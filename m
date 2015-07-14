@@ -1,57 +1,71 @@
-From: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Subject: Re: Help with routing ping requests
-Date: Sat, 11 Jul 2015 23:32:42 +0200
-Message-ID: <55A18B7A.4010702@plouf.fr.eu.org>
-References: <14e79fd9210.279f.a66e0210b6f036863bfeb88685b7aa6c@gmail.com> <14e7a023590.279f.a66e0210b6f036863bfeb88685b7aa6c@gmail.com>
-Mime-Version: 1.0
+From: Glen Huang <hey.hgl@gmail.com>
+Subject: Re: Network slowing down by masquerade
+Date: Tue, 14 Jul 2015 20:52:34 +0800
+Message-ID: <1E8FACB4-D45A-4564-AA7A-B7A940B91867@gmail.com>
+References: <C20C16F2-3345-4B9F-835B-7C35207A3A88@gmail.com> <55A18502.6090201@plouf.fr.eu.org>
+Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2102\))
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <14e7a023590.279f.a66e0210b6f036863bfeb88685b7aa6c@gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=content-type:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=KusCkXy+0fu/FOwWVqDrFdgjg4E8QbvT3Jh+hr2s33k=;
+        b=BEMhMqf5ZY8OZW/v16CFKt8VWOmBYdOJbeu5AU9RM+jwN0a13TzPFaR8Hd2uH1Zizg
+         lzi1iSDOqdyErAq8O3w/ACjmffq0dC79eGim+FmshtRxAC5QTdbeODh2p3WNNObqGgHI
+         1/7nvkgEqdNj3RnkRaTr2hozV4ZhRB7li+ZZP0QbmqRRW/bTb3OTn/bm/xNM/lOq7zFQ
+         RvciP0oShVzoYhSISA1ahIuwwUCIxZ8jogg6e8LHvr94A7x4yqM3DVgfiZsNhVekc8uz
+         6nzpQhqzM8MR9ROHxBkIUu1cgQ9VzABNglb7ns2LKEVl7yB+Z6AaeNHjnA4J5YGIffrM
+         a+Mw==
+In-Reply-To: <55A18502.6090201@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Donald Schlicht <dschlic1@gmail.com>
+To: Pascal Hambourg <pascal@plouf.fr.eu.org>
 Cc: netfilter@vger.kernel.org
 
-Donald Schlicht a =E9crit :
-> I have an application where I need to configure a router to pass thro=
-ugh=20
-> ping requests (ICMP type 8) through to the LAN port. I have a Linksys=
-=20
-> WRT54GS with tiny DD-WRT V24 SP2 installed. I am adding the following=
-=20
-> iptables rules:=20
->=20
-> iptables -t nat -I PREROUTING -p icmp --icmp-type 8 -s 72.64.140.50 -=
-j DNAT=20
-> --to-destination 192.168.1.200=20
-> iptables -t filter -I FORWARD -p icmp --icmp-type 8 -s 72.64.140.50 -=
-d=20
-> 192.168.1.200 -j ACCEPT
->  iptables -t nat -I POSTROUTING -p icmp --icmp-type 8 -s 72.64.140.50=
- -d=20
-> 192.168.1.200 -j ACCEPT
->=20
->  The intent is that the first rule will change an incoming echo reque=
-st=20
-> destination to the unit on the LAN which I want to receive the ping r=
-equest.=20
->=20
-> The second rule allows the modified echo request to pass through the=20
-> FORWARD table. And the last one allows the modified echo request to p=
-ass=20
-> through the POSTROUTING table. When I send a ping to the router with =
-four=20
-> tries, I get no pings out the LAN.
+> Why do you have to use --interface ?
 
-What do you mean exactly ? How do you know ?
+Because ppp1 is not the default route's output device. I'm running that=
+ command on the gateway to test the connection. Forgot to mention it, S=
+orry.
 
-> Using iptables -L -v -n I can see were=20
-> rule #1 passes one packet (but not four), rule #2 passes four packets=
-=20
-> (good!) and rule #3 passes 1 packet.
+> I would suspect first MTU issues
 
-This is expected behaviour. Chains in the nat table see only the first
-packet of any "connection". NAT operations applied to this packet are
-implicitly applied to subsequent packets of the same connection. A ping
-sequence is considered as a connection.
+It's indeed a MTU issue. After enabling MSS clamping, I get full speed =
+on the host. Thank you so much for the help. :)
+
+> On Jul 12, 2015, at 5:05 AM, Pascal Hambourg <pascal@plouf.fr.eu.org>=
+ wrote:
+>=20
+> Glen Huang a =C3=A9crit :
+>> I have a pptp client connection (ppp1) on a gateway. If I directly
+>> using curl --interface ppp1 to download a file, I get full download
+>> speed very quickly (2m/s).
+>=20
+> Why do you have to use --interface ?
+>=20
+>> But if I route my lan host to ppp1 and -o ppp1 -j MASQUERADE, runnin=
+g
+>> curl to download the same file on the host starts very slow (less th=
+an
+>> 100k/s), then the speed *slowly* increases(about 50k per second), un=
+til
+>> it reach about 1.8m/s. While downloading the file on the host, the
+>> gateway's cpu usage never reach 1 from the output of top.
+>>=20
+>> If I directly establish the pptp client connection on host, I quickl=
+y
+>> get full speed again.
+>>=20
+>> I wonder what might slow down the network when the packets are
+>> forwarded. I'm currently guess it's the masquerade target, but I'm n=
+ot sure.
+>=20
+> I don't think MASQUERADE is the culprit. I would suspect first MTU
+> issues (fragmentation, path MTU discovery).
+>=20
+>> How do I test it?
+>=20
+> Lower the MTU of the client host LAN interface below ~1460.
+
