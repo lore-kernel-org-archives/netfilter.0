@@ -1,71 +1,101 @@
-From: Glen Huang <hey.hgl@gmail.com>
-Subject: Re: Network slowing down by masquerade
-Date: Tue, 14 Jul 2015 20:52:34 +0800
-Message-ID: <1E8FACB4-D45A-4564-AA7A-B7A940B91867@gmail.com>
-References: <C20C16F2-3345-4B9F-835B-7C35207A3A88@gmail.com> <55A18502.6090201@plouf.fr.eu.org>
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2102\))
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Steve Hill <steve@opendium.com>
+Subject: Mangling and blocking
+Date: Tue, 14 Jul 2015 15:20:15 +0100
+Message-ID: <55A51A9F.8050800@opendium.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="------------040609010403080705060702"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=content-type:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=KusCkXy+0fu/FOwWVqDrFdgjg4E8QbvT3Jh+hr2s33k=;
-        b=BEMhMqf5ZY8OZW/v16CFKt8VWOmBYdOJbeu5AU9RM+jwN0a13TzPFaR8Hd2uH1Zizg
-         lzi1iSDOqdyErAq8O3w/ACjmffq0dC79eGim+FmshtRxAC5QTdbeODh2p3WNNObqGgHI
-         1/7nvkgEqdNj3RnkRaTr2hozV4ZhRB7li+ZZP0QbmqRRW/bTb3OTn/bm/xNM/lOq7zFQ
-         RvciP0oShVzoYhSISA1ahIuwwUCIxZ8jogg6e8LHvr94A7x4yqM3DVgfiZsNhVekc8uz
-         6nzpQhqzM8MR9ROHxBkIUu1cgQ9VzABNglb7ns2LKEVl7yB+Z6AaeNHjnA4J5YGIffrM
-         a+Mw==
-In-Reply-To: <55A18502.6090201@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-> Why do you have to use --interface ?
+This is a multi-part message in MIME format.
+--------------040609010403080705060702
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Because ppp1 is not the default route's output device. I'm running that=
- command on the gateway to test the connection. Forgot to mention it, S=
-orry.
 
-> I would suspect first MTU issues
+I'm writing some fairly complex firewall rules, which will be 
+controllable through a GUI.  The basic requirement is:
 
-It's indeed a MTU issue. After enabling MSS clamping, I get full speed =
-on the host. Thank you so much for the help. :)
+1. The user can select whether or not to allow some traffic.
+2. Traffic the user has opted to disallow, will be directed at a 
+transparent proxy, if there is a suitable proxy, otherwise it will be 
+dropped.  This is done by setting a MARK on the traffic and applying 
+special routing to it.
 
-> On Jul 12, 2015, at 5:05 AM, Pascal Hambourg <pascal@plouf.fr.eu.org>=
- wrote:
->=20
-> Glen Huang a =C3=A9crit :
->> I have a pptp client connection (ppp1) on a gateway. If I directly
->> using curl --interface ppp1 to download a file, I get full download
->> speed very quickly (2m/s).
->=20
-> Why do you have to use --interface ?
->=20
->> But if I route my lan host to ppp1 and -o ppp1 -j MASQUERADE, runnin=
-g
->> curl to download the same file on the host starts very slow (less th=
-an
->> 100k/s), then the speed *slowly* increases(about 50k per second), un=
-til
->> it reach about 1.8m/s. While downloading the file on the host, the
->> gateway's cpu usage never reach 1 from the output of top.
->>=20
->> If I directly establish the pptp client connection on host, I quickl=
-y
->> get full speed again.
->>=20
->> I wonder what might slow down the network when the packets are
->> forwarded. I'm currently guess it's the masquerade target, but I'm n=
-ot sure.
->=20
-> I don't think MASQUERADE is the culprit. I would suspect first MTU
-> issues (fragmentation, path MTU discovery).
->=20
->> How do I test it?
->=20
-> Lower the MTU of the client host LAN interface below ~1460.
+I can obviously construct rules to make a decision about 
+allowing/blocking traffic and apply them to the FORWARD chain in the 
+filter table.  However, the rules to make a decision about what gets 
+sent to the transparent proxy are almost identical to the filtering 
+rules, but iptables only lets you MARK in the mangle table - this means 
+I need to duplicate all the filter rules into the mangle table, which 
+seems like a very inefficient way of doing things when there are a large 
+number of rules.
 
+Doing any kind of filtering in the mangle table seems to be strongly 
+discouraged, so I'm looking for some advice on the best way to approach 
+this.  What are the problems associated with either filtering in the 
+mangle table's PREROUTING chain, or at least just having mangle rules to 
+MARK packets that are to be allowed and then rules in the filter table 
+that allow/drop based on that MARK?
+
+ From looking at 
+https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Netfilter-packet-flow.svg/2000px-Netfilter-packet-flow.svg.png 
+it looks like:
+- mangle:PREROUTING will carry both INPUT and FORWARD traffic, so care 
+would need to be taken to ensure the rules are acting on the right traffic.
+- mangle:PREROUTING rules won't be able to use -o, whereas 
+filter:FORWARD could.
+- mangle:PREROUTING will happen before any NAT, so some traffic would 
+have the "wrong" addresses on it.
+
+
+Secondly, am I right in thinking that a MARK that affects routing needs 
+to be set in mangle:PREROUTING - i.e. by the time mangle:FORWARD is 
+traversed, its too late?
+
+
+Thanks.
+
+-- 
+  - Steve Hill
+    Technical Director
+    Opendium Limited     http://www.opendium.com
+
+Direct contacts:
+    Instant messager: xmpp:steve@opendium.com
+    Email:            steve@opendium.com
+    Phone:            sip:steve@opendium.com
+
+Sales / enquiries contacts:
+    Email:            sales@opendium.com
+    Phone:            +44-1792-824568 / sip:sales@opendium.com
+
+Support contacts:
+    Email:            support@opendium.com
+    Phone:            +44-1792-825748 / sip:support@opendium.com
+
+--------------040609010403080705060702
+Content-Type: text/x-vcard; charset=utf-8;
+ name="steve.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="steve.vcf"
+
+begin:vcard
+fn:Steve Hill
+n:Hill;Steve
+org:Opendium Limited
+adr:1 Brue Close;;Highfield House;Bruton;Somerset;BA10 0HY;England
+email;internet:steve@opendium.com
+title:Technical Director
+tel;work:+44-1792-824568
+x-mozilla-html:FALSE
+url:http://www.opendium.com
+version:2.1
+end:vcard
+
+
+--------------040609010403080705060702--
