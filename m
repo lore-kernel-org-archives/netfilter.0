@@ -1,101 +1,89 @@
-From: Steve Hill <steve@opendium.com>
-Subject: Mangling and blocking
-Date: Tue, 14 Jul 2015 15:20:15 +0100
-Message-ID: <55A51A9F.8050800@opendium.com>
+From: =?utf-8?B?QW5kcsOpIFBhdWxzYmVyZy1Dc2liaQ==?= 
+	<Andre.Paulsberg-Csibi@evry.com>
+Subject: RE: Mangling and blocking
+Date: Wed, 15 Jul 2015 09:35:31 +0000
+Message-ID: <838AB161BE491743AE3CA3A916CF1CC648C551FD@CCDEX015.corp.corpcommon.com>
+References: <55A51A9F.8050800@opendium.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------040609010403080705060702"
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <55A51A9F.8050800@opendium.com>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="macroman"
+To: Steve Hill <steve@opendium.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-This is a multi-part message in MIME format.
---------------040609010403080705060702
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-
-
-I'm writing some fairly complex firewall rules, which will be 
-controllable through a GUI.  The basic requirement is:
-
-1. The user can select whether or not to allow some traffic.
-2. Traffic the user has opted to disallow, will be directed at a 
-transparent proxy, if there is a suitable proxy, otherwise it will be 
-dropped.  This is done by setting a MARK on the traffic and applying 
-special routing to it.
-
-I can obviously construct rules to make a decision about 
-allowing/blocking traffic and apply them to the FORWARD chain in the 
-filter table.  However, the rules to make a decision about what gets 
-sent to the transparent proxy are almost identical to the filtering 
-rules, but iptables only lets you MARK in the mangle table - this means 
-I need to duplicate all the filter rules into the mangle table, which 
-seems like a very inefficient way of doing things when there are a large 
-number of rules.
-
-Doing any kind of filtering in the mangle table seems to be strongly 
-discouraged, so I'm looking for some advice on the best way to approach 
-this.  What are the problems associated with either filtering in the 
-mangle table's PREROUTING chain, or at least just having mangle rules to 
-MARK packets that are to be allowed and then rules in the filter table 
-that allow/drop based on that MARK?
-
- From looking at 
-https://upload.wikimedia.org/wikipedia/commons/thumb/3/37/Netfilter-packet-flow.svg/2000px-Netfilter-packet-flow.svg.png 
-it looks like:
-- mangle:PREROUTING will carry both INPUT and FORWARD traffic, so care 
-would need to be taken to ensure the rules are acting on the right traffic.
-- mangle:PREROUTING rules won't be able to use -o, whereas 
-filter:FORWARD could.
-- mangle:PREROUTING will happen before any NAT, so some traffic would 
-have the "wrong" addresses on it.
-
-
-Secondly, am I right in thinking that a MARK that affects routing needs 
-to be set in mangle:PREROUTING - i.e. by the time mangle:FORWARD is 
-traversed, its too late?
-
-
-Thanks.
-
--- 
-  - Steve Hill
-    Technical Director
-    Opendium Limited     http://www.opendium.com
-
-Direct contacts:
-    Instant messager: xmpp:steve@opendium.com
-    Email:            steve@opendium.com
-    Phone:            sip:steve@opendium.com
-
-Sales / enquiries contacts:
-    Email:            sales@opendium.com
-    Phone:            +44-1792-824568 / sip:sales@opendium.com
-
-Support contacts:
-    Email:            support@opendium.com
-    Phone:            +44-1792-825748 / sip:support@opendium.com
-
---------------040609010403080705060702
-Content-Type: text/x-vcard; charset=utf-8;
- name="steve.vcf"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="steve.vcf"
-
-begin:vcard
-fn:Steve Hill
-n:Hill;Steve
-org:Opendium Limited
-adr:1 Brue Close;;Highfield House;Bruton;Somerset;BA10 0HY;England
-email;internet:steve@opendium.com
-title:Technical Director
-tel;work:+44-1792-824568
-x-mozilla-html:FALSE
-url:http://www.opendium.com
-version:2.1
-end:vcard
-
-
---------------040609010403080705060702--
+VGhlcmUgaXMgdG9vIGZldyBkZXRhaWxzIGFib3V0IHdoYXQgeW91IGFyZSBleGFjdGx5IHRyeWlu
+ZyB0byBkbyAoIGFuZCB3aGF0IHVzZXJzIGFyZSBhbGxvd2VkIHRvIGRvIGluIHRoZSBHVUkgKSwN
+CmJ1dCBmcm9tIG15IHN0YW5kcG9pbnQgaXQgc2VlbXMgbGlrZSB5b3Ugd291bGQgd2FudCB0byBt
+YWtlIGEgbG9naWMgY2hvaWNlIGFzIHRoZSB3aGVyZSB5b3UgZGVjaWRlIHdoZXJlIHBhY2tldHMg
+c2hvdWxkIGdvIC4NCklGIGl0IHdhcyBtZSBJIHRoaW5rIEkgd291bGQgdXNlIHRoZSBNQVJLIHRv
+IGRlY2lkZSB3aGF0IHNob3VsZCBoYXBwZW4gb24gYmFzaWMgbGV2ZWxzICwgYW5kIG1vc3QgbGlr
+ZWx5IGl0IHdvdWxkIGJlIHNvbWV0aGluZyBsaWtlIHRoaXMgOg0KDQpNQVJLICIxIiBpcyB0cmFm
+ZmljIGZvciBQUk9YWQ0KTUFSSyAiMiIgaXMgIlVTRVIgQ0hPU0VOIFJVTEVTIg0KTUFSSyAiNCIg
+aXMgc29tZSBzb3J0IG9mIGV4Y2VwdGlvbnMgLCB0aGF0IG5lZWRzIHNwZWNpYWwgY2FyZSAuLi4N
+CkFsbCBvdGhlciBwYWNrZXRzICggTUFSSyAwICkgSSB3b3VsZCBqdXN0IERST1ANCg0KU29ycnkg
+Zm9yIG5vIHNwZWNpZmljIGV4YW1wbGVzICwgYnV0IHRoYXQgd291bGQgcmVxdWlyZSBzb21lIG1v
+cmUgZGV0YWlscyAuLi4NCg0KQXMgZm9yIGEgZ2VuZXJhbCBydWxlICwgSSB3b3VsZCBtb3N0IGxp
+a2VseSByZWRpcmVjdCB0aGUgZm9sbG93aW5nOg0KVENQIHBvcnQgMjEgLCA4MCBhbmQgNDQzIHRv
+IGEgc3F1aWQgcHJveHkgKCBvciBvdGhlciBXRUIvRlRQIHByb3h5ICkNClRDUCBhbmQgVURQIDUz
+IHRvIGEgRE5TIHNlcnZlciANClVEUCAxMjMgdG8gYSBOVFAgc2VydmVyDQoNCkFzIGZvciB0aGUg
+ZXhjZXB0aW9ucyAsIHRoYXQgaXMgZm9yIGluc3RhbmNlIERIQ1AgcGFja2V0cyBvciBJQ01QIHBh
+Y2tldHMgcmVxdWlyZWQgdG8gYWxsb3cgbm9ybWFsIGZsb3dzIGFuZCBzZXR1cCBmb3IgdGhlIHVz
+ZXJzIC4NCkFuZCBhbnkgZGVzdGluYXRpb24geW91IHdvdWxkIGFsd2F5cyBibG9jayAsIGxpa2Ug
+TUdNVCBzeXN0ZW1zIG9yIHlvdXIgR1cvRlcgaW50ZXJmYWNlcyAuDQptYXkgYWxzbyBiZSB5b3Ug
+d291bGQgbGlrZSB0byBibG9jayB0dW5uZWxpbmcgcHJvdG9jb2xzIC0gbGlrZSBJS0UgLCBURVJF
+RE8gb3IgU1NIIGFuZCBzb21lIElDTVAgdHlwZXMgdGhhdCBjYW4gcmVkaXJlY3Qgb3IgbWVzcyB3
+aXRoIHN5c3RlbXMgLg0KDQoNCkJlc3QgcmVnYXJkcw0KQW5kcsOpIFBhdWxzYmVyZy1Dc2liaQ0K
+U2VuaW9yIE5ldHdvcmsgRW5naW5lZXIgDQpGYXVsdCBIYW5kbGluZw0KRVZSWSBOb3JkaWMgT3Bl
+cmF0aW9ucyBBUw0KYW5kcmUucGF1bHNiZXJnLWNzaWJpQGV2cnkuY29tDQpNICs0NyA5MDcwIDU5
+ODgNCg0KDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBuZXRmaWx0ZXItb3du
+ZXJAdmdlci5rZXJuZWwub3JnIFttYWlsdG86bmV0ZmlsdGVyLW93bmVyQHZnZXIua2VybmVsLm9y
+Z10gT24gQmVoYWxmIE9mIFN0ZXZlIEhpbGwNClNlbnQ6IDE0LiBqdWxpIDIwMTUgMTY6MjANClRv
+OiBuZXRmaWx0ZXJAdmdlci5rZXJuZWwub3JnDQpTdWJqZWN0OiBNYW5nbGluZyBhbmQgYmxvY2tp
+bmcNCg0KDQpJJ20gd3JpdGluZyBzb21lIGZhaXJseSBjb21wbGV4IGZpcmV3YWxsIHJ1bGVzLCB3
+aGljaCB3aWxsIGJlIA0KY29udHJvbGxhYmxlIHRocm91Z2ggYSBHVUkuICBUaGUgYmFzaWMgcmVx
+dWlyZW1lbnQgaXM6DQoNCjEuIFRoZSB1c2VyIGNhbiBzZWxlY3Qgd2hldGhlciBvciBub3QgdG8g
+YWxsb3cgc29tZSB0cmFmZmljLg0KMi4gVHJhZmZpYyB0aGUgdXNlciBoYXMgb3B0ZWQgdG8gZGlz
+YWxsb3csIHdpbGwgYmUgZGlyZWN0ZWQgYXQgYSANCnRyYW5zcGFyZW50IHByb3h5LCBpZiB0aGVy
+ZSBpcyBhIHN1aXRhYmxlIHByb3h5LCBvdGhlcndpc2UgaXQgd2lsbCBiZSANCmRyb3BwZWQuICBU
+aGlzIGlzIGRvbmUgYnkgc2V0dGluZyBhIE1BUksgb24gdGhlIHRyYWZmaWMgYW5kIGFwcGx5aW5n
+IA0Kc3BlY2lhbCByb3V0aW5nIHRvIGl0Lg0KDQpJIGNhbiBvYnZpb3VzbHkgY29uc3RydWN0IHJ1
+bGVzIHRvIG1ha2UgYSBkZWNpc2lvbiBhYm91dCANCmFsbG93aW5nL2Jsb2NraW5nIHRyYWZmaWMg
+YW5kIGFwcGx5IHRoZW0gdG8gdGhlIEZPUldBUkQgY2hhaW4gaW4gdGhlIA0KZmlsdGVyIHRhYmxl
+LiAgSG93ZXZlciwgdGhlIHJ1bGVzIHRvIG1ha2UgYSBkZWNpc2lvbiBhYm91dCB3aGF0IGdldHMg
+DQpzZW50IHRvIHRoZSB0cmFuc3BhcmVudCBwcm94eSBhcmUgYWxtb3N0IGlkZW50aWNhbCB0byB0
+aGUgZmlsdGVyaW5nIA0KcnVsZXMsIGJ1dCBpcHRhYmxlcyBvbmx5IGxldHMgeW91IE1BUksgaW4g
+dGhlIG1hbmdsZSB0YWJsZSAtIHRoaXMgbWVhbnMgDQpJIG5lZWQgdG8gZHVwbGljYXRlIGFsbCB0
+aGUgZmlsdGVyIHJ1bGVzIGludG8gdGhlIG1hbmdsZSB0YWJsZSwgd2hpY2ggDQpzZWVtcyBsaWtl
+IGEgdmVyeSBpbmVmZmljaWVudCB3YXkgb2YgZG9pbmcgdGhpbmdzIHdoZW4gdGhlcmUgYXJlIGEg
+bGFyZ2UgDQpudW1iZXIgb2YgcnVsZXMuDQoNCkRvaW5nIGFueSBraW5kIG9mIGZpbHRlcmluZyBp
+biB0aGUgbWFuZ2xlIHRhYmxlIHNlZW1zIHRvIGJlIHN0cm9uZ2x5IA0KZGlzY291cmFnZWQsIHNv
+IEknbSBsb29raW5nIGZvciBzb21lIGFkdmljZSBvbiB0aGUgYmVzdCB3YXkgdG8gYXBwcm9hY2gg
+DQp0aGlzLiAgV2hhdCBhcmUgdGhlIHByb2JsZW1zIGFzc29jaWF0ZWQgd2l0aCBlaXRoZXIgZmls
+dGVyaW5nIGluIHRoZSANCm1hbmdsZSB0YWJsZSdzIFBSRVJPVVRJTkcgY2hhaW4sIG9yIGF0IGxl
+YXN0IGp1c3QgaGF2aW5nIG1hbmdsZSBydWxlcyB0byANCk1BUksgcGFja2V0cyB0aGF0IGFyZSB0
+byBiZSBhbGxvd2VkIGFuZCB0aGVuIHJ1bGVzIGluIHRoZSBmaWx0ZXIgdGFibGUgDQp0aGF0IGFs
+bG93L2Ryb3AgYmFzZWQgb24gdGhhdCBNQVJLPw0KDQogRnJvbSBsb29raW5nIGF0IA0KaHR0cHM6
+Ly91cGxvYWQud2lraW1lZGlhLm9yZy93aWtpcGVkaWEvY29tbW9ucy90aHVtYi8zLzM3L05ldGZp
+bHRlci1wYWNrZXQtZmxvdy5zdmcvMjAwMHB4LU5ldGZpbHRlci1wYWNrZXQtZmxvdy5zdmcucG5n
+IA0KaXQgbG9va3MgbGlrZToNCi0gbWFuZ2xlOlBSRVJPVVRJTkcgd2lsbCBjYXJyeSBib3RoIElO
+UFVUIGFuZCBGT1JXQVJEIHRyYWZmaWMsIHNvIGNhcmUgDQp3b3VsZCBuZWVkIHRvIGJlIHRha2Vu
+IHRvIGVuc3VyZSB0aGUgcnVsZXMgYXJlIGFjdGluZyBvbiB0aGUgcmlnaHQgdHJhZmZpYy4NCi0g
+bWFuZ2xlOlBSRVJPVVRJTkcgcnVsZXMgd29uJ3QgYmUgYWJsZSB0byB1c2UgLW8sIHdoZXJlYXMg
+DQpmaWx0ZXI6Rk9SV0FSRCBjb3VsZC4NCi0gbWFuZ2xlOlBSRVJPVVRJTkcgd2lsbCBoYXBwZW4g
+YmVmb3JlIGFueSBOQVQsIHNvIHNvbWUgdHJhZmZpYyB3b3VsZCANCmhhdmUgdGhlICJ3cm9uZyIg
+YWRkcmVzc2VzIG9uIGl0Lg0KDQoNClNlY29uZGx5LCBhbSBJIHJpZ2h0IGluIHRoaW5raW5nIHRo
+YXQgYSBNQVJLIHRoYXQgYWZmZWN0cyByb3V0aW5nIG5lZWRzIA0KdG8gYmUgc2V0IGluIG1hbmds
+ZTpQUkVST1VUSU5HIC0gaS5lLiBieSB0aGUgdGltZSBtYW5nbGU6Rk9SV0FSRCBpcyANCnRyYXZl
+cnNlZCwgaXRzIHRvbyBsYXRlPw0KDQoNClRoYW5rcy4NCg0KLS0gDQogIC0gU3RldmUgSGlsbA0K
+ICAgIFRlY2huaWNhbCBEaXJlY3Rvcg0KICAgIE9wZW5kaXVtIExpbWl0ZWQgICAgIGh0dHA6Ly93
+d3cub3BlbmRpdW0uY29tDQoNCkRpcmVjdCBjb250YWN0czoNCiAgICBJbnN0YW50IG1lc3NhZ2Vy
+OiB4bXBwOnN0ZXZlQG9wZW5kaXVtLmNvbQ0KICAgIEVtYWlsOiAgICAgICAgICAgIHN0ZXZlQG9w
+ZW5kaXVtLmNvbQ0KICAgIFBob25lOiAgICAgICAgICAgIHNpcDpzdGV2ZUBvcGVuZGl1bS5jb20N
+Cg0KU2FsZXMgLyBlbnF1aXJpZXMgY29udGFjdHM6DQogICAgRW1haWw6ICAgICAgICAgICAgc2Fs
+ZXNAb3BlbmRpdW0uY29tDQogICAgUGhvbmU6ICAgICAgICAgICAgKzQ0LTE3OTItODI0NTY4IC8g
+c2lwOnNhbGVzQG9wZW5kaXVtLmNvbQ0KDQpTdXBwb3J0IGNvbnRhY3RzOg0KICAgIEVtYWlsOiAg
+ICAgICAgICAgIHN1cHBvcnRAb3BlbmRpdW0uY29tDQogICAgUGhvbmU6ICAgICAgICAgICAgKzQ0
+LTE3OTItODI1NzQ4IC8gc2lwOnN1cHBvcnRAb3BlbmRpdW0uY29tDQo=
