@@ -1,61 +1,61 @@
-From: Thomas Delrue <thomas.delrue@fundamental-software.net>
-Subject: Creating, editing, removing rules from C(++)
-Date: Tue, 21 Jul 2015 17:41:26 -0400
-Message-ID: <55AEBC86.5010604@fundamental-software.net>
+From: alvin <alvin.sm@Mail.Linux-Consulting.com>
+Subject: Re: Creating, editing, removing rules from C(++)
+Date: Tue, 21 Jul 2015 15:30:26 -0700 (PDT)
+Message-ID: <201507212230.t6LMURFX024196@Mail.Linux-Consulting.com>
+References: <55AEBC86.5010604@fundamental-software.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature";
-	boundary="maPbx7OHBSpGd0RigO2TrJF9xDTqn915T"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <55AEBC86.5010604@fundamental-software.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
-
---maPbx7OHBSpGd0RigO2TrJF9xDTqn915T
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-Is there a way to interact with the firewall rules from a C(++) program?
-What I'm really trying to do is have a program that only allows a
-certain set of CIDRs through the firewall through a particular port.
-However these CIDRs change from time to time and so my application is
-there to update the firewall rules to make sure that the firewall rules
-contain the latest and greatest information that says: "drop everything
-trying to connect to port P EXCEPT for stuff originating from these CIDRs=
-".
-
-The information I've found so far seems to indicate I should look at
-libnftnl and nftables but I'm not sure this is right.
-Can you point me to the documentation for this? I've been looking online
-for information on how to do this but haven't found anything really.
-
-Thanks,
-Thomas
+Content-Type: text/plain; charset="us-ascii"
+To: Thomas Delrue <thomas.delrue@fundamental-software.net>
+Cc: netfilter@vger.kernel.org, alvin <alvin.sm@Mail.Linux-Consulting.com>
 
 
---maPbx7OHBSpGd0RigO2TrJF9xDTqn915T
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+hi thomas
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
+> Is there a way to interact with the firewall rules from a C(++) program?
+> What I'm really trying to do is have a program that only allows a
+> certain set of CIDRs through the firewall through a particular port.
+> However these CIDRs change from time to time and so my application is
+> there to update the firewall rules to make sure that the firewall rules
+> contain the latest and greatest information that says: "drop everything
+> trying to connect to port P EXCEPT for stuff originating from these CIDRs=
+> ".
 
-iQIcBAEBCgAGBQJVrryMAAoJEDZWLDUW2nDQmjoQAJDVRHFlcOhdLXFsFbKqYACz
-r/SLxhuo7tvzlrM2Cf7o0rgObr38syrOIqohnLMie+tguG8AmH2PSKnmg3bRwF1d
-oBiMwbnWPa1Ue4Q+8FgX1vsHcTGxPPi0lBEToKSZbmNNgVBQStummg9UM3QHBcaI
-d5l6pQQoI9NC4EY5uJjykl8F/Qm5+HekC4Yrd5UGUIo9xA0PLgwvKlHh5guMDZVv
-mw7LJl4MkTc8KR/Y8z6gkvIJK/ItMyhWu2QL1nXa+HGrKVNjI2MyNkEXbjoex4QL
-sWKdcpOwf7MReu8Sh9gRrMOKkm3f8J8qfzQ/fbFo5PWqFwr1Db6bIS4lk0pxdojC
-E26sgMgAAhGrq6NGCUNnNzUAEsHj2JFWlfFnKE3UPEkzkXGZhSvVUpzoL0v3bVZP
-HRvUTICrbbzHPokjMQwalbVh1oIDvQWyAC7fnHj12Iz8EwnDl8r+8szilbB3MgVd
-xw/7BrcsFH4WoHciiGXKdYdiTwQnbGyL0091K6X9pKcC5CvFfaO0HgcFi3R2kVt2
-0zX6czPF+aaLJk1UvBN/ZeJAnH1K1Uir798aqc/orZz/8xjIWB5Q03DN859crJD0
-2/WSvKtlf/Ky7DCIZ+q7HQXg8RAqNT3oRWQ1yBoO7DH+6Tay1GCo1kckQIxsB0MP
-cWtPZCN0nlrvvBqqniR/
-=6aKL
------END PGP SIGNATURE-----
+yes, i update iptables rules randomly and on the fly
 
---maPbx7OHBSpGd0RigO2TrJF9xDTqn915T--
+iptables recent module did not do what i wanted so i wrote the 
+add or delete iptables rules in C
+
+it has a command line interface or web pages with cgi-bin 
+
+modifying iptables rules from apache requires visudo to 
+allow apache to modify iptable rules which is kinda dangerous :-)
+
+# eg. add incoming ddos attackers to iptables blacklist
+# iptables-gui -autoadd ... 'a.b.c.d|w.x.y.z'
+
+# the corresponding actual iptable rule:
+  iptables -I BlackList -p tcp -s a.b.c.d -d myLAN/24 -j TARPIT
+
+# eg. remove inactive ddos attacks from the blacklist
+# iptables-gui -autodelete ... w.x.y.z
+
+# the corresponding actual iptable rule:
+  iptables -D BlackList -p tcp -s a.b.c.d -d myLAN/24 -j TARPIT
+
+- online demo:  http://DDoS-Mitigator.net/cgi-bin/IPtables-GUI.pl
+
+have fun
+alvin
+
+> The information I've found so far seems to indicate I should look at
+> libnftnl and nftables but I'm not sure this is right.
+> Can you point me to the documentation for this? I've been looking online
+> for information on how to do this but haven't found anything really.
+> 
+> Thanks,
+> Thomas
