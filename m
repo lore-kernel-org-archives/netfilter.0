@@ -1,28 +1,84 @@
-From: Donald Schlicht <dschlic1@gmail.com>
-Subject: Help with routing ping requests
-Date: Wed, 22 Jul 2015 11:59:21 -0400
-Message-ID: <CAA0NJifxj+g70uXUit=N-EvbdtgbPxMhXCqJVvx7Zz2a5U_s9Q@mail.gmail.com>
+From: alvin <alvin.sm@Mail.Linux-Consulting.com>
+Subject: Re: Creating, editing, removing rules from C(++)
+Date: Wed, 22 Jul 2015 10:01:54 -0700
+Message-ID: <20150722170154.GA2610@Mail.Linux-Consulting.com>
+References: <201507212230.t6LMURFX024196@Mail.Linux-Consulting.com>
+ <55AECB5B.9090302@fundamental-software.net>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=3huQhXQ7ZxFjIhw8dqJVBgvDY3H+ki1GkBZf0oUH+c4=;
-        b=1EF5jEyQBPhuqEA04UWloP6UV591k+cGCDWUIDYoeLmCfJfVNmJ0tnce2lU+bzbBk4
-         C/SCK/m1lxQh73odClPoos4AzE3xThfj2vPOiGsqBoKwmy6ANyoqbb5P1hLJKNkLotek
-         dUKq5a0FeXz0mU38vGEjWWAvpC///ODoVkP8udzJZPvGkPgjznw91z392r0xHaCXOM3s
-         63J7NMIYVP4wDvYSj1aQCY7Iq98FaNEQFxMPL4KYSHyGxhm2F16eOSM5p2SaeW3Nfy6+
-         AYdjWnsQdUI3daBzHt1sOqGxbh28svgmqkjJWHADLqyJ54JfeOhlwC2X6WzxVOjHbRSN
-         uwVg==
+Content-Disposition: inline
+In-Reply-To: <55AECB5B.9090302@fundamental-software.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Thomas Delrue <thomas.delrue@fundamental-software.net>
+Cc: netfilter@vger.kernel.org, alvin <alvin.sm@Mail.Linux-Consulting.com>
 
-I have found a solution to this issue. For some reason I have to put a
-SNAT in the POSTROUTING table to change the source IP address to the
-LAN gateway address. Once I did that, the system started working
-correctly.
 
-Thanks for all of your help
+hi thomas
+
+On Tue, Jul 21, 2015 at 06:44:43PM -0400, Thomas Delrue wrote:
+> Thank you for replying!
+...
+> On 07/21/2015 06:30 PM, alvin wrote:
+...
+> > # eg. add incoming ddos attackers to iptables blacklist
+> > # iptables-gui -autoadd ... 'a.b.c.d|w.x.y.z'
+> >
+> > # the corresponding actual iptable rule:
+> >   iptables -I BlackList -p tcp -s a.b.c.d -d myLAN/24 -j TARPIT
+> 
+> This is exactly the kind of thing that I would like to do
+> Is the source for iptables-gui open source? 
+
+it is not open source :-)
+
+the idea is simple:
+- ( tcpdump or any sniffer | cleanup and extract > traffic.data.txt ) &
+--- iptables-gui need to sort the traffic data and insert or delete
+--- incoming IP# of the DDoS at the right rule# in iptables chains
+- crontab# iptables-gui -add or -delete
+
+> Can you point me to it or to
+> the documentation/resources you used to write this application.
+
+#
+# i assume ( require ) certain set or sequence of iptables rules
+# and list of the other people's IPtables howto 
+#
+http://iptables-blacklist.net/Howto/
+
+------
+
+Neil murphy's idea of using iptables-restore is a good idea too
+for add/deleting CIDRs that changes infrequently 
+
+iptables-save -c > /tmp/iptables.txt
+
+sed -e s/a.b.c.d/w.x.y.z/g < /tmp/iptables.txt > /tmp/iptables.new.txt
+
+iptables-restore -c < /tmp/iptables.new.txt
+
+#
+# you'd need to verify save and restore works ... it didn't work
+# for me when i tested on debian-testing, slackware-14.x, redhat variants
+#
+# save/restore seems to work on most all versions of OpenSuSE
+# and rolling updates worked across 4 major patch levels from
+# 11.x - 12.x - 13.x - factory
+#
+# i needed iptables rules to be independent of the distro's syntax
+#
+
+> # eg. remove inactive ddos attacks from the blacklist
+> > # iptables-gui -autodelete ... w.x.y.z
+> > 
+> > # the corresponding actual iptable rule:
+> >   iptables -D BlackList -p tcp -s a.b.c.d -d myLAN/24 -j TARPIT
+> 
+> Yep, this also is exactly what I'm trying to do
+ 
+have fun
+alvin
+http://DDoS-Mitigator.net
