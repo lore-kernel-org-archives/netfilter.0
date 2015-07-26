@@ -1,84 +1,77 @@
-From: alvin <alvin.sm@Mail.Linux-Consulting.com>
-Subject: Re: Creating, editing, removing rules from C(++)
-Date: Wed, 22 Jul 2015 10:01:54 -0700
-Message-ID: <20150722170154.GA2610@Mail.Linux-Consulting.com>
-References: <201507212230.t6LMURFX024196@Mail.Linux-Consulting.com>
- <55AECB5B.9090302@fundamental-software.net>
+From: Andy Hester <andy.hester@gmail.com>
+Subject: Rule counter incrementing, but packet not dropped?
+Date: Sun, 26 Jul 2015 16:30:48 -0500
+Message-ID: <CAMSXMRaxNUPBjbQRs6RZ3rgE8hCZV+tUCknd+enad2ncn_+foQ@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <55AECB5B.9090302@fundamental-software.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=CqtuLed/EEcONf0xUmh2HRNqY7XVcSnL6lmh/0I3iws=;
+        b=Niojxz0DQgMrJCZTf8KzSD9ogBmshwzluLtfJiFHeh2FFoD7h9dPFPlYTzdYFv7RLR
+         UCUO5Jk+7ozz9K+ESKRQ7lcAoT0yqjWBpfcbTQR5oXDzTj1mirM9/x9E4fDxVmuOpxq4
+         6CpGeJGYObeKQkVa5C4ZOCg/MehQbuXaIM/PJ6zn9xviOrCRHMBRelwyYbNCgzaGwkM3
+         4opRPvpH6cf9uRv4teqnpMxIYFwCxzGlRPqK2rvlpKx4wXwvBPgzYJ93IaHV35nki2m6
+         TPxSKuZI1NOgbHdRh9V0N6h4jwo/nzyv8gCtTSj/7rENVWWMs4tILynLkENJUeSx6Q+e
+         x4mA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Thomas Delrue <thomas.delrue@fundamental-software.net>
-Cc: netfilter@vger.kernel.org, alvin <alvin.sm@Mail.Linux-Consulting.com>
+To: netfilter@vger.kernel.org
+
+Has anyone experienced a condition where rule counter increments but
+the target doesn't work?  (I tried the DROP, TRACE target and the MARK
+target also without success)  Any ideas where I should look next?
+
+Firewall is a bridging firewall.
+
+I can see traffic hitting a specific firewall rule for a specific host
+that has a drop target (counters increment), but the traffic is still
+making it through.
+
+I tried the TRACE target to see if I had done something wrong, but it
+doesn't work either.  (I did insmod the logging module). No logs in
+/var/log/kern.log|messages|syslog etc
+
+Other rules have been to mark packet for a queue, but the queue
+counters don't increment even though the iptables rule does.  (It use
+to work fine)
+
+All of this started after upgrades which forced me to add vlan
+subinterfaces and bridge them.  (I used to just bridge the physical
+interfaces and ignored the VLANs and everything worked fine.  After
+the upgrade this no longer worked, and the only fix was to add the
+subitenterface configs for the vlans.  After fixing the bridging to
+work with the new kernel, iptables is not working.)
 
 
-hi thomas
 
-On Tue, Jul 21, 2015 at 06:44:43PM -0400, Thomas Delrue wrote:
-> Thank you for replying!
-...
-> On 07/21/2015 06:30 PM, alvin wrote:
-...
-> > # eg. add incoming ddos attackers to iptables blacklist
-> > # iptables-gui -autoadd ... 'a.b.c.d|w.x.y.z'
-> >
-> > # the corresponding actual iptable rule:
-> >   iptables -I BlackList -p tcp -s a.b.c.d -d myLAN/24 -j TARPIT
-> 
-> This is exactly the kind of thing that I would like to do
-> Is the source for iptables-gui open source? 
+The bridge has multiple interfaces/subinterfaces.
 
-it is not open source :-)
+eth0-eth3 all have sub interfaces ie
 
-the idea is simple:
-- ( tcpdump or any sniffer | cleanup and extract > traffic.data.txt ) &
---- iptables-gui need to sort the traffic data and insert or delete
---- incoming IP# of the DDoS at the right rule# in iptables chains
-- crontab# iptables-gui -add or -delete
+eth0.1, eth.100, etc
 
-> Can you point me to it or to
-> the documentation/resources you used to write this application.
+the bridges contain the subinterfaces only.  Traffic is passing
+normally and vlans are working as expected through the bridge.  That
+is to say the hosts on either side of the bridge are getting the
+traffic they are supposed to.
 
-#
-# i assume ( require ) certain set or sequence of iptables rules
-# and list of the other people's IPtables howto 
-#
-http://iptables-blacklist.net/Howto/
+I have the setting in sysctl.conf set to pass bridge traffic to
+iptables and also the setting for passing vlan traffic to iptables.  I
+verified via the sysctl command.
 
-------
+I also turned these settings off and verified that packets no longer
+incremented the counters on the rules
+Turned them back on and verified that the counters on a very specific
+rule (1 src IP)  increment again.
 
-Neil murphy's idea of using iptables-restore is a good idea too
-for add/deleting CIDRs that changes infrequently 
+But I verified that I can still pass traffic through the bridge.  I
+have verified that there are no rules ahead of the block rule,
+although the default for all tables is accept.
 
-iptables-save -c > /tmp/iptables.txt
 
-sed -e s/a.b.c.d/w.x.y.z/g < /tmp/iptables.txt > /tmp/iptables.new.txt
+Any help appreciated.
 
-iptables-restore -c < /tmp/iptables.new.txt
-
-#
-# you'd need to verify save and restore works ... it didn't work
-# for me when i tested on debian-testing, slackware-14.x, redhat variants
-#
-# save/restore seems to work on most all versions of OpenSuSE
-# and rolling updates worked across 4 major patch levels from
-# 11.x - 12.x - 13.x - factory
-#
-# i needed iptables rules to be independent of the distro's syntax
-#
-
-> # eg. remove inactive ddos attacks from the blacklist
-> > # iptables-gui -autodelete ... w.x.y.z
-> > 
-> > # the corresponding actual iptable rule:
-> >   iptables -D BlackList -p tcp -s a.b.c.d -d myLAN/24 -j TARPIT
-> 
-> Yep, this also is exactly what I'm trying to do
- 
-have fun
-alvin
-http://DDoS-Mitigator.net
+Andy
