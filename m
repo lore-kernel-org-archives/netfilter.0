@@ -1,10 +1,12 @@
 From: sillysausage <sillysausage@privatedemail.net>
-Subject: Routing 192.168.1.0/24 to ISP and 192.168.2.0/24 to VPN using
+Subject: Re: Routing 192.168.1.0/24 to ISP and 192.168.2.0/24 to VPN using
  fwmark+mangle+iproute
-Date: Fri, 7 Aug 2015 03:14:26 +0930
-Message-ID: <55C39CFA.9050308@privatedemail.net>
+Date: Fri, 7 Aug 2015 22:33:46 +0930
+Message-ID: <55C4ACB2.7060205@privatedemail.net>
+References: <55C39CFA.9050308@privatedemail.net>
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <55C39CFA.9050308@privatedemail.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 MIME-Version: 1.0
@@ -13,154 +15,59 @@ To: netfilter@vger.kernel.org
 
 Hi,
 
-I'm trying to set up VPN routing on my router, so that clients are routed into
-a VPN depending on their source IP address. eg 192.168.1.0/24 goes directly
-out my WAN port, and 192.168.2.0/24 goes into my VPN, with a few exceptions for
-things like SIP and SMTP.
+So I came across this guide
 
-I want it so that all the filtering is done with iptables, and iproute just
-acts on the specific fwmarks.
+    http://nerdboys.com/2006/05/05/conning-the-mark-multiwan-connections-using-iptables-mark-connmark-and-iproute2/
+    http://nerdboys.com/2006/05/08/multiwan-connections-addendum/
 
-It is an improvement on this solution https://superuser.com/a/888337/426558
-which uses rules like:
+it was intended for a multiwan setup. The problem I found when using it was
+that 192.168.1.0/24 seemed to route but 192.168.2.0/24 did not.
 
-/sbin/ip rule add from 192.168.2.0/24 table vpn
-/sbin/ip rule add to 192.168.2.0/24 table vpn
+I'm not sure if this means that my packets were somehow slipping through the
+main table unmarked or actually working ie going through ISP.
 
-because that currently requires filtering in iptables and in iproute. It also
-lacks flexibility on filtering by port, (required if I wanted to send all
-465/587 traffic over the non-VPN table. This method worked okay because my SIP
-server has a static IP address, but in the case of smtp.gmail.com I will have
-to filter by port as google has a pool of potentially unknown IP addresses.
-
-This wiki article I wrote detailing the whole project and I'd love to hear of
-improvements I could make. I'm new to netfilter/iptables and still consider
-myself a noob, and as I've documented my efforts for others I want to be as
-"correct" as possible.
-
-http://wiki.alpinelinux.org/wiki/Linux_Router_with_VPN_on_a_Raspberry_Pi#VPN_Tunnel_on_specific_subnet
-an article which I wrote.
-
-So the better approach seems to be to me that packets marked with 0x1 go
-directly out ppp0 and packets marked with 0x2 go through tun0.
-
-I did also post the question here https://superuser.com/questions/950031/
-if you have the answer to my problem and want credit on superuser then reply
-there as well.
-
-So, what have I tried:
-
-Well first I created two routing tables:
-
-gateway:~# cat /etc/iproute2/rt_tables
-1 ISP
-2 VPN
-
-Rules that are added when the ppp0 goes up on boot. Note I'm using the pppd
-hooks to keep things generic https://ppp.samba.org/pppd.html#sect13
-
-gateway:~# cat /etc/ppp/ip-up
-#!/bin/sh
-#
-# This script is run by pppd when there's a successful ppp connection.
-#
-
-# Flush out any old routes when ppp0 goes down
-/sbin/ip route flush table ISP
-
-# Copy routes from main
-/sbin/ip route show table main | grep -Ev ^default | while read ROUTE ; do ip route add table ISP $ROUTE; done
-
-# Set default route to ppp0
-/sbin/ip route add table ISP default via ${IPLOCAL}
-
-Rules that are added when the VPN goes up. OpenVPN also has environmental
-variables: https://openvpn.net/index.php/open-source/documentation/manuals/65-openvpn-20x-manpage.html#lbAS
-
-gateway:~# cat /etc/openvpn/route-up.sh
-#!/bin/sh
-#
-# This script is run by OpenVPN when there's a successful VPN connection.
-#
-
-# Flush out any old routes when tun0 goes down
-/sbin/ip route flush table VPN
-
-# Copy routes from main
-/sbin/ip route show table main | grep -Ev ^default | while read ROUTE ; do ip route add table VPN $ROUTE; done
-
-# Set default route to tun0
-/sbin/ip route add default via ${route_vpn_gateway} dev ${dev} table VPN
-
-This creates these routing tables:
-
-gateway:~# ip route show table main
-default dev ppp0 scope link metric 300
-172.16.32.0/20 dev tun0 proto kernel scope link src 172.16.39.64
-192.168.0.0/30 dev eth1 proto kernel scope link src 192.168.0.2
-192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.1
-192.168.2.0/24 dev eth0 proto kernel scope link src 192.168.2.1
-IPREMOTE dev ppp0 proto kernel scope link src IPLOCAL
-
-gateway:~# ip route show table ISP
-default via IPLOCAL dev ppp0
-192.168.0.0/30 dev eth1 proto kernel scope link src 192.168.0.2
-192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.1
-192.168.2.0/24 dev eth0 proto kernel scope link src 192.168.2.1
-IPREMOTE dev ppp0 proto kernel scope link src IPLOCAL
-
-gateway:~# ip route show table VPN
-default via 172.16.32.1 dev tun0
-172.16.32.0/20 dev tun0 proto kernel scope link src 172.16.39.64
-192.168.0.0/30 dev eth1 proto kernel scope link src 192.168.0.2
-192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.1
-192.168.2.0/24 dev eth0 proto kernel scope link src 192.168.2.1
-IPREMOTE dev ppp0 proto kernel scope link src IPLOCAL
-
-In /etc/network/interfaces I added this under one of the interfaces:
-
-post-up /etc/network/fwmark_rules
-
-gateway:~# cat /etc/network/fwmark_2_0_subnet_rules
-#!/bin/sh
-
-/sbin/ip rule add fwmark 0x1 lookup ISP
-/sbin/ip rule add fwmark 0x2 lookup VPN
-
-Finally my complete iptables rules. I'm fairly certain the problem is in the
-mangle table.
+These are the iptables rules I tried this time (note mangle table):
 
 #########################################################################
 # Advanced routing rule set
 # Uses 192.168.1.0 via ISP
-# 192.168.2.0 via VPN
+#      192.168.2.0 via VPN
 #
 # Packets to/from 192.168.1.0/24 are marked with 0x1 and routed to ISP
 # Packets to/from 192.168.2.0/24 are marked with 0x2 and routed to VPN
 #
+# http://nerdboys.com/2006/05/05/conning-the-mark-multiwan-connections-using-iptables-mark-connmark-and-iproute2/
+# http://nerdboys.com/2006/05/08/multiwan-connections-addendum/
 #########################################################################
 
-# Set up the nat table
-*nat
+# Set up the mangle table
+*mangle
 :PREROUTING ACCEPT
 :INPUT ACCEPT
+:FORWARD ACCEPT
 :OUTPUT ACCEPT
 :POSTROUTING ACCEPT
 
-# Bittorrent forwarded to Linux Workstation through VPN
--A PREROUTING -i tun0 -p tcp -m tcp --dport 6881:6889 -j DNAT --to-destination 192.168.2.20
--A PREROUTING -i tun0 -p udp -m udp --dport 6881:6889 -j DNAT --to-destination 192.168.2.20
+# Restore CONNMARK to the MARK (If one doesn't exist then no mark is set
+-A PREROUTING -j CONNMARK --restore-mark --nfmask 0xffffffff --ctmask 0xffffffff
 
-# Masquerade rule for exception, such as VOIP server when on 192.168.2.0/24 address
-# -A POSTROUTING -d <IP_OF_HOST/MASK> -o ppp0 -j MASQUERADE
+# If packet MARK is 2, then it means there is already a connection mark and the original packet came in on VPN
+-A PREROUTING -m mark --mark 0x2 -j ACCEPT
 
-# Allows for network hosts to access the internet via VPN tunnel
--A POSTROUTING -s 192.168.2.0/24 -o tun0 -j MASQUERADE
+# Else MARK packet as 2
+#-A PREROUTING -i tun0 -j MARK --set-xmark 0x2/0xffffffff
+-A PREROUTING -i tun0 -m conntrack --ctstate NEW -m mark --mark 0x0 -j MARK --set-xmark 0x2/0xffffffff
 
-# Allows for network hosts to access the internet via WAN port
--A POSTROUTING -s 192.168.1.0/24 -o ppp0 -j MASQUERADE
+# If packet MARK is 1, then it means there is already a connection mark and the original packet came in on ISP
+-A PREROUTING -m mark --mark 0x1 -j ACCEPT
 
-# Commit the nat table
+# Else MARK packet as 1
+#-A PREROUTING -i ppp0 -j MARK --set-xmark 0x1/0xffffffff
+-A PREROUTING -i ppp0 -m conntrack --ctstate NEW -m mark --mark 0x0 -j MARK --set-xmark 0x1/0xffffffff
+
+# Save MARK to CONNMARK
+-A PREROUTING -j CONNMARK --save-mark --nfmask 0xffffffff --ctmask 0xffffffff
+
 COMMIT
 
 # Set up the filter table
@@ -251,9 +158,6 @@ COMMIT
 # SSH To Modem from Router
 -A IN_ETH1 -s 192.168.0.0/30 -d 192.168.0.0/30 -p tcp -m tcp --sport 22 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
 
-# Incoming rule exception from ppp0, such as VOIP server when on 192.168.2.0/24 address
-# -A IN_PPP0 -s <IP_OF_HOST/MASK> -j ACCEPT
-
 # Accept incoming tracked PPP0 connections
 -A IN_PPP0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 
@@ -262,35 +166,251 @@ COMMIT
 
 # Accept incoming tracked connections from 192.168.2.0/24 to VPN
 -A IN_TUN0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-
-# Commit the filter table
 COMMIT
 
-# Commit mangle table
-*mangle
+*nat
 :PREROUTING ACCEPT
 :INPUT ACCEPT
-:FORWARD ACCEPT
 :OUTPUT ACCEPT
 :POSTROUTING ACCEPT
 
-# ------- Section I'm Unsure about -------
-# Restore mark for tun0
--A PREROUTING -i tun0 -j CONNMARK --restore-mark --nfmask 0xffffffff --ctmask 0xffffffff
+# Bittorrent forwarded to Linux Workstation through VPN
+-A PREROUTING -i tun0 -p tcp -m tcp --dport 6881:6889 -j DNAT --to-destination 192.168.2.20
+-A PREROUTING -i tun0 -p udp -m udp --dport 6881:6889 -j DNAT --to-destination 192.168.2.20
 
-# Restore mark for ppp0
--A PREROUTING -i ppp0 -j CONNMARK --restore-mark --nfmask 0xffffffff --ctmask 0xffffffff
+# Allows for network hosts to access the internet via VPN tunnel
+-A POSTROUTING -s 192.168.2.0/24 -o tun0 -j MASQUERADE
 
-# Restore marks for eth0 for both subnets
--A PREROUTING -s 192.68.2.0/24 -i eth0 -m conntrack --ctstate RELATED,ESTABLISHED -j CONNMARK --restore-mark --nfmask 0xffffffff --ctmask 0xffffffff
--A PREROUTING -s 192.168.1.0/24 -i eth0 -m conntrack --ctstate RELATED,ESTABLISHED -j CONNMARK --restore-mark --nfmask 0xffffffff --ctmask 0xffffffff
-
-# Mark for VPN
--A POSTROUTING -s 192.168.2.0/24 -j CONNMARK --set-xmark 0x2/0xffffffff
-
-# Mark for ISP
--A POSTROUTING -s 192.168.1.0/24 -j CONNMARK --set-xmark 0x1/0xffffffff
-
+# Allows for network hosts to access the internet via WAN port
+-A POSTROUTING -s 192.168.1.0/24 -o ppp0 -j MASQUERADE
 COMMIT
-# ------- Section I'm Unsure about -------
+
+
+#########################################################################
+
+My routing tables:
+
+gateway:~# cat /etc/iproute2/rt_tables
+#
+# reserved values
+#
+255 local
+254 main
+253 default
+0 unspec
+#
+# local
+#
+#1  inr.ruhep
+1 ISP
+2 VPN
+
+#########################################################################
+
+Script I used to setup the default routes for the ISP table
+
+gateway:~# cat /etc/ppp/ip-up
+#!/bin/sh
+#
+# This script is run by pppd when there's a successful ppp connection.
+#
+
+/sbin/ip route flush table ISP
+/sbin/ip route add 192.168.1.0/24 dev eth0 table ISP
+/sbin/ip rule add from ${IPLOCAL} table ISP
+/sbin/ip route add table ISP default via ${IPLOCAL}
+
+#########################################################################
+
+Script I used to setup the default routes for the VPN table
+
+gateway:~# cat /etc/openvpn/route-up-fwmark.sh
+#!/bin/sh
+#
+# This script is run by OpenVPN when there's a successful VPN connection.
+#
+
+/sbin/ip route flush table VPN
+/sbin/ip route add 192.168.2.0/24 dev eth0 table VPN
+/sbin/ip rule add from ${route_vpn_gateway} table VPN
+/sbin/ip route add default via ${route_vpn_gateway} dev ${dev} table VPN
+
+#########################################################################
+
+How the main table looks:
+
+gateway:~# ip route sh table main
+default dev ppp0  scope link  metric 300
+172.16.32.0/20 dev tun0  proto kernel  scope link  src 172.16.39.64
+192.168.0.0/30 dev eth1  proto kernel  scope link  src 192.168.0.2
+192.168.1.0/24 dev eth0  proto kernel  scope link  src 192.168.1.1
+192.168.2.0/24 dev eth0  proto kernel  scope link  src 192.168.2.1
+203.16.215.199 dev ppp0  proto kernel  scope link  src 14.2.28.78
+
+#########################################################################
+
+How the ISP table looks:
+
+gateway:~# ip route sh table ISP
+default via 14.2.28.78 dev ppp0
+192.168.1.0/24 dev eth0  scope link
+
+#########################################################################
+
+How the VPN table looks:
+
+gateway:~# ip route sh table VPN
+default via 172.16.32.1 dev tun0
+192.168.2.0/24 dev eth0  scope link
+
+#########################################################################
+
+fwmark rules run on boot:
+
+gateway:~# cat /etc/network/fwmark_2_0_subnet_rules
+#!/bin/sh
+
+/sbin/ip rule add fwmark 1 table ISP prio 1
+/sbin/ip rule add fwmark 2 table VPN prio 2
+
+#########################################################################
+
+How they look in the rule policy:
+
+gateway:~# ip rule
+0:  from all lookup local
+0:  from 14.2.28.78 lookup ISP
+0:  from 172.16.32.1 lookup VPN
+1:  from all fwmark 0x1 lookup ISP
+2:  from all fwmark 0x2 lookup VPN
+32766:  from all lookup main
+32767:  from all lookup default
+
+#########################################################################
+
+And my interfaces:
+
+gateway:~# ip addr
+
+### Loopback
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet 127.0.0.2/8 scope host secondary lo:1
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host
+       valid_lft forever preferred_lft forever
+
+### Connection to LAN
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether b8:27:eb:63:46:b5 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.1.1/24 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet 192.168.2.1/24 scope global eth0:2
+       valid_lft forever preferred_lft forever
+    inet6 fe80::ba27:ebff:fe63:46b5/64 scope link
+       valid_lft forever preferred_lft forever
+
+### Connection to Modem
+3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000
+    link/ether 80:49:71:12:38:79 brd ff:ff:ff:ff:ff:ff
+    inet 192.168.0.2/30 scope global eth1
+       valid_lft forever preferred_lft forever
+    inet6 fe80::8249:71ff:fe12:3879/64 scope link
+       valid_lft forever preferred_lft forever
+
+### Connection to ISP
+4: ppp0: <POINTOPOINT,MULTICAST,NOARP,UP,LOWER_UP> mtu 1492 qdisc pfifo_fast state UNKNOWN group default qlen 3
+    link/ppp
+    inet 14.2.28.78 peer 203.16.215.199/32 scope global ppp0
+       valid_lft forever preferred_lft forever
+
+### Connection to VPN
+5: tun0: <POINTOPOINT,MULTICAST,NOARP,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UNKNOWN group default qlen 100
+    link/none
+    inet 172.16.39.64/20 brd 172.16.47.255 scope global tun0
+       valid_lft forever preferred_lft forever
+
+#########################################################################
+
+In this page:
+
+    http://nerdboys.com/2006/05/08/multiwan-connections-addendum/
+
+> Turn rp_filter OFF
+
+> It appears that rp_filter causes problems with NAT and connection marking.
+> From what I could tell, packets tend to 'lose' their mark and thus get
+> routed out the wrong interface without this turned off. However, it should
+> be noted that if you turn this off, you need to take care of the
+> anti-spoofing functionality it provides in your firewall script.
+
+I turned rp_filter to 2, instead of 1. The guide did recommend 0 as one of the
+comments said:
+
+> David van Vyfeyken @ November 14th, 2013 at 2:33 am
+> I wanted to point out that setting the rp_filter to 2 instead of 0 also
+> works for me. setting it to 2 is much better as it still does source
+> validation but on all the interfaces instead of only the one that the traffic
+> came in. This only works on newer kernels though.
+
+My kernel is 3.18.12-0-rpi2 the latest kernel included in Alpine Linux 3.2.2.
+
+gateway:~# cat /etc/sysctl.conf
+net.ipv4.ip_forward = 1
+net.ipv4.conf.default.rp_filter = 2
+kernel.panic = 120
+
+#### ipv4 networking and equivalent ipv6 parameters ####
+
+## TCP SYN cookie protection (default)
+## helps protect against SYN flood attacks
+## only kicks in when net.ipv4.tcp_max_syn_backlog is reached
+net.ipv4.tcp_syncookies = 1
+
+## protect against tcp time-wait assassination hazards
+## drop RST packets for sockets in the time-wait state
+## (not widely supported outside of linux, but conforms to RFC)
+net.ipv4.tcp_rfc1337 = 1
+
+## sets the kernels reverse path filtering mechanism to value 1(on)
+## will do source validation of the packet's recieved from all the interfaces on the machine
+## protects from attackers that are using ip spoofing methods to do harm
+net.ipv4.conf.all.rp_filter = 2
+net.ipv6.conf.all.rp_filter = 1
+
+## tcp timestamps
+## + protect against wrapping sequence numbers (at gigabit speeds)
+## + round trip time calculation implemented in TCP
+## - causes extra overhead and allows uptime detection by scanners like nmap
+## enable @ gigabit speeds
+net.ipv4.tcp_timestamps = 0
+#net.ipv4.tcp_timestamps = 1
+
+## log martian packets
+net.ipv4.conf.all.log_martians = 0  # Disabled to prevent spam in messages
+
+## ignore echo broadcast requests to prevent being part of smurf attacks (default)
+net.ipv4.icmp_echo_ignore_broadcasts = 1
+
+## ignore bogus icmp errors (default)
+net.ipv4.icmp_ignore_bogus_error_responses = 1
+
+## send redirects (not a router, disable it)
+net.ipv4.conf.all.send_redirects = 0
+
+## ICMP routing redirects (only secure)
+#net.ipv4.conf.all.secure_redirects = 1 (default)
+net/ipv4/conf/default/accept_redirects=0
+net/ipv4/conf/all/accept_redirects=0
+net/ipv6/conf/default/accept_redirects=0
+net/ipv6/conf/all/accept_redirects=0
+
+# Disable ipv6
+net.ipv6.conf.all.disable_ipv6 = 1
+net.ipv6.conf.default.disable_ipv6 = 1
+net.ipv6.conf.lo.disable_ipv6 = 1
+
+#########################################################################
 
