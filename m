@@ -1,51 +1,43 @@
-From: Madhan <madhan.mepco@gmail.com>
-Subject: REDIRECT and UDP in client
-Date: Wed, 12 Aug 2015 00:03:47 +0530
-Message-ID: <CA+BD1JHnZ7FtbX=NOH95NQtaonWxzLM7cg1eBF33RVVH1fFdzA@mail.gmail.com>
+From: alvin <alvin.sm@Mail.Linux-Consulting.com>
+Subject: Re: GPL violation in Ahnlab Online Security.
+Date: Tue, 11 Aug 2015 15:29:15 -0700 (PDT)
+Message-ID: <201508112229.t7BMTFfB022036@Mail.Linux-Consulting.com>
+References: <55C9D5F3.4000002@gentoo.moe>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:from:date:message-id:subject:to:content-type;
-        bh=/Gkgypan2SHREsspOShPtg1PU+YsQ+h3gRpT78Xc2VY=;
-        b=xibhwo+cDwaRCxO/tk7tkidwDeAQlKmjMSM9mqys+uRaTBXpSXOKdB9RgVbBdWSg7U
-         LEohLl1jbd170D/wsKUgFUmNnuTWohtEVU5hsVVvj5w3Zu+tjjBwe04x9F/DkMooMar5
-         MfMcYjoq8JLGcBtHHXecOUSYysTsD8uflNmSx3PAq385T4X/bWrAFA993k6CYgG0FlSa
-         qYRKa/HgPXJ5SPZ5/Lh3wFF6Gu4lR6n8zI+w9gVcP9hnj8VtpEzUjZdsRApmyvTFCDTD
-         TnxyD/Ed/2eUPgZNXmnSOs2WLOoa6iSTSI2E/sMcmny0sKH09P3zCCepKWZivHty6bwK
-         sY9g==
+In-Reply-To: <55C9D5F3.4000002@gentoo.moe>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
-
-Hi All ,
-I am trying to redirect the udp packet to particular port where I run
-my proxy (SOCKS) . I am supposed to obtain the original destination
-ipaddress of the client to add to the data field of socks message as
-per the RFC .
-
-However , when I use REDIRECT chain as it sets the dest addr to the LO
-address i get the LO address 127.0.0.1 and the port where socks proxy
-client runs .
-
-I tried patching SO_ORIGINAL_DST to obtain for UDP protocol also . In
-this case it would work if I use single FD for single dest . However
-when I use single FD for multiple connection it might not work .
+To: perillamint <perillamint@gentoo.moe>
+Cc: netfilter@vger.kernel.org, licensing@fsf.org, alvin <alvin.sm@Mail.Linux-Consulting.com>
 
 
-I cannot add as part of rsvmsg , as I have to send to the proxy server
-in advance .
+hi
 
-TPROXY works in prerouting , I am not sure how we use in the client
-side to send the first packet with the dest address . (I am not sure
-about the TPROXYing though)
+i think there is 1,000,000s of examples of various opensource license
+violations that is NOT being pursued.  If the licenses and intellectual
+property are not enforced, the opensource sw or pieces of it will
+or already has become the equivalent of kleenex, coke, xerox, cadallic
+etc etc all of which was at one time proprietory trademark'd products
 
+it's a sad thing to see, large commercial entities with multi-billion
+dollar r/d budgets not be willing to show credit where its due and owed
+per the opensource licenses
 
-Can you please suggest the method to overcome the problem . Thanks in advance.
+pixie dust
+alvin
+# http://IPtables-BlackList.net
 
-Regards,
-Madhan Raj K ,
-Senior Software Engineer - Android R&D ,
-Samsung Research Institute - Bangalore .
+> -----BEGIN PGP SIGNED MESSAGE-----
+
+....
+> So I think they are violating GPL.
+> 
+> Additionally, here is contact information of AhnLab Inc.
+> 
+> Webpage : http://ahnlab.com
+> Tel     : +82 31 722 8000
+> Fax     : +82 31 722 8901
+> Email   : global.sales@ahnlab.com
