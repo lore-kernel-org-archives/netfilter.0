@@ -1,90 +1,51 @@
-From: Akshat Kakkar <akshat.1984@gmail.com>
-Subject: Re: Ipset Error : ipset v6.25.1: Kernel error received: set type not
- supported (on Kernel 4.1.4)
-Date: Tue, 11 Aug 2015 19:16:14 +0530
-Message-ID: <CAA5aLPjaE_LbNwhVFjnHYUN2EsQKJKZRuXBmOxhx=6gqT+oWuw@mail.gmail.com>
-References: <CAA5aLPh-_ySu=PFqkyyG+AzTWQo_cUc35ZcnH3W5ojQPeJeG4g@mail.gmail.com>
-	<alpine.DEB.2.10.1508111211280.9289@blackhole.kfki.hu>
-	<CAA5aLPj7LA3bN4NBCTvQ=FjDMy-8GZqh9nWk3groyMYOj5nQUQ@mail.gmail.com>
-	<alpine.DEB.2.10.1508111320400.9289@blackhole.kfki.hu>
-	<CAA5aLPhO7643BnLNNe4Kp+h6Nivvn_jtgVdRXBfWGPPPLf_kXA@mail.gmail.com>
-	<alpine.DEB.2.10.1508111416010.9289@blackhole.kfki.hu>
-	<CAA5aLPiNcE51=3UYfuRa8U_ueq6U7cJJPR0Tyd2cqH143vd9wg@mail.gmail.com>
+From: Madhan <madhan.mepco@gmail.com>
+Subject: REDIRECT and UDP in client
+Date: Wed, 12 Aug 2015 00:03:47 +0530
+Message-ID: <CA+BD1JHnZ7FtbX=NOH95NQtaonWxzLM7cg1eBF33RVVH1fFdzA@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :content-type;
-        bh=3azNfctsrZuEDHraY6K57YaT64XQtn+iRg8QFdoIqC0=;
-        b=DbtaIuN7PG3XhrpBU113PhmfwWatQ+w49cC+ELtKZsh9t8JrUl0NjO1QeVD7oonM6Y
-         b/Eoq6meIdmLEgNstfLp0QrOQGliumvOhnd23ItY4T/pcykzgNBH7U/6p/ho8sCvqpxr
-         nqpY/+BZa5QH03pLA0GgYnMjCB0KOKIvBTEZ8KUBiOGT3WYOelOhp6bdqCZUukT2jsQZ
-         CUjb8UNi+4KRDcUdKoBIlPdlWYOitmfGtIqYk/07Rk7BE4sM2U2WIEnpyMPRKo6gV8Me
-         g9jufBP+39rkL49XfudgOlHqvgjulZwSfp2BL1y1QyKa56dh3xTeyx45bj6/EBybvHyb
-         jPSA==
-In-Reply-To: <CAA5aLPiNcE51=3UYfuRa8U_ueq6U7cJJPR0Tyd2cqH143vd9wg@mail.gmail.com>
+        h=mime-version:from:date:message-id:subject:to:content-type;
+        bh=/Gkgypan2SHREsspOShPtg1PU+YsQ+h3gRpT78Xc2VY=;
+        b=xibhwo+cDwaRCxO/tk7tkidwDeAQlKmjMSM9mqys+uRaTBXpSXOKdB9RgVbBdWSg7U
+         LEohLl1jbd170D/wsKUgFUmNnuTWohtEVU5hsVVvj5w3Zu+tjjBwe04x9F/DkMooMar5
+         MfMcYjoq8JLGcBtHHXecOUSYysTsD8uflNmSx3PAq385T4X/bWrAFA993k6CYgG0FlSa
+         qYRKa/HgPXJ5SPZ5/Lh3wFF6Gu4lR6n8zI+w9gVcP9hnj8VtpEzUjZdsRApmyvTFCDTD
+         TnxyD/Ed/2eUPgZNXmnSOs2WLOoa6iSTSI2E/sMcmny0sKH09P3zCCepKWZivHty6bwK
+         sY9g==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-looks like things will run ...
+Hi All ,
+I am trying to redirect the udp packet to particular port where I run
+my proxy (SOCKS) . I am supposed to obtain the original destination
+ipaddress of the client to add to the data field of socks message as
+per the RFC .
 
-I did rmmod ip_set
-then recompiled again
-and then modprobe ip_set
+However , when I use REDIRECT chain as it sets the dest addr to the LO
+address i get the LO address 127.0.0.1 and the port where socks proxy
+client runs .
+
+I tried patching SO_ORIGINAL_DST to obtain for UDP protocol also . In
+this case it would work if I use single FD for single dest . However
+when I use single FD for multiple connection it might not work .
 
 
-and tests are now running ...
-its taking a bit time for these test to run but atleast it has not
-stopped with an error ....
+I cannot add as part of rsvmsg , as I have to send to the proxy server
+in advance .
+
+TPROXY works in prerouting , I am not sure how we use in the client
+side to send the first packet with the dest address . (I am not sure
+about the TPROXYing though)
 
 
-Gr8 ... Thanks for all the help
+Can you please suggest the method to overcome the problem . Thanks in advance.
 
-On Tue, Aug 11, 2015 at 7:09 PM, Akshat Kakkar <akshat.1984@gmail.com> wrote:
-> I manually deleted all the ip_set* in kernel 2.6.32 manually
->
-> then recompiled the ipsets but still same issue....
->
-> is there something else also which I should delete
->
-> On Tue, Aug 11, 2015 at 5:51 PM, Jozsef Kadlecsik
-> <kadlec@blackhole.kfki.hu> wrote:
->> On Tue, 11 Aug 2015, Akshat Kakkar wrote:
->>
->>> [root@localhost ipset-6.25.1]# find /lib/modules -name ip_set_hash_ip.ko
->>>
->>> /lib/modules/2.6.32-279.el6.x86_64/kernel/net/netfilter/ipset/ip_set_hash_ip.ko
->>> /lib/modules/4.1.4-1.el6.elrepo.x86_64/extra/netfilter/ipset/ip_set_hash_ip.ko
->>> /lib/modules/4.1.4-1.el6.elrepo.x86_64/kernel/net/netfilter/ipset/ip_set_hash_ip.ko
->>>
->>> [root@localhost ipset-6.25.1]# modinfo ip_set_hash_ip
->>> filename:
->>> /lib/modules/4.1.4-1.el6.elrepo.x86_64/extra/netfilter/ipset/ip_set_hash_ip.ko
->>> alias:          ip_set_hash:ip
->>> description:    hash:ip type of IP sets, revisions 0-4
->>> author:         Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
->>> license:        GPL
->>> srcversion:     E2BD7DC4C7AF706B56E2CBA
->>> depends:        ip_set
->>> vermagic:       4.1.4-1.el6.elrepo.x86_64 SMP mod_unload modversions
->>
->> The module is there, recognized by modinfo, so it should be loaded
->> automatically, when the hash:ip type is requested by the "ipset" command.
->> The output of "ipset help" shows that exactly the same revisions are
->> supported by both the kernel module and ipset.
->>
->> Hm. Maybe older versions of the ip_set modules are already loaded in and
->> therefore the new ones cannot be autoloaded. Remove all ip_set* modules
->> and try to create the set again.
->>
->> Best regards,
->> Jozsef
->> -
->> E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
->> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
->> Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
->>           H-1525 Budapest 114, POB. 49, Hungary
+Regards,
+Madhan Raj K ,
+Senior Software Engineer - Android R&D ,
+Samsung Research Institute - Bangalore .
