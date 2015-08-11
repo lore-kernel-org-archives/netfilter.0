@@ -1,73 +1,90 @@
-From: perillamint <perillamint@gentoo.moe>
-Subject: GPL violation in Ahnlab Online Security.
-Date: Tue, 11 Aug 2015 20:01:07 +0900
-Message-ID: <55C9D5F3.4000002@gentoo.moe>
+From: Akshat Kakkar <akshat.1984@gmail.com>
+Subject: Re: Ipset Error : ipset v6.25.1: Kernel error received: set type not
+ supported (on Kernel 4.1.4)
+Date: Tue, 11 Aug 2015 19:16:14 +0530
+Message-ID: <CAA5aLPjaE_LbNwhVFjnHYUN2EsQKJKZRuXBmOxhx=6gqT+oWuw@mail.gmail.com>
+References: <CAA5aLPh-_ySu=PFqkyyG+AzTWQo_cUc35ZcnH3W5ojQPeJeG4g@mail.gmail.com>
+	<alpine.DEB.2.10.1508111211280.9289@blackhole.kfki.hu>
+	<CAA5aLPj7LA3bN4NBCTvQ=FjDMy-8GZqh9nWk3groyMYOj5nQUQ@mail.gmail.com>
+	<alpine.DEB.2.10.1508111320400.9289@blackhole.kfki.hu>
+	<CAA5aLPhO7643BnLNNe4Kp+h6Nivvn_jtgVdRXBfWGPPPLf_kXA@mail.gmail.com>
+	<alpine.DEB.2.10.1508111416010.9289@blackhole.kfki.hu>
+	<CAA5aLPiNcE51=3UYfuRa8U_ueq6U7cJJPR0Tyd2cqH143vd9wg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=gentoo.moe; s=tengwa;
-	t=1439290811; bh=iwq0tifEPXNKEIiSCIeaA6u+jpPtYv+yn2psSlx5hEM=;
-	h=To:From:Subject:Cc:Date:From;
-	b=fY+TYztFNUc6W7bcuBObGhO1zcgZEkZZAHrQM4OUKFYXFKFpN5w0secBG1SoTBJa5
-	 AC69dqeDbt/ry5PsIlwvkiD51fU8uwO3RL2oJVayj3XFXgt1Ed+Hu37pC1uN+RhdbB
-	 lh2N228YElhQ72006kjzuKBrIYeNgLQW9wJSwVys=
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=gentoo.moe; s=tengwa;
-	t=1439290809; bh=iwq0tifEPXNKEIiSCIeaA6u+jpPtYv+yn2psSlx5hEM=;
-	h=To:From:Subject:Cc:Date:From;
-	b=GiXhQzz3lkEuyZ4cfAWsxhU34oSsjZV/u1Xpc/8WwTmv99Hjbt+J75ABZdFFp/Jqb
-	 4qRbLIHv1oQu+51tfe4BMjzEQ/IRk26IqZbDtTo8uxQAc5UNjDKOMdluD2qqY5MF9E
-	 mBvUzHHeyQJLbPXSSVHyCJmMjwJkvoeLL5zNkd1c=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :content-type;
+        bh=3azNfctsrZuEDHraY6K57YaT64XQtn+iRg8QFdoIqC0=;
+        b=DbtaIuN7PG3XhrpBU113PhmfwWatQ+w49cC+ELtKZsh9t8JrUl0NjO1QeVD7oonM6Y
+         b/Eoq6meIdmLEgNstfLp0QrOQGliumvOhnd23ItY4T/pcykzgNBH7U/6p/ho8sCvqpxr
+         nqpY/+BZa5QH03pLA0GgYnMjCB0KOKIvBTEZ8KUBiOGT3WYOelOhp6bdqCZUukT2jsQZ
+         CUjb8UNi+4KRDcUdKoBIlPdlWYOitmfGtIqYk/07Rk7BE4sM2U2WIEnpyMPRKo6gV8Me
+         g9jufBP+39rkL49XfudgOlHqvgjulZwSfp2BL1y1QyKa56dh3xTeyx45bj6/EBybvHyb
+         jPSA==
+In-Reply-To: <CAA5aLPiNcE51=3UYfuRa8U_ueq6U7cJJPR0Tyd2cqH143vd9wg@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
-Cc: licensing@fsf.org
+Content-Transfer-Encoding: 7bit
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+looks like things will run ...
 
-Hello, I found Ahnlab Online Security is using libnfnetlink and
-libnetfilter_conntrack and I think they are violating GPL license.
+I did rmmod ip_set
+then recompiled again
+and then modprobe ip_set
 
-They are distributing that application on this page (Hana bank online
-banking site. They are only providing korean version of that page.)
 
-https://open.hanabank.com/common/installSecurityModule.jsp#//HanaBank
+and tests are now running ...
+its taking a bit time for these test to run but atleast it has not
+stopped with an error ....
 
-In this page, there are not mentioning about they are using
-libnfnetlink and libnetfilter_conntrack
 
-However, in debian package file, libnflink.so.0.2.0 and
-libnetfilter_conntrack.so.3.1.3 exists in
-/opt/Ahnlab/ASP/Firewall/lib/Netfilter/
+Gr8 ... Thanks for all the help
 
-and there are copyright notice in
-/usr/share/doc/ahnlab-online-security-firewall/copyright but they are
-not mentioning about they are using netfilter library and GPL notice.
-(And it is proprietary licensed software)
-
-So I think they are violating GPL.
-
-Additionally, here is contact information of AhnLab Inc.
-
-Webpage : http://ahnlab.com
-Tel     : +82 31 722 8000
-Fax     : +82 31 722 8901
-Email   : global.sales@ahnlab.com
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJVydXwAAoJEAnN7LS7JtQ97CoP/idk/HuNB4Sd+HyptS9K9acT
-uD8FdHTQTGIhOpJy3vnhV9z1JZph2kXT1ljeJW1kVn9a9TkN/ZAV0GEsOmn/RSBM
-GNG8kkIuGqmkXYSiFCP37ux3ClCSdAZefNiaWYciVwTwX3WYysCYEVt2dXK2GxX6
-mKmpYWokqATulFIaKwWyN+cky/H0y7PlNu34Y3VKTv2yJBuvmhYHlgUVsyRPkee3
-Hhxmcjv2QdtTyG1uNOgS4QMl9gd82tbZXWQ95eP1Y4p8AlNw/CWcaKvaVvHScySq
-w6Tw2I9SMO093sS7pK1Qgq2yAGk0lR39vO7aL33mGtvvCZm4bt+iebPi91M5d545
-4xdDpdrdjUQDlaY5qqF0xvgB/A7dB3nIQ0ZEhABHyyNiMBHajT1tX/nln6VTkccR
-9Mb3W9q1g4Vr/10Usg+0CoF5O75vd4Fs5TparPpziaaBaJwGZbyQnQ5/uA4zmhz/
-m51wkbJJWlN4YLoUR4OZiPJ9XhKS0KszddoTaiyVecD4Dywhz2FLyl23VnVgO7kV
-jJPp1Bf158eMbOC8WZDCVDjWofMuTqc18a7zkfHjUuYfl4OD0oCT6xkj70rnI4/n
-VcwpidseEq9S+03N+k63YTvNoBvRE9+Y1j4/0vu8wt/ohdmNukTTbRIy32z1bVKy
-3l9kjNSOalKvkKFR7ev6
-=/AMQ
------END PGP SIGNATURE-----
+On Tue, Aug 11, 2015 at 7:09 PM, Akshat Kakkar <akshat.1984@gmail.com> wrote:
+> I manually deleted all the ip_set* in kernel 2.6.32 manually
+>
+> then recompiled the ipsets but still same issue....
+>
+> is there something else also which I should delete
+>
+> On Tue, Aug 11, 2015 at 5:51 PM, Jozsef Kadlecsik
+> <kadlec@blackhole.kfki.hu> wrote:
+>> On Tue, 11 Aug 2015, Akshat Kakkar wrote:
+>>
+>>> [root@localhost ipset-6.25.1]# find /lib/modules -name ip_set_hash_ip.ko
+>>>
+>>> /lib/modules/2.6.32-279.el6.x86_64/kernel/net/netfilter/ipset/ip_set_hash_ip.ko
+>>> /lib/modules/4.1.4-1.el6.elrepo.x86_64/extra/netfilter/ipset/ip_set_hash_ip.ko
+>>> /lib/modules/4.1.4-1.el6.elrepo.x86_64/kernel/net/netfilter/ipset/ip_set_hash_ip.ko
+>>>
+>>> [root@localhost ipset-6.25.1]# modinfo ip_set_hash_ip
+>>> filename:
+>>> /lib/modules/4.1.4-1.el6.elrepo.x86_64/extra/netfilter/ipset/ip_set_hash_ip.ko
+>>> alias:          ip_set_hash:ip
+>>> description:    hash:ip type of IP sets, revisions 0-4
+>>> author:         Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+>>> license:        GPL
+>>> srcversion:     E2BD7DC4C7AF706B56E2CBA
+>>> depends:        ip_set
+>>> vermagic:       4.1.4-1.el6.elrepo.x86_64 SMP mod_unload modversions
+>>
+>> The module is there, recognized by modinfo, so it should be loaded
+>> automatically, when the hash:ip type is requested by the "ipset" command.
+>> The output of "ipset help" shows that exactly the same revisions are
+>> supported by both the kernel module and ipset.
+>>
+>> Hm. Maybe older versions of the ip_set modules are already loaded in and
+>> therefore the new ones cannot be autoloaded. Remove all ip_set* modules
+>> and try to create the set again.
+>>
+>> Best regards,
+>> Jozsef
+>> -
+>> E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+>> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+>> Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+>>           H-1525 Budapest 114, POB. 49, Hungary
