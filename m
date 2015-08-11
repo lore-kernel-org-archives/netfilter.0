@@ -1,81 +1,73 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Ipset Error : ipset v6.25.1: Kernel error received: set type
- not supported (on Kernel 4.1.4)
-Date: Tue, 11 Aug 2015 12:13:48 +0200 (CEST)
-Message-ID: <alpine.DEB.2.10.1508111211280.9289@blackhole.kfki.hu>
-References: <CAA5aLPh-_ySu=PFqkyyG+AzTWQo_cUc35ZcnH3W5ojQPeJeG4g@mail.gmail.com>
+From: perillamint <perillamint@gentoo.moe>
+Subject: GPL violation in Ahnlab Online Security.
+Date: Tue, 11 Aug 2015 20:01:07 +0900
+Message-ID: <55C9D5F3.4000002@gentoo.moe>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAA5aLPh-_ySu=PFqkyyG+AzTWQo_cUc35ZcnH3W5ojQPeJeG4g@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=gentoo.moe; s=tengwa;
+	t=1439290811; bh=iwq0tifEPXNKEIiSCIeaA6u+jpPtYv+yn2psSlx5hEM=;
+	h=To:From:Subject:Cc:Date:From;
+	b=fY+TYztFNUc6W7bcuBObGhO1zcgZEkZZAHrQM4OUKFYXFKFpN5w0secBG1SoTBJa5
+	 AC69dqeDbt/ry5PsIlwvkiD51fU8uwO3RL2oJVayj3XFXgt1Ed+Hu37pC1uN+RhdbB
+	 lh2N228YElhQ72006kjzuKBrIYeNgLQW9wJSwVys=
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=gentoo.moe; s=tengwa;
+	t=1439290809; bh=iwq0tifEPXNKEIiSCIeaA6u+jpPtYv+yn2psSlx5hEM=;
+	h=To:From:Subject:Cc:Date:From;
+	b=GiXhQzz3lkEuyZ4cfAWsxhU34oSsjZV/u1Xpc/8WwTmv99Hjbt+J75ABZdFFp/Jqb
+	 4qRbLIHv1oQu+51tfe4BMjzEQ/IRk26IqZbDtTo8uxQAc5UNjDKOMdluD2qqY5MF9E
+	 mBvUzHHeyQJLbPXSSVHyCJmMjwJkvoeLL5zNkd1c=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Akshat Kakkar <akshat.1984@gmail.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
+Cc: licensing@fsf.org
 
-On Tue, 11 Aug 2015, Akshat Kakkar wrote:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-> I am running sl6.3 (i.e. kernel 2.6.32-279). I upgraded the kernel
-> using elrepo to kernel 4.1.4.
-> Then I downloaded ipset 6.25.
-> I executed follwing commands
-> ./autogen.sh
-> ./configure
-> make
-> make modules
-> make install
-> make modules_install
-> 
-> No error is generated at any step
+Hello, I found Ahnlab Online Security is using libnfnetlink and
+libnetfilter_conntrack and I think they are violating GPL license.
 
-Wasn't there any warning message displayed, like 
+They are distributing that application on this page (Hana bank online
+banking site. They are only providing korean version of that page.)
 
-!!! WARNING !!! WARNING !!! WARNING !!!
+https://open.hanabank.com/common/installSecurityModule.jsp#//HanaBank
 
-Your distribution seems to ignore the /lib/modules/<kernelrelease>/extra/
-subdirectory, where the ipset kernel modules are installed.
+In this page, there are not mentioning about they are using
+libnfnetlink and libnetfilter_conntrack
 
-Add the 'extra' directory to the search definition of your depmod
-configuration (/etc/depmod.conf or /etc/depmod.d/) and re-run
+However, in debian package file, libnflink.so.0.2.0 and
+libnetfilter_conntrack.so.3.1.3 exists in
+/opt/Ahnlab/ASP/Firewall/lib/Netfilter/
 
-        depmod <kernelrelease>
+and there are copyright notice in
+/usr/share/doc/ahnlab-online-security-firewall/copyright but they are
+not mentioning about they are using netfilter library and GPL notice.
+(And it is proprietary licensed software)
 
-otherwise the ipset kernel modules in the extra subdir will be ignored.
- 
-> Now when I want to creat an uipset using command
-> ipset -N foo hash:ip
-> 
-> I get error
-> ""
-> ipset v6.25.1: Kernel error received: set type not supported
-> ""
-> 
-> output of uname -r
-> 
-> 4.1.4-1.el6.elrepo.x86_64 
-> 
-> o/p of " find /lib/modules/4.1.4-1.el6.elrepo.x86_64 -name ip_set.ko"
-> 
-> /lib/modules/4.1.4-1.el6.elrepo.x86_64/extra/netfilter/ipset/ip_set.ko
-> /lib/modules/4.1.4-1.el6.elrepo.x86_64/kernel/net/netfilter/ipset/ip_set.ko
-> 
-> o/p of "find /lib/modules -name ip_set.ko"
-> 
-> /lib/modules/2.6.32-279.el6.x86_64/extra/ip_set.ko
-> /lib/modules/2.6.32-279.el6.x86_64/kernel/net/netfilter/ipset/ip_set.ko
-> /lib/modules/4.1.4-1.el6.elrepo.x86_64/extra/netfilter/ipset/ip_set.ko
-> /lib/modules/4.1.4-1.el6.elrepo.x86_64/kernel/net/netfilter/ipset/ip_set.ko
-> 
-> 
-> please help....
+So I think they are violating GPL.
 
-Please enter the command "modinfo ip_set" and post the generated output.
+Additionally, here is contact information of AhnLab Inc.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+Webpage : http://ahnlab.com
+Tel     : +82 31 722 8000
+Fax     : +82 31 722 8901
+Email   : global.sales@ahnlab.com
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJVydXwAAoJEAnN7LS7JtQ97CoP/idk/HuNB4Sd+HyptS9K9acT
+uD8FdHTQTGIhOpJy3vnhV9z1JZph2kXT1ljeJW1kVn9a9TkN/ZAV0GEsOmn/RSBM
+GNG8kkIuGqmkXYSiFCP37ux3ClCSdAZefNiaWYciVwTwX3WYysCYEVt2dXK2GxX6
+mKmpYWokqATulFIaKwWyN+cky/H0y7PlNu34Y3VKTv2yJBuvmhYHlgUVsyRPkee3
+Hhxmcjv2QdtTyG1uNOgS4QMl9gd82tbZXWQ95eP1Y4p8AlNw/CWcaKvaVvHScySq
+w6Tw2I9SMO093sS7pK1Qgq2yAGk0lR39vO7aL33mGtvvCZm4bt+iebPi91M5d545
+4xdDpdrdjUQDlaY5qqF0xvgB/A7dB3nIQ0ZEhABHyyNiMBHajT1tX/nln6VTkccR
+9Mb3W9q1g4Vr/10Usg+0CoF5O75vd4Fs5TparPpziaaBaJwGZbyQnQ5/uA4zmhz/
+m51wkbJJWlN4YLoUR4OZiPJ9XhKS0KszddoTaiyVecD4Dywhz2FLyl23VnVgO7kV
+jJPp1Bf158eMbOC8WZDCVDjWofMuTqc18a7zkfHjUuYfl4OD0oCT6xkj70rnI4/n
+VcwpidseEq9S+03N+k63YTvNoBvRE9+Y1j4/0vu8wt/ohdmNukTTbRIy32z1bVKy
+3l9kjNSOalKvkKFR7ev6
+=/AMQ
+-----END PGP SIGNATURE-----
