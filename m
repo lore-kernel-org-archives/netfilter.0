@@ -1,7 +1,7 @@
 From: sillysausage <sillysausage@privatedemail.net>
-Subject: Filtering bogon ranges from exiting WAN
-Date: Wed, 12 Aug 2015 22:10:45 +0930
-Message-ID: <55CB3ECD.2010509@privatedemail.net>
+Subject: Creating a LAN only null routed network (no access to internet)
+Date: Wed, 12 Aug 2015 22:42:13 +0930
+Message-ID: <55CB462D.6040203@privatedemail.net>
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
@@ -10,7 +10,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-So I've been working on building my own router using iptables and
+I've been working on building my own router using iptables and
 iproute2 as a bit of a research project to get to know these things
 better.
 
@@ -19,90 +19,103 @@ and so others can try it out:
 
 http://wiki.alpinelinux.org/wiki/Linux_Router_with_VPN_on_a_Raspberry_Pi
 
-I realized that I was not filtering bogon ranges, that were exiting
-out my router's WAN port. These things are obviously forbidden in
-some way on the general internet I wanted to filter them before
-that happens.
+So far I've set it up so that the 192.168.1.0/24 range is directly
+routed out onto the internet and fwmarked with 0x1, while the
+192.168.2.0/24 range is fwmarked with 0x2 and sent out the VPN.
 
-I'd looked at this guide:
+This is working great now :)
 
-http://blog.ls20.com/securing-your-server-using-ipset-and-dynamic-blocklists/
+The intent is to create a 3rd subnet 192.168.3.0/24 which both
+192.168.1.0/24 and 192.168.2.0/24 can access hosts on like printers
+WiFi access points and IP Phones, things that do not need to ever
+have a route out onto the Internet as they only need other resources
+on the LAN.
 
-I'm not using the full fullbogons-ipv4.txt range, but rather the
-smaller one which consists of reserved ranges.
+So after adding the third routing table to /etc/iproute2/rt_tables
+eg: 3 LAN
 
-https://files.pfsense.org/lists/bogon-bn-nonagg.txt
-https://en.wikipedia.org/wiki/Reserved_IP_addresses
+I'm a bit stuck as to what the default route should be for the LAN
+table.
 
-The method is to use ipset to load the list, and add it to it's own
-filter chain and then block all but the actual ranges that exist on
-my network.
+In the past I've used something like:
 
-First of all I imported the list and can see it was correctly loaded:
+  /sbin/ip route add table <table> default via ${IPLOCAL}
 
-# ipset list
-Name: bogon-bn-nonagg
-Type: hash:net
-Revision: 6
-Header: family inet hashsize 1024 maxelem 65536
-Size in memory: 8976
-References: 4
-Members:
-172.16.0.0/12
-192.168.0.0/16
-192.0.2.0/24
-224.0.0.0/4
-240.0.0.0/4
-10.0.0.0/8
-127.0.0.0/8
-198.18.0.0/15
-198.51.100.0/24
-100.64.0.0/10
-192.0.0.0/24
-169.254.0.0/16
-203.0.113.0/24
-0.0.0.0/8
+However this table shouldn't be routed to ppp0 or tun0's IP.
+
+It won't have a MASQUERADE rule in IPTables either.
+
+Likewise the from rule I've used in the past has usually been
+something like:
+
+  /sbin/ip rule add from ${IPLOCAL} table <table>
+
+--------------------------------------------------------------------
+
+So I decided to have a go at it and see what I could get:
+
+I decided to create some routes to it.
+
+gateway:~# ip route add 192.168.1.0/24 dev eth0 table LAN
+gateway:~# ip route add 192.168.2.0/24 dev eth0 table LAN
+gateway:~# ip route add 192.168.3.0/24 dev eth0 table LAN
+
+gateway:# ip route ls table main
+default dev ppp0  scope link  metric 300
+172.16.32.0/20 dev tun0  proto kernel  scope link  src 172.16.39.64
+192.168.0.0/30 dev eth1  proto kernel  scope link  src 192.168.0.2
+192.168.1.0/24 dev eth0  proto kernel  scope link  src 192.168.1.1
+192.168.2.0/24 dev eth0  proto kernel  scope link  src 192.168.2.1
+192.168.3.0/24 dev eth0  proto kernel  scope link  src 192.168.3.1
+${IPREMOTE} dev ppp0  proto kernel  scope link  src ${IPLOCAL}
+
+gateway:# ip route ls table ISP
+default via ${IPLOCAL} dev ppp0  metric 100
+192.168.1.0/24 dev eth0  scope link  metric 100
+192.168.2.0/24 dev eth0  scope link  metric 200
+
+gateway:# ip route ls table VPN
+default via 172.16.39.64 dev tun0  metric 200
+192.168.2.0/24 dev eth0  scope link  metric 200
+
+gateway:# ip route ls table LAN
+192.168.1.0/24 dev eth0  scope link
+192.168.2.0/24 dev eth0  scope link
+192.168.3.0/24 dev eth0  scope link
+
+Rule I added to deal with the LAN table:
+
+/sbin/ip rule add fwmark 3 table LAN prio 250
+
+gateway:# ip rule
+0:  from all lookup local
+100:  from all fwmark 0x1 lookup ISP
+100:  from ${IPLOCAL} lookup ISP
+200:  from all fwmark 0x2 lookup VPN
+200:  from 172.16.39.64 lookup VPN
+250:  from all fwmark 0x3 lookup LAN
+300:  from all fwmark 0x2 prohibit
+32766:  from all lookup main
+32767:  from all lookup default
+
+The rules for 0x3 are certainly being tripped when a packet comes
+from or two one of the other ranges and 192.168.3.0/24
+
+# iptables -L --line-numbers -n -v -t mangle
+Chain PREROUTING (policy ACCEPT 2130 packets, 2140K bytes)
+num   pkts bytes target     prot opt in     out     source               destination
+1     3304 2222K CONNMARK   all  --  *      *       0.0.0.0/0            0.0.0.0/0            CONNMARK restore
+2        9   692 ACCEPT     all  --  *      *       192.168.3.0/24       0.0.0.0/0            mark match 0x3
+3        7   492 MARK       all  --  *      *       192.168.3.0/24       0.0.0.0/0            MARK set 0x3
+4     1118 74778 ACCEPT     all  --  *      *       192.168.2.0/24       0.0.0.0/0            mark match 0x2
+5       36  2215 MARK       all  --  *      *       192.168.2.0/24       0.0.0.0/0            MARK set 0x2
+6       47  6520 ACCEPT     all  --  *      *       192.168.1.0/24       0.0.0.0/0            mark match 0x1
+7       18  2167 MARK       all  --  *      *       192.168.1.0/24       0.0.0.0/0            MARK set 0x1
+8     2130 2140K CONNMARK   all  --  *      *       0.0.0.0/0            0.0.0.0/0            CONNMARK save
 
 
-Then created the chain:
-
-# Create Bogon Chain
-:IP4BOGONS - [0:0]
-
-# Allow localhost
--A INPUT ! -i lo -j IP4BOGONS
-
-
-Made the exceptions:
-
-# Except connection between modem and router
--A IP4BOGONS -s 192.168.0.0/30 -j RETURN
-
-# Except hosts on regular link to ISP
--A IP4BOGONS -s 192.168.1.0/24 -j RETURN
-
-# Except hosts on link to VPN
--A IP4BOGONS -s 192.168.2.0/24 -j RETURN
-
-# Except hosts on LAN only subnet
--A IP4BOGONS -s 192.168.3.0/24 -j RETURN
-
-# Except VPN interface
--A IP4BOGONS -s 172.16.32.0/20 -j RETURN
-
-Block all remaining bogons whether in source or destination:
-
-# Block bogons with source matching list
--A IP4BOGONS -m set --match-set bogon-bn-nonagg src -j DROP
-
-# Block bogons with destination matching list
--A IP4BOGONS -m set --match-set bogon-bn-nonagg dst -j DROP
-
-Unfortunately the problem still seems to be if I ping 192.168.5.1
-for example it still is routed out to my ISP and filtered by their
-router.
-
-My full rules are below for completeness:
+My rules are as follows, I marked the packets and made sure to allow
+forwarding of the 192.168.3.0/24 range.
 
 #########################################################################
 # Advanced routing rule set
@@ -133,15 +146,16 @@ My full rules are below for completeness:
 -A PREROUTING -j CONNMARK --restore-mark --nfmask 0xffffffff --ctmask 0xffffffff
 
 # If packet MARK is 3, then it means there is already a connection mark
-#-A PREROUTING -s 192.168.3.0/24 -m mark --mark 0x3 -j ACCEPT
+-A PREROUTING -s 192.168.3.0/24 -m mark --mark 0x3 -j ACCEPT
 
 # Check packets coming from 192.168.3.0/24 are 0x3
-#-A PREROUTING -s 192.168.3.0/24 -j MARK --set-xmark 0x3/0xffffffff
+-A PREROUTING -s 192.168.3.0/24 -j MARK --set-xmark 0x3/0xffffffff
 
 # If packet MARK is 2, then it means there is already a connection mark and the original packet came in on VPN
 -A PREROUTING -s 192.168.2.0/24 -m mark --mark 0x2 -j ACCEPT
 
-# Check exception (this is a server which when accessed on a 192.168.2.0/24 address will go out the ISP table) are 0x1
+# Check exception (this is a server which when accessed on a 192.168.2.0/24 address will go out the ISP table)
+are 0x1
 #-A PREROUTING -s 192.168.2.0/24 -d <IP_OF_EXCEPTED_SERVER>/32 -m mark --mark 0x1 -j ACCEPT
 
 # Check packets coming from 192.168.2.0/24 are 0x2
@@ -153,7 +167,8 @@ My full rules are below for completeness:
 # Check packets coming from 192.168.1.0/24 are 0x1
 -A PREROUTING -s 192.168.1.0/24 -j MARK --set-xmark 0x1/0xffffffff
 
-# Mark exception (this is a server which when accessed on a 192.168.2.0/24 address will go out the ISP table) as 0x1
+# Mark exception (this is a server which when accessed on a 192.168.2.0/24 address
+# will go out the ISP table) as 0x1
 #-A PREROUTING -s 192.168.2.0/24 -d <IP_OF_EXCEPTED_SERVER>/32 -j MARK --set-xmark 0x1/0xffffffff
 
 # Save MARK to CONNMARK (remember iproute can't see CONNMARKs)
@@ -182,12 +197,6 @@ COMMIT
 :IN_ETH1 - [0:0]
 :IN_PPP0 - [0:0]
 :IN_TUN0 - [0:0]
-
-# Create Bogon Chain
-:IP4BOGONS - [0:0]
-
-# Allow localhost
--A INPUT ! -i lo -j IP4BOGONS
 
 # Pass input packet to corresponding rule chain
 -A INPUT -i lo -j ACCEPT
@@ -224,8 +233,10 @@ COMMIT
 #-A FWD_ETH0 -s 192.168.2.0/24 -d <IP_OF_EXCEPTED_SERVER>/32 -o ppp0 -j ACCEPT
 
 # Forward SSH packets from network to modem
--A FWD_ETH1 -s 192.168.0.0/30 -d 192.168.1.0/24 -p tcp -m tcp --sport 22 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
--A FWD_ETH1 -s 192.168.0.0/30 -d 192.168.2.0/24 -p tcp -m tcp --sport 22 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+-A FWD_ETH1 -s 192.168.0.0/30 -d 192.168.1.0/24 -p tcp -m tcp --sport 22 -m conntrack --ctstate NEW,ESTABLISHED
+-j ACCEPT
+-A FWD_ETH1 -s 192.168.0.0/30 -d 192.168.2.0/24 -p tcp -m tcp --sport 22 -m conntrack --ctstate NEW,ESTABLISHED
+-j ACCEPT
 
 # SSH to Router
 -A IN_ETH0 -s 192.168.1.0/24 -p tcp -m tcp --dport 22 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
@@ -249,40 +260,20 @@ COMMIT
 # Accept traffic to router on both subnets
 -A IN_ETH0 -s 192.168.1.0/24 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
 -A IN_ETH0 -s 192.168.2.0/24 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+-A IN_ETH0 -s 192.168.3.0/24 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
 
 # Allow excepted server to be INPUT to eth0 from LAN
 #-A IN_ETH0 -s 192.168.2.0/24 -d <IP_OF_EXCEPTED_SERVER>/32 -o ppp0 -j ACCEPT
 
 # SSH To Modem from Router
--A IN_ETH1 -s 192.168.0.0/30 -d 192.168.0.0/30 -p tcp -m tcp --sport 22 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+-A IN_ETH1 -s 192.168.0.0/30 -d 192.168.0.0/30 -p tcp -m tcp --sport 22 -m conntrack --ctstate NEW,ESTABLISHED
+-j ACCEPT
 
 # Accept incoming tracked PPP0 connection
 -A IN_PPP0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
 
 # Accept incoming tracked TUN0 connection
 -A IN_TUN0 -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-
-# Except connection between modem and router
--A IP4BOGONS -s 192.168.0.0/30 -j RETURN
-
-# Except hosts on regular link to ISP
--A IP4BOGONS -s 192.168.1.0/24 -j RETURN
-
-# Except hosts on link to VPN
--A IP4BOGONS -s 192.168.2.0/24 -j RETURN
-
-# Except hosts on LAN only subnet
--A IP4BOGONS -s 192.168.3.0/24 -j RETURN
-
-# Except VPN interface
--A IP4BOGONS -s 172.16.32.0/20 -j RETURN
-
-# Block bogons with source matching list
--A IP4BOGONS -m set --match-set bogon-bn-nonagg src -j DROP
-
-# Block bogons with destination matching list
--A IP4BOGONS -m set --match-set bogon-bn-nonagg dst -j DROP
-
 COMMIT
 
 #
@@ -309,37 +300,26 @@ COMMIT
 -A POSTROUTING -o ppp0 -j MASQUERADE
 COMMIT
 
+When I tried to ping from:
 
-The the exception chains are certainly working as indicated by the
-counters. However it seems chain 8-9 (the two DROP chains) don't
-seem to work at all.
+  IP: 192.168.3.25
+  Default gateway: 192.168.3.1
 
-If I put the exceptions below those two match-sets then it certainly
-denies me access to the router as expected, so I know ipset is
-working.
+  to:
 
-I tried using ACCEPT instead of RETURN but that didn't help me
-either.
+  IP: 192.168.2.20
+  Default gateway: 192.168.2.1
 
-# iptables --line-numbers -nv -L INPUT; iptables -nv -L IP4BOGONS
-Chain INPUT (policy DROP 1 packets, 40 bytes)
-num   pkts bytes target     prot opt in     out     source               destination
-1     3456  953K IP4BOGONS  all  --  !lo    *       0.0.0.0/0            0.0.0.0/0
-2      123 21379 ACCEPT     all  --  lo     *       0.0.0.0/0            0.0.0.0/0
-3        0     0 IN_ETH0    all  --  eth0   *       0.0.0.0/0            0.0.0.0/0
-4        0     0 IN_ETH1    all  --  eth1   *       0.0.0.0/0            0.0.0.0/0
-5      959  750K IN_PPP0    all  --  ppp0   *       0.0.0.0/0            0.0.0.0/0
-6        0     0 IN_TUN0    all  --  tun0   *       0.0.0.0/0            0.0.0.0/0
-7        1    40 LOG        all  --  *      *       0.0.0.0/0            0.0.0.0/0            LOG flags 0 level 4 prefix "DROPPED INPUT: "
-8        0     0 DROP       all  --  eth0   *       0.0.0.0/0            0.0.0.0/0            match-set bogon-bn-nonagg src
-9        0     0 DROP       all  --  eth0   *       0.0.0.0/0            0.0.0.0/0            match-set bogon-bn-nonagg dst
-Chain IP4BOGONS (1 references)
- pkts bytes target     prot opt in     out     source               destination
-   44  5933 ACCEPT     all  --  *      *       192.168.0.0/30       0.0.0.0/0
-   61  8733 ACCEPT     all  --  *      *       192.168.1.0/24       0.0.0.0/0
- 2336  159K ACCEPT     all  --  *      *       192.168.2.0/24       0.0.0.0/0
-    0     0 ACCEPT     all  --  *      *       192.168.3.0/24       0.0.0.0/0
-   62 29160 ACCEPT     all  --  *      *       172.16.32.0/20       0.0.0.0/0
+  These are the same interface on the router eg
+  eth0:  192.168.1.1
+  eth0:2 192.168.2.1
+  eth0:3 192.168.3.1
 
--------------------------------------------------------------------------------
+  I got this message:
+
+  From 192.168.3.1: icmp_seq=2 Redirect Host(New nexthop: 192.168.2.20).
+
+I don't think the problem is with iptables, I think I am missing
+something from my routing policy database. I am wondering if someone
+can tell me/give me a hint what that might be.
 
