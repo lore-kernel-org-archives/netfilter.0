@@ -1,33 +1,90 @@
-From: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
-Subject: Re: Creating a LAN only null routed network (no access to internet)
-Date: Thu, 13 Aug 2015 02:31:39 -0400
-Message-ID: <20150813023139.3d91a82d@playground>
-References: <55CB462D.6040203@privatedemail.net>
-	<55CC2DD4.6090706@privatedemail.net>
+From: Akshat Kakkar <akshat.1984@gmail.com>
+Subject: Re: Ipset Error : ipset v6.25.1: Kernel error received: set type not
+ supported (on Kernel 4.1.4)
+Date: Fri, 14 Aug 2015 13:04:03 +0530
+Message-ID: <CAA5aLPi=Q_KcWAMsZ9DHZVdU8cuZNNXh8LWuL1w1nSsGdR165g@mail.gmail.com>
+References: <CAA5aLPh-_ySu=PFqkyyG+AzTWQo_cUc35ZcnH3W5ojQPeJeG4g@mail.gmail.com>
+	<alpine.DEB.2.10.1508111211280.9289@blackhole.kfki.hu>
+	<CAA5aLPj7LA3bN4NBCTvQ=FjDMy-8GZqh9nWk3groyMYOj5nQUQ@mail.gmail.com>
+	<alpine.DEB.2.10.1508111320400.9289@blackhole.kfki.hu>
+	<CAA5aLPhO7643BnLNNe4Kp+h6Nivvn_jtgVdRXBfWGPPPLf_kXA@mail.gmail.com>
+	<alpine.DEB.2.10.1508111416010.9289@blackhole.kfki.hu>
+	<CAA5aLPiNcE51=3UYfuRa8U_ueq6U7cJJPR0Tyd2cqH143vd9wg@mail.gmail.com>
+	<CAA5aLPjaE_LbNwhVFjnHYUN2EsQKJKZRuXBmOxhx=6gqT+oWuw@mail.gmail.com>
+	<CAA5aLPgeDDPzMD=4aoLY=2asWg1JN8nhWLV1qbY0XbhwwTP6wQ@mail.gmail.com>
+	<alpine.DEB.2.10.1508121118040.15443@blackhole.kfki.hu>
+	<CAA5aLPicyk_fi8O8XX3dtOwqTGiCBMWypbOJs9Bwff3yw2p-5w@mail.gmail.com>
+	<alpine.DEB.2.10.1508121148020.15443@blackhole.kfki.hu>
+	<CAA5aLPg2xNZMw2xRirj5pBnEort-K4sHesYfnVL+CD9D2V97jQ@mail.gmail.com>
+	<alpine.DEB.2.10.1508121210280.15443@blackhole.kfki.hu>
+	<CAA5aLPgtb7iKy3BgjAGzVUVW4m0uUGpvS3ffJM-KH7ikTgFQNA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <55CC2DD4.6090706@privatedemail.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :content-type;
+        bh=cr0CgyHaOhdHhSlELPKsCa6AMxcZAcP8EjAnBgY35ik=;
+        b=K13EcGW0WvO0Q8FyLML6rSqCxh/oVZLn7Eit5R0Cvy1JCTPmeW3m9eD7mwHbNIHWuT
+         ZS9i47ys2kjccUTxJf8uxv2fgkvZAyQ3HLZBmJm/MKSWCB7tkxyp48F6OirgwYDNIBRM
+         cbqbvMEMiprkj7BVAtcQKlb6pW/w1L4p3CS9RIP9RQqamQdYPjW/2tuoGDkT8UrqdYcW
+         M2/U0QC1ZklyAQvtVx9chCx17nSOY8TTKc14MXwsSmb7U+bArI3L9e18cmihbXh0T8/I
+         PI+g4xSk0nIg5V5OzFcrr6a820dI/Ud8JIP1YzJA4avKgCdr15TxbQyHNZAyga0KeMqL
+         jcZw==
+In-Reply-To: <CAA5aLPgtb7iKy3BgjAGzVUVW4m0uUGpvS3ffJM-KH7ikTgFQNA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
-Cc: sillysausage <sillysausage@privatedemail.net>
+Content-Transfer-Encoding: 7bit
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Thu, 13 Aug 2015 15:10:36 +0930
-sillysausage <sillysausage@privatedemail.net> wrote:
+Hi Jozsef,
 
-> It does turn out I will need to buy myself a managed switch at some
-> point and use VLANs instead of virtual interfaces if I want to assign IP
-> addresses in this range. Virtual interfaces such as eth0:3 (192.168.3.1)
-> currently have the same broadcast as eth0 (192.168.1.1) which would mean
-> this will never work:
+Any update  ?
 
-What happens if you don't use virtual IFs? That is, use multiple primary addresses:
-  ip addr add 192.168.1.1/24 dev eth0
-  ip addr add 192.168.2.1/24 dev eth0
-  ip addr add 192.168.3.1/24 dev eth0
-
-The system determines the correct broadcast address to use based on the source address. With correct primary CIDR addresses, you don't need to specify the broadcast address at all.
-
-Or does this make your routing impossible to achieve?
+On Wed, Aug 12, 2015 at 4:12 PM, Akshat Kakkar <akshat.1984@gmail.com> wrote:
+> Thanks a lot.
+>
+> On Wed, Aug 12, 2015 at 3:42 PM, Jozsef Kadlecsik
+> <kadlec@blackhole.kfki.hu> wrote:
+>> On Wed, 12 Aug 2015, Akshat Kakkar wrote:
+>>
+>>> that I did change to 4,
+>>>
+>>> o/p is
+>>>
+>>> comment: Bitmap comment: List set: passed
+>>> comment: Bitmap comment: Check listing: passed
+>>> comment: Sleep 5s so that entries can time out: passed
+>>> comment: Bitmap comment: List set: passed
+>>> comment: Bitmap comment: Check listing: --- .foo        2015-08-12
+>>> 15:10:46.562822931 +0530
+>>> +++ comment.t.list12    2015-06-25 14:49:08.000000000 +0530
+>>> @@ -1,9 +1,9 @@
+>>>  Name: test
+>>>  Type: bitmap:ip
+>>>  Header: range 2.0.0.1-2.1.0.0 timeout x comment
+>>> -Size in memory: 1056896
+>>> +Size in memory: 1056928
+>>>  References: 0
+>>> -Number of entries: 255
+>>> +Number of entries: 510
+>>>  Members:
+>>>  2.0.1.1 timeout x comment "text message 1"
+>>>  2.0.1.2 timeout x comment "text message 2"
+>>> FAILED
+>>> Failed test: diff -u -I 'Size in memory.*' .foo comment.t.list12
+>>> make: *** [tests] Error 1
+>>
+>> That is quite strange: the bitmap:ip timeout tests ran successfully, here
+>> the comment extension is added to the elements besides the timeout.
+>>
+>> So this is with kernel 4.1.4 - I'm going to check it myself.
+>>
+>> Best regards,
+>> Jozsef
+>> -
+>> E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+>> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+>> Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+>>           H-1525 Budapest 114, POB. 49, Hungary
