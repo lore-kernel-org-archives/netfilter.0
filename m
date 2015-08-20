@@ -1,70 +1,54 @@
-From: Akshat Kakkar <akshat.1984@gmail.com>
-Subject: make modules_install Error : Can't read private key
-Date: Thu, 20 Aug 2015 18:59:33 +0530
-Message-ID: <CAA5aLPiSBfyEqymTJ0rBU2zjBV2k1ruw9x9N3tJuKWhF8vCe9Q@mail.gmail.com>
+From: Anand Raj Manickam <anandrm@gmail.com>
+Subject: Fails to NAT and Route reply packets for Multiple Interfaces
+Date: Thu, 20 Aug 2015 20:28:02 +0530
+Message-ID: <CAEyr1FTKc3bbt4UNKooA2VW7=-gthE2C3_rP7-PxvF3LebW7Ew@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
         h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=my10WD6VOdedvy2fpDLp0e7/vVLM9cj51v1GlKxO9Wk=;
-        b=h7aWbFU6fKOg0IvnFH7JBsaQ+zb15MEWwlbH/gFwIEzrOx5y+JkzzIIbY4VQjQ+mfg
-         X5EqTyo3qdci5plsr51I7Cv8whW/7szAE2bbAbXP4rHiw94pGD89M/11yekFD+SdcRB7
-         Xw8OEkgCyv77083CdkkCAok0W52a2L65KRC/yymci+QQa+y4ujuWuFmtd+oQXEWVzgBk
-         2z9SD8GQLtlzHIK5Ywpegl1dTEjabG9Yb+LhbqEvFzeRz97UFdQxsuFovq+nJWD7UAti
-         wHIFiAFsd8a8zQDnVE75ay8MOHwrYIz1NnhrTYN6ecXTWmwb5MoVog42wECiDBEW9eZK
-         n5OA==
+        bh=QJOl7zXSIpzvT7NPrFL60NU/DjmmKxQ1xWbv+Xecxj8=;
+        b=zVo5PkkB3Ut7wqXyM+6TDatyNBHZaqsX0PeBAfWPHNp/2HVjReRdHzdVz+eKcaCTLc
+         fYhmrZZFEqpKC+OUK5l/M+fjEMduYpwS4IaOscbknnOEtUq0NWbvauvTbO6p+Xi38F4f
+         6c3pL5LFBrJ4i9zkW2fgUkenLWP2Kr5JJSbBm84Ph0E04QYoXdGFpTXJylmzxWUHnY65
+         2hI0S1gPE5K0T8tFLOqGWw2WdnHN27XlxxGTtcb8qWv5w7Lg3wD1AQ2NvDmgZl5+ftvR
+         bLZ513HuaLDJfxBJkkQ+WvhJkGye8Q8hGPH7rwbA38d8O3+dgW3JtBkubXy2jHZhgf0i
+         3UKw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, Anand Raj Manickam <anandrm@gmail.com>
 
-I am on SL 7, kernel 3.10.0-229
+Hi ,
+I have a multi nic router setup.
 
-I am installing ipset
+172.0.0.1/24  |---------(eth1)(Internet)
+eth0(LAN)----|
+                      |---------(eth2)(Internet)
 
-everyrthing went fine, but just in the last step "make
-modules_install" I am geting o/p as
+When both the Links are up and connected , the NATTING / ROUTING fails
+to route the packet back to the LAN on one of the Links in most cases
+it eth1 .
+Eg
+172.1.1.1->100.1.1.1  routed to eth1 , which(i m MASQURADING) SNAT's
+to x.x.x.x ->100.1.1.1
+there is reply from 100.1.1.1->x.x.x.x. I see the packet in the
+PREROUTING Mangle table and also in TCPDUMP . But after that the
+packet is lost.
+I did try to log the packet in FORWARD , mangle table , it did not reach here .
 
-make -C /lib/modules/`uname -r`/build M=$PWD/kernel/net \
-                KDIR=$PWD/kernel modules_install
-make[1]: Entering directory `/usr/src/kernels/3.10.0-229.11.1.el7.x86_64'
-  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set.ko
-Can't read private key
-  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_bitmap_ip.ko
-Can't read private key
-  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_bitmap_ipmac.ko
-Can't read private key
-  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_bitmap_port.ko
-Can't read private key
-  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_hash_ip.ko
-Can't read private key
-  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_hash_ipmark.ko
-Can't read private key
-  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_hash_ipport.ko
-Can't read private key
-  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_hash_ipportip.ko
-Can't read private key
-  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_hash_ipportnet.ko
-Can't read private key
-  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_hash_mac.ko
-Can't read private key
-  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_hash_net.ko
-Can't read private key
-  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_hash_netiface.ko
-Can't read private key
-  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_hash_netnet.ko
-Can't read private key
-  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_hash_netport.ko
-Can't read private key
-  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_hash_netportnet.ko
-Can't read private key
-  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_list_set.ko
-Can't read private key
-  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/xt_set.ko
-Can't read private key
-  INSTALL /home/akshat/ipset-6.25.1/kernel/net/sched/em_ipset.ko
-Can't read private key
-  DEPMOD  3.10.0-229.11.1.el7.x86_64
-make[1]: Leaving directory `/usr/src/kernels/3.10.0-229.11.1.el7.x86_64'
+Conntrack -E , also show the SYN_RECV state for the packet.
+
+But when only one link is in connected state , it works fine. Also
+,when both the links are up it routes fine on eth2. The connectivity
+of the links are fine as i m using this in a private setup.
+
+I m using fwmark ip route table to route the packets on the particular
+interface .
+I m using Linux Kernel version 3.12.14 .
+
+Can someone shed some light this ?
+
+Thanks,
+Anand
