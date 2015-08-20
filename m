@@ -1,32 +1,70 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: ICMPv6 Type 1 Code 5 and 6 missing in iptables REJECT target
- and icmpv6 match
-Date: Thu, 20 Aug 2015 10:13:34 +0200 (CEST)
-Message-ID: <alpine.LSU.2.20.1508201012310.28043@nerf40.vanv.qr>
-References: <20150819145136.GN21654@kvmbude>
+From: Akshat Kakkar <akshat.1984@gmail.com>
+Subject: make modules_install Error : Can't read private key
+Date: Thu, 20 Aug 2015 18:59:33 +0530
+Message-ID: <CAA5aLPiSBfyEqymTJ0rBU2zjBV2k1ruw9x9N3tJuKWhF8vCe9Q@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <20150819145136.GN21654@kvmbude>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=my10WD6VOdedvy2fpDLp0e7/vVLM9cj51v1GlKxO9Wk=;
+        b=h7aWbFU6fKOg0IvnFH7JBsaQ+zb15MEWwlbH/gFwIEzrOx5y+JkzzIIbY4VQjQ+mfg
+         X5EqTyo3qdci5plsr51I7Cv8whW/7szAE2bbAbXP4rHiw94pGD89M/11yekFD+SdcRB7
+         Xw8OEkgCyv77083CdkkCAok0W52a2L65KRC/yymci+QQa+y4ujuWuFmtd+oQXEWVzgBk
+         2z9SD8GQLtlzHIK5Ywpegl1dTEjabG9Yb+LhbqEvFzeRz97UFdQxsuFovq+nJWD7UAti
+         wHIFiAFsd8a8zQDnVE75ay8MOHwrYIz1NnhrTYN6ecXTWmwb5MoVog42wECiDBEW9eZK
+         n5OA==
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Andreas Herz <andi@geekosphere.org>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
+I am on SL 7, kernel 3.10.0-229
 
-On Wednesday 2015-08-19 16:51, Andreas Herz wrote:
->And in RFC 4443 they are defined as:
->
->> 5 - Source address failed ingress/egress policy
->> 6 - Reject route to destination
->
->Is there a reason for that?
->
->If i look into the "extensions/libip6t_icmp6.c" i just see the codes 0,1,2,3,4
->for type 1. And in "include/linux/netfilter_ipv6/ip6t_REJECT.h" it's
->"IP6T_ICMP6_ECHOREPLY" which doesnt' sound like the one in the RFC.
->
->Or is it just missing, so i might add it?
+I am installing ipset
 
-It would appear fine to just add it.
+everyrthing went fine, but just in the last step "make
+modules_install" I am geting o/p as
+
+make -C /lib/modules/`uname -r`/build M=$PWD/kernel/net \
+                KDIR=$PWD/kernel modules_install
+make[1]: Entering directory `/usr/src/kernels/3.10.0-229.11.1.el7.x86_64'
+  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set.ko
+Can't read private key
+  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_bitmap_ip.ko
+Can't read private key
+  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_bitmap_ipmac.ko
+Can't read private key
+  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_bitmap_port.ko
+Can't read private key
+  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_hash_ip.ko
+Can't read private key
+  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_hash_ipmark.ko
+Can't read private key
+  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_hash_ipport.ko
+Can't read private key
+  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_hash_ipportip.ko
+Can't read private key
+  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_hash_ipportnet.ko
+Can't read private key
+  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_hash_mac.ko
+Can't read private key
+  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_hash_net.ko
+Can't read private key
+  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_hash_netiface.ko
+Can't read private key
+  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_hash_netnet.ko
+Can't read private key
+  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_hash_netport.ko
+Can't read private key
+  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_hash_netportnet.ko
+Can't read private key
+  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/ipset/ip_set_list_set.ko
+Can't read private key
+  INSTALL /home/akshat/ipset-6.25.1/kernel/net/netfilter/xt_set.ko
+Can't read private key
+  INSTALL /home/akshat/ipset-6.25.1/kernel/net/sched/em_ipset.ko
+Can't read private key
+  DEPMOD  3.10.0-229.11.1.el7.x86_64
+make[1]: Leaving directory `/usr/src/kernels/3.10.0-229.11.1.el7.x86_64'
