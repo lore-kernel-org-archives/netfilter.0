@@ -1,74 +1,47 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipset v6.25.1 does not recognize 'counters' as option
-Date: Sat, 22 Aug 2015 20:05:52 +0200 (CEST)
-Message-ID: <alpine.DEB.2.10.1508222004380.13403@blackhole.kfki.hu>
-References: <CAFUsPDZw6uGSsNvoZN3TKm=NHdUJTQ79QakYvxP1OyHMzZDzmQ@mail.gmail.com> <CAEzD07KL6CaBq8dHsPVLQH-R=Em76iiS=ErNOXFsVMd4Gygsfw@mail.gmail.com> <CAFUsPDZjpkKSgdv29kH0snwm=-XOBXPVF4JUhmU2B-U=dCFBbw@mail.gmail.com> <alpine.DEB.2.10.1508211959110.7784@blackhole.kfki.hu>
- <CAFUsPDaRjqd8LA2iNqdwGXwH9VUVaixJDznRNFKRKLPtvrogCg@mail.gmail.com>
+From: Tugrul Erdogan <h.tugrul.erdogan@gmail.com>
+Subject: Bridged interfaces are not accepting arp replay packages
+Date: Sun, 23 Aug 2015 10:22:52 +0300
+Message-ID: <CA+whn7TW=E=+ozNN_-3Y-gRordrhRw0+69qvXr-LKc_=+Wpogw@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAFUsPDaRjqd8LA2iNqdwGXwH9VUVaixJDznRNFKRKLPtvrogCg@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=HZMkMQPIXRSQBeYynsk5m+uOsyo7OMd1bmBm6iEmVsM=;
+        b=MuwG+Kh7py+NEAlBkqVxOCRsQv19fFbNyRBqFFhECGFNKMlxVqQtrcSaqXjuBclsUY
+         6kW1IdrfqM6/GCtdLk9fntQtufxTphKf3Cz05WumPKyCms234mFkssogxxdULG2JBS6/
+         oLcrhSAU1EqWPr8bkxLQGYjWmj15IjhbbnGNEyhXmnK2ZsZC4PazmHYvGXkXl9i7azKw
+         iJHJLZvY0GecoQYZsyupURxYVMpsYhs12FKSbE+7AcK1QxdbnDwXLomqa2tc3z1x/HsW
+         3H6ct+Te9d9q6BC8bK/iOE1rEpc9FOnBDcH0QsIUL52tvzZc5emR4zG3JfToxi7+bbvF
+         JWOA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Soroosh Sardari <soroosh.sardari@gmail.com>
-Cc: Anton Danilov <littlesmilingcloud@gmail.com>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Sat, 22 Aug 2015, Soroosh Sardari wrote:
+Hi all;
 
-> On Fri, Aug 21, 2015 at 10:31 PM, Jozsef Kadlecsik
-> <kadlec@blackhole.kfki.hu> wrote:
-> > On Fri, 21 Aug 2015, Soroosh Sardari wrote:
-> >
-> >> Thanks, this is the output of ipset help | counters:
-> >>
-> >>     list:set 1 counters support
-> >>     hash:net,iface 3 counters support
-> >>     hash:net,port 4 counters support
-> >>     hash:net 3 counters support
-> >>     hash:ip,port,net 4 counters support
-> >>     hash:ip,port,ip 2 counters support
-> >>     hash:ip,port 2 counters support
-> >>     hash:ip 1 counters support
-> >>     bitmap:port 1 counters support
-> >>     bitmap:ip,mac 1 counters support
-> >>     bitmap:ip 1 counters suppor
-> >>
-> >> Seems I'm using the new kernel modules. Is there any make option to
-> >> enable counters in ipset user space tool?!
-> >
-> > No, the output above means that the ipset userspace utility supports the
-> > counters. Your kernel still may use the old ip_set* modules, without
-> > counters support. You can check it out by "modinfo ip_set_hash_net": it
-> > should support revision 3 too.
-> >
-> > Best regards,
-> > Jozsef
-> > -
-> > E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-> > PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-> > Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-> >           H-1525 Budapest 114, POB. 49, Hungary
-> 
-> modinfo ip_set_hash_net
-> filename:
-> /lib/modules/3.2.0-4-amd64/extra/netfilter/ipset/ip_set_hash_net.ko
-> alias:          ip_set_hash:net
-> description:    hash:net type of IP sets, revisions 0-6
-> author:         Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-> license:        GPL
-> depends:        ip_set,ip_set
-> vermagic:       3.2.0-4-amd64 SMP mod_unload modversions
-> 
-> This is the ko file that i just compiled from latest source codes.
+I have a problem on bridged interface's arp replay management. My
+bridged interface which name is br0 and its physical NICs has no ip
+assigned them. I added the routing rule as follow "ip ro add A dev
+br0" . When I try to use synproxy rule on iptables my device send an
+arp request to A to determine the mac address of the A to create the
+SYN+ACK package which will be sent to A. Then the arp replay of A came
+back to my device, I can see the arp replay packets of A by tcpdump on
+br0 interface.  But the arp table is not including this arp replay.
 
-Then you have got the original ip_set* modules loaded in. rmmod the old 
-modules so that the new one could be loaded in by the system.
+When I write some rules on arptables to analyze the arp request and
+replay packages, I see that the arp request leaves from physical NIC
+and but the replay of that arp request comes from br0 interface. So I
+think that for this reason the arp replay is not taken on by arp table
+as the mac address of A on my device (maybe as a arp spoofing
+prevention method).
 
+I want to take your helps. What can be the reason of this arp request
+rejection. Is there any sysctl setting that I have not known yet or
+how can I solve this problem?
+
+Thanks for your helps.
 Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+Tugrul
