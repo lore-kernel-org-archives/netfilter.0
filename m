@@ -1,35 +1,31 @@
 From: Akshat Kakkar <akshat.1984@gmail.com>
-Subject: ipset memory usage
-Date: Tue, 25 Aug 2015 17:35:50 +0530
-Message-ID: <CAA5aLPgxW=-hJcBLxagCKTgX26mHg9XAmsr-UVoS3s0n50oEDA@mail.gmail.com>
+Subject: Does nft offers performance advantage over iptables?
+Date: Wed, 26 Aug 2015 01:21:54 +0700
+Message-ID: <CAA5aLPg6cRDE0qMn=2WE0EggXpmd725PhuUqgJTaRSWTMhFUsQ@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
         h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=btX+7/4Me4Tg8JZ3Ro/t4QLYlHuA0JpN6zsCHCDWHNQ=;
-        b=qnJ6Guuo+e+sMVtxT+hkUszLCdT9HAqm4MIPsZBb/WnUO5Xh/7DU0IYrwFwWLu4z88
-         06Dt4NVwSxXSCCl/FCKDrO3jTQ78uGArrTjeiIwgiB728hKm4rrpziIPKCTYLp6oV3r3
-         jfutvnhZTFJPT4rv2GsH8YXgcz76wcYB0Lgpx1s1mkU+Lx/M7d87Nea+a7HTQrWHj5YF
-         4IuACU676hRasrhPkSP17eqC5EZG25eZog7cq7aX7Hx2wE+ZO813vn+eQqXN3pqBBkBH
-         t/Ty/4tQljqC/glKr/8pvMpxK4ThiBMOhaPRCgp8AzqqWsHP8z93T2uZWsRNXSMjT9Gs
-         Y0LQ==
+        bh=6/TH+OSGt+54SsBgbVdvRDf6ZddmNhL80FZLaut13Z0=;
+        b=IKZ9u4tJaOLtplyiyxqCT/baCb/alh5DpReGBSvCvXIShjQKC1UrwK44uN6EXwdF6T
+         ogHzCAeXhCNuZMkfWHZpB7ne+O4mLbR13YtPe2tdHe3M3xgtx+NFWoD3GOOuaYcvFPkU
+         ghfDXasBX8pNnzJcGHlsZQ0CHQBv57zTtvORmLWLw0iS0xzZ0lR5jDY0zRmU8VUYynwT
+         IhW4npecVOT5xJNAG4MT9MW1FQmxsOtGxG56OwpgCPC2r8m2YXtBv924DARbtb9Hd3dP
+         5QY0FPItNKUqlLPSUb72e8Q1yJOJjqdppxuqDsXWDvTHATMbAKebaIRcpHv8B4TUm6ug
+         L9Cw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-As per info in http://lists.netfilter.org/pipermail/netfilter/2005-September/062859.html,
-ipset of iphash of 20Million IPs, takes around only 80MB. I understand
-that this might be simply multiplication of 20Million with 4 bytes
-which IP takes if stored normally.
+The new bold change in linux is nftables.
+It might be simpler in syntax, as compared to iptables, and that might
+help a beginner. But for individuals already working comfortably with
+iptables and ipsets, this feature of nft doesnt offer a motivation for
+change.
 
-But when I try to replicate this I am getting size in memory as
-506,481,176 (around 483MB) for number of entries 16,581,375.
+So, what should be the motivation for changing from iptables to nft?
 
-This comes to around 30Bytes per IP.
-
-I have got this values from ipset -L command
-
-Is this much size anticipated?
+Does nft offers performance advantage over iptables?
