@@ -1,59 +1,67 @@
-From: Ken-ichirou MATSUZAWA <chamaken@gmail.com>
-Subject: logging rule ID
-Date: Tue, 25 Aug 2015 13:57:20 +0900
-Message-ID: <20150825045720.GA3073@gmail.com>
+From: Anton Danilov <littlesmilingcloud@gmail.com>
+Subject: Re: Bridged interfaces are not accepting arp replay packages
+Date: Tue, 25 Aug 2015 10:00:53 +0300
+Message-ID: <CAEzD07+RTrG0DHQL4OT1ywa1whYax0N0=ikVB0hVqaEjhFbDWA@mail.gmail.com>
+References: <CA+whn7TW=E=+ozNN_-3Y-gRordrhRw0+69qvXr-LKc_=+Wpogw@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=date:from:to:subject:message-id:mime-version:content-type
-         :content-disposition:user-agent;
-        bh=I9AQXpE/wNkfIin/RDoqh98Suxa0ofcsuFKMdltlphw=;
-        b=GNLhuhvQMca/TZk2bUPBYQI5tzSyiH6b8z7tzs5DYogK8rLKXGh1/Pftdu61FBft5Z
-         vG/0cH+MYZNVJq18s5J9pS0cTYAag3RoEyLwy+w5I0cFk+I4joY9e2ZqYXEvv0N5sHS7
-         Vz4V50AmZgA36vrzz6jeBT4au37V2+tbNUClJbAKkwnKswoh8KbHt0XhtpCS7tlvulUP
-         iw9ZoOd/VfGIDYZGWl/N7YIlOYBQTkwnT2wwCDot9yBMdM0GLelXbpxwNVo5rWbgMrZ7
-         TaMYF4MSZfTvcAj389dy82cZxJUE8v4hqPGb5wiZIoDFWuILUNfc5aGOGkI8QgiPZHNM
-         VfeQ==
-Content-Disposition: inline
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type;
+        bh=HWFNp0gq5UEY1+NdijGTvX2mgt/53e3085/XZdesFyo=;
+        b=jMbQMxA0CpF/kKPHIw8/pgFlauu3uQ+PpJsES5v9tapL3Lc9ucNkkEYuETl6rQDGTm
+         0gMpPhHOKt2qQtRH87eB///vNqk+bb/NX7RePohn9+cSuowyvtUTqKxF4nZIkRQn7ycB
+         HRhQk5Ggxrd18g/6cV3I3eBs77gcwfAwAHCN6ixDmHP1FA4zCORLH+QL8v1fYVaFf8Gi
+         Aq8g1SehBxmjlbrTQzjj2aALGfaM79n3Crq0zBrTtjjrn/ewu1uxLWUGIPg225XKnPUn
+         oI7rcI97bl/s9qIGoW8e7uAZNfSqttrjN6m0X5bG2EjWc80mvf8JYzM1+AYBSuAvGYlh
+         CaKA==
+In-Reply-To: <CA+whn7TW=E=+ozNN_-3Y-gRordrhRw0+69qvXr-LKc_=+Wpogw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Tugrul Erdogan <h.tugrul.erdogan@gmail.com>
+Cc: netfilter@vger.kernel.org
 
- Hi,
+Hello.
+Seems like you should load br_netfilter module.
+Without it switching in the bridge works with some stranges.
+After loading this module check the sysctl variables
+bridge.netfilter.bridge-nf-* and set it to corresponded values.
 
-We manage firewall appliance products. A few of them can log not
-only packet information but also log which rule number or rule ID
-causes to log. I know nflog can do so by specifying log-prefix but
-user must keep the uniqueness, it seems troublesome.
+2015-08-23 10:22 GMT+03:00 Tugrul Erdogan <h.tugrul.erdogan@gmail.com>:
+> Hi all;
+>
+> I have a problem on bridged interface's arp replay management. My
+> bridged interface which name is br0 and its physical NICs has no ip
+> assigned them. I added the routing rule as follow "ip ro add A dev
+> br0" . When I try to use synproxy rule on iptables my device send an
+> arp request to A to determine the mac address of the A to create the
+> SYN+ACK package which will be sent to A. Then the arp replay of A came
+> back to my device, I can see the arp replay packets of A by tcpdump on
+> br0 interface.  But the arp table is not including this arp replay.
+>
+> When I write some rules on arptables to analyze the arp request and
+> replay packages, I see that the arp request leaves from physical NIC
+> and but the replay of that arp request comes from br0 interface. So I
+> think that for this reason the arp replay is not taken on by arp table
+> as the mac address of A on my device (maybe as a arp spoofing
+> prevention method).
+>
+> I want to take your helps. What can be the reason of this arp request
+> rejection. Is there any sysctl setting that I have not known yet or
+> how can I solve this problem?
+>
+> Thanks for your helps.
+> Best regards,
+> Tugrul
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-Based on it, how about passing systematic id to nflog? I think one
-of a way is introducing holder struct like
 
-    struct nft_rule_key {
-         char *chain_name;
-         u64  rule_handle;
-    };
 
-and add it to struct nft_pktinfo member. A Rule identifier --- chain
-name and rule handle number --- can be passed to eval() callback by
-setting those in nft_do_chain()::nf_tables_core.c before calling
-eval() callback.
-
-But I don't know whether this way adapts to the whole nft design or
-not. And it seems that big change will be needed after passing
-nft_rule_key to nft_log_eval().
-
-Then, please let me ask three questions:
-
-* Is there a way to identify the rule which rule outputs log without
-  log-prefix?
-
-* Is there a plan to identify the rule from log?
-
-* How do I progress in nft_log_eval() if this method, passing rule
-  identifier to nflog_log_eval(), can be acceptable?
-
-Thanks,
+-- 
+Anton.
