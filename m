@@ -1,48 +1,59 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: make modules_install Error : Can't read private key
-Date: Mon, 24 Aug 2015 19:21:47 +0200 (CEST)
-Message-ID: <alpine.DEB.2.10.1508241912110.28598@blackhole.kfki.hu>
-References: <CAA5aLPiSBfyEqymTJ0rBU2zjBV2k1ruw9x9N3tJuKWhF8vCe9Q@mail.gmail.com> <alpine.DEB.2.10.1508202024190.2398@blackhole.kfki.hu> <CAA5aLPhJ7H6oYQM4L2Cv1_Wbz-93YxPERVO6c9H8i1gcrsVrYA@mail.gmail.com> <CAA5aLPhkdi+9C-tNo_+kLc31yUycQ=n4VUUTJaTyhRBBt_kHSQ@mail.gmail.com>
- <alpine.DEB.2.10.1508241251250.23047@blackhole.kfki.hu> <CAA5aLPisw07FDgaBH3gzNp3jDHmV1qgjKvBKWpGghpini81Wpw@mail.gmail.com>
+From: Ken-ichirou MATSUZAWA <chamaken@gmail.com>
+Subject: logging rule ID
+Date: Tue, 25 Aug 2015 13:57:20 +0900
+Message-ID: <20150825045720.GA3073@gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAA5aLPisw07FDgaBH3gzNp3jDHmV1qgjKvBKWpGghpini81Wpw@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=date:from:to:subject:message-id:mime-version:content-type
+         :content-disposition:user-agent;
+        bh=I9AQXpE/wNkfIin/RDoqh98Suxa0ofcsuFKMdltlphw=;
+        b=GNLhuhvQMca/TZk2bUPBYQI5tzSyiH6b8z7tzs5DYogK8rLKXGh1/Pftdu61FBft5Z
+         vG/0cH+MYZNVJq18s5J9pS0cTYAag3RoEyLwy+w5I0cFk+I4joY9e2ZqYXEvv0N5sHS7
+         Vz4V50AmZgA36vrzz6jeBT4au37V2+tbNUClJbAKkwnKswoh8KbHt0XhtpCS7tlvulUP
+         iw9ZoOd/VfGIDYZGWl/N7YIlOYBQTkwnT2wwCDot9yBMdM0GLelXbpxwNVo5rWbgMrZ7
+         TaMYF4MSZfTvcAj389dy82cZxJUE8v4hqPGb5wiZIoDFWuILUNfc5aGOGkI8QgiPZHNM
+         VfeQ==
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Akshat Kakkar <akshat.1984@gmail.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-On Mon, 24 Aug 2015, Akshat Kakkar wrote:
+ Hi,
 
-> The o/p of strace -f make modules_install is attached as it is very big.
+We manage firewall appliance products. A few of them can log not
+only packet information but also log which rule number or rule ID
+causes to log. I know nflog can do so by specifying log-prefix but
+user must keep the uniqueness, it seems troublesome.
 
-You should have sent such a huge file privately to me only, instead of 
-the whole mailing list...
+Based on it, how about passing systematic id to nflog? I think one
+of a way is introducing holder struct like
 
-Searching the log for "key":
+    struct nft_rule_key {
+         char *chain_name;
+         u64  rule_handle;
+    };
 
-[pid 31645] execve("/bin/perl", ["perl", 
-"/usr/src/kernels/3.10.0-229.11.1"..., "sha256", "./signing_key.priv", 
-"./signing_key.x509", "/lib/modules/3.10.0-229.11.1.el7"...], [/* 103 vars 
-*/]) = 0
+and add it to struct nft_pktinfo member. A Rule identifier --- chain
+name and rule handle number --- can be passed to eval() callback by
+setting those in nft_do_chain()::nf_tables_core.c before calling
+eval() callback.
 
-So apparently SL 7 wants to sign the kernel modules. However it doesn't 
-work because the required private and public key files are assumed to be 
-in the working directory.
+But I don't know whether this way adapts to the whole nft design or
+not. And it seems that big change will be needed after passing
+nft_rule_key to nft_log_eval().
 
-I don't have RedHat based systems. Read 
-https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux/7/html/System_Administrators_Guide/sect-signing-kernel-modules-for-secure-boot.html 
-and decide that you need signed kernel modules or not, and if yes, then 
-where your key files are located. Then possibly symlinking them into the 
-ipset source directory is enough for a successful, signed module 
-installation.
+Then, please let me ask three questions:
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+* Is there a way to identify the rule which rule outputs log without
+  log-prefix?
+
+* Is there a plan to identify the rule from log?
+
+* How do I progress in nft_log_eval() if this method, passing rule
+  identifier to nflog_log_eval(), can be acceptable?
+
+Thanks,
