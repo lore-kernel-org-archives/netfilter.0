@@ -1,27 +1,39 @@
 From: Akshat Kakkar <akshat.1984@gmail.com>
-Subject: checking mark values in iptables from ipset ...
-Date: Wed, 26 Aug 2015 13:14:24 +0530
-Message-ID: <CAA5aLPgf23fABFe6JuRxcoSoTE5=+bKiEeM+sSr+d_qBcY7B8w@mail.gmail.com>
+Subject: wrong info in ipset man pages
+Date: Wed, 26 Aug 2015 14:26:04 +0530
+Message-ID: <CAA5aLPj0FgFzhbPvtAKF3shX2V9Eeu-cBpkPdODqp6foKW_opA@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
         h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=MfmvuW2Ov5KsAnTlxfVUPWDWEDSb/Ly5wpJ5tBJ7kEw=;
-        b=l1tFiab31Fj3K7oUNuhoL9N9xCxBmGP6k91hs6Mkeude56bqSzjWITqO8cjE4N7A7G
-         ZEJ5NQy9riu5The9ZsL3Ca3bXOCxXh+kfB/OgRbloT4A5tBCZQgWPOYL5M6coT6HV/eS
-         rXBS0VAl8kHPT3OY4PiwNty9PKBRW1GTmg9FJgMi2N32scC60xKNBx57M5ejbJ2umskc
-         nw1JbKFikPAGYz2NJhBMoCjC7nXAFNPgi89ABFtTSac44JaJ48wesmHAYTVNfxJnS4ee
-         O4YM+ucfoc3MmeYABIfgvibm6emMOevCisLAtHl582jRHaOs8TwWuBzVWWk6OQsnfu3G
-         NlTA==
+        bh=cNlgoVQ7+90MBGAAEwIMBpsUfKksVd5XjmItP6Kymfg=;
+        b=0m9AE1/A8JnaOJHOiwI7Hm4GorpqnPru/RVOIq7lo5/6E6yVqQHFoAnA0TcxbIZ1Uo
+         UCx2kDledf6IgnM37T7FV7/kS8lwpEn7xNaGrjYNYm0UR3FnoN/Oc42XAcia3ZdGJawk
+         4uPBpRwqReD4uEDZLjRLQadHnhLbITCp3ZLaDNaAfaTqQobgbtFIULHyCl3eRP3MRSPW
+         mm/dR1QHnz7H1afujE6Qbbtg0+Y6aJm5HMUz0yMaZW5lfKJvJxz1UlDPhVP1ZuR+/6Ii
+         3NQv3utpERKfHYRIncQHvxo7Ju9g6g/e4N1DQwrrkjZH7cmtmRbSQ1FZpdFu0nTXZNKl
+         HQ6A==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Since ipset 6.22 (Courtersy: Anton), we can store skbinfo in ipset
-alongwith ips, etc.
+With regards to ipset type hash:ip,mark, it is mentioned that
 
- Is it possible to use ipset to check existing mark on the packet and
-then use Map-Set option to select the SKBPRIO ?
+"""
+The hash:ip,mark type of sets require two src/dst parameters of the
+set match and SET target kernel modules.
+"""
+
+However as it invoves storing mark, which has nothing to do with
+src/dst parametes, so it should be mentioned something like
+
+"""
+The hash:ip,mark type of sets require one src/dst IP/network and
+fwmark of the set match and SET target kernel modules.
+"""
+
+Besides, as this is the only set which hashes mark also, so exactly
+which IPTABLES module to use should also be mentioned.
