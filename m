@@ -1,74 +1,40 @@
-From: Jeff <Jeff.Meyers@gmx.net>
-Subject: Re: Accept clients that were seen at least twice only
-Date: Wed, 26 Aug 2015 14:51:50 +0200
-Message-ID: <55DDB666.60709@gmx.net>
+From: =?utf-8?B?QW5kcsOpIFBhdWxzYmVyZy1Dc2liaQ==?= 
+	<Andre.Paulsberg-Csibi@evry.com>
+Subject: RE: Accept clients that were seen at least twice only
+Date: Wed, 26 Aug 2015 12:46:22 +0000
+Message-ID: <838AB161BE491743AE3CA3A916CF1CC648C8D8E2@CCDEX015.corp.corpcommon.com>
 References: <55DDAF52.3090507@gmx.net>
- <838AB161BE491743AE3CA3A916CF1CC648C8D8E2@CCDEX015.corp.corpcommon.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <838AB161BE491743AE3CA3A916CF1CC648C8D8E2@CCDEX015.corp.corpcommon.com>
+In-Reply-To: <55DDAF52.3090507@gmx.net>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: =?UTF-8?Q?Andr=c3=a9_Paulsberg-Csibi?= <Andre.Paulsberg-Csibi@evry.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="macroman"
+To: Jeff <Jeff.Meyers@gmx.net>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Could be 2x SYN or 2x UDP or 2x ICMP. Any of that kind shall allow the=20
-2nd packet to pass since I can - at least for now - assume, that this i=
-s=20
-not a random flood with spoofed IPs. Of course only within a certain=20
-time frame like 10-30 seconds and not infinite.
-
-
-Best,
-Jeff
-
-Am 26.08.2015 um 14:46 schrieb Andr=C3=A9 Paulsberg-Csibi:
-> One short question , do you mean clients that send you 2 or more SYN =
-packets in the same session ?
->
-> Or just send ANY 2 packets in the same "session" , or even "worse" 2 =
-times whatever the packet type ?
->
->
-> Best regards
-> Andr=C3=A9 Paulsberg-Csibi
-> Senior Network Engineer
-> Fault Handling
-> EVRY Nordic Operations AS
-> andre.paulsberg-csibi@evry.com
-> M +47 9070 5988
->
->
->
->
-> -----Original Message-----
-> From: netfilter-owner@vger.kernel.org [mailto:netfilter-owner@vger.ke=
-rnel.org] On Behalf Of Jeff
-> Sent: 26. august 2015 14:22
-> To: netfilter@vger.kernel.org
-> Subject: Accept clients that were seen at least twice only
->
-> Hello everybody,
->
-> I am looking for a way to accept traffic from clients only if they we=
-re
-> seen at least twice. This shall be part of a firewall concept which
-> protects the target from random floods where source IPs are usually o=
-nly
-> seen once since they are random.
-> I cannot use the --state ESTABLISHED here because this requires a
-> complete handshake (for TCP). I'm okay with the first packet not
-> matching this rule as long as the 2nd one does. I'm looking forward t=
-o
-> reading your ideas!
->
->
-> Best,
-> Jeff
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
+T25lIHNob3J0IHF1ZXN0aW9uICwgZG8geW91IG1lYW4gY2xpZW50cyB0aGF0IHNlbmQgeW91IDIg
+b3IgbW9yZSBTWU4gcGFja2V0cyBpbiB0aGUgc2FtZSBzZXNzaW9uID8NCg0KT3IganVzdCBzZW5k
+IEFOWSAyIHBhY2tldHMgaW4gdGhlIHNhbWUgInNlc3Npb24iICwgb3IgZXZlbiAid29yc2UiIDIg
+dGltZXMgd2hhdGV2ZXIgdGhlIHBhY2tldCB0eXBlID8NCg0KDQpCZXN0IHJlZ2FyZHMNCkFuZHLD
+qSBQYXVsc2JlcmctQ3NpYmkNClNlbmlvciBOZXR3b3JrIEVuZ2luZWVyIA0KRmF1bHQgSGFuZGxp
+bmcNCkVWUlkgTm9yZGljIE9wZXJhdGlvbnMgQVMNCmFuZHJlLnBhdWxzYmVyZy1jc2liaUBldnJ5
+LmNvbQ0KTSArNDcgOTA3MCA1OTg4DQoNCg0KDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0t
+DQpGcm9tOiBuZXRmaWx0ZXItb3duZXJAdmdlci5rZXJuZWwub3JnIFttYWlsdG86bmV0ZmlsdGVy
+LW93bmVyQHZnZXIua2VybmVsLm9yZ10gT24gQmVoYWxmIE9mIEplZmYNClNlbnQ6IDI2LiBhdWd1
+c3QgMjAxNSAxNDoyMg0KVG86IG5ldGZpbHRlckB2Z2VyLmtlcm5lbC5vcmcNClN1YmplY3Q6IEFj
+Y2VwdCBjbGllbnRzIHRoYXQgd2VyZSBzZWVuIGF0IGxlYXN0IHR3aWNlIG9ubHkNCg0KSGVsbG8g
+ZXZlcnlib2R5LA0KDQpJIGFtIGxvb2tpbmcgZm9yIGEgd2F5IHRvIGFjY2VwdCB0cmFmZmljIGZy
+b20gY2xpZW50cyBvbmx5IGlmIHRoZXkgd2VyZSANCnNlZW4gYXQgbGVhc3QgdHdpY2UuIFRoaXMg
+c2hhbGwgYmUgcGFydCBvZiBhIGZpcmV3YWxsIGNvbmNlcHQgd2hpY2ggDQpwcm90ZWN0cyB0aGUg
+dGFyZ2V0IGZyb20gcmFuZG9tIGZsb29kcyB3aGVyZSBzb3VyY2UgSVBzIGFyZSB1c3VhbGx5IG9u
+bHkgDQpzZWVuIG9uY2Ugc2luY2UgdGhleSBhcmUgcmFuZG9tLg0KSSBjYW5ub3QgdXNlIHRoZSAt
+LXN0YXRlIEVTVEFCTElTSEVEIGhlcmUgYmVjYXVzZSB0aGlzIHJlcXVpcmVzIGEgDQpjb21wbGV0
+ZSBoYW5kc2hha2UgKGZvciBUQ1ApLiBJJ20gb2theSB3aXRoIHRoZSBmaXJzdCBwYWNrZXQgbm90
+IA0KbWF0Y2hpbmcgdGhpcyBydWxlIGFzIGxvbmcgYXMgdGhlIDJuZCBvbmUgZG9lcy4gSSdtIGxv
+b2tpbmcgZm9yd2FyZCB0byANCnJlYWRpbmcgeW91ciBpZGVhcyENCg0KDQpCZXN0LA0KSmVmZg0K
+LS0NClRvIHVuc3Vic2NyaWJlIGZyb20gdGhpcyBsaXN0OiBzZW5kIHRoZSBsaW5lICJ1bnN1YnNj
+cmliZSBuZXRmaWx0ZXIiIGluDQp0aGUgYm9keSBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZn
+ZXIua2VybmVsLm9yZw0KTW9yZSBtYWpvcmRvbW8gaW5mbyBhdCAgaHR0cDovL3ZnZXIua2VybmVs
+Lm9yZy9tYWpvcmRvbW8taW5mby5odG1sDQo=
