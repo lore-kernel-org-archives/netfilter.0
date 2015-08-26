@@ -1,11 +1,11 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipset memory usage
-Date: Wed, 26 Aug 2015 20:22:59 +0200 (CEST)
-Message-ID: <alpine.DEB.2.10.1508261946410.9155@blackhole.kfki.hu>
-References: <CAA5aLPgxW=-hJcBLxagCKTgX26mHg9XAmsr-UVoS3s0n50oEDA@mail.gmail.com>
+Subject: Re: wrong info in ipset man pages
+Date: Wed, 26 Aug 2015 20:35:43 +0200 (CEST)
+Message-ID: <alpine.DEB.2.10.1508262028270.9155@blackhole.kfki.hu>
+References: <CAA5aLPj0FgFzhbPvtAKF3shX2V9Eeu-cBpkPdODqp6foKW_opA@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAA5aLPgxW=-hJcBLxagCKTgX26mHg9XAmsr-UVoS3s0n50oEDA@mail.gmail.com>
+In-Reply-To: <CAA5aLPj0FgFzhbPvtAKF3shX2V9Eeu-cBpkPdODqp6foKW_opA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
@@ -13,40 +13,42 @@ Content-Transfer-Encoding: 7bit
 To: Akshat Kakkar <akshat.1984@gmail.com>
 Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Tue, 25 Aug 2015, Akshat Kakkar wrote:
+On Wed, 26 Aug 2015, Akshat Kakkar wrote:
 
-> As per info in 
-> http://lists.netfilter.org/pipermail/netfilter/2005-September/062859.html, 
-> ipset of iphash of 20Million IPs, takes around only 80MB. I understand 
-> that this might be simply multiplication of 20Million with 4 bytes which 
-> IP takes if stored normally.
+> With regards to ipset type hash:ip,mark, it is mentioned that
 > 
-> But when I try to replicate this I am getting size in memory as
-> 506,481,176 (around 483MB) for number of entries 16,581,375.
+> """
+> The hash:ip,mark type of sets require two src/dst parameters of the
+> set match and SET target kernel modules.
+> """
 > 
-> This comes to around 30Bytes per IP.
-> 
-> I have got this values from ipset -L command
-> 
-> Is this much size anticipated?
+> However as it invoves storing mark, which has nothing to do with
+> src/dst parametes, so it should be mentioned something like
 
-At that time we had ipset 2.x - now it's 6.x. The algorithm behind the 
-hash types has been completely rewritten since then and memory had been 
-sacrified for the sake of speed. So that number does not apply to the 
-current ipset memory usage.
+No, see below.
+ 
+> """
+> The hash:ip,mark type of sets require one src/dst IP/network and
+> fwmark of the set match and SET target kernel modules.
+> """
 
-The memory requirement for the hash types depends on the hashsize (H) and 
-the number of elements (N) and it is something like (not counting some 
-basic fixed structures):
+Set type specific "direction" parameters were possible only if there were 
+no list set type which may contain any kind of set, and if there was no 
+possible to swap sets.
 
-H * 40byte + (N/4 + N%4) * 4 * element size
+The syntax MUST be acceptable for all possible set types, regardless of 
+the real meaning of the individual elemet parts in a given set type.
 
-The RCU support also increased significantly the memory requirement.
+> Besides, as this is the only set which hashes mark also, so exactly
+> which IPTABLES module to use should also be mentioned.
+
+Why? The same iptables modules can be used as with all other set types: 
+set match and SET target.
 
 Best regards,
 Jozsef
 -
 E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-GGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
 Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
           H-1525 Budapest 114, POB. 49, Hungary
