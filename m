@@ -1,54 +1,29 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: wrong info in ipset man pages
-Date: Wed, 26 Aug 2015 20:35:43 +0200 (CEST)
-Message-ID: <alpine.DEB.2.10.1508262028270.9155@blackhole.kfki.hu>
-References: <CAA5aLPj0FgFzhbPvtAKF3shX2V9Eeu-cBpkPdODqp6foKW_opA@mail.gmail.com>
+From: Akshat Kakkar <akshat.1984@gmail.com>
+Subject: byte counters counts 14 bytes less?
+Date: Thu, 27 Aug 2015 13:18:38 +0530
+Message-ID: <CAA5aLPh9OhQOD73K0ABATh-118pB+CmeY9jn9Zn6pVMOiyauQA@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAA5aLPj0FgFzhbPvtAKF3shX2V9Eeu-cBpkPdODqp6foKW_opA@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=IUp3QhJoAtbLDEyTGqVhyqUE75824LShmWUpppYWDhw=;
+        b=k4Wh4iDCcrzFx340W3oNxQMg51+x0VAQZfZhnEiG1krCY+5rOvw/7U8YVwmB70SAUr
+         gxkQJaMwwuxN2IckpGkDUTYac1J4mPVC6Dq4mDxEcyWd/V1+KslnNLdx/cjtZda1eK31
+         RPhLuHo13AlRctvvqgZno0lYXn4jCMiSSOMipz9Pm36rWEsBlPcjflJEVae31E3RIpBm
+         EUEwHJKnckovUQOUUchk/Oc0Q8GK1HGvPULHIxZJ6eOhwgEwkf+Y4mL6NoO44+PKHLhd
+         fXKX0d5VIoGIceDvBiJ9uIwQ64mCuLam/DQGtr/nDjO3tQr7B6a1UHK/PaNydNrfjIgl
+         pacw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Akshat Kakkar <akshat.1984@gmail.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Wed, 26 Aug 2015, Akshat Kakkar wrote:
+I am trying to use byte counters to know how much total data is
+transferred from an IP. However, simple test with ping shows that it
+counts 14 bytes less, probably ignoring later 2 header.
 
-> With regards to ipset type hash:ip,mark, it is mentioned that
-> 
-> """
-> The hash:ip,mark type of sets require two src/dst parameters of the
-> set match and SET target kernel modules.
-> """
-> 
-> However as it invoves storing mark, which has nothing to do with
-> src/dst parametes, so it should be mentioned something like
-
-No, see below.
- 
-> """
-> The hash:ip,mark type of sets require one src/dst IP/network and
-> fwmark of the set match and SET target kernel modules.
-> """
-
-Set type specific "direction" parameters were possible only if there were 
-no list set type which may contain any kind of set, and if there was no 
-possible to swap sets.
-
-The syntax MUST be acceptable for all possible set types, regardless of 
-the real meaning of the individual elemet parts in a given set type.
-
-> Besides, as this is the only set which hashes mark also, so exactly
-> which IPTABLES module to use should also be mentioned.
-
-Why? The same iptables modules can be used as with all other set types: 
-set match and SET target.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+Is my understanding correct
+or
+am I missing something in this?
