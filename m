@@ -1,34 +1,34 @@
-From: Akshat Kakkar <akshat.1984@gmail.com>
-Subject: are restore-mark and -m connmark same ?
-Date: Thu, 3 Sep 2015 14:05:37 +0530
-Message-ID: <CAA5aLPjnxpQp9LFXjMeSSnfPU0e4dCvBOzeBwcHn99a-3QTdkg@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: nftables multi-dimensional dictionaries
+Date: Thu, 3 Sep 2015 18:35:25 +0200
+Message-ID: <20150903163519.GA14100@salvia>
+References: <DUB109-W834148D76D2B04B8469D05E1690@phx.gbl>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=g+ix47F+LPcGVZd1lnmM7nphtZJbuBcNEoy/KjQQ3Qc=;
-        b=DOVidUY6fiKJJJqXd7WQTgNAFAEs94EI2u+Nz3pqa9QQ2lCeCrQd1pIerYL7rvSHsQ
-         1VhaOivgtBv+r5qkKiApPtr59gq6Vnrm+0PMmerPEgT7qvxnHiYqb8oxDmvd6NmFN2+F
-         bLfsjEx6NTMUABvDEGJDjFMWi3owEZHGrSQW0Oq6i7WGoHjnZUw44sgIXyJ1REkpVR4A
-         h0BEkYXlPZcewK/PwKzphB5EhxL5JjEXpRTU66w/nPFxAmnwbliSJqWu0LiWBSJwxk/4
-         17TW4wr3Q+EpKMUTGS+KcSj+bSNwd/VmymcmmGKPJRpr9IMt7ZiGhaNes+U+MbMfRU91
-         iWCA==
+Content-Disposition: inline
+In-Reply-To: <DUB109-W834148D76D2B04B8469D05E1690@phx.gbl>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: Alex Chapman <ajchapman88@hotmail.co.uk>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-ARE
+On Wed, Sep 02, 2015 at 10:17:12AM +0100, Alex Chapman wrote:
+> Hi,
+> 
+> Are multi-dimensional dictionaries supported in nftables? For example:
+> 
+> nft add rule ip filter forward meta iifname . meta oifname { \ eth0 . eth1 : jump chain \ }
 
-iptables -t mangle -A PREROUTING -j CONNMARK --restore-mark
-iptables -t mangle -A PREROUTING -m mark ! --mark -0x0 -j ACCEPT
+Currently we don't support oifname and oifname, the utility complains
+since it's a variable length datatype. But I think we can fix this by
+using the maximum length.
 
-and
+Anyway, meanwhile you can use iif and oif for device whose device
+index is not expected to change.
 
-iptables -t mangle -A PREROUTING -m connmark --ctstate RELATED,
-ESTABLISHED -j ACCEPT
+So this is how what you need looks like:
 
-
-_exactly_ same or there can be any case/condition where this will fail ?
+        nft add rule ip filter forward \
+                meta iif . meta oif vmap { eth0 . eth1 : jump test-chain }
