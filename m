@@ -1,53 +1,53 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: nftables multi-dimensional dictionaries
-Date: Fri, 4 Sep 2015 16:44:21 +0200
-Message-ID: <20150904144421.GA3711@salvia>
-References: <DUB109-W834148D76D2B04B8469D05E1690@phx.gbl>
- <20150903163519.GA14100@salvia>
- <DUB109-W37CC9580BFB40296703618E1570@phx.gbl>
+From: Akshat Kakkar <akshat.1984@gmail.com>
+Subject: Feature suggestion ...
+Date: Sun, 6 Sep 2015 18:01:54 +0530
+Message-ID: <CAA5aLPgmP6hKQasPo+o6oQkZMMtuXieyxCadZ+1dzoaT1HmzkA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <DUB109-W37CC9580BFB40296703618E1570@phx.gbl>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=PXeFdtH6olzVBc45rcmM3AnzxQigJuagTXL3oS05khk=;
+        b=sLp1aoLvDUuAH7NEvtYNVA0lqFP7ic4NN8jnwdMhrl6wFZkc0+m2Kj3dbbCryntmxZ
+         ujqmzFBvVEa/Dar8kRn4UMr+rPmslcFcjtv6z+GQygtNQ7DpEbG3vBE1OhoDxRBWU7Pl
+         FA/1sQ3ScYmFUYwxk0cdf5oFBadNphjuXtwTGAlpDjPh5mgs17p+bDyz/8JzsKfd6IXY
+         699BBd6akM6C/q6CA85xtcGYWYc+Z7kg1yiVQo1eATiuK2rx6SfxLmD+DYhi9cgpqhsN
+         UR4uCVhWf4/pxn8XA/Onuny5UycrWnxaWZ5w3+KSm37+H4eTrFthpzsbnyAgwHPlsVwt
+         N5/Q==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Alex Chapman <ajchapman88@hotmail.co.uk>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Fri, Sep 04, 2015 at 02:32:31PM +0100, Alex Chapman wrote:
-> Hi Pablo,
->=20
-> Thanks for the response. Do I need kernel 4.2 to support this? I'm on=
- 4.1 currently and the command below is erroring:
->=20
-> # nft add rule ip firewall forward =A0meta iif . meta oif vmap { eth0=
- . lo : jump test }
-> <cmdline>:1:55-79: Error: Could not process rule: Invalid argument
-> add rule ip firewall forward meta iif . meta oif vmap { eth0 . lo : j=
-ump test }
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ^^^^^^^^^^^^^^^^^^^^^^^^^
-> <cmdline>:1:55-79: Error: Could not process rule: No such file or dir=
-ectory
-> add rule ip firewall forward meta iif . meta oif vmap { eth0 . lo : j=
-ump test }
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ^^^^^^^^^^^^^^^^^^^^^^^^^
-> <cmdline>:1:1-79: Error: Could not process rule: No such file or dire=
-ctory
-> add rule ip firewall forward meta iif . meta oif vmap { eth0 . lo : j=
-ump test }
-> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^=
-^^^^^^^^^^
->=20
-> (table named firewall and both 'forward' and 'test' chains configured=
-).=A0
+Hi All,
 
-You need this oneliner fix:
+With latest addition of storing skbinfo (mainly skbprio) in ipset and
+then applying it later to the traffic as and when it passes the
+iptables ruleset, it becomes relatively easy and simple to do traffic
+shaping.
 
-http://git.kernel.org/cgit/linux/kernel/git/pablo/nf.git/commit/?id=3Db=
-f798657eb5ba57552096843c315f096fdf9b715
+IMHO what one of the feature set which we can add is to have an ipset
+of only fwmarks i.e. fw-marks will be hashed and stored in the ipset
+and then later using these marks we can instantly (in single look up)
+set traffic class.
+Motivation for this is the fact that just reading the mark can signify
+which fw rule it belongs to (no matter how complex was that firewall
+rule). So if we do traffic shaping based on marks, it becomes
+straightforward traffic shaping for that fw rule. Now as no of rules
+increase, this lookup will also increase linearly and
+more-importantly, we cant take advantage of any statefulness over
+here, i.e. if there are 100 rules then everytime my packet will have
+to go down 100 lines, get it matched, get its skbprio value and then
+move forward.
 
-It's on its way to 4.3-rc and will send to -stable 4.1 and 4.2 asap.
+however, if we such an ipset as I am mentioning, so all these skbprio
+settings and all can always be done in single shot,
+
+say we make something like
+ipset -N MARK-TC-MAP hash:mark skbinfo
+
+iptables -t mangle -A POSTROUTING -j SET --map-set MARK-TC-MAP src --map-prio
+
+
+Whats your view on this?
