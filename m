@@ -1,7 +1,7 @@
 From: Akshat Kakkar <akshat.1984@gmail.com>
 Subject: Re: Feature suggestion ...
-Date: Mon, 7 Sep 2015 01:32:01 +0530
-Message-ID: <CAA5aLPjMu9qZ698XghELFaeeXVeYLZHfNuNMdJJgzi7YYDXgbg@mail.gmail.com>
+Date: Mon, 7 Sep 2015 01:37:28 +0530
+Message-ID: <CAA5aLPjhXREe9W6fT1oNj=mKV3Yb6CBSLP44do-sgBrhKHa2mA@mail.gmail.com>
 References: <CAA5aLPgmP6hKQasPo+o6oQkZMMtuXieyxCadZ+1dzoaT1HmzkA@mail.gmail.com>
 	<alpine.DEB.2.10.1509062024540.12913@blackhole.kfki.hu>
 Mime-Version: 1.0
@@ -10,13 +10,13 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
         h=mime-version:in-reply-to:references:date:message-id:subject:from:to
          :cc:content-type;
-        bh=0VTS4Uvyyrb6+IXzStt82U4XhWUtHXXdy6po8AGq3ZQ=;
-        b=pFBMw24VOqCUsPFgyS6Ts7ZAGhzwCoLIHh2JxAuHnez5KxedgYVW1TQmpTWl8g0VgR
-         oHYxMWu3gQeL3xnJWfSex3dLjaSP53NQvVvZxsYeX2VRdXyslSKTOumDaRpYt3cyZEFa
-         h8Y8EzL85Nzxr9NU+N4mCzBSPpSSedwQ/aAPRMQyNjUoUC8qeKMNL0HHQREmKNBMevsw
-         9fZ+uzHCgotS2hjsOvcu7Ln3wO++GPtQ4WWuGj0GKDsm5wo7tJSKN5hh8IvGbKRJC4rL
-         5eDvjWvmJ8bueUw6P+/5cVgpLjehfDZrE7uVWmnH+X59YU3af2B90LfgiyDl7c2yr2Y/
-         JjUQ==
+        bh=QkXKzaQdqJ4jv58cS9co9101zPaQTyLAYIehjJXonDE=;
+        b=cRSNkjx8a1Z85yDPQhjPVv2quwgsI1EUAmFdjpZHTS/JzGDxLIILzdvo3srT8P5icP
+         9l75g/G1XVqidvYMzRukrWdsYG0lRVOo08YIt/xRGCp7fxbaATGr475Y60qHg8rc2O1N
+         6WFx2KjjmuP+O8Ha7VAZo/nPXTkvHxJYSIdU1bUBnsdlLiME0bERWXCD2zpE6oah3XBc
+         NzgOCT88/OKzQcxkDeZZobz5DFnqCQb18DrcZwQlfAU9gvMHUsXZlE1QY7fMVMtjqWeU
+         x2Wq6OjQiC/OZy4vTqtgzUMatXvmyH/Jfawn+gulWChNZtQJmh0YyC6Xtn6pHVWbHSbk
+         rMQQ==
 In-Reply-To: <alpine.DEB.2.10.1509062024540.12913@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
@@ -25,25 +25,6 @@ Content-Transfer-Encoding: 7bit
 To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Web
-more
-Sent Mail
-Feature suggestion ...
-InboxNETFILTER
-
-Akshat Kakkar
-Hi All, With latest addition of storing skbinfo (mainly skbprio) in
-ipset and then applying it later to the traffic as and when it passes
-the iptab...
-J
-Jozsef Kadlecsik
-You can already store skbmark in the set element extension and set the
-mark value to the matching packets. Sorry, but I don't undestand
-this... ......
-
-Akshat Kakkar
-to Jozsef, netfilter
-1 minute agoDetails
 I am suggesting an ipset hash:mark.
 
 Let me explain the motivation for this requirement:
