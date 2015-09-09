@@ -1,77 +1,40 @@
 From: Akshat Kakkar <akshat.1984@gmail.com>
-Subject: Re: ulog dropping packets when rate is 4000 packets/sec or more
-Date: Wed, 9 Sep 2015 13:09:04 +0530
-Message-ID: <CAA5aLPhAydV2-pdg38qyPcpWDzgzdsUmdS+rTkgDUYuOhKFWbg@mail.gmail.com>
-References: <CAA5aLPijmeBmgU_AznRJfRK3OHfgwFY-T8XiWz-1r19QFOALnQ@mail.gmail.com>
-	<5cd26acb-e50d-4312-93a2-01fb3b964c51@email.android.com>
+Subject: nflog : We are losing events. Increasing buffer size to 1736704
+Date: Wed, 9 Sep 2015 18:54:00 +0530
+Message-ID: <CAA5aLPi5sdeEQTX0ss8DEQGNYd2SuNgt45tGHfWeO9t0uqvZxw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type:content-transfer-encoding;
-        bh=TdmsUNsZdnH6Vux7Y/vc1yUIKy4YSfnVc6X2jvHsr3E=;
-        b=iPghyPdMP89vUSK0C+jOJzSMWIRUxJ2dAchypHjySB9va7Dxp+8vF3qKLsw4XkKF3C
-         algbvyxcC8NPAPM6m2zKAnKIqqbps0759M4Sgs1+FMHdRosLiCucyJ6vERvNVskOxVsw
-         OyJ/Q/NSg9onijfHjJRwSrEl4z5kqCK+pfPfNB0alD7uRt+ouGbZHRcmonspXk+DJ9dl
-         SwEw7hbuyxdpXhv0Ixgu2XIEO/SGhSgGKk2j9tQ3/x5deXQTZA6EKhlYuWFc5BtTQfSp
-         paX7h0nTpiwAMHWcXmfVGtiqe25uAUjpYb/KDDDf6362aZ/XI0fSIOPKC7w8iLGxn4w+
-         6R7Q==
-In-Reply-To: <5cd26acb-e50d-4312-93a2-01fb3b964c51@email.android.com>
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=Z8t+sKWb4PXlLY9NbSiy12aTo/+d7SovC59foDxuZDo=;
+        b=Dm/Kgt6e7FS0PKxP9mvz+2asVr8w0vYnUkWDihcsruEGF+4H0Q3kDnBDpmaurJA9Oi
+         ahwANZJ/6b5g92w/7hsbbt7/oZT0uLeWYJXqvR33BMvEHOBEIgmCEASg3G22eisnq3E3
+         u5KFwKzCPmpLOfiCwmwTwzZeBgVUkJOMd14X5zNLLjUdo7ArzaA8QyhOcqkz9eX77uqd
+         vPX6yPkCQiRRXd3R8bxlK95p6pIaNDWdVeIscep/3qqTYlQKJHF4zNm1ZcYEDswLSUWJ
+         kfutgrievEsZHsgcNbJasCd/wKGWYbO/wlgvOXGHUGR0x/HHXjrCJ85b/1G8lx9o3iok
+         L99A==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Eric Leblond <eric@regit.org>
-Cc: Netfilter Users ML <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Wed, Sep 9, 2015 at 12:21 PM, Eric Leblond <eric@regit.org> wrote:
-> Hello,
->
-> Le 9 sept. 2015 8:27 AM, Akshat Kakkar <akshat.1984@gmail.com> a =C3=A9=
-crit :
->>
->> On Mon, Sep 7, 2015 at 5:45 PM, Akshat Kakkar <akshat.1984@gmail.com=
-> wrote:
->> > Hi!
->> >
->> > I am using JSON plugin of ULOG to log iptables traffic. When the i=
-nput
->> > rate  is arond 4000 packets/sec, ulog is not logging all the packe=
-ts.
->
-> Please use nflog instead. Ulog has been removed from recent kernel.
->
->> > At 4000 pkts/sec, it drops around 0.1 % of pkts.
->> > At 5000 pkts/sec, it drops around 2.4% of pkts.
->> > At 6000 pkts/sec, it drops around 3.67% of pkts.
->> > At 15000 pkts/sec, it drops around 16.7% of pkts.
->> >
->> > Is this expected? or am I missing something.
->
-> This is expected, there is a performance cost in logging.
->
-> Some ways to try to improve this:
->  - use nflog batch feature (iptables/nftables option)
+Hi!
 
-I am currently batching at maximum value of 50.
-But one thing, Why 50 is the limit?
+I am using nflog for logging iptables traffic. When traffic rate is
+increased, I see message like
+We are losing events. Increasing buffer size to 12000
 
->  - increase nfnetlink buffer size (ulogd conf)
+We are losing events. Increasing buffer size to 16000
+...
 
-This increased the delay at times.
+We are losing events. Increasing buffer size to 1736704
 
->  - write json file to a faster disk (I doubt this is the key point he=
-re)
+It doesnt get increased more than 1736704.
+Even if I set 1736704 as the default buffer size, then also I get the
+same message
+We are losing events. Increasing buffer size to 1736704
 
-Presently I am having 15K sas.
-Putting json file on ramfs (ram: DDR3 1600MHz) makes that 4000 to 7000
-but not more that.
-
-With o/p in PCAP on ramfs, this increases to 16000 pkts/sec.
-
-I want to use kibana (+logsash and elastic-search) for viewing and
-analyzing this log. Logstash dont understand pcap directly. So I cant
-use PCAP.
-Is there a format which is understood by logstash and is better (in
-performance) than JSON for ulog/nflog.
+Why is that so? What makes the buffer size having ceiling at 1736704
+(= 212KBytes)
