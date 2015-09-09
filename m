@@ -1,40 +1,37 @@
-From: Akshat Kakkar <akshat.1984@gmail.com>
-Subject: Re: Feature suggestion ...
-Date: Wed, 9 Sep 2015 12:05:03 +0530
-Message-ID: <CAA5aLPg3hZOctA8VMRtg85L7i7VZ1NCG4yTA2E7HRTk_VcU+6A@mail.gmail.com>
-References: <CAA5aLPgmP6hKQasPo+o6oQkZMMtuXieyxCadZ+1dzoaT1HmzkA@mail.gmail.com>
-	<alpine.DEB.2.10.1509062024540.12913@blackhole.kfki.hu>
-	<CAA5aLPjhXREe9W6fT1oNj=mKV3Yb6CBSLP44do-sgBrhKHa2mA@mail.gmail.com>
-	<alpine.DEB.2.10.1509062215520.13557@blackhole.kfki.hu>
-	<CAA5aLPi2of6Z4UGmD9pqvcq3hr2HCgVMrK46MxRKDbYL-jwK5w@mail.gmail.com>
-	<CAEzD07JL13Pv00-b1B_y2UUK327O91kMMMc157yX6J93M2VPng@mail.gmail.com>
+From: Eric Leblond <eric@regit.org>
+Subject: Re: ulog dropping packets when rate is 4000 packets/sec or more
+Date: Wed, 09 Sep 2015 08:51:35 +0200
+Message-ID: <5cd26acb-e50d-4312-93a2-01fb3b964c51@email.android.com>
+References: <CAA5aLPijmeBmgU_AznRJfRK3OHfgwFY-T8XiWz-1r19QFOALnQ@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=WnV5/n0mgqZ+enbrUrlyLWmjbhDWjt4v48+00uNrDi8=;
-        b=N1K9pLxEUnT6zZF2Mf108cNABxW9a2BL6TnGbT0CoBiQ+1fbqQkmugFgl/DtF7c39g
-         /eolgJ5uES2OtLCMF/k/VBXKXDkc8sqZkGjj1qJm7bkb7OW7hCgMO0Z99lvH0QI3ANiT
-         poSeqHKiDn0oxInoGADCWtKLsXd7qOj2ngcRA/xImSQAzZzRmaX+BFDFsCWdSDFD5A+n
-         LxiRfux0lMYcXZDvHlExLUJipTQ+kF2JJKZsesM8rIHgfDsN3Vc82HY1SJnLyTnN0RSG
-         zB2eFYtE3lLPuI/SvV9WTvbKf56htw7UykaVHw1uXMF7660zkFnyZUB45zdsA/A7phEJ
-         LrOQ==
-In-Reply-To: <CAEzD07JL13Pv00-b1B_y2UUK327O91kMMMc157yX6J93M2VPng@mail.gmail.com>
+In-Reply-To: <CAA5aLPijmeBmgU_AznRJfRK3OHfgwFY-T8XiWz-1r19QFOALnQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Anton Danilov <littlesmilingcloud@gmail.com>
-Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+To: Akshat Kakkar <akshat.1984@gmail.com>
+Cc: Netfilter Users ML <netfilter@vger.kernel.org>
 
-On Mon, Sep 7, 2015 at 6:22 PM, Anton Danilov
-<littlesmilingcloud@gmail.com> wrote:
-> Hello.
-> You can use the firewall mark as tc classid with fwmark filter.
-> It can interpret fwmark as tc classid. So, you can use this feature
-> inside your ipset/iptables/tc rules.
->
+SGVsbG8sCgpMZcKgOSBzZXB0LiAyMDE1IDg6MjcgQU0sIEFrc2hhdCBLYWtrYXIgPGFrc2hhdC4x
+OTg0QGdtYWlsLmNvbT4gYSDDqWNyaXTCoDoKPgo+IE9uIE1vbiwgU2VwIDcsIDIwMTUgYXQgNTo0
+NSBQTSwgQWtzaGF0IEtha2thciA8YWtzaGF0LjE5ODRAZ21haWwuY29tPiB3cm90ZTogCj4gPiBI
+aSEgCj4gPiAKPiA+IEkgYW0gdXNpbmcgSlNPTiBwbHVnaW4gb2YgVUxPRyB0byBsb2cgaXB0YWJs
+ZXMgdHJhZmZpYy4gV2hlbiB0aGUgaW5wdXQgCj4gPiByYXRlwqAgaXMgYXJvbmQgNDAwMCBwYWNr
+ZXRzL3NlYywgdWxvZyBpcyBub3QgbG9nZ2luZyBhbGwgdGhlIHBhY2tldHMuIAoKUGxlYXNlIHVz
+ZSBuZmxvZyBpbnN0ZWFkLiBVbG9nIGhhcyBiZWVuIHJlbW92ZWQgZnJvbSByZWNlbnQga2VybmVs
+LgoKPiA+IEF0IDQwMDAgcGt0cy9zZWMsIGl0IGRyb3BzIGFyb3VuZCAwLjEgJSBvZiBwa3RzLiAK
+PiA+IEF0IDUwMDAgcGt0cy9zZWMsIGl0IGRyb3BzIGFyb3VuZCAyLjQlIG9mIHBrdHMuIAo+ID4g
+QXQgNjAwMCBwa3RzL3NlYywgaXQgZHJvcHMgYXJvdW5kIDMuNjclIG9mIHBrdHMuIAo+ID4gQXQg
+MTUwMDAgcGt0cy9zZWMsIGl0IGRyb3BzIGFyb3VuZCAxNi43JSBvZiBwa3RzLiAKPiA+IAo+ID4g
+SXMgdGhpcyBleHBlY3RlZD8gb3IgYW0gSSBtaXNzaW5nIHNvbWV0aGluZy4gCgpUaGlzIGlzIGV4
+cGVjdGVkLCB0aGVyZSBpcyBhIHBlcmZvcm1hbmNlIGNvc3QgaW4gbG9nZ2luZy4KClNvbWUgd2F5
+cyB0byB0cnkgdG8gaW1wcm92ZSB0aGlzOgogLSB1c2UgbmZsb2cgYmF0Y2ggZmVhdHVyZSAoaXB0
+YWJsZXMvbmZ0YWJsZXMgb3B0aW9uKQogLSBpbmNyZWFzZSBuZm5ldGxpbmsgYnVmZmVyIHNpemUg
+KHVsb2dkIGNvbmYpCiAtIHdyaXRlIGpzb24gZmlsZSB0byBhIGZhc3RlciBkaXNrIChJIGRvdWJ0
+IHRoaXMgaXMgdGhlIGtleSBwb2ludCBoZXJlKQoKQlIsCgo+Cj4gQW55Ym9keT8gUmVnaXQ/IAo+
+IC0tIAo+IFRvIHVuc3Vic2NyaWJlIGZyb20gdGhpcyBsaXN0OiBzZW5kIHRoZSBsaW5lICJ1bnN1
+YnNjcmliZSBuZXRmaWx0ZXIiIGluIAo+IHRoZSBib2R5IG9mIGEgbWVzc2FnZSB0byBtYWpvcmRv
+bW9Admdlci5rZXJuZWwub3JnIAo+IE1vcmUgbWFqb3Jkb21vIGluZm8gYXTCoCBodHRwOi8vdmdl
+ci5rZXJuZWwub3JnL21ham9yZG9tby1pbmZvLmh0bWwgCg==
 
-Can you provide an example as how fwmark is intrepreted as classid ?
