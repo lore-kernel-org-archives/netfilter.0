@@ -1,7 +1,7 @@
-From: Anton Danilov <littlesmilingcloud@gmail.com>
+From: Akshat Kakkar <akshat.1984@gmail.com>
 Subject: Re: Feature suggestion ...
-Date: Thu, 10 Sep 2015 13:21:11 +0300
-Message-ID: <CAEzD07LM3U9V2ZQLyk5P6n=W7pB0aL25Q+AnsFOXWq+UWA5JZA@mail.gmail.com>
+Date: Thu, 10 Sep 2015 15:56:29 +0530
+Message-ID: <CAA5aLPhLup=uyoxLcd=7Rk6AY7PQ+P6N6=aiHf=qkzG6gLE5TQ@mail.gmail.com>
 References: <CAA5aLPgmP6hKQasPo+o6oQkZMMtuXieyxCadZ+1dzoaT1HmzkA@mail.gmail.com>
 	<alpine.DEB.2.10.1509062024540.12913@blackhole.kfki.hu>
 	<CAA5aLPjhXREe9W6fT1oNj=mKV3Yb6CBSLP44do-sgBrhKHa2mA@mail.gmail.com>
@@ -12,37 +12,48 @@ References: <CAA5aLPgmP6hKQasPo+o6oQkZMMtuXieyxCadZ+1dzoaT1HmzkA@mail.gmail.com>
 	<CAEzD07JQYbtrjBr18=zS0vGMKhFXL52YVcaf3FJqa1Z3TaYZsw@mail.gmail.com>
 	<CAA5aLPi3AuC3m0cZgU1wZ3_U=wQoL29tUjVjX9DYO1gU_bjMAw@mail.gmail.com>
 	<CAA5aLPjLFNhsAwP8uLVq=v-gNYaa6uU17Yqh8ikYwfPXEuQUww@mail.gmail.com>
+	<CAEzD07LM3U9V2ZQLyk5P6n=W7pB0aL25Q+AnsFOXWq+UWA5JZA@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
         h=mime-version:in-reply-to:references:date:message-id:subject:from:to
          :cc:content-type;
-        bh=4IUxoRJyY9pA6zjBpagXhlOYnQeKV0iz4uGJuJ4FxiQ=;
-        b=rd/GatpEJl1gJAT/RsjuH3WmbxItYO+lU/8Yz1wcyFmP/U1SdJ41mGTJhjKvlV7lFh
-         tk2Tc0ebJKnBtS2iYjqPyxZ2xOU8qrZxEiGaqvMQNwdgpthrshcUEp/T2m4vshWfO06s
-         sJYX9CmnKpfEjKML4u3QQhQm/YN0/6+ULaLxj9NXcKJmKaQHAp3Z+sj3O58REvn3Ej71
-         4pAfJrG9M+JBjMhGKzEIelgYDnvgsMU9mivghB8Eg2qDJXPpn6yPA+FbURVqirBiNRAm
-         WGNclbkfdd/luM0UnBcM89SrmElxrblJ7FGo0m2jlKuS6aZ3iuqr1CdeGAUj2nsthfhH
-         A1eQ==
-In-Reply-To: <CAA5aLPjLFNhsAwP8uLVq=v-gNYaa6uU17Yqh8ikYwfPXEuQUww@mail.gmail.com>
+        bh=/9knatL/ZwAN7bRSr84uGkzZ7WPTLLbefgjW7eKrhGo=;
+        b=krKSS5fuSzeryDG6lqvjZAVgbatPKyuQADhwGGrtV4JIm1VoYBYsuTJkXEPUf/cE3V
+         ggmcgs7wrsFbIW/nJAZxst6ZGvU3BGSlqy5Wp3mAzBOSreya8mZKYtT8rvCXuyirORC3
+         yyJYaIKB+NIEl8C1R5mVI8hLgh34bn3cAauZ6o+TX/lIDMt52E2fExTAc+2qNWnJD/wV
+         XyMytuOFasrP5D9Z1VjhThOvBGVr6S3RhSO1pUL2LfxQUCMpV2I2uZKB1CembxaIc27x
+         RvkRO/VE6WPwum5rHPUWNG1TnaSa8Wt1GMYqm2lgdcTyzkSkKxuk21w2ZSss689XxLAN
+         GSUQ==
+In-Reply-To: <CAEzD07LM3U9V2ZQLyk5P6n=W7pB0aL25Q+AnsFOXWq+UWA5JZA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Akshat Kakkar <akshat.1984@gmail.com>
+To: Anton Danilov <littlesmilingcloud@gmail.com>
 Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Classid will be overwritten by fw classifier.
-
-2015-09-10 13:20 GMT+03:00 Akshat Kakkar <akshat.1984@gmail.com>:
->>> Without any options fw classifier maps fwmark to classid.
->>>
->>> tc filter add dev <iface> parent <qhandle> protocol ip prio 1 fw
+> Classid will be overwritten by fw classifier.
 >
-> What if the packet has fwmark and skbprio set?
+For sake of completeness,
+
+So if I use tc filter add dev <iface> parent <qhandle> protocol ip prio 1 fw
+
+and my packet has mark(640001) and classid(1:10) both set,
+then because of above tc filter, the exisiting classid will be set to
+64:1 i.e. equal to the mark.
+
+Is my understanding correct?
+
+If my understanding is correct,
+shouldn't it be like that if class is set, then it should not overwrite?
 
 
 
--- 
-Anton.
+> 2015-09-10 13:20 GMT+03:00 Akshat Kakkar <akshat.1984@gmail.com>:
+>>>> Without any options fw classifier maps fwmark to classid.
+>>>>
+>>>> tc filter add dev <iface> parent <qhandle> protocol ip prio 1 fw
+>>
+>> What if the packet has fwmark and skbprio set?
