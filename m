@@ -1,136 +1,57 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] conntrack-tools 1.4.3 release
-Date: Wed, 9 Sep 2015 17:58:38 +0200
-Message-ID: <20150909155838.GA5958@salvia>
+From: Akshat Kakkar <akshat.1984@gmail.com>
+Subject: Re: Feature suggestion ...
+Date: Thu, 10 Sep 2015 10:38:35 +0530
+Message-ID: <CAA5aLPi3AuC3m0cZgU1wZ3_U=wQoL29tUjVjX9DYO1gU_bjMAw@mail.gmail.com>
+References: <CAA5aLPgmP6hKQasPo+o6oQkZMMtuXieyxCadZ+1dzoaT1HmzkA@mail.gmail.com>
+	<alpine.DEB.2.10.1509062024540.12913@blackhole.kfki.hu>
+	<CAA5aLPjhXREe9W6fT1oNj=mKV3Yb6CBSLP44do-sgBrhKHa2mA@mail.gmail.com>
+	<alpine.DEB.2.10.1509062215520.13557@blackhole.kfki.hu>
+	<CAA5aLPi2of6Z4UGmD9pqvcq3hr2HCgVMrK46MxRKDbYL-jwK5w@mail.gmail.com>
+	<CAEzD07JL13Pv00-b1B_y2UUK327O91kMMMc157yX6J93M2VPng@mail.gmail.com>
+	<CAA5aLPg3hZOctA8VMRtg85L7i7VZ1NCG4yTA2E7HRTk_VcU+6A@mail.gmail.com>
+	<CAEzD07JQYbtrjBr18=zS0vGMKhFXL52YVcaf3FJqa1Z3TaYZsw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="HcAYCG3uE/tztfnV"
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :content-type;
+        bh=kjRfhOk0mD/P0K4eWdZETX6P1LeF3IGD5bXzJ7u5dnw=;
+        b=KhLauyxp4afX73W3/phGsxRi/fs+b1YLtgDnl0nNUpSM5Msa7yLsDM8hxzNssydibb
+         nCKsYeZz7F56FdOWITZmVTA1CKMvxK/6NhgmuywfwRQyd8KfTPhLRf4LBl1eDdFD5PEd
+         5lWpUa8DtUwYDTRUlgbYOy84lk5o2pfqhlfvllgdra57aIhwFGnR8BKxRb53hj6PldMX
+         oagR7LsjKuU7PDRX9XVaW9B5zdP0HMbt5OQGfAlh/MKp8Wf/61CIL460/VovN4JVM72a
+         YEzEAAblGxCMzu1qfexDHiY4ojpkaUg1KebKlNqzhAFmjNlSxa03wAh2WhHFLo9r5qou
+         yufw==
+In-Reply-To: <CAEzD07JQYbtrjBr18=zS0vGMKhFXL52YVcaf3FJqa1Z3TaYZsw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter-devel@vger.kernel.org
-Cc: netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Anton Danilov <littlesmilingcloud@gmail.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
+That's gr8.
 
---HcAYCG3uE/tztfnV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I think we should document this behaviour. It is very useful.
 
-Hi!
-
-The Netfilter project proudly presents:
-
-        conntrack-tools 1.4.3
-
-The conntrack-tools are a set of tools targeted at system
-administrators. They are conntrack, the userspace command line
-interface, and conntrackd, the userspace daemon. The tool conntrack
-provides a full featured interface that is intended to replace the old
-/proc/net/ip_conntrack interface. Using conntrack, you can view and
-manage the in-kernel connection tracking state table from userspace.
-On the other hand, conntrackd covers the specific aspects of stateful
-firewalls to enable highly available scenarios, and can be used as
-statistics collector as well.
-
-See ChangeLog that comes attached to this email for more details.
-
-You can download it from:
-
-http://www.netfilter.org/projects/conntrack-tools/downloads.html
-ftp://ftp.netfilter.org/pub/conntrack-tools/
-
-Have fun!
-
---HcAYCG3uE/tztfnV
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: attachment; filename="changes-conntrack-tools-1.4.3.txt"
-Content-Transfer-Encoding: quoted-printable
-
-Arturo Borrero (2):
-      man: fix hyphen used as minus sign
-      nfct: don't link against libnetfilter_conntrack
-
-Arturo Borrero Gonzalez (2):
-      list: fix prefetch dummy
-      doc/debian.conntrackd.init.d: drop file
-
-Ash Hughes (1):
-      conntrackd: userspace SSDP helper
-
-Chas Williams III (1):
-      cthelper: don't pass up a 0 length queue
-
-Clemence Faure (1):
-      conntrack: support add/delete of conntrack labels
-
-Felix Janda (6):
-      configure: Add AM_PROG_AR to silence automake warning
-      include: Sync with kernel headers
-      src: Use stdint types
-      src: Include <sys/select.h> for fd_set
-      src: Define _GNU_SOURCE to get members of tcphdr&ucphdr
-      netlink: Use <fcntl.h> instead of legacy synonym <sys/fcntl.h>
-
-Florian Westphal (3):
-      conntrack: minor cleanup
-      conntrack: support multiple -l options
-      conntrack: do not exit when update returns an error
-
-Hani Benhabiles (2):
-      nfct: Fix use-after-free / double-free
-      conntrackd: Don't hardcode libs dir path
-
-Jarno Rajahalme (1):
-      conntrack: fix setting labels in updates
-
-Pablo Neira Ayuso (33):
-      conntrack: fix dump of IPv6 entries in the dying and unconfirmed list
-      conntrackd: cthelper: allow to attach expectations via nfqueue
-      conntrackd: helpers: add DHCPv6 helper
-      nfct: modularize extensions
-      build: add --disable-cthelper and --disable-cttimeout
-      nfct: timeout: use getprotoent
-      nfct: timeout: split nfct_cmd_timeout_add in several functions
-      nfct: src: add nfct_mnl_talk and use it
-      nfct: src: consolidate netlink socket creation
-      conntrackd: cthelper: add SANE helper
-      conntrackd: cthelper: add TFTP helper
-      conntrackd: cthelper: add amanda helper
-      build: don't include leftover .orig and .rej files in doc/
-      nfct: remove unneeded included header
-      nfct: timeout: add support for default protocol timeout tuning
-      udp: bind UDP sender side to same interface of the receiver side
-      conntrackd: build: fix crash when optional kernel modules are not loa=
-ded
-      conntrack: fix doc/cli/test.sh create-expect
-      conntrackd: allow strings with underscore from flex scanner
-      expect: Fix wrong memset usage
-      tests: conntrack: don't overwrite read-only shell variable
-      conntrackd: fix sanitization of expection attribute in the wire format
-      conntrackd: NTA_MAX is also an invalid attribute
-      conntrackd: fix leak in fork_process_new()
-      conntrackd: fix descriptor leak in do_local_request()
-      conntrackd: fix error handling in nfq_queue_cb()
-      conntrackd: simplify branch in tcp_accept()
-      conntrackd: use strncpy to set up the cache name
-      conntrackd: missing break in expectation message parser function
-      tests: fix run-test.sh
-      nfct: Update syntax to specify command before subsystem
-      nfct: update syntax in documentation
-      conntrack-tools 1.4.3 release
-
-Paul Aitken (2):
-      conntrackd: remove unused 'numbytes'
-      cthelper: Optimise nfq_queue_cb
-
-Szil=E1rd Pfeiffer (3):
-      conntrack: refactor handling of address options
-      conntrack: fix expectation entry creation
-      conntrack: made the protocol option value case insensitive
-
-Thomas Jarosch (1):
-      channel: Fix file descriptor leak in channel_open() on error
-
-
---HcAYCG3uE/tztfnV--
+On Wed, Sep 9, 2015 at 9:35 PM, Anton Danilov
+<littlesmilingcloud@gmail.com> wrote:
+> Without any options fw classifier maps fwmark to classid.
+>
+> tc filter add dev <iface> parent <qhandle> protocol ip prio 1 fw
+>
+> 2015-09-09 9:35 GMT+03:00 Akshat Kakkar <akshat.1984@gmail.com>:
+>> On Mon, Sep 7, 2015 at 6:22 PM, Anton Danilov
+>> <littlesmilingcloud@gmail.com> wrote:
+>>> Hello.
+>>> You can use the firewall mark as tc classid with fwmark filter.
+>>> It can interpret fwmark as tc classid. So, you can use this feature
+>>> inside your ipset/iptables/tc rules.
+>>>
+>>
+>> Can you provide an example as how fwmark is intrepreted as classid ?
+>
+>
+>
+> --
+> Anton.
