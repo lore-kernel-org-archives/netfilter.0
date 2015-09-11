@@ -1,59 +1,63 @@
-From: Akshat Kakkar <akshat.1984@gmail.com>
-Subject: Re: Feature suggestion ...
-Date: Thu, 10 Sep 2015 15:56:29 +0530
-Message-ID: <CAA5aLPhLup=uyoxLcd=7Rk6AY7PQ+P6N6=aiHf=qkzG6gLE5TQ@mail.gmail.com>
-References: <CAA5aLPgmP6hKQasPo+o6oQkZMMtuXieyxCadZ+1dzoaT1HmzkA@mail.gmail.com>
-	<alpine.DEB.2.10.1509062024540.12913@blackhole.kfki.hu>
-	<CAA5aLPjhXREe9W6fT1oNj=mKV3Yb6CBSLP44do-sgBrhKHa2mA@mail.gmail.com>
-	<alpine.DEB.2.10.1509062215520.13557@blackhole.kfki.hu>
-	<CAA5aLPi2of6Z4UGmD9pqvcq3hr2HCgVMrK46MxRKDbYL-jwK5w@mail.gmail.com>
-	<CAEzD07JL13Pv00-b1B_y2UUK327O91kMMMc157yX6J93M2VPng@mail.gmail.com>
-	<CAA5aLPg3hZOctA8VMRtg85L7i7VZ1NCG4yTA2E7HRTk_VcU+6A@mail.gmail.com>
-	<CAEzD07JQYbtrjBr18=zS0vGMKhFXL52YVcaf3FJqa1Z3TaYZsw@mail.gmail.com>
-	<CAA5aLPi3AuC3m0cZgU1wZ3_U=wQoL29tUjVjX9DYO1gU_bjMAw@mail.gmail.com>
-	<CAA5aLPjLFNhsAwP8uLVq=v-gNYaa6uU17Yqh8ikYwfPXEuQUww@mail.gmail.com>
-	<CAEzD07LM3U9V2ZQLyk5P6n=W7pB0aL25Q+AnsFOXWq+UWA5JZA@mail.gmail.com>
+From: Vieri Di Paola <vieridipaola@gmail.com>
+Subject: iptables TRACE not logged
+Date: Fri, 11 Sep 2015 10:25:15 +0200
+Message-ID: <CABLYT9hQERBkQWskobkKb8tJ64is48e8_4joAYivjo4a+_e+GA@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=/9knatL/ZwAN7bRSr84uGkzZ7WPTLLbefgjW7eKrhGo=;
-        b=krKSS5fuSzeryDG6lqvjZAVgbatPKyuQADhwGGrtV4JIm1VoYBYsuTJkXEPUf/cE3V
-         ggmcgs7wrsFbIW/nJAZxst6ZGvU3BGSlqy5Wp3mAzBOSreya8mZKYtT8rvCXuyirORC3
-         yyJYaIKB+NIEl8C1R5mVI8hLgh34bn3cAauZ6o+TX/lIDMt52E2fExTAc+2qNWnJD/wV
-         XyMytuOFasrP5D9Z1VjhThOvBGVr6S3RhSO1pUL2LfxQUCMpV2I2uZKB1CembxaIc27x
-         RvkRO/VE6WPwum5rHPUWNG1TnaSa8Wt1GMYqm2lgdcTyzkSkKxuk21w2ZSss689XxLAN
-         GSUQ==
-In-Reply-To: <CAEzD07LM3U9V2ZQLyk5P6n=W7pB0aL25Q+AnsFOXWq+UWA5JZA@mail.gmail.com>
+        h=mime-version:date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=poJohbB5AiHI+7O5ZDrPPIxkFXZNjWi55HrJoQSHAho=;
+        b=NSZm8Tr1fSgUN572J0jZZVktb9bQNA0+0k0YEuPpFwnxxXNQY/WeB/c03eu77oDMAn
+         agJ5p2Cu5dXQa5a+14pA4yzlfAXgHx8LF/Bj5gMRtNB/JVV5DAgJciCOGRJmw0PkBCJB
+         0g6zfdrWV1GI3kil9h/lr5wDQ1NKFP11TM3kI42IW+1XRLNPO3Y+Bldgyf8a4Rrmm6Ba
+         Z2SW3Pke8GYDjMZ6APGNuBPX5ZPvjRzuPF3BYtAyOGyFFtbvTWFY6k4qyoihAlAejWrX
+         QmykAoW8O0N22Tu9QnAaUFNTOtUpxiZXCXmAke5itjF3erF20tfCamOJfs1A//LFzuKt
+         c3MQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Anton Danilov <littlesmilingcloud@gmail.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-> Classid will be overwritten by fw classifier.
->
-For sake of completeness,
+Hi,
 
-So if I use tc filter add dev <iface> parent <qhandle> protocol ip prio 1 fw
+I'm trying to see the TRACE log by issuing the following commands:
 
-and my packet has mark(640001) and classid(1:10) both set,
-then because of above tc filter, the exisiting classid will be set to
-64:1 i.e. equal to the mark.
+/sbin/iptables -t raw -A PREROUTING --destination 10.215.237.237 -j TRACE
+/sbin/iptables -t raw -A OUTPUT --destination 10.215.237.237 -j TRACE
 
-Is my understanding correct?
+After ping'ing 10.215.237.237, I'd like to know where to look for the
+TRACE messages.
+I've looked in /var/log/messages (and other system logs) and
+/proc/kmsg but no sign of them.
 
-If my understanding is correct,
-shouldn't it be like that if class is set, then it should not overwrite?
+What can I try?
 
+Kernel has support for TRACE (CONFIG_NETFILTER_XT_TARGET_TRACE=m).
 
+# lsmod | grep -i trace
+xt_TRACE                 551  0
+x_tables                8695  52
+xt_physdev,xt_pkttype,xt_statistic,xt_DSCP,xt_dscp,xt_iprange,xt_mark,xt_time,xt_CT,xt_helper,xt_length,xt_comment,xt_policy,xt_CHECKSUM,xt_recent,ip_tables,xt_socket,xt_tcpmss,xt_tcpudp,ipt_MASQUERADE,xt_LOGMARK,xt_condition,xt_NFQUEUE,xt_NFLOG,xt_TRACE,xt_iface,xt_ipp2p,xt_limit,xt_owner,xt_realm,xt_ACCOUNT,ipt_rpfilter,xt_connlimit,xt_conntrack,xt_IPMARK,xt_LOG,xt_mac,xt_nat,xt_set,xt_hashlimit,xt_multiport,iptable_filter,xt_CLASSIFY,xt_TARPIT,xt_TCPMSS,xt_TPROXY,xt_connmark,ipt_REJECT,xt_REDIRECT,iptable_mangle,xt_addrtype,iptable_raw
 
-> 2015-09-10 13:20 GMT+03:00 Akshat Kakkar <akshat.1984@gmail.com>:
->>>> Without any options fw classifier maps fwmark to classid.
->>>>
->>>> tc filter add dev <iface> parent <qhandle> protocol ip prio 1 fw
->>
->> What if the packet has fwmark and skbprio set?
+I'm using syslog-ng.but I've also tried metalog: still no TRACE messages.
+
+So I guess the logger isn't to blame and there's something wrong with
+my kernel or netfilter installation.
+
+# uname -a
+Linux fw3 4.1.4-hardened #1 SMP Thu Aug 13 15:49:17 CEST 2015 i686
+Intel(R) Xeon(TM) CPU 2.66GHz GenuineIntel GNU/Linux
+
+# iptables --version
+iptables v1.4.21
+
+Do you need more info?
+
+What can I try?
+
+Thanks,
+
+Vieri
