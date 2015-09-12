@@ -1,42 +1,33 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Vieri Di Paola <vieridipaola@gmail.com>
 Subject: Re: iptables TRACE not logged
-Date: Fri, 11 Sep 2015 17:37:51 +0200
-Message-ID: <20150911153751.GA3581@salvia>
+Date: Sun, 13 Sep 2015 00:13:41 +0200
+Message-ID: <CABLYT9gFA=khGxc6aFkDkBuoacKi_cB2Awv0h7WQXUpJ8MEC1g@mail.gmail.com>
 References: <CABLYT9hQERBkQWskobkKb8tJ64is48e8_4joAYivjo4a+_e+GA@mail.gmail.com>
- <20150911122803.GA5460@salvia>
- <CABLYT9i-i5oaXkAmeVSXGbsob5kfcX5RQM8xktzAj7f273BriQ@mail.gmail.com>
+	<20150911122803.GA5460@salvia>
+	<CABLYT9i-i5oaXkAmeVSXGbsob5kfcX5RQM8xktzAj7f273BriQ@mail.gmail.com>
+	<20150911153751.GA3581@salvia>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CABLYT9i-i5oaXkAmeVSXGbsob5kfcX5RQM8xktzAj7f273BriQ@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type;
+        bh=VF6fNKn7rIsBlbU7b4gGQDsrfB1N3RTKwEw3vw5Ka0g=;
+        b=oyngQgIzNeE2Z4yPl0iNpYqk0JlH43OExIa7junsMPBYg/FjGoO3ap3sAZlbbJ4aCq
+         8cBa/0IrUk059kNbLYnsVUyX0qIYpGyNRp54u2SmFyzYDd9WeYzwgXGydiwos8GRwZaO
+         JV4XBrRtJe/7V36SrpV/V+guird2EvRisywu5SRaXi4s+GoDMhaHFWsuH4V1yNHkXUMY
+         VtS6t6l6eNGHLsuSZULqmdy0jlBAXHAwQ2eZa3xfTr4KR5MkYC/hzTM920RvdyN8+5Yt
+         xgqd8j2oY3NFkA4z2I6dfu31E1F3HTjtLS4ZOwpsYMMV8DhzuIH6+woB6eBjpH0RyEah
+         LF3w==
+In-Reply-To: <20150911153751.GA3581@salvia>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Vieri Di Paola <vieridipaola@gmail.com>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter@vger.kernel.org
 
-On Fri, Sep 11, 2015 at 03:31:05PM +0200, Vieri Di Paola wrote:
-> [sorry, I previously replied only to Pablo instead of the mailing list]
-> 
-> # cat /proc/net/netfilter/nf_log
->  0 NONE (nfnetlink_log)
->  1 NONE (nfnetlink_log)
->  2 nfnetlink_log (nf_log_ipv4,nfnetlink_log)
->  3 NONE (nfnetlink_log)
->  4 NONE (nfnetlink_log)
->  5 NONE (nfnetlink_log)
->  6 NONE (nfnetlink_log)
->  7 NONE (nfnetlink_log)
->  8 NONE (nfnetlink_log)
->  9 NONE (nfnetlink_log)
-> 10 NONE (nfnetlink_log)
-> 11 NONE (nfnetlink_log)
-> 12 NONE (nfnetlink_log)
-> 
-> Do I need to change the backend?
-> eg. sysctl net.netfilter.nf_log.2=ipt_LOG
-
-You have to switch to nf_log_ipv4, yes. Otherwise the trace messages
-go to nfnetlink_log, thus you'll need ulogd2, which is something that
-you may not need in your setup.
+Thanks Pablo.
+This worked:
+sysctl net.netfilter.nf_log.2=nf_log_ipv4
+Now I'm getting TRACE messages in system log.
