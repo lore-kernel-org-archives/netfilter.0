@@ -1,36 +1,70 @@
-From: Vieri Di Paola <vieridipaola@gmail.com>
-Subject: Re: iptables TRACE not logged
-Date: Mon, 14 Sep 2015 11:31:13 +0200
-Message-ID: <CABLYT9jwt3qHLRRYd8ctPZmg5FkTyeEhtEs=1-sX3emy=cLomA@mail.gmail.com>
-References: <CABLYT9hQERBkQWskobkKb8tJ64is48e8_4joAYivjo4a+_e+GA@mail.gmail.com>
-	<20150911122803.GA5460@salvia>
-	<CABLYT9i-i5oaXkAmeVSXGbsob5kfcX5RQM8xktzAj7f273BriQ@mail.gmail.com>
-	<20150911153751.GA3581@salvia>
-	<CABLYT9gFA=khGxc6aFkDkBuoacKi_cB2Awv0h7WQXUpJ8MEC1g@mail.gmail.com>
-	<20150913115016.GD3691@salvia>
+From: Florian Westphal <fw@strlen.de>
+Subject: Re: Netfilter: BUG: unable to handle kernel paging request, RIP:
+ physdev_mt+0xd6/0x160
+Date: Mon, 14 Sep 2015 16:45:16 +0200
+Message-ID: <20150914144516.GM24810@breakpoint.cc>
+References: <1620a50057d1e8aadafe27c74ee42d93@eikelenboom.it>
+ <20150913180620.GK24810@breakpoint.cc>
+ <57e23f8e80b57dff72f6bc5b7e9b2d53@eikelenboom.it>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :content-type;
-        bh=lie+Ht5lyOiViyvNv1bI+0QjxAG2y6znYVl/QQ1/nfM=;
-        b=wD/8seJ8Cyl4UX3xhPoLfxOSZ1OSvyFJ8mUu/yFdgceIImG1rZ5yWAcJhYnrABJV21
-         bIIIBih9gviOEpG+5KfEh//wF9qppl57UrT16Q8RvWTa/Hz/Djl9nAEfsUXodrJVAcQW
-         3YBlIF0loH5itwgK/ny3JSFK8PdntJFHKQRGirCogP3rKHwTmkD6AIXeRIEGNH++h0Qn
-         bI9jCfYs6DZLoKzFrvr++6uhO+BDmGSW2A+LLtH/GWtozhO7DuNlc9TQdB7DW8lTpUEc
-         RzIO3Cd3FzfOe+2avR49Y3l8MTLNDueUW1vYvaOlyE+5NXVAmB6tRPBVt8Iw1eOxho+0
-         ofng==
-In-Reply-To: <20150913115016.GD3691@salvia>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <57e23f8e80b57dff72f6bc5b7e9b2d53@eikelenboom.it>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Sander Eikelenboom <linux@eikelenboom.it>
+Cc: Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org, netfilter@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>
 
-On Sun, Sep 13, 2015 at 1:50 PM, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> BTW, this used to work with ipt_LOG, right?
+Sander Eikelenboom <linux@eikelenboom.it> wrote:
+> On 2015-09-13 20:06, Florian Westphal wrote:
+> >Sander Eikelenboom <linux@eikelenboom.it> wrote:
+> >>Using a linux-4.3-rc1 kernel i encountered the splat below:
+> >
+> >Thanks for reporting this bug.
+> >
+> >>[  290.200642] BUG: unable to handle kernel paging request at
+> >>000000000484195d
+> >>[  290.211702] IP: [<ffffffff819bc3e6>] physdev_mt+0xd6/0x160
+> >[..]
+> >
+> >>[  290.444088]  [<ffffffff81a4e6c0>] ipt_do_table+0x210/0x390
+> >>[  290.461951]  [<ffffffff81a510ae>] iptable_filter_hook+0x2e/0x70
+> >>[  290.470756]  [<ffffffff8199279c>] nf_iterate+0x4c/0x80
+> >>[  290.479587]  [<ffffffff81992834>] nf_hook_slow+0x64/0xc0
+> >>[  290.488341]  [<ffffffff81a06779>] ip_forward+0x369/0x3c0
+> >>[  290.496927]  [<ffffffff81a06380>] ? ip_frag_mem+0x40/0x40
+> >>[  290.505365]  [<ffffffff81a04961>] ip_rcv_finish+0x101/0x330
+> >>[  290.513480]  [<ffffffff81a05001>] ip_rcv+0x291/0x390
+> >>[  290.521562]  [<ffffffff81a04860>] ?
+> >
+> >Aye, ip forwarding of bridged packets with call-iptables=1 is broken.
+> >
+> >Please, could you try this patch?  It fixes this bug for me.
+> 
+> Hi Florian,
+> 
+> Works for me too, thx for the fix !
 
-I believe so.
+Sorry, I made this claim too early.
 
-Vieri
+We cannot use this fix, since it will still cause kernel oops when using
+-j NFQUEUE in PRE_ROUTING (We would bump refcnt on ->physoutdev, which is
+garbage in this case).
+
+Only option is to undo 72b1e5e4cac as follows:
+
+diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
+--- a/include/linux/skbuff.h
++++ b/include/linux/skbuff.h
+@@ -183,7 +183,8 @@ struct nf_bridge_info {
+ 		/* prerouting: detect dnat in orig/reply direction */
+ 		__be32          ipv4_daddr;
+ 		struct in6_addr ipv6_daddr;
+-
++	};
++	union {
+ 		/* after prerouting + nat detected: store original source
+ 		 * mac since neigh resolution overwrites it, only used while
+ 		 * skb is out in neigh layer.
