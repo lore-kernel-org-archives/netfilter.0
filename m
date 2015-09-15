@@ -1,70 +1,48 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: Netfilter: BUG: unable to handle kernel paging request, RIP:
- physdev_mt+0xd6/0x160
-Date: Mon, 14 Sep 2015 16:45:16 +0200
-Message-ID: <20150914144516.GM24810@breakpoint.cc>
-References: <1620a50057d1e8aadafe27c74ee42d93@eikelenboom.it>
- <20150913180620.GK24810@breakpoint.cc>
- <57e23f8e80b57dff72f6bc5b7e9b2d53@eikelenboom.it>
+From: Akshat Kakkar <akshat.1984@gmail.com>
+Subject: Re: nflog : We are losing events. Increasing buffer size to 1736704
+Date: Tue, 15 Sep 2015 10:54:27 +0530
+Message-ID: <CAA5aLPiH2CRJnA0H1WrpnHp=R-eS_MWiZJq9r-y+fYHiD7ptqg@mail.gmail.com>
+References: <CAA5aLPi5sdeEQTX0ss8DEQGNYd2SuNgt45tGHfWeO9t0uqvZxw@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <57e23f8e80b57dff72f6bc5b7e9b2d53@eikelenboom.it>
-Sender: netdev-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :content-type;
+        bh=eXoXkP9Ql51kprJTogL+O6notBtZT/PkQ/ig1+LLjaw=;
+        b=PLaDI8Q2xVfhn4StRvElyesyx/QpnM545AZkAHHG1fqLgfgrxVn0vd97UtsJda8vbt
+         ub/zgA7j6BC7zT9wR1RgexYt858tSamqkhZIOVdfN+KoPegPHvWHRfjXirDLIoDmNHVz
+         tHibfhisop8/6Ak07rjmgD6ehbgR0YgDHM53JA8ggvB1g0LRid5bfm7Rn1BxWnI1mLzO
+         /l+fxB7A3/KEWR9pIY4HjDp1B8s1cnVglvHvRIeulbuOSZEtMep2oIJkVMkg1yj+ukG2
+         W1kMulEx5bk3M04zTf97WmOiaP0dO2UoGhajr4GtyOKmOZdnjg69FbidNjQT/GtZ8fXv
+         CB4w==
+In-Reply-To: <CAA5aLPi5sdeEQTX0ss8DEQGNYd2SuNgt45tGHfWeO9t0uqvZxw@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Sander Eikelenboom <linux@eikelenboom.it>
-Cc: Florian Westphal <fw@strlen.de>, netdev@vger.kernel.org, netfilter@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Sander Eikelenboom <linux@eikelenboom.it> wrote:
-> On 2015-09-13 20:06, Florian Westphal wrote:
-> >Sander Eikelenboom <linux@eikelenboom.it> wrote:
-> >>Using a linux-4.3-rc1 kernel i encountered the splat below:
-> >
-> >Thanks for reporting this bug.
-> >
-> >>[  290.200642] BUG: unable to handle kernel paging request at
-> >>000000000484195d
-> >>[  290.211702] IP: [<ffffffff819bc3e6>] physdev_mt+0xd6/0x160
-> >[..]
-> >
-> >>[  290.444088]  [<ffffffff81a4e6c0>] ipt_do_table+0x210/0x390
-> >>[  290.461951]  [<ffffffff81a510ae>] iptable_filter_hook+0x2e/0x70
-> >>[  290.470756]  [<ffffffff8199279c>] nf_iterate+0x4c/0x80
-> >>[  290.479587]  [<ffffffff81992834>] nf_hook_slow+0x64/0xc0
-> >>[  290.488341]  [<ffffffff81a06779>] ip_forward+0x369/0x3c0
-> >>[  290.496927]  [<ffffffff81a06380>] ? ip_frag_mem+0x40/0x40
-> >>[  290.505365]  [<ffffffff81a04961>] ip_rcv_finish+0x101/0x330
-> >>[  290.513480]  [<ffffffff81a05001>] ip_rcv+0x291/0x390
-> >>[  290.521562]  [<ffffffff81a04860>] ?
-> >
-> >Aye, ip forwarding of bridged packets with call-iptables=1 is broken.
-> >
-> >Please, could you try this patch?  It fixes this bug for me.
-> 
-> Hi Florian,
-> 
-> Works for me too, thx for the fix !
+Anybody? Please ...
 
-Sorry, I made this claim too early.
+ulogd_inppkt_NFLOG.c:443 We are losing events, increasing buffer size to 1736704
 
-We cannot use this fix, since it will still cause kernel oops when using
--j NFQUEUE in PRE_ROUTING (We would bump refcnt on ->physoutdev, which is
-garbage in this case).
-
-Only option is to undo 72b1e5e4cac as follows:
-
-diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
---- a/include/linux/skbuff.h
-+++ b/include/linux/skbuff.h
-@@ -183,7 +183,8 @@ struct nf_bridge_info {
- 		/* prerouting: detect dnat in orig/reply direction */
- 		__be32          ipv4_daddr;
- 		struct in6_addr ipv6_daddr;
--
-+	};
-+	union {
- 		/* after prerouting + nat detected: store original source
- 		 * mac since neigh resolution overwrites it, only used while
- 		 * skb is out in neigh layer.
+On Wed, Sep 9, 2015 at 6:54 PM, Akshat Kakkar <akshat.1984@gmail.com> wrote:
+> Hi!
+>
+> I am using nflog for logging iptables traffic. When traffic rate is
+> increased, I see message like
+> We are losing events. Increasing buffer size to 12000
+>
+> We are losing events. Increasing buffer size to 16000
+> ...
+>
+> We are losing events. Increasing buffer size to 1736704
+>
+> It doesnt get increased more than 1736704.
+> Even if I set 1736704 as the default buffer size, then also I get the
+> same message
+> We are losing events. Increasing buffer size to 1736704
+>
+> Why is that so? What makes the buffer size having ceiling at 1736704
+> (= 212KBytes)
