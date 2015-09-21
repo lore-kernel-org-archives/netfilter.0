@@ -1,50 +1,43 @@
-From: arunkumar velayutham <arun.softtech@gmail.com>
-Subject: ebtables rule to forward the frames to specific interface.
-Date: Thu, 17 Sep 2015 17:34:47 -0700
-Message-ID: <CAH21Whgc5QX7TyUF7MzPNJs1B_qPRA2ir2sJaH3uNok9zvdaaQ@mail.gmail.com>
+From: =?UTF-8?B?56We5qW95Z2C546y5aWI?= <zh99998@gmail.com>
+Subject: how to do port forwarding using nftables map
+Date: Mon, 21 Sep 2015 10:09:25 +0800
+Message-ID: <CAP8bwDUTn=zfWNjzypzLw5a4z7earJ6Ou2Uh4JHv_Am9uu_4Lw@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=QXitaRPC60otUUec9QA+TYnKIFc5cYr0Kj8JvV6iyoc=;
-        b=jvdQvzyoeiL+vh0npCg7i0+K6JYj/46Y+wUYgN4hOWxmROJ+thVd7HeLfc5AUKFsKJ
-         AV1JzT/g2tUlRlC0gGApxn965bVkeF3DUlPzSFdLzWuPSNwyjh26eUFtEWHdWuoQwevS
-         AzIwtE+YwtEUscj87hyfTRbPsU3fL8uHu+VPp4PTamXuWLKi4wgglf8AMK3MFP3VenhK
-         ly+VopBzGXwvbw8LtDwSIY1UhbqsF/BjEVdH16u18nD8HWK6FUIlsIBD6i1dYdnaYRRm
-         yot7wnE8Bs8Gskf4lXCSl9fCut8zUrNv3D87vI15Y1C2I2Ma1EPRM6GNCZOmDoNt4HLL
-         OGuQ==
+        h=mime-version:from:date:message-id:subject:to:content-type;
+        bh=jqGS678+sc4p2/fztQNpRMjJzPEXgdsAlLVWHx67JE4=;
+        b=Yu64qBVGJEGKPzVqfAgiQhTIWumEDEYyIcyLz2zxCGH5KIuNmYeCANvIb419lX3pxU
+         F5DAByUWivDfUiyzwFiOaPLiEG+162QA7bxmleYHKY5z+KK14Q7IA0CVVP2FDwDI39j/
+         lAn69e1MRl/S0ToXL5p4yJ8k7+NLSEnSlTHtFkrrbXZmk2piXcdUO4tZdmGIgebxGyqL
+         qY+eQywtYWBxgqVMzrKk05168zg/mXXQ6quKiheTcdIfaMJ9WF4Rbwn4T+id3FyKz8Do
+         3zcKG/6K9uZLX9kSPLDutr3NU4oNZg/mndQq/XOeOsLrfrEQ+BvTIUNnYDN3zZTUJZoE
+         mWSQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello,
+I'm doing many port forwarding service on a linux server. There will
+be many(may thousands of) port forward rule so I want to use nftables
+map to improve performance rather than just many rules.
 
-I'm relatively new to use ebtables. please give some suggestion on the
-below scenario.
+the policy will be [protocol : port -> address : port], like [tcp 1234
+-> 1.1.1.1:4321], forward tcp 1234 port to address 1.1.1.1 same
+protocol port 4321.
+the protocol may only tcp and udp. so it's also ok if the key can
+support only one port field. i can set maps and rules for each
+protocol.
 
-Frames arrived on any of the interfaces (eth0, eth1, eth2) should
-always be forwarded to a specific interfaces eth4 all the time
-regardless of its destination address(at the L2 level). for example,
-the ethernet frame arrives at eth0, though it can be forwarded to eth1
-to reach the destination based on the bridge table, it should be
-forwarded to eth4 all the time and the device connected at the other
-end of eth4 will decide on the routing.
+the problem is, how to define the value "ip:port" using map?
 
-looking for a suitable ebtables rule options which can help in
-achieving the same.
+I tried create 2 maps, using
 
---out-if or the redirect option will be helpful for the above needs?.
-I tried some thing like below
+> nft add map nat forward_address {type inet_service : ipv4_addr \;}
+> nft add map nat forward_port {type inet_service : inet_service \;}
 
-ebtables rule to mark the frame (using --mark-set) with specific value
-per incoming interface and with the further rule, I tried to retarget
-the frames to eth4 using --out-if option. But this didn't help.
-
-Please suggested on the ebtables options for the above scenario.
-
-Thanks
-
-Arun.
+but then I don't know how to set dnat rule....... seems the dnat
+destnation can only accept one map value? and also i don't know how to
+set "ip:port" as one value in map.
