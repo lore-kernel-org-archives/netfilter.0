@@ -1,61 +1,36 @@
-From: Christophe Leroy <christophe.leroy@c-s.fr>
-Subject: Re: SIP messages with no/invalid CSeq are dropped by nf_ct_sip, 400
- Bad Request is expected instead
-Date: Thu, 24 Sep 2015 13:49:48 +0200
-Message-ID: <5603E35C.4040500@c-s.fr>
-References: <5603BA34.60700@c-s.fr>
- <20150924111908.GA32673@macbook.localdomain>
+From: Richard Melville <richardm@cellularity.co.uk>
+Subject: nftables wiki
+Date: Thu, 24 Sep 2015 14:20:26 +0100
+Message-ID: <CAPeGcy_A=5RttXYxa+2E12n+hEXRwSUyGsN25G4mfbRFRsrjZw@mail.gmail.com>
+Reply-To: richardm@cellularity.co.uk
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20150924111908.GA32673@macbook.localdomain>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:reply-to:sender:date:message-id:subject:from:to
+         :content-type;
+        bh=B9yjecJ3LMjWoJKrZYj17z7o1BXvRiaJtx+EyBBfiuo=;
+        b=mxRJDS9Ckq/jWVJEd31zjW88OAlU0ECj8huUdX85PpY72a8qpgflClapsKJO1Rnw7R
+         tG7UFRSpqu6gVWtxbvDS76OhCTiWLe/mRfVekoLKDcSJWlwa1ft5VSDKP6lp/ewrwrxE
+         OyauwcyplpjR+52t3Qe1iYeSsatLUZj2j+900ADJQUF8JGK0kqgUnlOlhyUuGrvhnb7X
+         kDvjeq5iH4CeCa2jPwhErDIpnvl6PxooTniGoGfk97k3SzzaO3MxVTBzQZcg3A0jJR+n
+         WMpafEzBg1ABCB+S/SGiZvB+MkbmXW0mS1ekcN3tjPv69JQxm7YqRYJ7GtYhxmSNsJgj
+         6HzQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Patrick McHardy <kaber@trash.net>
-Cc: "David S. Miller" <davem@davemloft.net>, Pablo Neira Ayuso <pablo@netfilter.org>, Netfilter Development Mailing list <netfilter-devel@vger.kernel.org>, netfilter@vger.kernel.org, TIXADOU Jean-Yves <jean-yves.tixadou@c-s.fr>, PERRONNY Olivier <olivier.perronny@c-s.fr>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
+Hi
 
+I've noticed a number of typos and general errors on the wiki.  Is it
+possible to get write permissions in order to rectify those issues?
 
-Le 24/09/2015 13:19, Patrick McHardy a =E9crit :
-> On 24.09, Christophe Leroy wrote:
->> I have an issue with the SIP conntrack:
->>
->> In commit 30f33e6dee [NETFILTER]: nf_conntrack_sip: support method s=
-pecific
->> request/response handling
->> Modified by b20ab9cc63 netfilter: nf_ct_helper: better logging for d=
-ropped
->> packets
->>
->> SIP requests with no CSeq header are dropped by kernel before reachi=
-ng the
->> user app.
->>
->> According to RFC4475 "Session Initiation Protocol (SIP) Torture Test
->> Messages", requests with invalid CSeq should be responded with 400 B=
-ad
->> Request, and that's what my app does, but it can only do it if it re=
-ceives
->> the request.
-> I don't see anything about missing CSeq-headers in that RFC, could yo=
-u point
-> me to the correct chapter?
->
-RFC4475 gives no exemple explicitly about missing CSeq-headers, but it=20
-has some exemples for bad CSeq-headers in =A73.1.2.4, =A73.1.2.17 and =A7=
-3.3.8=20
-where it expects 400 Bad request response.
-
-In addition, =A73.3.1 "Missing Required Header Fields" shows that 400 B=
-ad=20
-Request is also expected in the case of missing Call-ID, From, or To=20
-mandatory headers. Taking into account RFC3261 =A78.1.1, CSeq is also a=
-=20
-mandatory header in the same way as Call-ID, From, or To, so the same=20
-answer should be expected.
-
-RFC3261 =A721.4.1 shows that 400 Bad request is to be used for missing=20
-headers.
-
-Christophe
+-- 
+Richard Melville
+Systems Architect
+cellularity.co.uk
+stellarsystem.wordpress.com
++44 20 33 555 305
++44 7957 836330
