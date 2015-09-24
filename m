@@ -1,32 +1,23 @@
-From: Corin Langosch <info@corinlangosch.com>
-Subject: migration of ebtables arp rule to nftables
-Date: Thu, 24 Sep 2015 16:34:42 +0200
-Message-ID: <56040A02.5060605@corinlangosch.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: nftables wiki
+Date: Thu, 24 Sep 2015 19:57:51 +0200
+Message-ID: <20150924175751.GB3610@salvia>
+References: <CAPeGcy_A=5RttXYxa+2E12n+hEXRwSUyGsN25G4mfbRFRsrjZw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAPeGcy_A=5RttXYxa+2E12n+hEXRwSUyGsN25G4mfbRFRsrjZw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: Richard Melville <richardm@cellularity.co.uk>
+Cc: netfilter@vger.kernel.org
 
-Hi guys,
+On Thu, Sep 24, 2015 at 02:20:26PM +0100, Richard Melville wrote:
+> Hi
+> 
+> I've noticed a number of typos and general errors on the wiki.  Is it
+> possible to get write permissions in order to rectify those issues?
 
-I'd like to move to nftables (Ubuntu trusty, kernel 3.19). So far it works quite well, however I wonder how to migrate
-these ebtables rules:
-
--p ARP --arp-op Request --arp-ip-dst 192.168.178.237 -j ACCEPT
--p ARP --arp-op Reply --arp-ip-dst 192.168.178.237 -j ACCEPT
--j DROP
-
--p ARP --arp-op Request --arp-ip-src 192.168.178.237 --arp-mac-src 2:fb:c5:e0:ef:a3 -j ACCEPT
--p ARP --arp-op Reply --arp-ip-src 192.168.178.237 --arp-mac-src 2:fb:c5:e0:ef:a3 -j ACCEPT
--j DROP
-
-They are used to prevent ARP spoofing of qemu quests using tap devices on the host. The rule "nft add rule bridge filter
-qemu1-o arp operation request counter accept" works, however I have no idea how to add the ip/mac contraints to the rule.
-
-Thanks for any help. :)
-
-Cheers
-Corin
+Just created an account for you.
