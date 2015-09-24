@@ -1,36 +1,32 @@
-From: Richard Melville <richardm@cellularity.co.uk>
-Subject: nftables wiki
-Date: Thu, 24 Sep 2015 14:20:26 +0100
-Message-ID: <CAPeGcy_A=5RttXYxa+2E12n+hEXRwSUyGsN25G4mfbRFRsrjZw@mail.gmail.com>
-Reply-To: richardm@cellularity.co.uk
+From: Corin Langosch <info@corinlangosch.com>
+Subject: migration of ebtables arp rule to nftables
+Date: Thu, 24 Sep 2015 16:34:42 +0200
+Message-ID: <56040A02.5060605@corinlangosch.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:reply-to:sender:date:message-id:subject:from:to
-         :content-type;
-        bh=B9yjecJ3LMjWoJKrZYj17z7o1BXvRiaJtx+EyBBfiuo=;
-        b=mxRJDS9Ckq/jWVJEd31zjW88OAlU0ECj8huUdX85PpY72a8qpgflClapsKJO1Rnw7R
-         tG7UFRSpqu6gVWtxbvDS76OhCTiWLe/mRfVekoLKDcSJWlwa1ft5VSDKP6lp/ewrwrxE
-         OyauwcyplpjR+52t3Qe1iYeSsatLUZj2j+900ADJQUF8JGK0kqgUnlOlhyUuGrvhnb7X
-         kDvjeq5iH4CeCa2jPwhErDIpnvl6PxooTniGoGfk97k3SzzaO3MxVTBzQZcg3A0jJR+n
-         WMpafEzBg1ABCB+S/SGiZvB+MkbmXW0mS1ekcN3tjPv69JQxm7YqRYJ7GtYhxmSNsJgj
-         6HzQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi
+Hi guys,
 
-I've noticed a number of typos and general errors on the wiki.  Is it
-possible to get write permissions in order to rectify those issues?
+I'd like to move to nftables (Ubuntu trusty, kernel 3.19). So far it works quite well, however I wonder how to migrate
+these ebtables rules:
 
--- 
-Richard Melville
-Systems Architect
-cellularity.co.uk
-stellarsystem.wordpress.com
-+44 20 33 555 305
-+44 7957 836330
+-p ARP --arp-op Request --arp-ip-dst 192.168.178.237 -j ACCEPT
+-p ARP --arp-op Reply --arp-ip-dst 192.168.178.237 -j ACCEPT
+-j DROP
+
+-p ARP --arp-op Request --arp-ip-src 192.168.178.237 --arp-mac-src 2:fb:c5:e0:ef:a3 -j ACCEPT
+-p ARP --arp-op Reply --arp-ip-src 192.168.178.237 --arp-mac-src 2:fb:c5:e0:ef:a3 -j ACCEPT
+-j DROP
+
+They are used to prevent ARP spoofing of qemu quests using tap devices on the host. The rule "nft add rule bridge filter
+qemu1-o arp operation request counter accept" works, however I have no idea how to add the ip/mac contraints to the rule.
+
+Thanks for any help. :)
+
+Cheers
+Corin
