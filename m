@@ -1,23 +1,20 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: nftables wiki
-Date: Thu, 24 Sep 2015 19:57:51 +0200
-Message-ID: <20150924175751.GB3610@salvia>
-References: <CAPeGcy_A=5RttXYxa+2E12n+hEXRwSUyGsN25G4mfbRFRsrjZw@mail.gmail.com>
+From: Corin Langosch <info@corinlangosch.com>
+Subject: network namespaces and conntrack
+Date: Sat, 26 Sep 2015 10:54:50 +0200
+Message-ID: <56065D5A.9050701@corinlangosch.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAPeGcy_A=5RttXYxa+2E12n+hEXRwSUyGsN25G4mfbRFRsrjZw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Richard Melville <richardm@cellularity.co.uk>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Thu, Sep 24, 2015 at 02:20:26PM +0100, Richard Melville wrote:
-> Hi
-> 
-> I've noticed a number of typos and general errors on the wiki.  Is it
-> possible to get write permissions in order to rectify those issues?
+Hi guys,
 
-Just created an account for you.
+do network namespaces share conntrack data structures under the hood or does each netns get its own? So is it possible
+that a (malicious) program in netns1 can overflow conntrack on the host or any other netns or is it safe? Can the tables
+(size, hash size, ...) be tuned individually for each netns?
+
+Cheers
+Corin
