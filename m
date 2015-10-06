@@ -1,7 +1,7 @@
 From: Andrew <nitr0@seti.kr.ua>
 Subject: Re: Kernel panic in 4.1.6 in nf_nat_redirect
-Date: Sun, 4 Oct 2015 22:46:20 +0300
-Message-ID: <5611820C.2050508@seti.kr.ua>
+Date: Tue, 6 Oct 2015 13:11:17 +0300
+Message-ID: <56139E45.1000605@seti.kr.ua>
 References: <560D9DDD.8000601@seti.kr.ua> <20151004190543.GA17688@salvia>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -13,7 +13,24 @@ Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter@vger.kernel.org
 
-Hm, strange, gdb can't find debug info.
+Hi.
+
+I recompiled kernel with debug info enabled; here's gdb output:
+
+(gdb) list *nf_nat_redirect_ipv4+0x24
+0x24 is in nf_nat_redirect_ipv4 
+(/var/testpoint/LEAF/source/i486-unknown-linux-uclibc/linux/linux-4.1/net/netfilter/nf_nat_redirect.c:60).
+55
+56            rcu_read_lock();
+57            indev = __in_dev_get_rcu(skb->dev);
+58            if (indev != NULL) {
+59                ifa = indev->ifa_list;
+60                newdst = ifa->ifa_local;
+61            }
+62            rcu_read_unlock();
+63
+64            if (!newdst)
+
 
 04.10.2015 22:05, Pablo Neira Ayuso wrote:
 > Could you please do the following?
