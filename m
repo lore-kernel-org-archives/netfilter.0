@@ -1,67 +1,41 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
 Subject: Re: nft rule to redirect multiple ports using maps
-Date: Fri, 9 Oct 2015 12:56:21 +0200
-Message-ID: <20151009105621.GA2624@salvia>
+Date: Fri, 9 Oct 2015 14:09:09 -0400
+Message-ID: <20151009140909.77221e5d@playground>
 References: <5616CE2E.1070200@arcor.de>
+	<20151009105621.GA2624@salvia>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5616CE2E.1070200@arcor.de>
+DKIM-Filter: OpenDKIM Filter v2.10.3 MAIL1.WPI.EDU t99I9CPk007761
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wpi.edu; s=_dkim;
+	t=1444414152; i=@wpi.edu;
+	bh=qMSQn670/h1kAtCIHT/3skLjDeUf76nbA4me+mstk8w=;
+	h=Date:From:To:Subject:In-Reply-To:References;
+	b=PjUnkBa2Rz6fMx/rUNwDqnXWHDPCrdthVB/OqxEmgSUGN3TVjAYsOKsDFHs+ndEiU
+	 Hf+vXLU3Uj0FT7v95Xb1uWWTIn24C05q3LAyLUDIdQDhDzQa4lIqaYsIfpAQf6rEVo
+	 6uavE7HGWF0aiMHUpZ4Hg8BLuzUmmD1JvB+u9lng=
+In-Reply-To: <20151009105621.GA2624@salvia>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Giorgio <giorgio.nicole@arcor.de>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Thu, Oct 08, 2015 at 10:12:30PM +0200, Giorgio wrote:
-> Hi,
-> 
-> in the answer at:
-> 
-> marc.info/?l=netfilter&m=144286539313019&w=2
-> 
-> there is a cool example of how to use nft maps to write a rule
-> that defines multiple dnats:
-> 
-> nft add rule nat prerouting dnat \
->       tcp dport map { 1000 : 1.1.1.1, 2000 : 1.1.1.1 } : \
->       tcp dport map { 1000 : 1234, 1001 : 2222 }
-> 
-> 
-> Now I would like to do something similar with port redirections
-> to generalize rules like:
-> 
-> nft add rule nat prerouting tcp dport 22 redirect to 2222
-> 
-> found on the nftable wiki:
-> 
-> http://wiki.nftables.org/wiki-nftables/index.php/Performing_Network_Address_Translation_%28NAT%29
-> 
-> Here is my (faulty) command line:
-> 
-> # nft add rule nat prerouting redirect to tcp dport map { 22 : 2222, 23
-> : 2323 }
-> <cmdline>:1:37-74: Error: transport protocol mapping is only valid after
-> transport protocol match
-> add rule nat prerouting redirect to tcp dport map { 22 : 2222, 23 : 2323 }
-> 
-> I want to redirect a list of dports (22 and 23) to a correspondent list
-> of new dports (2222 and 2323).
-> 
-> I know that there is a way to do it but can't get the logic behind the
-> syntax of this.
+On Fri, 9 Oct 2015 12:56:21 +0200
+Pablo Neira Ayuso <pablo@netfilter.org> wrote:
 
-That is telling that protocol context is missing, try with this:
+> On Thu, Oct 08, 2015 at 10:12:30PM +0200, Giorgio wrote:
 
- nft add rule nat prerouting ip protocol tcp \
-        redirect to tcp dport map { 22 : 2222, 23 : 2323 }
+> > <cmdline>:1:37-74: Error: transport protocol mapping is only valid after
+> > transport protocol match
 
-We may enhance our context generation routine so it infers the
-protocol context from the 'tcp dport' in the map in the future, but
-what I'm posting above should be fine by now.
+> That is telling that protocol context is missing, try with this:
+> 
+>  nft add rule nat prerouting ip protocol tcp \
+>         redirect to tcp dport map { 22 : 2222, 23 : 2323 }
 
-You can file a bug to bugzilla as request for enhancement, so we don't
-forget.
+The words, while technically correct, probably should convey more information. Perhaps something like:
 
-Thanks for reporting.
+"... Error: You must specify a transport protocol (TCP/UDP/etc.) before you can map it"
+
+Neal
