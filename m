@@ -1,26 +1,80 @@
-From: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
-Subject: iptables 1.4.21 'transient' error
-Date: Sat, 10 Oct 2015 01:25:00 -0400
-Message-ID: <20151010012500.4b7111aa@playground>
+From: christophe leroy <christophe.leroy@c-s.fr>
+Subject: Re: How are ct helper to be configured with NFT ?
+Date: Mon, 12 Oct 2015 20:06:38 +0200
+Message-ID: <561BF6AE.7080803@c-s.fr>
+References: <54761724.9060201@c-s.fr> <54815E4F.10500@c-s.fr>
+ <20141205103827.GB3746@salvia> <54EDBD07.5010801@c-s.fr>
+ <CAJCcFsgYxFZUiCfEa4tAZV6LSt23wg5xA25=m-w7aaiZ6OX2uQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Filter: OpenDKIM Filter v2.10.3 MAIL1.WPI.EDU t9A5P3vN027888
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wpi.edu; s=_dkim;
-	t=1444454703; i=@wpi.edu;
-	bh=J5oDlUs92fu6+gGGC0VJ1AXXdKbRQ8cB0aKJ4Hrx6bg=;
-	h=Date:From:To:Subject;
-	b=p26thHGavQSctF28HPpQKCz9e3r3neDfbvwffUOxjrMC6+Pv2Ls5ygjW81NCY3Kan
-	 m/eLE0PchT3AfsSC5RAtCGOpZ4P2m7sD0AnYCcXcROH+TcUHPTsfTPYTwYCEd3y2aT
-	 zRAN6hpwkjdmp0Sd0v/XMt9ivn6katZZJqTjjE/w=
+In-Reply-To: <CAJCcFsgYxFZUiCfEa4tAZV6LSt23wg5xA25=m-w7aaiZ6OX2uQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: Jason Sipula <alupis1@gmail.com>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter@vger.kernel.org
 
-I recently bumped Smoothwall to 1.4.21. Now I am seeing the error "commit failed on table mangle: Resource temporarily unavailable" during system boot. I know what is being executed; it always worked on the previous version (1.4.14). And it works OK when I bounce the links after startup. It only fails during boot, and possibly only under certain conditions.
 
-What exactly is this message telling me? That some parts of netfilter are slow to initialize? That 1.4.21 has interlocks that cause failure instead of delay in the case of concurrent access? I need some clues to figure out what's happening and how to work around (or otherwise avoid) the problem.
+Le 25/02/2015 16:58, Jason Sipula a =C3=A9crit :
+> my understanding was 3.13 had the core of nftables merged
+Yes but according to Pablo, "userspace supports this but unfortunately=20
+the kernel code is still missing".
+Hence my question.
 
-Thanks!
-Neal
+As of today, what is the status of nftables regarding the support of ct=
+=20
+helper ?
+If it is not in yet, how can I help getting it in ?
+
+Christophe
+
+>
+> On Wed, Feb 25, 2015 at 4:16 AM, leroy christophe
+> <christophe.leroy@c-s.fr> wrote:
+>> Le 05/12/2014 11:38, Pablo Neira Ayuso a =C3=A9crit :
+>>> On Fri, Dec 05, 2014 at 08:27:11AM +0100, leroy christophe wrote:
+>>>> test.c               100%
+>>>> |*****************************************************************=
+*******|
+>>>> 804   0:00:00 ETA
+>>>>
+>>>> # nft list ruleset
+>>>> table ip filter {
+>>>>           chain output {
+>>>>                    type filter hook output priority 0;
+>>>>                    udp dport tftp ct helper "tftp"
+>>> The right syntax is:
+>>>
+>>>           udp dport tftp ct helper set "tftp"
+>>>                                    ^^^
+>>>
+>>> your rule above does something different:
+>>>
+>>> 1) udp dport tftp
+>>>
+>>> and
+>>>
+>>> 2) the ct helper is "tftp"
+>>>
+>>> However, userspace supports this but unfortunately the kernel code =
+is
+>>> still missing.  So you'll have to wait for this feature or
+>>> (temporarily) rely on the automagic helper assignment (from that
+>>> message, I understand you already do).
+>> Any idea of when the kernel support will be added ?
+>>
+>> Christophe
+>>
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe netfilter"=
+ in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+
+---
+L'absence de virus dans ce courrier =C3=A9lectronique a =C3=A9t=C3=A9 v=
+=C3=A9rifi=C3=A9e par le logiciel antivirus Avast.
+https://www.avast.com/antivirus
+
