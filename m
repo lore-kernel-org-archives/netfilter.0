@@ -1,36 +1,48 @@
-From: Christophe Leroy <christophe.leroy@c-s.fr>
-Subject: Re: How are ct helper to be configured with NFT ?
-Date: Tue, 13 Oct 2015 07:49:39 +0200
-Message-ID: <561C9B73.9020509@c-s.fr>
-References: <54761724.9060201@c-s.fr> <54815E4F.10500@c-s.fr>
- <20141205103827.GB3746@salvia> <54EDBD07.5010801@c-s.fr>
- <CAJCcFsgYxFZUiCfEa4tAZV6LSt23wg5xA25=m-w7aaiZ6OX2uQ@mail.gmail.com>
- <561BF6AE.7080803@c-s.fr>
- <CAJCcFsip+zxLgOTjHfeWGug+up0+T3LM4Tb9+9uvvr0KDcBjMQ@mail.gmail.com>
+From: =?UTF-8?Q?St=C3=A9phane_Charette?= <stephanecharette@gmail.com>
+Subject: using conntrack to drop connections?
+Date: Tue, 13 Oct 2015 13:07:24 -0700
+Message-ID: <CA+HxBU+3O-Juj0Ma_Exxdmkfed11yEZQAC9+JVZV5G8cV+i1fg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAJCcFsip+zxLgOTjHfeWGug+up0+T3LM4Tb9+9uvvr0KDcBjMQ@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=TkAd4dvB6jcNAfJ948P0kvQrIzVMNaY9BzGvyQosKGY=;
+        b=j/+zKbxuPBg7JMRAJq3m31MYqHPygoeMH2FWmr6ZDvtSVB+8HjphYHk6iNtMOrIkNY
+         cpCdYf0el9dvaXlDWxK9BiEV30hRn8Z1FntoAtW99gSEZY5zTqrdva+ovc7uOlM/5yYL
+         1Z4mUIEeD2JOZ8Tv3NHuqzXWPbNXK+ISHbl2A6dyiL688QFxJV1tWh1OVAxLyJdWYWTa
+         kg3iNUdO7tTpJAQWdDAray/TqhTnXfXiHcZSW62AFYG1tjXfo1k7lePj6klRqs2w2G74
+         18FYOj1nixiHKyx9FIVJ1hjTGG7tfuePL7nf+JX6aVQ+uSdiJnrbG+G52wEwJt/LG/gm
+         /3uQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Jason Sipula <alupis1@gmail.com>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="macroman"
+To: netfilter@vger.kernel.org
 
+I see conntrack examples where a device used to forward packets can
+drop idle connections after a short time.  For example,
+http://stackoverflow.com/questions/9322325/ip-conntrack-tcp-timeout-est=
+ablished-not-applied-to-entire-subnet
 
+But can conntrack also be used on the end device, such as the server
+in a normal TCP client/server scenario?
 
-Le 12/10/2015 20:11, Jason Sipula a =C3=A9crit :
-> Maybe we're talking about different things? I had read in some places
-> that linux kernel version 3.13 had the core of nftables merged.
->
-> https://wiki.archlinux.org/index.php/Nftables
->
-> I do not know anything about ct helper, however.
+I'm looking at a customer issue that we suspect may be caused by an
+aggressive customer firewall dropping TCP connections after a very
+short idle time.  I was hoping to duplicate the customer scenario with
+iptable rules to quickly drop "idle" TCP connections.  Can this be
+done?
 
-"ct helper" stands for conntrack helper. It is some part of netfilter=20
-that helps conntrack
-to track complex streams like FTP or TFTP streams where the conntrack=20
-needs to identify and keep
-track of the data stream associated to the signalling stream
+> uname -rvp
+3.19.0-30-generic #34-Ubuntu SMP Fri Oct 2 22:08:41 UTC 2015 x86_64
+> dpkg -l | grep conntr
+ii  conntrack                       1:1.4.2-2ubuntu1   amd64   Program
+to modify the conntrack tables
+ii  libnetfilter-conntrack3:amd64   1.0.4-1            amd64
+Netfilter netlink-conntrack library
 
-Christophe
+TIA.
+
+St=C3=A9phane
