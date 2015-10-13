@@ -1,42 +1,36 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Christophe Leroy <christophe.leroy@c-s.fr>
 Subject: Re: How are ct helper to be configured with NFT ?
-Date: Mon, 12 Oct 2015 20:21:51 +0200
-Message-ID: <20151012182151.GA7856@salvia>
-References: <54761724.9060201@c-s.fr>
- <54815E4F.10500@c-s.fr>
- <20141205103827.GB3746@salvia>
- <54EDBD07.5010801@c-s.fr>
+Date: Tue, 13 Oct 2015 07:49:39 +0200
+Message-ID: <561C9B73.9020509@c-s.fr>
+References: <54761724.9060201@c-s.fr> <54815E4F.10500@c-s.fr>
+ <20141205103827.GB3746@salvia> <54EDBD07.5010801@c-s.fr>
  <CAJCcFsgYxFZUiCfEa4tAZV6LSt23wg5xA25=m-w7aaiZ6OX2uQ@mail.gmail.com>
  <561BF6AE.7080803@c-s.fr>
+ <CAJCcFsip+zxLgOTjHfeWGug+up0+T3LM4Tb9+9uvvr0KDcBjMQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <561BF6AE.7080803@c-s.fr>
+In-Reply-To: <CAJCcFsip+zxLgOTjHfeWGug+up0+T3LM4Tb9+9uvvr0KDcBjMQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: christophe leroy <christophe.leroy@c-s.fr>
-Cc: Jason Sipula <alupis1@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Jason Sipula <alupis1@gmail.com>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter@vger.kernel.org
 
-On Mon, Oct 12, 2015 at 08:06:38PM +0200, christophe leroy wrote:
->=20
-> Le 25/02/2015 16:58, Jason Sipula a =E9crit :
-> >my understanding was 3.13 had the core of nftables merged
-> Yes but according to Pablo, "userspace supports this but unfortunatel=
-y the
-> kernel code is still missing".
-> Hence my question.
->=20
-> As of today, what is the status of nftables regarding the support of =
-ct
-> helper ?
-> If it is not in yet, how can I help getting it in ?
 
-I'd appreciate of you can send me patches that we can discuss on
-netfilter-devel@vger.kernel.org.
 
-I think it only requires extra little code for the nft_meta expression
-from the kernel.
+Le 12/10/2015 20:11, Jason Sipula a =C3=A9crit :
+> Maybe we're talking about different things? I had read in some places
+> that linux kernel version 3.13 had the core of nftables merged.
+>
+> https://wiki.archlinux.org/index.php/Nftables
+>
+> I do not know anything about ct helper, however.
 
-Thanks.
+"ct helper" stands for conntrack helper. It is some part of netfilter=20
+that helps conntrack
+to track complex streams like FTP or TFTP streams where the conntrack=20
+needs to identify and keep
+track of the data stream associated to the signalling stream
+
+Christophe
