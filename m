@@ -1,62 +1,52 @@
-From: Andrew <nitr0@seti.kr.ua>
-Subject: Re: Kernel panic in 4.1.6 in nf_nat_redirect
-Date: Wed, 14 Oct 2015 21:45:33 +0300
-Message-ID: <561EA2CD.8000503@seti.kr.ua>
-References: <560D9DDD.8000601@seti.kr.ua> <20151004190543.GA17688@salvia>
- <56139E45.1000605@seti.kr.ua> <5613A136.7010203@seti.kr.ua>
- <20151014175859.GA3415@salvia>
+From: Ben Swartzlander <ben@swartzlander.org>
+Subject: Using NPTv6 with stateful firewall
+Date: Wed, 14 Oct 2015 22:40:15 -0400
+Message-ID: <561F120F.4070601@swartzlander.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20151014175859.GA3415@salvia>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=swartzlander.org; h=to
+	:from:subject:message-id:date:mime-version:content-type:
+	content-transfer-encoding; s=swartzlander.org; bh=/mqIbHsGS6HMTa
+	hGpxVN+njlJf0=; b=h1l9P7v0LmzZXOusVVC5KbSySwLentr426eQ8t/BWzltJ3
+	uMPTBpZtxdGHqxqpJjeac4HfFThRmIEj3wJ6k5bP/pWlHwS5rOEviJDAR57jJY/Z
+	sJIB32aOs07JvH0hwl1rn5dETDW/Xi9NvSgt3fTK3JTwqlmhN4vxCV1avVkLA=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-I switched to SNAT to avoid crashes.
+Like many people I'm struggling to figure out how to best manage an IPv6 
+network with multiple WAN connections. I discovered the NPTv6 concept 
+and read up on the implementation in ip6tables. According to the 
+documentation (I haven't tried it yet) I must disable connection 
+tracking if I use the DNPT and SNPT targets in ipt6tables [1]. This 
+seems to be a fairly serious limitation, because in my case the router 
+and the firewall are the same machine, and the whole point of a stateful 
+firewall is to track connections and only allow incoming packets related 
+to existing connections. Those who dislike NAT like to remind us that 
+the security an IPv4 NAT router gives us comes from the stateful 
+firewalling, not from the NAT feature, so it seems strange to implement 
+an address translation scheme that prevents connection tracking.
 
-I use 3rd-party software, that creates peer-to-peer pseudointerfaces on 
-DHCP packet, so on pseudointerface disappearing all packets are 
-processed via master interface that has no IP address, and this cause a 
-crash on test box. But similar crashes can be present in other configs 
-with eth interfaces w/o IP with REDIRECT rule (for ex., PPPoE BRAS).
+I'm wondering if I'm missing something in the docs and if there actually 
+is a way to do both IPv6 prefix translation and connection tracking at 
+the same time, or if it's the case that what I want simply isn't 
+implemented yet (or maybe never will be, perhaps with a good reason?) I 
+also noted that NPT doesn't modify the payload like normal NAT [2] which 
+seems like another serious limitation, making me think that perhaps the 
+feature in netfilter is still experimental and not fully implemented.
 
-14.10.2015 20:58, Pablo Neira Ayuso wrote:
-> On Tue, Oct 06, 2015 at 01:23:50PM +0300, Andrew wrote:
->> Maybe crash happens when packet comes to interface without assigned IP?
-> Do this resolved the problem for you?
->
-> Not telling here this is enough, obviously we shouldn't crash here.
->
->> 06.10.2015 13:11, Andrew wrote:
->>> Hi.
->>>
->>> I recompiled kernel with debug info enabled; here's gdb output:
->>>
->>> (gdb) list *nf_nat_redirect_ipv4+0x24
->>> 0x24 is in nf_nat_redirect_ipv4 (/var/testpoint/LEAF/source/i486-unknown-linux-uclibc/linux/linux-4.1/net/netfilter/nf_nat_redirect.c:60).
->>> 55
->>> 56            rcu_read_lock();
->>> 57            indev = __in_dev_get_rcu(skb->dev);
->>> 58            if (indev != NULL) {
->>> 59                ifa = indev->ifa_list;
->>> 60                newdst = ifa->ifa_local;
->>> 61            }
->>> 62            rcu_read_unlock();
->>> 63
->>> 64            if (!newdst)
->>>
->>>
->>> 04.10.2015 22:05, Pablo Neira Ayuso wrote:
->>>> Could you please do the following?
->>>>
->>>> $ gdb net/netfilter/nf_nat_redirect.o
->>>> $ list *nf_nat_redirect_ipv4+0x24
->>>>
->>>> And post the result, thanks.
->>> -- 
->>> To unsubscribe from this list: send the line "unsubscribe netfilter" in
->>> the body of a message to majordomo@vger.kernel.org
->>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I'm still hopeful that NPTv6 could be a good solution for multi-WAN with 
+IPv6, at least until other solutions materialize, such as the work of 
+the IETF homenet working group [3]. In the mean time it's a very big 
+hassle to manage multiple prefixes on my network which periodically 
+change at the whim of my ISPs, and I have absolutely no solution to help 
+hosts choose the "better" prefix by default without manually configuring 
+each host.
 
+-Ben Swartzlander
+
+[1] http://ipset.netfilter.org/iptables-extensions.man.html#lbCW
+[2] http://www.spinics.net/lists/netfilter/msg53833.html
+[3] https://tools.ietf.org/wg/homenet/
