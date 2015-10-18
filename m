@@ -1,53 +1,46 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: linux 3.4.43 : kernel crash at __nf_conntrack_confirm
-Date: Sun, 18 Oct 2015 10:07:02 +0200
-Message-ID: <20151018080702.GA14564@breakpoint.cc>
-References: <CAOxq_8PF91fpX9jYTgBbXnOVeVfSu3tytu-3P_Zr5OodGRoz+g@mail.gmail.com>
- <CAOxq_8Pt7VMwkV8+wdjS9vj=-L0L8Xxkd3Beit0zZN_oR6ixhw@mail.gmail.com>
+From: Steve Horsley <steve.horsley@gmail.com>
+Subject: nftables segv while trying to use nat redirection with map
+Date: Sun, 18 Oct 2015 13:32:09 +0100
+Message-ID: <56239149.2010805@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAOxq_8Pt7VMwkV8+wdjS9vj=-L0L8Xxkd3Beit0zZN_oR6ixhw@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-type:content-transfer-encoding;
+        bh=UVkI3GSt2okqK8bjAtvOhNSN8/nlDdjGErnPwHx9ixA=;
+        b=cvfkDlxwsmGoBcGweFqeUnBVLRAkdLDl88V2PS13RwA5GwvqeUbNCmHaJ6j+3afRd2
+         z2qBkO3assKys/16OCRarbmIn1twqAUPLB/6b1KjymE6bqn6E8gcuyGmvxBrR04VPhK/
+         Y3NG9t5NGWKI9TioSVlTdvMIQiV6NOzRARkZkJ4A9/Y5oROtNSrctnPDWDaN93GOQea0
+         a5dwwEuqeORW9T4Epla1T2TjdPrTv/UhFzaexPON59AxLZIcWuytgijTfexffygqxCO9
+         aUT+tu//4UOzbdPFTSQL2JQ8H6EcOq8feHblPjH563kF+I+KyygtziEhREGHZVI4nDO/
+         Li1w==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Ani Sinha <ani@arista.com>
-Cc: Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Ani Sinha <ani@arista.com> wrote:
-> Coming back to this crash, I see something interesting in the
-> conntrack code in linux 3.4.109 (a supported kernel version). I see
-> that the hash table manipulations are protected by a spinlock. Also
-> lookups/reads are protected by RCU. However allocation and
-> deallocation of conntrack objects happen outside of both the locks.
-> It seems to me that a conntrack object can be deallocated and a new
-> object can be allocated and initialized within the same RCU grace
-> period, while the hash table is being read.
+I would like to do host redirection using nftables, and using maps for 
+efficient host address lookup (thousands of entries).
+As a first step, I tried just natting the output from my laptop but the 
+real use will be on the prerouting chain:
+172.16.0.1 -> 8.8.8.8.
+The following works as intended:
+     nft add table nat
+     nft add chain nat output { type nat hook output priority 0 \; }
+     nft add rule nat output ip daddr 172.16.1.1 dnat 8.8.8.8
+     ping 172.16.1.1
 
-Yes.  We need to use SLAB_DESTROY_BY_RCU instead of kfree_rcu because
-there could be hundreds of thousands of alloc/free pairs within a short
-time period.
+But I can't get it to work using maps - this causes a segmentation error:
+     nft flush ruleset
+     nft add table nat
+     nft add chain nat output { type nat hook output priority 0 \; }
+     nft add rule ip nat output dnat ip daddr map { 172.16.1.1 : 8.8.8.8 }
+     nft list ruleset
 
-> It looks like a bug to me.
+I don't know if I just have the wrong syntax, if it's a bug in nft, or 
+if it's just something I shouldn't be trying to do in the first place. I 
+am using nftables 0.4 (ubuntu 15.10 beta) but had the same result on 
+ubuntu 15.04.
 
-No, as long as readers detect object reuse.
-
-> > Looking upstream, I see a couple of patches which fixes race condition
-> > around the use of the conntrack hash table with RCU (lock free read)
-> > primitives :
-> >
-> > commit c6825c0976fa7893692e0e43b09740b419b23c09
-> > Author: Andrey Vagin <avagin@openvz.org>
-> > Date:   Wed Jan 29 19:34:14 2014 +0100
-> >      netfilter: nf_conntrack: fix RCU race in nf_conntrack_find_get
-> >
-> > and a followup patch :
-> >
-> > commit e53376bef2cd97d3e3f61fdc677fb8da7d03d0da
-> > Author: Pablo Neira Ayuso <pablo@netfilter.org>
-> > Date:   Mon Feb 3 20:01:53 2014 +0100
-> >         netfilter: nf_conntrack: don't release a conntrack with non-zero refcnt
-> >
-
-These for instance fix such bugs.
