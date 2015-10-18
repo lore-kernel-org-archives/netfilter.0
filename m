@@ -1,193 +1,183 @@
-From: Miroslav Kratochvil <exa.exa@gmail.com>
-Subject: Lots of WARNINGs in sch_hfsc with attached codel or fq_codel
-Date: Sat, 17 Oct 2015 12:30:28 +0200
-Message-ID: <CAO0uZ+_tB_5n8nrDhnPcN-b2miucAM4VXrg8mL9fc-zKr6Cb-Q@mail.gmail.com>
+From: Ani Sinha <ani@arista.com>
+Subject: Re: linux 3.4.43 : kernel crash at __nf_conntrack_confirm
+Date: Sat, 17 Oct 2015 19:34:47 -0700
+Message-ID: <CAOxq_8Pt7VMwkV8+wdjS9vj=-L0L8Xxkd3Beit0zZN_oR6ixhw@mail.gmail.com>
+References: <CAOxq_8PF91fpX9jYTgBbXnOVeVfSu3tytu-3P_Zr5OodGRoz+g@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=5MXR0gcPnYGwa9Bf57+ANDXOqKOQBuiv0tVzTtTrwfc=;
-        b=PiEDkgUgKfbczc1KNV8IiAnQaHvzTzwN3lGiCGCHE5nUJIfZQqmO/xMHHX2Y+CAN83
-         YP694lzRhMZoRZBOHD/sXdAYEE620weOQHWTFDyKdecG450GCA3NNzb/SE4l2vsFCvv1
-         hVoTuXuI8zQ6xQkC7XNdM9nlj7dt65kfY2FZZydIPGuAcrrSiD5fz2MG6amH0gtJQTb/
-         OOlnYzRy0Q6HK1FHsg5x09tMluYSW9qdfM3F+/672REIoHP6scaa1eQbHV718mvzjAV+
-         uIM5eJOa44EwyVAohyMY0wqMKxdSe0sre9sw+IrgLoLVzEFSfZJJfi4kTjEjqF8Z0tqi
-         ECyA==
-Sender: netfilter-owner@vger.kernel.org
+        d=arista.com; s=google;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :content-type;
+        bh=dzT239hBLmfcFlWVMl2/pc8g/GMBFwU85QgXzGLcwJk=;
+        b=F4sgJ8XIQ8HwjQLFZB1wiW4SIsnzPJM9ZjJoiouz2aqS1uyGLifu+oPpY8Exc/e0Nz
+         3gdbGmfA2oskkBjiFGNg4X967112SbG3OR09EZxyKEpfLi87qiSVGwRjfZ2wWHtAAkl+
+         Lu5T2ceRCzgfU0N/zMt8+KkBEeZtwhKS7IM5Q=
+In-Reply-To: <CAOxq_8PF91fpX9jYTgBbXnOVeVfSu3tytu-3P_Zr5OodGRoz+g@mail.gmail.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 
-Hello everyone,
+Hi guys,
 
-I'm using a hfsc qdisc to do some bandwidth-intensive QoS. After some
-upgrading (3.16 -> 4.2) I have probably hit an issue similar to the
-one reported in debian bugs here:
+Coming back to this crash, I see something interesting in the
+conntrack code in linux 3.4.109 (a supported kernel version). I see
+that the hash table manipulations are protected by a spinlock. Also
+lookups/reads are protected by RCU. However allocation and
+deallocation of conntrack objects happen outside of both the locks.
+It seems to me that a conntrack object can be deallocated and a new
+object can be allocated and initialized within the same RCU grace
+period, while the hash table is being read. It looks like a bug to me.
+Do you guys have any thoughts on this? Situations like the one I
+described can result in the crash I sent below.
 
-https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=631945
+thanks
+ani
 
-In short, when codel or fq_codel qdiscs are attached to HFSC leaf
-classes, the kernel sometimes generates bursts of WARNINGs like the
-one attached below. The burst repeats several times in a hour and
-lasts just several seconds (20 at most), but can trigger several
-thousand warnings per second, which usually makes the userspace
-slow/unresponsive. Kernel stuff (including actual traffic shaping)
-works without noticeable trouble.
-
-The debian issue (that was reported for the same error, only with SFQ
-attached instead of codel) has been solved by fixing a statistic
-counting, citing:
-
-> Oh well, it seems one qdisc_tree_decrease_qlen(sch, 1) is missing
-
-Because the issue got fixed for me if I used sfq instead of
-(fq_)codel, I assumed that similar patch would be needed for codels.
-For my investigation so far, I tried to remove the check that
-postpones the qlen update until next cycle (it seemed like a
-HTB-specific hack, removal patch attached below), but that didn't fix
-the problem.
-
-Also, the issue doesn't seem to happen with older kernels (Notably the
-default one from debian jessie,  3.16.0-4-amd64 #1 SMP Debian
-3.16.7-ckt7-1. Current machine uses 4.2.0-1-amd64 #1 SMP Debian
-4.2.1-2), so it would be also possible that some of recent (~2014)
-HFSC changes broke it, but they do not seem dangerous in any way to
-me.
-
-Do you have some idea what could cause the warnings, or a pointer
-where to continue the search for the cause?
-
-Thanks in advance,
--mk
-
-
-Attached, the warning:
-
-
-[762997.348743] WARNING: CPU: 1 PID: 191 at
-/build/linux-hTOZhE/linux-4.2.1/net/sched/sch_hfsc.c:1429
-hfsc_dequeue+0x2f6/0x310 [sch_hfsc]()
-[762997.348744] Modules linked in: sch_fq_codel sch_sfq binfmt_misc
-act_mirred act_gact sch_ingress sch_codel cls_u32 sch_hfsc nfsd
-auth_rpcgss oid_registry nfs_acl nfs lockd grace fscache sunrpc
-x86_pkg_temp_thermal intel_powerclamp intel_rapl iosf_mbi processor
-thermal_sys coretemp kvm_intel iTCO_wdt kvm crct10dif_pclmul
-iTCO_vendor_support crc32_pclmul ghash_clmulni_intel ast ttm
-drm_kms_helper drm sg evdev joydev serio_raw lpc_ich mfd_core
-sha256_ssse3 sha256_generic ie31200_edac edac_core hmac i2c_i801
-shpchp pcspkr drbg ansi_cprng aesni_intel aes_x86_64 lrw gf128mul
-glue_helper ablk_helper cryptd ifb autofs4 xfs libcrc32c hid_generic
-usbhid hid sd_mod ixgbe igb i2c_algo_bit dca vxlan ip6_udp_tunnel
-udp_tunnel mdio ahci libahci libata crc32c_intel scsi_mod xhci_pci
-ehci_pci xhci_hcd ehci_hcd e1000e
-[762997.348763]  ptp pps_core usbcore usb_common
-[762997.348764] CPU: 1 PID: 191 Comm: systemd-journal Tainted: G
- W       4.2.0-1-amd64 #1 Debian 4.2.1-2
-[762997.348765] Hardware name: Supermicro X10SLL-F/X10SLL-F, BIOS 2.0 04/24/2014
-[762997.348766]  0000000000000000 ffffffffa0600060 ffffffff81548756
-0000000000000000
-[762997.348767]  ffffffff8106e571 ffff88040a15e600 00000ada74e993a3
-ffff88040cb7b800
-[762997.348768]  ffff88040cb7bc90 ffff8803cd9ad700 ffffffffa05fe546
-ffff88040a15e600
-[762997.348769] Call Trace:
-[762997.348770]  <IRQ>  [<ffffffff81548756>] ? dump_stack+0x40/0x50
-[762997.348772]  [<ffffffff8106e571>] ? warn_slowpath_common+0x81/0xb0
-[762997.348774]  [<ffffffffa05fe546>] ? hfsc_dequeue+0x2f6/0x310 [sch_hfsc]
-[762997.348775]  [<ffffffff8147ce1f>] ? __qdisc_run+0x3f/0x1b0
-[762997.348776]  [<ffffffff8145c3cf>] ? __dev_queue_xmit+0x2bf/0x540
-[762997.348778]  [<ffffffffa06c1580>] ? tcf_mirred+0x120/0x188 [act_mirred]
-[762997.348779]  [<ffffffff814823a5>] ? tcf_action_exec+0x45/0x80
-[762997.348780]  [<ffffffffa06ac9fc>] ? u32_classify+0x20c/0x430 [cls_u32]
-[762997.348781]  [<ffffffff8147cc5d>] ? sch_direct_xmit+0x5d/0x1e0
-[762997.348783]  [<ffffffff8147df14>] ? tc_classify_compat+0x54/0x80
-[762997.348784]  [<ffffffff8147e9db>] ? tc_classify+0x2b/0x80
-[762997.348785]  [<ffffffff81459d9b>] ? __netif_receive_skb_core+0x4fb/0x9a0
-[762997.348786]  [<ffffffff8101c2e5>] ? read_tsc+0x5/0x10
-[762997.348788]  [<ffffffff8145a2bf>] ? netif_receive_skb_internal+0x1f/0x80
-[762997.348789]  [<ffffffff8145ae08>] ? napi_gro_receive+0x98/0xc0
-[762997.348791]  [<ffffffffa0278f1d>] ? ixgbe_clean_rx_irq+0x54d/0xa90 [ixgbe]
-[762997.348793]  [<ffffffffa027a114>] ? ixgbe_poll+0x424/0x790 [ixgbe]
-[762997.348795]  [<ffffffff8145a0e1>] ? __netif_receive_skb_core+0x841/0x9a0
-[762997.348796]  [<ffffffff8145a76a>] ? net_rx_action+0x20a/0x320
-[762997.348797]  [<ffffffff8107254e>] ? __do_softirq+0xfe/0x250
-[762997.348798]  [<ffffffff81072812>] ? irq_exit+0x92/0xa0
-[762997.348799]  [<ffffffff81550a3f>] ? do_IRQ+0x4f/0xd0
-[762997.348801]  [<ffffffff8154e9eb>] ? common_interrupt+0x6b/0x6b
-[762997.348801]  <EOI>
-[762997.348802] ---[ end trace c1d672c9597e7d60 ]---
-[762997.349389] systemd-journald[191]: /dev/kmsg buffer overrun, some
-messages lost.
-
-[ ... ]
-
-The patch that tried to disable the htb-specific check:
-
---- a/net/sched/sch_codel.c
-+++ b/net/sched/sch_codel.c
-@@ -79,10 +79,7 @@ static struct sk_buff *codel_qdisc_dequeue(struct Qdisc *sch)
-
-     skb = codel_dequeue(sch, &q->params, &q->vars, &q->stats, dequeue);
-
--    /* We cant call qdisc_tree_decrease_qlen() if our qlen is 0,
--     * or HTB crashes. Defer it for next round.
--     */
--    if (q->stats.drop_count && sch->q.qlen) {
-+    if (q->stats.drop_count) {
-         qdisc_tree_decrease_qlen(sch, q->stats.drop_count);
-         q->stats.drop_count = 0;
-     }
-diff --git a/net/sched/sch_fq_codel.c b/net/sched/sch_fq_codel.c
-index 4c834e9..3619598 100644
---- a/net/sched/sch_fq_codel.c
-+++ b/net/sched/sch_fq_codel.c
-@@ -276,10 +276,7 @@ begin:
-     }
-     qdisc_bstats_update(sch, skb);
-     flow->deficit -= qdisc_pkt_len(skb);
--    /* We cant call qdisc_tree_decrease_qlen() if our qlen is 0,
--     * or HTB crashes. Defer it for next round.
--     */
--    if (q->cstats.drop_count && sch->q.qlen) {
-+    if (q->cstats.drop_count) {
-         qdisc_tree_decrease_qlen(sch, q->cstats.drop_count);
-         q->cstats.drop_count = 0;
-     }
--- 
-
-The hardware, just to be sure:
-00:00.0 Host bridge: Intel Corporation Xeon E3-1200 v3 Processor DRAM
-Controller (rev 06)
-00:14.0 USB controller: Intel Corporation 8 Series/C220 Series Chipset
-Family USB xHCI (rev 05)
-00:19.0 Ethernet controller: Intel Corporation Ethernet Connection
-I217-LM (rev 05)
-00:1a.0 USB controller: Intel Corporation 8 Series/C220 Series Chipset
-Family USB EHCI #2 (rev 05)
-00:1c.0 PCI bridge: Intel Corporation 8 Series/C220 Series Chipset
-Family PCI Express Root Port #1 (rev d5)
-00:1c.1 PCI bridge: Intel Corporation 8 Series/C220 Series Chipset
-Family PCI Express Root Port #2 (rev d5)
-00:1c.4 PCI bridge: Intel Corporation 8 Series/C220 Series Chipset
-Family PCI Express Root Port #5 (rev d5)
-00:1d.0 USB controller: Intel Corporation 8 Series/C220 Series Chipset
-Family USB EHCI #1 (rev 05)
-00:1f.0 ISA bridge: Intel Corporation C222 Series Chipset Family
-Server Essential SKU LPC Controller (rev 05)
-00:1f.2 SATA controller: Intel Corporation 8 Series/C220 Series
-Chipset Family 6-port SATA Controller 1 [AHCI mode] (rev 05)
-00:1f.3 SMBus: Intel Corporation 8 Series/C220 Series Chipset Family
-SMBus Controller (rev 05)
-00:1f.6 Signal processing controller: Intel Corporation 8 Series
-Chipset Family Thermal Management Controller (rev 05)
-01:00.0 PCI bridge: ASPEED Technology, Inc. AST1150 PCI-to-PCI Bridge (rev 03)
-02:00.0 VGA compatible controller: ASPEED Technology, Inc. ASPEED
-Graphics Family (rev 30)
-03:00.0 Ethernet controller: Intel Corporation I210 Gigabit Network
-Connection (rev 03)
-04:00.0 Ethernet controller: Intel Corporation 82599ES 10-Gigabit
-SFI/SFP+ Network Connection (rev 01)
-04:00.1 Ethernet controller: Intel Corporation 82599ES 10-Gigabit
-SFI/SFP+ Network Connection (rev 01)
+On Wed, Oct 7, 2015 at 12:57 PM, Ani Sinha <ani@arista.com> wrote:
+> Hi guys :
+>
+> We encountered a kernel crash on one of our boxes running 3.4.43
+> kernel in the conntrack code. We are using dnsmasq as a proxy to relay
+> our dns requests to the real dns server. We verified that the
+> conntrack tables were not full. running conntrack -L around the time
+> of the crash showed that it had more than 2100 entries for dnsmasq.
+>
+> Looking upstream, I see a couple of patches which fixes race condition
+> around the use of the conntrack hash table with RCU (lock free read)
+> primitives :
+>
+> commit c6825c0976fa7893692e0e43b09740b419b23c09
+> Author: Andrey Vagin <avagin@openvz.org>
+> Date:   Wed Jan 29 19:34:14 2014 +0100
+>      netfilter: nf_conntrack: fix RCU race in nf_conntrack_find_get
+>
+> and a followup patch :
+>
+> commit e53376bef2cd97d3e3f61fdc677fb8da7d03d0da
+> Author: Pablo Neira Ayuso <pablo@netfilter.org>
+> Date:   Mon Feb 3 20:01:53 2014 +0100
+>         netfilter: nf_conntrack: don't release a conntrack with non-zero refcnt
+>
+>
+> We are trying to reproduce the crash again but it is very rare.
+> Meanwhile, I have two questions:
+>
+> - Do you guys think the race condition described in the above two
+> patches have anything to do with the crash I mention below?
+> - If answer to the above is a NO, then have you guys have any other
+> reports of a similar crash or any idea what could be going on?
+>
+> We are still investigating and I will update this thread if I can get
+> additional info.
+>
+> Thanks
+> Ani
+>
+> <1>[10618591.817967] BUG: unable to handle kernel NULL pointer
+> dereference at           (null)
+> <1>[10618591.914483] IP: [<ffffffffa007b3f7>]
+> __nf_conntrack_confirm+0x1fb/0x36c [nf_conntrack]
+> <4>[10618592.012027] PGD 5aa67067 PUD 5b4f4067 PMD 0
+> <4>[10618592.012035] Oops: 0002 [#1] PREEMPT SMP
+> <4>[10618592.012041] CPU 1
+> <4>[10618592.012043] Modules linked in: xt_comment sch_prio fpdma(PO)
+> msr nf_conntrack_ipv6 nf_defrag_ipv6 ip6t_REJECT ip6table_mangle
+> nf_conntrack_ipv4
+> nf_defr
+> ag_ipv4 xt_LOG xt_limit xt_hl xt_state ipt_REJECT xt_multiport
+> xt_tcpudp iptable_mangle kbfd(O) 8021q garp stp llc tun
+> nf_conntrack_tftp iptable_raw
+> iptable_fil
+> ter ip_tables xt_NOTRACK nf_conntrack xt_mark ip6table_raw
+> ip6table_filter ip6_tables x_tables k10temp hwmon amd64_edac_mod
+> scd(O) microcode kvm_amd kvm
+> <4>[10618592.012092]
+> <4>[10618592.012096] Pid: 5586, comm: dnsmasq Tainted: P           O 3.4.43 #1
+> <4>[10618592.012102] RIP: 0010:[<ffffffffa007b3f7>]
+> [<ffffffffa007b3f7>] __nf_conntrack_confirm+0x1fb/0x36c [nf_conntrack]
+> <4>[10618592.012112] RSP: 0018:ffff88005aa1fb98  EFLAGS: 00010202
+> <4>[10618592.012116] RAX: 0000000000002769 RBX: ffff880063d58658 RCX:
+> 000000001cc74948
+> <4>[10618592.012120] RDX: 0000000000000000 RSI: ffff88010cd80000 RDI:
+> 0000000000004000
+> <4>[10618592.012123] RBP: ffff88005aa1fbc8 R08: 00000000872541be R09:
+> 000000007aa31682
+> <4>[10618592.012127] R10: ffff880063d586d8 R11: ffff88005aa1fb68 R12:
+> ffffffff81648180
+> <4>[10618592.012130] R13: 00000000000017ef R14: 000000000000bf78 R15:
+> 0000000000009da0
+> <4>[10618592.012135] FS:  0000000000000000(0000)
+> GS:ffff88013fb00000(0063) knlGS:00000000f74126d0
+> <4>[10618592.012139] CS:  0010 DS: 002b ES: 002b CR0: 0000000080050033
+> <4>[10618592.012142] CR2: 0000000000000000 CR3: 000000005b412000 CR4:
+> 00000000000007e0
+> <4>[10618592.012146] DR0: 0000000000000000 DR1: 0000000000000000 DR2:
+> 0000000000000000
+> <4>[10618592.012149] DR3: 0000000000000000 DR6: 00000000ffff0ff0 DR7:
+> 0000000000000400
+> <4>[10618592.012154] Process dnsmasq (pid: 5586, threadinfo
+> ffff88005aa1e000, task ffff8800727d6050)
+> <4>[10618592.012156] Stack:
+> <4>[10618592.012159]  0000000000000000 ffff8800889050c0
+> ffff8800889050c0 ffff880063d58658
+> <4>[10618592.012166]  0000000000000004 0000000000000002
+> ffff88005aa1fc38 ffffffffa00e3c54
+> <4>[10618592.012172]  0000000000000004 0000000000000000
+> ffff88005aa1fc38 ffffffffa0078168
+> <4>[10618592.012179] Call Trace:
+> <4>[10618592.012186] [<ffffffffa00e3c54>] ipv4_confirm+0x17e/0x1a5
+> [nf_conntrack_ipv4]
+> <4>[10618592.012192] [<ffffffffa0078168>] ?
+> iptable_mangle_hook+0xfa/0x116 [iptable_mangle]
+> <4>[10618592.012199] [<ffffffff81324afe>] ? ip_finish_output+0x0/0x36f
+> <4>[10618592.012205] [<ffffffff8131900f>] nf_iterate+0x43/0x78
+> <4>[10618592.012210] [<ffffffff81324afe>] ? ip_finish_output+0x0/0x36f
+> <4>[10618592.012214] [<ffffffff813191a1>] nf_hook_slow+0x6e/0x106
+> <4>[10618592.012219] [<ffffffff81324afe>] ? ip_finish_output+0x0/0x36f
+> <4>[10618592.012224] [<ffffffff813222e8>] ? dst_output+0x0/0x11
+> <4>[10618592.012229] [<ffffffff81324ef0>] ip_output+0x83/0x97
+> <4>[10618592.012234] [<ffffffff813240a3>] ? __ip_local_out+0x9c/0x9e
+> <4>[10618592.012239] [<ffffffff813240c9>] ip_local_out+0x24/0x28
+> <4>[10618592.012244] [<ffffffff8132462f>] ip_queue_xmit+0x2e4/0x322
+> <4>[10618592.012249] [<ffffffff81336f97>] tcp_transmit_skb+0x766/0x7a7
+> <4>[10618592.012254] [<ffffffff81337345>] tcp_send_active_reset+0xd8/0x104
+> <4>[10618592.012258] [<ffffffff8132b8c6>] tcp_close+0x101/0x335
+> <4>[10618592.012264] [<ffffffff8134b8f2>] inet_release+0x7b/0x82
+> <4>[10618592.012269] [<ffffffff812ea36e>] sock_release+0x1a/0x72
+> <4>[10618592.012273] [<ffffffff812ea3e8>] sock_close+0x22/0x26
+> <4>[10618592.012278] [<ffffffff810aad2d>] fput+0x117/0x1f8
+> <4>[10618592.012283] [<ffffffff810a7ce2>] filp_close+0x6d/0x78
+> <4>[10618592.012288] [<ffffffff810a7d7b>] sys_close+0x8e/0xc8
+> <4>[10618592.012293] [<ffffffff813dcacb>] cstar_dispatch+0x7/0x1e
+> <4>[10618592.012296] Code: 31 d2 0f b6 d2 85 d2 0f 85 61 01 00 00 48
+> 8b 00 a8 01 75 0d 8b 53 68 3b 50 10 75 94 e9 6a ff ff ff 48 8b 43 20
+> 48 8b 53 28 a8 01
+> <48>
+>  89 02 75 04 48 89 50 08 49 bd 00 02 20 00 00 00 ad de 48 8d
+> <1>[10618592.012355] RIP  [<ffffffffa007b3f7>]
+> __nf_conntrack_confirm+0x1fb/0x36c [nf_conntrack]
+> <4>[10618592.110942]  RSP <ffff88005aa1fb98>
+> <4>[10618592.110944] CR2: 0000000000000000
+>
+>
+> The crash happened here in this code :
+>
+> static inline void __hlist_nulls_del(struct hlist_nulls_node *n)
+> {
+>        struct hlist_nulls_node *next = n->next;
+>         struct hlist_nulls_node **pprev = n->pprev;
+>                                                    *pprev = next;
+>          1ac1:       48 89 02                mov    %rax,(%rdx)  <==== CRASH
+>         if (!is_a_nulls(next))
+>     1ac4:       75 04                   jne    1aca
+> <nf_ct_delete_from_lists+0x62>
+> next->pprev = pprev;
+>
+> 1ac6:       48 89 50 08             mov    %rdx,0x8(%rax)
+> * hlist_nulls_for_each_entry().
+> */
+>
+> The instruction is *prev = next and pprev pointer is NULL (RDX)
