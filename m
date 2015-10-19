@@ -1,84 +1,81 @@
-From: Florian Westphal <fw@strlen.de>
+From: Ani Sinha <ani@arista.com>
 Subject: Re: linux 3.4.43 : kernel crash at __nf_conntrack_confirm
-Date: Sun, 18 Oct 2015 23:40:50 +0200
-Message-ID: <20151018214050.GD4386@breakpoint.cc>
+Date: Mon, 19 Oct 2015 13:22:51 -0700
+Message-ID: <CAOxq_8N1Cx8duPy47THVMnDqN58=a_=gbmzksvVarVr9qkS5Uw@mail.gmail.com>
 References: <CAOxq_8PF91fpX9jYTgBbXnOVeVfSu3tytu-3P_Zr5OodGRoz+g@mail.gmail.com>
  <CAOxq_8Pt7VMwkV8+wdjS9vj=-L0L8Xxkd3Beit0zZN_oR6ixhw@mail.gmail.com>
- <20151018080702.GA14564@breakpoint.cc>
- <CAOxq_8NLLFyNCSDJ68+VjxFGpNSex8ShdhGFNBHK29g_+UBW6g@mail.gmail.com>
- <alpine.OSX.2.20.1510181409060.87917@athabasca.local>
+ <20151018080702.GA14564@breakpoint.cc> <CAOxq_8NLLFyNCSDJ68+VjxFGpNSex8ShdhGFNBHK29g_+UBW6g@mail.gmail.com>
+ <alpine.OSX.2.20.1510181409060.87917@athabasca.local> <20151018214050.GD4386@breakpoint.cc>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.OSX.2.20.1510181409060.87917@athabasca.local>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc:content-type;
+        bh=1XsCgw51tH98+Of/rQrLxLw4gj/wol16/F9wWh+pcZI=;
+        b=RpAHRqP8V2st8HFY64YI6ZKISUgym2BJFeU6Aux1muc/JlfAqs8VItCwvX1It4tr8f
+         t8CKrL/yzuiGwDkJaISVz6+6/YxZJbzPpLp3Q+1ohGejdT21qcBYiHSf1ySUqpf85lBE
+         BCcsx13+FxliPVhfuRnrmniqq/15uhOx0EKr4=
+In-Reply-To: <20151018214050.GD4386@breakpoint.cc>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Ani Sinha <ani@arista.com>
-Cc: Florian Westphal <fw@strlen.de>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+To: Florian Westphal <fw@strlen.de>
+Cc: Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 
-Ani Sinha <ani@arista.com> wrote:
-> Indeed. So it seems to me that we have run into one another such case.
-> In patch c6825c0976fa7893692, I see we have added an additional check (along with comparing tuple and zone) to verify that if the conntrack is confirmed.
->  
-> +       return nf_ct_tuple_equal(tuple, &h->tuple) &&
-> +               nf_ct_zone(ct) == zone &&
-> +               nf_ct_is_confirmed(ct);
-> 
-> This is necessary since it's possible that a conntrack can be recreated with the same zone.
-> Unfortunately, we leave a hole open in __nf_conntrack_confirm() because this routine _is_ responsible
-> for confirming the conntrack. We cannot use the same logic here.
+On Sun, Oct 18, 2015 at 2:40 PM, Florian Westphal <fw@strlen.de> wrote:
+> Ani Sinha <ani@arista.com> wrote:
+>> Indeed. So it seems to me that we have run into one another such case.
+>> In patch c6825c0976fa7893692, I see we have added an additional check (along with comparing tuple and zone) to verify that if the conntrack is confirmed.
+>>
+>> +       return nf_ct_tuple_equal(tuple, &h->tuple) &&
+>> +               nf_ct_zone(ct) == zone &&
+>> +               nf_ct_is_confirmed(ct);
+>>
+>> This is necessary since it's possible that a conntrack can be recreated with the same zone.
+>> Unfortunately, we leave a hole open in __nf_conntrack_confirm() because this routine _is_ responsible
+>> for confirming the conntrack. We cannot use the same logic here.
+>
+> Hmm, why?
+>
+> I don't understand why we need to change __nf_conntrack_confirm(), can
+> you elaborate?
 
-Hmm, why?
+ok, let's take a step back. The fundamental question I am trying to
+find answer to is that whether it is possible for another thread to
+deallocate and then reallocate and initialize the conntrack object
+while running concurrently during __nf_conntrack_confirm() . The crash
+below seems to indicate that this can happen.
 
-I don't understand why we need to change __nf_conntrack_confirm(), can
-you elaborate?
+However, in the current 3.4 release (and the image which generated the
+crash), we do not have the patch
 
-At __nf_conntrack_confirm call time, only one cpu can see this nfct entry.
-Other cpus on read-side can see it due to object re-use but any of the
-following tests should fail:
+e53376bef2cd97d3e3f61fdc6
 
-1. different tuples
-2. differnet zones
-3. CONFIRMED not set
+applied. This patch bumps the refcount before adding the connrack
+entry into the unconfirmed list.
 
-So they would skip entry and restart lookup (NULs value mismatch).
++ /* Now it is inserted into the unconfirmed list, bump refcount */
++ nf_conntrack_get(&ct->ct_general);
 
-> Should I send a patch along the lines of :
->  
-> diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-> index 71935fc..6ff4088 100644
-> --- a/net/netfilter/nf_conntrack_core.c
-> +++ b/net/netfilter/nf_conntrack_core.c
-> @@ -535,6 +535,12 @@ __nf_conntrack_confirm(struct sk_buff *skb)
->  		    zone == nf_ct_zone(nf_ct_tuplehash_to_ctrack(h)))
->  			goto out;
->  
-> +	/* we might be racing against a case where the conntrack was deleted 
-> +	   and a new conntrack was initialized with the exact same zone. We
-> +	   need to make sure that the conntrack node is in the hashtable */
+and if we assume the invariant that nf_conntrack_free() is never
+called when refcount is !=0, then this would seem to indicate that the
+above patch should fix the crash I mentioned in the thread.
 
-?
+One curious piece of hunk is :
 
-The conntrack is NOT in the hashtable at this point.  Its not even on
-the unconfirmed list since we already removed it in preparation of
-hashtable insertion.
++ /* A freed object has refcnt == 0, that's
++ * the golden rule for SLAB_DESTROY_BY_RCU
++ */
++ NF_CT_ASSERT(atomic_read(&ct->ct_general.use) == 0);
++
 
-> +	if (hlist_nulls_unhashed(&ct->tuplehash[IP_CT_DIR_ORIGINAL].hnnode))
-> +	  goto out;
+First, this assertion only puts a warning log at best when it fails.
+Second, if this assertion is false, at some point we will get into a
+kernel crash as the one I mentioned. So this assertion effectively
+does nothing other than perhaps help in debugging. Third, the very
+fact that this assertion was placed seems to indicate that there might
+be cases where we can free a conntrack object with non-zero ref-count.
 
-That would be a bug, how can ->nfct be confirmed twice?
-
-If you're talking about IPS_CONFIRMED getting set -- that should be
-harmless.  In some theoretical condition we could indeed observe this
-nfct on another cpu, just before we actually insert this but this does
-not cause a problem on the read-side since the conntrack matches the
-tuple exactly and all extensions have been initialized.
-
-And if we create two conntracks with identical tuples on different CPUs
-which is possible regardless of RCU this will be detected during
-confirm step (we search ht for a colliding tuple).
-
-So, if there is a problem please describe in more detail, I don't see
-anything wrong so far.
+Does all this makes sense?
