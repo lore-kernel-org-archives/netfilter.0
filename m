@@ -1,67 +1,131 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: How to use NFT inet sets???
-Date: Tue, 20 Oct 2015 13:46:17 +0200
-Message-ID: <20151020114617.GA3501@salvia>
-References: <56261C9A.3020902@sabitov.su>
+From: giorgio.nicole@arcor.de
+Subject: Aw: Re: nft 'script' not working
+Date: Tue, 20 Oct 2015 14:37:46 +0200 (CEST)
+Message-ID: <512001352.171753.1445344666801.JavaMail.ngmail@webmail12.arcor-online.net>
+References: <20151020103959.GA2206@salvia> <808081249.162491.1445328120632.JavaMail.ngmail@webmail12.arcor-online.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <56261C9A.3020902@sabitov.su>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=arcor.de; s=mail-in;
+	t=1445344666; bh=QE3KGM9Bitj7RXpJMas8goZyv4fy7HPQPvtTeacXFi4=;
+	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
+	 MIME-Version:Content-Type:Content-Transfer-Encoding;
+	b=ngSWQ8cNz2rHi5DjEcwSVKIqCiP4U9dRKB9UAM8waKy5b6Yp/wudPZJScB7LUwTyN
+	 R75tCMe7t05fkpZApKnT4sBjDd/K0Vy/ZtChOFf/l9COM4woFsZLqMqMUVc9J8O0S/
+	 L61LUSHW367+4i2F1bk4MKQUj7CnKBD7hSG+Vigg=
+In-Reply-To: <20151020103959.GA2206@salvia>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "sabitov@sabitov.su" <sabitov@sabitov.su>
+To: pablo@netfilter.org
 Cc: netfilter@vger.kernel.org
 
-On Tue, Oct 20, 2015 at 04:51:06PM +0600, sabitov@sabitov.su wrote:
-> Hi!
+----- Original Nachricht ----
+Von:     Pablo Neira Ayuso <pablo@netfilter.org>
+An:      giorgio.nicole@arcor.de
+Datum:   20.10.2015 12:39
+Betreff: Re: nft 'script' not working
+
+> On Tue, Oct 20, 2015 at 10:02:00AM +0200, giorgio.nicole@arcor.de wrote:
+> > Hi,
+> > 
+> > I'm facing problems trying to run a simple nft script to
+> > setup a very simple firewall.
+> > 
+> > Here are the script pieces:
+> > 
+> > # cat /etc/nftables/fw_basic.nft
+> > #!/sbin/nft -f
+> > flush ruleset
+> > include "/etc/nftables/ipv4-nat"
+> > include "/etc/nftables/ipv6-nat"
+> > table inet filter {
+> > 	chain input {
+> > 		type filter hook input priority 0; policy accept;
+> > 		iif lo accept
+> > 		ct state established,related accept
+> > 		ip6 nexthdr icmpv6 icmpv6 type { nd-neighbor-solicit, echo-request,
+> nd-router-advert, nd-neighbor-advert } accept
+> > 		tcp dport { 22, 80, 443 } accept
+> > 		udp dport { 5353 } accept
+> > 	}
+> > }
+> > include "/var/lib/nftables/user.nft"
+> > 
+> > and:
+> > 
+> > # cat /var/lib/nftables/user.nft
+> > add chain inet filter input { policy drop; }
+> > # 
+> > 
+> > And here is the result:
+> > # /etc/nftables/fw_basic.nft
+> > In file included from ./fw_basic.nft:15:1-37:
+> > /var/lib/nftables/user.nft:1:1-45: Error: Could not process rule: No such
+> file or directory
+> > add chain inet filter input { policy drop; }
+> > ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 > 
-> I try to build combined ipv4 and ipv6 firewall using NFT. But I cannot find
-> any working example of nft's _INET_ set usage :(
-
-There is no support inet sets (mixing IPv4 and IPv6 addresses) at this
-moment. Several comments below.
-
-> I try to do next:
+> This is not related to the scripting, it's currently a kernel
+> limitation. You can reproduce this problem with the following script:
 > 
-> /sbin/nft -i
-> nft> list ruleset
-> nft> flush ruleset
-> nft> list ruleset
-> nft> add table inet fw
-> nft> add chain inet fw input { type filter hook input priority 10; }
-> nft> add chain inet fw output { type filter hook output priority 10; }
-> nft> add chain inet fw forward { type filter hook forward priority 10; }
-> nft> add set inet fw admin_list { type inet_proto ; }
-> nft> add set inet fw black_list { type inet_proto ; }
+> - ruleset.file -
+> #!/usr/sbin/nft
+> 
+> add table filter
+> add chain filter output { type nat hook output priority 0 ; }
+> add chain filter output { policy drop ; }
+> - EOF ruleset.file -
+> 
+> % nft -f ruleset.file
+> ruleset.file:5:1-42: Error: Could not process rule: No such file or
+> directory
+> add chain filter output { policy drop ; }
+> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+> The real problem is that we currently cannot update an object that it
+> is being created from the same batch. This existing limitation was
+> already discussed on the -devel ML, and it should be easy to remove it.
+> 
+> > Further, I noticed that if I remove the last 'include' from the main
+> script, 'fw_basic.nft',
+> > and issue the last command manually:
+> > # nft add chain inet filter input { policy drop\; }
+> > #
+> > 
+> > it works.
+> > 
+> > My second question is:
+> > 
+> > should it be possible to 'include' empty .nft files in a script without
+> having errors ?
+> 
+> This works here with nft 0.5:
+> 
+> % touch empty.file
+> % cat x
+> #!/usr/sbin/nft
+> 
+> include "empty.file"
+> % nft -f x
 
-% nft describe ip protocol
-payload expression, datatype inet_proto (Internet protocol) (basetype integer), 8 bits
+Hi,
 
-inet_proto is a datatype defined for Internet protocol numbers.
+thanks for your answer,
 
-> nft> add rule  inet fw  input    inet saddr @black_list log drop
-> <cli>:1:29-32: Error: syntax error, unexpected inet
-> add rule  inet fw  input    inet saddr @black_list log drop
->                             ^^^^
-> nft> add rule  inet fw  input    ip saddr @black_list log drop
-> <cli>:1:38-48: Error: datatype mismatch, expected IPv4 address, set has type
-> Internet protocol
-> add rule  inet fw  input    ip saddr @black_list log drop
->                             ~~~~~~~~ ^^^^^^^^^^^
+your answer to the first question confirms what I already supposed,
+my workaround is now to add a last 'drop' rule to the input table
+instead of changing the table policy:
 
-This obviously doesn't work since:
+add rule inet filter input drop
 
-% nft describe ip saddr
-payload expression, datatype ipv4_addr (IPv4 address) (basetype integer), 32 bits
+instead of
 
-datatypes mismatch.
+add chain inet filter input { policy drop; }
 
-> nft> add rule  inet fw  input    ip6 saddr @black_list log drop
-> <cli>:1:39-49: Error: datatype mismatch, expected IPv6 address, set has type
-> Internet protocol
-> add rule  inet fw  input    ip6 saddr @black_list log drop
->                             ~~~~~~~~~ ^^^^^^^^^^^
+Regarding the second question about including empty files I think it was just
+a consequence of the other errors, now it works as expected.
 
-Same thing here.
+Thanks again for your quick support.
+
+giorgio
