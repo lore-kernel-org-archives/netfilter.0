@@ -1,18 +1,24 @@
-From: JO Bower <jbower@NILP.ORG>
-Subject: RE:
-Date: Sat, 24 Oct 2015 13:02:01 +0800
-Message-ID: <0f1ee808-0dc3-4b60-ac9a-eed6072c9be7__39989.6954921589$1445663474$gmane$org@MAIL.NILP.ORG>
-Reply-To: monicatorresesp@gmail.com
+From: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Subject: Re: Redirecting external IP/Port from localhost to an ssh tunnel
+ on localhost
+Date: Sat, 24 Oct 2015 15:47:10 +0200
+Message-ID: <562B8BDE.2050509@plouf.fr.eu.org>
+References: <CAHfhYmybX5R2Qo6dMTfMdcHBk7N_xsZQ548Hf5DZCZF9pv=QYA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Description: Mail message body
+In-Reply-To: <CAHfhYmybX5R2Qo6dMTfMdcHBk7N_xsZQ548Hf5DZCZF9pv=QYA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"
-To: Recipients <jbower@NILP.ORG>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Gaetan Lord <email@gaetanlord.ca>
+Cc: netfilter <netfilter@vger.kernel.org>
 
-Your email address has brought you an unexpected luck, which was select=
-ed in The Euro Millions Lottery and subsequently won you the sum of =E2=
-=82=AC1,000,000.00 Euros. Contact Monica Torres Email: monicatorresesp@=
-gmail.com to claim your prize.
+Gaetan Lord a =E9crit :
+>=20
+> From my computer, I have an application trying to reach a external
+> host/IP but I would like to redirect all the packets to a local port.
+
+=46or example :
+iptables -t nat -A OUTPUT -d $ORIGINAL_IP -p tcp --dport $ORIGINAL_PORT
+-j DNAT --to $LOCAL_IP:$LOCAL_PORT
