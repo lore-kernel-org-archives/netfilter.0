@@ -1,39 +1,54 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH 1/1] commit c6825c0976fa7893692e0e43b09740b419b23c09
- upstream.
-Date: Mon, 26 Oct 2015 21:06:33 +0100
-Message-ID: <20151026200633.GA13476@salvia>
-References: <alpine.OSX.2.20.1510261144390.3919@athabasca.local>
+From: Shivani Bhardwaj <shivanib134@gmail.com>
+Subject: Help needed with installation errors
+Date: Wed, 28 Oct 2015 11:19:59 +0530
+Message-ID: <CAKHNQQFNHhfU1VZTnP58R=j53q+hXhC0Bs894vgjnb3iy-AEmQ@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.OSX.2.20.1510261144390.3919@athabasca.local>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=sy+LO3oe7xXpg3CXOK8VohY5ufFNBDHpdqBV8UViAIg=;
+        b=aThP69LcAZO8I3QsH8ERMaMMJyU4Y/oeh2jZeg+CivhGTKHozXrutQ7WMZWT/DeTP9
+         c7rwOW8hXPML6+j+VHkaGZVHSo1VLkWZ6kHp+FuJDF9aXeRQono4h/zBo9D8e5A4iYTR
+         1jcLxFJvjklijl7GX4TG/c/3BHZIk8ghGBllYF232yNkuyVwLGM0ZXlMzmE/to39jQSY
+         PbemmZci6y19UDOHLktYTNSfpEU0wGMmKS6SNqhL+r4pCsdYuph52MUuu6Z0Wr4Xp4pO
+         eQIU0OTgXRZT7sMCjLa167d3KMRtLl/oA6JvEpZWasSOpxEZJazdaB76H6JPesOt2KtD
+         gZ/Q==
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Ani Sinha <ani@arista.com>
-Cc: Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, netdev@vger.kernel.org, coreteam@netfilter.org, Florian Westphal <fw@strlen.de>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Cyrill Gorcunov <gorcunov@openvz.org>, Zefan Li <lizefan@huawei.com>, Eric Dumazet <eric.dumazet@gmail.com>, "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
+To: netfilter@vger.kernel.org
 
 Hi,
 
-On Mon, Oct 26, 2015 at 11:55:39AM -0700, Ani Sinha wrote:
-> netfilter: nf_conntrack: fix RCU race in nf_conntrack_find_get
+I'm trying to install libtool but for all its packages, it shows "NOT
+FOUND". I tried the following:
 
-Please, no need to Cc everyone here. Please, submit your Netfilter
-patches to netfilter-devel@vger.kernel.org.
+sudo apt-get install libtool
 
-Moreover, it would be great if the subject includes something
-descriptive on what you need, for this I'd suggest:
 
-[PATCH -stable 3.4,backport] netfilter: nf_conntrack: fix RCU race in nf_conntrack_find_get
+I have also tried the following:
 
-I'm including Neal P. Murphy, he said he would help testing these
-backports, getting a Tested-by: tag usually speeds up things too.
+sudo apt-get update
 
-Burden is usually huge here, the easier you get it for us, the best.
-Then we can review and, if no major concerns, I can submit this to
--stable.
 
-Let me know if you have any other questions,
-Thanks.
+and,
+
+
+sudo apt-get --fix-missing install libtool
+
+
+None of them works.
+It always shows the following:
+
+
+404  Not Found
+Failed to fetch
+
+
+while trying to fetch from the remote repository. Can somebody please
+help me out? What am I doing wrong?
+
+Thank you
+Shivani
