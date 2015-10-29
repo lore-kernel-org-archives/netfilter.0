@@ -1,125 +1,103 @@
-From: Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>
-Subject: Re: Masquerading with selectively open ports -- nftables
-Date: Thu, 29 Oct 2015 09:11:03 +0100
-Message-ID: <CAOkSjBiQ3uGZW9-mUXqGp8xFbfjwHnGd0T=S_1-Qhm0q+cq-cQ@mail.gmail.com>
-References: <E3A2E5F1-41EB-41BA-A45D-7FEF5680DC15@gmail.com>
- <20151028231533.GA2371@salvia> <17D2CE38-D4D5-4838-9749-B1FBC907E239@gmail.com>
+From: GhostOp14 <ghostop14@gmail.com>
+Subject: Transparent Bridge NAT Issue
+Date: Thu, 29 Oct 2015 13:12:12 -0400
+Message-ID: <000c01d1126c$f4857550$dd905ff0$@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-type:content-transfer-encoding;
-        bh=U2yGK97qNIJ5OJ3wywacAbU3krrX52TyQS4Zc6M+bjU=;
-        b=B0L07pHS2xPUzmgSZ2WSq+EBQI5tB3kT4IMobqfWWRNv8bmSSgOXnjkNJzt9RF4wh4
-         +sZcG8COzE3+zb1lmESsPte+zveHXMRybZuhvYMdHIRCYsaTxWg9vvC++OjL6D7PjqEc
-         5hpvNNuKjtvTyEdD6Ly6r30vKEXyuVYeCzjsL7zbZsRT/bAg17qdapSQ8gQuetqmKyOJ
-         EPJ/NsTGUBO+bksLRJkZTRgl2S+3BitssDqwidgg5jSe1LkC2ZnANjJjrFNWHN6VBZVt
-         RwCQk0VcpBJ5InXibD/PgUNlNHax0zI8JraBcChwyRx1bP3/O8vDL8j5SjamMXNWIkrN
-         77gQ==
-In-Reply-To: <17D2CE38-D4D5-4838-9749-B1FBC907E239@gmail.com>
+        h=from:to:subject:date:message-id:mime-version:content-type
+         :content-transfer-encoding:thread-index:content-language;
+        bh=Lq5P3x98yaIbsZn1oplhrmKZVkR1fbRvIOSaJV2bx9U=;
+        b=ZqpL46zWHPB2WdnFq+mFq7VFyM5cWWOrneZfmjszHqpPIIF9d8GQsa7eJYq2yc3JNG
+         dmPHJlcNoc0KCUd32C7biKW7Y8MtwTA+gZ3YT3DgPUqLKM7Y44KW8lz2Yz+8L/216kp1
+         9O3kHmbFo1rPRtsG3OeY5LoKmFOxwXIcXRWqpoy1zzWronVw5M0W/GjMoeowPLsxmqP/
+         Q8JqITjUj10ncrYJY87j2Bj4vM/i9wWHKqqsISd/W7XAIykLLgCELG2wTm01cqV+D8sl
+         ifZfHkEpADKzUk7ZsCGnqCYWGIT7qCHRkKmTYNJtTUOefj7BUtvtgryUyiWANDSdAPel
+         gX5Q==
+Content-Language: en-us
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Johannes Ernst <johannes.ernst@gmail.com>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Netfilter Users Mailing list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On 29 October 2015 at 05:51, Johannes Ernst <johannes.ernst@gmail.com> =
-wrote:
->> On Oct 28, 2015, at 16:15, Pablo Neira Ayuso <pablo@netfilter.org> w=
-rote:
->>
->> You can probably contribute these examples to the wiki. Or I'd be
->> happy to get more or less generic scripts as examples that we can
->> place in the wiki.
->
-> Once I figured out how to do what I want to do, I will definitely put=
- it somewhere where others can find it.
->
->>> Now I=E2=80=99m attempting to add masquerading, and I=E2=80=99m fai=
-ling:
->>>> nft add table nat
->>>> nft add chain nat prerouting { type nat hook prerouting priority 0=
- \; }
->>>> nft add chain nat postrouting { type nat hook postrouting priority=
- 0 \; }
->>>> nft add rule nat postrouting masquerade
->>> <cmdline>:1:1-35: Error: Could not process rule: No such file or di=
-rectory
->>> add rule nat postrouting masquerade
->>> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->>>
->>> 1. This is copied straight from the wiki [1]. What am I doing wrong=
-?
->>
->> The lines above work fine here.
->>
->> Masquerading was added in 3.18, what kernel version are you using?
->
-> I=E2=80=99m on Arch, Linux 4.2.2 or thereabouts.
->
->> Moreover, make sure you also compiled masquerading support for nf_ta=
-bles:
->>
->> CONFIG_NFT_MASQ=3Dm
->
-> Ahh, that might be it. The Arch build script is here [2] and I don=E2=
-=80=99t see anything that looks like CONFIG_NFT_MASQ. I=E2=80=99ll reco=
-mpile tomorrow and see where that leads us.
->
+I'm trying to put together a transparent bridge to protect a system.  Using
+ebtables, arptables, and iptables, I've ALMOST got it working, and I'm
+wondering if using nftables may be the better way to go.  I have a test
+script below, but the idea is that the bridge will have 2 NICs in it, eth0
+connected to the computer to protect, and eth1 connected to the switch.
+What's happening is that the bridge works fine and the protected computer
+can communicate, however packets originating locally (the reason for some of
+the NAT rules) ultimately doesn't work its way up the IP stack.  The packets
+hit the wire with the correctly NAT'd entries so the NAT rules appear to be
+working correctly, however the bridge itself doesn't seem to be processing
+responding packets.  Originally I thought that the ARP mangling (rather than
+an ARP equivalent to a NAT) might be causing the issue, but entering a
+static entry in the arp table for a target to talk to produced the same
+result.  Any help would be greatly appreciated!
 
-this config option is from the linux kernel, for example:
+-----------------------------------
 
-% grep CONFIG_NFT_ /boot/config-4.2.0-1-amd64
-CONFIG_NFT_EXTHDR=3Dm
-CONFIG_NFT_META=3Dm
-CONFIG_NFT_CT=3Dm
-CONFIG_NFT_RBTREE=3Dm
-CONFIG_NFT_HASH=3Dm
-CONFIG_NFT_COUNTER=3Dm
-CONFIG_NFT_LOG=3Dm
-CONFIG_NFT_LIMIT=3Dm
-CONFIG_NFT_MASQ=3Dm
-CONFIG_NFT_REDIR=3Dm
-CONFIG_NFT_NAT=3Dm
-CONFIG_NFT_QUEUE=3Dm
-CONFIG_NFT_REJECT=3Dm
-CONFIG_NFT_REJECT_INET=3Dm
-CONFIG_NFT_COMPAT=3Dm
-CONFIG_NFT_CHAIN_ROUTE_IPV4=3Dm
-CONFIG_NFT_REJECT_IPV4=3Dm
-CONFIG_NFT_CHAIN_NAT_IPV4=3Dm
-CONFIG_NFT_MASQ_IPV4=3Dm
-# CONFIG_NFT_REDIR_IPV4 is not set
-CONFIG_NFT_CHAIN_ROUTE_IPV6=3Dm
-CONFIG_NFT_REJECT_IPV6=3Dm
-CONFIG_NFT_CHAIN_NAT_IPV6=3Dm
-CONFIG_NFT_MASQ_IPV6=3Dm
-# CONFIG_NFT_REDIR_IPV6 is not set
-CONFIG_NFT_BRIDGE_META=3Dm
-CONFIG_NFT_BRIDGE_REJECT=3Dm
+#!/bin/bash
+
+BRINT=br0
+COMPINT=eth0
+SWINT=eth1
+COMPMAC="01:02:03:04:05:06"
+# change this to the mac of the bridge
+SWMAC="11:12:13:14:15:16"
+# Set this to the IP address of the computer to protect (this works best if
+you bring the bridge up before running this and let the computer DHCP to
+pull an address
+COMIP="192.168.1.31"
+
+# Non-routable IP for bridge that we can NAT later to $COMIP
+BRIP=169.254.66.66
+# SNAT port range.
+ RANGE=61000-62000
+
+# Just verify the bridge is set up
+HASBRIDGE=`ifconfig | grep $BRINT | wc -l`
+
+if [ $HASBRIDGE -eq 0 ]; then
+	brctl addbr $BRINT
+	brctl addif $BRINT $COMPINT
+	brctl addif $BRINT $SWINT
+	brctl stp $BRINT off
+
+	# Set the bridge to forward the EAPOL frames
+	sysctl -w net.ipv4.ip_forward=1 > /dev/null
+	sysctl -w net.ipv6.conf.all.forwarding=1 > /dev/null
+	echo 8 > /sys/class/net/$BRINT/bridge/group_fwd_mask
+
+	#bring up both sides of the bridge
+	ifconfig $COMPINT 0.0.0.0 up promisc
+	ifconfig $SWINT 0.0.0.0 up promisc
+
+	# Just to only have to deal with 1 mac from eth1 and the bridge
+	macchanger -m $SWMAC $BRINT >/dev/null
+fi
+
+ifconfig $BRINT $BRIP up promisc
+route flush 2>/dev/null 
+route add -net 192.168.1.0/24 br0
+route add default gw 192.168.1.1
+
+ebtables -t nat --flush
+ebtables -t nat -A POSTROUTING -s $SWMAC -o $SWINT -j snat --to-src $COMPMAC
+--snat-arp
+
+arptables -t nat --flush
+arptables -t nat -A OUTPUT -o $BRINT --source-mac $SWMAC -j mangle
+--mangle-ip-s $COMIP
+
+iptables -t nat --flush
+iptables -t nat -A POSTROUTING -o $BRINT -s $BRIP -p tcp -j SNAT --to
+$COMIP:$RANGE
+iptables -t nat -A POSTROUTING -o $BRINT -s $BRIP -p udp -j SNAT --to
+$COMIP:$RANGE
+iptables -t nat -A POSTROUTING -o $BRINT -s $BRIP -p icmp -j SNAT --to
+$COMIP
 
 
-> The other thing I=E2=80=99m still missing is where to attach the masq=
-uerade keyword. Is it on the incoming or outgoing interface or automagi=
-c? E.g. if my box has two interfaces (enp2s0, upstream to ISP with DHCP=
-) and (enp3s0, LAN, static IP assignment), do I need to say something l=
-ike =E2=80=9Ciifname enp2s0 masquerade=E2=80=9D?
->
-
-masquerading is a kind of source NAT, so only works in the output
-path. In think you need this: 'oifname enp2s0 masquerade' in the nat
-postrouting chain.
-
-> Also, the example has a separate table =E2=80=98nat=E2=80=99. Can I j=
-ust put the nat chain into my inet filter table, or does this have to b=
-e a separate table?
->
-
-In nftables tables has no special semantic apart of storing chains.
-Beware of families however, I doubt the inet family can hold NAT
-stuff.
-
---=20
-Arturo Borrero Gonz=C3=A1lez
