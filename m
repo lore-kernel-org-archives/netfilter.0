@@ -1,103 +1,79 @@
-From: GhostOp14 <ghostop14@gmail.com>
-Subject: Transparent Bridge NAT Issue
-Date: Thu, 29 Oct 2015 13:12:12 -0400
-Message-ID: <000c01d1126c$f4857550$dd905ff0$@gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Masquerading with selectively open ports -- nftables
+Date: Thu, 29 Oct 2015 20:55:18 +0100
+Message-ID: <20151029195518.GB1778@salvia>
+References: <E3A2E5F1-41EB-41BA-A45D-7FEF5680DC15@gmail.com>
+ <20151028231533.GA2371@salvia>
+ <17D2CE38-D4D5-4838-9749-B1FBC907E239@gmail.com>
+ <CAOkSjBiQ3uGZW9-mUXqGp8xFbfjwHnGd0T=S_1-Qhm0q+cq-cQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=from:to:subject:date:message-id:mime-version:content-type
-         :content-transfer-encoding:thread-index:content-language;
-        bh=Lq5P3x98yaIbsZn1oplhrmKZVkR1fbRvIOSaJV2bx9U=;
-        b=ZqpL46zWHPB2WdnFq+mFq7VFyM5cWWOrneZfmjszHqpPIIF9d8GQsa7eJYq2yc3JNG
-         dmPHJlcNoc0KCUd32C7biKW7Y8MtwTA+gZ3YT3DgPUqLKM7Y44KW8lz2Yz+8L/216kp1
-         9O3kHmbFo1rPRtsG3OeY5LoKmFOxwXIcXRWqpoy1zzWronVw5M0W/GjMoeowPLsxmqP/
-         Q8JqITjUj10ncrYJY87j2Bj4vM/i9wWHKqqsISd/W7XAIykLLgCELG2wTm01cqV+D8sl
-         ifZfHkEpADKzUk7ZsCGnqCYWGIT7qCHRkKmTYNJtTUOefj7BUtvtgryUyiWANDSdAPel
-         gX5Q==
-Content-Language: en-us
+Content-Disposition: inline
+In-Reply-To: <CAOkSjBiQ3uGZW9-mUXqGp8xFbfjwHnGd0T=S_1-Qhm0q+cq-cQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>
+Cc: Johannes Ernst <johannes.ernst@gmail.com>, Netfilter Users Mailing list <netfilter@vger.kernel.org>
 
-I'm trying to put together a transparent bridge to protect a system.  Using
-ebtables, arptables, and iptables, I've ALMOST got it working, and I'm
-wondering if using nftables may be the better way to go.  I have a test
-script below, but the idea is that the bridge will have 2 NICs in it, eth0
-connected to the computer to protect, and eth1 connected to the switch.
-What's happening is that the bridge works fine and the protected computer
-can communicate, however packets originating locally (the reason for some of
-the NAT rules) ultimately doesn't work its way up the IP stack.  The packets
-hit the wire with the correctly NAT'd entries so the NAT rules appear to be
-working correctly, however the bridge itself doesn't seem to be processing
-responding packets.  Originally I thought that the ARP mangling (rather than
-an ARP equivalent to a NAT) might be causing the issue, but entering a
-static entry in the arp table for a target to talk to produced the same
-result.  Any help would be greatly appreciated!
+On Thu, Oct 29, 2015 at 09:11:03AM +0100, Arturo Borrero Gonzalez wrote=
+:
+> On 29 October 2015 at 05:51, Johannes Ernst <johannes.ernst@gmail.com=
+> wrote:
+> >> On Oct 28, 2015, at 16:15, Pablo Neira Ayuso <pablo@netfilter.org>=
+ wrote:
+[...]
+> >> Moreover, make sure you also compiled masquerading support for nf_=
+tables:
+> >>
+> >> CONFIG_NFT_MASQ=3Dm
+> >
+> > Ahh, that might be it. The Arch build script is here [2] and I
+> > don=E2=80=99t see anything that looks like CONFIG_NFT_MASQ. I=E2=80=
+=99ll recompile
+> > tomorrow and see where that leads us.
+> >
+>=20
+> this config option is from the linux kernel, for example:
+>=20
+> % grep CONFIG_NFT_ /boot/config-4.2.0-1-amd64
+> CONFIG_NFT_EXTHDR=3Dm
+> CONFIG_NFT_META=3Dm
+> CONFIG_NFT_CT=3Dm
+> CONFIG_NFT_RBTREE=3Dm
+> CONFIG_NFT_HASH=3Dm
+> CONFIG_NFT_COUNTER=3Dm
+> CONFIG_NFT_LOG=3Dm
+> CONFIG_NFT_LIMIT=3Dm
+> CONFIG_NFT_MASQ=3Dm
+> CONFIG_NFT_REDIR=3Dm
+> CONFIG_NFT_NAT=3Dm
+> CONFIG_NFT_QUEUE=3Dm
+> CONFIG_NFT_REJECT=3Dm
+> CONFIG_NFT_REJECT_INET=3Dm
+> CONFIG_NFT_COMPAT=3Dm
+> CONFIG_NFT_CHAIN_ROUTE_IPV4=3Dm
+> CONFIG_NFT_REJECT_IPV4=3Dm
+> CONFIG_NFT_CHAIN_NAT_IPV4=3Dm
+> CONFIG_NFT_MASQ_IPV4=3Dm
+> # CONFIG_NFT_REDIR_IPV4 is not set
+> CONFIG_NFT_CHAIN_ROUTE_IPV6=3Dm
+> CONFIG_NFT_REJECT_IPV6=3Dm
+> CONFIG_NFT_CHAIN_NAT_IPV6=3Dm
+> CONFIG_NFT_MASQ_IPV6=3Dm
+> # CONFIG_NFT_REDIR_IPV6 is not set
+> CONFIG_NFT_BRIDGE_META=3Dm
+> CONFIG_NFT_BRIDGE_REJECT=3Dm
 
------------------------------------
+It would be good to have a sort of "compiling nf_tables kernel
+support" on the wiki, in case anyone finds the time to contribute it.
+We can use what Eric Leblond wrote time ago on his quick howto and
+update it.
 
-#!/bin/bash
+[...]
+> In nftables tables has no special semantic apart of storing chains.
+> Beware of families however, I doubt the inet family can hold NAT
+> stuff.
 
-BRINT=br0
-COMPINT=eth0
-SWINT=eth1
-COMPMAC="01:02:03:04:05:06"
-# change this to the mac of the bridge
-SWMAC="11:12:13:14:15:16"
-# Set this to the IP address of the computer to protect (this works best if
-you bring the bridge up before running this and let the computer DHCP to
-pull an address
-COMIP="192.168.1.31"
-
-# Non-routable IP for bridge that we can NAT later to $COMIP
-BRIP=169.254.66.66
-# SNAT port range.
- RANGE=61000-62000
-
-# Just verify the bridge is set up
-HASBRIDGE=`ifconfig | grep $BRINT | wc -l`
-
-if [ $HASBRIDGE -eq 0 ]; then
-	brctl addbr $BRINT
-	brctl addif $BRINT $COMPINT
-	brctl addif $BRINT $SWINT
-	brctl stp $BRINT off
-
-	# Set the bridge to forward the EAPOL frames
-	sysctl -w net.ipv4.ip_forward=1 > /dev/null
-	sysctl -w net.ipv6.conf.all.forwarding=1 > /dev/null
-	echo 8 > /sys/class/net/$BRINT/bridge/group_fwd_mask
-
-	#bring up both sides of the bridge
-	ifconfig $COMPINT 0.0.0.0 up promisc
-	ifconfig $SWINT 0.0.0.0 up promisc
-
-	# Just to only have to deal with 1 mac from eth1 and the bridge
-	macchanger -m $SWMAC $BRINT >/dev/null
-fi
-
-ifconfig $BRINT $BRIP up promisc
-route flush 2>/dev/null 
-route add -net 192.168.1.0/24 br0
-route add default gw 192.168.1.1
-
-ebtables -t nat --flush
-ebtables -t nat -A POSTROUTING -s $SWMAC -o $SWINT -j snat --to-src $COMPMAC
---snat-arp
-
-arptables -t nat --flush
-arptables -t nat -A OUTPUT -o $BRINT --source-mac $SWMAC -j mangle
---mangle-ip-s $COMIP
-
-iptables -t nat --flush
-iptables -t nat -A POSTROUTING -o $BRINT -s $BRIP -p tcp -j SNAT --to
-$COMIP:$RANGE
-iptables -t nat -A POSTROUTING -o $BRINT -s $BRIP -p udp -j SNAT --to
-$COMIP:$RANGE
-iptables -t nat -A POSTROUTING -o $BRINT -s $BRIP -p icmp -j SNAT --to
-$COMIP
-
-
+I confirm this: We have no nat table for inet, only filter.
