@@ -1,84 +1,75 @@
-From: Johannes Ernst <johannes.ernst@gmail.com>
-Subject: Re: Masquerading with selectively open ports -- nftables
-Date: Wed, 28 Oct 2015 21:51:11 -0700
-Message-ID: <17D2CE38-D4D5-4838-9749-B1FBC907E239@gmail.com>
-References: <E3A2E5F1-41EB-41BA-A45D-7FEF5680DC15@gmail.com> <20151028231533.GA2371@salvia>
-Mime-Version: 1.0 (Mac OS X Mail 9.0 \(3094\))
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=from:content-type:mime-version:subject:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=yBQHhLJ8F5mxGBSaxsJS3Y6YpRuK4o/uXvust86dN9Q=;
-        b=ysB/8NSwDa5yQ1LuIf5naRDy5GnoBND3FSCfLghvX27/6PNWWJcyQxJW8TOwx/j0dV
-         3wEPp8NemQXK0XWI2MOjb8YprOYrrT1p/dHJhl2C+tEE4bF0lm+EwnxEOZaZI7iUPtxe
-         fAGENyKeEIYVxkDk8q6aiEuobRA8M/B47z7omdcx+IfySCGtK7s2OBvUi8GklCQBuiLY
-         h38bOLPtPxw07Eec8QNCbszss5r9XpHNFkbjHUEAOJx85CVTNNeb0+rza/PMTGuqQqJr
-         0b6ezKFow7T2+kxypr8fw5+4M25cLnkRZtX9OIGy7NdLnOBPwO+GKCnEJjp7mtTLeAmZ
-         RhXw==
-In-Reply-To: <20151028231533.GA2371@salvia>
-Sender: netfilter-owner@vger.kernel.org
+From: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
+Subject: Re: [PATCH 1/1] commit c6825c0976fa7893692e0e43b09740b419b23c09
+ upstream.
+Date: Thu, 29 Oct 2015 02:40:52 -0400
+Message-ID: <20151029024052.28e11c83@playground>
+References: <alpine.OSX.2.20.1510261144390.3919@athabasca.local>
+	<20151026200633.GA13476@salvia>
+	<17709_1446014232_t9S6b5a3017652_20151028023650.7b76098f@playground>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+DKIM-Filter: OpenDKIM Filter v2.10.3 MAIL1.WPI.EDU t9T6euwC021611
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wpi.edu; s=_dkim;
+	t=1446100856; i=@wpi.edu;
+	bh=KISJ3VS0Ch4n3JMoS8rB1nRSB9oAWV1FB94ypNhImf8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References;
+	b=dzxA51lybowbjWx4aEfsj2TqRto3uDhCixkwKgQ70a2165kcvjUK3qoJvgbOvvQk5
+	 R1/F6JLWYGuJU1i95JKoUIQpCwDv7MnnVzeLK3fcXm7qvasRgozQ3F0+TZfFwheyoT
+	 OL6TosUMpJb7igOS9J9LZc9j5zyU7M4Mz4tbWrgs=
+In-Reply-To: <17709_1446014232_t9S6b5a3017652_20151028023650.7b76098f@playground>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Ani Sinha <ani@arista.com>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, netdev@vger.kernel.org
 
-> On Oct 28, 2015, at 16:15, Pablo Neira Ayuso <pablo@netfilter.org> wr=
-ote:
->=20
-> You can probably contribute these examples to the wiki. Or I'd be
-> happy to get more or less generic scripts as examples that we can
-> place in the wiki.
+On Wed, 28 Oct 2015 02:36:50 -0400
+"Neal P. Murphy" <neal.p.murphy@alum.wpi.edu> wrote:
 
-Once I figured out how to do what I want to do, I will definitely put i=
-t somewhere where others can find it.
+> On Mon, 26 Oct 2015 21:06:33 +0100
+> Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+> 
+> > Hi,
+> > 
+> > On Mon, Oct 26, 2015 at 11:55:39AM -0700, Ani Sinha wrote:
+> > > netfilter: nf_conntrack: fix RCU race in nf_conntrack_find_get
+> > 
+> > Please, no need to Cc everyone here. Please, submit your Netfilter
+> > patches to netfilter-devel@vger.kernel.org.
+> > 
+> > Moreover, it would be great if the subject includes something
+> > descriptive on what you need, for this I'd suggest:
+> > 
+> > [PATCH -stable 3.4,backport] netfilter: nf_conntrack: fix RCU race in nf_conntrack_find_get
+> > 
+> > I'm including Neal P. Murphy, he said he would help testing these
+> > backports, getting a Tested-by: tag usually speeds up things too.
+> 
 
->> Now I=E2=80=99m attempting to add masquerading, and I=E2=80=99m fail=
-ing:
->>> nft add table nat
->>> nft add chain nat prerouting { type nat hook prerouting priority 0 =
-\; }
->>> nft add chain nat postrouting { type nat hook postrouting priority =
-0 \; }
->>> nft add rule nat postrouting masquerade
->> <cmdline>:1:1-35: Error: Could not process rule: No such file or dir=
-ectory
->> add rule nat postrouting masquerade
->> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->>=20
->> 1. This is copied straight from the wiki [1]. What am I doing wrong?
->=20
-> The lines above work fine here.
->=20
-> Masquerading was added in 3.18, what kernel version are you using?
+I've probably done about as much seat-of-the-pants testing as I can. All opening/closing the same destination IP/port.
 
-I=E2=80=99m on Arch, Linux 4.2.2 or thereabouts.
+Host: Debian Jessie, 8-core Vishera 8350 at 4.4 GHz, 16GiB RAM at (I think) 2100MHz.
 
-> Moreover, make sure you also compiled masquerading support for nf_tab=
-les:
->=20
-> CONFIG_NFT_MASQ=3Dm
+Traffic generator 1: 6-CPU KVM running 64-bit Smoothwall Express 3.1 (linux 3.4.109 without these patches), with 8GiB RAM and 9GiB swap. Packets sent across PURPLE (to bypass NAT and firewall).
 
-Ahh, that might be it. The Arch build script is here [2] and I don=E2=80=
-=99t see anything that looks like CONFIG_NFT_MASQ. I=E2=80=99ll recompi=
-le tomorrow and see where that leads us.
+Traffic generator 2: 32-bit KVM running Smoothwall Express 3.1 (linux 3.4.110 with these patches), 3GiB RAM and minimal swap.
 
-The other thing I=E2=80=99m still missing is where to attach the masque=
-rade keyword. Is it on the incoming or outgoing interface or automagic?=
- E.g. if my box has two interfaces (enp2s0, upstream to ISP with DHCP) =
-and (enp3s0, LAN, static IP assignment), do I need to say something lik=
-e =E2=80=9Ciifname enp2s0 masquerade=E2=80=9D?
+In the first set of tests, generator 1's traffic passed through Generator 2 as a NATting firewall, to the host's web server. In the second set of tests, generator 2's traffic went through NAT to the host's web server.
 
-Also, the example has a separate table =E2=80=98nat=E2=80=99. Can I jus=
-t put the nat chain into my inet filter table, or does this have to be =
-a separate table?
+The load tests:
+  - 2500 processes using 2500 addresses and random src ports
+  - 2500 processes using 2500 addresses and the same src port
+  - 2500 processes using the same src address and port
 
-Thank you!
+I also tested using stock NF timeouts and using 1 second timeouts.
 
+Bandwidth used got as high as 16Mb/s for some tests.
 
-Johannes.
+Conntracks got up to 200 000 or so or bounced between 1 and 2, depending on the test and the timeouts.
 
-[2] https://projects.archlinux.org/svntogit/packages.git/tree/trunk/PKG=
-BUILD?h=3Dpackages/nftables
+I did not reproduce the problem these patches solve. But more importantly, I saw no problems at all. Each time I terminated a test, RAM usage returned to about that of post-boot; so there were no apparent memory leaks. No kernel messages and no netfilter messages appeared during the tests.
 
+If I have time, I suppose I could run another set of tests: 2500 source processes using 2500 addresses times 200 ports to connect to 2500 addresses times 200 ports on a destination system. Each process opens 200 sockets, then closes them. And repeats ad infinitum. But I might have to be clever since I can't run 500 000 processes; but I could run 20 VMs; that would get it down to about 12 000 processes per VM. And I might have to figure out how to allow allow processes on the destination system to open hundreds or thousands of sockets.
+
+N
