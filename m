@@ -1,55 +1,76 @@
-From: Johannes Ernst <johannes.ernst@gmail.com>
-Subject: kernel modules: was Re: Masquerading with selectively open ports -- nftables
-Date: Thu, 29 Oct 2015 16:48:52 -0700
-Message-ID: <F2A0EC37-BBAD-4B1F-9771-1461054F208B@gmail.com>
-References: <E3A2E5F1-41EB-41BA-A45D-7FEF5680DC15@gmail.com> <20151028231533.GA2371@salvia> <17D2CE38-D4D5-4838-9749-B1FBC907E239@gmail.com> <CAOkSjBiQ3uGZW9-mUXqGp8xFbfjwHnGd0T=S_1-Qhm0q+cq-cQ@mail.gmail.com>
-Mime-Version: 1.0 (Mac OS X Mail 9.0 \(3094\))
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
+From: Ani Sinha <ani@arista.com>
+Subject: Re: [PATCH 1/1] commit c6825c0976fa7893692e0e43b09740b419b23c09 upstream.
+Date: Thu, 29 Oct 2015 17:01:24 -0700
+Message-ID: <CAOxq_8M5J0RO8X4Rd70rCWcrbBOrX3_jn4-dmrT+Y3yPYGThTA@mail.gmail.com>
+References: <alpine.OSX.2.20.1510261144390.3919@athabasca.local>
+ <20151026200633.GA13476@salvia> <17709_1446014232_t9S6b5a3017652_20151028023650.7b76098f@playground>
+ <20151029024052.28e11c83@playground>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+Return-path: <netfilter-devel-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=from:content-type:mime-version:subject:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=dmsF8KRkb41fbMVChRIjg1cCxHJC8bhTPEHBOReLiXA=;
-        b=bKWecn6gTeVTjDspltC7MNqbAPx9gYH/AsD7FffVOU3k3H0LN4Wb3AWxUg24WQHwxI
-         IVEIAqBHgSMzjxn4IRQ11/1alNEmmiyVA8Md8MkuiMJJhs2W9yGTJZ2arBnWuPhcgDQx
-         sI+GmqN5Kct2hor0hQICbwt/4y6MN2xNuTxm0FnL1WmvOfaaoQCQsyi57e6OpM7bQekO
-         lVLSwKHpUbkoGToadZ8amUpL0n4p3kL/r97KzTL/1GlvVttFSgsXjB2XXvJ2MUIq1Nq9
-         poo/u9xdqp/YGfbKG9kmbkbLGcU59Fju1ffAgHEt55Uzz8C41E2kjX6TSc2lCQTPI1/G
-         hzUg==
-In-Reply-To: <CAOkSjBiQ3uGZW9-mUXqGp8xFbfjwHnGd0T=S_1-Qhm0q+cq-cQ@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+        d=arista.com; s=google;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc:content-type:content-transfer-encoding;
+        bh=hnvUky1riqwJ9wp9Rjv66cDq8IisogmhYw91WRYAnfk=;
+        b=IjGFpu5nEsntCF+LwHMyLbdFF/+31i6IFR+Ig5RGNoEStuXj1BfzuBDy8lXfs/Ujs3
+         wzKvr08SjzKvfA7YnyFEFp1oY3LmQroBop66eoIxhdrNMU7E3rKtYgi454lqTmC+denQ
+         MF+5c25CzUdvb+ybWAKAAmXgFR8vBM8/7TU9A=
+In-Reply-To: <20151029024052.28e11c83@playground>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Netfilter Users Mailing list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 
-On 29 October 2015 at 05:51, Johannes Ernst <johannes.ernst@gmail.com> =
-wrote:
->>>>> nft add rule nat postrouting masquerade
->>>> <cmdline>:1:1-35: Error: Could not process rule: No such file or d=
-irectory
->>>> add rule nat postrouting masquerade
->>>> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->>>>=20
->>>> 1. This is copied straight from the wiki [1]. What am I doing wron=
-g?
+On Wed, Oct 28, 2015 at 11:40 PM, Neal P. Murphy
+<neal.p.murphy@alum.wpi.edu> wrote:
+> On Wed, 28 Oct 2015 02:36:50 -0400
+> "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu> wrote:
+>
+>> On Mon, 26 Oct 2015 21:06:33 +0100
+>> Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+>>
+>> > Hi,
+>> >
+>> > On Mon, Oct 26, 2015 at 11:55:39AM -0700, Ani Sinha wrote:
+>> > > netfilter: nf_conntrack: fix RCU race in nf_conntrack_find_get
+>> >
+>> > Please, no need to Cc everyone here. Please, submit your Netfilter
+>> > patches to netfilter-devel@vger.kernel.org.
+>> >
+>> > Moreover, it would be great if the subject includes something
+>> > descriptive on what you need, for this I'd suggest:
+>> >
+>> > [PATCH -stable 3.4,backport] netfilter: nf_conntrack: fix RCU race in nf_conntrack_find_get
+>> >
+>> > I'm including Neal P. Murphy, he said he would help testing these
+>> > backports, getting a Tested-by: tag usually speeds up things too.
+>>
+>
+> I've probably done about as much seat-of-the-pants testing as I can. All opening/closing the same destination IP/port.
+>
+> Host: Debian Jessie, 8-core Vishera 8350 at 4.4 GHz, 16GiB RAM at (I think) 2100MHz.
+>
+> Traffic generator 1: 6-CPU KVM running 64-bit Smoothwall Express 3.1 (linux 3.4.109 without these patches), with 8GiB RAM and 9GiB swap. Packets sent across PURPLE (to bypass NAT and firewall).
+>
+> Traffic generator 2: 32-bit KVM running Smoothwall Express 3.1 (linux 3.4.110 with these patches), 3GiB RAM and minimal swap.
+>
+> In the first set of tests, generator 1's traffic passed through Generator 2 as a NATting firewall, to the host's web server. In the second set of tests, generator 2's traffic went through NAT to the host's web server.
+>
+> The load tests:
+>   - 2500 processes using 2500 addresses and random src ports
+>   - 2500 processes using 2500 addresses and the same src port
+>   - 2500 processes using the same src address and port
+>
+> I also tested using stock NF timeouts and using 1 second timeouts.
+>
+> Bandwidth used got as high as 16Mb/s for some tests.
+>
+> Conntracks got up to 200 000 or so or bounced between 1 and 2, depending on the test and the timeouts.
+>
+> I did not reproduce the problem these patches solve. But more importantly, I saw no problems at all. Each time I terminated a test, RAM usage returned to about that of post-boot; so there were no apparent memory leaks. No kernel messages and no netfilter messages appeared during the tests.
+>
+> If I have time, I suppose I could run another set of tests: 2500 source processes using 2500 addresses times 200 ports to connect to 2500 addresses times 200 ports on a destination system. Each process opens 200 sockets, then closes them. And repeats ad infinitum. But I might have to be clever since I can't run 500 000 processes; but I could run 20 VMs; that would get it down to about 12 000 processes per VM. And I might have to figure out how to allow allow processes on the destination system to open hundreds or thousands of sockets.
 
-I fixed it. Apparently kernel module nft_masq_ipv4 (and some dependenci=
-es) hadn=E2=80=99t been loaded. (I don=E2=80=99t know why.)
-
-Q: What do I have to do about kernel module loading? Is that automatic,=
- or do I need to do something manually? (e.g. with /etc/modules-load.d/=
-) This [1] seems to imply I have to do it manually.
-
-Thanks,
-
-
-
-
-Johannes.
-
-[1] https://home.regit.org/netfilter-en/nftables-quick-howto/
-
-
-
+Should I resend the patch with a Tested-by: tag?
