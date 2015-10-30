@@ -1,88 +1,61 @@
-From: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
-Subject: Re: [PATCH 1/1] commit c6825c0976fa7893692e0e43b09740b419b23c09
- upstream.
-Date: Thu, 29 Oct 2015 21:21:29 -0400
-Message-ID: <20151029212129.0900b84d@playground>
-References: <alpine.OSX.2.20.1510261144390.3919@athabasca.local>
-	<20151026200633.GA13476@salvia>
-	<17709_1446014232_t9S6b5a3017652_20151028023650.7b76098f@playground>
-	<20151029024052.28e11c83@playground>
-	<CAOxq_8M5J0RO8X4Rd70rCWcrbBOrX3_jn4-dmrT+Y3yPYGThTA@mail.gmail.com>
+From: =?ISO-8859-15?Q?Martin_Gr=F6ger?= <mgroeger1@web.de>
+Subject: Re: nftables: bridge filter with queue to userspace
+Date: Fri, 30 Oct 2015 08:16:21 +0100
+Message-ID: <56331945.1080804@web.de>
+References: <56328E60.4040002@web.de> <20151029221138.GA3447@salvia> <20151029222303.GF18062@breakpoint.cc>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-DKIM-Filter: OpenDKIM Filter v2.10.3 MAIL1.WPI.EDU t9U1LXVK020413
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wpi.edu; s=_dkim;
-	t=1446168093; i=@wpi.edu;
-	bh=zmFMYo6Wi8c7uVGYhRhJe0uLhvIslpKoCsLWLBh/Rhs=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=QeN2ZApnlQpQd5WwHqbXMxHzvY5gUmvoZMivg6a+E5GdGSkv6skQjmsu9caZggKWz
-	 L3XU47LY0QHgIfzIer1wqxBf+VFrsiTAuVe2wlsauLWyjD11NrZ8Cdz+snqyRFXqP4
-	 k1loqob4mnnd7t/t/TNm0aug7l29gFmaSSTopf7A=
-In-Reply-To: <CAOxq_8M5J0RO8X4Rd70rCWcrbBOrX3_jn4-dmrT+Y3yPYGThTA@mail.gmail.com>
-Sender: netdev-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <20151029222303.GF18062@breakpoint.cc>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Ani Sinha <ani@arista.com>, netfilter@vger.kernel.org
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter-devel@vger.kernel.org, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Florian Westphal <fw@strlen.de>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter@vger.kernel.org, bernhard.thaler@wvnet.at
 
-On Thu, 29 Oct 2015 17:01:24 -0700
-Ani Sinha <ani@arista.com> wrote:
 
-> On Wed, Oct 28, 2015 at 11:40 PM, Neal P. Murphy
-> <neal.p.murphy@alum.wpi.edu> wrote:
-> > On Wed, 28 Oct 2015 02:36:50 -0400
-> > "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu> wrote:
-> >
-> >> On Mon, 26 Oct 2015 21:06:33 +0100
-> >> Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> >>
-> >> > Hi,
-> >> >
-> >> > On Mon, Oct 26, 2015 at 11:55:39AM -0700, Ani Sinha wrote:
-> >> > > netfilter: nf_conntrack: fix RCU race in nf_conntrack_find_get
-> >> >
-> >> > Please, no need to Cc everyone here. Please, submit your Netfilter
-> >> > patches to netfilter-devel@vger.kernel.org.
-> >> >
-> >> > Moreover, it would be great if the subject includes something
-> >> > descriptive on what you need, for this I'd suggest:
-> >> >
-> >> > [PATCH -stable 3.4,backport] netfilter: nf_conntrack: fix RCU race in nf_conntrack_find_get
-> >> >
-> >> > I'm including Neal P. Murphy, he said he would help testing these
-> >> > backports, getting a Tested-by: tag usually speeds up things too.
-> >>
-> >
-> > I've probably done about as much seat-of-the-pants testing as I can. All opening/closing the same destination IP/port.
-> >
-> > Host: Debian Jessie, 8-core Vishera 8350 at 4.4 GHz, 16GiB RAM at (I think) 2100MHz.
-> >
-> > Traffic generator 1: 6-CPU KVM running 64-bit Smoothwall Express 3.1 (linux 3.4.109 without these patches), with 8GiB RAM and 9GiB swap. Packets sent across PURPLE (to bypass NAT and firewall).
-> >
-> > Traffic generator 2: 32-bit KVM running Smoothwall Express 3.1 (linux 3.4.110 with these patches), 3GiB RAM and minimal swap.
-> >
-> > In the first set of tests, generator 1's traffic passed through Generator 2 as a NATting firewall, to the host's web server. In the second set of tests, generator 2's traffic went through NAT to the host's web server.
-> >
-> > The load tests:
-> >   - 2500 processes using 2500 addresses and random src ports
-> >   - 2500 processes using 2500 addresses and the same src port
-> >   - 2500 processes using the same src address and port
-> >
-> > I also tested using stock NF timeouts and using 1 second timeouts.
-> >
-> > Bandwidth used got as high as 16Mb/s for some tests.
-> >
-> > Conntracks got up to 200 000 or so or bounced between 1 and 2, depending on the test and the timeouts.
-> >
-> > I did not reproduce the problem these patches solve. But more importantly, I saw no problems at all. Each time I terminated a test, RAM usage returned to about that of post-boot; so there were no apparent memory leaks. No kernel messages and no netfilter messages appeared during the tests.
-> >
-> > If I have time, I suppose I could run another set of tests: 2500 source processes using 2500 addresses times 200 ports to connect to 2500 addresses times 200 ports on a destination system. Each process opens 200 sockets, then closes them. And repeats ad infinitum. But I might have to be clever since I can't run 500 000 processes; but I could run 20 VMs; that would get it down to about 12 000 processes per VM. And I might have to figure out how to allow allow processes on the destination system to open hundreds or thousands of sockets.
-> 
-> Should I resend the patch with a Tested-by: tag?
+Am 29.10.2015 23:23, schrieb Florian Westphal:
+> Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+>
+> [ CC Bernhard ]
+>
+>> On Thu, Oct 29, 2015 at 10:23:44PM +0100, Martin Gr=F6ger wrote:
+>>> I'm trying to build a transparent filter with application level fil=
+tering.
+>>> First experiment with ip and output hook and queue to userspace was
+>>> successful. Then I changed to bridge filtering with forward hook. W=
+ith
+>>> counter action I see that the packets match the rule, but the queue=
+ to the
+>>> usersapce doesn't work.
+>>>
+>>> Am I right, that this fuction should work?
+> nfqueue backend only works with NFPROTO_IPV4 and _IPV6 at the moment,
+> i.e. nft ip and nft ip6, or via bridge_netfilter hack (which 'pushes'
+> packets though ipv4/ipv6 netfilter hooks).
+Ok, this explains why my experiment with ip work, but not the one with=20
+bridge family.
 
-... Oh, wait. Not yet. The dawn just broke over ol' Marblehead here. I only tested TCP; I need to hammer UDP, too.
+>
+>> Florian told me he will come up sooner or later with native queue
+>> support for nft (ie. no bridge_netfilter required anymore).
+> Argh.  I'm a moron and forgot about this.
+How does a native (indepent on bridge) queue support should work ?
+>
+> I still have the q&d hack that makes it work but no reroute (re-bridg=
+e,
+> cough) support, just dump-to-userspace.
+As far as I understand this would be sufficient for my usecase, since I=
+=20
+want simply to inspect the packets and then decide to accept or drop th=
+em.
 
-Can I set the timeouts to zero? Or is one as low as I can go?
+>
+> Bernhard, did you have time to work on this?
+>
+> If not, I think I can make time available soon since the other work
+> (nft bridge conntrack, nf netns hook stuff) is delayed at the moment
+> anyways.
+>
+Would be great, if you can help me!
 
-N
