@@ -1,112 +1,101 @@
-From: =?ISO-8859-15?Q?Martin_Gr=F6ger?= <mgroeger1@web.de>
-Subject: Re: nftables: bridge filter with queue to userspace
-Date: Sat, 31 Oct 2015 10:02:09 +0100
-Message-ID: <56348391.8060500@web.de>
-References: <56328E60.4040002@web.de> <20151029221138.GA3447@salvia> <20151029222303.GF18062@breakpoint.cc> <56331945.1080804@web.de> <20151030133812.GB3461@breakpoint.cc> <5633D164.2010400@web.de> <20151030212703.GC3461@breakpoint.cc>
+From: Jakub Sztandera <k.sztandera@hotmail.com>
+Subject: nftables: NAT table not receiving any traffic
+Date: Sat, 31 Oct 2015 13:56:39 +0100
+Message-ID: <DUB122-W3470AB4A4B403D576C00A3EA2E0@phx.gbl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20151030212703.GC3461@breakpoint.cc>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Florian Westphal <fw@strlen.de>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter@vger.kernel.org, bernhard.thaler@wvnet.at
+Content-Type: text/plain; charset="iso-8859-1"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Am 30.10.2015 22:27, schrieb Florian Westphal:
-> Martin Gr=F6ger <mgroeger1@web.de> wrote:
->>> - NFQA_PAYLOAD maintains illusion of disabled/non-existant VLAN hw
->>> offload, i.e. we insert it into NFQA_PAYLOAD between mac and networ=
-k
->>> header.
->> Sorry, I don't understand this. The VLAN header is (if exists) after
->> the source MAC. If a paket is bridged, I would expect, that the VLAN
->> header is kept unchanged. I would expect to find the VLAN header
->> exactly there! Is this wrong?
-> Yes, there is no VLAN header, its removed (usually by hardware offloa=
-ds)
-> and stored in meta data only.
->
-> Thats why I think we should transparently re-insert when sending
-> the copy to userspace.
->
-> (I.e. undo what hardware offloads did).
+Hello,
 
-Ok, now I understand.
+we have recently transitioned from iptables to nftables. Our network ar=
+chitecture isn't simple
+but it can be simplified for the sake of this message.
+We also use a lot of LXC (cgroups) and we suspect that it might play a =
+role in this case.
 
-So there are basically 2 options:
-1.) reinsert the VLAN header
-     pro: looks like the wire
-     con: Is the insert measurable in terms of performance?
-2.) pass der VLAN header also as meta data to the user.
-     pro: network header is always on the same offset, so it might be=20
-easier for higher layer inspection
-     con: not like the wire
+This instance of nftables is in LXC container (51.254.25.16, 10.1.0.1).
+This container uses following interfaces:
+eth0 - for WAN communication. IP: 51.254.25.16
+br0 - LAN, connected to higher level bridge. Whole internal network wor=
+ks in 10.0.0.0/8 subnet, this bridge handles 10.1.0.0/16.
+multiple veth - for joining containers inside this one to br0.
+and few more but those are probably not important.
 
-So, although I would have expected option 1, I think option 2 has=20
-advantages too. So I think both shoud be ok.
->
->>> - NFQA_HWADDR attribute is not present (redundant, we have this in
->>>    NFQA_PAYLOAD).
->>>>> I still have the q&d hack that makes it work but no reroute (re-b=
-ridge,
->>>>> cough) support, just dump-to-userspace.
->>>> As far as I understand this would be sufficient for my usecase,
->>>> since I want simply to inspect the packets and then decide to acce=
-pt
->>>> or drop them.
->>> Yes, in fact I think we should just ignore reroute (bad idea) or re=
-bridge
->>> (what would be the use case of this...?)
->>>
->>> If someone really needs to be able to resend/relay packet they coul=
-d do
->>> this in userspace or just use PRE_ROUTING since thats before bridge
->>> asks the FDB for the output port.
->>>
->>> We could add bridge_me_harder to pick another output device for que=
-ueing
->>> in BRIDGE OUTPUT but I have no idea why one would want such feature=
-=2E
->>>
->> I'm currently trying to understand the structure.
->> So to add the missing parts:
->> - there is no change in the nftable kernel modules necessary?
-> Not to nftables but to nfnetlink_queue module (and to bridge netfilte=
-r
-> kernel part).
- From the presentation Nftables-osd-2013-developer.pdf I understood,=20
-that there is a generic instruction set part of the kernel. New=20
-functionality will be added by new combination of this instruction set.=
-=20
-Additionally there must be some code for each hook, but I would expext,=
-=20
-that this code provides the packet and some metadata to the engine,=20
-which process the instructions. Also for the interface from the main=20
-engine to the nfnetlink_queue module I would expect the packet and a=20
-metadata structure. Since the queueing for the IP hook works, I expecte=
-d=20
-that all generic instructions for this purpose are available and just=20
-have to be used for the bridge hook.
+Rough sketch of the network: http://assets.magik6k.net/screenshoots/144=
+6293074.png
+nftables configuration at the bottom of the message.
 
-So obviously somehow my expectation is wrong - but what's wrong?
+Behaviour that causes the issue is simple `table ip nat` with (pos|pre)=
+routing hooks does not receive any traffic.
+http://assets.magik6k.net/screenshoots/1446289768.png
+Packets go through forward chain (counter increases) in the `inet filte=
+r` table but are not to be seen in routing chains.
 
->
->> - there are changes in the nftnl library necessary?
-> No, unless we add extra attribute e.g. for vlan header but I'd like
->   avoid it.
-Ok, is this again an argument for Option 1 above?
-Is this, because there is currently in the generic instructions no=20
-option to add VLAN metadata somehow to the nfnetlink_queue?
->
->> - there are changes in nft necessary?
-> No, nft side should already work just fine.
->
->> Only Pablo_nftables-osd-userday-2013.pdf and
->> Nftables-osd-2013-developer.pdf.
->> Is there somethimg more to read to get an better understanding of nf=
-tables?
-> Sorry, not that I know of.  Perhaps Patrick or Pablo have more
-> information available somewhere.
->
+Using tcpdump we are able to see packets going in to the bridge interfa=
+ce and going out through the eth0
+but without SNAT applied.
+Packets did not even enter NAT chains which does not change after flush=
+ing conntracker.
 
+This issue appeared randomly after installation, configuration of nftab=
+les of first restart of whole physical machine and was resolved
+either by us (there was mismatch with MAC address which could have caus=
+ed confusion of filtering)
+or randomly by itself. It reappeared now (about 24h after first one) in=
+ different container
+(different bridge and interfaces but setup very similar to the first on=
+e).
+
+Our networking was working without any problems for about 3 months with=
+ iptables before issues started happening with nftables.
+The nat module of iptables was removed blacklisted and disabled in modp=
+robe.d so it is not causing any interference with nftables.
+We think that there might be some problem with cgroups compatibility of=
+ nftables but we have no way to be sure.
+
+If you have any ideas or thoughts how to debug this problem we will be =
+happy to check them as we are out of our owns.
+
+Best regards,
+Jakub (Kubuxu) Sztandera
+
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+nftables configuration:
+
+table inet filter {
+=A0 chain input {
+=A0=A0=A0 type filter hook input priority 0;
+=A0=A0=A0 accept
+=A0 }
+=A0 chain forward {
+=A0=A0=A0 type filter hook forward priority 0;
+=A0=A0=A0 counter
+=A0=A0=A0 accept
+=A0 }
+=A0 chain output {
+=A0=A0=A0 type filter hook output priority 0;
+=A0=A0=A0 accept
+=A0 }
+}
+table ip nat {
+=A0 chain prerouting {
+=A0=A0=A0 type nat hook prerouting priority 0;
+=A0=A0=A0 counter;
+=A0=A0=A0 iif eth0 tcp dport 53 dnat 51.254.25.23
+=A0=A0=A0 iif eth0 udp dport 53 counter dnat 51.254.25.23
+=A0=A0=A0 iif eth0 tcp dport 13000 dnat 10.1.0.3
+=A0 }
+
+=A0 chain postrouting {
+=A0=A0=A0 type nat hook postrouting priority 0;
+=A0=A0=A0 counter
+=A0=A0=A0 oif eth0 counter snat 51.254.25.16
+=A0 }
+}
+ 		 	   		  
