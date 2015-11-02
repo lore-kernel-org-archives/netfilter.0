@@ -1,66 +1,107 @@
-From: Johannes Ernst <johannes.ernst@gmail.com>
-Subject: Re: Masquerading with selectively open ports -- nftables
-Date: Mon, 2 Nov 2015 12:29:06 -0800
-Message-ID: <9694F058-B55C-4926-99EB-ADC0A1BEAB67@gmail.com>
-References: <E3A2E5F1-41EB-41BA-A45D-7FEF5680DC15@gmail.com> <20151028231533.GA2371@salvia> <17D2CE38-D4D5-4838-9749-B1FBC907E239@gmail.com> <CAOkSjBiQ3uGZW9-mUXqGp8xFbfjwHnGd0T=S_1-Qhm0q+cq-cQ@mail.gmail.com> <20151029195518.GB1778@salvia> <CAOkSjBhXp_Y39yT+dMPxMz+fHQ0S+QiB8nWwMQdvOjAnpSHyZw@mail.gmail.com> <20151030114617.GA1934@salvia> <500B1649-C3AA-4420-9384-6606448036FD@gmail.com> <CAOkSjBiajm2Oq9min2NpXDGmDUQVB0GuqmrD-1ECAoOJQCzuEw@mail.gmail.com> <8BE61298-7591-4BF4-AE3D-062A69F051B3@gmail.com>
-Mime-Version: 1.0 (Mac OS X Mail 9.0 \(3094\))
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
+From: Ani Sinha <ani@arista.com>
+Subject: Re: [PATCH 1/1] commit c6825c0976fa7893692e0e43b09740b419b23c09 upstream.
+Date: Mon, 2 Nov 2015 12:48:15 -0800
+Message-ID: <CAOxq_8N+HMgPyyzoWu9fGgRFjjcG5mzON6G8APGC0FU1HpnxsQ@mail.gmail.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+Return-path: <netdev-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=from:content-type:mime-version:subject:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=DHw8N13Yyzrfhlb1SX3Yfrnc3bxw6Miu5zjUt2hToAM=;
-        b=NVTgIigfZbGyHZS3swpa0K0TYZ2UYLCZ2Xucy9vklM8UA7KLCCbP6Go1tyQRU6GBjh
-         BjrOzcSTFn1/Nzbm7SQB+Eww0sWhTLKORCjhs+qfH+52LULPJnOiccMaabCsQBnyETC/
-         aKGB11MFEKSc2wu5rcO2DQuFWPgFpcs/eM7Y8Nq7K+0EdllyMW7tHmkWaqB5K5vLsgJm
-         lxPn4MH8MuSZE03lBxi2BuGF1q8UqB3gFXXIo26R5dGaZE8BWauya4qPyGwBkLGOemcU
-         cFeJGZdf/AkvxqWwNgisIcTz7hxVdpxM4Leax0eRs7Nssw9F1mNAUnYOyl+VOnf2Ji6J
-         pq3A==
-In-Reply-To: <8BE61298-7591-4BF4-AE3D-062A69F051B3@gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+        d=arista.com; s=google;
+        h=mime-version:from:date:message-id:subject:to:content-type
+         :content-transfer-encoding;
+        bh=UQ/pGmrw+DADCDb9DBjILwclpXgB2opV1AW8OoSUHb4=;
+        b=GFiEqUBd3BTshPy7AsRK14t4pZsQiAI4rlhi3HCFLBtUo5gltmHmY81esqfmbJJRXB
+         9QpmQ+avrCd33bQBizIcOhL2IkwZaLA7+XmNUFryudOlgRFoawUrgThIL+WO5VmAaGi0
+         /WUaknYojiUd7z3yJYkpbi/bVtiyBsXzgc68A=
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Netfilter Users Mailing list <netfilter@vger.kernel.org>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+To: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Ani Sinha <ani@anirban.org>
 
-Kernel modules are ok now, but I can=E2=80=99t get =E2=80=9Cout=E2=80=9D=
- from my LAN via masquerade if I say 'oifname enp2s0 masquerade'.
+> On Thu, Oct 29, 2015 at 6:21 PM, Neal P. Murphy
+> <neal.p.murphy@alum.wpi.edu> wrote:
+> > On Thu, 29 Oct 2015 17:01:24 -0700
+> > Ani Sinha <ani@arista.com> wrote:
+> >
+> >> On Wed, Oct 28, 2015 at 11:40 PM, Neal P. Murphy
+> >> <neal.p.murphy@alum.wpi.edu> wrote:
+> >> > On Wed, 28 Oct 2015 02:36:50 -0400
+> >> > "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu> wrote:
+> >> >
+> >> >> On Mon, 26 Oct 2015 21:06:33 +0100
+> >> >> Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+> >> >>
+> >> >> > Hi,
+> >> >> >
+> >> >> > On Mon, Oct 26, 2015 at 11:55:39AM -0700, Ani Sinha wrote:
+> >> >> > > netfilter: nf_conntrack: fix RCU race in nf_conntrack_find_get
+> >> >> >
+> >> >> > Please, no need to Cc everyone here. Please, submit your Netfilter
+> >> >> > patches to netfilter-devel@vger.kernel.org.
+> >> >> >
+> >> >> > Moreover, it would be great if the subject includes something
+> >> >> > descriptive on what you need, for this I'd suggest:
+> >> >> >
+> >> >> > [PATCH -stable 3.4,backport] netfilter: nf_conntrack: fix RCU race in nf_conntrack_find_get
+> >> >> >
+> >> >> > I'm including Neal P. Murphy, he said he would help testing these
+> >> >> > backports, getting a Tested-by: tag usually speeds up things too.
+> >> >>
+> >> >
+> >> > I've probably done about as much seat-of-the-pants testing as I can. All opening/closing the same destination IP/port.
+> >> >
+> >> > Host: Debian Jessie, 8-core Vishera 8350 at 4.4 GHz, 16GiB RAM at (I think) 2100MHz.
+> >> >
+> >> > Traffic generator 1: 6-CPU KVM running 64-bit Smoothwall Express 3.1 (linux 3.4.109 without these patches), with 8GiB RAM and 9GiB swap. Packets sent across PURPLE (to bypass NAT and firewall).
+> >> >
+> >> > Traffic generator 2: 32-bit KVM running Smoothwall Express 3.1 (linux 3.4.110 with these patches), 3GiB RAM and minimal swap.
+> >> >
+> >> > In the first set of tests, generator 1's traffic passed through Generator 2 as a NATting firewall, to the host's web server. In the second set of tests, generator 2's traffic went through NAT to the host's web server.
+> >> >
+> >> > The load tests:
+> >> >   - 2500 processes using 2500 addresses and random src ports
+> >> >   - 2500 processes using 2500 addresses and the same src port
+> >> >   - 2500 processes using the same src address and port
+> >> >
+> >> > I also tested using stock NF timeouts and using 1 second timeouts.
+> >> >
+> >> > Bandwidth used got as high as 16Mb/s for some tests.
+> >> >
+> >> > Conntracks got up to 200 000 or so or bounced between 1 and 2, depending on the test and the timeouts.
+> >> >
+> >> > I did not reproduce the problem these patches solve. But more importantly, I saw no problems at all. Each time I terminated a test, RAM usage returned to about that of post-boot; so there were no apparent memory leaks. No kernel messages and no netfilter messages appeared during the tests.
+> >> >
+> >> > If I have time, I suppose I could run another set of tests: 2500 source processes using 2500 addresses times 200 ports to connect to 2500 addresses times 200 ports on a destination system. Each process opens 200 sockets, then closes them. And repeats ad infinitum. But I might have to be clever since I can't run 500 000 processes; but I could run 20 VMs; that would get it down to about 12 000 processes per VM. And I might have to figure out how to allow allow processes on the destination system to open hundreds or thousands of sockets.
+> >>
+> >> Should I resend the patch with a Tested-by: tag?
+> >
+> > ... Oh, wait. Not yet. The dawn just broke over ol' Marblehead here. I only tested TCP; I need to hammer UDP, too.
+> >
+> > Can I set the timeouts to zero? Or is one as low as I can go?
+>
+> Any progress with testing ?
 
-It does seem to work without the oifname. But how does nftables decide =
-which of the interfaces need to be masqueraded if I don=E2=80=99t provi=
-de such a conditional?
+I applied the 'hammer' through a firewall with the patch. I used TCP,
+UDP and ICMP.
 
-This is what I have:
+I don't know if the patch fixes the problem. But I'm reasonably sure
+that it did not break normal operations.
 
-enp2s0: 192.168.138.125 (towards =E2=80=98upstream=E2=80=99)
-enp3s0: 192.168.150.1 (=E2=80=98LAN=E2=80=99)
+To test a different problem I fixed (a memory leak in my 64-bit
+counter patch for xt_ACCOUNT), I tested 60,000 addresses (most of a
+/16) through the firewall. Again, no troubles.
 
-> nft list tables
-table ip nat
-> nft list table ip nat
-table ip nat {
-  chain prerouting {
-    type nat hook prerouting priority 0; policy accept;
-  }
-  chain postrouting {
-    type nat hook postrouting priority 0; policy accept;
-    oifname =E2=80=9Cenp2s0=E2=80=9D masquerade
-  }
-}
-
-My =E2=80=98LAN=E2=80=99 test machine has 192.168.150.239. It can ping =
-192.168.150.1 and 192.168.138.125, but nothing further upstream.
-
-My =E2=80=98gateway=E2=80=99 can ping upstream and the LAN test machine=
-=2E
-
-Again, it seems to work if I drop the 'oifname =E2=80=9Cenp2s0=E2=80=9D=
-' in front of the masquerade.
-
-Thanks,
+I only observed two odd things which are likely completely unrelated
+to your patch. When I started the TCP test, then added the UDP test,
+only TCP would come through. If I stopped and restarted the TCP test,
+only UDP would come through. I suspect this is due to buffering. It's
+just a behaviour I haven't encountered since I started using Linux
+many years ago (around '98). The second, when I started the test, the
+firewall would lose contact with the upstream F/W's apcupsd daemon;
+again, this is likely due to the nature of the test: it likely floods
+input and output queues.
 
 
+I'd say you can probably resend with Tested-by.
 
-Johannes.
-
+Neal
