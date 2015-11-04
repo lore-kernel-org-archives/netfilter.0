@@ -1,89 +1,51 @@
-From: Michael Schwartzkopff <ms@sys4.de>
-Subject: Re: OpenDPI and Netfilter
-Date: Wed, 04 Nov 2015 11:06:19 +0100
-Message-ID: <1734097.89bsIlettF@nb003>
-References: <5639CF92.9080007@qmail.re>
-Reply-To: ms@sys4.de
+From: Bill <boober95@rogers.com>
+Subject: Connection tracking Cli and an ALG for DNS
+Date: Wed, 4 Nov 2015 14:32:09 -0400
+Message-ID: <201511041332.09522.boober95@rogers.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart1482292.OfYhX9mBZf"; micalg="pgp-sha256"; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=sys4.de;
-	s=ms-sys4-de-201501; t=1446631583;
-	bh=t3tU95oh/g19R4sC1Vsu5Esp4jZeDCIxOonHnAK8M5A=;
-	h=From:To:Reply-To:Subject:Date:In-Reply-To:References;
-	b=kMU9a8wWbPJT6Yc6DJ9vqaOWXypmLnjT2/pIqOOQIKj2kz9K7h1OTFxA/q+HTAxSh
-	 VaBHqCtKVFRXUQXPnG9M9UlI38Nzo5iOqSKWsdAiU0qeYdz+We+J5DR03A+hD1KtP4
-	 y8mLigQYvyOqsKkUQFWQyKT6p48F86wgCXITWfTsyQ8d4UW3EQAH7IBVXIu9grRp2l
-	 EaCMN/FtJO+8cU+smwQG6csDV8ng6wFzrTb9xIuvqVAoa6fedir0CVJ4h23upy2S3C
-	 y43wX+xoaEbu96OTBLHet9qoA+hjPHptyPGMWjicP3me4g93SLVjraOwTLHOlurktL
-	 JVwd5sEszhVJw==
-In-Reply-To: <5639CF92.9080007@qmail.re>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rogers.com; s=s2048; t=1446661931; bh=w6J/jUlcmUxDLUDoxy6/eZ97olowDzdsZg0JWLAF7ig=; h=From:To:Subject:Date:From:Subject; b=Q0bykPqKpJrjPyPu8HVEssnVFpbkj1b2/NxWRs2veOKOakYqd0/N1xKPsNGuf0Q6s0UVA8gOhBYRYKzLwd8fNGf2UF5wLGo2kU+0oQFwac3oMOifrRFw/hN+0sQC0akAGmIUfOCYz0F0LsM1MxRQZ2kLcTjhU4rzzasbwgP5+oBT1qMiJ2tuUGTDNsQt943ESDoy0lW3eSQlPi6WSMR2JBZw9JIbubWTsRmmOv3RTDzf5rR0cLWL7FDHpKG7CpeKE+fdo9d0azzQtz/3zSZpSLSOmlnE99HWpQERbZpJX4fzrrCk5TF2A79KQNkj6s2RbO/Bakhpfh8Ctqq1BUdv8Q==
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter Users Mailing list <netfilter@vger.kernel.org>
 
+I am looking at creating a DNS_ALG using netfilter connection tracking.  I 
+believe I understand most of what is needed but am having problems testing 
+the ideas using the Cli from the conntrack-tools package.
 
---nextPart1482292.OfYhX9mBZf
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="iso-8859-1"
+Basically I have a setup that looks like this, a NAT gateway (with DNS) a 
+local host inside the NAT, and a remote host outside the NAT:
 
-Am Mittwoch, 4. November 2015, 10:27:46 schrieb Laurent B.:
-> Dear all,
->=20
-> is there a way to connect netfilter/iptables with opendpi ? something=
+local host               dns/nat gateway              remote host
+192.168.20.171      192.168.20.170                192.168.30.172
+                              192.168.30.170
+inside               ----->>> nat >>> ------          outside
 
-> like -m ndpi --dpi-protocol p2p -j DROP ?
->=20
-> I saw the opendpi-netfilter project which seems to be no longer
-> maintened and which do not compile with recent kernel.
->=20
-> An idea ? If nothing is existing, do you think it can be useful to
-> (re)develop such a connector ?
->=20
-> Thank you,
->=20
-> Laurent
+Thus local host can connect to remote host and is natted thru the gateway, but 
+remote host can't connect to local host as it is blocked by the NAT gateway.
 
-Hi,
+What want ultimately is for remote to do a DNS on the gateway, and have the 
+gateway configure the NAT to allow the incoming connection.  I want the 
+connection to look as if local has initiated it, ie I want it natted so the 
+connection is between the gateway and the remote host IPs on the outside.
 
-do not know exactly about opendpi, but about a year ago we tested the D=
-PI=20
-libraries of ntop-ng.
+Ultimately I want to program this into a DNS server or build a DNS_ALG, but 
+for now I am just testing out the ideas and trying to test using the 
+conntrack-tools, but I have having limited success.  I can add/delete/modify 
+connections but I haven't been able to create a conntrack 'expectation'.
 
-With some patching it works quite good with netfilter / traffic control=
-. We wrote=20
-down our finding in the German journal iX (https://shop.heise.de/katalo=
-g/tiefe-einsichten, sorry paywalled)
+In the conntrack-tools there is a set of tests 'test.sh' file that has 
+examples, and they work, but not the 'expectation', test as it is missing 
+some options.
 
-It works quite good.
+What I'd like to know is given the above example, where I'd like 
+192.168.30.172 to connect to an expectation on 192.168.30.170 and be passed 
+thru the NAT to 192.168.20.171, what are the right commends to use? 
 
-Please mail me if you need more info.
+I am pretty sure I need an 'expectation' and not a connection in one of the 
+initial state machine states, but please correct me if I am wrong.
 
-Mit freundlichen Gr=FC=DFen,
-
-Michael Schwartzkopff
-
-=2D-=20
-[*] sys4 AG
-
-http://sys4.de, +49 (89) 30 90 46 64, +49 (162) 165 0044
-Franziskanerstra=DFe 15, 81669 M=FCnchen
-
-Sitz der Gesellschaft: M=FCnchen, Amtsgericht M=FCnchen: HRB 199263
-Vorstand: Patrick Ben Koetter, Marc Schiffbauer
-Aufsichtsratsvorsitzender: Florian Kirstein
---nextPart1482292.OfYhX9mBZf
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iF4EABEIAAYFAlY52J4ACgkQsmtesqLuBDSm0wD/VyAg9D+6U7Okh1zKMpx3W/32
-INm144jBYggW5L8aPmwBAI67HB8Y3nxt+5C9VZRG3ldSn2B/dI6y/qbslf+ATQq1
-=e/8P
------END PGP SIGNATURE-----
-
---nextPart1482292.OfYhX9mBZf--
-
+/bill
