@@ -1,7 +1,7 @@
 From: Adel Belhouane <bugs.a.b@free.fr>
 Subject: Re: [Bulk] Connection tracking Cli and an ALG for DNS
-Date: Sun, 15 Nov 2015 19:26:39 +0100
-Message-ID: <5648CE5F.5040002@free.fr>
+Date: Sun, 15 Nov 2015 19:45:38 +0100
+Message-ID: <5648D2D2.7010107@free.fr>
 References: <201511041332.09522.boober95@rogers.com> <201511061727.37090.boober95@rogers.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
@@ -10,7 +10,12 @@ In-Reply-To: <201511061727.37090.boober95@rogers.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+To: Bill <boober95@rogers.com>
+Cc: Netfilter Users Mailing list <netfilter@vger.kernel.org>
+
+
+(I didn't reply to the original sender, my bad. So sending the same mes=
+sage again...)
 
 Le 06/11/2015 23:27, Bill a =E9crit :
 > I've been looking at this a bit more and it occurs to me that it may =
@@ -21,6 +26,7 @@ e.
 
 [...]
 
+>
 > If anyone can tell me definitively if I can use a connection or an ex=
 pect to
 > do what I want, as described below, I'd appreciate it.
@@ -91,12 +97,11 @@ ssing
 
 Can't you simply use the iptables DNAT target? If not, can you explain =
 why
-it won't work for your case and for what reason you'd need something el=
-se?
+it won't work for your use case and for what reason you'd need somethin=
+g else?
 
 >> /bill
 >> --
 
 regards,
-Adel BELHOUANE.
-
+Adel BELHOUANE
