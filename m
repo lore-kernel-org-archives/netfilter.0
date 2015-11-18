@@ -1,44 +1,36 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: nftables DNAT change destport
-Date: Mon, 16 Nov 2015 11:39:37 +0100
-Message-ID: <20151116103937.GA2907@salvia>
-References: <CAAPqxJwz30Lw5uaF05D=yBxeQ7p_O7EsTEMom1LavERYHgbT5w@mail.gmail.com>
+From: David TAILLANDIER - DIGI VALUE <david.taillandier@digi-value.fr>
+Subject: "raw" table versus "filter" table
+Date: Wed, 18 Nov 2015 22:47:02 +0100
+Message-ID: <564CF1D6.9000709@digi-value.fr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAAPqxJwz30Lw5uaF05D=yBxeQ7p_O7EsTEMom1LavERYHgbT5w@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pankaj Yadav <pankajdnapster@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Sun, Nov 15, 2015 at 04:16:06PM +0530, Pankaj Yadav wrote:
-> I am trying to make a DNAT port map using nftables
-> 
-> flush table ip nat
-> table ip nat {
->         chain prerouting {
->                 type nat hook prerouting priority 0; policy accept;
->                 dnat tcp dport map { 10737 : 62.210.105.235:8080,
-> 10738 : 62.210.105.257:8081 }
->         }
-> 
->         chain postrouting {
->                 type nat hook postrouting priority 0; policy accept;
->                 masquerade
->         }
-> }
-> 
-> but this ruleset produces error: Error: syntax error, unexpected
-> colon, expecting comma or '}'
-> 
-> What should be the correct syntax if i want to change destport also
-> corresponding to IPTABLE's (-j DNAT --to 62.210.105.235:8080 ) ?
-> I have tried several combinations but none works and Google also didnt
-> help much.Please help me .
 
-Have a look at:
+Hi,
 
-http://wiki.nftables.org/wiki-nftables/index.php/Multiple_NATs_using_nftables_maps
+according to the well-known netfilter schematic:
+http://inai.de/images/nf-packet-flow.png
+the "raw" table is processed before the "filter" table.
+
+I tested it with some usual commands without problem:
+    iptables --table raw --append PREROUTING --source 1.2.3.4 --jump REJECT
+    iptables --table raw --append PREROUTING --in-interface lo --jump ACCEPT
+
+- the packets are handled sooner, without the need to go though
+  conntrack+mangle+nat+routing. So less CPU/memory stress (and in turn
+  lightly compensated by the fact the iptable_raw module has to be
+  loaded ?)
+- only one rule in case the box is also a router (won't be ok for
+  every rules, obviously) because there is no need to add the same rule
+  for filter/forward
+
+The documentations I found always describe the raw table to be used in
+strict cases. But none give even the smallest justification.
+
+--> Is there any reasons not to use the raw table, apart dogmatic ones ?
+
