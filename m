@@ -1,21 +1,22 @@
-From: Roger Price <roger@rogerprice.org>
+From: Pascal Hambourg <pascal@plouf.fr.eu.org>
 Subject: Re: iptables: unknown protocol "!" specified
-Date: Sat, 21 Nov 2015 22:10:40 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1511212204280.3864@maria.rogerprice.org>
-References: <alpine.LNX.2.00.1511211917160.3864@maria.rogerprice.org> <20151121155753.0c7e1850@playground>
+Date: Sun, 22 Nov 2015 09:18:56 +0100
+Message-ID: <56517A70.4020001@plouf.fr.eu.org>
+References: <alpine.LNX.2.00.1511211917160.3864@maria.rogerprice.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20151121155753.0c7e1850@playground>
+In-Reply-To: <alpine.LNX.2.00.1511211917160.3864@maria.rogerprice.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Netfilter Users Mailing list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Roger Price <roger@rogerprice.org>
+Cc: Netfilter Users Mailing list <netfilter@vger.kernel.org>
 
-On Sat, 21 Nov 2015, Neal P. Murphy wrote:
+Roger Price a =E9crit :
+>=20
+>   Explanation ... This match can also be inversed with the !
+>   sign, so --protocol ! tcp would mean to match UDP and ICMP.
 
-> This was changed quite some time ago. The 'infix' notation was removed.
-> Try "! --protocol icmp".
-
-Thanks, I had misunderstood the notation and explanation in man iptables. 
-Roger
+No, it means to match anything but TCP. There are many other protocols
+than TCP, UDP and ICMP.
