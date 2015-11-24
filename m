@@ -1,71 +1,74 @@
-From: Shaun Savage <savages@savages.com>
-Subject: Re: iptables and policy based routing together
-Date: Mon, 23 Nov 2015 10:51:05 -0800
-Message-ID: <56536019.5080701@savages.com>
-References: <56535BE4.9020504@savages.com>
+From: salih ahi <salihahi@gmail.com>
+Subject: How can I configure linux routing with bridge interfaces to apply
+ iptables rules for tcp packets?
+Date: Tue, 24 Nov 2015 12:01:06 +0200
+Message-ID: <CALZybbdm8ZDa7qmdfBzc-_EbQpFVtOJi9Z81BiSsLwmSr6c4ug@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=savages.com;
-	s=151110; t=1448304638;
-	bh=UcSys/95rFZFSN4My7K2wPuxK8rwA76xps6ZC0AA+3Y=;
-	h=Date:From:To:Subject:References:In-Reply-To:From;
-	b=JMes30JRAgfLSlX3hl+BJ9eXTujAWocuKrQTa8OnhS1qJ7hYDR/pgTRArMFNfEWBq
-	 iy7EXevTnNAndLQkFdbctje5o8HLvn7T/iVl+e+/mzSYg2lJVt/YkLAyq9GrIzLzjv
-	 4JZOwTtLihKWCAjEQ38FnV4gLplDR4SmGWk0zVDw=
-In-Reply-To: <56535BE4.9020504@savages.com>
-Sender: netdev-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=z3gvbhof4xHu4qsIkyj9+iRKLff7A35m07b9piOBGsc=;
+        b=REk9WeYL2Bw9+d9nPE/gJ20mVz5pa8QPYajtFa/ZJsehoX+v77JiGrCjFIvQn7zfIW
+         4cYiZ3eJGRHnh8aQ/uhZP65BZgux2H/vAKP4nb2ysc1mlhQNbfT+OQHIv8kG99te8g9s
+         ooXEuHKCSmbHmDajvhcbbyr3/lMC6KL2Oo0oNUNlzbu1K2jiCE31fPKaiLBeL+tBz9h2
+         po8N/e70mT/1OkoigkRY1LeuMNXtOU+Q4Kyh6lGseCnayBAvKSntJnCBMIwnBRNzZAFU
+         EP4bacIzt1htjaK3yAbZjO6bnEj7kmjrNJk0AHRkDqiKvGXFPE8foczZSwlgdU/RtAIQ
+         vIsw==
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org, linux-net@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
+I am trying to install a transparent proxy to my current network.
+Currently there is only one client machine, directly connected to eth0
+of my proxy. eth1 is connected to the switch and goes out from there.
+Now eth0 and eth1 is members of a bridge interface and packets are
+directly transmitted from one another. For other reasons, I can not
+assign IP addresses to these interfaces and use normal IP forwarding.
 
-> My problem is I have Virtual Private Servers, VPS in different 
-> locations around the world.  I have created a mesh by using openvpn.  
-> Each VPS phones home and sets up a TCP connection  to my RT-AC68U 
-> running Tomato Shibby 128. I want to route, without thinking, to the 
-> different VPS depending upon the country.  Then that VPS is now my 
-> exit node.  I also run Tor on each VPS.
->
-> The VPNs are setup and working. I have added a filter on INPUT that 
-> only allows sessions to initiate from home.
->
-> # iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
->
-> This prevents someone who accesses the VPS to get in to my home network.
->
-> Next I have setup marking packets according to country
-> CN = 86
-> IN = 91
-> RU = 7
-> so on
->
-> # iptables -t mangle -m geoip  --dst-cc CN,HK -j MARK --set-mark 86
-> # iptables -t mangle -m geoip  --dst-cc IN -j MARK --set-mark 91
-> .....
->
-> * BTW how do I debug what fwmark is set?
->
-> Now I start adding rules
->
-> # ip rule add fwmark 86 table CN
-> # ip rule add fwmark 91 table IN
-> ......
->
-> Now type
->
-> # ip rule show
-> 0:    from all lookup local
-> .....
-> 32763:
-> 32764:    from all fwmark 0x5B lookup IN
-> 32765:    from all fwmark 0x56 lookup CN
-> 32766:    from all lookup main
-> 32767:    from all lookup default
->
-> Now I get lost, to me this states only if fwmark == 0x56 use table CN 
-> else do not use table CN
->
-> I have played with adding routing to the tables
-> # ip route add <gw> dev <tunxx> table CN
-> # ????
+What I need is, I have a HTTP sniffer on the proxy, to which I want to
+send packets with
+
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8080
+I want to grab these packets from BROUTING chain of BROUTE table. This
+is the BROUTE table in ebtables I have configured
+
+*broute
+:BROUTING ACCEPT
+:NATLOG ACCEPT
+-A BROUTING -p IPv4 --ip-proto tcp --ip-dport 80 --log-level info
+--log-prefix "LOG_BR" --log-ip -j DROP
+But none of the packets are received by iptables. I set some log lines
+in the iptables itself but they were never executed, thats why I don't
+think packets are coming to iptables chains. Heres the iptables filter
+table
+
+Table: filter
+Chain INPUT (policy ACCEPT)
+num  target     prot opt source               destination
+1    LOG_INP    tcp  --  0.0.0.0/0            0.0.0.0/0           tcp dpt:80
+
+Chain FORWARD (policy ACCEPT)
+num  target     prot opt source               destination
+1    LOG_FWD    tcp  --  0.0.0.0/0            0.0.0.0/0           tcp dpt:80
+
+Chain OUTPUT (policy ACCEPT)
+num  target     prot opt source               destination
+
+Chain LOG_FWD (1 references)
+num  target     prot opt source               destination
+1    LOG        all  --  0.0.0.0/0            0.0.0.0/0           LOG
+flags 0 level 6 prefix `IP_FIL_FWD'
+
+Chain LOG_INP (1 references)
+num  target     prot opt source               destination
+1    LOG        all  --  0.0.0.0/0            0.0.0.0/0           LOG
+flags 0 level 6 prefix `IP_FIL_INP'
+I expect to at least see the dropped packets from ebtables BROUTING in
+the iptables PREROUTING chain of RAW table. But it's as if those
+packets are just discarded. Whereas the man pages say dropped packets
+from brouting are handed over to higher network layers.
+
+What are the iptables/ebtables rules I have to use for this scenario
