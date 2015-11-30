@@ -1,74 +1,65 @@
-From: salih ahi <salihahi@gmail.com>
-Subject: How can I configure linux routing with bridge interfaces to apply
- iptables rules for tcp packets?
-Date: Tue, 24 Nov 2015 12:01:06 +0200
-Message-ID: <CALZybbdm8ZDa7qmdfBzc-_EbQpFVtOJi9Z81BiSsLwmSr6c4ug@mail.gmail.com>
+From: Stefan Berghofer <stefan.berghofer@secunet.com>
+Subject: nftables: Example involving payload_raw_expr
+Date: Mon, 30 Nov 2015 14:28:38 +0100
+Message-ID: <565C4F06.5030102@secunet.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=z3gvbhof4xHu4qsIkyj9+iRKLff7A35m07b9piOBGsc=;
-        b=REk9WeYL2Bw9+d9nPE/gJ20mVz5pa8QPYajtFa/ZJsehoX+v77JiGrCjFIvQn7zfIW
-         4cYiZ3eJGRHnh8aQ/uhZP65BZgux2H/vAKP4nb2ysc1mlhQNbfT+OQHIv8kG99te8g9s
-         ooXEuHKCSmbHmDajvhcbbyr3/lMC6KL2Oo0oNUNlzbu1K2jiCE31fPKaiLBeL+tBz9h2
-         po8N/e70mT/1OkoigkRY1LeuMNXtOU+Q4Kyh6lGseCnayBAvKSntJnCBMIwnBRNzZAFU
-         EP4bacIzt1htjaK3yAbZjO6bnEj7kmjrNJk0AHRkDqiKvGXFPE8foczZSwlgdU/RtAIQ
-         vIsw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="macroman"
 To: netfilter@vger.kernel.org
 
-I am trying to install a transparent proxy to my current network.
-Currently there is only one client machine, directly connected to eth0
-of my proxy. eth1 is connected to the switch and goes out from there.
-Now eth0 and eth1 is members of a bridge interface and packets are
-directly transmitted from one another. For other reasons, I can not
-assign IP addresses to these interfaces and use normal IP forwarding.
+Hi all,
 
-What I need is, I have a HTTP sniffer on the proxy, to which I want to
-send packets with
+I just tried out the example file tests/payload-ll distributed with nft=
+ables,
+which makes use of payload raw expressions of the form "@..,..,..". Whi=
+le the first
+two declarations in the file, i.e.
 
-iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8080
-I want to grab these packets from BROUTING chain of BROUTE table. This
-is the BROUTE table in ebtables I have configured
+  nft add table ip filter
+  nft add chain ip filter input \{ type filter hook input priority 0\; =
+\}
 
-*broute
-:BROUTING ACCEPT
-:NATLOG ACCEPT
--A BROUTING -p IPv4 --ip-proto tcp --ip-dport 80 --log-level info
---log-prefix "LOG_BR" --log-ip -j DROP
-But none of the packets are received by iptables. I set some log lines
-in the iptables itself but they were never executed, thats why I don't
-think packets are coming to iptables chains. Heres the iptables filter
-table
+work as expected, the third declaration
 
-Table: filter
-Chain INPUT (policy ACCEPT)
-num  target     prot opt source               destination
-1    LOG_INP    tcp  --  0.0.0.0/0            0.0.0.0/0           tcp dpt:80
+  nft add rule ip filter input @ll,48,48 00:15:e9:f0:10:f8 counter
 
-Chain FORWARD (policy ACCEPT)
-num  target     prot opt source               destination
-1    LOG_FWD    tcp  --  0.0.0.0/0            0.0.0.0/0           tcp dpt:80
+is rejected with the error message
 
-Chain OUTPUT (policy ACCEPT)
-num  target     prot opt source               destination
+  Error: protocol specification is invalid for this family
 
-Chain LOG_FWD (1 references)
-num  target     prot opt source               destination
-1    LOG        all  --  0.0.0.0/0            0.0.0.0/0           LOG
-flags 0 level 6 prefix `IP_FIL_FWD'
+(the expression "@ll,48,48" is underlined in the output). Does the exam=
+ple use
+an outdated syntax, or have I done something wrong?
 
-Chain LOG_INP (1 references)
-num  target     prot opt source               destination
-1    LOG        all  --  0.0.0.0/0            0.0.0.0/0           LOG
-flags 0 level 6 prefix `IP_FIL_INP'
-I expect to at least see the dropped packets from ebtables BROUTING in
-the iptables PREROUTING chain of RAW table. But it's as if those
-packets are just discarded. Whereas the man pages say dropped packets
-from brouting are handed over to higher network layers.
+Is there any documentation on how to use payload raw expressions? I cou=
+ldn't find
+any mention of it in the wiki or the manpage of nftables.
 
-What are the iptables/ebtables rules I have to use for this scenario
+I am using Linux Kernel 4.2.4, together with the latest repository vers=
+ion of
+libnftnl and nftables.
+
+Greetings,
+Stefan
+
+--=20
+Dr. Stefan Berghofer
+Senior Consultant, Network & Client Security
+Public Authorities
+secunet Security Networks AG
+
+Phone: +49 201 54 54-3606, Fax: +49 201 54 54-1323
+E-Mail: stefan.berghofer@secunet.com
+Ammonstra=DFe 74, 01067 Dresden, Germany
+www.secunet.com
+
+______________________________________________________________________
+
+Registered at: Kronprinzenstra=DFe 30, 45128 Essen, Deutschland
+Amtsgericht Essen HRB 13615
+Management Board: Dr Rainer Baumgart (CEO), Thomas Pleines
+Chairman of Supervisory Board: Dr Peter Zattler
+______________________________________________________________________
