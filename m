@@ -1,59 +1,39 @@
-From: Adel Belhouane <bugs.a.b@free.fr>
-Subject: Re: Connection tracking Cli and an ALG for DNS
-Date: Wed, 2 Dec 2015 12:12:47 +0100
-Message-ID: <565ED22F.7070903@free.fr>
-References: <201511041332.09522.boober95@rogers.com>
- <201511061727.37090.boober95@rogers.com> <5648D2D2.7010107@free.fr>
- <201511191352.03564.boober95@rogers.com>
+From: Oliver Graute <oliver.graute@gmail.com>
+Subject: Marking frames with ebtables for iptables
+Date: Wed, 2 Dec 2015 14:02:39 +0000 (UTC)
+Message-ID: <loom.20151202T145721-935@post.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <201511191352.03564.boober95@rogers.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Bill <boober95@rogers.com>
-Cc: Netfilter Users Mailing list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Le 19/11/2015 19:52, Bill a =E9crit :
+Hello,
 
-> For reference here is my diagram again:
->=20
->>>> local host               dns/nat gateway              remote host
->>>> 192.168.20.171      192.168.20.170                192.168.30.172
->>>>                                192.168.30.170
->>>> inside               ----->>> nat >>> ------          outside
->=20
-> As you can see, DNAT would no do for my requirements since I'd have t=
-o=20
-> add/delete iptables rules, which I supposed I could do, but doesn't s=
-eem te=20
-> right approach.
->=20
-> Now since my original posting I have been reading code and have mange=
-d to=20
-> create an e'expect' connection by upgrading to the latest 4.4 kernel.=
-  In=20
-> this version I find the sample test 'create-expect' works.
->=20
-> After succeeding with this I realize I may need to build a kernel mod=
-ule for=20
-> the expectation and have started looking at the kernel code for this,=
- such as=20
-> those for FTP etc.
->=20
-I didn't get before that the "ALG" part was essential. I read a summary=
- here:
-https://www.juniper.net/documentation/en_US/junos12.1x47/topics/concept=
-/security-alg-dns-overview.html
+I'am new to ebtables/iptables. I struggle with the mark feature. 
 
-So I still don't get exactly what you are looking for (sorry), but I re=
-alize
-it's related to DNS data content, not just connections. Sorry to have
-waisted your time with my replies and good luck with your project.
+I try to mark some frames with ebtables on MAC Layer to pass these mark to 
+iptables network layer.
 
-> /bill
->=20
+I build up a bridge interface br0, cleared all ebtables and iptables tables 
+as preparation. Then I try something like this:   
 
-regards,
-Adel BELHOUANE.
+ebtables -t filter -A INPUT -p IPv4 -s 00:11:22:33:44:55 -i eth0 -j mark --
+mark-set 0xffff --mark-target ACCEPT
+ebtables -t filter -A INPUT --log-level info --log-ip --log-prefix EBFW
+iptables -t mangle -A PREROUTING -m mark --mark 0xffff
+iptables -t mangle -A PREROUTING -m mark --mark 0xffff -j LOG --log-level 
+info --log-prefix MARKED
+
+
+i would expect that iptables log show me the marked packages from ebtables. 
+But i see no mark 0xffff
+
+Does anyone know how this is done right?
+
+Best regards,
+
+Oliver
+
