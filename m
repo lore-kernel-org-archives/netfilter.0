@@ -1,94 +1,55 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] NetDev 1.1 updates (Seville, Spain February 10-12)
-Date: Tue, 1 Dec 2015 22:00:36 +0100
-Message-ID: <20151201210036.GA2780@salvia>
+From: =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>
+Subject: [PATCH 1/1] Fix musl build issue
+Date: Wed,  2 Dec 2015 05:23:16 +0100
+Message-ID: <1449030196-14718-1-git-send-email-joerg.krause@embedded.rocks>
 Mime-Version: 1.0
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=embedded.rocks;
+	 h=content-transfer-encoding:content-type:content-type
+	:mime-version:x-mailer:message-id:date:date:subject:subject:from
+	:from:received:received; s=default; t=1449030198; x=1449634999;
+	 bh=wL1/P0OGAXqOC37EcEALmTfaLgjVYgcy+T8srXQD/do=; b=ZlZBG/mU/ypd
+	SATFzDgdGQ8OpNZJm5ZyX/HAkx0b8tGFVbyVglan86dNEY1mLBJkxV2jXO2iojCj
+	wYooDeKbXd6cA3BF1jTaFhAiaRVJBT+2EVooSGHgOukT/AHKzIV4bQuzm7QgSYWV
+	KN8O2EZcByCSre2mWh+x5tVrKF/wqbhR8HXtOHzcl+HIQNZ3W9QvBsGEa+FJuvjK
+	sXBazUCHqCiCKgPKLKlwrW+iWHTTyPVt+K+XCoLrS6Wd0V456heqUL2aFkvaye6E
+	2YvefjLEh4izsOcWcRFmp7LHdZQor35AksdxwRuNd1ijHhLGjcLqN6YswXU/gx24
+	OIQKvK6HZA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
+Cc: =?UTF-8?q?J=C3=B6rg=20Krause?= <joerg.krause@embedded.rocks>
 
-Hi!
-
-We would like to share with you some interesting updates regarding
-netdev 1.1, the community-driven Linux networking conference held
-back-to-back with netconf in Sevilla, Spain, February 10-12, 2016.
-
-First off, we're extending our session proposal submission deadline to
-Dec 20th.
-
-Moreover, we already got a good bunch of interesting accepted talks,
-tutorials and workshops, they are:
-
-= Tutorials =
-
-* In-tree support for 100G switch, no more SDK (Elad Raz, Jiri Pirko)
-
-* Using SR-IOV on OpenStack (Alexander Duyck)
-
-* Ipset - a tool for faster, more efficient firewalling with iptables
-  (Jozsef Kadlecsik)
-
-* Using the VRF Implementation in Linux (David Ahern)
-
-* LibOS as a regression test framework for Linux networking (Hajime Tazaki)
-
-= Talks =
-
-* An adventure of analysis and optimisation of the Linux networking
-  stack (Marco Varlese, Kim-marie Jones)
-
-* Networking in your pocket: how the Linux networking stack is made to
-  work on Android devices (Lorenzo Colitti, Erik Kline)
-
-* "Kernel-level GTP (Generic Tunneling Protocol) implementation
-  (Harald Welte & Andreas Schultz)
-
-* State and Future of generic 6LoWPAN branch (Alexander Aring)
-
-* Securing traffic tunnelled over L3 (Sowmini Varadhan)
-
-= Workshops =
-
-We'll be hosting the Linux Wireless Workshop, this meeting provides
-the forum to discuss wireless (mostly 802.11) related topics.
-
-And even more yet to come... We'll keep you posted.
-
-Registration is open at: https://www.netdevconf.org/1.1/registration.html
-
-                          ____________________
-                         / Don't              \
-                         | procrastinate, buy |
-                         \ your ticket now!   /
-                          --------------------
-                            \
-                             \
-                              .--.
-                             |o_o |
-                             |:_/ |
-                            //   \ \
-                           (|     | )
-                          /'\_   _/`\
-                          \___)=(___/
-
-For more info, visit:
-* netdev 1.1: https://www.netdevconf.org/1.1/
-* netconf 2016: http://vger.kernel.org/netconf2016.html
-
-We would also like to thank those that already confirmed sponsorship:
-Cumulus Networks, Facebook, VmWare, Google, Mellanox, Mojatatu
-Networks, OISF/Suricata and Zen Load Balancer. Thank you a lot!
-
-We're still looking for sponsors, in case you can help us, please
-reach us at: sponsor@netdevconf.org
-
-If you yearn for the old community tech driven conferences where you
-mingle with fellow geeks (only these would be Linux networking geeks)
-then this would be it. There will be no marketing flashy openings.
-There will just be a pure feed of Linux networking.
-
-See you at netdev 1.1 in Seville, Spain!
+RHVlIHRvIGNsYXNoZXMgaW4gdGhlIG5hbWVzcGFjZSBiZXR3ZWVuIHRoZSBMaW51eCBLZXJuZWwg
+aGVhZGVycyBhbmQgdGhlCm5ldGluZXQgaGVhZGVycyBidWlsZGluZyBhcnB0YWJsZXMgd2l0aCB0
+aGUgbXVzbCBDIGxpYnJhcnkgZmFpbHMuCgpCZXN0IGFkdmljZSBmcm9tIHRoZSBtdXNsIGRldmVs
+b3BlcnMgaXMgdG8gbm90IGluY2x1ZGUgYm90aCBoZWFkZXJzIGluIGEKdXNlcnNwYWNlIHRvb2wg
+KHNlZSB0aGUgdGhyZWFkIG9uIHRoZSBtdXNsIG1haWxpbmcgbGlzdCBbMV0sIGVzcGVjaWFsbHkg
+WzJdKS4KClNpbmNlIGFycHRhYmxlcyBvbmx5IHJlcXVpcmVzIGEgZmV3IGRlZmluaXRpb25zIGZy
+b20gdGhlIExpbnV4IEtlcm5lbCBoZWFkZXJzCndlIG9wdC1vdXQgdGhlIGNsYXNoaW5nIGhlYWRl
+ciBmaWxlcyBhbmQgZGVmaW5lIHRoZSBuZWVkZWQgZGVmaW5pdGlvbnMuCgpbMV0gaHR0cDovL3d3
+dy5vcGVud2FsbC5jb20vbGlzdHMvbXVzbC8yMDEyLzEwLzA5LzEKWzJdIGh0dHA6Ly93d3cub3Bl
+bndhbGwuY29tL2xpc3RzL211c2wvMjAxMi8xMC8xMS8xCgpTaWduZWQtb2ZmLWJ5OiBKw7ZyZyBL
+cmF1c2UgPGpvZXJnLmtyYXVzZUBlbWJlZGRlZC5yb2Nrcz4KLS0tCiBleHRlbnNpb25zL2FycHRf
+Q0xBU1NJRlkuYyAgICB8ICA3ICsrKysrKysKIGluY2x1ZGUvbGludXgvbmV0ZmlsdGVyX2FycC5o
+IHwgMTEgKysrKysrKysrKysKIDIgZmlsZXMgY2hhbmdlZCwgMTggaW5zZXJ0aW9ucygrKQoKZGlm
+ZiAtLWdpdCBhL2V4dGVuc2lvbnMvYXJwdF9DTEFTU0lGWS5jIGIvZXh0ZW5zaW9ucy9hcnB0X0NM
+QVNTSUZZLmMKaW5kZXggNzg5M2FlZC4uNzQyYmU2MyAxMDA2NDQKLS0tIGEvZXh0ZW5zaW9ucy9h
+cnB0X0NMQVNTSUZZLmMKKysrIGIvZXh0ZW5zaW9ucy9hcnB0X0NMQVNTSUZZLmMKQEAgLTIxLDcg
+KzIxLDE0IEBACiAjaW5jbHVkZSA8c3RkaW8uaD4KICNpbmNsdWRlIDxnZXRvcHQuaD4KICNpbmNs
+dWRlIDxhcnB0YWJsZXMuaD4KKworI2lmZGVmIF9fS0VSTkVMX18KICNpbmNsdWRlIDxsaW51eC9u
+ZXRmaWx0ZXIveHRfQ0xBU1NJRlkuaD4KKyNlbHNlCitzdHJ1Y3QgeHRfY2xhc3NpZnlfdGFyZ2V0
+X2luZm8geworCXVpbnQzMl90IHByaW9yaXR5OworfTsKKyNlbmRpZgogCiAjZGVmaW5lIFRDX0hf
+TUFKX01BU0sgKDB4RkZGRjAwMDBVKQogI2RlZmluZSBUQ19IX01JTl9NQVNLICgweDAwMDBGRkZG
+VSkKZGlmZiAtLWdpdCBhL2luY2x1ZGUvbGludXgvbmV0ZmlsdGVyX2FycC5oIGIvaW5jbHVkZS9s
+aW51eC9uZXRmaWx0ZXJfYXJwLmgKaW5kZXggOTJiYzZkZC4uMmE2M2U4MiAxMDA2NDQKLS0tIGEv
+aW5jbHVkZS9saW51eC9uZXRmaWx0ZXJfYXJwLmgKKysrIGIvaW5jbHVkZS9saW51eC9uZXRmaWx0
+ZXJfYXJwLmgKQEAgLTUsNyArNSwxOCBAQAogICogKEMpMjAwMiBSdXN0eSBSdXNzZWxsIElCTSAt
+LSBUaGlzIGNvZGUgaXMgR1BMLgogICovCiAKKyNpZmRlZiBfX0tFUk5FTF9fCiAjaW5jbHVkZSA8
+bGludXgvbmV0ZmlsdGVyLmg+CisjZWxzZQorLyogUmVzcG9uc2VzIGZyb20gaG9vayBmdW5jdGlv
+bnMuICovCisjZGVmaW5lIE5GX0RST1AgMAorI2RlZmluZSBORl9BQ0NFUFQgMQorI2RlZmluZSBO
+Rl9TVE9MRU4gMgorI2RlZmluZSBORl9RVUVVRSAzCisjZGVmaW5lIE5GX1JFUEVBVCA0CisjZGVm
+aW5lIE5GX1NUT1AgNQorI2RlZmluZSBORl9NQVhfVkVSRElDVCBORl9TVE9QCisjZW5kaWYKIAog
+LyogVGhlcmUgaXMgbm8gUEZfQVJQLiAqLwogI2RlZmluZSBORl9BUlAJCTAKLS0gCjIuNi4yCgo=
