@@ -1,71 +1,48 @@
-From: Scott Bronson <bronson@rinspin.com>
-Subject: Why isn't DNAT happening for host-originated packets?
-Date: Thu, 3 Dec 2015 14:45:28 -0800
-Message-ID: <CAKmUPx5kE+v03OGAjF32rOGyVQfOLbSmyTEOOK9uApANeWbU1A@mail.gmail.com>
+From: Noel Kuntze <noel@familie-kuntze.de>
+Subject: Re: Why isn't DNAT happening for host-originated packets?
+Date: Fri, 4 Dec 2015 00:14:25 +0100
+Message-ID: <5660CCD1.60807@familie-kuntze.de>
+References: <CAKmUPx5kE+v03OGAjF32rOGyVQfOLbSmyTEOOK9uApANeWbU1A@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rinspin-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=rKVbhU2qdJViWVxFFOjDJ28Dha5Q6mQWpacW/S09g+M=;
-        b=qyYCHSCad/UWSogUms2gWn6FHz3rs0iULYZMEDiFRDcCdoxwfJ6pdl4zjMayJLCF1w
-         J8g+ABMGgyBgsfrVq32qHkcL9qHkT2F+8OHsQRS4l/rVn/E/C+XD0DBjNhY+5A11NvN4
-         TzeyC5Jg9S/t8R23e0aGc8P53KIxpzxUan8/oXlyniSgd6BGEmhaQ5jFpdlUoy5pBqhv
-         CwpWOjVfJh5tFVW36J/LOQqamV0MLCi32gNiE+mHE2/+/2ittcz+NNX4icAu4jOIgVOY
-         XLNTyabyFhwyk58jnx3bx1wz2EbyQU03hct9hIrESFQpYEniNq7nZVt2PjIUcA267LlM
-         KPTA==
+In-Reply-To: <CAKmUPx5kE+v03OGAjF32rOGyVQfOLbSmyTEOOK9uApANeWbU1A@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
-
-Near as I can tell, packets originating on the host are skipping the
-nat:PREROUTING rule...  This is before routing, so wouldn't externally-
-generated packets and internally-generated packets follow the exact
-same path?
+Content-Type: text/plain; charset="utf-8"
+To: Scott Bronson <bronson@rinspin.com>, netfilter@vger.kernel.org
 
 
-Background:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-I'm trying to forward some ports on the host to a virtual machine.
-This is on libvirt's default masquerading/bridged network setup.
+Look at the packet flow graph. That's fairly up to date (but is missing=
+ the new *nat INPUT chain).
+http://inai.de/images/nf-packet-flow.png
 
-Let's add some rules to forward the port with DNAT:
+- --=20
 
-  iptables -t nat -I PREROUTING -p tcp -d 173.233.67.174 \
-    --dport 25 -j DNAT --to 192.168.122.10:25
-  iptables -t filter -I FORWARD -p tcp --dport 25 -j ACCEPT
+Mit freundlichen Gr=C3=BC=C3=9Fen/Kind Regards,
+Noel Kuntze
 
-This almost works...  Traffic from outside is great.  However, traffic
-originating on the host fails.  It doesn't get NATed, it just terminates
-on the host.
+GPG Key ID: 0x63EC6658
+=46ingerprint: 23CA BB60 2146 05E7 7278 6592 3839 298F 63EC 6658
 
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Here's what I think is happening:
+iQIcBAEBCAAGBQJWYMzPAAoJEDg5KY9j7GZYKPsP/189soz785huEAVPb2vpaSEA
+QOGGJ0N2+amRccHSiMmDE/fnI4MRCUUWbiDS0PBJBSC0aKjhDkA7JRej8oWJaJYx
+Mjw6VhGmpwRHG5x1bWPcrj+Zx3EXYNOkVhZwu/SPgnagnUMtcN7y2SYtNwlArlAA
+twZhoKaVwB75NLqMzcOPNe68kyCyoE7wQNZcczR1HDURs6lWqQh7IyaRKQbX98aa
+J1oC6I5e4fqET90PcK2OC1txTRmdyPCCrLqU0yrceV1nO0QEQx+GSIsg+sz5dl9f
+Beno5AxzNEaeb0Bifq/PbmwKdTY2jC7QM+4/efwt4jXq/kkiV+VHu91LBbwEFPuM
+0JLu9FVpSkXO+e8yVO2KoURYWBN0vKPKvs1qxf5Q37fFiDXmpKlrDS24ZE32xyja
+suBREsiAfz7z97NED/0pDQhU1Cf3TJBXHp0kWJSPRZAg7GYI1lnEkMutkD61wVj+
+/pNCO7MlLZ2ls8qZZpn7BJW8KoNt5N50DmJ/37zCD3kRHiHlG5OCX4vj2EcssRdz
+aQ+HW76S0Bqg+svikkPmBXQvLemh99/izt0DZyJKfC8JpVJhDDj0BallpD4JuZTi
+5J2+9dmdgY7js+ATAEvSjT0zj/l3M8sxuqi+NSIWan8eHzWxRm8SRCIl5uQdK8f3
+rL/oXXhfJCy8ZRzNSp2T
+=3Djtdy
+-----END PGP SIGNATURE-----
 
-  - The packet originates on the host: 1.2.3.4:55555 -> 1.2.3.4:25
-  - It runs through the output chains unmodified. Good.
-  - It reappears as input.
-
-Now I would expect that the nat:PREROUTING rule would fire, DNATing
-the packet out to the VM.
-
-However, that never happens.  Traffic from outside does hit nat:PREROUTING,
-yes, but traffic originating on the host never does.
-
-
-To test this, I copied the nat:PREROUTING rule to the nat:OUTPUT chain,
-so the packets are DNATed in the output stage instead of the input:
-
-  iptables -t nat -I OUTPUT p tcp -d 173.233.67.174 \
-    --dport 25 -j DNAT --to-destination 192.168.122.10:25
-
-And everything works!
-
-
-Here's the raw data: https://gist.github.com/bronson/6fa02c4515f95b104ec1
-
-Thanks for any insight.
-
-    - Scott
