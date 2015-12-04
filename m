@@ -1,42 +1,53 @@
-From: Scott Bronson <bronson@rinspin.com>
+From: Noel Kuntze <noel@familie-kuntze.de>
 Subject: Re: Why isn't DNAT happening for host-originated packets?
-Date: Thu, 3 Dec 2015 16:09:29 -0800
-Message-ID: <CAKmUPx4jX4wyK10jR9Qr0DEPveRG5kOoLnuScpLgWE78DRXtyw@mail.gmail.com>
+Date: Fri, 4 Dec 2015 01:31:48 +0100
+Message-ID: <5660DEF4.20901@familie-kuntze.de>
 References: <CAKmUPx5kE+v03OGAjF32rOGyVQfOLbSmyTEOOK9uApANeWbU1A@mail.gmail.com>
-	<5660CCD1.60807@familie-kuntze.de>
-	<CAKmUPx44yvsz21jRE9BoxK0D4R+gGjJdk9De5QQHUBzj6o9r6Q@mail.gmail.com>
-	<5660D6D3.8040205@familie-kuntze.de>
+ <5660CCD1.60807@familie-kuntze.de>
+ <CAKmUPx44yvsz21jRE9BoxK0D4R+gGjJdk9De5QQHUBzj6o9r6Q@mail.gmail.com>
+ <5660D6D3.8040205@familie-kuntze.de>
+ <CAKmUPx4jX4wyK10jR9Qr0DEPveRG5kOoLnuScpLgWE78DRXtyw@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rinspin-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=slLs0NqqFas0zJnTw4Tf1CDyjSR0fBz1lpmag8Mz2Fw=;
-        b=OnurAP/JIWdXQizXqAtbrx0IMLFm7UniwW7R59b5O0xpPkPvt4CUApBqYjS58t4+Yb
-         R+oy2K0cadYDQaMRdfY06wPlkOuRvrXeTv08vmATYfm1m+vRYjFWlPRnt3fCfOo672Rm
-         Af9uwW1tfB5EylJqHxJLFc4lzK0LDu1PhdB2nLsQZqNSk+26OGAr4X2qeNbV5nANep85
-         KzVYDzHzpnHdbxgufFZAwgtKFeI4CjjDer5IZx5JkmzuR6+LAYUmpcxSLK7gK+2jCvz/
-         rSRSmGJmXK+irfShnG2lBqsghLsl5UiSKYflD3bIhuOL7c0j2SVYe1GNbUTuYNbtr47P
-         lAyw==
-In-Reply-To: <5660D6D3.8040205@familie-kuntze.de>
+In-Reply-To: <CAKmUPx4jX4wyK10jR9Qr0DEPveRG5kOoLnuScpLgWE78DRXtyw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Noel Kuntze <noel@familie-kuntze.de>
+Content-Type: text/plain; charset="utf-8"
+To: Scott Bronson <bronson@rinspin.com>
 Cc: netfilter@vger.kernel.org
 
-> They originate in the middle top of the graph. They only go right, they never go
-> left, where the PREROUTING chains are.
 
-Ah, I was naively starting all packets at the (start) box.  That makes
-a lot more sense.  Thank you!
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-My workaround (copy all nat:PREROUTING rules bit-for-bit to
-nat:OUTPUT) is pretty skanky though...  Does anyone have a suggestion
-for a better way to solve this?
+That's not needed.
+Just create a custom chain in the nat table and redirect the traffic fr=
+om
+OUTPUT and POSTROUTING into it.
+- --=20
 
-Thanks again!
+Mit freundlichen Gr=C3=BC=C3=9Fen/Kind Regards,
+Noel Kuntze
 
-     - Scott
+GPG Key ID: 0x63EC6658
+=46ingerprint: 23CA BB60 2146 05E7 7278 6592 3839 298F 63EC 6658
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJWYN7yAAoJEDg5KY9j7GZY8tcP/03sCHLogLqbGOgh338JCSPX
+BpbhuYyBb+NyrnpuOM97ZIQmOFAeT1mS5paEvPdF4lDp7eZuyQuvAjafKt9ypjXH
+kGDzE9vsvcDPtU5Db9Kf9qYnAOnm7mEE64oWNXzaOO+Ul+SdTFz19N3yjFjhXLsm
+Mxn8HdYyc4dapuhKu/WYyUuvbOzawE6mtZHzAEYa5EK2nLYY/K2hCB+QSLnoI69p
+vtSVUsL2DXcfqbhAwfm0KCZjkQEwvtfuWwsfCVCI0YA4TuVv9qSLUNIUu5qGJRkA
+=46kuCniVG6YjI7agcxUrURdnAQFEwoo82EfteXJYjJzLsQuIRhhjjxYIUt8FKk31o
+MApnmEWPi3cUH0twfFyukzlOUsdObDI5+xqAq1cpokema/Ttf06wpko9wduK5zEm
+iZWnmaBTsz7iOn/j/PZOziH3UZh8VEKOfihPqDsm4YKxUApStEcev70WVBSLUem2
+Vy0Nlp2Ys6gR3YC4XuHAgKg9f8xcAPGSvseA6wOAI2sW4FQIOM8RZtpOdKzl6Std
+OMTxtEt2M3jroksc+E5uz3eZ1yiHuRvpVT0apJzuzbtaRaa6OL+L38dmucFusbi9
+L0q589Yfm7MnncsnstiAcvxpdbgPoeF5GQbAhdpAcHPTJT+LAPO1L6BIB0CR5YJC
+4KIF52rBiC885loxEUgD
+=3D+CR2
+-----END PGP SIGNATURE-----
+
