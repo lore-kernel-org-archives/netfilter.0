@@ -1,125 +1,56 @@
-From: Scott Bronson <bronson@rinspin.com>
+From: Noel Kuntze <noel@familie-kuntze.de>
 Subject: Re: Why isn't DNAT happening for host-originated packets?
-Date: Thu, 3 Dec 2015 16:33:02 -0800
-Message-ID: <CAKmUPx6yaQdb1OE6CSf0TQ=eZYV=eX7Kmdzg-x6nVPtxtMpLEA@mail.gmail.com>
+Date: Fri, 4 Dec 2015 01:35:19 +0100
+Message-ID: <5660DFC7.9040206@familie-kuntze.de>
 References: <CAKmUPx5kE+v03OGAjF32rOGyVQfOLbSmyTEOOK9uApANeWbU1A@mail.gmail.com>
-	<5660CCD1.60807@familie-kuntze.de>
-	<CAKmUPx44yvsz21jRE9BoxK0D4R+gGjJdk9De5QQHUBzj6o9r6Q@mail.gmail.com>
-	<5660D6D3.8040205@familie-kuntze.de>
-	<CAKmUPx4jX4wyK10jR9Qr0DEPveRG5kOoLnuScpLgWE78DRXtyw@mail.gmail.com>
+ <5660CCD1.60807@familie-kuntze.de>
+ <CAKmUPx44yvsz21jRE9BoxK0D4R+gGjJdk9De5QQHUBzj6o9r6Q@mail.gmail.com>
+ <5660D6D3.8040205@familie-kuntze.de>
+ <CAKmUPx4jX4wyK10jR9Qr0DEPveRG5kOoLnuScpLgWE78DRXtyw@mail.gmail.com>
+ <CAKmUPx6yaQdb1OE6CSf0TQ=eZYV=eX7Kmdzg-x6nVPtxtMpLEA@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rinspin-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=7t3gGJKFQI4bbaLBQZJYTuPi5GMA41EDUXhwC3T1riY=;
-        b=VLRDcnqARhZR7gaOipkr3rjEqu2HKwFd3YtZ+a3X9PS/dgSnbtUbusCfhxjFO4BufV
-         3+AJEzWsnaJrOJ96qq6eZoOogxIzCvXO3x7QzNTnsAYK5iDvXIdmVHGCXQT3nLHiuq2r
-         TyNjN5xGsUFEEBtu2HTI8JQ9c57ZmYmSMosE6KJntz115TI06W3SqHuz4QJclZqAwElV
-         rbjirTMG8e1SlUVfZzGYK6PRa6hXfb83sUrYmC2USsaA2VHOcRrmVxiqajv3FxVEDIB5
-         0vR/gIYGeXhScYkKKD9IUqCT05iETY3f4BeAbv3ARifqOK89bHKXUWBALO7lsDKOeWyo
-         TnIA==
-In-Reply-To: <CAKmUPx4jX4wyK10jR9Qr0DEPveRG5kOoLnuScpLgWE78DRXtyw@mail.gmail.com>
+In-Reply-To: <CAKmUPx6yaQdb1OE6CSf0TQ=eZYV=eX7Kmdzg-x6nVPtxtMpLEA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Noel Kuntze <noel@familie-kuntze.de>
+Content-Type: text/plain; charset="utf-8"
+To: Scott Bronson <bronson@rinspin.com>
 Cc: netfilter@vger.kernel.org
 
-Actually, the inbound path still looks strange to me.  Here's a
-concrete example:
 
-A packet originates on the host and travels outbound without
-modification [2], exactly as you say.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-Now, because the source and destination are the same, it's returning inbound.
+Traffic going over loopback seems to be handled in a special way
+with the TRACE target. There's probably no (in attritubes of the
+internal data structure speaking) lossy conversion
+to an Ethernet frame (or IP packet) going on.
+That won't happen for traffic coming from another box.
 
-   The packet:   src=173.233.67.174:59748   dst=173.233.67.174:25
+- --=20
 
-According to my trace [1], here the path it takes:
+Mit freundlichen Gr=C3=BC=C3=9Fen/Kind Regards,
+Noel Kuntze
 
-   raw:PREROUTING
-   mangle:PREROUTING
-   mangle:INPUT
-   filter:INPUT
-   local process
+GPG Key ID: 0x63EC6658
+=46ingerprint: 23CA BB60 2146 05E7 7278 6592 3839 298F 63EC 6658
 
-However, the diagram shows nat:PREROUTING between mangle:PREROUTING
-and mangle:INPUT.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Why doesn't my packet do that?
+iQIcBAEBCAAGBQJWYN/HAAoJEDg5KY9j7GZYO8sQAJLP6ragMp/0NGAwYyWs7QdG
+pePBmNhRKFXFaJdBdR3pGZ8UMO0FfpCdBrEavZpD1HC2YUM2d0UGe3grENV+KkoN
+v5h5SQnBBWDcUJVpJbOwrrO4Dj0zYY3XQm9pfqx/w22hxZtxT828ze7pt4y40hOr
+UsNTKGpMjZ3GVph/PIlwlvFZ7enTykxn1ZQnef8uTlT1ItqUsMivna5TkjAvhRAw
+EJJqoGgrW26Kol1y4cscGsLDk9yQNrNB9QrFi++i1uIQlwqYPfYjIO6z01oyOhn1
+2d7/l4JLmw7uFql1VQ10lkem/pWdjx3JA2TIp6Hq3apmeXw5LK+6bRQ6/E0gze4n
+O/CZ7DCcPL82Jqwvjwjz3/AJ94qCPekut4uXSoXQMtkXij3GbMFU4T+sfgUZA7YP
+SFVtCRLufFId9uyD2i1k53mq13pz7zUkvBl+vtLNlNYwzNkCkAFiugibTKsP3HnV
+xLJ+sH1FzOmhUmKUHtmPvIPI0zENgLCnZp9IRhviNMOOQrhgNg5twRDQ+GVeRJJj
+QzFWIETamy3PbVVOWLnsOrbaFAITGLxf17vyV8p0CAk5ZGkhBJvbS7U8LS+eRFSU
+YlR3Gi+c0nAn7OWVBm5U8yPJytBhYHb40+xPqaM0ku4KhVwYj/0ndkCn6qEl+3Vu
+u8lpwUxLLeNKP4xZSWJ5
+=3D5K7a
+-----END PGP SIGNATURE-----
 
-Thanks again, this has been very enlightening.
-
-     - Scott
-
-
-[1] the inbound path doesn't match the diagram, starting at "(start)":
-
-Dec 3 14:03:43 ex kernel: TRACE: raw:PREROUTING:rule:2 IN=lo OUT=
-MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=173.233.67.174
-DST=173.233.67.174 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=63334 DF
-PROTO=TCP SPT=59748 DPT=25 SEQ=2002582068 ACK=0 WINDOW=43690 RES=0x00
-SYN URGP=0 OPT (0204FFD70402080A027F0D520000000001030307)
-Dec 3 14:03:43 ex kernel: TRACE: raw:PREROUTING:policy:3 IN=lo OUT=
-MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=173.233.67.174
-DST=173.233.67.174 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=63334 DF
-PROTO=TCP SPT=59748 DPT=25 SEQ=2002582068 ACK=0 WINDOW=43690 RES=0x00
-SYN URGP=0 OPT (0204FFD70402080A027F0D520000000001030307)
-Dec 3 14:03:43 ex kernel: TRACE: mangle:PREROUTING:policy:1 IN=lo OUT=
-MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=173.233.67.174
-DST=173.233.67.174 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=63334 DF
-PROTO=TCP SPT=59748 DPT=25 SEQ=2002582068 ACK=0 WINDOW=43690 RES=0x00
-SYN URGP=0 OPT (0204FFD70402080A027F0D520000000001030307)
-Dec 3 14:03:43 ex kernel: TRACE: mangle:INPUT:policy:1 IN=lo OUT=
-MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=173.233.67.174
-DST=173.233.67.174 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=63334 DF
-PROTO=TCP SPT=59748 DPT=25 SEQ=2002582068 ACK=0 WINDOW=43690 RES=0x00
-SYN URGP=0 OPT (0204FFD70402080A027F0D520000000001030307)
-Dec 3 14:03:43 ex kernel: TRACE: filter:INPUT:policy:5 IN=lo OUT=
-MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=173.233.67.174
-DST=173.233.67.174 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=63334 DF
-PROTO=TCP SPT=59748 DPT=25 SEQ=2002582068 ACK=0 WINDOW=43690 RES=0x00
-SYN URGP=0 OPT (0204FFD70402080A027F0D520000000001030307)
-
-
-
-[2]: the outbound path exactly matches the diagram, starting at "local process":
-
-Dec 3 14:03:43 ex kernel: TRACE: raw:OUTPUT:rule:1 IN= OUT=lo
-SRC=173.233.67.174 DST=173.233.67.174 LEN=60 TOS=0x00 PREC=0x00 TTL=64
-ID=63334 DF PROTO=TCP SPT=59748 DPT=25 SEQ=2002582068 ACK=0
-WINDOW=43690 RES=0x00 SYN URGP=0 OPT
-(0204FFD70402080A027F0D520000000001030307) UID=0 GID=0
-Dec 3 14:03:43 ex kernel: TRACE: raw:OUTPUT:policy:3 IN= OUT=lo
-SRC=173.233.67.174 DST=173.233.67.174 LEN=60 TOS=0x00 PREC=0x00 TTL=64
-ID=63334 DF PROTO=TCP SPT=59748 DPT=25 SEQ=2002582068 ACK=0
-WINDOW=43690 RES=0x00 SYN URGP=0 OPT
-(0204FFD70402080A027F0D520000000001030307) UID=0 GID=0
-Dec 3 14:03:43 ex kernel: TRACE: mangle:OUTPUT:policy:1 IN= OUT=lo
-SRC=173.233.67.174 DST=173.233.67.174 LEN=60 TOS=0x00 PREC=0x00 TTL=64
-ID=63334 DF PROTO=TCP SPT=59748 DPT=25 SEQ=2002582068 ACK=0
-WINDOW=43690 RES=0x00 SYN URGP=0 OPT
-(0204FFD70402080A027F0D520000000001030307) UID=0 GID=0
-Dec 3 14:03:43 ex kernel: TRACE: nat:OUTPUT:policy:1 IN= OUT=lo
-SRC=173.233.67.174 DST=173.233.67.174 LEN=60 TOS=0x00 PREC=0x00 TTL=64
-ID=63334 DF PROTO=TCP SPT=59748 DPT=25 SEQ=2002582068 ACK=0
-WINDOW=43690 RES=0x00 SYN URGP=0 OPT
-(0204FFD70402080A027F0D520000000001030307) UID=0 GID=0
-Dec 3 14:03:43 ex kernel: TRACE: filter:OUTPUT:policy:2 IN= OUT=lo
-SRC=173.233.67.174 DST=173.233.67.174 LEN=60 TOS=0x00 PREC=0x00 TTL=64
-ID=63334 DF PROTO=TCP SPT=59748 DPT=25 SEQ=2002582068 ACK=0
-WINDOW=43690 RES=0x00 SYN URGP=0 OPT
-(0204FFD70402080A027F0D520000000001030307) UID=0 GID=0
-Dec 3 14:03:43 ex kernel: TRACE: mangle:POSTROUTING:policy:2 IN=
-OUT=lo SRC=173.233.67.174 DST=173.233.67.174 LEN=60 TOS=0x00 PREC=0x00
-TTL=64 ID=63334 DF PROTO=TCP SPT=59748 DPT=25 SEQ=2002582068 ACK=0
-WINDOW=43690 RES=0x00 SYN URGP=0 OPT
-(0204FFD70402080A027F0D520000000001030307) UID=0 GID=0
-Dec 3 14:03:43 ex kernel: TRACE: nat:POSTROUTING:policy:6 IN= OUT=lo
-SRC=173.233.67.174 DST=173.233.67.174 LEN=60 TOS=0x00 PREC=0x00 TTL=64
-ID=63334 DF PROTO=TCP SPT=59748 DPT=25 SEQ=2002582068 ACK=0
-WINDOW=43690 RES=0x00 SYN URGP=0 OPT
-(0204FFD70402080A027F0D520000000001030307) UID=0 GID=0
