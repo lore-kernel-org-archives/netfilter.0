@@ -1,42 +1,57 @@
-From: Scott Bronson <bronson@rinspin.com>
+From: Noel Kuntze <noel@familie-kuntze.de>
 Subject: Re: Why isn't DNAT happening for host-originated packets?
-Date: Thu, 3 Dec 2015 16:42:51 -0800
-Message-ID: <CAKmUPx5751FXOkBBhcxUKPBwq2cQrBSkoYX4JGJfy-UZE9+Vmw@mail.gmail.com>
+Date: Fri, 4 Dec 2015 01:45:14 +0100
+Message-ID: <5660E21A.7050808@familie-kuntze.de>
 References: <CAKmUPx5kE+v03OGAjF32rOGyVQfOLbSmyTEOOK9uApANeWbU1A@mail.gmail.com>
-	<5660CCD1.60807@familie-kuntze.de>
-	<CAKmUPx44yvsz21jRE9BoxK0D4R+gGjJdk9De5QQHUBzj6o9r6Q@mail.gmail.com>
-	<5660D6D3.8040205@familie-kuntze.de>
-	<CAKmUPx4jX4wyK10jR9Qr0DEPveRG5kOoLnuScpLgWE78DRXtyw@mail.gmail.com>
-	<CAKmUPx6yaQdb1OE6CSf0TQ=eZYV=eX7Kmdzg-x6nVPtxtMpLEA@mail.gmail.com>
-	<5660DFC7.9040206@familie-kuntze.de>
+ <5660CCD1.60807@familie-kuntze.de>
+ <CAKmUPx44yvsz21jRE9BoxK0D4R+gGjJdk9De5QQHUBzj6o9r6Q@mail.gmail.com>
+ <5660D6D3.8040205@familie-kuntze.de>
+ <CAKmUPx4jX4wyK10jR9Qr0DEPveRG5kOoLnuScpLgWE78DRXtyw@mail.gmail.com>
+ <CAKmUPx6yaQdb1OE6CSf0TQ=eZYV=eX7Kmdzg-x6nVPtxtMpLEA@mail.gmail.com>
+ <5660DFC7.9040206@familie-kuntze.de>
+ <CAKmUPx5751FXOkBBhcxUKPBwq2cQrBSkoYX4JGJfy-UZE9+Vmw@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rinspin-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=EPTweWauUlV0TSyXH62VguoklRszJXVDAhhMlvRwUZw=;
-        b=QMMaUm3PNaa2CBr3poMZlyO1UNXAFgHXCJKBhulwoau2osHTAarXI2Yz466ZCMWo+g
-         GUVlvn1+4SNjU7jMmlXO1amoSLOkkXfrk8oSxeVh89EN6UfimV0C1qp4YFCPk4OFL72M
-         BDyMAst5bzOxkiPMBOb460yiWLjdHw8/9v2lzqWLi0nMHd3N1Toiwmu3qBHZ4gyLT+tK
-         KRxYx4+j/+l6zpYtE6NLEHS0iW2C4NH/V/+uYrwvV0lx/D/73028WwLvjohlwY89Nd4M
-         aV8LRBUg8LU62Vh52+h80sRroyLk23/IPSkH6Rr3KjIu8OcYayZWljF6NarUKmQEgrZK
-         7N3A==
-In-Reply-To: <5660DFC7.9040206@familie-kuntze.de>
+In-Reply-To: <CAKmUPx5751FXOkBBhcxUKPBwq2cQrBSkoYX4JGJfy-UZE9+Vmw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Noel Kuntze <noel@familie-kuntze.de>
+Content-Type: text/plain; charset="utf-8"
+To: Scott Bronson <bronson@rinspin.com>
 Cc: netfilter@vger.kernel.org
 
-> Traffic going over loopback seems to be handled in a special way
-> with the TRACE target.
 
-It's considered looped back even though there's never any 127.0.0.1 addresses?
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
 
-Ah well, I was afraid it would be something like that.  Your suggested
-workaround sounds fine.
+Well, traffic from yourself to yourself always goes over loopback.
+Look at the output of `ip route get <your IP>`.
+Don't bother editing the graphic. There's a bunch of missing stuff.
+There'll be something in the pipe to fix the graphic soon.
 
-This behavior feels weird though.  Should I update the diagram with a
-dotted line conditionally skipping nat:PREROUTING?
+- --=20
+
+Mit freundlichen Gr=C3=BC=C3=9Fen/Kind Regards,
+Noel Kuntze
+
+GPG Key ID: 0x63EC6658
+=46ingerprint: 23CA BB60 2146 05E7 7278 6592 3839 298F 63EC 6658
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJWYOIaAAoJEDg5KY9j7GZYlP4P/064e7c32AKHxrpi/RnQBN3H
+HDJgpkVaVLpiU0pAca1d9O9srNgcX6+U4aMqp3f57MwDPrP4dY7QLumYZEcgqyH2
+2Ousj5raMaRhKHhzqq3WlqTp7T/8W/SwTYxzO2HngqFGA5QGPSzsOIN/Ms+38fNT
+obZYOJ9NzTKVuBrfjfN1H5R2n/1vyKNBz9PelM6ZCHMUwabkTo+y5UKa6X2Rz1GC
+=46uKoDtpCAQnvolO/7Tv/NTc2zUQIGTySF/mASde47nfbAPRQ7YCWgtJV6hxhEnYv
+Z01nTsLD1m8iqu0bHwNC6EjrVJu/QOc3V2yhK8l0ZzhpbhGoFVOQk6oWOaByYJQ9
+mGaYTM6OIdj/FCh7FqaOqWsR3p0/QYXmtBCoTwOerLtEJazlX1UF+ve4Q7GhoXnI
+2areMnZ5etvgWJDVfVBS8ogh25mgkdIMq0SpkkE8MjOqKU4Uyjlw5ns91m8YYdCi
+8LC5i3F+WTs/g8tFAiE2FR03ZtXv7uuHdLyf1yZ7rUH8SdOr0wBZ4V0TFTfRDrfU
+m5n66tULf0djY4tiQy671rYXdTFyJqIZrX81ksy1sJvaQslp1vYp/Oa1U1pNQtef
+dcQ9PgXALgWm3dOPkHUWg1VbBDmxAGtsBKCktBOacEIWontqHMonaT88G5zMuaFF
+VnCBiSQAu2yxL755iGHl
+=3DLl34
+-----END PGP SIGNATURE-----
+
