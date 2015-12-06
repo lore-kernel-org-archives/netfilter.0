@@ -1,57 +1,54 @@
-From: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Subject: Re: Marking frames with ebtables for iptables
-Date: Sat, 05 Dec 2015 12:30:20 +0100
-Message-ID: <5662CACC.9010809@plouf.fr.eu.org>
-References: <loom.20151202T145721-935@post.gmane.org>
+From: Anton Danilov <littlesmilingcloud@gmail.com>
+Subject: Re: Packet disappears after DNAT?
+Date: Sun, 6 Dec 2015 11:49:11 +0300
+Message-ID: <CAEzD07KT9ivvqA-1K_1C8PoyiaX1i6jLsQBh2ipnfvqcHv1qCA@mail.gmail.com>
+References: <CAKmUPx5_sDgRSUQuZmXoCxPnuN3Z0q4df5XECvR7gzY6F3gpDA@mail.gmail.com>
+	<CAEzD07JQmLe_SetqcEg-EetvD=Et=2Zy47V53nA37q75FBv_NA@mail.gmail.com>
+	<CAKmUPx7x2EP_O26K8UC4SKQqPC11uM2sNSpNPSV3=jbqq4GdyQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <loom.20151202T145721-935@post.gmane.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type;
+        bh=2vYuHnXumwJ7esSEKoR7X7vKGryothWDZwkaUbGA1Us=;
+        b=QkdjxDrLldG8kpWfZFSaOs6h5/u0DbhXkDJX3eOrXZ9zaB38Mfl3oAxpN8iQq425lE
+         oj7ubF8MN1BgnAMqT3eScvZmFFMxzbKvbsQ0LQqX3EhU/DSyHZhpycPr0Zjc49e4RT0e
+         I2Mdb1q2QgoNNJO4JbtMhe8O7dmIbIGDJ+u736UVpl9rKl7/pR8Tx/8ZdN943Zdnbf+d
+         8PSce2/uQKXO7bzwzr7QYGAMvW2pnfLYSXWaKQ1hlyfmR9cGkxdT0sq6AiwSek+vdHOb
+         9+IV88eH05rCS4i/woWJz2qjSXUSfI2ZX+dbECfhJvPPpQ8iMwumthHWRP7KzS9vJxrB
+         7EkA==
+In-Reply-To: <CAKmUPx7x2EP_O26K8UC4SKQqPC11uM2sNSpNPSV3=jbqq4GdyQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Oliver Graute <oliver.graute@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Scott Bronson <bronson@rinspin.com>
 Cc: netfilter@vger.kernel.org
 
-Hello,
+show the output of 'ip route get 192.168.122.10 from 192.168.122.10
+iif virbr0' command
 
-Oliver Graute a =E9crit :
->=20
-> I try to mark some frames with ebtables on MAC Layer to pass these ma=
-rk to=20
-> iptables network layer.
->=20
-> I build up a bridge interface br0, cleared all ebtables and iptables =
-tables=20
-> as preparation. Then I try something like this:  =20
->=20
-> ebtables -t filter -A INPUT -p IPv4 -s 00:11:22:33:44:55 -i eth0 -j m=
-ark --
-> mark-set 0xffff --mark-target ACCEPT
-> ebtables -t filter -A INPUT --log-level info --log-ip --log-prefix EB=
-=46W
-> iptables -t mangle -A PREROUTING -m mark --mark 0xffff
+2015-12-04 19:18 GMT+03:00 Scott Bronson <bronson@rinspin.com>:
+> On Fri, Dec 4, 2015 at 3:55 AM, Anton Danilov
+> <littlesmilingcloud@gmail.com> wrote:
+>> Have you enabled the ip forward?
+>
+> Yep, alas.  Connections from the host and the public IP work great.
+> It's just connections from the VM where the packet disappears.
+>
+>
+> I also should have mentioned that this is on Centos 7, and:
+>
+> [root@ex ~]# cat /proc/version
+> Linux version 3.10.0-229.20.1.el7.x86_64
+> (builder@kbuilder.dev.centos.org) (gcc version 4.8.3 20140911 (Red Hat
+> 4.8.3-9) (GCC) ) #1 SMP Tue Nov 3 19:10:07 UTC 2015
+>
+> [root@ex ~]# iptables --version
+> iptables v1.4.21
 
-What's the use of this rule with no target ?
 
-> iptables -t mangle -A PREROUTING -m mark --mark 0xffff -j LOG --log-l=
-evel=20
-> info --log-prefix MARKED
->=20
-> i would expect that iptables log show me the marked packages from ebt=
-ables.=20
-> But i see no mark 0xffff
 
-Check the packet flow diagram at
-<https://upload.wikimedia.org/wikipedia/commons/3/37/Netfilter-packet-f=
-low.svg>
-
-You can see that if the packet is received on a bridge (blue
-background), ebtables/INPUT (blue header) comes after
-iptables/PREROUTING (green header). To avoid the iptables/ebtables mix,
-you must disable iptables call by bridge-nf :
-
-echo 0 > /proc/sys/net/bridge/bridge-nf-call-iptables
-
-What is your goal ? If you just need to match the source MAC address,
-you don't need ebtables. Iptables has the "mac" match.
+-- 
+Anton.
