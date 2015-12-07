@@ -1,37 +1,47 @@
 From: Scott Bronson <bronson@rinspin.com>
 Subject: Re: Packet disappears after DNAT?
-Date: Sun, 6 Dec 2015 22:57:36 -0800
-Message-ID: <CAKmUPx7uzn6jVSb-mLQOFCVXujBuabg-tTFiO6FOPKNZvi1WKg@mail.gmail.com>
+Date: Sun, 6 Dec 2015 23:07:51 -0800
+Message-ID: <CAKmUPx40SPPjAjQa2LyKMwQu=Qrd+Cfi1FjmQR5Oap8hQPL8Vg@mail.gmail.com>
 References: <CAKmUPx5_sDgRSUQuZmXoCxPnuN3Z0q4df5XECvR7gzY6F3gpDA@mail.gmail.com>
-	<CAEzD07JQmLe_SetqcEg-EetvD=Et=2Zy47V53nA37q75FBv_NA@mail.gmail.com>
-	<CAKmUPx7x2EP_O26K8UC4SKQqPC11uM2sNSpNPSV3=jbqq4GdyQ@mail.gmail.com>
-	<CAEzD07KT9ivvqA-1K_1C8PoyiaX1i6jLsQBh2ipnfvqcHv1qCA@mail.gmail.com>
+	<5662BD03.60004@plouf.fr.eu.org>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=rinspin-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:in-reply-to:references:date:message-id:subject:from:to
          :cc:content-type;
-        bh=wURGqg7t82LbMUVZD/wEbPAprG2UKgPip+xQ+Gf6BgU=;
-        b=2RMW/mT6jsRIqR8sOlwp0CTnOYrxEBYE+T5vgpx5FU6uHxl9WnxfbAVJ2pQkXWXnr9
-         4ZyszLtf0yT1mkj1XR6D/SZCp0YC5pJ73eD8WHSQA06pnZ9yFzW2y7AnDBU/l8ueXqWR
-         do2807fRogqiBYdL16LBz5Q31fc/kbnrrJma+epkuZdpSPoW05Fiyw6gAAZqZhP43Wrx
-         VzAvYyvyH3o+CLCvf3/J/G4RHFLdrx/TwoLK2ydgM3GIcsNfqIZKMcUDMRkD/lsLMJqh
-         FYWgiZrHaEM4hEJsZEv6FhzDIGIrIV0COXSXuZWS+MBTEZT6Xcq8DPMKXKVsf7EqgQ7n
-         70SQ==
-In-Reply-To: <CAEzD07KT9ivvqA-1K_1C8PoyiaX1i6jLsQBh2ipnfvqcHv1qCA@mail.gmail.com>
+        bh=YrnyjDGfNO4VaGCIvtRMyGMas/CIytGuRkuje/CVPj0=;
+        b=N0AaNsQnJOrPo/pEZV3G6su0/HqesKK+G6C85YQHHWqvaL9P6NX6HLbScodAoke4RZ
+         7xMa1LleszHGsaR8nz7WEJ46dwmHV3yiwvVris3eorTEb6EgfE8cijrGbB4e9GmXldmW
+         xSbWXXGOhA2P+VXEAv5nIpzRNvVFIL1s//ZzpDp4rAJCWQS64/18nHtZExpJaHwza/WL
+         mIURy+WheiUj7MqAwY2Bk3ASpdnbQhiMOtgEc9wraQ+U00EnYGeXqVAJ98QqdwuDDl4L
+         uQoYpeI8weTZhb8Z8+V2MrjDxXoIGgt/Xq2Le8DPxKTQdSMnCgVSBA55X+UVb6UTFHn2
+         HqKQ==
+In-Reply-To: <5662BD03.60004@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Anton Danilov <littlesmilingcloud@gmail.com>
+To: Pascal Hambourg <pascal@plouf.fr.eu.org>
 Cc: netfilter@vger.kernel.org
 
-On Sun, Dec 6, 2015 at 12:49 AM, Anton Danilov
-<littlesmilingcloud@gmail.com> wrote:
-> show the output of 'ip route get 192.168.122.10 from 192.168.122.10
-> iif virbr0' command
+On Sat, Dec 5, 2015 at 2:31 AM, Pascal Hambourg <pascal@plouf.fr.eu.org> wrote:
+> IIUC, you're looping back traffic on a bridge interface.
 
-[root@ex ~]# ip route get 192.168.122.10 from 192.168.122.10 iif virbr0
-192.168.122.10 from 192.168.122.10 dev virbr0
-    cache <redirect>  iif *
+That sounds right.  The packet arrives on virbr0, and I want to send it
+right back where it came from.
+
+> Bridge-nf is
+> enabled by default and can cause weird behaviour with NAT. Try to
+> disable it :
+>
+> echo 0 > /proc/sys/net/bridge/bridge-nf-call-iptables
+>
+> Without that, after DNAT, the packet is not routed but bridged. But I
+> suspect that the bridge code won't forward it back to its original port
+> due to its source MAC address.
+
+It still times out.  Is it worth installing the logging to see if the
+packet is still disappearing at the DNAT step?  Guessing no.
+
+Maybe I can DNAT the source MAC too?  :)
