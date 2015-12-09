@@ -1,32 +1,33 @@
-From: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Subject: Re: IPTables connection mark rule stops working
-Date: Wed, 09 Dec 2015 09:13:15 +0100
-Message-ID: <5667E29B.3000003@plouf.fr.eu.org>
-References: <CAGEc96=kjP8yi_3WyFv1xKcqzoLvrpZLNDKPsxc9vnmtoD1pYQ@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: nftables rate limit logging and then drop
+Date: Wed, 9 Dec 2015 22:44:13 +0100
+Message-ID: <20151209214413.GA20365@salvia>
+References: <565F73F5.3090004@heinlein-support.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAGEc96=kjP8yi_3WyFv1xKcqzoLvrpZLNDKPsxc9vnmtoD1pYQ@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <565F73F5.3090004@heinlein-support.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Justin Michael Schwartzbeck <justinmschw@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Robert Sander <r.sander@heinlein-support.de>
+Cc: netfilter <netfilter@vger.kernel.org>, Shivani Bhardwaj <shivanib134@gmail.com>
 
-Justin Michael Schwartzbeck a =E9crit :
->=20
-> Now I know the traffic is being marked in the kernel
-> module because I have a log message that goes to syslog from the
-> kernel module indicating this. But the traffic does not get DNATed.
-> When I look at "iptables -t nat -vL" I can see that the count for tha=
-t
-> rule is not going up. Eventually I just power cycle the VM and
-> everything goes back to normal. I am wondering how I can troubleshoot
-> this. What might cause this problem to occur? My first instinct is
-> maybe some table is being filled up (perhaps connection tracking?) bu=
-t
-> when I check syslog I don't see any useful information. I just need
-> some idea of where to look. What other things can I check?
+On Wed, Dec 02, 2015 at 11:43:01PM +0100, Robert Sander wrote:
+> Hi,
+> 
+> How do I implement something like this in nftables:
+> 
+> iptables -A INPUT -m conntrack --ctstate INVALID -m limit --limit 3/m --limit-burst 5 -j LOG --log-level debug --log-prefix "INVALID DROP: "
+> iptables -A INPUT -m conntrack --ctstate INVALID -j DROP
 
-Check the packet conntrack state in mangle/PREROUTING. A packet won't
-enter the nat chains if  it has a state other than NEW.
+The translation is:
+
+nft add rule filter input ct state invalid \
+        limit rate 3/minute burst 5 packets \
+        log level debug prefix \"INVALID DROP: \" counter
+nft add rule filter input ct state invalid counter drop
+
+Note that rule counters are optional in nftables, unlikely iptables
+where we always have them on.
