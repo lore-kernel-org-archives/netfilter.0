@@ -1,36 +1,34 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: using iptables matches and targets with nft
-Date: Thu, 10 Dec 2015 13:45:15 +0100
-Message-ID: <20151210124515.GA2504@salvia>
-References: <56696D12.6040601@secunet.com>
+From: Satish Patel <satish.txt@gmail.com>
+Subject: block ip fragmented packet
+Date: Thu, 10 Dec 2015 17:38:04 -0500
+Message-ID: <CAPgF-frhssFMAxB0M=qA1Y1jCxjScO7+3JE7=i9FaXu37HCLOw@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <56696D12.6040601@secunet.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=IWdCioNQB96jSqjFyDGgXdiRiTxfsoXI6ezNMfyitsU=;
+        b=owtUILsPjtDjarn0Kf/xDZXx6Nkx83ylY2CRZovckMMFEyFcAinPNfQs6148z3SLdL
+         4uzdRjwcOpN0p83DduglI4fcS86Okh1ULrDKh1DElH9a+vnh0ywlUf3M5bqz8gdNN4rd
+         0R5eLQp+J4eASUtPWRUnk1RizhhPiUTma72+msVuObVWa/lCHKJHx/33ZKOcarF00+7s
+         UDhUxsBMUUQ76cqX59/KHUUB1PQ8+2LMlfw4rYl6XodmQO5aPV7o6AsO4ZgN53477d7K
+         DyCd3dBnmiCwL9Lxp2v48+ZEb1JHrphz5/pl8nCP+Ff2byxFnMkTdi/NHPtzs45shJTI
+         vswg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Stefan Berghofer <stefan.berghofer@secunet.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Thu, Dec 10, 2015 at 01:16:18PM +0100, Stefan Berghofer wrote:
-> Hi all,
-> 
-> recent versions of the Linux kernel and the libnftnl library define nft expression types
-> with the names "match" and "target". However, I could not find any reference to these
-> expression types in the code of the nft user space utility, but only in the code for iptables.
-> Is it possible to access iptables matches and targets from rules defined with nft, or is
-> this not intended?
+We have iptables v1.4.21 running and i am trying to stop all
+fragmented packet but following rules doesn't working what is wrong
+here?
 
-iptables-compat uses this, this will be included in iptables 1.6.0
-(just resolved a problem with static compilation, so we can release
-this asap).
 
-There is also a patch for nft (not in master yet) that takes what was
-added via iptables-compat and provides a translation to the native
-extensions (Shivani is working on the translation part at this
-moment).
 
-The idea is to provide an easy way to migrate from your iptables
-ruleset to nft.
+iptables -t raw -A PREROUTING -m u32 ! --u32 "0x4&0x3fff=0x0" -m
+comment --comment "Fragmented" -j DROP
+
+To test rules i am doing following:
+
+ping -M want -s 3000 192.168.1.1
