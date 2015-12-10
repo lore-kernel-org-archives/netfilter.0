@@ -1,33 +1,60 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: nftables rate limit logging and then drop
-Date: Wed, 9 Dec 2015 22:44:13 +0100
-Message-ID: <20151209214413.GA20365@salvia>
-References: <565F73F5.3090004@heinlein-support.de>
+From: "Jack Lin" <helloworldjack@sina.com>
+Subject: help,i have a problem with nftable redirect
+Date: Thu, 10 Dec 2015 10:00:04 +0800
+Message-ID: <20151210020004.4CA232A09CE@webmail.sinamail.sina.com.cn>
+Reply-To: helloworldjack@sina.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <565F73F5.3090004@heinlein-support.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Robert Sander <r.sander@heinlein-support.de>
-Cc: netfilter <netfilter@vger.kernel.org>, Shivani Bhardwaj <shivanib134@gmail.com>
+To: netfilter <netfilter@vger.kernel.org>
 
-On Wed, Dec 02, 2015 at 11:43:01PM +0100, Robert Sander wrote:
-> Hi,
-> 
-> How do I implement something like this in nftables:
-> 
-> iptables -A INPUT -m conntrack --ctstate INVALID -m limit --limit 3/m --limit-burst 5 -j LOG --log-level debug --log-prefix "INVALID DROP: "
-> iptables -A INPUT -m conntrack --ctstate INVALID -j DROP
 
-The translation is:
+aGkgYWxsLA0KaSB0aGluayB0aGUgdmVyc2lvbiBvZiBrZXJuZWwgaXMgb2ssIHdoeSBpdCBwcmlu
+dGVkICJFcnJvcjogQ291bGQgbm90IHByb2Nlc3MgcnVsZTogTm8gc3VjaCBmaWxlIG9yIGRpcmVj
+dG9yeSIgd2hlbiBpIGlucHV0ZWQgIm5mdCBhZGQgcnVsZSB0YWJsZTEyMyBuYXRwcmUgdGNwIGRw
+b3J0IDIyIHJlZGlyZWN0IHRvIDIyMjIiLg0KaSBjb25maWd1cmVkIGl0IGZvbGxvd2VkICJodHRw
+Oi8vd2lraS5uZnRhYmxlcy5vcmcvd2lraS1uZnRhYmxlcy9pbmRleC5waHAvUGVyZm9ybWluZ19O
+ZXR3b3JrX0FkZHJlc3NfVHJhbnNsYXRpb25fKE5BVCkiDQoNCnJvb3RAZGViaWFuOi9iaW4jIF5D
+DQpyb290QGRlYmlhbjovYmluIyBjYXQgL3Byb2MvdmVyc2lvbiANCkxpbnV4IHZlcnNpb24gNC4y
+LjAtMS1hbWQ2NCAoZGViaWFuLWtlcm5lbEBsaXN0cy5kZWJpYW4ub3JnKSAoZ2NjIHZlcnNpb24g
+NC45LjMgKERlYmlhbiA0LjkuMy04KSApICMxIFNNUCBEZWJpYW4gNC4yLjYtMyAoMjAxNS0xMi0w
+NikNCnJvb3RAZGViaWFuOi9iaW4jIG5mdCAtdg0KbmZ0YWJsZXMgdjAuNSAoU3VwcG9ydCBFZHdh
+cmQgU25vd2RlbikNCnJvb3RAZGViaWFuOi9iaW4jIG5mdCBsaXN0IHRhYmxlIHRhYmxlMTIzIC1h
+DQp0YWJsZSBpcCB0YWJsZTEyMyB7DQpjaGFpbiBwcmUgew0KdHlwZSBmaWx0ZXIgaG9vayBwcmVy
+b3V0aW5nIHByaW9yaXR5IDA7IHBvbGljeSBhY2NlcHQ7DQp9DQpjaGFpbiBwb3N0IHsNCnR5cGUg
+ZmlsdGVyIGhvb2sgcG9zdHJvdXRpbmcgcHJpb3JpdHkgMDsgcG9saWN5IGFjY2VwdDsNCn0NCmNo
+YWluIG5hdHByZSB7DQp0eXBlIG5hdCBob29rIHByZXJvdXRpbmcgcHJpb3JpdHkgMDsgcG9saWN5
+IGFjY2VwdDsNCn0NCmNoYWluIG5hdHBvc3Qgew0KdHlwZSBuYXQgaG9vayBwb3N0cm91dGluZyBw
+cmlvcml0eSAwOyBwb2xpY3kgYWNjZXB0Ow0KfQ0KfQ0Kcm9vdEBkZWJpYW46L2JpbiMgbmZ0IGFk
+ZCBydWxlIHRhYmxlMTIzIG5hdHBvc3QgaXAgc2FkZHIgMTAuNjguMTY2LjQ0IGlwIHByb3RvY29s
+IGljbXAgc25hdCAxMC42OC4xNjYuNDUNCnJvb3RAZGViaWFuOi9iaW4jIG5mdCBhZGQgcnVsZSB0
+YWJsZTEyMyBuYXRwcmUgcmVkaXJlY3QNCjxjbWRsaW5lPjoxOjEtMzM6IEVycm9yOiBDb3VsZCBu
+b3QgcHJvY2VzcyBydWxlOiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5DQphZGQgcnVsZSB0YWJs
+ZTEyMyBuYXRwcmUgcmVkaXJlY3QNCl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXg0K
+cm9vdEBkZWJpYW46L2JpbiMgbmZ0IGFkZCBydWxlIHRhYmxlMTIzIG5hdHByZSB0Y3AgZHBvcnQg
+MjIgcmVkaXJlY3QgdG8gMjIyMg0KPGNtZGxpbmU+OjE6MS01NDogRXJyb3I6IENvdWxkIG5vdCBw
+cm9jZXNzIHJ1bGU6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3RvcnkNCmFkZCBydWxlIHRhYmxlMTIz
+IG5hdHByZSB0Y3AgZHBvcnQgMjIgcmVkaXJlY3QgdG8gMjIyMg0KXl5eXl5eXl5eXl5eXl5eXl5e
+Xl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eXl5eDQpyb290QGRlYmlhbjovYmluIw0K
+DQpyb290QGRlYmlhbjovbGliL21vZHVsZXMvNC4yLjAtMS1hbWQ2NC9rZXJuZWwvbmV0L25ldGZp
+bHRlciMgbHNtb2QgfGdyZXAgbmYNCm5mdF9jb3VudGVyIDE2Mzg0IDEgDQpuZnRfcmVqZWN0IDE2
+Mzg0IDAgDQpuZnRfY3QgMTYzODQgMCANCm5mX2Nvbm50cmFja19hbWFuZGEgMTYzODQgMCANCm5m
+X25hdF9yZWRpcmVjdCAxNjM4NCAwIA0KbmZ0X3JlZGlyIDE2Mzg0IDAgDQpuZnRfbmF0IDE2Mzg0
+IDEgDQpuZnRfY2hhaW5fbmF0X2lwdjQgMTYzODQgNCANCm5mX2Nvbm50cmFja19pcHY0IDIwNDgw
+IDEgDQpuZl9kZWZyYWdfaXB2NCAxNjM4NCAxIG5mX2Nvbm50cmFja19pcHY0DQpuZl9uYXRfaXB2
+NCAxNjM4NCAxIG5mdF9jaGFpbl9uYXRfaXB2NA0KbmZfbmF0IDI0NTc2IDMgbmZfbmF0X3JlZGly
+ZWN0LG5mdF9uYXQsbmZfbmF0X2lwdjQNCm5mX2Nvbm50cmFjayAxMTA1OTIgNSBuZl9uYXQsbmZ0
+X2N0LG5mX25hdF9pcHY0LG5mX2Nvbm50cmFja19hbWFuZGEsbmZfY29ubnRyYWNrX2lwdjQNCm5m
+X3RhYmxlc19pcHY0IDE2Mzg0IDQgDQpuZl90YWJsZXMgNjk2MzIgMTUgbmZfdGFibGVzX2lwdjQs
+bmZ0X2NoYWluX25hdF9pcHY0LG5mdF9uYXQsbmZ0X2N0LG5mdF9yZWRpcixuZnRfY291bnRlcg0K
+bmZuZXRsaW5rIDE2Mzg0IDEgbmZfdGFibGVzDQpiaW5mbXRfbWlzYyAyMDQ4MCAxIA0KbmZzZCAy
+ODI2MjQgMiANCmF1dGhfcnBjZ3NzIDU3MzQ0IDEgbmZzZA0KbmZzX2FjbCAxNjM4NCAxIG5mc2QN
+Cm5mcyAyNDk4NTYgMCANCmxvY2tkIDkwMTEyIDIgbmZzLG5mc2QNCmdyYWNlIDE2Mzg0IDIgbmZz
+ZCxsb2NrZA0KZnNjYWNoZSA2MTQ0MCAxIG5mcw0Kc3VucnBjIDMyNzY4MCA2IG5mcyxuZnNkLGF1
+dGhfcnBjZ3NzLGxvY2tkLG5mc19hY2wNCnRwbV9pbmZpbmVvbiAyMDQ4MCAwIA0KdHBtIDQwOTYw
+IDIgdHBtX3Rpcyx0cG1faW5maW5lb24NCnJvb3RAZGViaWFuOi9saWIvbW9kdWxlcy80LjIuMC0x
+LWFtZDY0L2tlcm5lbC9uZXQvbmV0ZmlsdGVyIyBeQw==
 
-nft add rule filter input ct state invalid \
-        limit rate 3/minute burst 5 packets \
-        log level debug prefix \"INVALID DROP: \" counter
-nft add rule filter input ct state invalid counter drop
-
-Note that rule counters are optional in nftables, unlikely iptables
-where we always have them on.
