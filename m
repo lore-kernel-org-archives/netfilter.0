@@ -1,70 +1,48 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: =?UTF-8?B?RMOibmllbA==?= Fraga <fragabr@gmail.com>
 Subject: Re: Linux 4.3.1 regression: -m state returns "Protocol wrong type
  for socket"
-Date: Sat, 12 Dec 2015 20:32:37 +0100
-Message-ID: <20151212193237.GB10759@salvia>
+Date: Sat, 12 Dec 2015 17:34:55 -0200
+Message-ID: <566c76e3.0303810a.334b3.fffffd08@mx.google.com>
 References: <n4g4s8$4pr$1@ger.gmane.org>
- <566BEF33.7090501@gmail.com>
- <alpine.DEB.2.10.1512121116390.13421@blackhole.kfki.hu>
- <566C09F5.6080606@gmail.com>
- <alpine.DEB.2.10.1512121259340.14295@blackhole.kfki.hu>
- <566C0E75.6080800@familie-kuntze.de>
- <566c4622.936d810a.ece67.ffffdfc9@mx.google.com>
+	<566BEF33.7090501@gmail.com>
+	<alpine.DEB.2.10.1512121116390.13421@blackhole.kfki.hu>
+	<566C09F5.6080606@gmail.com>
+	<alpine.DEB.2.10.1512121259340.14295@blackhole.kfki.hu>
+	<566C0E75.6080800@familie-kuntze.de>
+	<20151212191019.GA10759@salvia>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="DocE+STaALJfprDB"
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <566c4622.936d810a.ece67.ffffdfc9@mx.google.com>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=message-id:date:from:to:cc:subject:in-reply-to:references
+         :organization:mime-version:content-type:content-transfer-encoding;
+        bh=l3fGDLNVLPh07FdnpyMSHE7dcDqI1cV9bNmJZAtFRMc=;
+        b=B2dt6dlBANVkpk2g09s65QzQrl9ROntya3sNS+xmm21EOUqRjfk1Wl9q5+ubTb+s4O
+         wAs5uZVUFJit0/zokNW48vrx0xZ+nlHzitpmTbpsAK1hV/Dn+Jn5zDdmtfxg958W4dk0
+         f+ErI1yIYp6sindDVssB8ksR05k1hAR1ITBy5O3DsBol8HnjRlJJklPUydVjn02FlGqx
+         8tzRDMnVj20n/x3Mh7dJIsnxH++9kUUVs1EeOLKRDC89rIf2tHZa0f5BTsG9vrWlEnb0
+         qKSxZcBmrlqyP14/N4dv5bYkofP2x0BXMv6TRR06zKsLShl+bZSr3ZZ9AFACiUb3zVtT
+         mUkA==
+In-Reply-To: <20151212191019.GA10759@salvia>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: =?iso-8859-1?Q?D=E2niel?= Fraga <fragabr@gmail.com>
-Cc: Noel Kuntze <noel@familie-kuntze.de>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Remzi =?iso-8859-1?Q?AKY=DCZ?= <linuxliste@gmail.com>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Noel Kuntze <noel@familie-kuntze.de>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Remzi =?UTF-8?B?QUtZw5xa?= <linuxliste@gmail.com>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
+On Sat, 12 Dec 2015 20:10:19 +0100
+Pablo Neira Ayuso <pablo@netfilter.org> wrote:
 
---DocE+STaALJfprDB
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> For the record, -m state is *not* deprecated.
+> 
+> This syntax is still supported and will always be.
 
-On Sat, Dec 12, 2015 at 02:06:55PM -0200, D=E2niel Fraga wrote:
-> 	I tried this:
->=20
-> iptables -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
->=20
-> 	And I got the same error:
->=20
-> iptables: Protocol wrong type for socket.
+	Thanks, but why it works on Linux 4.3.0 and it doesn't work on
+Linux 4.3.1 and above? Any hints?
 
-There is some problem with the revision infrastructure.
-
-iptables is asking for a match revision that is not available in the
-kernel. So the negotiation between userspace and kernel to use a given
-version of this match is failing for some reason.
-
-Could you apply this patch and tell me what it shows when you run this
-command and the one using -m state?
-
-BTW, any particularly on your setup that is worth mention?
-
-Thanks.
-
---DocE+STaALJfprDB
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment; filename="x.patch"
-
-diff --git a/libxtables/xtables.c b/libxtables/xtables.c
-index f14d503..d0e942c 100644
---- a/libxtables/xtables.c
-+++ b/libxtables/xtables.c
-@@ -825,6 +825,8 @@ int xtables_compatible_revision(const char *name, uint8_t revision, int opt)
- 
- static int compatible_match_revision(const char *name, uint8_t revision)
- {
-+	printf("compatible_match_revision name=%s revision=%u\n",
-+		name, revision);
- 	return xt_params->compat_rev(name, revision, afinfo->so_rev_match);
- }
- 
-
---DocE+STaALJfprDB--
+-- 
+Linux 4.3.2: Blurry Fish Butt
+http://www.youtube.com/DanielFragaBR
+http://exchangewar.info
+Bitcoin: 12H6661yoLDUZaYPdah6urZS5WiXwTAUgL
