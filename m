@@ -1,81 +1,51 @@
-From: Noel Kuntze <noel@familie-kuntze.de>
-Subject: Re: Linux 4.3.1 regression: -m state returns "Protocol wrong type for
- socket"
-Date: Sat, 12 Dec 2015 14:41:42 +0100
-Message-ID: <566C2416.3030304@familie-kuntze.de>
-References: <n4g4s8$4pr$1@ger.gmane.org> <566BEF33.7090501@gmail.com>
- <alpine.DEB.2.10.1512121116390.13421@blackhole.kfki.hu>
- <566C09F5.6080606@gmail.com>
- <alpine.DEB.2.10.1512121259340.14295@blackhole.kfki.hu>
- <566C0E75.6080800@familie-kuntze.de> <566C1751.403@gmail.com>
- <566C1804.5060605@gmail.com>
+From: =?UTF-8?B?RMOibmllbA==?= Fraga <fragabr@gmail.com>
+Subject: Re: Linux 4.3.1 regression: -m state returns "Protocol wrong type
+ for socket"
+Date: Sat, 12 Dec 2015 14:01:26 -0200
+Message-ID: <566c44d8.c17b810a.f320.ffffdbb2@mx.google.com>
+References: <n4g4s8$4pr$1@ger.gmane.org>
+	<566BEF33.7090501@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <566C1804.5060605@gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=message-id:date:from:to:cc:subject:in-reply-to:references
+         :organization:mime-version:content-type:content-transfer-encoding;
+        bh=EiUOb6q811KOoIHHGTmvsl3hNqwOaGlLMaaTxjgu7Ac=;
+        b=CCk0SPqd7Cgqkuh8dKntYTJON7IxrlbRiwL3YXYWjer4fpnOwmPudFj+kMuiF0jJhb
+         CQaUq6Ue8WEsk+XABd88/80t2wqe8SinFQPGI+x0e9Qa7Rxxvnj8/SWAbKkQxEU3mdy7
+         VKwhs4/HLqHzOL2B2pVdjbpf9K3yo3qoD/eCiL55qn/iwrovUu90m/974Ss5iU3CwteL
+         ujH8kYW3InDuLMmbjl7dlNArfnCu0KHFz2ROZ1xlnbJRaRW7Rx4oDY9+/fwTSS5HdkFE
+         mHE6cbY4XNdoZ73+9KD7CgtMHXQR9AeGT9/SnxMM2MOZY4NyVsJDhhkRZeoXty7d70ol
+         9NVw==
+In-Reply-To: <566BEF33.7090501@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: =?UTF-8?Q?Remzi_AKY=c3=9cZ?= <linuxliste@gmail.com>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: =?UTF-8?Q?D=c3=a2niel_Fraga?= <fragabr@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="windows-1252"
+To: Remzi =?UTF-8?B?QUtZw5xa?= <linuxliste@gmail.com>
+Cc: netfilter@vger.kernel.org
 
+On Sat, 12 Dec 2015 11:56:03 +0200
+Remzi AKY=C3=9CZ <linuxliste@gmail.com> wrote:
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+> Please use with -p tcp
+>=20
+> iptables -A INPUT -p tcp -m state --state ESTABLISHED,RELATED -j ACCE=
+PT
 
->        States for --ctstate:
->
->        INVALID
->               The packet is associated with no known connection.
->
->        NEW    The packet has started a new connection or otherwise as=
-sociated with a connection which has not seen packets in both direction=
-s.
->
->        ESTABLISHED
->               The packet is associated with a connection which has se=
-en packets in both directions.
->
->        RELATED
->               The packet is starting a new connection, but is associa=
-ted with an existing connection, such as an FTP data transfer or an ICM=
-P error.
->
->        UNTRACKED
->               The packet is not tracked at all, which happens if you =
-explicitly untrack it by using -j CT --notrack in the raw table.
->
->        SNAT   A virtual state, matching if the original source addres=
-s differs from the reply destination.
->
->        DNAT   A virtual state, matching if the original destination d=
-iffers from the reply source.
+	I tried that, but it returns the same error:
 
-- --=20
+iptables: Protocol wrong type for socket.
 
-Mit freundlichen Gr=C3=BC=C3=9Fen/Kind Regards,
-Noel Kuntze
+	Something has changed between kernel 4.3.0 and 4.3.1. Am I
+missing something? Maybe some module isn't loading?
 
-GPG Key ID: 0x63EC6658
-=46ingerprint: 23CA BB60 2146 05E7 7278 6592 3839 298F 63EC 6658
+	I noticed the xt_state module isn't loading automatically, but
+even if I manually load it, I get the same error.
 
-A quote from the man page
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJWbCQUAAoJEDg5KY9j7GZYA2YQAJARyzxFzaYyaFWmYnLFnLTN
-TkCAfWqBCIz1ibQs2ajuIIVypslyRjSd8cLKT4x+VMGgT2gUv6uBLW3hZ/Kysui1
-mKtYWk+Tiy/XStgHhjStUY86ImXadl11jX5P2aj+Ogr1pV96GJzCk/lCNjsEpqXQ
-Sk3LS7U4EfTODWMRclnnjWcjuN5EQxLbdtoGM1Q0u8XmbwtQtnPoqtVfK4DSp8ny
-=46v7/JabOJtZ+Ej5iiQOySXn8AOJOAqN5inWG5TQylsDkk65IfhCDsedHUoBd+kL4
-3Ej59+bIYcpGYtpQTmAjTrV37+cDCxg49ms/gNSN4w4UeFFmZ8Tk/CHN3Kl0TncD
-yBqEE3KyL6DkbjWpUkUx0uCtTAztj3R1nkbGQKthrnGWF6sedWlan9EgVC+qmolC
-aG42OjpkjfRjbP15TR3srdj3SrYv5NeXqS5o07pTjxKUJNl6jFqICX9qSOq/LJ0M
-LGdCvqmJx021MNW8GzUEGYcStViF2goMolxA8DXG/Qp3j7GSR3GlU89JRDE1fMj6
-+vch/+QfoO08op5+r35/poFciwtQSpdND5yWFGyXiNNpOu4l16wfto+fUhjkXdgF
-wL4B8J4RzdmXijbvr1GqJoTdG+dQIyg9d8g9wo83otB9NEOVzFNJjynFN0vhpN6+
-J8coUqcCgB+b5NsMMkDj
-=3DpDL1
------END PGP SIGNATURE-----
-
+--=20
+Linux 4.3.2: Blurry Fish Butt
+http://www.youtube.com/DanielFragaBR
+http://exchangewar.info
+Bitcoin: 12H6661yoLDUZaYPdah6urZS5WiXwTAUgL
