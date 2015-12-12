@@ -1,47 +1,69 @@
-From: =?UTF-8?Q?Remzi_AKY=c3=9cZ?= <linuxliste@gmail.com>
-Subject: Re: Linux 4.3.1 regression: -m state returns "Protocol wrong type for
- socket"
-Date: Sat, 12 Dec 2015 11:56:03 +0200
-Message-ID: <566BEF33.7090501@gmail.com>
-References: <n4g4s8$4pr$1@ger.gmane.org>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Linux 4.3.1 regression: -m state returns "Protocol wrong type
+ for socket"
+Date: Sat, 12 Dec 2015 11:18:23 +0100 (CET)
+Message-ID: <alpine.DEB.2.10.1512121116390.13421@blackhole.kfki.hu>
+References: <n4g4s8$4pr$1@ger.gmane.org> <566BEF33.7090501@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: MULTIPART/MIXED; BOUNDARY="110391812-354420897-1449915503=:13421"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-type:content-transfer-encoding;
-        bh=Us1ioZqAXMmeVznKAa8hG/Eo6n4smCiDzFkrDWKkyCQ=;
-        b=TsMfplyWtSTcXS8mvSVnDpl5jmRq4lEcyrFBr5vgzGXzK+mX4lKZ3ZpAqPkthBCI5H
-         Bd5tV325djwQRH4m945EKBHHcX4cJVxzCiI7caM/C94arhdkJAVpd/C47YD0lpvXxKuw
-         mulU8PiUbPDCws7kCBX8h3VXyXnDNX9ai6UVyCQ44CcOfxIftVBE1/n702rmwBzxY0F4
-         xtYlKpehWrGzvHn+jOUQvJY32tPaTBKjTApKa2pHUlClTtcLltBhNzSIFFRoL3gJ+gZ4
-         yza24DqzQbm0y6+W6DnwmrlsPcLmHhZNSJ9nXeM8qELNEffl9BRuNKB7gzN44m9j7vy3
-         lJqg==
-In-Reply-To: <n4g4s8$4pr$1@ger.gmane.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	blackhole.kfki.hu; h=content-type:content-type:mime-version
+	:user-agent:references:message-id:message-id:in-reply-to:from
+	:from:date:date:received:received:received; s=20151130; t=
+	1449915502; x=1451729903; bh=ObufZD6h3qp1FQkEhgluomcwtY9pKfdfyFw
+	aEXilANM=; b=roDCuIl+rUriYoC3lqaOqKpEAVMDw5EzJ4N1Yf4IGwbxUfI5E7m
+	N8yYw5oEpNvajLj+S6WiEcxngHRNJNhX3hLYRemkbel2MAdV2W3E068Hc82X5hBN
+	9AOOL/XeDbU5KtU+rihdc2ue8EHwTPJDpjdtEeXJIeC6mDTNEyWmm67Y=
+In-Reply-To: <566BEF33.7090501@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: =?UTF-8?Q?D=c3=a2niel_Fraga?= <fragabr@gmail.com>, netfilter@vger.kernel.org
+To: =?ISO-8859-15?Q?Remzi_AKY=DCZ?= <linuxliste@gmail.com>
+Cc: =?ISO-8859-15?Q?D=E2niel_Fraga?= <fragabr@gmail.com>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Please use with -p tcp
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-iptables -A INPUT -p tcp -m state --state ESTABLISHED,RELATED -j ACCEPT
+--110391812-354420897-1449915503=:13421
+Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
+On Sat, 12 Dec 2015, Remzi AKY=C3=9CZ wrote:
 
+> Please use with -p tcp
+>=20
+> iptables -A INPUT -p tcp -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-12-12-2015 05:38 tarihinde D=C3=A2niel Fraga yazd=C4=B1:
-> 	After upgrading the kernel from 4.3.0 to 4.3.1 (with the same
-> configuration), -m state doesn't work anymore.
->
-> iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
->
-> 	returns:
->
-> iptables: Protocol wrong type for socket.
->
-> 	I'm using iptables v1.4.21.
->
-> 	Any hints?
->
+That's not a solution at all, this can break a huge number of=20
+configurations.
 
+Best regards,
+Jozsef=20
+
+> 12-12-2015 05:38 tarihinde D=C3=A2niel Fraga yazd?:
+> > =09After upgrading the kernel from 4.3.0 to 4.3.1 (with the same
+> > configuration), -m state doesn't work anymore.
+> >
+> > iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> >
+> > =09returns:
+> >
+> > iptables: Protocol wrong type for socket.
+> >
+> > =09I'm using iptables v1.4.21.
+> >
+> > =09Any hints?
+> >
+>=20
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>=20
+
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
+--110391812-354420897-1449915503=:13421--
