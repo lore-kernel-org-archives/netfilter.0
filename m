@@ -1,68 +1,57 @@
-From: Scott Bronson <bronson@rinspin.com>
-Subject: Re: Why isn't DNAT happening for host-originated packets?
-Date: Mon, 14 Dec 2015 13:06:56 -0800
-Message-ID: <CAKmUPx7kNePHQ1TnbSui9NK-wjouN=y5nN8=63xCOgQgY_xuwA@mail.gmail.com>
-References: <CAKmUPx5kE+v03OGAjF32rOGyVQfOLbSmyTEOOK9uApANeWbU1A@mail.gmail.com>
-	<5660CCD1.60807@familie-kuntze.de>
-	<CAKmUPx44yvsz21jRE9BoxK0D4R+gGjJdk9De5QQHUBzj6o9r6Q@mail.gmail.com>
-	<5660D6D3.8040205@familie-kuntze.de>
-	<CAKmUPx4jX4wyK10jR9Qr0DEPveRG5kOoLnuScpLgWE78DRXtyw@mail.gmail.com>
-	<CAKmUPx6yaQdb1OE6CSf0TQ=eZYV=eX7Kmdzg-x6nVPtxtMpLEA@mail.gmail.com>
-	<5660DFC7.9040206@familie-kuntze.de>
-	<CAKmUPx5751FXOkBBhcxUKPBwq2cQrBSkoYX4JGJfy-UZE9+Vmw@mail.gmail.com>
-	<5662B8BD.1040908@plouf.fr.eu.org>
-	<CAKmUPx63JOfQ2Qv7JBu+b70c_oCWJF=cbnfxJfD7qs=tsEok1Q@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Linux 4.3.1 regression: -m state returns "Protocol wrong type
+ for socket"
+Date: Mon, 14 Dec 2015 22:19:34 +0100 (CET)
+Message-ID: <alpine.DEB.2.10.1512142215460.32166@blackhole.kfki.hu>
+References: <566C0E75.6080800@familie-kuntze.de> <566c4622.936d810a.ece67.ffffdfc9@mx.google.com> <20151212232044.GE12854@breakpoint.cc> <566cae67.86f60d0a.f3ad2.2638@mx.google.com> <alpine.LSU.2.20.1512130032300.32038@nerf40.vanv.qr>
+ <566cb640.46dc0d0a.5c3cc.287a@mx.google.com> <alpine.LSU.2.20.1512130124180.832@nerf40.vanv.qr> <566cbcbe.01ed0d0a.36f37.2c88@mx.google.com> <alpine.LSU.2.20.1512130135350.32160@nerf40.vanv.qr> <alpine.DEB.2.10.1512142140550.31836@blackhole.kfki.hu>
+ <20151214205556.GA2927@salvia>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rinspin-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=fY7KUkEullRQ22aihfJaLS/zHG1i5othWqoS3nPcZ8k=;
-        b=pVjUCCablia5GBsCYvFRLml3iqL9XLe9HydbKf7IGDxPq0+D9D8IG/4E5nwM8yQ58a
-         cH4V3Ac20MMRAxAhbPiHlu9PFcRdl9XcqLuZnA3hzSCORW69U4o7m3y3S+B51fle4JkD
-         SKwiCxtaPabN7Y744xTzpU8AZzlXZgw+++JPy+RGMOhbNqVVvnBs13Mhk+obLySEBN4b
-         OGt7JVd0C2ywp53sNxKAbmEISdD6Ti+HfFy9u/aVGnO+PJNGNs3b8iYD+r7VWtS8FSGm
-         hyncjAXTm35QQPkn/e3DFBkuh9VgT0w3hwYUCilJXg/w7uT3MGGh8X4fqHn7HyhnUgs+
-         SFeQ==
-In-Reply-To: <CAKmUPx63JOfQ2Qv7JBu+b70c_oCWJF=cbnfxJfD7qs=tsEok1Q@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	blackhole.kfki.hu; h=content-type:content-type:mime-version
+	:user-agent:references:message-id:message-id:in-reply-to:from
+	:from:date:date:received:received:received; s=20151130; t=
+	1450127973; x=1451942374; bh=WKw/qpwKUnKhfm0EnAodSdKWfAaRGTiHzoP
+	gxC0+lmc=; b=JUpvlPHaWoleZ2BGd18yBlWrchHnz3/nkKZ/tYTc3scWE/xny5X
+	pCVfjPruSSiZQHrFZfLjQzieRMMMH4jQpL0KnTpbppqYFOK1BmTQqFHbfpiWVQPT
+	1LifqzXm10e27C34WFegbCacLPVput5Huv9/fBxE4o0Ke+oDo72+JMsc=
+In-Reply-To: <20151214205556.GA2927@salvia>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Cc: Noel Kuntze <noel@familie-kuntze.de>, netfilter@vger.kernel.org
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Jan Engelhardt <jengelh@inai.de>, =?ISO-8859-15?Q?D=E2niel_Fraga?= <fragabr@gmail.com>, Florian Westphal <fw@strlen.de>, Noel Kuntze <noel@familie-kuntze.de>, =?ISO-8859-15?Q?Remzi_AKY=DCZ?= <linuxliste@gmail.com>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Finally got a chance to code up this fix:
+On Mon, 14 Dec 2015, Pablo Neira Ayuso wrote:
 
-https://github.com/bronson/libvirt-hook-qemu/tree/hostfix
-https://github.com/bronson/libvirt-hook-qemu/blob/hostfix/qemu#L67-L95
+> On Mon, Dec 14, 2015 at 09:47:31PM +0100, Jozsef Kadlecsik wrote:
+> > diff --git a/net/ipv4/netfilter/Kconfig b/net/ipv4/netfilter/Kconfig
+> > index a355841..a1dfd23 100644
+> > --- a/net/ipv4/netfilter/Kconfig
+> > +++ b/net/ipv4/netfilter/Kconfig
+> > @@ -12,6 +12,7 @@ config NF_DEFRAG_IPV4
+> >  config NF_CONNTRACK_IPV4
+> >         tristate "IPv4 connection tracking support (required for NAT)"
+> >         depends on NF_CONNTRACK
+> > +       default NETFILTER_XT_MATCH_CONNTRACK
+> 
+> I know of some people already giving a try to compiling nftables only
+> kernels, I think this would create an unnecessary dependency.
+> 
+> >         default m if NETFILTER_ADVANCED=n
+> >         select NF_DEFRAG_IPV4
+> >         ---help---
 
-Works great.  Thanks Noel and Pascal.  Now I need to work on the
-disappearing packet.
+It don't see why would it be a dependency for nftables only kernels. In 
+that case NETFILTER_XT_MATCH_CONNTRACK is set to "n", so the default would 
+be the same as currently and just right.
 
-On Mon, Dec 7, 2015 at 4:53 PM, Scott Bronson <bronson@rinspin.com> wrote:
-> On Sat, Dec 5, 2015 at 2:13 AM, Pascal Hambourg <pascal@plouf.fr.eu.org> wrote:
->> It's not handled specially /per se/.
->> It's a side effect of how conntrack and NAT work. The conntrack confirm
->> takes place at the end of POSTROUTING, and no new NAT rule can be
->> applied on a confirmed connection.
->>
->> The same applies to packets belonging to an established connection :
->> they all skip the nat chains.
->
-> That makes sense (assuming PREROUTING above).  Thanks, this seems
-> way less arbitrary.
->
->
->> The special thing in the loopback path is that there is no need for an
->> input routing decision after PREROUTING. So, what would happen if you
->> could actually DNAT the packet ?
->
-> I would like to change its destination, then have the routing decision after
-> PREROUTING send the packet somewhere else.
->
-> Just because it arrived local doesn't mean I want it to stay local!
->
-> But that's no big deal.  I'm making the PREROUTING+OUTPUT
-> chain modifications now, everything looks OK to me.
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
