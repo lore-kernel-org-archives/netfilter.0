@@ -1,43 +1,73 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: Linux 4.3.1 regression: -m state returns "Protocol wrong type
- for socket"
-Date: Sun, 13 Dec 2015 01:47:27 +0100 (CET)
-Message-ID: <alpine.LSU.2.20.1512130135350.32160@nerf40.vanv.qr>
-References: <n4g4s8$4pr$1@ger.gmane.org> <566BEF33.7090501@gmail.com> <alpine.DEB.2.10.1512121116390.13421@blackhole.kfki.hu> <566C09F5.6080606@gmail.com> <alpine.DEB.2.10.1512121259340.14295@blackhole.kfki.hu> <566C0E75.6080800@familie-kuntze.de>
- <566c4622.936d810a.ece67.ffffdfc9@mx.google.com> <20151212232044.GE12854@breakpoint.cc> <566cae67.86f60d0a.f3ad2.2638@mx.google.com> <alpine.LSU.2.20.1512130032300.32038@nerf40.vanv.qr> <566cb640.46dc0d0a.5c3cc.287a@mx.google.com>
- <alpine.LSU.2.20.1512130124180.832@nerf40.vanv.qr> <566cbcbe.01ed0d0a.36f37.2c88@mx.google.com>
+From: Robert Sander <r.sander@heinlein-support.de>
+Subject: iptables mangle PREROUTING on br0.17
+Date: Mon, 14 Dec 2015 17:10:37 +0100
+Message-ID: <566EE9FD.6020508@heinlein-support.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <566cbcbe.01ed0d0a.36f37.2c88@mx.google.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="lWUeJCItlNVUhr9ACeF6rvEqWL7LHxGu0"
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?UTF-8?Q?D=C3=A2niel_Fraga?= <fragabr@gmail.com>
-Cc: Florian Westphal <fw@strlen.de>, Noel Kuntze <noel@familie-kuntze.de>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, =?UTF-8?Q?Remzi_AKY=C3=9CZ?= <linuxliste@gmail.com>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: netfilter <netfilter@vger.kernel.org>
 
-On Sunday 2015-12-13 01:32, D=C3=A2niel Fraga wrote:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--lWUeJCItlNVUhr9ACeF6rvEqWL7LHxGu0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
->On Sun, 13 Dec 2015 01:30:17 +0100 (CET)
->Jan Engelhardt <jengelh@inai.de> wrote:
->
->> nf_conntrack_ipv4 is indeed autoloaded (provided modprobe can do it)
->> when you cause instantiation of a xt_conntrack (or xt_state) rule
->> object through ip(4)tables. And if modprobe cannot satisfy the
->> request, that feeds back through the kernel and to iptables, which
->> may then report it to stderr.
->
->	No, I mean selected in the "make menuconfig" ;) If the user
->chooses to compile state module, menuconfig won't select automatically
->nf_conntrack_ipv4 (and it should, since it depends on it).
+Hi,
 
-There is nothing to add to Kconfig, because there is no build-time=20
-dependency here. In addition, some people might get grumpy if the=20
-CONFIG_NETFILTER_XT_MATCH_CONNTRACK gained a dependency on something it=
-=20
-does not depend on at runtime in 100% of cases.
---
-To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
-el" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I need to add a connection mark on packets that enter the system on a
+bridge interface with a VLAN tag.
+
+The network setup looks like:
+
+eth0-\
+eth1--\                 /-br0.15
+eth2----bond0--\       /--br0.16
+eth2--/         --br0-----br0.17
+         tap0--/       \--br0.18
+
+The rule
+
+iptables -t mangle -A PREROUTING -i br0.17 -j CONNMARK --set-xmark 0x11
+
+does not match the packets incoming on br0.17, no connection mark is
+applied. tcpdump -i br0.17 shows incoming packets.
+
+Is it even possible to match which such a nested setup for the interfaces=
+?
+
+Regards
+--=20
+Robert Sander
+Heinlein Support GmbH
+Schwedter Str. 8/9b, 10119 Berlin
+http://www.heinlein-support.de
+
+
+--lWUeJCItlNVUhr9ACeF6rvEqWL7LHxGu0
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJWbun9AAoJEPC7kVgj3lsomqgQAII0HrAIhsSSRWJYCqQNPgdR
+kM/Kv8YSOJ1YzK2cGuh/qAqs8GeJS7rz9AYKg+p5t6+VoVwGUKz0BAuHSMRfWLWY
+id7ZxmDU1Gxa96N5BUC4SFFjJcxEt+0lFBS0Gcuaw9LKVuVeeuhKicPpqfFsOHhj
+PDlr3A2YhuUyjSii6BZGhBYdVQgbi64pA59fsKVPnIKqnevB2Oc7Gsi0tcwlvjm3
+t2P79g233jxcPFI2UmBdJeGB6Oz5VQE3OJVpPzwV9fvUSS+IE0is6XEYbmY1UIlM
+5WZOZ1xT5dNH9ba/o0z//ZcbX/kEX1Yx6zYU3qwn14GR/8Ywx7tUBdqLbuzJ6Gaw
+Vh8eNB06TBk1RRF2EnuHZwFndbB8uNtroCSTHCW2TfBtK3pSNsb7GrrHNDRbjNMH
+u94L2nU4XVwx5QBfkK9lz7UOo27wi6m1dBAfrFfUnZxY+yJlXtSPVkCYCx8XNgbQ
+v8zv8DiOQ0G2VNE/TNsMm8ZkD+ZPi2rrHbL8K98Cu2h5qLbCBFsse4LmsYxMbajJ
+b4fMjNhntZcI7y6DHciLyBa2TKqKapk1agv0uSAo/aaw/s08PxMFBKKbcRPtCmlv
+0MkoY3tVjLgr7NxjKmlbjgaApMHt1ggd27C/1UGnlzWHO0v3dG+cOwN+km8Or8Hf
+Lcdo1nUmDDsd4zMRMkwk
+=PVpi
+-----END PGP SIGNATURE-----
+
+--lWUeJCItlNVUhr9ACeF6rvEqWL7LHxGu0--
