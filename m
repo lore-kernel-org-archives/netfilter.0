@@ -1,39 +1,35 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [ANNOUNCE] iptables 1.6.0 release
-Date: Fri, 18 Dec 2015 21:17:28 +0100
-Message-ID: <20151218201728.GA17439@salvia>
-References: <20151218200453.GA13109@salvia>
- <alpine.LSU.2.20.1512182110250.16656@nerf40.vanv.qr>
+From: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Subject: Re: Packet disappears after DNAT?
+Date: Sat, 19 Dec 2015 17:34:56 +0100
+Message-ID: <56758730.4020901@plouf.fr.eu.org>
+References: <CAKmUPx5_sDgRSUQuZmXoCxPnuN3Z0q4df5XECvR7gzY6F3gpDA@mail.gmail.com>	<5662BD03.60004@plouf.fr.eu.org>	<CAKmUPx40SPPjAjQa2LyKMwQu=Qrd+Cfi1FjmQR5Oap8hQPL8Vg@mail.gmail.com>	<56653CCC.6020603@plouf.fr.eu.org>	<CAKmUPx7UQD0zE4ngHanfid4BN8aMFLdJ284peiW0_d8=EFW_JQ@mail.gmail.com>	<20151215130638.GA6295@salvia> <CAKmUPx4xc3nAzXsgCH+EPxC218V5FUhvR4nCCcDCEVRqbMUPwQ@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.20.1512182110250.16656@nerf40.vanv.qr>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <CAKmUPx4xc3nAzXsgCH+EPxC218V5FUhvR4nCCcDCEVRqbMUPwQ@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@inai.de>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
+Content-Type: text/plain; charset="iso-8859-1"
+To: Scott Bronson <bronson@rinspin.com>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter <netfilter@vger.kernel.org>
 
-On Fri, Dec 18, 2015 at 09:13:55PM +0100, Jan Engelhardt wrote:
-> 
-> On Friday 2015-12-18 21:04, Pablo Neira Ayuso wrote:
-> >        iptables 1.6.0
-> >You can download it from:
-> >http://www.netfilter.org/projects/conntrack-tools/downloads.html
-> >ftp://ftp.netfilter.org/pub/conntrack-tools/
-> 
-> There used to be a HTTP location for the downloads,
-> http://netfilter.org/projects/iptables/files/ .
-> 
-> This seems to be not pointing to the same directory as the ftp://
-> location above, or, if they are deliberately different directories,
-> the synchronization has not occurred yet. Is one of them
-> (non-)official?
+Scott Bronson a =E9crit :
+> On Tue, Dec 15, 2015 at 5:06 AM, Pablo Neira Ayuso <pablo@netfilter.o=
+rg> wrote:
+>>
+>> JFYI: The br-nf thing was moved to a separated module since 3.18. So
+>> now this finally requires explicit modprobing.
+>=20
+> Thanks Pablo.  Is this the right logic to use for all kernels?
+>=20
+> - if /proc/sys/net/bridge/bridge-nf-call-iptables doesn't exist
+>   - modprobe br_netfilter
+> - echo 0 > /proc/sys/net/bridge/bridge-nf-call-iptables
 
-This should be:
+Why load br_netfilter if it is not needed ?
 
-http://www.netfilter.org/projects/iptables/downloads.html
-ftp://ftp.netfilter.org/pub/iptables/
+I would do the following :
 
-The website is compiling, the update should be upstream soon.
+modprobe bridge
+if /proc/sys/net/bridge/bridge-nf-call-iptables exists
+  echo 0 > /proc/sys/net/bridge/bridge-nf-call-iptables
