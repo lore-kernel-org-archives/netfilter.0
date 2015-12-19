@@ -1,35 +1,35 @@
 From: Pascal Hambourg <pascal@plouf.fr.eu.org>
 Subject: Re: Packet disappears after DNAT?
-Date: Sat, 19 Dec 2015 17:34:56 +0100
-Message-ID: <56758730.4020901@plouf.fr.eu.org>
-References: <CAKmUPx5_sDgRSUQuZmXoCxPnuN3Z0q4df5XECvR7gzY6F3gpDA@mail.gmail.com>	<5662BD03.60004@plouf.fr.eu.org>	<CAKmUPx40SPPjAjQa2LyKMwQu=Qrd+Cfi1FjmQR5Oap8hQPL8Vg@mail.gmail.com>	<56653CCC.6020603@plouf.fr.eu.org>	<CAKmUPx7UQD0zE4ngHanfid4BN8aMFLdJ284peiW0_d8=EFW_JQ@mail.gmail.com>	<20151215130638.GA6295@salvia> <CAKmUPx4xc3nAzXsgCH+EPxC218V5FUhvR4nCCcDCEVRqbMUPwQ@mail.gmail.com>
+Date: Sat, 19 Dec 2015 17:38:31 +0100
+Message-ID: <56758807.90402@plouf.fr.eu.org>
+References: <CAKmUPx5_sDgRSUQuZmXoCxPnuN3Z0q4df5XECvR7gzY6F3gpDA@mail.gmail.com>	<5662BD03.60004@plouf.fr.eu.org>	<CAKmUPx40SPPjAjQa2LyKMwQu=Qrd+Cfi1FjmQR5Oap8hQPL8Vg@mail.gmail.com>	<56653CCC.6020603@plouf.fr.eu.org>	<CAKmUPx7UQD0zE4ngHanfid4BN8aMFLdJ284peiW0_d8=EFW_JQ@mail.gmail.com>	<56706DC5.8010206@plouf.fr.eu.org> <CAKmUPx7ST01XPj+cXSWhyksFJw77xeXf-WouaQkCxZ0QG1_aWQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAKmUPx4xc3nAzXsgCH+EPxC218V5FUhvR4nCCcDCEVRqbMUPwQ@mail.gmail.com>
+In-Reply-To: <CAKmUPx7ST01XPj+cXSWhyksFJw77xeXf-WouaQkCxZ0QG1_aWQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
 To: Scott Bronson <bronson@rinspin.com>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter <netfilter@vger.kernel.org>
+Cc: netfilter <netfilter@vger.kernel.org>
 
 Scott Bronson a =E9crit :
-> On Tue, Dec 15, 2015 at 5:06 AM, Pablo Neira Ayuso <pablo@netfilter.o=
-rg> wrote:
->>
->> JFYI: The br-nf thing was moved to a separated module since 3.18. So
->> now this finally requires explicit modprobing.
 >=20
-> Thanks Pablo.  Is this the right logic to use for all kernels?
+> Good question.  Editing mistake.  I'm actually forwarding different
+> ports to different guests depending on port number:
 >=20
-> - if /proc/sys/net/bridge/bridge-nf-call-iptables doesn't exist
->   - modprobe br_netfilter
-> - echo 0 > /proc/sys/net/bridge/bridge-nf-call-iptables
+> iptables -t nat -A POSTROUTING -s 192.168.122.10/32 -d
+> 192.168.122.10/32 -p udp --dport 53 -j MASQUERADE
+> iptables -t nat -A POSTROUTING -s 192.168.122.10/32 -d
+> 192.168.122.10/32 -p tcp --dport 53 -j MASQUERADE
+> iptables -t nat -A POSTROUTING -s 192.168.122.12/32 -d
+> 192.168.122.12/32 -p tcp --dport 25 -j MASQUERADE
 
-Why load br_netfilter if it is not needed ?
+I don't think you need a separate rule for each forwarded port. One
+global rule would do the job, as only forwarded packets would match the
+source/destination address.
 
-I would do the following :
 
-modprobe bridge
-if /proc/sys/net/bridge/bridge-nf-call-iptables exists
-  echo 0 > /proc/sys/net/bridge/bridge-nf-call-iptables
+iptables -t nat -A POSTROUTING -s 192.168.122.10/32 -d 192.168.122.10/3=
+2
+  -j MASQUERADE
