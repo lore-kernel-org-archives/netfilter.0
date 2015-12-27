@@ -1,113 +1,107 @@
-From: prmarino1@gmail.com
-Subject: Re: best distro to build iptable firewall
-Date: Thu, 24 Dec 2015 02:01:03 -0500
-Message-ID: <20151224070103.5251155.57850.21355@gmail.com>
-References: <CAPgF-fpEK=-AuP5Mtqddkgh2U8BMC8hKVb_2Mt7MJQNJ4cu8wg@mail.gmail.com>
- <20151223180630.61b8d238@playground>
+From: Kurt Haenen <Kurt.Haenen@quintux.com>
+Subject: Problems with bridge+router setup
+Date: Sun, 27 Dec 2015 12:00:57 +0100
+Message-ID: <b012b8f6ef5b98338b2ce4544df60a24@vpn.quintux.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=content-type:mime-version:content-transfer-encoding:message-id:date
-         :subject:from:in-reply-to:references:to;
-        bh=XidUELZftGTW4HhONnS29pcjTawalwjFdyjZUJqyPx0=;
-        b=COcstXvU0mfgEiAHRh4aIcIzR9jC/k+qRcUYEpu3E7TaLuLPlI/n3fBciW8QX3eTvH
-         f9L0vR/i7WdRUOWfn9T1XNZZG7rV7wCZiVdfk3tKX+9Xn6/q/6qQOtbmTNygfp1ntjlY
-         U8RDfyKg5fq0swlLFNkCshvvlZBWmK3Pph1NgXtbJb/ZL2V2ljLKaMI7QF6L/tlZsNta
-         uVq7pbHQbFIXSNeEMH74ujbZeBUKPyJ+R3f5mG/6fJZPMJGZppuTNsYgZLIDJ692dApf
-         nz51hcKPeLzLiAb6zAyzBIFVEvRvCjnboZm8PLPLiJMB/iePXJaTN115P52m1qLwxOKJ
-         PGQg==
-In-Reply-To: <20151223180630.61b8d238@playground>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-To deal with bursts you should always us a 64 bit version of linux for =
-a firewall.
-Also the last firewalls I built were RHEL 6 with contrack tools added f=
-or clustering.
+Dear all,
 
-It's a little behind but not far off. You will also want the HA add on.=
- CentOS or Scientific linux would work as an option too.
-=46edoras a little more up to date but not as stable=E2=80=8E. Do not u=
-se distros like Ubuntu because their focus is more for the desktop mark=
-et and will install many things you don't need which weakens the securi=
-ty of your firewall. Also if you do use RHEL do the install from a kick=
-start and do a nobase install so you only get the bare minimum OS.=C2=A0
+I'm trying to setup a Raspberry Pi2 as a special kind of bridge+router, 
+but am getting stuck (basically way before the difficult stuff starts) 
+with just basic bridging already.  I've tried figuring this out on my 
+own and with searching through all stuff on the Internet, but still am 
+no step closer to understanding the cause of my problems (even though I 
+don't thing I'm an idiot), so this is basically a cry for help ...
 
-That said smoothwall is not a bad choice but it's a bit inflexible in s=
-ome ways. Also I wouldn't use an ATOM processor for an number of reason=
-s mostly because it would have issues with handling microbursts.
-=E2=80=8EThat said a cheap $500 dollar desktop ( including the three ye=
-ar warranty) will do especially if you add in an Intel Quad card.
 
-=E2=80=8E
-On Wed, 23 Dec 2015 15:29:17 -0500
-Satish Patel <satish.txt@gmail.com> wrote:
+So, the basics of my setup:
 
-> All,
->=20
-> I am planning to build dedicated firewall for network and wonder whic=
-h
-> OS will be idle and best for dedicated firewall machine?
->=20
-> Its going to handle around 500mbps traffic peak.. so i need something
-> solid and secure, which won't crash...
+Client <----> RPI2 <----> LAN
 
-(I know this sounds like an advertisement, but Satish *did* ask. And I =
-*am* working to integrate the just-released iptables v1.6.0.)
+The RPI2 has an extra eth1 via USB to which the Windows-7 client is 
+connected, while the rest of the network is connected through eth0 of 
+the RPI2.  The LAN contains a server that hands out DHCP addresses.
 
-If you intend to filter SSL (via MITM), HTTP, HTTPS through clamav, fil=
-ter URLs for 'appropriateness', and run Snort to identify incoming thre=
-ats, *at 500Mb/s*, you will need at least 2GiB of fairly fast RAM and a=
- fast quad-core CPU.
+The RPI2 is running the latest Raspbian Jessie (Linux raspberrypi 
+4.1.13-v7+ #826 SMP PREEMPT Fri Nov 13 20:19:03 GMT 2015 armv7l 
+GNU/Linux).
+I created the bridge through the /etc/network/interfaces config file:
+     auto lo eth1 br0
+     iface lo inet loopback
+     iface eth0 inet manual
+     iface eth1 inet manual
+     iface br0 inet dhcp
+         bridge_fd 0
+         bridge_maxwait 0
+         bridge_stp off
+         bridge_ports eth0 eth1
 
-You don't need to build a dedicated firewall. Smoothwall Express v3.1 i=
-s already available:
-- i586 or x86_64
-- SMP
-- web-based UI
-- linux v3.4.110
-- iptables v1.4.21
-- ipset v6.19
-- gcc v4.7.3
-- glibc v2.18
-- binutils v.2.22
-- runs snort, clamav, squid
-- as a plain firewall, easily handles 4 NICs at constant 950Mb/s on a
-dual-core Atom N270. (clam/ids/squid filtering is a different story.)
-- improved build system makes it easy to add pkgs
-- script-based 'advanced installer' make it easy to hack and debug
-installation problems
-- hooks to make many mods 'non-invasive'
+The fd, maxwait and stp bridge settings were actually added after 
+checking the Internet for the problems I was hitting.  I've also tried 
+executing explicit brctl commands for the same, but that didn't change 
+anything ...  No ebtables or iptables rules applied yet, since I first 
+wanted to test basic bridging.
 
-Except for a stupid mistake on my part (I introduced a memory leak when=
- I converted iptACCOUNT to 64-bit counters), v3.1 has been very stable.
+With this setup, when I attach my Windows-7 client to eth1 of the RPI 
+and ensure the client has a static IP in the same range as the LAN, then 
+everything seems to work fine.  I can ping hosts on the LAN from the 
+client and vice-versa, BUT ...
 
-I'm presently working on v3.2 preliminaries:
-- linux v3.14.58
-- iptables v1.6.0
-- ipset v6.27
-- eudev v3.1.5
-It just built and the iso/flash images assembled. It installed and boot=
-ed (in a KVM) without trouble. So far, the firewall seems OK. But I do =
-expect to encounter a few incompatibilities with iptables v1.6.0.=20
+If I tell the client to use DHCP, then it (most of the time) doesn't 
+get an IP address.  I added a rule to just log events in the FORWARD 
+chain of ebtables' filter table, which (filtered on ports 67 and 68) 
+shows:
 
-We're working to overcome years of development neglect. I spent five ye=
-ars improving the build system, modernizing Express' 'foundation', poli=
-shing the UI a little bit, and stumbling upon and fixing many little bu=
-gs from the original v3.0; v3.1 was the result. Somewhere in there, I w=
-as appointed project leader. There is still room for improvement in the=
- UI and in the features; this will be the main focus during 3.2's devel=
-opment.
+Dec 27 10:35:54 raspberrypi kernel: [73804.793870] LOG_FORWARD IN=eth1 
+OUT=eth0 MAC source = 00:26:2d:c6:df:50 MAC dest = ff:ff:ff:ff:ff:ff 
+proto = 0x0800 IP SRC=0.0.0.0 IP DST=255.255.255.255, IP tos=0x00, IP 
+proto=17 SPT=68 DPT=67
+Dec 27 10:35:54 raspberrypi kernel: [73804.794508] LOG_FORWARD IN=eth0 
+OUT=eth1 MAC source = 00:e0:4c:e8:42:30 MAC dest = ff:ff:ff:ff:ff:ff 
+proto = 0x0800 IP SRC=192.168.21.1 IP DST=255.255.255.255, IP tos=0x10, 
+IP proto=17 SPT=67 DPT=68
+Dec 27 10:35:54 raspberrypi kernel: [73804.799762] LOG_FORWARD IN=eth0 
+OUT=eth1 MAC source = 00:e0:4c:e8:42:30 MAC dest = ff:ff:ff:ff:ff:ff 
+proto = 0x0800 IP SRC=192.168.21.1 IP DST=255.255.255.255, IP tos=0x10, 
+IP proto=17 SPT=67 DPT=68
+Dec 27 10:35:54 raspberrypi kernel: [73804.801009] LOG_FORWARD IN=eth1 
+OUT=eth0 MAC source = 00:26:2d:c6:df:50 MAC dest = ff:ff:ff:ff:ff:ff 
+proto = 0x0800 IP SRC=0.0.0.0 IP DST=255.255.255.255, IP tos=0x00, IP 
+proto=17 SPT=68 DPT=67
+Dec 27 10:35:54 raspberrypi kernel: [73804.809660] LOG_FORWARD IN=eth0 
+OUT=eth1 MAC source = 00:e0:4c:e8:42:30 MAC dest = ff:ff:ff:ff:ff:ff 
+proto = 0x0800 IP SRC=192.168.21.1 IP DST=255.255.255.255, IP tos=0x10, 
+IP proto=17 SPT=67 DPT=68
+Dec 27 10:35:55 raspberrypi kernel: [73805.917988] LOG_FORWARD IN=eth1 
+OUT=eth0 MAC source = 00:26:2d:c6:df:50 MAC dest = ff:ff:ff:ff:ff:ff 
+proto = 0x0800 IP SRC=0.0.0.0 IP DST=255.255.255.255, IP tos=0x00, IP 
+proto=17 SPT=68 DPT=67
+Dec 27 10:35:55 raspberrypi kernel: [73805.924720] LOG_FORWARD IN=eth0 
+OUT=eth1 MAC source = 00:e0:4c:e8:42:3
+0 MAC dest = ff:ff:ff:ff:ff:ff proto = 0x0800 IP SRC=192.168.21.1 IP 
+DST=255.255.255.255, IP tos=0x10, IP proto=17 SPT=67 DPT=68
 
-Unless it's a learning exercise, if you want to save yourself a lot of =
-time and trouble, visit us at http://community.smoothwall.org.
+So, I would conclude from this (correct me if I'm wrong) that the 
+server (192.168.21.1) is receiving the request for a DHCP address and 
+even responds back, but for some reason this response either never 
+reaches the Windows 7 machine or it refuses to use it.
 
-Neal
---
-To unsubscribe from this list: send the line "unsubscribe netfilter" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at http://vger.kernel.org/majordomo-info.html
+Now, yesterday, for an extensive period, the problem was gone: I could 
+attach the client, get an IP, detach it, attach it again and get the 
+same IP again.  Then this morning, with nothing changed, not even the 
+power taken off from any of the involved devices (apart from the client 
+which was put to sleep while detached from the network), it came back to 
+not getting an IP at all ...
+
+So, any clue, tips or whatever that could help me in figuring out the 
+root cause here?
+
+Much thanks in advance and happy hollidays to all!
+
+K.
