@@ -1,134 +1,125 @@
-From: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
+From: Misterke <netfilter@quintux.com>
 Subject: Re: Problems with bridge+router setup
-Date: Sun, 27 Dec 2015 14:21:18 -0500
-Message-ID: <20151227142118.27861ea5@playground>
+Date: Mon, 28 Dec 2015 10:57:11 +0100
+Message-ID: <7f5d15a0a7067992b1ae21b149d64266@vpn.quintux.com>
 References: <b012b8f6ef5b98338b2ce4544df60a24@vpn.quintux.com>
+ <20151227142118.27861ea5@playground>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Filter: OpenDKIM Filter v2.10.3 MAIL1.WPI.EDU tBRJLLWo014176
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wpi.edu; s=_dkim;
-	t=1451244081; i=@wpi.edu;
-	bh=11rwAMjNg0UYLCN141U1lnMGoD64MG+PlMIe4nF9BWQ=;
-	h=Date:From:To:Subject:In-Reply-To:References;
-	b=qzay4kYGkWvKkk9i2TIBFub0v9mttirGKqItLnSG7/HzQsdnhWgmYkw1AHCtpXAwP
-	 rbmCEEJqAvE6Fr7je/elpID/32F0Js928h6muMRUCXzW4U5WfMMsMwfB34dqJng+tR
-	 0oB3+St4wnEm7VDOEzUolceGXrdEeaR09Tw/vArY=
-In-Reply-To: <b012b8f6ef5b98338b2ce4544df60a24@vpn.quintux.com>
+In-Reply-To: <20151227142118.27861ea5@playground>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-On Sun, 27 Dec 2015 12:00:57 +0100
-Kurt Haenen <Kurt.Haenen@quintux.com> wrote:
+Thanks Neal!
 
-> Dear all,
-> 
-> I'm trying to setup a Raspberry Pi2 as a special kind of bridge+router, 
-> but am getting stuck (basically way before the difficult stuff starts) 
-> with just basic bridging already.  I've tried figuring this out on my 
-> own and with searching through all stuff on the Internet, but still am 
-> no step closer to understanding the cause of my problems (even though I 
-> don't thing I'm an idiot), so this is basically a cry for help ...
-> 
-> 
-> So, the basics of my setup:
-> 
-> Client <----> RPI2 <----> LAN
-> 
-> The RPI2 has an extra eth1 via USB to which the Windows-7 client is 
-> connected, while the rest of the network is connected through eth0 of 
-> the RPI2.  The LAN contains a server that hands out DHCP addresses.
-> 
-> The RPI2 is running the latest Raspbian Jessie (Linux raspberrypi 
-> 4.1.13-v7+ #826 SMP PREEMPT Fri Nov 13 20:19:03 GMT 2015 armv7l 
-> GNU/Linux).
-> I created the bridge through the /etc/network/interfaces config file:
->      auto lo eth1 br0
->      iface lo inet loopback
->      iface eth0 inet manual
->      iface eth1 inet manual
->      iface br0 inet dhcp
->          bridge_fd 0
->          bridge_maxwait 0
->          bridge_stp off
->          bridge_ports eth0 eth1
+I removed eth1 from the auto line and changed stp to on instead of off. 
+However, in parallel to that I also noticed a stupid DHCP config 
+mistake: both the WIFI and the wired MAC of my client notebook were 
+getting the same (hard configured) IP address assigned.  Normally this 
+notebook operates via WIFI, but for the test here I would hook it wired 
+to the RPi2 ... I guess then getting the same IP for the wired as the 
+WIFI already had can totally screw up things.
 
-I think you need STP (Spanning Tree Protocol); it's how devices on a LAN find out where bridges (switches) are and what's on the other side of them.
+Anyway, with all this modified, basic bridging seems to work fine, so 
+time to move on to the more complex things I need, but also have 
+numerous questions on how to get them done ...
 
-Also, remove eth1 from the 'auto' statement. Only br0 should be handled automatically.
+Reduced to the minimal, the needed setup would look something like 
+this:
 
-You've largely done what I do for my home-brew KVM controller, except that I also add "post-up brctl setfd br0 0". It's been years since I set it up and I don't remember why I added it. (It may've been needed for an older version of Debian that didn't do bridges right: DHCP would often fail because it would come up long before the bridge would time out and start processing traffic.)
+         +------+
+   A ----|      |   single IP link   +------+       +-----------+
+         |Switch|--------------------| RPi2 |-------|Cable modem|
+   B ----|      |                eth1+------+eth0   +-----------+
+         +------+
 
-To debug, you might add a script that periodically pings something on the LAN. When the pings start to fail, bounce the link. It's rare, but not unheard of, for NICs to go to sleep.
+Here client A is a normal network device for which the network it is 
+connected to should look like a normal LAN and the RPi2 should act as 
+firewall, DHCP & DNS server, etc.  In short: for client A the RPi2 
+should look like a typical router/firewall.
 
-> 
-> The fd, maxwait and stp bridge settings were actually added after 
-> checking the Internet for the problems I was hitting.  I've also tried 
-> executing explicit brctl commands for the same, but that didn't change 
-> anything ...  No ebtables or iptables rules applied yet, since I first 
-> wanted to test basic bridging.
-> 
-> With this setup, when I attach my Windows-7 client to eth1 of the RPI 
-> and ensure the client has a static IP in the same range as the LAN, then 
-> everything seems to work fine.  I can ping hosts on the LAN from the 
-> client and vice-versa, BUT ...
-> 
-> If I tell the client to use DHCP, then it (most of the time) doesn't 
-> get an IP address.  I added a rule to just log events in the FORWARD 
-> chain of ebtables' filter table, which (filtered on ports 67 and 68) 
-> shows:
-> 
-> Dec 27 10:35:54 raspberrypi kernel: [73804.793870] LOG_FORWARD IN=eth1 
-> OUT=eth0 MAC source = 00:26:2d:c6:df:50 MAC dest = ff:ff:ff:ff:ff:ff 
-> proto = 0x0800 IP SRC=0.0.0.0 IP DST=255.255.255.255, IP tos=0x00, IP 
-> proto=17 SPT=68 DPT=67
-> Dec 27 10:35:54 raspberrypi kernel: [73804.794508] LOG_FORWARD IN=eth0 
-> OUT=eth1 MAC source = 00:e0:4c:e8:42:30 MAC dest = ff:ff:ff:ff:ff:ff 
-> proto = 0x0800 IP SRC=192.168.21.1 IP DST=255.255.255.255, IP tos=0x10, 
-> IP proto=17 SPT=67 DPT=68
-> Dec 27 10:35:54 raspberrypi kernel: [73804.799762] LOG_FORWARD IN=eth0 
-> OUT=eth1 MAC source = 00:e0:4c:e8:42:30 MAC dest = ff:ff:ff:ff:ff:ff 
-> proto = 0x0800 IP SRC=192.168.21.1 IP DST=255.255.255.255, IP tos=0x10, 
-> IP proto=17 SPT=67 DPT=68
-> Dec 27 10:35:54 raspberrypi kernel: [73804.801009] LOG_FORWARD IN=eth1 
-> OUT=eth0 MAC source = 00:26:2d:c6:df:50 MAC dest = ff:ff:ff:ff:ff:ff 
-> proto = 0x0800 IP SRC=0.0.0.0 IP DST=255.255.255.255, IP tos=0x00, IP 
-> proto=17 SPT=68 DPT=67
-> Dec 27 10:35:54 raspberrypi kernel: [73804.809660] LOG_FORWARD IN=eth0 
-> OUT=eth1 MAC source = 00:e0:4c:e8:42:30 MAC dest = ff:ff:ff:ff:ff:ff 
-> proto = 0x0800 IP SRC=192.168.21.1 IP DST=255.255.255.255, IP tos=0x10, 
-> IP proto=17 SPT=67 DPT=68
-> Dec 27 10:35:55 raspberrypi kernel: [73805.917988] LOG_FORWARD IN=eth1 
-> OUT=eth0 MAC source = 00:26:2d:c6:df:50 MAC dest = ff:ff:ff:ff:ff:ff 
-> proto = 0x0800 IP SRC=0.0.0.0 IP DST=255.255.255.255, IP tos=0x00, IP 
-> proto=17 SPT=68 DPT=67
-> Dec 27 10:35:55 raspberrypi kernel: [73805.924720] LOG_FORWARD IN=eth0 
-> OUT=eth1 MAC source = 00:e0:4c:e8:42:3
-> 0 MAC dest = ff:ff:ff:ff:ff:ff proto = 0x0800 IP SRC=192.168.21.1 IP 
-> DST=255.255.255.255, IP tos=0x10, IP proto=17 SPT=67 DPT=68
-> 
-> So, I would conclude from this (correct me if I'm wrong) that the 
-> server (192.168.21.1) is receiving the request for a DHCP address and 
-> even responds back, but for some reason this response either never 
-> reaches the Windows 7 machine or it refuses to use it.
-> 
-> Now, yesterday, for an extensive period, the problem was gone: I could 
-> attach the client, get an IP, detach it, attach it again and get the 
-> same IP again.  Then this morning, with nothing changed, not even the 
-> power taken off from any of the involved devices (apart from the client 
-> which was put to sleep while detached from the network), it came back to 
-> not getting an IP at all ...
-> 
-> So, any clue, tips or whatever that could help me in figuring out the 
-> root cause here?
-> 
-> Much thanks in advance and happy hollidays to all!
-> 
-> K.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Client B however is a Digital TV box and my triple-play provider 
+unfortunately requires those to be directly connected to the cable 
+modem, which will hand them actually a DHCP address in a particular 
+range and probably do other special stuff.  In short: for client B the 
+entire network between itself and the cable modem should consist solely 
+of hubs/switches/bridges and hence for it to work the RPi2 should behave 
+as a simple bridge.
 
+In reality there will be more clients of both A and B type and there 
+will be additional switches between the RPi2 and the clients, but in 
+most locations I only have a single lead arriving (can't be changed 
+without major costs) whereas I need to attach both clients of type A and 
+B.
+
+So, what I would like the RPi2 to do is:
+  - For ethernet frames TO or FROM specific MAC adresses (those of 
+clients of type B) on its eth1 side, just pass them on from/to eth0
+  - For anything else, behave like a router and have iptables rules 
+dictate what is allowed and when outputting to the eth0-side do 
+NAT/masquerading
+
+I was thinking this would mean (but have to try this still):
+  - with ebtables (where xx indicates the mac of client B):
+      * -t broute -A BROUTING -i eth0 -d 
+xx:xx:xx:xx:xx:xx/01:00:00:00:00:00 -j ACCEPT
+      * -t broute -A BROUTING -i eth1 -s 
+xx:xx:xx:xx:xx:xx/01:00:00:00:00:00 -j ACCEPT
+      * -t broute -P BROUTING DROP
+  - with iptables:
+      * -t nat -A POSTROUTING -m physdev --physdev-out eth0 -j 
+MASQUERADE
+      * -P INPUT DROP
+      * -P FORWARD DROP
+      * -A FORWARD -m physdev --physdev-in eth1 -j ACCEPT
+      * -A FORWARD -p tcp -m tcp --tcp-flags ACK ACK -j ACCEPT
+      * -A FORWARD -m state --state ESTABLISHED -j ACCEPT
+      * -A FORWARD -m state --state RELATED -j ACCEPT
+      * -A INPUT -m physdev --physdev-in eth1 -j ACCEPT
+      * -A INPUT -p tcp -m tcp --tcp-flags ACK ACK -j ACCEPT
+      * -A INPUT -m state --state ESTABLISHED -j ACCEPT
+      * -A INPUT -m state --state RELATED -j ACCEPT
+      * -A INPUT -p udp -m udp --dport 1024:65535 --sport 53 -j ACCEPT
+      * -A INPUT -p icmp -m icmp --icmp-type echo-reply -j ACCEPT
+      * -A INPUT -p icmp -m icmp --icmp-type destination-unreachable -j 
+ACCEPT
+      * -A INPUT -p icmp -m icmp --icmp-type source-quench -j ACCEPT
+      * -A INPUT -p icmp -m icmp --icmp-type time-exceeded -j ACCEPT
+      * -A INPUT -p icmp -m icmp --icmp-type parameter-problem -j ACCEPT
+      * -A INPUT -p tcp -m tcp --dport auth -j ACCEPT
+      * -A INPUT -p tcp -m tcp -m multiport -j ACCEPT --dports 22,443
+
+So, first question of course would be whether this seems sensible and 
+whether any of you can give some
+input on mistakes or possible improvements.
+
+But I also have additional questions:
+   - To act as a router, I need IP addresses at both sides of the 
+bridge.  At the eth0 side, that should
+     be a DHCP address coming from the cable modem, but at the other end 
+it should be a static address.
+     Now, in the previous simple bridge setup, I already had the bridge 
+get a DHCP address and I could
+     even add a second static address to br0, but then those addresses 
+would exist at both ends of the
+     bridge, right?  So, should I then create ebtables/iptables rules 
+somehow to avoid that someone
+     would notice the internal IP address on the internet and vice 
+versa?
+   - Next to that, when running dnsmasq to hand out DHCP addresses, I of 
+course don't want it to start
+     offering addresses to the Internet side of the bridge.  So, either 
+I somehow need to tell dnsmasq
+     to only work on the LAN side (eth1) or perhaps I would again have 
+to somehow limit this with
+     ebtables/iptables.
+
+Any advice from anyone on all this?
+
+Again thanks to anyone who can offer tips, hints, ideas ...
+
+Kind regards,
+K
