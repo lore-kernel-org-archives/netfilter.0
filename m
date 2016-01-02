@@ -1,81 +1,34 @@
-From: Eric Leblond <eric@regit.org>
-Subject: Re: ulogd's SQLITE3 "buffer" option
-Date: Fri, 01 Jan 2016 11:04:25 +0100
-Message-ID: <1451642665.5359.17.camel@regit.org>
-References: <20151229183831.0ff29890@alex-desktop>
-	 <20151230001905.GA1700@salvia>
+From: Misterke <netfilter@quintux.com>
+Subject: Re: Problems with bridge+router setup
+Date: Sat, 02 Jan 2016 12:26:52 +0100
+Message-ID: <22e7956405073e3fc472637b7d6637ca@vpn.quintux.com>
+References: <b012b8f6ef5b98338b2ce4544df60a24@vpn.quintux.com>
+ <20151227142118.27861ea5@playground>
+ <7f5d15a0a7067992b1ae21b149d64266@vpn.quintux.com>
+ <20151228175036.2ff7ee1d@playground>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <20151230001905.GA1700@salvia>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <20151228175036.2ff7ee1d@playground>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Pablo Neira Ayuso <pablo@netfilter.org>, Alex Xu <alex_y_xu@yahoo.ca>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Hello,
+First of all: Happy New Year and Best Wishes to all.
 
-On Wed, 2015-12-30 at 01:19 +0100, Pablo Neira Ayuso wrote:
-> On Tue, Dec 29, 2015 at 06:38:31PM -0500, Alex Xu wrote:
-> > I was attempting to configure sqlite3 output in ulogd and could not
-> > determine the function of the "buffer" configuration option.
-> >=20
-> > $ grep buffer output/sqlite3/ulogd_output_sqlite3.c
-> > =A0=A0=A0=A0=A0=A0=A0=A0int buffer_size;
-> > =A0=A0=A0=A0=A0=A0=A0=A0int buffer_curr;
-> > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0.key =3D "buffer",
-> > #define buffer_ce(pi)=A0=A0=A0(pi)->config_kset->ces[2].u.value
-> > =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0priv->buffer_curr++=
-;
-> > =A0=A0=A0=A0=A0=A0=A0=A0/* initialize our buffer size and counter *=
-/
-> > =A0=A0=A0=A0=A0=A0=A0=A0priv->buffer_size =3D buffer_ce(pi);
-> > =A0=A0=A0=A0=A0=A0=A0=A0priv->buffer_curr =3D 0;
-> > $ grep -rF buffer_curr .
-> > output/sqlite3/ulogd_output_SQLITE3.c:=A0=A0int buffer_curr;
-> > output/sqlite3/ulogd_output_SQLITE3.c:=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-priv-
-> > >buffer_curr++;
-> > output/sqlite3/ulogd_output_SQLITE3.c:=A0=A0priv->buffer_curr =3D 0=
-;
-> >=20
-> > Now, it is quite likely that I am missing something, but it would
-> > appear that buffer_curr is never actually *read*, only *written*,
-> > and it's a basic fact of programming that a variable can have no
-> > effect
-> > if it is never read from. [citation needed]
-> >=20
-> > It would appear that the original code in ulogd-1.x employed a
-> > 'buffer'
-> > which was actually a counter for when to tell sqlite to sync to
-> > disk.
-> > When the code was rewritten by "Holger" and committed by Pablo
-> > Neira
-> > Ayuso (8f7bb61), the syncing part was removed but the buffer
-> > variable
-> > was simply renamed.
-> >=20
-> > Nobody noticed because one fsync every few seconds is tiny.
-> >=20
-> > Therefore, I think we should remove the "buffer" option entirely.
-> >=20
-> > Thoughts? I will send a patch if there are no objections.
->=20
-> This may be well a leftover that was introduced by when that large
-> rewrite took, please submit a patch that we can review.
+I especially want to thank those who made the effort to reply to my 
+questions - especially the setup indicated by Neal indeed reflects what 
+I would need, but I'm afraid I've taken a bit of the "easy way out".  
+Instead of making the effort to create a setup with Raspberry Pi's, I've 
+added a second PowerLAN adapter at the client side and at the server 
+side.  I hadn't mentioned before that the single IP link I was having 
+was PowerLAN and I guess adding a second PowerLAN adapter with a 
+different network isn't the best in terms of performance, but it was 
+very low effort and so far seems to get the job done.
 
-Agree on diagnostic, it seems unused in current version of the code.
-Waiting for the patch.
+So, again many thanks for all the feedback and sorry that I chickened 
+out and went for the "buy" instead of "make" solution.
 
-Happy new year to all,
---=20
-Eric Leblond <eric@regit.org>
-
-
---
-To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
-el" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks,
+K
