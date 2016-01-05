@@ -1,7 +1,7 @@
 From: "Skoll, Jeff" <uk038853@student.uni-kassel.de>
 Subject: Charity/Donation
-Date: Mon, 04 Jan 2016 21:40:01 -0500
-Message-ID: <auto-000000074659__7323.23319321058$1451962378$gmane$org@mailadmin.uni-kassel.de>
+Date: Tue, 05 Jan 2016 00:04:11 -0500
+Message-ID: <auto-000000159800__18165.6000706882$1451970305$gmane$org@mailadmin.uni-kassel.de>
 Reply-To: jeff.skoll@skollcharity.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
