@@ -1,34 +1,30 @@
-From: Misterke <netfilter@quintux.com>
-Subject: Re: Problems with bridge+router setup
-Date: Sat, 02 Jan 2016 12:26:52 +0100
-Message-ID: <22e7956405073e3fc472637b7d6637ca@vpn.quintux.com>
-References: <b012b8f6ef5b98338b2ce4544df60a24@vpn.quintux.com>
- <20151227142118.27861ea5@playground>
- <7f5d15a0a7067992b1ae21b149d64266@vpn.quintux.com>
- <20151228175036.2ff7ee1d@playground>
+From: "Skoll, Jeff" <uk038853@student.uni-kassel.de>
+Subject: Charity/Donation
+Date: Mon, 04 Jan 2016 21:40:01 -0500
+Message-ID: <auto-000000074659__7323.23319321058$1451962378$gmane$org@mailadmin.uni-kassel.de>
+Reply-To: jeff.skoll@skollcharity.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20151228175036.2ff7ee1d@playground>
+Content-Description: Mail message body
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: Me <uk038853@student.uni-kassel.de>
 
-First of all: Happy New Year and Best Wishes to all.
+Hi,
+My name is Jeffrey Skoll, a philanthropist and the founder of one of th=
+e largest private foundations in the world. I believe strongly in =E2=80=
+=98giving while living.=E2=80=99 I had one idea that never changed in m=
+y mind =E2=80=94 that you should use your wealth to help people and I h=
+ave decided to secretly give USD2.498 Million to a randomly selected in=
+dividual. On receipt of this email, you should count yourself as the in=
+dividual. Kindly get back to me at your earliest convenience, so I know=
+ your email address is valid.
 
-I especially want to thank those who made the effort to reply to my 
-questions - especially the setup indicated by Neal indeed reflects what 
-I would need, but I'm afraid I've taken a bit of the "easy way out".  
-Instead of making the effort to create a setup with Raspberry Pi's, I've 
-added a second PowerLAN adapter at the client side and at the server 
-side.  I hadn't mentioned before that the single IP link I was having 
-was PowerLAN and I guess adding a second PowerLAN adapter with a 
-different network isn't the best in terms of performance, but it was 
-very low effort and so far seems to get the job done.
+Visit the web page to know more about me: http://www.theglobeandmail.co=
+m/news/national/meet-the-canadian-billionaire-whos-giving-it-all-away/a=
+rticle4209888/ or you can read an article of me on Wikipedia.
 
-So, again many thanks for all the feedback and sorry that I chickened 
-out and went for the "buy" instead of "make" solution.
-
-Thanks,
-K
+Regards,
+Jeffrey Skoll.
