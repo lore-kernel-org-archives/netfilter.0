@@ -1,43 +1,89 @@
-From: Hannes Frederic Sowa <hannes@stressinduktion.org>
+From: prmarino1@gmail.com
 Subject: Re: Configure ICMP error source address
-Date: Fri, 8 Jan 2016 17:21:13 +0100
-Message-ID: <568FE1F9.9020101@stressinduktion.org>
+Date: Fri, 08 Jan 2016 22:57:08 -0500
+Message-ID: <20160109035708.5251154.82433.21820@gmail.com>
 References: <568F8207.9040305@heinlein-support.de>
+ <20160108152448.5251154.50977.21786@gmail.com>
+ <568FDFBF.3010300@stressinduktion.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
-	stressinduktion.org; h=content-transfer-encoding:content-type
-	:date:from:in-reply-to:message-id:mime-version:references
-	:subject:to:x-sasl-enc:x-sasl-enc; s=mesmtp; bh=Zlo+hGQllpSZGkQQ
-	J1frNcEkil4=; b=iH5NPoeB8hcghSrcwD/JZ/l+FaNfRYg/zuk5LKbuP4g8eF7A
-	o+ggCEVUCcaJnVWt6k7zJZ7S7LlhAsgEvp5pZMGNPvu5BZlyqEKdmjJazARjhLyG
-	SmJZYdYpSd1illNQSSWrJkwbEO8XGNynQYZX1LhvPG5MG6iR61pwR62B3fE=
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
-	messagingengine.com; h=content-transfer-encoding:content-type
-	:date:from:in-reply-to:message-id:mime-version:references
-	:subject:to:x-sasl-enc:x-sasl-enc; s=smtpout; bh=Zlo+hGQllpSZGkQ
-	QJ1frNcEkil4=; b=iTIx5ANL0Rvp+/G+N6pRONXk8GGDBRiYAjHWL59YtdJu2+n
-	qb0HAJW1TGXMP5STiAmmZayXGWtg/tNwUH7Jz39dofIznhLILjdVSrOwpy8EJDj4
-	o/+K9GiDIIsEXMVJ9EC7ILlmdaeRBddOAn0k6TfxA9Cm6xJ+5tadycrr/piA=
-In-Reply-To: <568F8207.9040305@heinlein-support.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=content-type:mime-version:content-transfer-encoding:message-id:date
+         :subject:from:in-reply-to:references:to;
+        bh=AtKJoJMT+Jf4hitpwPGfUKLRskmy231XSqN75VDb5NM=;
+        b=AQNC/dYmeE79mF0Vc+xte6/DNkXIlA/YxzQImZsCbgMKR6XgGjbeW3nNidnifCGgzi
+         DaKnO4MtTnMN9RzOZwIO7rW0YpVowkFQ4o2XViFwKXNsfDeoelyIOYyYymH9/1AJuPJ1
+         1HrKCibikree+x7CdpmN0GEfDyLe/ikwpSolo4wg4zQdJo4TFZ27RVe13tv7Xm3aEvIH
+         YfzvhS51MKAKIp2mwjSMb+GZAjhX74sm2yvTBBTpA3D0LPAwRWh6I6Ugqp6EqcMsUK2T
+         OEksYE0FLVzNcD4XyfJoBoySL2lvaEU5yGhESZye0sp9sNn9tSnQsSJ7KQB0+/wRztlM
+         n0Ow==
+In-Reply-To: <568FDFBF.3010300@stressinduktion.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Robert Sander <r.sander@heinlein-support.de>, netfilter@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: Hannes Frederic Sowa <hannes@stressinduktion.org>, Robert Sander <r.sander@heinlein-support.de>, netfilter@vger.kernel.org, netdev@vger.kernel.org
 
-On 08.01.2016 10:31, Robert Sander wrote:
-> Is it a good idea to develop a kernel patch that makes it possible to
-> select the first IPv4 address on dev lo with scope global as the source
-> address for ICMP errors? Would that do any harm to the Internet at large?
+=C2=A0The reason why is in the kernel documentation distributed with th=
+e source code.
+=E2=80=8EIts not all immediately obvious why and where the kernel does =
+this unless you were involved in the original debates about it. The pro=
+blems with binding a public ip address to a loopback address are more r=
+ecently is partialy selinux but mostly of it is because of how routing =
+changed when iproute2 was introduced in the 2.2 kernel (if I remember t=
+he versions correctly it was so long ago). The reason is security, many=
+ processes bind to the loopback interface for IPC and just grab the fir=
+st address on the first lo device they find, some of the developers of =
+the applications weren't even aware they were doing it because in some =
+cases it was C libraries several layers deep doing it because odd loopb=
+ack addresses were common on UNIX ( I remember an AIX admin back in the=
+ early 90's telling me I should always use addresses like 127.1.0.2 on =
+the loopback because it was valid made it harder for script kiddies to =
+attack processes ). This was fine when additional addresses would need =
+additional alias on the interface for ifconfig (lo:1 for example) but w=
+ith iproute2 you could now assign multiple ip addresses to an interface=
+ without creating an alias (commonly seen on the keepalived mailing lis=
+t "why doesn't my VIP show up in ifconfig?")
+So there was a decision made to declare all subnets assigned to the loo=
+pback interface as unroutable to prevent a lot of very common security =
+holes that were being seen in the wild.
 
-I think the way to go is to have a ip rule option in which the admin can 
-add routes which get consulted only by the icmp source address 
-determination logic. I can assume that some other installations use 
-other interface number logic or multiple public addresses. This kind of 
-lookup seems to allow all possible lookup scenarios.
+That said you can make it work but you have to do a lot of things you s=
+hould never do on a firewall like turn off selinux.=E2=80=8E Or you can=
+ simply use the dummy driver and bind your public IP's to that and the =
+problems magically go away. And it makes a lot of sense why else would =
+there be a need for the dummy network driver?
 
-Thoughts?
 
+=C2=A0 Original Message =C2=A0
+=46rom: Hannes Frederic Sowa
+Sent: Friday, January 8, 2016 11:11
+To: prmarino1@gmail.com; Robert Sander; netfilter@vger.kernel.org; netd=
+ev@vger.kernel.org
+Subject: Re: Configure ICMP error source address
+
+On 08.01.2016 16:24, prmarino1@gmail.com wrote:
+> Don't put a public address on a lo device use a dummy eth interface i=
+nstead=E2=80=8E. Any IP address and it's subnet assigned to a lo device=
+ is marked as a marcian address and the traffic is dropped if it tries =
+to leave the lo device.
+
+O_o
+
+> I know that there is som old documentation out there (for example qua=
+gga's documentation) that says you can do it =E2=80=8Ebut it's been wro=
+ng since the 2.4 version off the kernel.
+> Linux treats the lo device differently that what routers call a loopb=
+ack device. The dummy driver is the linux equivalent of what routers ca=
+ll a loopback device.
+
+What you write seems odd to me, we don't treat lo devices differently t=
+o=20
+dummy devices in respect if you bind a public ip address on it.
+
+Bye,
 Hannes
+
+
 
