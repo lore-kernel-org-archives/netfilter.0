@@ -1,89 +1,128 @@
-From: Hannes Frederic Sowa <hannes@stressinduktion.org>
+From: Robert Sander <r.sander@heinlein-support.de>
 Subject: Re: Configure ICMP error source address
-Date: Sun, 10 Jan 2016 00:01:24 +0100
-Message-ID: <56919144.4060508@stressinduktion.org>
+Date: Sun, 10 Jan 2016 20:12:09 +0100
+Message-ID: <5692AD09.80406@heinlein-support.de>
 References: <568F8207.9040305@heinlein-support.de>
  <20160108152448.5251154.50977.21786@gmail.com>
  <568FDFBF.3010300@stressinduktion.org>
  <20160109035708.5251154.82433.21820@gmail.com>
  <5690D98B.7070003@stressinduktion.org> <56913852.4030608@heinlein-support.de>
+ <56919144.4060508@stressinduktion.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
-	stressinduktion.org; h=content-transfer-encoding:content-type
-	:date:from:in-reply-to:message-id:mime-version:references
-	:subject:to:x-sasl-enc:x-sasl-enc; s=mesmtp; bh=kWrC0LHTxgcpzDx6
-	cKlUYVYvjg0=; b=LjO/q4/jUItz1fhKoGgdE71RPpsK4gIfCZT1Yua6hiPfy7tw
-	hzfWcTpF5/Avkx67KN/CvqMXFDXJUj+wt7/MguCW9jmkpccpbOkdSIPJwSxPlhP+
-	If5u756Euk6cpcpFZMcu7iEOt4zFoAOHIexz2MoJ/C8lT7B0yHwKgbDSz1w=
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
-	messagingengine.com; h=content-transfer-encoding:content-type
-	:date:from:in-reply-to:message-id:mime-version:references
-	:subject:to:x-sasl-enc:x-sasl-enc; s=smtpout; bh=kWrC0LHTxgcpzDx
-	6cKlUYVYvjg0=; b=p7yLyUPKxWWWnhF0MEu7hYrhEBRgrbobC2KQ+tj1bKFVPbr
-	ZuVkkd47YirI9Dbb/bQGPT059vuV0DDIX5Hr79IFCi+zoM+SZTEVxN7+eJB0CUFc
-	O3NLz302xxklBNbA9K4P19BojzgZoCcc86pCE//L1VGA6k97djhwMgYa9DHY=
-In-Reply-To: <56913852.4030608@heinlein-support.de>
-Sender: netdev-owner@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="F3r6jqpXWpqNUb94qMLjTc8cW0eVkK1GC"
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <56919144.4060508@stressinduktion.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Robert Sander <r.sander@heinlein-support.de>, netfilter@vger.kernel.org, netdev@vger.kernel.org
+To: netfilter@vger.kernel.org, netdev@vger.kernel.org
 
-On 09.01.2016 17:41, Robert Sander wrote:
-> Hi,
->
-> Am 09.01.2016 um 10:57 schrieb Hannes Frederic Sowa:
->>
->> I would also use dummy interfaces in production systems, merely to split
->> the statistics from dummy.
->
-> Thank you for discussing the merits of dummy interfaces. I will consider
-> your arguments. But unfortunately this did not answer my question.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--F3r6jqpXWpqNUb94qMLjTc8cW0eVkK1GC
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Yes, I know. :) I tried to answer it in the other reply.
+Am 10.01.2016 um 00:01 schrieb Hannes Frederic Sowa:
 
-> Let me rephrase it:
->
-> Is it a good idea to set a specific global IPv4 address as source
-> address for outgoing ICMP error messages?
+> I am not a fan of such implicit assumptions. I would prefer the direct
+> specification of the source ip address over writing interface
+> information to a procfs file.
 
-Not sure if this generic enough.
+I tried that but as I am not a seasoned kernel hacker introducing a new
+sysctl including the validation of an IPv4 address was a bit too much.
 
-So my idea was to have a specific routing table and ip rule you can 
-install merely for selecting the source address of an icmp errors.
+Instead I created this patch (applicable against kernel version 3.2):
 
-Not sure yet how complicated that is, it would require a match in the 
-rule lookup logic to specifically use another routing table when the 
-source address for an icmp packet is generated. We already supply the 
-protocol in the flow4 information, maybe this can be used plus another 
-input/flag in the flowi4 struct?
+diff --git a/net/ipv4/icmp.c b/net/ipv4/icmp.c
+index ab188ae..eba2071 100644
+--- a/net/ipv4/icmp.c
++++ b/net/ipv4/icmp.c
+@@ -567,7 +567,7 @@ void icmp_send(struct sk_buff *skb_in, int type, int =
+code, __be32 info)
+=20
+                rcu_read_lock();
+                if (rt_is_input_route(rt) &&
+-                   net->ipv4.sysctl_icmp_errors_use_inbound_ifaddr)
++                   net->ipv4.sysctl_icmp_errors_use_inbound_ifaddr =3D=3D=
+ 1)
+                        dev =3D dev_get_by_index_rcu(net, rt->rt_iif);
+=20
+                if (dev)
+@@ -577,6 +577,23 @@ void icmp_send(struct sk_buff *skb_in, int type, int=
+ code, __be32 info)
+                rcu_read_unlock();
+        }
+=20
++       /*
++        *      Set source in case of error reply
++        */
++
++       if (icmp_pointers[type].error && net->ipv4.sysctl_icmp_errors_use=
+_inbound_ifaddr =3D=3D 2) {
++               struct net_device *dev =3D NULL;
++               __be32 tmpaddr =3D 0;
++
++               rcu_read_lock();
++               dev =3D dev_get_by_name_rcu(net, "lo");
++               if (dev)
++                       tmpaddr =3D inet_select_addr(dev, 0, RT_SCOPE_UNI=
+VERSE);
++                       if (tmpaddr)
++                               saddr =3D tmpaddr;
++               rcu_read_unlock();
++       }
++
+        tos =3D icmp_pointers[type].error ? ((iph->tos & IPTOS_TOS_MASK) =
+|
+                                           IPTOS_PREC_INTERNETCONTROL) :
+                                          iph->tos;
 
-I can see situations were it is necessary to actually select the source 
-address depending of the interface.
 
-> Would it be OK to create a /proc/sys/net/ipv4/icmp_errors_source where
-> you could write an arbitrary IPv4 address into? And that would get used
-> as the source address of ICMP errors?
->
-> My questions did contain the loopback interface as I first thought it a
-> good source of a globally routable IPv4 address (at least in our case).
->
-> Secound thought: Instead of writing an IPv4 address to
-> /proc/sys/net/ipv4/icmp_errors_source write an interface name to that
-> file and take the first global IPv4 address from that interface as
-> source for ICMP errors. Then you could create a dummy interface for that
-> use case, too.
+It currently works in my testbed (Debian wheezy based, therefor kernel 3.=
+2).
 
-I am not a fan of such implicit assumptions. I would prefer the direct 
-specification of the source ip address over writing interface 
-information to a procfs file.
+Maybe there is someone more experienced with introducing new sysctl
+files and handling strings in kernel space than me that is able to
+pick up this idea and implement it properly.
 
-> Still: Is it a good idea to do so?
+Regards
+--=20
+Robert Sander
+Heinlein Support GmbH
+Schwedter Str. 8/9b, 10119 Berlin
 
-I agree, there should be a solution for this as this is a common setup 
-for BGP routers.
+http://www.heinlein-support.de
 
-Bye,
-Hannes
+Tel: 030 / 405051-43
+Fax: 030 / 405051-19
 
+Zwangsangaben lt. =C2=A735a GmbHG:=20
+HRB 93818 B / Amtsgericht Berlin-Charlottenburg,
+Gesch=C3=A4ftsf=C3=BChrer: Peer Heinlein -- Sitz: Berlin
+
+
+--F3r6jqpXWpqNUb94qMLjTc8cW0eVkK1GC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJWkq0JAAoJEPC7kVgj3lsonJMP/2Har7mNsTpCwlrTqmkwZvUG
+bj5iM3U4nzWaNqrNeOsrfw0YbGDvzEFF1NP2/WEkZ5SeLbbbhuwU2AUGtP7bgxhl
+IEDKZcE/7RE3O6Wezc9C+jjoPzOjefD1UIfYHBQsZukA4b4FOggmGsYgDYPzPOlE
+3uXOineZnsxFV/NrQT1Lqsde3LIiF9vMzE9k7BZmYBqIMtt0xvK2euCjaiBTtGBT
+MZfCRJxWQ05SUDINkX+raf6oh6JIh7yZEXxfw4Lg1FZMZGQ0OAR3KRycfyOcGlKR
+PqMectdz1FJBJHeDVcDFUAxQ8M6+6UoiUkd1SODxf8As6y+67pFnokXqQl1+iwmp
+K5CAgc41v6dyyrmXV65Mpbd3fRmu/mYioFwy3R9SFez6uZhD43aeSyAr/LwC1JLS
+6nJKVCIK3kRcBu/QFjrnXeQtaFb5ygtUa0aXMvhv6DhXv36svTgWVxZDhJXMAnyq
+hiWip5IEvHz1UD5gsPPdZKmhmuZMzDRerzz7zNZbix72kHvmF3XZz7NDLc4F4h+P
+7nuD1BVUJd8YgbeYwTuEgtLh0XJ1DTl5MUYaxLrJSR5m2sd7CyIUuNcGq/JwN0K7
+7tiuUpDkEgi/3L4B5SfsB9Qmo4bypaiqxAjOHBKpIq3nlJRdUoWW+RPZERwB/X9f
+tR/mLIVVcdoJxRywMxjL
+=Qu3C
+-----END PGP SIGNATURE-----
+
+--F3r6jqpXWpqNUb94qMLjTc8cW0eVkK1GC--
