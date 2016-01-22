@@ -1,53 +1,49 @@
-From: Joe Stringer <joe@ovn.org>
-Subject: Re: nf_unregister_net_hook: hook not found!
-Date: Tue, 19 Jan 2016 13:58:00 -0800
-Message-ID: <CAPWQB7HiD5q3QL7igYvkdRJ-O5BtS8Yt1OEkeJAJdvDY=nVsgg@mail.gmail.com>
-References: <8312456317d37de2b445bbece288b268@eikelenboom.it>
- <20151230001259.GA1637@salvia> <874mf0d5i1.fsf@x220.int.ebiederm.org> <52794c2a10ac78199c3912ccf1f97990@eikelenboom.it>
+From: Fabio Pedretti <fabio.pedretti@unibs.it>
+Subject: About using -i with MASQUERADE
+Date: Fri, 22 Jan 2016 12:53:02 +0100
+Message-ID: <CAGpfsQ2qF0htCZQ3SmKR15Gs0huWBy=Es3c_5hh4QsRQ_CM3oQ@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <52794c2a10ac78199c3912ccf1f97990@eikelenboom.it>
-Sender: netdev-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=unibs.it; s=google;
+        h=mime-version:from:date:message-id:subject:to:content-type
+         :content-transfer-encoding;
+        bh=hRtdx8JcKqWDiWkXaja8KyVxvWbiZv8NjQaN5czlVkU=;
+        b=AMuay8slDrTYKF4ZMvL8LYT8zQj+jzFaDOy7rDp5PspsoqQCDbZhuQzDRrE/pTgnnv
+         WW+CBxhrtK+ox2ab3vY81fa4HjdPUMch4LLDj0yIuWdNUNHkZ+3LQilOGyG5LOoZLglk
+         zaQDKvxnKJKZESBh+1XWJUxTdUieoIsAow+LI=
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Sander Eikelenboom <linux@eikelenboom.it>
-Cc: ebiederm@xmission.com, Pablo Neira Ayuso <pablo@netfilter.org>, netdev <netdev@vger.kernel.org>, netfilter@vger.kernel.org, linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="macroman"
+To: netfilter@vger.kernel.org
 
-On 30 December 2015 at 10:15, Sander Eikelenboom <linux@eikelenboom.it> wrote:
-> On 2015-12-30 03:39, ebiederm@xmission.com wrote:
->>
->> Pablo Neira Ayuso <pablo@netfilter.org> writes:
->>
->>> On Mon, Dec 28, 2015 at 09:05:03PM +0100, Sander Eikelenboom wrote:
->>>>
->>>> Hi,
->>>>
->>>> Running a 4.4.0-rc6 kernel i encountered the warning below.
->>>
->>>
->>> Cc'ing Eric Biederman.
->>>
->>> @Sander, could you provide a way to reproduce this?
->>
->>
->> I am on vacation until the new year, but if this is reproducible we
->> should be able to print out reg, reg->pf, reg->hooknum, reg->hook
->> to figure out which hook is having something very weird happen to it.
->>
->> This is happening in some network namespace exit.
->>
->> Eric
->>
->
-> Unfortunately i have found no way to reproduce,
-> 13 seconds implies it was at boot, but i only have seen this once.
+Hi, I would like to do the following:
+-t nat -A POSTROUTING -i eth3 -j MASQUERADE
 
-How about this script?
+but I get this error:
+iptables v1.4.21: Can't use -i with POSTROUTING
 
-#!/bin/sh
+So I am plannig to use:
+-t nat -A POSTROUTING -s 192.168.0.0/24 -j MASQUERADE
 
-ip netns add at_ns0
-ip netns del at_ns0
-modprobe nf_conntrack_ipv4
-modprobe -r nf_conntrack_ipv4
+However I find the latter, working solution less smarter than the
+first, non working. For example I should add rules for every network
+coming from that interface that may also change in the future.
+
+Is there a reason why -i is forbidden?
+Is there a better solution than using -s?
+
+Thanks.
+
+--=20
+ing. Pedretti Fabio
+Responsabile U.O.C. "Reti e Sistemi"
+http://www.unibs.it/organizzazione/amministrazione-centrale/servizio-se=
+rvizi-ict/uoc-reti-e-sistemi
+Universit=C3=A0 degli Studi di Brescia
+Via Valotti, 9 - 25121 Brescia
+E-mail: fabio.pedretti@unibs.it
+
+--=20
+Informativa sulla Privacy: http://www.unibs.it/node/8155
