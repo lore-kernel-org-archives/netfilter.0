@@ -1,36 +1,45 @@
-From: "Peter Reckmann" <preckmann@online.de>
-Subject: Need tech explanation for NFLog TLV type 16 (0x10) - hardware link layer header
-Date: Wed, 27 Jan 2016 14:00:40 +0100
-Message-ID: <5335FB9FCD34414CBC32917DA4973A03@computer1>
+From: Vigneswaran R <vignesh@atc.tcs.com>
+Subject: Re: About using -i with MASQUERADE
+Date: Fri, 29 Jan 2016 15:40:52 +0530
+Message-ID: <56AB3AAC.9060907@atc.tcs.com>
+References: <CAGpfsQ2qF0htCZQ3SmKR15Gs0huWBy=Es3c_5hh4QsRQ_CM3oQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <CAGpfsQ2qF0htCZQ3SmKR15Gs0huWBy=Es3c_5hh4QsRQ_CM3oQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Fabio Pedretti <fabio.pedretti@unibs.it>, netfilter@vger.kernel.org
 
-TLV type 16 (0x10) is "hardware link layer header".  Normally, the data for 
-this field has a length of 14 bytes.  6 for the destination MAC, 6 for the 
-source MAC, and 2 for the Ethernet type (08 00) which is IP.  This seems to 
-be the Ethernet Header for the packet.  But, about 20% of the packets I am 
-seeing have a length of 30 bytes.  So in addition to sMac, dMac, type, I am 
-seeing an extra 12 bytes.  What is this?  Here is an example:
+On 01/22/2016 05:23 PM, Fabio Pedretti wrote:
+> Hi, I would like to do the following:
+> -t nat -A POSTROUTING -i eth3 -j MASQUERADE
+>
+> but I get this error:
+> iptables v1.4.21: Can't use -i with POSTROUTING
+>
+> So I am plannig to use:
+> -t nat -A POSTROUTING -s 192.168.0.0/24 -j MASQUERADE
+>
+> However I find the latter, working solution less smarter than the
+> first, non working. For example I should add rules for every network
+> coming from that interface that may also change in the future.
+>
+> Is there a reason why -i is forbidden?
 
-45:00:00:3C:2B:6A:00:00:80:11:8D:B9
+I think, the incoming interface information of a packet is not retained 
+until the POSTROUTING chain. (only available upto INPUT/FORWARD chain).
 
-I have seen this in a regular iptables log before.  Here is an example:
+> Is there a better solution than using -s?
 
-owblk_udp_drop IN=eth0 OUT=eth1 
-MAC=b8:27:eb:c2:bd:37:00:1b:77:d2:88:62:08:00:45:00:00:3f:06:5a:00:00:7f:11:ab:c5 
-SRC=192.168.0.61 DST=192.168.8.1 LEN=63 TOS=0x00 PREC=0x00 TTL=127 ID=1626 
-PROTO=UDP SPT=1242 DPT=53 LEN=43.
+In the FORWARDING chain, you can mark the packets based on incoming 
+Interface. Then use the mark to MASQUERADE the packets at the 
+POSTROUTING chain. eg.,
 
-So MAC= comes back with DesMac, SrcMac, and type again and then there are 
-these additional bytes: 45:00:00:3f:06:5a:00:00:7f:11:ab:c5
+-t nat -A FORWARD -i eth3 -j MARK --set-mark 0xffff
+-t nat -A POSTROUTING -m mark --mark 0xffff  -j MASQUERADE
 
-Again 12 bytes.  They always start with 45:00:00 What are these?  What do 
-they represent?
+(I hope this should work. However, I haven't tried this by myself.)
 
-Thanks in advance! 
-
+Vignesh
