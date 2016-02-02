@@ -1,85 +1,96 @@
-From: AllKind <AllKind@fastest.cc>
-Subject: [announce] iptables-bash_completion 1.4 - Bash shell programmable
- completion for ip[6]tables
-Date: Tue, 2 Feb 2016 09:24:15 +0100
-Message-ID: <56B067AF.40700@fastest.cc>
-Reply-To: AllKind@fastest.cc
+From: GUNA <gbalasun@gmail.com>
+Subject: Failed to start IPv4 firewall with iptables
+Date: Tue, 2 Feb 2016 15:10:11 -0500
+Message-ID: <CAHW=wSe8p2=2Rwfx3y0Go9rAYBwOANCO0cnEj0_CzpUcT6g=Mg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=fastest.cc; h=
-	content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:reply-to:subject:to:x-sasl-enc:x-sasl-enc; s=
-	mesmtp; bh=Xs3ieMiT1HHZgtGzayab8Scw2cM=; b=M0S9QLIfujMi81dk6fzcX
-	6xXKw/FiiovY4EiBuW+EFCnskp8tjx1sq2aA+KNasJu6so0fC/R78Q3tAenp3Sxx
-	SW/LoTvEBbrEjbJjmF2x4CVltWvwQi7a9uXUeQuxsa+mLi+LvUYlopza0JZ7uuBH
-	E7ZhFIQ0aik2RwhvDCqIwo=
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
-	messagingengine.com; h=content-transfer-encoding:content-type
-	:date:from:message-id:mime-version:reply-to:subject:to
-	:x-sasl-enc:x-sasl-enc; s=smtpout; bh=Xs3ieMiT1HHZgtGzayab8Scw2c
-	M=; b=F+drTcHcfMQIoaiyZ44t27xOEWqalsojxou7D/kun6rU++ejJAIqKhdeT1
-	Rykbvt8DxzH4ukilP/WHJ/JigHrZzXdma8q0lobXGpMJ0R8KIQbq6vPwT3QzvfZ9
-	xDtDMXXBu5s05n8niTRPe44wB3BJuXZ6prB6JJuiyR/D5nri0=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=gzg7EoOelJz+hRitJZAQZcqbdKjV+WRbC0Yign7nHsc=;
+        b=WxCodC0zViz3ni73ZelTCqAIsHFV2oyBKd7KynA9lZ5eWdrpKuGtlc693tz7/MwjKs
+         /rv14H2D46BJ+dNRiJCV3VI2JkfLHq0J55+ezsq0W+pyW1eBeBfsmjK3nA1OZGo4V7/6
+         xlJzoW3cXuW+cfbJ2O2cR/KYMzmKZiDCq+28FjmkDU7ZPOhRmpgwVnB81nPP84ijQgIu
+         bpXarPHjqp/0JTvXw6R9EN0WGq3QwmFblypKRNdltS22IhjKpVk77WMll5ZJwJjwYwVl
+         xIEZf0/lZ7lliktWzCi1C6WlrTZR73swRO1l+mAGknHkv/GFJWUf3uN3GOFFk7Zybwzb
+         uBvQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hello netfilter list,
+Hello,
 
-I'm happy to announce a new release (1.4) of iptables-bash_completion.
+I have updated Fedora core 16 Kernel from 3.4.2 to 4.4.0. Once the
+system is rebooted with new kernel 4.4.0, the iptables loaded but not
+started.
 
-----------------------------------------------------------------------
+// logs
+Failed to start IPv4 firewall with iptables [FAILED]
+See 'systemctl status iptables.service' for details.
+Started IPv6 firewall with ip6tables [ OK ]
 
-Update:
+[root@localhost grub2]# systemctl status iptables.service
+iptables.service - IPv4 firewall with iptables
+Loaded: loaded (/lib/systemd/system/iptables.service; enabled)
+Active: failed since Wed, 27 Jan 2016 09:20:39 -0500; 5h 7min ago
+Process: 936 ExecStart=/usr/libexec/iptables.init start (code=exited,
+status=1/FAILURE)
+CGroup: name=systemd:/system/iptables.service
 
-This release updates the completion to the features of iptables 1.6.
-It also contains some fixes and improvements.
+Here are list of modules loaded related to ip:
+lsmod |grep ip
+iptable_nat 16384 0
+nf_nat_ipv4 16384 1 iptable_nat
+nf_nat 24576 1 nf_nat_ipv4
+nf_log_ipv4 16384 0
+nf_log_common 16384 1 nf_log_ipv4
+ip6t_REJECT 16384 0
+nf_reject_ipv6 16384 1 ip6t_REJECT
+nf_conntrack_ipv6 20480 0
+nf_defrag_ipv6 36864 1 nf_conntrack_ipv6
+ip6table_filter 16384 1
+nf_conntrack_ipv4 16384 3
+ip6_tables 28672 1 ip6table_filter
+nf_defrag_ipv4 16384 1 nf_conntrack_ipv4
+nf_conntrack 106496 5
+nf_nat_ipv4,nf_nat,nf_conntrack_ipv6,nf_conntrack_ipv4,xt_state
 
-----------------------------------------------------------------------
+After started the service manually, then the iptables started as follows:
+systemctl start iptables.service
+systemctl status iptables.service
+iptables.service - IPv4 firewall with iptables
+Loaded: loaded (/lib/systemd/system/iptables.service; enabled)
+Active: active (exited) since Fri, 01 Jan 2010 14:52:20 -0500; 1s ago
+Process: 18474 ExecStart=/usr/libexec/iptables.init start
+(code=exited, status=0/SUCCESS)
+CGroup: name=systemd:/system/iptables.service
 
-Description:
+Here are the rules:
+more /etc/sysconfig/iptables
 
-iptables-bash_completion provides programmable completion for the
-iptables and ip6tables programs from netfilter.org. Following the
-logic of iptables, options are shown only if they are valid at the
-current context. Additionally to the completion on options, matches
-and targets, it supports dynamic retrieval of data from the system
-i.e: chain-, set-names, interfaces, hostnames, etc. Environment
-variables allow to fine grade completion options. IP and MAC
-addresses can be feed by file.
+# Firewall configuration written by system-config-firewall
+# Manual customization of this file is not recommended.
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A INPUT -p icmp -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -j ACCEPT
+-I FORWARD -m physdev --physdev-is-bridged -j ACCEPT
+COMMIT
 
-Author: AllKind - AllKind@fastest.cc
+I rebuilt the kernel and tested with all of the Netfilter options on,
+but issue remains same.
 
-Homepage:
-http://sourceforge.net/projects/ipt-bashcompl
-https://github.com/AllKind/iptables-bash_completion
+Please confirm iptables v1.4.12 is compatible with latest Kernel 4.4.0 as well.
 
-Readme:
-https://sourceforge.net/p/ipt-bashcompl/code/ci/master/tree/README.md
-https://github.com/AllKind/iptables-bash_completion/blob/master/README.md
+Note, the ip6_tables loaded and started without any issue.
 
-Changelog:
-https://github.com/AllKind/iptables-bash_completion/commits/master
-https://sourceforge.net/p/ipt-bashcompl/code/commit_browser
+Any help is appreciated.
 
-----------------------------------------------------------------------
-
-You might want to take a look at my other netfilter related projects:
-
-ipset-bash_completion (completion for ipset):
-https://sourceforge.net/projects/ipset-bashcompl/
-
-ipset_list (ipset set listing wrapper script):
-https://sourceforge.net/projects/ipset-list/
-
-IP-Array (IPv4 firewall & traffic shaping):
-https://sourceforge.net/projects/ip-array/
-
-----------------------------------------------------------------------
-
-Good day!
-
-AllKind
-
+Thank you,
+Guna
