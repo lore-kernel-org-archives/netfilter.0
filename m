@@ -1,36 +1,43 @@
-From: Thomas Nyberg <tomuxiong@gmail.com>
-Subject: Using iptables to only allow a specific application to use certain
- ports
-Date: Fri, 5 Feb 2016 12:06:08 -0500
-Message-ID: <56B4D680.3060302@gmail.com>
+From: Scott McGillivray <scott.mcgillivray@gmail.com>
+Subject: two bridges back-to-back with veth pairs, SNAT not working and
+ traffic goes missing ?
+Date: Sat, 6 Feb 2016 10:08:51 +0800
+Message-ID: <CABXj3oBJRF6fT7EFKwy-ywpeZEVP_O8jBThmO2OOWTRO5D5bAA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-type:content-transfer-encoding;
-        bh=7F7MyXLN3RS12VS7z+CA6GQapyNYcXk+Jj+KWQJN7NE=;
-        b=QcRmaZAHU+dLCEy7ikkOCcgrm5P22dg4cOhTBpkl0T+hPcuqz2eTVKrEkrcaXP5+5G
-         rOSK37nRAnIHL7HEWri8xfhqMjTnkDX5Yaz1RZ/tkSKEKo3C4mRPfBDYxrp7thuYHNpy
-         TsWRs2qiyDUqUmVe3eCVUKMp84me6IxC336fDkNQOcKlh9tcLzH1T3Vc/BaK6qasyNw8
-         nClbRSLW8LIso/a0OCHUW7WtUr/QaRO9cUV8N60ot8Scqf5cZ8IMShLtNaby68ePz1RB
-         FF6z5t7Usm3fFDec4vkudbvBfj/965aKNSqqzgURFYsuva9/icWguEiBRz0CA8+JaWol
-         2A8Q==
+        h=mime-version:from:date:message-id:subject:to:content-type;
+        bh=ZTOfoAvU3tkUmyqEtaoIvo8Qbav4ugpIoBn3FLK3XZw=;
+        b=QWBD35bgsdPmU1VQnbjWgJx3XGH9KA0L786SmNU9//y9JGHzKGfGBbKwh2zwmaAKBl
+         drrZRO16C2FLMCeGi9hT7hvRn3VWDgw5PZV3J5MYsUlZR2QGXvJC5IdvPImGNdRISWTY
+         0x012tcJ9AqSkw75QRwC2jrAoScwD0a05SYY3ydM+I3lavZJ2YneV9rzsFUdHGlBqCfq
+         Tgtxgaa48/5ENjCf0Z+TpJ+7RdTvVHd15xYVG7om5zhoi6BoOC0t8yrukAL97iCusDX9
+         ieQ7p/fz0w0BZC2meU8aNr/poMHiF+VljEUiksuDoMP7mKvlwYhSVr80mfwCWGkCZSKq
+         tupg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello,
+Hi
 
-The mosh program requires ports 60000-61000 for operation (well it can 
-get by with less, but it appears it requires an indeterminate number of 
-ports). Is it possible to only open these ports for the 
-/usr/bin/mosh-server binary?
+I was testing what i thought to be a simple setup with two bridges
+connected back to back with veth pairs and then iptables doing SNAT
+but for some reason the traffic goes AWOL and tcpdump output is quite
+strange.
 
-I've done some searching online and haven't been all that successful at 
-figuring this out so I figured I'd ask here. Thanks so much!
+I posted full details of the problem here
+http://superuser.com/questions/1035443/rp-filter-not-working-still-get-martian-errors-and-dropped-traffic/
+hoping to get some help but after someone else helped test my config
+and got the same result the suggestion was a iptables/netfilter bug.
 
-Cheers,
-Thomas
+I've read on a couple of sites that this 'problem' has also been seen
+with xen and openstack type setups and the solution is to disable
+iptables for bridges or use NOTRACK.
+
+I'm curious if anyone can explain if this is expected behaviour or
+maybe is actually a bug ?
+
+Thank you.
