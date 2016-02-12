@@ -1,46 +1,61 @@
-From: Ken-ichirou MATSUZAWA <chamaken@gmail.com>
-Subject: Re: Confusion regarding nfct_query and nfct_callback_register
-Date: Fri, 12 Feb 2016 16:30:32 +0900
-Message-ID: <20160212073032.GA320@gmail.com>
-References: <CAKJ7aR5QqKWJadptNGrUruWX9JQm3C97bhHqvHY3AR11HXXHyQ@mail.gmail.com>
+From: "Peter Reckmann" <preckmann@online.de>
+Subject: Re: Need tech explanation for NFLog TLV type 16 (0x10) - hardware link layer header
+Date: Fri, 12 Feb 2016 17:39:30 +0100
+Message-ID: <0053D5BFFB4F4B81B3F9DEE719BEADA3@computer1>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-type:content-disposition:in-reply-to:user-agent;
-        bh=CfYj8Mii3jq8hUuUiokbEAT/NIG7VaOzhZWf0WtAz6M=;
-        b=MT7zcUtfHZuxjYr0Qt37pTszc3SPqNTwSBkQpx6pg5+sSBPBbWkkpAGiVNjtaoHo3l
-         YoqNGwOXcz1PEcU2E7tWpdqwdgoRC30zBvQlPA2dfUI6yWdviqTM1HcYBav5tjzLwg1Z
-         MYnxWQCYbgLupNMAnqqaSA4+29cC7AYkHSQbp+PUoHInvkl25SBga4vgbWFUMo4WpNBW
-         +kT3U0d71vqLUuH3+6eycBWvvTJ8nwOSYC7BUMTqGKh5SOJ5vdWHO01n9j3VVNmn6r6C
-         e9b8ZXYsutsZy4foJnZCEPyCZsyzrAAf+hvx0OxWWEhxU/V44+jeRgHU1navo/cwzAb8
-         SFJg==
-Content-Disposition: inline
-In-Reply-To: <CAKJ7aR5QqKWJadptNGrUruWX9JQm3C97bhHqvHY3AR11HXXHyQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Gadre Nayan <gadrenayan@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
+To: netfilter@vger.kernel.org
 
- Hi,
- 
-On Fri, Feb 12, 2016 at 09:40:49AM +0530, Gadre Nayan wrote:
-> Who is providing both these structures (struct nf_conntrack *ct, void
+I figured his out, finally. In case anyone is interested these additional 12 
+bytes are the first 12 bytes of the IP header.  They also show up in a 
+normal iptables j LOG.  Not sure this is feature or a bug but 100% sure its 
+the first 12 bytes of the ip packet.
 
-struct nf_conntrack is allocated by nfct_new(). You would find this
-function called in __callback() in src/callback.c. Then it parses
-nlmsg and updates nf_conntrack, calls callback function you
-registered.
+In case anyone is interested, I have a (linux) python threaded program that 
+captures the NFLOG messages using the C library directly.  Follows the c 
+test program exactly and uses the callback.  The threaded class only 
+captures the packet and pushes it onto a thread safe queue.  Its fast!  The 
+main thread then takes it off the queue and parses the packet. It parses the 
+Netlink header, the NFLog header and then the TLV fields.  It's been running 
+for 5 days 24x7 with no hiccups.  Works great if you want more information 
+then the normal j LOG can deliver or you don't want to mess with logs.
 
-The __callback() is registerd as callback of which libnfnetlink will
-call when conntrack nlmsg has received, at nfct_callback_register()
-in src/conntrack/api.c.
+Peter
 
-# it seems that using nfct_callback_register, functions related to
-# libnfnetlink, is discouraged for me.
+----- Original Message ----- 
+From: "Peter Reckmann" <preckmann@online.de>
+To: <netfilter@vger.kernel.org>
+Sent: Wednesday, January 27, 2016 2:00 PM
+Subject: Need tech explanation for NFLog TLV type 16 (0x10) - hardware link 
+layer header
 
-I hope this is an answer you are looking for.
-Thanks,
+
+> TLV type 16 (0x10) is "hardware link layer header".  Normally, the data 
+> for this field has a length of 14 bytes.  6 for the destination MAC, 6 for 
+> the source MAC, and 2 for the Ethernet type (08 00) which is IP.  This 
+> seems to be the Ethernet Header for the packet.  But, about 20% of the 
+> packets I am seeing have a length of 30 bytes.  So in addition to sMac, 
+> dMac, type, I am seeing an extra 12 bytes.  What is this?  Here is an 
+> example:
+>
+> 45:00:00:3C:2B:6A:00:00:80:11:8D:B9
+>
+> I have seen this in a regular iptables log before.  Here is an example:
+>
+> owblk_udp_drop IN=eth0 OUT=eth1 
+> MAC=b8:27:eb:c2:bd:37:00:1b:77:d2:88:62:08:00:45:00:00:3f:06:5a:00:00:7f:11:ab:c5 
+> SRC=192.168.0.61 DST=192.168.8.1 LEN=63 TOS=0x00 PREC=0x00 TTL=127 ID=1626 
+> PROTO=UDP SPT=1242 DPT=53 LEN=43.
+>
+> So MAC= comes back with DesMac, SrcMac, and type again and then there are 
+> these additional bytes: 45:00:00:3f:06:5a:00:00:7f:11:ab:c5
+>
+> Again 12 bytes.  They always start with 45:00:00 What are these?  What do 
+> they represent?
+>
+> Thanks in advance! 
+
