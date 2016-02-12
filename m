@@ -1,57 +1,57 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: Failing to compile latest iptables from git
-Date: Thu, 11 Feb 2016 04:34:09 +0100
-Message-ID: <56BC0131.3030900@chello.at>
-References: <56BA5718.6040403@chello.at>
-Reply-To: mart.frauenlob@chello.at
+From: Gadre Nayan <gadrenayan@gmail.com>
+Subject: Confusion regarding nfct_query and nfct_callback_register
+Date: Fri, 12 Feb 2016 09:40:49 +0530
+Message-ID: <CAKJ7aR5QqKWJadptNGrUruWX9JQm3C97bhHqvHY3AR11HXXHyQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <56BA5718.6040403@chello.at>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=lPvuOTaRNXCv0KmUVqzkrsibbKi46HovAZrgKg9VSVc=;
+        b=TZOKuASBifxLKtBb1NcThl4/jXwmkuv5MGtM8ruqJb0qy7WHvbWoLc8mzmEktKJwmN
+         07ewackF2xz1RZhakakVJ/eupi0fRvDzjk2vGJrsaWm9PMcHvY56epH9ga1rCvYjGHiU
+         t0EWBnOGUIqh2IUZ9E1BAnkQF2+habs/Wsf9TDab/p9hM6XyglMC+sfpb5eg5n6b+NER
+         FNQtGaAisc86KjcxNEEBkf47hINuOIIFxTeudlZMH4N5vctTTCwY9tcttxVUPUYE8uyG
+         GvW2No8Ijqa1+dkeDV/OpFQOPMTrnFktGLBObvP8d83n7sBbu5GlAEPOj2TOl5BmzX9c
+         mi7w==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On 09.02.2016 22:16, netfilter-owner@vger.kernel.org wrote:
-> Hello list,
->
-> I'm trying to prepare a patch for iptables, but unfortunately I'm
-> failing to build it. I've done it many times before, but this time I
-> don't know what's wrong, so I hope for your assistance.
->
-> The ./configure step runs just fine. It stops at the make process with
-> this error:
->
->    CC       libxt_connlabel.oo
->    CCLD     libxt_connlabel.so
-> libxt_connlabel.oo: In function `connlabel_open':
-> /home/ellen/git/iptables.git/extensions/libxt_connlabel.c:40: undefined
-> reference to `nfct_labelmap_new'
-> libxt_connlabel.oo: In function `connlabel_mt_parse':
-> /home/ellen/git/iptables.git/extensions/libxt_connlabel.c:56: undefined
-> reference to `nfct_labelmap_get_bit'
-> libxt_connlabel.oo: In function `connlabel_get_name':
-> /home/ellen/git/iptables.git/extensions/libxt_connlabel.c:76: undefined
-> reference to `nfct_labelmap_get_name'
-> collect2: ld returned 1 exit status
->
->
-> I have installed latest libs (libmnl, libnetlink,
-> libnetfilter_conntrack) from git. The ld.so.conf.d files point to the
-> libaries but that seems to be ignored (ldconfig was run), so I put this
-> into my environment:
->
-> export LDFLAGS="-L/usr/local/lib/
-> -L/opt/k_3.2.35/libnetfilter_conntrack/lib/
-> -L/opt/k_3.2.35/libnfnetlink/lib -L/opt/k_3.2.35/libmnl/lib/"
->
-> export LD_LIBRARY_PATH="-L/opt/k_3.2.35/libnfnetlink/lib
-> -L/opt/k_3.2.35/libmnl/lib -L/opt/k_3.2.35/libnetfilter_conntrack/lib"
->
-> export LD_RUN_PATH="-L/opt/k_3.2.35/libnfnetlink/lib
-> -L/opt/k_3.2.35/libmnl/lib -L/opt/k_3.2.35/libnetfilter_conntrack/lib"
+Dear All,
 
-omg, those two should be colon separated, not -L prefixed.
-Now it works....
+I using Netfilter framework and associated tools (
+libnetfilter_conntrack, Conntrack-tools).
 
+I am particularly confused with the arguments of 2 functions.
+
+1. int nfct_callback_register ( struct nfct_handle * h, enum
+nf_conntrack_msg_type type,
+                                                int(*)(enum
+nf_conntrack_msg_type type, struct nf_conntrack *ct, void *data)cb,
+                                                void * data ).
+
+2. int nfct_query (struct nfct_handle *h, const enum
+nf_conntrack_query qt, const void *data).
+
+The typical usage I see is as below:
+
+nfct_callback_register(h, NFCT_T_ALL, update_cb, NULL); ret =
+nfct_query(h, NFCT_Q_DUMP, &family);
+
+static int update_cb(enum nf_conntrack_msg_type type, struct
+nf_conntrack *ct, void *data)
+{
+        int res;
+        struct nf_conntrack *obj = data;
+}
+
+So both data and ct parameters of update_cb are of type struct nf_conntrack.
+Who is providing both these structures (struct nf_conntrack *ct, void
+data) in update_cb.
+Which struct nf_conntrack* among the 2 is the actual data received
+from the kernel space.
+
+Thanks and Regards
