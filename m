@@ -1,61 +1,16 @@
-From: "Peter Reckmann" <preckmann@online.de>
-Subject: Re: Need tech explanation for NFLog TLV type 16 (0x10) - hardware link layer header
-Date: Fri, 12 Feb 2016 17:39:30 +0100
-Message-ID: <0053D5BFFB4F4B81B3F9DEE719BEADA3@computer1>
+From: Pavel Volkov <sailor@lists.xtsubasa.org>
+Subject: nftables: limit connections per IP address
+Date: Sat, 13 Feb 2016 20:48:42 +0300
+Message-ID: <380c5e23-17ef-47f8-8fd3-33032d2d66a6@lists.xtsubasa.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-I figured his out, finally. In case anyone is interested these additional 12 
-bytes are the first 12 bytes of the IP header.  They also show up in a 
-normal iptables j LOG.  Not sure this is feature or a bug but 100% sure its 
-the first 12 bytes of the ip packet.
-
-In case anyone is interested, I have a (linux) python threaded program that 
-captures the NFLOG messages using the C library directly.  Follows the c 
-test program exactly and uses the callback.  The threaded class only 
-captures the packet and pushes it onto a thread safe queue.  Its fast!  The 
-main thread then takes it off the queue and parses the packet. It parses the 
-Netlink header, the NFLog header and then the TLV fields.  It's been running 
-for 5 days 24x7 with no hiccups.  Works great if you want more information 
-then the normal j LOG can deliver or you don't want to mess with logs.
-
-Peter
-
------ Original Message ----- 
-From: "Peter Reckmann" <preckmann@online.de>
-To: <netfilter@vger.kernel.org>
-Sent: Wednesday, January 27, 2016 2:00 PM
-Subject: Need tech explanation for NFLog TLV type 16 (0x10) - hardware link 
-layer header
-
-
-> TLV type 16 (0x10) is "hardware link layer header".  Normally, the data 
-> for this field has a length of 14 bytes.  6 for the destination MAC, 6 for 
-> the source MAC, and 2 for the Ethernet type (08 00) which is IP.  This 
-> seems to be the Ethernet Header for the packet.  But, about 20% of the 
-> packets I am seeing have a length of 30 bytes.  So in addition to sMac, 
-> dMac, type, I am seeing an extra 12 bytes.  What is this?  Here is an 
-> example:
->
-> 45:00:00:3C:2B:6A:00:00:80:11:8D:B9
->
-> I have seen this in a regular iptables log before.  Here is an example:
->
-> owblk_udp_drop IN=eth0 OUT=eth1 
-> MAC=b8:27:eb:c2:bd:37:00:1b:77:d2:88:62:08:00:45:00:00:3f:06:5a:00:00:7f:11:ab:c5 
-> SRC=192.168.0.61 DST=192.168.8.1 LEN=63 TOS=0x00 PREC=0x00 TTL=127 ID=1626 
-> PROTO=UDP SPT=1242 DPT=53 LEN=43.
->
-> So MAC= comes back with DesMac, SrcMac, and type again and then there are 
-> these additional bytes: 45:00:00:3f:06:5a:00:00:7f:11:ab:c5
->
-> Again 12 bytes.  They always start with 45:00:00 What are these?  What do 
-> they represent?
->
-> Thanks in advance! 
-
+Hi,
+I'd like to set limits on active inbound TCP connection per IPv4 address 
+and IPv6 /64 subnet with nftables.
+Can this be done?
