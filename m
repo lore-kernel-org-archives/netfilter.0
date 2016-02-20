@@ -1,149 +1,58 @@
-From: Michael Ritzert <michael.ritzert@ziti.uni-heidelberg.de>
-Subject: matching source UDP port (in kernel module)
-Date: Thu, 18 Feb 2016 15:00:51 +0100
-Message-ID: <201602181400.u1IE0pNi027235@extmail.urz.uni-heidelberg.de>
+From: Adel Belhouane <bugs.a.b@free.fr>
+Subject: Re: debugging a libnetfilter_queue program and stdout
+Date: Sat, 20 Feb 2016 21:42:17 +0100
+Message-ID: <56C8CFA9.3030500@free.fr>
+References: <0O2P00CI3HCLQG40@vms173025.mailsrvcs.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
-	micalg=sha1; boundary="LZvS9be/3tNcYl/X"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+In-Reply-To: <0O2P00CI3HCLQG40@vms173025.mailsrvcs.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "Michael D. Berger" <m.d.berger@ieee.org>
+Cc: netfilter@vger.kernel.org
+
+Le 17/02/2016 20:12, Michael D. Berger a =E9crit :
+> I wrote a program using libnetfilter_queue. Call it "tst".=20
+> It normally runs as a service, but when I am debugging it, I
+> put some printf statements in it and run it in the foreground
+> by typing:
+>=20
+>    tst
+>=20
+> and the printf results appear on the screen as expected. However,
+> if I expect a long output, I would rather type:
+>=20
+>    tst > log
+>=20
+> hoping to see the results in the file "log".  However, "log" is
+> always empty, even though I have other indications that "tst" is
+> running.
+>=20
+> Why is this?  Is there anything I could do to get the printf
+> results to appear in "log"?
+>=20
+
+	Not related to netfilter but only C, anyway... when the output is a
+file, printf (to stdout) is block buffered instead of line buffered for
+a terminal. You'd need more output to fill the first block. Check the
+man pages of fflush(3) and setvbuf(3) to know how to have it as you exp=
+ect.
+	According to these man pages if you were using stderr (with fprintf() =
+)
+it would be already unbuffered and tst 2>log would "work".
 
 
---LZvS9be/3tNcYl/X
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Thanks,
+> Mike.
+>=20
+> --
+> Michael D. Berger
+> m.d.berger@ieee.org
+> http://www.rosemike.net/
+> =20
 
-Hi all,
+regards,
+Adel Belhouane.
 
-I'm writing a conntracker module that should trigger on outgoing UDP packets
-FROM a given port.
-To my surprise, setting
-
-   helper.tuple.src.u.udp.port =3D cpu_to_be16(port);
-
-triggers on the destination port, i.e. I see all packets that go to "port".
-Given that I used src.u.udp.port, I would have expected to achieve what I w=
-ant.
-
-Unfortunately, simply reversing things doesn't seem to help, i.e. setting
-
-   helper2.tuple.dst.u.udp.port =3D cpu_to_be16(port);
-
-doesn't work (never triggers). So obviously I have a misunderstanding about
-what I have to do.
-
-I'm using a 3.10.0 kernel. I noticed that in old tutorials, a mask in the
-helper structure is used to mark which fields are filled and should be
-compared. Do I have to provide this information through other means now?
-
-Michael
-
-PS: For completeness: I also have
-   .tuple.src.l3num        =3D NFPROTO_IPV4,
-   .tuple.dst.protonum     =3D IPPROTO_UDP,
---=20
-Dr. Michael Ritzert                   Tel: +49 621 181 2883
-Schaltungstechnik und Simulation      Fax: +49 621 181 2734
-Technische Informatik, Uni Heidelberg michael.ritzert@ziti.uni-heidelberg.de
-68131 Mannheim, Germany               http://sus.ziti.uni-heidelberg.de
-
---LZvS9be/3tNcYl/X
-Content-Type: application/x-pkcs7-signature
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIISwgYJKoZIhvcNAQcCoIISszCCEq8CAQExCzAJBgUrDgMCGgUAMAsGCSqGSIb3DQEHAaCC
-D80wggVEMIIELKADAgECAgQMVinLMA0GCSqGSIb3DQEBBQUAMFoxCzAJBgNVBAYTAkRFMRMw
-EQYDVQQKEwpERk4tVmVyZWluMRAwDgYDVQQLEwdERk4tUEtJMSQwIgYDVQQDExtERk4tVmVy
-ZWluIFBDQSBHbG9iYWwgLSBHMDEwHhcNMDgwNTIzMTEzNjI3WhcNMTkwNjMwMDAwMDAwWjCB
-rjELMAkGA1UEBhMCREUxGzAZBgNVBAgTEkJhZGVuLVd1ZXJ0dGVtYmVyZzETMBEGA1UEBxMK
-SGVpZGVsYmVyZzEgMB4GA1UEChMXVW5pdmVyc2l0YWV0IEhlaWRlbGJlcmcxDDAKBgNVBAsT
-A3VuaTETMBEGA1UEAxMKVW5pLUhEMi1DQTEoMCYGCSqGSIb3DQEJARYZcGtpQHVyei51bmkt
-aGVpZGVsYmVyZy5kZTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKTkYVVz7bbw
-7FlL3Zicwnz6Wnfh4YnTQ5nUzNH0PkGgvEIruEYCm2WUi8LKuqFdPHsq2XsfMHkMjDgJzDCu
-2WmFubhC+QxkiN/TaFPZVrQArb82QM+0f2Ncrf42dq1uZootC4cx7YuwVhamJhTnum1mY1kR
-7pkWQ6xV2LsPGbNcrtzbSNYABhCO52qXw3oTs7E9DHjQquwP5Av6qM7TwFB1+Wqu8H59PLhu
-53SveGhXBeaZL7rkSidfP/BEs3ZBRML96+ykY0PUlm2kgOP1JTuVURxJMTWYzDsxcZKhiuMm
-uhMlCulCY8SgJzvjCWbu2BxsFnWfY4co2QNA+eMxy/kCAwEAAaOCAbswggG3MBIGA1UdEwEB
-/wQIMAYBAf8CAQEwCwYDVR0PBAQDAgEGMB0GA1UdDgQWBBS7oDus+PBgjLTQ1fm4kOCskhVX
-GzAfBgNVHSMEGDAWgBRJt8bP6D0ff+pEexMp9/EKcD7eZDAkBgNVHREEHTAbgRlwa2lAdXJ6
-LnVuaS1oZWlkZWxiZXJnLmRlMIGIBgNVHR8EgYAwfjA9oDugOYY3aHR0cDovL2NkcDEucGNh
-LmRmbi5kZS9nbG9iYWwtcm9vdC1jYS9wdWIvY3JsL2NhY3JsLmNybDA9oDugOYY3aHR0cDov
-L2NkcDIucGNhLmRmbi5kZS9nbG9iYWwtcm9vdC1jYS9wdWIvY3JsL2NhY3JsLmNybDCBogYI
-KwYBBQUHAQEEgZUwgZIwRwYIKwYBBQUHMAKGO2h0dHA6Ly9jZHAxLnBjYS5kZm4uZGUvZ2xv
-YmFsLXJvb3QtY2EvcHViL2NhY2VydC9jYWNlcnQuY3J0MEcGCCsGAQUFBzAChjtodHRwOi8v
-Y2RwMi5wY2EuZGZuLmRlL2dsb2JhbC1yb290LWNhL3B1Yi9jYWNlcnQvY2FjZXJ0LmNydDAN
-BgkqhkiG9w0BAQUFAAOCAQEARgH8t8Hb/94rPTeUpGXPVGgHnqbYnIlhYc8grNN3Ok7Jcwou
-qpbVEMon6UI5WMZIy9AXgIYZjeWDvYKfcOKg4GeKrGKESCVhnZhGc7aBVoGjpZniOLBv+6Bt
-iZgLqf8NygAhBXPIEKbvVrH/NppP8lUP0qVccdKaUwdG8hAvMzYQYKUp2HVQiJYtug18YefX
-dZGxVfOIqLDyIc3rBgAv0L6n1ly9B5UO5UTLhN+7ymDscKcJcAIK73dL0fZJMzFfftFNuASJ
-zzWa5yGTTt4jK6+ZJNZdjXWQju4QrjQKKajojurzxJiPohZOfx10J/Xc1P1/ia/t/ASRicNP
-mIQtMTCCBNUwggO9oAMCAQICCFBOxvU9EbRkMA0GCSqGSIb3DQEBCwUAMHExCzAJBgNVBAYT
-AkRFMRwwGgYDVQQKExNEZXV0c2NoZSBUZWxla29tIEFHMR8wHQYDVQQLExZULVRlbGVTZWMg
-VHJ1c3QgQ2VudGVyMSMwIQYDVQQDExpEZXV0c2NoZSBUZWxla29tIFJvb3QgQ0EgMjAeFw0x
-NDA3MjIxMjA4MjZaFw0xOTA3MDkyMzU5MDBaMFoxCzAJBgNVBAYTAkRFMRMwEQYDVQQKEwpE
-Rk4tVmVyZWluMRAwDgYDVQQLEwdERk4tUEtJMSQwIgYDVQQDExtERk4tVmVyZWluIFBDQSBH
-bG9iYWwgLSBHMDEwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDpm8NnhfkNrvWN
-VMOWUDU9YuluTO2U1wBblSJ01CDrNI/W7MAxBAuZgeKmFNJSoCgjhIt0iQReW+DieMF4yxbL
-KDU5ey2QRdDtoAB6fL9KDhsAw4bpXCsxEXsM84IkQ4wcOItqaACa7txPeKvSxhObdq3u3ibo
-7wGvdA/BCaL2a869080UME/15eOkyGKbghoDJzANAmVgTe3RCSMqljVYJ9N2xnG2kB3E7f81
-hn1vM7PbD8URwoqDoZRdQWvY0hD1TP3KUazZve+Sg7va64sWVlZDz+HVEz2mHycwzUlU28kT
-NJpxdcVs6qcLmPkhnSevPqM5OUhqjK3JmfvDEvK9AgMBAAGjggGGMIIBgjAOBgNVHQ8BAf8E
-BAMCAQYwHQYDVR0OBBYEFEm3xs/oPR9/6kR7Eyn38QpwPt5kMB8GA1UdIwQYMBaAFDHDeRu6
-9VPXF+CJei0XbAqzK50zMBIGA1UdEwEB/wQIMAYBAf8CAQIwYgYDVR0gBFswWTARBg8rBgEE
-AYGtIYIsAQEEAgIwEQYPKwYBBAGBrSGCLAEBBAMAMBEGDysGAQQBga0hgiwBAQQDATAPBg0r
-BgEEAYGtIYIsAQEEMA0GCysGAQQBga0hgiweMD4GA1UdHwQ3MDUwM6AxoC+GLWh0dHA6Ly9w
-a2kwMzM2LnRlbGVzZWMuZGUvcmwvRFRfUk9PVF9DQV8yLmNybDB4BggrBgEFBQcBAQRsMGow
-LAYIKwYBBQUHMAGGIGh0dHA6Ly9vY3NwMDMzNi50ZWxlc2VjLmRlL29jc3ByMDoGCCsGAQUF
-BzAChi5odHRwOi8vcGtpMDMzNi50ZWxlc2VjLmRlL2NydC9EVF9ST09UX0NBXzIuY2VyMA0G
-CSqGSIb3DQEBCwUAA4IBAQBjICj9nCGGcr45Rlk5MiW8qQGbDczKfUGchm0KbiyzE1l1sTOS
-G2EnFv/DstU1gvuEKgFJvWa7Zi+ywgZdbj9u4wFaW8pDY1yVtuExpx/VB19N5mWCTjL5w3x6
-S81NXHTuIfJ1AuxSPtLJatOQI25JZzW+f01WpOzML8+3oZeocj7JvEDWWqQIPda8gsO3tzKO
-sSyOam23NQIZz/U5RFhjpyQAELC7/E6vbi84u6VXST/YblBvLJeW3B1GmmWJz67M8uXZn1Oz
-PqEvkqnYC8aEHwTG6x7on321e6UC8STFJGMRNMxakyAqeYg6JUKQqWU7fIbTEhUjKfws2sw5
-W1QXMIIFqDCCBJCgAwIBAgIHGFS/RiLaszANBgkqhkiG9w0BAQsFADCBrjELMAkGA1UEBhMC
-REUxGzAZBgNVBAgTEkJhZGVuLVd1ZXJ0dGVtYmVyZzETMBEGA1UEBxMKSGVpZGVsYmVyZzEg
-MB4GA1UEChMXVW5pdmVyc2l0YWV0IEhlaWRlbGJlcmcxDDAKBgNVBAsTA3VuaTETMBEGA1UE
-AxMKVW5pLUhEMi1DQTEoMCYGCSqGSIb3DQEJARYZcGtpQHVyei51bmktaGVpZGVsYmVyZy5k
-ZTAeFw0xNDEwMDgxMzUyNTRaFw0xNzEwMDcxMzUyNTRaMEkxCzAJBgNVBAYTAkRFMSAwHgYD
-VQQKExdVbml2ZXJzaXRhZXQgSGVpZGVsYmVyZzEYMBYGA1UEAxMPTWljaGFlbCBSaXR6ZXJ0
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAySpPtV3vDVzgeBGdYNZNl1opI+Ys
-0JzIICk97GaQgaUt94jjzAf2MEz+i+7Bw7JQTOmzw1uWpQknNXsSXQLOg5nIPj/r94jRAqJ6
-mzocM5sj09bjsJUKjsQUvvZQWYmXBV8QDMIUv/ltICHv7Q8cZJJ8aCkEntdeCMBIIDR4NW4M
-3xmQknt6LUk2ZIY/ZPq92aDq1EagEPJ0jqVur2UPxIfl/uP8GNueWV71g1/ejxb5+BEwYapX
-iABCH3rU+ED+/X2GnA+usr+gVfvybC4n5dMuQPyDFOta/w7Yg9E4GKuEOwF7JMQvo+wwwX8V
-gkI6UsBIS6R1o6rG2msH/3wa9wIDAQABo4ICLTCCAikwQAYDVR0gBDkwNzARBg8rBgEEAYGt
-IYIsAQEEAwIwEQYPKwYBBAGBrSGCLAIBBAMBMA8GDSsGAQQBga0hgiwBAQQwCQYDVR0TBAIw
-ADALBgNVHQ8EBAMCBeAwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMB0GA1UdDgQW
-BBQUwVOBXA4sHqpbKQ9s3YAcV4hDLzAfBgNVHSMEGDAWgBS7oDus+PBgjLTQ1fm4kOCskhVX
-GzAxBgNVHREEKjAogSZtaWNoYWVsLnJpdHplcnRAeml0aS51bmktaGVpZGVsYmVyZy5kZTCB
-jwYDVR0fBIGHMIGEMECgPqA8hjpodHRwOi8vY2RwMS5wY2EuZGZuLmRlL3VuaS1oZWlkZWxi
-ZXJnLWNhL3B1Yi9jcmwvY2FjcmwuY3JsMECgPqA8hjpodHRwOi8vY2RwMi5wY2EuZGZuLmRl
-L3VuaS1oZWlkZWxiZXJnLWNhL3B1Yi9jcmwvY2FjcmwuY3JsMIGoBggrBgEFBQcBAQSBmzCB
-mDBKBggrBgEFBQcwAoY+aHR0cDovL2NkcDEucGNhLmRmbi5kZS91bmktaGVpZGVsYmVyZy1j
-YS9wdWIvY2FjZXJ0L2NhY2VydC5jcnQwSgYIKwYBBQUHMAKGPmh0dHA6Ly9jZHAyLnBjYS5k
-Zm4uZGUvdW5pLWhlaWRlbGJlcmctY2EvcHViL2NhY2VydC9jYWNlcnQuY3J0MA0GCSqGSIb3
-DQEBCwUAA4IBAQAz87t7F3+84gbkNEil6iZXvaIhCaVOTzhkFjd+gr14wGH6mFgRnYQ2IWmK
-rKaUvTo1ee+wwzFrIzGuFVV/s96sglJSjVl9ZhMrv7ig8DLBHJeQQmcGKm3wHTICMQVkK88q
-X7anqaiSSuVP8ViJAAM/1yf/yLrnyYs4HIpEAERVrViOT/xEqJeS5mD2dst8D3H0fOKGK9gN
-u3+ZmUW9RV4UsOGyQUCN4cstqc9s3CffA1EHT80ueE/enXKYAvwsf6TblyJPDWDy+Tgck8P9
-ttFej77kidG1KjBF94/ub4htnRHq/yGQWVusEAoXC+1ncWzuFrLzDc2BVDgGRvS6e78lMYIC
-vTCCArkCAQEwgbowga4xCzAJBgNVBAYTAkRFMRswGQYDVQQIExJCYWRlbi1XdWVydHRlbWJl
-cmcxEzARBgNVBAcTCkhlaWRlbGJlcmcxIDAeBgNVBAoTF1VuaXZlcnNpdGFldCBIZWlkZWxi
-ZXJnMQwwCgYDVQQLEwN1bmkxEzARBgNVBAMTClVuaS1IRDItQ0ExKDAmBgkqhkiG9w0BCQEW
-GXBraUB1cnoudW5pLWhlaWRlbGJlcmcuZGUCBxhUv0Yi2rMwCQYFKw4DAhoFAKCB2DAYBgkq
-hkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0xNjAyMTgxNDAwNTFaMCMG
-CSqGSIb3DQEJBDEWBBRu7T2rD3HXhUBe+xe9MAs3417MAzB5BgkqhkiG9w0BCQ8xbDBqMAsG
-CWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMA4GCCqG
-SIb3DQMCAgIAgDANBggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDANBgkq
-hkiG9w0BAQEFAASCAQDFzNtdBcz9u/TtG5kz6YggFKULsqVoFhISaygEw5RsIIOPVTSEU0Es
-I64bP4E+FdXcs4YjOHxJCkMB+VwRGfteJOlVollu7N3iJzpF/XbEJ6AO1gIsbBQq1kWGHJO8
-8w69m1XznTKi8V68o4nHDGRSFYyvp/ugx9CsMcKZPw30osbxK+9q+cdWzeApMeCUlEHnPlby
-yRmJwJ41SLhW6Oufu9AYbI6UFaR8zBMcNOBktNDzghCUVfdt91apKtTo9q2PMtY1tQyLZh29
-1CQj7F4x1ungrKBMzGZtaI1eU9NxBSi780t6+HhcoI/3yVS/2kg13pPf3fNaz2W+eP5OXS8x
-
---LZvS9be/3tNcYl/X--
