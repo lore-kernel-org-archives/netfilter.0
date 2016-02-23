@@ -1,41 +1,34 @@
-From: Ricardo Felipe Klein <klein.rfk@gmail.com>
-Subject: IPSET spec/rpm for CentOS7
-Date: Tue, 23 Feb 2016 09:44:32 -0300
-Message-ID: <56CC5430.2060102@gmail.com>
+From: Travis Garrison <travis@netviscom.com>
+Subject: NAT Pool
+Date: Tue, 23 Feb 2016 13:09:37 -0500 (EST)
+Message-ID: <1348593641.674234.1456250977299.JavaMail.zimbra@netviscom.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-type:content-transfer-encoding;
-        bh=JQTXH0F7P14SQe1UDtBaGGBvK7kWdRqnEIrm7R+ere4=;
-        b=nH0YS4dXAXWymjk8XwyccuDgMJ0X4BG2y/44F5HUEwZ0CrKF7xWC4rF5ZSGjbYAsNj
-         iRo9AEshQVuuk9WZt/vAQgwKRQ/yRgmR73RkyGeEehvUTaAf/jI02TNyR9K7pZedezR4
-         RdLg9E1Wc/fRv9GA9I1eEQzOL/WMxAUALgyUtP2XXWQIvNG/eWIkVgUu8Z+s1t99/sax
-         FHTZAUke+v61s2YFS5n9MA0u3bsESGzRo/FYZHpGLJ5iTekAhM6WPGWBe7pnlGaYmncP
-         DgnrKmlwLnKo+B7a+QAbS6ipwZ+6yF+9rLzxYXQrNYgzSrz257/Ox2FwSSWOydpJP3d3
-         pr2g==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi there,
+I am working on setting up a new router for our network and im trying to figure out the NAT rules. We have several VLANs that we need to enable PAT on. The issue comes from that we have several public IP addresses that we would like to use in the PAT pool. How would we be able to go about this. We are not doing anything special like port forwarding or redirection. 
 
-I am trying to (re)build a CentOS 7 rpm package of ipset with the kernel 
-modules, my work is based on the default CentOS7 ipset.spec file.
-I am now able to build ipset 6.27 rpm package, but, not with the kernel 
-modules.
-Can someone help me?
+Internal IP addresses: 
+192.168.0.0/24 
+192.168.1.0/24 
+192.168.2.0/24 
+192.168.3.0/24 
+192.168.4.0/24 
+192.168.5.0/24 
+192.168.6.0/24 
+192.168.7.0/24 
+....we have around 150 networks, using the 192, 172 and 10 ranges 
 
-The spec file is here:
-https://github.com/kleinstuff/ipset_centos_spec/blob/master/ipset.spec
+Public IP ranges: 
+x.x.252.0/24 
+x.x.254.0/24 
+x.x.173.0/24 
 
-And the build logs:
-https://drive.google.com/file/d/0B_MZOa-MiS6iZC03Mm9iOU5aSU0/view?usp=sharing
-https://drive.google.com/file/d/0B_MZOa-MiS6iZnRGTEt0WVA3TGc/view?usp=sharing
+We are currently using a Cisco FWSM with a few PAT IP's setup but the issue is it will use 1:1 NAT until all Public IPs are used the PAT the rest to a single IP address. We would like to PAT to all addresses in a round-robin fashion. 
 
-Yes, I can build it with ./configure / make / make modules... But I dont 
-want to build it in every of my firewalls and I need the newer version 
-of the kernel modules because I use hash:mac on my firewall scripts.
+Thank you 
+Travis Garrison
