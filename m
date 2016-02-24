@@ -1,54 +1,33 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Ipset kernel module functions
-Date: Wed, 24 Feb 2016 10:13:01 +0100 (CET)
-Message-ID: <alpine.DEB.2.10.1602241004150.19037@blackhole.kfki.hu>
-References: <CAKJ7aR5_xNAeDdnU53K4sVvOVzDTzBjYZ1yxJ7jX8cL=jCRBJQ@mail.gmail.com> <alpine.DEB.2.10.1602230936460.11314@blackhole.kfki.hu> <CAKJ7aR77U2XBBQqBg4ey5-np=6i=2Kj+R0o37vovM90=0S0Fkg@mail.gmail.com>
+From: Gadre Nayan <gadrenayan@gmail.com>
+Subject: Contributing changes to conntrack
+Date: Wed, 24 Feb 2016 22:26:35 +0530
+Message-ID: <CAKJ7aR7bsKMbNZ4D0AaqoxyuhOv9dctzviR1tpGBLw4Df7GXqg@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	blackhole.kfki.hu; h=mime-version:user-agent:message-id
-	:in-reply-to:from:from:date:date:received:received:received; s=
-	20151130; t=1456305140; x=1458119541; bh=iuqT4do7ipXl7SQP7rpG2dJ
-	UCqlX1MDp1cmaIrWC/nc=; b=TTwpgUXD1RtsMY3o6+2VYJjTUp5LVViNDV6qzcT
-	8XjIofjix/F7Jet0VZrIt0j+imAu/UTzzT3NkLNULLB3VlDq+AclUb/3Dxmw2gvR
-	WylDJ/9xRg/bMPAsiZ+E0jOv53ohMF8JQupuqpTVQwxyYdUK/iEuBn19a2WPf9wy
-	A/mU=
-In-Reply-To: <CAKJ7aR77U2XBBQqBg4ey5-np=6i=2Kj+R0o37vovM90=0S0Fkg@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=R9D63ShSdbDRRmIVQ3sHuiu0PhE204fHMI9oKkNB8oc=;
+        b=DCgzd+CtxtTjypUy8Q2GJMmLTf6DM525Bbfu+yu7XTQX5qQjAf4pZ2tpu3jtVZLoeY
+         Lgyxq+MOgjY901tKwrUJy0twjdGizbIs3i7MhSzr3E/HKa0sBlkibzVmtrfmvjk0XKI8
+         henHidQUzylWzouaHiYN4gbS/VmhhH1Opf4SWQb0QX2Q1vAEFYQcM1tUShgy3Cz04bZ/
+         x+Ch0YBPpdHZb/Us6ze1MPeAKdauE5EIfURYNKRwspIiFJ3jPAg2eQZ32CW4S1KCSSDS
+         uT2SouFxyw3OIqHcVjLeWVzq7OxecuJ1gLXr6DUPxbFg6l77meNvx7eW3/dmpXY3V4vf
+         xzsg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Gadre Nayan <gadrenayan@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Wed, 24 Feb 2016, Gadre Nayan wrote:
+Dear All,
 
-> I had few questions regarding the Netlink messages sent from User space.
-> 
-> 1. The command gets transformed into Netlink Message in
-> ipset_cmd(session, enum cmd, lineno) ---> lib/session.c
-> 
-> I see the attributes getting created. So which BUS id (Subsystem ID)
-> in Netlink is this message send to ?
+If I wanted to contribute (not a major contribution, just few function
+which I recently added in conntrack for my project) code extensions to
+conntrack, what can be the procedure.
 
-ipset uses NETLINK_NETFILTER netlink socket bus id and inside nfnetlink it 
-has its own NFNL_SUBSYS_IPSET subsystem id.
- 
-> 2. If I have to trace this command Netlink message in Kernel source, 
-> where can I start loooking. (I would typically start at the subsystem 
-> registration) so where can this IPSET subsystem be registered and 
-> parsed.
+Who should I send to, in what format, how will it be reviewed and how
+can i follow up with the process.
 
-The registration happens in ip_set_core.c (nfnetlink_subsys_register()) 
-and the message parser functions are actually callbacks, hooked into 
-nfnetlink (ip_set_netlink_subsys_cb[]). If you want to follow the whole 
-processing path, then start at netlink, then nfnetlink and after that 
-comes ipset.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+Thanks and Regards
+Gadre Nayan A
