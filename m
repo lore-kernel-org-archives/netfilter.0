@@ -1,67 +1,62 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Ipset Match equal function
-Date: Thu, 25 Feb 2016 11:43:53 +0100 (CET)
-Message-ID: <alpine.DEB.2.10.1602251123320.26943@blackhole.kfki.hu>
-References: <CAKJ7aR4efzGpDWwV+CKabbd9VaVLvOaMx43FFYQSWW5G_YQLFQ@mail.gmail.com>
+From: christophe leroy <christophe.leroy@c-s.fr>
+Subject: Re: How are ct helper to be configured with NFT ?
+Date: Wed, 2 Mar 2016 19:14:05 +0100
+Message-ID: <56D72D6D.3060308@c-s.fr>
+References: <54761724.9060201@c-s.fr> <54815E4F.10500@c-s.fr>
+ <20141205103827.GB3746@salvia> <54EDBD07.5010801@c-s.fr>
+ <CAJCcFsgYxFZUiCfEa4tAZV6LSt23wg5xA25=m-w7aaiZ6OX2uQ@mail.gmail.com>
+ <561BF6AE.7080803@c-s.fr> <20151012182151.GA7856@salvia>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	blackhole.kfki.hu; h=mime-version:user-agent:references
-	:message-id:in-reply-to:from:from:date:date:received:received
-	:received; s=20151130; t=1456396993; x=1458211394; bh=6sN8PW+R+H
-	ZVTsoqhaHFm4dEbBXKj+VFactKybanOr8=; b=XI5oZnzU2dCu7oHr5dFJ+cYTRK
-	A8moCrZSMUIv0mZblnpmYS2t92VdSTRAxpdTocE/7dgGx4GPBIvBANaLViu51xe5
-	eH3xaSSkHphjChnP8VNs2ahQpxnxTIYFvd+lN/7kKBlPwaHuxOH5LTNsHUOZlpho
-	ZhRUEN1chSlozye6o=
-In-Reply-To: <CAKJ7aR4efzGpDWwV+CKabbd9VaVLvOaMx43FFYQSWW5G_YQLFQ@mail.gmail.com>
+In-Reply-To: <20151012182151.GA7856@salvia>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Gadre Nayan <gadrenayan@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Jason Sipula <alupis1@gmail.com>, netfilter@vger.kernel.org
 
-On Thu, 25 Feb 2016, Gadre Nayan wrote:
 
-> So in my quest for understanding IPSETs I have traced the registration 
-> to ADT functions from the Userland Netlink.
-> 
-> How are the Common functions registered, How are they called. They must 
-> be called from the IPTABLES code, since I add my rule with a -set 
-> --match-set option attaching my Ipset.
-> 
-> So where is IPSET common functions getting attached to IPTABLES ?
-> 
->  49 /* Common functions */
->  50
->  51 static inline bool
->  52 hash_ip4_data_equal(const struct hash_ip4_elem *e1,
->  53                     const struct hash_ip4_elem *e2,
->  54                     u32 *multi)
->  55 {
->  56         return e1->ip == e2->ip;
->  57 }
->  58
 
-From iptables, ipset is used via the set match and SET target. The 
-corresponding kernel module (net/netfilter/xt_set.c) calls the ipset 
-kernel API functions: ip_set_test(), ip_set_add(), ip_set_del().
-The set belongs to a given set type and thus the functions call the set 
-type variant specific kadt function (the types which support both IPv4 
-and IPv6 has got two variants of kadt and low level functions).
+Le 12/10/2015 20:21, Pablo Neira Ayuso a =E9crit :
+> On Mon, Oct 12, 2015 at 08:06:38PM +0200, christophe leroy wrote:
+>> Le 25/02/2015 16:58, Jason Sipula a =E9crit :
+>>> my understanding was 3.13 had the core of nftables merged
+>> Yes but according to Pablo, "userspace supports this but unfortunate=
+ly the
+>> kernel code is still missing".
+>> Hence my question.
+>>
+>> As of today, what is the status of nftables regarding the support of=
+ ct
+>> helper ?
+>> If it is not in yet, how can I help getting it in ?
+> I'd appreciate of you can send me patches that we can discuss on
+> netfilter-devel@vger.kernel.org.
+>
+> I think it only requires extra little code for the nft_meta expressio=
+n
+> from the kernel.
+>
+>
+Isn't it is in nft_ct instead of nft_meta ?
 
-The functions you refer above are called deep down from the type variant 
-kadt function. Visually tracing the calls is the easiest in the case of 
-the set:list type, just check list_set_kadt() in ip_set_list_set.c. In all 
-other cases the common parts are collected in ip_set_bitmap_gen.h and 
-ip_set_hash_gen.h. When those files are included, the real function names 
-are built up by the HTYPE, MTYPE macros, that's a little bit tricky to 
-follow: start with the bitmap types where just MTYPE is used.
+I'm having difficulties to understand how it works.
+nft_ct_set_init() is called when I add the rule in the table. So I=20
+believe I have to call nf_ct_helper_ext_add() from here, haven't I ?
+But how do I get the name of the requested helper from that function ? =
+I=20
+suppose once I get it I can do the same as  xt_ct_set_helper() does.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+Otherwise, nft_ct_set_eval() is called when the helper is needed, but I=
+=20
+suppose it is too late when that happens because the conntrack has=20
+already said that it has used automatic helper assignment.
+
+Christophe
+
+---
+L'absence de virus dans ce courrier =E9lectronique a =E9t=E9 v=E9rifi=E9=
+e par le logiciel antivirus Avast.
+https://www.avast.com/antivirus
+
