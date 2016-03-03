@@ -1,60 +1,54 @@
 From: Karol Babioch <karol@babioch.de>
-Subject: nftables: Specify multiple protocols in one rule
-Date: Thu, 3 Mar 2016 11:47:06 +0100
-Message-ID: <56D8162A.4030607@babioch.de>
+Subject: nftables: DNAT state in connection tracking?
+Date: Thu, 3 Mar 2016 12:04:11 +0100
+Message-ID: <56D81A2B.2010704@babioch.de>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="GwIEr838l0OPiv7EplLfLN5hBPvj817Q6"
+ boundary="m2VsD14dlE7WxTxR1pqxLrKQeFRfewNrd"
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 To: netfilter@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---GwIEr838l0OPiv7EplLfLN5hBPvj817Q6
-Content-Type: multipart/mixed; boundary="uehaNExP4qpcxRNOqtcnTh44fn2b36dn3"
+--m2VsD14dlE7WxTxR1pqxLrKQeFRfewNrd
+Content-Type: multipart/mixed; boundary="naBgT9IF8lj3284eA0Hr2kqNu5VO45Wbe"
 From: Karol Babioch <karol@babioch.de>
 To: netfilter@vger.kernel.org
-Message-ID: <56D8162A.4030607@babioch.de>
-Subject: nftables: Specify multiple protocols in one rule
+Message-ID: <56D81A2B.2010704@babioch.de>
+Subject: nftables: DNAT state in connection tracking?
 
---uehaNExP4qpcxRNOqtcnTh44fn2b36dn3
+--naBgT9IF8lj3284eA0Hr2kqNu5VO45Wbe
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
 Hi,
 
-I'm stuck with something, that seems very trivial, but won't work for
-me. In particular I want to specify a rule to allow DNS traffic (both
-UDP and TCP). In its most basic form my rules for that look something
-like this:
+in my old iptables setup I've used something like this in the FORWARD
+chain to allow traffic that has been redirected through DNAT beforehand
+(i.e. in the NAT PREROUTING table).
 
-    oif eth0 udp dport domain accept
-    oif eth0 tcp dport domain accept
+iptables -A FORWARD -m conntrack --ctstate DNAT -j ACCEPT
 
-According to these examples [1], it should also be possible to put udp
-and tcp into a set, e.g. something like that:
+This way I don't have to specify rules twice, which is not only a
+massive overhead, but also prone to errors. Apparently nftables does not
+know anything about the "DNAT" and "SNAT" states.
 
-    oif eth0 {udp,tcp} dport domain accept
-
-However, this does not work and results in an syntax error, complaining
-about the "dport" statement. What am I missing here?
-
-Is it possible to simply the above two rules into one? I have rules like
-this all over the place, so it would be a huge win for me.
+Is there a way to simulate something like this? Marking all packages
+that are redirected using DNAT in the nat table, and allowing all marked
+packages through in the forwarding chain, should work, shouldn't it? Is
+this in any way different to the iptables approach?
 
 Thanks!
 
 Best regards,
 Karol Babioch
 
-[1]: https://home.regit.org/2014/01/why-you-will-love-nftables/
 
+--naBgT9IF8lj3284eA0Hr2kqNu5VO45Wbe--
 
---uehaNExP4qpcxRNOqtcnTh44fn2b36dn3--
-
---GwIEr838l0OPiv7EplLfLN5hBPvj817Q6
+--m2VsD14dlE7WxTxR1pqxLrKQeFRfewNrd
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
@@ -62,19 +56,19 @@ Content-Disposition: attachment; filename="signature.asc"
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQIcBAEBCAAGBQJW2BYrAAoJEHSaZc1HnzIVDCIQAIh8SCXx2B0lUM+ZsFDtLYk/
-S42Sz2fiuVMBWgN4OFgacuqNjWRK6TbT/fl+fnFjZSC0Qi4QELhuvofg/AQJ3kYw
-B+kwMjsCBalavmTw041qnrd86QCeONk8TqkX9q6RList2CWCAIJ63LVT6PAeADQz
-8dtjutASp++pTZfoZrGsFOlt1AZ2i4s7jOW2TIC8vWqL7+OMoMI1eE5+MX/guT5c
-SUyANcE9w5CEvN6UeulY1ZPDSySfWkBjSwQaH0wVJdiW8mE2KWruzMss8UlN+oiI
-uyTIge2mhbY8SJ6bcvLmb4SSU+Ssvl0Gy4JOGPpThfLz58yiWmeAR5xKxyP8EZSg
-o2bl3yb4FewE3+9dIwTFWOT3qG9KqE1Dv+p+dYYwCfBhf56WIdI/udLjQ5YmTOIb
-W1ilKp4mXDXEsN/au7kmPU27LkkiJcGKn5JxT6npyiizCIhQGDU1hO086fb124J6
-QgTkIGmWTXx0O89y5tuAqhEkfk2qZS5J9cCQj5IWPeWGr8Mu8RtjX16hr0k4/H7L
-84QfcqTNv+thQYEMZ7C55hZVIj3Wnrvr7wM8rqKnF+AKJB0SMofXYpjkEdnVy3Q5
-smsAsHpUwXTwelKYZN/IvJjiuv/opyUt8maUex1x7CHMBrUdeu5gewXMaT8caZxP
-MlSBa4A4h1rHga+xfNnJ
-=sdz4
+iQIcBAEBCAAGBQJW2BosAAoJEHSaZc1HnzIVOSsQAINv2pNOS1SRJ6Yw5BK6d5ZM
+T3xzFnAiNw7cTGxYJ/2L6AIezixysS9PDk6ywnpS4ekPtGmRmYg+isB+AX0Xa/xQ
+nprBhFW8+vvfhlHdj26XtKaRFqmKgrLTB1LpU8Zf+eTHYof34UkmPdHQMlKlmPry
+m2dLQP8mN+pneEuNZLdLd+C+k46c4pFp3pDcDzoY2GEuYf4iBUXbtbP9sRQHwDtM
+E/iAivNTij6tR+R8wLz2bNsccYJFfxQ+DGN6bSwK+XmWCnpe2nPPZewOsxL+cGaW
+ZhZsNOTpDAL9kl2QBX9nLP73eHiSoOLrqAmr7tMG78mjdizQh4/9gRr0zotxwNp2
+VNnLy4iMAoNgb2Sv66KLHs3eM0COEgiB6fq3LwwEU992gU4K767oOSK19yfN5Tt0
+DxGWkXQjGNlBgDhrf08eQMHeY1dThlrCOhtUELYwsOSa9z38LVXFpUFct1Y6NtID
+IBPm188N2ELHafVAV5ijXlMmRbgvk5Z6hQ2s7pN2HuwSK6K6nr0ws4tfwRT6Hp+i
+DhlEuIg7+64ZOms+TC4y/OSopYWE5ULDSlFhhkPnueKm19+HtK3FryT5AGhaHZgi
+FnRPtOCHXDhMNvctKct7/yGaOGQcw4Fa6necXbCyqlc72nXWJANKZmOxJlqa2p0P
+vVKo6/t9HUQ7iXTDKoH1
+=rhcD
 -----END PGP SIGNATURE-----
 
---GwIEr838l0OPiv7EplLfLN5hBPvj817Q6--
+--m2VsD14dlE7WxTxR1pqxLrKQeFRfewNrd--
