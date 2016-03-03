@@ -1,62 +1,80 @@
-From: christophe leroy <christophe.leroy@c-s.fr>
-Subject: Re: How are ct helper to be configured with NFT ?
-Date: Wed, 2 Mar 2016 19:14:05 +0100
-Message-ID: <56D72D6D.3060308@c-s.fr>
-References: <54761724.9060201@c-s.fr> <54815E4F.10500@c-s.fr>
- <20141205103827.GB3746@salvia> <54EDBD07.5010801@c-s.fr>
- <CAJCcFsgYxFZUiCfEa4tAZV6LSt23wg5xA25=m-w7aaiZ6OX2uQ@mail.gmail.com>
- <561BF6AE.7080803@c-s.fr> <20151012182151.GA7856@salvia>
+From: Karol Babioch <karol@babioch.de>
+Subject: nftables: Specify multiple protocols in one rule
+Date: Thu, 3 Mar 2016 11:47:06 +0100
+Message-ID: <56D8162A.4030607@babioch.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="GwIEr838l0OPiv7EplLfLN5hBPvj817Q6"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20151012182151.GA7856@salvia>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Jason Sipula <alupis1@gmail.com>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--GwIEr838l0OPiv7EplLfLN5hBPvj817Q6
+Content-Type: multipart/mixed; boundary="uehaNExP4qpcxRNOqtcnTh44fn2b36dn3"
+From: Karol Babioch <karol@babioch.de>
+To: netfilter@vger.kernel.org
+Message-ID: <56D8162A.4030607@babioch.de>
+Subject: nftables: Specify multiple protocols in one rule
+
+--uehaNExP4qpcxRNOqtcnTh44fn2b36dn3
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+I'm stuck with something, that seems very trivial, but won't work for
+me. In particular I want to specify a rule to allow DNS traffic (both
+UDP and TCP). In its most basic form my rules for that look something
+like this:
+
+    oif eth0 udp dport domain accept
+    oif eth0 tcp dport domain accept
+
+According to these examples [1], it should also be possible to put udp
+and tcp into a set, e.g. something like that:
+
+    oif eth0 {udp,tcp} dport domain accept
+
+However, this does not work and results in an syntax error, complaining
+about the "dport" statement. What am I missing here?
+
+Is it possible to simply the above two rules into one? I have rules like
+this all over the place, so it would be a huge win for me.
+
+Thanks!
+
+Best regards,
+Karol Babioch
+
+[1]: https://home.regit.org/2014/01/why-you-will-love-nftables/
 
 
+--uehaNExP4qpcxRNOqtcnTh44fn2b36dn3--
 
-Le 12/10/2015 20:21, Pablo Neira Ayuso a =E9crit :
-> On Mon, Oct 12, 2015 at 08:06:38PM +0200, christophe leroy wrote:
->> Le 25/02/2015 16:58, Jason Sipula a =E9crit :
->>> my understanding was 3.13 had the core of nftables merged
->> Yes but according to Pablo, "userspace supports this but unfortunate=
-ly the
->> kernel code is still missing".
->> Hence my question.
->>
->> As of today, what is the status of nftables regarding the support of=
- ct
->> helper ?
->> If it is not in yet, how can I help getting it in ?
-> I'd appreciate of you can send me patches that we can discuss on
-> netfilter-devel@vger.kernel.org.
->
-> I think it only requires extra little code for the nft_meta expressio=
-n
-> from the kernel.
->
->
-Isn't it is in nft_ct instead of nft_meta ?
+--GwIEr838l0OPiv7EplLfLN5hBPvj817Q6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-I'm having difficulties to understand how it works.
-nft_ct_set_init() is called when I add the rule in the table. So I=20
-believe I have to call nf_ct_helper_ext_add() from here, haven't I ?
-But how do I get the name of the requested helper from that function ? =
-I=20
-suppose once I get it I can do the same as  xt_ct_set_helper() does.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-Otherwise, nft_ct_set_eval() is called when the helper is needed, but I=
-=20
-suppose it is too late when that happens because the conntrack has=20
-already said that it has used automatic helper assignment.
+iQIcBAEBCAAGBQJW2BYrAAoJEHSaZc1HnzIVDCIQAIh8SCXx2B0lUM+ZsFDtLYk/
+S42Sz2fiuVMBWgN4OFgacuqNjWRK6TbT/fl+fnFjZSC0Qi4QELhuvofg/AQJ3kYw
+B+kwMjsCBalavmTw041qnrd86QCeONk8TqkX9q6RList2CWCAIJ63LVT6PAeADQz
+8dtjutASp++pTZfoZrGsFOlt1AZ2i4s7jOW2TIC8vWqL7+OMoMI1eE5+MX/guT5c
+SUyANcE9w5CEvN6UeulY1ZPDSySfWkBjSwQaH0wVJdiW8mE2KWruzMss8UlN+oiI
+uyTIge2mhbY8SJ6bcvLmb4SSU+Ssvl0Gy4JOGPpThfLz58yiWmeAR5xKxyP8EZSg
+o2bl3yb4FewE3+9dIwTFWOT3qG9KqE1Dv+p+dYYwCfBhf56WIdI/udLjQ5YmTOIb
+W1ilKp4mXDXEsN/au7kmPU27LkkiJcGKn5JxT6npyiizCIhQGDU1hO086fb124J6
+QgTkIGmWTXx0O89y5tuAqhEkfk2qZS5J9cCQj5IWPeWGr8Mu8RtjX16hr0k4/H7L
+84QfcqTNv+thQYEMZ7C55hZVIj3Wnrvr7wM8rqKnF+AKJB0SMofXYpjkEdnVy3Q5
+smsAsHpUwXTwelKYZN/IvJjiuv/opyUt8maUex1x7CHMBrUdeu5gewXMaT8caZxP
+MlSBa4A4h1rHga+xfNnJ
+=sdz4
+-----END PGP SIGNATURE-----
 
-Christophe
-
----
-L'absence de virus dans ce courrier =E9lectronique a =E9t=E9 v=E9rifi=E9=
-e par le logiciel antivirus Avast.
-https://www.avast.com/antivirus
-
+--GwIEr838l0OPiv7EplLfLN5hBPvj817Q6--
