@@ -1,41 +1,68 @@
-From: Sebastian Damm <damm@sipgate.de>
-Subject: Re: "Operation not permitted" from nf_conntrack under high UDP load
-Date: Fri, 4 Mar 2016 08:34:54 +0100
-Message-ID: <CABkWSFwxnoM7kHAKApPi=xEJ4zhPmuGTwsj=BzdsRL=D+hZ+cw@mail.gmail.com>
-References: <CABkWSFxpuoGST0CuSrYKb15dOixPvJ0aCzQof2A7aXqY_06_PA@mail.gmail.com>
- <56D90832.7020009@hallowe.lt>
+From: Alex Barylo <abarylo@gmail.com>
+Subject: Rewriting target IP and port on Linux with iptables or firewall-cmd
+Date: Fri, 4 Mar 2016 11:45:42 -0800
+Message-ID: <CAG8kwsqB_MPq5JX_yyw6+s4hZd5p=tfg=cN_MQ=fejD-7rQKoA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sipgate-de.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=JiRsFigPY3VkH5XySPO7lPJ/qjh9TTR4YIcjW0KaUes=;
-        b=y2TQQ+J0m34pwxnfnkatpCKTDYihTQ+B4RJirzkMch9SaimXRSIkcXMEu6SX1v6spB
-         8NkWOqMD7ytOfDtZ6kXtpVLJyY1HVx3TBitFUy6b8JNQWc23H02nksmQKaOPv01G0z+9
-         qDsOYcv51WPWXtUL7zP4DyUyWpVlivqTtY8JPWNDFPdKQcEv+VEl18PBadONByVjD3Ox
-         qsUwVvnqBS0Kaj2b8cV9W3mn97JFFC71Uw9aSlQlSAmHUAf0ZZNcmxdCSey0sMh4wu/b
-         LfBhAl76R+PvliG15ajdptk6T5hcZaBzm8aWX5BZpL0not4rdt7mDZnnByKwnTijd4pZ
-         fCJQ==
-In-Reply-To: <56D90832.7020009@hallowe.lt>
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to;
+        bh=n+UQXVRROxTVQZizCM/rjPSAC7qNzo44lHMDxBxdhgw=;
+        b=RC5Udkl3CxPSfSNhp1MsQMbMPfcMNGoixiEkZfGkgy8eX4rG1Z7Kc+RAwyEH4rGjUl
+         GQC0QaK3z0zsszjDFTpJB1vVZOI77hsvmGMvx5h6IFGrT4CcSojs5Ozhj/ZwoxJPVkht
+         2X93JUKjIENKiFP9Ad/uwjnXxl56xOIy+XRL9Fb3IBMYNT5ByM7X6Ex0f8GedS3vEX6d
+         su8MhiMEXRnhuUguuCKnh7uhElg3Hc8+GTHnE4lv++qBbtmUfyr2LrDXsjWvyGfA0Cgy
+         VdCi2qfvQmZzPinyuhq2/q9PAaNCZ4PZf8gW/5ZSS0Ct2HbYufByfdp2G7ZReplpzWei
+         lx4g==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi Kevin,
+I have a server in a DC1 with a private IP, of say 10.10.10.10. This
+IP is NAT'd to a public IP, say 216.58.219.10 in this way:
 
-On Fri, Mar 4, 2016 at 4:59 AM, Kevin Holly <root@hallowe.lt> wrote:
-> you might want to check your system logs for messages similar to "ip_conntrack: table full, dropping packet." because for me this sounds like a problem with the size of the connection tracking table not being large enough for the number of connections you're dealing there.
+216.58.219.10:8090 -> 10.10.10.10:8089
 
-As I wrote, we have a max for the connection tracking table of 800k
-set, and it is filled with about 300k entries, so this is definitely
-not the problem. We also don't see those log messages you mentioned. I
-was aware of those, and I've seen them before on other systems, but on
-this machine, this is definitely not the problem.
+I have a server in DC2 which knows about (and wants to connect to)
+10.10.10.10:8089 but doesn't know about 216.58.219.10:8090 (long
+story).
 
-Any other hints, anyone?
+So I want to rewrite dest IP/port from 10.10.10.10:8089 to 216.58.219.10:8090.
 
-Best Regards,
-Sebastian
+This is what I tried:
+
+# sysctl net.ipv4.ip_forward=1
+# iptables -t nat -A PREROUTING -p tcp --dest 10.10.10.10 --dport 8089
+-j DNAT --to 216.58.219.10:8090
+
+...and it gives me this:
+
+# iptables -L -t nat
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination
+DNAT       tcp  --  anywhere             10.10.10.10       tcp
+dpt:8089 to:216.58.219.10:8090
+
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
+
+... and it doesn't work.
+
+I see neither traffic to 10.x or to 216.x with tcpdump on the host in
+DC2 where I'm trying to rewrite.
+
+A side question: is there a way for me to see how traffic moves
+between/through chains?
+
+Any pointers are greatly appreciated.
+
+Thanks,
+Alex.
