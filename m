@@ -1,48 +1,47 @@
-From: Sven-Haegar Koch <haegar@sdinet.de>
-Subject: Re: Rewriting target IP and port on Linux with iptables or
- firewall-cmd
-Date: Sat, 5 Mar 2016 01:32:03 +0100 (CET)
-Message-ID: <alpine.DEB.2.20.1603050130390.24095@aurora.sdinet.de>
-References: <CAG8kwsqB_MPq5JX_yyw6+s4hZd5p=tfg=cN_MQ=fejD-7rQKoA@mail.gmail.com>
+From: Tobias Andresen <tobiasarp@gmx.de>
+Subject: NTP forwarding
+Date: Sat, 5 Mar 2016 15:15:49 +0100
+Message-ID: <56DAEA15.409@gmx.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAG8kwsqB_MPq5JX_yyw6+s4hZd5p=tfg=cN_MQ=fejD-7rQKoA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Alex Barylo <abarylo@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Fri, 4 Mar 2016, Alex Barylo wrote:
+Hi,
 
-> I have a server in a DC1 with a private IP, of say 10.10.10.10. This
-> IP is NAT'd to a public IP, say 216.58.219.10 in this way:
-> 
-> 216.58.219.10:8090 -> 10.10.10.10:8089
-> 
-> I have a server in DC2 which knows about (and wants to connect to)
-> 10.10.10.10:8089 but doesn't know about 216.58.219.10:8090 (long
-> story).
-> 
-> So I want to rewrite dest IP/port from 10.10.10.10:8089 to 216.58.219.10:8090.
-> 
-> This is what I tried:
-> 
-> # sysctl net.ipv4.ip_forward=1
-> # iptables -t nat -A PREROUTING -p tcp --dest 10.10.10.10 --dport 8089
-> -j DNAT --to 216.58.219.10:8090
+i have following network structure:
 
-> Any pointers are greatly appreciated.
 
-Try adding the same rule also to the nat OUTPUT chain.
+     NTP-Server (62.214.6.29)
+               |
+               |
+               |
+      (eth0: 10.0.0.95)
+        Embedded board
+    (eth1: 192.168.31.95)
+               |
+               |
+               |
+        Ethernet-Switch
+         |        |    |
+         |        |    |
+        PC1       |   PC3 (192.168.31.98)
+(192.168.31.96)  |
+                  |
+                 PC2
+(192.168.31.97)
 
-iptables -t nat -A OUTPUT -p tcp --dest 10.10.10.10 --dport 8089 -j 
-DNAT --to 216.58.219.10:8090
 
-c'ya
-sven-haegar
+The 3 PCs shall be able to connect to the NTP server (62.214.6.29)
+to update their time but i cannot figure out how to configure the 
+iptables rules
+on the embedded board to achieve this.
 
--- 
-Three may keep a secret, if two of them are dead.
-- Ben F.
+I have tried to forward port 123 but it does not work.
+
+Regards
+Tobias
+
