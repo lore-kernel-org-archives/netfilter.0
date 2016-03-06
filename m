@@ -1,49 +1,71 @@
-From: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Subject: Re: Rewriting target IP and port on Linux with iptables or firewall-cmd
-Date: Sun, 06 Mar 2016 21:52:35 +0100
-Message-ID: <56DC9893.1000108@plouf.fr.eu.org>
-References: <CAG8kwsqB_MPq5JX_yyw6+s4hZd5p=tfg=cN_MQ=fejD-7rQKoA@mail.gmail.com> <alpine.DEB.2.20.1603050130390.24095@aurora.sdinet.de>
+From: Tobias Andresen <tobiasarp@gmx.de>
+Subject: Re: NTP forwarding
+Date: Sun, 6 Mar 2016 22:16:02 +0100
+Message-ID: <56DC9E12.6050705@gmx.de>
+References: <56DAEA15.409@gmx.de> <56DC9631.7010702@plouf.fr.eu.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.20.1603050130390.24095@aurora.sdinet.de>
+In-Reply-To: <56DC9631.7010702@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Sven-Haegar Koch <haegar@sdinet.de>
-Cc: Alex Barylo <abarylo@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Pascal Hambourg <pascal@plouf.fr.eu.org>, netfilter@vger.kernel.org
 
-> On Fri, 4 Mar 2016, Alex Barylo wrote:
->=20
->> I have a server in a DC1 with a private IP, of say 10.10.10.10. This
->> IP is NAT'd to a public IP, say 216.58.219.10 in this way:
+Am 06.03.2016 um 21:42 schrieb Pascal Hambourg:
+> Tobias Andresen a =E9crit :
+>> i have following network structure:
 >>
->> 216.58.219.10:8090 -> 10.10.10.10:8089
 >>
->> I have a server in DC2 which knows about (and wants to connect to)
->> 10.10.10.10:8089 but doesn't know about 216.58.219.10:8090 (long
->> story).
+>>       NTP-Server (62.214.6.29)
+>>                 |
+>>                 |
+>>                 |
+>>        (eth0: 10.0.0.95)
+>>          Embedded board
+>>      (eth1: 192.168.31.95)
+>>                 |
+>>                 |
+>>                 |
+>>          Ethernet-Switch
+>>           |        |    |
+>>           |        |    |
+>>          PC1       |   PC3 (192.168.31.98)
+>> (192.168.31.96)  |
+>>                    |
+>>                   PC2
+>> (192.168.31.97)
 >>
->> So I want to rewrite dest IP/port from 10.10.10.10:8089 to 216.58.21=
-9.10:8090.
 >>
->> This is what I tried:
->>
->> # sysctl net.ipv4.ip_forward=3D1
->> # iptables -t nat -A PREROUTING -p tcp --dest 10.10.10.10 --dport 80=
-89
->> -j DNAT --to 216.58.219.10:8090
+>> The 3 PCs shall be able to connect to the NTP server (62.214.6.29)
+>> to update their time but i cannot figure out how to configure the
+>> iptables rules
+>> on the embedded board to achieve this.
+> Why do you think you need iptables rules ? Isn't plain routing enough=
+ ?
+The PCs should only be able use NTP (Port 123). They should not be able=
+=20
+tohave full access (i.e. internet, ...)
+>
+>> I have tried to forward port 123 but it does not work.
+> This statement does not contain any useful information. It does not
+> describe what you did and what happened.
 
-And what happened ?
-On which machine did you run these commands ?
-If it is on a machine acting as a gateway between the server in DC2 and
-the server in DC1, then you are correct. If it is on the server in DC2,
-then the sysctl is useless and the iptables rule should be added to the
-OUTPUT chain (for locally-generated traffic) instead of PREROUTING (for
-incoming traffic).
+I tried following rule for one PC:
 
-Sven-Haegar Koch a =E9crit :
-> Try adding the same rule also to the nat OUTPUT chain.
+iptables -t nat -A PREROUTING -p udp --dport 123 -j DNAT=20
+--to-destination 192.168.31.96:123
+iptables -t nat -A POSTROUTING -p udp --dport 123 -j MASQUERADE
 
-Why "also" ? Rather "instead". Both rules on the same machine are usele=
-ss.
+I know this would work only for one client but it was for testing purpo=
+ses.
+
+
+
+
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
