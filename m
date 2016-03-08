@@ -1,97 +1,67 @@
-From: Alex Barylo <abarylo@gmail.com>
-Subject: Re: Rewriting target IP and port on Linux with iptables or firewall-cmd
-Date: Mon, 7 Mar 2016 16:25:45 -0800
-Message-ID: <CAG8kwsp8Yr8=ThohNe50r1z5UgdrUU+nQ_4sTHvCE85q7BxqGg@mail.gmail.com>
-References: <CAG8kwsqB_MPq5JX_yyw6+s4hZd5p=tfg=cN_MQ=fejD-7rQKoA@mail.gmail.com>
-	<alpine.DEB.2.20.1603050130390.24095@aurora.sdinet.de>
+From: Karol Babioch <karol@babioch.de>
+Subject: Re: NTP forwarding
+Date: Tue, 8 Mar 2016 12:54:58 +0100
+Message-ID: <56DEBD92.40109@babioch.de>
+References: <56DAEA15.409@gmx.de>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="8o1iQ4Xa8UaSajqR48EBLqedAaUUgoSkq"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc;
-        bh=yTDuAS34zYLfQNB/6pNDWJXRib4AK6eTO2JT7nMtx1E=;
-        b=cRzWbwXgHYxP3b02UsTVCtLn6M/D+1muQr9uKMbHODrgZ6UJy9JsvM4L54CCBlRvB5
-         0AEwcP74Er4c2qpvE4ubmSeWwl+duIHAohLnrnml7wZxHuG7eWRTpehUIFecxzX5Jk7a
-         CwadDP55HuKhecHRQfLTBYO4oPXC7sj9u0GAx4Lln7ZbQB2Y5hpYDxo/ir3a9W9PXXY9
-         5YsWGoWVxiXBDyVWNlEao+t5AnvP1HE3Dtch8WyIsdXElOvnYx6N+XStBfMySm58cFTK
-         S2jKxYx4aeU2guwKwZN9Kh/XtaqZliq/18ePw+6ikc65BQ3MYV/tCJYDKZNBtlXtsbo4
-         DOpw==
-In-Reply-To: <alpine.DEB.2.20.1603050130390.24095@aurora.sdinet.de>
+In-Reply-To: <56DAEA15.409@gmx.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Sven-Haegar Koch <haegar@sdinet.de>
-Cc: netfilter@vger.kernel.org
+To: Tobias Andresen <tobiasarp@gmx.de>, netfilter@vger.kernel.org
 
-On Fri, Mar 4, 2016 at 4:32 PM, Sven-Haegar Koch <haegar@sdinet.de> wrote:
-> On Fri, 4 Mar 2016, Alex Barylo wrote:
->
->> I have a server in a DC1 with a private IP, of say 10.10.10.10. This
->> IP is NAT'd to a public IP, say 216.58.219.10 in this way:
->>
->> 216.58.219.10:8090 -> 10.10.10.10:8089
->>
->> I have a server in DC2 which knows about (and wants to connect to)
->> 10.10.10.10:8089 but doesn't know about 216.58.219.10:8090 (long
->> story).
->>
->> So I want to rewrite dest IP/port from 10.10.10.10:8089 to 216.58.219.10:8090.
->>
->> This is what I tried:
->>
->> # sysctl net.ipv4.ip_forward=1
->> # iptables -t nat -A PREROUTING -p tcp --dest 10.10.10.10 --dport 8089
->> -j DNAT --to 216.58.219.10:8090
->
->> Any pointers are greatly appreciated.
->
-> Try adding the same rule also to the nat OUTPUT chain.
->
-> iptables -t nat -A OUTPUT -p tcp --dest 10.10.10.10 --dport 8089 -j
-> DNAT --to 216.58.219.10:8090
->
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--8o1iQ4Xa8UaSajqR48EBLqedAaUUgoSkq
+Content-Type: multipart/mixed; boundary="GlbbPLHqAeiC2nV8TLTmtmmtrLtePwqCW"
+From: Karol Babioch <karol@babioch.de>
+To: Tobias Andresen <tobiasarp@gmx.de>, netfilter@vger.kernel.org
+Message-ID: <56DEBD92.40109@babioch.de>
+Subject: Re: NTP forwarding
+References: <56DAEA15.409@gmx.de>
+In-Reply-To: <56DAEA15.409@gmx.de>
 
-Excellent (winning!) idea, Sven-Haegar - thank you! I did try adding
-to OUTPUT instead of PREROUTING before I posted here and it didn't
-work. But when I added to both - voila!
+--GlbbPLHqAeiC2nV8TLTmtmmtrLtePwqCW
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Here is the script, in case you need to add more than one port and you
-hate repeating (almost) the same line.
+Hi,
 
-#!/bin/bash
+Am 05.03.2016 um 15:15 schrieb Tobias Andresen:
+> I have tried to forward port 123 but it does not work.
 
-PATH=/bin:/usr/bin:/user/local/bin:/sbin:/usr/sbin:/usr/local/sbin
+Regardless of whether you can make the forwarding work or not, maybe it
+would be a better idea to run your own NTP server on the embedded board?
 
-REMOTE_PUB_IP=<your_public_ip_here>
-REMOTE_PUB_PORT=(8089 8090 8091)
-
-REMOTE_PRV_IP=(your_private_ips_here, separated by space)
-REMOTE_PRV_PORT=(8089 8089 8089)
+Best regards,
+Karol Babioch
 
 
-run_cmd () {
-    if [[ -z "$DEBUG" ]]; then
-        $*
-    else
-        echo $*
-    fi
-}
+--GlbbPLHqAeiC2nV8TLTmtmmtrLtePwqCW--
 
+--8o1iQ4Xa8UaSajqR48EBLqedAaUUgoSkq
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-# Enable IP forwarding
-sysctl net.ipv4.ip_forward=1
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-# Flush all NAT rules
-iptables -t nat -F
+iQIcBAEBCAAGBQJW3r2SAAoJEHSaZc1HnzIVc7wP/1MFHVAVcQYPyOCOHywznHup
+ww/9v31rtZq5uo3GnVPZmaZtQd2W8in3mnkkd3jbQKn7x/0zfFMUw4GyByHDvbFT
+FB/wvTigQHa5IGpUCaxHoGGJtk6itkMt0xVBKbnwwVncyJYsu++ouInV7Ezay1ic
+MIEpJiE0hj3kI4F9adn5JlJNBk5MKA2iUo5hi8tmga+FgYD3BSO4Ue812KOwCDoV
+BR/gPHwi7TUblRM00sQ4+baoCZgWbu5H6sB0pTpvi5xdCCuwHvltlvSfJPucGvy4
+S3asxqMGJnBgXzfkBqBg57Bj+NGUB35V4x3fqk+aFeXeIeFPJXeuHSupLe3nJ4hS
+lNjv9IbrZqchof+bYpsVlkM1boCIbZAr7SvQxt3yxF0zNiLV5hT6de4NMR3ovGYH
+dxu3h6mS2KL5X5ILtBRCBCUYJGTo0P6cFWC/aPjl1wtiISY+goeeZQHDaShah3w5
+jUOVxKoWavrB8TakiIIJ50lTcVbfctTBG/r5i8xDUDu4PjjirTfDH6D6gm9ZnEMu
+ChfuWpnigFmBd4pKnB5JGltACZTdq6u40SxlH0991257hf8qWf6cEb4yInY8Utry
+5SM5IFaY/dl2VPF1mE2i2cn44JXq4CY6IkXUnbGI0UzBZ3VMxld7Qet0pntANJPs
+TZcJY9jm8XHkIqoKFUbx
+=GVNe
+-----END PGP SIGNATURE-----
 
-(( max_index = ${#REMOTE_PUB_PORT[*]} - 1 ))
-for i in $( seq 0 $max_index ); do
-    run_cmd "iptables -t nat -A PREROUTING -p tcp --dest
-${REMOTE_PRV_IP[i]} --dport ${REMOTE_PRV_PORT[i]} -j DNAT --to
-${REMOTE_PUB_IP}:${REMOTE_PUB_PORT[i]}"
-    run_cmd "iptables -t nat -A OUTPUT     -p tcp --dest
-${REMOTE_PRV_IP[i]} --dport ${REMOTE_PRV_PORT[i]} -j DNAT --to
-${REMOTE_PUB_IP}:${REMOTE_PUB_PORT[i]}"
-done
+--8o1iQ4Xa8UaSajqR48EBLqedAaUUgoSkq--
