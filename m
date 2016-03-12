@@ -1,39 +1,51 @@
-From: Sebastian Damm <damm@sipgate.de>
-Subject: Re: "Operation not permitted" from nf_conntrack under high UDP load
-Date: Fri, 11 Mar 2016 16:47:12 +0100
-Message-ID: <CABkWSFzN3OAoSfMH4msfP+ZdYg_HqkkB4kZLtfAf_idr3EiRmg@mail.gmail.com>
-References: <CABkWSFxpuoGST0CuSrYKb15dOixPvJ0aCzQof2A7aXqY_06_PA@mail.gmail.com>
- <56D90832.7020009@hallowe.lt> <CABkWSFwxnoM7kHAKApPi=xEJ4zhPmuGTwsj=BzdsRL=D+hZ+cw@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset 6.28 released
+Date: Sat, 12 Mar 2016 22:15:10 +0100 (CET)
+Message-ID: <alpine.DEB.2.10.1603122210440.15491@blackhole.kfki.hu>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sipgate-de.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to;
-        bh=RBQFY5z2vdJ0+3Q3lQK9pNmNrChYlKWMCzNzifnC5gE=;
-        b=Uwj5fvIxAIBZz4wMvDxQPV+GpArYAQbS9HMIoB1sqBEE0qsUsAcpqmQXJHbdRiVkJZ
-         ucNQXjbRZ//MnpNmt7697HbR2D0KaX62xhoDeNs6MdQHLdjwRKFzoM96osicb3msngGU
-         OglAH02UiyWTWRw6t49k5MHt2vJ27j/TjWp0KkrfYlbPk0mKWABzc/IlyhVtHqw196UF
-         7cG4/cKnC+pWJ44iQSyuYoLD1Zgu48ptt9Fg9RJnAiPehEUsTn+6Ho0iCs7YiNR6cVd8
-         /ilnUUzdgNSGd8v7oEHi1R6ml2MsyAMQ63lUZvIFqmPHBAzTnpozD0YAM/d82VoismzL
-         JNtg==
-In-Reply-To: <CABkWSFwxnoM7kHAKApPi=xEJ4zhPmuGTwsj=BzdsRL=D+hZ+cw@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	blackhole.kfki.hu; h=mime-version:user-agent:message-id:from
+	:from:date:date:received:received:received; s=20151130; t=
+	1457817261; x=1459631662; bh=SCkRp+klPLUNDh7oXhwvglOaEAiEX2pCyot
+	n4nDgFjg=; b=OVjjm4tOjX+cn4sHiWsHii3MAM9tLvO2kU15fRqvEl6C+MYgw4v
+	D2YVwpnJ9WEJRrk4bgjpBGmtmPDp/O4I43GlWWxyDMRZZbqxo75zruFH8S1d4/M2
+	FnWxLBLjIvMUKLwvDpvpAxVoDzf1gUoPOemBcOAI3guLbdr8i7cYuCls=
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
 Hi,
 
-just to close this one, after a lot of debugging we found the cause
-for this issue. When this error occurs, the SIP server is sending out
-two packets to the same destination (IP:port) at roughly the same
-time. This causes a race condition in nf_conntrack when inserting a
-new tuple into the conntrack table, leading to one of the two packets
-getting rejected by the kernel.
+I'm happy to announce ipset 6.28 with a couple of important fixes, some 
+compatibility improvements and corrections.
 
-Looks like there is no other solution for this problem than building a
-stateless firewall and unloading the nf_conntrack module.
+Userspace changes:
+  - Support older pkg-config packages
+  - Add bash completion to the install routine (Mart Frauenlob)
+  - Fix misleading error message with comment extension
+  - Test added to check 0.0.0.0/0,iface to be matched in
+    hash:net,iface type
+  - Fix link with libtool >= 2.4.4 (Olivier Blin)
+Kernel part changes:
+  - Check IPSET_ATTR_ETHER netlink attribute length
+  - Fix __aligned_u64 compatibility support for older kernel releases
+  - Add compatibility to support EXPORT_SYMBOL_GPL in module.h
+  - Fix set:list type crash when flush/dump set in parallel
+  - Pass down netns pointer to call() and call_rcu() (backport)
+  - Allow a 0 netmask with hash_netiface type (Florian Westphal)
 
-Best Regards,
-Sebastian
+You can download the source code of ipset from:
+        http://ipset.netfilter.org
+        ftp://ftp.netfilter.org/pub/ipset/
+        git://git.netfilter.org/ipset.git
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
