@@ -1,51 +1,58 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset 6.28 released
-Date: Sat, 12 Mar 2016 22:15:10 +0100 (CET)
-Message-ID: <alpine.DEB.2.10.1603122210440.15491@blackhole.kfki.hu>
+From: AllKind <AllKind@fastest.cc>
+Subject: [announce] ipset_list 3.4 released
+Date: Sun, 13 Mar 2016 07:25:41 +0100
+Message-ID: <56E507E5.7040803@fastest.cc>
+Reply-To: AllKind@fastest.cc
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	blackhole.kfki.hu; h=mime-version:user-agent:message-id:from
-	:from:date:date:received:received:received; s=20151130; t=
-	1457817261; x=1459631662; bh=SCkRp+klPLUNDh7oXhwvglOaEAiEX2pCyot
-	n4nDgFjg=; b=OVjjm4tOjX+cn4sHiWsHii3MAM9tLvO2kU15fRqvEl6C+MYgw4v
-	D2YVwpnJ9WEJRrk4bgjpBGmtmPDp/O4I43GlWWxyDMRZZbqxo75zruFH8S1d4/M2
-	FnWxLBLjIvMUKLwvDpvpAxVoDzf1gUoPOemBcOAI3guLbdr8i7cYuCls=
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=fastest.cc; h=
+	content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:reply-to:subject:to:x-sasl-enc:x-sasl-enc; s=
+	mesmtp; bh=4bQ8KuBY4iXnlu16IeXfvpnq7do=; b=j7Xc12x3dSOGTygkKk7zY
+	eHuJ5agkS9owQZd9owpmySYhXfD+gwZziy+AHkwb2K8E6yuuoOmWYRrk35DxuUvn
+	z3NeklstFxtDG7ycolL2CJ9X/zSuaWHsAU+Q3GJdj6N/rj5lhC6exyuZ69VUf2oX
+	lzknE/5mH67leGv79AEk9M=
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
+	messagingengine.com; h=content-transfer-encoding:content-type
+	:date:from:message-id:mime-version:reply-to:subject:to
+	:x-sasl-enc:x-sasl-enc; s=smtpout; bh=4bQ8KuBY4iXnlu16IeXfvpnq7d
+	o=; b=i2XV/TbCionhu2uh6yex/Pw9NjX558mlL+QlnKXg6DDioccaVBGtWknjgx
+	lV4TYXXSkJ+6VpVIruFfwZwmRAzZLrniwMRSP0SJSTmVD0Sl6QZHs7dQ4R2En6WT
+	MgGPl/UnjduKrfkPw59geKJJygQ+4h8Et7JBNGeUWhhCGQtkE=
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi,
+Good day everybody!
 
-I'm happy to announce ipset 6.28 with a couple of important fixes, some 
-compatibility improvements and corrections.
+I've just pushed a new release of ipset_list.
+New in version 3.4 is:
 
-Userspace changes:
-  - Support older pkg-config packages
-  - Add bash completion to the install routine (Mart Frauenlob)
-  - Fix misleading error message with comment extension
-  - Test added to check 0.0.0.0/0,iface to be matched in
-    hash:net,iface type
-  - Fix link with libtool >= 2.4.4 (Olivier Blin)
-Kernel part changes:
-  - Check IPSET_ATTR_ETHER netlink attribute length
-  - Fix __aligned_u64 compatibility support for older kernel releases
-  - Add compatibility to support EXPORT_SYMBOL_GPL in module.h
-  - Fix set:list type crash when flush/dump set in parallel
-  - Pass down netns pointer to call() and call_rcu() (backport)
-  - Allow a 0 netmask with hash_netiface type (Florian Westphal)
+A new option (-T) was introduced, allowing to test for existence of 
+elements. This option can be used multiple times over multiple ipset 
+sets in one query.
+An interactive wizard based mode has been added. It allows to select the 
+options for the query interactively. Additionally the command line for 
+the search can be composed (-G). In order to run the wizards, the dialog 
+and whiptail programs are supported.
+A man page has been included.
+Script options can now be set from a configuration file.
+One bug was fixed: usage output did not display some valid combinations.
+Also some minor tweaks have been done.
 
-You can download the source code of ipset from:
-        http://ipset.netfilter.org
-        ftp://ftp.netfilter.org/pub/ipset/
-        git://git.netfilter.org/ipset.git
+Homepage:
+https://sourceforge.net/projects/ipset-list/
+https://github.com/AllKind/ipset_list
+
+Changelog:
+https://sourceforge.net/p/ipset-list/code/commit_browser
+https://github.com/AllKind/ipset_list/commits/master
+
+Download:
+https://sourceforge.net/projects/ipset-list/files/latest/download
+https://github.com/AllKind/ipset_list/archive/v3.4.tar.gz
 
 Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+AllKind
