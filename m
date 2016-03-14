@@ -1,58 +1,45 @@
-From: AllKind <AllKind@fastest.cc>
-Subject: [announce] ipset_list 3.4 released
-Date: Sun, 13 Mar 2016 07:25:41 +0100
-Message-ID: <56E507E5.7040803@fastest.cc>
-Reply-To: AllKind@fastest.cc
+From: ravin goyal <ravirocks1021@gmail.com>
+Subject: libnetfilter_conntrack's NFCT_OF_TIMESTAMP is not working
+Date: Mon, 14 Mar 2016 10:39:20 +0530
+Message-ID: <CANU0Mn2zLUqjhcOWKYvSFetH94sp2zf8O7rkFaoYa7sfTn8epg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=fastest.cc; h=
-	content-transfer-encoding:content-type:date:from:message-id
-	:mime-version:reply-to:subject:to:x-sasl-enc:x-sasl-enc; s=
-	mesmtp; bh=4bQ8KuBY4iXnlu16IeXfvpnq7do=; b=j7Xc12x3dSOGTygkKk7zY
-	eHuJ5agkS9owQZd9owpmySYhXfD+gwZziy+AHkwb2K8E6yuuoOmWYRrk35DxuUvn
-	z3NeklstFxtDG7ycolL2CJ9X/zSuaWHsAU+Q3GJdj6N/rj5lhC6exyuZ69VUf2oX
-	lzknE/5mH67leGv79AEk9M=
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
-	messagingengine.com; h=content-transfer-encoding:content-type
-	:date:from:message-id:mime-version:reply-to:subject:to
-	:x-sasl-enc:x-sasl-enc; s=smtpout; bh=4bQ8KuBY4iXnlu16IeXfvpnq7d
-	o=; b=i2XV/TbCionhu2uh6yex/Pw9NjX558mlL+QlnKXg6DDioccaVBGtWknjgx
-	lV4TYXXSkJ+6VpVIruFfwZwmRAzZLrniwMRSP0SJSTmVD0Sl6QZHs7dQ4R2En6WT
-	MgGPl/UnjduKrfkPw59geKJJygQ+4h8Et7JBNGeUWhhCGQtkE=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=/+GIzEMyjgV7q9Ckn2LHllpcIEHWIDfUtDpGlvnmPJM=;
+        b=lcKkuv01JYs2DTYw7xGVf2pIeqGk8KyyRSB7i90fv73IoALMn60iaTbIliFdgpE8qY
+         JQ5IxjNWKGVtqPV5j+v5ycMIKFVhUAfdbci+w/njIKm+rG/ewEpEGpNcZIMhi4creigy
+         UJYuNg6nl5iFPJ8x/WNdOXIr3c4/SehXqPfKDiTiRaGS7u0zn3Qeb1l8ThvaCPYPnMAU
+         hiD68nocr9O888ECmXEhVSvqtXVreHz/4DJ0LhtnnZNZhiXSODgTNE40HJ26QsJqDvtD
+         WjDY9dnmfMtXaIb2ofah1hVjioGw/ZzDbczQjybZ9I/WCpfq4drd0ci/pxS4N4LDTnfe
+         8HyA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Cc: pablo@netfilter.org
 
-Good day everybody!
+Hii
 
-I've just pushed a new release of ipset_list.
-New in version 3.4 is:
+regarding libnetfilter_conntrack I have been working on getting start
+and stop timestamp of the connection, I lookup source code and found
+if i enable NFCT_OF_TIMESTAMP (echo "1" >
+/proc/sys/net/netfilter/nf_conntrack_timestamp)  , i will get the same
+but when i ran
+conntrack -E -eDESTROY -otimestamp,extended , it didn't show the start
+and stop time and when i print the value it said flags=1,
+NFCT_OF_TIMESTAMP is 8
+somehow the following line....
+if (flags & NFCT_OF_TIMESTAMP) in code
+/src/conntrack/snprint_default.c doesn't match hence function
+__snprintf_timestamp_start and __snprintf_timestamp_stop doesn't get
+called.
 
-A new option (-T) was introduced, allowing to test for existence of 
-elements. This option can be used multiple times over multiple ipset 
-sets in one query.
-An interactive wizard based mode has been added. It allows to select the 
-options for the query interactively. Additionally the command line for 
-the search can be composed (-G). In order to run the wizards, the dialog 
-and whiptail programs are supported.
-A man page has been included.
-Script options can now be set from a configuration file.
-One bug was fixed: usage output did not display some valid combinations.
-Also some minor tweaks have been done.
+I don't know how else can i set or use NFCT_OF_TIMESTAMP
 
-Homepage:
-https://sourceforge.net/projects/ipset-list/
-https://github.com/AllKind/ipset_list
+any help regarding this issue would be appreciated
 
-Changelog:
-https://sourceforge.net/p/ipset-list/code/commit_browser
-https://github.com/AllKind/ipset_list/commits/master
-
-Download:
-https://sourceforge.net/projects/ipset-list/files/latest/download
-https://github.com/AllKind/ipset_list/archive/v3.4.tar.gz
-
-Best regards,
-AllKind
+Regards
+Ravin Goyal
