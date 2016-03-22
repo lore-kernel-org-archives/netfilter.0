@@ -1,66 +1,55 @@
-From: Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>
-Subject: Re: nftables: Anonymous vs. Named Set (ipv4_addr with netmask)
-Date: Mon, 21 Mar 2016 09:01:13 +0100
-Message-ID: <CAOkSjBjXUD94N+rZdaMnF5ayS-g61NRMD8tSbwWO5yW1nW+=-w@mail.gmail.com>
-References: <CAAcp+HDRi5yGqJ=vkcKm0OzQq+f1T0vepWb8rcdiVrTGBXJ1ZA@mail.gmail.com>
+From: Christian Robottom Reis <kiko@acm.org>
+Subject: Packets (sometimes) not marked as RELATED/ESTABLISHED
+Date: Tue, 22 Mar 2016 15:55:31 -0300
+Message-ID: <20160322185530.GA3152@anthem.async.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=66O7jEidWM6knhNmx4NXbmR6BmfCgKk6ZQHhNFUwpZ0=;
-        b=oxa/HhVSuJXsmUYO0a8xaJ0ctlhXss5wZ+nPhaIIzUfNNGRcLgCs9Bv+rXQx3ojSME
-         x0sN0sutFqKg/HVnr3LEpKIc4YnOuBVOPEfs98wamyOapMceSBsg3fv6JRkef5izUCFK
-         Zh1ZDuCSHdg8XCra2tYgL/A/ReW3OFq/rYACxnm6BOTfSVFKNyspj00bgl3/euiUUw03
-         BCNtyN1LbVieuxBpJtIvaVHtcGH5xG/xPbj4dtWxW4jzA4JAP8H0aOwIaV4TvCxg5Y3a
-         feCkQbjc4r7ynCacIr2oMyZbSO/k4+nPP5k0bOqn8ot7+qEN2qUTlSx3tWCMYm3K0NVu
-         k0EQ==
-In-Reply-To: <CAAcp+HDRi5yGqJ=vkcKm0OzQq+f1T0vepWb8rcdiVrTGBXJ1ZA@mail.gmail.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"
-To: "Garrett ." <orthostatic@gmail.com>
-Cc: Netfilter Users Mailing list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On 21 March 2016 at 04:44, Garrett . <orthostatic@gmail.com> wrote:
-> Example One - Anonymous Set with Subnet
-> -------------------
-> nft -i
-> nft> add rule filter input meta iifname "eth1" ip saddr {
-> 10.0.0.0/8,192.168.0.0/16 } counter log drop
-> nft> list sets
->
-> set set0 {
->     type ipv4_addr
->     flags constant,interval
->     elements =3D { 10.0.0.0/8, 192.168.0.0/16}
-> }
->
+Hello there,
 
-This case is a fixed bug, see
-http://git.netfilter.org/nftables/commit/?id=3Ddf5e71ba390dc574c50f0977=
-f741d56cbc137034
+    In periodically looking at my firewall logs I've always noticed that
+from time to time a certain pattern will show up in my logs which
+indicates that a legitimate stream which should have been marked
+RELATED/ESTABLISHED isn't. I have the following rules set up to allow
+related incoming traffic:
 
->
-> Example Two - Named Set, type ipv4_addr, Subnet Add Fails
-> -------------------
-> nft -i
-> nft> add set filter rfc1918 { type ipv4_addr;}
-> nft> add element filter rfc1918 { 172.16.0.0/12 }
-> *** nft: netlink.c:326: netlink_gen_data: Assertion '0' failed. ***
-> nft -i
-> nft> list sets
->
-> set rfc1918 {
->     type ipv4_addr
-> }
+    -A INPUT -i eth3 -p tcp -m tcp --dport 10000:65535
+        -m state --state RELATED,ESTABLISHED -j ACCEPT
+    -A INPUT -i eth3 -p tcp -m tcp --sport 10000:65535
+        -m state --state RELATED,ESTABLISHED -j ACCEPT
 
-Also a bug, however the code has changed since your version.
+AIUI this is what allows the response from a website request to be
+targeted ACCEPT in the INPUT chain. However, my logs show that sometimes
+this doesn't work. Here's a recent example:
 
-Please, try to test latest git version.
+    [89003.161127] IN=eth3 OUT= MAC=XXX SRC=104.73.89.127 DST=XXX
+    LEN=1472 TOS=0x00 PREC=0x00 TTL=53 ID=10958 DF PROTO=TCP SPT=80
+    DPT=44709 WINDOW=3775 RES=0x00 ACK URGP=0 
 
-best regards.
---=20
-Arturo Borrero Gonz=C3=A1lez
+    [89003.497964] IN=eth3 OUT= MAC=XXX SRC=104.73.89.127 DST=XXX
+    LEN=1472 TOS=0x00 PREC=0x00 TTL=53 ID=17058 DF PROTO=TCP SPT=80
+    DPT=44710 WINDOW=3385 RES=0x00 ACK URGP=0 
+
+    [89049.561143] IN=eth3 OUT= MAC=XXX SRC=104.73.89.127 DST=XXX
+    LEN=1472 TOS=0x00 PREC=0x00 TTL=53 ID=26347 DF PROTO=TCP SPT=80
+    DPT=44932 WINDOW=1062 RES=0x00 ACK URGP=0 
+
+That specific host [1] is likely a web CDN node, and the fact that it's
+an ACK coming from SPT 80 indicates that this is just a plain response
+to a web request from an internal client. The question is: why didn't it
+get connection-tracked?
+
+Has anyone else noticed this in their logs? It's easy to find this by
+just grepping for ACKs -- it makes up more than 50% of my logged
+entries, it's almost completely traffic coming from port 80 and 443.
+
+[1] 104.73.89.127 is a104-73-89-127.deploy.static.akamaitechnologies.com.
+-- 
+Christian Robottom Reis | [+55 16] 3376 0125   | http://async.com.br/~kiko
+                        | [+55 16] 991 126 430 | http://launchpad.net/~kiko
