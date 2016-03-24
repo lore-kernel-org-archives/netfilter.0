@@ -1,78 +1,108 @@
-From: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
-Subject: Re: Packets (sometimes) not marked as RELATED/ESTABLISHED
-Date: Wed, 23 Mar 2016 17:00:57 -0400
-Message-ID: <20160323170057.2f69489c@playground>
-References: <20160322185530.GA3152@anthem.async.com.br>
-	<ncus81$i6b$1@ger.gmane.org>
+From: k c <kisscoolandthegangbang@hotmail.fr>
+Subject: tcp reset flags when forwarding incoming traffic on bridge
+Date: Thu, 24 Mar 2016 11:54:00 +0100
+Message-ID: <DUB125-W172906DF1D14330A10CCBDA0820@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Filter: OpenDKIM Filter v2.10.3 MAIL1.WPI.EDU u2NL149m004767
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wpi.edu; s=_dkim;
-	t=1458766864; i=@wpi.edu;
-	bh=u/pdlVfRVacD5wp6TJXvNFSvYnpc0czgx+qjFVYoqz4=;
-	h=Date:From:To:Subject:In-Reply-To:References;
-	b=TyrwcuISvUPEg1XY6TymbDsf2J95kO+rfVrpsjkoj2ygziCojUpMPAdU9P7KXvazV
-	 R1wY+ZDvMKSNrCB47R/tuPeCSSYNWv0vWoTDMsUfRZwaTVPpAX1d6ET232mSNLZAiT
-	 rDtptXEntbRlkxGg2m2duHPYRitw5V7u8WIEuAfI=
-In-Reply-To: <ncus81$i6b$1@ger.gmane.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Wed, 23 Mar 2016 14:53:37 -0500
-Robert Nichols <rnicholsNOSPAM@comcast.net> wrote:
+Hello,
 
-> On 03/22/2016 01:55 PM, Christian Robottom Reis wrote:
-> > Hello there,
-> >
-> >      In periodically looking at my firewall logs I've always noticed that
-> > from time to time a certain pattern will show up in my logs which
-> > indicates that a legitimate stream which should have been marked
-> > RELATED/ESTABLISHED isn't. I have the following rules set up to allow
-> > related incoming traffic:
-> >
-> >      -A INPUT -i eth3 -p tcp -m tcp --dport 10000:65535
-> >          -m state --state RELATED,ESTABLISHED -j ACCEPT
-> >      -A INPUT -i eth3 -p tcp -m tcp --sport 10000:65535
-> >          -m state --state RELATED,ESTABLISHED -j ACCEPT
-> >
-> > AIUI this is what allows the response from a website request to be
-> > targeted ACCEPT in the INPUT chain. However, my logs show that sometimes
-> > this doesn't work. Here's a recent example:
-> >
-> >      [89003.161127] IN=eth3 OUT= MAC=XXX SRC=104.73.89.127 DST=XXX
-> >      LEN=1472 TOS=0x00 PREC=0x00 TTL=53 ID=10958 DF PROTO=TCP SPT=80
-> >      DPT=44709 WINDOW=3775 RES=0x00 ACK URGP=0
-> >
-> >      [89003.497964] IN=eth3 OUT= MAC=XXX SRC=104.73.89.127 DST=XXX
-> >      LEN=1472 TOS=0x00 PREC=0x00 TTL=53 ID=17058 DF PROTO=TCP SPT=80
-> >      DPT=44710 WINDOW=3385 RES=0x00 ACK URGP=0
-> >
-> >      [89049.561143] IN=eth3 OUT= MAC=XXX SRC=104.73.89.127 DST=XXX
-> >      LEN=1472 TOS=0x00 PREC=0x00 TTL=53 ID=26347 DF PROTO=TCP SPT=80
-> >      DPT=44932 WINDOW=1062 RES=0x00 ACK URGP=0
-> 
-> I see those too. When I look back at the packet captures for those times
-> I never see any other traffic to or from that IP address, so of course
-> they don't match the RELATED/ESTABLISHED rule.  Just part of the noise.
-> 
-> I routinely capture packets passing through my router, filtering out
-> ARP noise, Netflix video streaming, Skype calls, and the like.  When
-> something unusual happens, it's very useful to see what was going on
-> at that time. I keep the most recent ~1 Gigabyte of that in a rotating
-> buffer.  In a case like this, I can see what was _not_ going on.
+I have a setup where I want to forward incoming traffic on a bridge to =
+another host. I can send the traffic to the other host but the problem =
+is that the when packets are forwarded, that generates packets with res=
+et flags and=A0 so client's connection fails.
 
-Such packets are often called 'spurious'. They are actually 'INVALID': packets for which netfilter has no clue why they arrived and no clue where to send them; they're obviously for ESTABLISHED conns, but netfilter has no record of them.. There are a lot of INVALID packets that float around. Most (or many) are for conns that have already been reset or closed; some may be DoS or DDoS attacks.
+To let the traffic go to the the desired host, I have the following rul=
+es :
 
-Handle them as early as possible: in mangle:PREROUTING. LOG them if you want. DROP them because they aren't going anywhere anyway. There's no sense in wasting CPU cycles processing INVALID packets. 
+# ebtables -t broute -L
+Bridge table: broute
 
-Try:
-  iptables -t mangle -I 1 PREROUTING -m state --state INVALID \
-      -j LOG  --log-prefix "Denied:mangle:INVALID "
-  iptables -t mangle -I 2 PREROUTING -m state --state INVALID -j DROP
+Bridge chain: BROUTING, entries: 1, policy: ACCEPT
+-p IPv4 --ip-proto tcp --ip-dport 389 --log-level notice --log-prefix "=
+LOG_BR : " --log-ip -j redirect
 
-The log prefix identifies the invalid packets as such in the log file.
+# iptables -t nat -S
+-P PREROUTING ACCEPT
+-P POSTROUTING ACCEPT
+-P OUTPUT ACCEPT
+-A PREROUTING -s 10.75.1.57/32 -i vmbr0 -p tcp -m tcp --dport 389 -j DN=
+AT --to-destination 10.93.64.203:389
+-A POSTROUTING -d 10.93.64.203/32 -o vmbr0 -p tcp -m tcp --dport 389 -j=
+ SNAT --to-source 10.93.64.206
 
-N
+And a tcpdump on the receiving host gives me:=20
+
+# tcpdump -anei any port 389
+tcpdump: verbose output suppressed, use -v or -vv for full protocol dec=
+ode
+listening on any, link-type LINUX_SLL (Linux cooked), capture size 2621=
+44 bytes
+10:36:22.068116=A0 In ec:f4:bb:c8:fe:3c ethertype IPv4 (0x0800), length=
+ 76: 10.93.64.206.52944> 10.93.64.203.389: Flags [S], seq 3338345292, w=
+in 29200, options [mss 1460,sackOK,TS val 1312169791 ecr 0,nop,wscale 7=
+], length 0
+10:36:22.068194 Out d6:46:93:c1:48:d6 ethertype IPv4 (0x0800), length 7=
+6: 10.93.64.203.389> 10.93.64.206.52944: Flags [S.], seq 592271397, ack=
+ 3338345293, win 14480, options [mss 1460,sackOK,TS val 1480126060 ecr =
+1312169791,nop,wscale 7], length 0
+10:36:22.068280=A0 In ec:f4:bb:c8:fe:3c ethertype IPv4 (0x0800), length=
+ 62: 10.93.64.206.52944> 10.93.64.203.389: Flags [R], seq 3338345293, w=
+in 0, length 0
+10:36:23.065698=A0 In ec:f4:bb:c8:fe:3c ethertype IPv4 (0x0800), length=
+ 76: 10.93.64.206.52944> 10.93.64.203.389: Flags [S], seq 3338345292, w=
+in 29200, options [mss 1460,sackOK,TS val 1312170041 ecr 0,nop,wscale 7=
+], length 0
+10:36:23.065755 Out d6:46:93:c1:48:d6 ethertype IPv4 (0x0800), length 7=
+6: 10.93.64.203.389> 10.93.64.206.52944: Flags [S.], seq 607858387, ack=
+ 3338345293, win 14480, options [mss 1460,sackOK,TS val 1480127058 ecr =
+1312170041,nop,wscale 7], length 0
+10:36:23.065893=A0 In ec:f4:bb:c8:fe:3c ethertype IPv4 (0x0800), length=
+ 62: 10.93.64.206.52944> 10.93.64.203.389: Flags [R], seq 3338345293, w=
+in 0, length 0
+10:36:25.069628=A0 In ec:f4:bb:c8:fe:3c ethertype IPv4 (0x0800), length=
+ 76: 10.93.64.206.52944> 10.93.64.203.389: Flags [S], seq 3338345292, w=
+in 29200, options [mss 1460,sackOK,TS val 1312170542 ecr 0,nop,wscale 7=
+], length 0
+10:36:25.069721 Out d6:46:93:c1:48:d6 ethertype IPv4 (0x0800), length 7=
+6: 10.93.64.203.389> 10.93.64.206.52944: Flags [S.], seq 639170166, ack=
+ 3338345293, win 14480, options [mss 1460,sackOK,TS val 1480129062 ecr =
+1312170542,nop,wscale 7], length 0
+10:36:25.069867=A0 In ec:f4:bb:c8:fe:3c ethertype IPv4 (0x0800), length=
+ 62: 10.93.64.206.52944> 10.93.64.203.389: Flags [R], seq 3338345293, w=
+in 0, length 0
+10:36:29.077828=A0 In ec:f4:bb:c8:fe:3c ethertype IPv4 (0x0800), length=
+ 76: 10.93.64.206.52944> 10.93.64.203.389: Flags [S], seq 3338345292, w=
+in 29200, options [mss 1460,sackOK,TS val 1312171544 ecr 0,nop,wscale 7=
+], length 0
+10:36:29.077902 Out d6:46:93:c1:48:d6 ethertype IPv4 (0x0800), length 7=
+6: 10.93.64.203.389> 10.93.64.206.52944: Flags [S.], seq 701798142, ack=
+ 3338345293, win 14480, options [mss 1460,sackOK,TS val 1480133070 ecr =
+1312171544,nop,wscale 7], length 0
+10:36:29.078059=A0 In ec:f4:bb:c8:fe:3c ethertype IPv4 (0x0800), length=
+ 62: 10.93.64.206.52944> 10.93.64.203.389: Flags [R], seq 3338345293, w=
+in 0, length 0
+10:36:29.973597=A0 In ec:f4:bb:c8:fe:3c ethertype IPv4 (0x0800), length=
+ 76: 10.93.64.206.52898> 10.93.64.203.389: Flags [S], seq 1218597864, w=
+in 29200, options [mss 1460,sackOK,TS val 1312171768 ecr 0,nop,wscale 7=
+], length 0
+10:36:29.973660 Out d6:46:93:c1:48:d6 ethertype IPv4 (0x0800), length 7=
+6: 10.93.64.203.389> 10.93.64.206.52898: Flags [S.], seq 1953784105, ac=
+k 1218597865, win 14480, options [mss 1460,sackOK,TS val 1480133965 ecr=
+ 1312171768,nop,wscale 7], length 0
+10:36:29.973775=A0 In ec:f4:bb:c8:fe:3c ethertype IPv4 (0x0800), length=
+ 62: 10.93.64.206.52898> 10.93.64.203.389: Flags [R], seq 1218597865, w=
+in 0, length 0
+
+I can't understand why the reset flags are there. I can forward traffic=
+ the same way on an eth interface just with the iptables rules and that=
+ works. I'm working with a bridge so ebtable is mandatory. Am i right ?=
+ Is my ebtable rule incorrect ? Have I missed something ?=20
+
+Thanks for your help.
+ 		 	   		  
