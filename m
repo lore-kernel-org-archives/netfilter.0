@@ -1,7 +1,7 @@
 From: k c <kisscoolandthegangbang@hotmail.fr>
 Subject: Re: tcp reset flags when forwarding incoming traffic on bridge
-Date: Fri, 25 Mar 2016 15:09:43 +0100
-Message-ID: <20160325150943.31e07d0e@martinpc.linkeo.intra>
+Date: Fri, 25 Mar 2016 15:00:20 +0100
+Message-ID: <20160325150020.23cfdf3f@martinpc.linkeo.intra>
 References: <DUB125-W172906DF1D14330A10CCBDA0820@phx.gbl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
@@ -29,6 +29,10 @@ iptables -t nat -A PREROUTING -p tcp -s 10.75.1.57/32 -d 10.93.64.206 -=
 -dport 389 -j DNAT --to-destination 10.93.64.203:389
 iptables -t nat -A POSTROUTING -p tcp -d 10.93.64.203 --dport 389 -j SN=
 AT --to-source 10.93.64.206:389
+=20
+
+
+
 
 On Thu, 24 Mar 2016 11:54:00 +0100
 k c <kisscoolandthegangbang@hotmail.fr> wrote:
