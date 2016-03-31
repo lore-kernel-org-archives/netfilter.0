@@ -1,113 +1,63 @@
-From: Miroslav Rovis <miro.rovis@croatiafidelis.hr>
-Subject: Nftables or Iptables/Ebtables for a simple linux bridge?
-Date: Tue, 29 Mar 2016 23:49:41 +0200
-Message-ID: <20160329214941.GA8622@g0n>
+From: "Perol.Chen" <perol.chen@gmail.com>
+Subject: Split traffic between VPN and local interface
+Date: Thu, 31 Mar 2016 13:32:11 +0800
+Message-ID: <CAL6-xCbC6gDCYMZ9KhctcGRQ=6kQZL2oZGNEV6NT9NQRO44BUQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="tThc/1wpZn/ma/RB"
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=m9eVUvC5PMrBgZPsvdK0hfD0gXv7V9iTWJRr8c7tSc4=;
+        b=r19iSDbngQULiTis7czE+GVTuqc3SC8Ls4bGcrwNgn7Z4Z6t8D41U5/Z44m5w754Zj
+         BpP/sEPOFdN6TL1XKVv6ZEK5/InxoT6SFRUKed6agmZ3ZwT+4iriyPtvaW9fD+feokaF
+         1PhRgamMuVh4rog/prPW3az0zxxLLyY5yuNfmopvPj4w6WzSkNb/1PdiM6P1RlQ9OyAN
+         kFKL0aShyDDmXxvvxeYuDIZJisiB3OAOYRSM4lFeJICraEgy/J+yMoSSh/JXoMYW+hIi
+         cXQuGjXF5aVB2N4eb+Ewaf6SeFJVfM9RWogwZJ3gGtuychWfir2IGGeSgomLFEicHn8q
+         P5NQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
+Dear all:
 
---tThc/1wpZn/ma/RB
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I start one vpn client on my computer, but I want my country's traffic
+direct from local interface,
 
-Hi!
+because the ip list is large, so I save them to ipset named chinaip.
 
-I have done a lot of research, and am unable to decide which way to go
-for my planned linux bridge implementation:
+I use commands below split the traffic, 192.168.1.1 is local interface
+gateway, 10.7.0.2 is the vpn tun ip.
 
-iptables+ebtables
 
-or
+id="11"
+ip rule add fwmark $id lookup $id
+ip route add default via 192.168.1.1 table $id
+iptables -t mangle -I OUTPUT 1 -m set --match-set chinaip dst -j MARK
+--set-mark $id
+iptables -t nat -A POSTROUTING -s 10.7.0.2 -o eth0 -j MASQUERADE
 
-nftables
 
-All my initial insecure beginner's steps are in the topic on Gentoo
-Forums:
+wireshark show the traffic send to eth0, but the local process can not
+receive data.
 
-A Firewalled Internet Access to Internal Subnet
-https://forums.gentoo.org/viewtopic-t-1041028.html
+128    5.583482000    192.168.1.118    180.149.134.141    TCP    74
+33474 > http [SYN] Seq=0 Win=27840 Len=0 MSS=1392 SACK_PERM=1
+TSval=17843425 TSecr=0 WS=128
 
-And I posted about my query on another topic on Gentoo Forums, where a
-(probably young) talented member attempts to deploy somewhat similar
-setup, but the two (very) senior Gentooers in their advice they mete to
-him, keep to Iptables only.
+129    5.586962000    180.149.134.141    192.168.1.118    TCP    66
+http > 33474 [SYN, ACK] Seq=0 Ack=1 Win=14600 Len=0 MSS=1448
+SACK_PERM=1 WS=128
 
-They never ever even mention Nftables... Have a look:
+249    6.332233000    192.168.1.118    180.149.134.141    TCP    74
+[TCP Retransmission] 33473 > http [SYN] Seq=0 Win=27840 Len=0 MSS=1392
+SACK_PERM=1 TSval=17843613 TSecr=0 WS=128
 
-PPPoE and static subnet setup
-https://forums.gentoo.org/viewtopic-t-1040272.html
+250    6.335188000    180.149.134.141    192.168.1.118    TCP    66
+[TCP Retransmission] http > 33473 [SYN, ACK] Seq=0 Ack=1 Win=14600
+Len=0 MSS=1448 SACK_PERM=1 WS=128
 
-Why is that? Those are senior members...
+There are all TCP Retransmission, Are there something problems?
 
-For my setup, that you can glean, maybe best if you go to this post in
-my ample and painstaking wandering:
-
-( same: "A Firewalled Internet Access to Internal Subnet" topic)
-https://forums.gentoo.org/viewtopic-t-1041028.html#7897936
-
-there is plenty of tutorials if I go the Iptables and the Ebtables way...
-
-And my question to the list is: where are the corresponding Nftables tutori=
-als for a setup like mine?
-
-Or should I better stick with the Iptables/Ebtables?
-
-Pls. also notice the questions I posted today on:
-
-( sae: "PPPoE and static subnet setup" topic )
-https://forums.gentoo.org/viewtopic-t-1040272.html#7899080
-esp. what "There is currently no connection tracking available for
-bridge filtering." on Nftables Wiki means.
-
-WARNING opfront: I am sincere, but not a programmer, nor very advanced
-user either, and it may be possible what I propose below, but it also
-may be that I wouldn't be able to really test as proper tester:
-
-I'd even be willing to try and do some testing with Nftables (simply
-because of the good sides of the new concept), if developers were sure
-they can achieve a result that, in some, even longer, but forseeable
-future, could be as good as what can be achieved with Iptables/Ebtables.
-
-(
-I hope you also read the paragraph previous to that offer.
-
-AND ANOTHER NOTE: you may need to have a lot of patience, but I would
-post all here on the list and other readers could assist.
-)
-
-Regards!
-
---=20
-Miroslav Rovis
-Zagreb, Croatia
-http://www.CroatiaFidelis.hr
-
---tThc/1wpZn/ma/RB
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-
-iQIcBAEBCgAGBQJW+vh1AAoJEOqYhIhPuvCuenYP/3FliKJ7hJqhuXcQrTRdStTp
-B+N/D4jVlNd+qIAHurx8G68tXLe09u7jvH0Lwe+sBWrn5OeRDduKpBalwp6UNf7h
-1rxeIsWJDSk4KaScEL56vPadSDxmDkduHBDTLA4SCVWTvv0qDWxS57d0gQYlZI6b
-UTbm0Xfcq3LaMHNaLlnqs7a0/rJeW4FZ9tkDGq+pY0Kzf1I56IKo2V9l4mVob4/U
-8ffqHss/HrMeUL+OrHoHVmWbCVpi0f3j6RHJAHLM+5KLkPaJVCr38c1+wPf3CBjW
-AuFaT9UVeKmcy9W6D85HVD5VK81nNCiu5rW+1OybcRREEAbWADoU0VN/ZSN7Kdfe
-ifxRfxylC/AhaXc7IKL2h9gA32mXrToz6OVxXSgcOkFvDaEO4KvBw8M5JnyCZ8Ma
-pDSI25/x5Z14UrLRqta6P4oZIjoEdycnl2M8uGXFCh5JVMaRJa4niChQKCmsD5OU
-dax2g7k8qjVLSahAwtXIKC6toi1OPaiay7wbsL3nSw/wVWjA9srx0fFx5F3EddiY
-lY3jZxxd7L1X3w3WLfdCn4jXqga70o45v/nbC+XbE7I9x5nT/O30Y82KAVF1L7sg
-CGhZq11VcyOT3HVgVKNxu0IAchN+FM6w8vxyxzYuY4kV0qEmWM3blSOe++rbvdvP
-aDCWmolqeqZ1inKdqcoS
-=QZp6
------END PGP SIGNATURE-----
-
---tThc/1wpZn/ma/RB--
+Thanks very much.
