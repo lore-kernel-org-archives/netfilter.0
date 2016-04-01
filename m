@@ -1,149 +1,83 @@
-From: Mathias Koehrer <mathias.koehrer@etas.com>
-Subject: Re: netfilter-queue: Incorrect UDP checksum computation in
- nfq_udp_compute_checksum_ipv4
-Date: Fri, 1 Apr 2016 13:39:44 +0200
-Message-ID: <56FE5E00.1070707@etas.com>
-References: <56FE35C2.2070202@etas.com> <20160401104431.GA1318@salvia>
- <56FE5CE0.9050604@etas.com>
+From: "Perol.Chen" <perol.chen@gmail.com>
+Subject: Re: Split traffic between VPN and local interface
+Date: Fri, 1 Apr 2016 22:43:10 +0800
+Message-ID: <CAL6-xCZKPscfy4Z4_70t2sJy+Op-0fcXLhs176yR9nzzUX0D_Q@mail.gmail.com>
+References: <CAL6-xCbC6gDCYMZ9KhctcGRQ=6kQZL2oZGNEV6NT9NQRO44BUQ@mail.gmail.com>
+ <56FD16BE.6050605@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
-	boundary="------------030403040209000607050302"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <56FE5CE0.9050604@etas.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=9pqLSJFIh4ZhWoDderZNQXrxn5/0+kGpTurnZVjKiQ4=;
+        b=jTLYOUkmH4F+XW6NhlPWJIl9lKiWrQOlKBmJXfiLoANW2k7KiXrZbGAsffEed8+89u
+         IPhV/JbC9/RqTwTSUgsc98Ds88xFELzbV1KgY6E5cC+auVMoRgQGLSqKiD9R4w8VFima
+         qE5EusL7/yVjpnpZK3mY34tG6jrlBtu2h1Jr7rBi22UXDaPbQEiXnXZdYO15V4z+hAWI
+         HfF2QrxyWRwX0alywtI2nCITLENqCg6FttTFotnI5P+1lH1KidZ2g/MSPZR2uxd+xWQ7
+         IDkRd82nzyX950QnQu1TX0bGIEasZmLFD4tz0lTN8h9KotJY+1Jlw6yrsVmfmg8u/5xA
+         um7A==
+In-Reply-To: <56FD16BE.6050605@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Pascal Hambourg <pascal@plouf.fr.eu.org>
 Cc: netfilter@vger.kernel.org
 
---------------030403040209000607050302
-Content-Type: text/plain; charset="windows-1252"
-Content-Transfer-Encoding: 7bit
+Thanks, it works when I set rp_filter on eth0 0 or 2.
 
-Hi Pablo,
-
->>> the function nfq_udp_compute_checksum_ipv4 (src/extra/udp.c) does not
->>> compute the correct UDP checksum.
->>> The issue is caused by the called function checksum_tcpudp_ipv4()
->>> (src/extra/checksum.c) that uses the hard coded protocol id IPPROTO_TCP
->>> which is fine for TCP but fails for UDP.
->>> A possible solution might be to pass the protocol id (IPPROTO_TCP /
->>> IPPROTOC_UDP) as parameter to the function checksum_tcpudp_ipv4().
->>>
->>> The very same is also true for the IPv6 versions of these functions.
->>>
->>> Any feedback is welcome.
+On Thu, Mar 31, 2016 at 8:23 PM, Pascal Hambourg <pascal@plouf.fr.eu.or=
+g> wrote:
+> Le 31/03/2016 07:32, Perol.Chen a =C3=A9crit :
 >>
->> Would you send us a patch to fix this? Thanks!
-> Here it is:
-
-It looks as if the line-structure of the patch is broken.
-I have attached the patch as file to this mail.
-
-Mathias
-
---------------030403040209000607050302
-Content-Type: text/x-patch; name="fix-udp-checksum.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment; filename="fix-udp-checksum.patch"
-
-Correct the computation of the UDP checksum
-Index: libnetfilter_queue-1.0.2/src/extra/checksum.c
-===================================================================
---- libnetfilter_queue-1.0.2.orig/src/extra/checksum.c
-+++ libnetfilter_queue-1.0.2/src/extra/checksum.c
-@@ -35,7 +35,7 @@ uint16_t checksum(uint32_t sum, uint16_t
- 	return (uint16_t)(~sum);
- }
- 
--uint16_t checksum_tcpudp_ipv4(struct iphdr *iph)
-+uint16_t checksum_tcpudp_ipv4(struct iphdr *iph, uint16_t protocol_id)
- {
- 	uint32_t sum = 0;
- 	uint32_t iph_len = iph->ihl*4;
-@@ -46,13 +46,13 @@ uint16_t checksum_tcpudp_ipv4(struct iph
- 	sum += (iph->saddr) & 0xFFFF;
- 	sum += (iph->daddr >> 16) & 0xFFFF;
- 	sum += (iph->daddr) & 0xFFFF;
--	sum += htons(IPPROTO_TCP);
-+	sum += htons(protocol_id);
- 	sum += htons(len);
- 
- 	return checksum(sum, (uint16_t *)payload, len);
- }
- 
--uint16_t checksum_tcpudp_ipv6(struct ip6_hdr *ip6h, void *transport_hdr)
-+uint16_t checksum_tcpudp_ipv6(struct ip6_hdr *ip6h, void *transport_hdr, uint16_t protocol_id)
- {
- 	uint32_t sum = 0;
- 	uint32_t hdr_len = (uint32_t *)transport_hdr - (uint32_t *)ip6h;
-@@ -68,7 +68,7 @@ uint16_t checksum_tcpudp_ipv6(struct ip6
- 		sum += (ip6h->ip6_dst.s6_addr16[i] >> 16) & 0xFFFF;
- 		sum += (ip6h->ip6_dst.s6_addr16[i]) & 0xFFFF;
- 	}
--	sum += htons(IPPROTO_TCP);
-+	sum += htons(protocol_id);
- 	sum += htons(ip6h->ip6_plen);
- 
- 	return checksum(sum, (uint16_t *)payload, len);
-Index: libnetfilter_queue-1.0.2/src/extra/tcp.c
-===================================================================
---- libnetfilter_queue-1.0.2.orig/src/extra/tcp.c
-+++ libnetfilter_queue-1.0.2/src/extra/tcp.c
-@@ -91,7 +91,7 @@ nfq_tcp_compute_checksum_ipv4(struct tcp
- {
- 	/* checksum field in header needs to be zero for calculation. */
- 	tcph->check = 0;
--	tcph->check = checksum_tcpudp_ipv4(iph);
-+	tcph->check = checksum_tcpudp_ipv4(iph, IPPROTO_TCP);
- }
- EXPORT_SYMBOL(nfq_tcp_compute_checksum_ipv4);
- 
-@@ -105,7 +105,7 @@ nfq_tcp_compute_checksum_ipv6(struct tcp
- {
- 	/* checksum field in header needs to be zero for calculation. */
- 	tcph->check = 0;
--	tcph->check = checksum_tcpudp_ipv6(ip6h, tcph);
-+	tcph->check = checksum_tcpudp_ipv6(ip6h, tcph, IPPROTO_TCP);
- }
- EXPORT_SYMBOL(nfq_tcp_compute_checksum_ipv6);
- 
-Index: libnetfilter_queue-1.0.2/src/extra/udp.c
-===================================================================
---- libnetfilter_queue-1.0.2.orig/src/extra/udp.c
-+++ libnetfilter_queue-1.0.2/src/extra/udp.c
-@@ -91,7 +91,7 @@ nfq_udp_compute_checksum_ipv4(struct udp
- {
- 	/* checksum field in header needs to be zero for calculation. */
- 	udph->check = 0;
--	udph->check = checksum_tcpudp_ipv4(iph);
-+	udph->check = checksum_tcpudp_ipv4(iph, IPPROTO_UDP);
- }
- EXPORT_SYMBOL(nfq_udp_compute_checksum_ipv4);
- 
-@@ -110,7 +110,7 @@ nfq_udp_compute_checksum_ipv6(struct udp
- {
- 	/* checksum field in header needs to be zero for calculation. */
- 	udph->check = 0;
--	udph->check = checksum_tcpudp_ipv6(ip6h, udph);
-+	udph->check = checksum_tcpudp_ipv6(ip6h, udph, IPPROTO_UDP);
- }
- EXPORT_SYMBOL(nfq_udp_compute_checksum_ipv6);
- 
-Index: libnetfilter_queue-1.0.2/src/internal.h
-===================================================================
---- libnetfilter_queue-1.0.2.orig/src/internal.h
-+++ libnetfilter_queue-1.0.2/src/internal.h
-@@ -13,8 +13,8 @@ struct iphdr;
- struct ip6_hdr;
- 
- uint16_t checksum(uint32_t sum, uint16_t *buf, int size);
--uint16_t checksum_tcpudp_ipv4(struct iphdr *iph);
--uint16_t checksum_tcpudp_ipv6(struct ip6_hdr *ip6h, void *transport_hdr);
-+uint16_t checksum_tcpudp_ipv4(struct iphdr *iph, uint16_t protocol_id);
-+uint16_t checksum_tcpudp_ipv6(struct ip6_hdr *ip6h, void *transport_hdr, uint16_t protocol_id);
- 
- struct pkt_buff {
- 	uint8_t *mac_header;
-
---------------030403040209000607050302--
-
+>> Dear all:
+>>
+>> I start one vpn client on my computer, but I want my country's traff=
+ic
+>> direct from local interface,
+>>
+>> because the ip list is large, so I save them to ipset named chinaip.
+>>
+>> I use commands below split the traffic, 192.168.1.1 is local interfa=
+ce
+>> gateway, 10.7.0.2 is the vpn tun ip.
+>>
+>>
+>> id=3D"11"
+>> ip rule add fwmark $id lookup $id
+>> ip route add default via 192.168.1.1 table $id
+>> iptables -t mangle -I OUTPUT 1 -m set --match-set chinaip dst -j MAR=
+K
+>> --set-mark $id
+>> iptables -t nat -A POSTROUTING -s 10.7.0.2 -o eth0 -j MASQUERADE
+>>
+>>
+>> wireshark show the traffic send to eth0, but the local process can n=
+ot
+>> receive data.
+>>
+>> 128    5.583482000    192.168.1.118    180.149.134.141    TCP    74
+>> 33474 > http [SYN] Seq=3D0 Win=3D27840 Len=3D0 MSS=3D1392 SACK_PERM=3D=
+1
+>> TSval=3D17843425 TSecr=3D0 WS=3D128
+>>
+>> 129    5.586962000    180.149.134.141    192.168.1.118    TCP    66
+>> http > 33474 [SYN, ACK] Seq=3D0 Ack=3D1 Win=3D14600 Len=3D0 MSS=3D14=
+48
+>> SACK_PERM=3D1 WS=3D128
+>>
+>> 249    6.332233000    192.168.1.118    180.149.134.141    TCP    74
+>> [TCP Retransmission] 33473 > http [SYN] Seq=3D0 Win=3D27840 Len=3D0 =
+MSS=3D1392
+>> SACK_PERM=3D1 TSval=3D17843613 TSecr=3D0 WS=3D128
+>>
+>> 250    6.335188000    180.149.134.141    192.168.1.118    TCP    66
+>> [TCP Retransmission] http > 33473 [SYN, ACK] Seq=3D0 Ack=3D1 Win=3D1=
+4600
+>> Len=3D0 MSS=3D1448 SACK_PERM=3D1 WS=3D128
+>>
+>> There are all TCP Retransmission, Are there something problems?
+>
+>
+> You probably need to disable rp_filter on eth0.
