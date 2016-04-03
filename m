@@ -1,83 +1,43 @@
-From: "Perol.Chen" <perol.chen@gmail.com>
-Subject: Re: Split traffic between VPN and local interface
-Date: Fri, 1 Apr 2016 22:43:10 +0800
-Message-ID: <CAL6-xCZKPscfy4Z4_70t2sJy+Op-0fcXLhs176yR9nzzUX0D_Q@mail.gmail.com>
-References: <CAL6-xCbC6gDCYMZ9KhctcGRQ=6kQZL2oZGNEV6NT9NQRO44BUQ@mail.gmail.com>
- <56FD16BE.6050605@plouf.fr.eu.org>
+From: AllKind <AllKind@fastest.cc>
+Subject: [announce] nfacct-bash_completion 1.0
+Date: Sun, 3 Apr 2016 12:48:15 +0200
+Message-ID: <5700F4EF.10008@fastest.cc>
+Reply-To: AllKind@fastest.cc
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=9pqLSJFIh4ZhWoDderZNQXrxn5/0+kGpTurnZVjKiQ4=;
-        b=jTLYOUkmH4F+XW6NhlPWJIl9lKiWrQOlKBmJXfiLoANW2k7KiXrZbGAsffEed8+89u
-         IPhV/JbC9/RqTwTSUgsc98Ds88xFELzbV1KgY6E5cC+auVMoRgQGLSqKiD9R4w8VFima
-         qE5EusL7/yVjpnpZK3mY34tG6jrlBtu2h1Jr7rBi22UXDaPbQEiXnXZdYO15V4z+hAWI
-         HfF2QrxyWRwX0alywtI2nCITLENqCg6FttTFotnI5P+1lH1KidZ2g/MSPZR2uxd+xWQ7
-         IDkRd82nzyX950QnQu1TX0bGIEasZmLFD4tz0lTN8h9KotJY+1Jlw6yrsVmfmg8u/5xA
-         um7A==
-In-Reply-To: <56FD16BE.6050605@plouf.fr.eu.org>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=fastest.cc; h=
+	content-transfer-encoding:content-type:date:from:message-id
+	:mime-version:reply-to:subject:to:x-sasl-enc:x-sasl-enc; s=
+	mesmtp; bh=KomL9yoGWHCLLVTkxhrPi2DeoyQ=; b=RJZY0iVT7mUF+hr+S2+Qo
+	nXzTOMhM0D4TcO3IEVj9klAI+SDFciL1TPhRghkbMTTLG1MMfkYnMZFD1JVXCET2
+	44iFHTXMs96CyR1+YyfAm5CnnCnOf0VnWQXwsT5AKAj00Vm92QBsn+grpAxYTfY2
+	kfrRdQn6MjaOzfOK59BQ2c=
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
+	messagingengine.com; h=content-transfer-encoding:content-type
+	:date:from:message-id:mime-version:reply-to:subject:to
+	:x-sasl-enc:x-sasl-enc; s=smtpout; bh=KomL9yoGWHCLLVTkxhrPi2Deoy
+	Q=; b=YixIFSbRM4+I9pUDSRr5bork6cC3WA+I5+bcQcUjNrUBTAEBJtK7WpjaJo
+	ws+kgeVjDpbm7rAjkYc4qXslOebrCOB29en3KHlNZ9wrWmBULpFTbO4uuqistSZO
+	pv44ZAUn3vOkKUp9B9KdDa82fwzXgvj2fmFhOmt/K4NhYrsbk=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Thanks, it works when I set rp_filter on eth0 0 or 2.
+Good day everybody!
 
-On Thu, Mar 31, 2016 at 8:23 PM, Pascal Hambourg <pascal@plouf.fr.eu.or=
-g> wrote:
-> Le 31/03/2016 07:32, Perol.Chen a =C3=A9crit :
->>
->> Dear all:
->>
->> I start one vpn client on my computer, but I want my country's traff=
-ic
->> direct from local interface,
->>
->> because the ip list is large, so I save them to ipset named chinaip.
->>
->> I use commands below split the traffic, 192.168.1.1 is local interfa=
-ce
->> gateway, 10.7.0.2 is the vpn tun ip.
->>
->>
->> id=3D"11"
->> ip rule add fwmark $id lookup $id
->> ip route add default via 192.168.1.1 table $id
->> iptables -t mangle -I OUTPUT 1 -m set --match-set chinaip dst -j MAR=
-K
->> --set-mark $id
->> iptables -t nat -A POSTROUTING -s 10.7.0.2 -o eth0 -j MASQUERADE
->>
->>
->> wireshark show the traffic send to eth0, but the local process can n=
-ot
->> receive data.
->>
->> 128    5.583482000    192.168.1.118    180.149.134.141    TCP    74
->> 33474 > http [SYN] Seq=3D0 Win=3D27840 Len=3D0 MSS=3D1392 SACK_PERM=3D=
-1
->> TSval=3D17843425 TSecr=3D0 WS=3D128
->>
->> 129    5.586962000    180.149.134.141    192.168.1.118    TCP    66
->> http > 33474 [SYN, ACK] Seq=3D0 Ack=3D1 Win=3D14600 Len=3D0 MSS=3D14=
-48
->> SACK_PERM=3D1 WS=3D128
->>
->> 249    6.332233000    192.168.1.118    180.149.134.141    TCP    74
->> [TCP Retransmission] 33473 > http [SYN] Seq=3D0 Win=3D27840 Len=3D0 =
-MSS=3D1392
->> SACK_PERM=3D1 TSval=3D17843613 TSecr=3D0 WS=3D128
->>
->> 250    6.335188000    180.149.134.141    192.168.1.118    TCP    66
->> [TCP Retransmission] http > 33473 [SYN, ACK] Seq=3D0 Ack=3D1 Win=3D1=
-4600
->> Len=3D0 MSS=3D1448 SACK_PERM=3D1 WS=3D128
->>
->> There are all TCP Retransmission, Are there something problems?
->
->
-> You probably need to disable rp_filter on eth0.
+I've written bash shell programmable completion code for nfacct.
+(http://www.netfilter.org/projects/nfacct/index.html)
+
+It's available for you at these locations:
+
+https://sourceforge.net/projects/nfacct-bash-completion
+https://github.com/AllKind/nfacct-bash_completion
+
+I hope you can make use of it!
+
+Best regards,
+AllKind
+
+
