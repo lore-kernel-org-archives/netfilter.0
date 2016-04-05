@@ -1,45 +1,56 @@
-From: Jack <jackzzjack@gmail.com>
-Subject: iptables with DNAT target to multiple port range translation
-Date: Mon, 4 Apr 2016 22:06:04 +0800
-Message-ID: <CADZ=QZnaGDX6P49n95pOo7hQp-F8mP2QK9DJ8bqDj4jMqv8R=w@mail.gmail.com>
+From: Guruswamy Basavaiah <guru2018@gmail.com>
+Subject: [PATCH] iptables-translate: Printing the table name before chain name
+Date: Tue, 5 Apr 2016 11:58:07 +0530
+Message-ID: <20160405062807.GA6421@inbhdhcp21574.apac.nsn-net.net>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=AtqfDH/J1WBfi411QVDMf7kLIoO9W+4c49su0w/lS9g=;
-        b=N6kUDIqgIjidXCrEJkWV2PxawxodlfpVsW4w/Qt6aXRkBUeYlBnvIRjSjt/NpNNlov
-         WQOMIXfp1vapfLVUh6BTsvgAvMIjPrlOeDbzyZlTrErhRZk4Bq3gvnIq8sQxYAlTGmGe
-         1E66Ju1keP/92LWhgxHZNBoD2HQZ2lUKQ0jeavhk2W2Zmkj32nhE2wIAesKD3385LgYI
-         iREGYb08xgc13fmqU4AUXbKpk8xaXLulBW0zSRXIlH3e34tpxfC6PJjoDZNM+Ykdgj59
-         AQOJLW3oFiM5bMJBV1Dpn5hnoUbXoMLy54VkDi9bCvTkXhbJpSCMoeVeMjMVp+8Zqiog
-         srTg==
+        h=date:from:to:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=lbAXrfidCxj3CZFxBdgfC1unzjAN51kTtiiObY0i6Ss=;
+        b=Wk5SVZ7+oJiaPJQbDV7ls6qsG12xJui4js88TVjZrPORQhoF53UoshFrLpWQ0+aIU6
+         8dQQBCkeqEcxIquGW5cuKCGSUxWqKOB8hGFXg7mJAHCpymgrKSKpzJOVxywDXEsViak9
+         QdncdX+xX/UnkkUQ5N2VreT7laIyia0EPhjIw5zwXeKuaYJJhzD8ygeCXo/WsvNXh4OV
+         g5Ap8Cr4OPwuCSYqIhg+pzQHFC/9cI+8BQTJY8KkQ2e6/ysyGnZKJSZtxd8TBGGYcV1+
+         FqYWonMlwNRKePMu2ozBBQLcIKHKZ8MaU7HD+759NuAeKULp18yPOVjFaJyja39s+HrR
+         JT/A==
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Dear all,
+Printing the table name before chain name.
 
-I want to use iptables to set DNAT target. The multi-port virtual
-server is the purpose that I want to do. But I found that DNAT cannot
-map multi-port to destination multi-port. e.g.
+Command ./iptables-restore-translate, was printing
+table name before the chain name for user added chains.
+This is breaking ./nft -f command.
 
-iptables -t nat -A PREROUTING -p tcp --dport 1000:2000 -j DNAT
---destination 192.168.1.100:3000-4000
+Before fix, output of "./iptables-restore-translate"
+add chain ip OUTPUT_direct raw
 
-I think this rule should be
-1000 ------> 3000
-1001 ------> 3001
-...........................
-2000 ------> 4000
+After fix:
+add chain ip raw OUTPUT_direct
 
-I tried to use whireshark to capture packets. No matter original
-packets are 1000, 1001, 2000 and so on, they seem translate to port
-3000 only. That's wired the iptables only mapping many ports to one
-port.
+Signed-off-by: Guruswamy Basavaiah <guru2018@gmail.com>
+---
+ iptables/xtables-translate.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Any advise ?
+diff --git a/iptables/xtables-translate.c b/iptables/xtables-translate.c
+index 44162a2..07cc98c 100644
+--- a/iptables/xtables-translate.c
++++ b/iptables/xtables-translate.c
+@@ -296,7 +296,7 @@ static const struct option options[] = {
+ static int xlate_chain_user_add(struct nft_handle *h, const char *chain,
+                                const char *table)
+ {
+-       printf("add chain %s %s %s\n", family2str[h->family], chain, table);
++       printf("add chain %s %s %s\n", family2str[h->family], table, chain);
+        return 0;
+ }
 
-Thanks.
+-- 
+2.5.0
