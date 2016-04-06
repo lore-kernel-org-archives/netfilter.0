@@ -1,63 +1,24 @@
 From: =?UTF-8?Q?Mika=c3=abl_Fourrier?= <mikael.fourrier@laposte.net>
-Subject: Add element in set when element already present.
-Date: Wed, 6 Apr 2016 13:22:09 +0200
-Message-ID: <704aee2d-ebe7-6a77-0848-b2d3ae614805@laposte.net>
+Subject: Re: Add element in set when element already present.
+Date: Wed, 6 Apr 2016 14:12:58 +0200
+Message-ID: <5804abff-8e95-16b2-a02f-6a23dc93bf83@laposte.net>
+References: <704aee2d-ebe7-6a77-0848-b2d3ae614805@laposte.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=laposte.net; s=mail1;
-	t=1459941731; bh=hlg/f8lDmUedV8ij1YLhzB6e2qR3qZBNsVe2mKGBCFQ=;
-	h=To:From:Subject:Date;
-	b=Un8/rba/1hpYeRXknhUnAmr8Zh2xjGqF3Apnsobv/snrnc02mjNdaljxFt1TAsS5o
-	 ylqIpNHOzSWqqKivufzH63DK5Erv7yTlV2amksO+6952uyxZk+bsCSP+O1j6xh6/zC
-	 koEKA8uJt0Wm6VN8fRFdhCx+NLkIlzLp1NQBoy7xvoMdVln3Qn0fwb6sklAg/Pfn/3
-	 xmlIezCP94zmNT+G3HeCnBhLEhMacdrNe5r1M7fVYJ8bdBcU4Voc43tJAZ7crq7X/4
-	 kbGH8bq0UFIHQwzyAVPfKAA9nX0Aq0+cGjcxlzRUYfRpSKVEE30y8NnuKnBG1mrQ6c
-	 S0+Ab53GiUm/g==
+	t=1459944780; bh=PUFY37ijz74evXnfkPRIVvYc1GUTMD6DPxieJuU6pYY=;
+	h=Subject:To:References:From:Date:In-Reply-To;
+	b=PX6zYxmQdM8cJgzHEcAtoSwd2OX0MS+wpkKsZjDbBf57tXDalJWJn4jWL3/1fyvTX
+	 fgk2pArY6owY2wCZ2P5iqorrNicCO+JONuUf6gfX7C0Alx/0nHbRT3MA4tLlVk27Wj
+	 cR2Sa2sun9BkExCAHIDhp4yuD3Q8xybXJM+6cGmuJHMMO21mkEI8OcA0Y0JjVDJiSF
+	 7dVs2cFYUYlldljxLzpgX5N3xyuAxitAMEXVjGX0tWZLwBcliH79AUeVTh5XPV43lL
+	 Nipaheq6kakfzZU77BZwH2JscTQ/oDWg3tcgUmf/TLXBM7hyjewFIWcRngzfXtifFK
+	 LDv98pRf5u50g==
+In-Reply-To: <704aee2d-ebe7-6a77-0848-b2d3ae614805@laposte.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi,
-
-When I add an element in a set and the set already contains the element=
-,=20
-the command fails with an error. Worse: I try to add multiple elements=20
-and at least one of these elements is already in the set, the command=20
-fails without adding any element. Why do you use this semantic? It woul=
-d=20
-be more ergonomic if you could just add elements in a set without=20
-checking its content.
-
-Have a good day,
-Mika=C3=ABl
-
-
-
-Example:
-
-```
-# nft add set inet filter myset '{ type ipv4_addr; }'
-
-# nft add element inet filter myset '{ 0.0.0.0 }'
-
-# nft add element inet filter myset '{ 0.0.0.0 }'
-<cmdline>:1:1-41: Error: Could not process rule: File exists
-add element inet filter myset { 0.0.0.0 }
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-# nft add element inet filter myset '{ 0.0.0.0, 1.1.1.1 }'
-<cmdline>:1:1-50: Error: Could not process rule: File exists
-add element inet filter myset { 0.0.0.0, 1.1.1.1 }
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-# nft list set inet filter myset
-	set myset {
-		type ipv4_addr
-		elements =3D { 0.0.0.0}
-	}
-
-```
-
-Expected: no error and the set contains { 0.0.0.0, 1.1.1.1}.
+The same applies to maps, BTW.
