@@ -1,55 +1,55 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Writing nftables extension / modifying packets via nftables and
- netfilter
-Date: Fri, 8 Apr 2016 14:10:42 +0200
-Message-ID: <20160408121042.GA7121@salvia>
+From: Stephan Arndt <arndt.stephan@gmail.com>
+Subject: Re: Writing nftables extension / modifying packets via nftables and netfilter
+Date: Fri, 8 Apr 2016 15:19:53 +0200
+Message-ID: <CADe663uqyZXSC-HkCvsYH_JLzdfuuF0n0UrVoNB4JHJfQGtuWQ@mail.gmail.com>
 References: <CADe663unBJZxLKgvbHh7rhZGOjmrYo8O_n4os8Boex0VcwBSvw@mail.gmail.com>
+	<20160408121042.GA7121@salvia>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CADe663unBJZxLKgvbHh7rhZGOjmrYo8O_n4os8Boex0VcwBSvw@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc;
+        bh=XpGrIvBoVWH0sHG1ov/EnFnbM7tMB1IqLUntWSgWAtE=;
+        b=Thpxr1Q309+ApGrri/LE2H9r4Cjx9xKwPjpxx6hbb++Q8lydhQI7ibL1XcBE+1/fPU
+         iKwBCwdWfCJElzdVQAwqLY1tusZl8nrrU11m9CA+ux4tVJyT4ScAktr6JC/t4czIh2pD
+         vNPYBBCOOvb5cvmrNklrZYVdQLyXeqT4AHvvTvJ6Yf6IkPGkC+p/A45oXrBjd/HmB6TG
+         dM0+t0YPimFkuVbGbK1GI+l55A6a7btcdObXeXUdDa1X6iRK8WLP5eGIC2WRnuLpLw7C
+         wDj26jbZDjgLya2OwRa6YE6RgFZdtnPitNsgqOZ9vbhRfNoue8Oph1tU6LcMRqtfMxIu
+         /BWw==
+In-Reply-To: <20160408121042.GA7121@salvia>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Stephan Arndt <arndt.stephan@gmail.com>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter@vger.kernel.org
 
-On Fri, Apr 08, 2016 at 01:04:47PM +0200, Stephan Arndt wrote:
-> Hello!
-> 
-> I've originally written this to the netfilter-devel list, but got no
-> reply, so I thought I might've asked in the wrong place?
-> 
-> I would like to write a netfilter module to modify packets going in
-> and out of my machine (TCP/IP headers, maybe content) after some
-> analysis of the packet. For this, I wanted to extend nftables with new
-> matches or targets that control this modification behavior. I've
-> looked around some, but couldn't find documentation on how to do this
-> properly using nftables, can someone point me in the right direction?
+2016-04-08 14:10 GMT+02:00 Pablo Neira Ayuso <pablo@netfilter.org>:
+> So the question is, in case you need some extension, what kind of
+> generic expression we could introduce so you can build what you need
+> following a lego-like thinking, plugging expressions one after
+> another.
 
-There are not matches and targets in nft, instead from kernelspace we
-have expressions. These expressions are basically instructions of our
-network-specific VM and the generic set infrastructure. You can place
-several expressions in one rule, each of it is evaluated linearly.
+I've done some more reading, and it seems that everything that I need
+is probably already there. My imagined flow of work takes packets that
+match specific criteria and sends them to a netfilter module to
+process.
+These criteria and what to do with the packets would have been
+specified by custom iptable matches/targets. But after reading some
+more of the nftables HOWTO pages, it seems that the equivalent of
+custom matches is creating a custom chain and then jumping into that
+chain when a packet matches my criterias, have I got that right? (Can
+I register a netfilter module on a custom chain?)
+What I still haven't found though, is how I can configure a netfilter
+module via nftables. For a silly example, let's say I write a
+netfilter module to change the MSS of each outgoing packet. How can I
+tell this module what to change the MSS to for different connections?
 
-> Using a netfilter/iptables combo, this kind of extension seems to be
-> pretty well documented (e.g. at the HOWTO page for netfilter hacking
-> [1]). I could also go this route, but as nftables seems to be poised
-> to succeed iptables, I wanted to try my hands at using the
-> future-proof technology.
+I've only done a basic netfilter module so far (Inspect every packet,
+then drop if some requirements are met), so maybe this is easy and I
+just overlooked it?
 
-We have a shift in the way of thinking with nft, as we have a
-network-specific VM, we try to make it expressive enough to catch all
-possible scenario that the user wants, aiming to extend this is a
-generic way which opposes to the many combo matches/targets that
-proliferated in the iptables era.
+Regards,
 
-So the question is, in case you need some extension, what kind of
-generic expression we could introduce so you can build what you need
-following a lego-like thinking, plugging expressions one after
-another.
-
-Anyway, several people already asked for a nftables hacking howto and
-I already started writing on this, it's on my large pile of work, but
-I promise to release when ready.
+Stephan
