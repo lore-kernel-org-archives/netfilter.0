@@ -1,26 +1,45 @@
-From: =?UTF-8?Q?Mika=c3=abl_Fourrier?= <mikael.fourrier@laposte.net>
-Subject: Re: Add element in set when element already present.
-Date: Wed, 6 Apr 2016 14:15:12 +0200
-Message-ID: <01632b48-3092-a0a1-ecb0-5ba18926bf8d@laposte.net>
-References: <704aee2d-ebe7-6a77-0848-b2d3ae614805@laposte.net>
+From: Stephan Arndt <arndt.stephan@gmail.com>
+Subject: Writing nftables extension / modifying packets via nftables and netfilter
+Date: Fri, 8 Apr 2016 13:04:47 +0200
+Message-ID: <CADe663unBJZxLKgvbHh7rhZGOjmrYo8O_n4os8Boex0VcwBSvw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=laposte.net; s=mail1;
-	t=1459944913; bh=adaAPlHOwhDQNuihaS4vEB9GyPYgwCGJzCLRuMAdlOw=;
-	h=Subject:To:References:From:Date:In-Reply-To;
-	b=iTgMah87zj/Y2m2SCZjuIXSvM3uDUyEarf56YGotTqKgnfXDIUNjMn19eSgxb9fFE
-	 RX+XhCnsgfwhs3c1DpE5FPNFOuDV4bCK43JrjZC9wWHHNtzk/VtH/+yByIMcaAEBSp
-	 lWQlN7DusibDsjAyc4DlfgrrLycsoAvY/j8nHQjauy4I03sII0/PXGkTqWSG4sOyB/
-	 BMBfaHQFiZugDm3fdZwlZxLJt2mkpQVZb8K/eugy6HiO+rVQ1mcqU6j4y1+IZaTW3q
-	 Ldfgrc8dcfxD24Gtb6sRiT0n8jTvqrJ71vBaG64ToCyVQ6bMXRZ9sO0AqqJz+oHXPb
-	 TqlElR2Ds+Jhw==
-In-Reply-To: <704aee2d-ebe7-6a77-0848-b2d3ae614805@laposte.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to;
+        bh=94O88MVg9FfIWoyYa45ORve6j3exg4DnSrf6dU0CK5w=;
+        b=HtNt0vG2p17IGeyt6fs/2+gKk0uZbZBJTnwOivXPCv+Jr7iPj03LmSgycukAfcv7RX
+         VP+5g+JlDKeldECkKwaqtG/SaESO3mi8c03NqBuWoAH9XuCDoZ3ck/4zNRi0ydc/ud0Z
+         JWpW7iKC6fJsMDZThgjqPXdAq0aUFVkH8oW1dmboc2TssCPl99XzSdj4pV7xPCMUUvaI
+         X/Pg/MvtMG7S8VjA9WdyaJkOiFRe2RIlGZCr23lkoalFku8gcG+TIco2hS4ZjFDM6zgN
+         IWn1vyq95e/W1PihBLGQ2c5VyWwfOr8+Dkt5dCDzLVEXx/xUWydzg8Q5WtVUrKTaV2WI
+         siXQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-It's the same idea with maps, BTW
+Hello!
 
-(sorry if double post, network problems)
+I've originally written this to the netfilter-devel list, but got no
+reply, so I thought I might've asked in the wrong place?
+
+I would like to write a netfilter module to modify packets going in
+and out of my machine (TCP/IP headers, maybe content) after some
+analysis of the packet. For this, I wanted to extend nftables with new
+matches or targets that control this modification behavior. I've
+looked around some, but couldn't find documentation on how to do this
+properly using nftables, can someone point me in the right direction?
+
+Using a netfilter/iptables combo, this kind of extension seems to be
+pretty well documented (e.g. at the HOWTO page for netfilter hacking
+[1]). I could also go this route, but as nftables seems to be poised
+to succeed iptables, I wanted to try my hands at using the
+future-proof technology.
+
+Regards,
+
+Stephan
+
+[1] http://www.netfilter.org/documentation/HOWTO/netfilter-hacking-HOWTO-4.html
