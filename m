@@ -1,36 +1,30 @@
-From: Damir Franusic <df@release14.org>
-Subject: How to get conntrack(CT) data using libnetfilter_queue(NFQUEUE)
-Date: Sat, 9 Apr 2016 11:54:00 +0200
-Message-ID: <5708D138.5080108@release14.org>
-References: <5708D0CE.2070908@release14.org>
+From: Brian Allen Vanderburg II <brianvanderburg2@aim.com>
+Subject: netfilter tables dynamic sets question
+Date: Sat, 9 Apr 2016 08:52:34 -0400
+Message-ID: <5708FB12.2020301@aim.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=release14-org.20150623.gappssmtp.com; s=20150623;
-        h=subject:references:to:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-transfer-encoding;
-        bh=bvATYB0zy28MdjM8sXLNZUnD68riEI/WTzPrR+CpPCs=;
-        b=VedMI03x27HwlKwKhVWipYnwn/j7EnisHNzwFe8qez3PI6fwVKgaYZSIyc0iydTM/u
-         CmllRBTCCSnXM9i7M0hBdRyOAFlzStsCt46gHtn4euERnT7wj0P6MFX2vz+L+f8mZA2/
-         aVHLjX5D1D5st7BzIyBBn6Bmz/128ynhWY/8J9QOB5jJBKh4i5S8x8CcWDwT7vwXQkpA
-         BMotjujEFATGDV8tJpr/HBpedOuXg7pdPHEm/VlhJQU6NMfn/V9wOP7LdzWCV5vwoS/w
-         JQMPPEgGqhIGNOwI9tCrZ9CfvmlQBtogpV0/wJHX8upxF5UGOtflTNAdZOXhwJOtbYeK
-         ebpg==
-In-Reply-To: <5708D0CE.2070908@release14.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mx.aim.com;
+	s=20150623; t=1460206283;
+	bh=XXQGpdoiitkIJmV7vcHyDl2LAhrpP6FQ4nMlCa8ceAk=;
+	h=From:To:Subject:Message-ID:Date:MIME-Version:Content-Type;
+	b=ImLFq0kFOkv8nkmLeqNyLT6qYNeFMa5dgxWmhph+nDCdZqmSacKWbDGfnpaIKyIJL
+	 E9qJvpcTe7JrUGfbnliPQsQzEedcS5Pj4a3ug9oeEI2KCJwsovvBFj3jHZUm1/4MFO
+	 yFjNOYp5wORuuyarOzZPvVBrkJcjcFJVKWmx1wXk=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-  Hi
+I have a question about the up and coming netfilter tables (nftables). 
+One feature I use with iptables is ipsets and the ability to dynamically
+add a rule to an IP set based on some traffic criteria within iptables,
+so that later traffic criteria can match against the set within
+iptables.  Is it currently possible to dynamically add entries to sets
+with nftables?
 
-I am currently using libnetfilter_queue to pop packets from NFQUEUE and 
-fetching conntrack data separately using libnetfilter_conntrack. I know 
-there should be a way to receive both packet data and conntrack data 
-when reading from NFQUEUE but I couldn't find any related documentation 
-or examples. If there is a simple example I would really appreciate it.
+Thanks,
 
+Brian Allen Vanderburg II
 
-Kind regards,
-Damir Franusic
