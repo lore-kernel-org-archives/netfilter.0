@@ -1,49 +1,47 @@
-From: Luigi Rizzo <rizzo@iet.unipi.it>
-Subject: Re: Build firewall with millions pps support
-Date: Wed, 27 Apr 2016 08:39:52 +0200
-Message-ID: <20160427063952.GA55161@onelab2.iet.unipi.it>
+From: =?utf-8?B?QW5kcsOpIFBhdWxzYmVyZy1Dc2liaSAoSUJNIENvbnN1bHRhbnQp?= 
+	<Andre.Paulsberg-Csibi@evry.com>
+Subject: RE: Build firewall with millions pps support
+Date: Wed, 27 Apr 2016 08:11:35 +0000
+Message-ID: <2e307752242f407989a5f11e2146cdf8@CCDEX021.corp.corpcommon.com>
 References: <CAPgF-foyqY7_UbQVK7R4vU5MRP0XsfgXAjpQUNwNROZVq9YxDQ@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
 In-Reply-To: <CAPgF-foyqY7_UbQVK7R4vU5MRP0XsfgXAjpQUNwNROZVq9YxDQ@mail.gmail.com>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Satish Patel <satish.txt@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="windows-1254"
+To: Satish Patel <satish.txt@gmail.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Tue, Apr 26, 2016 at 11:20:00PM -0400, Satish Patel wrote:
-> Planning to build stateless firewall which support 10GE link with
-> handling 2 million packet per second, need following suggestion from
-> folks
-> 
-> 1. Which OS i should use?  (BSD or Linux?)
-> 2. what type of 10GE NIC i should pick to achieve high Mpps (multiqueue etc.)
-> 3. what should i use for bypass kernel (I heard from googling people
-> saying use this technique).
-> 4. what kind of server i should pick?
-> 
-> We are build this firewall to stop bad traffic at front door and DDoS
-> (specially flooding and UDP IP Fragmentation stype)
-
-
-you may want to look at github.com/luigirizzo/netmap-ipfw ,
-it is a version of FreeBSD's ipfw+dummynet which runs on top
-of netmap.
-
-This works on both Linux and FreeBSD
-
-Re. cards in my experience the Intel cards (the old X520
-based on the 85299, and the newer X710 based on the new chipset)
-are both decent (I have a slight preference for the older,
-which I find more performant)
-
-cheers
-luigi
-
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+MS4gIldlIiB1cyBMaW51eCAsIEkgZG8gbm90IHNlZSBhbnl0aGluZyBiYWQgYWJvdXQgdXNpbmcg
+QlNEIGVpdGhlcg0KMi4gdGhlICIgSW50ZWwgQ29ycG9yYXRpb24gODI1OThFQiAxMC1HaWdhYml0
+IEFGIER1YWwgUG9ydCBOZXR3b3JrIENvbm5lY3Rpb24gKHJldiAwMSkiICwNCiAgICJ3ZSIgdXNl
+IDIgb2YgdGhlc2UgaW4gZWFjaCBGVyB3aXRoIExBQ1AgYm9uZGluZyBnaXZpbmcgMiB4IDIwR2Jw
+cw0KMy4gRm9yIHRoaXMgb25lIEkgaGF2ZSBubyAxMDAlIGFuc3dlciAsIGJ1dCBvdXIgZmlyZXdh
+bGwgaXMgcnVubmluZyBmdWxsIHN0YXRlZnVsIG1vZGUgd2l0aCBJUFMgYW5kIHVzZXMgaXRzIG93
+biBrZXJuZWwgbW9kdWxlIC4NCjQuIEkgZ3Vlc3MgdGhhdCBkZXBlbmRzIG1vcmUgb24geW91ciBs
+b2dnaW5nIGxldmVsICwNCiAgIEJ1dCAid2UiIHVzZSBJbnRlbChSKSBYZW9uKFIpIENQVSBFNTY0
+NSAgQCAyLjQwR0h6IGFuZCBSQUlEIDEgc2V0dXAgZm9yIHN0b3JpbmcgdGhlIGxvY2FsIGxvZ3Mg
+Lg0KDQpPdXIgdXNhZ2UgbWF5IGJlIGRpZmZlcmVudCB0aGVuIHdoYXQgeW91cnMgd2lsbCBiZSAo
+IG9yIHBsYW5uZWQgdG8gYmUgKSwNCmJ1dCB0aGUgRlcgY2FuIGhhbmRsZSAxTSBwcHMgZGVwZW5k
+aW5nIG9uIHRoZSBudW1iZXIgb2YgInNlc3Npb24iIHNldHVwcyAuDQpTbyBpZiB0aGUgdHJhZmZp
+YyBpcyBtb3N0bHkgRE5TICggVURQIDUzICkgcGFja2V0cyBpdCBtYXkgaGF2ZSBsb3dlciB0aHJv
+dWdocHV0DQoNCg0KTVZIIEFuZHLDqSBQYXVsc2JlcmctQ3NpYmkNCg0KDQotLS0tLU9yaWdpbmFs
+IE1lc3NhZ2UtLS0tLQ0KRnJvbTogbmV0ZmlsdGVyLW93bmVyQHZnZXIua2VybmVsLm9yZyBbbWFp
+bHRvOm5ldGZpbHRlci1vd25lckB2Z2VyLmtlcm5lbC5vcmddIE9uIEJlaGFsZiBPZiBTYXRpc2gg
+UGF0ZWwNClNlbnQ6IDI3LiBhcHJpbCAyMDE2IDA1OjIwDQpUbzogbmV0ZmlsdGVyQHZnZXIua2Vy
+bmVsLm9yZw0KU3ViamVjdDogQnVpbGQgZmlyZXdhbGwgd2l0aCBtaWxsaW9ucyBwcHMgc3VwcG9y
+dA0KDQpQbGFubmluZyB0byBidWlsZCBzdGF0ZWxlc3MgZmlyZXdhbGwgd2hpY2ggc3VwcG9ydCAx
+MEdFIGxpbmsgd2l0aA0KaGFuZGxpbmcgMiBtaWxsaW9uIHBhY2tldCBwZXIgc2Vjb25kLCBuZWVk
+IGZvbGxvd2luZyBzdWdnZXN0aW9uIGZyb20NCmZvbGtzDQoNCjEuIFdoaWNoIE9TIGkgc2hvdWxk
+IHVzZT8gIChCU0Qgb3IgTGludXg/KQ0KMi4gd2hhdCB0eXBlIG9mIDEwR0UgTklDIGkgc2hvdWxk
+IHBpY2sgdG8gYWNoaWV2ZSBoaWdoIE1wcHMgKG11bHRpcXVldWUgZXRjLikNCjMuIHdoYXQgc2hv
+dWxkIGkgdXNlIGZvciBieXBhc3Mga2VybmVsIChJIGhlYXJkIGZyb20gZ29vZ2xpbmcgcGVvcGxl
+DQpzYXlpbmcgdXNlIHRoaXMgdGVjaG5pcXVlKS4NCjQuIHdoYXQga2luZCBvZiBzZXJ2ZXIgaSBz
+aG91bGQgcGljaz8NCg0KV2UgYXJlIGJ1aWxkIHRoaXMgZmlyZXdhbGwgdG8gc3RvcCBiYWQgdHJh
+ZmZpYyBhdCBmcm9udCBkb29yIGFuZCBERG9TDQooc3BlY2lhbGx5IGZsb29kaW5nIGFuZCBVRFAg
+SVAgRnJhZ21lbnRhdGlvbiBzdHlwZSkNCi0tDQpUbyB1bnN1YnNjcmliZSBmcm9tIHRoaXMgbGlz
+dDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbmV0ZmlsdGVyIiBpbg0KdGhlIGJvZHkgb2Yg
+YSBtZXNzYWdlIHRvIG1ham9yZG9tb0B2Z2VyLmtlcm5lbC5vcmcNCk1vcmUgbWFqb3Jkb21vIGlu
+Zm8gYXQgIGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jkb21vLWluZm8uaHRtbA0K
