@@ -1,41 +1,34 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: autoload of nft modules
-Date: Wed, 27 Apr 2016 14:54:47 +0200
-Message-ID: <20160427125447.GA6899@salvia>
-References: <67e90927-885f-e860-a1dd-9f61ea95b53e@monom.org>
-Mime-Version: 1.0
+From: Satish Patel <satish.txt@gmail.com>
+Subject: Re: Build firewall with millions pps support
+Date: Wed, 27 Apr 2016 08:57:36 -0400
+Message-ID: <B4F13F97-5E5F-4ED3-8DC7-6213641E3D4A@gmail.com>
+References: <CAPgF-foyqY7_UbQVK7R4vU5MRP0XsfgXAjpQUNwNROZVq9YxDQ@mail.gmail.com> <20160427063952.GA55161@onelab2.iet.unipi.it>
+Mime-Version: 1.0 (1.0)
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <67e90927-885f-e860-a1dd-9f61ea95b53e@monom.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=references:in-reply-to:mime-version:content-transfer-encoding
+         :message-id:cc:from:subject:date:to;
+        bh=/e6eEvoNMtd7VwsTKbwkIWDbPqSnlYiIZuyzbsdmTAg=;
+        b=HTKndAmXCLR+fXfnymDj1hVt7G3EgT5RsbJiCmv3HOjVlUuTdevkngFQFWX+sVYrd+
+         x1MGcH6JVGlXtWb2CAt7qzOel8zXN8Dj/nTHkaBoD4Dn0ckmSPEe73NNOOFJpBqvv43L
+         x459J+ilSxHElnfp9Wgpebg8+798kXYprBlJuQ4t3mOzAzRVCh+I5z1urA9/S7oUGKsH
+         FiwynlpKmYpIaLUU8aX5z1XA6TMOHYY72ymvVtGChO9IW4p0lyyqURF+R9DOJpbJ6QR+
+         eGIyNfcUzzWLczdbf9OoARbyb4Rzv1HNS7koNt2sWyCCHj2+gmgCi7txYQhJg1hOUMkL
+         IZGA==
+In-Reply-To: <20160427063952.GA55161@onelab2.iet.unipi.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Daniel Wagner <wagi@monom.org>
-Cc: netfilter@vger.kernel.org, connman@lists.01.org, Dragos Tatulea <dragos@endocode.com>
+To: Luigi Rizzo <rizzo@iet.unipi.it>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Wed, Apr 27, 2016 at 10:52:13AM +0200, Daniel Wagner wrote:
-> Hi,
+It looks good I will sure look at it. Just curious why we need dummynet I think it use for traffic shapping right? Just trying to understand how ipfw and dummynet will boost pps? 
+
+--
+Sent from my iPhone
+
+> On Apr 27, 2016, at 2:39 AM, Luigi Rizzo <rizzo@iet.unipi.it> wrote:
 > 
-> Dragos and I are working on getting nft support into ConnMan [1]. Now we
-> face a small problem with the rule we load, which are essentially:
-> 
->  nft add table connman
->  nft add chain connman nat-prerouting			\
-> 	{ type nat hook prerouting priortiy 0 ; }
->  nft add chain connman nat-postrouting			\
-> 	{ type nat hook postrouting priortiy 0 ; }
->  nft add chain connman filter-output			\
-> 	{ type filter hook output priority 0 ; }
-> 
-> These work nicely using the nft CLI but when we run those commands
-> via libnftnl after a fresh reboot of the system, there is a ENOENT at
-> the third rule.
-
-Most likely you're missing the NLM_F_CREATE flags in your netlink
-messages.
-
-Please, send us patches for the example so other don't hit this
-problem.
-
-Thanks.
+> ipfw+dummynet
