@@ -1,108 +1,84 @@
-From: Satish Patel <satish.txt@gmail.com>
-Subject: Re: Build firewall with millions pps support
-Date: Wed, 27 Apr 2016 11:29:30 -0400
-Message-ID: <CAPgF-fos=c0Equ-YUDrOSzJ-MDWPkax9E2HBnKYVpZAVg9yHyA@mail.gmail.com>
-References: <CAPgF-foyqY7_UbQVK7R4vU5MRP0XsfgXAjpQUNwNROZVq9YxDQ@mail.gmail.com>
-	<CA+hQ2+ja5bRqH301R1q0ThKNno87yUHVCCc8pfvPVMFW48sDiw@mail.gmail.com>
-	<CAPgF-fpwkShxm4uHV8vuzAsHC9C8=Ske-MY14axtWxELvZvCZA@mail.gmail.com>
-	<881ec44b-22db-4f37-828d-cb8c0994131d@Spark>
+From: Stephan Arndt <arndt.stephan@gmail.com>
+Subject: libnetfilter_conntrack API question
+Date: Thu, 28 Apr 2016 21:02:23 +0200
+Message-ID: <CADe663vwDSDHWhZA_WeyKctoDbuK=1Ao8YtdiVN91Wn9KTu3Mw@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc;
-        bh=CRP5GA3tAUiB2yhMJJ6DnasHdXJabZuDucg8s2B/6Kg=;
-        b=HYciDYzlhcS4o4DC8ThRC4neUgXy/2UoJXOukls1pdWcEh/3ek91R48hdUb3SJHAyH
-         kztTK5naddBjny8wLORg6oSEHhGFo7+Ikxx2VZuApLgm8pJOjkKHSl6o9qbjNvkvB8KI
-         U8IR9ZEnqyui32yypb/yb7nNBjzbbQyPyup7p9eNJVwrlKU97ViuZAUON3zZ7VBoJeYx
-         /X7AY8mniBfXtVijpE4plyt6EjZlHMCox4eBNQ73V7Fmw/bv/yOdltq9CSeZvAJRCl1Q
-         C4ufHPPWP5cnqImhhNH10b514hvI6QXTP5vJACZOEUnVkB+GWqui3itoZ726fqdOwH8n
-         aytA==
-In-Reply-To: <881ec44b-22db-4f37-828d-cb8c0994131d@Spark>
+        h=mime-version:date:message-id:subject:from:to;
+        bh=C21wtuR/IIHaAc/xJy2NBPkX60nqzhrKp6MypnMnKAE=;
+        b=py8VZ8IMsyhXmUov2KsYTHBY+iDZilYyd73qgYWn7y72KKX2FtfesfhuBLe5Qxc118
+         ur449qCjEcVOhmYQlu9kLIYP69jQVFPhF6X+54N92VyVY71Pv22ZW0H/uwxzW8hpgkbp
+         aAS3BgVlvH9osPG4AR4LptFtvcpJB3wSnipIrVxNs2yWCIFvVcwtBz7vHi+Fq05jnQHB
+         YfCvTcZmjm8d9Yxu3DzLCff16QtNPl9YgZJXO3/FfCDOl0LC+JiqrPVhS1n144rKp1AG
+         vi1Xmzv6eYJQIk9pNy0ekmEFwxM/4qMOvm91PkRoXrW/koHGIF3pb9bJKtnl18rZuZxf
+         La+w==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Payam Chychi <pchychi@gmail.com>
-Cc: Luigi Rizzo <rizzo@iet.unipi.it>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-already did lots of and more you google more you get confused.. They
-are many many kind of NIC out there and everyone is slide differ from
-other thats why thought lets ask experts so i can save time and money
-to because i don't want to buy something buy mistake which look fancy
-by description. Anyway thanks for advice :)
+Hello,
 
-On Wed, Apr 27, 2016 at 11:08 AM, Payam Chychi <pchychi@gmail.com> wrote:
->
->
-> On Apr 27, 2016, 8:03 AM -0700, Satish Patel <satish.txt@gmail.com>, wrote:
->
-> How about this Intel NIC
-> http://www.intel.com/content/dam/doc/product-brief/ethernet-x520-server-adapters-brief.pdf
->
-> Does it support Multi Queue?
->
-> On Wed, Apr 27, 2016 at 2:13 AM, Luigi Rizzo <rizzo@iet.unipi.it> wrote:
->
-> you may want to look at github.com/luigirizzo/netmap-ipfw ,
-> it is a version of FreeBSD's ipfw+dummynet which runs on top
-> of netmap.
->
-> This works on both Linux and FreeBSD
->
-> Re. cards in my experience the Intel cards (the old X520
-> based on the 85299, and the newer X710 based on the new chipset)
-> are both decent (I have a slight preference for the older,
-> which I find more performant)
->
-> cheers
-> luigi
->
->
-> On Wed, Apr 27, 2016 at 5:20 AM, Satish Patel <satish.txt@gmail.com> wrote:
->
->
-> Planning to build stateless firewall which support 10GE link with
-> handling 2 million packet per second, need following suggestion from
-> folks
->
-> 1. Which OS i should use? (BSD or Linux?)
-> 2. what type of 10GE NIC i should pick to achieve high Mpps (multiqueue
-> etc.)
-> 3. what should i use for bypass kernel (I heard from googling people
-> saying use this technique).
-> 4. what kind of server i should pick?
->
-> We are build this firewall to stop bad traffic at front door and DDoS
-> (specially flooding and UDP IP Fragmentation stype)
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at http://vger.kernel.org/majordomo-info.html
->
->
->
->
->
-> --
-> -----------------------------------------+-------------------------------
-> Prof. Luigi RIZZO, rizzo@iet.unipi.it . Dip. di Ing. dell'Informazione
-> http://www.iet.unipi.it/~luigi/ . Universita` di Pisa
-> TEL +39-050-2217533 . via Diotisalvi 2
-> Mobile +39-338-6809875 . 56122 PISA (Italy)
-> -----------------------------------------+-------------------------------
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at http://vger.kernel.org/majordomo-info.html
->
->
->
->
-> Mate, how about you use the power of google and do some actual research
-> insted of asking for people to hold your hand without any prior work done by
-> yourself?
->
->
+I am currently using the nfqueue library to process incoming and
+outoing packets.
+I now want to do some additional connection tracking and are looking
+at the conntrack library for this. In general, I want to pretty much
+the same as this guy [1], namely listen for TCP/UDP conntrack
+DESTROY-events to remove additional info out of a list which also
+tracks the connections.
+
+Since I need to process both the nfqueue events, and the conntrack
+events, I wanted implement the handling of both via polling, as
+suggested in the answer to [1].
+But while I know how to use the filedescriptor for the nfqueue, the
+examples for libnetfilter_conntrack always use libmnl to receive
+conntrack events and to run the callback on these events (and read
+directly from an mnl_socket pointer) . So what I want to know is:
+
+How can I handle conntrack events without using libmnl?
+I have looked at the library setup page [2] and it seems like I can
+just register a callback via "nfct_callback_register(..)", but how do
+I run this callback?
+I.e., for nfqueue, I would call "nfq_handle_packet()" after filling my
+buffer for the packet with "recv()", but I don't know how what to do
+with my conntrack buffer after I filled it via "rec()".
+
+Basically I want to do something like this:
+
+    while ((ready = poll(fds, FD_COUNT,0)) && ready > 0 )
+    {
+        int i;
+        for (i = 0; i < FD_COUNT; i++) {
+
+            if ( fds[i].revents == POLLIN ) {
+
+                /* 0 is the nfqueue filedescriptor */
+                if (i == 0) {
+                    int rv = recv(fd_nfq, buf_nfq, sizeof(buf_nfq), 0);
+                    nfq_handle_packet(nf_h, buf_nfq, rv);
+                } else {
+                    /* What to do here? */
+                    recv(fd_ct, buf_ct, sizeof(buf_ct), 0);
+                }
+
+            }
+
+        }
+    }
+
+Another question, when using the
+
+ nfct_open(u_int8_t subsys_id, unsigned subscriptions)
+
+function, what is the "subscriptions" variable? I've seen it set to 0
+while poking around, what are the options that I can subscribe to?
+
+Regards,
+
+Stephan
+
+Links:
+[1] https://www.spinics.net/lists/netfilter-devel/msg03308.html
