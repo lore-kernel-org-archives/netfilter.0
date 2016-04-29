@@ -1,45 +1,40 @@
-From: Daniel Wagner <wagi@monom.org>
-Subject: Re: autoload of nft modules
-Date: Fri, 29 Apr 2016 07:33:45 +0200
-Message-ID: <9ca55cc7-1951-3151-0df3-335e17443ee9@monom.org>
-References: <67e90927-885f-e860-a1dd-9f61ea95b53e@monom.org>
- <20160427125447.GA6899@salvia>
+From: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
+Subject: bursts of INVALID packets
+Date: Fri, 29 Apr 2016 19:51:29 -0400
+Message-ID: <20160429195129.2e5b9d27@playground>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20160427125447.GA6899@salvia>
+DKIM-Filter: OpenDKIM Filter v2.10.3 MAIL1.WPI.EDU u3TNpXrh025445
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wpi.edu; s=_dkim;
+	t=1461973893; i=@wpi.edu;
+	bh=xcq2Ita+kf5DzrNAdY2Ha7j0yc1bGPhM7rUL6WIkmo0=;
+	h=Date:From:To:Subject;
+	b=skTFOfG9J9rzQaNYRr42tWOl9Gk8YwsKrgpe0ChqXitkSiDbHHoCqVgO65uwuM00g
+	 vLDfd0Z5HQFOSlR4ZtPvNyYZyzBkQMVZt7BgmX3vHd5ZxbsWuh4nFB8LfBfkYa60r3
+	 r1GP3jwkTKECwVva12A+XAPPKhqE4FVCh5rXH+QQ=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org, connman@lists.01.org, Dragos Tatulea <dragos@endocode.com>
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 04/27/2016 02:54 PM, Pablo Neira Ayuso wrote:
-> On Wed, Apr 27, 2016 at 10:52:13AM +0200, Daniel Wagner wrote:
->> Dragos and I are working on getting nft support into ConnMan [1]. Now we
->> face a small problem with the rule we load, which are essentially:
->>
->>  nft add table connman
->>  nft add chain connman nat-prerouting			\
->> 	{ type nat hook prerouting priortiy 0 ; }
->>  nft add chain connman nat-postrouting			\
->> 	{ type nat hook postrouting priortiy 0 ; }
->>  nft add chain connman filter-output			\
->> 	{ type filter hook output priority 0 ; }
->>
->> These work nicely using the nft CLI but when we run those commands
->> via libnftnl after a fresh reboot of the system, there is a ENOENT at
->> the third rule.
-> 
-> Most likely you're missing the NLM_F_CREATE flags in your netlink
-> messages.
+Kernel: 3.4.112
+Iptables: 1.4.21
+System: Smoothwall Express 3.1
 
-Yes, that did they the trick.
+This isn't exactly a problem; it's more of an oddity that raises some questions.
 
-> Please, send us patches for the example so other don't hit this
-> problem.
+Take two linux systems. Using ssh (and a shell script), transfer /dev/zero from one to /dev/null on the other. With a decent system and 100Mb NICs, they should climb to about 97Mb/s in and out. Very nice. Now interrupt one with CTRL/C. All of a sudden, a burst of INVALID RST packets arrives at (at least) one side. The number of packets in the burst can be from few to many.
 
-Will do.
+I surmise that one side buffered a bunch of packets and continued to transmit them after the transfer was interrupted. The other side received these packets, noted the now-closed connection, and sent RST packets back. The one side, upon receiving the RST packets, marked them INVALID and logged them. All is working as expected.
 
-thanks,
-daniel
+This leads to my questions. Can (or could, or should) netfilter detect that outgoing packets belong to closed conns and mark them INVALID? Should netfilter be able to detect and drop INVALID packets on output? Or, as an alternative, should netfilter be able to see that a conn is closed and mark outgoing packets INVALID so that rules can handle them? Is it worth the CPU cycles to do this?
+
+Dropping INVALID packets on input (mangle:PREROUTING) works marvelously.
+
+Of course, if the outgoing packets have already left netfilter and are queued for transmission, netfilter is out of the loop and cannot stop them.
+
+Aside, I've bumped SWE3.2 to iptables 1.6.0; but it'll be a long while before 3.2 is releasable.
+
+Thanks,
+Neal
