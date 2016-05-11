@@ -1,28 +1,33 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: setting meta priority to select link vlan qos 802.1q priority
- via egress map
-Date: Wed, 11 May 2016 22:49:06 +0200
-Message-ID: <20160511204906.GA24369@salvia>
-References: <CAGBdaZm-3nTMOp=zTF_=h3=epRDDAA13UCwZxnGg5jg8MV1yGg@mail.gmail.com>
- <CAGBdaZ=9bcechsjddxbcFZJGTv7UpkTSi22stnWBnyAsOvxHjw@mail.gmail.com>
+Subject: Re: NOTRACK equivalent
+Date: Wed, 11 May 2016 22:49:54 +0200
+Message-ID: <20160511204954.GB24369@salvia>
+References: <1462869799.1641.3.camel@idealista.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAGBdaZ=9bcechsjddxbcFZJGTv7UpkTSi22stnWBnyAsOvxHjw@mail.gmail.com>
+In-Reply-To: <1462869799.1641.3.camel@idealista.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Brad Pousland <bpousland@izuma.net>
+To: Ricardo Fraile <rfraile@idealista.com>
 Cc: netfilter@vger.kernel.org
 
-On Wed, May 11, 2016 at 03:07:42PM -0500, Brad Pousland wrote:
-> It appears to be a bug with the nftables userspace utility nft. I
-> wrote a program to decode nftables rules and found the nft utility is
-> trying to fill the BPF data register with the priority value in
-> big-endian format.  If I hack it to use little-endian format for the
-> meta value, the skb->priority is set appropriately.
+Hi Ricardo,
 
-Could you pass your hack so we can have a look?
+On Tue, May 10, 2016 at 10:43:19AM +0200, Ricardo Fraile wrote:
+> Hello,
+> 
+> 
+> How is possible to avoid tracking in nft as its done in iptables with
+> NOTRACK?
+> 
+> For example:
+> 
+> iptables -t raw -I PREROUTING -j NOTRACK
+> iptables -t raw -I OUTPUT -j NOTRACK
 
-Thanks!
+This extension doesn't exists yet.
+
+Please fill a bug in bugzilla so we can assign this task to anyone.
