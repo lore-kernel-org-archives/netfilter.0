@@ -1,26 +1,76 @@
-From: =?UTF-8?B?56We5qW95Z2C546y5aWI?= <zh99998@gmail.com>
-Subject: set route LSRR/SSRR option by iptables or nftables
-Date: Fri, 13 May 2016 08:55:01 +0800
-Message-ID: <CAP8bwDWMZ5fkxuX1T5rF-Xbe4Zn8gU0kUWqz93c=5otN2woXag@mail.gmail.com>
+From: Marcin Szewczyk <Marcin.Szewczyk@wodny.org>
+Subject: No "unreachable" response for an outgoing TCP connection when using
+ fwmark
+Date: Sat, 14 May 2016 15:16:39 +0200
+Message-ID: <20160514131639.GC3047@orkisz>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=MoVGEHydftaGXekMDBcKJpbxgmAp8kALsS7+E25P+M4=;
-        b=jr9eru8klMiWz/L2JN8GZdtit8IyWC1L28oh/MXXfzN6/z6ToFko2lz9AOYdg1iWxj
-         EidzF8akXUA9ogixx3+Pko8Z9+K6rLJu4x66pRBXQuxNTbWP3wN36+FhrG6gL+YAfHQj
-         h7CbT8vWYsAUbbZPzb57fsqg6gsk+UyMiZRIUYLP+KkrON+vV818ZJkWfnkpAZeoVXcL
-         io7r6dbpZCMQ7JDVHzQk+BvcTnQAq6Utddqh8mT2j+A8fdvitwj/OpRmleZSpEFAqTFk
-         LnEVpRxualtN+wJZOo+Y5sMkCrR1va8CThynehWWw7SHjEDdQ9yIjGhg/BiVfXupX585
-         x70g==
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-how could I set "strict source and record route" (SSRR) and "loose
-source and record route" (LSRR) by iptables or nftables ?
+Hi,
 
-if they can't do it, is there any other way to do it?
+I would like to route locally-generated traffic:
+- to a TCP port "A" of host "H" via the interface "A",
+- to a TCP port "B" of host "H" via the interface "B".
+
+Interface "B" is sometimes unavailable. Then I would like the kernel to
+notify the user with "Network is unreachable" error if one tries to
+connect to the TCP port "B".
+
+I have tried the following settings (when the interface "B" is down):
+
+# iptables -t mangle -nvL OUTPUT
+Chain OUTPUT (policy ACCEPT 2 packets, 120 bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+    2   120 MARK       all  --  *      *       0.0.0.0/0            host-H-ip         MARK set 0x64
+(for simplicity the rule does not include ports yet)
+
+# ip rule
+0:      from all lookup local 
+32765:  from all fwmark 0x64 lookup 200 
+32766:  from all lookup main 
+32767:  from all lookup default
+
+# ip route show table 200
+prohibit default
+
+There are no surprises when the interface "B" is available and the 200
+table contains a regular routing rule.
+
+But when the interface "B" is not available I get satisfactory results
+only for ICMP and UDP:
+
+$ ping host-H-ip
+PING host-H-ip (host-H-ip) 56(84) bytes of data.
+ping: sendmsg: Network is unreachable
+
+$ nc -nuv host-H-ip 5000
+(UNKNOWN) [host-H-ip] 5000 (?) open
+foo
+too many output retries : Network is unreachable
+
+For TCP it just hangs:
+$ nc -nv host-H-ip 5000
+
+I have found some threads that seem to be connected with the topic:
+http://marc.info/?l=linux-netdev&m=136633466813095&w=2
+http://www.spinics.net/lists/netdev/msg281954.html
+http://netfilter-devel.vger.kernel.narkive.com/8ggjpr4G/netfilter-core-mangle-table-rules-are-not-taken-into-account-in-preliminary-routing-decision
+
+Unfortunately, I still do not understand why I do not get "Network is
+unreachable" for TCP as well. Could anybody explain it to me?
+
+I have posted the following message to the netdev mailing list first but
+I suppose that netfilter might be better because it is not
+development-only.
+
+Best regards,
+
+-- 
+Marcin Szewczyk
+http://wodny.org
