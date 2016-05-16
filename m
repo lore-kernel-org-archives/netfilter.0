@@ -1,76 +1,40 @@
-From: Marcin Szewczyk <Marcin.Szewczyk@wodny.org>
-Subject: No "unreachable" response for an outgoing TCP connection when using
- fwmark
-Date: Sat, 14 May 2016 15:16:39 +0200
-Message-ID: <20160514131639.GC3047@orkisz>
+From: Adam Mills <adam@chambills.com>
+Subject: Fwd: iptables mac match in PREROUTING not always matching (on bridge)
+Date: Mon, 16 May 2016 15:10:26 +1000
+Message-ID: <CAB-=y+DF+9px8c1-vZJ1r7M+NQtS5fvOpNfaZmhxuBhwyWk=jQ@mail.gmail.com>
+References: <CAB-=y+Cmm88Yx7qefYiT2C9VyiWMnNNkH8NiLwr-a2yn4=_-QA@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chambills-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :content-transfer-encoding;
+        bh=POXoC2nKitdfnLv/du5R0IZUYbq4iGOmTvF233yQe2c=;
+        b=mPmA47/wpwm7UqLDzNy7MDRgJP5wWS3jbnPXyK3DCAv/rCBMRFGIaIDP0YvTaaLkNJ
+         ZQrkh7GE62r/ZdDziv9I7f1vfZIBRvK2bXjUv0qytb2RMzo80RvH/zl3vA83gzVmz4WU
+         SCPs0Cu/CywVpcz7C8gm8CjT/jk1B0W29JchRwgCVaMfiRoZ5b0BrqatuL6C2bUZdmHm
+         Lb8+JoV8Y8k/NXk9uA+SZfB+1Lu2l6BdCX6CX8jdh4r8hWHdujc90yZc1THICzvW9VIE
+         3alIxiJDKNO5CLHMnFhFq6Gw/4kejFUJhjQv4YjgrZovInKQOB4Q9F1je+zcs5KYH9ou
+         hKWg==
+In-Reply-To: <CAB-=y+Cmm88Yx7qefYiT2C9VyiWMnNNkH8NiLwr-a2yn4=_-QA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="macroman"
 To: netfilter@vger.kernel.org
 
-Hi,
+I'm running iptables v1.4.21 on OpenWRT barrier breaker configured as
+a bridge with
 
-I would like to route locally-generated traffic:
-- to a TCP port "A" of host "H" via the interface "A",
-- to a TCP port "B" of host "H" via the interface "B".
+net.bridge.bridge-nf-call-iptables=3D1
 
-Interface "B" is sometimes unavailable. Then I would like the kernel to
-notify the user with "Network is unreachable" error if one tries to
-connect to the TCP port "B".
+I have some rules in iptables chain PREROUTING (NAT) that filter on
+mac then log any unknown devices. I regularly get logs for devices
+whose mac is previously filtering to accept.
 
-I have tried the following settings (when the interface "B" is down):
+Is this a known issue? Am I doing something wrong?
 
-# iptables -t mangle -nvL OUTPUT
-Chain OUTPUT (policy ACCEPT 2 packets, 120 bytes)
- pkts bytes target     prot opt in     out     source               destination         
-    2   120 MARK       all  --  *      *       0.0.0.0/0            host-H-ip         MARK set 0x64
-(for simplicity the rule does not include ports yet)
+Thanks
+Adam
 
-# ip rule
-0:      from all lookup local 
-32765:  from all fwmark 0x64 lookup 200 
-32766:  from all lookup main 
-32767:  from all lookup default
-
-# ip route show table 200
-prohibit default
-
-There are no surprises when the interface "B" is available and the 200
-table contains a regular routing rule.
-
-But when the interface "B" is not available I get satisfactory results
-only for ICMP and UDP:
-
-$ ping host-H-ip
-PING host-H-ip (host-H-ip) 56(84) bytes of data.
-ping: sendmsg: Network is unreachable
-
-$ nc -nuv host-H-ip 5000
-(UNKNOWN) [host-H-ip] 5000 (?) open
-foo
-too many output retries : Network is unreachable
-
-For TCP it just hangs:
-$ nc -nv host-H-ip 5000
-
-I have found some threads that seem to be connected with the topic:
-http://marc.info/?l=linux-netdev&m=136633466813095&w=2
-http://www.spinics.net/lists/netdev/msg281954.html
-http://netfilter-devel.vger.kernel.narkive.com/8ggjpr4G/netfilter-core-mangle-table-rules-are-not-taken-into-account-in-preliminary-routing-decision
-
-Unfortunately, I still do not understand why I do not get "Network is
-unreachable" for TCP as well. Could anybody explain it to me?
-
-I have posted the following message to the netdev mailing list first but
-I suppose that netfilter might be better because it is not
-development-only.
-
-Best regards,
-
--- 
-Marcin Szewczyk
-http://wodny.org
+=E1=90=A7
