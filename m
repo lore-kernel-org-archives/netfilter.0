@@ -1,40 +1,92 @@
-From: Adam Mills <adam@chambills.com>
-Subject: Fwd: iptables mac match in PREROUTING not always matching (on bridge)
-Date: Mon, 16 May 2016 15:10:26 +1000
-Message-ID: <CAB-=y+DF+9px8c1-vZJ1r7M+NQtS5fvOpNfaZmhxuBhwyWk=jQ@mail.gmail.com>
-References: <CAB-=y+Cmm88Yx7qefYiT2C9VyiWMnNNkH8NiLwr-a2yn4=_-QA@mail.gmail.com>
+From: =?UTF-8?Q?J=c3=bcrgen_Schmidt?= <abcdmail@freenet.de>
+Subject: Strange behavior of conntrack helper sip: rules do not always match
+ as expected
+Date: Wed, 18 May 2016 20:21:03 +0200
+Message-ID: <573CB28F.8060004@freenet.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chambills-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :content-transfer-encoding;
-        bh=POXoC2nKitdfnLv/du5R0IZUYbq4iGOmTvF233yQe2c=;
-        b=mPmA47/wpwm7UqLDzNy7MDRgJP5wWS3jbnPXyK3DCAv/rCBMRFGIaIDP0YvTaaLkNJ
-         ZQrkh7GE62r/ZdDziv9I7f1vfZIBRvK2bXjUv0qytb2RMzo80RvH/zl3vA83gzVmz4WU
-         SCPs0Cu/CywVpcz7C8gm8CjT/jk1B0W29JchRwgCVaMfiRoZ5b0BrqatuL6C2bUZdmHm
-         Lb8+JoV8Y8k/NXk9uA+SZfB+1Lu2l6BdCX6CX8jdh4r8hWHdujc90yZc1THICzvW9VIE
-         3alIxiJDKNO5CLHMnFhFq6Gw/4kejFUJhjQv4YjgrZovInKQOB4Q9F1je+zcs5KYH9ou
-         hKWg==
-In-Reply-To: <CAB-=y+Cmm88Yx7qefYiT2C9VyiWMnNNkH8NiLwr-a2yn4=_-QA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-I'm running iptables v1.4.21 on OpenWRT barrier breaker configured as
-a bridge with
+Hello!
 
-net.bridge.bridge-nf-call-iptables=3D1
+Given is an Asterisk server running on a Linux 3.10.101 machine with a
+global IP address (-> no NAT).
 
-I have some rules in iptables chain PREROUTING (NAT) that filter on
-mac then log any unknown devices. I regularly get logs for devices
-whose mac is previously filtering to accept.
+The following rules are given:
 
-Is this a known issue? Am I doing something wrong?
 
-Thanks
-Adam
+INPUT
+=3D=3D=3D=3D=3D
 
-=E1=90=A7
+# SIP
+iptables \
+-A INPUT -i ppp0 -p udp -s 217.0.18.0/23 \
+-d 217.232.238.65 --sport 5060 --dport 5060 -m conntrack \
+--ctstate RELATED,ESTABLISHED -j ACCEPT
+
+# RTP
+iptables \
+-A INPUT -i ppp0 -p udp -s 217.0.0.0/13 -d 217.232.238.65 \
+--dport 11500:12000 -m conntrack --ctstate RELATED,ESTABLISHED \
+-m helper --helper sip -j ACCEPT
+
+
+
+OUTPUT
+=3D=3D=3D=3D=3D=3D
+
+# SIP
+iptables -A OUTPUT -p udp -o ppp0 -s 217.232.238.65 -d 217.0.18.0/23 \
+--dport 5060 --sport 5060 -j ACCEPT
+
+# RTP
+iptables -A OUTPUT -p udp -o ppp0 -s 217.232.238.65 -d 217.0.0.0/13
+--sport 11500:12000 -m conntrack --ctstate RELATED,ESTABLISHED \
+-m helper --helper sip -j ACCEPT
+
+
+
+This configuration works pretty fine as long as there is no ringgroup
+defined in Asterisk / FreePBX, which contains an *outbound* phone
+number. If the ringgroup contains an outbound phone number, the
+following problem happens, if the incoming call is accepted *locally*:
+
+- Asterisk stops the signaling to the outbound phone through the trunk.
+- Asterisk gives the call to the local phone.
+
+
+Now the problem:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+All RTP packages between provider and Asterisk trunk are now blocked in
+both directions by netfilter.
+
+To get it working again, these two additional rules are necessary for
+RTP handling *without* sip helper (but otherwise mostly the same as the
+RTP rules above besides slightly different states):
+
+iptables -I INPUT -i ppp0 -p udp -s 217.0.0.0/13 -d 217.232.238.65
+--dport 11500:12000 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+
+iptables -A OUTPUT -p udp -o ppp0 -s 217.232.238.65 -d 217.0.0.0/13 \
+--sport 11500:12000 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+
+
+Analyzing w/ conntrack -E didn't show any abnormality - the relevant an=
+d
+correct rules have been generated - but obviously aren't matched by the
+standard rules w/ helper sip any more although the rules would have bee=
+n
+completely suited. I too tested the sip helper rules using all states
+NEW,RELATED,ESTABLISHED - this doesn't match, too.
+
+
+Do you have any idea about what's going on there?
+
+
+Thanks for any hint,
+kind regards,
+J=C3=BCrgen
