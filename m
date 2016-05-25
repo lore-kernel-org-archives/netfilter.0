@@ -1,92 +1,49 @@
-From: =?UTF-8?Q?J=c3=bcrgen_Schmidt?= <abcdmail@freenet.de>
-Subject: Strange behavior of conntrack helper sip: rules do not always match
- as expected
-Date: Wed, 18 May 2016 20:21:03 +0200
-Message-ID: <573CB28F.8060004@freenet.de>
+From: Art Emius <art@emius.ru>
+Subject: ipset issues
+Date: Wed, 25 May 2016 23:42:45 +0300
+Message-ID: <CANY1rLhdjTYRu51fsDZaMZ04gzkkN5MLa1-MNJHwqx=v-2c3ow@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:sender:date:message-id:subject:from:to;
+        bh=gce3I0ViZhWkSlsHRiucOS9Bbnq/1fpxtb5xaosOobI=;
+        b=Myz1HZ1xG67Jsx8TmZ8h0OFhqtJ0lVfxtj1J1k1h+YH/c4rBplSM+MSXJ9XiAR967+
+         yGCtxBsIbQU3kDYRKi1Oa58s9Vl2jJ32Urj7PzGgMucXizSXqHbVvauYGfawZdX9KxNm
+         9kxKc1IHafbKJnoJH+CaFOTJfp3LgQWbhtKk+AMshSwmWynjWZBTrrPahiFHz/xjs0fL
+         6aGCzKVEQ+bSlIh8CRyoSuBIyg6cEjT9pUVrv6VllyF+3AyjoASznehvlTZVFFAtZmMp
+         T5nEspicqRcozYO5arMF3FvTNVRr7tWSmyWN5cu9ym9PAHjQ/ZVdZeUlbSpiBxbXKTtc
+         b1Eg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello!
+Hello guys,
 
-Given is an Asterisk server running on a Linux 3.10.101 machine with a
-global IP address (-> no NAT).
+Recently I've encountered an issue with using ipset in my firewall.
 
-The following rules are given:
+I use Debian Linux 8.4, running in virtual machine inside ESXi 5.5.
+My host is 192.168.1.2, remote host is 192.168.1.1.
+I'm running ssh server on my host and want to limit access to it using
+one rule with two sets of different types like this:
 
+iptables -t filter -A INPUT -m set --match-set NETS_IFACE src,src -m
+set --match-set SSH src,dst,dst -j ACCEPT
+iptables -p OUTPUT ACCEPT
 
-INPUT
-=3D=3D=3D=3D=3D
+ipset create SSH hash:ip,port,ip hashsize 8 maxelem 8 family inet
+ipset add SSH 192.168.1.1,tcp:22,192.168.1.2
 
-# SIP
-iptables \
--A INPUT -i ppp0 -p udp -s 217.0.18.0/23 \
--d 217.232.238.65 --sport 5060 --dport 5060 -m conntrack \
---ctstate RELATED,ESTABLISHED -j ACCEPT
+ipset create NETS_IFACE hash:net,iface hashsize 128 maxelem 128 family inet
+ipset add NETS_IFACE 192.168.1.0/24,eth1
 
-# RTP
-iptables \
--A INPUT -i ppp0 -p udp -s 217.0.0.0/13 -d 217.232.238.65 \
---dport 11500:12000 -m conntrack --ctstate RELATED,ESTABLISHED \
--m helper --helper sip -j ACCEPT
+It doesn't work this way. eth1 really exists and handle traffic.
+But If I use rule like this it works fine.
+iptables -t filter -A INPUT -i eth1 -m set --match-set SSH src,dst,dst -j ACCEPT
 
+What am I doing wrong?
 
-
-OUTPUT
-=3D=3D=3D=3D=3D=3D
-
-# SIP
-iptables -A OUTPUT -p udp -o ppp0 -s 217.232.238.65 -d 217.0.18.0/23 \
---dport 5060 --sport 5060 -j ACCEPT
-
-# RTP
-iptables -A OUTPUT -p udp -o ppp0 -s 217.232.238.65 -d 217.0.0.0/13
---sport 11500:12000 -m conntrack --ctstate RELATED,ESTABLISHED \
--m helper --helper sip -j ACCEPT
-
-
-
-This configuration works pretty fine as long as there is no ringgroup
-defined in Asterisk / FreePBX, which contains an *outbound* phone
-number. If the ringgroup contains an outbound phone number, the
-following problem happens, if the incoming call is accepted *locally*:
-
-- Asterisk stops the signaling to the outbound phone through the trunk.
-- Asterisk gives the call to the local phone.
-
-
-Now the problem:
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-All RTP packages between provider and Asterisk trunk are now blocked in
-both directions by netfilter.
-
-To get it working again, these two additional rules are necessary for
-RTP handling *without* sip helper (but otherwise mostly the same as the
-RTP rules above besides slightly different states):
-
-iptables -I INPUT -i ppp0 -p udp -s 217.0.0.0/13 -d 217.232.238.65
---dport 11500:12000 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
-
-iptables -A OUTPUT -p udp -o ppp0 -s 217.232.238.65 -d 217.0.0.0/13 \
---sport 11500:12000 -m conntrack --ctstate ESTABLISHED -j ACCEPT
-
-
-Analyzing w/ conntrack -E didn't show any abnormality - the relevant an=
-d
-correct rules have been generated - but obviously aren't matched by the
-standard rules w/ helper sip any more although the rules would have bee=
-n
-completely suited. I too tested the sip helper rules using all states
-NEW,RELATED,ESTABLISHED - this doesn't match, too.
-
-
-Do you have any idea about what's going on there?
-
-
-Thanks for any hint,
-kind regards,
-J=C3=BCrgen
+Regards,
+Art
