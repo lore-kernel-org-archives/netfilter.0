@@ -1,57 +1,66 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipset issues
-Date: Wed, 25 May 2016 22:58:08 +0200 (CEST)
-Message-ID: <alpine.DEB.2.10.1605252255340.18463@blackhole.kfki.hu>
-References: <CANY1rLhdjTYRu51fsDZaMZ04gzkkN5MLa1-MNJHwqx=v-2c3ow@mail.gmail.com>
+From: Thilo-Alexander Ginkel <thilo@ginkel.com>
+Subject: `ip addr del` kills conntrack entries of unrelated IP addresses
+Date: Fri, 27 May 2016 12:40:51 +0200
+Message-ID: <CANvSZQ9VCCMpcxShc-3u0gAFbAL2gSkbYKsxmOsOmY4Tz3iK2A@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	blackhole.kfki.hu; h=mime-version:user-agent:references
-	:message-id:in-reply-to:from:from:date:date:received:received
-	:received; s=20151130; t=1464209801; x=1466024202; bh=24Zia6glFl
-	HIpzaIuVyZ28DDAupm+CQs2JWBwGLaIWo=; b=sXzU49SkvGsNiEHX72r3t3Kq/Q
-	mbUXWZaaJVtrzX6GS3gIsDCLS0/XhtgsIIeWMU2Gg/++ozrTG4kJF6is97PJdHeo
-	RBs35/f0S1DAA1mzuDXw85dTQYojljFoiOhYOHaDjol0Dj1zxpjPsM188eTxYc2v
-	q7kF2yGVhK/K5HvQs=
-In-Reply-To: <CANY1rLhdjTYRu51fsDZaMZ04gzkkN5MLa1-MNJHwqx=v-2c3ow@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ginkel.com; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=aaX5cTl/aAUnqCbmZJyFJpptxt9dHiBsQcOo6cBzBUY=;
+        b=BTn73LpymyIHTmQ6P3uMgXJiR1mqOQUUZGh1Zwfy7yTd7BzGblRRNtsI/TC4XDMecr
+         2fgzOj/KGjg9mUNrDd/6SOBRSWcLbj2fQaJFztb7LENL1TKAmI5pgHM11F8N/KOSlCCK
+         +YL3XP9l8RdX/tYXPT6vXJ0CvcBYV2vMCB6jQ=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Art Emius <art@emius.ru>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Wed, 25 May 2016, Art Emius wrote:
+Hello everyone,
 
-> Recently I've encountered an issue with using ipset in my firewall.
-> 
-> I use Debian Linux 8.4, running in virtual machine inside ESXi 5.5.
-> My host is 192.168.1.2, remote host is 192.168.1.1.
-> I'm running ssh server on my host and want to limit access to it using
-> one rule with two sets of different types like this:
-> 
-> iptables -t filter -A INPUT -m set --match-set NETS_IFACE src,src -m
-> set --match-set SSH src,dst,dst -j ACCEPT
-> iptables -p OUTPUT ACCEPT
-> 
-> ipset create SSH hash:ip,port,ip hashsize 8 maxelem 8 family inet
-> ipset add SSH 192.168.1.1,tcp:22,192.168.1.2
-> 
-> ipset create NETS_IFACE hash:net,iface hashsize 128 maxelem 128 family inet
-> ipset add NETS_IFACE 192.168.1.0/24,eth1
+we've been hunting a bug over the last couple of days and have been
+able to isolate it to an unfortunate `ip addr del` / conntrack
+interaction, which is where my knowledge ends and I'd welcome any
+input on whether what we are seeing is expected behavior or a
+potential bug.
 
-You should use "--match-set NETS_IFACE src,dst" in the rule above if you 
-want to limit the access to the traffic from the 192.168.1.0/24 subnet 
-received on interface eth1 only.
+We are operating a Docker-based infrastructure where - in addition to
+a hosts primary IP - additional IP addresses are added to the primary
+network interface to allow binding the containers' published ports on
+dedicated IP addresses.
 
-> It doesn't work this way. eth1 really exists and handle traffic.
-> But If I use rule like this it works fine.
-> iptables -t filter -A INPUT -i eth1 -m set --match-set SSH src,dst,dst -j ACCEPT
+Let's say, the primary IP is 10.70.0.5/16 (on bond0) and
+container-specific IPs are allocated from 10.70.0.64/32 onwards.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+Container-specific addresses are added using `ip addr add 10.70.0.x/32
+dev bond0` (x >= 64). This works as expected. Things get weird once
+one of these addresses is removed using `ip addr del 10.70.0.x/32 dev
+bond0`. From that point on established outbound connections
+originating from within Docker containers (source IP = 10.70.0.5) no
+longer receive any traffic. The cause of this seems to be that the
+respective connection's entries in the conntrack table are flushed as
+soon as `ip addr del` is executed (as can be observed using `conntrack
+-L`) -- despite this being a different IP address (but on the same
+interface).
+
+I have reproduced the issue so far on
+  Linux redacted 3.10.0-327.el7.x86_64 #1 SMP Thu Oct 29 17:29:29 EDT
+2015 x86_64 x86_64 x86_64 GNU/Linux
+and
+  Linux lyra 4.1.19-v7+ #858 SMP Tue Mar 15 15:56:00 GMT 2016 armv7l GNU/Linux
+
+Any ideas? Expected behavior? Bug?
+
+To reproduce:
+
+Start outbound netcat within Docker container
+ip addr add on the host
+conntrack -L still shows the entry
+ip addr del
+conntrack -L no longer shows the entry (and connection is dead)
+
+Please let me know if you need more details.
+
+Thanks & kind regards,
+Thilo
