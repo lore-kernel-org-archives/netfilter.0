@@ -1,77 +1,86 @@
-From: Art Emius <art@emius.ru>
-Subject: Re: ipset issues
-Date: Sat, 28 May 2016 22:09:16 +0300
-Message-ID: <CANY1rLhrLraT3PauKqZp8+8rfJjQGDd-_4Adq=oLGcJ8wUKa+Q@mail.gmail.com>
-References: <CANY1rLhdjTYRu51fsDZaMZ04gzkkN5MLa1-MNJHwqx=v-2c3ow@mail.gmail.com>
-	<alpine.DEB.2.10.1605252255340.18463@blackhole.kfki.hu>
+From: =?iso-8859-1?Q?Andr=E9_Paulsberg-Csibi_=28IBM_Consultant=29?= 
+	<Andre.Paulsberg-Csibi@evry.com>
+Subject: No sign of INVALID packet , LOGS DROP but not reason
+Date: Sun, 29 May 2016 10:42:47 +0000
+Message-ID: <1464518566817.52562@evry.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:sender:in-reply-to:references:date:message-id:subject
-         :from:to:cc;
-        bh=nq8xMutgA4PtROyrFW4M+sq/En1EVTM+r+AFim0Gj/I=;
-        b=yMmK1+zlrOXPna5MK0h9TOf6AyKtfEkqORNsFFGGrG+bwSXVetXMOr50X0TwW2NodH
-         +fzZ7ciPaWrdRYg4Gng73MsXCgDd82xytE7rQiZYABt/6xlpUdi5QGS+thxd50QGydBq
-         HHvCkE/iUGQivpZ/Bwo4AdCq0TKTSCr+beYY0iqFjsH8hV/1/kmp1Fc98euL5arZGPJJ
-         7Qi/mjUSyQKwDAQeffRsIlJKkCVS5UcfGSXDqutX9YFGz6adDRT/WuAx+M62U9KU3EIK
-         Wgba8X4d6bxixcBOCWSh2PC4EuomsiDPy5i2sUMq7rphFmNIxnhwg71Id4shFEdu7zle
-         Voow==
-In-Reply-To: <alpine.DEB.2.10.1605252255340.18463@blackhole.kfki.hu>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hello Jozsef,
+Hi ,
 
-Thanks for reply.
+=20
+I have come across something that I am starting to think is a bug ,
 
-This makes me feel confused, but seems it doesn't work at all. I've
-tried both src,src and src,dst parameters. Still I see packets are
-being dropped. But I use -i / -o in iptables rules it works fine.
+but before I start upgrading and other works lets see if I missed somet=
+hing !
 
 
-2016-05-25 23:58 GMT+03:00 Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>:
-> On Wed, 25 May 2016, Art Emius wrote:
->
->> Recently I've encountered an issue with using ipset in my firewall.
->>
->> I use Debian Linux 8.4, running in virtual machine inside ESXi 5.5.
->> My host is 192.168.1.2, remote host is 192.168.1.1.
->> I'm running ssh server on my host and want to limit access to it using
->> one rule with two sets of different types like this:
->>
->> iptables -t filter -A INPUT -m set --match-set NETS_IFACE src,src -m
->> set --match-set SSH src,dst,dst -j ACCEPT
->> iptables -p OUTPUT ACCEPT
->>
->> ipset create SSH hash:ip,port,ip hashsize 8 maxelem 8 family inet
->> ipset add SSH 192.168.1.1,tcp:22,192.168.1.2
->>
->> ipset create NETS_IFACE hash:net,iface hashsize 128 maxelem 128 family inet
->> ipset add NETS_IFACE 192.168.1.0/24,eth1
->
-> You should use "--match-set NETS_IFACE src,dst" in the rule above if you
-> want to limit the access to the traffic from the 192.168.1.0/24 subnet
-> received on interface eth1 only.
->
->> It doesn't work this way. eth1 really exists and handle traffic.
->> But If I use rule like this it works fine.
->> iptables -t filter -A INPUT -i eth1 -m set --match-set SSH src,dst,dst -j ACCEPT
->
-> Best regards,
-> Jozsef
-> -
-> E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-> Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
->           H-1525 Budapest 114, POB. 49, Hungary
+I have log entries like these
+
+May 28 10:47:13 zotac kernel: INVALID-STATE IN=3Dvlan0 OUT=3D MAC=3D# S=
+RC=3D189.222.120.167 DST=3D# LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D116 =
+ID=3D5745 PROTO=3DTCP SPT=3D21735 DPT=3D56715 WINDOW=3D0 RES=3D0x00 ACK=
+ RST URGP=3D0
+
+
+I have used
+
+conntrack -E -o timestamp
+
+and added logging with
+
+echo 255 > /proc/sys/net/netfilter/nf_conntrack_log_invalid
+
+
+=A0from what I can see there is no "kernel: nf_ct_tcp: " entries at the=
+ moment of the DROP of ACK RST
+
+and there is an entry in conntrack for this session that should allow A=
+CK RST to terminate that session .
+
+
+when I do :
+
+zotac:~ # journalctl | grep nf_ct | grep " ACK RST " | grep -v " ACK RS=
+T FIN "
+May 26 22:35:31 zotac kernel: nf_ct_tcp: invalid RST IN=3D OUT=3D SRC=3D=
+# DST=3D81.233.185.232 LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D127 ID=3D1=
+4841 PROTO=3DTCP SPT=3D7905 DPT=3D56206 SEQ=3D2244837322 ACK=3D83571625=
+8 WINDOW=3D0 RES=3D0x00 ACK RST URGP=3D0
+
+I only find ONE result , but when I do :
+
+zotac:~ # journalctl | grep INVALID | grep " ACK RST " | grep -v " ACK =
+RST FIN " | grep "May 2[678]" | wc
+=A0=A0 1590=A0=A0 38480=A0 412611
+
+
+I should have atleast 1000 + more nf_ct log entries to match all my INV=
+ALID ACK RST log entries .
+
+
+I have tried to spot some issues with TCPDUMPs , but all packets seems =
+like normal ACK RST when I try to get same result "manually" by sending=
+ SYN packets "I just used "telnet IP PORT" to a port I found in my log =
+=2E..
+
+I see the ACK RST telling me the port is blocked and I can't seem to fi=
+nd any issues with the packet !
 
 
 
--- 
- Art & Emius
- www.emius.ru
+Best regards
+Andr=E9 Paulsberg-Csibi
+Senior Network Engineer
+=46ault Handling
+IBM Services AS
+andre.paulsberg-csibi@evry.com
+
+=20
+   
