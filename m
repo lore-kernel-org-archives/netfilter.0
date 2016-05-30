@@ -1,74 +1,109 @@
-From: =?utf-8?B?QW5kcsOpIFBhdWxzYmVyZy1Dc2liaSAoSUJNIENvbnN1bHRhbnQp?= 
-	<Andre.Paulsberg-Csibi@evry.com>
-Subject: RE: No sign of INVALID packet , LOGS DROP but not reason
-Date: Mon, 30 May 2016 08:17:56 +0000
-Message-ID: <6eee9d67ecb84d43a24c411a4bab7bef@CCDEX021.corp.corpcommon.com>
-References: <1464518566817.52562@evry.com>
- <7ab10402-26d3-62de-4cd5-f4b4c2809c50@familie-kuntze.de>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] libnftnl 1.0.6 release
+Date: Mon, 30 May 2016 12:55:45 +0200
+Message-ID: <20160530105545.GA16431@salvia>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <7ab10402-26d3-62de-4cd5-f4b4c2809c50@familie-kuntze.de>
-Content-Language: en-US
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="2oS5YaxWCcQjTEyO"
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1254"
-To: Noel Kuntze <noel@familie-kuntze.de>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: netfilter-devel@vger.kernel.org
+Cc: netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
 
-VGhhbmsgeW91IGZvciB0aGF0IGFuc3dlciAsIEkgd2lsbCB0cnkgdG8gdmVyaWZ5L2NoZWNrIG91
-dCBpZiB0aGF0IGlzIHRoZSByZWFzb24gLg0KSXQgc2VlbXMgeW91IG1heSBiZSBjb3JyZWN0ICwg
-YXMgaXQgbWFrZXMgbm8gc2Vuc2UgdG8gc2V0IGFueSBVUkcgZmxhZyB3aXRoIHplcm8gZGF0YSAu
-DQooIEkgbWF5IGhhdmUganVzdCAiaWdub3JlZCIgaXQgbWVudGFsbHkgYXMgdGhlIFVSR1AgaXMg
-c2V0IHRvIFpFUk8gLCBhbmQgSSBtYXkgaGF2ZSBhc3N1bWVkIHRoYXQgaXMgdGhlIHNhbWUgYXMg
-bm8gZmxhZyApDQoNCkVpdGhlciB3YXkgSSB0aGluayB0aGF0IG5mX2N0IHNob3VsZCBoYXZlIG1h
-ZGUgYSBsb2cgZW50cnkgZm9yIHRoaXMgLCB3aGljaCBpdCBkb2Vzbid0IA0KKCBhbmQgZXZlbiBp
-ZiBJIG1pc3NlZCBzb21ldGhpbmcgKSB0aGF0IGRvZXMgc2VlbSBsaWtlICJzb21ldGhpbmciIHRo
-YXQgc2hvdWxkIGJlIGZpeGVkIDopDQoNCg0KQmVzdCByZWdhcmRzDQpBbmRyw6kgUGF1bHNiZXJn
-LUNzaWJpDQpTZW5pb3IgTmV0d29yayBFbmdpbmVlciANCkZhdWx0IEhhbmRsaW5nDQpJQk0gU2Vy
-dmljZXMgQVMNCmFuZHJlLnBhdWxzYmVyZy1jc2liaUBldnJ5LmNvbQ0KTSArNDcgOTA3MCA1OTg4
-DQoNCg0KDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBuZXRmaWx0ZXItb3du
-ZXJAdmdlci5rZXJuZWwub3JnIFttYWlsdG86bmV0ZmlsdGVyLW93bmVyQHZnZXIua2VybmVsLm9y
-Z10gT24gQmVoYWxmIE9mIE5vZWwgS3VudHplDQpTZW50OiAyOS4gbWFpIDIwMTYgMTk6NTINClRv
-OiBBbmRyw6kgUGF1bHNiZXJnLUNzaWJpIChJQk0gQ29uc3VsdGFudCkgPEFuZHJlLlBhdWxzYmVy
-Zy1Dc2liaUBldnJ5LmNvbT47IG5ldGZpbHRlckB2Z2VyLmtlcm5lbC5vcmcNClN1YmplY3Q6IFJl
-OiBObyBzaWduIG9mIElOVkFMSUQgcGFja2V0ICwgTE9HUyBEUk9QIGJ1dCBub3QgcmVhc29uDQoN
-Ck9uIDI5LjA1LjIwMTYgMTI6NDIsIEFuZHLDqSBQYXVsc2JlcmctQ3NpYmkgKElCTSBDb25zdWx0
-YW50KSB3cm90ZToNCj4gSGkgLA0KPg0KPiAgDQo+IEkgaGF2ZSBjb21lIGFjcm9zcyBzb21ldGhp
-bmcgdGhhdCBJIGFtIHN0YXJ0aW5nIHRvIHRoaW5rIGlzIGEgYnVnICwNCj4NCj4gYnV0IGJlZm9y
-ZSBJIHN0YXJ0IHVwZ3JhZGluZyBhbmQgb3RoZXIgd29ya3MgbGV0cyBzZWUgaWYgSSBtaXNzZWQg
-c29tZXRoaW5nICENCj4NCj4NCj4gSSBoYXZlIGxvZyBlbnRyaWVzIGxpa2UgdGhlc2UNCj4NCj4g
-TWF5IDI4IDEwOjQ3OjEzIHpvdGFjIGtlcm5lbDogSU5WQUxJRC1TVEFURSBJTj12bGFuMCBPVVQ9
-IE1BQz0jIFNSQz0xODkuMjIyLjEyMC4xNjcgRFNUPSMgTEVOPTQwIFRPUz0weDAwIFBSRUM9MHgw
-MCBUVEw9MTE2IElEPTU3NDUgUFJPVE89VENQIFNQVD0yMTczNSBEUFQ9NTY3MTUgV0lORE9XPTAg
-UkVTPTB4MDAgQUNLIFJTVCBVUkdQPTANCj4NCj4NCj4gSSBoYXZlIHVzZWQNCj4NCj4gY29ubnRy
-YWNrIC1FIC1vIHRpbWVzdGFtcA0KPg0KPiBhbmQgYWRkZWQgbG9nZ2luZyB3aXRoDQo+DQo+IGVj
-aG8gMjU1ID4gL3Byb2Mvc3lzL25ldC9uZXRmaWx0ZXIvbmZfY29ubnRyYWNrX2xvZ19pbnZhbGlk
-DQo+DQo+DQo+ICBmcm9tIHdoYXQgSSBjYW4gc2VlIHRoZXJlIGlzIG5vICJrZXJuZWw6IG5mX2N0
-X3RjcDogIiBlbnRyaWVzIGF0IHRoZSBtb21lbnQgb2YgdGhlIERST1Agb2YgQUNLIFJTVA0KPg0K
-PiBhbmQgdGhlcmUgaXMgYW4gZW50cnkgaW4gY29ubnRyYWNrIGZvciB0aGlzIHNlc3Npb24gdGhh
-dCBzaG91bGQgYWxsb3cgQUNLIFJTVCB0byB0ZXJtaW5hdGUgdGhhdCBzZXNzaW9uIC4NCj4NCj4N
-Cj4gd2hlbiBJIGRvIDoNCj4NCj4gem90YWM6fiAjIGpvdXJuYWxjdGwgfCBncmVwIG5mX2N0IHwg
-Z3JlcCAiIEFDSyBSU1QgIiB8IGdyZXAgLXYgIiBBQ0sgUlNUIEZJTiAiDQo+IE1heSAyNiAyMjoz
-NTozMSB6b3RhYyBrZXJuZWw6IG5mX2N0X3RjcDogaW52YWxpZCBSU1QgSU49IE9VVD0gU1JDPSMg
-RFNUPTgxLjIzMy4xODUuMjMyIExFTj00MCBUT1M9MHgwMCBQUkVDPTB4MDAgVFRMPTEyNyBJRD0x
-NDg0MSBQUk9UTz1UQ1AgU1BUPTc5MDUgRFBUPTU2MjA2IFNFUT0yMjQ0ODM3MzIyIEFDSz04MzU3
-MTYyNTggV0lORE9XPTAgUkVTPTB4MDAgQUNLIFJTVCBVUkdQPTANCj4NCj4gSSBvbmx5IGZpbmQg
-T05FIHJlc3VsdCAsIGJ1dCB3aGVuIEkgZG8gOg0KPg0KPiB6b3RhYzp+ICMgam91cm5hbGN0bCB8
-IGdyZXAgSU5WQUxJRCB8IGdyZXAgIiBBQ0sgUlNUICIgfCBncmVwIC12ICIgQUNLIFJTVCBGSU4g
-IiB8IGdyZXAgIk1heSAyWzY3OF0iIHwgd2MNCj4gICAgMTU5MCAgIDM4NDgwICA0MTI2MTENCj4N
-Cj4NCj4gSSBzaG91bGQgaGF2ZSBhdGxlYXN0IDEwMDAgKyBtb3JlIG5mX2N0IGxvZyBlbnRyaWVz
-IHRvIG1hdGNoIGFsbCBteSBJTlZBTElEIEFDSyBSU1QgbG9nIGVudHJpZXMgLg0KPg0KPg0KPiBJ
-IGhhdmUgdHJpZWQgdG8gc3BvdCBzb21lIGlzc3VlcyB3aXRoIFRDUERVTVBzICwgYnV0IGFsbCBw
-YWNrZXRzIHNlZW1zIGxpa2Ugbm9ybWFsIEFDSyBSU1Qgd2hlbiBJIHRyeSB0byBnZXQgc2FtZSBy
-ZXN1bHQgIm1hbnVhbGx5IiBieSBzZW5kaW5nIFNZTiBwYWNrZXRzICJJIGp1c3QgdXNlZCAidGVs
-bmV0IElQIFBPUlQiIHRvIGEgcG9ydCBJIGZvdW5kIGluIG15IGxvZyAuLi4NCj4NCj4gSSBzZWUg
-dGhlIEFDSyBSU1QgdGVsbGluZyBtZSB0aGUgcG9ydCBpcyBibG9ja2VkIGFuZCBJIGNhbid0IHNl
-ZW0gdG8gZmluZCBhbnkgaXNzdWVzIHdpdGggdGhlIHBhY2tldCAhDQo+DQo+DQo+DQo+IEJlc3Qg
-cmVnYXJkcw0KPiBBbmRyw6kgUGF1bHNiZXJnLUNzaWJpDQo+IFNlbmlvciBOZXR3b3JrIEVuZ2lu
-ZWVyDQo+IEZhdWx0IEhhbmRsaW5nDQo+IElCTSBTZXJ2aWNlcyBBUw0KPiBhbmRyZS5wYXVsc2Jl
-cmctY3NpYmlAZXZyeS5jb20NCkhlbGxvIEFuZHLDqSwNCg0KVGhlIFRDUCBmbGFnIGNvbWJpbmF0
-aW9uICJBQ0sgUlNUIFVSR1A9MCIgaXMgaW52YWxpZCwgSSB0aGluay4gVGhlIFJGQyAoUkZDIDYw
-OTMpIGFib3V0IHRoZSB1cmdlbnQgcG9pbnRlcg0KaXMgcHJldHR5IGNsZWFyIGFib3V0IHRoYXQu
-DQoNCi0tIA0KDQpNaXQgZnJldW5kbGljaGVuIEdyw7zDn2VuL0tpbmQgUmVnYXJkcywNCk5vZWwg
-S3VudHplDQoNCkdQRyBLZXkgSUQ6IDB4NjNFQzY2NTgNCkZpbmdlcnByaW50OiAyM0NBIEJCNjAg
-MjE0NiAwNUU3IDcyNzggNjU5MiAzODM5IDI5OEYgNjNFQyA2NjU4DQoNCg0K
+
+--2oS5YaxWCcQjTEyO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi!
+
+The Netfilter project proudly presents:
+
+        libnftnl 1.0.6
+
+libnftnl is a userspace library providing a low-level netlink
+programming interface (API) to the in-kernel nf_tables subsystem. The
+library libnftnl has been previously known as libnftables. This
+library is currently used by the nft command line tool.
+
+This release includes the following list of updates:
+
+* New TLV infrastructure for user data are in rule, set and elements.
+* Support for the new tracing infrastructure.
+* Matching of ct bytes and packets.
+* meta prandom support.
+* Enhancements for the limit expressions.
+* Support for payload mangling.
+* Masquerading port range selection.
+  ... and fixes.
+
+You can download this library from:
+
+http://www.netfilter.org/projects/libnftnl/downloads.html
+ftp://ftp.netfilter.org/pub/libnftnl/
+
+Enjoy this new release and help us testing, thanks!
+
+
+--2oS5YaxWCcQjTEyO
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: attachment; filename="changes-libnftnl-1.0.6.txt"
+Content-Transfer-Encoding: quoted-printable
+
+Arturo Borrero (2):
+      chain: fix segfault in 'device' XML parsing
+      expr: ct: fix typo unknow vs unknown
+
+Carlos Falgueras Garc=EDa (8):
+      udata: add TLV user data infrastructure
+      tests: nft-rule-test: check for NFTNL_RULE_USERDATA
+      libnftnl: Add to .gitignore all auto-generated files
+      libnftnl: gitignore: Fix mistake in gitignore regexp
+      tests: Free nftnl_udata_buf before exit
+      rule: Fix segfault due to invalid free of rule user data
+      set_elem: Fix memory leak
+      set_elem: Copy user data memory
+
+Daniel Wagner (1):
+      examples: load modules when adding chains or tables
+
+Florian Westphal (4):
+      src: rename EXPORT_SYMBOL to EXPORT_SYMBOL_ALIAS
+      src: add trace infrastructure support
+      src: ct: add packet and byte counter support
+      src: meta: add prandom support
+
+Pablo Neira Ayuso (13):
+      expr: limit: add burst attribute
+      expr: limit: add per-byte limiting support
+      expr: add dup expression support
+      expr: dup: fix missing space in text output
+      expr: limit: add support for flags
+      expr: add forward expression
+      rule: fix leaks in NFTNL_RULE_USERDATA
+      libnftnl: allow any set name length
+      src: remove unnecessary inline in _snprintf functions
+      src: missing static in several array definitions
+      chain: missing constification of _get() functions
+      include: refresh nf_tables.h cache copy
+      build: update LIBVERSION to prepare a new release
+
+Patrick McHardy (4):
+      payload: add payload mangling support
+      trace: fix multiple copy and paste errors
+      trace: fix missing NFTNL_TRACE_JUMP_TARGET in nftnl_trace_get_str()
+      libnftnl: constify object arguments to various functions
+
+Shivani Bhardwaj (2):
+      expr: masq: Add support for port selection
+      tests: expr-nat: Use different values to test
+
+Vijay Subramanian (3):
+      expr: Fix compilation with JSON and XML parsing enabled
+      examples: Fix nft-table-upd example
+      Add support to print netdev family
+
+
+--2oS5YaxWCcQjTEyO--
