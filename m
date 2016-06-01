@@ -1,38 +1,33 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH] netfilter: fix possible ZERO_SIZE_PTR
- pointerdereferencing error.
-Date: Wed, 1 Jun 2016 13:04:25 +0200
-Message-ID: <20160601110425.GA8276@salvia>
-References: <1464770068-7508-1-git-send-email-lixiubo@cmss.chinamobile.com>
- <20160601092711.GB2711@salvia>
- <574EB07B.3060307@cmss.chinamobile.com>
+From: Laura Garcia <nevola@gmail.com>
+Subject: Quick reference of nftables
+Date: Thu, 2 Jun 2016 00:33:06 +0200
+Message-ID: <20160601223302.GA4521@sonyv>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=date:from:to:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=c/mNl2zvQVB5PCHQ98hJjowJJm3iyT5yD89JEAWEwpE=;
+        b=z2uf3Lvx+2mlAj686A49VywK7YmKZ88KPwL5DmcjwdFksElBSBNnshPJITJKDZxeSy
+         LVgddXp+pwOWl2CvBcbtTO5ZuYH8r9ldCPsKzWdLxUIb8XdKJJdJrnMVJp7Vxxrp5oXv
+         SidSwnPixCrokOZ6kE8LXBRP/MlLpuIp6iXdiJ5DnTrJaK29JJ6A1TVThSS4S2/eju6Q
+         kv9YVnBp5VyAPeU35M1F4a9bYRX1B8tfG/ZwihsXY9g81aYS+XaXvEzGeZpfa5L3IUBL
+         jNz+FEMK476GO/tYiKfe+PJdwDJxvHgI4DUg26rhv1N+UVPRpdCKi5YV/KiHVak6VWwJ
+         S1mQ==
 Content-Disposition: inline
-In-Reply-To: <574EB07B.3060307@cmss.chinamobile.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Xiubo Li <lixiubo@cmss.chinamobile.com>
-Cc: kaber@trash.net, kadlec@blackhole.kfki.hu, davem@davemloft.net, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Wed, Jun 01, 2016 at 05:52:59PM +0800, Xiubo Li wrote:
-> >>  net/netfilter/x_tables.c | 3 +++
-> >>  1 file changed, 3 insertions(+)
-> >>
-> >>diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
-> >>index c8a0b7d..4df8e38 100644
-> >>--- a/net/netfilter/x_tables.c
-> >>+++ b/net/netfilter/x_tables.c
-> >>@@ -1185,6 +1185,9 @@ struct nf_hook_ops *xt_hook_link(const struct xt_table *table, nf_hookfn *fn)
-> >
-> >What kernel version are you using? I don't see xt_hook_link() in the
-> >development tree.
-> 
-> Sorry, in the wrong tree, i just work on linux-next tree, forget to checkout
-> the newest tags.
-> 
-> Should I will use nf.git tree or others instead ?
+Hi! I've created a quick reference of nftables in the official wiki in
+order to provide a complete list of options and features that
+currently are available.
 
-Yes please, thanks.
+https://wiki.nftables.org/wiki-nftables/index.php/Quick_reference-nftables_in_10_minutes
+
+Hope this helps to introduce to nft.
+
+Regards.
