@@ -1,48 +1,42 @@
-From: Georgios Amanakis <gamanakis@gmail.com>
-Subject: ip6tables --set-mark drops/distorts link-local packets
-Date: Fri, 3 Jun 2016 12:09:05 -0400
-Message-ID: <CACvFP_jMmuDPkN+ynW3vrZecdTPFGB6g=s9q5ZX1T_C8rL=3nQ@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Netfilter/Suricata user day on 27th June in Amsterdam, Netherlands
+Date: Wed, 8 Jun 2016 17:59:52 +0200
+Message-ID: <20160608155952.GA6942@salvia>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=WcT1uyNV/63ChYoWGXV8E8FhBGEztv73Fa0cMs28Jpc=;
-        b=MBoauA/UnrzXqzkCDj/bM9X9bhVKdrbggQN8Wsv4AZ0h4nZXWsG9tm0dlHkv5zIEgi
-         +joM3usNNdGMfGfCRshmbFvqqiwBGMdiTO7YTuWEmEGpzqFglPVVxDC80BSUut+0+853
-         IU8UvZOgjdXg9MBzDtRfIy7x1iroarKqZ9VDNIz3sBaX37N5yIOR3EZ7qcoRW4amEeMA
-         RmUom8yfOQeXj/P9Lfxurzgw/yDJnLwCMYuHBEdPVhjife1tnx/pUA0nuFUvO+3RqDKK
-         rwCvrz3SSYc3HHuIas/cXUUqH15oPUFaPmgMjY7YGasAFVm1ui0BWLWsSulHf8N9L+P7
-         QeUQ==
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Cc: lwn@lwn.net
 
-Hi all,
+Hi!
 
-I have already posted this in the lartc mailing list but I think the
-netfilter one is more suitable.
+We are organizing a public user day at the Vrije Universiteit (VU)
+Amsterdam on June 27th 2016. This day is titled "Suricata meets
+Netfilter" and brings talks about the Linux Netfilter/nftables
+Firewall project and the Suricata IDS/IPS project.
 
-I discovered that marking IPv6 packets with ip6tables results in link-
-local traffic being dropped/distorted. Specifically link-local UDP
-traffic on ports 546-547 (necessary for DHCPv6) fails in this
-situation. I provide a script for testing purposes:
+Keynote will be delivered by Linux NetDev maintainer David S. Miller.
 
------------8<------------
-#!/usr/bin/sh
+Speakers include:
 
-ip6tables -t mangle -F
-ip6tables -t mangle -A OUTPUT -o $oif -j MARK --set-mark 3
+ - Victor Julien: Suricata maintainer.
+ - Eric Leblond: Netfilter and Suricata developer.
+ - Andreas Herz: Suricata developer.
+ - Peter Manev: Suricata QA lead.
+ - Pablo Neira: Netfilter maintainer.
 
-exit 0
------------8<------------
+The agenda hasn't been finalized yet, so we're hoping to add some more
+speakers and provide more detailed information soon.
 
-Is this behavior known/expected? My search didn't reveal any relevant
-results on the web.
-I am running Archlinux, uname -a:
-"Linux a-router 4.4.11-1-lts #1 SMP Thu May 19 21:03:24 CEST 2016
-x86_64 GNU/Linux"
+Registration is free (at no cost) through:
+http://www.eventbrite.com/e/suricata-meets-netfilter-free-1-day-user-conference-tickets-25948425439
 
-George
+This is part of the activities scheduled for the 12th Netfilter
+Workshop: http://workshop.netfilter.org/2016/
+
+If live in the Netherlands or its surroundings, you're very welcome to
+attend. See you there!
