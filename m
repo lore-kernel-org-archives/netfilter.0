@@ -1,53 +1,82 @@
-From: Arunsundar <arun.sundar@sawridgesystems.com>
-Subject: Conntrack does not Re-Fragment, defragmented packet while forwarding
-Date: Tue, 14 Jun 2016 18:39:57 +0530
-Message-ID: <57600225.8000906@sawridgesystems.com>
+From: Richard Peeters <richardpeeters45@gmail.com>
+Subject: issue with nfnetlink_log and loading it
+Date: Tue, 14 Jun 2016 19:48:11 -0400
+Message-ID: <CABfb+p2j5Unx=ue0T+GdxqTZ3fTW__sQPLz4kWAfaeoP1qe3MA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=T4XRrOh5L9NKKzKuGHauwGmNNn6T5duIl8f4xWh7/AM=;
+        b=xHPebIdjw2maLVwUMbqJJCiQV+OYTZwx+YSGjbmjw3ofOjOsPLwCsBbbppUyHKWn7C
+         Kw0XZNHakzpwm8Xjx4L+xEHR1G5t7S3HivjaA2LkZKGjfDemxNi3brOxC8KVH6WWKkSz
+         tTQIcRrp6289BG++yewwDm8HSM9+4lcvomYCXCrG1XofH+8QX1sfaIrX9tVgiagN5gfO
+         m0UdrJ7awoDln31x70Bpbn+ZgjmAT9JfVOJYIGGMaq24o48KgGGO1lmEV2Z2EAY6chhT
+         qhqnC2NbTFLuU6PYyaR+3zk2Uq1WFTlwqYsUpHP/3nepZPjis0WOv/wZfdHVqZv5m3Fp
+         6ppA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi All,
+Hi,
 
-As per few online documents, conntrack will defragment the received 
-packets in Prerouting and it again re-fragment before packet leaves the 
-machine. But I observe that conntrack defragments and forward the same 
-defragmented packet, re-fragment while forwarding is not happening. 
-Details below
+I have a strange problem, I am running kernel 3.10 with ULOG, and want
+to move to NFLOG.
 
-Requirement:
-Receive the fragmented packets in ingress in interface0, mark the packet 
-based on IP and port and the marked packet will be sent via a particular 
-TC HTB class as it is received in the interface1. IP forward is enabled.
+I have the correct nfnetlink_log.ko module and loading the module
+works fine when checked with lsmod.
 
-Procedure followed:
-used below commands to mark the packet.
-     iptables -t mangle -A PREROUTING -i em1 -d 192.xxx.xxx.xxx -p udp 
---dport xxxx -j MARK --set-mark 0x400
-     iptables -t mangle -A PREROUTING -i em1 -d 192.xxx.xxx.xxx -p udp 
---dport xxxx -j CONNMARK --save-mark
-     iptables -t mangle -A PREROUTING -i em1 -p udp -d 192.xxx.xxx.xxx 
---dport xxxx -j CONNMARK --restore-mark
+The problem is that in order to switch from ULOG to NFLOG, we need to
+ask the system to activate NFLOG with echo "nfnetlink_log" >
+/proc/sys/net/netfilter/nf_log/2 (IPv4). But as you see from the
+output below, nfnetlink_log doesnt make itself available :
 
-These above commands work fine for my requirement. As per these 
-commands, Contrack defragment the received packets and mark it correctly 
-based on IP and port. But when the packet is forwarded to the next 
-interface, the defragmented packet is forwarded as it is instead of 
-sending the received packets.
+[be@bt]# cat /proc/net/netfilter/nf_log
+ 0 NONE ()
+ 1 NONE ()
+ 2 NONE ()
+ 3 NONE ()
+ 4 NONE ()
+ 5 NONE ()
+ 6 NONE ()
+ 7 NONE ()
+ 8 NONE ()
+ 9 NONE ()
+10 NONE ()
+11 NONE ()
+12 NONE ()
 
-Can some one let me know how to re-fragment the packets after 
-defragmentation done by conntrack.
+[be@bt]# modprobe nfnetlink_log
+[be@bt]# modprobe xt_NFLOG
+[be@bt]# lsmod | grep NFLOG
+xt_NFLOG               12537  0
+nfnetlink_log          17972  1 xt_NFLOG
 
-Other Info:
-iptables v1.4.21
-conntrack v1.4.1
-Linux Kernel - 4.4.6
+[be@bt]# lsmod | grep -i log
+xt_NFLOG               12537  0
+nfnetlink_log          17972  1 xt_NFLOG
+nfnetlink              14650  5 nfnetlink_log,nfnetlink_queue,ip_set
 
+[be@bt]# cat /proc/net/netfilter/nf_log
+ 0 NONE ()
+ 1 NONE ()
+ 2 NONE ()
+ 3 NONE ()
+ 4 NONE ()
+ 5 NONE ()
+ 6 NONE ()
+ 7 NONE ()
+ 8 NONE ()
+ 9 NONE ()
+10 NONE ()
+11 NONE ()
+12 NONE ()
 
--- 
-Regards,
-Arunsundar.
+I rmmod-ed ULOG hence the empty brackets.
 
+Can someone please point me in the correct direction.
+
+Thanks,
+Rich
