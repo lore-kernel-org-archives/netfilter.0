@@ -1,82 +1,66 @@
-From: Richard Peeters <richardpeeters45@gmail.com>
-Subject: issue with nfnetlink_log and loading it
-Date: Tue, 14 Jun 2016 19:48:11 -0400
-Message-ID: <CABfb+p2j5Unx=ue0T+GdxqTZ3fTW__sQPLz4kWAfaeoP1qe3MA@mail.gmail.com>
+From: Dan Rimal <dan@danrimal.net>
+Subject: nft chain route hook prerouting / postrouting
+Date: Thu, 16 Jun 2016 10:44:10 +0200
+Message-ID: <7a82f5ef-d22e-5d73-c46a-58043ee3fb09@danrimal.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=T4XRrOh5L9NKKzKuGHauwGmNNn6T5duIl8f4xWh7/AM=;
-        b=xHPebIdjw2maLVwUMbqJJCiQV+OYTZwx+YSGjbmjw3ofOjOsPLwCsBbbppUyHKWn7C
-         Kw0XZNHakzpwm8Xjx4L+xEHR1G5t7S3HivjaA2LkZKGjfDemxNi3brOxC8KVH6WWKkSz
-         tTQIcRrp6289BG++yewwDm8HSM9+4lcvomYCXCrG1XofH+8QX1sfaIrX9tVgiagN5gfO
-         m0UdrJ7awoDln31x70Bpbn+ZgjmAT9JfVOJYIGGMaq24o48KgGGO1lmEV2Z2EAY6chhT
-         qhqnC2NbTFLuU6PYyaR+3zk2Uq1WFTlwqYsUpHP/3nepZPjis0WOv/wZfdHVqZv5m3Fp
-         6ppA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi,
+Hello,
 
-I have a strange problem, I am running kernel 3.10 with ULOG, and want
-to move to NFLOG.
+I am trying to rewrite some our firewalls from iptables to nft and i am
+stucked on some iptables features.
 
-I have the correct nfnetlink_log.ko module and loading the module
-works fine when checked with lsmod.
+We have two uplinks from different ISP, so we have 2 different public IP
+adresses and LAN with NAT configuration.
 
-The problem is that in order to switch from ULOG to NFLOG, we need to
-ask the system to activate NFLOG with echo "nfnetlink_log" >
-/proc/sys/net/netfilter/nf_log/2 (IPv4). But as you see from the
-output below, nfnetlink_log doesnt make itself available :
+Now, we mark packets on input to distinguish where packet come from to
+our servers, and use this mark on "ip rule" to select appropriate
+routing table, when packet goes back to internet. First routing table
+have default route via ISP1, second routing table have default via ISP2,
+because we can not send SRC IP1 via ISP2 and vice versa (uRPF).
 
-[be@bt]# cat /proc/net/netfilter/nf_log
- 0 NONE ()
- 1 NONE ()
- 2 NONE ()
- 3 NONE ()
- 4 NONE ()
- 5 NONE ()
- 6 NONE ()
- 7 NONE ()
- 8 NONE ()
- 9 NONE ()
-10 NONE ()
-11 NONE ()
-12 NONE ()
+Iptables do desired marking in this way:
 
-[be@bt]# modprobe nfnetlink_log
-[be@bt]# modprobe xt_NFLOG
-[be@bt]# lsmod | grep NFLOG
-xt_NFLOG               12537  0
-nfnetlink_log          17972  1 xt_NFLOG
+## mark packet on input
+iptables -t mangle -A PREROUTING -i $INET_IFACE -j MARK --set-mark 100
+iptables -t mangle -A PREROUTING -i $INET2_IFACE -j MARK --set-mark 101
 
-[be@bt]# lsmod | grep -i log
-xt_NFLOG               12537  0
-nfnetlink_log          17972  1 xt_NFLOG
-nfnetlink              14650  5 nfnetlink_log,nfnetlink_queue,ip_set
+## save mark to conntrack when packet goes to LAN
+iptables -t mangle -A POSTROUTING -j CONNMARK --save-mark
+## restore mark to response when packet goes to the internet
+iptables -t mangle -A PREROUTING -j CONNMARK --restore-mark
 
-[be@bt]# cat /proc/net/netfilter/nf_log
- 0 NONE ()
- 1 NONE ()
- 2 NONE ()
- 3 NONE ()
- 4 NONE ()
- 5 NONE ()
- 6 NONE ()
- 7 NONE ()
- 8 NONE ()
- 9 NONE ()
-10 NONE ()
-11 NONE ()
-12 NONE ()
 
-I rmmod-ed ULOG hence the empty brackets.
+On some routers, we even mark packet with mask, to preserve some qos
+information saved on mark by TC, for example:
 
-Can someone please point me in the correct direction.
 
-Thanks,
-Rich
+iptables -t mangle -A PREROUTING -i $INET_IFACE -j MARK --set-mark 201/0xff
+
+iptables -t mangle -A PREROUTING -j CONNMARK --restore-mark --mask 0xff
+
+
+Is there any way, how to implement this behaviour in nftables? I tryied
+to create chain type route hook prerouting/postrouting, but i have got:
+
+./fw-base.nft:39:1-73: Error: Could not process rule: Operation not
+supported
+add chain ip route prerouting { type route hook prerouting priority 0; }
+
+I tryied other hook and looks like only output hook is available for
+now. Is it not implemented yet?
+
+I tryied it on last fedora 23 with kernel 4.5.6-200.fc23.x86_64 with
+nftables v0.4 and also on centos 7 with kernel
+4.4.13-1.el7.elrepo.x86_64 and nftables v0.6
+
+Thank you,
+
+Daniel
+
+
