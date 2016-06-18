@@ -1,66 +1,30 @@
-From: Dan Rimal <dan@danrimal.net>
-Subject: nft chain route hook prerouting / postrouting
-Date: Thu, 16 Jun 2016 10:44:10 +0200
-Message-ID: <7a82f5ef-d22e-5d73-c46a-58043ee3fb09@danrimal.net>
+From: =?UTF-8?Q?Humberto_Juc=C3=A1?= <betolj@gmail.com>
+Subject: New ndpi-netfilter release (3.0)
+Date: Sat, 18 Jun 2016 13:51:29 -0400
+Message-ID: <CACuyg26RysqviZt7yjrURyXHQ1N8kOcjU+kjyELyQtmOz3_Raw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=zwdpQyIXrkDwKLfSwI14nNF/VQq81w5SrDaFpgLMs1U=;
+        b=viBYGiMXhOdCUGG0dbFS11YCa5kLy1pTwxOKDInvF/usKvinubrGIZZzosXFBmrDD0
+         5F+GCyjQfOdv8s4R+cBXoNLjRrSftlon1dugjOcb0E0qpTY/3TJ+INtvP12Lw4KWgY6w
+         7kVhr99SGmInHZVX1HVB0gb00aI2e2/aktMwQZQ8LW5PfcRxFVFGBlcc+IjsSCrPcOnr
+         CFIhG7NhIzq20A7nWqzthmbRGFx4+0Okll37jWQ/Nl9j6hKDBY/rKLtsjFimpN+DEK+u
+         C/4iqYNmIPPe3CutSCTVslPV2CCmjeOIYGDqq2rGX/+jpuPlt0c4vpGl/TzTJchOQGQx
+         usBA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello,
+Hi,
 
-I am trying to rewrite some our firewalls from iptables to nft and i am
-stucked on some iptables features.
+I already released an new ndpi-netfilter update for downloads (v3.0):
+- more protocol detection (nDPI 1.8)
+- spinlock fixes
+- include debug param: modprobe xt_ndpi debug_dpi=1
 
-We have two uplinks from different ISP, so we have 2 different public IP
-adresses and LAN with NAT configuration.
-
-Now, we mark packets on input to distinguish where packet come from to
-our servers, and use this mark on "ip rule" to select appropriate
-routing table, when packet goes back to internet. First routing table
-have default route via ISP1, second routing table have default via ISP2,
-because we can not send SRC IP1 via ISP2 and vice versa (uRPF).
-
-Iptables do desired marking in this way:
-
-## mark packet on input
-iptables -t mangle -A PREROUTING -i $INET_IFACE -j MARK --set-mark 100
-iptables -t mangle -A PREROUTING -i $INET2_IFACE -j MARK --set-mark 101
-
-## save mark to conntrack when packet goes to LAN
-iptables -t mangle -A POSTROUTING -j CONNMARK --save-mark
-## restore mark to response when packet goes to the internet
-iptables -t mangle -A PREROUTING -j CONNMARK --restore-mark
-
-
-On some routers, we even mark packet with mask, to preserve some qos
-information saved on mark by TC, for example:
-
-
-iptables -t mangle -A PREROUTING -i $INET_IFACE -j MARK --set-mark 201/0xff
-
-iptables -t mangle -A PREROUTING -j CONNMARK --restore-mark --mask 0xff
-
-
-Is there any way, how to implement this behaviour in nftables? I tryied
-to create chain type route hook prerouting/postrouting, but i have got:
-
-./fw-base.nft:39:1-73: Error: Could not process rule: Operation not
-supported
-add chain ip route prerouting { type route hook prerouting priority 0; }
-
-I tryied other hook and looks like only output hook is available for
-now. Is it not implemented yet?
-
-I tryied it on last fedora 23 with kernel 4.5.6-200.fc23.x86_64 with
-nftables v0.4 and also on centos 7 with kernel
-4.4.13-1.el7.elrepo.x86_64 and nftables v0.6
-
-Thank you,
-
-Daniel
-
-
+Site: github.com/betolj/ndpi-netfilter
