@@ -1,34 +1,48 @@
-From: "Irwin L." <biatche@gmail.com>
-Subject: nftables: drop ssh brute force with ip block
-Date: Mon, 20 Jun 2016 02:24:11 +0800
-Message-ID: <5766E34B.4040008@gmail.com>
+From: Eliezer Croitoru <eliezer@ngtech.co.il>
+Subject: RE: New ndpi-netfilter release (3.0)
+Date: Sun, 19 Jun 2016 23:35:02 +0300
+Message-ID: <010801d1ca6a$0e951350$2bbf39f0$@ngtech.co.il>
+References: <CACuyg26RysqviZt7yjrURyXHQ1N8kOcjU+kjyELyQtmOz3_Raw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=message-id:date:from:user-agent:mime-version:to:subject
-         :content-transfer-encoding;
-        bh=8clYOynlgboACW2ws0p1Tuk9c6lBJrLlPob0UMjUG9U=;
-        b=q1pyNyHyvI+KkDOEsrGbfAUbH1XX3qtEcPSgTBcuoXVW4Kr+itn/iK6wpM12r5zFWP
-         F9WU7JGZKIP0uHib07zCK6Lu4TnixaukoClOE0jPwEY0Sj49ugjb6aflyWVNpczGIdt3
-         nHZoY7RnvqORke9Rlu8+8TQf7Q2exgQXBsVH2KyWxxT4hlrre9ll9ToyBA/7TtrBXwzp
-         rRXH/osX14GhiNOSsnQVWtUBm7fUd+6BfVZStZuNmCMdNXC1UG7ZadmuE5/S2pmpfj3+
-         f4GcB8dTABTSJtXfeuLKZuhCtSJ93BZ67P+MfU4xlN9lHBdOvjnUrsOuJlbeX47Kwig2
-         AFew==
+In-reply-to: <CACuyg26RysqviZt7yjrURyXHQ1N8kOcjU+kjyELyQtmOz3_Raw@mail.gmail.com>
+Content-language: he
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+To: =?UTF-8?Q?'Humberto_Juc=C3=A1'?= <betolj@gmail.com>, netfilter@vger.kernel.org
+
+Thanks for the great work.
+
+I will just mention the Docker buildnode I wrote:
+https://gist.github.com/elico/1c92fcee150ce3a02cb2c122588fda15
+
+And the interesting things is: So this you!! I new you are familiar from somewhere!! 
+
+Eliezer
+
+----
+Eliezer Croitoru
+Linux System Administrator
+Mobile: +972-5-28704261
+Email: eliezer@ngtech.co.il
+
+
+-----Original Message-----
+From: netfilter-owner@vger.kernel.org [mailto:netfilter-owner@vger.kernel.org] On Behalf Of Humberto Juc?
+Sent: Saturday, June 18, 2016 8:51 PM
 To: netfilter@vger.kernel.org
+Subject: New ndpi-netfilter release (3.0)
 
-As subject says.
+Hi,
 
-tcp dport {22} counter limit rate 3/minute counter accept comment "avoid 
-brute force"
+I already released an new ndpi-netfilter update for downloads (v3.0):
+- more protocol detection (nDPI 1.8)
+- spinlock fixes
+- include debug param: modprobe xt_ndpi debug_dpi=1
 
-I've tried something like this, but it seems to limit ALL ips.
-I would prefer to block the ip address for 24 hours or something.
+Site: github.com/betolj/ndpi-netfilter
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter" in the body of a message to majordomo@vger.kernel.org More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-Please suggest
-
-Irwin
