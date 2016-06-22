@@ -1,85 +1,46 @@
-From: Victor Julien <lists@inliniac.net>
-Subject: Suricata meets Netfilter Conference schedule posted
-Date: Wed, 22 Jun 2016 10:48:10 +0200
-Message-ID: <576A50CA.9060607@inliniac.net>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] Suricata meets Netfilter Conference on 27th June in
+ Amsterdam, Netherlands
+Date: Wed, 22 Jun 2016 12:13:19 +0200
+Message-ID: <20160622101319.GA2791@salvia>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="windows-1252"
-To: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Cc: Victor Julien <victor@inliniac.net>
 
-Hi all,
+Hi,
 
-Next Monday we'll have the user day of the Netfilter Workshop in
-Amsterdam: "Suricata meets Netfilter".
+I'm forwarding the original schedule that Victor Julien (Suricata) has
+prepared for the user day:
 
-I have just posted the final schedule of the day. I think we have a ver=
-y
-nice program:
+09h30 Welcoming
+10h   Suricata Intrusion Prevention with NFQUEUE (Andreas Herz)
+10h30 Shivani Bhardwaj : iptables-translate : Benefits and need
+10h45 SELKS =E2=80=93 Black (file) magic (Peter Manev)
+11h15 Break
+11h30 Amsterdamize your firewall (Eric Leblond)
+12h00  Vuurmuur Firewall (Victor Julien)
+12h30  Next steps for Linux Network stack, approaching 100Gbit/s (Jespe=
+r Brouer)
+13h15 Lunch break
+14h00 Netdev Keynote (David S. Miller)
+14h30 nftables tutorial (Pablo Neira)
+15h15 Suricata and Netfilter: The Mixed Mode (Giuseppe Longo)
+15h30 Break
+15h45 A Fast and Practical Software Packet Scheduling Architecture (Lui=
+gi Rizzo)
+16h15 Suricata 3.1 (Victor Julien)
+16h45 Fighting Word document with Suricata and Netfilter (Eric Leblond)
 
-
-930 Welcome
-945
-
-1000 Suricata Intrusion Prevention with NFQUEUE
-1015 Andreas Herz
-
-1030 Shivani Bhardwaj : iptables-translate : Benefits and need
-
-1045 SELKS =E2=80=93 Black (file) magic
-1100 Peter Manev
-
-1115 Break
-
-1130 Amsterdamize your firewall
-1145 Eric Leblond
-
-1200 Vuurmuur Firewall
-1215 Victor Julien
-
-1230 Next steps for Linux Network stack, approaching 100Gbit/s
-1245 Jesper Brouer
-
-1300
-1315 Lunch break
-1330
-1345
-
-1400 Netdev Keynote
-1415 David S. Miller
-
-1430 nftables tutorial
-1445 Pablo Neira
-1500
-
-1515 Giuseppe Longo: Suricata and Netfilter: The Mixed Mode
-
-1530 Break
-
-1545 A Fast and Practical Software Packet Scheduling Architecture
-1600 Luigi Rizzo
-
-1615 Suricata 3.1
-1630 Victor Julien
-
-1645 Fighting Word document with Suricata and Netfilter
-1700 Eric Leblond
-1715
-
-
-The event is free to attend, so please join us!
+The event is free to attend, so if you're located in Amsterdam or its
+surroundings, please join us!
 
 https://www.eventbrite.com/e/suricata-meets-netfilter-free-1-day-user-c=
 onference-tickets-25948425439
 
 Hope to see you there!
-
---=20
----------------------------------------------
-Victor Julien
-http://www.inliniac.net/
-PGP: http://www.inliniac.net/victorjulien.asc
----------------------------------------------
-
