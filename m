@@ -1,32 +1,85 @@
-From: Llorente Santos Jesus <jesus.llorente.santos@aalto.fi>
-Subject: SYNPROXY target issue with TCP reset sent from server after initial
- syn
-Date: Tue, 21 Jun 2016 12:34:02 +0000
-Message-ID: <A404B5896AB4F5468A8755AFC23F7317E431E333@EXMDB04.org.aalto.fi>
+From: Victor Julien <lists@inliniac.net>
+Subject: Suricata meets Netfilter Conference schedule posted
+Date: Wed, 22 Jun 2016 10:48:10 +0200
+Message-ID: <576A50CA.9060607@inliniac.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+To: netfilter@vger.kernel.org
 
-Dear all,
+Hi all,
 
-I'm attempting  to set up a scenario where a router connects two networks (A and B) and uses SYNPROXY when new TCP connections are initiated A-to-B direction.
-My server is located in network B and the remote client in network A. Both hosts use this router as default gateway for their traffic.
+Next Monday we'll have the user day of the Netfilter Workshop in
+Amsterdam: "Suricata meets Netfilter".
 
-I have followed the available instructions for setting up SYNPROXY and it seems to work very straightforward. I am using the SYNPROXY rule in filter FORWARD chain.
+I have just posted the final schedule of the day. I think we have a ver=
+y
+nice program:
 
-If the server-B is running in my network-B, client-A can connect perfectly to it and the connection is relayed by the SYNPROXY in the router, back and forth. However, and this is the reason why I am contacting the mailing list, SYNPROXY seems to fail if a TCP RST,ACK is sent by the server-B when the server process is not running. The TCP RST,ACK does not seem to be mangled by the SYNPROXY as it answered with TCP SEQ 0x00 and contains no TCP header options.
 
-After checking the code, I think I may have back traced the issue to the file ipt_SYNPROXY.c (line 360), in the function ipv4_synproxy_hook()
-    case TCP_CONNTRACK_SYN_SENT:
-                                if (!synproxy_parse_options(skb, thoff, th, &opts))
-                                                return NF_DROP;
-            
-Would you please clarify if the current behavior is the intended one or is this some kind of bug?
+930 Welcome
+945
 
-Thank you!
-Jesus Llorente
+1000 Suricata Intrusion Prevention with NFQUEUE
+1015 Andreas Herz
+
+1030 Shivani Bhardwaj : iptables-translate : Benefits and need
+
+1045 SELKS =E2=80=93 Black (file) magic
+1100 Peter Manev
+
+1115 Break
+
+1130 Amsterdamize your firewall
+1145 Eric Leblond
+
+1200 Vuurmuur Firewall
+1215 Victor Julien
+
+1230 Next steps for Linux Network stack, approaching 100Gbit/s
+1245 Jesper Brouer
+
+1300
+1315 Lunch break
+1330
+1345
+
+1400 Netdev Keynote
+1415 David S. Miller
+
+1430 nftables tutorial
+1445 Pablo Neira
+1500
+
+1515 Giuseppe Longo: Suricata and Netfilter: The Mixed Mode
+
+1530 Break
+
+1545 A Fast and Practical Software Packet Scheduling Architecture
+1600 Luigi Rizzo
+
+1615 Suricata 3.1
+1630 Victor Julien
+
+1645 Fighting Word document with Suricata and Netfilter
+1700 Eric Leblond
+1715
+
+
+The event is free to attend, so please join us!
+
+https://www.eventbrite.com/e/suricata-meets-netfilter-free-1-day-user-c=
+onference-tickets-25948425439
+
+Hope to see you there!
+
+--=20
+---------------------------------------------
+Victor Julien
+http://www.inliniac.net/
+PGP: http://www.inliniac.net/victorjulien.asc
+---------------------------------------------
+
