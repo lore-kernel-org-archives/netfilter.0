@@ -1,33 +1,54 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH v2] netfilter: fix possible ZERO_SIZE_PTR pointer
- dereferencing error.
-Date: Thu, 23 Jun 2016 12:12:53 +0200
-Message-ID: <20160623101253.GA9665@salvia>
-References: <1464836396-15671-1-git-send-email-lixiubo@cmss.chinamobile.com>
+Subject: Re: nftables: drop ssh brute force with ip block
+Date: Thu, 23 Jun 2016 12:34:30 +0200
+Message-ID: <20160623103430.GA10616@salvia>
+References: <5766E34B.4040008@gmail.com>
 Mime-Version: 1.0
-Return-path: <netdev-owner@vger.kernel.org>
+Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1464836396-15671-1-git-send-email-lixiubo@cmss.chinamobile.com>
-Sender: netdev-owner@vger.kernel.org
+In-Reply-To: <5766E34B.4040008@gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Xiubo Li <lixiubo@cmss.chinamobile.com>
-Cc: kaber@trash.net, kadlec@blackhole.kfki.hu, davem@davemloft.net, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org
+To: "Irwin L." <biatche@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-On Thu, Jun 02, 2016 at 10:59:56AM +0800, Xiubo Li wrote:
-> Since we cannot make sure that the 'hook_mask' will always be none
-> zero here. If it equals to zero, the num_hooks will be zero too,
-> and then kmalloc() will return ZERO_SIZE_PTR, which is (void *)16.
+On Mon, Jun 20, 2016 at 02:24:11AM +0800, Irwin L. wrote:
+> As subject says.
 > 
-> Then the following error check will fails:
->   ops = kmalloc(sizeof(*ops) * num_hooks, GFP_KERNEL);
->   if (ops == NULL)
->           return ERR_PTR(-ENOMEM);
+> tcp dport {22} counter limit rate 3/minute counter accept comment "avoid
+> brute force"
 > 
-> So this patch will fix this with just doing the zero check before
-> kmalloc() is called.
-> 
-> Maybe the case above will never happen here, but in theory.
+> I've tried something like this, but it seems to limit ALL ips.
+> I would prefer to block the ip address for 24 hours or something.
 
-Applied, thanks.
+Try something like:
+
+# nft add rule x y tcp dport 22 \
+        flow table ssh-bruteforce { ip saddr limit rate 3/minute } \
+                accept comment \"avoid brute force\"
+
+This is ratelimiting based on the source IP address.
+
+You can consult the content of this flow table via:
+
+# nft list flow table x ssh-bruteforce
+...
+
+The current output of this specific command is not stable,
+
+You require a relatively recent kernel and nft 0.6 to get this
+working.
+
+BTW, please don't use:
+
+        tcp dport { 22}
+
+The curly braces have very specific semantics, ie. they are requesting
+the kernel to create a set. In this specific case, this is overkill
+since this will create a set with *only one single element*. Thus:
+
+        tcp dport 22
+
+is better.
