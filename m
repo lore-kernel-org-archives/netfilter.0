@@ -1,67 +1,41 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: nftables: drop ssh brute force with ip block
-Date: Thu, 23 Jun 2016 13:01:32 +0200
-Message-ID: <20160623110132.GB2149@salvia>
-References: <5766E34B.4040008@gmail.com>
- <20160623103430.GA10616@salvia>
- <576BBC72.8030507@gmail.com>
- <20160623104847.GA18850@salvia>
- <576BC023.4040001@gmail.com>
+From: Martin Goralczyk <martin.goralczyk@gmail.com>
+Subject: How to route specific packets to specific interface or IP
+Date: Fri, 24 Jun 2016 18:32:35 +0200
+Message-ID: <CANivh0NCvw9HshOLkv7zZOKzei0hLXVPosTuqCmz19q3a=Ar3A@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <576BC023.4040001@gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=gJvTXKs9vj+esUxqt/RB5AATFlcUmlDwNv3HN5FbkyE=;
+        b=BvjeND6y87OqId/2s1+qMCqpDhODHtX/jkcmmtUpSLQp4rs1pKqjgG1k+Rhy0j9KPT
+         nTEwmxKAPrXHsD5+nQDNfMIFKmDNYsmxmhliPhCI8BgvHnBXZUTepGuucbxnM5d+HL60
+         su2mySqlvCfgBFTZ46x1cX6QJAp1E00Gi1gVDv+wQ1uF8hsoi8WQgHLXeMUdpARl0teX
+         rcYQHHVCDopOesFWfeMvCVNB6K2WrcKT4j66z1v5ecOcR98wEQxWGG4IP2k1xrPHjHas
+         etzPvtXw9+wZNISHtYCAvG22UV8ujLWi/Q8/OdgKFPnm1kNELVas9VN2Ru335eXtNnsM
+         z2lA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Irwin L." <biatche@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Thu, Jun 23, 2016 at 06:55:31PM +0800, Irwin L. wrote:
-> On 2016-06-23 18:48, Pablo Neira Ayuso wrote:
-> >On Thu, Jun 23, 2016 at 06:39:46PM +0800, Irwin L. wrote:
-> >>I currently use:
-> >>tcp dport {22222,40022,42222} ct state new counter flow table bruteforce {
-> >>ip saddr limit rate 3/minute } counter accept comment "limit bruteforce"
-> >>
-> >>Is this ok?
-> >Looks good to me. I would probably check for ct state new in first
-> >place, given that this only matches the first packet a new TCP
-> >connections. It will save you the tcp dport set lookup.
-> >
-> >Note that you can even limit this per port, ie.
-> >
-> >         ct state new tcp dport {22222,40022,42222} counter \
-> >                 flow table bruteforce { ip saddr . tcp dport limit rate 3/minute } \
-> >                         counter accept comment "limit bruteforce"
-> >
-> >using the 'ip saddr . tcp dport' concatenation. But I guess you want
-> >globally ban anyone spamming you to those ports anyway.
-> >
-> >>I wanted to ban spamming ips altogether, but I've since learned that this is
-> >>the job of 'fail2ban'
->
-> >fail2ban is nice to have to simplify this administrative hassle, but I
-> >think it is still using iptables (it's been a while a I didn't look at
-> >that code), we can do much better now with nft to resolve this problem.
-> 
-> By that do you mean "counter ct state new" instead of "counter flow table" ?
-> 
-> Thing is with this method, it only limits, I wonder if nft can blacklist the
-> ip for 1 day or even 1 week with the option of manually removing blacklisted
-> ips manually.
->
+Hi,
 
-I mean, instead of:
+I am running a mailserver at home and also have a "real server" with a
+static ip somewhere else. The real server runs an openvpn-server and
+my router at home is connected to this vpn.  What I want is, that if
+my mailserver sends anything over port 25, it will be routed over the
+vpn tunnel to the real server, then there will be NATed and sent to
+the destination. Also all packets incoming on port 25 on the real
+server should be forwarded/NATed to the mailserver.
 
-        tcp dport {22222,40022,42222} ct state new counter
+So as a first step I am trying to configure my router to send all
+packets from source IP "Mailserver-IP" and with destination port 25 to
+either the tun Interface or the openVPN IP. I have read iptables
+documentation, but am unable to see the right way. Could anyone help
+me out and turn me into the right direction?
 
-use this:
+Thanks for any help,
 
-        ct state new tcp dport {22222,40022,42222} counter
-
-so just place the 'ct state new' check in first place, as most packets
-will not go further in the rule evaluation, given that the rule
-evaluation happens from left to right. If one of the statements
-evaluates false, we stop evaluating and look at the next rule.
+Martin
