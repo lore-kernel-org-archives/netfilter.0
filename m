@@ -1,41 +1,72 @@
-From: Martin Goralczyk <martin.goralczyk@gmail.com>
-Subject: How to route specific packets to specific interface or IP
-Date: Fri, 24 Jun 2016 18:32:35 +0200
-Message-ID: <CANivh0NCvw9HshOLkv7zZOKzei0hLXVPosTuqCmz19q3a=Ar3A@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: nft chain route hook prerouting / postrouting
+Date: Fri, 24 Jun 2016 19:40:27 +0200
+Message-ID: <20160624174027.GA5456@salvia>
+References: <7a82f5ef-d22e-5d73-c46a-58043ee3fb09@danrimal.net>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=gJvTXKs9vj+esUxqt/RB5AATFlcUmlDwNv3HN5FbkyE=;
-        b=BvjeND6y87OqId/2s1+qMCqpDhODHtX/jkcmmtUpSLQp4rs1pKqjgG1k+Rhy0j9KPT
-         nTEwmxKAPrXHsD5+nQDNfMIFKmDNYsmxmhliPhCI8BgvHnBXZUTepGuucbxnM5d+HL60
-         su2mySqlvCfgBFTZ46x1cX6QJAp1E00Gi1gVDv+wQ1uF8hsoi8WQgHLXeMUdpARl0teX
-         rcYQHHVCDopOesFWfeMvCVNB6K2WrcKT4j66z1v5ecOcR98wEQxWGG4IP2k1xrPHjHas
-         etzPvtXw9+wZNISHtYCAvG22UV8ujLWi/Q8/OdgKFPnm1kNELVas9VN2Ru335eXtNnsM
-         z2lA==
+Content-Disposition: inline
+In-Reply-To: <7a82f5ef-d22e-5d73-c46a-58043ee3fb09@danrimal.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Dan Rimal <dan@danrimal.net>
+Cc: netfilter@vger.kernel.org
 
 Hi,
 
-I am running a mailserver at home and also have a "real server" with a
-static ip somewhere else. The real server runs an openvpn-server and
-my router at home is connected to this vpn.  What I want is, that if
-my mailserver sends anything over port 25, it will be routed over the
-vpn tunnel to the real server, then there will be NATed and sent to
-the destination. Also all packets incoming on port 25 on the real
-server should be forwarded/NATed to the mailserver.
+On Thu, Jun 16, 2016 at 10:44:10AM +0200, Dan Rimal wrote:
+> Hello,
+> 
+> I am trying to rewrite some our firewalls from iptables to nft and i am
+> stucked on some iptables features.
+> 
+> We have two uplinks from different ISP, so we have 2 different public IP
+> adresses and LAN with NAT configuration.
+> 
+> Now, we mark packets on input to distinguish where packet come from to
+> our servers, and use this mark on "ip rule" to select appropriate
+> routing table, when packet goes back to internet. First routing table
+> have default route via ISP1, second routing table have default via ISP2,
+> because we can not send SRC IP1 via ISP2 and vice versa (uRPF).
+> 
+> Iptables do desired marking in this way:
+> 
+> ## mark packet on input
+> iptables -t mangle -A PREROUTING -i $INET_IFACE -j MARK --set-mark 100
+> iptables -t mangle -A PREROUTING -i $INET2_IFACE -j MARK --set-mark 101
+> 
+> ## save mark to conntrack when packet goes to LAN
+> iptables -t mangle -A POSTROUTING -j CONNMARK --save-mark
+> ## restore mark to response when packet goes to the internet
+> iptables -t mangle -A PREROUTING -j CONNMARK --restore-mark
+> 
+> 
+> On some routers, we even mark packet with mask, to preserve some qos
+> information saved on mark by TC, for example:
+> 
+> 
+> iptables -t mangle -A PREROUTING -i $INET_IFACE -j MARK --set-mark 201/0xff
+> 
+> iptables -t mangle -A PREROUTING -j CONNMARK --restore-mark --mask 0xff
+> 
+> 
+> Is there any way, how to implement this behaviour in nftables? I tryied
+> to create chain type route hook prerouting/postrouting, but i have got:
+> 
+> ./fw-base.nft:39:1-73: Error: Could not process rule: Operation not
+> supported
+> add chain ip route prerouting { type route hook prerouting priority 0; }
+>
+> I tryied other hook and looks like only output hook is available for
+> now. Is it not implemented yet?
 
-So as a first step I am trying to configure my router to send all
-packets from source IP "Mailserver-IP" and with destination port 25 to
-either the tun Interface or the openVPN IP. I have read iptables
-documentation, but am unable to see the right way. Could anyone help
-me out and turn me into the right direction?
+Please, use a plain filter chain type instead, eg.
 
-Thanks for any help,
+        add chain ip route prerouting { type filter hook prerouting priority 0; }
+                                             ^^^^^^
 
-Martin
+The iptables mangle table only triggers the reroute semantics in the
+output chain, ie. in other chains, mangle chains are behaving just
+like filter chains.
