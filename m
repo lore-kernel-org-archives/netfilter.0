@@ -1,67 +1,32 @@
-From: Brilliantov Kirill Vladimirovich <brilliantov@inbox.ru>
-Subject: Routing packet on bridge with wireless
-Date: Sun, 26 Jun 2016 19:42:33 +0300
-Message-ID: <20160626164233.GA2136@kirill.netbynet.ru>
+From: zrm <zrm@trustiosity.com>
+Subject: How to persistently extend timeout of conntrack entry?
+Date: Mon, 27 Jun 2016 21:15:52 -0400
+Message-ID: <5bc67686-a9b8-35dd-fd37-a0cadec01ee2@trustiosity.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inbox.ru; s=mail;
-	h=Content-Type:MIME-Version:Message-ID:Subject:To:From:Date; bh=3TdgohI29173rwzSwYoR0udwOHZiz3+eUZb5f0U/Yaw=;
-	b=DC0L4d/R2BmHQaNDolS3gYuX9loXwFvWVUpoomfg3GK+U9c+CD3C6zLuCuBEeAcvLFxAzDp6NCxHpPTK1895V+JqI6+L9yicf2IE79F5aC+ETm/MMzPkUCf4Hkry1WUXr89P50C80DpsubDeugO2qKc6l0SPvVAY76oQBsNfDeE=;
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mx.trustiosity.com;
+	s=mx; t=1467076493; bh=5UiSG2eep51TTkJCfOooaHO8Nf1Kck53VYg9thZWJGU=;
+	h=To:From:Subject:Date:From;
+	b=gqpWzpahtQANB+zGowDUO9m+YbjpTDdu6bcE9x4TPP6MjYtr9ubnESo6TaLeMpS3Y
+	 FV8tOt3odgil5XWlIQpaIVbVMisqLfJ4fyckkV5zSi5d+dhxJYWSo44mR9961PlsAo
+	 N8ThppXdFs+pdHDpeHyOShYrfwhRqq7ShAQ44n3E=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello!
-I have bridge from eth0 (wired interface) and wlan0 (wireless interface),
-wlan0 connected with router via wpa_supplicant.
+I have a session I would like to have a long timeout for, so I do the 
+equivalent of this using the conntrack API:
 
-~ # brctl show
- bridge name     bridge id               STP enabled     interfaces
- br0             8000.544a1612d064       no              eth0
-                                                         wlan0
+conntrack -U -s 128.66.1.1 -d 128.66.2.2 -p udp --sport 1234 --dport 
+5678 -t 7200
 
-~ # ip l
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-2: eth0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc pfifo_fast master
-br0
-    link/ether f8:dc:7a:07:20:76 brd ff:ff:ff:ff:ff:ff
-3: wlan0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq master br0 qlen
-100
-    link/ether 54:4a:16:12:d0:64 brd ff:ff:ff:ff:ff:ff
-4: br0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue
-    link/ether 54:4a:16:12:d0:64 brd ff:ff:ff:ff:ff:ff
+This works fine to set the timeout to two hours, but as soon as there is 
+any traffic the timeout is reset to the default (e.g. three minutes).
 
-~ # ip a
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-	inet 127.0.0.1/8 scope host lo
-   valid_lft forever preferred_lft forever
-2: eth0: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc pfifo_fast master
-br0
-    link/ether f8:dc:7a:07:20:76 brd ff:ff:ff:ff:ff:ff
-3: wlan0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq master br0 qlen
-100
-    link/ether 54:4a:16:12:d0:64 brd ff:ff:ff:ff:ff:ff
-4: br0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue
-    link/ether 54:4a:16:12:d0:64 brd ff:ff:ff:ff:ff:ff
-	inet 192.168.1.3/24 scope global br0
-   valid_lft forever preferred_lft forever
+This could be a bug; new traffic should only extend the timeout, not 
+reduce it.
 
-~ # ip r
-192.168.1.0/24 dev br0  src 192.168.1.3
-
-Unfortunately I not get answer on pings, but I see what packet use wlan0 as out
-interface.
-~ # ping 192.168.1.1
-PING 192.168.1.1 (192.168.1.1): 56 data bytes
-^C
---- 192.168.1.1 ping statistics ---
-9 packets transmitted, 0 packets received, 100% packet loss
-
-Can solve this problem if I will be use netfilter.
-
-Thank you and excuse my bad english.
+But is there any workaround? Maybe some way to set the value the timeout 
+will be assigned when there is new traffic, for only the one session?
