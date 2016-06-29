@@ -1,32 +1,57 @@
-From: zrm <zrm@trustiosity.com>
-Subject: How to persistently extend timeout of conntrack entry?
-Date: Mon, 27 Jun 2016 21:15:52 -0400
-Message-ID: <5bc67686-a9b8-35dd-fd37-a0cadec01ee2@trustiosity.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] Statement of netfilter project on GPL enforcement
+Date: Thu, 30 Jun 2016 01:11:23 +0200
+Message-ID: <20160629231123.GA2497@salvia>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mx.trustiosity.com;
-	s=mx; t=1467076493; bh=5UiSG2eep51TTkJCfOooaHO8Nf1Kck53VYg9thZWJGU=;
-	h=To:From:Subject:Date:From;
-	b=gqpWzpahtQANB+zGowDUO9m+YbjpTDdu6bcE9x4TPP6MjYtr9ubnESo6TaLeMpS3Y
-	 FV8tOt3odgil5XWlIQpaIVbVMisqLfJ4fyckkV5zSi5d+dhxJYWSo44mR9961PlsAo
-	 N8ThppXdFs+pdHDpeHyOShYrfwhRqq7ShAQ44n3E=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="windows-1252"
+To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Cc: lwn@lwn.net
 
-I have a session I would like to have a long timeout for, so I do the 
-equivalent of this using the conntrack API:
+The netfilter project [1] hereby declares its official endorsement of
+the Principles of Community-Oriented GPL Enforcement [2] (the
+"Principles") as published by the Software Freedom Conservancy [3] and
+the Free Software Foundation [4].
 
-conntrack -U -s 128.66.1.1 -d 128.66.2.2 -p udp --sport 1234 --dport 
-5678 -t 7200
+The software of the netfilter project is primarily released under the
+GNU General Public License.  We strongly believe that license
+compliance is an important factor in the Free Software model.  In the
+absence of voluntary license compliance, license enforcement is a
+necessary tool to ensure all parties adhere to the same set of fair
+rules as set forth by the license.
 
-This works fine to set the timeout to two hours, but as soon as there is 
-any traffic the timeout is reset to the default (e.g. three minutes).
+On the other hand, we also believe that any enforcement action should
+always be focused on compliance, never prioritize financial gain,
+never settle for less than compliance and consider legal action in
+court only as a last resort.
 
-This could be a bug; new traffic should only extend the timeout, not 
-reduce it.
+We, the undersigned, pledge to perform license enforcement only in
+accordance with said "Principles".
 
-But is there any workaround? Maybe some way to set the value the timeout 
-will be assigned when there is new traffic, for only the one session?
+We also invite and encourage any other former or current netfilter
+developers and contributors to express their support for this
+statement by co-signing it. Please contact coreteam@netfilter.org for
+details.
+
+Amsterdam, June 29, 2016,
+
+Pablo Neira Ayuso (head of core team)
+Jozsef Kadlecsik (core team member)
+=46lorian Westphal (core team member)
+Eric Leblond (core team member)
+Harald Welte (emeritus core team member)
+
+A full copy of this statement and the "Principles=E2=80=9C is available=
+ on our
+website [5].
+
+[1] http://www.netfilter.org
+[2] https://sfconservancy.org/copyleft-compliance/principles.html
+[3] https://sfconservancy.org
+[4] https://www.fsf.org
+[5] http://www.netfilter.org/files/statement.pdf
+
