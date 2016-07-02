@@ -1,42 +1,70 @@
-From: Kevin Darbyshire-Bryant <kevin@darbyshire-bryant.me.uk>
-Subject: Advice please: de-masquerading from a qdisc?
-Date: Thu, 30 Jun 2016 09:23:24 +0100
-Message-ID: <5774D6FC.9030900@darbyshire-bryant.me.uk>
+From: "Anders K. Pedersen" <akp@akp.dk>
+Subject: Re: nftables: Dynamically updating sets gives syntax error
+Date: Sat, 02 Jul 2016 16:12:56 +0200
+Message-ID: <1467468776.1011.14.camel@akp.dk>
+References: <1466861422.29189.75.camel@akp.dk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=darbyshire-bryant.me.uk; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=Wlc1Es316QwxvEJfqKoH2zbspQ8Sc6ciJc7XSRTsNtM=;
- b=f4mnzNgo16w5PyC4JGxqWTb6DfUn2RlyKoOvWjl6AsmQNQRHQu+CEHmCjl98qrDlgKm5QwTPoysa3KvYHDTLJPMPK+7/Ee1tdlqU2Hk8iZdOZDjrojn/mzgIdKp4kaWWNOqzfDi129iTYrId/nlsauds/zPukBuziSimj9nRqaE=
+In-Reply-To: <1466861422.29189.75.camel@akp.dk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>
 
-Hello All,
+Hello,
 
-First post and I'm very much in a position of not knowing what I don't 
-know, so be relatively gentle if you can
+On l=C3=B8r, 2016-06-25 at 15:30 +0200, Anders K. Pedersen wrote:
+> With nftables 0.6 I'm getting a syntax error, when I try to use the
+> feature that was introduced
+> by=C2=A0http://git.netfilter.org/nftables/commit
+> /?id=3Da9467e55973b10c2e8fe37525514c961580f8506=C2=A0. For example:
+>=20
+> # nft filter input set add tcp dport @myset
+> <cmdline>:1:26-30: Error: syntax error, unexpected dport
+> filter input set add tcp dport @myset
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0^^^^^
+> # nft filter input set add ip saddr timeout 10s @myset
+> <cmdline>:1:25-29: Error: syntax error, unexpected saddr
+> filter input set add ip saddr timeout 10s @myset
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0^^^^^
+> # nft filter input set update ip saddr timeout 10s @myset
+> <cmdline>:1:28-32: Error: syntax error, unexpected saddr
+> filter input set update ip saddr timeout 10s @myset
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0^^^^^
 
-So, the basic question first:  Is it possible to access the NAT tables 
-to de-masquerade a packet from a qdisc?
+I did a git bisect on this and found that it was broken by
 
-Longer question/background:  I'm slightly involved in a qdisc AQM 
-project (cake) that amongst other things has 'per host' flow grouping 
-modes.  Typically 2 qdiscs are instantiated, one on the WAN interface 
-for egress traffic and another on a WAN IFB interface for ingress.  This 
-is all fine for IPv6, but in typical usage where IPv4 masquerading is 
-involved, the only host the ingress qdisc sees is the router's public 
-IPv4.  Similarly the egress qdisc doesn't see the internal LAN addresses 
-as it's all post NAT.
+commit a3e60492a684be09374d0649735da42bdadc6b48
+Author: Pablo Neira Ayuso <pablo@netfilter.org>
+Date:=C2=A0=C2=A0=C2=A0Sun Dec 27 22:15:17 2015 +0100
 
-All I have in the qdisc is the skb...and it looks like the pointer to 
-the nfct structure can help me but.....I'm really at the starting end of 
-a learning vertical cliff.  Where should I start reading? Can anyone 
-offer any pointers?
+=C2=A0=C2=A0=C2=A0=C2=A0parser: restrict relational rhs expression recu=
+rsion
 
-Thanks for your time,
+After studying it a bit I reverted a part of it with the following
+change, which made the commands above work again:
 
-Kevin
+--- a/src/parser_bison.y
++++ b/src/parser_bison.y
+@@ -2054,7 +2054,7 @@ set_elem_option		:	TIMEOUT			time_spec
+=C2=A0			}
+=C2=A0			;
+=C2=A0
+-set_lhs_expr		:	concat_rhs_expr
++set_lhs_expr		:	concat_expr
+=C2=A0			|	multiton_rhs_expr
+=C2=A0			;
+=C2=A0
+The commit message indicated that it intended to handle rhs
+expressions, but this is a lhs expression, so maybe this change was
+unintended?
+
+Regards,
+Anders K. Pedersen
