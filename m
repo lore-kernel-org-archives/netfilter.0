@@ -1,72 +1,39 @@
-From: alvin.ml@Mail.DDoS-Mitigator.net
+From: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
 Subject: Re: iptables TCP DDoS filtering
-Date: Tue, 5 Jul 2016 12:08:49 -0700
-Message-ID: <20160705190849.GA26405@Mail.DDoS-Mitigator.net>
+Date: Tue, 5 Jul 2016 16:51:26 -0400
+Message-ID: <20160705165126.7ecb9885@playground>
 References: <loom.20160705T084958-392@post.gmane.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+DKIM-Filter: OpenDKIM Filter v2.10.3 MAIL1.WPI.EDU u65KpTYX032636
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wpi.edu; s=_dkim;
+	t=1467751889; i=@wpi.edu;
+	bh=cjO4PEJyd6laCD9bp/BYPjmlQ3YgyYEO+tIxXNtKBMA=;
+	h=Date:From:To:Subject:In-Reply-To:References;
+	b=Dj0+9g65a5WKuGVilMAxJ2hefXHALyFf8JynHn9MpFII9uJlEse/APvTfy/8tJArd
+	 +UTKCUJZhiaGmZ6bUgVDu9hjgs+NTXr39D5qVeqLiVjWa4FTDlfWD+ebrCD+Bbr7fu
+	 epxMv83R1q2DFcFXy61Vc7UGlKFFgyMwYTVVs3kk=
 In-Reply-To: <loom.20160705T084958-392@post.gmane.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Josh Day <conna666@gmail.com>
-Cc: netfilter@vger.kernel.org, alvin.ml@Mail.DDoS-Mitigator.net
+To: netfilter@vger.kernel.org
 
+On Tue, 5 Jul 2016 06:53:07 +0000 (UTC)
+Josh Day <conna666@gmail.com> wrote:
 
-On 07/05/16 at 06:53am, Josh Day wrote:
 > I'm curious if anyone of you has read this article 
 > https://javapipe.com/iptables-ddos-protection and tried any of the 
 > rules/settings. I read it today but I'm not sure what to make of it, so 
 > thought you guys could maybe share your opinion.
 
-i've seen/read most of the various articles/howto/snipplets of using
-iptables for ddos mitigation .. the list of various iptables howto 
-for ddos mitigation at the bottom of http://iptables-blacklist.net/Howto
- 
-some of the rules in javapipe.com seems way tooo complicated ...
-( i think pre-routing and post-routing is un-necessary )
-#
-# more importantly, the iptables rules in javapipe is incomplete and
-# "droping" packets is NOT ddos mitigation because you already received
-# the packets.
-#
-the sysctl variables should be tuned per your server, cpu/mem, bandwidth,
-and amt and type of DDoS attacks
- 
-i keep wondering which of the big brand-name ddos mitigation appliances
-are using iptables under the hood ( under their "propritory os" )
- 
-i claim iptables + tarpit is ideal to defend against tcp-based ddos
-attacks ... the attacking zombie-host has to sit and wait the
-tcp-timeout ..  there are roughly 65,535 tcp-ports that should
-be protected with tarpits :-) .. how one builds the LAMP servers
-and how the network infrastrucure is configugred greatly affects
-your ability to mitigate tcp-based ddos attacks
- 
----
+The *first* rule in PREROUTING should drop INVALID packets (the rule should use '-I PREROUTING'). It makes no sense to waste one extra CPU cycle processing them. This should be standard on all firewalls.
 
-i think that dropping or limiting icmp-based or udp-based attacks are
-pointless since you've already received the ddos packets
+In TCP, I think only a SYN packet can be NEW; all other TCP packets for non-established (or maybe non-seen) conns are supposed to be INVALID because they cannot be matched to a tracked conn.
 
-udp-based and icmp-based attacks must be mitigated at the uplink ISP
-and not at the server under attack
- 
-also, limiting incoming is sorta misleading, since you cannot
-limit/stop/block/drop incoming packets.  you can only limit which
-of the incoming packets you are replying to
- 
-there are some icmp-packets you should reply to while ignoring
-un-necessary and un-used udp services
+Dropping all ICMP packets is wrong; ICMP is required for TCP/IP to work properly. And to drop only ICMP ECHO packets, it's better to use the kernel function that does that earlier: "echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_all".
 
-there are some udp-packets you should reply to while ignoring 
-un-necessary and un-used udp services
+The rules to drop private, documentation, LL and mcast addresses are too inclusive as written. That is, they drop such packets from all interfaces; they should only drop packets from the internet-facing interface(s). Only the rule that handles 127/8 is reasonably right.
 
-magic pixie dust
-alvin
-#
-# DDoS-Mitigator.net ... automated tcp-based iptables + tarpits
-# DDoS-Simulator.net
-#
-
+N
