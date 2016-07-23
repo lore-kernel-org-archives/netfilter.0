@@ -1,108 +1,63 @@
-From: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Subject: Re: How does iptables NAT handle IPsec ESP with NAT-T UDP header ?
-Date: Sat, 23 Jul 2016 23:56:15 +0200
-Message-ID: <4a1e6811-4d44-3b08-98af-95ecaad66dfb@plouf.fr.eu.org>
+From: Guy German <guy_g@rad.com>
+Subject: RE: How does iptables NAT handle IPsec ESP with NAT-T UDP header ?
+Date: Sat, 23 Jul 2016 18:55:00 +0000
+Message-ID: <AM4PR0301MB2275F18931456F441AEBA7B3910B0@AM4PR0301MB2275.eurprd03.prod.outlook.com>
 References: <AM4PR0301MB227595822291E80D8CFB861A910A0@AM4PR0301MB2275.eurprd03.prod.outlook.com>
  <fa1bc371-408e-6508-4cf3-e0ee438fc55a@plouf.fr.eu.org>
- <AM4PR0301MB2275F18931456F441AEBA7B3910B0@AM4PR0301MB2275.eurprd03.prod.outlook.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AM4PR0301MB2275F18931456F441AEBA7B3910B0@AM4PR0301MB2275.eurprd03.prod.outlook.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=rad365.onmicrosoft.com; s=selector1-rad-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=Q3QJtkn6HwHnXJg9PLO4387N6jL4enMwYo1pEhkLt88=;
+ b=Fj3UxA4dQn4Letp3wGV7BaNTfMUWjIGoRWXnm2Me1Cust5mBc32uRmOPyM6sVEmGL0iqXRj0bbt/KmFNXsQ+YbA5B9y9Qn9QZFBvVMkapvs57JkDrkC+GLkLB9JgyqSj4GQSFMBlVJbaXvO/x25BSlUUi2lL7Te+iJ4dbEGZfS8=
+In-Reply-To: <fa1bc371-408e-6508-4cf3-e0ee438fc55a@plouf.fr.eu.org>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Guy German <guy_g@rad.com>
-Cc: "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Pascal Hambourg <pascal@plouf.fr.eu.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
 
-Le 23/07/2016 =C3=A0 20:55, Guy German a =C3=A9crit :
-> I will try to clarify the problem with a specific example. I will use=
- 2 flows but there are 4 actually.
-> The device public IP in this example is 10.0.0.101 so the setup is li=
-ke the following:
->
-> Private domain                         Public domain
->
-> 2.1.1.1---+                                                          =
-+----------- 10.0.0.1
->                  +-------NAT--> 10.0.0.101 ----------+
-> 2.1.2.1---+                                                          =
-+----------- 10.0.0.2
->
-> Incoming flow1 (from private network, before NAT) has following heade=
-r:
-> Src-IP: 2.1.1.1 (private)
-> Dst IP: 10.0.0.1 (public)
-> UDP src port: 4500
-> UDP dst port: 4500
-> ESP SPI: 33F5A570
->
-> Incoming flow2 (from private network, before NAT) has following heade=
-r:
-> Src-IP: 2.1.2.1 (private)
-> Dst IP: 10.0.0.2 (public)
-> UDP src port: 4500
-> UDP dst port: 4500
-> ESP SPI: 9B417632
->
-> Now, the SNAT is performed (I'm currently not sure what is used exact=
-ly as src identifier), so both packets go out with (public) IP 10.0.0.1=
-01.
-> However, after NAT, both UDP ports (drc & dst) remain 4500.
-
-As expected. No need to alter source ports in this situation.
-
-> The incoming packets from opposite direction (from public nodes towar=
-ds NAT device) is as follows (as outgoing packets had both UDP ports 45=
-00, so are the packets in opposite direction):
->
-> Incoming flow1 (from public network) has following header:
-> Src-IP: 10.0.0.1 (public)
-> Dst IP: 10.0.0.101 (public)
-> UDP src port: 4500
-> UDP dst port: 4500
-> ESP SPI: 33F5A570
->
-> Incoming flow2 (from public network) has following header:
-> Src-IP: 10.0.0.2 (public)
-> Dst IP: 10.0.0.101 (public)
-> UDP src port: 4500
-> UDP dst port: 4500
-> ESP SPI: 9B417632
->
-> The thing is, that the iptables performs (somehow) the DNAT correctly=
- and the tunnels do work (we can ping from side to side).
-
-Of course it does work. Why wouldn't it ?
-
-> So internally after NAT, the packets are as follows:
-> Incoming flow1 (from public network, after NAT) has following header:
-> Src-IP: 10.0.0.1 (public)
-> Dst IP: 2.1.1.1 (private)
-> UDP src port: 4500
-> UDP dst port: 4500
-> ESP SPI: 33F5A570
->
-> Incoming flow2 (from public network, after NAT) has following header:
-> Src-IP: 10.0.0.2 (public)
-> Dst IP: 2.1.2.1 (private)
-> UDP src port: 4500
-> UDP dst port: 4500
-> ESP SPI: 9B417632
->
-> If both UDP ports are 4500, how did iptables distinguish between the =
-packets and knew which private IP to assign to each packet ?
-
-The connection tracking records original and reply source and=20
-destination addresses and ports in order to be able to match packets=20
-with registered flows. See my previous reply to display what is recorde=
-d=20
-about each registered flow.
-
-In your example, the destination address of each flow is different. Whe=
-n=20
-a reply packet comes from 10.0.0.1, conntrack knows it must be forwarde=
-d=20
-to 2.1.1.1.
-When a reply packet comes from 10.0.0.2, conntrack knows it must be=20
-forwarded to 2.1.2.1.
+SGkgUGFzY2FsLA0KTWFueSB0aGFua3MgZm9yIHRoZSBwcm9tcHQgcmVwbHkgIQ0KSSB3aWxsIHRy
+eSB0byBjbGFyaWZ5IHRoZSBwcm9ibGVtIHdpdGggYSBzcGVjaWZpYyBleGFtcGxlLiBJIHdpbGwg
+dXNlIDIgZmxvd3MgYnV0IHRoZXJlIGFyZSA0IGFjdHVhbGx5Lg0KVGhlIGRldmljZSBwdWJsaWMg
+SVAgaW4gdGhpcyBleGFtcGxlIGlzIDEwLjAuMC4xMDEgc28gdGhlIHNldHVwIGlzIGxpa2UgdGhl
+IGZvbGxvd2luZzoNCg0KUHJpdmF0ZSBkb21haW4gICAgICAgICAgICAgICAgICAgICAgICAgUHVi
+bGljIGRvbWFpbg0KDQoyLjEuMS4xLS0tKyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICArLS0tLS0tLS0tLS0gMTAuMC4wLjENCiAgICAgICAg
+ICAgICAgICAgKy0tLS0tLS1OQVQtLT4gMTAuMC4wLjEwMSAtLS0tLS0tLS0tKw0KMi4xLjIuMS0t
+LSsgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgKy0tLS0tLS0tLS0tIDEwLjAuMC4yDQoNCkluY29taW5nIGZsb3cxIChmcm9tIHByaXZhdGUg
+bmV0d29yaywgYmVmb3JlIE5BVCkgaGFzIGZvbGxvd2luZyBoZWFkZXI6DQpTcmMtSVA6IDIuMS4x
+LjEgKHByaXZhdGUpDQpEc3QgSVA6IDEwLjAuMC4xIChwdWJsaWMpDQpVRFAgc3JjIHBvcnQ6IDQ1
+MDANClVEUCBkc3QgcG9ydDogNDUwMA0KRVNQIFNQSTogMzNGNUE1NzANCg0KSW5jb21pbmcgZmxv
+dzIgKGZyb20gcHJpdmF0ZSBuZXR3b3JrLCBiZWZvcmUgTkFUKSBoYXMgZm9sbG93aW5nIGhlYWRl
+cjoNClNyYy1JUDogMi4xLjIuMSAocHJpdmF0ZSkNCkRzdCBJUDogMTAuMC4wLjIgKHB1YmxpYykN
+ClVEUCBzcmMgcG9ydDogNDUwMA0KVURQIGRzdCBwb3J0OiA0NTAwDQpFU1AgU1BJOiA5QjQxNzYz
+Mg0KDQpOb3csIHRoZSBTTkFUIGlzIHBlcmZvcm1lZCAoSSdtIGN1cnJlbnRseSBub3Qgc3VyZSB3
+aGF0IGlzIHVzZWQgZXhhY3RseSBhcyBzcmMgaWRlbnRpZmllciksIHNvIGJvdGggcGFja2V0cyBn
+byBvdXQgd2l0aCAocHVibGljKSBJUCAxMC4wLjAuMTAxLg0KSG93ZXZlciwgYWZ0ZXIgTkFULCBi
+b3RoIFVEUCBwb3J0cyAoZHJjICYgZHN0KSByZW1haW4gNDUwMC4NCg0KVGhlIGluY29taW5nIHBh
+Y2tldHMgZnJvbSBvcHBvc2l0ZSBkaXJlY3Rpb24gKGZyb20gcHVibGljIG5vZGVzIHRvd2FyZHMg
+TkFUIGRldmljZSkgaXMgYXMgZm9sbG93cyAoYXMgb3V0Z29pbmcgcGFja2V0cyBoYWQgYm90aCBV
+RFAgcG9ydHMgNDUwMCwgc28gYXJlIHRoZSBwYWNrZXRzIGluIG9wcG9zaXRlIGRpcmVjdGlvbik6
+DQoNCkluY29taW5nIGZsb3cxIChmcm9tIHB1YmxpYyBuZXR3b3JrKSBoYXMgZm9sbG93aW5nIGhl
+YWRlcjoNClNyYy1JUDogMTAuMC4wLjEgKHB1YmxpYykNCkRzdCBJUDogMTAuMC4wLjEwMSAocHVi
+bGljKQ0KVURQIHNyYyBwb3J0OiA0NTAwDQpVRFAgZHN0IHBvcnQ6IDQ1MDANCkVTUCBTUEk6IDMz
+RjVBNTcwDQoNCkluY29taW5nIGZsb3cyIChmcm9tIHB1YmxpYyBuZXR3b3JrKSBoYXMgZm9sbG93
+aW5nIGhlYWRlcjoNClNyYy1JUDogMTAuMC4wLjIgKHB1YmxpYykNCkRzdCBJUDogMTAuMC4wLjEw
+MSAocHVibGljKQ0KVURQIHNyYyBwb3J0OiA0NTAwDQpVRFAgZHN0IHBvcnQ6IDQ1MDANCkVTUCBT
+UEk6IDlCNDE3NjMyDQoNClRoZSB0aGluZyBpcywgdGhhdCB0aGUgaXB0YWJsZXMgcGVyZm9ybXMg
+KHNvbWVob3cpIHRoZSBETkFUIGNvcnJlY3RseSBhbmQgdGhlIHR1bm5lbHMgZG8gd29yayAod2Ug
+Y2FuIHBpbmcgZnJvbSBzaWRlIHRvIHNpZGUpLg0KU28gaW50ZXJuYWxseSBhZnRlciBOQVQsIHRo
+ZSBwYWNrZXRzIGFyZSBhcyBmb2xsb3dzOg0KSW5jb21pbmcgZmxvdzEgKGZyb20gcHVibGljIG5l
+dHdvcmssIGFmdGVyIE5BVCkgaGFzIGZvbGxvd2luZyBoZWFkZXI6DQpTcmMtSVA6IDEwLjAuMC4x
+IChwdWJsaWMpDQpEc3QgSVA6IDIuMS4xLjEgKHByaXZhdGUpDQpVRFAgc3JjIHBvcnQ6IDQ1MDAN
+ClVEUCBkc3QgcG9ydDogNDUwMA0KRVNQIFNQSTogMzNGNUE1NzANCg0KSW5jb21pbmcgZmxvdzIg
+KGZyb20gcHVibGljIG5ldHdvcmssIGFmdGVyIE5BVCkgaGFzIGZvbGxvd2luZyBoZWFkZXI6DQpT
+cmMtSVA6IDEwLjAuMC4yIChwdWJsaWMpDQpEc3QgSVA6IDIuMS4yLjEgKHByaXZhdGUpDQpVRFAg
+c3JjIHBvcnQ6IDQ1MDANClVEUCBkc3QgcG9ydDogNDUwMA0KRVNQIFNQSTogOUI0MTc2MzINCg0K
+SWYgYm90aCBVRFAgcG9ydHMgYXJlIDQ1MDAsIGhvdyBkaWQgaXB0YWJsZXMgZGlzdGluZ3Vpc2gg
+YmV0d2VlbiB0aGUgcGFja2V0cyBhbmQga25ldyB3aGljaCBwcml2YXRlIElQIHRvIGFzc2lnbiB0
+byBlYWNoIHBhY2tldCA/DQoNClRoYW5rcywNCkd1eQ0KDQo=
