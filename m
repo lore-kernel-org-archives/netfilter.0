@@ -1,37 +1,44 @@
-From: Guy German <guy_g@rad.com>
-Subject: RE: How does iptables NAT handle IPsec ESP with NAT-T UDP header ?
-Date: Sun, 24 Jul 2016 10:19:52 +0000
-Message-ID: <AM4PR0301MB22751A4F0B3DDAB0B41EF46C910C0@AM4PR0301MB2275.eurprd03.prod.outlook.com>
+From: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Subject: Re: How does iptables NAT handle IPsec ESP with NAT-T UDP header ?
+Date: Sun, 24 Jul 2016 13:48:42 +0200
+Message-ID: <f5e03ced-5f06-7b21-16c3-cd68212f7e2a@plouf.fr.eu.org>
 References: <AM4PR0301MB227595822291E80D8CFB861A910A0@AM4PR0301MB2275.eurprd03.prod.outlook.com>
  <fa1bc371-408e-6508-4cf3-e0ee438fc55a@plouf.fr.eu.org>
  <AM4PR0301MB2275F18931456F441AEBA7B3910B0@AM4PR0301MB2275.eurprd03.prod.outlook.com>
  <4a1e6811-4d44-3b08-98af-95ecaad66dfb@plouf.fr.eu.org>
+ <AM4PR0301MB22751A4F0B3DDAB0B41EF46C910C0@AM4PR0301MB2275.eurprd03.prod.outlook.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=rad365.onmicrosoft.com; s=selector1-rad-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=iBXqzGIGg+7DS6zHSMuz0l1rXk+LrK5MgUMGbV2wUVA=;
- b=rxS+smnpSzv1cVYgGqHpVeyTvE+126j4yovLH1cVi0/EfrnKH89eWU+TfJ5Fr3qMjqbITZl3OMAnMQVVqI/Rnobe/Lj+xeGpyPZYzSEaN+LpYsqj1+RA9pmifc1bf//hInzY32L4PwhzsAQSkCkrY5MUa+tsshw1l+hplf+R1CM=
-In-Reply-To: <4a1e6811-4d44-3b08-98af-95ecaad66dfb@plouf.fr.eu.org>
-Content-Language: en-US
+In-Reply-To: <AM4PR0301MB22751A4F0B3DDAB0B41EF46C910C0@AM4PR0301MB2275.eurprd03.prod.outlook.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: Guy German <guy_g@rad.com>
 Cc: "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
 
-SGkgUGFzY2FsLA0KT0ssIEkgdGhpbmsgSSBnb3QgaXQgbm93ICA6LSkNCkZvciBlYWNoIHNlc3Np
-b24gdGhlIGRlc3RpbmF0aW9uIElQIGFkZHJlc3MgaXMga2VwdCBhcyBwYXJ0IG9mIHRoZSBzZXNz
-aW9uIGlkZW50aWZpZXIga2V5IGFzIHdlbGwgPw0KU28sIGZvciBteSBleGFtcGxlLCB0aGVyZSBh
-cmUgMiB1bmlxdWUgZW50cmllcyBpbiB0aGUgTkFUIHRhYmxlLCB3aXRob3V0IHRoZSBuZWVkIGZv
-ciBVRFAgc3JjIHBvcnQgY2hhbmdlLg0KSG93ZXZlciwgaWYgMi4xLjEuMSB3aWxsIHNlbmQgYSBw
-YWNrZXQgdG8gMTAuMC4wLjIsDQphIDNyZCBlbnRyeSB3aWxsIGJlIGNyZWF0ZWQsIHRoaXMgdGlt
-ZSB3aXRoIHRoZSBzcmMgVURQIDQ1MDAgY2hhbmdlZCB0byBzb21lICJuZXctcG9ydCIgaW4gb3Jk
-ZXINCnRvIGRpc3Rpbmd1aXNoIGZyb20gdGhlIDJuZCBlbnRyeSAoaW4gd2hpY2ggZGVzdGluYXRp
-b24gYWRkcmVzcyBpcyBzYW1lIDEwLjAuMC4yKSA/DQpXaGlsZSB0aGUgMm5kIGVudHJ5IHdpbGwg
-Y29udGludWUgdG8gaGFuZGxlIHBhY2tldHMgMTAuMC4wLjIvNDUwMC0+MTAuMC4wLjEwMS80NTAw
-LA0KdGhlIDNyZCBlbnRyeSB3aWxsIGhhbmRsZSBwYWNrZXRzIDEwLjAuMC4yLzQ1MDAtPjEwLjAu
-MC4xMDEvIm5ldy1wb3J0Ii4NCkFtIEkgcmlnaHQgPw0KDQpNYW55IHRoYW5rcyBmb3IgdGhlIHN1
-cHBvcnQgYW5kIHBhdGllbmNlICENCg0KR3V5DQoNCg==
+Le 24/07/2016 =C3=A0 12:19, Guy German a =C3=A9crit :
+> OK, I think I got it now  :-)
+> For each session the destination IP address is kept as part of the se=
+ssion identifier key as well ?
+
+Yes.
+
+> So, for my example, there are 2 unique entries in the NAT table, with=
+out the need for UDP src port change.
+
+Yes, except it is not only a NAT table but a conntrack table, which=20
+keeps track of all connections even without NAT.
+
+> However, if 2.1.1.1 will send a packet to 10.0.0.2,
+> a 3rd entry will be created, this time with the src UDP 4500 changed =
+to some "new-port" in order
+> to distinguish from the 2nd entry (in which destination address is sa=
+me 10.0.0.2) ?
+> While the 2nd entry will continue to handle packets 10.0.0.2/4500->10=
+=2E0.0.101/4500,
+> the 3rd entry will handle packets 10.0.0.2/4500->10.0.0.101/"new-port=
+".
+> Am I right ?
+
+Yes.
