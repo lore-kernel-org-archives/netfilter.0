@@ -1,27 +1,92 @@
-From: Guy German <guy_g@rad.com>
-Subject: RE: How does iptables NAT handle IPsec ESP with NAT-T UDP header ?
-Date: Sun, 24 Jul 2016 18:00:53 +0000
-Message-ID: <AM4PR0301MB227558E9AF3FA875F45DB35D910C0@AM4PR0301MB2275.eurprd03.prod.outlook.com>
-References: <AM4PR0301MB227595822291E80D8CFB861A910A0@AM4PR0301MB2275.eurprd03.prod.outlook.com>
- <fa1bc371-408e-6508-4cf3-e0ee438fc55a@plouf.fr.eu.org>
- <AM4PR0301MB2275F18931456F441AEBA7B3910B0@AM4PR0301MB2275.eurprd03.prod.outlook.com>
- <4a1e6811-4d44-3b08-98af-95ecaad66dfb@plouf.fr.eu.org>
- <AM4PR0301MB22751A4F0B3DDAB0B41EF46C910C0@AM4PR0301MB2275.eurprd03.prod.outlook.com>
- <f5e03ced-5f06-7b21-16c3-cd68212f7e2a@plouf.fr.eu.org>
+From: namus <suman.subj@gmail.com>
+Subject: Fwd: Need guidance in - dropping incoming packets to a interface in a
+ bridged network.
+Date: Mon, 25 Jul 2016 13:37:02 +0300
+Message-ID: <CAGx1xT3r9xXVU1uZYWJL3P68NMvOutKnR5FW8JDhFHnRYq4u7A@mail.gmail.com>
+References: <CAGx1xT3HGq8WNmHAmEAOUR551LuBrDoFo=uhW6VV1w50KpBb4A@mail.gmail.com>
+ <CAGx1xT1+z8=0k9bc-iHKJZkjP0Lbe2rdU-V2wFMaus2tXzpT1Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=rad365.onmicrosoft.com; s=selector1-rad-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=PYZDWWXv72n4aLLtxPpIc68UgOARSliwzlQxbp9sHTQ=;
- b=iHYjpLADN2JPfFhfEF5wqm6Xa1z4XB229Y/MB6TRk76mhUxZ3mxIjoE2HpfcVzksP1nqZrfgoC5J7OuzUr0MmUE+dGFA3/acu+oSrym875ktRTDtfH2eJu+INowze0z2PWW1ytZqHwOc+7o4dj5MLZYOBK/l0zB31CpQ1XUk9CI=
-In-Reply-To: <f5e03ced-5f06-7b21-16c3-cd68212f7e2a@plouf.fr.eu.org>
-Content-Language: en-US
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to;
+        bh=H3YyiZaGzn5GD+6NOuJ55u7Gkv7O4pNFm2J2hyeZ9sg=;
+        b=t9Yz4s3a2QQNvBowf1M4EL2Gi15C6TQFg/lCeAXLnd1k4hxBBb/aUWrFN91/pwi05y
+         Grp/hU0rdNbPkDUEutzPoJ2l+F1KT0xb2TonuIASWQSz71N+xQwZKlY4YS2vK+4WtjUO
+         LRZinrBotcWxSbEwQ1HrX9lKTxOfxr1i7jPmKaRcXskNt0go4Z2qo3YmraUyZ/vcxUd6
+         Al6M8MXbrUCuW824EhZcK0YA8d9gk9Vi0NjfM5oM9qcAqvOirZESlqZZIszQXtNqyHMI
+         xga4UMAdlzVW3ycwcipihqcfS0DWAd3nkkLaNGM5VVHy+W2zEjxabkqCDtrfxlv+L6lM
+         UPhA==
+In-Reply-To: <CAGx1xT1+z8=0k9bc-iHKJZkjP0Lbe2rdU-V2wFMaus2tXzpT1Q@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Cc: "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-VGhhbmsgeW91IHZlcnkgbXVjaCBmb3IgYWxsIHlvdXIgaGVscCAhDQpHdXkNCg==
+Hi Team,
+
+My device contains 2 ethernet interfaces(eth1 and eth2)  added to
+bridge interface(br0)
+I am trying to DROP all the packets to eth1 interface based on some
+user-condition .
+and I am new to netlink programming apis.
+
+
+I did get past thru :
+drv->nf_sock = socket(AF_INET, SOCK_RAW, IPPROTO_RAW);
+getsockopt(drv->nf_sock,IPPROTO_IP,IPT_SO_GET_INFO,&info,&nf_sock_len)
+getsockopt(drv->nf_sock, IPPROTO_IP, IPT_SO_GET_ENTRIES, &entries,&tmp)
+
+
+now I am struck in finding exact match in those entries , replacing it
+with DROP rule and commit the (DROP) rule .
+Could you please help me in this ?
+
+Also I tried to get the debug : /tmp/libiptc-so_get_entries.blob file
+can you please suggest me (with od / hexdump/.. tool) command to view
+the details in that file.
+
+
+or any other approach to solve ..from here .. ?
+
+More info:
+
+I am using linux kernel 2.6.31 and
+iptables 1.4.9.1
+ebtables 2.0.6
+libnfnetlink-1.0.0
+libnl2  libraries
+
+
+I am confused whether to use socket-based or to include libiptc in my
+code to invoke functions.. whichever way would be suitable for my
+implementation , could you
+please point me in that direction?
+
+
+Following commands do not work:
+
+iptables -t filter -I INPUT -i eth2 -j DROP (doesn't drop any packets
+- checked via tcpdump of eth2 )
+iptables -t filter -I FORWARD -i eth2 -j DROP (doesn't drop any
+packets - checked via tcpdump of eth2 )
+
+whereas following commands work:
+
+iptables -t filter -I INPUT  -j DROP (does work .. cant see any
+packets flowing thru )
+iptables -t filter -I FORWARD -j DROP (does work .. cant see any
+packets flowing thru)
+
+
+iptables -t filter -I INPUT -i br0 -j DROP (does work .. cant see any
+packets flowing thru )
+iptables -t filter -I FORWARD -i br0 -j DROP (does work .. cant see
+any packets flowing thru)
+
+I hope bridging is playing a role in dropping the packets here.
+
+Your help will be greatly appreciated .
+Thanks in Advance,
+Suman.
