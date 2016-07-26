@@ -1,71 +1,52 @@
-From: namus <suman.subj@gmail.com>
-Subject: Re: Fwd: Need guidance in - dropping incoming packets to a interface
- in a bridged network.
-Date: Tue, 26 Jul 2016 11:13:19 +0300
-Message-ID: <CAGx1xT1M=ymRVsLB_aFGuFfwZeH916y9eRzTsRTCFdv53XTygQ@mail.gmail.com>
-References: <CAGx1xT3HGq8WNmHAmEAOUR551LuBrDoFo=uhW6VV1w50KpBb4A@mail.gmail.com>
- <CAGx1xT1+z8=0k9bc-iHKJZkjP0Lbe2rdU-V2wFMaus2tXzpT1Q@mail.gmail.com>
- <CAGx1xT3r9xXVU1uZYWJL3P68NMvOutKnR5FW8JDhFHnRYq4u7A@mail.gmail.com> <a529b978-43b6-118e-0772-174c1a47f956@plouf.fr.eu.org>
+From: Andreas Herz <andi@geekosphere.org>
+Subject: UNREPLIED conntrack entries won't be discarded
+Date: Tue, 26 Jul 2016 13:42:48 +0200
+Message-ID: <20160726114248.GR23593@ks3360651.kimsufi.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=A857VSPFkrY6LgpC9Pg5/cxh7LeI+CJbs7ViiYcvD4Q=;
-        b=wWmqngAgejXDS34WXSIxSvhLv381rJDNtKbOsyl1w0Pgn02LsvBtvgV5W1SHw9il6J
-         J62WD0R0SZl69L+uOyOv7ukOlEfM2JWh+usGbZxV9hFRyko1tI24CVTJsW6aukgpAXjg
-         WoNJY9ItfcFAnCGhRCSbNW2KDbmPUio4kmpmWCzm5J7/lXV0/BUtggwFD3/Jj59kRZas
-         Nq7y6vfPKf8HmnB8XFw9a0Xdd31t2AnepgViNZnoHopNEIWihwjblQCFMQuxg00t7MWr
-         a4KcHFcGfRANZ33wbjqfAj18MoXh+AxEwOjKG3MqQ1+IUUWJ5NxCE1KBPKmUIueo3WIi
-         U76Q==
-In-Reply-To: <a529b978-43b6-118e-0772-174c1a47f956@plouf.fr.eu.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=geekosphere.org;
+	s=gos; t=1469533259;
+	bh=7iKgh2X1gEstfJmseBGMLINTwk/iJCjv+RYeolofwfw=;
+	h=Date:From:To:Subject;
+	b=CUuFAIED3XOEgMibYQQusbqOZYR5miPxF0JfW425odVU2RYwRdkmndKuEzNBT25/P
+	 j/q4/z6BeUd8IjQLvaG882VaeMQzHm2sSGHHGR5Mz0nrty8qZNOtQG2Ba/Qa3TJ9jn
+	 UejCDVQA3TtTK9srhCNUaXBRnoI5wUKfQdLQwH6ZO38fp8jBwnZXPc31jVfLTC0i+Y
+	 9WSR35eY882Bhz9SwGGuy33KSbOYh4YnsJWshc130otsDX917fVlPtLlxuw3Bkaj+3
+	 NSdamKPfkUEhAeNoVhp9b7QMsvoEtbuKhjNhszLJEUiQ3IGxmoplrP/kUU5Ly9Wva4
+	 290MmWoqGT9pQ==
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hi Pascal,
+Hi,
 
-Your suggestion has worked ..
+we have a system with a huge amount of TCP ESTABLISHED connections but
+all [UNREPLIED] that have the 5 days timeout from
+nf_conntrack_tcp_timeout_established. Increasing conntrack_max is just
+delaying the issue.
 
-$iptables -t filter  -I FORWARD  -m physdev --physdev-in eth2  -j DROP
-(works ie.,  drops the incoming packets )
+I could run a script to get rid of them via cronjob but I found this in
+the neftilter documentation:
 
-$iptables -t filter  -D FORWARD  -m physdev --physdev-in eth2  -j DROP
-(undo / del the previous rule .. allows incoming  packets)
+> The answer is easy: UNREPLIED entries are temporary entries, i.e. as
+> soon as we run out of connection tracking entries (we reach
+> /proc/sys/net/ipv4/ip_conntrack_max), we delete old UNREPLIED entries.
+> In other words: instead of having empty conntrack entries, we'd rather
+> keep some maybe useful information in them until we really need them.
 
-Could you please guide me .. How to send the (DROP) message via
-setting the socket options (programmatically) ..
-ie., in filling-up the ipt_replace/xt_entry_match/xt_entry_target
-structure data structure / could you please point me to any simple
-example of "physdev" match case .
+(http://www.netfilter.org/documentation/FAQ/netfilter-faq-3.html)
 
+But I'm getting:
 
-Thanks a lot ,
-Suman.
+> kernel: nf_conntrack: table full, dropping packet.
 
-On Mon, Jul 25, 2016 at 9:07 PM, Pascal Hambourg <pascal@plouf.fr.eu.or=
-g> wrote:
-> Le 25/07/2016 =C3=A0 12:37, namus a =C3=A9crit :
->>
->> Hi Team,
->>
->> My device contains 2 ethernet interfaces(eth1 and eth2)  added to
->> bridge interface(br0)
->> I am trying to DROP all the packets to eth1 interface based on some
->> user-condition .
->
-> (...)
->>
->> Following commands do not work:
->>
->> iptables -t filter -I INPUT -i eth2 -j DROP (doesn't drop any packet=
-s
->> - checked via tcpdump of eth2 )
->
->
-> Check the "physdev" match.
->
+Should this "garbage collection" still work or would it be a good idea
+to implement a dedicated and much smaller counter for those connections?
+
+Thanks
+
+-- 
+Andreas Herz
