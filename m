@@ -1,99 +1,49 @@
-From: Eric Leblond <eric@regit.org>
-Subject: Re: ulogd.c:522 error during propagate_results
-Date: Thu, 28 Jul 2016 15:18:40 +0200
-Message-ID: <1469711920.2385.46.camel@regit.org>
-References: <CALp86C6itcb69x=t8z-qAWzs=aZeK75mp_LVVe+X3r+nHGz70Q@mail.gmail.com>
+From: Imran Geriskovan <imran.geriskovan@gmail.com>
+Subject: Iptables-nftables transition: DNAT on Output
+Date: Sat, 30 Jul 2016 15:07:37 +0300
+Message-ID: <CAK5rZE4HykuUgQ+brqU+nH-TUEwVFS+y8XxcVyPx3mBGegb7jg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-c8xpQ4ApMwuHI+1JnJ87"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CALp86C6itcb69x=t8z-qAWzs=aZeK75mp_LVVe+X3r+nHGz70Q@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=TQAFE21j8Ttwo4uk2uQE+5RlhXBgn+deNnfnkCtZlrA=;
+        b=hPbnT/ZdmSHB3KzLzVDaW5NzJwRR2IEaEf6RGu+cI1cBJQTS6hsZAYUHjYmKjgMRKS
+         AsGoQeu3t0qGAk383M5Wzs9IqxAuXZaF0RoDBR982tYvXRBTQVo0SD6moYrEvn8jSYst
+         D4RePfPXgASiITwCa+6yKcTNdZyzitlrF6NwyVyuGI5LC6f3ivDoOeQa5ZuHAedBNtKd
+         RzMWtohvzShXNb2B9ZxD4asliIuUmaPMB190E9IRUuvMPMSVBAADieYmhemTQBRjN2rQ
+         ECxfRwtgRmxFAyyq92agFu1sxagz8OqKaxOfoReoPT36asP2fW0RaKxI/j2LHJiuLGiC
+         hMhA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Saeed Abbassi <saeed144@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
+Hi... To control my outgoing traffic, I've redirected it to a local
+proxy like this:
 
---=-c8xpQ4ApMwuHI+1JnJ87
-Content-Type: text/plain; charset="iso-8859-15"
-Content-Transfer-Encoding: quoted-printable
+iptables -t nat -A OUTPUT -p tcp --dport XX -m owner --uid-owner imran
+-j DNAT --to 127.0.0.1:YY
 
-Hi,
+What's its equivalent on nftables?
 
-On Wed, 2016-07-27 at 15:47 -0400, Saeed Abbassi wrote:
-> Hello all
->=20
-> I thank you for the great package you provided for logging of
-> iptables
-> flow/policy.
+As I explore my options, I've tried the following
+without success. Is DNAT on Output unsupported on nftables?
 
-Thanks :)
+I'm on Kernel 4.6.4. Looking at Arch Linux default kernel config,
+I see everything is included for netfilter/nftables/iptables, etc..
 
-> #Issue
-> =A0I'm getting a lot of "ulogd.c:522 error during propagate_results" in
-> the /var/log/ulogd/ulogd.log file.
-> Which sometimes breaks the ulogd logging functionality.
->=20
-> #Specs
-> =A0 In my lab, I'm using ulogd-2.0.4-3.el7.lux.1.x86_64 on CentOS 7,
-> 4.6.3-1.el7.elrepo.x86_64.
-> Mostly, it works, and logs the packets into
-> /var/log/ulogd/ulogd_syslogemu.log file.
-> The command to enable NFLOG in iptables
-> sudo ip netns exec namespace1 iptables -A FORWARD -j NFLOG
-> --nflog-group 1 --nflog-prefix namespace1
->=20
-> #Config
-> Here's the configuration I'm using in
-> /etc/netns/namespace1/ulogd.conf
-> stack=3Dlog1:NFLOG,base1:BASE,ifi1:IFINDEX,ip2str1:IP2STR,mac2str1:HWHD
-> R,print1:PRINTPKT,emu1:LOGEMU
->=20
-> [log1]
-> group=3D1
-> netlink_socket_buffer_size=3D1736704
-> netlink_socket_buffer_maxsize=3D1085440
-> netlink_qthreshold=3D10
-> netlink_qtimeout=3D5
->=20
-> #Question
-> Is there anything I'm missing, or is this a known bug?
+Thanks for your comments...
 
-That is looking a bit strange maybe there is something forwarded that
-causes the error.
+chain out {
+   type filter hook output priority 0; policy drop;
+   meta skuid imran tcp dport XX counter dnat 127.0.0.1:YY  # jump natout
+}
+# Gives error with DNAT
+# If I change DNAT with JUMP, error is gone. But it doesn't do anything.
 
-Is it possible for you to run it in debug ? For that set loglevel to 1
-(line exist at start of ulogd.conf).
-
-If nothing interesting comes out, it would be great if you have the
-possibility to build a new version with the attached patch. And do the
-same test.
-
-BR,
---=20
-Eric Leblond <eric@regit.org>
---=-c8xpQ4ApMwuHI+1JnJ87
-Content-Disposition: attachment;
-	filename="0001-ulogd-print-plugin-causing-propagation-error.patch"
-Content-Type: text/x-patch;
-	name="0001-ulogd-print-plugin-causing-propagation-error.patch";
-	charset="ISO-8859-15"
-Content-Transfer-Encoding: base64
-
-RnJvbSA3ZTk4MzNjM2MyNGI1M2VkNTg2NjIxODg4NWUyNGFlOWE5ZTcyNmU4IE1vbiBTZXAgMTcg
-MDA6MDA6MDAgMjAwMQpGcm9tOiBFcmljIExlYmxvbmQgPGVyaWNAcmVnaXQub3JnPgpEYXRlOiBU
-aHUsIDI4IEp1bCAyMDE2IDE1OjE2OjEzICswMjAwClN1YmplY3Q6IFtQQVRDSF0gdWxvZ2Q6IHBy
-aW50IHBsdWdpbiBjYXVzaW5nIHByb3BhZ2F0aW9uIGVycm9yCgpTaWduZWQtb2ZmLWJ5OiBFcmlj
-IExlYmxvbmQgPGVyaWNAcmVnaXQub3JnPgotLS0KIHNyYy91bG9nZC5jIHwgNCArKystCiAxIGZp
-bGUgY2hhbmdlZCwgMyBpbnNlcnRpb25zKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEv
-c3JjL3Vsb2dkLmMgYi9zcmMvdWxvZ2QuYwppbmRleCA1YjlhNTg2Li43NGYyZTNhIDEwMDY0NAot
-LS0gYS9zcmMvdWxvZ2QuYworKysgYi9zcmMvdWxvZ2QuYwpAQCAtNjE2LDcgKzYxNiw5IEBAIHZv
-aWQgdWxvZ2RfcHJvcGFnYXRlX3Jlc3VsdHMoc3RydWN0IHVsb2dkX3BsdWdpbnN0YW5jZSAqcGkp
-CiAJCXN3aXRjaCAocmV0KSB7CiAJCWNhc2UgVUxPR0RfSVJFVF9FUlI6CiAJCQl1bG9nZF9sb2co
-VUxPR0RfTk9USUNFLAotCQkJCSAgImVycm9yIGR1cmluZyBwcm9wYWdhdGVfcmVzdWx0c1xuIik7
-CisJCQkJICAiZXJyb3IgZHVyaW5nIHByb3BhZ2F0ZV9yZXN1bHRzIGJ5IHBsdWdpbiAlc1xuIiwK
-KwkJCQkgIGN1ci0+cGx1Z2luLT5uYW1lCisJCQkJICApOwogCQkJLyogZmFsbHRocm91Z2ggKi8K
-IAkJY2FzZSBVTE9HRF9JUkVUX1NUT1A6CiAJCQkvKiB3ZSBzaGFsbCBhYm9ydCBmdXJ0aGVyIGl0
-ZXJhdGlvbiBvZiB0aGUgc3RhY2sgKi8KLS0gCjIuOC4xCgo=
-
-
---=-c8xpQ4ApMwuHI+1JnJ87--
-
+chain natout {
+  tcp dport XX counter dnat 127.0.0.1:YY  # counts nothing!
+  counter  # counts same as the counter at out
+}
