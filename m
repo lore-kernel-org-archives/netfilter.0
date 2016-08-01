@@ -1,49 +1,47 @@
-From: Imran Geriskovan <imran.geriskovan@gmail.com>
-Subject: Iptables-nftables transition: DNAT on Output
-Date: Sat, 30 Jul 2016 15:07:37 +0300
-Message-ID: <CAK5rZE4HykuUgQ+brqU+nH-TUEwVFS+y8XxcVyPx3mBGegb7jg@mail.gmail.com>
+From: Yan Seiner <yan@seiner.com>
+Subject: CONNTRACK and pppoe interfaces - marking does not work
+Date: Mon, 1 Aug 2016 16:28:40 -0400
+Message-ID: <036276d0-5efe-6c08-5a49-faf6520b195b@seiner.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=TQAFE21j8Ttwo4uk2uQE+5RlhXBgn+deNnfnkCtZlrA=;
-        b=hPbnT/ZdmSHB3KzLzVDaW5NzJwRR2IEaEf6RGu+cI1cBJQTS6hsZAYUHjYmKjgMRKS
-         AsGoQeu3t0qGAk383M5Wzs9IqxAuXZaF0RoDBR982tYvXRBTQVo0SD6moYrEvn8jSYst
-         D4RePfPXgASiITwCa+6yKcTNdZyzitlrF6NwyVyuGI5LC6f3ivDoOeQa5ZuHAedBNtKd
-         RzMWtohvzShXNb2B9ZxD4asliIuUmaPMB190E9IRUuvMPMSVBAADieYmhemTQBRjN2rQ
-         ECxfRwtgRmxFAyyq92agFu1sxagz8OqKaxOfoReoPT36asP2fW0RaKxI/j2LHJiuLGiC
-         hMhA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi... To control my outgoing traffic, I've redirected it to a local
-proxy like this:
+This is driving me nuts.  I've spent most of the day trying to figure 
+out why marking packets does not work.  I've now isolated the problem to 
+where I believe that neither MARK nor CONNMARK targets work on a pppoe 
+interface.
 
-iptables -t nat -A OUTPUT -p tcp --dport XX -m owner --uid-owner imran
--j DNAT --to 127.0.0.1:YY
+Here's what I have:
 
-What's its equivalent on nftables?
+eth0.9 - cable interface with DHCP: xxx.158.166.12
+eth0.8 - DSL interface with pppoe: xxx.251.62.82
 
-As I explore my options, I've tried the following
-without success. Is DNAT on Output unsupported on nftables?
+and here's how I mark them (I've also tried marking on PREROUTING):
 
-I'm on Kernel 4.6.4. Looking at Arch Linux default kernel config,
-I see everything is included for netfilter/nftables/iptables, etc..
+iptables -t mangle -A INPUT -i ${dsl_if} -j CONNMARK --set-mark 0x02/0x02
+iptables -t mangle -A INPUT -i ${cable_if} -j CONNMARK --set-mark 0x01/0x01
 
-Thanks for your comments...
+And here's what happens:
 
-chain out {
-   type filter hook output priority 0; policy drop;
-   meta skuid imran tcp dport XX counter dnat 127.0.0.1:YY  # jump natout
-}
-# Gives error with DNAT
-# If I change DNAT with JUMP, error is gone. But it doesn't do anything.
+root@AP1:~# grep 'dport=23 ' /proc/net/nf_*
+/proc/net/nf_conntrack:ipv4     2 tcp      6 58 SYN_RECV 
+src=73.81.17.116 dst=xxx.251.62.82 sport=38649 dport=23 packets=1 
+bytes=60 src=xxx.251.62.82 dst=73.81.17.116 sport=23 dport=38649 
+packets=3 bytes=180 mark=0 use=2
+/proc/net/nf_conntrack:ipv4     2 tcp      6 113 TIME_WAIT 
+src=73.81.17.116 dst=xxx.158.166.12 sport=33901 dport=23 packets=27 
+bytes=4722 src=xxx.158.166.12 dst=73.81.17.116 sport=23 dport=33901 
+packets=20 bytes=4322 [ASSURED] mark=1 use=2
 
-chain natout {
-  tcp dport XX counter dnat 127.0.0.1:YY  # counts nothing!
-  counter  # counts same as the counter at out
-}
+So the cable_if is marked as expected, but the DSL interface, with PPPOE 
+is not marked.  I've tried the underlying hardware interface, both 
+eth0.8 and eth0, and no joy.  Basically it looks like PPPOE is not 
+compatible with CONNMARK or MARK.
+
+Can anyone see anything that I am doing wrong?  Or, anything I can check 
+or do differently?  Something I need to do when pppoe comes up?
+
