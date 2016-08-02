@@ -1,53 +1,41 @@
-From: Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>
+From: Imran Geriskovan <imran.geriskovan@gmail.com>
 Subject: Re: Iptables-nftables transition: DNAT on Output
-Date: Tue, 2 Aug 2016 08:13:30 +0200
-Message-ID: <CAOkSjBiq2KEzaE+csSgExBoSk+QRAnKEna7mcptCR33gPd54_Q@mail.gmail.com>
+Date: Tue, 2 Aug 2016 15:36:24 +0300
+Message-ID: <CAK5rZE6mczN6WZ=+CQpSuH_pBWtDOUrD08YpDRgtOi_M8dhLfA@mail.gmail.com>
 References: <CAK5rZE4HykuUgQ+brqU+nH-TUEwVFS+y8XxcVyPx3mBGegb7jg@mail.gmail.com>
+ <CAOkSjBiq2KEzaE+csSgExBoSk+QRAnKEna7mcptCR33gPd54_Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
         h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=HTv/CdWkGtzyMhO8gC8bMFgOYv7uX5LLR1gDqa5k2Q0=;
-        b=qsfSpChCCKdyo5VTmGnZAgJ5zY1ZaZ7X+mB0SLXD96oOYpNKzbdRb9xMWhECawWyh2
-         UQI0ZNskXZdxhlbdgWQEjD3Md/getgjAUNeyLZYvJYnVFgfplNw8RBUppgIdBtSzp4Um
-         zES51/WtG/HNVcUHKwPOa98y5jD0q/IA+ViF4XQWAtUr1mTWLNxHfwBHSyAHhoV4GAof
-         Vzq08jBXcK+4oB2rqJdA0S64Nf2E3yl6h9ffs9WrUW/wsI2haI23zA0ZPRfBaWuqjBf0
-         2sx5KocDOoXdAU4HuhUiAE/VfDJZPlZJbFU2cZmdrz6qmGhecO78d8RPKfiauPc5Xk3x
-         /QKQ==
-In-Reply-To: <CAK5rZE4HykuUgQ+brqU+nH-TUEwVFS+y8XxcVyPx3mBGegb7jg@mail.gmail.com>
+         :cc;
+        bh=CG/jy+uTVlaPXDrubNlcpcIABc/5R/CBneNrRVZFkgo=;
+        b=EN09j8RPNnHC11nR7yNROtxO/0jd3cVbAH4RUyH7PDHArxosRqO5domIULUQjkn/14
+         8vYn+kxY2/tV8Tc+/xalx5e59xk0e2sEqsQDYEgwiYv0rbVtEXk+ygv3O3U5TK9gE0Pu
+         n2v5mN+ll+pOX4SotSROaqpqzaxoMrg4iuBfIZLxCyTMZZtx9kTaDS+QvwE1dCTGwzkg
+         1lAKlai6PIWX4zqq6TZchXaBBOVfdu3MkwSZol4SNI1EHXmtzWbdY3vz57qewMWZocUG
+         dXEC8B9b8D9bnD2WQ/TVt4oNkreDD22xB9Q2A93LarcVC+EOpriv/Ah50c2XFcB1/iNT
+         Qs6A==
+In-Reply-To: <CAOkSjBiq2KEzaE+csSgExBoSk+QRAnKEna7mcptCR33gPd54_Q@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"
-To: Imran Geriskovan <imran.geriskovan@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>
 Cc: Netfilter Users Mailing list <netfilter@vger.kernel.org>
 
-T24gMzAgSnVseSAyMDE2IGF0IDE0OjA3LCBJbXJhbiBHZXJpc2tvdmFuIDxpbXJhbi5nZXJpc2tv
-dmFuQGdtYWlsLmNvbT4gd3JvdGU6Cj4gSGkuLi4gVG8gY29udHJvbCBteSBvdXRnb2luZyB0cmFm
-ZmljLCBJJ3ZlIHJlZGlyZWN0ZWQgaXQgdG8gYSBsb2NhbAo+IHByb3h5IGxpa2UgdGhpczoKPgo+
-IGlwdGFibGVzIC10IG5hdCAtQSBPVVRQVVQgLXAgdGNwIC0tZHBvcnQgWFggLW0gb3duZXIgLS11
-aWQtb3duZXIgaW1yYW4KPiAtaiBETkFUIC0tdG8gMTI3LjAuMC4xOllZCj4KPiBXaGF0J3MgaXRz
-IGVxdWl2YWxlbnQgb24gbmZ0YWJsZXM/Cj4KPiBBcyBJIGV4cGxvcmUgbXkgb3B0aW9ucywgSSd2
-ZSB0cmllZCB0aGUgZm9sbG93aW5nCj4gd2l0aG91dCBzdWNjZXNzLiBJcyBETkFUIG9uIE91dHB1
-dCB1bnN1cHBvcnRlZCBvbiBuZnRhYmxlcz8KPgo+IEknbSBvbiBLZXJuZWwgNC42LjQuIExvb2tp
-bmcgYXQgQXJjaCBMaW51eCBkZWZhdWx0IGtlcm5lbCBjb25maWcsCj4gSSBzZWUgZXZlcnl0aGlu
-ZyBpcyBpbmNsdWRlZCBmb3IgbmV0ZmlsdGVyL25mdGFibGVzL2lwdGFibGVzLCBldGMuLgo+Cj4g
-VGhhbmtzIGZvciB5b3VyIGNvbW1lbnRzLi4uCj4KPiBjaGFpbiBvdXQgewo+ICAgIHR5cGUgZmls
-dGVyIGhvb2sgb3V0cHV0IHByaW9yaXR5IDA7IHBvbGljeSBkcm9wOwo+ICAgIG1ldGEgc2t1aWQg
-aW1yYW4gdGNwIGRwb3J0IFhYIGNvdW50ZXIgZG5hdCAxMjcuMC4wLjE6WVkgICMganVtcCBuYXRv
-dXQKPiB9Cj4gIyBHaXZlcyBlcnJvciB3aXRoIEROQVQKPiAjIElmIEkgY2hhbmdlIEROQVQgd2l0
-aCBKVU1QLCBlcnJvciBpcyBnb25lLiBCdXQgaXQgZG9lc24ndCBkbyBhbnl0aGluZy4KPgo+IGNo
-YWluIG5hdG91dCB7Cj4gICB0Y3AgZHBvcnQgWFggY291bnRlciBkbmF0IDEyNy4wLjAuMTpZWSAg
-IyBjb3VudHMgbm90aGluZyEKPiAgIGNvdW50ZXIgICMgY291bnRzIHNhbWUgYXMgdGhlIGNvdW50
-ZXIgYXQgb3V0Cj4gfQoKcGVyaGFwcyB0aGUgZXJyb3IgaXMgeW91ciBiYXNlIGNoYWluOiBzZWVt
-cyB0byBiZSBvZiB0eXBlIGZpbHRlci4KClBsZWFzZSwgcmVhZCB0aGUgbmZ0YWJsZXMgd2lraSBb
-MF1bMV0uCgpbMF0gaHR0cHM6Ly93aWtpLm5mdGFibGVzLm9yZy93aWtpLW5mdGFibGVzL2luZGV4
-LnBocC9Db25maWd1cmluZ19jaGFpbnMKWzFdIGh0dHBzOi8vd2lraS5uZnRhYmxlcy5vcmcvd2lr
-aS1uZnRhYmxlcy9pbmRleC5waHAvUGVyZm9ybWluZ19OZXR3b3JrX0FkZHJlc3NfVHJhbnNsYXRp
-b25fKE5BVCkKCgotLSAKQXJ0dXJvIEJvcnJlcm8gR29uesOhbGV6Ci0tClRvIHVuc3Vic2NyaWJl
-IGZyb20gdGhpcyBsaXN0OiBzZW5kIHRoZSBsaW5lICJ1bnN1YnNjcmliZSBuZXRmaWx0ZXIiIGlu
-CnRoZSBib2R5IG9mIGEgbWVzc2FnZSB0byBtYWpvcmRvbW9Admdlci5rZXJuZWwub3JnCk1vcmUg
-bWFqb3Jkb21vIGluZm8gYXQgIGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jkb21vLWluZm8u
-aHRtbAo=
+On 8/2/16, Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com> wrote:
+> perhaps the error is your base chain: seems to be of type filter.
+
+Thanks for the comment..
+Following does the trick:
+
+chain outnat {
+  type nat hook output priority 0;
+  skuid imran tcp dport XX dnat 127.0.0.1:YY
+}
+
+chain postnat {
+   type nat hook postrouting priority 100;
+}
