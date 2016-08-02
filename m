@@ -1,65 +1,53 @@
-From: Yan Seiner <yan@seiner.com>
-Subject: Re: CONNTRACK and pppoe interfaces - marking does not work
-Date: Mon, 1 Aug 2016 20:38:42 -0400
-Message-ID: <5a026daf-87ac-67ab-0713-34c464a97a52@seiner.com>
-References: <036276d0-5efe-6c08-5a49-faf6520b195b@seiner.com>
- <fb55d688-ed21-819b-2028-db08f3224959@plouf.fr.eu.org>
+From: Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>
+Subject: Re: Iptables-nftables transition: DNAT on Output
+Date: Tue, 2 Aug 2016 08:13:30 +0200
+Message-ID: <CAOkSjBiq2KEzaE+csSgExBoSk+QRAnKEna7mcptCR33gPd54_Q@mail.gmail.com>
+References: <CAK5rZE4HykuUgQ+brqU+nH-TUEwVFS+y8XxcVyPx3mBGegb7jg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <fb55d688-ed21-819b-2028-db08f3224959@plouf.fr.eu.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=HTv/CdWkGtzyMhO8gC8bMFgOYv7uX5LLR1gDqa5k2Q0=;
+        b=qsfSpChCCKdyo5VTmGnZAgJ5zY1ZaZ7X+mB0SLXD96oOYpNKzbdRb9xMWhECawWyh2
+         UQI0ZNskXZdxhlbdgWQEjD3Md/getgjAUNeyLZYvJYnVFgfplNw8RBUppgIdBtSzp4Um
+         zES51/WtG/HNVcUHKwPOa98y5jD0q/IA+ViF4XQWAtUr1mTWLNxHfwBHSyAHhoV4GAof
+         Vzq08jBXcK+4oB2rqJdA0S64Nf2E3yl6h9ffs9WrUW/wsI2haI23zA0ZPRfBaWuqjBf0
+         2sx5KocDOoXdAU4HuhUiAE/VfDJZPlZJbFU2cZmdrz6qmGhecO78d8RPKfiauPc5Xk3x
+         /QKQ==
+In-Reply-To: <CAK5rZE4HykuUgQ+brqU+nH-TUEwVFS+y8XxcVyPx3mBGegb7jg@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="macroman"
+To: Imran Geriskovan <imran.geriskovan@gmail.com>
+Cc: Netfilter Users Mailing list <netfilter@vger.kernel.org>
 
-
-
-On 08/01/2016 08:09 PM, Pascal Hambourg wrote:
-> Le 01/08/2016 à 22:28, Yan Seiner a écrit :
->> This is driving me nuts.  I've spent most of the day trying to figure
->> out why marking packets does not work.  I've now isolated the problem to
->> where I believe that neither MARK nor CONNMARK targets work on a pppoe
->> interface.
->
-> This assumption is of course wrong. iptables and conntrack don't care 
-> about the interface type.
-
-It never has before.  This is why it's stumping me so badly.  Maybe I 
-should have said on MY pppoe interface.
-
->
->> Here's what I have:
->>
->> eth0.9 - cable interface with DHCP: xxx.158.166.12
->> eth0.8 - DSL interface with pppoe: xxx.251.62.82
->>
->> and here's how I mark them (I've also tried marking on PREROUTING):
->>
->> iptables -t mangle -A INPUT -i ${dsl_if} -j CONNMARK --set-mark 
->> 0x02/0x02
->> iptables -t mangle -A INPUT -i ${cable_if} -j CONNMARK --set-mark 
->> 0x01/0x01
->
-> What is the value of ${dsl_if} ? It should be pppN, created by pppd 
-> with N=0, 1, 2...
->
-This is with openWRT; no idea why they rename the interface, but it 
-should still work. Everything else (all other iptables rules) work on 
-that interface, everything except CONNMARK.
-
-pppoe-dsl Link encap:Point-to-Point Protocol
-           inet addr:xxx.251.62.82  P-t-P:xxx.251.52.2 Mask:255.255.255.255
-           UP POINTOPOINT RUNNING NOARP MULTICAST  MTU:1492  Metric:1
-           RX packets:2759305 errors:0 dropped:0 overruns:0 frame:0
-           TX packets:1732475 errors:0 dropped:0 overruns:0 carrier:0
-           collisions:0 txqueuelen:3
-           RX bytes:3635826700 (3.3 GiB)  TX bytes:211953116 (202.1 MiB)
-
-The pppd daemon:
-
-2322 root     13592 S    /usr/sbin/pppd nodetach ipparam dsl ifname 
-pppoe-dsl +ipv6 nodefaultroute usepeerdns maxfail 1 user xxx password 
-xxx ip-up-script /lib/netifd/ppp-up ipv6-up-script /lib/netifd/ppp-up 
-ip-down-script /lib/netifd
-
+T24gMzAgSnVseSAyMDE2IGF0IDE0OjA3LCBJbXJhbiBHZXJpc2tvdmFuIDxpbXJhbi5nZXJpc2tv
+dmFuQGdtYWlsLmNvbT4gd3JvdGU6Cj4gSGkuLi4gVG8gY29udHJvbCBteSBvdXRnb2luZyB0cmFm
+ZmljLCBJJ3ZlIHJlZGlyZWN0ZWQgaXQgdG8gYSBsb2NhbAo+IHByb3h5IGxpa2UgdGhpczoKPgo+
+IGlwdGFibGVzIC10IG5hdCAtQSBPVVRQVVQgLXAgdGNwIC0tZHBvcnQgWFggLW0gb3duZXIgLS11
+aWQtb3duZXIgaW1yYW4KPiAtaiBETkFUIC0tdG8gMTI3LjAuMC4xOllZCj4KPiBXaGF0J3MgaXRz
+IGVxdWl2YWxlbnQgb24gbmZ0YWJsZXM/Cj4KPiBBcyBJIGV4cGxvcmUgbXkgb3B0aW9ucywgSSd2
+ZSB0cmllZCB0aGUgZm9sbG93aW5nCj4gd2l0aG91dCBzdWNjZXNzLiBJcyBETkFUIG9uIE91dHB1
+dCB1bnN1cHBvcnRlZCBvbiBuZnRhYmxlcz8KPgo+IEknbSBvbiBLZXJuZWwgNC42LjQuIExvb2tp
+bmcgYXQgQXJjaCBMaW51eCBkZWZhdWx0IGtlcm5lbCBjb25maWcsCj4gSSBzZWUgZXZlcnl0aGlu
+ZyBpcyBpbmNsdWRlZCBmb3IgbmV0ZmlsdGVyL25mdGFibGVzL2lwdGFibGVzLCBldGMuLgo+Cj4g
+VGhhbmtzIGZvciB5b3VyIGNvbW1lbnRzLi4uCj4KPiBjaGFpbiBvdXQgewo+ICAgIHR5cGUgZmls
+dGVyIGhvb2sgb3V0cHV0IHByaW9yaXR5IDA7IHBvbGljeSBkcm9wOwo+ICAgIG1ldGEgc2t1aWQg
+aW1yYW4gdGNwIGRwb3J0IFhYIGNvdW50ZXIgZG5hdCAxMjcuMC4wLjE6WVkgICMganVtcCBuYXRv
+dXQKPiB9Cj4gIyBHaXZlcyBlcnJvciB3aXRoIEROQVQKPiAjIElmIEkgY2hhbmdlIEROQVQgd2l0
+aCBKVU1QLCBlcnJvciBpcyBnb25lLiBCdXQgaXQgZG9lc24ndCBkbyBhbnl0aGluZy4KPgo+IGNo
+YWluIG5hdG91dCB7Cj4gICB0Y3AgZHBvcnQgWFggY291bnRlciBkbmF0IDEyNy4wLjAuMTpZWSAg
+IyBjb3VudHMgbm90aGluZyEKPiAgIGNvdW50ZXIgICMgY291bnRzIHNhbWUgYXMgdGhlIGNvdW50
+ZXIgYXQgb3V0Cj4gfQoKcGVyaGFwcyB0aGUgZXJyb3IgaXMgeW91ciBiYXNlIGNoYWluOiBzZWVt
+cyB0byBiZSBvZiB0eXBlIGZpbHRlci4KClBsZWFzZSwgcmVhZCB0aGUgbmZ0YWJsZXMgd2lraSBb
+MF1bMV0uCgpbMF0gaHR0cHM6Ly93aWtpLm5mdGFibGVzLm9yZy93aWtpLW5mdGFibGVzL2luZGV4
+LnBocC9Db25maWd1cmluZ19jaGFpbnMKWzFdIGh0dHBzOi8vd2lraS5uZnRhYmxlcy5vcmcvd2lr
+aS1uZnRhYmxlcy9pbmRleC5waHAvUGVyZm9ybWluZ19OZXR3b3JrX0FkZHJlc3NfVHJhbnNsYXRp
+b25fKE5BVCkKCgotLSAKQXJ0dXJvIEJvcnJlcm8gR29uesOhbGV6Ci0tClRvIHVuc3Vic2NyaWJl
+IGZyb20gdGhpcyBsaXN0OiBzZW5kIHRoZSBsaW5lICJ1bnN1YnNjcmliZSBuZXRmaWx0ZXIiIGlu
+CnRoZSBib2R5IG9mIGEgbWVzc2FnZSB0byBtYWpvcmRvbW9Admdlci5rZXJuZWwub3JnCk1vcmUg
+bWFqb3Jkb21vIGluZm8gYXQgIGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jkb21vLWluZm8u
+aHRtbAo=
