@@ -1,55 +1,52 @@
-From: =?utf-8?B?QW5kcsOpIFBhdWxzYmVyZy1Dc2liaSAoSUJNIENvbnN1bHRhbnQp?= 
-	<Andre.Paulsberg-Csibi@evry.com>
+From: Olaf Zaplinski <olaf@zaplinski.de>
 Subject: RE: lots of ACKs for DPT=1433
-Date: Mon, 8 Aug 2016 11:14:41 +0000
-Message-ID: <dbcb8e516e9d42369eaf288261fcefaf@CCDEX021.corp.corpcommon.com>
+Date: Mon, 08 Aug 2016 13:56:56 +0200
+Message-ID: <14f3006c1e6929ef8fd457fb33823ca9@mail.zaplinski.de>
 References: <d5bbb8f26b17a1d6cf8044864b7aa587@mail.zaplinski.de>
  <5342a37e-1534-59bd-16ac-dc4df108fea7@sterenborg.info>
  <bf5e106359174bc234805b6d5539d136@mail.zaplinski.de>
  <e0b3415fe427476e94df8050ef14e529@CCDEX021.corp.corpcommon.com>
  <cd37a7570597bcb79afbdc64c72dc162@mail.zaplinski.de>
+ <dbcb8e516e9d42369eaf288261fcefaf@CCDEX021.corp.corpcommon.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <cd37a7570597bcb79afbdc64c72dc162@mail.zaplinski.de>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=zaplinski.de;
+	s=20150415; t=1470657416;
+	bh=qF5kmTTjBvvy71VP2alsczyexr7Q57lh3AnRT179fIw=;
+	h=To:Subject:Date:From:In-Reply-To:References;
+	b=hgcoYqgFWokV64Qjv27G8rBMF7RxRtUp0qVCuI0seksWhBbm2fF/ugRxqrXXbFZA+
+	 WQZaiOB11woKyRnIluy/XLxZfnPZoyiJK8mEqBzfOQrjhC+Izzgs4Wvm3X4s0g7VOJ
+	 JVXWqPtJg1sYE3PHkOGAbXEomQrmSWsaYIceECTJIhIhhmDTb8ahWkRVHQtAG1TSTb
+	 B0nDDkSsoF5uLnTakQVR/uRNAQAvWd8qxATu617prm27LxCx8H0nv2UFYYBxsW+gZy
+	 W9iIZZdcY4I8tAXHcUDeqZICvy6Q2ZD2FmO2F8I89CRVpeJ13yVR5K4yPC8H364A+n
+	 RAADH7RlbA/1A==
+In-Reply-To: <dbcb8e516e9d42369eaf288261fcefaf@CCDEX021.corp.corpcommon.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"
-To: Olaf Zaplinski <olaf@zaplinski.de>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@vger.kernel.org
 
-SSBhZGp1c3RlZCBsb2dzIHRvIGtlZXAgb25seSAic21hbGxlc3QgY3JpdGFsIiBkYXRhIGxlZnQg
-OikNCg0KW2lwdGFibGVzIHRhcnBpdF0NCkF1ZyAgNCAxNDozOTo1OSBJTj1ldGgwIFNSQz0xMDku
-MTcwLjE2My4xNzQgTEVOPTQxIFRUTD0xMTcgSUQ9MjY0NzQgU1BUPTQ4ODYgIERQVD0xNDMzIEFD
-Sw0KQXVnICA0IDE0OjQwOjEwIElOPWV0aDAgU1JDPTEwOS4xNzAuMTYzLjE3NCBMRU49NDEgVFRM
-PTExNyBJRD0yNTU0ICBTUFQ9MzM4MSAgRFBUPTE0MzMgQUNLDQpBdWcgIDQgMTQ6NDA6MTYgSU49
-ZXRoMCBTUkM9OTUuOS4yNTIuNjYgICAgIExFTj00MSBUVEw9MTE1IElEPTMxOTQ1IFNQVD01ODYz
-MyBEUFQ9MTQzMyBBQ0sNCkF1ZyAgNCAxNDo0MDoxNyBJTj1ldGgwIFNSQz0xNzIuODcuMTkyLjMz
-ICAgTEVOPTQxIFRUTD0xMjEgSUQ9MjQzMjEgU1BUPTUxNzEgIERQVD0xNDMzIEFDSw0KQXVnICA0
-IDE0OjQwOjE5IElOPWV0aDAgU1JDPTEwNC4yNDcuMjIwLjIxMSBMRU49NDEgVFRMPTEyMSBJRD0z
-MzgwICBTUFQ9NTI0MCAgRFBUPTE0MzMgQUNLDQpBdWcgIDQgMTQ6NDA6MzggSU49ZXRoMCBTUkM9
-MjMuMjI4LjgxLjExNiAgIExFTj00MSBUVEw9MTE3IElEPTIyMjQ5IFNQVD0xNzE2ICBEUFQ9MTQz
-MyBBQ0sNCkF1ZyAgNCAxNDo0MDo0MiBJTj1ldGgwIFNSQz01OC45Ni4xNzcuMTIzICAgTEVOPTQx
-IFRUTD0yMzIgSUQ9MjgyNjQgU1BUPTU1NDE2IERQVD0xNDMzIEFDSw0KQXVnICA0IDE0OjQwOjQ3
-IElOPWV0aDAgU1JDPTE3Mi44Ny4xOTIuMzMgICBMRU49NDEgVFRMPTEyMSBJRD0yOTc1MyBTUFQ9
-NTE3MSAgRFBUPTE0MzMgQUNLDQoNCkF1ZyAgNiAwNDoyNjoxNyBJTj1ldGgwIFNSQz02MS4xOTEu
-NTkuMTc5ICAgTEVOPTQwIFRUTD0xMTMgSUQ9NDcxNSAgU1BUPTExNDQgRFBUPTE0MzMgQUNLDQpB
-dWcgIDYgMDQ6MjY6MTcgSU49ZXRoMCBTUkM9NjEuMTkxLjU5LjE3OSAgIExFTj00MCBUVEw9MTEz
-IElEPTQ3MTYgIFNQVD0xMTQ0IERQVD0xNDMzIEFDSyBGSU4NCkF1ZyAgNiAwNDoyNjoyNiBJTj1l
-dGgwIFNSQz02MS4xOTEuNTkuMTc5ICAgTEVOPTQwIFRUTD0xMTMgSUQ9MTQxNTggU1BUPTExNDQg
-RFBUPTE0MzMgQUNLIEZJTg0KDQpGcm9tIHdoYXQgSSBjYW4gc2VlIHRoZXNlIGxvZ3Mgc2hvdyAs
-IHlvdSBoYXZlIDIgdGhpbmdzIGhhcHBlbmluZyA6DQp0aGUgbGFzdCBmcm9tIEFVRyA2IHNlZW0g
-bGlrZSBhIG5vcm1hbCBzZXNzaW9uIHRoYXQgaXMgbm8gbG9uZ2VyIHJlc3BvbmRpbmcgKCBtYXli
-ZSB0aW1lZC1vdXQgKQ0KYnV0IHRoaXMgY2FuIGFsc28gYmUgc29tZSBob3N0IHdobyB0cmllZCB0
-byBzY2FuIHRoYXQgcG9ydCBidXQgc2VlbXMgbW9yZSBsaWtlIHNvbWUgYWNjaWRlbnRhbA0KYWNj
-ZXNzIGF0dGVtcHQgLg0KDQpUaGUgZmlyc3QgbG9nIGVudHJpZXMgYXJlIHByZXR0eSBzdXJlIHNv
-bWUga2luZCBvZiBwb3J0LXNjYW4gLCBldmVuIGlmIHRoZSBwYWNrZXRzIGFyZSBBQ0sgd2l0aG91
-dCBTWU4gLg0KTWF5YmUgdGhlIGF0dGFja2VycyBhcmUgbG9va2luZyBmb3Igc3lzdGVtcyBiZWhp
-bmQgb2xkIG5vbi1zdGF0ZWZ1bCBGVyB3aG8gb25seSBibG9jayBTWU4gcGFja2V0cyBhbmQNCmFs
-bG93cyBhbnkgb3RoZXIgZmxhZ2VkIHBhY2tldHMgaW50byB0aGVpciBzeXN0ZW1zIGFzc3VtaW5n
-IHRoZXkgYXJlICJzYWZlIiAuLi4NCi4uLiBtb3N0IGxpa2VseSAoIGFuZCB5b3UgY2FuIHRyeSAp
-IGlmIHlvdSBncmVwIGZvciAiU1JDPTEwOS4xNzAuMTYzLjE3NCIgeW91IHdpbGwgbW9zdCBsaWtl
-bHkgZmluZA0KMy04IHRyaWVzICwgYW5kIG1heWJlIDEgb3IgMiB3aXRoIFNZTiBmaXJzdCAuDQoN
-Cg0KDQpCZXN0IHJlZ2FyZHMNCkFuZHLDqSBQYXVsc2JlcmctQ3NpYmkNClNlbmlvciBOZXR3b3Jr
-IEVuZ2luZWVyIA0KRmF1bHQgSGFuZGxpbmcNCklCTSBTZXJ2aWNlcyBBUw0KYW5kcmUucGF1bHNi
-ZXJnLWNzaWJpQGV2cnkuY29tDQpNICs0NyA5MDcwIDU5ODgNCg0KDQoNCg==
+Am 2016-08-08 13:14, schrieb Andr=C3=A9 Paulsberg-Csibi:
+> I adjusted logs to keep only "smallest crital" data left :)
+
+Hmm, I think I should filter that a bit. ;-)
+
+> From what I can see these logs show , you have 2 things happening :
+> the last from AUG 6 seem like a normal session that is no longer
+> responding ( maybe timed-out )
+
+No outbound connections to TCP 1433 here, and no inbound either.
+
+> Maybe the attackers are looking for systems behind old non-stateful FW
+> who only block SYN packets and
+> allows any other flaged packets into their systems assuming they are=20
+> "safe" ...
+> ... most likely ( and you can try ) if you grep for
+> "SRC=3D109.170.163.174" you will most likely find
+> 3-8 tries , and maybe 1 or 2 with SYN first .
+
+Actually that have been 53 connections, berhaps because I am tarpitting=20
+instead of rejecting.
+
+Olaf
