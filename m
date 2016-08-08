@@ -1,69 +1,113 @@
-From: =?iso-8859-1?Q?Andr=E9_Paulsberg-Csibi_=28IBM_Consultant=29?= 
-	<Andre.Paulsberg-Csibi@evry.com>
+From: Olaf Zaplinski <olaf@zaplinski.de>
 Subject: RE: lots of ACKs for DPT=1433
-Date: Mon, 8 Aug 2016 09:35:11 +0000
-Message-ID: <e0b3415fe427476e94df8050ef14e529@CCDEX021.corp.corpcommon.com>
+Date: Mon, 08 Aug 2016 12:17:57 +0200
+Message-ID: <cd37a7570597bcb79afbdc64c72dc162@mail.zaplinski.de>
 References: <d5bbb8f26b17a1d6cf8044864b7aa587@mail.zaplinski.de>
  <5342a37e-1534-59bd-16ac-dc4df108fea7@sterenborg.info>
  <bf5e106359174bc234805b6d5539d136@mail.zaplinski.de>
+ <e0b3415fe427476e94df8050ef14e529@CCDEX021.corp.corpcommon.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <bf5e106359174bc234805b6d5539d136@mail.zaplinski.de>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=zaplinski.de;
+	s=20150415; t=1470651477;
+	bh=/E9x9h7MzBtSpM9q86QshqfGayoVZIryZVpuiqmR0mQ=;
+	h=To:Subject:Date:From:In-Reply-To:References;
+	b=rnqDJ+YB226+w+88fz2WVH7Fz/4Bg956n46mliVDRGRQvR8Hb4AIKX7aXnQLLW2tC
+	 g4Ky9/zQMQRXoCjCQPAxbDtEm1Uu+fcH6kg06Sc+Gy+eQFC78YOqmGId+zCHAS+tLn
+	 xo66HHuahyfQwgkvAa4Se7JN//JbF2dROm/iXn4IDPgBkU+8LoK5nkvrT1tMa599us
+	 MolPj495suvnfYdTtHVe9V1uiVIwLgr46wiHq4ugEeXGB+UxswWtSn/Vq7tdS7auLm
+	 d9ERf45xfqRBMv1uVpNmxQNjbYnFmT5JwSewo0bhR8EAdJEKOgrheT8z10ogS0KQww
+	 mXAERH/ECnyEA==
+In-Reply-To: <e0b3415fe427476e94df8050ef14e529@CCDEX021.corp.corpcommon.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Olaf Zaplinski <olaf@zaplinski.de>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-
-From the details you gave , it would be natural to assume you are talking a=
-bout multiple sources sending traffic
-to your Internet exposed IP's which would normally be some version of PORTS=
-CANNING .
-( Even if the packets are 90%-100% ACK packets , they can still be some att=
-empt of portscanning )
-
-In any case it would be helpful if you add some complete logfiles entries (=
-10-20) ,=20
-if you need you can just "MANGLE" your exposed IP's target but please leave=
- the rest of the logfiles as original as possible .
-
-
-Best regards
-Andr=E9 Paulsberg-Csibi
-Senior Network Engineer=20
-Fault Handling
-IBM Services AS
-andre.paulsberg-csibi@evry.com
-M +47 9070 5988
-
-
-
-
------Original Message-----
-From: netfilter-owner@vger.kernel.org [mailto:netfilter-owner@vger.kernel.o=
-rg] On Behalf Of Olaf Zaplinski
-Sent: 8. august 2016 10:16
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
-Subject: Re: lots of ACKs for DPT=3D1433
 
-Am 2016-08-07 17:29, schrieb Rob Sterenborg (Lists):
-> On 04-08-16 12:46, Olaf Zaplinski wrote:
->> Hi,
->>=20
->> I see lots of ACKs for DPT=3D1433 in my logs. Anyone else?
->>=20
->> Any idea what is the reason for this?
->>=20
->> Olaf
->=20
-> A lot of scans for a vulnerable MSSQL server.
+Am 2016-08-08 11:35, schrieb Andr=C3=A9 Paulsberg-Csibi:
+> In any case it would be helpful if you add some complete logfiles
+> entries (10-20)
 
-That would be true if that were SYN requests. But 90% of these requests=20
-or so are ACK requests.
+Okay, here are some examples:
+
+
+Aug  4 14:39:59 binky kernel: [2609148.849905] iptables tarpit IN=3Deth0=20
+OUT=3D MAC=3D00:f1:70:00:58:f0:fc:fb:fb:21:67:58:08:00 SRC=3D109.170.163.17=
+4=20
+DST=3D109.75.188.214 LEN=3D41 TOS=3D0x00 PREC=3D0x00 TTL=3D117 ID=3D26474 D=
+F=20
+PROTO=3DTCP SPT=3D4886 DPT=3D1433 WINDOW=3D65535 RES=3D0x00 ACK URGP=3D0
+Aug  4 14:40:10 binky kernel: [2609159.677601] iptables tarpit IN=3Deth0=20
+OUT=3D MAC=3D00:f1:70:00:58:f0:fc:fb:fb:21:67:58:08:00 SRC=3D109.170.163.17=
+4=20
+DST=3D109.75.188.214 LEN=3D41 TOS=3D0x00 PREC=3D0x00 TTL=3D117 ID=3D2554 DF=
+=20
+PROTO=3DTCP SPT=3D3381 DPT=3D1433 WINDOW=3D65535 RES=3D0x00 ACK URGP=3D0
+Aug  4 14:40:16 binky kernel: [2609165.361891] iptables tarpit IN=3Deth0=20
+OUT=3D MAC=3D00:f1:70:00:58:f0:fc:fb:fb:2d:55:53:08:00 SRC=3D95.9.252.66=20
+DST=3D109.75.188.214 LEN=3D41 TOS=3D0x00 PREC=3D0x00 TTL=3D115 ID=3D31945 D=
+F=20
+PROTO=3DTCP SPT=3D58633 DPT=3D1433 WINDOW=3D65340 RES=3D0x00 ACK URGP=3D0
+Aug  4 14:40:17 binky kernel: [2609166.281294] iptables tarpit IN=3Deth0=20
+OUT=3D MAC=3D00:f1:70:00:58:f0:fc:fb:fb:21:67:58:08:00 SRC=3D172.87.192.33 =
+
+DST=3D109.75.188.214 LEN=3D41 TOS=3D0x00 PREC=3D0x00 TTL=3D121 ID=3D24321 D=
+F=20
+PROTO=3DTCP SPT=3D5171 DPT=3D1433 WINDOW=3D65535 RES=3D0x00 ACK URGP=3D0
+Aug  4 14:40:19 binky kernel: [2609168.447578] iptables tarpit IN=3Deth0=20
+OUT=3D MAC=3D00:f1:70:00:58:f0:fc:fb:fb:21:67:58:08:00 SRC=3D104.247.220.21=
+1=20
+DST=3D109.75.188.214 LEN=3D41 TOS=3D0x00 PREC=3D0x00 TTL=3D121 ID=3D3380 DF=
+=20
+PROTO=3DTCP SPT=3D5240 DPT=3D1433 WINDOW=3D65535 RES=3D0x00 ACK URGP=3D0
+Aug  4 14:40:38 binky kernel: [2609187.895943] iptables tarpit IN=3Deth0=20
+OUT=3D MAC=3D00:f1:70:00:58:f0:fc:fb:fb:21:67:58:08:00 SRC=3D23.228.81.116 =
+
+DST=3D109.75.188.214 LEN=3D41 TOS=3D0x00 PREC=3D0x00 TTL=3D117 ID=3D22249 D=
+F=20
+PROTO=3DTCP SPT=3D1716 DPT=3D1433 WINDOW=3D65535 RES=3D0x00 ACK URGP=3D0
+Aug  4 14:40:42 binky kernel: [2609192.177811] iptables tarpit IN=3Deth0=20
+OUT=3D MAC=3D00:f1:70:00:58:f0:fc:fb:fb:2d:55:53:08:00 SRC=3D58.96.177.123 =
+
+DST=3D109.75.188.214 LEN=3D41 TOS=3D0x00 PREC=3D0x00 TTL=3D232 ID=3D28264 D=
+F=20
+PROTO=3DTCP SPT=3D55416 DPT=3D1433 WINDOW=3D65392 RES=3D0x00 ACK URGP=3D0
+Aug  4 14:40:47 binky kernel: [2609196.469551] iptables tarpit IN=3Deth0=20
+OUT=3D MAC=3D00:f1:70:00:58:f0:fc:fb:fb:21:67:58:08:00 SRC=3D172.87.192.33 =
+
+DST=3D109.75.188.214 LEN=3D41 TOS=3D0x00 PREC=3D0x00 TTL=3D121 ID=3D29753 D=
+F=20
+PROTO=3DTCP SPT=3D5171 DPT=3D1433 WINDOW=3D65535 RES=3D0x00 ACK URGP=3D0
+
+
+Interesting is that the number of those log entries have decreased a lot=20
+meanwhile. On 6th of August there were only 3 instead of 4664 the day=20
+before:
+
+Aug  6 04:26:17 binky kernel: [2745127.016759] iptables-geoip-cn IN=3Deth0 =
+
+OUT=3D MAC=3D00:f1:70:00:58:f0:fc:fb:fb:21:67:58:08:00 SRC=3D61.191.59.179 =
+
+DST=3D109.75.188.214 LEN=3D40 TOS=3D0x04 PREC=3D0x00 TTL=3D113 ID=3D4715 DF=
+=20
+PROTO=3DTCP SPT=3D1144 DPT=3D1433 WINDOW=3D65535 RES=3D0x00 ACK URGP=3D0
+Aug  6 04:26:17 binky kernel: [2745127.016816] iptables-geoip-cn IN=3Deth0 =
+
+OUT=3D MAC=3D00:f1:70:00:58:f0:fc:fb:fb:21:67:58:08:00 SRC=3D61.191.59.179 =
+
+DST=3D109.75.188.214 LEN=3D40 TOS=3D0x04 PREC=3D0x00 TTL=3D113 ID=3D4716 DF=
+=20
+PROTO=3DTCP SPT=3D1144 DPT=3D1433 WINDOW=3D65535 RES=3D0x00 ACK FIN URGP=3D0
+Aug  6 04:26:26 binky kernel: [2745136.157327] iptables-geoip-cn IN=3Deth0 =
+
+OUT=3D MAC=3D00:f1:70:00:58:f0:fc:fb:fb:21:67:58:08:00 SRC=3D61.191.59.179 =
+
+DST=3D109.75.188.214 LEN=3D40 TOS=3D0x04 PREC=3D0x00 TTL=3D113 ID=3D14158 D=
+F=20
+PROTO=3DTCP SPT=3D1144 DPT=3D1433 WINDOW=3D65535 RES=3D0x00 ACK FIN URGP=3D0
+
+
+Yesterday there were none.
 
 Olaf
---
-To unsubscribe from this list: send the line "unsubscribe netfilter" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
