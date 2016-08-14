@@ -1,10 +1,12 @@
 From: Chris Tucker <chris.tucker@chiltern-networks.co.uk>
 Subject: Suggested improvement for conntrack-tools primary-backup.sh script
-Date: Sun, 14 Aug 2016 10:02:22 -0400 (EDT)
-Message-ID: <699051644.2017.1471183342262.JavaMail.zimbra@chiltern-networks.co.uk>
+Date: Sun, 14 Aug 2016 10:31:46 -0400 (EDT)
+Message-ID: <1096156934.2085.1471185106640.JavaMail.zimbra@chiltern-networks.co.uk>
+References: <699051644.2017.1471183342262.JavaMail.zimbra@chiltern-networks.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <699051644.2017.1471183342262.JavaMail.zimbra@chiltern-networks.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="utf-8"
@@ -192,5 +194,3 @@ I hope the above is useful to anyone else who needs conntrackd to provide High A
 
 Best Regards,
 Chris.
-
-
