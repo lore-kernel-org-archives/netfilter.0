@@ -1,192 +1,82 @@
-From: "Walter H." <Walter.H@mathemainzel.info>
-Subject: NAT plus FILTER
-Date: Mon, 15 Aug 2016 20:29:45 +0200
-Message-ID: <57B20A19.4030105@mathemainzel.info>
+From: Alfredo Rezinovsky <alfrenovsky@gmail.com>
+Subject: Problem with arp and brouting
+Date: Wed, 17 Aug 2016 13:13:14 -0300
+Message-ID: <CAMXC=WtL_ELrLTh5adh_HF9zu4_KogYGFiCkrEgWrbVZTuGKmA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mathemainzel.info; s=dkim11;
-	h=Content-Transfer-Encoding:Content-Type:Subject:To:MIME-Version:From:Date:Message-ID; bh=QeYjpDcMnVDPavmTop5UwEcQifiHtNjMh/A+QDx+17I=;
-	b=TNAMKlkk6GmEkx1qewsCqWuKNJZZ9h06/RTFz1sOvlzz6kWOajDr0D73R/ScoaCDYqkrktMmC6+uUMENaa2E+tnRFl1YAhL3W4cNeeOENRysRWf1ntfEWjm+GhvixX4j0yl8w01wpAZU36p+d9aRskTjBAYt2to9WIdAMrIOi9I=;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=54rAAZBO2X6LAu4f8CvRjksrqVMIujL7vGnBWARjVKU=;
+        b=punA6lrL9ZhH+YNXJi8ftbmyh9UIGpX7RSDdh+wtD+gpjJt0/WLQkbIHZkTTGW5ki3
+         RWVAeSr+jVP6LV+MWeThdsI+O4//fKDPzhlfCyS5PVS4pgBm6oPHA/17UpidgNtElsFw
+         siYjUZWmAfvVwpli9I5ffMfy8qfqzs0lf7H5+VzLm4cI92aoLlRMlpJJCQYKdqWqdKQg
+         R44/LozOcyFJDrxEn96KFduX5OCZLJUBkQtLo6xQjRJ8BantonZwMyQN3So6Vjg0I9Ap
+         a7V5X+6ijG3oXu9nSZO1F3al/XS8uGHDVrRwqpEVINC6VG1HeudCoKfvB8lZ0daWPEJA
+         RiqA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello,
+I have a bridge for transparent http proxying
 
-I have a CentOS Box as NAT-Router;
+with:
+  ebtables -t broute -A BROUTING -p IPv4 --ip-proto tcp --ip-sport 80
+-j redirect --redirect-target DROP
+  ebtables -t broute -A BROUTING -p IPv4 --ip-proto tcp --ip-dport 80
+-j redirect --redirect-target DROP
+I can turn traffic in port 80 from bridged to routed. That way I can
+use tproxy iptables rules.
 
-2 interfaces, eth1 (WAN, this port should be NATed) and br0 (LAN, switch 
-over eth0 and wlan0)
-a IPv4-to-IPv6 tunnel device sit1
+Default Gateway (G) --- Brouter (B) --- Other Router (R) -- LAN Network PCs (L)
 
-in /etc/sysconfig/iptables I have the following
+In bridge mode (Without any ebtables rule) the bridge just works
+In brouter mode (With the two ebtables rules shown above) packets
+from/to port 80 are routed. So the brouter needs to know how to route
+them.
 
-<begin /etc/sysconfig/iptables>
+It will work if I add some routes to the brouter
 
-*nat
-:PREROUTING ACCEPT [0:0]
-:POSTROUTING ACCEPT [0:0]
-:OUTPUT ACCEPT [0:0]
+G dev br0
+default via G
+R dev br0
+Lan Network via R
 
-# NAT: Establish NAT
--A POSTROUTING -o eth1 -s 192.168.241.0/24 -j SNAT --to 192.168.128.127
+This seems to be simple, but sometimes there are a lots of "Other
+Routers" with different networks. And the need for routes makes this
+transparent proxy less transparent.
 
-# NAT: Port-Forwarding
--A PREROUTING -i eth1 -p tcp --dport 80 -j DNAT --to 192.168.241.211:80
--A PREROUTING -i eth1 -p tcp --dport 443 -j DNAT --to 192.168.241.211:443
+Those routes could be avoided if ebtables could load the original
+destination IP and MAC address (before the redirect) to the neigh
+table. Thus sending the packets to the same MAC as if the broute was a
+bridge. At least for the traffic going in (G-B-R).
+Question 1: Is that possible?
 
-COMMIT
+The other problem is that usually G has lots of IPs (G1, G2...) in
+many networks, each one with one router (R1, R2...) and the bridge has
+only one IP
 
-*filter
-:INPUT DROP [0:0]
-:FORWARD DROP [0:0]
-:OUTPUT DROP [0:0]
+Lets suppose the Bridge has and IP in the first network (B1).
 
-# Allow anything on the local link
--A INPUT -i lo -j ACCEPT
--A OUTPUT -o lo -j ACCEPT
+When a package comes in from internet to some IP in LAN Network 2.
 
-# Allow anything out on the localnet
--A OUTPUT -o br0 -j ACCEPT
-# Allow established, related packets back in
--A INPUT -i br0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+1. G knows the route for LAN 2 via R2
+2. Asks for a MAC
+3. G2, answers the ARP
+4. G Sents a packet to IP L2, MAC G2
+5. The brouter intercepts if using the redirect in ebtables.
+6. The brouter knows the route for LAN 2 via R2
+7. Brouter asks for a MAC for IP R2, using IP source B1.
 
-# Enable DHCP
--A INPUT -i br0 -p udp --dport 67:68 --sport 67:68 -j ACCEPT
+Because B1 is in subnet 1 and R2 is in other subnet, some routers wont
+answer the ARP request (CISCO for example)
 
-# Enable IPv6
--A INPUT -p ipv6 -i eth1 -s 216.66.80.30 -j ACCEPT
--A OUTPUT -p ipv6 -o eth1 -d 216.66.80.30 -j ACCEPT
-
-# Allow SSH from LAN
--A INPUT -i br0 -s 192.168.241.192/26 -m tcp -p tcp --dport 22 -m state --state NEW -j ACCEPT
-
-# Allow anything out on the internet
--A OUTPUT -o eth1 -p tcp -j ACCEPT
--A OUTPUT -o eth1 -p udp -j ACCEPT
--A OUTPUT -o eth1 -p icmp -j ACCEPT
-# Allow established, related packets back in
--A INPUT -i eth1 -p tcp -m state --state ESTABLISHED,RELATED -j ACCEPT
--A INPUT -i eth1 -p udp -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-[question1] could the above be also this
-{ -A OUTPUT -o eth1 -j ACCEPT
-   -A INPUT -i eth1 -m state --state ESTABLISHED,RELATED -j ACCEPT }
-
-# Allow Forwarding to WAN interface
--A FORWARD -i br0 -o eth1 -j ACCEPT
-# Allow established, related packets back through
--A FORWARD -i eth1 -o br0 -m state --state ESTABLISHED,RELATED -j ACCEPT
--A FORWARD -i eth1 -o br0 -j LOG  --log-prefix "IP[FWD-Reply]: " --log-level 7
-
-# Only the lan is allowed to ping me without restriction
--A INPUT -i br0 -p icmp -j ACCEPT
-# Else only pings with restricted icmp are allowed
--A INPUT -i eth1 -p icmp -m limit --limit 2/sec --limit-burst 4 -j ACCEPT
-
-# Enable TRACEroute to me from LAN
--I INPUT -i br0 -p udp --sport 32769:65535 --dport 33434:33523 -j ACCEPT
-# Enable TRACEroute to me from internet
--I INPUT -i eth1 -p udp --sport 32769:65535 --dport 33434:33523 -j ACCEPT
-
-# Enable PORT-Forwarding
--I FORWARD -i eth1 -o br0 -d 192.168.241.211 -m tcp -p tcp --dport 80 -j ACCEPT
--I FORWARD -i eth1 -o br0 -d 192.168.241.211 -m tcp -p tcp --dport 443 -j ACCEPT
-[question2] why doesn't this work; the ports in nat part don't work ...
-
-# Log all other
--A INPUT -j LOG --log-prefix "IP[IN]: " --log-level 7
--A FORWARD -j LOG  --log-prefix "IP[FWD]: " --log-level 7
--A OUTPUT -j LOG  --log-prefix "IP[OUT]: " --log-level 7
-
-COMMIT
-<end /etc/sysconfig/iptables>
-
-<begin /etc/sysconfig/ip6tables>
-
-*filter
-:INPUT DROP [0:0]
-:FORWARD DROP [0:0]
-:OUTPUT DROP [0:0]
-
-# Filter all packets that have RH0 headers
--A INPUT -m rt --rt-type 0 -j DROP
--A FORWARD -m rt --rt-type 0 -j DROP
--A OUTPUT -m rt --rt-type 0 -j DROP
-
-# Allow anything on the local link
--A INPUT -i lo -j ACCEPT
--A OUTPUT -o lo -j ACCEPT
-
-# Allow anything out on the localnet
--A OUTPUT -o br0 -j ACCEPT
-# Allow established, related packets back in
--A INPUT -i br0 -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-# Enable Forwarding on IPv6-Tunnel interface
--A INPUT -i br0 -s #subnet#/64 -d fe80::/10 -j ACCEPT
-# Enable ICMPv6 forward/send out on the localnet
--A INPUT -i br0 -p icmpv6 -j ACCEPT
-
-# Enable DHCPv6
--A INPUT -i br0 -m tcp -p tcp -m multiport -s fe80::/10 -d ff02::1:2 --dports 546,547 -j ACCEPT
--A INPUT -i br0 -m udp -p udp -m multiport -s fe80::/10 -d ff02::1:2 --dports 546,547 -j ACCEPT
-
-# Allow SSH from LAN
--A INPUT -i br0 -m tcp -p tcp --dport 22 -m state --state NEW -j ACCEPT
-
-# Allow SSH from internet
--A INPUT -i sit1 -m tcp -p tcp --dport 22 -m state --state NEW -j ACCEPT
-[question3] why doesn't I get a connection via SSH from internet, even I can
-traceroute6 or ping6 the sit1 ipv6 #tunnel#?
-
-# Allow anything out on the internet
--A OUTPUT -o sit1 -j ACCEPT
-# Allow established, related packets back in
--A INPUT -i sit1 -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-# Allow Link-Local addresses
--A INPUT -s fe80::/10 -j ACCEPT
--A OUTPUT -s fe80::/10 -j ACCEPT
-
-# Allow multicast
--A INPUT -d ff00::/8 -j ACCEPT
--A OUTPUT -d ff00::/8 -j ACCEPT
-
-# Paranoia setting on internet interface
--I INPUT -i sit1 -p tcp --syn -j DROP
--I FORWARD -i sit1 -p tcp --syn -j DROP
--I INPUT -i sit1 -p udp  -j DROP
--I FORWARD -i sit1 -p udp  -j DROP
-
-# Allow Forwarding to IPv6-Tunnel interface
--A FORWARD -i br0 -o sit1 -j ACCEPT
-# Allow established, related packets back through
--A FORWARD -i sit1 -o br0 -m state --state ESTABLISHED,RELATED -j ACCEPT
--A FORWARD -i sit1 -o br0 -j LOG  --log-prefix "IPv6[FWD-Reply]: " --log-level 7
-
-# Only the tunnel end is allowed to ping us with any icmp
--A INPUT -i sit1 -p icmpv6 -s #tunnel#::1 -d #tunnel#::2 -j ACCEPT
-# Else only pings with restricted icmp are allowed
--A INPUT -i sit1 -p icmpv6 -m limit --limit 2/sec --limit-burst 4 -j ACCEPT
-
-# Enable TRACEroute to me
--I INPUT -i sit1 -p udp --sport 32769:65535 --dport 33434:33523 -j ACCEPT
-
-# Log all other
--A INPUT -j LOG --log-prefix "IPv6[IN]: " --log-level 7
--A FORWARD -j LOG  --log-prefix "IPv6[FWD]: " --log-level 7
--A OUTPUT -j LOG  --log-prefix "IPv6[OUT]: " --log-level 7
-
-COMMIT
-<end /etc/sysconfig/ip6tables>
+Any solution without the need to add a permanent neigh entry for R2?
 
 
-Thanks for any help
 
-Greetings
-from Austria,
-Walter
 
+-- 
+Alfrenovsky
