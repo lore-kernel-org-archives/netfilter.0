@@ -1,53 +1,88 @@
-From: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Subject: Re: packet flow for connections to 127.0.0.0/8 network
-Date: Tue, 23 Aug 2016 10:40:46 +0200
-Message-ID: <b09a1493-f808-21d1-a30d-c655589d009b@plouf.fr.eu.org>
-References: <CAJx5YvHu0+U-_zK4DNoTGJ_7FZVf3tBiJeunwg+VBDouB7pttg@mail.gmail.com>
+From: Margel Mar <margelef2@gmail.com>
+Subject: net.netfilter.nf_conntrack_tcp_timeout_time_wait value being ignored
+Date: Tue, 23 Aug 2016 09:46:37 -0400
+Message-ID: <CAAuMRCO2urbyyi9yLyusSL7vp0tyPiBK1mYA=EmxhfWd5+d=KQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAJx5YvHu0+U-_zK4DNoTGJ_7FZVf3tBiJeunwg+VBDouB7pttg@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=FI1wmip+OdP1bsIqRJ8JcrG0STvZeQI6wVGmKAdz7zI=;
+        b=aJQChTKcC+k3rBjhhoDgrMctoCzq7BlQIM41e+9yik5YE5EA8rOdepsTi5ciJXRjCb
+         WnWhzW/rZGnGFcobklPtmxZgt0lylkbjWrZYf5ySalZno71B65TYyUxfEqBlxj2TUyXl
+         Ec+Te3tylA5sFrB0xHFAjWoa5TjEkzOd/ImvhxIkZaV53vLT5iCoe5v3lC7/ptiIx8D+
+         wjPjBtZPol2AJ+l5jeY/ESJE06fv8YeVe3PplxV3cvLt/30QUGcZFx9tiVJiPwXWjVux
+         2SD4KlgzIpiqEOW7AV/34NtMMledtGo+WBNhU7k2Z0A17+5v++m4djeynO63E0w1/xSU
+         5rdQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Martin T <m4rtntns@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Le 23/08/2016 à 09:13, Martin T a écrit :
->
-> # iptables -n -v -L INPUT --line-numbers
-> Chain INPUT (policy DROP 21 packets, 1683 bytes)
-> num   pkts bytes target     prot opt in     out     source
->   destination
-> 1        4   336 ACCEPT     all  --  *      *       0.0.0.0/0
->   0.0.0.0/0            ctstate RELATED,ESTABLISHED
+Our server handles a lot of traffic - during peak usage, the traffic
+is enough to overwhelm the ports with the default value of
+net.netfilter.nf_conntrack_tcp_timeout_time_wait of 120.
 
-The output of iptables-save would be more readable (IMO).
+We've had success decreasing the default value of time_wait from 120
+seconds to 1. We've run the command (sudo sysctl -w
+net.netfilter.nf_conntrack_tcp_timeout_time_wait=1) with empirically
+verifiable success 5+ times over the past 6 months.
 
-> As seen above, I don't explicitly allow connections to 127/8
-> network(-A INPUT -i lo -j ACCEPT)
+The server went down a few days ago due to what we were told was a
+"cpu stall", and we had to reboot. We ran sudo apt-get upgrade to take
+care of ~15 security updates. While poking around reading log files,
+etc to try to figure out why we went down I ran some netstat commands
+to check the status of our connections and noticed that the number of
+tcp connections in time_wait suggested that despite sysctl -a showing
+it to be set to 1, it behaves as though it is set to 120, the default
+value.
 
-127.0.0.0/8 is not the same as lo. It is actually more restrictive, 
-because lo sees the locally generated traffic sent to any local address, 
-not only 127.0.0.0/8.
+Increasing and decreasing the setting no longer has any effect on the
+number of connections in time_wait as it should. For example, if we do
+100 pageviews per second, we would expect ~15000 connections in
+time_wait (100 + ~30 asynch) * 120. If time_wait is decreased to 1, we
+would see only 130. If we increase it to 240 we should see 30000. No
+matter what value we set, it behaves as though it is set to the
+default value.
 
-> and thus while I receive for example
-> ICMP "echo reply" messages from 8.8.8.8, I don't receive replies if I
-> ping 127.0.0.1(configured to lo interface) or 10.10.10.1(configured to
-> physical eth0 interface). How does a day in the life of a packet look
-> like when it does not leave the machine?
+The server was moved from Xen to KVM about 1 month ago, but I am
+unsure as to whether the time_wait command worked as expected at that
+time because our traffic is seasonal and the past month has had low
+enough traffic that we wouldn't saturate our ports.
 
-On a usual interface connected to the outside world, outgoing packets go 
-through the OUTPUT chain and incoming packets go through the INPUT chain.
+We've tried rolling back to the kernels that were in use the last time
+we know the time_wait value of 1 was being properly utilized, but it
+had no effect, so we believe that we can eliminate the specific kernel
+as the cause of the problem.
 
-local process --> OUTPUT --> eth0 --> outside world
-outside world --> eth0 --> INPUT --> local process
+We're looking at two possible causes of the issue:
 
-However each packet sent over the loopback interfaces is both sent and 
-received thus goes through and must be accepted by both chains OUTPUT 
-and INPUT.
+1. The sudo apt-get upgrade run after recently going down. Conntrack
+is in the logs as noted below. Is it possible that what looks like a
+routine update is incompatible with KVM? Was a bug introduced in a
+recent update that causes the time_wait value to be ignored?
 
-local process --> OUTPUT --> lo --> INPUT --> local process
+2. The move to KVM - It's possible that this has been going on since
+the move to KVM, but before trying to migrate the server and enduring
+significant downtime, I thought it was worth running the issue by this
+list to see if anyone has any ideas.
 
-This also applies to the initial packet in the state NEW that your rule 
-does not allow.
+The logs for the only apt-get upgrade we've run since we know this was working:
+
+Selecting previously unselected package libmnl0:amd64.^M
+Preparing to unpack .../libmnl0_1.0.3-3ubuntu1_amd64.deb ...^M
+Unpacking libmnl0:amd64 (1.0.3-3ubuntu1) ...^M
+Selecting previously unselected package libnetfilter-conntrack3:amd64.^M
+Preparing to unpack .../libnetfilter-conntrack3_1.0.4-1_amd64.deb ...^M
+Unpacking libnetfilter-conntrack3:amd64 (1.0.4-1) ...^M
+Selecting previously unselected package conntrack.^M
+Preparing to unpack .../conntrack_1%3a1.4.1-1ubuntu1_amd64.deb ...^M
+Unpacking conntrack (1:1.4.1-1ubuntu1) ...^M
+Processing triggers for man-db (2.6.7.1-1ubuntu1) ...^M
+Setting up libmnl0:amd64 (1.0.3-3ubuntu1) ...^M
+Setting up libnetfilter-conntrack3:amd64 (1.0.4-1) ...^M
+Setting up conntrack (1:1.4.1-1ubuntu1) ...^M
+Processing triggers for libc-bin (2.19-0ubuntu6.9) ...^M
+
+Thanks for your help!
