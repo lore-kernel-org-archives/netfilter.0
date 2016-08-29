@@ -1,42 +1,63 @@
 From: Llorente Santos Jesus <jesus.llorente.santos@aalto.fi>
-Subject: RE: smcroute and snat rules - snat not working if multicast traffic
- is received while rules are being added otherwise it works
-Date: Mon, 29 Aug 2016 20:20:40 +0000
-Message-ID: <A404B5896AB4F5468A8755AFC23F7317E4334916@EXMDB04.org.aalto.fi>
-References: <FEE7A75AD8EEEF44A9D44E051B8E9A9B2F96E666@PRS49.progressrail.com>
+Subject: RE: Bigger packet after mangling queued packets
+Date: Mon, 29 Aug 2016 20:26:03 +0000
+Message-ID: <A404B5896AB4F5468A8755AFC23F7317E4334930@EXMDB04.org.aalto.fi>
+References: <CAAU8gNxtr=fNapaB0wh_4AySxbzF8JxLa46D1WdwzomA9rFnHQ@mail.gmail.com>
+ <CAEzD07JNkUbL6U-y9UrcMUysQCD9hW3oxVUbGOmNkpp0JCx2pA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <FEE7A75AD8EEEF44A9D44E051B8E9A9B2F96E666@PRS49.progressrail.com>
+In-Reply-To: <CAEzD07JNkUbL6U-y9UrcMUysQCD9hW3oxVUbGOmNkpp0JCx2pA@mail.gmail.com>
 Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Mark Fanara <mfanara@PROGRESSRAIL.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="windows-1254"
+To: Anton Danilov <littlesmilingcloud@gmail.com>, Pierre-Antoine BRAMERET <pa.brameret@gmail.com>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi Mark,
-
-Maybe you could try flushing the conntrack information, "conntrack -F" after applying the new rules.
-If the system has generated connection state already, it could be using that to forward your traffic. In any case, you could also monitor the rule counters and see what rules are being applied, (iptables -L -nv).
-
-Let me know if this helps :)
-
-Best,
-Jesus
-
------Original Message-----
-From: netfilter-owner@vger.kernel.org [mailto:netfilter-owner@vger.kernel.org] On Behalf Of Mark Fanara
-Sent: 29 August 2016 23:07
-To: netfilter@vger.kernel.org
-Subject: RE: smcroute and snat rules - snat not working if multicast traffic is received while rules are being added otherwise it works
-
-I am using smcroute to route multicast traffic from one LAN to another. Along with this I am using iptables to mangle the TTL value and also to NAT the source address onto the target LAN.
-
-I have a script that runs on startup of my device. The script starts the smcroute daemon, adds the smcroute rule, adds the iptables mangle rule and the NAT rule.
-
-If the script runs on startup and no multicast traffic (destined to the address of interest) is being received while the script runs, the traffic is properly routed, mangled and NATed. However, if, while the script is running, multicast traffic destined to the address of interest is being received, the traffic is properly routed and mangled, but is not NATed. 
-
-I have compared the rules as displayed by iptables in both cases and don't see any difference. I have also tried searching the user list archive as well as general Internet search on this topic, but have not found any useful discussion.
-
---
-To unsubscribe from this list: send the line "unsubscribe netfilter" in the body of a message to majordomo@vger.kernel.org More majordomo info at  http://vger.kernel.org/majordomo-info.html
+SGksDQoNCkkgdGhpbmsgSSBoYXZlIHJ1biBpbnRvIHRoaXMgaXNzdWUgaW4gdGhlIHBhc3QuIENo
+ZWNrIGlmIHlvdSBoYXZlIGxvYWRlZCB0aGUgbW9kdWxlIG5mX2RlZnJhZ19pcHY0LiBJZiB0aGF0
+IGlzIHRoZSBjYXNlLCBtb3N0IGxpa2VseSB0aGUgT1MgaXMgdGFraW5nIHBhcnQgb2YgdGhlIHJl
+YXNzZW1ibHkgYW5kIHlvdSB3b24ndCBiZSBhYmxlIHRvIHNlZSB0aGUgZnJhZ21lbnRzIG9mIHRo
+ZSBwYWNrZXQuIFlvdSBjYW4gdHJ5IGFzIHdlbGwgZGlzYWJsaW5nIHRoZSBjaGVja3N1bSBvZmZs
+b2FkaW5nIGNhbGN1bGF0aW9uIHdpdGggZXRodG9vbC4NCklmIG1hY2hpbmUgQSBhbmQgQiBhcmUg
+dmlydHVhbCBob3N0cyBjb25uZWN0ZWQgdmlhIHZldGggcGFpcnMsIGRpc2FibGUgdGhlIG9mZmxv
+YWQgaW4gYm90aCBlbmRzIDopDQoNCkJlc3QsDQpKZXN1cw0KDQotLS0tLU9yaWdpbmFsIE1lc3Nh
+Z2UtLS0tLQ0KRnJvbTogbmV0ZmlsdGVyLW93bmVyQHZnZXIua2VybmVsLm9yZyBbbWFpbHRvOm5l
+dGZpbHRlci1vd25lckB2Z2VyLmtlcm5lbC5vcmddIE9uIEJlaGFsZiBPZiBBbnRvbiBEYW5pbG92
+DQpTZW50OiAyOSBBdWd1c3QgMjAxNiAyMzoxOA0KVG86IFBpZXJyZS1BbnRvaW5lIEJSQU1FUkVU
+IDxwYS5icmFtZXJldEBnbWFpbC5jb20+DQpDYzogbmV0ZmlsdGVyQHZnZXIua2VybmVsLm9yZw0K
+U3ViamVjdDogUmU6IEJpZ2dlciBwYWNrZXQgYWZ0ZXIgbWFuZ2xpbmcgcXVldWVkIHBhY2tldHMN
+Cg0KSGkuDQoNCkNoZWNrIHRoZSBvdXRnb2luZyB0cmFmZmljIHdpdGggdGNwZHVtcCBvbiBtYWNo
+aW5lIEEsIGFuZCBjaGVjayB0aGUgb2ZmbG9hZHMgb24gbWFjaGluZSBCLg0KDQoyMDE2LTA4LTI5
+IDE5OjEyIEdNVCswMzowMCBQaWVycmUtQW50b2luZSBCUkFNRVJFVCA8cGEuYnJhbWVyZXRAZ21h
+aWwuY29tPjoNCj4gSGksDQo+DQo+DQo+IEkgcmVjZW50bHkgZGlzY292ZXJlZCBuZXRmaWx0ZXJf
+cXVldWUsIGFuZCBoYXZlIGEgcXVlc3Rpb24gYWJvdXQgDQo+IGNoYW5naW5nIHRoZSBwYWNrZXQg
+c2l6ZSBiZWZvcmUgYWNjZXB0aW5nIGl0LiBXaGF0IGhhcHBlbnMgd2hlbiB0aGUgDQo+IGFjY2Vw
+dGVkIHBhY2tldCBpcyBub3cgdG9vIGxhcmdlIGFuZCB3b3VsZCByZXF1aXJlIHNwbGl0dGluZz8N
+Cj4NCj4gSSBoYXZlIHRlc3RlZCB0aGUgZm9sbG93aW5nIHNpdHVhdGlvbi4gQ29tcHV0ZXIgQSBm
+aWx0ZXJzIG91dGdvaW5nIFVEUCANCj4gcGFja2V0cyB0b3dhcmQgYSBnaXZlbiBwb3J0IGFuZCBt
+dWx0aXBsZSBieSAxMCB0aGVpciBwYXlsb2FkIGJlZm9yZSANCj4gYWNjZXB0aW5nIHRoZW0uIEFu
+IGFwcCBzZW5kcyBhIHBhY2tldCBmcm9tIEEgdG8gY29tcHV0ZXIgQiwgd2hpY2ggaXMgDQo+IHJl
+YWNoYWJsZSB0aHJvdWdoIGEgTEFOLiBUaGUgTVRVIG9mIHRoZSBjb3JyZXNwb25kaW5nIGV0aGVy
+bmV0IGRldmljZXMgDQo+IGlzIDE1MDAuIEkgc2VudCBhIHBhY2tldCB3aXRoIGFuIGluaXRpYWwg
+cGF5bG9hZCBvZiAyMDAgYnl0ZXMsIHdoaWNoIA0KPiBpcyBjb3JyZWN0bHkgbXVsdGlwbGllZCBi
+eSAxMCBieSBteSBmaWx0ZXIgY2FsbGJhY2ssIGFuZCBnaXZlcyBhIA0KPiBzaW5nbGUgSVAgcGFj
+a2V0IG9mIG1vcmUgdGhhbiAyMDAwIGJ5dGVzLiBPbiBjb21wdXRlciBCLCBJIHNlZSB0aHJvdWdo
+IA0KPiB0Y3BkdW1wIHRoYXQgYSBzaW5nbGUgcGFja2V0IGFycml2ZXMsIHdpdGggYW4gZXJyb25l
+b3VzIElQIGhlYWRlciANCj4gKHRvdGFsIGxlbmd0aCBpcyAxNTAwLCBwYWNrZXQgaXMgbWFya2Vk
+IGFzIGZyYWdtZW50ZWQpLCBidXQgYSBjb3JyZWN0IA0KPiBVRFAgaGVhZGVyIChsZW5ndGggaXMg
+MjAwOCBieXRlcykuIFRoZSAyMDAwIGJ5dGVzIG9mIFVEUCBwYXlsb2FkIGFyZSANCj4gY29ycmVj
+dGx5IHJlY2VpdmVkIGJ5IHRoZSBzb2NrZXQgb24gY29tcHV0ZXIgQi4gSG93IHdvdWxkIHRoYXQg
+aGFwcGVuPw0KPg0KPiBJIGhhdmUgc2VlbiB0aGUgZGlzY3Vzc2lvbiBhYm91dCB3aGF0IG1heSBo
+YXBwZW4gdG8gYSBwYWNrZXQgdGhhdCBpcyANCj4gbGFyZ2VyIChodHRwOi8vbWFyYy5pbmZvLz9s
+PW5ldGZpbHRlciZtPTEzMzQ5NDM4MDgxODQxMiksIGlzIHRoaXMgdGhlIA0KPiBjYXNlIGhlcmU/
+DQo+DQo+DQo+IE1hbnkgdGhhbmtzLA0KPiAtLQ0KPiBCUkFNRVJFVCBQaWVycmUtQW50b2luZQ0K
+PiAtLQ0KPiBUbyB1bnN1YnNjcmliZSBmcm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5z
+dWJzY3JpYmUgbmV0ZmlsdGVyIiANCj4gaW4gdGhlIGJvZHkgb2YgYSBtZXNzYWdlIHRvIG1ham9y
+ZG9tb0B2Z2VyLmtlcm5lbC5vcmcgTW9yZSBtYWpvcmRvbW8gDQo+IGluZm8gYXQgIGh0dHA6Ly92
+Z2VyLmtlcm5lbC5vcmcvbWFqb3Jkb21vLWluZm8uaHRtbA0KDQoNCg0KLS0NCkFudG9uLg0KLS0N
+ClRvIHVuc3Vic2NyaWJlIGZyb20gdGhpcyBsaXN0OiBzZW5kIHRoZSBsaW5lICJ1bnN1YnNjcmli
+ZSBuZXRmaWx0ZXIiIGluIHRoZSBib2R5IG9mIGEgbWVzc2FnZSB0byBtYWpvcmRvbW9Admdlci5r
+ZXJuZWwub3JnIE1vcmUgbWFqb3Jkb21vIGluZm8gYXQgIGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcv
+bWFqb3Jkb21vLWluZm8uaHRtbA0K
