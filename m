@@ -1,114 +1,160 @@
-From: Khawar Shehzad <shehzad.khawar@gmail.com>
-Subject: Libmnl - Adding IPv6 Address in the interface
-Date: Mon, 29 Aug 2016 07:52:34 +0100
-Message-ID: <7bf46bb2-c807-6a3e-3447-60e8b9a8cbf2@gmail.com>
+From: Andreas Hainke <andreas.hainke@foteviken.de>
+Subject: nftables: Using variables in named sets
+Date: Mon, 29 Aug 2016 13:37:20 +0200
+Message-ID: <97002fd1-5d03-64e7-37c0-3807c2c59d37@foteviken.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="xrVvMgV1HXvtqiO9heHQidBclRtxPsAM5"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=FMi9UCoRJ/XggyGMyub5DrwsziCogacucRAgVT/vTVU=;
-        b=BufLwNH3daTMZoAYpupV9803oldQDZrfto2MNZ5M/JIjTfP3zcstL/JyAnvV9s9Itx
-         4xBpT6zfHHNn5KO2KQTNIol0irZ+kGYV1r7nh5EEmg4fedEjxjUvTF5PMVXtwm/2rdy1
-         VsEMY01zn7gYYdhWP7612KnuBqJ/9QplKTafZH+83OKRQ/3ENmsyhUSGMjc+ur6JTlIB
-         1a/q3POSirVZjbgYtj8kgrajb2IF01qQ752G04jy7EMAYwtqk8Dub4wQfy/0SV/2pV+y
-         CXluL6cF46+tD7suYj259KTxtnjQgAuZTlOkaZRGg0yTjA/NNGu3OEXa219/F3iRurFp
-         YewA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--xrVvMgV1HXvtqiO9heHQidBclRtxPsAM5
+Content-Type: multipart/mixed; boundary="KPUKN3Tl7oNm8eqUMkJe71OdtLA0ILkWt"
+From: Andreas Hainke <andreas.hainke@foteviken.de>
+To: netfilter@vger.kernel.org
+Message-ID: <97002fd1-5d03-64e7-37c0-3807c2c59d37@foteviken.de>
+Subject: nftables: Using variables in named sets
+
+--KPUKN3Tl7oNm8eqUMkJe71OdtLA0ILkWt
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
 Hi,
-I hope all are fine.
-You can view my question here as well ( 
-http://stackoverflow.com/questions/39183969/adding-an-ipv6-address-to-the-interface-using-libmnl-and-rtnetlink 
-)
 
-I am trying to add an IPv6 address to an ethernet interface, using 
-libmnl. After constructing a message and sending to the kernel, I saw 
-that it was not added to the interface, even though the return codes for 
-the kernel reply did not contain any error. Kindly can anybody have a 
-look, and help me correct it. Am I supposed to add more attributes to 
-the nlmsghdr or something else?
+I have a question regarding the definition of variables in nft. I have
+created two files rules.nft and definitions.nft. The file rules.nft=20
+contains a ruleset as follows:
 
 
-     #include <assert.h>
-     #include <string.h>
-     #include <inttypes.h>
-     #include <sys/socket.h>
-     #include <arpa/inet.h>
-     #include <libmnl/libmnl.h>
-     #include <linux/rtnetlink.h>
-     #include <net/if.h>
-     #include <time.h>
-     static struct mnl_socket *nl;
-     static unsigned int nlportid;
+include "/opt/firewall/filter/definitions.nft"
+table inet forward {
+*        set s-ext-2-int {**
+**                type ipv4_addr . inet_service**
+**                elements =3D  { $s-ext-2-int }**
+**        }*
 
-     int mnl_init(void);
-     int mnl_init(){
-         nl = mnl_socket_open(NETLINK_ROUTE);
-         if(nl == NULL){
-             printf("Error: mnl_socket_open\n");
-             return 0;
-         }
-         if(mnl_socket_bind(nl, 0, MNL_SOCKET_AUTOPID) < 0){
-             printf("Error: mnl_socket_bind\n");
-             return 0;
-         }
-         nlportid = mnl_socket_get_portid(nl);
-         return 1;
-     }
-     int add_to_interface(const char* eip){
-         char buf[MNL_SOCKET_BUFFER_SIZE];
-         struct nlmsghdr *nlh;
-         struct ifaddrmsg *ifm;
-         int ret;
-         uint8_t seq;
+        chain segments {
+                type filter hook forward priority 0; policy drop;
+                ct state established, related accept
 
-         nlh = mnl_nlmsg_put_header(buf);
+                ip saddr $g_n_int ip daddr $n_dmz ct state new jump
+int-2-dmz
+                ip saddr $n_dmz ip daddr $g_n_int ct state new jump
+dmz-2-int
+                ip saddr $g_n_int ip daddr $n_ext ct state new jump
+int-2-ext
+                ip saddr $n_ext ip daddr $g_n_int ct state new jump
+ext-2-int
+                ip saddr $n_dmz ip daddr $n_ext ct state new jump dmz-2-e=
+xt
+                ip saddr $n_ext ip daddr $n_dmz ct state new jump ext-2-d=
+mz
 
-         nlh->nlmsg_type = RTM_NEWADDR;
-         nlh->nlmsg_flags = NLM_F_REQUEST|NLM_F_CREATE|NLM_F_EXCL;
-         nlh->nlmsg_seq = seq = time(NULL);
+                ip6 saddr $g6_n_int ip6 daddr $n6_dmz ct state new jump
+int-2-dmz
+                ip6 saddr $n6_dmz ip6 daddr $g6_n_int ct state new jump
+dmz-2-int
+                ip6 saddr $g6_n_int ip6 daddr $n6_ext ct state new jump
+int-2-ext
+                ip6 saddr $n6_ext ip6 daddr $g6_n_int ct state new jump
+ext-2-int
+                ip6 saddr $n6_dmz ip6 daddr $n6_ext ct state new jump
+dmz-2-ext
+                ip6 saddr $n6_ext ip6 daddr $n6_dmz ct state new jump
+ext-2-dmz
+        }
+        chain int-2-dmz {
+                ip protocol icmp accept
+                ip6 nexthdr ipv6-icmp accept
+                ip saddr $g_h_int_DNS ip daddr $g_h_dmz_DNS udp dport 53
+accept
+               #...
+        }
+    #...
+}
 
-         ifm = mnl_nlmsg_put_extra_header(nlh, sizeof(*ifm));
 
-         ifm->ifa_family = AF_INET6;
-         ifm->ifa_prefixlen = 64;
-         ifm->ifa_flags = IFA_F_PERMANENT;
-         ifm->ifa_scope = RT_SCOPE_UNIVERSE;
-         /* TODO get interaface name from user or configuration*/
-         ifm->ifa_index = if_nametoindex("eth0");
-         unsigned char eipn[16];
-         inet_pton(AF_INET6, eip, eipn);
-         mnl_attr_put(nlh, IFA_ADDRESS, 16,eipn);
+The file rules.nft contains all variable definitions:
 
-         mnl_nlmsg_fprintf(stdout, nlh, nlh->nlmsg_len, sizeof(struct 
-ifaddrmsg));
+#########################
+# Interface definitions #
+#########################
+define i_local =3D lo
+define i_int =3D eth1
+define i_dmz =3D eth2
+define i_ext =3D eth0
 
-         if(mnl_socket_sendto(nl,nlh, nlh->nlmsg_len) < 0){
-             printf("Error: mnl_socket_sendto");
-             return 0;
-         }
-         ret = mnl_socket_recvfrom(nl,buf, sizeof(buf));
-         if(ret == -1){
-             printf("Error: mnl_socket_recvfrom");
-             return 0;
-         }
-         ret = mnl_cb_run(buf, ret, seq, nlportid, NULL, NULL);
-         return 0;
-     }
+*define s-ext-2-int =3D 10.10.10.10 . 25*
 
-     int main(int argc, char *argv[]){
-         if(mnl_init()){
-             add_to_interface("2001::20c:29ff:fe5f:13c7/64"); // for testing
-         }
-     }
+#######################
+# Network definitions #
+#######################
+# Internal segments
+define n_int =3D 10.10.10.0/24
+define n_int_cluster =3D 10.10.20.0/24
+#...
 
-Any help will be much appreciated.
-Cheers,
-Khawar
 
+I can use the variables as expected, except for named sets. Using only
+one element in s-ext-2-int is working properly, but as soon as I add a
+second element to the variable definition like this:*
+*
+
+*define s-ext-2-int =3D 10.10.10.10 . 25, 10.10.10.10 . 143*
+
+I receive the following error while loading the rules using nft -f:
+
+
+In file included from /opt/firewall/filter/ruleset.nft:2:1-41:
+/opt/firewall/filter/rules.nft:9:38-38: Error: syntax error, unexpected
+comma, expecting newline or semicolon
+n_int tcp dport 22 ct state new accept
+                                     ^
+In file included from /opt/firewall/filter/ruleset.nft:2:1-41:
+/opt/firewall/filter/rules.nft:19:32-42: Error: unknown identifier
+'s-ext-2-int'
+        elements =3D  { $s-ext-2-int }
+                               ^^^^^^^^^^^
+
+Is it possible to use variables for named sets, maps, etc. or is this
+currently not possible?
+
+Kind regards,
+
+Andreas
+
+
+
+
+
+
+--KPUKN3Tl7oNm8eqUMkJe71OdtLA0ILkWt--
+
+--xrVvMgV1HXvtqiO9heHQidBclRtxPsAM5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJXxB50AAoJENMia1VtPcvYTtwP/inp62XzVznTGT6FSIgVv/59
+cBhMvagD9gDbHh6xuDy5AJ7szL1zAhMlgrsVA/EoJllfqwzT9nwDU39yl9SnoBpW
+Z72AMaQPvpmPxNuxZoPV+0YT56+MNuPGp9R7DPo+qm8DaaW7vyy39DY3qTQzIfDS
+BfM0R1PoHbjCe+09UZMFE+Y9Wt93g2BzIccKnraoSoycR50x43ETiireEIh1L+/b
+L5RD4TLF1L33RoXPvXAAl+lmN7d79UZ83S24OE60fyR28gyNUFrdmmAgRMKa7/J5
+b/2BZnPZRSp3RgeDla7UK46zdLw56D33HoOUCpbUtrOmVlAnkMkRXLEZTD1rLqyk
+PwyX98QKrG9CCyLm7SR92yazhk6Gl8UEkmyRvXsNmkgWZngxi8f40Arx/qPXSXAl
+S5/ECZvYZVB59jT7Xd1OjDs3Yx1l7yFkxBbe54+tmCKvqJna0HnzoMcVaTrxPQ1S
+PxCxw6k1PzlHLv4N9TrbboHM7e+MAnZixjj4JIGJ+f3+EJUD1Lm+AduyWaiKXEze
+mYMhif62CVJhTtc+U1J4DloRzje1Psv69xXtzKZUErs3a0Kx6mxwj1+AJTKDgH6H
+jhEfO0EeAEYlZ20ZrpOEZeRWw7S4p0FnHCyBOSL5Y6yBsnxAv8XzFvUnmmDu0mJG
+rHPQrMtx04BgQOsmEWzz
+=Vq3+
+-----END PGP SIGNATURE-----
+
+--xrVvMgV1HXvtqiO9heHQidBclRtxPsAM5--
