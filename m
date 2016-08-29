@@ -1,37 +1,58 @@
-From: John Ratliff <John.Ratliff@smithville.com>
-Subject: NAT chain traversal
-Date: Mon, 29 Aug 2016 21:06:17 +0000
-Message-ID: <ACE72E703D378641812A4DF9E026803A5BC216E0@inelhqMAIL.stc.corp>
+From: Mark Fanara <mfanara@PROGRESSRAIL.com>
+Subject: RE: smcroute and snat rules - snat not working if multicast traffic
+ is received while rules are being added otherwise it works
+Date: Mon, 29 Aug 2016 21:29:25 +0000
+Message-ID: <FEE7A75AD8EEEF44A9D44E051B8E9A9B2F96E967@PRS49.progressrail.com>
+References: <FEE7A75AD8EEEF44A9D44E051B8E9A9B2F96E666@PRS49.progressrail.com>
+ <A404B5896AB4F5468A8755AFC23F7317E4334916@EXMDB04.org.aalto.fi>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <A404B5896AB4F5468A8755AFC23F7317E4334916@EXMDB04.org.aalto.fi>
 Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: Llorente Santos Jesus <jesus.llorente.santos@aalto.fi>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-SSBoYXZlIHNldmVyYWwgdmlydHVhbCBzZXJ2ZXJzIGluIGEgcHJpdmF0ZSB2bGFuICgxOTIuMTY4
-LjAuMC8yNCkuIEkgd291bGQgcHJlZmVyIHRoYXQgdGhleSBkbyBub3QgY29tbXVuaWNhdGUgZGly
-ZWN0bHksIGJ1dCByYXRoZXIgYmUgZm9yY2VkIHRvIGdvIHRocm91Z2ggdGhlIGZpcmV3YWxsLiBU
-byBhY2NvbXBsaXNoIHRoaXMsIEkgaGF2ZSBhIHJ1bGUgaW4gbXkgSU5QVVQgY2hhaW4gdG8gZHJv
-cCBhbGwgdHJhZmZpYyBmcm9tIDE5Mi4xNjguMC4wLzI0LiBUaGlzIGlzIHRoZSBvbmx5IHJ1bGUg
-b24gdGhlIHNlcnZlcnMsIGFuZCB0aGV5IGhhdmUgZGVmYXVsdCBBQ0NFUFQgcG9saWNpZXMgZm9y
-IGFsbCBjaGFpbnMuDQoNCkhvd2V2ZXIsIEkgZG8gd2FudCBvbmUgc2VydmVyIG9uIHRoZSB2bGFu
-IHRvIGNvbnRhY3QgYW5vdGhlciBvdmVyIHNzaC4gQnV0IEkgd2FudCB0aGlzIHRyYWZmaWMgdG8g
-ZmxvdyB0aHJvdWdoIHRoZSBmaXJld2FsbCwgc28gSSBjYW4ga2VlcCBhbGwgbXkgcnVsZXMgaW4g
-b25lIHBsYWNlICh0aGUgZmlyZXdhbGwpLg0KDQpTbywgSSB3YW50IHNlcnZlciBBICgxOTIuMTY4
-LjAuMTExKSB0byBjb250YWN0IHNlcnZlciBCICgxLjEuMS4yKSBvdmVyIHNzaC4NCg0KSXQgc2Vl
-bXMgbGlrZSB0aGlzIHdvdWxkIHJlcXVpcmUgYm90aCBTTkFUIGFuZCBETkFUIHJ1bGVzLCBidXQg
-SeKAmW0gbm90IHN1cmUgaWYgdGhpcyBpcyBwb3NzaWJsZS4NCg0KSWYgSSB0cmllZCB0byBjb25u
-ZWN0IHRvIHNlcnZlciBCIG9uIDEuMS4xLjI6MjIgKGZpcmV3YWxsIEROQVQgdHJhbnNsYXRlcyB0
-byAxOTIuMTY4LjAuMikgZnJvbSBzZXJ2ZXIgQSAoMTkyLjE2OC4wLjExMSksIHNlcnZlciBCIHdv
-dWxkIHJlcGx5IHRvIDE5Mi4xNjguMC4xMTEsIHdob3NlIHRyYWZmaWMgaXMgZHJvcHBlZC4gU28g
-d2l0aCBvbmx5IGEgRE5BVCBydWxlLCBJIGNvdWxkIGdldCB0cmFmZmljIGV4dGVybmFsIHRvIHRo
-ZSBmaXJld2FsbCB0byBjb25uZWN0IHRvIHNlcnZlciBCLCBidXQgbm90IHRyYWZmaWMgYmVoaW5k
-IHRoZSBmaXJld2FsbC4NCknigJl2ZSB0cmllZCBhZGRpbmcgU05BVCBydWxlcyB0byBjaGFuZ2Ug
-MTkyLjE2OC4wLjExMSAtPiAxLjEuMS4xMTEgd2hlbiBpdCB0cmllcyB0byBjb25uZWN0IHRvIDE5
-Mi4xNjguMC4yOjIyLCBidXQgaXQgZG9lc27igJl0IHNlZW0gdG8gd29yay4NCg0KSXMgd2hhdCBJ
-4oCZbSBhdHRlbXB0aW5nIHBvc3NpYmxlPw0KDQoNCkpvaG4gUmF0bGlmZg0KU3lzdGVtcyBFbmdp
-bmVlcg0KT2ZmaWNlOiAgKDgxMikgOTM1LTI0OTEgIHwgIE1vYmlsZTogICg4MTIpIDM0MC03NDIx
-DQpqb2huLnJhdGxpZmZAc21pdGh2aWxsZS5jb20gIHwgIHNtaXRodmlsbGUuY29tDQoNCg==
+Jesus --
+
+conntrack -F solved the problem!
+
+I am also wondering if there is a method of doing the SNATing for the forwarded multicast traffic that does not include connection tracking, but rather just does mangling? There really is no need to track a one-way multicast connection.
+
+Thanks
+Mark
+
+-----Original Message-----
+From: Llorente Santos Jesus [mailto:jesus.llorente.santos@aalto.fi] 
+Sent: Monday, August 29, 2016 3:21 PM
+To: Mark Fanara; netfilter@vger.kernel.org
+Subject: RE: smcroute and snat rules - snat not working if multicast traffic is received while rules are being added otherwise it works
+
+Hi Mark,
+
+Maybe you could try flushing the conntrack information, "conntrack -F" after applying the new rules.
+If the system has generated connection state already, it could be using that to forward your traffic. In any case, you could also monitor the rule counters and see what rules are being applied, (iptables -L -nv).
+
+Let me know if this helps :)
+
+Best,
+Jesus
+
+-----Original Message-----
+From: netfilter-owner@vger.kernel.org [mailto:netfilter-owner@vger.kernel.org] On Behalf Of Mark Fanara
+Sent: 29 August 2016 23:07
+To: netfilter@vger.kernel.org
+Subject: RE: smcroute and snat rules - snat not working if multicast traffic is received while rules are being added otherwise it works
+
+I am using smcroute to route multicast traffic from one LAN to another. Along with this I am using iptables to mangle the TTL value and also to NAT the source address onto the target LAN.
+
+I have a script that runs on startup of my device. The script starts the smcroute daemon, adds the smcroute rule, adds the iptables mangle rule and the NAT rule.
+
+If the script runs on startup and no multicast traffic (destined to the address of interest) is being received while the script runs, the traffic is properly routed, mangled and NATed. However, if, while the script is running, multicast traffic destined to the address of interest is being received, the traffic is properly routed and mangled, but is not NATed. 
+
+I have compared the rules as displayed by iptables in both cases and don't see any difference. I have also tried searching the user list archive as well as general Internet search on this topic, but have not found any useful discussion.
+
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter" in the body of a message to majordomo@vger.kernel.org More majordomo info at  http://vger.kernel.org/majordomo-info.html
