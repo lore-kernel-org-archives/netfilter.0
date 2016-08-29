@@ -1,114 +1,49 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: nftables: Using variables in named sets
-Date: Mon, 29 Aug 2016 18:04:29 +0200
-Message-ID: <20160829160429.GA20024@salvia>
-References: <97002fd1-5d03-64e7-37c0-3807c2c59d37@foteviken.de>
+From: Pierre-Antoine BRAMERET <pa.brameret@gmail.com>
+Subject: Bigger packet after mangling queued packets
+Date: Mon, 29 Aug 2016 18:12:44 +0200
+Message-ID: <CAAU8gNxtr=fNapaB0wh_4AySxbzF8JxLa46D1WdwzomA9rFnHQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <97002fd1-5d03-64e7-37c0-3807c2c59d37@foteviken.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=75wBNG4H7UgFrSi7T7HkRmuFHsoD41Gk0eov8iQN8rw=;
+        b=V091awYpAocIL3uE7cKkA1PtUTOvi6A98nwwCu+33hPhRvX01Vq8yrhJ7TdleCHtfG
+         sAbcRHDYqWzmiJtN6GXMO1FXqVHiDoMyRCOfrSZuNkZK7KQ5DJ6BdMcER3m7zpy97mAo
+         Wpaadm/2v+p15QK1q+/Sy8qNvlrgIgvkBmo/QVLl5jYbm2ApMGQiG59dN9ptgULVGF5t
+         VshT6F6i9cNG9TiPo94DCtFR9XIZGXAM4p5FYkAoHpLNqm4z5ZTMA3SXsCDE/OXv41Yg
+         uM5/uq29BQEF/sM23siVRbqPLWbgfdB5xRwbkaMkUG4PApVNPyBMG1aLAn+ISxHX8tbf
+         lpKQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Andreas Hainke <andreas.hainke@foteviken.de>
-Cc: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hi Andreas,
+Hi,
 
-On Mon, Aug 29, 2016 at 01:37:20PM +0200, Andreas Hainke wrote:
-> Hi,
-> 
-> I have a question regarding the definition of variables in nft. I have
-> created two files rules.nft and definitions.nft. The file rules.nft 
-> contains a ruleset as follows:
-> 
-> include "/opt/firewall/filter/definitions.nft"
-> table inet forward {
-> *	   set s-ext-2-int {**
-> **		    type ipv4_addr . inet_service**
-> **		    elements =	{ $s-ext-2-int }**
-> **	    }*
-> 
->	  chain segments {
->		  type filter hook forward priority 0; policy drop;
->		  ct state established, related accept
-> 
->		  ip saddr $g_n_int ip daddr $n_dmz ct state new jump
-> int-2-dmz
->		  ip saddr $n_dmz ip daddr $g_n_int ct state new jump
-> dmz-2-int
->		  ip saddr $g_n_int ip daddr $n_ext ct state new jump
-> int-2-ext
->		  ip saddr $n_ext ip daddr $g_n_int ct state new jump
-> ext-2-int
 
-Not related, but you can represent this is a more performance way
-using maps, just a simplification of the ruleset above:
+I recently discovered netfilter_queue, and have a question about
+changing the packet size before accepting it. What happens when the
+accepted packet is now too large and would require splitting?
 
-define g_n_int = 1.1.1.1
-define n_dmz = 2.2.2.2
-define n_ext = 3.3.3.3
+I have tested the following situation. Computer A filters outgoing UDP
+packets toward a given port and multiple by 10 their payload before
+accepting them. An app sends a packet from A to computer B, which is
+reachable through a LAN. The MTU of the corresponding ethernet devices
+is 1500. I sent a packet with an initial payload of 200 bytes, which
+is correctly multiplied by 10 by my filter callback, and gives a
+single IP packet of more than 2000 bytes. On computer B, I see through
+tcpdump that a single packet arrives, with an erroneous IP header
+(total length is 1500, packet is marked as fragmented), but a correct
+UDP header (length is 2008 bytes). The 2000 bytes of UDP payload are
+correctly received by the socket on computer B. How would that happen?
 
-table inet forward {
-	chain int-2-dmz {
-	}
-	chain dmz-2-int {
-	}
-	chain int-2-ext {
-	}
-	chain ext-2-int {
-	}
+I have seen the discussion about what may happen to a packet that is
+larger (http://marc.info/?l=netfilter&m=133494380818412), is this the
+case here?
 
-	chain segments {
-		ct state new ip saddr . ip saddr vmap { \
-			$g_n_int . $n_dmz : jump int-2-dmz, \
-			$n_dmz . $g_n_int : jump dmz-2-int, \
-			$g_n_int . $n_ext : jump int-2-ext, \
-			$n_ext . $g_n_int : jump ext-2-int
-		}
-	}
-}
 
-This is very fast as we use concatenations and maps to find the
-destination chain to jump in O(1), this is scales up nicely.
-
-[...]
-> I can use the variables as expected, except for named sets. Using only
-> one element in s-ext-2-int is working properly, but as soon as I add a
-> second element to the variable definition like this:*
-> *
-> 
-> *define s-ext-2-int = 10.10.10.10 . 25, 10.10.10.10 . 143*
-> 
-> I receive the following error while loading the rules using nft -f:
-> 
-> 
-> In file included from /opt/firewall/filter/ruleset.nft:2:1-41:
-> /opt/firewall/filter/rules.nft:9:38-38: Error: syntax error, unexpected
-> comma, expecting newline or semicolon
-> n_int tcp dport 22 ct state new accept
->				       ^
-> In file included from /opt/firewall/filter/ruleset.nft:2:1-41:
-> /opt/firewall/filter/rules.nft:19:32-42: Error: unknown identifier
-> 's-ext-2-int'
->	  elements =  { $s-ext-2-int }
->				 ^^^^^^^^^^^
-> 
-> Is it possible to use variables for named sets, maps, etc. or is this
-> currently not possible?
-
-I've submitted a patch for nft that I have tested with:
-
-	define s-ext-2-int = { 10.10.10.10 . 25, 10.10.10.10 . 143 }
-
-	table inet forward {
-	        set s-ext-2-int {
-	                type ipv4_addr . inet_service
-	                elements = $s-ext-2-int
-	        }
-	}
-
-http://patchwork.ozlabs.org/project/netfilter-devel/list/
-
-Thanks for reporting.
+Many thanks,
+-- 
+BRAMERET Pierre-Antoine
