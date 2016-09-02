@@ -1,93 +1,103 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: nf_conntrack_max
-Date: Thu, 1 Sep 2016 12:05:40 -0500
-Message-ID: <20160901170540.GQ28999@harrier.slackbuilds.org>
+From: =?iso-8859-1?Q?Andr=E9_Paulsberg-Csibi_=28IBM_Consultant=29?= 
+        <Andre.Paulsberg-Csibi@evry.com>
+Subject: RE: nf_conntrack_max
+Date: Fri, 2 Sep 2016 06:27:20 +0000
+Message-ID: <7fcee9a08e254004b9a4517bf46a29a0@CCDEX021.corp.corpcommon.com>
 References: <000e01d203d5$3e576d00$bb064700$@bluemarble.net>
- <20160831224731.GP28999@harrier.slackbuilds.org>
- <20160901105911.GA2779@salvia>
-Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20160901105911.GA2779@salvia>
+In-Reply-To: <000e01d203d5$3e576d00$bb064700$@bluemarble.net>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+To: John Ratliff <jratliff@bluemarble.net>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+
+Hi John ,
+
+You should try to identify WHY your sessions are reaching as much as 80-90k=
+ connections ,
+as I would say that this is some sort of anomaly ( from my experience ) .
+
+In the meantime there is no real issues increasing you the connection table=
+ while you figure that out ,
+and you can also GLOBALY fix the UDP timeouts if you so desire as most like=
+ly this can be lowered significantly from
+the defaults , here you can see one example from a smaller FW then yours ( =
+but still applicable ) :
+
+zotac:~ # grep netfilter /etc/sysctl.conf
+net.netfilter.nf_conntrack_max =3D 10000
+net.netfilter.nf_conntrack_tcp_timeout_established =3D 3600
+net.netfilter.nf_conntrack_tcp_timeout_close_wait =3D 40
+net.netfilter.nf_conntrack_tcp_timeout_fin_wait =3D 40
+net.netfilter.nf_conntrack_tcp_timeout_syn_recv =3D 40
+net.netfilter.nf_conntrack_tcp_timeout_syn_sent =3D 40
+net.netfilter.nf_conntrack_tcp_timeout_time_wait =3D 40
+net.netfilter.nf_conntrack_udp_timeout_stream =3D 60
+net.netfilter.nf_conntrack_udp_timeout =3D 10
+
+You can most likely use lower values depending on your sessions in the FW a=
+nd how the communicate ,
+and you should also look at statistics about WHAT sessions are being left o=
+ver and adjust any "problem" sessions lower ...
+
+
+Typically DNS use mostly UDP , so with a default timeout of 30 you would ne=
+ed approx. 3000 UDP sessions
+per second without any response to create 90k connections ( which seems exc=
+essive for any environment ) .
+Having a default of 10 seconds timeout would drop your connections down to =
+30k at the same session rate ,
+but would obviously not fix your underlying issue of why there are so many =
+sessions in the first place .
+
+
+
+Best regards
+Andr=E9 Paulsberg-Csibi
+Senior Network Engineer=20
+Fault Handling
+IBM Services AS
+andre.paulsberg-csibi@evry.com
+M +47 9070 5988
+
+
+
+
+-----Original Message-----
+From: netfilter-owner@vger.kernel.org [mailto:netfilter-owner@vger.kernel.o=
+rg] On Behalf Of John Ratliff
+Sent: 1. september 2016 00:16
 To: netfilter@vger.kernel.org
+Subject: nf_conntrack_max
 
-Hi Pablo, thanks for taking the time to reply.
+What are the implications of raising net.ipv4.netfilter.ip_conntrack_max?
 
-On Thu, Sep 01, 2016 at 12:59:11PM +0200, Pablo Neira Ayuso wrote:
-> On Wed, Aug 31, 2016 at 05:47:32PM -0500, /dev/rob0 wrote:
-> [...]
-> > One more thing I can add: I believe it is possible to set 
-> > different conntrack timeouts based on protocol/port.
-> 
-> Right, this is possible.
-> 
-> > I don't know exactly how to do that, but it would make sense for
-> > udp/53 to shorten that to something like 15 seconds; just a bit
-> > beyond the nameservers' and resolver clients' timeout values.
-> 
-> Setting custom timeout policies per address/protocol/port (any 
-> selector basically) is possible through -j CT --timeout name from 
-> the raw table.
-> 
-> You have to create the timeout policy in first place through 'nfct' 
-> that comes in the conntrack-tools package. I think there are 
-> examples for this already, otherwise let me know and we can place 
-> it on the manpage.
+I have a pair of firewalls in an active/passive failover setup (using
+keepalived and conntrackd) that I want to use to NAT several services
+behind. When I added DNS yesterday, I quickly exceeded the default 65536
+value. It never appeared to exceed 85000, so I simply doubled it for the
+time being.
 
-Okay, here's what I'd try for udp/53:
+When I was reading about this online, there were many suggestions for
+putting DNS servers outside the firewall. I am ambivalent about this
+solution. It will work, but it will require me to duplicate many rules from
+my main firewall to the packet filter on the individual DNS servers that I
+Would prefer not be duplicated.
 
-# nfct timeout add dns-udp inet udp established 15 close 1 close_wait 1
-# iptables -t raw -A PREROUTING -p udp --dport 53 -j CT --timeout dns-udp
-# iptables -t raw -A OUTPUT -p udp --dport 53 -j CT --timeout dns-udp
-# iptables -t raw -A PREROUTING -p udp --sport 53 -j CT --timeout dns-udp
-# iptables -t raw -A OUTPUT -p udp --sport 53 -j CT --timeout dns-udp
+Would there be a serious performance penalty to simply raising the
+conntrack_max value to 256k, 512k, or 1024k? Is it best to try and avoid
+large connection tracking tables like this? I do not know what my average
+table would be, but I would expect 100k from the data I have so far.
 
-(Understood that not all sites would need both the --dport and the
---sport sets of rules.)
+Thanks.
 
-root@tp:~# nfct version
-nfct v1.4.2: utility for the Netfilter's Connection Tracking System
+--John
 
-Perhaps I am looking at an older version of the man page (Slackware 
-14.1, still have not upgraded to 14.2), but indeed more discussion of 
-the conntrack states and other arguments would help.
 
-The example for TCP has:
-
-nfct <subsys> <cmd> <args>
-
-where <args> are:
-
-<name> <L3-proto> <L4-proto> <ctstate> <secs> [ <ctstate> <secs> ... ]
-
-The subsys and cmd are documented, but args are not.
-
-It would be ideal to have some information about each argument and 
-the various conntrack states which can be set; if possible even some 
-words about what default values exist for various protocols, and also 
-about what changing these values might do.
-
-What I don't know (can't tell from the man page) is if there is any 
-way to clear out the conntrack entry after a reply has been received.  
-Again/still we are talking about UDP DNS here, where a complete 
-"connection" consists of exactly two packets: the query (--dport 53) 
-and the reply (--sport 53).
-
-After the reply is sent (from a nameserver, or received, on a client) 
-there is no need for that conntrack entry to remain.
-
-> Now that nft has come, the plan is to unify all these command line 
-> tools such as conntrack and nfct into nft, so we end up using one 
-> single tool to interface with the netfilter subsystem in the 
-> future.
-
-This sounds good.  For the time being, however, I continue to relax 
-in the comfort of iptables-land. :)
--- 
-  http://rob0.nodns4.us/
-  Offlist GMX mail is seen only if "/dev/rob0" is in the Subject:
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
