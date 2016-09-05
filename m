@@ -1,88 +1,85 @@
-From: =?iso-8859-1?Q?Andr=E9_Paulsberg-Csibi_=28IBM_Consultant=29?= 
-        <Andre.Paulsberg-Csibi@evry.com>
-Subject: RE: nf_conntrack_max
-Date: Mon, 5 Sep 2016 08:40:59 +0000
-Message-ID: <818666f75b724e62b6427878c4ba59c5@CCDEX021.corp.corpcommon.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: nf_conntrack_max
+Date: Mon, 5 Sep 2016 11:33:04 +0200
+Message-ID: <20160905093304.GB2469@salvia>
 References: <000e01d203d5$3e576d00$bb064700$@bluemarble.net>
- <7fcee9a08e254004b9a4517bf46a29a0@CCDEX021.corp.corpcommon.com>
- <0b741f9e-b78e-100a-1db6-fc9755d436d4@trustiosity.com>
+ <20160831224731.GP28999@harrier.slackbuilds.org>
+ <20160901105911.GA2779@salvia>
+ <20160901170540.GQ28999@harrier.slackbuilds.org>
+ <000201d2052b$78188090$684981b0$@bluemarble.net>
+ <000001d20613$933e88e0$b9bb9aa0$@bluemarble.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <0b741f9e-b78e-100a-1db6-fc9755d436d4@trustiosity.com>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <000001d20613$933e88e0$b9bb9aa0$@bluemarble.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Cc: zrm <zrm@trustiosity.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: John Ratliff <jratliff@bluemarble.net>
+Cc: netfilter@vger.kernel.org
 
-I have yet to see any implementation of any FW in 2014 - 2016 that has UDP =
-timeouts in the 2-5 minutes range , as described in RFC 4787 .
+On Sat, Sep 03, 2016 at 02:47:08PM -0400, John Ratliff wrote:
+> I have been able to raise the conntrack limits and the hashsize, but I don't
+> know how to get a udp timeout policy yet. I'm using Debian 8 Jessie with
+> nfct 1.42.
+> 
+> $ nfct timeout add dns-udp inet udp established 15 close 1 close_wait 1
+> nfct v1.4.2: Wrong state name: `ESTABLISHED' for protocol `udp'
 
-IF I remember UDP implementations from a lot of todays firewalls is typical=
-ly set default timeout to about 30-40 seconds ,
-and despite RFC4787 I would rather recommend having lower timeouts for UDP =
-and higher ones for just those
-protocols that require this than to have 2-5 minutes for UDP which in most =
-cases never last more then 2-4 seconds .
+UDP has two states, replied and unreplied, so this is:
 
-That seems like an unreasonable reverse logic and use of resources , lookin=
-g at today vs 10-20 years ago's most common UDP traffic patterns .
+ # nfct add timeout dns-udp inet udp replied 15 unreplied 1
 
-But yes , I agree on increasing connection table in either case as this was=
- clearly low for such current level of sessions
-and find the root cause for the high amounts of sessions and fix that if po=
-ssible ...
+For TCP, states are:
 
+        syn_sent
+        syn_recv
+        established
+        fin_wait
+        close_wait
+        last_ack
+        time_wait
+        close
+        syn_sent2
+        retrans
+        unacknowledged
 
+When the generic tracker is in place, you use "timeout", eg.
 
-Best regards
-Andr=E9 Paulsberg-Csibi
-Senior Network Engineer=20
-Fault Handling
-IBM Services AS
-andre.paulsberg-csibi@evry.com
-M +47 9070 5988
+ # nfct add timeout generic-timeout-policy inet generic timeout 15
 
+For SCTP, states are:
 
+        closed
+        cookie_wait
+        cookie_eched
+        established
+        shutdown_sent
+        shutdown_recd
+        shutdown_ack_sent
 
+For DCCP, states are:
 
------Original Message-----
-From: netfilter-owner@vger.kernel.org [mailto:netfilter-owner@vger.kernel.o=
-rg] On Behalf Of zrm
-Sent: 2. september 2016 16:48
-To: Andr=E9 Paulsberg-Csibi (IBM Consultant) <Andre.Paulsberg-Csibi@evry.co=
-m>; John Ratliff <jratliff@bluemarble.net>; netfilter@vger.kernel.org
-Subject: Re: nf_conntrack_max
+        request
+        respond
+        partopen
+        open
+        closereq
+        closing
+        timewait
 
+For ICMP/v6, there is only one, so you use "timeout".
 
+That's it. If anyone gets some spare cycles, I'd appreciate if you can
+contribute a patch to update the manpage so this information is
+available there.
 
-On 09/02/2016 02:27 AM, Andr=E9 Paulsberg-Csibi (IBM Consultant) wrote:
+You can use this to create your custom timeout policies. You can also
+set global default timeouts via nfct:
 
-> In the meantime there is no real issues increasing you the connection tab=
-le while you figure that out ,
-> and you can also GLOBALY fix the UDP timeouts if you so desire as most li=
-kely this can be lowered significantly from
-> the defaults , here you can see one example from a smaller FW then yours =
-( but still applicable ) :
->
-> zotac:~ # grep netfilter /etc/sysctl.conf
-> net.netfilter.nf_conntrack_max =3D 10000
-> net.netfilter.nf_conntrack_tcp_timeout_established =3D 3600
-> net.netfilter.nf_conntrack_tcp_timeout_close_wait =3D 40
-> net.netfilter.nf_conntrack_tcp_timeout_fin_wait =3D 40
-> net.netfilter.nf_conntrack_tcp_timeout_syn_recv =3D 40
-> net.netfilter.nf_conntrack_tcp_timeout_syn_sent =3D 40
-> net.netfilter.nf_conntrack_tcp_timeout_time_wait =3D 40
-> net.netfilter.nf_conntrack_udp_timeout_stream =3D 60
-> net.netfilter.nf_conntrack_udp_timeout =3D 10
+ # nfct default-set timeout inet tcp established 15
 
-Global timeouts that short can cause other trouble though. See RFC4787=20
-Section 4.3 and RFC5382 Section 5. Outside of reducing the timeout only=20
-for DNS, the best choice is probably just increasing the maximum number=20
-of conntrack entries (and buying more memory if necessary).
---
-To unsubscribe from this list: send the line "unsubscribe netfilter" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+instead of using sysctl, just an alternative.
+
+Thanks!
