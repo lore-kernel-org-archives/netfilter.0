@@ -1,116 +1,175 @@
-From: zrm <zrm@trustiosity.com>
-Subject: Re: nf_conntrack_max
-Date: Mon, 5 Sep 2016 12:21:56 -0400
-Message-ID: <8510b15b-c4db-e9a5-eebb-90c9fff6e59f@trustiosity.com>
-References: <000e01d203d5$3e576d00$bb064700$@bluemarble.net>
- <7fcee9a08e254004b9a4517bf46a29a0@CCDEX021.corp.corpcommon.com>
- <0b741f9e-b78e-100a-1db6-fc9755d436d4@trustiosity.com>
- <818666f75b724e62b6427878c4ba59c5@CCDEX021.corp.corpcommon.com>
+From: Andreas Hainke <andreas.hainke@foteviken.de>
+Subject: Re: nftables: Using variables in named sets
+Date: Tue, 6 Sep 2016 11:55:02 +0200
+Message-ID: <88a1629b-5324-c802-cf9e-ffa64f81a460@foteviken.de>
+References: <97002fd1-5d03-64e7-37c0-3807c2c59d37@foteviken.de>
+ <20160829160429.GA20024@salvia>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="7igg8RrN9VSnj8iar6eNJrxMfctTs0cx9"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mx.trustiosity.com;
-        s=mx; t=1473092468; bh=/KUIZQxYKi6svMxABr+DAyPJICn5NcPgAwF6jhO4yv0=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=7t+ohvjI7iD4KBjipKPCRX+FwkqdYk1bV9LxNtZGR7TMx3YFqhiMF7rmsLYNBk4b2
-         YeEHlRrYGSozAXc2yhkI0SYZ4DABQbVkOTghbajgrbZhvWk1xrnrbClE7JTjmmmbT9
-         6vNv0qlmE0otnMrflSdcSVGXPr/IBzqGeBTg2KUM=
-In-Reply-To: <818666f75b724e62b6427878c4ba59c5@CCDEX021.corp.corpcommon.com>
+In-Reply-To: <20160829160429.GA20024@salvia>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: =?UTF-8?Q?Andr=c3=a9_Paulsberg-Csibi_=28IBM_Consultant=29?= <Andre.Paulsberg-Csibi@evry.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org
 
-The default conntrack timeout for UDP streams is 180 seconds, which is=20
-within that range. The protocols that need that are streams rather than=20
-transactional protocols like DNS. (Although the other suggestion to=20
-remove DNS immediately on reply would even cause trouble for DNS,=20
-because some clients send multiple DNS queries at the same time using=20
-the same ports, e.g. IPv6 (AAAA) and IPv4 (A) queries, and immediate=20
-removal would cause the other replies to be lost. One second timeouts=20
-could do the same.)
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--7igg8RrN9VSnj8iar6eNJrxMfctTs0cx9
+Content-Type: multipart/mixed; boundary="S0fi5XqEsxriotAk11Mx3iV74jLcLcHIg";
+ protected-headers="v1"
+From: Andreas Hainke <andreas.hainke@foteviken.de>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org
+Message-ID: <88a1629b-5324-c802-cf9e-ffa64f81a460@foteviken.de>
+Subject: Re: nftables: Using variables in named sets
+References: <97002fd1-5d03-64e7-37c0-3807c2c59d37@foteviken.de>
+ <20160829160429.GA20024@salvia>
+In-Reply-To: <20160829160429.GA20024@salvia>
 
-The main problem with very short global UDP stream timeouts is for IPsec=20
-tunnel mode, OpenVPN, or anything else that encapsulates traffic in UDP=20
-or otherwise needs the UDP entry to continue to exist indefinitely. If=20
-the app's keepalive interval is shorter than the timeout then packets=20
-that arrive between the timeout and the keepalive packet go to the bit=20
-bucket.
+--S0fi5XqEsxriotAk11Mx3iV74jLcLcHIg
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: quoted-printable
 
-Some applications will try to detect that and then shorten the keepalive=20
-interval (but not all, and generally only after several packets are lost=20
-with user-visible consequences). And even then the result is more=20
-deadweight keepalive packets consuming network resources and requiring=20
-power-expensive radio wakeups on battery-powered user devices.
+Hi Pablo,
 
-On 09/05/2016 04:40 AM, Andr=E9 Paulsberg-Csibi (IBM Consultant) wrote:
-> I have yet to see any implementation of any FW in 2014 - 2016 that has UD=
-P timeouts in the 2-5 minutes range , as described in RFC 4787 .
+thank you for the patch and the hint regarding the simplification of the
+ruleset. It's now working as expected.
+
+
+Kind regards,
+
+Andreas
+
+
+Am 29.08.2016 um 18:04 schrieb Pablo Neira Ayuso:
+> Hi Andreas,
 >
-> IF I remember UDP implementations from a lot of todays firewalls is typic=
-ally set default timeout to about 30-40 seconds ,
-> and despite RFC4787 I would rather recommend having lower timeouts for UD=
-P and higher ones for just those
-> protocols that require this than to have 2-5 minutes for UDP which in mos=
-t cases never last more then 2-4 seconds .
->
-> That seems like an unreasonable reverse logic and use of resources , look=
-ing at today vs 10-20 years ago's most common UDP traffic patterns .
->
-> But yes , I agree on increasing connection table in either case as this w=
-as clearly low for such current level of sessions
-> and find the root cause for the high amounts of sessions and fix that if =
-possible ...
->
->
->
-> Best regards
-> Andr=E9 Paulsberg-Csibi
-> Senior Network Engineer
-> Fault Handling
-> IBM Services AS
-> andre.paulsberg-csibi@evry.com
-> M +47 9070 5988
->
->
->
->
-> -----Original Message-----
-> From: netfilter-owner@vger.kernel.org [mailto:netfilter-owner@vger.kernel=
-.org] On Behalf Of zrm
-> Sent: 2. september 2016 16:48
-> To: Andr=E9 Paulsberg-Csibi (IBM Consultant) <Andre.Paulsberg-Csibi@evry.=
-com>; John Ratliff <jratliff@bluemarble.net>; netfilter@vger.kernel.org
-> Subject: Re: nf_conntrack_max
->
->
->
-> On 09/02/2016 02:27 AM, Andr=E9 Paulsberg-Csibi (IBM Consultant) wrote:
->
->> In the meantime there is no real issues increasing you the connection ta=
-ble while you figure that out ,
->> and you can also GLOBALY fix the UDP timeouts if you so desire as most l=
-ikely this can be lowered significantly from
->> the defaults , here you can see one example from a smaller FW then yours=
- ( but still applicable ) :
+> On Mon, Aug 29, 2016 at 01:37:20PM +0200, Andreas Hainke wrote:
+>> Hi,
 >>
->> zotac:~ # grep netfilter /etc/sysctl.conf
->> net.netfilter.nf_conntrack_max =3D 10000
->> net.netfilter.nf_conntrack_tcp_timeout_established =3D 3600
->> net.netfilter.nf_conntrack_tcp_timeout_close_wait =3D 40
->> net.netfilter.nf_conntrack_tcp_timeout_fin_wait =3D 40
->> net.netfilter.nf_conntrack_tcp_timeout_syn_recv =3D 40
->> net.netfilter.nf_conntrack_tcp_timeout_syn_sent =3D 40
->> net.netfilter.nf_conntrack_tcp_timeout_time_wait =3D 40
->> net.netfilter.nf_conntrack_udp_timeout_stream =3D 60
->> net.netfilter.nf_conntrack_udp_timeout =3D 10
+>> I have a question regarding the definition of variables in nft. I have=
+
+>> created two files rules.nft and definitions.nft. The file rules.nft=20
+>> contains a ruleset as follows:
+>>
+>> include "/opt/firewall/filter/definitions.nft"
+>> table inet forward {
+>> *	   set s-ext-2-int {**
+>> **		    type ipv4_addr . inet_service**
+>> **		    elements =3D	{ $s-ext-2-int }**
+>> **	    }*
+>>
+>> 	  chain segments {
+>> 		  type filter hook forward priority 0; policy drop;
+>> 		  ct state established, related accept
+>>
+>> 		  ip saddr $g_n_int ip daddr $n_dmz ct state new jump
+>> int-2-dmz
+>> 		  ip saddr $n_dmz ip daddr $g_n_int ct state new jump
+>> dmz-2-int
+>> 		  ip saddr $g_n_int ip daddr $n_ext ct state new jump
+>> int-2-ext
+>> 		  ip saddr $n_ext ip daddr $g_n_int ct state new jump
+>> ext-2-int
+> Not related, but you can represent this is a more performance way
+> using maps, just a simplification of the ruleset above:
 >
-> Global timeouts that short can cause other trouble though. See RFC4787
-> Section 4.3 and RFC5382 Section 5. Outside of reducing the timeout only
-> for DNS, the best choice is probably just increasing the maximum number
-> of conntrack entries (and buying more memory if necessary).
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> define g_n_int =3D 1.1.1.1
+> define n_dmz =3D 2.2.2.2
+> define n_ext =3D 3.3.3.3
 >
+> table inet forward {
+> 	chain int-2-dmz {
+> 	}
+> 	chain dmz-2-int {
+> 	}
+> 	chain int-2-ext {
+> 	}
+> 	chain ext-2-int {
+> 	}
+>
+> 	chain segments {
+> 		ct state new ip saddr . ip saddr vmap { \
+> 			$g_n_int . $n_dmz : jump int-2-dmz, \
+> 			$n_dmz . $g_n_int : jump dmz-2-int, \
+> 			$g_n_int . $n_ext : jump int-2-ext, \
+> 			$n_ext . $g_n_int : jump ext-2-int
+> 		}
+> 	}
+> }
+>
+> This is very fast as we use concatenations and maps to find the
+> destination chain to jump in O(1), this is scales up nicely.
+>
+> [...]
+>> I can use the variables as expected, except for named sets. Using only=
+
+>> one element in s-ext-2-int is working properly, but as soon as I add a=
+
+>> second element to the variable definition like this:*
+>> *
+>>
+>> *define s-ext-2-int =3D 10.10.10.10 . 25, 10.10.10.10 . 143*
+>>
+>> I receive the following error while loading the rules using nft -f:
+>>
+>>
+>> In file included from /opt/firewall/filter/ruleset.nft:2:1-41:
+>> /opt/firewall/filter/rules.nft:9:38-38: Error: syntax error, unexpecte=
+d
+>> comma, expecting newline or semicolon
+>> n_int tcp dport 22 ct state new accept
+>> 				       ^
+>> In file included from /opt/firewall/filter/ruleset.nft:2:1-41:
+>> /opt/firewall/filter/rules.nft:19:32-42: Error: unknown identifier
+>> 's-ext-2-int'
+>> 	  elements =3D  { $s-ext-2-int }
+>> 				 ^^^^^^^^^^^
+>>
+>> Is it possible to use variables for named sets, maps, etc. or is this
+>> currently not possible?
+> I've submitted a patch for nft that I have tested with:
+>
+> 	define s-ext-2-int =3D { 10.10.10.10 . 25, 10.10.10.10 . 143 }
+>
+> 	table inet forward {
+> 	        set s-ext-2-int {
+> 	                type ipv4_addr . inet_service
+> 	                elements =3D $s-ext-2-int
+> 	        }
+> 	}
+>
+> http://patchwork.ozlabs.org/project/netfilter-devel/list/
+>
+> Thanks for reporting.
+
+
+
+--S0fi5XqEsxriotAk11Mx3iV74jLcLcHIg--
+
+--7igg8RrN9VSnj8iar6eNJrxMfctTs0cx9
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.22 (GNU/Linux)
+
+iQIcBAEBAgAGBQJXzpJ6AAoJENMia1VtPcvYeS0QAIZoU9sllaYmJU9vP6o5dmda
+eLuzuc4rrPSyWRY0wUTjDUbVBS2+CA1dEbD5N2KA7YQJ4TmYmn00adocMPkgWplc
+T6vlbyaULAE/HhUvYNfmEz7zgsgZ4JiSeFMSoMsFRPYUcDgacmrXNZLMEdnW4q7K
+tXNrcct+SflCLxDM417eksPW+Yzsv4U3bc1tfyJ9iuNKnBiJ5upfel876BDkIJR2
+X06dSY18+wWllP45rUVYC010vIAOv6bYz8fRiWiuHPywWU4M7KnM8z+Uz5lkuB3V
+qq88ZdLQSaYhtEZVLhgAvzSe5xmOo+Kn/I/f46pyzzvofV/FI19GZqSRrot/Vnej
+xPkF9jKXi0QQA78D9PRMns6MKBcNtsKHLoOPOyJSx6RmsVpB1tM7vN/l6p8rop7f
+AFJ3g3rR7Uy+pnljL9xzEg8oniraoISepC0V9/M1ahtDSWF2bQDI2GfPJ+Xvh7oh
+EIjEURzVo/4oYiJICZVYiwW1W94v5gxVFxdr9LZahZ6Pi+gpmE83axAvfQQ+G3v0
+7uXzvnMmcIzB1qpubv+3D4S2KE4xtS8c8RBLLn0hOuWhwCBz9GU7hl07EzHs8j2S
+fh8eGpVVJ38Lq6c8WIApOT1iNAWg5rNloeghRPvZWOGZ6HeJpFUpVf0i3WG01kv3
+2Xc7vPUQZeFP8zmCA4lJ
+=4c/o
+-----END PGP SIGNATURE-----
+
+--7igg8RrN9VSnj8iar6eNJrxMfctTs0cx9--
