@@ -1,95 +1,66 @@
-From: Andreas Hainke <andreas.hainke@foteviken.de>
-Subject: Re: Rule for PROTO=139?
-Date: Tue, 6 Sep 2016 13:25:19 +0200
-Message-ID: <b7ea09dd-171a-1969-efbb-5604bf1bb8fe@foteviken.de>
+From: "Walter H." <walter.h@mathemainzel.info>
+Subject: RE: Rule for PROTO=139?
+Date: Tue, 6 Sep 2016 14:03:27 +0200
+Message-ID: <36ec0fca76fb7517d5d82dc5f09fb3ae.1473163407@squirrel.mail>
 References: <562f1fbc3e658613eafdd2c6f5200be4.1473159539@squirrel.mail>
+    <3e24e1f4a88741f0979847f78ef0ecc1@CCDEX021.corp.corpcommon.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="OBdUCOni1HlIE7HjphsBN3NLKSGkBhuuC"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <562f1fbc3e658613eafdd2c6f5200be4.1473159539@squirrel.mail>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mathemainzel.info; s=dkim11;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:To:From:Subject:Date:References:In-Reply-To:Message-ID; bh=9l8Jh24q9TUI66lFcOI1nTdBipg5FUe8DE612g1ymfY=;
+        b=z7VDVTAR48u4CMm9oMctWgz3nh+T2wGMMuInRoyY05ZNcSv4Bes52sWRnV0Id4TSbh2UxyhcSH+XIPXtIUoReF2MivZYpuZda0OhBF9iZ4pI6i+2lOoYdjopb+eB1pWWV6mHHm1Vu9mPDVvnZqDV0hlXx6biypJW/wO7Mv4hIqU=;
+In-Reply-To: <3e24e1f4a88741f0979847f78ef0ecc1@CCDEX021.corp.corpcommon.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "Walter H." <walter.h@mathemainzel.info>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?utf-8?B?IkFuZHLDqSBQYXVsc2JlcmctQ3NpYmkgKElCTSBDb25zdWx0YW50KSI=?= <Andre.Paulsberg-Csibi@evry.com>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---OBdUCOni1HlIE7HjphsBN3NLKSGkBhuuC
-Content-Type: multipart/mixed; boundary="iFMfF2nwjI5WfM03s3IEgalGqN2Nn2mKX";
- protected-headers="v1"
-From: Andreas Hainke <andreas.hainke@foteviken.de>
-To: "Walter H." <walter.h@mathemainzel.info>, netfilter@vger.kernel.org
-Message-ID: <b7ea09dd-171a-1969-efbb-5604bf1bb8fe@foteviken.de>
-Subject: Re: Rule for PROTO=139?
-References: <562f1fbc3e658613eafdd2c6f5200be4.1473159539@squirrel.mail>
-In-Reply-To: <562f1fbc3e658613eafdd2c6f5200be4.1473159539@squirrel.mail>
+Hello,
 
---iFMfF2nwjI5WfM03s3IEgalGqN2Nn2mKX
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+On Tue, September 6, 2016 13:51, Andr=C3=A9 Paulsberg-Csibi (IBM Consultant)
+wrote:
+> I will only add to the answers that this is not so widely used ,
+> that fact that you see this these packets would suggest that
+> one unit in your network with MAC 4c:72:b9:56:16:3e is using the HIP
+> protocol
+> to try to identify hosts within your LAYER 2 BROADCAST domain .
 
-Hi Walter,
+I see;
 
-as far as I know you can use the -p <protocol_number> parameter using
-iptables.
+> You could block it and ignore it , but maybe you would like to find that
+> MAC owner and check why it is using HIP .
 
-iptables -A FORWARD -i br0 -p 139 -j DROP
+yes this is my computer and the line came from my router;
 
-If you are using nftables
+> If it is some unit you manage , maybe you can "remove" it at the source
+> and save your L2-BC from this traffic all together :-)
 
-nft add rule <table> <chain> ip protocol 139 drop
+yes, of course, but where can I find the piece of software that is doing
+this on my computer running WinXP Prof. x64 Ed.;
 
-should work.
+Thanks,
+Walter
 
-Regards,
-Andreas
-
-
-Am 06.09.2016 um 12:58 schrieb Walter H.:
+> -----Original Message-----
+> From: netfilter-owner@vger.kernel.org
+> [mailto:netfilter-owner@vger.kernel.org] On Behalf Of Walter H.
+> Sent: 6. september 2016 12:59
+> To: netfilter@vger.kernel.org
+> Subject: Rule for PROTO=3D139?
+>
 > Hello,
 >
 > does anybody know with which rule I can catch these entries:
 >
-> [317607.438061] IN=3Dbr0 OUT=3D MAC=3Dff:ff:ff:ff:ff:ff:4c:72:b9:56:16:=
-3e:08:00
+> [317607.438061] IN=3Dbr0 OUT=3D MAC=3Dff:ff:ff:ff:ff:ff:4c:72:b9:56:16:3e=
+:08:00
 > SRC=3D0.0.0.0 DST=3D255.255.255.255 LEN=3D72 TOS=3D0x00 PREC=3D0x00 TTL=
 =3D255 ID=3D1624
 > PROTO=3D139
 >
 > Thanks,
 > Walter
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in=
-
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
 
-
---iFMfF2nwjI5WfM03s3IEgalGqN2Nn2mKX--
-
---OBdUCOni1HlIE7HjphsBN3NLKSGkBhuuC
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-
-iQIcBAEBAgAGBQJXzqenAAoJENMia1VtPcvYeBkP/RdoxhMTkKBq9twmBgr0PkPx
-GgrfY7/LQhVHfXTKoWYv/E9lNyn6UV70NRVA1Zt4AqOPZo67MhGWnnMKJ3ENthHL
-rRSOx+0hVXCqTrMzpMSIlF6xAeVfPZ/1asHoRr4nL685NyRrWUsprko6YDWu8Tzi
-dyDdGPIFU0rl2F3fvH/xhC6aR4r5jvMMm3100w1ZSdFTVtx4N69Vno6amRw1puhW
-qfaRRYvDD2uONLiNXA2/8lcnCSHAD8DNg3147iXsk9ebF+eUzQQMX2bMTZBQV7Hp
-AK2bUnRbYpqS8RsRdYHW22X3v30gxIe6CiIIGmBkrpe4zeaSRy9/czCey2m8EW8O
-MTk5QBHYACKDxP9TnQvE5vAqERroL/s6lZlPQvH8yzzJfiSFLEk0Vz+v2huWXfF1
-iNltY66pyyGWn/ZNUP3+i2z1xSyBWFbXcLZTD4W/YkFUMqx0RGF8vIJFXVQ8VZDt
-HDFOxNhr7jozJQ70AlW6G7sZ6SnSoe/Lz70qPOe2qUyNcj/DSv+RQFotw03ps9wh
-XjTFrQjPZH1CLpxpgMWEjJoUJmLu3iy8uF97sv6Gs0iCVRgaPt63fxFvQlP3lB2y
-02B+3Q9wOeuY20n/WEkzXx8MAUTQjcDPYCHcUT36Ybi/lv9WLxbfWFpQrjz3i5OK
-a7bRbl+6qtR7uDQBKLMa
-=r+w/
------END PGP SIGNATURE-----
-
---OBdUCOni1HlIE7HjphsBN3NLKSGkBhuuC--
