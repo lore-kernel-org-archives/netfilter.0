@@ -1,78 +1,79 @@
-From: Jens Koehler <jenskxxx@googlemail.com>
-Subject: Re: Linux - nf_conntrack_count = 30684?
-Date: Wed, 14 Sep 2016 14:54:25 +0200
-Message-ID: <CAL7_A_XC_xRffjVVtq0f3UnFeFv6x7vzqcn3uFO8SJxKGi4tAg@mail.gmail.com>
+From: =?utf-8?B?QW5kcsOpIFBhdWxzYmVyZy1Dc2liaSAoSUJNIENvbnN1bHRhbnQp?= 
+        <Andre.Paulsberg-Csibi@evry.com>
+Subject: RE: Linux - nf_conntrack_count = 30684?
+Date: Wed, 14 Sep 2016 13:29:48 +0000
+Message-ID: <62eebfdf07844a67bf526900f18d161c@CCDEX021.corp.corpcommon.com>
 References: <CAL7_A_XQXMFP598iP1nhUqvvmzE7GC5GUXcOoQ_2Y9YvRx8TOw@mail.gmail.com>
  <20160909132945.GA23757@salvia>
+ <CAL7_A_XC_xRffjVVtq0f3UnFeFv6x7vzqcn3uFO8SJxKGi4tAg@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20120113;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=137DUWs4klVXc5pQMbOgmf2WkDDpwZOdxvh7ZnNv49U=;
-        b=eq3pp+idV3LcBMrghe0wAhJ1NApElPDBT00vMDKDiO279pxL7KR7XZ5Q1ocqrqas46
-         U8dc1z0p8eBB9919PKU9rA4jY7jjDYyoHfvVa+FsBBuvZaPpaob9SmPbzm5hihq2Z3Vm
-         iYUCiknSFZrEewAlQ2/JusGxfb6QqWaIhYm6ovZeuL4oUdoSEd6/z46XpzbybkZH9jy0
-         BdLbSdplUfi+1VLWwIP+MWpKz4kFoY0/TDVnlCtsnBmlIEt1w2uhM7NNKk3DbK0TySlZ
-         uZuxE/Ym3iks/lOOv2JGBFwXqkvRaEQeFKs3N9ZkEAayfEQ4st8XB5gfyu2ELwMkcNEO
-         +1qw==
-In-Reply-To: <20160909132945.GA23757@salvia>
+In-Reply-To: <CAL7_A_XC_xRffjVVtq0f3UnFeFv6x7vzqcn3uFO8SJxKGi4tAg@mail.gmail.com>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="macroman"
+To: Jens Koehler <jenskxxx@googlemail.com>, Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Fri, Sep 9, 2016 at 3:29 PM, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> On Fri, Sep 09, 2016 at 10:29:33AM +0200, Jens Koehler wrote:
->>  A Linux application reads cyclically data from up to 32 severs by
->> Tcp. After disconnecting of many/ all servers another Linux
->> application could not send data via the network interface by UDP.
->> nf_conntrack_count shows an unexpected high value:
->>
->> net.netfilter.nf_conntrack_count = 30684
->>
->> What means the number exactly?
->
-> This is the number of conntrack entries in the table.
->
->> And what could be reason for so many open connections if no server
->> is connected?
->
-> Do `conntrack -L' or `cat /proc/net/nf_conntrack' show entries?
-
- Yes, 'cat /proc/net/nf_conntrack' shows a huge number of following entries:
-ipv4     2 tcp      6 109 SYN_SENT src=192.168.171.100
-dst=192.168.171.160 sport=37660 dport=502 [UNREPLIED]
-src=192.168.171.160 dst=192.168.171.100 sport=502 dport=37660 mark=0
-use=2
-ipv4     2 tcp      6 95 SYN_SENT src=192.168.171.100
-dst=192.168.171.168 sport=6341 dport=502 [UNREPLIED]
-src=192.168.171.168 dst=192.168.171.100 sport=502 dport=6341 mark=0
-use=2
-ipv4     2 tcp      6 105 SYN_SENT src=192.168.171.100
-dst=192.168.171.112 sport=50811 dport=502 [UNREPLIED]
-src=192.168.171.112 dst=192.168.171.100 sport=502 dport=50811 mark=0
-use=2
-ipv4     2 tcp      6 109 SYN_SENT src=192.168.171.100
-dst=192.168.171.111 sport=25782 dport=502 [UNREPLIED]
-src=192.168.171.111 dst=192.168.171.100 sport=502 dport=25782 mark=0
-use=2
-ipv4     2 tcp      6 103 SYN_SENT src=192.168.171.100
-dst=192.168.171.155 sport=14076 dport=502 [UNREPLIED]
-src=192.168.171.155 dst=192.168.171.100 sport=502 dport=14076 mark=0
-use=2
-ipv4     2 tcp      6 95 SYN_SENT src=192.168.171.100
-dst=192.168.171.160 sport=34017 dport=502 [UNREPLIED]
-src=192.168.171.160 dst=192.168.171.100 sport=502 dport=34017 mark=0
-use=2
-ipv4     2 tcp      6 100 SYN_SENT src=192.168.171.100
-dst=192.168.171.105 sport=43547 dport=502 [UNREPLIED]
-src=192.168.171.105 dst=192.168.171.100 sport=502 dport=43547 mark=0
-use=2
-ipv4     2 tcp      6 96 SYN_SENT src=192.168.171.100
-dst=192.168.171.162 sport=22357 dport=502 [UNREPLIED]
-src=192.168.171.162 dst=192.168.171.100 sport=502 dport=22357 mark=0
-use=2
+TG9va3MgbGlrZSAxOTIuMTY4LjE3MS4xMDAgaXMgdHJ5aW5nIHRvIGZpbmQgb3RoZXIgbWFjaGlu
+ZXMgd2l0aCA6DQphc2EtYXBwbC1wcm90byAgICAgNTAyL3RjcCAgICAgICMgYXNhLWFwcGwtcHJv
+dG8gIFtEZW5uaXNfRHViZV0NCmluIHRoZSBzYW1lICJzZWdtZW50IiBhcyBpdCBzZWxmICggbWF5
+YmUgaXQgaXMgcHJvYmluZyBhbGwgMTkyLjE2OC4wLjAvMTYgKSAuLi4NCg0KLi4uIG1heWJlIGFs
+bCB5b3UgaGF2ZSB0byBkbyBpcyB0byBnbyBvbiB0aGUgbWFjaGluZSBhbmQgZmluZCB0aGUgcHJv
+Y2VzcyB0aGF0IGRvZXMgdGhpcyBhbmQgZGlzYWJsZS9yZW1vdmUgaXQgLg0KKCBvciB0d2VhayBp
+dCB0byBkbyBsZXNzIG9mIHRoaXMgLSBpZiB0aGlzIGlzIHNvbWV0aGluZyB5b3UgaGF2ZSBpbnRl
+bmRlZCB0byBpbnN0YWxsIGFuZCB1c2UgKQ0KDQoNCg0KDQpCZXN0IHJlZ2FyZHMNCkFuZHLDqSBQ
+YXVsc2JlcmctQ3NpYmkNClNlbmlvciBOZXR3b3JrIEVuZ2luZWVyIA0KRmF1bHQgSGFuZGxpbmcN
+CklCTSBTZXJ2aWNlcyBBUw0KYW5kcmUucGF1bHNiZXJnLWNzaWJpQGV2cnkuY29tDQpNICs0NyA5
+MDcwIDU5ODgNCg0KDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBuZXRmaWx0
+ZXItb3duZXJAdmdlci5rZXJuZWwub3JnIFttYWlsdG86bmV0ZmlsdGVyLW93bmVyQHZnZXIua2Vy
+bmVsLm9yZ10gT24gQmVoYWxmIE9mIEplbnMgS29laGxlcg0KU2VudDogMTQuIHNlcHRlbWJlciAy
+MDE2IDE0OjU0DQpUbzogUGFibG8gTmVpcmEgQXl1c28gPHBhYmxvQG5ldGZpbHRlci5vcmc+DQpD
+YzogbmV0ZmlsdGVyQHZnZXIua2VybmVsLm9yZw0KU3ViamVjdDogUmU6IExpbnV4IC0gbmZfY29u
+bnRyYWNrX2NvdW50ID0gMzA2ODQ/DQoNCk9uIEZyaSwgU2VwIDksIDIwMTYgYXQgMzoyOSBQTSwg
+UGFibG8gTmVpcmEgQXl1c28gPHBhYmxvQG5ldGZpbHRlci5vcmc+IHdyb3RlOg0KPiBPbiBGcmks
+IFNlcCAwOSwgMjAxNiBhdCAxMDoyOTozM0FNICswMjAwLCBKZW5zIEtvZWhsZXIgd3JvdGU6DQo+
+PiAgQSBMaW51eCBhcHBsaWNhdGlvbiByZWFkcyBjeWNsaWNhbGx5IGRhdGEgZnJvbSB1cCB0byAz
+MiBzZXZlcnMgYnkNCj4+IFRjcC4gQWZ0ZXIgZGlzY29ubmVjdGluZyBvZiBtYW55LyBhbGwgc2Vy
+dmVycyBhbm90aGVyIExpbnV4DQo+PiBhcHBsaWNhdGlvbiBjb3VsZCBub3Qgc2VuZCBkYXRhIHZp
+YSB0aGUgbmV0d29yayBpbnRlcmZhY2UgYnkgVURQLg0KPj4gbmZfY29ubnRyYWNrX2NvdW50IHNo
+b3dzIGFuIHVuZXhwZWN0ZWQgaGlnaCB2YWx1ZToNCj4+DQo+PiBuZXQubmV0ZmlsdGVyLm5mX2Nv
+bm50cmFja19jb3VudCA9IDMwNjg0DQo+Pg0KPj4gV2hhdCBtZWFucyB0aGUgbnVtYmVyIGV4YWN0
+bHk/DQo+DQo+IFRoaXMgaXMgdGhlIG51bWJlciBvZiBjb25udHJhY2sgZW50cmllcyBpbiB0aGUg
+dGFibGUuDQo+DQo+PiBBbmQgd2hhdCBjb3VsZCBiZSByZWFzb24gZm9yIHNvIG1hbnkgb3BlbiBj
+b25uZWN0aW9ucyBpZiBubyBzZXJ2ZXINCj4+IGlzIGNvbm5lY3RlZD8NCj4NCj4gRG8gYGNvbm50
+cmFjayAtTCcgb3IgYGNhdCAvcHJvYy9uZXQvbmZfY29ubnRyYWNrJyBzaG93IGVudHJpZXM/DQoN
+CiBZZXMsICdjYXQgL3Byb2MvbmV0L25mX2Nvbm50cmFjaycgc2hvd3MgYSBodWdlIG51bWJlciBv
+ZiBmb2xsb3dpbmcgZW50cmllczoNCmlwdjQgICAgIDIgdGNwICAgICAgNiAxMDkgU1lOX1NFTlQg
+c3JjPTE5Mi4xNjguMTcxLjEwMA0KZHN0PTE5Mi4xNjguMTcxLjE2MCBzcG9ydD0zNzY2MCBkcG9y
+dD01MDIgW1VOUkVQTElFRF0NCnNyYz0xOTIuMTY4LjE3MS4xNjAgZHN0PTE5Mi4xNjguMTcxLjEw
+MCBzcG9ydD01MDIgZHBvcnQ9Mzc2NjAgbWFyaz0wDQp1c2U9Mg0KaXB2NCAgICAgMiB0Y3AgICAg
+ICA2IDk1IFNZTl9TRU5UIHNyYz0xOTIuMTY4LjE3MS4xMDANCmRzdD0xOTIuMTY4LjE3MS4xNjgg
+c3BvcnQ9NjM0MSBkcG9ydD01MDIgW1VOUkVQTElFRF0NCnNyYz0xOTIuMTY4LjE3MS4xNjggZHN0
+PTE5Mi4xNjguMTcxLjEwMCBzcG9ydD01MDIgZHBvcnQ9NjM0MSBtYXJrPTANCnVzZT0yDQppcHY0
+ICAgICAyIHRjcCAgICAgIDYgMTA1IFNZTl9TRU5UIHNyYz0xOTIuMTY4LjE3MS4xMDANCmRzdD0x
+OTIuMTY4LjE3MS4xMTIgc3BvcnQ9NTA4MTEgZHBvcnQ9NTAyIFtVTlJFUExJRURdDQpzcmM9MTky
+LjE2OC4xNzEuMTEyIGRzdD0xOTIuMTY4LjE3MS4xMDAgc3BvcnQ9NTAyIGRwb3J0PTUwODExIG1h
+cms9MA0KdXNlPTINCmlwdjQgICAgIDIgdGNwICAgICAgNiAxMDkgU1lOX1NFTlQgc3JjPTE5Mi4x
+NjguMTcxLjEwMA0KZHN0PTE5Mi4xNjguMTcxLjExMSBzcG9ydD0yNTc4MiBkcG9ydD01MDIgW1VO
+UkVQTElFRF0NCnNyYz0xOTIuMTY4LjE3MS4xMTEgZHN0PTE5Mi4xNjguMTcxLjEwMCBzcG9ydD01
+MDIgZHBvcnQ9MjU3ODIgbWFyaz0wDQp1c2U9Mg0KaXB2NCAgICAgMiB0Y3AgICAgICA2IDEwMyBT
+WU5fU0VOVCBzcmM9MTkyLjE2OC4xNzEuMTAwDQpkc3Q9MTkyLjE2OC4xNzEuMTU1IHNwb3J0PTE0
+MDc2IGRwb3J0PTUwMiBbVU5SRVBMSUVEXQ0Kc3JjPTE5Mi4xNjguMTcxLjE1NSBkc3Q9MTkyLjE2
+OC4xNzEuMTAwIHNwb3J0PTUwMiBkcG9ydD0xNDA3NiBtYXJrPTANCnVzZT0yDQppcHY0ICAgICAy
+IHRjcCAgICAgIDYgOTUgU1lOX1NFTlQgc3JjPTE5Mi4xNjguMTcxLjEwMA0KZHN0PTE5Mi4xNjgu
+MTcxLjE2MCBzcG9ydD0zNDAxNyBkcG9ydD01MDIgW1VOUkVQTElFRF0NCnNyYz0xOTIuMTY4LjE3
+MS4xNjAgZHN0PTE5Mi4xNjguMTcxLjEwMCBzcG9ydD01MDIgZHBvcnQ9MzQwMTcgbWFyaz0wDQp1
+c2U9Mg0KaXB2NCAgICAgMiB0Y3AgICAgICA2IDEwMCBTWU5fU0VOVCBzcmM9MTkyLjE2OC4xNzEu
+MTAwDQpkc3Q9MTkyLjE2OC4xNzEuMTA1IHNwb3J0PTQzNTQ3IGRwb3J0PTUwMiBbVU5SRVBMSUVE
+XQ0Kc3JjPTE5Mi4xNjguMTcxLjEwNSBkc3Q9MTkyLjE2OC4xNzEuMTAwIHNwb3J0PTUwMiBkcG9y
+dD00MzU0NyBtYXJrPTANCnVzZT0yDQppcHY0ICAgICAyIHRjcCAgICAgIDYgOTYgU1lOX1NFTlQg
+c3JjPTE5Mi4xNjguMTcxLjEwMA0KZHN0PTE5Mi4xNjguMTcxLjE2MiBzcG9ydD0yMjM1NyBkcG9y
+dD01MDIgW1VOUkVQTElFRF0NCnNyYz0xOTIuMTY4LjE3MS4xNjIgZHN0PTE5Mi4xNjguMTcxLjEw
+MCBzcG9ydD01MDIgZHBvcnQ9MjIzNTcgbWFyaz0wDQp1c2U9Mg0KLS0NClRvIHVuc3Vic2NyaWJl
+IGZyb20gdGhpcyBsaXN0OiBzZW5kIHRoZSBsaW5lICJ1bnN1YnNjcmliZSBuZXRmaWx0ZXIiIGlu
+DQp0aGUgYm9keSBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIua2VybmVsLm9yZw0KTW9y
+ZSBtYWpvcmRvbW8gaW5mbyBhdCAgaHR0cDovL3ZnZXIua2VybmVsLm9yZy9tYWpvcmRvbW8taW5m
+by5odG1sDQo=
