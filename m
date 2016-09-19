@@ -1,64 +1,28 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: nftables: Intervals inside of maps?
-Date: Mon, 19 Sep 2016 17:00:48 +0200
-Message-ID: <20160919150048.GA4517@salvia>
-References: <98f722ce-a936-015f-e90c-bd95eb27b9ba@foteviken.de>
+From: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
+Subject: iptables 1.6.0 parallel build trouble
+Date: Mon, 19 Sep 2016 19:22:27 -0400
+Message-ID: <20160919192227.6b1f1487@playground>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <98f722ce-a936-015f-e90c-bd95eb27b9ba@foteviken.de>
+DKIM-Filter: OpenDKIM Filter v2.10.3 MAIL1.WPI.EDU u8JNMU78020488
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wpi.edu; s=_dkim;
+        t=1474327350; i=@wpi.edu;
+        bh=lFoGOS0NLC6bgPsjp5xuJkRvTM+5Xzf4hh475vM1iJs=;
+        h=Date:From:To:Subject;
+        b=wOFQU0p6kRUf8qg//muGWSlDhQnyABdGQOYDeBvpCwSjYzBImpcmbyaYzLwSUfObw
+         a0GaCdNhm89PK78G5yPSD92ExJlhc/4AwdES5+RcpWzeiPocqOKVV/e4flsz7sTOqU
+         2TXF6U8saSLMinSAKrtI1Ji5dfc2HhUlOmNNf3W4=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Andreas Hainke <andreas.hainke@foteviken.de>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Thu, Sep 15, 2016 at 02:13:55PM +0200, Andreas Hainke wrote:
-> Hello,
-> 
-> does anybody know if it's possible to use intervals inside of maps?
-> Pablo already pointed out that it is possible to use maps as follows to
-> handle rule processing more efficient:
-> 
-> nft add rule test myChain ip saddr . ip daddr vmap { 10.10.10.15 .
-> 10.10.20.5 : accept, 10.10.10.1 . 10.10.20.1 : accept}
-> 
-> table ip test {
->     chain myChain {
->         ip saddr . ip daddr vmap { 10.10.10.15 . 10.10.20.5 : accept,
-> 10.10.10.1 . 10.10.20.1 : accept}
->     }
-> }
->
-> If I try to use intervals in maps the same way, I receive the following
-> output:
-> 
-> root@fw:~# nft add rule test myChain ip saddr . ip daddr vmap {
-> 10.10.10.0/24 . 10.10.20.0/24 : accept }
-> <cmdline>:1:64-64: Error: syntax error, unexpected ., expecting colon
-> add rule test myChain ip saddr . ip daddr vmap { 10.10.10.0/24 .
-> 10.10.20.0/24 : accept }
+itpables 1.6.0 been building fine for a while now (though it *has* tripped on occasion, but works the second time through). But today it decided to stop building with -j 8.
 
-Please, give a try to this:
+I see the commit to add xtables-config-parser.h to BUILT_SOURCES. The patch works.
 
-# nft add rule test myChain \
-        ip saddr and 255.255.255.0 . ip daddr and 255.255.255.0 \
-                vmap { 10.10.10.0 . 10.10.20.0 : accept }
+But I had to bump automake to v1.14(.1); iptables' build insists on using v1.14(.1). Do I need to run autoconf, too?
 
-Note that this is not an interval, this is masking the ip saddr and ip
-daddr, then concate both results. This concatenation is used to lookup
-for a matching of this the result in the map.
-
-Using a named set, you can do:
-
-# nft add map test myMap { type ipv4_addr . ipv4_addr : verdict \; }
-# nft add rule test myChain \
-        ip saddr and 255.255.255.0 . ip saddr and 255.255.255.0 vmap @myMap
-# nft add element test myMap { 10.10.10.0 . 10.10.20.0 : accept }
-
-It should be easy to provide a more compact syntax using prefixes, eg.
-ip saddr /24. I have a patch for this in a branch but I need to finish
-the listing side to print a prefix from there too.
-
-P.S: It would be great if anyone can add this to the nftables wiki.
+Thanks,
+N
