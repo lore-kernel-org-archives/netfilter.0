@@ -1,43 +1,33 @@
-From: Khawar <shehzad.khawar@gmail.com>
-Subject: IPSET: programmatically implementing ip6tables snat rule including
- ipset matching
-Date: Wed, 21 Sep 2016 17:11:26 +0100
-Message-ID: <45031426-e79d-d687-ddae-2e6f9219ff9e@gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Invalid argument on 1.4.4 w/DisableExternalCache On (Kernel
+ 4.7.4)
+Date: Wed, 21 Sep 2016 19:40:08 +0200
+Message-ID: <20160921174008.GA6176@salvia>
+References: <CAMJqGp6c2SaAb=nrCaxPVVx3_yD+RvNwmxsqW3tLRGFBSFnB1w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=from:to:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=hS3fiOgIx0ErsZmKPFJG4j/AVAyxLdLIt1jYNZP9bkc=;
-        b=EFtxdxn7LzapLu3PqjDyUhYtw/kkTvACNUD3+ILHRkJCAKKzCSZiLuIjckl5FmH5EB
-         r+0hGMC5Fy37TBIPTc7RdVIL39H5xGNz0lpi6OPBbR5hEbRXX/uGv3Se5juJVzNoopA3
-         0Htj1ykQ3yez/dN4YA5pUKXxmj79l7b06D9B4NtJNKqxbJsuTZF91a7quTAdfqN0ZZ3K
-         qvOc9VAWnDqwK946V8ULxUpb5IBUydJK40fAlj0gpqnDuwd5sTxg5JnhZDXq9uO8Df2b
-         IOlqz0kEK1RxBcLiTCgY/pYPyM0GTFUcuzpyteWkGGieSEcz+dKKSJWa5sgQKEKXsCND
-         FV+A==
+Content-Disposition: inline
+In-Reply-To: <CAMJqGp6c2SaAb=nrCaxPVVx3_yD+RvNwmxsqW3tLRGFBSFnB1w@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Lee Burton <lburton@mrow.org>
+Cc: netfilter@vger.kernel.org
 
-It is a newbie question, so I would highly appreciate your time.
+On Wed, Sep 21, 2016 at 03:00:00AM -0700, Lee Burton wrote:
+> Are there known issues with DisableExternalCache currently?  I was
+> trying it earlier and got a ton of:
+> [ERROR] inject-upd1: Invalid argument
 
-You can also view my question here 
-http://unix.stackexchange.com/questions/311373/how-to-programmatically-implement-ip6tables-rule-including-ipset
+What is the line that just follows after this? You should get a line
+printing the conntrack in the log file, similar format to what you get
+via conntrack -L.
 
-I want to implement following using C programming
+> [ERROR] inject-add2: Invalid argument
 
-     "ip6tables -t nat -j postrouting -d 
-<ipv6-address-in-destination-field> -m set --match-set xyz -j snat 
---to-source <ipv6-address>"
+This EINVAL means the kernel is rejecting the command because an
+attribute is missing. With the conntrack line I mentioned, we can
+guess what attribute is actually triggering the problem.
 
-What should I take into account?
-I have already installed the ipset userspace and kernel modules. I can 
-easily use ipset specific socket options etc which mean my compilation 
-and installation is somewhat ok.
-
-Thanks
-
-
+What kernel version are you using BTW?
