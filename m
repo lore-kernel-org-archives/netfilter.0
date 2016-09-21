@@ -1,54 +1,33 @@
-From: Christophe Leroy <christophe.leroy@c-s.fr>
-Subject: Re: rate limit not working ?
-Date: Tue, 20 Sep 2016 13:14:14 +0200
-Message-ID: <eb5fc335-baaa-852e-0d56-24909d87eec6@c-s.fr>
-References: <a6f9f673-8c5b-4a95-ea38-4fb8b39d4dc8@c-s.fr>
- <20160920081341.GA2328@salvia>
+From: Lee Burton <lburton@mrow.org>
+Subject: Invalid argument on 1.4.4 w/DisableExternalCache On (Kernel 4.7.4)
+Date: Wed, 21 Sep 2016 03:00:00 -0700
+Message-ID: <CAMJqGp6c2SaAb=nrCaxPVVx3_yD+RvNwmxsqW3tLRGFBSFnB1w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <20160920081341.GA2328@salvia>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mrow-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=4kpd/C8p+SB/m/QXLVKv/mO4lKRb0WUkHyJJBMf4ARI=;
+        b=PiGS1FX3dAadj+XRmFjoZLtyRJetLM1OspLck0s/bYSNw4GC8Koz/CDV8j0bScAEGu
+         +PBgR3DQlQhburaMiZsgPTozQWIKCEb+axwGuK1i0iJEwkJBufcwXW4BInHszWiOosC9
+         w//frGJSnFmQIuYOmv98Oo8x9Ck3CpxtyUEbuNGkH8yEUv9Dahe4DDF0utis60vfqwii
+         VJPFpoXlPDlCX5pHhVyQlDvWDL92k0iIRzCTsjtV7VqJ7LXDm5ApaUaUH+XuAANHJPt8
+         K2ilA3JjdoTHgqU8gCJzZlQZP0OmA8yz8fE3NrujgovEnqubfHjLghtDrGFxzitC6CH0
+         FbpA==
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
+Are there known issues with DisableExternalCache currently?  I was
+trying it earlier and got a ton of:
+[ERROR] inject-upd1: Invalid argument
+[ERROR] inject-add2: Invalid argument
+etc
+A quick strace looking @ sendto,recvfrom of what libnetfilter is
+sending is @ http://pastebin.com/XFSs5cQ6
 
-
-Le 20/09/2016 =E0 10:13, Pablo Neira Ayuso a =E9crit :
-> On Fri, Sep 16, 2016 at 06:50:22PM +0200, Christophe Leroy wrote:
->> Hi
->>
->> I tried to limit ping flooding by setting the following rule:
->>
->> nft add rule filter input icmp type echo-request limit rate 10/second ac=
-cept
->
-> This is matching packets under the rate, so packets under the rate are
-> accepted.
->
-> Your next rule, or default policy, should drop, so packets over the
-> rate are dropped.
->
-> You can invert this logic via:
->
->  # nft add rule filter input icmp type echo-request limit rate over 10/se=
-cond drop
->
-
-That didn't work either, but in fact I found the issue: I have a rule=20
-'ct state established, related accept' earlier in the ruleset, so only=20
-the first ping packet reached the rate limitation rule.
-
-Putting the rate limitation rules before that ct state rule, it works as=20
-expected.
-
-Thanks for your help
-
-Christophe
---
-To unsubscribe from this list: send the line "unsubscribe netfilter-devel" =
-in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks,
+Lee Burton
+lburton@mrow.org
