@@ -1,49 +1,49 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipset on older kernels
-Date: Thu, 22 Sep 2016 11:25:15 +0200 (CEST)
-Message-ID: <alpine.DEB.2.10.1609221123490.30187@blackhole.kfki.hu>
-References: <1490B20F-D566-4E59-8186-FE241AC4C231@gmail.com>
+Subject: Re: IPSET: programmatically implementing ip6tables snat rule including
+ ipset matching
+Date: Thu, 22 Sep 2016 11:36:05 +0200 (CEST)
+Message-ID: <alpine.DEB.2.10.1609221130140.30187@blackhole.kfki.hu>
+References: <45031426-e79d-d687-ddae-2e6f9219ff9e@gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         blackhole.kfki.hu; h=mime-version:user-agent:references
         :message-id:in-reply-to:from:from:date:date:received:received
-        :received; s=20151130; t=1474536316; x=1476350717; bh=+GIlWTNFEu
-        q+sSior2VpsRhMA4IGgGIUpJS/3y+93+c=; b=PBQjhNFINhj9bp8M9d5n7Nmr8t
-        n9WTtYsn4WYfkUqx3NaJJdxa6QmTCsKuBvMguEHjaERvmMYeSJ6DB8ZdGAtcu6fX
-        gAAxXmmkF+rUKjkSYr7neN28T0QIUVvLZlTkqnKZ2KQ9oFhI8M9aEYXtNRg4VnIM
-        FjNXIuk1OY3LqHUEE=
-In-Reply-To: <1490B20F-D566-4E59-8186-FE241AC4C231@gmail.com>
+        :received; s=20151130; t=1474536965; x=1476351366; bh=dsGapG1IOo
+        MKQMXv4eqBTeszfow1RLZRRdOAnT4qitg=; b=HUizOoRd3sb+mBjo6mTL3RIcW1
+        TKqBrZtV2KORNoItgHLPmp3i9vaAWqqa4/m9nrT34+eNCKBa12Itdoz6Eej7wqKV
+        CoZFMHlq5tEOYEzjs8x5UwMWqp1/sa8NCx0xo97xjWE5WF57N+7/TKMOD0CTdMQc
+        4f7RHBw+ImhhfPzm0=
+In-Reply-To: <45031426-e79d-d687-ddae-2e6f9219ff9e@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Sudheendra Murthy <sudhi.vm@gmail.com>
+To: Khawar <shehzad.khawar@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-On Wed, 21 Sep 2016, Sudheendra Murthy wrote:
+On Wed, 21 Sep 2016, Khawar wrote:
 
-> I'm trying to install iptables and ipset on an older kernel version 
-> 2.6.35-22-server. I was able to build iptables from source and iptables 
-> v1.6.0 is working fine.
+> I want to implement following using C programming
 > 
-> For ipset, I patched the kernel sources based on netlink.patch and ipset 
-> compiled correctly. However, when I try to execute any ipset command, it 
-> gives the following error.
-> 
-> # ipset -L
-> ipset v6.29: Kernel error received: Invalid argument
-> 
-> # dmesg
-> [69432.285219] ip_set: cannot register with nfnetlink.
-> 
-> From the code, it looks like it is failing when executing 
-> nfnetlink_subsys_register(...) 
-> (http://lxr.free-electrons.com/source/net/netfilter/ipset/ip_set_core.c#L2069).
+>     "ip6tables -t nat -j postrouting -d <ipv6-address-in-destination-field> -m
+> set --match-set xyz -j snat --to-source <ipv6-address>"
 
-As it is written in the README file of the ipset package, for kernel 
-versions < 2.6.39 you have to apply the netlink.patch from the package and 
-recompile the kernel itself.
+I assumne by "implement following using C programming" you mean to call 
+exec() from your code. If not, the stop in your project and rethink: 
+libiptables from the iptables package was never meant to be used by third 
+party projects, check out nftables.
+
+> What should I take into account?
+
+There's nothing fancy there:
+
+- create the sets before you refer them in i[6]ptables rules
+- use proper syntax (the flag parameter is missing from the set match)
+
+> I have already installed the ipset userspace and kernel modules. I can 
+> easily use ipset specific socket options etc which mean my compilation 
+> and installation is somewhat ok.
 
 Best regards,
 Jozsef
