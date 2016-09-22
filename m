@@ -1,61 +1,54 @@
-From: Lee Burton <lburton@mrow.org>
-Subject: Re: Invalid argument on 1.4.4 w/DisableExternalCache On (Kernel 4.7.4)
-Date: Wed, 21 Sep 2016 12:02:10 -0700
-Message-ID: <CAMJqGp78RKAFSXr0E_BJDOJeYGU62_qKcT7=0LJcTTXswRNj_w@mail.gmail.com>
-References: <CAMJqGp6c2SaAb=nrCaxPVVx3_yD+RvNwmxsqW3tLRGFBSFnB1w@mail.gmail.com>
- <20160921174008.GA6176@salvia>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: ipset on older kernels
+Date: Thu, 22 Sep 2016 11:25:15 +0200 (CEST)
+Message-ID: <alpine.DEB.2.10.1609221123490.30187@blackhole.kfki.hu>
+References: <1490B20F-D566-4E59-8186-FE241AC4C231@gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mrow-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=b3msEXhr04ik3U6PgLtm4h3twKNljbehCc1bypzd8i0=;
-        b=UbY+IY5wK4RWomEe528ULQwhgXlJJO0moFh3PNghmKibIxYPOJE3n9B5o4JzrzMxS8
-         pQS+OP3B/Uc+VRnkCoeGY601vDoEoJRFXML/kKNbatrFtu7t3eQVQEI39N6k5kr2fvPV
-         3MXmQgJK+pVOnzTzp0mGSSTw4L+a8YVdj8Cd6R6S/U03vIqXtTJcdichYaS2W6iZrrI/
-         gGrflXO7MavBDQuASeXh/0GU0MdB/2FTQVkPKmbTY6cDXYXcYdqSibqBNt4AgR6ptwxF
-         zYaWUTTy8UF2rNbKYXCU0t7iJ7U/ElbrRGQmEhJpHa2vu/7DMhtyOeLDe89wmcpsmYhp
-         1RHw==
-In-Reply-To: <20160921174008.GA6176@salvia>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        blackhole.kfki.hu; h=mime-version:user-agent:references
+        :message-id:in-reply-to:from:from:date:date:received:received
+        :received; s=20151130; t=1474536316; x=1476350717; bh=+GIlWTNFEu
+        q+sSior2VpsRhMA4IGgGIUpJS/3y+93+c=; b=PBQjhNFINhj9bp8M9d5n7Nmr8t
+        n9WTtYsn4WYfkUqx3NaJJdxa6QmTCsKuBvMguEHjaERvmMYeSJ6DB8ZdGAtcu6fX
+        gAAxXmmkF+rUKjkSYr7neN28T0QIUVvLZlTkqnKZ2KQ9oFhI8M9aEYXtNRg4VnIM
+        FjNXIuk1OY3LqHUEE=
+In-Reply-To: <1490B20F-D566-4E59-8186-FE241AC4C231@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Netfilter Users Mailing list <netfilter@vger.kernel.org>
+To: Sudheendra Murthy <sudhi.vm@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-As in the subject kernel 4.7.4:
-[Wed Sep 21 02:00:15 2016] (pid=48068) [ERROR] inject-add2: Invalid argument
-Wed Sep 21 02:00:15 2016        udp      17 src=192.168.1.10
-dst=8.8.4.4 sport=57856 dport=53 [UNREPLIED]
-[Wed Sep 21 02:00:15 2016] (pid=48068) [ERROR] inject-upd1: Invalid argument
-Wed Sep 21 02:00:15 2016        udp      17 src=192.168.1.10
-dst=8.8.4.4 sport=57856 dport=53
-is an example of both.
-Lee
+On Wed, 21 Sep 2016, Sudheendra Murthy wrote:
 
-On Wed, Sep 21, 2016 at 10:40 AM, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> On Wed, Sep 21, 2016 at 03:00:00AM -0700, Lee Burton wrote:
->> Are there known issues with DisableExternalCache currently?  I was
->> trying it earlier and got a ton of:
->> [ERROR] inject-upd1: Invalid argument
->
-> What is the line that just follows after this? You should get a line
-> printing the conntrack in the log file, similar format to what you get
-> via conntrack -L.
->
->> [ERROR] inject-add2: Invalid argument
->
-> This EINVAL means the kernel is rejecting the command because an
-> attribute is missing. With the conntrack line I mentioned, we can
-> guess what attribute is actually triggering the problem.
->
-> What kernel version are you using BTW?
+> I'm trying to install iptables and ipset on an older kernel version 
+> 2.6.35-22-server. I was able to build iptables from source and iptables 
+> v1.6.0 is working fine.
+> 
+> For ipset, I patched the kernel sources based on netlink.patch and ipset 
+> compiled correctly. However, when I try to execute any ipset command, it 
+> gives the following error.
+> 
+> # ipset -L
+> ipset v6.29: Kernel error received: Invalid argument
+> 
+> # dmesg
+> [69432.285219] ip_set: cannot register with nfnetlink.
+> 
+> From the code, it looks like it is failing when executing 
+> nfnetlink_subsys_register(...) 
+> (http://lxr.free-electrons.com/source/net/netfilter/ipset/ip_set_core.c#L2069).
 
+As it is written in the README file of the ipset package, for kernel 
+versions < 2.6.39 you have to apply the netlink.patch from the package and 
+recompile the kernel itself.
 
-
--- 
-Lee Burton
-lburton@mrow.org
-301 910 0246
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
