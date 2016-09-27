@@ -1,39 +1,33 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: nftables vmap concatenations with interval
-Date: Tue, 27 Sep 2016 21:11:01 +0200
-Message-ID: <20160927191101.GA3195@salvia>
-References: <11357773.LdaEAIBM0O@nemmerle>
+Subject: Re: Invalid argument on 1.4.4 w/DisableExternalCache On (Kernel
+ 4.7.4)
+Date: Tue, 27 Sep 2016 21:11:44 +0200
+Message-ID: <20160927191144.GA3280@salvia>
+References: <CAMJqGp6c2SaAb=nrCaxPVVx3_yD+RvNwmxsqW3tLRGFBSFnB1w@mail.gmail.com>
+ <20160921174008.GA6176@salvia>
+ <CAMJqGp78RKAFSXr0E_BJDOJeYGU62_qKcT7=0LJcTTXswRNj_w@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <11357773.LdaEAIBM0O@nemmerle>
+In-Reply-To: <CAMJqGp78RKAFSXr0E_BJDOJeYGU62_qKcT7=0LJcTTXswRNj_w@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Martin Bednar <martin@serafean.cz>
-Cc: netfilter@vger.kernel.org
+To: Lee Burton <lburton@mrow.org>
+Cc: Netfilter Users Mailing list <netfilter@vger.kernel.org>
 
-On Tue, Sep 27, 2016 at 05:10:45PM +0200, Martin Bednar wrote:
-> hi, 
-> 
-> using nftables, I want to create a vmap : 
-> 
-> map mymap {type ipv4_addr . iface_index : verdict }
-> 
-> I'd like the first argument to be an ip range/ network, so that I can add like 
-> so :
-> nft add element inet filter mymap { 172.18.0.1/24 . eth0 : accept }
->
-> nft add element inet filter mymap { 172.18.0.1-172.18.0.255 . eth0 : accept }
-> 
-> Any hints as to what to do it?
+On Wed, Sep 21, 2016 at 12:02:10PM -0700, Lee Burton wrote:
+> As in the subject kernel 4.7.4:
+> [Wed Sep 21 02:00:15 2016] (pid=48068) [ERROR] inject-add2: Invalid argument
+> Wed Sep 21 02:00:15 2016        udp      17 src=192.168.1.10
+> dst=8.8.4.4 sport=57856 dport=53 [UNREPLIED]
+> [Wed Sep 21 02:00:15 2016] (pid=48068) [ERROR] inject-upd1: Invalid argument
+> Wed Sep 21 02:00:15 2016        udp      17 src=192.168.1.10
+> dst=8.8.4.4 sport=57856 dport=53
+> is an example of both.
 
-nft add table inet filter
-nft add map inet filter mymap { type ipv4_addr . iface_index : verdict \; }
-nft add element inet filter mymap { 172.18.0.0  . eth0 : accept }
-nft add rule inet filter forward ip saddr and 255.255.255.0 . iif vmap @mymap
-                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
+Please, file a bug to netfilter's bugzilla, so hopefully someone can
+fit this.
 
-The idea here is to mask the address, then add to the set the result
-of this operation, thus, 172.18.0.0
+Thanks!
