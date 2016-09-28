@@ -1,43 +1,29 @@
-From: Martin Bednar <martin@serafean.cz>
-Subject: Re: nftables vmap concatenations with interval
-Date: Wed, 28 Sep 2016 14:51:50 +0200
-Message-ID: <6538549.qvO97AaWzG@nemmerle>
-References: <11357773.LdaEAIBM0O@nemmerle> <20160927191101.GA3195@salvia>
+From: Dennis Jacobfeuerborn <dennisml@conversis.de>
+Subject: iptables DNAT reply packets with RST flag are sent using private ip
+Date: Thu, 29 Sep 2016 00:04:56 +0200
+Message-ID: <13764fd5-d899-24ba-4693-4a6d4b311a28@conversis.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=serafean.cz;
-        s=default; t=1475067114;
-        bh=fZ49QzkFkjBfseHxEZLFq2GgmO6NfXPo94i8/rVzwdM=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=B29N6/0gSCx+AKqJFyh8SOMq3IXWNFEIpF/jC12/RV9509dc6AY56gwD47h9DtqjU
-         ZasQOOxyPeauB7dcsjKkFxCooWBcNrum5jvjt5jlP5peiRgS2tedeRcKzGJ7G0FKci
-         CVd1XE1W5nU9L3JhHR9a4hvwKqCaZdp8lHBmXc7uH8sEv4VQ3oCLvDn43oX5UY00NZ
-         waEPUV07KNIkFqNGcycu1m0aK4KQY2LPwZR8AB1nHuVb+9uPbZjO07CqQYksMz2or3
-         zPYcfd2uj8bSq+MXsmEXZaskWisRMEOzvAhqQ97pl3/say7NwKh8vCmAw9OK5F2LYW
-         FiBO578UP+nWQ==
-In-Reply-To: <20160927191101.GA3195@salvia>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Le Tuesday, September 27, 2016 9:11:01 PM CEST Pablo Neira Ayuso a =C3=A9cr=
-it :
->=20
-> nft add table inet filter
-> nft add map inet filter mymap { type ipv4_addr . iface_index : verdict \;=
- }
-> nft add element inet filter mymap { 172.18.0.0  . eth0 : accept }
-> nft add rule inet filter forward ip saddr and 255.255.255.0 . iif vmap
-> @mymap ^^^^^^^^^^^^^^^^^^^^^^^^^^
->=20
-> The idea here is to mask the address, then add to the set the result
-> of this operation, thus, 172.18.0.0
+Hi,
+I'm looking at a strange phenomenon that occurs on an iptables firewall.
+There is a DNAT rule configured that maps a public IP to a private one
+where a web serve is listening. Normal request operate as expected that
+is the destination ip is modified to the private one when the request
+arrives at the firewall and on the response packet the private ip is
+mapped back to the public one.
+What I noticed though is that for some response packets the source ip is
+*not* mapped back to the public ip and instead tcpdump shows that the
+packets are sent out with the private source ip. The thing all these
+packets have in common is that they have the RST flag set.
 
-Very cool trick... Thanks. this solves 90% of what I want :)
-This however implies the same mask for all networks, right?
-Is is somehow possible to have one vmap for networks with different masks?
+What could be the reason for this? Is there some particular iptables
+behavior that could explain this?
 
-Thanks.
+Regards,
+  Dennis
