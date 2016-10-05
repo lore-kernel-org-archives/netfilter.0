@@ -1,50 +1,25 @@
-From: Mathew Heard <mat999@gmail.com>
-Subject: Per connection track TCP Window Tracking
-Date: Wed, 5 Oct 2016 10:32:46 +1100
-Message-ID: <CALFfGYbyoxet9nood07SAg1AyBshRvJxXN0F3ibB4X=5mszNqw@mail.gmail.com>
-Mime-Version: 1.0
+From: Dave Carlton <davec@polymicro.net>
+Subject: nftables wiki
+Date: Wed, 5 Oct 2016 06:45:31 -1000
+Message-ID: <E6044FD1-33DA-4EDE-A868-B85815BA7F76@polymicro.net>
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=Mgqou/457tRfzHKR0bZWGEXFrnKDV/2YwDCdOeZSTaU=;
-        b=F3Nmv6JBixQunzen975IpB0TItNRql7ua+HndLtiuhPkvAYq22/MtD29THNmU1HWV8
-         CAJ1WE1Cwops7JV8gEsj15X1MePwZ2AAsxp/TBxevhaiZwWcV+qPxByMYUXx994q111j
-         NqIijzwZKYG1KfxwAwjGDU+9k5f/gZ7Ewn3DjbzXb19dQEVy4hboOWflRWIfhkjf8+T6
-         t7sf9Gqpxcj2KwsdQj7LCWuGCR4HCvUSjkI2dbXz2ocKto5DbJ4HeBVjK9F9euLGSlC3
-         F0lB1TKtlHVEftIPrImAsf80pkJBdgx/WL3pgtXhNAJ5Aj8f1KPc8gLVOag9fzsjiGP6
-         TWkw==
+        d=polymicro.net; s=google;
+        h=from:content-transfer-encoding:subject:message-id:date:to
+         :mime-version;
+        bh=dh4Mu5pszRfZOmSpEmlTIdCXeZmlmkH7yUzmHH/i5FA=;
+        b=a6dxHqhpJcLiuPOepztR1A36ytJGNESlqirmTeMWqp7ddvytcoBbtjm2nexXLeX1D0
+         GsZQMYTOsIpE6qJd90FLSTKf6QfI8whL42cVbTQALvvByidaHoAkQGZQElHgnOpffTZM
+         Ui5FslHzHGTB6MCp0azmvBTSKbmLdBSntKaJkPM47Otf1PeIAKk2dtXQPasyva8htMfA
+         e3O0kGAbH/u3Okp1qH6ETRhiaw2FQg9/MH2818aBeXkD0bWJckBgk1Qn9OcfEDkIs1n2
+         LK/bXMH7d9g7yF55CDMRGJN1QpDL99DbxBnEcNJtPK+i2l68ctc45firZBRgKCr3yL+k
+         0ncA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-Hi All,
-
-Long time reader, first time poster.
-
-I am currently trying to track down a bug where conntrackd
-(conntrack-tools) is not correctly setting IP_CT_TCP_FLAG_BE_LIBERAL
-on the reply side of the TCP connection.
-
-I believe this to be a bug in conntrackd or libnetfilter_conntrack,
-however I am struggling to identify the cause of the issue.
-
-I have been able to replicate the issue by building a piece of
-software to dump the specific connection track and looking at the
-values of the TCP flags.
-
-Here is a link to the Bugzilla:
-https://bugzilla.netfilter.org/show_bug.cgi?id=1087
-
-Replicated with:
-
-Kernel: 4.1.17
-Version: v1.4.3
-
-
-Any assistance as to places to look, or thoughts would be appreciated.
-
-Regards,
-Mathew
+I was going to try an add some content as I discover nftables but see no =
+way to create an account.=
