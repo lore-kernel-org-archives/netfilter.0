@@ -1,67 +1,66 @@
-From: seba@econ.uba.ar
-Subject: VRF + Netfilter deployment - multitenancy filtering box
-Date: Mon, 10 Oct 2016 11:45:05 -0300
-Message-ID: <c847aa653f58c75da5717819ff0f861b.squirrel@minkevie.econ.uba.ar>
+From: James <vger_tracker@trackivity.com>
+Subject: "nft add element" can't find table
+Date: Mon, 10 Oct 2016 14:21:40 -0400
+Message-ID: <d2ecc806-6c37-d1a6-f9a7-3e1668215be3@trackivity.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi, I'm trying to deploy VRFs + Netfilter in a such a way I could maintain
-different filtering rules while attaining isolated traffic at Layer 3, and
-perhaps some overlapping IPs functionality.
+This is "nftables/xenial,now 0.5+snapshot20151106-1 amd64" on "Release 16.04.1 LTS (Xenial Xerus) 64-bit", "Kernel Linux 4.4.0-38-generic x86_64".
 
-Even though there's some VRF + NF Kernel documentation, I could use some
-help from the netfilter community; and I think lack of information
-regarding this topic is due to only recent kernels (>4.6 will do the
-sucessful magic!) aren't massive today, but it'll be a hot issue when this
-kernel reaches production level.
+The (very simple) nft ruleset below has been working well for me.
 
-Here's what I'm looking after:
+But now I've tried to add the set "blackhole" and it does make it into the ruleset but attempting to add an element produces:
 
-                           +
-                        ^  |
-                        |  |
-                        |  v
-                        |
-                     +--+------+
-                     |         | 172.17.0.0/16
-                     | eth0    |
-                     | 	       |
-                     +---^-----+
-       +---------------^ |  ^-----------+
-       |                 |              |
-       |                 |              |
-       |                 |              |
-       |                 |              |
-   +---v------+     +----v-----+     +--v--------+
-   |          |     |          |     |           |
-   | RED      |     | BLUE     |     | GREEN	 |
-   | eth1     |     | eth2     |     | eth3      |
-   |          |     |          |     |           |
-   +----------+     +----------+     +-----------+
-10.0.0.0/24         10.0.0.0/24      10.0.0.0/24
+# nft add element firewall blackhole { 1.2.3.4 timeout 2h }
+<cmdline>:1:1-53: Error: Could not process rule: Table 'firewall' does not exist
+add element firewall blackhole { 1.2.3.4 timeout 2h }
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#
 
+I suspect it may be my so-far-successful desire to have only a single "inet" table that is the root of this error.
 
-Suppose you have an shared & physical interface which leads traffic inside
-and outside our box, serving three customers RED, GREEN & BLUE through
-dedicated physical internal interfaces, at the same time we're mantaining
-their traffic isolated from each other at layer 3 using VRFs (and maybe,
-later permit Overlapping IPs between customers if possible).
+Or not.  Help?
 
-I'm considering creating three VRF devices and attaching each different
-customer interfaces to them at the same time I attach eth0 to all the VRF
-devices, then deploy NAT rules through iptables in order to get the
-traffic flow in the desired direction...
+This is not a crisis, but I would *really* like to keep this single-table approach.  Originally I was trying to have "v4blackhole" and "v6blackhole" sets, and did try breaking the "incoming" chain into separate "ip" and "ip6" tables, I even named the tables and chains all differently but I've never gotten a completely successful result.
 
-How would it be your filtering strategy in order to achieve some sort of
-"VRF/multitenant" filtering ability? Filtering rules in each vrf device
-it's the only way or I'm missing something?
+# nft list ruleset
+table inet firewall {
+	set blackhole {
+		type ipv4_addr
+		timeout 1h
+	}
 
-I appreciate any help and advice you guys can give me,
-Best regards,
-Seba
+	chain incoming {
+		type filter hook input priority 0; policy drop;
+		iifname "lo" accept
+		ip saddr @blackhole drop
+		ip protocol { icmp} icmp type { echo-request} accept
+		ip6 nexthdr { ipv6-icmp} icmpv6 type { echo-request} accept
+		ip6 nexthdr { ipv6-icmp} icmpv6 type { nd-router-advert, nd-redirect, nd-neighbor-advert, nd-neighbor-solicit} accept
+		ct state { established, related} accept
+		ct state { new} tcp dport { ssh} accept
+		ct state { new} udp dport { domain} accept
+		ct state { new} tcp dport { smtp, urd, http, domain, https, pop3s} accept
+	}
 
+	chain forwarding {
+		type filter hook forward priority 0; policy drop;
+	}
+
+	chain outgoing {
+		type filter hook output priority 0; policy drop;
+		iifname "lo" accept
+		ip6 nexthdr { ipv6-icmp} icmpv6 type { echo-request, nd-neighbor-solicit, nd-neighbor-advert} accept
+		ct state { established, related, new} accept
+	}
+}
+#
+
+Thanks.
+
+  - James
