@@ -1,79 +1,49 @@
-From: Eric Leblond <eric@regit.org>
-Subject: Re: ulogd2 / segfault in ulogd_raw2packet_BASE.c with kernel 4.8.1
-Date: Mon, 10 Oct 2016 08:26:04 +0900
-Message-ID: <1476055564.5747.1.camel@regit.org>
-References: <de2d542d-c543-d254-beae-990a988effcf@undermydesk.org>
+From: Adel Belhouane <bugs.a.b@free.fr>
+Subject: Re: nf_conntrack_sip regression?
+Date: Mon, 10 Oct 2016 02:25:27 +0200
+Message-ID: <5751ffd3-1e38-5926-43a2-11ec680ec7bb@free.fr>
+References: <20161009001947.4eszsjifuc5wfacq@Redstar.dorchain.net>
+ <5fc84a99-1a7c-7aad-9baf-7e3047ca912d@free.fr>
+ <20161009092713.ursiwck3hg6d6jie@Redstar.dorchain.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <de2d542d-c543-d254-beae-990a988effcf@undermydesk.org>
+In-Reply-To: <20161009092713.ursiwck3hg6d6jie@Redstar.dorchain.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Frank Reppin <frank@undermydesk.org>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Joerg Dorchain <joerg@dorchain.net>
+Cc: netfilter@vger.kernel.org
 
-Hello,
+Le 09/10/2016 =E0 11:27, Joerg Dorchain a =E9crit :
+> On Sun, Oct 09, 2016 at 05:55:18AM +0200, Adel Belhouane wrote:
+>> Le 09/10/2016 =E0 02:19, Joerg Dorchain a =E9crit :
 
-On Sun, 2016-10-09 at 23:31 +0200, Frank Reppin wrote:
-> Hellos,
-> 
-> at first - sorry if this is the complete wrong place to
-> come up with this issue...
-> 
-> OS details:
-> =============
-> Debian Jessie 8.6 x64
->    ulogd2            -> 2.0.4-2+deb8u1
->    iptables          -> 1.4.21-2+b1
->    libnetfilter-log1 -> 1.0.1-1.1
->    libnfnetlink0      -> 1.0.1-3
-> 
-> Problem:
-> ==========
-> It segfaults... really soon after I connect via WLAN/hostapd
-> and some iptables log rule kicks in.
-> 
-> backtrace:
-> ===========
-> Program received signal SIGSEGV, Segmentation fault.
-> _interp_iphdr (pi=0x555555768b50, len=0) at
-> ulogd_raw2packet_BASE.c:718
-> 718     ulogd_raw2packet_BASE.c: No such file or directory.
-> (gdb) bt
-> #0  _interp_iphdr (pi=0x555555768b50, len=0) at
-> ulogd_raw2packet_BASE.c:718
-> #1  0x0000555555558dcb in ulogd_propagate_results 
-> (pi=pi@entry=0x555555766090) at ulogd.c:518
-> #2  0x00007ffff740d1fb in interp_packet (ldata=0x7fffffffe290, 
-> pf_family=2 '\002', upi=0x555555766090) at ulogd_inppkt_NFLOG.c:400
-> #3  msg_cb (gh=<optimized out>, nfmsg=0x7ffff7fc67d8, 
-> nfa=0x7fffffffe290, data=0x555555766090) at ulogd_inppkt_NFLOG.c:483
-> #4  0x00007ffff7208307 in ?? () from 
-> /usr/lib/x86_64-linux-gnu/libnetfilter_log.so.1
-> #5  0x00007ffff7003627 in nfnl_handle_packet () from 
-> /usr/lib/x86_64-linux-gnu/libnfnetlink.so.0
-> #6  0x00007ffff740cafe in nful_read_cb (fd=<optimized out>, 
-> what=<optimized out>, param=0x555555766090) at
-> ulogd_inppkt_NFLOG.c:463
-> #7  0x00005555555594a8 in ulogd_select_main (tv=<optimized out>) at 
-> select.c:105
-> #8  0x0000555555556ed7 in ulogd_main_loop () at ulogd.c:934
-> #9  main (argc=<optimized out>, argv=<optimized out>) at ulogd.c:1477
-> 
-> Additional details:
-> ====================
-> ulogd2 used to behave fine here (no segfaults/no issues at all) with 
-> previous kernel releases (for example 4.7.7 is OK)
+> I am sorry to quote myself, but as I wrote, I have in the RAW
+> table
+>=20
+>> Chain PREROUTING (policy ACCEPT 19781 packets, 3776K bytes)
+>>  pkts bytes target     prot opt in     out     source               dest=
+ination
+>>    86 48515 CT         udp  --  any    any     anywhere             anyw=
+here             udp dpt:sip CT helper sip
+>=20
 
-From what I can see, it looks possible there is a problem introduced by
-copy range handling change introduce in this kernel.
+Well sorry for the previous answer made without thinking (or reading), but =
+indeed
+I can read iptables-save better than iptables -L.
 
-Is it possible for you to test latest iptables ? It should handle the
-range correctly and this should fix the problem.
+If it's really a change in the sip helper code, sorry I can't help and I
+hope somebody else will help you.
 
-In the mean time, I'll continue to investigate.
+Else, if your ppp0's MTU is a bit low, SIP might switch from UDP to
+TCP (RFC3261 18.1.1), then adding a second CT rule with tcp port 5060
+would handle it.
 
-BR,
--- 
-Eric Leblond <eric@regit.org>
-Blog: https://home.regit.org/
+>=20
+> Thanks for bearing with me,
+>=20
+> Joerg
+>=20
+
+Adel
