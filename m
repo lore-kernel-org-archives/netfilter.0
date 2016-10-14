@@ -1,35 +1,40 @@
-From: frank <frank@undermydesk.org>
-Subject: Re: ulogd2 / segfault in ulogd_raw2packet_BASE.c with kernel 4.8.1
-Date: Tue, 11 Oct 2016 09:16:22 +0200
-Message-ID: <a3d68560-143a-7907-0440-6d6ce9698bdb@undermydesk.org>
-References: <de2d542d-c543-d254-beae-990a988effcf@undermydesk.org>
- <1476055564.5747.1.camel@regit.org>
- <d5fd9a36-7aaf-9a49-c359-4636c5535e53@undermydesk.org>
+From: Gargi Sharma <gs051095@gmail.com>
+Subject: iptables-translate command not found
+Date: Fri, 14 Oct 2016 21:14:02 +0530
+Message-ID: <CAOCi2DEkJ3JOJdYUK4_jX3cfdP7Rwje7zioqLBaj5Um3HoiT8Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <d5fd9a36-7aaf-9a49-c359-4636c5535e53@undermydesk.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=qCgafb9kn6IUUrvuV3vQ6WCAJz3T1veWKyWDlINuTPY=;
+        b=0FDzhg8J03M0KwOourhIzJXHCRPXuuchWGn7NAXuMwZayGsWZk8CZqCCJ5jjMnk29G
+         c8EoRRKOGhRUnwvDGXRcVKZIAAt9XA01x2j1/LPq6WQH1qy2E5CMgouxlRBNXuMNQEaG
+         Vylp/87DE4XIAyKtXjaumJ08s/cjhSWGB6hctgydoLiI+kiyN71FeP3qvmZymNe8G2BE
+         loVyiKGSAeNchs8mcbhdxannwCx3naGa8f6y80QgHqgaoJo9F9Kk6waCAKzvBS0ctAok
+         xNElay+Ke86m+jXw1e/nahjWMWdT77l9ABMICvJZifUXN2sxVXkhjhSGW2VHWUADRbei
+         IxvA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi Eric,
-dear list,
+Hi!
 
-just a short update on this issue...
+I am looking to translate iptable rules to nftables and when I run the
+command sudo iptables-translate I get , command not found.
 
-There's someone over at LKML with the same issue and there
-seems to be fix for this on the way.
-Your earlier assumption about the kernel changes were true:
+The path for iptables command is /sbin/iptables.
 
-http://www.gossamer-threads.com/lists/linux/kernel/2538445?do=post_view_threaded
+The other commands related to iptables that are available are:
+iptables-save
+iptables-restore
+ip6tables
 
-cheers,
-frank\
+How do I install iptables-translate? From what I have understood from
+looking around is that iptables-translate comes with the iptables
+package.
 
-
--- 
-43rd Law of Computing:
-         Anything that can go wr
-fortune: Segmentation violation -- Core dumped
+Thanks!
+Gargi
