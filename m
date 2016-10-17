@@ -1,35 +1,37 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: iptables-translate command not found
-Date: Mon, 17 Oct 2016 21:32:43 +0200
-Message-ID: <20161017193243.GA24375@salvia>
-References: <CAOCi2DEkJ3JOJdYUK4_jX3cfdP7Rwje7zioqLBaj5Um3HoiT8Q@mail.gmail.com>
- <20161014181808.GF6526@harrier.slackbuilds.org>
- <20161014221257.GG6526@harrier.slackbuilds.org>
+Subject: Re: ulogd2 / segfault in ulogd_raw2packet_BASE.c with kernel 4.8.1
+Date: Mon, 17 Oct 2016 21:34:06 +0200
+Message-ID: <20161017193406.GB24375@salvia>
+References: <de2d542d-c543-d254-beae-990a988effcf@undermydesk.org>
+ <1476055564.5747.1.camel@regit.org>
+ <d5fd9a36-7aaf-9a49-c359-4636c5535e53@undermydesk.org>
+ <a3d68560-143a-7907-0440-6d6ce9698bdb@undermydesk.org>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20161014221257.GG6526@harrier.slackbuilds.org>
+In-Reply-To: <a3d68560-143a-7907-0440-6d6ce9698bdb@undermydesk.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: frank <frank@undermydesk.org>
+Cc: netfilter@vger.kernel.org
 
-On Fri, Oct 14, 2016 at 05:12:57PM -0500, /dev/rob0 wrote:
-> On Fri, Oct 14, 2016 at 01:18:08PM -0500, I wrote:
-> > On Fri, Oct 14, 2016 at 09:14:02PM +0530, Gargi Sharma wrote:
-> > > How do I install iptables-translate?
-> > 
-> > Either:
-> >    1. Install from source obtained from netfilter.org, or:
-> >    2. Ask questions about your distro at a place which supports
-> >       your distro.
-> > 
-> > > From what I have understood from looking around is that 
-> > > iptables-translate comes with the iptables package.
+On Tue, Oct 11, 2016 at 09:16:22AM +0200, frank wrote:
+> Hi Eric,
+> dear list,
 > 
-> At this time apparently iptables-translate is only in the git repo, 
-> not yet in any of the released source tarballs.
+> just a short update on this issue...
+> 
+> There's someone over at LKML with the same issue and there
+> seems to be fix for this on the way.
+> Your earlier assumption about the kernel changes were true:
+> 
+> http://www.gossamer-threads.com/lists/linux/kernel/2538445?do=post_view_threaded
 
-AFAIK iptables-translate is already included in the iptables 1.6.0
-release, right?
+I have just applied the fix for 4.8, will take a little while to
+propagate this to -stable.
+
+Meanwhile, oneliner patch to fix it is here:
+
+http://patchwork.ozlabs.org/patch/680773/
