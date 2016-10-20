@@ -1,116 +1,107 @@
-From: Noel Kuntze <noel@familie-kuntze.de>
-Subject: Re: IPSec, masquerade and dnat with nftables
-Date: Tue, 18 Oct 2016 23:50:51 +0200
-Message-ID: <19c64580-f9da-f0de-5bc6-d6013b3bf800@familie-kuntze.de>
-References: <8737l9mu0c.fsf@ilexius.de> <20161017194405.GH24375@salvia>
- <ad567cf1-6c48-d367-1b99-9973bf08319b@familie-kuntze.de>
- <20161017201149.GB7690@salvia>
- <324a4f79-5207-6517-3cc0-49a6c2323bb0@familie-kuntze.de>
- <20161017202712.GA8529@salvia>
- <83a41f9a-608e-8c46-59b7-5a2b5af8032d@familie-kuntze.de>
- <20161018085957.GC29405@breakpoint.cc>
- <779a7b4b-1d9f-e27b-786a-fe90a4970502@familie-kuntze.de>
- <20161018205544.GA21308@breakpoint.cc>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: nftables: Add anonymous set to named set
+Date: Thu, 20 Oct 2016 17:11:44 +0200
+Message-ID: <20161020151144.GA1556@salvia>
+References: <20161018225231.5db3dac1@doomgiver>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="uhQOuTmM0QWqtnJj04acebMp2GqWo104e"
+Content-Type: multipart/mixed; boundary="8t9RHnE3ZwKMSgU+"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20161018205544.GA21308@breakpoint.cc>
+Content-Disposition: inline
+In-Reply-To: <20161018225231.5db3dac1@doomgiver>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Florian Westphal <fw@strlen.de>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Thomas Bach <t.bach@ilexius.de>, netfilter@vger.kernel.org
-
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---uhQOuTmM0QWqtnJj04acebMp2GqWo104e
-Content-Type: multipart/mixed; boundary="vC701LWnMlbGDo6LGVnpvRswR3WOwHnjM";
- protected-headers="v1"
-From: Noel Kuntze <noel@familie-kuntze.de>
-To: Florian Westphal <fw@strlen.de>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Thomas Bach <t.bach@ilexius.de>,
- netfilter@vger.kernel.org
-Message-ID: <19c64580-f9da-f0de-5bc6-d6013b3bf800@familie-kuntze.de>
-Subject: Re: IPSec, masquerade and dnat with nftables
-References: <8737l9mu0c.fsf@ilexius.de> <20161017194405.GH24375@salvia>
- <ad567cf1-6c48-d367-1b99-9973bf08319b@familie-kuntze.de>
- <20161017201149.GB7690@salvia>
- <324a4f79-5207-6517-3cc0-49a6c2323bb0@familie-kuntze.de>
- <20161017202712.GA8529@salvia>
- <83a41f9a-608e-8c46-59b7-5a2b5af8032d@familie-kuntze.de>
- <20161018085957.GC29405@breakpoint.cc>
- <779a7b4b-1d9f-e27b-786a-fe90a4970502@familie-kuntze.de>
- <20161018205544.GA21308@breakpoint.cc>
-In-Reply-To: <20161018205544.GA21308@breakpoint.cc>
-
---vC701LWnMlbGDo6LGVnpvRswR3WOwHnjM
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-On 18.10.2016 22:55, Florian Westphal wrote:
-> Same as above, except that it would check sp->xvec[X], for a fixed (use=
-r
-> defined) value of X, rather then searching all of sp->xvec[].
->=20
-> Or, putting it differently, in 1) user providides data (ip address,
-> spi, ...) and sp->xvec is the haystack we will search in.
->=20
-> I expect most users and use cases are covered by this, rather than 2).
->=20
-> For 2), user gives a policy index and tells us if they want saddr,
-> daddr, spi or reqid and we will then copy it to a register.
->=20
-> (Where another nft expression, e.g. cmp, can evaluate it)
->=20
-> So 2) is only needed when exact matching of the entire policies
-> is requested (--strict) mode.
->=20
-> If you think we can go without strict, then only 1) is needed.
->=20
-> The drawback is that 1) is very un-nftables like, but alas, I don't
-> think we can avoid it.
+To: Leon Merten Lohse <leon@green-side.de>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
 
-well, I think being able to search all policies would be a nifty thing to=
- have.
-But sure, doing the first thing would be much better and more suitable as=
- a
-replacement for -m policy in nftables.
+--8t9RHnE3ZwKMSgU+
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Tue, Oct 18, 2016 at 10:52:31PM +0200, Leon Merten Lohse wrote:
+> Hi,
+> 
+> I am trying to add an anonymous set that is defined as a variable to a
+> named set as follows:
+> 
+> define whitelist_v4 = { 1.1.1.1}
+> 
+> table inet filter {
+>   set whitelist_v4 { type ipv4_addr; }
+>  
+>   [ ... ]
+> }
+> 
+> add element inet filter whitelist_v4 $whitelist_v4
+
+Attaching a patch to resolve this. Thanks for reporting.
+
+--8t9RHnE3ZwKMSgU+
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment; filename="0001-parser_bison-allow-to-use-variable-to-add-create-del.patch"
+
+From 86ea36cfcb18bf4f1d3128e6b848c4d4ffc5f964 Mon Sep 17 00:00:00 2001
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Date: Thu, 20 Oct 2016 17:06:05 +0200
+Subject: [PATCH nft] parser_bison: allow to use variable to add/create/delete
+ elements
+
+Using variable definitions from element command doesn't work, eg.
+
+-test.nft-
+ define whitelist_v4 = { 1.1.1.1 }
+ table inet filter {
+	set whitelist_v4 { type ipv4_addr; }
+ }
+ add element inet filter whitelist_v4 $whitelist_v4
+-EOF-
+
+ # nft -f test.nft
+ test.nft:7:38-38: Error: syntax error, unexpected '$', expecting '{'
+ add element inet filter whitelist_v4 $whitelist_v4
+                                      ^
+
+Fix this by using set_block_expr rule for every element command.
+
+Reported-by: Leon Merten Lohse <leon@green-side.de>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ src/parser_bison.y | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/parser_bison.y b/src/parser_bison.y
+index 14ad67f61b6b..4108dff7e228 100644
+--- a/src/parser_bison.y
++++ b/src/parser_bison.y
+@@ -750,7 +750,7 @@ add_cmd			:	TABLE		table_spec
+ 				handle_merge(&$3->handle, &$2);
+ 				$$ = cmd_alloc(CMD_ADD, CMD_OBJ_SET, &$2, &@$, $5);
+ 			}
+-			|	ELEMENT		set_spec	set_expr
++			|	ELEMENT		set_spec	set_block_expr
+ 			{
+ 				$$ = cmd_alloc(CMD_ADD, CMD_OBJ_SETELEM, &$2, &@$, $3);
+ 			}
+@@ -799,7 +799,7 @@ create_cmd		:	TABLE		table_spec
+ 				handle_merge(&$3->handle, &$2);
+ 				$$ = cmd_alloc(CMD_CREATE, CMD_OBJ_SET, &$2, &@$, $5);
+ 			}
+-			|	ELEMENT		set_spec	set_expr
++			|	ELEMENT		set_spec	set_block_expr
+ 			{
+ 				$$ = cmd_alloc(CMD_CREATE, CMD_OBJ_SETELEM, &$2, &@$, $3);
+ 			}
+@@ -831,7 +831,7 @@ delete_cmd		:	TABLE		table_spec
+ 			{
+ 				$$ = cmd_alloc(CMD_DELETE, CMD_OBJ_SET, &$2, &@$, NULL);
+ 			}
+-			|	ELEMENT		set_spec	set_expr
++			|	ELEMENT		set_spec	set_block_expr
+ 			{
+ 				$$ = cmd_alloc(CMD_DELETE, CMD_OBJ_SETELEM, &$2, &@$, $3);
+ 			}
+-- 
+2.1.4
 
 
-
---=20
-
-Mit freundlichen Gr=C3=BC=C3=9Fen/Kind Regards,
-Noel Kuntze
-
-GPG Key ID: 0x63EC6658
-Fingerprint: 23CA BB60 2146 05E7 7278 6592 3839 298F 63EC 6658
-
-
-
---vC701LWnMlbGDo6LGVnpvRswR3WOwHnjM--
-
---uhQOuTmM0QWqtnJj04acebMp2GqWo104e
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQI0BAEBCAAeBQJYBpk7Fxxub2VsQGZhbWlsaWUta3VudHplLmRlAAoJEDg5KY9j
-7GZYxkQP/iwUxiYCjieZo838qF8CFzuG8J9c37S7Dw0N56tDMEQn1sw3hqKLm3AO
-O4aTzANpY84WiyhffynQEbe66mR0DE7oqcGlkzhDQQlE9FNVTSDJGRv66bGxi9lx
-nY/Kca4Ahdz9JJrbMBkO0iGo02Q9hmyXB+Xe6RKxC4hyyM5i7TI2nLK+GmR86Q6n
-B4KOnwTCsEshHLQYItASW/7KBiygjQEVsDG1o73itxhXHDqiDkGhMsYKgkTvXZ5d
-lN2v4Vqb6XIlhTb6B4Gm9JTga8YljcaYwFPlUlTq+0zXt6LUPKyGozc/Susa7KHQ
-1flKQgOP34TNJkoFyuJndbp6h036sMvU0Lru2fLUgz3wQ3/mQeJbuMKTTxMYl1nt
-ZvfM8uHRRo2fyX1VaKf8yu6KPt3JR8tcOUNmh3KM84KoXV7DFzs6Urip8naALGnc
-jKERU5OxWrBceGjdqUSQxJLafCU7mHZ4KnDkDDCsXxZKYd+Ty1FSbqn1qGqDAnap
-pEoJXu7Xx1o8TX+P9FI6YvsLOdNXUk2fe5DpUsg0KotZ1rPc29myG0xy/RSLFkp6
-YlAVDyiTxeQSXofheqvMph3Oo/TdhtLI3pgDXwkuBe4evFqu/h8z7nNU3ucCrXEY
-Ru9Sx5Z28agI/7FV66fnL5+RDGxdjwYq/ay254iHfxsOb0fSpFpB
-=tRhl
------END PGP SIGNATURE-----
-
---uhQOuTmM0QWqtnJj04acebMp2GqWo104e--
+--8t9RHnE3ZwKMSgU+--
