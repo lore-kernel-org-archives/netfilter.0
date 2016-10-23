@@ -1,51 +1,43 @@
-From: Sverd Johnsen <sverd.johnsen@googlemail.com>
-Subject: nftables: log in netdev not possible? (Error: Could not process rule:
- No such file or directory)
-Date: Fri, 21 Oct 2016 12:53:56 +0200
-Message-ID: <CAGmahrSLeMcs4Q+nmtgQ=qnvzeXEWbNz37VtpMoPffWVJL0iZQ@mail.gmail.com>
+From: Leon Merten Lohse <leon@green-side.de>
+Subject: nftables: named set for ipv4 networks
+Date: Sun, 23 Oct 2016 21:38:22 +0200
+Message-ID: <20161023213822.16337e5c@doomgiver>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20120113;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=nnigT+7gWLk0FHxvDGbJskbiktHJYfWoqU29abiniyU=;
-        b=kGBVfmO2i0YZZEMgaWTvuIUjQVbarmy3C4CvM811Fi+hwoC1jB+q7C1TXNo4U/Fl9h
-         ewCOOOMuy/wkqIiC8SiD+kWK0g/IHN+LlMv01jV21HFs9anRh6HUptADy33R2hI8nfDS
-         zYmm3aNmRXh5rIPAwRIDCEW6tBn2aLi5cfGLYLkbT31tT+OLlat4MJhBaQ+JuEozQ4rf
-         SiaAaHEkeWDYwAomIoy0LMiDpmCjv7Z3HRTlDQuxGLr9/9S+BB0cZw89mH6OJ/UzXX79
-         x22cEhyhY6R9EbLBz8kuw3Cwgz5nP+d8YFImjgn+RsBqVWop4q3jgDIlSBMsnTGDaNWv
-         hywQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-This works:
+Hi,
 
-table netdev filter {
-    chain test {
-        type filter hook ingress device eth0 priority 0; policy accept;
-        counter packets 43 bytes 2820
-    }
+is there a way to migrate a hash:net type ipset to nftables?
+We use this to implement a blacklist where we block a large number of
+networks.
+
+I tried using a type ipv4_addr named set as follows:
+
+flush ruleset
+table inet filter {
+  set blacklist_v4 { type ipv4_addr; }
 }
+add element inet filter blacklist_v4 { 10.0.0.0/8 }
 
-This does not:
+However, this results in:
+Error: Set member cannot be prefix, missing interval flag on declaration
+add element inet filter blacklist_v4 { 10.0.0.0/8 }
+                                       ^^^^^^^^^^
+Is ipv4_addr the wrong type in this case? I could not find any
+documentation on it.
+Using networks in anonymous sets seems to work flawlessly.
 
-table netdev filter {
-  chain test {
-  type filter hook ingress device eth0 priority 0;
-    counter log
-  }
-}
+Best,
+Leon
 
-# nft -f /etc/nftables.conf
-
-
-
-
- :(
-/etc/nftables.conf:112:1-2: Error: Could not process rule: No such
-file or directory
-table netdev filter {
-^^
+System:
+# nft --version
+nftables v0.6 (Support Edward Snowden)
+# uname -a
+Linux maracuja 4.7.0-0.bpo.1-amd64 #1 SMP Debian 4.7.5-1~bpo8+2
+(2016-10-01) x86_64 GNU/Linux
