@@ -1,68 +1,79 @@
-From: Michael Johnson - MJ <mj@revmj.com>
+From: Noel Kuntze <noel@familie-kuntze.de>
 Subject: Re: iptables 'related' not working under linux kernel 4.8.3?
-Date: Wed, 26 Oct 2016 10:54:12 -0700
-Message-ID: <CAHGunUk-HV6ELx0TqngV0Ghyu75Yp8NFgBnbhumJVt+V=hRWeA@mail.gmail.com>
+Date: Wed, 26 Oct 2016 20:20:06 +0200
+Message-ID: <53afa8b4-f32e-0a2a-224c-801485edbde3@familie-kuntze.de>
 References: <CAHGunUmgVPqiYTiAH3bQP5r_Ygj364EQhtz25Nr9aNDS0toR0g@mail.gmail.com>
+ <CAHGunUk-HV6ELx0TqngV0Ghyu75Yp8NFgBnbhumJVt+V=hRWeA@mail.gmail.com>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="pJGVqQH8SSJnRrNr36HjU9wFkAi0VK4J6"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:sender:in-reply-to:references:from:date:message-id
-         :subject:to;
-        bh=r+VopJn7I0wdN/d2QovU7o317jp/MNN45VoVjyg4tU0=;
-        b=okBBGsAnIqs35JSMqV5U1S/2azI6jTypuGyzy53WnnoOVoBEWNh3xZhRN0aPDS35sq
-         fbAPjKHZPCAGjqcZzRrNqVaTpipUbltF5xVtVLKUga57bBGrNk4RerzwJRdIBLFOxzyD
-         Cr9/cr+OB/F4Hd8Ci3/KSzwUQhiXrUDA+IsAhGhyisnPwHaXKRDHM9Mr8CsMaUupbGCD
-         2rFmp4FQh9DUeTrTrrkntsZSHRGNbcnV8wBD9xSgty3N/F09oQ3zfn3fK0Dgl7OrPWHI
-         LapYODeIwfDHz79y+R7Nrpv83niEuLxg84GdKeBM5flk3RuD+AlNkjJCNggsAhTQdmni
-         VMdw==
-In-Reply-To: <CAHGunUmgVPqiYTiAH3bQP5r_Ygj364EQhtz25Nr9aNDS0toR0g@mail.gmail.com>
+In-Reply-To: <CAHGunUk-HV6ELx0TqngV0Ghyu75Yp8NFgBnbhumJVt+V=hRWeA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Michael Johnson - MJ <mj@revmj.com>, netfilter@vger.kernel.org
 
-Hm...
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--pJGVqQH8SSJnRrNr36HjU9wFkAi0VK4J6
+Content-Type: multipart/mixed; boundary="oWJOUcU3L85O1Tx4xSc0H3VT9bnalfKoh";
+ protected-headers="v1"
+From: Noel Kuntze <noel@familie-kuntze.de>
+To: Michael Johnson - MJ <mj@revmj.com>, netfilter@vger.kernel.org
+Message-ID: <53afa8b4-f32e-0a2a-224c-801485edbde3@familie-kuntze.de>
+Subject: Re: iptables 'related' not working under linux kernel 4.8.3?
+References: <CAHGunUmgVPqiYTiAH3bQP5r_Ygj364EQhtz25Nr9aNDS0toR0g@mail.gmail.com>
+ <CAHGunUk-HV6ELx0TqngV0Ghyu75Yp8NFgBnbhumJVt+V=hRWeA@mail.gmail.com>
+In-Reply-To: <CAHGunUk-HV6ELx0TqngV0Ghyu75Yp8NFgBnbhumJVt+V=hRWeA@mail.gmail.com>
 
-Well, I don't know if the mailing list is working as my message still
-isn't showing up in the archives and I've not received any messages
-from the list since I joined.  But I figured out my problem and that
-is I needed to set net.netfilter.nf_conntrack_helper = 1 vial sysctl.
-On the off chance my message does eventually show up in the list
-archives, hopefully this will help someone in the future,
+--oWJOUcU3L85O1Tx4xSc0H3VT9bnalfKoh
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Oct 24, 2016 at 8:21 PM, Michael Johnson - MJ <mj@revmj.com> wrote:
-> I've got a system where we run a custom compiled kernel.  In response
-> to the DirtyCOW bug, we updated the kernel from 4.1.4 to 4.8.3.
->
-> Everything works flawlessly, except for the --RELATED option in
-> conjunction with FTP traffic (I don't know if it is working properly
-> for other traffic or not.  To be 100% clear, under the 4.1.4 kernel,
-> this worked fine.
->
-> Is this just broken or is there something wrong with my kernel
-> configuration?  It looks like my kernel config is right, but I know
-> for certain.  I've attached the kernel config for both 4.1.4 and
-> 4.8.3.
->
-> It is worth noting that our system is based off of Debian Wheezy.  The
-> iptables userspace tools are the version that come with Wheezy.  I
-> compiled iptables 1.6.0 and tried that with the same results.  The
-> only configuration option I passed to iptables was
-> '--disable-nftables'.  This was done because I was not having log
-> getting to to build against libnftnl in a custom location.
->
-> Any suggestions?  I really don't want to have to keep my highports
-> completely open to allow for FTP to work and I'm hitting a wall at
-> this point.
->
-> Thanks!
->
-> --
-> Michael Johnson - MJ
+On 26.10.2016 19:54, Michael Johnson - MJ wrote:
+> Hm...
+>=20
+> Well, I don't know if the mailing list is working as my message still
+> isn't showing up in the archives and I've not received any messages
+> from the list since I joined.  But I figured out my problem and that
+> is I needed to set net.netfilter.nf_conntrack_helper =3D 1 vial sysctl.=
+
+
+Don't do that. manually assign helpers to the traffic.
+https://home.regit.org/netfilter-en/secure-use-of-helpers/
+
+--=20
+
+Mit freundlichen Gr=C3=BC=C3=9Fen/Kind Regards,
+Noel Kuntze
+
+GPG Key ID: 0x63EC6658
+Fingerprint: 23CA BB60 2146 05E7 7278 6592 3839 298F 63EC 6658
 
 
 
--- 
-Michael Johnson - MJ
+--oWJOUcU3L85O1Tx4xSc0H3VT9bnalfKoh--
+
+--pJGVqQH8SSJnRrNr36HjU9wFkAi0VK4J6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQI0BAEBCAAeBQJYEPPYFxxub2VsQGZhbWlsaWUta3VudHplLmRlAAoJEDg5KY9j
+7GZYxEsP/3wuCOCRlffuFcl1xn/0nus8zVXMMoM9sYIHr1F8aD1NC8jl3oK9iCKs
+HMiNuVaGNg2JWRBikvtxpCX8r8WVpQv2yGgsCI3BTE9USPKYwxH50lSt2iuajned
+pNhgLpxei6qq6PK4dEjitELINbSNj67g2ZFhvIES+ugicmwTBC8ZFPjXKgu5wc4a
+MOSy3Yboz2loEoXswnETKpn8qxDlaxd6sYNNZU9YtRtovls0is/kfi22WE93GMIq
+WxfqJ6QNG8gPJrj6yT8PCBrBP8fIZ1yWwhk90V4UlCqmxIc3HQDGULQflflfiTGG
+kOfhbAfPBHf+IBgtQusByQ7UMcMqPNKWWzp9zFNeEd2cA7fmE4OjTvIpAAw99uHh
+yPHHDePyRYCAMI3SMng/fQBWzU2UD6pS9KcKoOzSr0bH6BLiVVIvVRe9gFIkvii+
+QMIn01cqnagzflJT72lSI4txsuEZjNhgBmQ67ZGLcyF67ISewyd7kzVWKx4wexXR
+UEPGVfme/YzA/9qScWT1K9JaLgezYN1eLbKBaGrFDjLDmNpHft+l9pIazzE7/7SK
++uHbG8af6r4xaiFTZaId/mZFAFlakVGOxj44OfHvQhy8Y+JR2D4EKcn9vQQu7Kko
+qQ1V0vI/7JlyNSDT10u36yKH/YL8uIFa6BjcL+kE2c4FO/UIvORY
+=3KXZ
+-----END PGP SIGNATURE-----
+
+--pJGVqQH8SSJnRrNr36HjU9wFkAi0VK4J6--
