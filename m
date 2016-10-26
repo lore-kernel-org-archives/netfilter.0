@@ -1,43 +1,46 @@
-From: Leon Merten Lohse <leon@green-side.de>
-Subject: nftables: named set for ipv4 networks
-Date: Sun, 23 Oct 2016 21:38:22 +0200
-Message-ID: <20161023213822.16337e5c@doomgiver>
+From: Richard Peeters <richardpeeters45@gmail.com>
+Subject: Question about NFLOG and conntrack glue
+Date: Wed, 26 Oct 2016 08:27:46 -0700
+Message-ID: <CABfb+p379t9n_iMK1mwMUA76fkhhr-76Fp=C-QCdmNN9iqFwkA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=CuXqwOhp0PjexLrj99FiknJArnmkIwpBMXF6yYjo9Dc=;
+        b=AmByg3khoLJcVQxVtEPprfsE9VVTpq6k/Ijs5JVbMfvdxMKeDESHXL2r8CJ/dY9XxR
+         16beB44KBhFBI+A0d/STo0ZjjYyHBXphI4QnO3yKXdMVOV6lTYki5q9hWPmY0HjiuIwZ
+         8gokhVXERhfGYiXOLOkcqmU2nv+/ct9penBvYwL0GBVDXGnjZauhKaF4w8gHPPEcsybb
+         Wlbc9Tqq/ZJBz7EIMQaJU6r73GMg4SKPRaYinXXTb2jOlRoku59pF48El3uC2/va0jF+
+         0QbzU7qIB7KMYBim6b3UT3pmqdY9yjDCDnU8TssQKGfFPTn3jgSdJRXkIaQ3+dbOFiTz
+         BVVQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
 Hi,
 
-is there a way to migrate a hash:net type ipset to nftables?
-We use this to implement a blacklist where we block a large number of
-networks.
+I am referring to commit :
+https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=a29a9a585b2840a205f085a34dfd65c75e86f7c3
+which was pulled in with 4.4, I am running kernel 4.8, and wondering
+how I would be able to access the attached conntrack info in user
+space.
 
-I tried using a type ipv4_addr named set as follows:
+My application runs in user space and retrieves packets that match a
+specific criteria from iptables using NFLOG, I would like to get
+conntrack information for said packet.
 
-flush ruleset
-table inet filter {
-  set blacklist_v4 { type ipv4_addr; }
-}
-add element inet filter blacklist_v4 { 10.0.0.0/8 }
+I use libnetfilter_log but I do not see any API exposed that will give
+me this information, even if I was able to extract information using
+libnfnnetlink apis,
+( nfnl_get_pointer_to_data(nfad->nfa, NFULA_CT, struct nf_conn);)
+the best I could get in this app would be a struct nf_conn pointer.
 
-However, this results in:
-Error: Set member cannot be prefix, missing interval flag on declaration
-add element inet filter blacklist_v4 { 10.0.0.0/8 }
-                                       ^^^^^^^^^^
-Is ipv4_addr the wrong type in this case? I could not find any
-documentation on it.
-Using networks in anonymous sets seems to work flawlessly.
+My question is : since struct nf_conn is not exposed to userspace, how
+is one supposed to use the attached information in userspace? It would
+be great to see some example code.
 
-Best,
-Leon
-
-System:
-# nft --version
-nftables v0.6 (Support Edward Snowden)
-# uname -a
-Linux maracuja 4.7.0-0.bpo.1-amd64 #1 SMP Debian 4.7.5-1~bpo8+2
-(2016-10-01) x86_64 GNU/Linux
+Thanks,
+Rich
