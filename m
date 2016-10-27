@@ -1,46 +1,72 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Question about NFLOG and conntrack glue
-Date: Thu, 27 Oct 2016 21:40:30 +0200
-Message-ID: <20161027194030.GA1257@salvia>
-References: <CABfb+p379t9n_iMK1mwMUA76fkhhr-76Fp=C-QCdmNN9iqFwkA@mail.gmail.com>
+Subject: Re: VRF + Netfilter deployment - multitenancy filtering box
+Date: Thu, 27 Oct 2016 21:43:55 +0200
+Message-ID: <20161027194355.GB1257@salvia>
+References: <c847aa653f58c75da5717819ff0f861b.squirrel@minkevie.econ.uba.ar>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CABfb+p379t9n_iMK1mwMUA76fkhhr-76Fp=C-QCdmNN9iqFwkA@mail.gmail.com>
+In-Reply-To: <c847aa653f58c75da5717819ff0f861b.squirrel@minkevie.econ.uba.ar>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Richard Peeters <richardpeeters45@gmail.com>
+To: seba@econ.uba.ar
 Cc: netfilter@vger.kernel.org
 
-On Wed, Oct 26, 2016 at 08:27:46AM -0700, Richard Peeters wrote:
-> Hi,
+On Mon, Oct 10, 2016 at 11:45:05AM -0300, seba@econ.uba.ar wrote:
+> Hi, I'm trying to deploy VRFs + Netfilter in a such a way I could maintain
+> different filtering rules while attaining isolated traffic at Layer 3, and
+> perhaps some overlapping IPs functionality.
 > 
-> I am referring to commit :
-> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=a29a9a585b2840a205f085a34dfd65c75e86f7c3
-> which was pulled in with 4.4, I am running kernel 4.8, and wondering
-> how I would be able to access the attached conntrack info in user
-> space.
+> Even though there's some VRF + NF Kernel documentation, I could use some
+> help from the netfilter community; and I think lack of information
+> regarding this topic is due to only recent kernels (>4.6 will do the
+> sucessful magic!) aren't massive today, but it'll be a hot issue when this
+> kernel reaches production level.
 > 
-> My application runs in user space and retrieves packets that match a
-> specific criteria from iptables using NFLOG, I would like to get
-> conntrack information for said packet.
+> Here's what I'm looking after:
 > 
-> I use libnetfilter_log but I do not see any API exposed that will give
-> me this information, even if I was able to extract information using
-> libnfnnetlink apis,
-> ( nfnl_get_pointer_to_data(nfad->nfa, NFULA_CT, struct nf_conn);)
-> the best I could get in this app would be a struct nf_conn pointer.
+>                            +
+>                         ^  |
+>                         |  |
+>                         |  v
+>                         |
+>                      +--+------+
+>                      |         | 172.17.0.0/16
+>                      | eth0    |
+>                      | 	       |
+>                      +---^-----+
+>        +---------------^ |  ^-----------+
+>        |                 |              |
+>        |                 |              |
+>        |                 |              |
+>        |                 |              |
+>    +---v------+     +----v-----+     +--v--------+
+>    |          |     |          |     |           |
+>    | RED      |     | BLUE     |     | GREEN	 |
+>    | eth1     |     | eth2     |     | eth3      |
+>    |          |     |          |     |           |
+>    +----------+     +----------+     +-----------+
+> 10.0.0.0/24         10.0.0.0/24      10.0.0.0/24
 > 
-> My question is : since struct nf_conn is not exposed to userspace, how
-> is one supposed to use the attached information in userspace? It would
-> be great to see some example code.
+> 
+> Suppose you have an shared & physical interface which leads traffic inside
+> and outside our box, serving three customers RED, GREEN & BLUE through
+> dedicated physical internal interfaces, at the same time we're mantaining
+> their traffic isolated from each other at layer 3 using VRFs (and maybe,
+> later permit Overlapping IPs between customers if possible).
+> 
+> I'm considering creating three VRF devices and attaching each different
+> customer interfaces to them at the same time I attach eth0 to all the VRF
+> devices, then deploy NAT rules through iptables in order to get the
+> traffic flow in the desired direction...
+> 
+> How would it be your filtering strategy in order to achieve some sort of
+> "VRF/multitenant" filtering ability? Filtering rules in each vrf device
+> it's the only way or I'm missing something?
 
-You can apply this patch on top of libnetfilter_log:
+Did you consider using conntrack zones for this?
 
-https://patchwork.ozlabs.org/patch/530498/
-
-I requested one small change (see thread for details), it would be
-great if you could take it, revamp it and resubmit it so I can apply
-this. Thanks.
+See iptables-extensions(8) manpages, more specifically the CT target.
+You can set the zone from raw/prerouting chain.
