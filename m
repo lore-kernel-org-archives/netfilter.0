@@ -1,51 +1,46 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: nftables: log in netdev not possible? (Error: Could not process
- rule: No such file or directory)
-Date: Thu, 27 Oct 2016 21:35:52 +0200
-Message-ID: <20161027193552.GB1570@salvia>
-References: <CAGmahrSLeMcs4Q+nmtgQ=qnvzeXEWbNz37VtpMoPffWVJL0iZQ@mail.gmail.com>
+Subject: Re: Question about NFLOG and conntrack glue
+Date: Thu, 27 Oct 2016 21:40:30 +0200
+Message-ID: <20161027194030.GA1257@salvia>
+References: <CABfb+p379t9n_iMK1mwMUA76fkhhr-76Fp=C-QCdmNN9iqFwkA@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAGmahrSLeMcs4Q+nmtgQ=qnvzeXEWbNz37VtpMoPffWVJL0iZQ@mail.gmail.com>
+In-Reply-To: <CABfb+p379t9n_iMK1mwMUA76fkhhr-76Fp=C-QCdmNN9iqFwkA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Sverd Johnsen <sverd.johnsen@googlemail.com>
+To: Richard Peeters <richardpeeters45@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-On Fri, Oct 21, 2016 at 12:53:56PM +0200, Sverd Johnsen wrote:
-> This works:
+On Wed, Oct 26, 2016 at 08:27:46AM -0700, Richard Peeters wrote:
+> Hi,
 > 
-> table netdev filter {
->     chain test {
->         type filter hook ingress device eth0 priority 0; policy accept;
->         counter packets 43 bytes 2820
->     }
-> }
+> I am referring to commit :
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=a29a9a585b2840a205f085a34dfd65c75e86f7c3
+> which was pulled in with 4.4, I am running kernel 4.8, and wondering
+> how I would be able to access the attached conntrack info in user
+> space.
 > 
-> This does not:
+> My application runs in user space and retrieves packets that match a
+> specific criteria from iptables using NFLOG, I would like to get
+> conntrack information for said packet.
 > 
-> table netdev filter {
->   chain test {
->   type filter hook ingress device eth0 priority 0;
->     counter log
->   }
-> }
+> I use libnetfilter_log but I do not see any API exposed that will give
+> me this information, even if I was able to extract information using
+> libnfnnetlink apis,
+> ( nfnl_get_pointer_to_data(nfad->nfa, NFULA_CT, struct nf_conn);)
+> the best I could get in this app would be a struct nf_conn pointer.
 > 
-> # nft -f /etc/nftables.conf
-> 
-> 
-> 
-> 
->  :(
-> /etc/nftables.conf:112:1-2: Error: Could not process rule: No such
-> file or directory
-> table netdev filter {
-> ^^
+> My question is : since struct nf_conn is not exposed to userspace, how
+> is one supposed to use the attached information in userspace? It would
+> be great to see some example code.
 
-Just for the record (people searching for this), I posted this patch,
-so this should hit upstream for the 4.10 release:
+You can apply this patch on top of libnetfilter_log:
 
-http://patchwork.ozlabs.org/patch/687918/
+https://patchwork.ozlabs.org/patch/530498/
+
+I requested one small change (see thread for details), it would be
+great if you could take it, revamp it and resubmit it so I can apply
+this. Thanks.
