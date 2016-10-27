@@ -1,89 +1,57 @@
-From: Leon Merten Lohse <leon@green-side.de>
-Subject: Re: nftables: named set for ipv4 networks
-Date: Thu, 27 Oct 2016 23:41:52 +0200
-Message-ID: <20161027234152.2c94a832@doomgiver>
-References: <20161023213822.16337e5c@doomgiver>
-        <20161027192338.GA1570@salvia>
+From: Rui Santos <rsantos@ruisantos.com>
+Subject: Re: NAT with unique egress port
+Date: Thu, 27 Oct 2016 23:41:34 +0100
+Message-ID: <CAJxU1QP5OK=eScajCLB_=zNxc=2Q1Sc77iVsQnp4Cccs1iTmtg@mail.gmail.com>
+References: <CAJxU1QN4c+5KOBgakYAgRXnR3jRh_s72BKyqT3F5g+oReQp3QQ@mail.gmail.com>
+ <7118f027-0f54-7878-6d83-f304beed5430@familie-kuntze.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20161027192338.GA1570@salvia>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ruisantos-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=XgdG63gCX68B4Egjb7NMvPLeO/yea3V7YooKGUEWZl0=;
+        b=0dt2RGya4bXl5Cw5lWEmOpHTkb75fW1o3l1Vlgyen2HCkx7IG2bguHjOo2aqug5+97
+         Hb4pzI01yay3Scm7DvCj7UYagE2+zhmBjJQ5cdvAGYdz4TWJleYUgVtelDcO0ds7jo7f
+         OpWSgZlXyJ609Ed2MFnD0OZjEVN/aUNx3OffdE69QB6Fn4elkBsST9PEYwYAeTFhdrqR
+         qXSYW/LMxp3jmPcrrIfQDY8d0cLLYsHb3aNnh0KuzXDVP0cXx8Gf7dRGPGd1ZBeV//OI
+         0CiLQ5RfOPelHm1JMsydpN3zbVOyf184JR2X+iDS+UARCiDcI6grnPwy9cZj9J6C0z+W
+         hSCg==
+In-Reply-To: <7118f027-0f54-7878-6d83-f304beed5430@familie-kuntze.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: Noel Kuntze <noel@familie-kuntze.de>
+Cc: netfilter@vger.kernel.org
 
-(repost to list. sorry for the duplicate)
+HI Noel,
 
-Thank you, Pablo!
-Unfortunately this results in a segfault for me. I was able to boil the
-ruleset down to a minimal example that segfaults. 
+Thank you for your reply on this!
 
-# nft -f segfault.ruleset 
-Segmentation fault
+I believe you may be referring to the --random of the SNAT target.
 
-Even if I made a severe error, it should not segfault, right? ..
+Although that is a solution which I will probably take if there is no
+other, there are actually two issues with it:
+1) AFAIK, it will randomize all egress ports. I would like to keep the
+default behavior of NAT, by tampering with connections as little as
+possible. On the example I provided, only the connection initiated by
+server2, gets a random egress port. server1 connection egress port
+will be the same as the origin source port.
 
-Versions of nftables and kernel are as in my previous emails.
+2) Random does not necessarily mean unique. What will happen if
+client1 and client2, randomly get the same egress port for different
+destination IP's? Will --random consider this valid? If it will, I end
+up with the same issue (although rare, true) of having two clients
+with the same egress port.
 
-Best 
-Leon
+Is there any way to accomplish this?
 
----
+>
+> The answer is on the man page (man iptables-extensions).
+> Read the text about the SNAT and MASQUERADE targets.
+>
 
-# segfault.ruleset
-
-flush ruleset
-
-table inet filter {
-  # blocked networks
-  set blacklist_v4 { type ipv4_addr; flags interval; }
-}
-
-# this would be included from a generated file
-add element inet filter blacklist_v4 {
-192.168.0.1/24,
-}
-
-
-
-On Thu, 27 Oct 2016 21:23:38 +0200
-Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-
-> On Sun, Oct 23, 2016 at 09:38:22PM +0200, Leon Merten Lohse wrote:  
-> > Hi,
-> > 
-> > is there a way to migrate a hash:net type ipset to nftables?
-> > We use this to implement a blacklist where we block a large number
-> > of networks.
-> > 
-> > I tried using a type ipv4_addr named set as follows:
-> > 
-> > flush ruleset
-> > table inet filter {
-> >   set blacklist_v4 { type ipv4_addr; }
-> > }
-> > add element inet filter blacklist_v4 { 10.0.0.0/8 }
-> > 
-> > However, this results in:
-> > Error: Set member cannot be prefix, missing interval flag on
-> > declaration add element inet filter blacklist_v4 { 10.0.0.0/8 }
-> >                                        ^^^^^^^^^^
-> > Is ipv4_addr the wrong type in this case? I could not find any
-> > documentation on it.
-> > Using networks in anonymous sets seems to work flawlessly.    
-> 
-> Missing "flags interval;" here, so this should be:
-> 
->         table inet filter {
->            set blacklist_v4 { type ipv4_addr; flags interval; }
->         }
-> 
-> With named sets, you have to specify this flag since the kernel uses
-> to select what is the best data structure uses to represent what you
-> need.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter"
-> in the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html  
-
+-- 
+Rui Santos
+Veni, Vidi, Linux
