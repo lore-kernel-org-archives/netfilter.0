@@ -1,79 +1,59 @@
-From: Noel Kuntze <noel@familie-kuntze.de>
-Subject: Re: iptables 'related' not working under linux kernel 4.8.3?
-Date: Wed, 26 Oct 2016 20:20:06 +0200
-Message-ID: <53afa8b4-f32e-0a2a-224c-801485edbde3@familie-kuntze.de>
-References: <CAHGunUmgVPqiYTiAH3bQP5r_Ygj364EQhtz25Nr9aNDS0toR0g@mail.gmail.com>
- <CAHGunUk-HV6ELx0TqngV0Ghyu75Yp8NFgBnbhumJVt+V=hRWeA@mail.gmail.com>
+From: Rui Santos <rsantos@ruisantos.com>
+Subject: NAT with unique egress port
+Date: Thu, 27 Oct 2016 17:22:50 +0100
+Message-ID: <CAJxU1QN4c+5KOBgakYAgRXnR3jRh_s72BKyqT3F5g+oReQp3QQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="pJGVqQH8SSJnRrNr36HjU9wFkAi0VK4J6"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAHGunUk-HV6ELx0TqngV0Ghyu75Yp8NFgBnbhumJVt+V=hRWeA@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ruisantos-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=t/ZBcuc4IJaI/Kn3gwEfrKPk/tHX479+MH0fwo6UmtU=;
+        b=KrsthvaX46KD+XF0hslCyd7Jr2TPLFv32yWAI3tSLA2ysFzlnkJ6bRucIFc7Y/WN23
+         +LAgYLHvTqWjTpyvP4xoh6ksijqrpEdNWqw/w1lG8ru8LejFrs/QUuymIJ/ivj23JSpp
+         lDRrVRC0B4X2P1WksoIXC0NcsOOLbRSPgUh/0BsYop+tvdMTTvKwGNvDg5z8ndk6weec
+         SffCiiPZQyg6P2ZlX82qdSKNbAXEenX6OWNXuJrnjuxjdZtg4TOjHuJwpMwo/u0Suqge
+         1qxYxwjYRGUesYTZ8Y0uqcUPXp9CH5BmRAyZe6mDbSuIE3HGfug2oT63MJdXuGaRxSwq
+         aOfw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Michael Johnson - MJ <mj@revmj.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---pJGVqQH8SSJnRrNr36HjU9wFkAi0VK4J6
-Content-Type: multipart/mixed; boundary="oWJOUcU3L85O1Tx4xSc0H3VT9bnalfKoh";
- protected-headers="v1"
-From: Noel Kuntze <noel@familie-kuntze.de>
-To: Michael Johnson - MJ <mj@revmj.com>, netfilter@vger.kernel.org
-Message-ID: <53afa8b4-f32e-0a2a-224c-801485edbde3@familie-kuntze.de>
-Subject: Re: iptables 'related' not working under linux kernel 4.8.3?
-References: <CAHGunUmgVPqiYTiAH3bQP5r_Ygj364EQhtz25Nr9aNDS0toR0g@mail.gmail.com>
- <CAHGunUk-HV6ELx0TqngV0Ghyu75Yp8NFgBnbhumJVt+V=hRWeA@mail.gmail.com>
-In-Reply-To: <CAHGunUk-HV6ELx0TqngV0Ghyu75Yp8NFgBnbhumJVt+V=hRWeA@mail.gmail.com>
+Hi all,
 
---oWJOUcU3L85O1Tx4xSc0H3VT9bnalfKoh
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+I'm currently using NAT to provide Basic address translation from
+private to public IP's.
 
-On 26.10.2016 19:54, Michael Johnson - MJ wrote:
-> Hm...
->=20
-> Well, I don't know if the mailing list is working as my message still
-> isn't showing up in the archives and I've not received any messages
-> from the list since I joined.  But I figured out my problem and that
-> is I needed to set net.netfilter.nf_conntrack_helper =3D 1 vial sysctl.=
+However, linux kernel uses both destination IP and Port as part of
+it's NAT mapping process. This way (client1 and client2 are on the
+same internal network):
+- if client1 connects to server1 using source port X, the NAT will be
+mapped: client1IP:SourcePortX -> server1IP:SourcePortX;
+- if client2 then connects to server2 using source port X, the NAT
+will be mapped: client2IP:SourcePortX -> server2IP:SourcePortX.
+Basically, SourcePortX is used on both mappings for client1 and client2.
 
+But, if client2 tries to connect do server1 instead, using the same
+source port X, the NAT will be mapped: client2IP:SourcePortX ->
+server2IP:SourcePortY
+SourcePortY will be an available (randomly generated?) ephemeral port.
 
-Don't do that. manually assign helpers to the traffic.
-https://home.regit.org/netfilter-en/secure-use-of-helpers/
+My goal is to force this behavior on all outgoing connections. This
+way I would get a unique egress port mapping to an internal IP:Port in
+a specific point in time:
+- if client1 connects to server1 using source port X, the NAT will be
+mapped: client1IP:SourcePortX -> server1IP:SourcePortX;
+- if client2 then connects to server2 using source port X, the NAT
+will be mapped: client2IP:SourcePortX -> server2IP:SourcePortY.
+SourcePortY will be an available (randomly generated?) ephemeral port.
 
---=20
+I am aware that this will imply a concurrent NAT connections limit,
+equal to the ephemeral port range, per egress IP.
 
-Mit freundlichen Gr=C3=BC=C3=9Fen/Kind Regards,
-Noel Kuntze
+Is there any way I can accomplish this kind of behaviour?
 
-GPG Key ID: 0x63EC6658
-Fingerprint: 23CA BB60 2146 05E7 7278 6592 3839 298F 63EC 6658
-
-
-
---oWJOUcU3L85O1Tx4xSc0H3VT9bnalfKoh--
-
---pJGVqQH8SSJnRrNr36HjU9wFkAi0VK4J6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQI0BAEBCAAeBQJYEPPYFxxub2VsQGZhbWlsaWUta3VudHplLmRlAAoJEDg5KY9j
-7GZYxEsP/3wuCOCRlffuFcl1xn/0nus8zVXMMoM9sYIHr1F8aD1NC8jl3oK9iCKs
-HMiNuVaGNg2JWRBikvtxpCX8r8WVpQv2yGgsCI3BTE9USPKYwxH50lSt2iuajned
-pNhgLpxei6qq6PK4dEjitELINbSNj67g2ZFhvIES+ugicmwTBC8ZFPjXKgu5wc4a
-MOSy3Yboz2loEoXswnETKpn8qxDlaxd6sYNNZU9YtRtovls0is/kfi22WE93GMIq
-WxfqJ6QNG8gPJrj6yT8PCBrBP8fIZ1yWwhk90V4UlCqmxIc3HQDGULQflflfiTGG
-kOfhbAfPBHf+IBgtQusByQ7UMcMqPNKWWzp9zFNeEd2cA7fmE4OjTvIpAAw99uHh
-yPHHDePyRYCAMI3SMng/fQBWzU2UD6pS9KcKoOzSr0bH6BLiVVIvVRe9gFIkvii+
-QMIn01cqnagzflJT72lSI4txsuEZjNhgBmQ67ZGLcyF67ISewyd7kzVWKx4wexXR
-UEPGVfme/YzA/9qScWT1K9JaLgezYN1eLbKBaGrFDjLDmNpHft+l9pIazzE7/7SK
-+uHbG8af6r4xaiFTZaId/mZFAFlakVGOxj44OfHvQhy8Y+JR2D4EKcn9vQQu7Kko
-qQ1V0vI/7JlyNSDT10u36yKH/YL8uIFa6BjcL+kE2c4FO/UIvORY
-=3KXZ
------END PGP SIGNATURE-----
-
---pJGVqQH8SSJnRrNr36HjU9wFkAi0VK4J6--
+Thanks for all your help,
+-- 
+Rui Santos
+Veni, Vidi, Linux
