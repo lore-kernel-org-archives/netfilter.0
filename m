@@ -1,48 +1,51 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: nftables: named set for ipv4 networks
-Date: Thu, 27 Oct 2016 21:23:38 +0200
-Message-ID: <20161027192338.GA1570@salvia>
-References: <20161023213822.16337e5c@doomgiver>
+Subject: Re: nftables: log in netdev not possible? (Error: Could not process
+ rule: No such file or directory)
+Date: Thu, 27 Oct 2016 21:35:52 +0200
+Message-ID: <20161027193552.GB1570@salvia>
+References: <CAGmahrSLeMcs4Q+nmtgQ=qnvzeXEWbNz37VtpMoPffWVJL0iZQ@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20161023213822.16337e5c@doomgiver>
+In-Reply-To: <CAGmahrSLeMcs4Q+nmtgQ=qnvzeXEWbNz37VtpMoPffWVJL0iZQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Leon Merten Lohse <leon@green-side.de>
+To: Sverd Johnsen <sverd.johnsen@googlemail.com>
 Cc: netfilter@vger.kernel.org
 
-On Sun, Oct 23, 2016 at 09:38:22PM +0200, Leon Merten Lohse wrote:
-> Hi,
+On Fri, Oct 21, 2016 at 12:53:56PM +0200, Sverd Johnsen wrote:
+> This works:
 > 
-> is there a way to migrate a hash:net type ipset to nftables?
-> We use this to implement a blacklist where we block a large number of
-> networks.
-> 
-> I tried using a type ipv4_addr named set as follows:
-> 
-> flush ruleset
-> table inet filter {
->   set blacklist_v4 { type ipv4_addr; }
+> table netdev filter {
+>     chain test {
+>         type filter hook ingress device eth0 priority 0; policy accept;
+>         counter packets 43 bytes 2820
+>     }
 > }
-> add element inet filter blacklist_v4 { 10.0.0.0/8 }
 > 
-> However, this results in:
-> Error: Set member cannot be prefix, missing interval flag on declaration
-> add element inet filter blacklist_v4 { 10.0.0.0/8 }
->                                        ^^^^^^^^^^
-> Is ipv4_addr the wrong type in this case? I could not find any
-> documentation on it.
-> Using networks in anonymous sets seems to work flawlessly.
+> This does not:
+> 
+> table netdev filter {
+>   chain test {
+>   type filter hook ingress device eth0 priority 0;
+>     counter log
+>   }
+> }
+> 
+> # nft -f /etc/nftables.conf
+> 
+> 
+> 
+> 
+>  :(
+> /etc/nftables.conf:112:1-2: Error: Could not process rule: No such
+> file or directory
+> table netdev filter {
+> ^^
 
-Missing "flags interval;" here, so this should be:
+Just for the record (people searching for this), I posted this patch,
+so this should hit upstream for the 4.10 release:
 
-        table inet filter {
-           set blacklist_v4 { type ipv4_addr; flags interval; }
-        }
-
-With named sets, you have to specify this flag since the kernel uses
-to select what is the best data structure uses to represent what you
-need.
+http://patchwork.ozlabs.org/patch/687918/
