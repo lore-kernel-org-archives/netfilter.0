@@ -1,72 +1,89 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: VRF + Netfilter deployment - multitenancy filtering box
-Date: Thu, 27 Oct 2016 21:43:55 +0200
-Message-ID: <20161027194355.GB1257@salvia>
-References: <c847aa653f58c75da5717819ff0f861b.squirrel@minkevie.econ.uba.ar>
+From: Leon Merten Lohse <leon@green-side.de>
+Subject: Re: nftables: named set for ipv4 networks
+Date: Thu, 27 Oct 2016 23:41:52 +0200
+Message-ID: <20161027234152.2c94a832@doomgiver>
+References: <20161023213822.16337e5c@doomgiver>
+        <20161027192338.GA1570@salvia>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <c847aa653f58c75da5717819ff0f861b.squirrel@minkevie.econ.uba.ar>
+In-Reply-To: <20161027192338.GA1570@salvia>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: seba@econ.uba.ar
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Mon, Oct 10, 2016 at 11:45:05AM -0300, seba@econ.uba.ar wrote:
-> Hi, I'm trying to deploy VRFs + Netfilter in a such a way I could maintain
-> different filtering rules while attaining isolated traffic at Layer 3, and
-> perhaps some overlapping IPs functionality.
-> 
-> Even though there's some VRF + NF Kernel documentation, I could use some
-> help from the netfilter community; and I think lack of information
-> regarding this topic is due to only recent kernels (>4.6 will do the
-> sucessful magic!) aren't massive today, but it'll be a hot issue when this
-> kernel reaches production level.
-> 
-> Here's what I'm looking after:
-> 
->                            +
->                         ^  |
->                         |  |
->                         |  v
->                         |
->                      +--+------+
->                      |         | 172.17.0.0/16
->                      | eth0    |
->                      | 	       |
->                      +---^-----+
->        +---------------^ |  ^-----------+
->        |                 |              |
->        |                 |              |
->        |                 |              |
->        |                 |              |
->    +---v------+     +----v-----+     +--v--------+
->    |          |     |          |     |           |
->    | RED      |     | BLUE     |     | GREEN	 |
->    | eth1     |     | eth2     |     | eth3      |
->    |          |     |          |     |           |
->    +----------+     +----------+     +-----------+
-> 10.0.0.0/24         10.0.0.0/24      10.0.0.0/24
-> 
-> 
-> Suppose you have an shared & physical interface which leads traffic inside
-> and outside our box, serving three customers RED, GREEN & BLUE through
-> dedicated physical internal interfaces, at the same time we're mantaining
-> their traffic isolated from each other at layer 3 using VRFs (and maybe,
-> later permit Overlapping IPs between customers if possible).
-> 
-> I'm considering creating three VRF devices and attaching each different
-> customer interfaces to them at the same time I attach eth0 to all the VRF
-> devices, then deploy NAT rules through iptables in order to get the
-> traffic flow in the desired direction...
-> 
-> How would it be your filtering strategy in order to achieve some sort of
-> "VRF/multitenant" filtering ability? Filtering rules in each vrf device
-> it's the only way or I'm missing something?
+(repost to list. sorry for the duplicate)
 
-Did you consider using conntrack zones for this?
+Thank you, Pablo!
+Unfortunately this results in a segfault for me. I was able to boil the
+ruleset down to a minimal example that segfaults. 
 
-See iptables-extensions(8) manpages, more specifically the CT target.
-You can set the zone from raw/prerouting chain.
+# nft -f segfault.ruleset 
+Segmentation fault
+
+Even if I made a severe error, it should not segfault, right? ..
+
+Versions of nftables and kernel are as in my previous emails.
+
+Best 
+Leon
+
+---
+
+# segfault.ruleset
+
+flush ruleset
+
+table inet filter {
+  # blocked networks
+  set blacklist_v4 { type ipv4_addr; flags interval; }
+}
+
+# this would be included from a generated file
+add element inet filter blacklist_v4 {
+192.168.0.1/24,
+}
+
+
+
+On Thu, 27 Oct 2016 21:23:38 +0200
+Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+
+> On Sun, Oct 23, 2016 at 09:38:22PM +0200, Leon Merten Lohse wrote:  
+> > Hi,
+> > 
+> > is there a way to migrate a hash:net type ipset to nftables?
+> > We use this to implement a blacklist where we block a large number
+> > of networks.
+> > 
+> > I tried using a type ipv4_addr named set as follows:
+> > 
+> > flush ruleset
+> > table inet filter {
+> >   set blacklist_v4 { type ipv4_addr; }
+> > }
+> > add element inet filter blacklist_v4 { 10.0.0.0/8 }
+> > 
+> > However, this results in:
+> > Error: Set member cannot be prefix, missing interval flag on
+> > declaration add element inet filter blacklist_v4 { 10.0.0.0/8 }
+> >                                        ^^^^^^^^^^
+> > Is ipv4_addr the wrong type in this case? I could not find any
+> > documentation on it.
+> > Using networks in anonymous sets seems to work flawlessly.    
+> 
+> Missing "flags interval;" here, so this should be:
+> 
+>         table inet filter {
+>            set blacklist_v4 { type ipv4_addr; flags interval; }
+>         }
+> 
+> With named sets, you have to specify this flag since the kernel uses
+> to select what is the best data structure uses to represent what you
+> need.
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter"
+> in the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html  
+
