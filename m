@@ -1,64 +1,37 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Leon Merten Lohse <leon@green-side.de>
 Subject: Re: nftables: named set for ipv4 networks
-Date: Fri, 28 Oct 2016 10:04:19 +0200
-Message-ID: <20161028080419.GB1553@salvia>
+Date: Fri, 28 Oct 2016 16:23:53 +0200
+Message-ID: <20161028162353.7da8573c@doomgiver>
 References: <20161023213822.16337e5c@doomgiver>
- <20161027192338.GA1570@salvia>
- <20161027234152.2c94a832@doomgiver>
+        <20161027192338.GA1570@salvia>
+        <20161027234152.2c94a832@doomgiver>
+        <20161028080419.GB1553@salvia>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20161027234152.2c94a832@doomgiver>
+In-Reply-To: <20161028080419.GB1553@salvia>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Leon Merten Lohse <leon@green-side.de>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter@vger.kernel.org
 
-On Thu, Oct 27, 2016 at 11:41:52PM +0200, Leon Merten Lohse wrote:
-> (repost to list. sorry for the duplicate)
-> 
-> Thank you, Pablo!
-> Unfortunately this results in a segfault for me. I was able to boil the
-> ruleset down to a minimal example that segfaults. 
-> 
-> # nft -f segfault.ruleset 
-> Segmentation fault
-> 
-> Even if I made a severe error, it should not segfault, right? ..
-> 
-> Versions of nftables and kernel are as in my previous emails.
-> 
-> Best 
-> Leon
-> 
-> ---
-> 
-> # segfault.ruleset
-> 
-> flush ruleset
-> 
-> table inet filter {
->   # blocked networks
->   set blacklist_v4 { type ipv4_addr; flags interval; }
-> }
-> 
-> # this would be included from a generated file
-> add element inet filter blacklist_v4 {
-> 192.168.0.1/24,
-> }
+On Fri, 28 Oct 2016 10:04:19 +0200
+Pablo Neira Ayuso <pablo@netfilter.org> wrote:
 
-This is working here.
+> Could you please grab a nftables git.netfilter.org clone and confirm
+> this works for you?
 
-Your nft version is probably missing this patch:
+It seems to work with the latest git version -- no segmentation fault.
+Thank you!
 
-http://git.netfilter.org/nftables/commit/?id=24c9e993eeff0ed41875aa7efef5dd69db4eb537
+However, I stumbled onto the next problem: 
+When I load this ruleset twice, it complains that "interval overlaps
+with an existing one" even though I explicitly do a "flush ruleset" at
+the beginning of the file.
+This problem does not occur if I "nft flush ruleset" first and then
+load the ruleset.
+Do I have to explicitly flush the sets, somehow?
 
-Could you please grab a nftables git.netfilter.org clone and confirm
-this works for you?
-
-We're planning for the nft 0.7 release, so it would be good if you can
-help us confirm that the problem is already gone.
-
-Thanks.
+Best
+Leon
