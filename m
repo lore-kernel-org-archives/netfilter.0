@@ -1,57 +1,50 @@
-From: Gennady Kovalev <gik@bigur.ru>
-Subject: Re: Forward local traffic to another host with nftables
-Date: Tue, 1 Nov 2016 00:36:39 +0300
-Message-ID: <2117c0fd-7d34-0cdb-1d9a-3cb41528ce80@bigur.ru>
-References: <5bcf965b-aa71-eb5d-ed1e-a9a6e2c405f6@bigur.ru>
- <20161031192429.GA1658@salvia>
+From: Leon Merten Lohse <leon@green-side.de>
+Subject: Re: nftables: named set for ipv4 networks
+Date: Wed, 2 Nov 2016 11:30:06 +0100
+Message-ID: <20161102113006.0b3de6cd@doomgiver>
+References: <20161023213822.16337e5c@doomgiver>
+        <20161027192338.GA1570@salvia>
+        <20161027234152.2c94a832@doomgiver>
+        <20161028080419.GB1553@salvia>
+        <20161028162353.7da8573c@doomgiver>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20161031192429.GA1658@salvia>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bigur.ru; s=dkim; t=1477949800; bh=0CDosRafLDY68ZxXqrv8+vhntBD8q/NuUJGqUUtDgWA=; h=From:Subject:To:References:Message-ID:Date:MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding; b=PhW/O027Nv8vV1gaGSgbu1wgj1EV7DoELHV5JUtCyP2/TpRDYA9++eqyqS/VQESoZRuQwYvqDv1v3IlLjiGeC2hlscz3xMMGRfEKJULz2fJvLnApgaOk5tFQRLxknTUcYLnnCkn7AuHmHqIQ1J9voYznY+pxclgvhgBZLmMjVlY=
+In-Reply-To: <20161028162353.7da8573c@doomgiver>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-31.10.2016 22:24, Pablo Neira Ayuso wrote:
-> On Mon, Oct 31, 2016 at 08:33:57PM +0300, Геннадий Ковалёв wrote:  >> I have linux box (external ip x.x.x.x; internal bridge (br0) ip >> 
-10.0.2.1) with lxc container (10.0.2.22). I want to translate local >> 
-http packet with daddr to public ip to lxc container. I have put >> dnat 
-rule to nat chain with output hook, and snat rule to nat table >> with 
-postrouting hook: > From > 
-https://wiki.nftables.org/wiki-nftables/index.php/Performing_Network_Address_Translation_%28NAT%29 
- > > "You have to register the prerouting chain even if you have no rules
-> there since this chain invokes the NAT engine for the packets coming > in the input path."
+I would really appreciate if someone could comment on this.
 
-Oh, I try to make example simple and make mistake in simple config. 
-Another try:
+The problem is that nft complains about overlapping intervals in the
+set, if I load the following ruleset twice.
+This occurs even though there is a `flush ruleset' directive at the
+beginning of the ruleset. As far as I understand it, all sets should be
+empty after that.
+Calling `nft flush ruleset' beforehand works around this but is no
+longer atomic.
 
-root@sed:~# nft list ruleset
-table ip nat {
-         chain prerouting {
-                 type nat hook prerouting priority 0; policy accept;
-         }
+Best
+Leon
 
-         chain output {
-                 type nat hook output priority 0; policy accept;
-                 oif lo ip daddr x.x.x.x tcp dport http counter nftrace 
-set 1 dnat 10.0.2.22
-         }
+flush ruleset
 
-         chain postrouting {
-                 type nat hook postrouting priority 0; policy accept;
-                 oif br0 ip saddr x.x.x.x counter snat 10.0.2.1
-         }
+table inet filter {
+  set blacklist_v4 { type ipv4_addr; flags interval; }
 }
 
-And cuted tcpdump output:
-IP 10.0.2.1.36320 > 10.0.2.22.80: Flags [S], seq 2655320356...
-IP 10.0.2.22.80 > x.x.x.x.36320: Flags [S.], seq 1337026682, ack 
-2655320357...
-IP x.x.x.x.36320 > 10.0.2.22.80: Flags [R], seq 2655320357...
+add element inet filter blacklist_v4 {
+192.168.0.1/24,
+}
 
-It looks like at reverse path ip changed by snat restored, but changed 
-by dnat not.
+On Fri, 28 Oct 2016 16:23:53 +0200
+Leon Merten Lohse <leon@green-side.de> wrote:
 
-
+> When I load this ruleset twice, it complains that "interval overlaps
+> with an existing one" even though I explicitly do a "flush ruleset" at
+> the beginning of the file.
+> This problem does not occur if I "nft flush ruleset" first and then
+> load the ruleset.
+> Do I have to explicitly flush the sets, somehow?
