@@ -1,71 +1,52 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Forward local traffic to another host with nftables
-Date: Thu, 3 Nov 2016 17:25:15 +0100
-Message-ID: <20161103162515.GA3651@salvia>
-References: <5bcf965b-aa71-eb5d-ed1e-a9a6e2c405f6@bigur.ru>
- <20161031192429.GA1658@salvia>
- <2117c0fd-7d34-0cdb-1d9a-3cb41528ce80@bigur.ru>
+From: emacsuser emacs <emacsuser123@gmail.com>
+Subject: Unable to broute packets containing VLAN tag
+Date: Mon, 7 Nov 2016 12:42:01 +0100
+Message-ID: <CALR9CgcPK9QMVVGDuokAdfe0-DY09T+vCm6W6J6FA=sn_1E62Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <2117c0fd-7d34-0cdb-1d9a-3cb41528ce80@bigur.ru>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=XafNsP1YIJSSr/YzQuZZlPeGzzoavTRgsikFshIKHXo=;
+        b=PyYDNGV801ilG4ILkAYw3V3msztjaHL/12cVegED44w0V5LIKeAD9kYaXrFpD1r5f+
+         +vwafuNioeju+WhfYXznyG1HqLGr2DTpas0alywxQUEHNJeX5cY2b2bkSGMoHmjo+1Te
+         JRBjdg83t/0TPUCAN89AEgXqBQ3Gt/lKNG4Fl3j8O5fcZttM/H1q+Z55WSlHDSl8Mss/
+         NN5nw7nfADaEefgoLVtJC4laZb3kWluUleJmKa+JQCHfsA/RjgilClSo77hga1OVrdqe
+         3v9JLyjjy9i1IX40E6VGOmfzYEk6IIHI3dgQm8NbucxtyLt3yXoMZ/LT40m0ioPu7roU
+         vYrA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Gennady Kovalev <gik@bigur.ru>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
+Cc: emacsuser emacs <emacsuser123@gmail.com>
 
-On Tue, Nov 01, 2016 at 12:36:39AM +0300, Gennady Kovalev wrote:
-> 31.10.2016 22:24, Pablo Neira Ayuso wrote:
-> >On Mon, Oct 31, 2016 at 08:33:57PM +0300, Геннадий Ковалёв wrote:  >> I
-> >have linux box (external ip x.x.x.x; internal bridge (br0) ip >>
-> 10.0.2.1) with lxc container (10.0.2.22). I want to translate local >> http
-> packet with daddr to public ip to lxc container. I have put >> dnat rule to
-> nat chain with output hook, and snat rule to nat table >> with postrouting
-> hook: > From > https://wiki.nftables.org/wiki-nftables/index.php/Performing_Network_Address_Translation_%28NAT%29
-> > > "You have to register the prerouting chain even if you have no rules
-> >there since this chain invokes the NAT engine for the packets coming > in the input path."
-> 
-> Oh, I try to make example simple and make mistake in simple config. Another
-> try:
-> 
-> root@sed:~# nft list ruleset
-> table ip nat {
->         chain prerouting {
->                 type nat hook prerouting priority 0; policy accept;
+Hello.
 
-I can also see priority numbers don't match the same we use in
-iptables. This should be:
+I made some progress on my broute issue...
 
-        priority -100
+Now, I am able to see in syslog file incoming packets with VLAN info included.
 
->         }
-> 
->         chain output {
->                 type nat hook output priority 0; policy accept;
->                 oif lo ip daddr x.x.x.x tcp dport http counter nftrace set 1
-> dnat 10.0.2.22
->         }
-> 
->         chain postrouting {
->                 type nat hook postrouting priority 0; policy accept;
+The ebtable rule I'm using is:
 
-This should be:
+# ebtables -t broute -A BROUTING -i eth0 -p 802_1Q --vlan-encap IPV4
+-j redirect --redirect-target DROP --log-level DEBUG
 
-        priority 100
+(eth0 interface is added to bridge br0)
 
->                 oif br0 ip saddr x.x.x.x counter snat 10.0.2.1
->         }
-> }
-> 
-> And cuted tcpdump output:
-> IP 10.0.2.1.36320 > 10.0.2.22.80: Flags [S], seq 2655320356...
-> IP 10.0.2.22.80 > x.x.x.x.36320: Flags [S.], seq 1337026682, ack
-> 2655320357...
-> IP x.x.x.x.36320 > 10.0.2.22.80: Flags [R], seq 2655320357...
-> 
-> It looks like at reverse path ip changed by snat restored, but changed by
-> dnat not.
+The problem that I have now is that packets with VLAN_ID other than 0
+are not brouted to the iptables layer.
+Instead, any incoming packet with VLAN_ID = 0 is brouted to the
+iptables layer successfully.
 
-Out of curiosity. Is iptable_nat load? If so, rmmod iptable_nat.
+Somehow, ebtables is dropping  those packets, I do not know why. They
+are logged to the syslog fiel successfully, but they are not sent to
+the iptables layer.
+
+Do you have any idea why packets not having VLAN_ID = 0 are dropped by ebtables?
+
+Is there any way to enable additional logging on ebtables so that the
+reason for dropping packets is dumped out?
+
+Thanks.
+-Bob
