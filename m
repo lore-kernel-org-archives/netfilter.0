@@ -1,77 +1,38 @@
-From: Anton Danilov <littlesmilingcloud@gmail.com>
-Subject: Re: matching process
-Date: Tue, 8 Nov 2016 12:07:52 +0300
-Message-ID: <CAEzD07+0edc391W8uq=xHjYUSRaQJEuhZSvV8H0PF-+SWdNbnw@mail.gmail.com>
-References: <CANY1rLgxygkJXdLVEQbE_O3fsf0=4Qye8TjdKaYY1d-FzvPj6w@mail.gmail.com>
-Mime-Version: 1.0
+From: David Buchmann <david@jazznetworks.com>
+Subject: nfqueue: Get pid of socket owner
+Date: Tue, 8 Nov 2016 12:32:35 +0100
+Message-ID: <2AA7640B-E6CC-43FA-A0A2-D057FC224235@jazznetworks.com>
+Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=ie76LJDPTpbIIhfEwdoShSSAgZu9or18WAEKbHLix5k=;
-        b=HymWMdcPndG71lJ699+2OZJCxQGlQiLg3eJCnFp6cgpn1JHY4EMRGg1EPd60p6yrLR
-         vR9jxWwhY9KKESMtvVU4l9wP44umoMq8j5PZZBJTUawKW25Vq5z3rhVl6brGSSzr/UES
-         x66k9PUQ1u4tgPu1TUWliljscIuHODEePdeozupbIB7cOu2TOjOP71d0pjLygsInmnL5
-         Td5yZdjhPTUU44nZFo4tzd7SLvFHHiOVnFBPD9DGccaCxenuOW0K9GKbKD4vYlkoystE
-         kN7GC9eDeywiwma56bTjABfSbelMnsEvTLg9n6c9ys72dl0+5bcsJ89+3bvXUdMP2YEP
-         9IvA==
-In-Reply-To: <CANY1rLgxygkJXdLVEQbE_O3fsf0=4Qye8TjdKaYY1d-FzvPj6w@mail.gmail.com>
+        d=jazznetworks-com.20150623.gappssmtp.com; s=20150623;
+        h=from:content-transfer-encoding:subject:message-id:date:to
+         :mime-version;
+        bh=9Q9Z9KMDaZrkX3lkQNMvIFFHjHD1OIKwI/wP6OcXBMU=;
+        b=fxyONoGVWVnFpx0dLCA4D8gz5Lnepi8jkbwEhw2tMjs90+xMyc6x95vZZ5U7k0b9jX
+         p361tlkGq6zo3y8DXGKtqt8wJwBnOuJkqw19vEUwftsS4BXalRJkpspGwy/sfkbc7Jvn
+         KWt8RHpbHx6PlXSOjPOxOxnumSZGGCBYy1oOPKk4HotgOIzZka76BrmdBuG+qS1efu8g
+         Sy+KQCgOeuQ8Z5HCcbESLvC1v0LiI5t9aCzWdfkr/tlVcayluqGpTFSt9qEbsjCixCvY
+         g42VoyLMHOQxCN9RH2xRdP8GSGbTUFzr4DMmao9BZw8zre3Ia9qTcEYoyvgz8k+gbhWn
+         8wJA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Art Emius <art@emius.ru>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-> Does criteria number matter? Two example rules are written below.
-> iptables -t filter -A FORWARD -i eth0 -p icmp -j ACCEPT
-> iptables -t filter -A FORWARD -i eth1 -s 10.10.10.10 -d 10.20.20.20 -p
-> icmp -j ACCEPT
-> Will it take same time to match packet by these rules, or first rule
-> will take less time?
+Hi,
 
-Both rules take the same time: addresses, interfaces and protocol
-matches will be checked.
+I've started work to add support in the nfnetlink_queue kernel module =
+for
+sending the pid of the process owning the socket triggering nfqueue, and =
+I
+want to add the userspace support in libnetfilter_queue, but before I =
+get
+too invested in that work I just want to check whether there are any
+objections to such a feature in either the kernel or in the
+libnetfilter_queue library?
 
-> How does matching process exactly happens?
-> Let's say we have a rule like:
-> iptables -t filter -A FORWARD -i eth0 -s 10.10.10.10 -d 10.20.20.20 -p
-> udp --dport 123 -j ACCEPT
-> And packet with
-> iif=eth1
-> src=10.10.10.10
-> dst=10.20.20.20
-> proto=udp
-> dport=123
->
-> Will netfilter match packet with all criteria specified and make
-> decision in the end, or it will jump to next rule when first criteria
-> mismatch happen?
-
-In this case will be checked addresses at first place, and match
-process will be break
-after interface mismatch.
-
-> And third question. Is it all fair if using ipset? Will packet be
-> matched with SET2 if it doesn't match SET1?
-> iptables -t filter -A FORWARD -m set --match-set SET1 src,src -m set
-> --match-set SET2 dst,dst -j ACCEPT
-
-It fairs for any type of matches. A packet will not be matched with
-SET2 - after SET1
-checking there is a jump at next rule.
-
->
-> --
-> Regards,
-> Emius
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-
-
--- 
-Anton.
+=
+https://github.com/wuurrd/linux/commit/79d12e93ca2a28c0939937a5a690943311e=
+4bf6c=
