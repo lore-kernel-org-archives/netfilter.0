@@ -1,38 +1,128 @@
-From: David Buchmann <david@jazznetworks.com>
-Subject: nfqueue: Get pid of socket owner
-Date: Tue, 8 Nov 2016 12:32:35 +0100
-Message-ID: <2AA7640B-E6CC-43FA-A0A2-D057FC224235@jazznetworks.com>
-Mime-Version: 1.0 (Mac OS X Mail 9.3 \(3124\))
-Content-Transfer-Encoding: quoted-printable
+From: Juergen Schmidt <abcdmail@freenet.de>
+Subject: sip helper doesn't match on calls to myself
+Date: Wed, 9 Nov 2016 17:01:38 +0100
+Message-ID: <a3cf2e4b-1345-1efc-b211-5fea64438baf@freenet.de>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jazznetworks-com.20150623.gappssmtp.com; s=20150623;
-        h=from:content-transfer-encoding:subject:message-id:date:to
-         :mime-version;
-        bh=9Q9Z9KMDaZrkX3lkQNMvIFFHjHD1OIKwI/wP6OcXBMU=;
-        b=fxyONoGVWVnFpx0dLCA4D8gz5Lnepi8jkbwEhw2tMjs90+xMyc6x95vZZ5U7k0b9jX
-         p361tlkGq6zo3y8DXGKtqt8wJwBnOuJkqw19vEUwftsS4BXalRJkpspGwy/sfkbc7Jvn
-         KWt8RHpbHx6PlXSOjPOxOxnumSZGGCBYy1oOPKk4HotgOIzZka76BrmdBuG+qS1efu8g
-         Sy+KQCgOeuQ8Z5HCcbESLvC1v0LiI5t9aCzWdfkr/tlVcayluqGpTFSt9qEbsjCixCvY
-         g42VoyLMHOQxCN9RH2xRdP8GSGbTUFzr4DMmao9BZw8zre3Ia9qTcEYoyvgz8k+gbhWn
-         8wJA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi,
+Hello!
 
-I've started work to add support in the nfnetlink_queue kernel module =
-for
-sending the pid of the process owning the socket triggering nfqueue, and =
-I
-want to add the userspace support in libnetfilter_queue, but before I =
-get
-too invested in that work I just want to check whether there are any
-objections to such a feature in either the kernel or in the
-libnetfilter_queue library?
+I've got the following problem: If I'm calling myself, the incoming call
+isn't matched by the sip helper rules, but the rules w/o sip helper. I
+would have expected, that both calls are matched by the sip helper rules.
 
-=
-https://github.com/wuurrd/linux/commit/79d12e93ca2a28c0939937a5a690943311e=
-4bf6c=
+
+In detail:
+
+Given is an asterisk server, one extension (C610 IP with 3 phones, which
+can handle 2 lines at the same time) and a trunk to the provider.
+
+The extension calls the own number, which provides the following scenario:
+
+outgoing call: extension -> asterisk -> provider
+
+   and
+
+incoming call: provider -> asterisk -> extension
+
+
+*Important*: the provider uses independent media servers. This means:
+the signaling server and the media servers have different IP addresses.
+
+
+The calls from asterisk to the extensions are not described here,
+because there is no problem.
+
+
+This means:
+At the outgoing interface (ppp0) to the provider can be seen 4 legs, 2
+of the outgoing call and 2 of the incoming call. The 2 legs of the
+incoming call are not matched by the sip helper rules!
+
+kernel is 	4.4.26
+iptables is 	v1.4.21
+
+
+
+iptables is configured like this:
+
+
+modprobe nf_conntrack_sip sip_direct_media=0
+echo 0 > /proc/sys/net/netfilter/nf_conntrack_helper
+
+
+# register sip helper
+iptables -I OUTPUT -t raw -p udp -m udp -o ppp0  -d 217.0.22.0/23 -s
+$IPLOCAL --dport 5060 -j CT --helper sip
+
+iptables -I PREROUTING -t raw -p udp -m udp -i ppp0 s 217.0.22.0/23 -d
+$IPLOCAL --sport 5060 -j CT --helper sip
+
+
+# match packages in OUTPUT:
+---------------------------
+iptables -I OUTPUT -p udp -s $IPLOCAL -d 217.0.22.0/23 --sport 5060
+--dport 5060 -j ACCEPT
+
+# rtp (matched by the outgoing call)
+iptables -A OUTPUT -p udp -s $IPLOCAL -d 217.0.0.0/13 --sport
+30000:40000 -m conntrack --ctstate RELATED,ESTABLISHED -m helper
+--helper sip -j ACCEPT
+
+# why is this rule necessary for the incoming call when calling to self?
+# matched by the incoming call
+iptables -A internet-out -p udp -o ppp0 -s $IPLOCAL -d 217.0.0.0/13
+--sport 30000:40000 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+
+
+match packages in INPUT:
+------------------------
+iptables -I INPUT -i ppp0 -p udp -s 217.0.22.0/23 -d $IPLOCAL --sport
+5060 --dport 5060 -m conntrack --ctstate RELATED,ESTABLISHED  -j ACCEPT
+
+# rtp (matched by the outgoing call)
+iptables -A internet-in -i ppp0 -p udp -s 217.0.0.0/13 -d $IPLOCAL
+--dport 30000:40000 -m conntrack --ctstate RELATED,ESTABLISHED -m helper
+--helper sip -j ACCEPT
+
+# why is this rule necessary for the incoming call?
+# matched by the incoming call
+iptables -A internet-in -i ppp0 -p udp -s 217.0.0.0/13 -d $IPLOCAL
+--dport 30000:40000 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+
+
+
+
+conntrack -L gives:
+
+# Outgoing call (is matched as expected):
+# rtp
+udp      17 179 src=$IPLOCAL dst=217.0.4.103 sport=17188 dport=2016
+src=217.0.4.103 dst=$IPLOCAL sport=2016 dport=17188 [ASSURED] mark=0 use=1
+# rtcp
+udp      17 175 src=$IPLOCAL dst=217.0.4.103 sport=17189 dport=2017
+src=217.0.4.103 dst=$IPLOCAL sport=2017 dport=17189 [ASSURED] mark=0 use=1
+
+
+# Incoming call - which is *not* matched by sip helper rules, but by the
+conntrack rule without sip helper:
+# rtp
+udp      17 179 src=217.0.4.135 dst=$IPLOCAL sport=53254 dport=18900
+src=$IPLOCAL dst=217.0.4.135 sport=18900 dport=53254 [ASSURED] mark=0 use=2
+# rtcp
+udp      17 175 src=217.0.4.135 dst=$IPLOCAL sport=53255 dport=18901
+src=$IPLOCAL dst=217.0.4.135 sport=18901 dport=53255 [ASSURED] mark=0 use=1
+
+
+
+I would be glad to get some hint why it behaves like this.
+
+
+
+Thanks,
+Juergen
