@@ -1,138 +1,164 @@
-From: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
-Subject: Re: basic understanding of iptables - some questions
-Date: Sun, 20 Nov 2016 16:14:18 -0500
-Message-ID: <20161120161418.2ca1938b@playground>
-References: <560733058.4361908.1479674705472.JavaMail.zimbra@helmholtz-muenchen.de>
+From: =?UTF-8?Q?Paw_M=C3=B8ller?= <pawsen@gmail.com>
+Subject: Nftables: masquerade and forwarding firewall together
+Date: Wed, 23 Nov 2016 15:54:27 +0100
+Message-ID: <CAP6xULG5=xFQQLnq+T_=snwHA0TNTW2mE9SswV4DD3cjf-AgCA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Filter: OpenDKIM Filter v2.10.3 MAIL1.WPI.EDU uAKLELb3030698
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wpi.edu; s=_dkim;
-        t=1479676461; i=@wpi.edu;
-        bh=PUC6ftzcs1sXaUVTSSRgo4sGKsEQvZRXVWVcX/JgBGg=;
-        h=Date:From:Cc:Subject:In-Reply-To:References;
-        b=enO8w2DCDf2UQvok0GIm4VAZcn7Q7uUnK9Zlcm4Trpjx7A0t4hPTDEtgo8K0QRWJz
-         O/LGWbKPlYMIbeV78dC0sfTN7/huGtZ23IXuWZx1tS11SgmaqZnTwOFwfO4YBLbxir
-         hpf74F1eJyz3L7WuQvnpKvabj4Zi0CSDEr6d8H8A=
-In-Reply-To: <560733058.4361908.1479674705472.JavaMail.zimbra@helmholtz-muenchen.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=W4zp8dB2VqiYr7GgiMlNFdlT1Qg89SKfxR/4RTBkoX0=;
+        b=WQPvXGU7SW0z62xgmhH+XTAu3ICj7Aohkzi167WqFcpDi3o4amLlq+hWxIPwQ2QAqJ
+         233VpNDP1Jq4B+5YV8lwj12rElFaMQVHcwdtbJM4zkMC7r5ii6uExOrcUN+KYF/K3W+b
+         +taKsDJSdnHFXBClyb7p/Sn6pOcUQUdpxOZMixq2A9yUcqKpW9YRDXKUNgrf7O/xmPSj
+         JPsowXuf72e/TKTjNY1sH1UQZSirr5I1OxLEWDLfxglyZPyydWZCDQeq7JdyjYth8ng1
+         TLbemAEVAwgFmWZZpVJkF4SgVq3EVE2ViMPNtCvHNfIEFlralgxWNqMxr5LEY3IRZdQY
+         qiDA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: 
-Cc: Netfilter <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org, holger borum <holger.stadel.borum@gmail.com>
 
-Unless I misunderstand or things have changed in recent years,
-  - NEW refers to an unanswered SYN (for TCP) or the first packet of a UDP conn
-  - RELATED refers to (1) an unanswered SYN (for TCP), or (2) the first packet of
-    a UDP conn, that a conntrack helper has determined is related to an existing conn.
-  - ESTABLISHED refers to all subsequent packets in any conn.
+Dear all,
 
-Therefore, you can only know that a packet is the first packet of a conn or it is a subsequent packet. You can't know which conn a RELATED packet is associated with, and without using CONNMARKs, you cannot know if a conn was RELATED once it is ESTABLISHED.
+I have a firewall, doing NAT using masquerade for my internal network (I live at
+a dormitory). This works well. however we have a small pool of fixed
+external IPs,
+which some of the people here would like to use.
 
-N
+But I do not understand how I get nftables to do masquerade for the internal net
+while only forwarding the traffic from VLAN50 with external ip(see below [2]).
+
+I have copied a small example of how I am trying to do the config.
+I have:
+  iif $dmz_if oif $ext_if accept
+before masquerade in the nat postrouting chain. This does not work.
+How should I do it? Something with a goto somewhere?
 
 
-On Sun, 20 Nov 2016 21:45:05 +0100 (CET)
-"Lentes, Bernd" <bernd.lentes@helmholtz-muenchen.de> wrote:
+Another question:
+Can I flush a table depending on whether the table exists? Eg like:
+if (table ip) exist
+   flush table ip filter
+The reason for this is that I use fail2ban and have the following
 
-> Hi,
-> 
-> 
-> 
-> I'm trying to understand Ubuntu 16.04 (kernel 4.4.0-45-generic) firewall rules. See the rules for the chain INPUT:
-> 
-> Chain INPUT (policy DROP 20 packets, 800 bytes)
->  pkts bytes target     prot opt in     out     source               destination
->   880  134K ufw-before-logging-input  all  --  *      *       0.0.0.0/0            0.0.0.0/0
->   880  134K ufw-before-input  all  --  *      *       0.0.0.0/0            0.0.0.0/0
->   481 86297 ufw-after-input  all  --  *      *       0.0.0.0/0            0.0.0.0/0
->    20   800 ufw-after-logging-input  all  --  *      *       0.0.0.0/0            0.0.0.0/0
->    20   800 ufw-reject-input  all  --  *      *       0.0.0.0/0            0.0.0.0/0
->    20   800 ufw-track-input  all  --  *      *       0.0.0.0/0            0.0.0.0/0
-> 
-> chain ufw-before-logging-input (1 references)
->  pkts bytes target     prot opt in     out     source               destination
-> 
-> 
-> Chain ufw-before-logging-input does nothing, so evaluating the rules continues with ufw-before-input:
-> 
-> Chain ufw-before-input (1 references)
->  pkts bytes target     prot opt in     out     source               destination
->     0     0 ACCEPT     all  --  lo     *       0.0.0.0/0            0.0.0.0/0
->   317 22568 ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
->     0     0 ufw-logging-deny  all  --  *      *       0.0.0.0/0            0.0.0.0/0            ctstate INVALID
->     0     0 DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0            ctstate INVALID
->     0     0 ACCEPT     icmp --  *      *       0.0.0.0/0            0.0.0.0/0            icmptype 3
->     0     0 ACCEPT     icmp --  *      *       0.0.0.0/0            0.0.0.0/0            icmptype 4
->     0     0 ACCEPT     icmp --  *      *       0.0.0.0/0            0.0.0.0/0            icmptype 11
->     0     0 ACCEPT     icmp --  *      *       0.0.0.0/0            0.0.0.0/0            icmptype 12
->     4   112 ACCEPT     icmp --  *      *       0.0.0.0/0            0.0.0.0/0            icmptype 8
->    72 23616 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0.0.0/0            udp spt:67 dpt:68
->   487 87216 ufw-not-local  all  --  *      *       0.0.0.0/0            0.0.0.0/0
->     6   919 ACCEPT     udp  --  *      *       0.0.0.0/0            224.0.0.251          udp dpt:5353
->     0     0 ACCEPT     udp  --  *      *       0.0.0.0/0            239.255.255.250      udp dpt:1900
->   481 86297 ufw-user-input  all  --  *      *       0.0.0.0/0            0.0.0.0/0
-> 
-> First question: 
-> second rule: is that the rule for responses from outgoing packets ? E.g. i start a browser and open a web page. First my host does a TCP SYN to the web server, and this one answers with a tcp SYN ACK.
-> Because man iptables-extensions says:
-> 
-> ESTABLISHED: The packet is associated with a connection which has seen packets in both directions.
-> RELATED: The packet is starting a new connection, but is associated with an existing connection, such as an FTP data transfer or an ICMP error.
-> 
-> Because ESTABLISHED must have seen packets in BOTH directions. When i open a web page and the first packet comes back from the webserver (SYN ACK), this connection does not have seen packets in both directions.
-> And RELATED, as i understand, is e.g. for ftp, which uses in one session different destination ports (i think one for control and one for data ?).
-> 
-> But if this is not the rule for the first packet coming back, where is this rule ?
-> 
-> This chain also accepts packets for icmp, dhcp, upnp and mDNS. Right ?
-> 
-> OK. Evaluating continues with ufw-user-input, which are e.g. the services opened by the admin for some services, like ssh ...
-> 
-> Chain ufw-user-input (1 references)
->  pkts bytes target     prot opt in     out     source               destination
-> 41587 1849K ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:22
->     0     0 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0.0.0/0            udp dpt:22
->     1    60 ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:7937
->     5   300 ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:7938
->     0     0 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0.0.0/0            udp dpt:7938
-> 
-> 
-> Evaluating continues with ufw-after-input, which drops e.g. some packtes for windows services (file sharing ...) and dhcp.
->   It does this by calling another chain which drops the packets.
-> 
-> Chain ufw-after-input (1 references)
->  pkts bytes target     prot opt in     out     source               destination
-> 18978 1486K ufw-skip-to-policy-input  udp  --  *      *       0.0.0.0/0            0.0.0.0/0            udp dpt:137
->  5358 1231K ufw-skip-to-policy-input  udp  --  *      *       0.0.0.0/0            0.0.0.0/0            udp dpt:138
->     0     0 ufw-skip-to-policy-input  tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:139
->     0     0 ufw-skip-to-policy-input  tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:445
-> 67988   25M ufw-skip-to-policy-input  udp  --  *      *       0.0.0.0/0            0.0.0.0/0            udp dpt:67
->     0     0 ufw-skip-to-policy-input  udp  --  *      *       0.0.0.0/0            0.0.0.0/0            udp dpt:68
->  159K   20M ufw-skip-to-policy-input  all  --  *      *       0.0.0.0/0            0.0.0.0/0            ADDRTYPE match dst-type BROADCAST
-> 
-> Chain ufw-skip-to-policy-input (7 references)
->  pkts bytes target     prot opt in     out     source               destination
->  251K   48M DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0
-> 
-> 
-> And THEN comes ufw-after-logging-input, which logs all the packets which survived all the previous rules.
-> 
-> Chain ufw-after-logging-input (1 references)
->  pkts bytes target     prot opt in     out     source               destination
-> 42933 1717K LOG        all  --  *      *       0.0.0.0/0            0.0.0.0/0            LOG flags 8 level 4 prefix "[UFW BLOCK INPUT] "
-> 
-> 
-> So ufw-after-logging-input comes into play when there is a packet which has no previous packet in any direction, is not for the allowed services nor for the denied services.
-> E.g. i do a port scan to 12345 on that host. Right ? It should be logged by that rule. Because i don't have a service running on port 12345.
-> 
-> The reason i'm asking is that i have some logging from this rule with ip addresses not from our network, and i'd like to know when this rule comes into play.
-> 
-> I'd appreciate any help, if you want to know more please ask me.
-> 
-> Thanks.
-> 
-> Bernd
-> 
-> 
+$ cat nftables.conf
+  flush ruleset
+  include "/etc/firewall.d/fail2ban.conf"
+  include "/etc/firewall.d/firewall.conf"
 
+So that I can reload only the firewall by doing
+$ nft -f /etc/firewall.d/firewall.conf
+
+I hope someone can help. I use systemd-network.[1]
+Best regards,
+
+
+--
+Paw
+
+[1]
+eth0 is the Interface connected to the "internet". eht1 contains all the VLANS.
+$ cat /etc/systemd/network/eth0.network
+  [Match]
+  Name=eth0
+
+  [Network]
+  Gateway=130.226.aaa.xxx
+  DNS=8.8.8.8
+  IPForward=ipv4
+  IPForward=ipv6
+
+  [Address]
+  Address=130.226.aaa.bbb/26
+
+VLAN50 has the following
+$ cat /etc/systemd/network/vlan50.net*
+  [NetDev]
+  Name=vlan50
+  Kind=vlan
+
+  [VLAN]
+  Id=50
+  [Match]
+  Name=vlan50
+
+  [Network]
+  Address=130.226.aaa.bb1/27
+  IPForward=ipv4
+
+
+[2]
+# Outgoing interface
+define ext_if  = eth0
+define ext_ip  = 130.226.aaa.bbb
+define int_net = 10.42.0.0/16
+
+# VLAN with external IPs. Don't masquerade
+define dmz_if = vlan50
+define dmz_net = 130.226.aaa.bb0/27
+
+# internal VLANS. Do masquerade
+define cosmos_if = vlan11
+define cosmos_net = 10.42.11.0/24
+
+define all_ifs =  { $cosmos_if, ...}
+define all_nets = { $cosmos_net, ...}
+
+table ip filter {
+  chain input {
+    type filter hook input priority 0;
+
+    ct state established,related accept
+    ct state invalid drop
+
+    iifname lo accept
+    iif $dmz_if oif $ext_if counter accept
+
+    tcp dport 22 limit rate 15/minute accept
+    ip saddr $all_nets tcp dport ssh accept
+
+    iif $ext_if counter drop
+    udp dport { 137, 138, 5353 } drop    # NetBIOS, Avahi
+    udp sport 17500 udp dport 17500 drop # Dropbox LANsync
+
+  }
+  chain forward {
+    type filter hook forward priority 0;
+    ct state established,related accept
+    ct state invalid drop
+
+    # allow local traffic
+    iif $all_ifs  ip saddr $all_nets  accept
+  }
+  chain output {
+    type filter hook output priority 0;
+    ct state {established, related} accept
+    ct state invalid drop
+    oifname lo accept
+  }
+}
+
+table ip nat {
+  chain portforward {
+  }
+  chain prerouting {
+    type nat hook prerouting priority -150;
+    goto portforward
+  }
+  chain output {
+    type nat hook output priority -150;
+    goto portforward
+  }
+  chain input {
+    type nat hook input priority -150;
+    # this chain is needed to make dnat from the output chain work
+  }
+  chain postrouting {
+    type nat hook postrouting priority -150;
+    # accept dmz_if as it is and do masquerade on the rest
+    iif $dmz_if oif $ext_if accept
+    oif $ext_if masquerade
+  }
+}
