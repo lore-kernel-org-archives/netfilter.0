@@ -1,164 +1,85 @@
-From: =?UTF-8?Q?Paw_M=C3=B8ller?= <pawsen@gmail.com>
-Subject: Nftables: masquerade and forwarding firewall together
-Date: Wed, 23 Nov 2016 15:54:27 +0100
-Message-ID: <CAP6xULG5=xFQQLnq+T_=snwHA0TNTW2mE9SswV4DD3cjf-AgCA@mail.gmail.com>
+From: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Subject: Re: basic understanding of iptables - some questions
+Date: Wed, 23 Nov 2016 23:54:09 +0100
+Message-ID: <a07f78ad-c0f7-21a4-890c-87b9b89269cb@plouf.fr.eu.org>
+References: <560733058.4361908.1479674705472.JavaMail.zimbra@helmholtz-muenchen.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=W4zp8dB2VqiYr7GgiMlNFdlT1Qg89SKfxR/4RTBkoX0=;
-        b=WQPvXGU7SW0z62xgmhH+XTAu3ICj7Aohkzi167WqFcpDi3o4amLlq+hWxIPwQ2QAqJ
-         233VpNDP1Jq4B+5YV8lwj12rElFaMQVHcwdtbJM4zkMC7r5ii6uExOrcUN+KYF/K3W+b
-         +taKsDJSdnHFXBClyb7p/Sn6pOcUQUdpxOZMixq2A9yUcqKpW9YRDXKUNgrf7O/xmPSj
-         JPsowXuf72e/TKTjNY1sH1UQZSirr5I1OxLEWDLfxglyZPyydWZCDQeq7JdyjYth8ng1
-         TLbemAEVAwgFmWZZpVJkF4SgVq3EVE2ViMPNtCvHNfIEFlralgxWNqMxr5LEY3IRZdQY
-         qiDA==
+In-Reply-To: <560733058.4361908.1479674705472.JavaMail.zimbra@helmholtz-muenchen.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, holger borum <holger.stadel.borum@gmail.com>
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: "Lentes, Bernd" <bernd.lentes@helmholtz-muenchen.de>, Netfilter <netfilter@vger.kernel.org>
 
-Dear all,
+Le 20/11/2016 à 21:45, Lentes, Bernd a écrit :
+>
+> I'm trying to understand Ubuntu 16.04 (kernel 4.4.0-45-generic) firewall rules. See the rules for the chain INPUT:
+>
+> Chain INPUT (policy DROP 20 packets, 800 bytes)
+>  pkts bytes target     prot opt in     out     source               destination
+>   880  134K ufw-before-logging-input  all  --  *      *       0.0.0.0/0            0.0.0.0/0
 
-I have a firewall, doing NAT using masquerade for my internal network (I live at
-a dormitory). This works well. however we have a small pool of fixed
-external IPs,
-which some of the people here would like to use.
+I always recommend to use iptables-save or iptables -S instead of 
+iptables -L because I find the output format much easier to read.
 
-But I do not understand how I get nftables to do masquerade for the internal net
-while only forwarding the traffic from VLAN50 with external ip(see below [2]).
+> Chain ufw-before-input (1 references)
+>  pkts bytes target     prot opt in     out     source               destination
+>     0     0 ACCEPT     all  --  lo     *       0.0.0.0/0            0.0.0.0/0
+>   317 22568 ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
+(...)
+> second rule: is that the rule for responses from outgoing packets ? E.g. i start a browser and open a web page. First my host does a TCP SYN to the web server, and this one answers with a tcp SYN ACK.
 
-I have copied a small example of how I am trying to do the config.
-I have:
-  iif $dmz_if oif $ext_if accept
-before masquerade in the nat postrouting chain. This does not work.
-How should I do it? Something with a goto somewhere?
+Yes.
 
+> Because man iptables-extensions says:
+>
+> ESTABLISHED: The packet is associated with a connection which has seen packets in both directions.
 
-Another question:
-Can I flush a table depending on whether the table exists? Eg like:
-if (table ip) exist
-   flush table ip filter
-The reason for this is that I use fail2ban and have the following
+Hint : including the packet being processed.
 
-$ cat nftables.conf
-  flush ruleset
-  include "/etc/firewall.d/fail2ban.conf"
-  include "/etc/firewall.d/firewall.conf"
+> RELATED: The packet is starting a new connection, but is associated with an existing connection, such as an FTP data transfer or an ICMP error.
+>
+> Because ESTABLISHED must have seen packets in BOTH directions.
 
-So that I can reload only the firewall by doing
-$ nft -f /etc/firewall.d/firewall.conf
+Yes, including the packet being processed.
 
-I hope someone can help. I use systemd-network.[1]
-Best regards,
+> When i open a web page and the first packet comes back from the webserver (SYN ACK), this connection does not have seen packets in both directions.
 
+It just did. See above.
 
---
-Paw
+> And RELATED, as i understand, is e.g. for ftp, which uses in one session different destination ports (i think one for control and one for data ?).
 
-[1]
-eth0 is the Interface connected to the "internet". eht1 contains all the VLANS.
-$ cat /etc/systemd/network/eth0.network
-  [Match]
-  Name=eth0
+Yes, and ICMP errors.
 
-  [Network]
-  Gateway=130.226.aaa.xxx
-  DNS=8.8.8.8
-  IPForward=ipv4
-  IPForward=ipv6
+> This chain also accepts packets for icmp, dhcp, upnp and mDNS. Right ?
 
-  [Address]
-  Address=130.226.aaa.bbb/26
+Except for ICMP errors and replies to unicast packets, probably not 
+because the other listed protocols use broadcast or multicast, but 
+conntrack only handles correctly unicast traffic.
 
-VLAN50 has the following
-$ cat /etc/systemd/network/vlan50.net*
-  [NetDev]
-  Name=vlan50
-  Kind=vlan
+> OK. Evaluating continues with ufw-user-input, which are e.g. the services opened by the admin for some services, like ssh ...
+>
+> Chain ufw-user-input (1 references)
+>  pkts bytes target     prot opt in     out     source               destination
+> 41587 1849K ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:22
+>     0     0 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0.0.0/0            udp dpt:22
 
-  [VLAN]
-  Id=50
-  [Match]
-  Name=vlan50
+Silly. SSH does not use UDP.
 
-  [Network]
-  Address=130.226.aaa.bb1/27
-  IPForward=ipv4
+> And THEN comes ufw-after-logging-input, which logs all the packets which survived all the previous rules.
+>
+> Chain ufw-after-logging-input (1 references)
+>  pkts bytes target     prot opt in     out     source               destination
+> 42933 1717K LOG        all  --  *      *       0.0.0.0/0            0.0.0.0/0            LOG flags 8 level 4 prefix "[UFW BLOCK INPUT] "
+>
+>
+> So ufw-after-logging-input comes into play when there is a packet which has no previous packet in any direction, is not for the allowed services nor for the denied services.
+> E.g. i do a port scan to 12345 on that host. Right ? It should be logged by that rule.
 
+Guess so.
 
-[2]
-# Outgoing interface
-define ext_if  = eth0
-define ext_ip  = 130.226.aaa.bbb
-define int_net = 10.42.0.0/16
+> Because i don't have a service running on port 12345.
 
-# VLAN with external IPs. Don't masquerade
-define dmz_if = vlan50
-define dmz_net = 130.226.aaa.bb0/27
-
-# internal VLANS. Do masquerade
-define cosmos_if = vlan11
-define cosmos_net = 10.42.11.0/24
-
-define all_ifs =  { $cosmos_if, ...}
-define all_nets = { $cosmos_net, ...}
-
-table ip filter {
-  chain input {
-    type filter hook input priority 0;
-
-    ct state established,related accept
-    ct state invalid drop
-
-    iifname lo accept
-    iif $dmz_if oif $ext_if counter accept
-
-    tcp dport 22 limit rate 15/minute accept
-    ip saddr $all_nets tcp dport ssh accept
-
-    iif $ext_if counter drop
-    udp dport { 137, 138, 5353 } drop    # NetBIOS, Avahi
-    udp sport 17500 udp dport 17500 drop # Dropbox LANsync
-
-  }
-  chain forward {
-    type filter hook forward priority 0;
-    ct state established,related accept
-    ct state invalid drop
-
-    # allow local traffic
-    iif $all_ifs  ip saddr $all_nets  accept
-  }
-  chain output {
-    type filter hook output priority 0;
-    ct state {established, related} accept
-    ct state invalid drop
-    oifname lo accept
-  }
-}
-
-table ip nat {
-  chain portforward {
-  }
-  chain prerouting {
-    type nat hook prerouting priority -150;
-    goto portforward
-  }
-  chain output {
-    type nat hook output priority -150;
-    goto portforward
-  }
-  chain input {
-    type nat hook input priority -150;
-    # this chain is needed to make dnat from the output chain work
-  }
-  chain postrouting {
-    type nat hook postrouting priority -150;
-    # accept dmz_if as it is and do masquerade on the rest
-    iif $dmz_if oif $ext_if accept
-    oif $ext_if masquerade
-  }
-}
+It does not matter to iptables whether a service is running on that port 
+or not.
