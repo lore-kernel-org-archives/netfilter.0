@@ -1,73 +1,110 @@
-From: Martin Bednar <martin@serafean.cz>
-Subject: Re: nftables kernel bug
-Date: Wed, 30 Nov 2016 00:28:51 +0100
-Message-ID: <10355886.rWhGxfjZAr@nemmerle>
-References: <2097005.VXRZyRJPl3@nemmerle> <20161129225430.GA8487@salvia>
+From: Khawar Shehzad <shehzad.khawar@gmail.com>
+Subject: Programmatically adding Map element into the map/set using libnftnl
+Date: Wed, 30 Nov 2016 19:16:28 +0000
+Message-ID: <CAE0moyeVaSi5gmTZgsm4r8on0oWg7zU1eBRaj75TKY9YA58Jew@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=serafean.cz;
-        s=default; t=1480462134;
-        bh=A1/Y1XRsn5DGxBdGpPQQCVFmmEQDGEohHf7sA7rJu4s=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=XKovRFos7ADZ7c8crgEsmytUT5Z0MIpwMHOt6AkRJ8/eUjQsPIzpNXJBi4Qrj6jua
-         er6sA3Ek5vhIkNSSny9BQZh7khspY0rxx76kNz7W5lCStPpUJTy5uDp3N8EB0FgN/k
-         frPnuGudFMcjZu8xKgARFinCQFFWgsnsGOjSpqBe+jS74xh6cT2TK/fJ5VkTVdGmPk
-         dxtSxoeAMF4NiKJ/IY0hliHeGhCALM02bhNgIbYfJn1WmlJxflozco/LJ9tjuaPylA
-         xVXnD4SZF4XLQhjGoOgA6wN0ljNKPC+1MNmFCp9aS/yj3nCABA9hx9c62+pATpMQDw
-         GnaEW8kGrcEPQ==
-In-Reply-To: <20161129225430.GA8487@salvia>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=pLeXfSBNJsJp2gIbX4/Lq7Kox7Ifd1/m+zeFSG3lTvc=;
+        b=kJxEW4uSgGmRznXqgCsEbCuzrKzHOnTNUFtfjTLBeuJSsdGdyZmG6ksDtZlNL2N/KX
+         Pyh7cp4a7ps0kLyBKt7sUyeyhfBPULvZQeP46vQRKVhXj9Fc3HRZ5ZCjDis5HocvGeQw
+         HFDuWQL44lFMgUDtoO/tp5PAhxQYBNVB1bczuJLxR6/RjeVbwQ3AP1SUKnxxaVVTn1r+
+         Io8oDb2BdyIricgR4SPgsv1wreOkXfhnHb8uhFcA/J6lfD4Cnq4Ep5umOFQx9CcG4IZi
+         RubDtFNdaN8/nvOMSy1eTrEWawqAvpdsORRw9Kgf3QAvzeBD1Y6MqaYLjUPxBpGyTeyq
+         OSyQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Le Tuesday, November 29, 2016 11:54:30 PM CET Pablo Neira Ayuso a =C3=A9cri=
-t :
-> On Tue, Nov 29, 2016 at 11:37:21PM +0100, Martin Bednar wrote:
-> > Hi, I just hit a kernel bug using nftables.
-> > Using kernel 4.8.11.
-> >=20
-> > Inline is a minimal configuration file to reproduce and the dmesg log.
-> > Let me know if you need anything else.
-> >=20
-> > Martin.
-> >=20
-> > Minimal configuration to reproduce:
-> >=20
-> > table inet filter{
-> >=20
-> > 	map iface_rules {type iface_index : verdict;}
-> > 	chain lan1{
-> > 	}
-> > =09
-> > 	chain input{
-> > 	type filter hook input priority 0;policy accept;
-> > =09
-> > 	iif vmap @iface_rules
-> > =09
-> > 	}
-> >=20
-> > }
-> > add element inet filter iface_rules {enp0s18 : jump lan1 } #BUG_ON here.
->=20
-> Fixed by:
->=20
-> http://git.kernel.org/cgit/linux/kernel/git/pablo/nf.git/commit/?id=3D58c=
-78e10
-> 4d937c1f560fb10ed9bb2dcde0db4fcf
->=20
-> Will pass this to -stable asap.
+Hi,
+I hope everybody is fine.
 
-Thanks! Will try the patch tomorrow.
-
->=20
-> Thanks for reporting.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I want to do following programmatically in C using libnftnl.
 
 
+_______________________________________________
+"nft add element ip6 my_table my_map {fe80::2 : fe80::3 }"
+_______________________________________________
 
+My example code is below, and it gives "error: Invalid argument"
+error. My question is simple how can I add an IPv6 map into a set/map.
+My map type is "type ipv6_addr : ipv6_addr".
+
+
+#include <stdlib.h>
+#include <time.h>
+#include <string.h>
+#include <netinet/in.h>
+#include <linux/netfilter.h>
+#include <linux/netfilter/nf_tables.h>
+#include <libmnl/libmnl.h>
+#include <libnftnl/set.h>
+
+int main(int argc, char *argv[])
+{
+        struct mnl_socket *nl;
+        char buf[MNL_SOCKET_BUFFER_SIZE];
+        struct nlmsghdr *nlh;
+        uint32_t portid, seq, family;
+        struct nftnl_set *s;
+        struct nftnl_set_elem *e;
+        int ret;
+
+        s = nftnl_set_alloc();
+
+        seq = time(NULL);
+        family = NFPROTO_IPV6;
+
+        nftnl_set_set(s, NFTNL_SET_TABLE, "my_table");
+        nftnl_set_set(s, NFTNL_SET_NAME, "my_map");
+
+        e = nftnl_set_elem_alloc();
+
+        nftnl_set_elem_set(e, NFTNL_SET_ELEM_KEY, "fe80::2", 16);
+
+        nftnl_set_elem_set(e, NFTNL_SET_ELEM_DATA, "fe80::3", 16);
+
+        nftnl_set_elem_add(s, e);
+
+        e = nftnl_set_elem_alloc();
+
+        nlh = nftnl_set_nlmsg_build_hdr(buf, NFT_MSG_NEWSETELEM, family,
+                                      NLM_F_CREATE|NLM_F_EXCL|NLM_F_ACK, seq);
+        nftnl_set_elems_nlmsg_build_payload(nlh, s);
+        nftnl_set_free(s);
+
+        nl = mnl_socket_open(NETLINK_NETFILTER);
+
+        if (mnl_socket_bind(nl, 0, MNL_SOCKET_AUTOPID) < 0) {
+                perror("mnl_socket_bind");
+                exit(EXIT_FAILURE);
+        }
+        portid = mnl_socket_get_portid(nl);
+
+        if (mnl_socket_sendto(nl, nlh, nlh->nlmsg_len) < 0) {
+                perror("mnl_socket_send");
+                exit(EXIT_FAILURE);
+        }
+
+        ret = mnl_socket_recvfrom(nl, buf, sizeof(buf));
+        while (ret > 0) {
+                ret = mnl_cb_run(buf, ret, seq, portid, NULL, NULL);
+                if (ret <= 0)
+                        break;
+                ret = mnl_socket_recvfrom(nl, buf, sizeof(buf));
+        }
+        mnl_socket_close(nl);
+
+        return EXIT_SUCCESS;
+}
+
+
+
+I get the "error: Invalid argument" error. Any help will be much appreciated.
+
+Cheers,
+Khawar
