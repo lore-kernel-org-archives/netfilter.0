@@ -1,69 +1,58 @@
 From: "Brian J. Murrell" <brian@interlinx.bc.ca>
-Subject: DNAT working for one host but not another
-Date: Sun, 04 Dec 2016 14:01:41 -0500
-Message-ID: <1480878101.19944.29.camel@interlinx.bc.ca>
+Subject: Re: DNAT working for one host but not another
+Date: Sun, 04 Dec 2016 14:06:37 -0500
+Message-ID: <1480878397.19944.31.camel@interlinx.bc.ca>
+References: <1480878101.19944.29.camel@interlinx.bc.ca>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-68uZvaOBorOqTCdneYNY"
+        protocol="application/pgp-signature"; boundary="=-+2e56uRfU3+7Hkr9eusE"
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <1480878101.19944.29.camel@interlinx.bc.ca>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 To: netfilter@vger.kernel.org
 
 
---=-68uZvaOBorOqTCdneYNY
+--=-+2e56uRfU3+7Hkr9eusE
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-I have a DNAT rule on a host who's purpose is to redirect traffic that
-is destined for port 23768 to port 5060 on that host:
+On Sun, 2016-12-04 at 14:01 -0500, Brian J. Murrell wrote:
+> I have a DNAT rule on a host who's purpose is to redirect traffic
+> that
+> is destined for port 23768 to port 5060 on that host:
 
-Chain PREROUTING (policy ACCEPT 7340K packets, 362M bytes)
-=C2=A0pkts bytes target=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0prot opt in=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0out=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0source=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-destination
-    9  3878 DNAT       udp  --  enp1s7 *       0.0.0.0/0            0.0.0.0=
-/0            udp dpt:23768 to::5060
+I should add, that what is going back to the 10.75.23.212 host is also
+wrong:
 
-That rule seems to be working for one host but not another.  This is
-what I end up with in the conntrack table:
+14:04:53.723018 IP 10.75.23.212.6060 > 10.75.22.8.23768: UDP, length 0
+14:04:53.877539 IP 10.75.22.8.5060 > 10.75.23.212.6060: SIP, length: 555
+14:04:53.910351 IP 10.75.23.212.6060 > 10.75.22.8.23768: UDP, length 472
+14:04:53.912158 IP 10.75.22.8.5060 > 10.75.23.212.6060: SIP, length: 555
 
-udp      17 29 src=3D10.75.22.8 dst=3D10.75.23.212 sport=3D5060 dport=3D606=
-0 [UNREPLIED] src=3D10.75.23.212 dst=3D10.75.22.8 sport=3D6060 dport=3D5060=
- mark=3D0 secctx=3Dsystem_u:object_r:unlabeled_t:s0 use=3D1
-udp      17 175 src=3D10.75.22.200 dst=3D10.75.22.8 sport=3D6060 dport=3D23=
-768 src=3D10.75.22.8 dst=3D10.75.22.200 sport=3D5060 dport=3D6060 [ASSURED]=
- mark=3D0 secctx=3Dsystem_u:object_r:unlabeled_t:s0 use=3D1
-udp      17 29 src=3D10.75.23.212 dst=3D10.75.22.8 sport=3D6060 dport=3D237=
-68 [UNREPLIED] src=3D10.75.22.8 dst=3D10.75.23.212 sport=3D5060 dport=3D102=
-4 mark=3D0 secctx=3Dsystem_u:object_r:unlabeled_t:s0 use=3D1
-
-So as you can see, 10.75.22.200 seems to be properly natted and moves
-to the ASSURED state but the natting for 10.75.23.212 seems to get
-confused and we end up with two of UNREPLIED entries.
-
-Any idea what I'm doing wrong, or what is going wrong?
+As you can see, what is being returned is not having it's port un-
+natted back to 23768.  But that is perhaps unsurprising given that the
+connection never gets to ASSURED.
 
 Cheers,
 b.
 
---=-68uZvaOBorOqTCdneYNY
+--=-+2e56uRfU3+7Hkr9eusE
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v2
 
-iQEcBAABCAAGBQJYRGgWAAoJENrB0DQWy8igrAYH+gLCcfOjNGSXnGab9DttYtIi
-qOR4lf67Ye59XLIG0xNCqQcyLsWHer5sX9kgTNjEFLDAfG8Ih+5dngCUeqmZfAEc
-1FS4pyn6oIDPtyu2FBJzMb9lYI+L8UsKH4nBYo2uS1ENfQhLYHyOlOXttv/7p7UB
-40JKXpKoMjQBWTrrhkOrdXGiWwswouR1v2MaxA/C9PfcIwrbZdlCJIj52xzdCqRN
-zUVBmF3l9cl2CIccKSzX74zop0LUCQQlouUkla3w7rofaEbPW/8TC7xHGA4Z/ecG
-ss4BGgHhiqNzWeooNEL+BMTMVtb1ytBsKY6pV05H7G+j0ASITaSXzhK+ey/g5vM=
-=fh4e
+iQEcBAABCAAGBQJYRGk9AAoJENrB0DQWy8igJHEH/33vNrQ2wJW1g8WE5tto3jpQ
+8vQGljQsHGXlBfrUp0y5FliHzKKTUhZ2RUqSQOQlVqR9SIJLVta/plN7iIMfa5nr
+jyuYAaStUG5JBoNuiuuTqfDZotvczVe5dDxxtzmO+lSrBXVGsm4xESkcRsognI9g
+E6nFNL1hhPA3lme85A5Z/K3tRRFvvkoFp3lQezaNCqfIMrezrXoF+QGc6nQymv6O
+3OiXtooR+Crhbe6sxKOp80EZ+0GEvV742MVWVUrh9vZxXNv68PJDeEWX+ZJpNbI8
+W0tgdrSSxxMvLIiItIDmWlzYx7U5juLYDkVp7sHIjHGsSUoyy9H+2ZZH8jLh/oo=
+=IBCf
 -----END PGP SIGNATURE-----
 
---=-68uZvaOBorOqTCdneYNY--
+--=-+2e56uRfU3+7Hkr9eusE--
 
 
