@@ -1,54 +1,102 @@
-From: "Brian J. Murrell" <brian@interlinx.bc.ca>
-Subject: Re: DNAT working for one host but not another
-Date: Mon, 05 Dec 2016 10:56:24 -0500
-Message-ID: <1480953384.19944.69.camel@interlinx.bc.ca>
-References: <1480878101.19944.29.camel@interlinx.bc.ca>
-         <1480878397.19944.31.camel@interlinx.bc.ca>
-         <aab4caed2f9f4941b0749ef4875d5761@aalto.fi>
-         <1480949008.19944.60.camel@interlinx.bc.ca>
-         <CACuyg26fDUzT0UeUjCHkBaj7j6b441vNEh1T-_pj2Gw-OCyrfw@mail.gmail.com>
+From: Eliezer Croitoru <eliezer@ngtech.co.il>
+Subject: RE: basic understanding of iptables - some questions
+Date: Sat, 10 Dec 2016 10:43:47 +0200
+Message-ID: <051c01d252c1$8612a3e0$9237eba0$@ngtech.co.il>
+References: <560733058.4361908.1479674705472.JavaMail.zimbra@helmholtz-muenchen.de> <a07f78ad-c0f7-21a4-890c-87b9b89269cb@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-Gu4rHItLTIwOwYft31DK"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CACuyg26fDUzT0UeUjCHkBaj7j6b441vNEh1T-_pj2Gw-OCyrfw@mail.gmail.com>
+In-reply-to: <a07f78ad-c0f7-21a4-890c-87b9b89269cb@plouf.fr.eu.org>
+Content-language: he
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: 'Pascal Hambourg' <pascal@plouf.fr.eu.org>, "'Lentes, Bernd'" <bernd.lentes@helmholtz-muenchen.de>, 'Netfilter' <netfilter@vger.kernel.org>
+
+It's not silly that ssh uses UDP since there are implementations of SSH which utilizes UDP....
+
+Eliezer
+
+----
+Eliezer Croitoru
+Linux System Administrator
+Mobile: +972-5-28704261
+Email: eliezer@ngtech.co.il
 
 
---=-Gu4rHItLTIwOwYft31DK
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+-----Original Message-----
+From: netfilter-owner@vger.kernel.org [mailto:netfilter-owner@vger.kernel.org] On Behalf Of Pascal Hambourg
+Sent: Thursday, November 24, 2016 12:54 AM
+To: Lentes, Bernd <bernd.lentes@helmholtz-muenchen.de>; Netfilter <netfilter@vger.kernel.org>
+Subject: Re: basic understanding of iptables - some questions
 
-T24gTW9uLCAyMDE2LTEyLTA1IGF0IDEyOjUyIC0wMzAwLCBIdW1iZXJ0byBKdWPDoSB3cm90ZToK
-PiBXaGF0IGFyZSB0aGUgbmZfbmF0IG1vZHVsZXMgcnVubmluZyBpbiBtZW1vcnk/Cj4gCj4gbHNt
-b2QgfCBncmVwICJuZl9uYXRfIgoKIyBsc21vZCB8IGdyZXAgbmZfbmF0Cm5mX25hdF9pcHY2wqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgMTQxMzHCoMKgMSBpcDZ0YWJsZV9uYXQKbmZfbmF0X2lwdjTC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAxNDExNcKgwqAxIGlwdGFibGVfbmF0Cm5mX25hdMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAyNjE0NsKgwqA0IG5mX25hdF9pcHY0LG5mX25h
-dF9pcHY2LHh0X25hdCx4dF9SRURJUkVDVApuZl9jb25udHJhY2vCoMKgwqDCoMKgwqDCoMKgwqDC
-oDEwNTczN8KgwqA3IG5mX25hdCxuZl9uYXRfaXB2NCxuZl9uYXRfaXB2Nix4dF9jb25udHJhY2ss
-bmZfY29ubnRyYWNrX25ldGxpbmssbmZfY29ubnRyYWNrX2lwdjQsbmZfY29ubnRyYWNrX2lwdjYK
-Cktlcm5lbCBpcyAzLjEwLjAKCkNoZWVycywKYi4K
+Le 20/11/2016 à 21:45, Lentes, Bernd a écrit :
+>
+> I'm trying to understand Ubuntu 16.04 (kernel 4.4.0-45-generic) firewall rules. See the rules for the chain INPUT:
+>
+> Chain INPUT (policy DROP 20 packets, 800 bytes)
+>  pkts bytes target     prot opt in     out     source               destination
+>   880  134K ufw-before-logging-input  all  --  *      *       0.0.0.0/0            0.0.0.0/0
 
+I always recommend to use iptables-save or iptables -S instead of iptables -L because I find the output format much easier to read.
 
---=-Gu4rHItLTIwOwYft31DK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
+> Chain ufw-before-input (1 references)
+>  pkts bytes target     prot opt in     out     source               destination
+>     0     0 ACCEPT     all  --  lo     *       0.0.0.0/0            0.0.0.0/0
+>   317 22568 ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
+(...)
+> second rule: is that the rule for responses from outgoing packets ? E.g. i start a browser and open a web page. First my host does a TCP SYN to the web server, and this one answers with a tcp SYN ACK.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+Yes.
 
-iQEcBAABCAAGBQJYRY4oAAoJENrB0DQWy8igPt8H/iPf/8T0PEarLgwFxD4UiQQD
-b52E6NwFPHlY+IFksRDScIxRR3lYhq6LTLNa9a2mX9ruUtUaVegIoUZZy+p8GslM
-t8cOqJ2StagrraK90RYGS+GMTDDf36F1Pbs/ilx1ZBDhuS8W1LfqyDkqLJ1nAAOQ
-ttIhBIrMwFfOcZCNYuANLbxv8l79wEiasaYE6iEBQSZg02smyJv8mq5o8uedzrr6
-R5pQ8F4V9OQKtyvffChmRxEumtO69C570mNTaN72A0Ozge3UfhqB5H0JcJdbIGdo
-/+QMKPe1lOKCDg+AmEfGxMJT8VnLX87x9d/UIhvll6sjVjlYS0uTuzVB50Y9dFM=
-=R8NM
------END PGP SIGNATURE-----
+> Because man iptables-extensions says:
+>
+> ESTABLISHED: The packet is associated with a connection which has seen packets in both directions.
 
---=-Gu4rHItLTIwOwYft31DK--
+Hint : including the packet being processed.
 
+> RELATED: The packet is starting a new connection, but is associated with an existing connection, such as an FTP data transfer or an ICMP error.
+>
+> Because ESTABLISHED must have seen packets in BOTH directions.
+
+Yes, including the packet being processed.
+
+> When i open a web page and the first packet comes back from the webserver (SYN ACK), this connection does not have seen packets in both directions.
+
+It just did. See above.
+
+> And RELATED, as i understand, is e.g. for ftp, which uses in one session different destination ports (i think one for control and one for data ?).
+
+Yes, and ICMP errors.
+
+> This chain also accepts packets for icmp, dhcp, upnp and mDNS. Right ?
+
+Except for ICMP errors and replies to unicast packets, probably not because the other listed protocols use broadcast or multicast, but conntrack only handles correctly unicast traffic.
+
+> OK. Evaluating continues with ufw-user-input, which are e.g. the services opened by the admin for some services, like ssh ...
+>
+> Chain ufw-user-input (1 references)
+>  pkts bytes target     prot opt in     out     source               destination
+> 41587 1849K ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:22
+>     0     0 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0.0.0/0            udp dpt:22
+
+Silly. SSH does not use UDP.
+
+> And THEN comes ufw-after-logging-input, which logs all the packets which survived all the previous rules.
+>
+> Chain ufw-after-logging-input (1 references)
+>  pkts bytes target     prot opt in     out     source               destination
+> 42933 1717K LOG        all  --  *      *       0.0.0.0/0            0.0.0.0/0            LOG flags 8 level 4 prefix "[UFW BLOCK INPUT] "
+>
+>
+> So ufw-after-logging-input comes into play when there is a packet which has no previous packet in any direction, is not for the allowed services nor for the denied services.
+> E.g. i do a port scan to 12345 on that host. Right ? It should be logged by that rule.
+
+Guess so.
+
+> Because i don't have a service running on port 12345.
+
+It does not matter to iptables whether a service is running on that port or not.
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter" in the body of a message to majordomo@vger.kernel.org More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
