@@ -1,102 +1,47 @@
-From: Eliezer Croitoru <eliezer@ngtech.co.il>
-Subject: RE: basic understanding of iptables - some questions
-Date: Sat, 10 Dec 2016 10:43:47 +0200
-Message-ID: <051c01d252c1$8612a3e0$9237eba0$@ngtech.co.il>
-References: <560733058.4361908.1479674705472.JavaMail.zimbra@helmholtz-muenchen.de> <a07f78ad-c0f7-21a4-890c-87b9b89269cb@plouf.fr.eu.org>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: basic understanding of iptables - some questions
+Date: Sat, 10 Dec 2016 09:11:39 -0600
+Message-ID: <20161210151139.GT8339@harrier.slackbuilds.org>
+References: <560733058.4361908.1479674705472.JavaMail.zimbra@helmholtz-muenchen.de>
+ <a07f78ad-c0f7-21a4-890c-87b9b89269cb@plouf.fr.eu.org>
+ <051c01d252c1$8612a3e0$9237eba0$@ngtech.co.il>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-In-reply-to: <a07f78ad-c0f7-21a4-890c-87b9b89269cb@plouf.fr.eu.org>
-Content-language: he
+Content-Disposition: inline
+In-Reply-To: <051c01d252c1$8612a3e0$9237eba0$@ngtech.co.il>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: 'Pascal Hambourg' <pascal@plouf.fr.eu.org>, "'Lentes, Bernd'" <bernd.lentes@helmholtz-muenchen.de>, 'Netfilter' <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-It's not silly that ssh uses UDP since there are implementations of SSH which utilizes UDP....
+[ top-posting fixed ]
+> Pascal Hambourg:
+> Le 20/11/2016 =E0 21:45, Lentes, Bernd a =E9crit :
+> >
+> > Chain ufw-user-input (1 references)
+> >  pkts bytes target     prot opt in     out     source               des=
+tination
+> > 41587 1849K ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0=
+.0.0/0            tcp dpt:22
+> >     0     0 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0=
+.0.0/0            udp dpt:22
+>=20
+> Silly. SSH does not use UDP.
 
-Eliezer
+On Sat, Dec 10, 2016 at 10:43:47AM +0200, Eliezer Croitoru wrote:
+> It's not silly that ssh uses UDP since there are implementations of=20
+> SSH which utilizes UDP....
 
-----
-Eliezer Croitoru
-Linux System Administrator
-Mobile: +972-5-28704261
-Email: eliezer@ngtech.co.il
+This post made me curious.  Clearly in the case of the OP, Pascal is=20
+correct; we can see the counters on the udp/22 rule above.
 
+I did a bit of searching and the only "ssh using udp" implementation=20
+found was Mosh, <https://mosh.org/>, but Mosh !=3D ssh.
 
------Original Message-----
-From: netfilter-owner@vger.kernel.org [mailto:netfilter-owner@vger.kernel.org] On Behalf Of Pascal Hambourg
-Sent: Thursday, November 24, 2016 12:54 AM
-To: Lentes, Bernd <bernd.lentes@helmholtz-muenchen.de>; Netfilter <netfilter@vger.kernel.org>
-Subject: Re: basic understanding of iptables - some questions
-
-Le 20/11/2016 à 21:45, Lentes, Bernd a écrit :
->
-> I'm trying to understand Ubuntu 16.04 (kernel 4.4.0-45-generic) firewall rules. See the rules for the chain INPUT:
->
-> Chain INPUT (policy DROP 20 packets, 800 bytes)
->  pkts bytes target     prot opt in     out     source               destination
->   880  134K ufw-before-logging-input  all  --  *      *       0.0.0.0/0            0.0.0.0/0
-
-I always recommend to use iptables-save or iptables -S instead of iptables -L because I find the output format much easier to read.
-
-> Chain ufw-before-input (1 references)
->  pkts bytes target     prot opt in     out     source               destination
->     0     0 ACCEPT     all  --  lo     *       0.0.0.0/0            0.0.0.0/0
->   317 22568 ACCEPT     all  --  *      *       0.0.0.0/0            0.0.0.0/0            ctstate RELATED,ESTABLISHED
-(...)
-> second rule: is that the rule for responses from outgoing packets ? E.g. i start a browser and open a web page. First my host does a TCP SYN to the web server, and this one answers with a tcp SYN ACK.
-
-Yes.
-
-> Because man iptables-extensions says:
->
-> ESTABLISHED: The packet is associated with a connection which has seen packets in both directions.
-
-Hint : including the packet being processed.
-
-> RELATED: The packet is starting a new connection, but is associated with an existing connection, such as an FTP data transfer or an ICMP error.
->
-> Because ESTABLISHED must have seen packets in BOTH directions.
-
-Yes, including the packet being processed.
-
-> When i open a web page and the first packet comes back from the webserver (SYN ACK), this connection does not have seen packets in both directions.
-
-It just did. See above.
-
-> And RELATED, as i understand, is e.g. for ftp, which uses in one session different destination ports (i think one for control and one for data ?).
-
-Yes, and ICMP errors.
-
-> This chain also accepts packets for icmp, dhcp, upnp and mDNS. Right ?
-
-Except for ICMP errors and replies to unicast packets, probably not because the other listed protocols use broadcast or multicast, but conntrack only handles correctly unicast traffic.
-
-> OK. Evaluating continues with ufw-user-input, which are e.g. the services opened by the admin for some services, like ssh ...
->
-> Chain ufw-user-input (1 references)
->  pkts bytes target     prot opt in     out     source               destination
-> 41587 1849K ACCEPT     tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:22
->     0     0 ACCEPT     udp  --  *      *       0.0.0.0/0            0.0.0.0/0            udp dpt:22
-
-Silly. SSH does not use UDP.
-
-> And THEN comes ufw-after-logging-input, which logs all the packets which survived all the previous rules.
->
-> Chain ufw-after-logging-input (1 references)
->  pkts bytes target     prot opt in     out     source               destination
-> 42933 1717K LOG        all  --  *      *       0.0.0.0/0            0.0.0.0/0            LOG flags 8 level 4 prefix "[UFW BLOCK INPUT] "
->
->
-> So ufw-after-logging-input comes into play when there is a packet which has no previous packet in any direction, is not for the allowed services nor for the denied services.
-> E.g. i do a port scan to 12345 on that host. Right ? It should be logged by that rule.
-
-Guess so.
-
-> Because i don't have a service running on port 12345.
-
-It does not matter to iptables whether a service is running on that port or not.
---
-To unsubscribe from this list: send the line "unsubscribe netfilter" in the body of a message to majordomo@vger.kernel.org More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
+Of what ssh implementation do you speak?  More to the point of this=20
+thread, is it using udp/22?  Is it available for GNU/Linux?
+--=20
+  http://rob0.nodns4.us/
+  Offlist GMX mail is seen only if "/dev/rob0" is in the Subject:
