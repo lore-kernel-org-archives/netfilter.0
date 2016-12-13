@@ -1,98 +1,77 @@
-From: Leon Merten Lohse <leon@green-side.de>
-Subject: Re: Nftables / ipset / multiple tables
-Date: Tue, 13 Dec 2016 08:31:24 +0100
-Message-ID: <bf72b6bd87626813b2a1cdb13c013465@mail.lhcode.de>
-References: <CABAu8hMnZd84Ya-17aK9ERfqp-7TbfuhfWnDz5dydML0Jhdb0A@mail.gmail.com>
+From: Tom Hacohen <tom@stosb.com>
+Subject: nftables: masquerade sets wrong source address
+Date: Tue, 13 Dec 2016 13:28:41 +0000
+Message-ID: <CAEvi_o9_SJNGH-RWq6Kt+UiXVY4ozaMy3yJ2rPdV0Rbk1QrRZw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CABAu8hMnZd84Ya-17aK9ERfqp-7TbfuhfWnDz5dydML0Jhdb0A@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=stosb.com; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=DP1z1M+lu+0GwKuU+K9r5Uxm2pqskoN9mVa0rX1X7HM=;
+        b=i4ZNEG8WRmkEflZ9UaveCA2d8FacU0rLNTRe2OTlQEwCz9OrgcDFI3qAkhZGK2+N2o
+         OtpHfnGeniQl9u2ngf1a6NMP+gzo2mYShEyxMiSSeRAtdx3ExIjaGBkoy61Lw/zJGhih
+         Us7Y97rmhrDrt2LiD2oulz5HrhaJVz7hiUCoo=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
-Cc: Mark Morgan <morganm.qc@gmail.com>
 
---repost to list--
+Hi,
 
-As far as I know, named sets are only visible in the current table.
+I've recently migrated from iptables (no modules loaded anymore) to
+nftables and came across a weird situation that looks like a bug to
+me.
 
-The way I do it is that I create the named set in the table I need it 
-and populate it in an included file.
-Translated to your example it would look like this:
+When using "masquerade" it always sets the ip address to that of one
+of my interfaces, and not per interface as one would expect.
 
-# nftables.conf
+My config:
+
+flush ruleset
+
 table inet filter {
-set country_block { /* set_type ie `type ipv4_addr' */ }
-/* more stuff in here */
+    chain input {
+        type filter hook input priority 0; policy accept;
+
+        iifname lo log accept
+    }
+    chain output {
+        type filter hook output priority 0; policy accept;
+    }
 }
-@include "nftables.foobar"
 
-
-# nftables.foobar
-add element inet filter country_block {
-/* set elements here */
+table ip nat {
+    chain postrouting {
+        type nat hook postrouting priority 100;
+        masquerade
+    }
 }
 
 
-The real downside of this is that it does not allow to access this set 
-from another table.
-For example, I have a mac based blacklist where port 80 is redirected to 
-a portal page.
-Normally I would have to know the blocked macs in 3 tables, because I 
-want the filter table to be inet but I also need nat chains for the 
-dnats, which are not allowed in inet tables. I solved this by marking 
-the packets very early in prerouting in the inet table and checking for 
-the mark in the nat chains of the ip and ipv6 nat chains.
-tl;dr: Currently it is not always feasible to translate old ipset 
-approaches to nftables 1 to 1.
+With this, connections to localhost fail because the masquerade line
+sets the source IP to that of the wlp1s0 interface, and not of the lo
+interface.
 
-Best
-Leon
+Here is output from the log:
+IN=lo OUT= MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00
+SRC=192.168.86.18 DST=127.0.0.1 LEN=60 TOS=0x00 PREC=0x00 TTL=64
+ID=64500 DF PROTO=TCP SPT=36844 DPT=8000 WINDOW=43690 RES=0x00 SYN
+URGP=0
 
-On 2016-12-13 05:39, Mark Morgan wrote:
-> I am trying to convert from iptables to nftables. So far I really like
-> the way nftables is structured, it will allow me to cleanup my
-> iptables settings and I expect it to be much more manageable over the
-> long term.
-> 
-> However, I'm encountering an issue trying to translate an
-> iptables/ipset feature into nftables in a sane way.
-> 
-> Today I use ipsets, which I can maintain separate from my iptable
-> firewall rules. This is a nice convenience - I can add blacklists,
-> manage CIDR block sets, etc, all in an efficient package (ipset),
-> without having to restart my entire firewall rule set.
-> 
-> As best I can tell, nftables does not support external ipset,
-> presumably because it has its own internal version. It would be great
-> if it could support external ipset, then I could have the best of both
-> worlds.
-> 
-> For now, I converted some of my ipsets to nftables format. The problem
-> I'm having is that while there is an "include" directive which allows
-> me to separate out my ipsets into manageable separate files, there is
-> no mechanism I can see to actually reference these sets. Example:
-> 
-> # nftables.conf
-> @include "nftables.foobar"
-> table inet filter { /* stuff in here */ }
-> 
-> # nftables.foobar
-> table ip foobar { set country_block { /*blah blah*/ } }
-> 
-> Now I want to reference "set country_block" from my inet filters. I
-> can't find any documentation on how to reference a set in another
-> table. The "@country_block" reference seems to be scoped to only the
-> current table, with no way I can find to have it reference a set in
-> another table. I really do not want to store all of my ip sets in a
-> single large file/table. That would be worse than what I have today
-> with iptables.
-> 
-> Am I missing an feature that perhaps isn't documented that would make
-> this all work, or is there a forth coming feature that might make this
-> possible to do in the future?
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+You can see how the source ip is wrong. This is from running "curl"
+trying to connect to a local http server on port 8000.
+
+Removing the masquerade line, or changing it to: "oifname wlp1s0
+masquerade" fixes it, but this is just a workaround that will fail in
+more complex situations.
+
+I would have loved to provide you with tracing information, but
+unfortunately I never got that to work for me.
+
+Tried with kernels: 4.8.12 and 4.4.35 on arch linux. Nft version is 0.6.
+
+Please let me know if there's any other info you'd like me to provide you with.
+
+Thanks,
+Tom.
