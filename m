@@ -1,84 +1,97 @@
-From: Buddy Lumpkin <buddy.lumpkin@gmail.com>
-Subject: Rewriting ethernet frames
-Date: Tue, 13 Dec 2016 17:08:58 -0800
-Message-ID: <CAMfvBhO2QH5whtWs8ySrMe9AB6cVcGqR8fh+XcD2dQJosn07nw@mail.gmail.com>
+From: Mark Morgan <morganm.qc@gmail.com>
+Subject: Re: Nftables / ipset / multiple tables
+Date: Tue, 13 Dec 2016 20:06:27 -0800
+Message-ID: <CABAu8hPR=S+jpFtuOn3mNByWEiZmgOSnvyiazrurjNhxg787WQ@mail.gmail.com>
+References: <CABAu8hMnZd84Ya-17aK9ERfqp-7TbfuhfWnDz5dydML0Jhdb0A@mail.gmail.com>
+ <20161213193934.GA2881@salvia>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=AdlyfJPwwb16MYZdUMk67uOarf9Ul8VfKsAunpRxtTo=;
-        b=PyxXrcdYmX8p1r6aS0bRjOrK4PaFMSwi1SZfM9wl8ksAx5kxChZYqw4o5slIhUREsl
-         hT9DV4W3nunxSePCubOLWOX5thOLqnm1YxXidkaUjy+8T7YqdsMiz/EhtTKsuiv8NclV
-         jyKOUVG99VxazDUJCFsAfIEUCh0NNB2Tnm9REkAuPBV3QBaymTGXzYChEUVD29MLkbpe
-         KjcIikdFag5gF170I6OmXkf7Q7jl63++zjOyL48DbSM7cxSH68Dgvj59VxbOiXsFfqCb
-         YHjr/RrhXJPagh/edihZVw1PUQcasIbTWdIxZL3eDUMlpt62mqcQ4KB3HHvaV/Ftj+qI
-         u+dg==
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=3BKTm++5iafowdkoQiyn3YcjiqjHqFQEHeg1hXQs4Rk=;
+        b=HzhhT3bgcrTH38xEQllS8c1Kur1jg2PlTnfDRfZrBck3WwKVRsGQMxPStFuDubxWQZ
+         oJBj861TCbhP5TQSU4mySHhNxa/8qVuO/2X7KF0OK7jT7QdjreBnOwqvhOdWCQfoKSre
+         WCDFABXNoTovdinLhzKwxvgFUXh3pBrPnCVY3ECqLqh0kPJ7YqQPrmpB3TNreoQU39ER
+         GR/0CioKMZvWhJ7aG8xenLWozAq0X3N6iuCT/P963c4BroRC19lrwTE4Kpjmg1DotH0C
+         y2cbKEc3P1FGFaJWUdCCRU8UsdQaZAjYogWkPWJ3RR4g5Qu49G9AVNtXR5d4FXNX/opO
+         meRw==
+In-Reply-To: <20161213193934.GA2881@salvia>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org
 
-Hi All,
+Great ideas, thank you both. I tried Pablo's suggestion and have an
+error. Here's what it looks like:
 
-I have a tftp server that is padding runt frames with garbage data,
-rather than zero's. Our intel NICs are able to transfer files from it
-just fine during PXE boot, but I recently tried to netboot from a new
-NIC from another vendor, and it behaves pathologically after receiving
-a TFTP option acknowledgment with garbage appended to the end. Here is
-an example:
+# nftables.conf
+include "/etc/nftables.country-block"
+table inet filter {
+  set country-block {
+    type ipv4_addr; flags interval;
+    elements = $country_block_list
+  }
+}
 
-0000   00 0a f7 97 a6 9c 44 4c a8 26 11 e1 81 00 0f f2  ......DL.&......
-0010   08 00 45 00 00 2b 66 50 40 00 3d 11 2a 0e ac 12  ..E..+fP@.=.*...
-0020   16 1f ac 12 3f 20 94 40 07 7d 00 17 b2 d1 00 06  ....? .@.}......
-0030   62 6c 6b 73 69 7a 65 00 31 34 36 38 00 25 57 2c  blksize.1468.%W,
-0040   39 09 0a 2d
-         9..-
+# nftables.country-block
+define country_block_list = {
+          1.160.0.0/12, 1.192.0.0/13, 1.200.0.0/16, 1.202.0.0/15, 1.204.0.0/14,
+          # .... many lines here
+        223.240.0.0/13, 223.4.0.0/14, 223.64.0.0/11
+    }
 
-The ASCII characters at the end: %W,9..- is random garbage, used to
-get the runt packet up to a total of 67 bytes. Wireshark refers to
-this last 7 octets as a vlan trailer.
+And when I try to reload nftables, I receive the error:
 
-We used editing features on an Arista 7060cx switch to zero out the
-last 7 bytes, and the NIC in question booted successfully. I will
-figure out where the source of this garbage padding is, but for now, I
-want to get something to the NIC vendor so they can reproduce the
-problem. This is where I hoped I could use netfilter_queue ...
+Dec 13 19:56:18 ip-172-31-46-95 nft[563]: /etc/nftables.conf:82:16-16:
+Error: syntax error, unexpected '$', expecting '{'
+Dec 13 19:56:18 ip-172-31-46-95 nft[563]:     elements = $country_block_list
+Dec 13 19:56:18 ip-172-31-46-95 nft[563]:                ^
 
-I started with the following iptables rule:
+Did I do something wrong? Versions if it matters (Arch Linux):
 
-iptables -D OUTPUT -p udp -j NFQUEUE --queue-num 0
+> uname -r -m
+4.4.36-1-ec2-lts x86_64
+> nft --version
+nftables v0.6 (Support Edward Snowden)
 
-Then I hacked out some C code to dump the contents of the packets
-using netfilter_queue. Here is a hex dump of all of the data from
-nfq_get_payload():
+I tried Leon's suggested approach and it just coredumps:
 
+# nftables.conf
+table inet filter {
+  set country-block {
+    type ipv4_addr; flags interval;
+  }
+}
+include "/etc/nftables.country-block"
 
-  0000  45 00 00 38 d5 a9 40 00 40 11 0c 46 0a 8f b7 9b  E..8..@.@..F....
-  0010  0a 91 8c 0a b7 61 c7 7a 00 24 76 6f 00 06 74 73  .....a.z.$vo..ts
-  0020  69 7a 65 00 38 34 38 36 37 32 00 62 6c 6b 73 69  ize.848672.blksi
-  0030  7a 65 00 31 34 36 38 00                          ze.1468.
+# nftables.country-block
+add element inet filter country-block {
+        1.160.0.0/12, 1.192.0.0/13, 1.200.0.0/16, 1.202.0.0/15, 1.204.0.0/14,
+        # ... blah blah
+        223.240.0.0/13, 223.4.0.0/14, 223.64.0.0/11
+    }
 
-Unlike the hex/ASCII dump from wireshark above, this hex dump starts
-with an ip header.
+-- Unit nftables.service has begun starting up.
+Dec 13 20:00:35 ip-172-31-46-95 kernel: nft[616]: segfault at 70 ip
+000000000041d662 sp 00007ffc1b3f8db0 error 4 in nft[400000+56000]
+Dec 13 20:00:35 ip-172-31-46-95 systemd[1]: Started Process Core Dump
+(PID 618/UID 0).
+-- Subject: Unit systemd-coredump@2-618-0.service has finished start-up
 
-RFC894 states the following about ethernet padding:
+Also in case size is a possible issue, here's word count on my
+country-block file:
 
-If necessary, the data field should be padded
-   (with octets of zero) to meet the Ethernet minimum frame size.  This
-   padding is not part of the IP packet and is not included in the total
-   length field of the IP header.
+> wc nftables.country-block
+  213   952 16532 nftables.country-block
 
-Since this is a tftp option acknowlegement, I can't just tack more
-data onto the end of the UDP packet. I need access to the rest of the
-packet. Is this possible with netfilter_queue? Perhaps with a
-different iptables rule, or do I need another tool?
+Skipping 10-15 words of meta information, that's approximately ~940
+CIDR blocks in the list.
 
-Any guidance here would be appreciated. If I need to write a kernel
-module, I am fine with that. I just need someone to give me the high
-level synopsis of what I need to do and i'll take it from there.
-
-Thanks in advance,
-
---Buddy
+Should I try different versions of nftables or a newer kernel?  Or for
+the core dumping issue, feel free to point me at some docs for how to
+capture useful debug information for the devs and I'm happy to read up
+and submit a bug report.
