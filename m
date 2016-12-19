@@ -1,106 +1,180 @@
-From: Liping Zhang <zlpnobody@gmail.com>
-Subject: Re: nftables: masquerade sets wrong source address
-Date: Mon, 19 Dec 2016 10:25:14 +0800
-Message-ID: <CAML_gOc5tdwguuZ6VhPsgwCcsP3WeUpENAw5ncXoMbC-EgXGZQ@mail.gmail.com>
-References: <CAEvi_o9_SJNGH-RWq6Kt+UiXVY4ozaMy3yJ2rPdV0Rbk1QrRZw@mail.gmail.com>
- <CAML_gOdZn8UmZzeDWd6q--U9+f+SzBLMppCEtdCFsZ4rrTZ24A@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] libnftnl 1.0.7 release
+Date: Mon, 19 Dec 2016 23:57:33 +0100
+Message-ID: <20161219225733.GA9104@salvia>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=ysy9ETNu37IoWFCvSsxqHyUHG70jmqapWiqzhQI7yN0=;
-        b=mhZAxi/my4F5QabDeT0LXomjSIVLkN3D/ODewrLDyrUXIekItL/Ok3odKhCvfqXNku
-         GCZAC1i2Z0wvIvTit8DEmdX3RXpy1EL6yncMch3xNxmEZXsHqCayA7D9P1oBgs00TbFs
-         E1qZWpfFn9WecywsJv3cYCJHvOF8P96tPITOtHjm+NcU6LDjyTwJayNKsn2AHBAImCSA
-         fqI6pkaxhDZQitqAvugkx/os54O9ShhQduWwxmmxuf73ViflTKWPDXp9rVH6GV3QccVE
-         sR1RRoBKNNUufThVefriOgYgZXM5Ommmckjs7Cd/yMrIKIAL8+I8JxtSleRBfqvL3Be4
-         xTcw==
-In-Reply-To: <CAML_gOdZn8UmZzeDWd6q--U9+f+SzBLMppCEtdCFsZ4rrTZ24A@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="2oS5YaxWCcQjTEyO"
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Tom Hacohen <tom@stosb.com>, Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
+To: netfilter-devel@vger.kernel.org
+Cc: netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
 
-2016-12-17 22:18 GMT+08:00 Liping Zhang <zlpnobody@gmail.com>:
->
-> For loopback connection, the request packets will traverse:
-> OUTPUT->POSTROUTING->PREROUTING->INPUT
-> and the source ip will be modified in nat POSTROUTING hook.
->
-> Meanwhile the reply packets will also traverse:
-> OUTPUT->POSTROUTING->PREROUTING->INPUT
-> and if nat OUTPUT hook exist, the destination ip will be modified
-> in it, and re-route will happen. Otherwise, the destination ip will
-> be modified at nat PREROUTING hook, and the dst entry will
-> be dropped. In such situation(i.e. nat OUTPUT doesn't exist),
-> we will try to do routing lookup and packets will be dropped
-> at ip_route_input_slow->martian_destination.
->
-> Furthermore, if ipt_rpfilter is configured, the reply packet maybe
-> dropped at there.
->
-> In iptables, nat output chain always exists, so there's no
-> such problem.
->
-> But I think that enforcing the user to add a nat output chain
-> in nftables is not a good idea, so probably we need a following
-> patch(I only list the ipv4 part):
->
-> diff --git a/net/ipv4/netfilter/nf_nat_l3proto_ipv4.c
-> b/net/ipv4/netfilter/nf_nat_l3proto_ipv4.c
-> index f8aad03..5bc9b22 100644
-> --- a/net/ipv4/netfilter/nf_nat_l3proto_ipv4.c
-> +++ b/net/ipv4/netfilter/nf_nat_l3proto_ipv4.c
-> @@ -344,8 +344,21 @@ nf_nat_ipv4_in(void *priv, struct sk_buff *skb,
->
->         ret = nf_nat_ipv4_fn(priv, skb, state, do_chain);
->         if (ret != NF_DROP && ret != NF_STOLEN &&
-> -           daddr != ip_hdr(skb)->daddr)
-> -               skb_dst_drop(skb);
-> +           daddr != ip_hdr(skb)->daddr) {
-> +               const struct rtable *rt = skb_rtable(skb);
-> +               int err;
-> +
-> +               if (rt) {
-> +                       if (rt->rt_flags & RTCF_LOCAL) {
-> +                               err = ip_route_me_harder(state->net, skb,
-> +                                                        RTN_UNSPEC);
-> +                               if (err < 0)
-> +                                       ret = NF_DROP_ERR(err);
-> +                       } else {
-> +                               skb_dst_drop(skb);
-> +                       }
-> +               }
-> +       }
->
->         return ret;
->  }
->
 
-Please ignore the above patch, it's incorrect that we use ip_route_output_key
-for the incoming packets.
+--2oS5YaxWCcQjTEyO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Maybe the below one will be better, but I'm not sure whether this will break
-some special use cases or not:
+Hi!
 
-diff --git a/net/ipv4/netfilter/nf_nat_l3proto_ipv4.c
-b/net/ipv4/netfilter/nf_nat_l3proto_ipv4.c
-index f8aad03..d358670 100644
---- a/net/ipv4/netfilter/nf_nat_l3proto_ipv4.c
-+++ b/net/ipv4/netfilter/nf_nat_l3proto_ipv4.c
-@@ -344,8 +344,13 @@ int nf_nat_icmp_reply_translation(struct sk_buff *skb,
+The Netfilter project proudly presents:
 
-        ret = nf_nat_ipv4_fn(priv, skb, state, do_chain);
-        if (ret != NF_DROP && ret != NF_STOLEN &&
--           daddr != ip_hdr(skb)->daddr)
-+           daddr != ip_hdr(skb)->daddr) {
-+               if (state->in->flags & IFF_LOOPBACK ||
-+                   skb->pkt_type == PACKET_LOOPBACK)
-+                       return ret;
-+
-                skb_dst_drop(skb);
-+       }
+        libnftnl 1.0.7
+
+libnftnl is a userspace library providing a low-level netlink
+programming interface (API) to the in-kernel nf_tables subsystem. The
+library libnftnl has been previously known as libnftables. This library
+is currently used by the nft command line tool.
+
+This release includes the following list of updates:
+
+* New nftnl_rule_cmp() interface to compare rules.
+
+* Support for new kernel expressions:
+ - Number Generator (a.k.a. numgen).
+ - Routing (a.k.a. rt).
+ - Range.
+ - Inverted set lookups.
+ - Inverted dynamic set updates (ie. rule mismatch on full sets).
+ - Packet quota.
+ - Hash.
+ - Forward Information Base lookups (a.k.a. fib).
+ - Reference to stateful objects (requires kernel 4.10-rc).
+ - Notrack.
+
+* Allow to add userdata to sets.
+
+* Support for stateful objects, including quota and counter (requires
+  kernel 4.10-rc).
+
+* Support for layer 4 pseudoheader fields checksum updates (requires
+  kernel 4.10-rc).
+
+  ... and fixes.
+
+You can download this library from:
+
+http://www.netfilter.org/projects/libnftnl/downloads.html
+ftp://ftp.netfilter.org/pub/libnftnl/
+
+Thanks!
+
+--2oS5YaxWCcQjTEyO
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: attachment; filename="changes-libnftnl-1.0.7.txt"
+Content-Transfer-Encoding: quoted-printable
+
+Anders K. Pedersen (1):
+      src: introduce rt expression
+
+Arturo Borrero (2):
+      expr: lookup: give support for inverted matching
+      src: remove libmxml support
+
+Arturo Borrero Gonzalez (1):
+      src: update Arturo Borrero Gonzalez email
+
+Carlos Falgueras Garc=EDa (19):
+      src: Fix leak in nftnl_*_unset()
+      chain: Check correct attribute
+      src: fix missing error checking in parser functions
+      set: Add new attribute into 'set' to store user data
+      tests: Check set user data
+      src: Fix missing nul-termination in nftnl_*_set_str()
+      src: Fix nftnl_*_get_data() to return the real attribute length
+      src: Constify iterators
+      rule: Implement internal iterator for expressions
+      tests: Add missing tests to test-script.sh
+      expr: Fix lookup builder
+      tests: Fix tests for immediate and lookup expressions
+      tests: masq: Fix wrong expression creation
+      utils: Fix out of bound access in nftnl_family2str
+      expr: cmp: Use cmp2str() instead of directly access to array
+      src: Implement rule comparison
+      rule: Fix comparison between rules if number of expressions differ
+      expr: data_reg: Fix DATA_CHAIN comparison
+      expr: immediate: Fix verdict comparison
+
+Florian Westphal (1):
+      expr: add fib expression
+
+Josue Alvarez (1):
+      examples: nft-rule-get: selective rule dumping
+
+Laura Garcia Liebana (5):
+      expr: add hash expression
+      expr: add number generation expression
+      expr: numgen: Rename until attribute by modulus
+      expr: hash: Add offset to hash value
+      expr: numgen: add number generation offset
+
+Liping Zhang (7):
+      trace: use get_u32 to parse NFPROTO and POLICY attribute
+      expr: queue: remove redundant NFTNL_EXPR_QUEUE_NUM set in json parse
+      tests: queue: add missing NFTNL_EXPR_QUEUE_FLAGS compare test
+      expr: queue: add NFTA_QUEUE_SREG_QNUM attr support
+      expr: log: fix typo in nftnl_expr_log_export
+      expr: log: do not print prefix if it is not set
+      expr: log: complete log flags support
+
+Pablo Neira Ayuso (43):
+      examples: nft-table-upd: don't use deprecated aliases
+      expr: payload: don't use deprecated definition NFT_EXPR_PAYLOAD_SREG
+      src: assert when setting unknown attributes
+      src: return value on setters that internally allocate memory
+      src: check for strdup() errors from setters and parsers
+      expr: data_reg: get rid of leftover perror() calls
+      src: simplify unsetters
+      src: check for flags before releasing attributes
+      tests: shuffle values that are injected
+      chain: dynamically allocate name
+      tests: stricter string attribute validation
+      set_elem: fix return in several error paths of nftnl_set_elems_parse2=
+()
+      expr: lookup: print flags only if they are available
+      src: don't set data_len to zero when returning pointers
+      Revert "common: Avoid integer overflow in nftnl_batch_is_supported()"
+      expr: add quota expression
+      expr: numgen: use switch to handle numgen types from snprintf
+      expr: numgen: add missing trailing whitespace
+      expr: hash: missing trailing space and modulus in hexadecimal in snpr=
+intf
+      expr: numgen: add missing nftnl_expr_ng_cmp()
+      set: fix incorrect maximum set description attribute
+      include: resync nf_tables.h cache copy
+      src: display offset only if present in hash and numgen expressions
+      src: add range expression
+      set_elem: don't add NFTA_SET_ELEM_LIST_ELEMENTS attribute if set is e=
+mpty
+      src: add notrack expression
+      expr: missing offset handling for snprintf() in hash and numgen
+      include: refresh nf_tables.h cache copy
+      expr: call expr->ops->snprintf only if defined
+      examples: add nft-map-add
+      examples: nft-set-add: update it to add a set that stores port numbers
+      examples: nft-set-elem-add: add missing batch logic
+      expr: payload: add NFTNL_EXPR_PAYLOAD_FLAGS
+      set_elem: nftnl_set_elems_nlmsg_build_payload_iter()
+      include: fetch stateful object updates for nf_tables.h cache copy
+      src: support for stateful objects
+      expr: add stateful object reference expression
+      set: add NFTNL_SET_OBJ_TYPE attribute
+      set_elem: add NFTNL_SET_ELEM_OBJREF attribute
+      expr: objref: add support for stateful object maps
+      quota: support for consumed bytes
+      build: update LIBVERSION to prepare a new release
+      include: Missing nf_log.h in Makefile
+
+Phil Sutter (7):
+      set: prevent memleak in nftnl_jansson_parse_set_info()
+      expr/ct: prevent array index overrun in ctkey2str()
+      expr/limit: Drop unreachable code in limit_to_type()
+      common: Avoid integer overflow in nftnl_batch_is_supported()
+      src: Avoid returning uninitialized data
+      ruleset: Initialize ctx.flags before calling nftnl_ruleset_ctx_set()
+      utils: Don't return directly from SNPRINTF_BUFFER_SIZE
+
+
+--2oS5YaxWCcQjTEyO--
