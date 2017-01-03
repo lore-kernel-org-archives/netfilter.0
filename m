@@ -1,74 +1,50 @@
-From: Tom Hacohen <tom@stosb.com>
-Subject: Re: nftables: masquerade sets wrong source address
-Date: Thu, 22 Dec 2016 22:40:34 +0000
-Message-ID: <CAEvi_o8k-LYKD2QyvPnejHN9XVe7+N=xPNJutSFe4p4BKacMHQ@mail.gmail.com>
-References: <CAEvi_o9_SJNGH-RWq6Kt+UiXVY4ozaMy3yJ2rPdV0Rbk1QrRZw@mail.gmail.com>
- <CAML_gOdZn8UmZzeDWd6q--U9+f+SzBLMppCEtdCFsZ4rrTZ24A@mail.gmail.com>
- <CAEvi_o-7soTh5vPqniCo76Szbf7J1y6nwwD-YqJ5uJvOYSeVHw@mail.gmail.com>
- <CAML_gOfxzY9iWefK8Vw8kxYXNmOrZBmouO=PfMxtyz4jfp=13g@mail.gmail.com>
- <CAEvi_o96hh=ZfkofcjswUEDeH1Pi6wGD99qV+k87B=Z+QM-78w@mail.gmail.com>
- <20161222103448.GA31504@breakpoint.cc> <CAEvi_o8wV5GNk8JvSg96kP3WdDsVsf8PubRe=K1ZiD2+nBaYTg@mail.gmail.com>
+From: Johannes Krupp <johannes.krupp@cispa.saarland>
+Subject: same MAC, same IP, different interface - NAT possible?
+Date: Tue, 3 Jan 2017 02:17:25 +0100
+Message-ID: <586AFBA5.6030108@cispa.saarland>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=stosb.com; s=google;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=co/Be0O+8R0NDtKs7GRc8mSuWUkxSl5iF3Ke9lby/mQ=;
-        b=aPMS/A36/X10IqqeO0uJjNC2hRMt2cjTMpTUHctCxfm8gVEX3i4XKk5UZp9ZP859VY
-         Gy3pXfZxxHEQg5A5l44cF1ATBLkmPLGVyfICQ7huDARdu6tF/Qcqzgg2UJcYKGlAjQlz
-         GNT3xj6IvrGLyau8fMnYfHnAEvl0XwuDg36Qc=
-In-Reply-To: <CAEvi_o8wV5GNk8JvSg96kP3WdDsVsf8PubRe=K1ZiD2+nBaYTg@mail.gmail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Florian Westphal <fw@strlen.de>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Liping Zhang <zlpnobody@gmail.com>, netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-On Thu, Dec 22, 2016 at 4:56 PM, Tom Hacohen <tom@stosb.com> wrote:
->
->
-> On 22 Dec 2016 12:35, "Florian Westphal" <fw@strlen.de> wrote:
->
-> Tom Hacohen <tom@stosb.com> wrote:
->> I'm sorry for repeating myself, however I'd like to stress out again,
->> that while your workaround fixes an inconsistency between iptables and
->> nftables, the scenario itself is caused by the buggy behaviour of
->> masquerade with "lo", and that needs to be fixed too. The workaround
->> above, and any fixes to that issue will only fix the dropping of the
->> packets, but the wrong rewrite will still be there.
->
-> The 'wrong rewrite' also occurs with iptables.
->
-> It doesn't cause connectivity issues because in iptables the nat table
-> always registers the output hook.
->
-> (I agree that nft masquerade should not cause these connectivity issues,
->  but I think proper ruleset fix is to use meta iif to restrict masq to
->  the correct interface(s)).
->
->
-> Yes, iptables so misbehaves here. I know you agree about not causing the
-> connectivity issues, but don't you agree that the wrong rewrite shouldn't
-> happen? For both iptables and nftables?
->
-> I already use oif to restrict the masquerade, I'm not trying to solve it for
-> myself, because I already have a working workaround. I'm trying to help
-> reporting and resolving a bug.
->
-> --
-> Tom
+Dear netfilter community,
 
-Resending as plain text.
+I have a setup* in which I have a server with multiple virtual network
+interfaces (vif1 .. vifX) that are connected (bridged) to one virtual
+machine each (vm1 .. vmX) which all have the same IP and MAC (let's say
+192.168.1.100 resp. 00:11:22:33:44:55). In addition to that my server
+also has one regular network interface (eth0) connected to the rest of
+my network (10.0.0.0/16).
 
-Yes, iptables so misbehaves here. I know you agree about not causing
-the connectivity issues, but don't you agree that the wrong rewrite
-shouldn't happen? For both iptables and nftables?
+Now I would like to be able to provide NAT-like capabilities such that
+every packet coming from vm1 reaches the regular network as coming from
+10.0.1.1, every packet coming from vm2 as 10.0.1.2 and so on. Of course,
+packets coming from the network destined towards 10.0.1.x should also be
+correctly translated by the server such that vmX will receive them.
 
-I already use oif to restrict the masquerade, I'm not trying to solve
-it for myself, because I already have a working workaround. I'm trying
-to help reporting and resolving a bug.
+From what I understand I could use ebtables with the snat-target to
+rewrite the MAC addresses for the vifX bridges, such that the remaining
+network would see at least a different MAC address per VM. However, I
+cannot see an easy solution to rewrite the IP. Using iptables nat-table
+and the snat-target will not work, since I would need to also filter on
+the source-mac or incoming device, but the snat-target is only available
+on the POSTROUTING chain.
 
---
-Tom
+One possible to solution would be to write a small program that listens
+on a rawsocket on every interface, rewrites packets and re-sends them on
+the correct interface, but I'd rather avoid that and use standard tools
+instead.
+
+I would be very grateful for ideas/tips,
+
+kind regards,
+
+Johannes
+
+
+*The reason all virtual machines have the same MAC and IP is that I want
+to run a analysis on memory dumps and would like all VMs to be as
+identical as possible.
