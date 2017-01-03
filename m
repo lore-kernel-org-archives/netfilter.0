@@ -1,50 +1,26 @@
-From: Johannes Krupp <johannes.krupp@cispa.saarland>
-Subject: same MAC, same IP, different interface - NAT possible?
-Date: Tue, 3 Jan 2017 02:17:25 +0100
-Message-ID: <586AFBA5.6030108@cispa.saarland>
+From: DOHC F22 <dohcf22@gmail.com>
+Subject: Need netfilter module
+Date: Tue, 3 Jan 2017 09:27:52 -0600
+Message-ID: <CAH-pVi_N8AixyRDfZtC-h_mwPiMy2cZ5YonYsYxeyXQXCv74JA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=/GlLgRwa/HF5KDE7ZNbt21sTBuB0+rMJvXucBBoZxT0=;
+        b=Ga0ipcZHgELgcK7dIfHtlrjoCzyYyjB95S1FdsGIvpeRfVCmBaAi1nnHI5jKSzTZa+
+         0E+uJH0aLdT9eTe1HrSDnuH2wg1g9WKn8o+Ckuq3lipzFMz0DXqj7ebEltqho2LexRct
+         24cVmIoBOMf8efDm8Yfa4wQO8SpQd/msRXQYLcJvjzCZ4fntjSijdVwtG7OXJTu5arcL
+         zIaBm0QzvBLBH6gj0EycYZvpSPZyxRA3SZfM9NIGKLbQJ9NHqxsS625mSQEsi2j5zuod
+         IGEEaiiTUVf1vpLxX3WPgci5uBObqFOhBJWmkRfocPtsTUsoO/2mB1IYjZns1GXvsnyJ
+         0/Zg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Dear netfilter community,
+Does someone know where I can find a ToS module that works with kernel
+3.10.61+ and iptables 1.4.20?
 
-I have a setup* in which I have a server with multiple virtual network
-interfaces (vif1 .. vifX) that are connected (bridged) to one virtual
-machine each (vm1 .. vmX) which all have the same IP and MAC (let's say
-192.168.1.100 resp. 00:11:22:33:44:55). In addition to that my server
-also has one regular network interface (eth0) connected to the rest of
-my network (10.0.0.0/16).
-
-Now I would like to be able to provide NAT-like capabilities such that
-every packet coming from vm1 reaches the regular network as coming from
-10.0.1.1, every packet coming from vm2 as 10.0.1.2 and so on. Of course,
-packets coming from the network destined towards 10.0.1.x should also be
-correctly translated by the server such that vmX will receive them.
-
-From what I understand I could use ebtables with the snat-target to
-rewrite the MAC addresses for the vifX bridges, such that the remaining
-network would see at least a different MAC address per VM. However, I
-cannot see an easy solution to rewrite the IP. Using iptables nat-table
-and the snat-target will not work, since I would need to also filter on
-the source-mac or incoming device, but the snat-target is only available
-on the POSTROUTING chain.
-
-One possible to solution would be to write a small program that listens
-on a rawsocket on every interface, rewrites packets and re-sends them on
-the correct interface, but I'd rather avoid that and use standard tools
-instead.
-
-I would be very grateful for ideas/tips,
-
-kind regards,
-
-Johannes
-
-
-*The reason all virtual machines have the same MAC and IP is that I want
-to run a analysis on memory dumps and would like all VMs to be as
-identical as possible.
+Thanks!
