@@ -1,33 +1,33 @@
-From: Arturo Borrero Gonzalez <arturo@debian.org>
+From: Khawar Shehzad <shehzad.khawar@gmail.com>
 Subject: Re: How to programmatically implement a firewall rule
-Date: Thu, 5 Jan 2017 12:03:30 +0100
-Message-ID: <CAOkSjBjd3V4pK6bnjs66CZNxSi9mLye-n4mb5N6h8Bdpj-O=2w@mail.gmail.com>
+Date: Thu, 5 Jan 2017 17:44:20 +0000
+Message-ID: <CAE0moye-8YSBQJ5csQLxLi8DO0o4kDurvC=SDDMoofa1VAmTWw@mail.gmail.com>
 References: <CAE0moyf85VpysmmCLa+dX4wtFZhDv+AVcxkM=BcCr=2hJ0mMBQ@mail.gmail.com>
+ <1483635760.877444.838416369.2C081B0B@webmail.messagingengine.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAE0moyf85VpysmmCLa+dX4wtFZhDv+AVcxkM=BcCr=2hJ0mMBQ@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=rzL6gUgf627XON4EkDSqcnk6Qw6ZnRW3s0Augj8wk2M=;
+        b=hVbQ18MCRC8zy7bXtJBXkSOo8bO9RMPtjoIKe7KxuGYWo+wkvql1jpT0Gyk5e0siEm
+         eDSiyvU44VQfcFPmEt12+NYWVr31s3k7OJCI+Z5JhzlGcmtn69YfntJl1Uoz1CniFPWg
+         sg1yH7JClkdWHhmFzII92EtzCWCwxCUH05Ze2RPQs/FqCB0iOiQHlGlJZciJu5gyHYiY
+         135lazIUPmIrgFjb7O5J7vV25HixKjyxJIppCF/ENMRRuQ57JoSEVmM5MbJASAPgg4ru
+         ZW9+MCxc6tD90b7EOVE3h4+F/CYzqeRMo49oQTB2+y98VVykYoOJi276EfTeKOroio5s
+         iAfg==
+In-Reply-To: <1483635760.877444.838416369.2C081B0B@webmail.messagingengine.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Khawar Shehzad <shehzad.khawar@gmail.com>
-Cc: Netfilter Users Mailing list <netfilter@vger.kernel.org>
+To: Jehan Tremback <jehan@altheamesh.com>
+Cc: netfilter@vger.kernel.org
 
-On 5 January 2017 at 11:56, Khawar Shehzad <shehzad.khawar@gmail.com> wrote:
-> HI,
-> I hope all are fine, and happy new year.
->
->
-> I want to implement a rule using libnftnl in C programming. This rule
-> specifies that a packet with a specific source address and a specific
-> destination address SHOULD be allowed. All other packet which does not
-> have that source and destination address MUST be dropped.
->
->
-> Just a little hint would suffice. I need to implement it. Any
-> direction would be much appreciated.
+On Thu, Jan 5, 2017 at 5:02 PM, Jehan Tremback <jehan@altheamesh.com> wrote:
+> altheamesh.com
 
-Take a look at libnftnl examples. In nft-rule-add.c [0] a rule that
-does 'tcp dport 22 counter' is added.
-
-[0] http://git.netfilter.org/libnftnl/tree/examples/nft-rule-add.c
+Performance. In my case the rules get updated very often, and a lot of
+rules get configured per second. So it all boils down to performance
+for me.
