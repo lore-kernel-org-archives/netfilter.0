@@ -1,54 +1,45 @@
-From: "Ethy H. Brito" <ethy.brito@inexo.com.br>
+From: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
 Subject: Re: Iptables Reject with TCP Reset
-Date: Fri, 6 Jan 2017 15:30:35 -0200
-Message-ID: <20170106153035.336da335@pulsar.inexo.com.br>
+Date: Fri, 6 Jan 2017 18:26:23 -0500
+Message-ID: <20170106182623.75d3451d@playground>
 References: <HK2PR0201MB21296E195C755C65E4110DDCE8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
         <d991fbe7-ca57-6045-8bfe-88e590ed2f65@familie-kuntze.de>
         <HK2PR0201MB2129ABDBC46F8805B3757387E8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Filter: OpenDKIM Filter v2.10.3 MAIL1.WPI.EDU v06NQPj7024896
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wpi.edu; s=_dkim;
+        t=1483745185; i=@wpi.edu;
+        bh=+/SxiB0XZ2dxInSy2k64G+eQcSSx5JAS83Pf6ZSbW/8=;
+        h=Date:From:Cc:Subject:In-Reply-To:References;
+        b=ukpVFvr8zqKLzLYXnvfmWGobWMNPWzHT9ShT6j+y1qrKbLGy9OIevymRO4l85VrUK
+         KF5dZf9H84PTbAgZdpbFdGH5OVJRYFJLMmD30mL+MZ8/aZFqSrj+kiZJy73m3FLXNn
+         OTzsceCGZvB3kN0CyGiB27PUZgxENRjd24DXCdHA=
 In-Reply-To: <HK2PR0201MB2129ABDBC46F8805B3757387E8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Matt Killock <matt.killock@praemium.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: 
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
 On Fri, 6 Jan 2017 16:28:31 +0000
 Matt Killock <matt.killock@praemium.com> wrote:
 
-> > Depends on your rule set. Check and fix it. The target usually works.  
+> > Depends on your rule set. Check and fix it. The target usually works.
 > 
 > As a test, I made the very first FORWARD rule this:
 > 
-> iptables -A FORWARD -i eth1 -p tcp -s 192.168.20.0/24 -d 212.58.244.71
-> --dport 80 -j REJECT --reject-with tcp-reset
-> 
-> 'iptables -n -L' output:
-> 
-> Chain FORWARD (policy DROP)
-> target     prot opt source               destination
-> REJECT     tcp  --  192.168.20.0/24      212.58.244.71        tcp dpt:80
-> reject-with tcp-reset
-> 
-> 
-> However, no Reset packets can be observed:
-> 
-> # tcpdump -ni eth1 host 192.168.20.164
-> 16:23:00.706667 IP 192.168.20.164.50105 > 212.58.244.71.80: Flags [SEW], seq
-> 2763730948, win 8192, options [mss 1460,nop,wscale 8,nop,nop,sackOK], length
-> 0 16:23:02.717733 IP 192.168.20.164.50106 > 212.58.244.71.80: Flags [SEW],
-> seq 2464499683, win 8192, options [mss 1460,nop,wscale 8,nop,nop,sackOK],
-> length 0
-> 
-> If this does usually work then could you give me a clue on what ruleset it
-> does work with?
-> 
+> iptables -A FORWARD -i eth1 -p tcp -s 192.168.20.0/24 -d 212.58.244.71 --dport 80 -j REJECT --reject-with tcp-reset
 
-Is the 192.168.20.0/24 network at the "same side" of eth1 ??
+Dumb question: can you reset a TCP conn that isn't ESTABLISHED? I don't think a TCP reset applies to the first SYN packet.
 
-The rule, as it is written, expects an incoming packet thru eth1 and outgoing
-thru any interface towards port 80. Therefore 192.168.20.0/24 must be at the "same side" of the eth1.
+Here are the rules I use when a conn passes outside its allowed time frame:
+  -A timedaction -p tcp -m state --state ESTABLISHED -j REJECT --reject-with tcp-reset
+  -A timedaction -j REJECT --reject-with icmp-admin-prohibited
 
-Ethy
+When a packet is received for an established TCP conn, a reset is returned to the sender. Each direction is handled separately. Once a particular direction has been reset, it is no longer ESTABLISHED, and further packets in that direction are rejected with ICMP 'admin prohibited' packets.
 
+In short, each direction of established TCP conns is reset individually. All other conns, including each reset direction of TCP conns, are rejected via ICMP.
+
+N
