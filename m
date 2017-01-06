@@ -1,74 +1,67 @@
-From: Noel Kuntze <noel@familie-kuntze.de>
-Subject: Re: Iptables Reject with TCP Reset
-Date: Fri, 6 Jan 2017 17:09:16 +0100
-Message-ID: <d991fbe7-ca57-6045-8bfe-88e590ed2f65@familie-kuntze.de>
+From: Matt Killock <matt.killock@praemium.com>
+Subject: RE: Iptables Reject with TCP Reset
+Date: Fri, 6 Jan 2017 16:28:31 +0000
+Message-ID: <HK2PR0201MB2129ABDBC46F8805B3757387E8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
 References: <HK2PR0201MB21296E195C755C65E4110DDCE8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
+ <d991fbe7-ca57-6045-8bfe-88e590ed2f65@familie-kuntze.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="3xgcaHDn3eh9vBuj9xXgs44R6a4xxq0FU"
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <HK2PR0201MB21296E195C755C65E4110DDCE8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=wealthcraft.onmicrosoft.com; s=selector1-praemium-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=FIodLr3HcZRfbY9oretGBBJvitcpB526VGXRNHPqDfk=;
+ b=PJhJ6jlB5V2h9gYc1xrSyGfBQPg/RhAZ+SYZ7Qt7M1J/T0ETsIJySHdMhLDuvac5G3dtSXE7lG1ZyXPFNpGH6oDcSAxKJAEDkf/ZrmvnbqdlIS0/WAnnmrzwulR7B2QAL/J5x7ry04KUqzmfCug7r0XAUHpohHJATiR3GPbGvtM=
+In-Reply-To: <d991fbe7-ca57-6045-8bfe-88e590ed2f65@familie-kuntze.de>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Matt Killock <matt.killock@praemium.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="windows-1254"
+To: Noel Kuntze <noel@familie-kuntze.de>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---3xgcaHDn3eh9vBuj9xXgs44R6a4xxq0FU
-Content-Type: multipart/mixed; boundary="kDd4oBLFtCjwnStrPNWmejGjJCK3J62SD";
- protected-headers="v1"
-From: Noel Kuntze <noel@familie-kuntze.de>
-To: Matt Killock <matt.killock@praemium.com>,
- "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Message-ID: <d991fbe7-ca57-6045-8bfe-88e590ed2f65@familie-kuntze.de>
-Subject: Re: Iptables Reject with TCP Reset
-References: <HK2PR0201MB21296E195C755C65E4110DDCE8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
-In-Reply-To: <HK2PR0201MB21296E195C755C65E4110DDCE8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
-
---kDd4oBLFtCjwnStrPNWmejGjJCK3J62SD
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-On 06.01.2017 16:19, Matt Killock wrote:
-> The following line does not do this - does this no longer work?
->=20
-> iptables -A FORWARD -s 192.168.40.0/24 -d 0/0 -p tcp --dport 80 -j REJE=
-CT --reject-with tcp-reset
-Depends on your rule set. Check and fix it. The target usually works.
-
---=20
-
-Mit freundlichen Gr=C3=BC=C3=9Fen/Kind Regards,
-Noel Kuntze
-
-GPG Key ID: 0x63EC6658
-Fingerprint: 23CA BB60 2146 05E7 7278 6592 3839 298F 63EC 6658
-
-
-
---kDd4oBLFtCjwnStrPNWmejGjJCK3J62SD--
-
---3xgcaHDn3eh9vBuj9xXgs44R6a4xxq0FU
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJLBAEBCAA1FiEEI8q7YCFGBedyeGWSODkpj2PsZlgFAlhvwSwXHG5vZWxAZmFt
-aWxpZS1rdW50emUuZGUACgkQODkpj2PsZliBIg//eoG5o+eacJlpFp0YXfVKXNIL
-byPVcoA7/xDHNO4X3bFEmZt8gZoWW8m0Y3bzIxQP1myqdFy4ABAnat/ybtX6+dGv
-NQnkHU199l/UT7Yt2vZre0UdNQm7FcBgXzGmCSmeAyfSQr8CFol+lkHeISfW+RZI
-/ulJDEV93jchNgCMeKti4P1raD0GBf+Un4y0YsOlVbEkYRjB3EkCj+PopR+5ztse
-fm/GEecwK2rzosBfRWDS8GqgbExqXqkgssjeXg6fW2luUPRB9UT7nzaJBXsMlV87
-ioOrpGffgqkIcxbbQAoRer5h9Jd2m3VnkGN4Qwv01ZFsRjD5SeA+8q8fGcLACiK1
-yEd7gPI0r9mq+kW5LI+STPe7JZyZpaNeGcod9JjW2dFPHx8+/ewvtShiq41RKGEv
-KNlbehz1NFYtdgnX1jPDlDOMDzP5Y0F1yw2Ip0t09QYtt3AZfL9xE/Z1GhZfHphy
-sK2GNFLIvnv5qNCLxesI5KXAXXcUSv+MI6Xovlh2lKdJ4knpAUkRzBtbLKC86IAP
-lr2li91kpet+ITvnIlkFCBGkFQEPEJBDOxV9KP+kT/hM7lvP1bEBODo1FfWSubHF
-udxsngkjUKbarlQlffkp+nScKG8Uz3pZ79SehlvJblyie/3WDyfh6KAsKNY+DX6Q
-BJUOiA0Tomqhls22roM=
-=F58C
------END PGP SIGNATURE-----
-
---3xgcaHDn3eh9vBuj9xXgs44R6a4xxq0FU--
+PiBEZXBlbmRzIG9uIHlvdXIgcnVsZSBzZXQuIENoZWNrIGFuZCBmaXggaXQuIFRoZSB0YXJnZXQg
+dXN1YWxseSB3b3Jrcy4NCg0KQXMgYSB0ZXN0LCBJIG1hZGUgdGhlIHZlcnkgZmlyc3QgRk9SV0FS
+RCBydWxlIHRoaXM6DQoNCmlwdGFibGVzIC1BIEZPUldBUkQgLWkgZXRoMSAtcCB0Y3AgLXMgMTky
+LjE2OC4yMC4wLzI0IC1kIDIxMi41OC4yNDQuNzEgLS1kcG9ydCA4MCAtaiBSRUpFQ1QgLS1yZWpl
+Y3Qtd2l0aCB0Y3AtcmVzZXQNCg0KJ2lwdGFibGVzIC1uIC1MJyBvdXRwdXQ6DQoNCkNoYWluIEZP
+UldBUkQgKHBvbGljeSBEUk9QKQ0KdGFyZ2V0ICAgICBwcm90IG9wdCBzb3VyY2UgICAgICAgICAg
+ICAgICBkZXN0aW5hdGlvbg0KUkVKRUNUICAgICB0Y3AgIC0tICAxOTIuMTY4LjIwLjAvMjQgICAg
+ICAyMTIuNTguMjQ0LjcxICAgICAgICB0Y3AgZHB0OjgwIHJlamVjdC13aXRoIHRjcC1yZXNldA0K
+DQoNCkhvd2V2ZXIsIG5vIFJlc2V0IHBhY2tldHMgY2FuIGJlIG9ic2VydmVkOg0KDQojIHRjcGR1
+bXAgLW5pIGV0aDEgaG9zdCAxOTIuMTY4LjIwLjE2NA0KMTY6MjM6MDAuNzA2NjY3IElQIDE5Mi4x
+NjguMjAuMTY0LjUwMTA1ID4gMjEyLjU4LjI0NC43MS44MDogRmxhZ3MgW1NFV10sIHNlcSAyNzYz
+NzMwOTQ4LCB3aW4gODE5Miwgb3B0aW9ucyBbbXNzIDE0NjAsbm9wLHdzY2FsZSA4LG5vcCxub3As
+c2Fja09LXSwgbGVuZ3RoIDANCjE2OjIzOjAyLjcxNzczMyBJUCAxOTIuMTY4LjIwLjE2NC41MDEw
+NiA+IDIxMi41OC4yNDQuNzEuODA6IEZsYWdzIFtTRVddLCBzZXEgMjQ2NDQ5OTY4Mywgd2luIDgx
+OTIsIG9wdGlvbnMgW21zcyAxNDYwLG5vcCx3c2NhbGUgOCxub3Asbm9wLHNhY2tPS10sIGxlbmd0
+aCAwDQoNCklmIHRoaXMgZG9lcyB1c3VhbGx5IHdvcmsgdGhlbiBjb3VsZCB5b3UgZ2l2ZSBtZSBh
+IGNsdWUgb24gd2hhdCBydWxlc2V0IGl0IGRvZXMgd29yayB3aXRoPw0KDQpUaGFua3MNCg0KTWF0
+dA0KDQpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fXw0KDQpQbHVtIFNvZnR3YXJlIGlz
+IGEgZnVsbHkgb3duZWQgc3Vic2lkaWFyeSBvZiBQcmFlbWl1bSBMaW1pdGVkLg0KDQpUaGlzIGUt
+bWFpbCBpcyBjb25maWRlbnRpYWwuIEl0IG1heSBhbHNvIGJlIGxlZ2FsbHkgcHJpdmlsZWdlZC4g
+SWYgeW91IGFyZSBub3QgdGhlIGFkZHJlc3NlZSwgeW91IG1heSBub3QgY29weSwgZm9yd2FyZCwg
+ZGlzY2xvc2Ugb3IgdXNlIGFueSBwYXJ0IG9mIGl0LiBJZiB5b3UgaGF2ZSByZWNlaXZlZCB0aGlz
+IG1lc3NhZ2UgaW4gZXJyb3IsIHBsZWFzZSBkZWxldGUgaXQgYW5kIGFsbCBjb3BpZXMgZnJvbSB5
+b3VyIHN5c3RlbSBhbmQgbm90aWZ5IHRoZSBzZW5kZXIgaW1tZWRpYXRlbHkgYnkgcmV0dXJuIGVt
+YWlsLiBJbnRlcm5ldCBjb21tdW5pY2F0aW9ucyBjYW5ub3QgYmUgZ3VhcmFudGVlZCB0byBiZSB0
+aW1lbHksIHNlY3VyZSwgb3IgZXJyb3Igb3IgdmlydXMgZnJlZS4gVGhlIHNlbmRlciBkb2VzIG5v
+dCBhY2NlcHQgbGlhYmlsaXR5IGZvciBhbnkgZXJyb3JzIG9yIG9taXNzaW9ucy4NCg0KSW4gdGhl
+IFVLIHRoZSBQcmFlbWl1bSBHcm91cCBpczogUHJhZW1pdW0gUG9ydGZvbGlvIFNlcnZpY2VzIEx0
+ZCAoQ29tcGFueSBOdW1iZXI6IDA1MzYyMTY4KSwgUHJhZW1pdW0gKFVLKSBMdGQgKENvbXBhbnkg
+TnVtYmVyOiAwNTM2MjE1MyksIFByYWVtaXVtIEFkbWluaXN0cmF0aW9uIEx0ZCAoQ29tcGFueSBO
+dW1iZXI6IDA2MDE2ODI4KSBhbmQgU21hcnRmdW5kIE5vbWluZWVzIEx0ZCAoQ29tcGFueSBOdW1i
+ZXI6IDA3MTUzNDE3KSBlYWNoIGhhdmluZyBpdHMgcmVnaXN0ZXJlZCBvZmZpY2UgYXQgNHRoIEZs
+b29yLCBTdWl0ZSA2NDMtNjU5LCBTYWxpc2J1cnkgSG91c2UsIExvbmRvbiBXYWxsLCBMb25kb24s
+IEVDMk0gNVFRLCBVbml0ZWQgS2luZ2RvbS4gUHJhZW1pdW0gQWRtaW5pc3RyYXRpb24gTHRkIGlz
+IGF1dGhvcmlzZWQgYW5kIHJlZ3VsYXRlZCBieSB0aGUgRmluYW5jaWFsIENvbmR1Y3QgQXV0aG9y
+aXR5IHVuZGVyIHJlZmVyZW5jZSA0NjM1NjYuIFNlZSBodHRwOi8vd3d3LmZjYS5vcmcudWsvcmVn
+aXN0ZXIgZm9yIG1vcmUgZGV0YWlscy4NCg0KSW4gSmVyc2V5IHRoZSBQcmFlbWl1bSBHcm91cCBp
+czogUHJhZW1pdW0gSW50ZXJuYXRpb25hbCBMdGQgKENvbXBhbnkgTnVtYmVyOiAxMDc2MjQpIHdo
+aWNoIGhhcyBpdHMgcmVnaXN0ZXJlZCBvZmZpY2UgYXQgM3JkIEZsb29yIEVhc3QsIFNhbGlzYnVy
+eSBIb3VzZSwgMS05IFVuaW9uIFN0cmVldCwgU3QgSGVsaWVyLCBKRTIgM1JGIGFuZCBpcyByZWd1
+bGF0ZWQgdW5kZXIgdGhlIEZpbmFuY2lhbCBTZXJ2aWNlIChKZXJzZXkpIExhdyAxOTk4IGJ5IHRo
+ZSBKZXJzZXkgRmluYW5jaWFsIFNlcnZpY2VzIENvbW1pc3Npb24gZm9yIHRoZSBjb25kdWN0IG9m
+IGludmVzdG1lbnQgYnVzaW5lc3MgaW4gSmVyc2V5LiBTZWUgaHR0cDovL3d3dy5qZXJzZXlmc2Mu
+b3JnIGZvciBtb3JlIGRldGFpbHMuDQoNClRoYW5rIHlvdSBmb3IgeW91ciBjb29wZXJhdGlvbi4g
+UGxlYXNlIGNvbnRhY3QgdXMgb24gKzQ0ICgwKTIwNyA1NjIyIDQ1MCBpZiB5b3UgcmVxdWlyZSBh
+c3Npc3RhbmNlLg0K
