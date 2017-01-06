@@ -1,45 +1,94 @@
-From: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
+From: Noel Kuntze <noel@familie-kuntze.de>
 Subject: Re: Iptables Reject with TCP Reset
-Date: Fri, 6 Jan 2017 18:26:23 -0500
-Message-ID: <20170106182623.75d3451d@playground>
+Date: Sat, 7 Jan 2017 00:40:42 +0100
+Message-ID: <387c6020-81c2-a5ab-7ba0-27ae8240d11b@familie-kuntze.de>
 References: <HK2PR0201MB21296E195C755C65E4110DDCE8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
-        <d991fbe7-ca57-6045-8bfe-88e590ed2f65@familie-kuntze.de>
-        <HK2PR0201MB2129ABDBC46F8805B3757387E8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
+ <d991fbe7-ca57-6045-8bfe-88e590ed2f65@familie-kuntze.de>
+ <HK2PR0201MB2129ABDBC46F8805B3757387E8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
+ <20170106182623.75d3451d@playground>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="7s7qa5s0hAw8lLivxgMx08MU0p58i4QIl"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Filter: OpenDKIM Filter v2.10.3 MAIL1.WPI.EDU v06NQPj7024896
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wpi.edu; s=_dkim;
-        t=1483745185; i=@wpi.edu;
-        bh=+/SxiB0XZ2dxInSy2k64G+eQcSSx5JAS83Pf6ZSbW/8=;
-        h=Date:From:Cc:Subject:In-Reply-To:References;
-        b=ukpVFvr8zqKLzLYXnvfmWGobWMNPWzHT9ShT6j+y1qrKbLGy9OIevymRO4l85VrUK
-         KF5dZf9H84PTbAgZdpbFdGH5OVJRYFJLMmD30mL+MZ8/aZFqSrj+kiZJy73m3FLXNn
-         OTzsceCGZvB3kN0CyGiB27PUZgxENRjd24DXCdHA=
-In-Reply-To: <HK2PR0201MB2129ABDBC46F8805B3757387E8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
+In-Reply-To: <20170106182623.75d3451d@playground>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: 
+To: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
 Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Fri, 6 Jan 2017 16:28:31 +0000
-Matt Killock <matt.killock@praemium.com> wrote:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--7s7qa5s0hAw8lLivxgMx08MU0p58i4QIl
+Content-Type: multipart/mixed; boundary="eBpuA4P58oF6FSqq4dq5GHG1tAC9UBKoG";
+ protected-headers="v1"
+From: Noel Kuntze <noel@familie-kuntze.de>
+To: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Message-ID: <387c6020-81c2-a5ab-7ba0-27ae8240d11b@familie-kuntze.de>
+Subject: Re: Iptables Reject with TCP Reset
+References: <HK2PR0201MB21296E195C755C65E4110DDCE8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
+ <d991fbe7-ca57-6045-8bfe-88e590ed2f65@familie-kuntze.de>
+ <HK2PR0201MB2129ABDBC46F8805B3757387E8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
+ <20170106182623.75d3451d@playground>
+In-Reply-To: <20170106182623.75d3451d@playground>
 
-> > Depends on your rule set. Check and fix it. The target usually works.
-> 
-> As a test, I made the very first FORWARD rule this:
-> 
-> iptables -A FORWARD -i eth1 -p tcp -s 192.168.20.0/24 -d 212.58.244.71 --dport 80 -j REJECT --reject-with tcp-reset
+--eBpuA4P58oF6FSqq4dq5GHG1tAC9UBKoG
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Dumb question: can you reset a TCP conn that isn't ESTABLISHED? I don't think a TCP reset applies to the first SYN packet.
+On 07.01.2017 00:26, Neal P. Murphy wrote:
+> Dumb question: can you reset a TCP conn that isn't ESTABLISHED? I don't=
+ think a TCP reset applies to the first SYN packet.
+Yes, you can and have to. It's specified as such. It does.
 
-Here are the rules I use when a conn passes outside its allowed time frame:
-  -A timedaction -p tcp -m state --state ESTABLISHED -j REJECT --reject-with tcp-reset
-  -A timedaction -j REJECT --reject-with icmp-admin-prohibited
 
-When a packet is received for an established TCP conn, a reset is returned to the sender. Each direction is handled separately. Once a particular direction has been reset, it is no longer ESTABLISHED, and further packets in that direction are rejected with ICMP 'admin prohibited' packets.
+>   -A timedaction -p tcp -m state --state ESTABLISHED -j REJECT --reject=
+-with tcp-reset
+>   -A timedaction -j REJECT --reject-with icmp-admin-prohibited
+You should reject all TCP packets, not just the ones that belong to an es=
+tablished connection.
 
-In short, each direction of established TCP conns is reset individually. All other conns, including each reset direction of TCP conns, are rejected via ICMP.
+> and further packets in that direction are rejected with ICMP 'admin pro=
+hibited' packets.
+That's invalid behaviour. See above.
 
-N
+>  All other conns, including each reset direction of TCP conns, are reje=
+cted via ICMP.
+See above.
+
+--=20
+
+Mit freundlichen Gr=C3=BC=C3=9Fen/Kind Regards,
+Noel Kuntze
+
+GPG Key ID: 0x63EC6658
+Fingerprint: 23CA BB60 2146 05E7 7278 6592 3839 298F 63EC 6658
+
+
+
+--eBpuA4P58oF6FSqq4dq5GHG1tAC9UBKoG--
+
+--7s7qa5s0hAw8lLivxgMx08MU0p58i4QIl
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJLBAEBCAA1FiEEI8q7YCFGBedyeGWSODkpj2PsZlgFAlhwKvoXHG5vZWxAZmFt
+aWxpZS1rdW50emUuZGUACgkQODkpj2PsZlhTqw/+ObUpwwSUvOpl378YxVSO0N1i
+38V9h4U0VQUcIIKSuO6ucf8R1BIMG5T6UqPGo7MBq/iHBHVkgcOJQPaR3OS6ttnH
+1fQ1L7GhPFp+alMtfLjMwb9YjSuJXa0W4QVfw9veBdPNTSsA2qu3etj3ecuU+WVj
+LtkYvIMFyHU4iyxi8rQeFSrqRFRGQdL2Eiou3aNoMr2p0qSrRC1rmesRTfr6cXUx
+V/BkaSsVoAVeaqlxQtid4rRSHaI5/v6e1sKeTzHw02ZMRp85IdN++LR6b98f+iKc
+C6lqeRqvV1oRUUnOhhdc92GsUNgNtNpkPc+/w6zzY2CcHLVo1f0Jx7aVnUQe+5O+
+vmerF8hbOxMPgFYTfLbI5waRQscfib+/ljZoYRKATrholb/6VmK/WLXRzyNXe+93
+T8U71jSEXubS3PXikBe5aIlwAkPCOfAw0Pe9u0YIwxQTdKzh9Jexh1mRfVPdCbdw
+4Zk4NBWEfDxFTyNeS0XPcgiUnCoVNfu//iKySMMeWrW3Pn5XF2fGMuMF7LMB+0qe
+ujH9VPq6K3T6abfxxN/kLz0mtyR4LD7pcJYg+Jcs9cp8ptAV92jnMeBGyGUqkjTL
+G8I+ZLJB13qjcHQXEJ90amoU5oX81kNeDfCx7umFKSRZOkUgb85eWQJhKex4IWAu
+L7t1jtj+5yG/P0E9I8Y=
+=Kehn
+-----END PGP SIGNATURE-----
+
+--7s7qa5s0hAw8lLivxgMx08MU0p58i4QIl--
