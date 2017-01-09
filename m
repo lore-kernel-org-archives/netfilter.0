@@ -1,43 +1,75 @@
-From: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Subject: Re: Need module help
-Date: Sun, 8 Jan 2017 12:29:44 +0100
-Message-ID: <3d6b0822-d484-e41e-8141-94dc128b94ba@plouf.fr.eu.org>
-References: <CAH-pVi-McTaVYJjvsBLbnSVk+wW2biD+0U8byK3exrFHfig1Hg@mail.gmail.com>
- <72f2e366-c823-40a6-17d6-330e803bc52e@plouf.fr.eu.org>
- <CAH-pVi-94=nY8zZJDQE_Kfq=01t9snXnBk-Rw3C8sbhsAM6i-w@mail.gmail.com>
- <20170108035307.GH8339@harrier.slackbuilds.org>
+From: Matt Killock <matt.killock@praemium.com>
+Subject: RE: Iptables Reject with TCP Reset
+Date: Mon, 9 Jan 2017 10:45:56 +0000
+Message-ID: <HK2PR0201MB212958238BE1225DA9B7FC09E8640@HK2PR0201MB2129.apcprd02.prod.outlook.com>
+References: <HK2PR0201MB21296E195C755C65E4110DDCE8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
+ <d991fbe7-ca57-6045-8bfe-88e590ed2f65@familie-kuntze.de>
+ <HK2PR0201MB2129ABDBC46F8805B3757387E8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
+ <19ab6efe-7891-3950-e468-11dd59e71246@familie-kuntze.de>
+ <HK2PR0201MB212932A38853DB306E300014E8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
+ <4f4fa7f2-0f5f-ac04-4bc2-f10c455da613@familie-kuntze.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20170108035307.GH8339@harrier.slackbuilds.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=wealthcraft.onmicrosoft.com; s=selector1-praemium-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=TkaYj1TtOQ7/Rg6X4Dl1gelX3XiCmmYGtFKXnW84UV4=;
+ b=IheUQN5y4GkmF0cPvb7TI7WapiJJ2tV2NOQSQMWKe2GkDRetyURRsIwXnjtv3qa4fA66hiKB8Qguav4inuLA/4Y+ok8LXcjWId0ZeLil0cW2W2kATounvsqx3Nqc4Ask57hQKbXCrR0rc9TCvhwGQJ/DUllSrb9hnStIAVAGjh0=
+In-Reply-To: <4f4fa7f2-0f5f-ac04-4bc2-f10c455da613@familie-kuntze.de>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Noel Kuntze <noel@familie-kuntze.de>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Le 08/01/2017 =E0 04:53, /dev/rob0 a =E9crit :
-> [ top-posting fixed ]
-
-Thanks for this.
-
->> On Sat, Jan 7, 2017 at 3:33 PM, Pascal Hambourg
->> <pascal@plouf.fr.eu.org> wrote:
->>> Le 07/01/2017 =E0 18:54, DOHC F22 a =E9crit :
->>>>
->>>> Does someone know where I can find a ToS module that works
->>>> with kernel 3.10.61+ and iptables 1.4.20?
->>>
->>> xt_dscp
->>> xt_DSCP
->
-> On Sat, Jan 07, 2017 at 09:39:33PM -0600, DOHC F22 wrote:
->> Are those two different modules?
->
-> Yes.  Names in lowercase are match extensions, in this case, see:
->     iptables -m dscp -h
->
-> UPPERCASE names indicate target extensions, so see this:
->     iptables -j DSCP -h
-
-Note that these modules also support the older tos match and TOS target=20
-extensions respectively.
+VGhhbmtzIGZvciB5b3VyIHJlc3BvbnNlLg0KDQo+IFVzZSBpcHJvdXRlMi4gRG9uJ3QgdXNlIHRo
+ZSBuZXQtdG9vbHMuIFRoZXkncmUgdW5tYWludGFpbmVkLCBsZXNzIHBvd2VyZnVsIGFuZCBsaWUu
+DQoNCkkgZG8gdXNlIGlwcm91dGUyIC0gZm9yIG91ciBtdWx0aS1ob21lZCBlZGdlIHJvdXRlciwg
+d2hlcmUgaXQncyBuZWVkZWQuIEluIHRoaXMgY2FzZSwgSSB3YW50ZWQgYSBsaXN0IG9mIGludGVy
+ZmFjZXMsIGFuZCBJIGNhbiBzZWUgdGhhdCB0aGUgb3V0cHV0IHdhcyBub3QgYSAnbGllJywgc28g
+YXMgYSB0b29sIGZvciB0aGF0IGpvYiwgaXQncyBmaW5lLg0KDQo+WW91ciBydWxlIHNldCBpcyBh
+YnNvbHV0ZWx5IGJyb2tlbiwgYmVjYXVzZSB5b3UgZG9uJ3QgcGVybWl0IGN0c3RhdGUgUkVMQVRF
+RCBhbmQgYXQgdGhlIHNhbWUgdGltZSwgaXQncyB1bm5lY2Vzc2FyaWx5IGNvbnZvbHV0ZWQgdW5z
+dHJ1Y3RlcmVkLg0KDQpJIG5vdGUgeW91IGRpc2xpa2Ugb3VyIHJ1bGVzZXQsIGFuZCBJIGhhdmUg
+bm8gaW50ZW50aW9uIG9mIHJld3JpdGluZyB0aGUgd2hvbGUgdGhpbmcsIGVzcGVjaWFsbHkgYXMg
+dGhlIGV4YW1wbGVzIGluIGxpbmtzIHlvdSBwcm92aWRlIGFsbG93IGFsbCBvdXRib3VuZCB0cmFm
+ZmljIGZyb20gaW50ZXJuYWwgaG9zdHMuIFdlIHdhbnQgdG8gYmxvY2sgYWxsIG91dGJvdW5kIHRy
+YWZmaWMgZXhjZXB0IG9uIGEgdmVyeSBsaW1pdGVkIHJhbmdlIG9mIGhvc3QgLyBwb3J0IGNvbWJp
+bmF0aW9ucy4gSSBhY2NlcHQgdGhhdCB3ZSBtYXkgbm90IGhhdmUgZ29uZSBhYm91dCB0aGF0IGlu
+IGFuIGVudGlyZWx5IG1vZGVybiBvciBzaW1wbGVzdCBtYW5uZXIgcG9zc2libGUsIGJ1dCBpdCBp
+cyBmYXIgZnJvbSAnYWJzb2x1dGVseScgYnJva2VuLg0KDQpIb3dldmVyLCB5b3UgZGlkIG1hbmFn
+ZSB0byB0ZWxsIG1lIHdoYXQgSSBuZWVkIHRvIGtub3csIHdoaWNoIGlzIHRoYXQgSSBuZWVkZWQg
+YSBSRUxBVEVEIHJ1bGUgaW4gdGhlcmUuIEFmdGVyIGEgYml0IG9mIGV4cGVyaW1lbnRhdGlvbiwg
+SSBkaXNjb3ZlcmVkIHRoYXQgSSBuZWVkIGEgcnVsZSBsaWtlIHRoaXM6DQoNCmlwdGFibGVzIC1B
+IE9VVFBVVCAtbyBldGgxIC1wIHRjcCAtZCAxOTIuMTY4LjQwLjAvMjQgLW0gc3RhdGUgLS1zdGF0
+ZSBSRUxBVEVEIC1qIEFDQ0VQVA0KDQpUaGF0IGZpeGVzIHRoaXMgcHJvYmxlbSwgdGhhbmsgeW91
+Lg0KDQpNYXR0DQoNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQoNClBsdW0gU29m
+dHdhcmUgaXMgYSBmdWxseSBvd25lZCBzdWJzaWRpYXJ5IG9mIFByYWVtaXVtIExpbWl0ZWQuDQoN
+ClRoaXMgZS1tYWlsIGlzIGNvbmZpZGVudGlhbC4gSXQgbWF5IGFsc28gYmUgbGVnYWxseSBwcml2
+aWxlZ2VkLiBJZiB5b3UgYXJlIG5vdCB0aGUgYWRkcmVzc2VlLCB5b3UgbWF5IG5vdCBjb3B5LCBm
+b3J3YXJkLCBkaXNjbG9zZSBvciB1c2UgYW55IHBhcnQgb2YgaXQuIElmIHlvdSBoYXZlIHJlY2Vp
+dmVkIHRoaXMgbWVzc2FnZSBpbiBlcnJvciwgcGxlYXNlIGRlbGV0ZSBpdCBhbmQgYWxsIGNvcGll
+cyBmcm9tIHlvdXIgc3lzdGVtIGFuZCBub3RpZnkgdGhlIHNlbmRlciBpbW1lZGlhdGVseSBieSBy
+ZXR1cm4gZW1haWwuIEludGVybmV0IGNvbW11bmljYXRpb25zIGNhbm5vdCBiZSBndWFyYW50ZWVk
+IHRvIGJlIHRpbWVseSwgc2VjdXJlLCBvciBlcnJvciBvciB2aXJ1cyBmcmVlLiBUaGUgc2VuZGVy
+IGRvZXMgbm90IGFjY2VwdCBsaWFiaWxpdHkgZm9yIGFueSBlcnJvcnMgb3Igb21pc3Npb25zLg0K
+DQpJbiB0aGUgVUsgdGhlIFByYWVtaXVtIEdyb3VwIGlzOiBQcmFlbWl1bSBQb3J0Zm9saW8gU2Vy
+dmljZXMgTHRkIChDb21wYW55IE51bWJlcjogMDUzNjIxNjgpLCBQcmFlbWl1bSAoVUspIEx0ZCAo
+Q29tcGFueSBOdW1iZXI6IDA1MzYyMTUzKSwgUHJhZW1pdW0gQWRtaW5pc3RyYXRpb24gTHRkIChD
+b21wYW55IE51bWJlcjogMDYwMTY4MjgpIGFuZCBTbWFydGZ1bmQgTm9taW5lZXMgTHRkIChDb21w
+YW55IE51bWJlcjogMDcxNTM0MTcpIGVhY2ggaGF2aW5nIGl0cyByZWdpc3RlcmVkIG9mZmljZSBh
+dCA0dGggRmxvb3IsIFN1aXRlIDY0My02NTksIFNhbGlzYnVyeSBIb3VzZSwgTG9uZG9uIFdhbGws
+IExvbmRvbiwgRUMyTSA1UVEsIFVuaXRlZCBLaW5nZG9tLiBQcmFlbWl1bSBBZG1pbmlzdHJhdGlv
+biBMdGQgaXMgYXV0aG9yaXNlZCBhbmQgcmVndWxhdGVkIGJ5IHRoZSBGaW5hbmNpYWwgQ29uZHVj
+dCBBdXRob3JpdHkgdW5kZXIgcmVmZXJlbmNlIDQ2MzU2Ni4gU2VlIGh0dHA6Ly93d3cuZmNhLm9y
+Zy51ay9yZWdpc3RlciBmb3IgbW9yZSBkZXRhaWxzLg0KDQpJbiBKZXJzZXkgdGhlIFByYWVtaXVt
+IEdyb3VwIGlzOiBQcmFlbWl1bSBJbnRlcm5hdGlvbmFsIEx0ZCAoQ29tcGFueSBOdW1iZXI6IDEw
+NzYyNCkgd2hpY2ggaGFzIGl0cyByZWdpc3RlcmVkIG9mZmljZSBhdCAzcmQgRmxvb3IgRWFzdCwg
+U2FsaXNidXJ5IEhvdXNlLCAxLTkgVW5pb24gU3RyZWV0LCBTdCBIZWxpZXIsIEpFMiAzUkYgYW5k
+IGlzIHJlZ3VsYXRlZCB1bmRlciB0aGUgRmluYW5jaWFsIFNlcnZpY2UgKEplcnNleSkgTGF3IDE5
+OTggYnkgdGhlIEplcnNleSBGaW5hbmNpYWwgU2VydmljZXMgQ29tbWlzc2lvbiBmb3IgdGhlIGNv
+bmR1Y3Qgb2YgaW52ZXN0bWVudCBidXNpbmVzcyBpbiBKZXJzZXkuIFNlZSBodHRwOi8vd3d3Lmpl
+cnNleWZzYy5vcmcgZm9yIG1vcmUgZGV0YWlscy4NCg0KVGhhbmsgeW91IGZvciB5b3VyIGNvb3Bl
+cmF0aW9uLiBQbGVhc2UgY29udGFjdCB1cyBvbiArNDQgKDApMjA3IDU2MjIgNDUwIGlmIHlvdSBy
+ZXF1aXJlIGFzc2lzdGFuY2UuDQo=
