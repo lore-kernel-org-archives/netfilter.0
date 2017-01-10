@@ -1,93 +1,49 @@
-From: =?utf-8?B?QW5kcsOpIFBhdWxzYmVyZy1Dc2liaSAoSUJNIENvbnN1bHRhbnQp?= 
-        <Andre.Paulsberg-Csibi@evry.com>
-Subject: RE: Iptables Reject with TCP Reset
-Date: Tue, 10 Jan 2017 11:41:51 +0000
-Message-ID: <9a646cb3d8e54ad8b8d641a107af1fde@CCDEX021.corp.corpcommon.com>
+From: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
+Subject: Re: Iptables Reject with TCP Reset
+Date: Tue, 10 Jan 2017 13:32:21 -0500
+Message-ID: <20170110133221.560d3b6d@playground>
 References: <HK2PR0201MB21296E195C755C65E4110DDCE8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
- <d991fbe7-ca57-6045-8bfe-88e590ed2f65@familie-kuntze.de>
- <HK2PR0201MB2129ABDBC46F8805B3757387E8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
- <19ab6efe-7891-3950-e468-11dd59e71246@familie-kuntze.de>
- <HK2PR0201MB212932A38853DB306E300014E8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
- <4f4fa7f2-0f5f-ac04-4bc2-f10c455da613@familie-kuntze.de>
- <HK2PR0201MB212958238BE1225DA9B7FC09E8640@HK2PR0201MB2129.apcprd02.prod.outlook.com>
- <b7cce260df01445c8c387889d3b30114@CCDEX021.corp.corpcommon.com>
- <HK2PR0201MB21294E23EB7B6CFD0DE8D406E8670@HK2PR0201MB2129.apcprd02.prod.outlook.com>
+        <d991fbe7-ca57-6045-8bfe-88e590ed2f65@familie-kuntze.de>
+        <HK2PR0201MB2129ABDBC46F8805B3757387E8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
+        <19ab6efe-7891-3950-e468-11dd59e71246@familie-kuntze.de>
+        <HK2PR0201MB212932A38853DB306E300014E8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
+        <4f4fa7f2-0f5f-ac04-4bc2-f10c455da613@familie-kuntze.de>
+        <HK2PR0201MB212958238BE1225DA9B7FC09E8640@HK2PR0201MB2129.apcprd02.prod.outlook.com>
+        <b7cce260df01445c8c387889d3b30114@CCDEX021.corp.corpcommon.com>
+        <HK2PR0201MB21294E23EB7B6CFD0DE8D406E8670@HK2PR0201MB2129.apcprd02.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Filter: OpenDKIM Filter v2.10.3 MAIL1.WPI.EDU v0AIWO7j020885
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wpi.edu; s=_dkim;
+        t=1484073144; i=@wpi.edu;
+        bh=wIVnATnYgZXEclbbD5xV9yLB4WGMbeSVJmvvNEPUvuQ=;
+        h=Date:From:Cc:Subject:In-Reply-To:References;
+        b=QIhMl2F4HGCe6I4UdcvV4p6C0v6j8UZngVtOsyEjHb57ZiVy3iq5vhkrkKznLYeWK
+         Z1H1/Uy0kOa5+SDlvd8GP7vzDBpEZdufvm/Nbzu7mHjuoDAqyZwDjaxai66n3bSorC
+         l4m/9cNu67bfW0rQQyS9pk/wmmPAbZfcLwF4RnxU=
 In-Reply-To: <HK2PR0201MB21294E23EB7B6CFD0DE8D406E8670@HK2PR0201MB2129.apcprd02.prod.outlook.com>
-Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Matt Killock <matt.killock@praemium.com>, Noel Kuntze <noel@familie-kuntze.de>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: 
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-VENQLVJFU0VUIHdvdWxkIHR5cGljYWxseSBiZSAiRVNUQUJMSVNIRUQiIGFzIHRoYXQgd291bGQg
-YmUgYSBub3JtYWwgcGFydCBvZiBhIFRDUCBzZXNzaW9uICwNCkluIElQVEFCTEVTIGl0IG1pZ2h0
-IGJlIHRoYXQgYW4gRUFSTFkgVENQLVJFU0VUIGNvdWxkIGJlICJSRUxBVEVEIiBidXQgSSBkbyBu
-b3QgdGhpbmsgc28gLg0KDQoiUkVMQVRFRCIgaXMgdHlwaWNhbGx5IElDTVAgcmVzcG9uc2VzIGZy
-b20gc3lzdGVtcyBpbiB0aGUgcGF0aCB0aGF0IGFyZSByZXNwb25zZSB0byBhIFRDUCBzZXNzaW9u
-IHRoYXQgZm9yIHNvbWUgcmVhc29uIG5vIGxvbmdlciBpcyAicmVhY2hhYmxlIiAsDQphcyB0aGlz
-IGlzIG5vdCBwYXJ0IG9mIHRoZSBUQ1Agc2Vzc2lvbiBkaXJlY3RseSBpdCB3b3VsZCBub3QgYmUg
-aW4gdGhlIGNvbm50cmFjayB0YWJsZSBhbmQNCklQVEFCTEVTIHdvdWxkIG5lZWQgdG8gbG9vayBh
-dCB0aGUgREFUQSBpbiB0aGUgSUNNUCB0byBzZWUgaWYgdGhhdCBpcyBSRUxBVEVEIHRvIGFueSBh
-Y3RpdmUgc2Vzc2lvbiAuDQoNCiJSRUxBVEVEIiBjb3VsZCBhbHNvIGJlIHNlc3Npb25zIGluc3Bl
-Y3RlZCB3aXRoIEZUUCBvciBvdGhlciBwcm90b2NvbHMgLCB3aGVyZSBhIE5FVyBUQ1Agc2Vzc2lv
-biBpcyBjcmVhdGVkIHdoaWNoIGNhbiBiZSBpbnNwZWN0ZWQNCmluIHRoZSB1bmNyeXB0ZWQgRlRQ
-IHNlc3Npb24gb24gdGhlIHByaW1hcnkgRlRQIHBvcnQgb2YgMjEgYW5kIHRoZW4gUkVMQVRFRCBh
-cyBpdCBpcyBjcmVhdGVkIGlmIHByb3BlciBtb2R1bGVzIGFyZSB1c2VkIC4NCg0KVXNpbmcgIlJF
-TEFURUQiIGlzIG1vc3RseSBzYWZlciBhbmQgcHJlZmVyYWJsZSBpbnN0ZWFkIG9mIG9wZW5pbmcg
-bWFudWFsbHkgZm9yIElDTVAgVFlQRSAzICwgVFlQRSA0IGFuZCBUWVBFIDExIA0KKCBhbmQgYWxs
-IG90aGVyIHR5cGVzIHRoYXQgbWF5IGJlIG5lZWRlZCB0byBoYXZlIGNvcnJlY3QgYW5kIHN0YWJs
-ZSBUQ1AvSVAgY29ubmVjdGl2aXR5ICkNCg0KDQpCZXN0IHJlZ2FyZHMNCkFuZHLDqSBQYXVsc2Jl
-cmctQ3NpYmkNClNlbmlvciBOZXR3b3JrIEVuZ2luZWVyIA0KRmF1bHQgSGFuZGxpbmcNCklCTSBT
-ZXJ2aWNlcyBBUw0KDQoNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IE1hdHQg
-S2lsbG9jayBbbWFpbHRvOm1hdHQua2lsbG9ja0BwcmFlbWl1bS5jb21dIA0KU2VudDogMTAuIGph
-bnVhciAyMDE3IDExOjEwDQpUbzogQW5kcsOpIFBhdWxzYmVyZy1Dc2liaSAoSUJNIENvbnN1bHRh
-bnQpIDxBbmRyZS5QYXVsc2JlcmctQ3NpYmlAZXZyeS5jb20+OyBOb2VsIEt1bnR6ZSA8bm9lbEBm
-YW1pbGllLWt1bnR6ZS5kZT47IG5ldGZpbHRlckB2Z2VyLmtlcm5lbC5vcmcNClN1YmplY3Q6IFJF
-OiBJcHRhYmxlcyBSZWplY3Qgd2l0aCBUQ1AgUmVzZXQNCg0KPiBUaGUgcnVsZSB5b3UgbWFkZSBo
-ZXJlIG1ha2VzIGxpdHRsZSBzZW5zZSAsIEl0IHdvdWxkIGJlIHByZWZlcmFibGUgdG8gbWFrZSBh
-IG1vcmUgc2ltcGxlIHJ1bGUgYXQgInRoZSB0b3AiIGxpa2UgdGhpcyAuLi4NCj4NCj4gVGhpcyB3
-aWxsIGFsbG93ICJhbGwiIHRyYWZmaWMgZm9yIHJ1bGVzIHlvdSBoYXZlIGFscmVhZHkgYWxsb3dl
-ZCB0aHJvdWdoIG90aGVyIHJ1bGVzIGluIHRoZSBGVyAoIG5vIG1hdHRlciB0aGUgSVAgb3IgaW50
-ZXJmYWNlICkgLg0KDQpJIG5vdGUgdGhhdCBpdCB3b3VsZCBiZSBzaW1wbGVyIHRvIGhhdmUgb25l
-IHN1Y2ggcnVsZSBmb3IgUkVMQVRFRCxFU1RBQkxJU0hFRCBidXQgdGhhdCdzIG5vdCB0aGUgd2F5
-IHdlJ3ZlIGRvbmUgdGhpbmdzIGhlcmUsIG11Y2ggdG8gTm9lbCdzIGRpc2d1c3QuIDopDQoNCldl
-J3ZlIGJsb2NrZWQgZXZlcnl0aGluZywgaW5jbHVkaW5nIE9VVFBVVCwgYnkgZGVmYXVsdC4gVGhl
-cmUgYXJlIG5vIGdlbmVyYWwgU05BVCBydWxlcyBvciBNQVNRVUVSQURFLiBXZSd2ZSB0cmllZCB0
-byBhbGxvdyBvbmx5IHRoZSBiYXJlIG1pbmltdW0gcmVxdWlyZWQgZm9yIHR3by13YXkgdHJhZmZp
-YyBiZXR3ZWVuIGEgc21hbGwgc2V0IG9mIGhvc3QvcG9ydCBjb21iaW5hdGlvbnMuIFRoaXMgaGFz
-IGxlZCB0byBzb21lIHVubmVjZXNzYXJ5IGR1cGxpY2F0aW9uIG9mIEVTVEFCTElTSEVEIHJ1bGVz
-LCBhbmQgSSBkaWRuJ3QgYXBwcmVjaWF0ZSB0aGF0IFJFTEFURUQgdHJhZmZpYyBpcyB3aGF0IHRo
-ZSAnUkVKRUNUIHdpdGggVENQLVJlc2V0JyB0cmFmZmljIGlzIGNsYXNzZWQgYXMgYnV0IG90aGVy
-d2lzZSBpdCBtYWtlcyAoc29tZSkgc2Vuc2UgYW5kIGRvZXMgd29yay4NCg0KS2luZCByZWdhcmRz
-DQpNYXR0DQoNCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fDQoNClBsdW0gU29mdHdh
-cmUgaXMgYSBmdWxseSBvd25lZCBzdWJzaWRpYXJ5IG9mIFByYWVtaXVtIExpbWl0ZWQuDQoNClRo
-aXMgZS1tYWlsIGlzIGNvbmZpZGVudGlhbC4gSXQgbWF5IGFsc28gYmUgbGVnYWxseSBwcml2aWxl
-Z2VkLiBJZiB5b3UgYXJlIG5vdCB0aGUgYWRkcmVzc2VlLCB5b3UgbWF5IG5vdCBjb3B5LCBmb3J3
-YXJkLCBkaXNjbG9zZSBvciB1c2UgYW55IHBhcnQgb2YgaXQuIElmIHlvdSBoYXZlIHJlY2VpdmVk
-IHRoaXMgbWVzc2FnZSBpbiBlcnJvciwgcGxlYXNlIGRlbGV0ZSBpdCBhbmQgYWxsIGNvcGllcyBm
-cm9tIHlvdXIgc3lzdGVtIGFuZCBub3RpZnkgdGhlIHNlbmRlciBpbW1lZGlhdGVseSBieSByZXR1
-cm4gZW1haWwuIEludGVybmV0IGNvbW11bmljYXRpb25zIGNhbm5vdCBiZSBndWFyYW50ZWVkIHRv
-IGJlIHRpbWVseSwgc2VjdXJlLCBvciBlcnJvciBvciB2aXJ1cyBmcmVlLiBUaGUgc2VuZGVyIGRv
-ZXMgbm90IGFjY2VwdCBsaWFiaWxpdHkgZm9yIGFueSBlcnJvcnMgb3Igb21pc3Npb25zLg0KDQpJ
-biB0aGUgVUsgdGhlIFByYWVtaXVtIEdyb3VwIGlzOiBQcmFlbWl1bSBQb3J0Zm9saW8gU2Vydmlj
-ZXMgTHRkIChDb21wYW55IE51bWJlcjogMDUzNjIxNjgpLCBQcmFlbWl1bSAoVUspIEx0ZCAoQ29t
-cGFueSBOdW1iZXI6IDA1MzYyMTUzKSwgUHJhZW1pdW0gQWRtaW5pc3RyYXRpb24gTHRkIChDb21w
-YW55IE51bWJlcjogMDYwMTY4MjgpIGFuZCBTbWFydGZ1bmQgTm9taW5lZXMgTHRkIChDb21wYW55
-IE51bWJlcjogMDcxNTM0MTcpIGVhY2ggaGF2aW5nIGl0cyByZWdpc3RlcmVkIG9mZmljZSBhdCA0
-dGggRmxvb3IsIFN1aXRlIDY0My02NTksIFNhbGlzYnVyeSBIb3VzZSwgTG9uZG9uIFdhbGwsIExv
-bmRvbiwgRUMyTSA1UVEsIFVuaXRlZCBLaW5nZG9tLiBQcmFlbWl1bSBBZG1pbmlzdHJhdGlvbiBM
-dGQgaXMgYXV0aG9yaXNlZCBhbmQgcmVndWxhdGVkIGJ5IHRoZSBGaW5hbmNpYWwgQ29uZHVjdCBB
-dXRob3JpdHkgdW5kZXIgcmVmZXJlbmNlIDQ2MzU2Ni4gU2VlIGh0dHA6Ly93d3cuZmNhLm9yZy51
-ay9yZWdpc3RlciBmb3IgbW9yZSBkZXRhaWxzLg0KDQpJbiBKZXJzZXkgdGhlIFByYWVtaXVtIEdy
-b3VwIGlzOiBQcmFlbWl1bSBJbnRlcm5hdGlvbmFsIEx0ZCAoQ29tcGFueSBOdW1iZXI6IDEwNzYy
-NCkgd2hpY2ggaGFzIGl0cyByZWdpc3RlcmVkIG9mZmljZSBhdCAzcmQgRmxvb3IgRWFzdCwgU2Fs
-aXNidXJ5IEhvdXNlLCAxLTkgVW5pb24gU3RyZWV0LCBTdCBIZWxpZXIsIEpFMiAzUkYgYW5kIGlz
-IHJlZ3VsYXRlZCB1bmRlciB0aGUgRmluYW5jaWFsIFNlcnZpY2UgKEplcnNleSkgTGF3IDE5OTgg
-YnkgdGhlIEplcnNleSBGaW5hbmNpYWwgU2VydmljZXMgQ29tbWlzc2lvbiBmb3IgdGhlIGNvbmR1
-Y3Qgb2YgaW52ZXN0bWVudCBidXNpbmVzcyBpbiBKZXJzZXkuIFNlZSBodHRwOi8vd3d3LmplcnNl
-eWZzYy5vcmcgZm9yIG1vcmUgZGV0YWlscy4NCg0KVGhhbmsgeW91IGZvciB5b3VyIGNvb3BlcmF0
-aW9uLiBQbGVhc2UgY29udGFjdCB1cyBvbiArNDQgKDApMjA3IDU2MjIgNDUwIGlmIHlvdSByZXF1
-aXJlIGFzc2lzdGFuY2UuDQo=
+On Tue, 10 Jan 2017 10:09:55 +0000
+Matt Killock <matt.killock@praemium.com> wrote:
+
+> > The rule you made here makes little sense , It would be preferable to make a more simple rule at "the top" like this ...
+> >
+> > This will allow "all" traffic for rules you have already allowed through other rules in the FW ( no matter the IP or interface ) .
+> 
+> I note that it would be simpler to have one such rule for RELATED,ESTABLISHED but that's not the way we've done things here, much to Noel's disgust. :)
+> 
+> We've blocked everything, including OUTPUT, by default. There are no general SNAT rules or MASQUERADE. We've tried to allow only the bare minimum required for two-way traffic between a small set of host/port combinations. This has led to some unnecessary duplication of ESTABLISHED rules, and I didn't appreciate that RELATED traffic is what the 'REJECT with TCP-Reset' traffic is classed as but otherwise it makes (some) sense and does work.
+
+This doesn't make much sense. A RELATED packet is the first packet of a new conn that a helper has determined is related to an existing conn (e.g., the data conn of an FTP control session). Once a RELATED packet is replied to, the resulting conn is an ordinary, vanilla ESTABLISHED conn; specifically, the RELATED 'tag' is discarded. When a packet matches a "REJECT with TCP-Reset" rule, netfilter immediately sends a TCP RESET to the end that sent the packet.
+
+It may be that TCP RESET applies to the first TCP SYN packet of a conn. But RESETting only established TCP conns and using ICMP 'admin prohibited' for all other packets works well and is logical.
+
+It almost sounds like you built a nearly stateless firewall.
+
+A rule near the top that allows packets for ESTABLISHED,RELATED conns to pass is more efficient, and is probably significantly more-so on a busy router because *most* packets will be associated with established conns and should be handled without needlessly passing them through all the 'new conn' checks.
