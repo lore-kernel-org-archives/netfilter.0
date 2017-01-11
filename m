@@ -1,37 +1,73 @@
-From: "Christoph Pleger" <Christoph.Pleger@cs.tu-dortmund.de>
-Subject: Chain priorities for NAT
-Date: Wed, 11 Jan 2017 17:25:27 +0100
-Message-ID: <7c7a3675f33b1e4768f751e6fd2864eb.squirrel@postweb.cs.tu-dortmund.de>
+From: Jiri Kosina <jikos@kernel.org>
+Subject: Re: conntrackd: synchronization failures
+Date: Wed, 11 Jan 2017 21:12:08 +0100 (CET)
+Message-ID: <alpine.LRH.2.00.1701112108360.25853@gjva.wvxbf.pm>
+References: <alpine.LRH.2.00.1701112049480.25853@gjva.wvxbf.pm>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <alpine.LRH.2.00.1701112049480.25853@gjva.wvxbf.pm>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
+Cc: info@jablonka.cz
 
-Hello,
+On Wed, 11 Jan 2017, Jiri Kosina wrote:
 
-I am just doing my first steps with the nftables program, reading the
-documentation and entering some of the commands mentioned there. After
-reading something about NAT rules, I am now quite confused about the
-priorities that can be given when creating chains:
+> conntrackd.conf can be found below.
 
-The Wiki on https://wiki.nftables.org mentions two priorities specifically
-available for NAT, -100 and 100. But of these two, the wiki's example for
-NAT only uses the value 100 for the postrouting chain. The prerouting
-chain has priority 0, and there is no difference between SNAT and DNAT.
+.. and now actually included, sorry.
 
-When I look at the ipv4-nat example which is shipped together with my
-nftables package, both chains use priority -150, though due to the Wiki,
-that value is used for mangling.
+BTW NetlinkOverrunResync and NetlinkEventsReliable don't have any 
+significant impact on the issue.
 
-And when I look at some online-exmaples, they use 0 for prerouting and
-postrouting.
 
-So, what are really the best values to use for priority in snat prerouting
-and postrouting and dnat prerouting and postrouting?
+=== cut here ===
+Sync {
+	Mode FTFW {
+		DisableExternalCache On
+	}
 
-Kind regards
-  Christoph
+	UDP {
+		IPv4_address 10.33.28.13
+		IPv4_Destination_Address 10.33.28.14
+		Port 3780
+		Interface eth2
+	}
 
+}
+
+General {
+	Nice -20
+	HashSize 32768
+	HashLimit 1024000
+	LogFile on
+	LockFile /var/lock/conntrack.lock
+	UNIX {
+		Path /var/run/conntrackd.ctl
+		Backlog 20
+	}
+	NetlinkBufferSize 2097152
+	NetlinkBufferSizeMaxGrowth 33554432
+	NetlinkOverrunResync Off
+	NetlinkEventsReliable On
+
+	Filter From Userspace {
+		Protocol Accept {
+			TCP
+			SCTP
+			DCCP
+			UDP
+			ICMP
+			IPv6-ICMP
+		}
+		Address Ignore {
+			IPv4_address 127.0.0.1 # loopback
+	}
+}
+=== cut here ===
+
+-- 
+Jiri Kosina <jikos@kernel.org>
+SUSE Labs
