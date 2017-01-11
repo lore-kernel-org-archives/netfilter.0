@@ -1,8 +1,7 @@
-From: =?utf-8?B?QW5kcsOpIFBhdWxzYmVyZy1Dc2liaSAoSUJNIENvbnN1bHRhbnQp?= 
-        <Andre.Paulsberg-Csibi@evry.com>
+From: Matt Killock <lists@killock.net>
 Subject: RE: Iptables Reject with TCP Reset
-Date: Wed, 11 Jan 2017 10:21:17 +0000
-Message-ID: <e5943affc23440f3bcb33662ba18a82f@CCDEX021.corp.corpcommon.com>
+Date: Wed, 11 Jan 2017 10:34:48 +0000
+Message-ID: <b2b4cd74a6a03e24947c05646f5e8e76@killock.net>
 References: <HK2PR0201MB21296E195C755C65E4110DDCE8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
  <d991fbe7-ca57-6045-8bfe-88e590ed2f65@familie-kuntze.de>
  <HK2PR0201MB2129ABDBC46F8805B3757387E8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
@@ -14,81 +13,88 @@ References: <HK2PR0201MB21296E195C755C65E4110DDCE8630@HK2PR0201MB2129.apcprd02.p
  <HK2PR0201MB21294E23EB7B6CFD0DE8D406E8670@HK2PR0201MB2129.apcprd02.prod.outlook.com>
  <20170110133221.560d3b6d@playground>
  <97e9b02ea87a5c04a31f5be7ab26f2ff@killock.net>
+ <e5943affc23440f3bcb33662ba18a82f@CCDEX021.corp.corpcommon.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <97e9b02ea87a5c04a31f5be7ab26f2ff@killock.net>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=killock.net; s=mail;
+        t=1484130888; bh=jNphw2xBT/VanMS5GB56IAx7Xp1Ups/B4TliAJupUWQ=;
+        h=To:Subject:Date:From:Cc:In-Reply-To:References:From;
+        b=ZQy8bgepugKcI2znybo0y+ekYEmnml6ZdKVo+4TWATEAzoLwJo6wBcwiinzQh/sAt
+         YQg8weW2+O2QVVkg6dll4y/aMhJRSHUILLm13vcvXjf2QJGsXH+5bAuaAnuk4L8atE
+         T6gfGcy6F60yVNoD506aEhFdwuQoNbb9h8QfkG6c=
+In-Reply-To: <e5943affc23440f3bcb33662ba18a82f@CCDEX021.corp.corpcommon.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"
-To: Matt Killock <lists@killock.net>, "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, "netfilter-owner@vger.kernel.org" <netfilter-owner@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: =?UTF-8?Q?Andr=C3=A9_Paulsberg-Csibi_=28IBM_Consultant=29?= <Andre.Paulsberg-Csibi@evry.com>
+Cc: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>, netfilter@vger.kernel.org, netfilter-owner@vger.kernel.org
 
-QWZ0ZXIgeW91ciBtYWlsIG5vdyBJIGFtIHBydWRlbnQgdG8gdGVzdCB0aGlzIG1vcmUgdGhvdQ0K
-DQpJIGhhdmUgc29tZXdoYXQgdmVyaWZpZWQgaW4gYSB0ZXN0IEZXIHRoYXQgeW91IGRvIG5vdCBu
-ZWVkIFJFTEFURUQgcnVsZSBmb3IgdGhlIElQVEFCTEVTIHRvIGJlIGFsbG93ZWQgdG8gZ2VuZXJh
-dGUgYSBUQ1AgUlNUIHBhY2tldCBpbnRlcm5hbGx5IC4NCg0KRnJvbSB3aGF0IHlvdSBzZW50IG1l
-IGRpcmVjdGx5ICwgeW91IGFsc28gYWxsb3dlZCB0aGlzIGluIHRoZSBPVVRQVVQgY2hhaW4gd2hp
-Y2ggbWFrZXMgbm8gc2Vuc2UgdG8gbWUgLi4uDQouLi4gYnV0IGl0IG1heWJlIHRoYXQgdGhlIHJ1
-bGVzIHNldCBoYXMgc29tZWhvdyBiZWVuICJicm9rZW4iIGFuZCBpdCBpcyBub3cgY2F1c2luZyB1
-bi1pbnRlbmRlZCBwYWNrZXQgaGFuZGxpbmcgLg0KDQpJIHdpbGwgdHJ5IHRvIGNoYW5nZSBteSBP
-VVRQVVQgcnVsZXMgdG8gTE9HIGFueSBvdXRwdXQgdGhhdCBpcyByZWdhcmRlZCBhcyBSRUxBVEVE
-IHdpdGggZnVsbCBvcHRpb25zICwNClRoYXQgd2lsbCBub3QgY2hhbmdlIGFueXRoaW5nIGluIHRo
-ZSBGVyBydWxlcyBpdHNlbGYganVzdCBhZGQgYSBMT0cgZW50cnkgYXQgdGhlIHN0YXJ0IG9mIHRo
-ZSBPVVRQVVQgY2hhaW4gdG8gc2VlIGlmDQpUQ1AgUlNUIGdlbmVyYXRlZCBpbnNpZGUgdGhlIElQ
-VEFCTEVTIEZPUldBUkQgY2hhaW4gaGFzIHRvIHBhc3MgdGhlIE9VVFBVVCBjaGFpbiBhdCBhbnkg
-dGltZSAuLi4NCg0KDQpCZXN0IHJlZ2FyZHMNCkFuZHLDqSBQYXVsc2JlcmctQ3NpYmkNClNlbmlv
-ciBOZXR3b3JrIEVuZ2luZWVyIA0KRmF1bHQgSGFuZGxpbmcNCklCTSBTZXJ2aWNlcyBBUw0KDQoN
-Ci0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBuZXRmaWx0ZXItb3duZXJAdmdlci5r
-ZXJuZWwub3JnIFttYWlsdG86bmV0ZmlsdGVyLW93bmVyQHZnZXIua2VybmVsLm9yZ10gT24gQmVo
-YWxmIE9mIE1hdHQgS2lsbG9jaw0KU2VudDogMTAuIGphbnVhciAyMDE3IDIwOjMwDQpUbzogTmVh
-bCBQLiBNdXJwaHkgPG5lYWwucC5tdXJwaHlAYWx1bS53cGkuZWR1Pg0KQ2M6IG5ldGZpbHRlckB2
-Z2VyLmtlcm5lbC5vcmc7IG5ldGZpbHRlci1vd25lckB2Z2VyLmtlcm5lbC5vcmcNClN1YmplY3Q6
-IFJlOiBJcHRhYmxlcyBSZWplY3Qgd2l0aCBUQ1AgUmVzZXQNCg0KPiBUaGlzIGRvZXNuJ3QgbWFr
-ZSBtdWNoIHNlbnNlLiBBIFJFTEFURUQgcGFja2V0IGlzIHRoZSBmaXJzdCBwYWNrZXQgb2YNCj4g
-YSBuZXcgY29ubiB0aGF0IGEgaGVscGVyIGhhcyBkZXRlcm1pbmVkIGlzIHJlbGF0ZWQgdG8gYW4g
-ZXhpc3RpbmcgY29ubg0KPiAoZS5nLiwgdGhlIGRhdGEgY29ubiBvZiBhbiBGVFAgY29udHJvbCBz
-ZXNzaW9uKS4gT25jZSBhIFJFTEFURUQgcGFja2V0DQo+IGlzIHJlcGxpZWQgdG8sIHRoZSByZXN1
-bHRpbmcgY29ubiBpcyBhbiBvcmRpbmFyeSwgdmFuaWxsYSBFU1RBQkxJU0hFRA0KPiBjb25uOyBz
-cGVjaWZpY2FsbHksIHRoZSBSRUxBVEVEICd0YWcnIGlzIGRpc2NhcmRlZC4gV2hlbiBhIHBhY2tl
-dA0KPiBtYXRjaGVzIGEgIlJFSkVDVCB3aXRoIFRDUC1SZXNldCIgcnVsZSwgbmV0ZmlsdGVyIGlt
-bWVkaWF0ZWx5IHNlbmRzIGENCj4gVENQIFJFU0VUIHRvIHRoZSBlbmQgdGhhdCBzZW50IHRoZSBw
-YWNrZXQuDQoNClNvdW5kcyBuaWNlIGluIHRoZW9yeSwgYnV0IHJlYWxpdHkgYml0ZXMgYmFjay4g
-UkVMQVRFRCBhbHNvIGFwcGxpZXMgdG8gDQp0aGUgVENQIFJlc2V0IHBhY2tldHMgdG8gU1lOIHBh
-Y2tldHMuDQoNCkkganVzdCB0cmllZCB0aGlzIGF0IGhvbWUgdG8gY29uZmlybSBteSBmaW5kaW5n
-cy4NCg0KUGxlYXNlIHJldmlldyB0aGUgYmVsb3cgZmlyZXdhbGwgc2NyaXB0LiBJdCBkb2VzIG5v
-dCBzZW5kIHRoZSBUQ1AgUlNUIA0KcGFja2V0cyB1bmxlc3MgeW91IG1ha2Ugb25lIG1pbm9yIGNo
-YW5nZTogVG8gYWRkICdSRUxBVEVELCcgdG8gdGhlIGxpbmUgDQp1bmRlcm5lYXRoICcjR2VuZXJh
-bCBTdGF0ZSBNYXRjaGluZycNCg0KUGxlYXNlIG5vdGUgdGhhdCBpdCBoYXMgdGhlIHNpbmdsZSBz
-dGF0ZSBtYXRjaGluZyBsaW5lcyBhcyByZWNvbW1lbmRlZCANCmJ5IHZhcmlvdXMgb3RoZXJzIG9u
-IHRoaXMgbGlzdC4NCg0KDQoNCg0KDQo+IEl0IGFsbW9zdCBzb3VuZHMgbGlrZSB5b3UgYnVpbHQg
-YSBuZWFybHkgc3RhdGVsZXNzIGZpcmV3YWxsLg0KDQpJdCdzIG1vcmUgb3IgbGVzcyBsaWtlIHRo
-ZSBiZWxvdyBidXQgZHVwbGljYXRlcyBFU1RBQkxJU0hFRCBldmVyeXdoZXJlDQoNCi0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KDQpBPScvc2Jpbi9pcHRhYmxlcycNCkVYSUY9J3BwcDAn
-DQpMQU5JRj0nZXRoMScNCg0KI0NsZWFyDQokQSAtRg0KJEEgLUYgSU5QVVQNCiRBIC1GIE9VVFBV
-VA0KJEEgLUYgRk9SV0FSRA0KJEEgLUYgLXQgbWFuZ2xlDQokQSAtRiAtdCBuYXQNCiRBIC1YDQoN
-CiNTZXR1cCBwb2xpY2llcw0KJEEgLVAgSU5QVVQgRFJPUA0KJEEgLVAgT1VUUFVUIERST1ANCiRB
-IC1QIEZPUldBUkQgRFJPUA0KDQplY2hvICIxIiA+IC9wcm9jL3N5cy9uZXQvaXB2NC9pcF9mb3J3
-YXJkDQoNCiMgU29tZSBiYXNpY3MNCiMgQWNjZXB0IGxvb3BiYWNrIGludGVyZmFjZQ0KJEEgLUEg
-SU5QVVQgLWkgbG8gLWogQUNDRVBUDQpBPScvc2Jpbi9pcHRhYmxlcycNCkVYSUY9J3BwcDAnDQpM
-QU5JRj0nZXRoMScNCg0KI0NsZWFyDQokQSAtRg0KJEEgLUYgSU5QVVQNCiRBIC1GIE9VVFBVVA0K
-JEEgLUYgRk9SV0FSRA0KJEEgLUYgLXQgbWFuZ2xlDQokQSAtRiAtdCBuYXQNCiRBIC1YDQoNCiNT
-ZXR1cCBwb2xpY2llcw0KJEEgLVAgSU5QVVQgRFJPUA0KJEEgLVAgT1VUUFVUIERST1ANCiRBIC1Q
-IEZPUldBUkQgRFJPUA0KDQplY2hvICIxIiA+IC9wcm9jL3N5cy9uZXQvaXB2NC9pcF9mb3J3YXJk
-DQoNCiMgU29tZSBiYXNpY3MNCiMgQWNjZXB0IGxvb3BiYWNrIGludGVyZmFjZQ0KJEEgLUEgSU5Q
-VVQgLWkgbG8gLWogQUNDRVBUDQokQSAtQSBPVVRQVVQgLW8gbG8gLWogQUNDRVBUDQoNCiMgU1NI
-IGZyb20gTEFODQokQSAtQSBJTlBVVCAtaSAkTEFOSUYgLXAgdGNwIC0tZHBvcnQgMjIgLWogQUND
-RVBUDQoNCiNnZW5lcmFsIE5BVA0KJEEgLXQgbmF0IC1BIFBPU1RST1VUSU5HIC1vICRFWElGIC1q
-IE1BU1FVRVJBREUNCg0KI0dlbmVyYWwgU3RhdGUgTWF0Y2hpbmcNCiRBIC1BIE9VVFBVVCAtbSBz
-dGF0ZSAtLXN0YXRlIEVTVEFCTElTSEVEIC1qIEFDQ0VQVA0KJEEgLUEgRk9SV0FSRCAtbSBzdGF0
-ZSAtLXN0YXRlIFJFTEFURUQsRVNUQUJMSVNIRUQgLWogQUNDRVBUDQoNCiNBbGxvd2VkIEhUVFAv
-SFRUUFMgU2l0ZXMNCiNiYmMNCiRBIC1BIEZPUldBUkQgLWkgJExBTklGIC1vICRFWElGIC1kIDIx
-Mi41OC4yNDQuMjIgLXAgdGNwIC1tIG11bHRpcG9ydCANCi0tZHBvcnRzICc4MCw0NDMnIC1qIEFD
-Q0VQVA0KDQojU2VuZCBSU1QgdG8gTEFOIGZvciBhbGwgb3RoZXIgODAvNDQzIGNvbm5lY3Rpb25z
-DQokQSAtQSBGT1JXQVJEIC1pICRMQU5JRiAtcCB0Y3AgLW0gbXVsdGlwb3J0IC0tZHBvcnRzICc4
-MCw0NDMnIC1qIFJFSkVDVCANCi0tcmVqZWN0LXdpdGggdGNwLXJlc2V0DQoNCg0KLS0tLS0tLS0t
-LS0tLS0tLS0tLS0NCg0KDQoNCk1hdHQNCg0KDQoNCi0tDQpUbyB1bnN1YnNjcmliZSBmcm9tIHRo
-aXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbmV0ZmlsdGVyIiBpbg0KdGhlIGJv
-ZHkgb2YgYSBtZXNzYWdlIHRvIG1ham9yZG9tb0B2Z2VyLmtlcm5lbC5vcmcNCk1vcmUgbWFqb3Jk
-b21vIGluZm8gYXQgIGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jkb21vLWluZm8uaHRtbA0K
+On 2017-01-11 10:21, Andr=C3=A9 Paulsberg-Csibi wrote:
+> From what you sent me directly , you also allowed this in the OUTPUT
+> chain which makes no sense to me ...
+> ... but it maybe that the rules set has somehow been "broken" and it
+> is now causing un-intended packet handling .
+
+You might need INPUT, OUTPUT & FORWARD policies all to be 'DROP' for=20
+this behaviour.
+
+I reproduced this at home using the below script (now corrected for=20
+copy/paste errors)
+
+It's very basic, and should allow you to telnet from an internal host to=20
+the allowed HTTP site but refuse all other port 80's
+
+I used tcpdump on the firewall to monitor the LAN interface.
+
+--------------------------------------------------
+
+A=3D'/sbin/iptables'
+EXIF=3D'ppp0'
+LANIF=3D'eth1'
+
+#Clear
+$A -F
+$A -F INPUT
+$A -F OUTPUT
+$A -F FORWARD
+$A -F -t mangle
+$A -F -t nat
+$A -X
+
+#Setup policies
+$A -P INPUT DROP
+$A -P OUTPUT DROP
+$A -P FORWARD DROP
+
+echo "1" > /proc/sys/net/ipv4/ip_forward
+
+# Some basics
+# Accept loopback interface
+$A -A INPUT -i lo -j ACCEPT
+$A -A OUTPUT -o lo -j ACCEPT
+
+# SSH from LAN
+$A -A INPUT -i $LANIF -p tcp --dport 22 -j ACCEPT
+
+#general NAT
+$A -t nat -A POSTROUTING -o $EXIF -j MASQUERADE
+
+#General State Matching
+$A -A OUTPUT -m state --state ESTABLISHED -j ACCEPT
+$A -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+#Allowed HTTP/HTTPS Sites
+#bbc
+$A -A FORWARD -i $LANIF -o $EXIF -d 212.58.244.22 -p tcp -m multiport
+--dports '80,443' -j ACCEPT
+
+#Send RST to LAN for all other 80/443 connections
+$A -A FORWARD -i $LANIF -p tcp -m multiport --dports '80,443' -j REJECT
+--reject-with tcp-reset
+
+
+--------------------------
+
+
+Matt
