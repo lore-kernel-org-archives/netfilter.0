@@ -1,7 +1,8 @@
-From: Matt Killock <lists@killock.net>
-Subject: Re: Iptables Reject with TCP Reset
-Date: Tue, 10 Jan 2017 19:29:40 +0000
-Message-ID: <97e9b02ea87a5c04a31f5be7ab26f2ff@killock.net>
+From: =?utf-8?B?QW5kcsOpIFBhdWxzYmVyZy1Dc2liaSAoSUJNIENvbnN1bHRhbnQp?= 
+        <Andre.Paulsberg-Csibi@evry.com>
+Subject: RE: Iptables Reject with TCP Reset
+Date: Wed, 11 Jan 2017 10:21:17 +0000
+Message-ID: <e5943affc23440f3bcb33662ba18a82f@CCDEX021.corp.corpcommon.com>
 References: <HK2PR0201MB21296E195C755C65E4110DDCE8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
  <d991fbe7-ca57-6045-8bfe-88e590ed2f65@familie-kuntze.de>
  <HK2PR0201MB2129ABDBC46F8805B3757387E8630@HK2PR0201MB2129.apcprd02.prod.outlook.com>
@@ -12,125 +13,82 @@ References: <HK2PR0201MB21296E195C755C65E4110DDCE8630@HK2PR0201MB2129.apcprd02.p
  <b7cce260df01445c8c387889d3b30114@CCDEX021.corp.corpcommon.com>
  <HK2PR0201MB21294E23EB7B6CFD0DE8D406E8670@HK2PR0201MB2129.apcprd02.prod.outlook.com>
  <20170110133221.560d3b6d@playground>
+ <97e9b02ea87a5c04a31f5be7ab26f2ff@killock.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=killock.net; s=mail;
-        t=1484076580; bh=ODNDSXNOrdBeHyqsPpiAHjSS3nhDObvs4YbsXSkgyQk=;
-        h=To:Subject:Date:From:Cc:In-Reply-To:References:From;
-        b=gOBdWnTCIi0WCNROc+Dyob+2rYy0bfbQlvPYe+v5xS2bKp73DILw83AoAYXwdiKsl
-         T/93RZtKIjaUoFU+kV0WEU3U0s1yrOTcONE+rkUa7lbH0tdhC5rKchjPRde2nlcjTl
-         0bYCd/RtAcp4jkNr3oo+6dstSXTy48ej4WNMO1eU=
-In-Reply-To: <20170110133221.560d3b6d@playground>
+In-Reply-To: <97e9b02ea87a5c04a31f5be7ab26f2ff@killock.net>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
-Cc: netfilter@vger.kernel.org, netfilter-owner@vger.kernel.org
+Content-Type: text/plain; charset="macroman"
+To: Matt Killock <lists@killock.net>, "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, "netfilter-owner@vger.kernel.org" <netfilter-owner@vger.kernel.org>
 
-> This doesn't make much sense. A RELATED packet is the first packet of
-> a new conn that a helper has determined is related to an existing conn
-> (e.g., the data conn of an FTP control session). Once a RELATED packet
-> is replied to, the resulting conn is an ordinary, vanilla ESTABLISHED
-> conn; specifically, the RELATED 'tag' is discarded. When a packet
-> matches a "REJECT with TCP-Reset" rule, netfilter immediately sends a
-> TCP RESET to the end that sent the packet.
-
-Sounds nice in theory, but reality bites back. RELATED also applies to 
-the TCP Reset packets to SYN packets.
-
-I just tried this at home to confirm my findings.
-
-Please review the below firewall script. It does not send the TCP RST 
-packets unless you make one minor change: To add 'RELATED,' to the line 
-underneath '#General State Matching'
-
-Please note that it has the single state matching lines as recommended 
-by various others on this list.
-
-
-
-
-
-> It almost sounds like you built a nearly stateless firewall.
-
-It's more or less like the below but duplicates ESTABLISHED everywhere
-
-------------------------------
-
-A='/sbin/iptables'
-EXIF='ppp0'
-LANIF='eth1'
-
-#Clear
-$A -F
-$A -F INPUT
-$A -F OUTPUT
-$A -F FORWARD
-$A -F -t mangle
-$A -F -t nat
-$A -X
-
-#Setup policies
-$A -P INPUT DROP
-$A -P OUTPUT DROP
-$A -P FORWARD DROP
-
-echo "1" > /proc/sys/net/ipv4/ip_forward
-
-# Some basics
-# Accept loopback interface
-$A -A INPUT -i lo -j ACCEPT
-A='/sbin/iptables'
-EXIF='ppp0'
-LANIF='eth1'
-
-#Clear
-$A -F
-$A -F INPUT
-$A -F OUTPUT
-$A -F FORWARD
-$A -F -t mangle
-$A -F -t nat
-$A -X
-
-#Setup policies
-$A -P INPUT DROP
-$A -P OUTPUT DROP
-$A -P FORWARD DROP
-
-echo "1" > /proc/sys/net/ipv4/ip_forward
-
-# Some basics
-# Accept loopback interface
-$A -A INPUT -i lo -j ACCEPT
-$A -A OUTPUT -o lo -j ACCEPT
-
-# SSH from LAN
-$A -A INPUT -i $LANIF -p tcp --dport 22 -j ACCEPT
-
-#general NAT
-$A -t nat -A POSTROUTING -o $EXIF -j MASQUERADE
-
-#General State Matching
-$A -A OUTPUT -m state --state ESTABLISHED -j ACCEPT
-$A -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-
-#Allowed HTTP/HTTPS Sites
-#bbc
-$A -A FORWARD -i $LANIF -o $EXIF -d 212.58.244.22 -p tcp -m multiport 
---dports '80,443' -j ACCEPT
-
-#Send RST to LAN for all other 80/443 connections
-$A -A FORWARD -i $LANIF -p tcp -m multiport --dports '80,443' -j REJECT 
---reject-with tcp-reset
-
-
---------------------
-
-
-
-Matt
-
-
-
+QWZ0ZXIgeW91ciBtYWlsIG5vdyBJIGFtIHBydWRlbnQgdG8gdGVzdCB0aGlzIG1vcmUgdGhvdQ0K
+DQpJIGhhdmUgc29tZXdoYXQgdmVyaWZpZWQgaW4gYSB0ZXN0IEZXIHRoYXQgeW91IGRvIG5vdCBu
+ZWVkIFJFTEFURUQgcnVsZSBmb3IgdGhlIElQVEFCTEVTIHRvIGJlIGFsbG93ZWQgdG8gZ2VuZXJh
+dGUgYSBUQ1AgUlNUIHBhY2tldCBpbnRlcm5hbGx5IC4NCg0KRnJvbSB3aGF0IHlvdSBzZW50IG1l
+IGRpcmVjdGx5ICwgeW91IGFsc28gYWxsb3dlZCB0aGlzIGluIHRoZSBPVVRQVVQgY2hhaW4gd2hp
+Y2ggbWFrZXMgbm8gc2Vuc2UgdG8gbWUgLi4uDQouLi4gYnV0IGl0IG1heWJlIHRoYXQgdGhlIHJ1
+bGVzIHNldCBoYXMgc29tZWhvdyBiZWVuICJicm9rZW4iIGFuZCBpdCBpcyBub3cgY2F1c2luZyB1
+bi1pbnRlbmRlZCBwYWNrZXQgaGFuZGxpbmcgLg0KDQpJIHdpbGwgdHJ5IHRvIGNoYW5nZSBteSBP
+VVRQVVQgcnVsZXMgdG8gTE9HIGFueSBvdXRwdXQgdGhhdCBpcyByZWdhcmRlZCBhcyBSRUxBVEVE
+IHdpdGggZnVsbCBvcHRpb25zICwNClRoYXQgd2lsbCBub3QgY2hhbmdlIGFueXRoaW5nIGluIHRo
+ZSBGVyBydWxlcyBpdHNlbGYganVzdCBhZGQgYSBMT0cgZW50cnkgYXQgdGhlIHN0YXJ0IG9mIHRo
+ZSBPVVRQVVQgY2hhaW4gdG8gc2VlIGlmDQpUQ1AgUlNUIGdlbmVyYXRlZCBpbnNpZGUgdGhlIElQ
+VEFCTEVTIEZPUldBUkQgY2hhaW4gaGFzIHRvIHBhc3MgdGhlIE9VVFBVVCBjaGFpbiBhdCBhbnkg
+dGltZSAuLi4NCg0KDQpCZXN0IHJlZ2FyZHMNCkFuZHLDqSBQYXVsc2JlcmctQ3NpYmkNClNlbmlv
+ciBOZXR3b3JrIEVuZ2luZWVyIA0KRmF1bHQgSGFuZGxpbmcNCklCTSBTZXJ2aWNlcyBBUw0KDQoN
+Ci0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBuZXRmaWx0ZXItb3duZXJAdmdlci5r
+ZXJuZWwub3JnIFttYWlsdG86bmV0ZmlsdGVyLW93bmVyQHZnZXIua2VybmVsLm9yZ10gT24gQmVo
+YWxmIE9mIE1hdHQgS2lsbG9jaw0KU2VudDogMTAuIGphbnVhciAyMDE3IDIwOjMwDQpUbzogTmVh
+bCBQLiBNdXJwaHkgPG5lYWwucC5tdXJwaHlAYWx1bS53cGkuZWR1Pg0KQ2M6IG5ldGZpbHRlckB2
+Z2VyLmtlcm5lbC5vcmc7IG5ldGZpbHRlci1vd25lckB2Z2VyLmtlcm5lbC5vcmcNClN1YmplY3Q6
+IFJlOiBJcHRhYmxlcyBSZWplY3Qgd2l0aCBUQ1AgUmVzZXQNCg0KPiBUaGlzIGRvZXNuJ3QgbWFr
+ZSBtdWNoIHNlbnNlLiBBIFJFTEFURUQgcGFja2V0IGlzIHRoZSBmaXJzdCBwYWNrZXQgb2YNCj4g
+YSBuZXcgY29ubiB0aGF0IGEgaGVscGVyIGhhcyBkZXRlcm1pbmVkIGlzIHJlbGF0ZWQgdG8gYW4g
+ZXhpc3RpbmcgY29ubg0KPiAoZS5nLiwgdGhlIGRhdGEgY29ubiBvZiBhbiBGVFAgY29udHJvbCBz
+ZXNzaW9uKS4gT25jZSBhIFJFTEFURUQgcGFja2V0DQo+IGlzIHJlcGxpZWQgdG8sIHRoZSByZXN1
+bHRpbmcgY29ubiBpcyBhbiBvcmRpbmFyeSwgdmFuaWxsYSBFU1RBQkxJU0hFRA0KPiBjb25uOyBz
+cGVjaWZpY2FsbHksIHRoZSBSRUxBVEVEICd0YWcnIGlzIGRpc2NhcmRlZC4gV2hlbiBhIHBhY2tl
+dA0KPiBtYXRjaGVzIGEgIlJFSkVDVCB3aXRoIFRDUC1SZXNldCIgcnVsZSwgbmV0ZmlsdGVyIGlt
+bWVkaWF0ZWx5IHNlbmRzIGENCj4gVENQIFJFU0VUIHRvIHRoZSBlbmQgdGhhdCBzZW50IHRoZSBw
+YWNrZXQuDQoNClNvdW5kcyBuaWNlIGluIHRoZW9yeSwgYnV0IHJlYWxpdHkgYml0ZXMgYmFjay4g
+UkVMQVRFRCBhbHNvIGFwcGxpZXMgdG8gDQp0aGUgVENQIFJlc2V0IHBhY2tldHMgdG8gU1lOIHBh
+Y2tldHMuDQoNCkkganVzdCB0cmllZCB0aGlzIGF0IGhvbWUgdG8gY29uZmlybSBteSBmaW5kaW5n
+cy4NCg0KUGxlYXNlIHJldmlldyB0aGUgYmVsb3cgZmlyZXdhbGwgc2NyaXB0LiBJdCBkb2VzIG5v
+dCBzZW5kIHRoZSBUQ1AgUlNUIA0KcGFja2V0cyB1bmxlc3MgeW91IG1ha2Ugb25lIG1pbm9yIGNo
+YW5nZTogVG8gYWRkICdSRUxBVEVELCcgdG8gdGhlIGxpbmUgDQp1bmRlcm5lYXRoICcjR2VuZXJh
+bCBTdGF0ZSBNYXRjaGluZycNCg0KUGxlYXNlIG5vdGUgdGhhdCBpdCBoYXMgdGhlIHNpbmdsZSBz
+dGF0ZSBtYXRjaGluZyBsaW5lcyBhcyByZWNvbW1lbmRlZCANCmJ5IHZhcmlvdXMgb3RoZXJzIG9u
+IHRoaXMgbGlzdC4NCg0KDQoNCg0KDQo+IEl0IGFsbW9zdCBzb3VuZHMgbGlrZSB5b3UgYnVpbHQg
+YSBuZWFybHkgc3RhdGVsZXNzIGZpcmV3YWxsLg0KDQpJdCdzIG1vcmUgb3IgbGVzcyBsaWtlIHRo
+ZSBiZWxvdyBidXQgZHVwbGljYXRlcyBFU1RBQkxJU0hFRCBldmVyeXdoZXJlDQoNCi0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQ0KDQpBPScvc2Jpbi9pcHRhYmxlcycNCkVYSUY9J3BwcDAn
+DQpMQU5JRj0nZXRoMScNCg0KI0NsZWFyDQokQSAtRg0KJEEgLUYgSU5QVVQNCiRBIC1GIE9VVFBV
+VA0KJEEgLUYgRk9SV0FSRA0KJEEgLUYgLXQgbWFuZ2xlDQokQSAtRiAtdCBuYXQNCiRBIC1YDQoN
+CiNTZXR1cCBwb2xpY2llcw0KJEEgLVAgSU5QVVQgRFJPUA0KJEEgLVAgT1VUUFVUIERST1ANCiRB
+IC1QIEZPUldBUkQgRFJPUA0KDQplY2hvICIxIiA+IC9wcm9jL3N5cy9uZXQvaXB2NC9pcF9mb3J3
+YXJkDQoNCiMgU29tZSBiYXNpY3MNCiMgQWNjZXB0IGxvb3BiYWNrIGludGVyZmFjZQ0KJEEgLUEg
+SU5QVVQgLWkgbG8gLWogQUNDRVBUDQpBPScvc2Jpbi9pcHRhYmxlcycNCkVYSUY9J3BwcDAnDQpM
+QU5JRj0nZXRoMScNCg0KI0NsZWFyDQokQSAtRg0KJEEgLUYgSU5QVVQNCiRBIC1GIE9VVFBVVA0K
+JEEgLUYgRk9SV0FSRA0KJEEgLUYgLXQgbWFuZ2xlDQokQSAtRiAtdCBuYXQNCiRBIC1YDQoNCiNT
+ZXR1cCBwb2xpY2llcw0KJEEgLVAgSU5QVVQgRFJPUA0KJEEgLVAgT1VUUFVUIERST1ANCiRBIC1Q
+IEZPUldBUkQgRFJPUA0KDQplY2hvICIxIiA+IC9wcm9jL3N5cy9uZXQvaXB2NC9pcF9mb3J3YXJk
+DQoNCiMgU29tZSBiYXNpY3MNCiMgQWNjZXB0IGxvb3BiYWNrIGludGVyZmFjZQ0KJEEgLUEgSU5Q
+VVQgLWkgbG8gLWogQUNDRVBUDQokQSAtQSBPVVRQVVQgLW8gbG8gLWogQUNDRVBUDQoNCiMgU1NI
+IGZyb20gTEFODQokQSAtQSBJTlBVVCAtaSAkTEFOSUYgLXAgdGNwIC0tZHBvcnQgMjIgLWogQUND
+RVBUDQoNCiNnZW5lcmFsIE5BVA0KJEEgLXQgbmF0IC1BIFBPU1RST1VUSU5HIC1vICRFWElGIC1q
+IE1BU1FVRVJBREUNCg0KI0dlbmVyYWwgU3RhdGUgTWF0Y2hpbmcNCiRBIC1BIE9VVFBVVCAtbSBz
+dGF0ZSAtLXN0YXRlIEVTVEFCTElTSEVEIC1qIEFDQ0VQVA0KJEEgLUEgRk9SV0FSRCAtbSBzdGF0
+ZSAtLXN0YXRlIFJFTEFURUQsRVNUQUJMSVNIRUQgLWogQUNDRVBUDQoNCiNBbGxvd2VkIEhUVFAv
+SFRUUFMgU2l0ZXMNCiNiYmMNCiRBIC1BIEZPUldBUkQgLWkgJExBTklGIC1vICRFWElGIC1kIDIx
+Mi41OC4yNDQuMjIgLXAgdGNwIC1tIG11bHRpcG9ydCANCi0tZHBvcnRzICc4MCw0NDMnIC1qIEFD
+Q0VQVA0KDQojU2VuZCBSU1QgdG8gTEFOIGZvciBhbGwgb3RoZXIgODAvNDQzIGNvbm5lY3Rpb25z
+DQokQSAtQSBGT1JXQVJEIC1pICRMQU5JRiAtcCB0Y3AgLW0gbXVsdGlwb3J0IC0tZHBvcnRzICc4
+MCw0NDMnIC1qIFJFSkVDVCANCi0tcmVqZWN0LXdpdGggdGNwLXJlc2V0DQoNCg0KLS0tLS0tLS0t
+LS0tLS0tLS0tLS0NCg0KDQoNCk1hdHQNCg0KDQoNCi0tDQpUbyB1bnN1YnNjcmliZSBmcm9tIHRo
+aXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbmV0ZmlsdGVyIiBpbg0KdGhlIGJv
+ZHkgb2YgYSBtZXNzYWdlIHRvIG1ham9yZG9tb0B2Z2VyLmtlcm5lbC5vcmcNCk1vcmUgbWFqb3Jk
+b21vIGluZm8gYXQgIGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jkb21vLWluZm8uaHRtbA0K
