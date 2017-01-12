@@ -1,55 +1,55 @@
-From: Arturo Borrero Gonzalez <arturo@debian.org>
-Subject: Re: conntrackd: synchronization failures
-Date: Thu, 12 Jan 2017 08:58:32 +0100
-Message-ID: <CAOkSjBj-X8F-Ca4vwocSsaZVzQN2R1MAUN+SCvCOb0XVPEzQ8Q@mail.gmail.com>
-References: <alpine.LRH.2.00.1701112049480.25853@gjva.wvxbf.pm> <alpine.LRH.2.00.1701112254250.25853@gjva.wvxbf.pm>
+From: DOHC F22 <dohcf22@gmail.com>
+Subject: Re: Need module help
+Date: Thu, 12 Jan 2017 07:29:31 -0600
+Message-ID: <CAH-pVi810QXjG5p_nhdpdGNcM2RWO7w9AZrE==t0-tzsyLEpLw@mail.gmail.com>
+References: <CAH-pVi-McTaVYJjvsBLbnSVk+wW2biD+0U8byK3exrFHfig1Hg@mail.gmail.com>
+ <72f2e366-c823-40a6-17d6-330e803bc52e@plouf.fr.eu.org> <CAH-pVi-94=nY8zZJDQE_Kfq=01t9snXnBk-Rw3C8sbhsAM6i-w@mail.gmail.com>
+ <20170108035307.GH8339@harrier.slackbuilds.org> <3d6b0822-d484-e41e-8141-94dc128b94ba@plouf.fr.eu.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LRH.2.00.1701112254250.25853@gjva.wvxbf.pm>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=m/kqiKyAZyPCDxSPJGxcpUHbBJ7RjR/dC2JkK2lElO0=;
+        b=AV8hUUtN/OaVaj5wZq7QxUnoAoFiy1N+dQME8HYUcHCL4KTZXLq0utklog6aOgT6Uz
+         ihVPSqMjXCb7FD5qq2/D1vafbWPgQVZX7XTlP2QYw99ZjFC7fEbaqkbOnmZD7yGzmsvv
+         ZrGgW+rbezXS1Alw5mpGOkZAbgQa/MJB0DuFGAAYdnDvaehYtP7TADoLING3zgYVCkkt
+         plZEExy6CAHrjZL9EnAPizV3bHA5xwv0pbZIJr4pkd6r9llCAsXMxugy6fQNonsl63Lb
+         ekIMEBCJ1i/rDU5hMe9GqAhR2kSo+5C94rz3nFfplow00xxgPu8szjWMGCzxjF5FTtg2
+         Us9g==
+In-Reply-To: <3d6b0822-d484-e41e-8141-94dc128b94ba@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jiri Kosina <jikos@kernel.org>
-Cc: Netfilter Users Mailing list <netfilter@vger.kernel.org>, info@jablonka.cz
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-On 11 January 2017 at 22:57, Jiri Kosina <jikos@kernel.org> wrote:
-> On Wed, 11 Jan 2017, Jiri Kosina wrote:
+On Sun, Jan 8, 2017 at 5:29 AM, Pascal Hambourg <pascal@plouf.fr.eu.org> wr=
+ote:
+> Le 08/01/2017 =C3=A0 04:53, /dev/rob0 a =C3=A9crit :
+>>
+>>
+>> On Sat, Jan 07, 2017 at 09:39:33PM -0600, DOHC F22 wrote:
+>>>
+>>> Are those two different modules?
+>>
+>>
+>> Yes.  Names in lowercase are match extensions, in this case, see:
+>>     iptables -m dscp -h
+>>
+>> UPPERCASE names indicate target extensions, so see this:
+>>     iptables -j DSCP -h
 >
->>       (pid=11083) [ERROR] inject-add2: File exists
 >
-> Sometimes this EEXIST is reported in inject-add1
+> Note that these modules also support the older tos match and TOS target
+> extensions respectively.
 >
->>               tcp      6 120 FIN_WAIT src=10.33.12.15 dst=116.31.116.30 sport=22 dport=44232 [ASSURED]
->>       (pid=11083) [ERROR] inject-add2: Device or resource busy
->
-> This EBUSY seems to be always inject-add2 phase though.
->
-> I've tried both conntrackd 1.0.1 and 1.4.3, both compiled against
-> libnfnetlink-1.0.1; the behavior has been exactly the same.
->
-> The hosts are running rather different kernels (3.10 from RHEL 7 (RS2) and
-> 4.6.1-rt2 (RS1) respectively).
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-I can see them too, in NATed connections most of the time:
-
-
-Jan 12 08:54:09 cf03 conntrack-tools[32717]: inject-upd1: File exists
-Jan 12 08:54:09 cf03 conntrack-tools[32717]: tcp      6 120 TIME_WAIT
-src=192.168.5.181 dst=31.13.65.1 sport=57419 dport=443 [ASSURED]
-Jan 12 08:54:09 cf03 conntrack-tools[32717]: inject-upd1: File exists
-Jan 12 08:54:09 cf03 conntrack-tools[32717]: tcp      6 10 CLOSE
-src=192.168.5.181 dst=31.13.65.1 sport=57419 dport=443 [ASSURED]
-Jan 12 08:55:15 cf03 conntrack-tools[32717]: inject-add2: File exists
-Jan 12 08:55:15 cf03 conntrack-tools[32717]: tcp      6 120 SYN_SENT
-src=192.168.5.219 dst=216.58.211.202 sport=45121 dport=443 [UNREPLIED]
-Jan 12 08:55:15 cf03 conntrack-tools[32717]: inject-upd1: File exists
-Jan 12 08:55:15 cf03 conntrack-tools[32717]: tcp      6 60 SYN_RECV
-src=192.168.5.219 dst=216.58.211.202 sport=45121 dport=443
-Jan 12 08:55:15 cf03 conntrack-tools[32717]: inject-upd1: File exists
-Jan 12 08:55:15 cf03 conntrack-tools[32717]: tcp      6 432000
-ESTABLISHED src=192.168.5.219 dst=216.58.211.202 sport=45121 dport=443
-[ASSURED]
-
-this is linux 4.8.11 and conntrack-tools commit
-5a51b045b369e3f8aa83cd32c14149158bd86546
+I'm having trouble finding those modules for the exact iptables/kernel
+version.  Should I be more focused on matching the kernel version?  Is
+there some repository somewhere with modules to download?
