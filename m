@@ -1,67 +1,52 @@
-From: =?iso-8859-1?Q?Andr=E9_Paulsberg-Csibi_=28IBM_Consultant=29?= 
-        <Andre.Paulsberg-Csibi@evry.com>
-Subject: RE: Filtering content inside packets , specifically RELATED data in
- the various ICMP TYPE 3 packets
-Date: Fri, 13 Jan 2017 11:44:17 +0000
-Message-ID: <8ab166a389ea4b63bd46c325c11f8834@CCDEX021.corp.corpcommon.com>
-References: <d60d0ad0fe82496a86f052993fe2cb9b@CCDEX021.corp.corpcommon.com>
- <7a697d77-84f1-2403-37ad-74d53f6ce41a@plouf.fr.eu.org>
+From: Jiri Kosina <jikos@kernel.org>
+Subject: Re: conntrackd: synchronization failures
+Date: Fri, 13 Jan 2017 16:01:43 +0100 (CET)
+Message-ID: <alpine.LRH.2.00.1701131558020.25853@gjva.wvxbf.pm>
+References: <alpine.LRH.2.00.1701112049480.25853@gjva.wvxbf.pm> <alpine.LRH.2.00.1701112254250.25853@gjva.wvxbf.pm> <CAOkSjBj-X8F-Ca4vwocSsaZVzQN2R1MAUN+SCvCOb0XVPEzQ8Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <7a697d77-84f1-2403-37ad-74d53f6ce41a@plouf.fr.eu.org>
-Content-Language: en-US
+In-Reply-To: <CAOkSjBj-X8F-Ca4vwocSsaZVzQN2R1MAUN+SCvCOb0XVPEzQ8Q@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Arturo Borrero Gonzalez <arturo@debian.org>
+Cc: Netfilter Users Mailing list <netfilter@vger.kernel.org>, info@jablonka.cz
 
-APC >> Now the problem is to create a rule that would perform this task , b=
-ut looking at the module for string match
-APC >> and searching google has left me a bit unsure if I am going in the r=
-ight direction ...
+On Thu, 12 Jan 2017, Arturo Borrero Gonzalez wrote:
 
-PH  > The u32 match may be more precise as it allows to match a pattern at =
-a specific offset.
+> I can see them too, in NATed connections most of the time:
+> 
+> Jan 12 08:54:09 cf03 conntrack-tools[32717]: inject-upd1: File exists
+> Jan 12 08:54:09 cf03 conntrack-tools[32717]: tcp      6 120 TIME_WAIT
+> src=192.168.5.181 dst=31.13.65.1 sport=57419 dport=443 [ASSURED]
+> Jan 12 08:54:09 cf03 conntrack-tools[32717]: inject-upd1: File exists
+> Jan 12 08:54:09 cf03 conntrack-tools[32717]: tcp      6 10 CLOSE
+> src=192.168.5.181 dst=31.13.65.1 sport=57419 dport=443 [ASSURED]
+> Jan 12 08:55:15 cf03 conntrack-tools[32717]: inject-add2: File exists
+> Jan 12 08:55:15 cf03 conntrack-tools[32717]: tcp      6 120 SYN_SENT
+> src=192.168.5.219 dst=216.58.211.202 sport=45121 dport=443 [UNREPLIED]
+> Jan 12 08:55:15 cf03 conntrack-tools[32717]: inject-upd1: File exists
+> Jan 12 08:55:15 cf03 conntrack-tools[32717]: tcp      6 60 SYN_RECV
+> src=192.168.5.219 dst=216.58.211.202 sport=45121 dport=443
+> Jan 12 08:55:15 cf03 conntrack-tools[32717]: inject-upd1: File exists
+> Jan 12 08:55:15 cf03 conntrack-tools[32717]: tcp      6 432000
+> ESTABLISHED src=192.168.5.219 dst=216.58.211.202 sport=45121 dport=443
+> [ASSURED]
 
-Thank you , I will search "iptables u32 match" on google :-)
+Do you also experience (either from inject-upd2 or inject-add2 phase) 
+EBUSY ones?
 
+I'm seeing quite a lot of entries such as
 
-APC >> Since the IPTABLES normally can find this data in its RELATED functi=
-on in the STATE-MODULE ,
+	(pid=9769) [ERROR] inject-add2: Device or resource busy
+	        tcp      6 300 CLOSE src=10.33.37.4 dst=77.75.77.94 sport=42653 dport=443 [UNREPLIED]
 
-PH  > Conntrack is independent of iptables.
-PH  > Conntrack sets the state, and iptables just checks it.
+I'm still trying to understand from the source what consequences this 
+might have; any hint would be appreciated.
 
-I was hoping it was not so , but this explains why I have not found options=
- for this so far .
+Thanks,
 
-
-PH  > But I'd like to ask why do you bother to log such packets ?
-
-I am not sure I 100% understand what exactly you are asking , since I want =
-to remove these from my logs ...
-... I will assume you are asking generally why I log INVALID / OUT-OF-STATE=
- packets .
-
-The reason is simple , if there is some kind of TIME-OUT issue , you will i=
-n most cases find it almost immediately with a fast look in the LOG .
-and you will not have to create some massive tcpdump / pcap files to invest=
-igate why something is not working or being broken .
-
-Logging level is also adjusted for this for most systems that have to be PC=
-I-DSS compliant ,
-or at least the general "understanding" or conception is that such is neede=
-d .
-This typically means that all systems follow the same standard , even when =
-it does not have to be PCI-DSS compliant at the moment or ever .
-
-
-Best regards
-Andr=E9 Paulsberg-Csibi
-Senior Network Engineer=20
-Fault Handling
-IBM Services AS
-
-
+-- 
+Jiri Kosina <jikos@kernel.org>
+SUSE Labs
