@@ -1,52 +1,85 @@
-From: Jiri Kosina <jikos@kernel.org>
-Subject: Re: conntrackd: synchronization failures
-Date: Fri, 13 Jan 2017 16:01:43 +0100 (CET)
-Message-ID: <alpine.LRH.2.00.1701131558020.25853@gjva.wvxbf.pm>
-References: <alpine.LRH.2.00.1701112049480.25853@gjva.wvxbf.pm> <alpine.LRH.2.00.1701112254250.25853@gjva.wvxbf.pm> <CAOkSjBj-X8F-Ca4vwocSsaZVzQN2R1MAUN+SCvCOb0XVPEzQ8Q@mail.gmail.com>
+From: Jamal Hadi Salim <jhs-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
+Subject: ANNOUNCE: Netdev 2.1 in Montreal
+Date: Fri, 13 Jan 2017 14:58:19 -0500
+Message-ID: <1a7b6b2c-38bc-7c6f-e3bf-ab913b163dba@mojatatu.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAOkSjBj-X8F-Ca4vwocSsaZVzQN2R1MAUN+SCvCOb0XVPEzQ8Q@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=qD+jMHhN3UZUqG1Q0ctiiYXAtknDF/22fijqwrE6Vrw=;
+        b=cT/P3+iZp89wZtWtzBr844mwz60kgb8EXJPIDtAz11UilfUq+S/XdjmT39NqYokYyv
+         gq8b04zmFyD4EZQFuuYvw97EfpsCWLhGTYKSWkbIej8CdTuIJVHn2iEY1NfYzvA7Pkli
+         reZe82SFc97ULxkDF4Z41auBXg6x8c1GWSmahkXf0tUZWdM5BZnsRwiVypeXmzwN/WQB
+         9p2ladT2T1pjyDuC5m+I7wJwJNhZ5ccA5tpCV428MrKN0nnQawoT57+YAMBqGODqYE9G
+         MHCo5eQEIBPOCufW7yRlDwtvhTVtSBX/liIChhd0hbvX3pvpxruRYcBFdlJnxuHlGgKF
+         eIrw==
+Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Arturo Borrero Gonzalez <arturo@debian.org>
-Cc: Netfilter Users Mailing list <netfilter@vger.kernel.org>, info@jablonka.cz
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
+To: netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Cc: netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, info-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, tech-committee-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org, David Miller <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>, Stephen Jaworski <jaws-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, Rob Echlin <rob-XjY9sGI/8jX3fQ9qLvQP4Q@public.gmane.org>, lwn-T1hC0tSOHrs@public.gmane.org
 
-On Thu, 12 Jan 2017, Arturo Borrero Gonzalez wrote:
 
-> I can see them too, in NATed connections most of the time:
-> 
-> Jan 12 08:54:09 cf03 conntrack-tools[32717]: inject-upd1: File exists
-> Jan 12 08:54:09 cf03 conntrack-tools[32717]: tcp      6 120 TIME_WAIT
-> src=192.168.5.181 dst=31.13.65.1 sport=57419 dport=443 [ASSURED]
-> Jan 12 08:54:09 cf03 conntrack-tools[32717]: inject-upd1: File exists
-> Jan 12 08:54:09 cf03 conntrack-tools[32717]: tcp      6 10 CLOSE
-> src=192.168.5.181 dst=31.13.65.1 sport=57419 dport=443 [ASSURED]
-> Jan 12 08:55:15 cf03 conntrack-tools[32717]: inject-add2: File exists
-> Jan 12 08:55:15 cf03 conntrack-tools[32717]: tcp      6 120 SYN_SENT
-> src=192.168.5.219 dst=216.58.211.202 sport=45121 dport=443 [UNREPLIED]
-> Jan 12 08:55:15 cf03 conntrack-tools[32717]: inject-upd1: File exists
-> Jan 12 08:55:15 cf03 conntrack-tools[32717]: tcp      6 60 SYN_RECV
-> src=192.168.5.219 dst=216.58.211.202 sport=45121 dport=443
-> Jan 12 08:55:15 cf03 conntrack-tools[32717]: inject-upd1: File exists
-> Jan 12 08:55:15 cf03 conntrack-tools[32717]: tcp      6 432000
-> ESTABLISHED src=192.168.5.219 dst=216.58.211.202 sport=45121 dport=443
-> [ASSURED]
+Folks,
 
-Do you also experience (either from inject-upd2 or inject-add2 phase) 
-EBUSY ones?
+We are pleased to announce Netdev 2.1 (year 2, conference 1)
+in the beautiful city of Montreal, Canada on the 6th to 8th of April.
+The website is now online: http://www.netdevconf.org/2.1/
+Netdev 2.1 will be held back to back with netconf2017.1
+(http://vger.kernel.org/netconf2017.html)
 
-I'm seeing quite a lot of entries such as
+Netdev 2.1 is a  community-driven conference geared towards Linux
+netheads. Linux kernel networking and user space utilization of the
+interfaces to the Linux kernel networking subsystem are the central
+theme.
+If you are using Linux as a boot system for proprietary networking,
+then this conference _may not be for you_.
 
-	(pid=9769) [ERROR] inject-add2: Device or resource busy
-	        tcp      6 300 CLOSE src=10.33.37.4 dst=77.75.77.94 sport=42653 dport=443 [UNREPLIED]
+Registration costs
+------------------
+Very Cheap.
+$CAN 300 if you register before Feb 27. $360 after.
+$CAN 150 if you are a student. $180 after Feb 27
 
-I'm still trying to understand from the source what consequences this 
-might have; any hint would be appreciated.
+Why you should register
+-----------------------
+If you yearn for the old community tech driven conferences where
+you mingle with fellow geeks (only these would be Linux networking
+geeks) then this would be it. There will be no marketing flashing
+light openings or loud bad music. Just a pure feed of Linux
+networking. Gurus and magicians of all sorts will be there mingling,
+juggling and giving talks.
 
-Thanks,
+While there will be heavy Linux kernel influence we expect a lot
+of user space presence as well.
 
--- 
-Jiri Kosina <jikos@kernel.org>
-SUSE Labs
+Exact Location:
+-----------------
+Tentative: LE WESTIN MONTR=C3=89AL
+
+Sponsorship
+------------
+
+If you can help us organize this event by sponsoring, please drop us a=20
+line to: sponsor-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org and we'll send you=
+ our sponsorship policy.
+
+Important dates
+----------------
+January 18, 2017 Call for proposals open
+January 23, 2017 Registration opens
+February 20, 2017 Call for proposals close
+February 27, 2017 Early Registration close
+March 13, 2017 Conference schedule announced
+March 27, 2017 Paper submission
+March 31, 2017 Online Registration close
+April 3, 2017 Slides submission
+April 6-8, 2017 Conference days
+May 1, 2017 Slides release
+June 1, 2017 Paper release
+
+cheers,
+jamal
