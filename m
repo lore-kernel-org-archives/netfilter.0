@@ -1,85 +1,60 @@
-From: Jamal Hadi Salim <jhs-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
-Subject: ANNOUNCE: Netdev 2.1 in Montreal
-Date: Fri, 13 Jan 2017 14:58:19 -0500
-Message-ID: <1a7b6b2c-38bc-7c6f-e3bf-ab913b163dba@mojatatu.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=qD+jMHhN3UZUqG1Q0ctiiYXAtknDF/22fijqwrE6Vrw=;
-        b=cT/P3+iZp89wZtWtzBr844mwz60kgb8EXJPIDtAz11UilfUq+S/XdjmT39NqYokYyv
-         gq8b04zmFyD4EZQFuuYvw97EfpsCWLhGTYKSWkbIej8CdTuIJVHn2iEY1NfYzvA7Pkli
-         reZe82SFc97ULxkDF4Z41auBXg6x8c1GWSmahkXf0tUZWdM5BZnsRwiVypeXmzwN/WQB
-         9p2ladT2T1pjyDuC5m+I7wJwJNhZ5ccA5tpCV428MrKN0nnQawoT57+YAMBqGODqYE9G
-         MHCo5eQEIBPOCufW7yRlDwtvhTVtSBX/liIChhd0hbvX3pvpxruRYcBFdlJnxuHlGgKF
-         eIrw==
-Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+From: Jeremy Hansen <jeremy@skidrow.la>
+Subject: Re: Routing LAN to external IP from behind NAT
+Date: Fri, 13 Jan 2017 14:13:11 -0800
+Message-ID: <9D4BC192-04C4-4ADA-B4E4-68F6DCA1E728@skidrow.la>
+References: <F7FF15A4-8565-43D9-985B-5F66DCC224B6@skidrow.la>
+ <28e62ab70eb5ea675eaca3a1fa08e52b@killock.net>
+ <675323d5f1ce20d6205e49b0bc784663@killock.net>
+Mime-Version: 1.0 (Mac OS X Mail 10.2 \(3259\))
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=skidrow.la; h=
+        x-mailer:references:message-id:content-transfer-encoding:date
+        :date:in-reply-to:from:from:subject:subject:mime-version
+        :content-type:content-type:received:received; s=foo; t=
+        1484345594; x=1486159995; bh=RbHdw5LOtTS6KSAQYyQ7p3K6ezha1SaUaLp
+        yhtcyg1I=; b=QxbGWZoveFwpI2paca9B8xjlXZuxVuPXZotdlDCOOFJiY0+GLKI
+        IJHnC5lSMc4Xa+JggVK8z3qLTKuyyk97KANVjjYGePfjwUKGZJ+I9mkGvO1Y0jcz
+        yRYn2tXNVfs5VO+ikM46udc/JY8OzyC0RGp1pUqLb1lSrN3qIsOyIlX4=
+In-Reply-To: <675323d5f1ce20d6205e49b0bc784663@killock.net>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"; format="flowed"
-To: netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, info-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, tech-committee-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org, David Miller <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>, Stephen Jaworski <jaws-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, Rob Echlin <rob-XjY9sGI/8jX3fQ9qLvQP4Q@public.gmane.org>, lwn-T1hC0tSOHrs@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
+Cc: Matt Killock <lists@killock.net>
 
+This works perfectly.  Thank you very much!
 
-Folks,
+-jeremy
 
-We are pleased to announce Netdev 2.1 (year 2, conference 1)
-in the beautiful city of Montreal, Canada on the 6th to 8th of April.
-The website is now online: http://www.netdevconf.org/2.1/
-Netdev 2.1 will be held back to back with netconf2017.1
-(http://vger.kernel.org/netconf2017.html)
+> On Jan 13, 2017, at 2:25 AM, Matt Killock <lists@killock.net> wrote:
+> 
+> On 2017-01-13 10:25, Matt Killock wrote:
+>> On 2017-01-13 09:14, Jeremy Hansen wrote:
+>>> What do I have to
+>>> do with iptables so I can access these things from within the LAN
+>>> without having to do something like fake dns so it uses internal IPs
+>>> to access these hosts and ports?
+>> You'd need to do some careful NAT'ing.
+>> First you'd need to direct traffic arriving on the internal interface
+>> from the LAN hosts to each of those IP address, and DNAT to the
+>> relevant internal host IP. Something like
+>> iptables -t nat -A PREROUTING -i $LANIF -s $LANSUBNET -d
+>> 111.114.34.128 -p tcp --dport 80 -j DNAT --to $LANSERVER
+>> You need to narrow down the interface/destination host/port as much as
+>> possible to stop this interfering with any general NAT rules you have
+>> got. Next you'd need to SNAT the traffic that you've just DNAT'd so
+>> that it appears to come from the firewall host
+>> iptables -t nat -A POSTROUTING -o $LANIF -s $LANSUBNET -d $LANSERVER
+>> -p tcp --dport 80 -j SNAT --to $FWLANIP
+>> These rules would need to come before any general NAT rules.
+>> $LANIF = your internal LAN interface
+>> $LANSUBNET = internal subnet
+>> $LANSERVER = internal LAN IP of your server
+>> $FWLANIP = the LAN IP on your firwall
+>> Matt
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-Netdev 2.1 is a  community-driven conference geared towards Linux
-netheads. Linux kernel networking and user space utilization of the
-interfaces to the Linux kernel networking subsystem are the central
-theme.
-If you are using Linux as a boot system for proprietary networking,
-then this conference _may not be for you_.
-
-Registration costs
-------------------
-Very Cheap.
-$CAN 300 if you register before Feb 27. $360 after.
-$CAN 150 if you are a student. $180 after Feb 27
-
-Why you should register
------------------------
-If you yearn for the old community tech driven conferences where
-you mingle with fellow geeks (only these would be Linux networking
-geeks) then this would be it. There will be no marketing flashing
-light openings or loud bad music. Just a pure feed of Linux
-networking. Gurus and magicians of all sorts will be there mingling,
-juggling and giving talks.
-
-While there will be heavy Linux kernel influence we expect a lot
-of user space presence as well.
-
-Exact Location:
------------------
-Tentative: LE WESTIN MONTR=C3=89AL
-
-Sponsorship
-------------
-
-If you can help us organize this event by sponsoring, please drop us a=20
-line to: sponsor-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org and we'll send you=
- our sponsorship policy.
-
-Important dates
-----------------
-January 18, 2017 Call for proposals open
-January 23, 2017 Registration opens
-February 20, 2017 Call for proposals close
-February 27, 2017 Early Registration close
-March 13, 2017 Conference schedule announced
-March 27, 2017 Paper submission
-March 31, 2017 Online Registration close
-April 3, 2017 Slides submission
-April 6-8, 2017 Conference days
-May 1, 2017 Slides release
-June 1, 2017 Paper release
-
-cheers,
-jamal
