@@ -1,64 +1,76 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: Need module help
-Date: Thu, 12 Jan 2017 12:15:24 -0600
-Message-ID: <20170112181524.GJ8339@harrier.slackbuilds.org>
-References: <CAH-pVi-McTaVYJjvsBLbnSVk+wW2biD+0U8byK3exrFHfig1Hg@mail.gmail.com>
- <72f2e366-c823-40a6-17d6-330e803bc52e@plouf.fr.eu.org>
- <CAH-pVi-94=nY8zZJDQE_Kfq=01t9snXnBk-Rw3C8sbhsAM6i-w@mail.gmail.com>
- <20170108035307.GH8339@harrier.slackbuilds.org>
- <3d6b0822-d484-e41e-8141-94dc128b94ba@plouf.fr.eu.org>
- <CAH-pVi810QXjG5p_nhdpdGNcM2RWO7w9AZrE==t0-tzsyLEpLw@mail.gmail.com>
-Reply-To: netfilter@vger.kernel.org
-Mime-Version: 1.0
+From: Jeremy Hansen <jeremy@skidrow.la>
+Subject: Routing LAN to external IP from behind NAT
+Date: Fri, 13 Jan 2017 01:14:55 -0800
+Message-ID: <F7FF15A4-8565-43D9-985B-5F66DCC224B6@skidrow.la>
+Mime-Version: 1.0 (Mac OS X Mail 10.2 \(3259\))
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAH-pVi810QXjG5p_nhdpdGNcM2RWO7w9AZrE==t0-tzsyLEpLw@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=skidrow.la; h=
+        x-mailer:date:date:message-id:subject:subject:mime-version
+        :content-transfer-encoding:content-type:content-type:from:from
+        :received:received; s=foo; t=1484298897; x=1486113298; bh=KKnuJ7
+        yn4wOtAFKS2wksX1WtoN21SkMMQ2buuHH70LM=; b=eScR+cQafXg1Enl8CDrH+X
+        qd+VmvyLJkltx71LYtOXfvukEGZGPHVuFp0cOAY+Mh3M7VC95m/QM42dUeX54yXj
+        FTX5jKcU1G1WQOXtb2v4tPhuXjP5ExVs9zcMFe6cFBONKGBuXvqbmm4NSN49Z9Id
+        dlYJXb4Y9b/c2j6BCpJJo=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="windows-1252"
 To: netfilter@vger.kernel.org
 
-On Thu, Jan 12, 2017 at 07:29:31AM -0600, DOHC F22 wrote:
-> On Sun, Jan 8, 2017 at 5:29 AM, Pascal Hambourg=20
-> <pascal@plouf.fr.eu.org> wrote:
-> > Le 08/01/2017 =E0 04:53, /dev/rob0 a =E9crit :
-> >> On Sat, Jan 07, 2017 at 09:39:33PM -0600, DOHC F22 wrote:
-> >>>
-> >>> Are those two different modules?
-> >>
-> >> Yes.  Names in lowercase are match extensions, in this case,=20
-> >> see:
-> >>     iptables -m dscp -h
-> >>
-> >> UPPERCASE names indicate target extensions, so see this:
-> >>     iptables -j DSCP -h
-> >
-> >
-> > Note that these modules also support the older tos match and
-> > TOS target extensions respectively.
->=20
-> I'm having trouble finding those modules for the exact
-> iptables/kernel version.  Should I be more focused on matching
-> the kernel version?  Is there some repository somewhere with
-> modules to download?
+I have a Linux firewall/NAT host on my network port forwarding specific =
+ports such as port 80 to a host within the LAN.  This works fine when =
+I=E2=80=99m connecting from outside of the LAN.  What do I have to do =
+with iptables so I can access these things from within the LAN without =
+having to do something like fake dns so it uses internal IPs to access =
+these hosts and ports?
 
-No.  Well, *maybe* depending on distro, but the Linux kernel is=20
-distributed by the upstream project (kernel.org) as source code.
+Current ruleset looks like this:
 
-Are you saying that those modules are not found on your system?  If=20
-that's the case you're going to have to recompile your kernel with
-all necessary options enabled.
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination        =20
+LOG_AND_DROP  all  --  43.229.53.68         0.0.0.0/0          =20
+LOG_AND_DROP  all  --  46.148.18.162        0.0.0.0/0          =20
+LOG_AND_DROP  all  --  159.226.35.207       0.0.0.0/0          =20
+LOG_AND_DROP  all  --  111.224.46.7         0.0.0.0/0          =20
 
-BTW just about any distro kernel gets this right.  Only custom=20
-kernels built by inexperienced people have problems like this.
-(This issue is often seen on VPS systems where you don't control
-your own kernel, too.)
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination        =20
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           state =
+RELATED,ESTABLISHED=20
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0          =20
+ACCEPT     tcp  --  0.0.0.0/0            192.168.10.10       tcp dpt:80 =
+state NEW,RELATED,ESTABLISHED=20
+ACCEPT     tcp  --  0.0.0.0/0            192.168.10.10       tcp dpt:443 =
+state NEW,RELATED,ESTABLISHED=20
+ACCEPT     tcp  --  0.0.0.0/0            192.168.10.10       tcp dpt:25 =
+state NEW,RELATED,ESTABLISHED=20
+ACCEPT     tcp  --  0.0.0.0/0            192.168.10.10       tcp dpt:587 =
+state NEW,RELATED,ESTABLISHED=20
+ACCEPT     tcp  --  0.0.0.0/0            192.168.10.10       tcp dpt:143 =
+state NEW,RELATED,ESTABLISHED=20
+ACCEPT     tcp  --  0.0.0.0/0            192.168.10.10       tcp dpt:993 =
+state NEW,RELATED,ESTABLISHED=20
 
-I suspect a hefty amount of "XY question" is involved here, in=20
-addition to a lack of background information.  Perhaps if you share=20
-the background on what you're trying to accomplish, you can get the=20
-kind of help you can use.
---=20
-  http://rob0.nodns4.us/
-  Offlist GMX mail is seen only if "/dev/rob0" is in the Subject:
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination        =20
+
+Chain LOG_AND_DROP (4 references)
+target     prot opt source               destination        =20
+LOG        all  --  0.0.0.0/0            0.0.0.0/0           LOG flags 0 =
+level 4 prefix `HOST DENIED: '=20
+DROP       all  --  0.0.0.0/0            0.0.0.0/0          =20
+
+
+Trying to connect to port 80 on the external IP from within the lan =
+results in this:
+
+telnet www.blah.com 80
+Trying 111.114.34.128...
+telnet: connect to address 111.114.34.128.: Connection refused
+telnet: Unable to connect to remote host
+
+Thank you for any help.
+
+-jeremy
+
