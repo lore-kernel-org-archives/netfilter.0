@@ -1,190 +1,165 @@
-From: Andre Cunha <anovaescunha@gmail.com>
-Subject: Packets not being nat'd intermittently with iptables
-Date: Mon, 16 Jan 2017 11:43:13 +0100
-Message-ID: <CAGOYNM-f9eaSL2CdX5E67EDxr9fsnxAeXMv0uaUNLcf5TJjfpQ@mail.gmail.com>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Subject: ANNOUNCE: Netdev 2.1 Call For Proposals Opened!
+Date: Mon, 16 Jan 2017 10:00:37 -0500
+Message-ID: <7a79630a-bc90-e201-0b10-049ae93dc678@mojatatu.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=qvLxVhp2qjVEdb2X887RoSROxoH9Kk92P0MoqGFli1M=;
-        b=r4b4op7mtPdgOMrMRvVZp29DPF5XLRe4PpPD1EqJ4qVTCGkiYuNI485jmYtiWnWYg3
-         icol/R1xV6n35oCDCAAKKAO21jc25r1FCPVzRzQdKlq4YW2n2z+nGEzlPJ2jJWpAqGFd
-         1A2xKsOWPYpY9uE0RBoJWTsVGsr7dNbBF9KrYHowzD1mYJaBFek+bOsox1nGPaoFtAtd
-         IxXcHWu6+sj+Idmkuu/M2FbmUJGkkbnBKrt+YzknSfz1YbrE0nQPDGUyQtMN7ca9FDZv
-         EHw70Tb9ZO21yToAnuHILBQZv/dd0eqbArKuzu7ENC8XT6gbug6BbQllbAwGKguba5hk
-         kufQ==
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=lgiCpxLuU8aE+h57uK110adLwDRvN6XIaruIP1B/KM8=;
+        b=ET3sjgCBJ0JLkEiilK3HfgonJdIuWr9ef2Q6vaUfDnqem3COgTmExk0h0iK+QEPywF
+         UyVebqHudJGZ6x8Y44ePC2mOPN0QYf15zbI6HyY+B8vu1Nb9OrCb0EPMb6jIytt0BFLy
+         diLB7QlsoLrqI36CdsmBuoeBv1IuuScl4deILOPgFQDYDjvN7MV5oE3HKtRdALRprDyT
+         mMvNRuk70EJ9TZd8EMyXgiXmvGDS7G+QtIIeZjpuzUTYw7KE/myuOgoEOBVSiNlbTM7n
+         HjCSiiKvKK+9+SmU3oWnaBIqucBTs2gsnyHW67ODluJlYfS14vGwsfssm7g0QD6FlDsT
+         ghIg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
-
-Hi,
-
-I'm having a strange behavior with nat/iptables.
-
-I have the following scenario:
-
-Internet ---- [xenbr0] Server [xapi2] ----- VMs
-
-The VMs are in the 192.168.0.0/24 subnet. I have NAT with iptables so
-that external requests from the internet can reach the internal VMs.
-I started a ping from an external client machine 50.116.26.209 to HTTP
-server IP 78.x.x.229, which translates to IP 192.168.0.229 located in
-one of the VMs. Here are the tcpdumps on each interface:
-
-internal vm [evertyhing ok on the vm side]
------------
-02:20:07.848280 IP 50.116.26.209 > 192.168.0.229: ICMP echo request,
-id 23409, seq 3, length 64
-02:20:07.848304 IP 192.168.0.229 > 50.116.26.209: ICMP echo reply, id
-23409, seq 3, length 64
-
-xapi2 [only echo request, no replies here...]
------
-02:20:49.077968 IP 50.116.26.209 > 192.168.0.229: ICMP echo request,
-id 23409, seq 3, length 64
-
-xenbr0 [2 packets replies for the same request, one nat'd and the
-other with internal address]
-------
-02:20:49.078071 IP 192.168.0.229 > 50.116.26.209: ICMP echo reply, id
-23409, seq 3, length 64
-02:20:49.078107 IP 78.x.x.228 > 50.116.26.209: ICMP echo reply, id
-23409, seq 3, length 64
-
-Another strange thing that I see is internal interface xapi2 receiving
-packets without being NAT'd:
-
-TRACE: nat:PREROUTING:policy:9 IN=xapi2 OUT= SRC=50.116.26.209 DST=78.x.x.229
-TRACE: filter:INPUT:rule:8 IN=xapi2 OUT= SRC=50.116.26.209 DST=78.x.x.229
-
-When this happens, the packet is discarded (rule 8 in my filter
-table), but these packets should not be there in the first place...
-and it happens occasionally, but enough to cause access problems to
-the web server.
-
-[root@xenserver-2 ~]# iptables --list -n -v
-Chain INPUT (policy DROP 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source
-destination
-54498  112M ACCEPT     all  --  lo     *       0.0.0.0/0
-0.0.0.0/0
-  193 55092 ACCEPT     47   --  *      *       0.0.0.0/0
-0.0.0.0/0
-    0     0 ACCEPT     all  --  *      *       91.122.159.196
-138.201.64.228
- 4256  317K ACCEPT     all  --  xapi2  *       192.168.0.0/24
-0.0.0.0/0
-    0     0 ACCEPT     all  --  *      *       78.x.x.231
-0.0.0.0/0
- 855K   60M ACCEPT     all  --  *      *       0.0.0.0/0
-78.x.x.231
->>>>>> 23970 1599K REJECT     all  --  *      *       0.0.0.0/0            78.x.x.224/29     reject-with icmp-port-unreachable
-27361 3721K ACCEPT     tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0            tcp dpt:443
- 5326  453K ACCEPT     icmp --  *      *       0.0.0.0/0
-0.0.0.0/0            icmptype 255
-    0     0 ACCEPT     udp  --  xenapi *       0.0.0.0/0
-0.0.0.0/0            udp dpt:67
-2906K  932M ACCEPT     all  --  *      *       0.0.0.0/0
-0.0.0.0/0            ctstate RELATED,ESTABLISHED
-    0     0 ACCEPT     udp  --  *      *       0.0.0.0/0
-0.0.0.0/0            ctstate NEW udp dpt:694
-    0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0            ctstate NEW tcp dpt:443
-    0     0 ACCEPT     udp  --  *      *       0.0.0.0/0
-0.0.0.0/0            multiport dports 5404,5405
-20938 1511K REJECT     all  --  *      *       0.0.0.0/0
-0.0.0.0/0            reject-with icmp-host-prohibited
-
-Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source
-destination
-   30  1772 ACCEPT     tcp  --  *      *       0.0.0.0/0
-192.168.0.225        multiport dports 8443:8446
-  886 64643 ACCEPT     tcp  --  *      *       0.0.0.0/0
-192.168.0.227        multiport dports 80,8069,8080,8090
-75056   89M ACCEPT     all  --  xapi2  *       192.168.0.0/24
-0.0.0.0/0
-80933 6781K ACCEPT     icmp --  *      *       0.0.0.0/0
-0.0.0.0/0            icmptype 8
-  443 32522 ACCEPT     tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0            tcp dpt:22022
- 122K   11M ACCEPT     tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0            multiport dports 80,443
- 141K  119M ACCEPT     all  --  *      *       0.0.0.0/0
-0.0.0.0/0            ctstate RELATED,ESTABLISHED
-    0     0 ACCEPT     all  --  *      *       91.122.159.196
-0.0.0.0/0
-12036  635K REJECT     all  --  *      *       0.0.0.0/0
-0.0.0.0/0            reject-with icmp-port-unreachable
-
-Basically packets go to the PREROUTING table for nat as expected, and
-the ones that for some reason do not get nat'd, reach the INPUT chain
-(since net 78.x.x.224/29 is local to the host) and hit the REJECT
-rule. The remote client received an ICMP port unreachable message.
-Since the issue is intermittent, I'm considering that there is some
-issue either with iptables or the kernel...
-
-Another strange thing in the TRACE output is that the NAT/PREROUTING
-table has only 8 rules, and the trace says that it hit rule 9 (maybe
-it's the default policy?)
-
-Here is my nat table:
-
-[root@xenserver-2 ~]# iptables --list -n -t nat --line-numbers -v
-Chain PREROUTING (policy ACCEPT 611K packets, 43M bytes)
-num   pkts bytes target     prot opt in     out     source
-  destination
-1     1761 90004 DNAT       all  --  xenbr0 *       0.0.0.0/0
-  78.x.x.224        to:192.168.0.224
-2     1686 87453 DNAT       all  --  xenbr0 *       0.0.0.0/0
-  78.x.x.225        to:192.168.0.225
-3     1589 79760 DNAT       all  --  xenbr0 *       0.0.0.0/0
-  78.x.x.226        to:192.168.0.226
-4     1855 92353 DNAT       all  --  xenbr0 *       0.0.0.0/0
-  78.x.x.227        to:192.168.0.227
-5     2929  148K DNAT       all  --  xenbr0 *       0.0.0.0/0
-  78.x.x.228        to:192.168.0.228
-6    21333 1668K DNAT       all  --  xenbr0 *       0.0.0.0/0
-  78.x.x.229        to:192.168.0.229
-7     1664 85048 DNAT       all  --  xenbr0 *       0.0.0.0/0
-  78.x.x.230        to:192.168.0.230
-8        0     0 DNAT       tcp  --  xenbr0 *       0.0.0.0/0
-  0.0.0.0/0            tcp dpt:28080 to:192.168.0.10:8080
-
-Chain INPUT (policy ACCEPT 566K packets, 40M bytes)
-num   pkts bytes target     prot opt in     out     source
-  destination
-
-Chain OUTPUT (policy ACCEPT 364K packets, 29M bytes)
-num   pkts bytes target     prot opt in     out     source
-  destination
-
-Chain POSTROUTING (policy ACCEPT 386K packets, 30M bytes)
-num   pkts bytes target     prot opt in     out     source
-  destination
-1        0     0 SNAT       all  --  *      xenbr0  192.168.0.224
-  0.0.0.0/0            to:78.x.x.224
-2       28  2128 SNAT       all  --  *      xenbr0  192.168.0.225
-  0.0.0.0/0            to:78.x.x.225
-3        0     0 SNAT       all  --  *      xenbr0  192.168.0.226
-  0.0.0.0/0            to:78.x.x.226
-4        6   424 SNAT       all  --  *      xenbr0  192.168.0.227
-  0.0.0.0/0            to:78.x.x.227
-5      116  7552 SNAT       all  --  *      xenbr0  192.168.0.228
-  0.0.0.0/0            to:78.x.x.228
-6     1171 70329 SNAT       all  --  *      xenbr0  192.168.0.229
-  0.0.0.0/0            to:78.x.x.229
-7        0     0 SNAT       all  --  *      xenbr0  192.168.0.230
-  0.0.0.0/0            to:78.x.x.230
-8       32  2066 MASQUERADE  all  --  *      xenbr0  192.168.0.0/24
-   0.0.0.0/0
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netdev@vger.kernel.org
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, info@netdevconf.org, linux-wireless@vger.kernel.org, tech-committee@netdevconf.org, David Miller <davem@davemloft.net>, Stephen Jaworski <jaws@mojatatu.com>, Rob Echlin <rob@echlin.ca>, lwn@lwn.net, "info@netdev01.org" <info@netdev01.org>, tech-committee@netdevconf.org
 
 
-Could you help me understand what's going on?
+Folks,
 
-Thanks
-Andre
+We are pleased to announce that the CFP for netdev 2.1 is now open.
+
+Netdev 2.1 is a community-driven conference geared towards Linux
+netheads. Linux kernel networking and user space utilization of the
+interfaces to the Linux kernel networking subsystem are the focus.
+If you are using Linux as a boot system for proprietary networking, then
+this conference _may not be for you_.
+
+Netdev2.1 will be held in Montreal April 6-8
+For more details visit: www.netdevconf.org
+
+Netdev 2.1 has a theme: IOT networking and DDOS.
+Submissions in that area are highly encouraged.
+
+Current topics include:
+
+IOT networking.
+DDOS.
+Wireless.
+Performance analysis and improvement.
+Networking hardware and offload.
+Netfilter.
+Traffic control.
+Different networking layers (L2/3, etc.).
+Security.
+Additional topics can be suggested.
+
+Session submissions
+--------------------
+
+We encourage submission of paper and tutorial proposals, though we
+*highly highly discourage* submission of recycled talks. Your proposals
+will be evaluated by the technical committee that will provide prompt
+feedback to you. If your proposal is approved, you will be requested to
+submit your Camera-ready paper.
+Unlike other conferences where only the schedule is announced,
+proposals will be regularly announced as they get accepted on our 
+website and on relevant lists and twitter.
+
+Please stay within the relevant topic focus and tie to FOSS Linux
+networking to make it easier for the technical committee to provide
+quick feedback. In order to give a talk you must be registered.
+If your proposal is accepted you will not be charged a conference fee
+or your conference fee will be refunded to you when your talk gets
+accepted.
+
+Types of proposals
+-------------------
+1. BoF
+
+This serves to carry out initial discussions on some topic without any
+pre-planned agenda.  At least one person is responsible for introducing
+the topic, chairing and moderating it.  You have to list a few people
+that will be planning to participate in the discussion.  Expect people
+from the public to participate actively in the discussions.
+
+The lifetime of a BOF may be only one or two Netdev conference 
+gatherings. We discourage perpetual BOFs. BoFs don't need to have an
+existing networking subsystem or mailing list. BOFs also don't need to
+strive to be upgraded to be a Workshop in the future. Their longevity
+could only be one conference. The sitting format could vary and be
+either lecture or round table format depending on the proposal.
+
+
+2. Talk
+At least one person (of possibly multiple authors) is responsible for
+the presentation.  Details proposal/development plans to the public for
+45 minutes.
+A paper submission of the talk is expected (please use the provided
+template). The paper has to be a minimum of two pages and not to exceed
+10 pages  (not including the references).
+
+3. Tutorial
+
+This implies planned agenda too.
+Introduces audience to a topic.
+Includes practical examples on using the functionality.
+Functionality should already be in mainline or at least have been posted
+already.
+
+4. Workshops
+
+Workshops are centered around existing networking subsystems.
+Workshops are intended to be an extension of the mailing list in the
+sense that many times previous discussions from the mailing list (or
+that could otherwise have happened there) are taken to the round-table
+to simplify the decision-making process.
+
+The networking subsystem maintainer(s) should at least prepare a
+list of agenda items well before the workshop takes place to allow
+participants to come prepared; this makes the discussions most
+productive.
+Sometimes brain-storming sessions will also be appropriate where
+being prepared is less important, for example for discussions
+around new user requirements this can be very valuable.
+
+At the workshop meeting itself discussions prevail and notes are
+later sent back to the mailing list; presentations are typically
+- at the discretion of the chairs - only used where needed to
+clarify a problem statement for discussion.
+
+Submiting Proposals
+-------------------
+
+Your proposal must be sent to tech-committee@netdevconf.org before
+February 20, 2017 with the following format:
+
+Title: Title of the proposal
+Type: BoF, Talk, Tutorial.
+Description: (350 words max).
+Submitter names:
+Estimated time: (talk = 45 minutes max., tutorial = 90 minutes max.).
+
+Once your proposal is accepted, please prepare your paper based on the
+conference  template (odt or latex).
+
+How to submit your paper
+------------------------
+
+Once your proposal is accepted and you have been invited to submit a
+paper, please send the paper to both info@netdevconf.org and
+tech-committee@netdevconf.org.
+
+Deadlines
+---------
+February 20, 2017 Call for proposals close
+Paper submission for review  March 27, 2017
+Slides submission April 3, 2017
+
+How to submit your slides
+-------------------------
+
+If your slides of your talk are ready, please send the PDF to:
+info@netdevconf.org.
+
+
+cheers,
+jamal
