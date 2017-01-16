@@ -1,55 +1,56 @@
-From: DOHC F22 <dohcf22@gmail.com>
-Subject: Re: Need module help
-Date: Sat, 14 Jan 2017 10:38:38 -0600
-Message-ID: <CAH-pVi_jaonY80gYv3WsgTdX321syqCiH7XuFT4rqThvq7Q6EA@mail.gmail.com>
-References: <CAH-pVi-McTaVYJjvsBLbnSVk+wW2biD+0U8byK3exrFHfig1Hg@mail.gmail.com>
- <72f2e366-c823-40a6-17d6-330e803bc52e@plouf.fr.eu.org> <CAH-pVi-94=nY8zZJDQE_Kfq=01t9snXnBk-Rw3C8sbhsAM6i-w@mail.gmail.com>
- <20170108035307.GH8339@harrier.slackbuilds.org> <3d6b0822-d484-e41e-8141-94dc128b94ba@plouf.fr.eu.org>
- <CAH-pVi810QXjG5p_nhdpdGNcM2RWO7w9AZrE==t0-tzsyLEpLw@mail.gmail.com>
- <20170112181524.GJ8339@harrier.slackbuilds.org> <CAH-pVi838ZUeqSKZu7JiLDYjX9R2upmfKP8xH8esD9YAhVJ95g@mail.gmail.com>
- <fc5afaf8-5303-ac48-7683-64f474c57316@plouf.fr.eu.org>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: conntrackd: synchronization failures
+Date: Mon, 16 Jan 2017 11:16:29 +0100
+Message-ID: <20170116101629.GA5107@salvia>
+References: <alpine.LRH.2.00.1701112049480.25853@gjva.wvxbf.pm>
+ <alpine.LRH.2.00.1701112254250.25853@gjva.wvxbf.pm>
+ <CAOkSjBj-X8F-Ca4vwocSsaZVzQN2R1MAUN+SCvCOb0XVPEzQ8Q@mail.gmail.com>
+ <alpine.LRH.2.00.1701131558020.25853@gjva.wvxbf.pm>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=oq1vBMnqiHJSJiOOLEADCu+wghz5QFN6Q/aaDVPfOUc=;
-        b=baHp8JTbkiPdGxDPy0YNRFz4Rcjh4jiQd5p3coqMhSnqFvVBZtz6y3CCW77hjMWP4e
-         O2vtr0WP3u3UKTslxDTspa0cc8VBiUxVEwba1wHmtN8Dl5JiWnXHR04qeZCp8QMOxp5E
-         FXVAY8ZSk0egrSxzAqhDypWLYRp6o2cmhJAJXWRW7bLsLap/nErqNo2mZrpTAmjw9xqd
-         B9gvcVMdC58D7qqqVpUEByy71xVMqHAd8MCHR6+OCTSF1NIdnfbKwupnvz+WGkbfbndA
-         +TqS5VKhugVv3qIly0iCzofgmhxL4uHf1tSIgBCP0pS41TeK71A/emK/zeUeY+CZJLkV
-         +ocA==
-In-Reply-To: <fc5afaf8-5303-ac48-7683-64f474c57316@plouf.fr.eu.org>
+Content-Disposition: inline
+In-Reply-To: <alpine.LRH.2.00.1701131558020.25853@gjva.wvxbf.pm>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jiri Kosina <jikos@kernel.org>
+Cc: Arturo Borrero Gonzalez <arturo@debian.org>, Netfilter Users Mailing list <netfilter@vger.kernel.org>, info@jablonka.cz
 
-On Sat, Jan 14, 2017 at 2:56 AM, Pascal Hambourg <pascal@plouf.fr.eu.org> w=
-rote:
-> Le 14/01/2017 =C3=A0 01:27, DOHC F22 a =C3=A9crit :
->>
->>
->> Ok, what I'm trying to do is mark certain packets on my Fire TV (it's
->> running android) so when they get to my router I can filter them
->> accordingly.  I was told that MARK wouldn't travel with the packet but
->> ToS would.
->
->
-> Indeed MARK is internal to the kernel.
->
-> So you need the TOS/DSCP target kernel module and iptables extension on t=
-he
-> Fire TV Android, and the tos/dscp match kernel module and iptables extens=
-ion
-> on the router (what OS ?). Which ones are missing, on which side ?
->
-I am running Tomato firmware on my router.  It has kernel version
-'2.6.36.4brcmarm' and iptables version '1.4.14'.  I think they are
-missing from both.  However, I do see a 'ipt_TOS.ko' and 'ipt_tos.ko
-modules on the router.  They may not be the correct ones, but they
-looked promising. :)
+On Fri, Jan 13, 2017 at 04:01:43PM +0100, Jiri Kosina wrote:
+> On Thu, 12 Jan 2017, Arturo Borrero Gonzalez wrote:
+> 
+> > I can see them too, in NATed connections most of the time:
+> > 
+> > Jan 12 08:54:09 cf03 conntrack-tools[32717]: inject-upd1: File exists
+> > Jan 12 08:54:09 cf03 conntrack-tools[32717]: tcp      6 120 TIME_WAIT
+> > src=192.168.5.181 dst=31.13.65.1 sport=57419 dport=443 [ASSURED]
+> > Jan 12 08:54:09 cf03 conntrack-tools[32717]: inject-upd1: File exists
+> > Jan 12 08:54:09 cf03 conntrack-tools[32717]: tcp      6 10 CLOSE
+> > src=192.168.5.181 dst=31.13.65.1 sport=57419 dport=443 [ASSURED]
+> > Jan 12 08:55:15 cf03 conntrack-tools[32717]: inject-add2: File exists
+> > Jan 12 08:55:15 cf03 conntrack-tools[32717]: tcp      6 120 SYN_SENT
+> > src=192.168.5.219 dst=216.58.211.202 sport=45121 dport=443 [UNREPLIED]
+> > Jan 12 08:55:15 cf03 conntrack-tools[32717]: inject-upd1: File exists
+> > Jan 12 08:55:15 cf03 conntrack-tools[32717]: tcp      6 60 SYN_RECV
+> > src=192.168.5.219 dst=216.58.211.202 sport=45121 dport=443
+> > Jan 12 08:55:15 cf03 conntrack-tools[32717]: inject-upd1: File exists
+> > Jan 12 08:55:15 cf03 conntrack-tools[32717]: tcp      6 432000
+> > ESTABLISHED src=192.168.5.219 dst=216.58.211.202 sport=45121 dport=443
+> > [ASSURED]
+> 
+> Do you also experience (either from inject-upd2 or inject-add2 phase) 
+> EBUSY ones?
+> 
+> I'm seeing quite a lot of entries such as
+> 
+> 	(pid=9769) [ERROR] inject-add2: Device or resource busy
+> 	        tcp      6 300 CLOSE src=10.33.37.4 dst=77.75.77.94 sport=42653 dport=443 [UNREPLIED]
+> 
+> I'm still trying to understand from the source what consequences this 
+> might have; any hint would be appreciated.
+
+Some conntrack attributes can also be set up from NEW flows.
+
+Most likely this entry already exists in the kernel, and conntrackd is
+trying to update it.
