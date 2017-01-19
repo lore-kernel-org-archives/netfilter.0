@@ -1,46 +1,171 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: set ipv4_addr interval timeout?
-Date: Mon, 16 Jan 2017 17:28:56 +0100
-Message-ID: <20170116162856.GA2479@salvia>
-References: <186719b4-eedb-80aa-232c-11f07e4ebcc8@trackivity.com>
+From: Patrick PIGNOL <patrick.pignol@gmail.com>
+Subject: User Firewall
+Date: Thu, 19 Jan 2017 05:31:15 +0100
+Message-ID: <86185443-8840-2736-bffd-7e869be41997@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <186719b4-eedb-80aa-232c-11f07e4ebcc8@trackivity.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:subject:to:message-id:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=cfc3zIRK0G/kce86l8YyfbaAi/3lsxNzHU7Ech0cAIo=;
+        b=QeLETW2rUs6mMagh9kTAql3s3xAXR3n9U4FzpvM/3BpTbGcVVtN5mtlY6KPQ3msV2M
+         KM5SfthVgkFQA6jZFvKrRAGsm2diYbO0BTXKl6hEtLcFTxxNIfR3iOUfYEtGuoyUIR3z
+         yLI/xQf4VlR6tE9hMiespiG1d1xJXRZxXR/YYerc0hCdw68j1VatSeMnDHHd4wRvMOpV
+         C4qtHUp3czZ9D6xCtaJ8LOQ6AmRiR1IROyTdb+f+rief30WF1BVNp3D+Cb2y9O3Jai+Z
+         zaj33MLjEhN4tSqdT2Sc/x6cnClJyJz7wVjitHQQJ1RMaw+FFz2Ew1i3qRiioPdXmMxb
+         klYA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: James <vger_tracker@trackivity.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Fri, Jan 06, 2017 at 08:18:11PM -0500, James wrote:
-> http://git.netfilter.org/nftables/tree/src/parser_bison.y#n1171 (and especially #n1206 and #n1213)
-> 
-> would seem to indicate that the following should work... *is* it supposed to work?
-> 
-> uname -a
-> Linux pc 4.8.0-32-generic #34-Ubuntu SMP Tue Dec 13 14:30:43 UTC 2016 x86_64 x86_64 x86_64 GNU/Linux
-> nft --version
-> nftables v0.7 (Scrooge McDuck)
-> nft flush ruleset
-> nft list ruleset
-> nft add table inet firewall
-> nft add set inet firewall v4timeoutintervals { type ipv4_addr\; flags interval\; timeout 1h\; }
-> <cmdline>:1:1-89: Error: Could not process rule: Operation not supported
-> add set inet firewall v4timeoutintervals { type ipv4_addr; flags interval; timeout 1h; }
-> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> 
-> Either interval or timeout alone works but interval and timeout together don't.
-> 
-> Basically, it seems that you can't use timeouts for subnets.
+Good day all,
 
-Yes.
+First please don't blame my poor English, I'm French and I'm not fluent.
 
-Combination of intervals and timeouts is not yet implemented. Please,
-file a bug at netfilter's bugzilla so we can keep track of this
-enhancement request:
+I don't know if this is the good Mailing-List for that ... so please 
+redirect me as necessary ...
 
-        https://bugzilla.netfilter.org/
+But I would like to write a linux firewall user software like Zone-Alarm 
+on windows, able to warn user that a given software(even system one, via 
+socket or not) want access to the web on a given 
+way(INPUT[/FORWARD[/NAT]]/OUTPUT), on a given 
+protocol(ARP/ICMP/IP/TCP/UDP included) and on given port(s) to let the 
+user choose what to do with that packet and maybe create automated rule 
+for that kind of packet.
 
-Thanks!
+I heard about NF_QUEUE API and finally found this sample code on the web :
+
+http://netfilter.org/projects/libnetfilter_queue/doxygen/nfqnl__test_8c_source.html
+
+I have been modified the code line 91 :
+
+<code>
+
+printf("unbinding existing nf_queue handler for AF_INET (if any)\n");
+
+if (nfq_unbind_pf(h, AF_INET) < 0)
+
+{
+
+     fprintf(stderr, "error during nfq_unbind_pf()\n");
+
+     exit(1);
+
+}
+
+printf("binding nfnetlink_queue as nf_queue handler for AF_INET\n");
+
+if (nfq_bind_pf(h, AF_INET) < 0)
+
+{
+
+     fprintf(stderr, "error during nfq_bind_pf()\n");
+
+     exit(1);
+
+}
+
+</code>
+
+by :
+
+<code>
+
+printf("unbinding existing nf_queue handler for AF_INET (if any) ... ");
+
+nfq_unbind_pf(h, AF_INET);
+
+printf("done\n");
+
+printf("binding nfnetlink_queue as nf_queue handler for AF_INET ... ");
+
+nfq_bind_pf(h, AF_INET);
+
+printf("done\n");
+
+</code>
+
+because of, as I have been understood, there was a retro-compatibility 
+issue that return non-positive values.
+
+I have been compiled it with :
+
+ >$ gcc -Wall -o test nfqnl_test.c -lnfnetlink -lnetfilter_queue
+
+Cha ching ! That done !
+
+I written a firewall script with (at end of file) :
+
+<shell>
+
+ ># iptables -A OUTPUT -p ALL -j NFQUEUE –queue-num 0
+
+ ># iptables -A INPUT -p ALL -j NFQUEUE –queue-num 0
+
+</shell>
+
+that give me something like:
+
+<shell>
+
+ ># iptables -L -n -v --line-numbers
+
+Chain INPUT (policy DROP 0 packets, 0 bytes)
+num   pkts bytes target     prot opt in     out source               
+destination
+...
+7        0     0 NFQUEUE    all  --  *      * 0.0.0.0/0            
+0.0.0.0/0            NFQUEUE num 0
+
+Chain FORWARD (policy DROP 0 packets, 0 bytes)
+num   pkts bytes target     prot opt in     out source               
+destination
+
+Chain OUTPUT (policy DROP 0 packets, 0 bytes)
+num   pkts bytes target     prot opt in     out source               
+destination
+...
+16       0     0 NFQUEUE    all  --  *      * 0.0.0.0/0            
+0.0.0.0/0            NFQUEUE num 0
+
+</shell>
+
+So I think it is well registered by Netfilter
+
+When I launch The test code, it output :
+
+<shell>
+
+opening library handle
+unbinding existing nf_queue handler for AF_INET (if any) ... done
+binding nfnetlink_queue as nf_queue handler for AF_INET ... done
+binding this socket to queue '0'
+error during nfq_create_queue()
+
+</shell>
+
+In fact :
+
+<code>
+
+qh = nfq_create_queue(h,  0, &cb, NULL); // qh == 0
+
+</code>
+
+So I'm blocked on Queue creation and can't move forward because I don't 
+know what doesn't work at all.
+
+I'm on UBUNTU (lastest, not LTS) (I know, it's not a good word, but not 
+worst as "Windows").
+
+My question is : Have you any hint (or links) on/for that issue ?
+
+By advance, thank you.
+
+Best regards
+
+Patrick.
+
