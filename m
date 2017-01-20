@@ -1,32 +1,37 @@
-From: Dennis Jacobfeuerborn <dennisml@conversis.de>
-Subject: Re: intermittent nat issue
-Date: Fri, 20 Jan 2017 11:36:45 +0100
-Message-ID: <14ec9b85-d18b-db28-b0a1-3459835da78e@conversis.de>
+From: Llorente Santos Jesus <jesus.llorente.santos@aalto.fi>
+Subject: RE: intermittent nat issue
+Date: Fri, 20 Jan 2017 15:23:13 +0000
+Message-ID: <04c2569a9abf471b98c6b759271a4431@aalto.fi>
 References: <6a6cc500-9c8a-4075-f856-fb5d90f0571b@pkfnet.co.za>
  <1e5b43088d9a493faee12f3027ce8aa5@aalto.fi>
  <64c68c3a-9397-a93b-4cc4-8e6db25e02c6@pkfnet.co.za>
+ <14ec9b85-d18b-db28-b0a1-3459835da78e@conversis.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <64c68c3a-9397-a93b-4cc4-8e6db25e02c6@pkfnet.co.za>
+In-Reply-To: <14ec9b85-d18b-db28-b0a1-3459835da78e@conversis.de>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Mark Coetser <mark@pkfnet.co.za>, Llorente Santos Jesus <jesus.llorente.santos@aalto.fi>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Cc: Dennis Jacobfeuerborn <dennisml@conversis.de>, Mark Coetser <mark@pkfnet.co.za>
 
-On 20.01.2017 10:47, Mark Coetser wrote:
-> Hi Llorente
-> 
-> I did run conntrack -F to check that but still had the unnatted packets
-> traversing the interface.
-> 
-
-Hi, I'm seeing this as well on our systems. One thing I notice is that
-all packets either the RST of FIN flag set. Could this be some sort of
-race condition where Conntrack removes the connection from the table
-because of the flags and as a result the final packet will not get
-masqueraded/nat'ed?
-
-Regards,
-  Dennis
-
+SGksIA0KSSB3b3VsZG4ndCB0aGluayB0aGF0IGlzIHRoZSBwcm9ibGVtLi4uYXMgZmFyIGFzIEkg
+a25vdyBjb25udHJhY2sgc2V0cyBzcGVjaWZpYyB0aW1lb3V0cyBvbiB0aGUgY29ubmVjdGlvbnMg
+dG8gbWF0Y2ggd2l0aCB0aGUgYWN0dWFsIGNvbm50cmFjayBzdGF0ZS4NCllvdSBjYW4gc2VlIHRo
+ZXNlIHZpYQ0Kc3lzY3RsIC1hIHwgIGdyZXAgbmV0Lm5ldGZpbHRlci5uZl9jb25udHJhY2tfDQoN
+CkJlc3QsDQpKZXN1cw0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogRGVubmlz
+IEphY29iZmV1ZXJib3JuIFttYWlsdG86ZGVubmlzbWxAY29udmVyc2lzLmRlXSANClNlbnQ6IDIw
+IEphbnVhcnkgMjAxNyAxMjozNw0KVG86IE1hcmsgQ29ldHNlciA8bWFya0Bwa2ZuZXQuY28uemE+
+OyBMbG9yZW50ZSBTYW50b3MgSmVzdXMgPGplc3VzLmxsb3JlbnRlLnNhbnRvc0BhYWx0by5maT47
+IG5ldGZpbHRlckB2Z2VyLmtlcm5lbC5vcmcNClN1YmplY3Q6IFJlOiBpbnRlcm1pdHRlbnQgbmF0
+IGlzc3VlDQoNCk9uIDIwLjAxLjIwMTcgMTA6NDcsIE1hcmsgQ29ldHNlciB3cm90ZToNCj4gSGkg
+TGxvcmVudGUNCj4gDQo+IEkgZGlkIHJ1biBjb25udHJhY2sgLUYgdG8gY2hlY2sgdGhhdCBidXQg
+c3RpbGwgaGFkIHRoZSB1bm5hdHRlZCANCj4gcGFja2V0cyB0cmF2ZXJzaW5nIHRoZSBpbnRlcmZh
+Y2UuDQo+IA0KDQpIaSwgSSdtIHNlZWluZyB0aGlzIGFzIHdlbGwgb24gb3VyIHN5c3RlbXMuIE9u
+ZSB0aGluZyBJIG5vdGljZSBpcyB0aGF0IGFsbCBwYWNrZXRzIGVpdGhlciB0aGUgUlNUIG9mIEZJ
+TiBmbGFnIHNldC4gQ291bGQgdGhpcyBiZSBzb21lIHNvcnQgb2YgcmFjZSBjb25kaXRpb24gd2hl
+cmUgQ29ubnRyYWNrIHJlbW92ZXMgdGhlIGNvbm5lY3Rpb24gZnJvbSB0aGUgdGFibGUgYmVjYXVz
+ZSBvZiB0aGUgZmxhZ3MgYW5kIGFzIGEgcmVzdWx0IHRoZSBmaW5hbCBwYWNrZXQgd2lsbCBub3Qg
+Z2V0IG1hc3F1ZXJhZGVkL25hdCdlZD8NCg0KUmVnYXJkcywNCiAgRGVubmlzDQoNCg==
