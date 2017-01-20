@@ -1,32 +1,35 @@
-From: Mark Coetser <mark@pkfnet.co.za>
-Subject: intermittent nat issue
-Date: Fri, 20 Jan 2017 08:24:58 +0200
-Message-ID: <6a6cc500-9c8a-4075-f856-fb5d90f0571b@pkfnet.co.za>
+From: Llorente Santos Jesus <jesus.llorente.santos@aalto.fi>
+Subject: RE: intermittent nat issue
+Date: Fri, 20 Jan 2017 07:21:41 +0000
+Message-ID: <1e5b43088d9a493faee12f3027ce8aa5@aalto.fi>
+References: <6a6cc500-9c8a-4075-f856-fb5d90f0571b@pkfnet.co.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <6a6cc500-9c8a-4075-f856-fb5d90f0571b@pkfnet.co.za>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="windows-1254"
+To: Mark Coetser <mark@pkfnet.co.za>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi All
-
-kernel 3.16.0-4-686-pae
-iptables 1.4.21-2+b1
-
-I have a few different firewalls that are exhibiting the same issue
-
-basic rule iptables -t nat -I POSTROUTING -o $external_iface -j MASQUERADE
-
-when running tcpdump on $external_iface I am seeing SOME packets from 
-the private_network not being masqueraded/natted.
-
--- 
-Thank you,
-
-Mark Adrian Coetser
-mark@pkfnet.co.za
-
-"Help save the world!"              -- Larry Wall in README
-
+SGkgTWFyaywNCg0KRGlkIHlvdSBmbHVzaCB0aGUgY29ubnRyYWNrPyBQZXJoYXBzIHdoYXQgeW91
+IGFyZSBzZWVpbmcgYXJlIHNvbWUgYWxyZWFkeSBlc3RhYmxpc2hlZCBjb25uZWN0aW9ucyBwcmlv
+ciB0byBzZXR0aW5nIHRoZSBydWxlIGluIGlwdGFibGVzPw0KVHJ5IHdpdGggImNvbm50cmFjayAt
+RCIgdG8gcmVtb3ZlIHRoZSBjb25uZWN0aW9ucy4NCg0KQmVzdCwNCkplc3VzDQoNCi0tLS0tT3Jp
+Z2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBuZXRmaWx0ZXItb3duZXJAdmdlci5rZXJuZWwub3Jn
+IFttYWlsdG86bmV0ZmlsdGVyLW93bmVyQHZnZXIua2VybmVsLm9yZ10gT24gQmVoYWxmIE9mIE1h
+cmsgQ29ldHNlcg0KU2VudDogMjAgSmFudWFyeSAyMDE3IDA4OjI1DQpUbzogbmV0ZmlsdGVyQHZn
+ZXIua2VybmVsLm9yZw0KU3ViamVjdDogaW50ZXJtaXR0ZW50IG5hdCBpc3N1ZQ0KDQpIaSBBbGwN
+Cg0Ka2VybmVsIDMuMTYuMC00LTY4Ni1wYWUNCmlwdGFibGVzIDEuNC4yMS0yK2IxDQoNCkkgaGF2
+ZSBhIGZldyBkaWZmZXJlbnQgZmlyZXdhbGxzIHRoYXQgYXJlIGV4aGliaXRpbmcgdGhlIHNhbWUg
+aXNzdWUNCg0KYmFzaWMgcnVsZSBpcHRhYmxlcyAtdCBuYXQgLUkgUE9TVFJPVVRJTkcgLW8gJGV4
+dGVybmFsX2lmYWNlIC1qIE1BU1FVRVJBREUNCg0Kd2hlbiBydW5uaW5nIHRjcGR1bXAgb24gJGV4
+dGVybmFsX2lmYWNlIEkgYW0gc2VlaW5nIFNPTUUgcGFja2V0cyBmcm9tIHRoZSBwcml2YXRlX25l
+dHdvcmsgbm90IGJlaW5nIG1hc3F1ZXJhZGVkL25hdHRlZC4NCg0KLS0NClRoYW5rIHlvdSwNCg0K
+TWFyayBBZHJpYW4gQ29ldHNlcg0KbWFya0Bwa2ZuZXQuY28uemENCg0KIkhlbHAgc2F2ZSB0aGUg
+d29ybGQhIiAgICAgICAgICAgICAgLS0gTGFycnkgV2FsbCBpbiBSRUFETUUNCg0KLS0NClRvIHVu
+c3Vic2NyaWJlIGZyb20gdGhpcyBsaXN0OiBzZW5kIHRoZSBsaW5lICJ1bnN1YnNjcmliZSBuZXRm
+aWx0ZXIiIGluIHRoZSBib2R5IG9mIGEgbWVzc2FnZSB0byBtYWpvcmRvbW9Admdlci5rZXJuZWwu
+b3JnIE1vcmUgbWFqb3Jkb21vIGluZm8gYXQgIGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jk
+b21vLWluZm8uaHRtbA0K
