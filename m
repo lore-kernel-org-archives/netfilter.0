@@ -1,89 +1,98 @@
-From: prmarino1@gmail.com
-Subject: Re: Need module help
-Date: Sat, 28 Jan 2017 02:19:26 -0500
-Message-ID: <20170128071926.5304404.38143.39912@gmail.com>
-References: <CAH-pVi-McTaVYJjvsBLbnSVk+wW2biD+0U8byK3exrFHfig1Hg@mail.gmail.com>
- <CAH-pVi-94=nY8zZJDQE_Kfq=01t9snXnBk-Rw3C8sbhsAM6i-w@mail.gmail.com>
- <20170108035307.GH8339@harrier.slackbuilds.org>
- <3d6b0822-d484-e41e-8141-94dc128b94ba@plouf.fr.eu.org>
- <CAH-pVi810QXjG5p_nhdpdGNcM2RWO7w9AZrE==t0-tzsyLEpLw@mail.gmail.com>
- <20170112181524.GJ8339@harrier.slackbuilds.org>
- <CAH-pVi838ZUeqSKZu7JiLDYjX9R2upmfKP8xH8esD9YAhVJ95g@mail.gmail.com>
- <fc5afaf8-5303-ac48-7683-64f474c57316@plouf.fr.eu.org>
- <CAH-pVi_jaonY80gYv3WsgTdX321syqCiH7XuFT4rqThvq7Q6EA@mail.gmail.com>
- <CAH-pVi-AVscMXMhRufz80n7iPxkZgLwuHrrYqpAuXr+A-1Jq8g@mail.gmail.com>
+From: deva seetharam <deva.seetharam@gmail.com>
+Subject: ssh tunnels and iptables
+Date: Sun, 29 Jan 2017 20:57:35 +0530
+Message-ID: <CAGU6BDkW2C3JvsryWFzZT02MUZfOA6woZjB9NZqnQnJf_7ViQA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:content-transfer-encoding:message-id:date:subject:from
-         :in-reply-to:references:to;
-        bh=Pu82MQKorhPmkGobsyDwDgNP7MTSdGkwq1MjdS/Mk7U=;
-        b=GQv/GYG5pWkeY4O0euZwDaaSSjt2dhWIz2rxgdN10Nl+4Jq4lU7a5+s4YekjmAd03m
-         ihpn9K6PkKgmnsMh3JCWqIBpav3ytasjMQJrMvCtfa7I4Iqksad2rYXtAaohZ7GgtN3X
-         uGmNrL6/OeS5RFsc8uOrPqBDeG/h0eK5aXOE2y03fak8G5rmV8uaR70BsPEJAOvlrOf/
-         CZANg+oBWOIQ4/eTFzAUzgYFd7/iqX5D5C6zExfqrkGIIqx6lTbgErz6eo9RsZh5+kdU
-         6XTlPfRQOXCv8H7+mFwjODntV+mRVNwHyF+33aQDOCjo5SKSdevOk2Tk9ii3lh03rQAs
-         KiYA==
-In-Reply-To: <CAH-pVi-AVscMXMhRufz80n7iPxkZgLwuHrrYqpAuXr+A-1Jq8g@mail.gmail.com>
+        h=mime-version:from:date:message-id:subject:to;
+        bh=2vRhoQyxdbQJy9MEj+0wQfZbqYMspTpLY4IPyWimx7Q=;
+        b=h2TgBKQC0b9TJD0TR/AXYrtzPGeYod6WwJ85D7SkzCgag3NQYTtqtrl0hvkUqXa2JH
+         Hfom9PB6hgIaH6zmw6lstBvqXXIXbO7kI06c3K9KRfjmdFrZOIKo36L7hNOdhasgxyao
+         AHRB+SSmxTGvRoPDec4UvW1WYu83iKRWNBEOYCE91FT72rwjYoWcd+hh9m8ckrp+0TAW
+         ZBKwy7D6Cu3mLrCQ2oJDAOj6RalKK7R8S3c5sB9xFX/Bk6RaEC7UCwy9aBtET2q2ocD/
+         SPFCZ6rUzX3p15rVEk4kVeKK/Ozf43N8i2Q+xozZXG7ia9P7JM3RRtsuLJ/3DJc5moLj
+         RlgQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: DOHC F22 <dohcf22@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-No its not that, it's just an example of how crickets sound on a mailing li=
-st ... :)
-I'm not saying that to be mean, I'm just being honest.
-=E2=80=8E
-This means no one has a good answer for you based on the information you ha=
-ve provided.=E2=80=8E
-We either need more information or can't help you based on the information =
-provided.
-=E2=80=8E
-=E2=80=8EWhile we would love to help you if you can provide the information=
- required to give you definitive answer. You may have better luck on the us=
-er forum for your router. Personally I have no clue what code base tomato i=
-s (distribution, hardware, or what modules were compiled into its kernel) =
-=C2=A0and knowing is half the battle.
-=E2=80=8E
-We will be happy to answer but keep in mind we are (for the most part) scie=
-ntists on this list. Precision isn't only expected but required on this list
+I have setup a reverse ssh tunnel using the following command between
+a Linux laptop and a remote server:
 
-=C2=A0 Original Message =C2=A0
-From: DOHC F22
-Sent: Friday, January 27, 2017o: netfilter@vger.kernel.org
-Subject: Re: Need module help
+    ssh -4nNT -R 2222:localhost:22 somehost.com
+That is, the laptop, which is behind a firewall, can be accessed over
+ssh using the following command:
 
-I'm posting this again because it seems my posts don't come through at
-times. Please see below.
+    ssh -p 2222 -l joe somehost.com
 
-On Sat, Jan 14, 2017 at 10:38 AM, DOHC F22 <dohcf22@gmail.com> wrote:
-> On Sat, Jan 14, 2017 at 2:56 AM, Pascal Hambourg <pascal@plouf.fr.eu.org>=
- wrote:
->> Le 14/01/2017 =C3=A0 01:27, DOHC F22 a =C3=A9crit :
->>>
->>>
->>> Ok, what I'm trying to do is mark certain packets on my Fire TV (it's
->>> running android) so when they get to my router I can filter them
->>> accordingly. I was told that MARK wouldn't travel with the packet but
->>> ToS would.
->>
->>
->> Indeed MARK is internal to the kernel.
->>
->> So you need the TOS/DSCP target kernel module and iptables extension on =
-the
->> Fire TV Android, and the tos/dscp match kernel module and iptables exten=
-sion
->> on the router (what OS ?). Which ones are missing, on which side ?
->>
-> I am running Tomato firmware on my router. It has kernel version
-> '2.6.36.4brcmarm' and iptables version '1.4.14'. I think they are
-> missing from both. However, I do see a 'ipt_TOS.ko' and 'ipt_tos.ko
-> modules on the router. They may not be the correct ones, but they
-> looked promising. :)
---
-To unsubscribe from this list: send the line "unsubscribe netfilter" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at http://vger.kernel.org/majordomo-info.html
+on sshd_config of somehost.com, i have enabled Gatewayports=yes.
+
+I am glad to say all these work fine. However, one thing beats me:
+there is an `iptables` running on somehost.com that does NOT have the
+port 2222 opened. In spite of this tunnel works, how is that possible?
+how does iptables handle gateway ports of ssh? could anyone kindly
+explain? thanks in advance.
+
+here is the output of iptables -L:
+
+      target     prot opt source               destination
+
+      ACCEPT     icmp --  anywhere             anywhere
+icmp destination-unreachable
+      ACCEPT     icmp --  anywhere             anywhere
+icmp time-exceeded
+      ACCEPT     icmp --  anywhere             anywhere
+icmp echo-request
+      ACCEPT     icmp --  anywhere             anywhere
+icmp echo-reply
+      DROP       tcp  -f  anywhere             anywhere
+      DROP       tcp  --  anywhere             anywhere
+tcp flags:FIN,SYN,RST,PSH,ACK,URG/FIN,SYN,RST,PSH,ACK,URG
+      DROP       tcp  --  anywhere             anywhere
+tcp flags:FIN,SYN,RST,PSH,ACK,URG/NONE
+      DROP       tcp  --  anywhere             anywhere
+tcp flags:FIN,SYN/FIN,SYN
+      DROP       tcp  --  anywhere             anywhere
+tcp flags:FIN,ACK/FIN
+      DROP       tcp  --  anywhere             anywhere
+tcp flags:SYN,RST/SYN,RST
+      DROP       tcp  --  anywhere             anywhere
+tcp flags:FIN,SYN,RST,PSH,ACK,URG/FIN,SYN,RST,ACK,URG
+      DROP       udp  --  anywhere             anywhere
+udp spt:bootps dpt:bootpc
+      DROP       tcp  --  anywhere             anywhere
+tcp dpt:kazaa
+      DROP       udp  --  anywhere             anywhere
+udp dpt:kazaa
+      LOG        tcp  --  anywhere             somehost.com  tcp
+dpt:ssh state NEW LOG level warning tcp-options ip-options prefix
+"firewall-> ssh1: "
+      ACCEPT     tcp  --  anywhere             somehost.com  tcp dpt:ssh
+      LOG        tcp  --  anywhere             somehost.com  tcp
+dpt:2023 state NEW LOG level warning tcp-options ip-options prefix
+"firewall-> Check: "
+      ACCEPT     tcp  --  anywhere             somehost.com  tcp dpt:2023
+      LOG        tcp  --  anywhere             somehost.com  tcp
+dpt:http state NEW LOG level warning tcp-options ip-options prefix
+"firewall-> HTTP: "
+      ACCEPT     tcp  --  anywhere             somehost.com  tcp dpt:http
+      LOG        tcp  --  anywhere             somehost.com  tcp
+dpt:https state NEW LOG level warning tcp-options ip-options prefix
+"firewall-> HTTPS: "
+      ACCEPT     tcp  --  anywhere             somehost.com  tcp dpt:https
+
+      Chain FORWARD (policy ACCEPT)
+      target     prot opt source               destination
+
+      Chain OUTPUT (policy ACCEPT)
+      target     prot opt source               destination
+      ACCEPT     tcp  --  anywhere             anywhere             tcp spt:http
+
+
+-- 
+best regards,
+Deva P. Seetharam
