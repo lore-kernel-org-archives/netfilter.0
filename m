@@ -1,70 +1,55 @@
-From: Jamal Hadi Salim <jhs@mojatatu.com>
-Subject: ANNOUNCE: Netdev 2.1 update
-Date: Tue, 31 Jan 2017 09:15:24 -0500
-Message-ID: <251ff72a-01b7-9c57-6181-eb45d66ba070@mojatatu.com>
+From: Brian Bostwick <bostwick.brian@gmail.com>
+Subject: dnat port range to single port, udp, between two local machines on a LAN
+Date: Tue, 31 Jan 2017 11:28:18 -0500
+Message-ID: <CAM9he-WxJmUh53geOrRDAXuGCHQ7AxQ=0i7PgvVWxtNPryA_bg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
-        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to
          :content-transfer-encoding;
-        bh=sTT9660dquCmP6VGt2lCtRqktZvkiBQSmL81yc18jk4=;
-        b=gebxr3GYnkJSZSaLn49o06cuOEJYzie65Wgs29zndpEwfH8wTMUVLZxQQzNNSivwE6
-         LQSHXvn0WzZwgLf0eMYVJ1Vt3UOp9S+j1HLv0LN9snfUfy0UoJbr40VZJdHc3LQcp1pj
-         YUz/SBcaSP2Oq5QcLhgsEwBmmyOqw2ZjHtKCYMhGDS6/PM29os2jIogRomleGi4nyFt6
-         DJfdrzAHf/O6YVqVFdDWtykk4dwfhD70mBLO749Ha9X+Nxp3FztQUY0jNGI9U1uBwZP0
-         dhEy6f1w52Ldw1528fSPzCiyA0xmnFgsIIo5pEtsMUr2ihmae49DxFUK2cBtHDpjR905
-         FhDQ==
-Sender: netfilter-devel-owner@vger.kernel.org
+        bh=ZM7s/OqfhD+i0YO2D5WAOrfW1GDUfrJIa9/kqYipMUE=;
+        b=OnTZ1ffE0R2lZRY35lGoyHnNkXg9IzUxn42fk67ezNtGlzFQs82p1w/u7NmHLDt6EJ
+         Roa20g+rdXh0avZb7FblC3sehQSzOUUBW3iUOnaMTThS2cJ7IhxO/E+ope66u9YbBzxj
+         7QRu787nqUHieIHkBxw5b1T43UZFJ71jQSdn9FKS4ETFsdrtkxz3WdKhEfajoaO47LGu
+         Fvk9iDpMtHwiW65JBWvscGkWannx3YRHo9RobDoV3GTw8Sfhtn+D+aXuf6LiKeRnLMe1
+         f8k+EbKBNgEOZ1enpA6Wami8JD7tszgmcCHwP8DI/pHG/SJw9REsUC67WobPseLJsCbC
+         tdpg==
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, info@netdevconf.org, linux-wireless@vger.kernel.org, tech-committee@netdevconf.org, David Miller <davem@davemloft.net>, Stephen Jaworski <jaws@mojatatu.com>, Rob Echlin <rob@echlin.ca>, lwn@lwn.net
+Content-Type: text/plain; charset="windows-1252"
+To: netfilter@vger.kernel.org
 
-A few announcements:
-- We expect to open up registration and announce hotel and location
-next week.
+Hi, I am running DD WRT and trying to use iptables to change the
+destination port based on a port range used by the source connection.
+I am not very well versed with this tool, but have had success doing
+similar things, but not using a port range and over TCP.
 
-- We are pleased to announce the first netdev 2.1 talk has been accepted
-by the tech committee! The Call for Proposals is still open, submit 
-early to avoid the hazards of last minute traffic. Refer to:
-http://netdevconf.org/1.2/submit-proposal.html
+I am using two rules, after scourging the internet for help. The
+answer I found says that I can do DNAT in the PREROUTING, but I have
+to have an SNAT rule in the POSTROUTING back to the source IP.
 
-On to the accepted talk:
--------
-Title: Evaluating and improving kernel stack performance for datagram 
-sockets
-        from the perspective of RDBMS applications
+Here are my two rules:
 
-Authors: Sowmini Varadhan, Tushar Dave
+iptables -t nat -A PREROUTING -p udp --dport 45000:65000 -j DNAT
+--to-destination 192.168.1.131:5000
 
-RDBMS applications heavily use stateless datagram sockets such as RDS
-and UDP. These workloads  are typically highly CPU-bound and sensitive
-to network latency, so any perf improvements to these parameters is 
-extremely
-desirable.
+iptables -t nat -A POSTROUTING -p udp -d 192.168.1.131 --dport
+45000:65000 -j SNAT --to-source 192.168.1.122
 
-At the same time, since I/O for these RDBMS  applications comes
-from various sources (network, disk, local file-system and NFS),
-APIs for perf enhancements is also a critical factor.
+I don't think the second one makes sense, because I believe I would
+need to specify the exact destination port (original source port),
+which I do not have because it is a rule based off a range.
 
-Motivated by these goals and constraints, we have investigated a few
-kernel alternatives to UDP/IP, such as PF_PACKET.  We have used
-micro-benchmarks such as netperf, and are currently evaluating PF_PACKET
-usage in IPC libraries for actual transaction-oriented RDBMS workloads.
+In Wireshark, I see no change:
 
-We would like to share some of the findings from these experiments with
-the netdev community. In addition to the actual numbers themselves,
-interesting points that we'd like to discuss are the gaps between
-micro-benchmarks and real-world usage, what works well (and what
-doesn't matter so much) for real workloads, and practical factors
-that impact deployment for any solution.
+142243 1078.651017 192.168.1.122 192.168.1.131 UDP 144 9296 =E2=86=92 55900=
+ Len=3D102
 
-This is active work-in-progress, and some of our findings suggest areas
-of perf-improvement in the kernel for various datagram sockets
-that we'd like to bounce off netdev-ers for input.
----------------
+I hopes this makes sense. Basically, I would like to change the
+destination port going from A to B, where the originating packet will
+be on a port range and UDP. Is this possible between two local
+machines behind the same router?
 
-cheers,
-jamal
+Thanks!
