@@ -1,37 +1,70 @@
-From: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
-Subject: Re: ssh tunnels and iptables
-Date: Sun, 29 Jan 2017 19:54:37 -0500
-Message-ID: <20170129195437.2533b527@playground>
-References: <CAGU6BDkW2C3JvsryWFzZT02MUZfOA6woZjB9NZqnQnJf_7ViQA@mail.gmail.com>
-        <159eb2fe630.27c2.011a82e1253448b704705c1b47ed667a@pkfnet.co.za>
-        <CAGU6BD=-W-YwLXbYgNgCOwd-nO1RGK=0=GOEUauK00u+rEiQDQ@mail.gmail.com>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Subject: ANNOUNCE: Netdev 2.1 update
+Date: Tue, 31 Jan 2017 09:15:24 -0500
+Message-ID: <251ff72a-01b7-9c57-6181-eb45d66ba070@mojatatu.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Filter: OpenDKIM Filter v2.10.3 MAIL1.WPI.EDU v0U0se92003213
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wpi.edu; s=_dkim;
-        t=1485737680; i=@wpi.edu;
-        bh=Jmi9jTLStyhwwmp6mnK1JmfKsdq9FbP/EbGis6Qel8c=;
-        h=Date:From:Cc:Subject:In-Reply-To:References;
-        b=foHr41oBMIJjV3XnxzafKUhyM6eDe6rZO9chw9juZQHL7BGSNYbbRblfCtDRmTswl
-         QsRUNRl0PKNXTdeokVYDev9IGfBxbbpJaA1mD1jzSJP0ubg9xKLbpqEZtrLuM530Lv
-         JDHqnCaWwR2h1YgrZZSZIp5ABt98mgo1pWhEIG1g=
-In-Reply-To: <CAGU6BD=-W-YwLXbYgNgCOwd-nO1RGK=0=GOEUauK00u+rEiQDQ@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=sTT9660dquCmP6VGt2lCtRqktZvkiBQSmL81yc18jk4=;
+        b=gebxr3GYnkJSZSaLn49o06cuOEJYzie65Wgs29zndpEwfH8wTMUVLZxQQzNNSivwE6
+         LQSHXvn0WzZwgLf0eMYVJ1Vt3UOp9S+j1HLv0LN9snfUfy0UoJbr40VZJdHc3LQcp1pj
+         YUz/SBcaSP2Oq5QcLhgsEwBmmyOqw2ZjHtKCYMhGDS6/PM29os2jIogRomleGi4nyFt6
+         DJfdrzAHf/O6YVqVFdDWtykk4dwfhD70mBLO749Ha9X+Nxp3FztQUY0jNGI9U1uBwZP0
+         dhEy6f1w52Ldw1528fSPzCiyA0xmnFgsIIo5pEtsMUr2ihmae49DxFUK2cBtHDpjR905
+         FhDQ==
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: 
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, info@netdevconf.org, linux-wireless@vger.kernel.org, tech-committee@netdevconf.org, David Miller <davem@davemloft.net>, Stephen Jaworski <jaws@mojatatu.com>, Rob Echlin <rob@echlin.ca>, lwn@lwn.net
 
-On Mon, 30 Jan 2017 06:03:08 +0530
-deva seetharam <deva.seetharam@gmail.com> wrote:
+A few announcements:
+- We expect to open up registration and announce hotel and location
+next week.
 
-> sorry, it does not make sense because it is a reverse tunnel. that is,
-> the server that is running the firewall  gets the connection requests
-> on that port (2222). i see that the port opens (can see it using nmap)
-> up as soon as the tunnel is up. however, IPTABLES does not have that
-> port open. that is what is confusing.
+- We are pleased to announce the first netdev 2.1 talk has been accepted
+by the tech committee! The Call for Proposals is still open, submit 
+early to avoid the hazards of last minute traffic. Refer to:
+http://netdevconf.org/1.2/submit-proposal.html
 
-That's because the 'reverse' tunnel flows across the encrypted SSH connection. The server's firewall never sees the traffic; it only sees packets flowing across the existing connection.
+On to the accepted talk:
+-------
+Title: Evaluating and improving kernel stack performance for datagram 
+sockets
+        from the perspective of RDBMS applications
 
-When a program on the server connects to localhost:2222 (or to remotehost.com:2222), SSH itself listens on that socket and communicates with the SSH instance running on the laptop to connect to the host:port specified in the '-R' option. The traffic for that connection flows across (is tunneled through) the encrypted SSH connection.
+Authors: Sowmini Varadhan, Tushar Dave
+
+RDBMS applications heavily use stateless datagram sockets such as RDS
+and UDP. These workloads  are typically highly CPU-bound and sensitive
+to network latency, so any perf improvements to these parameters is 
+extremely
+desirable.
+
+At the same time, since I/O for these RDBMS  applications comes
+from various sources (network, disk, local file-system and NFS),
+APIs for perf enhancements is also a critical factor.
+
+Motivated by these goals and constraints, we have investigated a few
+kernel alternatives to UDP/IP, such as PF_PACKET.  We have used
+micro-benchmarks such as netperf, and are currently evaluating PF_PACKET
+usage in IPC libraries for actual transaction-oriented RDBMS workloads.
+
+We would like to share some of the findings from these experiments with
+the netdev community. In addition to the actual numbers themselves,
+interesting points that we'd like to discuss are the gaps between
+micro-benchmarks and real-world usage, what works well (and what
+doesn't matter so much) for real workloads, and practical factors
+that impact deployment for any solution.
+
+This is active work-in-progress, and some of our findings suggest areas
+of perf-improvement in the kernel for various datagram sockets
+that we'd like to bounce off netdev-ers for input.
+---------------
+
+cheers,
+jamal
