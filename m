@@ -1,41 +1,33 @@
-From: "Christoph Pleger" <Christoph.Pleger@cs.tu-dortmund.de>
-Subject: Re: Chain priorities for NAT
-Date: Thu, 2 Feb 2017 13:52:18 +0100
-Message-ID: <0d585498cb83fc8b2b03855bf58a5a28.squirrel@postweb.cs.tu-dortmund.de>
+From: Brian Bostwick <bostwick.brian@gmail.com>
+Subject: Re: dnat port range to single port, udp, between two local machines
+ on a LAN
+Date: Fri, 3 Feb 2017 11:04:32 -0500
+Message-ID: <CAM9he-WzEXUf-oWa3yV6-raXudF6ce2TYn2qFbiq4xXDVx_5nw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=XgHQ88w2RIc4XbYIk/QopmjOQk+67U5+aYL002CAN5I=;
+        b=PxBgAwRfURLA39xkfb/08pybjbXdgNhCSiyZc99i4X7oWchFx8LkvkE+/gZKsT+evK
+         1+ITnVnmlxzbPgUVj6Q/R03o/otrPKjdQZctWA+/cC5D4ILd0h7fr08hVqydCoJH0/uP
+         Tk1bzyPdewZmKjazioA39Ha2+dwaGOxYk0d+WxpgZSbFAiweegSJgAx+2LlnCejgiyO7
+         rgwT5OOvWMbZboDaVU8iFdTp+c3ZGsaNDr8HZET88Z7mGxdml/p1vJqtB5mjLrAwUyhd
+         dJbWkyTBjX5V2vpvpBXHe4NqdhgieItZPXZjqIv34byylteAr7oaJUkbpqA253fibsrT
+         c1tw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello,
+Thanks for the help! I realized that my goal is not attainable because
+I do not have control over the initial connection. I believe your
+suggestion would work if that weren't the case.
 
-On 2017-01-11, I wrote:
+However, I came across this picture, which seems misleading. It is an
+example of how not to use NAT, which is admittedly what I am doing,
+but it suggests I can change the destination. Can anyone confirm that
+it is just meant as an illustration of why this scenario is improper?
 
-> The Wiki on https://wiki.nftables.org mentions two priorities
-specifically available for NAT, -100 and 100. But of these two, the
-wiki's example for NAT only uses the value 100 for the postrouting
-chain. The prerouting chain has priority 0, and there is no difference
-between SNAT and DNAT.
->
-> When I look at the ipv4-nat example which is shipped together with my
-nftables package, both chains use priority -150, though due to the Wiki,
-that value is used for mangling.
->
-> And when I look at some online-exmaples, they use 0 for prerouting and
-postrouting.
->
-> So, what are really the best values to use for priority in snat
-prerouting and postrouting and dnat prerouting and postrouting?
-
-Does "No answer in three weeks" mean that nobody here knows how to use
-these priority values for NAT chains? Though probably netfilter developers
-are reading this list?
-
-Regards
-  Christoph
-
-
-
+http://inai.de/images/dnat-mistake.png
