@@ -1,40 +1,71 @@
-From: Jamal Hadi Salim <jhs@mojatatu.com>
-Subject: ANNOUNCE: Netdev 2.1 update Feb 06
-Date: Mon, 6 Feb 2017 08:02:51 -0500
-Message-ID: <bb5b53b7-ae46-e08c-f996-2dbc96fa1c29@mojatatu.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Chain priorities for NAT
+Date: Mon, 6 Feb 2017 18:48:26 +0100
+Message-ID: <20170206174826.GA18766@salvia>
+References: <0d585498cb83fc8b2b03855bf58a5a28.squirrel@postweb.cs.tu-dortmund.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=MxWXfYcYoCVyHuVE88JTEPfKewUUkOtfLEb02PbrL+g=;
-        b=OAFFVs1kHo0HeDT4kksrhaPe7Kdhy4DW2qYgUpXeQMMibkO/Z3w/kuSrK3NyPmwori
-         itTrQXJiZdAzQTsMu6LdzV3DAmMUQ5PhrrBcIx62sshxMSrdDVFdAvVYBKhEhvA+VGtb
-         Joy6ZXjvC8VSW76xqk6WBObXkkoU6om73YepO9zlkIXt+NoASgO/C3H8XcEWwpPC0bbp
-         T5/N7aZU0i3H3RpboPGfHdhLw1rVcFW9hxiWJOuW6MDS/oMZ3xXBbl7K1pkLBOpZOh3K
-         YCgGVbmxCXdQVuF49ScmtnhQeHKzhk2LIqwGXfrRgEaqlSz0uUvtPOvqohemftQg0yeC
-         9jNQ==
+Content-Disposition: inline
+In-Reply-To: <0d585498cb83fc8b2b03855bf58a5a28.squirrel@postweb.cs.tu-dortmund.de>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, info@netdevconf.org, linux-wireless@vger.kernel.org, tech-committee@netdevconf.org, David Miller <davem@davemloft.net>, Stephen Jaworski <jaws@mojatatu.com>, Rob Echlin <rob@echlin.ca>, lwn@lwn.net
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Christoph Pleger <Christoph.Pleger@cs.tu-dortmund.de>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
+On Thu, Feb 02, 2017 at 01:52:18PM +0100, Christoph Pleger wrote:
+> Hello,
+> 
+> On 2017-01-11, I wrote:
+> 
+> > The Wiki on https://wiki.nftables.org mentions two priorities
+> specifically available for NAT, -100 and 100. But of these two, the
+> wiki's example for NAT only uses the value 100 for the postrouting
+> chain. The prerouting chain has priority 0, and there is no difference
+> between SNAT and DNAT.
+> >
+> > When I look at the ipv4-nat example which is shipped together with my
+> nftables package, both chains use priority -150, though due to the Wiki,
+> that value is used for mangling.
+> >
+> > And when I look at some online-exmaples, they use 0 for prerouting and
+> postrouting.
+> >
+> > So, what are really the best values to use for priority in snat
+> prerouting and postrouting and dnat prerouting and postrouting?
+> 
+> Does "No answer in three weeks" mean that nobody here knows how to use
+> these priority values for NAT chains? Though probably netfilter developers
+> are reading this list?
 
-A few announcements:
-- We expect to open up registration and announce hotel and location
-this week.
+Sorry, I overlooked this email.
 
-- We are pleased to announce the first netdev 2.1 sponsor!
-Many thanks to Mellanox who has been a strong supporter of the netdev
-community. Mellanox is first to cross the netdev2.1 sponsor line with a
-silver.
+See nf_ip_hook_priorities:
+http://lxr.free-electrons.com/source/include/uapi/linux/netfilter_ipv4.h
 
-The Call for Proposals is still open, submit early
-to avoid the hazards of last minute traffic. Refer to:
-http://netdevconf.org/2.1/submit-proposal.html
+See nf_ip6_hook_priorities:
+http://lxr.free-electrons.com/source/include/uapi/linux/netfilter_ipv6.h
 
-cheers,
-jamal
+Yes, I'm pointing to source code, I know I should not be doing this ;-)
+
+Probably we can add the 'default' label, so:
+
+        add chain x y { type filter hook input priority default\; }
+
+In this case, default translates to 0.
+
+        add chain x y { type nat hook prerouting priority default\; }
+
+In this case this would be -100.
+
+Then:
+
+        add chain x y { type nat hook postrouting priority default\; }
+
+This results in priority 100.
+
+We would still need explicit labels though, eg. raw and security at
+least. These are special type of filter chains.
+
+Comments welcome. Thanks.
