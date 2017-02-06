@@ -1,61 +1,40 @@
-From: zrm <zrm@trustiosity.com>
-Subject: Re: dnat port range to single port, udp, between two local machines
- on a LAN
-Date: Fri, 3 Feb 2017 15:19:07 -0500
-Message-ID: <9adf1d44-a888-5aed-80f1-c19c9fedd31c@trustiosity.com>
-References: <CAM9he-WzEXUf-oWa3yV6-raXudF6ce2TYn2qFbiq4xXDVx_5nw@mail.gmail.com>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Subject: ANNOUNCE: Netdev 2.1 update Feb 06
+Date: Mon, 6 Feb 2017 08:02:51 -0500
+Message-ID: <bb5b53b7-ae46-e08c-f996-2dbc96fa1c29@mojatatu.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mx.trustiosity.com;
-        s=mx; t=1486153130; bh=fxxbFXY7v3MBTezEXmNUXY301xaPdSnoTB0pfrcvuXY=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=ya+GD8UrnB6UZDrYdzDO7o8xBgoa+lZcL7nBXL0ldh68KvkDT4jzU44rQcjMw/KuH
-         8ev09u25O3LLJ7H9E4ZW+1xN26QhK2x1FRuMNUwHOCO/wOmwVwdG7+pPBKm59HjPtt
-         rdGLFcdTTQ+VjA0yq4nDf7jJ7c8oz/ld6wZVKdrU=
-In-Reply-To: <CAM9he-WzEXUf-oWa3yV6-raXudF6ce2TYn2qFbiq4xXDVx_5nw@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=MxWXfYcYoCVyHuVE88JTEPfKewUUkOtfLEb02PbrL+g=;
+        b=OAFFVs1kHo0HeDT4kksrhaPe7Kdhy4DW2qYgUpXeQMMibkO/Z3w/kuSrK3NyPmwori
+         itTrQXJiZdAzQTsMu6LdzV3DAmMUQ5PhrrBcIx62sshxMSrdDVFdAvVYBKhEhvA+VGtb
+         Joy6ZXjvC8VSW76xqk6WBObXkkoU6om73YepO9zlkIXt+NoASgO/C3H8XcEWwpPC0bbp
+         T5/N7aZU0i3H3RpboPGfHdhLw1rVcFW9hxiWJOuW6MDS/oMZ3xXBbl7K1pkLBOpZOh3K
+         YCgGVbmxCXdQVuF49ScmtnhQeHKzhk2LIqwGXfrRgEaqlSz0uUvtPOvqohemftQg0yeC
+         9jNQ==
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Brian Bostwick <bostwick.brian@gmail.com>, netfilter@vger.kernel.org
+To: "netdev@vger.kernel.org" <netdev@vger.kernel.org>
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, info@netdevconf.org, linux-wireless@vger.kernel.org, tech-committee@netdevconf.org, David Miller <davem@davemloft.net>, Stephen Jaworski <jaws@mojatatu.com>, Rob Echlin <rob@echlin.ca>, lwn@lwn.net
 
-On 02/03/2017 11:04 AM, Brian Bostwick wrote:
-> Thanks for the help! I realized that my goal is not attainable because
-> I do not have control over the initial connection. I believe your
-> suggestion would work if that weren't the case.
->
-> However, I came across this picture, which seems misleading. It is an
-> example of how not to use NAT, which is admittedly what I am doing,
-> but it suggests I can change the destination. Can anyone confirm that
-> it is just meant as an illustration of why this scenario is improper?
->
-> http://inai.de/images/dnat-mistake.png
 
-What the picture shows is DNAT of the destination IP address. What you 
-are trying to do is DNAT/DNPT of only the destination port.
+A few announcements:
+- We expect to open up registration and announce hotel and location
+this week.
 
-In the picture, the original packet goes to the DNAT host but the reply 
-packet goes directly to the source host which prevents the DNAT host 
-from translating it back.
+- We are pleased to announce the first netdev 2.1 sponsor!
+Many thanks to Mellanox who has been a strong supporter of the netdev
+community. Mellanox is first to cross the netdev2.1 sponsor line with a
+silver.
 
-In your case, the *original* packet goes directly to the destination 
-host and the DNAT host has nothing to say about it at all.
+The Call for Proposals is still open, submit early
+to avoid the hazards of last minute traffic. Refer to:
+http://netdevconf.org/2.1/submit-proposal.html
 
-You can actually fix the case in the picture by adding the SNAT rule. 
-Then the traffic would look like this:
-
-original packet:
-src 1.3.3.7:1111 dst 1.3.3.8:2222 -> src 1.3.3.8:3333 dst 1.3.3.9:2222
-reply packet:
-src 1.3.3.9:2222 dst 1.3.3.8:3333 -> src 1.3.3.8:2222 dst 1.3.3.7:1111
-
-Which is hideous and causes 1.3.3.9 to see the peer's IP as 1.3.3.8 
-instead of 1.3.3.7, but the traffic actually gets there.
-
-In your case there is nothing you can do from the DNAT host because it 
-never even sees the packets.
-
-The thing you could do is to change that. Put the source and destination 
-hosts in different subnets so they always have to go through the router. 
-Then you would only need the DNAT rule and both would see the correct IP 
-addresses.
+cheers,
+jamal
