@@ -1,71 +1,113 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Chain priorities for NAT
-Date: Mon, 6 Feb 2017 18:48:26 +0100
-Message-ID: <20170206174826.GA18766@salvia>
-References: <0d585498cb83fc8b2b03855bf58a5a28.squirrel@postweb.cs.tu-dortmund.de>
+From: Robert White <rwhite@pobox.com>
+Subject: So close to "recent" support... a modest proposal (or two)
+Date: Tue, 7 Feb 2017 09:05:59 +0000
+Message-ID: <35f7095a-8e2c-7836-a7e8-2ecafa5d3091@pobox.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <0d585498cb83fc8b2b03855bf58a5a28.squirrel@postweb.cs.tu-dortmund.de>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Christoph Pleger <Christoph.Pleger@cs.tu-dortmund.de>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Thu, Feb 02, 2017 at 01:52:18PM +0100, Christoph Pleger wrote:
-> Hello,
-> 
-> On 2017-01-11, I wrote:
-> 
-> > The Wiki on https://wiki.nftables.org mentions two priorities
-> specifically available for NAT, -100 and 100. But of these two, the
-> wiki's example for NAT only uses the value 100 for the postrouting
-> chain. The prerouting chain has priority 0, and there is no difference
-> between SNAT and DNAT.
-> >
-> > When I look at the ipv4-nat example which is shipped together with my
-> nftables package, both chains use priority -150, though due to the Wiki,
-> that value is used for mangling.
-> >
-> > And when I look at some online-exmaples, they use 0 for prerouting and
-> postrouting.
-> >
-> > So, what are really the best values to use for priority in snat
-> prerouting and postrouting and dnat prerouting and postrouting?
-> 
-> Does "No answer in three weeks" mean that nobody here knows how to use
-> these priority values for NAT chains? Though probably netfilter developers
-> are reading this list?
+So with the "timeout" flag, if we had a "duplicates" flag we'd have full 
+support for the old recent rules.
 
-Sorry, I overlooked this email.
+Consider (disregarding any syntax problems) the following, which is a 
+semantic translation of one of my iptables rule group:
 
-See nf_ip_hook_priorities:
-http://lxr.free-electrons.com/source/include/uapi/linux/netfilter_ipv4.h
+table ip filter {
+  set bad_actors {
+   type ipv4_address
+   flags timeout
+  }
+  set recent {
+   type ipv4_address . inet_service
+   flags duplicates timeout
+  }
 
-See nf_ip6_hook_priorities:
-http://lxr.free-electrons.com/source/include/uapi/linux/netfilter_ipv6.h
+  chain throttle {
+   set update ip saddr timeout 1d drop
+   set add ip saddr . dport timeout 1h @recent lt 4 return
+   set add ip saddr timeout 1d @bad_actors
+   drop
+  }
 
-Yes, I'm pointing to source code, I know I should not be doing this ;-)
+  chain input {
+   type filter hook input priority 0; policy accept;
+   set update ip saddr timeout 1d @bad_actors drop
+   tcp dport ssh jump throttle
+  }
 
-Probably we can add the 'default' label, so:
+}
 
-        add chain x y { type filter hook input priority default\; }
+Explained:
 
-In this case, default translates to 0.
+- the update of @bad_actors keeps them locked out till the go away for a day
 
-        add chain x y { type nat hook prerouting priority default\; }
+- the @recent set acts as an event accumulator
 
-In this case this would be -100.
+- the timeout on @recent entries is the span
 
-Then:
+So the above approves three tries an hour because of the return, then 
+falls through to mark the fourth try in an hour or less puts you in the 
+@bad_actor list.
 
-        add chain x y { type nat hook postrouting priority default\; }
+This lets me have my occasional SSH session for maintenance. Doesn't 
+punish too soon. And forgives me next-day if I accidentally trip my own 
+limit. Botnets and brute-force attacks quickly become irrelevant.
 
-This results in priority 100.
 
-We would still need explicit labels though, eg. raw and security at
-least. These are special type of filter chains.
+Underlying semantics:
 
-Comments welcome. Thanks.
+In essence, if sets can hold duplicate entries then they return the 
+number of entries that match when used in a numeric context (such as 
+less-than or greater than or equal) and implicitly have a "greater-than 
+zero" in Boolean contexts.
+
+Each set entry would have it's own separate timeout (a count isn't 
+sufficient).
+
+The "add" operation will add a duplicate entry.
+
+The "update" operation will update the timestamp of the newest entry 
+only. (This _may_ be a change to existing semantics. The documentation 
+on the add and update verbs was a little terse. But better sooner than 
+later for this sort of change, if it is one. 8-)
+
+The "update" entry would _not_ add an entry if no entry exists.
+
+ASIDE: We don't seem to have a dynamic delete operation (we probably 
+should) but it would best delete _all_ matching entries. Updating the 
+timeout to zero or -1 should delete the latest entry.
+
+MAYBE: add and update could take a "copies" number for useful weighting. 
+e.g. all entries would have a default of 1 for this value and the return 
+value would be the sum of all weights/copies from the list.
+
+Garbage collection semantics would be the same as now. That would add 
+some slop to the timeout/recent-count but too much precision there would 
+be a huge waste of CPU.
+
+----
+
+Separately:
+
+It would be super useful if sets could (optionally) live in a global 
+table or be aliased or otherwise shared between tables.
+
+In particular I'd like to be able to put that @bad_actor set in the 
+netdev table at a very negative priority to drop those packets before 
+the state tracker and all that. It would cover that whole UNTRACKED 
+issue automagically, without add/remove events in the connection tracker.
+
+Syntactically, qualified namespace references like @filter::bad_actor 
+would be fine, but I don't know if the underlying system can support 
+that sort of cross-table access thing. (pointer locking or whatever 
+might be problematic.)
+
+====
+
+Sincerely,
+Rob White,
+Pushy user... 8-)
