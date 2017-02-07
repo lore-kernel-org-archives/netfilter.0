@@ -1,7 +1,8 @@
 From: Robert White <rwhite@pobox.com>
-Subject: So close to "recent" support... a modest proposal (or two)
-Date: Tue, 7 Feb 2017 09:05:59 +0000
-Message-ID: <35f7095a-8e2c-7836-a7e8-2ecafa5d3091@pobox.com>
+Subject: How does "inet" interact with "ip" and "ip6" in terms of policy and
+ compatibility?
+Date: Tue, 7 Feb 2017 09:28:05 +0000
+Message-ID: <e8d6d191-5535-7cbc-7a1e-20974f38815e@pobox.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -10,104 +11,33 @@ List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-So with the "timeout" flag, if we had a "duplicates" flag we'd have full 
-support for the old recent rules.
+In particular if there is the same priority on a filter hook for a 
+chain, does inet run before or after the address family specific chains?
 
-Consider (disregarding any syntax problems) the following, which is a 
-semantic translation of one of my iptables rule group:
+So if the policy of ip6 input is accept and ip input is drop, what 
+should I do with inet?
 
-table ip filter {
-  set bad_actors {
-   type ipv4_address
-   flags timeout
-  }
-  set recent {
-   type ipv4_address . inet_service
-   flags duplicates timeout
-  }
+---
 
-  chain throttle {
-   set update ip saddr timeout 1d drop
-   set add ip saddr . dport timeout 1h @recent lt 4 return
-   set add ip saddr timeout 1d @bad_actors
-   drop
-  }
+meanwhile, if I use an ipv4 compatibility address on an IPV6 address 
+family socket, q.v. [::FFFF:192.168.14.3], will it go through the ip or 
+ip6 chains?
 
-  chain input {
-   type filter hook input priority 0; policy accept;
-   set update ip saddr timeout 1d @bad_actors drop
-   tcp dport ssh jump throttle
-  }
+One of my services does use that multi-mode.
 
-}
+I'm _assuming_ (from observing the SSH implementation) that these 
+compatibility addresses go through the ip/inet not ip6/inet tables and 
+only get up-converted to IPv6 as the presentation layer.
 
-Explained:
+...
 
-- the update of @bad_actors keeps them locked out till the go away for a day
+This all comes up because the list of services that I want to filter is 
+_almost_ the same for my IPv6 and IPv4 faces on a single box. (Comcast 
+provides both address families and I'm working on a transition, but I 
+can't go all the way because of gaming. 8-)
 
-- the @recent set acts as an event accumulator
+In particular I want the "drop" policy on my IPv4 stack, but I want to 
+be sure that both ip and inet chains are considered.
 
-- the timeout on @recent entries is the span
-
-So the above approves three tries an hour because of the return, then 
-falls through to mark the fourth try in an hour or less puts you in the 
-@bad_actor list.
-
-This lets me have my occasional SSH session for maintenance. Doesn't 
-punish too soon. And forgives me next-day if I accidentally trip my own 
-limit. Botnets and brute-force attacks quickly become irrelevant.
-
-
-Underlying semantics:
-
-In essence, if sets can hold duplicate entries then they return the 
-number of entries that match when used in a numeric context (such as 
-less-than or greater than or equal) and implicitly have a "greater-than 
-zero" in Boolean contexts.
-
-Each set entry would have it's own separate timeout (a count isn't 
-sufficient).
-
-The "add" operation will add a duplicate entry.
-
-The "update" operation will update the timestamp of the newest entry 
-only. (This _may_ be a change to existing semantics. The documentation 
-on the add and update verbs was a little terse. But better sooner than 
-later for this sort of change, if it is one. 8-)
-
-The "update" entry would _not_ add an entry if no entry exists.
-
-ASIDE: We don't seem to have a dynamic delete operation (we probably 
-should) but it would best delete _all_ matching entries. Updating the 
-timeout to zero or -1 should delete the latest entry.
-
-MAYBE: add and update could take a "copies" number for useful weighting. 
-e.g. all entries would have a default of 1 for this value and the return 
-value would be the sum of all weights/copies from the list.
-
-Garbage collection semantics would be the same as now. That would add 
-some slop to the timeout/recent-count but too much precision there would 
-be a huge waste of CPU.
-
-----
-
-Separately:
-
-It would be super useful if sets could (optionally) live in a global 
-table or be aliased or otherwise shared between tables.
-
-In particular I'd like to be able to put that @bad_actor set in the 
-netdev table at a very negative priority to drop those packets before 
-the state tracker and all that. It would cover that whole UNTRACKED 
-issue automagically, without add/remove events in the connection tracker.
-
-Syntactically, qualified namespace references like @filter::bad_actor 
-would be fine, but I don't know if the underlying system can support 
-that sort of cross-table access thing. (pointer locking or whatever 
-might be problematic.)
-
-====
-
-Sincerely,
-Rob White,
-Pushy user... 8-)
+The combo table is super useful but I cant find any unambiguous material 
+on these two
