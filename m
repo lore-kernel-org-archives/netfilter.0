@@ -1,43 +1,48 @@
-From: Robert White <rwhite@pobox.com>
-Subject: How does "inet" interact with "ip" and "ip6" in terms of policy and
- compatibility?
-Date: Tue, 7 Feb 2017 09:28:05 +0000
-Message-ID: <e8d6d191-5535-7cbc-7a1e-20974f38815e@pobox.com>
+From: Jamal Hadi Salim <jhs-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
+Subject: ANNOUNCE: Netdev 2.1 Location and Hotel
+Date: Tue, 7 Feb 2017 07:58:52 -0500
+Message-ID: <e0a0bc78-0333-6715-5d2e-61e89482eab5@mojatatu.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: base64
+Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=tVXyUKDevns3peWM1ES2yyTRZJ26ngrfIeocR8Zm1tA=;
+        b=j23JQFkqjAGSyaAJcAk58MZpEsOrLNbiiM+HeaQOR9K3k+xGV7O3VsbYd5mpfGqskc
+         w7DfTQA3vc+Yk40bpZbUw3zqpbTb1rgsAZEr117IKkqVmsG1C3n/bawL3eP+eRn6bLWP
+         5pjTdcCpew7qbyCDNwZdtKlC8BUhye3kfjiPQLwjpk2Rd4o8xisBlXHw3mz3BdNz1xhV
+         ndMHW6wXjrCbP9EF48KetWCL/eWqCz2dZTtvlZrP5koov5wsFrkwbmw4/X6Vm441p4V/
+         kIqcxNom7nsts2LGjidjkJbSF2bxplF2hL3NsbxjwtOEM3Ny6plsFZonh1Ockgl8ooSH
+         GDpg==
+Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="macroman"; format="flowed"
+To: "netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Cc: netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, info-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, tech-committee-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org, David Miller <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>, Stephen Jaworski <jaws-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, Rob Echlin <rob-XjY9sGI/8jX3fQ9qLvQP4Q@public.gmane.org>, lwn-T1hC0tSOHrs@public.gmane.org
 
-In particular if there is the same priority on a filter hook for a 
-chain, does inet run before or after the address family specific chains?
-
-So if the policy of ip6 input is accept and ip input is drop, what 
-should I do with inet?
-
----
-
-meanwhile, if I use an ipv4 compatibility address on an IPV6 address 
-family socket, q.v. [::FFFF:192.168.14.3], will it go through the ip or 
-ip6 chains?
-
-One of my services does use that multi-mode.
-
-I'm _assuming_ (from observing the SSH implementation) that these 
-compatibility addresses go through the ip/inet not ip6/inet tables and 
-only get up-converted to IPv6 as the presentation layer.
-
-...
-
-This all comes up because the list of services that I want to filter is 
-_almost_ the same for my IPv6 and IPv4 faces on a single box. (Comcast 
-provides both address families and I'm working on a transition, but I 
-can't go all the way because of gaming. 8-)
-
-In particular I want the "drop" policy on my IPv4 stack, but I want to 
-be sure that both ip and inet chains are considered.
-
-The combo table is super useful but I cant find any unambiguous material 
-on these two
+ClR3byBpbXBvcnRhbnQgYW5ub3VuY2VtZW50cwoKMSkgV2UgYXJlIHBsZWFzZWQgdG8gYW5ub3Vu
+Y2UgYSBsb2NhdGlvbiBmb3IgbmV0ZGV2IDIuMToKCkxlIFdlc3RpbiBNb250csOpYWwKMjcwIFJ1
+ZSBTdC4gQW50b2luZSBPdWVzdCwgTW9udHJlYWwsIFFDIEgyWSAwQTMsIENhbmFkYQoKTGUgV2Vz
+dGluIHdpbGwgYWxzbyBiZSB0aGUgY29uZmVyZW5jZSBob3RlbC4gV2UgaGF2ZSBhIHNwZWFjaWFs
+CmFycmFuZ2VtZW50IGZvciBhbGwgYXR0ZW5kZWVzIHRvIGdldCBzcGVhY2lhbCByYXRlcyBhdCB0
+aGUgaG90ZWwuCldlIHdvdWxkIGxpa2UgdG8gZW5jb3VyYWdlIGF0dGVuZGVlcyB0byBib29rIGF0
+IHRoaXMgaG90ZWwuCklmIHlvdSBjYW4gZmluZCBhIGJldHRlciBkZWFsIGZvciB0aGlzIGhvdGVs
+IGFueXdoZXJlIGVsc2UKb24gdGhlIG5ldCBmb3IgdGhlIGNvbmZlcmVuY2UgZGF5cywgcGxlYXNl
+IG5vdGlmeSB1cyBpbW1lZGlhdGVseQphdCBpbmZvLUFxN2ZlaHpZUlVhZ3BheG10VXM3aGdAcHVi
+bGljLmdtYW5lLm9yZyBhbmQgd2UnbGwgY29udGFjdCB0aGUgaG90ZWwuCgpUaGUgaG90ZWwgcmVn
+aXN0cmF0aW9uIGlzIGF0OgpodHRwczovL3d3dy5zdGFyd29vZG1lZXRpbmcuY29tL0Jvb2svbmV0
+ZGV2MjAxNwoKVGhlIHJvb20gcmF0ZXMgYXJlOgpUcmFkaXRpb25hbCBLaW5nOiAkMTg5ClRyYWRp
+dGlvbmFsIDIgUXVldWVuOiAkMjA5ClByZW1pdW0gSnVuaW9yIFN1aXRlOiAkMjY5CgpFeHRyYSAz
+cmQgYW5kIDR0aCBwZXJzb24gc2hhcmluZyBhIHJvb20gaXMKJDMwIENBRCBwZXIgcGVyc29uLCBw
+ZXIgbmlnaHQuCgpBbGwgYWJvdmUgcmF0ZXMgYXJlIGluIENhbmFkaWFuICQgZXhjbHVkaW5nIHRh
+eGVzLgpSYXRlcyBhcmUgYXZhaWxhYmxlIDMgZGF5cyBiZWZvcmUgYW5kIDMgZGF5cyBhZnRlciBl
+dmVudHMuClJhdGVzIHdpbGwgbm8gbG9uZ2VyIGJlIGF2YWlsYWJsZSBhZnRlciBNYXJjaCAyMiwg
+MjAxNy4KClRoZSBDYWxsIGZvciBQcm9wb3NhbHMgaXMgc3RpbGwgb3Blbiwgc3VibWl0IGVhcmx5
+CnRvIGF2b2lkIHRoZSBoYXphcmRzIG9mIGxhc3QgbWludXRlIHRyYWZmaWMuIFJlZmVyIHRvOgpo
+dHRwOi8vbmV0ZGV2Y29uZi5vcmcvMi4xL3N1Ym1pdC1wcm9wb3NhbC5odG1sCgoyKSBXZSB3b3Vs
+ZCBsaWtlIHRvIGFubm91bmNlIHRoZSByZWdpc3RyYXRpb24gaXMgbm93IG9wZW4uCgpQbGVhc2Ug
+Z28gYWhlYWQgYW5kIHJlZ2lzdGVyIHNvb25lciB0aGFuIGxhdGVyLiBJdCBoZWxwcyB1cwpwbGFu
+IGJldHRlcjoKaHR0cHM6Ly9vbmxpbmVyZWdpc3RyYXRpb25zLmNhL25ldGRldjIxLwoKY2hlZXJz
+LApqYW1hbAo=
