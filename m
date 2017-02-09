@@ -1,7 +1,7 @@
 From: Robert White <rwhite@pobox.com>
 Subject: Re: BUG: nft cannot "list ruleset" with interval maps
-Date: Wed, 8 Feb 2017 23:51:26 +0000
-Message-ID: <88f894ca-a77d-f71c-9656-f7c5cb941e6c@pobox.com>
+Date: Thu, 9 Feb 2017 00:11:41 +0000
+Message-ID: <c53a3b2b-f091-b564-fc77-047d69dd1428@pobox.com>
 References: <f6c01a5c-33f4-0c90-96e1-8abf7777b4b8@pobox.com>
  <20170208172815.GA28759@salvia>
 Mime-Version: 1.0
@@ -54,16 +54,21 @@ On 02/08/17 17:28, Pablo Neira Ayuso wrote:
 >
 > Thanks.
 >
-Oh, forgot version info. Duh.
 
-# nft --version
-nftables v0.7 (Scrooge McDuck)
+The current git head does _not_ throw the ASSERT like the 0.7 release 
+built by the gentoo installer.
 
-# uname -a
-Linux touchy.whiterc.com 4.9.6-gentoo #2 SMP PREEMPT Fri Jan 27 12:16:31 
--00 2017 x86_64 Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz GenuineIntel 
-GNU/Linux
+Tested successfully with and without --with-mini-gmp for whatever that's 
+worth. (tried option both ways because of ASSERT text mentioning 
+"mini-gmp".)
+
+I also verified that the error _does_ occur with the 
+nftables-0.7.tar.bz2 file available for download at netfilter.org but 
+_only_ when built after configure --with-mini-gmp. Excluding that option 
+removes the error.
 
 
+So I guess it's good for the next release but verified repeatable with 
+the current release.
 
-This is what is currently being built by gentoo ~arch on a 64 bit platform.
+
