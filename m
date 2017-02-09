@@ -1,47 +1,86 @@
-From: "Mario Leone" <mario.leone@certimeter.it>
-Subject: Re: R: Bridge
-Date: Thu,  9 Feb 2017 12:28:17 +0100
-Message-ID: <OL3UJ5$797E6AA5BE1DAA47DF6B1377D7EE4A4C@certimeter.it>
-References: <20170209105749.GA2149@salvia>
+From: Alfredo Rezinovsky <alfrenovsky@gmail.com>
+Subject: Re: Bridge
+Date: Thu, 9 Feb 2017 11:12:10 -0300
+Message-ID: <084215be-69e6-fd05-64ff-996a23ce7373@gmail.com>
+References: <008c01d28229$87da0cd0$978e2670$@certimeter.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20170209105749.GA2149@salvia>
-References: =?iso-8859-1?q?=3C008c01d28229=2487da0cd0=24978e2670=24=40certimeter?=
-        =?iso-8859-1?q?=2Eit=3E_=3C001001d282be=24beec73d0=243cc55b70=24=40ce?=
-        =?iso-8859-1?q?rtimeter=2Eit=3E_=3C20170209105749=2EGA2149=40salvia?=
-        =?iso-8859-1?q?=3E?=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aruba.it; s=a1;
-        t=1486639697; bh=iKpeNtiffq2jNSvuGNkp1bUhLkXs8ASnJi/RHAU3Etc=;
-        h=Date:Subject:MIME-Version:Content-Type:From:To;
-        b=oOMD9RfBmmxtmyG+lL2BobQmERD+JsN5u7jr0AthT7iB/vuivqDE6uc2cxlQlS24X
-         WQgTadgK13YZpvYEsGevGd4AypJbTcgq3rRMeLoWiyC1aAF7dd5MYPNAxrYn5Pvp4q
-         0ppAtjXXnNNNKmWnwY6ctYG95cjnnZEQhYCJ14ifXzzQbgvL4i7fNLDt688yFkqnyh
-         yN4YmMDPrXepl8g9QkHSNBF7we807DjqTs9wtUorpWCX2r8QYpK3Jqqx59MRTV6Pws
-         x3LmKn57xA3Gze3bHFMcxZu1KdgI4RjbRsK6Fuw03O88oxzLR2vOiT+EfMmwtT+hWT
-         VhF51sr3uPiKQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:references:from:message-id:date:user-agent:mime-version
+         :in-reply-to:content-transfer-encoding;
+        bh=6pKk18LoKDLpsiqBiDQfZICvdDeBqNS7pGLkVXRPCIM=;
+        b=JCiyMxAx5shh9atLO7iblHI8VjySzuUo6mOkDTSQAyg2mf/0SdKmaFs4YassZhstG0
+         Q74K/8SRdMqnvYuGAUZTvQKO6oyulbxe4BJhbBiSL7wdZGSOFF72vy69qWMt3uvac03u
+         Ptt7Ym4KzGwgLx95/MaV250M9ijeI+egrTsByWQQE7kjF8UaqvlWoEVTl+6lQdNtLOmx
+         KLSacBFpdUH33H1taLJB5TGgMF6FlI8awI8wXotmr9KBvYvAzYos67a8Qsit0iadVfDv
+         vZ8vvFR2Xq496Ss7zi6hLpAO95nlj5vblT956QoLN/tgMHIJiMvbV4M7FO2Vf5WwN4yo
+         JmwA==
+In-Reply-To: <008c01d28229$87da0cd0$978e2670$@certimeter.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: pablo@netfilter.org
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mario Leone <mario.leone@certimeter.it>, netfilter@vger.kernel.org
 
-> On Thu, Feb 09, 2017 at 11:24:49AM +0100, Mario Leone wrote:=0A> > As s=
-aid here: http://ebtables.netfilter.org/documentation/bridge-nf.html=0A> =
-> =0A> > bridge-nf-call-arptables=0A> > bridge-nf-call-iptables=0A> > bri=
-dge-nf-call-ip6tables=0A> > =0A> > are enabled by default=0A> > =0A> > ec=
-ho 1 > bridge-nf-filter-vlan-tagged=0A> > does nothing=0A> > =0A> > echo =
-1> bridge-nf-filter-pppoe-tagged=0A> > drops the connection=0A> =0A> What=
- kernel and userspace tooling versions are you using?=0A=0Aroot@zotac:~# =
-uname -r=0A4.9.0-kali1-amd64=0Aroot@zotac:~# ebtables -V=0Aebtables v2.0.=
-10-4 (December 2011)=0Aroot@zotac:~# iptables -V=0Aiptables v1.6.0=0A=0A=0A=
-tail -n +1 /proc/sys/net/bridge/bridge-nf-*=0A=3D=3D> /proc/sys/net/bridg=
-e/bridge-nf-call-arptables <=3D=3D=0A1=0A=0A=3D=3D> /proc/sys/net/bridge/=
-bridge-nf-call-ip6tables <=3D=3D=0A1=0A=0A=3D=3D> /proc/sys/net/bridge/br=
-idge-nf-call-iptables <=3D=3D=0A1=0A=0A=3D=3D> /proc/sys/net/bridge/bridg=
-e-nf-filter-pppoe-tagged <=3D=3D=0A0=0A=0A=3D=3D> /proc/sys/net/bridge/br=
-idge-nf-filter-vlan-tagged <=3D=3D=0A1=0A=0A=3D=3D> /proc/sys/net/bridge/=
-bridge-nf-pass-vlan-input-dev <=3D=3D=0A0=0A=0A=0A> --=0A> To unsubscribe=
- from this list: send the line "unsubscribe netfilter" in=0A> the body of=
- a message to majordomo@vger.kernel.org=0A> More majordomo info at  http:=
-//vger.kernel.org/majordomo-info.html=0A> =0A=0A=0A
+
+
+On 08/02/17 13:36, Mario Leone wrote:
+> Dear users,
+>
+> I have a GPON fiber home connection that consists in 2 apparatus:
+>
+> - Optical network terminal ( Huawei HG8010H)
+> - My ISP custom firmware router
+>
+> The router connects to ONT via WAN port and the traffic is basically ipv4
+> incapsulated in pppoe session incapsulated in 2 vlan trunk, one for http(s)
+> one for voip
+>
+> I want so see the traffic that flows between router and ont so i built a
+> linux box with 2 ports configurated ad bridge with no ip
+>
+> ONT ------ eth1[BOX]eth0 ------- Router
+>
+> The tipical packet that flows had source mac address and destination mac
+> address of ont and router(depending on the direction) and the rest inside.
+> I could just put wireshark listening on br0 but I can see only unencrypted
+> traffic, so I want to do something a little more complicated.
+>
+> I would intercept traffic on both directions and redirect  it to localhost
+> proxy with 3 stages:
+>
+> 1) setup ebtables to recognize traffic on http vlan(so all traffic) and
+> bring it to layer3
+> 2) setup iptables to NAT packet on some ports to be intercepted by my ssl
+> proxy and leave untouched all other traffic
+> 3) nat traffic back to original destination like it was sent by the router
+> or vice versa from the server
+>
+> I failed any attempt to redirect traffic or even log it passing trough the
+> bridge.
+> Any help?
+>
+> Thanks
+>
+>
+# First rule is only an optimization.
+ebtables -t broute -A BROUTING -d ${my_bridge_mac} -p ipv4 -j redirect 
+--redirect-target DROP
+
+#Those are the rules to bring http traffic to layer 3
+ebtables -t broute -A BROUTING -p ipv4 --ip-proto tcp --ip-dport 80 -j 
+redirect --redirect-target DROP
+ebtables -t broute -A BROUTING -p ipv4 --ip-proto tcp --ip-sport 80 -j 
+redirect --redirect-target DROP
+
+# Some more may be needed because your vlan configuration.
+
+When in layer 3. the Router must have routes to reach ONT, the Router 
+and the IPs behind Router. The router needs an IP to ask for ARP in both 
+sides.
+The proxy (unless in tproxy mode) needs to have an IP to use al source 
+for its packets. Even in tproxy, the proxy needs a source IP to ask NS 
+queries.
+
+
