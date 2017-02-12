@@ -1,43 +1,44 @@
-From: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Subject: Re: Configure conntrack and understand timestamp
-Date: Sun, 12 Feb 2017 13:15:19 +0100
-Message-ID: <f19d7a7e-d2b0-4bc4-7e26-d63c782a93db@plouf.fr.eu.org>
-References: <!&!AAAAAAAAAAAYAAAAAAAAAOosgHnoPqdNlUO2DUrQ/DfCgAAAEAAAAFK7h3ZgWDNHt5MtE3gECVIBAAAAAA==@manfbraun.de>
+From: Michael Weiser <michael@weiser.dinsnail.net>
+Subject: Re: Match packet address against addresses on interface
+Date: Sun, 12 Feb 2017 13:43:32 +0100
+Message-ID: <20170212124332.GE2935@weiser.dinsnail.net>
+References: <20170211171321.GC31183@weiser.dinsnail.net>
+ <568f0d90-e6e6-f1ac-4d9b-27b3b21438da@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <!&!AAAAAAAAAAAYAAAAAAAAAOosgHnoPqdNlUO2DUrQ/DfCgAAAEAAAAFK7h3ZgWDNHt5MtE3gECVIBAAAAAA==@manfbraun.de>
+Content-Disposition: inline
+In-Reply-To: <568f0d90-e6e6-f1ac-4d9b-27b3b21438da@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: webman@manfbraun.de
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Pascal Hambourg <pascal@plouf.fr.eu.org>
 Cc: netfilter@vger.kernel.org
 
-Le 12/02/2017 =E0 12:12, webman@manfbraun.de a =E9crit :
->
-> My current work is around conntrack.
-> The first I've found is, that some
-> required configuration variables
-> are not set by default:
->
-> net.netfilter.nf_conntrack_acct =3D 1
-> net.netfilter.nf_conntrack_timestamp =3D 1
->
-> I added these to "/etc/sysctl.conf", but after
-> a reboot, these are NOT set. I am looking
-> for a workaround to set these variables.
-> I am on Debian Jessie 8.6 (3.16.0-4-amd64)
-> with conntrack 1.4.
+Hi Pascal,
 
-Did you make sure that the nf_conntrack module is loaded before=20
-/etc/sysctl.conf is used, e.g. by adding it to /etc/modules ? Otherwise=20
-the sysctls do not exist yet.
+On Sun, Feb 12, 2017 at 09:59:14AM +0100, Pascal Hambourg wrote:
 
-Also, you can set these variables with module parameters 'tstamp' and=20
-'acct' when loading the module, e.g. in /etc/modules :
+> > is there an elegant way in either ip{,6}tables or nftables to match
+> > addresses in packets against all the addresses set on a specific local
+> > interface?
+> For the interface the packet is coming in or going out, maybe with the
+> iptables 'addrtype' match.
 
-nf_conntrack acct=3D1 tstamp=3D1
+A first test with a rule like
 
-or in a /etc/modprobe.d/*.conf file with an 'options' statement :
+iptables -I OUTPUT 1 -p tcp --dport 22 -m addrtype --src-type LOCAL -j ACCEPT
 
-options nf_conntrack acct=3D1 tstamp=3D1
+looks very promising: Allowing out only packets with source addresses
+actually assigned to a local interface (tested with hping3 -u -p 22 -a
+7.7.7.7 192.168.2.1). If you don't hear from me again, my question is
+answered. :)
+
+The thing for dummies like me to note about this is that addrtype
+doesn't deal with predefined classes of addresses but the actual state
+of things on the interfaces present in the system. Consequently LOCAL
+doesn't mean RFC1918 addresses or somesuch but addresses actually
+assigned to local interfaces.
+-- 
+Thanks!
+Michael
