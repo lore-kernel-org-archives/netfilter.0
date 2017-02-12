@@ -1,41 +1,48 @@
 From: <webman@manfbraun.de>
-Subject: Looking for conntrack packet information
-Date: Sun, 12 Feb 2017 12:00:54 +0100
-Message-ID: <!&!AAAAAAAAAAAYAAAAAAAAAOosgHnoPqdNlUO2DUrQ/DfCgAAAEAAAAODde6NmS+tNjTQOrkiHBUkBAAAAAA==@manfbraun.de>
+Subject: Configure conntrack and understand timestamp
+Date: Sun, 12 Feb 2017 12:12:33 +0100
+Message-ID: <!&!AAAAAAAAAAAYAAAAAAAAAOosgHnoPqdNlUO2DUrQ/DfCgAAAEAAAAFK7h3ZgWDNHt5MtE3gECVIBAAAAAA==@manfbraun.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Language: de
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
 Hello !
 
-I try to use conntrack to create a small security solution
-on my firewall, because it knows, whats passing cross-wall.
+My current work is around conntrack.
+The first I've found is, that some
+required configuration variables
+are not set by default:
 
-I am using this statetment to run:
-"conntrack -E -e new -o id,timestamp,ktimestamp,extended"
+net.netfilter.nf_conntrack_acct =3D 1
+net.netfilter.nf_conntrack_timestamp =3D 1
 
-and I get results. But this is not what I am looking for,
-because the data doe NOT contain any packet information
-(as they are visible, if one uses "Conntrack -L").
+I added these to "/etc/sysctl.conf", but after
+a reboot, these are NOT set. I am looking
+for a workaround to set these variables.
+I am on Debian Jessie 8.6 (3.16.0-4-amd64)
+with conntrack 1.4.
 
-I need something which show from the first moment on,
-if data will be transferred. Even including the "update"
-event does not change this. Regard a UDP packet, which
-just comes onece. You' have to wait until the destroy
-event tells you, how many data were transferred - but
-this is definitively too much too late.
+The other point is to understand the timefield,
+which you receive with "-o timestamp,ktimestamp":
+[1486897660.578827]
 
-Because - from my small insights - conntrack is the only
-tool which knows these cross-wall connections, which option
-do I have?
+What is this? If I translate the first part
+to long and add it to 1970/0/0, I get a time,
+which is about 5 minutes behind the reality.
+Is is a double/float with decimal point?
+Which unit it expresses? s/ms/=B5s/ns ??
 
-Thanks anyway,
+If someone could shed some light onto this,
+I would be happy.
+
+Thanks anyway and best regards,
 Manfred
+
 
 
 
