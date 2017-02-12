@@ -1,24 +1,32 @@
 From: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Subject: Re: Match packet address against addresses on interface
-Date: Sun, 12 Feb 2017 09:59:14 +0100
-Message-ID: <568f0d90-e6e6-f1ac-4d9b-27b3b21438da@plouf.fr.eu.org>
-References: <20170211171321.GC31183@weiser.dinsnail.net>
+Subject: Re: Restrictive FTP egress using conntrack helper
+Date: Sun, 12 Feb 2017 10:14:08 +0100
+Message-ID: <10a85123-67f2-c323-435c-3d006ba692aa@plouf.fr.eu.org>
+References: <20170211171431.GD31183@weiser.dinsnail.net>
+ <4d8f60b9-2eb1-2baa-035d-3ac223bfbdf5@pobox.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20170211171321.GC31183@weiser.dinsnail.net>
+In-Reply-To: <4d8f60b9-2eb1-2baa-035d-3ac223bfbdf5@pobox.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Michael Weiser <michael@weiser.dinsnail.net>
+To: Robert White <rwhite@pobox.com>, Michael Weiser <michael@weiser.dinsnail.net>
 Cc: netfilter@vger.kernel.org
 
-Le 11/02/2017 =E0 18:13, Michael Weiser a =E9crit :
+Le 11/02/2017 =E0 23:13, Robert White a =E9crit :
 >
-> is there an elegant way in either ip{,6}tables or nftables to match
-> addresses in packets against all the addresses set on a specific local
-> interface?
+> I think I read somewhere that the as of Kernel 4.7 the connection
+> tracker no longer _automatically_ loads the helper module.
 
-For the interface the packet is coming in or going out, maybe with the=20
-iptables 'addrtype' match.
+AFAIK, the connection tracking never loaded any protocol helper module=20
+automatically.
 
+What has changed in recent kernels is that by default the helper is no=20
+more automatically associated to the "master" connection. You must do so=20
+explicitly with the 'CT' target, or change the default setting with some=20
+sysctl or module parameter I forgot about.
+
+I fail to retrieve the information page I had read about this change,=20
+but this one contains useful information :
+<https://home.regit.org/netfilter-en/secure-use-of-helpers/>
