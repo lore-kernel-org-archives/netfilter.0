@@ -1,29 +1,24 @@
-From: Robert White <rwhite@pobox.com>
-Subject: Re: Restrictive FTP egress using conntrack helper
-Date: Sat, 11 Feb 2017 22:13:08 +0000
-Message-ID: <4d8f60b9-2eb1-2baa-035d-3ac223bfbdf5@pobox.com>
-References: <20170211171431.GD31183@weiser.dinsnail.net>
+From: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Subject: Re: Match packet address against addresses on interface
+Date: Sun, 12 Feb 2017 09:59:14 +0100
+Message-ID: <568f0d90-e6e6-f1ac-4d9b-27b3b21438da@plouf.fr.eu.org>
+References: <20170211171321.GC31183@weiser.dinsnail.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20170211171431.GD31183@weiser.dinsnail.net>
+In-Reply-To: <20170211171321.GC31183@weiser.dinsnail.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Michael Weiser <michael@weiser.dinsnail.net>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Michael Weiser <michael@weiser.dinsnail.net>
+Cc: netfilter@vger.kernel.org
 
-On 02/11/17 17:14, Michael Weiser wrote:
-> I still get:
+Le 11/02/2017 =E0 18:13, Michael Weiser a =E9crit :
 >
-> ftp> ls
-> 227 Entering Passive Mode (134,76,12,6,119,247).
-> ftp: connect: Connection refused
-> ftp>
+> is there an elegant way in either ip{,6}tables or nftables to match
+> addresses in packets against all the addresses set on a specific local
+> interface?
 
-I think I read somewhere that the as of Kernel 4.7 the connection 
-tracker no longer _automatically_ loads the helper module. So if you've 
-built the connection tracking stuff as modules you'll need to manually 
-modprobe the helpers you want to use.
+For the interface the packet is coming in or going out, maybe with the=20
+iptables 'addrtype' match.
 
-If you're using the kernels and building as modules I'd double-check 
-lsmod before you bang your head against anything solid. 8-)
