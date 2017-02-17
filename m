@@ -1,48 +1,32 @@
-From: Jamal Hadi Salim <jhs-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
-Subject: Re: ANNOUNCE: Netdev 2.1 update Feb 14
-Date: Tue, 14 Feb 2017 08:21:33 -0500
-Message-ID: <d3237bc3-4c1e-9f60-4c70-2fa0d799f883@mojatatu.com>
-References: <42736b6d-b23b-bcae-e53d-a943516ce100@mojatatu.com>
+From: Darshan Ghumare <darshan.ghumare@gmail.com>
+Subject: Can I ask Conntrack to send stats my to own process instead of
+ dumping to /var/log/conntrackd-stats.log?
+Date: Fri, 17 Feb 2017 12:06:24 +0530
+Message-ID: <CAOr=3U_Sbz0n9tYAwN5bo6-BLLy1OR8cYy74X3LpZJJNx_DkCg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=/57DPgvMbeQJrdsSGYb2IVVYr9CybzX9pMJ2kDsXaX8=;
-        b=ldd2pvA5VopQ7HVH68Nbj42n5aykKD+g3HM1jCMLIMd1ZPJpW9sg0mJjhz7zcHV2a2
-         /PP+INDSwnfdGhW1J3UPDZm96AjecbLdjNr00LZDGkZZSKPPE3ZfaB6JIc+29DgjwFSi
-         +zQ/yIcNVzpQrOwo2Uk74oAATDTaFQk3mwpQfbpPhxrBDV52hupbhybPvUywyY4yLdY4
-         nvPiK6JOXFuHyRYxVXjqv8+Pj+cAY8JeMEW1Gdztd71FThvxNMaPdOu1ePzNMZDLNlSR
-         Tw1Q2zZ/eF40aRIyQtcHdo4yv9X8RnJccf0X6JLgeBMHSpqiv0h2osFTtMuYtgDD6pvn
-         No8w==
-In-Reply-To: <42736b6d-b23b-bcae-e53d-a943516ce100-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
-Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=mw/GYqepyrH2i/QTtuVLkQxP53i69i5kpU2lx2GyFRQ=;
+        b=cZyQQntiCjn5R+g8wEX4CLADA93cDDHj8yb0sfsA1uigaVRIC1uolZqJBV1f4EQWkW
+         A9f1Ik8xfHfYijLyJO6Yhf5ZiES08J5a7odkylvohjcuFTaOev9ZYy7OjMZ9BnR9SwgJ
+         aoF7rgs91IgyL0Pru434rTWpxT35A1LI3nULY/IozgWU9t7cOVounIlMU6kFwu8juvkv
+         aqeEasnnZhGk3+mZbbmy0TDpfqxDP3Dn7xt3Wi1j1pWNyoD4Y9Q9PCWGbNNQEIK2+SA+
+         4N56o3rOmYt75LLo5AVEdXi4W+avkf4y6waDBDUMq6UZfq8HIJr2remQZ1vzhFjUpQKT
+         poUg==
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Cc: netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, info-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, tech-committee-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org, David Miller <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>, Stephen Jaworski <jaws-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, Rob Echlin <rob-XjY9sGI/8jX3fQ9qLvQP4Q@public.gmane.org>, lwn-T1hC0tSOHrs@public.gmane.org, people-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On 17-02-14 08:16 AM, Jamal Hadi Salim wrote:
->
-> A few announcements:
-> -Registration is open. Register early so we can plan better.
-> https://onlineregistrations.ca/netdev21/
->
-> hotel (If you can get the hotel cheaper online than conference
-> rates please send us email, dont book ):
-> http://www.netdevconf.org/2.1/hotel.html
->
-> News:
-> - We are pleased to announce our first silver sponsor! We thank
-> ZEVENET for their commitment to the netdev community!
->
+Hello,
 
-Apologies - small correction. ZEVENET is the _first_ bronze
-sponsor.
-https://www.netdevconf.org/2.1/news.html?sponsor-ZEVENET
+Is there a way wherein I can get the stats into my own custom process
+so that it can process it in memory? Currently, I need to parse it
+from /var/log/conntrackd-stats.log, which is written on disk.
+Please help.
 
-cheers,
-jamal
-
+Thanks,
+Darshan Ghumare
