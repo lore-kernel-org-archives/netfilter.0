@@ -1,68 +1,85 @@
-From: Jamal Hadi Salim <jhs@mojatatu.com>
-Subject: ANNOUNCE: Netdev 2.1 update Feb 20
-Date: Mon, 20 Feb 2017 08:18:15 -0500
-Message-ID: <7ac4b86b-5346-e709-6c45-39271a902ef0@mojatatu.com>
+From: Robert Sander <r.sander@heinlein-support.de>
+Subject: CLUSTERIP for router?
+Date: Tue, 21 Feb 2017 09:31:16 +0100
+Message-ID: <defb364c-503b-7a83-7ca2-308e8ce81569@heinlein-support.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=RGvNjK7np3cVTuXYBTWC42A3zWjFHXtMHHL0/wE6oOQ=;
-        b=LocU6lCRsJsgWeYTf9HEZyEOv3S407c0bV0XaRZr5kBW8uAtKIf+GXiqcYhCi8cN7p
-         V1sPToiOJG5mwNQO0MU/hGg1TNlUTOerAs+H22NduGED/xFWubfTzvbo+J6xDnDkRoVs
-         BEzDbpcQdNSNgUPEcuvdhy8DBiWPTLNaZlmTyT9Pru1RN2HgRSgLnNr1wAbKSh4DvFe/
-         e7jxP679vLE6MriuPzjBL5wQmQuD/yg0vd9RjjJ4sJSmOOOBx5wXu83/jlEgpYts6w0j
-         9g5kxhRG0b9nP1i2W5By+XKTsg+B/bjxYWlilQfUUZBQgmwfuVihgQGJCqld5lGsYFBg
-         uKmA==
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="vJMKDCke0jGlQe6pG4rj3lT5LgjhLE1oe"
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netdev@vger.kernel.org" <netdev@vger.kernel.org>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, info@netdevconf.org, linux-wireless@vger.kernel.org, tech-committee@netdevconf.org, David Miller <davem@davemloft.net>, Stephen Jaworski <jaws@mojatatu.com>, lwn@lwn.net, people@netdevconf.org, Brenda Butler <bjb@mojatatu.com>
+To: netfilter@vger.kernel.org
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--vJMKDCke0jGlQe6pG4rj3lT5LgjhLE1oe
+Content-Type: multipart/mixed; boundary="sSvbwBj0hreecQ5UNup69W6wLl1o8gfBe";
+ protected-headers="v1"
+From: Robert Sander <r.sander@heinlein-support.de>
+To: netfilter@vger.kernel.org
+Message-ID: <defb364c-503b-7a83-7ca2-308e8ce81569@heinlein-support.de>
+Subject: CLUSTERIP for router?
+
+--sSvbwBj0hreecQ5UNup69W6wLl1o8gfBe
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+is it possible to use the iptables CLUSTERIP target in a two node router
+pair?
+
+My testing experience shows that it works perfectly for connections to
+the hosts but packets addressed to the multicast MAC address with other
+IP destination addresses will not be picked up and forwarded.
+
+I tried a CLUSTERIP target rule in the PREROUTING chain of the nat table
+but that has no effect.
+
+The goal would be to load balance outgoing traffic between the uplinks
+connected to the routers.
+
+Is that even possible?
+
+Regards
+--=20
+Robert Sander
+Heinlein Support GmbH
+Schwedter Str. 8/9b, 10119 Berlin
+
+http://www.heinlein-support.de
+
+Tel: 030 / 405051-43
+Fax: 030 / 405051-19
+
+Zwangsangaben lt. =C2=A735a GmbHG:
+HRB 93818 B / Amtsgericht Berlin-Charlottenburg,
+Gesch=C3=A4ftsf=C3=BChrer: Peer Heinlein -- Sitz: Berlin
 
 
+--sSvbwBj0hreecQ5UNup69W6wLl1o8gfBe--
 
-A few announcements:
--Registration is open. Register early so we can plan better.
-https://onlineregistrations.ca/netdev21/
+--vJMKDCke0jGlQe6pG4rj3lT5LgjhLE1oe
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-hotel (If you can get the hotel cheaper online than conference
-rates please send us email, dont book ):
-http://www.netdevconf.org/2.1/hotel.html
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
-- We are pleased to announce our first Gold sponsor! We welcome back
-Redhat as sponsors and thank them for their commitment to the netdev
-community!
+iQIcBAEBCAAGBQJYq/rVAAoJEPC7kVgj3lsoSksP/RgOBuXMeShvyxI+SEorf0Le
+i5XR9gsuYF0TG4IPkaNRfN9vy2q6nFYaM4fFJwbZ4gi+Uh6QBha5UdMpw40ykwKT
+NP89J7p9EWkgYbV4kAuWSZ6qEf5xX06AO9h8HpmrbQ+dttUApp9vIXZfuBJWNIXW
+RzYo3M4Dtn0rQ1cTTFk9eduxf9RLx0Aw5G3Q5pNG51kh58g9uNEjaCWcabxZVUlp
+bT5Xz1ziibsikfqcBraBDma+I7sx8hWt3vEfer1vNehLQ86heqRQhY6jlkTHGdSy
+BKomrgyQ0mNemJMPzjKxZAov5cT4j5jIDLxZwSNUVL4nCGdqo7Z+cvzh+JfePyRI
+5kxA9kCUhldw+QLVaDc9FKugzY/IB6661degTTIc706sHSkp4vVUvr/sjOar9Sw+
+VrpcbZJ2aSGQM4dB2rmWNmXajoxXfgO5eTJ8/Q6oZzbvmA8njZIBlbfEA8+uD7IA
+0V9NzRjWvQ6ZJ0efVPevINXHkhThi1JBx3qT0CRagPW+Yptv/6Jg2g81Ii2U8YN6
+7LFL9FQP1O1m7vUR6Q1qrG/nOUZ+gTClxDAdIhKlGbA0BbgbAPh4T7ul/wjFErv/
+ewYuxiDyXm1CMnxeDUs0Hlx14HyHksiB2JQyA+PaPuZ884wX6zEBf9f0Iy2htNLe
+/EdQux/NDcIJjUPjzhpI
+=X8Bg
+-----END PGP SIGNATURE-----
 
-- We are pleased to announce our first Platinum sponsor: Cumulus
-Networks. Cumulus has always been there for the netdev Community from
-our very first conference.  Thank you Cumulus!
-
-- Our hard working tech committee has accepted another proposal. This
-time veteran netdever Stephen Hemminger digs into the semantics of
-names. Names have consequences he says.
-
-Title: What's in a name?
----
-Network device names have existed from the earliest days of Unix
-networking and their usage has evolved. This talk is a look at some of
-the issues with network device names. kernel developers often think the
-problem is a userspace issue and nothing can be done but the names are
-a key part of the existing ABI.
-
-In the talk, I will cover how the choice of naming policy interacts
-with applications and cloud environments, what current expectations
-are, and how this interacts with cloud infrastructure. There is no
-solution but there are several things that can be done to improve
-the user experience. Will also give examples including Amazon, Azure,
-Google Compute as well as other non-Linux environments.
------
-
-Please note that The Call for Proposals is still open, submit early
-to avoid the hazards of last minute traffic. Refer to:
-http://netdevconf.org/2.1/submit-proposal.html
-
-cheers,
-jamal
+--vJMKDCke0jGlQe6pG4rj3lT5LgjhLE1oe--
