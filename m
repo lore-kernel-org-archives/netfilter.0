@@ -1,33 +1,101 @@
-From: t t <eeweb90@gmail.com>
-Subject: Subject: iptables: nf_conntrack_proto_gre.c and support for NHRP
- protocol ?
-Date: Wed, 22 Feb 2017 12:22:01 -0500
-Message-ID: <CAP1xz+7Gc7doHmDim0MEkQyz77Y92=YtEifw6vueTKFMY-dnaQ@mail.gmail.com>
+From: Chris Babcock <chris@bluegreenit.com>
+Subject: DNAT not working as expected
+Date: Thu, 23 Feb 2017 13:14:57 -0600
+Message-ID: <8cf5ed55-7d72-40b7-115a-6a1370067bda@bluegreenit.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=+nYvBmlAbAbtmYngvSmsJmFmClIIFttBLIZesY48jps=;
-        b=bsCGyjqAJnSu0m4yqcbpX8qdDhrHAHHYwpt7F5K1G9AxlJi+8O9XHDLQTGnFx8rGO3
-         3FYtNQo0VQqyOZ7BcYiD1sVCdVPPpYSvvKi/o/O1LKxunkdvVP/AQulIcbNUh2ff0xHG
-         3ujpdJw1oV5fSwOudl5nEXZ64l2/0Pa1koyWh1/fbHIeSZlf/Df/oJqMu8ltYdxH7rHR
-         +ZJiIGNydv72pJ2s3h1xP64d80h6rIaPgTm+RzAW+yKIODJ2zn6vYAn7XQqSBX47LmzS
-         2mb8wnSncdy2ofhYpJldR5R/wrEIzGQBXbSguJRjavBESnPDB6tXIOU3dM5I1XTfcjl9
-         z5pw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi,
-Can you tell me if there is option or future development for iptables to
-support tracking multiple GRE tunnels through one host when:
+Hi All,
 
-1.    We are using NHRP (protocol 0x2001) to establish a GRE tunnel (ie
-NHRP Request and Response packets).
-2.    We are NOT using PPTP.
+I've a strange problem.  I've done this many times before, but no magic 
+for me today. I'm trying to DNAT 1:1 to a device. In this case the 
+device is at 172.21.0.25. I can ping the device no problem from the 
+Ubuntu 16.04(4.8 kernel)but when I setup the following DNAT it responds 
+to my test ping with ICMP host unreachable.
 
-Thanks
-Tom
+So it should the server on 172.30.5.206 then > 172.21.0.25.
+
+This is my iptables nat rules:
+
+root@ip-172-30-5-161:/home/ubuntu# iptables -t nat -S -v
+-P PREROUTING ACCEPT -c 0 0
+-P INPUT ACCEPT -c 0 0
+-P OUTPUT ACCEPT -c 1 60
+-P POSTROUTING ACCEPT -c 1 60
+-A PREROUTING -d 172.30.5.206/32 -c 1 60 -j DNAT --to-destination 
+172.21.0.25
+root@ip-172-30-5-161:/home/ubuntu#
+
+All other policies are set to ACCEPT:
+
+root@ip-172-30-5-161:/home/ubuntu# iptables -S -v
+-P INPUT ACCEPT -c 8649 550346
+-P FORWARD ACCEPT -c 20 1200
+-P OUTPUT ACCEPT -c 8367 580846
+root@ip-172-30-5-161:/home/ubuntu#
+
+Here is my routing table:
+
+Kernel IP routing table
+Destination Gateway Genmask Flags Metric Ref Use Iface
+default 172.30.5.1 0.0.0.0 UG 0 0 0 eth0
+172.21.0.0 * 255.255.254.0 U 0 0 0 vti1
+172.30.5.0 * 255.255.255.0 U 0 0 0 eth0
+
+Here are my IPs
+
+root@ip-172-30-5-161:/home/ubuntu# ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN 
+group default qlen 1
+link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+inet 127.0.0.1/8 scope host lo
+valid_lft forever preferred_lft forever
+inet6 ::1/128 scope host
+valid_lft forever preferred_lft forever
+2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 9001 qdisc pfifo_fast 
+state UP group default qlen 1000
+link/ether 06:f2:02:c4:12:88 brd ff:ff:ff:ff:ff:ff
+inet 172.30.5.161/24 brd 172.30.5.255 scope global eth0
+valid_lft forever preferred_lft forever
+inet 172.30.5.206/24 brd 172.30.5.255 scope global secondary eth0:10
+valid_lft forever preferred_lft forever
+inet6 fe80::4f2:2ff:fec4:1288/64 scope link
+valid_lft forever preferred_lft forever
+3: ovs-system: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN 
+group default qlen 1000
+link/ether 56:af:d1:d4:4e:4c brd ff:ff:ff:ff:ff:ff
+4: OVSBR: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group 
+default qlen 1000
+link/ether 76:a0:55:27:b8:47 brd ff:ff:ff:ff:ff:ff
+5: ip_vti0@NONE: <NOARP> mtu 1332 qdisc noop state DOWN group default qlen 1
+link/ipip 0.0.0.0 brd 0.0.0.0
+6: vti1@NONE: <NOARP,UP,LOWER_UP> mtu 1332 qdisc noqueue state UNKNOWN 
+group default qlen 1
+link/ipip 172.30.5.161 brd 0.0.0.0
+inet 172.21.0.1/23 scope global vti1
+valid_lft forever preferred_lft forever
+
+Here is proof I'm ready to route:
+
+root@ip-172-30-5-161:/home/ubuntu# sysctl net.ipv4.ip_forward
+net.ipv4.ip_forward = 1
+
+Here is proof that the host is reachable:
+
+root@ip-172-30-5-161:/home/ubuntu# ping 172.21.0.25
+PING 172.21.0.25 (172.21.0.25) 56(84) bytes of data.
+64 bytes from 172.21.0.25: icmp_seq=1 ttl=64 time=35.8 ms
+
+
+Related note, when I change the DNAT to be the IP(172.21.0.1) on vti1 
+that is directly connected to the 172.21.0.0/23 subnet, it works, but 
+tcpdump does not show traffic on vti1. What am I missing?  I've 
+exhausted all other forums trying to figure this out before I emailed 
+this group.   Thanks and I appreciate your time.
+
+CB
