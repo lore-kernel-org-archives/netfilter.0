@@ -1,106 +1,73 @@
-From: Jamal Hadi Salim <jhs-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
-Subject: ANNOUNCE: Netdev 2.1 update Feb 27
-Date: Mon, 27 Feb 2017 08:43:14 -0500
-Message-ID: <f43e06f4-cd52-6d98-c585-8243f1a002be@mojatatu.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=i2cqXJWS8mFyuEt0zubnCHd+47uSfnIsG2/Hdu/224w=;
-        b=FdDCt75F1apXNPlwqp6+gyH2KrYIXDAgcMwgceQIZ5l6HpoOaUh6Zlb+ec0qUngxcC
-         Qt3OU3npNNHC3skcUAhR0zFZwYdQRYf3UrUhLN4G9rqC8R8rrIOQU6rMXrvLvKHrJ1wW
-         UFfuhRGIXYYecJji3KKuVDsLeGz6q5mOItiah49XDvuETTPEBNH6EzR7gFlKOt6zHJUw
-         MEOy8LUW1XK1H6l/lCMqScBD4dP4RRvu+Jg4uWazenAYFddLOn2jsnMajnFIotNkCcxT
-         mub2OAFo2kMp6otpfhCzVE2smzFF7X95/281AEhDOV9/8YCvh9a7d3+fab6iVaJj2YKX
-         JKIg==
-Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+From: =?utf-8?Q?H=C3=A5vard_Rabbe?= <hrabbe@me.com>
+Subject: How can I drop IPv6 auto configuration traffic when bridging two
+ interfaces?
+Date: Mon, 27 Feb 2017 17:51:22 +0100
+Message-ID: <ED31549B-0E75-4B7E-8E98-94326F66EE13@me.com>
+Mime-Version: 1.0 (Mac OS X Mail 10.0 \(3226\))
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=4d515a;
+        t=1488214253; bh=Wmv1lDUFRDaifmG5Nk+w8SRLBrQkLJMBCtGBOGFK2Cg=;
+        h=From:Content-type:MIME-version:Subject:Message-id:Date:To;
+        b=EbrOeHaZzcQaIjEbvf2oOqmNGbuLwPdPowWKLMrjKY8E/5PZ3BodMYvYuLxMUgqx3
+ iy2Wvpt7dT55s5ggvYHq+TO4fam3VE/9UxexpQZ45WoKNoQFAGRllE+hBqDZLHiXiP
+ 5/++N+KPdWcz+ZovWaWU66pxeoaNbaqTNcCRg3XPEBvZ2F2P7HbQA0OpyoC/EKgCrd
+ 7Tros+sXo3bzzBioFdyLCPiLmdm3nGGLXNlslpKCxqZdf67qu/1ejPVvRS6a011O21
+ RqYLGzOjhwJB3jB4GbOn+kOqHh2pdt0Hqy7xBjJNvU2+TP8MQ6jTMoIRDICKT4//Hk
+ HJgUAQb+HBksg==
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Cc: netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, info-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, tech-committee-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org, David Miller <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>, Stephen Jaworski <jaws-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, lwn-T1hC0tSOHrs@public.gmane.org, people-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org, Brenda Butler <bjb-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-A few announcements:
+Hi
+Im using tinc vpn to bridge networks together. And im using ebtables to =
+block dhcp traffic for ipv4 on each node in tinc. One of my nodes have =
+recently began using ipv6. The isp is using auto configuration to give =
+out ipv6 addresses. The problem is that every computer in my bridged =
+network is getting ipv6 addresses from that node.
+The other computers behind the other nodes have no use for ipv6 =
+addresses it gets through the tinc tunnel.
 
-1) The CFP is now officially closed. Thanks to everyone who submitted.
+Is there a way to block ipv6 auto configuration traffic entering the =
+tinc tunnel on each node?
 
-2) We are extending the early registration to March 5.
+This is the bridging:
+root@JOTVPN:~# brctl show
 
-Register early so we can plan better (and so you can save some $$).
-https://onlineregistrations.ca/netdev21/
+bridge name bridge id STP enabled   interfaces
 
-- hotel (If you can get the hotel cheaper online than conference
-rates please send us email, dont book ):
-https://www.netdevconf.org/2.1/hotel.html
+bridge 8000.000c29638a7e no           eth0
 
-3) Tech committee would like to make two announcements:
+                                                            vpn
 
-First, a talk by Hajime Tazaki titled "Playing BBR with a userspace 
-network stack"
 
------
-Linux kernel library (LKL) is aimed to run Linux kernel code upon
-different environment such as Linux userspace, Windows userspace,
-hypervisors, etc.  With the userspace deployments, an application can
-benefit new additional features such as TCP extensions without
-involving the update of host kernel.
 
-This characteristic of network stack personality is useful since we
-don't have to instantiate a virtual machine instance to use a new
-feature of network stack (e.g., a TCP extension).  Instead, we just
-need a single (userspace) process to introduce new features.
+This is what I have tried so far:
 
-One concern of userspace network stack in general, and addressed by
-David Miller in the last netdev conference (in Tokyo), is the achieved
-timing accuracy in userspace which the important network feature such
-as packet pacing and transport protocols requires.
+ip6tables -A FORWARD -o bridge -p ipv6-icmp -m icmp6 --icmpv6-type 133 =
+-j DROP
+ip6tables -A FORWARD -i bridge -p ipv6-icmp -m icmp6 --icmpv6-type 134 =
+-j DROP
 
-In this talk, we're going to present our performance studies on this
-timing accuracy concern of a userspace network stack. We present the
-result of netperf benchmarks with a couple of congestion control
-algorithm of TCP, BBR and cubic with the LKL-ed netperf and ordinal
-netperf with Linux kernel.
-We're trying to reveal that what is the obstacle of LKL (userspace
-network stack) and what can be fixed to reach the performance goal of
-LKL (i.e., x1 performance of the original kernel network stack).
 
-Second, our first workshop announcement on "IoT related MAC layers, header
-compression and routing protocols" chaired by Stefan Schmidt.
----
-This workshop aims to identify generic requirements for the networking
-subsystem for IoT and starting the process of addressing the gaps
-found. The workshop will encompass related MAC layers, networking
-protocols, adaptation layers, header compression, routing protocols
-and application layers.
+root@JOTVPN:~# ip6tables --list-rules
 
-As a starting point we will look at existing subsystems (Bluetooth,
-802.15.4, 6LoWPAN, etc) and discuss a way forward to  address the gaps
-posed. An overview of MAC layers and open IoT related specifications
-will help to identify things we should probably support in the future
-(LPWAN, SCHC, RPL, Thread, etc). Note: We emphasize only on open
-protocols and specifications as well as IPv6 instead of company grown
-networking layers.
-Additional user-space interfaces might be needed to cater for the
-requirements of application layer stacks (ZigBee, IoTivity, etc.).
-What kind of interfaces besides the normal socket API and existing
-netlink interfaces do they need?
-(header compression configuration, DTLS support in AF_KTLS, etc.)
+-P INPUT ACCEPT
 
-A primary goal of this workshop is initially to target Linux as a
-gateway or border router at the edge of IoT networks, be it industrial
-or home automation.
+-P FORWARD ACCEPT
 
-A future scope, starting with discussions at the workshop, could be for
-Linux to replace RTOSes on leaf nodes which operate on very constrained
-hardware and power limits; such an effort would need a serious amount
-of work towards tinyfication in all parts of the kernel.
+-P OUTPUT ACCEPT
 
-We expect the workshop to ignite efforts on these topics and followup
-discussions on mailing lists and future netdevs to produce results that
-make it a possibility.
-----
+-A FORWARD -o bridge -p ipv6-icmp -m icmp6 --icmpv6-type 133 -j DROP
 
-cheers,
-jamal
+-A FORWARD -i bridge -p ipv6-icmp -m icmp6 --icmpv6-type 134 -j DROP
+
+
+But its not working
+
+Do someone know how to fix this?
+
+Best Regards,
+
+H=C3=A5vard Rabbe=
