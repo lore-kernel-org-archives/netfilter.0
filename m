@@ -1,32 +1,38 @@
-From: Jamal Hadi Salim <jhs-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
-Subject: ANNOUNCE: Netdev 2.1 New Gold Sponsor
-Date: Thu, 2 Mar 2017 11:36:51 -0500
-Message-ID: <0d467bce-af29-a4f6-5130-c692d81f338c@mojatatu.com>
+From: Matthew Sims <matt@simsweb.org>
+Subject: iptables ip tracking buffer size?
+Date: Fri, 3 Mar 2017 10:20:20 -0800
+Message-ID: <CAJV-0PdPVVBbMR+HcE5mjjkuKquR60c-n=D3b6N_j_+HK6wx6w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
-        h=from:subject:cc:message-id:date:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=nE/VUmD5ksI31/A+PXsxi+wfEk0VcsVW1GkSROEY32k=;
-        b=L4sk8YZ+X2WxHqpj+FjOX7D2joDrkMrxKqybP9KB2pj6amQNUptaiLs6FXagLtK9Rf
-         Yu4Pg8dmRe06Xrg/HNhUy9lvOw1n0ABcGQEtxFkTSyzRmDyRdAnsP2hgDUIpuieHTZeP
-         Pi9GqXsUs6v0pZAhJnKTAOFR07Y9kHKWGnP1o1wW8SzBW9Bl5wLZDqbUPeGb3fCB3a73
-         tdpNBS2GDcGGU0M5wu1aXXp8lH6V8+006xQGv41u2rhOKvsIM+710+D9UWt2TIqCaXFG
-         GQJNffT34AG4EV62ziveLYCvz/85r9jetE6bDB6QpJ7IsuoJE624TT+eovBspMhG1f2K
-         fsnA==
-Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+        d=simsweb-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=WDBwD4ho3A5fjqDQl/s95y7+osyJcoyL3U59PXIh7tU=;
+        b=tEADPen8ZZvBd5kwNgvnKNRmAsW02euBjrT6/KNUY0r0EvgFouH+V6FpAdYxcRCdv7
+         xln8MOTNrRq8yFfzOVxVpumEPOjiMTQ51UQXMbWwRE22ou+pqDWEUWV+EhxyH3bpg1Cb
+         brrM8S1p9R2PME6QXz50R5wCjBYDJ617A4ZLPHw19UYiHzyak63Ka6dk1CQlvE8iEA4S
+         4uSmq1E3cFFKrbY1kJFhzvJWwJj7JSZTtSU0xlrSh59RzAq2iak21qwZI/sTFTFlbIlb
+         cbnns/dyWJqH3ONhrMQ/UTP+oyjy9N1NhPrOYYMlxWnEhOfbWbq8UvSPbL09qPSNKoPq
+         jUiQ==
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: 
-Cc: netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, tech-committee-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org, David Miller <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>, Stephen Jaworski <jaws-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, people-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org, Brenda Butler <bjb-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
+Quick backstory. I recently took over an unused project from a co-worker
+who left over a year ago. The idea was to block IPs that reached a certain
+hit_count limit within a minute.
 
+When this was enabled, it worked...sort of. While iptables was keeping
+track of IPs, we weren't able to block when tests were performed.
 
-We'd like to announce Mojatatu Networks as our second Gold Sponsor.
+The reason had something to do with IPs in a "buffer pool" (??) were being
+knocked out when new IPs were tracked? I don't have the actual issue as he
+never documented it. I'm guessing that while iptables was keeping track of
+hit_counts, the list grew so big that it had to bump out IPs at the end of
+the list to track new ones.
 
-Thank you for the continued support!
-
-cheers,
-jamal
+This is the best I can do to describe this and wondered if anyone knows
+about this. I don't have a name that allows me to research this so its been
+difficult to find a solution.
