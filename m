@@ -1,56 +1,46 @@
 From: Jamal Hadi Salim <jhs@mojatatu.com>
-Subject: ANNOUNCE: Netdev 2.1 update Mar 03
-Date: Fri, 3 Mar 2017 17:34:22 -0500
-Message-ID: <4112ce7e-f793-9982-64c4-d9c3aeb3835e@mojatatu.com>
+Subject: ANNOUNCE: New talk accepted on Netfilter Connection Tracking
+Date: Sun, 5 Mar 2017 12:25:37 -0500
+Message-ID: <3e9ee6d3-a01b-e7d1-f0d3-487bcc791244@mojatatu.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-devel-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
-        h=from:subject:cc:message-id:date:user-agent:mime-version
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
          :content-transfer-encoding;
-        bh=bQw5fpM37e327kwKwcy9ftmKqQVnm18BXCNEkuSo+bI=;
-        b=B+gMbUKOTMCViZ1S1IxUOV3iBLyKK6ziIzYglt9BX1mTQ24v6Xu+Vb24skqas+CYfp
-         hHREUUNT49a700hpwZKBCoIcvNm2Oq09pkmTRnp9H23/tV5yu4aWw7x0+f8ma09Sl5tp
-         14DdUMh/5WVj0KmNAo6/ppPZgyN5kiNPv5eBeesgNEYosvBD+tB63k9e/Sl0tXURy2ED
-         X/wt8Dhb9Z7pVbG8yF48AIPPmkgQzoslejE2E9cyBj2ho72Gw4hGPaaWgOyohsrlAZ9c
-         6JmGi5Sfz+nLhpDgq8eqKliEkhe7ERlJYRqVPYNTfypnk87EcwXMBuUL+Xgb3VO8yQXh
-         ggiw==
+        bh=iCm59RWgBV/fxlmZI6JTJiqkQPXGNcpkpVCmqM21Kr4=;
+        b=O6hLNV8794iIiU5Vhp7mmXI9UzavEMhal0TjrgjuUUJi0D6ywsS174cHcG2bx/A+Lv
+         zAbGWkl12XfsVnUCb+9JtKgadoRGyf26/NyqKQjAI9wubkTzeB1tB0PeDIpB8lGpaNpL
+         0e5abNdZAYkmKWuIOyxeukXY6+cPRKHxBXpvQQhA9cGV7kXJ6SqScP/nhCz8kLv1lvK8
+         1ruEJ44UtoRAw8RjuRFwQWX/VE3Tv8dGnHyITwFWtvqZKn8SshTf6zQoV/Wbw7oJhduL
+         bzZ6YzzGIYkR185bb14IHKWBDStuU1JpTizUgUVCSia7ETgS9QWdan7iQt+a6BmoTum4
+         NSGQ==
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: 
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, linux-wireless@vger.kernel.org, tech-committee@netdevconf.org, David Miller <davem@davemloft.net>, Stephen Jaworski <jaws@mojatatu.com>, people@netdevconf.org, Brenda Butler <bjb@mojatatu.com>
+To: people@netdevconf.org
+Cc: tech-committee@netdevconf.org, netfilter-devel@vger.kernel.org, Brenda Butler <bjb@mojatatu.com>, Stephen Jaworski <jaws@mojatatu.com>, netfilter@vger.kernel.org
 
+The tech committee would like to announce a new accepted talk.
 
+Florian Westphal will be demystifying Netfilter Connection Tracking.
+You cant miss this talk!
 
-The tech committee has accepted a new workshop on
-Network Performance chaired by Alexander Duyck
+The description is as follows:
+----
+  This talk will take a look at netfilters connection tracking, namely:
 
-Some details:
-----------
-The network performance performance workshop is a follow-up of several 
-mailing list threads on the netdev mailing list as well as presentations 
-at Netdev 1.2. We want to discuss the progress made on various efforts 
-to enable better performance through enabling new features in the 
-kernel, and changing existing APIs to better enable the drivers to 
-handle the ever increasing workloads.
+     data structures
+     conntrack extensions (what are these, how are they used)
+     NAT handling
+     connection tracking helpers (ftp, sip etc)
+     connection tracking events
 
-This is an opportunity to bring together the various network device 
-vendors to discuss what has worked and what hasn't in terms of enabling 
-better performance in the Linux kernel ecosystem.
-
-Topics for the session would include:
-
-Implementing page based receive paths and page recycling and/or reuse
-Zero-copy using AF_PACKET to accelerate user-space networking
-Recent changes to enable better use of build_skb and XDP
-Batching of Tx and Rx workloads
-Kernel memory optimizations
------
-
-Alex will be posting a lot more details and agenda items by
-the conference time.
+The second part of the talk will focus on conntrack overflow handling 
+('table full') under DoS/packet floods and how handling of such 
+scenarios could be improved.
+----
 
 cheers,
 jamal
