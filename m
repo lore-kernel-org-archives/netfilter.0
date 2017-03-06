@@ -1,96 +1,89 @@
-From: Kangkook Jee <aixer77@gmail.com>
-Subject: Netfilter interface change in kernel 4.4.0
-Date: Mon, 6 Mar 2017 09:27:16 -0500
-Message-ID: <D199BD67-28F1-4D79-A4A8-36A59213434E@gmail.com>
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3269\))
-Content-Transfer-Encoding: quoted-printable
+From: "gerald" <gerald@palmerhouse.net>
+Subject: conntrackd will not accept connection records into kernel table from another machine
+Date: Mon, 06 Mar 2017 11:15:04 -0600
+Message-ID: <2602-58bd9900-3-1184bca@164654059>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:content-transfer-encoding:mime-version:subject:message-id:date
-         :to;
-        bh=zlVnAbJantdrcM5rz/lUBGhNt1aNP9pzCd90qVor5zA=;
-        b=SMUFlvl5nsTcUh+tOESjaemMcQ7I243VGWPX/LEavGL5sGU20M+UtTIJHG+JWaSqn0
-         s6N1vtoe2ehoMsQaXnwVgsfvL7AteuUwQWtcEHbhnLxY07TBt46M2qWEA9YOKOI6N+iX
-         /HOSqWePAujM/fKzGVRsLoBttftl3VSsDa0MpYiz/NMTbINrNWkTmczJeeNQU2acP0B6
-         GNkDCTYbCxwD45Vxl9A2ti3wIQw5XJ2OXc3P1sqJM5B80GtFKktQA9l3WWXekJG0Es5A
-         Ax7NS0ydCu91HMQJzoX+iOsMNBSFcquVrE67aDZy+eVtPedTGyi7cNtJoxdCESRO1diF
-         c1aw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi all,
+https://bugzilla.netfilter.org/show_bug.cgi?id=1123
 
-I am trying to update kernel module that used to run for kernel version =
-< 4.4.0.
-I found out that struct nf_hook_ops and the signature for function type =
-nf_hookfn have changed for kernels higher than version 4.4.0.=20
-However, I couldn't find any documentation that explains the change.=20
+OS localhost 4.9.8-1-ARCH #1 SMP PREEMPT Mon Feb 6 12:59:40 CET 2017 x86_64 GNU/Linux
 
-To be precise for kernel 4.1.0 =
-(http://lxr.free-electrons.com/source/include/linux/netfilter.h?v=3D4.1),=20=
-
-
-77 typedef unsigned int nf_hookfn(const struct nf_hook_ops *ops,
-78                                struct sk_buff *skb,
-79                                const struct nf_hook_state *state);
-80=20
-81 struct nf_hook_ops {
-82         struct list_head list;
-83=20
-84         /* User fills in from here down. */
-85         nf_hookfn       *hook;
-86         struct module   *owner;
-87         void            *priv;
-88         u_int8_t        pf;
-89         unsigned int    hooknum;
-90         /* Hooks are ordered in ascending priority. */
-91         int             priority;
-92 };
+conntrackd version 1.4.4
+conntrackd gives an error for each remote connction it attempts to add to the local table:
+[Thu Feb 16 17:56:27 2017] (pid=1312) [ERROR] inject-add2: Invalid argument
+Thu Feb 16 17:56:27 2017 icmp     1 src=192.168.0.15 dst=67.36.196.10 type=8 code=0 id=5486 [UNREPLIED]
+[Thu Feb 16 17:56:27 2017] (pid=1312) [ERROR] inject-upd1: Invalid argument
+Thu Feb 16 17:56:27 2017 icmp     1 src=192.168.0.15 dst=67.36.196.10 type=8 code=0 id=5486
 
 
-for kernel 4.4.0 =
-(http://lxr.free-electrons.com/source/include/linux/netfilter.h?v=3D4.4),=20=
+
+when
+DisableExternalCache On
+
+conntrackd WILL add to external table when the external cache is enabled
+but errors with the cache is disabled
+
+with the external cache disabled
+entries DO NOT appear in conntrack -L
+entries DO NOT appear in conntrackd -e
+entries DO NOT appear in conntrackd -i
+failures show in conntrackd -s
 
 
- 83 typedef unsigned int nf_hookfn(void *priv,
- 84                                struct sk_buff *skb,
- 85                                const struct nf_hook_state *state);
- 86=20
- 87 struct nf_hook_ops {
- 88         struct list_head        list;
- 89=20
- 90         /* User fills in from here down. */
- 91         nf_hookfn               *hook;
- 92         struct net_device       *dev;
- 93         void                    *priv;
- 94         u_int8_t                pf;
- 95         unsigned int            hooknum;
- 96         /* Hooks are ordered in ascending priority. */
- 97         int                     priority;
- 98 };
+conntrackd.conf:
+Sync {
+    Mode FTFW {
+        DisableExternalCache On
+        CommitTimeout 1800
+        PurgeTimeout 5
+    }
 
-As you can see, the first parameter of nf_hookfn() is changed=20
-    from=20
-      const struct nf_hook_ops *ops=20
-    to=20
-      void *priv=20
+    UDP {
+        IPv4_address 192.168.0.31
+        IPv4_Destination_Address 192.168.0.30
+        Port 3780
+        Interface ens8
+        SndSocketBuffer 24985600
+        RcvSocketBuffer 24985600
+        Checksum on
+    }
+}
 
-and struct nf_hook_ops no longer has the member for=20
+General {
+    Nice -20
+    HashSize 32768
+    HashLimit 131072
+    LogFile on
+    Syslog on
+    LockFile /var/lock/conntrack.lock
+    UNIX {
+        Path /var/run/conntrackd.ctl
+        Backlog 20
+    }
+    NetlinkBufferSize 2097152
+    NetlinkBufferSizeMaxGrowth 8388608
+    Filter From Userspace {
+        Protocol Accept {
+            TCP
+            UDP
+            ICMP # This requires a Linux kernel >= 2.6.31
+        }
+        Address Ignore {
+            IPv4_address 127.0.0.1 # loopback
+            IPv4_address 192.168.0.30
+            IPv4_address 192.168.0.31
+        }
+    }
+}
 
-struct module   *owner;
+conntrack -c
+works and adds entries to the local table when executed
 
-and instead has the member of
-
-struct net_device       *dev;
-
-
-If anyone can tell me how to cope with this changes, it will be very =
-helpful.=20
-
-Thanks!
-
-Regards, Kangkook
-
+perhaps related to:
+http://www.linuxquestions.org/questions/showthread.php?p=5547189#post5547189
