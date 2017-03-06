@@ -1,89 +1,47 @@
-From: "gerald" <gerald@palmerhouse.net>
-Subject: conntrackd will not accept connection records into kernel table from another machine
-Date: Mon, 06 Mar 2017 11:15:04 -0600
-Message-ID: <2602-58bd9900-3-1184bca@164654059>
+From: Robert White <rwhite@pobox.com>
+Subject: Re: nat/forwarding reject - basic question ipt/nft
+Date: Mon, 6 Mar 2017 20:04:35 +0000
+Message-ID: <baff79d3-5534-676e-3078-15a9bbdecf01@pobox.com>
+References: <trinity-262aff1c-8a6f-462f-88c5-52ab1a11aa67-1488029996995@3capp-gmx-bs32>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <trinity-262aff1c-8a6f-462f-88c5-52ab1a11aa67-1488029996995@3capp-gmx-bs32>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Infoomatic <infoomatic@gmx.at>, netfilter@vger.kernel.org
 
-https://bugzilla.netfilter.org/show_bug.cgi?id=1123
+On 02/25/17 13:39, Infoomatic wrote:
+> Now I want the host 192.168.200.170 to get an icmp type 3 code 3 return when it wants to connect
+> to any ip-address to tcp-port 22. I have tried various ways, e.g.
+> iptables -A FORWARD -p tcp --source 192.168.200.170 --dest X.X.X.X -j REJECT
+> This rule works but the client does not get notified so when it connects it just gets a timeout
 
-OS localhost 4.9.8-1-ARCH #1 SMP PREEMPT Mon Feb 6 12:59:40 CET 2017 x86_64 GNU/Linux
+If you want it "for any host" then you don't want a "--dest" stanza at all.
 
-conntrackd version 1.4.4
-conntrackd gives an error for each remote connction it attempts to add to the local table:
-[Thu Feb 16 17:56:27 2017] (pid=1312) [ERROR] inject-add2: Invalid argument
-Thu Feb 16 17:56:27 2017 icmp     1 src=192.168.0.15 dst=67.36.196.10 type=8 code=0 id=5486 [UNREPLIED]
-[Thu Feb 16 17:56:27 2017] (pid=1312) [ERROR] inject-upd1: Invalid argument
-Thu Feb 16 17:56:27 2017 icmp     1 src=192.168.0.15 dst=67.36.196.10 type=8 code=0 id=5486
+If you want "any host on my subnet" then you need the subnet mask, not 
+just any host but just any host on the subnet, you want "--destination 
+192.168.200.0/24"
 
+Keep in mind that "0.0.0.0" is a specific address, while "0.0.0.0/0" is 
+the range of all possible addresses. Not specifying an address at all is 
+functionally the same as specifying the range of all addresses.
 
+If you want it for "tcp port 22" then you need a "--dport 22" stanza.
 
-when
-DisableExternalCache On
+Note that FORWARD is only for forwarding so if you are testing by trying 
+to telnet to the firewall itself then you are hitting the INPUT table 
+not the forwarding table.
 
-conntrackd WILL add to external table when the external cache is enabled
-but errors with the cache is disabled
+Use "iptables --list --verbose" to see which rules are being hit by your 
+attempted connection. Do this before and after the attempt to see which 
+rules' or policy's counter(s) was incremented by the attempt.
 
-with the external cache disabled
-entries DO NOT appear in conntrack -L
-entries DO NOT appear in conntrackd -e
-entries DO NOT appear in conntrackd -i
-failures show in conntrackd -s
+So "iptables -A FORWARD -p tcp --source 192.168.200.170 --dport 22 -j 
+REJECT" does what you say you want for all hosts _except_ the firewall 
+itself.
 
-
-conntrackd.conf:
-Sync {
-    Mode FTFW {
-        DisableExternalCache On
-        CommitTimeout 1800
-        PurgeTimeout 5
-    }
-
-    UDP {
-        IPv4_address 192.168.0.31
-        IPv4_Destination_Address 192.168.0.30
-        Port 3780
-        Interface ens8
-        SndSocketBuffer 24985600
-        RcvSocketBuffer 24985600
-        Checksum on
-    }
-}
-
-General {
-    Nice -20
-    HashSize 32768
-    HashLimit 131072
-    LogFile on
-    Syslog on
-    LockFile /var/lock/conntrack.lock
-    UNIX {
-        Path /var/run/conntrackd.ctl
-        Backlog 20
-    }
-    NetlinkBufferSize 2097152
-    NetlinkBufferSizeMaxGrowth 8388608
-    Filter From Userspace {
-        Protocol Accept {
-            TCP
-            UDP
-            ICMP # This requires a Linux kernel >= 2.6.31
-        }
-        Address Ignore {
-            IPv4_address 127.0.0.1 # loopback
-            IPv4_address 192.168.0.30
-            IPv4_address 192.168.0.31
-        }
-    }
-}
-
-conntrack -c
-works and adds entries to the local table when executed
-
-perhaps related to:
-http://www.linuxquestions.org/questions/showthread.php?p=5547189#post5547189
+You may separately need "iptables -A INPUT -p tcp --source 
+192.168.200.170 --dport 22 -j REJECT" if you want the firewall itself to 
+reject telnet attempts.
