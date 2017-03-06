@@ -1,47 +1,81 @@
 From: Robert White <rwhite@pobox.com>
-Subject: Re: nat/forwarding reject - basic question ipt/nft
-Date: Mon, 6 Mar 2017 20:04:35 +0000
-Message-ID: <baff79d3-5534-676e-3078-15a9bbdecf01@pobox.com>
-References: <trinity-262aff1c-8a6f-462f-88c5-52ab1a11aa67-1488029996995@3capp-gmx-bs32>
+Subject: Re: iptables ip tracking buffer size?
+Date: Mon, 6 Mar 2017 20:30:14 +0000
+Message-ID: <e9d24023-89a0-2704-5ec3-e6c2b1b9ac2d@pobox.com>
+References: <CAJV-0PdPVVBbMR+HcE5mjjkuKquR60c-n=D3b6N_j_+HK6wx6w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <trinity-262aff1c-8a6f-462f-88c5-52ab1a11aa67-1488029996995@3capp-gmx-bs32>
+In-Reply-To: <CAJV-0PdPVVBbMR+HcE5mjjkuKquR60c-n=D3b6N_j_+HK6wx6w@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Infoomatic <infoomatic@gmx.at>, netfilter@vger.kernel.org
+To: Matthew Sims <matt@simsweb.org>, netfilter@vger.kernel.org
 
-On 02/25/17 13:39, Infoomatic wrote:
-> Now I want the host 192.168.200.170 to get an icmp type 3 code 3 return when it wants to connect
-> to any ip-address to tcp-port 22. I have tried various ways, e.g.
-> iptables -A FORWARD -p tcp --source 192.168.200.170 --dest X.X.X.X -j REJECT
-> This rule works but the client does not get notified so when it connects it just gets a timeout
+On 03/03/17 18:20, Matthew Sims wrote:
+> Quick backstory. I recently took over an unused project from a co-worker
+> who left over a year ago. The idea was to block IPs that reached a certain
+> hit_count limit within a minute.
 
-If you want it "for any host" then you don't want a "--dest" stanza at all.
+You don't need "a project" you just need the "recent" match and a branch 
+chain.
 
-If you want "any host on my subnet" then you need the subnet mask, not 
-just any host but just any host on the subnet, you want "--destination 
-192.168.200.0/24"
+Consider this set of rules for throttling SSH attempts to five per hour.
 
-Keep in mind that "0.0.0.0" is a specific address, while "0.0.0.0/0" is 
-the range of all possible addresses. Not specifying an address at all is 
-functionally the same as specifying the range of all addresses.
 
-If you want it for "tcp port 22" then you need a "--dport 22" stanza.
+iptables --new-chain SSHTHROTTLE
 
-Note that FORWARD is only for forwarding so if you are testing by trying 
-to telnet to the firewall itself then you are hitting the INPUT table 
-not the forwarding table.
+iptables --append SSHTHROTTLE --match recent --name bad_actors --update 
+--seconds 86400 --jump DROP
 
-Use "iptables --list --verbose" to see which rules are being hit by your 
-attempted connection. Do this before and after the attempt to see which 
-rules' or policy's counter(s) was incremented by the attempt.
+iptables --append SSHTHROTTLE --match hashlimit --hashlimit-name 
+ssh_throttle --hashlimit-upto 5/hour --hashlimit-mode srcip 
+--hashlimit-burst 2 --jump ACCEPT
 
-So "iptables -A FORWARD -p tcp --source 192.168.200.170 --dport 22 -j 
-REJECT" does what you say you want for all hosts _except_ the firewall 
-itself.
+iptables --append SSHTHROTTLE --match recent --name bad_actors --set 
+--jump DROP
 
-You may separately need "iptables -A INPUT -p tcp --source 
-192.168.200.170 --dport 22 -j REJECT" if you want the firewall itself to 
-reject telnet attempts.
+iptables --append INPUT --in-interface ext+ --proto tcp --match 
+conntrack --ctstate NEW --dport 22 --syn --jump SSHTHROTTLE
+
+
+So the core thing is the three rules in the SSHTHROTTLE chain. How does 
+it do what you want?
+
+In the _last_ rule of the chain, the source ip address is added to the 
+"bad_actors" set and the packet is dropped.
+
+In the first rule the "--match recent" with "--update" is only true if 
+the packet's source ip address is already in the "bad_actors" set. So it 
+only does the DROP if some previous pass through the chain got all the 
+way to the end of the chain.
+
+So the middle rule, the hashlimit rule will ACCEPT up to five attempts 
+an hour. Since "ACCEPT" stops the chain evaluation the "hashlimit" 
+allows up to five connections an hour. So as long as the client never 
+does six or more an hour he's fine.
+
+Now back to that first rule. The --seconds value (one day in this case) 
+acts as a grace period. If the bad actor goes away for a day then the 
+match will miss and they can proceed with a new connection. Since the 
+recent match is less than the penalty time they are forgiven their past 
+sins and they are back to five connections an hour.
+
+NOTE: using "-j RETURN" instead of "-j ACCEPT" will make this logic work 
+without actually accepting the packet, so you can have this kind of gate 
+without the gate needing to be the point of authorization. By that I 
+mean that the throttling doesn't have to be tied to the details of the rule.
+
+So playing around with timing and other parameters, and using other 
+conditions on the call rule can let one gate/throttle be part of many 
+sequences without making things hard.
+
+You need one chain per throttle group, but you can have lots of 
+different throttles by using different names in the recent and 
+[hash]limit stanzas.
+
+Eventually you will hit limits if you've got thousands of entries in the 
+limits and whatnot because memory is a finite resource.
+
+But you don't need complex code or any kind of external program to pull 
+off these throttles.
