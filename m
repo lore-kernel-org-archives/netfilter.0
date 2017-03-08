@@ -1,78 +1,32 @@
-From: Robert White <rwhite@pobox.com>
-Subject: Re: per source bandwidth limit with hashlimit
-Date: Tue, 7 Mar 2017 19:43:45 +0000
-Message-ID: <d41a3194-9acc-7bff-afda-2c3df053c2b3@pobox.com>
-References: <15d4f6da-0004-e2d3-5380-11fb2131ba48@gmail.com>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Subject: ANNOUNCE: Verizon Labs New Platinum Sponsor
+Date: Wed, 8 Mar 2017 08:01:48 -0500
+Message-ID: <4204acad-f613-3125-80b9-01860e3eab7c@mojatatu.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <15d4f6da-0004-e2d3-5380-11fb2131ba48@gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=ROaR9YdBgebi3epge5bTMd7tTiqAM8IDqWImyOy/rkk=;
+        b=gNf+OWiAjMm8RH1jEM0qau9i85j+yajhjio9au/Bm0jir0G2rA5b2bVsR8SLvhUxIX
+         8uLa0zRNtc/DoRWzKx8vclXWM5E3JBnDMbSAe2NSZeEYZ2WDMUMD5Hb9Mk29RSvAKuiw
+         5JyB/8NPQiYeMb4QcwA1NQoLPsRVX0VdXNApkCqd/sb5b5pZOQdbjkwqE+J206kzn3Hj
+         8H1OiCzGBQcrAgks+KaS+EZuHTRTrOwyhSPbB4jmD/YF+PFR3OHhUP99NAptx4+PXmWL
+         wnJA1YAEKGRLrv+WwVKUjB0FMJyz8g5Hufqg8MD3jCRnImPWYY/kU1achsL3cZyM+hM5
+         BzjQ==
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Fatih USTA <fatihusta86@gmail.com>, netfilter@vger.kernel.org
+To: people@netdevconf.org
+Cc: tech-committee@netdevconf.org, netfilter-devel@vger.kernel.org, Brenda Butler <bjb@mojatatu.com>, Stephen Jaworski <jaws@mojatatu.com>, netfilter@vger.kernel.org, lwn@lwn.net, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, Heri Muhero <hmuhero@gmail.com>
 
-On 03/07/17 12:47, Fatih USTA wrote:
-> Hi
->
-> I tried to use hashlimit to limit the bandwidth, for each ip address on
-> the 192.168.59.0/24 network. But did not work specified network address
-> or protocol.
-> iptables -t mangle -I PREROUTING -m tcp -p tcp -m hashlimit
-> --hashlimit-above 50kb/sec --hashlimit-burst 50kb --hashlimit-mode srcip
-> --hashlimit-name persource -j DROP
-> iptables -t mangle -A PREROUTING -j RETURN
+The organizing committee is happy to announce Verizon Labs as our
+second Platinum sponsor.
 
-You are using hashlimit backwards. The jump target is executed when the 
-limit is still good, it fails once the limit has been exceeded. So your 
-rule is dropping the packets/connections until the 50kb a second 
-threshold is exceeded then it's letting them through.
+Verizon Labs has been a solid supporter of the netdev community from the 
+very first conference. We appreciate you!
 
-What you want is
-
-iptables (blah blah) hashlimit (blah blah) -j RETURN
-iptables (blah blah) -j DROP
-
-Now when you are within the limits the data gets through, and when you 
-exceed the limits the rule evaluation falls through to the drop.
-
-Note that I usually put this in a separate chain that I invoke from the 
-real chain so that I can still apply other logic before/after the throttle.
-
-so...
-
-iptables -N throttle
-iptables -A throttle -m hashlimit (blah blah) -j RETURN
-ipbables -A throttle -j DROP
-iptables -A (wherever) (conditional blah) -j throttle
-
-As far as (wherever), I don't like to interfere with existing 
-connections since that leads to more load, not less. So I'd put the 
-throttle in FORWARDING or INPUT with the (conditional blah) being for 
-ctstate NEW and after the established,related rule.
-
-This secondary chain means that you can use the same throttle for 
-several different protocols or conditions without it getting really 
-complex to invoke.
-
-Of course your where-and-when will vary depending on your task and 
-goals. But in truth, if you are the service then your service 
-application is going to be the source of most of the data so you 
-probably ought to throttle in the server not the firewall rules instead 
-of dropping your own data or throwing away packets that you've already 
-paid bandwidth/time to receive and which the sending end is probably 
-just going to send again because of the "loss".
-
-That is bulk limits on existing connections tends to drive received 
-volume _up_ as re-transmits occur.
-
-So be careful not to shoot yourself in the foot.
-
-So anyway... the --match hashlimit should be followed by the success 
---jump and the later rules are then the failure path.
-
-
-
-Hope this helps,
---Rob.
-
+cheers,
+jamal
