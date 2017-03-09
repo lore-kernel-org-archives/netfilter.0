@@ -1,101 +1,110 @@
-From: Fatih USTA <fatihusta86@gmail.com>
-Subject: Re: per source bandwidth limit with hashlimit
-Date: Thu, 9 Mar 2017 08:21:17 +0300
-Message-ID: <3901f2d5-c76f-5dc2-7589-a50cd86543ae@gmail.com>
-References: <15d4f6da-0004-e2d3-5380-11fb2131ba48@gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: conntrackd will not accept connection records into kernel table
+ from another machine
+Date: Thu, 9 Mar 2017 21:32:47 +0100
+Message-ID: <20170309203247.GA12738@salvia>
+References: <2602-58bd9900-3-1184bca@164654059>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:subject:to:references:message-id:date:user-agent:mime-version
-         :in-reply-to:content-transfer-encoding;
-        bh=/DCmiHmJZ28eD0Upu0isqXqJz5ZDTf1Uk4eBk96m3Pk=;
-        b=gsMziw6Xpe4NESnLAS19YjqfvPJQdoAgdT5mSesokjHbKlRymufDcgie6FcgVzNL5v
-         uE6Zu+GKkHQ47dVW3C6iPkxUbtlpkMkj38LqOYH56ygdjVAzHEWw7P9BBiCkRc/NSLZT
-         3iSMjGTdomE8Zdrw2DombcN3jWJihFMxiRGgcUIvJ4yCX9K55+g0LxmWHVBqe72P3dYT
-         gvKDonUi59IOYN9S8u2UQ8bNK6O0jgzACLaL5IL7SDYC0SE4B5kI9rKVgfFq4gGR9i1z
-         0stFZ8DiHyY+AoGN3KhgqbLGONsspNTH2uPG9ix7iMP9+209xw3zdnsR9Td1f1JG4RJI
-         KQEg==
-In-Reply-To: <15d4f6da-0004-e2d3-5380-11fb2131ba48@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <2602-58bd9900-3-1184bca@164654059>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: gerald <gerald@palmerhouse.net>
+Cc: netfilter@vger.kernel.org
 
-I Found my mistake.
+On Mon, Mar 06, 2017 at 11:15:04AM -0600, gerald wrote:
+> https://bugzilla.netfilter.org/show_bug.cgi?id=1123
+> 
+> OS localhost 4.9.8-1-ARCH #1 SMP PREEMPT Mon Feb 6 12:59:40 CET 2017 x86_64 GNU/Linux
+> 
+> conntrackd version 1.4.4
+> conntrackd gives an error for each remote connction it attempts to add to the local table:
+> [Thu Feb 16 17:56:27 2017] (pid=1312) [ERROR] inject-add2: Invalid argument
+> Thu Feb 16 17:56:27 2017 icmp     1 src=192.168.0.15 dst=67.36.196.10 type=8 code=0 id=5486 [UNREPLIED]
+> [Thu Feb 16 17:56:27 2017] (pid=1312) [ERROR] inject-upd1: Invalid argument
+> Thu Feb 16 17:56:27 2017 icmp     1 src=192.168.0.15 dst=67.36.196.10 type=8 code=0 id=5486
 
-I thought it was connection-based. I was wrong
-The hashlimit is working towards the package direction.
-I fixed this problem (-d 192.168.59.0/24 and --haslimit-mode dstip)
+I fail to reproduce this here with 4.10 and current
+libnetfilter_conntrack and conntrack-tools git HEAD.
 
-Thanks.
+EINVAL means that the message we send to the kernel is malformed, that
+looks like a normal ping.
 
-Fatih USTA
+> when
+> DisableExternalCache On
+> 
+> conntrackd WILL add to external table when the external cache is enabled
+> but errors with the cache is disabled
+> 
+> with the external cache disabled
+> entries DO NOT appear in conntrack -L
+> entries DO NOT appear in conntrackd -e
+> entries DO NOT appear in conntrackd -i
+> failures show in conntrackd -s
+> 
+> 
+> conntrackd.conf:
+> Sync {
+>     Mode FTFW {
+>         DisableExternalCache On
 
-On 07-03-2017 15:47, Fatih USTA wrote:
-> Hi
->
-> I tried to use hashlimit to limit the bandwidth, for each ip address 
-> on the 192.168.59.0/24 network. But did not work specified network 
-> address or protocol.
->
-> [~]# uname -r
-> 4.4.0-64-generic
->
-> [~]# iptables -V
-> iptables v1.6.0
->
-> [~]# lsmod | grep -i hashlimit
-> xt_hashlimit           20480  2
-> x_tables               36864  6 
-> ip_tables,xt_tcpudp,xt_nat,xt_hashlimit,iptable_filter,iptable_mangle
->
->
->
-> This command working. With tcp protocol
->
-> iptables -t mangle -I PREROUTING -m tcp -p tcp -m hashlimit 
-> --hashlimit-above 50kb/sec --hashlimit-burst 50kb --hashlimit-mode 
-> srcip --hashlimit-name persource -j DROP
-> iptables -t mangle -A PREROUTING -j RETURN
->
->
-> This commands not working.
->
-> without tcp protocol
->
-> iptables -t mangle -I PREROUTING -m hashlimit --hashlimit-above 
-> 50kb/sec --hashlimit-burst 50kb --hashlimit-mode srcip 
-> --hashlimit-name persource -j DROP
-> iptables -t mangle -A PREROUTING -j RETURN
->
-> or with udp protocol
->
-> iptables -t mangle -I PREROUTING -m udp -p udp  -m hashlimit 
-> --hashlimit-above 50kb/sec --hashlimit-burst 50kb --hashlimit-mode 
-> srcip --hashlimit-name persource -j DROP
-> iptables -t mangle -A PREROUTING -j RETURN
->
-> or not working with source network
->
-> iptables -t mangle -I PREROUTING -s 192.168.59.0/24 -p tcp -m tcp -m 
-> hashlimit --hashlimit-above 50kb/sec --hashlimit-burst 50kb 
-> --hashlimit-mode srcip --hashlimit-name persource -j DROP
-> iptables -t mangle -A PREROUTING -j RETURN
->
-> and with hashlimit-srcmask
->
-> iptables -t mangle -I PREROUTING -s 192.168.59.0/24 -p tcp -m tcp -m 
-> hashlimit --hashlimit-srcmask 32 --hashlimit-above 50kb/sec 
-> --hashlimit-burst 50kb --hashlimit-mode srcip --hashlimit-name 
-> persource -j DROP
-> iptables -t mangle -A PREROUTING -j RETURN
->
->
-> Do you have any idea this case?
->
-> Thanks.
->
->
+You cannot use FTFW with DisableExternalCache On. I'll make a patch to
+warn on this to users. But this shouldn't be the cause of the problem.
 
+>         CommitTimeout 1800
+
+Could you comment out this option and retest?
+
+>         PurgeTimeout 5
+>     }
+> 
+>     UDP {
+>         IPv4_address 192.168.0.31
+>         IPv4_Destination_Address 192.168.0.30
+>         Port 3780
+>         Interface ens8
+>         SndSocketBuffer 24985600
+>         RcvSocketBuffer 24985600
+>         Checksum on
+>     }
+> }
+> 
+> General {
+>     Nice -20
+>     HashSize 32768
+>     HashLimit 131072
+>     LogFile on
+>     Syslog on
+>     LockFile /var/lock/conntrack.lock
+>     UNIX {
+>         Path /var/run/conntrackd.ctl
+>         Backlog 20
+>     }
+>     NetlinkBufferSize 2097152
+>     NetlinkBufferSizeMaxGrowth 8388608
+>     Filter From Userspace {
+>         Protocol Accept {
+>             TCP
+>             UDP
+>             ICMP # This requires a Linux kernel >= 2.6.31
+>         }
+>         Address Ignore {
+>             IPv4_address 127.0.0.1 # loopback
+>             IPv4_address 192.168.0.30
+>             IPv4_address 192.168.0.31
+>         }
+>     }
+> }
+> 
+> conntrack -c
+> works and adds entries to the local table when executed
+> 
+> perhaps related to:
+> http://www.linuxquestions.org/questions/showthread.php?p=5547189#post5547189
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
