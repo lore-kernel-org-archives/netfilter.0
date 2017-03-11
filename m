@@ -1,7 +1,7 @@
 From: Jamal Hadi Salim <jhs@mojatatu.com>
-Subject: ANNOUNCE: New talk accepted on Netfilter Connection Tracking
-Date: Sat, 11 Mar 2017 08:48:53 -0500
-Message-ID: <71f7cf32-ab66-2b05-aa55-631e08d23a45@mojatatu.com>
+Subject: ANNOUNCE: New talk accepted on OVS without OVS
+Date: Sat, 11 Mar 2017 09:26:30 -0500
+Message-ID: <4bf8ef8c-0b02-56e6-17f5-c8b1e509cffd@mojatatu.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -10,12 +10,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         h=from:subject:to:cc:message-id:date:user-agent:mime-version
          :content-transfer-encoding;
         bh=iJgoSPiL/lSDSV2iVlEcefOgZti9nLtF0pXWuQglFBk=;
-        b=LXaX6Gw+BY3VhWrT/p5PV6RF6keKwG0Q18UETm0BHOlQfPsOJKmoxyv7c98eEjcuBp
-         eqarGiW15zsSsCUo570RSsFUx+lJJZ5evlZn/WjPqD4AFaIIFm946kKKe+9TRTpz0PA7
-         GnBH9t/5QlXcsKHF4WDHA6LFU8rMcxIQtjt34nzQjBVUqCFOnQ4VYiZkgOxPmNAEkFPD
-         goypAvB6q+jcl1dYOMNagxeYAk9AonjvB18bIVw3U6THI4R7Dv/lUl2Pc2GJjjPScubB
-         PHgHxO7HQEo8dhs2LrUSYwd/cUsChPKzTlU6GNSY456bIOECuOCut+Vv2HUJtygBwGRO
-         1k0Q==
+        b=w0ksWf/jERHM0bHgI0DEUb4n7a9msggxiwmaw5obAy58uporuebwqpNTMJImTuSMgU
+         sEUXpBFccBdzx3bXc1RtHI+iqgqhEaH87fuiKKK1oZmnVGsCszECmlZ7nu6HAZ4A4u0F
+         LF/UIX7z48PUzdLT17UrbCUplZ0xnjMPR07NHHJV+8I6orplcaEbHOR5bxFw8VIMLlzR
+         e8Xh6RbfEILTy6j4ORipAtOhmELBZ+MgdPC5Vs/7C3fNcfxFvrvmsHLkdo84JOBLJkCT
+         nL92uV0JQEM+eH3buXQV8EMqZp83R9B0BR16Ie50Y7mhj9wGuhqXBAtu8k0i6j+7Tlq4
+         DxuQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
