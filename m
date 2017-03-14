@@ -1,108 +1,105 @@
-From: Ran Shalit <ranshalit@gmail.com>
-Subject: Re: using PREROUTING to change destination
-Date: Tue, 14 Mar 2017 11:56:56 +0200
-Message-ID: <CAJ2oMhLpOJ2qAebiV6SMkA+bxJYDuEaJ5OpQvo20+U+N93=rMw@mail.gmail.com>
+From: Robert White <rwhite@pobox.com>
+Subject: Re: Q: using PREROUTING to change destination
+Date: Tue, 14 Mar 2017 11:06:09 +0000
+Message-ID: <1c436605-e4d2-e0a0-1ba9-6ecbfd6746d2@pobox.com>
 References: <CAJ2oMh+hJ30EYbMJqrWTBuPjkoimuYukdNtcGDaF0dhKw+w5DQ@mail.gmail.com>
- <30f19523390f4222a80fd8fb4150eb1f@CCDEX021.corp.corpcommon.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=aGIvUhCN+fGjuzkDjo/WsSFI7Ma5iajtjlzEVhasFj4=;
-        b=EBgDVD9qpUpDR3JaiRMauKvcjL6kKtQEBh77pBnlED9l2P7r9L16pw96/ycCImd2Xp
-         ohdD4DatVho4xEYwV5lbBRaRQmklSXFLA2wcry1AkVbGp9a+QFy5FaAThBS6uVW89uUh
-         dGZ9EYA/V5nEBPVar1tlyxh6doLSmLGVHRHRpla6iiZNshMaQVj33K6PON8CBTycJFB6
-         tCFyHnEBDZJ/lhY9jgJNPMVHdmnnGyZx+RXovfsuvdfn/xV/k8ZgFGMQ1wXDGn1lwn5m
-         GgkYQsPChuuy88nSb5L//qicfFlXC6Ioksb85ocpZjkzjn1WayZSI1OCKPA8sGkmKUjF
-         +FKw==
-In-Reply-To: <30f19523390f4222a80fd8fb4150eb1f@CCDEX021.corp.corpcommon.com>
+In-Reply-To: <CAJ2oMh+hJ30EYbMJqrWTBuPjkoimuYukdNtcGDaF0dhKw+w5DQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: =?UTF-8?Q?Andr=C3=A9_Paulsberg=2DCsibi_=28IBM_Consultant=29?= <Andre.Paulsberg-Csibi@evry.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Ran Shalit <ranshalit@gmail.com>, netfilter@vger.kernel.org
 
-On Tue, Mar 14, 2017 at 11:36 AM, Andr=C3=A9 Paulsberg-Csibi (IBM
-Consultant) <Andre.Paulsberg-Csibi@evry.com> wrote:
-> Maybe better word for most people would be "final destination" , and not =
-real .
-> ( but real is the actually the "real" destination for THAT rule where cli=
-ents will be sent ,
->  not the actual target the client originally tried to reach and "think" i=
-t is still reaching )
->
-> For the termination I would say yes , because "you" decide where it termi=
-nates so if you are asking I will
-> assume you are using an out of the box PROXY which would typically make n=
-ew connections in the "backend" from its own source IP .
->
-
-Hi Andr=C3=A9 ,
-
-Thanks for the reply.
-
-I understand from your reply that REDIRECT rule for the destination
-port will change the destination port, so that the real
-destination(=3D"final destination") is in the packet header  (and there
-is no memory for the original destination any where else).
-
-Thanks,
-Ran
-
-
-
-
->
-> Best regards
-> Andr=C3=A9 Paulsberg-Csibi
-> Senior Network Engineer
-> Fault Handling
-> IBM Services AS
-> andre.paulsberg-csibi@evry.com
-> M +47 9070 5988
->
->
->
-> -----Original Message-----
-> From: netfilter-owner@vger.kernel.org [mailto:netfilter-owner@vger.kernel=
-.org] On Behalf Of Ran Shalit
-> Sent: 14. mars 2017 09:57
-> To: netfilter@vger.kernel.org
-> Subject: Q: using PREROUTING to change destination
->
+On 03/14/17 08:56, Ran Shalit wrote:
 > Hello,
 >
 > I am trying to understand how to use rules with PREROUTING and
 > transparent proxy.
->
-> In documentation it is said:
->
-> "6.2 Destination NAT
->
-> This is done in the PREROUTING chain, just as the packet comes in;
-> this means that anything else on the Linux box itself (routing, packet
-> filtering) will see the packet going to its `real' destination. It
-> also means that the `-i' (incoming interface) option can be used."
->
-> What does `real' destination means here ? Does it mean that the packet
-> is transfered to the new destination according to the rule given for
-> PREROUTING ?
-> for example, In case of transparent proxy :
->
-> iptables -t nat -A PREROUTING -p tcp -s 192.168.201.0/24 --dport 80 -j
-> DNAT --to 192.168.201.250:3128
->
-> Does it mean that the transparent proxy will be the end destination of
-> the packet ?
->
-> I am new with iptables.
->
-> Thank you,
-> Ran
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+Okay, at any moment an IP packet has two addresses inside it. "From" and 
+"To". From is the "Source" and To is "Destination".
+
+So now forget computers entirely for a second and instead imagine a 
+corporate mail room for a small company.
+
+The corporation tells customers to send pre-sale questions to 
+"Department 1" and complaints to "Department 2".
+
+The mail room knows that "Department 1" is actually Alice, and 
+"Department 2" is Betty.
+
+When the mail room gets something for Department 1 they "route it to Alice".
+
+So the customer doesn't need to know where or who Betty is, so they 
+won't stab out he tires for her response to her their complaint.
+
+So in the mail room the easiest thing to do is to cross off "Department 
+1" and write "Alice" on the envelope, and cross off the Department 2 to 
+write in Betty.
+
+Now we need to also be sure that whatever anybody sends out from their 
+desk will have the mailroom as the return address. That's because the 
+postal service has no clue who Alice and Betty are. They just have the 
+building address.
+
+In real letters we can put 'attn: Betty' but we are already putting 
+'attn: Department 2' so that we don't ever have to tell anybody if we 
+fire Betty and replace her with Chris.
+
+
+So back to computers...
+
+DNAT means "cross off the existing destination and
+
+iptables --table nat --append PREROUTING --destination Mailroom --dport 
+Department_1 --jump DNAT --to Alice
+iptables --table nat --append PREROUTING --destination Mailroom --dport 
+Department_2 --jump DNAT --to Betty
+
+iptables --table nat --append POSTROUTING --out-interface postal_service 
+--jump SNAT --from Mailroom
+
+ASIDE: in the above the names "Alice", "Betty", and "Mailroom" are from 
+the /etc/hosts or named/bind, and the department names are from 
+/etc/services. But literal numbers are common. The translation from 
+names to numbers and back is done by the "iptables" tool. The actual 
+rules put into the kernel just has numbers there which is what 
+"--numeric" means when you do "iptables --table nat --list --numeric". 
+That option means "don't turn the numbers back into names" and so on.
+
+So there we are. We need to know "who the packet needs to be sent to", 
+q.v. where to route it, _before_ we route it to the individual's desk.
+
+And we need to know that a packet is going out the the rest of the world 
+before we cross out the return address, the "source address", before we 
+post it.
+
+Why? Well if the packet is from Alice to Betty it's going to stay in the 
+building so nobody needs to change any addresses at all.
+
+Just remember that the S in SNAT is "source" and the D in DNAT is 
+"destination" and "source" or "destination" is what you are crossing off 
+and replacing in the packet.
+
+You need to rewrite the destination before you know what local machine 
+to send it to, so it that's got to happen before you _can_ route it to 
+that machine.
+
+Now if _you_ had to keep track of these connections in manual rules it 
+would be nearly impossible. The kernel provides "the connection 
+tracker". Once you tell the system to "Translate the Destination 
+Address" for the first packet exchanged (e.g. --cstate NEW) it will 
+automatically reverse those changes in the replies (ESTABLISHED 
+connection) and in some specifically related (RELATED).
+
+So the best thing to do until you get the hang of it is to mentally say 
+"Destination Network Address Translation" when you see "DNAT".
+
+Life Pro Tip: if you are new to iptables, I _strongly_ suggest using the 
+long arguments "--table" instead of "-t", "--insert" instead of "-I", 
+and so on. It will reinforce your understanding of what is right and 
+wrong as you experiment.
+
+--Rob.
