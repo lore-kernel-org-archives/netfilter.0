@@ -1,101 +1,59 @@
-From: Ran Shalit <ranshalit@gmail.com>
-Subject: Re: using PREROUTING to change destination
-Date: Tue, 14 Mar 2017 14:08:54 +0200
-Message-ID: <CAJ2oMhKz612uEXA=GyUxWcEkocBMU1VaGLWt9CM2BDQH0LjTQQ@mail.gmail.com>
-References: <CAJ2oMh+hJ30EYbMJqrWTBuPjkoimuYukdNtcGDaF0dhKw+w5DQ@mail.gmail.com>
- <30f19523390f4222a80fd8fb4150eb1f@CCDEX021.corp.corpcommon.com>
- <CAJ2oMhLpOJ2qAebiV6SMkA+bxJYDuEaJ5OpQvo20+U+N93=rMw@mail.gmail.com> <fd694cd0-4186-6d72-af78-3f23c06aedfd@pobox.com>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Subject: ANNOUNCE: New talk accepted on Netesto tool suite
+Date: Tue, 14 Mar 2017 08:11:34 -0400
+Message-ID: <f3f5ac35-b685-a2f6-ed89-277996dc3c17@mojatatu.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-owner@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=CS1vwDkdadz76zJVRLfFKhuGwn4HElahp/dLjFI0ivw=;
-        b=oVYslxsxfqn/vye0CdnD4/AkTxJmM5/D0bxuy3viSZ0RSWs0XK4cMFRvCqLUxIok9i
-         5DwkX/E+51uYtMSSn1yiwKp1uXrv8CYItMje/lATnyMmJsDpNirDBe0IgWLa5qZ4ZEWu
-         BoMWoxbLYfsitlOvioIlnAvF1pLUj8DlzxsI9nStrdQ5aillW+8vKIvPsj47eiHuZ5bQ
-         GJqW84l/rSdBAXjRe/Lldw2aOO0LAC6U0iDrV6I2cAeu/Fgz++x0HR9i85BWRQ8pLnA5
-         VQQCMX0jEwYv6vkReh/1VaLpRP9pQA8P1Ya7dDq9mNbQCCMnhXMXk2L9dWGyZPD/L0q7
-         Qvmg==
-In-Reply-To: <fd694cd0-4186-6d72-af78-3f23c06aedfd@pobox.com>
-Sender: netfilter-owner@vger.kernel.org
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=/BBWmvBQpeGQ7PqxYz9kf4JUMLMz9mhk7jF55zhsTIA=;
+        b=jOryZX+5hhNfklwc6EX0j/lfW0CxgBB0HwVed9KJyDOIAI/jEdK+nfHqErnijB6ZoR
+         90ER4vYbadokn4WKIHSKNtz70uvXn+aRHtgFZsM2P9+F2fBHevucjmQ0mWvDda9I9hE4
+         3xoCUQHknk3tDB5F9ZA3SpoP8OFpgRBYOdxIPQxT9kzbY11SVEsjR876L+wJpaFr5I9b
+         TthJxi4R4tyFBQG6VYI/BLUcuwAuikHbSMw9awOFSDjLpfvQVjWgdZbTeLYy+1pyJYmb
+         mJcd+VF2nZwQilx7Sozjur0yXMcsi/1coYcpHY0s0vjFGpIo9Fx/4qaiFUEEBVntX7W4
+         0I9Q==
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"
-To: Robert White <rwhite@pobox.com>
-Cc: =?UTF-8?Q?Andr=C3=A9_Paulsberg=2DCsibi_=28IBM_Consultant=29?= <Andre.Paulsberg-Csibi@evry.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: people@netdevconf.org
+Cc: tech-committee@netdevconf.org, netfilter-devel@vger.kernel.org, Brenda Butler <bjb@mojatatu.com>, Stephen Jaworski <jaws@mojatatu.com>, netfilter@vger.kernel.org, linux-wireless@vger.kernel.org, Heri Muhero <hmuhero@gmail.com>
 
-On Tue, Mar 14, 2017 at 1:29 PM, Robert White <rwhite@pobox.com> wrote:
-> On 03/14/17 09:56, Ran Shalit wrote:
->>
->> I understand from your reply that REDIRECT rule for the destination
->> port will change the destination port, so that the real
->> destination(=3D"final destination") is in the packet header  (and there
->> is no memory for the original destination any where else).
->
->
-> REDIRECT is totally different from DNAT. Destination Network Address
-> Translation sends the packet off to a different machine (well IP address,
-> which could be another address on the current machine but that's _super_
-> _rare_) so one might DNAT some packets arriving on your firewall through =
-to
-> your Web Server, and others over to your XBox witch is clearly never the
-> same machine as your firewall.
->
-> REDIRECT says "this service is here on the firewall, but at a different p=
-ort
-> than this packet thinks it would be.
->
-> Here's a REDIRECT example.
->
-> I want to run a web server. I decide to run it on the firewall. I don't w=
-ant
-> the WebServer processes to be run as root because if someone breaks into =
-the
-> WebServer I don't want them to have any special root privileges. A proces=
-s
-> needs to be a root process to take over port eighty because its less than
-> port 1024.
->
-> So now what?
->
-> Well I create the web server user with no dangerous privilege and tell it=
- to
-> use an unprivileged port (typically 8080).
->
-> Then...
->
-> iptables --table nat --append PREROUTING --protocol tcp --dport 80 --jump
-> REDIRECT --to-port 8080
->
-> So the web server user can now open and close 8080 as needed with Just Pl=
-ain
-> User=E2=84=A2 rights, and I don't have to tell the entire world to use 80=
-80 instead
-> of the default.
->
-> And again the connection tracking system is going to do all the translati=
-ons
-> automagically for the connections after you DNAT, SNAT, or REDIRECT the
-> first packet. So if you do a "iptables --table nat --list --verbose" the
-> packet count is more-or-less the 'new connections' or 'new flows' count f=
-or
-> the rule. The connection tracker keeps the necessary records of what's be=
-en
-> changed for what so that you don't have to think about that part of this =
-at
-> all (in most settings).
->
->
-> Again, saying/spelling the whole long-form arguments out is very helpful =
-in
-> picking all this skill set up more quickly.
->
-> --Rob
+The tech committee would like to announce a new accepted talk.
 
-Rob,
+Lawrence Brakmo  will talk about Netesto tool suite
 
-Thanks a lot. It is much more clear to me now.
+Details are as follows:
+-----
+Netesto (NEtwork TESting TOolkit) is a suite of tools for running 
+multi-host network experiments that supports the collection and display 
+of relevant data and statistics. It currently supports TCP RPC and 
+STREAM transfers through netperf. Although the framework itself can 
+easily be expanded to support other protocols and transfer programs. It 
+has some similarities to Flent (The Flexible Network Tester) in that it 
+is based on Python, but unlike Flent, Netesto supports:
 
-Ran
+Multiple senders and receivers
+Detailed flow information: RTTs, cwnds, etc.
+Per host statistics and state
+Creation of csv file with results
+Creation of html file with results in table plus detailed results 
+including graphs of cwnds, RTTs, goodput
+Support for creating complex scenarios through macros
+Support for adding delays with netem
+Netesto can run complex scenarios consisting of multiple individual 
+tests with just a few commands due to the use of macros and libraries. 
+The end result is an HTML page consisting of a table with one or more 
+lines per test, plus links to pages for individual results which contain 
+graphs showing goodputs, RTTs and cwnds. Netesto has proved very 
+valuable for comparing the performance of different TCP variants (such 
+as Cubic, Reno, BBR, NV). For example, it was used to evaluate BBR and 
+compare its performance to Cubic 
+(https://drive.google.com/file/d/0B4YZ_0yTgbJEa21CbUVLWFdrX2c/view)
+----
+
+cheers,
+jamal
