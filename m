@@ -1,51 +1,45 @@
-From: Ran Shalit <ranshalit@gmail.com>
-Subject: Q: using PREROUTING to change destination
-Date: Tue, 14 Mar 2017 10:56:33 +0200
-Message-ID: <CAJ2oMh+hJ30EYbMJqrWTBuPjkoimuYukdNtcGDaF0dhKw+w5DQ@mail.gmail.com>
+From: MICHAL BLIZNAK <michal.bliznak@schneider-electric.com>
+Subject: Limitation of connection rate (SYN packets) without timing
+ restrictions.
+Date: Tue, 14 Mar 2017 09:39:45 +0000
+Message-ID: <DB5PR0401MB18967DE8D3D746330DDE5A1AA7240@DB5PR0401MB1896.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=17I1vYKfkkAR/71gvDym5ITlozmy+r/2TVGi8Jf/ABE=;
-        b=i3gJVYJN5DpwtxrR7S7b+LXOh4Vo477b6+Mxmdw8ghj0aqj9wxeOX/bumCSSsAKVGv
-         zhh5WmpYO11EjYxGmhBeuQ38LQV9S2B5FcUu27l2rs9DotYm6GF0q1/Al2BgdiaGinba
-         w2CVxe1q6xOwuyceZ+39/Pir885eyeDJfWioyS2YYEgtlfdUk9RcHnBjUtTTHGH67t4W
-         S0UBrwjDvjpfu87wf9FImIycQMSn0mOckeIL7UVINy/a/kupJ6kax62Lcf18BEpDoJRe
-         /bkIuEYgg8WPc6ZFmuPozbmkwNSMeoJ013m07xETm8Dn3+81gdZzI/rGfNBC3B8aqik7
-         0TEA==
+ d=schneiderelectric.onmicrosoft.com; s=selector1-schneiderelectric-com02c;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=EMMVuwCNxwduyY0fo8hlzClF4Wm1jwqrujwWs/AFzoU=;
+ b=Mm3lczZVEXlDGZKpwSLGpF8pr/Q+U7loZ1HhQSH/MobDkOws8BarxJawvTXeArfEBCGsVKnvxLekIokjhBi4V2yMs8CSuAzIOVS/FT0cAS+9ytnPGfT46st5qO/1ymxPBTAHG5HO831/AlAvdvJ/fBwir6Ra2fV/FEa6z3fXdLE=
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hello,
+Dear All,
 
-I am trying to understand how to use rules with PREROUTING and
-transparent proxy.
+I'd like to know whether we can (by using iptables rules) restrict connecti=
+on rates in the following way: We need to limit number of TCP connections r=
+equest per a second, but without restrictions on at which exact time slot w=
+ithin the one second period the connection attempts (SYN packets) arrive. L=
+et's consider the following scenario: The connection rate limitation specif=
+ied in iptables should accept just 10 new TCP connections (SYN packets) per=
+ one second. By using limit, or hashlimit match module we can achieve that =
+but based on our tryings, the iptables works in a way that just one SYN pac=
+ket is acceptable within  1/10s (i.e. 100 ms). It means, that if, for examp=
+le, 9 SYN packets arrive in the first 100ms then just one packet is accepte=
+d and the rest is rejected even when no new SYN packet arrives within subse=
+quent 900ms. I know, that we could set burst value to any number higher tha=
+n one, but it doesn't solve the problem if several SYN packets arrive at th=
+e beggining of the time period and previous time period was fully loaded. I=
+'d like to know whether it is feasible to set the iptables so that some tot=
+al number of new connection requests (comming from ANY IP address but aimin=
+g to some specific port) can be accepted regardless on exact timing.
 
-In documentation it is said:
+Best regards and thanks for your ideas in advance,=20
 
-"6.2 Destination NAT
+Michal Bliznak
+=A0=A0=A0=A0=A0=A0=A0=20
 
-This is done in the PREROUTING chain, just as the packet comes in;
-this means that anything else on the Linux box itself (routing, packet
-filtering) will see the packet going to its `real' destination. It
-also means that the `-i' (incoming interface) option can be used."
 
-What does `real' destination means here ? Does it mean that the packet
-is transfered to the new destination according to the rule given for
-PREROUTING ?
-for example, In case of transparent proxy :
-
-iptables -t nat -A PREROUTING -p tcp -s 192.168.201.0/24 --dport 80 -j
-DNAT --to 192.168.201.250:3128
-
-Does it mean that the transparent proxy will be the end destination of
-the packet ?
-
-I am new with iptables.
-
-Thank you,
-Ran
