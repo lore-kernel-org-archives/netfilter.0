@@ -1,41 +1,69 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] 13th Netfilter Workshop nearby Faro, Portugal
-Date: Wed, 15 Mar 2017 12:25:38 +0100
-Message-ID: <20170315112538.GA6641@salvia>
+From: Jamal Hadi Salim <jhs-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
+Subject: ANNOUNCE: New Talk: Story of a Network Virtualization and it's future
+ in Software and in Hardware
+Date: Wed, 15 Mar 2017 08:28:40 -0400
+Message-ID: <a08ffed4-7ae7-68c3-4ebb-296346241469@mojatatu.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
-Cc: lwn@lwn.net
+Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=C+CkIUpsw8n3wJ3c7QWHYLNdjmBb+E4RWGdUydyuY58=;
+        b=LybJfsOUMl+W46TptC/LVdQnjVwZZvn6gHmByJLXLej6HpHURL38HZMzo+PPZJyoiM
+         Wndn0jkjN8UwGDJuqUU4sqMJF9+2QmWdAVYkbah5n2Klm6mwbC1cc0CG3YK+lbwtA9nZ
+         V6kXf2VXQJ3tuUJky4dlp5eglqYUUQyMLmDds1j419l/2QTCx8zawIAgPLSnE1y5bOiY
+         n3dhz9DL3rNcnpuvih8CNVnqvdktSep73smdMCKk9fGcIlXpi9nvDookHSNCOIQDVB/p
+         s9vuNYhYIuckJW8ytb2CE+ssX9vjSrJYnPbWFjuwp8NeBgrWH6hm8AcgGDrZ4z9ISzb0
+         iYIQ==
+Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: people-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org
+Cc: tech-committee-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Brenda Butler <bjb-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, Stephen Jaworski <jaws-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Heri Muhero <hmuhero-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-Hi!
+The tech committee would like to announce a new accepted talk from
+Anjali Singhai Jain along with
+Alexander H Duyck, Parthasarathy Sarangam and Nrupal Jani
 
-We are glad to announce a new round in the Netfilter Workshop series.
-This year this event will take place nearby Faro, Portugal, from 3th
-July to 7th July, 2016 [1]. Exact location TBA.
+The details are as follows:
+-------
+The paper and the presentation will quickly go through a time lapse of 
+Network virtualization as it evolved, successes and failures and the 
+reasons behind those. Revisiting history and understanding the present 
+and future use cases for Network virtualization will fuel the future 
+Hardware and Software designs for a better end user experience and 
+pushing the envelope on Network virtualization. Intel and the industry 
+has seen many generations of Network virtualization.
 
-The Netfilter Workshop (NFWS) is the main event organized for and by
-the Netfilter community. During the workshop days, Linux kernel
-networking and Netfilter developers meet and discuss the status of the
-on-going Netfilter-related developments and the plans for the near
-future.
+The talk will be focused on two important areas:
 
-Attendance requires an invitation. Linux networking developers with
-contributions to any of the Netfilter subsystems and users with
-interesting usecases and open problems are also welcome. We have
-traditionally left room for other projects that rely on Netfilter
-infrastructure such as the Linux Virtual Server project. You can send
-us proposal in a very lightweight format: title and quick abstract
-(not more than 500 words!) as well as estimated time to present.
+     Briefly Analyze the past and present
+     Make a case for the future technologies
 
-We are looking for sponsors, if you think you can help us to get funds
-to run the workshop, please, contact us at coreteam@netfilter and
-we'll be glad to send you our sponsorship policy.
+The talk will go deep dive into HW challenges in two areas of Network 
+Virtualization:
 
-Join us!
+     Why the Hardware offloads and getting them just right is important 
+(Goldilocks effect), may be SRIOV is little too much.
+     Host interface exposed by a network Virtualization device and how 
+do we get that just right
 
-[1] http://workshop.netfilter.org/2017/
+The talk will also cover what the future SW model for Network 
+Virtualization is shaping up to be
+
+     The best control and data plane split that works for Network or 
+compute intensive VMs/Containers.
+     Why less is more in some cases for the Virtual function device.
+     Is true SR-IOV a good answer in all cases, are Mediated devices a 
+better compromise
+
+To conclude we will go over the upcoming Virtualization technology 
+supported by VFIO Mediated devices and PCIE specification for PASID, 
+what problems will that solve. How do we get the software model right in 
+this case and learn from our mistakes with SR-IOV.
+----
+
+cheers,
+jamal
