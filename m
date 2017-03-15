@@ -1,69 +1,99 @@
-From: Jamal Hadi Salim <jhs-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
-Subject: ANNOUNCE: New Talk: Story of a Network Virtualization and it's future
- in Software and in Hardware
-Date: Wed, 15 Mar 2017 08:28:40 -0400
-Message-ID: <a08ffed4-7ae7-68c3-4ebb-296346241469@mojatatu.com>
+From: Muhammad Faisal <faisalusuf@gmail.com>
+Subject: Re: Year missing from ulogd2 timestamp
+Date: Wed, 15 Mar 2017 22:51:36 +0500
+Message-ID: <CAAzdDtNokDLm0d6bT1Uxaw8NzoqnwbWg9huDd=ax1GWSWNwh7g@mail.gmail.com>
+References: <CAAzdDtMV=OaFftNs8A_AF9-TXCvn-pxmVDqdDHCBD_2HTu3t3g@mail.gmail.com>
+ <CACmTqUmm4y+6_gQJ8t4r+ZPDmJ_z7XRRm=jX9QGAAh8cCQD4cg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=C+CkIUpsw8n3wJ3c7QWHYLNdjmBb+E4RWGdUydyuY58=;
-        b=LybJfsOUMl+W46TptC/LVdQnjVwZZvn6gHmByJLXLej6HpHURL38HZMzo+PPZJyoiM
-         Wndn0jkjN8UwGDJuqUU4sqMJF9+2QmWdAVYkbah5n2Klm6mwbC1cc0CG3YK+lbwtA9nZ
-         V6kXf2VXQJ3tuUJky4dlp5eglqYUUQyMLmDds1j419l/2QTCx8zawIAgPLSnE1y5bOiY
-         n3dhz9DL3rNcnpuvih8CNVnqvdktSep73smdMCKk9fGcIlXpi9nvDookHSNCOIQDVB/p
-         s9vuNYhYIuckJW8ytb2CE+ssX9vjSrJYnPbWFjuwp8NeBgrWH6hm8AcgGDrZ4z9ISzb0
-         iYIQ==
-Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+        d=gmail.com; s=20161025;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=lDhAjV9In52UH+tNp2X/nMc/8k2TjuQxLWhr7Hz0zwU=;
+        b=Nx+i/AXorZOBTPizC+Z1cUV3ZHiaHaMc15eyPhmHLy3QMFY6AfFj4HtvyK58y0ITxK
+         koaQOT6ZL6Zv4Q8++8QUdJKy8EvavjWzeslEVMN9Th89//BrvAIXr29Ng0Sg8bIeaEeK
+         vvWYTMWBKZGN6RfQJVGTyss7cyP7GDX6Os1QHL6uh9YPIt9z9ZCSQ1phCc/UOZDFY4/i
+         AMFtqlgWTdZZii+6e+yMh8tfr1wvH0qBWb7ciClPWaWET5Z22EQDBxFHGQL58ghfE995
+         5DKQYTkY/5Z7d7lY3uvDRzJludcfBEEaHFJWFFN1jAaCWGt2O21hdEHjzcfU1B8Y8LWL
+         PYYA==
+In-Reply-To: <CACmTqUmm4y+6_gQJ8t4r+ZPDmJ_z7XRRm=jX9QGAAh8cCQD4cg@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: people-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org
-Cc: tech-committee-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Brenda Butler <bjb-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, Stephen Jaworski <jaws-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Heri Muhero <hmuhero-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: V Kurien <kurien.varugis@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-The tech committee would like to announce a new accepted talk from
-Anjali Singhai Jain along with
-Alexander H Duyck, Parthasarathy Sarangam and Nrupal Jani
+Hi Kurien,
+Please see the nf_conntrack_timestamp giving error is it the correct command?
 
-The details are as follows:
--------
-The paper and the presentation will quickly go through a time lapse of 
-Network virtualization as it evolved, successes and failures and the 
-reasons behind those. Revisiting history and understanding the present 
-and future use cases for Network virtualization will fuel the future 
-Hardware and Software designs for a better end user experience and 
-pushing the envelope on Network virtualization. Intel and the industry 
-has seen many generations of Network virtualization.
+[root@wc01 ~]# /bin/echo "1"> /proc/sys/net/netfilter/nf_conntrack_timestamp
+-bash: /proc/sys/net/netfilter/nf_conntrack_timestamp: No such file or directory
+[root@wc01 ~]# cat /proc/sys
+sys/           sysrq-trigger  sysvipc/
+[root@wc01 ~]# cat /proc/sys/net/netfilter/nf_
+nf_conntrack_acct
+nf_conntrack_buckets
+nf_conntrack_checksum
+nf_conntrack_count
+nf_conntrack_events
+nf_conntrack_events_retry_timeout
+nf_conntrack_expect_max
+nf_conntrack_generic_timeout
+nf_conntrack_icmp_timeout
+nf_conntrack_log_invalid
+nf_conntrack_max
+nf_conntrack_tcp_be_liberal
+nf_conntrack_tcp_loose
+nf_conntrack_tcp_max_retrans
+nf_conntrack_tcp_timeout_close
+nf_conntrack_tcp_timeout_close_wait
+nf_conntrack_tcp_timeout_established
+nf_conntrack_tcp_timeout_fin_wait
+nf_conntrack_tcp_timeout_last_ack
+nf_conntrack_tcp_timeout_max_retrans
+nf_conntrack_tcp_timeout_syn_recv
+nf_conntrack_tcp_timeout_syn_sent
+nf_conntrack_tcp_timeout_time_wait
+nf_conntrack_tcp_timeout_unacknowledged
+nf_conntrack_udp_timeout
+nf_conntrack_udp_timeout_stream
+nf_log/
+Best Regards,
+Muhammad Faisal
 
-The talk will be focused on two important areas:
+Disclaimer:
+Information in this e-mail and attachments is confidential and may be
+legally privileged. Only intended recipients are authorized to use it.
+If you have received this message in error, please delete it and all
+copies of the message from your system and notify the sender
+immediately by return e-mail. I'm neither liable for incomplete
+transmission of the information in this communication nor for damage
+caused by any virus transmitted through this e-mail.
 
-     Briefly Analyze the past and present
-     Make a case for the future technologies
 
-The talk will go deep dive into HW challenges in two areas of Network 
-Virtualization:
 
-     Why the Hardware offloads and getting them just right is important 
-(Goldilocks effect), may be SRIOV is little too much.
-     Host interface exposed by a network Virtualization device and how 
-do we get that just right
-
-The talk will also cover what the future SW model for Network 
-Virtualization is shaping up to be
-
-     The best control and data plane split that works for Network or 
-compute intensive VMs/Containers.
-     Why less is more in some cases for the Virtual function device.
-     Is true SR-IOV a good answer in all cases, are Mediated devices a 
-better compromise
-
-To conclude we will go over the upcoming Virtualization technology 
-supported by VFIO Mediated devices and PCIE specification for PASID, 
-what problems will that solve. How do we get the software model right in 
-this case and learn from our mistakes with SR-IOV.
-----
-
-cheers,
-jamal
+On Wed, Mar 15, 2017 at 12:04 AM, V Kurien <kurien.varugis@gmail.com> wrote:
+> Don't you have to enable timestamp and byte logging support?
+> /bin/echo "1" > /proc/sys/net/netfilter/nf_conntrack_acct
+> /bin/echo "1"> /proc/sys/net/netfilter/nf_conntrack_timestamp
+>
+> On Tue, Mar 14, 2017 at 11:55 AM, Muhammad Faisal <faisalusuf@gmail.com> wrote:
+>> Hello,
+>> I would like to understand is this a feature or a possible bug that
+>> Year info is missing from the ulogd2 output.
+>>
+>>
+>> Mar 11 15:55:59 wc01 ulogd[14289]: [NEW] ORIG: SRC=5.55.22.172
+>> DST=192.168.1.3 PROTO=TCP SPT=2083 DPT=5158 PKTS=0 BYTES=0 , REPLY:
+>> SRC=192.168.1.3 DST=5.55.22.172 PROTO=TCP SPT=5158 DPT=2083 PKTS=0
+>> BYTES=0
+>>
+>>
+>> Best Regards,
+>> Muhammad Faisal
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
