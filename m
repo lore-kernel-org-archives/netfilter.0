@@ -1,40 +1,46 @@
 From: V Kurien <kurien.varugis@gmail.com>
-Subject: Re: Ulogd2 messages stopped [Cent OS 6.8]
-Date: Thu, 16 Mar 2017 11:16:21 -0700
-Message-ID: <CACmTqUnHjuB9zc8tHavgNNCf8TgRN_RNc3CrmOeRPEQxJ37fiA@mail.gmail.com>
-References: <CAAzdDtPv0SC=8i3Zn5k4qCNZB7pLBC_4Yf7THAmBU5UAhvnoPA@mail.gmail.com>
- <CAAzdDtOzRi2digE+3uUbeOj50sOWpAGjxxznP69jDN=2NJu5pQ@mail.gmail.com>
- <1489478521.15907.4.camel@regit.org> <CAAzdDtNtRaGSbMvTEuZOsGUVO3ZedfHxSX=X-0rm3Fyqju3wMw@mail.gmail.com>
- <CAAzdDtPzy9q_6v6P9JA9qrJO8q=gtqzPevibDQ6xAuP6Hdc8HA@mail.gmail.com> <CAAzdDtNRbSGBeegw8XXoW7HnhDpbea90MNwTmiEv3bKMxsp6Vw@mail.gmail.com>
+Subject: Re: Year missing from ulogd2 timestamp
+Date: Thu, 16 Mar 2017 11:22:08 -0700
+Message-ID: <CACmTqUmd4AfqDxR6xs0+qJGS_RXJ=HT9r-i7VoXg5sujZAgJPg@mail.gmail.com>
+References: <CAAzdDtMV=OaFftNs8A_AF9-TXCvn-pxmVDqdDHCBD_2HTu3t3g@mail.gmail.com>
+ <CACmTqUmm4y+6_gQJ8t4r+ZPDmJ_z7XRRm=jX9QGAAh8cCQD4cg@mail.gmail.com>
+ <CAAzdDtNokDLm0d6bT1Uxaw8NzoqnwbWg9huDd=ax1GWSWNwh7g@mail.gmail.com>
+ <CACmTqU=m7WQYtULG-WRhScnr90HCEr0FBGOcLpFgQFX8K2CQgQ@mail.gmail.com>
+ <CAAzdDtNZmBsZKQiJXPx0QCU=g5j3NQSd0M14+u8nX=c9+FEbiw@mail.gmail.com> <CAAzdDtOwZoFQPy44FJ9ppfjM=rt210Rbu4GbP9Lja80g7aVNCQ@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:in-reply-to:references:from:date:message-id:subject:to
          :cc;
-        bh=WNrWXhxR4mwQO6UELwfElBmzbcmy6Gpz/m1M5dR15Fg=;
-        b=B4m3sdn+braXhsSoMCYY/SuyLC+43JI8bc+q4zHenL12SWOsS0N0fbJLRX9JKxC/zV
-         Cwk4hn+MEOm5oEgg83znB2yOM3YYOVzNs94NUFNLGivalj6cOmc84rKdi1fpWXAlFMIP
-         73Ah5aPDBQHOyXbB/gxP+v1KHXIVqmXHZWdPZ68RNtGy0te4aLtExyl64IMHwEzwuV3L
-         NwO056A1HrBMhI3oYMl/b3C0Dc1lXa1ETu2lpOXAYEPu2DamI+jKqeQs2po4haRpkNlX
-         JeRPHVfI2ZmlKhvoQTYCG7qJE0f2NvHP3fNHlNiY3pH2Jw1KOQKLYiQgvix+0Gg8USy/
-         Nd2w==
-In-Reply-To: <CAAzdDtNRbSGBeegw8XXoW7HnhDpbea90MNwTmiEv3bKMxsp6Vw@mail.gmail.com>
+        bh=tMoTuDaxC9dn4D9vzm2zMywIWgsuiRyRLA2LbyYNweo=;
+        b=mAE927QbXODrVCPByhg1SqdvGl5ulyII3Fwb0o/rwXqgI3BPfXdEzwTatuNFKgLqbe
+         GhEKnn697BOs7sbLwucIyr7AlBB1s73FxvbI5LgTA4cDvkdc9PpI2I71IG/oO5qsqjH6
+         mdM/GU0Qxegnq7SjOPFmSFTJypoilOjezZS5x+VpwElGsGGwYIzrZYNd52p5aQbJGoAU
+         lGVHh9z7Jp6WdJQSwt81UWiJE1WFTYeX6jtC6HaugU018mkHKN+G/OohM0QiywIC+/CF
+         9MEGXbFrbY1BhI+jYLxyqFXGW/UXsphR25iz1PfQf4fOzBc+Km0NjVG3Rl8TzsPcnbDo
+         BNKg==
+In-Reply-To: <CAAzdDtOwZoFQPy44FJ9ppfjM=rt210Rbu4GbP9Lja80g7aVNCQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: Muhammad Faisal <faisalusuf@gmail.com>
-Cc: Eric Leblond <eric@regit.org>, netfilter@vger.kernel.org
+Cc: netfilter@vger.kernel.org
 
-I'd do the following:
-a) Run lsmod when the system is not showing messages.
-b) Run lsmod after running conntrack -L
+Which printer are you using? I see timestamps using both gprint and
+syslog on my system. The output snippet I sent was a syslog message.
 
+And did the procfs parameters show up post kernel upgrade?
 
-On Thu, Mar 16, 2017 at 10:32 AM, Muhammad Faisal <faisalusuf@gmail.com> wrote:
-> Hello,
-> Any suggestion on this?
+On Thu, Mar 16, 2017 at 1:00 AM, Muhammad Faisal <faisalusuf@gmail.com> wrote:
+> The kernel upgraded to 3.10, timestamp was required a newer kernel.
+> But still no timestamps in the logs:
+>
+> Mar 16 13:58:11 wc01 ulogd[4022]: [NEW] ORIG: SRC=172.16.50.17
+> DST=192.168.1.1 PROTO=TCP SPT=17012 DPT=5222 PKTS=0 BYTES=0 , REPLY:
+> SRC=192.168.1.1 DST=192.168.2.1 PROTO=TCP SPT=5222 DPT=17012 PKTS=0
+> BYTES=0
 > Best Regards,
 > Muhammad Faisal
 >
@@ -49,17 +55,19 @@ On Thu, Mar 16, 2017 at 10:32 AM, Muhammad Faisal <faisalusuf@gmail.com> wrote:
 >
 >
 >
-> On Thu, Mar 16, 2017 at 12:01 AM, Muhammad Faisal <faisalusuf@gmail.com> wrote:
->> Hello,
->> Im able to reproduce the problem. The messages stopped upon system
->> reboot. The logs starts when conntrack -L command is executed. The
->> interesting fact is the following message appeared when I ran the
->> conntrack -L command. This mean NETLINK things is not getting started
->> unless conntrack command is ran by the user.
+> On Wed, Mar 15, 2017 at 11:28 PM, Muhammad Faisal <faisalusuf@gmail.com> wrote:
+>> Yes,
 >>
->> Mar 16 00:51:53 wc01 kernel: Netfilter messages via NETLINK v0.30.
+>> [root@wc01 ~]# modprobe nf_conntrack_netlink
+>> [root@wc01 ~]# modprobe nf_conntrack_ipv4
+>> [root@wc01 ~]# echo "1"> /proc/sys/net/netfilter/nf_conntrack_timestamp
+>> -bash: /proc/sys/net/netfilter/nf_conntrack_timestamp: No such file or directory
+>> [root@wc01 ~]#
 >>
->> What is the solution ?
+>> CentOS 6.8
+>> [root@wc01 ~]# uname -a
+>> Linux wc01 2.6.32-642.15.1.el6.x86_64 #1 SMP Fri Feb 24 14:31:22 UTC
+>> 2017 x86_64 x86_64 x86_64 GNU/Linux
 >> Best Regards,
 >> Muhammad Faisal
 >>
@@ -74,305 +82,85 @@ On Thu, Mar 16, 2017 at 10:32 AM, Muhammad Faisal <faisalusuf@gmail.com> wrote:
 >>
 >>
 >>
->> On Tue, Mar 14, 2017 at 11:48 PM, Muhammad Faisal <faisalusuf@gmail.com> wrote:
->>> Hi Eric,
+>> On Wed, Mar 15, 2017 at 11:21 PM, V Kurien <kurien.varugis@gmail.com> wrote:
+>>> Hmm. Odd. What OS are you on? I am on U16.04. How important are the
+>>> timestamps to you? Note that the log collector can add timestamps as
+>>> well.
 >>>
->>>> This looks rather strange. Could you have a task running in background
->>>> and removing conntrack related kernel module ?
+>>> Did you modprobe appropriately?
+>>> modprobe nf_conntrack_netlink
+>>> modprobe nf_conntrack_ipv4
 >>>
->>> Pardon, I couldnt get what you mean? Please elaborate
->>>
->>> Also the Ravin response is also witnessing there is some problem for
->>> which conntrack -L command is requried to run periodically. Strange
->>> though!
->>>
->>>
->>>
->>> On Tue, Mar 14, 2017 at 1:02 PM, Eric Leblond <eric@regit.org> wrote:
->>>> Hi,
+>>> On Wed, Mar 15, 2017 at 10:51 AM, Muhammad Faisal <faisalusuf@gmail.com> wrote:
+>>>> Hi Kurien,
+>>>> Please see the nf_conntrack_timestamp giving error is it the correct command?
 >>>>
->>>> On Tue, 2017-03-14 at 10:05 +0500, Muhammad Faisal wrote:
->>>>> Hello,
->>>>> Anyone experienced this behavior with ulogd2?
->>>>>
->>>>> We have setup nat server with src-nat event logging using ulogd2.
->>>>> After running for couple of day all of sudden the ulogd2 messages
->>>>> stopped. There was nothing related to connection events.
->>>>>
->>>>> When i run conntrack -L command and then conntrack -E command the
->>>>> logs
->>>>> starts appearing.
->>>>>
->>>>> Please help me out i did not find any clue why this is happening.
+>>>> [root@wc01 ~]# /bin/echo "1"> /proc/sys/net/netfilter/nf_conntrack_timestamp
+>>>> -bash: /proc/sys/net/netfilter/nf_conntrack_timestamp: No such file or directory
+>>>> [root@wc01 ~]# cat /proc/sys
+>>>> sys/           sysrq-trigger  sysvipc/
+>>>> [root@wc01 ~]# cat /proc/sys/net/netfilter/nf_
+>>>> nf_conntrack_acct
+>>>> nf_conntrack_buckets
+>>>> nf_conntrack_checksum
+>>>> nf_conntrack_count
+>>>> nf_conntrack_events
+>>>> nf_conntrack_events_retry_timeout
+>>>> nf_conntrack_expect_max
+>>>> nf_conntrack_generic_timeout
+>>>> nf_conntrack_icmp_timeout
+>>>> nf_conntrack_log_invalid
+>>>> nf_conntrack_max
+>>>> nf_conntrack_tcp_be_liberal
+>>>> nf_conntrack_tcp_loose
+>>>> nf_conntrack_tcp_max_retrans
+>>>> nf_conntrack_tcp_timeout_close
+>>>> nf_conntrack_tcp_timeout_close_wait
+>>>> nf_conntrack_tcp_timeout_established
+>>>> nf_conntrack_tcp_timeout_fin_wait
+>>>> nf_conntrack_tcp_timeout_last_ack
+>>>> nf_conntrack_tcp_timeout_max_retrans
+>>>> nf_conntrack_tcp_timeout_syn_recv
+>>>> nf_conntrack_tcp_timeout_syn_sent
+>>>> nf_conntrack_tcp_timeout_time_wait
+>>>> nf_conntrack_tcp_timeout_unacknowledged
+>>>> nf_conntrack_udp_timeout
+>>>> nf_conntrack_udp_timeout_stream
+>>>> nf_log/
+>>>> Best Regards,
+>>>> Muhammad Faisal
 >>>>
->>>> This looks rather strange. Could you have a task running in background
->>>> and removing conntrack related kernel module ?
+>>>> Disclaimer:
+>>>> Information in this e-mail and attachments is confidential and may be
+>>>> legally privileged. Only intended recipients are authorized to use it.
+>>>> If you have received this message in error, please delete it and all
+>>>> copies of the message from your system and notify the sender
+>>>> immediately by return e-mail. I'm neither liable for incomplete
+>>>> transmission of the information in this communication nor for damage
+>>>> caused by any virus transmitted through this e-mail.
 >>>>
->>>> BR,
 >>>>
+>>>>
+>>>> On Wed, Mar 15, 2017 at 12:04 AM, V Kurien <kurien.varugis@gmail.com> wrote:
+>>>>> Don't you have to enable timestamp and byte logging support?
+>>>>> /bin/echo "1" > /proc/sys/net/netfilter/nf_conntrack_acct
+>>>>> /bin/echo "1"> /proc/sys/net/netfilter/nf_conntrack_timestamp
 >>>>>
->>>>> Thanks
->>>>> Best Regards,
->>>>> Muhammad Faisal
->>>>>
->>>>> Disclaimer:
->>>>> Information in this e-mail and attachments is confidential and may be
->>>>> legally privileged. Only intended recipients are authorized to use
->>>>> it.
->>>>> If you have received this message in error, please delete it and all
->>>>> copies of the message from your system and notify the sender
->>>>> immediately by return e-mail. I'm neither liable for incomplete
->>>>> transmission of the information in this communication nor for damage
->>>>> caused by any virus transmitted through this e-mail.
->>>>>
->>>>>
->>>>>
->>>>> On Mon, Mar 13, 2017 at 8:38 PM, Muhammad Faisal <faisalusuf@gmail.co
->>>>> m> wrote:
->>>>> > Hello,
->>>>> > We have setup nat server with src-nat event logging using ulogd2.
->>>>> > After running for couple of day all of sudden the ulogd2 messages
->>>>> > stopped. There was nothing related to connection events.
->>>>> >
->>>>> > When i run conntrack -L command and then conntrack -E command the
->>>>> > logs
->>>>> > starts appearing.
->>>>> >
->>>>> > Please help me out i did not find any clue why this is happening.
->>>>> >
->>>>> > Cent OS 6
->>>>> > Conntrack v1.4
->>>>> >
->>>>> > [root@wc01 ~]# ulogd -V
->>>>> > ulogd Version 2.0.5
->>>>> >
->>>>> > Installed Packages
->>>>> > Name        : libnet
->>>>> > Arch        : x86_64
->>>>> > Version     : 1.1.6
->>>>> > Release     : 7.el6
->>>>> > Size        : 141 k
->>>>> > Repo        : installed
->>>>> > From repo   : epel
->>>>> >
->>>>> > Available Packages
->>>>> > Name        : libnet
->>>>> > Arch        : i686
->>>>> > Version     : 1.1.6
->>>>> > Release     : 7.el6
->>>>> > Size        : 59 k
->>>>> > Repo        : epel
->>>>> >
->>>>> > Name        : libnet-devel
->>>>> > Arch        : i686
->>>>> > Version     : 1.1.6
->>>>> > Release     : 7.el6
->>>>> > Size        : 181 k
->>>>> > Repo        : epel
->>>>> >
->>>>> > Name        : libnet-devel
->>>>> > Arch        : x86_64
->>>>> > Version     : 1.1.6
->>>>> > Release     : 7.el6
->>>>> > Size        : 181 k
->>>>> > Repo        : epel
->>>>> >
->>>>> > Name        : libnet10
->>>>> > Arch        : i686
->>>>> > Version     : 1.0.2a
->>>>> > Release     : 18.el6
->>>>> > Size        : 39 k
->>>>> > Repo        : epel
->>>>> >
->>>>> > Name        : libnet10
->>>>> > Arch        : x86_64
->>>>> > Version     : 1.0.2a
->>>>> > Release     : 18.el6
->>>>> > Size        : 37 k
->>>>> > Repo        : epel
->>>>> >
->>>>> > Name        : libnet10-devel
->>>>> > Arch        : i686
->>>>> > Version     : 1.0.2a
->>>>> > Release     : 18.el6
->>>>> > Size        : 21 k
->>>>> > Repo        : epel
->>>>> >
->>>>> > Name        : libnet10-devel
->>>>> > Arch        : x86_64
->>>>> > Version     : 1.0.2a
->>>>> > Release     : 18.el6
->>>>> > Size        : 21 k
->>>>> > Repo        : epel
->>>>> >
->>>>> > Name        : libnetfilter_acct
->>>>> > Arch        : i686
->>>>> > Version     : 1.0.2
->>>>> > Release     : 1.el6
->>>>> > Size        : 18 k
->>>>> > Repo        : epel
->>>>> >
->>>>> > Name        : libnetfilter_acct
->>>>> > Arch        : x86_64
->>>>> > Version     : 1.0.2
->>>>> > Release     : 1.el6
->>>>> > Size        : 18 k
->>>>> > Repo        : epel
->>>>> >
->>>>> > Name        : libnetfilter_acct-devel
->>>>> > Arch        : i686
->>>>> > Version     : 1.0.2
->>>>> > Release     : 1.el6
->>>>> > Size        : 22 k
->>>>> > Repo        : epel
->>>>> >
->>>>> > Name        : libnetfilter_acct-devel
->>>>> > Arch        : x86_64
->>>>> > Version     : 1.0.2
->>>>> > Release     : 1.el6
->>>>> > Size        : 22 k
->>>>> > Repo        : epel
->>>>> >
->>>>> > Name        : libnetfilter_conntrack
->>>>> > Arch        : i686
->>>>> > Version     : 0.0.100
->>>>> > Release     : 2.el6
->>>>> > Size        : 39 k
->>>>> > Repo        : base
->>>>> >
->>>>> > Name        : libnetfilter_conntrack
->>>>> > Arch        : x86_64
->>>>> > Version     : 0.0.100
->>>>> > Release     : 2.el6
->>>>> > Size        : 38 k
->>>>> > Repo        : base
->>>>> >
->>>>> > Name        : libnetfilter_conntrack-devel
->>>>> > Arch        : i686
->>>>> > Version     : 0.0.100
->>>>> > Release     : 2.el6
->>>>> > Size        : 14 k
->>>>> > Repo        : base
->>>>> >
->>>>> >
->>>>> > Name        : libnetfilter_conntrack-devel
->>>>> > Arch        : x86_64
->>>>> > Version     : 0.0.100
->>>>> > Release     : 2.el6
->>>>> > Size        : 14 k
->>>>> > Repo        : base
->>>>> >
->>>>> >
->>>>> > Name        : libnetfilter_cthelper
->>>>> > Arch        : i686
->>>>> > Version     : 1.0.0
->>>>> > Release     : 3.el6
->>>>> > Size        : 17 k
->>>>> > Repo        : epel
->>>>> >
->>>>> > Name        : libnetfilter_cthelper
->>>>> > Arch        : x86_64
->>>>> > Version     : 1.0.0
->>>>> > Release     : 3.el6
->>>>> > Size        : 16 k
->>>>> > Repo        : epel
->>>>> >
->>>>> >
->>>>> > Name        : libnetfilter_cthelper-devel
->>>>> > Arch        : i686
->>>>> > Version     : 1.0.0
->>>>> > Release     : 3.el6
->>>>> > Size        : 14 k
->>>>> > Repo        : epel
->>>>> >
->>>>> > Name        : libnetfilter_cthelper-devel
->>>>> > Arch        : x86_64
->>>>> > Version     : 1.0.0
->>>>> > Release     : 3.el6
->>>>> > Size        : 14 k
->>>>> > Repo        : epel
->>>>> >
->>>>> >
->>>>> > Name        : libnetfilter_log
->>>>> > Arch        : i686
->>>>> > Version     : 1.0.1
->>>>> > Release     : 7.el6
->>>>> > Size        : 21 k
->>>>> > Repo        : epel
->>>>> >
->>>>> > Name        : libnetfilter_log
->>>>> > Arch        : x86_64
->>>>> > Version     : 1.0.1
->>>>> > Release     : 7.el6
->>>>> > Size        : 21 k
->>>>> > Repo        : epel
->>>>> >
->>>>> > Name        : libnetfilter_log-devel
->>>>> > Arch        : i686
->>>>> > Version     : 1.0.1
->>>>> > Release     : 7.el6
->>>>> > Size        : 8.9 k
->>>>> > Repo        : epel
->>>>> >
->>>>> > Name        : libnetfilter_log-devel
->>>>> > Arch        : x86_64
->>>>> > Version     : 1.0.1
->>>>> > Release     : 7.el6
->>>>> > Size        : 8.9 k
->>>>> > Repo        : epel
->>>>> >
->>>>> >
->>>>> > Name        : libnetfilter_queue
->>>>> > Arch        : i686
->>>>> > Version     : 1.0.1
->>>>> > Release     : 3.el6
->>>>> > Size        : 18 k
->>>>> > Repo        : base
->>>>> >
->>>>> > Name        : libnetfilter_queue
->>>>> > Arch        : x86_64
->>>>> > Version     : 1.0.1
->>>>> > Release     : 3.el6
->>>>> > Size        : 18 k
->>>>> > Repo        : base
->>>>> >
->>>>> > Name        : libnetfilter_queue-devel
->>>>> > Arch        : i686
->>>>> > Version     : 1.0.1
->>>>> > Release     : 3.el6
->>>>> > Size        : 8.4 k
->>>>> > Repo        : base
->>>>> >
->>>>> > Name        : libnetfilter_queue-devel
->>>>> > Arch        : x86_64
->>>>> > Version     : 1.0.1
->>>>> > Release     : 3.el6
->>>>> > Size        : 8.4 k
->>>>> > Repo        : base
->>>>> > Best Regards,
->>>>> > Muhammad Faisal
->>>>> >
->>>>> > Disclaimer:
->>>>> > Information in this e-mail and attachments is confidential and may
->>>>> > be
->>>>> > legally privileged. Only intended recipients are authorized to use
->>>>> > it.
->>>>> > If you have received this message in error, please delete it and
->>>>> > all
->>>>> > copies of the message from your system and notify the sender
->>>>> > immediately by return e-mail. I'm neither liable for incomplete
->>>>> > transmission of the information in this communication nor for
->>>>> > damage
->>>>> > caused by any virus transmitted through this e-mail.
->>>>>
->>>>> --
->>>>> To unsubscribe from this list: send the line "unsubscribe netfilter"
->>>>> in
->>>>> the body of a message to majordomo@vger.kernel.org
->>>>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>>> --
->>>> Eric Leblond <eric@regit.org>
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>>>>> On Tue, Mar 14, 2017 at 11:55 AM, Muhammad Faisal <faisalusuf@gmail.com> wrote:
+>>>>>> Hello,
+>>>>>> I would like to understand is this a feature or a possible bug that
+>>>>>> Year info is missing from the ulogd2 output.
+>>>>>>
+>>>>>>
+>>>>>> Mar 11 15:55:59 wc01 ulogd[14289]: [NEW] ORIG: SRC=5.55.22.172
+>>>>>> DST=192.168.1.3 PROTO=TCP SPT=2083 DPT=5158 PKTS=0 BYTES=0 , REPLY:
+>>>>>> SRC=192.168.1.3 DST=5.55.22.172 PROTO=TCP SPT=5158 DPT=2083 PKTS=0
+>>>>>> BYTES=0
+>>>>>>
+>>>>>>
+>>>>>> Best Regards,
+>>>>>> Muhammad Faisal
+>>>>>> --
+>>>>>> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+>>>>>> the body of a message to majordomo@vger.kernel.org
+>>>>>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
