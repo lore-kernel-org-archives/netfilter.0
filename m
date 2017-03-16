@@ -1,159 +1,33 @@
-From: Muhammad Faisal <faisalusuf@gmail.com>
-Subject: Re: Year missing from ulogd2 timestamp
-Date: Thu, 16 Mar 2017 13:00:31 +0500
-Message-ID: <CAAzdDtOwZoFQPy44FJ9ppfjM=rt210Rbu4GbP9Lja80g7aVNCQ@mail.gmail.com>
-References: <CAAzdDtMV=OaFftNs8A_AF9-TXCvn-pxmVDqdDHCBD_2HTu3t3g@mail.gmail.com>
- <CACmTqUmm4y+6_gQJ8t4r+ZPDmJ_z7XRRm=jX9QGAAh8cCQD4cg@mail.gmail.com>
- <CAAzdDtNokDLm0d6bT1Uxaw8NzoqnwbWg9huDd=ax1GWSWNwh7g@mail.gmail.com>
- <CACmTqU=m7WQYtULG-WRhScnr90HCEr0FBGOcLpFgQFX8K2CQgQ@mail.gmail.com> <CAAzdDtNZmBsZKQiJXPx0QCU=g5j3NQSd0M14+u8nX=c9+FEbiw@mail.gmail.com>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Subject: ANNOUNCE: New Platinum sponsor - Facebook
+Date: Thu, 16 Mar 2017 12:57:03 -0400
+Message-ID: <09dcc6cc-bc5f-4465-0f8c-3c77f73d5abf@mojatatu.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=idKtxuB2zgi29xB/wKCvQGWLdBwFUcVgyVIXUg5N7gE=;
-        b=QD/CObqRNf9atyJtfPV4zZxo/63nMipAOHm8imDxR1gz5JQlxXj0d+2+3jlVNbBxw2
-         wm41dDWzK2QD9Hv0b1ThKgHKagAw3308+u/0Rameh2oEG5yajWTIH5y3ZUgrBZNT6FPV
-         CIEMaNlaGe2cPi1baZseTpr0E5DYBLZDtf9nZxVS2sg2RkEcoDrnJcroDd0M5xD/5wOr
-         rOeSYQjwftvqYf5g6iWJLHBP6Xfsu8mHbAUwU93k6bEBwjaAkblzWQGv5DvalccVdGgW
-         XvEy7/Hntl+Gvbn4zlOw8E/5bzHlrD3sGJ34OzFHrR+GRuUTecsHkkKgOxVSHC8Yv7WL
-         9e4A==
-In-Reply-To: <CAAzdDtNZmBsZKQiJXPx0QCU=g5j3NQSd0M14+u8nX=c9+FEbiw@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: V Kurien <kurien.varugis@gmail.com>
-Cc: netfilter@vger.kernel.org
-
-The kernel upgraded to 3.10, timestamp was required a newer kernel.
-But still no timestamps in the logs:
-
-Mar 16 13:58:11 wc01 ulogd[4022]: [NEW] ORIG: SRC=172.16.50.17
-DST=192.168.1.1 PROTO=TCP SPT=17012 DPT=5222 PKTS=0 BYTES=0 , REPLY:
-SRC=192.168.1.1 DST=192.168.2.1 PROTO=TCP SPT=5222 DPT=17012 PKTS=0
-BYTES=0
-Best Regards,
-Muhammad Faisal
-
-Disclaimer:
-Information in this e-mail and attachments is confidential and may be
-legally privileged. Only intended recipients are authorized to use it.
-If you have received this message in error, please delete it and all
-copies of the message from your system and notify the sender
-immediately by return e-mail. I'm neither liable for incomplete
-transmission of the information in this communication nor for damage
-caused by any virus transmitted through this e-mail.
+Return-path: <netdev-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=nXZcwZfBcwFh5iLRuB5Xqk2AuUFd9R/VALvwR9mVebI=;
+        b=YgXmDaTo9YJWuSx5FmEfPt1W9C+gU/zI8h9odB6t4EoHcET7nV0pmzJrZLGKGR7E6R
+         QJQdM8NbI6t501eEgssfH3dEmKpmwYxFqvIp0xJrZpszMeYzXtroa/sifibW6DV6+ldC
+         df8WiBcWsL64n2WDIgwgRqGSzS83FWBKXH0E/KsTpkZi0tiO4hRepmDzhu9VO+2wU+h/
+         JAAYLfYDxiAvq+GHau/mqERPTavu4ChOg1WH8iNr+QTtPqwu1D2m8LYxmt8K0jZJlw4j
+         lg/uDcAedSLWw27kCeM8eSXnmzaiA4SsSkmiNqICWlePV0F4P1f1ks5zBv9OUHmwTeSF
+         Uujw==
+Sender: netdev-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: people@netdevconf.org
+Cc: tech-committee@netdevconf.org, netfilter-devel@vger.kernel.org, Brenda Butler <bjb@mojatatu.com>, Stephen Jaworski <jaws@mojatatu.com>, netfilter@vger.kernel.org, linux-wireless@vger.kernel.org, Heri Muhero <hmuhero@gmail.com>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, lwn@lwn.net
 
 
+The organizing committee would like to welcome back a repeat
+platinum sponsor, Facebook!
 
-On Wed, Mar 15, 2017 at 11:28 PM, Muhammad Faisal <faisalusuf@gmail.com> wrote:
-> Yes,
->
-> [root@wc01 ~]# modprobe nf_conntrack_netlink
-> [root@wc01 ~]# modprobe nf_conntrack_ipv4
-> [root@wc01 ~]# echo "1"> /proc/sys/net/netfilter/nf_conntrack_timestamp
-> -bash: /proc/sys/net/netfilter/nf_conntrack_timestamp: No such file or directory
-> [root@wc01 ~]#
->
-> CentOS 6.8
-> [root@wc01 ~]# uname -a
-> Linux wc01 2.6.32-642.15.1.el6.x86_64 #1 SMP Fri Feb 24 14:31:22 UTC
-> 2017 x86_64 x86_64 x86_64 GNU/Linux
-> Best Regards,
-> Muhammad Faisal
->
-> Disclaimer:
-> Information in this e-mail and attachments is confidential and may be
-> legally privileged. Only intended recipients are authorized to use it.
-> If you have received this message in error, please delete it and all
-> copies of the message from your system and notify the sender
-> immediately by return e-mail. I'm neither liable for incomplete
-> transmission of the information in this communication nor for damage
-> caused by any virus transmitted through this e-mail.
->
->
->
-> On Wed, Mar 15, 2017 at 11:21 PM, V Kurien <kurien.varugis@gmail.com> wrote:
->> Hmm. Odd. What OS are you on? I am on U16.04. How important are the
->> timestamps to you? Note that the log collector can add timestamps as
->> well.
->>
->> Did you modprobe appropriately?
->> modprobe nf_conntrack_netlink
->> modprobe nf_conntrack_ipv4
->>
->> On Wed, Mar 15, 2017 at 10:51 AM, Muhammad Faisal <faisalusuf@gmail.com> wrote:
->>> Hi Kurien,
->>> Please see the nf_conntrack_timestamp giving error is it the correct command?
->>>
->>> [root@wc01 ~]# /bin/echo "1"> /proc/sys/net/netfilter/nf_conntrack_timestamp
->>> -bash: /proc/sys/net/netfilter/nf_conntrack_timestamp: No such file or directory
->>> [root@wc01 ~]# cat /proc/sys
->>> sys/           sysrq-trigger  sysvipc/
->>> [root@wc01 ~]# cat /proc/sys/net/netfilter/nf_
->>> nf_conntrack_acct
->>> nf_conntrack_buckets
->>> nf_conntrack_checksum
->>> nf_conntrack_count
->>> nf_conntrack_events
->>> nf_conntrack_events_retry_timeout
->>> nf_conntrack_expect_max
->>> nf_conntrack_generic_timeout
->>> nf_conntrack_icmp_timeout
->>> nf_conntrack_log_invalid
->>> nf_conntrack_max
->>> nf_conntrack_tcp_be_liberal
->>> nf_conntrack_tcp_loose
->>> nf_conntrack_tcp_max_retrans
->>> nf_conntrack_tcp_timeout_close
->>> nf_conntrack_tcp_timeout_close_wait
->>> nf_conntrack_tcp_timeout_established
->>> nf_conntrack_tcp_timeout_fin_wait
->>> nf_conntrack_tcp_timeout_last_ack
->>> nf_conntrack_tcp_timeout_max_retrans
->>> nf_conntrack_tcp_timeout_syn_recv
->>> nf_conntrack_tcp_timeout_syn_sent
->>> nf_conntrack_tcp_timeout_time_wait
->>> nf_conntrack_tcp_timeout_unacknowledged
->>> nf_conntrack_udp_timeout
->>> nf_conntrack_udp_timeout_stream
->>> nf_log/
->>> Best Regards,
->>> Muhammad Faisal
->>>
->>> Disclaimer:
->>> Information in this e-mail and attachments is confidential and may be
->>> legally privileged. Only intended recipients are authorized to use it.
->>> If you have received this message in error, please delete it and all
->>> copies of the message from your system and notify the sender
->>> immediately by return e-mail. I'm neither liable for incomplete
->>> transmission of the information in this communication nor for damage
->>> caused by any virus transmitted through this e-mail.
->>>
->>>
->>>
->>> On Wed, Mar 15, 2017 at 12:04 AM, V Kurien <kurien.varugis@gmail.com> wrote:
->>>> Don't you have to enable timestamp and byte logging support?
->>>> /bin/echo "1" > /proc/sys/net/netfilter/nf_conntrack_acct
->>>> /bin/echo "1"> /proc/sys/net/netfilter/nf_conntrack_timestamp
->>>>
->>>> On Tue, Mar 14, 2017 at 11:55 AM, Muhammad Faisal <faisalusuf@gmail.com> wrote:
->>>>> Hello,
->>>>> I would like to understand is this a feature or a possible bug that
->>>>> Year info is missing from the ulogd2 output.
->>>>>
->>>>>
->>>>> Mar 11 15:55:59 wc01 ulogd[14289]: [NEW] ORIG: SRC=5.55.22.172
->>>>> DST=192.168.1.3 PROTO=TCP SPT=2083 DPT=5158 PKTS=0 BYTES=0 , REPLY:
->>>>> SRC=192.168.1.3 DST=5.55.22.172 PROTO=TCP SPT=5158 DPT=2083 PKTS=0
->>>>> BYTES=0
->>>>>
->>>>>
->>>>> Best Regards,
->>>>> Muhammad Faisal
->>>>> --
->>>>> To unsubscribe from this list: send the line "unsubscribe netfilter" in
->>>>> the body of a message to majordomo@vger.kernel.org
->>>>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Facebook has been a great supporter of the netdev community, we
+thank them!
+
+cheers,
+jamal
