@@ -1,7 +1,7 @@
 From: Muhammad Faisal <faisalusuf@gmail.com>
 Subject: Re: Year missing from ulogd2 timestamp
-Date: Fri, 17 Mar 2017 18:15:33 +0500
-Message-ID: <CAAzdDtP=DRz-AJtDb67pRqmXyLHpNQsdKVGkTWhTxwWGqtBRuA@mail.gmail.com>
+Date: Fri, 17 Mar 2017 18:40:35 +0500
+Message-ID: <CAAzdDtPzNEcEfVGNjDsHMDuVzpotqdoCCgvi5yDyeOLAndJY4A@mail.gmail.com>
 References: <CAAzdDtMV=OaFftNs8A_AF9-TXCvn-pxmVDqdDHCBD_2HTu3t3g@mail.gmail.com>
  <CACmTqUmm4y+6_gQJ8t4r+ZPDmJ_z7XRRm=jX9QGAAh8cCQD4cg@mail.gmail.com>
  <CAAzdDtNokDLm0d6bT1Uxaw8NzoqnwbWg9huDd=ax1GWSWNwh7g@mail.gmail.com>
@@ -15,13 +15,13 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:in-reply-to:references:from:date:message-id:subject:to
          :cc;
-        bh=w6lkodcZyowWHKbfSz5/+nB0bKblGeWc2cybxJogVUw=;
-        b=gJFRoP3buJNCKK0jZRmBJf2gyH/SadUl6BXIUc6TKcKBB68EZeCOXrlIRLh8hPmXqn
-         /m3HWX7exBBjdltC875/5RuzqOuT7ckEZxZmtIIUifBqFsZN3t1oW0AebLDryMN4maue
-         fSSyw/5iy49mkrT7Lz49HI8waFjxCoOORyp58Hgeqmyo1vcgJqKDF7qPW06YnPrxcJlL
-         Fs4DZUiWfrR8qKfKy1bZnGj08OIu3R9+Vk/VZ3BfwUPuWXeGZ3u6MM5r5dRZA/xWs19L
-         ly3wLsXN2EuPiWOERpirRzR9c2My4GsJ6vCqlEcWmr8cq8svtij9f9Rymrcz5/fVWf+q
-         /tfg==
+        bh=yZspmE30+OQqax0wm8wY7mzJV5bti2Ck7WvrzCoN5no=;
+        b=ldovB5X/HCjZMJug6t2zct8IDK3p24z500oSh9yf0hrl9w34+8+huy3wO6tdJ2aDal
+         foIVBpcdqeT69sw5+msH7L/1J4tMNzGOc+BunH/jDwfq6FIIsQ1MhjO/qwIxzD8gaDfa
+         sftZvulRTIewGV2ajZPzYLzb12Fv4xp/LyN9OnrfZz/0Un6gBRGPQya6fGzHmVv47HTJ
+         8yMza2eLwrUQ6tzOmq6frgMcly3gXbLnv+vc8V1pv8VEhiiR+hTrnhvd+SCBEYOK7uB8
+         948vWmW1I8ditIfC/7g/Dwa8y5Ki/KLARrH75s7I8Ze6+dHexcX0xvIEaYUF6yzwKCPT
+         yFrg==
 In-Reply-To: <CAAzdDtPeiBdrBSQRRvTx72AK631LE++08GZ4s1x8WB22qyn=5w@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
@@ -31,7 +31,7 @@ To: V Kurien <kurien.varugis@gmail.com>
 Cc: netfilter@vger.kernel.org
 
 Hello,
-Any suggestion on timestamps? Need help
+Any suggestion on timestamps? Still no timestamps in syslog messages.
 Thanks,
 F.
 
