@@ -1,192 +1,63 @@
-From: Muhammad Faisal <faisalusuf@gmail.com>
-Subject: Re: Year missing from ulogd2 timestamp
-Date: Fri, 17 Mar 2017 18:40:35 +0500
-Message-ID: <CAAzdDtPzNEcEfVGNjDsHMDuVzpotqdoCCgvi5yDyeOLAndJY4A@mail.gmail.com>
-References: <CAAzdDtMV=OaFftNs8A_AF9-TXCvn-pxmVDqdDHCBD_2HTu3t3g@mail.gmail.com>
- <CACmTqUmm4y+6_gQJ8t4r+ZPDmJ_z7XRRm=jX9QGAAh8cCQD4cg@mail.gmail.com>
- <CAAzdDtNokDLm0d6bT1Uxaw8NzoqnwbWg9huDd=ax1GWSWNwh7g@mail.gmail.com>
- <CACmTqU=m7WQYtULG-WRhScnr90HCEr0FBGOcLpFgQFX8K2CQgQ@mail.gmail.com>
- <CAAzdDtNZmBsZKQiJXPx0QCU=g5j3NQSd0M14+u8nX=c9+FEbiw@mail.gmail.com>
- <CAAzdDtOwZoFQPy44FJ9ppfjM=rt210Rbu4GbP9Lja80g7aVNCQ@mail.gmail.com>
- <CACmTqUmd4AfqDxR6xs0+qJGS_RXJ=HT9r-i7VoXg5sujZAgJPg@mail.gmail.com> <CAAzdDtPeiBdrBSQRRvTx72AK631LE++08GZ4s1x8WB22qyn=5w@mail.gmail.com>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Subject: ANNOUNCE: New tutorial on XDP
+Date: Fri, 17 Mar 2017 09:17:38 -0400
+Message-ID: <6089d01b-3eaa-00bc-17dc-0c0f48e395a8@mojatatu.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=yZspmE30+OQqax0wm8wY7mzJV5bti2Ck7WvrzCoN5no=;
-        b=ldovB5X/HCjZMJug6t2zct8IDK3p24z500oSh9yf0hrl9w34+8+huy3wO6tdJ2aDal
-         foIVBpcdqeT69sw5+msH7L/1J4tMNzGOc+BunH/jDwfq6FIIsQ1MhjO/qwIxzD8gaDfa
-         sftZvulRTIewGV2ajZPzYLzb12Fv4xp/LyN9OnrfZz/0Un6gBRGPQya6fGzHmVv47HTJ
-         8yMza2eLwrUQ6tzOmq6frgMcly3gXbLnv+vc8V1pv8VEhiiR+hTrnhvd+SCBEYOK7uB8
-         948vWmW1I8ditIfC/7g/Dwa8y5Ki/KLARrH75s7I8Ze6+dHexcX0xvIEaYUF6yzwKCPT
-         yFrg==
-In-Reply-To: <CAAzdDtPeiBdrBSQRRvTx72AK631LE++08GZ4s1x8WB22qyn=5w@mail.gmail.com>
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=kIIwJexO2oLrTjgMhiJXbu2lkuzMJnFsV3FkDaWN2w0=;
+        b=nym0LV7+AiMx/Z8FXUclhVeoybe3mypBpeOozb0Qvgg0BGzWNWBogNRr7YRvVqCcJV
+         txU+0LVuTSkosgiM3yPZqx3KSRdd1tSqtTAQumwO0ZpuoTiIEra4PoV/cOiA3L7nNKzY
+         MGYc3l3LQoqd4QyuDxTs7WaEqCTTHFZJoDeafqMmo8uUrNu/1q/RBpYkwz/huQ1MaA3o
+         XKctb7haEtyJmSPRlyqIX5WTBZG3Dhmvky7FQHpY0Xwop0Xvy1JF4VJHqMh7BcjvGxfc
+         ydcll8fBFZtuqtHrVX4eNb9xopTRq4nHcOXwENGLsU9zo+CzDlGq6KLrIuW9fNRuou58
+         pPWw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: V Kurien <kurien.varugis@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: people@netdevconf.org
+Cc: tech-committee@netdevconf.org, netfilter-devel@vger.kernel.org, Brenda Butler <bjb@mojatatu.com>, Stephen Jaworski <jaws@mojatatu.com>, netfilter@vger.kernel.org, linux-wireless@vger.kernel.org, Heri Muhero <hmuhero@gmail.com>
 
-Hello,
-Any suggestion on timestamps? Still no timestamps in syslog messages.
-Thanks,
-F.
+The tech committee would like to announce our first accepted tutorial
+
+Monsieurs Andy Gospodarek and Jesper Dangaard Brouer will give an
+XDP tutorial catered to mere mortals titled "XDP for the Rest of Us"
+
+Description:
+-----
+XDP (eXpress Data Path) has been one of the most widely discussed topics 
+for the last few netdev conferences. XDP is the Linux kernels
+answer to operating at the same speeds as kernel bypass solutions
+like DPDK. The typical use-case discussed for XDP is a large
+datacenter or clustered environment, but XDP is obviously not limited
+to those workloads. Since support for XDP now appears in multiple
+network drivers (with more patches landing between the time of this
+writing and the conference date) and is available on x86 and arm64
+architectures, there now exists the possibility to allow a greater 
+number of systems to benefit from this technology.
+
+This tutorial will present an example/case-study where a tool such as
+logtrigger or fail2ban will interact with an application and a BPF
+program to make decisions to drop or allow certain packets early in
+the packet processing step for enhanced DDoS prevention over
+traditional methods.
+Getting started using XDP, goes hand-in-hand with learning eBPF
+(Extended Berkeley Packet Filter), as this is currently the XDP-hook
+language. This tutorial will cover the process of writing/modifying a
+simple BPF program, interacting with BPF maps in a programmatic manner,
+and the potential performance benefit to early drop with XDP compared
+to more traditional drop operations used on some embedded systems that
+are placed much higher in the network stack.
+
+Learning to use XDP can feel like a fairly steep learning curve, but
+the goal of this tutorial is to make this process clear to kernel
+developers, sysadmins, or anyone with DevOps responsibilities.
+-------
 
 
-On Thu, Mar 16, 2017 at 11:29 PM, Muhammad Faisal <faisalusuf@gmail.com> wrote:
-> Hi Kurien,
-> Im using rsyslogd to print messages the log i have shared is from syslog.
-> Best Regards,
-> Muhammad Faisal
->
-> Disclaimer:
-> Information in this e-mail and attachments is confidential and may be
-> legally privileged. Only intended recipients are authorized to use it.
-> If you have received this message in error, please delete it and all
-> copies of the message from your system and notify the sender
-> immediately by return e-mail. I'm neither liable for incomplete
-> transmission of the information in this communication nor for damage
-> caused by any virus transmitted through this e-mail.
->
->
->
-> On Thu, Mar 16, 2017 at 11:22 PM, V Kurien <kurien.varugis@gmail.com> wrote:
->> Which printer are you using? I see timestamps using both gprint and
->> syslog on my system. The output snippet I sent was a syslog message.
->>
->> And did the procfs parameters show up post kernel upgrade?
->>
->> On Thu, Mar 16, 2017 at 1:00 AM, Muhammad Faisal <faisalusuf@gmail.com> wrote:
->>> The kernel upgraded to 3.10, timestamp was required a newer kernel.
->>> But still no timestamps in the logs:
->>>
->>> Mar 16 13:58:11 wc01 ulogd[4022]: [NEW] ORIG: SRC=172.16.50.17
->>> DST=192.168.1.1 PROTO=TCP SPT=17012 DPT=5222 PKTS=0 BYTES=0 , REPLY:
->>> SRC=192.168.1.1 DST=192.168.2.1 PROTO=TCP SPT=5222 DPT=17012 PKTS=0
->>> BYTES=0
->>> Best Regards,
->>> Muhammad Faisal
->>>
->>> Disclaimer:
->>> Information in this e-mail and attachments is confidential and may be
->>> legally privileged. Only intended recipients are authorized to use it.
->>> If you have received this message in error, please delete it and all
->>> copies of the message from your system and notify the sender
->>> immediately by return e-mail. I'm neither liable for incomplete
->>> transmission of the information in this communication nor for damage
->>> caused by any virus transmitted through this e-mail.
->>>
->>>
->>>
->>> On Wed, Mar 15, 2017 at 11:28 PM, Muhammad Faisal <faisalusuf@gmail.com> wrote:
->>>> Yes,
->>>>
->>>> [root@wc01 ~]# modprobe nf_conntrack_netlink
->>>> [root@wc01 ~]# modprobe nf_conntrack_ipv4
->>>> [root@wc01 ~]# echo "1"> /proc/sys/net/netfilter/nf_conntrack_timestamp
->>>> -bash: /proc/sys/net/netfilter/nf_conntrack_timestamp: No such file or directory
->>>> [root@wc01 ~]#
->>>>
->>>> CentOS 6.8
->>>> [root@wc01 ~]# uname -a
->>>> Linux wc01 2.6.32-642.15.1.el6.x86_64 #1 SMP Fri Feb 24 14:31:22 UTC
->>>> 2017 x86_64 x86_64 x86_64 GNU/Linux
->>>> Best Regards,
->>>> Muhammad Faisal
->>>>
->>>> Disclaimer:
->>>> Information in this e-mail and attachments is confidential and may be
->>>> legally privileged. Only intended recipients are authorized to use it.
->>>> If you have received this message in error, please delete it and all
->>>> copies of the message from your system and notify the sender
->>>> immediately by return e-mail. I'm neither liable for incomplete
->>>> transmission of the information in this communication nor for damage
->>>> caused by any virus transmitted through this e-mail.
->>>>
->>>>
->>>>
->>>> On Wed, Mar 15, 2017 at 11:21 PM, V Kurien <kurien.varugis@gmail.com> wrote:
->>>>> Hmm. Odd. What OS are you on? I am on U16.04. How important are the
->>>>> timestamps to you? Note that the log collector can add timestamps as
->>>>> well.
->>>>>
->>>>> Did you modprobe appropriately?
->>>>> modprobe nf_conntrack_netlink
->>>>> modprobe nf_conntrack_ipv4
->>>>>
->>>>> On Wed, Mar 15, 2017 at 10:51 AM, Muhammad Faisal <faisalusuf@gmail.com> wrote:
->>>>>> Hi Kurien,
->>>>>> Please see the nf_conntrack_timestamp giving error is it the correct command?
->>>>>>
->>>>>> [root@wc01 ~]# /bin/echo "1"> /proc/sys/net/netfilter/nf_conntrack_timestamp
->>>>>> -bash: /proc/sys/net/netfilter/nf_conntrack_timestamp: No such file or directory
->>>>>> [root@wc01 ~]# cat /proc/sys
->>>>>> sys/           sysrq-trigger  sysvipc/
->>>>>> [root@wc01 ~]# cat /proc/sys/net/netfilter/nf_
->>>>>> nf_conntrack_acct
->>>>>> nf_conntrack_buckets
->>>>>> nf_conntrack_checksum
->>>>>> nf_conntrack_count
->>>>>> nf_conntrack_events
->>>>>> nf_conntrack_events_retry_timeout
->>>>>> nf_conntrack_expect_max
->>>>>> nf_conntrack_generic_timeout
->>>>>> nf_conntrack_icmp_timeout
->>>>>> nf_conntrack_log_invalid
->>>>>> nf_conntrack_max
->>>>>> nf_conntrack_tcp_be_liberal
->>>>>> nf_conntrack_tcp_loose
->>>>>> nf_conntrack_tcp_max_retrans
->>>>>> nf_conntrack_tcp_timeout_close
->>>>>> nf_conntrack_tcp_timeout_close_wait
->>>>>> nf_conntrack_tcp_timeout_established
->>>>>> nf_conntrack_tcp_timeout_fin_wait
->>>>>> nf_conntrack_tcp_timeout_last_ack
->>>>>> nf_conntrack_tcp_timeout_max_retrans
->>>>>> nf_conntrack_tcp_timeout_syn_recv
->>>>>> nf_conntrack_tcp_timeout_syn_sent
->>>>>> nf_conntrack_tcp_timeout_time_wait
->>>>>> nf_conntrack_tcp_timeout_unacknowledged
->>>>>> nf_conntrack_udp_timeout
->>>>>> nf_conntrack_udp_timeout_stream
->>>>>> nf_log/
->>>>>> Best Regards,
->>>>>> Muhammad Faisal
->>>>>>
->>>>>> Disclaimer:
->>>>>> Information in this e-mail and attachments is confidential and may be
->>>>>> legally privileged. Only intended recipients are authorized to use it.
->>>>>> If you have received this message in error, please delete it and all
->>>>>> copies of the message from your system and notify the sender
->>>>>> immediately by return e-mail. I'm neither liable for incomplete
->>>>>> transmission of the information in this communication nor for damage
->>>>>> caused by any virus transmitted through this e-mail.
->>>>>>
->>>>>>
->>>>>>
->>>>>> On Wed, Mar 15, 2017 at 12:04 AM, V Kurien <kurien.varugis@gmail.com> wrote:
->>>>>>> Don't you have to enable timestamp and byte logging support?
->>>>>>> /bin/echo "1" > /proc/sys/net/netfilter/nf_conntrack_acct
->>>>>>> /bin/echo "1"> /proc/sys/net/netfilter/nf_conntrack_timestamp
->>>>>>>
->>>>>>> On Tue, Mar 14, 2017 at 11:55 AM, Muhammad Faisal <faisalusuf@gmail.com> wrote:
->>>>>>>> Hello,
->>>>>>>> I would like to understand is this a feature or a possible bug that
->>>>>>>> Year info is missing from the ulogd2 output.
->>>>>>>>
->>>>>>>>
->>>>>>>> Mar 11 15:55:59 wc01 ulogd[14289]: [NEW] ORIG: SRC=5.55.22.172
->>>>>>>> DST=192.168.1.3 PROTO=TCP SPT=2083 DPT=5158 PKTS=0 BYTES=0 , REPLY:
->>>>>>>> SRC=192.168.1.3 DST=5.55.22.172 PROTO=TCP SPT=5158 DPT=2083 PKTS=0
->>>>>>>> BYTES=0
->>>>>>>>
->>>>>>>>
->>>>>>>> Best Regards,
->>>>>>>> Muhammad Faisal
->>>>>>>> --
->>>>>>>> To unsubscribe from this list: send the line "unsubscribe netfilter" in
->>>>>>>> the body of a message to majordomo@vger.kernel.org
->>>>>>>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+cheers,
+jamal
