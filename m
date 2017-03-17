@@ -1,63 +1,31 @@
-From: Jamal Hadi Salim <jhs@mojatatu.com>
-Subject: ANNOUNCE: New tutorial on XDP
-Date: Fri, 17 Mar 2017 09:17:38 -0400
-Message-ID: <6089d01b-3eaa-00bc-17dc-0c0f48e395a8@mojatatu.com>
+From: Robert White <rwhite@pobox.com>
+Subject: Re: Suggestion: Default (else) value for maps, dictionaries, and
+ Verdicts
+Date: Fri, 17 Mar 2017 23:17:42 +0000
+Message-ID: <7d328655-9cea-5593-9b89-aea71a251223@pobox.com>
+References: <b32fd2e4-d3e5-8519-6b6c-e218781a813f@pobox.com>
+ <20170317101425.GA1850@salvia>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=kIIwJexO2oLrTjgMhiJXbu2lkuzMJnFsV3FkDaWN2w0=;
-        b=nym0LV7+AiMx/Z8FXUclhVeoybe3mypBpeOozb0Qvgg0BGzWNWBogNRr7YRvVqCcJV
-         txU+0LVuTSkosgiM3yPZqx3KSRdd1tSqtTAQumwO0ZpuoTiIEra4PoV/cOiA3L7nNKzY
-         MGYc3l3LQoqd4QyuDxTs7WaEqCTTHFZJoDeafqMmo8uUrNu/1q/RBpYkwz/huQ1MaA3o
-         XKctb7haEtyJmSPRlyqIX5WTBZG3Dhmvky7FQHpY0Xwop0Xvy1JF4VJHqMh7BcjvGxfc
-         ydcll8fBFZtuqtHrVX4eNb9xopTRq4nHcOXwENGLsU9zo+CzDlGq6KLrIuW9fNRuou58
-         pPWw==
+In-Reply-To: <20170317101425.GA1850@salvia>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: people@netdevconf.org
-Cc: tech-committee@netdevconf.org, netfilter-devel@vger.kernel.org, Brenda Butler <bjb@mojatatu.com>, Stephen Jaworski <jaws@mojatatu.com>, netfilter@vger.kernel.org, linux-wireless@vger.kernel.org, Heri Muhero <hmuhero@gmail.com>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-The tech committee would like to announce our first accepted tutorial
+On 03/17/17 10:14, Pablo Neira Ayuso wrote:
+> I guess you refer to some sort of catch-all case, if we find no
+> matching in the set.
 
-Monsieurs Andy Gospodarek and Jesper Dangaard Brouer will give an
-XDP tutorial catered to mere mortals titled "XDP for the Rest of Us"
+Yes, exactly.
 
-Description:
------
-XDP (eXpress Data Path) has been one of the most widely discussed topics 
-for the last few netdev conferences. XDP is the Linux kernels
-answer to operating at the same speeds as kernel bypass solutions
-like DPDK. The typical use-case discussed for XDP is a large
-datacenter or clustered environment, but XDP is obviously not limited
-to those workloads. Since support for XDP now appears in multiple
-network drivers (with more patches landing between the time of this
-writing and the conference date) and is available on x86 and arm64
-architectures, there now exists the possibility to allow a greater 
-number of systems to benefit from this technology.
+> Please, add an entry to the netfilter's bugzilla, so we can keep an
+> eye on this.
 
-This tutorial will present an example/case-study where a tool such as
-logtrigger or fail2ban will interact with an application and a BPF
-program to make decisions to drop or allow certain packets early in
-the packet processing step for enhanced DDoS prevention over
-traditional methods.
-Getting started using XDP, goes hand-in-hand with learning eBPF
-(Extended Berkeley Packet Filter), as this is currently the XDP-hook
-language. This tutorial will cover the process of writing/modifying a
-simple BPF program, interacting with BPF maps in a programmatic manner,
-and the potential performance benefit to early drop with XDP compared
-to more traditional drop operations used on some embedded systems that
-are placed much higher in the network stack.
+Done.
 
-Learning to use XDP can feel like a fairly steep learning curve, but
-the goal of this tutorial is to make this process clear to kernel
-developers, sysadmins, or anyone with DevOps responsibilities.
--------
+https://bugzilla.netfilter.org/show_bug.cgi?id=1132
 
 
-cheers,
-jamal
