@@ -1,31 +1,46 @@
 From: Robert White <rwhite@pobox.com>
-Subject: Re: Suggestion: Default (else) value for maps, dictionaries, and
- Verdicts
-Date: Fri, 17 Mar 2017 23:17:42 +0000
-Message-ID: <7d328655-9cea-5593-9b89-aea71a251223@pobox.com>
-References: <b32fd2e4-d3e5-8519-6b6c-e218781a813f@pobox.com>
- <20170317101425.GA1850@salvia>
+Subject: (discussion) Why are "flow tables" syntactically unique?
+Date: Sat, 18 Mar 2017 00:59:18 +0000
+Message-ID: <99833e6a-90f8-4b53-276b-51e6c221a55c@pobox.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20170317101425.GA1850@salvia>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 03/17/17 10:14, Pablo Neira Ayuso wrote:
-> I guess you refer to some sort of catch-all case, if we find no
-> matching in the set.
+So this doesn't rate a bug, but it did confuse me.
 
-Yes, exactly.
+Flow tables are always named, but they don't conform to the way sets, 
+maps, and dictionaries work in terms of "add" and "delete" and all that.
 
-> Please, add an entry to the netfilter's bugzilla, so we can keep an
-> eye on this.
+They are also "flow tables" instead of one word like "flows" or 
+"throttle" or something.
 
-Done.
+It seems weird to just have these break the syntactic expectations.
 
-https://bugzilla.netfilter.org/show_bug.cgi?id=1132
+I think, long-term, that picking a one word designator like "rate" or 
+"gauge" and making them syntactically similar to sets with a type and 
+flags at the table level, and using @name syntax or having them be 
+unnamed in place, would make much more sense.
 
+It's especially confusing since "list map tablename mapname" and "list 
+flow table tablename flowname" are so similar in function but have a 
+different word count and are not orthogonal to add and delete and clear 
+etc.
+
+So if they were just like sets this would be so much less confusing.
+
+table ip example {
+   gauge dhcp_throttle {
+     type ipv4_addr . inet_service
+     flags whatever, whateverelse
+   }
+
+   chain dhcp_traffic {
+     gauge { ip saddr limit over 200/day } drop
+     gauge @dhcp_throttle { ip saddr . udp dport limit 3/second } accept
+   }
+}
 
