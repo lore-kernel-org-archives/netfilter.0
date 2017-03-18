@@ -1,41 +1,50 @@
-From: Amine Aouled Hamed <amine.ahd@gmail.com>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
 Subject: Re: ANNOUNCE: New sponsor Netronome
-Date: Sat, 18 Mar 2017 13:27:09 +0100
-Message-ID: <CAMXA6B1noOrAFxzy7YhEW+oNvDFLk3+JcTvjorYfKkuZp5xk=w@mail.gmail.com>
+Date: Sat, 18 Mar 2017 08:34:57 -0400
+Message-ID: <2b522b0c-fdd8-a9e8-bbbd-1bd48881bb08@mojatatu.com>
 References: <020d0eff-2c5b-aff7-2c51-11398b27dffc@mojatatu.com>
+ <CAMXA6B1noOrAFxzy7YhEW+oNvDFLk3+JcTvjorYfKkuZp5xk=w@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-devel-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=4LIV0PY0AS3ofck3lc0gbVjYb/yS1Eu8yIzhNURCtG0=;
-        b=L5RThnxlzp/+aNJvDHMhPMFcM3PrqlWk2WH7M1u+UfgOHPzHXukN7kbCZBAZ/wwevL
-         wes1QFVqV16fzRnl8oX9Cm/ch0AyTOiL8+KnzDyAPlEw+HsGGXKszRm2dyhY7w11L4lX
-         IImPRQ9c89jkNzKYargBiFZy5psV66WnkuHR4uUkoCrmjnQ359l7qpvmzJMe8clLnKlT
-         X6gvmnq4w8dT6PNv3nt9nBe+klbHaMNqzGaXzD9GkKyxJ8oCM8UO3kuWRmUhAJBWZCPr
-         56bBBY2C9OmRbBh4W9aG/EEBrLMAcuvvu49q1LkeC95680eLIP/kkJVwwtsCC4ahIqpL
-         RlNw==
-In-Reply-To: <020d0eff-2c5b-aff7-2c51-11398b27dffc@mojatatu.com>
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:references:cc:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding;
+        bh=T3WvNsxIKR5qFM+l2+EJQE4xuHkwyKja8WPogEGjlGk=;
+        b=PXtwXKje1XLG04pYdjd4O7j8g5g+0zN34TP2ISlH5kT0hLwJ+IuFB59wq0B+0Cgb5m
+         ECgAVfgmZ5y9OtnbGn8Cy8qM6bkmX1TH2bGNXKSAiBrRqoiTSraNrYHVb2xb/g0/u3U4
+         QRMKP8Qgc/M0c7hRfoFwYMyngRYnYJFZcILto7fOqtJf1FJ+6Zy6sJei3wg3P0DNX7tZ
+         jySFbzYEcwcAkq8Ya1POw7frtT0sa2j5gsuz2HflMJeAOpWtYVw4adpZggn4ncHto0xT
+         rdeh3U64hj5veaULGl/2YH8iJftfHth+i8y3lIaogRDuz1jMtq/iPbPyy2iEANF2Vb5+
+         9h9A==
+In-Reply-To: <CAMXA6B1noOrAFxzy7YhEW+oNvDFLk3+JcTvjorYfKkuZp5xk=w@mail.gmail.com>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jamal Hadi Salim <jhs@mojatatu.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Amine Aouled Hamed <amine.ahd@gmail.com>
 Cc: people@netdevconf.org, tech-committee@netdevconf.org, netfilter-devel@vger.kernel.org, Brenda Butler <bjb@mojatatu.com>, Stephen Jaworski <jaws@mojatatu.com>, netfilter@vger.kernel.org, linux-wireless@vger.kernel.org, Heri Muhero <hmuhero@gmail.com>
 
-Can you stop with the spam?
+On 17-03-18 08:27 AM, Amine Aouled Hamed wrote:
+> Can you stop with the spam?
+>
 
-On Sat, Mar 18, 2017 at 1:10 PM, Jamal Hadi Salim <jhs@mojatatu.com> wrote:
-> The organizing committee would like to announce a new silver sponsor,
-> Netronome.
+Which mailing list do you represent that considers this spam?
+
+cheers,
+jamal
+> On Sat, Mar 18, 2017 at 1:10 PM, Jamal Hadi Salim <jhs@mojatatu.com> wrote:
+>> The organizing committee would like to announce a new silver sponsor,
+>> Netronome.
+>>
+>> Netronome is a returning silver sponsor. The netdev community
+>> appreciates their support once again!
+>>
+>> cheers,
+>> jamal
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 >
-> Netronome is a returning silver sponsor. The netdev community
-> appreciates their support once again!
->
-> cheers,
-> jamal
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
