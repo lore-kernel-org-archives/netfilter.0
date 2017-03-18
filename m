@@ -1,46 +1,32 @@
-From: Robert White <rwhite@pobox.com>
-Subject: (discussion) Why are "flow tables" syntactically unique?
-Date: Sat, 18 Mar 2017 00:59:18 +0000
-Message-ID: <99833e6a-90f8-4b53-276b-51e6c221a55c@pobox.com>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Subject: ANNOUNCE: New sponsor Netronome
+Date: Sat, 18 Mar 2017 08:10:29 -0400
+Message-ID: <020d0eff-2c5b-aff7-2c51-11398b27dffc@mojatatu.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=GjXyQL78rFn91JIvVGP5rJnXwSr7mb0cwYp2gxtlYz8=;
+        b=PBqYSNSxOL7prquaTpvgUeALuQp9tpGk7izEoFm98w1PUAm5y/gYTUJWmRy/Yj+pzO
+         XAbssqu0EDzX5BZp5nc5VpbTkokaX1Yw/QoJQ2Il5wfrj7zTIJZuriy0KPZYqr7H77Qd
+         UIXahxqdTyERfvFaut7LlhSTzxvnxv86oHT1GX+y8HB7oeJm5ycAHJNWQ5mVucB6eMyQ
+         j3R9bOVoDE3fex3LtQ4WjG4ZTOdmkdTLZiJRf/zmXCa9R1ntXsONIOOrCRWcyUz2ir5R
+         V2R0JbUjtQZo8P2SszDkS6FEBFC//dTjxkMzgu6iBjBvQiVhgkIyv32zUhFQ3ulTW0LH
+         3cPw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: people@netdevconf.org
+Cc: tech-committee@netdevconf.org, netfilter-devel@vger.kernel.org, Brenda Butler <bjb@mojatatu.com>, Stephen Jaworski <jaws@mojatatu.com>, netfilter@vger.kernel.org, linux-wireless@vger.kernel.org, Heri Muhero <hmuhero@gmail.com>
 
-So this doesn't rate a bug, but it did confuse me.
+The organizing committee would like to announce a new silver sponsor,
+Netronome.
 
-Flow tables are always named, but they don't conform to the way sets, 
-maps, and dictionaries work in terms of "add" and "delete" and all that.
+Netronome is a returning silver sponsor. The netdev community
+appreciates their support once again!
 
-They are also "flow tables" instead of one word like "flows" or 
-"throttle" or something.
-
-It seems weird to just have these break the syntactic expectations.
-
-I think, long-term, that picking a one word designator like "rate" or 
-"gauge" and making them syntactically similar to sets with a type and 
-flags at the table level, and using @name syntax or having them be 
-unnamed in place, would make much more sense.
-
-It's especially confusing since "list map tablename mapname" and "list 
-flow table tablename flowname" are so similar in function but have a 
-different word count and are not orthogonal to add and delete and clear 
-etc.
-
-So if they were just like sets this would be so much less confusing.
-
-table ip example {
-   gauge dhcp_throttle {
-     type ipv4_addr . inet_service
-     flags whatever, whateverelse
-   }
-
-   chain dhcp_traffic {
-     gauge { ip saddr limit over 200/day } drop
-     gauge @dhcp_throttle { ip saddr . udp dport limit 3/second } accept
-   }
-}
-
+cheers,
+jamal
