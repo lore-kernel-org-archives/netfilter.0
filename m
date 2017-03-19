@@ -1,7 +1,7 @@
-From: Jamal Hadi Salim <jhs@mojatatu.com>
-Subject: Re: [NetDev-tech] [NetDev] ANNOUNCE: New sponsor Netronome
-Date: Sat, 18 Mar 2017 21:56:36 -0400
-Message-ID: <9119c54c-df24-7846-71e5-fc4b6a531488@mojatatu.com>
+From: Alexander Alemayhu <alexander-lyk0faqGNUlWk0Htik3J/w@public.gmane.org>
+Subject: Re: [NetDev] [NetDev-tech]  ANNOUNCE: New sponsor Netronome
+Date: Sun, 19 Mar 2017 07:06:37 +0100
+Message-ID: <20170319060637.GA3733@gmail.com>
 References: <020d0eff-2c5b-aff7-2c51-11398b27dffc@mojatatu.com>
  <CAMXA6B1noOrAFxzy7YhEW+oNvDFLk3+JcTvjorYfKkuZp5xk=w@mail.gmail.com>
  <2b522b0c-fdd8-a9e8-bbbd-1bd48881bb08@mojatatu.com>
@@ -11,38 +11,46 @@ References: <020d0eff-2c5b-aff7-2c51-11398b27dffc@mojatatu.com>
  <CAMXA6B0B4q__gYbRM8ksBr3-g1PhjYkk68z9w-gp96h1YZp0FQ@mail.gmail.com>
  <5ce34c9c-29c6-4b59-1fc9-f0b5425a8347@mojatatu.com>
  <CAAnMG+O=DMk5dnUnNktMRywa5mkLA0scty6YpU2fnZyQ8BX+JA@mail.gmail.com>
+ <9119c54c-df24-7846-71e5-fc4b6a531488@mojatatu.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:references:cc:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding;
-        bh=SjNPlkBwb5pvxhwk3HaHJgn40vDEfE1ehcVNoSM26o8=;
-        b=J8YhgitaJb6kKPdpBfoDRQ9ypNrxjTdvAzZLjm7QlIcBkWufLEpEEOnRQEr8d9tt3G
-         mRGw1r8clQn/pjxiIHOMBVQyBRje6VjKjmb4eFRMexOlsbSGTUT1U/S94caqhtnOeJRN
-         4S0tgqoBeqjlrSLmxk7PCzS2icZfbdMqoelSCvSyN270W9AAtpkBIDZo85mbeda4I627
-         1excqaOlOSdNaCPC8v6rnEj4vKZjDjSXvf2qcGPvc4PP8nYs7O494R1MeshnweOKfyAB
-         99AB7cQP7xYAPxx4QVWx9wICT1GQraasnUt4Hn4D6N07ONEgB8kjLhNRbALkq5XzW1L9
-         ExtA==
-In-Reply-To: <CAAnMG+O=DMk5dnUnNktMRywa5mkLA0scty6YpU2fnZyQ8BX+JA@mail.gmail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+        d=alemayhu-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=dFCsMr7HZlOWR16uNnijrf8HoJgqGlkgjwn5Xcjv1xM=;
+        b=D5ToKN8MJcAnspIUIAqbf0/4FVHVDQco0+gbl3zMvJsbLFkMI5uuIdcQuk4nN1gjVZ
+         u4uhdjbN0epQUmzD+j/A0PHPispaDsG3JADCnHmXfzh81qoWxtzftNpA8iTTM440tdxv
+         fAMoiOMuonY7np8lTabHsPgl2uyUOQ0Hl+Aiu0nWda6/EhMWNIV/scLUqNJ0XwF66/kT
+         vfwipLHo29aVZWCrA0Ei6adhbf7Jr7Xyyhp01d6mZDMKyEJ0bOYPKeyW3f/RFgiyGUci
+         CoIeamc1q0guc/IFAk2ysOvb7gCvR5wAjC9Y1OqFjpedl6/X3HUNbOSRqOa+nUvXkIJf
+         CgOA==
+Content-Disposition: inline
+In-Reply-To: <9119c54c-df24-7846-71e5-fc4b6a531488-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
+Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Alexis Green <agreen@uniumwifi.com>
-Cc: Amine Aouled Hamed <amine.ahd@gmail.com>, Jamal Hadi Salim <hadi@mojatatu.com>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, tech-committee <tech-committee@netdevconf.org>, linux-wireless <linux-wireless@vger.kernel.org>, Heri Muhero <hmuhero@gmail.com>, people@netdevconf.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Jamal Hadi Salim <jhs-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
+Cc: Alexis Green <agreen-EaYfvaLb8E+tG0bUXCXiUA@public.gmane.org>, tech-committee <tech-committee-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org>, linux-wireless <linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Heri Muhero <hmuhero-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, people-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mathieu Desnoyers <mathieu.desnoyers-vg+e7yoeK/dWk0Htik3J/w@public.gmane.org>, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Amine Aouled Hamed <amine.ahd-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-On 17-03-18 09:42 PM, Alexis Green wrote:
-> Why is this sent to linux-wireless?
+On Sat, Mar 18, 2017 at 09:56:36PM -0400, Jamal Hadi Salim wrote:
+>=20
+> Note: this discussion already has generated more traffic
+> than a few days worth of announcements ;->
 >
 
-Because linux-wireless is part of this event.
+IIRC Hajime always added links to the site in his announcements, which
+made it easy to lookup netdev.  Maybe adding some lines about netdev to
+all emails would reduce confusion? Suspect not everyone subscribed to
+these lists knows what netdev is.=20
 
-Like netfilter, lets please have more people chime
-in _to not_ have these postings go to linux-wireless.
+Don't consider these emails spam at all :)
 
-Note: this discussion already has generated more traffic
-than a few days worth of announcements ;->
+Thanks.
 
-cheers,
-jamal
+--=20
+Mit freundlichen Gr=FC=DFen
+
+Alexander Alemayhu
