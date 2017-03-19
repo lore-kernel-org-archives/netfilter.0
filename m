@@ -1,56 +1,55 @@
-From: Alexander Alemayhu <alexander-lyk0faqGNUlWk0Htik3J/w@public.gmane.org>
-Subject: Re: [NetDev] [NetDev-tech]  ANNOUNCE: New sponsor Netronome
-Date: Sun, 19 Mar 2017 07:06:37 +0100
-Message-ID: <20170319060637.GA3733@gmail.com>
-References: <020d0eff-2c5b-aff7-2c51-11398b27dffc@mojatatu.com>
- <CAMXA6B1noOrAFxzy7YhEW+oNvDFLk3+JcTvjorYfKkuZp5xk=w@mail.gmail.com>
- <2b522b0c-fdd8-a9e8-bbbd-1bd48881bb08@mojatatu.com>
- <2099393925.18313.1489875757778.JavaMail.zimbra@efficios.com>
- <ea392711-26b0-4d82-d86e-2adf8365b024@mojatatu.com>
- <CAAFAkD9uG2UUxxLPDF8fuWCP4gxEmozfw3giOSViaWRE38UhFQ@mail.gmail.com>
- <CAMXA6B0B4q__gYbRM8ksBr3-g1PhjYkk68z9w-gp96h1YZp0FQ@mail.gmail.com>
- <5ce34c9c-29c6-4b59-1fc9-f0b5425a8347@mojatatu.com>
- <CAAnMG+O=DMk5dnUnNktMRywa5mkLA0scty6YpU2fnZyQ8BX+JA@mail.gmail.com>
- <9119c54c-df24-7846-71e5-fc4b6a531488@mojatatu.com>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Subject: ANNOUNCE: New talk accepted! Droplet: DDoS countermeasures powered by
+ BPF + XDP
+Date: Sun, 19 Mar 2017 09:49:40 -0400
+Message-ID: <29545711-ad05-f3f7-0a69-2d329ac70c41@mojatatu.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=alemayhu-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to
-         :user-agent;
-        bh=dFCsMr7HZlOWR16uNnijrf8HoJgqGlkgjwn5Xcjv1xM=;
-        b=D5ToKN8MJcAnspIUIAqbf0/4FVHVDQco0+gbl3zMvJsbLFkMI5uuIdcQuk4nN1gjVZ
-         u4uhdjbN0epQUmzD+j/A0PHPispaDsG3JADCnHmXfzh81qoWxtzftNpA8iTTM440tdxv
-         fAMoiOMuonY7np8lTabHsPgl2uyUOQ0Hl+Aiu0nWda6/EhMWNIV/scLUqNJ0XwF66/kT
-         vfwipLHo29aVZWCrA0Ei6adhbf7Jr7Xyyhp01d6mZDMKyEJ0bOYPKeyW3f/RFgiyGUci
-         CoIeamc1q0guc/IFAk2ysOvb7gCvR5wAjC9Y1OqFjpedl6/X3HUNbOSRqOa+nUvXkIJf
-         CgOA==
-Content-Disposition: inline
-In-Reply-To: <9119c54c-df24-7846-71e5-fc4b6a531488-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
-Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=6Ge0IMlnX1RtBVj/cXwnzW8ZGOolEN4bq0IpES6P+tA=;
+        b=k/p+6EnftFK2eNgOrfXZ2QT9xb0d0KWRIzO7YWpaK2sHn3N+0H2SUuKFIiyMY7bsKR
+         wBBPdmiEYZzpMsdEEjhiCCEkRaI4fuA0cqI8Gw2lZlbLZz2KN60MBwSWdtP42YCHqDPB
+         7Mbnda1RnySfSOUTHdn0FsIo25fkJCh3BPj+eriDdQ8+v8I+sjFj6FFItjYmjF92RyEt
+         Naoi/7wYs0tL28h5zDMHQa1IM/XkiV/MZrsuQElOUH8qClywmzCqHgXFX1kZqSnFLqQq
+         K9ZcpabrqykJ6jnJdDt85nGwIjQrJAclUubXLIpiBPZeOHvwaMf4d2/1SNXdy0g7Hlld
+         Js+A==
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jamal Hadi Salim <jhs-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
-Cc: Alexis Green <agreen-EaYfvaLb8E+tG0bUXCXiUA@public.gmane.org>, tech-committee <tech-committee-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org>, linux-wireless <linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Heri Muhero <hmuhero-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, people-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Mathieu Desnoyers <mathieu.desnoyers-vg+e7yoeK/dWk0Htik3J/w@public.gmane.org>, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Amine Aouled Hamed <amine.ahd-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: people@netdevconf.org
+Cc: tech-committee@netdevconf.org, netfilter-devel@vger.kernel.org, Brenda Butler <bjb@mojatatu.com>, Stephen Jaworski <jaws@mojatatu.com>, netfilter@vger.kernel.org, linux-wireless@vger.kernel.org, Heri Muhero <hmuhero@gmail.com>
 
-On Sat, Mar 18, 2017 at 09:56:36PM -0400, Jamal Hadi Salim wrote:
->=20
-> Note: this discussion already has generated more traffic
-> than a few days worth of announcements ;->
->
+I am going to keep netfilter and wireless lists on for now unless I hear
+more objections. We will be doing about one a day from now until about
+the time of the conference.
 
-IIRC Hajime always added links to the site in his announcements, which
-made it easy to lookup netdev.  Maybe adding some lines about netdev to
-all emails would reduce confusion? Suspect not everyone subscribed to
-these lists knows what netdev is.=20
+The tech committee would like to announce a new accepted talk.
 
-Don't consider these emails spam at all :)
+Huapeng Zhou, Doug Porter, Ryan Tierney and Nikita Shirokov
+are going to give a talk on Droplet which is used at Facebook
+to plug in DDoS countermeasures.
 
-Thanks.
+More details:
+----
+Droplet is a generic framework to implement bpf policers to drop
+packets at the earliest stage in the networking stack, preferably at
+line rate. It's born for anti-DDoS and is the preferred infrastructure
+at Facebook to plug in DDoS countermeasures. This talk presents the
+overall architecture of Droplet and discusses a few issues in
+developing and rolling out the software.
 
---=20
-Mit freundlichen Gr=FC=DFen
+At a high level, Droplet takes bpf policer code written in restricted C
+syntax, compiles it at runtime and hooks it into the kernel. The
+framework abstracts out interactions between user space and kernel
+space so the end user only needs to write policer code. It could chain
+bpf programs together so we get multiple active DDoS countermeasures at
+the same time. The policer code is shipped as configuration, which
+enables fast response time when under active attacks.
+--------
 
-Alexander Alemayhu
+cheers,
+jamal
