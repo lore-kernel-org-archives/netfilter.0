@@ -1,76 +1,44 @@
-From: Edoardo Panfili <edoardo@aspix.it>
-Subject: Can't see IP address for a redirection in nft list table output
-Date: Sun, 19 Mar 2017 17:15:49 +0100
-Message-ID: <8c8f6c53-7f9a-a74a-9c72-0cabf907f744@aspix.it>
+From: Jamal Hadi Salim <jhs-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
+Subject: [Netdev ANNOUNCE]: New tc workshop accepted
+Date: Mon, 20 Mar 2017 13:32:42 -0400
+Message-ID: <63339d3a-dcac-0639-2de0-204a773567dd@mojatatu.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
+Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:subject:to:message-id:date:user-agent:mime-version
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
          :content-transfer-encoding;
-        bh=LsoQEA/UnmBVW438xYEsSunW8VhgceiDt7fjA0K7uJ4=;
-        b=FMAsE7ry8CAmYOKJDZdT1EvKEL+LCdMYfR5Ff/MoMmR3uLMFa7YmhPvwJNjy1kovrU
-         DPMsqTNQ/2RlytPHokWOiXBe69RO87HYHX4+vNhE2GL9xgbnqGND+7rCHm/gTWgABdw/
-         jy700d1R+uSdRW/0vq2bjEtbXUsORH4m0DyLjz9pMgzVEQdc62S3UYojDahh0dgFrREl
-         o3J7Qwjd08Oma8DDXKXNJfJzK8CAA7//HOFrUIsHAf/Z7U4DQyL8rEBXpUAdIHU/faJZ
-         ZU/rJSgOlj+NSOaGHKlVVR6ZCkBLPqhg8FlXEHsWSptqP6sftYIApBZjj2s3KgLFIrMV
-         TyMA==
-Sender: netfilter-owner@vger.kernel.org
+        bh=2w+uUwXxV4CDzsmyaI7zswMQld411MeqfIPXnyny0is=;
+        b=BUUlim86XHwAkh6hI0CCyvu73L+IzZLpo+G5UBA01u+f6Ceaz42cKLoyMTG2vaAh/m
+         07xjFOevmQqPiMVGjEzwmnZ1wpkRps0orY9vpbhlUf960gefcCZ3iY5ASvPqvK5MmaOj
+         iJS7QsBYGn4FIWQSG+fONQcOMghiWluyfwxBOpW7Z6QE/R3tC8etsEXI9JecO7ndyJo5
+         0NxtEZMeMI6lLvq7Ya7VmkbZL2mhBYbLZR7Oiv/M5tDjsScNyXkrvHu0M9m4Sq1njj5y
+         Hi75NLvGRkwO3I/9XgolMCVmuiPGN2Hxt/Am6IHi5E3tDGh45lHWcz0gTb4Q8wedEtwq
+         tB8w==
+Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: people-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org
+Cc: tech-committee-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Brenda Butler <bjb-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, Stephen Jaworski <jaws-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Heri Muhero <hmuhero-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-Hello,
+The tech committee would like to announce a new accepted workshop.
 
-I need to redirect incoming traffict to two different servers
-and all works fine using the following commands:
+Jamal Hadi Salim will chair the Traffic Control (tc) workshop
+
+Details are as follows:
 -----
-nft add table portForward
-nft add chain portForward prerouting { type nat hook prerouting priority 
-0 \; }
-nft add chain portForward postrouting { type nat hook postrouting 
-priority 100 \; }
-nft add rule portForward prerouting dnat tcp dport map \
-{ 8888 : 192.168.2.3} : tcp dport map { 8888 : 80 }
-nft add rule portForward prerouting dnat tcp dport map \
-{ 9999 : 192.168.2.4} : tcp dport map { 9999 : 8080 }
------
+Face to Face discussions on different tc topics
 
-but when I try to inspect the table using
-# nft list table portForward
-the output is:
------
-table ip portForward {
-   chain prerouting {
-     type nat hook prerouting priority 0; policy accept;
-     dnat to :tcp dport map { 8888 : http}
-     dnat to :tcp dport map { 9999 : http-alt}
-   }
+Current WAG agenda (subject to update):
 
-   chain postrouting {
-     type nat hook postrouting priority 100; policy accept;
-   }
-}
------
-I can't see the IP of the two different servers and if I use it
-as input for "nft -f" this is the output
+New tc offloads since netdev 1.2
+New features/requests/improvements
+Performance
+Packet edit/offload discussion
+YATO (Yet another Tunnel offload).
+----
 
-x:4:26-53: Error: transport protocol mapping is only valid after 
-transport protocol match
-dnat to :tcp dport map { 8888 : http}
-~~~~     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-my environment is Debian Stretch with:
-$ nft -v
-nftables v0.7 (Scrooge McDuck)
-$ uname -a
-Linux elrond 4.9.0-2-686-pae #1 SMP Debian 4.9.13-1 (2017-02-27) i686 
-GNU/Linux
-
-the same happens using kernel 4.10 from experimental.
-
-How can I obtain the differen IPs in the output of nft list table?
-
-thank you
-Edoardo
+cheers,
+jamal
