@@ -1,44 +1,59 @@
-From: Jamal Hadi Salim <jhs-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
-Subject: [Netdev ANNOUNCE]: New tc workshop accepted
-Date: Mon, 20 Mar 2017 13:32:42 -0400
-Message-ID: <63339d3a-dcac-0639-2de0-204a773567dd@mojatatu.com>
+From: Mathieu Desnoyers <mathieu.desnoyers-vg+e7yoeK/dWk0Htik3J/w@public.gmane.org>
+Subject: Re: [NetDev] [Netdev ANNOUNCE]: New tc workshop accepted
+Date: Mon, 20 Mar 2017 18:56:44 +0000 (UTC)
+Message-ID: <747959804.19467.1490036204772.JavaMail.zimbra@efficios.com>
+References: <63339d3a-dcac-0639-2de0-204a773567dd@mojatatu.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=2w+uUwXxV4CDzsmyaI7zswMQld411MeqfIPXnyny0is=;
-        b=BUUlim86XHwAkh6hI0CCyvu73L+IzZLpo+G5UBA01u+f6Ceaz42cKLoyMTG2vaAh/m
-         07xjFOevmQqPiMVGjEzwmnZ1wpkRps0orY9vpbhlUf960gefcCZ3iY5ASvPqvK5MmaOj
-         iJS7QsBYGn4FIWQSG+fONQcOMghiWluyfwxBOpW7Z6QE/R3tC8etsEXI9JecO7ndyJo5
-         0NxtEZMeMI6lLvq7Ya7VmkbZL2mhBYbLZR7Oiv/M5tDjsScNyXkrvHu0M9m4Sq1njj5y
-         Hi75NLvGRkwO3I/9XgolMCVmuiPGN2Hxt/Am6IHi5E3tDGh45lHWcz0gTb4Q8wedEtwq
-         tB8w==
+In-Reply-To: <63339d3a-dcac-0639-2de0-204a773567dd-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
 Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: people-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org
-Cc: tech-committee-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Brenda Butler <bjb-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, Stephen Jaworski <jaws-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Heri Muhero <hmuhero-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Jamal Hadi Salim <jhs-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
+Cc: people <people-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org>, tech-committee <tech-committee-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org>, linux-wireless <linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, Heri Muhero <hmuhero-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, netfilter <netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, netfilter-devel <netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 
-The tech committee would like to announce a new accepted workshop.
+Hi Jamal,
 
-Jamal Hadi Salim will chair the Traffic Control (tc) workshop
+So, the interesting thing is that I've been automatically
+re-subscribed to people-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org about 1 day after
+I explicitly unsubscribed. What do I need to do to stop
+receiving those unsolicited emails ?
 
-Details are as follows:
------
-Face to Face discussions on different tc topics
+Best regards,
 
-Current WAG agenda (subject to update):
-
-New tc offloads since netdev 1.2
-New features/requests/improvements
-Performance
-Packet edit/offload discussion
-YATO (Yet another Tunnel offload).
-----
+Mathieu
 
 
-cheers,
-jamal
+----- On Mar 20, 2017, at 1:32 PM, Jamal Hadi Salim jhs-jkUAjuhPggJWk0Htik3J/w@public.gmane.org wrote:
+
+> The tech committee would like to announce a new accepted workshop.
+> 
+> Jamal Hadi Salim will chair the Traffic Control (tc) workshop
+> 
+> Details are as follows:
+> -----
+> Face to Face discussions on different tc topics
+> 
+> Current WAG agenda (subject to update):
+> 
+> New tc offloads since netdev 1.2
+> New features/requests/improvements
+> Performance
+> Packet edit/offload discussion
+> YATO (Yet another Tunnel offload).
+> ----
+> 
+> 
+> cheers,
+> jamal
+> 
+> _______________________________________________
+> people mailing list
+> people-wool9L35kic1SDoEz2Kt52D2FQJk+8+b@public.gmane.org
+> http://lists.netdevconf.org/cgi-bin/mailman/listinfo/people
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
