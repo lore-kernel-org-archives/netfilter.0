@@ -1,50 +1,46 @@
 From: Robert White <rwhite@pobox.com>
-Subject: Re: nftables: vmaps and atomic update
-Date: Tue, 21 Mar 2017 19:36:27 +0000
-Message-ID: <990b6f2b-ad63-6e79-b9fd-41a662034850@pobox.com>
-References: <748570280.473727.1490115228816.JavaMail.zimbra@tpip.net>
+Subject: Question: Why can't non-hooked chains have policies?
+Date: Tue, 21 Mar 2017 19:49:56 +0000
+Message-ID: <1cc7769a-b025-a2f2-15d3-8c2baceb9132@pobox.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <748570280.473727.1490115228816.JavaMail.zimbra@tpip.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Andreas Schultz <aschultz@tpip.net>, netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 03/21/17 16:53, Andreas Schultz wrote:
->     delete element ip filter client_to_any { 10.180.86.22 : goto CIn_1 }
->     delete chain ip filter CIn_1
+I am not sure if this is deliberate or an oversight, but it seems that 
+chains without a hook directive can not have a policy.
 
-I've verified that the problem is repeatable and that the two commands 
-work separately. The problem also exists for jump verdicts.
+The decision of what to do if you fall off the end of a chain is not 
+hard to answer with an explicit directive, but in terms of a chain you 
+might want to flush and rebuild or whatever it's just sort of surprising.
 
-I'd suspect that there's a strict ordering that makes "the chain work 
-happen first". For most cases this would make sense. Since the sets and 
-the chains are owned by different parts of the kernel (the two set types 
-are in kernel modules, so must be distinct from the chain handling) 
-there are probably limits on the degree of atomic modification. (e.g. I 
-think the sets and maps internal consistency logic _must_ be separate.)
+Trivial example of discussion point:
 
-The two commands work separately, so once the set element is gone the 
-chain is just noise. So I'd rate it as annoying but probably non-trivial 
-to fix.
+table ip example {
+   chain expected_normal {
+     type filter hook forward priority 0; policy drop;
+     iif eth0 goto avoid_policy_if_flushed
+     iif eth1 goto ought_to_be_legal
+   }
+   chain avoid_policy_if_flushed {
+     drop
+   }
+   chain ought_to_be_legal {
+     policy drop; # not legal but should be IMHO
+   }
+}
 
-I'd open a bug at the bug tracker site (https://bugzilla.netfilter.org/) 
-and meanwhile do the chain drop separately after the set/map command.
+later # nft flush chain ip example avoid_policy_if_flushed
 
-As a cheesy workaround for scripting, you can use a here document (etc.) 
-redirected into "nft -i" to do fast sequential changes.
+Now obviously using jump instead of goto makes this less of an issue, so 
+this isn't impossible, but if something/someone tangles up some logic 
+surprises could develop.
 
-So
-
-nft -i <<'EOT'
-delete element ip filter client_to_any { 10.180.86.22 : goto CIn_1 }
-delete chain ip filter CIn_1
-EOT
-
+I haven't figured out of this limit is arbitrary code or if it's 
+inherent to how hooks work. So this is a request for discussion not a 
+feature request etc. email.
 
 --Rob.
-
-P.S. I'm just some guy, not a core developer or anything. I just thought 
-I'd toss in a few seconds of problem analysis. 8-)
