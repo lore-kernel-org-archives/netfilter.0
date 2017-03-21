@@ -1,96 +1,56 @@
-From: Jamal Hadi Salim <jhs@mojatatu.com>
-Subject: [Netdev ANNOUNCE]: Two new talks on network emulators and zero copy
- sendmsg
-Date: Tue, 21 Mar 2017 11:15:44 -0400
-Message-ID: <cfc3bb6e-67c0-2ab5-283a-b534836dcbc0@mojatatu.com>
+From: Andreas Schultz <aschultz@tpip.net>
+Subject: nftables: vmaps and atomic update
+Date: Tue, 21 Mar 2017 17:53:48 +0100 (CET)
+Message-ID: <748570280.473727.1490115228816.JavaMail.zimbra@tpip.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=eRs27MeEWjj9JEt4EEqTYqHa798QtUdxI0JwmHpJXP4=;
-        b=ezz+vuwg/Zu4QVx6xXSmaRWXbV3+e3eJopGLThfMizSMMGmDCEDXAZdu96DhQh9+wy
-         tCobRT++QXJDu9rTd+kbwop2gelFZAXo4RGWvek9jgHKkIup4hde8F1KzFeC1WMq0HNb
-         AKsGmyYJrihj1lQxm3UFMyFuxzPa6yN3W3RrQujFafWctFLMdP4y5IEVG2LxnB7nRxXv
-         +hAZ+dosSzSaXjrkMN9MxHLssXZnxobuuOyUTrMmwD/WqzLQ/pP4IfCFTN7XG5zpGLTn
-         qDizOH6YXWBeVjamXhCmqsozYEIQv7qHDdqNyhwl7pgIN8COl7HD2Q/rtZDE/JVO3cDB
-         gzEw==
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: people@netdevconf.org
-Cc: tech-committee@netdevconf.org, netfilter-devel@vger.kernel.org, Brenda Butler <bjb@mojatatu.com>, Stephen Jaworski <jaws@mojatatu.com>, netfilter@vger.kernel.org, linux-wireless@vger.kernel.org, Heri Muhero <hmuhero@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-The tech committee would like to announce two new accepted talks.
+Hi,
 
-The first one is a talk on container based network emulators by
-Brian Linkletter and the second one is by Willem de Bruijn
-on zero copy sendmsg.
+Delete an item that has a goto from a vmap and the chain
+that the goto pointed to in the atomic transaction
+is not working on Linux 4.10.
 
-Details are as follows:
+Minimal sample:
 
-1) Investigating Linux Network Behaviour Using Open-Source Network
-Emulators (Brian Linkletter)
+init.nft:
 
-----
-There are several open source, GUI based, network emulation tools that
-  are based on linux containers that could be used to replicate network
-scenarios including failures. This talk will be taking a trouble-
-shooting approach to introduce a sample of these tools.
+    table ip filter {
+	map client_to_any {
+		type ipv4_addr : verdict
+		elements = { 10.180.86.22 : goto CIn_1}
+	}
 
-* Show how a complex virtual network topology of virtual bridges, Linux
-hosts, and Linux routers can be created in an ad-hoc fashion in minutes
-using Linux containers and Linux bridging in a GUI-based network
-emulator such as the CORE Network Emulator
+	chain FORWARD {
+		type filter hook forward priority 0; policy accept;
+		goto client_to_any
+	}
 
-*Create a troubleshooting scenario in the emulated network caused by one 
-or more problems (for example: by interfering with traffic on links
-in  the virtual network, or by incorrectly configuring routers in the
-network) and show how the network emulator integrates with commonly
-used tools, such as Wireshark, to evaluate and identify the problem.
+	chain client_to_any {
+		ip saddr vmap @client_to_any
+	}
 
-*Show how the network emulation scenario setup may be automated using
-  Python scripts and APIs
+	chain CIn_1 {
+	}
+    }
 
-*Briefly show that the CORE network emulation tool, and similar tools, 
-may be extended to add new functionality.
+del.nft:
 
-*Briefly show a general overview of other open-source network emulation
-tools that use virtualized Linux nodes to emulate networks, emphasizing
-the use-cases where each is best suited, based in hypervisor or
-container technology used, scripting language used, available API's,
-and integration with complementary tools.
+    delete element ip filter client_to_any { 10.180.86.22 : goto CIn_1 }
+    delete chain ip filter CIn_1
 
-At the end of the talk, developers would have an appreciation of the 
-open-source network emulation projects available and how to use them to 
-replicate network behavior while testing or debugging network 
-applications or applications that use a network.
-----
+Attempting to execute del.nft results in:
 
-2)  sendmsg copy avoidance with MSG_ZEROCOPY (Willem de Bruijn)
----
-  Linux offers various copy avoidance mechanisms, such as sendfile,
-vmsplice and tun zerocopy. In this talk I will give an overview of
-current interfaces and introduce a new MSG_ZEROCOPY extension to the
-socket API. Processes converted to the interface see a cycle reduction
-ranging from 90% of process cycles (62% systemwide) for a netperf micro-
-benchmark to 5-8% for lightly modified production machine learning and
-CDN workloads.
+# nft -f del.nft
+del.nft:2:1-29: Error: Could not process rule: Device or resource busy
+delete chain ip filter CIn_1
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The feature combines a send() flag with a completion notification
-channel over the socket error queue. Aside from introducing the
-interface, the talk will focus on technical constraints. Primarily,
-supporting complex protocols like TCP, where segmentation,
-retransmission and reordering introduce a non-trivial relationship
-between user buffers and packets on the wire. To handle these,
-completion notification requires careful reference counting across the
-transmit stack. Other concerns are bounding notification latency and
-working set size, avoiding TOCTTOU attacks with shared read-write page
-mappings and amortizing the cost of notification processing over the
-socket error queue.
-----
+Is that supposed to be that way?
 
-cheers,
-jamal
+Andreas
