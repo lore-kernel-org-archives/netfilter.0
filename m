@@ -1,56 +1,59 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: nftables: vmaps and atomic update
-Date: Wed, 22 Mar 2017 12:19:29 +0100
-Message-ID: <20170322111929.GA2690@salvia>
-References: <748570280.473727.1490115228816.JavaMail.zimbra@tpip.net>
- <990b6f2b-ad63-6e79-b9fd-41a662034850@pobox.com>
+Subject: Re: (discussion) Why are "flow tables" syntactically unique?
+Date: Wed, 22 Mar 2017 17:25:57 +0100
+Message-ID: <20170322162557.GA23457@salvia>
+References: <99833e6a-90f8-4b53-276b-51e6c221a55c@pobox.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <990b6f2b-ad63-6e79-b9fd-41a662034850@pobox.com>
+In-Reply-To: <99833e6a-90f8-4b53-276b-51e6c221a55c@pobox.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: Robert White <rwhite@pobox.com>
-Cc: Andreas Schultz <aschultz@tpip.net>, netfilter@vger.kernel.org
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Tue, Mar 21, 2017 at 07:36:27PM +0000, Robert White wrote:
-> On 03/21/17 16:53, Andreas Schultz wrote:
-> >    delete element ip filter client_to_any { 10.180.86.22 : goto CIn_1 }
-> >    delete chain ip filter CIn_1
+On Sat, Mar 18, 2017 at 12:59:18AM +0000, Robert White wrote:
+> So this doesn't rate a bug, but it did confuse me.
 > 
-> I've verified that the problem is repeatable and that the two commands work
-> separately. The problem also exists for jump verdicts.
+> Flow tables are always named, but they don't conform to the way sets, maps,
+> and dictionaries work in terms of "add" and "delete" and all that.
 > 
-> I'd suspect that there's a strict ordering that makes "the chain work happen
-> first". For most cases this would make sense. Since the sets and the chains
-> are owned by different parts of the kernel (the two set types are in kernel
-> modules, so must be distinct from the chain handling) there are probably
-> limits on the degree of atomic modification. (e.g. I think the sets and maps
-> internal consistency logic _must_ be separate.)
+> They are also "flow tables" instead of one word like "flows" or "throttle"
+> or something.
 > 
-> The two commands work separately, so once the set element is gone the chain
-> is just noise. So I'd rate it as annoying but probably non-trivial to fix.
+> It seems weird to just have these break the syntactic expectations.
 > 
-> I'd open a bug at the bug tracker site (https://bugzilla.netfilter.org/) and
-> meanwhile do the chain drop separately after the set/map command.
+> I think, long-term, that picking a one word designator like "rate" or
+> "gauge" and making them syntactically similar to sets with a type and flags
+> at the table level, and using @name syntax or having them be unnamed in
+> place, would make much more sense.
 > 
-> As a cheesy workaround for scripting, you can use a here document (etc.)
-> redirected into "nft -i" to do fast sequential changes.
+> It's especially confusing since "list map tablename mapname" and "list flow
+> table tablename flowname" are so similar in function but have a different
+> word count and are not orthogonal to add and delete and clear etc.
 > 
-> So
+> So if they were just like sets this would be so much less confusing.
 > 
-> nft -i <<'EOT'
-> delete element ip filter client_to_any { 10.180.86.22 : goto CIn_1 }
-> delete chain ip filter CIn_1
-> EOT
+> table ip example {
+>   gauge dhcp_throttle {
+>     type ipv4_addr . inet_service
+>     flags whatever, whateverelse
+>   }
 
-Right.
+This would provide a way to restore flow table between reboots, so we
+could even per populate them with elements.
 
-But this is not atomic as Andreas indicates.
+>   chain dhcp_traffic {
+>     gauge { ip saddr limit over 200/day } drop
+>     gauge @dhcp_throttle { ip saddr . udp dport limit 3/second } accept
 
-There is a bug in the 2-phase commit protocol, the chain->use counter
-is not being decremented in the mapping.
+This would resolve the inconsistency, yes.
 
-Let me have a look. Thanks for reporting!
+I would still stick to 'flow table' instead of 'gauge'. I was never
+comfortable with the fact that we overload 'table' with more semantics
+(given we already have tables in nf_tables).
+
+Let me think, it would be good to add an entry to netfilter's
+bugzilla, so we don't lose track of this.
