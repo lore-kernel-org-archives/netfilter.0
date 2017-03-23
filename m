@@ -1,67 +1,62 @@
-From: Jamal Hadi Salim <jhs-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
-Subject: [ANNOUNCE]: New sponsor and accepted talk
-Date: Thu, 23 Mar 2017 14:46:34 -0400
-Message-ID: <3a7c4196-2812-4894-2f4e-a7d1c88fa650@mojatatu.com>
+From: Robert White <rwhite@pobox.com>
+Subject: Re: TCP flags syntax in nftables
+Date: Thu, 23 Mar 2017 19:43:25 +0000
+Message-ID: <a270fb38-5ad2-d3b5-a527-eee85548328e@pobox.com>
+References: <CAJRbyBz+ujYaTFbTAMnWnNXcO061upw7-f34BuDnirMzvRkmmQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=gujN7SVC73WP/T3Jtex+kwYWcxGbB4FnSTTK0MCigNU=;
-        b=0WiZw/VLxe9GmPv4da9/W5TYRqILN+N48S0xigWaw20EUtP5tOJsu4WeZMFGxnVyUu
-         eA3Kc/QJfMgjib+2m9Isz7S6swBPiVQp9eevlsW6In49DspzUdXPKTGll1bTXLC7RX6A
-         Jbk9OtUfODb1GclFEEhS3bPhpknvwZ4rJoOjntIEE/TJkGHICjkTsJ9VvY6dcWZdkXzs
-         YRgsDornzlFMCttL1TBQIk+PbVI+5FBpwKJa8yqizQVn29SROEHdgHGDp/HOzBVKQ1jU
-         4brzHuqHqrIkzmrmIki2rxT5XE8Jtv/yePWk5iFlodLkQVt9IT0UmBgs6MjBmU2v4iUt
-         tlbQ==
-Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <CAJRbyBz+ujYaTFbTAMnWnNXcO061upw7-f34BuDnirMzvRkmmQ@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: people-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org
-Cc: tech-committee-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Brenda Butler <bjb-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, Stephen Jaworski <jaws-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Heri Muhero <hmuhero-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+To: Brian Filipek <bfilipek@betterworldbooks.com>, netfilter@vger.kernel.org
 
+On 03/23/17 12:11, Brian Filipek wrote:
+> Hi,
+>
+> I've done some digging but really can't find a good explanation of the
+> syntax for matching TCP flags in nftables. In iptables a rule can be
+> written like:
+> -A TEST_BADFLAGS -p tcp --tcp-flags SYN,FIN SYN,FIN -j LOG_BADFLAGS
+>
+> How do I do the equivalent in nftables? Also are we still able to use
+> the "ALL" and "NONE" keywords?
 
-Two announcements for today. An accepted talk and a new sponsor.
+So a quick preamble. The iptables command and structure didn't include 
+basic math support because the engine didn't have any sort of expression 
+evaluation.
 
-1) The tech committee would like to announce a new accepted talk.
-Arthur Davis and Tom Distler will talk about their quest for a
-quest for a network configuration solution for a large Linux storage
-application
+So in iptables the tow expressions are (first) the mask to bitwise-and 
+with the actual flags, then (second) the expected result.
 
-Details are as follows:
--------
-This talk is about our quest for a network configuration solution
-for a large Linux storage application. Our application is based on
-a highly available cluster architecture which requires
-dynamic and reliable software-driven network configuration.
+So --tcpflags M R is the same as "if ((packet_flags & M) == R) then"
 
-Further requirements include:
-- programmatic access to configure the majority of the Linux network
-   stack,
-- transaction-like semantics where multiple related configurations
-   either fail or succeed as a unit,
-- logic to monitor the system and when it differs from the expected
-   configuration, provide notifications and possibly attempt automatic
-   repairs,
-- and all of this without becoming entangled with application-specific
-   expectations about behaviors and policies.
+In nftables you write that out as an actual expression.
 
-The talk expands upon the above set of core requirements and discusses
-some of the difficulties around meeting these requirements with
-currently available open source solutions. Our journey leads to a new
-configuration system to meet these requirements, and we discuss some
-key architecture and design aspects of the system.
+So "tcp flags & (syn|fin) == syn|fin"
 
-We are planning to release our work into the open source community and
-we hope the talk will encourage discussion and provide us feedback on
-making this work better.
---------
+Which is "fetch tcp flags", make a bitwise or of syn and fin bits, use 
+that value as a mask to ingore other bits, now make a bitwise or of syn 
+and fin again, finally compare the two values and make sure they are equal.
 
-2) The organizing committee would like to announce
-Savoirfairelinux  joining as a bronze sponsor. Thank you!
+Now the front-end is going to compile this into "flags & 0x03 == 0x03", 
+which is exactly the sort of thing that the iptables match did so WTF 
+amirite?
 
+Since the nft system basically introduces a limited mathematical context 
+you can use other expressions. Not equal and less-than and so on.
 
-cheers,
-jamal
+So lets say you want a counter of all the tcp packets with "exotic" flags.
+
+thats "tcp flags ge urg counter"
+
+This will catch any packet with urg, ecn, or cwr set regardless of any 
+other flags also set.
+
+So the math context relieves you of the strict equality test in the 
+iptables version, but it's a hair more hands-on in terms of knowing how 
+boolean expressions work in C-like languages.
+
+--Rob.
+
