@@ -1,43 +1,33 @@
-From: Scott Bonar <sbonar@gmail.com>
-Subject: Kernel panic when using IPset with counters
-Date: Thu, 23 Mar 2017 05:47:04 -0600
-Message-ID: <CABGW2bVabLiHO6_DuqhzOgkV5z1oeBMLSyqLrFZiY2oaVg6D0g@mail.gmail.com>
+From: Brian Filipek <bfilipek@betterworldbooks.com>
+Subject: TCP flags syntax in nftables
+Date: Thu, 23 Mar 2017 08:11:12 -0400
+Message-ID: <CAJRbyBz+ujYaTFbTAMnWnNXcO061upw7-f34BuDnirMzvRkmmQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=IBasB5Nz4MrpJw0dVrlHsJeDnfq4tFdjT6zPpqxAL3Y=;
-        b=pZgY/uzRlTaYyZiXpEfxpUsfiOOZoSUha79nzJNdBAeKmyYVz9jqi8ypqyTFjLYu9q
-         r3f+wOQBJ2Zec6kZ3PZaXzh5BSr+u0MSJziLByHX2z6KdAv1UXxL36EuNMfUud5yIIlK
-         E0e+kU8RvfZ3ac+vcuFFvvPKYwgxvAxGDmHx+DF2lfuG6TvLHFGarUQTWtZK00ikMo9u
-         x6oDECj7MobhN4tVDgIxkmJIDD5mh+V/aCfgwHDacjmVSM/9ow+rFstWY2SuMOFGqufz
-         bOCkXGloAgXCCPy9HaIsQ4FEZUsfLe0q/FjM/tjAXYDwB47N2ix/fBh52c9ZDenyOVey
-         A98Q==
+        d=betterworldbooks-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=Mw+Kc3WbKPioVhV9tYB1Vc1W4VyiihzWD80tEM8Z7ns=;
+        b=HAxEggH3uhqX96Dti85uYOzZGPCN0l2OOqcBN8p+pQQnYQZVg5lt+1FFJYTuTF3Mt5
+         ETgrw248HmgGI5ve/xRE7X8xmZpoVVBZz/GR6Jyso71e6wPgzsrBLASaT0NhS4Zg1Ogh
+         p7DxDtkGyf7A4mBOfuy1UIH45QIdkJ3fSZqH1EGcV32wL5YJFOfOiRe2PoG23MZPbJ/B
+         ZnKkCj1KmEZAtuuxVKyeA/ns1vPnhypF02igUw2WjYikV8ILd2Q4GClQvHQGQUirj97v
+         HkYPfbuDrLGypdm2ggeUl0Yz5968WRae/AtHe3yLqESlblurWaC0V9a9zaPPe4GWXFQP
+         NIyg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-When I configure a set with type =E2=80=98hash:ip=E2=80=99 and option =E2=
-=80=98counters=E2=80=99,
-after I have added more than 20 to 30 IP addresses to the set and then
-execute an `ipset list <setname>` I get a kernel panic in the function
-hash_ip4_list(). If I don=E2=80=99t have the option =E2=80=98counters=E2=80=
-=99 I don=E2=80=99t get the
-panic.
+Hi,
 
-I am using ipset version 6.21.1 and kernel 3.14.
+I've done some digging but really can't find a good explanation of the
+syntax for matching TCP flags in nftables. In iptables a rule can be
+written like:
+-A TEST_BADFLAGS -p tcp --tcp-flags SYN,FIN SYN,FIN -j LOG_BADFLAGS
 
-Is this a known issue and fixed in newer versions of ipset or kernel
-or both??  Is there something I can do differently in setting up the
-set?  I've tried playing with the hashsize and maxelem values but it
-still panics.
+How do I do the equivalent in nftables? Also are we still able to use
+the "ALL" and "NONE" keywords?
 
-
-Thanks in advance.
-
-
-Scott Bonar
+Thanks!
