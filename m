@@ -1,25 +1,43 @@
-From: Robert White <rwhite@pobox.com>
-Subject: Re: (discussion) Why are "flow tables" syntactically unique?
-Date: Thu, 23 Mar 2017 08:23:10 +0000
-Message-ID: <5a069f83-9f08-2dd3-48b2-ba6e5e2273b1@pobox.com>
-References: <pw1bjeso6tf5c3ckw3b6stgk.1490201457124@email.android.com>
+From: Scott Bonar <sbonar@gmail.com>
+Subject: Kernel panic when using IPset with counters
+Date: Thu, 23 Mar 2017 05:47:04 -0600
+Message-ID: <CABGW2bVabLiHO6_DuqhzOgkV5z1oeBMLSyqLrFZiY2oaVg6D0g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <pw1bjeso6tf5c3ckw3b6stgk.1490201457124@email.android.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=IBasB5Nz4MrpJw0dVrlHsJeDnfq4tFdjT6zPpqxAL3Y=;
+        b=pZgY/uzRlTaYyZiXpEfxpUsfiOOZoSUha79nzJNdBAeKmyYVz9jqi8ypqyTFjLYu9q
+         r3f+wOQBJ2Zec6kZ3PZaXzh5BSr+u0MSJziLByHX2z6KdAv1UXxL36EuNMfUud5yIIlK
+         E0e+kU8RvfZ3ac+vcuFFvvPKYwgxvAxGDmHx+DF2lfuG6TvLHFGarUQTWtZK00ikMo9u
+         x6oDECj7MobhN4tVDgIxkmJIDD5mh+V/aCfgwHDacjmVSM/9ow+rFstWY2SuMOFGqufz
+         bOCkXGloAgXCCPy9HaIsQ4FEZUsfLe0q/FjM/tjAXYDwB47N2ix/fBh52c9ZDenyOVey
+         A98Q==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "neal.p.murphy" <neal.p.murphy@alum.wpi.edu>, Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-On 03/22/17 16:50, neal.p.murphy wrote:
-> Let me think, it would be good to add an entry to netfilter's
-> bugzilla, so we don't lose track of this.
+When I configure a set with type =E2=80=98hash:ip=E2=80=99 and option =E2=
+=80=98counters=E2=80=99,
+after I have added more than 20 to 30 IP addresses to the set and then
+execute an `ipset list <setname>` I get a kernel panic in the function
+hash_ip4_list(). If I don=E2=80=99t have the option =E2=80=98counters=E2=80=
+=99 I don=E2=80=99t get the
+panic.
 
-Bug created using original email and both of your comments as insets.
+I am using ipset version 6.21.1 and kernel 3.14.
 
-http://bugzilla.netfilter.org/show_bug.cgi?id=1137
+Is this a known issue and fixed in newer versions of ipset or kernel
+or both??  Is there something I can do differently in setting up the
+set?  I've tried playing with the hashsize and maxelem values but it
+still panics.
 
---Rob.
 
+Thanks in advance.
+
+
+Scott Bonar
