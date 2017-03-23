@@ -1,49 +1,67 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Kernel panic when using IPset with counters
-Date: Thu, 23 Mar 2017 13:20:21 +0100 (CET)
-Message-ID: <alpine.DEB.2.11.1703231318100.5569@blackhole.kfki.hu>
-References: <CABGW2bVabLiHO6_DuqhzOgkV5z1oeBMLSyqLrFZiY2oaVg6D0g@mail.gmail.com>
+From: Jamal Hadi Salim <jhs-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
+Subject: [ANNOUNCE]: New sponsor and accepted talk
+Date: Thu, 23 Mar 2017 14:46:34 -0400
+Message-ID: <3a7c4196-2812-4894-2f4e-a7d1c88fa650@mojatatu.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        blackhole.kfki.hu; h=mime-version:user-agent:references
-        :message-id:in-reply-to:from:from:date:date:received:received
-        :received; s=20151130; t=1490271621; x=1492086022; bh=r3Gs3QstcE
-        MEqsoaJ2k6n5D/b8AKnJJ6y91mxluM2aY=; b=WwOCg6b0Raz3QCduE0lnrpgXtU
-        HMX+ZP9pje7qU6FDb1VJXa4pPLDZqnpS6rGghteiWxHxR1TZ8juCPJOq3oqQPCOX
-        4Q+bPYwkYlK15qIvLLmwSpZ/PqsJmRmie8caOOW6d0cW1lcHRldO91epO+qGPwss
-        yAFiAGYzGcmkYIILQ=
-In-Reply-To: <CABGW2bVabLiHO6_DuqhzOgkV5z1oeBMLSyqLrFZiY2oaVg6D0g@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Scott Bonar <sbonar@gmail.com>
-Cc: netfilter@vger.kernel.org
+Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=gujN7SVC73WP/T3Jtex+kwYWcxGbB4FnSTTK0MCigNU=;
+        b=0WiZw/VLxe9GmPv4da9/W5TYRqILN+N48S0xigWaw20EUtP5tOJsu4WeZMFGxnVyUu
+         eA3Kc/QJfMgjib+2m9Isz7S6swBPiVQp9eevlsW6In49DspzUdXPKTGll1bTXLC7RX6A
+         Jbk9OtUfODb1GclFEEhS3bPhpknvwZ4rJoOjntIEE/TJkGHICjkTsJ9VvY6dcWZdkXzs
+         YRgsDornzlFMCttL1TBQIk+PbVI+5FBpwKJa8yqizQVn29SROEHdgHGDp/HOzBVKQ1jU
+         4brzHuqHqrIkzmrmIki2rxT5XE8Jtv/yePWk5iFlodLkQVt9IT0UmBgs6MjBmU2v4iUt
+         tlbQ==
+Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: people-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org
+Cc: tech-committee-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Brenda Butler <bjb-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, Stephen Jaworski <jaws-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Heri Muhero <hmuhero-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-On Thu, 23 Mar 2017, Scott Bonar wrote:
 
-> When I configure a set with type ?hash:ip? and option ?counters?, after 
-> I have added more than 20 to 30 IP addresses to the set and then execute 
-> an `ipset list <setname>` I get a kernel panic in the function 
-> hash_ip4_list(). If I don?t have the option ?counters? I don?t get the 
-> panic.
-> 
-> I am using ipset version 6.21.1 and kernel 3.14.
-> 
-> Is this a known issue and fixed in newer versions of ipset or kernel or 
-> both??  Is there something I can do differently in setting up the set?  
-> I've tried playing with the hashsize and maxelem values but it still 
-> panics.
+Two announcements for today. An accepted talk and a new sponsor.
 
-That's a pretty old version and lots of thing has been fixed (and new 
-features added) since then. I'd suggest to go with the current ipset 
-package, which supports your kernel version.
+1) The tech committee would like to announce a new accepted talk.
+Arthur Davis and Tom Distler will talk about their quest for a
+quest for a network configuration solution for a large Linux storage
+application
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+Details are as follows:
+-------
+This talk is about our quest for a network configuration solution
+for a large Linux storage application. Our application is based on
+a highly available cluster architecture which requires
+dynamic and reliable software-driven network configuration.
+
+Further requirements include:
+- programmatic access to configure the majority of the Linux network
+   stack,
+- transaction-like semantics where multiple related configurations
+   either fail or succeed as a unit,
+- logic to monitor the system and when it differs from the expected
+   configuration, provide notifications and possibly attempt automatic
+   repairs,
+- and all of this without becoming entangled with application-specific
+   expectations about behaviors and policies.
+
+The talk expands upon the above set of core requirements and discusses
+some of the difficulties around meeting these requirements with
+currently available open source solutions. Our journey leads to a new
+configuration system to meet these requirements, and we discuss some
+key architecture and design aspects of the system.
+
+We are planning to release our work into the open source community and
+we hope the talk will encourage discussion and provide us feedback on
+making this work better.
+--------
+
+2) The organizing committee would like to announce
+Savoirfairelinux  joining as a bronze sponsor. Thank you!
+
+
+cheers,
+jamal
