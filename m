@@ -1,62 +1,52 @@
-From: Robert White <rwhite@pobox.com>
-Subject: Re: TCP flags syntax in nftables
-Date: Thu, 23 Mar 2017 19:43:25 +0000
-Message-ID: <a270fb38-5ad2-d3b5-a527-eee85548328e@pobox.com>
-References: <CAJRbyBz+ujYaTFbTAMnWnNXcO061upw7-f34BuDnirMzvRkmmQ@mail.gmail.com>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Subject: [Netdev ANNOUNCE]: New talk accepted debug pipe
+Date: Fri, 24 Mar 2017 11:56:30 -0400
+Message-ID: <0edc0f79-c960-5f26-efea-4a26455f5747@mojatatu.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAJRbyBz+ujYaTFbTAMnWnNXcO061upw7-f34BuDnirMzvRkmmQ@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=MDRPPLTk4IyKkvnZ7NuqJi25O/T3bhp6zULNPSmVgsc=;
+        b=e8HgZ16WY7hcfq8GI8LuET0NchrizdDeZnseYWgH0KAC04EvwrK4PeVNPntAJr8I5y
+         fFhdKjs5juPAaAyKQEDYbkxHXZt1dzAeKRaGF7PM5MaWOaulXooKzRV+ov112cckHgai
+         OKQh6b2QyRjnvcuK5btq63WucY0wpP6ru3+5X9bsVIwa3eO8kAU9RSZkq9afHGGyi+52
+         SEGxic9kYL1skc7J/AagOsMcmSZNz0cK2wGRs7yqD0Ol5DrIakqvpFEDKBbEHa5uRLag
+         17UVjIElFE+LQwivSO61Sg4jX7f/U7SLhYIf+ffg25+oEIzoDnkT4aMTNvso7x5JrV1t
+         /ddw==
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Brian Filipek <bfilipek@betterworldbooks.com>, netfilter@vger.kernel.org
+To: people@netdevconf.org
+Cc: tech-committee@netdevconf.org, netfilter-devel@vger.kernel.org, Brenda Butler <bjb@mojatatu.com>, Stephen Jaworski <jaws@mojatatu.com>, netfilter@vger.kernel.org, linux-wireless@vger.kernel.org, Heri Muhero <hmuhero@gmail.com>
 
-On 03/23/17 12:11, Brian Filipek wrote:
-> Hi,
->
-> I've done some digging but really can't find a good explanation of the
-> syntax for matching TCP flags in nftables. In iptables a rule can be
-> written like:
-> -A TEST_BADFLAGS -p tcp --tcp-flags SYN,FIN SYN,FIN -j LOG_BADFLAGS
->
-> How do I do the equivalent in nftables? Also are we still able to use
-> the "ALL" and "NONE" keywords?
+The tech committee would like to announce a new accepted talk.
 
-So a quick preamble. The iptables command and structure didn't include 
-basic math support because the engine didn't have any sort of expression 
-evaluation.
+Arkadi Sharshevski will give a talk on the new dpipe tool.
 
-So in iptables the tow expressions are (first) the mask to bitwise-and 
-with the actual flags, then (second) the expected result.
+Details are as follows:
+-----
+While doing the hardware offloading process much of the hardware
+specifics cannot be presented. One example for such is the routing LPM
+algorithm used in Mellanox Spectrum ASIC which differs in hardware
+implementation from the kernel software implementation. The only
+information the user receives is whether specific route is offloaded or
+not, but he cannot really understand the underlying implementation nor
+get the specific statistics related to that process.
 
-So --tcpflags M R is the same as "if ((packet_flags & M) == R) then"
+Another example is TC classification-action offload which in hardware
+commonly implemented using TCAM memory. Currently there is no
+capability to gain visibility into the TCAM structure and to debug
+sub-optimal resource allocation.
 
-In nftables you write that out as an actual expression.
+The new dpipe interface introduces capability for exporting the ASICs
+pipeline abstraction via devlink infrastructure, which should serve as
+an complementary tool. This infrastructure allows the user to get
+visibility into the ASIC by modeling it as a set of match/action tables.
 
-So "tcp flags & (syn|fin) == syn|fin"
+-----
 
-Which is "fetch tcp flags", make a bitwise or of syn and fin bits, use 
-that value as a mask to ingore other bits, now make a bitwise or of syn 
-and fin again, finally compare the two values and make sure they are equal.
-
-Now the front-end is going to compile this into "flags & 0x03 == 0x03", 
-which is exactly the sort of thing that the iptables match did so WTF 
-amirite?
-
-Since the nft system basically introduces a limited mathematical context 
-you can use other expressions. Not equal and less-than and so on.
-
-So lets say you want a counter of all the tcp packets with "exotic" flags.
-
-thats "tcp flags ge urg counter"
-
-This will catch any packet with urg, ecn, or cwr set regardless of any 
-other flags also set.
-
-So the math context relieves you of the strict equality test in the 
-iptables version, but it's a hair more hands-on in terms of knowing how 
-boolean expressions work in C-like languages.
-
---Rob.
-
+cheers,
+jamal
