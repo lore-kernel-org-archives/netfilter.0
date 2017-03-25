@@ -1,67 +1,32 @@
-From: Jamal Hadi Salim <jhs-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
-Subject: [Netdev ANNOUNCE]: New talk accepted
-Date: Sat, 25 Mar 2017 10:59:48 -0400
-Message-ID: <c82335d3-cd46-a2af-7b4b-4c888ad63999@mojatatu.com>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Subject: [Netdev ANNOUNCE]: New Platinum sponsor
+Date: Sat, 25 Mar 2017 11:13:43 -0400
+Message-ID: <e088030e-4cca-cd45-da3e-58755f096660@mojatatu.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
         h=from:subject:to:cc:message-id:date:user-agent:mime-version
          :content-transfer-encoding;
-        bh=nmX3AfPPtSut+/oK61qolyqvM2FOP4RwAWQzVtf/Vug=;
-        b=vgCt431ePnhqhdFVlm0UBLG/UpjAfvpVedPlS2Z31LBSp5S18NexOY/IWJdhRzVkAM
-         dK2wGuFUi1D4kgIP5yottzlIyvGAeOaaq4RoVrc1nLV4T9EcjXLhOSBcp8Nrwcvl2WI0
-         vI70H0Jmn5y3kVMj+USaMlSBV15InJurhaDv7ehvqWeST+EpXCYn5OpWdD8Rrezbzt9C
-         hL/be9Ayc+ld5NcIjpOeEFqhFGHbLXelTgMJxjAKkV+u9DmiZSdoGNn0awQjt/h1s7rL
-         IE/Gy7M/B9mn3+VQQYDzwsSi/7OviJPPX1RhWkcOKREL5GBlPxH6Hs7svomN612Cu5+w
-         8ioA==
-Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+        bh=hNoDOtXZLFpy3uIWnhZVVQwFV5i+2QXqjID4a07r/5M=;
+        b=mqXBVWzNMo/NLPY7TEYWXqm5iIoH9TF6qUBjegGYwMTSa7t/uf4WMSepA4/oGHwl54
+         oAGPMGs9fceRepaIsP/4yXBygB2Hwcg9UzqDKcw+YfNnt1CrsX74uCCuHPAkTwMAYIkh
+         SNm3u0izNuASvksOS9tDO5cJuvw5A8YssyaIHi6gdSTjaO1ZYKNc3/tvTyS4siaN7WFU
+         ui0ag5tlOg4ppkKaGJNxLholSAjB0HnlVVp1qO7/KW2VMsS82bgBBXX4GkHr3hoYd1cB
+         OaYY+wjT0AOSvXuQCAeGJ4tYsNVO3Jum5KLxC2DprECCO6TUqnML7RsszjqCHwhnEctb
+         zrfg==
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: people-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org
-Cc: tech-committee-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Brenda Butler <bjb-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, Stephen Jaworski <jaws-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Heri Muhero <hmuhero-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+To: people@netdevconf.org
+Cc: tech-committee@netdevconf.org, netfilter-devel@vger.kernel.org, Brenda Butler <bjb@mojatatu.com>, Stephen Jaworski <jaws@mojatatu.com>, netfilter@vger.kernel.org, linux-wireless@vger.kernel.org, Heri Muhero <hmuhero@gmail.com>
 
+The organizing committee would like to announce a new Platinum sponsor,
+Intel!
 
-The tech committee would like to announce a new accepted talk.
-
-Tom Herbert will talk about the need for very critical (life or death!)
-infrastructure need for IOT.
-
-
-More details on the talk:
-
-----
-This talks presents the motivation and direction to support the
-emerging class of IoT applications and protocols that require latencies
-measured in milliseconds on the Internet. These may be thought of as
-"life-critical applications" in the sense that they could be a matter
-of life and death to be correct. For example, a camera monitoring an
-intersection by a school may detect a child darting out into traffic. A
-device attached to the camera may send a warning to an autonomous
-vehicle to apply brakes to avoid hitting the child. The difference in
-reaction time between the an automated system and human is stark--
-about 40 msecs compared to 500 msecs or more for a human.
-
-Real-time IoT protocols need to be implemented with very low latency
-from hazard detection to response, strict latency bounds, be highly
-available, be secure (critical messages can't be spoofed), and be
-resistant to DDOS. A primary use case for such applications, as
-exhibited in the above example, is so-called Vehicle to Infrastructure
-communications (V2X). This implies that communicating devices may be
-highly mobile needing a solution such as ILA or MobileIP. The
-underlying network may also have different flavors including Dedicated
-Short-Range Communications (DSRC) which is standardized as 802.11p, 4G
-or the emerging 5G standard, as well as traditional WIFI.
-
-In order to achieve the tight latency bounds the application, network
-stack, network, scheduling, must all be tightly coordinated.
-Information is usually time sensitive with deadlines of usefulness such
-that techniques such as forward error correction are more likely to be
-used than traditional reliable protocols such as TCP. DTLS handshake
-must also be low latency, as well as any hand-off for implemented
-MobileIP.
------
+Intel is a returning sponsor and has been a strong supporter of the
+netdev community. Thank you Intel!
 
 
 cheers,
