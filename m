@@ -1,67 +1,45 @@
-From: Nick Howitt <nick@howitts.co.uk>
-Subject: Problem with ipset and --in-interface
-Date: Sun, 26 Mar 2017 09:06:19 +0100
-Message-ID: <237f8db1-1a60-c97f-f965-8ed363860731@howitts.co.uk>
+From: Jamal Hadi Salim <jhs-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
+Subject: [Netdev ANNOUNCE]: New sponsors and workshop workshop accepted
+Date: Sun, 26 Mar 2017 09:52:11 -0400
+Message-ID: <f93512ca-f041-c1a0-6458-c7ac3a040794@mojatatu.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Filter: OpenDKIM Filter v2.10.3 mailserver.howitts.co.uk 7A404409E691
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=howitts.co.uk;
-        s=201703; t=1490515580;
-        bh=iMDMYMpV6vt/vfMQGaK8zjpn8xilRzE3X21DMVRV/zU=;
-        h=To:From:Subject:Date:From;
-        b=6uewaDRaFt8VKInaGyqlW66jo2yguaFFvHDlstdRxh1f89zeTvGXF01HbumU8EjLY
-         bsPtHWEQxs2ZOxRPqtQ9WhFodJ1NkW6zp7Mlyex6BRju6rjg98PGM63BwFwEHFAYJm
-         BbByb5ZBDMOT67Eb+knPU1NLVqhmIsAn325ntTPAbbOeWvxznEU1oxlW9/LOh7GqWg
-         9hKeQIKB71Umknzf4iLaqsqOtn38z7y8YioENxwE7Hfc7fEFJ6ev6lp7H7jAmrx1iM
-         d2aHK8boOfsO3aYj92kIOTmxDpNp6idPmDZzERICEyp0a88wim7QCFALpul+/0hube
-         fz+lnby28Q0kw==
-DKIM-Filter: OpenDKIM Filter v2.10.3 mailserver.howitts.co.uk 8BFCF409E692
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=howitts.co.uk;
-        s=201703; t=1490515579;
-        bh=iMDMYMpV6vt/vfMQGaK8zjpn8xilRzE3X21DMVRV/zU=;
-        h=To:From:Subject:Date:From;
-        b=dnLwDgcj568X4f19Vj6sOXy46ICwRY595xC3ONFMQbJEcmKfy5GB8epfKEBy0/KmK
-         ECUMdq5oiXxF5x2c65aIuNeScbfhHRBR30GL1i4wUkn3zw3d9hMBjqEPaXzDcKATe2
-         ISS0HuU7REDvhwX0PzHC5aO11Pwp0cwOX4H4yp3Gz4mhzn9z25kfl8/uxBa4Ct039l
-         y5V6ba7qdn235enDPhSPP3JCCedqf14lhBv9ZM6mRGOz4u/fBeqU7dQZ7b4w27NQOW
-         LLY3HPHD2sCLEzAUZ3D3oBeWw92xVvuLrYFCyrWVn9dy0IhPiYnlZ2Qw3Ssdyg7fUy
-         uFD7tplXsDueQ==
-DKIM-Filter: OpenDKIM Filter v2.10.3 mailserver.howitts.co.uk 68399409E691
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=howitts.co.uk;
-        s=201703; t=1490515579;
-        bh=iMDMYMpV6vt/vfMQGaK8zjpn8xilRzE3X21DMVRV/zU=;
-        h=To:From:Subject:Date:From;
-        b=dnLwDgcj568X4f19Vj6sOXy46ICwRY595xC3ONFMQbJEcmKfy5GB8epfKEBy0/KmK
-         ECUMdq5oiXxF5x2c65aIuNeScbfhHRBR30GL1i4wUkn3zw3d9hMBjqEPaXzDcKATe2
-         ISS0HuU7REDvhwX0PzHC5aO11Pwp0cwOX4H4yp3Gz4mhzn9z25kfl8/uxBa4Ct039l
-         y5V6ba7qdn235enDPhSPP3JCCedqf14lhBv9ZM6mRGOz4u/fBeqU7dQZ7b4w27NQOW
-         LLY3HPHD2sCLEzAUZ3D3oBeWw92xVvuLrYFCyrWVn9dy0IhPiYnlZ2Qw3Ssdyg7fUy
-         uFD7tplXsDueQ==
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-transfer-encoding;
+        bh=+Y3iNioCvnBdI8+/KQKiEAbCGlHktB+8fHZX4VDQsNo=;
+        b=UkMdOWVuhJDQglWDA4IFN09DTFat3QQ+7Oe/e6vyHshpPcHoaB2yGveIPouali5w0Z
+         Jz4OYqOD3Bv7a2tNKhxfaa4A2mD9yQV5MPkSh/k+Wc63b6QUhz3NW742NfxXTYGU8pif
+         e6isHuGevPuQ7p83cJ0LIrw9a0lo8XU7DZg40AozRyJAm8f0WLRN0CJ609tJYKe3Z++m
+         MGEvvWmrx/igbt94RSSimHbK/xXdKYirTuKlRZRvXKUFOzZmHNiPYf9yyoMfG0928yoL
+         6UOwhky/0wHCEep9jvBbzKOWnJD5Eo1Ptm+lk1Dwvzao3ZwJQHN9gMH2A8bx5fLOx9A/
+         DDrQ==
+Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: people-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org
+Cc: tech-committee-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Brenda Butler <bjb-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, Stephen Jaworski <jaws-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Heri Muhero <hmuhero-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
 
-Hi,
-I'm new to the list so please forgive.
+We have 3 announcements today.
 
-I have the following rule in my iptables:
+The organizing committee would like to announce two new sponsors:
 
-iptables -w -I INPUT -i enp2S0 -m set --match-set country-list src -p 
-tcp -m multiport ! --dports 25,80,443 -m state --state NEW -j DROP
+1) Google returns as a Gold Sponsor. Google has supported the netdev
+conference from version 0.1. They has been a staunch supporter of the
+netdev community. We appreaciate you Google!
 
-but I've noticed it is not blocking. I tried checking using GRC's 
-Shields Up test scanning port 993. If instead, I do:
+2) LWN returns as a media sponsor. LWN has been the media sponsor since
+netdev 1.2. Thank you LWN!
 
-iptables -w -I INPUT -m set --match-set country-list src -p tcp -m 
-multiport ! --dports 25,80,443 -m state --state NEW -j DROP.
+Last:
 
-It works. The problem seems to be the come when I use the -i selector. 
-Do you know what I'm doing wrong?
+The tech committee would like to announce a new accepted workshop.
+Pablo Neira Ayuso will chair the mini netfilter workshop
 
-I am using ClearOS7.3 (a CentOS7.3 derrivative) with 
-ipset-6.19-6.el7.x86_64 and iptables-1.4.21-17.v7.x86_64.
+This workshop will go over new features and things that have changed 
+since Netdev1.2
 
-TIA,
-Nick
+cheers,
+jamal
