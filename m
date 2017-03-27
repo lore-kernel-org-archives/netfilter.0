@@ -1,51 +1,62 @@
-From: "Sam Basan" <sbasan@gmail.com>
-Subject: Allow connection on specific port only when other port is used
-Date: Mon, 27 Mar 2017 09:57:09 +0300
-Message-ID: <013001d2a6c7$5b5a8f50$120fadf0$@gmail.com>
-Reply-To: <sbasan@bluebe.net>
+From: Robert White <rwhite@pobox.com>
+Subject: Re: Allow connection on specific port only when other port is used
+Date: Mon, 27 Mar 2017 17:58:14 +0000
+Message-ID: <504d1c2b-6fbd-1e7d-aa2f-fbef2b8dc1a8@pobox.com>
+References: <013001d2a6c7$5b5a8f50$120fadf0$@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=reply-to:from:to:subject:date:organization:message-id:mime-version
-         :content-transfer-encoding:thread-index:content-language;
-        bh=0e51kxM7YNIatfPkaJScD/mXFeQgqXn3o6kD6+T9Kx4=;
-        b=A6GNeNPIflEh3c51mnAEtraihMeKCtjhhjdX4SK7kPeJskvjjK7R4KsF17AL/juXsi
-         Aut079y7gUXKzL/O5yikcpf2f024URgH6rL7IiuetXgmTxnASTnKQR+pazP3XOYwn0OE
-         yqNvpDMGI0G8JdV7zCXjD12D46cbGwJnrx59BF6iO3S7O9Dbzoh1MRpfpsFfEY7b/jYK
-         omgGWBoi74yHmc+gPcWFZNgQk/dG8kX7xaXgmdNpZyuzY6+uj1Q25DOtQiFy4uPfgw9M
-         lUlRS/+Ed/2dyXdHLxOBG2I5DEKrtCNLljKTe8wMdbiF6MafglksIwQfh+wGWjHEI/xK
-         mOog==
-Content-Language: he
+In-Reply-To: <013001d2a6c7$5b5a8f50$120fadf0$@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: sbasan@bluebe.net, netfilter@vger.kernel.org
 
-Hello,
+On 03/27/17 06:57, Sam Basan wrote:
+> I couldn't find this issue on the web.
+> I want to allow new connection on specific port (let's say FTP) only when
+> there is active session in HTTP.
+> It's like port knocking only I don't want to "knock" HTTP port but make sure
+> it's active session and only then open the FTP port to this specific IP
+> address.
 
-I couldn't find this issue on the web.
-I want to allow new connection on specific port (let's say FTP) only when
-there is active session in HTTP.
-It's like port knocking only I don't want to "knock" HTTP port but make sur=
-e
-it's active session and only then open the FTP port to this specific IP
-address.
-
-Any info on how this can be achieved will be highly appreciated.
-
-
-Thanks in advance
-Sam
+DISCLAIMER: this response is extemporaneous. I haven't tested it, just
+thought it out a little. YMMV.
 
 
----
-=D7=94=D7=95=D7=93=D7=A2=D7=AA =D7=93=D7=95=D7=90"=D7=9C =D7=96=D7=95 =D7=
-=A0=D7=91=D7=93=D7=A7=D7=94 =D7=9C=D7=90=D7=99=D7=AA=D7=95=D7=A8 =D7=95=D7=
-=99=D7=A8=D7=95=D7=A1=D7=99=D7=9D =D7=A2=D7=9C =D7=99=D7=93=D7=99 =D7=AA=D7=
-=95=D7=9B=D7=A0=D7=AA =D7=94=D7=90=D7=A0=D7=98=D7=99-=D7=95=D7=99=D7=A8=D7=
-=95=D7=A1 =D7=A9=D7=9C avast.
+You can do this pretty easily in nftables with a self-updating set.
 
-https://www.avast.com/antivirus
+table ip example {
+	set allowable {
+		type ipv4_addr
+		flags timeout
+	}
 
+	chain trigger {
+		tcp dport http set add ip saddr timeout 2m @allowable
+	}
+
+	chain gatekeeper {
+		tcp dport ftp ip saddr @allowable accept
+	}
+}
+
+This solution is self cleaning since the set membership has a fixed
+duration.
+
+
+In ipbables you could use the "--match recent" with a --set rule in one
+place (the http path) and an --update --seconds nnn --reap in the other
+(the ftp path). In this case the set will tend to grow without bounds
+since it is only cleaned by FTP failures.
+
+In all cases you have to use a timeout window instead of an "active
+connection" as the HTTP socket will almost surely be closed by the time
+the FTP action is invoked.
+
+Understand that you are putting policy into these rules in a way that is
+not bullet proof since even a trivial open of the http socket, such as
+via an nmap scan, will effectively knock the FTP port open. It would be
+"better" to do something system strong at the application layer.
+
+--Rob.
