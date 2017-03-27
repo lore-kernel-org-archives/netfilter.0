@@ -1,62 +1,48 @@
 From: Robert White <rwhite@pobox.com>
-Subject: Re: Allow connection on specific port only when other port is used
-Date: Mon, 27 Mar 2017 17:58:14 +0000
-Message-ID: <504d1c2b-6fbd-1e7d-aa2f-fbef2b8dc1a8@pobox.com>
-References: <013001d2a6c7$5b5a8f50$120fadf0$@gmail.com>
+Subject: Re: Problem with ipset and --in-interface
+Date: Mon, 27 Mar 2017 18:29:05 +0000
+Message-ID: <f22d3b15-a879-0147-a339-a31ebf413363@pobox.com>
+References: <237f8db1-1a60-c97f-f965-8ed363860731@howitts.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <013001d2a6c7$5b5a8f50$120fadf0$@gmail.com>
+In-Reply-To: <237f8db1-1a60-c97f-f965-8ed363860731@howitts.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: sbasan@bluebe.net, netfilter@vger.kernel.org
+To: Nick Howitt <nick@howitts.co.uk>, netfilter@vger.kernel.org
 
-On 03/27/17 06:57, Sam Basan wrote:
-> I couldn't find this issue on the web.
-> I want to allow new connection on specific port (let's say FTP) only when
-> there is active session in HTTP.
-> It's like port knocking only I don't want to "knock" HTTP port but make sure
-> it's active session and only then open the FTP port to this specific IP
-> address.
+On 03/26/17 08:06, Nick Howitt wrote:
+> I have the following rule in my iptables:
+> 
+> iptables -w -I INPUT -i enp2S0 -m set --match-set country-list src -p
+> tcp -m multiport ! --dports 25,80,443 -m state --state NEW -j DROP
+> 
+> but I've noticed it is not blocking. I tried checking using GRC's
+> Shields Up test scanning port 993. If instead, I do:
+> 
+> iptables -w -I INPUT -m set --match-set country-list src -p tcp -m
+> multiport ! --dports 25,80,443 -m state --state NEW -j DROP.
+> 
 
-DISCLAIMER: this response is extemporaneous. I haven't tested it, just
-thought it out a little. YMMV.
+There's nowhere near enough information in that post. In particular,
+where are you running the "shileds up" test? If it's not coming from
+another computer on the enp2S0 adapter then it would, of course, not hit
+this rule for not arriving on that adapter.
 
+Now my suspicion is that upper-case letter "S". The default naming
+scheme uses lower case letters. The name match is not checked at install
+time because it's a wildcard enabled text match. So for instance I can
+paste that command line in on my host:
 
-You can do this pretty easily in nftables with a self-updating set.
+iptables --append FORWARD -i blarg -j DROP
 
-table ip example {
-	set allowable {
-		type ipv4_addr
-		flags timeout
-	}
+and it will go into my rule set just fine even though I don't have an
+interface named "blarg". The rule will simply hang out, doing nothing,
+until I rename an interface to "blarg".
 
-	chain trigger {
-		tcp dport http set add ip saddr timeout 2m @allowable
-	}
+So I'd guess that you need to double-check that argument for correctness.
 
-	chain gatekeeper {
-		tcp dport ftp ip saddr @allowable accept
-	}
-}
-
-This solution is self cleaning since the set membership has a fixed
-duration.
-
-
-In ipbables you could use the "--match recent" with a --set rule in one
-place (the http path) and an --update --seconds nnn --reap in the other
-(the ftp path). In this case the set will tend to grow without bounds
-since it is only cleaned by FTP failures.
-
-In all cases you have to use a timeout window instead of an "active
-connection" as the HTTP socket will almost surely be closed by the time
-the FTP action is invoked.
-
-Understand that you are putting policy into these rules in a way that is
-not bullet proof since even a trivial open of the http socket, such as
-via an nmap scan, will effectively knock the FTP port open. It would be
-"better" to do something system strong at the application layer.
+The rule isn't matching because the interface name doesn't match.
 
 --Rob.
