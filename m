@@ -1,45 +1,51 @@
-From: Jamal Hadi Salim <jhs-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
-Subject: [Netdev ANNOUNCE]: New sponsors and workshop workshop accepted
-Date: Sun, 26 Mar 2017 09:52:11 -0400
-Message-ID: <f93512ca-f041-c1a0-6458-c7ac3a040794@mojatatu.com>
+From: "Sam Basan" <sbasan@gmail.com>
+Subject: Allow connection on specific port only when other port is used
+Date: Mon, 27 Mar 2017 09:57:09 +0300
+Message-ID: <013001d2a6c7$5b5a8f50$120fadf0$@gmail.com>
+Reply-To: <sbasan@bluebe.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=+Y3iNioCvnBdI8+/KQKiEAbCGlHktB+8fHZX4VDQsNo=;
-        b=UkMdOWVuhJDQglWDA4IFN09DTFat3QQ+7Oe/e6vyHshpPcHoaB2yGveIPouali5w0Z
-         Jz4OYqOD3Bv7a2tNKhxfaa4A2mD9yQV5MPkSh/k+Wc63b6QUhz3NW742NfxXTYGU8pif
-         e6isHuGevPuQ7p83cJ0LIrw9a0lo8XU7DZg40AozRyJAm8f0WLRN0CJ609tJYKe3Z++m
-         MGEvvWmrx/igbt94RSSimHbK/xXdKYirTuKlRZRvXKUFOzZmHNiPYf9yyoMfG0928yoL
-         6UOwhky/0wHCEep9jvBbzKOWnJD5Eo1Ptm+lk1Dwvzao3ZwJQHN9gMH2A8bx5fLOx9A/
-         DDrQ==
-Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+        d=gmail.com; s=20161025;
+        h=reply-to:from:to:subject:date:organization:message-id:mime-version
+         :content-transfer-encoding:thread-index:content-language;
+        bh=0e51kxM7YNIatfPkaJScD/mXFeQgqXn3o6kD6+T9Kx4=;
+        b=A6GNeNPIflEh3c51mnAEtraihMeKCtjhhjdX4SK7kPeJskvjjK7R4KsF17AL/juXsi
+         Aut079y7gUXKzL/O5yikcpf2f024URgH6rL7IiuetXgmTxnASTnKQR+pazP3XOYwn0OE
+         yqNvpDMGI0G8JdV7zCXjD12D46cbGwJnrx59BF6iO3S7O9Dbzoh1MRpfpsFfEY7b/jYK
+         omgGWBoi74yHmc+gPcWFZNgQk/dG8kX7xaXgmdNpZyuzY6+uj1Q25DOtQiFy4uPfgw9M
+         lUlRS/+Ed/2dyXdHLxOBG2I5DEKrtCNLljKTe8wMdbiF6MafglksIwQfh+wGWjHEI/xK
+         mOog==
+Content-Language: he
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: people-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org
-Cc: tech-committee-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Brenda Butler <bjb-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, Stephen Jaworski <jaws-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Heri Muhero <hmuhero-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-We have 3 announcements today.
+Hello,
 
-The organizing committee would like to announce two new sponsors:
+I couldn't find this issue on the web.
+I want to allow new connection on specific port (let's say FTP) only when
+there is active session in HTTP.
+It's like port knocking only I don't want to "knock" HTTP port but make sur=
+e
+it's active session and only then open the FTP port to this specific IP
+address.
 
-1) Google returns as a Gold Sponsor. Google has supported the netdev
-conference from version 0.1. They has been a staunch supporter of the
-netdev community. We appreaciate you Google!
+Any info on how this can be achieved will be highly appreciated.
 
-2) LWN returns as a media sponsor. LWN has been the media sponsor since
-netdev 1.2. Thank you LWN!
 
-Last:
+Thanks in advance
+Sam
 
-The tech committee would like to announce a new accepted workshop.
-Pablo Neira Ayuso will chair the mini netfilter workshop
 
-This workshop will go over new features and things that have changed 
-since Netdev1.2
+---
+=D7=94=D7=95=D7=93=D7=A2=D7=AA =D7=93=D7=95=D7=90"=D7=9C =D7=96=D7=95 =D7=
+=A0=D7=91=D7=93=D7=A7=D7=94 =D7=9C=D7=90=D7=99=D7=AA=D7=95=D7=A8 =D7=95=D7=
+=99=D7=A8=D7=95=D7=A1=D7=99=D7=9D =D7=A2=D7=9C =D7=99=D7=93=D7=99 =D7=AA=D7=
+=95=D7=9B=D7=A0=D7=AA =D7=94=D7=90=D7=A0=D7=98=D7=99-=D7=95=D7=99=D7=A8=D7=
+=95=D7=A1 =D7=A9=D7=9C avast.
 
-cheers,
-jamal
+https://www.avast.com/antivirus
+
