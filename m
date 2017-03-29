@@ -1,41 +1,58 @@
-From: Jamal Hadi Salim <jhs-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
-Subject: ANNOUNCE: netdev 2.1 conference Schedule out!
-Date: Tue, 28 Mar 2017 18:21:22 -0400
-Message-ID: <53040eb8-7a93-591e-97ed-542f702de1f3@mojatatu.com>
+From: Matt Rivet <mattr@penguinfoo.com>
+Subject: xt_socket.c only PRE_ROUTING and LOCAL_IN hooks
+Date: Tue, 28 Mar 2017 21:55:15 -0700
+Message-ID: <CAPvR+tj50maiWLqnyvTVxuKT4b6Qn4VicrkTypVbhkHQw1_X9w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
-        h=from:subject:to:cc:message-id:date:user-agent:mime-version
-         :content-transfer-encoding;
-        bh=cjqSO3G5hPA5h+HQ3BJHQNW73rvx2xp+FCwb0TO6w4I=;
-        b=UMmkoHRuDsi0VyeyR+5yDsmbB+fD+Z4YbuhgBzAQqFpebkFit6K7qhjOGlfYX4p5p8
-         xgJTyFa/1L7VfT5IbsURQxs+LiOyxOWYLhjPDUZLuaS+AmVyzEDOgD9Hg0Sa3Flh417V
-         vsEFWG8DxDvEA/cRkqCKq+JqN1DGu86Wfw0AHr4DFzvTXFYfTKNEaSUc6mD3o+HAuhRu
-         q9GCf7r99prGjBRw3FtGswBN7C+v4tRFMqKlUntusI6wxhpzb6Wopwc5GvG2qumht1aL
-         kstL/lr/j/nL6uRgksZq6i7Wp+vZ7Io77+mQx+KvYOci+4tdNcr6rppnSATe5zLxABcU
-         ModQ==
-Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+        d=penguinfoo-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=WhZryU9dB1M7pDpnKYdpHJq4bjYC/LvVJjW8QNGYS/w=;
+        b=sfIsvTdGTWfu+B1NAZC1NESCVt8FjKckQFr63Q63jO7uFs2R3JTUluY6bNj6k7jPi+
+         e8/2tw3MLvvn75n0A8HmBa0p2A7RNZlzqGbUVVMrIaPyRxhlJ1g7Sle6eoTTXaK7azLo
+         92+rlX5v0h9mPIMRwn1f4PIOqJLj6/5v1Y1NfN5IXRJsjPF+i6UR60h+MmlZBiwfEFeX
+         aIN/7IQ0QN24y2cktCqEWZFDsAIXDXNDZNBYosbAdAaWVIrPKP44cfZmTKfIOXPiTvd3
+         WzDALvnRR4ixlZ8+655GYTqSWg9mTOWxhJfiNZ0uEOrv4/QRaqjmajbrB9QKZVdgYqZC
+         0mwg==
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: people-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org
-Cc: tech-committee-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Brenda Butler <bjb-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, Stephen Jaworski <jaws-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Heri Muhero <hmuhero-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>, "netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>, lwn-T1hC0tSOHrs@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
+
+Hi,
+
+Is it a safety concern for not allowing socket to register in OUTPUT
+and POSTROUTING hooks?
+
+I have modified the socket match module to allow OUTPUT and
+POSTROUTING rules, but wonder if there is a reason for explicitly
+registering these hooks.
+
+net/netfilter/xt_socket.c
+static struct xt_match socket_mt_reg[] __read_mostly = {
+...
+...
+  .name  = "socket",
+...
+...
+  .hooks  = (1 << NF_INET_PRE_ROUTING) |
+                  (1 << NF_INET_LOCAL_IN),
+           ---> add OUTPUT OR POSTROUTING or remove .hooks
+},
 
 
-The tech committee would like to announce the schedule.
+My goal is to read the SO_MARK on tx.
+example:
 
-There is a lot of great great content which we hope you are
-going to enjoy.
+iptables -I OUTPUT -m socket --restore-mark -j SET-DSCP
+iptables -I SET_DSCP -t mangle -m mark 5 -j DSCP --set-dscp 5
 
-There were also many other fantastic submissions which we were
-unfortunately unable to accommodate. We appreciate everyone that
-took the time to make a submission.
+instead of going through all the work of restoring the mark, I added a
+match option to socket.
 
-Please visit:
-http://www.netdevconf.org/2.1/schedule.html
+example.
+iptables -I OUTPUT -m socket --match-skmark 5 -j DSCP --set-dscp 5
 
-for more details.
-
-cheers,
-jamal
+If there isn't a reason for not using socket on tx, does the team have
+interest in me submit a patch for --match-skmark?
