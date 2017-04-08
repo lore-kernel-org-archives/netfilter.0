@@ -1,73 +1,43 @@
-From: Robert White <rwhite@pobox.com>
-Subject: (suggestion) A common verb for all "inet_service" protocols would be
- nice and efficient
-Date: Tue, 4 Apr 2017 08:58:40 +0000
-Message-ID: <c91444d2-2d53-f021-9ca2-345bfdc5557a@pobox.com>
+From: Pavithra Ramesh <pavithra@skyportsystems.com>
+Subject: label info missing in conntrack -E output
+Date: Fri, 7 Apr 2017 17:55:48 -0700
+Message-ID: <CAEmwYhA7K8FS0g-forkO=FN6DMt_e9G+6O3k4cm0yo73ujCGrA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=skyportsystems.com; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=DyD2tGnFVKa+XU+e+1hrQQC7gSjU6jOGjx5AHC07wew=;
+        b=WHFSnr8RM1UmLXtsB/jSoIvk0i+lWJtkJimnKrhFg6Qfji5/ck5GkrE38cJTtso2eK
+         WgJ/zTVJEOo+W80fETHzG3QOs9Fw9clA8kOW8EEcJq/jMa3GelmMUPXwMiGXmsp/PKa0
+         tQKCV2i4iX6FDAO3bcdiK/xe6J+rNDa3kz58Y=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-So there are a number of protocols (tcp, udp, sctp, udplite, etc) that
-all start with the sixteen bit "source port" and "destination port"
-values. I find myself writing a lot of duplicate rules, first one for
-TCP then one for UDP to catch connection attempts to a lot of ports I do
-not offer.
+Hi,
 
-It would save time and effort if there were a generic verb that would
-match all of these port/service protocols that have that same 32 bit
-layout and introduce "sport" and "dport" syntax.
+I have been trying out the connlabel feature in netfilter_conntrack
+and have been able to get label info to show up in "conntrack -L -o
+labels" output.
 
-ASIDE: the word "generic" here will be used, it's not a bad choice for
-the actual word to use since "generic dport" reads correctly... but that
-may _not_ be the best wording for ESL readers. So I've got no real
-opinion on what word to use. "meta" is already busy for other purposes
-so...?
+I am able to see the label info show up based on the mapping found in
+/etc/xtables/connlabel.conf.
 
-Example:
+However, when I run "conntrack -E -o labels", I do not see the label
+info. These are the same connections that show up in "conntrack -L -o
+labels" output, WITH the label info.
 
-table inet example {
-	set SANS_alerts {
-		type inet_service
-	}
+I ran strace on the conntrack -E command, and I do not see the label
+info show up as part of the socket recv bytes. Is there any kernel
+config I have to enable for conntrack -E to see the label info?
 
-	chain guards {
-		generic dport @SANS_alerts drop
-	}
-}
+I am running libnetfilter_conntrack 1.0.4-1, conntrack version 1.4.3
+I also have CONFIG_NF_CONNTRACK_LABELS=y set.
 
-The example is suspiciously trite, but the ability to just sweep up
-services you know you are never going to offer and, or indeed being able
-to list the very limited services you do offer all in one go seems like
-a win.
+Is there anything else I can try?
 
-additionally, with the default option discussed in bug 1132 this becomes
-especially powerful.
-
-table inet example {
-  chain input {
-    generic dport vmap {http     : jump webstuf,
-                        ssh      : jump ssh_secure,
-                        ntp      : jump udp_throttle,
-                        diameter : jump sctp_checks,
-                        *        : drop }
-  }
-}
-
-So this one rule sweeps up all the inet_service protocols but doesn't
-touch arp, icmp, dccp, ah, esp, and any other non-service stuff.
-
-The only two sub-keys I've been able to identify as usefully common and
-therefore fast at runtime are sport and dport.
-
-ASIDE: I don't know if it is smart to have it in the inet instead of
-just ip or ip6, but the broadest case seemed to be the best.
-
-I know that something like this could be hacked together with u16 rules
-in iptables, but there is clarity to this sort of structure and it
-sweeps up so much common logic.
-
--- Rob.
+Thanks,
+Pavithra
