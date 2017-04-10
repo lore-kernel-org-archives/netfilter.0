@@ -1,46 +1,61 @@
-From: Robert White <rwhite@pobox.com>
-Subject: Re: Open Ports for Mosh
-Date: Sun, 9 Apr 2017 07:07:17 +0000
-Message-ID: <42f5dc00-055e-c0cb-9bee-8798d8febd44@pobox.com>
-References: <CADq=pgn+W1kTtUSheCDxCKAhCTk3e287cvOZ85y=FhcBwHY5cA@mail.gmail.com>
+From: Mauro Santos <registo.mailling@gmail.com>
+Subject: Help/guidance with automatic CT helper assignment
+Date: Mon, 10 Apr 2017 22:22:25 +0100
+Message-ID: <4be4e306-a7e4-4aa9-feae-ec00de07b463@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CADq=pgn+W1kTtUSheCDxCKAhCTk3e287cvOZ85y=FhcBwHY5cA@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=NdNGsfkgkFVLM85ovtZWrFLoJLKPKEytij0keqJmotg=;
+        b=pjt5B7+Y5b1kob7mc4D4nEm1CYyu2acbsxNIzBtH4TYExS6NWKDI72PnvWiCdo5Dj8
+         SIdHAuQLXycnPA98pfLtCUD9YTPc+pgcoo7uSjLJEbLTh++jfwSBWfyx3r+4jhXW3CQ4
+         +IMSiDqlX7KmnnheiUB0oxP/YPYOsiUe5BKzt5IAXPV9G7irg4picLx6xibmpxxejFjO
+         nl72VQ1Y0EV9kmWn2j9g5Gdj8Lt2LVPkEMYkuVfx/hxoSf4l25s/EABPvs7EFmP1/Pxf
+         NfQYfc8yCCxMm7dFfl46TvvgkG6/XNu3u89MvyRZ95eanzqruYEkAI8prBqBCqxwQ0ie
+         Ibrg==
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Josh Burghandy <kid1000002000@gmail.com>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On 04/09/17 05:13, Josh Burghandy wrote:
-> I have written this but mosh still does not work:
-> nft add rule inet filter input udp dport 60000-61000 accept
+Hello,
 
-You didn't provide the entire output of "list ruleset" so I can not
-really help you for sure... but here goes.
+I'm running linux 4.10.8 and I am aware that automatic connection
+tracker loading has been disabled by default for security reasons.
 
-I assume you are running the mosh server on the firewall itself.
+I'm currently seeing:
 
-- Do you have a matching output rule to allow the responses?
+nf_conntrack: default automatic helper assignment has been turned off
+for security reasons and CT-based  firewall rule not found. Use the
+iptables CT target to attach helpers instead.
 
-- Have you already opened the SSH port for session establishment?
+in my kernel logs, which is to be expected to some degree I suppose.
 
-- Do you have ct state established and related enabled in your input and
-output chains?
+What I would like some help/guidance with is finding out what is causing
+this, that is, finding out which program would cause an automatic helper
+to be loaded if automatic loading was enabled.
 
-I looked at the firewall instructions for mosh from several of the top
-google results and they strongly and silently assume that all the other
-plumbing for ssh and connection tracking is in place and known to be
-working.
+I have currently setup two helpers, one for ftp and one for pptp (which
+pulls the gre helper if I'm not mistaken). These two helpers have been
+added with:
+iptables -t raw -A OUTPUT -p tcp --dport 21 -j CT --helper ftp
+iptables -t raw -A OUTPUT -p tcp --dport 1723 -j CT --helper pptp
 
-As an aside, if you aren't expecting a thousand simultaneous mosh
-sessions you should use a smaller port range. The ports are opened in
-order so something more like ten ports is probably plenty.
+I have tried monitoring incoming and outgoing connections with source
+and destination ports that the other helpers should work with (I've
+taken the list from here http://www.shorewall.net/Helpers.html) but the
+timestamps of the messages (ports log and nf_conntrack message) are too
+far for me to believe I'm catching what is causing this.
 
-Super Off Topic: Do be aware that since you cannot reconnect to a
-dropped session in mosh, you may well end up leaking sessions or
-suffering other 'disappointments', particularly when using mobile
-devices. Aside from the rarely-needed bandwidth reduction, using ssh and
-screen tends to be much better for remote maintenance.
+Short of logging everything in bulk, is there anything else I can try to
+catch the culprit? I'd like to avoid logging in bulk because I have not
+found a way to trigger this on demand and sometimes I see the
+nf_conntrack message several hours after boot, which would make for huge
+logs with normal machine usage (youtube, video calls, etc).
 
---Rob.
+-- 
+Mauro Santos
