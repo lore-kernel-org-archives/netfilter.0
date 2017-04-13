@@ -1,37 +1,38 @@
-From: as Bari <rondowheel@gmail.com>
-Subject: nftables: packet payload
-Date: Wed, 12 Apr 2017 15:54:36 +0300
-Message-ID: <CAO4UgCPuW_9XNaJ36C2p5xEAOd4nSEeMNTnhym9i_o-NvwHOHA@mail.gmail.com>
+From: Jochen Dehm <jochen.dehm@freenet.de>
+Subject: ulogd2 - missing local.hostname
+Date: Thu, 13 Apr 2017 19:24:47 +0200
+Message-ID: <7ef141c1-9c30-6487-bd71-1c63e5f923cd@freenet.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=VIt8b1e8Jc/WYA2U6qmlMasU/7Oju/2UPFR06jTlti8=;
-        b=O2njPHPx13rC3eCcfTPPKFusVOrjBb5xLxqr06ZtZ0luYfHb4UzjQ5aRv7R3cfAblN
-         ds/yZn6oQDhZ+0MMtNemR1lgNw715C/LfWWicAyKPT8K+zuZzdL6G+/G4Dry1WzOq5Yv
-         EJaZ3m8cTxY8XRwQU2K54CiNIHP045DqByr6S6Rb4gz0lWgu2DYNn9tw3pIF50MsRJwG
-         beFUbWv33JlXnCRbmenpFzf3V18e7ophP6F4ZL7FkMpCvqiVWLVZjDNWatj9p2pTwOex
-         iR8OJJu1ungyz/n9tgKN0A3YVsyZ1hpTjh95P3UrGrmJWgBbvDvEXMVFPWt37BA6eH3w
-         8dpQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello,
+Hello everyone,
 
-Can one currently perform actions with packet based on its *body* (not
-headers) payload? E.g. discard packet which has udp[8:4] = 0xABCDEFGH,
-or u32-like syntax.
-Can one load raw bpf expressions (tcpdump -ddd ...)?
-Or maybe one could involve instruction set to build payload inspection
-rule using bit mask, but how to do this using nft?
+I'm using ulogd2 and the ability to write data into a mysql-db. In 
+principle this works very well.
 
-As I've read https://wiki.nftables.org/wiki-nftables/index.php/Supported_features_compared_to_xtables
-page, this stays unclear to me...
-> bpf: consider native interface
-> u32: raw expressions?
+Because I have several firewalls, I would like to enter the hostname 
+into the database. In the 1.x version was the plugin "ulogd_LOCAL.so" 
+responsible.
 
-Thanks
+According to the documentation https://rlworkman.net/howtos/ulogd.html 
+it should still be there in the 2.x version, but I can not find it anymore.
+
+I took ulogd2 from this source:
+Https://github.com/bootc/ulogd2.git
+and compiled.
+
+Unfortunately, no file "ulogd_LOCAL.so" is generated.
+
+If I look at the 1.x version here: https://github.com/kalloc/ulogd then 
+I find in the folder extensions the "ulogd_LOCAL.c".
+
+Is there a special reason why the file in 2.x no longer exists?
+Is there another variant to save the hostname in the database?
+
+Regards Joed
+
