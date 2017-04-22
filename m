@@ -1,38 +1,57 @@
-From: Jochen Dehm <jochen.dehm@freenet.de>
-Subject: ulogd2 - missing local.hostname
-Date: Thu, 13 Apr 2017 19:24:47 +0200
-Message-ID: <7ef141c1-9c30-6487-bd71-1c63e5f923cd@freenet.de>
+From: Alexander Meinhardt <alexander.meinhardt@gmail.com>
+Subject: nftables: response of nft is rising
+Date: Sat, 22 Apr 2017 15:37:22 +0200
+Message-ID: <CAB_+ZOv_5-Zq94ZczEMn4ThnXn6G4+QS0HQPqO1WapsqN6n4uA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=O++FjqccmG2+NLlQK8wNQ13l4/Cf/JwgdVWT3EmVXOg=;
+        b=Jza+CY8o3mskEiTY+zidrRV1ONnwiKti+f/nyOlIYm4d2L+PoSZlEUAsaWFE7OYnzs
+         yTKoYUj2V6WsxGN9g5r+HU1im1LhA99lcEqcTZMco3cYPlls+Y+m1pdjUC8kugpr+/ef
+         HcoGYz/wwTJaOijaL+saYqsYrYTbmrlI+x41aeSgtnVysz7nHEzPQCOcLcA/AU5bLZzC
+         JYuW7C/Zz8wP4ECBpO8iFYpOofqXfWy5a0TmRwqZbi1vb2/kuQkXoMzSbebFnuKlV0kl
+         k66YXp1uqDG0++WPl5sQ77iXe12kUGx0l1amFlQ4V8LsNjvn3fkdRgzBbnKVttE8VbuY
+         gjSA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello everyone,
+Hello,
 
-I'm using ulogd2 and the ability to write data into a mysql-db. In 
-principle this works very well.
+I was updating my kernel to 4.9.16, because it is the latest stable
+marked on Gentoo, and recognized a heavy rising response-time from
+nft.
 
-Because I have several firewalls, I would like to enter the hostname 
-into the database. In the 1.x version was the plugin "ulogd_LOCAL.so" 
-responsible.
+I have a standard ruleset including 4 sets, where each of them has
+dynamic content (ip blocklists) containing set1 450 entries, set2 250
+entries, set3 5 entries and set4 1 entry.
+Each set was created with "type ipv4_addr" and "flags interval".
 
-According to the documentation https://rlworkman.net/howtos/ulogd.html 
-it should still be there in the 2.x version, but I can not find it anymore.
+After 3 days uptime, the response-time from "nft list table ip filter"
+(where "ip" is only ipv4 and "filter" the whole ruleset of ipv4) is
+approx 0.6s.
+>real 0m0.651s
+>user 0m0.105s
+>sys 0m0.536s
 
-I took ulogd2 from this source:
-Https://github.com/bootc/ulogd2.git
-and compiled.
+After 4 days i'm reaching nearly 0.8-0.9s - rising.
 
-Unfortunately, no file "ulogd_LOCAL.so" is generated.
+When i restart nftables, it's starting from 0.008 - 0.012s again, but
+it's still rising.
+So for me it's not related to the size of all four sets?
 
-If I look at the 1.x version here: https://github.com/kalloc/ulogd then 
-I find in the folder extensions the "ulogd_LOCAL.c".
+Can anyone confirm this or has some ideas?
 
-Is there a special reason why the file in 2.x no longer exists?
-Is there another variant to save the hostname in the database?
+Using:
+- kernel-4.9.16
+- nftables-0.7
+- libmnl-1.0.4
+- libnftnl-1.0.7
 
-Regards Joed
-
+--
+Regards
+Alex
