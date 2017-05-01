@@ -1,84 +1,74 @@
-From: Netfilter Subscription <netfilter@quintux.com>
-Subject: Need help simplifying network setup
-Date: Sun, 30 Apr 2017 18:14:27 +0200
-Message-ID: <db596221c405d6e14f5ce4e5791ef493@piserver.lan.quintux.com>
+From: Darshan Ghumare <darshan.ghumare@gmail.com>
+Subject: ulogd start script
+Date: Mon, 1 May 2017 11:28:29 +0530
+Message-ID: <CAOr=3U_-b4Az0MpU3RTt3_R6MMhCFbNUDTZMFQg0kVQxaBSdxA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=1sHbBrczMZvhXvh2glCs4HeFw1DylmmbpzeAh4to+fk=;
+        b=g/DlsfoaEavEtdBIDXhhHDjWD8dRZQqK1IDGegunzkkPdR5bb3YeqsARiNGuRsPVb4
+         XDqCubrJ+svzz0tBbJxSa+3o4dQKoEGTmpTP/f/6CufVs+HAWBUVpy1YROfNEbWSqJe6
+         7f5oLkWBRjbugjOg2selOuWzWc84GtIrinO8JDTo05SKbGLaE1vQ4PVVWlgf5E+tv607
+         V03dduRiJ6tpNo8VoH/s/XQyQOMVDjoBVg3QyUI+ea4b3DD1ZT3q5IARaFW8Qz3G3qXa
+         oQElvZiryJi+D9TWoDNdyzgkwKKxVE5G5vFcX+BYHXTD8jvi6He72g6aZXMPZ6cKisel
+         xxFQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>
 
-Hi all,
+Hi,
 
-I'm trying to simplify the following setup that I currently have:
+When I trying to run ulogd using  init script I am getting error but
+run without it (ulogd -d) there wasn't any problem. Please help me to
+understand,
 
-  +-----+   +------+     +----------------+     +------+
--|modem|---|switch|-----|+-----+   +----+|-----|switch|---- LAN
-  +-----+   +------+     ||eth0 |   |eth1||     +------+
-                |        |+-----+   +----+|         |
-                |        ||veth0|         |         |
-                |        |+-----+   router|         |
-                |        +----------------+         |
-                |                                   |
-                |             +------+              |
-                +-------------|bridge|--------------+
-                              +------+
+service ulogd start; tailf /var/log/ulogd/ulogd.log
 
-The "bridge" is an RPi only bridging packets from/to specific MAC 
-address on the LAN.  This is needed for the TV-boxes of my supplier, 
-which demand having direct connection with the modem (but apperently 
-only need IP and a DHCP address assigned by the router, no multicast or 
-other more complex stuff).  The EBTables rules used:
+Starting ulogd:  [  OK  ]
 
-   INPUT -P DROP
-   INPUT -A -i eth1 -j ACCEPT    # allow us to access the bridge from our 
-LAN and give it a DHCP address from there
-   OUTPUT -P DROP
-   OUTPUT -A -o eth1 -j ACCEPT   # same reason as above
-   FORWARD -P DROP
-   FORWARD -A -d 68:63:59:33:49:d7 -i eth0 -j ACCEPT
-   FORWARD -A -s 68:63:59:33:49:d7 -o eth0 -j ACCEPT
-   FORWARD -p ARP -d Broadcast -i eth0 --arp-op Request --arp-mac-dst 
-0:0:0:0:0:0 -j ACCEPT
-     # allow the modem's ARP request onto the LAN
-     # but ARP responses will only be allowed back from the host with 
-above MAC address
+Sun Apr 30 22:49:51 2017 <5> ulogd.c:940 building new pluginstance
+stack: 'ct2:NFCT,ip2str1:IP2STR,json1:JSON'
 
-The router is also an RPi, but because it wants 2 Internet addresses (to 
-mimic 2 separate hosts), it has a macvlan veth0 attached to eth0.  The 
-IPTables rules are a bit too complex to list here, but include some DNAT 
-via nat/PREROUTING to forward requests for specific ports on veth0 to a 
-host on the LAN and obviously masquerading for anything going out to the 
-Internet over eth0.  It also has a DHCP server which is configured to 
-ignore requests from the MAC addresses that bridge allows to pass (since 
-those hosts will get their DHCP address from the modem).
+Sun Apr 30 22:49:51 2017 <8> ulogd_inpflow_NFCT.c:1293 error opening ctnetlink
 
-All this works fine for the moment.  It took me sufficient headaches to 
-get to this point, but I'm happy with the result, except for one thing: 
-it takes a lot of hardware.  If I could combine the bridge and router 
-together to a single BROUTER, it would remove 2 switches and 1 RPi, 
-which all waste electricity ...
+Sun Apr 30 22:49:51 2017 <7> ulogd.c:910 error starting `ct2'
 
-In an attempt to address that, I tried adding eth0 of the router to a 
-bridge, but that failed because of the existence of veth0 (the macvlan 
-type bridge interface attached to eth0).  That seems logical, but then I 
-started wondering how I can get the same functionality with a bridge.  
-Adding eth0 to the bridge (when there is no macvlan attached) is a 
-breeze, but how do I then get an additional interface with a second MAC 
-address that can get its own DHCP address from the modem?  I tried 
-adding a n interface-pair with "ip link add dev veth0 address 
-xx:xx:xx:xx:xx:xx type veth peer name veth0b" and then adding veth0b to 
-the bridge.  Unfortunately without additional changes this veth0 was 
-unable to get a DHCP address.  Possibly the (empty) ebtables and 
-(unchanged) iptables rules might play a role here, but I'm unsure 
-whether this approach would really be the correct one ...
+Sun Apr 30 22:49:51 2017 <8> ulogd.c:1543 not even a single working plugin stack
 
-So, first question: How to implement the equivalent of a macvlan (type 
-bridge) with an actual Linux bridge?  Of course additional info on how I 
-could collapse the above setup to a single Linux BROUTER would always 
-help.
+^C
 
-Thanks in advance,
-K
+[root@darshan-2 ulogd]# ulogd -d
+
+[root@darshan-2 ulogd]# tailf /var/log/ulogd/ulogd.log
+
+Sun Apr 30 22:48:16 2017 <5> ulogd.c:940 building new pluginstance
+stack: 'ct2:NFCT,ip2str1:IP2STR,json1:JSON'
+
+Sun Apr 30 22:48:16 2017 <8> ulogd_inpflow_NFCT.c:1293 error opening ctnetlink
+
+Sun Apr 30 22:48:16 2017 <7> ulogd.c:910 error starting `ct2'
+
+Sun Apr 30 22:48:16 2017 <8> ulogd.c:1543 not even a single working plugin stack
+
+Sun Apr 30 22:49:51 2017 <5> ulogd.c:940 building new pluginstance
+stack: 'ct2:NFCT,ip2str1:IP2STR,json1:JSON'
+
+Sun Apr 30 22:49:51 2017 <8> ulogd_inpflow_NFCT.c:1293 error opening ctnetlink
+
+Sun Apr 30 22:49:51 2017 <7> ulogd.c:910 error starting `ct2'
+
+Sun Apr 30 22:49:51 2017 <8> ulogd.c:1543 not even a single working plugin stack
+
+Sun Apr 30 22:51:40 2017 <5> ulogd.c:940 building new pluginstance
+stack: 'ct2:NFCT,ip2str1:IP2STR,json1:JSON'
+
+Sun Apr 30 22:51:40 2017 <5> ulogd_inpflow_NFCT.c:1399 NFCT plugin
+working in event mode
+
+
+Thanks,
+Darshan Ghumare
