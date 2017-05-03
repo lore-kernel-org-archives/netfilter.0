@@ -1,45 +1,36 @@
-From: Jeremy Hansen <jeremy@cigarsoul.com>
-Subject: middleman Raspberry Pi wired to wifi configuration
-Date: Wed, 3 May 2017 04:32:52 -0700
-Message-ID: <88D4348C-63A1-47FC-B096-9DB67B239098@cigarsoul.com>
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Content-Transfer-Encoding: 8bit
+From: "Rob Sterenborg (lists)" <lists@sterenborg.info>
+Subject: Re: PPTP passthrough
+Date: Wed, 3 May 2017 16:45:16 +0200
+Message-ID: <86316f95-37e3-8f80-d9ee-c4f6c428ff1c@sterenborg.info>
+References: <6d2c9c2f-2636-9e3f-b8e1-eec95eb02370@suse.com.au>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.subtraverse.net 1082F65F88
+In-Reply-To: <6d2c9c2f-2636-9e3f-b8e1-eec95eb02370@suse.com.au>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Steven O'Connor <steven@suse.com.au>, netfilter@vger.kernel.org
+
+On 3-5-2017 04:13, Steven O'Connor wrote:
+> PPTP pass-through seems to be broken. When the client tries to connect,
+> a gre packet is sent but the reply gre packet is dropped at my firewall.
+>
+> The relevant conntrack dump shows a mismatch between the expected reply
+> and the packet received, srckey/dstkey do not match. Is that significant?
+>
+>
+> gre      47 27 src=aaa.bbb.cc.ddd dst=www.xxx.yy.zz srckey=0x0
+> dstkey=0xb053 [UNREPLIED] src=www.xxx.yy.zz dst=aaa.bbb.cc.ddd
+> srckey=0xb053 dstkey=0x0 mark=0 use=1
+> gre      47 27 src=192.168.0.212 dst=aaa.bbb.cc.ddd srckey=0x0
+> dstkey=0x1380 [UNREPLIED] src=aaa.bbb.cc.ddd dst=www.xxx.yy.zz
+> srckey=0x1380 dstkey=0x0 mark=0 use=1
+
+You don't show any rules, so just a guess.
+Do you allow/forward protocol 47 (gre) packets?
 
 
-I’m sharing a wifi connection in some office space.  I’d like to create my own internal network.  I have a raspberry pi, connected to the office wifi, a switch connected to the ethernet port of the pi, and a wifi AP connected to the switch.  DHCP and DNS running on the Pi…
+--
+Rob
 
-The configuration works and I’m able to gateway to the public internet via the AP connected to the Pi.
-
-It’s just very slow and I’m wondering if it has to do with my iptables rules and the fact that it’s basically NAT’ing twice, once at the pi for my internal network, and secondly at the office’s main internet connection...  
-
-Here’s my current rules:
-
-*filter
-:INPUT ACCEPT [73:5085]
-:FORWARD ACCEPT [0:0]
-:OUTPUT ACCEPT [72:6792]
--A FORWARD -i eth0 -j ACCEPT
--A FORWARD -i wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
-COMMIT
-*nat
-:PREROUTING ACCEPT [43:2584]
-:INPUT ACCEPT [2:278]
-:OUTPUT ACCEPT [0:0]
-:POSTROUTING ACCEPT [0:0]
--A POSTROUTING -o eth0 -j MASQUERADE
--A POSTROUTING -o eth0 -j MASQUERADE
--A POSTROUTING -o wlan0 -j SNAT --to-source 192.168.10.30
-COMMIT
-
-192.168.10.30 is the IP of the wireless interface on the PI.  This wireless interface is connected to the office wifi…
-
-Not sure what other details I’m missing.  If there’s something I’m obviously doing wrong, please let me know.  It’s just extremely slow compared to going direct to the office network.
-
-Thank you
--jeremy
