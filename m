@@ -1,86 +1,63 @@
-From: Jeremy Hansen <jeremy@cigarsoul.com>
-Subject: Re: middleman Raspberry Pi wired to wifi configuration
-Date: Wed, 3 May 2017 12:26:02 -0700
-Message-ID: <8A480EC2-6022-4516-8CAE-AAF08CEE44BB@cigarsoul.com>
-References: <88D4348C-63A1-47FC-B096-9DB67B239098@cigarsoul.com>
- <07a314f2-9a70-566a-e6d7-d40e5f0bbe5b@trustiosity.com>
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Content-Transfer-Encoding: 8bit
+From: Steven O'Connor <steven@suse.com.au>
+Subject: Re: PPTP passthrough
+Date: Thu, 4 May 2017 13:42:35 +1000
+Message-ID: <af6f998e-1d52-9939-4408-16ff1193b167@suse.com.au>
+References: <6d2c9c2f-2636-9e3f-b8e1-eec95eb02370@suse.com.au>
+ <86316f95-37e3-8f80-d9ee-c4f6c428ff1c@sterenborg.info>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.subtraverse.net 6985265F88
-In-Reply-To: <07a314f2-9a70-566a-e6d7-d40e5f0bbe5b@trustiosity.com>
+In-Reply-To: <86316f95-37e3-8f80-d9ee-c4f6c428ff1c@sterenborg.info>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: zrm <zrm@trustiosity.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "Rob Sterenborg (lists)" <lists@sterenborg.info>, netfilter@vger.kernel.org
 
-Unfortunately I’m not able to connect directly to the router.  I have to do this in an isolated way.  The office is inside of an old dive bar.  I’m trying to be as non-intrusive as possible…plus I don’t trust my equipment inside of this drinking establishment. 
-
-With that said, it seems the pi might be my limiting factor.  Only 100mb ethernet and its wifi only supports 2.4G.  I ordered USB replacements but I’m still limited by the bus on the pi, so … maybe using a pi here isn’t the best option.
-
-Thanks
--jeremy
-
-> On May 3, 2017, at 10:10 AM, zrm <zrm@trustiosity.com> wrote:
-> 
-> > -A FORWARD -i eth0 -j ACCEPT
-> 
-> The chain default policy is already ACCEPT, so that does nothing.
-> 
-> Get rid of it and add this as the last filter rule:
-> 
-> -A FORWARD -i wlan0 -j REJECT
-> 
-> > -A POSTROUTING -o eth0 -j MASQUERADE
-> > -A POSTROUTING -o eth0 -j MASQUERADE
-> 
-> Duplicate rule, and you don't need either of them, because any NEW traffic from the outside should hit the REJECT rule so there is nothing to MASQUERADE.
-> 
-> But none of that should make things *slow*. It's probably some kind of wireless problem. Make sure the channels your two access points use are as far away from each other as possible and put the Pi as physically close to the office access point as you can.
-> 
-> The better solution if possible would be to connect your router to the office network with ethernet.
-> 
-> 
-> On 05/03/2017 07:32 AM, Jeremy Hansen wrote:
->> 
->> I’m sharing a wifi connection in some office space.  I’d like to create my own internal network.  I have a raspberry pi, connected to the office wifi, a switch connected to the ethernet port of the pi, and a wifi AP connected to the switch.  DHCP and DNS running on the Pi…
->> 
->> The configuration works and I’m able to gateway to the public internet via the AP connected to the Pi.
->> 
->> It’s just very slow and I’m wondering if it has to do with my iptables rules and the fact that it’s basically NAT’ing twice, once at the pi for my internal network, and secondly at the office’s main internet connection...
->> 
->> Here’s my current rules:
->> 
->> *filter
->> :INPUT ACCEPT [73:5085]
->> :FORWARD ACCEPT [0:0]
->> :OUTPUT ACCEPT [72:6792]
->> -A FORWARD -i eth0 -j ACCEPT
->> -A FORWARD -i wlan0 -m state --state RELATED,ESTABLISHED -j ACCEPT
->> COMMIT
->> *nat
->> :PREROUTING ACCEPT [43:2584]
->> :INPUT ACCEPT [2:278]
->> :OUTPUT ACCEPT [0:0]
->> :POSTROUTING ACCEPT [0:0]
->> -A POSTROUTING -o eth0 -j MASQUERADE
->> -A POSTROUTING -o eth0 -j MASQUERADE
->> -A POSTROUTING -o wlan0 -j SNAT --to-source 192.168.10.30
->> COMMIT
->> 
->> 192.168.10.30 is the IP of the wireless interface on the PI.  This wireless interface is connected to the office wifi…
->> 
->> Not sure what other details I’m missing.  If there’s something I’m obviously doing wrong, please let me know.  It’s just extremely slow compared to going direct to the office network.
->> 
->> Thank you
->> -jeremy--
->> To unsubscribe from this list: send the line "unsubscribe netfilter" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->> 
-> --
+On 04/05/17 00:45, Rob Sterenborg (lists) wrote:
+> On 3-5-2017 04:13, Steven O'Connor wrote:
+>> PPTP pass-through seems to be broken. When the client tries to connect,
+>> a gre packet is sent but the reply gre packet is dropped at my firewall.
+>>
+>> The relevant conntrack dump shows a mismatch between the expected reply
+>> and the packet received, srckey/dstkey do not match. Is that 
+>> significant?
+>>
+>>
+>> gre      47 27 src=aaa.bbb.cc.ddd dst=www.xxx.yy.zz srckey=0x0
+>> dstkey=0xb053 [UNREPLIED] src=www.xxx.yy.zz dst=aaa.bbb.cc.ddd
+>> srckey=0xb053 dstkey=0x0 mark=0 use=1
+>> gre      47 27 src=192.168.0.212 dst=aaa.bbb.cc.ddd srckey=0x0
+>> dstkey=0x1380 [UNREPLIED] src=aaa.bbb.cc.ddd dst=www.xxx.yy.zz
+>> srckey=0x1380 dstkey=0x0 mark=0 use=1
+>
+> You don't show any rules, so just a guess.
+> Do you allow/forward protocol 47 (gre) packets?
+>
+>
+> -- 
+> Rob
+>
+> -- 
 > To unsubscribe from this list: send the line "unsubscribe netfilter" in
 > the body of a message to majordomo@vger.kernel.org
 > More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+The default policy LAN->NET is accept. I have also added a rule to 
+accept gre.
+
+It has been working previously but after an update to the kernel or 
+shorewall it has stopped working.  I only use pptp occasionally so I 
+cannot be sure when it stopped.
+
+The firewall can accept pptp connections from the net and it is only the 
+passthru that is broken.
+
+
+-- 
+Steven O'Connor
+=============================================
+Support Services Pty Ltd   ABN 49 006 226 428
+2 Commonwealth Terrace, Sandhurst VIC 3977
+Fax 03 9888 2677, Mobile 0417 571 113
+=============================================
 
