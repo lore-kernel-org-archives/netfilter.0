@@ -1,45 +1,86 @@
-From: Robert White <rwhite@pobox.com>
-Subject: Re: ulogd start script
-Date: Thu, 4 May 2017 20:12:01 +0000
-Message-ID: <d0626d6c-95cd-7ef9-07b6-46bc3a857b68@pobox.com>
-References: <CAOr=3U_-b4Az0MpU3RTt3_R6MMhCFbNUDTZMFQg0kVQxaBSdxA@mail.gmail.com>
- <CAOr=3U_v0wKgJN7ABFyO3cUonPDvavSqDj4Ea6xc7Zchpb+4-w@mail.gmail.com>
+From: Maxime de Roucy <maxime.deroucy@gmail.com>
+Subject: nftables: arp forward
+Date: Sat, 06 May 2017 23:45:27 +0200
+Message-ID: <1494107127.19463.20.camel@gmail.com>
+Reply-To: maxime.deroucy@gmail.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-rBh+dnYQbw1XDY9cVDbD"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAOr=3U_v0wKgJN7ABFyO3cUonPDvavSqDj4Ea6xc7Zchpb+4-w@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:reply-to:to:date:mime-version;
+        bh=4wKk5j5T97CaW4cgJsqQ4NRlR5saLbOpLf9jnimmv8I=;
+        b=aO3eWOmk3FjSOH0QBHpJTN/WTcMq0Nd3+PKUoXgrhTvaJ3nrAxUW27B7bIDbYmP00C
+         JScFbsQ8X3TDx68OmRaEWU7d2qf9h3LABNevlUrVolDtB6emNc7ceNM3X3SLJ7UkX4v/
+         DYiNIiZiODv5bA7LY7NumwBYO7HmepMc/mgCaVKUUkTTw8pAlX5S/8EtujJKt8Kn6MsX
+         mIqKANJrlh+0KAtORlhEJZMiXMnOJa4HyJ5m7O1M95jPYMJ2AXwJYYEG+VA54hr3Dr+U
+         WEKIR+Gm0k5oZE9LVAenXxS/VnH3Wfr8M/L5k0ghqL02tnoyZXWq6o2qAOvKabDrGtVY
+         ej3A==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Darshan Ghumare <darshan.ghumare@gmail.com>, netfilter@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter@vger.kernel.org
 
-On 05/04/17 08:35, Darshan Ghumare wrote:
-> When I ran `#service ulogd start` this failed because `nfnlh->fd =
-> socket(AF_NETLINK, SOCK_RAW, NETLINK_NETFILTER);` from libnfnetlink
-> failed with -EACCES. But `#ulogd -d` succeeded.
 
-YMMV but that's _usually_ caused by the service startup script trying to
-use nobody/nogroup or some other safe UID/GID to start deamons.
+--=-rBh+dnYQbw1XDY9cVDbD
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: base64
 
-I personally use Gentoo, which doesn't use the "service" command and I
-think you are using RedHat or a derrative, but...
+SGVsbG8sCgpJIHRyaWVkIHRvIHVzZSBuZnRhYmxlcyBhcnAgdGFibGUgb24gZm9yd2FyZCBob29r
+IGJ1dCBpdCBkb2Vzbid0IHdvcmsuClRoZSB3aWtpIHNheXMgYXJwIGhvb2tzIGFyZSBpbnB1dCBh
+bmQgb3V0cHV0IGJ1dCBuZnQgZG9lc24ndCBmYWlsIHdoZW4KSSBhZGQgaXQuCmh0dHBzOi8vd2lr
+aS5uZnRhYmxlcy5vcmcvd2lraS1uZnRhYmxlcy9pbmRleC5waHAvUXVpY2tfcmVmZXJlbmNlLW5m
+dGFibGVzX2luXzEwX21pbnV0ZXMjQ2hhaW5zCgpBZGQgdGhlIHRhYmxlIG9uIGhvc3QxIDoKYGBg
+CnRhYmxlIGFycCBhcnB0ZXN0IHsKwqDCoMKgwqDCoMKgwqDCoGNoYWluIGlucHV0IHsKwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqB0eXBlIGZpbHRlciBob29rIGlucHV0IHByaW9yaXR5
+IDA7IHBvbGljeSBhY2NlcHQ7CsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgY291bnRl
+ciBsb2cgcHJlZml4ICJJTlBVVMKgRklMVEVSwqBBUlA6ICIKwqDCoMKgwqDCoMKgwqDCoH0KwqDC
+oMKgwqDCoMKgwqDCoGNoYWluIGZvcndhcmQgewrCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoHR5cGUgZmlsdGVyIGhvb2sgZm9yd2FyZCBwcmlvcml0eSAwOyBwb2xpY3kgYWNjZXB0OwrC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoGNvdW50ZXIgbG9nIHByZWZpeCAiRk9SV0FS
+RMKgRklMVEVSwqBBUlA6ICIKwqDCoMKgwqDCoMKgwqDCoH0KwqDCoMKgwqDCoMKgwqDCoGNoYWlu
+IG91dHB1dCB7CsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgdHlwZSBmaWx0ZXIgaG9v
+ayBvdXRwdXQgcHJpb3JpdHkgMDsgcG9saWN5IGFjY2VwdDsKwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqBjb3VudGVyIGxvZyBwcmVmaXggIk9VVFBVVMKgRklMVEVSwqBBUlA6ICIKwqDC
+oMKgwqDCoMKgwqDCoH0KfQpgYGAKClRoZSB0b3BvbG9naWUgb2YgbXkgbmV0d29yayAoMSBob3N0
+LCAyIHZtcyk6CgogICAgICBob3N0MQogICAgICB2aXJicjAgMTkyLjE2OC4xMjIuMSAoYnJpZGdl
+IGNvbnRhaW5pbmcgdm5ldDEgYW5kIHZuZXQyKQogdm5ldDEgICAgICAgICAgICAgIHZuZXQyCiAg
+ICDihpUgICAgICAgICAgICAgICAgIOKGlQogICBlbnMzICAgICAgICAgICAgICBlbnMzCjE5Mi4x
+NjguMTIyLjIgwqAgMTkyLjE2OC4xMjIuMwogICB2bTEgICAgICAgICAgICAgICB2bTIKCnByb2Js
+ZW06CmBgYAp2bTEkIGFycGluZyAtSSBlbnMzIDE5Mi4xNjguMTIyLjMKYGBgCgpPbiBob3N0MSBJ
+IHNlZSBpbnB1dCBjb3VudGVyIGluY3JlYXNpbmcsICJJTlBVVCBGSUxURVIgQVJQIiBsb2dzIGlu
+CmpvdXJuYWxjdGwgOyBidXQgbm90aGluZyBlbHNlLgpPdXRwdXQgY291bnRlciBkb2Vzbid0IG1v
+dmUgKG5vICJPVVRQVVQg4oCmIiBsb2dzKSwgd2hpY2ggaXMgbm9ybWFsLgpCdXQgZm9yd2FyZCBj
+b3VudGVyIGRvZXNuJ3QgbW92ZSBlaXRoZXIgKG5vICJGT1JXQVJEIOKApiIgbG9ncykgd2hpY2gK
+aXNuJ3Qgbm9ybWFsICEKCkRpZCBJIGRvIHNvbWV0aGluZyB3cm9uZyA/IERpZCBJIG1pc3VuZGVy
+c3RhbmQgc29tZXRoaW5nID8KCklmIGFycCBjYW4ndCBiZSB1c2Ugb24gZm9yd2FyZCBob29rLCB3
+aHkgbmZ0IGRvZXNuJ3QgcmFpc2UgYW4gZXJyb3IKd2hlbiBJIGFkZGVkIHRoZSBjaGFpbiA/Cgpg
+YGAKbWF4QG1kZS10ZXN0ICUgbmZ0IC12wqDCoMKgCm5mdGFibGVzIHYwLjcgKFNjcm9vZ2UgTWNE
+dWNrKQptYXhAbWRlLXRlc3QgJSB1bmFtZSAtYQpMaW51eCBtZGUtdGVzdCA0LjEwLjEzLTEtQVJD
+SCAjMSBTTVAgUFJFRU1QVCBUaHUgQXByIDI3IDEyOjE1OjA5IENFU1QgMjAxNyB4ODZfNjQgR05V
+L0xpbnV4CmBgYAotLSAKVGhhbmsgeW91IGluIGFkdmFuY2UKTWF4aW1lIGRlIFJvdWN5
 
-It's common to not want to run deamons with full root priviliges. Some
-things, such as Apache, will start as full root to grab a few priviliged
-resources and then change their effective/ongoing user ID to something
-much more restricted. But _lots_ (indeed most?) demons don't do this, so
-lots of the systems out there have an explicit override in the service
-launcher to "always" run deamons as a specific or less priviliged user ID.
 
-So you'll need to consult your system documentation to determine how to
-control that feature as needed.
+--=-rBh+dnYQbw1XDY9cVDbD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
 
-Alternatively there is a way to assign various capabilities to specific
-programs. I've never bothered to learn the full ins-and-outs of the
-whole setcap command, but you should be able to find and set the needed
-capability on the ulogd executable so that it can have the permission(s)
-needed to open the netlink socket regardless of the user ID used to
-invoke it.
+-----BEGIN PGP SIGNATURE-----
 
-oh, so many caveats apply...
+iQIzBAABCAAdFiEER5gczwOKW0gcs6kxEf8YVWxR9N0FAlkOQ/cACgkQEf8YVWxR
+9N320Q/+MtXrc7Nsr8rxM2gvivnMLPP6GiaJYtgsvelxzjWT3CU78lCwWC+6nvcm
+Lg+D2CjZkoLyUi3zOYepasxt9Y51c0INK6LuIR/XVelXz19VJ16hgjDAa+j2tgdX
+aDWDq5ZyYfbBDc6mZcOBK0U0Thui9FaOGOINN8JxPqpRf24cufWY+HLp7pG1kgbY
+GqqrB3RHTYOWlixD0WnpL+ZLy7bDci5wyJJJVZi8hLM+P2Z5Od7FF1iC6hHUWVeu
+s3kfKiafM5KTtGWGTWVu60/6ZssmweSkucQRvsSxtqaGXo26lHvrYvQImQj8GMQJ
++G4cx/ZQKjkyskEm59HhQ6nUxHKvdHAj37JUMbbHW3cQjHvahxQZYIJyfX8lJsw4
+uHcHSyimEhEHhG4NFHeXhoYZxkx1duCVD1/ea5P+FZjJjKcme+j8N1RjUVr3Ju0e
+F7V5SJYcYbcCPPRjZTfHcHyQOTuUtJ9TIYrK2ZPenl614R5cwkbklv9gujo+nO88
+b3XRfQVX/L7OTWoKJcU0v4mB/OC6BCd+x8RoWUcfwIGEudFGwzrzEtil9I6OsBe3
+5PsttW36MmjZvtLr1dhv2oeQgHW3lR2Um4BXsOFHkN8Svgl+VSFsH7gnS5BzhDiS
+t/FQozG+YKArxuCt9Y3mupFYq2aQ0J3hQW22YOx54XEr5EX591o=
+=qaRo
+-----END PGP SIGNATURE-----
+
+--=-rBh+dnYQbw1XDY9cVDbD--
 
