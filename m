@@ -1,64 +1,89 @@
-From: Robert White <rwhite@pobox.com>
-Subject: Re: Fwd: Accept nftables statement doesn't prevent lower priority
- chains for same hook from execution
-Date: Tue, 9 May 2017 09:23:37 +0000
-Message-ID: <567fc0f3-ffad-1d93-23c3-aa3d1a391622@pobox.com>
-References: <CAPQ8kBXK1m6tJWYaqsmUTTDzov8ey2ZaMmMKe3nX-FLGw-PYeA@mail.gmail.com>
- <CAPQ8kBUwz1QJoT-w9yAmng8BxKikQ1LJP4mMv1fWBYzG0qHQbg@mail.gmail.com>
+From: Maxime de Roucy <maxime.deroucy@gmail.com>
+Subject: nftables: Request for comments - packet flow diagram
+Date: Tue, 09 May 2017 21:38:03 +0200
+Message-ID: <1494358682.1866.2.camel@gmail.com>
+Reply-To: maxime.deroucy@gmail.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-v3Kh4JmZ+b+gop10WgpA"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAPQ8kBUwz1QJoT-w9yAmng8BxKikQ1LJP4mMv1fWBYzG0qHQbg@mail.gmail.com>
-Content-Language: en-CA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:reply-to:to:date:mime-version;
+        bh=0HtvKcd8Eo4L7+su3I6pIj4waDlpkp5s4BpTFtyfyLw=;
+        b=VyyfSR5RE5wQXhRmTraa0Bet7c1ReSp0r4MPQDyC92i4qMQVfbTquOL7RvXsEX+Yzo
+         j+TQx6YhMd6XekzwB9QIphgIWXV9JpW4gKuCW3KKRHBO/JBAEm26SRuq9taH/F59ilnA
+         775+8Lu8eaeYNfPElGIlFJ7SNj6FwqbYqJdn3JJOGBjgkR1aakCfyH2GPWnO34v8wqJU
+         gqSh270UasFMYnAeDmRgVAclKEbIruJHC09553/6pEluWCPQ3yHBjoy0ukBZnJdV/DWc
+         q6x34D5aZUoEDxDOa0+IQkf8oZNYmBC3a6nz7wedumg72AcDJZ7kTZh5FYl9kb9CvXRJ
+         bkpA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Vladimir Lebedev <zeronineseven@gmail.com>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On 05/08/17 14:43, Vladimir Lebedev wrote:
-> Suppose you have 2 basic chains for the same hook(e.g. filter input)
-> where first chain has higher priority(executed first) than second.
-> Currently it looks like that if packet is "accept"ed in the first
-> chain second is still executed and can "drop" _already accepted_
-> packet.
 
-You have the gist of it by my understanding.
+--=-v3Kh4JmZ+b+gop10WgpA
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
 
-Any drop is a true drop causing immediate discard.
+Hello,
 
-Any accept is terminal for the hook executing but does not render the
-packet immune to subsequent hooks.
+I recently switch from iptables to nftables (I have a very
+simple/personal firewall).
 
-In iptables, since there is only one (implicit) "hook" the distinction
-makes no difference. In nftables you need to be able to deal with things
-like multiple policies.
+When I built my iptables firewall I refereed to the packet flow diagram
+(by Jan Engelhardt) on iptables Wikipedia web page :=A0
+https://en.wikipedia.org/wiki/Iptables#/media/File:Netfilter-packet-flow.sv=
+g
 
-So, for example, you don't want to have the accept _policy_ of the first
-table to eternally mask the subsequent later tables.
+Using this diagram for nftables firewall is hard as some concept
+changed.
 
-If you want to easily pass a final verdict then you should mark the
-packet with a mark that you use to accept the packet in later hooks/tables.
+I did some tests and draw my own diagram (using yed editor) covering
+all netdev, ip, ip6, inet, bridge and arp tables :
 
-The asymmetric treatment of drop/accept is required to prevent the need
-for a "not yet classified" flag. And if you had such a flag then you'd
-need to have to do away with policies and explicitly classify every packet.
+https://pelican.craoc.fr/#packet-flow
 
-Also remember that the other facilities are in the same evaluation stack
-(which is why the priorities exist).
+Direct URL and yed sources :
+ * https://pelican.craoc.fr/images/packet_flow.svg
+ * https://pelican.craoc.fr/images/packet_flow.graphml
 
-So the rules are no more difficult in nftables than they are in iptables
-if you stick to one hook the way you are forced to do in the latter. But
-in the former, if you decide to use the much more detailed facilities
-you will have to expend more detailed effort.
+Can you please verify it ? Feedback would be much appreciated :)
+I am not a network expert but the subject interest me and I would like
+to know if I misunderstand something.
 
-In particular mixing "inet" with "ip" and/or "ip6" means you'll have to
-take extra care as I don't think there's any guarantee which is
-evaluated first if you use the same priority.
+I put this diagram on CC-BY-SA license so feel free to use/modify it if
+you like.
 
-So yes.
+Note: I draw an arp-forward-filter chain in the diagram because I can
+create one, but I can't actually saw any packet going through it.
+I think it's a bug, so I draw it anyway. More informations :
 
-You only need to drop once, but you need to accept in every frame
-implicitly or explicitly.
+ * https://pelican.craoc.fr/#arp-vm1-vm2
+ * http://marc.info/?l=3Dnetfilter&m=3D149410713429067
+--=20
+Regards
+Maxime de Roucy
+--=-v3Kh4JmZ+b+gop10WgpA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
 
-It only takes one hanging to kill, but you have to survive every charge
-in every court to escape the noose.
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCAAdFiEER5gczwOKW0gcs6kxEf8YVWxR9N0FAlkSGpoACgkQEf8YVWxR
+9N0XdhAAgZhzjIwfSslMKhANxqgCePVP5w6Q5448D0dCzqjJTmKb6tHo14AzIGQO
+sul05WT5CWOalMirZZfQCqJ1F5cw0UAW3fR6kU283iFzR7TtlM2EtJmUAtMKLug1
+tpIMZetdw5kb8ESZUa/okyVw9Vj9iNK8xe7KDNW4tP3yAjBxxvUsZMAAdpswyE+L
+9kcNsFJIsb5x9+uRMjzjElZNTUlKqdmfuXfvUCCkz0FTCGr2YRLFo9fsKP41o+iR
+vorsKlBd4Av2sWnxRDxblyhLyrEFC+IS3grF5Hu8tyXunVtM1FJoP0R+ndYkyEsM
+2SV4obWUEhRKu5aKW6QL9Ftuv8OGQO62VU0+SkcPgZ8+DTTSPN3xZbJyeUtwyg1p
+4azrjHN+/kuldj1Jiy3jUjVTcBoXpLrUDD5k5u1ZxyUnraCPQciQyD4C6412ohE6
+F+0aNm73ww4qVlH12qeGOKuThUZtXI/Zg7p562P380Qm2dE0O1Ypt/aMwMgHyRI1
+M0o+BpkiHBjZ3ff+xsPZyH8w35eFeQ1fET/Fu+HFqoNcZyI5rS6WEWXBowSxYcbe
+1WGTgPkNM8Kxgjc1O8xOb7DqgKnvJXAYd+QHFs+Hz79SkUD7D2C916dtidupDnDn
+s1J4pT18wam1MfZp6kXbG+PQqyVKYUVaVz4d8RSEA75wKQdm9Os=
+=FFPY
+-----END PGP SIGNATURE-----
+
+--=-v3Kh4JmZ+b+gop10WgpA--
+
