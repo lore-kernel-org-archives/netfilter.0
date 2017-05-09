@@ -1,108 +1,64 @@
-From: xiegaofeng@grandcloud.cn
-Subject: Multicast does not work on ebtables
-Date: Tue, 09 May 2017 16:46:45 +0800
-Message-ID: <4289f9ef5464dbbcdaee38396ae06e5b@grandcloud.cn>
+From: Robert White <rwhite@pobox.com>
+Subject: Re: Fwd: Accept nftables statement doesn't prevent lower priority
+ chains for same hook from execution
+Date: Tue, 9 May 2017 09:23:37 +0000
+Message-ID: <567fc0f3-ffad-1d93-23c3-aa3d1a391622@pobox.com>
+References: <CAPQ8kBXK1m6tJWYaqsmUTTDzov8ey2ZaMmMKe3nX-FLGw-PYeA@mail.gmail.com>
+ <CAPQ8kBUwz1QJoT-w9yAmng8BxKikQ1LJP4mMv1fWBYzG0qHQbg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-dkim-signature: v=1; a=rsa-sha256; d=grandcloud.cn; s=mail;
-        c=relaxed/relaxed; q=dns/txt; h=From:Subject:Date:Message-ID:To:MIME-Version:Content-Type:Content-Transfer-Encoding;
-        bh=DIoXQJYmZZhEz+TJ2/UySwX6EL8J5YDjPTqs2IaVt3c=;
-        b=BDCsksHryV6RIIZ+Y8rKl99ueWJFeUj2/PDBeyaNjwmfUlGQr3NWMrceLKd/ROxlZZjh8fVE0ZsfjaC8//C/QuKI9FfCA8OOSHsVEI8XytuhV3GHJHm3yCic7kvGzVJ+/jshNjhFPbVuRX1QDEQ3TDJ8Yx5y7UOZ7p2vrmamWJE=
+In-Reply-To: <CAPQ8kBUwz1QJoT-w9yAmng8BxKikQ1LJP4mMv1fWBYzG0qHQbg@mail.gmail.com>
+Content-Language: en-CA
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Vladimir Lebedev <zeronineseven@gmail.com>, netfilter@vger.kernel.org
 
-Hi,
+On 05/08/17 14:43, Vladimir Lebedev wrote:
+> Suppose you have 2 basic chains for the same hook(e.g. filter input)
+> where first chain has higher priority(executed first) than second.
+> Currently it looks like that if packet is "accept"ed in the first
+> chain second is still executed and can "drop" _already accepted_
+> packet.
 
-My host has three virtual machines: VM1 VM2, and VM3. Their interfaces 
-in the
-physical host respectively are tap1, tap2, and tap3; and their IPs are
-     10.200.10.101(52:54:0:1:6c:c1),
-     10.200.10.102(52:54:0:1:6c:c2),
-     10.200.10.103(52:54:0:1:6c:c3).
-tap1, tap2 and tap3 are bound on a same linux bridge.
+You have the gist of it by my understanding.
 
-I hope that tap1 and tap2 can communicate with each other, not tap3.
+Any drop is a true drop causing immediate discard.
 
-The ebtables rules are as follow.
+Any accept is terminal for the hook executing but does not render the
+packet immune to subsequent hooks.
 
-# For tap1
-ebtalbes -N tap1_IC
-ebtables -P tap1_IC DROP
-ebtables -A tap1_IC --among-src ! 52:54:0:1:6c:c1=10.200.10.101 -j DROP
-ebtables -A tap1_IC --among-dst 52:54:0:1:6c:c2=10.200.10.102 -j ACCEPT
-ebtables -A tap1_IC -d Broadcast -j ACCEPT
-ebtalbes -A tap1_IC -d Multicast -j ACCEPT
+In iptables, since there is only one (implicit) "hook" the distinction
+makes no difference. In nftables you need to be able to deal with things
+like multiple policies.
 
-ebtalbes -N tap1_MI
-ebtables -P tap1_MI DROP
-ebtables -A tap1_MI --among-dst 52:54:0:1:6c:c1=10.200.10.101 -j RETURN
-ebtables -A tap1_MI -d Broadcast -j RETURN
-ebtalbes -A tap1_MI -d Multicast -j RETURN
+So, for example, you don't want to have the accept _policy_ of the first
+table to eternally mask the subsequent later tables.
 
-ebtables -N tap1_OC
-ebtables -P tap1_OC DROP
-ebtables -A tap1_OC -j tap1_MI
-ebtables -A tap1_OC --among-src 52:54:0:1:6c:c2=10.200.10.102 -j ACCEPT
+If you want to easily pass a final verdict then you should mark the
+packet with a mark that you use to accept the packet in later hooks/tables.
 
-ebtables -A FORWARD -i tap1 -j tap1_IC
-ebtables -A FORWARD -o tap1 -j tap1_OC
+The asymmetric treatment of drop/accept is required to prevent the need
+for a "not yet classified" flag. And if you had such a flag then you'd
+need to have to do away with policies and explicitly classify every packet.
 
-# For tap2
-ebtalbes -N tap2_IC
-ebtables -P tap2_IC DROP
-ebtables -A tap2_IC --among-src ! 52:54:0:1:6c:c2=10.200.10.102 -j DROP
-ebtables -A tap2_IC --among-dst 52:54:0:1:6c:c1=10.200.10.101 -j ACCEPT
-ebtables -A tap2_IC -d Broadcast -j ACCEPT
-ebtalbes -A tap2_IC -d Multicast -j ACCEPT
+Also remember that the other facilities are in the same evaluation stack
+(which is why the priorities exist).
 
-ebtalbes -N tap2_MI
-ebtables -P tap2_MI DROP
-ebtables -A tap2_MI --among-dst 52:54:0:1:6c:c2=10.200.10.102 -j RETURN
-ebtables -A tap2_MI -d Broadcast -j RETURN
-ebtalbes -A tap2_MI -d Multicast -j RETURN
+So the rules are no more difficult in nftables than they are in iptables
+if you stick to one hook the way you are forced to do in the latter. But
+in the former, if you decide to use the much more detailed facilities
+you will have to expend more detailed effort.
 
-ebtables -N tap2_OC
-ebtables -P tap2_OC DROP
-ebtables -A tap2_OC -j tap2_MI
-ebtables -p tap2_OC --among-src 52:54:0:1:6c:c1=10.200.10.101 -j ACCEPT
+In particular mixing "inet" with "ip" and/or "ip6" means you'll have to
+take extra care as I don't think there's any guarantee which is
+evaluated first if you use the same priority.
 
-ebtables -A FORWARD -i tap2 -j tap1_IC
-ebtables -A FORWARD -o tap2 -j tap1_OC
+So yes.
 
-# For tap3
-ebtalbes -N tap3_IC
-ebtables -P tap3_IC DROP
-ebtables -A tap3_IC --among-src ! 52:54:0:1:6c:c3=10.200.10.103 -j DROP
-ebtables -A tap3_IC -d Broadcast -j ACCEPT
-ebtalbes -A tap3_IC -d Multicast -j ACCEPT
+You only need to drop once, but you need to accept in every frame
+implicitly or explicitly.
 
-ebtalbes -N tap3_MI
-ebtables -P tap3_MI DROP
-ebtables -A tap3_MI --among-dst 52:54:0:1:6c:c3=10.200.10.103 -j RETURN
-ebtables -A tap3_MI -d Broadcast -j RETURN
-ebtalbes -A tap3_MI -d Multicast -j RETURN
-
-ebtables -N tap3_OC
-ebtables -P tap3_OC DROP
-ebtables -A tap3_OC -j tap3_MI
-
-ebtables -A FORWARD -i tap3 -j tap1_IC
-ebtables -A FORWARD -o tap3 -j tap1_OC
-
-For TCP, UDP or BROADCAST, it works as expected. But for Multicast, it's 
-not.
-
-When VM1 sends a Multicast packet, VM2 can receive it and it's OK, but 
-VM3 will
-also receive it. It's not right, because the chain tap3_OC does not have 
-the
-matched rule and will DROP it by default. I do not known why VM3 can 
-receive
-this Multicast packet. I'm not sure whether it is a bug.
-
-Thanks,
-Aaron
-
+It only takes one hanging to kill, but you have to survive every charge
+in every court to escape the noose.
