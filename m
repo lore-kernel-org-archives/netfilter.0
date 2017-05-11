@@ -1,8 +1,8 @@
 From: =?iso-8859-1?Q?Andr=E9_Paulsberg-Csibi_=28IBM_Consultant=29?= 
         <Andre.Paulsberg-Csibi@evry.com>
 Subject: RE: Multicast does not work on ebtables
-Date: Thu, 11 May 2017 05:32:51 +0000
-Message-ID: <450a7935d46549e2a57147a7eead73be@CCDEX021.corp.corpcommon.com>
+Date: Thu, 11 May 2017 05:37:10 +0000
+Message-ID: <bceeeb8634f84a70832fe240bac2e819@CCDEX021.corp.corpcommon.com>
 References: <4289f9ef5464dbbcdaee38396ae06e5b@grandcloud.cn>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="iso-8859-1"
@@ -11,37 +11,20 @@ Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=evry.onmicrosoft.com;
  s=selector1-evry-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=skwLEuMfMWDAPeq4swcAgBIZrHDMzU0yVJflXX9kz7s=;
- b=C6KvrGIUKsmqOToeYWIBcqplH2JhIQWNwK+wHMVCUDM18zuB+u3RD5/03mOKQALXC0G0TzwEFipe+GRP/HAQLLpN4qF/0bEOQuckFkuoloLjQu76hn4bP3IMXYW3GkSsWoci4mGDud1Wg9JKZfTe2VRalY53oKNELpqPYkukd8s=
+ bh=4kn5jUKpoghi+pckOAThajoLH6fYBHGTmOlWh6pjzzM=;
+ b=EfqYstaalVI6ZkzxaWIwzJh+juJcz43YYMpPxLQ+0KyWCjdEb/IeQjrNiFgL4pA0hOGWA6AxDvLrmjfqXPvvBbM3wz2Op+ZsQwVCWmnMazCW8fny5O9fHzFC9amLT84o4QVNenySVrBg6JtVCNBBh5Sw3k8hp19kwWgXtIZAYjY=
 In-Reply-To: <4289f9ef5464dbbcdaee38396ae06e5b@grandcloud.cn>
 Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 To: "xiegaofeng@grandcloud.cn" <xiegaofeng@grandcloud.cn>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-I am not sure I read your rules correctly , the layout might be different i=
-n the actual ruleset ,
-but as far as I can tell the FIRST rule that would match your traffic would=
- be this one :
+I noticed another fault also ,
 
- ebtables -A FORWARD -i tap1 -j tap1_IC
+ebtables -A FORWARD -i tap3 -j tap1_IC
+ebtables -A FORWARD -o tap3 -j tap1_OC
 
-*ebtalbes -N tap1_IC
- ebtables -P tap1_IC DROP
- ebtables -A tap1_IC --among-src ! 52:54:0:1:6c:c1=3D10.200.10.101 -j DROP
- ebtables -A tap1_IC --among-dst 52:54:0:1:6c:c2=3D10.200.10.102 -j ACCEPT
- ebtables -A tap1_IC -d Broadcast -j ACCEPT
-*ebtalbes -A tap1_IC -d Multicast -j ACCEPT
-
-So reading the rules , after hitting the last rules here you go to ACCEPT a=
-nd no further ruleset is used ,
-Aka it will NEVER process the rules for outgoing to tap3 "ebtables -A FORWA=
-RD -o tap3 -j tap1_OC" as you already allowed it prior !
-
-On a second note , there are several places your rules are using wrong word=
- " ebtalbes" instead of "ebtables"
-( not sure if that is only in this mail , or if that is also in the actual =
-ruleset )
+This rules jump to tap1_OC and not tap3_OC
 
 
 
@@ -52,7 +35,6 @@ Fault Handling
 IBM Services AS
 andre.paulsberg-csibi@evry.com
 M +47 9070 5988
-
 
 
 
