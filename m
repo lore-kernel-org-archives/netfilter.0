@@ -1,89 +1,82 @@
-From: =?iso-8859-1?Q?Andr=E9_Paulsberg-Csibi_=28IBM_Consultant=29?= 
-        <Andre.Paulsberg-Csibi@evry.com>
-Subject: RE: Multicast does not work on ebtables
-Date: Thu, 11 May 2017 08:41:43 +0000
-Message-ID: <bc4cc23390c941f0ac149e7b5f97daf0@CCDEX021.corp.corpcommon.com>
-References: <4289f9ef5464dbbcdaee38396ae06e5b@grandcloud.cn>
- <450a7935d46549e2a57147a7eead73be@CCDEX021.corp.corpcommon.com>
- <0f700380dcf7bbad5386b5e966643f87@grandcloud.cn>
+From: Bluec0re <nftables@bluec0re.eu>
+Subject: [Question/Bug?] Translating ebtables/iptables nat to nftables
+Date: Fri, 12 May 2017 17:39:02 +0200
+Message-ID: <84afb7f2-dc36-7683-c743-bcec6d34770f@bluec0re.eu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=evry.onmicrosoft.com;
- s=selector1-evry-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=0UcZUcdE0lEp1qLfItuJXjjUpPtv3qCTUQ4cT1q5ssM=;
- b=tTkOsnt6uN30irBlsBjEp4qmJE1ZvAKDAFJdDxKHtviqKROJ0Dikfyoyek8lSPj8ew6FsCM0gYYV55XyEAkAnXe9dHMW7aPth565v7mbGA7CEhfqGwMgzToDAXRNHpDpt65OjUlMJbDdz85mCJgSPr2ECWbJhP/Xqe8NPGBNFyI=
-In-Reply-To: <0f700380dcf7bbad5386b5e966643f87@grandcloud.cn>
-Content-Language: en-US
+Content-Language: en-GB
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "xiegaofeng@grandcloud.cn" <xiegaofeng@grandcloud.cn>, Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-I understand , but if you allow it in this CHAIN tap1_IC it will not go int=
-o the CHAIN for tap3_OC=20
+Hi,
 
-If you cannot find the issue , I guess you will need to take a look at the =
-combined setup from the HOST if theses VMs .
+I've some problems translating the following ebtables/iptables:
 
-brctl show
-ifconfig
-ebtables-save
-ebtables -L
+ebtables -t nat -I PREROUTING -i $CLIENT_IF -p ip --ip-protocol tcp
+--ip-source $CLIENT_IP --ip-destination-port $PORT -j redirect
 
-And see if counters and tcpdumps of the interfaces and bridges can help you=
- track down where the packets are going or being DROPed .
+iptables -t nat -I PREROUTING -i $BRIDGE_IF -p tcp -s $CLIENT_IP --dport
+$PORT -j DNAT --to $MY_IP
+
+The setup is as follows:
+
+                             br0
+CLIENT  eth0  ----- eth1   BRIDGE  eth2 ------ eth0 SERVER
+192.168.50.2            192.168.50.4            192.168.50.3
+
+I successfully redirected all tcp traffic from 192.168.50.2 to
+192.168.50.3:12345 to 192.168.50.4:12345.
+
+I tried the following nftables rules to achieve the same result:
+
+table bridge nat {
+    chain prerouting {
+        type filter hook prerouting priority 0;
+        iifname $CLIENT_IF ip saddr $CLIENT_IP counter meta pkttype set
+unicast ether daddr set $MY_MAC
+    }
+}
+table ip nat {
+    chain prerouting {
+        type nat hook prerouting priority 0;
+        iifname $BRIDGE_IF ip saddr $CLIENT_IP counter dnat to $MY_IP
+    }
+}
+
+But it does not work, instead the MAC was rewritten, but the packets
+were forwarded to eth2. I also registered all available hooks for the
+tables and did a trace:
 
 
+> trace id d43314fa netdev nat ingress packet: iif "eth1" ether saddr 08:00:27:31:3b:bc ether daddr 08:00:27:11:84:71 ip saddr 192.168.50.2 ip daddr 192.168.50.3 ip dscp cs0 ip ecn not-ect ip ttl 64 ip id 45735 ip length 60 tcp sport 47676 tcp dport 12345 tcp flags == syn tcp window 29200 
+> trace id d43314fa netdev nat ingress rule nftrace set 1 (verdict continue)
+> trace id d43314fa netdev nat ingress verdict continue 
+> trace id d43314fa netdev nat ingress 
+> trace id d43314fa bridge nat prerouting packet: iif "eth1" ether saddr 08:00:27:31:3b:bc ether daddr 08:00:27:11:84:71 ip saddr 192.168.50.2 ip daddr 192.168.50.3 ip dscp cs0 ip ecn not-ect ip ttl 64 ip id 45735 ip length 60 tcp sport 47676 tcp dport 12345 tcp flags == syn tcp window 29200 
+> trace id d43314fa bridge nat prerouting rule iif "eth1" counter packets 0 bytes 0 (verdict continue)
+> trace id d43314fa bridge nat prerouting rule iifname "eth1" ip saddr 192.168.50.2 counter packets 0 bytes 0 pkttype set host ether daddr set 08:00:27:1b:a1:83 (verdict continue)
+> trace id d43314fa bridge nat prerouting verdict continue 
+> trace id d43314fa bridge nat prerouting 
+> trace id d43314fa bridge nat input packet: iif "eth1" ether saddr 08:00:27:31:3b:bc ether daddr 08:00:27:1b:a1:83 ip saddr 192.168.50.2 ip daddr 192.168.50.3 ip dscp cs0 ip ecn not-ect ip ttl 64 ip id 45735 ip length 60 tcp sport 47676 tcp dport 12345 tcp flags == syn tcp window 29200 
+> trace id d43314fa bridge nat input rule iif "eth1" counter packets 0 bytes 0 (verdict continue)
+> trace id d43314fa bridge nat input verdict continue 
+> trace id d43314fa bridge nat input 
 
-Best regards
-Andr=E9 Paulsberg-Csibi
-Senior Network Engineer=20
-Fault Handling
-IBM Services AS
-andre.paulsberg-csibi@evry.com
-M +47 9070 5988
+I also tried to rewrite the mac and ip in the ingress hook. This worked
+in terms of that the SYN packets were accepted, but the SYN/ACKs were
+sent back with the wrong src ip (.4 instead of .3) as it was actually
+hard rewrite instead of a dnat.
 
+Any ideas why the ip nat tables are not invoked? Is this a bug in
+nftables or is it not supposed to work? (As it worked with iptables)
 
+Thanks in advance,
+Bluec0re
 
-
------Original Message-----
-From: xiegaofeng@grandcloud.cn [mailto:xiegaofeng@grandcloud.cn]=20
-Sent: 11. mai 2017 09:01
-To: Andr=E9 Paulsberg-Csibi (IBM Consultant) <Andre.Paulsberg-Csibi@evry.co=
-m>; Netfilter <netfilter@vger.kernel.org>
-Subject: Re: Multicast does not work on ebtables
-
-Sorry, it's my input error.
-
-When hit the rules of tap1, I copied and pasted them for tap1 and tap2,
-but forgot to modify them altogether.
-
-In my last mail, there are three kinds of errors about ebtables rules.
-
-1. It should be ebtables, not ebtalbes.
-
-2. In the following rule, It should be -A, not -p.
-ebtables -p tap2_OC --among-src 52:54:0:1:6c:c1=3D10.200.10.101 -j ACCEPT
-
-3. In the FORWARD chain, it should be:
-
-   ebtables -A FORWARD -i tap1 -j tap1_IC
-   ebtables -A FORWARD -o tap1 -j tap1_OC
-
-   ebtables -A FORWARD -i tap2 -j tap2_IC
-   ebtables -A FORWARD -o tap2 -j tap2_OC
-
-   ebtables -A FORWARD -i tap3 -j tap3_IC
-   ebtables -A FORWARD -o tap3 -j tap3_OC
-
-tap1_IC and tap1_OC are for tap1.
-tap2_IC and tap2_OC are for tap2.
-tap3_IC and tap3_OC are for tap3.
-
-In my test, the Broadcast packets from VM1 won't enter into VM3,
-but the Multicast packets from VM1 enter into VM3.
-
-I don't known why.
-
+PS: I could not find any packet flow diagrams for nftables like this
+one:
+https://upload.wikimedia.org/wikipedia/commons/3/37/Netfilter-packet-flow.svg
+Are the hooks still the same, are there some new flow paths?
