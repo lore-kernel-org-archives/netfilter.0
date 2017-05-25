@@ -1,156 +1,145 @@
-From: Juergen Schmidt <abcdmail@freenet.de>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 Subject: Re: regression: nf_conntrack_sip: kernel BUG at
  ../net/netfilter/nf_conntrack_helper.c:384! since linux 4.8
-Date: Thu, 25 May 2017 19:50:57 +0200
-Message-ID: <136ee9f0-1e80-01f2-8dc4-e7d2fc8e2269@freenet.de>
+Date: Thu, 25 May 2017 20:49:40 +0200
+Message-ID: <20170525184940.GA4772@salvia>
 References: <a72bec87-be30-65ce-818b-b3e9d22ab867@freenet.de>
+ <136ee9f0-1e80-01f2-8dc4-e7d2fc8e2269@freenet.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------0BBC083744A1CC64E7BB2980"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <a72bec87-be30-65ce-818b-b3e9d22ab867@freenet.de>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <136ee9f0-1e80-01f2-8dc4-e7d2fc8e2269@freenet.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Juergen Schmidt <abcdmail@freenet.de>
+Cc: netfilter@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------0BBC083744A1CC64E7BB2980
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Could you try this patch?
 
-On 05/25/2017 at 10:51 AM Juergen Schmidt wrote:
-> Hello!
+commit da2f27e9e615d1c799c9582b15262458da61fddc
+Author: Christophe Leroy <christophe.leroy@c-s.fr>
+Date:   Wed Mar 1 15:33:26 2017 +0100
+
+    netfilter: nf_conntrack_sip: fix wrong memory initialisation
+
+We can request inclusion of this patch to -stable kernels.
+
+On Thu, May 25, 2017 at 07:50:57PM +0200, Juergen Schmidt wrote:
+> On 05/25/2017 at 10:51 AM Juergen Schmidt wrote:
+> > Hello!
+> > 
+> > If you want to use more than one port (like
+> > modprobe nf_conntrack_sip 777,778), you get the following BUG (linux 4.9.x):
+> > 
+> > 
+> > May 25 07:17:46 dualc kernel: kernel BUG at ../net/netfilter/nf_conntrack_helper.c:384!
+> > May 25 07:17:46 dualc kernel: invalid opcode: 0000 [#1] PREEMPT SMP
+> > May 25 07:17:46 dualc kernel: Modules linked in: nf_conntrack_sip(+) vhost_net tun vhost macvtap macvlan nf_log_ipv4 nf_log_common xt_LOG ipt_REJECT nf_reject_ipv4 xt_tcpudp nf_conntrack_ipv4 nf_defrag_ipv4 xt_conntrack nf_conntrack iptable_filter ip_tables x_tables vfio
+> > _pci vfio_iommu_type1 vfio_virqfd vfio br_netfilter bridge stp llc iscsi_ibft iscsi_boot_sysfs it87 hwmon_vid snd_hda_codec_realtek snd_hda_codec_generic snd_hda_codec_hdmi mxm_wmi snd_hda_intel snd_hda_codec snd_hda_core snd_hwdep snd_pcm edac_mce_amd snd_seq edac_core 
+> > snd_seq_device snd_timer kvm_amd sp5100_tco kvm r8169 fam15h_power pcspkr k10temp i2c_piix4 irqbypass mii tpm_infineon snd fjes soundcore wmi button shpchp acpi_cpufreq tpm_tis tpm_tis_core tpm nfsd auth_rpcgss nfs_acl lockd grace sunrpc xfs libcrc32c dm_crypt uas usb_storage hid_generic
+> > May 25 07:17:46 dualc kernel:  usbhid raid1 md_mod ohci_pci crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel serio_raw sr_mod cdrom amdkfd amd_iommu_v2 firewire_ohci radeon firewire_core crc_itu_t ohci_hcd ehci_pci i2c_algo_bit ehci_hcd drm_kms_helper sysco
+> > pyarea sysfillrect xhci_pci sysimgblt fb_sys_fops xhci_hcd ttm usbcore drm aesni_intel aes_x86_64 glue_helper lrw ablk_helper cryptd ata_generic pata_atiixp dm_mirror dm_region_hash dm_log sg thermal dm_multipath dm_mod scsi_dh_rdac scsi_dh_emc scsi_dh_alua
+> > May 25 07:17:46 dualc kernel: CPU: 4 PID: 4064 Comm: modprobe Not tainted 4.9.29-1-default #1
+> > May 25 07:17:46 dualc kernel: Hardware name: Gigabyte Technology Co., Ltd. GA-990XA-UD3/GA-990XA-UD3, BIOS F14b 01/24/2013
+> > May 25 07:17:46 dualc kernel: task: ffff90d3af6fe040 task.stack: ffffaa814af40000
+> > May 25 07:17:46 dualc kernel: RIP: 0010:[<ffffffffc0d47b8e>]  [<ffffffffc0d47b8e>] nf_conntrack_helper_register+0xee/0x100 [nf_conntrack]
+> > May 25 07:17:46 dualc kernel: RSP: 0018:ffffaa814af43bf0  EFLAGS: 00010246
+> > May 25 07:17:46 dualc kernel: RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffff90d54ee93888
+> > May 25 07:17:46 dualc kernel: RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffffffffc0dc2150
+> > May 25 07:17:46 dualc kernel: RBP: ffffaa814af43c18 R08: 0000000000000020 R09: 00000000c0dc0000
+> > May 25 07:17:46 dualc kernel: R10: 0000000000ffff0a R11: 0000000000000003 R12: 0000000000000000
+> > May 25 07:17:46 dualc kernel: R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000200
+> > May 25 07:17:46 dualc kernel: FS:  00007facd0838700(0000) GS:ffff90d56ed00000(0000) knlGS:0000000000000000
+> > May 25 07:17:46 dualc kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> > May 25 07:17:46 dualc kernel: CR2: 00007f4d1800a988 CR3: 00000006103ee000 CR4: 00000000000406e0
+> > May 25 07:17:46 dualc kernel: Stack:
+> > May 25 07:17:46 dualc kernel:  0000000000000001 ffffffffc0dc2150 ffffffffc0dc20c0 0000000000000008
+> > May 25 07:17:46 dualc kernel:  ffff90d386a03a80 ffffaa814af43c50 ffffffffc0d4822c 0000000000000001
+> > May 25 07:17:46 dualc kernel:  0000000000000002 ffffffffc0dc2540 ffffffffc0dc21e0 0000000000000000
+> > May 25 07:17:46 dualc kernel: Call Trace:
+> > May 25 07:17:46 dualc kernel:  [<ffffffffc0d4822c>] nf_conntrack_helpers_register+0x3c/0x80 [nf_conntrack]
+> > May 25 07:17:46 dualc kernel:  [<ffffffffc034318d>] nf_conntrack_sip_init+0x18d/0x1000 [nf_conntrack_sip]
+> > May 25 07:17:46 dualc kernel:  [<ffffffffc0343000>] ? 0xffffffffc0343000
+> > May 25 07:17:46 dualc kernel:  [<ffffffffb6002190>] do_one_initcall+0x50/0x190
+> > May 25 07:17:46 dualc kernel:  [<ffffffffb61ed191>] ? __vunmap+0x81/0xd0
+> > May 25 07:17:46 dualc kernel:  [<ffffffffb61a2cdc>] ? do_init_module+0x27/0x20a
+> > May 25 07:17:46 dualc kernel:  [<ffffffffb61a2d15>] do_init_module+0x60/0x20a
+> > May 25 07:17:46 dualc kernel:  [<ffffffffb61131af>] load_module+0x203f/0x28d0
+> > May 25 07:17:46 dualc kernel:  [<ffffffffb610ff20>] ? __symbol_put+0x50/0x50
+> > May 25 07:17:46 dualc kernel:  [<ffffffffb6113c29>] SYSC_finit_module+0x99/0xd0
+> > May 25 07:17:46 dualc kernel:  [<ffffffffb6113c7e>] SyS_finit_module+0xe/0x10
+> > May 25 07:17:46 dualc kernel:  [<ffffffffb6003ad1>] do_syscall_64+0x61/0x190
+> > May 25 07:17:46 dualc kernel:  [<ffffffffb6727caf>] entry_SYSCALL64_slow_path+0x25/0x25
+> > May 25 07:17:46 dualc kernel: Code: db eb 0f 0f b6 73 5e 40 38 70 5e 75 d0 bb ef ff ff ff 48 c7 c7 c0 43 d5 c0 e8 ef ce 9d f5 89 d8 5b 41 5c 41 5d 41 5e 41 5f 5d c3 <0f> 0b 0f 0b 0f 0b 66 90 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 
+> > May 25 07:17:46 dualc kernel: RIP  [<ffffffffc0d47b8e>] nf_conntrack_helper_register+0xee/0x100 [nf_conntrack]
+> > May 25 07:17:46 dualc kernel:  RSP <ffffaa814af43bf0>
+> > May 25 07:17:46 dualc kernel: ---[ end trace 02b02dd336a52aa8 ]---
+> > 
+> > 
+> > 
+> > Would be great if it would be fixed!
 > 
-> If you want to use more than one port (like
-> modprobe nf_conntrack_sip 777,778), you get the following BUG (linux 4.9.x):
+> 
+> The attached patch nf_conntrack_sip.array.patch fixes the regression. It
+> completely allocates the sip array variable.
+> 
+> The second patch nf_conntrack_sip.port.patch makes it work like
+> documented. The helper -j CT e.g. can now be addressed via sip-$port and
+> not sip-$index (which is confusing).
 > 
 > 
-> May 25 07:17:46 dualc kernel: kernel BUG at ../net/netfilter/nf_conntrack_helper.c:384!
-> May 25 07:17:46 dualc kernel: invalid opcode: 0000 [#1] PREEMPT SMP
-> May 25 07:17:46 dualc kernel: Modules linked in: nf_conntrack_sip(+) vhost_net tun vhost macvtap macvlan nf_log_ipv4 nf_log_common xt_LOG ipt_REJECT nf_reject_ipv4 xt_tcpudp nf_conntrack_ipv4 nf_defrag_ipv4 xt_conntrack nf_conntrack iptable_filter ip_tables x_tables vfio
-> _pci vfio_iommu_type1 vfio_virqfd vfio br_netfilter bridge stp llc iscsi_ibft iscsi_boot_sysfs it87 hwmon_vid snd_hda_codec_realtek snd_hda_codec_generic snd_hda_codec_hdmi mxm_wmi snd_hda_intel snd_hda_codec snd_hda_core snd_hwdep snd_pcm edac_mce_amd snd_seq edac_core 
-> snd_seq_device snd_timer kvm_amd sp5100_tco kvm r8169 fam15h_power pcspkr k10temp i2c_piix4 irqbypass mii tpm_infineon snd fjes soundcore wmi button shpchp acpi_cpufreq tpm_tis tpm_tis_core tpm nfsd auth_rpcgss nfs_acl lockd grace sunrpc xfs libcrc32c dm_crypt uas usb_storage hid_generic
-> May 25 07:17:46 dualc kernel:  usbhid raid1 md_mod ohci_pci crct10dif_pclmul crc32_pclmul crc32c_intel ghash_clmulni_intel serio_raw sr_mod cdrom amdkfd amd_iommu_v2 firewire_ohci radeon firewire_core crc_itu_t ohci_hcd ehci_pci i2c_algo_bit ehci_hcd drm_kms_helper sysco
-> pyarea sysfillrect xhci_pci sysimgblt fb_sys_fops xhci_hcd ttm usbcore drm aesni_intel aes_x86_64 glue_helper lrw ablk_helper cryptd ata_generic pata_atiixp dm_mirror dm_region_hash dm_log sg thermal dm_multipath dm_mod scsi_dh_rdac scsi_dh_emc scsi_dh_alua
-> May 25 07:17:46 dualc kernel: CPU: 4 PID: 4064 Comm: modprobe Not tainted 4.9.29-1-default #1
-> May 25 07:17:46 dualc kernel: Hardware name: Gigabyte Technology Co., Ltd. GA-990XA-UD3/GA-990XA-UD3, BIOS F14b 01/24/2013
-> May 25 07:17:46 dualc kernel: task: ffff90d3af6fe040 task.stack: ffffaa814af40000
-> May 25 07:17:46 dualc kernel: RIP: 0010:[<ffffffffc0d47b8e>]  [<ffffffffc0d47b8e>] nf_conntrack_helper_register+0xee/0x100 [nf_conntrack]
-> May 25 07:17:46 dualc kernel: RSP: 0018:ffffaa814af43bf0  EFLAGS: 00010246
-> May 25 07:17:46 dualc kernel: RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffff90d54ee93888
-> May 25 07:17:46 dualc kernel: RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffffffffc0dc2150
-> May 25 07:17:46 dualc kernel: RBP: ffffaa814af43c18 R08: 0000000000000020 R09: 00000000c0dc0000
-> May 25 07:17:46 dualc kernel: R10: 0000000000ffff0a R11: 0000000000000003 R12: 0000000000000000
-> May 25 07:17:46 dualc kernel: R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000200
-> May 25 07:17:46 dualc kernel: FS:  00007facd0838700(0000) GS:ffff90d56ed00000(0000) knlGS:0000000000000000
-> May 25 07:17:46 dualc kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> May 25 07:17:46 dualc kernel: CR2: 00007f4d1800a988 CR3: 00000006103ee000 CR4: 00000000000406e0
-> May 25 07:17:46 dualc kernel: Stack:
-> May 25 07:17:46 dualc kernel:  0000000000000001 ffffffffc0dc2150 ffffffffc0dc20c0 0000000000000008
-> May 25 07:17:46 dualc kernel:  ffff90d386a03a80 ffffaa814af43c50 ffffffffc0d4822c 0000000000000001
-> May 25 07:17:46 dualc kernel:  0000000000000002 ffffffffc0dc2540 ffffffffc0dc21e0 0000000000000000
-> May 25 07:17:46 dualc kernel: Call Trace:
-> May 25 07:17:46 dualc kernel:  [<ffffffffc0d4822c>] nf_conntrack_helpers_register+0x3c/0x80 [nf_conntrack]
-> May 25 07:17:46 dualc kernel:  [<ffffffffc034318d>] nf_conntrack_sip_init+0x18d/0x1000 [nf_conntrack_sip]
-> May 25 07:17:46 dualc kernel:  [<ffffffffc0343000>] ? 0xffffffffc0343000
-> May 25 07:17:46 dualc kernel:  [<ffffffffb6002190>] do_one_initcall+0x50/0x190
-> May 25 07:17:46 dualc kernel:  [<ffffffffb61ed191>] ? __vunmap+0x81/0xd0
-> May 25 07:17:46 dualc kernel:  [<ffffffffb61a2cdc>] ? do_init_module+0x27/0x20a
-> May 25 07:17:46 dualc kernel:  [<ffffffffb61a2d15>] do_init_module+0x60/0x20a
-> May 25 07:17:46 dualc kernel:  [<ffffffffb61131af>] load_module+0x203f/0x28d0
-> May 25 07:17:46 dualc kernel:  [<ffffffffb610ff20>] ? __symbol_put+0x50/0x50
-> May 25 07:17:46 dualc kernel:  [<ffffffffb6113c29>] SYSC_finit_module+0x99/0xd0
-> May 25 07:17:46 dualc kernel:  [<ffffffffb6113c7e>] SyS_finit_module+0xe/0x10
-> May 25 07:17:46 dualc kernel:  [<ffffffffb6003ad1>] do_syscall_64+0x61/0x190
-> May 25 07:17:46 dualc kernel:  [<ffffffffb6727caf>] entry_SYSCALL64_slow_path+0x25/0x25
-> May 25 07:17:46 dualc kernel: Code: db eb 0f 0f b6 73 5e 40 38 70 5e 75 d0 bb ef ff ff ff 48 c7 c7 c0 43 d5 c0 e8 ef ce 9d f5 89 d8 5b 41 5c 41 5d 41 5e 41 5f 5d c3 <0f> 0b 0f 0b 0f 0b 66 90 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 
-> May 25 07:17:46 dualc kernel: RIP  [<ffffffffc0d47b8e>] nf_conntrack_helper_register+0xee/0x100 [nf_conntrack]
-> May 25 07:17:46 dualc kernel:  RSP <ffffaa814af43bf0>
-> May 25 07:17:46 dualc kernel: ---[ end trace 02b02dd336a52aa8 ]---
-> 
-> 
-> 
-> Would be great if it would be fixed!
+> Regards,
+> Juergen
 
+> --- a/net/netfilter/nf_conntrack_sip.c	2017-05-25 07:54:45.000000000 +0200
+> +++ b/net/netfilter/nf_conntrack_sip.c	2017-05-25 19:25:51.771419668 +0200
+> @@ -1624,13 +1624,14 @@
+>  
+>  static int __init nf_conntrack_sip_init(void)
+>  {
+> -	int i, ret;
+> +	int i, j, ret;
+>  
+>  	if (ports_c == 0)
+>  		ports[ports_c++] = SIP_PORT;
+>  
+>  	for (i = 0; i < ports_c; i++) {
+> -		memset(&sip[i], 0, sizeof(sip[i]));
+> +		for (j = 0; j < 3; j++)
+> +			memset(&sip[4 * i + j], 0, sizeof(sip[0]));
+>  
+>  		nf_ct_helper_init(&sip[4 * i], AF_INET, IPPROTO_UDP, "sip",
+>  				  SIP_PORT, ports[i], ports[i], sip_exp_policy,
 
-The attached patch nf_conntrack_sip.array.patch fixes the regression. It
-completely allocates the sip array variable.
+> --- a/net/netfilter/nf_conntrack_sip.c	2016-12-11 20:17:54.000000000 +0100
+> +++ b/net/netfilter/nf_conntrack_sip.c	2017-05-25 07:46:56.000000000 +0200
+> @@ -1633,22 +1633,22 @@
+>  		memset(&sip[i], 0, sizeof(sip[i]));
+>  
+>  		nf_ct_helper_init(&sip[4 * i], AF_INET, IPPROTO_UDP, "sip",
+> -				  SIP_PORT, ports[i], i, sip_exp_policy,
+> +				  SIP_PORT, ports[i], ports[i], sip_exp_policy,
+>  				  SIP_EXPECT_MAX,
+>  				  sizeof(struct nf_ct_sip_master), sip_help_udp,
+>  				  NULL, THIS_MODULE);
+>  		nf_ct_helper_init(&sip[4 * i + 1], AF_INET, IPPROTO_TCP, "sip",
+> -				  SIP_PORT, ports[i], i, sip_exp_policy,
+> +				  SIP_PORT, ports[i], ports[i], sip_exp_policy,
+>  				  SIP_EXPECT_MAX,
+>  				  sizeof(struct nf_ct_sip_master), sip_help_tcp,
+>  				  NULL, THIS_MODULE);
+>  		nf_ct_helper_init(&sip[4 * i + 2], AF_INET6, IPPROTO_UDP, "sip",
+> -				  SIP_PORT, ports[i], i, sip_exp_policy,
+> +				  SIP_PORT, ports[i], ports[i], sip_exp_policy,
+>  				  SIP_EXPECT_MAX,
+>  				  sizeof(struct nf_ct_sip_master), sip_help_udp,
+>  				  NULL, THIS_MODULE);
+>  		nf_ct_helper_init(&sip[4 * i + 3], AF_INET6, IPPROTO_TCP, "sip",
+> -				  SIP_PORT, ports[i], i, sip_exp_policy,
+> +				  SIP_PORT, ports[i], ports[i], sip_exp_policy,
+>  				  SIP_EXPECT_MAX,
+>  				  sizeof(struct nf_ct_sip_master), sip_help_tcp,
+>  				  NULL, THIS_MODULE);
 
-The second patch nf_conntrack_sip.port.patch makes it work like
-documented. The helper -j CT e.g. can now be addressed via sip-$port and
-not sip-$index (which is confusing).
-
-
-Regards,
-Juergen
-
---------------0BBC083744A1CC64E7BB2980
-Content-Type: text/x-patch;
- name="nf_conntrack_sip.array.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="nf_conntrack_sip.array.patch"
-
---- a/net/netfilter/nf_conntrack_sip.c	2017-05-25 07:54:45.000000000 +020=
-0
-+++ b/net/netfilter/nf_conntrack_sip.c	2017-05-25 19:25:51.771419668 +020=
-0
-@@ -1624,13 +1624,14 @@
-=20
- static int __init nf_conntrack_sip_init(void)
- {
--	int i, ret;
-+	int i, j, ret;
-=20
- 	if (ports_c =3D=3D 0)
- 		ports[ports_c++] =3D SIP_PORT;
-=20
- 	for (i =3D 0; i < ports_c; i++) {
--		memset(&sip[i], 0, sizeof(sip[i]));
-+		for (j =3D 0; j < 3; j++)
-+			memset(&sip[4 * i + j], 0, sizeof(sip[0]));
-=20
- 		nf_ct_helper_init(&sip[4 * i], AF_INET, IPPROTO_UDP, "sip",
- 				  SIP_PORT, ports[i], ports[i], sip_exp_policy,
-
---------------0BBC083744A1CC64E7BB2980
-Content-Type: text/x-patch;
- name="nf_conntrack_sip.port.patch"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="nf_conntrack_sip.port.patch"
-
---- a/net/netfilter/nf_conntrack_sip.c	2016-12-11 20:17:54.000000000 +010=
-0
-+++ b/net/netfilter/nf_conntrack_sip.c	2017-05-25 07:46:56.000000000 +020=
-0
-@@ -1633,22 +1633,22 @@
- 		memset(&sip[i], 0, sizeof(sip[i]));
-=20
- 		nf_ct_helper_init(&sip[4 * i], AF_INET, IPPROTO_UDP, "sip",
--				  SIP_PORT, ports[i], i, sip_exp_policy,
-+				  SIP_PORT, ports[i], ports[i], sip_exp_policy,
- 				  SIP_EXPECT_MAX,
- 				  sizeof(struct nf_ct_sip_master), sip_help_udp,
- 				  NULL, THIS_MODULE);
- 		nf_ct_helper_init(&sip[4 * i + 1], AF_INET, IPPROTO_TCP, "sip",
--				  SIP_PORT, ports[i], i, sip_exp_policy,
-+				  SIP_PORT, ports[i], ports[i], sip_exp_policy,
- 				  SIP_EXPECT_MAX,
- 				  sizeof(struct nf_ct_sip_master), sip_help_tcp,
- 				  NULL, THIS_MODULE);
- 		nf_ct_helper_init(&sip[4 * i + 2], AF_INET6, IPPROTO_UDP, "sip",
--				  SIP_PORT, ports[i], i, sip_exp_policy,
-+				  SIP_PORT, ports[i], ports[i], sip_exp_policy,
- 				  SIP_EXPECT_MAX,
- 				  sizeof(struct nf_ct_sip_master), sip_help_udp,
- 				  NULL, THIS_MODULE);
- 		nf_ct_helper_init(&sip[4 * i + 3], AF_INET6, IPPROTO_TCP, "sip",
--				  SIP_PORT, ports[i], i, sip_exp_policy,
-+				  SIP_PORT, ports[i], ports[i], sip_exp_policy,
- 				  SIP_EXPECT_MAX,
- 				  sizeof(struct nf_ct_sip_master), sip_help_tcp,
- 				  NULL, THIS_MODULE);
-
---------------0BBC083744A1CC64E7BB2980--
