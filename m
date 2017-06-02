@@ -1,33 +1,48 @@
-From: Arturo Borrero Gonzalez <arturo@debian.org>
-Subject: Re: nft list ruleset miss nat config information
-Date: Wed, 31 May 2017 12:32:06 +0200
-Message-ID: <CAOkSjBiz-j+z2p866jzdi1L+igx_P1N1Am6mWUKkHg+sSoTAMA@mail.gmail.com>
-References: <CAG1z+7_yU2Br2eu3h3-+oTseUnKpcCfrj+rkYQpBU+QGVsnkMQ@mail.gmail.com>
+From: Ran Shalit <ranshalit@gmail.com>
+Subject: Server for reordering of NAT packets
+Date: Fri, 2 Jun 2017 11:40:18 +0300
+Message-ID: <CAJ2oMhLFrqz0kUvTXK=uXJjhJbyq3W-CBzqFZZHa2fJivhnRfg@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAG1z+7_yU2Br2eu3h3-+oTseUnKpcCfrj+rkYQpBU+QGVsnkMQ@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=ANjc+ruSNVRUQV8UflDLWQ2VNkPyUvPNPedxdyVJUR8=;
+        b=SzQhGqO3GD8w2eeucRzMcTacQYAMixK1wWDd2PwxmKYpKjucstkQGhcBnUVmGJBN9C
+         zsgdgC3cksBW7NUjQg0Yt2CvCXiGaPF6t0mjwFkeclT1dIgljhU2mv8qr70A8wyn3aIM
+         OcwY1xeq75o7jkcxkIuDRNLHBzFnmD0VBGox+aTLLQVrAb9Q6HnFx8kOsfgfksuHoIeV
+         agPo/0vy8ciPuXZBvemkstVMIocq6l4Q9NJ3PovJTQ0A3eSJPEicjZYzWLa9mzqmUyjA
+         uf6f9K66h85RT5XOhW2T8I/WVpBT3rZrI7sflFsEv41aU/taNi4i8+lEsStC3nIPhFxE
+         IObA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Zheng konia <konianet@gmail.com>
-Cc: Netfilter Users Mailing list <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-On 31 May 2017 at 10:13, Zheng konia <konianet@gmail.com> wrote:
-> Hi,
->       Refer to the wiki from this
-> https://wiki.nftables.org/wiki-nftables/index.php/Multiple_NATs_using_nftables_maps
->
->      I configured the my server's nftables like this
->
-> % nft add rule nat prerouting dnat \
->       tcp dport map { 1000 : 1.1.1.1, 2000 : 2.2.2.2, 3000 : 3.3.3.3} \
->       : tcp dport map { 1000 : 1234, 2000 : 2345, 3000 : 3456 }
->
->
-> However, when I try nft list ruleset, I can't get the destination ip
-> addr, like 1.1.1.1 or 2.2.2.2
->
+Hello,
 
+I intend to work on a server which connects to cellular load balacing
+router on the other side.
+The server is connected to internet and recieve NAT messeges which
+contain distributed packets (from 4 channels, so that we exploit the 4
+channels bandwidth).
 
-This has been fixed already. The next release will contain the fix.
+Now, in the PC side, running Linux, I need to queue/fifo  the NAT
+packets, extract the internal packet in NAT and reorder them , and
+reassemble the internal packets from 4 NAT channels into a combined
+stream which goes up to PC web server.
+There is also a need to do the other direction (from PC server, to
+distribute into 4 channels NAT).
+Handling this both direction shall require some layer for this
+distribution/aggregation in the IP layer , and using queues for packet
+reordering.
+
+Is the best way to handle this layer is by using netfilter mechanism
+with user defined chain ?
+Should I use this mechanism is both direction (one extract and reorder
+the internal packets within NAT, the other direction create a NAT from
+the internal packet ) ?
+
+Best Regards,
+Ran
