@@ -1,154 +1,36 @@
-From: James <vger_tracker@trackivity.com>
-Subject: nfqueue -> Net::Frame::Layer::ETH? (Perl)
-Date: Fri, 9 Jun 2017 11:18:08 -0400
-Message-ID: <8e283c34-9988-5cea-76a6-92bd16dbc044@trackivity.com>
+From: evan <composingmotion@gmail.com>
+Subject: How to count access attempts per ip and block automatically
+Date: Tue, 20 Jun 2017 17:49:22 -0500
+Message-ID: <1497998962.14144.1.camel@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-CA
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=message-id:subject:from:to:date:mime-version
+         :content-transfer-encoding;
+        bh=z7QQXkiN0A/TKL9T4TPZjszOg9UlKqYY/GwU7MICBMY=;
+        b=s9Il2uMDOfKK49hDOfIHmxwMZ4w7GZHT4Cm4VMaDN+eGUXR5jgB+6vk8QMzwSVev06
+         IqXsvTWwyoe7eFxX9NIJd0Vc3eZDkrA+4nTjo9FtTiu7iicVeoJ4NbQcl2LMC423nLEh
+         GXeIz1bLylr47VHukSD7eO0IHXfszoHEFWbmqU8+LKygLP58EG3Y/ci1j5JERLtKG6zs
+         Pylyp8MbQmdWBdj1Ut94JJ5GTsDgd1yeIL7a+D65iIj3hduLNe1RE8JYP9AyqFRc7JhC
+         fvVvfM21Hk7QDcyVz2dco9EhbdW9C8lUrGdvNPWyglEP0XBYk0BGufA29KdB73SEGCGc
+         TPeA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter Users Mailing list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Short spew:
+Hello Netfilter Community, first message, I would be grateful for any
+guidance, thanks in advance
 
-How does one take a netfilter-queued-to-userspace packet and turn it
-into a Perl "Net::Frame::Layer::ETH" object?
+What I have already, watches for new ipv4_addr that are not on a
+white/blacklist'set' and adds them to an evaluation set. 
 
-No matter how I try to call "new(raw => $something)" it seems to ignore
-the "raw" attribute and create a default-value'd object.
+however I would also like monitor the evaluation set and automatically
+add to the blacklist any address that for example 
 
-Yes, this is very much more of a Perl question than anything else but
-since it's coming from netfilter (using nftables) I thought I would ask
-here first.
+attempts more than 25 connections on port 22 per hour.
 
-Answers such as "go read such-and-such document/web page" are
-quite welcome.
-
-#-------------------
-
-Long spew:
-
-#---------
-
-I did indeed manage to get all of this working with Perl "NetPacket::IP"
-objects, but apparently that does IPv4 only and not IPv6.
-
-What *does* work:
-
-1) nftables "ct state { new } udp dport { domain } queue num 53 bypass",
-2) Perl nfqueue-bindings (https://github.com/chifflier/nfqueue-bindings,
-    "libnfqueue-perl" package on Ubuntu),
-3) Perl NetPacket::IP (https://metacpan.org/pod/NetPacket::IP,
-    "libnetpacket-perl" package on Ubuntu), and
-4) Perl Net::DNS::Packet (https://metacpan.org/pod/Net::DNS::Packet,
-    "libnet-dns-perl" package on Ubuntu)
-
-together allow me to inspect DNS packets (UDP, so far) and issue
-NF_ACCEPT or NF_DROP verdicts as I wish (so I can drop requests for
-recursion, or not for my domains, and so forth).
-
-And I can even add the (IPv4) source IPs as elements to an nftables
-IP address set, complete with timeouts.
-
-So far, so good.  In fact more like "totally awesome".  It eliminates
-a lot of crap coming at me.
-
-Except that "NetPacket::IP" appears to handle IPv4 packets only,
-not IPv6.
-
-If someone tells me that "NetPacket::IP" does indeed do IPv6 and points
-me at the detail that I'm missing then that would be great.
-
-#---------
-
-So I have tried flipping over to "Net::Frame" in the hopes that it can
-both tell me if it's an IPv4 or IPv6 packet and then let me work my way
-up from there.
-
-What *doesn't* work (following is one of four attempts... scroll down
-this email for all four together):
-
-  $layer = Net::Frame::Layer::ETH->new(raw => $payload);
-
-  ... that just seems to cheerfully ignore the "raw" attribute and
-produce a default-valued result as described by the documentation.
-
-Code appended below produces following result... what am I doing wrong
-such that "new" does not see the data that I'm trying to give it?
-
-#---------
-
-Got a layer:
-ETH: dst:ff:ff:ff:ff:ff:ff  src:00:00:00:00:00:00  type:0x0800
-Got a layer:
-ETH: dst:ff:ff:ff:ff:ff:ff  src:00:00:00:00:00:00  type:0x0800
-Got a layer:
-ETH: dst:ff:ff:ff:ff:ff:ff  src:00:00:00:00:00:00  type:0x0800
-Got a layer:
-ETH: dst:ff:ff:ff:ff:ff:ff  src:00:00:00:00:00:00  type:0x0800
-
-#---------
-
-#!/usr/bin/perl -w
-
-use strict;
-use nfqueue;
-use Socket qw(AF_INET AF_INET6);
-use Net::Frame::Layer::ETH;
-
-my $q;
-
-sub cleanup() {
-  $q->unbind(AF_INET);
-  $q->close();
-}
-
-sub cb() {
-  my $payload;
-  my $data;
-  my $layer;
-
-  ($payload) = @_;
-  if ($payload) {
-   $data = $payload->get_data();
-   $layer = Net::Frame::Layer::ETH->new(raw => $payload);
-   if ($layer) {
-    print("Got a layer:\n");
-    print($layer->print,"\n");
-   };
-   $layer = Net::Frame::Layer::ETH->new(raw => $data);
-   if ($layer) {
-    print("Got a layer:\n");
-    print($layer->print,"\n");
-   };
-   $layer = Net::Frame::Layer::ETH->new(raw => \$payload);
-   if ($layer) {
-    print("Got a layer:\n");
-    print($layer->print,"\n");
-   };
-   $layer = Net::Frame::Layer::ETH->new(raw => \$data);
-   if ($layer) {
-    print("Got a layer:\n");
-    print($layer->print,"\n");
-   };
-   print "---\n";
-   $payload->set_verdict($nfqueue::NF_ACCEPT);
-  }
-}
-
-$q = new nfqueue::queue();
-
-$SIG{INT} = "cleanup";
-
-$q->set_callback(\&cb);
-$q->fast_open(53, AF_INET);
-$q->set_queue_maxlen(5000);
-$q->try_run();
-
-#---------
-
--- 
-
-  - James
+probably this is has been explained alas I have yet to find this issue
+described elsewhere. Best regards
