@@ -1,32 +1,46 @@
-From: Samuel Williams <space.ship.traveller@gmail.com>
-Subject: How to translate iptables hitcount to nftables?
-Date: Fri, 30 Jun 2017 12:40:55 +1200
-Message-ID: <CAHkN8V8c2TxSLq9rWcaQj2N+wc8keHZgG0cNMcE6f2jR79_XSQ@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] Netfilter (+folks) userday in Faro, Portugal (Monday,
+ July 3th)
+Date: Fri, 30 Jun 2017 14:15:26 +0200
+Message-ID: <20170630121526.GA1446@salvia>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=r5OKBW8k0/zwwmeFYokkiTCBKkkbnrfetI29W1sPoMc=;
-        b=pjsYT5ZS04WOIML+03WOHqk6tmqhAPZTvnUMk6LypXVFW4nGKhq58H0jK4LEv+pPuf
-         7lIMcZ4ZCx4zPPYJvzlWsHzszHkwsVG0Eb6pg3Ncexfd3jYfuvj8DPNsdQoFYAnAlCM7
-         yVvQFGHkNpFttR8DCBIzXFw1sEml0JlXsNXt5gEl8FF9UssVvXBKDCJAPkazWSYZwTVg
-         K+ZiOFTBWM/st7mYAMUDKAp9PycRqkp6g5h2n781CglqVvwK53XpFjvYnKTu55yz0dlk
-         AnJOjtDCZ6yPXJtX/lqRm14SJhNKce/F6aO5bfjbdNXpqRDBbVkjRSraXahuybOiGwkB
-         6cYA==
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: netfilter-devel@vger.kernel.org
+Cc: netfilter@vger.kernel.org
 
-Thanks for any help! I did some search on the wiki but there was no
-reference to hitcount - perhaps we can add something?
+Hi!
 
-iptables -A INPUT -i eth0 -p tcp --dport 22 -m state --state NEW -m
-recent --set --name SSH
-iptables -A INPUT -i eth0 -p tcp --dport 22 -m state --state NEW -m
-recent --update --seconds 60 --hitcount 8 --rttl --name SSH -j DROP
+We're releasing today the planning for our Netfilter (and folks)
+userday in Faro, Portugal. This is the pre-event that traditionally
+come before the Netfilter developer Workshop.
 
-Kind regards,
-Samuel
+This is the planning:
+
+9h:     Welcoming (Pablo Neira)
+9h15:   Suricata and its interaction with Netfilter (Eric Leblond)
+10h:    Coffe break
+10h15:  OVS and OVN (Joe Stringer)
+10h50:  Introduction to kasan and syzkaller (Florian Westphal)
+11h25:  Netfilter logging (Eric Leblond)
+12h:    Lunch
+14:     Linux network stack walkthrough (Florian Westphal)
+14h50:  Hands-on: migrate your laptop to nftables (Netfilter coreteam)
+15h:    Coffe break
+15h10:  TCP/IP is Boring: A tour of cellular protocol stacks (Harald Welte)
+16h:    Closing
+
+This event will take place in the Campus da Penha, in the University
+of Algarve, Building 9, room 2.25 (second floor).
+
+This event is public, free (no cost) and it requires no previous
+invitation. If you're in the area, you are welcome to join us.
+
+Thanks!
+
+P.S: Please, note that the Netfilter developer workshop starts on July
+     4th and it requires an invitation to attend indeed.
