@@ -1,77 +1,74 @@
-From: Robert White <rwhite@pobox.com>
-Subject: Re: Hairpin NAT - possible without packet marking?
-Date: Tue, 4 Jul 2017 10:21:15 +0000
-Message-ID: <fbe6f166-e719-1a63-0926-2f5c1be60aaa@pobox.com>
-References: <1363a246-966e-59fc-7d5a-efaf12aa6b51@dynator.no>
- <4c60ba2e-3e52-f55d-96e1-699c7821940d@pobox.com>
- <ea023673-d0c6-f8d8-0399-203a71e7fa62@trustiosity.com>
- <6773e78c-f0e6-508d-0a72-d5880705756d@pobox.com>
- <a3219c0b-2e2e-74d3-ae9b-88ec6ff35810@trustiosity.com>
- <1402388a-fb32-d7af-bc3a-6f25b8a2f47a@pobox.com>
- <B3451526-9879-43F6-87BB-291E414AE43B@quintux.com>
- <20170704030739.3746d533@playground>
+From: Stuart Bailey <Stuart.Bailey@ast-uk.com>
+Subject: Input interface not showing in iptables-save for mangle table
+Date: Tue, 4 Jul 2017 13:36:16 +0000
+Message-ID: <823DAD67B7E6624DB0F0E7732DED62128CFF7F1E@ASTMBX01.ast.ast-uk.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20170704030739.3746d533@playground>
-Content-Language: en-CA
+Content-Language: en-GB
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-
-On 07/04/2017 07:07 AM, Neal P. Murphy wrote:
-> On Tue, 04 Jul 2017 07:48:36 +0200
-> K <netfilter@quintux.com> wrote:
-> 
->> What do all the locks in the world help when you invite the burglar in for tea? In other words: most IT departments have the incoming traffic pinned down as you described, but a single executable disguised as a clip of a cute kitty, downloaded and executed by any employee is what nowadays forms the real threat.
-> 
-> And that's why I maintain that SSL/TLS is the one of the worst things that could've happened to The Internet: our peripheral firewalls are powerless to prevent malware from traversing conns encrypted with SSL/TLS.
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
 
-Well communism would be the perfect form of government if no humans were
-involved... but humans are involved.
+Hello,
+I have a program that creates firewall rules using libiptc. One rule that is created is an entry in teh mangle table.
+This is displayed using iptables -L -v -t mangle:
 
-Humans are the week point in any system.
+# iptables -L -v -t mangle
+Chain PREROUTING (policy ACCEPT 3160 packets, 541K bytes)
+ pkts bytes target     prot opt in     out     source               destination        
+ 6282 1245K MARK       tcp  --  wifi4  any     anywhere             anywhere             ! match-set users_list src MARK set 0x63
+ 6282 1245K MARK       tcp  --  lan4   any     anywhere             anywhere             ! match-set users_list src MARK set 0x63
+    0     0 MARK       tcp  --  wifi4  any     anywhere             anywhere             match-set users_list src MARK set 0x1
+    0     0 MARK       tcp  --  lan4   any     anywhere             anywhere             match-set users_list src MARK set 0x1
 
-Imagining you can fix human stupidity by just tightening the screws a
-little tighter is just fairy dust and unicorn farts.
 
-The easiest way to breach a network is to drop thumb drives, cdroms, and
-urls in the parking lot.
+This clearly shows the input interface as wifi4 and lan4.
 
-Banning encryption isn't going to save a single thing.
+However, if I use iptables-save, the input interface is missing:
 
-Make passwords to onerous and they get written on post-it notes. Ban usb
-drives and people plug in media players. Ban all USB and people will fax
-shit.
+*mangle
+:PREROUTING ACCEPT [3239:547882]
+:INPUT ACCEPT [3233:547072]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [3233:508803]
+:POSTROUTING ACCEPT [3233:508803]
+-A PREROUTING -p tcp -m set ! --match-set users_list src -j MARK --set-xmark 0x63/0xffffffff
+-A PREROUTING -p tcp -m set ! --match-set users_list src -j MARK --set-xmark 0x63/0xffffffff
+-A PREROUTING -p tcp -m set --match-set users_list src -j MARK --set-xmark 0x1/0xffffffff
+-A PREROUTING -p tcp -m set --match-set users_list src -j MARK --set-xmark 0x1/0xffffffff
 
-Technology cannot fix human engineering.
 
-So you build the system to be hard enough for remote nonsense to be easy
-and then lose the superman complex.
+What can cause this problem?
 
-Think you can stop things using a ban on TLS? I scoff at you. I'll
-rot-13 the virus and send it with instructions. I'll shar that puppy and
-send it with instructions. Hell, I'll just send instructions in plain
-text and _someone_ in your office will be stupid enough to do _all_ the
-work.
+My program adds the interface to the iptc_entry struct:
 
-Heck for all your talk I'd bet money that you've never done a full
-system restore drill on you computers at home or at the office, and at
-least half of your data isn't even backed up at all,let alone off-site.
 
-A system too onerous to use _will_ be subverted. Every time. Period.
+        struct ipt_entry            *pEntry;
 
-The only way to keep a computer safe is to turn it off, unplug it, and
-shred it.
+        ...
 
-So you need to concentrate on doing the best things to stop the most damage.
+        pEntry->ip.src.s_addr  = 0;
+        pEntry->ip.dst.s_addr  = 0;
+        pEntry->ip.smsk.s_addr = 0;
+        pEntry->ip.dmsk.s_addr = 0;
+        pEntry->ip.proto       = protocolToUint(pProtocol);
+        pEntry->ip.flags       = 0;
+        pEntry->ip.invflags    = 0;
 
-For all that a virus scanner can stop a virus, maybe, if it's already
-been told about the virus, the most pernicious encoding of a bad idea is
-a well-phrased meme handed to a neophyte.
+        if (_pIface)
+            strncpy(pEntry->ip.iniface,  _pIface, IFNAMSIZ);
 
-You can't fix stupid and you cant's solve security through draconian
-technological intervention.
+
+
+Many thanks,
+
+Stuart
+
+This email and any attachments are confidential and intended solely for the individual to whom it is addressed. Any view or opinion expressed belongs solely to the author and does not necessarily represent those of Applied Satellite Technology Ltd, its subsidiaries or any affiliated group company (AST).
+
+If you are not the intended recipient please do not disclose, copy or distribute information in this email nor take any action in reliance of its content; to do so is strictly prohibited and may be unlawful. Please inform us if you have received this message in error before deleting it. All liability is excluded to the extent permitted by law for any claims arising as a result of the use of this medium to transmit information by or to AST. Thank you for your co-operation.
+
+Applied Satellite Technology Ltd | Company Number: 2153172 England | Registered Office: Satellite House, Bessemer Way, Harfreys Industrial Estate, Great Yarmouth, Norfolk NR31 0LX (UK)
