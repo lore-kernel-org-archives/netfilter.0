@@ -1,91 +1,42 @@
-From: sorcus@inwebse.com
-Subject: What wrong with snat in nftables?
-Date: Mon, 10 Jul 2017 13:36:41 +0000
-Message-ID: <691d19d7765158dc9d10dd62b5033536@inwebse.com>
+From: Amit Limaye <amit.limaye@gmail.com>
+Subject: cgroup match failing for synack packets
+Date: Mon, 10 Jul 2017 16:42:08 -0700
+Message-ID: <CAGFnk5Fm5+VZ5oVnzP6sQG1X6kH2JSM5GC=EXXXrr7LiRT7f+A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inwebse.com
-        ; s=mail; h=Message-ID:From:Date:Content-Transfer-Encoding:Content-Type:
-        MIME-Version:Subject:To:Sender:Reply-To:Cc:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=6t53u7uwaYz2tiEUY6QCayqPnMyiQnN07NjJ4vgbC+M=; b=c9g7bifE29T7SYcPBP+z0keIMX
-        o80dbBjlc/7Pu/Ome0QzHX9tsPy6ywI4r88txhUJOQniygunwwoYbGeEDjjUrP6PKwUCoxsF6KdL3
-        OtBmNbyzQPTZs8ID7gWE8Ap+TA3ifOGkiJNkieLQd9RY2ngTNtWow5CdZN0MQGegCmu4=;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=sqM6oGxx0Rw6Am6bwu6UYklH+7uW7p48i+lWdT+jlBs=;
+        b=KWjf6Gwbmp3g154EWo3lNr4Kl1KsjKyXj+VDPqRm+nRzM9oNtDGARvl3tyQ95KrZY7
+         snhmJqmsRQrbFP6JMjCvHFZ4m4nFd9h0/uJbNBbn6Sh1kEFx8uVl/2xVuxJ0Kc9NiWYj
+         2cFUFoVtVtKxHdiYYWfltDh4yuOTYgyCYzPUOAstAEmWnMVHMbVFSmIj1pzmDkuPla93
+         RTK9V2GjqKyx62kd5OQQoBuEVdRNy2hcjFob/8RSqAsAWM+BV6kJdQZ5izk0zGSAozfJ
+         +tkgpP9AAA+Mh73apV4xb6UdkVUGA0EKq/mxZcq5Vu4DdDZx0cqDvdqZ1ZWRj3yHx2hd
+         zgNg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-I have two virtual machines (server, client) with wireguard vpn.
-When i try ping any IPv6 resource from client packets doesn't return to 
-client.
-Tcpdump show me ICMP Reply packets in enp0s3 interface (server), not in 
-wg0 (vpn interface on server).
-But if disable nftables and start ip6tables, all works.
-After this step i disable ip6tables and enable nftables... All continue 
-works...
+Hello,
+        i am trying to capture packets coming out a process by
+matching the cgroup the process is in.
+The match for cgroup works syn packets in the tcp handshake but fails
+for the syn ack packet.
+i can match SYN for cgroup 102 using
+  1    60 MARK       tcp  --  *      *       0.0.0.0/0
+0.0.0.0/0            tcp flags:0x12/0x02 cgroup 102 MARK set 0x66
 
-Software versions:
-NixOS: 17.09.git.ebaff59 (Hummingbird)
-WireGuard: 0.0.20170706
-Nftables: 0.7
+but it fails if i try SYNACK on the server end and not packets hit my rule.
 
-Build ISO images with next commands:
-Server: nix-build -A config.system.build.isoImage -I 
-nixos-config=./wireguard_server_10.nix ./nixpkgs/nixos/default.nix
-Client: nix-build -A config.system.build.isoImage -I 
-nixos-config=./wireguard_client_20.nix ./nixpkgs/nixos/default.nix
+My rule on the server side is
+ 0     0 MARK       tcp  --  *      *       0.0.0.0/0
+0.0.0.0/0            tcp flags:0x12/0x12 cgroup 101 MARK set 0x65
 
-Here nix files - 
-https://gist.github.com/MrSorcus/d6d8b8b6acff715368844a643775c980
+where the server is a part of cgroup 101
 
-Create virtual machines with next commands:
-
-Server: virt-install \
---name NixOSVS10 \
---ram 1024 \
---vcpus 1 \
---cdrom /tmp/nixos_10.iso \
---os-type linux \
---nodisk \
---network bridge=br0 \
---graphics vnc,password="ABCDEF",port=5910,listen=2a01:4f8:xx:xx::13 \
---autostart \
---noautoconsole
-
-Client: virt-install \
---name NixOSVS20 \
---ram 1024 \
---vcpus 1 \
---cdrom /tmp/nixos_20.iso \
---os-type linux \
---nodisk \
---network bridge=br0 \
---graphics vnc,password="ABCDEF",port=5920,listen=2a01:4f8:xx:xx::13 \
---autostart \
---noautoconsole
-
-Output for ip a, ip -6 route, route -6, wg, sysctl -a, dmesg, lsmod.
-
-Server: 
-https://gist.github.com/MrSorcus/1a8c9f5aacf8957502299d707a38c5fc
-Client: 
-https://gist.github.com/MrSorcus/b7dc077249ca513ca8f307a68c62d1ce
-
-Tcpdump logs from client. Ping IPv6 address 2001:19f0:7400:87a2::64 
-(https://ipv6.net/)
-https://gist.github.com/MrSorcus/03e716fba67c4119772012777847c569
-
-Output from /proc/net/nf_conntrack:
-With nftables - 
-https://gist.github.com/MrSorcus/601170680ff644c52a11e5352997879a
-With ip6tables - 
-https://gist.github.com/MrSorcus/e043101f98e787c8cbf6d0605fd9de7e
-
-Snat doesn't work correctly in nftables. But work after next steps:
-[root@nixos:~]# systemctl stop nftables
-[root@nixos:~]# ip6tables -t nat -A POSTROUTING -o enp0s3 -j SNAT 
---to-source 2a01:4f8:xx:xx::10
+Am i missing something here or is this a new bug ?
+-SIGTERM
+amit
