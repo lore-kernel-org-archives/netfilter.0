@@ -1,35 +1,75 @@
-From: Bruno de Paula Larini <bruno.larini@riosoft.com.br>
-Subject: FTP NAT fails after kernel upgrade
-Date: Thu, 13 Jul 2017 17:57:04 -0300
-Message-ID: <bfb77353-7334-1a41-f3c4-b5d260a14a6d@riosoft.com.br>
+From: sorcus@inwebse.com
+Subject: Re: What wrong with snat in nftables?
+Date: Fri, 14 Jul 2017 01:06:17 +0000
+Message-ID: <6687da5a7ee70c19e1c3b41fea5fb20f@inwebse.com>
+References: <691d19d7765158dc9d10dd62b5033536@inwebse.com>
+ <CAEzD07JY4pix=dh0W7rZ1MU0MxCo=Ky32o3EFtbf9i44B+7BMQ@mail.gmail.com>
+ <e55eeed4d10d0209dc4441a83b1bc922@inwebse.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: pt-BR
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=inwebse.com
+        ; s=mail; h=Message-ID:References:In-Reply-To:Cc:From:Date:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:To:Sender:
+        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=AAaMh9LzyJ2bs9aqZJ3Oz2xElxLli4UN/jEAEZZtbMI=; b=j9FbTQi2v4cU6IPkGS6tGbcLG+
+        QyTb0le4Kd+wotY0rh1q4M8lsdPh8nWf42F4DnANzf1St+/Xsepf9O7wPwEBO+ZpNDJaIt+0B9ALf
+        gfNG2FjwlhH40KqDE1rfZpm+jdxo62GN1GrbgN/sXGRrKHGk11DAGBK7SEF1+bKa00y8=;
+In-Reply-To: <e55eeed4d10d0209dc4441a83b1bc922@inwebse.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: Anton Danilov <littlesmilingcloud@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hello everyone.
-I'm experiencing some unexpected behavior after upgrading the kernel 
-from 4.6.5-300.fc24.x86_64 to 4.10.10-100.fc24.x86_64.
+Nftables rules for server -
+https://gist.github.com/MrSorcus/17827298ad81970cc272b9e7f779923f
 
-I have some rules that make FTP connections go back to my LAN with DNAT, 
-delivering it with SNAT so my FTP server won't try to reply directly to 
-my computer. I'm doing this so users can seamlessly use their service 
-with their laptops inside or outside my network without changing their 
-profiles.
+Nftables rules for client -
+https://gist.github.com/MrSorcus/ad05f19759e02f92aac5d9c246f56cf6
 
-After updating the kernel, I've noticed that users outside my network 
-can use the FTP service normally, but the connection fails for users in 
-the LAN. But it will only fail for the FTP port or any additional ports 
-specified in the options for the nf_conntrack_ftp module, which in my 
-case is "options nf_conntrack_ftp ports=21,2121". If I remove the port 
-2121 from the option, for example, it will work (authentication only, 
-listing the directory will fail as expected in a DROP policy).
+I used information from here -
+https://wiki.nftables.org/wiki-nftables/index.php/Performing_Network_Address_Translation_(NAT)
 
-Is there some new way to do what I wanted in these new kernel versions 
-or would it be some bug?
+> 1. flush conntrack entries after changing of rules in the nat table.
 
-Thanks for the help!
+"conntrack -D" - show me "0 flow entries have been deleted.". But
+"/proc/net/nf_conntrack" has 3 entries...
+
+> 2. add counters to nftables nat rule to check that rule really hit the 
+> packets.
+
+chain postrouting {
+   type nat hook postrouting priority 0; policy drop;
+   oif "enp0s3" nftrace set 1 counter packets 3 bytes 312 snat to 
+2a01:4f8:xx:xx::10
+   nftrace set 1 counter packets 0 bytes 0 accept comment "IPv6 < Nat < 
+Postrouting"
+}
+
+With git version of nftables, libmnl & libnftnl and kernels 4.9, 4.11 & 
+4.12 doesn't work...
+With archlinux server doesn't work too...
+
+
+> On 2017-07-11 10:10, Anton Danilov wrote:
+>> Hello.
+>> I haven't seen the nftables rules.
+>> 
+>> Seems like you have misconfiguration in the nftables rules.
+>> 
+>> NAT action are being done in the conntrack subsystem, and *tables just
+>> apply the rule for first packets of NEW state connection and create
+>> special conntrack entries. Other packets of this known connection
+>> bypass the rules in the nat table. So it caused working after moving
+>> back from ip6tables to nftables, because it hasn't affected the
+>> conntrack entries.
+>> 
+>> So, these are two recommends:
+>> 
+>> 1. flush conntrack entries after changing of rules in the nat table.
+>> 2. add counters to nftables nat rule to check that rule really hit the 
+>> packets.
+
