@@ -1,30 +1,92 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE]: New Coreteam Member Arturo Borrero
-Date: Mon, 17 Jul 2017 12:23:46 +0200
-Message-ID: <20170717102346.GA3253@salvia>
+From: Bruno de Paula Larini <bruno.larini@riosoft.com.br>
+Subject: Re: FTP NAT fails after kernel upgrade
+Date: Mon, 17 Jul 2017 11:00:00 -0300
+Message-ID: <e4cfb776-7d73-42d1-4b48-51ade05977be@riosoft.com.br>
+References: <bfb77353-7334-1a41-f3c4-b5d260a14a6d@riosoft.com.br>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
-Cc: arturo@netfilter.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <bfb77353-7334-1a41-f3c4-b5d260a14a6d@riosoft.com.br>
+Content-Language: pt-BR
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-The Netfilter Core Team is proud to announce the addition of Arturo
-Borrero as a new member.
+Hello again.
+Sorry for the insistence, but I really wanted to know if I'm doing 
+anything wrong about the problem below.
 
-He has repeatedly demonstrated high insight and coding standards, and
-has already been actively contributing to several parts of the
-codebase, especially nftables and conntrackd. He has also been very
-collaborative and helpful to everyone in the Netfilter community in
-general.
+Em 13/07/2017 17:57, Bruno de Paula Larini escreveu:
+> Hello everyone.
+> I'm experiencing some unexpected behavior after upgrading the kernel 
+> from 4.6.5-300.fc24.x86_64 to 4.10.10-100.fc24.x86_64.
+>
+> I have some rules that make FTP connections go back to my LAN with 
+> DNAT, delivering it with SNAT so my FTP server won't try to reply 
+> directly to my computer. I'm doing this so users can seamlessly use 
+> their service with their laptops inside or outside my network without 
+> changing their profiles.
+>
+> After updating the kernel, I've noticed that users outside my network 
+> can use the FTP service normally, but the connection fails for users 
+> in the LAN. But it will only fail for the FTP port or any additional 
+> ports specified in the options for the nf_conntrack_ftp module, which 
+> in my case is "options nf_conntrack_ftp ports=21,2121". If I remove 
+> the port 2121 from the option, for example, it will work 
+> (authentication only, listing the directory will fail as expected in a 
+> DROP policy).
+>
+> Is there some new way to do what I wanted in these new kernel versions 
+> or would it be some bug?
+>
+> Thanks for the help!
 
-By joining the Core Team, Arturo will definitely help advance the
-development of the Netfilter project to a higher level.
+To make easier to understand my problem, here are the rules I'm using:
 
-Welcome onboard, Arturo!
+#!/bin/bash
 
-P.S: Sorry I couldn't do this announce any sooner, I was off last week
-     (short holidays) after the Netfilter Workshop in Faro, Portugal.
+     modprobe iptable_nat
+     modprobe nf_conntrack
+     modprobe nf_conntrack_ftp
+     modprobe nf_nat_ftp
+
+     iptables -P INPUT DROP
+     iptables -P FORWARD DROP
+     iptables -P OUTPUT ACCEPT
+
+     iptables -F
+     iptables -F -t nat
+     iptables -X
+     iptables -Z
+
+     echo 1 > /proc/sys/net/ipv4/ip_forward
+     echo 1 > /proc/sys/net/ipv4/conf/all/rp_filter
+     echo 1 > /proc/sys/net/netfilter/nf_conntrack_helper
+
+     iptables -A INPUT -i lo -j ACCEPT
+     iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+     iptables -t nat -A PREROUTING -d $public_ip -p tcp --dport 21 -j 
+DNAT --to-destination 192.168.0.10:2121
+
+...
+
+     iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+     iptables -A FORWARD -d 192.168.0.10 -p tcp --dport 2121 -j ACCEPT
+
+     iptables -t nat -A POSTROUTING -s 192.168.0.10 -p tcp --sport 2121 
+-j SNAT --to-source $public_ip
+
+     iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -d 192.168.0.10 -p 
+tcp --dport 2121 -j SNAT --to-source 192.168.0.1
+
+...
+
+Using LOG I can see packets from my LAN going all the way to the 
+POSTROUTING chain, so I don't think rp_filter would have anything to do 
+with this.
+As said before, this only happens with ports added to the 
+nf_conntrack_ftp option.
+
+Thanks!
