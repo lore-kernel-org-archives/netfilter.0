@@ -1,34 +1,47 @@
-From: Arturo Borrero Gonzalez <arturo@netfilter.org>
-Subject: Re: conntrackd exits during failover when there are around 30000 connections
-Date: Wed, 26 Jul 2017 09:04:45 +0200
-Message-ID: <CAOkSjBh+sXpNo2ezv35E+py_d76aWSJ7qZo=wHAs=UgG+_pvMw@mail.gmail.com>
-References: <733DB87B7669B346B4428487F4A99461230594E8@USMLVA0EM23MSX.ww017.siemens.net>
+From: "Walter H." <walter.h@mathemainzel.info>
+Subject: User defined chains to reduce/make more readable
+Date: Wed, 26 Jul 2017 10:03:22 +0200
+Message-ID: <aa7cbc43bc58207ef3867861ecaa0169.1501056202@squirrel.mail>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <733DB87B7669B346B4428487F4A99461230594E8@USMLVA0EM23MSX.ww017.siemens.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mathemainzel.info; s=dkim11;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:To:From:Subject:Date:Message-ID; bh=Il28wHGz4iu3RqwGZA6xhUNKSjyRX21q4nq6td918CI=;
+        b=qPj7wUQ7XWlQUGJTfDJennebGEO2o+SnUFoj0p9/gsEgUTl81eHgISZ9BDKIbCzTmMDTmhhjh58Ryy2rq/En202jHxFpZ6jiRMOIvFBYYq10QIdyNsKkn7vN4Xj6Oi7R5OqM6plQRcXQ1DqqLK5cAU3vKlD8ul44l3LUQ6PoGlw=;
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "PATEL, SAMEER" <sameer.patel@siemens.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-On 25 July 2017 at 16:32, PATEL, SAMEER <sameer.patel@siemens.com> wrote:
-> Hi,
->
-> I'm having some problems with the following configuration:
->
-> - Two firewalls in a master-backup configuration managed by keepalived
-> - A single dedicated link between the two firewalls managed by conntrackd
->
-> Now, if I make around 30000 connections between a computer and a server behind the firewall, and the master firewall fails, then conntrackd exits (or perhaps crashes). I don't think this is an out-of-memory issue because conntrackd didn't have the highest OOM score before it failed. Also, I watched memory usage while this was going on and there seemed to be plenty.
->
-> Is there some tweak or configuration parameter that enables support for large numbers of connections? Any insights into this issue would be greatly appreciated.
->
+Hello,
 
-Could you share which version are you running? both of the kernel,
-conntrackd (and libnetfilter-conntrackd).
-Did you look at the logs? usually /var/log/conntrackd.log.
+I define this chain:
 
-If conntrackd is hitting some errors, for example, failed to commit
-some entries, then some log lines should be there.
+-N RESTRICT-HOST
+-A RESTRICT-HOST -p icmp -j ACCEPT
+-A RESTRICT-HOST -p udp --dport 123 -j ACCEPT
+-A RESTRICT-HOST -p udp --sport 32769:65535 --dport 33434:33523 -j ACCEPT
+-A RESTRICT-HOST -j LOG --log-prefix "xxx: " --log-level 7
+-A RESTRICT-HOST -j REJECT
+
+and would use it like this:
+
+-A FORWARD -i eth0 -o eth1 -s 192.168.1.1 -j RESTRICT-HOST
+-A FORWARD -i eth0 -o eth1 -s 192.168.11.11 -j RESTRICT-HOST
+-A FORWARD -i eth0 -o eth1 -s 192.168.111.111 -j RESTRICT-HOST
+
+where eth0 is the LAN port and eth1 the WAN port of the router
+
+is there a possibility where I can change these rules similar to these:
+
+-A FORWARD -i eth0 -o eth1 -s 192.168.1.1 -j RESTRICT-HOST "game-pc: "
+-A FORWARD -i eth0 -o eth1 -s 192.168.11.11 -j RESTRICT-HOST "office-pc: "
+-A FORWARD -i eth0 -o eth1 -s 192.168.111.111 -j RESTRICT-HOST "tablet-pc: "
+
+and a rule in the chain takes "game-pc: " instead of this "xxx: " as given
+above?
+
+Thanks,
+Walter
+
+
