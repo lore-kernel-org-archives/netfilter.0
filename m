@@ -1,47 +1,65 @@
-From: "Walter H." <walter.h@mathemainzel.info>
-Subject: User defined chains to reduce/make more readable
-Date: Wed, 26 Jul 2017 10:03:22 +0200
-Message-ID: <aa7cbc43bc58207ef3867861ecaa0169.1501056202@squirrel.mail>
+From: "PATEL, SAMEER" <sameer.patel@siemens.com>
+Subject: RE: conntrackd exits during failover when there are around 30000
+ connections
+Date: Wed, 26 Jul 2017 13:49:16 +0000
+Message-ID: <733DB87B7669B346B4428487F4A99461230595B8@USMLVA0EM23MSX.ww017.siemens.net>
+References: <733DB87B7669B346B4428487F4A99461230594E8@USMLVA0EM23MSX.ww017.siemens.net>
+ <CAOkSjBh+sXpNo2ezv35E+py_d76aWSJ7qZo=wHAs=UgG+_pvMw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mathemainzel.info; s=dkim11;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:To:From:Subject:Date:Message-ID; bh=Il28wHGz4iu3RqwGZA6xhUNKSjyRX21q4nq6td918CI=;
-        b=qPj7wUQ7XWlQUGJTfDJennebGEO2o+SnUFoj0p9/gsEgUTl81eHgISZ9BDKIbCzTmMDTmhhjh58Ryy2rq/En202jHxFpZ6jiRMOIvFBYYq10QIdyNsKkn7vN4Xj6Oi7R5OqM6plQRcXQ1DqqLK5cAU3vKlD8ul44l3LUQ6PoGlw=;
+In-Reply-To: <CAOkSjBh+sXpNo2ezv35E+py_d76aWSJ7qZo=wHAs=UgG+_pvMw@mail.gmail.com>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="windows-1254"
+To: Arturo Borrero Gonzalez <arturo@netfilter.org>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hello,
-
-I define this chain:
-
--N RESTRICT-HOST
--A RESTRICT-HOST -p icmp -j ACCEPT
--A RESTRICT-HOST -p udp --dport 123 -j ACCEPT
--A RESTRICT-HOST -p udp --sport 32769:65535 --dport 33434:33523 -j ACCEPT
--A RESTRICT-HOST -j LOG --log-prefix "xxx: " --log-level 7
--A RESTRICT-HOST -j REJECT
-
-and would use it like this:
-
--A FORWARD -i eth0 -o eth1 -s 192.168.1.1 -j RESTRICT-HOST
--A FORWARD -i eth0 -o eth1 -s 192.168.11.11 -j RESTRICT-HOST
--A FORWARD -i eth0 -o eth1 -s 192.168.111.111 -j RESTRICT-HOST
-
-where eth0 is the LAN port and eth1 the WAN port of the router
-
-is there a possibility where I can change these rules similar to these:
-
--A FORWARD -i eth0 -o eth1 -s 192.168.1.1 -j RESTRICT-HOST "game-pc: "
--A FORWARD -i eth0 -o eth1 -s 192.168.11.11 -j RESTRICT-HOST "office-pc: "
--A FORWARD -i eth0 -o eth1 -s 192.168.111.111 -j RESTRICT-HOST "tablet-pc: "
-
-and a rule in the chain takes "game-pc: " instead of this "xxx: " as given
-above?
-
-Thanks,
-Walter
-
-
+SGkgQXJ0dXJvLA0KDQpXZSdyZSB1c2luZyBhIGRpc3RyaWJ1dGlvbiBiYXNlZCBvbiBEZWJpYW4g
+SmVzc2llLiBUaGUgc29mdHdhcmUgdmVyc2lvbnMgYXJlIGJlbG93Og0KDQpsaWJuZXRmaWx0ZXIt
+Y29ubnRyYWNrMzogMS4wLjQNCmxpYm5ldGZpbHRlci1jdGhlbHBlcjA6IDEuMC4wDQpsaWJuZXRm
+aWx0ZXItcXVldWUxOiAxLjAuMg0KY29ubnRyYWNrZDogMS40LjINCmtlcm5lbDogMy4xNC42OA0K
+DQpUaGVyZSBhcmVuJ3QgYW55IGVycm9ycyBpbiB0aGUgbG9ncy4gVGhlIGxhc3QgdGhpbmdzIEkg
+c2VlIGFyZSAiZmx1c2hpbmcgY29ubnRyYWNrIHRhYmxlIGluIDYwIiBhbmQgInJlcXVlc3QgcmVz
+eW5jIg0KDQpBbHNvIGNvbm50cmFja2QgZmFpbHMgdG8gcmVzdGFydCB1bnRpbCBJIGRlbGV0ZSBh
+IGxvY2sgZmlsZS4gVGhpcyBtaWdodCBiZSBtb3JlIGV2aWRlbmNlIHRoYXQgY29ubnRyYWNrZCBp
+c24ndCBleGl0aW5nIGNsZWFubHkuDQoNClRoYW5rcywNClNhbWVlcg0KDQoNCi0tLS0tT3JpZ2lu
+YWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBBcnR1cm8gQm9ycmVybyBHb256YWxleiBbbWFpbHRvOmFy
+dHVyb0BuZXRmaWx0ZXIub3JnXQ0KU2VudDogSnVseS0yNi0xNyAzOjA1IEFNDQpUbzogUEFURUws
+IFNBTUVFUiAoUEQgUEEgQ0kgUkMgUiZEIFNXKQ0KQ2M6IG5ldGZpbHRlckB2Z2VyLmtlcm5lbC5v
+cmcNClN1YmplY3Q6IFJlOiBjb25udHJhY2tkIGV4aXRzIGR1cmluZyBmYWlsb3ZlciB3aGVuIHRo
+ZXJlIGFyZSBhcm91bmQgMzAwMDAgY29ubmVjdGlvbnMNCg0KT24gMjUgSnVseSAyMDE3IGF0IDE2
+OjMyLCBQQVRFTCwgU0FNRUVSIDxzYW1lZXIucGF0ZWxAc2llbWVucy5jb20+IHdyb3RlOg0KPiBI
+aSwNCj4NCj4gSSdtIGhhdmluZyBzb21lIHByb2JsZW1zIHdpdGggdGhlIGZvbGxvd2luZyBjb25m
+aWd1cmF0aW9uOg0KPg0KPiAtIFR3byBmaXJld2FsbHMgaW4gYSBtYXN0ZXItYmFja3VwIGNvbmZp
+Z3VyYXRpb24gbWFuYWdlZCBieSBrZWVwYWxpdmVkDQo+IC0gQSBzaW5nbGUgZGVkaWNhdGVkIGxp
+bmsgYmV0d2VlbiB0aGUgdHdvIGZpcmV3YWxscyBtYW5hZ2VkIGJ5DQo+IGNvbm50cmFja2QNCj4N
+Cj4gTm93LCBpZiBJIG1ha2UgYXJvdW5kIDMwMDAwIGNvbm5lY3Rpb25zIGJldHdlZW4gYSBjb21w
+dXRlciBhbmQgYSBzZXJ2ZXIgYmVoaW5kIHRoZSBmaXJld2FsbCwgYW5kIHRoZSBtYXN0ZXIgZmly
+ZXdhbGwgZmFpbHMsIHRoZW4gY29ubnRyYWNrZCBleGl0cyAob3IgcGVyaGFwcyBjcmFzaGVzKS4g
+SSBkb24ndCB0aGluayB0aGlzIGlzIGFuIG91dC1vZi1tZW1vcnkgaXNzdWUgYmVjYXVzZSBjb25u
+dHJhY2tkIGRpZG4ndCBoYXZlIHRoZSBoaWdoZXN0IE9PTSBzY29yZSBiZWZvcmUgaXQgZmFpbGVk
+LiBBbHNvLCBJIHdhdGNoZWQgbWVtb3J5IHVzYWdlIHdoaWxlIHRoaXMgd2FzIGdvaW5nIG9uIGFu
+ZCB0aGVyZSBzZWVtZWQgdG8gYmUgcGxlbnR5Lg0KPg0KPiBJcyB0aGVyZSBzb21lIHR3ZWFrIG9y
+IGNvbmZpZ3VyYXRpb24gcGFyYW1ldGVyIHRoYXQgZW5hYmxlcyBzdXBwb3J0IGZvciBsYXJnZSBu
+dW1iZXJzIG9mIGNvbm5lY3Rpb25zPyBBbnkgaW5zaWdodHMgaW50byB0aGlzIGlzc3VlIHdvdWxk
+IGJlIGdyZWF0bHkgYXBwcmVjaWF0ZWQuDQo+DQoNCkNvdWxkIHlvdSBzaGFyZSB3aGljaCB2ZXJz
+aW9uIGFyZSB5b3UgcnVubmluZz8gYm90aCBvZiB0aGUga2VybmVsLCBjb25udHJhY2tkIChhbmQg
+bGlibmV0ZmlsdGVyLWNvbm50cmFja2QpLg0KRGlkIHlvdSBsb29rIGF0IHRoZSBsb2dzPyB1c3Vh
+bGx5IC92YXIvbG9nL2Nvbm50cmFja2QubG9nLg0KDQpJZiBjb25udHJhY2tkIGlzIGhpdHRpbmcg
+c29tZSBlcnJvcnMsIGZvciBleGFtcGxlLCBmYWlsZWQgdG8gY29tbWl0IHNvbWUgZW50cmllcywg
+dGhlbiBzb21lIGxvZyBsaW5lcyBzaG91bGQgYmUgdGhlcmUuDQoNClRoaXMgbWVzc2FnZSBhbmQg
+YW55IGF0dGFjaG1lbnRzIGFyZSBzb2xlbHkgZm9yIHRoZSB1c2Ugb2YgaW50ZW5kZWQgcmVjaXBp
+ZW50cy4gVGhlIGluZm9ybWF0aW9uIGNvbnRhaW5lZCBoZXJlaW4gbWF5IGluY2x1ZGUgdHJhZGUg
+c2VjcmV0cywgcHJvdGVjdGVkIGhlYWx0aCBvciBwZXJzb25hbCBpbmZvcm1hdGlvbiwgcHJpdmls
+ZWdlZCBvciBvdGhlcndpc2UgY29uZmlkZW50aWFsIGluZm9ybWF0aW9uLiBVbmF1dGhvcml6ZWQg
+cmV2aWV3LCBmb3J3YXJkaW5nLCBwcmludGluZywgY29weWluZywgZGlzdHJpYnV0aW5nLCBvciB1
+c2luZyBzdWNoIGluZm9ybWF0aW9uIGlzIHN0cmljdGx5IHByb2hpYml0ZWQgYW5kIG1heSBiZSB1
+bmxhd2Z1bC4gSWYgeW91IGFyZSBub3QgYW4gaW50ZW5kZWQgcmVjaXBpZW50LCB5b3UgYXJlIGhl
+cmVieSBub3RpZmllZCB0aGF0IHlvdSByZWNlaXZlZCB0aGlzIGVtYWlsIGluIGVycm9yLCBhbmQg
+dGhhdCBhbnkgcmV2aWV3LCBkaXNzZW1pbmF0aW9uLCBkaXN0cmlidXRpb24gb3IgY29weWluZyBv
+ZiB0aGlzIGVtYWlsIGFuZCBhbnkgYXR0YWNobWVudCBpcyBzdHJpY3RseSBwcm9oaWJpdGVkLiBJ
+ZiB5b3UgaGF2ZSByZWNlaXZlZCB0aGlzIGVtYWlsIGluIGVycm9yLCBwbGVhc2UgY29udGFjdCB0
+aGUgc2VuZGVyIGFuZCBkZWxldGUgdGhlIG1lc3NhZ2UgYW5kIGFueSBhdHRhY2htZW50IGZyb20g
+eW91ciBzeXN0ZW0uIFRoYW5rIHlvdSBmb3IgeW91ciBjb29wZXJhdGlvbg0K
