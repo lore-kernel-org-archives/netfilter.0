@@ -1,48 +1,49 @@
-From: Arturo Borrero Gonzalez <arturo@netfilter.org>
-Subject: Re: conntrackd exits during failover when there are around 30000 connections
-Date: Thu, 27 Jul 2017 12:40:03 +0200
-Message-ID: <CAOkSjBgrFe5Wsqag5UkOgTWMdDkHqPaEjc5VLJhmHoJ4d3GzXg@mail.gmail.com>
+From: "PATEL, SAMEER" <sameer.patel@siemens.com>
+Subject: RE: conntrackd exits during failover when there are around 30000
+ connections
+Date: Thu, 27 Jul 2017 13:15:06 +0000
+Message-ID: <733DB87B7669B346B4428487F4A994612305961E@USMLVA0EM23MSX.ww017.siemens.net>
 References: <733DB87B7669B346B4428487F4A99461230594E8@USMLVA0EM23MSX.ww017.siemens.net>
- <CAOkSjBh+sXpNo2ezv35E+py_d76aWSJ7qZo=wHAs=UgG+_pvMw@mail.gmail.com> <733DB87B7669B346B4428487F4A99461230595B8@USMLVA0EM23MSX.ww017.siemens.net>
+ <CAOkSjBh+sXpNo2ezv35E+py_d76aWSJ7qZo=wHAs=UgG+_pvMw@mail.gmail.com>
+ <733DB87B7669B346B4428487F4A99461230595B8@USMLVA0EM23MSX.ww017.siemens.net>
+ <CAOkSjBgrFe5Wsqag5UkOgTWMdDkHqPaEjc5VLJhmHoJ4d3GzXg@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <733DB87B7669B346B4428487F4A99461230595B8@USMLVA0EM23MSX.ww017.siemens.net>
+In-Reply-To: <CAOkSjBgrFe5Wsqag5UkOgTWMdDkHqPaEjc5VLJhmHoJ4d3GzXg@mail.gmail.com>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "PATEL, SAMEER" <sameer.patel@siemens.com>
+Content-Type: text/plain; charset="windows-1254"
+To: Arturo Borrero Gonzalez <arturo@netfilter.org>
 Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 26 July 2017 at 15:49, PATEL, SAMEER <sameer.patel@siemens.com> wrote:
-> Hi Arturo,
->
-> We're using a distribution based on Debian Jessie. The software versions are below:
->
-> libnetfilter-conntrack3: 1.0.4
-> libnetfilter-cthelper0: 1.0.0
-> libnetfilter-queue1: 1.0.2
-> conntrackd: 1.4.2
-> kernel: 3.14.68
->
-
-Well, many fixes happened since conntrackd 1.4.2 which is 4 years old.
-Same for the kernel.
-It is possible if you try a more recent version of both kernel and conntrackd?
-
-> There aren't any errors in the logs. The last things I see are "flushing conntrack table in 60" and "request resync"
->
-> Also conntrackd fails to restart until I delete a lock file. This might be more evidence that conntrackd isn't exiting cleanly.
->
-
-True. This reminds my of the debian bug #796877 [0] that I suffered in the past.
-
-Problem is that back then, the conntrackd package didn't include debug
-symbols, so even if you run conntrackd with valgrind or gdb to see
-where the crash happens, you wont get the symbol names (i.e.
-funcionts) so little clues.
-
-Since then, I took over the debian packages and added debug symbols
-(starting with 1:1.4.3-2). But then, again, you need a newer version.
-
-[0] https://bugs.debian.org/796877
+RGlkbid0IHJlYWxpemUgd2Ugd2VyZSB1c2luZyBzdWNoIGFuIG9sZCB2ZXJzaW9uLiBJJ2xsIHRy
+eSB3aXRoIHRoZSBsYXRlc3QuIFRoYW5rcyB2ZXJ5IG11Y2ggZm9yIHRoZSBoZWxwLg0KDQpTYW1l
+ZXINCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEFydHVybyBCb3JyZXJvIEdv
+bnphbGV6IFttYWlsdG86YXJ0dXJvQG5ldGZpbHRlci5vcmddIA0KU2VudDogSnVseS0yNy0xNyA2
+OjQwIEFNDQpUbzogUEFURUwsIFNBTUVFUiAoUEQgUEEgQ0kgUkMgUiZEIFNXKQ0KQ2M6IG5ldGZp
+bHRlckB2Z2VyLmtlcm5lbC5vcmcNClN1YmplY3Q6IFJlOiBjb25udHJhY2tkIGV4aXRzIGR1cmlu
+ZyBmYWlsb3ZlciB3aGVuIHRoZXJlIGFyZSBhcm91bmQgMzAwMDAgY29ubmVjdGlvbnMNCg0KT24g
+MjYgSnVseSAyMDE3IGF0IDE1OjQ5LCBQQVRFTCwgU0FNRUVSIDxzYW1lZXIucGF0ZWxAc2llbWVu
+cy5jb20+IHdyb3RlOg0KPiBIaSBBcnR1cm8sDQo+DQo+IFdlJ3JlIHVzaW5nIGEgZGlzdHJpYnV0
+aW9uIGJhc2VkIG9uIERlYmlhbiBKZXNzaWUuIFRoZSBzb2Z0d2FyZSB2ZXJzaW9ucyBhcmUgYmVs
+b3c6DQo+DQo+IGxpYm5ldGZpbHRlci1jb25udHJhY2szOiAxLjAuNA0KPiBsaWJuZXRmaWx0ZXIt
+Y3RoZWxwZXIwOiAxLjAuMA0KPiBsaWJuZXRmaWx0ZXItcXVldWUxOiAxLjAuMg0KPiBjb25udHJh
+Y2tkOiAxLjQuMg0KPiBrZXJuZWw6IDMuMTQuNjgNCj4NCg0KV2VsbCwgbWFueSBmaXhlcyBoYXBw
+ZW5lZCBzaW5jZSBjb25udHJhY2tkIDEuNC4yIHdoaWNoIGlzIDQgeWVhcnMgb2xkLg0KU2FtZSBm
+b3IgdGhlIGtlcm5lbC4NCkl0IGlzIHBvc3NpYmxlIGlmIHlvdSB0cnkgYSBtb3JlIHJlY2VudCB2
+ZXJzaW9uIG9mIGJvdGgga2VybmVsIGFuZCBjb25udHJhY2tkPw0KDQo+IFRoZXJlIGFyZW4ndCBh
+bnkgZXJyb3JzIGluIHRoZSBsb2dzLiBUaGUgbGFzdCB0aGluZ3MgSSBzZWUgYXJlICJmbHVzaGlu
+ZyBjb25udHJhY2sgdGFibGUgaW4gNjAiIGFuZCAicmVxdWVzdCByZXN5bmMiDQo+DQo+IEFsc28g
+Y29ubnRyYWNrZCBmYWlscyB0byByZXN0YXJ0IHVudGlsIEkgZGVsZXRlIGEgbG9jayBmaWxlLiBU
+aGlzIG1pZ2h0IGJlIG1vcmUgZXZpZGVuY2UgdGhhdCBjb25udHJhY2tkIGlzbid0IGV4aXRpbmcg
+Y2xlYW5seS4NCj4NCg0KVHJ1ZS4gVGhpcyByZW1pbmRzIG15IG9mIHRoZSBkZWJpYW4gYnVnICM3
+OTY4NzcgWzBdIHRoYXQgSSBzdWZmZXJlZCBpbiB0aGUgcGFzdC4NCg0KUHJvYmxlbSBpcyB0aGF0
+IGJhY2sgdGhlbiwgdGhlIGNvbm50cmFja2QgcGFja2FnZSBkaWRuJ3QgaW5jbHVkZSBkZWJ1ZyBz
+eW1ib2xzLCBzbyBldmVuIGlmIHlvdSBydW4gY29ubnRyYWNrZCB3aXRoIHZhbGdyaW5kIG9yIGdk
+YiB0byBzZWUgd2hlcmUgdGhlIGNyYXNoIGhhcHBlbnMsIHlvdSB3b250IGdldCB0aGUgc3ltYm9s
+IG5hbWVzIChpLmUuDQpmdW5jaW9udHMpIHNvIGxpdHRsZSBjbHVlcy4NCg0KU2luY2UgdGhlbiwg
+SSB0b29rIG92ZXIgdGhlIGRlYmlhbiBwYWNrYWdlcyBhbmQgYWRkZWQgZGVidWcgc3ltYm9scyAo
+c3RhcnRpbmcgd2l0aCAxOjEuNC4zLTIpLiBCdXQgdGhlbiwgYWdhaW4sIHlvdSBuZWVkIGEgbmV3
+ZXIgdmVyc2lvbi4NCg0KWzBdIGh0dHBzOi8vYnVncy5kZWJpYW4ub3JnLzc5Njg3Nw0K
