@@ -1,54 +1,48 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: User defined chains to reduce/make more readable
-Date: Wed, 26 Jul 2017 11:22:09 -0500
-Message-ID: <20170726162209.GM32555@harrier.slackbuilds.org>
-References: <aa7cbc43bc58207ef3867861ecaa0169.1501056202@squirrel.mail>
-Reply-To: netfilter@vger.kernel.org
+From: Arturo Borrero Gonzalez <arturo@netfilter.org>
+Subject: Re: conntrackd exits during failover when there are around 30000 connections
+Date: Thu, 27 Jul 2017 12:40:03 +0200
+Message-ID: <CAOkSjBgrFe5Wsqag5UkOgTWMdDkHqPaEjc5VLJhmHoJ4d3GzXg@mail.gmail.com>
+References: <733DB87B7669B346B4428487F4A99461230594E8@USMLVA0EM23MSX.ww017.siemens.net>
+ <CAOkSjBh+sXpNo2ezv35E+py_d76aWSJ7qZo=wHAs=UgG+_pvMw@mail.gmail.com> <733DB87B7669B346B4428487F4A99461230595B8@USMLVA0EM23MSX.ww017.siemens.net>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <aa7cbc43bc58207ef3867861ecaa0169.1501056202@squirrel.mail>
+In-Reply-To: <733DB87B7669B346B4428487F4A99461230595B8@USMLVA0EM23MSX.ww017.siemens.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: "PATEL, SAMEER" <sameer.patel@siemens.com>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Wed, Jul 26, 2017 at 10:03:22AM +0200, Walter H. wrote:
-> I define this chain:
-> 
-> -N RESTRICT-HOST
+On 26 July 2017 at 15:49, PATEL, SAMEER <sameer.patel@siemens.com> wrote:
+> Hi Arturo,
+>
+> We're using a distribution based on Debian Jessie. The software versions are below:
+>
+> libnetfilter-conntrack3: 1.0.4
+> libnetfilter-cthelper0: 1.0.0
+> libnetfilter-queue1: 1.0.2
+> conntrackd: 1.4.2
+> kernel: 3.14.68
+>
 
-(For iptables-restore(8) the user chains are in the chain subsection 
-just under the built-in chains.)
+Well, many fixes happened since conntrackd 1.4.2 which is 4 years old.
+Same for the kernel.
+It is possible if you try a more recent version of both kernel and conntrackd?
 
-> -A RESTRICT-HOST -p icmp -j ACCEPT
-> -A RESTRICT-HOST -p udp --dport 123 -j ACCEPT
-> -A RESTRICT-HOST -p udp --sport 32769:65535 --dport 33434:33523 -j ACCEPT
-> -A RESTRICT-HOST -j LOG --log-prefix "xxx: " --log-level 7
-> -A RESTRICT-HOST -j REJECT
-> 
-> and would use it like this:
-> 
-> -A FORWARD -i eth0 -o eth1 -s 192.168.1.1 -j RESTRICT-HOST
-> -A FORWARD -i eth0 -o eth1 -s 192.168.11.11 -j RESTRICT-HOST
-> -A FORWARD -i eth0 -o eth1 -s 192.168.111.111 -j RESTRICT-HOST
-> 
-> where eth0 is the LAN port and eth1 the WAN port of the router
-> 
-> is there a possibility where I can change these rules similar to these:
-> 
-> -A FORWARD -i eth0 -o eth1 -s 192.168.1.1 -j RESTRICT-HOST "game-pc: "
-> -A FORWARD -i eth0 -o eth1 -s 192.168.11.11 -j RESTRICT-HOST "office-pc: "
-> -A FORWARD -i eth0 -o eth1 -s 192.168.111.111 -j RESTRICT-HOST "tablet-pc: "
-> 
-> and a rule in the chain takes "game-pc: " instead of this "xxx: " 
-> as given above?
+> There aren't any errors in the logs. The last things I see are "flushing conntrack table in 60" and "request resync"
+>
+> Also conntrackd fails to restart until I delete a lock file. This might be more evidence that conntrackd isn't exiting cleanly.
+>
 
-That would be a cool feature, to basically set a variable in a rule 
-and [possibly] subsequently use it in a LOG or other rule later.
+True. This reminds my of the debian bug #796877 [0] that I suffered in the past.
 
-AFAIK that feature does not exist.  (Yet? :) )
--- 
-  http://rob0.nodns4.us/
-  Offlist GMX mail is seen only if "/dev/rob0" is in the Subject:
+Problem is that back then, the conntrackd package didn't include debug
+symbols, so even if you run conntrackd with valgrind or gdb to see
+where the crash happens, you wont get the symbol names (i.e.
+funcionts) so little clues.
+
+Since then, I took over the debian packages and added debug symbols
+(starting with 1:1.4.3-2). But then, again, you need a newer version.
+
+[0] https://bugs.debian.org/796877
