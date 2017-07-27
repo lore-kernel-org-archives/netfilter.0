@@ -1,29 +1,23 @@
-From: Arturo Borrero Gonzalez <arturo@netfilter.org>
-Subject: Re: conntrackd exits during failover when there are around 30000 connections
-Date: Thu, 27 Jul 2017 15:21:56 +0200
-Message-ID: <CAOkSjBhVPH1jDVoQMonqG+XxMWzr84oLxqzEsJ_MSwXURxN79w@mail.gmail.com>
-References: <733DB87B7669B346B4428487F4A99461230594E8@USMLVA0EM23MSX.ww017.siemens.net>
- <CAOkSjBh+sXpNo2ezv35E+py_d76aWSJ7qZo=wHAs=UgG+_pvMw@mail.gmail.com>
- <733DB87B7669B346B4428487F4A99461230595B8@USMLVA0EM23MSX.ww017.siemens.net>
- <CAOkSjBgrFe5Wsqag5UkOgTWMdDkHqPaEjc5VLJhmHoJ4d3GzXg@mail.gmail.com> <733DB87B7669B346B4428487F4A994612305961E@USMLVA0EM23MSX.ww017.siemens.net>
+From: Perry Thompson <contact@ryper.org>
+Subject: recent module in nftables
+Date: Thu, 27 Jul 2017 15:59:59 -0500
+Message-ID: <20170727155959.758138ab@lustre.ryper.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <733DB87B7669B346B4428487F4A994612305961E@USMLVA0EM23MSX.ww017.siemens.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "PATEL, SAMEER" <sameer.patel@siemens.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-On 27 July 2017 at 15:15, PATEL, SAMEER <sameer.patel@siemens.com> wrote:
-> Didn't realize we were using such an old version. I'll try with the latest. Thanks very much for the help.
->
+Hello all,
 
-Great, thanks :-)
+It may be way to early to ask this question, but I thought I might as
+well see if anyone has any information on it.
 
-BTW, please, in the future avoid top-posting [0].
+Will the "recent" module or an option with a similar function be
+introduced into nftables in the future? Are there any plans to create
+something like this? It has always been a very good tool for keeping
+bad IPs from touching my system.
 
-best regards.
-
-[0] https://en.wikipedia.org/wiki/Posting_style#Top-posting
+Thank you.
