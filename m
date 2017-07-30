@@ -1,67 +1,81 @@
-From: Alexander Huemer <alexander.huemer@xx.vu>
-Subject: Transport protocol agnostic way to multiplex ports and forward
- metainfo?
-Date: Fri, 28 Jul 2017 22:49:30 +0200
-Message-ID: <20170728204930.GA20016@yade.chaostreff.at>
+From: Perry Thompson <contact@ryper.org>
+Subject: Re: recent module in nftables
+Date: Sun, 30 Jul 2017 18:32:04 -0500
+Message-ID: <20170730183152.12d8a637@lustre.ryper.org>
+References: <20170727155959.758138ab@lustre.ryper.org>
+        <1889595.mTRbqK2Shg@ged>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ boundary="Sig_/OL8kOhflkjeEmF98H3SWNzG"; protocol="application/pgp-signature"
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+In-Reply-To: <1889595.mTRbqK2Shg@ged>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Martin Bednar <martin@serafean.cz>
+Cc: netfilter@vger.kernel.org
 
-Hi,
+--Sig_/OL8kOhflkjeEmF98H3SWNzG
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I attempt to create a network service that should be available on a host 
-on multiple ports on multiple transport protocols.
-Since opening a lot of ports on the application layer is inefficient, I 
-would prefer to multiplex on the network layer, like this:
+Thank you. I hadn't known about hashlimits and flow. While it is still
+a bit different, this will work perfectly for what I need it to do.
 
-                       +----- netfilter
-                       V
+I suppose from here I'd be curious to know if the "recent" module has
+any benefits over "hashlimit" in iptables, and I suppose I'm still
+curious to know if it plans on being implemented in nftables or left
+out completely, if anyone knows.
 
---> TCP port 1001 -->--+
-                       |
---> TCP port 1002 -->--+--> TCP port 1001
-                       |
---> TCP port 1003 -->--+
+Thank you,
 
-                       +----- netfilter
-                       V
+On Fri, 28 Jul 2017 21:57:25 +0200
+Martin Bednar <martin@serafean.cz> wrote:
 
---> UDP port 2001 -->--+
-                       |
---> UDP port 2002 -->--+--> UDP port 2001
-                       |
---> UDP port 2003 -->--+
+> On Thursday, 27 July 2017 22:59:59 CEST Perry Thompson wrote:
+> > Hello all,
+> >=20
+> > It may be way to early to ask this question, but I thought I might
+> > as well see if anyone has any information on it.
+> >=20
+> > Will the "recent" module or an option with a similar function be
+> > introduced into nftables in the future? Are there any plans to
+> > create something like this? It has always been a very good tool for
+> > keeping bad IPs from touching my system. =20
+>=20
+> I think flow tables might fit the bill.
+> https://wiki.nftables.org/wiki-nftables/index.php/Flow_tables
+>=20
+> I use them for filtering out SSH connection attempts, by allowing 3
+> SYN packets per minute.
+>=20
+> tcp dport ssh ct state new flow table ssh { iif . ip saddr . tcp
+> dport timeout 1h limit rate 3/minute}  accept
+>=20
+>=20
+> Cheers
+>=20
+> Martin.
 
-[Same possibly for SCTP, DCCP, ...]
 
-One additional requirement is that I would like to be able to know in 
-the application on which port the connection reached the system 
-originally.
+--Sig_/OL8kOhflkjeEmF98H3SWNzG
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
-I am aware of the following mechanisms that allow what I want to do:
+-----BEGIN PGP SIGNATURE-----
 
-For TCP: Using a REDIRECT rule with a port range and getsockopt with
-         SO_ORIGINAL_DST.
+iQIzBAEBCgAdFiEEefFXVtKanGCvvBh/4zpqP9fCsrcFAll+bHQACgkQ4zpqP9fC
+srcy/w//dYZ2dsxIHp25EtyRvjZv6YrlRJFrHqeC4fd8vTYv0EoJfYvXX4LsBFQi
+0EOe3h2GYe0ADi+A27h5J4eCoR23l+zgHfipSfd3pM+cvitEBaPzE/k3LvOf7tMX
+Z6T02htYJih7FFbqrv+HlEnJs35R5SI1ASh3AIeIcJJ6MK3Ayek64LHtclCo/+ht
+HjDdhaReD752VkME+miEmDa7C/uaG1wNutm2SBSfg+vjuLI7XfnsKM40fY0RN5UA
+HagUoa+NA/rudQrCydXf0ZGyE8GF1s/E00u0gs0ZU0pg+HqqFeFvsTmQM5DU+nmo
+Ec0ZigYpzfQvK0irHS4UWuO3ZFezN+SghFn1j//EVYm6qLRYtJ3xy9PT2icZeUsU
+Z3+xcp9wo/QTMScqOJbTQOs9RmIKAsr43hSTviFynvqpZ6Clyc0N2E8RRdvrxv4s
+zMbgOQqNYVuVzZyxxirm6Xg0E7fycVzpxesi73IVq1StoehRD6JhyJux85uw6or8
+BlZgQdheyef1hnI9HycqK/F2hMFhrimR7wj8+HZFdJWKOYYvHw6M4kV3ezchfQhP
+MO8TGAuw31u4KmGJn8gyJd+nJuxStp87u7Yiinv9mjQAD8eb0X5nnwXf8AwKTGx8
+xGHjJAsHrRiER/MutoYGkPK162GIM+ADqAQrLsn2hi2rgLxXEts=
+=spDp
+-----END PGP SIGNATURE-----
 
-For UDP: Using a TPROXY rule with a port range and recvmsg, then consume
-         ancillary message that is provided
-
-For SCTP, DCCP, others: I don't know.
-
-So, my question is: Is there a transport protocol agnostic way to 
-multiplex ports to an application, enabling the application to know on 
-which port the connection came in?
-
-I looked into libnetfilter_conntrack, though I am not sure if I can use 
-it reliably for that purpose, since it is not operating on an actual 
-socket AFAICS.
-
-Any advise appreciated.
-
-Kind regards,
--Alex
+--Sig_/OL8kOhflkjeEmF98H3SWNzG--
