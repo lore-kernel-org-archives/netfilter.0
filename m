@@ -1,41 +1,51 @@
-From: "Paolo Malfatti" <paolo@cidis.ws>
-Subject: tc show rate over ceil value
-Date: Fri, 4 Aug 2017 09:41:26 -0400
-Message-ID: <3c7301d30d27$5ec08fc0$1c41af40$@cidis.ws>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From: J Doe <general@nativemethods.com>
+Subject: Question regarding nft and tables
+Date: Fri, 4 Aug 2017 13:51:01 -0400
+Message-ID: <88DDA058-C2B7-4D1E-92F2-2F9198FD4EC5@nativemethods.com>
+Mime-Version: 1.0 (1.0)
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-References: 
-In-Reply-To: 
-Content-Language: es
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi everybody. 
- 
-I upgraded my kernel from 4.3 to 4.11 and i’m seeing weird values doing “tc show” commands: 
- 
-tc -s -d class show dev eth0 classid 1:1385
-class htb 1:1385 parent 1:405 leaf 1385: prio 6 quantum 42625 rate 341Kbit ceil 4096Kbit linklayer ethernet burst 13Kb/1 mpu 0b cburst 8Kb/1 mpu 0b level 0
-Sent 139507848 bytes 92285 pkt (dropped 0, overlimits 0 requeues 0)
-rate 7256Kbit 599pps backlog 0b 0p requeues 0
-lended: 8835 borrowed: 42779 giants: 0
-tokens: -232736 ctokens: 19103
+Hi,
 
-I’m using debian testing with iproute2 4.9.0-1 and rate estimator in my script: 
- 
-echo 1 > /sys/module/sch_htb/parameters/htb_rate_est
- 
-Booting back with 4.3 kernel resolve the issue and the traffic is shaped like usual. 
- 
-Any idea?
- 
-Best regards
-Paolo Malfatti
-CIDIS Camiri
- 
- 
+I am new to nftables and have been experimenting with the syntax.  I am working on Ubuntu 16.04.3 LTS server with a kernel of 4.4.0.  I have installed the nftables package and nft is version 0.5.
+
+My goal is to create two tables - one of protocol family ip and one of protocol family inet.  To do so, I issued the following commands:
+
+$ sudo nft add table ip filter_ip
+$ sudo nft add table inet filter_inet
+
+I then create chains for inbound and outbound traffic:
+
+$ sudo nft add chain ip filter_ip input { type filter hook input priority 0 \; }
+$ sudo nft add chain ip filter_ip output { type filter hook output priority 0 \;}
+$ sudo nft add chain inet filter_inet input { type filter hook input priority 0 \; }
+$ sudo nft add chain inet filter_inet output { type filter hook output priority 0 \; }
+
+I then attempt to allow inbound and outbound traffic on the loop back interface:
+
+$ sudo nft add rule inet filter_inet input iif lo accept
+$ sudo nft add rule inet filter_inet output iif lo accept
+
+I then list the tables:
+
+$ sudo nft list tables
+table ip filter_ip
+table inet filter_inet
+
+But when I attempt to view the loop back rules in filter_inet, I get the following:
+
+$ sudo nft list table filter_inet
+<cmdline>:1:1-22: Error: Could not process rule: Table 'filter_inet' does not exist
+
+What am I doing wrong ?
+
+Thanks,
+
+- J
 
 
