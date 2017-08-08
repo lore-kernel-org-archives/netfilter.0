@@ -1,37 +1,42 @@
-From: Daniel Kahn Gillmor <dkg@fifthhorseman.net>
-Subject: [PATCH] man: use https for wiki link
-Date: Sun,  6 Aug 2017 21:02:43 -0400
-Message-ID: <20170807010243.25408-1-dkg@fifthhorseman.net>
+From: J Doe <general@nativemethods.com>
+Subject: Question regarding meta skuid
+Date: Tue, 8 Aug 2017 17:01:46 -0400
+Message-ID: <5EB94417-274C-45CD-BA35-B7C545491C34@nativemethods.com>
+Mime-Version: 1.0 (1.0)
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-https works for the wiki, and users should prefer it by default,
-whether they are logging in (to protect their credentials) or whether
-they're reading data (to protect the integrity of the content).
+Hello,
 
-Signed-off-by: Daniel Kahn Gillmor <dkg@fifthhorseman.net>
----
- doc/nft.xml | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+I am currently experimenting with nftables syntax for a LAMP web server.
 
-diff --git a/doc/nft.xml b/doc/nft.xml
-index 4d03a3d..c9ef5e0 100644
---- a/doc/nft.xml
-+++ b/doc/nft.xml
-@@ -4488,7 +4488,7 @@ filter output oif wlan0
- 			</simplelist>
- 		</para>
- 		<para>
--			There is an official wiki at: http://wiki.nftables.org
-+			There is an official wiki at: https://wiki.nftables.org
- 		</para>
- 	</refsect1>
- 
--- 
-2.13.2
+Initially I used the following rules:
+
+add rule filter input tcp dport { http, https } ct state new,established,related accept
+add rule filter output tcp sport { http, https } ct state established,related accept
+
+I then though it would be good to limit traffic to processes with specific user ids.  In the case of the webserver this would be "root" as well as "www-data".
+
+This works on outbound traffic:
+
+add rule filter output tcp sport { http, https } meta skuid { root, www-data } ct state established,related accept
+
+...but when I attempt to limit inbound traffic to processes that are run on the *SERVER* as either "root" or "www-data":
+
+add rule filter input tcp dport { http, https } meta skuid { root, www-data } ct state new,established,related accept
+
+...a web client cannot complete the connection.
+
+When I remove the "meta skuid { root, www-data }" from the inbound rule, everything is ok.
+
+I am assuming this is because nftables cannot determine what process was the originator of the inbound traffic.  That makes sense, but what I'd like to know is there a way to limit *INBOUND* traffic to only specific processes ?  In that case, allow inbound HTTP/S traffic *ONLY* to processes running under "root" or "www-data" as opposed to knowing that the traffic originated from the *CLIENT* as "root" or "www-data" ?
+
+Thanks,
+
+- J
+
 
