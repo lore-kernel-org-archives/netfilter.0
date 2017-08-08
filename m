@@ -1,7 +1,7 @@
 From: J Doe <general@nativemethods.com>
-Subject: Using sets for protocols ?
-Date: Tue, 8 Aug 2017 17:15:00 -0400
-Message-ID: <3F149C27-5E77-455F-B870-68307C3A87DF@nativemethods.com>
+Subject: Error on wiki.nftables.org
+Date: Tue, 8 Aug 2017 17:54:54 -0400
+Message-ID: <39295EC6-BEB7-4861-8346-28E0BADFCC1F@nativemethods.com>
 Mime-Version: 1.0 (1.0)
 Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -10,39 +10,32 @@ List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi,
+Hello,
 
-I am currently experimenting with nftables syntax and was wondering if there was a way to specify that a rule applies to *BOTH* TCP and UDP.
+I believe I have found an error on the nftables wiki on the "Jumping to chain" page [1].
 
-For instance, allowing DNS resolution:
+Under the "jump vs goto" section, the example of jump and the example of goto repeat the destination port keyword ("dport").
 
-add rule filter input tcp sport domain ct state established,related accept
-add rule filter output tcp dport domain ct state new,established,related accept
-add rule filter input udp sport domain ct state established,related accept
-add rule filter output udp dport domain ct state new,established,related accept 
+Example of jump on the line after "# this is the 1 matching rule" shows:
 
-...requires four rules the way I have written it.
+ip saddr 1.1.1.1 ip daddr 2.2.2.2 tcp dport 111 tcp dport 222 jump other-chain
 
-Is there a way to decrease this by specifying the rules apply to both TCP and UDP ?
+It should be:
 
-I tried using a set:
+ip saddr 1.1.1.1 ip daddr 2.2.2.2 tcp sport 111 tcp dport 222 jump other-chain
 
-add rule filter input { tcp, udp } sport domain ct state established,related accept
-add rule filter output { tcp, udp } dport domain ct state new,established,related accept
+This also applies to the line after "# this is the 3 matching rule.  It shows:
 
-...but the nft parser rejects this syntax.
+ip saddr 1.1.1.1 ip daddr 2.2.2.2 tcp dport 111 tcp dport 222 accept
 
-I also tried leaving the protocol out to see if it would default to both:
+It should be:
 
-add rule filter input sport domain ct state established,related accept
-add rule filter output dport domain ct state new,established,related accept
+ip saddr 1.1.1.1 ip daddr 2.2.2.2 tcp sport 111 tcp dport 222 accept
 
-...but the nft parser rejects this syntax as well.
-
-Is there another way of writing this ?
+I attempted to change this but could not find a way to create a wiki account.  Currently one can only login if an account exists.
 
 Thanks,
-
 - J
 
-
+Sources:
+[1] https://wiki.nftables.org/wiki-nftables/index.php/Jumping_to_chain
