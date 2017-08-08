@@ -1,7 +1,7 @@
 From: J Doe <general@nativemethods.com>
-Subject: Question regarding meta skuid
-Date: Tue, 8 Aug 2017 17:01:46 -0400
-Message-ID: <5EB94417-274C-45CD-BA35-B7C545491C34@nativemethods.com>
+Subject: Using sets for protocols ?
+Date: Tue, 8 Aug 2017 17:15:00 -0400
+Message-ID: <3F149C27-5E77-455F-B870-68307C3A87DF@nativemethods.com>
 Mime-Version: 1.0 (1.0)
 Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -10,30 +10,36 @@ List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hello,
+Hi,
 
-I am currently experimenting with nftables syntax for a LAMP web server.
+I am currently experimenting with nftables syntax and was wondering if there was a way to specify that a rule applies to *BOTH* TCP and UDP.
 
-Initially I used the following rules:
+For instance, allowing DNS resolution:
 
-add rule filter input tcp dport { http, https } ct state new,established,related accept
-add rule filter output tcp sport { http, https } ct state established,related accept
+add rule filter input tcp sport domain ct state established,related accept
+add rule filter output tcp dport domain ct state new,established,related accept
+add rule filter input udp sport domain ct state established,related accept
+add rule filter output udp dport domain ct state new,established,related accept 
 
-I then though it would be good to limit traffic to processes with specific user ids.  In the case of the webserver this would be "root" as well as "www-data".
+...requires four rules the way I have written it.
 
-This works on outbound traffic:
+Is there a way to decrease this by specifying the rules apply to both TCP and UDP ?
 
-add rule filter output tcp sport { http, https } meta skuid { root, www-data } ct state established,related accept
+I tried using a set:
 
-...but when I attempt to limit inbound traffic to processes that are run on the *SERVER* as either "root" or "www-data":
+add rule filter input { tcp, udp } sport domain ct state established,related accept
+add rule filter output { tcp, udp } dport domain ct state new,established,related accept
 
-add rule filter input tcp dport { http, https } meta skuid { root, www-data } ct state new,established,related accept
+...but the nft parser rejects this syntax.
 
-...a web client cannot complete the connection.
+I also tried leaving the protocol out to see if it would default to both:
 
-When I remove the "meta skuid { root, www-data }" from the inbound rule, everything is ok.
+add rule filter input sport domain ct state established,related accept
+add rule filter output dport domain ct state new,established,related accept
 
-I am assuming this is because nftables cannot determine what process was the originator of the inbound traffic.  That makes sense, but what I'd like to know is there a way to limit *INBOUND* traffic to only specific processes ?  In that case, allow inbound HTTP/S traffic *ONLY* to processes running under "root" or "www-data" as opposed to knowing that the traffic originated from the *CLIENT* as "root" or "www-data" ?
+...but the nft parser rejects this syntax as well.
+
+Is there another way of writing this ?
 
 Thanks,
 
