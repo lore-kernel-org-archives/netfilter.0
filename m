@@ -1,41 +1,33 @@
-From: Eric Leblond <eric@regit.org>
-Subject: Re: nft and sip with debian 9 stretch
-Date: Wed, 09 Aug 2017 13:06:54 +0200
-Message-ID: <1502276814.18029.1.camel@regit.org>
-References: <b4d31d0b-9f15-9b2a-0804-6ad6fd827cb9@herzog-systems.de>
+From: Akshat Kakkar <akshat.1984@gmail.com>
+Subject: Error in IPSET : Unknown argument `skbinfo'
+Date: Wed, 9 Aug 2017 17:31:20 +0530
+Message-ID: <CAA5aLPj4ZA-wDtsW7C+rt7a9X9_T+jrzxWV1pdfCUWYu7jiLTg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <b4d31d0b-9f15-9b2a-0804-6ad6fd827cb9@herzog-systems.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=m4iZzvhgvZGmxYmiAI83BkCpwgn8pk+cRFFT7EMCgas=;
+        b=t9is5+u9YrVXUtRtByWPIxDLiBkpYkWeaV8aJDVbc4eAUEbeIHl7kCaG2GuX8hqSal
+         WOe1f8RSl/RfjLk08LXWJeGN6qp+MI0SrdeIZjbjOdOk4NRdsDe6vwua2Kf2UhwE1Y5L
+         VzGFmW3LNsxcy6aLlIpymrzCjLu6zDCyXKGSGitq9sxvxwz5vF+39o2vNchNyXh0uOSM
+         ZZdgvSr9t1e9m7uHpClwNeWqPpsgzORUu/VltgZVd+loEIcAjSX1nD5uIhC1tUHgCLzA
+         NY8xGPO80NhR2htt66zt2YfBnvxQirhBdhXQ75Zghxw2/qAVUdOWCK0vsRDL/VUERL4C
+         AGaQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Marc Neudorfer <marc.neudorfer@herzog-systems.de>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hello,
+my ipset version is 6.32. OS is CentOS 7.3. Kernel is 3.10
 
-On Wed, 2017-08-09 at 12:36 +0200, Marc Neudorfer wrote:
-> Hello,
-> 
-> i am currently using Debian 9 (nft 0.7, kernel 4.9).
-> I tried to use nft as primary firewall for my network, but there are
-> a 
-> lot of problems with our sip/voip phones (phones are ringing, no
-> voice 
-> -> ct-problem)
-> The wiki says, the ct-helpers are only available with nft 0.8 and
-> kernel 
-> 4.12.
-> Is there any known method to get sip-phones to work with nft 0.7? Or 
-> some kind of workaround?
+when I execute following command,
 
-Indeed, connection tracking helpers assignation can only be used with
-nft 0.8 and Linux 4.12.
+    ipset create foo hash:ip skbinfo
 
-You can set automatic assignement with:
-echo 1 > /proc/sys/net/netfilter/nf_conntrack_helper 
+I get error as
 
-BR
--- 
-Eric Leblond <eric@regit.org>
-Blog: https://home.regit.org/
+   ipset v6.32: Unknown argument: `skbinfo'
+
+Please help.
