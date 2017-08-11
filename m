@@ -1,11 +1,10 @@
 From: "Chris" <chris2014@postbox.xyz>
-Subject: (unknown)
-Date: Sat, 12 Aug 2017 00:09:53 +0200
-Message-ID: <40b4be3f26c0242f8b125cd5217a67f5.squirrel@mail2.postbox.xyz>
+Subject: Bridge Logging
+Date: Sat, 12 Aug 2017 00:20:02 +0200
+Message-ID: <16883d94080d3c240250781e30f7e7bf.squirrel@mail2.postbox.xyz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Subject: 
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
@@ -27,5 +26,7 @@ chain, but not to LOG them?
 I've not loaded any bridge-nf modules. bridge/nf_call_iptables is 0.
 
 - Chris
+
+
 
 
