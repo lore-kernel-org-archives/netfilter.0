@@ -1,46 +1,33 @@
-From: Raymond Burkholder <ray@oneunified.net>
-Subject: Re: Netfilter Study material
-Date: Sat, 12 Aug 2017 10:29:43 -0300
-Message-ID: <003dd0d1-c5cc-3deb-e466-90a96e073e62@oneunified.net>
-References: <83F37397-6A0C-4129-8186-4A710932E1DF@gmail.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: J Doe <general@nativemethods.com>
+Subject: Re: Question regarding meta skuid
+Date: Sat, 12 Aug 2017 20:56:34 -0400
+Message-ID: <A39C618A-B11D-42AC-B2AD-2AAE07196D4D@nativemethods.com>
+References: <5EB94417-274C-45CD-BA35-B7C545491C34@nativemethods.com>
+Mime-Version: 1.0 (1.0)
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <83F37397-6A0C-4129-8186-4A710932E1DF@gmail.com>
-Content-Language: en-US
+In-Reply-To: <5EB94417-274C-45CD-BA35-B7C545491C34@nativemethods.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Sina Owolabi <notify.sina@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On 08/12/17 03:46, Sina Owolabi wrote:
+Hello,
 
-> I'm interested in using Linux network software  to route and filter on my network.
-> Please where can I find reading material to get me properly started?
+I was wondering if anyone had feedback regarding limiting which accounts on a host can receive traffic.
 
-http://www.policyrouting.org/iproute2.doc.html -- one of many sites
+I initially attempted to use the following rule to allow inbound traffic on port 80/443 to be handled only by processes on the server that were root or www-data:
 
-> I also have a very interesting (to me) problem to solve: I need to have some endpoints failover between two gateway routers on my network which happen to be on the same subnet (both routers have ips  on the same subnet as the endpoints) . Is this possible?
+add rule filter input tcp dport { http, https } meta skuid { root, www-data } ct state new,established,related accept
 
-http://www.keepalived.org/documentation.html -- look for vrrp
+...I have since learned that a better approach for this rule would be abstracting the connection states out, but I have repeated the rule from my original post.
 
-https://netfilter.org/projects/conntrack-tools/index.html -- used to 
-create high availability firewall clusters
+This did not work as nftables is attempting to limit the skuid to root or www-data based on the client account that created the traffic - which is not included in the traffic.
 
-> cordially yours,
-> Sina Owolabi--
+Is there a way to restrict this so only processes owned by root or www-data on the server will receive HTTP/S traffic (either with nftables or another means) ?
 
-Raymond Burkholder
-https://blog.raymond.burkholder.net/
+Thanks,
 
+- J
 
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
-
--- 
-This message has been scanned for viruses and
-dangerous content by MailScanner, and is
-believed to be clean.
 
