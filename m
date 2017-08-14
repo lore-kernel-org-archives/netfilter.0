@@ -1,38 +1,35 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH] man: use https for wiki link
-Date: Mon, 14 Aug 2017 12:41:37 +0200
-Message-ID: <20170814104137.GA22578@salvia>
-References: <20170807010243.25408-1-dkg@fifthhorseman.net>
- <CAOkSjBgbmUS-ZSA73wmFz71H0kBHmkcdJ=V+DWS5uPH7i7E28Q@mail.gmail.com>
-Mime-Version: 1.0
+From: J Doe <general@nativemethods.com>
+Subject: Question regarding flow table selectors
+Date: Mon, 14 Aug 2017 18:43:49 -0400
+Message-ID: <F525A3F3-1F8C-4D8E-83D8-1BBCB81E7135@nativemethods.com>
+Mime-Version: 1.0 (1.0)
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAOkSjBgbmUS-ZSA73wmFz71H0kBHmkcdJ=V+DWS5uPH7i7E28Q@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Arturo Borrero Gonzalez <arturo@netfilter.org>
-Cc: Daniel Kahn Gillmor <dkg@fifthhorseman.net>, Netfilter Users Mailing list <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-On Sun, Aug 13, 2017 at 02:25:34PM +0200, Arturo Borrero Gonzalez wrote:
-> On 7 August 2017 at 03:02, Daniel Kahn Gillmor <dkg@fifthhorseman.net> wrote:
-> > https works for the wiki, and users should prefer it by default,
-> > whether they are logging in (to protect their credentials) or whether
-> > they're reading data (to protect the integrity of the content).
-> >
-> > Signed-off-by: Daniel Kahn Gillmor <dkg@fifthhorseman.net>
-> > ---
-> >  doc/nft.xml | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> 
-> Please, resend to netfilter-devel@vger.kernel.org.
-> 
-> Add this:
-> 
-> Acked-by: Arturo Borrero Gonzalez <arturo@netfilter.org>
+Hello,
 
-Hm, I don't find this patch anyway.
+I have a question regarding flow tables.
 
-Please, resubmit as Arturo requests and I'll take it. Thanks!
+On the wiki [1], there is an example of a single selector flow table:
+
+add rule filter input tcp dport 22 ct state new flow table ssh-ftable { ip saddr limit rate 10/second } accept
+
+From this example, I am under the impression that:
+
+* For inbound IPv4 TCP traffic to destination port 22 with state new
+* The selector is the IPv4 source address of the connection
+
+What I do not understand is if the connection rate limit is used to filter the flow table results (from nft list flow...), or whether this is used to restrict traffic on the rule (only allow traffic that is up to 10 packets per second).
+
+Which one is it ?
+
+Thanks,
+
+- J
+
+Sources
+[1] https://wiki.nftables.org/wiki-nftables/index.php/Flow_tables
