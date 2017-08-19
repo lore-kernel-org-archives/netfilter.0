@@ -1,41 +1,61 @@
-From: khawar shehzad <shehzad.khawar@gmail.com>
-Subject: Why can't we use DNAT in the INPUT Chain?
-Date: Sat, 19 Aug 2017 13:36:20 +0100
-Message-ID: <5c984fa5-a2a5-340d-7cb6-6b21c3768e45@gmail.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Why can't we use DNAT in the INPUT Chain?
+Date: Sat, 19 Aug 2017 08:28:27 -0500
+Message-ID: <20170819132827.GY2027@harrier.slackbuilds.org>
+References: <5c984fa5-a2a5-340d-7cb6-6b21c3768e45@gmail.com>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=YIORFgQV7VT73klynyvqeHdRZx4+bAvMcQ5Cz/s40OQ=;
-        b=FX8Ef6TpmxcbAJZMeSnv0zxKUEUcRXTYqTfMcQuqlUqGM4fP/Vdf/vW1NEigZ+/QmA
-         HwZVvghFlosqY11Crc+26g+z6DNa1gzBnd93GandqsuVMS1nYnlpATsUnJ2jPtCbGGor
-         zfw6GhnkPki/5iFtuP39PE133wN2nxk71EHUx87oR1gibLdc03MhdhuMaNU5vsFA5dGv
-         SXXjbhnrtKKMO953+zXaC0T7BYRPBI6Vq26Zyu97TbBxMal5z7LIXG7+IrlAtbJyGwP5
-         ORe17i9E8MRkE6qm5Qr90xqaKrPFlMu2qr9nJgdFORPod55CA5Y0lXVYl9qqrvdjUdPf
-         2geg==
-Content-Language: en-GB
+Content-Disposition: inline
+In-Reply-To: <5c984fa5-a2a5-340d-7cb6-6b21c3768e45@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi,
+On Sat, Aug 19, 2017 at 01:36:20PM +0100, khawar shehzad wrote:
+> I have a simple question,
 
-I have a simple question, but I have a very compeling application which 
-requires this feature.
+But the question seems to lack necessary understanding.
 
-I want to do DNAT in the INPUT chain. I am doing filtration at the 
-PREROUTING chain (getting rid of some source IPs based on a vmap).
+> but I have a very compeling application which
+> requires this feature.
+> 
+> I want to do DNAT in the INPUT chain. I am doing filtration at the
+> PREROUTING chain (getting rid of some source IPs based on a vmap).
+> 
+> Those IPs which are accepted after the prerouting filter, I need
+> to DNAT them only. I don't want to use router to do it in the
+> FORWORD chain.
 
-Those IPs which are accepted after the prerouting filter, I need to DNAT 
-them only. I don't want to use router to do it in the FORWORD chain.
+The thing you seem to be missing is the concept of tables.  Refer to 
+the iptables(8) manual discussion about tables.
 
-Any help will be much appreciated.
+Network address translation (NAT) only happens in the "nat" table; 
+this table has no "INPUT" nor "FORWARD" (note: spelling counts! ;) ) 
+for your use.
 
-Cheers,
+Filtering is done in the "filter" table, which likewise, has no 
+"PREROUTING" chain.  To some extent you could filter in the "raw" 
+table, but there's not much benefit to that.
 
-Khawar
+You did not describe your use case very well, but from the little 
+which did come across, perhaps you could drop certain source IP 
+addresses in raw/PREROUTING.  Then do DNAT in nat/PREROUTING as 
+normal.  These connections will be seen again in filter/FORWARD.
+
+(If the list of blocked source addresses is large and/or dynamic, 
+consider ipset(8) and the -m set match.)
+
+http://inai.de/images/nf-packet-flow.png might help you to see how 
+packets flow through the various tables and chains.
+
+Try describing your problem and goal a bit better (what does "don't 
+want to use router to do it in the FORWORD chain" mean?  What's the
+problem with normal DNAT?) then perhaps we can offer more and better
+suggestions.
+-- 
+  http://rob0.nodns4.us/
+  Offlist GMX mail is seen only if "/dev/rob0" is in the Subject:
 
