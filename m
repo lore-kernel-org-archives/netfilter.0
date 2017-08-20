@@ -1,67 +1,39 @@
-From: J Doe <general@nativemethods.com>
-Subject: Re: Failure with autogen.sh when building libnftnl
-Date: Sat, 19 Aug 2017 18:57:38 -0400
-Message-ID: <6EDD0B3E-C7DC-4F8B-9D7F-90CD5DA885CC@nativemethods.com>
-References: <B934F71F-B5FF-4B6A-8AA7-1C479F09E760@nativemethods.com>
-Mime-Version: 1.0 (1.0)
-Content-Transfer-Encoding: 8BIT
+From: Duncan Roe <duncan_roe@optusnet.com.au>
+Subject: Re: Why can't we use DNAT in the INPUT Chain?
+Date: Sun, 20 Aug 2017 12:15:15 +1000
+Message-ID: <20170820021515.GA3396@dimstar.local.net>
+References: <5c984fa5-a2a5-340d-7cb6-6b21c3768e45@gmail.com>
+ <20170819132827.GY2027@harrier.slackbuilds.org>
+ <6ae93686-46d2-416e-b736-ca6e7fa45231@gmail.com>
+ <8980c2d3-8a82-651f-2553-8e15fbebfec8@plouf.fr.eu.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <B934F71F-B5FF-4B6A-8AA7-1C479F09E760@nativemethods.com>
+Content-Disposition: inline
+In-Reply-To: <8980c2d3-8a82-651f-2553-8e15fbebfec8@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
+On Sat, Aug 19, 2017 at 07:07:41PM +0200, Pascal Hambourg wrote:
+> Le 19/08/2017 =E0 16:16, khawar shehzad a =E9crit :
+[SNIP]
+> > My solution is like the following, which is not working.
+> >
+> > table ip6 natcap {
+> >          map natcap_vmap {
+> >                  type ipv6_addr . ipv6_addr : verdict
+> >                  elements =3D { 2001::20 . 2001::1:0:0:2 : accept}
+> >          }
+> >          chain prerouting_filter {
+> >                  type filter hook prerouting priority -101; policy drop;
+> >                  ip6 saddr . ip6 daddr vmap @natcap_vmap
+> >          }
+> (...)
+>
+> What is this syntax ? This is not iptables.
+It's nftables, the reason I joined this list (to get my head around nftable=
+s ;)
 
-> On Aug 19, 2017, at 3:16 PM, J Doe <general@nativemethods.com> wrote:
-> 
-> Hello,
-> 
-> I am currently attempting to build libnftnl as per the instructions on the wiki [1]
-> 
-> $ git clone git://git.netfilter.org/libnftnl
-> $ cd libnftnl
-> $ sh autogen.sh
-> 
-> autogen fails with the following error code:
-> 
-> configure.ac.28: error: possibly undefined macro: AC_DISABLE_STATIC
->   If this token and others are legitimate, please use m4_pattern_allow.
->   See the Autoconf documentation.
-> autoreconf: /user/bin/autoconf failed with exit status: 1
-> 
-> What am I currently doing wrong ?
-> 
-> Thanks,
-> - J
-> 
-> Sources:
-> [1] wiki.nftables.org/wiki-nftables/index.php/Building_and_installing_nftables_from_sources
-
-Hello,
-
-As an update to this e-mail - it turns out I did not have a complete set of build tools.  Ubuntu Server 16.04.03 LTS does not install them by default.
-
-$ sudo apt-get install bison flex binutils build-essential autoconf libtool pkg-config
-
-Then I install from packages the two dependencies that nftables requires.
-
-$ sudo apt-get install libgmp-dev libreadline-dev
-
-Then I proceed with building the libmnl and libnftnl libraries as per the wiki instructions.
-
-Lastly I had to update the path to the libraries
-
-$ LD_LIBRARY_PATH=/usr/local/lib
-$ export LD_LIBRARY_PATH
-
-Running nft now shows the correct version.
-
-$ nft -v
-nftables v0.7 (Scrooge McDuck)
-
-Regards,
-
-- J
-
-
+Cheers ... Duncan.
