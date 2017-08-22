@@ -1,102 +1,24 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Diagnosing "Error: NAT is only supported for IPv4/IPv6"
-Date: Tue, 22 Aug 2017 19:33:15 +0200
-Message-ID: <20170822173315.GA18186@salvia>
-References: <5156c091-4b06-9efd-fd33-9a117f526572@wagsky.com>
- <94b2bbfe-b72f-992f-b1c6-ec36e0aa4c1b@wagsky.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+From: J Doe <general@nativemethods.com>
+Subject: Re: "Test" mode for nft?
+Date: Tue, 22 Aug 2017 13:38:44 -0400
+Message-ID: <5D3A3F0E-EB73-433E-B27B-654C8F3F51E4@nativemethods.com>
+References: <27b5c43e-a173-b292-3878-e655f53a2dc2@allycomm.com> <A9D44313-3B7A-4BD0-A308-AFA150BA50A1@nativemethods.com> <a8dbbb49-6583-f670-78ed-4208b0689288@wagsky.com> <CAOkSjBgT86Z=R92jHwiuNZT0M5Pdu2aUSK2Yd4L0J8vUtJMGhg@mail.gmail.com>
+Mime-Version: 1.0 (1.0)
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <94b2bbfe-b72f-992f-b1c6-ec36e0aa4c1b@wagsky.com>
+In-Reply-To: <CAOkSjBgT86Z=R92jHwiuNZT0M5Pdu2aUSK2Yd4L0J8vUtJMGhg@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jeff Kletsky <netfilter@allycomm.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Arturo Borrero Gonzalez <arturo@netfilter.org>
+Cc: Jeff Kletsky <netfilter@allycomm.com>, Netfilter Users Mailing list <netfilter@vger.kernel.org>
 
-On Tue, Aug 22, 2017 at 09:55:10AM -0700, Jeff Kletsky wrote:
-> Digging into the cause (and, for now ignoring the unhelpful error message=
-),
-> this appears to be a bug in nft
->=20
-> No matter what the documentation says, it appears that NAT statements can=
-'t
-> be in an "inet" table
->=20
-> Parses and loads with "table ip"
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
->=20
-> #!/usr/sbin/nft -f
->=20
-> flush ruleset
->=20
-> table ip global {
->=20
-> =A0=A0=A0 chain nat_in {
-> =A0=A0=A0 =A0=A0=A0 type nat hook prerouting priority -100
-> =A0=A0=A0 continue
-> =A0=A0=A0 }
->=20
-> =A0=A0=A0 chain nat_out {
-> =A0=A0=A0=A0=A0=A0=A0 type nat hook postrouting priority -100
-> =A0=A0=A0 continue
-> =A0=A0=A0 }
->=20
-> }
->=20
->=20
-> Fails with "table inet"
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->=20
-> #!/usr/sbin/nft -f
->=20
-> flush ruleset
->=20
-> table inet global {
->=20
-> =A0=A0=A0 chain nat_in {
-> =A0=A0=A0 =A0=A0=A0 type nat hook prerouting priority -100
-> =A0=A0=A0 continue
-> =A0=A0=A0 }
->=20
-> =A0=A0=A0 chain nat_out {
-> =A0=A0=A0=A0=A0=A0=A0 type nat hook postrouting priority -100
-> =A0=A0=A0 continue
-> =A0=A0=A0 }
->=20
-> }
->=20
->=20
-> The error messages here are different, but equally useless
->=20
-> $ sudo nft -f nftables.conf
-> nftables.conf:3:1-14: Error: Could not process rule: No such file or
-> directory
-> flush ruleset
-> ^^^^^^^^^^^^^^
-> nftables.conf:3:1-14: Error: Could not process rule: No such file or
-> directory
-> flush ruleset
-> ^^^^^^^^^^^^^^
-> nftables.conf:3:1-14: Error: Could not process rule: No such file or
-> directory
-> flush ruleset
-> ^^^^^^^^^^^^^^
-> nftables.conf:3:1-14: Error: Could not process rule: No such file or
-> directory
-> flush ruleset
-> ^^^^^^^^^^^^^^
+Hi Arturo,
 
-This is working since:
+Ah, great!  Thank you for pointing this out.  I see from the commit that it is accessible via "-c" or "--check".
 
-commit 509671dfa03365bba727b8be5e522b737da93a6f
-Author: Pablo Neira Ayuso <pablo@netfilter.org>
-Date:   Thu Jun 15 14:35:33 2017 +0200
+Out of curiosity, do you have a rough timeline of when the next release of nft will land (this quarter, next quarter, etc.) ?
 
-    src: error reporting for nested ruleset representation
+Thanks again,
 
-Would you give a try to nft.git snapshot to confirm this?
-
-This will be included in the next release.
+- J
