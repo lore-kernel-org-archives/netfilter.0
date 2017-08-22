@@ -1,197 +1,49 @@
-From: Jeff Kletsky <netfilter@allycomm.com>
-Subject: Diagnosing "Error: NAT is only supported for IPv4/IPv6"
-Date: Mon, 21 Aug 2017 14:42:25 -0700
-Message-ID: <5156c091-4b06-9efd-fd33-9a117f526572@wagsky.com>
+From: "Walter H." <walter.h@mathemainzel.info>
+Subject: IPv6: unknown packet logged ...
+Date: Tue, 22 Aug 2017 16:42:19 +0200
+Message-ID: <f1a8f3cdd11c6f2fa7a5946a0cf4c66f.1503412939@squirrel.mail>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mathemainzel.info; s=dkim11;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:To:From:Subject:Date:Message-ID; bh=F+Nsg4xAZnci+SIH6cXzX2kcj2nftMeCJpUCpZbZ9Eo=;
+        b=VsjwKM/d2cMSJi1EeyDWizHmk5Ff/kS/C1oTBf5FE2DehRL/JUo+D8KfzTw6V6BMOrrSlT2gf/KuBwU8oYY1AZ4pUo7ytL3nvVDHN3qDWH4YNC6fsw6IlFbCg2Vh0IAf2OCmSDpcE9p3s7ts1n4FjRQXamBkoWNUr5iu08ovibM=;
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Objectives:
+Hello,
 
-* Get DNAT working for IPv4 on "if_external"
+I have these rules at the beginning of /etc/sysconfig/ip6tables
 
-* Get SNAT working for IPv4 on "if_external"
+# Filter all packets with state INVALID
+-A INPUT -m state --state INVALID -j DROP
+-A FORWARD -m state --state INVALID -j DROP
+-A OUTPUT -m state --state INVALID -j DROP
 
-* Be able to easily draft, manage, and read rule execution "around" NAT
-   (some rules before NAT, others after,
-    with one "pair" for inbound and another pair for outbound packets)
+and on bottom these rules:
 
+# Log all other
+-A INPUT -j LOG --log-prefix "IPv6[IN]: " --log-level 7
+-A FORWARD -j LOG --log-prefix "IPv6[FWD]: " --log-level 7
+-A OUTPUT -j LOG --log-prefix "IPv6[OUT]: " --log-level 7
 
-TL;DR:
+which rule would have catched these logged packets:
 
-Ruleset parses and works as expected without NAT statements.
-
-Adding simple NAT statements results in "meaningless" reference in error 
-message:
-
-     In file included from nftables.conf:114:5-45:
-     ./blackhole_check_internal.nft:6:54-57: Error: NAT is only 
-supported for IPv4/IPv6
-     nal_allowed_net {
-^^^^
-
-That's a non-sequetor, nowhere near any NAT-related statement.
-
-The NAT-related statements are in an "inet" table.
-
-The NAT-related statements are all "protected" with "ip version 4" now,
-and the problem still persists.
-
-How do I locate the problem?
-
-
-
-
-nftables.conf (excerpts):
-
-
-       1 #!/usr/sbin/nft -f
-       2
-       3 flush ruleset
-       4
-       5 table inet global {
-       6
-       7     define if_external = eth1
-       8     define if_internal = eth0
-
-[...]
-
-     101     #
-     102
-     103     include "./nat_rules_inbound_ipv4.nft"
-     104     include "./nat_rules_outbound_ipv4.nft"
-     105
-     106     #
-     107
-     108     include "./postrouting_ext_int.nft"
-     109     include "./postrouting_int_ext.nft"
-     110
-     111     #
-     112
-     113     include "./blackhole_check_external.nft"
-     114     include "./blackhole_check_internal.nft"
-     115
-     116     #
-
-[...]
-
-     123     chain prerouting {
-     124         type filter hook prerouting priority 0
-     125         policy drop
-
-[...]
-
-     273     chain postrouting {
-     274         type filter hook postrouting priority 0
-     275         policy drop
-
-[...]
-
-
-Yes, I'm aware that I'm revealing the testing IPs and nets here
-
-Yes, I've already run into what appears to be a 32-character limit on 
-chain names and changed the names as a result
-(No thanks to "Numerical result out of range" and "No such file or 
-directory" error messages in finding *that* problem)
-
-blackhole_check_internal.nft
-
-       1 define if_internal_ip = { 10.10.10.131, 10.10.10.255 }
-       2
-       3 set if_internal_allowed_net {
-       4     type ipv4_addr
-       5     flags interval
-       6     elements = { 10.10.10.0/24 }
-       7 }
-       8
-       9
-      10 chain blackhole_check_internal_pre {
-      11
-      12     ip saddr != @if_internal_allowed_net jump blackhole_src
-      13
-      14     ip daddr != $if_internal_ip jump blackhole_dst
-      15
-      16     return
-      17 }
-      18
-      19
-      20 chain blackhole_check_internal_post {
-      21
-      22     ip saddr != $if_internal_ip jump blackhole_src
-      23
-      24     ip daddr != @if_internal_allowed_net jump blackhole_dst
-      25
-      26     return
-      27 }
-
-
-The reference to
-
-./blackhole_check_internal.nft:6:54-57
-
-appears to be a complete non-sequetor, at least as far as NAT goes.
-(The ruleset, without the NAT includes and jumps parses, compiles, and 
-works as expected)
-
-
-
-nat_rules_inbound_ipv4.nft:
-
-       1 chain nat_rules_inbound_ipv4 {
-       2
-       3     iifname != $if_external return
-       4
-       5     ip version 4 tcp dport @forwarded_ports_wildside dnat $wildside
-       6
-       7     return
-
-       8 }
-
-nat_rules_outbound_ipv4.nft
-
-       1 chain nat_rules_outbound_ipv4 {
-       2
-       3     oifname != $if_external return
-       4
-       5     ip version 4 snat $wildside
-       6
-       7     return
-       8 }
-
-
-$wildside is an IPv4 address literal in dotted-quad notation
-
-@forwarded_ports_wildside is of "type inet_service" and is non-empty
-
-
-Both the dnat and snat expressions, themselves, are restricted to IPv4, 
-as a futile attempt to convince nft that it is only NAT-ing IPv4
-
-In prerouting chain:
-
-     iifname $if_external jump nat_rules_inbound_ipv4
-
-In postrouting chain:
-
-     oifname $if_external jump nat_rules_outbound_ipv4
-
-(this approach allows me to have rules before and after the NAT in the 
-prerouting and postrouting chains)
-
-
-How do I go about deducing what the real problem here is?
+[70223.386265] IPv6[FWD]: IN=sit1 OUT=br0
+SRC=2a00:1450:4001:081a:0000:0000:0000:200e DST=myipv6addr LEN=123 TC=0
+HOPLIMIT=60 FLOWLBL=617912 PROTO=TCP SPT=443 DPT=59073 WINDOW=1171
+RES=0x00 ACK PSH URGP=0
+[70232.150311] IPv6[FWD]: IN=sit1 OUT=br0
+SRC=2a00:1450:4001:081a:0000:0000:0000:200e DST=myipv6addr LEN=123 TC=0
+HOPLIMIT=60 FLOWLBL=949795 PROTO=TCP SPT=443 DPT=59073 WINDOW=1171
+RES=0x00 ACK PSH URGP=0
+[70249.740932] IPv6[FWD]: IN=sit1 OUT=br0
+SRC=2a00:1450:4001:081a:0000:0000:0000:200e DST=myipv6addr LEN=123 TC=0
+HOPLIMIT=60 FLOWLBL=811062 PROTO=TCP SPT=443 DPT=59073 WINDOW=1171
+RES=0x00 ACK PSH URGP=0
 
 Thanks,
-
-
-Jeff
-
-
-
+Walter
 
