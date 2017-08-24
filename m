@@ -1,79 +1,167 @@
 From: Jeff Kletsky <netfilter@allycomm.com>
-Subject: Re: Empirically determined limits on identifier name length
-Date: Thu, 24 Aug 2017 06:49:20 -0700
-Message-ID: <1c612813-7b28-cbfc-788c-4f5aa3cb2e7e@allycomm.com>
-References: <0628e05b-00cb-0135-3ffc-c44dcb4634b3@wagsky.com>
- <0ea79422-035e-6a2a-d416-937f32615e89@wagsky.com>
- <7c9cc6db-30be-5b89-7030-5ea3bec04c8b@wagsky.com>
- <015d67fd-4453-66df-c4c9-78a17bcbbdd3@wagsky.com>
- <CAOkSjBg2dsA+huYfJRakB8EDMY0_gTSwT9QA7xc8vfDw1eXvDw@mail.gmail.com>
+Subject: Re: NFTABLES - Can we do filtering based on SRC address before doing
+ DNAT
+Date: Thu, 24 Aug 2017 07:18:59 -0700
+Message-ID: <69227d2c-3f6a-7b24-9224-7886979af84c@allycomm.com>
+References: <645e0d25-9505-b703-023c-75c5a5878494@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAOkSjBg2dsA+huYfJRakB8EDMY0_gTSwT9QA7xc8vfDw1eXvDw@mail.gmail.com>
+In-Reply-To: <645e0d25-9505-b703-023c-75c5a5878494@gmail.com>
 Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Arturo Borrero Gonzalez <arturo@netfilter.org>
-Cc: Jeff Kletsky <netfilter@allycomm.com>, Netfilter Users Mailing list <netfilter@vger.kernel.org>
+To: khawar shehzad <shehzad.khawar@gmail.com>, netfilter@vger.kernel.org
 
-The referenced patch is, in fact, in the build I am using and have been 
-using. The deficit in error reporting is *not* resolved.
+I can't speak for iptables, but my initial testing of netfilter using 
+its trace feature suggests that you can split a given "phase" up into 
+pre-nat, nat, and post-nat chains with different priorities and have 
+them execute sequentially.
 
-As Pablo requested, a fresh build was done and reported here that 
-confirmed again that the error-reporting problems were present, even 
-with that patch in place.
+I have not found any documentation that indicates if the nftables 
+priority system interacts with the netfilter priority system, so I am 
+planning to use priorities within nftables that intermesh with those of 
+netfilter. This *hopefully* will mean that IPv4 defragmentation and 
+conntrack happen at the "right" time, relative to nftables chain execution.
 
-$ git log --oneline 509671dfa03365bba727b8be5e522b737da93a6f^..2017-08-19
+Potential gotchas in this include:
 
-where 2017-08-19 is my local build tag, confirms this.
+* nat chains are required for both prerouring and postrouting
+* nat chains *must* be in ip or ipv6 tables, not inet tables
+* accept-ing a packet in one chain does not bypass future chains in the 
+same phase
+* I have not found documentation on the interactions of netfilter and 
+nftables priorities
 
-$ git log -1
-commit d74eed8c9649e9278b69f2cd0fd92f71e3e19cfb (HEAD -> master, tag: 
-2017-08-19, origin/master, origin/HEAD)
-Author: Varsha Rao <rvarsha016@gmail.com>
-Date:   Wed Aug 16 19:48:17 2017 +0530
-
-
-My posts are not about the bug itself, but trying to work through the 
-untenable combination of incomplete and/or inaccurate documentation and 
-arrive with a Linux-based firewall that I trust to work. Determining how 
-a security-sensitive process works by "poking at it with a stick" is 
-hardly considered best practice. There are things that you can't poke 
-and observe response that either need to be trusted (bad plan), or 
-documented as part of the nftables "contract" with its users.
-
-When I first started with nftables and found its documentation to be 
-sorely incomplete, I asked on the -devel list how I could best help with 
-documentation and there was no response.
-
-<https://wiki.nftables.org/wiki-nftables/index.php/Main_Page>
-Third line of the main page:
-"If you have any suggestion to improve it, please send your comments to 
-Netfilter users mailing list <netfilter@vger.kernel.org>."
+The netfilter priorities are described on 
+<https://wiki.nftables.org/wiki-nftables/index.php/Configuring_chains> 
+or /usr/include/linux/netfilter_ipv4.h
 
 
+I'm still working through my ruleset here, but my plan is as follows:
+
+# PREROUTING
+#
+# pre-NAT       -175    After CONNTRACK, before MANGLE
+# NAT            -75    After MANGLE and NAT_DST, before FILTER
+# post-NAT       -50    After NAT_DST, before FILTER
 
 
-On 8/23/17 11:33 PM, Arturo Borrero Gonzalez wrote:
->> The error message when the limit is exceeded for the "in-kernel" chain and
->> set identifiers is similar to
->>
->>      nftables.conf:3:1-14: Error: Could not process rule: Numerical result
->> out of range
->>      flush ruleset
->>      ^^^^^^^^^^^^^^
->>
-> You complain again and again about this bug (bad error reporting) but
-> as Pablo told you already, this has been solved.
-> I know the bug is annoying, but this fixed code isn't included in v0.7.
+# INPUT
+#
+# filter         -50    After NAT_DST, before FILTER
+
+# FORWARD
+#
+# filter         -50    After NAT_DST, before FILTER
+
+# OUTPUT
+#
+# filter         -50    After NAT_DST, before FILTER
+
+# POSTROUTING
+#
+# pre-NAT        -50    After NAT_DST, before FILTER
+# NAT            125    After NAT_SRC, before SELINUX_LAST
+# post-NAT       175    After NAT_SRC, before SELINUX_LAST
+
+I'm far from a netfilter or nftables expert, but this at least feels 
+safer than ignoring the netfilter priorities. I have yet to find any 
+documentation of how the nftables priorities interact with those of 
+netfilter.
+
+
+Here's the rule set I used to see if I could control the execution of 
+NAT relative to the execution of tests in pre- and post-NAT chains. This 
+poke-with-a-stick rule set DNATs telnet to a different IP configured on 
+the same host, 10.11.12.13. It does *not* use the priorities I outlined 
+above. (No intentional reason why the trace statement for postrouting 
+isn't in the earliest chain to run.)
+
+#!/usr/sbin/nft -f
+flush ruleset
+table ip global {
+     chain prerouting_m1000 {
+         type filter hook prerouting priority -1000
+         tcp dport telnet meta nftrace set 1
+         continue
+     }
+     chain prerouting_0 {
+         type filter hook prerouting priority 0
+         iif lo accept
+         continue
+     }
+     chain nat_in_10{
+         type nat hook prerouting priority 10
+         tcp dport telnet meta nftrace set 1
+         tcp dport telnet dnat 10.11.12.13
+         continue
+     }
+     chain prerouting_1000 {
+         type filter hook prerouting priority 1000
+         accept
+     }
+     #####
+     chain output_m1000 {
+         type filter hook output priority -1000
+         tcp sport telnet meta nftrace set 1
+         continue
+     }
+     chain output_0 {
+         type filter hook output  priority 0
+         oif lo accept
+         continue
+     }
+     chain output_1000 {
+         type filter hook output  priority 1000
+         accept
+     }
+     ####
+     chain postrouting_m1000 {
+         type filter hook postrouting priority -1000
+         continue
+     }
+     chain nat_out_m100 {
+         type nat hook postrouting priority -100
+         tcp dport telnet meta nftrace set 1
+         continue
+     }
+     chain postrouting_0 {
+         type filter hook postrouting priority 0
+         accept
+     }
+     chain postrouting_1000 {
+         type filter hook postrouting priority 1000
+         accept
+     }
+}
+
+
+On 8/24/17 2:23 AM, khawar shehzad wrote:
+> Hi all,
 >
-> Reference:
->   http://git.netfilter.org/nftables/commit/?id=509671dfa03365bba727b8be5e522b737da93a6f
-> --
+> I hope all is well.
+>
+> Can we do filtering based on the source address before doing DNAT in 
+> nftables?
+>
+> If so are there any directions for them OR is there something that I 
+> need to know.
+>
+> I heard that it can be done in iptables using raw table. But what 
+> about nftables? I need to do it with nftables because I want to make 
+> use of latest features e.g. verdict maps.
+>
+> Cheers,
+>
+> Khawar
+>
+> Infoginx.com
+>
+> -- 
 > To unsubscribe from this list: send the line "unsubscribe netfilter" in
 > the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> More majordomo info at http://vger.kernel.org/majordomo-info.html
 >
 
