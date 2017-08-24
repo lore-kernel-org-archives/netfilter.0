@@ -1,29 +1,47 @@
 From: Arturo Borrero Gonzalez <arturo@netfilter.org>
-Subject: Re: Stateful objects and nft version
-Date: Thu, 24 Aug 2017 08:28:12 +0200
-Message-ID: <CAOkSjBiOCXUo5jW5ipSsCo37YZs3UyN4Btvo_fM-tfe8UZu_Tw@mail.gmail.com>
-References: <67518BA9-3A7F-4F93-A64F-80FFA3AD970F@nativemethods.com>
- <862ad0a7-c7fa-42c7-e49b-c76e54534838@wagsky.com> <796DF313-DF01-4A48-961A-4EB2B23AC98A@nativemethods.com>
+Subject: Re: Empirically determined limits on identifier name length
+Date: Thu, 24 Aug 2017 08:33:48 +0200
+Message-ID: <CAOkSjBg2dsA+huYfJRakB8EDMY0_gTSwT9QA7xc8vfDw1eXvDw@mail.gmail.com>
+References: <0628e05b-00cb-0135-3ffc-c44dcb4634b3@wagsky.com>
+ <0ea79422-035e-6a2a-d416-937f32615e89@wagsky.com> <7c9cc6db-30be-5b89-7030-5ea3bec04c8b@wagsky.com>
+ <015d67fd-4453-66df-c4c9-78a17bcbbdd3@wagsky.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <796DF313-DF01-4A48-961A-4EB2B23AC98A@nativemethods.com>
+In-Reply-To: <015d67fd-4453-66df-c4c9-78a17bcbbdd3@wagsky.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: J Doe <general@nativemethods.com>
+To: Jeff Kletsky <jmk@wagsky.com>
 Cc: Jeff Kletsky <netfilter@allycomm.com>, Netfilter Users Mailing list <netfilter@vger.kernel.org>
 
-On 24 August 2017 at 06:05, J Doe <general@nativemethods.com> wrote:
-> Hi Jeff,
+On 23 August 2017 at 23:58, Jeff Kletsky <jmk@wagsky.com> wrote:
+> At least working with the HEAD version of nftables v0.7, current library
+> versions, and kernel 4.9,
+> the limits on identifier length that I have determined empirically (I have
+> not examined the code):
 >
-> Thanks for your reply.
+> * chain, set -- 31 characters
+> * table -- (not examined, but *guessing* 31 characters as well)
 >
-> Am I missing something - the latest source code builds out to nft 0.7 but the wiki lists version 0.8 for the functionality ?
->
-> Have you been able to get version 0.8 ?  Perhaps I mistakenly grabbed 0.7.
+> * define -- limit in excess of 65 characters
 >
 
-v0.8 is an upcoming release. You can test it by using the latest code
-in the git repos.
-We don't have an estimated date for the v0.8 release.
+Yes, we have limits in the name of the objects. Probably raising
+limits in the future.
+
+> The error message when the limit is exceeded for the "in-kernel" chain and
+> set identifiers is similar to
+>
+>     nftables.conf:3:1-14: Error: Could not process rule: Numerical result
+> out of range
+>     flush ruleset
+>     ^^^^^^^^^^^^^^
+>
+
+You complain again and again about this bug (bad error reporting) but
+as Pablo told you already, this has been solved.
+I know the bug is annoying, but this fixed code isn't included in v0.7.
+
+Reference:
+ http://git.netfilter.org/nftables/commit/?id=509671dfa03365bba727b8be5e522b737da93a6f
