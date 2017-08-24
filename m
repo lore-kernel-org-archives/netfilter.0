@@ -1,54 +1,44 @@
-From: Arturo Borrero Gonzalez <arturo@netfilter.org>
-Subject: Re: Create set and/or chain accessible across multiple tables
-Date: Thu, 24 Aug 2017 08:46:25 +0200
-Message-ID: <CAOkSjBgZ_YDpe5+F8pkvEaVvBHwC+08J2AFP32xzk=jvhtF8fA@mail.gmail.com>
-References: <02c72729-72ab-1947-53b7-0a3cbaff4d7a@wagsky.com>
- <CAOkSjBiqzd5PHuFU=_sctb4JxRC0_ibmgcVkgDL8C9qANrCFMQ@mail.gmail.com>
- <CAOkSjBjkO8J7RGUqGSb_nqTTe7roeoMgqd0FnC7+0h_4iz9FQw@mail.gmail.com> <06974758-bdb2-125f-2d39-bb9ca8529fd9@wagsky.com>
+From: khawar shehzad <shehzad.khawar@gmail.com>
+Subject: NFTABLES - Can we do filtering based on SRC address before doing DNAT
+Date: Thu, 24 Aug 2017 10:23:10 +0100
+Message-ID: <645e0d25-9505-b703-023c-75c5a5878494@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <06974758-bdb2-125f-2d39-bb9ca8529fd9@wagsky.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=LD5p79CUJkMeeZ/vGHU4GmVyhuqoDKdiLJTWeYLGnkE=;
+        b=jKEOhQqE1n2jGUpoUSh5Rt/qkvhKfSqCSFY7Pr+JvX1gVtZj0B0l4eK/EbNj7dEqD1
+         s7fjAfMJhDSMSOMfWhW6X2tIM3yT695ibE9AQo0D8SzWQi7VkzxJDXEo+o/iCEh/g/BQ
+         Snp3nuznJy7i+4KgJKiv0YoHAj9GZm6mYKNE+EfGRvd5X441Sv9RcfYn/svIJA6VmtFW
+         BAZD6tihzXdks6H59HcUaIgR+0/pVHCRXBBV0QGPWenyLg9zLQXzWcXorSHfWUVhR75A
+         CU7CPzY0B2amQbtSYBYmcxMiuxQbEN7K2dv8WVhjrrCJzeudk5DHViTiHYMgDq6KXVXl
+         4Qmg==
+Content-Language: en-GB
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jeff Kletsky <netfilter@allycomm.com>
-Cc: Netfilter Users Mailing list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On 23 August 2017 at 20:51, Jeff Kletsky <netfilter@allycomm.com> wrote:
-> Thanks, yes, a define at the top-level can be accessed throughout.
->
-> I chose to select an approach to declare the set in a file that can be
-> "included" within any table.
->
+Hi all,
 
-As sets are per-table, this is not possible unless you use the
-variable trick I mentioned in the previous email.
+I hope all is well.
 
-> The question about atomic changes comes from my familiarity with and use of
-> FreeBSD's ipfw
-> and its support for atomic operations on only *parts* of a rule set, such
-> as:
->
+Can we do filtering based on the source address before doing DNAT in 
+nftables?
 
-great, then I hope you find nftables better than ipfw regarding this :-)
+If so are there any directions for them OR is there something that I 
+need to know.
 
->
-> As an example of an application of this, consider that there are two
-> possible packet flows that need to be "switched" between.
->
->     /---- path A ----\
-> ---X                  Y--->
->     \---- path B ----/
->
-> To provide uninterrupted flow, the "switch" point at Y needs to be
-> simultaneously changed with that at X
->
->
+I heard that it can be done in iptables using raw table. But what about 
+nftables? I need to do it with nftables because I want to make use of 
+latest features e.g. verdict maps.
 
-If I understand well and X, Y are the same box/firewall, then atomic
-replacement using 'nft -f' is the way to go.
+Cheers,
 
-In case they are different boxes/firewalls, we have a tool in mind
-(nft-sync) which is under (slow-)development to handle cases like
-this.
+Khawar
+
+Infoginx.com
+
