@@ -1,89 +1,79 @@
-From: "Walter H." <walter.h@mathemainzel.info>
-Subject: Re: IPtables and String Match
-Date: Thu, 24 Aug 2017 15:43:43 +0200
-Message-ID: <3a248eba3eb07108aa34a1f83a456bee.1503582223@squirrel.mail>
-References: <3c4797dd17135f05badc81d9656c7e86.1503579504@squirrel.mail>
-    <20170824102624.7b0ded11@pulsar.inexo.com.br>
+From: Jeff Kletsky <netfilter@allycomm.com>
+Subject: Re: Empirically determined limits on identifier name length
+Date: Thu, 24 Aug 2017 06:49:20 -0700
+Message-ID: <1c612813-7b28-cbfc-788c-4f5aa3cb2e7e@allycomm.com>
+References: <0628e05b-00cb-0135-3ffc-c44dcb4634b3@wagsky.com>
+ <0ea79422-035e-6a2a-d416-937f32615e89@wagsky.com>
+ <7c9cc6db-30be-5b89-7030-5ea3bec04c8b@wagsky.com>
+ <015d67fd-4453-66df-c4c9-78a17bcbbdd3@wagsky.com>
+ <CAOkSjBg2dsA+huYfJRakB8EDMY0_gTSwT9QA7xc8vfDw1eXvDw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mathemainzel.info; s=dkim11;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Cc:To:From:Subject:Date:References:In-Reply-To:Message-ID; bh=rZyVetzTq/cg4FjyWSiepIhRPXDNYe/YL4AlVy31MnM=;
-        b=j35X5qRjPIEqz3MblNGQoB9BWNl9YrencTp4w/uLEQT9pTZXKQjRFZkjKi5gKR+au2dA3YyuGrr6AZqxqSKUKsd2Qaul0I8GeRR/hFnzIpVNpbDqSTOCj+/maHYVFfSoqIJYWiiyh+kD5mgDYlV0go5UC8GORXBq5gl0Vpg6qe8=;
-In-Reply-To: <20170824102624.7b0ded11@pulsar.inexo.com.br>
+In-Reply-To: <CAOkSjBg2dsA+huYfJRakB8EDMY0_gTSwT9QA7xc8vfDw1eXvDw@mail.gmail.com>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: "Ethy H. Brito" <ethy.brito@inexo.com.br>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: Arturo Borrero Gonzalez <arturo@netfilter.org>
+Cc: Jeff Kletsky <netfilter@allycomm.com>, Netfilter Users Mailing list <netfilter@vger.kernel.org>
 
-On Thu, August 24, 2017 15:26, Ethy H. Brito wrote:
-> On Thu, 24 Aug 2017 14:58:24 +0200
-> "Walter H." <walter.h@mathemainzel.info> wrote:
->
->> Hello,
->>
->> -N VERIFY-HTTP
->> -A VERIFY-HTTP -m string --to 61 --algo bm --string "GET /w00tw00t.at."
->> \
->>                         -j LOG --log-prefix "IP[HTTP-SCAN]: "
->> --log-level 7
->> -A VERIFY-HTTP -j ACCEPT
->>
->> and
->>
->> -A INPUT -i eth1 -m tcp -p tcp --dport 80 -m state --state NEW -j
->> VERIFY-HTTP
->>
->> I would expect that HTTP requests like
->>
->> wget http://thishost/w00tw00t.at.SANS
->>
->> would be logged, but it isn't
->>
->> why?
->
-> Hi Walter.
->
-> In a perfect world, "NEW" tcp packets does not carry any payload.
->
-> "NEW", on a tcp streeam, is supposed to match the "SYN" package or the
-> first on
-> a "malformed" tcp stream. (more info at
-> http://www.iptables.info/en/connection-state.html and many others)
->
-> You should try something like:
->
-> -A INPUT -i eth1 -m tcp -p tcp --dport 80 -j VERIFY-HTTP
->
-> (not very effective since every packet will be scanned. I do not know what
-> are
-> your goals here and http servers is not may area of expertize but doesn't
-> your
-> http server has some traps to this?)
->
-> regards
->
-> Ethy
->
->
->
-this doesn't work either ...
+The referenced patch is, in fact, in the build I am using and have been 
+using. The deficit in error reporting is *not* resolved.
 
--A INPUT -i eth1 -m tcp -p tcp --dport 80 \
- -m string --to 61 --algo bm --string "GET /w00tw00t.at." \
- -j LOG --log-prefix "IP[HTTP-SCAN]: "
--A INPUT -i eth1 -m tcp -p tcp --dport 80 -m state --state NEW -j ACCEPT
+As Pablo requested, a fresh build was done and reported here that 
+confirmed again that the error-reporting problems were present, even 
+with that patch in place.
 
-but the strange thing, I have 3 identical (same Linux Distribution:
- CentOS 6, latest updates),
-on two of them (these are virtual servers at webhosters) this works,
-and one is phisical host (my router) this doesn't work ..., and I don't
-know why ...
+$ git log --oneline 509671dfa03365bba727b8be5e522b737da93a6f^..2017-08-19
 
-of course the webserver has logging facility, but the goal of this is
-to replace -j LOG ... with -j DROP
+where 2017-08-19 is my local build tag, confirms this.
 
-Thanks,
-Walter
+$ git log -1
+commit d74eed8c9649e9278b69f2cd0fd92f71e3e19cfb (HEAD -> master, tag: 
+2017-08-19, origin/master, origin/HEAD)
+Author: Varsha Rao <rvarsha016@gmail.com>
+Date:   Wed Aug 16 19:48:17 2017 +0530
+
+
+My posts are not about the bug itself, but trying to work through the 
+untenable combination of incomplete and/or inaccurate documentation and 
+arrive with a Linux-based firewall that I trust to work. Determining how 
+a security-sensitive process works by "poking at it with a stick" is 
+hardly considered best practice. There are things that you can't poke 
+and observe response that either need to be trusted (bad plan), or 
+documented as part of the nftables "contract" with its users.
+
+When I first started with nftables and found its documentation to be 
+sorely incomplete, I asked on the -devel list how I could best help with 
+documentation and there was no response.
+
+<https://wiki.nftables.org/wiki-nftables/index.php/Main_Page>
+Third line of the main page:
+"If you have any suggestion to improve it, please send your comments to 
+Netfilter users mailing list <netfilter@vger.kernel.org>."
+
+
+
+
+On 8/23/17 11:33 PM, Arturo Borrero Gonzalez wrote:
+>> The error message when the limit is exceeded for the "in-kernel" chain and
+>> set identifiers is similar to
+>>
+>>      nftables.conf:3:1-14: Error: Could not process rule: Numerical result
+>> out of range
+>>      flush ruleset
+>>      ^^^^^^^^^^^^^^
+>>
+> You complain again and again about this bug (bad error reporting) but
+> as Pablo told you already, this has been solved.
+> I know the bug is annoying, but this fixed code isn't included in v0.7.
+>
+> Reference:
+>   http://git.netfilter.org/nftables/commit/?id=509671dfa03365bba727b8be5e522b737da93a6f
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
 
