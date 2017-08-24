@@ -1,44 +1,37 @@
-From: khawar shehzad <shehzad.khawar@gmail.com>
-Subject: NFTABLES - Can we do filtering based on SRC address before doing DNAT
-Date: Thu, 24 Aug 2017 10:23:10 +0100
-Message-ID: <645e0d25-9505-b703-023c-75c5a5878494@gmail.com>
+From: "Walter H." <walter.h@mathemainzel.info>
+Subject: IPtables and String Match
+Date: Thu, 24 Aug 2017 14:58:24 +0200
+Message-ID: <3c4797dd17135f05badc81d9656c7e86.1503579504@squirrel.mail>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=LD5p79CUJkMeeZ/vGHU4GmVyhuqoDKdiLJTWeYLGnkE=;
-        b=jKEOhQqE1n2jGUpoUSh5Rt/qkvhKfSqCSFY7Pr+JvX1gVtZj0B0l4eK/EbNj7dEqD1
-         s7fjAfMJhDSMSOMfWhW6X2tIM3yT695ibE9AQo0D8SzWQi7VkzxJDXEo+o/iCEh/g/BQ
-         Snp3nuznJy7i+4KgJKiv0YoHAj9GZm6mYKNE+EfGRvd5X441Sv9RcfYn/svIJA6VmtFW
-         BAZD6tihzXdks6H59HcUaIgR+0/pVHCRXBBV0QGPWenyLg9zLQXzWcXorSHfWUVhR75A
-         CU7CPzY0B2amQbtSYBYmcxMiuxQbEN7K2dv8WVhjrrCJzeudk5DHViTiHYMgDq6KXVXl
-         4Qmg==
-Content-Language: en-GB
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mathemainzel.info; s=dkim11;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:To:From:Subject:Date:Message-ID; bh=4BGM4D9u6xvGYhN2izXaKTKhs2Kprlb9wrNGe/38vp0=;
+        b=wo6rSDgg0qzXrNgUis6cva/KKaPTqdnJP0O1IU8mZ3EIBErx5SrM2EP0uoyZkF+ezNUGnXOW54YHgo469oZEO+YCEfm6rAQvs3ZP44LmVGOP4vvQyUP2ntXgomp6NflIIyeEFTKWyFIZsnWYvGPN6LaY+VhRVdnnVf33ZhyUAHs=;
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi all,
+Hello,
 
-I hope all is well.
+-N VERIFY-HTTP
+-A VERIFY-HTTP -m string --to 61 --algo bm --string "GET /w00tw00t.at." \
+                        -j LOG --log-prefix "IP[HTTP-SCAN]: " --log-level 7
+-A VERIFY-HTTP -j ACCEPT
 
-Can we do filtering based on the source address before doing DNAT in 
-nftables?
+and
 
-If so are there any directions for them OR is there something that I 
-need to know.
+-A INPUT -i eth1 -m tcp -p tcp --dport 80 -m state --state NEW -j VERIFY-HTTP
 
-I heard that it can be done in iptables using raw table. But what about 
-nftables? I need to do it with nftables because I want to make use of 
-latest features e.g. verdict maps.
+I would expect that HTTP requests like
 
-Cheers,
+wget http://thishost/w00tw00t.at.SANS
 
-Khawar
+would be logged, but it isn't
 
-Infoginx.com
+why?
+
+Thanks,
+Walter
 
