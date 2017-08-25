@@ -1,40 +1,48 @@
-From: netfilter@allycomm.com
-Subject: Re: Can't override filter section OUTPUT DROP / INPUT DROP Policy
-Date: Fri, 25 Aug 2017 09:16:54 -0700
-Message-ID: <202e2fe9-12b2-4d6c-934f-02f8f23147b2@wagsky.com>
-References: <59A0313C.1020409@embarqmail.com>
- <84281c34-08f4-2979-ad33-78d8bec77c39@wagsky.com>
+From: Jeff Kletsky <netfilter@allycomm.com>
+Subject: [nftables][git] Current nftables HEAD requires new version of
+ libnftnl
+Date: Fri, 25 Aug 2017 10:17:54 -0700
+Message-ID: <00ce74ec-0be9-fbcb-be8d-191c80127fa5@wagsky.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <84281c34-08f4-2979-ad33-78d8bec77c39@wagsky.com>
 Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: netfilter@allycomm.com, gazoxtapod <gazoxtapod@embarqmail.com>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Ugh, here are the diagrams again, hopefully "protected" against spacing 
-changes this time!
+If anyone else tries a local build of nftables based on the current HEAD
 
-On 8/25/17 9:12 AM, netfilter@allycomm.com wrote:
-> . Approach 1 -- Provide staticroute to modem
->
-> . Modem ----- Router IF_ext                Router IF_int ----- 
-> internal net ----- RPi
-> .             203.0.113.123/24 - DHCP 192.168.168.1/24 -- static      
->        192.168.168.200/24 -- DHCP
-> .             192.168.0.2/24   - static 192.168.0.4/24   -- static
->
-> . Approach 2 -- Bridge to VLAN
->
-> . Modem ----- Router IF_ext                Router IF_int ----- 
-> internal net ----- RPi
-> .             203.0.113.123/24 - DHCP 192.168.168.1/24 - static      
->         192.168.168.200/24 - DHCP
-> .             Router IF_ext:1              Router 
-> IF_ext.1234                     RPi.1234 (or second adapter)
-> .             192.168.0.2/24   - static 192.168.0.3/24   - static 
->              192.168.0.4/24     - static
+~/build/nftables$ git log -1
+commit d3d56d0fe1856b7fe27584eb90e8349e883cd56b (HEAD -> master, tag: 
+2017-08-25, origin/master, origin/HEAD)
+Author: Pablo Neira Ayuso <pablo@netfilter.org>
+Date:   Thu Aug 24 17:56:38 2017 +0200
+
+
+a current version of libnftl appears required to avoid the following error
+
+netlink_linearize.c: In function 'netlink_gen_exthdr_stmt':
+netlink_linearize.c:836:28: error: 'NFTNL_EXPR_EXTHDR_SREG' undeclared 
+(first use in this function)
+   netlink_put_register(nle, NFTNL_EXPR_EXTHDR_SREG, sreg);
+                             ^
+
+The version of libnftl that caused that error was build from HEAD as of 
+2017-08-19
+
+
+
+The version of libnftl I am now using successfully is
+
+~/build/libnftnl$ git log -1
+commit 75fd5f1cd6fff96a6aef97a14f7916c984da53ef (HEAD -> master, tag: 
+2017-08-25, origin/master, origin/HEAD)
+Author: Florian Westphal <fw@strlen.de>
+Date:   Fri Jul 28 12:29:35 2017 +0200
+
+
+Jeff
 
 
