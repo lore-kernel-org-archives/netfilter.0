@@ -1,64 +1,53 @@
-From: pradeep <pradeep.malke@dexceldesigns.com>
-Subject: Getting "OUT OF ORDER" error
-Date: Mon, 28 Aug 2017 19:13:37 +0530
-Message-ID: <6605e7ef-c0cc-ed9a-aedd-903c58457eb6@dexceldesigns.com>
+From: Akshat Kakkar <akshat.1984@gmail.com>
+Subject: NFLOG Performance issues ...
+Date: Wed, 30 Aug 2017 23:09:13 +0530
+Message-ID: <CAA5aLPgoCdJcFZk0iScnNXNPjv04XbkFEdfAjpwq32u4xd8zPg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=jevYB6/KkuS9ktCc5lGp+QMYIAfJ/iQ9gFCLRRCnQPM=;
+        b=jdnBdWmoRObude0+1LRZA+EsBUlgAnoNrmVoATfkg9qKTSrnVkYnAyZk2FTThwnZ6W
+         SfEmnMXyDugRrCSLJT4dHK4HannsA1nfomTMLMTDcTGUPLLYH6BemtlimD65RWQNvBX6
+         YVc3X9cMxk/wM4aFTrbLDPWrtyOdNk1xghYXAUj30BSjlv7pbF/HNITSfUYJravSbdqA
+         s0PzKpJfTf6xLqcqc2VFlj56vWo4g6Fwfk9y7cijHBhFY0J7ZBUHDmC+sAP4bzL1CbbC
+         gqj/cjzkQAYN5z3htR3D6SZXYgRMpKs5Zo8w5ed782FnpgtCMx+s4XtPxDa+8gNWWZNS
+         WLRQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello,
+ am using ulogd2 to log iptables activity.
+However, when using pgsql as output plugin ... performance is very
+very sluggish. (~130-150 entries per second)
 
-I'm facing out of sequence errors, when I transmit traffic
-from source to destination through my netem configured box(router).
+To enhance performance I am trying
 
-I want to emulate delay by filtering traffic based on SRCIP and DESTIP
+modprobe ipt_ULOG nlbufsiz=65535 flushtimeout=1000
 
-Below is my setup
-+-----+                             +-----+         +-----+
-  |        | iface1---------eth0 |        | eth1------------iface2|        |
-+-----+ +-----+                               +-----+
-  source                netem configured box(router) destination
-
-iface1 ip:  10.0.0.10 gw 10.0.0.1
-iface2 ip:  20.0.0.10 gw 20.0.0.1
-
-eth0 : 10.0.0.1
-eth2 : 20.0.0.1
+but this gives error : ipt_ULOG module not found.
 
 
-Below are the commands i used on eth0 and eth1 to emulate delay
+On the same lines, I tried
 
-   tc qdisc add dev INFACE root handle 1: htb default 10
-   tc class add dev  INFACE parent 1: classid 1:1 htb rate $RATE ceil 
-10000mbit
-   tc class add dev INFACE parent 1:1 classid 1:11 htb rate $RATE ceil 
-10000mbit
-   tc qdisc add dev INFACE parent 1:11 handle 11:0 netem delay 10ms 
-limit 100000
+modprobe ipt_NFLOG nlbufsiz=65535 flushtimeout=1000
+It didnt give any error !!!
 
-IFACE: eth0 and eth1
+But still there is no increase in performance.
+Are these values effective?
 
-Below command is to filter the traffic
-   iptables -t mangle -A POSTROUTING -s 10.0.0.10 -d  20.0.0.10 -j 
-CLASSIFY --set-class 1:11
+I am also using  --nflog-threshold 50 in iptables rule.
 
+I am setting buffer_size as
+netlink_socket_buffer_size=104857600
+netlink_socket_buffer_maxsize=1048576000
 
-   when i send traffic through iperf3 from source to destination it 
-applies the desired delay, but with OUT OF ORDER errors
-
-iperf3 commands:
-source
-          iperf3 -c 20.0.0.10 -i 1 -u -b 10g (sending traffic)
-
-destination
-            iperf3 -s (reciving out of order errors)
-
-Note: I'm using 10g NIC
-
-Let me if im doing anything wrong.
-
+When running ulog, it gives message of setting buffer size as
+21708600. Though it didnt give any message like
+"ulogd_inppkt_NFLOG.c:443 We are losing events, increasing buffer size
+to xxxxxx"
+but again why it is only setting buffer size as 21708600 though I have
+set in config as 104857600?
