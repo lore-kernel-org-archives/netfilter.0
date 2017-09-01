@@ -1,21 +1,35 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: NFLOG Performance issues ...
-Date: Fri, 1 Sep 2017 11:43:19 +0200
-Message-ID: <20170901094319.GA2519@salvia>
-References: <CAA5aLPgoCdJcFZk0iScnNXNPjv04XbkFEdfAjpwq32u4xd8zPg@mail.gmail.com>
- <CAA5aLPgAktg8etg=Zq0ihbcTB0F9MyDf_KQaVRNHQi-ubWdJXQ@mail.gmail.com>
+Subject: Re: Possible nftables U32 equivalent to read packet's data contents
+Date: Fri, 1 Sep 2017 12:30:04 +0200
+Message-ID: <20170901103004.GA16773@salvia>
+References: <f337fb23f03b4a60ae45f24a49dd7696@nalasexr02h.na.qualcomm.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAA5aLPgAktg8etg=Zq0ihbcTB0F9MyDf_KQaVRNHQi-ubWdJXQ@mail.gmail.com>
+In-Reply-To: <f337fb23f03b4a60ae45f24a49dd7696@nalasexr02h.na.qualcomm.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Akshat Kakkar <akshat.1984@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Raul Martinez <mraul@qti.qualcomm.com>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Fri, Sep 01, 2017 at 12:09:45AM +0530, Akshat Kakkar wrote:
-> Please help .... I hope I am not alone!!!
+Hi Raul,
 
-http://netfilter.org/mailinglists.html#list-rules
+On Wed, Aug 30, 2017 at 09:59:26PM +0000, Raul Martinez wrote:
+> Hi all,
+>=20
+> Looking for a way to implement an expression that can read the first
+> few bytes of an packet's data contents.  It seems this is only
+> possible using raw expressions such as @ll and @nh=A0 with an offset
+> that goes past the header length and into the packet's data.  Is
+> there another keyword that supports u32 behavior that I am missing?
+> Will this approach fail because of some internal check to prevent
+> out of bounds reads?
+>=20
+> Another question is if raw expressions have been fixed or is there a
+> kernel change required to enable raw expressions?  I still get the
+> below error when I try to use 2017 nftables.=20
+
+If not much asking, what application layer patterns would you like to
+match?
