@@ -1,33 +1,36 @@
-From: Akshat Kakkar <akshat.1984@gmail.com>
-Subject: Re: NFLOG Performance issues ...
-Date: Sat, 2 Sep 2017 21:40:25 +0530
-Message-ID: <CAA5aLPgxg5pSh1HJ6z5C1wiWXzrjCXj70wFe9_JESFfLgES1rw@mail.gmail.com>
-References: <CAA5aLPgoCdJcFZk0iScnNXNPjv04XbkFEdfAjpwq32u4xd8zPg@mail.gmail.com>
- <CAA5aLPgAktg8etg=Zq0ihbcTB0F9MyDf_KQaVRNHQi-ubWdJXQ@mail.gmail.com> <20170901094319.GA2519@salvia>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Possible nftables U32 equivalent to read packet's data contents
+Date: Mon, 4 Sep 2017 22:55:21 +0200
+Message-ID: <20170904205521.GA14891@salvia>
+References: <f337fb23f03b4a60ae45f24a49dd7696@nalasexr02h.na.qualcomm.com>
+ <20170901103004.GA16773@salvia>
+ <c57ba9690f0d4ec680ce16599e8b15da@nalasexr02h.na.qualcomm.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=oOKjOP3+xXNRzHBKH/9HM2GZwkcLpZZvgQuwtoTve1g=;
-        b=E881H0ODP+Cv7oQzDcdJedoBTXnyE5L7EfqbwTBbEv2JnLy12JYa1HPE9vEbkD4HxJ
-         su2Z8U1EXxMzk84rECF7IAux7GJVUjjiHz4Fy7XD8Pr0DYDb9sgrlohpgrIlQ3ex1aYo
-         MD6RPblmj+xWOImlMovoydE/QtuFEeJz5Uqy69FdptPCMaeimuKiAaEvQNYmBIF00wvb
-         PUbKIR+1gSUV/JS/A7SULcGnJVM8jZpWxdJO3DTdRoEq7iqAIwgLrhWDOGSCsUMTAeRI
-         QrvDMapC344sHIHiBkg2/ZPr5fwFM/iavaMqfVY/9hI5A5z5/DWLFdIqjcrGSQ+grV4T
-         xUjw==
-In-Reply-To: <20170901094319.GA2519@salvia>
+Content-Disposition: inline
+In-Reply-To: <c57ba9690f0d4ec680ce16599e8b15da@nalasexr02h.na.qualcomm.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+To: Raul Martinez <mraul@qti.qualcomm.com>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Apologies for missing out on those. I thought those are only for
-subject. Anyways, will keep a note in future.
+Hi Raul,
 
-But, has anybody faced or experienced similar issues with NFLOG performance ?
-Besides, for last 2 years or more ... It has not seen any much direct
-development also. So, is it like some other utility need to be used?
+On Fri, Sep 01, 2017 at 04:39:35PM +0000, Raul Martinez wrote:
+> Hi Pablo,
+> 
+> Ultimately my use would be to read the first byte of a ESP IP 
+> packet's data payload. So IP layer is where I would want the 
+> expression to work in.
+> 
+> The packets I am working with are identical and need to be 
+> routed to one of two interfaces based on if the first byte of 
+> the data contents is non-zero. 
+
+OK, so it's just an arbitrary byte. Not anything in a standard header
+that needs to be matched.
+
+I'm asking because we could add the protocol definition for what you
+need, so we don't need to use raw expressions.
