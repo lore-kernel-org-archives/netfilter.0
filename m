@@ -1,36 +1,40 @@
-From: Arturo Borrero Gonzalez <arturo@netfilter.org>
-Subject: Re: NFLOG Performance issues ...
-Date: Wed, 13 Sep 2017 11:36:57 +0200
-Message-ID: <CAOkSjBjSw=5j71Mgi0XnDJXkRDod3qD_YcWR4hZ7dUfzUmddbQ@mail.gmail.com>
-References: <CAA5aLPgoCdJcFZk0iScnNXNPjv04XbkFEdfAjpwq32u4xd8zPg@mail.gmail.com>
- <CAA5aLPgAktg8etg=Zq0ihbcTB0F9MyDf_KQaVRNHQi-ubWdJXQ@mail.gmail.com>
- <20170901094319.GA2519@salvia> <CAA5aLPgxg5pSh1HJ6z5C1wiWXzrjCXj70wFe9_JESFfLgES1rw@mail.gmail.com>
- <CAA5aLPhjaOat800R+Wk4cqScw0YGxWx_UnHAfzT3Ln5NrUXhCw@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Change source or destination for packets arriving locally (for
+ Direct Server Return)
+Date: Wed, 13 Sep 2017 12:10:05 +0200
+Message-ID: <20170913101005.GA2661@salvia>
+References: <3B3CC463-CF1E-4020-83E0-5C10C065DD1A@creamfinance.com>
+ <CAOkSjBh4nkZ25_oxmkK6W5uFQnMUc7_nCdC+LVA90jbqhdALPA@mail.gmail.com>
+ <E2AE9F76-4DD3-4DB2-8AB9-BA179BB1A046@creamfinance.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAA5aLPhjaOat800R+Wk4cqScw0YGxWx_UnHAfzT3Ln5NrUXhCw@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <E2AE9F76-4DD3-4DB2-8AB9-BA179BB1A046@creamfinance.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Akshat Kakkar <akshat.1984@gmail.com>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: Thomas Rosenstein <thomas.rosenstein@creamfinance.com>
+Cc: Arturo Borrero Gonzalez <arturo@netfilter.org>, Netfilter Users Mailing list <netfilter@vger.kernel.org>
 
-On 5 September 2017 at 14:50, Akshat Kakkar <akshat.1984@gmail.com> wrote:
-> I am not able to log more than 150/sec.
->
-> Can anybody share their performance results when writing logs from
-> NFLOG/ULOG to postgres or mysql.
->
-> Please share your performance parameters too.
->
+On Wed, Sep 13, 2017 at 11:36:56AM +0200, Thomas Rosenstein wrote:
+> Hi,
+> 
+> I have to check it out, but in the mean time I already wrote my small
+> iptables plugin to rewrite the dst-addr.
+> 
+> let's call it pre-alpha:
+> 
+> https://github.com/creamfinance/dstwrite
 
-Hi,
+Did you try packet field mangling?
 
-I sent a patch other day regarding performance of ulogd2 [0].
-Please, read the patch description, where I summarice different
-approaches for increasing the performance of the daemon.
+https://wiki.nftables.org/wiki-nftables/index.php/Mangle_packet_header_fields
 
-It would be great if could give a test to the patch and report back :-)
+You need a Linux kernel >= 4.10.
 
-[0] http://patchwork.ozlabs.org/patch/810976/
+Syntax is simple, eg.
+
+        ip daddr set 1.2.3.4
+
+
