@@ -1,65 +1,36 @@
-From: "Thomas Rosenstein" <thomas.rosenstein@creamfinance.com>
-Subject: Re: Change source or destination for packets arriving locally (for
- Direct Server Return)
-Date: Wed, 13 Sep 2017 11:36:56 +0200
-Message-ID: <E2AE9F76-4DD3-4DB2-8AB9-BA179BB1A046@creamfinance.com>
-References: <3B3CC463-CF1E-4020-83E0-5C10C065DD1A@creamfinance.com>
- <CAOkSjBh4nkZ25_oxmkK6W5uFQnMUc7_nCdC+LVA90jbqhdALPA@mail.gmail.com>
+From: Arturo Borrero Gonzalez <arturo@netfilter.org>
+Subject: Re: NFLOG Performance issues ...
+Date: Wed, 13 Sep 2017 11:36:57 +0200
+Message-ID: <CAOkSjBjSw=5j71Mgi0XnDJXkRDod3qD_YcWR4hZ7dUfzUmddbQ@mail.gmail.com>
+References: <CAA5aLPgoCdJcFZk0iScnNXNPjv04XbkFEdfAjpwq32u4xd8zPg@mail.gmail.com>
+ <CAA5aLPgAktg8etg=Zq0ihbcTB0F9MyDf_KQaVRNHQi-ubWdJXQ@mail.gmail.com>
+ <20170901094319.GA2519@salvia> <CAA5aLPgxg5pSh1HJ6z5C1wiWXzrjCXj70wFe9_JESFfLgES1rw@mail.gmail.com>
+ <CAA5aLPhjaOat800R+Wk4cqScw0YGxWx_UnHAfzT3Ln5NrUXhCw@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=creamfinance.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version;
-        bh=CjpFs2dZbeQJxib1LaIWFpFnqhVSRr3Kr6Q1coBkzvI=;
-        b=gMKkryUiHyOXJiJ7YiEZ4zcYuvL473zQn/YS+JLHn7emrTvgdD4A8ihkmnnlhgbspW
-         AWpD5PbFPde8lLN/xcBiDy6jaTu0p1jftijukQHCpP9ijoIMHc8u4wz+XlM3fulab9Hb
-         AztsP6SJzwx6rswXyN5C+8YEtiZq7ceA1SUi0=
-In-Reply-To: <CAOkSjBh4nkZ25_oxmkK6W5uFQnMUc7_nCdC+LVA90jbqhdALPA@mail.gmail.com>
+In-Reply-To: <CAA5aLPhjaOat800R+Wk4cqScw0YGxWx_UnHAfzT3Ln5NrUXhCw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; format=flowed; markup=markdown; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Arturo Borrero Gonzalez <arturo@netfilter.org>
-Cc: Netfilter Users Mailing list <netfilter@vger.kernel.org>
+To: Akshat Kakkar <akshat.1984@gmail.com>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+
+On 5 September 2017 at 14:50, Akshat Kakkar <akshat.1984@gmail.com> wrote:
+> I am not able to log more than 150/sec.
+>
+> Can anybody share their performance results when writing logs from
+> NFLOG/ULOG to postgres or mysql.
+>
+> Please share your performance parameters too.
+>
 
 Hi,
 
-I have to check it out, but in the mean time I already wrote my small 
-iptables plugin to rewrite the dst-addr.
+I sent a patch other day regarding performance of ulogd2 [0].
+Please, read the patch description, where I summarice different
+approaches for increasing the performance of the daemon.
 
-let's call it pre-alpha:
+It would be great if could give a test to the patch and report back :-)
 
-https://github.com/creamfinance/dstwrite
-
-BR
-Thomas
-
-On 13 Sep 2017, at 11:34, Arturo Borrero Gonzalez wrote:
-
-> On 12 September 2017 at 08:00, Thomas Rosenstein
-> <thomas.rosenstein@creamfinance.com> wrote:
->> Hello,
->>
->> I'm trying to setup L3 load balancing (with direct server return) 
->> which
->> requires me to send back or receive packets with a certain src/dst 
->> address,
->> but for these packets the dst address is replaced on the load 
->> balancer, then
->> routed and are arriving on my linux container.
->>
->
->
-> I guess you could do this with nftables. You can perform this kind of
-> load balancing with nftables out of the box [0].
-> Note that nftables should be able to work with DSCP, so you can
-> combine both things (matching, load-balancing) with the same
-> technology.
->
-> Please, read the docs in our wiki and do some tests.  After that, it
-> would be great if you come back here and report your experience :-)
-> Perhaps we can generate a concrete example and put it in the wiki for
-> future references.
->
-> [0] https://wiki.nftables.org/wiki-nftables/index.php/Load_balancing
+[0] http://patchwork.ozlabs.org/patch/810976/
