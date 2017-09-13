@@ -1,45 +1,39 @@
 From: Arturo Borrero Gonzalez <arturo@netfilter.org>
-Subject: Re: An article on writing custom expression for nftables
-Date: Wed, 13 Sep 2017 08:59:52 +0200
-Message-ID: <CAOkSjBg5ygFUzt7m7YvG1G4871WPcKME_Zb94cKCxEiS8agdHA@mail.gmail.com>
-References: <CAMtaSwQjaLxz=QxM+ryZ+0r-TxuNkGjGVAi+ht+oqvTqx2pEcg@mail.gmail.com>
+Subject: Re: Change source or destination for packets arriving locally (for
+ Direct Server Return)
+Date: Wed, 13 Sep 2017 11:34:03 +0200
+Message-ID: <CAOkSjBh4nkZ25_oxmkK6W5uFQnMUc7_nCdC+LVA90jbqhdALPA@mail.gmail.com>
+References: <3B3CC463-CF1E-4020-83E0-5C10C065DD1A@creamfinance.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAMtaSwQjaLxz=QxM+ryZ+0r-TxuNkGjGVAi+ht+oqvTqx2pEcg@mail.gmail.com>
+In-Reply-To: <3B3CC463-CF1E-4020-83E0-5C10C065DD1A@creamfinance.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Xiang Gao <qasdfgtyuiop@gmail.com>
+To: Thomas Rosenstein <thomas.rosenstein@creamfinance.com>
 Cc: Netfilter Users Mailing list <netfilter@vger.kernel.org>
 
-On 13 September 2017 at 06:33, Xiang Gao <qasdfgtyuiop@gmail.com> wrote:
-> Hi All,
+On 12 September 2017 at 08:00, Thomas Rosenstein
+<thomas.rosenstein@creamfinance.com> wrote:
+> Hello,
 >
-> I write an article introducing how to write a kernel module and modify
-> user space tool, i.e. libnftnl and nftables, to add custom experssion.
-> The article is at:
->
-> https://zasdfgbnm.github.io/2017/09/07/Extending-nftables/
->
-> Hope this article is helpful.
-
-Thanks Xiang, the article is indeed very useful.
-
->
-> To admins of nftables wiki:
-> If you think this article is good, would you mind give a link to this
-> article somewhere in the wiki?
+> I'm trying to setup L3 load balancing (with direct server return) which
+> requires me to send back or receive packets with a certain src/dst address,
+> but for these packets the dst address is replaced on the load balancer, then
+> routed and are arriving on my linux container.
 >
 
-Sure! I just added the link [0].
 
-We are interested in offering this kind of information natively from
-our wiki as well, so we may reuse part of your work.
-This is specially interesting for newcomers to the Netfilter project,
-and also for GSoC/Outreachy people.
+I guess you could do this with nftables. You can perform this kind of
+load balancing with nftables out of the box [0].
+Note that nftables should be able to work with DSCP, so you can
+combine both things (matching, load-balancing) with the same
+technology.
 
-If you would like to contribute technical documentation for
-developers, we could give you a wiki account, let me know :-)
+Please, read the docs in our wiki and do some tests.  After that, it
+would be great if you come back here and report your experience :-)
+Perhaps we can generate a concrete example and put it in the wiki for
+future references.
 
-[0] https://wiki.nftables.org/wiki-nftables/index.php/Main_Page#External_links
+[0] https://wiki.nftables.org/wiki-nftables/index.php/Load_balancing
