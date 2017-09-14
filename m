@@ -1,153 +1,39 @@
-From: khawar shehzad <shehzad.khawar@gmail.com>
-Subject: How to use Netlink to create a concatination based verdict-map
- element in nftables?
-Date: Thu, 14 Sep 2017 09:59:17 +0100
-Message-ID: <7a1e91ed-97ff-6668-271b-62da0756fdce@gmail.com>
+From: Imran Geriskovan <imran.geriskovan@gmail.com>
+Subject: Re: IPtables and HTTP/2-Push?
+Date: Thu, 14 Sep 2017 12:58:38 +0200
+Message-ID: <CAK5rZE5RhzuHT+f+jpUGpzS7WnorSoUK8xtbOQLMSFjweTvmEg@mail.gmail.com>
+References: <ba7e09d692a6bdb55ad32d7e106e33c7.1505378527@squirrel.mail>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=XUAkYT7E+RAFudSvKkzPOjOyM5nTeleYCxx1m7n64xM=;
-        b=Cly6mvPPRBC/zZ0xagVSTRecM3agqL7xJ8bPh8EOZirjOYa25id3Rf6oYdK/LGDoCF
-         IoKJSu3LHENcTqwGjzR0vWt5OCfZItIdbEn+4+zHbub00K0aslpto8E9OBI5PdJoD9uB
-         rLFgNJlF4ahfFI941TeneStjVQkhQdTOtmBKr/Jjg4qlBsWhgHlW64r8Ww52nk6boe3C
-         kb2zmt1iiaYTqAJsO6XPGj7BKdpGWWuP0pjX6syyXr8amt5Xm7GiLhaLxXpomQoJA8g4
-         0NfRHQAdfFmhUMSQN329wipsOsKGPemldCAb6y738hhs2NXWw+ylR3lIyQNklWzS5vO9
-         WiKg==
-Content-Language: en-GB
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc;
+        bh=nTU1CmTyxmGanpTxurOrofctqI5+R64R2EykVZwpW+Y=;
+        b=EErpjGcNuUJFoJlvE4xccqVLZrkzJVnxRjcaY2IrGyAkglPLdIbsaEN7fVFSnEQLWg
+         h5peW+ZeqJUmnUciu6a2dchhuDM0NYCX0nrbROELLRkoR5rKLkCKK/qZYbLzgQMZ5WZR
+         7kSp0WPUChdHPfU/NGjrvLSKcnFsDkfdSdY7SNnwrVGKL8ZpGDssyb8vOhDYfgKgm3NC
+         UNw/64gdfhdxDMpv3m6Ol0nJ1nFlqTTuiIqRHHCu80vVIDTXfZmmShCz03CBeke9olsT
+         SSPc6dJ7BJoydNaMwGImZwoEFpseaqdpxGRyGeaOZ1xJPpTOCcsSGjr7U2KQ15/9OHaE
+         YF+A==
+In-Reply-To: <ba7e09d692a6bdb55ad32d7e106e33c7.1505378527@squirrel.mail>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Walter H." <walter.h@mathemainzel.info>
+Cc: netfilter@vger.kernel.org
 
-Hi,
+On 9/14/17, Walter H. <walter.h@mathemainzel.info> wrote:
+> Hello,
+> when I have these two rules on client side (Browser)
+> or on firewalls/routers
+> what happens to to packets that the Server pushes without request?
+> I ask this because I see in the logs regularly a few entries like this
+> as I filtered away INVALID, I can imagine, that these blocked packets come
+> from HTTP/2-Push ...
+> Am i right?
 
-I have the following code but not working, can anybody have a look. I 
-don't know what I am missing here.
-
-int nft_vmap_elem_do(int action, const char* cip, const char* eip, const 
-char* table, const char* vmap, const char *verdict)
-{
-struct mnl_socket *nl;
-char buf[MNL_SOCKET_BUFFER_SIZE];
-struct mnl_nlmsg_batch *batch;
-struct nlmsghdr *nlh;
-uint32_t portid, seq, family;
-struct nftnl_set *s;
-struct nftnl_set_elem *e;
-uint16_t data;
-int ret;
-s = nftnl_set_alloc();
-if (s == NULL) {
-perror("OOM");
-exit(EXIT_FAILURE);
-}
-
-
-seq = time(NULL);
-family = NFPROTO_IPV6;
-
-
-nftnl_set_set(s, NFTNL_SET_TABLE, table);
-nftnl_set_set(s, NFTNL_SET_NAME, vmap);
-nftnl_set_set_u32(s, NFTNL_SET_FLAGS, NFT_SET_MAP);
-
-
-e = nftnl_set_elem_alloc();
-if (e == NULL) {
-perror("OOM");
-exit(EXIT_FAILURE);
-}
-
-
-struct sockaddr_in6 sa1,sa2;
-inet_pton(AF_INET6, cip, &(sa1.sin6_addr));
-inet_pton(AF_INET6, eip, &(sa2.sin6_addr));
-nftnl_set_elem_set(e, NFTNL_SET_ELEM_KEY, &(sa1.sin6_addr), 16);
-nftnl_set_elem_set(e, NFTNL_SET_ELEM_KEY, &(sa2.sin6_addr), 16);
-//uint32_t v = htonl(1);
-uint32_t v = 1;
-nftnl_set_elem_set_u32(e, NFTNL_SET_ELEM_VERDICT, v);
-nftnl_set_elem_add(s, e);
-
-
-batch = mnl_nlmsg_batch_start(buf, sizeof(buf));
-
-
-nftnl_batch_begin(mnl_nlmsg_batch_current(batch), seq++);
-mnl_nlmsg_batch_next(batch);
-switch(action){
-case NFT_VMAP_ADD_ELEM:
-nft_vmap_elem_do(NFT_VMAP_DEL_ELEM, cip, eip, table, vmap, verdict);
-nlh = nftnl_nlmsg_build_hdr(mnl_nlmsg_batch_current(batch),
-NFT_MSG_NEWSETELEM, family,
-NLM_F_CREATE | NLM_F_REPLACE | NLM_F_ACK,
-seq++);
-break;
-case NFT_VMAP_DEL_ELEM:
-nlh = nftnl_nlmsg_build_hdr(mnl_nlmsg_batch_current(batch),
-NFT_MSG_DELSETELEM, family,
-NLM_F_ACK,
-seq++);
-
-
-break;
-}
-nftnl_set_elems_nlmsg_build_payload(nlh, s);
-nftnl_set_free(s);
-mnl_nlmsg_batch_next(batch);
-
-
-nftnl_batch_end(mnl_nlmsg_batch_current(batch), seq++);
-mnl_nlmsg_batch_next(batch);
-
-
-nl = mnl_socket_open(NETLINK_NETFILTER);
-if (nl == NULL) {
-perror("mnl_socket_open");
-exit(EXIT_FAILURE);
-}
-
-
-if (mnl_socket_bind(nl, 0, MNL_SOCKET_AUTOPID) < 0) {
-perror("mnl_socket_bind");
-exit(EXIT_FAILURE);
-}
-portid = mnl_socket_get_portid(nl);
-
-
-if (mnl_socket_sendto(nl, mnl_nlmsg_batch_head(batch),
-mnl_nlmsg_batch_size(batch)) < 0) {
-perror("mnl_socket_send");
-exit(EXIT_FAILURE);
-}
-
-
-mnl_nlmsg_batch_stop(batch);
-
-
-ret = mnl_socket_recvfrom(nl, buf, sizeof(buf));
-while (ret > 0) {
-ret = mnl_cb_run(buf, ret, 0, portid, NULL, NULL);
-if (ret <= 0)
-break;
-ret = mnl_socket_recvfrom(nl, buf, sizeof(buf));
-}
-if (ret == -1) {
-perror("error");
-//exit(EXIT_FAILURE);
-}
-mnl_socket_close(nl);
-
-
-return EXIT_SUCCESS;
-}
-
-
-///////////////////////////////////////////////////////////////
-Cheers,
-Khawar
-
+As far as I know http2 pushes content over already open tcp
+connections. So I guess that invalid packets are probably unrelated
+to http2.
