@@ -1,142 +1,164 @@
-From: "Walter H." <Walter.H@mathemainzel.info>
-Subject: Re: IPtables and HTTP/2-Push?
-Date: Sun, 17 Sep 2017 09:42:39 +0200
-Message-ID: <59BE276F.9080507@mathemainzel.info>
-References: <ba7e09d692a6bdb55ad32d7e106e33c7.1505378527@squirrel.mail>
+From: Duncan Roe <duncan_roe@optusnet.com.au>
+Subject: Re: How to use Netlink to create a concatination based verdict-map
+ element in nftables?
+Date: Mon, 18 Sep 2017 11:14:20 +1000
+Message-ID: <20170918011419.GA19455@dimstar.local.net>
+References: <7a1e91ed-97ff-6668-271b-62da0756fdce@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha1; boundary="------------ms020107010505030409010004"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mathemainzel.info; s=dkim11;
-        h=Content-Type:In-Reply-To:References:Subject:To:MIME-Version:From:Date:Message-ID; bh=uUzsGcYjNwCZmCiWwX+V/mOEBH8Prqi8Y5x65E1zR6o=;
-        b=vnhBF20xv0S+xDmQfAWDCVtD4GflUX+cgxCggzcYJBxFAf6pVLT3n4qCoXaAsvbULuUSXd7S2V0NP8Ve/9JjfWubdoMFF89a+RdXDzxD25esLe4PrNWOdXSe1ep4b//0b3KZ0rfxAyZROJPcNRxpT1pxYCmBstrT2UXTmyPS8J0=;
-In-Reply-To: <ba7e09d692a6bdb55ad32d7e106e33c7.1505378527@squirrel.mail>
+Content-Disposition: inline
+In-Reply-To: <7a1e91ed-97ff-6668-271b-62da0756fdce@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-This is a cryptographically signed message in MIME format.
+On Thu, Sep 14, 2017 at 09:59:17AM +0100, khawar shehzad wrote:
+> Hi,
+>
+> I have the following code but not working, can anybody have a look. I don't
+> know what I am missing here.
+>
+> int nft_vmap_elem_do(int action, const char* cip, const char* eip, const
+> char* table, const char* vmap, const char *verdict)
+> {
+> struct mnl_socket *nl;
+> char buf[MNL_SOCKET_BUFFER_SIZE];
+> struct mnl_nlmsg_batch *batch;
+> struct nlmsghdr *nlh;
+> uint32_t portid, seq, family;
+> struct nftnl_set *s;
+> struct nftnl_set_elem *e;
+> uint16_t data;
+> int ret;
+> s = nftnl_set_alloc();
+> if (s == NULL) {
+> perror("OOM");
+> exit(EXIT_FAILURE);
+> }
+>
+>
+> seq = time(NULL);
+> family = NFPROTO_IPV6;
+>
+>
+> nftnl_set_set(s, NFTNL_SET_TABLE, table);
+> nftnl_set_set(s, NFTNL_SET_NAME, vmap);
+> nftnl_set_set_u32(s, NFTNL_SET_FLAGS, NFT_SET_MAP);
+>
+>
+> e = nftnl_set_elem_alloc();
+> if (e == NULL) {
+> perror("OOM");
+> exit(EXIT_FAILURE);
+> }
+>
+>
+> struct sockaddr_in6 sa1,sa2;
+> inet_pton(AF_INET6, cip, &(sa1.sin6_addr));
+> inet_pton(AF_INET6, eip, &(sa2.sin6_addr));
+> nftnl_set_elem_set(e, NFTNL_SET_ELEM_KEY, &(sa1.sin6_addr), 16);
+> nftnl_set_elem_set(e, NFTNL_SET_ELEM_KEY, &(sa2.sin6_addr), 16);
+> //uint32_t v = htonl(1);
+> uint32_t v = 1;
+> nftnl_set_elem_set_u32(e, NFTNL_SET_ELEM_VERDICT, v);
+> nftnl_set_elem_add(s, e);
+>
+>
+> batch = mnl_nlmsg_batch_start(buf, sizeof(buf));
+>
+>
+> nftnl_batch_begin(mnl_nlmsg_batch_current(batch), seq++);
+> mnl_nlmsg_batch_next(batch);
+> switch(action){
+> case NFT_VMAP_ADD_ELEM:
+> nft_vmap_elem_do(NFT_VMAP_DEL_ELEM, cip, eip, table, vmap, verdict);
+> nlh = nftnl_nlmsg_build_hdr(mnl_nlmsg_batch_current(batch),
+> NFT_MSG_NEWSETELEM, family,
+> NLM_F_CREATE | NLM_F_REPLACE | NLM_F_ACK,
+> seq++);
+> break;
+> case NFT_VMAP_DEL_ELEM:
+> nlh = nftnl_nlmsg_build_hdr(mnl_nlmsg_batch_current(batch),
+> NFT_MSG_DELSETELEM, family,
+> NLM_F_ACK,
+> seq++);
+>
+>
+> break;
+> }
+> nftnl_set_elems_nlmsg_build_payload(nlh, s);
+> nftnl_set_free(s);
+> mnl_nlmsg_batch_next(batch);
+>
+>
+> nftnl_batch_end(mnl_nlmsg_batch_current(batch), seq++);
+> mnl_nlmsg_batch_next(batch);
+>
+>
+> nl = mnl_socket_open(NETLINK_NETFILTER);
+> if (nl == NULL) {
+> perror("mnl_socket_open");
+> exit(EXIT_FAILURE);
+> }
+>
+>
+> if (mnl_socket_bind(nl, 0, MNL_SOCKET_AUTOPID) < 0) {
+> perror("mnl_socket_bind");
+> exit(EXIT_FAILURE);
+> }
+> portid = mnl_socket_get_portid(nl);
+>
+>
+> if (mnl_socket_sendto(nl, mnl_nlmsg_batch_head(batch),
+> mnl_nlmsg_batch_size(batch)) < 0) {
+> perror("mnl_socket_send");
+> exit(EXIT_FAILURE);
+> }
+>
+>
+> mnl_nlmsg_batch_stop(batch);
+>
+>
+> ret = mnl_socket_recvfrom(nl, buf, sizeof(buf));
+> while (ret > 0) {
+> ret = mnl_cb_run(buf, ret, 0, portid, NULL, NULL);
+> if (ret <= 0)
+> break;
+> ret = mnl_socket_recvfrom(nl, buf, sizeof(buf));
+> }
+> if (ret == -1) {
+> perror("error");
+> //exit(EXIT_FAILURE);
+> }
+> mnl_socket_close(nl);
+>
+>
+> return EXIT_SUCCESS;
+> }
+>
+>
+> ///////////////////////////////////////////////////////////////
+> Cheers,
+> Khawar
+>
+Hi Khawar,
 
---------------ms020107010505030409010004
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
+I tried to build your code, but after inserting
 
-On 14.09.2017 10:42, Walter H. wrote:
-> Hello,
->
-> when I have these two rules on client side (Browser)
->
-> # Allow anything out on WAN
-> -A OUTPUT -o iface-wan -j ACCEPT
-> # Allow established, related packets back in
-> -A INPUT -i iface-wan -m state --state ESTABLISHED,RELATED -j ACCEPT
->
-> or on firewalls/routers
->
-> # Allow anything out on WAN
-> -A FORWARD -i iface-lan -o iface-wan -j ACCEPT
-> # Allow established, related packets back in
-> -A FORWARD -i iface-wan -o iface-lan -m state --state ESTABLISHED,RELAT=
-ED
-> -j ACCEPT
->
->
-> what happens to to packets that the Server pushes without request?
->
-> I ask this because I see in the logs regularly a few entries like this
->
-> [13-Sep-2017; 16:42:06.415850] IPv6[FWD]: IN=3Dsit1 OUT=3Dbr0
-> SRC=3D2a00:1450:4001:0811:0000:0000:0000:200e
-> DST=3DLANprefix:0000:0000:0000:1234 LEN=3D123 TC=3D0 HOPLIMIT=3D60 FLOW=
-LBL=3D262223
->
-> as I filtered away INVALID, I can imagine, that these blocked packets c=
-ome
-> from HTTP/2-Push ...
->
-> Am i right?
->
-> Greetings,
-> Walter
->
-p.s. this is not limited to IPv6,
-also IPv4
-e.g.
-[17-Sep-2017; 08:42:21.259878] IP[IN]: IN=3Deth1 OUT=3D=20
-MAC=3D24:xx:xx:xx:xx:24:24:xx:xx:xx:xx:24:08:00 SRC=3D151.101.112.188=20
-DST=3D#WAN-IP# LEN=3D115 TOS=3D0x00 PREC=3D0x00 TTL=3D59 ID=3D63615 DF PR=
-OTO=3DTCP=20
-SPT=3D443 DPT=3D53156 WINDOW=3D57 RES=3D0x00 ACK PSH URGP=3D0
+#include <time.h>
+#include <stdlib.h>
+#include <arpa/inet.h>
+#include <netinet/in.h>
+#include <libnftnl/set.h>
+#include <libmnl/libmnl.h>
+#include <libipset/nfproto.h>
+#include <linux/netfilter/nf_tables.h>
 
+at start of the code, I am still getting NFT_VMAP_ADD_ELEM & NFT_VMAP_DEL_ELEM
+undefined.
 
---------------ms020107010505030409010004
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+Where are they please?
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIKBDCC
-BOgwggPQoAMCAQICDkgbagkTvYAkyl0i8BTzMA0GCSqGSIb3DQEBCwUAMEwxIDAeBgNVBAsT
-F0dsb2JhbFNpZ24gUm9vdCBDQSAtIFIzMRMwEQYDVQQKEwpHbG9iYWxTaWduMRMwEQYDVQQD
-EwpHbG9iYWxTaWduMB4XDTE2MDYxNTAwMDAwMFoXDTI0MDYxNTAwMDAwMFowXTELMAkGA1UE
-BhMCQkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYtc2ExMzAxBgNVBAMTKkdsb2JhbFNpZ24g
-UGVyc29uYWxTaWduIDIgQ0EgLSBTSEEyNTYgLSBHMzCCASIwDQYJKoZIhvcNAQEBBQADggEP
-ADCCAQoCggEBALaWaJNl/SwB7GKjDVS/i8ukQ5Gimq+xg/K1bW/Z8OrczxZ71xnjhAOF+cYf
-cI8fbEnFaRkecJE4NX4CSF05axhEpmqlyHT0XfWEPmMfcUSCCD7tyaf26W4mQSmAyUm6/9l2
-oKO7G/Z530so00p7nFHCD2VQoZ+oSp3lRgSNg0/cssg9z5ghCZhMwPGPeqk/NyZlR9hmj0km
-wsNAvmY9bP86rSlG8BOc4fLrmaeLwtNfUG2iDm/HBpc4L06hjkcCtIMA2KTjukEHYOXdN1ry
-B8E7p5yXaC6376lINrzpaaiZqkfpx/ZR0vmxLLbFSbWYnlNT2vty83wP+HE+1wP6Z8MCAwEA
-AaOCAbUwggGxMA4GA1UdDwEB/wQEAwIBBjBqBgNVHSUEYzBhBggrBgEFBQcDAgYIKwYBBQUH
-AwQGCCsGAQUFBwMJBgorBgEEAYI3FAICBgorBgEEAYI3CgMEBgkrBgEEAYI3FQYGCisGAQQB
-gjcKAwwGCCsGAQUFBwMHBggrBgEFBQcDETASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdDgQW
-BBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAfBgNVHSMEGDAWgBSP8Et/qC5FJK5NUPpjmove4t0b
-vDA+BggrBgEFBQcBAQQyMDAwLgYIKwYBBQUHMAGGImh0dHA6Ly9vY3NwMi5nbG9iYWxzaWdu
-LmNvbS9yb290cjMwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5nbG9iYWxzaWduLmNv
-bS9yb290LXIzLmNybDBnBgNVHSAEYDBeMAsGCSsGAQQBoDIBKDAMBgorBgEEAaAyASgKMEEG
-CSsGAQQBoDIBXzA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxzaWduLmNvbS9y
-ZXBvc2l0b3J5LzANBgkqhkiG9w0BAQsFAAOCAQEAqJ3NMsx8Z+ILUNelXHCjZuIl7+q0tlMw
-bocSN1wz4sIoVuOTvUWV81jYFXFM8+SCiRS+/qXMR73rBlSCPua/vvXqiPV5xCgiC4x69g4L
-4yquSZoOm8In8my2G1VKAbYZ4WhQdFi8EkUYT67eXhsTMOdVJjSAov4UigSrB4RhUhGiUAC2
-cuBy9BFnbhOiC2AI1+gUl0Q7RxXlD3XW+On+R3+a8yExi7J/QSKaDla4EvO/DuCZ31FkItvc
-gX5++R2o4nxbzwvrqp/q3FZ766S4LCzmBv+uJFl/xUR/PpoVXvpnEl98bFKXMSvavby01ba6
-FP8iVJhAuDnB+XULGxwaozCCBRQwggP8oAMCAQICDDf7Me/cd27Vi+FlDzANBgkqhkiG9w0B
-AQsFADBdMQswCQYDVQQGEwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTEzMDEGA1UE
-AxMqR2xvYmFsU2lnbiBQZXJzb25hbFNpZ24gMiBDQSAtIFNIQTI1NiAtIEczMB4XDTE3MDQy
-NDEwNDQxOFoXDTIwMDQyNDEwNDQxOFowVTELMAkGA1UEBhMCQVQxGzAZBgNVBAMTEldhbHRl
-ciBIb2VobGh1Ym1lcjEpMCcGCSqGSIb3DQEJARYad2FsdGVyLmhAbWF0aGVtYWluemVsLmlu
-Zm8wggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDROn0wc2eBzHcRoKiSnUFz1H4T
-SN5QEKhssd+B8F0YMDxEzXyvnOeCLAN+8+ui/fyZ0g1A8qgWIGkerNeJJgVes9Xf5EpemE5b
-zksNPIoVQVB7sBfWezlJ6E12FUNssdLdcQlVqNtFnHtfZV0SD0BS87mW5GL75Ay8XpSkwwTV
-6XpIAcKRyd7EFCw+7g2Udp/ZAjPZ4X7oZl8sFFlOClPvWu8LCjbnDcWHpE93QeXnmMx86LQg
-tACrTy1PDX0yAOeCTan6F3sX0tz5Cp8sWduQiMaKof8yxW/t2V7BJwXhZhiDhax3y/AFREOH
-NC5dJ2w1sFiwidK7sljogU7/orGHAgMBAAGjggHaMIIB1jAOBgNVHQ8BAf8EBAMCBaAwgZ4G
-CCsGAQUFBwEBBIGRMIGOME0GCCsGAQUFBzAChkFodHRwOi8vc2VjdXJlLmdsb2JhbHNpZ24u
-Y29tL2NhY2VydC9nc3BlcnNvbmFsc2lnbjJzaGEyZzNvY3NwLmNydDA9BggrBgEFBQcwAYYx
-aHR0cDovL29jc3AyLmdsb2JhbHNpZ24uY29tL2dzcGVyc29uYWxzaWduMnNoYTJnMzBMBgNV
-HSAERTBDMEEGCSsGAQQBoDIBKDA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3dy5nbG9iYWxz
-aWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEQGA1UdHwQ9MDswOaA3oDWGM2h0dHA6
-Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hhMmczLmNybDAlBgNVHREE
-HjAcgRp3YWx0ZXIuaEBtYXRoZW1haW56ZWwuaW5mbzAdBgNVHSUEFjAUBggrBgEFBQcDAgYI
-KwYBBQUHAwQwHQYDVR0OBBYEFOQybe9sZCmROEwJqrOUU1qsTrgqMB8GA1UdIwQYMBaAFGly
-gmIxZ5VEhXeRgMQENkmdewthMA0GCSqGSIb3DQEBCwUAA4IBAQBY5Zn+1HTT58xtZQgu1IcN
-UI9t2PC0ps6sELyN3eCBvqYiqk5D8J58hNl9j0hnht5oM0aKVgTL1GNFu6J9DDd3Bk2sNmG6
-8uIvo0NsJAFk23lMzKt+YOm3C6+oveuxICFhHeiTxn9z2jLfU+xYLg8UXpSl5U6m0uZcVoLA
-YYYhLgpaSM8jNYgAv8U2NVK+f8hd4AVEpwyF2edKbZTAdj/iDmjmOm9lkUIzacemNR8DRxiD
-Eb2XTZa5pcrsPOe1bisJ5wcHoIx+217fm8WJF7Vk2amB9fg8AM3cGU7V7D2Ynbg5tJdV5Et6
-ff+sk9Fv1HRaFDqKQVorlDY1P5h1HsoxMYIDYTCCA10CAQEwbTBdMQswCQYDVQQGEwJCRTEZ
-MBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQZXJzb25h
-bFNpZ24gMiBDQSAtIFNIQTI1NiAtIEczAgw3+zHv3Hdu1YvhZQ8wCQYFKw4DAhoFAKCCAckw
-GAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTcwOTE3MDc0MjM5
-WjAjBgkqhkiG9w0BCQQxFgQUHUnbMzkE1eecputKmNT3Aya1zckwbAYJKoZIhvcNAQkPMV8w
-XTALBglghkgBZQMEASowCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIA
-gDANBggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDB8BgkrBgEEAYI3EAQx
-bzBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQD
-EypHbG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDDf7Me/cd27V
-i+FlDzB+BgsqhkiG9w0BCRACCzFvoG0wXTELMAkGA1UEBhMCQkUxGTAXBgNVBAoTEEdsb2Jh
-bFNpZ24gbnYtc2ExMzAxBgNVBAMTKkdsb2JhbFNpZ24gUGVyc29uYWxTaWduIDIgQ0EgLSBT
-SEEyNTYgLSBHMwIMN/sx79x3btWL4WUPMA0GCSqGSIb3DQEBAQUABIIBAIyOStEtOia9/BRP
-I95epKxtlUMY8Xk0Y1fLMSqtLvbavAxFGE4WpUUF1goGuS80ve8X0ZgCk2AmIhwME6BkwDNV
-yBXHSwZJR/r9oFW2f+KkFLotZzNwpd89bYBbj7e8EtCAHSdKtq3b/Om+Ifh4eNTS37GLioQ9
-Amp4iP3qwsnie6ZIZ07GX32oWzo3X+BXi3SmxUs+94VHV2TJM23PCn4d5FVw+K5jRNFiQHkB
-rCpokMDK0otsVtKy8m9aeQdJfVvXHjTQb+QDgl+dM5z5suaCenNBbdPjMPlhG1vA1oMr1pos
-UglA6dyLPhR8IQpMSeAvPN8TF+3Ac7jKNLiGZR4AAAAAAAA=
---------------ms020107010505030409010004--
+Cheers ... Duncan.
