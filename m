@@ -1,34 +1,53 @@
-From: Will Sewell <me@willsewell.com>
-Subject: Blog post: Per-IP rate limiting with iptables
-Date: Tue, 19 Sep 2017 20:23:01 +0100
-Message-ID: <CAKMCqE+-hNhS0izfZPo62dxNQ4=WHJgwrT-0E_ihTHM1L-Gc2A@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset 6.34 released
+Date: Sat, 23 Sep 2017 20:58:46 +0200 (CEST)
+Message-ID: <alpine.DEB.2.11.1709232053580.11869@blackhole.kfki.hu>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=willsewell-name.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=0u+CTToWH5tq6uVBJO6obS/qNXL06MI0qsyMg+69pIg=;
-        b=vU03Elm5p+eW5c9vgXL02pjR78cjDl0ciBm9BPb1MTvfpCgfaSWR9LdfoHcDAu+kmY
-         JFccTlC1klMccZkxjT9fGx/UkLxegh3hCfREy3aJgEzk2HqRzJlv4gOSnwRA5RS5mgkh
-         vW2j+mMQqTurIOoGuyC8tc6fVNfmKePGWaE39Sn+ATc9PhRfLNGnf+NPCYMhexG0Zlcd
-         4p1BCWWfJFEo8XbsA2Cd2AIoOqPYZ6WrZ7o91GAHVc7kCmAU0/sX8HWE7elNWWr3tJa7
-         9LK27npoo4vwZS3ZsCbXawnDPZ0FHM8yNHDKBimfQZEobtxeYyHu3tHcrmElqhEIZnVP
-         QDBg==
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        blackhole.kfki.hu; h=mime-version:user-agent:message-id:from
+        :from:date:date:received:received:received; s=20151130; t=
+        1506193126; x=1508007527; bh=NY0EC/YFkyHjP0vEoum+JK6GytSrXtb0uwE
+        lSWwIt8k=; b=GcpU4+un5R1bwon4enmS7IlcXS3GHbzpABjkir7Exfsrd4TTaCx
+        tCaFSI2CEsoPautUZyoL+4LuwEJTHV3Ms4usNoVuF2uU64tzFHVNHUBB8yMvj3I7
+        jzl3nOeVY6yJ82TXffZuKvtVYURJTwU4VhI3SJQFezbXY17wVTXY7uTs=
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Hi, we recently had to implement per-IP address rate limiting using
-iptables with conntrack and hashlimit. The goal was to block
-connection from rogue clients in hot retry loops. The post is written
-in a tutorial style, so it should hopefully be useful to new users.
+Hi,
 
-We're relatively new to Netfilter/iptables too, so if you have any
-feedback and/or corrections on the content, then please let us know.
+I'm happy to announce ipset 6.34, which fixes a couple bugtrack issues.
+(Due to the missing function from libipset.map, v6.33 could not
+successfully be built on all systems.)
 
-Here's the post: https://making.pusher.com/per-ip-rate-limiting-with-iptables/
+Userspace changes:
+  - testsuite: Make sure it can be run over ssh :-)
+  - Reset state after a command failed, when multiple ones are issued
+    (bugzilla id #1158, reported by Dimitri Grischin)
+  - Handle padding attribute properly in userspace.
+  - Test to check the fix to add an IPv4 range containing more than 2^31
+    addresses
+  - Fix the include guards on the include/libipset/linux_ip_set*.h
+    (bugzilla id #1139, suggested by Quentin Armitage)
+  - New function added in commit 54802b2c is missing from libipset.map
+    (bugzilla id #1182, reported by irherder@gmail.com)
 
-Regards,
-Will
+Kernel part changes:
+  - Fix adding an IPv4 range containing more than 2^31 addresses
+    (bugzilla id #1005, reported by Oleg Serditov and Oliver Ford)
+
+You can download the source code of ipset from:
+        http://ipset.netfilter.org
+        ftp://ftp.netfilter.org/pub/ipset/
+        git://git.netfilter.org/ipset.git
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
