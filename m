@@ -1,53 +1,42 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset 6.34 released
-Date: Sat, 23 Sep 2017 20:58:46 +0200 (CEST)
-Message-ID: <alpine.DEB.2.11.1709232053580.11869@blackhole.kfki.hu>
+From: Will Sewell <me@willsewell.com>
+Subject: Why are two hash tuples stored for each connection in the connection
+ tracking system?
+Date: Wed, 27 Sep 2017 08:52:45 +0100
+Message-ID: <CAKMCqEL=UCUUn2=Ke7-4uJo-fij80k7u13zEOsHNh_AP_p2EKQ@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        blackhole.kfki.hu; h=mime-version:user-agent:message-id:from
-        :from:date:date:received:received:received; s=20151130; t=
-        1506193126; x=1508007527; bh=NY0EC/YFkyHjP0vEoum+JK6GytSrXtb0uwE
-        lSWwIt8k=; b=GcpU4+un5R1bwon4enmS7IlcXS3GHbzpABjkir7Exfsrd4TTaCx
-        tCaFSI2CEsoPautUZyoL+4LuwEJTHV3Ms4usNoVuF2uU64tzFHVNHUBB8yMvj3I7
-        jzl3nOeVY6yJ82TXffZuKvtVYURJTwU4VhI3SJQFezbXY17wVTXY7uTs=
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=willsewell-name.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=4/HTKB0CKqOBtKXgp0tqC26HJCCtDb+2RBTPAK4o+vU=;
+        b=1PS3lF14OyRmBNaHB/nhm2QN/vcQIzHVx0gTXqN1qFcEsETmmLWi1YTxl0Bgl7E4eq
+         EhlAHDU6cIzAnIGu12ERKbTxWYhbpMSAbv6W7dmi8mv4SMbOuUsMzLflwANrDZmuTqEB
+         SAOilehcEGKR6SGCS8ePn/l1bD8TS45sHR+gS5yY95SUV8+yHslXLEsmJAcM6PJvMkKy
+         NynoqyADz0hk7g6891HSdkZsM9wRXMRaLdORDPjmPIXH4j4ibqhVuMgIoBQx1Qy2OtBI
+         nOoZ3vCxpT8K2/RMZmscrtFEFVyyDDVGTdIRZV3O1NQovpkP8sPJD69tFhgGrYFC0L9n
+         uObg==
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: netfilter@vger.kernel.org
 
 Hi,
 
-I'm happy to announce ipset 6.34, which fixes a couple bugtrack issues.
-(Due to the missing function from libipset.map, v6.33 could not
-successfully be built on all systems.)
+The connection tracking system stores one hash tuple of layer 3/4
+information for each packet's original direction, and one for the
+reply direction. The are embedded in the conntrack struct which stores
+the actual connection state.
 
-Userspace changes:
-  - testsuite: Make sure it can be run over ssh :-)
-  - Reset state after a command failed, when multiple ones are issued
-    (bugzilla id #1158, reported by Dimitri Grischin)
-  - Handle padding attribute properly in userspace.
-  - Test to check the fix to add an IPv4 range containing more than 2^31
-    addresses
-  - Fix the include guards on the include/libipset/linux_ip_set*.h
-    (bugzilla id #1139, suggested by Quentin Armitage)
-  - New function added in commit 54802b2c is missing from libipset.map
-    (bugzilla id #1182, reported by irherder@gmail.com)
+I'm curious why this is. Is it so connection state can be looked up
+with only partial information, e.g. only the reply direction
+information? If that's true, then in which cases do we only have
+partial information? My assumption would be that information on both
+direction would be available in the packet.
 
-Kernel part changes:
-  - Fix adding an IPv4 range containing more than 2^31 addresses
-    (bugzilla id #1005, reported by Oleg Serditov and Oliver Ford)
+I'm also curious why these hash tuples are stored in a doubly linked
+list, rather than a singly linked list. Is it just for more efficient
+deletion?
 
-You can download the source code of ipset from:
-        http://ipset.netfilter.org
-        ftp://ftp.netfilter.org/pub/ipset/
-        git://git.netfilter.org/ipset.git
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+Thank you,
+Will
