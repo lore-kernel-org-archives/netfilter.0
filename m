@@ -1,37 +1,54 @@
-From: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Subject: Re: Why are two hash tuples stored for each connection in the
- connection tracking system?
-Date: Wed, 27 Sep 2017 10:24:15 +0200
-Message-ID: <6f1b85b3-4982-d14c-a7d0-9abca40489aa@plouf.fr.eu.org>
-References: <CAKMCqEL=UCUUn2=Ke7-4uJo-fij80k7u13zEOsHNh_AP_p2EKQ@mail.gmail.com>
- <0cc1bff1-b709-06ff-1dfa-5d4214397277@plouf.fr.eu.org>
+From: "Evan Davies" <evan.davies@gmail.com>
+Subject: Nftables bridge interface redirect to local machine
+Date: Wed, 27 Sep 2017 21:11:25 +1000
+Message-ID: <000b01d33781$5dbad2f0$193078d0$@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <0cc1bff1-b709-06ff-1dfa-5d4214397277@plouf.fr.eu.org>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding:thread-index:content-language;
+        bh=cqBDJ1YXPgfhnC0SsIfMf5YgSkaU435MEIu0o9C0/Jw=;
+        b=lufHU+cedv9yUsDLVfCD9lOKRiA4BYPOOhQGRW0xqCLL9n0Uev2VBjatDzj6myp5hT
+         LN4nzZjTK7qkkDwFIexlE6W5Gc2vhp0g9pMKL1kTiyvxqrxp/amrRwQh6Ta2035qVAqI
+         DC5cXS71IKEDDT6JvPHuuxpN404OqGXbNblkHdK2lCFb2o9C32yGXknb9V+cLl4oDeMP
+         E6xR9eFDf42Ncyeb7hTl3XVJIW7LvgaatViL7AhsI1a87pUNoP+cSPUbn3Yj8MKMyxbd
+         8wgBbz9dwt+qWyAav8ITA0mmo6GloBNMQBS/xPD2zQ0oHGaTC184x2V0rc3uxrA7d4ts
+         FT1A==
+Content-Language: en-au
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Will Sewell <me@willsewell.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-Le 27/09/2017 à 10:20, Pascal Hambourg a écrit :
-> Le 27/09/2017 à 09:52, Will Sewell a écrit >>
->> The connection tracking system stores one hash tuple of layer 3/4
->> information for each packet's original direction, and one for the
->> reply direction. The are embedded in the conntrack struct which stores
->> the actual connection state.
->>
->> I'm curious why this is.
-> 
-> Because conntrack has to process packets in both directions, and the 
-> packet header fields in the reply direction may not be obtained just by 
-> swapping the fields in the original direction.
-> 
-> A few examples :
-> - DNAT : original destination address/port != reply source address/port
-> - SNAT : original source address/port != reply destination address/port
-> - ICMP echo/reply : original type/code 8/0 != reply type/code 8/0
 
-Oops, I meant to wrote :
-- ICMP echo request/reply : original type/code 8/0 != reply type/code 0/0
+Hi Guys,
+
+I'm trying to migrate across to nftables as I like its new features. My
+current sent up is:
+
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 br0
+LAN <------------>=A0 [ens34 bridged ens33] <--------------> =
+ROUTER(Internet)
+
+
+I would like to redirect any incoming traffic on the LAN side (ens34) of =
+the
+bridge interface br0 destined to port 80 to the local web server to
+authenticate.
+I would like to do this for all DNS requests as well. Basically, use the
+bridged Linux box as a transparent gateway.
+
+I have tried the example in the man page but I cannot get it to work.
+Any help or pointers would be greatly appreciated.
+
+Kernel Version 4.10.0-35-generic
+nftables v0.7
+
+Thanks
+Evan
+
+
+
