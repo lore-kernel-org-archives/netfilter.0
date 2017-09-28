@@ -1,54 +1,42 @@
-From: "Evan Davies" <evan.davies@gmail.com>
-Subject: Nftables bridge interface redirect to local machine
-Date: Wed, 27 Sep 2017 21:11:25 +1000
-Message-ID: <000b01d33781$5dbad2f0$193078d0$@gmail.com>
+From: Will Sewell <me@willsewell.com>
+Subject: Re: Why are two hash tuples stored for each connection in the
+ connection tracking system?
+Date: Thu, 28 Sep 2017 16:09:08 +0100
+Message-ID: <CAKMCqELnZLifhdEmbYEnPOX7SWAS4Y1L5KGBJ4YS_qT3QwkK=A@mail.gmail.com>
+References: <CAKMCqEL=UCUUn2=Ke7-4uJo-fij80k7u13zEOsHNh_AP_p2EKQ@mail.gmail.com>
+ <0cc1bff1-b709-06ff-1dfa-5d4214397277@plouf.fr.eu.org> <6f1b85b3-4982-d14c-a7d0-9abca40489aa@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding:thread-index:content-language;
-        bh=cqBDJ1YXPgfhnC0SsIfMf5YgSkaU435MEIu0o9C0/Jw=;
-        b=lufHU+cedv9yUsDLVfCD9lOKRiA4BYPOOhQGRW0xqCLL9n0Uev2VBjatDzj6myp5hT
-         LN4nzZjTK7qkkDwFIexlE6W5Gc2vhp0g9pMKL1kTiyvxqrxp/amrRwQh6Ta2035qVAqI
-         DC5cXS71IKEDDT6JvPHuuxpN404OqGXbNblkHdK2lCFb2o9C32yGXknb9V+cLl4oDeMP
-         E6xR9eFDf42Ncyeb7hTl3XVJIW7LvgaatViL7AhsI1a87pUNoP+cSPUbn3Yj8MKMyxbd
-         8wgBbz9dwt+qWyAav8ITA0mmo6GloBNMQBS/xPD2zQ0oHGaTC184x2V0rc3uxrA7d4ts
-         FT1A==
-Content-Language: en-au
+        d=willsewell-name.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:sender:in-reply-to:references:from:date:message-id
+         :subject:to:cc;
+        bh=rTY/8x38ptUWLW0jpE94E3EDtH5OB8T0tOxkUKu9VDo=;
+        b=1OTuQ8eaM3YwNrklQ0yCn4YD3xjsMnQKEw0do5qWsP3aZuV6WW4qDDCqBA5HfIT5uR
+         UYRt5ZFr+XgCdqnygYsn43Gr3yO3DWALQUWsFkDzi+ZsJxwAHiy6BqpkDZsrvbmq9CtS
+         6LdZcvNvj5xO8UjtkeBy06LBWmUukSmTgVmCwRngVVcZ+2PQV26ikRV8v/LmZyBk7b5F
+         Lrx1JCBVN/0yUcvCk4Db7Hp2gEzKvZP7bp+s4/Al6EzMq5mPm2gIUwOtqXXMLaqGFL4C
+         vHJaLLIs0rw1zJ82DNf4EK4quOIjKGbvscPuZhsZMNprXV93zwevBqY99oUtJ+5esTev
+         J8Og==
+In-Reply-To: <6f1b85b3-4982-d14c-a7d0-9abca40489aa@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Cc: netfilter@vger.kernel.org
 
+> Because conntrack has to process packets in both directions, and the
+> packet header fields in the reply direction may not be obtained just by
+> swapping the fields in the original direction.
 
-Hi Guys,
-
-I'm trying to migrate across to nftables as I like its new features. My
-current sent up is:
-
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 br0
-LAN <------------>=A0 [ens34 bridged ens33] <--------------> =
-ROUTER(Internet)
-
-
-I would like to redirect any incoming traffic on the LAN side (ens34) of =
-the
-bridge interface br0 destined to port 80 to the local web server to
-authenticate.
-I would like to do this for all DNS requests as well. Basically, use the
-bridged Linux box as a transparent gateway.
-
-I have tried the example in the man page but I cannot get it to work.
-Any help or pointers would be greatly appreciated.
-
-Kernel Version 4.10.0-35-generic
-nftables v0.7
-
-Thanks
-Evan
-
-
-
+Thanks. That makes sense. I still have some confusion however: in the
+case where the original/reply connection information is not equal, how
+does the connection tracking system ensure that both hash tuples are
+embedded in the same conntrack struct (nf_conn)? Let's say an original
+packet arrives with some new original direction connection
+information. I'm assuming conntrack will allocate a new nf_conn struct
+with just the original hash tuple embedded. When a packet arrives from
+the reply direction, how does conntrack find the correct nf_conn to
+embed it in? From what I can tell the orifginal connection information
+is required to look this up.
