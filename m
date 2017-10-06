@@ -1,38 +1,67 @@
-From: Will Sewell <me@willsewell.com>
-Subject: Re: Why are two hash tuples stored for each connection in the
- connection tracking system?
-Date: Fri, 6 Oct 2017 13:23:52 +0100
-Message-ID: <CAKMCqEK6NN1HoA4A-5A=ku8RX8_VYEp=LtHWAkTkjqMdK=2qjw@mail.gmail.com>
-References: <CAKMCqEL=UCUUn2=Ke7-4uJo-fij80k7u13zEOsHNh_AP_p2EKQ@mail.gmail.com>
- <0cc1bff1-b709-06ff-1dfa-5d4214397277@plouf.fr.eu.org> <6f1b85b3-4982-d14c-a7d0-9abca40489aa@plouf.fr.eu.org>
- <CAKMCqELnZLifhdEmbYEnPOX7SWAS4Y1L5KGBJ4YS_qT3QwkK=A@mail.gmail.com>
- <abe1f557-b3f7-1c41-ed15-5db7c7f5b1d0@plouf.fr.eu.org> <CAKMCqEJyaqmH5rnQGcmVYwxw=JxZYJd8gOHq-Wwuc375K+BuPw@mail.gmail.com>
- <62f03124-a3ed-1f17-3477-288c1f48c969@plouf.fr.eu.org> <CAKMCqEJLrtUEXo6xGHs2JMM3Z5dSg2wRfpi4bZNCf7yMtaOn5g@mail.gmail.com>
- <64d6734e-ca72-3788-42d4-afe495b3f372@plouf.fr.eu.org> <CAKMCqEJ4urXwNcwcQQ6y6_ogyhU7GDX_pQM=tusZOpHNvHoETQ@mail.gmail.com>
- <5e618aa9-262a-b3b1-43e6-28fdcdfd1731@plouf.fr.eu.org>
+From: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Subject: Re: Why I can not use physdev module on iptables POSTROUTING chain?
+Date: Fri, 6 Oct 2017 22:15:38 +0200
+Message-ID: <76c1045f-3e80-547f-0b75-bf35a8ede463@plouf.fr.eu.org>
+References: <CAK6Qs9=1tbQJ2ds2QTTt0SfSNX6_OvFX_S=2S41kHgO=xim3=w@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=willsewell-name.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:sender:in-reply-to:references:from:date:message-id
-         :subject:to:cc;
-        bh=ghJ1ZU6TwUfpHVkMMbVJxXdUQycqzu7Mtrssds09RG8=;
-        b=SJl6XuiUlNelMeFa0rMuABNoufp2iOHsk4lstb0URYENBXaMIk8sL+QCPmb/5ghm4v
-         SIdImsEMTmBiYJeS2CFPSR0IxXAIx5xuR7IJ5qvCn6rxj38jS2u3aqlJ47+YWX0SQc4S
-         ucTgdiBPFk4as1ynMyovGXskn3YPxA6wjmlYTCL82rjmXQXv8AQJs+QZJ+yYCJjtbm+r
-         Lc6rVRCijaiMBWHsdOUWNzTM42bzV+kYxU0F1GsCx02csFPDSmHhW011TWEnY1Va0bn2
-         4sBoCG//N5PN5ZQasIcPGbxZZShLUQQ8ia1298o8fkmjPT4d5zqq5ekDILZ4PVK6C1xI
-         ee0w==
-In-Reply-To: <5e618aa9-262a-b3b1-43e6-28fdcdfd1731@plouf.fr.eu.org>
+In-Reply-To: <CAK6Qs9=1tbQJ2ds2QTTt0SfSNX6_OvFX_S=2S41kHgO=xim3=w@mail.gmail.com>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: =?UTF-8?Q?=c4=b0brahim_Ercan?= <ibrahim.metu@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-> There are variations for handling of "special" protocols such as ICMP which
-> use header fields other than source/destination ports to identify
-> connections.
+Le 06/10/2017 à 10:25, İbrahim Ercan a écrit :
+> I have a bridged topology and want to match bridge interface on
+> mangle/POSTROUTING chain.
+> 
+> I can add a rule like this.
+> 
+> iptables -A POSTROUTING -t mangle -m physdev --physdev-in enp0s3
 
-Makes sense. Thanks again for your help!
+Don't you mean --physdev-out ? According to the man page, --physdev-in 
+works only in the PREROUTING, INPUT and FORWARD chains.
+
+> Then I figured out packets aren't matching and I saw this warning on dmesg.
+> 
+> xt_physdev: using --physdev-out in the OUTPUT, FORWARD and POSTROUTING
+> chains for non-bridged traffic is not supported anymore
+> 
+> Then I just tried "-o enp0s3" and that didnt work either.
+
+-o matches the bridge (master) interface name, not the bridge port name.
+
+> I wonder why this feature isnt suported anymore?
+
+The rationale was described in 
+Documentation/feature-removal-schedule.txt in Linux 2.6.18 source :
+
+=======
+What: Bridge netfilter deferred IPv4/IPv6 output hook calling
+When: January 2007
+Why:  The deferred output hooks are a layering violation causing unusual
+       and broken behaviour on bridge devices. Examples of things they
+       break include QoS classifation using the MARK or CLASSIFY targets,
+       the IPsec policy match and connection tracking with VLANs on a
+       bridge. Their only use is to enable bridge output port filtering
+       within iptables with the physdev match, which can also be done by
+       combining iptables and ebtables using netfilter marks. Until it
+       will get removed the hook deferral is disabled by default and is
+       only enabled when needed.
+=======
+
+Note that this change happened in 2006 and only affects non bridged 
+traffic, i.e. packets which are sent to a bridge interface. It does not 
+affect bridged traffic, i.e. packets received on a bridge port and 
+forwarded to another port of the same bridge.
+
+> And Is there a way that I can match by interface on POSTROUTING if I
+> have a bridged topology?
+
+If the packets are really bridged, then your failure to match by the 
+output bridge port is not related to the above change.
+If the packets are just sent to a bridge interface, then you can combine 
+netfilter marks and ebtables as indicated above.
