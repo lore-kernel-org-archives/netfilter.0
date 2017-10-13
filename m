@@ -1,39 +1,34 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: [ANNOUNCE] libnftnl 1.0.8 release
-Date: Fri, 13 Oct 2017 02:42:14 +0200 (CEST)
-Message-ID: <nycvar.YFH.7.76.1710130238430.10708@n3.vanv.qr>
-References: <20171012234148.GA23593@salvia>
+From: "Walter H." <walter.h@mathemainzel.info>
+Subject: Probably bug detected with ip6tables ...
+Date: Fri, 13 Oct 2017 11:49:06 +0200
+Message-ID: <1b6eda16c4c70db5c0bb1824a002c98a.1507888146@squirrel.mail>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <20171012234148.GA23593@salvia>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mathemainzel.info; s=dkim11;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:To:From:Subject:Date:Message-ID; bh=l0VbHabwEp8Ij2fnxHIaDLWW5M0k4iPu2riPdtNW4G0=;
+        b=vx/3G9HFd8LAG/INXQdzZlm0zteD+haKekbju2swAiT8jszFlPtdzDX9Cx+GaELBz6cDZkX0X6MC0QQyQn2U+4JydmVAARG9NSwBGYxxMb1T85iRvDNPNwYm2zF6Cm0IlznoxIFGhnm9TPOG2/ccPHVFHEyaVq+RHcuaZVNMvII=;
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
+To: netfilter@vger.kernel.org
 
+I have a virtual server at a hoster, where I have a full /64-prefix,
+so I declared a few addeesses with special numbers ...
 
-On Friday 2017-10-13 01:41, Pablo Neira Ayuso wrote:
->
->        libnftnl 1.0.8
+e.g.  pi = 3.141592653589 and the IPv6 address is [prefix:3:1415:9265:3589]
+there is also a special number below 1, the IPv6 [prefix:0:5772:1566:4901]
 
-Here's a buffer overflow reported by gcc:
+now the bug:
 
-expr/data_reg.c: In function 'nftnl_data_reg_json_parse':
-expr/data_reg.c:69:27: warning: '%d' directive writing between 1 and 10 bytes into a region of size 2 [-Wformat-overflow=]
-   sprintf(node_name, "data%d", i);
-                           ^~
-expr/data_reg.c:69:22: note: directive argument in the range [0, 2147483647]
-   sprintf(node_name, "data%d", i);
-                      ^~~~~~~~
-In file included from /usr/include/stdio.h:862:0,
-                 from expr/data_reg.c:12:
-/usr/include/bits/stdio2.h:33:10: note: '__builtin___sprintf_chk' output between 6 and 15 bytes into a destination of size 6
-   return __builtin___sprintf_chk (__s, __USE_FORTIFY_LEVEL - 1,
-          ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-       __bos (__s), __fmt, __va_arg_pack ());
-       ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+this works:
+-A INPUT -i eth0 -d prefix::5772:1566:4901 -m tcp -p tcp --dport 25 -m
+state --state NEW -j ACCEPT
 
+but this not:
+-A INPUT -i eth0 -d prefix:0:5772:1566:4901 -m tcp -p tcp --dport 25 -m
+state --state NEW -j ACCEPT
 
-AFAICS it's triggerable when reg->len > 396.
+Greetings,
+Walter
+
