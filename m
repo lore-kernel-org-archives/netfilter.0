@@ -1,27 +1,34 @@
-From: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Subject: Re: conntrack and NAT rules behaviour on return path
-Date: Mon, 16 Oct 2017 00:14:01 +0200
-Message-ID: <443832ee-1ba2-7a30-edab-d28e60c28455@plouf.fr.eu.org>
-References: <20171015110540.GA8513@naoned.it>
+From: "Frank A. Cancio Bello" <frank@generalsoftwareinc.com>
+Subject: What is the best way to contribute to wiki.nftables.org?
+Date: Wed, 18 Oct 2017 12:31:49 -0400
+Message-ID: <20171018163149.GB1055@ubuntu-server-1604>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20171015110540.GA8513@naoned.it>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=generalsoftwareinc-com.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=WS72MdTNsK4bZfJKg5ANqWS/p34QCaVizajtp08txyk=;
+        b=JpvJPW4IAC7ZM+5phwuRvD7uyPRs6ROlI4r9LmnzqHfDrtDibrUP07T89kJJI2QZvt
+         WIuPhKvfz+m57kK7Af2GAWIN6byeQCFuPw4NOimenRM4l6VqYE3efwkogk0FMLYyPTOB
+         qbPdC8FiIUehSJjc8V/HiGLMMtwDA5SBzBhHWYraPlJFsqjGAxHr8VdYcdPHREvozvFk
+         do/DOyDpfyVMAT3529xXoe8f3P5wHQs9dGOSel1cOuQu+w48nzGAQgYK6XalNVycRQ/F
+         61+pWBeWvqrlcCvkcLJ4uUQfzbMT+7+RLEMn+oXBWVoj0DNPYQPt8u2Vcv07qet+LnQM
+         Z1dA==
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: LB <netfilter@naoned.it>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Le 15/10/2017 à 13:05, LB a écrit :
-> 
-> My question is there : the return flow of this connection , as per the netfilter diagrams I see, will reach conntrack first , in the PREROUTING, go into FORWARD, and then POSTROUTING. But here, in postrouting, the flow IS matching my SNAT rule, isn't it ? So why the return flow is not SNAT'ed to 10.10.10.2 (I can see in tcpdump it is not)
-> I was under the feeling that once a conntrack entry is "matched" (sorry for the lack of precision), it would somehow "bypass" the SNAT (or DNAT) rewriting.
+Hi,
 
-Sort of.
+As Outreachy kernel applicant, I installed from the source: libmnl, libnftnl, nftables and iptables on a pristine Ubuntu server installation.
 
-The nat table is special. Only the first packet of a NEW connection goes 
-through the chains and rules of the nat table. All subsequent packets 
-belonging or related to the same connection are processed according to 
-which rules were applied to the first packet.
+I encountered myself googling to solve some dependencies problems, so I was thinking that maybe would be nice to have a section on https://wiki.nftables.org/wiki-nftables/index.php/Building_and_installing_nftables_from_sources that cover installation from the source of 'libmnl, libnftnl, nftables and iptables' (at least in one distro) for newbies like me.
+
+What is the best way to edit that wiki? Or is better that I send the 'guide' hear so someone can add it to the wiki?
+
+thanks
+frank
