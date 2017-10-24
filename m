@@ -1,41 +1,58 @@
 From: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Subject: Re: Is "--ctstate RELATED" deprecated ?
-Date: Tue, 24 Oct 2017 20:49:16 +0200
-Message-ID: <61748987-95d0-3c6e-2be7-5edd6245a777@plouf.fr.eu.org>
-References: <518706823.59969905.1508834982526.JavaMail.root@zimbra65-e11.priv.proxad.net>
- <236899556.60177991.1508838174605.JavaMail.root@zimbra65-e11.priv.proxad.net>
+Subject: Re: CONNMARK not working ?
+Date: Tue, 24 Oct 2017 23:57:39 +0200
+Message-ID: <92a21baa-33b5-3a8b-9bbd-efb057230380@plouf.fr.eu.org>
+References: <CANSGRxTdrVG_-1uMA40bKXO0QxjDsKfWEJ27nLVOR6eXXUE5tQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <236899556.60177991.1508838174605.JavaMail.root@zimbra65-e11.priv.proxad.net>
+In-Reply-To: <CANSGRxTdrVG_-1uMA40bKXO0QxjDsKfWEJ27nLVOR6eXXUE5tQ@mail.gmail.com>
 Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: marcfun@free.fr
+To: paulo bruck <paulobruck1@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-Le 24/10/2017 à 11:42, marcfun@free.fr a écrit :
+Le 24/10/2017 à 00:15, paulo bruck a écrit :
 > 
-> [root@archlinux ~]# iptables -t raw -A OUTPUT -p tcp --dport 21 -j CT --helper ftp
-> [root@archlinux ~]# iptables -A INPUT -m conntrack --ctstate RELATED -m helper --helper ftp -j ACCEPT
-> [root@archlinux ~]# iptables -A INPUT -m conntrack --ctstate RELATED -j ACCEPT
+> lan------- firewall--------- wan1------internet
+>                         |-----------wan2 -----internet
 > 
-> => That gives :
+> All interfaces as bridges
+
+Do you mean that lan, wan1 and wan2 are ports in the same bridge ?
+Or they are themselves bridges ?
+
+> iptables -t mangle -A PREROUTING -i wan1 -m conntrack --ctstate NEW -j CONNMARK --set-mark 0x1
+
+Sets connection mark to 1.
+
+> iptables -t mangle -A PREROUTING -i wan1 -j CONNMARK --save-mark
+
+IIUC, copies packet mark (unset so far) to the connection mark, 
+overwriting the previous value (1). Why are you doing this ?
+
+> iptables -t mangle -A PREROUTING -i wan1 -m conntrack --ctstate ESTABLISHED,RELATED  -j CONNMARK --restore-mark
+
+Copies the connection mark (now unset) to the packet mark.
+
+> I can reach apache  but looking at conntrack -L  I see :
 > 
-> [root@archlinux ~]# iptables -nvL
+> tcp      6 107 TIME_WAIT src=192.241.152.243 dst=192.168.1.2
+> sport=53545 dport=80 src=192.168.1.2 dst=192.241.152.243 sport=80
+> dport=53545 [ASSURED] mark=0 use=1
+> tcp      6 103 TIME_WAIT src=192.241.152.243 dst=192.168.1.2
+> sport=53544 dport=80 src=192.168.1.2 dst=192.241.152.243 sport=80
+> dport=53544 [ASSURED] mark=0 use=1
+> 
+> 
+> Should be mark=1 ??
 
-Please consider using iptables-save instead of iptables -L. IMO, its 
-output is much easier to read.
+No. See above comments.
 
-> I follow the conntrack events for expect with "conntrack -E expect", and i another shell I initiate a PASSIVE FTP session.
-(...)
-> BUT in the filter table, the RELATED ctstate is not matched...
+> How can I force mark=1
 
-Passive FTP means that the client initiates the data connection to the 
-server. From your first rule, I guess that the client is the local host. 
-So shouldn't the RELATED rules also be in the OUTPUT chain instead of 
-INPUT ?
+Do not --save-mark when the packet mark is unset.
 
-Or use active FTP instead, so that the server initiates the data 
-connection to the client.
+Why do you need connection marks and packet marks ?
