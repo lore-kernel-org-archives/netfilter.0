@@ -1,54 +1,54 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: How to enable jhash for nftables v0.8
-Date: Thu, 26 Oct 2017 11:34:09 +0200
-Message-ID: <20171026093409.GA6149@salvia>
-References: <CAG1z+79Ed9-U4XbU3As1Yc6QVi61Wro0PA4eUVmx=RSdjvFj3w@mail.gmail.com>
- <CAF90-WiarOqxC4=OALo4gdsit4sohWmJR1rp+KXr+WecSvPiJg@mail.gmail.com>
- <CAE=SJfDohSBgye64-upou+GrmNaOHa0x0KPwrRLnzvu4iO426g@mail.gmail.com>
- <20171026092202.GA2589@salvia>
+From: Leonardo Bruno <leonardo@cefetmg.br>
+Subject: How to enable Xen VM traffic using nft
+Date: Fri, 27 Oct 2017 18:55:41 -0200
+Message-ID: <1509137741.13003.0.camel@cefetmg.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20171026092202.GA2589@salvia>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Laura =?iso-8859-1?Q?Garc=EDa_Li=E9bana?= <laura.garcia@zevenet.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-On Thu, Oct 26, 2017 at 11:22:02AM +0200, Pablo Neira Ayuso wrote:
-> On Thu, Oct 26, 2017 at 11:09:26AM +0200, Laura Garc=EDa Li=E9bana wrote:
-> > > From: Zheng konia <konianet@gmail.com>
-> > > Date: Thu, Oct 26, 2017 at 10:48 AM
-> > > Subject: How to enable jhash for nftables v0.8
-> > > To: Netfilter Users Mailing list <netfilter@vger.kernel.org>
-> > >
-> > >
-> > > Hi,
-> > >
-> > >    I'm have some error with configureing nftables-nat with loading
-> > > balance when I trying `jhash`.
-> > >
-> > >    # nft add rule nat prerouting mark set jhash ip saddr . tcp dport =
-mod 2
-> > >          Error: Could not process rule: Invalid argument
-> > >          add rule nat prerouting mark set jhash ip saddr . tcp dport =
-mod 2
-> > >         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^=
-^^^^^
-> >=20
-> > Hi, the jhash expression it's correct but you should try with:
-> >=20
-> > # nft add rule ip nat prerouting ct mark set jhash ...
->=20
-> Probably he doesn't want to set the mark... but match on it based on
-> the jhash result.
+Hi guys.
 
-I mean, the rule is valid. Although it may not make much sense? It's
-just marking the first packet only.
+I am running Xen 4.8.1 and Debian 9 'stretch' as Dom0. I am also
+using  
+'nft' instead of 'iptables' as Debian is now encouraging the users to  
+do.
 
-Anyway, I suspect Zheng is running a kernel with no jhash support.
+The 'xen-scripts' shipped with Debian Xen packages add rules to
+permit  
+(accept) packages to/from virtual interfaces to flow in/out through  
+the bridge interface.
 
-It would be good to document on the wiki since what kernel version
-this is supported.
+But these scripts are not 'nft-ready' and, although it is simple to  
+modify it in order to run the correct 'nft' commands, I could not  
+translate the original 'iptables' rules to 'nftables' rules.
+
+The 'iptables' commands executed when the VM is started (supposing a  
+virtual interface 'vif0') are:
+
+iptables -I FORWARD -m physdev --physdev-is-bridged --physdev-in vif0  
+-j ACCEPT
+iptables -I FORWARD -m physdev --physdev-is-bridged --physdev-out
+vif0  
+-j ACCEPT
+
+Almost the same commands are executed when the VM is shutted down:
+
+iptables -D FORWARD -m physdev --physdev-is-bridged --physdev-in vif0  
+-j ACCEPT
+iptables -D FORWARD -m physdev --physdev-is-bridged --physdev-out
+vif0  
+-j ACCEPT
+
+Can someone help? Thanks in advance.
+
+Best regards,
+Leonardo Lopes
+
+-- 
+Esta mensagem foi verificada pelo sistema de antivírus e
+ acredita-se estar livre de perigo.
+
