@@ -1,54 +1,29 @@
-From: Leonardo Bruno <leonardo@cefetmg.br>
-Subject: How to enable Xen VM traffic using nft
-Date: Fri, 27 Oct 2017 18:55:41 -0200
-Message-ID: <1509137741.13003.0.camel@cefetmg.br>
+From: Jan Rovner <jan.rovner@diadema.cz>
+Subject: HW accelerated DPI hardware and software for module x86 ?
+Date: Sun, 29 Oct 2017 12:49:48 +0000
+Message-ID: <bfffd78fbd2f4db6b4944092983124c2@diadema.cz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi guys.
+Hello,
 
-I am running Xen 4.8.1 and Debian 9 'stretch' as Dom0. I am also
-using  
-'nft' instead of 'iptables' as Debian is now encouraging the users to  
-do.
+sorry for a little offtopic, however I am looking for a functional hardware and software module for 
+PC (x86) platform that would allow to perform packet content inspection via (ip)tables match.
 
-The 'xen-scripts' shipped with Debian Xen packages add rules to
-permit  
-(accept) packages to/from virtual interfaces to flow in/out through  
-the bridge interface.
+Something like xt_layer7 or xt_string, but L7/REGEX matching to done by hardware offload... 
 
-But these scripts are not 'nft-ready' and, although it is simple to  
-modify it in order to run the correct 'nft' commands, I could not  
-translate the original 'iptables' rules to 'nftables' rules.
+Probably a PCIe NIC card with proper drivers and some custom iptables module is what I am looking for.
 
-The 'iptables' commands executed when the VM is started (supposing a  
-virtual interface 'vif0') are:
+Any recommendations or other solutions for x86 are welcome.
 
-iptables -I FORWARD -m physdev --physdev-is-bridged --physdev-in vif0  
--j ACCEPT
-iptables -I FORWARD -m physdev --physdev-is-bridged --physdev-out
-vif0  
--j ACCEPT
+Thank you very much.
 
-Almost the same commands are executed when the VM is shutted down:
+Jan
 
-iptables -D FORWARD -m physdev --physdev-is-bridged --physdev-in vif0  
--j ACCEPT
-iptables -D FORWARD -m physdev --physdev-is-bridged --physdev-out
-vif0  
--j ACCEPT
-
-Can someone help? Thanks in advance.
-
-Best regards,
-Leonardo Lopes
-
--- 
-Esta mensagem foi verificada pelo sistema de antivírus e
- acredita-se estar livre de perigo.
 
