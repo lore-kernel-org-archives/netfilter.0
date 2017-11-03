@@ -1,69 +1,44 @@
 From: Tomas Mudrunka <mudrunka@spoje.net>
-Subject: Re: Traffic shaping with nftables maps and tc
-Date: Fri, 03 Nov 2017 13:37:50 +0100
-Message-ID: <79baac2c7d201c134a2852cca86b5bce@spoje.net>
-References: <62018f4d1c124ef84a7bd2281b1b2dcc@spoje.net>
- <392d67152072ea965fd56fbe6efefab7@spoje.net>
- <CAOkSjBh8H2tn6noj9BrbGcwdk4nnjZxm-4TiTVyhm+jciSYCew@mail.gmail.com>
+Subject: Matching daddr and saddr in single =?UTF-8?Q?rule=3F?=
+Date: Fri, 03 Nov 2017 15:39:00 +0100
+Message-ID: <a97dd1aa1730955ba8673fd483a53d0a@spoje.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=spoje.net;
-        s=spojemail; t=1509712672;
-        bh=bJ7rSzMGBqbDSSSS9d9w46lX0t4m2xa21i+ju42F3Io=;
-        h=Date:From:To:Subject:In-Reply-To:References:From;
-        b=lXQo9c52S63j5ZQhygl0AHyf/GB4GsJxy3pghNMXyM9ILkeV9HU7n9QoLwlxKs3ff
-         7gnMJ/Fn/+v1hyaEqBOPGfCjRyycJetUIVLZH2LhXr4oI1+cNlhKkdzxHs1c96wnJH
-         4F0Nsq/tscDeLKYvFFnmsGXBAVONwP8RZkY+UOMo=
+        s=spojemail; t=1509719951;
+        bh=O/tka7isWtpoV/djdW8nK7/DifHB0UJC5A09zMyrU84=;
+        h=Date:From:To:Subject:From;
+        b=NdrxyRfoMulJhs/6BVo5Ti31bGCfsF2QQd3T54V7SqZQITVJorfbPxCDGfML970qN
+         BtUWFNJcTRREWcQ94zi1w9CLz8vp32N1USOjnqanaSVgVn8ThjEjqExPWh+N8+WSHT
+         rlGexs0Qs5E3pfPlYHuARYChTCl+scH/3VZjEweE=
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=spoje.net;
-        s=spojemail; t=1509712670;
-        bh=bJ7rSzMGBqbDSSSS9d9w46lX0t4m2xa21i+ju42F3Io=;
-        h=Date:From:To:Subject:In-Reply-To:References:From;
-        b=fcvkNi+xKADeQ3v6YlNldy2QqIGUJx/v9UuLjUKRfB+7tECcFtxdGEseOH991JtzM
-         kKIP7AVm0hMKzfTrgr3GGxj1PeGOPfu5YA/Kj2dfPjZ9m/s20LiO3MyOgR7onkNTxt
-         zi2JK3mmSlbIF3wlx+T3ZpJ1iSvnZIdYt9Mv8Vl8=
-In-Reply-To: <CAOkSjBh8H2tn6noj9BrbGcwdk4nnjZxm-4TiTVyhm+jciSYCew@mail.gmail.com>
+        s=spojemail; t=1509719940;
+        bh=O/tka7isWtpoV/djdW8nK7/DifHB0UJC5A09zMyrU84=;
+        h=Date:From:To:Subject:From;
+        b=cXs+KP6hJUXx6uRRN1fvvZk6BHYs7HTCqzcwqWgheSd1UGG/Oo7/v0BXIvLqWN9V4
+         iZT9sw2fC7ozwKwxzQ+9aIbNBlK/oyCnS67M3HqKfUA7Mf1sS+eHHtlstltAKe+OuB
+         PAVUfH0qTTXbfP10yZikRiMY0It4+mcQQ+0lId5M=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="utf-8"; format="flowed"
 To: Netfilter Users Mailing list <netfilter@vger.kernel.org>
 
-> Try this:
-> meta priority set ip daddr map { 1.1.1.2 : 2:2222, 1.1.1.3 : 3:3333 }
+Hello,
+i'd like to drop all traffic that is related to address. is there way to 
+merge these two rules:
 
-Thank you, that looks promising. However is there way to name this map, 
-so i can dynamicaly edit it? I've checked nft describe:
+nft add rule ip filter output ip daddr 1.2.3.4 counter drop
+nft add rule ip filter output ip saddr 1.2.3.4 counter drop
 
-$ nft describe ip daddr
-payload expression, datatype ipv4_addr (IPv4 address) (basetype 
-integer), 32 bits
+to single rule like this:
 
-$ nft describe meta priority
-meta expression, datatype classid (TC classid) (basetype integer), 32 
-bits
+nft add rule ip filter output ip addr 1.2.3.4 counter drop
 
-But then later "classid" seems to fail when name defining table:
+i think this would be quite useful to simplify my rule set. especialy 
+when handling vast amount of addresses.
 
-#  nft add map filter deucalion { type ipv4_addr : classid\; }
-<cmdline>:1:45-51: Error: syntax error, unexpected classid, expecting 
-string or dscp or ecn or mark
-add map filter deucalion { type ipv4_addr : classid; }
-                                             ^^^^^^^
-<cmdline>:1:26-52: Error: map definition does not specify key data type
-add map filter deucalion { type ipv4_addr : classid; }
-                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Same goes for this:
-
-	map deucalion {
-		type ipv4_addr : classid;
-		elements = { 1.1.1.2 : 2:2222, 1.1.1.3 : 3:3333 }
-	}
-
-
-	chain input {
-		type filter hook input priority 0; policy accept;
-		meta priority set ip daddr map @deucalion;
-	}
+Thanks.
 
 
 -- 
