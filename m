@@ -1,53 +1,36 @@
-From: Tomas Mudrunka <mudrunka@spoje.net>
-Subject: Re: Traffic shaping with nftables maps and tc
-Date: Fri, 03 Nov 2017 17:28:33 +0100
-Message-ID: <9a12636557fc2e5e1636b86f8145db88@spoje.net>
-References: <62018f4d1c124ef84a7bd2281b1b2dcc@spoje.net>
- <392d67152072ea965fd56fbe6efefab7@spoje.net>
- <CAOkSjBh8H2tn6noj9BrbGcwdk4nnjZxm-4TiTVyhm+jciSYCew@mail.gmail.com>
- <79baac2c7d201c134a2852cca86b5bce@spoje.net>
- <CAOkSjBjC9WBUvn0GFHfneJJmA9-03gH3ZjBj590WuUOLrzCiRg@mail.gmail.com>
+From: Muneyuki KAWATANI <kawatani.muneyuki@lab.ntt.co.jp>
+Subject: Why NFQUEUE doesn't use source port number on hashing.
+Date: Tue, 7 Nov 2017 19:28:43 +0900
+Message-ID: <8816aa27-3520-f822-1a05-b2372c226be2@lab.ntt.co.jp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=spoje.net;
-        s=spojemail; t=1509726515;
-        bh=FbYR4vtOYXLnQhURs1SjHLxgC/k96sYB5g8qVcT6Vn4=;
-        h=Date:From:To:Subject:In-Reply-To:References:From;
-        b=bOoEZBYbVaJ3+X1125KFLJF7CpkcjHiuMk72j3hAikNlNGOn4o42ZfCvyMZlCBUnn
-         5DNRFM/sJQP/iVIGt6VMhQVSiu7jZSpcVxStAjdbZvuX398IQhuueOHHfQjBCobCZb
-         Qp5iomzewe+STCPdtycWF6+zS/a9v1ckXKH85mWo=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=spoje.net;
-        s=spojemail; t=1509726513;
-        bh=FbYR4vtOYXLnQhURs1SjHLxgC/k96sYB5g8qVcT6Vn4=;
-        h=Date:From:To:Subject:In-Reply-To:References:From;
-        b=UUEkmt5y96kAGtyi0hCgrvujcKq2ZisSGlUieA2VGehWfUZ07zrEB1e8BIFoc5UPf
-         eTaiVLz6B/Ewzxsi6rJgym9MpLlWcZnF4vzhZHRPRXioyRGIJB3vzHQZ0pz7d+pr/G
-         eIg/CZ+627064vYMi3AP50s0Ctjo3ZHw05hBk8+4=
-In-Reply-To: <CAOkSjBjC9WBUvn0GFHfneJJmA9-03gH3ZjBj590WuUOLrzCiRg@mail.gmail.com>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter Users Mailing list <netfilter@vger.kernel.org>
 
-> Could you please test the attached patch? It is quick and dirty, not
-> even compiled tested.
+  Hi, all.
 
-Hell yeah! It loaded :-) Thank you.
-That's one small line for a bison, one giant leap for traffic shaping on 
-nftables.
+  I have a question on NFQUEUE's --queue-balance option.
 
+  Current implementaion of --queue-balance doesn't balance
+well in some environments, because the hash value is
+calculated only using saddr, daddr and protocol in the
+ip-header.
 
-> +++ b/src/parser_bison.y
-> @@ -1545,6 +1545,7 @@ type_identifier		:	STRING	{ $$ = $1; }
->  			|	MARK	{ $$ = xstrdup("mark"); }
->  			|	DSCP	{ $$ = xstrdup("dscp"); }
->  			|	ECN	{ $$ = xstrdup("ecn"); }
-> +			|	CLASSID { $$ = xstrdup("classid"); }
-> 			;
-> 
+  In some environment, these hash parameters are not
+distributed well (ie. An environment consists of 1-server
+and a few clients).
 
--- 
-S pozdravem
-Best regards
-      Tomáš Mudruňka - SPOJE.NET s.r.o.
+  My question is why NFQUEUE doesn't use source port
+number as hash parameter to make it balance well?
+  If source port number is used besides saddr, daddr
+and porotocol, packets of a tcp-flow are sent to the
+queue.
+  I know that, kernel's flow based ECMP also uses
+source and dest port number after 4.12.
+
+  Give me some hints. Thanks.
+
