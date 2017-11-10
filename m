@@ -1,37 +1,58 @@
-From: Thomas Winter <Thomas.Winter@alliedtelesis.co.nz>
-Subject: ipset support for nftables?
-Date: Fri, 10 Nov 2017 03:25:03 +0000
-Message-ID: <1510284303396.22927@alliedtelesis.co.nz>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Counters for individual elements in maps and sets?
+Date: Fri, 10 Nov 2017 08:07:50 +0100
+Message-ID: <20171110070750.GA6027@salvia>
+References: <869ba4d3be90adbb2519654c489285d0@spoje.net>
+ <CAOkSjBhjbdmBw3QgHDcRjuO6KfVfWEhT5Owrdkx3=bkhCH1FKQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail; t=1510284304;
-        bh=Dj5t1utOj/UgzCXH6Ui6GVP9codYEEbFEQQKXlxKnyY=;
-        h=From:To:Subject:Date;
-        b=w45DHcukpeHIe3k8yTznb7qbMH+kfaxqTPn1U278V1jVO3Xp491ofBYKkzCX2uv34
-         /6KYKiXblDnBjC4t4sbVxLBCWmUS2vXFfxy1NG0xjSqO7TbiMqP8C7zGEU0x9eK56j
-         oe2djIY3qx/NN8Wn2ajyuSs/G2Wzb9Zlu3sxD+L0=
-Content-Language: en-GB
+Content-Disposition: inline
+In-Reply-To: <CAOkSjBhjbdmBw3QgHDcRjuO6KfVfWEhT5Owrdkx3=bkhCH1FKQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: Arturo Borrero Gonzalez <arturo@netfilter.org>
+Cc: Tomas Mudrunka <mudrunka@spoje.net>, Netfilter Users Mailing list <netfilter@vger.kernel.org>
 
-Hello,=0A=
-=0A=
-I have iptables rules that use sets defined with ipset and I wondering if i=
-t is possible to make nftables use these? =0A=
-=0A=
-An example iptables rule where LAN is an ipset as seen by "ipset list LAN":=
-=0A=
--A PBR_RULES -m set --match-set LAN src,src -m set --match-set LAN dst,dst =
--j PBR_RULES_001=0A=
-=0A=
-The wiki page https://wiki.nftables.org/wiki-nftables/index.php/Supported_f=
-eatures_compared_to_xtables#set_2 says to use nftables builtin set infrastr=
-ucture but I'd rather avoid trying to rework the part of our system that ge=
-nerates all the ipset stuff for now to make the transition easier.=0A=
-=0A=
-Regards,=0A=
-Thomas=
+On Tue, Nov 07, 2017 at 07:44:13PM +0100, Arturo Borrero Gonzalez wrote:
+> On 7 November 2017 at 14:09, Tomas Mudrunka <mudrunka@spoje.net> wrote:
+> > Hello,
+> > i've figured it's possible to simplify my rules by using maps and sets
+> > instead of using individual rules, but i need to account traffic for each
+> > address in the map separately. Maybe this can be implemented using flags in
+> > map/set, so i will be able to enable it like this:
+> >
+> >         map prometheus {
+> >                 type ipv4_addr : classid;
+> >                 flags interval, counter;
+> >                 elements = {
+> >                         1.1.1.2 : 2:2222 counter packets 10 bytes 5120,
+> >                         1.1.1.3 : 3:3333 counter packets 3 bytes 489
+> >                 }
+> >         }
+> >
+> > just to make it clear, the same map without counters looks like this right
+> > now:
+> >
+> >         map prometheus {
+> >                 type ipv4_addr : classid
+> >                 flags interval
+> >                 elements = {
+> >                         1.1.1.2 : 2:2222,
+> >                         1.1.1.3 : 3:3333
+> >                 }
+> >         }
+> >
+> >
+> > Will it be ever possible to have per element counters for maps and sets?
+> >
+> 
+> you are probably looking for something like this:
+> https://wiki.nftables.org/wiki-nftables/index.php/Flow_tables
+
+This looks like a different usecase we don't support yet, that doesn't
+fit into flow tables.
+
+There's a ticket in bugzilla asking for something like this, we plan
+to add support for this indeed.
