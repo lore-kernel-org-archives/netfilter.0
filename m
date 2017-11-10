@@ -1,28 +1,37 @@
-From: Arturo Borrero Gonzalez <arturo@netfilter.org>
-Subject: Re: [Fwd: How to enable Xen VM traffic using nft]
-Date: Thu, 9 Nov 2017 12:51:44 +0100
-Message-ID: <CAOkSjBhTxijtCRh7PK=Pw_RYwPOnbY2ZeeQP7DhEoRoWYWEtRQ@mail.gmail.com>
-References: <1509137741.13003.0.camel@cefetmg.br> <1510179317.5175.1.camel@cefetmg.br>
+From: Thomas Winter <Thomas.Winter@alliedtelesis.co.nz>
+Subject: ipset support for nftables?
+Date: Fri, 10 Nov 2017 03:25:03 +0000
+Message-ID: <1510284303396.22927@alliedtelesis.co.nz>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1510179317.5175.1.camel@cefetmg.br>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail; t=1510284304;
+        bh=Dj5t1utOj/UgzCXH6Ui6GVP9codYEEbFEQQKXlxKnyY=;
+        h=From:To:Subject:Date;
+        b=w45DHcukpeHIe3k8yTznb7qbMH+kfaxqTPn1U278V1jVO3Xp491ofBYKkzCX2uv34
+         /6KYKiXblDnBjC4t4sbVxLBCWmUS2vXFfxy1NG0xjSqO7TbiMqP8C7zGEU0x9eK56j
+         oe2djIY3qx/NN8Wn2ajyuSs/G2Wzb9Zlu3sxD+L0=
+Content-Language: en-GB
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Leonardo Bruno <leonardo@cefetmg.br>
-Cc: netfilter <netfilter@vger.kernel.org>
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 8 November 2017 at 23:15, Leonardo Bruno <leonardo@cefetmg.br> wrote:
-> Hi guys.
->
-> Any clue on this subject?
->
-> Hope someone can help.
->
-
-Try using nftables in the bridge family.
-
-I see we lack some information here so I added a new wiki page:
-
-https://wiki.nftables.org/wiki-nftables/index.php/Nftables_families
+Hello,=0A=
+=0A=
+I have iptables rules that use sets defined with ipset and I wondering if i=
+t is possible to make nftables use these? =0A=
+=0A=
+An example iptables rule where LAN is an ipset as seen by "ipset list LAN":=
+=0A=
+-A PBR_RULES -m set --match-set LAN src,src -m set --match-set LAN dst,dst =
+-j PBR_RULES_001=0A=
+=0A=
+The wiki page https://wiki.nftables.org/wiki-nftables/index.php/Supported_f=
+eatures_compared_to_xtables#set_2 says to use nftables builtin set infrastr=
+ucture but I'd rather avoid trying to rework the part of our system that ge=
+nerates all the ipset stuff for now to make the transition easier.=0A=
+=0A=
+Regards,=0A=
+Thomas=
