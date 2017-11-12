@@ -1,63 +1,71 @@
-From: Raymond Burkholder <ray@oneunified.net>
-Subject: Re: Counters for individual elements in maps and sets?
-Date: Sat, 11 Nov 2017 16:29:17 -0400
-Message-ID: <48d93081-d530-2064-6e54-f7b18e50e310@oneunified.net>
-References: <869ba4d3be90adbb2519654c489285d0@spoje.net>
- <CAOkSjBhjbdmBw3QgHDcRjuO6KfVfWEhT5Owrdkx3=bkhCH1FKQ@mail.gmail.com>
- <20171110070750.GA6027@salvia> <cc5ae755d98ceba9be4d2e30f42e64ee@spoje.net>
+From: Louis Sautier <sautier.louis@gmail.com>
+Subject: Why is the bugzilla private?
+Date: Sun, 12 Nov 2017 02:17:50 +0100
+Message-ID: <34f41f9c-d095-d459-b89f-8571540d5154@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="ABFc3vBxVtp2Tk8XNsfgHSLqqWvdMQqdu"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <cc5ae755d98ceba9be4d2e30f42e64ee@spoje.net>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:from:subject:message-id:date:user-agent:mime-version;
+        bh=tpL/wVOsT09ZDzuV5s9FE2/PJ1AiyCMumuGuR3hYY/I=;
+        b=QjKv+SCf+V2S0Ue78NfKwDst7t5d5y0NRSC3q46fc2ojU9+fWE5Ihlh5zPrzAot0Yh
+         Hya1GM9BO4RtAnAydnuEFo8eLn//tdqiy95yti0GqzGAtWu8vpBoPcU2n3n2NEKAUAlH
+         0/hLS3v+Ak+kNuP4E9dIuqOfPkqXS8Mn2E8JXDheRUBd2/hFDRmJ205QTWYgL3WkPUk4
+         NP8S+F/omSdG9S0nOIG9sBPFysxPq39Dnz6oWWF6JytRe8QeHMwR8ModCq6ip9N6REHV
+         Owb7NsMvNHw7UPONHh7+N0eSDEHhGG3VxA+UsJ7tMI+A7T2/2B8jR2o0mn4VOLqOiOsX
+         Y9tg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Tomas Mudrunka <mudrunka@spoje.net>, Netfilter Users Mailing list <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-On 11/10/2017 09:09 AM, Tomas Mudrunka wrote:
-> Dne 2017-11-10 08:07, Pablo Neira Ayuso napsal:
->> On Tue, Nov 07, 2017 at 07:44:13PM +0100, Arturo Borrero Gonzalez wrote:
->>> On 7 November 2017 at 14:09, Tomas Mudrunka <mudrunka@spoje.net> wrote:
->>> > Hello,
->>> > i've figured it's possible to simplify my rules by using maps and sets
->>> > instead of using individual rules, but i need to account traffic 
->>> for each
->>> > address in the map separately. Maybe this can be implemented using 
->>> flags in
->>> > map/set, so i will be able to enable it like this:
->>> >
->>>
->>> you are probably looking for something like this:
->>> https://wiki.nftables.org/wiki-nftables/index.php/Flow_tables
->>
->> This looks like a different usecase we don't support yet, that doesn't
->> fit into flow tables.
->>
-> I guess that this can be done using flow tables, HOWEVER in such case 
-> each packet has to be matched two times. Once for classification and 
-> once for traffic accounting.
-> 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--ABFc3vBxVtp2Tk8XNsfgHSLqqWvdMQqdu
+Content-Type: multipart/mixed; boundary="3bx0Q3tfn56fljkf8nGLxe55fK81owKiM";
+ protected-headers="v1"
+From: Louis Sautier <sautier.louis@gmail.com>
+To: netfilter@vger.kernel.org
+Message-ID: <34f41f9c-d095-d459-b89f-8571540d5154@gmail.com>
+Subject: Why is the bugzilla private?
 
-Doing a free association here, in case it is of interest, use connection 
-tracking in Open vSwitch.  It deals with flows, makes use of connection 
-tracking, and maintains flow statistics.
+--3bx0Q3tfn56fljkf8nGLxe55fK81owKiM
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
 
-It is an interesting technology combination, and I am working to convert 
-infrastructure for which I am responsible to this style of security: 
-security rules are built into the routing and switching mechanism at 
-endpoints as well as midpoints.
+Hi,
+I was wondering why the bug tracker requires an account even to view
+bugs. Is it because of performance-related issues?
+I've rarely encountered private bug trackers such as this one and I
+think that adding some kind of public read-only access could be quite
+helpful.
 
-There are many other related concepts which spring to mind for those 
-interested in this mix.
+Please CC me, I'm not subscribed to the list.
 
---
-Raymond Burkholder
-https://blog.raymond.burkholder.net
+Kind regards,
+
+Louis
 
 
--- 
-This message has been scanned for viruses and
-dangerous content by MailScanner, and is
-believed to be clean.
+--3bx0Q3tfn56fljkf8nGLxe55fK81owKiM--
 
+--ABFc3vBxVtp2Tk8XNsfgHSLqqWvdMQqdu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEIaYtDDqHEijHS173LN9/2oYrKfsFAloHoT4ACgkQLN9/2oYr
+Kft0QAf/SI/oOc854n1Zy21GKU6kPRIJh9yqF4AnbpCu+iB3zxg/hDAyntxRk8ko
+r8IO/FZMCfGQeWIYXZmzx4qQClLkWFMo6yNrfFXA9bB81rbncuXPLVvlOeCMwZL7
+3tHGlWcNxAwfHvbSV56Bvp55Cj1Jk+V+pvV1l/yk2/YjUxZts8+xQEZItgGK0W4B
+rlVSbSSSYsV9NrHuOOPe2f7vyBUu+p7cfSeY83YhJRXSS7O2tO04ziQMmdbV6X6s
+/wD6aQQIklbHfxAgFghk7eTLRo9iqR5H0S43Mqf5ka0U0KRGk6tQQMHKeOipRA9Z
+Ij5zibIztVVyapGdLLHt1CArHNoK+Q==
+=vL6b
+-----END PGP SIGNATURE-----
+
+--ABFc3vBxVtp2Tk8XNsfgHSLqqWvdMQqdu--
