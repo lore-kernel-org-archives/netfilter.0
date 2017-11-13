@@ -1,32 +1,27 @@
-From: Robert White <rwhite@pobox.com>
-Subject: Ingress by adapter group ID instead of just adapter?
-Date: Sun, 12 Nov 2017 04:41:52 +0000
-Message-ID: <7197f7d4-a0c7-a5d5-8109-11a509733f61@pobox.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Why is the bugzilla private?
+Date: Mon, 13 Nov 2017 17:41:41 +0100
+Message-ID: <20171113164141.GA13971@salvia>
+References: <34f41f9c-d095-d459-b89f-8571540d5154@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-CA
+Content-Disposition: inline
+In-Reply-To: <34f41f9c-d095-d459-b89f-8571540d5154@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: Louis Sautier <sautier.louis@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Howdy,
+On Sun, Nov 12, 2017 at 02:17:50AM +0100, Louis Sautier wrote:
+> Hi,
+> I was wondering why the bug tracker requires an account even to view
+> bugs. Is it because of performance-related issues?
+> I've rarely encountered private bug trackers such as this one and I
+> think that adding some kind of public read-only access could be quite
+> helpful.
+> 
+> Please CC me, I'm not subscribed to the list.
 
-So ingress chain are attached to adapters, but it would be nice if they
-could be attached to adapter group IDs as well as individual adapters.
-That way I don't have to instantiate a chain for every adapter, I can
-just have the one.
-
-In the syntax [device] would be [device | "group" number].
-
-In particular I use group 1 for all external interfaces, which includes
-several ethX interfaces and all the pppX interfaces as well. I keep a
-"Bad Actor" list and I've been looking at tossing their packets before
-connection tracking and all that with an ingress chain.
-
-
-Better still would be less than or greater than matching on groups.
-
-All this can be done in other rules and other ways, but a simple and
-fast numeric match just seems so much cleaner.
+I have just relaxed this.
