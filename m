@@ -1,90 +1,38 @@
-From: Leonardo Bruno <leonardo@cefetmg.br>
-Subject: Re: [Fwd: How to enable Xen VM traffic using nft]
-Date: Fri, 17 Nov 2017 18:30:37 -0200
-Message-ID: <1510950637.25976.2.camel@cefetmg.br>
-References: <1509137741.13003.0.camel@cefetmg.br>
-         <1510179317.5175.1.camel@cefetmg.br>
-         <CAOkSjBhTxijtCRh7PK=Pw_RYwPOnbY2ZeeQP7DhEoRoWYWEtRQ@mail.gmail.com>
+From: Rafael Ganascim <rganascim@gmail.com>
+Subject: CGNAT - Deterministic port ranges RFC7422
+Date: Sat, 25 Nov 2017 02:41:50 -0200
+Message-ID: <CAD4ZOMw-r1iPt4KHL-oN4CGx7FuAZS8dNQz4srqbuJLWrigT7Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAOkSjBhTxijtCRh7PK=Pw_RYwPOnbY2ZeeQP7DhEoRoWYWEtRQ@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=0U41Dn/OO6DJMzDUxWjchXb9d0xF+nYxY4cDi0Bfqvw=;
+        b=m2nf0lqZazLVh84Ha7K0tKwG1v41I8neBHeFfRpsgq2+JZamoic1WUA2I2fuSravSl
+         4ADEIaWHG+lOzbf9K8kKbzUrNKLoHz27Vg1FvotbMM57gS8QHD2bKqi/YeF1My1wNWQr
+         uCKyazndyf4h9PZTSCokWM45nY7RCAGxjePdo508/fQJQTal5RoeBLisUgXIOpytq46P
+         UxF4dwuK7e3byxyoDLXgehO7+8DfsrRU1auIDAZomqXIxvLkjwXu2G7cxJ3OlnTOhp8X
+         tYOOqA32JQmqTh7h18f+9HJ6v5g3kwsgJ6LR8fPSQgn5PBOXijh8rMXKlcf+BlKweEXB
+         CoGA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Em qui, 2017-11-09 às 12:51 +0100, Arturo Borrero Gonzalez escreveu:
-> On 8 November 2017 at 23:15, Leonardo Bruno <leonardo@cefetmg.br>
-> wrote:
-> > Hi guys.
-> > 
-> > Any clue on this subject?
-> > 
-> > Hope someone can help.
-> > 
-> 
-> Try using nftables in the bridge family.
-> 
-> I see we lack some information here so I added a new wiki page:
-> 
-> https://wiki.nftables.org/wiki-nftables/index.php/Nftables_families
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter"
-> in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+Hello guys,
 
-Thank you guys.
+Do you know if its possible to create in few rules the RFC7422
+deterministic port ranges with netfilter?
 
-I am a little frustrated. I can not match the virtual bridged interface
-in any way either using bridge or inet families.
+I'm using with iptables generating a lot of rules, one for each
+internal ipv4 address/port range/protocol (minimum 3 for each private
+ip address).
 
-To make myself more clear, I used to configure iptables default chain
-policies as 'drop' and then added the exceptions. So considering you
-have a virtual interface vif0 bridged 'under' bridge br0, all you have
-to do is to accept packages going in and out through vif0 using the
-chain FORWARD of table filter.
+I'm looking in DNETMAP implementation, but I don't know if it can be
+configured to be deterministic based on the source-ip/port.
 
-So all my tries were guided by this objective: to match the virtual
-interface and accept the packages. First I used the chains in
-inet/filter table, and so I did the same using bridge/filter table
-
-I tried rules like:
-
-table inet tb_filter {
-	chain ch_forward {
-		type filter hook forward priority 0; policy drop;
-		iifname "vif3.0" log prefix "VIF3_FW_IN_" accept
-		oifname "vif3.0" log prefix "VIF3_FW_OUT_" accept
-	}
-
-	chain ch_input {
-		type filter hook input priority 0; policy drop;
-		iifname "vif3.0" log prefix "VIF3_IN_" accept
-	}
-
-	chain ch_output {
-		type filter hook output priority 0; policy drop;
-		oifname "vif3.0" log prefix "VIF3_OUT_"  accept
-	}
-}
-
-I watched syslog to see which rule really matches, but I could only see
-broadcast/multicast packages. Sometimes I could see that a rule
-matches, but when I switched the chain default policy to drop, it
-didn't work.
-
-I tried similar rules using bridge family and prerouting/postrouting
-chains and nothing.
-
-Maybe you can spot what I am missing. Thank you so much.
 
 Regards,
-Leonardo Lopes
 
--- 
-Esta mensagem foi verificada pelo sistema de antivírus e
- acredita-se estar livre de perigo.
-
+Rafael
