@@ -1,38 +1,29 @@
-From: Rafael Ganascim <rganascim@gmail.com>
-Subject: CGNAT - Deterministic port ranges RFC7422
-Date: Sat, 25 Nov 2017 02:41:50 -0200
-Message-ID: <CAD4ZOMw-r1iPt4KHL-oN4CGx7FuAZS8dNQz4srqbuJLWrigT7Q@mail.gmail.com>
+From: "FAIR, ED" <ef7193@att.com>
+Subject: SNMP mangling anybody?
+Date: Wed, 29 Nov 2017 16:27:26 +0000
+Message-ID: <038581F89849074CAFDAFA8E4AE887F41F76D74C@GAALPA1MSGUSRBF.ITServices.sbc.com>
 Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=0U41Dn/OO6DJMzDUxWjchXb9d0xF+nYxY4cDi0Bfqvw=;
-        b=m2nf0lqZazLVh84Ha7K0tKwG1v41I8neBHeFfRpsgq2+JZamoic1WUA2I2fuSravSl
-         4ADEIaWHG+lOzbf9K8kKbzUrNKLoHz27Vg1FvotbMM57gS8QHD2bKqi/YeF1My1wNWQr
-         uCKyazndyf4h9PZTSCokWM45nY7RCAGxjePdo508/fQJQTal5RoeBLisUgXIOpytq46P
-         UxF4dwuK7e3byxyoDLXgehO7+8DfsrRU1auIDAZomqXIxvLkjwXu2G7cxJ3OlnTOhp8X
-         tYOOqA32JQmqTh7h18f+9HJ6v5g3kwsgJ6LR8fPSQgn5PBOXijh8rMXKlcf+BlKweEXB
-         CoGA==
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hello guys,
+Hi,
 
-Do you know if its possible to create in few rules the RFC7422
-deterministic port ranges with netfilter?
+Are there any members here successfully mangling SNMP requests/replies (udp 161)?  I'm trying to policy-route my outbound SNMP requests, but my efforts have been unsuccessful to date.  I'd like to hear how you do it.
 
-I'm using with iptables generating a lot of rules, one for each
-internal ipv4 address/port range/protocol (minimum 3 for each private
-ip address).
+I have two interfaces in play; I do not have routing turned on; bond0.1 is used for the default route (main table); I would like to policy-route just the locally-generated SNMP requests via bond0.2 towards a NAT device.  So I use:
 
-I'm looking in DNETMAP implementation, but I don't know if it can be
-configured to be deterministic based on the source-ip/port.
+	ip route add to unicast default table 7 via 192.168.168.7 dev bond0.2 src 192.168.168.3   #192.168.168.7 is a NAT server, 192.168.168.3 is the address assigned to bond0.2
+	iptables -t mangle -A OUTPUT -p udp --dport 161 -j MARK --set-mark 256
+	ip rule add priority 9999 type unicast fwmark 256 table 7
+	ip route flush cache table 7
 
+In the above configuration, the SNMP requests correctly egress via bond0.2 - the policy-routing is having some effect - but the requests retain the bond0.1 address in the IP SRC - the policy-routing doesn't update the IP SRC as I had hoped.  
 
-Regards,
+For testing, I'm using net-snmp-utils "snmpget" command, with no "clientaddr" specified.
 
-Rafael
+Thanks in Advance!
