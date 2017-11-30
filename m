@@ -1,77 +1,46 @@
-From: Robert White <rwhite@pobox.com>
-Subject: Re: SNMP mangling anybody?
-Date: Thu, 30 Nov 2017 11:02:32 +0000
-Message-ID: <c38d24c0-9425-2b08-6db6-6df1db83261e@pobox.com>
+From: "FAIR, ED" <ef7193@att.com>
+Subject: RE: SNMP mangling anybody?
+Date: Thu, 30 Nov 2017 14:12:24 +0000
+Message-ID: <038581F89849074CAFDAFA8E4AE887F41F770580@GAALPA1MSGUSRBF.ITServices.sbc.com>
 References: <038581F89849074CAFDAFA8E4AE887F41F76D74C@GAALPA1MSGUSRBF.ITServices.sbc.com>
+ <c38d24c0-9425-2b08-6db6-6df1db83261e@pobox.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <038581F89849074CAFDAFA8E4AE887F41F76D74C@GAALPA1MSGUSRBF.ITServices.sbc.com>
-Content-Language: en-CA
+In-Reply-To: <c38d24c0-9425-2b08-6db6-6df1db83261e@pobox.com>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: "FAIR, ED" <ef7193@att.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+To: Robert White <rwhite@pobox.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-You need to bind the socket to the specific interface using your
-application.
-
-For snmpget, for example, you can use the snmp.conf file or just add the
-clientaddr option on the command line.
-
-so using:
-
-snmpget --clientaddr=udp:192.168.168.3 (rest of stuff)
-
-would bind the get to the local address, and so interface, you
-specified. You seem to already know about this but want to avoid it for
-some reason.
-
-You are correct that policy routing does not rewrite packet addresses.
-That's not what it's for. Rule based nat can do it, but that's not your
-best option.
-
-If you want to rewrite the addres, then SNAT the packet (that's what
-snat is for, ha ha ha).
-
-But really, unless you have some reason no to, you should use the most
-native tool (the clientaddr option or similar) instead of getting "tricky".
-
-As Scotty famously said "the more you over-think the plumbing, the
-easier it is to stop up the pipes."
-
-You can use the mark to limit the snat in postrouting, presuming you're
-getting the packets marked properly.
-
-
-iptables --append POSTROUTING \
-  --match mark --mark 256 \
-  --jump SNAT --to-source 192.168.168.7
-
-But seriously, clientaddr is your best option.
-
---Rob
-
-On 11/29/2017 04:27 PM, FAIR, ED wrote:
-> Hi,
-> 
-> Are there any members here successfully mangling SNMP requests/replies (udp 161)?  I'm trying to policy-route my outbound SNMP requests, but my efforts have been unsuccessful to date.  I'd like to hear how you do it.
-> 
-> I have two interfaces in play; I do not have routing turned on; bond0.1 is used for the default route (main table); I would like to policy-route just the locally-generated SNMP requests via bond0.2 towards a NAT device.  So I use:
-> 
-> 	ip route add to unicast default table 7 via 192.168.168.7 dev bond0.2 src 192.168.168.3   #192.168.168.7 is a NAT server, 192.168.168.3 is the address assigned to bond0.2
-> 	iptables -t mangle -A OUTPUT -p udp --dport 161 -j MARK --set-mark 256
-> 	ip rule add priority 9999 type unicast fwmark 256 table 7
-> 	ip route flush cache table 7
-> 
-> In the above configuration, the SNMP requests correctly egress via bond0.2 - the policy-routing is having some effect - but the requests retain the bond0.1 address in the IP SRC - the policy-routing doesn't update the IP SRC as I had hoped.  
-> 
-> For testing, I'm using net-snmp-utils "snmpget" command, with no "clientaddr" specified.
-> 
-> Thanks in Advance!
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
-
+VGhhbmsgeW91IGZvciB0aGUgcmVwbHkgUm9iZXJ0LCBtb3N0IGFwcHJlY2lhdGVkLg0KDQpXaGls
+ZSB0ZXN0aW5nIHdpdGggc25tcGdldCBJIG1vbml0b3IgdHJhZmZpYyBhdCAxKSB0aGUgU05NUCBt
+YW5hZ2VyIGFuZCAyKSB0aGUgTkFUIGRldmljZSB3aXRoOiAidGNwZHVtcCAtbiAtZSBhcnAgb3Ig
+cG9ydCAxNjEiLg0KDQpTZXR0aW5nIHRoZSBTTk1QIGNsaWVudGFkZHIgc2VlbXMgdG8gaGF2ZSB0
+aGUgZGVzaXJlZCBlZmZlY3Qgb24gdGhlIElQIFNSQyBpbiB0aGUgb3V0Ym91bmQgU05NUCByZXF1
+ZXN0LCBhbmQgdGhlIHBvbGljeS1yb3V0ZSBoYXMgdGhlIGRlc2lyZWQgZWZmZWN0IHRvIHNlbmQg
+dG8gdGhlIGRlc2lyZWQgbmV4dGhvcCB2aWEgdGhlIGNvcnJlY3QgaW50ZXJmcmFjZS4gIEJ1dCBp
+dCBzdGlsbCBkb2Vzbid0IHdvcmsgaW4gdGhlIGVuZDogIHRjcGR1bXAgc2hvd3MgdGhlIFNOTVAg
+cmVxdWVzdCBhbmQgdGhlIFNOTVAgcmVzcG9uc2UgZXhhY3RseSBhcyBleHBlY3RlZCBhdCBib3Ro
+IDEgYW5kIDIgYWJvdmUsICBidXQgdGhlIHNubXBnZXQgY29tbWFuZCBzaG93cyBhIFRpbWVvdXQg
+ZXJyb3IgKEkgdXNlIC10IDUgd2hpY2ggaXMgYSBncmFjaW91cyBwbGVudHkpLiAgVGhlIFNOTVAg
+cmVzcG9uc2UgaXMgbm90IG1ha2luZyBpdCB1cCB0aGUgc3RhY2sgdG8gdGhlIGFwcGxpY2F0aW9u
+IGxheWVyLiAgSSBkb24ndCBrbm93IHdoZXJlL3doeSBpdCdzIGJlaW5nIGRyb3BwZWQuIEkgaW5z
+ZXJ0ZWQgYSBncmF0dWl0b3VzIEFDQ0VQVCBpbiB0aGUgZmlsdGVyIHRhYmxlIElOUFVUIGNoYWlu
+LCBidXQgdGhlIHBhY2tldCBjb3VudCByZW1haW5zIHplcm8sIHNvIEkgdGhpbmsgaXQncyBkcm9w
+cGVkIGJ5IHRoZSBrZXJuZWwgYmVmb3JlIG5ldGZpbHRlciBzZWVzIGl0LiAgKFRvIGZ1cnRoZXIg
+c3VwcG9ydCB0aGlzIGJlbGllZiwgaWYgSSBjaGFuZ2UgdGhlIFNOTVAgbWFuYWdlciB0byBkZWZh
+dWx0IHJvdXRlIHZpYSBib25kMC4yLCBldmVyeXRoaW5nIHdvcmtzIHBlcmZlY3RseSAtIG5vIHRp
+bWVvdXQpLg0KDQo+Pj4gUnVsZSBiYXNlZCBuYXQgY2FuIGRvIGl0LCBidXQgdGhhdCdzIG5vdCB5
+b3VyIGJlc3Qgb3B0aW9uLiA8PDwgDQoNCkkgdGhvdWdodCB0aGlzIHdhcyBkZXByZWNhdGVkPw0K
+DQo+Pj4gSWYgeW91IHdhbnQgdG8gcmV3cml0ZSB0aGUgYWRkcmVzcywgdGhlbiBTTkFUIHRoZSBw
+YWNrZXQgKHRoYXQncyB3aGF0IHNuYXQgaXMgZm9yLCBoYSBoYSBoYSkuIDw8PA0KDQpJIGhhdmUg
+c3BlbnQgc29tZSB0aW1lIGNvbmZpZ3VyaW5nIGFuZCB0ZXN0aW5nIHdpdGggU05BVCB0b28sIGFu
+ZCBJIHdpbGwgbGlrZWx5IHJldHVybiB0byB0aGF0IGFmdGVyIEkgdW5kZXJzdGFuZCB3aGF0J3Mg
+aGFwcGVuaW5nIGluIHRoZSBtdWNoIHNpbXBsZXIgY2FzZSBvZiBqdXN0IHNldHRpbmcgY2xpZW50
+YWRkciBhcyBhYm92ZS4NCg0KPj4+IGlwdGFibGVzIC0tYXBwZW5kIFBPU1RST1VUSU5HICAgLS1t
+YXRjaCBtYXJrIC0tbWFyayAyNTYgICAtLWp1bXAgU05BVCAtLXRvLXNvdXJjZSAxOTIuMTY4LjE2
+OC43IDw8PA0KDQoxOTIuMTY4LjE2OC43IGlzIHRoZSBOQVQgZGV2aWNlLCBzaG91bGRuJ3QgdGhh
+dCBiZSB0aGUgYm9uZDAuMiBhZGRyZXNzIG9mIHRoZSBTTk1QIG1hbmFnZXIgKDE5Mi4xNjguMTY4
+LjMpDQoNCg0K
