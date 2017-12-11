@@ -1,116 +1,101 @@
-From: "FAIR, ED" <ef7193@att.com>
-Subject: RE: SNMP mangling anybody?
-Date: Mon, 4 Dec 2017 14:36:09 +0000
-Message-ID: <038581F89849074CAFDAFA8E4AE887F41F774004@GAALPA1MSGUSRBF.ITServices.sbc.com>
+From: Robert White <rwhite@pobox.com>
+Subject: Re: SNMP mangling anybody?
+Date: Mon, 11 Dec 2017 18:40:13 +0000
+Message-ID: <7c8313a3-b60d-5afe-bd1c-d3743b644354@pobox.com>
 References: <038581F89849074CAFDAFA8E4AE887F41F76D74C@GAALPA1MSGUSRBF.ITServices.sbc.com>
  <c38d24c0-9425-2b08-6db6-6df1db83261e@pobox.com>
  <038581F89849074CAFDAFA8E4AE887F41F771684@GAALPA1MSGUSRBF.ITServices.sbc.com>
  <9871b3d5-87b3-0d25-6e4b-b42c4978cc7a@pobox.com>
+ <038581F89849074CAFDAFA8E4AE887F41F774004@GAALPA1MSGUSRBF.ITServices.sbc.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <9871b3d5-87b3-0d25-6e4b-b42c4978cc7a@pobox.com>
-Content-Language: en-US
+In-Reply-To: <038581F89849074CAFDAFA8E4AE887F41F774004@GAALPA1MSGUSRBF.ITServices.sbc.com>
+Content-Language: en-CA
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"
-To: Robert White <rwhite@pobox.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: "FAIR, ED" <ef7193@att.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Um9iLA0KDQpib25kMC4xIElQPTEwLjM2LjIyLjc3LzI0LCBib25kMC4yIElQPTE5Mi4xNjguMTY4
-Ljg0LzI0LiAgU2VlIGRpYWdyYW0gYW5kIGlwIGNvbmZpZ3MgYmVsb3cuDQoNCkkgYW0gcHJvbmUg
-dG8gYWR2YW5jZWQgZXJyb3JzLCB5ZXMgOikgQW5kIEkgYW0gcHV6emxlZCBieSB0aGUgcnBfZmls
-dGVyIFJGQzM3MDQgYmVoYXZpb3IuDQoNCkkgd2FudCBhbGwgbG9jYWxseS1nZW5lcmF0ZWQgdHJh
-ZmZpYyAqZXhjZXB0IGxvY2FsbHktZ2VuZXJhdGVkIFNOTVAqIHRvIHJvdXRlIHZpYSB0aGUgZGVm
-YXVsdCByb3V0ZSBpbiB0YWJsZSAibWFpbiIsIGVncmVzcyBib25kMC4xOyBJIHdhbnQgKmxvY2Fs
-bHktZ2VuZXJhdGVkIFNOTVAqIHRvIHJvdXRlIHZpYSB0aGUgZGVmYXVsdCByb3V0ZSBpbiB0YWJs
-ZSA3LCBlZ3Jlc3MgYm9uZDAuMi4NCg0KUGVyaGFwcyBJIGhhdmUgaWdub3JhbnRseSBtaXNjb25m
-aWd1cmVkIHNvbWV0aGluZyB0byBiaWFzIHJwX2ZpbHRlcj8gIEl0IHNlZW1zIHRoYXQgcnBfZmls
-dGVyIGRvZXMgbm90IHRyZWF0IHRoZSB0d28gZGlmZmVyZW50IGRlZmF1bHQgcm91dGVzIGluIHR3
-byBkaWZmZXJlbnQgdGFibGVzIGFzIGVxdWFscy4NCg0KVGhlIGJlbG93IHJlbmRlcnMgYmVzdCBp
-biBhIGZpeGVkIGZvbnQgQlRXLg0KDQoNCi0tLS0tLS0tLS04PC0tLS0tLS0tLS0tLS0tLS0tLS0N
-Cg0KaG9zdEEtQyBhbmQgbmF0MSBhcmUgYWxsIGNvbnRhaW5lZCB3aXRoaW4gYSBzaW5nbGUgY2hh
-c3NpczsgUlRSIGlzIG5vdCB3aXRoaW4gdGhlIGNoYXNzaXMuDQoNCiAgICstLS0tLS0tLS0tLS0t
-LSBJTlRFUk5BTCBuZXR3b3JrLCBWTEFOIDIsIDE5Mi4xNjguMC4wLzI0LCBib25kMC4yIG9uIGFs
-bCBob3N0cy4gIFRoaXMgVkxBTiBpcyBpbnRlcm5hbCB0byB0aGUgY2hhc3NpcyBhbmQgaXMgbm90
-IHJvdXRhYmxlIG91dHNpZGUgdGhlIGNoYXNzaXMuDQogICB8DQogICB8DQogICB8ICAgICAgICAg
-ICAgICstLS0tLSBFWFRFUk5BTCBuZXR3b3JrLCBWTEFOIDEsIDEwLjAuMC4wLzggbmV0d29yaywg
-Ym9uZDAuMSBvbiBhbGwgaG9zdHMuICBUaGlzIFZMQU4gaGFzIGV4dGVybmFsIA0KICAgfCAgICAg
-ICAgICAgICB8DQogICB8ICAgICAgICAgICAgIHwNCiAgIHwgICAgICAgICAgICAgfA0KICAgViAg
-ICAgICAgICAgICBWDQoNCiAgIH4gICAgICAgICAgICAgfg0KICAgfCAgKy0tLS0tLS0rICB8DQog
-ICB8ICB8ICAgICAgIHwgIHwNCiAgICstLXwgaG9zdEEgfC0tKw0KICAgfCAgfCAgICAgICB8ICB8
-DQogICB8ICArLS0tLS0tLSsgIHwNCiAgIHwgICAgICAgICAgICAgfA0KICAgfCAgKy0tLS0tLS0r
-ICB8DQogICB8ICB8ICAgICAgIHwgIHwNCiAgICstLXwgaG9zdEIgfC0tKyAgIE5vdGVzOiANCiAg
-IHwgIHwgICAgICAgfCAgfCAgICAgIA0KICAgfCAgKy0tLS0tLS0rICB8ICAgICAgaG9zdEEtQyBh
-cmUgbm90IGZvcndhcmRpbmcvcm91dGluZy4NCiAgIHwgICAgICAgICAgICAgfCAgICAgIG90aGVy
-IG5ldHdvcmsgaW50ZXJmYWNlcyBvbWl0dGVkIGZvciBjbGFyaXR5IChTQU4sIERSLCBldGMuKS4N
-CiAgIHwgICstLS0tLS0tKyAgfCAgICAgIA0KICAgfCAgfCAgICAgICB8ICB8DQogICArLS18IGhv
-c3RDIHwtLSsNCiAgIHwgIHwgICAgICAgfCAgfA0KICAgfCAgKy0tLS0tLS0rICB8DQogICB8ICAg
-ICAgICAgICAgIHwgICAgICAgICAgICAgfg0KICAgfCAgICAgIC4gICAgICB8ICAgKy0tLS0tLSsg
-IHwgICgoKCgoKCgoKCgoKCgoKSkpKSkpKSkpKSkpKSkgDQogICB8ICAgICAgLiAgICAgIHwgICB8
-ICAgICAgfCAgfCAgKCAgICAgICAgICAgICAgICAgICAgICAgICAgKQ0KICAgfCAgICAgIC4gICAg
-ICArLS0tfCBSVFIgIHwtLSstLSggdGhlIHJlc3Qgb2YgdGhlIG5ldHdvcmsgICkNCiAgIHwgICAg
-ICAgICAgICAgfCAgIHwgICAgICB8ICB8ICAoICAgICAgICAgICAgICAgICAgICAgICAgICApDQog
-ICB8ICArLS0tLS0tLSsgIHwgICArLS0tLS0tKyAgfCAgKCgoKCgoKCgoKCgoKCgpKSkpKSkpKSkp
-KSkpKQ0KICAgfCAgfCAgICAgICB8ICB8ICAgICAgICAgICAgIH4NCiAgICstLXwgbmF0MSAgfC0t
-Kw0KICAgfCAgfCAgICAgICB8ICB8DQogICB8ICArLS0tLS0tLSsgIHwNCiAgIH4gICAgICAgICAg
-ICAgfg0KDQoNCg0KJCBpcCBhZGRyIHNob3cNCjE6IGxvOiA8TE9PUEJBQ0ssVVAsTE9XRVJfVVA+
-IG10dSA2NTUzNiBxZGlzYyBub3F1ZXVlIHN0YXRlIFVOS05PV04NCiAgICBsaW5rL2xvb3BiYWNr
-IDAwOjAwOjAwOjAwOjAwOjAwIGJyZCAwMDowMDowMDowMDowMDowMA0KICAgIGluZXQgMTI3LjAu
-MC4xLzggc2NvcGUgaG9zdCBsbw0KICAgIGluZXQ2IDo6MS8xMjggc2NvcGUgaG9zdA0KICAgICAg
-IHZhbGlkX2xmdCBmb3JldmVyIHByZWZlcnJlZF9sZnQgZm9yZXZlcg0KMjogZXRoNDogPEJST0FE
-Q0FTVCxNVUxUSUNBU1Q+IG10dSAxNTAwIHFkaXNjIG5vb3Agc3RhdGUgRE9XTiBxbGVuIDEwMDAN
-CiAgICBsaW5rL2V0aGVyIDAwOjFiOjIxOjZhOmZkOmZkIGJyZCBmZjpmZjpmZjpmZjpmZjpmZg0K
-MzogZXRoNTogPEJST0FEQ0FTVCxNVUxUSUNBU1Q+IG10dSAxNTAwIHFkaXNjIG5vb3Agc3RhdGUg
-RE9XTiBxbGVuIDEwMDANCiAgICBsaW5rL2V0aGVyIDAwOjFiOjIxOjZhOmZkOmZjIGJyZCBmZjpm
-ZjpmZjpmZjpmZjpmZg0KNDogZXRoNjogPEJST0FEQ0FTVCxNVUxUSUNBU1Q+IG10dSAxNTAwIHFk
-aXNjIG5vb3Agc3RhdGUgRE9XTiBxbGVuIDEwMDANCiAgICBsaW5rL2V0aGVyIDAwOjFiOjIxOjZh
-OmZkOmZmIGJyZCBmZjpmZjpmZjpmZjpmZjpmZg0KNTogZXRoNzogPEJST0FEQ0FTVCxNVUxUSUNB
-U1Q+IG10dSAxNTAwIHFkaXNjIG5vb3Agc3RhdGUgRE9XTiBxbGVuIDEwMDANCiAgICBsaW5rL2V0
-aGVyIDAwOjFiOjIxOjZhOmZkOmZlIGJyZCBmZjpmZjpmZjpmZjpmZjpmZg0KNjogZXRoODogPEJS
-T0FEQ0FTVCxNVUxUSUNBU1QsVVAsTE9XRVJfVVA+IG10dSAxNTAwIHFkaXNjIHBmaWZvX2Zhc3Qg
-c3RhdGUgVVAgcWxlbiAxMDAwDQogICAgbGluay9ldGhlciAwMDoxYjoyMTpkNzoyYzo1MSBicmQg
-ZmY6ZmY6ZmY6ZmY6ZmY6ZmYNCiAgICBpbmV0IDE5Mi4xNjguOTMuMjQvMjMgYnJkIDE5Mi4xNjgu
-OTMuMjU1IHNjb3BlIGdsb2JhbCBldGg4DQogICAgaW5ldDYgZmU4MDo6MjFiOjIxZmY6ZmVkNzoy
-YzUxLzY0IHNjb3BlIGxpbmsNCiAgICAgICB2YWxpZF9sZnQgZm9yZXZlciBwcmVmZXJyZWRfbGZ0
-IGZvcmV2ZXINCjc6IGV0aDk6IDxCUk9BRENBU1QsTVVMVElDQVNUPiBtdHUgMTUwMCBxZGlzYyBu
-b29wIHN0YXRlIERPV04gcWxlbiAxMDAwDQogICAgbGluay9ldGhlciAwMDoxYjoyMTpkNzoyYzo1
-MCBicmQgZmY6ZmY6ZmY6ZmY6ZmY6ZmYNCjg6IGV0aDEwOiA8QlJPQURDQVNULE1VTFRJQ0FTVD4g
-bXR1IDE1MDAgcWRpc2Mgbm9vcCBzdGF0ZSBET1dOIHFsZW4gMTAwMA0KICAgIGxpbmsvZXRoZXIg
-MDA6MWI6MjE6ZDc6MmM6NTMgYnJkIGZmOmZmOmZmOmZmOmZmOmZmDQo5OiBldGgxMTogPEJST0FE
-Q0FTVCxNVUxUSUNBU1Q+IG10dSAxNTAwIHFkaXNjIG5vb3Agc3RhdGUgRE9XTiBxbGVuIDEwMDAN
-CiAgICBsaW5rL2V0aGVyIDAwOjFiOjIxOmQ3OjJjOjUyIGJyZCBmZjpmZjpmZjpmZjpmZjpmZg0K
-MTA6IGV0aDA6IDxCUk9BRENBU1QsTVVMVElDQVNULFNMQVZFLFVQLExPV0VSX1VQPiBtdHUgMTUw
-MCBxZGlzYyBtcSBtYXN0ZXIgYm9uZDAgc3RhdGUgVVAgcWxlbiAxMDAwDQogICAgbGluay9ldGhl
-ciAwMDoxYjoyMTpkODo3YjpmYyBicmQgZmY6ZmY6ZmY6ZmY6ZmY6ZmYNCjExOiBldGgxOiA8QlJP
-QURDQVNULE1VTFRJQ0FTVCxTTEFWRSxVUCxMT1dFUl9VUD4gbXR1IDE1MDAgcWRpc2MgbXEgbWFz
-dGVyIGJvbmQwIHN0YXRlIFVQIHFsZW4gMTAwMA0KICAgIGxpbmsvZXRoZXIgMDA6MWI6MjE6ZDg6
-N2I6ZmMgYnJkIGZmOmZmOmZmOmZmOmZmOmZmDQoxMjogZXRoMjogPEJST0FEQ0FTVCxNVUxUSUNB
-U1Q+IG10dSAxNTAwIHFkaXNjIG5vb3Agc3RhdGUgRE9XTiBxbGVuIDEwMDANCiAgICBsaW5rL2V0
-aGVyIDAwOjIxOjI4OmRlOjQ5OmYyIGJyZCBmZjpmZjpmZjpmZjpmZjpmZg0KMTM6IGV0aDM6IDxC
-Uk9BRENBU1QsTVVMVElDQVNUPiBtdHUgMTUwMCBxZGlzYyBub29wIHN0YXRlIERPV04gcWxlbiAx
-MDAwDQogICAgbGluay9ldGhlciAwMDoyMToyODpkZTo0OTpmMyBicmQgZmY6ZmY6ZmY6ZmY6ZmY6
-ZmYNCjE0OiBib25kMDogPEJST0FEQ0FTVCxNVUxUSUNBU1QsTUFTVEVSLFVQLExPV0VSX1VQPiBt
-dHUgMTUwMCBxZGlzYyBub3F1ZXVlIHN0YXRlIFVQDQogICAgbGluay9ldGhlciAwMDoxYjoyMTpk
-ODo3YjpmYyBicmQgZmY6ZmY6ZmY6ZmY6ZmY6ZmYNCiAgICBpbmV0NiBmZTgwOjoyMWI6MjFmZjpm
-ZWQ4OjdiZmMvNjQgc2NvcGUgbGluaw0KICAgICAgIHZhbGlkX2xmdCBmb3JldmVyIHByZWZlcnJl
-ZF9sZnQgZm9yZXZlcg0KMTU6IGJvbmQwLjFAYm9uZDA6IDxCUk9BRENBU1QsTVVMVElDQVNULFVQ
-LExPV0VSX1VQPiBtdHUgMTUwMCBxZGlzYyBub3F1ZXVlIHN0YXRlIFVQDQogICAgbGluay9ldGhl
-ciAwMDoxYjoyMTpkODo3YjpmYyBicmQgZmY6ZmY6ZmY6ZmY6ZmY6ZmYNCiAgICBpbmV0IDEwLjM2
-LjIyLjc3LzI0IGJyZCAxMC4zNi4yMi4yNTUgc2NvcGUgZ2xvYmFsIGJvbmQwLjENCiAgICBpbmV0
-NiBmZTgwOjoyMWI6MjFmZjpmZWQ4OjdiZmMvNjQgc2NvcGUgbGluaw0KICAgICAgIHZhbGlkX2xm
-dCBmb3JldmVyIHByZWZlcnJlZF9sZnQgZm9yZXZlcg0KMTY6IGJvbmQwLjJAYm9uZDA6IDxCUk9B
-RENBU1QsTVVMVElDQVNULFVQLExPV0VSX1VQPiBtdHUgMTUwMCBxZGlzYyBub3F1ZXVlIHN0YXRl
-IFVQDQogICAgbGluay9ldGhlciAwMDoxYjoyMTpkODo3YjpmYyBicmQgZmY6ZmY6ZmY6ZmY6ZmY6
-ZmYNCiAgICBpbmV0IDE5Mi4xNjguMTY4Ljg0LzI0IGJyZCAxOTIuMTY4LjE2OC4yNTUgc2NvcGUg
-Z2xvYmFsIGJvbmQwLjINCiAgICBpbmV0NiBmZTgwOjoyMWI6MjFmZjpmZWQ4OjdiZmMvNjQgc2Nv
-cGUgbGluaw0KICAgICAgIHZhbGlkX2xmdCBmb3JldmVyIHByZWZlcnJlZF9sZnQgZm9yZXZlcg0K
-JCBpcCByb3V0ZSBzaG93DQoxOTIuMTY4LjE2OC4wLzI0IGRldiBib25kMC4yICBwcm90byBrZXJu
-ZWwgIHNjb3BlIGxpbmsgIHNyYyAxOTIuMTY4LjE2OC44NA0KMTAuMzYuMjIuMC8yNCBkZXYgYm9u
-ZDAuMSAgcHJvdG8ga2VybmVsICBzY29wZSBsaW5rICBzcmMgMTAuMzYuMjIuNzcNCjE5Mi4xNjgu
-OTIuMC8yMyBkZXYgZXRoOCAgcHJvdG8ga2VybmVsICBzY29wZSBsaW5rICBzcmMgMTkyLjE2OC45
-My4yNA0KMTY5LjI1NC4wLjAvMTYgZGV2IGV0aDggIHNjb3BlIGxpbmsgIG1ldHJpYyAxMDA2DQox
-NjkuMjU0LjAuMC8xNiBkZXYgYm9uZDAgIHNjb3BlIGxpbmsgIG1ldHJpYyAxMDE0DQoxNjkuMjU0
-LjAuMC8xNiBkZXYgYm9uZDAuMSAgc2NvcGUgbGluayAgbWV0cmljIDEwMTUNCjE2OS4yNTQuMC4w
-LzE2IGRldiBib25kMC4yICBzY29wZSBsaW5rICBtZXRyaWMgMTAxNg0KZGVmYXVsdCB2aWEgMTAu
-MzYuMjIuMSBkZXYgYm9uZDAuMQ0KJCBpcCByb3V0ZSBzaG93IHRhYmxlIDcNCmRlZmF1bHQgdmlh
-IDE5Mi4xNjguMTY4LjkzIGRldiBib25kMC4yICBzcmMgMTkyLjE2OC4xNjguODQNCiQNCg0K
+First, if you are using VLAN 2 as an _internal_ network, why are you
+giving it a default route at all. Simply using the 192.168.0.X addresses
+will put you on the right link. That link doesn't leave. "Default"
+routes are only for finding a way to non-local segements, e.g. the
+larger internet.
+
+I'm confused as to how/why you have 192.168.0.0/24 as a descriptor when
+you are variously using 192.168.168.84/24 and such. the /24 locks all
+the bits of the first three octets as the host part so 192.168.168.84 is
+_not_ accessible from 192.168.0.0/24 except via a router.
+
+So it appears that you've drastically over-thought your addressing and
+made a mess. Or you've made a typo.
+
+I also have no understanding of your desire to _bond_ the interfaces.
+
+So here's the deal...
+
+This looks like some of the ATCA stuff I've worked with.
+
+You seem to be bonding two interfaces (eth0 and eth1)
+
+You talk about VLAN1 and VLAN2, so I am assuming you have some sort of
+switch in the chassis that is letting one VLAN out into the world (e.g.
+RTR) and keeping the other private.
+
+So if you strip out all the nonsense and just put the addresses on
+bond0.1 and bond0.2, then only generate traffic to 192.168.168.anything
+addresses when you want to use bond0.2 then everything is finished.
+
+The main routing tables that control all the access to all the locally
+attached segments is inviolate because things don't work at all if the
+user can bone finding 192.168.168.X/24 via the wire directly attached to
+the 192.168.168.Y/24 adapter.
+
+On 12/04/2017 02:36 PM, FAIR, ED wrote:
+
+So rp is upchucking because (first line of main table)
+> 192.168.168.0/24 \
+>   dev bond0.2 \
+>   proto kernel \
+>   scope link \
+>   src 192.168.168.84
+
+is just basic plumbing. It's unavoidable. And it has nothing to do with
+the default routes at all.
+
+So to say it in different words, "default" in "default route" is the
+entry to use for "not otherwise listed" address ranges. But the
+192.168.168.0/24 range is explicitly listed.
+
+In the end you've outsmarted yourself with a few classic misunderstandings.
+
+To acheive what you want:
+
+(1) don't mess with the routing tables at all. The default route that is
+added, with the via naming the address of RTR, plus all the local rules,
+is all you need, and it only applies for larger internet-world destinations.
+
+(2) you really _ought_ to use the clientaddr config, but you don't have
+to really do that as the src stanza of the above citation has you covered.
+
+(3) you don't need policy when your problem set is already constrained
+by addressing. So you don't need to do _anything_ with "ip route", "ip
+rule", iptables, or nft to get what you want to happen.
+
+When you use a 192.168.168.something target address it _will_ go out on
+the correct vlan using the correct address, as that's what thous
+unavoidable routes _do_ for you. This will affect any application using
+any address in that matching subnet.
+
+If this _isn't_ working for you then go back to the switch config and
+that line where you said vlan 2 was for the 192.168.0.0/24 range of
+addresses. If your switch is actively filtering that vlan for that
+address range then you need to reconcile that by changing your
+addresses, changing the filter in the switch, or using some other vlan
+number.
+
+
+
+But in general, for locally attached things, and in the absence of bad
+actors, just let the magic happen. 8-)
