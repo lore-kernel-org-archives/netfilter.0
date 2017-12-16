@@ -1,35 +1,25 @@
-From: Isabell Cowan <izzi@izzette.com>
-Subject: [conntrack-tools] - Multiple Routing Tables
-Date: Fri, 15 Dec 2017 09:18:18 -0600
-Message-ID: <a94bcbb3-ef8b-4835-6646-3a4a412b07e9@izzette.com>
+From: =?UTF-8?Q?Toralf_F=c3=b6rster?= <toralf.foerster@gmx.de>
+Subject: debug a --connlimit-above rule
+Date: Sat, 16 Dec 2017 13:04:17 +0100
+Message-ID: <3a442218-339c-ccf0-0d3e-7b089b867e85@gmx.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=izzette.com; h=
-        content-language:content-transfer-encoding:content-type
-        :content-type:mime-version:user-agent:date:date:message-id
-        :subject:subject:from:from:to; s=dkim; t=1513351100; x=
-        1514215101; bh=QoQbSFQOm9XbxYR/oV+aDrHx5bE00N6+74AMTQpNuc0=; b=o
-        p0/lPthChQB8wW254PuIWuXLUA0gvNEefWfiqqUjtuoRHEKU8APg6/e8tTD/BsSm
-        /jMXhpPI7DMAMmIpJIBIAP5iEHO/853piCHaHg+QLUNqqBBE+FvmCgBeITmhucdN
-        wv3PVOdpGZ4OcYCM6Cj5PhlMRyU6FjMWzgh/XVyX/Q=
-Content-Language: en-US
+Content-Language: en-GB
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Can conntrackd be used between routers that share multiple routing
-tables and default routes, for example as described in
-http://lartc.org/howto/lartc.rpdb.multiple-links.html.=C2=A0 If so, what =
-are
-the requirements for such a setup / configuration, and if not are there
-any plans to implement support.=C2=A0 I was unable to find any reference =
-to
-multiple routing tables in the user manual at
-http://lartc.org/howto/lartc.rpdb.multiple-links.html.=C2=A0 Any help
-appreciated, thanks in advance!
+I do wonder if replacing "--syn" with "--match conntrack --ctstate NEW" in the following rule
 
--- Isabell Cowan
+	/sbin/iptables-A OUTPUT -p tcp --destination-port 443 --syn --match connlimit --connlimit-above 100 --connlimit-mask 0 --connlimit-daddr --match limit --limit 1/second -j LOG --log-prefix " rule hit "
 
+makes any difference ?
+My goal is to be informed if there're over 100 new conenctions to remote *:443 addresses within a 1 second period.
 
+Furthermore are there any (/sys/ ?) files I could watch? Currently it seems that the rule misbehaves after a while. A restart of its appropriate iptable script every 10 min seems to help.
+
+-- 
+Toralf
+PGP C4EACDDE 0076E94E
