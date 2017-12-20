@@ -1,45 +1,59 @@
-From: Jeremy Audet <ichimonji10@gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 Subject: Re: Service names
-Date: Wed, 20 Dec 2017 15:18:28 -0500
-Message-ID: <CA+A7n+iG06Tp9oaYCWUDPsoqV=JN4BVQZHtPvxqA8ZTQhAfmqg@mail.gmail.com>
+Date: Wed, 20 Dec 2017 23:25:46 +0100
+Message-ID: <20171220222546.gw3wvgyq6z2brwt7@salvia>
+References: <CA+A7n+iG06Tp9oaYCWUDPsoqV=JN4BVQZHtPvxqA8ZTQhAfmqg@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=bhzr+DaRlYke4UP1g+8y2Q0XTx8Qq0SQaGV300XHFCA=;
-        b=kODCpImQ3f7+iuoQp/crSXmTedJG9uPLJWaDG+I4dsBqETii5JNvbnG8XEDcOACVhe
-         /KEtmdi6Rl46iS1kP1BPlDv5CU/pjrVcW0xCQkOBDGXIHKK32r3bMA504fsOw2Xa4e8r
-         Em/aRThdcc7Lfy4EuSmCG2XzVa1PiD71bbOU4fZB11a+I7uuZQaX+f56pQoWEP54cev0
-         j8xNBKd0LaFhKrl2s/QCXV5QTYzaym+BFEaIF2nPrF2jCJcxrZMiI/SVNgju9kdxjKa9
-         gbikQJNzMH4k1B0mA/80yjYv96H/iSChtgBaLhaflHEsN7A3fG+lCZHcDAymjf+dlGe2
-         TOpQ==
+Content-Disposition: inline
+In-Reply-To: <CA+A7n+iG06Tp9oaYCWUDPsoqV=JN4BVQZHtPvxqA8ZTQhAfmqg@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Jeremy Audet <ichimonji10@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Apparently, ProtonMail is incapable of sending good quality plain-text
-emails. I'm sorry about that. Here's what I sent earlier, and
-hopefully gmail can do plain text right.
+Hi Jeremy,
 
-Hi, The nftables 0.8 release notes [1] state:
+On Wed, Dec 20, 2017 at 03:18:28PM -0500, Jeremy Audet wrote:
+> Apparently, ProtonMail is incapable of sending good quality plain-text
+> emails. I'm sorry about that. Here's what I sent earlier, and
+> hopefully gmail can do plain text right.
+> 
+> Hi, The nftables 0.8 release notes [1] state:
+> 
+> > * Replace getaddrinfo() by inet_service internal lookup table, we don't
+> >   rely on /etc/services anymore, so we have a predictable input from the
+> >   parser side.
+> 
+> Questions:
+> 
+> * Is there some way to view the name-to-port mappings exposed by
+> inet_service, aside from digging around in source code?
 
-> * Replace getaddrinfo() by inet_service internal lookup table, we don't
->   rely on /etc/services anymore, so we have a predictable input from the
->   parser side.
+# nft describe tcp dport
+payload expression, datatype inet_service (internet network service) (basetype integer), 16 bits
 
-Questions:
+pre-defined symbolic constants (in decimal):
+        tcpmux                                             1
+        echo                                               7
+        discard                                            9
+        systat                                            11
+        daytime                                           13
+        netstat                                           15
+        qotd                                              17
+        msp                                               18
+        chargen                                           19
+        ftp-data                                          20
+        ftp                                               21
+        ssh                                               22
+        telnet                                            23
+        ...
 
-* Is there some way to view the name-to-port mappings exposed by
-inet_service, aside from digging around in source code?
-* Is there some way to provide insert custom name-to-port mappings
-into the inet_service lookup table? Or is this a terrible, horrible,
-no-good idea?
+> * Is there some way to provide insert custom name-to-port mappings
+> into the inet_service lookup table? Or is this a terrible, horrible,
+> no-good idea?
 
-Thanks,
-
--Jeremy Audet
-
-[1] http://www.spinics.net/lists/netfilter/msg57664.html
+There is not, but probably you want to define a variable for this
+instead in your ruleset.
