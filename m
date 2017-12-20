@@ -1,29 +1,45 @@
-From: JereBear <jerebear@protonmail.com>
-Subject: Service names
-Date: Wed, 20 Dec 2017 12:53:35 -0500
-Message-ID: <s2f_U5oU1R3-NhHkAf-OjCvVn9mFKEMiLC4uFI-JCbJoYkmBX76vkmX2V8QAfHB3zZpotSIXp_jHqiVINeQ3KctRFaRKxaa5Q_S53QQytNs=@protonmail.com>
-Reply-To: JereBear <jerebear@protonmail.com>
+From: Jeremy Audet <ichimonji10@gmail.com>
+Subject: Re: Service names
+Date: Wed, 20 Dec 2017 15:18:28 -0500
+Message-ID: <CA+A7n+iG06Tp9oaYCWUDPsoqV=JN4BVQZHtPvxqA8ZTQhAfmqg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=default; t=1513792427;
-        bh=mv3+XHOQLHwqkyNJq/JYTD8JOhZR0IiCtG3fsz69mKk=;
-        h=Date:To:From:Reply-To:Subject:Feedback-ID:From;
-        b=vXjAsKyfkWnHSXtuGTQ1WGMjhWia8G7Ns13Rp7SXoMlhPHfJIOV2XVPwxwV/Snr4G
-         oVu3vjraL57VVqZS0HhJ9OaLNq4W5qDj5VGQc6Af+kyN+FBK/DW+431qlHMhlshs9L
-         dLdCNEJsoPdFzRTnumS/N6aNNYfGSdAcdFzyAFUw=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=bhzr+DaRlYke4UP1g+8y2Q0XTx8Qq0SQaGV300XHFCA=;
+        b=kODCpImQ3f7+iuoQp/crSXmTedJG9uPLJWaDG+I4dsBqETii5JNvbnG8XEDcOACVhe
+         /KEtmdi6Rl46iS1kP1BPlDv5CU/pjrVcW0xCQkOBDGXIHKK32r3bMA504fsOw2Xa4e8r
+         Em/aRThdcc7Lfy4EuSmCG2XzVa1PiD71bbOU4fZB11a+I7uuZQaX+f56pQoWEP54cev0
+         j8xNBKd0LaFhKrl2s/QCXV5QTYzaym+BFEaIF2nPrF2jCJcxrZMiI/SVNgju9kdxjKa9
+         gbikQJNzMH4k1B0mA/80yjYv96H/iSChtgBaLhaflHEsN7A3fG+lCZHcDAymjf+dlGe2
+         TOpQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hi,=0A=0AThe nftables 0.8 release notes [1] state:=0A=0A> * Replace getaddr=
-info() by inet_service internal lookup table, we don't=0A>   rely on /etc/s=
-ervices anymore, so we have a predictable input from the=0A>   parser side.=
-=0A=0AQuestions:=0A=0A* Is there some way to view the name-to-port mappings=
- exposed by inet_service, aside from digging around in source code?=0A* Is =
-there some way to provide insert custom name-to-port mappings into the inet=
-_service lookup table? Or is this a terrible, horrible, no-good idea?=0A=0A=
-Thanks,=0A=0A-Jeremy Audet=0A=0A[1] http://www.spinics.net/lists/netfilter/=
-msg57664.html
+Apparently, ProtonMail is incapable of sending good quality plain-text
+emails. I'm sorry about that. Here's what I sent earlier, and
+hopefully gmail can do plain text right.
+
+Hi, The nftables 0.8 release notes [1] state:
+
+> * Replace getaddrinfo() by inet_service internal lookup table, we don't
+>   rely on /etc/services anymore, so we have a predictable input from the
+>   parser side.
+
+Questions:
+
+* Is there some way to view the name-to-port mappings exposed by
+inet_service, aside from digging around in source code?
+* Is there some way to provide insert custom name-to-port mappings
+into the inet_service lookup table? Or is this a terrible, horrible,
+no-good idea?
+
+Thanks,
+
+-Jeremy Audet
+
+[1] http://www.spinics.net/lists/netfilter/msg57664.html
