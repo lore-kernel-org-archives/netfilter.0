@@ -1,60 +1,40 @@
-From: Jeremy Audet <ichimonji10@gmail.com>
-Subject: Re: Service names
-Date: Thu, 21 Dec 2017 17:36:18 -0500
-Message-ID: <CA+A7n+g2Yz2+FT5bDE8Wh5EtFjseRMUu+OScTE1pUb-5zdM4Ug@mail.gmail.com>
-References: <CA+A7n+iG06Tp9oaYCWUDPsoqV=JN4BVQZHtPvxqA8ZTQhAfmqg@mail.gmail.com>
- <20171220222546.gw3wvgyq6z2brwt7@salvia>
+From: Robert White <rwhite@pobox.com>
+Subject: Re: limit + log + tcp not working ?
+Date: Fri, 22 Dec 2017 19:45:49 +0000
+Message-ID: <64babe0d-7b38-1f6f-e192-1f4aa79a0fd6@pobox.com>
+References: <CANSGRxTJHLttrZw6Oy+mfxN07ow_fq9yuO=X=JsJv6wuLDgSjg@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=y+qUjzg8alT1k/eVxTgbmMxXpdnnPBHDsB6i4IZKKTU=;
-        b=lL7XpoyRwkZbZ9luRLfPdfxBXzDzIYBpOKn18SQuiGhQ37Y/Qwzxbq0jVpafh0eCgw
-         ZQEcQ9XUa8hNzKHuwtvEqNLk5kUTgag56lH1J24iuBZdIDSQ6ThNPKnmuTKZR/8Fpr3B
-         bL7VQipiPNQwGSVItOWyMU240zpKJFO4qhIDvrwZEKKmmqwe0VEkEFPGQgjgvV9wOviy
-         j2SIDegChf0eMAdVrWYM9TC37Lv7QHjcudzy1CVRcpOM7/7gj6q/Max9MkP9pUbh+kjz
-         SUYqnbGuH4SBHG/0WzUAcigsu0TF5TSHkxAZwLp0yzEVAb+G3eOa94cu5SHYOcuDe9tZ
-         bNPQ==
-In-Reply-To: <20171220222546.gw3wvgyq6z2brwt7@salvia>
+In-Reply-To: <CANSGRxTJHLttrZw6Oy+mfxN07ow_fq9yuO=X=JsJv6wuLDgSjg@mail.gmail.com>
+Content-Language: en-CA
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+To: paulo bruck <paulobruck1@gmail.com>, netfilter@vger.kernel.org, pauloric <pauloric@contatogs.com.br>
 
->> * Is there some way to view the name-to-port mappings exposed by
->> inet_service, aside from digging around in source code?
->
-> # nft describe tcp dport
-> [...]
+On 12/21/2017 02:03 PM, paulo bruck wrote:
+> counter packets 7077 bytes 690164 tcp sport http counter packets 54
+> bytes 15716 log prefix "acesso a porta 80" flags all counter packets
+> 54 bytes 15716 limit rate 10 bytes/minute counter packets 0 bytes 0
+> 
+> counter packets 7077 bytes 690164 tcp sport http counter packets 54
+> bytes 15716 limit rate 10 bytes/minute counter packets 0 bytes 0 log
+> prefix "acesso a porta 80" flags all counter packets 0 bytes 0
 
-Perfect. Thanks!
+Read those limits again...
 
->> * Is there some way to provide insert custom name-to-port mappings
->> into the inet_service lookup table? Or is this a terrible, horrible,
->> no-good idea?
->
-> There is not, but probably you want to define a variable for this
-> instead in your ruleset.
+limit rate 10 _bytes_ per _minute_.
 
-Variables are definitely a better way to handle things.
+That rate limit will _always_ fail as it is too short to even admit a
+single HTTP request header. "GET / HTTP/1.1" is already 14 bytes before
+the CR/LF that ends the line.
 
-For the record, and in case someone else googles their way to this
-archived conversation, I consulted with the nftables wiki scripting
-page, [1] and wrote some variables like this:
+If you want ten _packets_ a minute you need to use "limit rate
+10/minute" not "limit rate 10 bytes/minute"
 
-    define ssh_srv1 = 30022
-    define syncthing_core_user1 = 22000
-    define syncthing_core_user2 = 22001
-    define services_srv1 = {
-        $ssh_srv1,
-        $syncthing_core_user1,
-        $syncthing_core_user2,
-        http,
-        https
-    }
+So the limit is a test expression, and it is failing as it should, and
+that ends the rule evaluation so none of the subsequent elements of the
+rule take effect.
 
-[1] https://wiki.nftables.org/wiki-nftables/index.php/Scripting
+--Rob.
