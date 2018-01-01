@@ -1,35 +1,31 @@
-From: Alessandro Vesely <vesely@tana.it>
-Subject: OT: tracking default route
-Date: Fri, 29 Dec 2017 15:57:29 +0100
-Message-ID: <5a49f62c-0797-798e-c28a-214ae6e056d1@tana.it>
+From: James <vger_tracker@trackivity.com>
+Subject: Lots of initial TCP packets with same sequence number
+Date: Mon, 1 Jan 2018 09:09:43 -0500
+Message-ID: <75567f3d-ab68-9bfa-aa10-0df52e6e6220@trackivity.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tana.it; s=beta;
-        t=1514559449; bh=GY0eWhzX/crxPEEiYJs1UR/zuA2BqMQEK6UxxmvVBNw=;
-        l=649; h=To:From:Date;
-        b=IiKooiW8OMMLYmt8YJDUAKnUSeIfflvHWK6OLVREgxGVh8bbhtmAu0kMz6vHSPy6m
-         O9atgME+yGNz+Z4wTYC76xqCaI7r/AWrH9jlHDzDQo68XpZA9qq4FEe35IrUcQJ3EE
-         LuFBuA7ZQrIQMaHIql3khhs3Ay4bHFedmMXss578=
 Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter Users Mailing list <netfilter@vger.kernel.org>
 
-Hi all!
+About 24 hours ago, I decided to start logging sequence numbers for the 
+TCP "ct state new" packets that I drop in my initial screening rules.
 
-I've been calling a script based on tcptraceroute every few minutes to monitor
-interfaces.  It is not reliable, because it only checks the next few hops,
-which may turn out to be disconnected, and then I should run it more often.
-Would someone please suggest a pointer to a better tool?
+The result appears quite fascinating... and smells quite fishy: just 
+about half of these packets have the same (non-zero) sequence number.
 
-The idea is to log fault start/end, issue ip route replace default adequately,
-and keep track of current status.  Google tells me nagios and similar packages,
-but they seem to me to be overkill.  I'd write my own utility, possibly hacking
-tcptraceroute source, but perhaps someone did it already...
+The destination ports are mostly 23, trailing off to 22, 2323, and 2222, 
+which only further adds to the smell.
 
-Apologies for the OT and best wishes
-Ale
+1) Is anyone else seeing this?
 
+2) Does anyone know what this is?
 
+Thanks.
+
+-- 
+
+  - James
