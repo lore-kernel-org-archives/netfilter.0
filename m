@@ -1,52 +1,64 @@
-From: =?utf-8?B?QW5kcsOpIFBhdWxzYmVyZy1Dc2liaSAoSUJNIENvbnN1bHRhbnQp?= 
-        <Andre.Paulsberg-Csibi@evry.com>
-Subject: RE: Lots of initial TCP packets with same sequence number
-Date: Tue, 2 Jan 2018 09:11:11 +0000
-Message-ID: <efd38162203c44bbb3cfb83f73ef9ee6@CCDEX023.corp.corpcommon.com>
-References: <75567f3d-ab68-9bfa-aa10-0df52e6e6220@trackivity.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] libnftnl 1.0.9 release
+Date: Tue, 2 Jan 2018 21:07:09 +0100
+Message-ID: <20180102200709.4tcdxcmuc5miach6@salvia>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Type: multipart/mixed; boundary="r6unvjeh4klmcx6y"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=evry.onmicrosoft.com;
- s=selector1-evry-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=U2hkU89MO6BoYvt5ZVEX6gglcXkYBumM5knfOsmk4Sk=;
- b=h84ZL+I99BEO0KvLotBcg8V0R208k+MxQJ70va5wfWg9Wg7Til8nDJGAbOAm5imPOKreG/9ZUWdVlRpkfNw1Cgr6IMttxE6t+0VsW+iql8pmWhyE2/3xKReLl7y1tQRIYoYw3XxW8pjKQNZRi/8Dxh4vprcp9otFDiiFVS7/nww=
-In-Reply-To: <75567f3d-ab68-9bfa-aa10-0df52e6e6220@trackivity.com>
-Content-Language: en-US
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"
-To: 'James' <vger_tracker@trackivity.com>, Netfilter Users Mailing list <netfilter@vger.kernel.org>
+To: netfilter-devel@vger.kernel.org
+Cc: netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
 
-VGhhdCBpcyBxdWl0ZSBub3JtYWwgLCBwb3J0c2Nhbm5pbmcgb3ZlciBzaG9ydCBwZXJpb2RzIHdp
-bGwgaGF2ZSBtYXNzaXZlIGFtb3VudHMgb2YgcmFuZG9tIFNPVVJDRSBJUCdzIGxvb2tpbmcgZm9y
-IHNhbWUgc2V0IG9mIG9wZW4gcG9ydHMgdG8gZXhwbG9pdCAuDQpUeXBpY2FsbHkgdGhhdCB3aWxs
-IGlmIHVzaW5nIHRoZSBzYW1lIHRvb2wgKCBvciBzYW1lIHNldHRpbmdzIG9uIHRoZSB0b29sICkg
-Y29tZSB1cCB3aXRoIGlkZW50aWNhbCBTRVFVRU5DRSBhbmQgU09VUkNFIFBPUlRTIGFsc28gLg0K
-DQpBZnRlciBzb21lIHdlZWtzIHRoZXkgbWlnaHQgY2hhbmdlIHNsaWdodGx5IG9yIGNvbWUgZnJv
-bSBhbm90aGVyIHNldCBvZmYgImlkZW50aWNhbHMiICwgZG9pbmcgdGhlIHNhbWUgc3R1ZmYgb3Ig
-dXNpbmcgc2ltaWxhciB0b29scyAuDQoNCg0KQmVzdCByZWdhcmRzDQpBbmRyw6kgUGF1bHNiZXJn
-LUNzaWJpDQpTZW5pb3IgTmV0d29yayBFbmdpbmVlciANCklCTSBTZXJ2aWNlcyBBUw0KDQotLS0t
-LU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogbmV0ZmlsdGVyLW93bmVyQHZnZXIua2VybmVs
-Lm9yZyBbbWFpbHRvOm5ldGZpbHRlci1vd25lckB2Z2VyLmtlcm5lbC5vcmddIE9uIEJlaGFsZiBP
-ZiBKYW1lcw0KU2VudDogTW9uZGF5LCBKYW51YXJ5IDEsIDIwMTggMzoxMCBQTQ0KVG86IE5ldGZp
-bHRlciBVc2VycyBNYWlsaW5nIGxpc3QgPG5ldGZpbHRlckB2Z2VyLmtlcm5lbC5vcmc+DQpTdWJq
-ZWN0OiBMb3RzIG9mIGluaXRpYWwgVENQIHBhY2tldHMgd2l0aCBzYW1lIHNlcXVlbmNlIG51bWJl
-cg0KDQpBYm91dCAyNCBob3VycyBhZ28sIEkgZGVjaWRlZCB0byBzdGFydCBsb2dnaW5nIHNlcXVl
-bmNlIG51bWJlcnMgZm9yIHRoZSBUQ1AgImN0IHN0YXRlIG5ldyIgcGFja2V0cyB0aGF0IEkgZHJv
-cCBpbiBteSBpbml0aWFsIHNjcmVlbmluZyBydWxlcy4NCg0KVGhlIHJlc3VsdCBhcHBlYXJzIHF1
-aXRlIGZhc2NpbmF0aW5nLi4uIGFuZCBzbWVsbHMgcXVpdGUgZmlzaHk6IGp1c3QgYWJvdXQgaGFs
-ZiBvZiB0aGVzZSBwYWNrZXRzIGhhdmUgdGhlIHNhbWUgKG5vbi16ZXJvKSBzZXF1ZW5jZSBudW1i
-ZXIuDQoNClRoZSBkZXN0aW5hdGlvbiBwb3J0cyBhcmUgbW9zdGx5IDIzLCB0cmFpbGluZyBvZmYg
-dG8gMjIsIDIzMjMsIGFuZCAyMjIyLCB3aGljaCBvbmx5IGZ1cnRoZXIgYWRkcyB0byB0aGUgc21l
-bGwuDQoNCjEpIElzIGFueW9uZSBlbHNlIHNlZWluZyB0aGlzPw0KDQoyKSBEb2VzIGFueW9uZSBr
-bm93IHdoYXQgdGhpcyBpcz8NCg0KVGhhbmtzLg0KDQotLSANCg0KICAtIEphbWVzDQotLQ0KVG8g
-dW5zdWJzY3JpYmUgZnJvbSB0aGlzIGxpc3Q6IHNlbmQgdGhlIGxpbmUgInVuc3Vic2NyaWJlIG5l
-dGZpbHRlciIgaW4gdGhlIGJvZHkgb2YgYSBtZXNzYWdlIHRvIG1ham9yZG9tb0B2Z2VyLmtlcm5l
-bC5vcmcgTW9yZSBtYWpvcmRvbW8gaW5mbyBhdCAgaHR0cHM6Ly9lbWVhMDEuc2FmZWxpbmtzLnBy
-b3RlY3Rpb24ub3V0bG9vay5jb20vP3VybD1odHRwJTNBJTJGJTJGdmdlci5rZXJuZWwub3JnJTJG
-bWFqb3Jkb21vLWluZm8uaHRtbCZkYXRhPTAyJTdDMDElN0MlN0M3NmFhOTg0YTcxZDU0N2QwZGQx
-ZjA4ZDU1MTIyNDdjMyU3QzQwY2MyOTE1ZTI4MzRhMjc5NDcxNmJkZDdjYTRjNmUxJTdDMSU3QzAl
-N0M2MzY1MDQxMzAwNjI3OTIwNjgmc2RhdGE9VWJwek9RZEZVJTJGRXRRMkpCJTJCR0M3b25yS2dN
-VyUyQjVzSDhjOHVKcFFHRHAlMkYwJTNEJnJlc2VydmVkPTANCg==
+
+--r6unvjeh4klmcx6y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi!
+
+The Netfilter project proudly presents:
+
+        libnftnl 1.0.9
+
+libnftnl is a userspace library providing a low-level netlink
+programming interface (API) to the in-kernel nf_tables subsystem. The
+library libnftnl has been previously known as libnftables. This library
+is currently used by the nft command line tool.
+
+This release includes mostly bug fixes plus one new
+nftnl_expr_fprintf() function.
+
+You can download this library from:
+
+http://www.netfilter.org/projects/libnftnl/downloads.html
+ftp://ftp.netfilter.org/pub/libnftnl/
+
+Thanks!
+
+--r6unvjeh4klmcx6y
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="changes-libnftnl-1.0.9.txt"
+
+Armin K (1):
+      src: Fix exporting symbols with clang
+
+Harsha Sharma (1):
+      tests: change char * pointer to constant (const char *)
+
+Pablo Neira Ayuso (2):
+      data_reg: calm down compilation warning in nftnl_data_reg_value_json_parse()
+      build: libnftnl 1.0.9 release
+
+Phil Sutter (7):
+      expr: Introduce nftnl_expr_fprintf()
+      data_reg: Add a missing break in nftnl_data_reg_snprintf
+      gen: Remove a pointless call to mnl_nlmsg_get_payload()
+      object: Avoid returning garbage in nftnl_obj_do_parse()
+      ruleset: Avoid reading garbage in nftnl_ruleset_cb()
+      set_elem: Don't return garbage in nftnl_set_elems_parse()
+      trace: Check return value of mnl_attr_parse_nested()
+
+
+--r6unvjeh4klmcx6y--
