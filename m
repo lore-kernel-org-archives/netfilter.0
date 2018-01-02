@@ -1,64 +1,114 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] libnftnl 1.0.9 release
-Date: Tue, 2 Jan 2018 21:07:09 +0100
-Message-ID: <20180102200709.4tcdxcmuc5miach6@salvia>
+From: "Oliver O'Boyle" <oliver.oboyle@gmail.com>
+Subject: conntrack and ICMP echo replies not showing as ESTABLISHED
+Date: Tue, 2 Jan 2018 16:05:11 -0500
+Message-ID: <CAMOPTEw27JqkKn1b5Y7-i79SRWn3pX+RNNEh3kvpLQBXzOR27A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="r6unvjeh4klmcx6y"
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=vj6X+9xG8q7MqYrdqFzrhxcOBwNfsInmXJBUSZA6pI0=;
+        b=tlkMR/r7PnbSpdxA0bzlSX2jdcMAQGSVhLEDaEwD4AkPy70zqko+PI84uDdRPhxcC9
+         La/JDnHnSL/Cak83aU6gsSNLk06s70zk0oxnj4Odl1BvTRRsaXZx/OaNoTSMfFpmksUC
+         13NryjJKQ770fKRiyIiUGfvBjl6xIgcjHDU9qFyLdE5Dfv5oEwrfTSF2Q48W/T+TeKuA
+         fylguYzzQzSMjXtvQU3sXh9wqu7T7hF60Lr0dKqzk1uyzGnGnuZkuqpuMUi+J9HPSrXi
+         /Fmfu3GO0b6E1iLHKMV81RIOkjiNsLeenvn+DcjL0zR3gGbisb+7ncOGITAdUZJrqFqf
+         yB7Q==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter-devel@vger.kernel.org
-Cc: netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
+
+Hi,
+
+Running on Ubuntu 16.04LTS with a fairly basic iptables config (see below).
+
+I'm sure I'm missing something obvious but I am not seeing echo
+replies showing as ESTABLISHED when running:
+
+sudo conntrack -E
+
+I see this:
+
+[NEW] icmp     1 30 src=192.168.144.164 dst=192.168.144.254 type=8
+code=0 id=1 [UNREPLIED] src=192.168.144.254 dst=192.168.144.164 type=0
+code=0 id=1
+[UPDATE] icmp     1 30 src=192.168.144.164 dst=192.168.144.254 type=8
+code=0 id=1 src=192.168.144.254 dst=192.168.144.164 type=0 code=0 id=1
+
+But I expected to see something more like line 3 where it shows the
+connection is ESTABLISHED:
+
+[NEW] tcp      6 120 SYN_SENT src=192.168.144.164 dst=52.12.252.111
+sport=10032 dport=443 [UNREPLIED] src=52.72.252.111 dst=216.46.2.101
+sport=443 dport=10032
+[UPDATE] tcp      6 60 SYN_RECV src=192.168.144.164 dst=52.12.252.111
+sport=10032 dport=443 src=52.72.252.111 dst=216.46.2.101 sport=443
+dport=10032
+[UPDATE] tcp      6 432000 ESTABLISHED src=192.168.144.164
+dst=52.12.252.111 sport=10032 dport=443 src=52.72.252.111
+dst=216.46.2.101 sport=443 dport=10032 [ASSURED]
 
 
---r6unvjeh4klmcx6y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I'm new to netfilter/iptables so I may be missing something or may
+just be expecting something that doesn't happen.
 
-Hi!
+Can someone point me in the right direction, please?
 
-The Netfilter project proudly presents:
+Thanks for the help!
 
-        libnftnl 1.0.9
+O.
 
-libnftnl is a userspace library providing a low-level netlink
-programming interface (API) to the in-kernel nf_tables subsystem. The
-library libnftnl has been previously known as libnftables. This library
-is currently used by the nft command line tool.
+FILTER TABLE:
 
-This release includes mostly bug fixes plus one new
-nftnl_expr_fprintf() function.
+Chain INPUT (policy DROP 0 packets, 0 bytes)
+num   pkts bytes target     prot opt in     out     source
+  destination
+1      162  9900 ACCEPT     all  --  any    any     anywhere
+  anywhere             ctstate RELATED,ESTABLISHED
+2        0     0 ACCEPT     all  --  lo     any     anywhere
+  anywhere             ctstate NEW
+3        2   120 ACCEPT     icmp --  any    any     anywhere
+  anywhere             ctstate NEW
+4        0     0 ACCEPT     tcp  --  ens192 any     anywhere
+  anywhere             tcp dpt:ssh
+5       51  4426 LOG        all  --  any    any     anywhere
+  anywhere             limit: avg 5/min burst 5 LOG level debug prefix
+"iptables denied: "
+6     1986  226K DROP       all  --  any    any     anywhere
+  anywhere
 
-You can download this library from:
+Chain FORWARD (policy ACCEPT 2 packets, 80 bytes)
+num   pkts bytes target     prot opt in     out     source
+  destination
+1     3359 1788K ACCEPT     all  --  ens160 ens192  anywhere
+  anywhere             ctstate RELATED,ESTABLISHED
+2     4887  896K ACCEPT     all  --  ens192 ens160  anywhere
+  anywhere             ctstate NEW,RELATED,ESTABLISHED
 
-http://www.netfilter.org/projects/libnftnl/downloads.html
-ftp://ftp.netfilter.org/pub/libnftnl/
+Chain OUTPUT (policy ACCEPT 214 packets, 41776 bytes)
+num   pkts bytes target     prot opt in     out     source
+  destination
+1       13   780 ACCEPT     icmp --  any    any     anywhere
+  anywhere             ctstate NEW,RELATED,ESTABLISHED
 
-Thanks!
+NAT TABLE:
 
---r6unvjeh4klmcx6y
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="changes-libnftnl-1.0.9.txt"
+Chain PREROUTING (policy ACCEPT 2587 packets, 269K bytes)
+num   pkts bytes target     prot opt in     out     source
+  destination
 
-Armin K (1):
-      src: Fix exporting symbols with clang
+Chain INPUT (policy ACCEPT 2 packets, 120 bytes)
+num   pkts bytes target     prot opt in     out     source
+  destination
 
-Harsha Sharma (1):
-      tests: change char * pointer to constant (const char *)
+Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
+num   pkts bytes target     prot opt in     out     source
+  destination
 
-Pablo Neira Ayuso (2):
-      data_reg: calm down compilation warning in nftnl_data_reg_value_json_parse()
-      build: libnftnl 1.0.9 release
-
-Phil Sutter (7):
-      expr: Introduce nftnl_expr_fprintf()
-      data_reg: Add a missing break in nftnl_data_reg_snprintf
-      gen: Remove a pointless call to mnl_nlmsg_get_payload()
-      object: Avoid returning garbage in nftnl_obj_do_parse()
-      ruleset: Avoid reading garbage in nftnl_ruleset_cb()
-      set_elem: Don't return garbage in nftnl_set_elems_parse()
-      trace: Check return value of mnl_attr_parse_nested()
-
-
---r6unvjeh4klmcx6y--
+Chain POSTROUTING (policy ACCEPT 0 packets, 0 bytes)
+num   pkts bytes target     prot opt in     out     source
+  destination
+1      429 22583 MASQUERADE  all  --  any    ens160  anywhere
+   anywhere
