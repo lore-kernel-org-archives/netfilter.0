@@ -1,59 +1,96 @@
-From: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
-Subject: Re: conntrack and ICMP echo replies not showing as ESTABLISHED
-Date: Tue, 2 Jan 2018 18:36:45 -0500
-Message-ID: <20180102183645.77a59ecc@playground>
+From: =?utf-8?B?QW5kcsOpIFBhdWxzYmVyZy1Dc2liaSAoSUJNIENvbnN1bHRhbnQp?= 
+        <Andre.Paulsberg-Csibi@evry.com>
+Subject: RE: conntrack and ICMP echo replies not showing as ESTABLISHED
+Date: Wed, 3 Jan 2018 10:13:06 +0000
+Message-ID: <cbb2077300a541f396aeb02edc4317d3@CCDEX023.corp.corpcommon.com>
 References: <CAMOPTEw27JqkKn1b5Y7-i79SRWn3pX+RNNEh3kvpLQBXzOR27A@mail.gmail.com>
         <28c711a6f49a42059d3cf6b47b486f8d@CCDEX023.corp.corpcommon.com>
+ <20180102183645.77a59ecc@playground>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Filter: OpenDKIM Filter v2.10.3 MAIL1.WPI.EDU w02NapMX017306
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wpi.edu; s=_dkim;
-        t=1514936211; i=@wpi.edu;
-        bh=CRoKVlDQXOkkxhd1Zpf44KlhqTgO/bg572890jCgfh8=;
-        h=Date:From:Cc:Subject:In-Reply-To:References;
-        b=xj5G+3dA0ho8rqCG9B9IGC2dFZNcF7Nsz65injZ4vh5GAStdhgSXEu4vcXDel9+oH
-         n9CedaCoGbR+e3PLErvVv2/Xs6jEbc5MgazGUig75aeRjhHHsQpx/jOrntXe+bON2r
-         pPsYHpQHkFCEBKEO87tVzKpL6cbqMJkB2XCp4cSs=
-In-Reply-To: <28c711a6f49a42059d3cf6b47b486f8d@CCDEX023.corp.corpcommon.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=evry.onmicrosoft.com;
+ s=selector1-evry-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=K4hK4PNCXCsV9cb3DaY5fWLQpGFxqTE2KrP6G1fS3XA=;
+ b=CEX7pa2LCBS5sAo2Aa/12fhmJs4c8UzxPEp4rFvHepkOif4QJKeWN7Mo1w+CbLAGIOGHv2G3bFSBhzyOBddczwXXHEs/EZgrT1RYBMnV6/Uyo8acBVvPoQdnkG8adaWDEa4/P+Eii7wFIXk4zM2nPQi0+tH1RgmP7j6yBz4QL/U=
+In-Reply-To: <20180102183645.77a59ecc@playground>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"
-To: 
+To: "'Neal P. Murphy'" <neal.p.murphy@alum.wpi.edu>
 Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Tue, 2 Jan 2018 21:56:07 +0000
-Andr=C3=A9 Paulsberg-Csibi (IBM Consultant)         <Andre.Paulsberg-Csibi@=
-evry.com> wrote:
-
-> As far as I can tell - ESTABLISHED - is only for session based protocols =
-like TCP .
-> You will not see that for UDP or ICMP , as far as CONNTRACK is concerned =
-. =20
-
-With netfilter, there are five connection states: NEW, RELATED, ESTABLISHED=
-, INVALID and RAW.
-  - A NEW packet is the first packet of a new peer-to-peer communication co=
-nnection
-    (a conn), be it TCP, SCTP, UDP, GRE, or any other protocol.
-  - A RELATED packet is the first packet of a new conn that netfilter deter=
-mined is
-    related to an existing conn (the data conn of an FTP conn, for example).
-  - When two-way communication is established with a reply packet, the conn=
-'s state
-    changes to ESTABLISHED.
-  - INVALID packets are those that netfilter has received but has no idea w=
-hat to do
-    with them; they are packets that can only belong to an ESTABLISHED conn=
- but it can
-    find no such conn in its database.
-  - I think RAW packets are those that netfilter has been told not to proce=
-ss; but I'm
-    not sure of this as I've never had reason to use RAW packets.
-
-In netfilter, 'connection' is not related to connection-oriented protocols.=
- It has to do with the relationship--the logical connection--between two en=
-dpoints on a LAN or on some internetwork of them. It is much like two peopl=
-e talking on a walkie-talkie, two people exchanging TXT MSGs, or two people=
- talking on a phone that has a circuit-switched connection set up between t=
-hem.
+SSB0aGluayBoZXJlIGFyZSBzb21lIHNlbWFudGljcyBjb25mdXNlZCAoIGNvdWxkIGJlIG15IGZh
+dWx0ICkuDQoNCk15IHN0YXRlbWVudCBpcyBtZWFudCB0byBleHBsYWluIHRoYXQgdGhlIHRlcm0g
+IkVTVEFCTElTSEVEIiB1c2VkIGluIENPTk5UUkFDSyAsIGRvZXMgbm90IG1hdGNoIHRoZSBzdGF0
+ZSAiRVNUQUJMSVNIRUQiIHVzZWQgaW4gaXB0YWJsZXMgcnVsZXMtc2V0IC4NCkVTVEFCTElTSEVE
+IGluIGlwdGFibGVzIHJ1bGVzZXQgc2ltcGx5IG1lYW5zIHRoZXJlIGlzIGFuIGVudHJ5IGRpcmVj
+dGx5IHJlbGF0ZWQgdG8gdGhlIHBhY2tldCB0aGF0IGlzIGJlaW5nIGV4YW1pbmVkIGluIHRoZSBj
+b25uZWN0aW9uIHRhYmxlIC4NCg0KRVNUQUJMSVNIRUQgaW4gdGhlIGNvbm50cmFjayBURVJNIGlz
+IG9ubHkgdXNlZCBmb3IgVENQIGFzIGhlcmUgdGhlIHBhY2tldHMgaGF2ZSBtdWx0aXBsZSB0aW1l
+cnMgYXMgYXQgbGVhc3QgVENQIGlzIHNlc3Npb24vY29ubmVjdGlvbiBiYXNlZCBwcm90b2NvbCAs
+DQpJIGFtIG5vdCBhd2FyZSBvZiBvdGhlciBwcm90b2NvbHMgd2hvIGhhdmUgb3RoZXIgdGltZXMg
+YW5kIG11bHRpcGxlIHNldHMgb2Ygc2Vzc2lvbi9jb25uZWN0aW9uIHN0YXRlcyBpbiBuZXRmaWx0
+ZXIvaXB0YWJsZXMvY29ubnRyYWNrIGFuZCB1c2luZyB0aGlzIFRFUk0gaW4gc2FtZSBtYW5uZXIg
+Lg0KDQpSRUxBVEVEIGlzIGFjdHVhbGx5IG5vdCB0aGUgRklSU1QvTkVXIHBhY2tldCBvZiBuZXcg
+Y29ubmVjdGlvbiAsIGl0IGlzIGFueSBwYWNrZXQgKCBmaXJzdCBzZWNvbmQgb3IgbGF0ZXIgKSBm
+cm9tIGFueSBzeXN0ZW0gdGhhdCBjb3VsZCBiZSBpbmRpcmVjdGx5IGNvbm5lY3RlZCB0byBhbnkg
+b25lIGNvbm5lY3Rpb24gdGFibGUgZW50cnkgLg0KSW5jbHVkaW5nIElDTVAgbWVzc2FnZXMgbGlr
+ZSB0eXBlIDExICggVFRMIGV4Y2VlZGVkICkgdHlwaWNhbGx5IHNlbnQgZnJvbSBldmVyeSByb3V0
+ZXIgb24gdGhlIHdheSB1bnRpbCB5b3UgcmVhY2hlZCB0aGUgZW5kIHRhcmdldCBkZXN0aW5hdGlv
+biB3aGVuIGRvaW5nIGEgdHJhY2Vyb3V0ZSAuDQoNCldoZW4gY29ubnRyYWNrIGRlYWxzIHdpdGgg
+b3RoZXIgbm9uZSBUQ1AgaXQgdXNlcyBvbmx5IFVOUkVQTElFRCAvIEFTU1VSRUQgYW5kIG5vdCB0
+aGUgdGVybSBFU1RBQkxJU0hFRA0KQW5kIGZvciBJQ01QIGl0IGRvZXMgbm90IHVzZSBBU1NVUkVE
+ICwgb25seSBVTlJFUExJRUQgKCB3aGljaCBpcyByZW1vdmVkIGFmdGVyIHRoZSBmaXJzdCByZXBs
+eSApDQoNCkFzIGZhciBhcyBJIGNhbiB0ZWxsIHRoZXJlIGFyZSA2IHN0YXRlcyBmb3IgdGhlIGNv
+bm5lY3Rpb24gdGFibGUgcGFydCAoIDcgaWYgeW91IGluY2x1ZGUgdGhvc2UgTk9UL05FVkVSIHRo
+ZXJlICkNCk5FVw0KRVNUQUJMSVNIRUQNClJFTEFURUQNCklOVkFMSUQNClVOVFJBQ0tFRA0KQ0xP
+U0VEDQoNCkZvciBtZSB0aGVzZSBzZW1hbnRpY3MgaXMgYWxzbyBub3Qgc28gc2VsZiBleHBsYW5h
+dG9yeSAsIHNwZWNpYWxseSBzaW5jZSB0aGUgdGVybXMgc29tZXdoYXQgb3ZlcmxhcCBhbmQgYXJl
+IG1pc3NpbmcgZm9yIG90aGVycyAuDQooIGJ1dCBub3cgbWF5YmUgdGhpcyBpcyBhIGJpdCBtb3Jl
+IGNsZWFyICkgSWYgbm90IGhlcmUgaXMgbW9yZSBkZXRhaWxzIGh0dHA6Ly93d3cuaXB0YWJsZXMu
+aW5mby9lbi9jb25uZWN0aW9uLXN0YXRlLmh0bWwNCg0KDQpCZXN0IHJlZ2FyZHMNCkFuZHLDqSBQ
+YXVsc2JlcmctQ3NpYmkNClNlbmlvciBOZXR3b3JrIEVuZ2luZWVyIA0KSUJNIFNlcnZpY2VzIEFT
+DQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBuZXRmaWx0ZXItb3duZXJAdmdl
+ci5rZXJuZWwub3JnIFttYWlsdG86bmV0ZmlsdGVyLW93bmVyQHZnZXIua2VybmVsLm9yZ10gT24g
+QmVoYWxmIE9mIE5lYWwgUC4gTXVycGh5DQpTZW50OiBXZWRuZXNkYXksIEphbnVhcnkgMywgMjAx
+OCAxMjozNyBBTQ0KQ2M6IG5ldGZpbHRlckB2Z2VyLmtlcm5lbC5vcmcNClN1YmplY3Q6IFJlOiBj
+b25udHJhY2sgYW5kIElDTVAgZWNobyByZXBsaWVzIG5vdCBzaG93aW5nIGFzIEVTVEFCTElTSEVE
+DQoNCk9uIFR1ZSwgMiBKYW4gMjAxOCAyMTo1NjowNyArMDAwMA0KQW5kcsOpIFBhdWxzYmVyZy1D
+c2liaSAoSUJNIENvbnN1bHRhbnQpICAgICAgICAgPEFuZHJlLlBhdWxzYmVyZy1Dc2liaUBldnJ5
+LmNvbT4gd3JvdGU6DQoNCj4gQXMgZmFyIGFzIEkgY2FuIHRlbGwgLSBFU1RBQkxJU0hFRCAtIGlz
+IG9ubHkgZm9yIHNlc3Npb24gYmFzZWQgcHJvdG9jb2xzIGxpa2UgVENQIC4NCj4gWW91IHdpbGwg
+bm90IHNlZSB0aGF0IGZvciBVRFAgb3IgSUNNUCAsIGFzIGZhciBhcyBDT05OVFJBQ0sgaXMgY29u
+Y2VybmVkIC4gIA0KDQpXaXRoIG5ldGZpbHRlciwgdGhlcmUgYXJlIGZpdmUgY29ubmVjdGlvbiBz
+dGF0ZXM6IE5FVywgUkVMQVRFRCwgRVNUQUJMSVNIRUQsIElOVkFMSUQgYW5kIFJBVy4NCiAgLSBB
+IE5FVyBwYWNrZXQgaXMgdGhlIGZpcnN0IHBhY2tldCBvZiBhIG5ldyBwZWVyLXRvLXBlZXIgY29t
+bXVuaWNhdGlvbiBjb25uZWN0aW9uDQogICAgKGEgY29ubiksIGJlIGl0IFRDUCwgU0NUUCwgVURQ
+LCBHUkUsIG9yIGFueSBvdGhlciBwcm90b2NvbC4NCiAgLSBBIFJFTEFURUQgcGFja2V0IGlzIHRo
+ZSBmaXJzdCBwYWNrZXQgb2YgYSBuZXcgY29ubiB0aGF0IG5ldGZpbHRlciBkZXRlcm1pbmVkIGlz
+DQogICAgcmVsYXRlZCB0byBhbiBleGlzdGluZyBjb25uICh0aGUgZGF0YSBjb25uIG9mIGFuIEZU
+UCBjb25uLCBmb3IgZXhhbXBsZSkuDQogIC0gV2hlbiB0d28td2F5IGNvbW11bmljYXRpb24gaXMg
+ZXN0YWJsaXNoZWQgd2l0aCBhIHJlcGx5IHBhY2tldCwgdGhlIGNvbm4ncyBzdGF0ZQ0KICAgIGNo
+YW5nZXMgdG8gRVNUQUJMSVNIRUQuDQogIC0gSU5WQUxJRCBwYWNrZXRzIGFyZSB0aG9zZSB0aGF0
+IG5ldGZpbHRlciBoYXMgcmVjZWl2ZWQgYnV0IGhhcyBubyBpZGVhIHdoYXQgdG8gZG8NCiAgICB3
+aXRoIHRoZW07IHRoZXkgYXJlIHBhY2tldHMgdGhhdCBjYW4gb25seSBiZWxvbmcgdG8gYW4gRVNU
+QUJMSVNIRUQgY29ubiBidXQgaXQgY2FuDQogICAgZmluZCBubyBzdWNoIGNvbm4gaW4gaXRzIGRh
+dGFiYXNlLg0KICAtIEkgdGhpbmsgUkFXIHBhY2tldHMgYXJlIHRob3NlIHRoYXQgbmV0ZmlsdGVy
+IGhhcyBiZWVuIHRvbGQgbm90IHRvIHByb2Nlc3M7IGJ1dCBJJ20NCiAgICBub3Qgc3VyZSBvZiB0
+aGlzIGFzIEkndmUgbmV2ZXIgaGFkIHJlYXNvbiB0byB1c2UgUkFXIHBhY2tldHMuDQoNCkluIG5l
+dGZpbHRlciwgJ2Nvbm5lY3Rpb24nIGlzIG5vdCByZWxhdGVkIHRvIGNvbm5lY3Rpb24tb3JpZW50
+ZWQgcHJvdG9jb2xzLiBJdCBoYXMgdG8gZG8gd2l0aCB0aGUgcmVsYXRpb25zaGlwLS10aGUgbG9n
+aWNhbCBjb25uZWN0aW9uLS1iZXR3ZWVuIHR3byBlbmRwb2ludHMgb24gYSBMQU4gb3Igb24gc29t
+ZSBpbnRlcm5ldHdvcmsgb2YgdGhlbS4gSXQgaXMgbXVjaCBsaWtlIHR3byBwZW9wbGUgdGFsa2lu
+ZyBvbiBhIHdhbGtpZS10YWxraWUsIHR3byBwZW9wbGUgZXhjaGFuZ2luZyBUWFQgTVNHcywgb3Ig
+dHdvIHBlb3BsZSB0YWxraW5nIG9uIGEgcGhvbmUgdGhhdCBoYXMgYSBjaXJjdWl0LXN3aXRjaGVk
+IGNvbm5lY3Rpb24gc2V0IHVwIGJldHdlZW4gdGhlbS4NCi0tDQpUbyB1bnN1YnNjcmliZSBmcm9t
+IHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbmV0ZmlsdGVyIiBpbiB0aGUg
+Ym9keSBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIua2VybmVsLm9yZyBNb3JlIG1ham9y
+ZG9tbyBpbmZvIGF0ICBodHRwczovL2VtZWEwMS5zYWZlbGlua3MucHJvdGVjdGlvbi5vdXRsb29r
+LmNvbS8/dXJsPWh0dHAlM0ElMkYlMkZ2Z2VyLmtlcm5lbC5vcmclMkZtYWpvcmRvbW8taW5mby5o
+dG1sJmRhdGE9MDIlN0MwMSU3QyU3QzhjZDYzYzg0ZjY5MjQwZDQyMzkzMDhkNTUyM2U0YzZkJTdD
+NDBjYzI5MTVlMjgzNGEyNzk0NzE2YmRkN2NhNGM2ZTElN0MxJTdDMCU3QzYzNjUwNTM0OTg4NDgy
+OTUzNSZzZGF0YT1od2M4RThraXB6Tmw5SERXM1NXaFpmYzl3MldnRm9PWEhINDN1VjV1Z05rJTNE
+JnJlc2VydmVkPTANCg==
