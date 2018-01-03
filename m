@@ -1,96 +1,170 @@
-From: =?utf-8?B?QW5kcsOpIFBhdWxzYmVyZy1Dc2liaSAoSUJNIENvbnN1bHRhbnQp?= 
-        <Andre.Paulsberg-Csibi@evry.com>
-Subject: RE: conntrack and ICMP echo replies not showing as ESTABLISHED
-Date: Wed, 3 Jan 2018 10:13:06 +0000
-Message-ID: <cbb2077300a541f396aeb02edc4317d3@CCDEX023.corp.corpcommon.com>
+From: "Oliver O'Boyle" <oliver.oboyle@gmail.com>
+Subject: Re: conntrack and ICMP echo replies not showing as ESTABLISHED
+Date: Wed, 3 Jan 2018 09:01:46 -0500
+Message-ID: <CAMOPTExzcsPh0r1V2juiQZJdSgjWfZZqbw8partoCvy_gkURqQ@mail.gmail.com>
 References: <CAMOPTEw27JqkKn1b5Y7-i79SRWn3pX+RNNEh3kvpLQBXzOR27A@mail.gmail.com>
-        <28c711a6f49a42059d3cf6b47b486f8d@CCDEX023.corp.corpcommon.com>
- <20180102183645.77a59ecc@playground>
+ <28c711a6f49a42059d3cf6b47b486f8d@CCDEX023.corp.corpcommon.com>
+ <20180102183645.77a59ecc@playground> <cbb2077300a541f396aeb02edc4317d3@CCDEX023.corp.corpcommon.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=evry.onmicrosoft.com;
- s=selector1-evry-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=K4hK4PNCXCsV9cb3DaY5fWLQpGFxqTE2KrP6G1fS3XA=;
- b=CEX7pa2LCBS5sAo2Aa/12fhmJs4c8UzxPEp4rFvHepkOif4QJKeWN7Mo1w+CbLAGIOGHv2G3bFSBhzyOBddczwXXHEs/EZgrT1RYBMnV6/Uyo8acBVvPoQdnkG8adaWDEa4/P+Eii7wFIXk4zM2nPQi0+tH1RgmP7j6yBz4QL/U=
-In-Reply-To: <20180102183645.77a59ecc@playground>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=Nw1TxWLH484iqJEMFgxUG6Aksm89jRHDpbuU61L3kgw=;
+        b=TWTB1jZlfOJTZ4RZFFgyI/1p6x6hV6yXG1UIpNKgwWkDziuLdisTCjo0OGY37Kz5k8
+         q9E9b3kklMoPfbNnQnmD/kGIonBH7yaamPyB84lyuUXJMjoTgO6lANKDvpFu/forhpFv
+         DpgjP2QUqNZ37oZk9EDozZVi+rq4NMM7KMmo3A5wd6575q5kK1vb9kaisQjBO4lLp/uz
+         JrgT2Grz8Xx/D/h3nZz7/PgkfWp+TyH0CqGuANn45aabAQNbqcskG3YFZp3cKtXUANco
+         ivD+TzBj2tfMWV0lYT4gOb/SpPesebJdelRCsvQVw8/J5AWoWOSotacwBOsBbt1Diyz1
+         pjMg==
+In-Reply-To: <cbb2077300a541f396aeb02edc4317d3@CCDEX023.corp.corpcommon.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "'Neal P. Murphy'" <neal.p.murphy@alum.wpi.edu>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+To: =?UTF-8?Q?Andr=C3=A9_Paulsberg=2DCsibi_=28IBM_Consultant=29?= <Andre.Paulsberg-Csibi@evry.com>
+Cc: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-SSB0aGluayBoZXJlIGFyZSBzb21lIHNlbWFudGljcyBjb25mdXNlZCAoIGNvdWxkIGJlIG15IGZh
-dWx0ICkuDQoNCk15IHN0YXRlbWVudCBpcyBtZWFudCB0byBleHBsYWluIHRoYXQgdGhlIHRlcm0g
-IkVTVEFCTElTSEVEIiB1c2VkIGluIENPTk5UUkFDSyAsIGRvZXMgbm90IG1hdGNoIHRoZSBzdGF0
-ZSAiRVNUQUJMSVNIRUQiIHVzZWQgaW4gaXB0YWJsZXMgcnVsZXMtc2V0IC4NCkVTVEFCTElTSEVE
-IGluIGlwdGFibGVzIHJ1bGVzZXQgc2ltcGx5IG1lYW5zIHRoZXJlIGlzIGFuIGVudHJ5IGRpcmVj
-dGx5IHJlbGF0ZWQgdG8gdGhlIHBhY2tldCB0aGF0IGlzIGJlaW5nIGV4YW1pbmVkIGluIHRoZSBj
-b25uZWN0aW9uIHRhYmxlIC4NCg0KRVNUQUJMSVNIRUQgaW4gdGhlIGNvbm50cmFjayBURVJNIGlz
-IG9ubHkgdXNlZCBmb3IgVENQIGFzIGhlcmUgdGhlIHBhY2tldHMgaGF2ZSBtdWx0aXBsZSB0aW1l
-cnMgYXMgYXQgbGVhc3QgVENQIGlzIHNlc3Npb24vY29ubmVjdGlvbiBiYXNlZCBwcm90b2NvbCAs
-DQpJIGFtIG5vdCBhd2FyZSBvZiBvdGhlciBwcm90b2NvbHMgd2hvIGhhdmUgb3RoZXIgdGltZXMg
-YW5kIG11bHRpcGxlIHNldHMgb2Ygc2Vzc2lvbi9jb25uZWN0aW9uIHN0YXRlcyBpbiBuZXRmaWx0
-ZXIvaXB0YWJsZXMvY29ubnRyYWNrIGFuZCB1c2luZyB0aGlzIFRFUk0gaW4gc2FtZSBtYW5uZXIg
-Lg0KDQpSRUxBVEVEIGlzIGFjdHVhbGx5IG5vdCB0aGUgRklSU1QvTkVXIHBhY2tldCBvZiBuZXcg
-Y29ubmVjdGlvbiAsIGl0IGlzIGFueSBwYWNrZXQgKCBmaXJzdCBzZWNvbmQgb3IgbGF0ZXIgKSBm
-cm9tIGFueSBzeXN0ZW0gdGhhdCBjb3VsZCBiZSBpbmRpcmVjdGx5IGNvbm5lY3RlZCB0byBhbnkg
-b25lIGNvbm5lY3Rpb24gdGFibGUgZW50cnkgLg0KSW5jbHVkaW5nIElDTVAgbWVzc2FnZXMgbGlr
-ZSB0eXBlIDExICggVFRMIGV4Y2VlZGVkICkgdHlwaWNhbGx5IHNlbnQgZnJvbSBldmVyeSByb3V0
-ZXIgb24gdGhlIHdheSB1bnRpbCB5b3UgcmVhY2hlZCB0aGUgZW5kIHRhcmdldCBkZXN0aW5hdGlv
-biB3aGVuIGRvaW5nIGEgdHJhY2Vyb3V0ZSAuDQoNCldoZW4gY29ubnRyYWNrIGRlYWxzIHdpdGgg
-b3RoZXIgbm9uZSBUQ1AgaXQgdXNlcyBvbmx5IFVOUkVQTElFRCAvIEFTU1VSRUQgYW5kIG5vdCB0
-aGUgdGVybSBFU1RBQkxJU0hFRA0KQW5kIGZvciBJQ01QIGl0IGRvZXMgbm90IHVzZSBBU1NVUkVE
-ICwgb25seSBVTlJFUExJRUQgKCB3aGljaCBpcyByZW1vdmVkIGFmdGVyIHRoZSBmaXJzdCByZXBs
-eSApDQoNCkFzIGZhciBhcyBJIGNhbiB0ZWxsIHRoZXJlIGFyZSA2IHN0YXRlcyBmb3IgdGhlIGNv
-bm5lY3Rpb24gdGFibGUgcGFydCAoIDcgaWYgeW91IGluY2x1ZGUgdGhvc2UgTk9UL05FVkVSIHRo
-ZXJlICkNCk5FVw0KRVNUQUJMSVNIRUQNClJFTEFURUQNCklOVkFMSUQNClVOVFJBQ0tFRA0KQ0xP
-U0VEDQoNCkZvciBtZSB0aGVzZSBzZW1hbnRpY3MgaXMgYWxzbyBub3Qgc28gc2VsZiBleHBsYW5h
-dG9yeSAsIHNwZWNpYWxseSBzaW5jZSB0aGUgdGVybXMgc29tZXdoYXQgb3ZlcmxhcCBhbmQgYXJl
-IG1pc3NpbmcgZm9yIG90aGVycyAuDQooIGJ1dCBub3cgbWF5YmUgdGhpcyBpcyBhIGJpdCBtb3Jl
-IGNsZWFyICkgSWYgbm90IGhlcmUgaXMgbW9yZSBkZXRhaWxzIGh0dHA6Ly93d3cuaXB0YWJsZXMu
-aW5mby9lbi9jb25uZWN0aW9uLXN0YXRlLmh0bWwNCg0KDQpCZXN0IHJlZ2FyZHMNCkFuZHLDqSBQ
-YXVsc2JlcmctQ3NpYmkNClNlbmlvciBOZXR3b3JrIEVuZ2luZWVyIA0KSUJNIFNlcnZpY2VzIEFT
-DQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBuZXRmaWx0ZXItb3duZXJAdmdl
-ci5rZXJuZWwub3JnIFttYWlsdG86bmV0ZmlsdGVyLW93bmVyQHZnZXIua2VybmVsLm9yZ10gT24g
-QmVoYWxmIE9mIE5lYWwgUC4gTXVycGh5DQpTZW50OiBXZWRuZXNkYXksIEphbnVhcnkgMywgMjAx
-OCAxMjozNyBBTQ0KQ2M6IG5ldGZpbHRlckB2Z2VyLmtlcm5lbC5vcmcNClN1YmplY3Q6IFJlOiBj
-b25udHJhY2sgYW5kIElDTVAgZWNobyByZXBsaWVzIG5vdCBzaG93aW5nIGFzIEVTVEFCTElTSEVE
-DQoNCk9uIFR1ZSwgMiBKYW4gMjAxOCAyMTo1NjowNyArMDAwMA0KQW5kcsOpIFBhdWxzYmVyZy1D
-c2liaSAoSUJNIENvbnN1bHRhbnQpICAgICAgICAgPEFuZHJlLlBhdWxzYmVyZy1Dc2liaUBldnJ5
-LmNvbT4gd3JvdGU6DQoNCj4gQXMgZmFyIGFzIEkgY2FuIHRlbGwgLSBFU1RBQkxJU0hFRCAtIGlz
-IG9ubHkgZm9yIHNlc3Npb24gYmFzZWQgcHJvdG9jb2xzIGxpa2UgVENQIC4NCj4gWW91IHdpbGwg
-bm90IHNlZSB0aGF0IGZvciBVRFAgb3IgSUNNUCAsIGFzIGZhciBhcyBDT05OVFJBQ0sgaXMgY29u
-Y2VybmVkIC4gIA0KDQpXaXRoIG5ldGZpbHRlciwgdGhlcmUgYXJlIGZpdmUgY29ubmVjdGlvbiBz
-dGF0ZXM6IE5FVywgUkVMQVRFRCwgRVNUQUJMSVNIRUQsIElOVkFMSUQgYW5kIFJBVy4NCiAgLSBB
-IE5FVyBwYWNrZXQgaXMgdGhlIGZpcnN0IHBhY2tldCBvZiBhIG5ldyBwZWVyLXRvLXBlZXIgY29t
-bXVuaWNhdGlvbiBjb25uZWN0aW9uDQogICAgKGEgY29ubiksIGJlIGl0IFRDUCwgU0NUUCwgVURQ
-LCBHUkUsIG9yIGFueSBvdGhlciBwcm90b2NvbC4NCiAgLSBBIFJFTEFURUQgcGFja2V0IGlzIHRo
-ZSBmaXJzdCBwYWNrZXQgb2YgYSBuZXcgY29ubiB0aGF0IG5ldGZpbHRlciBkZXRlcm1pbmVkIGlz
-DQogICAgcmVsYXRlZCB0byBhbiBleGlzdGluZyBjb25uICh0aGUgZGF0YSBjb25uIG9mIGFuIEZU
-UCBjb25uLCBmb3IgZXhhbXBsZSkuDQogIC0gV2hlbiB0d28td2F5IGNvbW11bmljYXRpb24gaXMg
-ZXN0YWJsaXNoZWQgd2l0aCBhIHJlcGx5IHBhY2tldCwgdGhlIGNvbm4ncyBzdGF0ZQ0KICAgIGNo
-YW5nZXMgdG8gRVNUQUJMSVNIRUQuDQogIC0gSU5WQUxJRCBwYWNrZXRzIGFyZSB0aG9zZSB0aGF0
-IG5ldGZpbHRlciBoYXMgcmVjZWl2ZWQgYnV0IGhhcyBubyBpZGVhIHdoYXQgdG8gZG8NCiAgICB3
-aXRoIHRoZW07IHRoZXkgYXJlIHBhY2tldHMgdGhhdCBjYW4gb25seSBiZWxvbmcgdG8gYW4gRVNU
-QUJMSVNIRUQgY29ubiBidXQgaXQgY2FuDQogICAgZmluZCBubyBzdWNoIGNvbm4gaW4gaXRzIGRh
-dGFiYXNlLg0KICAtIEkgdGhpbmsgUkFXIHBhY2tldHMgYXJlIHRob3NlIHRoYXQgbmV0ZmlsdGVy
-IGhhcyBiZWVuIHRvbGQgbm90IHRvIHByb2Nlc3M7IGJ1dCBJJ20NCiAgICBub3Qgc3VyZSBvZiB0
-aGlzIGFzIEkndmUgbmV2ZXIgaGFkIHJlYXNvbiB0byB1c2UgUkFXIHBhY2tldHMuDQoNCkluIG5l
-dGZpbHRlciwgJ2Nvbm5lY3Rpb24nIGlzIG5vdCByZWxhdGVkIHRvIGNvbm5lY3Rpb24tb3JpZW50
-ZWQgcHJvdG9jb2xzLiBJdCBoYXMgdG8gZG8gd2l0aCB0aGUgcmVsYXRpb25zaGlwLS10aGUgbG9n
-aWNhbCBjb25uZWN0aW9uLS1iZXR3ZWVuIHR3byBlbmRwb2ludHMgb24gYSBMQU4gb3Igb24gc29t
-ZSBpbnRlcm5ldHdvcmsgb2YgdGhlbS4gSXQgaXMgbXVjaCBsaWtlIHR3byBwZW9wbGUgdGFsa2lu
-ZyBvbiBhIHdhbGtpZS10YWxraWUsIHR3byBwZW9wbGUgZXhjaGFuZ2luZyBUWFQgTVNHcywgb3Ig
-dHdvIHBlb3BsZSB0YWxraW5nIG9uIGEgcGhvbmUgdGhhdCBoYXMgYSBjaXJjdWl0LXN3aXRjaGVk
-IGNvbm5lY3Rpb24gc2V0IHVwIGJldHdlZW4gdGhlbS4NCi0tDQpUbyB1bnN1YnNjcmliZSBmcm9t
-IHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbmV0ZmlsdGVyIiBpbiB0aGUg
-Ym9keSBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIua2VybmVsLm9yZyBNb3JlIG1ham9y
-ZG9tbyBpbmZvIGF0ICBodHRwczovL2VtZWEwMS5zYWZlbGlua3MucHJvdGVjdGlvbi5vdXRsb29r
-LmNvbS8/dXJsPWh0dHAlM0ElMkYlMkZ2Z2VyLmtlcm5lbC5vcmclMkZtYWpvcmRvbW8taW5mby5o
-dG1sJmRhdGE9MDIlN0MwMSU3QyU3QzhjZDYzYzg0ZjY5MjQwZDQyMzkzMDhkNTUyM2U0YzZkJTdD
-NDBjYzI5MTVlMjgzNGEyNzk0NzE2YmRkN2NhNGM2ZTElN0MxJTdDMCU3QzYzNjUwNTM0OTg4NDgy
-OTUzNSZzZGF0YT1od2M4RThraXB6Tmw5SERXM1NXaFpmYzl3MldnRm9PWEhINDN1VjV1Z05rJTNE
-JnJlc2VydmVkPTANCg==
+All,
+
+Thanks for the replies, your help is much appreciated.
+
+Andre, the link you included in your last message is one of the ones
+I've been referencing and it'sm in the fact, the one that's causing
+the confusion.
+
+a) I agree that ICMP is a connectionless protocol and we would not
+normally expect to see an established two-way session with it, such as
+we would see with TCP.
+b) As per Neal's and Pascal's comments above, I agree that
+Netfilter/Conntrack impose a connected (or unconnected) state between
+two endpoints/streams which is what's seen in the output of 'sudo
+contrack -E'.
+
+But I'm still not getting the result I'm hoping to see. Maybe it's
+just not possible, though. I'll re-phrase what I'm looking for to see
+if there's a different avenue for answers:
+
+Referencing the following quote from the link Andre sent: 'When the
+firewall sees a request packet, it considers it as NEW. When the host
+sends a reply packet to the request it is considered ESTABLISHED.'
+
+I'd like to see which packets are considered 'ESTABLISHED'. Or, I'd
+like a clear confirmation that the connection stream these ESTABLISHED
+packets are part of is considered "approved/allowed" to pass. I don't
+care which tool I use to see these. If the approval I'm looking for is
+in the form of a missing statement (meaning that the
+packet/stream/connection is considered allowed/established because
+there is no statement that explicitly declares a
+packet/stream/connection as NOT allowed/established) then I can work
+with that too, I just need confirmation that this is the case.
+
+Thanks!
+Oliver
+
+
+
+On Wed, Jan 3, 2018 at 5:13 AM, Andr=C3=A9 Paulsberg-Csibi (IBM Consultant)
+<Andre.Paulsberg-Csibi@evry.com> wrote:
+> I think here are some semantics confused ( could be my fault ).
+>
+> My statement is meant to explain that the term "ESTABLISHED" used in CONN=
+TRACK , does not match the state "ESTABLISHED" used in iptables rules-set .
+> ESTABLISHED in iptables ruleset simply means there is an entry directly r=
+elated to the packet that is being examined in the connection table .
+>
+> ESTABLISHED in the conntrack TERM is only used for TCP as here the packet=
+s have multiple timers as at least TCP is session/connection based protocol=
+ ,
+> I am not aware of other protocols who have other times and multiple sets =
+of session/connection states in netfilter/iptables/conntrack and using this=
+ TERM in same manner .
+>
+> RELATED is actually not the FIRST/NEW packet of new connection , it is an=
+y packet ( first second or later ) from any system that could be indirectly=
+ connected to any one connection table entry .
+> Including ICMP messages like type 11 ( TTL exceeded ) typically sent from=
+ every router on the way until you reached the end target destination when =
+doing a traceroute .
+>
+> When conntrack deals with other none TCP it uses only UNREPLIED / ASSURED=
+ and not the term ESTABLISHED
+> And for ICMP it does not use ASSURED , only UNREPLIED ( which is removed =
+after the first reply )
+>
+> As far as I can tell there are 6 states for the connection table part ( 7=
+ if you include those NOT/NEVER there )
+> NEW
+> ESTABLISHED
+> RELATED
+> INVALID
+> UNTRACKED
+> CLOSED
+>
+> For me these semantics is also not so self explanatory , specially since =
+the terms somewhat overlap and are missing for others .
+> ( but now maybe this is a bit more clear ) If not here is more details ht=
+tp://www.iptables.info/en/connection-state.html
+>
+>
+> Best regards
+> Andr=C3=A9 Paulsberg-Csibi
+> Senior Network Engineer
+> IBM Services AS
+>
+> -----Original Message-----
+> From: netfilter-owner@vger.kernel.org [mailto:netfilter-owner@vger.kernel=
+.org] On Behalf Of Neal P. Murphy
+> Sent: Wednesday, January 3, 2018 12:37 AM
+> Cc: netfilter@vger.kernel.org
+> Subject: Re: conntrack and ICMP echo replies not showing as ESTABLISHED
+>
+> On Tue, 2 Jan 2018 21:56:07 +0000
+> Andr=C3=A9 Paulsberg-Csibi (IBM Consultant)         <Andre.Paulsberg-Csib=
+i@evry.com> wrote:
+>
+>> As far as I can tell - ESTABLISHED - is only for session based protocols=
+ like TCP .
+>> You will not see that for UDP or ICMP , as far as CONNTRACK is concerned=
+ .
+>
+> With netfilter, there are five connection states: NEW, RELATED, ESTABLISH=
+ED, INVALID and RAW.
+>   - A NEW packet is the first packet of a new peer-to-peer communication =
+connection
+>     (a conn), be it TCP, SCTP, UDP, GRE, or any other protocol.
+>   - A RELATED packet is the first packet of a new conn that netfilter det=
+ermined is
+>     related to an existing conn (the data conn of an FTP conn, for exampl=
+e).
+>   - When two-way communication is established with a reply packet, the co=
+nn's state
+>     changes to ESTABLISHED.
+>   - INVALID packets are those that netfilter has received but has no idea=
+ what to do
+>     with them; they are packets that can only belong to an ESTABLISHED co=
+nn but it can
+>     find no such conn in its database.
+>   - I think RAW packets are those that netfilter has been told not to pro=
+cess; but I'm
+>     not sure of this as I've never had reason to use RAW packets.
+>
+> In netfilter, 'connection' is not related to connection-oriented protocol=
+s. It has to do with the relationship--the logical connection--between two =
+endpoints on a LAN or on some internetwork of them. It is much like two peo=
+ple talking on a walkie-talkie, two people exchanging TXT MSGs, or two peop=
+le talking on a phone that has a circuit-switched connection set up between=
+ them.
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in t=
+he body of a message to majordomo@vger.kernel.org More majordomo info at  h=
+ttps://emea01.safelinks.protection.outlook.com/?url=3Dhttp%3A%2F%2Fvger.ker=
+nel.org%2Fmajordomo-info.html&data=3D02%7C01%7C%7C8cd63c84f69240d4239308d55=
+23e4c6d%7C40cc2915e2834a2794716bdd7ca4c6e1%7C1%7C0%7C636505349884829535&sda=
+ta=3Dhwc8E8kipzNl9HDW3SWhZfc9w2WgFoOXHH43uV5ugNk%3D&reserved=3D0
+
+
+
+--=20
+:o@>
