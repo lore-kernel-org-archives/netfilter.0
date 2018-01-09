@@ -1,109 +1,104 @@
-From: Mauro Santos <registo.mailling@gmail.com>
+From: Joerg Dorchain <joerg@dorchain.net>
 Subject: Re: Using dynamic IP lists to block forwarding
-Date: Tue, 9 Jan 2018 16:59:28 +0000
-Message-ID: <699a50b3-5279-1275-c985-9448969d6b8e@gmail.com>
+Date: Tue, 9 Jan 2018 18:33:32 +0100
+Message-ID: <20180109173332.dthdu4vvzoi2frdq@Redstar.dorchain.net>
 References: <57cdc69a-1be8-d117-61a9-0de376f54152@osbourne.uk.eu.org>
  <20180109095832.qhetdvawgkzb2gak@Redstar.dorchain.net>
  <a2194be6-ac9a-5631-7e55-def8cb240b45@osbourne.uk.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="6ckf4rhlllh6npky"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-language:content-transfer-encoding;
-        bh=Qhvi1ebWpVCO2wVviTGYE+WFyWp7/V9vDbqi3aq9gJA=;
-        b=LcYVOQkfnn1DwM+OCkSG1QIVsfwL05e8eYODycgBZSEiFlZgaQ10fUXeSSVnWkk8u7
-         mhbMqF8LAR04bINr22HuRfi2aZClA0XS4fT7ZneqixSROVQ7A0qDacSyJbM1545bgQXA
-         0ralerv4rgwAsX7IGxUgzz/k2Ug8c/8Q+E1Xfy+0UxCKLI5NwGauC3Ym7GcV8ulp28sz
-         09WHNer7LO6j2xNCioywB7yqpqNtVEMo6VDfIV/3e9BmhdFEg9QGH6AWWf8q+fwsc15E
-         izApN/EU1MVHbHUma4tpM/kdTvkpS3uvC9iEgD58XuC7MsSutuH8ozVnUIOsMrpXK/KR
-         /LlA==
+DKIM-Filter: OpenDKIM Filter v2.11.0 Redstar.dorchain.net w09HXWOB008263
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorchain.net;
+        s=redstar; t=1515519212;
+        bh=nmMPM3UxTsdjO/JC5+CpqleTVS4v4+b2pZd1SHXVLEE=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ZZyQa9E2f/VQoPJQQyt/i6fvpH4/FRv8xZ0QX8tPshgRvVQfd1Egfa4xc+8uu8R7c
+         jPnqHgHoEuT1fY9f12sqcqHBdudDBs3Vi4RGzqzZRVEf8kjJjH6kEQJAKQ9Xh19Mub
+         8wI47PYqxh0TqqGoAyBUNQTcvAEsed3ebDKIULmo=
+Content-Disposition: inline
 In-Reply-To: <a2194be6-ac9a-5631-7e55-def8cb240b45@osbourne.uk.eu.org>
-Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Dave Osbourne <dave@osbourne.uk.eu.org>, netfilter@vger.kernel.org
+To: Dave Osbourne <dave@osbourne.uk.eu.org>
+Cc: netfilter@vger.kernel.org
 
-On 09-01-2018 16:24, Dave Osbourne wrote:
->=20
->=20
-> On 2018-01-09 09:58, Joerg Dorchain wrote:
->> On Tue, Jan 09, 2018 at 09:28:26AM +0000, Dave Osbourne wrote:
->>> 1. The list might be incorrect and legit requests will be blocked, the
->>> =A0=A0=A0 list will have to regularly derived (there might be a source =
-who
->>> knows)
->>> 2. "bad" IPs might be on that list and allowed
->>>
->>>
->>> My response is to implement a dynamic block list (say)
->>> http://iplists.firehol.org/?ipset=3Dblocklist_net_ua - using iptables
->>> on (say)
->>> Debian.=A0 I've looked at an hour of probe data and it seems that that
->>> /*specific */list would have blocked 97+% of known bad probe attempts
->>> (and
->>> the list is updated regularly).
->>>
->>> I hope someone might be able to provide argument for / against... or
->>> share
->>> an alternative...
->> I have been doing this for a while, but now have found that ipset
->> fit in very well here.
->> - Adding and removing ips from a set is easier than fiddling with
->> =A0=A0 iptables syntax.
->> - The timeout feature comes in very handy.
->> - Basically the iptables rules can be static.
->>
->> Bye,
->>
->> Joerg
+
+--6ckf4rhlllh6npky
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, Jan 09, 2018 at 04:24:50PM +0000, Dave Osbourne wrote:
 >=20
 > Ah - I looked at that (ipset) - didn't even know it existed...!!
 >=20
-> I'm getting a lot of resistance from our outsourced IT supplier on
-> this...=A0 the excuses are variously:
+> I'm getting a lot of resistance from our outsourced IT supplier on this..=
+=2E=A0
+> the excuses are variously:
 >=20
 > * block based on SRCIP being in <insert unfriendly state here> or
+
+Can do that, if you are sure to never get customer from there.
+More complementatry, not a replacement measure.
+
 > * why don't you migrate to Office365 or
-> * don't worry if you patch regularly and have a good passwd policy then
-> just let the traffic come
->=20
-> all completely pointless given the constrains and facts of the case.
->=20
-> Does *anyone* have some kind of a reference or best practice for this,
-> or their own motivation even?
->=20
-> I feel the resistance I'm getting (not from the list) is through a lack
-> of awareness by IT professionals...=A0 this seems like such an obvious
-> thing to do, yet 3 IT support companies I've spoken to don't seem keen....
->=20
 
-The only experience with something simpler (trying to reduce the number
-of ssh bruteforce attempts) is allowing only IPs from $MYCOUNTRY. Your
-concern about the list of IPs not being correct is a valid one but I've
-never had problems or complaints (machines have only a few users though)
-when using the lists from here:
+Or use icloud. Blonde is actually a state of mind, and makes the
+world a much easier place. Next round you'll be talking religous
+arguments ("I belief this will..." completely lacking undermining
+facts)
 
-ftp://ftp.ripe.net/pub/stats/ripencc/
+> * don't worry if you patch regularly and have a good passwd policy then j=
+ust
+> let the traffic come
 
-The files there are updated daily. You'll have to massage the file first
-to get a range of IPs you can use.
+Again, a complementatry thing.
 
-That said your idea sounds good and if it could help catch the few
-corner cases the static lists (firehol + ripe) don't catch I don't see
-why not use it (maybe false positives concern?).
-
-> Dave
+Don't rely on a single measure alone; If you notice an IP banging
+at you with a dozend failed logins a second, why not block it
+automatically for some time? Helps a bit the noise in the logs,
+and the length of that queue is a bit a a script kiddie fever
+curve.
 >=20
->=20
-> --=20
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at=A0 http://vger.kernel.org/majordomo-info.html
->=20
+> Does *anyone* have some kind of a reference or best practice for this, or
+> their own motivation even?
 
+Easy, cheap, helps. For more fundamental arguments, see relevant
+literature (Schneier et al.)
 
---=20
-Mauro Santos
+> I feel the resistance I'm getting (not from the list) is through a lack of
+> awareness by IT professionals...=A0 this seems like such an obvious thing=
+ to
+> do, yet 3 IT support companies I've spoken to don't seem keen....
+
+Sometimes people just are not interested in things they can't
+monetise within 3 month..
+
+Bye,
+
+Joerg
+
+--6ckf4rhlllh6npky
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJkBAEBCgBOFiEEi1H+OmIH+hWvEDR8cSN/dDZuHKgFAlpU/OcwFIAAAAAAFQAS
+cGthLWFkZHJlc3NAZ251cGcub3Jnam9lcmdAZG9yY2hhaW4ubmV0AAoJEHEjf3Q2
+bhyoaOQP/1ShcUAK+bDIGEhgdoIYCkQTiS06ZIpVsMiSsn4of/YOxKA709n6ckxG
+7aRQEAbCrJcaElQNgUeDzsEq6EwSwRqe5VMHA1BPP6+GSsFh8iX1G2voR1eQ13EY
+YLUO+Cc6eeWYgVkIF/bk4Pu0c6Or9DF2XPoMjR3dpNmi6z/l2l5nQk7FJ9URprex
+AVWfuQyp0uL07974IKqftiIeqAes82jEnId2q+o7aUcFzKih7Hgn5XTMBN4i9Svv
+VlGamN33WUwH28ARGU0TobBIVkSrw02W3VJOkrChz8ULe9sA54yZaWyvWLhq2jcH
++VM6QydeWDNFjxdu/aadOd+n3jBEqd7JBn9uW6NMzX/U1PtJw7rhOJdOOLvFIJBS
+HslBokgDspvfwtH8U8X4ZnSXimGj4KHaMwkk60aHr0QV3vdwK4gPlb82vVhIpLbs
+4X16jdI8tIRI9uhypRcmCz64Ph4Mn8gKOttnBAJ2mV++6Omzq0+4l+c8Uuv+ejUa
+j8DcJdbTdXMtkQuM3tpiC46whNQCVT2sAbwq5okvJdChsyhVHmKa1yWumhxMCEgp
+/142EmWryTstwlh1JYay9ur9xGuwKLluyeV0WAEhUUwiPaML0j+RXNRAuz/DRfpG
+sDI0j3aP6MKw1ZK9mAj7uyLCkqfN0Yvv926QQteuHDeGueaSZjL5
+=ow6z
+-----END PGP SIGNATURE-----
+
+--6ckf4rhlllh6npky--
