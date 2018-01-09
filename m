@@ -1,54 +1,80 @@
-From: Dave Osbourne <dave@osbourne.uk.eu.org>
-Subject: Using dynamic IP lists to block forwarding
-Date: Tue, 9 Jan 2018 09:28:26 +0000
-Message-ID: <57cdc69a-1be8-d117-61a9-0de376f54152@osbourne.uk.eu.org>
+From: Joerg Dorchain <joerg@dorchain.net>
+Subject: Re: Using dynamic IP lists to block forwarding
+Date: Tue, 9 Jan 2018 10:58:34 +0100
+Message-ID: <20180109095832.qhetdvawgkzb2gak@Redstar.dorchain.net>
+References: <57cdc69a-1be8-d117-61a9-0de376f54152@osbourne.uk.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="uyldctwa5ivokkga"
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-GB
+DKIM-Filter: OpenDKIM Filter v2.11.0 Redstar.dorchain.net w099wYn3015645
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorchain.net;
+        s=redstar; t=1515491914;
+        bh=nrHlMCEPj+LV4yX3zD7OKw+nSFctmNqA2umBKscDS2s=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ANGv5jYUbuWati0zR4cvJIRhRsnuZRG8tferBqIB5mLcYBb+CHgVXZ94Dzsxibkw8
+         XNyov9WX0jd1ep7qaQi3BGKDqG5gbhbKWqlB6O7jjDtMw9m1mDTMwAmqwP54CD9yas
+         DSlF7FNCGukFKg9rHMvhpak8xdAVuExb/ykQi/jA=
+Content-Disposition: inline
+In-Reply-To: <57cdc69a-1be8-d117-61a9-0de376f54152@osbourne.uk.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: netfilter@vger.kernel.org
-
-Hi,
-
-Not totally sure this is an acceptable post... I'm trying to find a 
-"firewalling principles" discussion group, but everything I find online 
-is either old and not longer used or brand / package specific.
-
-This question is specifically about services that MUST be exposed to the 
-"big bad internet" (i.e. internal MS Exchange servers for OWA, POP / 
-IMAP etc) and I'd like to exclude any discussion of whether this 
-(exposure) is good plan, focusing rather on how to best handle 
-forwarding (via iptales or deeper level inspection)
-
-Our current Watchguard does a temporary IP block on "bad" activity (this 
-could be from bad SYN/ACK/PSH or from a log watch), but I've noticed 
-that co-ordinated probes are coming from many different IPs, so this 
-sort of response doesn't help that at all.
-
-One suggestion I've had from a security agency is to identify a list of 
-"good" (in my case "UK" IPs) and block everything else.  I don't think 
-this is good since there are 2 modes of failure.
-
- 1. The list might be incorrect and legit requests will be blocked, the
-    list will have to regularly derived (there might be a source who knows)
- 2. "bad" IPs might be on that list and allowed
+To: Dave Osbourne <dave@osbourne.uk.eu.org>
+Cc: netfilter@vger.kernel.org
 
 
-My response is to implement a dynamic block list (say) 
-http://iplists.firehol.org/?ipset=blocklist_net_ua - using iptables on 
-(say) Debian.  I've looked at an hour of probe data and it seems that 
-that /*specific */list would have blocked 97+% of known bad probe 
-attempts (and the list is updated regularly).
+--uyldctwa5ivokkga
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I hope someone might be able to provide argument for / against... or 
-share an alternative...
+On Tue, Jan 09, 2018 at 09:28:26AM +0000, Dave Osbourne wrote:
+>=20
+> 1. The list might be incorrect and legit requests will be blocked, the
+>    list will have to regularly derived (there might be a source who knows)
+> 2. "bad" IPs might be on that list and allowed
+>=20
+>=20
+> My response is to implement a dynamic block list (say)
+> http://iplists.firehol.org/?ipset=3Dblocklist_net_ua - using iptables on =
+(say)
+> Debian.=A0 I've looked at an hour of probe data and it seems that that
+> /*specific */list would have blocked 97+% of known bad probe attempts (and
+> the list is updated regularly).
+>=20
+> I hope someone might be able to provide argument for / against... or share
+> an alternative...
 
-Regards,
-Dave
+I have been doing this for a while, but now have found that ipset
+fit in very well here.
+- Adding and removing ips from a set is easier than fiddling with
+  iptables syntax.
+- The timeout feature comes in very handy.
+- Basically the iptables rules can be static.
 
----
-http://dave.osbourne.uk.eu.org/
+Bye,
 
+Joerg
+
+--uyldctwa5ivokkga
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJkBAEBCgBOFiEEi1H+OmIH+hWvEDR8cSN/dDZuHKgFAlpUkj4wFIAAAAAAFQAS
+cGthLWFkZHJlc3NAZ251cGcub3Jnam9lcmdAZG9yY2hhaW4ubmV0AAoJEHEjf3Q2
+bhyo3NgP/iDmA2u2hYM5uEkXpaun3KHngSBK0kdz5bsuZz7SwYElW/vuJsmShyFc
+gnNtKPBwnM1elTl635MMOjpvdV0X+2CjzgzFT+kuJrfcNmXxRbf/c7nfbx2AoEJA
+jukNwtnLM5Tcpx7gXx0AB7GvPCkgtZiOel46OYl0MYnYeGCjL27kPY8ukIZ+3Ukd
+Ae6yt3GBvH/1zTH10JZ7F0M9qpkkJdkLz8gPntrXZnGYREvfa0e9WpmXLCaiJoOS
+CIeQ6EZIA9tY04eHzD0g4EzadEzyqoJ7EJGsJwM+7WdYPkFWW/cubzy/CrURfkIZ
+hTe5EuEhgyzapTAv17eBUxert3CSS8k9LaKgfJDm0qkQGX/lFuwSopqMagn6Vxiy
+3XzUYRg75xyBsgo6T4Xjit3rZtFyerR+t91kCXaeyaRagPpAGsQu1UDKQ1FL8BHI
+CVfNGMoV6A/+gEMX560KsvB4rF9Lk0zC004CSRvk+sK4NMAuP/PcW4LEketQnE1u
+01OHH/JuAhBuohn1foMpK3Rk2f8kv6/aPpw4f6TliN7244KPfw6/uEoOkeXxdC/o
+dcpfwjf1CqVi0KdtN+8kLhnRltocJ3iJhNLLv5qrCwp/dhY4UPu4HiU9zD2UZZQ6
+b/gp1RuIOgPSA0bKS+IIAr3dMtnSGhsqou9OHyRoF1v48andO1BO
+=Csjb
+-----END PGP SIGNATURE-----
+
+--uyldctwa5ivokkga--
