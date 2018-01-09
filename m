@@ -1,58 +1,54 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset 6.35 released
-Date: Sat, 6 Jan 2018 17:16:27 +0100 (CET)
-Message-ID: <alpine.DEB.2.11.1801061711590.26273@blackhole.kfki.hu>
+From: Dave Osbourne <dave@osbourne.uk.eu.org>
+Subject: Using dynamic IP lists to block forwarding
+Date: Tue, 9 Jan 2018 09:28:26 +0000
+Message-ID: <57cdc69a-1be8-d117-61a9-0de376f54152@osbourne.uk.eu.org>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        blackhole.kfki.hu; h=mime-version:user-agent:message-id:from
-        :from:date:date:received:received:received; s=20151130; t=
-        1515255387; x=1517069788; bh=EArP38XCvOwBuNGoeEaw3KfDgsDNaxAccMA
-        nMX/BXNI=; b=azoIbsDc8+gK4jGeg3tHq0KGNkcmIIDEcBuY0KsLR3mgos1FH/2
-        SvLdeBBNmBjpKujTRNzxFYWbHybLtqvC37wJqiQpHypHMMuQp5jru6LTrCpzXqj5
-        KeMmT92pxDP8lONL54ahXrY5qEUc1+VavW9kTGddCr8BD7p41ARooMxw=
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Language: en-GB
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: netfilter@vger.kernel.org
 
 Hi,
 
-I'm happy to announce ipset 6.35. The internal revision handling in 
-userspace has been reworked to make easier and simpler to add new
-revisions/features. The kernel part changes bring a few fixes, backports
-and small corrections:
+Not totally sure this is an acceptable post... I'm trying to find a 
+"firewalling principles" discussion group, but everything I find online 
+is either old and not longer used or brand / package specific.
 
-Userspace changes:
-  - Userspace revision handling is reworked
-  - Replace the last reference to u_int8_t with uint8_t.
-Kernel part changes:
-  - netfilter: mark expected switch fall-throughs (Gustavo A. R. Silva)
-  - License cleanup: add SPDX GPL-2.0 license identifier to files with no
-    license (Greg Kroah-Hartman)
-  - Backport patch: netfilter: ipset: use nfnl_mutex_is_locked
-  - Missing nfnl_lock()/nfnl_unlock() is added to ip_set_net_exit()
-  - netfilter: ipset: use nfnl_mutex_is_locked (Florian Westphal)
-  - netfilter: ipset: add resched points during set listing
-    (Florian Westphal)
-  - Fix "don't update counters" mode when counters used at the matching
-  - Backport patch: netfilter: ipset: Convert timers to use timer_setup()
-  - netfilter: ipset: use swap macro instead of _manually_ swapping values
-    (Gustavo A. R. Silva)
-  - netfilter: ipset: Fix race between dump and swap (Ross Lagerwall)
-  - netfilter: ipset: pernet ops must be unregistered last (Florian
-    Westphal)
+This question is specifically about services that MUST be exposed to the 
+"big bad internet" (i.e. internal MS Exchange servers for OWA, POP / 
+IMAP etc) and I'd like to exclude any discussion of whether this 
+(exposure) is good plan, focusing rather on how to best handle 
+forwarding (via iptales or deeper level inspection)
 
-You can download the source code of ipset from:
-        http://ipset.netfilter.org
-        ftp://ftp.netfilter.org/pub/ipset/
-        git://git.netfilter.org/ipset.git
+Our current Watchguard does a temporary IP block on "bad" activity (this 
+could be from bad SYN/ACK/PSH or from a log watch), but I've noticed 
+that co-ordinated probes are coming from many different IPs, so this 
+sort of response doesn't help that at all.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+One suggestion I've had from a security agency is to identify a list of 
+"good" (in my case "UK" IPs) and block everything else.  I don't think 
+this is good since there are 2 modes of failure.
+
+ 1. The list might be incorrect and legit requests will be blocked, the
+    list will have to regularly derived (there might be a source who knows)
+ 2. "bad" IPs might be on that list and allowed
+
+
+My response is to implement a dynamic block list (say) 
+http://iplists.firehol.org/?ipset=blocklist_net_ua - using iptables on 
+(say) Debian.  I've looked at an hour of probe data and it seems that 
+that /*specific */list would have blocked 97+% of known bad probe 
+attempts (and the list is updated regularly).
+
+I hope someone might be able to provide argument for / against... or 
+share an alternative...
+
+Regards,
+Dave
+
+---
+http://dave.osbourne.uk.eu.org/
+
