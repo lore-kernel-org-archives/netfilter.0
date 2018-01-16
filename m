@@ -1,99 +1,180 @@
-From: icovnik <icovnik@gmail.com>
-Subject: NFLOG with threads
-Date: Tue, 16 Jan 2018 09:28:07 +0100
-Message-ID: <CA+ZTgCsnZQgmWCKzTdW5QqfLwNDpj09syhnh8Y-HnF2iq605rA@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] nftables 0.8.1 release
+Date: Tue, 16 Jan 2018 14:01:59 +0100
+Message-ID: <20180116130159.m3dzom4zgitglfhh@salvia>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=IvUS+00gU8gEgIDxsDQj4feAJyLgLBpK6T6XYe7GrUw=;
-        b=ZPY/PMUzTmAJlonisZ/1OQEkr0ecmrjYyPA9Wm1mpoXNQmEDU/sr372ZvRLe+ug4h9
-         7VBsKRbQx/3ldc9Wlf/S0256DWnsNY3okafHqKUMiSzKv3JIsPcgcJpEwjr7ltikSm62
-         Sgu0yQFGVEK/Oax0mhS1o0JKIsyyk2Qje7FRdsm+63fNVv81ozmGG9kdcmK1mU5sfj/o
-         FwyHBfIdCbEaH2/qedEK7jyn6h1Uqvx1+GuWwHIb+KaQDrs9nvde4tuoVEelFSNoPR8m
-         /XkFANd6CgQ0iyI+4aCGMHqkDLaH2pXOCWErqUro6ASZNkay1ZcPobk4SHLMnylTYbb6
-         U3RQ==
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="zkuu3jz5tuutiqwd"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: netfilter-devel@vger.kernel.org
+Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
 
-Hello,
 
-I am trying to create some IP accounting software based on NFLOG /
-libnetfilter_log. When I started to use threads (to spread load to
-multiple CPUs) I got some strange behavior. The logic of my
-application is like this:
+--zkuu3jz5tuutiqwd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-1. "capture" packets with iptables:
+Hi!
 
-iptables -t mangle -F
-iptables -t mangle -A POSTROUTING -j NFLOG \
-    --nflog-group 5 --nflog-range 60 --nflog-threshold 1
-iptables -t mangle -A PREROUTING -j NFLOG \
-    --nflog-group 6 --nflog-range 60 --nflog-threshold 1
+The Netfilter project proudly presents:
 
-2. in C source create 2 threads, attach each thread to its nflog group:
+        nftables 0.8.1
 
-    int g = 5; // or 6 for the other thread
-    if (!(h = nflog_open())) exit(1);
-    if (nflog_bind_pf(h, AF_INET) < 0) exit(1);
-    if (!(gh = nflog_bind_group(h, g))) exit(1);
-    nflog_set_nlbufsiz(gh, NFLOG_BUFFER_SIZE);
-    if (nflog_set_mode(gh, NFULNL_COPY_PACKET, PACKET_BYTES_COPIED) < 0)
-        exit(1);
-    fd = nflog_fd(h);
+This release contains mostly incremental fixes and documentation
+updates, such as fixing up ./configure --with-mini-gmp for embedded
+setups that don't have libgmp.
 
-    if (g == 5) {
-        nflog_callback_register(gh, &got_packet5, &g);
-    } else if (g == 6) {
-        nflog_callback_register(gh, &got_packet6, &g);
-    }
+Deprecated syntax
+=================
 
-    printf("main loop %d\n", g);
+This release deprecates the "flow table" syntax in favor of "meter" to
+address Netfilter's bugzilla issues:
 
-    while (1) {
-        if ((rv = recv(fd, buf, 0xffff, 0)) <= 0) {
-            perror("recv()");
-            exit(1);
+https://bugzilla.netfilter.org/show_bug.cgi?id=1137
+https://bugzilla.netfilter.org/show_bug.cgi?id=1185
+
+This is an example of how to use it:
+
+# nft add table filter
+# nft add chain filter input { type filter hook input priority 0\; }
+# nft add rule filter input meter local-traffic { ip saddr counter }
+
+# nft list ruleset
+table ip filter {
+        chain input {
+                type filter hook input priority 0; policy accept;
+                meter local-traffic { ip saddr counter} 
         }
-        printf("recv %d\n", g);
-        fflush(stdout);
-        nflog_handle_packet(h, buf, rv);
-    }
+}
+# nft list ruleset
+table ip filter {
+        chain input {
+                type filter hook input priority 0; policy accept;
+                meter local-traffic { ip saddr counter} 
+        }
+}
+# nft list meter filter local-traffic 
+table ip filter {
+        meter local-traffic {
+                type ipv4_addr
+                elements = { 8.8.8.8 : counter packets 1 bytes 84, 84.11.121.21 : counter packets 1 bytes 76, 150.159.126.108 : counter packets 1 bytes 76, 123.102.2.4 : counter packets 1 bytes 76, 21.241.12.143 : counter packets 1 bytes 76 }
+        }
+}
 
-3. test:
+Former 'flow table' syntax will be still around for a while, but listing
+uses the new 'meter' syntax, so please revisit your scripts if you are
+using this feature.
 
-I tried to ping some host to get few nice packets, outgoing packets
-should be captured with group 5, incoming with group 6. In main loop I
-get nice output of "got 5"s and "got 6"s. Everything works nicely.
+Resources
+=========
 
-4. The problem:
+The nftables code can be obtained from:
 
-When testing (practically run from terminal, wait 5 sec, ^C, run
-again, ... etc) and getting all that "got XY"s, the callback functions
-get called back in 3 different ways. As far as I can tell the program
-run that way until I kill it:
+* http://netfilter.org/projects/nftables/downloads.html
+* ftp://ftp.netfilter.org/pub/nftables
+* git://git.netfilter.org/nftables
 
-- only got_packet5 gets called for all outgoing packets, got_packet6
-is never run
+To build the code, libnftnl 1.0.9 and libmnl >= 1.0.2 are required:
 
-- the other way - got_packet6 called for all incoming packets, no got_packet5
+* http://netfilter.org/projects/libnftnl/index.html
+* http://netfilter.org/projects/libmnl/index.html
 
-- sometimes everything works as you would imagine - got_packet5 is
-called for every "got 5" and got_packet6 for every "got 6".
+Visit our wikipage for user documentation at:
 
-So my questions:
+* http://wiki.nftables.org
 
-- Am I doing someting wrong? I stripped the C source to absolute
-minimum to show what am I doing.
+For the manpage reference, check man(8) nft.
 
-- Is the callback mechanism of NFLOG thread-safe? Should this work?
+In case of bugs and feature request, file them via:
 
-- Is there some recommended way to get multiple NFLOGs into threaded program?
+* https://bugzilla.netfilter.org
 
-Thank you.
+Make sure you create no duplicates already, thanks!
 
-ico
+Happy firewalling!
+
+--zkuu3jz5tuutiqwd
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="changes-nftables-0.8.1.txt"
+
+Arturo Borrero Gonzalez (1):
+      parser: allow classid as set key
+
+Duncan Roe (5):
+      doc: nft.8 change "Native Address Translation" to "Network Address Translation"
+      doc: nft.8 simplify initial SYNOPSIS line
+      doc: nft.8 document use of -f option to start nft scripts
+      doc: nft.8 Syslog level is introduced by "level" not "syslog-level"
+      doc: nft.8 aim for consistent synopses throughout
+
+Florian Westphal (9):
+      rule: fix netlink debug flag when listing table/rules
+      tests: fix harmess typo in table name
+      tests: icmpX: fix expected output
+      tests: add test case that checks icmp6 in-ipv4
+      tests: nft removes required payload protocol expressions
+      tests: enable ip/ip.t for bridge protocol, too
+      tests: nft removes required inet dependency expressions
+      ct: don't print newline if label bit cannot be mapped
+      netlink_linearize: exthdr op must be u32
+
+Harsha Sharma (4):
+      tests: shell: add testcases for named limits
+      tests/monitor: Print error "this requires root" and exit
+      evaluate: print error for null string
+      tests/py: add test for empty string match
+
+Pablo M. Bermudo Garay (1):
+      src: do not print limit keyword inside object definition
+
+Pablo Neira Ayuso (9):
+      netlink: fix element addition to map with stateful object
+      src: add nft_ prefix to everything exposed through include/nftables/nftables.h
+      utils: fix one compilation error with --with-mini-gmp
+      gmputil: turn mpz_printf into mpz_vfprintf to restore --with-mini-gmp
+      src: deprecate "flow table" syntax, replace it by "meter"
+      parser_bison: dismiss anonymous meters
+      parser_bison: no need for 'name' token for meters
+      include: refresh nf_tables.h cached copy
+      build: Bump version to v0.8.1
+
+Phil Sutter (19):
+      netlink: Use nftnl_expr_fprintf() in netlink_dump_expr()
+      main: Fix for wrong argument passed to cache_release in nft_ctx_free
+      libnftables: Move library stuff out of main.c
+      libnftables: Introduce nft_ctx_flush_cache()
+      cli: Use nft_run_cmd_from_buffer()
+      libnftables: Introduce getters and setters for everything
+      libnftables: Get rid of explicit cache flushes
+      libnftables: Flush iface cache after command execution
+      Eliminate struct mnl_ctx
+      libnftables: Unexport enum nftables_exit_codes
+      libnftables: Split code into frontend and library
+      rule: Make 'nft export' respect output_fp
+      libnftables: Ensure output_fp is never NULL
+      tests: shell: Prevent lockout in nft-f/0008split_tables_0
+      Make libnftables a local static library
+      tests/py: trivial: Fix error message
+      src: fix protocol context update on big-endian systems
+      build: Restore per object CFLAGS
+      src: Don't merge adjacent/overlapping ranges
+
+Varsha Rao (13):
+      tests: files: Remove jump chain tests.
+      tests: shell: Add test case for jump chain.
+      tests: shell: Add test case for sets.
+      tests: files: Remove tests for set.
+      tests: shell: Add tests for variable definition.
+      tests: files: Remove test cases for variable definition.
+      tests: files: Remove tests for chain.
+      tests: files: Remove tests for table.
+      tests: files: Remove tests for verdict maps.
+      tests: shell: Add test case for map expression.
+      src: tests: files: Remove test files.
+      tests: shell: Rename 0025named_limit_0 to 0026named_limit_0
+      tests: shell: Add test for IPv4 Mapped IPv6 address.
+
+
+--zkuu3jz5tuutiqwd--
