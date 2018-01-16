@@ -1,86 +1,99 @@
-From: "Oliver O'Boyle" <oliver.oboyle@gmail.com>
-Subject: Re: IPSET persistence on Ubuntu 16.04
-Date: Mon, 15 Jan 2018 16:19:39 -0500
-Message-ID: <CAMOPTEw7szxqowE50G6XB+QECr=9DtV5HzGatt1+PiY1j4bBRQ@mail.gmail.com>
-References: <CAMOPTEwan+tog9RwsuDFGWGGyHbv9cq_qmua6gmdjr4XoGM7HA@mail.gmail.com>
- <d9567a92-e4ee-0b38-f7a7-5447b9cb5b25@pkfnet.co.za>
+From: icovnik <icovnik@gmail.com>
+Subject: NFLOG with threads
+Date: Tue, 16 Jan 2018 09:28:07 +0100
+Message-ID: <CA+ZTgCsnZQgmWCKzTdW5QqfLwNDpj09syhnh8Y-HnF2iq605rA@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=786CR/YwFqu/e61frk5/FaTBwAKCX0w+AXq/y+Iv8Ik=;
-        b=KECjS9qU4wyvuN48Ya9BWCyawK8wJ43Y72PTx3czWS6WiJzt8GGPJ+INGrTzJS3OzX
-         8LNyXYaRwz5dwr7mak8COvYq3Ge57VuoWXodanaHWhb5hvwMWH5USEp23Z9Y7g5Re90C
-         FbOfxN+Ya9V2e++K+acUy7TiTabpvfwOdfX3APmbPOExUeI7UtAQaqJwuqjN5PSFj9Ap
-         xPyqxfniqyvR3RiCAZkPcCZIDEXEp092AUPf1mE2SbGbb7n/v1jREBR+K8z0kKIgDQ1L
-         V4JjqPeFBilKFrs0AqayQPeiPxxseQfkmgkReInBv9Ifi9QvUYXDqnsMBH+OCoas9g00
-         RUmw==
-In-Reply-To: <d9567a92-e4ee-0b38-f7a7-5447b9cb5b25@pkfnet.co.za>
+        h=mime-version:from:date:message-id:subject:to;
+        bh=IvUS+00gU8gEgIDxsDQj4feAJyLgLBpK6T6XYe7GrUw=;
+        b=ZPY/PMUzTmAJlonisZ/1OQEkr0ecmrjYyPA9Wm1mpoXNQmEDU/sr372ZvRLe+ug4h9
+         7VBsKRbQx/3ldc9Wlf/S0256DWnsNY3okafHqKUMiSzKv3JIsPcgcJpEwjr7ltikSm62
+         Sgu0yQFGVEK/Oax0mhS1o0JKIsyyk2Qje7FRdsm+63fNVv81ozmGG9kdcmK1mU5sfj/o
+         FwyHBfIdCbEaH2/qedEK7jyn6h1Uqvx1+GuWwHIb+KaQDrs9nvde4tuoVEelFSNoPR8m
+         /XkFANd6CgQ0iyI+4aCGMHqkDLaH2pXOCWErqUro6ASZNkay1ZcPobk4SHLMnylTYbb6
+         U3RQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Mark Coetser <mark@pkfnet.co.za>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Mark,
+Hello,
 
-I've implemented this by using :
+I am trying to create some IP accounting software based on NFLOG /
+libnetfilter_log. When I started to use threads (to spread load to
+multiple CPUs) I got some strange behavior. The logic of my
+application is like this:
 
-pre-up ipset restore -! < /etc/ipset/ipset.rules
-post-down ipset-save -file /etc/ipset/ipset.rules
+1. "capture" packets with iptables:
 
-ipset rules appear with sudo ipset -L after a reboot. So all looks good there.
+iptables -t mangle -F
+iptables -t mangle -A POSTROUTING -j NFLOG \
+    --nflog-group 5 --nflog-range 60 --nflog-threshold 1
+iptables -t mangle -A PREROUTING -j NFLOG \
+    --nflog-group 6 --nflog-range 60 --nflog-threshold 1
 
-However, sudo ip6tables -L still shows default rules. I'm using
-iptables-persistent for iptables persistence. Do you know when
-iptables-persistent is run? It looks like it's being called before the
-interface is in pre-up and so it's still not able to find ipset rules.
+2. in C source create 2 threads, attach each thread to its nflog group:
 
-Oliver
+    int g = 5; // or 6 for the other thread
+    if (!(h = nflog_open())) exit(1);
+    if (nflog_bind_pf(h, AF_INET) < 0) exit(1);
+    if (!(gh = nflog_bind_group(h, g))) exit(1);
+    nflog_set_nlbufsiz(gh, NFLOG_BUFFER_SIZE);
+    if (nflog_set_mode(gh, NFULNL_COPY_PACKET, PACKET_BYTES_COPIED) < 0)
+        exit(1);
+    fd = nflog_fd(h);
 
-On Mon, Jan 15, 2018 at 3:36 AM, Mark Coetser <mark@pkfnet.co.za> wrote:
->
-> On 12/01/2018 23:20, Oliver O'Boyle wrote:
->>
->> Hello,
->>
->> Just started using IPSet on Ubuntu 16.04. After reboot, my set
->> disappeared and my ip6tables config vanished, leaving my fw wide open
->> with default rules. OUCH.
->>
->> What's the proper way to do IPSet persistence on Ubuntu 16.04?
->>
->> Oliver
->>
->
-> either create a script that you call from /etc/network/interfaces ie
->
-> up /full/path/script
->
-> that has your ipset commands
->
-> or just put the ipset stuff into interfaces file
->
-> auto eth0
-> iface eth0 inet static
->         address x.x.x.x
->         netmask x.x.x.x
->         up ipset xxxxxx
->         up ipset xxxxxx
->
->
-> --
-> Thank you,
->
-> Mark Adrian Coetser
-> mark@pkfnet.co.za
->
-> What causes the mysterious death of everyone?
+    if (g == 5) {
+        nflog_callback_register(gh, &got_packet5, &g);
+    } else if (g == 6) {
+        nflog_callback_register(gh, &got_packet6, &g);
+    }
 
+    printf("main loop %d\n", g);
 
+    while (1) {
+        if ((rv = recv(fd, buf, 0xffff, 0)) <= 0) {
+            perror("recv()");
+            exit(1);
+        }
+        printf("recv %d\n", g);
+        fflush(stdout);
+        nflog_handle_packet(h, buf, rv);
+    }
 
--- 
-:o@>
+3. test:
+
+I tried to ping some host to get few nice packets, outgoing packets
+should be captured with group 5, incoming with group 6. In main loop I
+get nice output of "got 5"s and "got 6"s. Everything works nicely.
+
+4. The problem:
+
+When testing (practically run from terminal, wait 5 sec, ^C, run
+again, ... etc) and getting all that "got XY"s, the callback functions
+get called back in 3 different ways. As far as I can tell the program
+run that way until I kill it:
+
+- only got_packet5 gets called for all outgoing packets, got_packet6
+is never run
+
+- the other way - got_packet6 called for all incoming packets, no got_packet5
+
+- sometimes everything works as you would imagine - got_packet5 is
+called for every "got 5" and got_packet6 for every "got 6".
+
+So my questions:
+
+- Am I doing someting wrong? I stripped the C source to absolute
+minimum to show what am I doing.
+
+- Is the callback mechanism of NFLOG thread-safe? Should this work?
+
+- Is there some recommended way to get multiple NFLOGs into threaded program?
+
+Thank you.
+
+ico
