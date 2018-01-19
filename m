@@ -1,137 +1,41 @@
-From: "Oliver O'Boyle" <oliver.oboyle@gmail.com>
-Subject: Re: IPSET persistence on Ubuntu 16.04
-Date: Tue, 16 Jan 2018 15:22:53 -0500
-Message-ID: <CAMOPTExeGJgV9i+p_nJGv1+spawgOkDPcdmu4n05ZQgmBHFdjg@mail.gmail.com>
-References: <CAMOPTEwan+tog9RwsuDFGWGGyHbv9cq_qmua6gmdjr4XoGM7HA@mail.gmail.com>
- <d9567a92-e4ee-0b38-f7a7-5447b9cb5b25@pkfnet.co.za> <CAMOPTEw7szxqowE50G6XB+QECr=9DtV5HzGatt1+PiY1j4bBRQ@mail.gmail.com>
- <CAMOPTEz8SFPxh=eWMMmNMu8dRhyBYeOxwrfexy0-nWSjrMYk4Q@mail.gmail.com>
+From: "Raymond Burkholder" <ray@oneunified.net>
+Subject: Symmetric / Asymmetric Connection Tracking
+Date: Fri, 19 Jan 2018 09:37:52 -0400
+Message-ID: <5e5301d3912a$b4f42730$1edc7590$@oneunified.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc;
-        bh=6PkvE+m0K8ef7vzbutARD+yB7VVpIBF1m2lQt15u2OI=;
-        b=WzOzuUfG9pRu7b3xNt85XXhmNcJfYsJkvxcQErMNWblUiWGVGM0Irhw0gOYh6kWmYV
-         Zeq7v81RNMcTg80ONancTSMISvSZxjbNTgknFQwgYMFdII3lPa43fBcXhdsctuucJn+V
-         KVZRsMRzOl0xejRC+DnZGLStjIVDzZenwP0Et0b0NUzp6uqUlJQrdEeEzRDX/CK0/hJY
-         IyPT3Unb3f4BkWE6CPq8ZLlwt1JoGNAoKVr+r4JQaLG63Nnih0kMS4fKyPoMRRevg+cz
-         3lDbOE4kYW8g8RV/8SsQLha3X57yo2hA939b58mzTrhdSi7RxT+m2ohnxLSJIMLUEsF2
-         SQHQ==
-In-Reply-To: <CAMOPTEz8SFPxh=eWMMmNMu8dRhyBYeOxwrfexy0-nWSjrMYk4Q@mail.gmail.com>
+Content-Language: en-us
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mark Coetser <mark@pkfnet.co.za>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-I found this ipset plugin for iptables-persistent. I can confirm it
-works on Ubuntu 16.04.
+In the Conntrack Tools Manual at
+http://conntrack-tools.netfilter.org/manual.html, there is this quote:
 
-https://github.com/jordanrinke/ipsets-persistent
+" On the other hand, the asymmetric scenario may work if your setup fulfills
+several strong assumptions."
 
-Just put the 10-upset file into /usr/share/netfilter-persistent/plugins.d
-and chmod ugo+x 10-ipset
+I think I almost have the 'several strong assumptions' fulfilled, but  ...
+was wondering if those assumptions could be enumerated?
 
-add your ipset rules, then:
+I have refactored my network design to make use of the 'symmetric path
+routing' as much as I can.  But there are a few connections, which, if I can
+make 'asymmetric multi-path routing' work, that would make my day.
 
-sudo netfilter-persistent save
-sudo netfilter-persistent reload
+Any comments or suggestions or clarifications on the 'assumptions', or
+changes in thinking since that document was written?  I am using nftables
+commands to build my structures and would like to use the conntrackd tools
+to sync state.
 
-and reboot to confirm all is persistent with sudo ipset -L and sudo
-iptables -L and sudo ip6tables -L
-
-I still feel this should solution be merged into iptables-persistent
-for native support.
-
-O.
-
-On Tue, Jan 16, 2018 at 1:08 PM, Oliver O'Boyle <oliver.oboyle@gmail.com> wrote:
-> I've confirmed it's a service ordering issue. If I include these lines
-> in /etc/network/interfaces
->
-> pre-up ipset restore -! < /etc/ipset/ipset.rules
-> up /usr/share/netfilter-persistent/plugins.d/25-ip6tables restart
->
-> then ip6tables loads without issue.
->
-> I'm not super experienced with upstart and service ordering etc... Can
-> someone tell me if there's a better more elegant way to make use of
-> ipset and netfilter-persistent so that both ipset and ip(x)tables
-> remain persistent? Or, at least, please confirm that the way I'm doing
-> it above is the only (or best) way.
->
-> Thanks,
-> Oliver
->
-> On Mon, Jan 15, 2018 at 4:19 PM, Oliver O'Boyle <oliver.oboyle@gmail.com> wrote:
->> Mark,
->>
->> I've implemented this by using :
->>
->> pre-up ipset restore -! < /etc/ipset/ipset.rules
->> post-down ipset-save -file /etc/ipset/ipset.rules
->>
->> ipset rules appear with sudo ipset -L after a reboot. So all looks good there.
->>
->> However, sudo ip6tables -L still shows default rules. I'm using
->> iptables-persistent for iptables persistence. Do you know when
->> iptables-persistent is run? It looks like it's being called before the
->> interface is in pre-up and so it's still not able to find ipset rules.
->>
->> Oliver
->>
->> On Mon, Jan 15, 2018 at 3:36 AM, Mark Coetser <mark@pkfnet.co.za> wrote:
->>>
->>> On 12/01/2018 23:20, Oliver O'Boyle wrote:
->>>>
->>>> Hello,
->>>>
->>>> Just started using IPSet on Ubuntu 16.04. After reboot, my set
->>>> disappeared and my ip6tables config vanished, leaving my fw wide open
->>>> with default rules. OUCH.
->>>>
->>>> What's the proper way to do IPSet persistence on Ubuntu 16.04?
->>>>
->>>> Oliver
->>>>
->>>
->>> either create a script that you call from /etc/network/interfaces ie
->>>
->>> up /full/path/script
->>>
->>> that has your ipset commands
->>>
->>> or just put the ipset stuff into interfaces file
->>>
->>> auto eth0
->>> iface eth0 inet static
->>>         address x.x.x.x
->>>         netmask x.x.x.x
->>>         up ipset xxxxxx
->>>         up ipset xxxxxx
->>>
->>>
->>> --
->>> Thank you,
->>>
->>> Mark Adrian Coetser
->>> mark@pkfnet.co.za
->>>
->>> What causes the mysterious death of everyone?
->>
->>
->>
->> --
->> :o@>
->
->
->
-> --
-> :o@>
-
+--
+Raymond Burkholder
+https://blog.raymond.burkholder.net
 
 
 -- 
-:o@>
+This message has been scanned for viruses and
+dangerous content by MailScanner, and is
+believed to be clean.
+
