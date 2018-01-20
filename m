@@ -1,78 +1,124 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Error: interval overlaps with previous one (with previously
- valid configuration)
-Date: Sat, 20 Jan 2018 10:11:40 +0100
-Message-ID: <20180120091140.25jlj6tmgf6rwzan@salvia>
+From: Jeff Kletsky <netfilter@allycomm.com>
+Subject: Re: Error: interval overlaps with previous one (with previously valid
+ configuration)
+Date: Sat, 20 Jan 2018 10:28:29 -0800
+Message-ID: <ecff5d36-8d7c-53da-dbb8-32f8c4848580@allycomm.com>
 References: <d3d8d2fe-aebb-73ad-8162-44a0a184a7d2@wagsky.com>
+ <20180120091140.25jlj6tmgf6rwzan@salvia>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <d3d8d2fe-aebb-73ad-8162-44a0a184a7d2@wagsky.com>
+In-Reply-To: <20180120091140.25jlj6tmgf6rwzan@salvia>
+Content-Language: en-US
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jeff Kletsky <netfilter@allycomm.com>
-Cc: netfilter-devel@vger.kernel.org, Netfilter Users Mailing list <netfilter@vger.kernel.org>, Phil Sutter <phil@nwl.cc>
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: netfilter-devel@vger.kernel.org
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Netfilter Users Mailing list <netfilter@vger.kernel.org>, Phil Sutter <phil@nwl.cc>
 
-On Fri, Jan 19, 2018 at 08:42:52PM -0800, Jeff Kletsky wrote:
-> With a previously valid configuration, which "includes" files into the ma=
-in
-> configuration, I get error messages with the HEAD of master on January 16,
-> 2018 9afd72a883e391e366a1d75bb4e1705357e078e9
->=20
-> systemd[1]: Starting nftables...
-> apu.allycomm.com nft[31431]: In file included from nftables.conf:396:6-34:
-> apu.allycomm.com nft[31431]: ./dnat_targets.nft:45:9-23: Error: interval
-> overlaps with previous one
-> apu.allycomm.com nft[31431]:=A0=A0=A0=A0=A0=A0=A0=A0 ^^^^^^^^^^^^^^^
+
+
+On 1/20/18 1:11 AM, Pablo Neira Ayuso wrote:
+> On Fri, Jan 19, 2018 at 08:42:52PM -0800, Jeff Kletsky wrote:
+>> With a previously valid configuration, which "includes" files into the main
+>> configuration, I get error messages with the HEAD of master on January 16,
+>> 2018 9afd72a883e391e366a1d75bb4e1705357e078e9
+>>
+>> systemd[1]: Starting nftables...
+>> apu.allycomm.com nft[31431]: In file included from nftables.conf:396:6-34:
+>> apu.allycomm.com nft[31431]: ./dnat_targets.nft:45:9-23: Error: interval
+>> overlaps with previous one
+>> apu.allycomm.com nft[31431]:         ^^^^^^^^^^^^^^^
+>>
+>> Unfortunately, the error message both fails to identify what interval
+>> overlaps as well as failing to identify the location of the conflict.
+>> dnat_targets only has 23 lines. This feels like a similar problem to the
+>> "wrong-file" issues that were previously resolved.
+>>
+>> Guessing that the problem was caused by
+>>
+>> commit 9a4b513014cfdeaad6d247b72a7924b3a536cfe9
+>> Author: Phil Sutter <phil@nwl.cc>
+>> Date:   Wed Jan 10 21:32:04 2018 +0100
+>>
+>>      src: Don't merge adjacent/overlapping ranges
+>>
+>>      [...]
+>>
+>>
+>> I have reverted back to the previous commit
+>>
+>> commit 0b3ccd27e12d1df442aa3eac40a2ccb63d6c6407
+>> Author: Phil Sutter <phil@nwl.cc>
+>> Date:   Wed Jan 10 13:43:21 2018 +0100
+>>
+>>      build: Restore per object CFLAGS
+>>
+>> and at least have an operational system again.
+>>
+>>
+>> I don't see any commits in today's master branch after the 9a4b51 commit
+>> that seem to relate either to the interval regression, or to the problem
+>> with logging.
+>>
+>>
+>> How can I trace down this problem?
+> So we have two bugs here.
 >
-> Unfortunately, the error message both fails to identify what interval
-> overlaps as well as failing to identify the location of the conflict.
-> dnat_targets only has 23 lines. This feels like a similar problem to the
-> "wrong-file" issues that were previously resolved.
+> 1) Could you make an example for us to reproduce the misleading error
+> reporting? Something that we can simply run here to reproduce the
+> issue would be great.
 >
-> Guessing that the problem was caused by
->=20
-> commit 9a4b513014cfdeaad6d247b72a7924b3a536cfe9
-> Author: Phil Sutter <phil@nwl.cc>
-> Date:=A0=A0 Wed Jan 10 21:32:04 2018 +0100
->=20
-> =A0=A0=A0 src: Don't merge adjacent/overlapping ranges
->=20
-> =A0=A0=A0 [...]
->=20
->=20
-> I have reverted back to the previous commit
->=20
-> commit 0b3ccd27e12d1df442aa3eac40a2ccb63d6c6407
-> Author: Phil Sutter <phil@nwl.cc>
-> Date:=A0=A0 Wed Jan 10 13:43:21 2018 +0100
->=20
-> =A0=A0=A0 build: Restore per object CFLAGS
->=20
-> and at least have an operational system again.
->=20
->=20
-> I don't see any commits in today's master branch after the 9a4b51 commit
-> that seem to relate either to the interval regression, or to the problem
-> with logging.
->=20
->=20
-> How can I trace down this problem?
+> 2) Is there really any overlap in the set that is defined in
+> dnat_targets, in those 23 lines, or this error is bogus?
+>
+> Thanks!
+> --
 
-So we have two bugs here.
+Relatively trivial examples to replicate posted at 
+https://bugzilla.netfilter.org/show_bug.cgi?id=1216
 
-1) Could you make an example for us to reproduce the misleading error
-reporting? Something that we can simply run here to reproduce the
-issue would be great.
+Yes, there is overlap, as ::1/128 is a subset of ::/96
+That set is declared in blackhole_ipv6.nft with the overlapping elements 
+on lines 13 and 14 of the file.
 
-2) Is there really any overlap in the set that is defined in
-dnat_targets, in those 23 lines, or this error is bogus?
 
-Thanks!
---
-To unsubscribe from this list: send the line "unsubscribe netfilter-devel" =
-in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Related to this symptom, I'm puzzled by the apparent design behavior of 
+prohibiting overlapping ranges at all. By doing so, it seems to prevent 
+or hamper some of the use cases for which not merging ranges has benefit.
+
+For me, I see the benefits of not merging ranges to be two-fold:
+* The ranges reported by nft match those in configuration files
+* Dynamically modified sets
+
+The first is illustrated in the test case. Clearly seeing that the 
+loopback address is blocked has benefit, even if it is a subset of the 
+mapped-IPv4 block.
+
+In the second case, a firewall that adjusts its rules may want to deal 
+with a sub-range, or even a specific host within an existing sub-range, 
+without having to query the current rule set, and potentially need to 
+unwind merged sets. If a program needs to deal with host A.B.C.D, it 
+should be able to create a set entry for that single host (and later 
+remove it), without needing to know that there is already an entry for 
+A.B.C.0/24. An example of this is a behavior-based firewall, where both 
+the net block and the host have action taken, but that action will be 
+reversed on a different time scale for the host than for the net block.
+
+I don't argue that a "set" should be a "set" in the mathematical sense; 
+each element itself unique. What is limiting is that the relative 
+meaning of the elements of the set ("overlapping interval") impacts 
+their validity. If I have a good reason to have overlapping ranges, I 
+can see no reason to prohibit them. Even performance is an unconvincing 
+argument for me, as it is a conscious decision on my part, for example, 
+to wish to include both ::1/128 and ::/96 and be able to see their 
+presence and manage them independently.
+
+Think about the wide swaths of unallocated IPv6 address space. I'd 
+prefer to deal with them line-by-line, in the same form as the lists are 
+delivered, without having to worry about overlap, merging, or, worse, 
+un-merging.
+
+
+Jeff
+
