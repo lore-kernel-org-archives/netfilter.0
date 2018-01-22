@@ -1,195 +1,167 @@
-From: Jeff <jmk@wagsky.com>
-Subject: Re: Error: interval overlaps with previous one (with previously valid
- configuration)
-Date: Sat, 20 Jan 2018 16:36:15 -0800
-Message-ID: <30d704fa-5ff1-b63c-7907-fef8aae2e98f@wagsky.com>
-References: <d3d8d2fe-aebb-73ad-8162-44a0a184a7d2@wagsky.com>
- <20180120091140.25jlj6tmgf6rwzan@salvia>
- <ecff5d36-8d7c-53da-dbb8-32f8c4848580@allycomm.com>
- <d9cdd6a9-dd72-81f5-5d2b-1e07eebdd977@trackivity.com>
+From: David Fabian <david.fabian@cldn.cz>
+Subject: question about UNDEFINE/REDEFINE
+Date: Mon, 22 Jan 2018 14:44:19 +0100
+Message-ID: <2200580.RFSStH2qd4@voxel>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="nextPart13190643.81e5tvaz3h"
+Content-Transfer-Encoding: 7Bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <d9cdd6a9-dd72-81f5-5d2b-1e07eebdd977@trackivity.com>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cldn.cz; s=mail;
+        t=1516628660; bh=mJ2ARVN/5IlAmUW+Oy88UF8qKhBopHYrfftFhGH80/Y=;
+        h=From:To:Subject:Date;
+        b=oo9VbNFQN13HWaIjQG6ldH/LD6LgmiM3Np29xOYu4e9xowuz9RC6MorV0qOAPH2HL
+         7QXnfOXc5Og99IesheQTFpQTWDhiTH+w8d863t1bdpG6TCgcnKhmbBh34F6YjUtjft
+         uTGCCh8tYcJhtRlO/tdJ4k4MMXAMzwlALvTEUK8AUIs6pDioHk73+0T4FW1T2Asi6r
+         8Zv55fiDvIouwJxuZMoAmZzeV4CsCfz6vBmKyoCOGA42nQNH+Ewmfcb4R+UsoRK6Fg
+         tFYHPt4+W/cEgsdr6ZOiBFn20pDZheQ0amY6aNJJsG8k04icYsgdZ7uRY0E6jUwTRz
+         joiHgSJpVJQrw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Netfilter Users Mailing list <netfilter@vger.kernel.org>, netfilter-devel@vger.kernel.org
-Cc: James <vger_tracker@trackivity.com>
+To: Netfilter Users Mailing list <netfilter@vger.kernel.org>
 
-On 1/20/18 11:15 AM, James wrote:
->> On 1/20/18 1:11 AM, Pablo Neira Ayuso wrote:
->>> On Fri, Jan 19, 2018 at 08:42:52PM -0800, Jeff Kletsky wrote:
->>>> With a previously valid configuration, which "includes" files into 
->>>> the main
->>>> configuration, I get error messages with the HEAD of master on 
->>>> January 16,
->>>> 2018 9afd72a883e391e366a1d75bb4e1705357e078e9
->>>>
->>>> systemd[1]: Starting nftables...
->>>> apu.allycomm.com nft[31431]: In file included from 
->>>> nftables.conf:396:6-34:
->>>> apu.allycomm.com nft[31431]: ./dnat_targets.nft:45:9-23: Error: 
->>>> interval
->>>> overlaps with previous one
->>>> apu.allycomm.com nft[31431]:         ^^^^^^^^^^^^^^^
->>>>
->>>> Unfortunately, the error message both fails to identify what interval
->>>> overlaps as well as failing to identify the location of the conflict.
->>>> dnat_targets only has 23 lines. This feels like a similar problem 
->>>> to the
->>>> "wrong-file" issues that were previously resolved.
->>>>
->>>> Guessing that the problem was caused by
->>>>
->>>> commit 9a4b513014cfdeaad6d247b72a7924b3a536cfe9
->>>> Author: Phil Sutter <phil@nwl.cc>
->>>> Date:   Wed Jan 10 21:32:04 2018 +0100
->>>>
->>>>      src: Don't merge adjacent/overlapping ranges
->>>>
->>>>      [...]
->>>>
->>>>
->>>> I have reverted back to the previous commit
->>>>
->>>> commit 0b3ccd27e12d1df442aa3eac40a2ccb63d6c6407
->>>> Author: Phil Sutter <phil@nwl.cc>
->>>> Date:   Wed Jan 10 13:43:21 2018 +0100
->>>>
->>>>      build: Restore per object CFLAGS
->>>>
->>>> and at least have an operational system again.
->>>>
->>>>
->>>> I don't see any commits in today's master branch after the 9a4b51 
->>>> commit
->>>> that seem to relate either to the interval regression, or to the 
->>>> problem
->>>> with logging.
->>>>
->>>>
->>>> How can I trace down this problem?
->>> So we have two bugs here.
->>>
->>> 1) Could you make an example for us to reproduce the misleading error
->>> reporting? Something that we can simply run here to reproduce the
->>> issue would be great.
->>>
->>> 2) Is there really any overlap in the set that is defined in
->>> dnat_targets, in those 23 lines, or this error is bogus?
->>>
->>> Thanks!
->>> -- 
->>
->> Relatively trivial examples to replicate posted at 
->> https://bugzilla.netfilter.org/show_bug.cgi?id=1216
->>
->> Yes, there is overlap, as ::1/128 is a subset of ::/96
->> That set is declared in blackhole_ipv6.nft with the overlapping 
->> elements on lines 13 and 14 of the file.
->>
->>
->> Related to this symptom, I'm puzzled by the apparent design behavior 
->> of prohibiting overlapping ranges at all. By doing so, it seems to 
->> prevent or hamper some of the use cases for which not merging ranges 
->> has benefit.
->>
->> For me, I see the benefits of not merging ranges to be two-fold:
->> * The ranges reported by nft match those in configuration files
->> * Dynamically modified sets
->>
->> The first is illustrated in the test case. Clearly seeing that the 
->> loopback address is blocked has benefit, even if it is a subset of 
->> the mapped-IPv4 block.
->>
->> In the second case, a firewall that adjusts its rules may want to 
->> deal with a sub-range, or even a specific host within an existing 
->> sub-range, without having to query the current rule set, and 
->> potentially need to unwind merged sets. If a program needs to deal 
->> with host A.B.C.D, it should be able to create a set entry for that 
->> single host (and later remove it), without needing to know that there 
->> is already an entry for A.B.C.0/24. An example of this is a 
->> behavior-based firewall, where both the net block and the host have 
->> action taken, but that action will be reversed on a different time 
->> scale for the host than for the net block.
->>
->> I don't argue that a "set" should be a "set" in the mathematical 
->> sense; each element itself unique. What is limiting is that the 
->> relative meaning of the elements of the set ("overlapping interval") 
->> impacts their validity. If I have a good reason to have overlapping 
->> ranges, I can see no reason to prohibit them. Even performance is an 
->> unconvincing argument for me, as it is a conscious decision on my 
->> part, for example, to wish to include both ::1/128 and ::/96 and be 
->> able to see their presence and manage them independently.
->>
->> Think about the wide swaths of unallocated IPv6 address space. I'd 
->> prefer to deal with them line-by-line, in the same form as the lists 
->> are delivered, without having to worry about overlap, merging, or, 
->> worse, un-merging.
->>
->>
->> Jeff
->>
->
-> +1 in support of both not-merging and allowing overlapping intervals, 
-> specifically in support of behaviour-based firewalls.
->
-> I do that and after a couple of weeks of not flushing things I do 
-> start to encounter (rare) instances of interval collisions as the real 
-> world changes day-by-day and alters the results of the higher-level 
-> logic.
->
-> ***
->
-> And I'm hoping that moving to a don't-molest-intervals approach will 
-> allow timeouts for intervals to happen (I do see that someone has 
-> opened a bug for that... thank you).
->
-> I'm interested in timeouts on all elements types in support of getting 
-> my higher-level logic to achieve the goal of "everyone gets a second 
-> chance".  Single-address timeouts are great where applicable but when 
-> someone uses some large distributed hosted service provider to flood 
-> me with traffic then a single-address-at-time logic is simply 
-> inadequate. So, today, I simply (automatically) bang in intervals 
-> (without timeouts) and then review logs and "nft list ruleset" daily.
-[James]
+This is a multi-part message in MIME format.
 
+--nextPart13190643.81e5tvaz3h
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
 
-After adding printing of the conflicting intervals, I was able to find 
-and resolve several of them as they were "permanent" subsets of 
-"blackhole" net blocks.
+Hello,
 
-Unfortunately, the last of the occurrences I located breaks the logic of 
-the configuration files
+we have a firewall written in bash (using iptables) that is organized by 
+customer VLANs. Each VLAN has its own set of bash variables holding things 
+like uplink iface names, gateway IPs, etc. We want to rewrite the firewall to 
+nftables but are stuck on the fact that nft variables cannot be overridden in 
+the same scope. We have each VLAN configuration in a separate file containing 
+pre/post-routing, input, output and forward rules,and we include those files to 
+a master firewall configuration. One solution is to rename all the variables 
+with some VLAN specific (pre/su)ffix. But that is cumbersome.
 
-I define, in one file, the IP addresses associated with various 
-interfaces, attached networks, and "interesting" hosts. The intent is 
-that if network numbering or topology changes, I modify *one* file and 
-the changes flow through.
+I have made a small patch to nft which adds two new keywords - undefine and 
+redefine. undefine simply undefines a variable from the current scope. redefine 
+allows one to change a variable definition. The patch works against the latest 
+fedora nft (version 0.7) but I believe it should work against master as well. 
+I don't know how to properly send the patch to the project so I am attaching 
+it here. I would like to know your opinion.
 
-In particular, at one point in the rule set, I drop all packets that are 
-not destined for one of:
-* Addresses of a specific interface
-* A directly attached network
-* A specific service host
+-- 
+Best regards,
 
-     ip daddr != {$interface_addresses, $attached_network_addresses, 
-$service_host_address} drop
+David Fabian
+Cluster Design, s.r.o.
 
-Clear, concise, easy to maintain -- or was
+--nextPart13190643.81e5tvaz3h
+Content-Disposition: attachment; filename="0001-Added-undefine-redefine-keywords.patch"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/x-patch; charset="UTF-8"; name="0001-Added-undefine-redefine-keywords.patch"
 
-It now fails if the service host happens to be on the directly attached 
-network, which it won't always be.
+From 43abd3a12670b54739f0a7f6500aa315b3905f08 Mon Sep 17 00:00:00 2001
+From: David Fabian <david.fabian@bosson.cz>
+Date: Mon, 22 Jan 2018 14:02:11 +0100
+Subject: [PATCH] Added undefine/redefine keywords
 
-Removing $service_host_address breaks the one-point-configuration paradigm.
+---
+ include/rule.h     |  1 +
+ src/parser_bison.y | 23 +++++++++++++++++++++++
+ src/rule.c         | 16 ++++++++++++++++
+ src/scanner.l      |  2 ++
+ 4 files changed, 42 insertions(+)
+
+diff --git a/include/rule.h b/include/rule.h
+index b9b4a19..4524b4d 100644
+--- a/include/rule.h
++++ b/include/rule.h
+@@ -80,6 +80,7 @@ struct symbol {
+ 
+ extern void symbol_bind(struct scope *scope, const char *identifier,
+ 			struct expr *expr);
++extern int symbol_unbind(struct scope *scope, const char *identifier);
+ extern struct symbol *symbol_lookup(const struct scope *scope,
+ 				    const char *identifier);
+ 
+diff --git a/src/parser_bison.y b/src/parser_bison.y
+index deaaf06..4cc1b47 100644
+--- a/src/parser_bison.y
++++ b/src/parser_bison.y
+@@ -167,6 +167,8 @@ static void location_update(struct location *loc, struct location *rhs, int n)
+ 
+ %token INCLUDE			"include"
+ %token DEFINE			"define"
++%token REDEFINE			"redefine"
++%token UNDEFINE			"undefine"
+ 
+ %token FIB			"fib"
+ 
+@@ -661,6 +663,27 @@ common_block		:	INCLUDE		QUOTED_STRING	stmt_seperator
+ 				symbol_bind(scope, $2, $4);
+ 				xfree($2);
+ 			}
++			|       REDEFINE                identifier      '='     initializer_expr        stmt_seperator
++			{
++				struct scope *scope = current_scope(state);
++
++				/* ignore missing identifier */
++				symbol_unbind(scope, $2);
++				symbol_bind(scope, $2, $4);
++				xfree($2);
++			}
++			|       UNDEFINE                identifier      stmt_seperator
++			{
++				struct scope *scope = current_scope(state);
++
++				if (symbol_unbind(scope, $2) < 0) {
++					erec_queue(error(&@2, "undefined symbol '%s'", $2),
++						   state->msgs);
++					YYERROR;
++			}
++
++				xfree($2);
++			}
+ 			|	error		stmt_seperator
+ 			{
+ 				if (++state->nerrs == max_errors)
+diff --git a/src/rule.c b/src/rule.c
+index f1bb6cf..f97c8e5 100644
+--- a/src/rule.c
++++ b/src/rule.c
+@@ -447,6 +447,22 @@ void symbol_bind(struct scope *scope, const char *identifier, struct expr *expr)
+ 	list_add_tail(&sym->list, &scope->symbols);
+ }
+ 
++int symbol_unbind(struct scope *scope, const char *identifier)
++{
++	struct symbol *sym;
++
++	if ((sym = symbol_lookup(scope, identifier)) == NULL)
++	{
++		return -1;
++	}
++	list_del(&sym->list);
++	xfree(sym->identifier);
++	expr_free(sym->expr);
++	xfree(sym);
++	return 0;
++}
++
++
+ struct symbol *symbol_lookup(const struct scope *scope, const char *identifier)
+ {
+ 	struct symbol *sym;
+diff --git a/src/scanner.l b/src/scanner.l
+index 625023f..2000554 100644
+--- a/src/scanner.l
++++ b/src/scanner.l
+@@ -231,6 +231,8 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ 
+ "include"		{ return INCLUDE; }
+ "define"		{ return DEFINE; }
++"redefine"		{ return REDEFINE; }
++"undefine"		{ return UNDEFINE; }
+ 
+ "describe"		{ return DESCRIBE; }
+ 
+-- 
+2.14.3
 
 
-At least as presently implemented and unless overlapping ranges are 
-permitted, sets, both implicit and explicit, have become an 
-"anti-feature" for me.
-
-Jeff
-
+--nextPart13190643.81e5tvaz3h--
 
