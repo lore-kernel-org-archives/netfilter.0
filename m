@@ -1,131 +1,80 @@
-From: zrm <zrm@trustiosity.com>
+From: "toml@thlu.de" <toml@thlu.de>
 Subject: Re: Differences in FTP-Handling (Client-Sender) between
  iptables/nftables?
-Date: Tue, 23 Jan 2018 11:27:06 -0500
-Message-ID: <c8909477-a31e-8c8e-fa55-ad0076da2f36@trustiosity.com>
+Date: Tue, 23 Jan 2018 19:25:09 +0100
+Message-ID: <ac81f073-8f8e-de0f-3322-5dd8787b37cf@raspi1>
 References: <39761b3a-f5d8-0924-bd97-4208a24e257c@raspi1>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+ <c8909477-a31e-8c8e-fa55-ad0076da2f36@trustiosity.com>
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mx.trustiosity.com;
-        s=mx; t=1516724831; bh=CiZhNv3OY4YW3owafXsALnWfRJ9gwFN5z0HfLqGVRlk=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=GquuvFdxMdNnOL/igxwXZOnTa+4KKP8JKz5+gDxQIX9bJpHJ24T8qsA/IzjhJt3ji
-         AQdI4EtrNzgrVCFBHuzvD/fxbghpzFEUrTH6HoVfG17EwiRH0UU1lstkNoi4yc02S+
-         gT1u4PhJLpbNkjzk+nEWeP2OWBodZLYzN7dvEsX0=
-In-Reply-To: <39761b3a-f5d8-0924-bd97-4208a24e257c@raspi1>
-Content-Language: en-US
+In-Reply-To: <c8909477-a31e-8c8e-fa55-ad0076da2f36@trustiosity.com>
+Content-Language: de-DE
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: "toml@thlu.de" <toml@thlu.de>, netfilter@vger.kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On 01/23/2018 09:45 AM, toml@thlu.de wrote:
-> Hello @ all
-> 
-> A week ago I changed my iptables to nftabls for testing purposes.  Yeah, 
-> nftables
-> have really gotten better, i like it. My rules follow the premise, 
-> everything is
-> forbidden, which is not expressly allowed. But now I have an unsolvable 
-> problem
-> with understanding some of the interrelationships. This is a question 
-> for which
-> there seems to be no answer on the web: Is there a difference in the 
-> handling of
-> FTP-Ports between iptables and nftables...  from the perspective of a 
-> sending client?
-> 
-> This is my old basic-schema for iptables:
-> Chain INPUT (policy DROP 2391 packets, 301K bytes)
-> num target   prot opt in   out  source      destination
-> 1   ACCEPT   all  --  *    *    0.0.0.0/0   0.0.0.0/0   ctstate 
-> RELATED,ESTABLISHED
-> 
->      <some exclusive NEW accepts>
->      <some exclusive NEW accepts saadr-binded to lan>
-> 
-> 19  ACCEPT   icmp --  *    *    0.0.0.0/0   0.0.0.0/0   icmptype 8
-> 
-> 
-> Chain OUTPUT (policy DROP 101 packets, 12798 bytes)
-> num   target prot opt in   out  source      destination
-> 1   ACCEPT   all  --  *    *    0.0.0.0/0   0.0.0.0/0   ctstate 
-> RELATED,ESTABLISHED
-> 
-> 2   ACCEPT   tcp  --  *    *    0.0.0.0/0   0.0.0.0/0   tcp dpt:21 
-> ctstate NEW
-> 3   ACCEPT   tcp  --  *    *    0.0.0.0/0   0.0.0.0/0   tcp 
-> spts:1024:65535 dpts:1024:65535 ctstate NEW
->      <some further exclusive NEW accepts>
-> 
-> 13  ACCEPT   icmp --  *    *    0.0.0.0/0   0.0.0.0/0
-> 
-> 
-> And this is my new basic-schema for nftables, which is basically the 
-> same as the previous schema:
-> table ip filter {
->      chain INPUT {
->          type filter hook input priority 0; policy drop;
->          ct state established,related accept
-> 
->          <some exclusive NEW accepts>
->          <some exclusive NEW accepts saadr-binded to lan>
-> 
->          icmp type echo-request limit rate 1/second accept
->      }
->      chain OUTPUT {
->          type filter hook input priority 0; policy drop;
->          ct state established,related accept
-> 
->          tcp dport ftp ct state new accept
->          <some further exclusive NEW accepts>
-> 
->          ip protocol icmp counter accept
->      }
-> }
-> 
-> 
-> The peculiarity is, in the iptables-rules, FTP-Send only works with this 
-> Statement:
-> 3   ACCEPT   tcp  --  *    *    0.0.0.0/0   0.0.0.0/0   tcp 
-> spts:1024:65535 dpts:1024:65535 ctstate NEW
-> 
-> In the nftables rule it works also without this (translated) rule, see 
-> above. Is there an
-> explanation for this? Thank you for your Help.
-> 
-> Best Regards from Germany
-> Thomas Luening
-> 
-> 
-> ps
-> I'm sorry, but I needed for this Mail the help from 
-> https://www.deepl.com/translator
+Hello
+
+Thank you for your reply.
+
+Am 23.01.2018 um 17:27 schrieb zrm:
+> But the FTP ALG helper isn't always enabled by default. The relevant kernel module(s) must to be loaded (nf_nat_ftp or nf_conntrack_ftp). 
 
 
-FTP works like this. There is a control connection, which is typically 
-an outgoing connection from the client on a random port to the FTP 
-server on port 21. That connection is used for FTP commands like 
-requesting a file transfer or directory listing or setting file 
-timestamps etc.
+I've got a few more little ambiguities. Those were my "old" rules before I
+started with the nftables. Exactly as you can find it everywhere on the web
+as a solution:
 
-When you actually go to do a file transfer, FTP uses a separate 
-connection called an FTP data connection. This can use any ports, it can 
-even use any IP address (FXP), it's whatever the client and server agree 
-on via the control connection. Note that your iptables rule gets this 
-wrong, because it specifies only ports 1024:65535, but the standard port 
-for FTP data is port 20. This is frequently ignored in favor of 
-unprivileged ports, but that doesn't mean _nobody_ uses the standard port.
+iptables -A INPUT -p tcp --sport    21 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+iptables -A INPUT -p tcp --sport    20 --dport 1024 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -p tcp --sport  1024: --dport 1024: -m conntrack --ctstate ESTABLISHED -j ACCEPT
 
-The solution to this without requiring a rule that allows any:any is 
-called an Application-Level Gateway, which for FTP has the router snoop 
-the FTP control connection to see what ports the data connection will 
-use and then expect the data connection and allow it through, even 
-though an unexpected new connection using the same ports would otherwise 
-be blocked.
+iptables -A OUTPUT -p tcp --dport    21 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp --dport    20 -m conntrack --ctstate ESTABLISHED -j ACCEPT
+iptables -A OUTPUT -p tcp --sport  1024: --dport 1024: -m conntrack --ctstate NEW,ESTABLISHED,RELATED -j ACCEPT
 
-But the FTP ALG helper isn't always enabled by default. The relevant 
-kernel module(s) must to be loaded (nf_nat_ftp or nf_conntrack_ftp). The 
-modules also have options, like allowing FXP. See also the iptables 
---helper option and "ct helper" for nft.
+
+And when I changing from iptables to nftables, I assumed that the following two statements
+in my new rules replace the former ones (for 20 and 1024:) with ctstate ESTABLISHED, RELATED:
+
+iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+
+That is why I then removed the apparently superfluous statements, which finally led to the
+following NEW rules.
+iptables -A OUTPUT -p tcp --dport    21 -m conntrack --ctstate NEW -j ACCEPT
+iptables -A OUTPUT -p tcp --sport  1024: --dport 1024: -m conntrack --ctstate NEW -j ACCEPT
+
+
+But... and this has bothered me the whole time... this OUTPUT-NEW for 1024: has here imho
+only an "optically" connection to FTP. In reality, "NEW" generally means "NEW is accept",
+not only for FTP. Is that correct?
+
+If I understood your answer correctly, under 'nftables' after initializing the "Client-Send-Job"
+via Port 21 the furthermore necessary data-ports are automatically treated as Related-Ports to
+this OUTPUT-NEW on port 21 by the FTP-ALG-Helper, without having to open them explicitly as before
+under iptables. The Follow-up-Data-Ports can be the privileged port 20, or any unprivileged port
+from 1024 onwards, but they are always related to 21 by ALG.  And therefore it works for 'nftables'
+with ALG-Helper if only port 21 OUTPUT-NEW is allowed. That should be the explanation, because
+it works on my testmachine.
+
+nft add rule inet filter OUTPUT tcp dport 21 ct state new accept
+
+
+# lsmod | grep conntrack
+nf_conntrack_ftp       20480  0
+nf_conntrack_ipv6      20480  24
+nf_defrag_ipv6         36864  1 nf_conntrack_ipv6
+nf_conntrack_ipv4      16384  24
+nf_defrag_ipv4         16384  1 nf_conntrack_ipv4
+nf_conntrack          114688  4 nft_ct,nf_conntrack_ipv6,nf_conntrack_ftp,nf_conntrack_ipv4
+
+If I have understood all this correctly, it would be perfect with nftables. Sorry, I'm a little
+unsure.... and the subject is really complicated and I need some explanation in simple words
+to understand it properly, because a foreign language make it not easier to me.
+
+Thank you and best regards
+Thomas
