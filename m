@@ -1,80 +1,59 @@
-From: "toml@thlu.de" <toml@thlu.de>
-Subject: Re: Differences in FTP-Handling (Client-Sender) between
- iptables/nftables?
-Date: Tue, 23 Jan 2018 19:25:09 +0100
-Message-ID: <ac81f073-8f8e-de0f-3322-5dd8787b37cf@raspi1>
-References: <39761b3a-f5d8-0924-bd97-4208a24e257c@raspi1>
- <c8909477-a31e-8c8e-fa55-ad0076da2f36@trustiosity.com>
-Content-Transfer-Encoding: 7bit
+From: hdemir <hdemir@metu.edu.tr>
+Subject: How to get conntrack statics from proc system?
+Date: Wed, 24 Jan 2018 16:27:20 +0300
+Message-ID: <da49e7e6-14ae-5aca-a8f1-118fbcae6df9@metu.edu.tr>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <c8909477-a31e-8c8e-fa55-ad0076da2f36@trustiosity.com>
-Content-Language: de-DE
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hello
+Hi,
 
-Thank you for your reply.
+I have numa enabled system and want to get conntrack statistics. I have
+tried "/proc/net/stat/nf_conntrack" file. It gaves stats for each cpu
+but NEW column is always zero. "conntrack -S" also gave 0 (probably
+reads from there). What can I do to get these statistics.
 
-Am 23.01.2018 um 17:27 schrieb zrm:
-> But the FTP ALG helper isn't always enabled by default. The relevant kernel module(s) must to be loaded (nf_nat_ftp or nf_conntrack_ftp). 
-
-
-I've got a few more little ambiguities. Those were my "old" rules before I
-started with the nftables. Exactly as you can find it everywhere on the web
-as a solution:
-
-iptables -A INPUT -p tcp --sport    21 -m conntrack --ctstate ESTABLISHED -j ACCEPT
-iptables -A INPUT -p tcp --sport    20 --dport 1024 -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
-iptables -A INPUT -p tcp --sport  1024: --dport 1024: -m conntrack --ctstate ESTABLISHED -j ACCEPT
-
-iptables -A OUTPUT -p tcp --dport    21 -m conntrack --ctstate NEW,ESTABLISHED -j ACCEPT
-iptables -A OUTPUT -p tcp --dport    20 -m conntrack --ctstate ESTABLISHED -j ACCEPT
-iptables -A OUTPUT -p tcp --sport  1024: --dport 1024: -m conntrack --ctstate NEW,ESTABLISHED,RELATED -j ACCEPT
-
-
-And when I changing from iptables to nftables, I assumed that the following two statements
-in my new rules replace the former ones (for 20 and 1024:) with ctstate ESTABLISHED, RELATED:
-
-iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
-iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+# conntrack -S
+cpu=0   	found=0 invalid=0 ignore=281 insert=0 insert_failed=0 drop=0
+early_drop=0 error=0 search_restart=22
+cpu=1   	found=0 invalid=0 ignore=193 insert=0 insert_failed=0 drop=0
+early_drop=0 error=0 search_restart=2
+cpu=2   	found=0 invalid=0 ignore=203 insert=0 insert_failed=0 drop=0
+early_drop=0 error=0 search_restart=0
+cpu=3   	found=0 invalid=0 ignore=128 insert=0 insert_failed=0 drop=0
+early_drop=0 error=0 search_restart=0
+cpu=4   	found=0 invalid=0 ignore=43 insert=0 insert_failed=0 drop=0
+early_drop=0 error=0 search_restart=0
 
 
-That is why I then removed the apparently superfluous statements, which finally led to the
-following NEW rules.
-iptables -A OUTPUT -p tcp --dport    21 -m conntrack --ctstate NEW -j ACCEPT
-iptables -A OUTPUT -p tcp --sport  1024: --dport 1024: -m conntrack --ctstate NEW -j ACCEPT
+# lnstat -f nf_conntrack
+nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|
+ entries|searched|   found|     new| invalid|  ignore|  delete|delete_l|
+ insert|insert_f|
+drop|early_dr|icmp_err|expect_n|expect_c|expect_d|search_r|
+        |        |        |        |        |        |        |     ist|
+       |   ailed|        |      op|      or|      ew|   reate|   elete|
+estart|
+  441055|       0|       0|       0|103537732| 1337766|       0|
+0|       0|     266|       0|       0| 2416315|       0|       0|
+0| 2041986|
 
 
-But... and this has bothered me the whole time... this OUTPUT-NEW for 1024: has here imho
-only an "optically" connection to FTP. In reality, "NEW" generally means "NEW is accept",
-not only for FTP. Is that correct?
-
-If I understood your answer correctly, under 'nftables' after initializing the "Client-Send-Job"
-via Port 21 the furthermore necessary data-ports are automatically treated as Related-Ports to
-this OUTPUT-NEW on port 21 by the FTP-ALG-Helper, without having to open them explicitly as before
-under iptables. The Follow-up-Data-Ports can be the privileged port 20, or any unprivileged port
-from 1024 onwards, but they are always related to 21 by ALG.  And therefore it works for 'nftables'
-with ALG-Helper if only port 21 OUTPUT-NEW is allowed. That should be the explanation, because
-it works on my testmachine.
-
-nft add rule inet filter OUTPUT tcp dport 21 ct state new accept
+# uname -a
+Linux  4.9.76 #1 SMP Thu Jan 11 08:56:03 +03 2018 x86_64 GNU/Linux
 
 
-# lsmod | grep conntrack
-nf_conntrack_ftp       20480  0
-nf_conntrack_ipv6      20480  24
-nf_defrag_ipv6         36864  1 nf_conntrack_ipv6
-nf_conntrack_ipv4      16384  24
-nf_defrag_ipv4         16384  1 nf_conntrack_ipv4
-nf_conntrack          114688  4 nft_ct,nf_conntrack_ipv6,nf_conntrack_ftp,nf_conntrack_ipv4
+I have a python script to read from "conntrack -S" giving wrong values
+because of that.
 
-If I have understood all this correctly, it would be perfect with nftables. Sorry, I'm a little
-unsure.... and the subject is really complicated and I need some explanation in simple words
-to understand it properly, because a foreign language make it not easier to me.
 
-Thank you and best regards
-Thomas
+Thanks.
+
+Husnu Demir
+
+
