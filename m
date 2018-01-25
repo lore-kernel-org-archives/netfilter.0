@@ -1,41 +1,33 @@
-From: Renaud Drousies <renaudd@gmail.com>
-Subject: Slow 'connection refused' on REJECT rules
-Date: Thu, 25 Jan 2018 12:31:40 +0100
-Message-ID: <CAEHu7ET=6osh9-Njwdgqo4RW5jqGju++hHZEV-spZjZ61fiuXw@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: How to get conntrack statics from proc system?
+Date: Thu, 25 Jan 2018 12:49:37 +0100
+Message-ID: <20180125114937.bn3foi2dqpllszlb@salvia>
+References: <da49e7e6-14ae-5aca-a8f1-118fbcae6df9@metu.edu.tr>
+ <3b80c103-dacf-3244-a387-87e468392c84@metu.edu.tr>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=P2Pe1Qp5kdjYPcDBPaQj6Z8b9eB3utacEBzAqPTEBPY=;
-        b=awrgang/v/lsUcBup8agLw+vN4SVIQv0+Lfq3mNdGMhBFJNEnI+BFrbfiw+En8q4rp
-         9KbdsdV5l9zrRisl+pSJXjOTMCoeOIj/tNi9NZMOeZancN3eObLjv8+JWdJaCsNbxrw8
-         uBctkEvbhCSJcRvLBma5tDyB4mlA8NsDfaCj0prKkuSDPuW+uifOYhNw/P9xoCWFsK/d
-         nTd6akfcKpRCjs4zZM7HoWAsEzJs5BLt/ZM9eV6Kbnda5rf9yobPvsqzwUu3PoZKAW8W
-         C2EwfUXw1Q9nbK+miKrdtFDZWvBa/zpNknsde29t4r/CRAsiKe8PZw0JNbYrdRTQplc1
-         6Uzg==
+Content-Disposition: inline
+In-Reply-To: <3b80c103-dacf-3244-a387-87e468392c84@metu.edu.tr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: hdemir <hdemir@metu.edu.tr>
+Cc: netfilter@vger.kernel.org
 
-Hello,
+On Thu, Jan 25, 2018 at 10:11:56AM +0300, hdemir wrote:
+> Hi All Again,
+> 
+> Infact I just want to get conntrack stats? New, established, invalid,
+> etc. "conntrack -S" is not working, as procfs.
+> 
+> 
+> Any clue? Any simple way, tool?
 
-I would like to force a 'connection refused' when connecting to a
-specific host/port and to do so I'm using the following rule:
+A number of stat has been declared obsolete:
 
-iptables -A OUTPUT -d 10.99.12.15  -p tcp --dport 27017 -j REJECT
---reject-with icmp-port-unreachable
+https://patchwork.ozlabs.org/patch/674759/
 
-This works fine except that it takes around 1 second for the reply to
-come (I've straced it and it's really the call to connect() that
-hangs). I've tried the following rules on multiple kernels from the
-2.x, 3.x and 4.x branches and the behavior is always the same.
+Is that what you're missing?
 
-There wasn't any other rule in any chain when these tests were done.
-
-Would anybody know what could cause this delay and how to address that?
-
-Thanks!
-Renaud
+Thanks.
