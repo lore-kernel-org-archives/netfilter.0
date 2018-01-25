@@ -1,79 +1,41 @@
-From: hdemir <hdemir@metu.edu.tr>
-Subject: Re: How to get conntrack statics from proc system?
-Date: Thu, 25 Jan 2018 10:11:56 +0300
-Message-ID: <3b80c103-dacf-3244-a387-87e468392c84@metu.edu.tr>
-References: <da49e7e6-14ae-5aca-a8f1-118fbcae6df9@metu.edu.tr>
+From: Renaud Drousies <renaudd@gmail.com>
+Subject: Slow 'connection refused' on REJECT rules
+Date: Thu, 25 Jan 2018 12:31:40 +0100
+Message-ID: <CAEHu7ET=6osh9-Njwdgqo4RW5jqGju++hHZEV-spZjZ61fiuXw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <da49e7e6-14ae-5aca-a8f1-118fbcae6df9@metu.edu.tr>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=P2Pe1Qp5kdjYPcDBPaQj6Z8b9eB3utacEBzAqPTEBPY=;
+        b=awrgang/v/lsUcBup8agLw+vN4SVIQv0+Lfq3mNdGMhBFJNEnI+BFrbfiw+En8q4rp
+         9KbdsdV5l9zrRisl+pSJXjOTMCoeOIj/tNi9NZMOeZancN3eObLjv8+JWdJaCsNbxrw8
+         uBctkEvbhCSJcRvLBma5tDyB4mlA8NsDfaCj0prKkuSDPuW+uifOYhNw/P9xoCWFsK/d
+         nTd6akfcKpRCjs4zZM7HoWAsEzJs5BLt/ZM9eV6Kbnda5rf9yobPvsqzwUu3PoZKAW8W
+         C2EwfUXw1Q9nbK+miKrdtFDZWvBa/zpNknsde29t4r/CRAsiKe8PZw0JNbYrdRTQplc1
+         6Uzg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi All Again,
+Hello,
 
-Infact I just want to get conntrack stats? New, established, invalid,
-etc. "conntrack -S" is not working, as procfs.
+I would like to force a 'connection refused' when connecting to a
+specific host/port and to do so I'm using the following rule:
 
+iptables -A OUTPUT -d 10.99.12.15  -p tcp --dport 27017 -j REJECT
+--reject-with icmp-port-unreachable
 
-Any clue? Any simple way, tool?
+This works fine except that it takes around 1 second for the reply to
+come (I've straced it and it's really the call to connect() that
+hangs). I've tried the following rules on multiple kernels from the
+2.x, 3.x and 4.x branches and the behavior is always the same.
 
-Thanks.
+There wasn't any other rule in any chain when these tests were done.
 
+Would anybody know what could cause this delay and how to address that?
 
-
-On 24-01-2018 16:27, hdemir wrote:
-> Hi,
-> 
-> I have numa enabled system and want to get conntrack statistics. I have
-> tried "/proc/net/stat/nf_conntrack" file. It gaves stats for each cpu
-> but NEW column is always zero. "conntrack -S" also gave 0 (probably
-> reads from there). What can I do to get these statistics.
-> 
-> # conntrack -S
-> cpu=0   	found=0 invalid=0 ignore=281 insert=0 insert_failed=0 drop=0
-> early_drop=0 error=0 search_restart=22
-> cpu=1   	found=0 invalid=0 ignore=193 insert=0 insert_failed=0 drop=0
-> early_drop=0 error=0 search_restart=2
-> cpu=2   	found=0 invalid=0 ignore=203 insert=0 insert_failed=0 drop=0
-> early_drop=0 error=0 search_restart=0
-> cpu=3   	found=0 invalid=0 ignore=128 insert=0 insert_failed=0 drop=0
-> early_drop=0 error=0 search_restart=0
-> cpu=4   	found=0 invalid=0 ignore=43 insert=0 insert_failed=0 drop=0
-> early_drop=0 error=0 search_restart=0
-> 
-> 
-> # lnstat -f nf_conntrack
-> nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|nf_connt|
->  entries|searched|   found|     new| invalid|  ignore|  delete|delete_l|
->  insert|insert_f|
-> drop|early_dr|icmp_err|expect_n|expect_c|expect_d|search_r|
->         |        |        |        |        |        |        |     ist|
->        |   ailed|        |      op|      or|      ew|   reate|   elete|
-> estart|
->   441055|       0|       0|       0|103537732| 1337766|       0|
-> 0|       0|     266|       0|       0| 2416315|       0|       0|
-> 0| 2041986|
-> 
-> 
-> # uname -a
-> Linux  4.9.76 #1 SMP Thu Jan 11 08:56:03 +03 2018 x86_64 GNU/Linux
-> 
-> 
-> I have a python script to read from "conntrack -S" giving wrong values
-> because of that.
-> 
-> 
-> Thanks.
-> 
-> Husnu Demir
-> 
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+Thanks!
+Renaud
