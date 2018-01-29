@@ -1,82 +1,50 @@
-From: =?utf-8?B?QW5kcsOpIFBhdWxzYmVyZy1Dc2liaSAoSUJNIENvbnN1bHRhbnQp?= 
-        <Andre.Paulsberg-Csibi@evry.com>
-Subject: SV: Slow 'connection refused' on REJECT rules
-Date: Thu, 25 Jan 2018 17:39:08 +0000
-Message-ID: <7d57480998924477867886c07050e122@CCDEX023.corp.corpcommon.com>
+From: Renaud Drousies <renaudd@gmail.com>
+Subject: Re: Slow 'connection refused' on REJECT rules
+Date: Mon, 29 Jan 2018 07:03:32 +0100
+Message-ID: <CAEHu7ETX3jkE+59wmuko=CRAwkaGZhK-cV+Yk7hCPat=j4=4Mw@mail.gmail.com>
 References: <CAEHu7ET=6osh9-Njwdgqo4RW5jqGju++hHZEV-spZjZ61fiuXw@mail.gmail.com>
+ <7d57480998924477867886c07050e122@CCDEX023.corp.corpcommon.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=evry.onmicrosoft.com;
- s=selector1-evry-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=0ACgsriAEICFVmMZVgRH93geMc4SDUceqyLdzzqbQZQ=;
- b=FXcg4ySJy4uOOGPCeRdxt+l+J4HGOAGI2HbK5ws/7ctK4eOUTEab3PzqwZHyafuQM5kMxmCb0M9TZ8O/tacN2lWHKNVm3y92pqMrTSTcaaw7PfAfN6p5EQkFrqCC8+Tgn/yK+HcarED7SCrsD4sfMTvtq9cfOp5qgK5BHlkJR+Y=
-In-Reply-To: <CAEHu7ET=6osh9-Njwdgqo4RW5jqGju++hHZEV-spZjZ61fiuXw@mail.gmail.com>
-Content-Language: nb-NO
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=6S897NlvvcvjfcPIVhXtDXiSjzVmw6zf1EuiHSajmKs=;
+        b=Avc/s7awyTOTHTllaB+URcqZ7S79nnqefj0tI30jaW0ipEOH/W5qPeRKjm/Fpq358e
+         P8v7SmEaYFutBvEHtu3k2UKltU7g1VkLZ/VhWBUGSOn96CDLKPm1zOn/h1ZWXONKCCI4
+         6WSRPjtgIRJX3nKNkYJOCrsEOP2kfmgBsmWEO4WZx+/nIT1cT8sGDu5U928cSkBXrq5u
+         qEpqtsU1lKrJ6pWggvwuB5qVEHV4cywfnCEWjQ2CPAjcBy++wOEfKcekGzteeNiteGKg
+         eMEDq5TP2YOvCNbXfjqnZ82X4tIbUD2vKzREhwntLCguHumpxwSSa/qOOKW8VUKPjVU6
+         aYOQ==
+In-Reply-To: <7d57480998924477867886c07050e122@CCDEX023.corp.corpcommon.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: 'Renaud Drousies' <renaudd@gmail.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?UTF-8?Q?Andr=C3=A9_Paulsberg=2DCsibi_=28IBM_Consultant=29?= <Andre.Paulsberg-Csibi@evry.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-SGkNCg0KSSBiZWxpZXZlIHRoaXMgaXMgY2F1c2VkIGJ5IGhvdyB0aGUgY2xpZW50IGhhbmRsZXMg
-KCByZWFkIHJlc3BlY3QgKSBJQ01QIFBPUlQgVU5SRUFDSEFCTEUgcGFja2V0cyAuDQpJZiB5b3Ug
-c2VlIHVuZGVyIHlvdSBjYW4gc2VlIHRoYXQgeW91IGhhdmUgMiBoaXRzIG9uIHRoZSBydWxlIGZv
-ciB1c2luZyB0aGUgSUNNUCBjb250cmEgUlNUICwgYmVjYXVzZSBzb21lIGNsaWVudCBzb2Z0d2Fy
-ZSB3aWxsIFJFVFJZIHdpdGggMSBzZWNvbmQgZGVsYXkgLg0KU28gaXQgaXMgbm90IGNhdXNlZCBi
-eSB0aGUgT1Mgb3IgSVBUQUJMRVMgd2hpY2ggSSBhbSBwcmV0dHkgc3VyZSBzZW5kcyB0aGUgcGFj
-a2V0IGFzIHNvb24gYXMgaXQgcHJpb3JpdGl6ZXMgYm90aCB0aW1lcyAuDQooIGV2ZW4gaWYgdGhp
-cyB0ZXN0IGNhbm5vdCBzaG93IHRoZSBhY3R1YWwgcGFja2V0cyBiZWluZyBzZW50ICwgSSBjYW5u
-b3QgaW1hZ2luZSBpdCBkaWQgbm90IHJlY2VpdmUgaXQgLSBtYXliZSB5b3VyIHN0cmFjZSBzYXlz
-IGRpZmZlcmVudCApDQoNCmlwdGFibGVzIC1JIE9VVFBVVCAxIC1kIDEwLjk5LjEyLjE1ICAtcCB0
-Y3AgLS1kcG9ydCAyNzAxNiAtaiBSRUpFQ1QgLS1yZWplY3Qtd2l0aCBpY21wLXBvcnQtdW5yZWFj
-aGFibGUNCmlwdGFibGVzIC1JIE9VVFBVVCAyIC1kIDEwLjk5LjEyLjE1ICAtcCB0Y3AgLS1kcG9y
-dCAyNzAxNyAtaiBSRUpFQ1QgLS1yZWplY3Qtd2l0aCB0Y3AtcmVzZXQNCg0Kem90YWM6fi9GaXJl
-V2FsbCAjIGRhdGUgOyB0ZWxuZXQgMTAuOTkuMTIuMTUgMjcwMTYNClRodSBKYW4gMjUgMTg6MjY6
-MjAgQ0VUIDIwMTgNClRyeWluZyAxMC45OS4xMi4xNS4uLg0KdGVsbmV0OiBjb25uZWN0IHRvIGFk
-ZHJlc3MgMTAuOTkuMTIuMTU6IENvbm5lY3Rpb24gcmVmdXNlZA0Kem90YWM6fi9GaXJlV2FsbCAj
-IGRhdGUgOyB0ZWxuZXQgMTAuOTkuMTIuMTUgMjcwMTcNClRodSBKYW4gMjUgMTg6MjY6MjIgQ0VU
-IDIwMTgNClRyeWluZyAxMC45OS4xMi4xNS4uLg0KdGVsbmV0OiBjb25uZWN0IHRvIGFkZHJlc3Mg
-MTAuOTkuMTIuMTU6IENvbm5lY3Rpb24gcmVmdXNlZA0KDQp6b3RhYzp+ICMgdGNwZHVtcCAtbm5p
-IGxvDQp0Y3BkdW1wOiB2ZXJib3NlIG91dHB1dCBzdXBwcmVzc2VkLCB1c2UgLXYgb3IgLXZ2IGZv
-ciBmdWxsIHByb3RvY29sIGRlY29kZQ0KbGlzdGVuaW5nIG9uIGxvLCBsaW5rLXR5cGUgRU4xME1C
-IChFdGhlcm5ldCksIGNhcHR1cmUgc2l6ZSAyNjIxNDQgYnl0ZXMNCjE4OjI2OjIwLjA4MDM0OSBJ
-UCAxMjcuMC4wLjEgPiAxMjcuMC4wLjE6IElDTVAgMTAuOTkuMTIuMTUgdGNwIHBvcnQgMjcwMTYg
-dW5yZWFjaGFibGUsIGxlbmd0aCA2OA0KMTg6MjY6MjEuMDgxNDYzIElQIDEyNy4wLjAuMSA+IDEy
-Ny4wLjAuMTogSUNNUCAxMC45OS4xMi4xNSB0Y3AgcG9ydCAyNzAxNiB1bnJlYWNoYWJsZSwgbGVu
-Z3RoIDY4DQoxODoyNjoyMi40ODU3NzcgSVAgMTAuOTkuMTIuMTUuMjcwMTcgPiAxMjcuMC4wLjEu
-NTMwMzA6IEZsYWdzIFtSLl0sIHNlcSAwLCBhY2sgMjM2NTA1MTkwNSwgd2luIDAsIGxlbmd0aCAw
-DQoNCkNoYWluIE9VVFBVVCAocG9saWN5IEFDQ0VQVCAwIHBhY2tldHMsIDAgYnl0ZXMpDQogcGt0
-cyBieXRlcyB0YXJnZXQgICAgIHByb3Qgb3B0IGluICAgICBvdXQgICAgIHNvdXJjZSAgICAgICAg
-ICAgICAgIGRlc3RpbmF0aW9uICAgICAgICAgDQogICAgMiAgIDM2MCBSRUpFQ1QgICAgIHRjcCAg
-LS0gICogICAgICAqICAgICAgIDAuMC4wLjAvMCAgICAgICAgICAgIDEwLjk5LjEyLjE1ICAgICAg
-ICAgIHRjcCBkcHQ6MjcwMTYgcmVqZWN0LXdpdGggaWNtcC1wb3J0LXVucmVhY2hhYmxlDQogICAg
-MSAgIDE4MCBSRUpFQ1QgICAgIHRjcCAgLS0gICogICAgICAqICAgICAgIDAuMC4wLjAvMCAgICAg
-ICAgICAgIDEwLjk5LjEyLjE1ICAgICAgICAgIHRjcCBkcHQ6MjcwMTcgcmVqZWN0LXdpdGggdGNw
-LXJlc2V0DQoNClNJREVOT1RFIDogVHlwaWNhbGx5IHdoZW4gdXNpbmcgVENQICwgaXQgbWFrZXMg
-bW9yZSBzZW5zZSB0byB1c2UgIi1qIFJFSkVDVCAtLXJlamVjdC13aXRoIHRjcC1yZXNldCIgYnV0
-IGRvaW5nIG90aGVyd2lzZSBpcyBhbHNvIE9LICwNCkkgYW0gbm90IHNheWluZyB0aGlzIGlzIHRo
-ZSBzb2x1dGlvbiB0byB5b3VyIGlzc3VlIGJ1dCBpdCB3aWxsIHdvcmsgYXMgYSBhbG1vc3QgMTAw
-JSB3b3JrYXJvdW5kIGZvciBhbGwgVENQIHNlc3Npb25zIC4NCg0KDQpCZXN0IHJlZ2FyZHMNCkFu
-ZHLDqSBQYXVsc2JlcmctQ3NpYmkNClNlbmlvciBOZXR3b3JrIEVuZ2luZWVyIA0KSUJNIFNlcnZp
-Y2VzIEFTDQoNCi0tLS0tT3BwcmlubmVsaWcgbWVsZGluZy0tLS0tDQpGcmE6IG5ldGZpbHRlci1v
-d25lckB2Z2VyLmtlcm5lbC5vcmcgW21haWx0bzpuZXRmaWx0ZXItb3duZXJAdmdlci5rZXJuZWwu
-b3JnXSBQw6UgdmVnbmUgYXYgUmVuYXVkIERyb3VzaWVzDQpTZW5kdDogdG9yc2RhZyAyNS4gamFu
-dWFyIDIwMTggMTIuMzINClRpbDogbmV0ZmlsdGVyQHZnZXIua2VybmVsLm9yZw0KRW1uZTogU2xv
-dyAnY29ubmVjdGlvbiByZWZ1c2VkJyBvbiBSRUpFQ1QgcnVsZXMNCg0KSGVsbG8sDQoNCkkgd291
-bGQgbGlrZSB0byBmb3JjZSBhICdjb25uZWN0aW9uIHJlZnVzZWQnIHdoZW4gY29ubmVjdGluZyB0
-byBhIHNwZWNpZmljIGhvc3QvcG9ydCBhbmQgdG8gZG8gc28gSSdtIHVzaW5nIHRoZSBmb2xsb3dp
-bmcgcnVsZToNCg0KaXB0YWJsZXMgLUEgT1VUUFVUIC1kIDEwLjk5LjEyLjE1ICAtcCB0Y3AgLS1k
-cG9ydCAyNzAxNyAtaiBSRUpFQ1QgLS1yZWplY3Qtd2l0aCBpY21wLXBvcnQtdW5yZWFjaGFibGUN
-Cg0KVGhpcyB3b3JrcyBmaW5lIGV4Y2VwdCB0aGF0IGl0IHRha2VzIGFyb3VuZCAxIHNlY29uZCBm
-b3IgdGhlIHJlcGx5IHRvIGNvbWUgKEkndmUgc3RyYWNlZCBpdCBhbmQgaXQncyByZWFsbHkgdGhl
-IGNhbGwgdG8gY29ubmVjdCgpIHRoYXQgaGFuZ3MpLiBJJ3ZlIHRyaWVkIHRoZSBmb2xsb3dpbmcg
-cnVsZXMgb24gbXVsdGlwbGUga2VybmVscyBmcm9tIHRoZSAyLngsIDMueCBhbmQgNC54IGJyYW5j
-aGVzIGFuZCB0aGUgYmVoYXZpb3IgaXMgYWx3YXlzIHRoZSBzYW1lLg0KDQpUaGVyZSB3YXNuJ3Qg
-YW55IG90aGVyIHJ1bGUgaW4gYW55IGNoYWluIHdoZW4gdGhlc2UgdGVzdHMgd2VyZSBkb25lLg0K
-DQpXb3VsZCBhbnlib2R5IGtub3cgd2hhdCBjb3VsZCBjYXVzZSB0aGlzIGRlbGF5IGFuZCBob3cg
-dG8gYWRkcmVzcyB0aGF0Pw0KDQpUaGFua3MhDQpSZW5hdWQNCi0tDQpUbyB1bnN1YnNjcmliZSBm
-cm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbmV0ZmlsdGVyIiBpbiB0
-aGUgYm9keSBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIua2VybmVsLm9yZyBNb3JlIG1h
-am9yZG9tbyBpbmZvIGF0ICBodHRwOi8vdmdlci5rZXJuZWwub3JnL21ham9yZG9tby1pbmZvLmh0
-bWwNCg==
+Hello Andr=C3=A9,
+
+Thanks for your answer!
+
+> If you see under you can see that you have 2 hits on the rule for using t=
+he ICMP contra RST , because some client software will RETRY with 1 second =
+delay .
+
+Indeed, I tcpdump'ed on my side as well and I had 2 ICMP messages
+separated by ~ 1 second, like you had.
+I tried to set a rule on a remote machine to reject with icmp port
+unreachable connections made on some port (but on the INPUT chain this
+time), and in this case connect() gave up at the first ICMP reply, so
+maybe he's missing the first one sent by iptables, not sure...
+
+> SIDENOTE : Typically when using TCP , it makes more sense to use "-j REJE=
+CT --reject-with tcp-reset" but doing otherwise is also OK ,
+> I am not saying this is the solution to your issue but it will work as a =
+almost 100% workaround for all TCP sessions .
+
+That is definitively a solution, at least for me, thanks a lot!
+
+Best regards,
+Renaud
