@@ -1,50 +1,56 @@
-From: Renaud Drousies <renaudd@gmail.com>
-Subject: Re: Slow 'connection refused' on REJECT rules
-Date: Mon, 29 Jan 2018 07:03:32 +0100
-Message-ID: <CAEHu7ETX3jkE+59wmuko=CRAwkaGZhK-cV+Yk7hCPat=j4=4Mw@mail.gmail.com>
-References: <CAEHu7ET=6osh9-Njwdgqo4RW5jqGju++hHZEV-spZjZ61fiuXw@mail.gmail.com>
- <7d57480998924477867886c07050e122@CCDEX023.corp.corpcommon.com>
-Mime-Version: 1.0
+From: Glen Huang <heyhgl@gmail.com>
+Subject: How to trace IPSec packets?
+Date: Mon, 29 Jan 2018 17:10:14 +0800
+Message-ID: <2A246279-5BD5-4858-9E81-2132542CD4DA@gmail.com>
+Mime-Version: 1.0 (Mac OS X Mail 11.2 \(3445.5.20\))
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=6S897NlvvcvjfcPIVhXtDXiSjzVmw6zf1EuiHSajmKs=;
-        b=Avc/s7awyTOTHTllaB+URcqZ7S79nnqefj0tI30jaW0ipEOH/W5qPeRKjm/Fpq358e
-         P8v7SmEaYFutBvEHtu3k2UKltU7g1VkLZ/VhWBUGSOn96CDLKPm1zOn/h1ZWXONKCCI4
-         6WSRPjtgIRJX3nKNkYJOCrsEOP2kfmgBsmWEO4WZx+/nIT1cT8sGDu5U928cSkBXrq5u
-         qEpqtsU1lKrJ6pWggvwuB5qVEHV4cywfnCEWjQ2CPAjcBy++wOEfKcekGzteeNiteGKg
-         eMEDq5TP2YOvCNbXfjqnZ82X4tIbUD2vKzREhwntLCguHumpxwSSa/qOOKW8VUKPjVU6
-         aYOQ==
-In-Reply-To: <7d57480998924477867886c07050e122@CCDEX023.corp.corpcommon.com>
+        h=sender:from:content-transfer-encoding:mime-version:subject
+         :message-id:date:to;
+        bh=w7yVhMh3xcxJod+fzEuP/wlAH/4QgW8HhnKnzYFz/pg=;
+        b=Wy8qsopjes2BeaPq1Da4+rIF75UpGAN7qGBgT92bKr85nd7Q1Xn1nMl0Qiw4uMlWKZ
+         Fw2mwlSZvb4tu2YoC+sec4COWwnlXkr9ScIO8H8YziwjQyngnWJtB6A9RVomKyeFFejc
+         e/uxvvCj/YTUC6uo/0ru0ZnsuWM1EB/RSV4nJP7Ju8hFpgrx2Ur0Vv6MM6nN7al+FFDD
+         xxazPm7IZ6qL5xlD4RQuTRX+OomwURfwgh/+SW25UbcwxNGwRx7nf+pb9ZRRl2MnrF9d
+         84mF83BtbZOrV7/EemLdFmlMRKiugScFkqWmgenjSBTUB3wYs2IRRtjE2yo0TMQcdo6X
+         1M8w==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?UTF-8?Q?Andr=C3=A9_Paulsberg=2DCsibi_=28IBM_Consultant=29?= <Andre.Paulsberg-Csibi@evry.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-Hello Andr=C3=A9,
+Hi,
 
-Thanks for your answer!
+Hope the question isn=E2=80=99t too basic to be asked here.
 
-> If you see under you can see that you have 2 hits on the rule for using t=
-he ICMP contra RST , because some client software will RETRY with 1 second =
-delay .
+I have an IPSec tunnel set up between my machine and a server. All =
+packets originate from my machine go through that tunnel and then get =
+forwarded by the server. I=E2=80=99m trying to redirect DNS request from =
+my machine to 8.8.8.8 to a dns forwarder running on the server.
 
-Indeed, I tcpdump'ed on my side as well and I had 2 ICMP messages
-separated by ~ 1 second, like you had.
-I tried to set a rule on a remote machine to reject with icmp port
-unreachable connections made on some port (but on the INPUT chain this
-time), and in this case connect() gave up at the first ICMP reply, so
-maybe he's missing the first one sent by iptables, not sure...
+I tried this on the server
 
-> SIDENOTE : Typically when using TCP , it makes more sense to use "-j REJE=
-CT --reject-with tcp-reset" but doing otherwise is also OK ,
-> I am not saying this is the solution to your issue but it will work as a =
-almost 100% workaround for all TCP sessions .
+iptables -t nat -I PREROUTING -s $IPSEC_VIRTUAL_IP -d 8.8.8.8 -p udp =
+--dport 53 -j DNAT --to-destination 127.0.0.1
 
-That is definitively a solution, at least for me, thanks a lot!
+But it didn't work. To make sure it wasn't because I hadn't allowed =
+martian packets or anything. I tried to trace the decrypted packets.
 
-Best regards,
-Renaud
+iptables -t raw -I PREROUTING -s $IPSEC_VIRTUAL_IP -d 8.8.8.8 -p udp =
+--dport 53 -j TRACE
+
+But after dig @8.8.8.8 google.com on my machine, running grep 'TRACE:' =
+/var/log/kern.log on the server returned nothing.
+
+According to this picture: =
+https://en.wikipedia.org/wiki/Iptables#/media/File:Netfilter-packet-flow.s=
+vg after decrypting the ipsec packets, netfilter will make the decrypted =
+packets go through the ip stack again, and the trace target should be =
+able to catch it.
+
+I wonder if my mental model is incorrect or I missed something?
+
+Regards,
+Glen=
