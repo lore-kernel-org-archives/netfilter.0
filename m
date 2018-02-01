@@ -1,77 +1,114 @@
-From: =?utf-8?Q?H=C3=BCsn=C3=BC_Demir?= <hdemir@metu.edu.tr>
-Subject: Re: nftables set - network/netmask
-Date: Thu, 1 Feb 2018 21:28:20 +0300
-Message-ID: <7448FEA7-1FC9-4B63-9D5A-39F9A9E61E09@metu.edu.tr>
-References: <39fdc646-1ef4-a42c-c9f1-705c18b709ec@metu.edu.tr> <beb5146e-837f-fb5d-c766-e69547a6287f@metu.edu.tr> <CAOkSjBiMZUKBGYNJMaq98KzxDLWPLa_hd6+6Af06JWuAfM8G=A@mail.gmail.com> <20180201111940.fu556ybv2ob2k3l5@salvia>
-Mime-Version: 1.0 (1.0)
-Content-Transfer-Encoding: 8bit
+From: Eric Grunt <gruntblue@gmail.com>
+Subject: How to add rules to ip6/inet tables without getting unknown [invalid
+ type] with nft list?
+Date: Thu, 1 Feb 2018 21:59:55 +0300
+Message-ID: <CADB9fJHanmSUUhjrGt9SmM-9t_kFMFH6jApAGrSvo80rgvDnZw@mail.gmail.com>
+Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20180201111940.fu556ybv2ob2k3l5@salvia>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=DIGkonKsaCEo2bVbsPS55LHW6Z9njL6Tudnss5UcltI=;
+        b=ILV5+o5y/Miawiulob/eAtMy91qnkzaiJBGprFXZ2sUQXw+q6aZiVwI/jSbhV2EqKg
+         Yewz3SgTp5GX1W3b52VwYIdVK566c8t829IU9pUrR3WkV5CdiO9hPsziIlQm+fPIb5Wu
+         2ApbNzt2SIvd6cCKxijjm1saijhNILzwEfD1KmoHRBiL2UrmqlkNaR3wJraqrVTbG2Uq
+         TejKTiA7Jw8EAv0oORN+2UxHS1JeRuozml+AWxC60GacFKbMu7C5irL6EbNKMkQ59vJS
+         FHAx+D8XpYOkpbjtCzYkxzZCogDSqWNgyjxHYB6Yu3quV+rKrzAufRJbl/XzvnIzT7MM
+         L+0A==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Arturo Borrero Gonzalez <arturo@netfilter.org>, Netfilter Users Mailing list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Thanks for yorum answer but it would Kore useful for me to add multiple cdrs like 
+When modifying the example nft-rule-add.c to support family inet
+and to add an accept rule instead of a counter [1],
+it works as expected when operating on an ip table.
 
-{
-10.10.0.0/24 . tcp . 22,
-10.1.0.0/27 . tcp . 21,
+table ip filter {
+        chain input {
+                type filter hook input priority 0; policy accept;
+                tcp dport ssh accept
+        }
 }
 
+But not on an ip6 or inet table.
 
-Etc.
+table ip6/inet filter {
+        chain input {
+                type filter hook input priority 0; policy accept;
+                unknown unknown 0x6 [invalid type] unknown unknown
+0x16 [invalid type] accept
+        }
+}
 
-I did not perf test bey writing a rule for each block. About 10 rules and 10 different subnet block, it will be 100 rules, %90 increase. Better to stick with ipset?
+With the original nft-rule-add.c the results are similar.
 
-I have lots of different subnets, and in ipset it is pretty easy. 
+table ip6/inet filter {
+        chain input {
+                type filter hook input priority 0; policy accept;
+                unknown unknown 0x6 [invalid type] unknown unknown
+0x16 [invalid type] counter packets 0 bytes 0
+        }
+}
 
-As far as I see, netmask support will suffice for that.
+Using the nft command line tool to add the rules, the results are as expected.
 
-By the way, It would be helpfull to add these to the wiki.
+Are there additional flags needed in order to support ip6?
+Also, is there more documentation on how to use libnftnl?
 
-Thanks again.
 
-iPad’imden gönderildi
+[1]
 
-Pablo Neira Ayuso <pablo@netfilter.org> şunları yazdı (1 Şub 2018 14:19):
+--- /tmp/nft-rule-add.c 2018-02-01 11:49:00.120002698 +0200
++++ nft-rule-add.c      2018-02-01 11:56:27.130002751 +0200
+@@ -8,7 +8,6 @@
+  *
+  * This software has been sponsored by Sophos Astaro <http://www.sophos.com>
+  */
+-
+ #include <stdlib.h>
+ #include <time.h>
+ #include <string.h>
+@@ -66,16 +65,16 @@
+        nftnl_rule_add_expr(r, e);
+ }
 
->> On Thu, Feb 01, 2018 at 11:03:35AM +0100, Arturo Borrero Gonzalez wrote:
->>> On 1 February 2018 at 08:50, hdemir <hdemir@metu.edu.tr> wrote:
->>> Hi,
->>> 
->>> I found this conversation;
->>> 
->>> https://www.spinics.net/lists/netfilter/msg56947.html
->>> 
->>> It would be useful to have NET function as ipset has.
->>> 
->>> 
->> 
->> Then, using that example:
->> 
->>> hash:net,net
->> 
->> % nft add rule tablename chainname ip saddr and 255.255.255.0 . ip
->> daddr and 255.255.255.0 vmap { 10.10.10.0 . 10.10.20.0 : accept }
->> 
->>> hash:net,port,net
->> 
->> % nft add rule tablename chainname ip saddr and 255.255.255.0 . tcp
->> dport . ip daddr and 255.255.255.0 vmap { 10.10.10.0 . 80 . 10.10.20.0
->> : accept }
->> 
->> 
->>> hash:net,iface
->>> 
->> 
->> % nft add rule tablename chainname ip saddr and 255.255.255.0 . iif
->> vmap { 10.10.10.0 . eth0 : accept }
->> 
->> Will add this to the nftables wiki [0].
-> 
-> Thanks Arturo!
-> 
-> Sorry, I overlook your reply.
+-static void add_counter(struct nftnl_rule *r)
++static void add_accept(struct nftnl_rule *r)
+ {
+        struct nftnl_expr *e;
+-
+-       e = nftnl_expr_alloc("counter");
++       e=nftnl_expr_alloc("immediate");
+        if (e == NULL) {
+-               perror("expr counter oom");
++               perror("expr immediate oom");
+                exit(EXIT_FAILURE);
+        }
+-
++       nftnl_expr_set_u32(e, NFTNL_EXPR_IMM_VERDICT, NF_ACCEPT);
++        nftnl_expr_set_u32(e, NFTNL_EXPR_IMM_DREG, NFT_REG_VERDICT);
+        nftnl_rule_add_expr(r, e);
+ }
 
+@@ -112,7 +111,7 @@
+                    offsetof(struct tcphdr, dest), sizeof(uint16_t));
+        add_cmp(r, NFT_REG_1, NFT_CMP_EQ, &dport, sizeof(uint16_t));
+
+-       add_counter(r);
++       add_accept(r);
+
+        return r;
+ }
+@@ -137,8 +136,10 @@
+                family = NFPROTO_IPV4;
+        else if (strcmp(argv[1], "ip6") == 0)
+                family = NFPROTO_IPV6;
++       else if (strcmp(argv[1], "inet") == 0)
++               family = NFPROTO_INET;
+        else {
+-               fprintf(stderr, "Unknown family: ip, ip6\n");
++               fprintf(stderr, "Unknown family: ip, ip6, inet\n");
+                exit(EXIT_FAILURE);
+        }
