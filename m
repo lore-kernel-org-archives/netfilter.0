@@ -1,25 +1,77 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: How to get rule handle when adding a rule using libnftnl?
-Date: Thu, 1 Feb 2018 19:20:37 +0100
-Message-ID: <20180201182037.recv7u3ava6ohmc2@salvia>
-References: <CADB9fJF-rpjBo=DXeO7sxeH-9U4y5LytGWba5nUG_xfPkar-qg@mail.gmail.com>
- <20180201170614.7aiziqewvivb5eqw@salvia>
- <CADB9fJGJfSDpoz+DCTXjfw9+ZoTD2Sm27rWx7_Pbi6q-YMVyVQ@mail.gmail.com>
-Mime-Version: 1.0
+From: =?utf-8?Q?H=C3=BCsn=C3=BC_Demir?= <hdemir@metu.edu.tr>
+Subject: Re: nftables set - network/netmask
+Date: Thu, 1 Feb 2018 21:28:20 +0300
+Message-ID: <7448FEA7-1FC9-4B63-9D5A-39F9A9E61E09@metu.edu.tr>
+References: <39fdc646-1ef4-a42c-c9f1-705c18b709ec@metu.edu.tr> <beb5146e-837f-fb5d-c766-e69547a6287f@metu.edu.tr> <CAOkSjBiMZUKBGYNJMaq98KzxDLWPLa_hd6+6Af06JWuAfM8G=A@mail.gmail.com> <20180201111940.fu556ybv2ob2k3l5@salvia>
+Mime-Version: 1.0 (1.0)
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CADB9fJGJfSDpoz+DCTXjfw9+ZoTD2Sm27rWx7_Pbi6q-YMVyVQ@mail.gmail.com>
+In-Reply-To: <20180201111940.fu556ybv2ob2k3l5@salvia>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Eric Grunt <gruntblue@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Arturo Borrero Gonzalez <arturo@netfilter.org>, Netfilter Users Mailing list <netfilter@vger.kernel.org>
 
-On Thu, Feb 01, 2018 at 09:17:17PM +0300, Eric Grunt wrote:
-> Thank you for your prompt answer -
-> I will try this, just need to do some more research about how to
-> access the kernel's response.
+Thanks for yorum answer but it would Kore useful for me to add multiple cdrs like 
 
-Similar to what we do in examples/nft-rule-get.c, but do *not* set the
-NLM_F_DUMP flag, since that is only useful to request listings.
+{
+10.10.0.0/24 . tcp . 22,
+10.1.0.0/27 . tcp . 21,
+}
+
+
+Etc.
+
+I did not perf test bey writing a rule for each block. About 10 rules and 10 different subnet block, it will be 100 rules, %90 increase. Better to stick with ipset?
+
+I have lots of different subnets, and in ipset it is pretty easy. 
+
+As far as I see, netmask support will suffice for that.
+
+By the way, It would be helpfull to add these to the wiki.
+
+Thanks again.
+
+iPad’imden gönderildi
+
+Pablo Neira Ayuso <pablo@netfilter.org> şunları yazdı (1 Şub 2018 14:19):
+
+>> On Thu, Feb 01, 2018 at 11:03:35AM +0100, Arturo Borrero Gonzalez wrote:
+>>> On 1 February 2018 at 08:50, hdemir <hdemir@metu.edu.tr> wrote:
+>>> Hi,
+>>> 
+>>> I found this conversation;
+>>> 
+>>> https://www.spinics.net/lists/netfilter/msg56947.html
+>>> 
+>>> It would be useful to have NET function as ipset has.
+>>> 
+>>> 
+>> 
+>> Then, using that example:
+>> 
+>>> hash:net,net
+>> 
+>> % nft add rule tablename chainname ip saddr and 255.255.255.0 . ip
+>> daddr and 255.255.255.0 vmap { 10.10.10.0 . 10.10.20.0 : accept }
+>> 
+>>> hash:net,port,net
+>> 
+>> % nft add rule tablename chainname ip saddr and 255.255.255.0 . tcp
+>> dport . ip daddr and 255.255.255.0 vmap { 10.10.10.0 . 80 . 10.10.20.0
+>> : accept }
+>> 
+>> 
+>>> hash:net,iface
+>>> 
+>> 
+>> % nft add rule tablename chainname ip saddr and 255.255.255.0 . iif
+>> vmap { 10.10.10.0 . eth0 : accept }
+>> 
+>> Will add this to the nftables wiki [0].
+> 
+> Thanks Arturo!
+> 
+> Sorry, I overlook your reply.
+
