@@ -1,31 +1,30 @@
-From: "Raymond Burkholder" <ray@oneunified.net>
-Subject: RE: How to trace IPSec packets?
-Date: Thu, 1 Feb 2018 08:21:40 -0400
-Message-ID: <907801d39b57$379889c0$a6c99d40$@oneunified.net>
-References: <2A246279-5BD5-4858-9E81-2132542CD4DA@gmail.com> <CALNXhk0TefWZQ7_e+JOuDL7Qs7KFq2DwQ4h+CayKHd3uWd_y_Q@mail.gmail.com> <CACuyg267+379fHkBactPOShqsrXzQWxq4TM6ZBFh=WJZvqN0vQ@mail.gmail.com> <CALNXhk0ocwWiNyA=x_KVqjLL-tVXE1G2Uj917JXLV-SoG79+cg@mail.gmail.com> <CAP9CGviN_ZsMVq2M_bFvd8gkHFgF_uw-Qqb1fkokeVDALMhc7w@mail.gmail.com> <CALNXhk1aXDLfQ=+aC3mAHkgvq_Nr3uAjxBFbgt4iXEzW4zwswA@mail.gmail.com> <CAP9CGvjOSrYCYNGTD2fScBac-vLG51BwcyfE5u=eKxsai625WQ@mail.gmail.com> <CAP9CGvhH78bAfeG_RZn_kLfFzik23ETrccrGSpQxu=H2wLcpug@mail.gmail.com> <868912EE-65C5-4873-81AF-4B4C369FBAB7@gmail.com> <e9016481-7b80-8163-d2ba-9c377aa6d7ef@wagsky.com> <CA5C9BDA-A6ED-48CE-8BEC-67A50DEEEB81@gmail.com>
+From: Eric Grunt <gruntblue@gmail.com>
+Subject: How to get rule handle when adding a rule using libnftnl?
+Date: Thu, 1 Feb 2018 19:02:09 +0300
+Message-ID: <CADB9fJF-rpjBo=DXeO7sxeH-9U4y5LytGWba5nUG_xfPkar-qg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CA5C9BDA-A6ED-48CE-8BEC-67A50DEEEB81@gmail.com>
-Content-Language: en-us
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=6DTwIYiTrLRy5oVPE1rteuYP6BhIqccotqSE7j+pMOA=;
+        b=VcutBxIq9a1p5psq+KtkGBcjw91sX5GtZJkValOPVyasZTS/1asRc2o14OH/ZMM38U
+         8Dy7oVYx/TPlZzwr3tytBmcXGtYR8CfjYDuk367BRuKKjX4+yI3UNyll4vJ9pChLpAY5
+         xc/St3EdAxAw2XNgExGXKbw93Yqqp++8MGBQJoMGgxNsbXtp9sYiyO46DWYWNL/Tt2rw
+         rGNR3rHbDfei0z3K94pJ4Wxp09WjXsheZfnjzFEhg+PhMkc0eTTZmUPrBkmoqA8uRy0i
+         4R6SszCnW5VB1fxgl9/I1Wzvlqy1xx5DGMSWnsLGXbE3QOJNSkDDyGpvOpu5fajhmsOY
+         25sQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: 'Glen Huang' <heyhgl@gmail.com>, 'Jeff Kletsky' <netfilter@allycomm.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-> I initially gave bind a look, but since I just need edns-client-subnet support, I
-> find dnsmasq to be a more lightweight solution. I think using unbound will
-> lead to the same difficult as I did with dnsmasq: I ultimately need to map
-> client’s in-tunnel ip to client’s public ip when they do dns requests inside
-> ipsec, and I need to stick the public ip in ECS. So doing iptables in inevitable
-> IMHO.
+After adding a rule, one needs it's handle for eg deleting it again.
+On the command line it's aquired via the -a flag (nft list ruleset -a),
+but how is this done outside command line, programmatically?
 
-https://dnsdist.org/index.html is a rules based load balancer with various dns functionality.  Maybe load balancers might be a different question to ask?
-
-
--- 
-This message has been scanned for viruses and
-dangerous content by MailScanner, and is
-believed to be clean.
-
+As far as I understand, the handle is assigned by the kernel,
+so it should not be accessible before the mnl_socket_sendto() call.
+Can it be accessed using mnl_cb_run() or is a separate netlink command
+needed for this?
