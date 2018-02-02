@@ -1,112 +1,145 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] nftables 0.8.2 release
-Date: Fri, 2 Feb 2018 18:03:37 +0100
-Message-ID: <20180202170337.ik4o4y3vaoqj6txg@salvia>
+From: Eric Grunt <gruntblue@gmail.com>
+Subject: Re: How to add rules to ip6/inet tables without getting unknown
+ [invalid type] with nft list?
+Date: Fri, 2 Feb 2018 20:00:25 +0300
+Message-ID: <CADB9fJHAoU2VBBKfTGHeTv8sUkZK6cTUO-sRuKE9uA7tU6y8Dg@mail.gmail.com>
+References: <CADB9fJHanmSUUhjrGt9SmM-9t_kFMFH6jApAGrSvo80rgvDnZw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="yroqbmzlwmjuvdoe"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to;
+        bh=/aY4l2zo/w/hVA/2lmRygH0+3RAwrBKN0Y3NaRHb8GM=;
+        b=kZTjkwcbSGfGc1a+TsIHwhtdQ6OugprdY2Vlu4FhWBSS9baS6CaPrR7oyd9Jh3/bzr
+         HmaOUdSZqZpwE/B5/58l6TBINgeMLJbJKCPKlstQWguTkjdSHVgG2xEKp1hL9vefRhPO
+         LwEfHUJ4VRWqrPbwMar9QJ4nNIFNhCku/7yvqVd53zlcxpq97ptEoIsdDV0Uc18CWZJt
+         34kZtM68XzLiGkAyxbxp9XD2ufNFkv3h8q64s3hKamNMg4KYYYDRopQbL0i7/6kyR+Mf
+         mjqG2v43tVQjzMDN+DFJkaLvPjAFLNxI6aovNArrAnL72/j038528OihOcDe/4eHTO0t
+         ocNg==
+In-Reply-To: <CADB9fJHanmSUUhjrGt9SmM-9t_kFMFH6jApAGrSvo80rgvDnZw@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter-devel@vger.kernel.org
-Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
+I'm fairly stuck in understanding, why the nft-rule-add.c example code
+goes wrong with ip6
+Is there another example code adding rules that's known to work with ipv6?
 
---yroqbmzlwmjuvdoe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+When comparing the (parsed with pyroute2) strace output about what was
+sent to the kernel
+by the (modified, working with ipv4) example code and by the nft
+command line tool,
+it's mostly the same.
+Beside different sequence numbers and flags (once with and once
+without NLM_F_ACK)
+in the netlink message header built with nftnl_rule_nlmsg_build_hdr,
+there where three netlink messages in the beginning [1].
+All with nfgen_family 2, when using the nft command line tool,
+but two of them with nfgen_family 0, when using the example code [2].
 
-Hi!
+I'm a bit puzzled, about what these additional three messages are needed for,
+since all the information about the rule is in the fourth message [3],
+and about how these three messages can be changed, since they are not
+built by hand.
 
-The Netfilter project proudly presents:
+[1]
 
-        nftables 0.8.2
+{'attrs': [],
+ 'header': {'flags': 1,
+            'length': 20,
+            'pid': 0,
+            'sequence_number': 1522814987,
+            'type': 16},
+ 'nfgen_family': 0,
+ 'res_id': 10,
+ 'version': 0}
+........................................
+{'attrs': [],
+ 'header': {'flags': 5,
+            'length': 20,
+            'pid': 0,
+            'sequence_number': 1522814988,
+            'type': 2569},
+ 'nfgen_family': 2,
+ 'res_id': 0,
+ 'version': 0}
+........................................
+{'attrs': [],
+ 'header': {'flags': 1,
+            'length': 20,
+            'pid': 0,
+            'sequence_number': 1522814989,
+            'type': 17},
+ 'nfgen_family': 0,
+ 'res_id': 10,
+ 'version': 0}
+........................................
 
-This release fixes ./configure --with-xtables that enables interaction
-between iptables-compat [1] and nft, and it also includes a bunch of
-documentation updates.
+[2]
+ {'attrs': [],
+  'header': {'flags': 1,
+             'length': 20,
+             'pid': 0,
++            'sequence_number': 1522814987,
+-            'sequence_number': 0,
+             'type': 16},
++ 'nfgen_family': 0,
+- 'nfgen_family': 2,
+  'res_id': 10,
+  'version': 0}
+ ........................................
 
-This release introduces a new explicit option for interval sets, that
-enables auto-merge of adjacent/overlapping elements when adding them to
-the set, eg.
+ {'attrs': [],
+  'header': {'flags': 5,
+             'length': 20,
+             'pid': 0,
++            'sequence_number': 1522814988,
+-            'sequence_number': 1,
+             'type': 2569},
+  'nfgen_family': 2,
+  'res_id': 0,
+  'version': 0}
+ ........................................
 
-     table ip x {
-            ...
-            set y {
-                    type ipv4_addr
-                    flags interval
-                    auto-merge
-            }
-     }
-     # nft add element x z { 1.1.1.1-2.2.2.2, 1.1.1.2 }
+ {'attrs': [],
+  'header': {'flags': 1,
+             'length': 20,
+             'pid': 0,
++            'sequence_number': 1522814989,
+-            'sequence_number': 2,
+             'type': 17},
++ 'nfgen_family': 0,
+- 'nfgen_family': 2,
+  'res_id': 10,
+  'version': 0}
+ ........................................
 
-Resources
-=========
+[3]
 
-The nftables code can be obtained from:
-
-* http://netfilter.org/projects/nftables/downloads.html
-* ftp://ftp.netfilter.org/pub/nftables
-* git://git.netfilter.org/nftables
-
-To build the code, libnftnl 1.0.9 and libmnl >= 1.0.2 are required:
-
-* http://netfilter.org/projects/libnftnl/index.html
-* http://netfilter.org/projects/libmnl/index.html
-
-Visit our wikipage for user documentation at:
-
-* http://wiki.nftables.org
-
-For the manpage reference, check man(8) nft.
-
-In case of bugs and feature request, file them via:
-
-* https://bugzilla.netfilter.org
-
-Happy firewalling!
-
-[1] https://wiki.nftables.org/wiki-nftables/index.php/Moving_from_iptables_to_nftables#using_the_nf_tables_compat_backend
-
---yroqbmzlwmjuvdoe
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="changes-nftables-0.8.2.txt"
-
-Arturo Borrero Gonzalez (1):
-      doc/nft.xml: mention nftables earlier
-
-Florian Westphal (2):
-      meta: add secpath support
-      doc: dup and fwd statements
-
-Harsha Sharma (1):
-      tests: shell: fetch rule handle with '-a' option and then delete rule
-
-Pablo M. Bermudo Garay (1):
-      update gitignore
-
-Pablo Neira Ayuso (4):
-      Revert ("src: Remove xt_stmt_() functions").
-      src: add 'auto-merge' option to sets
-      netlink_delinearize: add assertion to prevent infinite loop
-      build: Bump version to v0.8.2
-
-Phil Sutter (4):
-      build: Eliminate forgotten traces of libnftables exporting
-      configure: Fix help text regarding --enable-debug
-      configure: Allow to disable man page building
-      tests/shell: Add back named_interval_automerging_0
-
-Shyam Saini (2):
-      src: Add import command for low level json
-      tests: shell: Add tests for low level json import
-
-Varsha Rao (5):
-      tests: Add test for compile options.
-      configure: Remove AC_HEADER_STDBOOL, AC_C_ and AC_TYPE_ macros
-      tests: build: Add README.
-      configure: Remove macro AC_CHECK_FUNCS
-      tests: build: Add enable man page option.
-
-
---yroqbmzlwmjuvdoe--
+{'attrs': [('NFTA_RULE_TABLE', 'filter'),
+           ('NFTA_RULE_CHAIN', 'input'),
+           ('NFTA_RULE_EXPRESSIONS', [{'attrs': [('NFTA_EXPR_NAME',
+'payload'), ('NFTA_EXPR_DATA', {'attrs': [('NFTA_PAYLOAD_DREG',
+'NFT_REG_1'), ('NFTA_PAYLOAD_BASE', 'NFT_PAYLOAD_NETWORK_HEADER'),
+('NFTA_PAYLOAD_OFFSET', 9), ('NFTA_PAYLOAD_LEN', 1)]}, 32768)]},
+{'attrs': [('NFTA_EXPR_NAME', 'cmp'), ('NFTA_EXPR_DATA', '
+\x00\x02\x80\x08\x00\x01\x00\x00\x00\x00\x01\x08\x00\x02\x00\x00\x00\x00\x00\x0c\x00\x03\x80\x05\x00\x01\x00\x06\x00\x00\x00')]},
+{'attrs': [('NFTA_EXPR_NAME', 'payload'), ('NFTA_EXPR_DATA', {'attrs':
+[('NFTA_PAYLOAD_DREG', 'NFT_REG_1'), ('NFTA_PAYLOAD_BASE',
+'NFT_PAYLOAD_TRANSPORT_HEADER'), ('NFTA_PAYLOAD_OFFSET', 2),
+('NFTA_PAYLOAD_LEN', 2)]}, 32768)]}, {'attrs': [('NFTA_EXPR_NAME',
+'cmp'), ('NFTA_EXPR_DATA', '
+\x00\x02\x80\x08\x00\x01\x00\x00\x00\x00\x01\x08\x00\x02\x00\x00\x00\x00\x00\x0c\x00\x03\x80\x06\x00\x01\x00\x00\x16\x00\x00')]},
+{'attrs': [('NFTA_EXPR_NAME', 'immediate'), ('NFTA_EXPR_DATA',
+'\x1c\x00\x02\x80\x08\x00\x01\x00\x00\x00\x00\x00\x10\x00\x02\x80\x0c\x00\x02\x80\x08\x00\x01\x00\x00\x00\x00\x01')]}],
+32768)],
+ 'header': {'flags': 3077,
+            'length': 288,
+            'pid': 0,
+            'sequence_number': 1522814988,
+            'type': 2566},
+ 'nfgen_family': 10,
+ 'res_id': 0,
+ 'version': 0}
