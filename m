@@ -1,145 +1,78 @@
-From: Eric Grunt <gruntblue@gmail.com>
-Subject: Re: How to add rules to ip6/inet tables without getting unknown
- [invalid type] with nft list?
-Date: Fri, 2 Feb 2018 20:00:25 +0300
-Message-ID: <CADB9fJHAoU2VBBKfTGHeTv8sUkZK6cTUO-sRuKE9uA7tU6y8Dg@mail.gmail.com>
-References: <CADB9fJHanmSUUhjrGt9SmM-9t_kFMFH6jApAGrSvo80rgvDnZw@mail.gmail.com>
+From: Gregory Vander Schueren <gregory.vanderschueren@tessares.net>
+Subject: How to retrieve original source address with FTP/NAT/TPROXY
+Date: Tue, 6 Feb 2018 15:49:24 +0100
+Message-ID: <5a11d6bb-ac44-fb67-779f-4b29f4ecea37@tessares.net>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to;
-        bh=/aY4l2zo/w/hVA/2lmRygH0+3RAwrBKN0Y3NaRHb8GM=;
-        b=kZTjkwcbSGfGc1a+TsIHwhtdQ6OugprdY2Vlu4FhWBSS9baS6CaPrR7oyd9Jh3/bzr
-         HmaOUdSZqZpwE/B5/58l6TBINgeMLJbJKCPKlstQWguTkjdSHVgG2xEKp1hL9vefRhPO
-         LwEfHUJ4VRWqrPbwMar9QJ4nNIFNhCku/7yvqVd53zlcxpq97ptEoIsdDV0Uc18CWZJt
-         34kZtM68XzLiGkAyxbxp9XD2ufNFkv3h8q64s3hKamNMg4KYYYDRopQbL0i7/6kyR+Mf
-         mjqG2v43tVQjzMDN+DFJkaLvPjAFLNxI6aovNArrAnL72/j038528OihOcDe/4eHTO0t
-         ocNg==
-In-Reply-To: <CADB9fJHanmSUUhjrGt9SmM-9t_kFMFH6jApAGrSvo80rgvDnZw@mail.gmail.com>
+        d=tessares-net.20150623.gappssmtp.com; s=20150623;
+        h=to:cc:from:subject:message-id:date:user-agent:mime-version
+         :content-language;
+        bh=8SI9CAGbVeuPu4UwV0fyZjzJgdZi4Rfsj8CSVOC5qGQ=;
+        b=iZz0HzB1ak4IB4L4z6vihzLbuQm3DNTnb++KbDMmAFCu/KVj3nZPDrJEeKTq7UiULg
+         C/lXahnXue5d0cAkyTUBMc7iTEPT70hRo2io1IRrq6AmZWhe+iYBFltz3jCywlAvLbDR
+         mchJy9OvqSj9qPtQ3seaIKAu2IVe2CBvJX6FRRV5UXivhWxIQ8awsYSLf/mLpeZbz8gn
+         vHozotk5tPpCw9yEypL9vNGoNcUzLSqI/mvmeU7j1oglsoI944CvV/f2GRp1xrVpYhq6
+         1WV9Z0hamTNLa5oXe6bojbYnD6WlYc4kXVz+eaCwROeE2jrAtP8vK2KQA04gkkcu1p71
+         k4xg==
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
+Cc: Matthieu Baerts <matthieu.baerts@tessares.net>, Gregory Detal <gregory.detal@tessares.net>
 
-I'm fairly stuck in understanding, why the nft-rule-add.c example code
-goes wrong with ip6
-Is there another example code adding rules that's known to work with ipv6?
+Hello,
 
-When comparing the (parsed with pyroute2) strace output about what was
-sent to the kernel
-by the (modified, working with ipv4) example code and by the nft
-command line tool,
-it's mostly the same.
-Beside different sequence numbers and flags (once with and once
-without NLM_F_ACK)
-in the netlink message header built with nftnl_rule_nlmsg_build_hdr,
-there where three netlink messages in the beginning [1].
-All with nfgen_family 2, when using the nft command line tool,
-but two of them with nfgen_family 0, when using the example code [2].
+I have the following IPv4 network:
 
-I'm a bit puzzled, about what these additional three messages are needed for,
-since all the information about the rule is in the fourth message [3],
-and about how these three messages can be changed, since they are not
-built by hand.
+FTPClient <-----------------> Proxy <--------------> FTPServer.
+      10.0.0.2          10.0.0.1   1.1.1.1        1.1.1.2
 
-[1]
+FTPClient connects to FTPServer in PASSIVE mode, meaning the FTPClient
+initiates the data connection towards FTPServer. Proxy performs NAT in 
+the POSTROUTING chain using the iptables MASQUERADE target. On Proxy, I 
+use the iptables TPROXY target to redirect the FTP data connection 
+towards a local socket.
 
-{'attrs': [],
- 'header': {'flags': 1,
-            'length': 20,
-            'pid': 0,
-            'sequence_number': 1522814987,
-            'type': 16},
- 'nfgen_family': 0,
- 'res_id': 10,
- 'version': 0}
-........................................
-{'attrs': [],
- 'header': {'flags': 5,
-            'length': 20,
-            'pid': 0,
-            'sequence_number': 1522814988,
-            'type': 2569},
- 'nfgen_family': 2,
- 'res_id': 0,
- 'version': 0}
-........................................
-{'attrs': [],
- 'header': {'flags': 1,
-            'length': 20,
-            'pid': 0,
-            'sequence_number': 1522814989,
-            'type': 17},
- 'nfgen_family': 0,
- 'res_id': 10,
- 'version': 0}
-........................................
+Upon accept() on this socket, the address returned by accept() is 
+1.1.1.1, not the IP of the Client (10.0.0.2) as I expected. Using 
+getpeername() also returns 1.1.1.1. For other TCP connections than FTP 
+accept() or getpeername() returns 10.0.0.2.
 
-[2]
- {'attrs': [],
-  'header': {'flags': 1,
-             'length': 20,
-             'pid': 0,
-+            'sequence_number': 1522814987,
--            'sequence_number': 0,
-             'type': 16},
-+ 'nfgen_family': 0,
-- 'nfgen_family': 2,
-  'res_id': 10,
-  'version': 0}
- ........................................
+I noticed this only occurs when using the NF_CONNTRACK_FTP and 
+NF_NAT_FTP kernel modules.
 
- {'attrs': [],
-  'header': {'flags': 5,
-             'length': 20,
-             'pid': 0,
-+            'sequence_number': 1522814988,
--            'sequence_number': 1,
-             'type': 2569},
-  'nfgen_family': 2,
-  'res_id': 0,
-  'version': 0}
- ........................................
+Note that I was able to retrieve the FTPClient IP on Proxy from
+/proc/net/ip_conntrack. I also made a quick patch to add a 
+SO_ORIGINAL_SRC socket option (similar to SO_ORIGINAL_DST) which allows 
+to retrieve the FTPClient IP. Since this option does not exist yet, I am 
+wondering if this is relevant to add such an option?
 
- {'attrs': [],
-  'header': {'flags': 1,
-             'length': 20,
-             'pid': 0,
-+            'sequence_number': 1522814989,
--            'sequence_number': 2,
-             'type': 17},
-+ 'nfgen_family': 0,
-- 'nfgen_family': 2,
-  'res_id': 10,
-  'version': 0}
- ........................................
+Also, this does not occur in IPv6.
 
-[3]
+Is this behavior normal?
+What is the rationale behind this?
 
-{'attrs': [('NFTA_RULE_TABLE', 'filter'),
-           ('NFTA_RULE_CHAIN', 'input'),
-           ('NFTA_RULE_EXPRESSIONS', [{'attrs': [('NFTA_EXPR_NAME',
-'payload'), ('NFTA_EXPR_DATA', {'attrs': [('NFTA_PAYLOAD_DREG',
-'NFT_REG_1'), ('NFTA_PAYLOAD_BASE', 'NFT_PAYLOAD_NETWORK_HEADER'),
-('NFTA_PAYLOAD_OFFSET', 9), ('NFTA_PAYLOAD_LEN', 1)]}, 32768)]},
-{'attrs': [('NFTA_EXPR_NAME', 'cmp'), ('NFTA_EXPR_DATA', '
-\x00\x02\x80\x08\x00\x01\x00\x00\x00\x00\x01\x08\x00\x02\x00\x00\x00\x00\x00\x0c\x00\x03\x80\x05\x00\x01\x00\x06\x00\x00\x00')]},
-{'attrs': [('NFTA_EXPR_NAME', 'payload'), ('NFTA_EXPR_DATA', {'attrs':
-[('NFTA_PAYLOAD_DREG', 'NFT_REG_1'), ('NFTA_PAYLOAD_BASE',
-'NFT_PAYLOAD_TRANSPORT_HEADER'), ('NFTA_PAYLOAD_OFFSET', 2),
-('NFTA_PAYLOAD_LEN', 2)]}, 32768)]}, {'attrs': [('NFTA_EXPR_NAME',
-'cmp'), ('NFTA_EXPR_DATA', '
-\x00\x02\x80\x08\x00\x01\x00\x00\x00\x00\x01\x08\x00\x02\x00\x00\x00\x00\x00\x0c\x00\x03\x80\x06\x00\x01\x00\x00\x16\x00\x00')]},
-{'attrs': [('NFTA_EXPR_NAME', 'immediate'), ('NFTA_EXPR_DATA',
-'\x1c\x00\x02\x80\x08\x00\x01\x00\x00\x00\x00\x00\x10\x00\x02\x80\x0c\x00\x02\x80\x08\x00\x01\x00\x00\x00\x00\x01')]}],
-32768)],
- 'header': {'flags': 3077,
-            'length': 288,
-            'pid': 0,
-            'sequence_number': 1522814988,
-            'type': 2566},
- 'nfgen_family': 10,
- 'res_id': 0,
- 'version': 0}
+Any help in understanding what happens would be much appreciated,
+Gregory
+
+(My apologies for initially sending this on the devel mailing list by 
+mistake...)
+
+-- 
+
+------------------------------
+DISCLAIMER.
+This email and any files transmitted with it are confidential and intended 
+solely for the use of the individual or entity to whom they are addressed. 
+If you have received this email in error please notify the system manager. 
+This message contains confidential information and is intended only for the 
+individual named. If you are not the named addressee you should not 
+disseminate, distribute or copy this e-mail. Please notify the sender 
+immediately by e-mail if you have received this e-mail by mistake and 
+delete this e-mail from your system. If you are not the intended recipient 
+you are notified that disclosing, copying, distributing or taking any 
+action in reliance on the contents of this information is strictly 
+prohibited.
