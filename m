@@ -1,64 +1,24 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: nftables: How to filter only ipv6 SSH traffic in an inet table?
-Date: Wed, 7 Feb 2018 20:26:32 +0100
-Message-ID: <20180207192632.6h2xczcmnpgai4yk@salvia>
-References: <20180206172809.f7a238e06cef71d52ec92ae0@bluenox07.de>
- <20180207003251.GA2621@dimstar.local.net>
+From: John Ratliff <john@bluemarble.net>
+Subject: linux martian packets
+Date: Wed, 7 Feb 2018 14:29:52 -0500
+Message-ID: <62fbf8b2-9536-6bf4-9fb1-825307d29262@bluemarble.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20180207003251.GA2621@dimstar.local.net>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
-Cc: Merlin =?iso-8859-1?Q?B=FCge?= <toni@bluenox07.de>
 
-Hi Merlin, Duncan,
+We have a couple of internal networks that we route between, 10.9/16 and 
+10.246/16. But when I try to reply to ICMP requests coming into a 10.246 
+IP on the host from a machine with a 10.9 IP, I can't seem to do that. I 
+see the ICMP echo request packets in tcpdump, but I can't find anything 
+in iptables. It seems like they're dropped before they come into the 
+filter table.
 
-On Wed, Feb 07, 2018 at 11:32:51AM +1100, Duncan Roe wrote:
-> On Tue, Feb 06, 2018 at 05:28:09PM +0100, Merlin B=FCge wrote:
-> > Hey all,
-> >
-> > I'm playing around with nftables and wonder how I could filter e.g.
-> > only ipv6 SSH traffic in an inet table?
-> >
-> > I've set up a basic inet filter table with the three chains input,
-> > forward and output.
-> >
-> > When I then do:
-> >
-> > "nft add rule inet filter input ip6 nexthdr tcp tcp dport ssh drop"
-> >
-> > ... "nft list ruleset" is showing my only "tcp dport ssh drop", so it
-> > seems the ipv6 bit got missed. I also tried:
-> >
-> > "nft add rule inet filter input meta nfproto ipv6 tcp dport ssh drop"
-> >
-> > ... but it yields to the same output.
-> >
-> > What am I doing wrong here?
-> >
-> > Note that I'm not wanting to actually drop IPv6 SSH traffic, I'm just
-> > trying to get used to nftables :)
-> >
-> > I'm using nftables v0.8.2 on an up-to-date archlinux.
-> >
-> > Any pointer appreciated!
-> >
-> > Thanks!
-> > --
-> > Merlin B=FCge <toni@bluenox07.de>
->=20
-> Hi Merlin,
->=20
-> Could you possibly post all of the output from nft list ruleset?
->=20
-> That would give us some context around the one-liner,
+Is there a way I can prevent this so that I can respond to traffic from 
+another non-publicly routable IP?
 
-We need to keep ip6 nexthdr around, since this is implicitly
-restricting to match only IPv6 in the inet chain, where we can see
-IPv4 and IPv6 traffic.
-
-Looking into this.
+Thanks.
