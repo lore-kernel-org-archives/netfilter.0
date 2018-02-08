@@ -1,41 +1,89 @@
-From: John Ratliff <john@bluemarble.net>
-Subject: Re: linux martian packets
-Date: Thu, 8 Feb 2018 07:33:58 -0500
-Message-ID: <1b128f90-9313-7ab5-eb4d-895d70f90971@bluemarble.net>
-References: <62fbf8b2-9536-6bf4-9fb1-825307d29262@bluemarble.net>
- <20180207230211.GA2303@dimstar.local.net>
- <CAC5zRjMcKGLvQDtc63mbYi_JNak=uThjUV9hNgVfOs+jXsoUFQ@mail.gmail.com>
+From: zrm <zrm@trustiosity.com>
+Subject: Re: Unable to query reply direction with conntrack-tools /
+ libnetfilter_conntrack
+Date: Thu, 8 Feb 2018 11:34:43 -0500
+Message-ID: <c7021b70-1006-759c-bc89-15616160323a@trustiosity.com>
+References: <CANtbet1vQmGGFw7f7MkSC=+x1QWEnJA-_rEu0AT22QH4zF-FNg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAC5zRjMcKGLvQDtc63mbYi_JNak=uThjUV9hNgVfOs+jXsoUFQ@mail.gmail.com>
+In-Reply-To: <CANtbet1vQmGGFw7f7MkSC=+x1QWEnJA-_rEu0AT22QH4zF-FNg@mail.gmail.com>
 Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Rob Thomas <xrobau@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: Omri Bahumi <omri.il@gmail.com>, netfilter@vger.kernel.org
 
-On 2/8/2018 1:44 AM, Rob Thomas wrote:
->> Yes indeed - tcpdump gets in before any of the iptables rules so you will see
->> incoming packets that are subsequently dropped.
->>
->> You must have an iptables rule that is dropping them, so I suggest to use watch
->> of iptables -L to see which rule increments its counter when you ping from 10.9.
+On 02/08/2018 07:21 AM, Omri Bahumi wrote:
+> Hi,
 > 
-> It's also possible that the kernel route-path filter is dropping the
-> traffic if it's coming in the 'wrong' intreface.
+> I’m trying to match a conntrack table entry based on the reply 5 tuple
+> with conntrack -G.
 > 
-> You can check /proc/sys/net/ipv4/conf/*/rp_filter and set it to 0 and
-> see if that fixes it.
+> My setup is as follows: two terminals, one running "nc -l 1024" and
+> the other "nc 127.0.0.1 1024".
+> I’m running “conntrack -L --src 127.0.0.1 --dst 127.0.0.1 --protonum
+> tcp --dport 1024” to find the connection, then, I’m trying to match
+> them with “conntrack -G”:
 > 
-> --Rob
+> original direction: “conntrack -G --src 127.0.0.1 --dst 127.0.0.1
+> --protonum tcp --sport <ephemeral-port-from-list-output> --dport 1024”
+> matches the connection
+> 
+> reply direction: “conntrack -G --reply-src 127.0.0.1 --reply-dst
+> 127.0.0.1 --protonum tcp --sport 1024 --dport
+> <ephemeral-port-from-list-output>”
+> returns “conntrack v1.4.4 (conntrack-tools): Operation failed: invalid
+> parameters”
+> 
+> I think that:
+> 1. conntrack-tools is missing the --reply-sport --reply-dport flags,
+> which have different ENUM values (ATTR_REPL_PORT_SRC !=
+> ATTR_ORIG_PORT_SRC)
+> 2. there seems to be a bug with libnetfilter_conntrack implementation
+> of __build_conntrack (conntrack/api.c) that assumes ORIG direction
+> (makes sure ATTR_ORIG_L3PROTO exists, calls nfnl_fill_hdr based on
+> orig l3protonum)
+> 
+> Given the above two points, I couldn’t test a IPCTNL_MSG_CT_GET query
+> on the reply flow. I tried both with the conntrack-tools package and
+> by modifying the nfct-mnl-get.c example in libnetfilter_conntrack.
+> 
+> Am I missing something here?
+> 
+> Thanks,
+> Omri
 > --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
 
-Thanks. This was the problem. I thought I had turned this off, but I 
-must have missed an interface when I did it manually. I changed 
-sysctl.conf and rebooted and it started working.
+This is part of the API.
 
+Notice that ATTR_PORT_SRC and ATTR_PORT_DST exist but are aliased to 
+ATTR_ORIG_PORT_SRC and ATTR_ORIG_PORT_DST, and likewise for 
+ATTR_IPV[46]_SRC and ATTR_IPV[46]_DST to ATTR_IPV[46]_ORIG_SRC and 
+ATTR_IPV[46]_ORIG_DST.
+
+The REPL values work on data that comes back from the kernel, so if you 
+use NFCT_Q_GET to get a struct nf_conntrack it will have those values 
+filled in and you can query them, but NFCT_Q_GET empirically doesn't use 
+them to match with. It only uses the ORIG values, i.e. the ones the 
+non-directionally-named constants are aliased to.
+
+But it seems to match in both directions. So ATTR_PORT_SRC will match 
+either ATTR_ORIG_PORT_SRC (which has the same value) or 
+ATTR_REPL_PORT_DST (which doesn't). As long as they all go together, 
+i.e. it won't match ATTR_PORT_SRC with ATTR_ORIG_PORT_SRC and 
+ATTR_PORT_DST with ATTR_REPL_PORT_SRC, but it will match if every SRC 
+address and port matches a REPL_DST and every DST matches a REPL_SRC.
+
+Which makes some sense, because if there is an entry with all those 
+values as REPL_DST and REPL_SRC then there can't be one with the same 
+values as ORIG_SRC and ORIG_DST.
+
+Also, newer versions of the conntrack command do have --reply-port-src 
+and --reply-port-dst, but they don't seem to actually work with -G, 
+consistent with the API behavior. But reversing --src with --dst and 
+--sport with --dport doesn't seem to work with the conntrack command 
+either. I haven't investigated what's going on there, but maybe the 
+command itself is filtering them after the fact, so when you ask for 
+--dport and the kernel gives that as the repl dst/orig src port it 
+claims no match.
