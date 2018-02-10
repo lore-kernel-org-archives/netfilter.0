@@ -1,30 +1,117 @@
-From: Philip Prindeville <philipp_subx@redfish-solutions.com>
-Subject: xtables-addons maintainers... specifically xt_geoip
-Date: Fri, 9 Feb 2018 18:57:01 -0700
-Message-ID: <E59A6274-7D02-4890-917F-F7CD603032C4@redfish-solutions.com>
-Mime-Version: 1.0 (Mac OS X Mail 11.2 \(3445.5.20\))
-Content-Transfer-Encoding: quoted-printable
+From: Peng Yu <pengyu.ut@gmail.com>
+Subject: How to check why HTTP proxy is not accessible from outside?
+Date: Fri, 9 Feb 2018 23:28:21 -0600
+Message-ID: <CABrM6wn4tJCx7XVfku=vn4Rm=rSa-gQxyCAYfkse+iFhicJhJQ@mail.gmail.com>
+Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=jXaQ/BIz1jr1pJY/z/Oe75qGXp2HNMJACxBqQiUbzq4=;
+        b=cy8OVupUi44jsREKrurTHJ45D8To/SRvMGQS4CcqKR2tT+V+fj7bIuB7RcEjjpFfvV
+         zxzUcAYL65syZ+NtVeV2BEB0TCQxS5S9Eunft2jyoi36NNNupWb1EzWOPlTnf7MC1kt0
+         W+fScvBXlMuqTZx1wnvlKOfBqvN2XqSwgy0t5xBVt552mfc1+VHF+GLp5LH0f1OR10VY
+         94V7RbmgmmkNWnWN2fYT8wstLYlVzHmjFLWOG4PbfIpqBRNLZGyEpwVbuSLPQ6mISpND
+         S1PWZlN9FohU2R5DRAUm8HopIe2ZuerssvmWdSWwcuKkvN/k8Zsb8+VtKwUGlPaAhJex
+         vG0Q==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
 Hi,
 
-Who maintains xtables-addons?  In particular, xt_geoip?
+I have squid HTTP proxy running on both of the following servers
+(server 1 and 2). But the proxy service on server1 can not be accessed
+from outside.
 
-I tried to email Samuel Jean and Nicolas Bouliane but people.netfilter.org =
-seems to be defunct.
+I am not familiar with the output of iptables. Could the difference
+explain why proxy on server1 is not accessible? Thanks.
 
-The GeoIP2 database is going obsolete soon, and hence the xt_geoip stuff wi=
-ll need to be ported over to GeoLite2 instead.
+server1:~$ sudo iptables -L
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
+REJECT     tcp  --  anywhere             anywhere             tcp
+dpt:smtp reject-with icmp-port-unreachable
+REJECT     tcp  --  anywhere             anywhere             tcp
+dpt:http reject-with icmp-port-unreachable
+ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5900
+ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5901
+ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5902
+ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5903
+ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5904
+ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5905
+ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5906
+ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5907
+REJECT     tcp  --  anywhere             anywhere             tcp
+dpt:5900 reject-with icmp-port-unreachable
+REJECT     tcp  --  anywhere             anywhere             tcp
+dpt:5901 reject-with icmp-port-unreachable
+REJECT     tcp  --  anywhere             anywhere             tcp
+dpt:5902 reject-with icmp-port-unreachable
+REJECT     tcp  --  anywhere             anywhere             tcp
+dpt:5903 reject-with icmp-port-unreachable
+REJECT     tcp  --  anywhere             anywhere             tcp
+dpt:5904 reject-with icmp-port-unreachable
+REJECT     tcp  --  anywhere             anywhere             tcp
+dpt:5905 reject-with icmp-port-unreachable
+REJECT     tcp  --  anywhere             anywhere             tcp
+dpt:5906 reject-with icmp-port-unreachable
+REJECT     tcp  --  anywhere             anywhere             tcp
+dpt:5907 reject-with icmp-port-unreachable
+REJECT     tcp  --  anywhere             anywhere             tcp
+dpt:imap2 reject-with icmp-port-unreachable
+REJECT     tcp  --  anywhere             anywhere             tcp
+dpt:imaps reject-with icmp-port-unreachable
 
-I can do this if no one else is working on it.
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
 
-But wasn=E2=80=99t sure who to send patches to for approval.
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+server2:~$  sudo iptables -L
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
+ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5900
+ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5901
+ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5902
+ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5903
+ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5904
+ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5905
+ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5906
+ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5907
+REJECT     tcp  --  anywhere             anywhere             tcp
+dpt:5900 reject-with icmp-port-unreachable
+REJECT     tcp  --  anywhere             anywhere             tcp
+dpt:5901 reject-with icmp-port-unreachable
+REJECT     tcp  --  anywhere             anywhere             tcp
+dpt:5902 reject-with icmp-port-unreachable
+REJECT     tcp  --  anywhere             anywhere             tcp
+dpt:5903 reject-with icmp-port-unreachable
+REJECT     tcp  --  anywhere             anywhere             tcp
+dpt:5904 reject-with icmp-port-unreachable
+REJECT     tcp  --  anywhere             anywhere             tcp
+dpt:5905 reject-with icmp-port-unreachable
+REJECT     tcp  --  anywhere             anywhere             tcp
+dpt:5906 reject-with icmp-port-unreachable
+REJECT     tcp  --  anywhere             anywhere             tcp
+dpt:5907 reject-with icmp-port-unreachable
+REJECT     tcp  --  anywhere             anywhere             tcp
+dpt:smtp reject-with icmp-port-unreachable
+REJECT     tcp  --  anywhere             anywhere             tcp
+dpt:http reject-with icmp-port-unreachable
+REJECT     tcp  --  anywhere             anywhere             tcp
+dpt:imap2 reject-with icmp-port-unreachable
+REJECT     tcp  --  anywhere             anywhere             tcp
+dpt:imaps reject-with icmp-port-unreachable
 
-Thanks,
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
 
--Philip
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
 
+-- 
+Regards,
+Peng
