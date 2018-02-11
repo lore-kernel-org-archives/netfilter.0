@@ -1,143 +1,190 @@
-From: =?utf-8?B?QW5kcsOpIFBhdWxzYmVyZy1Dc2liaSAoSUJNIENvbnN1bHRhbnQp?= 
-        <Andre.Paulsberg-Csibi@evry.com>
-Subject: SV: How to check why HTTP proxy is not accessible from outside?
-Date: Sun, 11 Feb 2018 21:03:04 +0000
-Message-ID: <f095e07f58414b00b4dddc3776f0f64e@CCDEX023.corp.corpcommon.com>
+From: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
+Subject: Re: How to check why HTTP proxy is not accessible from outside?
+Date: Sun, 11 Feb 2018 17:20:51 -0500
+Message-ID: <20180211172051.53d60163@playground>
 References: <CABrM6wn4tJCx7XVfku=vn4Rm=rSa-gQxyCAYfkse+iFhicJhJQ@mail.gmail.com>
+        <f095e07f58414b00b4dddc3776f0f64e@CCDEX023.corp.corpcommon.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=evry.onmicrosoft.com;
- s=selector1-evry-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=SruUd7kpJoXpl/lqFrcoEpIG3K1zFKJR1lNdCoAJVnM=;
- b=dzQcHY9sO1fJNaGiiFH60ss3yaXtTEJKv8m0Q3s/nuwmqdFbE5CuSo3RP3AQL3Z46jc/VdaYF9AlQTvbApGeZhrL/PnRgFidtzt0XK3dlLMzWBH0DjYWz0JX2X6UvHrSLr1vpHVn8LBpqqzc2nA0gJeZVpjm4YzPYcGubduLxEA=
-In-Reply-To: <CABrM6wn4tJCx7XVfku=vn4Rm=rSa-gQxyCAYfkse+iFhicJhJQ@mail.gmail.com>
-Content-Language: nb-NO
+DKIM-Filter: OpenDKIM Filter v2.10.3 MAIL1.WPI.EDU w1BMKsY0002318
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wpi.edu; s=_dkim;
+        t=1518387654; i=@wpi.edu;
+        bh=zspzix65R1VfvRV0MgpVVLiO8Nn6ImJtN3pM98TlPF8=;
+        h=Date:From:Cc:Subject:In-Reply-To:References;
+        b=qIzsIEO13fvzoi4Da/B9H9z/jJjGtBPTNWYzsSDs0X8X6iGEIb0qLwyf/W7ISxhmY
+         oaRQTByQANQYB12ghPl0hx1l2n7KO472j9pKoPueK4E/FldM2RK5KB5A9kHF2XNgiu
+         WZkAgN8Xylp5TBPM98QLntuSz/rDZSOtrmdz7x3k=
+In-Reply-To: <f095e07f58414b00b4dddc3776f0f64e@CCDEX023.corp.corpcommon.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"
-To: 'Peng Yu' <pengyu.ut@gmail.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+To: 
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-SGkgLA0KDQpFdmVuIGlmIHlvdSBoYXZlIG5vdCBleHBsYWluZWQgaG93IHRoaXMgaXMgc2V0dXAg
-LCBpdCBzZWVtcyB2ZXJ5IHVubGlrZWx5IHRoZSBpc3N1ZSB3aXRoIHNlcnZlcjEgY291bGQgYmUg
-dGhlIGlwdGFibGVzIEZXIC4uLg0KLi4uIEkgY2FuIG9ubHkgR1VFU1MgaGVyZSBzaW5jZSB0aGVy
-ZSBpcyBub3QgZW5vdWdoIGRhdGEgdG8gYmUgMTAwJSBzdXJlIC4NCkhvd2V2ZXIgdGhlcmUgYXJl
-IG5vdCByZWFsbHkgYW55IHJlbGV2YW50IGRpZmZlcmVuY2UgaW4gdGhlIHJ1bGVzIGZvciBzZXJ2
-ZXIxIGFuZCBzZXJ2ZXIyICwgYW5kIHRoZSBydWxlc2V0IGlzIG5vdCBzZXR1cCBpbiB3aGF0IEkg
-d291bGQgY2FsbCBiZXN0IHByYWN0aWNlIC4NCkluIGVzc2VuY2UgYm90aCBydWxlcyBhbGxvdyBm
-b3IgZXZlcnl0aGluZyAsIGV4Y2VwdCBTTVRQICwgSFRUUCAsIElNQVAyIGFuZCBJTUFQUw0KVW5s
-ZXNzIHlvdXIgU1FVSUQgUFJPWFkgc2V0dXAgaXMgdXNpbmcgb25lIG9mIHRoZSA0IHBvcnRzIGFz
-c29jaWF0ZWQgd2l0aCB0aGUgNCBzZXJ2aWNlcyAoIGFuZCBub3JtYWxseSBpdCB3b3VsZCBub3Qg
-KSBpdCBzaG91bGQgbm90IGJlIGJsb2NrZWQgLg0KDQpSRUpFQ1QgICAgIHRjcCAgLS0gIGFueXdo
-ZXJlICAgICAgICAgICAgIGFueXdoZXJlICAgICAgICAgICAgIHRjcCBkcHQ6c210cCByZWplY3Qt
-d2l0aCBpY21wLXBvcnQtdW5yZWFjaGFibGUNClJFSkVDVCAgICAgdGNwICAtLSAgYW55d2hlcmUg
-ICAgICAgICAgICAgYW55d2hlcmUgICAgICAgICAgICAgdGNwIGRwdDpodHRwIHJlamVjdC13aXRo
-IGljbXAtcG9ydC11bnJlYWNoYWJsZQ0KUkVKRUNUICAgICB0Y3AgIC0tICBhbnl3aGVyZSAgICAg
-ICAgICAgICBhbnl3aGVyZSAgICAgICAgICAgICB0Y3AgZHB0OmltYXAyIHJlamVjdC13aXRoIGlj
-bXAtcG9ydC11bnJlYWNoYWJsZQ0KUkVKRUNUICAgICB0Y3AgIC0tICBhbnl3aGVyZSAgICAgICAg
-ICAgICBhbnl3aGVyZSAgICAgICAgICAgICB0Y3AgZHB0OmltYXBzIHJlamVjdC13aXRoIGljbXAt
-cG9ydC11bnJlYWNoYWJsZQ0KDQpGcm9tIHdoYXQgSSBjYW4gdW5kZXJzdGFuZCBhbGwgb3RoZXIg
-cnVsZXMgYXJlIG5vdCBuZWVkZWQgLyBzaW5jZSB0aGV5IGFyZSBjb3ZlcmVkIGJ5IGEgREVGQVVM
-VCBBQ0NFUFQgaW4gdGhpcyAiU0VUVVAiDQoNCllvdSBjYW4gbm9ybWFsbHkgdmVyaWZ5IHRoaXMg
-aWYgeW91IHVzZSB0aGUgc3ludGF4DQoNCiJzdWRvIGlwdGFibGVzIC1udkwiDQpUaGlzIHdpbGwg
-c2hvdyB5b3UgaGl0IGNvdW50ZXJzIHN0YXRpc3RpY3MNCklmIHlvdSB0aGVuIHRyeSBmcm9tIG91
-dHNpZGUgInRlbG5ldCBzZXJ2ZXIxIDMxMjgiICggeW91IG1heSBuZWVkIHRvIGNoYW5nZSB0aGUg
-cG9ydCAzMTI4IHdpdGggd2hhdGV2ZXIgcG9ydCB5b3VyIHNxdWlkIHNldHVwIHVzZXMgLCBidXQg
-MzEyOCBpcyBub3JtYWxseSB0aGUgZGVmYXVsdCApDQoNClRoZW4gd2hlbiB5b3UgYW5vdGhlciAi
-c3VkbyBpcHRhYmxlcyAtbnZMIiByaWdodCBhZnRlciBhbmQgbm9uZSBvZiB0aGUgY291bnRlcnMg
-aGF2ZSBpbmNyZWFzZSBmb3IgYW55IERST1AgLyBSRUpFQ1QgcnVsZQ0KDQoNCg0KQmVzdCByZWdh
-cmRzDQpBbmRyw6kgUGF1bHNiZXJnLUNzaWJpDQpTZW5pb3IgTmV0d29yayBFbmdpbmVlciANCklC
-TSBTZXJ2aWNlcyBBUw0KDQotLS0tLU9wcHJpbm5lbGlnIG1lbGRpbmctLS0tLQ0KRnJhOiBuZXRm
-aWx0ZXItb3duZXJAdmdlci5rZXJuZWwub3JnIFttYWlsdG86bmV0ZmlsdGVyLW93bmVyQHZnZXIu
-a2VybmVsLm9yZ10gUMOlIHZlZ25lIGF2IFBlbmcgWXUNClNlbmR0OiBsw7hyZGFnIDEwLiBmZWJy
-dWFyIDIwMTggMDYuMjgNClRpbDogbmV0ZmlsdGVyQHZnZXIua2VybmVsLm9yZw0KRW1uZTogSG93
-IHRvIGNoZWNrIHdoeSBIVFRQIHByb3h5IGlzIG5vdCBhY2Nlc3NpYmxlIGZyb20gb3V0c2lkZT8N
-Cg0KSGksDQoNCkkgaGF2ZSBzcXVpZCBIVFRQIHByb3h5IHJ1bm5pbmcgb24gYm90aCBvZiB0aGUg
-Zm9sbG93aW5nIHNlcnZlcnMNCihzZXJ2ZXIgMSBhbmQgMikuIEJ1dCB0aGUgcHJveHkgc2Vydmlj
-ZSBvbiBzZXJ2ZXIxIGNhbiBub3QgYmUgYWNjZXNzZWQNCmZyb20gb3V0c2lkZS4NCg0KSSBhbSBu
-b3QgZmFtaWxpYXIgd2l0aCB0aGUgb3V0cHV0IG9mIGlwdGFibGVzLiBDb3VsZCB0aGUgZGlmZmVy
-ZW5jZQ0KZXhwbGFpbiB3aHkgcHJveHkgb24gc2VydmVyMSBpcyBub3QgYWNjZXNzaWJsZT8gVGhh
-bmtzLg0KDQpzZXJ2ZXIxOn4kIHN1ZG8gaXB0YWJsZXMgLUwNCkNoYWluIElOUFVUIChwb2xpY3kg
-QUNDRVBUKQ0KdGFyZ2V0ICAgICBwcm90IG9wdCBzb3VyY2UgICAgICAgICAgICAgICBkZXN0aW5h
-dGlvbg0KUkVKRUNUICAgICB0Y3AgIC0tICBhbnl3aGVyZSAgICAgICAgICAgICBhbnl3aGVyZSAg
-ICAgICAgICAgICB0Y3ANCmRwdDpzbXRwIHJlamVjdC13aXRoIGljbXAtcG9ydC11bnJlYWNoYWJs
-ZQ0KUkVKRUNUICAgICB0Y3AgIC0tICBhbnl3aGVyZSAgICAgICAgICAgICBhbnl3aGVyZSAgICAg
-ICAgICAgICB0Y3ANCmRwdDpodHRwIHJlamVjdC13aXRoIGljbXAtcG9ydC11bnJlYWNoYWJsZQ0K
-QUNDRVBUICAgICB0Y3AgIC0tICBsb2NhbGhvc3QgICAgICAgICAgICBhbnl3aGVyZSAgICAgICAg
-ICAgICB0Y3AgZHB0OjU5MDANCkFDQ0VQVCAgICAgdGNwICAtLSAgbG9jYWxob3N0ICAgICAgICAg
-ICAgYW55d2hlcmUgICAgICAgICAgICAgdGNwIGRwdDo1OTAxDQpBQ0NFUFQgICAgIHRjcCAgLS0g
-IGxvY2FsaG9zdCAgICAgICAgICAgIGFueXdoZXJlICAgICAgICAgICAgIHRjcCBkcHQ6NTkwMg0K
-QUNDRVBUICAgICB0Y3AgIC0tICBsb2NhbGhvc3QgICAgICAgICAgICBhbnl3aGVyZSAgICAgICAg
-ICAgICB0Y3AgZHB0OjU5MDMNCkFDQ0VQVCAgICAgdGNwICAtLSAgbG9jYWxob3N0ICAgICAgICAg
-ICAgYW55d2hlcmUgICAgICAgICAgICAgdGNwIGRwdDo1OTA0DQpBQ0NFUFQgICAgIHRjcCAgLS0g
-IGxvY2FsaG9zdCAgICAgICAgICAgIGFueXdoZXJlICAgICAgICAgICAgIHRjcCBkcHQ6NTkwNQ0K
-QUNDRVBUICAgICB0Y3AgIC0tICBsb2NhbGhvc3QgICAgICAgICAgICBhbnl3aGVyZSAgICAgICAg
-ICAgICB0Y3AgZHB0OjU5MDYNCkFDQ0VQVCAgICAgdGNwICAtLSAgbG9jYWxob3N0ICAgICAgICAg
-ICAgYW55d2hlcmUgICAgICAgICAgICAgdGNwIGRwdDo1OTA3DQpSRUpFQ1QgICAgIHRjcCAgLS0g
-IGFueXdoZXJlICAgICAgICAgICAgIGFueXdoZXJlICAgICAgICAgICAgIHRjcA0KZHB0OjU5MDAg
-cmVqZWN0LXdpdGggaWNtcC1wb3J0LXVucmVhY2hhYmxlDQpSRUpFQ1QgICAgIHRjcCAgLS0gIGFu
-eXdoZXJlICAgICAgICAgICAgIGFueXdoZXJlICAgICAgICAgICAgIHRjcA0KZHB0OjU5MDEgcmVq
-ZWN0LXdpdGggaWNtcC1wb3J0LXVucmVhY2hhYmxlDQpSRUpFQ1QgICAgIHRjcCAgLS0gIGFueXdo
-ZXJlICAgICAgICAgICAgIGFueXdoZXJlICAgICAgICAgICAgIHRjcA0KZHB0OjU5MDIgcmVqZWN0
-LXdpdGggaWNtcC1wb3J0LXVucmVhY2hhYmxlDQpSRUpFQ1QgICAgIHRjcCAgLS0gIGFueXdoZXJl
-ICAgICAgICAgICAgIGFueXdoZXJlICAgICAgICAgICAgIHRjcA0KZHB0OjU5MDMgcmVqZWN0LXdp
-dGggaWNtcC1wb3J0LXVucmVhY2hhYmxlDQpSRUpFQ1QgICAgIHRjcCAgLS0gIGFueXdoZXJlICAg
-ICAgICAgICAgIGFueXdoZXJlICAgICAgICAgICAgIHRjcA0KZHB0OjU5MDQgcmVqZWN0LXdpdGgg
-aWNtcC1wb3J0LXVucmVhY2hhYmxlDQpSRUpFQ1QgICAgIHRjcCAgLS0gIGFueXdoZXJlICAgICAg
-ICAgICAgIGFueXdoZXJlICAgICAgICAgICAgIHRjcA0KZHB0OjU5MDUgcmVqZWN0LXdpdGggaWNt
-cC1wb3J0LXVucmVhY2hhYmxlDQpSRUpFQ1QgICAgIHRjcCAgLS0gIGFueXdoZXJlICAgICAgICAg
-ICAgIGFueXdoZXJlICAgICAgICAgICAgIHRjcA0KZHB0OjU5MDYgcmVqZWN0LXdpdGggaWNtcC1w
-b3J0LXVucmVhY2hhYmxlDQpSRUpFQ1QgICAgIHRjcCAgLS0gIGFueXdoZXJlICAgICAgICAgICAg
-IGFueXdoZXJlICAgICAgICAgICAgIHRjcA0KZHB0OjU5MDcgcmVqZWN0LXdpdGggaWNtcC1wb3J0
-LXVucmVhY2hhYmxlDQpSRUpFQ1QgICAgIHRjcCAgLS0gIGFueXdoZXJlICAgICAgICAgICAgIGFu
-eXdoZXJlICAgICAgICAgICAgIHRjcA0KZHB0OmltYXAyIHJlamVjdC13aXRoIGljbXAtcG9ydC11
-bnJlYWNoYWJsZQ0KUkVKRUNUICAgICB0Y3AgIC0tICBhbnl3aGVyZSAgICAgICAgICAgICBhbnl3
-aGVyZSAgICAgICAgICAgICB0Y3ANCmRwdDppbWFwcyByZWplY3Qtd2l0aCBpY21wLXBvcnQtdW5y
-ZWFjaGFibGUNCg0KQ2hhaW4gRk9SV0FSRCAocG9saWN5IEFDQ0VQVCkNCnRhcmdldCAgICAgcHJv
-dCBvcHQgc291cmNlICAgICAgICAgICAgICAgZGVzdGluYXRpb24NCg0KQ2hhaW4gT1VUUFVUIChw
-b2xpY3kgQUNDRVBUKQ0KdGFyZ2V0ICAgICBwcm90IG9wdCBzb3VyY2UgICAgICAgICAgICAgICBk
-ZXN0aW5hdGlvbg0Kc2VydmVyMjp+JCAgc3VkbyBpcHRhYmxlcyAtTA0KQ2hhaW4gSU5QVVQgKHBv
-bGljeSBBQ0NFUFQpDQp0YXJnZXQgICAgIHByb3Qgb3B0IHNvdXJjZSAgICAgICAgICAgICAgIGRl
-c3RpbmF0aW9uDQpBQ0NFUFQgICAgIHRjcCAgLS0gIGxvY2FsaG9zdCAgICAgICAgICAgIGFueXdo
-ZXJlICAgICAgICAgICAgIHRjcCBkcHQ6NTkwMA0KQUNDRVBUICAgICB0Y3AgIC0tICBsb2NhbGhv
-c3QgICAgICAgICAgICBhbnl3aGVyZSAgICAgICAgICAgICB0Y3AgZHB0OjU5MDENCkFDQ0VQVCAg
-ICAgdGNwICAtLSAgbG9jYWxob3N0ICAgICAgICAgICAgYW55d2hlcmUgICAgICAgICAgICAgdGNw
-IGRwdDo1OTAyDQpBQ0NFUFQgICAgIHRjcCAgLS0gIGxvY2FsaG9zdCAgICAgICAgICAgIGFueXdo
-ZXJlICAgICAgICAgICAgIHRjcCBkcHQ6NTkwMw0KQUNDRVBUICAgICB0Y3AgIC0tICBsb2NhbGhv
-c3QgICAgICAgICAgICBhbnl3aGVyZSAgICAgICAgICAgICB0Y3AgZHB0OjU5MDQNCkFDQ0VQVCAg
-ICAgdGNwICAtLSAgbG9jYWxob3N0ICAgICAgICAgICAgYW55d2hlcmUgICAgICAgICAgICAgdGNw
-IGRwdDo1OTA1DQpBQ0NFUFQgICAgIHRjcCAgLS0gIGxvY2FsaG9zdCAgICAgICAgICAgIGFueXdo
-ZXJlICAgICAgICAgICAgIHRjcCBkcHQ6NTkwNg0KQUNDRVBUICAgICB0Y3AgIC0tICBsb2NhbGhv
-c3QgICAgICAgICAgICBhbnl3aGVyZSAgICAgICAgICAgICB0Y3AgZHB0OjU5MDcNClJFSkVDVCAg
-ICAgdGNwICAtLSAgYW55d2hlcmUgICAgICAgICAgICAgYW55d2hlcmUgICAgICAgICAgICAgdGNw
-DQpkcHQ6NTkwMCByZWplY3Qtd2l0aCBpY21wLXBvcnQtdW5yZWFjaGFibGUNClJFSkVDVCAgICAg
-dGNwICAtLSAgYW55d2hlcmUgICAgICAgICAgICAgYW55d2hlcmUgICAgICAgICAgICAgdGNwDQpk
-cHQ6NTkwMSByZWplY3Qtd2l0aCBpY21wLXBvcnQtdW5yZWFjaGFibGUNClJFSkVDVCAgICAgdGNw
-ICAtLSAgYW55d2hlcmUgICAgICAgICAgICAgYW55d2hlcmUgICAgICAgICAgICAgdGNwDQpkcHQ6
-NTkwMiByZWplY3Qtd2l0aCBpY21wLXBvcnQtdW5yZWFjaGFibGUNClJFSkVDVCAgICAgdGNwICAt
-LSAgYW55d2hlcmUgICAgICAgICAgICAgYW55d2hlcmUgICAgICAgICAgICAgdGNwDQpkcHQ6NTkw
-MyByZWplY3Qtd2l0aCBpY21wLXBvcnQtdW5yZWFjaGFibGUNClJFSkVDVCAgICAgdGNwICAtLSAg
-YW55d2hlcmUgICAgICAgICAgICAgYW55d2hlcmUgICAgICAgICAgICAgdGNwDQpkcHQ6NTkwNCBy
-ZWplY3Qtd2l0aCBpY21wLXBvcnQtdW5yZWFjaGFibGUNClJFSkVDVCAgICAgdGNwICAtLSAgYW55
-d2hlcmUgICAgICAgICAgICAgYW55d2hlcmUgICAgICAgICAgICAgdGNwDQpkcHQ6NTkwNSByZWpl
-Y3Qtd2l0aCBpY21wLXBvcnQtdW5yZWFjaGFibGUNClJFSkVDVCAgICAgdGNwICAtLSAgYW55d2hl
-cmUgICAgICAgICAgICAgYW55d2hlcmUgICAgICAgICAgICAgdGNwDQpkcHQ6NTkwNiByZWplY3Qt
-d2l0aCBpY21wLXBvcnQtdW5yZWFjaGFibGUNClJFSkVDVCAgICAgdGNwICAtLSAgYW55d2hlcmUg
-ICAgICAgICAgICAgYW55d2hlcmUgICAgICAgICAgICAgdGNwDQpkcHQ6NTkwNyByZWplY3Qtd2l0
-aCBpY21wLXBvcnQtdW5yZWFjaGFibGUNClJFSkVDVCAgICAgdGNwICAtLSAgYW55d2hlcmUgICAg
-ICAgICAgICAgYW55d2hlcmUgICAgICAgICAgICAgdGNwDQpkcHQ6c210cCByZWplY3Qtd2l0aCBp
-Y21wLXBvcnQtdW5yZWFjaGFibGUNClJFSkVDVCAgICAgdGNwICAtLSAgYW55d2hlcmUgICAgICAg
-ICAgICAgYW55d2hlcmUgICAgICAgICAgICAgdGNwDQpkcHQ6aHR0cCByZWplY3Qtd2l0aCBpY21w
-LXBvcnQtdW5yZWFjaGFibGUNClJFSkVDVCAgICAgdGNwICAtLSAgYW55d2hlcmUgICAgICAgICAg
-ICAgYW55d2hlcmUgICAgICAgICAgICAgdGNwDQpkcHQ6aW1hcDIgcmVqZWN0LXdpdGggaWNtcC1w
-b3J0LXVucmVhY2hhYmxlDQpSRUpFQ1QgICAgIHRjcCAgLS0gIGFueXdoZXJlICAgICAgICAgICAg
-IGFueXdoZXJlICAgICAgICAgICAgIHRjcA0KZHB0OmltYXBzIHJlamVjdC13aXRoIGljbXAtcG9y
-dC11bnJlYWNoYWJsZQ0KDQpDaGFpbiBGT1JXQVJEIChwb2xpY3kgQUNDRVBUKQ0KdGFyZ2V0ICAg
-ICBwcm90IG9wdCBzb3VyY2UgICAgICAgICAgICAgICBkZXN0aW5hdGlvbg0KDQpDaGFpbiBPVVRQ
-VVQgKHBvbGljeSBBQ0NFUFQpDQp0YXJnZXQgICAgIHByb3Qgb3B0IHNvdXJjZSAgICAgICAgICAg
-ICAgIGRlc3RpbmF0aW9uDQoNCi0tIA0KUmVnYXJkcywNClBlbmcNCi0tDQpUbyB1bnN1YnNjcmli
-ZSBmcm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbmV0ZmlsdGVyIiBp
-bg0KdGhlIGJvZHkgb2YgYSBtZXNzYWdlIHRvIG1ham9yZG9tb0B2Z2VyLmtlcm5lbC5vcmcNCk1v
-cmUgbWFqb3Jkb21vIGluZm8gYXQgIGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jkb21vLWlu
-Zm8uaHRtbA0K
+[send it to the list this time]
+
+
+The group of ACCEPTs allows packets to ports 5900-5907 from localhost to lo=
+calhost because this is the INPUT chain. The group of REJECTs blocks packet=
+s to ports 5900-5907, smtp, http, imap2 and imaps from anywhere to localhos=
+t).
+
+He didn't say how he is accessing his proxy. Which port? HTTP or HTTPS? Do =
+his proxies have public addresses? Is there a NAT firewall between his two =
+servers and the internet? If so, does that firewall allow traffic to server=
+2?
+
+If these are all the rules, I don't see any netfilter-related reason why se=
+rver1 does not work while server does work.
+
+N
+
+
+On Sun, 11 Feb 2018 21:03:04 +0000
+Andr=C3=A9 Paulsberg-Csibi (IBM Consultant)         <Andre.Paulsberg-Csibi@=
+evry.com> wrote:
+
+> Hi ,
+>=20
+> Even if you have not explained how this is setup , it seems very unlikely=
+ the issue with server1 could be the iptables FW ...
+> ... I can only GUESS here since there is not enough data to be 100% sure .
+> However there are not really any relevant difference in the rules for ser=
+ver1 and server2 , and the ruleset is not setup in what I would call best p=
+ractice .
+> In essence both rules allow for everything , except SMTP , HTTP , IMAP2 a=
+nd IMAPS
+> Unless your SQUID PROXY setup is using one of the 4 ports associated with=
+ the 4 services ( and normally it would not ) it should not be blocked .
+>=20
+> REJECT     tcp  --  anywhere             anywhere             tcp dpt:smt=
+p reject-with icmp-port-unreachable
+> REJECT     tcp  --  anywhere             anywhere             tcp dpt:htt=
+p reject-with icmp-port-unreachable
+> REJECT     tcp  --  anywhere             anywhere             tcp dpt:ima=
+p2 reject-with icmp-port-unreachable
+> REJECT     tcp  --  anywhere             anywhere             tcp dpt:ima=
+ps reject-with icmp-port-unreachable
+>=20
+> From what I can understand all other rules are not needed / since they ar=
+e covered by a DEFAULT ACCEPT in this "SETUP"
+>=20
+> You can normally verify this if you use the syntax
+>=20
+> "sudo iptables -nvL"
+> This will show you hit counters statistics
+> If you then try from outside "telnet server1 3128" ( you may need to chan=
+ge the port 3128 with whatever port your squid setup uses , but 3128 is nor=
+mally the default )
+>=20
+> Then when you another "sudo iptables -nvL" right after and none of the co=
+unters have increase for any DROP / REJECT rule
+>=20
+>=20
+>=20
+> Best regards
+> Andr=C3=A9 Paulsberg-Csibi
+> Senior Network Engineer=20
+> IBM Services AS
+>=20
+> -----Opprinnelig melding-----
+> Fra: netfilter-owner@vger.kernel.org [mailto:netfilter-owner@vger.kernel.=
+org] P=C3=A5 vegne av Peng Yu
+> Sendt: l=C3=B8rdag 10. februar 2018 06.28
+> Til: netfilter@vger.kernel.org
+> Emne: How to check why HTTP proxy is not accessible from outside?
+>=20
+> Hi,
+>=20
+> I have squid HTTP proxy running on both of the following servers
+> (server 1 and 2). But the proxy service on server1 can not be accessed
+> from outside.
+>=20
+> I am not familiar with the output of iptables. Could the difference
+> explain why proxy on server1 is not accessible? Thanks.
+>=20
+> server1:~$ sudo iptables -L
+> Chain INPUT (policy ACCEPT)
+> target     prot opt source               destination
+> REJECT     tcp  --  anywhere             anywhere             tcp
+> dpt:smtp reject-with icmp-port-unreachable
+> REJECT     tcp  --  anywhere             anywhere             tcp
+> dpt:http reject-with icmp-port-unreachable
+> ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5900
+> ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5901
+> ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5902
+> ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5903
+> ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5904
+> ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5905
+> ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5906
+> ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5907
+> REJECT     tcp  --  anywhere             anywhere             tcp
+> dpt:5900 reject-with icmp-port-unreachable
+> REJECT     tcp  --  anywhere             anywhere             tcp
+> dpt:5901 reject-with icmp-port-unreachable
+> REJECT     tcp  --  anywhere             anywhere             tcp
+> dpt:5902 reject-with icmp-port-unreachable
+> REJECT     tcp  --  anywhere             anywhere             tcp
+> dpt:5903 reject-with icmp-port-unreachable
+> REJECT     tcp  --  anywhere             anywhere             tcp
+> dpt:5904 reject-with icmp-port-unreachable
+> REJECT     tcp  --  anywhere             anywhere             tcp
+> dpt:5905 reject-with icmp-port-unreachable
+> REJECT     tcp  --  anywhere             anywhere             tcp
+> dpt:5906 reject-with icmp-port-unreachable
+> REJECT     tcp  --  anywhere             anywhere             tcp
+> dpt:5907 reject-with icmp-port-unreachable
+> REJECT     tcp  --  anywhere             anywhere             tcp
+> dpt:imap2 reject-with icmp-port-unreachable
+> REJECT     tcp  --  anywhere             anywhere             tcp
+> dpt:imaps reject-with icmp-port-unreachable
+>=20
+> Chain FORWARD (policy ACCEPT)
+> target     prot opt source               destination
+>=20
+> Chain OUTPUT (policy ACCEPT)
+> target     prot opt source               destination
+> server2:~$  sudo iptables -L
+> Chain INPUT (policy ACCEPT)
+> target     prot opt source               destination
+> ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5900
+> ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5901
+> ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5902
+> ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5903
+> ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5904
+> ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5905
+> ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5906
+> ACCEPT     tcp  --  localhost            anywhere             tcp dpt:5907
+> REJECT     tcp  --  anywhere             anywhere             tcp
+> dpt:5900 reject-with icmp-port-unreachable
+> REJECT     tcp  --  anywhere             anywhere             tcp
+> dpt:5901 reject-with icmp-port-unreachable
+> REJECT     tcp  --  anywhere             anywhere             tcp
+> dpt:5902 reject-with icmp-port-unreachable
+> REJECT     tcp  --  anywhere             anywhere             tcp
+> dpt:5903 reject-with icmp-port-unreachable
+> REJECT     tcp  --  anywhere             anywhere             tcp
+> dpt:5904 reject-with icmp-port-unreachable
+> REJECT     tcp  --  anywhere             anywhere             tcp
+> dpt:5905 reject-with icmp-port-unreachable
+> REJECT     tcp  --  anywhere             anywhere             tcp
+> dpt:5906 reject-with icmp-port-unreachable
+> REJECT     tcp  --  anywhere             anywhere             tcp
+> dpt:5907 reject-with icmp-port-unreachable
+> REJECT     tcp  --  anywhere             anywhere             tcp
+> dpt:smtp reject-with icmp-port-unreachable
+> REJECT     tcp  --  anywhere             anywhere             tcp
+> dpt:http reject-with icmp-port-unreachable
+> REJECT     tcp  --  anywhere             anywhere             tcp
+> dpt:imap2 reject-with icmp-port-unreachable
+> REJECT     tcp  --  anywhere             anywhere             tcp
+> dpt:imaps reject-with icmp-port-unreachable
+>=20
+> Chain FORWARD (policy ACCEPT)
+> target     prot opt source               destination
+>=20
+> Chain OUTPUT (policy ACCEPT)
+> target     prot opt source               destination
+>=20
+
