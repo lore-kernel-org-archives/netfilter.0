@@ -1,51 +1,75 @@
-From: "toml@thlu.de" <toml@thlu.de>
-Subject: 2 questions about rules for Multicast and ICMP
-Date: Mon, 12 Feb 2018 12:17:41 +0100
-Message-ID: <7c4c1159-c35e-87bd-271a-c8bdb89b9819@raspi1>
-Content-Transfer-Encoding: 7bit
+From: A <publicface@bak.rr.com>
+Subject: using iptables to route between subnets
+Date: Thu, 15 Feb 2018 18:25:02 -0800
+Message-ID: <411ef751-4f31-ea17-ad54-235d4ef308e1@bak.rr.com>
+References: <9835afd2-74b0-e5a8-e812-898869b06ad3@bak.rr.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: de-DE
+In-Reply-To: <9835afd2-74b0-e5a8-e812-898869b06ad3@bak.rr.com>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="utf-8"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello @ all
+I am trying to route packets between two internal/private subnets 
+10.1.1.0/24 and 10.1.2.0/24 .  The second subnet happens to be wireless.
 
-I have some small problems with understanding and ask for some help.
-Thank you very much! My Input- and Output-Policies are "drop", so I
-think, I have to accept some special traffic for IPv4 and IPv6. At
-first, I found these two variants (similar) on the web:
-
-1.) as Packet-Type
-     nft add rule ip tfilter cinput pkttype multicast counter accept
-
-2.) as Multicast-Port
-     nft add rule ip tfilter cinput tcp dport 5353 accept
-     nft add rule ip tfilter cinput udp dport 5353 accept
-
-Do both variants produce the same result? If not, which one is recommended?
+I've read until my eyes bled and have been at this for several days.  
+I've tried a variety of different ways based on other's similar posted 
+attempts, and at this point things are a mess as you will see below.  In 
+addition to simple routing, I need to get my wireless printer working 
+too, which is essentially the real reason I'm doing this, and I'm hoping 
+that issue will be resolved by this as well.
 
 
-And my second problem is ICMP. The Input-Rules are not a problem,
-nether IPv4, nor IPv6 ( RFC 4890). I want  also accept all outgoing
-ICMP, if I want to do a diagnostic against Net-Problems.
+This is a diagram of my network: 
+https://www.lucidchart.com/documents/edit/58779470-32c0-407d-8111-0b074b35ff4d/0?shared=true
 
-IPv4 is working fine:
-nft add rule ip tfilter coutput ip protocol icmp counter accept
+These are the relevant rules:
 
-But I got a Problem with outgoing traffic and the same Statement (transmitted to ip6)
-with IPv6. The translated rule from iptables...
-nft add rule ip6 tfilter coutput meta l4proto ipv6-icmp counter accept
-
-...seems to working  also fine, but I am realy unsure, if it is, what I
-want to do. What is the right way to accept outgoing ICMP on IPv6?
-Or is it normally sufficient to allow only outgoing echo-requests?
-
-Best Regards from Germany
-Thomas Luening
+iptables-save -c | grep RULE
 
 
-ps
-I'm sorry, but I needed for this Mail the help from https://www.deepl.com/translator
+[1:40] -A PREROUTING -i enp6s0 -p tcp -m multiport --dports 80,443 -m 
+comment --comment "RULE 1; in WAN port 80,443; rewrite dst as LAN 
+address" -j DNAT --to-destination 10.1.1.1
+[1:328] -A PREROUTING -d 10.1.2.0/24 -m comment --comment "RULE 1A; if 
+source WLAN rewrite as LAN address" -j NETMAP --to 10.1.1.0/24
+[26:3083] -A POSTROUTING -s 10.1.0.0/16 -o enp6s0 -m comment --comment 
+"RULE 2; after routing rewrite to WAN address iff src LAN or WLAN, out 
+WAN" -j MASQUERADE
+[183:72318] -A FORWARD -i enp6s0 -o wlp2s0 -m conntrack --ctstate 
+RELATED,ESTABLISHED -m comment --comment "RULE 3; in WAN; out wireless, 
+iff established." -j ACCEPT
+[0:0] -A FORWARD -d 10.1.1.0/24 -i wlp2s0 -o enp4s5 -m comment --comment 
+"RULE 4; in wireless out LAN; iff dst LAN" -j ACCEPT
+[324:69828] -A FORWARD -s 10.1.0.0/16 ! -d 10.1.0.0/16 -o enp6s0 -m 
+comment --comment "RULE 5; src LAN or WLAN, dst not LAN nor WLAN, out 
+WAN" -j ACCEPT
+[0:0] -A FORWARD -s 10.1.2.0/24 ! -d 10.1.0.0/16 -o enp6s0 -m comment 
+--comment "RULE 5w; src WLAN out WAN, iff dst not WLAN nor LAN" -j ACCEPT
+[0:0] -A FORWARD -s 10.1.0.0/16 -d 10.1.2.0/24 -o wlp2s0 -m comment 
+--comment "RULE 8; src LAN or WLAN, dst WLAN, out WLAN" -j ACCEPT
+[1:76] -A FORWARD -d 10.1.1.0/24 -i enp6s0 -o enp4s5 -m conntrack 
+--ctstate RELATED,ESTABLISHED -m comment --comment "RULE 6; in WAN out 
+LAN, iff established and dst LAN" -j ACCEPT
+[0:0] -A FORWARD -d 10.1.1.0/24 -i enp6s0 -p tcp -m multiport --dports 
+80,443 -m comment --comment "RULE 7 supplies a target for RULE 1" -j ACCEPT
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Some of them are obviously not getting hit, I don't know why. I'm not 
+really sure which I need, at this point I've grown dizzy from looking at 
+them.
+
+
+Here are the full set of rules if you'd like to see, though the above I 
+think might suffice: http://fnpaste.com/qprP
+
+Thank you in advance for your help!
+
+
+
+
