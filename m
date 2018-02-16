@@ -1,97 +1,274 @@
-From: =?utf-8?B?QW5kcsOpIFBhdWxzYmVyZy1Dc2liaSAoSUJNIENvbnN1bHRhbnQp?= 
-        <Andre.Paulsberg-Csibi@evry.com>
-Subject: SV: using iptables to route between subnets
-Date: Fri, 16 Feb 2018 09:08:42 +0000
-Message-ID: <41952bf0a8c7405c8d6f737d57ad1635@CCDEX023.corp.corpcommon.com>
-References: <9835afd2-74b0-e5a8-e812-898869b06ad3@bak.rr.com>
- <411ef751-4f31-ea17-ad54-235d4ef308e1@bak.rr.com>
- <22891e20-2bc6-bcc7-dac1-6ceb22010fea@trustiosity.com>
- <8d3b841e-4de6-b478-8fb9-2231ad280730@bak.rr.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+From: "Philip Prindeville" <philipp@redfish-solutions.com>
+Subject: [PATCH v1 1/1] geoip: store database in network byte order
+Date: Fri, 16 Feb 2018 08:29:14 -0700
+Message-ID: <20180216152914.12187-1-philipp@redfish-solutions.com>
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=evry.onmicrosoft.com;
- s=selector1-evry-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
- bh=bD39iWZnK1/j5SydyM4RvIKTyasZ8i5qIrWMP9yZuW8=;
- b=mwddDF/VGMjDL0BL1jw1EgpkWBQNURsAVRZxDCd30Tgb2kOkx5lt7/ajBvaXdCMt+44A6bThZJED+1PY8lK529lMMoTnZ2EsBkxbyBmw8ELKS0XG0wqeMwN3KWzYsPXBIT9uZHn7OUKiQuvjWhJb2zP6gYdGwFKu58l+Rn1KLo4=
-In-Reply-To: <8d3b841e-4de6-b478-8fb9-2231ad280730@bak.rr.com>
-Content-Language: nb-NO
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1254"
-To: 'A' <publicface@bak.rr.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
+Cc: Philip Prindeville <philipp@redfish-solutions.com>
 
-SnVzdCBvbmUgcXVlc3Rpb24gLCBoYXZlIHlvdSBzZXQgdGhlICJuZXQuaXB2NC5pcF9mb3J3YXJk
-IiB0byAxICggY2hlY2sgd2l0aCBjb21tYW5kICkgOg0KDQoic3VkbyBzeXNjdGwgbmV0LmlwdjQu
-aXBfZm9yd2FyZCINCg0KDQpCZXN0IHJlZ2FyZHMNCkFuZHLDqSBQYXVsc2JlcmctQ3NpYmkNClNl
-bmlvciBOZXR3b3JrIEVuZ2luZWVyIA0KSUJNIFNlcnZpY2VzIEFTDQoNCi0tLS0tT3BwcmlubmVs
-aWcgbWVsZGluZy0tLS0tDQpGcmE6IG5ldGZpbHRlci1vd25lckB2Z2VyLmtlcm5lbC5vcmcgW21h
-aWx0bzpuZXRmaWx0ZXItb3duZXJAdmdlci5rZXJuZWwub3JnXSBQw6UgdmVnbmUgYXYgQQ0KU2Vu
-ZHQ6IGZyZWRhZyAxNi4gZmVicnVhciAyMDE4IDA2LjUzDQpUaWw6IG5ldGZpbHRlckB2Z2VyLmtl
-cm5lbC5vcmcNCkVtbmU6IFJlOiB1c2luZyBpcHRhYmxlcyB0byByb3V0ZSBiZXR3ZWVuIHN1Ym5l
-dHMNCg0KDQoNCk9uIDAyLzE1LzIwMTggMDg6MTUgUE0sIHpybSB3cm90ZToNCj4gT24gMDIvMTUv
-MjAxOCAwOToyNSBQTSwgQSB3cm90ZToNCj4+IEkgYW0gdHJ5aW5nIHRvIHJvdXRlIHBhY2tldHMg
-YmV0d2VlbiB0d28gaW50ZXJuYWwvcHJpdmF0ZSBzdWJuZXRzDQo+PiAxMC4xLjEuMC8yNCBhbmQg
-MTAuMS4yLjAvMjQgLsKgIFRoZSBzZWNvbmQgc3VibmV0IGhhcHBlbnMgdG8gYmUgd2lyZWxlc3Mu
-DQo+Pg0KPj4gSSd2ZSByZWFkIHVudGlsIG15IGV5ZXMgYmxlZCBhbmQgaGF2ZSBiZWVuIGF0IHRo
-aXMgZm9yIHNldmVyYWwgZGF5cy4gDQo+PiBJJ3ZlIHRyaWVkIGEgdmFyaWV0eSBvZiBkaWZmZXJl
-bnQgd2F5cyBiYXNlZCBvbiBvdGhlcidzIHNpbWlsYXIgDQo+PiBwb3N0ZWQgYXR0ZW1wdHMsIGFu
-ZCBhdCB0aGlzIHBvaW50IHRoaW5ncyBhcmUgYSBtZXNzIGFzIHlvdSB3aWxsIHNlZSANCj4+IGJl
-bG93LsKgIEluIGFkZGl0aW9uIHRvIHNpbXBsZSByb3V0aW5nLCBJIG5lZWQgdG8gZ2V0IG15IHdp
-cmVsZXNzIA0KPj4gcHJpbnRlciB3b3JraW5nIHRvbywgd2hpY2ggaXMgZXNzZW50aWFsbHkgdGhl
-IHJlYWwgcmVhc29uIEknbSBkb2luZyANCj4+IHRoaXMsIGFuZCBJJ20gaG9waW5nIHRoYXQgaXNz
-dWUgd2lsbCBiZSByZXNvbHZlZCBieSB0aGlzIGFzIHdlbGwuDQo+Pg0KPj4NCj4+IFRoaXMgaXMg
-YSBkaWFncmFtIG9mIG15IG5ldHdvcms6IA0KPj4gaHR0cHM6Ly93d3cubHVjaWRjaGFydC5jb20v
-ZG9jdW1lbnRzL2VkaXQvNTg3Nzk0NzAtMzJjMC00MDdkLTgxMTEtMGIwDQo+PiA3NGIzNWZmNGQv
-MD9zaGFyZWQ9dHJ1ZQ0KPj4NCj4+DQo+PiBUaGVzZSBhcmUgdGhlIHJlbGV2YW50IHJ1bGVzOg0K
-Pj4NCj4+IGlwdGFibGVzLXNhdmUgLWMgfCBncmVwIFJVTEUNCj4+DQo+Pg0KPj4gWzE6NDBdIC1B
-IFBSRVJPVVRJTkcgLWkgZW5wNnMwIC1wIHRjcCAtbSBtdWx0aXBvcnQgLS1kcG9ydHMgODAsNDQz
-IC1tIA0KPj4gY29tbWVudCAtLWNvbW1lbnQgIlJVTEUgMTsgaW4gV0FOIHBvcnQgODAsNDQzOyBy
-ZXdyaXRlIGRzdCBhcyBMQU4gDQo+PiBhZGRyZXNzIiAtaiBETkFUIC0tdG8tZGVzdGluYXRpb24g
-MTAuMS4xLjEgWzE6MzI4XSAtQSBQUkVST1VUSU5HIC1kIA0KPj4gMTAuMS4yLjAvMjQgLW0gY29t
-bWVudCAtLWNvbW1lbnQgIlJVTEUgMUE7IGlmIHNvdXJjZSBXTEFOIHJld3JpdGUgYXMgDQo+PiBM
-QU4gYWRkcmVzcyIgLWogTkVUTUFQIC0tdG8gMTAuMS4xLjAvMjQgWzI2OjMwODNdIC1BIFBPU1RS
-T1VUSU5HIC1zIA0KPj4gMTAuMS4wLjAvMTYgLW8gZW5wNnMwIC1tIGNvbW1lbnQgLS1jb21tZW50
-ICJSVUxFIDI7IGFmdGVyIHJvdXRpbmcgDQo+PiByZXdyaXRlIHRvIFdBTiBhZGRyZXNzIGlmZiBz
-cmMgTEFOIG9yIFdMQU4sIG91dCBXQU4iIC1qIE1BU1FVRVJBREUgDQo+PiBbMTgzOjcyMzE4XSAt
-QSBGT1JXQVJEIC1pIGVucDZzMCAtbyB3bHAyczAgLW0gY29ubnRyYWNrIC0tY3RzdGF0ZSANCj4+
-IFJFTEFURUQsRVNUQUJMSVNIRUQgLW0gY29tbWVudCAtLWNvbW1lbnQgIlJVTEUgMzsgaW4gV0FO
-OyBvdXQgDQo+PiB3aXJlbGVzcywgaWZmIGVzdGFibGlzaGVkLiIgLWogQUNDRVBUIFswOjBdIC1B
-IEZPUldBUkQgLWQgMTAuMS4xLjAvMjQgDQo+PiAtaSB3bHAyczAgLW8gZW5wNHM1IC1tIGNvbW1l
-bnQgLS1jb21tZW50ICJSVUxFIDQ7IGluIHdpcmVsZXNzIG91dCANCj4+IExBTjsgaWZmIGRzdCBM
-QU4iIC1qIEFDQ0VQVCBbMzI0OjY5ODI4XSAtQSBGT1JXQVJEIC1zIDEwLjEuMC4wLzE2ICEgDQo+
-PiAtZCAxMC4xLjAuMC8xNiAtbyBlbnA2czAgLW0gY29tbWVudCAtLWNvbW1lbnQgIlJVTEUgNTsg
-c3JjIExBTiBvciANCj4+IFdMQU4sIGRzdCBub3QgTEFOIG5vciBXTEFOLCBvdXQgV0FOIiAtaiBB
-Q0NFUFQgWzA6MF0gLUEgRk9SV0FSRCAtcyANCj4+IDEwLjEuMi4wLzI0ICEgLWQgMTAuMS4wLjAv
-MTYgLW8gZW5wNnMwIC1tIGNvbW1lbnQgLS1jb21tZW50ICJSVUxFIDV3OyANCj4+IHNyYyBXTEFO
-IG91dCBXQU4sIGlmZiBkc3Qgbm90IFdMQU4gbm9yIExBTiIgLWogQUNDRVBUIFswOjBdIC1BIA0K
-Pj4gRk9SV0FSRCAtcyAxMC4xLjAuMC8xNiAtZCAxMC4xLjIuMC8yNCAtbyB3bHAyczAgLW0gY29t
-bWVudCAtLWNvbW1lbnQgDQo+PiAiUlVMRSA4OyBzcmMgTEFOIG9yIFdMQU4sIGRzdCBXTEFOLCBv
-dXQgV0xBTiIgLWogQUNDRVBUIFsxOjc2XSAtQSANCj4+IEZPUldBUkQgLWQgMTAuMS4xLjAvMjQg
-LWkgZW5wNnMwIC1vIGVucDRzNSAtbSBjb25udHJhY2sgLS1jdHN0YXRlIA0KPj4gUkVMQVRFRCxF
-U1RBQkxJU0hFRCAtbSBjb21tZW50IC0tY29tbWVudCAiUlVMRSA2OyBpbiBXQU4gb3V0IExBTiwg
-aWZmIA0KPj4gZXN0YWJsaXNoZWQgYW5kIGRzdCBMQU4iIC1qIEFDQ0VQVCBbMDowXSAtQSBGT1JX
-QVJEIC1kIDEwLjEuMS4wLzI0IC1pIA0KPj4gZW5wNnMwIC1wIHRjcCAtbSBtdWx0aXBvcnQgLS1k
-cG9ydHMgODAsNDQzIC1tIGNvbW1lbnQgLS1jb21tZW50ICJSVUxFIA0KPj4gNyBzdXBwbGllcyBh
-IHRhcmdldCBmb3IgUlVMRSAxIiAtaiBBQ0NFUFQNCj4+DQo+PiB+fn5+fn5+fn5+fn5+fn5+fn5+
-fn5+fn5+fn5+fn5+fn5+fn5+fn5+fg0KPj4NCj4+IFNvbWUgb2YgdGhlbSBhcmUgb2J2aW91c2x5
-IG5vdCBnZXR0aW5nIGhpdCwgSSBkb24ndCBrbm93IHdoeS4gSSdtIG5vdCANCj4+IHJlYWxseSBz
-dXJlIHdoaWNoIEkgbmVlZCwgYXQgdGhpcyBwb2ludCBJJ3ZlIGdyb3duIGRpenp5IGZyb20gbG9v
-a2luZyANCj4+IGF0IHRoZW0uDQo+Pg0KPj4NCj4+IEhlcmUgYXJlIHRoZSBmdWxsIHNldCBvZiBy
-dWxlcyBpZiB5b3UnZCBsaWtlIHRvIHNlZSwgdGhvdWdoIHRoZSBhYm92ZSANCj4+IEkgdGhpbmsg
-bWlnaHQgc3VmZmljZTogaHR0cDovL2ZucGFzdGUuY29tL3FwclANCj4+DQo+PiBUaGFuayB5b3Ug
-aW4gYWR2YW5jZSBmb3IgeW91ciBoZWxwIQ0KPg0KPiBUaGF0IGlzIG1vcmUgY29tcGxpY2F0ZWQg
-dGhhbiBpdCBuZWVkcyB0byBiZS4gQWxzbywgeW91IGhhdmUgYSBORVRNQVAgDQo+IHJ1bGUgaW4g
-dGhlcmUgd2hpY2ggaXMgcHJvYmFibHkgY2F1c2luZyBwcm9ibGVtcy4NCj4NCj4gVHJ5IGdldHRp
-bmcgcmlkIG9mIHRoYXQgYW5kIHJlcGxhY2luZyBhbGwgdGhlIEZPUldBUkQgcnVsZXMgd2l0aCB0
-aGlzOg0KPg0KPiAtQSBGT1JXQVJEIC1tIGNvbm50cmFjayAtLWN0c3RhdGUgUkVMQVRFRCxFU1RB
-QkxJU0hFRCAtaiBBQ0NFUFQgLUEgDQo+IEZPUldBUkQgLWkgZW5wNHM1IC1zIDEwLjEuMS4wLzI0
-IC1qIEFDQ0VQVCAtQSBGT1JXQVJEIC1pIHdscDJzMCAtcyANCj4gMTAuMS4yLjAvMjQgLWogQUND
-RVBUIC1BIEZPUldBUkQgLWogUkVKRUNUDQo+DQo+DQpUaGFuayB5b3UgZm9yIHJlc3BvbmRpbmch
-wqAgSSBoYXZlIGRvbmUgYXMgeW91IHN1Z2dlc3RlZC7CoCBJcyB0aGlzIGNsb3NlcsKgIGh0dHA6
-Ly9mbnBhc3RlLmNvbS9nb1FOIHRvIHdoYXQgeW91IHdlcmUgc3VnZ2VzdGluZz/CoCBJdCdzIHN0
-aWxsIG5vdCB3b3JraW5nLg0KLS0NClRvIHVuc3Vic2NyaWJlIGZyb20gdGhpcyBsaXN0OiBzZW5k
-IHRoZSBsaW5lICJ1bnN1YnNjcmliZSBuZXRmaWx0ZXIiIGluIHRoZSBib2R5IG9mIGEgbWVzc2Fn
-ZSB0byBtYWpvcmRvbW9Admdlci5rZXJuZWwub3JnIE1vcmUgbWFqb3Jkb21vIGluZm8gYXQgIGh0
-dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jkb21vLWluZm8uaHRtbA0K
+From: Philip Prindeville <philipp@redfish-solutions.com>
+
+This allows a single database to be built and distributed as a
+package that's accepted by both big- and little-endian hosts.
+
+Signed-off-by: Philip Prindeville <philipp@redfish-solutions.com>
+---
+ extensions/libxt_geoip.c | 77 +++++++++++++++++++++++++++++++++++------
+ geoip/xt_geoip_build     | 89 ++++++++----------------------------------------
+ 2 files changed, 82 insertions(+), 84 deletions(-)
+
+diff --git a/extensions/libxt_geoip.c b/extensions/libxt_geoip.c
+index ecc78014a097bc352560bd62aa6a2066e34619f3..44e2dfd4c16be360aa493d965a52ea419706e1df 100644
+--- a/extensions/libxt_geoip.c
++++ b/extensions/libxt_geoip.c
+@@ -49,6 +49,46 @@ static struct option geoip_opts[] = {
+ 	{NULL},
+ };
+ 
++#if __BYTE_ORDER == _LITTLE_ENDIAN
++static inline void
++geoip_swap_le16(uint16_t *buf)
++{
++	unsigned char *p = (unsigned char *)buf;
++	uint16_t n;
++
++	n = p[0] + (p[1] << 8);
++
++	p[0] = (n >> 8) & 0xff;
++	p[1] = n & 0xff;
++}
++
++static void geoip_swap_in6(struct in6_addr *in6)
++{
++	geoip_swap_le16(&in6->s6_addr16[0]);
++	geoip_swap_le16(&in6->s6_addr16[1]);
++	geoip_swap_le16(&in6->s6_addr16[2]);
++	geoip_swap_le16(&in6->s6_addr16[3]);
++	geoip_swap_le16(&in6->s6_addr16[4]);
++	geoip_swap_le16(&in6->s6_addr16[5]);
++	geoip_swap_le16(&in6->s6_addr16[6]);
++	geoip_swap_le16(&in6->s6_addr16[7]);
++}
++
++static inline void
++geoip_swap_le32(uint32_t *buf)
++{
++	unsigned char *p = (unsigned char *)buf;
++	uint32_t n;
++
++	n = p[0] + (p[1] << 8) + (p[2] << 16) + (p[3] << 24);
++
++	p[0] = (n >> 24) & 0xff;
++	p[1] = (n >> 16) & 0xff;
++	p[2] = (n >> 8) & 0xff;
++	p[3] = n & 0xff;
++}
++#endif
++
+ static void *
+ geoip_get_subnets(const char *code, uint32_t *count, uint8_t nfproto)
+ {
+@@ -56,20 +96,15 @@ geoip_get_subnets(const char *code, uint32_t *count, uint8_t nfproto)
+ 	struct stat sb;
+ 	char buf[256];
+ 	int fd;
++#if __BYTE_ORDER == _LITTLE_ENDIAN
++	unsigned n;
++#endif
+ 
+ 	/* Use simple integer vector files */
+ 	if (nfproto == NFPROTO_IPV6) {
+-#if __BYTE_ORDER == _BIG_ENDIAN
+-		snprintf(buf, sizeof(buf), GEOIP_DB_DIR "/BE/%s.iv6", code);
+-#else
+-		snprintf(buf, sizeof(buf), GEOIP_DB_DIR "/LE/%s.iv6", code);
+-#endif
++		snprintf(buf, sizeof(buf), GEOIP_DB_DIR "/%s.iv6", code);
+ 	} else {
+-#if __BYTE_ORDER == _BIG_ENDIAN
+-		snprintf(buf, sizeof(buf), GEOIP_DB_DIR "/BE/%s.iv4", code);
+-#else
+-		snprintf(buf, sizeof(buf), GEOIP_DB_DIR "/LE/%s.iv4", code);
+-#endif
++		snprintf(buf, sizeof(buf), GEOIP_DB_DIR "/%s.iv4", code);
+ 	}
+ 
+ 	if ((fd = open(buf, O_RDONLY)) < 0) {
+@@ -98,6 +133,28 @@ geoip_get_subnets(const char *code, uint32_t *count, uint8_t nfproto)
+ 		xtables_error(OTHER_PROBLEM, "geoip: insufficient memory");
+ 	read(fd, subnets, sb.st_size);
+ 	close(fd);
++
++#if __BYTE_ORDER == _LITTLE_ENDIAN
++	for (n = 0; n < *count; ++n) {
++		switch (nfproto) {
++		case NFPROTO_IPV6:
++			{
++				struct geoip_subnet6 *gs6 = &(((struct geoip_subnet6 *)subnets)[n]);
++				geoip_swap_in6(&gs6->begin);
++				geoip_swap_in6(&gs6->end);
++				break;
++			}
++		case NFPROTO_IPV4:
++			{
++				struct geoip_subnet4 *gs4 = &(((struct geoip_subnet4 *)subnets)[n]);
++				geoip_swap_le32(&gs4->begin);
++				geoip_swap_le32(&gs4->end);
++				break;
++			}
++		}
++	}
++#endif
++
+ 	return subnets;
+ }
+ 
+diff --git a/geoip/xt_geoip_build b/geoip/xt_geoip_build
+index fdd9fe95efb61e369a3b57e457700f4504616f03..871c94befbd4f5d8ac9450ad8366c020b7abbd03 100755
+--- a/geoip/xt_geoip_build
++++ b/geoip/xt_geoip_build
+@@ -8,51 +8,22 @@ use IO::Handle;
+ use Text::CSV_XS; # or trade for Text::CSV
+ use strict;
+ 
+-my $le32 = pack("V", 0x10000000);
+-my $be32 = pack("N", 0x10000000);
+-my $u32 = undef;
+-
+-sub wantBE { return !$u32 || $u32 eq $be32; }
+-sub wantLE { return !$u32 || $u32 eq $le32; }
+-
+ my $csv = Text::CSV_XS->new({
+ 	allow_whitespace => 1,
+ 	binary => 1,
+ 	eol => $/,
+ }); # or Text::CSV
+ my $target_dir = ".";
+-my $native_only = 0;
+ 
+ &Getopt::Long::Configure(qw(bundling));
+ &GetOptions(
+ 	"D=s" => \$target_dir,
+-	"n"   => \$native_only,
+ );
+ 
+ if (!-d $target_dir) {
+ 	print STDERR "Target directory $target_dir does not exist.\n";
+ 	exit 1;
+ }
+-my @dbs = qw(LE BE);
+-if ($native_only) {
+-	$u32 = pack("L", 0x10000000);
+-	if ($u32 eq $le32) {
+-		@dbs = qw(LE);
+-	} elsif ($u32 eq $be32) {
+-		@dbs = qw(BE);
+-	} else {
+-		print STDERRR "Cannot determine endianness.\n";
+-		exit 1;
+-	}
+-}
+-
+-foreach (@dbs) {
+-	my $dir = "$target_dir/$_";
+-	if (!-e $dir && !mkdir($dir)) {
+-		print STDERR "Could not mkdir $dir: $!\n";
+-		exit 1;
+-	}
+-}
+ 
+ &dump(&collect());
+ 
+@@ -96,61 +67,35 @@ sub dump
+ sub dump_one
+ {
+ 	my($iso_code, $country) = @_;
+-	my($file, $fh_le, $fh_be);
++	my($file, $fh);
+ 
+ 	printf "%5u IPv6 ranges for %s %s\n",
+ 		scalar(@{$country->{pool_v6}}),
+ 		$iso_code, $country->{name};
+ 
+-	if (wantLE) {
+-		$file = "$target_dir/LE/".uc($iso_code).".iv6";
+-		if (!open($fh_le, "> $file")) {
+-			print STDERR "Error opening $file: $!\n";
+-			exit 1;
+-		}
+-		foreach my $range (@{$country->{pool_v6}}) {
+-			print $fh_le &ip6_swap($range->[0]), &ip6_swap($range->[1]);
+-		}
+-		close $fh_le;
++	$file = "$target_dir/".uc($iso_code).".iv6";
++	if (!open($fh, "> $file")) {
++		print STDERR "Error opening $file: $!\n";
++		exit 1;
+ 	}
+-	if (wantBE) {
+-		$file = "$target_dir/BE/".uc($iso_code).".iv6";
+-		if (!open($fh_be, "> $file")) {
+-			print STDERR "Error opening $file: $!\n";
+-			exit 1;
+-		}
+-		foreach my $range (@{$country->{pool_v6}}) {
+-			print $fh_be $range->[0], $range->[1];
+-		}
+-		close $fh_be;
++	foreach my $range (@{$country->{pool_v6}}) {
++		print $fh $range->[0], $range->[1];
+ 	}
++	close $fh;
+ 
+ 	printf "%5u IPv4 ranges for %s %s\n",
+ 		scalar(@{$country->{pool_v4}}),
+ 		$iso_code, $country->{name};
+ 
+-	if (wantLE) {
+-		$file = "$target_dir/LE/".uc($iso_code).".iv4";
+-		if (!open($fh_le, "> $file")) {
+-			print STDERR "Error opening $file: $!\n";
+-			exit 1;
+-		}
+-		foreach my $range (@{$country->{pool_v4}}) {
+-			print $fh_le pack("VV", $range->[0], $range->[1]);
+-		}
+-		close $fh_le;
++	$file = "$target_dir/".uc($iso_code).".iv4";
++	if (!open($fh, "> $file")) {
++		print STDERR "Error opening $file: $!\n";
++		exit 1;
+ 	}
+-	if (wantBE) {
+-		$file = "$target_dir/BE/".uc($iso_code).".iv4";
+-		if (!open($fh_be, "> $file")) {
+-			print STDERR "Error opening $file: $!\n";
+-			exit 1;
+-		}
+-		foreach my $range (@{$country->{pool_v4}}) {
+-			print $fh_be pack("NN", $range->[0], $range->[1]);
+-		}
+-		close $fh_be;
++	foreach my $range (@{$country->{pool_v4}}) {
++		print $fh pack("NN", $range->[0], $range->[1]);
+ 	}
++	close $fh;
+ }
+ 
+ sub ip6_pack
+@@ -169,7 +114,3 @@ sub ip6_pack
+ 	return pack("n*", @addr);
+ }
+ 
+-sub ip6_swap
+-{
+-	return pack("V*", unpack("N*", shift @_));
+-}
+-- 
+2.13.6
+
