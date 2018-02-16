@@ -1,95 +1,97 @@
-From: A <publicface@bak.rr.com>
-Subject: Re: using iptables to route between subnets
-Date: Thu, 15 Feb 2018 21:53:10 -0800
-Message-ID: <8d3b841e-4de6-b478-8fb9-2231ad280730@bak.rr.com>
+From: =?utf-8?B?QW5kcsOpIFBhdWxzYmVyZy1Dc2liaSAoSUJNIENvbnN1bHRhbnQp?= 
+        <Andre.Paulsberg-Csibi@evry.com>
+Subject: SV: using iptables to route between subnets
+Date: Fri, 16 Feb 2018 09:08:42 +0000
+Message-ID: <41952bf0a8c7405c8d6f737d57ad1635@CCDEX023.corp.corpcommon.com>
 References: <9835afd2-74b0-e5a8-e812-898869b06ad3@bak.rr.com>
  <411ef751-4f31-ea17-ad54-235d4ef308e1@bak.rr.com>
  <22891e20-2bc6-bcc7-dac1-6ceb22010fea@trustiosity.com>
+ <8d3b841e-4de6-b478-8fb9-2231ad280730@bak.rr.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <22891e20-2bc6-bcc7-dac1-6ceb22010fea@trustiosity.com>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=evry.onmicrosoft.com;
+ s=selector1-evry-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version;
+ bh=bD39iWZnK1/j5SydyM4RvIKTyasZ8i5qIrWMP9yZuW8=;
+ b=mwddDF/VGMjDL0BL1jw1EgpkWBQNURsAVRZxDCd30Tgb2kOkx5lt7/ajBvaXdCMt+44A6bThZJED+1PY8lK529lMMoTnZ2EsBkxbyBmw8ELKS0XG0wqeMwN3KWzYsPXBIT9uZHn7OUKiQuvjWhJb2zP6gYdGwFKu58l+Rn1KLo4=
+In-Reply-To: <8d3b841e-4de6-b478-8fb9-2231ad280730@bak.rr.com>
+Content-Language: nb-NO
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="windows-1254"
+To: 'A' <publicface@bak.rr.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-
-
-On 02/15/2018 08:15 PM, zrm wrote:
-> On 02/15/2018 09:25 PM, A wrote:
->> I am trying to route packets between two internal/private subnets 
->> 10.1.1.0/24 and 10.1.2.0/24 .  The second subnet happens to be wireless.
->>
->> I've read until my eyes bled and have been at this for several days. 
->> I've tried a variety of different ways based on other's similar 
->> posted attempts, and at this point things are a mess as you will see 
->> below.  In addition to simple routing, I need to get my wireless 
->> printer working too, which is essentially the real reason I'm doing 
->> this, and I'm hoping that issue will be resolved by this as well.
->>
->>
->> This is a diagram of my network: 
->> https://www.lucidchart.com/documents/edit/58779470-32c0-407d-8111-0b074b35ff4d/0?shared=true 
->>
->>
->> These are the relevant rules:
->>
->> iptables-save -c | grep RULE
->>
->>
->> [1:40] -A PREROUTING -i enp6s0 -p tcp -m multiport --dports 80,443 -m 
->> comment --comment "RULE 1; in WAN port 80,443; rewrite dst as LAN 
->> address" -j DNAT --to-destination 10.1.1.1
->> [1:328] -A PREROUTING -d 10.1.2.0/24 -m comment --comment "RULE 1A; 
->> if source WLAN rewrite as LAN address" -j NETMAP --to 10.1.1.0/24
->> [26:3083] -A POSTROUTING -s 10.1.0.0/16 -o enp6s0 -m comment 
->> --comment "RULE 2; after routing rewrite to WAN address iff src LAN 
->> or WLAN, out WAN" -j MASQUERADE
->> [183:72318] -A FORWARD -i enp6s0 -o wlp2s0 -m conntrack --ctstate 
->> RELATED,ESTABLISHED -m comment --comment "RULE 3; in WAN; out 
->> wireless, iff established." -j ACCEPT
->> [0:0] -A FORWARD -d 10.1.1.0/24 -i wlp2s0 -o enp4s5 -m comment 
->> --comment "RULE 4; in wireless out LAN; iff dst LAN" -j ACCEPT
->> [324:69828] -A FORWARD -s 10.1.0.0/16 ! -d 10.1.0.0/16 -o enp6s0 -m 
->> comment --comment "RULE 5; src LAN or WLAN, dst not LAN nor WLAN, out 
->> WAN" -j ACCEPT
->> [0:0] -A FORWARD -s 10.1.2.0/24 ! -d 10.1.0.0/16 -o enp6s0 -m comment 
->> --comment "RULE 5w; src WLAN out WAN, iff dst not WLAN nor LAN" -j 
->> ACCEPT
->> [0:0] -A FORWARD -s 10.1.0.0/16 -d 10.1.2.0/24 -o wlp2s0 -m comment 
->> --comment "RULE 8; src LAN or WLAN, dst WLAN, out WLAN" -j ACCEPT
->> [1:76] -A FORWARD -d 10.1.1.0/24 -i enp6s0 -o enp4s5 -m conntrack 
->> --ctstate RELATED,ESTABLISHED -m comment --comment "RULE 6; in WAN 
->> out LAN, iff established and dst LAN" -j ACCEPT
->> [0:0] -A FORWARD -d 10.1.1.0/24 -i enp6s0 -p tcp -m multiport 
->> --dports 80,443 -m comment --comment "RULE 7 supplies a target for 
->> RULE 1" -j ACCEPT
->>
->> ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
->>
->> Some of them are obviously not getting hit, I don't know why. I'm not 
->> really sure which I need, at this point I've grown dizzy from looking 
->> at them.
->>
->>
->> Here are the full set of rules if you'd like to see, though the above 
->> I think might suffice: http://fnpaste.com/qprP
->>
->> Thank you in advance for your help!
->
-> That is more complicated than it needs to be. Also, you have a NETMAP 
-> rule in there which is probably causing problems.
->
-> Try getting rid of that and replacing all the FORWARD rules with this:
->
-> -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-> -A FORWARD -i enp4s5 -s 10.1.1.0/24 -j ACCEPT
-> -A FORWARD -i wlp2s0 -s 10.1.2.0/24 -j ACCEPT
-> -A FORWARD -j REJECT
->
->
-Thank you for responding!  I have done as you suggested.  Is this 
-closer  http://fnpaste.com/goQN to what you were suggesting?  It's still 
-not working.
+SnVzdCBvbmUgcXVlc3Rpb24gLCBoYXZlIHlvdSBzZXQgdGhlICJuZXQuaXB2NC5pcF9mb3J3YXJk
+IiB0byAxICggY2hlY2sgd2l0aCBjb21tYW5kICkgOg0KDQoic3VkbyBzeXNjdGwgbmV0LmlwdjQu
+aXBfZm9yd2FyZCINCg0KDQpCZXN0IHJlZ2FyZHMNCkFuZHLDqSBQYXVsc2JlcmctQ3NpYmkNClNl
+bmlvciBOZXR3b3JrIEVuZ2luZWVyIA0KSUJNIFNlcnZpY2VzIEFTDQoNCi0tLS0tT3BwcmlubmVs
+aWcgbWVsZGluZy0tLS0tDQpGcmE6IG5ldGZpbHRlci1vd25lckB2Z2VyLmtlcm5lbC5vcmcgW21h
+aWx0bzpuZXRmaWx0ZXItb3duZXJAdmdlci5rZXJuZWwub3JnXSBQw6UgdmVnbmUgYXYgQQ0KU2Vu
+ZHQ6IGZyZWRhZyAxNi4gZmVicnVhciAyMDE4IDA2LjUzDQpUaWw6IG5ldGZpbHRlckB2Z2VyLmtl
+cm5lbC5vcmcNCkVtbmU6IFJlOiB1c2luZyBpcHRhYmxlcyB0byByb3V0ZSBiZXR3ZWVuIHN1Ym5l
+dHMNCg0KDQoNCk9uIDAyLzE1LzIwMTggMDg6MTUgUE0sIHpybSB3cm90ZToNCj4gT24gMDIvMTUv
+MjAxOCAwOToyNSBQTSwgQSB3cm90ZToNCj4+IEkgYW0gdHJ5aW5nIHRvIHJvdXRlIHBhY2tldHMg
+YmV0d2VlbiB0d28gaW50ZXJuYWwvcHJpdmF0ZSBzdWJuZXRzDQo+PiAxMC4xLjEuMC8yNCBhbmQg
+MTAuMS4yLjAvMjQgLsKgIFRoZSBzZWNvbmQgc3VibmV0IGhhcHBlbnMgdG8gYmUgd2lyZWxlc3Mu
+DQo+Pg0KPj4gSSd2ZSByZWFkIHVudGlsIG15IGV5ZXMgYmxlZCBhbmQgaGF2ZSBiZWVuIGF0IHRo
+aXMgZm9yIHNldmVyYWwgZGF5cy4gDQo+PiBJJ3ZlIHRyaWVkIGEgdmFyaWV0eSBvZiBkaWZmZXJl
+bnQgd2F5cyBiYXNlZCBvbiBvdGhlcidzIHNpbWlsYXIgDQo+PiBwb3N0ZWQgYXR0ZW1wdHMsIGFu
+ZCBhdCB0aGlzIHBvaW50IHRoaW5ncyBhcmUgYSBtZXNzIGFzIHlvdSB3aWxsIHNlZSANCj4+IGJl
+bG93LsKgIEluIGFkZGl0aW9uIHRvIHNpbXBsZSByb3V0aW5nLCBJIG5lZWQgdG8gZ2V0IG15IHdp
+cmVsZXNzIA0KPj4gcHJpbnRlciB3b3JraW5nIHRvbywgd2hpY2ggaXMgZXNzZW50aWFsbHkgdGhl
+IHJlYWwgcmVhc29uIEknbSBkb2luZyANCj4+IHRoaXMsIGFuZCBJJ20gaG9waW5nIHRoYXQgaXNz
+dWUgd2lsbCBiZSByZXNvbHZlZCBieSB0aGlzIGFzIHdlbGwuDQo+Pg0KPj4NCj4+IFRoaXMgaXMg
+YSBkaWFncmFtIG9mIG15IG5ldHdvcms6IA0KPj4gaHR0cHM6Ly93d3cubHVjaWRjaGFydC5jb20v
+ZG9jdW1lbnRzL2VkaXQvNTg3Nzk0NzAtMzJjMC00MDdkLTgxMTEtMGIwDQo+PiA3NGIzNWZmNGQv
+MD9zaGFyZWQ9dHJ1ZQ0KPj4NCj4+DQo+PiBUaGVzZSBhcmUgdGhlIHJlbGV2YW50IHJ1bGVzOg0K
+Pj4NCj4+IGlwdGFibGVzLXNhdmUgLWMgfCBncmVwIFJVTEUNCj4+DQo+Pg0KPj4gWzE6NDBdIC1B
+IFBSRVJPVVRJTkcgLWkgZW5wNnMwIC1wIHRjcCAtbSBtdWx0aXBvcnQgLS1kcG9ydHMgODAsNDQz
+IC1tIA0KPj4gY29tbWVudCAtLWNvbW1lbnQgIlJVTEUgMTsgaW4gV0FOIHBvcnQgODAsNDQzOyBy
+ZXdyaXRlIGRzdCBhcyBMQU4gDQo+PiBhZGRyZXNzIiAtaiBETkFUIC0tdG8tZGVzdGluYXRpb24g
+MTAuMS4xLjEgWzE6MzI4XSAtQSBQUkVST1VUSU5HIC1kIA0KPj4gMTAuMS4yLjAvMjQgLW0gY29t
+bWVudCAtLWNvbW1lbnQgIlJVTEUgMUE7IGlmIHNvdXJjZSBXTEFOIHJld3JpdGUgYXMgDQo+PiBM
+QU4gYWRkcmVzcyIgLWogTkVUTUFQIC0tdG8gMTAuMS4xLjAvMjQgWzI2OjMwODNdIC1BIFBPU1RS
+T1VUSU5HIC1zIA0KPj4gMTAuMS4wLjAvMTYgLW8gZW5wNnMwIC1tIGNvbW1lbnQgLS1jb21tZW50
+ICJSVUxFIDI7IGFmdGVyIHJvdXRpbmcgDQo+PiByZXdyaXRlIHRvIFdBTiBhZGRyZXNzIGlmZiBz
+cmMgTEFOIG9yIFdMQU4sIG91dCBXQU4iIC1qIE1BU1FVRVJBREUgDQo+PiBbMTgzOjcyMzE4XSAt
+QSBGT1JXQVJEIC1pIGVucDZzMCAtbyB3bHAyczAgLW0gY29ubnRyYWNrIC0tY3RzdGF0ZSANCj4+
+IFJFTEFURUQsRVNUQUJMSVNIRUQgLW0gY29tbWVudCAtLWNvbW1lbnQgIlJVTEUgMzsgaW4gV0FO
+OyBvdXQgDQo+PiB3aXJlbGVzcywgaWZmIGVzdGFibGlzaGVkLiIgLWogQUNDRVBUIFswOjBdIC1B
+IEZPUldBUkQgLWQgMTAuMS4xLjAvMjQgDQo+PiAtaSB3bHAyczAgLW8gZW5wNHM1IC1tIGNvbW1l
+bnQgLS1jb21tZW50ICJSVUxFIDQ7IGluIHdpcmVsZXNzIG91dCANCj4+IExBTjsgaWZmIGRzdCBM
+QU4iIC1qIEFDQ0VQVCBbMzI0OjY5ODI4XSAtQSBGT1JXQVJEIC1zIDEwLjEuMC4wLzE2ICEgDQo+
+PiAtZCAxMC4xLjAuMC8xNiAtbyBlbnA2czAgLW0gY29tbWVudCAtLWNvbW1lbnQgIlJVTEUgNTsg
+c3JjIExBTiBvciANCj4+IFdMQU4sIGRzdCBub3QgTEFOIG5vciBXTEFOLCBvdXQgV0FOIiAtaiBB
+Q0NFUFQgWzA6MF0gLUEgRk9SV0FSRCAtcyANCj4+IDEwLjEuMi4wLzI0ICEgLWQgMTAuMS4wLjAv
+MTYgLW8gZW5wNnMwIC1tIGNvbW1lbnQgLS1jb21tZW50ICJSVUxFIDV3OyANCj4+IHNyYyBXTEFO
+IG91dCBXQU4sIGlmZiBkc3Qgbm90IFdMQU4gbm9yIExBTiIgLWogQUNDRVBUIFswOjBdIC1BIA0K
+Pj4gRk9SV0FSRCAtcyAxMC4xLjAuMC8xNiAtZCAxMC4xLjIuMC8yNCAtbyB3bHAyczAgLW0gY29t
+bWVudCAtLWNvbW1lbnQgDQo+PiAiUlVMRSA4OyBzcmMgTEFOIG9yIFdMQU4sIGRzdCBXTEFOLCBv
+dXQgV0xBTiIgLWogQUNDRVBUIFsxOjc2XSAtQSANCj4+IEZPUldBUkQgLWQgMTAuMS4xLjAvMjQg
+LWkgZW5wNnMwIC1vIGVucDRzNSAtbSBjb25udHJhY2sgLS1jdHN0YXRlIA0KPj4gUkVMQVRFRCxF
+U1RBQkxJU0hFRCAtbSBjb21tZW50IC0tY29tbWVudCAiUlVMRSA2OyBpbiBXQU4gb3V0IExBTiwg
+aWZmIA0KPj4gZXN0YWJsaXNoZWQgYW5kIGRzdCBMQU4iIC1qIEFDQ0VQVCBbMDowXSAtQSBGT1JX
+QVJEIC1kIDEwLjEuMS4wLzI0IC1pIA0KPj4gZW5wNnMwIC1wIHRjcCAtbSBtdWx0aXBvcnQgLS1k
+cG9ydHMgODAsNDQzIC1tIGNvbW1lbnQgLS1jb21tZW50ICJSVUxFIA0KPj4gNyBzdXBwbGllcyBh
+IHRhcmdldCBmb3IgUlVMRSAxIiAtaiBBQ0NFUFQNCj4+DQo+PiB+fn5+fn5+fn5+fn5+fn5+fn5+
+fn5+fn5+fn5+fn5+fn5+fn5+fn5+fg0KPj4NCj4+IFNvbWUgb2YgdGhlbSBhcmUgb2J2aW91c2x5
+IG5vdCBnZXR0aW5nIGhpdCwgSSBkb24ndCBrbm93IHdoeS4gSSdtIG5vdCANCj4+IHJlYWxseSBz
+dXJlIHdoaWNoIEkgbmVlZCwgYXQgdGhpcyBwb2ludCBJJ3ZlIGdyb3duIGRpenp5IGZyb20gbG9v
+a2luZyANCj4+IGF0IHRoZW0uDQo+Pg0KPj4NCj4+IEhlcmUgYXJlIHRoZSBmdWxsIHNldCBvZiBy
+dWxlcyBpZiB5b3UnZCBsaWtlIHRvIHNlZSwgdGhvdWdoIHRoZSBhYm92ZSANCj4+IEkgdGhpbmsg
+bWlnaHQgc3VmZmljZTogaHR0cDovL2ZucGFzdGUuY29tL3FwclANCj4+DQo+PiBUaGFuayB5b3Ug
+aW4gYWR2YW5jZSBmb3IgeW91ciBoZWxwIQ0KPg0KPiBUaGF0IGlzIG1vcmUgY29tcGxpY2F0ZWQg
+dGhhbiBpdCBuZWVkcyB0byBiZS4gQWxzbywgeW91IGhhdmUgYSBORVRNQVAgDQo+IHJ1bGUgaW4g
+dGhlcmUgd2hpY2ggaXMgcHJvYmFibHkgY2F1c2luZyBwcm9ibGVtcy4NCj4NCj4gVHJ5IGdldHRp
+bmcgcmlkIG9mIHRoYXQgYW5kIHJlcGxhY2luZyBhbGwgdGhlIEZPUldBUkQgcnVsZXMgd2l0aCB0
+aGlzOg0KPg0KPiAtQSBGT1JXQVJEIC1tIGNvbm50cmFjayAtLWN0c3RhdGUgUkVMQVRFRCxFU1RB
+QkxJU0hFRCAtaiBBQ0NFUFQgLUEgDQo+IEZPUldBUkQgLWkgZW5wNHM1IC1zIDEwLjEuMS4wLzI0
+IC1qIEFDQ0VQVCAtQSBGT1JXQVJEIC1pIHdscDJzMCAtcyANCj4gMTAuMS4yLjAvMjQgLWogQUND
+RVBUIC1BIEZPUldBUkQgLWogUkVKRUNUDQo+DQo+DQpUaGFuayB5b3UgZm9yIHJlc3BvbmRpbmch
+wqAgSSBoYXZlIGRvbmUgYXMgeW91IHN1Z2dlc3RlZC7CoCBJcyB0aGlzIGNsb3NlcsKgIGh0dHA6
+Ly9mbnBhc3RlLmNvbS9nb1FOIHRvIHdoYXQgeW91IHdlcmUgc3VnZ2VzdGluZz/CoCBJdCdzIHN0
+aWxsIG5vdCB3b3JraW5nLg0KLS0NClRvIHVuc3Vic2NyaWJlIGZyb20gdGhpcyBsaXN0OiBzZW5k
+IHRoZSBsaW5lICJ1bnN1YnNjcmliZSBuZXRmaWx0ZXIiIGluIHRoZSBib2R5IG9mIGEgbWVzc2Fn
+ZSB0byBtYWpvcmRvbW9Admdlci5rZXJuZWwub3JnIE1vcmUgbWFqb3Jkb21vIGluZm8gYXQgIGh0
+dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jkb21vLWluZm8uaHRtbA0K
