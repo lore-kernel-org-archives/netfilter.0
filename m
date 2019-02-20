@@ -1,64 +1,51 @@
-From: Greg KH <greg@kroah.com>
-Subject: Re: ct helper ipv6
-Date: Tue, 12 Jun 2018 11:51:46 +0200
-Message-ID: <20180612095146.GA23752@kroah.com>
-References: <2c145015821e6e830beddf376e0f563dac2d1867.camel@tin.it>
- <20180612090232.rnri3rf4nlnjrrqn@breakpoint.cc>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Subject: update on netdev 0x13 conference
+Date: Wed, 20 Feb 2019 08:24:54 -0500
+Message-ID: <e2934422-87e3-5096-0a35-ec514247d45e@mojatatu.com>
 Mime-Version: 1.0
-Return-path: <stable-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
-        :content-type:date:from:in-reply-to:message-id:mime-version
-        :references:subject:to:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=5/ti+OQOxdItA6LyWDmRx9tMHHMYBpWCapsuEljT/F4=; b=SVMxg3ju
-        C+zynB7pnObRnchn0iUlMXO3jB+uO24XHoBtZ/tsARO03tfGDoN7QEA9ivUBKv8A
-        02W7Nc6VDTF42/PlSiyG7M3Uob24cJa9JxMKlXYPw5CloKtNaqi27eDvWZAOR4LL
-        FuzGUjDEk5weobj/sfj0QqRN2CGc884Mac8HIbkIRlxQ/RQOT2OZR/ka28u+/LY5
-        PyoVuYjB7kLh+eBZ0TfyWfPouzgD6STmK12Hus2ATGb21oZsHuYerbfqRJTctFbZ
-        DRg7W10sJSBTFtiRDuQfe2sbhAXZp0hFfzuh9XcuHwpXbGT7ETgF6XJg9d1PaFXU
-        RsvO9YbaOF8gKQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm3; bh=5/ti+OQOxdItA6LyWDmRx9tMHHMYB
-        pWCapsuEljT/F4=; b=LYYAQpLmyo2sj46uPJ+Kh4yhcRLS9ZKb96vBM7L3hCMVc
-        xt8Xb/+GUQtnvC3X6xEnbUFp7nhxZOc0viGkCg4lLrE7yQyxKYONoPoFcKk99TBO
-        yi46HGwcSyRuywpi047Mog4onGJ1VRE2iU7rfmLdMRZAj3+69tC/vRIbqpKP0JqV
-        Wx9v5rgJUPBWpvm+/3tAV2nDjSP8QsE4R8qsUetolscSUHldg7Hctqe5FozVEK5i
-        HfhTAKsV/tCQO/YBTx1+ntkWd7ZYmU0EJfnIqlkv3Sb41aRwbzm3p/tCu5cNVBKf
-        7blp1wVBb0bnn1aIVXczNO9rpy2x7GoL4wzrHV7sw==
-Content-Disposition: inline
-In-Reply-To: <20180612090232.rnri3rf4nlnjrrqn@breakpoint.cc>
-Sender: stable-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Florian Westphal <fw@strlen.de>
-Cc: Ale <mystic@tin.it>, netfilter@vger.kernel.org, stable@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=BgGMsu2ZmHT0mzyx1aMHzvb90nh68+fMeDsNeea8Ttw=;
+        b=KHJ/Ur72mUYt3wWNjKm88CGEEFk7Y/S/Ivvg6ZO4H+pugvCpA2CTGsZWdcysIrxewI
+         2aCJEYyFbP3qxBmmN2ebqx3LyNaIFROPo5flhkcDCZMfJ9q5dZipZZA3BqVXLhloYIZo
+         gVbReRljdXdyhkvjWtedJKNQM0AF2fHZe+v0cnk1HZYNzZk4kdOmcdQ8KfGyZ4b06WJI
+         JHFXndZJ79ulnGg9zeCDNUyOBhMCsJTEVlY6ByQvozVhTCk7Zte3EAZe1o55DW6KCvfq
+         ww0yudYHa6XZOMChW8+LdnK+5U8U17Wwac0pf89YFeVtbNDkteyqGvG0+Th2diaT30Ad
+         b8vw==
+Content-Language: en-US
+Sender: netdev-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, lartc@vger.kernel.org
 
-On Tue, Jun 12, 2018 at 11:02:32AM +0200, Florian Westphal wrote:
-> Ale <mystic@tin.it> wrote:
-> 
-> [ cc stable, could you please queue below fix?  ]
-> 
-> > When I try to use CT HELPER for the ipv6, nft it dies and I have to
-> > restart the pc. But it works well for ip and inet.
-> > 
-> > nft add ct helper ip6 filter ftp-std { type \"ftp\" protocol tcp\; }
-> > nft add rule ip6 filter WAN-IN iifname $IF_WAN_1 tcp sport $UP_PORTS
-> > tcp dport $UP_PORTS ct helper set \"ftp-std\" counter accept
-> > 
-> > Kernel: RIP: strlen+0x0/0x20 RSP: ffffae1b4c67f980
-> > kernel: Code: f8 48 89 f9 74 09 48 83 c1 01 80 39 00 75 f7 31 d2 44 0f
-> > b6 04 16 44 88 04 11 48 83 c2 01 45 84 c0 75 ee c3 0f 1f 80 00 00 00 00
-> > <80> 3f 00 74 10 48 89 f8 48 >
-> 
-> This is most likely fixed in 4.17 by
-> 
-> commit b71534583f22d08c3e3563bf5100aeb5f5c9fbe5
-> netfilter: nf_tables: fix NULL pointer dereference on nft_ct_helper_obj_dump
-> 
-> The bug was added in Linux 4.12.
+This is a small update to the community on the Netdev 0x13 conference
+(March 20-22, in Prague, Czech Republic)
+https://www.netdevconf.org/0x13
 
-Queued up to 4.16.y and 4.14.y, thanks.
+Early registration fees end today at 23:59 EST.
+To Register: https://www.netdevconf.org/0x13/registration.html
 
-greg k-h
+Our bursaries are also going to close today at 23:59 EST.
+Any member of the community may request for a bursary (sponsorship) to
+attend.
+https://www.netdevconf.org/0x13/bursaries.html
+
+Many hours of exciting working discussions and talks.
+https://www.netdevconf.org/0x13/accepted-sessions.html
+https://www.netdevconf.org/0x13/schedule.html
+
+Because the schedule is packed we will be providing lunch
+this time at the conference location.
+
+For regular updates, please subscribe to people@lists.netdevconf.org
+(more info at: https://lists.netdevconf.org/cgi-bin/mailman/listinfo/people)
+
+If twitter is your thing then follow us: @netdev01
+and use hashtag #netdevconf
+
+cheers,
+jamal
