@@ -1,51 +1,113 @@
-From: Jamal Hadi Salim <jhs@mojatatu.com>
-Subject: update on netdev 0x13 conference
-Date: Wed, 20 Feb 2019 08:24:54 -0500
-Message-ID: <e2934422-87e3-5096-0a35-ec514247d45e@mojatatu.com>
+From: Naruto Nguyen <narutonguyen2018@gmail.com>
+Subject: ESTABLISHED tcp conntrack timeout
+Date: Wed, 10 Apr 2019 17:47:35 +0700
+Message-ID: <CANpxKHGdbN6UYTw=r=r9=usZ3taX05ARpnAQ_StF4Zikcpp5WA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netdev-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=BgGMsu2ZmHT0mzyx1aMHzvb90nh68+fMeDsNeea8Ttw=;
-        b=KHJ/Ur72mUYt3wWNjKm88CGEEFk7Y/S/Ivvg6ZO4H+pugvCpA2CTGsZWdcysIrxewI
-         2aCJEYyFbP3qxBmmN2ebqx3LyNaIFROPo5flhkcDCZMfJ9q5dZipZZA3BqVXLhloYIZo
-         gVbReRljdXdyhkvjWtedJKNQM0AF2fHZe+v0cnk1HZYNzZk4kdOmcdQ8KfGyZ4b06WJI
-         JHFXndZJ79ulnGg9zeCDNUyOBhMCsJTEVlY6ByQvozVhTCk7Zte3EAZe1o55DW6KCvfq
-         ww0yudYHa6XZOMChW8+LdnK+5U8U17Wwac0pf89YFeVtbNDkteyqGvG0+Th2diaT30Ad
-         b8vw==
-Content-Language: en-US
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=IlOlvllLCb4mFv3NHy4iq6nwncGuxZrWcuLR/98ZkyM=;
+        b=j7/2Qn6pkhSXM3IcQ+TQ+dX41h6pHiuntsMNSc3i+lqdbz0QX5PkHpSTe3aKLGCidk
+         NtQmwoOA7c2AzkXihIOa0X0wVobi88gMytCaIeKz56doSMPfWrNkYzKifQ8UytbuX5Rj
+         mwXM+vZGV3Ay8io2dGsByj90t/bA/sTa7xp7PcTNlBXyLQxFzThLHByyKQqHPr8Mu8Ar
+         TkBRiKC9JOhS0o7ynM8vYkx0gGuglDUyaNDRBAnDH60yNTWX1mF/mnU1tUhc/0E+k/XI
+         B67e+DP1W0fh5B+Eexf+JdjUJcMVM65m++Zl56YS4xzuSpQQTsldOl5jfn+LPp5H0SeI
+         JgLw==
 Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, linux-wireless <linux-wireless@vger.kernel.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, lartc@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-This is a small update to the community on the Netdev 0x13 conference
-(March 20-22, in Prague, Czech Republic)
-https://www.netdevconf.org/0x13
+Hello everyone,
 
-Early registration fees end today at 23:59 EST.
-To Register: https://www.netdevconf.org/0x13/registration.html
+When duplicating tcp conntrack from main name space to another network
+namespace, I see that sometimes timeout value for an established tcp
+connection in another network namespace has been changed from 432000
+to 300 like below, even it is in ASSURED
 
-Our bursaries are also going to close today at 23:59 EST.
-Any member of the community may request for a bursary (sponsorship) to
-attend.
-https://www.netdevconf.org/0x13/bursaries.html
+03:05:53.773
+tcp      6 300 ESTABLISHED src=10.172.1.6 dst=11.35.4.5 sport=70752
+dport=7050 src=11.35.4.5 dst=10.172.1.6 sport=7050 dport=70752
+[ASSURED] mark=0 use=1
+03:05:56.018
+tcp      6 299 ESTABLISHED src=10.172.1.6 dst=11.35.4.5 sport=70752
+dport=7050 src=11.35.4.5 dst=10.172.1.6 sport=7050 dport=70752
+[ASSURED] mark=0 use=1
+03:05:58.267
+tcp      6 300 ESTABLISHED src=10.172.1.6 dst=11.35.4.5 sport=70752
+dport=7050 src=11.35.4.5 dst=10.172.1.6 sport=7050 dport=70752
+[ASSURED] mark=0 use=1
+03:06:00.511
+tcp      6 299 ESTABLISHED src=10.172.1.6 dst=11.35.4.5 sport=70752
+dport=7050 src=11.35.4.5 dst=10.172.1.6 sport=7050 dport=70752
+[ASSURED] mark=0 use=1
+03:06:02.767
+tcp      6 299 ESTABLISHED src=10.172.1.6 dst=11.35.4.5 sport=70752
+dport=7050 src=11.35.4.5 dst=10.172.1.6 sport=7050 dport=70752
+[ASSURED] mark=0 use=1
+03:06:05.024
+tcp      6 299 ESTABLISHED src=10.172.1.6 dst=11.35.4.5 sport=70752
+dport=7050 src=11.35.4.5 dst=10.172.1.6 sport=7050 dport=70752
+[ASSURED] mark=0 use=1
+03:06:07.318
+tcp      6 299 ESTABLISHED src=10.172.1.6 dst=11.35.4.5 sport=70752
+dport=7050 src=11.35.4.5 dst=10.172.1.6 sport=7050 dport=70752
+[ASSURED] mark=0 use=1
+03:06:09.578
+tcp      6 431999 ESTABLISHED src=10.172.1.6 dst=11.35.4.5 sport=70752
+dport=7050 src=11.35.4.5 dst=10.172.1.6 sport=7050 dport=70752
+[ASSURED] mark=0 use=1
+03:06:11.833
+tcp      6 299 ESTABLISHED src=10.172.1.6 dst=11.35.4.5 sport=70752
+dport=7050 src=11.35.4.5 dst=10.172.1.6 sport=7050 dport=70752
+[ASSURED] mark=0 use=1
+03:06:14.082
+tcp      6 299 ESTABLISHED src=10.172.1.6 dst=11.35.4.5 sport=70752
+dport=7050 src=11.35.4.5 dst=10.172.1.6 sport=7050 dport=70752
+[ASSURED] mark=0 use=1
+03:06:16.315
+tcp      6 299 ESTABLISHED src=10.172.1.6 dst=11.35.4.5 sport=70752
+dport=7050 src=11.35.4.5 dst=10.172.1.6 sport=7050 dport=70752
+[ASSURED] mark=0 use=1
+03:06:25.314
+tcp      6 431999 ESTABLISHED src=10.172.1.6 dst=11.35.4.5 sport=70752
+dport=7050 src=11.35.4.5 dst=10.172.1.6 sport=7050 dport=70752
+[ASSURED] mark=0 use=1
+03:06:27.571
+tcp      6 431999 ESTABLISHED src=10.172.1.6 dst=11.35.4.5 sport=70752
+dport=7050 src=11.35.4.5 dst=10.172.1.6 sport=7050 dport=70752
+[ASSURED] mark=0 use=1
+03:06:29.815
+tcp      6 431999 ESTABLISHED src=10.172.1.6 dst=11.35.4.5 sport=70752
+dport=7050 src=11.35.4.5 dst=10.172.1.6 sport=7050 dport=70752
+[ASSURED] mark=0 use=1
+03:06:32.065
 
-Many hours of exciting working discussions and talks.
-https://www.netdevconf.org/0x13/accepted-sessions.html
-https://www.netdevconf.org/0x13/schedule.html
+In nf_conntrack_proto_tcp.c, I see that 2 constants have 5 mins set
 
-Because the schedule is packed we will be providing lunch
-this time at the conference location.
+[TCP_CONNTRACK_RETRANS] = 5 MINS,
+[TCP_CONNTRACK_UNACK] = 5 MINS,
 
-For regular updates, please subscribe to people@lists.netdevconf.org
-(more info at: https://lists.netdevconf.org/cgi-bin/mailman/listinfo/people)
+and the code
 
-If twitter is your thing then follow us: @netdev01
-and use hashtag #netdevconf
+if (ct->proto.tcp.retrans >= tn->tcp_max_retrans &&
+       timeouts[new_state] > timeouts[TCP_CONNTRACK_RETRANS])
+       timeout = timeouts[TCP_CONNTRACK_RETRANS];
+else if ((ct->proto.tcp.seen[0].flags | ct->proto.tcp.seen[1].flags) &
+       IP_CT_TCP_FLAG_DATA_UNACKNOWLEDGED &&
+       timeouts[new_state] > timeouts[TCP_CONNTRACK_UNACK])
+       timeout = timeouts[TCP_CONNTRACK_UNACK];
+else
+       timeout = timeouts[new_state];
 
-cheers,
-jamal
+but I am not sure this code cause the above issue. For the second
+TCP_CONNTRACK_UNACK, it only happens for [UNREPLIED] instead of
+[ASSURED]. Could you please let me know how the time out value can be
+changed for an established tcp connection and how to prevent this
+change?
+
+Thanks,
+Brs,
+Naruto
