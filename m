@@ -1,39 +1,31 @@
-From: Majordomo@vger.kernel.org
-Subject: Welcome to netfilter
-Date: Sun, 22 Sep 2019 16:26:15 -0400
-Message-ID: <S1731875AbfIVU0P/20190922202615Z+1151@vger.kernel.org>
-Reply-To: Majordomo@vger.kernel.org
+From: John Mok <a9121431@gmail.com>
+Subject: How is nftables + IFB
+Date: Mon, 23 Sep 2019 19:08:52 +0800
+Message-ID: <CALYzA8GZY1cJYsibQDOmA3DuUsV3d=KUdc6z04WgUxu-4Ya0jg@mail.gmail.com>
+Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-List-Id: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=Tzsm2EIh1ygUKtH6UQgOWSp2o2tu0ZAj9Yu6gyq/MN8=;
+        b=IRKs/W9TPlwtInofFp1vK76Paz0H5FTAV75B5LNnbIUiwgKVHgWykYhfPwN6ai2CrP
+         Zeqj/THvfUaThkGKH7D+Ei0Ga91UwDHmAC1LY9+C4I/RzcmAeDAP286anmFS2iTb8B4b
+         ggrn8oRlc0c97ZGqPIEl65X9rLQPGNT7dgiWI9HbqYy1VYdRWPwPhUVmGrJm/FAAE1B2
+         ioSTFHP34M3W+ZD3Pm/Xy8+DftWx46aRdujlot2jPUTYqVLa1WwegKGZp9K2aioafs8W
+         Q9NkKhkI1w1TWS/hebP7F9sWABTTB0rVukkUR2o+MfyRJCDo9AWf2O6CU8tcjAjG0FUr
+         JLbw==
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: gnng-netfilter@m.gmane.org
+To: netfilter@vger.kernel.org
 
---
+Hi all,
 
-Welcome to the netfilter mailing list!
+I have been using iptales + IFB (Intermediate Functional Block) for
+traffic shaping, How is the status of nftables + IFB (or its
+successor) ?
 
-Please save this message for future reference.  Thank you.
+Thanks a lot.
 
-If you ever want to remove yourself from this mailing list,
-you can send mail to <Majordomo@vger.kernel.org> with the following
-command in the body of your email message:
-
-    unsubscribe netfilter
-
-or from another account, besides gnng-netfilter@m.gmane.org:
-
-    unsubscribe netfilter gnng-netfilter@m.gmane.org
-
-If you ever need to get in contact with the owner of the list,
-(if you have trouble unsubscribing, or have questions about the
-list itself) send email to <owner-netfilter@vger.kernel.org> .
-This is the general rule for most mailing lists when you need
-to contact a human.
-
- Here's the general information for the list you've subscribed to,
- in case you don't already have it:
-
-Archives:
-	http://www.spinics.net/lists/netfilter/
+John Mok
