@@ -1,75 +1,97 @@
-From: trentbuck@gmail.com (Trent W. Buck)
-Subject: Re: How is nftables + IFB
-Date: Tue, 24 Sep 2019 11:44:58 +1000
-Message-ID: <87wodycvs5.fsf@goll.lan>
-References: <CALYzA8GZY1cJYsibQDOmA3DuUsV3d=KUdc6z04WgUxu-4Ya0jg@mail.gmail.com>
+From: Bernd Naumann <bena@spreadshirt.net>
+Subject: nft set elements: Comment not available for elements?
+Date: Tue, 24 Sep 2019 17:58:32 +0200
+Message-ID: <59dc7b2f-f771-2552-d7ef-4504336f616a@spreadshirt.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=spreadshirt.net;
+        s=mail; t=1569340714; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:in-reply-to:
+         references; bh=OJHurrDwOMyJCjKo2NQ2Ln8H0hSiEHJ289KVCutxrxI=;
+        b=oqFyRflQcpy4wjmDCAxHGncAERY5BFp/hUxPtDRG0MZ+DtlaZ6fGdFm8jtuoqiwCY4GW+o
+        CplQWmeff8TKDlOvN3l+Rcj4XhOjI5wHA/WGAfgRblnDxpZtKV5ruSJJGvtKRFDNRPdAlD
+        xKdlK6mJhtrsDHLrid/OmgfD+LU55IM=
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-John Mok <a9121431@gmail.com> writes:
+Hi *,
 
-> I have been using iptales + IFB (Intermediate Functional Block) for
-> traffic shaping, How is the status of nftables + IFB (or its
-> successor) ?
+I wonder why I can not give an element of a set a comment like with the 
+old `ipset`, neither via the syntax  `set my-set {}` nor by `nft add 
+element filter my-set`.
 
-For egress shaping I suggest you start with a CoDel variant.
+The man page does mention "comment" only for the whole set.
 
-    https://manpages.debian.org/tc-codel
-    https://en.wikipedia.org/wiki/CoDel
+Is this a planed feature or how do others keep /notes/ on their set entries?
 
-I guess you are talking about ingress shaping.
-I have not done this myself.
-Here are some initial guesses.
+To my mind comes i.e. the use-case of a set with prefixes used by a CDN 
+which gets updates, removals, or addons over time, and I want i.e. 
+attach a ticket-id to each element.
 
-This looks like a typical example;
-you can see most of it happens in tc (not xtables/nftables).
-The tc part should still Just Work.
 
-    https://wiki.archlinux.org/index.php/Advanced_Traffic_Control#Example_of_ingress_traffic_shaping_with_SNAT
+Another "issue" I've encountered is the parsing of comments in a config 
+file when using `#` within an "elements" block:
 
-The iptables part is (paraphrasing)
+```
+# This works just fine as expected:
+         set net_docu {
+                 type ipv4_addr
+                 flags interval
+                 elements = {
+                         192.0.2.0/24,
+                         198.51.100.0/24,
+                         203.0.113.0/24
+                 }
+         }
 
-    #!/usr/bin/iptables-apply
-    *mangle
-    :PREROUTING  ACCEPT
-    :INPUT       ACCEPT
-    :FORWARD     ACCEPT
-    :OUTPUT      ACCEPT
-    :POSTROUTING ACCEPT
-    :QOS         -
-    -A FORWARD -o ppp+ -j QOS
-    -A OUTPUT  -o ppp+ -j QOS
-    -A QOS -j CONNMARK --restore-mark
-    -A QOS -s 192.168.1.50 -m mark --mark 0 -j MARK --set-mark 3 -m comment --comment "Traffic from Alice's laptop gets more bandwidth"
-    -A QOS -j CONNMARK --save-mark
+# This does not work:
+# "Remove" an entry by prefixing a line with a hash-sign
 
-You can see all that's really doing is changing the connmark flag for
-traffic going from 192.168.1.50 to the internet.
+     set net_docu {
+             type ipv4_addr
+             flags interval
+             elements = {
+                     192.0.2.0/24,           # Documentation (TEST-NET-1)
+#                   198.51.100.0/24,        # Documentation (TEST-NET-2)
+                     203.0.113.0/24          # Documentation (TEST-NET-3)
+             }
+     }
 
-    https://wiki.nftables.org/wiki-nftables/index.php/Supported_features_compared_to_xtables#connmark
+root@buster:~# nft -f /etc/nftables.conf
+/etc/nftables.conf:60:50-50: Error: syntax error, unexpected newline, 
+expecting comma or '}'
+#                       198.51.100.0/24,        # Documentation (TEST-NET-2)
+ 
+     ^
+/etc/nftables.conf:61:25-35: Error: syntax error, unexpected string
+                         203.0.113.0/24          # Documentation 
+(TEST-NET-3)
+                                                      ^^^^^^^^^^^
 
-Piping the previous code block into iptables-restore-translate, we see
+# This how ever works
+# Prefix a line containing an unwanted element with a comma, followed by 
+a spaced hash-sign
+     set net_docu {
+         type ipv4_addr
+         flags interval
+         elements = {
+             192.0.2.0/24,           # Documentation (TEST-NET-1)
+, #         198.51.100.0/24,        # Documentation (TEST-NET-2)
+             203.0.113.0/24          # Documentation (TEST-NET-3)
+         }
+```
 
-    # Translated by iptables-restore-translate v1.8.3 on Tue Sep 24 11:41:35 2019
-    add table ip mangle
-    add chain ip mangle PREROUTING { type filter hook prerouting priority -150; policy accept; }
-    add chain ip mangle INPUT { type filter hook input priority -150; policy accept; }
-    add chain ip mangle FORWARD { type filter hook forward priority -150; policy accept; }
-    add chain ip mangle OUTPUT { type route hook output priority -150; policy accept; }
-    add chain ip mangle POSTROUTING { type filter hook postrouting priority -150; policy accept; }
-    add chain ip mangle QOS
-    add rule ip mangle FORWARD oifname "ppp*" counter jump QOS
-    add rule ip mangle OUTPUT oifname "ppp*" counter jump QOS
-    add rule ip mangle QOS counter meta mark set ct mark
-    add rule ip mangle QOS ip saddr 192.168.1.50 mark 0x0 counter meta mark set 0x3  comment "Traffic from Alice's laptop gets more bandwidth"
-    add rule ip mangle QOS counter ct mark set mark
-    # Completed on Tue Sep 24 11:41:35 2019
 
-The translations for "--restore-mark" and "--set-mark" hurt my brain,
-but it looks to me like everything should Just Work.
+I'm using Debian Buster 4.19.0-5-amd64 with nftables 0.9.0-2.
 
+Thanks.
+Bernd
+
+PS: I've also not found any reference for "meta-sets" like with `ipset`: 
+Create a bunch of sets, and group them in a set of type 'list:set'.
