@@ -1,42 +1,45 @@
-From: Anton Rieger <rieger@jikken.de>
-Subject: Intermix ip,ip6 saddr
-Date: Wed, 25 Sep 2019 13:54:52 +0200
-Message-ID: <20190925115451.ozhdsoykkkmdxnch@nisshoku>
+From: Anton Danilov <littlesmilingcloud@gmail.com>
+Subject: Re: How is nftables + IFB
+Date: Wed, 25 Sep 2019 17:37:19 +0300
+Message-ID: <CAEzD07LBL8AQMJtOqB=OFTGnfPREFKnECJpqoiJDuJR7BFFGVg@mail.gmail.com>
+References: <CALYzA8GZY1cJYsibQDOmA3DuUsV3d=KUdc6z04WgUxu-4Ya0jg@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=jikken.de;
-        s=Mv0BmWWr5KBeokdR; t=1569412495;
-        bh=C4q+BZTe1ZMkj/1fPBk+Fo1emD6FCNXyY5o7XhDirJA=;
-        h=Date:From:To:Subject;
-        b=t9Pj03E3LIP+u5+/s73yV0Ox5kzRdV9KQ+HunXf560dZbyWU9H5EK7bnaAqFBdeab
-         FBrACzHfH8d1ui5onAOTgoC9JQ40kT4alhdlmmyt/ImjNXZHv4nVyvjoFE+pKJ7Wp8
-         24kXpOwYAbF3QzdilgLhLhHZc92O9505yhX1WltM=
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KAg4AC8j6Nbu19JqKwB62mUzPcJpHIbftQOpaGzV/7w=;
+        b=itRvRqoszFpcnq3S0SvmWyWPAK9d8en+9v8ge+0wiZr9jkw2c0cAMZBLXweaxxs/kJ
+         L/ghY8copHBD32RSGqvQWAjvYP5M0+enAUUqaCY8rWG/e7vsPxHe/DQSo89gkAL6Wo9p
+         5oWzsHOzzFoCbVYY2iQhM/njlnC8uAtHq1gl0BgZ2HAzI/sXR0EED9atRuqxDgNFgpoY
+         8Sax7ceSZbSmUAzoYyVrF+ftuh/JaklsmtBEtcKCAdwFbG/U5FCu9MbdlRhZyvBc+55h
+         icIjFS9syXT/n8aVvV5j58qjVSgifgXmsmmn2b/KGoPyh11WtpRJdN1B/z+iri8f56yJ
+         JpOA==
+In-Reply-To: <CALYzA8GZY1cJYsibQDOmA3DuUsV3d=KUdc6z04WgUxu-4Ya0jg@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: John Mok <a9121431@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hi there,
+Hi.
+How exactly do you use the iptables + IFB for traffic shaping?
 
-I'm trying to figure out the best way to apply a rule on a set of IP and IPv4 ranges.
-My current workaround is to do the following:
+On Wed, 25 Sep 2019 at 13:29, John Mok <a9121431@gmail.com> wrote:
+>
+> Hi all,
+>
+> I have been using iptales + IFB (Intermediate Functional Block) for
+> traffic shaping, How is the status of nftables + IFB (or its
+> successor) ?
+>
+> Thanks a lot.
+>
+> John Mok
 
-RULE jump customnet
-
-chain customnet {
-  ip saddr {192.0.2.0/24, 198.51.100.0/24} drop
-  ip6 saddr {2001:DB8:4::/48, 2001:DB8:7::/48} drop
-}
 
 
-I think it might be possible to do this somehow with maps and meta nfproto expressions.
-
-BTW:
-It would be nice to have an ip4 alias to better match ip6/ip rules.
-Also resetting the default address family might be useful.
-For example I'm using more ip6 and inet than ip.
-
-Thank you,
-Anton
+-- 
+Anton Danilov.
