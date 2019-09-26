@@ -1,45 +1,84 @@
-From: Anton Danilov <littlesmilingcloud@gmail.com>
+From: Mikhail Morfikov <mmorfikov@gmail.com>
 Subject: Re: How is nftables + IFB
-Date: Wed, 25 Sep 2019 17:37:19 +0300
-Message-ID: <CAEzD07LBL8AQMJtOqB=OFTGnfPREFKnECJpqoiJDuJR7BFFGVg@mail.gmail.com>
+Date: Thu, 26 Sep 2019 12:06:00 +0200
+Message-ID: <6674530b-7a84-703d-315f-67ca7226a310@gmail.com>
 References: <CALYzA8GZY1cJYsibQDOmA3DuUsV3d=KUdc6z04WgUxu-4Ya0jg@mail.gmail.com>
+ <CAEzD07LBL8AQMJtOqB=OFTGnfPREFKnECJpqoiJDuJR7BFFGVg@mail.gmail.com>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="dItcLxGZFzibVbRudN9rnhvJrNngbFUWK"
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=KAg4AC8j6Nbu19JqKwB62mUzPcJpHIbftQOpaGzV/7w=;
-        b=itRvRqoszFpcnq3S0SvmWyWPAK9d8en+9v8ge+0wiZr9jkw2c0cAMZBLXweaxxs/kJ
-         L/ghY8copHBD32RSGqvQWAjvYP5M0+enAUUqaCY8rWG/e7vsPxHe/DQSo89gkAL6Wo9p
-         5oWzsHOzzFoCbVYY2iQhM/njlnC8uAtHq1gl0BgZ2HAzI/sXR0EED9atRuqxDgNFgpoY
-         8Sax7ceSZbSmUAzoYyVrF+ftuh/JaklsmtBEtcKCAdwFbG/U5FCu9MbdlRhZyvBc+55h
-         icIjFS9syXT/n8aVvV5j58qjVSgifgXmsmmn2b/KGoPyh11WtpRJdN1B/z+iri8f56yJ
-         JpOA==
-In-Reply-To: <CALYzA8GZY1cJYsibQDOmA3DuUsV3d=KUdc6z04WgUxu-4Ya0jg@mail.gmail.com>
+        h=subject:to:cc:references:from:openpgp:autocrypt:message-id:date
+         :user-agent:mime-version:in-reply-to;
+        bh=4Rt47f7SEV5vgvif3bRX6++eE3ZjPFATT5mloOAQ4RU=;
+        b=s5YjVyJfBnZhnwdzt5Gbu002uNfATGj9T4GUhsoZZhpQ+yWpjuTuiIrrLYuCSwTEs4
+         9toMkAy9KcY0AKWk/4xDFsX1h7yGJqBIshkU3ODjYGpbmJC2Bb6tT3Z/wB5CkYG5d6C/
+         2jXcsGD/PijHmXoze+C56IHGTzrV4wmzg2+DOa7ugx6J/2w2Z1rDR2ds0rQswDTZ6vkN
+         abP+7VI5JGOom+Bne2qgdFYz6ZD1U0XYLO2OlENtN1KteenZ/rlLv+QQzw/5ms7CjCzm
+         xb56TyNCxfGZcqlUgmyBZPeftEKVamcpPqJBVcMqlWF3jQRrnsRi9TLqzDXvGR3GHyMJ
+         Y2og==
+In-Reply-To: <CAEzD07LBL8AQMJtOqB=OFTGnfPREFKnECJpqoiJDuJR7BFFGVg@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: John Mok <a9121431@gmail.com>
+To: Anton Danilov <littlesmilingcloud@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-Hi.
-How exactly do you use the iptables + IFB for traffic shaping?
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--dItcLxGZFzibVbRudN9rnhvJrNngbFUWK
+Content-Type: multipart/mixed; boundary="Y8jsKKgcvgVsv3HkjyHlS8cvg4SUapTHb";
+ protected-headers="v1"
+From: Mikhail Morfikov <mmorfikov@gmail.com>
+To: Anton Danilov <littlesmilingcloud@gmail.com>
+Cc: netfilter@vger.kernel.org
+Message-ID: <6674530b-7a84-703d-315f-67ca7226a310@gmail.com>
+Subject: Re: How is nftables + IFB
+References: <CALYzA8GZY1cJYsibQDOmA3DuUsV3d=KUdc6z04WgUxu-4Ya0jg@mail.gmail.com>
+ <CAEzD07LBL8AQMJtOqB=OFTGnfPREFKnECJpqoiJDuJR7BFFGVg@mail.gmail.com>
+In-Reply-To: <CAEzD07LBL8AQMJtOqB=OFTGnfPREFKnECJpqoiJDuJR7BFFGVg@mail.gmail.com>
 
-On Wed, 25 Sep 2019 at 13:29, John Mok <a9121431@gmail.com> wrote:
->
-> Hi all,
->
-> I have been using iptales + IFB (Intermediate Functional Block) for
-> traffic shaping, How is the status of nftables + IFB (or its
-> successor) ?
->
-> Thanks a lot.
->
-> John Mok
+--Y8jsKKgcvgVsv3HkjyHlS8cvg4SUapTHb
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+
+On 25/09/2019 16:37, Anton Danilov wrote:
+> Hi.
+> How exactly do you use the iptables + IFB for traffic shaping?
+
+I was using iptables + tc. I once described two working examples of
+traffic shaping:
+iptables + ifb[1]
+iptables + imq[2]
+
+The IMQ example needs a patched kernel, but it works a way better=20
+than the IFB one especially in the case of ingress traffic. The
+arts are in Polish, but you can look through the commands that were=20
+used to get some basic idea how the mechanism works.
 
 
 
--- 
-Anton Danilov.
+[1]: https://morfikov.github.io/post/konfiguracja-interfejsow-ifb-w-linux=
+ie/
+[2]: https://morfikov.github.io/post/konfiguracja-interfejsow-imq-w-linux=
+ie/
+
+
+--Y8jsKKgcvgVsv3HkjyHlS8cvg4SUapTHb--
+
+--dItcLxGZFzibVbRudN9rnhvJrNngbFUWK
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEARYKAB0WIQR1ZhNYxftXAnkWpwEy2ctjR5bMoQUCXYyNjwAKCRAy2ctjR5bM
+oQ9NAQDgJLxSdXoLhqR+wY8tINu+VJh5vY1GQmv6DupEpzBpxwEAvEpA7XO++6SE
+eg/YnUrwQjZXT6WnG8oZWIllMaMu9QI=
+=UyNb
+-----END PGP SIGNATURE-----
+
+--dItcLxGZFzibVbRudN9rnhvJrNngbFUWK--
