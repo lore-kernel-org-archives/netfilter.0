@@ -1,84 +1,402 @@
-From: Mikhail Morfikov <mmorfikov@gmail.com>
-Subject: Re: How is nftables + IFB
-Date: Thu, 26 Sep 2019 12:06:00 +0200
-Message-ID: <6674530b-7a84-703d-315f-67ca7226a310@gmail.com>
-References: <CALYzA8GZY1cJYsibQDOmA3DuUsV3d=KUdc6z04WgUxu-4Ya0jg@mail.gmail.com>
- <CAEzD07LBL8AQMJtOqB=OFTGnfPREFKnECJpqoiJDuJR7BFFGVg@mail.gmail.com>
+From: Kristian Evensen <kristian.evensen@gmail.com>
+Subject: [PATCH] ipset: Add wildcard support to net,iface
+Date: Thu, 26 Sep 2019 12:06:45 +0200
+Message-ID: <20190926100645.4170-1-kristian.evensen@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="dItcLxGZFzibVbRudN9rnhvJrNngbFUWK"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:openpgp:autocrypt:message-id:date
-         :user-agent:mime-version:in-reply-to;
-        bh=4Rt47f7SEV5vgvif3bRX6++eE3ZjPFATT5mloOAQ4RU=;
-        b=s5YjVyJfBnZhnwdzt5Gbu002uNfATGj9T4GUhsoZZhpQ+yWpjuTuiIrrLYuCSwTEs4
-         9toMkAy9KcY0AKWk/4xDFsX1h7yGJqBIshkU3ODjYGpbmJC2Bb6tT3Z/wB5CkYG5d6C/
-         2jXcsGD/PijHmXoze+C56IHGTzrV4wmzg2+DOa7ugx6J/2w2Z1rDR2ds0rQswDTZ6vkN
-         abP+7VI5JGOom+Bne2qgdFYz6ZD1U0XYLO2OlENtN1KteenZ/rlLv+QQzw/5ms7CjCzm
-         xb56TyNCxfGZcqlUgmyBZPeftEKVamcpPqJBVcMqlWF3jQRrnsRi9TLqzDXvGR3GHyMJ
-         Y2og==
-In-Reply-To: <CAEzD07LBL8AQMJtOqB=OFTGnfPREFKnECJpqoiJDuJR7BFFGVg@mail.gmail.com>
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Jcd+vSvP92HMeaQNjQvsB03MgWRZfQFA0pM8Vz3I/fU=;
+        b=bbbbtiti24XNZ0Rwu5fk/j9AGUk0wnUXHcym4vnXXQGjCYUPLdlYr67swm+TnrWJwF
+         cgDTUoM/sqg2esF8BdhVMPMxe6JxyhkJXf1vDiza8GwTdjCzHDAZ3mC6FHlMVZCPO7Ti
+         YvghXkv4xprYEUWaapIdh80o+WWgVQy3amTdTrJjEoWx/8r53KE7MuPF/NcAi2zdUuh7
+         eBDJ8zQzcLgPOf9x7k+FKHtc0d8wfcqiKat+lW6NTCk0qVEo0Di75PF3IcKpK1j+tUw3
+         OdGW9aSLNjHxxb6GsTWkjBXNGdMmaaxs0Z2GFlpHVI5A3gL5fKthv9lWESRGw6wUhSpJ
+         FBGA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Anton Danilov <littlesmilingcloud@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
+Cc: Kristian Evensen <kristian.evensen@gmail.com>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---dItcLxGZFzibVbRudN9rnhvJrNngbFUWK
-Content-Type: multipart/mixed; boundary="Y8jsKKgcvgVsv3HkjyHlS8cvg4SUapTHb";
- protected-headers="v1"
-From: Mikhail Morfikov <mmorfikov@gmail.com>
-To: Anton Danilov <littlesmilingcloud@gmail.com>
-Cc: netfilter@vger.kernel.org
-Message-ID: <6674530b-7a84-703d-315f-67ca7226a310@gmail.com>
-Subject: Re: How is nftables + IFB
-References: <CALYzA8GZY1cJYsibQDOmA3DuUsV3d=KUdc6z04WgUxu-4Ya0jg@mail.gmail.com>
- <CAEzD07LBL8AQMJtOqB=OFTGnfPREFKnECJpqoiJDuJR7BFFGVg@mail.gmail.com>
-In-Reply-To: <CAEzD07LBL8AQMJtOqB=OFTGnfPREFKnECJpqoiJDuJR7BFFGVg@mail.gmail.com>
+The net,iface equal functions currently compares the full interface
+names. In several cases, wildcard (or prefix) matching is useful. For
+example, when converting a large iptables rule-set to make use of ipset,
+I was able to significantly reduce the number of set elements by making
+use of wildcard matching.
 
---Y8jsKKgcvgVsv3HkjyHlS8cvg4SUapTHb
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+Wildcard matching is enabled by adding "wildcard" when adding an element
+to a set. Internally, this causes the IPSET_FLAG_IFACE_WILDCARD-flag to
+be set.  When this flag is set, only the initial part of the interface
+name is used for comparison.
 
-On 25/09/2019 16:37, Anton Danilov wrote:
-> Hi.
-> How exactly do you use the iptables + IFB for traffic shaping?
+Wildcard matching is done per element and not per set, as there are many
+cases where mixing wildcard and non-wildcard elements are useful. This
+means that is up to the user to handle (avoid) overlapping interface
+names.
 
-I was using iptables + tc. I once described two working examples of
-traffic shaping:
-iptables + ifb[1]
-iptables + imq[2]
+Signed-off-by: Kristian Evensen <kristian.evensen@gmail.com>
+---
+ include/libipset/args.h                       |  1 +
+ include/libipset/data.h                       |  4 +-
+ include/libipset/linux_ip_set.h               |  2 +
+ .../uapi/linux/netfilter/ipset/ip_set.h       |  2 +
+ .../netfilter/ipset/ip_set_hash_netiface.c    | 23 ++++-
+ lib/args.c                                    |  8 ++
+ lib/data.c                                    |  8 ++
+ lib/ipset_hash_netiface.c                     | 95 +++++++++++++++++++
+ src/ipset.8                                   |  8 +-
+ 9 files changed, 144 insertions(+), 7 deletions(-)
 
-The IMQ example needs a patched kernel, but it works a way better=20
-than the IFB one especially in the case of ingress traffic. The
-arts are in Polish, but you can look through the commands that were=20
-used to get some basic idea how the mechanism works.
+diff --git a/include/libipset/args.h b/include/libipset/args.h
+index ce14251..616cca5 100644
+--- a/include/libipset/args.h
++++ b/include/libipset/args.h
+@@ -44,6 +44,7 @@ enum ipset_keywords {
+ 	IPSET_ARG_FORCEADD,			/* forceadd */
+ 	IPSET_ARG_MARKMASK,			/* markmask */
+ 	IPSET_ARG_NOMATCH,			/* nomatch */
++	IPSET_ARG_IFACE_WILDCARD,		/* interface wildcard match */
+ 	/* Extensions */
+ 	IPSET_ARG_TIMEOUT,			/* timeout */
+ 	IPSET_ARG_COUNTERS,			/* counters */
+diff --git a/include/libipset/data.h b/include/libipset/data.h
+index 9749847..851773a 100644
+--- a/include/libipset/data.h
++++ b/include/libipset/data.h
+@@ -66,6 +66,7 @@ enum ipset_opt {
+ 	IPSET_OPT_SKBMARK,
+ 	IPSET_OPT_SKBPRIO,
+ 	IPSET_OPT_SKBQUEUE,
++	IPSET_OPT_IFACE_WILDCARD,
+ 	/* Internal options */
+ 	IPSET_OPT_FLAGS = 48,	/* IPSET_FLAG_EXIST| */
+ 	IPSET_OPT_CADT_FLAGS,	/* IPSET_FLAG_BEFORE| */
+@@ -128,7 +129,8 @@ enum ipset_opt {
+ 	| IPSET_FLAG(IPSET_OPT_ADT_COMMENT)\
+ 	| IPSET_FLAG(IPSET_OPT_SKBMARK)	\
+ 	| IPSET_FLAG(IPSET_OPT_SKBPRIO)	\
+-	| IPSET_FLAG(IPSET_OPT_SKBQUEUE))
++	| IPSET_FLAG(IPSET_OPT_SKBQUEUE) \
++	| IPSET_FLAG(IPSET_OPT_IFACE_WILDCARD))
+ 
+ struct ipset_data;
+ 
+diff --git a/include/libipset/linux_ip_set.h b/include/libipset/linux_ip_set.h
+index 3cd151f..d2337f9 100644
+--- a/include/libipset/linux_ip_set.h
++++ b/include/libipset/linux_ip_set.h
+@@ -204,6 +204,8 @@ enum ipset_cadt_flags {
+ 	IPSET_FLAG_WITH_FORCEADD = (1 << IPSET_FLAG_BIT_WITH_FORCEADD),
+ 	IPSET_FLAG_BIT_WITH_SKBINFO = 6,
+ 	IPSET_FLAG_WITH_SKBINFO = (1 << IPSET_FLAG_BIT_WITH_SKBINFO),
++	IPSET_FLAG_BIT_IFACE_WILDCARD = 7,
++	IPSET_FLAG_IFACE_WILDCARD = (1 << IPSET_FLAG_BIT_IFACE_WILDCARD),
+ 	IPSET_FLAG_CADT_MAX	= 15,
+ };
+ 
+diff --git a/kernel/include/uapi/linux/netfilter/ipset/ip_set.h b/kernel/include/uapi/linux/netfilter/ipset/ip_set.h
+index a89c596..d8ab718 100644
+--- a/kernel/include/uapi/linux/netfilter/ipset/ip_set.h
++++ b/kernel/include/uapi/linux/netfilter/ipset/ip_set.h
+@@ -204,6 +204,8 @@ enum ipset_cadt_flags {
+ 	IPSET_FLAG_WITH_FORCEADD = (1 << IPSET_FLAG_BIT_WITH_FORCEADD),
+ 	IPSET_FLAG_BIT_WITH_SKBINFO = 6,
+ 	IPSET_FLAG_WITH_SKBINFO = (1 << IPSET_FLAG_BIT_WITH_SKBINFO),
++	IPSET_FLAG_BIT_IFACE_WILDCARD = 7,
++	IPSET_FLAG_IFACE_WILDCARD = (1 << IPSET_FLAG_BIT_IFACE_WILDCARD),
+ 	IPSET_FLAG_CADT_MAX	= 15,
+ };
+ 
+diff --git a/kernel/net/netfilter/ipset/ip_set_hash_netiface.c b/kernel/net/netfilter/ipset/ip_set_hash_netiface.c
+index 4916acc..2e6eeb7 100644
+--- a/kernel/net/netfilter/ipset/ip_set_hash_netiface.c
++++ b/kernel/net/netfilter/ipset/ip_set_hash_netiface.c
+@@ -29,7 +29,8 @@
+ /*				3    Counters support added */
+ /*				4    Comments support added */
+ /*				5    Forceadd support added */
+-#define IPSET_TYPE_REV_MAX	6 /* skbinfo support added */
++/*				6    skbinfo support added */
++#define IPSET_TYPE_REV_MAX	7 /* interface wildcard support added */
+ 
+ MODULE_LICENSE("GPL");
+ MODULE_AUTHOR("Jozsef Kadlecsik <kadlec@netfilter.org>");
+@@ -61,6 +62,7 @@ struct hash_netiface4_elem {
+ 	u8 cidr;
+ 	u8 nomatch;
+ 	u8 elem;
++	u8 wildcard;
+ 	char iface[IFNAMSIZ];
+ };
+ 
+@@ -75,7 +77,9 @@ hash_netiface4_data_equal(const struct hash_netiface4_elem *ip1,
+ 	       ip1->cidr == ip2->cidr &&
+ 	       (++*multi) &&
+ 	       ip1->physdev == ip2->physdev &&
+-	       strcmp(ip1->iface, ip2->iface) == 0;
++	       (ip1->wildcard ?
++		strncmp(ip1->iface, ip2->iface, strlen(ip1->iface)) == 0 :
++		strcmp(ip1->iface, ip2->iface) == 0);
+ }
+ 
+ static inline int
+@@ -107,7 +111,8 @@ static bool
+ hash_netiface4_data_list(struct sk_buff *skb,
+ 			 const struct hash_netiface4_elem *data)
+ {
+-	u32 flags = data->physdev ? IPSET_FLAG_PHYSDEV : 0;
++	u32 flags = (data->physdev ? IPSET_FLAG_PHYSDEV : 0) |
++		    (data->wildcard ? IPSET_FLAG_IFACE_WILDCARD : 0);
+ 
+ 	if (data->nomatch)
+ 		flags |= IPSET_FLAG_NOMATCH;
+@@ -233,6 +238,8 @@ hash_netiface4_uadt(struct ip_set *set, struct nlattr *tb[],
+ 			e.physdev = 1;
+ 		if (cadt_flags & IPSET_FLAG_NOMATCH)
+ 			flags |= (IPSET_FLAG_NOMATCH << 16);
++		if (cadt_flags & IPSET_FLAG_IFACE_WILDCARD)
++			e.wildcard = 1;
+ 	}
+ 	if (adt == IPSET_TEST || !tb[IPSET_ATTR_IP_TO]) {
+ 		e.ip = htonl(ip & ip_set_hostmask(e.cidr));
+@@ -284,6 +291,7 @@ struct hash_netiface6_elem {
+ 	u8 cidr;
+ 	u8 nomatch;
+ 	u8 elem;
++	u8 wildcard;
+ 	char iface[IFNAMSIZ];
+ };
+ 
+@@ -298,7 +306,9 @@ hash_netiface6_data_equal(const struct hash_netiface6_elem *ip1,
+ 	       ip1->cidr == ip2->cidr &&
+ 	       (++*multi) &&
+ 	       ip1->physdev == ip2->physdev &&
+-	       strcmp(ip1->iface, ip2->iface) == 0;
++	       (ip1->wildcard ?
++		strncmp(ip1->iface, ip2->iface, strlen(ip1->iface)) == 0 :
++		strcmp(ip1->iface, ip2->iface) == 0);
+ }
+ 
+ static inline int
+@@ -330,7 +340,8 @@ static bool
+ hash_netiface6_data_list(struct sk_buff *skb,
+ 			 const struct hash_netiface6_elem *data)
+ {
+-	u32 flags = data->physdev ? IPSET_FLAG_PHYSDEV : 0;
++	u32 flags = (data->physdev ? IPSET_FLAG_PHYSDEV : 0) |
++		    (data->wildcard ? IPSET_FLAG_IFACE_WILDCARD : 0);
+ 
+ 	if (data->nomatch)
+ 		flags |= IPSET_FLAG_NOMATCH;
+@@ -444,6 +455,8 @@ hash_netiface6_uadt(struct ip_set *set, struct nlattr *tb[],
+ 			e.physdev = 1;
+ 		if (cadt_flags & IPSET_FLAG_NOMATCH)
+ 			flags |= (IPSET_FLAG_NOMATCH << 16);
++		if (cadt_flags & IPSET_FLAG_IFACE_WILDCARD)
++			e.wildcard = 1;
+ 	}
+ 
+ 	ret = adtfn(set, &e, &ext, &ext, flags);
+diff --git a/lib/args.c b/lib/args.c
+index 204c544..c25bb80 100644
+--- a/lib/args.c
++++ b/lib/args.c
+@@ -195,6 +195,14 @@ static const struct ipset_arg ipset_args[] = {
+ 		.print = ipset_print_flag,
+ 		.help = "[nomatch]",
+ 	},
++	[IPSET_ARG_IFACE_WILDCARD] = {
++		.name = { "wildcard", NULL },
++		.has_arg = IPSET_NO_ARG,
++		.opt = IPSET_OPT_IFACE_WILDCARD,
++		.parse = ipset_parse_flag,
++		.print = ipset_print_flag,
++		.help = "[wildcard]",
++	},
+ 	/* Extensions */
+ 	[IPSET_ARG_TIMEOUT] = {
+ 		.name = { "timeout", NULL },
+diff --git a/lib/data.c b/lib/data.c
+index 47c9ddb..f28d1d3 100644
+--- a/lib/data.c
++++ b/lib/data.c
+@@ -410,6 +410,9 @@ ipset_data_set(struct ipset_data *data, enum ipset_opt opt, const void *value)
+ 	case IPSET_OPT_NOMATCH:
+ 		cadt_flag_type_attr(data, opt, IPSET_FLAG_NOMATCH);
+ 		break;
++	case IPSET_OPT_IFACE_WILDCARD:
++		cadt_flag_type_attr(data, opt, IPSET_FLAG_IFACE_WILDCARD);
++		break;
+ 	case IPSET_OPT_FLAGS:
+ 		data->flags = *(const uint32_t *)value;
+ 		break;
+@@ -433,6 +436,9 @@ ipset_data_set(struct ipset_data *data, enum ipset_opt opt, const void *value)
+ 		if (data->cadt_flags & IPSET_FLAG_WITH_SKBINFO)
+ 			ipset_data_flags_set(data,
+ 					     IPSET_FLAG(IPSET_OPT_SKBINFO));
++		if (data->cadt_flags & IPSET_FLAG_IFACE_WILDCARD)
++			ipset_data_flags_set(data,
++					     IPSET_FLAG(IPSET_OPT_IFACE_WILDCARD));
+ 		break;
+ 	default:
+ 		return -1;
+@@ -564,6 +570,7 @@ ipset_data_get(const struct ipset_data *data, enum ipset_opt opt)
+ 	case IPSET_OPT_CREATE_COMMENT:
+ 	case IPSET_OPT_FORCEADD:
+ 	case IPSET_OPT_SKBINFO:
++	case IPSET_OPT_IFACE_WILDCARD:
+ 		return &data->cadt_flags;
+ 	default:
+ 		return NULL;
+@@ -630,6 +637,7 @@ ipset_data_sizeof(enum ipset_opt opt, uint8_t family)
+ 	case IPSET_OPT_NOMATCH:
+ 	case IPSET_OPT_COUNTERS:
+ 	case IPSET_OPT_FORCEADD:
++	case IPSET_OPT_IFACE_WILDCARD:
+ 		return sizeof(uint32_t);
+ 	case IPSET_OPT_ADT_COMMENT:
+ 		return IPSET_MAX_COMMENT_SIZE + 1;
+diff --git a/lib/ipset_hash_netiface.c b/lib/ipset_hash_netiface.c
+index a709816..6755782 100644
+--- a/lib/ipset_hash_netiface.c
++++ b/lib/ipset_hash_netiface.c
+@@ -619,6 +619,100 @@ static struct ipset_type ipset_hash_netiface6 = {
+ 		 "      Adding/deleting multiple elements with IPv4 is supported.",
+ 	.description = "skbinfo support",
+ };
++/* interface wildcard support */
++static struct ipset_type ipset_hash_netiface7 = {
++	.name = "hash:net,iface",
++	.alias = { "netifacehash", NULL },
++	.revision = 7,
++	.family = NFPROTO_IPSET_IPV46,
++	.dimension = IPSET_DIM_TWO,
++	.elem = {
++		[IPSET_DIM_ONE - 1] = {
++			.parse = ipset_parse_ip4_net6,
++			.print = ipset_print_ip,
++			.opt = IPSET_OPT_IP
++		},
++		[IPSET_DIM_TWO - 1] = {
++			.parse = ipset_parse_iface,
++			.print = ipset_print_iface,
++			.opt = IPSET_OPT_IFACE
++		},
++	},
++	.cmd = {
++		[IPSET_CREATE] = {
++			.args = {
++				IPSET_ARG_FAMILY,
++				/* Aliases */
++				IPSET_ARG_INET,
++				IPSET_ARG_INET6,
++				IPSET_ARG_HASHSIZE,
++				IPSET_ARG_MAXELEM,
++				IPSET_ARG_TIMEOUT,
++				IPSET_ARG_COUNTERS,
++				IPSET_ARG_COMMENT,
++				IPSET_ARG_FORCEADD,
++				IPSET_ARG_SKBINFO,
++				IPSET_ARG_NONE,
++			},
++			.need = 0,
++			.full = 0,
++			.help = "",
++		},
++		[IPSET_ADD] = {
++			.args = {
++				IPSET_ARG_TIMEOUT,
++				IPSET_ARG_NOMATCH,
++				IPSET_ARG_IFACE_WILDCARD,
++				IPSET_ARG_PACKETS,
++				IPSET_ARG_BYTES,
++				IPSET_ARG_ADT_COMMENT,
++				IPSET_ARG_SKBMARK,
++				IPSET_ARG_SKBPRIO,
++				IPSET_ARG_SKBQUEUE,
++				IPSET_ARG_NONE,
++			},
++			.need = IPSET_FLAG(IPSET_OPT_IP)
++				| IPSET_FLAG(IPSET_OPT_IFACE),
++			.full = IPSET_FLAG(IPSET_OPT_IP)
++				| IPSET_FLAG(IPSET_OPT_CIDR)
++				| IPSET_FLAG(IPSET_OPT_IP_TO)
++				| IPSET_FLAG(IPSET_OPT_IFACE)
++				| IPSET_FLAG(IPSET_OPT_PHYSDEV),
++			.help = "IP[/CIDR]|FROM-TO,[physdev:]IFACE",
++		},
++		[IPSET_DEL] = {
++			.args = {
++				IPSET_ARG_NONE,
++			},
++			.need = IPSET_FLAG(IPSET_OPT_IP)
++				| IPSET_FLAG(IPSET_OPT_IFACE),
++			.full = IPSET_FLAG(IPSET_OPT_IP)
++				| IPSET_FLAG(IPSET_OPT_CIDR)
++				| IPSET_FLAG(IPSET_OPT_IP_TO)
++				| IPSET_FLAG(IPSET_OPT_IFACE)
++				| IPSET_FLAG(IPSET_OPT_PHYSDEV),
++			.help = "IP[/CIDR]|FROM-TO,[physdev:]IFACE",
++		},
++		[IPSET_TEST] = {
++			.args = {
++				IPSET_ARG_NOMATCH,
++				IPSET_ARG_NONE,
++			},
++			.need = IPSET_FLAG(IPSET_OPT_IP)
++				| IPSET_FLAG(IPSET_OPT_IFACE),
++			.full = IPSET_FLAG(IPSET_OPT_IP)
++				| IPSET_FLAG(IPSET_OPT_CIDR)
++				| IPSET_FLAG(IPSET_OPT_IFACE)
++				| IPSET_FLAG(IPSET_OPT_PHYSDEV),
++			.help = "IP[/CIDR],[physdev:]IFACE",
++		},
++	},
++	.usage = "where depending on the INET family\n"
++		 "      IP is a valid IPv4 or IPv6 address (or hostname),\n"
++		 "      CIDR is a valid IPv4 or IPv6 CIDR prefix.\n"
++		 "      Adding/deleting multiple elements with IPv4 is supported.",
++	.description = "skbinfo and wildcard support",
++};
+ 
+ void _init(void);
+ void _init(void)
+@@ -630,4 +724,5 @@ void _init(void)
+ 	ipset_type_add(&ipset_hash_netiface4);
+ 	ipset_type_add(&ipset_hash_netiface5);
+ 	ipset_type_add(&ipset_hash_netiface6);
++	ipset_type_add(&ipset_hash_netiface7);
+ }
+diff --git a/src/ipset.8 b/src/ipset.8
+index 9c12889..f1a1368 100644
+--- a/src/ipset.8
++++ b/src/ipset.8
+@@ -385,6 +385,12 @@ succeed and evict a random entry from the set.
+ .IP
+ ipset create foo hash:ip forceadd
+ .PP
++.SS wildcard
++This flag is valid when adding elements to a \fBhash:net,iface\fR set. If the
++flag is set, then prefix matching is used when comparing with this element. For
++example, an element containing the interface name "eth" will match any name with
++that prefix.
++.PP
+ .SH "SET TYPES"
+ .SS bitmap:ip
+ The \fBbitmap:ip\fR set type uses a memory range to store either IPv4 host
+@@ -957,7 +963,7 @@ address and interface name pairs.
+ .PP
+ \fIADD\-ENTRY\fR := \fInetaddr\fR,[\fBphysdev\fR:]\fIiface\fR
+ .PP
+-\fIADD\-OPTIONS\fR := [ \fBtimeout\fR \fIvalue\fR ]  [ \fBnomatch\fR ] [ \fBpackets\fR \fIvalue\fR ] [ \fBbytes\fR \fIvalue\fR ] [ \fBcomment\fR \fIstring\fR ] [ \fBskbmark\fR \fIvalue\fR ] [ \fBskbprio\fR \fIvalue\fR ] [ \fBskbqueue\fR \fIvalue\fR ]
++\fIADD\-OPTIONS\fR := [ \fBtimeout\fR \fIvalue\fR ]  [ \fBnomatch\fR ] [ \fBpackets\fR \fIvalue\fR ] [ \fBbytes\fR \fIvalue\fR ] [ \fBcomment\fR \fIstring\fR ] [ \fBskbmark\fR \fIvalue\fR ] [ \fBskbprio\fR \fIvalue\fR ] [ \fBskbqueue\fR \fIvalue\fR ] [ \fBwildcard\fR ]
+ .PP
+ \fIDEL\-ENTRY\fR := \fInetaddr\fR,[\fBphysdev\fR:]\fIiface\fR
+ .PP
+-- 
+2.20.1
 
-
-
-[1]: https://morfikov.github.io/post/konfiguracja-interfejsow-ifb-w-linux=
-ie/
-[2]: https://morfikov.github.io/post/konfiguracja-interfejsow-imq-w-linux=
-ie/
-
-
---Y8jsKKgcvgVsv3HkjyHlS8cvg4SUapTHb--
-
---dItcLxGZFzibVbRudN9rnhvJrNngbFUWK
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEARYKAB0WIQR1ZhNYxftXAnkWpwEy2ctjR5bMoQUCXYyNjwAKCRAy2ctjR5bM
-oQ9NAQDgJLxSdXoLhqR+wY8tINu+VJh5vY1GQmv6DupEpzBpxwEAvEpA7XO++6SE
-eg/YnUrwQjZXT6WnG8oZWIllMaMu9QI=
-=UyNb
------END PGP SIGNATURE-----
-
---dItcLxGZFzibVbRudN9rnhvJrNngbFUWK--
