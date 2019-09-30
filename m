@@ -1,43 +1,41 @@
-From: Ted Roo <reject5514@gmail.com>
-Subject: NAT statements in nft command documentation are misleading
-Date: Sat, 28 Sep 2019 13:33:27 +0900
-Message-ID: <CAFLRT63jBvUFkbUrZpd3iZSWHjAzgQ9ULdnwQ4Q8JQWNQGU6Xg@mail.gmail.com>
+From: Bernd Naumann <bena@spreadshirt.net>
+Subject: Re: nft set elements: Comment not available for elements?
+Date: Mon, 30 Sep 2019 11:06:40 +0200
+Message-ID: <0cdb9411-983b-1892-80bd-13f8b59640ca@spreadshirt.net>
+References: <59dc7b2f-f771-2552-d7ef-4504336f616a () spreadshirt ! net>
+ <63b54164-8126-cffa-0d3d-99e850e8f271@ottorei.fi>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=Sw+ZZuorDN0LCkIQ8u5P3oonXIEXQpw4ZPJZzt/6Mh4=;
-        b=HREJK9rDLMb5WYGplXU3C1OC64sI8WAXeRg9X+AY/KMpBpbI66qHpWs/2Qw085Xm7g
-         pUkPAl8eejFfvv5tVtK0pazt8T+hpKmv4VFOcnLzT8dfkWEdq9qim+GsPbv567npyChP
-         wgcXIPrKgP+TrDQWb8LDFTvyYOsC49ac1cH0QVxctAXD7sAn5iH/YgEY/9x6MRX2arsu
-         66jzpX4pP2m8DPBqq8DKoUznHYYU+1UDkEh39Mjrpig0ljnkr7IvQ4nqatp1xdoN59Fg
-         3vliU1Wpc1Yb4OxDawFSt3A2som5IvYZP8lxGpyDKqIw11Rc0VLHzQFaaLKYmXvFNaKY
-         a2pw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=spreadshirt.net;
+        s=mail; t=1569834411; h=from:from:sender:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=GicTfWjoDYT5R95bUVhChDhXKUue1d63Gw4WjJVHSY8=;
+        b=VhguIZXmKfajug4qVjf6q45cA/UWue8FOm5n4G5UlF7DDo8zOjTgQFIp2GHukwBC8GWM5H
+        PpxBAY3m6+LUaxBMp5poMvGj3Dcna/L1epiAZr06OOrvyOLj1pa4myIZcRyDTOlecQ5n92
+        WTWV7Y2B40K2kIGo2pFWUtXgTdNnEn4=
+In-Reply-To: <63b54164-8126-cffa-0d3d-99e850e8f271@ottorei.fi>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Cc: Otto Reinikainen <otto@ottorei.fi>
 
-Hi,
-I think the nat statements in the documentation can mislead the usage.
-NAT STATEMENTS section in the documentation is like this,
-           snat to address [:port] [PRF_FLAGS]
-           snat to address - address [:port - port] [PRF_FLAGS]
-           snat to { ip | ip6 } address - address [:port - port] [PR_FLAGS]
-           dnat to address [:port] [PRF_FLAGS]
-           dnat to address [:port - port] [PR_FLAGS]
-           dnat to { ip | ip6 } address [:port - port] [PR_FLAGS]
-           masquerade to [:port] [PRF_FLAGS]
-           masquerade to [:port - port] [PRF_FLAGS]
-           redirect to [:port] [PRF_FLAGS]
-           redirect to [:port - port] [PRF_FLAGS]
+On 29.09.19 17:35, Otto Reinikainen wrote:
+> Hi,
+> 
+> there is a comment-keyword that can be used in sets also.
+> 
 
-It can misunderstand that you must append "to"  string to use the snat, dnat,
-masquerade and redirect statements, even though it may not be used.
-e.g.,
-% nft add rule nat postrouting masquerade
-% nft add rule nat prerouting redirect
 
-I think the document should be revised. What do you think?
+Hi Otto,
+Thanks for your answer. I just did not tried it :/ and it is missing 
+from docs on nft for debian stable, besides that it works just fine and 
+as expected.
+
+Thanks again.
+Bernd
