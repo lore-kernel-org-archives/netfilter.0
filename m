@@ -1,41 +1,52 @@
-From: Bernd Naumann <bena@spreadshirt.net>
-Subject: Re: nft set elements: Comment not available for elements?
-Date: Mon, 30 Sep 2019 11:06:40 +0200
-Message-ID: <0cdb9411-983b-1892-80bd-13f8b59640ca@spreadshirt.net>
-References: <59dc7b2f-f771-2552-d7ef-4504336f616a () spreadshirt ! net>
- <63b54164-8126-cffa-0d3d-99e850e8f271@ottorei.fi>
+From: Vieri Di Paola <vieridipaola@gmail.com>
+Subject: iptables TEE target and system slowdown
+Date: Tue, 1 Oct 2019 10:44:18 +0200
+Message-ID: <CABLYT9jOb0n0vH8M7JLM-cK7MRHpTcckhhdwDM9n5oUUA7MAyw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=spreadshirt.net;
-        s=mail; t=1569834411; h=from:from:sender:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=GicTfWjoDYT5R95bUVhChDhXKUue1d63Gw4WjJVHSY8=;
-        b=VhguIZXmKfajug4qVjf6q45cA/UWue8FOm5n4G5UlF7DDo8zOjTgQFIp2GHukwBC8GWM5H
-        PpxBAY3m6+LUaxBMp5poMvGj3Dcna/L1epiAZr06OOrvyOLj1pa4myIZcRyDTOlecQ5n92
-        WTWV7Y2B40K2kIGo2pFWUtXgTdNnEn4=
-In-Reply-To: <63b54164-8126-cffa-0d3d-99e850e8f271@ottorei.fi>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=aGap4ZYtqYFQ8kZdPc9HmfMb3dlboavAFvLhKv0Jbak=;
+        b=V6cINlCmPVZDm81EWSYyNYWw338WjzNCvflhCjuWIbeh0gNehAqI/bVFnRgzteSulp
+         Zv5JvCbOf6fzPGzZZzl4dnMsHvQhEFrjYiq0agr9sH6DWOlh4i6kROxWtySpvvnOvO/z
+         PEsl4pXx2T7epsgVaVk6fXr9dv5+O0TtvNQuJTKQZcMH7/Zvm4+GL8w3eoR5x82CAPgu
+         EM/Ux0vjkcufF+3NMIkjswQfLddBSZ/pzgEMSuynooqay6bgbhUJMAf3mhN9Xv3CgMHI
+         lWg2BbPoJewBfBUIheGcJBibUsX9nRyTgJuyFKkXJjo7rzBcWLN3K5Z5IQpP8QrEpCgr
+         tIow==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
-Cc: Otto Reinikainen <otto@ottorei.fi>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On 29.09.19 17:35, Otto Reinikainen wrote:
-> Hi,
-> 
-> there is a comment-keyword that can be used in sets also.
-> 
+Hi,
 
+I'm trying to send a copy of part of my traffic (on a router) to an IDS host.
 
-Hi Otto,
-Thanks for your answer. I just did not tried it :/ and it is missing 
-from docs on nft for debian stable, besides that it works just fine and 
-as expected.
+I use this command:
 
-Thanks again.
-Bernd
+# iptables -t mangle -I POSTROUTING -o enp5s0.11 -j TEE --gateway 10.215.246.15
+
+I'm connected to the IDS host at 10.215.246.15 both via ssh and direct console.
+This host's NIC is working at 1000Mb/s according to ethtool.
+
+If I run tcpdump or iptraf-ng on the IDS's NIC then I see lots of
+packets (duplicates), so at first it seems to be working fine.
+However, it soon comes to a crawl and freezes for a while. It then
+works again, but freezes several times again too. And so on...
+
+CPU and RAM are apparently fine according to top.
+
+iptraf-ng reports peaks around 75Mb/s right before the screen freezes
+(when I say "freezes" I mean that the ssh session is totally frozen
+and can even expire if it lasts too long, but the direct console works
+fine, except iptraf-ng stops showing packet counters, etc..).
+So I'm still far away from the 1000Mb/s link speed.
+
+How can I further debug this?
+Is the system/NIC truly overwhelmed with packets? How can I be sure about this?
+
+Thanks,
+
+Vieri
