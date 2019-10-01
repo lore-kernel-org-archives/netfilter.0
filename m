@@ -1,52 +1,96 @@
-From: Vieri Di Paola <vieridipaola@gmail.com>
-Subject: iptables TEE target and system slowdown
-Date: Tue, 1 Oct 2019 10:44:18 +0200
-Message-ID: <CABLYT9jOb0n0vH8M7JLM-cK7MRHpTcckhhdwDM9n5oUUA7MAyw@mail.gmail.com>
+From: Jags <TheJags@protonmail.com>
+Subject: How can I block all traffic from an IP range, irrespective of origin, going to, or coming from, using nftables in Debian 10
+Date: Tue, 01 Oct 2019 23:22:29 +0000
+Message-ID: <NQw8Zn-Cr6DOqlayaUmuautcCgywjg96aFaMt1t0b-YRpyo0_DvByE3-RTNVC5S80qFIYbSNVGesY3XCvGxrLlYG__BFEBaDJ_XvIa0hREI=@protonmail.com>
+Reply-To: Jags <TheJags@protonmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=aGap4ZYtqYFQ8kZdPc9HmfMb3dlboavAFvLhKv0Jbak=;
-        b=V6cINlCmPVZDm81EWSYyNYWw338WjzNCvflhCjuWIbeh0gNehAqI/bVFnRgzteSulp
-         Zv5JvCbOf6fzPGzZZzl4dnMsHvQhEFrjYiq0agr9sH6DWOlh4i6kROxWtySpvvnOvO/z
-         PEsl4pXx2T7epsgVaVk6fXr9dv5+O0TtvNQuJTKQZcMH7/Zvm4+GL8w3eoR5x82CAPgu
-         EM/Ux0vjkcufF+3NMIkjswQfLddBSZ/pzgEMSuynooqay6bgbhUJMAf3mhN9Xv3CgMHI
-         lWg2BbPoJewBfBUIheGcJBibUsX9nRyTgJuyFKkXJjo7rzBcWLN3K5Z5IQpP8QrEpCgr
-         tIow==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=default; t=1569972153;
+        bh=LpxMMPuwRYG/g2ioOEd8iqfFi3qkUwyv97nD0BuUkBI=;
+        h=Date:To:From:Reply-To:Subject:Feedback-ID:From;
+        b=L6A4KQrNjQ4CZy2+5E/ZnI9fSa2t/b2+3SsyeG+YO+jIe/yaI7wmntAl3ThcEdE67
+         ZWxGLasUW3h1gdyIjjaUySW7y/lo+ok+0Oo4AdeW080N0H5WpCalTZAc+/ih1sCXUw
+         LQISuHzelWCCGXQYMJHp/k4zDSX0qqvyajGzscto=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi,
+hello everyone,
 
-I'm trying to send a copy of part of my traffic (on a router) to an IDS host.
+I would like to block all traffic from an IP range (e.g.: 123.0.0.0/8), irr=
+espective of its origin, going to, or coming from, using nftables firewall =
+in Debian 10.
 
-I use this command:
+If I understand correctly, the following will block traffic originating fro=
+m that IP range.
 
-# iptables -t mangle -I POSTROUTING -o enp5s0.11 -j TEE --gateway 10.215.246.15
+nft insert rule ip filter INPUT ip saddr 123.0.0.0/8 counter drop
 
-I'm connected to the IDS host at 10.215.246.15 both via ssh and direct console.
-This host's NIC is working at 1000Mb/s according to ethtool.
 
-If I run tcpdump or iptraf-ng on the IDS's NIC then I see lots of
-packets (duplicates), so at first it seems to be working fine.
-However, it soon comes to a crawl and freezes for a while. It then
-works again, but freezes several times again too. And so on...
+But it will still allow traffic if it's in response to (or associated with)=
+ an application on my Debian machine.
 
-CPU and RAM are apparently fine according to top.
+The problem: When I run a torrent client and add any torrent, be it Debian/=
+Ubuntu ISO or any other torrent, I can see a bunch of IPs from my ISP conne=
+cts to the torrent.
 
-iptraf-ng reports peaks around 75Mb/s right before the screen freezes
-(when I say "freezes" I mean that the ssh session is totally frozen
-and can even expire if it lasts too long, but the direct console works
-fine, except iptraf-ng stops showing packet counters, etc..).
-So I'm still far away from the 1000Mb/s link speed.
+Even if I add a torrent that have only 1 seed and no peer at all, I can see=
+ a lot of IPs from my ISP (with zero percent of torrent availability) in qB=
+ittorrent client. In fact, I have blocked like 100+ in qBittorrent but the =
+new IPs still keep popping up under "peers".
 
-How can I further debug this?
-Is the system/NIC truly overwhelmed with packets? How can I be sure about this?
+So I'd like to block an IP range, irrespective of traffic origin, going to,=
+ or coming from, using nftables.
 
-Thanks,
 
-Vieri
+Thanks a lot in advance.
+
+
+
+Here's my nftables.conf file:
+
+:::::
+#!/usr/sbin/nft -f
+
+flush ruleset
+
+table inet filter {
+
+    chain input {
+        type filter hook input priority 0; policy drop;
+
+        iifname lo accept
+
+        # ssh for internal network
+        ip saddr 192.168.0.0/16 tcp dport 22 counter accept
+        ct state established,related accept
+
+        # Avoid brute force on ssh
+        tcp dport 22 ct state new limit rate 10/minute accept
+
+        # Early drop of invalid connections
+        ct state invalid drop
+
+        # VsFTPD
+        ip saddr 192.168.0.0/16 tcp dport 20 counter accept
+        ip saddr 192.168.0.0/16 tcp dport 21 counter accept
+        ip saddr 192.168.0.0/16 tcp dport 990 counter accept
+        ip saddr 192.168.0.0/16 tcp dport 40000-50000 counter accept
+
+
+        # ICMP & IGMP
+        ip saddr 192.168.0.0/16 icmp type echo-request counter accept
+        icmp type echo-request counter drop
+        ip protocol igmp drop
+
+        # Everything else
+        reject with icmpx type port-unreachable
+
+        log flags all counter drop
+        log prefix "[nftables] Input Denied: " flags all counter drop
+    }
+}
+:::::
