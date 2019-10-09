@@ -1,72 +1,57 @@
-From: Norman Rasmussen <norman@rasmussen.co.za>
-Subject: nft tproxy without iproute2 rule
-Date: Wed, 9 Oct 2019 13:49:57 -0700
-Message-ID: <CAGF1phaHKy_bb1ALmB+YpB27gYtN30U8=zViaJ181TaCEPd4sQ@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: nft: auto-merge set doesn't merge overlapping intervals
+Date: Wed, 9 Oct 2019 23:02:30 +0200
+Message-ID: <20191009210230.z74pe5fvhldlgva2@salvia>
+References: <CAKWQeyhnQJPoveHKFNBPHosict1v-fAOGoHHVt3_ksv74qNEig@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rasmussen.co.za; s=google;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=pqFIG0/MnPKA3krR49Mhbin6rxderxNTnZ8S5jOT5X4=;
-        b=uLB9Fz+YxDbWPq+u19PwW1DcNv7mZSBh1q9OBUPb1SHYnr7OduqbLd1SbEsUZVSW4Y
-         XiE7CX4+Z/LHW8WgPW+we+4Es6rEkHw6ZSB8kru9igq+sZl1QvoA7WZWpB0XSw8WlLUQ
-         92Coscpyag8uxseGG3o7JapW0y2302rUjEJ4M=
+Content-Disposition: inline
+In-Reply-To: <CAKWQeyhnQJPoveHKFNBPHosict1v-fAOGoHHVt3_ksv74qNEig@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Richard Stanway <r1ch@teamliquid.net>
+Cc: netfilter@vger.kernel.org
 
-If there was a way to set the output interface in the prerouting and
-output hooks, would the meta mark action and ip rule & route still be
-required?
+On Wed, Oct 02, 2019 at 12:17:49PM +0200, Richard Stanway wrote:
+> Hello,
+> I'm making the transition from iptables to nftables and running into
+> an issue moving from ipset to native nftables sets. I've created a set
+> with an interval and the auto-merge flag, however when adding an
+> address with a mask that happens to cover an existing entry in the
+> set, the command gives an error instead of merging the two as I
+> expected. Example output:
+> 
+> # nft -v
+> nftables v0.9.2 (Scram)
+> 
+> # nft add set ip filter blackhole "{ type ipv4_addr; flags interval;
+> auto-merge }"
+> 
+> # nft list set ip filter blackhole
+> table ip filter {
+>         set blackhole {
+>                 type ipv4_addr
+>                 flags interval
+>                 auto-merge
+>         }
+> }
+> # nft add element ip filter blackhole { 10.0.0.1, }
+> 
+> # nft add element ip filter blackhole { 10.0.0.0/8, }
+> Error: interval overlaps with an existing one
+> add element filter blackhole { 10.0.0.0/8, }
+>                                ^^^^^^^^^^
+> Error: Could not process rule: File exists
+> add element filter blackhole { 10.0.0.0/8, }
+> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+> Am I misunderstanding how auto-merge works or is this a bug?
 
-The netdev fwd statement can be used to transmit packets via a given
-interface, but is only supported in the ingress hook. Would supporting
-setting the output interface it for inet hooks just be a matter of
-supporting the oif and oifname keywords for the "meta set" statement?
-(adding NFT_META_OIF and NFT_META_OIFNAME to nft_meta_set_init and
-nft_meta_set_eval)
+It should work if you specify both elements in the same command, ie.
 
-For example (taking from Documentation/networking/tproxy.txt) the
-config becomes:
+# nft add element ip filter blackhole { 10.0.0.1, 10.0.0.0/8 }
 
-# nft add chain filter divert "{ type filter hook prerouting priority -150; }"
-# nft add rule filter divert meta l4proto tcp socket transparent 1 fwd
-to lo accept
-# nft add rule filter divert tcp dport 80 tproxy to :50080 meta set
-oif lo accept
-
-and for local connections:
-# nft add chain filter local "{ type filter hook output priority -150; }"
-# nft add rule filter local tcp dport 80 tproxy to :50080 meta set oif
-to lo accept
-
-Is there a complication with supporting this in prerouting and output,
-or would this mostly just work as expected? I assume it wouldn't need
-to do the same as the netdev fwd path where the packet is immediately
-sent to egress and xmit, and just doing the far simpler set skb->dev
-and let the rest of the processing continue would work fine?
-
-For example in nft_meta_set_eval's switch:
-
-  case NFT_META_OIF:
-    dev = dev_get_by_index_rcu(nft_net(pkt), value);
-    if (!dev) {
-      kfree_skb(pkt->skb);
-      return;
-    }
-    // does this need updating?
-    nft_out(pkt)->ifindex = value
-    // is this the right way to change the output device?
-    skb->dst = dev
-    break;
-  NFT_META_OIFNAME:
-    // something similar to above but using dev_get_by_name_rcu?
-
-Thoughts?
-
--- 
-- Norman Rasmussen
- - Email: norman@rasmussen.co.za
- - Home page: http://norman.rasmussen.co.za/
+Having said this, "smarter" merging should be possible from userspace,
+like what you need, but this is not supported right now.
