@@ -1,66 +1,147 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: nft tproxy without iproute2 rule
-Date: Thu, 10 Oct 2019 00:02:51 +0200
-Message-ID: <20191009220251.GA15526@breakpoint.cc>
-References: <CAGF1phaHKy_bb1ALmB+YpB27gYtN30U8=zViaJ181TaCEPd4sQ@mail.gmail.com>
+From: Stephen Satchell <list@satchell.net>
+Subject: nft -- documentation on fib_addrtype missing
+Date: Thu, 10 Oct 2019 12:41:28 -0700
+Message-ID: <37a942dc-dff2-d087-3455-78565e290050@satchell.net>
+Reply-To: list@satchell.net
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAGF1phaHKy_bb1ALmB+YpB27gYtN30U8=zViaJ181TaCEPd4sQ@mail.gmail.com>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Norman Rasmussen <norman@rasmussen.co.za>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-Norman Rasmussen <norman@rasmussen.co.za> wrote:
-> If there was a way to set the output interface in the prerouting and
-> output hooks, would the meta mark action and ip rule & route still be
-> required?
+I'm just getting started with NFTABLES work in preparation for
+upgrading to CentOS 8.  In trying to understand how I can
+migrate my existing IPTABLES configuration, I ran into a
+roadblock: what are the acceptable values for "fib_addrtype",
+and what do they mean.  So I started poking around to see what
+I could find for myself.
 
-Yes.
+My follow-on project is to describe how to implement the
+recommendations in BCP-38 using IP-ROUTE and NFTABLES.
 
-> The netdev fwd statement can be used to transmit packets via a given
-> interface, but is only supported in the ingress hook. Would supporting
-> setting the output interface it for inet hooks just be a matter of
-> supporting the oif and oifname keywords for the "meta set" statement?
+Does my research glean accurate information?  If so, can
+that information be added to the wiki and to
+Git/nftables/doc/primary-expression.txt just before
+"Using fib expressions"?
 
-No.
+nftables v0.8 (Joe Btfsplk), CentOS Linux release 7.7.1908 (Core)
+(Checked against v0.9.2 in the Git nftables repository)
 
-> For example (taking from Documentation/networking/tproxy.txt) the
-> config becomes:
-> 
-> # nft add chain filter divert "{ type filter hook prerouting priority -150; }"
-> # nft add rule filter divert meta l4proto tcp socket transparent 1 fwd
-> to lo accept
-> # nft add rule filter divert tcp dport 80 tproxy to :50080 meta set
-> oif lo accept
+---From man 8 nft:
+FIB EXPRESSIONS
+    fib {saddr | daddr | [mark | iif | oif]} {oif | oifname |
+       type}
 
-The purpose of mark + rule + route is to influence the routing decision
-made after the prerouting step, so packet gets passed to input path and
-not forward.
+    A fib expression queries the  fib  (forwarding  information
+    base)  to  obtain  information such as the output interface
+    index a particular address would use. The input is a  tuple
+    of  elements  that is used as input to the fib lookup func‐
+    tions.
 
-skb->dev is the input device at this point.
+    fib expression specific types
 
-The code that is being influenced by mark + route is
-the call to ip_route_input_noref() in ip_rcv_finish_core which assigns
-skb->dst, and the dst_entry describes how the packet will travel in the stack.
+    +---------+--------------------+------------------+
+    |Keyword  | Description        | Type             |
+    +---------+--------------------+------------------+
+    |oif      | Output interface   | integer (32 bit) |
+    |         | index              |                  |
+    +---------+--------------------+------------------+
+    |oifname  | Output interface   | string           |
+    |         | name               |                  |
+    +---------+--------------------+------------------+
+    |type     | Address type       | fib_addrtype     |
+    +---------+--------------------+------------------+
 
-> and for local connections:
-> # nft add chain filter local "{ type filter hook output priority -150; }"
-> # nft add rule filter local tcp dport 80 tproxy to :50080 meta set oif
-> to lo accept
+NOTE:  The type "fib_addrtype" is not defined in any documentation
+I can find.  A search for "fib_addrtype" turned up the source file
+from which I extracted what appears to be a table of acceptable
+symbols, shown next.  I then went hunting around to find the exact
+meaning of each of the associated route types, which I include.
 
-> Is there a complication with supporting this in prerouting and output,
-> or would this mostly just work as expected? I assume it wouldn't need
-> to do the same as the netdev fwd path where the packet is immediately
-> sent to egress and xmit, and just doing the far simpler set skb->dev
-> and let the rest of the processing continue would work fine?
+I believe some of this information should be added to the nft(8)
+man page in some form, for completeness.  I question the utility
+of throw and nat discussions. I'm also concerned about the tag
+"not implemented" in the discussion of anycast.
 
-See above, skb->dev is still telling the stack where the packet is
-coming from, not where its going.
 
-Is this about ip rule scalability or keeping config 'private' to nftables,
-i.e. bypass the FIB?
 
+---From src/fib.c:
+SYMBOL("unspec",        RTN_UNSPEC),
+SYMBOL("unicast",       RTN_UNICAST),
+SYMBOL("local",         RTN_LOCAL),
+SYMBOL("broadcast",     RTN_BROADCAST),
+SYMBOL("anycast",       RTN_ANYCAST),
+SYMBOL("multicast",     RTN_MULTICAST),
+SYMBOL("blackhole",     RTN_BLACKHOLE),
+SYMBOL("unreachable",   RTN_UNREACHABLE),
+SYMBOL("prohibit",      RTN_PROHIBIT),
+
+
+
+---From man 8 iptables-extensions:
+UNSPEC      unspecified address (i.e. 0.0.0.0)
+UNICAST     unicast address
+LOCAL       local address
+BROADCAST   broadcast address
+ANYCAST     anycast packet (address?)
+MULTICAST   multicast address
+BLACKHOLE   blackhole address
+UNREACHABLE unreachable address
+PROHIBIT    prohibited address
+
+
+
+---From man 8 ip-route:
+Route types:
+
+       unicast - the route entry describes real paths to
+       the destinations covered by the route prefix.
+
+       unreachable - these destinations are unreachable.
+       Packets are discarded and the ICMP message host
+       unreachable is generated.  The local senders get an
+       EHOSTUNREACH error.
+
+       blackhole - these destinations are unreachable.
+       Packets are discarded silently.  The local senders
+       get an EINVAL error.
+
+       prohibit - these destinations are unreachable.
+       Packets are discarded and the ICMP message communi‐
+       cation administratively prohibited is generated.
+       The local senders get an EACCES error.
+
+       local - the destinations are assigned to this host.
+       The packets are looped back and delivered locally.
+
+       broadcast - the destinations are broadcast
+       addresses. The packets are sent as link broadcasts.
+
+       throw - a special control route used together with
+       policy rules. If such a route is selected, lookup
+       in this table is terminated pretending that no
+       route was found. Without policy routing it is
+       equivalent to the absence of the route in the rout‐
+       ing table. The packets are dropped and the ICMP
+       message net unreachable is generated. The local
+       senders get an ENETUNREACH error.
+
+       nat - a special NAT route. Destinations covered by
+       the prefix are considered to be dummy (or external)
+       addresses which require translation to real (or
+       internal) ones before forwarding. The addresses to
+       translate to are selected with the attribute via.
+       Warning: Route NAT is no longer supported in Linux
+       2.6.
+
+       anycast - (not implemented) the destinations are any‐
+       cast addresses assigned to this host. They are
+       mainly equivalent to local with one difference:
+       such addresses are invalid when used as the source
+       address of any packet.
+
+       multicast - a special type used for multicast rout‐
+       ing. It is not present in normal routing tables.
