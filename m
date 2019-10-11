@@ -1,54 +1,52 @@
-From: trentbuck@gmail.com (Trent W. Buck)
-Subject: Re: nft -- documentation on fib_addrtype missing
-Date: Fri, 11 Oct 2019 14:15:53 +1100
-Message-ID: <87r23kx992.fsf@goll.lan>
-References: <37a942dc-dff2-d087-3455-78565e290050@satchell.net>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: nft -- documentation on fib_addrtype missing, more data
+Date: Fri, 11 Oct 2019 10:29:26 +0200
+Message-ID: <20191011082926.4wfyhysc6joofuel@salvia>
+References: <5fbab89f-ee32-44f7-b8d7-cf63ba65bc0e@satchell.net>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <5fbab89f-ee32-44f7-b8d7-cf63ba65bc0e@satchell.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Stephen Satchell <list@satchell.net>
+Cc: netfilter@vger.kernel.org
 
-Stephen Satchell <list@satchell.net> writes:
+On Thu, Oct 10, 2019 at 02:45:59PM -0700, Stephen Satchell wrote:
+> Poking around looking for more information, I ran across this little tidbit:
+> 
+> From man 7 rtnetlink:
+>       rtm_type          Route type
+>       -----------------------------------------------------------------
+>       RTN_UNSPEC        unknown route
+>       RTN_UNICAST       a gateway or direct route
+>       RTN_LOCAL         a local interface route
+>       RTN_BROADCAST     a local broadcast route (sent as a broadcast)
+>       RTN_ANYCAST       a local broadcast route (sent as a unicast)
+>       RTN_MULTICAST     a multicast route
+>       RTN_BLACKHOLE     a packet dropping route
+>       RTN_UNREACHABLE   an unreachable destination
+>       RTN_PROHIBIT      a packet rejection route
+>       RTN_THROW         continue routing lookup in another table
+> 
+> This clears up the confusion I had about "anycast" versus "broadcast".
+> 
+> Is there a shell tool that will show the route type(s) for a
+> specified address?
 
-> My follow-on project is to describe how to implement the
-> recommendations in BCP-38 using IP-ROUTE and NFTABLES.
+# nft describe fib saddr type
+fib expression, datatype fib_addrtype (fib address type) (basetype integer), 32 bits
 
-I can't comment on your fib issue.
-However, BCP 38 (RFC 2827):
-
-  Network Ingress Filtering: Defeating Denial of Service Attacks which
-  employ IP Source Address Spoofing
-
-For which see rp_filter in sysctl:
-
-    http://www.tldp.org/HOWTO/Adv-Routing-HOWTO/lartc.kernel.rpf.html
-
-This works great if you have symmetric routes.
-If you have triangular routes, it will do the Wrong Thing.
-
-It also (mostly) isn't useful on servers, where all traffic arrives on a
-single interface.
-
-I've also had blackhole routes since forever, assuming (but never
-actually checking) that they help rp_filter to do its job.
-
-    iface lo inet loopback
-      # Until I think of a better place, add blackhole routes when the
-      # loopback interface comes up.  These ensure (unused) private IP
-      # ranges aren't accidentally sent to the internet.  Note that even
-      # without this, Internode filters outbound packets to private IPs.
-      #
-      # We also do the same for our /24s, so that if a subnet of them
-      # ever lacks a route, packets to that subnet won't be routed to
-      # the internet.
-      up   ip route   add   blackhole 10/8
-      up   ip route   add   blackhole 172.16/12
-      up   ip route   add   blackhole 192.168/16
-      up   ip route   add   blackhole 169.254/16
-      up   ip route   add   blackhole 203.7.155/24
-      up   ip route   add   blackhole 203.27.58/24
-      down ip route   flush type blackhole
+pre-defined symbolic constants (in decimal):
+        unspec                                             0
+        unicast                                            1
+        local                                              2
+        broadcast                                          3
+        anycast                                            4
+        multicast                                          5
+        blackhole                                          6
+        unreachable                                        7
+        prohibit                                           8
 
