@@ -1,42 +1,85 @@
-From: Daniel Huhardeaux <tech@tootai.net>
-Subject: nft - execute command without returning error
-Date: Sat, 12 Oct 2019 22:32:38 +0200
-Message-ID: <74e77ccc-f437-6368-37b6-72fdd102ea9a@tootai.net>
-Mime-Version: 1.0
+From: Thomas Luening <toml@thlu.de>
+Subject: syn-flag-check from outside not working
+Date: Sun, 13 Oct 2019 11:11:30 +0200
+Message-ID: <8beb7e27-2b22-b107-2482-27fd8fc3c8ad@mail>
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1570912359; bh=eDQZmrZOgQHOvX9LAizJXIsYtxCQvIO/Z/9bjq6a2WY=;
-        h=To:From:Subject:Date:From;
-        b=bYGqsZyHhc4BtD07AW/x3N/NtOTMHedAs41djXxlyVJUaX7DkiPVtaz4N1GLM6We7
-         TWbzanlAXL8DDYrFd9uxPRyyI4MrH+AHSI6HXjol1EfcBAWm7u7eDPFyU3DNy7ZWgw
-         ZuCjSVgrlHxm+rmVE9LWDxk/S0gRbYPrxRPwmJrA=
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1570912359; bh=eDQZmrZOgQHOvX9LAizJXIsYtxCQvIO/Z/9bjq6a2WY=;
-        h=To:From:Subject:Date:From;
-        b=bYGqsZyHhc4BtD07AW/x3N/NtOTMHedAs41djXxlyVJUaX7DkiPVtaz4N1GLM6We7
-         TWbzanlAXL8DDYrFd9uxPRyyI4MrH+AHSI6HXjol1EfcBAWm7u7eDPFyU3DNy7ZWgw
-         ZuCjSVgrlHxm+rmVE9LWDxk/S0gRbYPrxRPwmJrA=
-Content-Language: fr
+Content-Language: de-DE
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello,
+Hello @ all
 
-for instance, I want to delete a table which is not existing. Problem is 
-that nft return an error and stop processing the script. It's the same 
-for other commands like adding an already existing chain.
+My network is a private network with access via VPN just for me. The intention of my rules is to limit all syn-flag-packets from 
+outside to a maximum of 2 tries per minute, then immediately block the IP temporarily. This does not interfere with my own 
+connections, but should prevent repeated unauthorized connections. But exactly that doesn't happen....  see log excerpt. Where 
+is my thought error?
 
-If I run all nft stuff in a bash script I can use eg
+table ip filter {
+     set blackhole {
+         type ipv4_addr
+         size 1000
+         timeout 1h
+         gc-interval 1m
+     }
 
-nft delete table mytable 2>/dev/null || true or
-nft add chain mychain input { ... } 2>/dev/null || true
+chain input {
+     type filter hook input priority 0; policy accept;
+     ct state invalid counter packets 0 bytes 0 drop
+     iifname "lo" accept
+     ct state established,related accept
 
-to get around.
+     ip saddr @blackhole counter packets 0 bytes 0 log prefix "Temp.banned IP: " drop
 
-With table, using add instead of create does the job. What are the 
-solutions for others command like showned above ?
--- 
-Daniel
+     tcp flags syn ip saddr != { 10.0.1.0/24, 10.0.8.0/22 } limit rate over 2/minute add @blackhole { ip saddr }  reject with 
+tcp reset
+     icmp type echo-request ip saddr != { 10.0.1.0/24, 10.0.8.0/22 } limit rate over 2/minute add @blackhole { ip saddr } 
+reject with icmp type host-unreachable
+
+     ip protocol icmp ip saddr { 10.0.1.0/24, 10.0.8.0/22 } accept
+     pkttype { broadcast, multicast } ip saddr { 10.0.1.0/24, 10.0.8.0/22 } accept
+
+     ::::
+     :::: some special Port-Rules (only Accepts) ::::
+     ::::
+
+     ip protocol tcp counter packets 20 bytes 1200 reject with tcp reset
+     counter packets 1 bytes 328 reject
+}
+
+BR, Tom
+
+
+
+
+Excerpt from the Application-Log:
+Sat Oct 12 14:06:18 2019 107.199.31.162:50122 Connection reset, restarting [0]
+Sat Oct 12 14:06:18 2019 107.199.31.162:50123 Connection reset, restarting [0]
+Sat Oct 12 14:06:18 2019 107.199.31.162:50124 Connection reset, restarting [0]
+Sat Oct 12 14:06:18 2019 107.199.31.162:50125 Connection reset, restarting [0]
+Sat Oct 12 14:06:19 2019 107.199.31.162:50126 Connection reset, restarting [0]
+
+Sat Oct 12 14:09:01 2019 107.199.31.162:50924 Connection reset, restarting [0]
+Sat Oct 12 14:09:01 2019 107.199.31.162:50925 Connection reset, restarting [0]
+Sat Oct 12 14:09:01 2019 107.199.31.162:50927 Connection reset, restarting [0]
+Sat Oct 12 14:09:02 2019 107.199.31.162:50929 Connection reset, restarting [0]
+
+Sat Oct 12 14:11:44 2019 107.199.31.162:51378 Connection reset, restarting [0]
+Sat Oct 12 14:11:44 2019 107.199.31.162:51379 Connection reset, restarting [0]
+Sat Oct 12 14:11:44 2019 107.199.31.162:51380 Connection reset, restarting [0]
+Sat Oct 12 14:11:45 2019 107.199.31.162:51381 Connection reset, restarting [0]
+
+Sat Oct 12 14:14:27 2019 107.199.31.162:51403 Connection reset, restarting [0]
+Sat Oct 12 14:14:27 2019 107.199.31.162:51404 Connection reset, restarting [0]
+Sat Oct 12 14:14:27 2019 107.199.31.162:51405 Connection reset, restarting [0]
+Sat Oct 12 14:14:28 2019 107.199.31.162:51406 Connection reset, restarting [0]
+
+Sat Oct 12 14:17:10 2019 107.199.31.162:51422 Connection reset, restarting [0]
+Sat Oct 12 14:17:10 2019 107.199.31.162:51423 Connection reset, restarting [0]
+Sat Oct 12 14:17:10 2019 107.199.31.162:51424 Connection reset, restarting [0]
+Sat Oct 12 14:17:11 2019 107.199.31.162:51425 Connection reset, restarting [0]
+
+... and so on until late night
