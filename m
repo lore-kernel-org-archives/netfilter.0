@@ -1,143 +1,120 @@
-From: Daniel Huhardeaux <tech@tootai.net>
-Subject: Re: nft and defined variables
-Date: Mon, 14 Oct 2019 13:26:54 +0200
-Message-ID: <e2344c13-db1b-634c-ed3c-80f8fff0a13a@tootai.net>
-References: <7e6d4739-1877-c195-dc7b-95a111dd1cbc@tootai.net>
- <20191014100605.d3lnyran2ygeroh3@salvia>
+From: Florian Westphal <fw@strlen.de>
+Subject: Re: flowtable breaks masquerade for dnat flows
+Date: Mon, 14 Oct 2019 22:53:05 +0200
+Message-ID: <20191014205305.GO25052@breakpoint.cc>
+References: <66954409-3fcc-4319-a691-d65e80e2648f@www.fastmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1571052415; bh=OiDcPCLEp1sPQtNYjxIkQqClDvudrTD2dBi33QpPEKA=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=k3ZdknRlh75W6cle+wNdquF5gQtcq7afAobNlaGIU5PcNxQh7/DwoWJFcQryfsB7U
-         In+4VfrDKTLdO8xU5LGfiQPZ1yakgvxS/Wa5K+1g21+9RuUr08KvGI0TqjfcTBdp+b
-         33vdnU1qFzWKiypo2vzInt2zuymH5BAYb0kVaLLM=
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1571052415; bh=OiDcPCLEp1sPQtNYjxIkQqClDvudrTD2dBi33QpPEKA=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=k3ZdknRlh75W6cle+wNdquF5gQtcq7afAobNlaGIU5PcNxQh7/DwoWJFcQryfsB7U
-         In+4VfrDKTLdO8xU5LGfiQPZ1yakgvxS/Wa5K+1g21+9RuUr08KvGI0TqjfcTBdp+b
-         33vdnU1qFzWKiypo2vzInt2zuymH5BAYb0kVaLLM=
-In-Reply-To: <20191014100605.d3lnyran2ygeroh3@salvia>
-Content-Language: fr
+Content-Disposition: inline
+In-Reply-To: <66954409-3fcc-4319-a691-d65e80e2648f@www.fastmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jonathan Rudenberg <jonathan@titanous.com>
+Cc: netfilter@vger.kernel.org
 
-Le 14/10/2019 à 12:06, Pablo Neira Ayuso a écrit :
-> On Sat, Oct 12, 2019 at 09:52:20PM +0200, Daniel Huhardeaux wrote:
->> Hello,
->>
->> I want to script nft rules using sh + nft. The sh script contains variables
->> set for the host and passed to nft using include like eg include
->> "/etc/nftables/local.conf"
->>
->> It's OK for definition of IPs or port but not for alaphanumerical variables.
->> For instance, I want to pass as variable icmp_limit (number) and
->> icmp_measure (alpha) to include them in nft rule like blabla ... limit rate
->> over $icmp_limit/$icmp_measure ...
->>
->> define icmp_limit = { 20 }
->> define icmp_measure = minute
->>
->> but the result gives
->>
->> In file included from ./ip4fw.nft:3:1-35:
->> /etc/nftables/local.conf:10:23-28: Error: syntax error, unexpected minute
->> define icmp_measure = minute
->>                        ^^^^^^
+Jonathan Rudenberg <jonathan@titanous.com> wrote:
+> I'm on kernel 5.3.5 with nftables v0.9.2 using I211-AT NICs.
 > 
-> Quotes are missing.
-With
-
-define icmp_limit = { 20 } 
- 
-
-define icmp_measure = "minute"
-
-I get
-./ip4fw.nft:36:110-110: Error: syntax error, unexpected '$', expecting 
-number
-add rule ip filter input iif $IFACE meta l4proto icmp icmp type { 
-echo-reply, echo-request } limit rate over $icmp_limit/$icmp_measure 
-counter drop
-^
-
-$icmp_limit is not recognized as number
-
+> I set up a very basic routing/NAT setup with masquerade SNAT and DNAT for a single port. With no flowtable, everything works as expected. When the flowtable is enabled, the egress packets for flows associated with the DNAT port (source 172.17.2.128:32400 in the example config below) do not have their source address rewritten by the masquerade rule and are emitted onto enp1s0 with the IP 172.17.2.128 instead of the IP of enp1s0. Regular SNAT/masquerade flows work fine with the flowtable on.
 > 
->> ./ip4fw.nft:36:110-110: Error: syntax error, unexpected '$', expecting
->> number
->> add rule ip filter input iif $IFACE meta l4proto icmp icmp type {
->> echo-reply, echo-request } limit rate over $icmp_limit/$icmp_measure counter
->> drop
->>
->> Same for KEEPSTATE variable but IFACE one is OK
->>
->> define IFACE = ens3
->> define KEEPSTATE = "state related, established"
->>
->> ./ip4fw.nft:49:40-40: Error: syntax error, unexpected '$'
->> add rule ip filter input iif $IFACE ct $KEEPSTATE counter accept
-> 
-> KEEPSTATE is not a variable here,
+> A minimized example is below, let me know if there's any other information I can provide.
 
-Why ? Because of space ?
+[..]
 
-  what you describe works like a
-> macro. There is no macro support for nft yet. At this stage, you can
-> only define values through variable definitions.
-> 
->> What is the way to define alphanumerical variables ? I tried to escape
->> quotes with \ to remove them, to escape slash with \, no way to achieve my
->> goal :(
-> 
-> Always quote values in your variable definitions.
-> 
+Can you modify/send a patch for
 
-I get no errors on defines, only when rules are applied containing thos 
-3 variables. My complete define include loks like
+https://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf-next.git/tree/tools/testing/selftests/netfilter/nft_flowtable.sh
 
-# 
+That demonstrates the bug?
+
+I made following patch but it works for me (possible i made a stupid
+mistake and its now even being offloaded or i misunderstood the problem,
+etc) but i don't have time to follow up right now.
+
+diff --git a/tools/testing/selftests/netfilter/nft_flowtable.sh b/tools/testing/selftests/netfilter/nft_flowtable.sh
+--- a/tools/testing/selftests/netfilter/nft_flowtable.sh
++++ b/tools/testing/selftests/netfilter/nft_flowtable.sh
+@@ -226,17 +226,19 @@ check_transfer()
+ 	return 0
+ }
  
-
-# Local variables 
+-test_tcp_forwarding()
++test_tcp_forwarding_ip()
+ {
+ 	local nsa=$1
+ 	local nsb=$2
++	local dstip=$3
++	local dstport=$4
+ 	local lret=0
  
-
-# 
+ 	ip netns exec $nsb nc -w 5 -l -p 12345 < "$ns2in" > "$ns2out" &
+ 	lpid=$!
  
-
-define nets = { 192.168.10.0/24, 192.168.12.0/24, 10.0.70.0/24, 
-10.1.58.0/24, 10.2.70.0/24 } 
-
-define nettcpports = { 22 } 
+ 	sleep 1
+-	ip netns exec $nsa nc -w 4 10.0.2.99 12345 < "$ns1in" > "$ns1out" &
++	ip netns exec $nsa nc -w 4 "$dstip" "$dstport" < "$ns1in" > "$ns1out" &
+ 	cpid=$!
  
-
-define netudpports = { 65500 } 
+ 	sleep 3
+@@ -258,6 +260,28 @@ test_tcp_forwarding()
+ 	return $lret
+ }
  
-
-define worldtcpports = { 4569, 5060, 5061, 36022 } 
++test_tcp_forwarding()
++{
++	test_tcp_forwarding_ip "$1" "$2" 10.0.2.99 12345
++
++	return $?
++}
++
++test_tcp_forwarding_nat()
++{
++	local lret
++
++	test_tcp_forwarding_ip "$1" "$2" 10.0.2.99 12345
++	lret=$?
++
++	if [ $lret -eq 0 ] ; then
++		test_tcp_forwarding_ip "$1" "$2" 10.6.6.6 1666
++		lret=$?
++	fi
++
++	return $lret
++}
++
+ make_file "$ns1in" "ns1"
+ make_file "$ns2in" "ns2"
  
-
-define worldudpports = { 4569, 5060, 5061, 26000-26999 } 
+@@ -283,14 +307,19 @@ ip -net ns2 route add 192.168.10.1 via 10.0.2.1
+ # Same, but with NAT enabled.
+ ip netns exec nsr1 nft -f - <<EOF
+ table ip nat {
++   chain prerouting {
++      type nat hook prerouting priority 0; policy accept;
++      meta iif "veth0" ip daddr 10.6.6.6 tcp dport 1666 counter dnat ip to 10.0.2.99:12345
++   }
++
+    chain postrouting {
+       type nat hook postrouting priority 0; policy accept;
+-      meta oifname "veth1" masquerade
++      meta oifname "veth1" counter masquerade
+    }
+ }
+ EOF
  
-
-define icmp_limit = { 20 } 
+-test_tcp_forwarding ns1 ns2
++test_tcp_forwarding_nat ns1 ns2
  
-
-define icmp_measure = "minute" 
+ if [ $? -eq 0 ] ;then
+ 	echo "PASS: flow offloaded for ns1/ns2 with NAT"
+@@ -313,7 +342,7 @@ fi
+ ip netns exec ns1 sysctl net.ipv4.ip_no_pmtu_disc=0 > /dev/null
+ ip netns exec ns2 sysctl net.ipv4.ip_no_pmtu_disc=0 > /dev/null
  
-
-define IFACE = ens3 
- 
-
-define addripv4 = 192.168.10.241 
- 
-
-define KEEPSTATE = "state related, established"
-
-and I have no errors with other rules using those others variables.
--- 
-Daniel
+-test_tcp_forwarding ns1 ns2
++test_tcp_forwarding_nat ns1 ns2
+ if [ $? -eq 0 ] ;then
+ 	echo "PASS: flow offloaded for ns1/ns2 with NAT and pmtu discovery"
+ else
