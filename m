@@ -1,120 +1,54 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: flowtable breaks masquerade for dnat flows
-Date: Mon, 14 Oct 2019 22:53:05 +0200
-Message-ID: <20191014205305.GO25052@breakpoint.cc>
-References: <66954409-3fcc-4319-a691-d65e80e2648f@www.fastmail.com>
+From: A L <mail@lechevalier.se>
+Subject: Status of BPFilter?
+Date: Sun, 20 Oct 2019 15:54:23 +0200
+Message-ID: <3a0fc6f6-d66a-35aa-19d6-7456a3fe8f96@lechevalier.se>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <66954409-3fcc-4319-a691-d65e80e2648f@www.fastmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lechevalier.se; s=20140924;
+        h=content-transfer-encoding:content-type:mime-version:date:message-id:subject:
+         from:to:from;
+        bh=Y5jT+F7cjGV6ijooSQLakb0YdCQEZ8dDXEhZF4jl4iY=;
+        b=LbRlCvaOr3c1MqfX/OxwMYyZ1l3pfd3E59zRSE0dHLSPNmS1QWYgfe/QF3s5MLCSrVTLdcwCd2e9G
+         I1gVOqE1CHqdsqTTrFdIBjU6QzSCEgX9xf5FkKn9cs7umq99j+9pmt7YR+p9O6Z8SPWtdfHFuNXWVA
+         5u4VBw/HHv5+H7Yc=
+Content-Language: en-GB
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jonathan Rudenberg <jonathan@titanous.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Jonathan Rudenberg <jonathan@titanous.com> wrote:
-> I'm on kernel 5.3.5 with nftables v0.9.2 using I211-AT NICs.
-> 
-> I set up a very basic routing/NAT setup with masquerade SNAT and DNAT for a single port. With no flowtable, everything works as expected. When the flowtable is enabled, the egress packets for flows associated with the DNAT port (source 172.17.2.128:32400 in the example config below) do not have their source address rewritten by the masquerade rule and are emitted onto enp1s0 with the IP 172.17.2.128 instead of the IP of enp1s0. Regular SNAT/masquerade flows work fine with the flowtable on.
-> 
-> A minimized example is below, let me know if there's any other information I can provide.
+Dear all,
 
-[..]
+I'm looking for up to date documentation on bpfilter in Kernel and what 
+tools are needed to properly use it. I hope I have come to the right 
+place :)
 
-Can you modify/send a patch for
+The most recent information seems to be this 2018 PDF from Facebook(1) 
+where they talk about re-implementing a firewall in eBPF using the 
+existing iptables (not nft/nf_tables?) kernel interface with the use of 
+a user-space helper module. It seems they mean that the original 
+iptables tools should work transparently.
 
-https://git.kernel.org/pub/scm/linux/kernel/git/pablo/nf-next.git/tree/tools/testing/selftests/netfilter/nft_flowtable.sh
+Looking at the source code /usr/src/linux-5.3.7-gentoo/net/bpfilter/ we 
+have both the 'bpfilter.ko' module and the user-mode-helper 
+bpfilrter_umh as an ELF executable. There is a YouTube video(2) showing 
+the use of the helper module that seemingly intercepts the standard 
+iptables (legacy?) rules and converts them to BPF.
 
-That demonstrates the bug?
+What is the status of bpfilter. What are its current capabilities and 
+how can we make use of them? For example, is some specially patched 
+iptables user tools required.
 
-I made following patch but it works for me (possible i made a stupid
-mistake and its now even being offloaded or i misunderstood the problem,
-etc) but i don't have time to follow up right now.
+Original mailinglist entries with patches:
+https://marc.info/?l=netfilter-devel&m=151878844403666&w=2
+https://lwn.net/Articles/747551
 
-diff --git a/tools/testing/selftests/netfilter/nft_flowtable.sh b/tools/testing/selftests/netfilter/nft_flowtable.sh
---- a/tools/testing/selftests/netfilter/nft_flowtable.sh
-+++ b/tools/testing/selftests/netfilter/nft_flowtable.sh
-@@ -226,17 +226,19 @@ check_transfer()
- 	return 0
- }
- 
--test_tcp_forwarding()
-+test_tcp_forwarding_ip()
- {
- 	local nsa=$1
- 	local nsb=$2
-+	local dstip=$3
-+	local dstport=$4
- 	local lret=0
- 
- 	ip netns exec $nsb nc -w 5 -l -p 12345 < "$ns2in" > "$ns2out" &
- 	lpid=$!
- 
- 	sleep 1
--	ip netns exec $nsa nc -w 4 10.0.2.99 12345 < "$ns1in" > "$ns1out" &
-+	ip netns exec $nsa nc -w 4 "$dstip" "$dstport" < "$ns1in" > "$ns1out" &
- 	cpid=$!
- 
- 	sleep 3
-@@ -258,6 +260,28 @@ test_tcp_forwarding()
- 	return $lret
- }
- 
-+test_tcp_forwarding()
-+{
-+	test_tcp_forwarding_ip "$1" "$2" 10.0.2.99 12345
-+
-+	return $?
-+}
-+
-+test_tcp_forwarding_nat()
-+{
-+	local lret
-+
-+	test_tcp_forwarding_ip "$1" "$2" 10.0.2.99 12345
-+	lret=$?
-+
-+	if [ $lret -eq 0 ] ; then
-+		test_tcp_forwarding_ip "$1" "$2" 10.6.6.6 1666
-+		lret=$?
-+	fi
-+
-+	return $lret
-+}
-+
- make_file "$ns1in" "ns1"
- make_file "$ns2in" "ns2"
- 
-@@ -283,14 +307,19 @@ ip -net ns2 route add 192.168.10.1 via 10.0.2.1
- # Same, but with NAT enabled.
- ip netns exec nsr1 nft -f - <<EOF
- table ip nat {
-+   chain prerouting {
-+      type nat hook prerouting priority 0; policy accept;
-+      meta iif "veth0" ip daddr 10.6.6.6 tcp dport 1666 counter dnat ip to 10.0.2.99:12345
-+   }
-+
-    chain postrouting {
-       type nat hook postrouting priority 0; policy accept;
--      meta oifname "veth1" masquerade
-+      meta oifname "veth1" counter masquerade
-    }
- }
- EOF
- 
--test_tcp_forwarding ns1 ns2
-+test_tcp_forwarding_nat ns1 ns2
- 
- if [ $? -eq 0 ] ;then
- 	echo "PASS: flow offloaded for ns1/ns2 with NAT"
-@@ -313,7 +342,7 @@ fi
- ip netns exec ns1 sysctl net.ipv4.ip_no_pmtu_disc=0 > /dev/null
- ip netns exec ns2 sysctl net.ipv4.ip_no_pmtu_disc=0 > /dev/null
- 
--test_tcp_forwarding ns1 ns2
-+test_tcp_forwarding_nat ns1 ns2
- if [ $? -eq 0 ] ;then
- 	echo "PASS: flow offloaded for ns1/ns2 with NAT and pmtu discovery"
- else
+Thanks,
+~A
+
+
+1) http://vger.kernel.org/lpc_net2018_talks/ebpf-firewall-LPC.pdf
+2) https://www.youtube.com/watch?v=AfgwVya9Cog
+
