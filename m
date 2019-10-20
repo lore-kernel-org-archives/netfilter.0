@@ -1,54 +1,46 @@
-From: A L <mail@lechevalier.se>
-Subject: Status of BPFilter?
-Date: Sun, 20 Oct 2019 15:54:23 +0200
-Message-ID: <3a0fc6f6-d66a-35aa-19d6-7456a3fe8f96@lechevalier.se>
+From: Jamal Hadi Salim <jhs-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
+Subject: CFS for Netdev 0x14 open!
+Date: Sun, 20 Oct 2019 14:11:03 -0400
+Message-ID: <65cebdca-7ed1-2bb5-450a-0bb8de7b6ff3@mojatatu.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
+Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lechevalier.se; s=20140924;
-        h=content-transfer-encoding:content-type:mime-version:date:message-id:subject:
-         from:to:from;
-        bh=Y5jT+F7cjGV6ijooSQLakb0YdCQEZ8dDXEhZF4jl4iY=;
-        b=LbRlCvaOr3c1MqfX/OxwMYyZ1l3pfd3E59zRSE0dHLSPNmS1QWYgfe/QF3s5MLCSrVTLdcwCd2e9G
-         I1gVOqE1CHqdsqTTrFdIBjU6QzSCEgX9xf5FkKn9cs7umq99j+9pmt7YR+p9O6Z8SPWtdfHFuNXWVA
-         5u4VBw/HHv5+H7Yc=
-Content-Language: en-GB
-Sender: netfilter-owner@vger.kernel.org
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=to:from:subject:cc:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=WwwOJG6cLnG5xe3kjsXT2ilCOHWGZRdMg+j74Vw53t4=;
+        b=xIRXpq8f/TDXgDmgVcZmBmcpBA1YW2MqqLg1daMjdWhX29XZxDpk+kWpAbHEc9I9ak
+         QvZk0TsCqH8w+tGANCynHQASn8DjmWLsCvql3TAMT6Sl4YSOJHhZ0Ubr2XRydLZW2b8S
+         uX2+tIPVXTRL6jA8P5UDWJhIlmSC4FBNjJFWJOpADWdR6+A/LhT7sDXrSsYGLUdXmCcM
+         svh6WrY1AREuxupY5jZaNQFUWvYL+0HmIlkPpg4b4OADBTPojBAlotOydJHDMiqAE6Fz
+         +IOFGJPqAFYRPBlE/p4t+f9EWrOeiYNhfmctDfjwzMIZEVUN6YHBHDRgIClvdY/G5yBN
+         jloA==
+Content-Language: en-US
+Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
-
-Dear all,
-
-I'm looking for up to date documentation on bpfilter in Kernel and what 
-tools are needed to properly use it. I hope I have come to the right 
-place :)
-
-The most recent information seems to be this 2018 PDF from Facebook(1) 
-where they talk about re-implementing a firewall in eBPF using the 
-existing iptables (not nft/nf_tables?) kernel interface with the use of 
-a user-space helper module. It seems they mean that the original 
-iptables tools should work transparently.
-
-Looking at the source code /usr/src/linux-5.3.7-gentoo/net/bpfilter/ we 
-have both the 'bpfilter.ko' module and the user-mode-helper 
-bpfilrter_umh as an ELF executable. There is a YouTube video(2) showing 
-the use of the helper module that seemingly intercepts the standard 
-iptables (legacy?) rules and converts them to BPF.
-
-What is the status of bpfilter. What are its current capabilities and 
-how can we make use of them? For example, is some specially patched 
-iptables user tools required.
-
-Original mailinglist entries with patches:
-https://marc.info/?l=netfilter-devel&m=151878844403666&w=2
-https://lwn.net/Articles/747551
-
-Thanks,
-~A
+To: people <people-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org>
+Cc: netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lwn-T1hC0tSOHrs@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lartc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 
 
-1) http://vger.kernel.org/lpc_net2018_talks/ebpf-firewall-LPC.pdf
-2) https://www.youtube.com/watch?v=AfgwVya9Cog
 
+We are pleased to announce the opening of Call For
+Submissions(CFS) for Netdev 0x14.
+
+For overview of topics, submissions and requirements
+please visit:
+https://netdevconf.info/0x14/submit-proposal.html
+
+For all submitted sessions, we employ a blind
+review process carried out by the Program Committee.
+Please refer to:
+https://www.netdevconf.info/0x14/pc_review.html
+
+Important dates:
+Closing of CFS: Wed, January 15, 2020.
+Notification by: Mon, January 20, 2020
+Conference dates:  Tue, March 17 to Fri, March 20, 2020.
+
+cheers,
+jamal
