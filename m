@@ -1,46 +1,45 @@
-From: Jamal Hadi Salim <jhs-jkUAjuhPggJWk0Htik3J/w@public.gmane.org>
-Subject: CFS for Netdev 0x14 open!
-Date: Sun, 20 Oct 2019 14:11:03 -0400
-Message-ID: <65cebdca-7ed1-2bb5-450a-0bb8de7b6ff3@mojatatu.com>
+From: Daniel Huhardeaux <tech@tootai.net>
+Subject: nftables v0.9.0 netlink: Error: set is not a map
+Date: Mon, 21 Oct 2019 22:08:17 +0200
+Message-ID: <37d8e802-87c2-4ef6-d0da-173bbd2ded60@tootai.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
-        h=to:from:subject:cc:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=WwwOJG6cLnG5xe3kjsXT2ilCOHWGZRdMg+j74Vw53t4=;
-        b=xIRXpq8f/TDXgDmgVcZmBmcpBA1YW2MqqLg1daMjdWhX29XZxDpk+kWpAbHEc9I9ak
-         QvZk0TsCqH8w+tGANCynHQASn8DjmWLsCvql3TAMT6Sl4YSOJHhZ0Ubr2XRydLZW2b8S
-         uX2+tIPVXTRL6jA8P5UDWJhIlmSC4FBNjJFWJOpADWdR6+A/LhT7sDXrSsYGLUdXmCcM
-         svh6WrY1AREuxupY5jZaNQFUWvYL+0HmIlkPpg4b4OADBTPojBAlotOydJHDMiqAE6Fz
-         +IOFGJPqAFYRPBlE/p4t+f9EWrOeiYNhfmctDfjwzMIZEVUN6YHBHDRgIClvdY/G5yBN
-         jloA==
-Content-Language: en-US
-Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
+        t=1571688499; bh=kH7TPA9VFugtSpur7Kg9DsLfVdavZrk0Urg3WifghDc=;
+        h=To:From:Subject:Date:From;
+        b=pSb4M7IbSvTqtA2AQom3Yhlb38rRsanYfFLQLQkvGkWW5dRW5wxKGzT3mCE97fSIq
+         6zt5KyUKb07U443Q+jpD0vSnzrRc2gfFkF7J19oqYOJ0BxBXd7YVNzhvDnQ/eApgzx
+         QpmEP+l8IjzhmBVDyMBtGNz0u7gQfSVx5+wnAIwI=
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
+        t=1571688498; bh=kH7TPA9VFugtSpur7Kg9DsLfVdavZrk0Urg3WifghDc=;
+        h=To:From:Subject:Date:From;
+        b=sWzVSL/pYf+3HtXK3vwSETDcQIOyjUgtbvoj/Ce38CDxpO6I7Rp7RazJ4tk7IUG3t
+         /PvjirTmuAcczv5BbbS6K+gQZwKAG9+SaKjIRla06R1nPNOwZh/ZHfWzd6DL6faltD
+         pQydM5RCCbFVabt7YTjwh5I/wk2ZZ7UvV/a4CeGQ=
+Content-Language: fr
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: people <people-Aq7fehzYRUagpaxmtUs7hg@public.gmane.org>
-Cc: netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lwn-T1hC0tSOHrs@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lartc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: netfilter@vger.kernel.org
 
+Hello,
 
+I created a bash script under Debian/Buster to create nft rules: it 
+works perfectly.
 
-We are pleased to announce the opening of Call For
-Submissions(CFS) for Netdev 0x14.
+Now I copy this script to a Debian/Stretch machine (nftables v0.7.0) and 
+get in troubles to make it work: at some point I receive the subject error.
 
-For overview of topics, submissions and requirements
-please visit:
-https://netdevconf.info/0x14/submit-proposal.html
+OK, I think it's a version problem: I installed nftables from Stretch 
+backports which is the same version as the Buster one, v0.9.0 But bang, 
+error is still here :(
 
-For all submitted sessions, we employ a blind
-review process carried out by the Program Committee.
-Please refer to:
-https://www.netdevconf.info/0x14/pc_review.html
+What can be the cause of this error? Yes, I use sets, and no, they are 
+no maps defined.
 
-Important dates:
-Closing of CFS: Wed, January 15, 2020.
-Notification by: Mon, January 20, 2020
-Conference dates:  Tue, March 17 to Fri, March 20, 2020.
+Thanks for any hint
 
-cheers,
-jamal
+-- 
+TOOTAi Networks
+Daniel
