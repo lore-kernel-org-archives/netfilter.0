@@ -1,46 +1,42 @@
-From: trentbuck@gmail.com (Trent W. Buck)
-Subject: Re: nftables v0.9.0 netlink: Error: set is not a map
-Date: Tue, 22 Oct 2019 11:30:26 +1100
-Message-ID: <87sgnld3kt.fsf@goll.lan>
-References: <37d8e802-87c2-4ef6-d0da-173bbd2ded60@tootai.net>
+From: Ttttabcd <ttttabcd@protonmail.com>
+Subject: How to implement transparent proxy in bridge through nftables
+Date: Tue, 22 Oct 2019 08:02:34 +0000
+Message-ID: <Nvqi4FOJQaMWqaK3fKSuAiB168CYDyZI1uf8_peoeV3N0J-l0r8yt6GBJG21iY5dMA8t8-2WfyZ8A0GG6UDGEA6Y3KJKAaRUB7fEKmujlqk=@protonmail.com>
+Reply-To: Ttttabcd <ttttabcd@protonmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=default; t=1571731362;
+        bh=J02+z6N0OImzY90ezirAO66MBw0GrT4R50v9V06BjQA=;
+        h=Date:To:From:Reply-To:Subject:Feedback-ID:From;
+        b=baFHZiY89t7GqWI9C59pTX7fhJlpLogAcytjGp8tGWIkoOYdMBVMYtWPjlvcq/CQM
+         8oVMXBIQbLwbs5JEXO9Lbj+9PQUEbvXHoM95ohDk1+QMsaQLssSn/Y0dfPJv6tFbLN
+         mH0Uoj2BEsvJGx/+Ay/DzQ5HKCwi7RhsoS/+ZAdE=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Daniel Huhardeaux <tech@tootai.net> writes:
+In ebtables, I can pull the direct Layer 2 forwarding traffic to the networ=
+k layer through the "broute" table, but I can't find the "broute" table in =
+nftables.
 
-> I created a bash script under Debian/Buster to create nft rules: it
-> works perfectly.
->
-> Now I copy this script to a Debian/Stretch machine (nftables v0.7.0)
-> and get in troubles to make it work: at some point I receive the
-> subject error.
->
-> OK, I think it's a version problem: I installed nftables from Stretch
-> backports which is the same version as the Buster one, v0.9.0 But
-> bang, error is still here :(
->
-> What can be the cause of this error? Yes, I use sets, and no, they are
-> no maps defined.
+Later, I want to perform target MAC address redirection in PREROUTING, and =
+change the target MAC to the bridge itself or the MAC of the slave interfac=
+e, so that the data frame can reach the network layer.
 
-Can you show us your actual ruleset.nft?
+But nftables doesn't seem to be able to perform MAC address redirection in =
+bridge families, so there is no way to use it.
 
-Or (better yet) distill it down to a minimal test ruleset.nft that
-generates the problem, and show us that.
+Finally, I searched the Internet for a long time, found br_netfilter, can o=
+pen bridge-nf-call-iptables to pass the bridge frame to the iptables hook p=
+rocessing, but nftables does not support this feature.
 
+Now I have tried all the methods that I can think of and can search. All of=
+ them are not working. I can only come here for help.
 
-I don't recognize the specific error.
-I have seen similar errors before due to brainos in my ruleset.
+Can someone tell me how to run transparent proxy in the bridge with nftable=
+s, and the transparent proxy uses the tproxy module.
 
-I agree it doesn't make sense that the same version (nftables=0.9.0 on
-Debian 9 and Debian 10) should parse the same way - so maybe it's a
-difference on the kernel side?
-
-Are you running
-4.19.67-2+deb10u1~bpo9+1 on Debian 9, and
-4.19.67-2 on Debian 10?
-
+Does anyone know how to do it?
