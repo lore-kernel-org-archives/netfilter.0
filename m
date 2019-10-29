@@ -1,33 +1,32 @@
-From: Duncan Roe <duncan_roe@optusnet.com.au>
+From: Laura Garcia <nevola@gmail.com>
 Subject: Re: Named sets with timeout
-Date: Tue, 29 Oct 2019 12:35:53 +1100
-Message-ID: <20191029013553.GA1938@dimstar.local.net>
-References: <cd3973f01a86ebc50a7fae9da40f29ce@mailtower.de>
- <87wocowgab.fsf@goll.lan>
+Date: Tue, 29 Oct 2019 09:00:43 +0100
+Message-ID: <CAF90-WiguQF4PfU=8jGBSeC+PrbizWj8hXNAUQUkzOpsoLcYjA@mail.gmail.com>
+References: <cd3973f01a86ebc50a7fae9da40f29ce@mailtower.de> <87wocowgab.fsf@goll.lan>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tvKhNiwa0VQanzW3JUBVSqyRx9TjCZal9CNthcDwSDw=;
+        b=PHPCq1cT9hPFCbrJ4VMMzHOl3pHxo1qKuSS1JITsbbOE0ceTF1HNBbLFxKAKCndumd
+         SjJk+uZE7Pzswi1gmINsDsGvzpwnk6lBO1JjWwQWPlrjMRoqtpDoWCKR8IpWYahZH5SJ
+         rZiEVemku40qWs1kgcf+75JfOxLxNvbjAq/+zM73jvlVJDSdkgoPqdp3Ix49awRFp8Er
+         Uu7gkcKMYNeDD6dVa0ahWbPCDQ5UT4pdlQwhTxwXf9KFqkgB+D9QZPaA9LiEudYSSUKS
+         bg4EIL4W74nIAzoFNYSPYwG/rHaMugIy9dnK6rwdoox5kAyANFq+DlNW2yVhckl6t2JZ
+         GlBw==
 In-Reply-To: <87wocowgab.fsf@goll.lan>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
-Cc: matt-nft@mailtower.de, trentbuck@gmail.com
+To: "Trent W. Buck" <trentbuck@gmail.com>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On Tue, Oct 29, 2019 at 11:23:40AM +1100, Trent W. Buck wrote:
-> Matt <matt-nft@mailtower.de> writes:
+On Tue, Oct 29, 2019 at 8:00 AM Trent W. Buck <trentbuck@gmail.com> wrote:
 >
-> > Then i add the following sample element to it:
-> >   /usr/sbin/nft add set ip filter_v4 my_drop \{type ipv4_addr \; flags
-> > timeout \; elements=\{a.b.c.d timeout 600s  \} \;\}
-> >
-> > All good so far, a.b.c.d is counting down as expected,
-> > beginning with 10min.
-> > But when I wait - say 1 minute and repeat the 'nft add set ... 600s'
-> > command from above then the timer remains unchanged (?)
-> > It looks as the timer cannot get changed anymore once it has been
-> > initialized.
+[...]
 >
 > I think you are right, but see this recent commit (in 0.9.2+):
 >
@@ -39,10 +38,17 @@ On Tue, Oct 29, 2019 at 11:23:40AM +1100, Trent W. Buck wrote:
 > ...which sounds like there is a new (as-yet-undocumented?) keyword for
 > changing (as opposed to initializing) the timeout of a set element.
 >
-It's "update"
 
-I.e. use update instead of add got get timeout to reset.
+Hi,
 
-Needs kernel 5.3 IIRC
+No new or undocumented keyword, it uses the already created syntax to
+dump expiration values in order to modify it. Please refer to [1] and
+[2].
 
-Cheers ... Duncan.
+As Duncan states, "update" is what you're looking for. Please check
+the first example of [2].
+
+[1] https://wiki.nftables.org/wiki-nftables/index.php/Element_timeouts
+[2] https://wiki.nftables.org/wiki-nftables/index.php/Updating_sets_from_the_packet_path
+
+Cheers.
