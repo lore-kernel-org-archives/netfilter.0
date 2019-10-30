@@ -1,48 +1,72 @@
-From: Laura Garcia <nevola@gmail.com>
-Subject: Re: Named sets with timeout
-Date: Wed, 30 Oct 2019 09:06:39 +0100
-Message-ID: <CAF90-WjSW=BxO7sEfr1C4qMD-XTYdGZe2HXBb+bDNbqnpHRShw@mail.gmail.com>
-References: <cd3973f01a86ebc50a7fae9da40f29ce@mailtower.de>
- <87wocowgab.fsf@goll.lan> <CAF90-WiguQF4PfU=8jGBSeC+PrbizWj8hXNAUQUkzOpsoLcYjA@mail.gmail.com>
- <878sp3nihy.fsf@goll.lan>
+From: Daniel Huhardeaux <tech@tootai.net>
+Subject: IPv6 nft vs ip6tables - Local incompatibility ?
+Date: Wed, 30 Oct 2019 18:04:07 +0100
+Message-ID: <f696024b-d134-3470-ff70-27d7e00df9cd@tootai.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=MhxAN0qJykbwrZwokBsl+Q3hWYUiqjf6PHIzB/gq5X8=;
-        b=Dgac4+8k/8jJG9vMI9+QfrKhYzGIP3oc0ZyuG3J63xa1qdhfms2TlDVjE0FjzOCbj+
-         buZ9fT8tqcM8SVkQ07lJRZgnWCaIlmX09nL/PlSb1iWp+1KANQcDvGeDEToIQYrDs2lh
-         h42lZWuSOHhNuBf4USzn+d++AUoa91Pozmob23CU4ix0IQu2AVoYc/RtBKWLXmk5dqMF
-         IZ/Q50Z4h5DJ3zv89eSxrttMc3vPxW1hLF3MtrZQWw7go90auQNPG+tVk0f5cFGZCenP
-         L1R8XvgvPZlj89aOCUxTswA0o9Wpb8SkToziaakOHfPoaShH6delMkRJ74GRoOiwS5n5
-         ro+A==
-In-Reply-To: <878sp3nihy.fsf@goll.lan>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
+        t=1572455048; bh=0juqj42fWTG6xsyJKgw7DQAxEOjp4NMQtcnAqNpvClE=;
+        h=To:From:Subject:Date:From;
+        b=TJr29LUOOKKsTj6PAVVB/+68mcu8W9evFYmbfw7tg+ur7yZ9nmCPxfxu8AGaNXLI2
+         +X9uOxFwBTXG/3I1DuekFgRJbknP1/mdsA7Pfu0F+hTQXxcMu3rFePpjhadVR/47sc
+         MvFslppPhKFIkJ01U5V948Pa1hecVmkt3zkIgkNY=
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
+        t=1572455048; bh=0juqj42fWTG6xsyJKgw7DQAxEOjp4NMQtcnAqNpvClE=;
+        h=To:From:Subject:Date:From;
+        b=TJr29LUOOKKsTj6PAVVB/+68mcu8W9evFYmbfw7tg+ur7yZ9nmCPxfxu8AGaNXLI2
+         +X9uOxFwBTXG/3I1DuekFgRJbknP1/mdsA7Pfu0F+hTQXxcMu3rFePpjhadVR/47sc
+         MvFslppPhKFIkJ01U5V948Pa1hecVmkt3zkIgkNY=
+Content-Language: fr
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Trent W. Buck" <trentbuck@gmail.com>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Wed, Oct 30, 2019 at 2:14 AM Trent W. Buck <trentbuck@gmail.com> wrote:
->
-> Laura Garcia <nevola@gmail.com> writes:
->
-> > On Tue, Oct 29, 2019 at 8:00 AM Trent W. Buck <trentbuck@gmail.com> wrote:
-> >> I think you are right, but see [...]
-> >> https://git.netfilter.org/nftables/commit/?id=24f33c7
-> >> ...which sounds like there is a new (as-yet-undocumented?) keyword for
-> >> changing (as opposed to initializing) the timeout of a set element.
-> >
-> > No new or undocumented keyword, [...]
-> > "update" is what you're looking for. [....]
-> > [2] https://wiki.nftables.org/wiki-nftables/index.php/Updating_sets_from_the_packet_path
->
-> Thanks!
->
-> I apologize for my wrong & misleading answer. :-{
->
+Hello,
 
-No problem :)
+I use nftables in a network where stations are under Ubuntu 18 or Debian 
+9/10.
+
+IPv6 networks are:
+2a01:YYY:ZZZ:10::9000/128
+2a01:YYY:ZZZ:10::/64
+
+ICMP rules on 2a01:YYY:ZZZ:10::4
+
+chain output {
+		type filter hook output priority 0; policy drop;
+		oif "lo" accept
+		oif "lan" meta l4proto ipv6-icmp counter packets 0 bytes 0 accept
+		oif "lan" ct state established,related,new counter packets 0 bytes 0 
+accept
+	}
+
+Pinging ipv6 addresses external to the network is working fine.
+
+Pinging a local machine, doesn't matter in which lan, I get "ping 
+sendmsg: operation not permitted".
+
+If I change policy to accept, I get
+ From 2a01:YYY:ZZZ:10::4 icmp_seq=1 Destination unreachable: Address 
+unreachable
+
+If I switch to ip6tables
+
+  96 10892 ACCEPT     icmpv6    lan   *       ::/0 
+2a01:729:16e:10::4
+     6  1008 ACCEPT     icmpv6    lan   *       ::/0 
+::/0                 ipv6-icmptype 134 HL match HL == 255
+    31  2232 ACCEPT     icmpv6    lan   *       ::/0 
+::/0                 ipv6-icmptype 135 HL match HL == 255
+    39  2496 ACCEPT     icmpv6    lan   *       ::/0 
+::/0                 ipv6-icmptype 136 HL match HL == 255
+     0     0 ACCEPT     icmpv6    lan   *       ::/0 
+::/0                 ipv6-icmptype 137 HL match HL == 255
+
+I can ping machines from both lan.
+
+Any clue ?
+-- 
+Daniel
+TOOTAi Networks
