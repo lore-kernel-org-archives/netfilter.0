@@ -1,81 +1,55 @@
-From: =?UTF-8?Q?Kadlecsik_J=C3=B3zsef?= <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset 7.4 released
-Date: Fri, 1 Nov 2019 16:44:22 +0100 (CET)
-Message-ID: <alpine.DEB.2.20.1911011627280.9207@blackhole.kfki.hu>
+From: Andreas Sikkema <ramdyne@gmx.net>
+Subject: Length module, docs "incorrect" or something else?
+Date: Fri, 1 Nov 2019 18:14:23 +0100
+Message-ID: <CABkXqaN43d3SC+KxzJu0uBZYw0kwoB5A8jO9WazWeEpfF3k7PA@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        blackhole.kfki.hu; h=mime-version:user-agent:message-id:from
-        :from:date:date:received:received:received; s=20151130; t=
-        1572623063; x=1574437464; bh=FciZkGk3B24yfqxRiLmfx4wAFoAMhCkIKhH
-        HvZo+DaA=; b=env889Da/QmwgNotkK3Wmzz6r2QazTiOEUZUVTzVJ+DsRREaT6X
-        +Pts4fw6T7vgV8hj5vL3jgEMdjgUsX/GYlXn4y2gp7Emj3Dn8ckn1BEVc/gGRAW8
-        FTJLOo9PqH1KznVQedUTI4e4/GryG4jyWuCAGlyNjJrrKctHdsXGz6pI=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: netfilter@vger.kernel.org
 
 Hi,
 
-I'm happy to announce ipset 7.4 which brings a few corrections and fixes.
-As a new feature, Kristian Evensen added wildcard support to the type
-hash:net,iface.
+I have a strange problem trying to filter out some unwanted packets
+from RTP streams. I have two machines exchanging quite a lot of RTP
+traffic between each other, both then send these on to other devices.
+For some reason one side is sending empty UDP messages to the other
+side which the other side doesn't like which results in loss of media.
+I have found that when I use iptables/netfilter to filter out these
+empty UDP messages nothing breaks and my users are happy.
 
-Please note, if you want to use ipset with kernel 5.2 and above, you need 
-ipset 7.4 otherwise some commands do not work: from 5.2 NL_VALIDATE_STRICT 
-is enabled and three netlink nla policies in ipset was not complete.
+The iptables command I use is:
+/sbin/iptables -A INPUT -s <source ip>/32 -p udp -m length --length 28 -j DROP
 
-The sorting is changed: instead of textual sorting it now follows the 
-natural ordering of IP addresses (i.e. 2.2.2.2 comes before 11.11.11.11) 
-and in the case of the same prefix, more specific netblocks come before 
-the least specific ones.
+This worked for years without any issue, but the last few months users
+have been complaining that the problems started again, possibly after
+we've upgraded the machine that's doing the filtering to a much newer
+Debian 9, iptables version is currently 1.6.0+snapshot20161117-6
 
-Userspace changes:
-  - Fix compatibility support for netlink extended ACK and add
-    synchronize_rcu_bh() checking
-  - treewide: Replace GPLv2 boilerplate/reference with SPDX - rule 500
-    (Thomas Gleixner)
-  - ipset: Add wildcard support to net,iface (Kristian Evensen)
-  - Sort naturally instead of textual sort (bugzilla #1369)
-  - Do not return with error at 'make modules_install' when modules
-    are not loaded (reported by Oskar Berggren)
-Kernel part changes:
-  - Fix nla_policies to fully support NL_VALIDATE_STRICT
-  - treewide: Replace GPLv2 boilerplate/reference with SPDX - rule 500
-    (Thomas Gleixner)
-  - netfilter: remove unnecessary spaces (yangxingwu)
-  - ipset: Add wildcard support to net,iface (Kristian Evensen)
-  - ipset: Copy the right MAC address in hash:ip,mac IPv6 sets
-    (Stefano Brivio)
-  - netfilter: ipset: move ip_set_get_ip_port() to ip_set_bitmap_port.c.
-    (Jeremy Sowden)
-  - netfilter: ipset: move function to ip_set_bitmap_ip.c. (Jeremy Sowden) 
-  - netfilter: ipset: make ip_set_put_flags extern. (Jeremy Sowden)
-  - netfilter: ipset: move functions to ip_set_core.c. (Jeremy Sowden)
-  - netfilter: ipset: move ip_set_comment functions from ip_set.h
-    to ip_set_core.c. (Jeremy Sowden)
-  - netfilter: ipset: remove inline from static functions in .c files.
-    (Jeremy Sowden)
-  - netfilter: ipset: add a coding-style fix to ip_set_ext_destroy.
-    (Jeremy Sowden)
-  - netfilter: added missing includes to a number of header-files.
-    (Jeremy Sowden)
-  - netfilter: inlined four headers files into another one. (Jeremy 
-    Sowden)
-  - netfilter: ipset: Fix an error code in ip_set_sockfn_get()
-    (Dan Carpenter)
+Upon investigation using TCPdump I saw that the UDP messages that were
+still being dropped had the expected 28 bytes of IP message size, but
+so did the messages that were not being dropped. The only difference
+between these two in my captures was that the non-dropped messages
+included Ethernet padding and the dropped messages had no padding in
+the capture.
 
-You can download the source code of ipset from:
-        http://ipset.netfilter.org
-        ftp://ftp.netfilter.org/pub/ipset/
-        git://git.netfilter.org/ipset.git
+I have three questions:
+- How do I see (on a production machine) what length the length module
+sees on these empty UDP messages?
+- Should the length module even (appear to) use the length of the
+Ethernet frame body as source of the "length of the layer-3 payload
+(e.g. layer-4 packet) of a packet"?
+- Have I missed a trick in finding out why these (apparently) larger
+messages are not being dropped?
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+An additional question I have is whether I should even be seeing
+padding intermittently using TCPdump? But that is probably off-topic
+here.
+
+I am completely lost at this point, can anyone point me in a
+potentially correct direction?
+
+-- 
+Andreas Sikkema
