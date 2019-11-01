@@ -1,88 +1,81 @@
-From: Daniel Huhardeaux <tech@tootai.net>
-Subject: Re: IPv6 nft vs ip6tables - Local incompatibility ?
-Date: Wed, 30 Oct 2019 19:04:28 +0100
-Message-ID: <5e34ad10-a278-2c59-c075-2c19731bab3c@tootai.net>
-References: <f696024b-d134-3470-ff70-27d7e00df9cd@tootai.net>
- <20191030171849.GG876@breakpoint.cc>
+From: =?UTF-8?Q?Kadlecsik_J=C3=B3zsef?= <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset 7.4 released
+Date: Fri, 1 Nov 2019 16:44:22 +0100 (CET)
+Message-ID: <alpine.DEB.2.20.1911011627280.9207@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1572458669; bh=Ckh3oHUUDgfGMVTZg5bJr8vH9PhQ9jZvSkQn9h9Ab0E=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=T8KGB8eZA63Mn3xtNK1ybOqq0ISRMbN/pmKrklipZUBCNsWgw43UNMT33LWaqNZ1q
-         bxKoOWlmrawpTX2ln5zNf9TFY33uorwl3KAsRZPTBBtXhh89tcip6ED4FWfhyBNT8R
-         gxUJeFFSNYTBmYG7vbYhOz7frEoAF4B9izPvAsT0=
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1572458669; bh=Ckh3oHUUDgfGMVTZg5bJr8vH9PhQ9jZvSkQn9h9Ab0E=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=T8KGB8eZA63Mn3xtNK1ybOqq0ISRMbN/pmKrklipZUBCNsWgw43UNMT33LWaqNZ1q
-         bxKoOWlmrawpTX2ln5zNf9TFY33uorwl3KAsRZPTBBtXhh89tcip6ED4FWfhyBNT8R
-         gxUJeFFSNYTBmYG7vbYhOz7frEoAF4B9izPvAsT0=
-In-Reply-To: <20191030171849.GG876@breakpoint.cc>
-Content-Language: fr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        blackhole.kfki.hu; h=mime-version:user-agent:message-id:from
+        :from:date:date:received:received:received; s=20151130; t=
+        1572623063; x=1574437464; bh=FciZkGk3B24yfqxRiLmfx4wAFoAMhCkIKhH
+        HvZo+DaA=; b=env889Da/QmwgNotkK3Wmzz6r2QazTiOEUZUVTzVJ+DsRREaT6X
+        +Pts4fw6T7vgV8hj5vL3jgEMdjgUsX/GYlXn4y2gp7Emj3Dn8ckn1BEVc/gGRAW8
+        FTJLOo9PqH1KznVQedUTI4e4/GryG4jyWuCAGlyNjJrrKctHdsXGz6pI=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Le 30/10/2019 à 18:18, Florian Westphal a écrit :
-> Daniel Huhardeaux <tech@tootai.net> wrote:
->> Hello,
->>
->> I use nftables in a network where stations are under Ubuntu 18 or Debian
->> 9/10.
->>
->> IPv6 networks are:
->> 2a01:YYY:ZZZ:10::9000/128
->> 2a01:YYY:ZZZ:10::/64
->>
->> ICMP rules on 2a01:YYY:ZZZ:10::4
->>
->> chain output {
->> 		type filter hook output priority 0; policy drop;
->> 		oif "lo" accept
->> 		oif "lan" meta l4proto ipv6-icmp counter packets 0 bytes 0 accept
->> 		oif "lan" ct state established,related,new counter packets 0 bytes 0
->> accept
->> 	}
->>
->> Pinging ipv6 addresses external to the network is working fine.
->>
->> Pinging a local machine, doesn't matter in which lan, I get "ping sendmsg:
->> operation not permitted".
->>
->> If I change policy to accept, I get
->>  From 2a01:YYY:ZZZ:10::4 icmp_seq=1 Destination unreachable: Address
->> unreachable
->>
->> If I switch to ip6tables
->>
->>   96 10892 ACCEPT     icmpv6    lan   *       ::/0 2a01:729:16e:10::4
->>      6  1008 ACCEPT     icmpv6    lan   *       ::/0 ::/0
->> ipv6-icmptype 134 HL match HL == 255
->>     31  2232 ACCEPT     icmpv6    lan   *       ::/0 ::/0
->> ipv6-icmptype 135 HL match HL == 255
->>     39  2496 ACCEPT     icmpv6    lan   *       ::/0 ::/0
->> ipv6-icmptype 136 HL match HL == 255
->>      0     0 ACCEPT     icmpv6    lan   *       ::/0 ::/0
->> ipv6-icmptype 137 HL match HL == 255
->>
->> I can ping machines from both lan.
->>
->> Any clue ?
-> 
-> It looks like nft ruleset tests output, whereas ip6tables checks
-> input...
-> 
+Hi,
 
-My bad, I paste the wrong output :(
+I'm happy to announce ipset 7.4 which brings a few corrections and fixes.
+As a new feature, Kristian Evensen added wildcard support to the type
+hash:net,iface.
 
-Anyway, I found the problem: flushing ip6tables rules is not enough to 
-disable ip6tables, you have to unload modules too. All nftables machines 
-where rebooted and now all is good.
+Please note, if you want to use ipset with kernel 5.2 and above, you need 
+ipset 7.4 otherwise some commands do not work: from 5.2 NL_VALIDATE_STRICT 
+is enabled and three netlink nla policies in ipset was not complete.
 
-Thanks for your help
+The sorting is changed: instead of textual sorting it now follows the 
+natural ordering of IP addresses (i.e. 2.2.2.2 comes before 11.11.11.11) 
+and in the case of the same prefix, more specific netblocks come before 
+the least specific ones.
 
--- 
-TOOTAi Networks
+Userspace changes:
+  - Fix compatibility support for netlink extended ACK and add
+    synchronize_rcu_bh() checking
+  - treewide: Replace GPLv2 boilerplate/reference with SPDX - rule 500
+    (Thomas Gleixner)
+  - ipset: Add wildcard support to net,iface (Kristian Evensen)
+  - Sort naturally instead of textual sort (bugzilla #1369)
+  - Do not return with error at 'make modules_install' when modules
+    are not loaded (reported by Oskar Berggren)
+Kernel part changes:
+  - Fix nla_policies to fully support NL_VALIDATE_STRICT
+  - treewide: Replace GPLv2 boilerplate/reference with SPDX - rule 500
+    (Thomas Gleixner)
+  - netfilter: remove unnecessary spaces (yangxingwu)
+  - ipset: Add wildcard support to net,iface (Kristian Evensen)
+  - ipset: Copy the right MAC address in hash:ip,mac IPv6 sets
+    (Stefano Brivio)
+  - netfilter: ipset: move ip_set_get_ip_port() to ip_set_bitmap_port.c.
+    (Jeremy Sowden)
+  - netfilter: ipset: move function to ip_set_bitmap_ip.c. (Jeremy Sowden) 
+  - netfilter: ipset: make ip_set_put_flags extern. (Jeremy Sowden)
+  - netfilter: ipset: move functions to ip_set_core.c. (Jeremy Sowden)
+  - netfilter: ipset: move ip_set_comment functions from ip_set.h
+    to ip_set_core.c. (Jeremy Sowden)
+  - netfilter: ipset: remove inline from static functions in .c files.
+    (Jeremy Sowden)
+  - netfilter: ipset: add a coding-style fix to ip_set_ext_destroy.
+    (Jeremy Sowden)
+  - netfilter: added missing includes to a number of header-files.
+    (Jeremy Sowden)
+  - netfilter: inlined four headers files into another one. (Jeremy 
+    Sowden)
+  - netfilter: ipset: Fix an error code in ip_set_sockfn_get()
+    (Dan Carpenter)
+
+You can download the source code of ipset from:
+        http://ipset.netfilter.org
+        ftp://ftp.netfilter.org/pub/ipset/
+        git://git.netfilter.org/ipset.git
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
