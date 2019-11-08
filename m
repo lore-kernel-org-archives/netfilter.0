@@ -1,23 +1,23 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: ebtables dnat rule gets system frozen
-Date: Sun, 3 Nov 2019 20:16:49 +0100
-Message-ID: <20191103191649.GM876@breakpoint.cc>
-References: <CAGnHSE=RxEesfAnzhHi+qteoWs1Mpc5BVWPn8zteEGqpTbgMeQ@mail.gmail.com>
+From: "TSB" <debbett@shertel.net>
+Subject: Your Account Update Verification!
+Date: Fri, 08 Nov 2019 01:44:55 -0800
+Message-ID: <20191108094458.1B2BC1DC4ADC@mail.palitramed.ru>
+Reply-To: craigdonaldson@indamail.hu
 Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAGnHSE=RxEesfAnzhHi+qteoWs1Mpc5BVWPn8zteEGqpTbgMeQ@mail.gmail.com>
+Content-Description: Mail message body
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Tom Yan <tom.ty89@gmail.com>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+To: Recipients <debbett@shertel.net>
 
-Tom Yan <tom.ty89@gmail.com> wrote:
-> Kernel version being 5.3.8, after adding a dnat rule (to the OUTPUT
-> chain) with ebtables-nft in iptables 1.8.3, my system is frozen as
-> soon as I ping anything. I couldn't catch anything with dmesg -w. Can
-> anyone reproduce the same issue? I am on Arch Linux.
-
-Yes, investigating.
+]]This is transfer to your provided bank account details below.
+Bank name: Deutsche Kreditbank Ag
+Bank Branch : Leipzig city, Germany
+Swift Bic: BYLADEM1001.
+IBAN: DE56 1203 0000 0010 5034 49
+Account Name: Bettina Sch=F6n
+We will appreciate if you can confirm this to be true as we will not
+be held liable for unauthorised transfer.
+Yours faithfully,
