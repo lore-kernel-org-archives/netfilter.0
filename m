@@ -1,46 +1,48 @@
-From: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
+From: Pierluigi Frullani Sinergy <p.frullani@sinergy.it>
 Subject: Re: Trouble getting SYNPROXY to work.
-Date: Tue, 12 Nov 2019 19:23:29 +0000
-Message-ID: <20191112142326.2ad4acf3@playground>
-References: <3018728.1mgFJ8EcOk@topolinux>
-        <3abdbb03-e10c-938f-bfb1-5e10764e1a3f@gmail.com>
-        <2490043.Bzh1xko5Hd@topolinux>
+Date: Tue, 12 Nov 2019 21:42:59 +0100
+Message-ID: <13941443.1yEmWJ4apE@topolinux>
+References: <3018728.1mgFJ8EcOk@topolinux> <2490043.Bzh1xko5Hd@topolinux> <20191112142326.2ad4acf3@playground>
+Reply-To: p.frullani@sinergy.it
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7Bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alum.wpi.edu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=jt3Yis7RLgwauWuCTrqV7ygef94szwgI5rlMnuGOqL8=;
- b=lK6pzdgRHIVHCMHcIg44zwP8F4k5PKNdFXwbBX8XwcVSuL0lllSXVdPLoM2E20hTa+Ha4DSnkxaIr56vxJ5kUkAPPkOIKU9vtpI5R52nN74QSwlztKcPHYm05l+W9xLGWmpyzalX0kq8k49teYrYy3w48JKcohMe6IQYHxoxKV4=
-In-Reply-To: <2490043.Bzh1xko5Hd@topolinux>
-Content-Language: en-US
-Content-ID: <7E5B5CA6719CE140A7D23B6474438413@namprd22.prod.outlook.com>
+DKIM-Filter: OpenDKIM Filter v2.10.3 orca.frumar.it xACKhmCI007803
+In-Reply-To: <20191112142326.2ad4acf3@playground>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: 
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Tue, 12 Nov 2019 19:31:54 +0100
-Pigi <pigi@frumar.it> wrote:
+Neal, 
 
-> On Tuesday 12 November 2019 11:37:29 Fatih USTA wrote:
-> > Hi Pierluigi,
-> >=20
-> > If you don't have ip address on br0 interface. =20
->=20
->=20
-> But, Fatih, I do have an IP address on br0:
->=20
-> root@firewall:~# ifconfig br0                                            =
-                                                                           =
-                                                             =20
-> br0: flags=3D4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500              =
-                                                                           =
-                                                               =20
->         inet 10.0.1.51  netmask 255.255.255.0  broadcast 10.0.2.255      =
-                                                                           =
-                                             =20
-Broadcast address doesn't match address/mask. Fix and verify you have no ot=
-her config errors.
+> > root@firewall:~# ifconfig br0                                                                                                                                                                                     
+> > br0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500                                                                                                                                                         
+> >         inet 10.0.1.51  netmask 255.255.255.0  broadcast 10.0.2.255                                                                                                                               
+> Broadcast address doesn't match address/mask. Fix and verify you have no other config errors.
+
+Easy fix:
+
+root@firewall:~# ifconfig br0
+br0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 10.0.1.51  netmask 255.255.255.0  broadcast 10.0.1.255
+        inet6 fe80::44b9:4bff:fe81:89e2  prefixlen 64  scopeid 0x20<link>
+
+but still no joy:
+root@firewall:~# tcpdump -n -i any port 82                                       <==== Here I'm using "any" to be sure no routing problems.
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on any, link-type LINUX_SLL (Linux cooked), capture size 262144 bytes
+
+
+21:40:58.520154 IP 10.0.1.18.34488 > 10.0.1.51.82: Flags [S], seq 900706808, win 29200, options [mss 1323,sackOK,TS val 2805112532 ecr 0,nop,wscale 7], length 0
+21:40:58.520154 IP 10.0.1.18.34488 > 10.0.1.51.82: Flags [S], seq 900706808, win 29200, options [mss 1323,sackOK,TS val 2805112532 ecr 0,nop,wscale 7], length 0
+21:40:59.585539 IP 10.0.1.18.34488 > 10.0.1.51.82: Flags [S], seq 900706808, win 29200, options [mss 1323,sackOK,TS val 2805113594 ecr 0,nop,wscale 7], length 0
+21:40:59.585539 IP 10.0.1.18.34488 > 10.0.1.51.82: Flags [S], seq 900706808, win 29200, options [mss 1323,sackOK,TS val 2805113594 ecr 0,nop,wscale 7], length 0
+21:41:01.630401 IP 10.0.1.18.34488 > 10.0.1.51.82: Flags [S], seq 900706808, win 29200, options [mss 1323,sackOK,TS val 2805115642 ecr 0,nop,wscale 7], length 0                                                  
+21:41:01.630401 IP 10.0.1.18.34488 > 10.0.1.51.82: Flags [S], seq 900706808, win 29200, options [mss 1323,sackOK,TS val 2805115642 ecr 0,nop,wscale 7], length 0                                                  
+
+Still banging my head on the wall :(
+
+Thx 
+
+Pierluigi
