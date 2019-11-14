@@ -1,68 +1,32 @@
-From: =?UTF-8?Q?Kadlecsik_J=C3=B3zsef?= <kadlec@blackhole.kfki.hu>
-Subject: Re: ipset bitmap:port question
-Date: Thu, 14 Nov 2019 14:24:35 +0100 (CET)
-Message-ID: <alpine.DEB.2.20.1911141416460.7498@blackhole.kfki.hu>
-References: <ba4fb013-93a0-3f63-0fd6-a4ee557893af@lechevalier.se> <alpine.DEB.2.20.1911141343070.7498@blackhole.kfki.hu>
+From: Matt <matt-nft@mailtower.de>
+Subject: One more application available for nftables
+Date: Thu, 14 Nov 2019 20:40:29 +0100
+Message-ID: <b5512a97bad28c14e57ebf2f92c12f27@mailtower.de>
+References: <b99d882d69f5e152919339c65ac26163@mailtower.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="110363376-1953589561-1573737875=:7498"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        blackhole.kfki.hu; h=mime-version:user-agent:references
-        :message-id:in-reply-to:from:from:date:date:received:received
-        :received; s=20151130; t=1573737875; x=1575552276; bh=+YpdSZBLY+
-        /sgCHmRWxmDDZfn2plvqVhIOEn7PBsIis=; b=OuSywGqyN8QDtc4caBNgDsT7p4
-        dKqwu4YtbMR+v0aFHGe7DBuPnSNCgRnNHuYjNEMIQpxORNVXF2L8Ib4C1ybC9t6r
-        KCCY/THOfl7ZJueUVeOvmbDXeTOWOX5AxTsMWx7qShxFSDjiff3/fTl+VXZSW/ZO
-        LilmMHkZNqV63MZ2E=
-In-Reply-To: <alpine.DEB.2.20.1911141343070.7498@blackhole.kfki.hu>
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailtower.de xAEJeTWN019514
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailtower.de; s=mail;
+        t=1573760429; bh=pd8MocWITF9xHRAtiQblkM7kvMTpOmETKuGYMF3UYJM=;
+        h=Date:From:To:Subject:In-Reply-To:References:From;
+        b=wQseYW0bEUxk/uVoB4m8QuUvRUW7OpHPCkcA86ZID+GQ293ZaLr2zrgDQ9qadeLxv
+         8Jd5blO+P+U2k3WdOo6H8vA9Uf5FEubKLxc3veHos94O3w24cfsAuPY1uVu+SAZJJU
+         7sFL7snN7hj4PzwPtW94xz8vxIK0zAS34DVA1TH8=
+In-Reply-To: <b99d882d69f5e152919339c65ac26163@mailtower.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: A L <mail@lechevalier.se>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org, netfilter-owner@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Dear Forum,
+I'd like to announce a new application which runs on nftables, I've 
+named it "fail2nft".
 
---110363376-1953589561-1573737875=:7498
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+The application takes care about unwanted ssh (and other)  logins.
 
-On Thu, 14 Nov 2019, Kadlecsik J=C3=B3zsef wrote:
+If you are interested, then please see: 
+https://coolscript.org/index.php/Fail2nft
 
-> On Thu, 14 Nov 2019, A L wrote:
->=20
-> > I'm trying to understand if ipset "bitmap:port" should support protocol=
-=20
-> > or not. Based on the name"bitmap:port" it should only store one value=
-=20
-> > per row, and not tuple like "bitmap:ip,mac" does. However the examples=
-=20
-> > in the manual suggests it should?
->=20
-> It's a documentation bug, bitmap:port type does not support protocol.=20
-> I'm going to fix the documentation, both in the help and the manpage.
-
-Checking the manpage it reads
-
-bitmap:port
- ....
- ADD-ENTRY :=3D { [proto:]port | [proto:]fromport-toport }
- ....
- proto only needs to be specified if a service name is used, and  that =20
- name does not exist as a TCP service.
-
-So you can type "ipset add foo udp:rlp" instead of "ipset add foo 39" -=20
-it's only a helper to avoid writing numbers.
-
-The manpage does not claim that protocol is stored, but then it's best to=
-=20
-explicitly state so in the documentation.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics
-          H-1525 Budapest 114, POB. 49, Hungary
---110363376-1953589561-1573737875=:7498--
+Thanks for assistance.
+Matt
