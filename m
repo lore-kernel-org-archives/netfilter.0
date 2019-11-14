@@ -1,32 +1,29 @@
-From: Matt <matt-nft@mailtower.de>
-Subject: One more application available for nftables
-Date: Thu, 14 Nov 2019 20:40:29 +0100
-Message-ID: <b5512a97bad28c14e57ebf2f92c12f27@mailtower.de>
-References: <b99d882d69f5e152919339c65ac26163@mailtower.de>
+From: Psyspy rambo <psyspy2020@gmail.com>
+Subject: Netfilter hook doesn't see all packets
+Date: Thu, 14 Nov 2019 13:23:46 -0700
+Message-ID: <CAFqmWq_+GgO3uiu6omDxiUPiiV5OcJ9d6A--RHC3-jZCy_sV0A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailtower.de xAEJeTWN019514
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailtower.de; s=mail;
-        t=1573760429; bh=pd8MocWITF9xHRAtiQblkM7kvMTpOmETKuGYMF3UYJM=;
-        h=Date:From:To:Subject:In-Reply-To:References:From;
-        b=wQseYW0bEUxk/uVoB4m8QuUvRUW7OpHPCkcA86ZID+GQ293ZaLr2zrgDQ9qadeLxv
-         8Jd5blO+P+U2k3WdOo6H8vA9Uf5FEubKLxc3veHos94O3w24cfsAuPY1uVu+SAZJJU
-         7sFL7snN7hj4PzwPtW94xz8vxIK0zAS34DVA1TH8=
-In-Reply-To: <b99d882d69f5e152919339c65ac26163@mailtower.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=wTDjomLJK5uY2zjl0g9QDNLEPciuOa25LkPIsDbxcZY=;
+        b=Pe8LlmC78L91Bq98N5G4rUd7/JitP0LLIMbngTWbfha8XFB4wHRM9X2IQCSSVYKrO2
+         CYgBJeKEPxRetcSxsOzbvusEHvSoAf2grcmYI+BDF669ZGk7xQhrNqFw99+1JxUeZO0W
+         rrAMF4dVcsLFENtY5MD0U9iq6OPUQAyWGH2p8jHZ8aOGtygUEGsbWBLwrlQHHNCx+/SP
+         MA66WS/bR/2S4R+f6g1yqZw3d20l/NmA+ZZuz/Qi7UseynBftlVkBjVkuxzUNND5E7k7
+         UvkBnJVUHBG+cgDkVvUul/rptOIEVsNyIMkWV0zToXVu+BKdGg+Gn3NvyMnDVIrGek+J
+         JuCQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org, netfilter-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Dear Forum,
-I'd like to announce a new application which runs on nftables, I've 
-named it "fail2nft".
+Hello,
 
-The application takes care about unwanted ssh (and other)  logins.
-
-If you are interested, then please see: 
-https://coolscript.org/index.php/Fail2nft
-
-Thanks for assistance.
-Matt
+I implemented a kernel module that hooks into netfilter PREROUTING
+hook and tries to log multicast dns packet tuple. If I add a iptables
+log rule for mdns (port 5353), it logs all mdns packets. Verified that
+it matches tcpdump output. However, the netfilter hook sees only a few
+packets. Any ideas why? Thanks in advance.
