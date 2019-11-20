@@ -1,121 +1,40 @@
-From: Gordon Fish <gordfisherman@gmail.com>
-Subject: How to prevent SNAT rules from being applied to 'ICMP time exceeded' responses?
-Date: Tue, 19 Nov 2019 11:24:30 -0800
-Message-ID: <CALVYNH_zaqSYJdvCW=JpWvz6epQvQF6nooqH-bxd0+wZ3tsR+A@mail.gmail.com>
+From: Elias Valea Peri <eliasvp@gmail.com>
+Subject: Doubts about netfilter + nftables and module
+Date: Wed, 20 Nov 2019 13:29:51 +0100
+Message-ID: <CAPar=unRE+rOGVEnvJfvgLKAz3hBa+azm-gb6kPsP-kUz5MLOw@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=3Scq9VqgwCnspwEG8x5iXp+RZ0apVNJFClcYPMBJTPI=;
-        b=tYQ4bppL2Nf5BnkMoKI3o3PwCVQ9BRuAwUsJlbxhtZCiaBLzo42SzMdwj1bej1xSkS
-         DSJ5tldqHKpoJ/OqPcPn/fBQV52bRRYRKeoaks/OtHFJQ0MbYKjfa0bkXeHaWunr6rxQ
-         aUqAaloE1ZZXYnc557PZe21vhB3Gx3pBwyXIk7yXVnzqD6/g59+wi0M0DE+L2zatpSCg
-         oCFbTxTZqAPlMw35Sj6UiSi32WMTSqC4Q3yE7ibRbit4qFDMkM3kzxGZxoogEcUf2S7l
-         9kTb5K592pJbBIFVuX2NV8X1QuUuzwo7pmNfFfqwwsDS0p5DTA0kEsDFzNaw/+RXqpM+
-         YtBg==
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=382+KCntjYuqDinC+gJLHqMHUNKvNMg5eIT6B9SL1cE=;
+        b=ac0uutaFQ7+zoN1jEgYb8nNqpKf17sEpBLRfhXdVQkAWIcB8jS/hfVbcvq222nMuXI
+         KW1OBgIPgIZs4/fRI0cNcUqCp9uI6nOOk0UHEoe1qVKABXk32wUZgSqPhTVeXk8A2UBU
+         UlR2E4lZAVdKhjAy8Fsb/1JiuBji6/wamyKMMWoVtPcTSjHUZ4iUNT56W11WFRQ3MbGF
+         IuzLJSMyVUHFdFydx8FJk/DOW2MexEkoB2BghUyw7W3T6Zcip54C5xJNuDbvugJLWOxP
+         3US3EPEt2nxq5BGjkOL+kV7+FuDcB4SkgXUinkEpRbpaRErIcT7jn/eOr4K/vtXQiMYC
+         oPAg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
 To: netfilter@vger.kernel.org
 
-I have the following rules on a Linux server, to route packets
-from LAN node 10.0.1.8 (a Windows machine) destined for
-192.168.173.93 to 1.2.3.4 and vice versa:
+Hi to all, we=E2=80=99re migrating our systems from netfilter + iptables to
+netfilter + nftables.
+We=E2=80=99re looking for information about which modules we want/need to l=
+oad
+for our needs and extensions we want to use.
+Looking for documentation about, we aren't capable to find a
+description of what does each module. For some modules, we see easily,
+just by its filename, what does but for others it isn't easy.
+We've downloaded our kernel sources, look for doc at netfilter.org,
+www.kernel.org/doc, etc... without success.
+Does anybody knows where we can find for each nf_*.ko, nfnetlink_*.ko,
+nft_*.ko ... file the functionality/extension that implements each one
+????
 
-  iptables -t nat -I PREROUTING  -i br0 -s 10.0.1.8 -d 192.168.173.93
-    -j DNAT --to-destination 1.2.3.4
+Thanks a lot for your help
 
-  iptables -t nat -I POSTROUTING -o br0 -s 10.0.1.8 -d 1.2.3.4
-    -j SNAT --to-source      10.0.1.4
-
-
-This works in general, but trace routes get fouled up due to the
-SNAT rule above, for whatever reason, being applied to the source
-address (the address of a hop) of *ICMP time exceeded in-transit*
-packets.
-
-Is there a way to prevent this, so that the IP of the hop isn't
-changed to 192.168.173.93 (which results in each hop line showing
-that ip, when running `tracert 192.168.173.93` from 10.0.1.8,
-though with the correct pings)?
-
-I ran the following trace:
-
-  iptables -t raw -I PREROUTING -p icmp --icmp-type any -j TRACE
-
-
-This is what each *ICMP time exceeded in-transit* section looks
-like in the TRACE log (formatted for readability/email):
-
-  Nov  13  15:03:23  linux  kernel:  TRACE:
-    raw:PREROUTING:policy:2
-      IN=br0  OUT=  MAC=Linux-br0(eth0)-MAC:Router-MAC:08:00
-      SRC=IP-of-HOP  DST=10.0.1.4
-        LEN=56  TOS=0x00  PREC=0x00  TTL=244  ID=57128
-        PROTO=ICMP  TYPE=11  CODE=0  [
-          SRC=10.0.1.4  DST=1.2.3.4
-          LEN=92 TOS=0x00  PREC=0x00  TTL=1  ID=57128
-          PROTO=ICMP  TYPE=8 CODE=0  ID=512  SEQ=43011
-        ]
-  Nov  13  15:03:23  linux  kernel:  TRACE:
-    mangle:PREROUTING:policy:1
-      IN=br0  OUT=  MAC=Linux-br0(eth0)-MAC:Router-MAC:08:00
-      SRC=IP-of-HOP  DST=10.0.1.4
-        LEN=56  TOS=0x00  PREC=0x00  TTL=244  ID=57128
-        PROTO=ICMP  TYPE=11  CODE=0 [
-          SRC=10.0.1.4  DST=1.2.3.4
-          LEN=92 TOS=0x00  PREC=0x00 TTL=1 ID=57128
-          PROTO=ICMP  TYPE=8  CODE=0  ID=512  SEQ=43011
-        ]
-  Nov  13  15:03:23  linux  kernel:  TRACE:
-    mangle:FORWARD:policy:1
-      IN=br0  OUT=br0  MAC=Linux-br0(eth0)-MAC:Router-MAC:08:00
-      SRC=IP-of-HOP  DST=10.0.1.8
-        LEN=56  TOS=0x00  PREC=0x00  TTL=243  ID=57128
-        PROTO=ICMP  TYPE=11  CODE=0  [
-          SRC=10.0.1.8  DST=1.2.3.4
-          LEN=92  TOS=0x00  PREC=0x00  TTL=1  ID=57128
-          PROTO=ICMP  TYPE=8  CODE=0  ID=512  SEQ=43011
-        ]
-  Nov  13  15:03:23  linux  kernel:  TRACE:
-    filter:FORWARD:policy:1
-      IN=br0  OUT=br0  MAC=Linux-br0(eth0)-MAC:Router-MAC:08:00
-      SRC=IP-of-HOP  DST=10.0.1.8
-        LEN=56  TOS=0x00  PREC=0x00  TTL=243  ID=57128
-        PROTO=ICMP  TYPE=11  CODE=0  [
-          SRC=10.0.1.8  DST=1.2.3.4
-          LEN=92  TOS=0x00  PREC=0x00  TTL=1  ID=57128
-          PROTO=ICMP  TYPE=8  CODE=0  ID=512  SEQ=43011
-        ]
-  Nov  13  15:03:23  linux  kernel:  TRACE:
-    mangle:POSTROUTING:policy:1
-      IN=  OUT=br0  (no MAC)
-      SRC=IP-of-HOP  DST=10.0.1.8
-        LEN=56  TOS=0x00  PREC=0x00  TTL=243  ID=57128
-        PROTO=ICMP  TYPE=11  CODE=0  [
-          SRC=10.0.1.8  DST=1.2.3.4
-          LEN=92  TOS=0x00  PREC=0x00  TTL=1  ID=57128
-          PROTO=ICMP  TYPE=8  CODE=0  ID=512  SEQ=43011
-        ]
-
-Or see here:
-https://gist.github.com/gordon-fish/4ffe50798acdd7b4a97bfb52cff6ac68
-
-
-I don't see that the source address is being changed in the normal
-flow at all; it's not even hitting the *nat* table, just *raw*,
-*mangle*, and *filter* tables, so I assume it's being done by
-conntrack.
-
-I'd really like to prevent that, when it comes to *ICMP time
-exceeded in-transit* responses, as my rules were only intended
-to translate just 192.168.173.93 to 1.2.3.4 and back.
-
-Is there any way to accomplish this?
-
-Thanks,
-
--- 
-gordonfish
+Elias
