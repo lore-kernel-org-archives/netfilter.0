@@ -1,29 +1,60 @@
-From: Harald Dunkel <harald.dunkel@aixigo.com>
-Subject: Re: WARNING: CPU: 9 PID: 0 at net/netfilter/nf_conntrack_core.c:977
- __nf_conntrack_confirm+0x4e5/0x6f0 [nf_conntrack]
-Date: Tue, 26 Nov 2019 08:18:35 +0100
-Message-ID: <4e3ab3b0-2a1f-1772-ab3c-e7f6ce8fd4e3@aixigo.com>
-References: <e6eaa72a-08f3-9645-d37b-6367eee90078@aixigo.com>
- <d4656ade-d2fd-92fc-0f3e-5abb7c3f01e2@aixigo.com>
+From: Jan-Philipp Litza <jpl+direct@plutex.de>
+Subject: nftables: No prefixes in anonymous sets?
+Date: Mon, 2 Dec 2019 10:10:31 +0100
+Message-ID: <7dd662ab-9d95-dbe9-3cf8-5db33ccb4b1a@plutex.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <d4656ade-d2fd-92fc-0f3e-5abb7c3f01e2@aixigo.com>
-Content-Language: en-US
+Content-Language: de-DE
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="utf-8"
 To: netfilter@vger.kernel.org
 
-Anybody interested?
+Hi everyone,
 
-Dropping the obsolete port mapping did *not* help. It crashed again.
+surely not only for me, sets were one of the main reasons to switch from
+iptables to nftables. However, I was very disappointed that anonymous IP
+address sets don't support prefixes (ranges):
 
-Currently I would assume that the problem is triggered by the combination
-of bridge and macvlan interfaces. Since I have bound the macvlan to eth0
-(2 days ago) there was no incident anymore. Before it died within a
-few hours.
+/etc/nftables.conf:5:20-29: Error: Set member cannot be prefix, missing
+interval flag on declaration
+        ip saddr { 8.8.8.8/32, 1.1.1.1/32 }  drop
+                   ^^^^^^^^^^
 
+Poking around in the source code, I found the relevant line [1] that
+explicitly checks for anonymous sets. Apparently it was added in [2] to
+give the user a better error message that some "BUG".
 
-Regards
-Harri
+But couldn't you also simply (or maybe not so simply) "upgrade" the
+anonymous set to an interval-capable set when you encounter a prefix?
+Or, if this is totally impossible, maybe add a syntax to explicitly give
+anonymous sets the interval flag? Or are anonymous sets inside the
+kernel itself somehow incapable of containing prefixes?
+
+Also, why isn't this message triggerd by something like "tcp dport {
+22-23, 80, 443 }"? Isn't this a range in an anonymous set as well?
+
+Best regards,
+Jan-Philipp Litza
+
+PS: Not on the list, so please CC me directly.
+
+[1]: https://git.netfilter.org/nftables/tree/src/evaluate.c#n1298
+[2]:
+https://git.netfilter.org/nftables/commit/src/evaluate.c?id=3f84f4ad0568f22106f283a3077a85957e83fe57
+-- 
+Jan-Philipp Litza
+PLUTEX GmbH
+Hermann-Ritter-Str. 108
+28197 Bremen
+
+Hotline: 0800 100 400 800
+Telefon: 0800 100 400 821
+Telefax: 0800 100 400 888
+E-Mail: support@plutex.de
+Internet: http://www.plutex.de
+
+USt-IdNr.: DE 815030856
+Handelsregister: Amtsgericht Bremen, HRB 25144
+Geschäftsführer: Torben Belz, Hendrik Lilienthal
