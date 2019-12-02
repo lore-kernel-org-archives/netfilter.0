@@ -1,130 +1,215 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] ebtables 2.0.11 release
-Date: Mon, 2 Dec 2019 16:33:56 +0100
-Message-ID: <20191202153356.xowrrxn26jlm5v4f@salvia>
+From: Phil Sutter <phil@netfilter.org>
+Subject: [ANNOUNCE] iptables 1.8.4 release
+Date: Mon, 2 Dec 2019 18:01:21 +0100
+Message-ID: <20191202170121.GB10243@orbyte.nwl.cc>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="xu3xazvyeffwpblx"
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="KsGdsel6WgEHnImy"
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter-devel@vger.kernel.org
-Cc: netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
+To: netfilter@vger.kernel.org
+Cc: netfilter-devel <netfilter-devel@vger.kernel.org>
 
 
---xu3xazvyeffwpblx
+--KsGdsel6WgEHnImy
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
 Hi!
 
-The Netfilter project presents:
+The Netfilter project proudly presents:
 
-        ebtables 2.0.11
+iptables 1.8.4
 
-ebtables is the userspace command line program used to configure the
-Linux 2.4.x and bridge packet filtering ruleset. It is targeted
-towards system administrators.
+This release contains the following fixes and enhancements:
 
-NOTE: This is a release of legacy software. Patches may still be
-accepted and pushed out to the git repository, which will remain active
-and accessible as usual although support for this software might be
-discontinued at some point.
+libiptc:
+ - Generic libiptc.so shared object is no longer built, likely all users
+   link to libip4tc.so or libip6tc.so directly.
 
-We are thankful to all the contributors of ebtables over time and we
-also acknowledge it is time to move on.
+xtables-restore and xtables-save:
+ - Fix for wrong counter format in 'ebtables-nft-save -c' output.
+ - Print typical iptables-save comments in arptables- and ebtables-save,
+   too.
+ - Fix for spurious errors with odd characters in rule comments.
+
+iptables-legacy:
+ - Add --suppl-groups option to owner match.
+ - Fix nfacct on mixed 64/32bit kernel/userland.
+
+iptables-nft:
+ - Avoid endless loop when called as non-root user.
+ - Fix for table compatibility checking considering only non-interesting
+   tables.
+ - Remove support for /etc/xtables.conf.
+ - Various performance improvements when dealing with large rulesets.
+ - Fix --fragment option on Big Endian.
+ - Fix zeroing rule counters with TPROXY target.
+
+iptables-restore:
+ - Restore support for '-4' and '-6' prefixes in rule lines.
+
+ebtables-nft:
+ - Fix for spurious errors when using '-o' option in user-defined
+   chains.
+ - Add rudimental support for among match.
+
+iptables-translate:
+ - Fix translation for conntrack status EXPECTED.
+ - Support SYNPROXY target.
 
 See ChangeLog that comes attached to this email for more details.
 
 You can download it from:
 
-ftp://ftp.netfilter.org/pub/ebtables/
+http://www.netfilter.org/projects/iptables/downloads.html#iptables-1.8.4
 
-Happy firewalling.
+To build the code, libnftnl 1.1.5 is required:
 
---xu3xazvyeffwpblx
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: attachment; filename="changes-ebtables-2.0.11.txt"
-Content-Transfer-Encoding: 8bit
+* http://netfilter.org/projects/libnftnl/index.html
 
-Alin Năstac (1):
-      ebtables: Allow RETURN target rules in user defined chains
+In case of bugs and feature requests, file them via:
 
-Arturo Borrero Gonzalez (3):
-      ebtables: legacy renaming
-      ebtables: drop .spec file
-      ebtables: drop sysvinit script
+* https://bugzilla.netfilter.org
 
-Bart De Schuymer (4):
-      add RARP and update iana url
-      add info about -Wl,-no-as-needed
-      remove ebtables-restore binary from repository
-      don't print IPv6 mask if it's all ones (based on patch by Mariusz Mazur <mmazur at axeos.com>)
+Happy firewalling!
 
-Baruch Siach (1):
-      include: Fix musl libc compatibility
+--KsGdsel6WgEHnImy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="iptables-1.8.4.txt"
 
-Bernie Harris (1):
-      extensions: Add string filter to ebtables
+Adel Belhouane (1):
+  restore legacy behaviour of iptables-restore when rules start with -4/-6
 
-Duncan Roe (2):
-      ebtables: Fix build errors and warnings
-      extensions: ebt_string: take action if snprintf discards data
+Duncan Roe (1):
+  netfilter: hashlimit: prefer PRIu64 to avoid warnings on 32bit platforms
 
-Felix Janda (2):
-      extensions: Use stdint types
-      ethernetdb.h: Remove C++ specific compiler hint macro _THROW
+Fernando Fernandez Mancera (1):
+  utils: nfnl_osf: fix snprintf -Wformat-truncation warning
 
-Florian Westphal (2):
-      extensions: fix build failure on fc28
-      ebtablesd: avoid build warning
+Florian Westphal (6):
+  extensions/libxt_MASQUERADE.man: random and random-fully are now identical
+  nft: exit in case we can't fetch current genid
+  ebtables: fix over-eager -o checks on custom chains
+  libiptc: axe non-building debug code
+  libiptc: silence two comiler warnings
+  ipables: xtables-restore: output filename option in help text
 
-Gargi Sharma (1):
-      ebtables: extensions: Constify option struct
+Jan Engelhardt (2):
+  build: remove -Wl,--no-as-needed and libiptc.so
+  src: replace IPTABLES_VERSION by PACKAGE_VERSION
 
-Jan Engelhardt (7):
-      build: update ebtables.h from kernel and drop local unused copy
-      build: drop install -o/-g root
-      build: rename sed source files to .in
-      build: use autoconf-style placeholders in sed-ed files
-      extensions: use __attribute__((constructor)) for autoregistration
-      Add .gitignore
-      build: move to automake
+Jose M. Guisado Gomez (1):
+  extensions: libxt_SYNPROXY: add xlate method
 
-Luis Fernando (1):
-      workaround for kernel regression bug: IPv6 source/destination addresses are potentially not matched correctly
+Joseph C. Sible (1):
+  doc: Note REDIRECT case of no IP address
 
-Matthias Schiffer (4):
-      include: sync linux/netfilter_bridge/ebt_ip.h with kernel
-      Move ICMP type handling functions from ebt_ip6 to useful_functions.c
-      ebt_ip: add support for matching ICMP type and code
-      ebt_ip: add support for matching IGMP type
+Juliana Rodrigueiro (1):
+  extensions: nfacct: Fix alignment mismatch in xt_nfacct_match_info
 
-Pablo Neira Ayuso (1):
-      build: ebtables 2.0.11 release
+Lukasz Pawelczyk (1):
+  extensions: libxt_owner: Add supplementary groups option
 
-Pedro Alvarez (1):
-      Add kernel headers needed from v3.16
+Phil Sutter (92):
+  xtables-restore: Fix program names in help texts
+  nft: Set socket receive buffer
+  nft: Pass nft_handle down to mnl_batch_talk()
+  nft: Move send/receive buffer sizes into nft_handle
+  xtables-save: Use argv[0] as program name
+  ebtables: Fix error message for invalid parameters
+  ebtables-save: Fix counter formatting
+  xtables-save: Unify *-save header/footer comments
+  xtables-save: Fix table compatibility check
+  nft: Make nft_for_each_table() more versatile
+  xtables-save: Avoid mixed code and declarations
+  xtables-save: Pass optstring/longopts to xtables_save_main()
+  xtables-save: Make COMMIT line optional
+  xtables-save: Pass format flags to do_output()
+  arptables-save: Merge into xtables_save_main()
+  ebtables-save: Merge into xtables_save_main()
+  nft: Set errno in nft_rule_flush()
+  xtables: Drop support for /etc/xtables.conf
+  doc: Install nft-variant man pages only if enabled
+  doc: Install ip{6,}tables-restore-translate.8 man pages
+  nft: Drop stale include directive
+  iptables-test: Support testing host binaries
+  tests/shell: Make ebtables-basic test more verbose
+  DEBUG: Print to stderr to not disturb iptables-save
+  nft: Use nftnl_*_set_str() functions
+  nft: Introduce nft_bridge_commit()
+  nft Increase mnl_talk() receive buffer size
+  nft: Fix add_bitwise_u16() on Big Endian
+  xtables_error() does not return
+  nft: Fix typo in nft_parse_limit() error message
+  nft: Get rid of NFT_COMPAT_EXPR_MAX define
+  tests/shell: Speed up ipt-restore/0004-restore-race_0
+  tests: shell: Support running for legacy/nft only
+  nft: Fix for add and delete of same rule in single batch
+  nft: Make nftnl_table_list_get() fetch only tables
+  xtables-restore: Minimize caching when flushing
+  nft: Pass nft_handle to flush_cache()
+  nft: Avoid nested cache fetching
+  nft: Extract cache routines into nft-cache.c
+  iptables-test: Run tests in lexical order
+  nft-cache: Introduce cache levels
+  nft-cache: Fetch only chains in nft_chain_list_get()
+  nft-cache: Cover for multiple fetcher invocation
+  nft-cache: Support partial cache per table
+  nft-cache: Support partial rule cache per chain
+  nft: Reduce cache overhead of nft_chain_builtin_init()
+  nft: Support nft_is_table_compatible() per chain
+  nft: Optimize flushing all chains of a table
+  xtables-restore: Treat struct nft_xt_restore_parse as const
+  xtables-restore: Use xt_params->program_name
+  xtables-restore: Introduce rule counter tokenizer function
+  xtables-restore: Constify struct nft_xt_restore_cb
+  iptables-restore: Constify struct iptables_restore_cb
+  xtables-restore: Drop local xtc_ops instance
+  xtables-restore: Drop chain_list callback
+  xtables-restore: Fix --table parameter check
+  xtables-restore: Unbreak *tables-restore
+  nft: Use ARRAY_SIZE() macro in nft_strerror()
+  iptables-xml: Use add_param_to_argv()
+  xshared: Introduce struct argv_store
+  xtables-arp: Use xtables_ipparse_multiple()
+  ip6tables, xtables-arp: Drop unused struct pprot
+  xshared: Share a common add_command() implementation
+  xshared: Share a common implementation of parse_rulenumber()
+  Merge CMD_* defines
+  xtables-arp: Drop generic_opt_check()
+  Replace TRUE/FALSE with true/false
+  xtables-arp: Integrate OPT_* defines into xshared.h
+  xtables-arp: Drop some unused variables
+  xtables-arp: Use xtables_parse_interface()
+  nft-arp: Use xtables_print_mac_and_mask()
+  xtables-restore: Integrate restore callbacks into struct nft_xt_restore_parse
+  xtables-restore: Introduce struct nft_xt_restore_state
+  xtables-restore: Introduce line parsing function
+  xtables-restore: Remove some pointless linebreaks
+  xtables-restore: Allow lines without trailing newline character
+  xtables-restore: Improve performance of --noflush operation
+  tests: shell: Add ipt-restore/0007-flush-noflush_0
+  nft: CMD_ZERO needs a rule cache
+  nft: Fix -Z for rules with NFTA_RULE_COMPAT
+  nft: family_ops: Pass nft_handle to 'add' callback
+  nft: family_ops: Pass nft_handle to 'rule_find' callback
+  nft: family_ops: Pass nft_handle to 'print_rule' callback
+  nft: family_ops: Pass nft_handle to 'rule_to_cs' callback
+  nft: Keep nft_handle pointer in nft_xt_ctx
+  nft: Eliminate pointless calls to nft_family_ops_lookup()
+  nft: Introduce NFT_CL_SETS cache level
+  nft: Support NFT_COMPAT_SET_ADD
+  nft: Bore up nft_parse_payload()
+  nft: Embed rule's table name in nft_xt_ctx
+  nft: Support parsing lookup expression
+  nft: bridge: Rudimental among extension support
 
-Petri Gynther (1):
-      fix compilation warning
+Quentin Armitage (1):
+  extensions: fix iptables-{nft,translate} with conntrack EXPECTED
 
-Phil Sutter (11):
-      Use flock() for --concurrent option
-      Fix locking if LOCKDIR does not exist
-      extensions: among: Fix bitmask check
-      Print IPv6 prefixes in CIDR notation
-      Adjust .gitignore to renamed files
-      extensions: Drop Makefile
-      Allow customizing lockfile location at configure time
-      extensions: Add AUDIT target
-      Fix segfault with missing lockfile directory
-      Fix incorrect IPv6 prefix formatting
-      Drop ebtables-config from repository
+Shekhar Sharma (1):
+  iptables-tests: fix python3
 
-Sanket Shah (1):
-      Add --noflush command line support for ebtables-restore
-
-
---xu3xazvyeffwpblx--
+--KsGdsel6WgEHnImy--
