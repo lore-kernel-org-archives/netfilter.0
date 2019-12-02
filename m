@@ -1,60 +1,78 @@
-From: Jan-Philipp Litza <jpl+direct@plutex.de>
-Subject: nftables: No prefixes in anonymous sets?
-Date: Mon, 2 Dec 2019 10:10:31 +0100
-Message-ID: <7dd662ab-9d95-dbe9-3cf8-5db33ccb4b1a@plutex.de>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] libnftnl 1.1.5 release
+Date: Mon, 2 Dec 2019 14:57:42 +0100
+Message-ID: <20191202135742.tdkuffglhefgzgnw@salvia>
+References: <20190819110328.vnwmmox5ymabneib@salvia>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="4qppecvfce6p6usk"
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: de-DE
+Content-Disposition: inline
+In-Reply-To: <20190819110328.vnwmmox5ymabneib@salvia>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@vger.kernel.org
+To: netfilter-devel@vger.kernel.org
+Cc: netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
 
-Hi everyone,
 
-surely not only for me, sets were one of the main reasons to switch from
-iptables to nftables. However, I was very disappointed that anonymous IP
-address sets don't support prefixes (ranges):
+--4qppecvfce6p6usk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-/etc/nftables.conf:5:20-29: Error: Set member cannot be prefix, missing
-interval flag on declaration
-        ip saddr { 8.8.8.8/32, 1.1.1.1/32 }  drop
-                   ^^^^^^^^^^
+Hi!
 
-Poking around in the source code, I found the relevant line [1] that
-explicitly checks for anonymous sets. Apparently it was added in [2] to
-give the user a better error message that some "BUG".
+The Netfilter project proudly presents:
 
-But couldn't you also simply (or maybe not so simply) "upgrade" the
-anonymous set to an interval-capable set when you encounter a prefix?
-Or, if this is totally impossible, maybe add a syntax to explicitly give
-anonymous sets the interval flag? Or are anonymous sets inside the
-kernel itself somehow incapable of containing prefixes?
+        libnftnl 1.1.5
 
-Also, why isn't this message triggerd by something like "tcp dport {
-22-23, 80, 443 }"? Isn't this a range in an anonymous set as well?
+libnftnl is a userspace library providing a low-level netlink
+programming interface (API) to the in-kernel nf_tables subsystem. The
+library libnftnl has been previously known as libnftables. This
+library is currently used by nftables.
 
-Best regards,
-Jan-Philipp Litza
+See ChangeLog that comes attached to this email for more details.
 
-PS: Not on the list, so please CC me directly.
+You can download it from:
 
-[1]: https://git.netfilter.org/nftables/tree/src/evaluate.c#n1298
-[2]:
-https://git.netfilter.org/nftables/commit/src/evaluate.c?id=3f84f4ad0568f22106f283a3077a85957e83fe57
--- 
-Jan-Philipp Litza
-PLUTEX GmbH
-Hermann-Ritter-Str. 108
-28197 Bremen
+http://www.netfilter.org/projects/libnftnl/downloads.html
+ftp://ftp.netfilter.org/pub/libnftnl/
 
-Hotline: 0800 100 400 800
-Telefon: 0800 100 400 821
-Telefax: 0800 100 400 888
-E-Mail: support@plutex.de
-Internet: http://www.plutex.de
+Happy firewalling.
 
-USt-IdNr.: DE 815030856
-Handelsregister: Amtsgericht Bremen, HRB 25144
-Geschäftsführer: Torben Belz, Hendrik Lilienthal
+--4qppecvfce6p6usk
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="changes-libnftnl-1.1.5.txt"
+
+Ander Juaristi (2):
+      expr: meta: Make NFT_META_TIME_{NS, DAY, HOUR} known
+      expr: meta: Make NFT_DYNSET_OP_DELETE known
+
+Eric Jallot (1):
+      flowtable: add support for handle attribute
+
+Fernando Fernandez Mancera (1):
+      src: synproxy stateful object support
+
+Manuel Messner (1):
+      flowtable: Fix symbol export for clang
+
+Pablo Neira Ayuso (4):
+      flowtable: device array dynamic allocation
+      chain: multi-device support
+      flowtable: remove NFTA_FLOWTABLE_SIZE
+      build: libnftnl 1.1.5 release
+
+Phil Sutter (11):
+      set: Export nftnl_set_list_lookup_byname()
+      obj: ct_timeout: Check return code of mnl_attr_parse_nested()
+      set_elem: Fix return code of nftnl_set_elem_set()
+      obj/tunnel: Fix for undefined behaviour
+      set: Don't bypass checks in nftnl_set_set_u{32,64}()
+      obj/ct_timeout: Avoid array overrun in timeout_parse_attr_data()
+      set_elem: Validate nftnl_set_elem_set() parameters
+      obj/ct_timeout: Fix NFTA_CT_TIMEOUT_DATA parser
+      libnftnl.map: Export nftnl_{obj,flowtable}_set_data()
+      Deprecate untyped data setters
+      utils: Define __visible even if not supported by compiler
+
+
+--4qppecvfce6p6usk--
