@@ -1,36 +1,48 @@
-From: Valentin =?utf-8?B?VmlkacSH?= <vvidic@valentin-vidic.from.hr>
-Subject: xt_cluster for IPv6
-Date: Fri, 6 Dec 2019 21:48:00 +0100
-Message-ID: <20191206204800.GD30087@valentin-vidic.from.hr>
+From: Mike <mike@mdabbs.org>
+Subject: trying to duplicate udp packets destined for port 67 to port 6767 on
+ same host
+Date: Mon, 9 Dec 2019 21:22:30 -0600
+Message-ID: <ba39eeef-6fa0-10de-e45d-8b121f1c37e5@mdabbs.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-        d=valentin-vidic.from.hr; s=2017; t=1575665281;
-        bh=FaTwyrC8dFFtQtM9pj6vnTXbSd+oJ4oHsbAv40E5sEQ=;
-        h=Date:From:To:Subject:From;
-        b=FqMxRLO/jcTNxYnhQQGF/aw1wRe+GMR0HSY8GEXrORkPXOCr8rooovj7Akx3dQIos
-         BrZfoCK3ao4xBUGQotbrGLn22Z0uY43Wc3hHOEa03n7YDsarX0zSD1oMQZ7Dev1IZ2
-         vAu/VikBxzXcMswHztKFaqt7bhRYFWqhpkdyOOMBwuLqsjq53JWMNuy1WtRt8G7A8o
-         I97h8g203Zh7R3AvHxtQ/M36RRyj+G9ScudDbkQkF1WUyutEDbhlW/JdxNTj9LChKb
-         EGDzpPcx/pEm2TNANph2siH9gCq7HkbnJnWVyY1cRlxEr0O1zmDui0zULwGWdHLkbV
-         tjKDkLFAnqFAg==
-Content-Disposition: inline
+DKIM-Filter: OpenDKIM Filter v2.11.0 gw2.litvpn.com 24498E3EF1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mdabbs.org; s=relay;
+        t=1575948189; bh=5DctLiFe62rubBfwCLSKYP1Xtg8jnneSRIalswuqTQU=;
+        h=To:From:Subject:Date:From;
+        b=UHIGd1IcRto7A0JqtA6tw8Eohx2g4yNnxFcri4Uqe1JbDpyQqvjhN9Yf+SlWhKtNR
+         1e/Gzdv4kzCJReyKyjzjQxGnx6dCGMX5Ht1BB8re2PaJASrHJSkK4Pa2mpG7bwLY/q
+         mYZCgk7OZCmp3KnldJKRZRUMN2/KbgA5svi1jcIw=
+Content-Language: en-GB
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi,
+I have a DHCP server on a host but also want to run openHAB which has 
+the ability to listen on port 6767 for DHCP requests. The docs say to 
+execute the following commands to replicate the packets on to port 6767:
 
-I would like to try xt_cluster for IPv6 but not sure how
-to do the equivalent of ARP rewrite:
+iptables -A PREROUTING -t mangle -p udp ! -s 127.0.0.1 --dport 67 -j TEE 
+--gateway 127.0.0.1
+iptables -A OUTPUT -t nat -p udp -s 127.0.0.1/32 --dport 67 -j DNAT --to 
+127.0.0.1:6767
 
-  arptables -I OUTPUT -o eth1 --h-length 6 \
-            -j mangle --mangle-mac-s 01:00:5e:00:01:01
+When I do this though, I see the mangle rule packet count start to 
+skyrocket and the nat rule never sees any packets. When I try a slight 
+variation below, I prevent the skyrocketing packet count but the nat 
+rule still never kicks in.
 
-Is it possible to rewrite Neighbor Advertisement packages
-somehow?
+iptables -A PREROUTING -t mangle -p udp ! -i lo --dport 67 -j TEE 
+--gateway 127.0.0.1
 
--- 
-Valentin
+I have tried various combinations of ip_forward and route_localnet
+
+
+I hope this is the right mailing list and someone could offer some help. 
+I can provide nf trace logs if needed, or any other kind of info.
+
+Thanks,
+
+Mike
+
