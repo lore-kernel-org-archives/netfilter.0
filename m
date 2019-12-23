@@ -1,53 +1,60 @@
-From: Duncan Roe <duncan_roe@optusnet.com.au>
-Subject: Re: trying to duplicate udp packets destined for port 67 to port
- 6767 on same host
-Date: Wed, 18 Dec 2019 17:04:02 +1100
-Message-ID: <20191218060402.GA11444@dimstar.local.net>
-References: <ba39eeef-6fa0-10de-e45d-8b121f1c37e5@mdabbs.org>
+From: Felix <felix@epost.ch>
+Subject: geoip not working as expected
+Date: Mon, 23 Dec 2019 15:40:04 +0100
+Message-ID: <f26bf016-3442-49a8-f988-2e0ba69551c6@epost.ch>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <ba39eeef-6fa0-10de-e45d-8b121f1c37e5@mdabbs.org>
+Content-Language: fr
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mike <mike@mdabbs.org>
-Cc: Netfilter <netfilter@vger.kernel.org>, Netfilter Development <netfilter-devel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-Hi Mike,
+Hello,
 
-On Mon, Dec 09, 2019 at 09:22:30PM -0600, Mike wrote:
-> I have a DHCP server on a host but also want to run openHAB which has the
-> ability to listen on port 6767 for DHCP requests. The docs say to execute
-> the following commands to replicate the packets on to port 6767:
->
-> iptables -A PREROUTING -t mangle -p udp ! -s 127.0.0.1 --dport 67 -j TEE
-> --gateway 127.0.0.1
-> iptables -A OUTPUT -t nat -p udp -s 127.0.0.1/32 --dport 67 -j DNAT --to
-> 127.0.0.1:6767
->
-> When I do this though, I see the mangle rule packet count start to skyrocket
-> and the nat rule never sees any packets. When I try a slight variation
-> below, I prevent the skyrocketing packet count but the nat rule still never
-> kicks in.
->
-> iptables -A PREROUTING -t mangle -p udp ! -i lo --dport 67 -j TEE --gateway
-> 127.0.0.1
->
-> I have tried various combinations of ip_forward and route_localnet
->
->
-> I hope this is the right mailing list and someone could offer some help. I
-> can provide nf trace logs if needed, or any other kind of info.
->
-> Thanks,
->
-> Mike
->
-You should be able to achieve this using the NFQUEUE target. Your nfq
-application opens a udp socket to port 6767 and duplicates incoming packets to
-port DHCP to this socket, using regular sendto() calls. Then it accepts the
-packet, so DHCP gets to see it.
+Since few days I updated to buster and have the following setup:
 
-Cheers ... Duncan.
+- Linux raspberrypi 4.19.84-v7l+ #1 SMP Mon Nov 18 15:40:00 GMT 2019
+armv7l GNU/Linux
+- xtables-addons-3.7
+
+I can make queries against countries:
+
+$ cd /usr/share/xt_geoip  # I have to sit on this directory to succeed
+$ ./xt_geoip_fetch CH|less
+2.56.40.0-2.56.43.255
+2.59.28.0-2.59.31.255
+2.59.96.0-2.59.99.255
+2.59.120.0-2.59.123.255
+5.1.96.0-5.1.103.255
+5.1.112.0-5.1.119.255
+5.23.22.0-5.23.22.7
+5.39.2.205-5.39.2.205
+5.39.56.32-5.39.56.47
+5.39.103.56-5.39.103.63
+5.44.112.0-5.44.127.255
+5.53.104.0-5.53.111.255
+5.57.200.0-5.57.207.255
+5.61.224.0-5.61.231.255
+5.102.32.0-5.102.35.255
+...
+
+And I have this rule active:
+
+#iptables -A INPUT -m geoip --src-cc CH -j ACCEPT
+iptables -A INPUT -i eth1 -m geoip ! --src-cc CH,FR -j DROP
+
+But everything is blocked:
+
+$ iptables -nvL|grep geoip
+  867 39076 DROP       all  --  eth1   *       0.0.0.0/0           
+0.0.0.0/0            -m geoip ! --source-country CH,FR
+
+And the commented rule allow every countries.
+
+Any hint to fix or troubleshoot?
+
+Kind regards
+
+Felix
