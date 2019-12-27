@@ -1,81 +1,57 @@
-From: Reindl Harald <h.reindl@thelounge.net>
-Subject: Re: Weird/High CPU usage caused by LOG target
-Date: Fri, 27 Dec 2019 02:58:07 +0100
-Message-ID: <e69b5e0e-4600-4101-bdf4-b64378022ff9@thelounge.net>
-References: <CAGnHSEkvf0zieVJtPyneZ6PfnzeANmfFxTb=0JpgVb1FXVk0-w@mail.gmail.com>
- <20191226222923.GA32765@dimstar.local.net>
- <24814d60-92c1-6c7e-8eb5-e977e1c7c1d0@thelounge.net>
- <CAGnHSE=ztRxvUoaeCSp6u9bz21EcPrWLWTGMSDBCb_U7VespKQ@mail.gmail.com>
+From: Stephen Satchell <list@satchell.net>
+Subject: RFC -- IPTABLES vs NFTABLES vs BPFILTER
+Date: Thu, 26 Dec 2019 18:32:46 -0800
+Message-ID: <4c563d84-2098-9c5e-86ef-b78c704540a6@satchell.net>
+Reply-To: list@satchell.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAGnHSE=ztRxvUoaeCSp6u9bz21EcPrWLWTGMSDBCb_U7VespKQ@mail.gmail.com>
 Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Tom Yan <tom.ty89@gmail.com>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
+I need to build a new firewall for my fiber service.  My current 
+firewall is running CentOS 4 and IPTABLES.  When considering what 
+service to use, I thought I could use CentOS 8 and NFTABLES to handle 
+IPv4 and IPv6 in an easy-to-maintain manner.
 
+After checking the status of CentOS 8, specifically the list of packages 
+that are not ready for prime time even though the distribution is in 
+release, I needed to reconsider.  I found that the current CentOS 7 
+appears to have NFTABLES available.
 
-Am 27.12.19 um 02:29 schrieb Tom Yan:
-> Hi Reindl,
-> 
-> Hmm. Not sure I get what you mean. Are you saying that this could be a
-> "generic" kernel flaw (in handling logging / messages), instead of a
-> Netfilter-specific issue?
+In the course of investigating this modified course of action, I ran 
+into a discussion of BPFILTER.  People with respectable names are using 
+this, according to my research, but not necessarily from an existing 
+distribution.  I suspect that because there is significant kernel 
+involvement, that I would have to wait for another major release of 
+CentOS to take advantage of it.
 
-dunno, but since no longer using "-j LOG" the f**g randomly crashes of
-our production firewall system over months hwich nearly made me insane
-are gone and that it spits to "dmesg" is ugly anyways
+I'm using commodity fanless computers with wall-wart supplies, so 
+hardware acceleration is not an option at this time.  So I have questions:
 
-when i try to debug crashes, enable kexec/kdump and the only thing it
-has to do is write my whole filesystem full with 100 lines iptables
-related messages from dmesg repeatet until the is no space available i
-am done
+1.  Is anyone using NFTABLES on CentOS 7 "out of the box"?  (I'm not 
+talking about firewalld or the GUI tools -- I would expect to use BASH 
+or Python to hook to the userspace tools.  The dbus facility appears to 
+have some shortcomings.)
 
-> On Fri, 27 Dec 2019 at 08:23, Reindl Harald <h.reindl@thelounge.net> wrote:
->>
->>
->>
->> Am 26.12.19 um 23:29 schrieb Duncan Roe:
->>> On Thu, Dec 26, 2019 at 11:05:33AM +0800, Tom Yan wrote:
->>>> Hi all,
->>>>
->>>> So I was trying to log all traffics in the FORWARD chain with the LOG
->>>> target in iptables (while I say all, it's just some VPN server/client
->>>> that is used by only me, and the tests were just opening some
->>>> website).
->>>>
->>>> I notice that the logging causes high CPU usage (so it goes up only
->>>> when there are traffics). In (h)top, the usage shows up as openvpn's
->>>> if the forwarding involves their tuns. Say I am forwarding from one
->>>> tun to another, each of the openvpn instance will max out one core on
->>>> my raspberry pi 3 b+. (And that actually slows the whole system down,
->>>> like ssh/bash responsiveness, and stalls the traffic flow.) If I do
->>>> not log, or log with the NFLOG target instead, their CPU usage will be
->>>> less than 1%.
->>>>
->>>> Interestingly, the problem seems to be way less obvious if I am using
->>>> it on higher end devices (like my Haswell PC, or even a raspberry pi
->>>> 4). There are still "spikes" as well, but it won't make me "notice"
->>>> the problem, at least not when I am just doing some trivial web
->>>> browsing.
->>>>
->>>> Let me know how I can further help debugging, if any of you are
->>>> interested in fixing this.
->>>>
->>> Just in case you missed it, be sure that your logger is configured not to sync
->>> the file system after every logging. That is the default action btw.
->>>
->>> I have used large-volume logging in the past and never encountered a CPU problem
->>> (but had to run logrotate every minute to avoid filling the disk)
->>
->> the problem is "-j LOG" at it's own and not suprisingly after having
->> enough of random crashes and kexec only spits the disk full of
->> demsg-output from iptables "-j LOG" switching awy to NFLOG and ulogd and
->> never ever faced antother crash
->>
->> "-j LOG" spits into kernel ring buffer and by it's own produces double
->> load no matter what happns after the action
+2.  Is anyone using BPFILTER in any distribution "out of the box"?
+
+3.  I'm implementing BCP38 by hooking a script to Network Manager, to 
+null-route the non-routable networks in such a way that VPN or other 
+dynamic connection managers can install routes that would override the 
+null route.
+
+4.  Setting the rp_filter setting on the uplink interface to "1" to have 
+the IP stack verify that the source address is routable, and would exit 
+through the same interface.  I decided against using loose mode reverse 
+filtering (setting to "2").
+
+5.  I decided against populating the routing table with null routes from 
+the bogon project.  I do populate the routing table with null routes 
+from those netblocks that send me malicious traffic.  This mimics the 
+ACL blocking I currently do in IPTABLES, with much lower overhead.
+
+Constructive criticism welcome.
