@@ -1,36 +1,39 @@
-From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
-Subject: Re: [nft 0.9.2] cannot get sets to work - Error: Could not process
- rule: Not supported
-Date: Fri, 27 Dec 2019 20:30:44 +0000
-Message-ID: <c7d31750-7de4-d394-e02d-5b565e706c38@gmx.net>
-References: <6aa06206-7b72-c828-0090-b94d046e01cc@gmx.net>
- <20191227201210.d6f78c7180afd569527ead9e@plushkava.net>
-Reply-To: vtol@gmx.net
+From: Changli Gao <xiaosuo@gmail.com>
+Subject: Assertion error when using map
+Date: Tue, 31 Dec 2019 07:23:16 +0800
+Message-ID: <CABa6K_EvuX5EJNNxM+9aESFephAjhos9dmmNmGsZJvjEzHiupQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1577478644;
-        bh=JD7Lm4bBEA17BxcwVLsJTWo+5oRVXiqDg9CrlsFlNVY=;
-        h=X-UI-Sender-Class:Reply-To:Subject:To:References:From:Date:
-         In-Reply-To;
-        b=CiVyFZxuHADP6Q9lpasFLTXmCwf1YKjksfN0AmbdyIH0gVQUimz/E4sEQYxGCijiq
-         NRkqjewJrfKGRqX0j4GkqeNgOAlcO51jDtVkp99sbiZEUfp1Zkc8Dv5AmvoewNzeHv
-         giwC+JM4rrFlwSi0XfpyGIxyGuQR4HhrQ40i9rzQ=
-In-Reply-To: <20191227201210.d6f78c7180afd569527ead9e@plushkava.net>
-Content-Language: en-GB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=/48VSRObCE0Eu+tCrsiewS+ciu/vwzZm77Ie5jssEDM=;
+        b=TP5FjHfd82EvU/ygQmCsskz0svAJ+V6fOpVddgjid11GOgCQWTDZQtnrmig+m8C6CI
+         oX34THUW6v9wLQ2eArM5l3jBmnbaeWDRycwoyp7gYS82pABxyYCksHVgmUCtHiHwWoV/
+         NnkYOMkrQgk0vmA84eTbq3M5BL2S2InBas+yT8zlZJnxzbTm8qgcVHcNyORGqzJpvoFT
+         5P9jgxwV30rMOa6xqXQ7v6gRUu3c0Aoz++7G5gqEiPnoWZ26OmMPKL0+e6v6JSYwdlz1
+         vuiCpARpICKkaZUAlxT/QCWzQcxY4NROzT9s2kAxqBsIwIJlI+kNAMWZPfsRvMRB/W7e
+         DtlA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
+I want to use map to simplify the configuration of DSCP fields with
+the following command:
 
-On 27/12/2019 20:12, kfm@plushkava.net wrote:
->
-> Check the status of CONFIG_NF_TABLES_SET.
->
+> ... ip dscp set meta cgroup map { 3000 : 0x2c, 4000 : 0x20 }
 
-Ouhmpf, there we go... thanks for the pointer!
+But it fails with the following message:
 
- > CONFIG_NF_TABLES_SET is not set
+> BUG: invalid mapping expression set reference
+> nft: evaluate.c:1426: expr_evaluate_map: Assertion `0' failed.
+> Aborted (core dumped)
 
+It seems that the parser recognize the command as a valid one, but the
+later evaluation process doesn't think so.
+
+-- 
+Regards,
+Changli Gao(xiaosuo@gmail.com)
