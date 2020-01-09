@@ -1,36 +1,37 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: Assertion error when using map
-Date: Sat, 4 Jan 2020 12:15:09 +0100
-Message-ID: <20200104111509.GN795@breakpoint.cc>
-References: <CABa6K_EvuX5EJNNxM+9aESFephAjhos9dmmNmGsZJvjEzHiupQ@mail.gmail.com>
- <20200102232529.GL795@breakpoint.cc>
- <CABa6K_FjRaPTh1Qf_PuudozzMYKfBToA6i2apx7Shfr4sND8Ww@mail.gmail.com>
+From: Alberto Spin <a.spin@datawatt.nl>
+Subject: nft script file, using include with wildcards
+Date: Thu, 9 Jan 2020 14:47:51 +0000
+Message-ID: <AM0PR0102MB35540D625A4D1072683C6E1F9B390@AM0PR0102MB3554.eurprd01.prod.exchangelabs.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CABa6K_FjRaPTh1Qf_PuudozzMYKfBToA6i2apx7Shfr4sND8Ww@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=datawatt.onmicrosoft.com; s=selector2-datawatt-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pW1GA6Siok/juVWNDr9Emu99qqKj6EzqJmVlE8E8TBI=;
+ b=BMHu2ua1KEFBX91C0TUf7m6bgrHQyvDfDknrsQpYduhRmfe++6SbVt4mRufAbL0vL4kqp32BgMPze9O6dZ/yC7UbJ0Ebrurn4zIPY1TzNT81Pq4P5Q8j1QBdYuDyzn6VvbFd9P8qH5XC+BgIqUOzf00l73At1qUKIZPVoAylyP4=
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Changli Gao <xiaosuo@gmail.com>
-Cc: Florian Westphal <fw@strlen.de>, netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Changli Gao <xiaosuo@gmail.com> wrote:
-> I know it is difficult. Do you have any plan to support this kind of
-> features? Or, is there any way to work around this issue?
-
-Yes, I think we should extend bitwise first, since that would make this
-work:
-src/nft -e -a --debug=netlink add rule inet filter input \
-   ct mark set "ct mark & 0xffff0000 | meta mark & 0xffff"
-inet filter input
-  [ meta load mark => reg 2 ]
-  [ bitwise reg 2 = (reg=2 & 0x0000ffff ) ^ 0x00000000 ]
-  [ ct load mark => reg 1 ]
-  [ bitwise reg 1 = (reg=1 & 0xffffffff ) ^ reg 2]
-  [ ct set mark with reg 1 ]
-
-As you can see I have netlink linearization part working, don't know yet
-when I will start working on kernel part (or testing of this thing for
-that matter ...).
+SGVsbG8sDQoNCkknbSB1c2luZyBuZnRhYmxlcyAwLjcgKHJvY2tvIGJyYW5jaCkNCg0KSSd2ZSBn
+b3QgYSBuZnQgc2NyaXB0IGZpbGUgdGhhdCBjb250YWlucyB0aGUgZm9sbG93aW5nIGxpbmU6DQoN
+CiMgaW5jbHVkZSBhbGwgcnVsZSBmaWxlcyAoYWxwaGFiZXRpY2FsIG9yZGVyKQ0KaW5jbHVkZSAi
+Ki5ydWxlcyINCg0KV2hlbiBJIGV4ZWN1dGUgdGhpcyBzY3JpcHQgSSBnZXQgdGhlIGZvbGxvd2lu
+ZyBlcnJvcjoNCg0KLi9maXJld2FsbC5uZnQ6MjU6MS0xODogRXJyb3I6IENvdWxkIG5vdCBvcGVu
+IGZpbGUgIioucnVsZXMiOiBObyBzdWNoIGZpbGUgb3IgZGlyZWN0b3J5DQppbmNsdWRlICIqLnJ1
+bGVzIg0KXl5eXl5eXl5eXl5eXl5eXl5eDQoNCkl0IGRvZXNuJ3QgbWF0dGVyIHdoZXRoZXIgdGhl
+IGFyZSAucnVsZXMgcHJlc2VudCBvciBub3QuDQpXaGVuIEkgY2hhbmdlIHRoZSBsaW5lIGludG8g
+ImluY2x1ZGUgZm9vLnJ1bGVzIiwgZXZlcnl0aGluZyB3b3JrcyBhcyBpbnRlbmRlZC4NCg0KV2h5
+IGlzIHRoaXMgZXJyb3IgZ2VuZXJhdGVkLCB0aGUgZG9jdW1lbnRhdGlvbnMgc3RhdGVzOg0KDQpJ
+TkNMVURFIEZJTEVTDQoNCi4uLi4NCkluY2x1ZGUgc3RhdGVtZW50cyBzdXBwb3J0IHRoZSB1c3Vh
+bCBzaGVsbCB3aWxkY2FyZCBzeW1ib2xzICgqLD8sW10pLiBIYXZpbmcgbm8gbWF0Y2hlcyBmb3Ig
+YW4gaW5jbHVkZSBzdGF0ZW1lbnQgaXMgbm90IGFuIGVycm9yLCBpZiB3aWxkY2FyZCBzeW1ib2xz
+IGFyZSB1c2VkIGluIHRoZSBpbmNsdWRlIHN0YXRlbWVudC4gVGhpcyBhbGxvd3MgaGF2aW5nIHBv
+dGVudGlhbGx5IGVtcHR5IGluY2x1ZGUgZGlyZWN0b3JpZXMgZm9yIHN0YXRlbWVudHMgbGlrZSBp
+bmNsdWRlICIvZXRjL2ZpcmV3YWxsL3J1bGVzLyoiLiBUaGUgd2lsZGNhcmQgbWF0Y2hlcyBhcmUg
+bG9hZGVkIGluIGFscGhhYmV0aWNhbCBvcmRlci4gRmlsZXMgYmVnaW5uaW5nIHdpdGggZG90ICgu
+KSBhcmUgbm90IG1hdGNoZWQgYnkgaW5jbHVkZSBzdGF0ZW1lbnRzLiAgDQoNCldoYXQgYW0gSSBt
+aXNzaW5nIGhlcmU/DQoNCiBLaW5kIFJlZ2FyZHMsDQoNCkFsYmVydG8NCg0KIA0K
