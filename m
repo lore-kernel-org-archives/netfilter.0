@@ -1,59 +1,50 @@
-From: =?UTF-8?Q?Kadlecsik_J=C3=B3zsef?= <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset 7.5 released
-Date: Thu, 9 Jan 2020 20:42:56 +0100 (CET)
-Message-ID: <alpine.DEB.2.20.2001092035200.7220@blackhole.kfki.hu>
+From: david NEW <david@hajes.org>
+Subject: nftables static routing fails
+Date: Mon, 13 Jan 2020 22:13:36 +0100
+Message-ID: <967a25ca-ed80-b13e-a301-0907081debbf@hajes.org>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        blackhole.kfki.hu; h=mime-version:user-agent:message-id:from
-        :from:date:date:received:received:received; s=20151130; t=
-        1578598987; x=1580413388; bh=cnOQm+WldV8DinQLXnj14UUkpULVSlFkFkD
-        bmaAY+vA=; b=R0BYB/6Hr4GoNJqYF9bpyfG24cSlPhXsL7dzI47yzg+71jX+rAi
-        SmlRjw8GK1giCCRJXY+vCje6fYpGV3wYz5Vt/fML1f6Qyb6dY4GyFvWPjct2KzoD
-        JTBL4qsm22XzOgp3vwt4CTD6WJFispK8wOYs6gK0vKzL8OQjelQUBF/s=
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hajes.org; s=f2019;
+        t=1578950016; bh=nYyo9xwmqLCy+xAvJlBsWVrimJlQqAx8eaIKj4Y3G04=;
+        h=To:From:Subject:Message-ID:Date:MIME-Version:Content-Type;
+        b=aQ0XBBDrWdzCgSvYsGL2e5IKyKPQBEZjMx5iVPaRTXMxSrRgXYD6Lxo4XmbQIs9zA
+         8yhQi2rb4JQ62IcooSngfy2PSbcdl1YW13mEnlc3Dw7uAadBB3fyMsNxNC4+0+aN6F
+         BDpEb6YeZ3EyDpohrgJvb/KQSLx3GTGR3hD/MZX2DZeGYgAiX1L4bUNLcjkTxglV19
+         nE+jH69Vdc8mgLiQvGJCkdn19/U5duzk/G+VImtjYjPsxmSDJ/BBjQ1sX05aHEg8UD
+         M8ZTjhtex6AmVyeSmireL9C1lloSPH2idq7MNG6tXjR5lnWtwqQo6NhCyW5gpywu6e
+         AdxqWQnhGavIA==
+Content-Language: en-GB
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Hi,
+hi,
 
-ipset 7.5 is just released - please upgrade to this version! The syzkaller 
-fuzzer discovered a NULL dereference bug in ipset, which was fixed by 
-Florian Westphal. The CAP_NET_ADMIN capability is required to exploit the 
-vulnerability. Other than that, the release brings a lot of backward 
-compatibility improvements, thanks to Serhey Popovych.
+I am trying to route blocked ip set to IP:8080 where is info about "you 
+have been blocked"
 
-Userspace changes:
-  - configure.ac: Support building with old autoconf 2.63
-    (Serhey Popovych)
-  - configure.ac: Build on kernels without skb->vlan_proto correctly
-    (Serhey Popovych)
-  - configure.ac: Add cond_resched_rcu() checks (Serhey Popovych)
-  - configure.ac: Better match for ipv6_skip_exthdr() frag_offp
-    arg presence (Serhey Popovych)
-  - Document explicitly that protocol is not stored in bitmap:port
-Kernel part changes:
-  - netfilter: ipset: avoid null deref when IPSET_ATTR_LINENO is present
-    (Florian Westphal)
-  - ip_set: Pass init_net when @net is missing in match check params
-    data structure (Serhey Popovych)
-  - netfilter: xt_set: Do not restrict --map-set to the mangle table
-    (Serhey Popovych)
-  - compat: em_ipset: Build on old kernels (Serhey Popovych)
-  - compat: Use skb_vlan_tag_present() instead of vlan_tx_tag_present()
-    (Serhey Popovych)
+table ip raw {
+     set bad_ip {'
+         type ipv4_addr
+         elements = { xxx.xxx.xxx.xxx }
+     }
 
-You can download the source code of ipset from:
-        http://ipset.netfilter.org
-        ftp://ftp.netfilter.org/pub/ipset/
-        git://git.netfilter.org/ipset.git
+chain prerouting {
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+     type filter hook prerouting priority -500; policy accept;
+     nft add raw preroute ip saddr @bad_ip tcp dport { 80, 443 } ip 
+daddr set xxx.xxx.xxx.xxx tcp dport set 8080 notrack
+}
+
+}
+
+netfilter doesn't complain about this rule but nothing 
+happens...connection timed out and nothing happened. I see no errors in 
+Apache2 logs.
+
+I can see connection attempt in tcpdump but it is not redirected.
+
+any suggestion, please?
+
