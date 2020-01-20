@@ -1,68 +1,75 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: nftables static routing fails
-Date: Mon, 13 Jan 2020 23:33:48 +0100
-Message-ID: <20200113223348.GK795@breakpoint.cc>
-References: <967a25ca-ed80-b13e-a301-0907081debbf@hajes.org>
- <20200113214002.GJ795@breakpoint.cc>
- <601b51d0-e31a-0de7-8827-a8e92bcdabcd@hajes.org>
+From: "Sig Pam" <spam@itserv.de>
+Subject: nftables equivalent for iptables -m recent
+Date: Mon, 20 Jan 2020 14:48:27 +0000
+Message-ID: <kcEE.pOI45menO0OHYgWymsen8Q.gO9QrKDP1QE@exchange64.corp.itserv.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <601b51d0-e31a-0de7-8827-a8e92bcdabcd@hajes.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=itserv.de; s=201701;
+        t=1579531717; bh=/HjxFM+ULZ1OYJY0vnxVis9DM1HxbmZkIxN/6G47kgc=;
+        h=Subject:From:To:Date:From;
+        b=pb5Dzr3jElkK5+3fNXKRjl/FP4IOpyZ/YkLFYu7ZHOEW27/eGbg+8ZZEHr4j9INks
+         6aw6I9SGqPn3qoSBJWJFcYTjLpDVkCvMBKQeFIAkmF79g/1XRxyJKlRpgpWtSl2Hiq
+         ZDbTuhGon8ZsiBp/57fX0rrS2VhK+3tyQvSwC8IbzTXXvWgaaAIVfwYt5yJB/W12bB
+         6y5L2Degs/khJGGFvyXbArBLN284q1uT9j+HKC/fANS5vnGPrksu9H3PZ5lKzW8uZV
+         Z8nT+az5tNRSUia7Dvt2JHO3i7X8OAX7zdTi7kTtioqUxWntx6Z4sA5/KDpdO/qMR1
+         NKsQuC7DpOBtg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=itserv.de; s=201701;
+        t=1579531709; bh=/HjxFM+ULZ1OYJY0vnxVis9DM1HxbmZkIxN/6G47kgc=;
+        h=Subject:From:To:Date:From;
+        b=TghWeya5uggGRpBh04iBRza1eyEwGrQWRopvGJDoEmWiEorWqpVULypcCLYD+ENPc
+         e/m9HSq6g4M2I947BC/We5XwZw5gtTxt2f92aiZsApH0aHwqfhnYoIf139pQMCOwu+
+         rZAM+Y6nSBtfb+AxwECuRJbyD3sR6n+M6BcZ6AQCY2uBDpjwjqqOd9Gvgv3vJrk3C2
+         6epdgkvWKdWDdY7vbJeCfkYikfUUIK2rBy+t5zupY3gcvgJxMEiJRa+XddFOrwwbvv
+         Q06ZoeQEkbToC9QmEOvUr22E1fpgj2kn84de4yAtlIy12u/k1Q6d5tM895qYl0anFD
+         1J0NKb+dswhgQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=itserv.de; s=201701;
+        t=1579531707; bh=/HjxFM+ULZ1OYJY0vnxVis9DM1HxbmZkIxN/6G47kgc=;
+        h=Subject:From:To:Date:From;
+        b=vn2ixtR0VqI05cZw2HZjbOwYJ65pj+eYOrudu7+8ZgerLGes5XOd+ioByN6hsnnW6
+         gka42vylbH1y3RsrZ0lcpzH6HF24PVqRUcgUT4wWvraiOogrV6U8X5O9X40nAFEbdZ
+         sRCf9z8WgJg6MpAA/mCOfRMHASrsmcGd5vmWzz6+qqhHHhXVbEWdI/pr93Vr4hTz4X
+         c70c11KJ3xy/uSs0153pOXxt7KKZPFJljuAX27DQeDUMnd5Z0fAiAJV68jKo/IZFAO
+         RBnLXFNgLnWAHHRm5Od6eNav9RVlWBZzMtF7+X1MGIblpjeKq6miAJtrv0rIOri7MY
+         WQ9/w21LX50TA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: david NEW <david@hajes.org>
-Cc: Florian Westphal <fw@strlen.de>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="windows-1252"
+To: =?us-ascii?Q?netfilter=40vger=2Ekernel=2Eorg?= <netfilter@vger.kernel.org>
 
-david NEW <david@hajes.org> wrote:
-> I did run "tcpdump port 80" where I saw incoming packet. Then repeated
-> process but watching port 8080 this time but no packets have been captured.
-> I assumed it never went through.
-> 
-> I have never worked with tcpdump before so there may be some mistakes on my
-> side.
-> 
-> I do not know what is "reverse xlate rule" - can you show me how would you
-> write this rule, please?
+Hello, world!
 
-It won't work for your use case.
+I'd appreciate your help with the following issue on my Debian 10 with converting the ruleset from iptables to nftables.
 
-> I do not care how it is written as long as netfilter rule checks source
-> address (from set) that asks for connection to port 80, 443...and redirects
-> it to IP:8080 where web server error page awaits.
+I'm using iptables to blacklist incoming packets for a short while. If somebody tries to scan my host, his IP address gets blacklisted for ten minutes.
 
-Use nat + redirect.
+The following rules are in use:
 
-Stateless nat only works for simple use cases, like this for instance:
-table inet crap {
-        chain prerouting {
-                type filter hook prerouting priority -500; policy accept;
-                ip saddr 192.168.7.10 tcp dport { 80, 443 } ip daddr set 192.168.0.7 tcp dport set 8080 notrack
-        }
+[=85]
+iptables -A Enemies -m recent --name psc --update --seconds 600 -j DROP
+iptables -A Enemies -i eth0 -m tcp -p tcp --dport 1:21 -m recent --name psc --set -j PORTSCAN
+iptables -A Enemies -i eth0 -m tcp -p tcp --dport 23:24 -m recent --name psc --set -j PORTSCAN
+iptables -A Enemies -i eth0 -m tcp -p tcp --dport 26:79 -m recent --name psc --set -j PORTSCAN
+[=85]
+(PORTSCAN then simply logs and drops the packet.)
 
-        chain output {
-                type route hook output priority -500; policy accept;
-                tcp sport 8080 tcp sport set 80 ip saddr set 192.168.7.1
-        }
-}
+Since Debian uses the iptables command to insert nftables rules, I look at them and get the following:
 
-This works, client connects to 192.168.7.1 80, but really talks to 192.168.0.7:8080.
-The output rule is needed to reverse translate 192.168.0.7 to 192.168.7.1 and 8080 to 80.
-Without it, you get
+root@host:~# nft list ruleset
+[=85]
+chain Enemies {
+    # recent: UPDATE seconds: 600 name: psc side: source mask: 255.255.255.255 counter packets 0 bytes 0 drop
+    iifname "eth0" meta l4proto tcp tcp dport 1-21 # recent: SET name: psc side: source mask: 255.255.255.255 counter packets 0 bytes 0 jump PORTSCAN
+    iifname "eth0" meta l4proto tcp tcp dport 23-24 # recent: SET name: psc side: source mask: 255.255.255.255 counter packets 0 bytes 0 jump PORTSCAN
+    iifname "eth0" meta l4proto tcp tcp dport 26-79 # recent: SET name: psc side: source mask: 255.255.255.255 counter packets 0 bytes 0 jump PORTSCAN
+[=85]
 
- 192.168.7.10.39472 > 192.168.7.1.80: Flags [S], seq 16468682, win 64..
- 192.168.0.7.8080 > 192.168.7.10.39472: Flags [S.], seq 47272, ack 16468683, win 65 ..
- 192.168.7.10.39472 > 192.168.0.7.8080: Flags [R], seq 16468683
+Obvisiously, the recent module of iptables is not converted to anything of nftables, and if I dump my ruleset generated by iptables with nft list ruleset > ruleset , flush iptables, and run the nftables rules (nft -f ruleset), I don=92t get the functionality of blocking for a while
 
-In your case, you don't have the original address anymore so you can't create the reverse rule.
+Can you please guide me and help me defining a rule that blacklists IP addresses trying to open a specific TCP or UDP port (IPv4 and v6) for a defined time=3F
 
-table ip nat {
-        chain prerouting {
-                type nat hook prerouting priority dstnat; policy accept;
-                ip saddr @bad tcp dport { 80, 443 } redirect to :8080
-        }
-}
+Thank you very much
 
-will work because conntrack/nat handles the reverse translation.
+Sig
+
+
