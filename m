@@ -1,58 +1,75 @@
-From: "" <kfm@plushkava.net>
-Subject: Re: nftables: Allow NAT Access with Timeout
-Date: Thu, 23 Jan 2020 01:17:14 +0000
-Message-ID: <2b67148e-84df-9bba-f3fc-0184d7e67df4@plushkava.net>
-References: <d44f6c86-27bf-aff5-4251-b1cbf06de174@softtalker.com>
+From: "Sig Pam" <spam@itserv.de>
+Subject: AW: nftables equivalent for iptables -m recent
+Date: Thu, 23 Jan 2020 19:25:03 +0000
+Message-ID: <kcEE.LpII0HkB7kmx9fv8WDctFA.gNGKzyLS1QE@exchange64.corp.itserv.de>
+References: <kcEE.pOI45menO0OHYgWymsen8Q.gO9QrKDP1QE@exchange64.corp.itserv.de> <5aa1a916-0bc3-80cd-efd5-b0d5ce0c3af3@plushkava.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-         h=subject:to:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=a
-        28wQlH9to51csiTYkQBwTvgO74n38K4hGpevwc08TU=; b=N+PvjPEkeF7bQBLIS
-        Z9ROAInAPyIlVT1gD5BI0wTXoxpadpG8p5JuTy7/0Ym+Xh99Nxdb2uoGsirgCfkc
-        2fKVXoedHfsFtIhzAFARjGTKD7SMs/4yaqp3tCBSq2fr97oAKDvvdTIiBnOpWlmx
-        kpMrbD4/lFY0XUkP2/plnBE2KsxssOmnkFfWsBzqfBFNU20xW9D/BRGByyPExS3y
-        vhXuCqPBD8cMBVMOPUj0PT8sHUT8iAmpvuS9oFGOQNvGsNHg3/mdU2Jpb1ck6aVf
-        o0IcQeNaNVN2NEryFCFrsHEtaQNzbAyAm6opuISgNaCJpVGth450G4HYt3ZIKgpM
-        NWbzA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=a28wQlH9to51csiTYkQBwTvgO74n38K4hGpevwc08
-        TU=; b=LMAI2hBJY4UcaJs/lcN0TnlAM4KahC05Zwx568fewKc0se+q6XOMFKAcI
-        77xdLG28P+Z4IMw88gzque0zsPkWwz06ecXL7Jn3aBf8e89ldD3bzjPEnSGGF47Y
-        XsqmtYM3wjbhRwtiiljvy5HauCtaO7IjOyErdb7H0qz9BZzyuj1g8CebrraHnWZq
-        6nadx7Euns9fidVUBbk3j6MvxdRXhkjByxToxTm9RVxFuoiSS7pLPFCRadV9tSiZ
-        nQ97Ah33mmvJJ1PLh8Vd7PWkqIENCXRTYIIW0Wg9ZiUtgYfS0qJMfHPJO3MGb52O
-        anwg2MR7gJOuh6bPVQkHHFcz/guIQ==
-In-Reply-To: <d44f6c86-27bf-aff5-4251-b1cbf06de174@softtalker.com>
-Content-Language: en-GB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=itserv.de; s=201701;
+        t=1579807518; bh=TnUHQTPB5rN5ZWeyKQGna8NQRYZGDXyctr2GLYTaGDw=;
+        h=Subject:From:To:Date:In-Reply-To:References:From;
+        b=WOpYvCy1pVT9v1FuZlV0mC873iF5YC/5H5oS2AdWL9LrKyu0VJlWJyfCvVEzw0Q2Y
+         fF34TLx/TqO89BlL3ir4/vqTiKPN8ZVpQCpsQxenV6qeghvUVHJTnnM41bukgMOPVP
+         47mWD6KvTibyhH+xGyLjna/kw8R/UROMRYP85vJ2UPr4C2dLo/uteVfW7ejoewALrP
+         rf0gFxw6ntSEGxzcbOXP/HN0qAcv79K5l3JU1IiCZPr21lgAbBuUn2x8qh1z2E4Acz
+         yVkqG2mO3AgmRzCuCEZ7LDiIez9PKYEbs6sgyCDNEKp9sjJZBV2tH7Sz/TEKBHnyzx
+         bjmWTb0Sbn76g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=itserv.de; s=201701;
+        t=1579807510; bh=TnUHQTPB5rN5ZWeyKQGna8NQRYZGDXyctr2GLYTaGDw=;
+        h=Subject:From:To:Date:In-Reply-To:References:From;
+        b=ffuyU+HKmY3nnep/geVQQxOVS8t85XizLUqai0/C66f+62asDf8AeGKggrwfF4V0A
+         JleTnHM0qgbx1Cio6aZ8hS1YIEWEmDXOzrNOoUI9e6N6YxkfVdpftGdmbmCwVUT0/1
+         wu0tc7WGWqB0X2k8AZDpmYSC7vFMbDiPUy0MVpV9G9EcF4c6PS7aVAryFL1HPPIpk1
+         caL5i4w1J8iEqpe5fjErO4m/9kj5DPcBEgu2ZIPCvIGap0kTdzW2D5YvKaTsnKCJC7
+         VnyE691PpacwDE/8QUZ5Tw0J6eihcS0EMzZmfsPAaE6OFWv5dEqmf/2VEfny9STMR/
+         vBzgKZBlJhpeA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=itserv.de; s=201701;
+        t=1579807504; bh=TnUHQTPB5rN5ZWeyKQGna8NQRYZGDXyctr2GLYTaGDw=;
+        h=Subject:From:To:Date:In-Reply-To:References:From;
+        b=zkEKrmXiOJnKL84Se6r/L4h4Lnn18RZq6F6FxLZVih+8hm3MGRC0kt1c3QJIv2qKH
+         JjH3NWMHJdf9mRZOxMYKhNDUo7haw+jhavQMl0mX6veSFeAJaL1+VSm0LB14tzrgnI
+         I/ZOZ122TKv1c2JIuqykh2J5bwy7qaDlQ/5ZUpOQR0MfZ2mlH9S6UGHDPktslcvB+k
+         E9EmXxLEeT23pBFWBsEj9DYdaN6mkH+O6pn7vRDJ4tG5xk4ZbEKb89uB24RleFRG5f
+         O/bvMBGTCG3ayq28nb5SVIK+A7L/fEDxGFKzvsbddCCl6xYcImhNrPOPmg+LUHeOJW
+         j/glNAcppEw9Q==
+In-Reply-To: <5aa1a916-0bc3-80cd-efd5-b0d5ce0c3af3@plushkava.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: =?us-ascii?Q?kfm=40plushkava=2Enet?= <kfm@plushkava.net>, =?us-ascii?Q?netfilter=40vger=2Ekernel=2Eorg?= <netfilter@vger.kernel.org>
 
-On 23/01/2020 00:01, Mike Dillinger wrote:
-> I am running nftables 0.9.3 on Debian 10.=A0 Behind the Linux router, I=20
-> have multiple clients, mostly Windows.=A0 Some of them would like to run =
+This works:
 
-> an application such as Torrent but I'd like to limit the time that can=20
-> happen.=A0 Ideally, I'd like use use a set within the nat table and have =
+table ip filter {
+=09set enemies {
+=09=09type ipv4_addr
+=09=09flags timeout
+=09=09timeout 5m
+=09}
 
-> the access automatically expire after 4 hours.=A0 I have hit a brick wall=
-=20
-> and I don't see a straightforward way to do this since each nat entry=20
-> needs a destination IP, inbound port, and destination port, yet set's=20
-> only have a single one of those entries.=A0 I was leaning toward using a =
+=09chain INPUT {
+=09=09type filter hook input priority 0; policy accept;
 
-> set because that's the only entry type that has automatic timeouts as=20
-> far as I can tell.
+=09=09iifname ens192 ip saddr @enemies \
+=09=09=09update @enemies { ip saddr }
 
-Concatenations allow for set elements to be of a composite data type.
+=09=09iifname ens192 tcp dport { 1-21, 23-24, 26-79 } \
+=09=09=09update @enemies { ip saddr }
 
-type ipv4_addr . inet_service . inet_service
+=09=09iifname ens192 ip saddr @enemies log drop
+=09}
+}
 
---=20
-Kerin Millar
+
+First, the set "enemies" is defined with a 5 Minute timeout
+
+In the INPUT Chain,
+- ip addresses already in the set are re-added and theire ban is prolonged
+- ip addresses trying to open one of the specified ports are newly put into the set
+- if the ip source address is in the enemies set, the packet is dropped.
+
+Thank you four your help!
+
+Sig.
+
