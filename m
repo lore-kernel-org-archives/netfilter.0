@@ -1,78 +1,49 @@
-From: Robert Sander <r.sander@heinlein-support.de>
-Subject: nft icmp type all?
-Date: Fri, 24 Jan 2020 22:16:43 +0100
-Message-ID: <a0fa4c0b-d8d8-752b-6926-753720a00796@heinlein-support.de>
+From: "" <kfm@plushkava.net>
+Subject: Re: nft icmp type all?
+Date: Fri, 24 Jan 2020 21:29:01 +0000
+Message-ID: <ea408bc8-2171-d329-5606-62dbebbe428c@plushkava.net>
+References: <a0fa4c0b-d8d8-752b-6926-753720a00796@heinlein-support.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="zDIngKy6hrZhbdnExDjAeGunKmdjI7nC2"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+         h=subject:to:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=+
+        NUF21mt8Rkt6Nvku9m1Zlaxcdyto4ipAOZd896zACk=; b=KEdveCDvWbcvvwCnb
+        /+L9lN1QaJeekMNoFWEyKWskSBdStEciAoToYydA7EaAxhfnl5BV4vuBsRa7TOjZ
+        ArJjH01XVBzCWBUEEG403GBLoZ5HMHo+EWR5j6vBt3Ly9ukOghuu2gcD5+L+kZug
+        cC1HT7Fx1OA0EgWeHR6TYWD2UOtEv8+iP+gtocTOdCPwLI5ZLg488SoKaUZtapCs
+        k2KcElMJ331Ge08SREUop1SsZTDZCcSQQs0zba3xv8sc7dBwnUQQGGuuLZxPwL4e
+        2u9Gd+e6h5kvo190vJFu4DY4EbGXT6m23jEPpk9yIKdN3Nis0lYuC462RdpMvt0c
+        +6EdQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=+NUF21mt8Rkt6Nvku9m1Zlaxcdyto4ipAOZd896zA
+        Ck=; b=WwfqcaR2a/IZ0tl2spELJlMXJqeK3WhgLB+p1kzELXINjciMRYNwZPMV8
+        fP2tD0eqVwFi74Ifc0ZygTHP27m4cxIAu1IfF7fSQ6AoF+rfl6B9QGyejCaA+YOq
+        kEcj85mjeLIO9IWGiVBmvPom85CxHQA7YRWdICTQRJErOyL9t3WNqC2u/m3Sfpyi
+        2vL0UmjzooW3QTTCccMCNcush8NuUuFi2Fig+DDESPhkOQQLBL9q/oWXwp9kc5X9
+        Gc1XYbzJcSvoPBfd8V24J6aH0bA8ODQcf6yyasmdxIxCRnwfqmhCo+OPHJlRH+0p
+        q6wpumsjLo6heVccDzAzG9jY2SMjQ==
+In-Reply-To: <a0fa4c0b-d8d8-752b-6926-753720a00796@heinlein-support.de>
+Content-Language: en-GB
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---zDIngKy6hrZhbdnExDjAeGunKmdjI7nC2
-Content-Type: multipart/mixed; boundary="rFXPQlSfHSbFLbnun2XNfMHe6T33glvpF"
+On 24/01/2020 21:16, Robert Sander wrote:
+> Hi,
+> 
+> how do I specify a rule to match all ICMP packages?
+> 
+> nft add rule ip filter input icmp accept
+> 
+> does not work.
 
---rFXPQlSfHSbFLbnun2XNfMHe6T33glvpF
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: quoted-printable
+nft add rule ip filter input meta l4proto icmp accept
 
-Hi,
-
-how do I specify a rule to match all ICMP packages?
-
-nft add rule ip filter input icmp accept
-
-does not work.
-
-nft add rule ip filter input icmp type all accept
-
-also does not work. any instead of all also no success.
-
-Is it really necessary to have all possible ICMP types in a set with a
-rule like this?
-
-Regards
---=20
-Robert Sander
-Heinlein Support GmbH
-Schwedter Str. 8/9b, 10119 Berlin
-
-http://www.heinlein-support.de
-
-Tel: 030 / 405051-43
-Fax: 030 / 405051-19
-
-Zwangsangaben lt. =C2=A735a GmbHG:
-HRB 93818 B / Amtsgericht Berlin-Charlottenburg,
-Gesch=C3=A4ftsf=C3=BChrer: Peer Heinlein -- Sitz: Berlin
-
-
---rFXPQlSfHSbFLbnun2XNfMHe6T33glvpF--
-
---zDIngKy6hrZhbdnExDjAeGunKmdjI7nC2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCgAdFiEEhVXmaPzvl7l1erVE8LuRWCPeWygFAl4rXsMACgkQ8LuRWCPe
-Wyi9TRAAtq7MygaDXw2IwoK5UyUgBUh5xcS60hh/5x/hrKNaoZdKce6KFtypfA5E
-/MKQh4x6NR1hmB8VLOwUpLACQ1rdb0t37sHMlrF6ZLPqeU2GNkGtEaT8mwDYfMu9
-rbTMku/Ak+0CZJzZTruAl8/akpQoSUH4jCvRs683gMtZCVuslfmgfHMHx0jtZAni
-T0SOZse8ConhUhwbRa4zifbbdgenES5QPJ1JzACE/cSzNAMXDrZB26rWkuniGgnN
-nmWjtyVolxVxKIp7SuMN0+lrwxDlRF1YjvB6v8Lm7pEVBYIimjBnla/s6cvoprPi
-FqlM/ffudFujJydhTsbkm69koU2FwubEw0ujPNGwttP+nMYHUp/gy76OqdUQhnBH
-olIvcN7DRwWo7Otz9Om809z0GSBo0Q4Ml0V6TR66T7yyis86WzzhxfzTKEZEaolh
-soPggyC/2aqeCtkjb/9BcCf2DYM9PtNUXoiA611OCRv1QCXctOSHSKwE5pejZQek
-6WJAH779xBQrTPOJLMmFZ3K0eNnPbpkEP4r9oq1dZOPBPeoy9+boxpltigVMd1lP
-jWHa82kFh3wtY1MC4R8Ih5+bcUsTn1zHlzf0qvIjK6+XtAbKQsReJeFEdIOZbhOq
-rjUya4v0jEMxAC5Njl+b8p3++kvvJs51HIzKHjxQw3d0A9g2w0Q=
-=Gfyc
------END PGP SIGNATURE-----
-
---zDIngKy6hrZhbdnExDjAeGunKmdjI7nC2--
+-- 
+Kerin Millar
