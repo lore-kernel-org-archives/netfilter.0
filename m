@@ -1,75 +1,74 @@
-From: "Sig Pam" <spam@itserv.de>
-Subject: AW: nftables equivalent for iptables -m recent
-Date: Thu, 23 Jan 2020 19:25:03 +0000
-Message-ID: <kcEE.LpII0HkB7kmx9fv8WDctFA.gNGKzyLS1QE@exchange64.corp.itserv.de>
-References: <kcEE.pOI45menO0OHYgWymsen8Q.gO9QrKDP1QE@exchange64.corp.itserv.de> <5aa1a916-0bc3-80cd-efd5-b0d5ce0c3af3@plushkava.net>
+From: Felipe Arturo Polanco <felipeapolanco@gmail.com>
+Subject: Policy routing Docker host not forwarding return traffic if marked
+Date: Thu, 23 Jan 2020 23:15:21 -0400
+Message-ID: <CADcj3=43fXMNcOhJrJM7w5Hd8FAKEKUo=dJ0XFePA3Lt7uDeDQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=itserv.de; s=201701;
-        t=1579807518; bh=TnUHQTPB5rN5ZWeyKQGna8NQRYZGDXyctr2GLYTaGDw=;
-        h=Subject:From:To:Date:In-Reply-To:References:From;
-        b=WOpYvCy1pVT9v1FuZlV0mC873iF5YC/5H5oS2AdWL9LrKyu0VJlWJyfCvVEzw0Q2Y
-         fF34TLx/TqO89BlL3ir4/vqTiKPN8ZVpQCpsQxenV6qeghvUVHJTnnM41bukgMOPVP
-         47mWD6KvTibyhH+xGyLjna/kw8R/UROMRYP85vJ2UPr4C2dLo/uteVfW7ejoewALrP
-         rf0gFxw6ntSEGxzcbOXP/HN0qAcv79K5l3JU1IiCZPr21lgAbBuUn2x8qh1z2E4Acz
-         yVkqG2mO3AgmRzCuCEZ7LDiIez9PKYEbs6sgyCDNEKp9sjJZBV2tH7Sz/TEKBHnyzx
-         bjmWTb0Sbn76g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=itserv.de; s=201701;
-        t=1579807510; bh=TnUHQTPB5rN5ZWeyKQGna8NQRYZGDXyctr2GLYTaGDw=;
-        h=Subject:From:To:Date:In-Reply-To:References:From;
-        b=ffuyU+HKmY3nnep/geVQQxOVS8t85XizLUqai0/C66f+62asDf8AeGKggrwfF4V0A
-         JleTnHM0qgbx1Cio6aZ8hS1YIEWEmDXOzrNOoUI9e6N6YxkfVdpftGdmbmCwVUT0/1
-         wu0tc7WGWqB0X2k8AZDpmYSC7vFMbDiPUy0MVpV9G9EcF4c6PS7aVAryFL1HPPIpk1
-         caL5i4w1J8iEqpe5fjErO4m/9kj5DPcBEgu2ZIPCvIGap0kTdzW2D5YvKaTsnKCJC7
-         VnyE691PpacwDE/8QUZ5Tw0J6eihcS0EMzZmfsPAaE6OFWv5dEqmf/2VEfny9STMR/
-         vBzgKZBlJhpeA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=itserv.de; s=201701;
-        t=1579807504; bh=TnUHQTPB5rN5ZWeyKQGna8NQRYZGDXyctr2GLYTaGDw=;
-        h=Subject:From:To:Date:In-Reply-To:References:From;
-        b=zkEKrmXiOJnKL84Se6r/L4h4Lnn18RZq6F6FxLZVih+8hm3MGRC0kt1c3QJIv2qKH
-         JjH3NWMHJdf9mRZOxMYKhNDUo7haw+jhavQMl0mX6veSFeAJaL1+VSm0LB14tzrgnI
-         I/ZOZ122TKv1c2JIuqykh2J5bwy7qaDlQ/5ZUpOQR0MfZ2mlH9S6UGHDPktslcvB+k
-         E9EmXxLEeT23pBFWBsEj9DYdaN6mkH+O6pn7vRDJ4tG5xk4ZbEKb89uB24RleFRG5f
-         O/bvMBGTCG3ayq28nb5SVIK+A7L/fEDxGFKzvsbddCCl6xYcImhNrPOPmg+LUHeOJW
-         j/glNAcppEw9Q==
-In-Reply-To: <5aa1a916-0bc3-80cd-efd5-b0d5ce0c3af3@plushkava.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=lA8U3JZ80HC6ZHsWi8cE1E01DOT2LX6tE1JGTju9wwA=;
+        b=cJAviFNn5bCc55D1K1R16mxpRL0sKXBMllB6PRxI3/fXvklGTceeXhvxEikRnjdS+c
+         5jSgC1HxoWgGczgWuhBjIwh3n4vvOIoymkJjKlokH+jdhKV/zTASIRX80vwtYziRC8iH
+         FRYBLK0lraeQ3eLHpOMVD7EJ1i6//Lus6fP0FsIi8JhVVSoXiSEafWYGEBbkAMrK6yib
+         34IOnsrSzyknFXzwMRqF6X0u+vw1fx1J6WC8jjUAMIDGtiYKBGyR1vdFz+lZlH2wTH4H
+         974Uf3vgKaO12/kx3kujLGVwO1njiZ8nhcrE9uTv35hTrSfnMY4DHOz/O0viS/KDGrMd
+         oOsw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: =?us-ascii?Q?kfm=40plushkava=2Enet?= <kfm@plushkava.net>, =?us-ascii?Q?netfilter=40vger=2Ekernel=2Eorg?= <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-This works:
+NETWORK INFO:
+Centos 7 Kernel 3.10
 
-table ip filter {
-=09set enemies {
-=09=09type ipv4_addr
-=09=09flags timeout
-=09=09timeout 5m
-=09}
+Container IP 172.16.0.2/16
+Host IP 172.16.0.1/16
+Host public IP 100.64.0.10
+Default gateway 100.64.0.1
+Host VPN IP 10.8.0.2
+VPN peer 10.8.0.1
 
-=09chain INPUT {
-=09=09type filter hook input priority 0; policy accept;
+COMMANDS USED:
+iptables -t nat mangle -A PREROUTING -s 172.16.0.2/32 -p tcp --sport
+80 -j MARK --set-mark 1
+ip rule add fwmark 1 lookup 100
 
-=09=09iifname ens192 ip saddr @enemies \
-=09=09=09update @enemies { ip saddr }
+VPN ROUTES, def gateway
+ip route add 0.0.0.0/1 via 10.8.0.1 dev tun0 src 10.8.0.2
+ip route add 128.0.0./1 via 10.8.0.1 dev tun0 src 10.8.0.2
 
-=09=09iifname ens192 tcp dport { 1-21, 23-24, 26-79 } \
-=09=09=09update @enemies { ip saddr }
+# routing table 100 for container return traffic
+ip route add default via 100.64.0.1 dev eth0 table 100 src 100.64.0.10
+ip route add 172.16.0.0/16 dev br-0123456789 table 100 src 172.16.0.1
 
-=09=09iifname ens192 ip saddr @enemies log drop
-=09}
-}
+Hi,
 
+I'm hitting a strange situation where the return traffic of a
+container is not being forwarded on the host.
 
-First, the set "enemies" is defined with a 5 Minute timeout
+I set up a point to point VPN connection on the host and make all the
+traffic go to the VPN peer.
 
-In the INPUT Chain,
-- ip addresses already in the set are re-added and theire ban is prolonged
-- ip addresses trying to open one of the specified ports are newly put into the set
-- if the ip source address is in the enemies set, the packet is dropped.
+I also have a docker container listening in port 80, docker port
+forwards the host:8080 to container:80 and it works
+I go to 100.64.0.10:8080 and I see the container website.
 
-Thank you four your help!
+The problem happens when I start the VPN and now all the return
+traffic goes out through the VPN instead of the default gateway
+100.64.0.1, this due to asymmetric routing.
 
-Sig.
+To solve this I decided to use policy based routing and mark the
+packets that have tcp/80 as source and make them hit a different
+routing table.
 
+Sadly it is not working, according to TRACE messages, it last hits
+MANGLE PREROUTING but is never seen on FORWARD, it just dies there.
+
+I'm not sure if this is a conntrack issue, I clear the conntrack table
+and the issue persists, I also disabled rp_filter and nothing.
+
+Any ideas??
+
+Thanks,
