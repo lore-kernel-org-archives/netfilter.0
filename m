@@ -1,106 +1,78 @@
-From: Fatih USTA <fatihusta86@gmail.com>
-Subject: Re: TCP 4 way handshake or TCP Split Handshake Attack
-Date: Fri, 24 Jan 2020 22:54:11 +0300
-Message-ID: <b7975d59-04d7-4163-beda-94269ef68903@gmail.com>
-References: <33c1b81b-cb3d-e277-334f-5a8daaf8dd73@gmail.com>
- <20200124162417.GW795@breakpoint.cc>
+From: Robert Sander <r.sander@heinlein-support.de>
+Subject: nft icmp type all?
+Date: Fri, 24 Jan 2020 22:16:43 +0100
+Message-ID: <a0fa4c0b-d8d8-752b-6926-753720a00796@heinlein-support.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="zDIngKy6hrZhbdnExDjAeGunKmdjI7nC2"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=6xdOZu4XXiOfRJhqsCFEJQkZXOlKlj9tQY72hpHSBI8=;
-        b=qdBKkK5wgzFTmxdmh4xj76YlUaVC1kT0XuAr2EDoK7SjyXLuxo3FHuIvNXsVM3kns5
-         SkiGdV9ipjUlLSTlq6mjeOqB/H6TppX39rBGAmL/nDjVndaw9mmGy1inuHXTj9bAVtQj
-         wnPOhQGlRPYCOMrTc/fOFxoB9AJRdjTtTHM1fjeZIt3XDCQVzolEENWjmhJCU8K+QH+V
-         /7bpYhb/KKjJPfMKPBPgP2Nc++g4hmk0REDaeH0ojIOHBLaMp9XQbuPGI/dvVunIlBcz
-         2Nmf8y8cdoa0/tmg+GbxgdjT9vALwchvBYuqLpczY9hMlIEEsxNz6oRlBKe0dAHZ/ifF
-         dVLg==
-In-Reply-To: <20200124162417.GW795@breakpoint.cc>
-Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Florian Westphal <fw@strlen.de>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--zDIngKy6hrZhbdnExDjAeGunKmdjI7nC2
+Content-Type: multipart/mixed; boundary="rFXPQlSfHSbFLbnun2XNfMHe6T33glvpF"
+
+--rFXPQlSfHSbFLbnun2XNfMHe6T33glvpF
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+how do I specify a rule to match all ICMP packages?
+
+nft add rule ip filter input icmp accept
+
+does not work.
+
+nft add rule ip filter input icmp type all accept
+
+also does not work. any instead of all also no success.
+
+Is it really necessary to have all possible ICMP types in a set with a
+rule like this?
+
+Regards
+--=20
+Robert Sander
+Heinlein Support GmbH
+Schwedter Str. 8/9b, 10119 Berlin
+
+http://www.heinlein-support.de
+
+Tel: 030 / 405051-43
+Fax: 030 / 405051-19
+
+Zwangsangaben lt. =C2=A735a GmbHG:
+HRB 93818 B / Amtsgericht Berlin-Charlottenburg,
+Gesch=C3=A4ftsf=C3=BChrer: Peer Heinlein -- Sitz: Berlin
 
 
-Fatih USTA
+--rFXPQlSfHSbFLbnun2XNfMHe6T33glvpF--
 
-On 24.01.2020 19:24, Florian Westphal wrote:
-> Fatih USTA <fatihusta86@gmail.com> wrote:
->> Hello,
->> I am trying to protect my network from the tcp split handshake attack!
->> (4-way handshake rejection or 3-way handshake enforcement).
->> I tested the sample code. (link below) And passed the firewall(iptables).
-> Why wouldn't it?  Its valid tcp, your ruleset allows connections to happen
-> and there is a socket expecting a connection.
+--zDIngKy6hrZhbdnExDjAeGunKmdjI7nC2
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-Actually there isn't real open socket(sample code) on the clients. Only 
-sending and receiving packet. There is no listen port on the system. (If 
-I understand correctly)
->> I can't find any solution on the internet for Linux.
-> nft add rule filter forward tcp flags & (syn | ack) == syn ct direction reply counter drop
+-----BEGIN PGP SIGNATURE-----
 
-fw1
+iQIzBAEBCgAdFiEEhVXmaPzvl7l1erVE8LuRWCPeWygFAl4rXsMACgkQ8LuRWCPe
+Wyi9TRAAtq7MygaDXw2IwoK5UyUgBUh5xcS60hh/5x/hrKNaoZdKce6KFtypfA5E
+/MKQh4x6NR1hmB8VLOwUpLACQ1rdb0t37sHMlrF6ZLPqeU2GNkGtEaT8mwDYfMu9
+rbTMku/Ak+0CZJzZTruAl8/akpQoSUH4jCvRs683gMtZCVuslfmgfHMHx0jtZAni
+T0SOZse8ConhUhwbRa4zifbbdgenES5QPJ1JzACE/cSzNAMXDrZB26rWkuniGgnN
+nmWjtyVolxVxKIp7SuMN0+lrwxDlRF1YjvB6v8Lm7pEVBYIimjBnla/s6cvoprPi
+FqlM/ffudFujJydhTsbkm69koU2FwubEw0ujPNGwttP+nMYHUp/gy76OqdUQhnBH
+olIvcN7DRwWo7Otz9Om809z0GSBo0Q4Ml0V6TR66T7yyis86WzzhxfzTKEZEaolh
+soPggyC/2aqeCtkjb/9BcCf2DYM9PtNUXoiA611OCRv1QCXctOSHSKwE5pejZQek
+6WJAH779xBQrTPOJLMmFZ3K0eNnPbpkEP4r9oq1dZOPBPeoy9+boxpltigVMd1lP
+jWHa82kFh3wtY1MC4R8Ih5+bcUsTn1zHlzf0qvIjK6+XtAbKQsReJeFEdIOZbhOq
+rjUya4v0jEMxAC5Njl+b8p3++kvvJs51HIzKHjxQw3d0A9g2w0Q=
+=Gfyc
+-----END PGP SIGNATURE-----
 
--A FORWARD -p tcp -m tcp --tcp-flags SYN,ACK SYN -m conntrack --ctdir 
-REPLY -j LOG --log-prefix "SPLIT FWD " --log-level 6
--A FORWARD -p tcp -m tcp --tcp-flags SYN,ACK SYN -m conntrack --ctdir 
-REPLY -j DROP
-
-kernel: : [3074700.968937] SPLIT FWD IN=eth12 OUT=eth11 
-MAC=8a:15:53:25:4e:94:72:43:c2:9f:07:cb:08:00 SRC=172.16.2.2 
-DST=10.0.0.2 LEN=60 TOS=0x00 PREC=0x00 TTL=61 ID=206 DF PROTO=TCP 
-SPT=5555 DPT=5555 WINDOW=29200 RES=0x00 SYN URGP=0
-
-
-I wrote this rule on fw1, but not dropped. Is this rule correct?
-Here is the test topology.
-host1 <> fw1 <> router <> fw2 <> host2
-
-host1=10.0.0.2
-fw1= 10.0.0.1
-fw1= 172.16.1.2(MASQ)
-router=172.16.1.1
-router=172.16.2.1
-fw2= 172.16.2.2 (MASQ)
-fw2=10.0.1.1
-host2=10.0.1.2
-
-host1 command
-./tcp-4way.py 172.16.2.2 5555 hello
-host2 command
-./tcp-4way.py 172.16.1.2 5555 world
-
-host1 result
-connected to 172.16.2.2:5555
-received message: [world]
-
-host2 result
-connected to 172.16.1.2:5555
-received message: [hello]
-
-> But why would you want to disallow this behaviour?
-
-There isn't defined port forwarding to clients on the iptables. Clients 
-sends packets to "remote Real IP" address. I think this is security 
-issue. isn't?
->> Link1: https://tech.labs.oliverwyman.com/blog/2016/11/07/4-way-tcp-handshake-and-firewalls/
-> This is simultaneous connect, at least thats what can be seen in the
-> tcpdump, syns cross on wire, both ends send syn/ack.  WHy do you
-> consider this an "attack"?
-I know this is RFC defined feature.
-Some one says attack some one says issue.
-This issue reported by the nss labs. Global firewall vendors patched 
-their software.
-
-What's your comments for this report?
-https://www.nsslabs.com/press/2011/5/10/network-firewall-vendors-address-tcp-split-handshake-issues-found-by-nss-labs/
-
-Other links.
-https://kb.juniper.net/InfoCenter/index?page=content&id=JSA10476&cat=SECURITY_PRODUCTS&actp=LIST
-https://www.hackmageddon.com/2011/04/17/tcp-split-handshake-attack-explained/
-https://www.secplicity.org/2011/04/15/what-is-the-tcp-split-handshake-attack-and-does-it-affect-me/
+--zDIngKy6hrZhbdnExDjAeGunKmdjI7nC2--
