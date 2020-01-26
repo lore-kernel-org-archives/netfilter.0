@@ -1,45 +1,54 @@
-From: "" <kfm@plushkava.net>
-Subject: Re: nft multiple port exception
-Date: Sun, 26 Jan 2020 14:07:18 +0000
-Message-ID: <c386de5e-f500-880e-64a1-aae6764d3bbc@plushkava.net>
-References: <88552dfd-377b-c0ac-aaa4-ad7868348758@hajes.org>
+From: =?UTF-8?Q?Lars_Nood=c3=a9n?= <lars.nooden@gmx.com>
+Subject: Re: Bulk loading of IP addresses or subnets in nftables?
+Date: Sun, 26 Jan 2020 18:43:26 +0200
+Message-ID: <382e1060-194b-3fbf-8fa8-25e8332a92e6@gmx.com>
+References: <8856312f-553c-f751-bd0b-aa230fda6d11@gmx.com>
+ <199029b9-994b-421a-7a6f-ff27d9944970@plushkava.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-         h=subject:to:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=F
-        AHE3x1+/sm+fVcFeeMJCs/QScatHBGwodBs1f7tg6A=; b=E/Q2sjyOuMYzEMPu0
-        Y3dTYkjTDPU6sFxrzWr/SYKccVsaFUfU9S4vWYkWHg1Y8sHHMaJxWMKmxqRhcfBC
-        hZRvkrvd121YKEsPmL5xQ5uv5AePqny509s5zZWpPjWX1rwK2xcIqy/FQ0MY1rQE
-        a90ob6zKf3MkNNvuAF+tG2KDIqJqDTjJclaBmDHYUsVQ8AriHXgOnA4l4UgH3cp0
-        B6SEGBuHMeW7iIFwvUKhOQ5lPKPHXfvSRfZwD4mxMnIaQWIXNbwXb72wceyIFn5S
-        Y237hyQKeU/MzntUyMHO5UEYkQ1M7rFoOHWDiwKl5I3QuFLnr+3L0WUjrzuL7zdD
-        Qmg4g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=FAHE3x1+/sm+fVcFeeMJCs/QScatHBGwodBs1f7tg
-        6A=; b=E+N6/HoCByo28Lz2Os/mnInCn+qtjNt8a0IV3DDF61KZnbHTycOzfvf/i
-        l8+0Z3On7156+KfBiWiaQ0/Qkke8GhMWl5XkmzMxFdavLfN9vCa3uSoTA8RKFL7W
-        2n5pbVNpzlV89ECaFm4CyaCpRpodxrvJ/8KgYU8dPlWxQ9gGDaKgpw0Qx6J96cpF
-        YIGE1ogmVio6rWFBlU5oZZew9IlDaWCEAUn1xQ6IuihA1DVzQWBBBFXJjPO1L4iQ
-        UimwnlC+ukTA5EF2HBi73m2mRo5xHBcg/rT8RV3YaKxuMhHEk8ktTQndlx0Vk+zq
-        T+1nNKLjfKwIwPVYBaMKN/53mxzIQ==
-In-Reply-To: <88552dfd-377b-c0ac-aaa4-ad7868348758@hajes.org>
-Content-Language: en-GB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1580057007;
+        bh=27Ze3uYB0os81J6LzCnN9h7VJ5kqsBOEoaU4kZS8QkQ=;
+        h=X-UI-Sender-Class:To:References:From:Subject:Date:In-Reply-To;
+        b=Ny6L3a+5iqXpmafocACc3HGckhDU3lJvWs9B89ZIIndIqWHxhXmnyKLSdJ5PMY0Ls
+         ekef+xvKpkUv+jCXSA3m1T0URlTCrMJ065Z90AjPH4RH7/1FsE2setjHnK48XiHBbP
+         0Rizm0h2azWv7sPmDc0SPlNEwhzRmgtNL1dd6mBs=
+In-Reply-To: <199029b9-994b-421a-7a6f-ff27d9944970@plushkava.net>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: Linux Netfilter Users List <netfilter@vger.kernel.org>
 
-On 26/01/2020 14:01, david@hajes.org wrote:
-> is it possible to use =! exception statemenet for multiple ports?
-> 
-> ip saddr xxx.xxx.xxx.xxx tcp dport != { 80, 443 } drop
+On 1/26/20 1:36 PM, kfm wrote:
+> On 26/01/2020 04:18, Lars Nood=C3=A9n wrote:
+>> In nftables, I'd like to apply a rule or set of rules to a very large
+>> number of IP addresses and subne> [snip]
+> It matters. Rather than individual rules, you should definitely use a
+> set if you can.
+> [snip]
 
-Yes.
+Thanks for the details.  That helped and now I have a working filter
+based on a set.  It needed "flags interval;" as you said.  Since I fed
+it the output from a whois search on an AS number, I also had to use
+"auto-merge" to fold overlapping subnets onto each other.
 
--- 
-Kerin Millar
+	set foo4 {
+                type ipv4_addr
+                flags interval
+                auto-merge
+                elements =3D { ..., ..., ... }
+	}
+
+There were a lot of warnings about overlap as the subnets were fed in
+but the result seemed that the minimum had been calculated (I think).
+
+	whois -h whois.radb.net '!gAS.....' \
+	| tr ' ' '\n' \
+	| grep -E '([0-9]{1,3}\.){3}' \
+	| sort -t . -k1,1n -k2,2n -k3,3 -k4,4 \
+	| xargs -I% nft element ip filter foo4 { % }
+
+/Lars
+
