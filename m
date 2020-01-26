@@ -1,54 +1,86 @@
-From: =?UTF-8?Q?Lars_Nood=c3=a9n?= <lars.nooden@gmx.com>
-Subject: Re: Bulk loading of IP addresses or subnets in nftables?
-Date: Sun, 26 Jan 2020 18:43:26 +0200
-Message-ID: <382e1060-194b-3fbf-8fa8-25e8332a92e6@gmx.com>
-References: <8856312f-553c-f751-bd0b-aa230fda6d11@gmx.com>
- <199029b9-994b-421a-7a6f-ff27d9944970@plushkava.net>
+From: Robert Sander <r.sander@heinlein-support.de>
+Subject: Re: nft icmp type all?
+Date: Sun, 26 Jan 2020 18:30:18 +0100
+Message-ID: <a0d11d7f-31d4-9701-a160-06f3e15fd06a@heinlein-support.de>
+References: <a0fa4c0b-d8d8-752b-6926-753720a00796@heinlein-support.de>
+ <ea408bc8-2171-d329-5606-62dbebbe428c@plushkava.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="4JKEYaTdiJBnTnJVQAsHQ73fq152nTzFF"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1580057007;
-        bh=27Ze3uYB0os81J6LzCnN9h7VJ5kqsBOEoaU4kZS8QkQ=;
-        h=X-UI-Sender-Class:To:References:From:Subject:Date:In-Reply-To;
-        b=Ny6L3a+5iqXpmafocACc3HGckhDU3lJvWs9B89ZIIndIqWHxhXmnyKLSdJ5PMY0Ls
-         ekef+xvKpkUv+jCXSA3m1T0URlTCrMJ065Z90AjPH4RH7/1FsE2setjHnK48XiHBbP
-         0Rizm0h2azWv7sPmDc0SPlNEwhzRmgtNL1dd6mBs=
-In-Reply-To: <199029b9-994b-421a-7a6f-ff27d9944970@plushkava.net>
-Content-Language: en-US
+In-Reply-To: <ea408bc8-2171-d329-5606-62dbebbe428c@plushkava.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Linux Netfilter Users List <netfilter@vger.kernel.org>
+To: kfm@plushkava.net, netfilter@vger.kernel.org
 
-On 1/26/20 1:36 PM, kfm wrote:
-> On 26/01/2020 04:18, Lars Nood=C3=A9n wrote:
->> In nftables, I'd like to apply a rule or set of rules to a very large
->> number of IP addresses and subne> [snip]
-> It matters. Rather than individual rules, you should definitely use a
-> set if you can.
-> [snip]
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--4JKEYaTdiJBnTnJVQAsHQ73fq152nTzFF
+Content-Type: multipart/mixed; boundary="SLYyf8pehnZk2rG81L7G5CVdyIqH3HbHi"
 
-Thanks for the details.  That helped and now I have a working filter
-based on a set.  It needed "flags interval;" as you said.  Since I fed
-it the output from a whois search on an AS number, I also had to use
-"auto-merge" to fold overlapping subnets onto each other.
+--SLYyf8pehnZk2rG81L7G5CVdyIqH3HbHi
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
 
-	set foo4 {
-                type ipv4_addr
-                flags interval
-                auto-merge
-                elements =3D { ..., ..., ... }
-	}
+Am 24.01.20 um 22:29 schrieb kfm@plushkava.net:
+> On 24/01/2020 21:16, Robert Sander wrote:
+>> Hi,
+>>
+>> how do I specify a rule to match all ICMP packages?
+>>
+>> nft add rule ip filter input icmp accept
+>>
+>> does not work.
+>=20
+> nft add rule ip filter input meta l4proto icmp accept
+>=20
 
-There were a lot of warnings about overlap as the subnets were fed in
-but the result seemed that the minimum had been calculated (I think).
+So it's basically like
 
-	whois -h whois.radb.net '!gAS.....' \
-	| tr ' ' '\n' \
-	| grep -E '([0-9]{1,3}\.){3}' \
-	| sort -t . -k1,1n -k2,2n -k3,3 -k4,4 \
-	| xargs -I% nft element ip filter foo4 { % }
+iptables -p icmp -m icmp --icmp-type xyz
 
-/Lars
+         ^       ^
+         |       +- icmp type xyz
+         +- meta l4proto icmp
 
+Thanks.
+--=20
+Robert Sander
+Heinlein Support GmbH
+Linux: Akademie - Support - Hosting
+http://www.heinlein-support.de
+
+Tel: 030-405051-43
+Fax: 030-405051-19
+
+Zwangsangaben lt. =C2=A735a GmbHG:
+HRB 93818 B / Amtsgericht Berlin-Charlottenburg,
+Gesch=C3=A4ftsf=C3=BChrer: Peer Heinlein  -- Sitz: Berlin
+
+
+--SLYyf8pehnZk2rG81L7G5CVdyIqH3HbHi--
+
+--4JKEYaTdiJBnTnJVQAsHQ73fq152nTzFF
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEhVXmaPzvl7l1erVE8LuRWCPeWygFAl4tzK8ACgkQ8LuRWCPe
+WyjvcxAAiwbxzk+Ltph3wtPRbVm32Eh1JnZIUzRvta31OMuzB8thvRf0mK2aFQEU
+G7PK+CUO6lTsb35l5+OQ9o1l2PidN6EPLg8B88Gl1ubjIo4Q3Sq4sAC0l/m/A9JC
+n6XduLIpVf0pgN8BpZev6rS4NpXn4bcsWKMVkbsVtq9KOugZ7hQtQtFo02xm/cwA
+c+4p3qLXI5z7djUc0kexkSrFtMZEDhKbL0F1LoPuysqTyUoU44G2LvJ/RcDtA+ET
+jNc/cpRJD9z8YwyXlSyK0AqV8IvPIHCJnpcUYezy+Wo5B4MZKW1kiqQJ3UmcFqzW
+7NbbKcTl0sCHfB3KFQ28Qtu6/fLrG76LaALsV4wGeZqbxhxMpz9scEe8dCvwXj6G
+SAyH/weU6LKK/ITxzAaJVDK7tAiakNy1azEDSdplmf14tbLxOUJPjZGzbMut1yuH
+yWbwm2CFAiFNKXtKGk8aLG2+rxLG5KBpf/NmOuLK/hJsmSfa5jmlUZMWfIeasyl+
+uJUB066Wqr3IYE6snN5fZ6tJuvrcrW1u6EMtxnfDvRcKGo3Yk9pnR1SGb1UVFct3
+xbxbBTFO3s0mJlxkvij1YVwYz+9PpbqAFtEcWCQB4MWcbff1CAcoBMO+cQJqmoGh
+QoQ8v/P5JaafvwdzJEY2AIov6E1TK+fVTQ3Ns1PLMRNIpWbNads=
+=pUkb
+-----END PGP SIGNATURE-----
+
+--4JKEYaTdiJBnTnJVQAsHQ73fq152nTzFF--
