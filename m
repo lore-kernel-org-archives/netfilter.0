@@ -1,50 +1,43 @@
 From: Robert Sander <r.sander@heinlein-support.de>
 Subject: Re: nft icmp type all?
-Date: Sun, 26 Jan 2020 18:30:18 +0100
-Message-ID: <a0d11d7f-31d4-9701-a160-06f3e15fd06a@heinlein-support.de>
+Date: Sun, 26 Jan 2020 18:35:07 +0100
+Message-ID: <01c0f25b-862b-cb00-3b5c-f8ac5852f37c@heinlein-support.de>
 References: <a0fa4c0b-d8d8-752b-6926-753720a00796@heinlein-support.de>
  <ea408bc8-2171-d329-5606-62dbebbe428c@plushkava.net>
+ <7f7b3f05-f0cf-1694-b61e-ab627fa4e176@street-artists.org>
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
  protocol="application/pgp-signature";
- boundary="4JKEYaTdiJBnTnJVQAsHQ73fq152nTzFF"
+ boundary="9dMLcGVRBq4Nit57z46SxcFd1EEJhlsJo"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <ea408bc8-2171-d329-5606-62dbebbe428c@plushkava.net>
+In-Reply-To: <7f7b3f05-f0cf-1694-b61e-ab627fa4e176@street-artists.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: kfm@plushkava.net, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---4JKEYaTdiJBnTnJVQAsHQ73fq152nTzFF
-Content-Type: multipart/mixed; boundary="SLYyf8pehnZk2rG81L7G5CVdyIqH3HbHi"
+--9dMLcGVRBq4Nit57z46SxcFd1EEJhlsJo
+Content-Type: multipart/mixed; boundary="pPRdNfeKOyuOhPZuHkFRMPBZQarRk6ymx"
 
---SLYyf8pehnZk2rG81L7G5CVdyIqH3HbHi
+--pPRdNfeKOyuOhPZuHkFRMPBZQarRk6ymx
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
 Content-Transfer-Encoding: quoted-printable
 
-Am 24.01.20 um 22:29 schrieb kfm@plushkava.net:
-> On 24/01/2020 21:16, Robert Sander wrote:
->> Hi,
->>
->> how do I specify a rule to match all ICMP packages?
->>
->> nft add rule ip filter input icmp accept
->>
->> does not work.
+Am 26.01.20 um 03:24 schrieb Daniel Lakeland:
+
+> I think this also works:
 >=20
-> nft add rule ip filter input meta l4proto icmp accept
->=20
+> nft add rule ip filter input ip protocol icmp accept
 
-So it's basically like
+Ah thanks. I overread the "protocol" keyword on the wiki page.
 
-iptables -p icmp -m icmp --icmp-type xyz
+So you have to add protocol before "icmp" if you do not want to specify
+an icmp type (or tcp/udp port).
 
-         ^       ^
-         |       +- icmp type xyz
-         +- meta l4proto icmp
+Is there any motivation for that?
 
-Thanks.
+Regards
 --=20
 Robert Sander
 Heinlein Support GmbH
@@ -59,28 +52,28 @@ HRB 93818 B / Amtsgericht Berlin-Charlottenburg,
 Gesch=C3=A4ftsf=C3=BChrer: Peer Heinlein  -- Sitz: Berlin
 
 
---SLYyf8pehnZk2rG81L7G5CVdyIqH3HbHi--
+--pPRdNfeKOyuOhPZuHkFRMPBZQarRk6ymx--
 
---4JKEYaTdiJBnTnJVQAsHQ73fq152nTzFF
+--9dMLcGVRBq4Nit57z46SxcFd1EEJhlsJo
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCgAdFiEEhVXmaPzvl7l1erVE8LuRWCPeWygFAl4tzK8ACgkQ8LuRWCPe
-WyjvcxAAiwbxzk+Ltph3wtPRbVm32Eh1JnZIUzRvta31OMuzB8thvRf0mK2aFQEU
-G7PK+CUO6lTsb35l5+OQ9o1l2PidN6EPLg8B88Gl1ubjIo4Q3Sq4sAC0l/m/A9JC
-n6XduLIpVf0pgN8BpZev6rS4NpXn4bcsWKMVkbsVtq9KOugZ7hQtQtFo02xm/cwA
-c+4p3qLXI5z7djUc0kexkSrFtMZEDhKbL0F1LoPuysqTyUoU44G2LvJ/RcDtA+ET
-jNc/cpRJD9z8YwyXlSyK0AqV8IvPIHCJnpcUYezy+Wo5B4MZKW1kiqQJ3UmcFqzW
-7NbbKcTl0sCHfB3KFQ28Qtu6/fLrG76LaALsV4wGeZqbxhxMpz9scEe8dCvwXj6G
-SAyH/weU6LKK/ITxzAaJVDK7tAiakNy1azEDSdplmf14tbLxOUJPjZGzbMut1yuH
-yWbwm2CFAiFNKXtKGk8aLG2+rxLG5KBpf/NmOuLK/hJsmSfa5jmlUZMWfIeasyl+
-uJUB066Wqr3IYE6snN5fZ6tJuvrcrW1u6EMtxnfDvRcKGo3Yk9pnR1SGb1UVFct3
-xbxbBTFO3s0mJlxkvij1YVwYz+9PpbqAFtEcWCQB4MWcbff1CAcoBMO+cQJqmoGh
-QoQ8v/P5JaafvwdzJEY2AIov6E1TK+fVTQ3Ns1PLMRNIpWbNads=
-=pUkb
+iQIzBAEBCgAdFiEEhVXmaPzvl7l1erVE8LuRWCPeWygFAl4tzcsACgkQ8LuRWCPe
+WygbpQ/+PxY5lc4OjQSh3i8y6hgdsb+2ADnqfzodeiUy8O4nsl3Ra6gQ7btwb5il
+gXqSNVMIs+v1Gy1tdDc1pY94NM6aVWIJKh0BvwsMzviUa59XanNJwAfPP4UZ8Pf+
+Nrf6z/8boUrIKDHMttGIpqp7gbUzL0bQEVALwd7fEwkiq1O/M4FSxgBTHq/6H2Pz
+OHOHWza6MistBDQEPiZgpUDY96OZr8i6MiIEtFbgo+0umyEl1JmNlIwTxjKI6ya6
+OXNaiOhFtFVAE+NbwDWpJHVgg7cjvyO/N6AqYj1rg9rwguNfyS5lg3WdcASYfb3W
+ANPar558b3AeeNj5UWBtQ5YXFAV5lPZGloULzXfoyhqK6Lgtmxp2rxz850M626YH
+oRK/UiO4dAWhCYzEXE7Ij8zmp7SvRBd4YH0H/gc58D0yfQHfFAn7wh0Ep39RK+/Z
+joXw2zKCtRYCm5W8j8knyfQYOqxIy+uXu1f41Ly7QHeHEPpx6IGFaZBkRsrBdJsA
+OnjIxtMIm20FxN7+BwzOzeUlB/Q+q4uooo+2nl4nS/SnWZWydEAzpl0Pd7PnR4wH
+pJs64Ukp1rG8/OLxVAhTwWcIToiNomfF8FDyf6G0vZGkyJnV0K/GnZWgCpx8NAvL
+6vCXeGzwiqXB/Baom1MMmrVl5fGLmqaTISSDrvj26wc8s9bkwfI=
+=LJkS
 -----END PGP SIGNATURE-----
 
---4JKEYaTdiJBnTnJVQAsHQ73fq152nTzFF--
+--9dMLcGVRBq4Nit57z46SxcFd1EEJhlsJo--
