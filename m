@@ -1,40 +1,29 @@
-From: Daniel Lakeland <dlakelan@street-artists.org>
-Subject: Re: nft icmp type all?
-Date: Sat, 25 Jan 2020 18:24:30 -0800
-Message-ID: <7f7b3f05-f0cf-1694-b61e-ab627fa4e176@street-artists.org>
-References: <a0fa4c0b-d8d8-752b-6926-753720a00796@heinlein-support.de>
- <ea408bc8-2171-d329-5606-62dbebbe428c@plushkava.net>
+From: =?UTF-8?Q?Lars_Nood=c3=a9n?= <lars.nooden@gmx.com>
+Subject: Bulk loading of IP addresses or subnets in nftables?
+Date: Sun, 26 Jan 2020 06:18:59 +0200
+Message-ID: <8856312f-553c-f751-bd0b-aa230fda6d11@gmx.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=street-artists.org; h=
-        subject:to:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=
-        street-artists.org; bh=TkaYayMZ5sib6PsOs7wpZyP9Qkc=; b=fe2kJlwzn
-        6654A2ko8uvMXwhJh7LfLgon0l8sMWLt2ONliLdQKHtyOpW5gtEEUcCf+3FcluoH
-        Uu/zq4E+uudkvaOeSAtP3FkJTLao43KCz+jTfz3hjX4K2n+PC84VJLkQ63yaiChD
-        19ibvFZeOHEKcvsWq4BaAIgsgTvdJyBrw0=
-In-Reply-To: <ea408bc8-2171-d329-5606-62dbebbe428c@plushkava.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1580012340;
+        bh=KtarYwz99siSyK/QkXKVuhih00OfwPco7X8Ai0x/sDI=;
+        h=X-UI-Sender-Class:To:From:Subject:Date;
+        b=bK5HOCtwlCLP9P2XuYvHOTsPjygzxGwYvSGr4BCQZJP4Kjj/qsYoL9ebuAvGocKJm
+         Y3bq8h1OTxlTmVu1QUSjuH1v9x5Riazay37gkYp73ncSKvTalLWoJACC0kC1hFA+YO
+         styCqqv+3/arLKrSHnD1+UlmQiqS1ntkTxk/aoOE=
 Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: kfm@plushkava.net, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Linux Netfilter Users List <netfilter@vger.kernel.org>
 
-On 1/24/20 1:29 PM, kfm@plushkava.net wrote:
-> On 24/01/2020 21:16, Robert Sander wrote:
->> Hi,
->>
->> how do I specify a rule to match all ICMP packages?
->>
->> nft add rule ip filter input icmp accept
->>
->> does not work.
->
-> nft add rule ip filter input meta l4proto icmp accept
->
-I think this also works:
+In nftables, I'd like to apply a rule or set of rules to a very large
+number of IP addresses and subnets and looking for the recommended best
+practices for that: Should I make a new chain with one address or subnet
+per rule, should I use a dictionary, or should I try using a set, or
+does it matter?  The list would be read at boot but not usually updated
+much between boots.  Which method would operate most efficiently once
+the addresses and subnets are loaded?
 
-nft add rule ip filter input ip protocol icmp accept
-
-
+/Lars
