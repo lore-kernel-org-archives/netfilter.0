@@ -1,37 +1,62 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: nft icmp type all?
-Date: Sun, 26 Jan 2020 19:02:57 +0100
-Message-ID: <20200126180257.GC795@breakpoint.cc>
-References: <a0fa4c0b-d8d8-752b-6926-753720a00796@heinlein-support.de>
- <ea408bc8-2171-d329-5606-62dbebbe428c@plushkava.net>
- <7f7b3f05-f0cf-1694-b61e-ab627fa4e176@street-artists.org>
- <01c0f25b-862b-cb00-3b5c-f8ac5852f37c@heinlein-support.de>
-Mime-Version: 1.0
+From: Thomas Luening <toml@thlu.de>
+Subject: Multiples Chain with same hook - Default-Behavior?
+Date: Tue, 28 Jan 2020 12:35:18 +0100
+Message-ID: <c6174010-de04-5dd7-2d28-58dc3e7aa537@mail>
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <01c0f25b-862b-cb00-3b5c-f8ac5852f37c@heinlein-support.de>
+Content-Language: de-DE
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Robert Sander <r.sander@heinlein-support.de>
-Cc: netfilter@vger.kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Robert Sander <r.sander@heinlein-support.de> wrote:
-> Ah thanks. I overread the "protocol" keyword on the wiki page.
-> 
-> So you have to add protocol before "icmp" if you do not want to specify
-> an icmp type (or tcp/udp port).
-> 
-> Is there any motivation for that?
+Hello
 
-Different things.
+I have a question about the default behavior of nftables, when a certain program (unwanted) creates another chain (INPUT+OUTPUT) 
+with the input/output-hook. See examples below. 'INPUT' is created by the Programm, 'input' are my regular Rules. This is only a 
+test example. My concern is whether there may be a risk to my own rules in the upper chain default acceptance (Test 1).
 
-"ip protocol icmp" is short for
-"ip protocol = icmp".
+Apparently it doesn't matter where I set the Policy=Drop when testing, in the upper (INPUT) or lower (input) ruleset, Drop 
+always works. But if the upper chain says "Policy=Accecpt" (Test 1) and the lower Drop, the Accept doesn't work. Are the rules 
+(and policy) in the lower input chain still respected, even if the policy in the upper one has already "accepted"?
 
-"icmp type x" is short for "icmp type = x".
+Thank you, best Regards
+Tom
 
-So, "icmp type" is short for "icmp type =", i.e., the compare lacks
-right-hand-side.
 
+Test 1:
+-------
+table ip filter {
+     chain INPUT {
+         type filter hook input priority 0; policy accept;
+     }
+     chain OUTPUT {
+         type filter hook output priority 0; policy accept;
+     }
+
+     chain input {
+         type filter hook input priority 0; policy drop;
+     }
+     chain output {
+         type filter hook output priority 0; policy drop;
+     }
+}
+
+Test 2:
+-------
+table ip filter {
+     chain INPUT {
+         type filter hook input priority 0; policy drop;
+     }
+     chain OUTPUT {
+         type filter hook output priority 0; policy drop;
+     }
+
+     chain input {
+         type filter hook input priority 0; policy accept;
+     }
+     chain output {
+         type filter hook output priority 0; policy accept;
+     }
+}
