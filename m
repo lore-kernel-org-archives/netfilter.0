@@ -1,62 +1,30 @@
-From: Thomas Luening <toml@thlu.de>
-Subject: Multiples Chain with same hook - Default-Behavior?
-Date: Tue, 28 Jan 2020 12:35:18 +0100
-Message-ID: <c6174010-de04-5dd7-2d28-58dc3e7aa537@mail>
+From: Frank Myhr <fmyhr@fhmtech.com>
+Subject: nftables atomic updates
+Date: Tue, 28 Jan 2020 18:03:02 -0500
+Message-ID: <76313ba4-fe88-1ef3-8250-682764dfcb08@fhmtech.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: de-DE
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=larkmoor.net; s=larkmoor20140928;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:Message-ID:To:Subject:From; bh=9njSEBzngE3z/94/AgybU+gchFFgP7y8fRHemEvXTU4=;
+        b=RiImWrTQrJGuNhoBhlQR1JHqyUxaZYjQ3R7ilmgb6VWhLz7tYZU9VAm3OyYvH7cUzHRNhmCP9kjOwx+epvE45vcD6qJ/wRuziaxLrXSdgBs7yK9IjezNtvEyCXAn8uSgDz62LsNmAsnVuqEMWfbCdIrkJOGEMvnmx+kgdAsjCv4=;
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello
+Hi,
 
-I have a question about the default behavior of nftables, when a certain program (unwanted) creates another chain (INPUT+OUTPUT) 
-with the input/output-hook. See examples below. 'INPUT' is created by the Programm, 'input' are my regular Rules. This is only a 
-test example. My concern is whether there may be a risk to my own rules in the upper chain default acceptance (Test 1).
+I'm belatedly moving from iptables and ipset to nftables. I've become 
+accustomed to using 'ipset swap' to atomically update large ipsets (by 
+loading the update into a temp ipset, then swapping the temp ipset with 
+the old one, then finally deleting the temp ipset). From reading the 
+fine nftables wiki I gather that all nft operations* included in a 
+single file run with 'nft -f <file>' are first built up in parallel 
+memory structures and then applied atomically. Is this statement correct?
 
-Apparently it doesn't matter where I set the Policy=Drop when testing, in the upper (INPUT) or lower (input) ruleset, Drop 
-always works. But if the upper chain says "Policy=Accecpt" (Test 1) and the lower Drop, the Accept doesn't work. Are the rules 
-(and policy) in the lower input chain still respected, even if the policy in the upper one has already "accepted"?
+* I'm particularly interested in 'add element' operations.
 
-Thank you, best Regards
-Tom
-
-
-Test 1:
--------
-table ip filter {
-     chain INPUT {
-         type filter hook input priority 0; policy accept;
-     }
-     chain OUTPUT {
-         type filter hook output priority 0; policy accept;
-     }
-
-     chain input {
-         type filter hook input priority 0; policy drop;
-     }
-     chain output {
-         type filter hook output priority 0; policy drop;
-     }
-}
-
-Test 2:
--------
-table ip filter {
-     chain INPUT {
-         type filter hook input priority 0; policy drop;
-     }
-     chain OUTPUT {
-         type filter hook output priority 0; policy drop;
-     }
-
-     chain input {
-         type filter hook input priority 0; policy accept;
-     }
-     chain output {
-         type filter hook output priority 0; policy accept;
-     }
-}
+Thanks,
+Frank
