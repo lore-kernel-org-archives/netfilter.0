@@ -1,32 +1,33 @@
-From: Frank Myhr <fmyhr@fhmtech.com>
-Subject: Re: nft -f fails to merge some chains in same table but defined in
- separate blocks
-Date: Sat, 1 Feb 2020 17:17:35 -0500
-Message-ID: <a19e6bcd-8ddf-7f00-1cee-f7a2c6b70ea6@fhmtech.com>
-References: <657e2684-db7d-0721-d23e-8da6d05054d7@fhmtech.com>
+From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+Subject: [nftables v0.9.2] hoplimit mutually exclusive with with saddr/daddr?
+Date: Sun, 2 Feb 2020 17:13:59 +0000
+Message-ID: <af5c5ee0-ae0b-1832-73a2-35c34ed7f844@gmx.net>
+Reply-To: vtol@gmx.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=larkmoor.net; s=larkmoor20140928;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:References:To:From:Subject; bh=RPe/rkQxwHvM+jQM8SllEYwd1VXAvICfoKRFS8vX7Bk=;
-        b=d9tslxmVWJCTBVTkdcqFZEYD89nbEOVK4jxUIOpyzOMY16HimiO0Q/t2x9i88ox+6WlZCJaPwFPBSl0yL+I6DhC11CTUo+kiroBJs7itxvHXnQSpTz8BKrKBb5EDo57jf4I4/nfWI+UqoocksiIAvEaib8y3iIoYtA3cwjW1i38=;
-In-Reply-To: <657e2684-db7d-0721-d23e-8da6d05054d7@fhmtech.com>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1580663640;
+        bh=f/Kg4KdurKVOn9Vy1YXLNZI53TOrGKR9ERJ0DwsBURk=;
+        h=X-UI-Sender-Class:Reply-To:To:From:Subject:Date;
+        b=LGN50aIQc4hpbC/Dfj4BD5QSEKE6CLbGFJOgoar+WbE2hCs4v4FeohKYErGHYG+31
+         H/N+60yiK5l9gzRlzszwIN7KSZ8c8zpX0tYKrBAysJ1A2yKqqcLh0qI2a4Od4UbHFt
+         KdA6uzMZ0VzSJqY5BM0g2cNmZVspbTeWv24/I/Vo=
+Content-Language: en-GB
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-On 2020/01/31 21:57, Frank Myhr wrote:
-> must every chain that contains 
-> set-matching rules be defined in the same _block_ (not just the same 
-> table) as the set being matched?
+Trying to implement in the ip6 filter table / chain input:
 
-I guess this is no big deal if true. I've rearranged my ruleset's 
-component files and now use a bash script to assemble them into a single 
-input file for nft -f. This is a lot more flexible than trying to use 
-multiple include statements in a manually-edited nft file, as I 
-initially tried.
+iif eth2 ip6 hoplimit 1 saddr fc00::/6 udp sport 547 ip6 daddr fc00::/6=20
+udp dport 546 accept;
 
-Thanks,
-Frank
+However, that throws
+
+Error: syntax error, unexpected saddr, expecting newline or semicolon
+
+Is this expected since hoplimit being pertinent to the header whilst=20
+saddr/daddr are not?
+
