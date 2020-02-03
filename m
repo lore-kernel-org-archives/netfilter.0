@@ -1,77 +1,42 @@
-From: =?UTF-8?Q?Pawe=c5=82_Krawczyk?= <pawel.krawczyk@hush.com>
-Subject: Re: Lint for nftables
-Date: Mon, 3 Feb 2020 13:14:31 +0000
-Message-ID: <49eef164ec814a8cd1b3835d366a3f7d@smtp.hushmail.com>
-References: <e94e649a-0d30-6fd1-4144-4bb73564d0ff@satchell.net>
+From: =?utf-8?B?0JjQstCw0L3QvtCyINCg0L7QvNCw0L0=?= <krey@irinium.ru>
+Subject: nftables routing decision
+Date: Mon, 3 Feb 2020 19:37:51 +0000
+Message-ID: <DB8P191MB0633D8075A151338381BB3FABB000@DB8P191MB0633.EURP191.PROD.OUTLOOK.COM>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------F0CCECBC09F6838C78357428"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=hush.com; h=subject:to:from:date; s=hush; bh=rPcPhXawpfec3w6WBGo+RGFmIHImBbN9Ja9+WVvm2SM=; b=H5ylOMWgeFfmYUQknMRb9p61Ep5XZKr0d9qqcFYa/FDJIE8OcxPqskSt51PB9l5piyWNRR49RWikmwDY/mdB7aYKdaXcCYIe9caJn6k6kPzTzVl0q6BviDzfciVQ58v7YLejxKK1N+syZSsKQlpTFWoVMeBWAVVfVHYPF1pN2dHxAqht6T+5UVfx1ctmnfmJ/JJzdHZjoCKRHI1mfqJ+tChORN+EdleX/OCnNv4yvGKv8RwirawcVIOsrCZTNaX92gRIQw9H1VTe+WZSnVKJ/bo2+nuvdhRROdAuQw2FBROVefTZQc8EKAw9b1DATPEzo5dAfyswpjhOxcNz5uSxEA==
-In-Reply-To: <e94e649a-0d30-6fd1-4144-4bb73564d0ff@satchell.net>
 Content-Language: en-US
+Content-ID: <E0907892EBCB88429802E23663D55160@EURP191.PROD.OUTLOOK.COM>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: list@satchell.net, netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-This is a multi-part message in MIME format.
---------------F0CCECBC09F6838C78357428
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-On 02/02/2020 19:23, Stephen Satchell wrote:
-> Is there an equivalent to lint(1) for nftables?=C2=A0 One that, instead=
- of
-> just saying "you blew it", it shows where you blew it and what it was
-> expected.
->
-nft --check --file nftables.conf does a pretty good job already.
-
-Just make sure you have a recent version. What's being distributed in
-Linux distros is usually out-of-date with long-fixed bugs still present.
-
---=20
-Pawe=C5=82 Krawczyk
-+44 7879 180015
-
-
---------------F0CCECBC09F6838C78357428
-Content-Type: application/pgp-keys;
- name="pEpkey.asc"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: attachment;
- filename="pEpkey.asc"
-
------BEGIN PGP PUBLIC KEY BLOCK-----
-
-mQENBFg5z8kBCACs2svy+XIZvNoP54dOXNjq1WABvm7NMy7xWudMxw2tvMVa1Fgh
-shRC61ivjoNH21i12ELqmPeSwJFQefecDyssOR8+W7AIhYsHUdM1VnZsorzGZdyc
-oomwWYusv1BBeGTInMdpLi35oK0gxg2BjAASWodo/aJwnNss4rSklWzsK9pCnDbM
-7dhDuR3hvd0Jf2AhE8OmlZBvBkWEGNXgNzoUslf/mcn/iJIvUjxsI22Qm3nAfaRM
-Ex9WeS9ujEgX2CtM93Y31Aou80Ok5IxgpepuQ29rKjmZxNmYeb39hBn413SGEqnn
-RQeA6BogxhQajOIGqEdLhToLJNS+zy5AvKGZABEBAAG0M1Bhd2XFgiBLcmF3Y3p5
-ayAoYmFja3VwcykgPHBhd2VsLmtyYXdjenlrQGh1c2guY29tPokBNwQTAQoAIQUC
-WDnPyQIbAwULCQgHAgYVCAkKCwIEFgIDAQIeAQIXgAAKCRDWDU3qNHr5qlLTB/41
-LIqh80n0bYO5TML4RZi6FuUlMSzhiIw9llWVyM1GgSjiAkA6KGO1z3nR6/NHOJ1l
-+HtSwr3LsVXsnjwy+krNWgGRTDlxdPATy2T8fpgyALP8PPHArHj9/rKmXdlepTdk
-Om2+5TFnChOCA2TPHa/YhN5b1TQ2iBjmrHXCWcA8DiwIlTCJpu76Pmv3UIRg+wgz
-ussEgf97dkSR6nV+ys7xiHMGc22TLnpts01p1RjM9/8TyhJmABzj3YQNUEDrRPON
-XhZT7+OXn/zKZBLWJGqnroZ28CDrp+eLsXhSYXkkKD9wzkrDAdpkwCg1MvJNdxYU
-QyeNoRmZ4+eLftvMDNSiuQENBFg5z8kBCADN5vApPqbAGPSesDMiaQEZIRf9eNU2
-rRp3zmnQ+sR4Q8mImUftXtMS1/riffOlyBAPNFE7E8PxdXxp4OzcYzbf2IElfHje
-W5ldfrgYebfhkmA/qxNop6Z2ImhkFS0lWc4lfrIhRtt9E0AFeIFX8sxAhRBbBxRE
-UWHSfJODf3uYCT74B5cO0U+e9i2viuXj3qEcgfuwVv110yioJmX00XvrcvSTUgsF
-tPVpAmtqhINZblGBcv6T2/TF+ILLP8vFt2Oi6D6lDctg5M7TLixvMURe0g5CSwO3
-g28yWG7HIsuhgMtdw7UtGKp6FKUG1ws1P01toDfMyJ4V7kZD54zGMukNABEBAAGJ
-AR8EGAEKAAkFAlg5z8kCGwwACgkQ1g1N6jR6+apPuAf/YRbHgtJPDqqtx8wfn0yv
-BOB3GvwerXcrCHMZk6qznKiZ/zWyF6WokCIfBtB8M2uGg/R8NYTXRWqKwnL/txRV
-LNEOw9JyztM8oz6ltHEUW+4t1LYuweiEjxu0K7sY8bB1SRvwJ59mHzY6SZ+sn4Dn
-r+yCNRXamSk1YAJ3A5NMzR35c1aKwxK9/XRrP5qQWdBiTkEOCU4M8Aqvpj4V+kgQ
-cxJOmkzvEK5kEF7+xNZti2gNewxzto4DmcWXbZed2DSjw5VcDoH1DKsGYMRs8Sa9
-lRLPQFDZZe/Fjxt/ecFvt/0QJQmw9EZQxGtzZAyoyT05EPBYr4VnTBmTYU3IvBPX
-nQ=3D=3D
-=3Dpz1+
------END PGP PUBLIC KEY BLOCK-----
-
---------------F0CCECBC09F6838C78357428--
-
+SG93IG5mdGFibGVzIG1ha2Ugcm91dGVyIGRlY2lzaW9uIGFib3V0IHBhY2tldCBkaXJlY3RlZCB0
+byBpbnB1dCBvciANCmZvcndhcmQgY2hhaW5zPw0KUGxlYXNlIHNlZSBteSBleGFtcGxlDQpXZSBo
+YXZlIHJvdXRlciB3aXRoIG5mdGFibGVzLCBwcml2YXRlIGhvc3QgYW5kIHB1YmxpYyBob3N0IHRo
+YXQgcmVkaXJlY3QgDQp0cmFmZmljIHRvIHByaXZhdGUgaG9zdCB0aHJvdWdoIHR1bm5lbA0KDQpQ
+cml2YXRlIGhvc3TCoMKgIMKgwqDCoCDCoMKgwqAgwqBSb3V0ZXLCoMKgIMKgwqDCoCDCoMKgwqAg
+wqDCoMKgIMKgUHVibGljIGhvc3QNCltMQU4gMTkyLjE2OC40MC4xMl0gKDUpPT7CoMKgIMKgW1dB
+TiA5NS4wLjAuMV3CoMKgIMKgKDEpPT4gwqBbV0FOIDk2LjAuMC4xXcKgwqAgDQogwqDCoMKgIMKg
+KDIpPSENCnw8PSg0KcKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqBbVHVubmVsIDE5Mi4xNjgu
+NDAuMV3CoMKgIMKgPD0oMykgwqBbVHVubmVsIA0KMTkyLjE2OC40MC4yXcKgwqAgwqDCoCA8PSEN
+Cg0KSWYgaSB0cnkgdG8gY29ubmVjdCBmcm9tIHByaXZhdGUgbmV0d29yayB0byBwdWJsaWMgaG9z
+dCBjb25uZWN0aW9uIGZhaWxzDQpPbiBzdGVwICg1KSB3aGVuIHByaXZhdGUgaG9zdCBzZW5kIGFu
+c3dlcnMgYmFjayB0byA5NS4wLjAuMSwgbmZ0YWJsZXMgb24gDQpyb3V0ZXIgcHV0IHBhY2tldHMg
+aW4gaW5wdXQgY2hhaW4gYnV0IG5vdCBmb3J3YXJkaW5nIGNoYWluLg0KVGhpcyBiZWhhdmlvdXIg
+YXBlYXJzIHJlZ2FyZGxlc3MgYW55IHBhY2tldCBtYXJrcy4NCkhvdyBpIGNhbiBjaGFuZ2UgdGhp
+cyBiZWhhdmlvcj8gTWF5IGJlIHNvbWUgb3B0aW9ucyBvbiByYXcsIG1hbmdsZSBvciANCm90aGVy
+IGNoYWlucyB0aGF0IG92ZXJyaWRlcyByb3V0aW5nIGRlY2lzaW9uIGFuZCBwdXQgcGFja2V0IGRp
+cmVjdGx5IGluIA0KZm9yd2FyZCBjaGFpbj8NCg0KQnkgc3RlcHM6DQowLiBGcm9tIG90aGVyIGhv
+c3QgaW4gbGFuIHF1ZXJ5IDk2LjAuMC4xLCBodHRwIGdldCBmb3IgZXhhbXBsZQ0KMS4gUm91dGVy
+IG1ha2UgbWFzcSBvciBzbmF0LiBTcmMgaXAgOTUuMC4wLjEsIERzdCBpcCA5Ni4wLjAuMQ0KMi4g
+UHVibGljIGhvc3QgbWFrZXMgZG5hdCwgU3JjIGlwIDk1LjAuMC4xLCBEc3QgaXAgMTkyLjE2OC40
+MC4xMi4NCjMuIFBhY2tldCBzZW50IHZpYSB0dW5uZWwuDQo0LiBSb3V0ZXIgZm9yd2FyZCBwYWNr
+ZXQgdG8gMTkyLjE2OC40MC4xMiANCihuZXQuaXB2NC5jb25mLnRubC5hY2NlcHRfbG9jYWwgbXVz
+dCBiZSAxKS4gU3JjIGlwIDk1LjAuMC4xLCBEc3QgaXAgDQoxOTIuMTY4LjQwLjEyLg0KNS4gUHJp
+dmF0ZSBob3N0IHJlY2VpdmUgcGFja2V0IGFuZCBzZW5kIHJlc3BvbnNlLiBTcmMgMTkyLjE2OC40
+MC4xMiwgRHN0IA0KaXAgOTUuMC4wLjENCjYuIE5mdGFibGVzIG9uIHJvdXRlciByZWNlaXZlIHBh
+Y2tldCB3aXRoIERzdCBpcCA5NS4wLjAuMSBhbmQgcHV0IGl0IG9uIA0KaW5wdXQgY2hhaW4uIElu
+aXRpYWwgaG9zdCBvbiBzdGVwIDAgbmV2ZXIgZ2V0IHJlc3BvbnNlLg0KDQpCZXN0IFJlZ2FyZHMN
+CktyZXkNCg0KDQo=
