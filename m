@@ -1,24 +1,38 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: Lint for nftables
-Date: Mon, 3 Feb 2020 01:27:23 +0100
-Message-ID: <20200203002723.GP795@breakpoint.cc>
-References: <e94e649a-0d30-6fd1-4144-4bb73564d0ff@satchell.net>
+From: Miriam Rico <miriam.rico@enigmedia.es>
+Subject: Is it possible to differentiate a nmap port scan from a syn flood attack?
+Date: Mon, 3 Feb 2020 09:51:09 +0100
+Message-ID: <CAAKiOS-Roh1_qnv-_C-GVSbv-oBSr-GWdPDnoars=jbSdiTMnA@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <e94e649a-0d30-6fd1-4144-4bb73564d0ff@satchell.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=enigmedia-es.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=bvnm7Qo8Fjj7sMOqKgLeiu8hbFvGMCxGeaxZOhe9GIg=;
+        b=UnA0wtEF1xErmqtvuEqHXYp2Ra2MuzuzfVRE1QvZdr+34NUvQltnWnJIrbMZIASjxC
+         jXzx0Emk4WvqqtYYtBLq2CprcMKQo/CAcFZ3qUffFaDLBjdDkdDvFG5YbftglY8evzmt
+         4FmJEf/lemX3RaMCTbLw2uSIBADaSBMo43mfpxAI2QmKoauMrAFFueh1MjUstVApqI2Z
+         MwMgyCm9dBq5cXi//21y0pGKpF8wQshblJ78hunRVvxfhxqkGyfUntR1FIihYm9o5D1t
+         li8M6JE+5Wy800/pDk5cQcjn5P//vuSp6CIFCKWZ99k47RLJsDPSAWe1wz1oERJ0dCsD
+         SKiA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Stephen Satchell <list@satchell.net>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Stephen Satchell <list@satchell.net> wrote:
-> Is there an equivalent to lint(1) for nftables?  One that, instead of just
-> saying "you blew it", it shows where you blew it and what it was expected.
+Hi,
 
-No.  nft is already supposed to tell you where the problem is.
+I am trying to log the different attempts of attacks such as a tcp
+port scan, a udp port scan, a syn flood attack, ... arriving at a
+computer.
 
-Please provide an example error and we can try to improve the error
-reporting.
+I would like to classify attacks received in sections such as warning
+and critical. Warning would be port scans and critical syn flood
+attacks. However, I don't get the necessary rules to be able to
+differentiate a syn flood attack of a tcp port scan.
+
+Is it possible to differentiate a nmap tcp port scan from a syn flood attack?
+
+I am using Ubuntu 18.04 with Kernel 4.18.
+
+Thanks in advance,
