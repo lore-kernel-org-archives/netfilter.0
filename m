@@ -1,38 +1,78 @@
-From: Miriam Rico <miriam.rico@enigmedia.es>
-Subject: Is it possible to differentiate a nmap port scan from a syn flood attack?
-Date: Mon, 3 Feb 2020 09:51:09 +0100
-Message-ID: <CAAKiOS-Roh1_qnv-_C-GVSbv-oBSr-GWdPDnoars=jbSdiTMnA@mail.gmail.com>
+From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+Subject: [nftables v0.9.2 | kernel 4.19.93] ICMPv6 ingress dropped despite
+ accept rule
+Date: Mon, 3 Feb 2020 10:56:24 +0000
+Message-ID: <f8914acf-6487-c9bd-e452-d253069aebe5@gmx.net>
+Reply-To: vtol@gmx.net
 Mime-Version: 1.0
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=enigmedia-es.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=bvnm7Qo8Fjj7sMOqKgLeiu8hbFvGMCxGeaxZOhe9GIg=;
-        b=UnA0wtEF1xErmqtvuEqHXYp2Ra2MuzuzfVRE1QvZdr+34NUvQltnWnJIrbMZIASjxC
-         jXzx0Emk4WvqqtYYtBLq2CprcMKQo/CAcFZ3qUffFaDLBjdDkdDvFG5YbftglY8evzmt
-         4FmJEf/lemX3RaMCTbLw2uSIBADaSBMo43mfpxAI2QmKoauMrAFFueh1MjUstVApqI2Z
-         MwMgyCm9dBq5cXi//21y0pGKpF8wQshblJ78hunRVvxfhxqkGyfUntR1FIihYm9o5D1t
-         li8M6JE+5Wy800/pDk5cQcjn5P//vuSp6CIFCKWZ99k47RLJsDPSAWe1wz1oERJ0dCsD
-         SKiA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1580727536;
+        bh=tou4Nvc7lqJwn4tOq99BBuHdSpzs8W+3GHHNbLfQPrM=;
+        h=X-UI-Sender-Class:Reply-To:From:Subject:To:Date;
+        b=dwhn8bvOYBdus08x50Y5diF2JndVA8mE5OV2FG+tbwFbl/i6rYHV2lHIiGejUOUjz
+         gn5zvIHOlZbe/Y4Uorjp0bLso6gCdqwchfpG4xcDAw4HJ5hCdunAbFYyoEjsCzYT8u
+         t0abbNBsrQemLL4dw/w7UEBCLu/HlCdtWMGEBvvA=
+Content-Language: en-GB
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi,
-
-I am trying to log the different attempts of attacks such as a tcp
-port scan, a udp port scan, a syn flood attack, ... arriving at a
-computer.
-
-I would like to classify attacks received in sections such as warning
-and critical. Warning would be port scans and critical syn flood
-attacks. However, I don't get the necessary rules to be able to
-differentiate a syn flood attack of a tcp port scan.
-
-Is it possible to differentiate a nmap tcp port scan from a syn flood attack?
-
-I am using Ubuntu 18.04 with Kernel 4.18.
-
-Thanks in advance,
+QXBwcmVjaWF0ZSBpZiBzb21lb25lIGNvdWxkIGJlIG9ibGlnZWQgYW5kIGhhdmUgYSBsb29r
+IGF0IHRoZSBiZWxvdyANCnJ1bGVzZXQgYW5kIGxldCBtZSBrbm93IHdoZXJlIEkgYW0gZ29p
+bmcgd3Jvbmcgc2luY2UgSUNNUHY2IGlzIGJlaW5nIA0KKHBvbGljeSkgZHJvcHBlZDoNCg0K
+RFJPUF9XQU5fSU4gSU49cHBwb2Utd2FuIE9VVD0gTUFDPSANClNSQz1mZTgwOjAwMDA6MDAw
+MDowMDAwOmUyYWM6ZjFmZjpmZTY1OjUxYmEgDQpEU1Q9ZmYwMjowMDAwOjAwMDA6MDAwMDow
+MDAwOjAwMDA6MDAwMDowMDAxIExFTj03MiBUQz0yMjQgSE9QTElNSVQ9MjU1IA0KRkxPV0xC
+TD0wIFBST1RPPUlDTVB2NiBUWVBFPTEzNCBDT0RFPTANCg0KZGVzcGl0ZSBhbiBhY2NlcHQg
+c3RhdGVtZW50DQoNCi0tLSBydWxlc2V0DQoNCnRhYmxlIGFycCBmaWx0ZXIgeyAjIGhhbmRs
+ZSAxNDENCiDCoMKgwqDCoMKgwqDCoCBjaGFpbiBpbnB1dCB7ICMgaGFuZGxlIDENCiDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdHlwZSBmaWx0ZXIgaG9vayBpbnB1dCBwcmlv
+cml0eSBmaWx0ZXI7IHBvbGljeSBhY2NlcHQ7DQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIGlpZiAiZXRoMiIgZHJvcCAjIGhhbmRsZSAzDQogwqDCoMKgwqDCoMKgwqAgfQ0K
+DQogwqDCoMKgwqDCoMKgwqAgY2hhaW4gb3V0cHV0IHsgIyBoYW5kbGUgMg0KIMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB0eXBlIGZpbHRlciBob29rIG91dHB1dCBwcmlvcml0
+eSBmaWx0ZXI7IHBvbGljeSBhY2NlcHQ7DQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgIG9pZiAiZXRoMiIgZHJvcCAjIGhhbmRsZSA0DQogwqDCoMKgwqDCoMKgwqAgfQ0KfQ0K
+dGFibGUgaW5ldCBmaWx0ZXIgeyAjIGhhbmRsZSAxNDINCiDCoMKgwqDCoMKgwqDCoCBjaGFp
+biBpbnB1dCB7ICMgaGFuZGxlIDENCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+dHlwZSBmaWx0ZXIgaG9vayBpbnB1dCBwcmlvcml0eSBmaWx0ZXI7IHBvbGljeSBkcm9wOw0K
+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjdCBzdGF0ZSBlc3RhYmxpc2hlZCxy
+ZWxhdGVkIGFjY2VwdCAjIGhhbmRsZSA0DQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgIGN0IHN0YXRlIGludmFsaWQgZHJvcCAjIGhhbmRsZSA1DQogwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgIGlpZiAibG8iIGFjY2VwdCAjIGhhbmRsZSA2DQogwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlpZiAiYnItbGFuIiBhY2NlcHQgIyBoYW5kbGUgNw0K
+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpaWYgImxhbjAiIGFjY2VwdCAjIGhh
+bmRsZSA4DQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlpZiAibGFuMSIgYWNj
+ZXB0ICMgaGFuZGxlIDkNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWlmICJs
+YW4yIiBhY2NlcHQgIyBoYW5kbGUgMTANCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgaWlmICJsYW4zIiBhY2NlcHQgIyBoYW5kbGUgMTENCiDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgaWlmICJsYW40IiBhY2NlcHQgIyBoYW5kbGUgMTINCiDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAgbG9nIHByZWZpeCAiRFJPUF9XQU5fSU4gIiAjIGhhbmRs
+ZSAxMw0KIMKgwqDCoMKgwqDCoMKgIH0NCn0NCnRhYmxlIGlwNiBmaWx0ZXIgeyAjIGhhbmRs
+ZSAxNDUNCiDCoMKgwqDCoMKgwqDCoCBjaGFpbiBpbnB1dCB7ICMgaGFuZGxlIDENCiDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWlmICJldGgyIiBpcDYgc2FkZHIgZmMwMDo6
+LzYgdWRwIHNwb3J0IDU0NyB1ZHAgZHBvcnQgDQo1NDYgaXA2IGRhZGRyIGZjMDA6Oi82IGFj
+Y2VwdCAjIGhhbmRsZSAzDQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGljbXB2
+NiB0eXBlIGRlc3RpbmF0aW9uLXVucmVhY2hhYmxlIG1ldGEgbmZ0cmFjZSBzZXQgMSANCmFj
+Y2VwdCAjIGhhbmRsZSA0DQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGljbXB2
+NiB0eXBlIHBhY2tldC10b28tYmlnIG1ldGEgbmZ0cmFjZSBzZXQgMSBhY2NlcHQgIyANCmhh
+bmRsZSA1DQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGljbXB2NiB0eXBlIHRp
+bWUtZXhjZWVkZWQgbWV0YSBuZnRyYWNlIHNldCAxIGFjY2VwdCAjIA0KaGFuZGxlIDYNCiDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWNtcHY2IHR5cGUgcGFyYW1ldGVyLXBy
+b2JsZW0gbWV0YSBuZnRyYWNlIHNldCAxIGFjY2VwdCANCiMgaGFuZGxlIDcNCiDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWNtcHY2IHR5cGUgZWNoby1yZXBseSBtZXRhIG5m
+dHJhY2Ugc2V0IDEgYWNjZXB0ICMgaGFuZGxlIDgNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgaWNtcHY2IHR5cGUgbmQtcm91dGVyLWFkdmVydCBtZXRhIG5mdHJhY2Ugc2V0
+IDEgYWNjZXB0IA0KIyBoYW5kbGUgOQ0KIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCBpY21wdjYgdHlwZSBuZC1uZWlnaGJvci1hZHZlcnQgbWV0YSBuZnRyYWNlIHNldCAxIA0K
+YWNjZXB0ICMgaGFuZGxlIDEwDQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlj
+bXB2NiB0eXBlIG5kLXJlZGlyZWN0IG1ldGEgbmZ0cmFjZSBzZXQgMSBhY2NlcHQgIyANCmhh
+bmRsZSAxMQ0KIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpY21wdjYgdHlwZSAx
+NDkgbWV0YSBuZnRyYWNlIHNldCAxIGFjY2VwdCAjIGhhbmRsZSAxMg0KIMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoCBpY21wdjYgdHlwZSAxNTEgbWV0YSBuZnRyYWNlIHNldCAx
+IGFjY2VwdCAjIGhhbmRsZSAxMw0KIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBp
+Y21wdjYgdHlwZSAxNTMgbWV0YSBuZnRyYWNlIHNldCAxIGFjY2VwdCAjIGhhbmRsZSAxNA0K
+IMKgwqDCoMKgwqDCoMKgIH0NCn0NCg0K
