@@ -1,75 +1,113 @@
-From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+From: "" <kfm@plushkava.net>
 Subject: Re: [nftables v0.9.2 | kernel 4.19.93] ICMPv6 ingress dropped despite
  accept rule
-Date: Mon, 3 Feb 2020 11:20:37 +0000
-Message-ID: <900da355-fb50-2359-7cd9-50b9fe9fc1fc@gmx.net>
+Date: Mon, 3 Feb 2020 11:55:50 +0000
+Message-ID: <a4085c80-4896-54b9-8373-3e51b8c0bce9@plushkava.net>
 References: <f8914acf-6487-c9bd-e452-d253069aebe5@gmx.net>
  <df96258c-8bcb-4db4-6910-d96ef1caf990@plushkava.net>
  <77d49c07-70dd-7108-ea77-ee3f943ca765@plushkava.net>
-Reply-To: vtol@gmx.net
+ <900da355-fb50-2359-7cd9-50b9fe9fc1fc@gmx.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1580728836;
-        bh=Lyrd1naDml6em65Ryd2LcOii0QneFHd4xxJlkFjNuWI=;
-        h=X-UI-Sender-Class:Reply-To:Subject:To:References:From:Date:
-         In-Reply-To;
-        b=WiVu2ETn3wgpwVjmMNZCnXPQbqYm5yntEGea6MhJ45qseGpmf7eXukLA7N71hPHKc
-         P8RCZOd4RXZOrz0swLSYyVRtGmpZev45/px/HD8slWg2V4UyaoKP1p2cX1j8WvnvV8
-         wphqwerKQFHBmzHO7AF3uLI76J6tEfg40hJN+Ytc=
-In-Reply-To: <77d49c07-70dd-7108-ea77-ee3f943ca765@plushkava.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+         h=subject:to:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=W
+        FxHmwgmZHTrRxhGsICiE/hvAXBiMCQB2oDkFmai3Tk=; b=jWKZL2X3Ry+kWfH+f
+        LEE2R+LiO57ytker+UnuNz16RUdm4xqg1ErkEMzFBzRPY8piGmeUCBjY2eF3NcS2
+        7NRyxaWhAs+ynIJ4VyZtWRHU0hpsgOH9POG4WStoOL8BNqycmMsu1PPpZX40Ewr8
+        7BfVHfpFP4C4IqZhn45+/RjyBPNP0vKnsU+2NkZDdlVUiqCv86Ihuuy9Hla4m/Ve
+        91fdo7/Au8YVUMVuF0HeSxzWZOIRLDQiWz73+O7tDeAM4uIG6dLjP/MCK0xwK3uO
+        lE/v3hPDls4fzojaeKw5BwMpkzSzMUojVh/2q+FbroOvfYJ7jJCWBjlSBrIAHPx5
+        CEU3Q==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=WFxHmwgmZHTrRxhGsICiE/hvAXBiMCQB2oDkFmai3
+        Tk=; b=SSPaTQBkID5wHBhAKn7/pMEP2hgUEeSQIOn6K5HG4IX13K8guMEdghEQ7
+        sN4HuSnlQO6TNz8XB2yraPHYGA6wyroYJc18A/dVgGVQca3+XsiUZlkHI0QLeNjC
+        IJUuRC1DnJtHJSMAHOhzY/FKysjuAbfSobcjWwgE2vcSVnf5r728UVfZQGDO5fte
+        l/isZdc0Ojxc7HHMbaCtuu+GdZpaJ5JM4cRvFbR8GPhYIYvL5XySdNU8OQAgsT3h
+        A2/AeUH0GCyovj2YUzY5mzLi4yd5UjAt7oRNPms5T0vEdTBZBSppBjqghTmZRjOs
+        8KNurX4FHvJ/njdu3EiNhhatgk5jg==
+In-Reply-To: <900da355-fb50-2359-7cd9-50b9fe9fc1fc@gmx.net>
 Content-Language: en-GB
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: kfm@plushkava.net, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-T24gMDMvMDIvMjAyMCAxMToxNSwga2ZtQHBsdXNoa2F2YS5uZXQgd3JvdGU6DQo+IE9uIDAz
-LzAyLzIwMjAgMTE6MTIsIEtlcmluIE1pbGxhciB3cm90ZToNCj4+IE9uIDAzLzAyLzIwMjAg
-MTA6NTYsING90onhtqzhuLPihKAgd3JvdGU6DQo+Pj4gQXBwcmVjaWF0ZSBpZiBzb21lb25l
-IGNvdWxkIGJlIG9ibGlnZWQgYW5kIGhhdmUgYSBsb29rIGF0IHRoZSBiZWxvdyANCj4+PiBy
-dWxlc2V0IGFuZCBsZXQgbWUga25vdyB3aGVyZSBJIGFtIGdvaW5nIHdyb25nIHNpbmNlIElD
-TVB2NiBpcyBiZWluZyANCj4+PiAocG9saWN5KSBkcm9wcGVkOg0KPj4+DQo+Pj4gRFJPUF9X
-QU5fSU4gSU49cHBwb2Utd2FuIE9VVD0gTUFDPSANCj4+PiBTUkM9ZmU4MDowMDAwOjAwMDA6
-MDAwMDplMmFjOmYxZmY6ZmU2NTo1MWJhIA0KPj4+IERTVD1mZjAyOjAwMDA6MDAwMDowMDAw
-OjAwMDA6MDAwMDowMDAwOjAwMDEgTEVOPTcyIFRDPTIyNCANCj4+PiBIT1BMSU1JVD0yNTUg
-RkxPV0xCTD0wIFBST1RPPUlDTVB2NiBUWVBFPTEzNCBDT0RFPTANCj4+Pg0KPj4+IGRlc3Bp
-dGUgYW4gYWNjZXB0IHN0YXRlbWVudA0KPj4+DQo+Pj4gLS0tIHJ1bGVzZXQNCj4+Pg0KPj4+
-IHRhYmxlIGFycCBmaWx0ZXIgeyAjIGhhbmRsZSAxNDENCj4+PiDCoMKgwqDCoMKgwqDCoMKg
-IGNoYWluIGlucHV0IHsgIyBoYW5kbGUgMQ0KPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIHR5cGUgZmlsdGVyIGhvb2sgaW5wdXQgcHJpb3JpdHkgZmlsdGVyOyBwb2xp
-Y3kgYWNjZXB0Ow0KPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlpZiAi
-ZXRoMiIgZHJvcCAjIGhhbmRsZSAzDQo+Pj4gwqDCoMKgwqDCoMKgwqDCoCB9DQo+Pj4NCj4+
-PiDCoMKgwqDCoMKgwqDCoMKgIGNoYWluIG91dHB1dCB7ICMgaGFuZGxlIDINCj4+PiDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB0eXBlIGZpbHRlciBob29rIG91dHB1dCBw
-cmlvcml0eSBmaWx0ZXI7IHBvbGljeSANCj4+PiBhY2NlcHQ7DQo+Pj4gwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgb2lmICJldGgyIiBkcm9wICMgaGFuZGxlIDQNCj4+PiDC
-oMKgwqDCoMKgwqDCoMKgIH0NCj4+PiB9DQo+Pj4gdGFibGUgaW5ldCBmaWx0ZXIgeyAjIGhh
-bmRsZSAxNDINCj4+PiDCoMKgwqDCoMKgwqDCoMKgIGNoYWluIGlucHV0IHsgIyBoYW5kbGUg
-MQ0KPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHR5cGUgZmlsdGVyIGhv
-b2sgaW5wdXQgcHJpb3JpdHkgZmlsdGVyOyBwb2xpY3kgZHJvcDsNCj4+PiDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjdCBzdGF0ZSBlc3RhYmxpc2hlZCxyZWxhdGVkIGFj
-Y2VwdCAjIGhhbmRsZSA0DQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-Y3Qgc3RhdGUgaW52YWxpZCBkcm9wICMgaGFuZGxlIDUNCj4+PiDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoCBpaWYgImxvIiBhY2NlcHQgIyBoYW5kbGUgNg0KPj4+IMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlpZiAiYnItbGFuIiBhY2NlcHQgIyBoYW5k
-bGUgNw0KPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlpZiAibGFuMCIg
-YWNjZXB0ICMgaGFuZGxlIDgNCj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCBpaWYgImxhbjEiIGFjY2VwdCAjIGhhbmRsZSA5DQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgaWlmICJsYW4yIiBhY2NlcHQgIyBoYW5kbGUgMTANCj4+PiDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpaWYgImxhbjMiIGFjY2VwdCAjIGhhbmRs
-ZSAxMQ0KPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlpZiAibGFuNCIg
-YWNjZXB0ICMgaGFuZGxlIDEyDQo+Pj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgbG9nIHByZWZpeCAiRFJPUF9XQU5fSU4gIiAjIGhhbmRsZSAxMw0KPj4+IMKgwqDCoMKg
-wqDCoMKgwqAgfQ0KPj4+IH0NCj4+PiB0YWJsZSBpcDYgZmlsdGVyIHsgIyBoYW5kbGUgMTQ1
-DQo+Pj4gwqDCoMKgwqDCoMKgwqDCoCBjaGFpbiBpbnB1dCB7ICMgaGFuZGxlIDENCj4+DQo+
-PiBUaGlzIHBhcnRpY3VsYXIgY2hhaW4gaXMgbm90IGhvb2tlZC4NCj4+DQo+DQo+IFJlLXBv
-c3RpbmcgdGhlIGFib3ZlIGFzIEkgYWNjaWRlbnRhbGx5IHJlcGxpZWQgb2ZmLWxpc3QuDQo+
-DQpCdXQgaXQgaXMgdGhyb3VnaA0KDQp0YWJsZSBpbmV0IGZpbHRlciB7ICMgaGFuZGxlIDE0
-Mg0KIMKgwqDCoMKgwqDCoMKgwqAgY2hhaW4gaW5wdXQgeyAjIGhhbmRsZSAxDQogwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdHlwZSBmaWx0ZXIgaG9vayBpbnB1dCBwcmlv
-cml0eSBmaWx0ZXI7IHBvbGljeSBkcm9wOw0KDQpvciBpcyBpdCBub3Q/IGluZXQgYXBwbGll
-cyB0byBib3RoIGZhbWlsaWVzIElQdjQgYW5kIElQdjYsIGxlYXN0IHRoYXQgaXMgDQpteSB1
-bmRlcnN0YW5kaW5nLiBPciBkbyB0aGUgY2hhaW5zIGhhdmUgdG8gYmUgZGVmaW5lZCBhZ2Fp
-biBmb3IgaXAgYW5kIGlwNj8NCg==
+On 03/02/2020 11:20, ѽ҉ᶬḳ℠ wrote:
+> On 03/02/2020 11:15, kfm@plushkava.net wrote:
+>> On 03/02/2020 11:12, Kerin Millar wrote:
+>>> On 03/02/2020 10:56, ѽ҉ᶬḳ℠ wrote:
+>>>> Appreciate if someone could be obliged and have a look at the below 
+>>>> ruleset and let me know where I am going wrong since ICMPv6 is being 
+>>>> (policy) dropped:
+>>>>
+>>>> DROP_WAN_IN IN=pppoe-wan OUT= MAC= 
+>>>> SRC=fe80:0000:0000:0000:e2ac:f1ff:fe65:51ba 
+>>>> DST=ff02:0000:0000:0000:0000:0000:0000:0001 LEN=72 TC=224 
+>>>> HOPLIMIT=255 FLOWLBL=0 PROTO=ICMPv6 TYPE=134 CODE=0
+>>>>
+>>>> despite an accept statement
+>>>>
+>>>> --- ruleset
+>>>>
+>>>> table arp filter { # handle 141
+>>>>          chain input { # handle 1
+>>>>                  type filter hook input priority filter; policy accept;
+>>>>                  iif "eth2" drop # handle 3
+>>>>          }
+>>>>
+>>>>          chain output { # handle 2
+>>>>                  type filter hook output priority filter; policy 
+>>>> accept;
+>>>>                  oif "eth2" drop # handle 4
+>>>>          }
+>>>> }
+>>>> table inet filter { # handle 142
+>>>>          chain input { # handle 1
+>>>>                  type filter hook input priority filter; policy drop;
+>>>>                  ct state established,related accept # handle 4
+>>>>                  ct state invalid drop # handle 5
+>>>>                  iif "lo" accept # handle 6
+>>>>                  iif "br-lan" accept # handle 7
+>>>>                  iif "lan0" accept # handle 8
+>>>>                  iif "lan1" accept # handle 9
+>>>>                  iif "lan2" accept # handle 10
+>>>>                  iif "lan3" accept # handle 11
+>>>>                  iif "lan4" accept # handle 12
+>>>>                  log prefix "DROP_WAN_IN " # handle 13
+>>>>          }
+>>>> }
+>>>> table ip6 filter { # handle 145
+>>>>          chain input { # handle 1
+>>>
+>>> This particular chain is not hooked.
+>>>
+>>
+>> Re-posting the above as I accidentally replied off-list.
+>>
+> But it is through
+> 
+> table inet filter { # handle 142
+>           chain input { # handle 1
+>                   type filter hook input priority filter; policy drop;
+
+This is not the chain in question. For a chain to be utilised, it must 
+either be hooked or be referenced - whether directly or indirectly - by 
+a rule within a chain that is hooked. Your "ip6 filter input" chain 
+currently does not fulfil either of these requirements.
+
+> 
+> or is it not? inet applies to both families IPv4 and IPv6, least that is 
+> my understanding. Or do the chains have to be defined again for ip and ip6?
+
+Yes, the inet table covers both families. As such, you have the option 
+of relocating your icmpv6-filtering rules from the ip6 to the inet 
+table. Doing so would not obviate the aformentioned requirements, though.
+
+-- 
+Kerin Millar
