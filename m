@@ -1,42 +1,39 @@
-From: =?utf-8?B?0JjQstCw0L3QvtCyINCg0L7QvNCw0L0=?= <krey@irinium.ru>
-Subject: nftables routing decision
-Date: Mon, 3 Feb 2020 19:37:51 +0000
-Message-ID: <DB8P191MB0633D8075A151338381BB3FABB000@DB8P191MB0633.EURP191.PROD.OUTLOOK.COM>
+From: Jaga Doe <jaga.doe@aol.com>
+Subject: nftables simple configuration
+Date: Mon, 3 Feb 2020 21:09:43 +0000 (UTC)
+Message-ID: <1991613112.828781.1580764183006@mail.yahoo.com>
+References: <1991613112.828781.1580764183006.ref@mail.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
-Content-ID: <E0907892EBCB88429802E23663D55160@EURP191.PROD.OUTLOOK.COM>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1580764187; bh=YKJV0wjExP5tqPwgN5roNWT2Ob7RXAukjf+z4OfShA8=; h=Date:From:To:Subject:References:From:Subject; b=DcJm75t3I2WikjFSgmk8sMWuRvMZE3JsKbzx6aD7wwsWC0aB3UUzaauLHGDGqdnemhoGPUV+XaoT7isTqsei1xm5kzd5GwB0mmG5bLen4AFzhOp6FGurE+0ftPIHyiDn8MvuxCRdYcgyw1RZEi1aljPiBDmtu+QGunjB8h+kfLDdYNlysX3xWObdNRjoBQ2DHLY4Kurz8OvsZ/x8B/eqAjiv8wa+x8ykFX1cxkcv3BX1Sd3EaEh2puvdHAIFbCnw1tUxTTzxLVIYc8s67CCMVmkmRCAdTq+hjiW0ln28Sdm2aqntsex3SMGxePbcPZzAAFw5efbZ2JYZDRYxuvVMKA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-SG93IG5mdGFibGVzIG1ha2Ugcm91dGVyIGRlY2lzaW9uIGFib3V0IHBhY2tldCBkaXJlY3RlZCB0
-byBpbnB1dCBvciANCmZvcndhcmQgY2hhaW5zPw0KUGxlYXNlIHNlZSBteSBleGFtcGxlDQpXZSBo
-YXZlIHJvdXRlciB3aXRoIG5mdGFibGVzLCBwcml2YXRlIGhvc3QgYW5kIHB1YmxpYyBob3N0IHRo
-YXQgcmVkaXJlY3QgDQp0cmFmZmljIHRvIHByaXZhdGUgaG9zdCB0aHJvdWdoIHR1bm5lbA0KDQpQ
-cml2YXRlIGhvc3TCoMKgIMKgwqDCoCDCoMKgwqAgwqBSb3V0ZXLCoMKgIMKgwqDCoCDCoMKgwqAg
-wqDCoMKgIMKgUHVibGljIGhvc3QNCltMQU4gMTkyLjE2OC40MC4xMl0gKDUpPT7CoMKgIMKgW1dB
-TiA5NS4wLjAuMV3CoMKgIMKgKDEpPT4gwqBbV0FOIDk2LjAuMC4xXcKgwqAgDQogwqDCoMKgIMKg
-KDIpPSENCnw8PSg0KcKgwqAgwqDCoMKgIMKgwqDCoCDCoMKgwqAgwqBbVHVubmVsIDE5Mi4xNjgu
-NDAuMV3CoMKgIMKgPD0oMykgwqBbVHVubmVsIA0KMTkyLjE2OC40MC4yXcKgwqAgwqDCoCA8PSEN
-Cg0KSWYgaSB0cnkgdG8gY29ubmVjdCBmcm9tIHByaXZhdGUgbmV0d29yayB0byBwdWJsaWMgaG9z
-dCBjb25uZWN0aW9uIGZhaWxzDQpPbiBzdGVwICg1KSB3aGVuIHByaXZhdGUgaG9zdCBzZW5kIGFu
-c3dlcnMgYmFjayB0byA5NS4wLjAuMSwgbmZ0YWJsZXMgb24gDQpyb3V0ZXIgcHV0IHBhY2tldHMg
-aW4gaW5wdXQgY2hhaW4gYnV0IG5vdCBmb3J3YXJkaW5nIGNoYWluLg0KVGhpcyBiZWhhdmlvdXIg
-YXBlYXJzIHJlZ2FyZGxlc3MgYW55IHBhY2tldCBtYXJrcy4NCkhvdyBpIGNhbiBjaGFuZ2UgdGhp
-cyBiZWhhdmlvcj8gTWF5IGJlIHNvbWUgb3B0aW9ucyBvbiByYXcsIG1hbmdsZSBvciANCm90aGVy
-IGNoYWlucyB0aGF0IG92ZXJyaWRlcyByb3V0aW5nIGRlY2lzaW9uIGFuZCBwdXQgcGFja2V0IGRp
-cmVjdGx5IGluIA0KZm9yd2FyZCBjaGFpbj8NCg0KQnkgc3RlcHM6DQowLiBGcm9tIG90aGVyIGhv
-c3QgaW4gbGFuIHF1ZXJ5IDk2LjAuMC4xLCBodHRwIGdldCBmb3IgZXhhbXBsZQ0KMS4gUm91dGVy
-IG1ha2UgbWFzcSBvciBzbmF0LiBTcmMgaXAgOTUuMC4wLjEsIERzdCBpcCA5Ni4wLjAuMQ0KMi4g
-UHVibGljIGhvc3QgbWFrZXMgZG5hdCwgU3JjIGlwIDk1LjAuMC4xLCBEc3QgaXAgMTkyLjE2OC40
-MC4xMi4NCjMuIFBhY2tldCBzZW50IHZpYSB0dW5uZWwuDQo0LiBSb3V0ZXIgZm9yd2FyZCBwYWNr
-ZXQgdG8gMTkyLjE2OC40MC4xMiANCihuZXQuaXB2NC5jb25mLnRubC5hY2NlcHRfbG9jYWwgbXVz
-dCBiZSAxKS4gU3JjIGlwIDk1LjAuMC4xLCBEc3QgaXAgDQoxOTIuMTY4LjQwLjEyLg0KNS4gUHJp
-dmF0ZSBob3N0IHJlY2VpdmUgcGFja2V0IGFuZCBzZW5kIHJlc3BvbnNlLiBTcmMgMTkyLjE2OC40
-MC4xMiwgRHN0IA0KaXAgOTUuMC4wLjENCjYuIE5mdGFibGVzIG9uIHJvdXRlciByZWNlaXZlIHBh
-Y2tldCB3aXRoIERzdCBpcCA5NS4wLjAuMSBhbmQgcHV0IGl0IG9uIA0KaW5wdXQgY2hhaW4uIElu
-aXRpYWwgaG9zdCBvbiBzdGVwIDAgbmV2ZXIgZ2V0IHJlc3BvbnNlLg0KDQpCZXN0IFJlZ2FyZHMN
-CktyZXkNCg0KDQo=
+        Hello,
+   I am very new in Linux (just bought a while ago a PI unit) and while playing with what Linux can do I found about nftables. The tool seem fantastic and while at first sight is quite simple I am not able to create a very simple configuration. Here is what I am trying to do:
+                                         +-------+
+                                         |DHCP|
+                                         +-+----+
+                                             |
++--------------+               +---v-------+           +------------+   direct     +-------------+
+|  WinPC1   +--------->+ Router +---------->+  myPI  |-------------->+ WinPC2 |
++--------------+               +------------+           +------------+   cable     +-------------+
+IP: 192.168.10.11                                    eth1        eth2                 IP: 192.168.10.30
+MAC:10:ab:34:e2:93:45                                                                  MAC: 10:ab:34:f9:a2:ec
+
+In my PI device I am trying to do this:
+
+1. all traffic arriving on eth1 and not having as destination WinPC2 port 3000 must be forwarded to eth2 (without changing IP/MAC of the source)
+2. all traffic arriving on eth2 not originating on WinPC2 port 3000 should be forwarded to eth1
+3. the traffic entering on eth1 and having as destination WinPC2 port 3000 must be send to a local process listening on port 3300.
+4. the local process which is intercepting the traffic at #3 will connect to the WinPC2 port 3000 and will send packages with the source being set to WinPC1 IP/MAC
+5. the WinPC2 replies coming from port 3000 should go back to my local process and this will send them to the WinPC1 having the IP/MAC of WinPC2.
+
+The traffic which is going directly from eth1 to eth2 and vice versa should allow everything, including ARP, ICMP, etc.
+Practically I need to intercept a specific connection (plain unencrypted TCP connection) between WinPC1 and WinPC2 and act as a man in the middle for that connection.
+
+Thank you and best regards,
+Jaga.
