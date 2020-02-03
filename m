@@ -1,78 +1,89 @@
-From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
-Subject: [nftables v0.9.2 | kernel 4.19.93] ICMPv6 ingress dropped despite
+From: "" <kfm@plushkava.net>
+Subject: Re: [nftables v0.9.2 | kernel 4.19.93] ICMPv6 ingress dropped despite
  accept rule
-Date: Mon, 3 Feb 2020 10:56:24 +0000
-Message-ID: <f8914acf-6487-c9bd-e452-d253069aebe5@gmx.net>
-Reply-To: vtol@gmx.net
+Date: Mon, 3 Feb 2020 11:15:46 +0000
+Message-ID: <77d49c07-70dd-7108-ea77-ee3f943ca765@plushkava.net>
+References: <f8914acf-6487-c9bd-e452-d253069aebe5@gmx.net>
+ <df96258c-8bcb-4db4-6910-d96ef1caf990@plushkava.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1580727536;
-        bh=tou4Nvc7lqJwn4tOq99BBuHdSpzs8W+3GHHNbLfQPrM=;
-        h=X-UI-Sender-Class:Reply-To:From:Subject:To:Date;
-        b=dwhn8bvOYBdus08x50Y5diF2JndVA8mE5OV2FG+tbwFbl/i6rYHV2lHIiGejUOUjz
-         gn5zvIHOlZbe/Y4Uorjp0bLso6gCdqwchfpG4xcDAw4HJ5hCdunAbFYyoEjsCzYT8u
-         t0abbNBsrQemLL4dw/w7UEBCLu/HlCdtWMGEBvvA=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+         h=subject:from:to:references:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=d
+        02LMEabtFM0w0ZSjlpHD5/wNxwswDbK0NpTlIRNSiQ=; b=WxuY0fNtK/prVdRNc
+        8nVRwz+NLQv6d7TjfyDH1lN58ebSj0yAZ8V6fq4yvg7YIB55kMQM8dc28ifl2tx7
+        IQY9m1aVReK/sPNK3smQvyluI4+cyhHaRX8HTvN8iZ46j1+5YgOS0jI1NpcAWQ23
+        AOtNOKZPWmpLA7sSdt0gVkEInVKQb7KUX0yqMSUONadVN1VWSvr2YJt/0JHixyON
+        BQEi6Yt8SsMF3tHGjuSimxIX1+51HX+OE2EZaNgOHZI7KXnRzwssyAAL7bnkwP5p
+        6qc10oiNiMtOhckSCqRLlAF4OBAwPGmDNyHbADnqgrh5nz8rDptRobSiNWvRfW07
+        O47lA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=d02LMEabtFM0w0ZSjlpHD5/wNxwswDbK0NpTlIRNS
+        iQ=; b=kWJ1k4YmF8hqHz1/IqCjm/OtNEuUtVI6HnzxmvDYvj7YbE0XbjxERQUMn
+        B+J50/LK0MpZ5iKAlG+24ADiI+/n6eNPd4YzloXkBi5Q5+KwriUzHUTyT8hQIcQY
+        Em+cIdP4LehLbcxDzvh7qjuA+SHxLekw8co6mq8xTE1AiFYSOMWyCjTR3VPQnAw1
+        wPHSkD2iviypprGU7srfccxdjt5gn/92+njzZPd8bTxETHhcf2yk0nfw5DXlsjyH
+        mhtog80tkY0M2m4dgM6r1GFTK9PKhbcdw3XpI8pD1RekG4ziTWVy2Sb6HWreiAfR
+        rtZuog8vgdjR8eRM3ydonfWeOeuwg==
+In-Reply-To: <df96258c-8bcb-4db4-6910-d96ef1caf990@plushkava.net>
 Content-Language: en-GB
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-QXBwcmVjaWF0ZSBpZiBzb21lb25lIGNvdWxkIGJlIG9ibGlnZWQgYW5kIGhhdmUgYSBsb29r
-IGF0IHRoZSBiZWxvdyANCnJ1bGVzZXQgYW5kIGxldCBtZSBrbm93IHdoZXJlIEkgYW0gZ29p
-bmcgd3Jvbmcgc2luY2UgSUNNUHY2IGlzIGJlaW5nIA0KKHBvbGljeSkgZHJvcHBlZDoNCg0K
-RFJPUF9XQU5fSU4gSU49cHBwb2Utd2FuIE9VVD0gTUFDPSANClNSQz1mZTgwOjAwMDA6MDAw
-MDowMDAwOmUyYWM6ZjFmZjpmZTY1OjUxYmEgDQpEU1Q9ZmYwMjowMDAwOjAwMDA6MDAwMDow
-MDAwOjAwMDA6MDAwMDowMDAxIExFTj03MiBUQz0yMjQgSE9QTElNSVQ9MjU1IA0KRkxPV0xC
-TD0wIFBST1RPPUlDTVB2NiBUWVBFPTEzNCBDT0RFPTANCg0KZGVzcGl0ZSBhbiBhY2NlcHQg
-c3RhdGVtZW50DQoNCi0tLSBydWxlc2V0DQoNCnRhYmxlIGFycCBmaWx0ZXIgeyAjIGhhbmRs
-ZSAxNDENCiDCoMKgwqDCoMKgwqDCoCBjaGFpbiBpbnB1dCB7ICMgaGFuZGxlIDENCiDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdHlwZSBmaWx0ZXIgaG9vayBpbnB1dCBwcmlv
-cml0eSBmaWx0ZXI7IHBvbGljeSBhY2NlcHQ7DQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIGlpZiAiZXRoMiIgZHJvcCAjIGhhbmRsZSAzDQogwqDCoMKgwqDCoMKgwqAgfQ0K
-DQogwqDCoMKgwqDCoMKgwqAgY2hhaW4gb3V0cHV0IHsgIyBoYW5kbGUgMg0KIMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB0eXBlIGZpbHRlciBob29rIG91dHB1dCBwcmlvcml0
-eSBmaWx0ZXI7IHBvbGljeSBhY2NlcHQ7DQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIG9pZiAiZXRoMiIgZHJvcCAjIGhhbmRsZSA0DQogwqDCoMKgwqDCoMKgwqAgfQ0KfQ0K
-dGFibGUgaW5ldCBmaWx0ZXIgeyAjIGhhbmRsZSAxNDINCiDCoMKgwqDCoMKgwqDCoCBjaGFp
-biBpbnB1dCB7ICMgaGFuZGxlIDENCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-dHlwZSBmaWx0ZXIgaG9vayBpbnB1dCBwcmlvcml0eSBmaWx0ZXI7IHBvbGljeSBkcm9wOw0K
-IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjdCBzdGF0ZSBlc3RhYmxpc2hlZCxy
-ZWxhdGVkIGFjY2VwdCAjIGhhbmRsZSA0DQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIGN0IHN0YXRlIGludmFsaWQgZHJvcCAjIGhhbmRsZSA1DQogwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgIGlpZiAibG8iIGFjY2VwdCAjIGhhbmRsZSA2DQogwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlpZiAiYnItbGFuIiBhY2NlcHQgIyBoYW5kbGUgNw0K
-IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpaWYgImxhbjAiIGFjY2VwdCAjIGhh
-bmRsZSA4DQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlpZiAibGFuMSIgYWNj
-ZXB0ICMgaGFuZGxlIDkNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWlmICJs
-YW4yIiBhY2NlcHQgIyBoYW5kbGUgMTANCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgaWlmICJsYW4zIiBhY2NlcHQgIyBoYW5kbGUgMTENCiDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqAgaWlmICJsYW40IiBhY2NlcHQgIyBoYW5kbGUgMTINCiDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgbG9nIHByZWZpeCAiRFJPUF9XQU5fSU4gIiAjIGhhbmRs
-ZSAxMw0KIMKgwqDCoMKgwqDCoMKgIH0NCn0NCnRhYmxlIGlwNiBmaWx0ZXIgeyAjIGhhbmRs
-ZSAxNDUNCiDCoMKgwqDCoMKgwqDCoCBjaGFpbiBpbnB1dCB7ICMgaGFuZGxlIDENCiDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWlmICJldGgyIiBpcDYgc2FkZHIgZmMwMDo6
-LzYgdWRwIHNwb3J0IDU0NyB1ZHAgZHBvcnQgDQo1NDYgaXA2IGRhZGRyIGZjMDA6Oi82IGFj
-Y2VwdCAjIGhhbmRsZSAzDQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGljbXB2
-NiB0eXBlIGRlc3RpbmF0aW9uLXVucmVhY2hhYmxlIG1ldGEgbmZ0cmFjZSBzZXQgMSANCmFj
-Y2VwdCAjIGhhbmRsZSA0DQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGljbXB2
-NiB0eXBlIHBhY2tldC10b28tYmlnIG1ldGEgbmZ0cmFjZSBzZXQgMSBhY2NlcHQgIyANCmhh
-bmRsZSA1DQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGljbXB2NiB0eXBlIHRp
-bWUtZXhjZWVkZWQgbWV0YSBuZnRyYWNlIHNldCAxIGFjY2VwdCAjIA0KaGFuZGxlIDYNCiDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWNtcHY2IHR5cGUgcGFyYW1ldGVyLXBy
-b2JsZW0gbWV0YSBuZnRyYWNlIHNldCAxIGFjY2VwdCANCiMgaGFuZGxlIDcNCiDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWNtcHY2IHR5cGUgZWNoby1yZXBseSBtZXRhIG5m
-dHJhY2Ugc2V0IDEgYWNjZXB0ICMgaGFuZGxlIDgNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgaWNtcHY2IHR5cGUgbmQtcm91dGVyLWFkdmVydCBtZXRhIG5mdHJhY2Ugc2V0
-IDEgYWNjZXB0IA0KIyBoYW5kbGUgOQ0KIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCBpY21wdjYgdHlwZSBuZC1uZWlnaGJvci1hZHZlcnQgbWV0YSBuZnRyYWNlIHNldCAxIA0K
-YWNjZXB0ICMgaGFuZGxlIDEwDQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlj
-bXB2NiB0eXBlIG5kLXJlZGlyZWN0IG1ldGEgbmZ0cmFjZSBzZXQgMSBhY2NlcHQgIyANCmhh
-bmRsZSAxMQ0KIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpY21wdjYgdHlwZSAx
-NDkgbWV0YSBuZnRyYWNlIHNldCAxIGFjY2VwdCAjIGhhbmRsZSAxMg0KIMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCBpY21wdjYgdHlwZSAxNTEgbWV0YSBuZnRyYWNlIHNldCAx
-IGFjY2VwdCAjIGhhbmRsZSAxMw0KIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBp
-Y21wdjYgdHlwZSAxNTMgbWV0YSBuZnRyYWNlIHNldCAxIGFjY2VwdCAjIGhhbmRsZSAxNA0K
-IMKgwqDCoMKgwqDCoMKgIH0NCn0NCg0K
+On 03/02/2020 11:12, Kerin Millar wrote:
+> On 03/02/2020 10:56, ѽ҉ᶬḳ℠ wrote:
+>> Appreciate if someone could be obliged and have a look at the below 
+>> ruleset and let me know where I am going wrong since ICMPv6 is being 
+>> (policy) dropped:
+>>
+>> DROP_WAN_IN IN=pppoe-wan OUT= MAC= 
+>> SRC=fe80:0000:0000:0000:e2ac:f1ff:fe65:51ba 
+>> DST=ff02:0000:0000:0000:0000:0000:0000:0001 LEN=72 TC=224 HOPLIMIT=255 
+>> FLOWLBL=0 PROTO=ICMPv6 TYPE=134 CODE=0
+>>
+>> despite an accept statement
+>>
+>> --- ruleset
+>>
+>> table arp filter { # handle 141
+>>          chain input { # handle 1
+>>                  type filter hook input priority filter; policy accept;
+>>                  iif "eth2" drop # handle 3
+>>          }
+>>
+>>          chain output { # handle 2
+>>                  type filter hook output priority filter; policy accept;
+>>                  oif "eth2" drop # handle 4
+>>          }
+>> }
+>> table inet filter { # handle 142
+>>          chain input { # handle 1
+>>                  type filter hook input priority filter; policy drop;
+>>                  ct state established,related accept # handle 4
+>>                  ct state invalid drop # handle 5
+>>                  iif "lo" accept # handle 6
+>>                  iif "br-lan" accept # handle 7
+>>                  iif "lan0" accept # handle 8
+>>                  iif "lan1" accept # handle 9
+>>                  iif "lan2" accept # handle 10
+>>                  iif "lan3" accept # handle 11
+>>                  iif "lan4" accept # handle 12
+>>                  log prefix "DROP_WAN_IN " # handle 13
+>>          }
+>> }
+>> table ip6 filter { # handle 145
+>>          chain input { # handle 1
+> 
+> This particular chain is not hooked.
+> 
+
+Re-posting the above as I accidentally replied off-list.
+
+-- 
+Kerin Millar
