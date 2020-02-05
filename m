@@ -1,64 +1,57 @@
-From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
-Subject: [nftables v0.9.2 | kernel 4.19.93] logging protocols in inet family
- table require explicit protocol statement?
-Date: Wed, 5 Feb 2020 14:14:42 +0000
-Message-ID: <7f4e6968-d2c8-7b14-0d42-137c7f7d7f85@gmx.net>
-Reply-To: vtol@gmx.net
+From: Florian Westphal <fw@strlen.de>
+Subject: Re: [nftables v0.9.2 | kernel 4.19.93] logging protocols in inet
+ family table require explicit protocol statement?
+Date: Wed, 5 Feb 2020 15:29:35 +0100
+Message-ID: <20200205142935.GG26952@breakpoint.cc>
+References: <7f4e6968-d2c8-7b14-0d42-137c7f7d7f85@gmx.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1580912082;
-        bh=spoOTlUDuZuHGzFCrwEXtyld6ZuYwDkYyTzYRPqbvc8=;
-        h=X-UI-Sender-Class:Reply-To:To:From:Subject:Date;
-        b=HpnGA2ouotTQ3kwccFyI5LiHitEDMO/rBhkkPEdkwrspOSUww4PsbQHdjmNVQPy8O
-         F0DY2xZQ0d8wWOqdj/BQ0lI6HGoQ7gEOOpLybH4USEbsSoMlPbaXG4xcPb2qkDe4zf
-         0FLgDdlHAlDLPwuO0Wt9zNKEQ4W0AvnPvQDYnVsw=
-Content-Language: en-GB
+Content-Disposition: inline
+In-Reply-To: <7f4e6968-d2c8-7b14-0d42-137c7f7d7f85@gmx.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+To: =?utf-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-SGF2aW5nIHBlcnVzZWQgdGhlIFdJS0kgWzFdIEkgdHJpZWQgdG8gZ2V0IHByb3RvY29sIHNw
-ZWNpZmljIGxvZ2dpbmcgDQpnb2luZywgYnV0IGVuZGVkIHVwIHdpdGgNCg0KKiB0Y3AgbG9n
-IC0+IEVycm9yOiBzeW50YXggZXJyb3IsIHVuZXhwZWN0ZWQgbG9nDQoqIGljbXB2NiBsb2cg
-LT4gRXJyb3I6IHN5bnRheCBlcnJvciwgdW5leHBlY3RlZCBsb2cNCg0KT25seSB3aXRoIGFu
-IGV4cGxpY2l0IHByb3RvY29sIHN0YXRlbWVudCBsb2dnaW5nIHdvcmtzDQoNCiogaXAgcHJv
-dG9jb2wgdGNwIGxvZw0KKiBpcDYgbmV4dGhkcsKgIGljbXB2NiBsb2cNCg0KSXMgdGhhdCB0
-byBiZSBleHBlY3RlZCwgaW4gbGlldSBvZiBzdWNoIG1lbnRpb24gdGhlIFdJS0k/IE9yIGlz
-IA0Kc29tZXRoaW5nIG1pc3NpbmcgaW4gdGhlIGtlcm5lbCBzZXR0aW5ncz8NCg0KbHNtb2Qg
-fCBncmVwIGxvZw0KbmZfbG9nX2NvbW1vbsKgwqDCoMKgwqDCoMKgwqDCoCAxNjM4NMKgIDIg
-bmZfbG9nX2lwdjQsbmZfbG9nX2lwdjYNCm5mX2xvZ19pcHY0wqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCAxNjM4NMKgIDUNCm5mX2xvZ19pcHY2wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAxNjM4
-NMKgIDUNCm5mX3RhYmxlc8KgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDk4MzA0MTM1IA0K
-bmZ0X2ZpYl9pbmV0LG5mX2Zsb3dfdGFibGVfaXB2NixuZl9mbG93X3RhYmxlX2lwdjQsbmZf
-Zmxvd190YWJsZV9pbmV0LG5mdF9yZWplY3RfaXB2NixuZnRfcmVqZWN0X2lwdjQsbmZ0X3Jl
-amVjdF9pbmV0LG5mdF9yZWplY3RfYnJpZGdlLG5mdF9yZWplY3QsbmZ0X3JlZGlyX2lwdjYs
-bmZ0X3JlZGlyX2lwdjQsbmZ0X3JlZGlyLG5mdF9xdW90YSxuZnRfbnVtZ2VuLG5mdF9uYXQs
-bmZ0X21hc3FfaXB2NixuZnRfbWFzcV9pcHY0LG5mdF9tYXNxLG5mdF9sb2csbmZ0X2xpbWl0
-LG5mdF9md2RfbmV0ZGV2LG5mdF9mbG93X29mZmxvYWQsbmZ0X2ZpYl9pcHY2LG5mdF9maWJf
-aXB2NCxuZnRfZmliLG5mdF9kdXBfbmV0ZGV2LG5mdF9jdCxuZnRfY291bnRlcixuZnRfY2hh
-aW5fcm91dGVfaXB2NixuZnRfY2hhaW5fcm91dGVfaXB2NCxuZnRfY2hhaW5fbmF0X2lwdjYs
-bmZ0X2NoYWluX25hdF9pcHY0DQpuZm5ldGxpbmvCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCAxNjM4NMKgIDQgDQpuZm5ldGxpbmtfbG9nLG5mX3RhYmxlcyxuZl9jb25udHJhY2tfbmV0
-bGluayxpcF9zZXQNCm5mbmV0bGlua19sb2fCoMKgwqDCoMKgwqDCoMKgwqAgMjA0ODDCoCAw
-DQpuZnRfbG9nwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDE2Mzg0wqAgMQ0KDQpj
-YXQgL3Byb2MvbmV0L25ldGZpbHRlci9uZl9sb2cNCiDCoDAgTk9ORSAobmZuZXRsaW5rX2xv
-ZykNCiDCoDEgTk9ORSAobmZuZXRsaW5rX2xvZykNCiDCoDIgbmZfbG9nX2lwdjQgKG5mX2xv
-Z19pcHY0LG5mbmV0bGlua19sb2cpDQogwqAzIE5PTkUgKG5mbmV0bGlua19sb2cpDQogwqA0
-IE5PTkUgKG5mbmV0bGlua19sb2cpDQogwqA1IE5PTkUgKG5mbmV0bGlua19sb2cpDQogwqA2
-IE5PTkUgKG5mbmV0bGlua19sb2cpDQogwqA3IE5PTkUgKG5mbmV0bGlua19sb2cpDQogwqA4
-IE5PTkUgKG5mbmV0bGlua19sb2cpDQogwqA5IE5PTkUgKG5mbmV0bGlua19sb2cpDQoxMCBu
-Zl9sb2dfaXB2NiAobmZfbG9nX2lwdjYsbmZuZXRsaW5rX2xvZykNCjExIE5PTkUgKG5mbmV0
-bGlua19sb2cpDQoxMiBOT05FIChuZm5ldGxpbmtfbG9nKQ0KDQpUcmllZCB3aXRoDQoNCmVj
-aG8gIm5mX2xvZ19pY21wIiA+IC9wcm9jL3N5cy9uZXQvbmV0ZmlsdGVyL25mX2xvZy8xDQoN
-CmJ1dCB0aGF0IHByb2R1Y2VzDQoNCmFzaDogd3JpdGUgZXJyb3I6IE5vIHN1Y2ggZmlsZSBv
-ciBkaXJlY3RvcnkNCg0KZGVzcGl0ZQ0KDQpzdGF0IC9wcm9jL3N5cy9uZXQvbmV0ZmlsdGVy
-L25mX2xvZy8xDQogwqAgRmlsZTogL3Byb2Mvc3lzL25ldC9uZXRmaWx0ZXIvbmZfbG9nLzEN
-CiDCoCBTaXplOiAwwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBCbG9ja3M6IDDCoMKg
-wqDCoMKgwqDCoMKgwqAgSU8gQmxvY2s6IDEwMjQgcmVndWxhciBlbXB0eSANCmZpbGUNCkRl
-dmljZTogNGgvNGTCoMKgIElub2RlOiAyNjA3MDLCoMKgwqDCoMKgIExpbmtzOiAxDQpBY2Nl
-c3M6ICgwNjQ0Ly1ydy1yLS1yLS0pwqAgVWlkOiAowqDCoMKgIDAvwqDCoMKgIHJvb3QpwqDC
-oCBHaWQ6ICjCoMKgwqAgMC8gcm9vdCkNCl9fXw0KWzFdIGh0dHBzOi8vd2lraS5uZnRhYmxl
-cy5vcmcvd2lraS1uZnRhYmxlcy9pbmRleC5waHAvTG9nZ2luZ190cmFmZmljDQo=
+ѽ҉ᶬḳ℠ <vtol@gmx.net> wrote:
+> Having perused the WIKI [1] I tried to get protocol specific logging going,
+> but ended up with
+> 
+> * tcp log -> Error: syntax error, unexpected log
+> * icmpv6 log -> Error: syntax error, unexpected log
+> 
+> Only with an explicit protocol statement logging works
+> 
+> * ip protocol tcp log
+> * ip6 nexthdr  icmpv6 log
+
+You mean "log" doesn't work?  (no "tcp" prefix).
+
+> cat /proc/net/netfilter/nf_log
+>  0 NONE (nfnetlink_log)
+>  1 NONE (nfnetlink_log)
+>  2 nf_log_ipv4 (nf_log_ipv4,nfnetlink_log)
+>  3 NONE (nfnetlink_log)
+>  4 NONE (nfnetlink_log)
+>  5 NONE (nfnetlink_log)
+>  6 NONE (nfnetlink_log)
+>  7 NONE (nfnetlink_log)
+>  8 NONE (nfnetlink_log)
+>  9 NONE (nfnetlink_log)
+> 10 nf_log_ipv6 (nf_log_ipv6,nfnetlink_log)
+> 11 NONE (nfnetlink_log)
+> 12 NONE (nfnetlink_log)
+
+This means that ipv4 is logged by nf_log_ipv4 and ipv6 via
+nf_log_ipv6.  Everything should be working for ipv4, ipv6 and inet
+without any further action (provided you want to use printk-based
+logging via dmesg rather than nfnetlink).
+
+> Tried with
+> 
+> echo "nf_log_icmp" > /proc/sys/net/netfilter/nf_log/1
+
+There is no layer 4 logger. nf_log_XXX, where XXX is a l3 protocol
+family, i.e.  nf_log_{ipv4,ipv6,arp,bridge} or nfnetlink_log.
