@@ -1,101 +1,70 @@
-From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+From: Florian Westphal <fw@strlen.de>
 Subject: Re: [nftables v0.9.2 | kernel 4.19.93] MSS clamping rule possible in
  the inet family table?
-Date: Wed, 5 Feb 2020 20:40:20 +0000
-Message-ID: <9fdbae51-1c8d-18b4-dd0c-5f0c22f8347c@gmx.net>
+Date: Thu, 6 Feb 2020 00:38:43 +0100
+Message-ID: <20200205233843.GM26952@breakpoint.cc>
 References: <3716a5fa-e7e7-5220-06c1-a651ee6b576f@gmx.net>
  <20200205112612.GB26952@breakpoint.cc>
  <801ea275-a5b0-4c49-f772-eb7632431ff3@gmx.net>
-Reply-To: vtol@gmx.net
+ <9fdbae51-1c8d-18b4-dd0c-5f0c22f8347c@gmx.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1580935221;
-        bh=/LLsQ2rQy4ivhHGA5c6iALMu1mcnB3N61ClEyXBB3tw=;
-        h=X-UI-Sender-Class:Reply-To:Subject:From:To:Cc:References:Date:
-         In-Reply-To;
-        b=gqYV4bmzk3VlVm2/YDQBWf/3PFk2okE7r7KH1yzxIe3ZPX0eARC5MVjwT84yOEGO2
-         XSrY9eF56+O1jOJ61FKo0IMupDHa6DdHCLYJ71Q7FcE8tHfCs4/Uq4w37NYVTFQk3r
-         /1Ul+5pCV6Zf2WAtayWPZImI+1ZPFY1Vb94PSUWY=
-In-Reply-To: <801ea275-a5b0-4c49-f772-eb7632431ff3@gmx.net>
-Content-Language: en-GB
+Content-Disposition: inline
+In-Reply-To: <9fdbae51-1c8d-18b4-dd0c-5f0c22f8347c@gmx.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Florian Westphal <fw@strlen.de>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+To: =?utf-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+Cc: Florian Westphal <fw@strlen.de>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-T24gMDUvMDIvMjAyMCAxMjo0Niwg0b3SieG2rOG4s+KEoCB3cm90ZToNCj4gT24gMDUvMDIv
-MjAyMCAxMToyNiwgRmxvcmlhbiBXZXN0cGhhbCB3cm90ZToNCj4+ING90onhtqzhuLPihKAg
-PHZ0b2xAZ214Lm5ldD4gd3JvdGU6DQo+Pj4gV0lLSSBbMV0gc3RpcHVsYXRlcyB0aGUgcnVs
-ZSBpbiB0aGUgaXAgZmFtaWx5IHRhYmxlLCBwZXJoYXBzIGxvZ2ljYWwgDQo+Pj4gc2luY2UN
-Cj4+PiBpdCBhcHBsaWVzIHRvIElQdjQgb25seSwgSXQgaXMgaG93ZXZlciBwb3NzaWJsZSB0
-byBpbmNsdWRlIHRoZSBydWxlIA0KPj4+IGluIHRoZQ0KPj4+IGluZXQgZmFtaWx5IHRhYmxl
-Pw0KPj4+DQo+Pj4gSGF2aW5nIGl0IGltcGxlbWVudGVkIGluDQo+Pj4NCj4+PiB0YWJsZSBp
-bmV0IGZpbHRlciB7DQo+Pj4gwqDCoGNoYWluIGlucHV0IMKgwqDCoCDCoMKgwqAgwqDCoMKg
-IMKgIHsgb2lmIHBwcG9lLXdhbiB0Y3AgZmxhZ3Mgc3luIHRjcCBvcHRpb24gDQo+Pj4gbWF4
-c2VnDQo+Pj4gc2l6ZSBzZXQgMTQwMDsgfQ0KPj4+IH0NCj4+Pg0KPj4+IGRvZXMgbm90IHRo
-cm93IGFuIGVycm9yIGJ1dCBpdCBkb2VzIG5vdCB3b3JrIGVpdGhlci4NCj4+IFRoYXQgY2hh
-aW4gaXNuJ3QgaG9va2VkIHVwLCBpdHMgbWlzc2luZyB0aGUgJ3R5cGUgZmlsdGVyIGhvb2sg
-aW5wdXQNCj4+IHByaW9yaXR5IDA7JyBwYXJ0Lg0KPg0KPiBJdCBpcyBob29rZWQsIGluIHRo
-ZSBzcGlyaXQgb2YgYnJldml0eSBza2lwcGVkIHRoYXQgY29kZSBwb3J0aW9uIA0KPiBoYXZp
-bmcgY29tcG9zZWQgdGhlIGluaXRpYWwgbWVzc2FnZSB0byB0aGUgbWFpbGluZyBsaXN0Lg0K
-Pg0KPj4NCj4+PiBUaGVuIHRyaWVkIGluc3RlYWQgKGluZXQgZmFtaWx5KQ0KPj4+DQo+Pj4g
-eyBvaWYgcHBwb2Utd2FuIGlwIHByb3RvY29sIHRjcCBmbGFncyBzeW4gdGNwIG9wdGlvbiBt
-YXhzZWcgc2l6ZSBzZXQgDQo+Pj4gMTQwMDsgfQ0KPj4+IHsgb2lmIHBwcG9lLXdhbiBpcCBw
-cm90b2NvbCB0Y3AgZmxhZ3Mgc3luIGlwIHByb3RvY29sIHRjcCBvcHRpb24gDQo+Pj4gbWF4
-c2VnIHNpemUNCj4+PiBzZXQgMTQwMDsgfQ0KPj4+DQo+Pj4gQnV0IGVpdGhlciB0aHJvd2lu
-Zw0KPj4+DQo+Pj4gRXJyb3I6IHN5bnRheCBlcnJvciwgdW5leHBlY3RlZCBmbGFncywgZXhw
-ZWN0aW5nIG5ld2xpbmUgb3Igc2VtaWNvbG9uLg0KPj4+IHsgb2lmIHBwcG9lLXdhbiBpcCBw
-cm90b2NvbCB0Y3AgZmxhZ3Mgc3luIHRjcCBvcHRpb24gbWF4c2VnIHNpemUgc2V0IA0KPj4+
-IDE0MDA7IH0NCj4+IFRoaXMgaXM6IG9pZiA9PSBwcHBvZS13YW4NCj4+IMKgwqDCoMKgwqDC
-oMKgwqDCoCBpcCBwcm90b2NvbCA9PSB0Y3ANCj4+IMKgwqDCoMKgIGZsYWdzIHN5biAjIGlu
-dmFsaWQsIHNob3VsZCBiZSAidGNwIGZsYWdzIHN5biINCj4+DQo+Pj4gV2hhdCBhbSBJIG1p
-c3NpbmcgdG8gZ2V0IHRoaXMgdG8gd29yayBpbiB0aGUgaW5ldCBmYW1pbHkgdGFibGU/DQo+
-PiBEaWQgbm90IHRyeSBpdCBidXQgaXQgc2hvdWxkIHdvcmssIHRoZXJlIGlzIG5vdGhpbmcg
-aXAvaXB2NiBzcGVjaWZpYw0KPj4gaW4gdGhlIHRjcCBvcHRpb24gY29kZS4NCj4NCj4gSXQg
-ZG9lcyBub3Qgd29yayBpbiB0aGUgaW5ldCBmYW1pbHkgdGFibGUgYnV0IGRvZXMgaW4gdGhl
-IGlwIGZhbWlseSANCj4gdGFibGU7DQo+DQo+ICogcnVsZSB3aGVuIGRlcGxveWVkIHdpdGgg
-dGhlIF9pcCBmYW1pbHlfIC0+IHBhY2tldCBjYXB0dXJlIHNob3dzIHRoZSANCj4gcGFja2V0
-IHNpemUgYXMgc2V0L3N0aXB1bGF0ZWQgaW4gdGhlIHJ1bGUNCj4gKiBydWxlIHdoZW4gZGVw
-bG95ZWQgd2l0aCB0aGUgX2luZXQgZmFtaWx5XyAtPiBwYWNrZXQgY2FwdHVyZSBkb2VzIG5v
-dCANCj4gc2hvdyB0aGUgcGFja2V0IHNpemUgYXMgc2V0L3N0aXB1bGF0ZWQgaW4gdGhlIHJ1
-bGUNCj4NCj4gQXMgZmFyIGFzIEkgY2FuIGNvbXByZWhlbmQgSVB2NiBkb2VzIG5vdCByZXF1
-aXJlIE1TUyBjbGFtcGluZyBkdWUgdG8gDQo+IGl0cyBidWlsZC1pbiBQYXRoIE1UVSBEaXNj
-b3Zlcnkgd2hpY2ggaXMgbm90IG1hbmRhdG9yeSBmb3IgSVB2NC4gSXQgDQo+IHdvdWxkIHRo
-dXMgcHJvYmFibHkgbm90IG1ha2Ugc2Vuc2UgdG8gYXBwbHkgTVNTIGNsYW1waW5nIHRvIElQ
-djYuDQo+DQoNCkZpbmFsbHkgZ290IGl0IHdvcmtpbmcgaW4gdGhlIGluZXQgdGFibGUsIHNl
-ZW1zIGJlaW5nIGEgbWF0dGVyIG9mIHJ1bGUgDQpwb3NpdGlvbiAoaGFuZGxlIHZhbHVlKSwN
-Cg0KdGhpcyB3b3Jrcw0KDQpjaGFpbiBmb3J3YXJkIHsgIyBoYW5kbGUgMg0KIMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB0eXBlIGZpbHRlciBob29rIGZvcndhcmQgcHJpb3Jp
-dHkgZmlsdGVyOyBwb2xpY3kgZHJvcDsNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgY3Qgc3RhdGUgZXN0YWJsaXNoZWQscmVsYXRlZCBhY2NlcHQgIyBoYW5kbGUgMTkNCiDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY3Qgc3RhdGUgaW52YWxpZCBkcm9wICMg
-aGFuZGxlIDIwDQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG9pZiAicHBwb2Ut
-d2FuIiB0Y3AgZmxhZ3Mgc3luIHRjcCBvcHRpb24gbWF4c2VnIHNpemUgDQpzZXQgMTMwMCAj
-IGhhbmRsZSAyMQ0KIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpaWYgImJyLWxh
-biIgYWNjZXB0ICMgaGFuZGxlIDIyDQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-IG9pZiAiYnItbGFuIiBhY2NlcHQgIyBoYW5kbGUgMjMNCiDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqAgaWlmICJici1tZ3QiIGFjY2VwdCAjIGhhbmRsZSAyNA0KIMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBvaWYgImJyLW1ndCIgYWNjZXB0ICMgaGFuZGxlIDI1
-DQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGxvZyBwcmVmaXggIkRST1BfRlcg
-IiBsZXZlbCBkZWJ1ZyBmbGFncyBhbGwgY291bnRlciANCnBhY2tldHMgMCBieXRlcyAwICMg
-aGFuZGxlIDI2DQoNCmJ1dCB0aGlzIGRvZXMgbm90DQoNCmNoYWluIGZvcndhcmQgeyAjIGhh
-bmRsZSAyDQogwqDCoMKgwqDCoMKgwqAgdHlwZSBmaWx0ZXIgaG9vayBmb3J3YXJkIHByaW9y
-aXR5IGZpbHRlcjsgcG9saWN5IGRyb3A7DQogwqDCoMKgwqDCoMKgwqAgY3Qgc3RhdGUgZXN0
-YWJsaXNoZWQscmVsYXRlZCBhY2NlcHQgIyBoYW5kbGUgMTkNCiDCoMKgwqDCoMKgwqDCoCBj
-dCBzdGF0ZSBpbnZhbGlkIGRyb3AgIyBoYW5kbGUgMjANCiDCoMKgwqDCoMKgwqDCoCBpaWYg
-ImJyLWxhbiIgYWNjZXB0ICMgaGFuZGxlIDIxDQogwqDCoMKgwqDCoMKgwqAgb2lmICJici1s
-YW4iIGFjY2VwdCAjIGhhbmRsZSAyMg0KIMKgwqDCoMKgwqDCoMKgIGlpZiAiYnItbWd0IiBh
-Y2NlcHQgIyBoYW5kbGUgMjMNCiDCoMKgwqDCoMKgwqDCoCBvaWYgImJyLW1ndCIgYWNjZXB0
-ICMgaGFuZGxlIDI0DQogwqDCoMKgwqDCoMKgwqAgb2lmICJwcHBvZS13YW4iIHRjcCBmbGFn
-cyBzeW4gdGNwIG9wdGlvbiBtYXhzZWcgc2l6ZSBzZXQgMTMwMCAjIA0KaGFuZGxlIDI1DQog
-wqDCoMKgwqDCoMKgwqAgbG9nIHByZWZpeCAiRFJPUF9GVyAiIGxldmVsIGRlYnVnIGZsYWdz
-IGFsbCBjb3VudGVyIHBhY2tldHMgMCANCmJ5dGVzIDAgIyBoYW5kbGUgMjYNCg0KSSBzb21l
-b25lIGNvdWxkIGV4cGxhaW4gd2h5IEkgd291bGQgYmUgZ3JhdGVmdWwgYmVjYXVzZSBJIGRv
-IG5vdCANCmNvbXByZWhlbmQgdGhlIHZhcnlpbmcgb3V0Y29tZS4gSXMgaXQgYmVjYXVzZSBh
-ZnRlciBlZ3Jlc3MvaW5ncmVzcyANCnRyYWZmaWMgaGl0dGluZyBoYW5kbGUgMjEvMjIgKGJv
-dHRvbSBzeW50YXgpIHRoZSBwYWNrZXRzIGFyZSBleGl0aW5nIHRoZSANCmNoYWluIGFmdGVy
-IGJlZW4gcHJvY2Vzc2VkIGFuZCBub3QgcmVhY2hpbmcgaGFuZGxlIDI1IGZvciBwcm9jZXNz
-aW5nPw0K
+ѽ҉ᶬḳ℠ <vtol@gmx.net> wrote:
+> Finally got it working in the inet table, seems being a matter of rule
+> position (handle value),
+
+The handle has nothing to do with the ordering though, the handle is
+just a unique identifier.
+
+> chain forward { # handle 2
+>                 type filter hook forward priority filter; policy drop;
+>                 ct state established,related accept # handle 19
+>                 ct state invalid drop # handle 20
+>                 oif "pppoe-wan" tcp flags syn tcp option maxseg size set
+> 1300 # handle 21
+>                 iif "br-lan" accept # handle 22
+>                 oif "br-lan" accept # handle 23
+>                 iif "br-mgt" accept # handle 24
+>                 oif "br-mgt" accept # handle 25
+
+iif { "br-lan", "br-mgt } accept
+oif { "br-lan", "br-mgt } accept
+
+or maybe
+iifname "br-*"
+
+saves two rules.
+
+> but this does not
+> 
+> chain forward { # handle 2
+>         type filter hook forward priority filter; policy drop;
+>         ct state established,related accept # handle 19
+>         ct state invalid drop # handle 20
+>         iif "br-lan" accept # handle 21
+>         oif "br-lan" accept # handle 22
+>         iif "br-mgt" accept # handle 23
+>         oif "br-mgt" accept # handle 24
+>         oif "pppoe-wan" tcp flags syn tcp option maxseg size set 1300 #
+> handle 25
+>         log prefix "DROP_FW " level debug flags all counter packets 0 bytes
+> 0 # handle 26
+> 
+> I someone could explain why I would be grateful because I do not comprehend
+> the varying outcome. Is it because after egress/ingress traffic hitting
+> handle 21/22 (bottom syntax) the packets are exiting the chain after been
+> processed and not reaching handle 25 for processing?
+
+Yes, this is no different than iptables, a verdict ends packet
+evaluation in that base chain hook.
+
+So, if packet came from "br-lan" forward chain evaluation ends with handle 21.
