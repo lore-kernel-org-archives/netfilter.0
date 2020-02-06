@@ -1,70 +1,60 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: [nftables v0.9.2 | kernel 4.19.93] MSS clamping rule possible in
- the inet family table?
-Date: Thu, 6 Feb 2020 00:38:43 +0100
-Message-ID: <20200205233843.GM26952@breakpoint.cc>
-References: <3716a5fa-e7e7-5220-06c1-a651ee6b576f@gmx.net>
- <20200205112612.GB26952@breakpoint.cc>
- <801ea275-a5b0-4c49-f772-eb7632431ff3@gmx.net>
- <9fdbae51-1c8d-18b4-dd0c-5f0c22f8347c@gmx.net>
+From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+Subject: [nftables v0.9.2 | kernel 4.19.93] does redirect accept daddr?
+Date: Thu, 6 Feb 2020 02:01:39 +0000
+Message-ID: <d7f31893-feaa-e138-ad80-95a37d275e7b@gmx.net>
+Reply-To: vtol@gmx.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <9fdbae51-1c8d-18b4-dd0c-5f0c22f8347c@gmx.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1580954499;
+        bh=4FurrcyuNxRvov4oLWx5gQi/qcFt6Zf2JiF4RdknneU=;
+        h=X-UI-Sender-Class:Reply-To:From:Subject:To:Date;
+        b=bbaeXw5H/bDCvdAPC6SeWtzSL9tUCJp28svKvS8Hu9h451wPYbqkwUFECdTzTT2M4
+         HbFUNZgW7EnwaG66ArefqzMClpRG/4PUciWoTDw1fzarQtzahO1+uYwGCVD0slWID3
+         Hq++A43rWvEw4OjB49drGO2keoPrB/zH6Q4ojS38=
+Content-Language: en-GB
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: =?utf-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
-Cc: Florian Westphal <fw@strlen.de>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-ѽ҉ᶬḳ℠ <vtol@gmx.net> wrote:
-> Finally got it working in the inet table, seems being a matter of rule
-> position (handle value),
+The aim is to prevent DNS query hijacking (e.g. as Android tries)
 
-The handle has nothing to do with the ordering though, the handle is
-just a unique identifier.
+table nat {
+ =C2=A0=C2=A0=C2=A0 chain prerouting=C2=A0=C2=A0=C2=A0 { oif br-lan ip da=
+ddr !=3D 192.168.112.12 udp=20
+dport 53 redirect to ip daddr 192.168.112.12;=C2=A0 }
+}
 
-> chain forward { # handle 2
->                 type filter hook forward priority filter; policy drop;
->                 ct state established,related accept # handle 19
->                 ct state invalid drop # handle 20
->                 oif "pppoe-wan" tcp flags syn tcp option maxseg size set
-> 1300 # handle 21
->                 iif "br-lan" accept # handle 22
->                 oif "br-lan" accept # handle 23
->                 iif "br-mgt" accept # handle 24
->                 oif "br-mgt" accept # handle 25
+hooks/prio is otherwise defined but it prints this ominous error:
 
-iif { "br-lan", "br-mgt } accept
-oif { "br-lan", "br-mgt } accept
+Error: syntax error, unexpected semicolon
 
-or maybe
-iifname "br-*"
+Removing the offending semicolon it then prints:
 
-saves two rules.
+Error: syntax error, unexpected newline
 
-> but this does not
-> 
-> chain forward { # handle 2
->         type filter hook forward priority filter; policy drop;
->         ct state established,related accept # handle 19
->         ct state invalid drop # handle 20
->         iif "br-lan" accept # handle 21
->         oif "br-lan" accept # handle 22
->         iif "br-mgt" accept # handle 23
->         oif "br-mgt" accept # handle 24
->         oif "pppoe-wan" tcp flags syn tcp option maxseg size set 1300 #
-> handle 25
->         log prefix "DROP_FW " level debug flags all counter packets 0 bytes
-> 0 # handle 26
-> 
-> I someone could explain why I would be grateful because I do not comprehend
-> the varying outcome. Is it because after egress/ingress traffic hitting
-> handle 21/22 (bottom syntax) the packets are exiting the chain after been
-> processed and not reaching handle 25 for processing?
+It is a bit difficult to understand what the issue really is.
 
-Yes, this is no different than iptables, a verdict ends packet
-evaluation in that base chain hook.
+----
 
-So, if packet came from "br-lan" forward chain evaluation ends with handle 21.
+Alternatively, this
+
+table nat {
+ =C2=A0=C2=A0=C2=A0 chain prerouting=C2=A0=C2=A0=C2=A0 {=C2=A0 oif br-lan=
+ ip daddr !=3D 192.168.112.12 udp=20
+dport 53 ip daddr set 192.168.112.12; }
+}
+
+or a bit shorter even
+
+table nat {
+ =C2=A0=C2=A0=C2=A0 chain prerouting=C2=A0=C2=A0=C2=A0 {=C2=A0 oif br-lan=
+ ip daddr !=3D 192.168.112.12 udp=20
+dport 53 ip daddr 192.168.112.12; }
+}
+
+does not throw an error but I am not sure whether that achieves the in=20
+the context of the table?
+
