@@ -1,113 +1,147 @@
-From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
-Subject: Re: [nftables v0.9.2 | kernel 4.19.93] does redirect accept daddr?
-Date: Thu, 6 Feb 2020 16:10:18 +0000
-Message-ID: <5bedaa6a-5dd7-1fac-ab58-4a2c13727f74@gmx.net>
-References: <d7f31893-feaa-e138-ad80-95a37d275e7b@gmx.net>
- <235762f1-4d73-1b5d-6e5d-eaf59cb8e916@plushkava.net>
- <6f2040c1-f7cb-589d-fefd-743af3988703@gmx.net>
- <325b66b7-ae3a-dd64-c1d6-a65f7c929562@plushkava.net>
-Reply-To: vtol@gmx.net
+From: Jaga Doe <jaga.doe@aol.com>
+Subject: Re: Redirect bridged traffic
+Date: Thu, 6 Feb 2020 16:43:37 +0000 (UTC)
+Message-ID: <54308857.271223.1581007417521@mail.yahoo.com>
+References: <54308857.271223.1581007417521.ref@mail.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1581005418;
-        bh=d6jd5Ovw7bQSx4UrmRCQ3XLpmVmgUMFywxSi5HdMYBw=;
-        h=X-UI-Sender-Class:Reply-To:Subject:To:References:From:Date:
-         In-Reply-To;
-        b=S/mZjbGjaJQrgebkfAWkZaMKx5wWpOVGpTxHNYAE2gKqND4Ze2mBI+dK+TXwUXGbu
-         YQj1/9WUk6mUgUlWroCaEhWo85Ak56Lyme1p5SLS//LfPA7cFuggbiXBOk7WKxh+pn
-         4CIIUmmdKwGiYKGy9jdMW5NQbZsGqi7W4m2cZg/c=
-In-Reply-To: <325b66b7-ae3a-dd64-c1d6-a65f7c929562@plushkava.net>
-Content-Language: en-GB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1581007420; bh=2xHa5bxJ2BL8krUzC/xXu+gu0h7VGY35zxIs56kk9uE=; h=Date:From:To:Cc:Subject:References:From:Subject; b=d5ndMbglrAGw6Sv7jujoopExS7q4Un2W6PB5/6CeO3HrBqwbHd/myqmJR9sRJc5LVy9Dk5SrhgyHtx8KbZ/E+sCqmhw128pWx+q5PoGsbDsG0slraTChmX9lmGhjQeGrTIiryeFcG/zGb8oXEY723Tgrg/tqeJawYbsU1Bd/XGoPFZI1eqs7WnzY3Tzgt7Meg/yqjFyXkB9RwoG93cBE14cKWnGPRJdGKqbAed/CSn6E96bUZehYdumMrM6jVomIUEebK5CUr6bkmnSmQWDjTn/FCeUddZ+KlcXI0YDWMjcRW+2mL70dhEVJ4WrgPqCytSlHH6SwT7kisIRHDQkh5A==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: kfm@plushkava.net, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+To: fw@strlen.de
+Cc: netfilter@vger.kernel.org
 
-T24gMDYvMDIvMjAyMCAxNToyMywga2ZtQHBsdXNoa2F2YS5uZXQgd3JvdGU6DQo+IE9uIDA2
-LzAyLzIwMjAgMTI6MzIsING90onhtqzhuLPihKAgd3JvdGU6DQo+PiBPbiAwNi8wMi8yMDIw
-IDA3OjI5LCBrZm1AcGx1c2hrYXZhLm5ldCB3cm90ZToNCj4+PiBPbiAwNi8wMi8yMDIwIDAy
-OjAxLCDRvdKJ4bas4biz4oSgIHdyb3RlOg0KPj4+DQo+Pj4gVGhlICJyZWRpcmVjdCIgc3Rh
-dGVtZW50IHJlc3VsdHMgaW4gdGhlIHBhY2tldCBiZWluZyBkaXJlY3RlZCB0byB0aGUgDQo+
-Pj4gcHJpbWFyeSBhZGRyZXNzIG9mIHRoZSBpbnRlcmZhY2Ugb24gd2hpY2ggaXQgd2FzIHJl
-Y2VpdmVkLiBUaGF0J3MgDQo+Pj4gbm9uLW5lZ290aWFibGUuIEFzIHN1Y2gsICJpcCBkYWRk
-ciIgaXMgbm90IHN1cHBvcnRlZCBhcyBhbiBhc3BlY3Qgb2YgDQo+Pj4gaXRzIGdyYW1tYXIu
-IEluZGVlZCwgdGhhdCdzIG5vdCBldmVuIGhvdyBpdCB3b3JrcyBmb3IgdGhlICJkbmF0IiAN
-Cj4+PiBzdGF0ZW1lbnQuDQo+Pj4NCj4+PiBGb3IgaW5zdGFuY2UsIHRoZXNlIGFyZSB2YWxp
-ZDoNCj4+Pg0KPj4+IMKgwqAgcmVkaXJlY3QNCj4+PiDCoMKgIHJlZGlyZWN0IHRvIDo4MDgw
-DQo+Pj4NCj4+PiBUaGlzIGlzIGludmFsaWQ6DQo+Pj4NCj4+PiDCoMKgIHJlZGlyZWN0IHRv
-IDEuMi4zLjQ6ODA4MA0KPj4NCj4+IFN1cHBvc2UgdGhhdCBjYW4vc2hvdWxkIGJlIGluZmVy
-cmVkIGZyb20gdGhlIFdJS0kNCj4+DQo+PiAiSXMgYSBzcGVjaWFsIGNhc2Ugb2YgRE5BVCB3
-aGVyZSB0aGUgZGVzdGluYXRpb24gaXMgdGhlIGN1cnJlbnQgDQo+PiBtYWNoaW5lLiINCj4+
-DQo+Pj4NCj4+PiBIb3dldmVyLCB0aGVzZSBhcmUgdmFsaWQ6DQo+Pj4NCj4+PiDCoMKgIGRu
-YXQgdG8gMS4yLjMuNA0KPj4+IMKgwqAgZG5hdCB0byAxLjIuMy40OjgwODANCj4+Pg0KPj4+
-IE9uY2UgeW91IGFkZHJlc3MgdGhpcywgYW55IHJlbWFpbmluZyBlcnJvcnMgc2hvdWxkIGJl
-Z2luIHRvIG1ha2UgDQo+Pj4gbW9yZSBzZW5zZS4NCj4+DQo+PiBSaWdodCwgbm8gZXJyb3Ig
-YmVpbmcgcHJpbnRlZCB3aXRoOg0KPj4NCj4+IHRhYmxlIGlwIG5hdCB7ICMgaGFuZGxlIDcN
-Cj4+IMKgwqDCoMKgwqDCoMKgwqAgY2hhaW4gaW5wdXQgeyAjIGhhbmRsZSAxDQo+PiDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB0eXBlIG5hdCBob29rIGlucHV0IHByaW9y
-aXR5IDEwMDsgcG9saWN5IGFjY2VwdDsNCj4+IMKgwqDCoMKgwqDCoMKgwqAgfQ0KPj4NCj4+
-IMKgwqDCoMKgwqDCoMKgwqAgY2hhaW4gb3V0cHV0IHsgIyBoYW5kbGUgMg0KPj4gwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdHlwZSBuYXQgaG9vayBvdXRwdXQgcHJpb3Jp
-dHkgLTEwMDsgcG9saWN5IGFjY2VwdDsNCj4+IMKgwqDCoMKgwqDCoMKgwqAgfQ0KPj4NCj4+
-IMKgwqDCoMKgwqDCoMKgwqAgY2hhaW4gcHJlcm91dGluZyB7ICMgaGFuZGxlIDMNCj4+IMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHR5cGUgbmF0IGhvb2sgcHJlcm91dGlu
-ZyBwcmlvcml0eSAtMTAwOyBwb2xpY3kgYWNjZXB0Ow0KPj4gwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgaWlmICJici1sYW4iIHVkcCBkcG9ydCA1MyBkbmF0IHRvIDE5Mi4x
-NjguMTEyLjEyICMgDQo+PiBoYW5kbGUgNQ0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgaWlmICJici1sYW4iIHRjcCBkcG9ydCA1MyBkbmF0IHRvIDE5Mi4xNjguMTEy
-LjEyICMgDQo+PiBoYW5kbGUgNg0KPj4gwqDCoMKgwqDCoMKgwqDCoCB9DQo+Pg0KPj4gwqDC
-oMKgwqDCoMKgwqDCoCBjaGFpbiBwb3N0cm91dGluZyB7ICMgaGFuZGxlIDQNCj4+IMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHR5cGUgbmF0IGhvb2sgcG9zdHJvdXRpbmcg
-cHJpb3JpdHkgMTAwOyBwb2xpY3kgYWNjZXB0Ow0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqAgb2lmICJwcHBvZS13YW4iIG1hc3F1ZXJhZGUgIyBoYW5kbGUgNw0KPj4g
-wqDCoMKgwqDCoMKgwqDCoCB9DQo+PiB9DQo+Pg0KPj4NCj4+IFlldCB3aGVuIHBhY2tldCBk
-dW1waW5nIG9uIHRoZSBkb3duc3RyZWFtIGNsaWVudCB0aGUgY2FwdHVyZSBzaG93cyBubyAN
-Cj4+IHNpZ24gb2YgdGhlIHJ1bGUgdGFraW5nIGVmZmVjdCBidXQgaW5zdGVhZCB0aGUgY2xp
-ZW50IGNvbW11bmljYXRpbmcgDQo+PiAoZWdyZXNzIGFuZCBpbmdyZXNzKSB1bmFiYXRlZCB3
-aXRoIHRoZSBETlMgc2VydmVyIHNldCBieSB0aGUgY2xpZW50LiANCj4+IFNpbmNlIHRoaXMg
-YmVpbmcgcHJlLXJvdXRpbmcgdHJhY2luZy9sb2dnaW5nIHNlZW1zIG5vdCBhcHBsaWNhYmxl
-IGluIA0KPj4gb3JkZXIgdG8gZmlndXJlIG91dCB3aGF0IGlzIChub3QpIGhhcHBlbmluZy4N
-Cj4NCj4gSXQgaXMgYXBwbGljYWJsZS4gVGhlIHVzZSBvZiBkbmF0IChvciByZWRpcmVjdCkg
-YW1vdW50cyB0byBhIG1vc3RseSANCj4gdHJhbnNwYXJlbnQgZm9ybSBvZiBpbnRlcmNlcHRp
-b24gYXQgTGF5ZXIgNC4gVGhlIGNsaWVudCdzIHJlc29sdmVyIA0KPiB3aWxsIHNlbmQgcGFj
-a2V0cyB0byB3aGljaGV2ZXIgbmFtZXNlcnZlciBpdCBpcyBjb25maWd1cmVkIHRvIHVzZS4g
-DQo+IFRoZXNlIHBhY2tldHMgc2hvdWxkIGJlIGR1bHkgaW50ZXJjZXB0ZWQgYW5kIHJlZGly
-ZWN0ZWQgYnkgdGhlIHJ1bGVzIA0KPiB5b3UndmUgc2hvd24uIFJlc3BvbnNlcyB3aWxsIGFw
-cGVhciB0byB0aGUgY2xpZW50IGFzIG9yaWdpbmF0aW5nIGZyb20gDQo+IHNhaWQgbmFtZXNl
-cnZlciwgb3dpbmcgdG8gdGhlIGVmZmVjdCBvZiBkbmF0IGFsb25nIHRoZSBpbnZlcnNlIHBh
-dGguDQoNClRoYXQgaXMgdGhlIHdlaXJkIHBhcnQsIEkgd291bGQgaGF2ZSBleHBlY3RlZCB0
-aG9zZSBzaG93aW5nIHRoZSBpcCBvZiANCnRoZSBMQU4gcmVzb2x2ZXIgaW5zdGFuY2UgYW5k
-IG5vdCB0aGUgV0FOIG9uZSBzcGVjaWZpZWQgb24gdGhlIGNsaWVudA0KDQo+DQo+IEknZCBz
-dWdnZXN0IHRha2luZyBhIGNsb3NlciBsb29rIGF0IHdoYXQncyBoYXBwZW5pbmcgYXQgdGhl
-IA0KPiBpbnRlcmNlcHRpbmcgaG9zdCB3aXRoIHRoZSBsaWtlcyBvZiBjb3VudGVyLCBsb2cs
-IG5mdHJhY2Ugc2V0IDEsIA0KPiB0Y3BkdW1wIGV0Yy4gWW91IGNvdWxkIGFsc28gdXNlIHRo
-ZSBjb25udHJhY2sgdXNlcnNwYWNlIHRvb2wgdG8gDQo+IG9ic2VydmUgYW5kIG1vbml0b3Ig
-dGhlIHJlbGV2YW50IHN0YXRlIGVudHJpZXMgaW4geW91ciBjb25uZWN0aW9uIA0KPiB0cmFj
-a2luZyB0YWJsZS4NCj4NCg0KSW5zdGVhZCBvZiBkdW1waW5nIHBhY2tldHMgb24gZWFjaCB0
-cmF2ZXJzaW5nIGludGVyZmFjZSBJIG1hZGUgc29ydCBvZiBhIA0KbGl0bXVzIHRlc3QgLSBz
-aG91bGQgaGF2ZSB0aG91Z2h0IG9mIGl0IGZyb20gdGhlIHN0YXJ0IC0gYW5kIHN0b3BwZWQg
-dGhlIA0KTEFOIHJlc29sdmVyIGluc3RhbmNlIGFuZCBETlMgc3RvcHBlZCBmb3IgdGhlIGNs
-aWVudCBhcyB3ZWxsLCBkZXNwaXRlIA0KaGF2aW5nIHNwZWNpZmllZCBhIFdBTiByZXNvbHZl
-ci4NCg0KVGhhbmtzIGZvciB0aGUgaW5wdXQvZmVlZGJhY2suDQoNCk4uQi4gaW4gdGhlIHNw
-aXJpdCBvZiB0aGUgdG9waWMgLSBkYWRkciB3b3JrcyBhcyB3ZWxsIChhcyBleHBlY3RlZCkg
-LSANCnRoZSBydWxlIG5vdyByZWFkaW5nOg0KDQp0YWJsZSBpcCBuYXQgeyAjIGhhbmRsZSAz
-NQ0KIMKgwqDCoMKgwqDCoMKgIGNoYWluIGlucHV0IHsgIyBoYW5kbGUgMQ0KIMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB0eXBlIG5hdCBob29rIGlucHV0IHByaW9yaXR5IDEw
-MDsgcG9saWN5IGFjY2VwdDsNCiDCoMKgwqDCoMKgwqDCoCB9DQoNCiDCoMKgwqDCoMKgwqDC
-oCBjaGFpbiBvdXRwdXQgeyAjIGhhbmRsZSAyDQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgIHR5cGUgbmF0IGhvb2sgb3V0cHV0IHByaW9yaXR5IC0xMDA7IHBvbGljeSBhY2Nl
-cHQ7DQogwqDCoMKgwqDCoMKgwqAgfQ0KDQogwqDCoMKgwqDCoMKgwqAgY2hhaW4gcHJlcm91
-dGluZyB7ICMgaGFuZGxlIDMNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdHlw
-ZSBuYXQgaG9vayBwcmVyb3V0aW5nIHByaW9yaXR5IC0xMDA7IHBvbGljeSBhY2NlcHQ7DQog
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlpZiAiYnItbGFuIiBpcCBkYWRkciAh
-PSAxOTIuMTY4LjExMi4xMiB1ZHAgZHBvcnQgNTMgDQpkbmF0IHRvIDE5Mi4xNjguMTEyLjEy
-ICMgaGFuZGxlIDUNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWlmICJici1s
-YW4iIGlwIGRhZGRyICE9IDE5Mi4xNjguMTEyLjEyIHRjcCBkcG9ydCA1MyANCmRuYXQgdG8g
-MTkyLjE2OC4xMTIuMTIgIyBoYW5kbGUgNg0KIMKgwqDCoMKgwqDCoMKgIH0NCg0KIMKgwqDC
-oMKgwqDCoMKgIGNoYWluIHBvc3Ryb3V0aW5nIHsgIyBoYW5kbGUgNA0KIMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoCB0eXBlIG5hdCBob29rIHBvc3Ryb3V0aW5nIHByaW9yaXR5
-IDEwMDsgcG9saWN5IGFjY2VwdDsNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-b2lmICJwcHBvZS13YW4iIG1hc3F1ZXJhZGUgIyBoYW5kbGUgNw0KIMKgwqDCoMKgwqDCoMKg
-IH0NCn0NCg0KDQoNCg==
+You are totally right. Adding an IP address to the bridge, is passing the r=
+edirect drop stage. I thought that having all SRC/DST parameters set in the=
+ package, is supposed to have the data flow completed.
+However. after adding the bridge IP, the package seems that is getting lost=
+ in another step. In order to troubleshoot the issue I have created all hoo=
+ks for all chains in ip, inet and bridge tables. For understanding easier w=
+here the package is I have created the tables with the naming tb_<table typ=
+e> and rules ch_<chain type>_<hook>.
+
+ The nftrace feature is allowing me to follow how the package is traversing=
+ the network stack:
+
+trace id ff3b1d8d bridge tb_bridge ch_filter_prerouting packet: iif "eth1" =
+ether saddr f4:8c:50:fa:1f:e5 ether daddr 00:0c:29:15:7b:a0 ip saddr 192.16=
+8.0.21 ip daddr 192.168.0.123 ip dscp 0x04 ip ecn not-ect ip ttl 64 ip id 6=
+4068 ip protocol tcp ip length 60 tcp sport 46206 tcp dport 3000 tcp flags =
+=3D=3D syn tcp window 64240=20
+trace id ff3b1d8d bridge tb_bridge ch_filter_prerouting rule log tcp dport =
+3000 meta pkttype set host ether daddr set 00:0c:29:15:7b:a0 counter packet=
+s 8 bytes 480 meta nftrace set 1 (verdict continue)
+trace id ff3b1d8d bridge tb_bridge ch_filter_prerouting rule log tcp dport =
+3000 comment "bridge-filter-prerouting" (verdict continue)
+trace id ff3b1d8d bridge tb_bridge ch_filter_prerouting verdict continue=20
+trace id ff3b1d8d bridge tb_bridge ch_filter_prerouting policy accept=20
+trace id ff3b1d8d inet tb_inet ch_nat_prerouting packet: iif "br0" ether sa=
+ddr f4:8c:50:fa:1f:e5 ether daddr 00:0c:29:15:7b:a0 ip saddr 192.168.0.21 i=
+p daddr 192.168.0.123 ip dscp 0x04 ip ecn not-ect ip ttl 64 ip id 64068 ip =
+protocol tcp ip length 60 tcp sport 46206 tcp dport 3000 tcp flags =3D=3D s=
+yn tcp window 64240=20
+trace id ff3b1d8d inet tb_inet ch_nat_prerouting rule log tcp dport 3000 co=
+unter packets 8 bytes 480 redirect to :3000 (verdict accept)
+trace id ff3b1d8d inet tb_inet ch_filter_prerouting packet: iif "br0" ether=
+ saddr f4:8c:50:fa:1f:e5 ether daddr 00:0c:29:15:7b:a0 ip saddr 192.168.0.2=
+1 ip daddr 192.168.100.10 ip dscp 0x04 ip ecn not-ect ip ttl 64 ip id 64068=
+ ip protocol tcp ip length 60 tcp sport 46206 tcp dport 3000 tcp flags =3D=
+=3D syn tcp window 64240=20
+trace id ff3b1d8d inet tb_inet ch_filter_prerouting rule log tcp dport 3000=
+ comment "inet-filter-prerouting" (verdict continue)
+trace id ff3b1d8d inet tb_inet ch_filter_prerouting verdict continue=20
+trace id ff3b1d8d inet tb_inet ch_filter_prerouting policy accept=20
+trace id ff3b1d8d ip tb_ip ch_filter_prerouting packet: iif "br0" ether sad=
+dr f4:8c:50:fa:1f:e5 ether daddr 00:0c:29:15:7b:a0 ip saddr 192.168.0.21 ip=
+ daddr 192.168.100.10 ip dscp 0x04 ip ecn not-ect ip ttl 64 ip id 64068 ip =
+length 60 tcp sport 46206 tcp dport 3000 tcp flags =3D=3D syn tcp window 64=
+240=20
+trace id ff3b1d8d ip tb_ip ch_filter_prerouting rule log tcp dport 3000 com=
+ment "ip-filter-prerouting" (verdict continue)
+trace id ff3b1d8d ip tb_ip ch_filter_prerouting verdict continue=20
+trace id ff3b1d8d ip tb_ip ch_filter_prerouting policy accept=20
+
+From this capture I can see that the package is going throuh prerouting in =
+all tables, the last one being ip table. Here even though the verdict is co=
+ntinue and the policy accept, the package cannot be seen in other hooks inp=
+ut, forward, output or postrouting (therefore the application listening loc=
+ally to 3000 is not getting the connection request). It seems that the pack=
+age is simply vanishing.
+
+The nstat is returning:
+#3661.1804289383 sampling_interval=3D10 time_const=3D60
+IpInReceives                    66                 6.6
+IpInAddrErrors                  0                  0.4
+IpInDelivers                    53                 4.6
+IpOutRequests                   52                 4.5
+IpOutNoRoutes                   1                  0.1
+TcpInSegs                       53                 4.6
+TcpOutSegs                      56                 4.7
+TcpRetransSegs                  2                  0.1
+Ip6InReceives                   1                  0.1
+Ip6InMcastPkts                  1                  0.1
+Ip6InOctets                     72                 6.4
+Ip6OutOctets                    0                  0.6
+Ip6InMcastOctets                72                 6.3
+Ip6OutMcastOctets               0                  0.6
+Ip6InNoECTPkts                  1                  0.1
+TcpExtDelayedACKs               1                  0.1
+TcpExtTCPHPHits                 0                  0.3
+TcpExtTCPPureAcks               14                 0.9
+TcpExtTCPHPAcks                 32                 2.7
+TcpExtTCPLossProbes             3                  0.1
+TcpExtTCPBacklogCoalesce        1                  0.1
+TcpExtTCPDSACKRecv              2                  0.1
+TcpExtIPReversePathFilter       10                 1.2
+TcpExtTCPAutoCorking            12                 1.2
+TcpExtTCPOrigDataSent           52                 4.3
+TcpExtTCPDelivered              54                 4.4
+IpExtInOctets                   4275             526.9
+IpExtOutOctets                  23132           1469.2
+IpExtInBcastOctets              0                  4.4
+IpExtInNoECTPkts                66                 6.6
+
+Any idea on how to troubleshoot?
+
+Thanks,
+Jaga
+
+-----Original Message-----
+From: Florian Westphal <fw@strlen.de>
+To: Jaga Doe <jaga.doe@aol.com>
+Cc: fw <fw@strlen.de>; netfilter <netfilter@vger.kernel.org>
+Sent: Thu, Feb 6, 2020 10:46 am
+Subject: Re: Redirect bridged traffic
+
+Jaga Doe <jaga.doe@aol.com> wrote:
+>=C2=A0 =C2=A0 =C2=A0  Hello,
+>=20
+>=C2=A0 =C2=A0 I have discovered a great mechanism of understanding what is=
+ happening, but setting nftrace flag. With that I can see the dataflow:
+>=20
+> trace id 9af9e0b6 bridge tbrFilter cbrRedirect packet: iif "eth1" ether s=
+addr f4:8c:50:fa:1f:e5 ether daddr 00:0c:29:15:7b:a0 ip saddr 192.168.0.21 =
+ip daddr 192.168.0.123 ip dscp 0x04 ip ecn not-ect ip ttl 64 ip id 18388 ip=
+ protocol tcp ip length 60 tcp sport 40902 tcp dport 3000 tcp flags =3D=3D =
+syn tcp window 64240=20
+> trace id 9af9e0b6 bridge tbrFilter cbrRedirect rule log tcp dport 3000 me=
+ta pkttype set host ether daddr set 00:0c:29:15:7b:a0 counter packets 5 byt=
+es 300 meta nftrace set 1 (verdict continue)
+> trace id 9af9e0b6 bridge tbrFilter cbrRedirect verdict continue=20
+> trace id 9af9e0b6 bridge tbrFilter cbrRedirect policy accept=20
+> trace id 9af9e0b6 inet tlcRedirect clcRedirect packet: iif "br0" ether sa=
+ddr f4:8c:50:fa:1f:e5 ether daddr 00:0c:29:15:7b:a0 ip saddr 192.168.0.21 i=
+p daddr 192.168.0.123 ip dscp 0x04 ip ecn not-ect ip ttl 64 ip id 18388 ip =
+protocol tcp ip length 60 tcp sport 40902 tcp dport 3000 tcp flags =3D=3D s=
+yn tcp window 64240=20
+> trace id 9af9e0b6 inet tlcRedirect clcRedirect rule log tcp dport 3000 co=
+unter packets 5 bytes 300 redirect to :3000 (verdict drop)
+>=20
+> I don't understand why the redirect rule is leading to the drop verdict.
+
+Most simple explanation: your bridge doesn't have an ip address
+(redirect is really just 'dnat to' with the primary address of the
+ incoming interface).
+
