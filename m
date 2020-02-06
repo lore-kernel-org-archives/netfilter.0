@@ -1,48 +1,113 @@
-From: "" <kfm@plushkava.net>
+From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
 Subject: Re: [nftables v0.9.2 | kernel 4.19.93] does redirect accept daddr?
-Date: Thu, 6 Feb 2020 15:37:00 +0000
-Message-ID: <c039bd75-e337-1fb9-520b-c684a646bce5@plushkava.net>
+Date: Thu, 6 Feb 2020 16:10:18 +0000
+Message-ID: <5bedaa6a-5dd7-1fac-ab58-4a2c13727f74@gmx.net>
 References: <d7f31893-feaa-e138-ad80-95a37d275e7b@gmx.net>
  <235762f1-4d73-1b5d-6e5d-eaf59cb8e916@plushkava.net>
  <6f2040c1-f7cb-589d-fefd-743af3988703@gmx.net>
  <325b66b7-ae3a-dd64-c1d6-a65f7c929562@plushkava.net>
+Reply-To: vtol@gmx.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-         h=subject:from:to:references:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=k
-        wZtjzlgH01YIJiSvrrNBbk8kPF1uXor84+aXIjIEf8=; b=hf7sYzXmCL6FarYfo
-        HeVx+fYGce+Uzs58PNisHgk8Em/VbIZallGN6qYKvSEjvTnY+p14hR0GgFyudtWo
-        lQ9fM5oRA+bW/TnscH26uZlEANlosRiaB4ZZCcl0wdbPdVi/xFUhYbB0olnwQYc1
-        tB4qMww60qEz9zZeHWRJWVMU2croyin6AyLcf8nhhP735c0m9XDLrV3x7VuSSDXV
-        Ly7UBPLo3VhW6CL+02yAwS41AyslANKZzmGqx/6agJbsqBXH3wt+3V+7e5tX2ndm
-        bARnodJiFwH2Auq/XM+9Pq7HvEoWqwzcCEq9isXoBb9caL+zMQNxLgnyg248P80L
-        Wr6uQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=kwZtjzlgH01YIJiSvrrNBbk8kPF1uXor84+aXIjIE
-        f8=; b=vOXH/RrzN49wHnvpON0wS0F+R3tS0GfTV0IaW2yyJqGWuH89/T4696F/4
-        JliItMxkxcRTHqfVg3Q5pWbz1axZNfodfISc1do6gj25k7PkSpppRVZX4AY322hk
-        oHeHTgXBqlzy0bNYyIjznNSwIvkHxt0+8aVOHz+besUDpLPT5LGvfArVggWLLfFk
-        ASYV2d8ZUhn+LwqYj8SvAqaMYgxbabSceAePYF9VMy/ZzZy9YHCOo3WTVGKs12IK
-        kqWVR54oOO5cfIg/0ldxlHlYXFmJZnFeW/NbG0gDpyg4bvI6Y5klMS1eebfwe/gv
-        d2g11QzqwDimcythQg7F+VsFTaIDg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1581005418;
+        bh=d6jd5Ovw7bQSx4UrmRCQ3XLpmVmgUMFywxSi5HdMYBw=;
+        h=X-UI-Sender-Class:Reply-To:Subject:To:References:From:Date:
+         In-Reply-To;
+        b=S/mZjbGjaJQrgebkfAWkZaMKx5wWpOVGpTxHNYAE2gKqND4Ze2mBI+dK+TXwUXGbu
+         YQj1/9WUk6mUgUlWroCaEhWo85Ak56Lyme1p5SLS//LfPA7cFuggbiXBOk7WKxh+pn
+         4CIIUmmdKwGiYKGy9jdMW5NQbZsGqi7W4m2cZg/c=
 In-Reply-To: <325b66b7-ae3a-dd64-c1d6-a65f7c929562@plushkava.net>
 Content-Language: en-GB
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: kfm@plushkava.net, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 06/02/2020 15:23, kfm@plushkava.net wrote:
-> 
-> It is applicable. The use of dnat (or redirect) amounts to a mostly 
-> transparent form of interception at Layer 4.
-
-Self-correction: Layer 3 and/or 4, depending on the rule in question.
-
--- 
-Kerin Millar
+T24gMDYvMDIvMjAyMCAxNToyMywga2ZtQHBsdXNoa2F2YS5uZXQgd3JvdGU6DQo+IE9uIDA2
+LzAyLzIwMjAgMTI6MzIsING90onhtqzhuLPihKAgd3JvdGU6DQo+PiBPbiAwNi8wMi8yMDIw
+IDA3OjI5LCBrZm1AcGx1c2hrYXZhLm5ldCB3cm90ZToNCj4+PiBPbiAwNi8wMi8yMDIwIDAy
+OjAxLCDRvdKJ4bas4biz4oSgIHdyb3RlOg0KPj4+DQo+Pj4gVGhlICJyZWRpcmVjdCIgc3Rh
+dGVtZW50IHJlc3VsdHMgaW4gdGhlIHBhY2tldCBiZWluZyBkaXJlY3RlZCB0byB0aGUgDQo+
+Pj4gcHJpbWFyeSBhZGRyZXNzIG9mIHRoZSBpbnRlcmZhY2Ugb24gd2hpY2ggaXQgd2FzIHJl
+Y2VpdmVkLiBUaGF0J3MgDQo+Pj4gbm9uLW5lZ290aWFibGUuIEFzIHN1Y2gsICJpcCBkYWRk
+ciIgaXMgbm90IHN1cHBvcnRlZCBhcyBhbiBhc3BlY3Qgb2YgDQo+Pj4gaXRzIGdyYW1tYXIu
+IEluZGVlZCwgdGhhdCdzIG5vdCBldmVuIGhvdyBpdCB3b3JrcyBmb3IgdGhlICJkbmF0IiAN
+Cj4+PiBzdGF0ZW1lbnQuDQo+Pj4NCj4+PiBGb3IgaW5zdGFuY2UsIHRoZXNlIGFyZSB2YWxp
+ZDoNCj4+Pg0KPj4+IMKgwqAgcmVkaXJlY3QNCj4+PiDCoMKgIHJlZGlyZWN0IHRvIDo4MDgw
+DQo+Pj4NCj4+PiBUaGlzIGlzIGludmFsaWQ6DQo+Pj4NCj4+PiDCoMKgIHJlZGlyZWN0IHRv
+IDEuMi4zLjQ6ODA4MA0KPj4NCj4+IFN1cHBvc2UgdGhhdCBjYW4vc2hvdWxkIGJlIGluZmVy
+cmVkIGZyb20gdGhlIFdJS0kNCj4+DQo+PiAiSXMgYSBzcGVjaWFsIGNhc2Ugb2YgRE5BVCB3
+aGVyZSB0aGUgZGVzdGluYXRpb24gaXMgdGhlIGN1cnJlbnQgDQo+PiBtYWNoaW5lLiINCj4+
+DQo+Pj4NCj4+PiBIb3dldmVyLCB0aGVzZSBhcmUgdmFsaWQ6DQo+Pj4NCj4+PiDCoMKgIGRu
+YXQgdG8gMS4yLjMuNA0KPj4+IMKgwqAgZG5hdCB0byAxLjIuMy40OjgwODANCj4+Pg0KPj4+
+IE9uY2UgeW91IGFkZHJlc3MgdGhpcywgYW55IHJlbWFpbmluZyBlcnJvcnMgc2hvdWxkIGJl
+Z2luIHRvIG1ha2UgDQo+Pj4gbW9yZSBzZW5zZS4NCj4+DQo+PiBSaWdodCwgbm8gZXJyb3Ig
+YmVpbmcgcHJpbnRlZCB3aXRoOg0KPj4NCj4+IHRhYmxlIGlwIG5hdCB7ICMgaGFuZGxlIDcN
+Cj4+IMKgwqDCoMKgwqDCoMKgwqAgY2hhaW4gaW5wdXQgeyAjIGhhbmRsZSAxDQo+PiDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB0eXBlIG5hdCBob29rIGlucHV0IHByaW9y
+aXR5IDEwMDsgcG9saWN5IGFjY2VwdDsNCj4+IMKgwqDCoMKgwqDCoMKgwqAgfQ0KPj4NCj4+
+IMKgwqDCoMKgwqDCoMKgwqAgY2hhaW4gb3V0cHV0IHsgIyBoYW5kbGUgMg0KPj4gwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdHlwZSBuYXQgaG9vayBvdXRwdXQgcHJpb3Jp
+dHkgLTEwMDsgcG9saWN5IGFjY2VwdDsNCj4+IMKgwqDCoMKgwqDCoMKgwqAgfQ0KPj4NCj4+
+IMKgwqDCoMKgwqDCoMKgwqAgY2hhaW4gcHJlcm91dGluZyB7ICMgaGFuZGxlIDMNCj4+IMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHR5cGUgbmF0IGhvb2sgcHJlcm91dGlu
+ZyBwcmlvcml0eSAtMTAwOyBwb2xpY3kgYWNjZXB0Ow0KPj4gwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgaWlmICJici1sYW4iIHVkcCBkcG9ydCA1MyBkbmF0IHRvIDE5Mi4x
+NjguMTEyLjEyICMgDQo+PiBoYW5kbGUgNQ0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqAgaWlmICJici1sYW4iIHRjcCBkcG9ydCA1MyBkbmF0IHRvIDE5Mi4xNjguMTEy
+LjEyICMgDQo+PiBoYW5kbGUgNg0KPj4gwqDCoMKgwqDCoMKgwqDCoCB9DQo+Pg0KPj4gwqDC
+oMKgwqDCoMKgwqDCoCBjaGFpbiBwb3N0cm91dGluZyB7ICMgaGFuZGxlIDQNCj4+IMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHR5cGUgbmF0IGhvb2sgcG9zdHJvdXRpbmcg
+cHJpb3JpdHkgMTAwOyBwb2xpY3kgYWNjZXB0Ow0KPj4gwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgb2lmICJwcHBvZS13YW4iIG1hc3F1ZXJhZGUgIyBoYW5kbGUgNw0KPj4g
+wqDCoMKgwqDCoMKgwqDCoCB9DQo+PiB9DQo+Pg0KPj4NCj4+IFlldCB3aGVuIHBhY2tldCBk
+dW1waW5nIG9uIHRoZSBkb3duc3RyZWFtIGNsaWVudCB0aGUgY2FwdHVyZSBzaG93cyBubyAN
+Cj4+IHNpZ24gb2YgdGhlIHJ1bGUgdGFraW5nIGVmZmVjdCBidXQgaW5zdGVhZCB0aGUgY2xp
+ZW50IGNvbW11bmljYXRpbmcgDQo+PiAoZWdyZXNzIGFuZCBpbmdyZXNzKSB1bmFiYXRlZCB3
+aXRoIHRoZSBETlMgc2VydmVyIHNldCBieSB0aGUgY2xpZW50LiANCj4+IFNpbmNlIHRoaXMg
+YmVpbmcgcHJlLXJvdXRpbmcgdHJhY2luZy9sb2dnaW5nIHNlZW1zIG5vdCBhcHBsaWNhYmxl
+IGluIA0KPj4gb3JkZXIgdG8gZmlndXJlIG91dCB3aGF0IGlzIChub3QpIGhhcHBlbmluZy4N
+Cj4NCj4gSXQgaXMgYXBwbGljYWJsZS4gVGhlIHVzZSBvZiBkbmF0IChvciByZWRpcmVjdCkg
+YW1vdW50cyB0byBhIG1vc3RseSANCj4gdHJhbnNwYXJlbnQgZm9ybSBvZiBpbnRlcmNlcHRp
+b24gYXQgTGF5ZXIgNC4gVGhlIGNsaWVudCdzIHJlc29sdmVyIA0KPiB3aWxsIHNlbmQgcGFj
+a2V0cyB0byB3aGljaGV2ZXIgbmFtZXNlcnZlciBpdCBpcyBjb25maWd1cmVkIHRvIHVzZS4g
+DQo+IFRoZXNlIHBhY2tldHMgc2hvdWxkIGJlIGR1bHkgaW50ZXJjZXB0ZWQgYW5kIHJlZGly
+ZWN0ZWQgYnkgdGhlIHJ1bGVzIA0KPiB5b3UndmUgc2hvd24uIFJlc3BvbnNlcyB3aWxsIGFw
+cGVhciB0byB0aGUgY2xpZW50IGFzIG9yaWdpbmF0aW5nIGZyb20gDQo+IHNhaWQgbmFtZXNl
+cnZlciwgb3dpbmcgdG8gdGhlIGVmZmVjdCBvZiBkbmF0IGFsb25nIHRoZSBpbnZlcnNlIHBh
+dGguDQoNClRoYXQgaXMgdGhlIHdlaXJkIHBhcnQsIEkgd291bGQgaGF2ZSBleHBlY3RlZCB0
+aG9zZSBzaG93aW5nIHRoZSBpcCBvZiANCnRoZSBMQU4gcmVzb2x2ZXIgaW5zdGFuY2UgYW5k
+IG5vdCB0aGUgV0FOIG9uZSBzcGVjaWZpZWQgb24gdGhlIGNsaWVudA0KDQo+DQo+IEknZCBz
+dWdnZXN0IHRha2luZyBhIGNsb3NlciBsb29rIGF0IHdoYXQncyBoYXBwZW5pbmcgYXQgdGhl
+IA0KPiBpbnRlcmNlcHRpbmcgaG9zdCB3aXRoIHRoZSBsaWtlcyBvZiBjb3VudGVyLCBsb2cs
+IG5mdHJhY2Ugc2V0IDEsIA0KPiB0Y3BkdW1wIGV0Yy4gWW91IGNvdWxkIGFsc28gdXNlIHRo
+ZSBjb25udHJhY2sgdXNlcnNwYWNlIHRvb2wgdG8gDQo+IG9ic2VydmUgYW5kIG1vbml0b3Ig
+dGhlIHJlbGV2YW50IHN0YXRlIGVudHJpZXMgaW4geW91ciBjb25uZWN0aW9uIA0KPiB0cmFj
+a2luZyB0YWJsZS4NCj4NCg0KSW5zdGVhZCBvZiBkdW1waW5nIHBhY2tldHMgb24gZWFjaCB0
+cmF2ZXJzaW5nIGludGVyZmFjZSBJIG1hZGUgc29ydCBvZiBhIA0KbGl0bXVzIHRlc3QgLSBz
+aG91bGQgaGF2ZSB0aG91Z2h0IG9mIGl0IGZyb20gdGhlIHN0YXJ0IC0gYW5kIHN0b3BwZWQg
+dGhlIA0KTEFOIHJlc29sdmVyIGluc3RhbmNlIGFuZCBETlMgc3RvcHBlZCBmb3IgdGhlIGNs
+aWVudCBhcyB3ZWxsLCBkZXNwaXRlIA0KaGF2aW5nIHNwZWNpZmllZCBhIFdBTiByZXNvbHZl
+ci4NCg0KVGhhbmtzIGZvciB0aGUgaW5wdXQvZmVlZGJhY2suDQoNCk4uQi4gaW4gdGhlIHNw
+aXJpdCBvZiB0aGUgdG9waWMgLSBkYWRkciB3b3JrcyBhcyB3ZWxsIChhcyBleHBlY3RlZCkg
+LSANCnRoZSBydWxlIG5vdyByZWFkaW5nOg0KDQp0YWJsZSBpcCBuYXQgeyAjIGhhbmRsZSAz
+NQ0KIMKgwqDCoMKgwqDCoMKgIGNoYWluIGlucHV0IHsgIyBoYW5kbGUgMQ0KIMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB0eXBlIG5hdCBob29rIGlucHV0IHByaW9yaXR5IDEw
+MDsgcG9saWN5IGFjY2VwdDsNCiDCoMKgwqDCoMKgwqDCoCB9DQoNCiDCoMKgwqDCoMKgwqDC
+oCBjaGFpbiBvdXRwdXQgeyAjIGhhbmRsZSAyDQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgIHR5cGUgbmF0IGhvb2sgb3V0cHV0IHByaW9yaXR5IC0xMDA7IHBvbGljeSBhY2Nl
+cHQ7DQogwqDCoMKgwqDCoMKgwqAgfQ0KDQogwqDCoMKgwqDCoMKgwqAgY2hhaW4gcHJlcm91
+dGluZyB7ICMgaGFuZGxlIDMNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdHlw
+ZSBuYXQgaG9vayBwcmVyb3V0aW5nIHByaW9yaXR5IC0xMDA7IHBvbGljeSBhY2NlcHQ7DQog
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlpZiAiYnItbGFuIiBpcCBkYWRkciAh
+PSAxOTIuMTY4LjExMi4xMiB1ZHAgZHBvcnQgNTMgDQpkbmF0IHRvIDE5Mi4xNjguMTEyLjEy
+ICMgaGFuZGxlIDUNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgaWlmICJici1s
+YW4iIGlwIGRhZGRyICE9IDE5Mi4xNjguMTEyLjEyIHRjcCBkcG9ydCA1MyANCmRuYXQgdG8g
+MTkyLjE2OC4xMTIuMTIgIyBoYW5kbGUgNg0KIMKgwqDCoMKgwqDCoMKgIH0NCg0KIMKgwqDC
+oMKgwqDCoMKgIGNoYWluIHBvc3Ryb3V0aW5nIHsgIyBoYW5kbGUgNA0KIMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoCB0eXBlIG5hdCBob29rIHBvc3Ryb3V0aW5nIHByaW9yaXR5
+IDEwMDsgcG9saWN5IGFjY2VwdDsNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
+b2lmICJwcHBvZS13YW4iIG1hc3F1ZXJhZGUgIyBoYW5kbGUgNw0KIMKgwqDCoMKgwqDCoMKg
+IH0NCn0NCg0KDQoNCg==
