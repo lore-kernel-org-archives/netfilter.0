@@ -1,51 +1,87 @@
-From: pauloric@contatogs.com.br
-Subject: Re: [nftables] xtables-addons - GeoIP/ASN filter and lscan
- replicable?
-Date: Thu, 6 Feb 2020 08:51:10 -0200 (BRST)
-Message-ID: <147904727.45.1580986270280.JavaMail.zimbra@contatogs.com.br>
-References: <80253ddd-a2ea-3fdb-2612-6ed7c4d68abd@gmx.net>
+From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+Subject: Re: [nftables v0.9.2 | kernel 4.19.93] does redirect accept daddr?
+Date: Thu, 6 Feb 2020 12:32:51 +0000
+Message-ID: <6f2040c1-f7cb-589d-fefd-743af3988703@gmx.net>
+References: <d7f31893-feaa-e138-ad80-95a37d275e7b@gmx.net>
+ <235762f1-4d73-1b5d-6e5d-eaf59cb8e916@plushkava.net>
+Reply-To: vtol@gmx.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Filter: OpenDKIM Filter v2.10.3 mercurio.contatogs.com.br 88B94400BF
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=contatogs.com.br;
-        s=547D7A06-2322-11E9-835A-A37390E63B7D; t=1580986274;
-        bh=6dyXNyA+EsevMxdPFKd2EAj0fqqID3bjtU8r2/zf7kw=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=HwJaVZrBVFqqqWZeUz6UKTtSaSRoT/+Y/b/NdWc7T0kJyJICL3GZlDaRIftSmGcv6
-         w0WcszP3haDQmnJfAeWsC05bAW2s9PttJwnFy9pV+0mhl/ljhdSyp9BPqYU/wHX5nY
-         cUgFFSIO9rV1o+BqDyFmxR7bORlToN4nMifJiMlbhOS9FAgNyidyUK2f3ddcSbNcnH
-         jfI5t5U3Z812rUKS/1kfGy8AICxcqT9ZtmW0KyzMO/ubo26IHprPGfAubh7Pj7z+nS
-         YfYuzsT/A1z0NgS36S/VUCLEdo+SGH0A26TAlApRX0zhH9j4/E5E6kfF+GZ1Hd+Ysl
-         LOCfTPEN0PPCA==
-In-Reply-To: <80253ddd-a2ea-3fdb-2612-6ed7c4d68abd@gmx.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1580992372;
+        bh=XG/ykDxismFIslh39REfxp2Dp8c81UYDI64LghIKnXI=;
+        h=X-UI-Sender-Class:Reply-To:Subject:To:References:From:Date:
+         In-Reply-To;
+        b=YsrzuDzK9lPJOg8COpYh2BGZJBkDPbFu7KYuOPgZ13k3GLuAqKJNoOk0RFsI3EU3M
+         OHjfGOiLEUkTc6hXzxn/lx3Q1k2GPQdpTsby955Pu+x49cHMXwiY17Gm3H2VASni8c
+         Fnrmmp8NWnQcLGDsvSgpKNifNYnnUuVnfLxVooiU=
+In-Reply-To: <235762f1-4d73-1b5d-6e5d-eaf59cb8e916@plushkava.net>
+Content-Language: en-GB
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: vtol@gmx.net
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: kfm@plushkava.net, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Geoip:
-
-https://github.com/chr0mag/geoipsets
-
-best regards
-
------ Mensagem original -----
-De: "=D1=BD=D2=89=E1=B6=AC=E1=B8=B3=E2=84=A0" <vtol@gmx.net>
-Para: netfilter@vger.kernel.org
-Enviadas: Quarta-feira, 5 de fevereiro de 2020 23:27:16
-Assunto: [nftables] xtables-addons - GeoIP/ASN filter and lscan replicable?
-
-From what I was able to gather xtables-addons are not available for nft?
-
-Is there any way to
-
-* achieve GeoIP (country | residential)=C2=A0 | ASN filtering?
-* replicate lscan?
---=20
-Paulo Ricardo Bruck consultor=20
-tel 011 3596-4881 011 98140-9184(TIM/Whats)=20
-[ http://www.contatogs.com.br/ | http://www.contatogs.com.br ]=20
-gpg AAA59989 at wwwkeys.us.pgp.net=20
-skype: suportecontatogs
+T24gMDYvMDIvMjAyMCAwNzoyOSwga2ZtQHBsdXNoa2F2YS5uZXQgd3JvdGU6DQo+IE9uIDA2
+LzAyLzIwMjAgMDI6MDEsING90onhtqzhuLPihKAgd3JvdGU6DQo+DQo+IFRoZSAicmVkaXJl
+Y3QiIHN0YXRlbWVudCByZXN1bHRzIGluIHRoZSBwYWNrZXQgYmVpbmcgZGlyZWN0ZWQgdG8g
+dGhlIA0KPiBwcmltYXJ5IGFkZHJlc3Mgb2YgdGhlIGludGVyZmFjZSBvbiB3aGljaCBpdCB3
+YXMgcmVjZWl2ZWQuIFRoYXQncyANCj4gbm9uLW5lZ290aWFibGUuIEFzIHN1Y2gsICJpcCBk
+YWRkciIgaXMgbm90IHN1cHBvcnRlZCBhcyBhbiBhc3BlY3Qgb2YgDQo+IGl0cyBncmFtbWFy
+LiBJbmRlZWQsIHRoYXQncyBub3QgZXZlbiBob3cgaXQgd29ya3MgZm9yIHRoZSAiZG5hdCIg
+DQo+IHN0YXRlbWVudC4NCj4NCj4gRm9yIGluc3RhbmNlLCB0aGVzZSBhcmUgdmFsaWQ6DQo+
+DQo+IMKgwqAgcmVkaXJlY3QNCj4gwqDCoCByZWRpcmVjdCB0byA6ODA4MA0KPg0KPiBUaGlz
+IGlzIGludmFsaWQ6DQo+DQo+IMKgwqAgcmVkaXJlY3QgdG8gMS4yLjMuNDo4MDgwDQoNClN1
+cHBvc2UgdGhhdCBjYW4vc2hvdWxkIGJlIGluZmVycmVkIGZyb20gdGhlIFdJS0kNCg0KIklz
+IGEgc3BlY2lhbCBjYXNlIG9mIEROQVQgd2hlcmUgdGhlIGRlc3RpbmF0aW9uIGlzIHRoZSBj
+dXJyZW50IG1hY2hpbmUuIg0KDQo+DQo+IEhvd2V2ZXIsIHRoZXNlIGFyZSB2YWxpZDoNCj4N
+Cj4gwqDCoCBkbmF0IHRvIDEuMi4zLjQNCj4gwqDCoCBkbmF0IHRvIDEuMi4zLjQ6ODA4MA0K
+Pg0KPiBPbmNlIHlvdSBhZGRyZXNzIHRoaXMsIGFueSByZW1haW5pbmcgZXJyb3JzIHNob3Vs
+ZCBiZWdpbiB0byBtYWtlIG1vcmUgDQo+IHNlbnNlLg0KDQpSaWdodCwgbm8gZXJyb3IgYmVp
+bmcgcHJpbnRlZCB3aXRoOg0KDQp0YWJsZSBpcCBuYXQgeyAjIGhhbmRsZSA3DQogwqDCoMKg
+wqDCoMKgwqAgY2hhaW4gaW5wdXQgeyAjIGhhbmRsZSAxDQogwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgIHR5cGUgbmF0IGhvb2sgaW5wdXQgcHJpb3JpdHkgMTAwOyBwb2xpY3kg
+YWNjZXB0Ow0KIMKgwqDCoMKgwqDCoMKgIH0NCg0KIMKgwqDCoMKgwqDCoMKgIGNoYWluIG91
+dHB1dCB7ICMgaGFuZGxlIDINCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdHlw
+ZSBuYXQgaG9vayBvdXRwdXQgcHJpb3JpdHkgLTEwMDsgcG9saWN5IGFjY2VwdDsNCiDCoMKg
+wqDCoMKgwqDCoCB9DQoNCiDCoMKgwqDCoMKgwqDCoCBjaGFpbiBwcmVyb3V0aW5nIHsgIyBo
+YW5kbGUgMw0KIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB0eXBlIG5hdCBob29r
+IHByZXJvdXRpbmcgcHJpb3JpdHkgLTEwMDsgcG9saWN5IGFjY2VwdDsNCiDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqAgaWlmICJici1sYW4iIHVkcCBkcG9ydCA1MyBkbmF0IHRv
+IDE5Mi4xNjguMTEyLjEyICMgaGFuZGxlIDUNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgaWlmICJici1sYW4iIHRjcCBkcG9ydCA1MyBkbmF0IHRvIDE5Mi4xNjguMTEyLjEy
+ICMgaGFuZGxlIDYNCiDCoMKgwqDCoMKgwqDCoCB9DQoNCiDCoMKgwqDCoMKgwqDCoCBjaGFp
+biBwb3N0cm91dGluZyB7ICMgaGFuZGxlIDQNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgdHlwZSBuYXQgaG9vayBwb3N0cm91dGluZyBwcmlvcml0eSAxMDA7IHBvbGljeSBh
+Y2NlcHQ7DQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIG9pZiAicHBwb2Utd2Fu
+IiBtYXNxdWVyYWRlICMgaGFuZGxlIDcNCiDCoMKgwqDCoMKgwqDCoCB9DQp9DQoNCg0KWWV0
+IHdoZW4gcGFja2V0IGR1bXBpbmcgb24gdGhlIGRvd25zdHJlYW0gY2xpZW50IHRoZSBjYXB0
+dXJlIHNob3dzIG5vIA0Kc2lnbiBvZiB0aGUgcnVsZSB0YWtpbmcgZWZmZWN0IGJ1dCBpbnN0
+ZWFkIHRoZSBjbGllbnQgY29tbXVuaWNhdGluZyANCihlZ3Jlc3MgYW5kIGluZ3Jlc3MpIHVu
+YWJhdGVkIHdpdGggdGhlIEROUyBzZXJ2ZXIgc2V0IGJ5IHRoZSBjbGllbnQuIA0KU2luY2Ug
+dGhpcyBiZWluZyBwcmUtcm91dGluZyB0cmFjaW5nL2xvZ2dpbmcgc2VlbXMgbm90IGFwcGxp
+Y2FibGUgaW4gDQpvcmRlciB0byBmaWd1cmUgb3V0IHdoYXQgaXMgKG5vdCkgaGFwcGVuaW5n
+Lg0KDQpTdHJhbmdlbHkgdGhlc2UgaXB0YWJsZXMgcnVsZXMgZG9lcyBub3QgaGF2ZSBhbnkg
+ZWZmZWN0IGVpdGhlcg0KDQotQSB6b25lX2xhbl9wcmVyb3V0aW5nIC1wIHRjcCAtbSB0Y3Ag
+LS1kcG9ydCA1MyAtbSBjb21tZW50IC0tY29tbWVudCANCiJETlMgY2xpZW50IGhpamFjayBw
+cmV2ZW50aW9uIiAtaiBETkFUIC0tdG8tZGVzdGluYXRpb24gMTkyLjE2OC4xMTIuMTI6NTMN
+Ci1BIHpvbmVfbGFuX3ByZXJvdXRpbmcgLXAgdWRwIC1tIHVkcCAtLWRwb3J0IDUzIC1tIGNv
+bW1lbnQgLS1jb21tZW50IA0KIkROUyBjbGllbnQgaGlqYWNrIHByZXZlbnRpb24iIC1qIERO
+QVQgLS10by1kZXN0aW5hdGlvbiAxOTIuMTY4LjExMi4xMjo1Mw0KDQpOLkIuIG5mdCBpcyBu
+b3QgZGVwbG95ZWQgd2hlbiBpcHQgaXMgcnVubmluZyBhbmQgY29udmVyc2VseSBpcHQgY2hh
+aW5zIA0KYmVlbiBmbHVzaGVkL3JlbW92ZWQgYW5kIGlwdCBrbW9kcyBiZWVuIHVubG9hZGVk
+IHByaW9yIGFjdGl2YXRpbmcgbmZ0Lg0KDQo+DQo+Pg0KPj4gQWx0ZXJuYXRpdmVseSwgdGhp
+cw0KPj4NCj4+IHRhYmxlIG5hdCB7DQo+PiDCoMKgwqDCoCBjaGFpbiBwcmVyb3V0aW5nwqDC
+oMKgIHvCoCBvaWYgYnItbGFuIGlwIGRhZGRyICE9IDE5Mi4xNjguMTEyLjEyIHVkcCANCj4+
+IGRwb3J0IDUzIGlwIGRhZGRyIHNldCAxOTIuMTY4LjExMi4xMjsgfQ0KPj4gfQ0KPg0KPiBB
+cyBJIHVuZGVyc3RhbmQgaXQsICJpcCBkYWRkciBzZXQiIGlzIHBlcm1pdHRlZCBidXQgaXMg
+ZWZmZWN0aXZlbHkgYSANCj4gZm9ybSBvZiBzdGF0ZWxlc3MgRE5BVC4gU28sIHVubGlrZSAi
+ZG5hdCIsIHRoZSBjb25udHJhY2sgc3Vic3lzdGVtIA0KPiB3b24ndCBhdXRvbWF0aWNhbGx5
+IGhhbmRsZSB0aGUgcmV3cml0aW5nIG9mIHRoZSBzb3VyY2UgYWRkcmVzcyBhbG9uZyANCj4g
+dGhlIGludmVyc2UgcGF0aC4gSWYgaW4gYW55IGRvdWJ0LCB0aGF0J3MgcHJvYmFibHkgbm90
+IHdoYXQgeW91IHdhbnQuDQoNClBpY2tlZCB0aGUgaWRlYSB1cCBmcm9tIHRoZSBtYW4gcGFn
+ZXMgWzFdIGJ1dCB0aGVyZSBpdCBpcyBtZW50aW9uZWQgaW4gYSANCmRpZmZlcmVudCBjb250
+ZXh0L3RhYmxlIChyb3V0ZSBzb21lIHBhY2tldHMgaW5zdGVhZCBvZiBicmlkZ2luZykgYW5k
+IA0KdGhvdWdodCB0byBnaXZlIGEgc3dpcmwuDQoNClsxXSBodHRwczovL3d3dy5uZXRmaWx0
+ZXIub3JnL3Byb2plY3RzL25mdGFibGVzL21hbnBhZ2UuaHRtbA0KDQo=
