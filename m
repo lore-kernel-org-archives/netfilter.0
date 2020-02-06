@@ -1,35 +1,51 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: Redirect bridged traffic
-Date: Thu, 6 Feb 2020 09:46:44 +0100
-Message-ID: <20200206084644.GN26952@breakpoint.cc>
-References: <1291389071.153642.1580977922721.ref@mail.yahoo.com>
- <1291389071.153642.1580977922721@mail.yahoo.com>
+From: pauloric@contatogs.com.br
+Subject: Re: [nftables] xtables-addons - GeoIP/ASN filter and lscan
+ replicable?
+Date: Thu, 6 Feb 2020 08:51:10 -0200 (BRST)
+Message-ID: <147904727.45.1580986270280.JavaMail.zimbra@contatogs.com.br>
+References: <80253ddd-a2ea-3fdb-2612-6ed7c4d68abd@gmx.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1291389071.153642.1580977922721@mail.yahoo.com>
+DKIM-Filter: OpenDKIM Filter v2.10.3 mercurio.contatogs.com.br 88B94400BF
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=contatogs.com.br;
+        s=547D7A06-2322-11E9-835A-A37390E63B7D; t=1580986274;
+        bh=6dyXNyA+EsevMxdPFKd2EAj0fqqID3bjtU8r2/zf7kw=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=HwJaVZrBVFqqqWZeUz6UKTtSaSRoT/+Y/b/NdWc7T0kJyJICL3GZlDaRIftSmGcv6
+         w0WcszP3haDQmnJfAeWsC05bAW2s9PttJwnFy9pV+0mhl/ljhdSyp9BPqYU/wHX5nY
+         cUgFFSIO9rV1o+BqDyFmxR7bORlToN4nMifJiMlbhOS9FAgNyidyUK2f3ddcSbNcnH
+         jfI5t5U3Z812rUKS/1kfGy8AICxcqT9ZtmW0KyzMO/ubo26IHprPGfAubh7Pj7z+nS
+         YfYuzsT/A1z0NgS36S/VUCLEdo+SGH0A26TAlApRX0zhH9j4/E5E6kfF+GZ1Hd+Ysl
+         LOCfTPEN0PPCA==
+In-Reply-To: <80253ddd-a2ea-3fdb-2612-6ed7c4d68abd@gmx.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jaga Doe <jaga.doe@aol.com>
-Cc: fw@strlen.de, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: vtol@gmx.net
+Cc: netfilter@vger.kernel.org
 
-Jaga Doe <jaga.doe@aol.com> wrote:
->       Hello,
-> 
->    I have discovered a great mechanism of understanding what is happening, but setting nftrace flag. With that I can see the dataflow:
-> 
-> trace id 9af9e0b6 bridge tbrFilter cbrRedirect packet: iif "eth1" ether saddr f4:8c:50:fa:1f:e5 ether daddr 00:0c:29:15:7b:a0 ip saddr 192.168.0.21 ip daddr 192.168.0.123 ip dscp 0x04 ip ecn not-ect ip ttl 64 ip id 18388 ip protocol tcp ip length 60 tcp sport 40902 tcp dport 3000 tcp flags == syn tcp window 64240 
-> trace id 9af9e0b6 bridge tbrFilter cbrRedirect rule log tcp dport 3000 meta pkttype set host ether daddr set 00:0c:29:15:7b:a0 counter packets 5 bytes 300 meta nftrace set 1 (verdict continue)
-> trace id 9af9e0b6 bridge tbrFilter cbrRedirect verdict continue 
-> trace id 9af9e0b6 bridge tbrFilter cbrRedirect policy accept 
-> trace id 9af9e0b6 inet tlcRedirect clcRedirect packet: iif "br0" ether saddr f4:8c:50:fa:1f:e5 ether daddr 00:0c:29:15:7b:a0 ip saddr 192.168.0.21 ip daddr 192.168.0.123 ip dscp 0x04 ip ecn not-ect ip ttl 64 ip id 18388 ip protocol tcp ip length 60 tcp sport 40902 tcp dport 3000 tcp flags == syn tcp window 64240 
-> trace id 9af9e0b6 inet tlcRedirect clcRedirect rule log tcp dport 3000 counter packets 5 bytes 300 redirect to :3000 (verdict drop)
-> 
-> I don't understand why the redirect rule is leading to the drop verdict.
+Geoip:
 
-Most simple explanation: your bridge doesn't have an ip address
-(redirect is really just 'dnat to' with the primary address of the
- incoming interface).
+https://github.com/chr0mag/geoipsets
 
+best regards
+
+----- Mensagem original -----
+De: "=D1=BD=D2=89=E1=B6=AC=E1=B8=B3=E2=84=A0" <vtol@gmx.net>
+Para: netfilter@vger.kernel.org
+Enviadas: Quarta-feira, 5 de fevereiro de 2020 23:27:16
+Assunto: [nftables] xtables-addons - GeoIP/ASN filter and lscan replicable?
+
+From what I was able to gather xtables-addons are not available for nft?
+
+Is there any way to
+
+* achieve GeoIP (country | residential)=C2=A0 | ASN filtering?
+* replicate lscan?
+--=20
+Paulo Ricardo Bruck consultor=20
+tel 011 3596-4881 011 98140-9184(TIM/Whats)=20
+[ http://www.contatogs.com.br/ | http://www.contatogs.com.br ]=20
+gpg AAA59989 at wwwkeys.us.pgp.net=20
+skype: suportecontatogs
