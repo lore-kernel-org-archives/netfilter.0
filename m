@@ -1,32 +1,34 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: Metering is not working with dynamic sets on nft v0.9.2
-Date: Sat, 8 Feb 2020 23:15:22 +0100
-Message-ID: <20200208221522.GD2991@breakpoint.cc>
-References: <8665bae3-ba91-2699-15ea-27d256d9bcd2@mailbox.org>
- <4d26b387-5466-d57d-6191-dcbe8926ec01@gmx.net>
- <20200207101740.GC6466@breakpoint.cc>
- <89800836.90200.1581073253643@office.mailbox.org>
- <20200207110626.GD6466@breakpoint.cc>
- <6be894ad-b817-6c14-365c-21d068eaa261@mailbox.org>
+From: Nico Schottelius <nico.schottelius@ungleich.ch>
+Subject: Netfilter state synchronisation in IPv6 only networks?
+Date: Sat, 08 Feb 2020 23:22:43 +0100
+Message-ID: <87d0aora6k.fsf@ungleich.ch>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <6be894ad-b817-6c14-365c-21d068eaa261@mailbox.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ungleich.ch; s=mail;
+        t=1581200563; bh=E2c6D2G56qXWAfE3CE2gbIwQ4xmXZePdlYeuAa9TOtI=;
+        h=From:To:Subject:Date:From;
+        b=lWT3slQiFrvHWLfKAcehius1HgwNOMGc5hE7YtEKiPtTiCvDbTwjgAD58KmJaHijs
+         ZUDSSsZc7XX+EZnSFuruHi4IPb+tNQTbxA847vjVRGTVq5u7mXpDOVC50FKkbbvsyU
+         x7APa/HlTZlZRQlhkFNCdsTkmCN47AziG66Kw199Xm39++lO7cFtDrDxeGmMmQ4FM+
+         YGEodimBXR0TXIAz0LtfYdrwr50KZSeYSK2PNsejSah6mCIYv4hf2giXe19efMshfi
+         2gHBBucKzWEB3R0ELzhM3uIRvFAmLDZjXFa6H05BbgXyiuLJVXPbpx5iAgG1MUB4it
+         +8PytHd4jGyTw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: darius <dram@mailbox.org>
-Cc: Florian Westphal <fw@strlen.de>, =?utf-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-darius <dram@mailbox.org> wrote:
-> I have checked link provided by you. This patch is already implemented
-> on 4.14 kernel that runs on OpenWRT, but that does not help with the
-> error. I still have fault.
-> Any other ideas where to check? Just would be nice to find where is problem.
 
-No.  If you know some C, edit net/netfilter/nf_tables.c, search for
-nft_select_set_ops() and check which set type is picked.
+Good morning,
 
-ops needs to be "nft_set_rhash_type", thats the only one where
-ops->update is non-NULL.
+as conntrackd seems not to support IPv6 only networks for exchanging
+states, is anyone aware of any other tool that can synchronise
+active/active or active/passive firewalls via IPv6 only networks?
+
+Best,
+
+Nico
+
+--
+Modern, affordable, Swiss Virtual Machines. Visit www.datacenterlight.ch
