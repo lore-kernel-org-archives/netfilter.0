@@ -1,34 +1,38 @@
-From: Haochen Tong <i@hexchain.org>
-Subject: nftables "native interface" for IPv6 NPT?
-Date: Sun, 9 Feb 2020 01:44:19 +0100
-Message-ID: <8b2eff13-0857-08d8-9111-9be84b39db29@hexchain.org>
-Reply-To: i@hexchain.org
+From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+Subject: [nftables] economics of reverse path filtering - FIB expression vs.
+ kernel parameter
+Date: Sun, 9 Feb 2020 12:51:43 +0000
+Message-ID: <4c393f46-903c-bfe3-0b91-a4b5411b50d0@gmx.net>
+Reply-To: vtol@gmx.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=hexchain.org; q=dns/txt;
- s=smtp; t=1581209064; h=Content-Transfer-Encoding: Content-Type:
- MIME-Version: Date: Message-ID: Subject: From: To: Reply-To: Sender;
- bh=87nycdntUlsqtPjmUnC1m6GY++eQPJ+kH1GaA247GsQ=; b=FvvKlDi1z/cw6DTMvIQFd0MgvK6gna4k2MwyaWLi/UBc7+oBy7sKz/pNthHXjtRIqSAFq5wA
- fcERyhGq4iwJexfHJq4zNtCckFMj6m962DPjzxh6ysnC6iZ3j1W7Wwy3+5Ng49MKQKMV5GVU
- sgklO8Hl6hQCl2dTNca+E+OJlvTS1q/VBgpElVDcq/nP9hbVlqqVQcGrrFAQmJInpakkYMbk
- 550CqXyfq7Vu2DbF2/JropG4+W3l0PyTBA8SRdHyQo3Z4QX98KyXq2GXTxPmDGyo1oMTOgsW
- GrnzmmzjmLXjeix6tf+UyWsQ/vTBG/7pJv/maXUmUjzi98upaX6zKw==
-Content-Language: en-US-large
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1581252705;
+        bh=7uw0C/rnoocrp7UVE7zkSRm9vEj0qhpL0lTbUQdIZvQ=;
+        h=X-UI-Sender-Class:Reply-To:To:From:Subject:Date;
+        b=cra1btwplgZyEoN1ar10sNVXi/MUI+cOnWyo5TGG0kByIc8NmOdz5ppjGW/cJR2jL
+         KR/GFhJQy9eudzzNiXM+FUVSTO/RCCgdcLcAeMIX/qut1X97NAgEK1zrZVUotE9FmE
+         phZCuIc+Bw2IScz2zCwYJIK4Ekpe77dgV0Sq81BI=
+Content-Language: en-GB
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi,
+Presumably NFT rule
 
-While trying to implement IPv6 NPT with nftables I did not found any
-useful documentation. The wiki says "consider native interface", however
-I cannot find any reference to this "native interface".
+* filter prerouting fib saddr . iif oif missing drop
 
-Is this unsupported for now? Are there any workarounds?
+and kernel parameter
 
-Thanks in advance.
+net.ipv4.conf.<interface>.rp_filter =3D 2
 
-Best regards,
-Haochen Tong
+achieving the same goal.
+
+Which one comes into effect first, if there is difference assuming that=20
+both are being processed through netfilter?
+Is one or the other more economic with regard to CPU cycles and/or=20
+responsiveness?
+
+
