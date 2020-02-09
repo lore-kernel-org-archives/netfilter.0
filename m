@@ -1,34 +1,34 @@
-From: Nico Schottelius <nico.schottelius@ungleich.ch>
-Subject: Netfilter state synchronisation in IPv6 only networks?
-Date: Sat, 08 Feb 2020 23:22:43 +0100
-Message-ID: <87d0aora6k.fsf@ungleich.ch>
+From: Haochen Tong <i@hexchain.org>
+Subject: nftables "native interface" for IPv6 NPT?
+Date: Sun, 9 Feb 2020 01:44:19 +0100
+Message-ID: <8b2eff13-0857-08d8-9111-9be84b39db29@hexchain.org>
+Reply-To: i@hexchain.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ungleich.ch; s=mail;
-        t=1581200563; bh=E2c6D2G56qXWAfE3CE2gbIwQ4xmXZePdlYeuAa9TOtI=;
-        h=From:To:Subject:Date:From;
-        b=lWT3slQiFrvHWLfKAcehius1HgwNOMGc5hE7YtEKiPtTiCvDbTwjgAD58KmJaHijs
-         ZUDSSsZc7XX+EZnSFuruHi4IPb+tNQTbxA847vjVRGTVq5u7mXpDOVC50FKkbbvsyU
-         x7APa/HlTZlZRQlhkFNCdsTkmCN47AziG66Kw199Xm39++lO7cFtDrDxeGmMmQ4FM+
-         YGEodimBXR0TXIAz0LtfYdrwr50KZSeYSK2PNsejSah6mCIYv4hf2giXe19efMshfi
-         2gHBBucKzWEB3R0ELzhM3uIRvFAmLDZjXFa6H05BbgXyiuLJVXPbpx5iAgG1MUB4it
-         +8PytHd4jGyTw==
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=hexchain.org; q=dns/txt;
+ s=smtp; t=1581209064; h=Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Date: Message-ID: Subject: From: To: Reply-To: Sender;
+ bh=87nycdntUlsqtPjmUnC1m6GY++eQPJ+kH1GaA247GsQ=; b=FvvKlDi1z/cw6DTMvIQFd0MgvK6gna4k2MwyaWLi/UBc7+oBy7sKz/pNthHXjtRIqSAFq5wA
+ fcERyhGq4iwJexfHJq4zNtCckFMj6m962DPjzxh6ysnC6iZ3j1W7Wwy3+5Ng49MKQKMV5GVU
+ sgklO8Hl6hQCl2dTNca+E+OJlvTS1q/VBgpElVDcq/nP9hbVlqqVQcGrrFAQmJInpakkYMbk
+ 550CqXyfq7Vu2DbF2/JropG4+W3l0PyTBA8SRdHyQo3Z4QX98KyXq2GXTxPmDGyo1oMTOgsW
+ GrnzmmzjmLXjeix6tf+UyWsQ/vTBG/7pJv/maXUmUjzi98upaX6zKw==
+Content-Language: en-US-large
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
+Hi,
 
-Good morning,
+While trying to implement IPv6 NPT with nftables I did not found any
+useful documentation. The wiki says "consider native interface", however
+I cannot find any reference to this "native interface".
 
-as conntrackd seems not to support IPv6 only networks for exchanging
-states, is anyone aware of any other tool that can synchronise
-active/active or active/passive firewalls via IPv6 only networks?
+Is this unsupported for now? Are there any workarounds?
 
-Best,
+Thanks in advance.
 
-Nico
-
---
-Modern, affordable, Swiss Virtual Machines. Visit www.datacenterlight.ch
+Best regards,
+Haochen Tong
