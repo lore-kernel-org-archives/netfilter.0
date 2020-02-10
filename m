@@ -1,38 +1,59 @@
-From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
-Subject: [nftables] economics of reverse path filtering - FIB expression vs.
- kernel parameter
-Date: Sun, 9 Feb 2020 12:51:43 +0000
-Message-ID: <4c393f46-903c-bfe3-0b91-a4b5411b50d0@gmx.net>
-Reply-To: vtol@gmx.net
-Mime-Version: 1.0
+From: Glen Huang <heyhgl@gmail.com>
+Subject: Compiling nftables with stack-protector-strong fails checksec's
+ canary check
+Date: Mon, 10 Feb 2020 23:10:28 +0800
+Message-ID: <6A09ABFE-49AF-4629-BC3F-382FA8E895FE@gmail.com>
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1581252705;
-        bh=7uw0C/rnoocrp7UVE7zkSRm9vEj0qhpL0lTbUQdIZvQ=;
-        h=X-UI-Sender-Class:Reply-To:To:From:Subject:Date;
-        b=cra1btwplgZyEoN1ar10sNVXi/MUI+cOnWyo5TGG0kByIc8NmOdz5ppjGW/cJR2jL
-         KR/GFhJQy9eudzzNiXM+FUVSTO/RCCgdcLcAeMIX/qut1X97NAgEK1zrZVUotE9FmE
-         phZCuIc+Bw2IScz2zCwYJIK4Ekpe77dgV0Sq81BI=
-Content-Language: en-GB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:content-transfer-encoding:mime-version:subject
+         :message-id:date:to;
+        bh=AaW3Zboy801bjG95A5Q8T0SZvhIySgc9w1nvLFlwzQ0=;
+        b=o0rYnNqgaNWo4MZ6JrXIBlSoES+CySZnteEimiY4L09AOr14pLfA7q4cHI8Whaj+gN
+         C3AkD2bNQgta+Vjv1b8x9mxlthr4yQ6+l2w0WdTx0EWd4YghrueZaosqAVHAe5mFQck2
+         hkyW6PtGTI4Afhcgq28zwuQF5+q3yxqUiwlQJJU5t6i4UeRMY/kQCIedGezsKfJG1/W1
+         qnM0vFdGvlXEc1+X8UqLmrhHfsVSMc34BcS6+o8KH/gFujR6/5hvjjssAux+x/bXSo/3
+         nzuJe//zzFfp4yZO0ECZWZ0z0zilHPeAjI0tJlrzN77by9bygdpuEprhPKS+MfQ1linu
+         lc/w==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-Presumably NFT rule
+Hi,
 
-* filter prerouting fib saddr . iif oif missing drop
+I=E2=80=99m trying to compile nftables with hardening applied by using =
+these commands in Debian buster:
 
-and kernel parameter
+export CFLAGS=3D'-g -O2 -fdebug-prefix-map=3D/tmp/nftables=3D. =
+-fstack-protector-strong -Wformat -Werror=3Dformat-security' \
+&& export LDFLAGS=3D'-Wl,-z,relro -Wl,-z,now' \
+&& ./configure \
+    --prefix=3D/usr \
+    --sysconfdir=3D/etc \
+    --disable-debug \
+    --disable-man-doc \
+    --without-cli
+&& make install
 
-net.ipv4.conf.<interface>.rp_filter =3D 2
+Everything is fine, except that /usr/sbin/nft fails checksec.sh=E2=80=99s =
+stack canary check where it says =E2=80=9CNo canary found=E2=80=9D in =
+the STACK CANARY column
 
-achieving the same goal.
+That test is simply done with readelf -s /usr/sbin/nft 2>/dev/null | =
+grep -Eq '__stack_chk_fail|__intel_security_cookie=E2=80=99
 
-Which one comes into effect first, if there is difference assuming that=20
-both are being processed through netfilter?
-Is one or the other more economic with regard to CPU cycles and/or=20
-responsiveness?
+I wonder why this check fails? Is there any flags I should add to pass =
+it?
 
+If I change -fstack-protector-strong to -fstack-protector-all, then the =
+test passes, but I=E2=80=99d like to stick with fstack-protector-strong =
+if that=E2=80=99s possible.
 
+Gcc version is "gcc (Debian 8.3.0-6) 8.3.0=E2=80=9D and I take the =
+hardening flags from Debian=E2=80=99s "dpkg-buildflags --get CPPFLAGS=E2=80=
+=9D and friends.
+
+Regards.=
