@@ -1,55 +1,59 @@
-From: "G.W. Haywood" <ged@jubileegroup.co.uk>
+From: =?UTF-8?B?7JaR7Jyg7ISd?= <ileixe@gmail.com>
 Subject: Re: Does anybody experience kernel crush when 'ebtable -t nat -L'
-Date: Tue, 11 Feb 2020 12:47:47 +0000 (GMT)
-Message-ID: <alpine.DEB.2.20.2002111243370.6759@tornado.local.jubileegroup.co.uk>
-References: <CAFAx9aaiv4dK6Om0kkaGfzxiOY9CDGbzXtube5LLVBiA3pbMxw@mail.gmail.com> <alpine.DEB.2.20.2002111201530.6759@tornado.local.jubileegroup.co.uk> <CAFAx9aZd6vA0Se_6eEsRCr4AkRgGj3Eb=7SDXrRZPSpxMCN2vg@mail.gmail.com>
+Date: Tue, 11 Feb 2020 22:29:22 +0900
+Message-ID: <CAFAx9abww8D7y59DU+JrHjswGGMVW1cUEVLgPPu2-gN8M_2Tjw@mail.gmail.com>
+References: <CAFAx9aaiv4dK6Om0kkaGfzxiOY9CDGbzXtube5LLVBiA3pbMxw@mail.gmail.com>
+ <alpine.DEB.2.20.2002111201530.6759@tornado.local.jubileegroup.co.uk>
+ <CAFAx9aZd6vA0Se_6eEsRCr4AkRgGj3Eb=7SDXrRZPSpxMCN2vg@mail.gmail.com> <alpine.DEB.2.20.2002111243370.6759@tornado.local.jubileegroup.co.uk>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="-1463800020-1173153301-1581425270=:6759"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        jubileegroup.co.uk; h=Cc:Date:From:From:In-Reply-To:Message-ID
-        :MIME-Version:References:Reply-To:Subject:To:User-Agent; s=uk;
-         bh=Y1AVrEUt+mEJSt8LD2iMmataMhNxMLNpQZSc9+3/MEA=; b=ryx5RwSPahbv
-        5fvchYmxbL1PLeLfKpv5nZ/FwTCuQRsGCqwBgpOon+VB+jvFRhz3kC3vQ4VtvLOv
-        o/wlBcppUBzim2s27Zcm9XhfLPm94rRvJ/irI+/WWzgJh8A3KPXYmlRhFgg28q34
-        mQKy/MmB//PcpSUHDtV6rjodBlpWqr8iiFWECJkIp9pPlPbxULj2It6uMvL9xG9C
-        tiNx9cGjIuMIuGgauS/urdOLQqSqnWf7u7D7XgPkzQd2doQVx54vh1Y1uv+GoKO4
-        lt0Jadq7qH3M185iXWBz/s9JWk4ASL9saxdI334EOZLrHCot0G0rfSQjKuMNMjL4
-        ubQzJvnFCA==
-In-Reply-To: <CAFAx9aZd6vA0Se_6eEsRCr4AkRgGj3Eb=7SDXrRZPSpxMCN2vg@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=5tAGpQ9EDmJYFObqihGasYmy6Q6Ktnhg5jhD/EszfyM=;
+        b=jy9zmWuUyAFhsuRa8j940f92AyfvHj7kNGfF3YTq6vd9Ez9c/J3S1KAS9hqsvpQ2LY
+         ERqV9BMG27Sw1EQXPL2JPUI48+V8+FKdrC6elFE9dx0n+i5JE1U0z0k2zEetXt7ZE+f9
+         0LGt7sYzW80jvwfdaQsDONE+CTU1njWKRfNPKjhoGLWwdBHlu5b5rpKPu/PH/C7czD1+
+         BV74S/VSSCF48/jHvmq2lEeoJMi9Op/CIyTTF58W38nKRdrMMT5ucdkVrhf6SfoRumSf
+         0XqFFzPvI648T16RhRJe8oBrGj/wnMtcNytTtTvFKTFyl7vOEnHehCEaB5mRs4mhtwCT
+         n2Ag==
+In-Reply-To: <alpine.DEB.2.20.2002111243370.6759@tornado.local.jubileegroup.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: =?EUC-KR?B?vufAr7yu?= <ileixe@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: "G.W. Haywood" <ged@jubileegroup.co.uk>, netfilter@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+2020=EB=85=84 2=EC=9B=94 11=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 9:47, G=
+.W. Haywood <ged@jubileegroup.co.uk>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> Hi there,
+>
+> On Tue, 11 Feb 2020, =EC=96=91=EC=9C=A0=EC=84=9D wrote:
+>
+> > Do you mean the remote logging like rsyslog?
+>
+> Yes.
+>
+> > We did not try since syslog does not emit at all. Is it worth to try
+> > though?
+>
+> Like you I have occasionally seen strings of NULL bytes in the logs.
+> It has appeared to me that something has tried to write a message but
+> failed to get it to the disc because of kernel disc write caching,
+> which can be many seconds of data.  If the messages go out over the
+> network, to a server which does not crash, they can have a better
+> chance of reaching some permanent storage.  There are other tricks,
+> Mr. Millar's suggestion is good too.
 
----1463800020-1173153301-1581425270=:6759
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-Content-Transfer-Encoding: 8bit
+Oh, I did not realize difference between network and disc. It's
+reasonable so surely worth to try. Thanks.
+Also, where is Mr.Millar's suggestion? I could receive his e-mail.
 
-Hi there,
-
-On Tue, 11 Feb 2020, 양유석 wrote:
-
-> Do you mean the remote logging like rsyslog?
-
-Yes.
-
-> We did not try since syslog does not emit at all. Is it worth to try
-> though?
-
-Like you I have occasionally seen strings of NULL bytes in the logs.
-It has appeared to me that something has tried to write a message but
-failed to get it to the disc because of kernel disc write caching,
-which can be many seconds of data.  If the messages go out over the
-network, to a server which does not crash, they can have a better
-chance of reaching some permanent storage.  There are other tricks,
-Mr. Millar's suggestion is good too.
-
--- 
-
-73,
-Ged.
----1463800020-1173153301-1581425270=:6759--
+Regards,
+>
+> --
+>
+> 73,
+> Ged.
