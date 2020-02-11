@@ -1,53 +1,49 @@
-From: =?UTF-8?B?7JaR7Jyg7ISd?= <ileixe@gmail.com>
+From: "G.W. Haywood" <ged@jubileegroup.co.uk>
 Subject: Re: Does anybody experience kernel crush when 'ebtable -t nat -L'
-Date: Tue, 11 Feb 2020 21:07:49 +0900
-Message-ID: <CAFAx9aZd6vA0Se_6eEsRCr4AkRgGj3Eb=7SDXrRZPSpxMCN2vg@mail.gmail.com>
+Date: Tue, 11 Feb 2020 12:03:22 +0000 (GMT)
+Message-ID: <alpine.DEB.2.20.2002111201530.6759@tornado.local.jubileegroup.co.uk>
 References: <CAFAx9aaiv4dK6Om0kkaGfzxiOY9CDGbzXtube5LLVBiA3pbMxw@mail.gmail.com>
- <alpine.DEB.2.20.2002111201530.6759@tornado.local.jubileegroup.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; BOUNDARY="-1463800020-1233497215-1581422605=:6759"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=ECePHKohEqDyHSfOH7umTGEVd4ldTTB461lWx6/7GvM=;
-        b=Ym38Yn9SafpMTB/WcMWA0oCMiQAbBHVkaLpEs71WIns/+cHNrV0gW4qHgNC4tlhvbw
-         j+MjDSNBvCFxeDsysK9MgAu9Zq6oe4hohGVT5KPgh2vJXvGx4hJ8dzN1UHiwsymKIsuk
-         AkQm4THVrxkw3/6bE5oTaevBvDBdyJqteN4eYoxNO6V1LEmt+t02PEgqOVWv5xrapzEt
-         aT9pai/IAuD6qs6zEKdpd/js7jOXN/2dkjeRL4Isomz8KyI3S8xbJZovrLUOwUlERltf
-         DA7Ksjw8SdcuhMCqgjYVjKhVMLaUajLum5zSYNU4enLtlzSl59wez11b5oukVY+jq5++
-         D+iw==
-In-Reply-To: <alpine.DEB.2.20.2002111201530.6759@tornado.local.jubileegroup.co.uk>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        jubileegroup.co.uk; h=Cc:Date:From:From:In-Reply-To:Message-ID
+        :MIME-Version:References:Reply-To:Subject:To:User-Agent; s=uk;
+         bh=fZxWAYhmS8bupqX+OIvGrcOrVeakyU/5oXgS3yv5P0E=; b=Dr3onyvmMHDt
+        kpxVhbwKys4m3dNyyEpHfd6hCRUR9JD1Qyh5/W9iYEjOxiM8j2o/P592Si3ZNt6y
+        rlIRBepJ8VCFfFpONOdc7KjC+Fyw33VGAmChFNAqCC4r7Ne/cyHoo9j4FZXb4qAn
+        LohH7ARQbqnRmKEHb6M9w0x6hZn815wS/d+GcxTJ6Ra7CPvVxEkJX8FQ5Dfc/Ba3
+        h9iZFCceymZ35uxT3EvUZThJeMenP2XNCNd31Sgs795S45U7VJgbOj1LMGTb+vjk
+        KLZWCSoPUma8vwK5PVMM+McPPzd1CYHWuXpLvVxl+IUy7ckHupZNhtRj4hofI9if
+        +J0PqhQytQ==
+In-Reply-To: <CAFAx9aaiv4dK6Om0kkaGfzxiOY9CDGbzXtube5LLVBiA3pbMxw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: "G.W. Haywood" <ged@jubileegroup.co.uk>, netfilter@vger.kernel.org
+To: =?EUC-KR?B?vufAr7yu?= <ileixe@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Haywood,
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Do you mean the remote logging like rsyslog? We did not try since
-syslog does not emit at all. Is it worth to try though?
+---1463800020-1233497215-1581422605=:6759
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: 8bit
 
-Anyway thanks for the advice, I will try to do anything to fix it.
+Hi there,
 
-2020=EB=85=84 2=EC=9B=94 11=EC=9D=BC (=ED=99=94) =EC=98=A4=ED=9B=84 9:03, G=
-.W. Haywood <ged@jubileegroup.co.uk>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
->
-> Hi there,
->
-> On Tue, 11 Feb 2020, =EC=96=91=EC=9C=A0=EC=84=9D wrote:
->
-> > From today, we even does not know what makes crush since there was no
-> > any log (literally kernel, application or something) Only that we
-> > encounter is when linux bridge agent in openstack restarted, server
-> > reboot without any log. After reboot, we see strange null string (@)
-> > in syslog. ...
->
-> I cannot help you with the kernel crash but I suggest that you try
-> remote logging to another server, it might help provide more log info.
->
-> --
->
-> 73,
-> Ged.
+On Tue, 11 Feb 2020, 양유석 wrote:
+
+> From today, we even does not know what makes crush since there was no
+> any log (literally kernel, application or something) Only that we
+> encounter is when linux bridge agent in openstack restarted, server
+> reboot without any log. After reboot, we see strange null string (@)
+> in syslog. ...
+
+I cannot help you with the kernel crash but I suggest that you try
+remote logging to another server, it might help provide more log info.
+
+-- 
+
+73,
+Ged.
+---1463800020-1233497215-1581422605=:6759--
