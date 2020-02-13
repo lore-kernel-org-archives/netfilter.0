@@ -1,48 +1,51 @@
-From: Duncan Roe <duncan_roe@optusnet.com.au>
-Subject: Re: manipulating the ttl
-Date: Thu, 13 Feb 2020 21:00:18 +1100
-Message-ID: <20200213100018.GA6347@dimstar.local.net>
-References: <9c18d561-2033-baa9-718f-29275392acd5@street-artists.org>
- <82e00d85-680c-2932-42e2-3b1087bb1013@street-artists.org>
+From: Alessandro Vesely <vesely@tana.it>
+Subject: nfnetlink: This library is not meant as a public API for application
+ developers.
+Date: Thu, 13 Feb 2020 12:27:41 +0100
+Message-ID: <bcff17cd-1457-7454-e00f-22d798afd7e5@tana.it>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <82e00d85-680c-2932-42e2-3b1087bb1013@street-artists.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tana.it; s=delta;
+        t=1581593261; bh=ghJJh5IaONuNe83BcUcpd3NvbBDWtJHKtjZ8aHoE2e4=;
+        l=617; h=To:From:Date;
+        b=DKjJP6WoWmFn52I+HZ0xeqt9ul2caDnWMBHt+nSx1sxE+g5baj3faXYhEVDIziT4v
+         xZTwGeLb6RCvcPdzqCFTSNZLdfH2iH9KdzZOpYSl9USTUUJ4FKmilOXtF0AFdbfjUG
+         v+OuRWxvVr1EitnSWfir4trKrcqpNcguFaMmUo2Mv99IKI96Zy/4s8j5z/45n
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Netfilter Mailing List <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-On Sat, Jan 25, 2020 at 05:17:05PM -0800, Daniel Lakeland wrote:
-> On 1/25/20 5:02 PM, Daniel Lakeland wrote:
-> > As far as I can tell in nftables there's no way to manipulate the TTL
-> > field in packets, along the lines of iptables -A foo -j TTL --ttl-set 2
-> > or the like
-> >
-> > This becomes a problem for handling certain multicast scenarios. Is this
-> > on the horizon?
-> >
-> >
-> >
-> hmmm in further inspection I see that you can *set* the ttl, something like:
->
-> nft add rule inet mytable mychain ip ttl set 2
->
-> but I don't see how I could do something like decrement the ttl by 4 or
-> basically do anything where you'd calculate the TTL as a function of its
-> current value.
->
-> In general calculating simple arithmetic in order to manipulate fields isn't
-> necessarily obvious in nftables. Any pointers?
->
->
-(apologies for late reply)
+Has that disclaimer always been in libnfnetlink home page[*]?
 
-You are able to make arbitrary changes via a netfilter_queue (nfq) program: send
-packets that you wish to manipulate to a QUEUE. Unlike with xtables, in nft this
-is not a final verdict: other chains in the same table will see the packet after
-manipulation as long as they run at a lower priority than the chain that did the
-queuing. (I.e. as long as the nfq program accepts the packet).
+It is the first time I see it.
 
-Cheers ... Duncan.
+I have a userspace filter[†] working with it, and it currently works well.
+
+If I remove -lnfnetlink from the link command, I get just one undefined
+reference to symbol 'nfnl_rcvbufsiz'.  It is used only if there is a command
+line option to set the buffer size to a given size, to avoid enobufs.  For the
+rest, the daemon uses libnetfilter_queue.
+
+Should I rewrite that?  How?
+
+
+Best
+Ale
+-- 
+
+[*] https://netfilter.org/projects/libnfnetlink/index.html
+
+[†] https://savannah.nongnu.org/projects/ipqbdb/
+
+
+
+
+
+
+
+
+
+
