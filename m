@@ -1,79 +1,45 @@
-From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
-Subject: Re: [nftables] economics of reverse path filtering - FIB expression
- vs. kernel parameter
-Date: Thu, 13 Feb 2020 13:14:53 +0000
-Message-ID: <af53983b-babb-f61d-1889-9b6a95b2d17d@gmx.net>
-References: <4c393f46-903c-bfe3-0b91-a4b5411b50d0@gmx.net>
- <075aab6d-0c81-f38a-eed1-41be303066d9@gmx.net>
- <0b6710c6-d2d2-59bd-8054-d4b6203781a1@gmx.net>
- <alpine.DEB.2.20.2002131342380.9582@blackhole.kfki.hu>
-Reply-To: vtol@gmx.net
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: nfnetlink: This library is not meant as a public API for
+ application developers.
+Date: Thu, 13 Feb 2020 14:55:04 +0100
+Message-ID: <20200213135504.srhuuph4sd7pd7ne@salvia>
+References: <bcff17cd-1457-7454-e00f-22d798afd7e5@tana.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1581599695;
-        bh=8FNyutFrjzNFxFfD+YiCrjAo9WTuvtDhbtZlJ3nix7U=;
-        h=X-UI-Sender-Class:Reply-To:Subject:To:References:From:Date:
-         In-Reply-To;
-        b=W5OjztCLMuQiOPw08sNhb19op+DzB8Yhd1v3dFmXeCnokbH20hK3tUMpBsNNKi2Sp
-         TPnH9x10o1HQMi+QYAYu7sAWFm5LBC/k7RPxD9AQtRPaTnfiJfZ5g4GHG3yUFz+e43
-         9pc8FtwyPuXlfjtYvut1z+fjLk4webtiDzpyyEKk=
-In-Reply-To: <alpine.DEB.2.20.2002131342380.9582@blackhole.kfki.hu>
-Content-Language: en-GB
+Content-Disposition: inline
+In-Reply-To: <bcff17cd-1457-7454-e00f-22d798afd7e5@tana.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="windows-1252"
+To: Alessandro Vesely <vesely@tana.it>
+Cc: netfilter@vger.kernel.org
 
-On 13/02/2020 12:51, Jozsef Kadlecsik wrote:
-> On Thu, 13 Feb 2020, =D1=BD=D2=89=E1=B6=AC=E1=B8=B3=E2=84=A0 wrote:
+Hi,
+
+On Thu, Feb 13, 2020 at 12:27:41PM +0100, Alessandro Vesely wrote:
+> Has that disclaimer always been in libnfnetlink home page[*]?
+>=20
+> It is the first time I see it.
 >
->>> Been also wondering about potential conflicts between kernel
->>> parameters vs. firewall rules, which takes precedence?
->>>
->>> Another example - here purposely creating a conflict:
->>>
->>> * net.ipv6.conf.<interface>.accept_redirects =3D 0
->>>
->>> vs.
->>>
->>> * ip6 saddr fe80::/10 ip6 hoplimit 255 daddr FF02::1 icmpv6 type 137 =
-accept;
->> Looked into various publications, including [1], but came up short in
->> discovering the hierarchy of /proc parameters vs firewall rules/chains=
-,
->> i.e.
->>
->> * is the kernel treating both the same or considers one or the other
->> weighing more/higher than the other?
->> * if treated equally does timing in availability of structures cancels=
+> I have a userspace filter[=E2=80=A0] working with it, and it currently wo=
+rks well.
+>=20
+> If I remove -lnfnetlink from the link command, I get just one undefined
+> reference to symbol 'nfnl_rcvbufsiz'.  It is used only if there is a comm=
+and
+> line option to set the buffer size to a given size, to avoid enobufs.  Fo=
+r the
+> rest, the daemon uses libnetfilter_queue.
+>=20
+> Should I rewrite that?  How?
 
->> out the other, e.g. first available sets the rule or the last one
->> available cancels out the earlier one?
-> Check out the packet flow in netfilter and the networking stack, eg:
-> https://upload.wikimedia.org/wikipedia/commons/3/37/Netfilter-packet-fl=
-ow.svg
->
-> A networking subsystem proc/whatever setting have got a chance to tell
-> what happens with the packet if the netfilter hooks let the packet pass=
- up
-> to that point. And vice versa: if a subsytem decides to drop the packet=
+Probably, we should rewrite that sentence to: "For new software,
+please consider using libmnl instead." which is actually the
+intention.
 
-> (say routing due to reverse path filtering), then the next netfilter ho=
-ok
-> won't/can't process it.
->
-> Best regards,
-> Jozsef
+libnetfilter_queue also provides an API that combines well with
+libmnl.
 
-It was the point of asking the question here, also having perused that=20
-graphic, to understand where the /proc/sys/net/* variables fit in the=20
-packet flow, but now understanding (also as Florian pointed out) that=20
-those variables are processed as part of the routing decision. That make =
-
-things clear and helps to design the network protection efficiently.
-
-
-
-
+There is no plans to remove libnfnetlink anytime soon, it's still
+being used by netfilter userspace software.
