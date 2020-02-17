@@ -1,126 +1,43 @@
-From: Anton Danilov <littlesmilingcloud@gmail.com>
-Subject: Re: Difficulties with ulog / NFCT
-Date: Mon, 17 Feb 2020 18:53:23 +0300
-Message-ID: <CAEzD07JoH=KN4z0hN+UXqPr3AJW6cc3maVwMRZUcahSkfL+8WQ@mail.gmail.com>
-References: <ef15f5cc-1fa3-fe40-3e5e-a463e3f95314@tana.it> <ee17e7ef-8e26-4062-5c2c-b666e9525d59@tana.it>
+From: Vieri Di Paola <vieridipaola@gmail.com>
+Subject: NFQUEUE/iptables and kernel warning messages for net/ipv4/tcp_output.c
+Date: Mon, 17 Feb 2020 18:30:48 +0100
+Message-ID: <CABLYT9gNPFh7RpwE8P3uZyLKBM-_6ctpg7_8BPo4iCN3PWMQOQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=irZhJIpgNhbL+xCT1qlq2C8w/hQqvbj34mqffhmevg8=;
-        b=cDf48IYB6bXfHYoRIiqaVmv51J6XnlMFDVAva3GOfBEzZQjDbdb+L+tQRzWHuSiq1O
-         Ti4Jrtgcx+CYX7N4TWBPCJpnxnZGskctJbs6j/FKY3ZoPOP/hBNb7IVmGdU2HhLXBTSn
-         xXjdWgKKxwwjq7jlLyGKHT3X0du2xHAxsb4S9aLb/cyul5E5t0gEfOQUgmy4fllTDXfQ
-         7vc4Ok1DeI/hCofbGkQWDhkpXhGTVJDIU5pPwh8zL74aVGa0Pm2gEg9lRuU/DnLoIFjp
-         HdqzyVAV/R4Rg8uOtDIgP6zVeQzaKtxxqDfhVT+TzRCd6VWhhH5KLTTajsAn1JRo3JSI
-         Dgyg==
-In-Reply-To: <ee17e7ef-8e26-4062-5c2c-b666e9525d59@tana.it>
+        h=mime-version:from:date:message-id:subject:to;
+        bh=eJYq///UjqxDgrvVT6wuAefz/4j/Z2xeEPYJTav8wqE=;
+        b=oYrIoNKrBlEMY1tYF7IpUB3oNMDfKYEF88BqiJYMuoZWLi6afDHFn4ncH2qVoED5OO
+         3YueU8AvGJVh4YYw0pX0iU1biutHd7KDl4RCjNATF8Axn/D8lmIJWADZdgGnZTtlcXYg
+         SUPgkYg5y1w+OdfsJOClT6JQWeKvdH3SGnSPS3EYdk3M4JEjODmPvWq6IpZu+i8KXL1X
+         M04uhWLKzPIR4ozLjTi9ikuDwVvZcwGEidU0eLbAiNEtqwY9/172smN4+M4MMt1K0zR8
+         tPVvPtMXbD7Emns3gxdOIyxxATQrzjGBde8DMXXoN2KJsOtSPVaxGvqx0UomiThZJ2xP
+         9+VQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Alessandro Vesely <vesely@tana.it>
-Cc: netfilter <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Have you enabled the conntrack accounting and conntrack timestamps via sysc=
-tl?
+Hi,
 
-On Mon, 17 Feb 2020 at 18:13, Alessandro Vesely <vesely@tana.it> wrote:
->
-> Hi,
->
-> Only the start timestamp is NULL, the end one looks fine.  I tried settin=
-g
-> hash_enable=3D0, it apparently didn't better nor worse the logging.
->
->
-> In /proc/net/nf_conntrack there is no timestamp, but port numbers seem go=
-od
-> (there is no port 32767).
->
->
-> What am I missing?
->
-> Best
-> Ale
->
-> On Sat 15/Feb/2020 17:03:19 +0100 Alessandro Vesely wrote:
-> > I've set up logging as follows, to get a history of TCP connections:
-> >
-> > # conntrack logging to MariaDB
-> > stack=3Dct1:NFCT,ip2str1:IP2STR,mysql1:MYSQL
-> >
-> > [ct1]
-> > accept_proto_filter=3Dtcp # layer 4 proto of connections
-> > event_mask=3D0x00000004 # only listen to DESTROY events
-> >
-> > [mysql1]
-> > table=3D"ct"
-> > reconnect=3D4
-> > connect_timeout=3D60
-> > procedure=3D"INSERT"
-> > db=3D"ulog"
-> > host=3D"localhost"
-> > user=3D"ulog"
-> > pass=3D"*****"
-> > port=3D3306
-> >
-> >
-> > It doesn't work well.  For example, I get this:
-> >
-> > MariaDB [ulog]> SELECT FROM_UNIXTIME(flow_start_sec) AS start, flow_end=
-_sec - flow_start_sec AS sec,
-> >> orig_ip_saddr_str AS src, orig_l4_sport AS sport, orig_ip_daddr_str, o=
-rig_l4_dport AS svc
-> >> FROM ct WHERE orig_ip_saddr_str =3D '66.110.216.209';
-> > +-------+------+----------------+-------+-------------------+------+
-> > | start | sec  | src            | sport | orig_ip_daddr_str | svc  |
-> > +-------+------+----------------+-------+-------------------+------+
-> > | NULL  | NULL | 66.110.216.209 | 32767 | 62.94.243.226     |  143 |
-> > | NULL  | NULL | 66.110.216.209 | 32767 | 62.94.243.226     |  143 |
-> > +-------+------+----------------+-------+-------------------+------+
-> > 2 rows in set (0.00 sec)
-> >
-> >
-> >
-> > flow_start_sec and flow_end_sec are both NULL, after several hours.  Th=
-ey seem to be non-NULL for outgoing connections and for connections coming =
-from the internal network.  Even then, they don't seem to be accurate timin=
-gs.
-> >
-> > The mail log for the IP above IP is as follows (the source port is alwa=
-ys 32767):
-> >
-> > Feb 15 12:08:07 22 north imapd: LOGIN FAILED, user=3Dsungjtrio@fragolin=
-e.it, ip=3D[66.110.216.209], port=3D[41204]
-> > Feb 15 12:08:16 23 north imapd: Disconnected, ip=3D[66.110.216.209], po=
-rt=3D[41204], time=3D16
-> > Feb 15 12:08:47 23 north imapd: Connection, ip=3D[66.110.216.209], port=
-=3D[45344]
-> > Feb 15 12:08:54 22 north imapd: LOGIN FAILED, user=3Dsungjtrio@fragolin=
-e.it, ip=3D[66.110.216.209], port=3D[45344]
-> > Feb 15 12:09:06 23 north imapd: Disconnected, ip=3D[66.110.216.209], po=
-rt=3D[45344], time=3D19
-> >
-> > Disconnections are likely caused by conntrack -D -s 66.110.216.209.  I'=
-m reporting abusive login attempts at end-of-day, and I've been told to men=
-tion my server (target) address and port, 62.94.243.226:143 in this case.  =
-Since the mail log doesn't mention that data, the idea is to find it in the=
- NFCT log based on the time and source IP.
-> >
-> > Should I be running conntrackd?
-> > Should I play with socket buffer/ resync timeout/ backlog_oneshot_reque=
-sts/ ring_buffer_size?
-> > Any other hint?
-> >
-> >
-> > TIA
-> > Ale
-> >
+Whenever I use NFQUEUE/iptables to send traffic to an IDS/IPS (eg.
+Suricata), I get an ugly kernel warning which can sometimes and on the
+long run turn into a system freeze.
 
+I'm using NFQUEUE 0:5, and I'm running Suricata with -q 0 -q 1 -q 2 -q
+3 -q 4 -q 5 as arguments.
 
+I've already reported the issue on the LKML here:
 
---=20
-Anton Danilov.
+https://lkml.org/lkml/2020/2/13/1255
+
+However, I've been told by the Suricata ML to try and post here too.
+
+The message "WARNING: CPU: * at net/ipv4/tcp_output.c:915" does not
+appear when I stop using Suricata with NFQUEUE.
+
+Regards,
+
+Vieri
