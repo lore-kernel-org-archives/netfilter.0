@@ -1,101 +1,150 @@
-From: Alessandro Vesely <vesely@tana.it>
-Subject: Difficulties with ulog / NFCT
-Date: Sat, 15 Feb 2020 17:03:19 +0100
-Message-ID: <ef15f5cc-1fa3-fe40-3e5e-a463e3f95314@tana.it>
+From: Bernd Jerzyna <bjerzyna@gmail.com>
+Subject: Problems with CONNTRACK --restore-mark
+Date: Mon, 17 Feb 2020 17:32:01 +1000
+Message-ID: <CAFOucxXziXWf7zx=6yo1QUWSH+QzNsgG8gvU7Ewx_v6iMHc8Yg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tana.it; s=delta;
-        t=1581782600; bh=kQBo7NFahF0MIzohqTtv9RqPP3aT4JQRk09Jsx+CLXM=;
-        l=2445; h=To:From:Date;
-        b=CsU4AzeIrUEM4/FYtSZSXLFw2wKOvx9I+lA/gxJ8810kBW+v6WT5Xb/DbcdHX70jc
-         VrIL0xsZKN2wB00CvgVPAbwylxspwJZvSyEXDPof3JwE6/gjY9R9FXOjyz88GA90PK
-         7Rbsx/U3dAmrBFeWYwgUUvdSWB6NPWeNHZgfAiyOHDcSeqpHKOyCL9w91UmLV
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=sodaXXjeED4KTOi0nwRDtWblf5XPPLFBM2Xkq8TbSf0=;
+        b=ICp0L02OJUgv1A7F90U9KcTL0PLYfZ64MDTRrfVBweYioo5CKk4B5jm4eInD6UK8nf
+         6MNvPJZ74rqeWA9QOCSAKeebrONYjr4HOjc+lig2MJlPRPdZ+t2yJ1kuVMuGpqCw/4/K
+         ke0nwAxL5gcHcREDdhyL6LYU2bshlBCuwqxYr6Z8b6w/5bK31JecSaRT5Dq/Jk7ehfTM
+         U2MMZ6hf+ezkCM5OxLNvCwimg9oVY6+S/+6rc07gEF44TKdKzbK7avVUlk10RsMOf1n8
+         cMd4DNwbYfd81AMyaAtepcvdIPpVnGwcmJjjbgmUMTalmno91wRX0biD38wJGAzHMFPt
+         qjFg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hi,
+Hi there,
 
-I've set up logging as follows, to get a history of TCP connections:
+I'm having trouble marking a connection.
 
-# conntrack logging to MariaDB
-stack=ct1:NFCT,ip2str1:IP2STR,mysql1:MYSQL
+My iptables configuration is
 
-[ct1]
-accept_proto_filter=tcp # layer 4 proto of connections
-event_mask=0x00000004 # only listen to DESTROY events
+[root@arnott ~]# iptables -t mangle -L
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination
+set_connmark  tcp  --  anywhere             anywhere             tcp
+dpt:telnet state NEW
+MARK       tcp  --  anywhere             anywhere             tcp
+dpt:telnet MARK set 0x2
+CONNMARK   tcp  --  anywhere             anywhere             tcp
+dpt:telnet CONNMARK restore
 
-[mysql1]
-table="ct"
-reconnect=4
-connect_timeout=60
-procedure="INSERT"
-db="ulog"
-host="localhost"
-user="ulog"
-pass="*****"
-port=3306
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
+
+Chain set_connmark (1 references)
+target     prot opt source               destination
+MARK       tcp  --  anywhere             anywhere             tcp
+dpt:telnet MARK set 0x1
+CONNMARK   tcp  --  anywhere             anywhere             tcp
+dpt:telnet CONNMARK save
+
+What I expect is that on the first packet a connection mark is set
+(0x1) and that it is restored to the packet mark for every packet in
+that connection (after setting the packet mark to 0x2).
+
+What I see, though, is that this only works for the first packet as
+the iptables TRACE shows:
+
+raw:PREROUTING:policy:4                      16835 TCP    10.3.118.45
+   50759 94.142.241.111  23    ---        ['DF', 'SYN', 'OPT']
+mangle:PREROUTING:rule:1                     16835 TCP    10.3.118.45
+   50759 94.142.241.111  23    ---        ['DF', 'SYN', 'OPT']
+mangle:set_connmark:rule:1                   16835 TCP    10.3.118.45
+   50759 94.142.241.111  23    ---        ['DF', 'SYN', 'OPT']
+mangle:set_connmark:rule:2                   16835 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x1        ['DF', 'SYN', 'OPT']
+mangle:set_connmark:return:3                 16835 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x1        ['DF', 'SYN', 'OPT']
+mangle:PREROUTING:rule:2                     16835 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x1        ['DF', 'SYN', 'OPT']
+mangle:PREROUTING:rule:3                     16835 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x2        ['DF', 'SYN', 'OPT']
+mangle:PREROUTING:policy:4                   16835 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x1        ['DF', 'SYN', 'OPT']
+nat:PREROUTING:policy:1                      16835 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x1        ['DF', 'SYN', 'OPT']
+mangle:FORWARD:policy:1                      16835 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x1        ['DF', 'SYN', 'OPT']
+filter:FORWARD:policy:1                      16835 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x1        ['DF', 'SYN', 'OPT']
+mangle:POSTROUTING:policy:1                  16835 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x1        ['DF', 'SYN', 'OPT']
+nat:POSTROUTING:policy:1                     16835 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x1        ['DF', 'SYN', 'OPT']
+wire:POSTROUTING:policy:1                    16835 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x1        ['DF', 'SYN', 'OPT']
+raw:PREROUTING:policy:4                      16836 TCP    10.3.118.45
+   50759 94.142.241.111  23    ---        ['DF', 'ACK']
+mangle:PREROUTING:rule:2                     16836 TCP    10.3.118.45
+   50759 94.142.241.111  23    ---        ['DF', 'ACK']
+mangle:PREROUTING:rule:3                     16836 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x2        ['DF', 'ACK']
+mangle:PREROUTING:policy:4                   16836 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x2        ['DF', 'ACK']
+mangle:FORWARD:policy:1                      16836 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x2        ['DF', 'ACK']
+filter:FORWARD:policy:1                      16836 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x2        ['DF', 'ACK']
+mangle:POSTROUTING:policy:1                  16836 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x2        ['DF', 'ACK']
+wire:POSTROUTING:policy:1                    16836 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x2        ['DF', 'ACK']
+raw:PREROUTING:policy:4                      16837 TCP    10.3.118.45
+   50759 94.142.241.111  23    ---        ['DF', 'ACK']
+mangle:PREROUTING:rule:2                     16837 TCP    10.3.118.45
+   50759 94.142.241.111  23    ---        ['DF', 'ACK']
+mangle:PREROUTING:rule:3                     16837 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x2        ['DF', 'ACK']
+mangle:PREROUTING:policy:4                   16837 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x2        ['DF', 'ACK']
+mangle:FORWARD:policy:1                      16837 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x2        ['DF', 'ACK']
+filter:FORWARD:policy:1                      16837 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x2        ['DF', 'ACK']
+mangle:POSTROUTING:policy:1                  16837 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x2        ['DF', 'ACK']
+wire:POSTROUTING:policy:1                    16837 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x2        ['DF', 'ACK']
+raw:PREROUTING:policy:4                      16838 TCP    10.3.118.45
+   50759 94.142.241.111  23    ---        ['DF', 'ACK']
+mangle:PREROUTING:rule:2                     16838 TCP    10.3.118.45
+   50759 94.142.241.111  23    ---        ['DF', 'ACK']
+mangle:PREROUTING:rule:3                     16838 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x2        ['DF', 'ACK']
+mangle:PREROUTING:policy:4                   16838 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x2        ['DF', 'ACK']
+mangle:FORWARD:policy:1                      16838 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x2        ['DF', 'ACK']
+filter:FORWARD:policy:1                      16838 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x2        ['DF', 'ACK']
+mangle:POSTROUTING:policy:1                  16838 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x2        ['DF', 'ACK']
+wire:POSTROUTING:policy:1                    16838 TCP    10.3.118.45
+   50759 94.142.241.111  23    0x2        ['DF', 'ACK']
 
 
-It doesn't work well.  For example, I get this:
+Using conntrack -E -d 94.142.241.111 I can see that the connection
+mark is maintained at 0x1.
+This is a test case iptables configuration to try to isolate the problem.
 
-MariaDB [ulog]> SELECT FROM_UNIXTIME(flow_start_sec) AS start, flow_end_sec - flow_start_sec AS sec,
-> orig_ip_saddr_str AS src, orig_l4_sport AS sport, orig_ip_daddr_str, orig_l4_dport AS svc
-> FROM ct WHERE orig_ip_saddr_str = '66.110.216.209';
-+-------+------+----------------+-------+-------------------+------+
-| start | sec  | src            | sport | orig_ip_daddr_str | svc  |
-+-------+------+----------------+-------+-------------------+------+
-| NULL  | NULL | 66.110.216.209 | 32767 | 62.94.243.226     |  143 |
-| NULL  | NULL | 66.110.216.209 | 32767 | 62.94.243.226     |  143 |
-+-------+------+----------------+-------+-------------------+------+
-2 rows in set (0.00 sec)
+[root@arnott ~]# iptables --version
+iptables v1.4.21
 
+I'd appreciate any help with this.
 
-
-flow_start_sec and flow_end_sec are both NULL, after several hours.  They seem to be non-NULL for outgoing connections and for connections coming from the internal network.  Even then, they don't seem to be accurate timings.
-
-The mail log for the IP above IP is as follows (the source port is always 32767):
-
-Feb 15 12:08:07 22 north imapd: LOGIN FAILED, user=sungjtrio@fragoline.it, ip=[66.110.216.209], port=[41204]
-Feb 15 12:08:16 23 north imapd: Disconnected, ip=[66.110.216.209], port=[41204], time=16
-Feb 15 12:08:47 23 north imapd: Connection, ip=[66.110.216.209], port=[45344]
-Feb 15 12:08:54 22 north imapd: LOGIN FAILED, user=sungjtrio@fragoline.it, ip=[66.110.216.209], port=[45344]
-Feb 15 12:09:06 23 north imapd: Disconnected, ip=[66.110.216.209], port=[45344], time=19
-
-Disconnections are likely caused by conntrack -D -s 66.110.216.209.  I'm reporting abusive login attempts at end-of-day, and I've been told to mention my server (target) address and port, 62.94.243.226:143 in this case.  Since the mail log doesn't mention that data, the idea is to find it in the NFCT log based on the time and source IP.
-
-Should I be running conntrackd?
-Should I play with socket buffer/ resync timeout/ backlog_oneshot_requests/ ring_buffer_size?
-Any other hint?
-
-
-TIA
-Ale
--- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Best regards
+Bernd
