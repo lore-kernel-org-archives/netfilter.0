@@ -1,119 +1,51 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: NFQUEUE/iptables and kernel warning messages for
- net/ipv4/tcp_output.c
-Date: Tue, 18 Feb 2020 13:39:58 +0100
-Message-ID: <20200218123958.GJ19559@breakpoint.cc>
+From: Vieri Di Paola <vieridipaola@gmail.com>
+Subject: Re: NFQUEUE/iptables and kernel warning messages for net/ipv4/tcp_output.c
+Date: Tue, 18 Feb 2020 13:59:56 +0100
+Message-ID: <CABLYT9j6a+QT=7BdeSbJY2AnbHhKz72OQTJ8x5nL6_4TBeZT3Q@mail.gmail.com>
 References: <CABLYT9gNPFh7RpwE8P3uZyLKBM-_6ctpg7_8BPo4iCN3PWMQOQ@mail.gmail.com>
+ <20200218123958.GJ19559@breakpoint.cc>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CABLYT9gNPFh7RpwE8P3uZyLKBM-_6ctpg7_8BPo4iCN3PWMQOQ@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Wnj5Tqet5dMfyuJyMnMDbeP5ExV9WxQrvbQPdq9dkYk=;
+        b=EA3i5fzm3RQyQe5l/jEL9TVSu0AS+cEpdElhaDZxii1irZgsePRQLryMJaZe/lIzga
+         aild4CJiAlmYFZzy25BO0+pREC2gdIsYXJGip/gu8DrxUhNVXte+cEtUUgHIeUv9hEou
+         3BUzNJIMItOCI7fRSTxAh657lwXflw2IbOU/5P2lWh1f1LMdyz3/lRvZ+Fy2FBbVs8DN
+         O8X875Fpx7bbA66SAod3h7Rr6R/hWzBgXyN7p/b2oMG5e0ZK4vpgfSE8vGger0t2jc2m
+         tZ2fWccldul6nAqj0M7OLKHV0PhsWVs7O4g5tY451fJFWnCzQn/OPJox2X9PF6QNCamN
+         0fRQ==
+In-Reply-To: <20200218123958.GJ19559@breakpoint.cc>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Vieri Di Paola <vieridipaola@gmail.com>
+To: Florian Westphal <fw@strlen.de>
 Cc: netfilter@vger.kernel.org
 
-Vieri Di Paola <vieridipaola@gmail.com> wrote:
-> Hi,
-> 
-> Whenever I use NFQUEUE/iptables to send traffic to an IDS/IPS (eg.
-> Suricata), I get an ugly kernel warning which can sometimes and on the
-> long run turn into a system freeze.
-> 
-> I'm using NFQUEUE 0:5, and I'm running Suricata with -q 0 -q 1 -q 2 -q
-> 3 -q 4 -q 5 as arguments.
-> 
-> I've already reported the issue on the LKML here:
-> 
-> https://lkml.org/lkml/2020/2/13/1255
+On Tue, Feb 18, 2020 at 1:39 PM Florian Westphal <fw@strlen.de> wrote:
+>
+> get this patch working (untested)
 
-No idea.  Suricata forces software-side segmentation for each packet,
-could be related.
+> +static uint32_t nfq_get_pktinfo(struct nfq_data *nfad)
+> +{
+> +        return ntohl(nfnl_get_data(nfad->data, NFQA_SKB_INFO, uint32_t));
 
-Can you post to suricata ML and get this patch working (untested):
-If the problem doesn't occur with segmentation off we've at least
-narrowed it down:
+I applied the patch, but I get this compilation error:
 
-diff --git a/src/source-nfq.c b/src/source-nfq.c
---- a/src/source-nfq.c
-+++ b/src/source-nfq.c
-@@ -154,6 +154,7 @@ typedef enum NFQMode_ {
- } NFQMode;
- 
- #define NFQ_FLAG_FAIL_OPEN  (1 << 0)
-+#define NFQ_FLAG_GSO        (1 << 2)
- 
- typedef struct NFQCnf_ {
-     NFQMode mode;
-@@ -242,6 +243,10 @@ void NFQInitConfig(char quiet)
- #endif
-     }
- 
-+#ifdef HAVE_NFQ_SET_QUEUE_FLAGS
-+        nfq_config.flags |= NFQ_FLAG_GSO;
-+#endif
-+
-     if ((ConfGetInt("nfq.repeat-mark", &value)) == 1) {
-         nfq_config.mark = (uint32_t)value;
-     }
-@@ -389,6 +394,16 @@ static inline void NFQMutexInit(NFQQueueVars *nq)
-     }
- }
- 
-+/* Ugly Hack */
-+struct nfq_data {
-+	void **data;
-+};
-+
-+static uint32_t nfq_get_pktinfo(struct nfq_data *nfad)
-+{
-+        return ntohl(nfnl_get_data(nfad->data, NFQA_SKB_INFO, uint32_t));
-+}
-+
- #define NFQMutexLock(nq) do {           \
-     if ((nq)->use_mutex)                \
-         SCMutexLock(&(nq)->mutex_qh);   \
-@@ -412,6 +427,7 @@ static int NFQSetupPkt (Packet *p, struct nfq_q_handle *qh, void *data)
-     int ret;
-     char *pktdata;
-     struct nfqnl_msg_packet_hdr *ph;
-+    uint32_t pktinfo;
- 
-     ph = nfq_get_msg_packet_hdr(tb);
-     if (ph != NULL) {
-@@ -474,6 +490,11 @@ static int NFQSetupPkt (Packet *p, struct nfq_q_handle *qh, void *data)
-         gettimeofday(&p->ts, NULL);
-     }
- 
-+    pktinfo = nfq_get_pktinfo(tb);
-+    /* kernel/nic will compute checksum on output */
-+    if (pktinfo & NFQA_SKB_CSUMNOTREADY)
-+       p->flags |= PKT_IGNORE_CHECKSUM;
-+
-     p->datalink = DLT_RAW;
-     return 0;
- }
-@@ -674,16 +695,14 @@ static TmEcode NFQInitThread(NFQThreadVars *t, uint32_t queue_maxlen)
- #endif
- 
- #ifdef HAVE_NFQ_SET_QUEUE_FLAGS
--    if (nfq_config.flags & NFQ_FLAG_FAIL_OPEN) {
--        uint32_t flags = NFQA_CFG_F_FAIL_OPEN;
--        uint32_t mask = NFQA_CFG_F_FAIL_OPEN;
--        int r = nfq_set_queue_flags(q->qh, mask, flags);
-+    if (nfq_config.flags) {
-+        int r = nfq_set_queue_flags(q->qh, nfq_config.flags, nfq_config.flags);
- 
-         if (r == -1) {
--            SCLogWarning(SC_ERR_NFQ_SET_MODE, "can't set fail-open mode: %s",
--                         strerror(errno));
-+            SCLogWarning(SC_ERR_NFQ_SET_MODE, "can't set nfq flags 0x%x: %s",
-+                         nfq_config.flags, strerror(errno));
-         } else {
--            SCLogInfo("fail-open mode should be set on queue");
-+            SCLogInfo("Set flag modes 0x%x on queue", nfq_config.flags);
-         }
-     }
- #endif
+In file included from suricata-common.h:180,
+                 from source-nfq.c:28:
+source-nfq.c: In function 'nfq_get_pktinfo':
+source-nfq.c:404:48: error: 'NFQA_SKB_INFO' undeclared (first use in
+this function)
+  404 |         return ntohl(nfnl_get_data(nfad->data, NFQA_SKB_INFO,
+uint32_t));
+      |                                                ^~~~~~~~~~~~~
+
+I'll post to the suricata ML asap.
+
+Thanks,
+
+Vieri
