@@ -1,56 +1,119 @@
-From: Haochen Tong <i@hexchain.org>
-Subject: Re: nftables "native interface" for IPv6 NPT?
-Date: Mon, 17 Feb 2020 20:37:40 +0100
-Message-ID: <20200217193740.7gzgh32m2nsguip5@kotori.hexchain.org>
-References: <8b2eff13-0857-08d8-9111-9be84b39db29@hexchain.org>
+From: Florian Westphal <fw@strlen.de>
+Subject: Re: NFQUEUE/iptables and kernel warning messages for
+ net/ipv4/tcp_output.c
+Date: Tue, 18 Feb 2020 13:39:58 +0100
+Message-ID: <20200218123958.GJ19559@breakpoint.cc>
+References: <CABLYT9gNPFh7RpwE8P3uZyLKBM-_6ctpg7_8BPo4iCN3PWMQOQ@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=hexchain.org; q=dns/txt;
- s=smtp; t=1581968263; h=In-Reply-To: Content-Type: MIME-Version:
- References: Message-ID: Subject: To: From: Date: Sender;
- bh=IhiMp/MDhPaifKbffEscvPB8ROtELeNxkDU1astKKEI=; b=K2q5htRKdsZlYCD9oQ9d+s72XIZXmS3TxdHY+ehzvhM3pRjZmimgWD/Cdl0rcdaeA30sMl1f
- 6hIIap4PD9DWQkNyHcdnRBZic010XlHqzCQ0zGUvvUQyHxxhJBS9TD1h6/69h693nFJx1qaS
- o3fbpsRqs0/V7jZ1Peu/FIn44rrYPzEi2OUNS2VH8y1C75BzMOi5VtREuXuZdnJFKcajG9k2
- WctPKlqnBwSpzU3KDSB7NkgaplYl0u/0vZIuKnridp9uCrnVM48o2WZxkY/rF5kHP+v9R/of
- kPu+obwunlLwrOBCYK9gtgU84H29QkDj18t5vbS3JyUJyehegWrz4Q==
 Content-Disposition: inline
-In-Reply-To: <8b2eff13-0857-08d8-9111-9be84b39db29@hexchain.org>
+In-Reply-To: <CABLYT9gNPFh7RpwE8P3uZyLKBM-_6ctpg7_8BPo4iCN3PWMQOQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Vieri Di Paola <vieridipaola@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-On Sun, Feb 09, 2020 at 01:44:19AM +0100, Haochen Tong wrote:
+Vieri Di Paola <vieridipaola@gmail.com> wrote:
 > Hi,
 > 
-> While trying to implement IPv6 NPT with nftables I did not found any
-> useful documentation. The wiki says "consider native interface", however
-> I cannot find any reference to this "native interface".
+> Whenever I use NFQUEUE/iptables to send traffic to an IDS/IPS (eg.
+> Suricata), I get an ugly kernel warning which can sometimes and on the
+> long run turn into a system freeze.
 > 
-> Is this unsupported for now? Are there any workarounds?
+> I'm using NFQUEUE 0:5, and I'm running Suricata with -q 0 -q 1 -q 2 -q
+> 3 -q 4 -q 5 as arguments.
+> 
+> I've already reported the issue on the LKML here:
+> 
+> https://lkml.org/lkml/2020/2/13/1255
 
-I have hacked up something with nft, by applying bitwise arithmetic on
-IP addresses and manually calculating the RFC6296 checksum for a single
-/80 subnet (not necessarilly correct in the following example because IP
-addresses are mangled for privacy reasons, but seems to work):
+No idea.  Suricata forces software-side segmentation for each packet,
+could be related.
 
-table ip6 npt {
-        chain prerouting-dnpt {
-                type filter hook prerouting priority mangle; policy accept;
-                iif ens3 ip6 daddr 2001:da8:1400:57:a6fb::/80 ip6 daddr set ip6 daddr and ::ffff:ffff:ffff or 2001:da8:1234:5678:90ab:: notrack
-        }
-        chain postrouting-snpt {
-                type filter hook postrouting priority mangle; policy accept;
-                oif ens3 ip6 saddr 2001:da8:1234:5678:90ab::/80 ip6 daddr != 2001:da8:1234::/48 oif ens3 ip6 saddr set ip6 saddr and ::ffff:ffff:ffff or 2001:da8:1400:57:a6fb:: notrack
-        }
-}
+Can you post to suricata ML and get this patch working (untested):
+If the problem doesn't occur with segmentation off we've at least
+narrowed it down:
 
-However, the {S,D}NPT targets in iptables are able to calculate the checksum
-automatically, for all subnets in a /64.
-
-So, again, what is the preferred way to do NPT in nftables with "native
-interfaces"? Is a new kernel module needed?
-
-Thanks,
-Haochen Tong
+diff --git a/src/source-nfq.c b/src/source-nfq.c
+--- a/src/source-nfq.c
++++ b/src/source-nfq.c
+@@ -154,6 +154,7 @@ typedef enum NFQMode_ {
+ } NFQMode;
+ 
+ #define NFQ_FLAG_FAIL_OPEN  (1 << 0)
++#define NFQ_FLAG_GSO        (1 << 2)
+ 
+ typedef struct NFQCnf_ {
+     NFQMode mode;
+@@ -242,6 +243,10 @@ void NFQInitConfig(char quiet)
+ #endif
+     }
+ 
++#ifdef HAVE_NFQ_SET_QUEUE_FLAGS
++        nfq_config.flags |= NFQ_FLAG_GSO;
++#endif
++
+     if ((ConfGetInt("nfq.repeat-mark", &value)) == 1) {
+         nfq_config.mark = (uint32_t)value;
+     }
+@@ -389,6 +394,16 @@ static inline void NFQMutexInit(NFQQueueVars *nq)
+     }
+ }
+ 
++/* Ugly Hack */
++struct nfq_data {
++	void **data;
++};
++
++static uint32_t nfq_get_pktinfo(struct nfq_data *nfad)
++{
++        return ntohl(nfnl_get_data(nfad->data, NFQA_SKB_INFO, uint32_t));
++}
++
+ #define NFQMutexLock(nq) do {           \
+     if ((nq)->use_mutex)                \
+         SCMutexLock(&(nq)->mutex_qh);   \
+@@ -412,6 +427,7 @@ static int NFQSetupPkt (Packet *p, struct nfq_q_handle *qh, void *data)
+     int ret;
+     char *pktdata;
+     struct nfqnl_msg_packet_hdr *ph;
++    uint32_t pktinfo;
+ 
+     ph = nfq_get_msg_packet_hdr(tb);
+     if (ph != NULL) {
+@@ -474,6 +490,11 @@ static int NFQSetupPkt (Packet *p, struct nfq_q_handle *qh, void *data)
+         gettimeofday(&p->ts, NULL);
+     }
+ 
++    pktinfo = nfq_get_pktinfo(tb);
++    /* kernel/nic will compute checksum on output */
++    if (pktinfo & NFQA_SKB_CSUMNOTREADY)
++       p->flags |= PKT_IGNORE_CHECKSUM;
++
+     p->datalink = DLT_RAW;
+     return 0;
+ }
+@@ -674,16 +695,14 @@ static TmEcode NFQInitThread(NFQThreadVars *t, uint32_t queue_maxlen)
+ #endif
+ 
+ #ifdef HAVE_NFQ_SET_QUEUE_FLAGS
+-    if (nfq_config.flags & NFQ_FLAG_FAIL_OPEN) {
+-        uint32_t flags = NFQA_CFG_F_FAIL_OPEN;
+-        uint32_t mask = NFQA_CFG_F_FAIL_OPEN;
+-        int r = nfq_set_queue_flags(q->qh, mask, flags);
++    if (nfq_config.flags) {
++        int r = nfq_set_queue_flags(q->qh, nfq_config.flags, nfq_config.flags);
+ 
+         if (r == -1) {
+-            SCLogWarning(SC_ERR_NFQ_SET_MODE, "can't set fail-open mode: %s",
+-                         strerror(errno));
++            SCLogWarning(SC_ERR_NFQ_SET_MODE, "can't set nfq flags 0x%x: %s",
++                         nfq_config.flags, strerror(errno));
+         } else {
+-            SCLogInfo("fail-open mode should be set on queue");
++            SCLogInfo("Set flag modes 0x%x on queue", nfq_config.flags);
+         }
+     }
+ #endif
