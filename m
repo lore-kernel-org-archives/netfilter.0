@@ -1,52 +1,44 @@
-From: Vieri Di Paola <vieridipaola@gmail.com>
-Subject: Re: NFQUEUE/iptables and kernel warning messages for net/ipv4/tcp_output.c
-Date: Wed, 19 Feb 2020 20:37:47 +0100
-Message-ID: <CABLYT9iGmGJCmaJn5epgtGr+35Z3CMECut=dHjBcKBe5OkeqDQ@mail.gmail.com>
-References: <CABLYT9gNPFh7RpwE8P3uZyLKBM-_6ctpg7_8BPo4iCN3PWMQOQ@mail.gmail.com>
- <20200218123958.GJ19559@breakpoint.cc> <CABLYT9j6a+QT=7BdeSbJY2AnbHhKz72OQTJ8x5nL6_4TBeZT3Q@mail.gmail.com>
- <20200218132107.GK19559@breakpoint.cc>
+From: Stephen Satchell <list@satchell.net>
+Subject: Waiting until first release of NFTABLES
+Date: Wed, 19 Feb 2020 15:41:52 -0800
+Message-ID: <c4e081c5-3bb9-827e-a382-388fe4d859de@satchell.net>
+Reply-To: list@satchell.net
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=dLaLtKWOAc+qpJz5+RVqWLirVZRppQnKvncg5gvNTrY=;
-        b=LSp7opfLOb6IOukw8tLt4VVZS1ux0hoYtGZRUB47sPkQVPXb3wQKh5RMGgf8wutJZC
-         kH7EzFIZHQTHhEPgnK0plki2iSq8Unr65YQeBqalqI2rV9GyKAUkVxxyZyAX6PuIf2SI
-         HgW2873DtlxQDAc2q+uMwyLecARL3Zq2YDyOF48KAWf6i2VeNSbreAwsxwOyLWqIKzCS
-         Zuh9jqGvjAoIljCugcb0kMm8LaPb+24UQtI/gp9w4dKshKfpZRn8KwuGDoz6XxF2K7UJ
-         ZlOLNMXJDirlev6lpT47j60d7nBUC0GjQXLiEy+B0/UhabBF/VQV9wXPEN2fTIHONtjd
-         tnzw==
-In-Reply-To: <20200218132107.GK19559@breakpoint.cc>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Florian Westphal <fw@strlen.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Tue, Feb 18, 2020 at 2:21 PM Florian Westphal <fw@strlen.de> wrote:
->
->
-> This means your kernel headers are older than 3.10.
-> It should be part of /usr/include/linux/netfilter/nfnetlink_queue.h .
+I'm concerned that Centos 8 is using a pre-release version of nftables. 
+I just did a system update, and found this as current:
 
-Actually I have 4.19. I also had to define another constant.
-In any case, it compiled OK, and the problem was not seen again for a
-test period of at least 15 hours (I usually had several of these
-kernel warnings almost each hour, so 15 hours in a weekday is
-significant).
-I then removed your patch, recompiled and ran suricata in nfq "accept"
-mode (default). It was set as "repeat mode" before. It hasn't been
-running long enough yet (7 hours), but for now I haven't seen any
-kernel warnings in "accept mode".
+/etc/redhat-release:  CentOS Linux release 8.1.1911 (Core)
+$ nft -v:             nftables v0.9.0 (Fearless Fosdick)
 
-So all I can say for now is that it seems I'm getting these kernel
-warnings when using Suricata in nfq repeat mode.
+I think that, given some of the issues that have been mentioned on this 
+list, I'm not comfortable with this new pre-release facility.  So I'll 
+wait until it reaches v1.0 or higher, and in the meantime revert to 
+using IPTABLES and my home-brew shell script, disabling firewalld(8) in 
+the process.
 
-I'll ask the Suricata ML what they think about that.
+To ensure BGP-38 compliance upstream, I'll use the routing table 
+extension that I have developed for NetworkManager, that I posted 
+earlier, that null-routes all reserved netblocks.  (I'm not planning to 
+incorporate the BOGON enhancement as suggested by others.)
 
-Thanks,
+The following will appear in my /etc/sysctl.conf file, which turns on 
+source filtering and logs martians.
 
-Vieri
+  net.ipv6.conf.all.disable_ipv6  = 1
+  net.ipv4.conf.all.rp_filter = 1
+  net.ipv4.conf.all.log_martians = 1
+
+  net.ipv6.conf.default.disable_ipv6 = 1
+  net.ipv4.conf.default.rp_filter = 1
+  net.ipv4.conf.default.log_martians = 1
+
+Yes, this means that I'm blocking all ipv6 for now.  I will reconsider 
+as the 1.0 or later release version makes it to the CentOS 8 distribution.
