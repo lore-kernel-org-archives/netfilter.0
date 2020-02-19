@@ -1,50 +1,39 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: NFQUEUE/iptables and kernel warning messages for
- net/ipv4/tcp_output.c
-Date: Tue, 18 Feb 2020 14:21:07 +0100
-Message-ID: <20200218132107.GK19559@breakpoint.cc>
-References: <CABLYT9gNPFh7RpwE8P3uZyLKBM-_6ctpg7_8BPo4iCN3PWMQOQ@mail.gmail.com>
- <20200218123958.GJ19559@breakpoint.cc>
- <CABLYT9j6a+QT=7BdeSbJY2AnbHhKz72OQTJ8x5nL6_4TBeZT3Q@mail.gmail.com>
+From: =?UTF-8?Q?Lars_Nood=c3=a9n?= <lars.nooden@gmx.com>
+Subject: Automatically maintaining unique list of addresses
+Date: Wed, 19 Feb 2020 09:44:51 +0200
+Message-ID: <ab8bf7b2-d135-2e4b-b9a9-7c917f113ddf@gmx.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CABLYT9j6a+QT=7BdeSbJY2AnbHhKz72OQTJ8x5nL6_4TBeZT3Q@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1582098292;
+        bh=r9K2yEP1Qfzieb5ZHnL9kpx9a6m7M+bYHgvaAOnQQg8=;
+        h=X-UI-Sender-Class:To:From:Subject:Date;
+        b=LwYx2kijbDX/qhzZlmh93o6LZdt/9I8LNhUuO/aQ64+TcUJlRYeU+lJIumrjKZx9W
+         pV4BAfa3vOzE71mWCieffdD6foZ5HVeduYXmhWFeOqPcg9znSH2a5wHHFm/TDqrN7b
+         snMXsOfiiksMLsGQS//1tFXzjq7gaGxlXpOVsQvs=
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Vieri Di Paola <vieridipaola@gmail.com>
-Cc: Florian Westphal <fw@strlen.de>, netfilter@vger.kernel.org
+To: Linux Netfilter Users List <netfilter@vger.kernel.org>
 
-Vieri Di Paola <vieridipaola@gmail.com> wrote:
-> On Tue, Feb 18, 2020 at 1:39 PM Florian Westphal <fw@strlen.de> wrote:
-> >
-> > get this patch working (untested)
-> 
-> > +static uint32_t nfq_get_pktinfo(struct nfq_data *nfad)
-> > +{
-> > +        return ntohl(nfnl_get_data(nfad->data, NFQA_SKB_INFO, uint32_t));
-> 
-> I applied the patch, but I get this compilation error:
-> 
-> In file included from suricata-common.h:180,
->                  from source-nfq.c:28:
-> source-nfq.c: In function 'nfq_get_pktinfo':
-> source-nfq.c:404:48: error: 'NFQA_SKB_INFO' undeclared (first use in
-> this function)
->   404 |         return ntohl(nfnl_get_data(nfad->data, NFQA_SKB_INFO,
-> uint32_t));
->       |                                                ^~~~~~~~~~~~~
+If I add an IP address multiple times, I end up with it in the ruleset
+three times.  Is there an easy way to try to add IP addresses such that
+they aren't duplicated?
 
-This means your kernel headers are older than 3.10.
-It should be part of /usr/include/linux/netfilter/nfnetlink_queue.h .
+/Lars
 
+$ sudo nft add rule ip filter4 input ip \
+	saddr 198.51.100.209 counter reject
 
-You can substitute 14 instead, or add
+$ sudo nft add rule ip filter4 input ip \
+	saddr 198.51.100.209 counter reject
 
-#define NFQA_SKB_INFO 14
+$ sudo nft add rule ip filter4 input ip \
+	saddr 198.51.100.209 counter reject
 
-> I'll post to the suricata ML asap.
-
-Thanks.
+$ sudo nft list ruleset| grep 51
+                ip saddr 198.51.100.209 counter packets 0 bytes 0 reject
+                ip saddr 198.51.100.209 counter packets 0 bytes 0 reject
+                ip saddr 198.51.100.209 counter packets 0 bytes 0 reject
