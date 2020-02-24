@@ -1,55 +1,55 @@
-From: Jozsef Kadlecsik <kadlec@netfilter.org>
-Subject: [ANNOUNCE] ipset 7.6 released
-Date: Sat, 22 Feb 2020 20:34:40 +0100 (CET)
-Message-ID: <alpine.DEB.2.20.2002222023100.8763@blackhole.kfki.hu>
+From: trentbuck@gmail.com (Trent W. Buck)
+Subject: Re: Waiting until first release of NFTABLES
+Date: Mon, 24 Feb 2020 11:58:38 +1100
+Message-ID: <875zfwssw1.fsf@goll.lan>
+References: <c4e081c5-3bb9-827e-a382-388fe4d859de@satchell.net>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        blackhole.kfki.hu; h=mime-version:user-agent:message-id:from
-        :from:date:date:received:received:received; s=20151130; t=
-        1582400080; x=1584214481; bh=KRHpkErE98Hx1o6eOkjgj94LQQREXWDwyRH
-        H20BnE/I=; b=uWIoq9DIkL610S92oGpf27mRv90bYCT+8Y8bqFs7r+hsqfFxCFx
-        HkAk81fDqVF1JHzXqvV2cqfOKm0jYFda5oRtcKfmnns2mPteKP/IdZ9JO+FSQ4Dl
-        NnjNUpH/Tmt9ejPtACc6pGafi/WiAeZF02AOiIf9fQXgpWV8KEwcqM04=
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Hi,
+Stephen Satchell <list@satchell.net> writes:
 
-I'm happy to announce ipset 7.6. The release contains mostly bugfixes 
-uncovered by syzbot. The fixing of "INFO: rcu detected stall in hash_xxx" 
-is resulted faster add/del operations due to the introduced region locks
-instead of using a single lock to protect the set data.
+> I'm concerned that Centos 8 is using a pre-release version of
+> nftables. I just did a system update, and found this as current:
+>
+> /etc/redhat-release:  CentOS Linux release 8.1.1911 (Core)
+> $ nft -v:             nftables v0.9.0 (Fearless Fosdick)
 
-Please note, the oldest kernel version supported by the ipset package
-is now 3.11.
+You might want to look for other installed packages < 1.0.0:
 
-Userspace changes:
-  - Add checking system_power_efficient_wq in the kernel source tree
-  - .gitignore: add temporary files to the list
+    rpm -qa --qf '%{name} %{version}-%{release}\n' |
+    sort --sort=version --key=2
 
-Kernel part changes:
-  - netfilter: ipset: Fix forceadd evaluation path
-  - netfilter: ipset: Correct the reported memory size
-  - ip_set: Include kernel header instead of UAPI (Serhey Popovych)
-  - netfilter: ipset: Fix "INFO: rcu detected stall in hash_xxx" reports
-  - netfilter: ipset: fix suspicious RCU usage in find_set_and_id
-  - Add compatibility support for bitmap_zalloc() and bitmap_zero()
-  - netfilter: ipset: use bitmap infrastructure completely
-  - netfilter: fix a use-after-free in mtype_destroy() (Cong Wang)
+It's... not uncommon. :-)
+On my laptop, fully 20% of packages are below version 1.
 
-You can download the source code of ipset from:
-        http://ipset.netfilter.org
-        ftp://ftp.netfilter.org/pub/ipset/
-        git://git.netfilter.org/ipset.git
+> To ensure BGP-38 compliance upstream, I'll use the routing table
+> extension that I have developed for NetworkManager, that I posted
+> earlier, that null-routes all reserved netblocks.  (I'm not planning
+> to incorporate the BOGON enhancement as suggested by others.)
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
-PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+I think you mean BCP-38:
+https://tools.ietf.org/html/bcp38
+
+> The following will appear in my /etc/sysctl.conf file, which turns on
+> source filtering and logs martians.
+>
+>  net.ipv6.conf.all.disable_ipv6  = 1
+>  net.ipv4.conf.all.rp_filter = 1
+>  net.ipv4.conf.all.log_martians = 1
+>
+>  net.ipv6.conf.default.disable_ipv6 = 1
+>  net.ipv4.conf.default.rp_filter = 1
+>  net.ipv4.conf.default.log_martians = 1
+>
+> Yes, this means that I'm blocking all ipv6 for now.  I will reconsider
+> as the 1.0 or later release version makes it to the CentOS 8
+> distribution.
+
+CentOS runs systemd, so rp_filter=1 (or =2 since v240) should be on by default:
+https://github.com/systemd/systemd/blob/master/sysctl.d/50-default.conf
+
