@@ -1,47 +1,50 @@
-From: trentbuck@gmail.com (Trent W. Buck)
-Subject: Re: Waiting until first release of NFTABLES
-Date: Tue, 25 Feb 2020 14:30:31 +1100
-Message-ID: <87a757qr6w.fsf@goll.lan>
-References: <c4e081c5-3bb9-827e-a382-388fe4d859de@satchell.net>
-        <875zfwssw1.fsf@goll.lan>
-        <b0399d25-901e-38a8-7359-8096516a818e@satchell.net>
-        <e36d450d-6707-4902-9378-a326504e5840@thelounge.net>
-        <ff0fb90e-8da1-18b5-9be5-dc7c4886a009@satchell.net>
-        <87r1yjqxki.fsf@goll.lan>
-        <e73f8381-66ea-18f7-9267-d8493de3dafd@satchell.net>
+From: pauloric@contatogs.com.br
+Subject: loadbalance  with 2 or more links
+Date: Tue, 25 Feb 2020 16:59:38 -0300 (BRT)
+Message-ID: <825530945.480.1582660778781.JavaMail.zimbra@contatogs.com.br>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Filter: OpenDKIM Filter v2.10.3 mercurio.contatogs.com.br 0217D40211
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=contatogs.com.br;
+        s=547D7A06-2322-11E9-835A-A37390E63B7D; t=1582660780;
+        bh=4s0YRDfZBtlsjZo2L4lj/IbOuR6KGLZSf2qvtVSwaWk=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=TgUc6NOOGPvbKOiczK+A2XiEXJPc/4QXcVhnZjP15QtL/WWRCxtTsHZHLimOZ8wT5
+         /pvrkuGQ7OXswiumTaif5Qr+9dcy2vUsSKDPtgJBDlqtUoX28TfHktMhtLYG3ByTcU
+         niwllYxYBay0BlA+8TvHaj5crTZs/ikE21R5tLEWYY1ComNKAw37S6fuXFQTE52Fhz
+         WSy1KV5hwJE9c1hAB0J3oNQLwadws7WNx0iwL73LHDMzxgmMlE8c4xvkeU9djPY5TM
+         G4NtLnGtkT9FD1BItfT0gEQ6i8nx39u30Wv5LKvpWPIqa28mKxFSUAtCx6J57PpAgN
+         nPPOTKDvsPGaQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: netfilter <netfilter@vger.kernel.org>
 
-Stephen Satchell <list@satchell.net> writes:
+Hi 
 
-> On 2/24/20 5:12 PM, Trent W. Buck wrote:
->> Can't you use "ip netns" (or systemd-nspawn, or docker, or libvirt-qemu)
->> to set up a test network with a test firewall, then send packets into /
->> out of that test environment?
->>
->> OK, it's a bit fiddly to set up, but I don't see why you need any
->> special nftables-specific thing when you can just do regular
->> namespace/container/vm techniques.
->
-> HOWTO link?
+I have been working with iptables and now I'm  migrating to nftables ( BTW really nice job netfilter team 80)  ).
 
-I don't have one, but this is a basic introduction to "ip netns":
-https://lwn.net/Articles/580893/
+I have been using http://fatihusta.com/2015/03/07/network/linux-wan-load-balancing/  since nexthop is not working for a long time.
 
-Once the netns is set up, you'd do something like
+Studing nftables wiki I found 2 solutions:
 
-    ip netns exec my-cool-namespace  nft --file=my-cool-firewall.nft
-    ip netns exec my-cool-namespace  firefox gopher://porn.example.edu
 
-Then look at nft's counters (add rule ... counter accept), or
-kernel logs (add rule ... log accept), or
-whatever diagnostics you normally do.
+a) nftbl   https://github.com/zevenet/nftlb
 
-The fiddly part is turning that into a turnkey "solution" that can have
-multiple namespaces hooked up to one another, and to the real internet.
+nftbl looks like very good, but very complex for a single load balance solution.
+
+or
+
+b) nftables + nat/loadbalance  https://wiki.nftables.org/wiki-nftables/index.php/Load_balancing
+
+98% is ok using iptables-restore-translate as example.
+
+
+As I've been using  iptables + mangle + iproute, what is easiest solution to use with 2 or more links ??  
+
+
+Best regards
+
+
 
