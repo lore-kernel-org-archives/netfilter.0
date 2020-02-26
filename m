@@ -1,61 +1,56 @@
-From: Laura Garcia <nevola@gmail.com>
-Subject: Re: loadbalance with 2 or more links
-Date: Wed, 26 Feb 2020 09:08:04 +0100
-Message-ID: <CAF90-Wh5SaSfCoQWC+ejThQCdr_YqVxN9Lqy58M5o98owkgkBQ@mail.gmail.com>
-References: <825530945.480.1582660778781.JavaMail.zimbra@contatogs.com.br>
+From: pauloric@contatogs.com.br
+Subject: wiki acess
+Date: Wed, 26 Feb 2020 11:28:41 -0300 (BRT)
+Message-ID: <1884078385.414.1582727321252.JavaMail.zimbra@contatogs.com.br>
 Mime-Version: 1.0
+Content-Type: multipart/alternative; 
+        boundary="=_ccf40739-8435-4b6b-8075-997279fec5d2"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=li4g8HobUyyZBEYDapp4vKwW6NdFVLFADPtkExNCOAE=;
-        b=m8tJa3sAjslmp7dn6cnWfi+K6ufZhDYtayvENyFW1Z+pQTfpq/bzOM2PyDgHBvKEy7
-         VeEzchGDpuNvn6CBYGqLZUXhTjdBV5RNRPRiuC9ioHq6uAveBYLqjEOW3SgbOwkr0FZj
-         Mjj9FlIVZpmDD3IXKHJ6jbjG3DrM4cmo4IXzHNlrs+JrJUu78c0FbPV+4wUAMpQ9wAc7
-         R+dMGCthErqoP9N5zGhkUZX6cmNEfUt8MggidWbIcgEURVZCiCgwEa0M6Gq8kCvF7L6x
-         9Utrod0pFtaE08qbBvVnalSqOUKwshLs/erOR5GVUBpPMzai4gsxVb8qqQE9v5tg6+uM
-         gJog==
-In-Reply-To: <825530945.480.1582660778781.JavaMail.zimbra@contatogs.com.br>
+DKIM-Filter: OpenDKIM Filter v2.10.3 mercurio.contatogs.com.br 8563A40637
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=contatogs.com.br;
+        s=547D7A06-2322-11E9-835A-A37390E63B7D; t=1582727323;
+        bh=E+kZ7+RP/9DS4Ai7VhRWhFW4y/zq34wpRjK1Regh8X8=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=BvRMMav792ZGU5JFp/9YedOtZVxUR9HW8SNAL7quvXxChbwk45vlImgcAzpgHUg6S
+         oy7L3t/P5WmAq62UytAqlTURqh5mVr0tiPxJZHF5DgkyT5PCBiJgj00ElacKP60qYy
+         VWphEjuqfWEwnAD9vvaXu3ko9c3w2PPHVTdkxkrIcubepzPylQJPgaw2QFN47nh3mm
+         hC/ZxV9IpW0ANO1sHkQV/Zx1sFyUn7Rxy/H49cI1KbQ4+sz+HVmLH/Lqdk0haricaq
+         1b+3DHbvfOQtslMgKO6HXyZIJNqV3Yxx4UhtHaO/tCWPuiujn6m3iAbS7f5ilSlgQV
+         HB/ZFqTnJczuA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@vger.kernel.org>
+
+--=_ccf40739-8435-4b6b-8075-997279fec5d2
+Content-Type: multipart/related; 
+	boundary="=_5b821089-0823-4fb5-bc0a-53ca6d4acae7"
+
+--=_5b821089-0823-4fb5-bc0a-53ca6d4acae7
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
-To: pauloric@contatogs.com.br
-Cc: netfilter <netfilter@vger.kernel.org>
 
-On Tue, Feb 25, 2020 at 9:03 PM <pauloric@contatogs.com.br> wrote:
->
-> Hi
->
-> I have been working with iptables and now I'm  migrating to nftables ( BTW really nice job netfilter team 80)  ).
->
-> I have been using http://fatihusta.com/2015/03/07/network/linux-wan-load-balancing/  since nexthop is not working for a long time.
->
-> Studing nftables wiki I found 2 solutions:
->
->
-> a) nftbl   https://github.com/zevenet/nftlb
->
-> nftbl looks like very good, but very complex for a single load balance solution.
->
-> or
->
-> b) nftables + nat/loadbalance  https://wiki.nftables.org/wiki-nftables/index.php/Load_balancing
->
-> 98% is ok using iptables-restore-translate as example.
->
+Hi 
 
-Both uses the same techniques, mainly for load balance services but
-probably you could use it for uplinks load balancing as well if you
-isolate the network interfaces to each router and put the load
-balancer as the default GW in your LAN.
+I would like to insert at: 
 
->
-> As I've been using  iptables + mangle + iproute, what is easiest solution to use with 2 or more links ??
->
 
-We've been using iproute for load balancing uplinks, but it shouldn't
-be difficult to add it in nftlb as well.
+a) https://wiki.nftables.org/wiki-nftables/index.php/Sets more info about auto merge 
 
-Cheers.
+b) https://wiki.nftables.org/wiki-nftables/index.php/Quick_reference-nftables_in_10_minutes  at list a call to: 
+fib 
+dup 
+fwd 
+
+
+Or could I have a login to insert this infos?  login ( paulobruck1)
+
+best regards
+
+-- 
+Paulo Ricardo Bruck consultor 
+http://www.contatogs.com.br/
+
+
+--=_5b821089-0823-4fb5-bc0a-53ca6d4acae7--
+
+--=_ccf40739-8435-4b6b-8075-997279fec5d2--
