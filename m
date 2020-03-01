@@ -1,56 +1,118 @@
-From: pauloric@contatogs.com.br
-Subject: wiki acess
-Date: Wed, 26 Feb 2020 11:28:41 -0300 (BRT)
-Message-ID: <1884078385.414.1582727321252.JavaMail.zimbra@contatogs.com.br>
+From: jon_netfilter@use.startmail.com
+Subject: Demystifying sets
+Date: Sun, 1 Mar 2020 17:33:14 +0100
+Message-ID: <b125461d-57f9-cdc4-0eab-2332fc53b287@negentropy.io>
 Mime-Version: 1.0
-Content-Type: multipart/alternative; 
-        boundary="=_ccf40739-8435-4b6b-8075-997279fec5d2"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Filter: OpenDKIM Filter v2.10.3 mercurio.contatogs.com.br 8563A40637
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=contatogs.com.br;
-        s=547D7A06-2322-11E9-835A-A37390E63B7D; t=1582727323;
-        bh=E+kZ7+RP/9DS4Ai7VhRWhFW4y/zq34wpRjK1Regh8X8=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=BvRMMav792ZGU5JFp/9YedOtZVxUR9HW8SNAL7quvXxChbwk45vlImgcAzpgHUg6S
-         oy7L3t/P5WmAq62UytAqlTURqh5mVr0tiPxJZHF5DgkyT5PCBiJgj00ElacKP60qYy
-         VWphEjuqfWEwnAD9vvaXu3ko9c3w2PPHVTdkxkrIcubepzPylQJPgaw2QFN47nh3mm
-         hC/ZxV9IpW0ANO1sHkQV/Zx1sFyUn7Rxy/H49cI1KbQ4+sz+HVmLH/Lqdk0haricaq
-         1b+3DHbvfOQtslMgKO6HXyZIJNqV3Yxx4UhtHaO/tCWPuiujn6m3iAbS7f5ilSlgQV
-         HB/ZFqTnJczuA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=startmail.com;
+        s=2017-11; t=1583080395;
+        bh=RFahLixMqh7Nm0sEigTATDiPvlB8at+1KVa5nY+i99c=;
+        h=To:From:Subject:Date:From;
+        b=h9lAfVHAquSFMU+fgCa2N2CxPXqc2MBM4Q7A2Ibf5MnE+dw/ywHUCPsU0NHKPzEnW
+         fplSIdX4Q64vJuRvVx+YHBhZz45+vFnOkEPZR27T6hTXlsZA17WVLx+V1dUodu7KGg
+         huh5Rl1weLdQstsGv/9IBEYLpb+btatsWBshbT6sMCVjb/20Bwz/E2qPedtcd3KJlL
+         +xZRedQG/NI+XlQg/u8JZsMKUV6Blo4lTSY2m5gO4M0LRkZExq6AKAKktxGTzK1K0A
+         PqP6ftmCrzuXQov4VoJQSXSEx+c6YSWJX19Eht4GANUHzK3YvQkrI+jEANtuMnhZz0
+         JLAlbOhfuxBDQ==
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
---=_ccf40739-8435-4b6b-8075-997279fec5d2
-Content-Type: multipart/related; 
-	boundary="=_5b821089-0823-4fb5-bc0a-53ca6d4acae7"
+Hi everyone!
 
---=_5b821089-0823-4fb5-bc0a-53ca6d4acae7
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+I have been trying to transition to nftables from iptables, and I have 
+some questions regarding the syntax and usage of sets and their nature, 
+to which I could find no answers in the documentation on the nftables 
+wiki or the man page of my distribution (debian sid). Thanks in advance 
+for those reading!
 
-Hi 
+My versions:
 
-I would like to insert at: 
+- nftables v0.9.3 (Topsy)
+- kernel 5.4.13
 
+1) what is the most up-to-date documentation or version of the man page?
 
-a) https://wiki.nftables.org/wiki-nftables/index.php/Sets more info about auto merge 
+For instance, the man page at netfilter.org says it was updated on march 
+21 2018, and doesn't mention things like the dynamic flag for sets. I 
+see that there's been a commit adding an explanation for the "ct count" 
+expression at [1], but I don't see it included in any man page I could find.
 
-b) https://wiki.nftables.org/wiki-nftables/index.php/Quick_reference-nftables_in_10_minutes  at list a call to: 
-fib 
-dup 
-fwd 
+2) what does the dynamic flag for sets actually do?
 
+In debian sid's nft man page, it says this:
 
-Or could I have a login to insert this infos?  login ( paulobruck1)
+ > The set statement is used to dynamically add or update elements in a 
+set from the packet path. The set setname must already exist in the 
+given table and **must have been created with the dynamic flag**.
 
-best regards
+Note my emphasis. However, I've tried this, and rules which modify set 
+contents from "the packet path" work without having to set the dynamic 
+flag for the set that is used (see [2]). After some more 
+experimentation, it seems that the dynamic flag *is* required for using 
+the limit and conntrack expressions. Which brings me to my next question.
 
--- 
-Paulo Ricardo Bruck consultor 
-http://www.contatogs.com.br/
+3) What are the rules for the expressions provided to the set statement? 
+(add, update)
 
+On "my" man page, the statement is defined thus:
 
---=_5b821089-0823-4fb5-bc0a-53ca6d4acae7--
+ > {add | update} @setname { expression [timeout timeout] [comment string] }
 
---=_ccf40739-8435-4b6b-8075-997279fec5d2--
+I've been experimenting with rate limiting, using the limit and ct count 
+expressions (statements?). In most examples, they are put inside the 
+curly braces, for instance like this [3]:
+
+ > ct state new add @my_connlimit { ip daddr ct count over 20 } counter 
+packets 0 bytes 0 drop
+
+or
+
+ > add rule my_filter_table my_input_chain tcp dport 22 ct state new add 
+@my_ssh_meter { ip saddr . tcp dport timeout 60s limit rate 10/second } 
+accept
+
+ From the man page, I would've assumed that something like "{ ip saddr 
+limit rate over 1/minute timeout 60s}" would be correct, since it only 
+lists "expression [timeout timeout]". How are the expressions "ip saddr 
+timeout 60s" and "limit rate over 1/minute" combined? What are the rules 
+for this? Is the "timeout 60s" bit part of the "expression", or is it 
+separate? Should the documentation say something like
+
+ > {add | update} @setname { expression [timeout timeout] [expression] 
+[comment string] }
+
+?
+
+4) Finally, what's in a set?
+
+I can specify the type of a set, for instance ipv4_addr. I can then in 
+addition set the flag to dynamic, which allows me to use rules adding a 
+"limit rate" or "ct count" expression to the add/update statements 
+modiying the set. Then, when I list the contents of the set, the set 
+seems to not only contain the ipv4_addr, but also this "thing" which is 
+the "limit rate over 1/minute" part, or "ct count over 2" or whatever. 
+What is this part? Can there only be one? How should I think of this? 
+The "limit rate" expression/statement seems to not remove the entry 
+automatically when the condition no longer matches, but the "ct count" 
+statement/expression on the other hand *does* remove the entry 
+automatically when the condition no longer holds.
+
+If you've read this far, thanks again! I have high hopes for nftables 
+and hope someone has the time and energy to answer some of these 
+questions. I'd be more than willing to update docs or wiki examples, for 
+instance to clarify the relationship between what requires a dynamic 
+flag and its relationship to whether a set is a "dynamic set".
+
+With kind regards,
+Jon
+
+1 
+https://git.netfilter.org/nftables/commit/?id=fe573574fcb2605bc9011c621f44654707180765
+2 
+https://wiki.nftables.org/wiki-nftables/index.php/Updating_sets_from_the_packet_path
+3 https://wiki.nftables.org/wiki-nftables/index.php/Meters
+
