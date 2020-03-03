@@ -1,67 +1,173 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: nftables offload doesn't seem to work
-Date: Tue, 3 Mar 2020 14:36:35 +0100
-Message-ID: <20200303133635.z3a5bxxfgksjx3zg@salvia>
-References: <20200301151148.44bd0e5e@moya.linuxfreak.ca>
- <20200301151504.78592af2@moya.linuxfreak.ca>
+From: Verachten Bruno <gounthar@gmail.com>
+Subject: Is it possible to get a transparent proxy with Redsocks when using
+ the new nftables?
+Date: Tue, 3 Mar 2020 15:27:25 +0100
+Message-ID: <CACtV=deJ2Sfq1q0r=MYvFOyh9B0UHkRTTnCYPW4yxMVfGLJyeA@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20200301151504.78592af2@moya.linuxfreak.ca>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=aOgOiVsz9ie9a1lg+B3uk1FBJfYnsKar3Pj7h5K0PQs=;
+        b=cN9ihmVy/KzUssxKN75ZZCRUh+sGEMAYe8cPscsDIldYe+DWh3pjxbX1cBijtQ752w
+         YsqIAAGbZRa9AZx1UL8p4ZyWoq4g+W8CVF6uwMo1VQZctDb3893txXRxHwr/EkiQ83N2
+         bq6x7gzmlVlJdrpzOkq0PZY/8Kzb54OCwh8gvn3YV5En82fEM/iU5sEIi/M7AfwqCThp
+         nOUuN+EjgbkqMztglpMLRN/vT7u64/5f2lvrvKrCfjS14qj3xx2RdfcB73Vpy+TcD/p0
+         S9VC/zI7VCJELMgJNtzDe60ZKjHHxMJ8YVw+RE45Nyig4zxF66H5rO3PUMoub8bBpQkV
+         s15w==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Patrick McLean <chutzpah@gentoo.org>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Sun, Mar 01, 2020 at 03:15:04PM -0800, Patrick McLean wrote:
-> On Sun, 1 Mar 2020 15:11:48 -0800
-> Patrick McLean <chutzpah@gentoo.org> wrote:
-> 
-> > Hi,
-> > 
-> > I am trying to test the nftables offload support, as describe in
-> > https://lwn.net/Articles/810663/
-> > 
-> > When I try to load the rules, or check a rules file, nft errors out, it
-> > appears that it does not understand "flags offload;":
-> > 
-> > # nft --check --file test.nft
-> > test.nft:6:51-55: Error: syntax error, unexpected flags
-> >                 type filter hook ingress device if0 priority 0; flags offload;
-> > 
-> > Here is the contents of the file I am trying to load:
-> > 
-> > table netdev filter_test {
-> >     chain ingress {
-> >         type filter hook ingress device eth0 priority 0; flags offload;
-> > 
-> >         192.168.0.10 tcp dport 22 drop
-> Oops, copy/paste error, this line is:
-> ip daddr 192.168.0.10 tcp dport 22 drop
-> >     }
-> > }
-> > 
-> > I am using the 5.4.22 kernel with nftables 0.9.3
+Hi List,
 
-You have to use a nftables snapshot from git.netfilter.org.
+I hope I'm on the right list to ask that question. I'm not an expert
+by any means on network, so please bear with me.
 
-Please, remember to invoke ethtool first:
+I've been using Redsocks for a few months now on a Ubuntu "18.04.3 LTS
+(Bionic Beaver)" machine. This machine has iptables, and not nftables.
+So I have a few rules to redirect 80,443,9048,1935 and so on.
 
-        ethtool -K eth0 hw-tc-offload on
+sudo iptables -t nat -A REDSOCKS -p tcp -j REDIRECT --to-ports 12345
+sudo iptables -t nat -A OUTPUT -p tcp --dport 443 -j REDSOCKS
+sudo iptables -t nat -A OUTPUT -p tcp --dport 1935 -j REDSOCKS
+sudo iptables -t nat -A OUTPUT -p tcp --dport 80 -j REDSOCKS
+sudo iptables -t nat -A OUTPUT -p tcp --dport 21 -j REDSOCKS
+sudo iptables -t nat -A OUTPUT -p tcp --dport 11371 -j REDSOCKS
+sudo iptables -t nat -A OUTPUT -p tcp --dport 9418 -j REDSOCKS
+sudo iptables -t nat -A OUTPUT -p tcp --dport 6380 -j REDSOCKS
+sudo iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDSOCKS
+sudo iptables -t nat -A PREROUTING -p tcp --dport 1935 -j REDSOCKS
+sudo iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDSOCKS
+sudo iptables -t nat -A PREROUTING -p tcp --dport 21 -j REDSOCKS
+sudo iptables -t nat -A PREROUTING -p tcp --dport 11371 -j REDSOCKS
+sudo iptables -t nat -A PREROUTING -p tcp --dport 9418 -j REDSOCKS
+sudo iptables -t nat -A PREROUTING -p tcp --dport 9418 -j REDSOCKS
+sudo iptables -t nat -A PREROUTING -p tcp --dport 6380 -j REDSOCKS
 
-I'm planning to explore a way to make this transparent to the user, so
-the offload flag implicitly turns on this toggle, so users do not have
-to invoke ethtool and the 'flags offload' becomes sufficient to turn
-on hardware offload.
+I exported those rules to another machine running "Debian GNU/Linux 10
+(buster)", which has nftables. I converted the existing rules thanks
+to
 
-Please, note that basechain priorities are restricted to 1 to
-USHRT_MAX.
+iptables-save > save.txt
+iptables-restore-translate -f save.txt > ruleset.nft
+nft -f ruleset.nft
 
-        type filter hook ingress device eth0 priority 1; flags offload;
-                                                      ^
+Nothing seems to work, as a git command or anything else is just
+falling in timeout.
 
-Such basechain priority limitation might be removed in the future,
-however, that will require cooperation from network driver
-maintainers.
+Here is the configuration I get once the rules have been imported:
+
+table ip filter {
+        chain INPUT {
+                type filter hook input priority 0; policy accept;
+        }
+
+        chain FORWARD {
+                type filter hook forward priority 0; policy accept;
+        }
+
+        chain OUTPUT {
+                type filter hook output priority 0; policy accept;
+        }
+}
+table ip nat {
+        chain PREROUTING {
+                type nat hook prerouting priority -100; policy accept;
+                meta l4proto tcp tcp dport 443 counter packets 0 bytes
+0 jump REDSOCKS
+                meta l4proto tcp tcp dport 1935 counter packets 0
+bytes 0 jump REDSOCKS
+                meta l4proto tcp tcp dport 80 counter packets 0 bytes
+0 jump REDSOCKS
+                meta l4proto tcp tcp dport 21 counter packets 0 bytes
+0 jump REDSOCKS
+                meta l4proto tcp tcp dport 9418 counter packets 0
+bytes 0 jump REDSOCKS
+                tcp dport https counter packets 0 bytes 0 jump REDSOCKS
+                tcp dport 1935 counter packets 0 bytes 0 jump REDSOCKS
+                tcp dport http counter packets 0 bytes 0 jump REDSOCKS
+                tcp dport ftp counter packets 0 bytes 0 jump REDSOCKS
+                tcp dport git counter packets 0 bytes 0 jump REDSOCKS
+        }
+
+        chain INPUT {
+                type nat hook input priority 100; policy accept;
+        }
+
+        chain POSTROUTING {
+                type nat hook postrouting priority 100; policy accept;
+        }
+
+        chain OUTPUT {
+                type nat hook output priority -100; policy accept;
+                meta l4proto tcp tcp dport 443 counter packets 0 bytes
+0 jump REDSOCKS
+                meta l4proto tcp tcp dport 1935 counter packets 0
+bytes 0 jump REDSOCKS
+                meta l4proto tcp tcp dport 80 counter packets 0 bytes
+0 jump REDSOCKS
+                meta l4proto tcp tcp dport 21 counter packets 0 bytes
+0 jump REDSOCKS
+                meta l4proto tcp tcp dport 9418 counter packets 0
+bytes 0 jump REDSOCKS
+                tcp dport https counter packets 0 bytes 0 jump REDSOCKS
+                tcp dport 1935 counter packets 0 bytes 0 jump REDSOCKS
+                tcp dport http counter packets 0 bytes 0 jump REDSOCKS
+                tcp dport ftp counter packets 0 bytes 0 jump REDSOCKS
+                tcp dport git counter packets 0 bytes 0 jump REDSOCKS
+        }
+
+        chain REDSOCKS {
+                ip daddr 0.0.0.0/8 counter packets 0 bytes 0 return
+                ip daddr 10.0.0.0/8 counter packets 0 bytes 0 return
+                ip daddr 127.0.0.0/8 counter packets 0 bytes 0 return
+                ip daddr 169.254.0.0/16 counter packets 0 bytes 0 return
+                ip daddr 172.16.0.0/12 counter packets 0 bytes 0 return
+                ip daddr 192.168.1.0/24 counter packets 0 bytes 0 return
+                ip daddr 192.168.31.0/24 counter packets 0 bytes 0 return
+                ip daddr 224.0.0.0/4 counter packets 0 bytes 0 return
+                ip daddr 240.0.0.0/4 counter packets 0 bytes 0 return
+                meta l4proto tcp counter packets 0 bytes 0 redirect to :12345
+                counter packets 0 bytes 0 return
+                ip daddr 10.0.0.0/8 counter packets 0 bytes 0 return
+                ip daddr 127.0.0.0/8 counter packets 0 bytes 0 return
+                ip daddr 169.254.0.0/16 counter packets 0 bytes 0 return
+                ip daddr 172.16.0.0/12 counter packets 0 bytes 0 return
+                ip daddr 192.168.1.0/24 counter packets 0 bytes 0 return
+                ip daddr 192.168.31.0/24 counter packets 0 bytes 0 return
+                ip daddr 224.0.0.0/4 counter packets 0 bytes 0 return
+                ip daddr 240.0.0.0/4 counter packets 0 bytes 0 return
+                ip protocol tcp counter packets 0 bytes 0 redirect to :12345
+        }
+}
+table ip mangle {
+        chain PREROUTING {
+                type filter hook prerouting priority -150; policy accept;
+        }
+
+        chain INPUT {
+                type filter hook input priority -150; policy accept;
+        }
+
+        chain FORWARD {
+                type filter hook forward priority -150; policy accept;
+        }
+
+        chain OUTPUT {
+                type route hook output priority -150; policy accept;
+        }
+
+        chain POSTROUTING {
+                type filter hook postrouting priority -150; policy accept;
+        }
+}
+
+Is there anything I'm missing?
+
+Thanks.
+
+-- 
+Bruno Verachten
