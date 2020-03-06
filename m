@@ -1,72 +1,56 @@
-From: =?UTF-8?Q?Lars_Nood=c3=a9n?= <lars.nooden@gmx.com>
-Subject: Re: Found extra tables in nft ruleset
-Date: Fri, 6 Mar 2020 15:22:42 +0200
-Message-ID: <06e0616d-1f87-5c2d-040b-4f9b58b9cd57@gmx.com>
-References: <bd9702b2-0c75-96ba-24b8-b8ad05c50813@gmx.com>
- <20200306130800.GN979@breakpoint.cc>
+From: Dennett Ingram <d@epicup.com>
+Subject: use numgen to create address in rule
+Date: Fri, 6 Mar 2020 10:08:59 -0700
+Message-ID: <CAD8My5xdrceMzRr_z4gaCsc1fWgr+5scJbprFpXny30a8k2+Lw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1583500963;
-        bh=m6xCL8rrYxqFzPLrQoQ5w9bY4pS6NvbWuo1LPhpDh1o=;
-        h=X-UI-Sender-Class:To:References:From:Subject:Date:In-Reply-To;
-        b=BW7CU8GwuTeY4wqMsK/q0cQol/bAhOo1KiyPaphX8w/jW148LlQoVgXfwTR7Xczo2
-         WO4YzmtQQVE2m62HazMavCM0EUF4PEAeRgvyFAQSW7DzVctulFoYNm6K53ahddjXlo
-         xBK2cHGcfM02NFj41DHHYreRu7ElGgTE16SVLwRI=
-In-Reply-To: <20200306130800.GN979@breakpoint.cc>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=epicup-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=KbywEwxZss5re5Ad1styZ3BPCTIL+yqejzX3lsokc4w=;
+        b=0udDv6fV3JIUkun/vYOM2P3mt+TTZsB+TFeuySjYqUPF9vd6RhtvA4I3T4I+CnTMY3
+         Zfd9r7LCgttveQI1hEauLi9xQETtwXjKQacXD94q0FG4YZUnPImTsNkTuaeNUapEFQae
+         kxBLpPI6VBCVoZVrKnZOPimKgT3YAokv6lnuiENxP/Dcrq/6n2ITB9Nj5TqsxMKPsL4A
+         ChDb7qazlj3hTfzdw1OcS5OGKPO93WZ4okm1UezINJPxNHRWh/9mD5lPSobIZpC4e5Uy
+         54orcf6l+GEFcjOza7cGHwRwCmIpuST3psq4lZECS5bRwRQeZ11F0lxnZwLr68kgXTqw
+         AJ5Q==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Linux Netfilter Users List <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-[...]
-> THey are not supposed to be there.
->
->> Is this an error on my part?  If so what?
->
-> Run 'nft monitor' to figure out what adds them.
+So I currently see no way of doing this.  But I figured I'd just write
+out to verify.
 
-Thanks.
+Is there anyway to have a statement "evaluated" for each packet?
 
-If I clear the ruleset and wait, while watching 'nft monitor' I get the
-following.
+https://wiki.nftables.org/wiki-nftables/index.php/Load_balancing
 
-# new generation 951 by process 4497 (nft)
-add table ip filter
-add chain ip filter INPUT { type filter hook input priority 0; policy
-accept; }
-add chain ip filter FORWARD { type filter hook forward priority 0;
-policy accept; }
-add chain ip filter OUTPUT { type filter hook output priority 0; policy
-accept; }
-# new generation 952 by process 4510 (iptables)
-# new generation 953 by process 4510 (iptables)
-add table ip6 filter
-add chain ip6 filter INPUT { type filter hook input priority 0; policy
-accept; }
-add chain ip6 filter FORWARD { type filter hook forward priority 0;
-policy accept; }
-add chain ip6 filter OUTPUT { type filter hook output priority 0; policy
-accept; }
-# new generation 954 by process 4512 (ip6tables)
-# new generation 955 by process 4512 (ip6tables)
-# new generation 956 by process 4514 (iptables)
-# new generation 957 by process 4514 (iptables)
-# new generation 958 by process 4516 (ip6tables)
-# new generation 959 by process 4516 (ip6tables)
-... and so on ...
+shows the use of:
 
-However, I can't seem to find anything obviously calling ip6tables, the
-processes are quite short lived.  Then I search for ip6tables in a
-script or (ugh) unit file, for example:
+% nft add rule nat prerouting dnat to numgen inc mod 2 map { \
+               0 : 192.168.10.100, \
+               1 : 192.168.20.200 }
 
-# grep -r ip6tables /lib/systemd/*
-# grep -r ip6tables /etc/*
 
-Both greps turn up nothing, but something is running and modifying
-nftables frequently.  It's probably related to the distro so I will dig
-into that, if the cause is not already known.
+which is great, to be able to generate a random number and use that to
+find one of X items from the Map.  What would be really nice is if
+there was some way you could do:
 
-/Lars
+% nft add rule nat prerouting dnat to 192.168.10.(100+numgen inc mod 20)
+
+which would then do the same type of mapping as before, but going from
+192.168.10.100-192.168.10.120, without needing to create a map and
+iterate through every value.
+
+Being able to do simple math in there as well, you could have
+100+2*(numgen inc mod 20) or whatever to have it skip every two.  or
+2000:2000:A356::( numgen inc mod  65,536).ToHex() to have it generate
+an IPv6 address in that /64 block randomly.  The ToHex() is just
+something I put out there, I figure there would be some way to write
+it in hex, or write the IPv6 address as a double, that could be
+accepted.
+
+I know this is a very niche situation, and not something supported,
+but just thought I'd bring it up.
