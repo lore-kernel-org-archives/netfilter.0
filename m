@@ -1,41 +1,84 @@
-From: Glen Huang <heyhgl@gmail.com>
-Subject: Re: Why inet table doesn't support nat prerouting chain?
-Date: Fri, 6 Mar 2020 19:40:03 +0800
-Message-ID: <4CE65002-0DBD-49F7-9652-F8AF4E966627@gmail.com>
-References: <DF324CE0-08D5-4041-9761-D7F740979715@gmail.com>
- <20200306113734.GM979@breakpoint.cc>
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.1\))
-Content-Transfer-Encoding: quoted-printable
+From: =?UTF-8?Q?Lars_Nood=c3=a9n?= <lars.nooden@gmx.com>
+Subject: Found extra tables in nft ruleset
+Date: Fri, 6 Mar 2020 14:52:32 +0200
+Message-ID: <bd9702b2-0c75-96ba-24b8-b8ad05c50813@gmx.com>
+Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=9XN6Dn6Fu5czA0KHc2pBNdufj07Eo40KnDtVsLXuLLc=;
-        b=FDtx4gH/NmMMcxoeCkNot1cM4VPpq1B29JZX1nDXxop2P5cK/FPID7CyzGafhFBqZ4
-         gBXikVBnY/Z62dYEKvAukZAeD9FZfqaoe7EEmwjXc8LatX7rPKGKOIuEbyxYVECsfmjn
-         MqM4o65ji/NRM0n+C7Ol9ILiJZNbqNgtqW3TNIEeSPKrJr1qdYzG2Qq43MR7NXJeju2h
-         dx6Nu6uoVBtLt2uFe+ZlYH8fTGlCxmJTxoH6m8jfrTh6LVsQtEqplMYvhEyo3YxUmvax
-         qVWUnpn3Cd05/yY1PFXXy+IVDMYZWwRIJ4DoZADlF/STd29CP5G2FwhBd1QaexfdvWhJ
-         7OVQ==
-In-Reply-To: <20200306113734.GM979@breakpoint.cc>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1583499153;
+        bh=G76J79SPe/kexK/qqB+Gbw7UjarAEKZQVfw/VwTciRc=;
+        h=X-UI-Sender-Class:To:From:Subject:Date;
+        b=Qcpf5uOzGteKlJB3DiappWS1nY8kbxZbz5COQKlTS8xs4Vjws3yF76IdBRmuCY0od
+         oA1zgJ55aBKd0lR6IkVvA6cZuU8UUco4GODfOM2VNDxNey187UTmqJcKlTcPjoVaKk
+         0OhLSHReNOZzvtRVXiTiORD4Bjg/Ngu4BhjOsqq4=
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"
-To: Florian Westphal <fw@strlen.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Linux Netfilter Users List <netfilter@vger.kernel.org>
 
-Oh, that explains it. Debian 10.3 comes with 4.19.
+It's looking like nft is creating some extra tables when I create a chain.
 
-Thanks, guess I have to create them separately for now.
+Seen below, I can clear the ruleset and then create a table and only the
+table I created is in the otherwise empty ruleset.  However, if I add a
+chain to that table, then two unasked for tables get created, but
+perhaps not used.  I'm not sure if they are supposed to be there or if
+they should be used.
 
-> On Mar 6, 2020, at 7:37 PM, Florian Westphal <fw@strlen.de> wrote:
->=20
-> Glen Huang <heyhgl@gmail.com> wrote:
->> Hi,
->>=20
->> It seems I can create a nat prerouting chain in either ip or ip6 =
-table, but not inet, I wonder if that=E2=80=99s by design?
->=20
-> Kernel too old? Should work as of 5.2.
+Is this an error on my part?  If so what?
 
+Thanks,
+Lars
+
+# uname -sr
+Linux 4.19.97-v7l+
+
+# nft --version
+nftables v0.9.0 (Fearless Fosdick)
+
+# nft flush ruleset
+
+# nft list ruleset
+
+# nft add table ip foobar
+
+# nft list ruleset
+table ip foobar {
+}
+
+# nft add chain foobar output  { type filter hook output priority 0 \;
+policy drop \; }
+
+# nft list ruleset
+table ip foobar {
+        chain output {
+                type filter hook output priority 0; policy drop;
+        }
+}
+table ip filter {
+        chain INPUT {
+                type filter hook input priority 0; policy accept;
+        }
+
+        chain FORWARD {
+                type filter hook forward priority 0; policy accept;
+        }
+
+        chain OUTPUT {
+                type filter hook output priority 0; policy accept;
+        }
+}
+table ip6 filter {
+        chain INPUT {
+                type filter hook input priority 0; policy accept;
+        }
+
+        chain FORWARD {
+                type filter hook forward priority 0; policy accept;
+        }
+
+        chain OUTPUT {
+                type filter hook output priority 0; policy accept;
+        }
+}
