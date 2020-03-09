@@ -1,87 +1,48 @@
-From: sean darcy <seandarcy2@gmail.com>
-Subject: Re: nft ingress won't work on wireless ?
-Date: Mon, 9 Mar 2020 12:13:37 -0400
-Message-ID: <r45pvi$3ajq$1@ciao.gmane.io>
-References: <r45gp9$1j5t$1@ciao.gmane.io>
+From: =?UTF-8?Q?Lars_Nood=c3=a9n?= <lars.nooden@gmx.com>
+Subject: Re: Found extra tables in nft ruleset
+Date: Mon, 9 Mar 2020 18:31:39 +0200
+Message-ID: <951a2bbe-f3b8-7f2a-4cdf-4ab4eac53db5@gmx.com>
+References: <bd9702b2-0c75-96ba-24b8-b8ad05c50813@gmx.com>
+ <20200306130800.GN979@breakpoint.cc>
+ <06e0616d-1f87-5c2d-040b-4f9b58b9cd57@gmx.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <r45gp9$1j5t$1@ciao.gmane.io>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1583771500;
+        bh=Catn5g9A9TYEdETdND73q7szz1ii9QV+oXDGpbihIlg=;
+        h=X-UI-Sender-Class:From:To:References:Subject:Date:In-Reply-To;
+        b=TuKQEjKSsyA88xi7myj3TQD4UOypbPyiXDBN99/QPV99Oro+BptImdmWmcxN3gz5Q
+         CkVuN3vp3O3ZBanaorXXqYLSbRt9d7hObIH2iSY2M3tCzHliQkCJM5d3x6osfwkCen
+         orIrlhsp+Z6qTa3ZEzI2SBfQBbaKYaMCupm1HtV4=
+In-Reply-To: <06e0616d-1f87-5c2d-040b-4f9b58b9cd57@gmx.com>
 Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Linux Netfilter Users List <netfilter@vger.kernel.org>
 
-On 3/9/20 9:36 AM, sean darcy wrote:
-> Fedora 31. nftables-0.9.1-3.fc31.x86_64
-> 
-> The same ingress rule works on the ethernet port, but not on wireless.
-> 
-> This works:
-> 
-> 
-> cat  ipv4-netdev-asterisk
-> # /opt/nftables/ipv4-filter-asterisk
-> 
-> include "/opt/nftables/whitelist1"
-> include "/opt/nftables/ip.blacklist1"
-> 
-> table netdev netdev1 {
->         set whitelist {
->                  type ipv4_addr
->                  flags interval
->                  auto-merge
->                  elements = $whitelist_ips
->          }
-> 
->          set blacklist {
->                  type ipv4_addr
->                  flags interval
->                  auto-merge
->                  elements = $blacklist_ips
->          }
-> 
->          chain ingress1 {
->          type filter hook ingress device enp5s0 priority 0; policy accept;
->                  udp dport { 6000-31000 } accept comment  rtp_ports
->                  #accept whitelist
->                  ip saddr @whitelist accept
->                  tcp dport { 3478, 5349, 554, 5222, 5269, 19294 } 
-> counter accept comment "stun stun-tls rtsp and gv"
->                  udp dport { 3478, 4893, 19295, 19302 } counter accept 
-> comment "stun and gv"
->                  #drop blacklist
->                  ip saddr @blacklist counter drop
->          }
-> }
-> 
-> 
-> But if I change the device in the ingress1 chain to wlp4s0, which exists:
-> 
->   ifconfig | grep -A 1 wlp4s0
-> wlp4s0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
->          inet 10.0.0.61  netmask 255.255.255.0  broadcast 10.0.0.255
-> 
-> it fails.
-> 
-> nft[4158]: In file included from /opt/nftables/whitelist1:39:2-39:
-> nft[4158]:                  from 
-> /opt/nftables/ipv4-netdev-asterisk-wlp4s0:6:1-35:
-> nft[4158]:                  from /etc/sysconfig/nftables.conf:17:1-52:
-> nft[4158]: /opt/nftables/ip.blacklist1:1124:15-22: Error: Could not 
-> process rule: Device or resource busy
-> systemd[1]: nftables.service: Main process exited, code=exited, 
-> status=1/FAILURE
-> 
-> Just to repeat: the only change is the device. The other files are all 
-> the same.
-> 
-> Puzzled,
-> 
-> sean
-> 
-> 
+Using 'nft monitor' solved that: It appears that the extra tables were
+added by iptables, which is in Raspbian Buster by default in the package
+of the same name:
 
-kernel 5.5.7
+$ grep -i pretty /etc/os-release
+PRETTY_NAME="Raspbian GNU/Linux 10 (buster)"
 
+$ apt-cache policy iptables | head -n 3
+iptables:
+  Installed: 1.8.2-4
+  Candidate: 1.8.2-4
+
+iptables interferes with nft.  Uninstalling it package leaves nftables
+alone to create new tables without getting extra, unasked for tables.
+
+$ sudo nft add table ip foobar
+
+$ sudo nft list ruleset
+table ip foobar {
+}
+
+All set.  Thanks.
+
+/Lars
