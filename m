@@ -1,49 +1,94 @@
-From: "" <kfm@plushkava.net>
-Subject: Re: nftables equivalent of "ipset test"?
-Date: Mon, 9 Mar 2020 19:50:18 +0000
-Message-ID: <2b844dbe-2760-ca42-1ace-41593b9fa984@plushkava.net>
-References: <633ac5cf-a8db-4142-6ed2-ae335c7e12f1@fhmtech.com>
- <20200309191435.GT979@breakpoint.cc>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: nft ingress won't work on wireless ?
+Date: Mon, 9 Mar 2020 20:50:54 +0100
+Message-ID: <20200309195054.rs4pyy4s6y6dluxo@salvia>
+References: <r45gp9$1j5t$1@ciao.gmane.io>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-         h=subject:cc:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm2; bh=g
-        7O5A9iDNkqOXyPriVq9ChP2ngh/FvEIk55ne+M24aM=; b=juFLA036wRsAfqoPs
-        3+FeVqA+/9oGQJ7UuvRjOuhbN/KhdHAWDnyRHvjPmUH/VVPh/3Mahpey4wXMoE2L
-        OdOban5kfTOgAYfvZlr4A4lxvCxfIzM7qkdOAQlN2D5l40pd6az/f4qroQVKZzUO
-        qXnl/jS2/q70tKKyWz8P2qL9LtQGVWHVpyUlqwMArrWq/JoS3hp7lIOnheZXWiyP
-        MQJXS5GP7jlGXJxMQlwl1T/5z2CorEgahk1EQq3mqcOQOjLgt6LHmFGlMmwOpHVN
-        mumGGdF1b0K9MPzqWhPVCrdE+V9GIq/YZ7lEXp6djANCYLym1bhikhQKQyrVkcSO
-        IQ1Ww==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=g7O5A9iDNkqOXyPriVq9ChP2ngh/FvEIk55ne+M24
-        aM=; b=Jg/r4Ayw/4ByaqzXdyH1PQviz0bWjlWGJiRyZYRlO9YivedszJdEy63HW
-        z26VPf+Nd3TLUNRKPpWDdPPTJniLh7k7FMhR1EsBoCXp1ieQnR8LRie8ntrnPohK
-        dspfDQ/7VDB7dZ3eCSFyujnOgdCMJkvXsF34U0hfX54siUZbMvNysq3TDFxGCa8b
-        W/VUIcOiz4E1/wTlXkKl7b7Kusk6oYuPt4AkWpTqwM3MXQVxW4Es2bvg5cvoPiNV
-        xGzilQIQZXg4IqA+fQhGSHZpkfnpdbuzMSBEjhAkkbmXHMgilRfU0LNB82Yt2H/5
-        gPEqTKyt8j4Uu3TpN5SVSQSJwu8XA==
-In-Reply-To: <20200309191435.GT979@breakpoint.cc>
-Content-Language: en-GB
+Content-Disposition: inline
+In-Reply-To: <r45gp9$1j5t$1@ciao.gmane.io>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: 
-Cc: Linux Netfilter Users List <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: sean darcy <seandarcy2@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-On 09/03/2020 19:14, Florian Westphal wrote:
-> Frank Myhr <fmyhr@fhmtech.com> wrote:
->> Is there a recommended way to test whether an element is a member of an
->> nftables set?
-> 
-> nft get element inet filter foo "{ 1.2.3.4 }"
+On Mon, Mar 09, 2020 at 09:36:40AM -0400, sean darcy wrote:
+> Fedora 31. nftables-0.9.1-3.fc31.x86_64
+>
+> The same ingress rule works on the ethernet port, but not on wireless.
+>
+> This works:
+>
+>
+> cat  ipv4-netdev-asterisk
+> # /opt/nftables/ipv4-filter-asterisk
 
-Excellent. Thanks.
+flush ruleset is fine here? More comments below.
 
--- 
-Kerin Millar
+> include "/opt/nftables/whitelist1"
+> include "/opt/nftables/ip.blacklist1"
+>
+> table netdev netdev1 {
+>        set whitelist {
+>                 type ipv4_addr
+>                 flags interval
+>                 auto-merge
+>                 elements = $whitelist_ips
+>         }
+>
+>         set blacklist {
+>                 type ipv4_addr
+>                 flags interval
+>                 auto-merge
+>                 elements = $blacklist_ips
+>         }
+>
+>         chain ingress1 {
+> 		type filter hook ingress device enp5s0 priority 0; policy accept;
+>                 udp dport { 6000-31000 } accept comment  rtp_ports
+>                 #accept whitelist
+>                 ip saddr @whitelist accept
+>                 tcp dport { 3478, 5349, 554, 5222, 5269, 19294 } counter
+> accept comment "stun stun-tls rtsp and gv"
+>                 udp dport { 3478, 4893, 19295, 19302 } counter accept
+> comment "stun and gv"
+>                 #drop blacklist
+>                 ip saddr @blacklist counter drop
+>         }
+> }
+>
+>
+> But if I change the device in the ingress1 chain to wlp4s0, which exists:
+>
+>  ifconfig | grep -A 1 wlp4s0
+> wlp4s0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+>         inet 10.0.0.61  netmask 255.255.255.0  broadcast 10.0.0.255
+>
+> it fails.
+>
+> nft[4158]: In file included from /opt/nftables/whitelist1:39:2-39:
+> nft[4158]:                  from
+> /opt/nftables/ipv4-netdev-asterisk-wlp4s0:6:1-35:
+> nft[4158]:                  from /etc/sysconfig/nftables.conf:17:1-52:
+> nft[4158]: /opt/nftables/ip.blacklist1:1124:15-22: Error: Could not process
+> rule: Device or resource busy
+> systemd[1]: nftables.service: Main process exited, code=exited,
+> status=1/FAILURE
+>
+> Just to repeat: the only change is the device. The other files are all the
+> same.
+
+Are you re-using your existing 'ingress1' chain?
+
+I mean:
+
+# nft add table netdev x
+# nft add chain netdev x x { type filter hook ingress device eth0 priority 0\; }
+# nft add chain netdev x x { type filter hook ingress device wlan0 priority 0\; }
+Error: Could not process rule: Device or resource busy
+add chain netdev x x { type filter hook ingress device wlan0 priority 0; }
+
+If you try to update the chain 'x' to use device 'wlan0' (different
+device), then nft reports that this chain is already busy.
