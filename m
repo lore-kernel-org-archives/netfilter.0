@@ -1,51 +1,49 @@
-From: Frank Myhr <fmyhr@fhmtech.com>
+From: "" <kfm@plushkava.net>
 Subject: Re: nftables equivalent of "ipset test"?
-Date: Mon, 9 Mar 2020 15:48:19 -0400
-Message-ID: <3582f3f4-b22a-6841-38ab-c3a595423dc2@fhmtech.com>
+Date: Mon, 9 Mar 2020 19:50:18 +0000
+Message-ID: <2b844dbe-2760-ca42-1ace-41593b9fa984@plushkava.net>
 References: <633ac5cf-a8db-4142-6ed2-ae335c7e12f1@fhmtech.com>
- <5698be8d-9813-533d-907b-3d420ecd5b7e@plushkava.net>
+ <20200309191435.GT979@breakpoint.cc>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=larkmoor.net; s=larkmoor20140928;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject; bh=tyTlk/w1QGJXg4nYypYlKRvC6Gckb3wkZIxsDx41dSo=;
-        b=ZAboWuhH9jkDFnY1E6Kz79StmaDwykeGqBMr5rwkW7wD/Vu+n29kf6qEVbo2UdIao3VI4LcSN0cu6agg8bX+9aXMLD1LNpXhNPkAp+0p2iNLe49Ll2Q3f/ORskdz2R3gboKHLtAFBYgCuegDEL3iyLUxY5qIifyPAK1BBdcqoeA=;
-In-Reply-To: <5698be8d-9813-533d-907b-3d420ecd5b7e@plushkava.net>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+         h=subject:cc:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm2; bh=g
+        7O5A9iDNkqOXyPriVq9ChP2ngh/FvEIk55ne+M24aM=; b=juFLA036wRsAfqoPs
+        3+FeVqA+/9oGQJ7UuvRjOuhbN/KhdHAWDnyRHvjPmUH/VVPh/3Mahpey4wXMoE2L
+        OdOban5kfTOgAYfvZlr4A4lxvCxfIzM7qkdOAQlN2D5l40pd6az/f4qroQVKZzUO
+        qXnl/jS2/q70tKKyWz8P2qL9LtQGVWHVpyUlqwMArrWq/JoS3hp7lIOnheZXWiyP
+        MQJXS5GP7jlGXJxMQlwl1T/5z2CorEgahk1EQq3mqcOQOjLgt6LHmFGlMmwOpHVN
+        mumGGdF1b0K9MPzqWhPVCrdE+V9GIq/YZ7lEXp6djANCYLym1bhikhQKQyrVkcSO
+        IQ1Ww==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; bh=g7O5A9iDNkqOXyPriVq9ChP2ngh/FvEIk55ne+M24
+        aM=; b=Jg/r4Ayw/4ByaqzXdyH1PQviz0bWjlWGJiRyZYRlO9YivedszJdEy63HW
+        z26VPf+Nd3TLUNRKPpWDdPPTJniLh7k7FMhR1EsBoCXp1ieQnR8LRie8ntrnPohK
+        dspfDQ/7VDB7dZ3eCSFyujnOgdCMJkvXsF34U0hfX54siUZbMvNysq3TDFxGCa8b
+        W/VUIcOiz4E1/wTlXkKl7b7Kusk6oYuPt4AkWpTqwM3MXQVxW4Es2bvg5cvoPiNV
+        xGzilQIQZXg4IqA+fQhGSHZpkfnpdbuzMSBEjhAkkbmXHMgilRfU0LNB82Yt2H/5
+        gPEqTKyt8j4Uu3TpN5SVSQSJwu8XA==
+In-Reply-To: <20200309191435.GT979@breakpoint.cc>
+Content-Language: en-GB
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Linux Netfilter Users List <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: 
+Cc: Linux Netfilter Users List <netfilter@vger.kernel.org>
 
-On 2020/03/09 14:56, kfm@plushkava.net wrote:
-> One option would be to use the JSON output format. Here is an example of 
-> how it might be done with jshon [1] for a set whose elements contain 
-> just a single data type:-
+On 09/03/2020 19:14, Florian Westphal wrote:
+> Frank Myhr <fmyhr@fhmtech.com> wrote:
+>> Is there a recommended way to test whether an element is a member of an
+>> nftables set?
 > 
-> nft_set_test() {
->      local val=$1
->      shift
->      nft -j list set "$@" |
->          jshon -e nftables -e 1 -a -e elem -a -u |
->          grep -qxF "$val"
-> }
-> 
-> if nft_set_test 1.2.3.4 ip filter myset; then
->      echo "matched 1.2.3.4"
-> fi
-> 
-> Where jshon isn't available, jq [2] could be another option.
-> 
-> [1] http://kmkeen.com/jshon/
-> [2] https://stedolan.github.io/jq/
+> nft get element inet filter foo "{ 1.2.3.4 }"
 
-Kerin,
+Excellent. Thanks.
 
-Thank you very much for the link to jshon and even including a sample 
-script! Debian does have a jshon package available, I imagine I'll find 
-many uses for it. In this case, I think jshon approach fails for 
-interval sets when testing for a single element. (Say, test for 10.0.0.7 
-in set containing 10.0.0.0/8.) Right?
-
-Thanks,
-Frank
+-- 
+Kerin Millar
