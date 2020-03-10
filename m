@@ -1,46 +1,128 @@
-From: Frank Myhr <fmyhr@fhmtech.com>
-Subject: Restoring rulesets containing dynamic sets with counters
-Date: Mon, 9 Mar 2020 19:35:15 -0400
-Message-ID: <5e5cfaed-d2c6-02e1-8019-dd6ba2613034@fhmtech.com>
+From: sean darcy <seandarcy2@gmail.com>
+Subject: Re: nft ingress won't work on wireless ?
+Date: Mon, 9 Mar 2020 21:14:19 -0400
+Message-ID: <r46plc$3c4n$1@ciao.gmane.io>
+References: <r45gp9$1j5t$1@ciao.gmane.io>
+ <20200309195054.rs4pyy4s6y6dluxo@salvia>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=larkmoor.net; s=larkmoor20140928;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:Message-ID:Subject:From:To; bh=rzJevRG8qJdPJX6rMJ/HpnuziXV0KxBRxHnKQZSFP4g=;
-        b=ZtMIju/42ltheZwSL5kWBk13sFMtdfAY0VmMoRLDqYGZawkAGnRnz3EEHt8C+H7IL67lDbK4CTItsM5ZzLJYa1/8KfesuQF8dztvsAV2oh8wXcbN2ln7bA8hfov0NWwdQLGyg892mXjH94pWv6P1beGHy48Fs28ULSyBLhkeg9E=;
+In-Reply-To: <20200309195054.rs4pyy4s6y6dluxo@salvia>
 Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi,
+On 3/9/20 3:50 PM, Pablo Neira Ayuso wrote:
+> On Mon, Mar 09, 2020 at 09:36:40AM -0400, sean darcy wrote:
+>> Fedora 31. nftables-0.9.1-3.fc31.x86_64
+>>
+>> The same ingress rule works on the ethernet port, but not on wireless.
+>>
+>> This works:
+>>
+>>
+>> cat  ipv4-netdev-asterisk
+>> # /opt/nftables/ipv4-filter-asterisk
+> 
+> flush ruleset is fine here? More comments below.
+> 
+>> include "/opt/nftables/whitelist1"
+>> include "/opt/nftables/ip.blacklist1"
+>>
+>> table netdev netdev1 {
+>>         set whitelist {
+>>                  type ipv4_addr
+>>                  flags interval
+>>                  auto-merge
+>>                  elements = $whitelist_ips
+>>          }
+>>
+>>          set blacklist {
+>>                  type ipv4_addr
+>>                  flags interval
+>>                  auto-merge
+>>                  elements = $blacklist_ips
+>>          }
+>>
+>>          chain ingress1 {
+>> 		type filter hook ingress device enp5s0 priority 0; policy accept;
+>>                  udp dport { 6000-31000 } accept comment  rtp_ports
+>>                  #accept whitelist
+>>                  ip saddr @whitelist accept
+>>                  tcp dport { 3478, 5349, 554, 5222, 5269, 19294 } counter
+>> accept comment "stun stun-tls rtsp and gv"
+>>                  udp dport { 3478, 4893, 19295, 19302 } counter accept
+>> comment "stun and gv"
+>>                  #drop blacklist
+>>                  ip saddr @blacklist counter drop
+>>          }
+>> }
+>>
+>>
+>> But if I change the device in the ingress1 chain to wlp4s0, which exists:
+>>
+>>   ifconfig | grep -A 1 wlp4s0
+>> wlp4s0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+>>          inet 10.0.0.61  netmask 255.255.255.0  broadcast 10.0.0.255
+>>
+>> it fails.
+>>
+>> nft[4158]: In file included from /opt/nftables/whitelist1:39:2-39:
+>> nft[4158]:                  from
+>> /opt/nftables/ipv4-netdev-asterisk-wlp4s0:6:1-35:
+>> nft[4158]:                  from /etc/sysconfig/nftables.conf:17:1-52:
+>> nft[4158]: /opt/nftables/ip.blacklist1:1124:15-22: Error: Could not process
+>> rule: Device or resource busy
+>> systemd[1]: nftables.service: Main process exited, code=exited,
+>> status=1/FAILURE
+>>
+>> Just to repeat: the only change is the device. The other files are all the
+>> same.
+> 
+> Are you re-using your existing 'ingress1' chain?
+> 
+> I mean:
+> 
+> # nft add table netdev x
+> # nft add chain netdev x x { type filter hook ingress device eth0 priority 0\; }
+> # nft add chain netdev x x { type filter hook ingress device wlan0 priority 0\; }
+> Error: Could not process rule: Device or resource busy
+> add chain netdev x x { type filter hook ingress device wlan0 priority 0; }
+> 
+> If you try to update the chain 'x' to use device 'wlan0' (different
+> device), then nft reports that this chain is already busy.
+> 
 
-I've created a ruleset that contains several dynamic sets with counters 
-that are incremented from the packet path using rules like:
-update @suspect { ip saddr counter }
+I'm not using nft from the command line. I'm restarting nft altogether 
+using systemd.
 
-After awhile in operation, "nft list ruleset" produces output like:
-table ip ip_filter {
-	set suspect {
-		type ipv4_addr
-		size 65535
-		flags dynamic,timeout
-		timeout 30d
-		gc-interval 1d
-		elements = { 1.2.3.4 expires 19d23h52m27s576ms counter packets 51 
-bytes 17265 }
-	}
+systemctl stop nftables
+[change the device in ingress1]
+systemctl start nftables
 
-But "nft -f" then chokes when loading the saved ruleset, with
-"Error: syntax error, unexpected counter, expecting comma or '}'".
+cat /usr/lib/systemd/system/nftables.service
+[Unit]
+Description=Netfilter Tables
+Documentation=man:nft(8)
+Wants=network-pre.target
+Before=network-pre.target
 
-For now I can use sed to blank the counter text before reloading the 
-ruleset (as after reboot). That's bit clunky, and obviously loses the 
-counter values.
+[Service]
+Type=oneshot
+ProtectSystem=full
+ProtectHome=true
+ExecStart=/sbin/nft -f /etc/sysconfig/nftables.conf
+ExecReload=/sbin/nft 'flush ruleset; include 
+"/etc/sysconfig/nftables.conf";'
+ExecStop=/sbin/nft flush ruleset
+RemainAfterExit=yes
 
-I do want to keep the dynamically-added elements across reboot. Is there 
-a better way to do so?
+[Install]
+WantedBy=multi-user.target
 
-Thanks,
-Frank
+
+sean
+
+
