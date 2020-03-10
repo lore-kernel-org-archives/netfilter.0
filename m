@@ -1,18 +1,22 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 Subject: Re: Restoring rulesets containing dynamic sets with counters
-Date: Tue, 10 Mar 2020 14:09:43 +0100
-Message-ID: <20200310130943.wg24juixdz4fzvom@salvia>
+Date: Tue, 10 Mar 2020 14:37:38 +0100
+Message-ID: <20200310133738.zi3axvy62xqihrod@salvia>
 References: <5e5cfaed-d2c6-02e1-8019-dd6ba2613034@fhmtech.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="rw3ul6nmkiyk2q4q"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
 Content-Disposition: inline
 In-Reply-To: <5e5cfaed-d2c6-02e1-8019-dd6ba2613034@fhmtech.com>
-Sender: netfilter-owner@vger.kernel.org
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: Frank Myhr <fmyhr@fhmtech.com>
-Cc: netfilter@vger.kernel.org
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+
+
+--rw3ul6nmkiyk2q4q
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
 On Mon, Mar 09, 2020 at 07:35:15PM -0400, Frank Myhr wrote:
 > Hi,
@@ -43,5 +47,79 @@ On Mon, Mar 09, 2020 at 07:35:15PM -0400, Frank Myhr wrote:
 > I do want to keep the dynamically-added elements across reboot. Is there a
 > better way to do so?
 
-Not yet, this is incomplete. I have a unfinished patchset here in a
-branch.
+This is the userspace patch to update the syntax. Still missing
+remaining bits, but it is doable.
+
+--rw3ul6nmkiyk2q4q
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment; filename="x.patch"
+
+diff --git a/include/expression.h b/include/expression.h
+index 87c39e5de08a..9cd21b0e1dad 100644
+--- a/include/expression.h
++++ b/include/expression.h
+@@ -276,6 +276,11 @@ struct expr {
+ 			uint64_t		expiration;
+ 			const char		*comment;
+ 			struct stmt		*stmt;
++			struct {
++				bool		enabled;
++				uint64_t	packets;
++				uint64_t	bytes;
++			} counters;
+ 			uint32_t		elem_flags;
+ 		};
+ 		struct {
+diff --git a/src/parser_bison.y b/src/parser_bison.y
+index 26ce4e089e1e..afd29a208e4e 100644
+--- a/src/parser_bison.y
++++ b/src/parser_bison.y
+@@ -3671,7 +3671,7 @@ meter_key_expr_alloc	:	concat_expr
+ 			;
+ 
+ set_elem_expr		:	set_elem_expr_alloc
+-			|	set_elem_expr_alloc		set_elem_options
++			|	set_elem_expr_alloc		set_elem_expr_options
+ 			;
+ 
+ set_elem_expr_alloc	:	set_lhs_expr
+@@ -3701,6 +3701,37 @@ set_elem_option		:	TIMEOUT			time_spec
+ 			}
+ 			;
+ 
++set_elem_expr_options	:	set_elem_expr_option
++			{
++				$<expr>$	= $<expr>0;
++			}
++			|	set_elem_expr_options	set_elem_expr_option
++			;
++
++set_elem_expr_option	:	TIMEOUT			time_spec
++			{
++				$<expr>0->timeout = $2;
++			}
++			|	EXPIRES		time_spec
++			{
++				$<expr>0->expiration = $2;
++			}
++			|	COUNTER
++			{
++				$<expr>0->counters.enabled = true;
++			}
++			|	COUNTER	PACKETS	NUM	BYTES	NUM
++			{
++				$<expr>0->counters.enabled = true;
++				$<expr>0->counters.packets = $3;
++				$<expr>0->counters.bytes = $5;
++			}
++			|	comment_spec
++			{
++				$<expr>0->comment = $1;
++			}
++			;
++
+ set_lhs_expr		:	concat_rhs_expr
+ 			|	wildcard_expr
+ 			;
+
+--rw3ul6nmkiyk2q4q--
