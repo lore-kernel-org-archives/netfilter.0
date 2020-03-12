@@ -1,46 +1,55 @@
-From: Frank Myhr <fmyhr@fhmtech.com>
-Subject: Re: Restoring rulesets containing dynamic sets with counters
-Date: Tue, 10 Mar 2020 10:45:32 -0400
-Message-ID: <9bab2027-df96-7533-6d2a-4eaac7b5f277@fhmtech.com>
-References: <5e5cfaed-d2c6-02e1-8019-dd6ba2613034@fhmtech.com>
- <20200310133738.zi3axvy62xqihrod@salvia>
- <11cd37e2-6340-a469-c564-d6970841b4cd@fhmtech.com>
+From: Moyuan Chen <moyuan.chen@gmail.com>
+Subject: Re: use libiptc to build a rule to allow tftp traffic
+Date: Thu, 12 Mar 2020 15:48:43 -0400
+Message-ID: <CAJjT2kgiAg17n085MbvOTOOYCvDnnzEUJqqj+t89-J5wmqNC2w@mail.gmail.com>
+References: <CAJjT2kgnuK_zy1tyQh5U7GiSv1P9pQqK7c7e_578w10sFMLKDA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=larkmoor.net; s=larkmoor20140928;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:References:Cc:To:From:Subject; bh=8bKoYOH0gYpRdbDEaAxo1P9CAj9kUFOMpPW8ErERvkg=;
-        b=Nj8JUnMvvoS5oOpSGjULRGSDsEavHAup4ERjK/Ohau7LQpaef8ZcNRBC5MFbbpYftRfEtnNV+BOEwfy98nFBmMpRhDWJ0K5IaLuOueZMJvrUimvkBwhT3hiXO82UxFDovk50x+WR3t2xhetEQKrS19ddIFwIPEcK0YEfP2mqPjg=;
-In-Reply-To: <11cd37e2-6340-a469-c564-d6970841b4cd@fhmtech.com>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=AToQHot9AlMgyqDtzPXQuIBKhSJ5DGbDxLPYv6Qbrp0=;
+        b=sQBUgPwbfrmW4L5zQNYPqoD9dmk5dgcm572m7LAfO669UqbmWbiURmynlPB4Gb2az/
+         NXrX9AJVvCvtB27FszoZ8fxG8K1o1SBcYMDEvZN7yj94soA4Q2gaykZn2rx0tQPyjYFc
+         IShuVV4XvfvgBpa2oJCCFk/XeoYLvwRBOWXjm52ISyWItT32RJuTBww5mZXXU/7kRK2W
+         GB4krZFcI4MGNV8hbYz65/omoKOy/ycXt1HHXfCh6wnhiLRL07A7ccD+fu0B04PAfC3w
+         XClA7QW5AYAS1Qneh/GJ7McJ8smrRu83xFMho7vkgcm/9TFD88/yLwZPO4S2vJcFrNe3
+         i/gA==
+In-Reply-To: <CAJjT2kgnuK_zy1tyQh5U7GiSv1P9pQqK7c7e_578w10sFMLKDA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On 2020/03/10 10:14, Frank Myhr wrote:
->> On Mon, Mar 09, 2020 at 07:35:15PM -0400, Frank Myhr wrote:
->>> I do want to keep the dynamically-added elements across reboot.
-...
-> For now I'll stick with released & packaged (debian buster-backports) 
-> nft, and use sed 's/[ ]\+counter[^,\}]\+//g' on saved rulesets before 
-> restoring them.
-...
-For limits,
-> sed 's/[ ]\+limit[^,\}]\+//g' before restoring from saved ruleset works 
-> for me.
+Hello,
+I am trying to build a rule just like below:
+iptables -t raw -I OUTPUT -j CT -p udp --dport 69 --helper tftp
 
-Thought I'd better follow up that I'm running these sed commands on 
-ruleset fragments that each include a single dynamic set _only_. I then 
-cat these together with other files that contain nftables chains and 
-rules, then load the combined file using nft -f.
+Just can't figure out the CT target part.
+I'm referring to xt_ct_target_info_v1 in xt_CT.h to construct the CT
+target data structure.
+For tftp helper, supposedly I should set the helper field to "tftp". Right?
+struct xt_ct_target_info_v1 {
+__u16 flags;
+__u16 zone;
+__u32 ct_events;
+__u32 exp_events;
+char helper[16];
+char timeout[32];
 
-Just want to be clear that nobody should run those sed commands on a 
-complete ruleset file; they will wipe out any counter and limit 
-statements that occur anywhere in the file, not just in sets. For a 
-complete ruleset file you would need to use some additional logic to 
-distinguish whether or not the set & limit statements occur inside of a set.
+/* Used internally by the kernel */
+struct nf_conn *ct __attribute__((aligned(8)));
+};
 
-Best regards,
-Frank
+
+But I also find a "xt_helper.h" where it's like below:
+Should I also add a match part using this xt_helper_info structure?
+
+struct xt_helper_info {
+int invert;
+char name[30];
+};
+
+Thanks,
+Moyuan
