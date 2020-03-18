@@ -1,143 +1,40 @@
-From: sean darcy <seandarcy2@gmail.com>
-Subject: Re: nft ingress won't work on wireless ?
-Date: Tue, 17 Mar 2020 11:46:39 -0400
-Message-ID: <r4qrd1$3aug$1@ciao.gmane.io>
-References: <r45gp9$1j5t$1@ciao.gmane.io>
- <20200309195054.rs4pyy4s6y6dluxo@salvia> <r46plc$3c4n$1@ciao.gmane.io>
+From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+Subject: [nftables 0.9.2 | kernel 4.19.93] dropping ct state untracked stops
+ ipv6 connectivity
+Date: Wed, 18 Mar 2020 12:05:57 +0000
+Message-ID: <9a55ac25-719e-49fb-c414-7467e67cb686@gmx.net>
+Reply-To: vtol@gmx.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <r46plc$3c4n$1@ciao.gmane.io>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1584533146;
+        bh=r4A3VtkKWuBEz1rcyz/TPw4+ro3JO7ccPBlBzoJgtZ8=;
+        h=X-UI-Sender-Class:Reply-To:To:From:Subject:Date;
+        b=fIEOdfh17j1uCRukWqaIsizxZQ7w+PPeC/DSBLs9y0/Qx7Ul15uq+xK8a43Jz9J0f
+         HSeBJNBpoCXP2W2SxrawU+cIGYYZ8OofNiDH45hEYNfa8pgTAMj6LRiytMB2jjdsn2
+         p8NKZkiw6T8Fw2RpRWu1zZJu3tobwBVKXtSxkslQ=
+Content-Language: en-GB
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 3/9/20 9:14 PM, sean darcy wrote:
-> On 3/9/20 3:50 PM, Pablo Neira Ayuso wrote:
->> On Mon, Mar 09, 2020 at 09:36:40AM -0400, sean darcy wrote:
->>> Fedora 31. nftables-0.9.1-3.fc31.x86_64
->>>
->>> The same ingress rule works on the ethernet port, but not on wireless.
->>>
->>> This works:
->>>
->>>
->>> cat  ipv4-netdev-asterisk
->>> # /opt/nftables/ipv4-filter-asterisk
->>
->> flush ruleset is fine here? More comments below.
->>
->>> include "/opt/nftables/whitelist1"
->>> include "/opt/nftables/ip.blacklist1"
->>>
->>> table netdev netdev1 {
->>>         set whitelist {
->>>                  type ipv4_addr
->>>                  flags interval
->>>                  auto-merge
->>>                  elements = $whitelist_ips
->>>          }
->>>
->>>          set blacklist {
->>>                  type ipv4_addr
->>>                  flags interval
->>>                  auto-merge
->>>                  elements = $blacklist_ips
->>>          }
->>>
->>>          chain ingress1 {
->>>         type filter hook ingress device enp5s0 priority 0; policy 
->>> accept;
->>>                  udp dport { 6000-31000 } accept comment  rtp_ports
->>>                  #accept whitelist
->>>                  ip saddr @whitelist accept
->>>                  tcp dport { 3478, 5349, 554, 5222, 5269, 19294 } 
->>> counter
->>> accept comment "stun stun-tls rtsp and gv"
->>>                  udp dport { 3478, 4893, 19295, 19302 } counter accept
->>> comment "stun and gv"
->>>                  #drop blacklist
->>>                  ip saddr @blacklist counter drop
->>>          }
->>> }
->>>
->>>
->>> But if I change the device in the ingress1 chain to wlp4s0, which 
->>> exists:
->>>
->>>   ifconfig | grep -A 1 wlp4s0
->>> wlp4s0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
->>>          inet 10.0.0.61  netmask 255.255.255.0  broadcast 10.0.0.255
->>>
->>> it fails.
->>>
->>> nft[4158]: In file included from /opt/nftables/whitelist1:39:2-39:
->>> nft[4158]:                  from
->>> /opt/nftables/ipv4-netdev-asterisk-wlp4s0:6:1-35:
->>> nft[4158]:                  from /etc/sysconfig/nftables.conf:17:1-52:
->>> nft[4158]: /opt/nftables/ip.blacklist1:1124:15-22: Error: Could not 
->>> process
->>> rule: Device or resource busy
->>> systemd[1]: nftables.service: Main process exited, code=exited,
->>> status=1/FAILURE
->>>
->>> Just to repeat: the only change is the device. The other files are 
->>> all the
->>> same.
->>
->> Are you re-using your existing 'ingress1' chain?
->>
->> I mean:
->>
->> # nft add table netdev x
->> # nft add chain netdev x x { type filter hook ingress device eth0 
->> priority 0\; }
->> # nft add chain netdev x x { type filter hook ingress device wlan0 
->> priority 0\; }
->> Error: Could not process rule: Device or resource busy
->> add chain netdev x x { type filter hook ingress device wlan0 priority 
->> 0; }
->>
->> If you try to update the chain 'x' to use device 'wlan0' (different
->> device), then nft reports that this chain is already busy.
->>
-> 
-> I'm not using nft from the command line. I'm restarting nft altogether 
-> using systemd.
-> 
-> systemctl stop nftables
-> [change the device in ingress1]
-> systemctl start nftables
-> 
-> cat /usr/lib/systemd/system/nftables.service
-> [Unit]
-> Description=Netfilter Tables
-> Documentation=man:nft(8)
-> Wants=network-pre.target
-> Before=network-pre.target
-> 
-> [Service]
-> Type=oneshot
-> ProtectSystem=full
-> ProtectHome=true
-> ExecStart=/sbin/nft -f /etc/sysconfig/nftables.conf
-> ExecReload=/sbin/nft 'flush ruleset; include 
-> "/etc/sysconfig/nftables.conf";'
-> ExecStop=/sbin/nft flush ruleset
-> RemainAfterExit=yes
-> 
-> [Install]
-> WantedBy=multi-user.target
-> 
-> 
-> sean
-> 
-> 
-> 
-
-For whatever reason, wireless works if I reboot.
-
-sean
-
+VGhpcyB3b3JrcyAoaS5lLiBpcHY0IGFuZCBpcHY2IGNvbm5lY3Rpdml0eSkNCg0KdGFibGUgaW5l
+dCBmaWx0ZXIgew0KIMKgwqDCoMKgwqDCoMKgIGNoYWluIGlucHV0IHsNCiDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoMKgwqAgdHlwZSBmaWx0ZXIgaG9vayBpbnB1dCBwcmlvcml0eSBmaWx0ZXI7
+IHBvbGljeSBkcm9wOw0KIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjdCBzdGF0ZSBl
+c3RhYmxpc2hlZCxyZWxhdGVkIGFjY2VwdA0KIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCBjdCBzdGF0ZSBpbnZhbGlkIGRyb3ANCiDCoMKgwqDCoMKgwqDCoCB9DQoNCn0NCg0KVGhpcyBj
+dXRzIGlwdjYgY29ubmVjdGl2aXR5IGVudGlyZWx5IChpcHY0IGNvbm5lY3Rpdml0eSB3b3JrcykN
+Cg0KdGFibGUgaW5ldCBmaWx0ZXIgew0KIMKgwqDCoMKgwqDCoMKgIGNoYWluIGlucHV0IHsNCiDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdHlwZSBmaWx0ZXIgaG9vayBpbnB1dCBwcmlv
+cml0eSBmaWx0ZXI7IHBvbGljeSBkcm9wOw0KIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oCBjdCBzdGF0ZSBlc3RhYmxpc2hlZCxyZWxhdGVkIGFjY2VwdA0KIMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqDCoCBjdCBzdGF0ZSBpbnZhbGlkLHVudHJhY2tlZCBkcm9wDQogwqDCoMKgwqDC
+oMKgwqAgfQ0KDQp9DQoNCg0KSXQgcmVwcm9kdWNlcyBvbiBlYWNoIHRvZ2dsZTogY3Qgc3RhdGUg
+aW52YWxpZCx1bnRyYWNrZWQgZHJvcCA8LT4gY3QgDQpzdGF0ZSBpbnZhbGlkIGRyb3AgKGN0IGRi
+L2NhY2hlIG5lZWRzIHRvIGNsZWFyIGluIGJldHdlZW4gdG9nZ2xpbmcpLg0KRW5hYmxlZCBsb2dn
+aW5nIGJ1dCBub3RoaW5nIGJlZW4gcHJpbnRlZCB0aGF0IHdvdWxkIHByb3ZpZGUgYSBoaW50Lg0K
+DQpJcyB0aGlzIHNvbWV0aGluZyB0byBiZSBleHBlY3RlZCwgYW5kIGlmIHNvIHdoeSwgb3IgaXMg
+aXQgYSBidWcgaW4gDQprZXJuZWwgLyBuZnQ/DQoNCg0K
