@@ -1,26 +1,56 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: [nftables 0.9.2 | kernel 4.19.93] dropping ct state untracked
- stops ipv6 connectivity
-Date: Wed, 18 Mar 2020 13:28:37 +0100
-Message-ID: <20200318122837.GC13921@breakpoint.cc>
-References: <9a55ac25-719e-49fb-c414-7467e67cb686@gmx.net>
- <20200318120726.GA13921@breakpoint.cc>
- <1ef6eb05-1f82-fc88-8d1f-8bb5b98ae67a@gmx.net>
+From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+Subject: [nftables 0.9.2 | kernel 4.19.93] flowtable - number of devices
+ limited (7)?
+Date: Wed, 18 Mar 2020 12:37:28 +0000
+Message-ID: <dd0815e7-2cae-afa9-0c54-240687c75c06@gmx.net>
+Reply-To: vtol@gmx.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1ef6eb05-1f82-fc88-8d1f-8bb5b98ae67a@gmx.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1584535037;
+        bh=8t2QlEiVnfL3ePqUfnwp8bJUdI4s7v+ht0xtCUE/dJQ=;
+        h=X-UI-Sender-Class:Reply-To:To:From:Subject:Date;
+        b=eNJ/boTrXJgHHGpeAAdxgDPwkGya5v/1yIGRpPNYJTtrfPyuNSZ4FeHErmuuGhY15
+         fQN5hje/IxToikkRRHsbxSFGjcUD9GtAY4lsFSgVXRauKpQg0O4TyIH5m+WFYg2YwZ
+         YWrieeKDIbg/EgVyKKPSVHg8fAK4P/9ZgU5gXTf0=
+Content-Language: en-GB
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: =?utf-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
-Cc: Florian Westphal <fw@strlen.de>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-ѽ҉ᶬḳ℠ <vtol@gmx.net> wrote:
-> That is one protocol (icmpv6 neigh resolution) being untracked but that
-> implies that NFT is then subsequently blocking the source ipv6 entirely?
+When exceeding the number of devices > 7 NFT prints:
 
-Its the same effect as dropping ipv4 arp packets with arptables,
-stack won't be able to figure out which ethernet address to use to send
-the packet to.
+Illegal instruction
+
+This does not print the error:
+
+flowtable ft =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 { ho=
+ok ingress priority 0; devices =3D {
+pppoe-wan, lan0, lan1, lan2, lan3, lan4, br-lan }; }
+flowtable ft =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 { ho=
+ok ingress priority 0; devices =3D {
+pppoe-wan, lan0, lan1, lan2, lan3, lan4, br-guest }; }
+flowtable ft =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 { ho=
+ok ingress priority 0; devices =3D {
+pppoe-wan, lan0, lan1, lan2, lan3, lan4, br-mgt }; }
+flowtable ft =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 { ho=
+ok ingress priority 0; devices =3D {
+pppoe-wan, lan0, lan1, lan3, lan4, br-mgt, br-guest }; }
+flowtable ft =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 { ho=
+ok ingress priority 0; devices =3D {
+pppoe-wan, lan0, lan1, lan3, br-mgt, br-guest, br-mgt }; }
+
+But this prints the error:
+
+flowtable ft =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 { ho=
+ok ingress priority 0; devices =3D {
+pppoe-wan, lan0, lan1, lan2, lan3, lan4, br-lan, br-mgt }; }
+flowtable ft =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 { ho=
+ok ingress priority 0; devices =3D {
+pppoe-wan, lan0, lan1, lan2, lan3, lan4, br-guest, br-lan }; }
+flowtable ft =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 { ho=
+ok ingress priority 0; devices =3D {
+pppoe-wan, lan0, lan1, lan2, lan3, lan4, br-mgt, br-guest }; }
+
