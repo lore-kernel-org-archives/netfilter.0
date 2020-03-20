@@ -1,39 +1,57 @@
-From: Robert White <rwhite@pobox.com>
-Subject: Interface group ID in flow tables?
-Date: Fri, 20 Mar 2020 04:08:15 +0000
-Message-ID: <3ed21862-ce8b-c70d-6e50-705efd46505c@pobox.com>
+From: Stefan Hartmann <stefanh@hafenthal.de>
+Subject: nftables 0.9.3, sets with concatentation
+Date: Fri, 20 Mar 2020 16:51:06 +0100
+Message-ID: <10a01f25-84fa-fa19-c10f-7c530ef9f10c@hafenthal.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=comcastmailservice.net; s=20180828_2048; t=1584677295;
-        bh=Ph4VGkXsXRC0FDmYmxdHZGxQsycnKGIXIP+UvW9VQlo=;
-        h=Received:Received:To:From:Subject:Message-ID:Date:MIME-Version:
-         Content-Type;
-        b=Ngfwi9jRYzdQ3BU7X8ZQ02Vtqor4SgSXROnFlc6x+1SLY0PJSchnPZDP4QqAb5rwt
-         1sJ396rw3tkcA7szQkNOE2rRXJNGB2G20+eE2OCSY0vpmVV8RekUA3EEMBmWv8lBlj
-         WF9MIC1dPl0BwosYACH+Id2GF96y/4gJ/69Mw1h8wFSIRJn8nQFojf+rUtXPnO/05Y
-         z9LrjaSbBcA3e1Y4JrscuHE9pAYTUhQzte5A2PA8gUOMB4/QBoPdlTfnzqbhDO67d+
-         cG6+66FjdpFq955q9UbetU60J11SIDG5QNHwneWndFVpRzxy796Awagb6UEG1S3jom
-         MAP4rKbP9EFJg==
-Content-Language: en-US
+Content-Language: de-DE
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"; format="flowed"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "netfilter.org" <netfilter@vger.kernel.org>
 
-Right now flow tables use a set of devices to select the table structure.
+I have successfully migrated from a cisco IOS router to a new GNU/Linux 
+Debian box with nftables 0.9.3.
 
-It Would Be Nice=E2=84=A2 to be able to specify at least one group ID(s) ei=
-ther=20
-as a replacement for devices=3D or in addition to it, that would select=20
-the candidate devices.
+At now I am trying to simplify the configuration with sets.
+E.g.
+table ip FILTER4 {
+	set s4_ICMP-RELATED {
+		type icmp_type
+		elements = { destination-unreachable,
+			     time-exceeded }
 
-With a group id selector dynamic interfaces (ppp, ppoe, or the *.staN=20
-interfaces created by hostapd on a 4addr segment) can come and go=20
-without having to reload or update the set of active rules.
+and using this set
+...
+chain ACL4-IN_IF2 {
+		ct state invalid log prefix "NFT: FILTER4/ACL4-IN_IF2: ct invalid: " drop
+		ct state established,related accept
+		icmp type @s4_ICMP-RELATED accept
+		...
 
-The structure of the running table doesn't change since each active=20
-entry is still interface-to-interface, but the table building logic in=20
-the accept stanza would include the group number check when needed.
+This works perfectly with sets without concatenation.
 
+
+For the sake of a well-arranged ruleset,
+it would be nice to have a concatenated set like
+	set s4_MISC-SERVICES {
+		type inet_proto . inet_service
+		elements = { udp . 69, tcp . 23 ]
+
+and then use this set like
+	ip daddr $IP4_IF2 . dport @s4_MISC-SERVICES accept
+
+But I got a syntax error "unexpected dport".
+
+With eg ip daddr $IP4_IF2 . udp dport @s4_MISC-SERVICES accept it is 
+working, but this is here useless for simplyfying.
+
+What is the right syntax or is the mixing of udp and tcp in this manner 
+impossible?
+Is there a better approach to get the abstraction from a group of 
+services into a mixed tcp udp ruleset?
+
+
+Thanks,
+Stefan Hartmann
