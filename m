@@ -1,52 +1,36 @@
-From: Frank Myhr <fmyhr@fhmtech.com>
-Subject: Re: nftables 0.9.3, sets with concatentation
-Date: Fri, 20 Mar 2020 12:46:11 -0400
-Message-ID: <ae6abdfc-8479-29ae-c411-ecca532d864f@fhmtech.com>
-References: <10a01f25-84fa-fa19-c10f-7c530ef9f10c@hafenthal.de>
- <4220067c-41e2-d3e2-fc78-8ac0fb909911@fhmtech.com>
+From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+Subject: [nftables 0.9.2 | flow table] dynamic (soft) NETDEV
+Date: Sat, 21 Mar 2020 09:53:15 +0000
+Message-ID: <574afe87-ced9-8c5b-9dd4-4619e85f9774@gmx.net>
+Reply-To: vtol@gmx.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=larkmoor.net; s=larkmoor20140928;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:References:To:From:Subject; bh=eM0ZbjpkLLTPcZF9oQXi9CPl8v+zGsr7+qNsNycp5ew=;
-        b=kVwCsRBgpdxkSA4kUTBL2YuM4ogAHlkLr1JVZ04IVzq1fz2in5gLR09lTf93NXEV5wUvHOhK/W6fVJmBHFBfn1C9nj+LGdS9DAGxOetTssBDc7yppgXxML/yyety7XhnJ7cmKsW746eFcDv375tSgy1juAZ4+awViN736mNT2QQ=;
-In-Reply-To: <4220067c-41e2-d3e2-fc78-8ac0fb909911@fhmtech.com>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1584784405;
+        bh=JX6B+LW4fC2TzYUiepJwHzZOiyeXVxyXl29ivHvvq3s=;
+        h=X-UI-Sender-Class:Reply-To:To:From:Subject:Date;
+        b=Z6Uzb9GsOLdNK9MygDK8RFWmwlFKuzUamOt4d8kU2VNU85UH+J2ibNe41A7JapRLb
+         VYy5c+juvRmIlvOhsctRUosADOq9imW3di+UzIJiSWVWlu70Z4xLidP5HbDLcmCCJV
+         qm7zZ0uHtY3+tUisTJwESG+lHARS7xZVrFvdwtnw=
+Content-Language: en-GB
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Stefan Hartmann <stefanh@hafenthal.de>, "netfilter.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 2020/03/20 12:41, Frank Myhr wrote:
+With some (soft) NETDEV being available only after NFT been invoked at
+boot time, e.g. bridge or pppoe, NFT would fail to load at boot time if
+such NETDEV being stipulated, e.g.
 
-> set s4_MISC-SERVICES {
->            type ipv4_addr . inet_proto . inet_service
->            elements = { $IP4_IF2 . udp . 69, $IP4_IF2 . tcp . 23 ]
+flowtable f { hook ingress priority 0; devices =3D { pppoe-wan, lan0,
+lan1, lan2, lan3, lan4, br-lan }; }
 
-Argh! Use a curly brace at the end rather than square bracket, 
-obviously. ;-p
+Is there a syntax that would allow to add/alter such dynamic dev to an
+initial stanza, e.g.
 
+flowtable f { hook ingress priority 0; devices =3D { lan0, lan1, lan2,
+lan3, lan4 }; }
 
-> meta l4proto {tcp, udp} \
->      ip daddr . meta l4proto . th dport @s4_MISC-SERVICES   accept
-> 
-> 
-> Or, you may well want to handle ipv4 addresses in a separate set:
-> 
-> set s4_MISC-SERV2 {
->      type inet_proto . inet_service
->            elements = { udp . 69, tcp . 23 ]
-
-Same here.
-
-
-> set ip_allowed {
->      type ipv4_addr
->      elements = { $IP4_IF2 }
-
-Add missing end brace }.
-
-
-Sorry for the typos!
-
--F
+and then adding pppoe-* and/or br-* to it? Or is there any other good
+practice, e.g. are dynamic sets are working with flowtable device =3D?
