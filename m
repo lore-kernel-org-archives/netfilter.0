@@ -1,39 +1,40 @@
-From: Frank Myhr <fmyhr@fhmtech.com>
-Subject: Re: TCP and UDP dport in the same rule
-Date: Sun, 22 Mar 2020 10:17:55 -0400
-Message-ID: <c3cba3e7-4cbb-13f5-7104-e1129416b5e0@fhmtech.com>
-References: <670198645.21727.1584884428183@ox89.mailbox.org>
+From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+Subject: [nftables 0.9.2 | flow table] check whether it works?
+Date: Sun, 22 Mar 2020 14:18:52 +0000
+Message-ID: <41317d5f-a0b4-da4e-356b-45cf7677cf15@gmx.net>
+Reply-To: vtol@gmx.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=larkmoor.net; s=larkmoor20140928;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject; bh=3Y76iR1QNhjGUD0ogsYCkAPZPfcHov8MJPbxL6Ab+2E=;
-        b=v5ulDefxBcFhlqXLgyfXl4WGfAf9WG6A6ZIJ+FiJrJffy6tBHIvf9tfInI0HL2AYrp6L8pzbMYAYHUdhi8lWFAHhO6XLOFCqQGMBUXKFV1PMKqiErgPO751tGVx2XEl/Da8tnjBWlndo913w9fRghk4m/kYTyPfajV2pkgSbEGs=;
-In-Reply-To: <670198645.21727.1584884428183@ox89.mailbox.org>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1584886742;
+        bh=EwEVnJ81mn54kyVcKaokKREPW7yfoShsPWeDDNNus3g=;
+        h=X-UI-Sender-Class:Reply-To:To:From:Subject:Date;
+        b=Yn873LIYyefOqIR6+8j/F1+rQKSGw7TUjpOOgb+6M6AFifHlcvjNiVwKbBHx37Pau
+         f90jMn8lG2Z/ieFXugUU/685WEkbsRdctFJeJKwko0J7bWof6zJ9pCS5GbyOoOV6FR
+         P6pqqWvnPSVrpyjd2OHQuoRl3ar+O3KeykdzeIfM=
+Content-Language: en-GB
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Darius <dram@mailbox.org>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 2020/03/22 09:40, Darius wrote:
-> Hi, I can't find the way to make one rule matching packets with the
-> same dport either on tcp or udp. So far I have rules like this:
-> 
-> ip protocol tcp tcp dport 2000 counter accept ip protocol udp udp
-> dport 2000 counter accept
-> 
-> I would like to have one rule instead. I couldn't find the way to do
-> it with intervals or maps because dport statement must go together
-> with tcp or udp.
+How it is possible to check whether flowtable offloading actually works?
 
-Hi Darius,
+Can the populated flowtables somehow be dumped / observed / monitored?
 
-Please see:
-https://www.mankier.com/8/nft#Payload_Expressions-Raw_Payload_Expression
+If not mistaken the conntrack table would exhibit the [OFFLOAD] label
+but observing the conntack table it does not show such label.
 
-and this very recent thread:
-https://marc.info/?l=netfilter&m=158472251109859&w=2
+Reading https://lwn.net/Articles/738214/:
 
-Best regards,
-Frank
+> Patch 5/5 Switches and NICs come with built-in flow table, I've been
+>    observing out of tree patches in OpenWRT/LEDE to integrate this into
+>    Netfilter for a little while. This patch adds the ndo hooks to
+>    populate hardware flow table.
+
+This node running OpenWrt with Marvell Armada 385 88F6820 (that
+supposedly features Accelerated Data Path) with integrated NIC plus an
+onboard Marvell 88E6176 switch, latter driven by DSA, I am wondering
+whether flowtables offloading is even expected to work in such setup?
+
