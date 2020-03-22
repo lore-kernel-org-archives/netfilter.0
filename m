@@ -1,32 +1,39 @@
-From: Frank Myhr <fmyhr@fhmtech.com>
+From: Reindl Harald <h.reindl@thelounge.net>
 Subject: Re: TCP and UDP dport in the same rule
-Date: Sun, 22 Mar 2020 10:58:18 -0400
-Message-ID: <7cd58ca4-9569-4c83-d648-4cd332007fd2@fhmtech.com>
+Date: Sun, 22 Mar 2020 17:36:47 +0100
+Message-ID: <7f1b28fa-faeb-c89d-b94f-74e412c02e8f@thelounge.net>
 References: <670198645.21727.1584884428183@ox89.mailbox.org>
- <c3cba3e7-4cbb-13f5-7104-e1129416b5e0@fhmtech.com>
- <161865440.26652.1584887186397@ox93.mailbox.org>
- <e4b0dac3-78a3-c515-975d-5d8410e4e720@fhmtech.com>
- <799e2750-37c2-4fcd-8758-9eaed1d13c88@Canary>
+ <477be69c-1afd-233c-1126-b081aab6a244@thelounge.net>
+ <0b44d0eb-5d52-d0c8-fe6c-ccbe6ba88e01@fhmtech.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=larkmoor.net; s=larkmoor20140928;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject; bh=d0UPy9WVinF4gWKjwdabCmuxM1z9WrgNB6sWLlL7P3A=;
-        b=hSva8x984cP2vy08/2YS6riUBGecMITlX7kkgN8Bnr9AsaxVkJhfQ5WDpxwvO+svOU+xyEQ/Ba9a4Jc8sgCCG1WMRwXhDBKmiYbIzJqzKZWGoePV/+O/FMyifOOSzdOsMkRFLEDTB0lfKNetkYYPTSmCWxFYJJcBz/vIHtTHCeE=;
-In-Reply-To: <799e2750-37c2-4fcd-8758-9eaed1d13c88@Canary>
+In-Reply-To: <0b44d0eb-5d52-d0c8-fe6c-ccbe6ba88e01@fhmtech.com>
 Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"; format="flowed"
-To: Darius <dram@mailbox.org>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Frank Myhr <fmyhr@fhmtech.com>, Darius <dram@mailbox.org>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 2020/03/22 10:50, Darius wrote:
-> Yes, that is true. I will need two rules. Actually I=E2=80=99m using pack=
-et marking quite widely, but I guess I should stop doing that and need to u=
-pdate ruleset a bit.
 
-AFAIK there's nothing wrong with packet marking, just prefer simpler /=20
-more direct way if possible. :-)
 
-Cheers,
-Frank
+Am 22.03.20 um 15:43 schrieb Frank Myhr:
+> nftables has its own concept of sets:
+> https://wiki.nftables.org/wiki-nftables/index.php/Sets
+> 
+> I don't know of a way to use ipset with nftables
+
+well, that's a showstopper for even consider switch to nftables given
+the amount of code maintainig ipsets from shell scripts *because* they
+live outside of the ruleset
+
+it makes many things so much easier up to write backends in whatever
+language to maintain ipsets without any knowledge of the ruleset using
+them finally
+
+i even deploy ipsets to different machines no matter where they are
+phyisically located and hwat the role of the machine is (firewall,
+endpoint...)
+
+well, you need to think about naming to keep them useable that way....
+
