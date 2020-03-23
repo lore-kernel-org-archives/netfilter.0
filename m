@@ -1,38 +1,47 @@
-From: Philip Prindeville <philipp_subx@redfish-solutions.com>
-Subject: tc question about ingress bandwidth splitting
-Date: Sun, 22 Mar 2020 12:20:50 -0600
-Message-ID: <1D33C8C0-0638-4566-A85F-80B19CD532BA@redfish-solutions.com>
-Mime-Version: 1.0 (Mac OS X Mail 12.4 \(3445.104.11\))
-Content-Transfer-Encoding: 8bit
+From: Zheng konia <konianet@gmail.com>
+Subject: Ipv6tov4 address Dnat
+Date: Mon, 23 Mar 2020 13:35:02 +0800
+Message-ID: <CAG1z+7_CKA90Yd_AFkw+Jh7zJsxWE21Vnbso7fh3y9a_wcjSFg@mail.gmail.com>
+Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=LwcErEVHQqeeY4WDqFgDvYYxpULq3HS7G0RE9bo/hjs=;
+        b=dbdvOBkG2xaEi68bbVSFXAADCrhemSWUS+Ir+LhSnwNwaXL78xWrTQMAfaykpR7BOp
+         biXJTU2xJp2Z89MAns2aI4tRGz/6gVIqX0OE15UmC17Cvs1YMNst4PDDbngv7/BDbjRi
+         +HXT5Mbp/bLc13h3BQoMreptAUhOJLxZAuQltJ+ppviUrEIZH/v4g3Artw0GYbV/A3Cf
+         TZjUwfOYSfFuSym7fNu89eUqBCHT1Bw9xsHFXQqnwJiM83M3WHSI38jIS4HYzMehNSx5
+         s5/TiUybOa0JOrGV+Cp9fSY0QrgnPnTnTL6LPYoCwfwbntmSPsMz7C1EC3r02uIi2+JU
+         FnCw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Netfilter Users Mailing list <netfilter@vger.kernel.org>
 
-Hi all,
+Hi ,
 
-I asked around on IRC but no one seems to know the answer, so I thought I’d go to the source… Seemed like something Stephen or Eric might be able to answer.
+     I want to do the dnat like
 
-I have a SoHo router with two physical subnets, which we’ll call “production” (eth0) and “guest” (eth1), and the egress interface “wan” (eth5).
+            match IPV6  udp dport 9999 dnat to  IPV4:9999
 
-The uplink is G.PON 50/10 mbps.  I’d like to cap the usage on “guest” to 10/2 mbps.  Any unused bandwidth from “guest” goes to “production”.
+     However, the rule bellow didn't work.
 
-I thought about marking the traffic coming in off “wan" (the public interface).  Then using HTB to have a 50 mbps cap at the root, and allocating 10mb/s to the child “guest”.  The other sibling would be “production”, and he gets the remaining traffic.
+table inet nat {
 
-Upstream would be the reverse, marking ingress traffic from “guest” with a separate tag.  Allocating upstream root on “wan” with 10 mbps, and the child “guest” getting 2 mbps.  The remainder goes to the sibling “production”.
+   chain prerouting {
+       type nat hook prerouting priority 100; policy accept;
+                ip6 nexthdr udp udp dport 9999 dnat to  192.168.1.11:9999
+        }
 
-Should be straightforward enough, right? (Well, forwarding is more straightforward than traffic terminating on the router itself, I guess… bonus points for getting that right, too.)
+     chain postrouting {
+         type nat hook postrouting priority 100; policy accept;
+        masquerade
+   }
 
-I’m hoping that the limiting will work adequately so that the end-to-end path has adequate congestion avoidance happening, and that upstream doesn’t overrun the receiver and cause a lot of packets to be dropped on the last hop (work case of wasted bandwidth).  Not sure if I need special accommodations for bursting or if that would just delay the “settling” of congestion avoidance into steady-state.
+  Could you show me how to config ipv6 dnat to ipv4 ? Thanks.
 
-Also not sure if ECN is worth marking at this point.  Congestion control is supposed to work better than congestion avoidance, right?
-
-Anyone know what the steps would look like to accomplish the above?
-
-A bunch of people responded, “yeah, I’ve been wanting to do that too…” when I brought up my question, so if I get a good solution I’ll submit a FAQ entry to LARC.
-
-Thanks,
-
--Philip
-
+---------------
+konia
+2020/03/23
