@@ -1,24 +1,71 @@
-From: Marc SCHAEFER <schaefer@alphanet.ch>
-Subject: Re: tc question about ingress bandwidth splitting
-Date: Mon, 23 Mar 2020 10:36:47 +0100
-Message-ID: <20200323093647.GA4706@alphanet.ch>
-References: <1D33C8C0-0638-4566-A85F-80B19CD532BA@redfish-solutions.com>
- <8ce39670-f41d-4053-b424-bfbfe23c0329@swifty.hu>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: TCP and UDP dport in the same rule
+Date: Mon, 23 Mar 2020 12:46:06 +0100
+Message-ID: <20200323114606.y4mudsebactsddkn@salvia>
+References: <670198645.21727.1584884428183@ox89.mailbox.org>
+ <477be69c-1afd-233c-1126-b081aab6a244@thelounge.net>
+ <0b44d0eb-5d52-d0c8-fe6c-ccbe6ba88e01@fhmtech.com>
+ <7f1b28fa-faeb-c89d-b94f-74e412c02e8f@thelounge.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <8ce39670-f41d-4053-b424-bfbfe23c0329@swifty.hu>
+In-Reply-To: <7f1b28fa-faeb-c89d-b94f-74e412c02e8f@thelounge.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?iso-8859-1?B?R+FzcOFy?= Lajos <swifty@swifty.hu>
-Cc: Philip Prindeville <philipp_subx@redfish-solutions.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Reindl Harald <h.reindl@thelounge.net>
+Cc: Frank Myhr <fmyhr@fhmtech.com>, Darius <dram@mailbox.org>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Mon, Mar 23, 2020 at 07:47:11AM +0100, G=E1sp=E1r Lajos wrote:
-> Just a tip: AFAIK, you can only limit your sending bandwith... Everything
-> what you already received is already on your device... :)
+On Sun, Mar 22, 2020 at 05:36:47PM +0100, Reindl Harald wrote:
+>
+>
+> Am 22.03.20 um 15:43 schrieb Frank Myhr:
+> > nftables has its own concept of sets:
+> > https://wiki.nftables.org/wiki-nftables/index.php/Sets
+> >
+> > I don't know of a way to use ipset with nftables
+>
+> well, that's a showstopper for even consider switch to nftables given
+> the amount of code maintainig ipsets from shell scripts *because* they
+> live outside of the ruleset
 
-Right, however in case you do not have control on the sending
-device, you can slow down or loose TCP ACKs to slow down
-the opposite direction TCP traffic.
+Probably you can keep your set configuration in a separated file, e.g.
+
+ # cat mysets.nft
+ set blacklist {
+        type ipv4_addr
+        elements = {
+               192.168.100.20,
+               192.168.134.78,
+               192.168.156.77,
+        }
+ }
+
+Then, include this file from the ruleset.
+
+ # cat ruleset.nft
+ table ip foo {
+       include "./mysets.nft"
+
+       chain bar {
+               type filter hook prerouting priority 0;
+
+               ip saddr @blacklist counter drop
+       }
+ }
+
+So your set configure lives outside of your ruleset.
+
+> it makes many things so much easier up to write backends in whatever
+> language to maintain ipsets without any knowledge of the ruleset using
+> them finally
+>
+> i even deploy ipsets to different machines no matter where they are
+> phyisically located and hwat the role of the machine is (firewall,
+> endpoint...)
+
+Then, you can distribute your mysets.nft file to your different
+machines, as described in the example above.
+
+Thanks.
