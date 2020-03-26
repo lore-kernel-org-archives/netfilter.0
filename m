@@ -1,42 +1,39 @@
 From: Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming.com>
 Subject: Re: What is the BEST GUI frontend to iptables firewall?
-Date: Fri, 27 Mar 2020 07:15:18 +0800
-Message-ID: <555179cbc46865fd9e29c1c008acb16e@teo-en-ming.com>
+Date: Fri, 27 Mar 2020 07:18:34 +0800
+Message-ID: <56f1fe4110741d1488a32aa8a5f6eff5@teo-en-ming.com>
 References: <65bb6d398e79b3d924f518d20f40b48e@teo-en-ming.com>
- <f14233aa-a779-a4b8-fe0a-1624ce2eaf8d@heinlein-support.de>
+ <467df868-97b0-c665-668b-df8813b7eae0@gmx.at>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <f14233aa-a779-a4b8-fe0a-1624ce2eaf8d@heinlein-support.de>
+In-Reply-To: <467df868-97b0-c665-668b-df8813b7eae0@gmx.at>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Robert Sander <r.sander@heinlein-support.de>
+To: infoomatic <infoomatic@gmx.at>
 Cc: netfilter@vger.kernel.org, ceo@teo-en-ming.com
 
-On 2020-03-27 04:27, Robert Sander wrote:
-> Am 26.03.20 um 12:35 schrieb Turritopsis Dohrnii Teo En Ming:
+On 2020-03-27 01:19, infoomatic wrote:
+> While I do suggest using scripts and CLI, fwbuilder is probably worth a
+> look for GUI fans.
+> 
+> 
+> On 26.03.20 12:35, Turritopsis Dohrnii Teo En Ming wrote:
+>> Good evening from Singapore,
 >> 
->> May I know what is the BEST GUI frontend to iptables firewall? It can 
->> be
->> very involved and tedious to configure iptables firewall using the
+>> May I know what is the BEST GUI frontend to iptables firewall? It can
+>> be very involved and tedious to configure iptables firewall using the
 >> command line approach.
-> 
-> fwbuilder is/was a very good desktop application to configure a range 
-> of
-> firewall systems. Development has been moved to
-> https://github.com/fwbuilder/fwbuilder
-> 
-> Regards
+>> 
+>> Are there any good rankings and reviews on the best GUI frontend to
+>> iptables firewall?
+>> 
+>> I am looking forward to hearing from you soon.
+>> 
+>> Thank you very much.
 
-Hi Robert Sander,
-
-Thank you for your reply.
-
-I found a video tutorial for Firewall Builder at the following link. Is 
-it the correct one?
-
-http://fwbuilder.sourceforge.net/4.0/videos.shtml
+I am a GUI fan :)
 
 
 
