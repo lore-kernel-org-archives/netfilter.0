@@ -1,78 +1,45 @@
-From: Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming.com>
-Subject: Re: What is the BEST GUI frontend to iptables firewall?
-Date: Thu, 26 Mar 2020 20:13:01 +0800
-Message-ID: <6368ebc27ab7b525e5b66b2935e2c354@teo-en-ming.com>
-References: <65bb6d398e79b3d924f518d20f40b48e@teo-en-ming.com>
- <e0d4f13d-5a9c-c5eb-c847-7a24e0558795@gmx.net>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+From: <kaskada@email.cz>
+Subject: batch update of conntrack?
+Date: Thu, 26 Mar 2020 16:04:31 +0100 (CET)
+Message-ID: <1z{.aV8H.46CnJzJxSaX.1UVCH}@seznam.cz>
+Mime-Version: 1.0 (szn-mime-2.0.52)
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <e0d4f13d-5a9c-c5eb-c847-7a24e0558795@gmx.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cz; s=beta;
+        t=1585235073; bh=kHnjikzX4WA6qT47KR/vERlItdk5aJZUmjByGA+77Ec=;
+        h=Received:From:To:Subject:Date:Message-Id:Mime-Version:X-Mailer:
+         Content-Type:Content-Transfer-Encoding;
+        b=gbhwK49EHLFUrqmH5Ql8q4q8ZfKyq+3a3xWsWs3+qycfJOtAWdFc0h+3iK1DP5Yfn
+         3MYOGboHaU2vefkOGh2ZaG6FbGcKeoD+CqPbp+vH1Eo+ScCYxzCSVWesJH0CJeY11z
+         OD0FxTZX+Nc3N7YSOuiwmppXED+LIFs6f2CCQ+SE=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: vtol@gmx.net
-Cc: netfilter@vger.kernel.org, ceo@teo-en-ming.com
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On 2020-03-26 19:49, ѽ҉ᶬḳ℠ wrote:
-> On 26/03/2020 11:35, Turritopsis Dohrnii Teo En Ming wrote:
->> Good evening from Singapore,
->> 
->> May I know what is the BEST GUI frontend to iptables firewall? It can
->> be very involved and tedious to configure iptables firewall using the
->> command line approach.
->> 
->> Are there any good rankings and reviews on the best GUI frontend to
->> iptables firewall?
->> 
->> I am looking forward to hearing from you soon.
->> 
->> Thank you very much.
-> 
-> "best" is rather something in the eye of the beholder / user
-> perspective. Some distros provide a comprehensive management GUI that
-> includes firewall management.
-> 
-> Back in the (iptables) day this distro independent GUI
-> https://configserver.com/cp/csf.html served me well, also integrates
-> with various admin panels.
+Hello,
 
+I`m trying hard to find if it is possible to update multiple (tens, hundre=
+ds and maybe thousands too) conntrack table flows with just one run of the=
+ "conntrack -U ...". I need to massively change "--mark" parameter on some=
+ of the flows depending on some external "values" I`m creating in my users=
+pace scripts.
 
-Hi,
+In other words, I`m looking for a way howto read a file with those multipl=
+e flows prepared. I mean flows like this example:
+conntrack -U -p $protokol --orig-src $src1 --orig-dst $dst1 --sport $sport=
+1 --dport $dport1 --reply-src $src2 --reply-dst $dst2 --reply-port-src $sp=
+ort2 --reply-port-dst $dport2 --mark 0
 
-Thank you for the quick reply.
+So, is there somethink like:
+conntrack -U < ./batch_file_with_changed_mark
+?
 
-I think CentOS Web Panel (CWP) web hosting control panel is also using 
-ConfigServer Security & Firewall (csf).
+Like iptables has:
+iptables-restore < ./iptables-save-restore-rules
+or tc has:
+tc -b ./tc_final_batch_file
 
-
-
-
-
-
-
-
------BEGIN EMAIL SIGNATURE-----
-
-The Gospel for all Targeted Individuals (TIs):
-
-[The New York Times] Microwave Weapons Are Prime Suspect in Ills of
-U.S. Embassy Workers
-
-Link: 
-https://www.nytimes.com/2018/09/01/science/sonic-attack-cuba-microwave.html
-
-********************************************************************************************
-
-Singaporean Mr. Turritopsis Dohrnii Teo En Ming's Academic
-Qualifications as at 14 Feb 2019 and refugee seeking attempts at the 
-United Nations Refugee Agency Bangkok (21 Mar 2017), in Taiwan (5 Aug 
-2019) and Australia (25 Dec 2019 to 9 Jan 2020):
-
-[1] https://tdtemcerts.wordpress.com/
-
-[2] https://tdtemcerts.blogspot.sg/
-
-[3] https://www.scribd.com/user/270125049/Teo-En-Ming
-
------END EMAIL SIGNATURE-----
+Thank you
+be brave...
+Pep.
