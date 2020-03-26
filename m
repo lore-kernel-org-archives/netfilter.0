@@ -1,45 +1,76 @@
-From: <kaskada@email.cz>
-Subject: batch update of conntrack?
-Date: Thu, 26 Mar 2020 16:04:31 +0100 (CET)
-Message-ID: <1z{.aV8H.46CnJzJxSaX.1UVCH}@seznam.cz>
-Mime-Version: 1.0 (szn-mime-2.0.52)
-Content-Transfer-Encoding: quoted-printable
+From: Robert Sander <r.sander@heinlein-support.de>
+Subject: Re: What is the BEST GUI frontend to iptables firewall?
+Date: Thu, 26 Mar 2020 21:27:37 +0100
+Message-ID: <f14233aa-a779-a4b8-fe0a-1624ce2eaf8d@heinlein-support.de>
+References: <65bb6d398e79b3d924f518d20f40b48e@teo-en-ming.com>
+Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="54R2j3ZCOQAtJi5um0FDScDC3W2PRoDDh"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=email.cz; s=beta;
-        t=1585235073; bh=kHnjikzX4WA6qT47KR/vERlItdk5aJZUmjByGA+77Ec=;
-        h=Received:From:To:Subject:Date:Message-Id:Mime-Version:X-Mailer:
-         Content-Type:Content-Transfer-Encoding;
-        b=gbhwK49EHLFUrqmH5Ql8q4q8ZfKyq+3a3xWsWs3+qycfJOtAWdFc0h+3iK1DP5Yfn
-         3MYOGboHaU2vefkOGh2ZaG6FbGcKeoD+CqPbp+vH1Eo+ScCYxzCSVWesJH0CJeY11z
-         OD0FxTZX+Nc3N7YSOuiwmppXED+LIFs6f2CCQ+SE=
+In-Reply-To: <65bb6d398e79b3d924f518d20f40b48e@teo-en-ming.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hello,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--54R2j3ZCOQAtJi5um0FDScDC3W2PRoDDh
+Content-Type: multipart/mixed; boundary="sue8NIdI7CLxJqwoO0D77C17e2EEBZoal"
 
-I`m trying hard to find if it is possible to update multiple (tens, hundre=
-ds and maybe thousands too) conntrack table flows with just one run of the=
- "conntrack -U ...". I need to massively change "--mark" parameter on some=
- of the flows depending on some external "values" I`m creating in my users=
-pace scripts.
+--sue8NIdI7CLxJqwoO0D77C17e2EEBZoal
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
 
-In other words, I`m looking for a way howto read a file with those multipl=
-e flows prepared. I mean flows like this example:
-conntrack -U -p $protokol --orig-src $src1 --orig-dst $dst1 --sport $sport=
-1 --dport $dport1 --reply-src $src2 --reply-dst $dst2 --reply-port-src $sp=
-ort2 --reply-port-dst $dport2 --mark 0
+Am 26.03.20 um 12:35 schrieb Turritopsis Dohrnii Teo En Ming:
+>=20
+> May I know what is the BEST GUI frontend to iptables firewall? It can b=
+e
+> very involved and tedious to configure iptables firewall using the
+> command line approach.
 
-So, is there somethink like:
-conntrack -U < ./batch_file_with_changed_mark
-?
+fwbuilder is/was a very good desktop application to configure a range of
+firewall systems. Development has been moved to
+https://github.com/fwbuilder/fwbuilder
 
-Like iptables has:
-iptables-restore < ./iptables-save-restore-rules
-or tc has:
-tc -b ./tc_final_batch_file
+Regards
+--=20
+Robert Sander
+Heinlein Support GmbH
+Schwedter Str. 8/9b, 10119 Berlin
 
-Thank you
-be brave...
-Pep.
+http://www.heinlein-support.de
+
+Tel: 030 / 405051-43
+Fax: 030 / 405051-19
+
+Zwangsangaben lt. =C2=A735a GmbHG:
+HRB 93818 B / Amtsgericht Berlin-Charlottenburg,
+Gesch=C3=A4ftsf=C3=BChrer: Peer Heinlein -- Sitz: Berlin
+
+
+--sue8NIdI7CLxJqwoO0D77C17e2EEBZoal--
+
+--54R2j3ZCOQAtJi5um0FDScDC3W2PRoDDh
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEhVXmaPzvl7l1erVE8LuRWCPeWygFAl59EDkACgkQ8LuRWCPe
+WyjkEg/+IZRtejaV9EZP9ALb42y+MDvxMgya0Ln/xmEIO2s27Wab43hLCpEMKwQM
+nlXUAFO/JiM31v7F0RC8vB0fhEXLVdp3zv6gyoIvbVIbuWUdsFkTJGkNR/T1NHz1
+eLDMx5WQJDi1MbvYhwWCqTNAvB8socDEFYJKnFHx8RNh6+Y2M/5OpJG1Untkg5E9
+D4BDClzLqB5GmRTR1P6EmVgFB6PYENaMofv+2iuHBY4uwJ5fPkYLTjLc7OqeQ9kf
+hznPuCX0zlw+x0JOpi/LYYgySrLxaiRCUGfFmnouJoKrSTt/i9gTcUOdUTBLBJB4
+0AnVIPRpSUrXnwXNpgam+M9NiXki9YBPB9vLYq2hguACP8qYDNocw41q2SB6fTaV
+jrj0COOdGCXHbblV8NdtwPUMZyRTHt/1zNCLO8gb2R0S6L659me7BJVaMdu7YECS
+rBFzxWV8gR4/dqXjOZ7lwgqTg7LREU+l/6OPo4VVF/0gzugMUeQzyb/zeh8N18gY
+2v8oedlDNFOFc4OM8ve0+8dULqLdl2LyPWzbDf7dpZ+PSnnRwr2MaNYEPuzseTrV
+lIAI8WFOFvmWvIJlCXY+dzBc8qdLHLaNW/b6t4mcEmKuoq9dDb7Qbmlg+UA/oXw0
+nCrfcGN56d6khyC1/ujo+5DrruqOnEAuoIr34mwmLf3SzqTNKlU=
+=QxdU
+-----END PGP SIGNATURE-----
+
+--54R2j3ZCOQAtJi5um0FDScDC3W2PRoDDh--
