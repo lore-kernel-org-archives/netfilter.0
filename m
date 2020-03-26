@@ -1,36 +1,49 @@
-From: Frank Myhr <fmyhr@fhmtech.com>
-Subject: Re: A question about priority in chains
-Date: Tue, 24 Mar 2020 16:55:38 -0400
-Message-ID: <b5688f99-efa0-b522-b7a7-81440d386186@fhmtech.com>
-References: <62b3a8f8-d0ae-bac1-c0f1-54f19ee3d31f@mailbox.org>
- <e43d85e0-0a1c-05b8-d1b4-bed6bdcbe6a2@fhmtech.com>
- <5042488d-3299-4a53-9250-843a3e902717@mailbox.org>
+From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+Subject: Re: [nftables 0.9.2 | flow table] check whether it works?
+Date: Thu, 26 Mar 2020 07:17:12 +0000
+Message-ID: <a549d215-7aa6-bc66-d004-a3b504bf2e17@gmx.net>
+References: <41317d5f-a0b4-da4e-356b-45cf7677cf15@gmx.net>
+Reply-To: vtol@gmx.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=larkmoor.net; s=larkmoor20140928;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject; bh=Ba+N4y3Ah2T2Uxvgy+311JC2FwYxwujTcrEDS+/Zl3k=;
-        b=wzjhwHDRR+j7iT1xJyk5kd6sOH3prdc91PhmIrTSZJn3Bz93QDgtN5V98ADmJk9oYnPKpqKgZ4OjMuWQLsQvcPeFfKVgarMz/hR8I3sNczRAvwH8RAR+8/5lL15jSadtG5qSgO+XtXiFSz6L8BGX4938i+6xGh7ONToB5JR2Bbc=;
-In-Reply-To: <5042488d-3299-4a53-9250-843a3e902717@mailbox.org>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1585207045;
+        bh=B8UTnTJytkESfTJt0ltHNDYmb+cAuSKtUXOqTXS+TxY=;
+        h=X-UI-Sender-Class:Reply-To:Subject:From:To:References:Date:
+         In-Reply-To;
+        b=Aq9zJTuoxek5DxZwWd9BBZeUD43TRHUjOSf7vWm39I44LE/kcIBapaBn69QGvQUps
+         isUKIbuUJ5Y3pVW8pgduEFalNMRbWyzpe99YC6ZfTw20G6WfePu3NouH538QDUkb/H
+         dFQGQUgkriiwKz8v8iuzhV73AKbv6NNu/D85Pdp4=
+In-Reply-To: <41317d5f-a0b4-da4e-356b-45cf7677cf15@gmx.net>
+Content-Language: en-GB
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: darius <dram@mailbox.org>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 2020/03/24 15:28, darius wrote:
+On 22/03/2020 14:18, =D1=BD=D2=89=E1=B6=AC=E1=B8=B3=E2=84=A0 wrote:
+> How it is possible to check whether flowtable offloading actually works?
+>
+> Can the populated flowtables somehow be dumped / observed / monitored?
+>
+> If not mistaken the conntrack table would exhibit the [OFFLOAD] label
+> but observing the conntack table it does not show such label.
+>
+> Reading https://lwn.net/Articles/738214/:
+>
+>> Patch 5/5 Switches and NICs come with built-in flow table, I've been
+>> =C2=A0=C2=A0 observing out of tree patches in OpenWRT/LEDE to integrate=
+ this into
+>> =C2=A0=C2=A0 Netfilter for a little while. This patch adds the ndo hook=
+s to
+>> =C2=A0=C2=A0 populate hardware flow table.
+>
+> This node running OpenWrt with Marvell Armada 385 88F6820 (that
+> supposedly features Accelerated Data Path) with integrated NIC plus an
+> onboard Marvell 88E6176 switch, latter driven by DSA, I am wondering
+> whether flowtables offloading is even expected to work in such setup?
+>
 
-> I was referring to Netfilter packet flow
-> https://en.wikipedia.org/wiki/Netfilter#/media/File:Netfilter-packet-flow.svg
-...
-> But again, nft is replacement for netfilter and it works in slightly
-> different way. that was maybe a bad idea to try to follow Netfilter
-> packet flow diagram.
-
-
-The Wikipedia article was conflating netfilter with iptables. nftables 
-is part of netfilter; it replaces iptables, the packet-filtering portion 
-of netfilter. I've made some edits to try to make this distinction.
-
-Thanks,
-Frank
+There is no way to see/check whether flowtable offloading actually
+works, or how to debug it?
