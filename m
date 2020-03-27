@@ -1,61 +1,78 @@
-From: Daniel <tech@tootai.net>
+From: Robert Sander <r.sander@heinlein-support.de>
 Subject: Re: What is the BEST GUI frontend to iptables firewall?
-Date: Fri, 27 Mar 2020 10:04:53 +0100
-Message-ID: <170b849d-a5cd-aa1c-e7da-4a189e1591be@tootai.net>
+Date: Fri, 27 Mar 2020 11:12:07 +0100
+Message-ID: <05f627c5-917b-7f67-4691-21ea92e03cce@heinlein-support.de>
 References: <65bb6d398e79b3d924f518d20f40b48e@teo-en-ming.com>
- <330d7201-6561-61a9-9095-8bdf8ee1518b@hajes.org>
- <fc1f0389e127ff74ee2b22c003918c73@teo-en-ming.com>
+ <f14233aa-a779-a4b8-fe0a-1624ce2eaf8d@heinlein-support.de>
+ <555179cbc46865fd9e29c1c008acb16e@teo-en-ming.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="utAvd1EAkzeHHB6Vv8rYTxmnkC2nAbf8u"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1585299900; bh=pzL3bej9Xg357yA09Z62ok4hZgo6IclXGhIuLnYsoaE=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=sczf4NiPpyQw7n2cl2l0x/rkkOjtV/Xgw0uYbtq2TiBqEUwBBnLGHAXmmjgtAJll/
-         ZBpzYMPZtZLkXIfYDWkbTCS7At41pCwOREDfSnovPtNM1KdEpVZZrTpTciyGNUAtn1
-         TaIzuF3+lV6AIiqHp68vMDY2Nq/f2xhJgJhtEAlc=
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1585299899; bh=pzL3bej9Xg357yA09Z62ok4hZgo6IclXGhIuLnYsoaE=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=ruKcA1wU45XXGDI6a556OFT4FCe2XlWYKjR8iezFYDQKTSwfloHwfpM3fyWjx7u17
-         sBQWamrZmVIarhKL106C+wOmbFsvdY/OpgbUuiynd2ZhFnc2ypeFqCjRAv3/oAHIGU
-         8gNOWic/MQ8kDKCtcZUTPj4D3vJfTy5z5PwKyHoI=
-In-Reply-To: <fc1f0389e127ff74ee2b22c003918c73@teo-en-ming.com>
-Content-Language: fr-FR
+In-Reply-To: <555179cbc46865fd9e29c1c008acb16e@teo-en-ming.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming.com>, david@hajes.org
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--utAvd1EAkzeHHB6Vv8rYTxmnkC2nAbf8u
+Content-Type: multipart/mixed; boundary="0uwLZqUvoATuPBPz7Jg25jciQkEKEI6Ya"
+
+--0uwLZqUvoATuPBPz7Jg25jciQkEKEI6Ya
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: quoted-printable
+
+Am 27.03.20 um 00:15 schrieb Turritopsis Dohrnii Teo En Ming:
+
+> I found a video tutorial for Firewall Builder at the following link. Is=
+
+> it the correct one?
+>=20
+> http://fwbuilder.sourceforge.net/4.0/videos.shtml
+
+http://fwbuilder.sourceforge.net/ is deprecated. The videos may give a
+sense of how fwbuilder works.
+
+Regards
+--=20
+Robert Sander
+Heinlein Support GmbH
+Schwedter Str. 8/9b, 10119 Berlin
+
+http://www.heinlein-support.de
+
+Tel: 030 / 405051-43
+Fax: 030 / 405051-19
+
+Zwangsangaben lt. =C2=A735a GmbHG:
+HRB 93818 B / Amtsgericht Berlin-Charlottenburg,
+Gesch=C3=A4ftsf=C3=BChrer: Peer Heinlein -- Sitz: Berlin
 
 
-Le 27/03/2020 à 00:11, Turritopsis Dohrnii Teo En Ming a écrit :
-> On 2020-03-27 00:21, david@hajes.org wrote:
->> best GUI is prompt/command line ;-)
->>
->> with nftables and native scripting is everything more simple
->>
->> On 26/03/2020 12:35, Turritopsis Dohrnii Teo En Ming wrote:
->>> Good evening from Singapore,
->>>
->>> May I know what is the BEST GUI frontend to iptables firewall? It 
->>> can be very involved and tedious to configure iptables firewall 
->>> using the command line approach.
->>>
->>> Are there any good rankings and reviews on the best GUI frontend to 
->>> iptables firewall?
->>>
->>> I am looking forward to hearing from you soon.
->>>
->>> Thank you very much.
->
-> What is nftables?
+--0uwLZqUvoATuPBPz7Jg25jciQkEKEI6Ya--
 
-It's the replacement of iptables
+--utAvd1EAkzeHHB6Vv8rYTxmnkC2nAbf8u
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-https://wiki.debian.org/nftables
+-----BEGIN PGP SIGNATURE-----
 
--- 
-Daniel Huhardeaux
-+33.368460088@tootai.net	      sip:820@sip.tootai.net
-+41.445532125@swiss-itech.ch		    tootaiNET
+iQIzBAEBCgAdFiEEhVXmaPzvl7l1erVE8LuRWCPeWygFAl590XcACgkQ8LuRWCPe
+WygKZQ//aNbpwBZxHK7H4BMT80HmR/B2zv0v3VLrYxzH6BVkTyGzTp7DLFeuCYLi
+Ua5JisF+qHSOmiKpoGJ1e5RqypFV4dTx94d/RlqkmRFnjfqdUcEFjJxzbSk9qflU
+59eqetrG66IWDJfC1pEb0xLK+2mKfRU2pUdQLGNhK3e4cswRahDdo0kV2YkAKg1f
+f41qclauRdL1wkpVM3WDO/qXQxaQ/YQ5R7OQ5NcNH6+1EegTP4KY0n/vnF8OI16P
+UZhhHF+NhGBdeoE3cmQOcbDfhnjoLdHG+f5UamFliWu5KaGSGiVl9+tfvEHDWRez
++KEH8hw3bXUKGEqY45UIReAMJBTpuQBEXUr9B/C1z1HzRvgr4YHWknmuAV5EkhMc
+XeejKvjKyvXc9b3PA3CzAoIi/Jg9zT0dbm+snCBTZ4R2+N9heDDK9j5vNicwYk4r
+gUBcqtYB+g5MdqllOJhyq8G7tB16wBD5RupzVPxFtwrLtHakynjAmCyrvgr6lrkG
+0tg7NWvDjdvrdV02gm6okzRQsbDsywRJXZzocd0Hq5JZT3J2qoXjYC0xjryP16a1
+ILFl5yNQn+32ajMiB+ayW6VaTl2wcEBE1VCqu9B/WuV56AeKwrY9vdAaOXOdbN0l
+g6uwqJREXlAssTafbJmrvsxVSGTuTa7/nko/4QIB/YbMQJqqeUc=
+=fkxe
+-----END PGP SIGNATURE-----
+
+--utAvd1EAkzeHHB6Vv8rYTxmnkC2nAbf8u--
