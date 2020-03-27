@@ -1,41 +1,34 @@
 From: Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming.com>
 Subject: Re: What is the BEST GUI frontend to iptables firewall?
-Date: Fri, 27 Mar 2020 20:11:34 +0800
-Message-ID: <df34cf4de4d39fb3878f5c9d8c2ad177@teo-en-ming.com>
+Date: Fri, 27 Mar 2020 20:13:29 +0800
+Message-ID: <35f2a5062daf754f59e6283d163a68e9@teo-en-ming.com>
 References: <65bb6d398e79b3d924f518d20f40b48e@teo-en-ming.com>
- <330d7201-6561-61a9-9095-8bdf8ee1518b@hajes.org>
- <fc1f0389e127ff74ee2b22c003918c73@teo-en-ming.com>
- <170b849d-a5cd-aa1c-e7da-4a189e1591be@tootai.net>
- <2a0019439ce80f32af6efe8cc33b497e@teo-en-ming.com>
- <7a8ae72b-1484-6620-a1e6-6ed04fac30a8@thelounge.net>
+ <f14233aa-a779-a4b8-fe0a-1624ce2eaf8d@heinlein-support.de>
+ <555179cbc46865fd9e29c1c008acb16e@teo-en-ming.com>
+ <05f627c5-917b-7f67-4691-21ea92e03cce@heinlein-support.de>
+ <cc1ad55ac80a62fac365ef5111fc7771@teo-en-ming.com>
+ <94503ea1-8336-55a4-90be-9cbb22e4785d@heinlein-support.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <7a8ae72b-1484-6620-a1e6-6ed04fac30a8@thelounge.net>
+In-Reply-To: <94503ea1-8336-55a4-90be-9cbb22e4785d@heinlein-support.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Reindl Harald <h.reindl@thelounge.net>
-Cc: Daniel <tech@tootai.net>, david@hajes.org, netfilter@vger.kernel.org, ceo@teo-en-ming.com
+To: Robert Sander <r.sander@heinlein-support.de>
+Cc: netfilter@vger.kernel.org, ceo@teo-en-ming.com
 
-On 2020-03-27 19:35, Reindl Harald wrote:
-> Am 27.03.20 um 12:24 schrieb Turritopsis Dohrnii Teo En Ming:
->>>> What is nftables?
->>> 
->>> It's the replacement of iptables
->>> 
->>> https://wiki.debian.org/nftables
->> 
->> Noted with thanks.
->> 
->> I understand that nftables has replaced iptables since the year 2014
->> with the release of Linux kernel 3.13.
+On 2020-03-27 20:09, Robert Sander wrote:
+> On 27.03.20 12:26, Turritopsis Dohrnii Teo En Ming wrote:
 > 
-> you can use *both* (even at the same time while it's nonsense), kernel
-> 5.5 and above still support iptables as all the years before
+>> Does the new Firewall Builder support nftables?
+> 
+> Currently not, it would need a new rules compiler for that.
+> Maybe someone from the netfilter comunity is willing to develop that.
+> 
+> Regards
 
-But it's better to use nftables over iptables?
-
+Are there any other GUI frontends that would support nftables?
 
 
 
