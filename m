@@ -1,38 +1,43 @@
 From: Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming.com>
 Subject: Re: What is the BEST GUI frontend to iptables firewall?
-Date: Fri, 27 Mar 2020 19:26:13 +0800
-Message-ID: <cc1ad55ac80a62fac365ef5111fc7771@teo-en-ming.com>
+Date: Fri, 27 Mar 2020 19:30:11 +0800
+Message-ID: <8f03842d6a29ec0bfe40aef46d97cf52@teo-en-ming.com>
 References: <65bb6d398e79b3d924f518d20f40b48e@teo-en-ming.com>
- <f14233aa-a779-a4b8-fe0a-1624ce2eaf8d@heinlein-support.de>
- <555179cbc46865fd9e29c1c008acb16e@teo-en-ming.com>
- <05f627c5-917b-7f67-4691-21ea92e03cce@heinlein-support.de>
+ <e0d4f13d-5a9c-c5eb-c847-7a24e0558795@gmx.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <05f627c5-917b-7f67-4691-21ea92e03cce@heinlein-support.de>
+In-Reply-To: <e0d4f13d-5a9c-c5eb-c847-7a24e0558795@gmx.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Robert Sander <r.sander@heinlein-support.de>
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: vtol@gmx.net
 Cc: netfilter@vger.kernel.org, ceo@teo-en-ming.com
 
-On 2020-03-27 18:12, Robert Sander wrote:
-> Am 27.03.20 um 00:15 schrieb Turritopsis Dohrnii Teo En Ming:
-> 
->> I found a video tutorial for Firewall Builder at the following link. 
->> Is
->> it the correct one?
+On 2020-03-26 19:49, ѽ҉ᶬḳ℠ wrote:
+> On 26/03/2020 11:35, Turritopsis Dohrnii Teo En Ming wrote:
+>> Good evening from Singapore,
 >> 
->> http://fwbuilder.sourceforge.net/4.0/videos.shtml
+>> May I know what is the BEST GUI frontend to iptables firewall? It can
+>> be very involved and tedious to configure iptables firewall using the
+>> command line approach.
+>> 
+>> Are there any good rankings and reviews on the best GUI frontend to
+>> iptables firewall?
+>> 
+>> I am looking forward to hearing from you soon.
+>> 
+>> Thank you very much.
 > 
-> http://fwbuilder.sourceforge.net/ is deprecated. The videos may give a
-> sense of how fwbuilder works.
+> "best" is rather something in the eye of the beholder / user
+> perspective. Some distros provide a comprehensive management GUI that
+> includes firewall management.
 > 
-> Regards
+> Back in the (iptables) day this distro independent GUI
+> https://configserver.com/cp/csf.html served me well, also integrates
+> with various admin panels.
 
-Does the new Firewall Builder support nftables?
-
-
+Does ConfigServer Security and Firewall (csf) support nftables?
 
 
 
