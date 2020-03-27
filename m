@@ -1,46 +1,45 @@
-From: Eric Garver <eric@garver.life>
-Subject: Re: What is the BEST GUI frontend to iptables firewall?
-Date: Fri, 27 Mar 2020 13:28:34 -0400
-Message-ID: <20200327172834.owufzw7dsjmidxvx@egarver>
-References: <65bb6d398e79b3d924f518d20f40b48e@teo-en-ming.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [nftables 0.9.2 | flow table] dynamic (soft) NETDEV
+Date: Fri, 27 Mar 2020 20:06:05 +0100
+Message-ID: <20200327190605.o5e6dugeklur2kbx@salvia>
+References: <574afe87-ced9-8c5b-9dd4-4619e85f9774@gmx.net>
+ <af7c651a-1f45-205b-d503-365452955443@gmx.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <65bb6d398e79b3d924f518d20f40b48e@teo-en-ming.com>
 Content-Disposition: inline
+In-Reply-To: <af7c651a-1f45-205b-d503-365452955443@gmx.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: =?utf-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Thu, Mar 26, 2020 at 07:35:01PM +0800, Turritopsis Dohrnii Teo En Ming wrote:
-> Good evening from Singapore,
+On Thu, Mar 26, 2020 at 12:09:20PM +0000, ѽ҉ᶬḳ℠ wrote:
+> On 21/03/2020 09:53, ѽ҉ᶬḳ℠ wrote:
+> > With some (soft) NETDEV being available only after NFT been invoked at
+> > boot time, e.g. bridge or pppoe, NFT would fail to load at boot time
+> > if such NETDEV being stipulated, e.g.
+> > 
+> > flowtable f { hook ingress priority 0; devices = { pppoe-wan, lan0,
+> > lan1, lan2, lan3, lan4, br-lan }; }
+> > 
+> > Is there a syntax that would allow to add/alter such dynamic dev to an
+> > initial stanza, e.g.
+> > 
+> > flowtable f { hook ingress priority 0; devices = { lan0, lan1, lan2,
+> > lan3, lan4 }; }
+> > 
+> > and then adding pppoe-* and/or br-* to it? Or is there any other good
+> > practice, e.g. are dynamic sets are working with flowtable device =?
 > 
-> May I know what is the BEST GUI frontend to iptables firewall? It can be
-> very involved and tedious to configure iptables firewall using the command
-> line approach.
+> Other NETDEV that may not be available at the NFT start during boot
+> time, or that are dynamically enabled/disabled, are WLan and VPN (tap,
+> tun, wg). Whilst this can be worked around with hotplug scripts it does
+> not help with altering the > devices = {  } < portion in a dynamic fashion.
 > 
-> Are there any good rankings and reviews on the best GUI frontend to iptables
-> firewall?
+> The replace command does not seem suitable as it requires the query for
+> the rule handle.
 
-Disclaimer: I'm the current firewalld maintainer.
-
-firewall-config is the firewalld GUI. It ships in a few distros by
-default [1]. It's also available to install in many distributions. It
-supports both iptables and nftables as firewall backends.
-
-The current GUI is a bit dated. An alternatively is to use cockpit [2].
-It provides basic functionality, but is often enough for simple use
-cases.
-
-The biggest negative of firewalld is it does not fully support output or
-forward filtering. This is currently in development [3].
-
-Hope that helps.
-Eric.
-
-[1] https://firewalld.org/ (see "Who is using it?" section)
-[2] https://cockpit-project.org/
-[3] https://github.com/orgs/firewalld/projects/1#card-25963208
-
+I agree than better support for dynamic devices is good to have in
+place.
