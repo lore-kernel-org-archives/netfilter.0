@@ -1,61 +1,59 @@
 From: Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming.com>
 Subject: Re: What is the BEST GUI frontend to iptables firewall?
-Date: Sat, 28 Mar 2020 09:27:12 +0800
-Message-ID: <af8cc7c07790f140a710efc2e57a936b@teo-en-ming.com>
+Date: Sat, 28 Mar 2020 09:30:40 +0800
+Message-ID: <28cbaf8218c0ba0f7463103ab80c58b9@teo-en-ming.com>
 References: <65bb6d398e79b3d924f518d20f40b48e@teo-en-ming.com>
- <330d7201-6561-61a9-9095-8bdf8ee1518b@hajes.org>
- <fc1f0389e127ff74ee2b22c003918c73@teo-en-ming.com>
- <170b849d-a5cd-aa1c-e7da-4a189e1591be@tootai.net>
- <2a0019439ce80f32af6efe8cc33b497e@teo-en-ming.com>
- <7a8ae72b-1484-6620-a1e6-6ed04fac30a8@thelounge.net>
- <df34cf4de4d39fb3878f5c9d8c2ad177@teo-en-ming.com>
- <1856ba12-090a-5065-1bc9-94203f15b9d4@tootai.net>
- <cf9f289c-b0c5-42cf-2289-926de172f436@thelounge.net>
+ <20200327172834.owufzw7dsjmidxvx@egarver>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <cf9f289c-b0c5-42cf-2289-926de172f436@thelounge.net>
+In-Reply-To: <20200327172834.owufzw7dsjmidxvx@egarver>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Reindl Harald <h.reindl@thelounge.net>
-Cc: Daniel <tech@tootai.net>, david@hajes.org, netfilter@vger.kernel.org, ceo@teo-en-ming.com
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming.com>
+Cc: netfilter@vger.kernel.org, netfilter-owner@vger.kernel.org
 
-On 2020-03-27 21:59, Reindl Harald wrote:
-> Am 27.03.20 um 13:13 schrieb Daniel:
+On 2020-03-28 01:28, Eric Garver wrote:
+> On Thu, Mar 26, 2020 at 07:35:01PM +0800, Turritopsis Dohrnii Teo En 
+> Ming wrote:
+>> Good evening from Singapore,
 >> 
->> Le 27/03/2020 à 13:11, Turritopsis Dohrnii Teo En Ming a écrit :
->>> On 2020-03-27 19:35, Reindl Harald wrote:
->>>> Am 27.03.20 um 12:24 schrieb Turritopsis Dohrnii Teo En Ming:
->>>>>>> What is nftables?
->>>>>> 
->>>>>> It's the replacement of iptables
->>>>>> 
->>>>>> https://wiki.debian.org/nftables
->>>>> 
->>>>> Noted with thanks.
->>>>> 
->>>>> I understand that nftables has replaced iptables since the year 
->>>>> 2014
->>>>> with the release of Linux kernel 3.13.
->>>> 
->>>> you can use *both* (even at the same time while it's nonsense), 
->>>> kernel
->>>> 5.5 and above still support iptables as all the years before
->>> 
->>> But it's better to use nftables over iptables?
->> nftables is the future
+>> May I know what is the BEST GUI frontend to iptables firewall? It can 
+>> be
+>> very involved and tedious to configure iptables firewall using the 
+>> command
+>> line approach.
+>> 
+>> Are there any good rankings and reviews on the best GUI frontend to 
+>> iptables
+>> firewall?
 > 
-> the future don't help when you have working stuff running and on my
-> prodcution machines the future is nice but the *present* is relevant
+> Disclaimer: I'm the current firewalld maintainer.
 > 
-> the present with ipset as example
+> firewall-config is the firewalld GUI. It ships in a few distros by
+> default [1]. It's also available to install in many distributions. It
+> supports both iptables and nftables as firewall backends.
 > 
-> but yes, please as much as possible people should jump to nftables, i 
-> am
-> early adopter enough with Fedora in production over 15 years :-)
+> The current GUI is a bit dated. An alternatively is to use cockpit [2].
+> It provides basic functionality, but is often enough for simple use
+> cases.
+> 
+> The biggest negative of firewalld is it does not fully support output 
+> or
+> forward filtering. This is currently in development [3].
+> 
+> Hope that helps.
+> Eric.
+> 
+> [1] https://firewalld.org/ (see "Who is using it?" section)
+> [2] https://cockpit-project.org/
+> [3] https://github.com/orgs/firewalld/projects/1#card-25963208
 
-I think I started with Red Hat Linux 9 :)
+I think Cockpit functions like Webmin. Please correct me if I am wrong.
+
+What is output and forward filtering?
+
 
 
 
