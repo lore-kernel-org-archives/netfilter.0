@@ -1,43 +1,53 @@
-From: Martin Gignac <martin.gignac@gmail.com>
-Subject: Is viewing a "candidate" ruleset in 'nft list ruleset' format possible?
-Date: Sat, 18 Apr 2020 22:12:29 -0400
-Message-ID: <CANf9dFNVrz_YjQ2Xe9vZP=U5h-3C7Hxk+oDz9rTD8Q4nALHO5A@mail.gmail.com>
-Mime-Version: 1.0
+From: "Philip Prindeville" <philipp@redfish-solutions.com>
+Subject: [PATCH v1 1/1] Simplify unpacking start/end tuples from database
+Date: Sun, 19 Apr 2020 17:17:14 -0600
+Message-ID: <20200419231714.9083-1-philipp@redfish-solutions.com>
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=mXW+EQGnmGE9OIPlws8bscMzV4s+vm6iDvhZDg3B01U=;
-        b=CRNqhwpEPSlGfQcc0fkEqWaplipTgCnmq3grcczzIUr8XuhAsFiJVdSnXV8/K++0AU
-         gijU+k+UrYlfcBBQul4st2uxPs78fJqOzHoM99FwPpzSn6p2W1u7r+FWfgtR6S0eOl0o
-         LgKogpEDmQz2Tt/kElw+62cLQH7wnRcRd5c7cAgR1KwrDXporGLzBylOK0E+graXF1+6
-         +ZZzWkArx/ziMat/+3BVsJ82ZzrjGiIA4ZqIEgTHxMyDB0TsNdlJplPrhTAhMEyL30t7
-         aYL5+DiHz0zIt4pnm7niUoFcOuBRJlq2UmaVzauZLlPmGbKSSlb7n1sFKAnivKpiqgt3
-         ur3A==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
+Cc: Philip Prindeville <philipp@redfish-solutions.com>
 
-Hi,
+From: Philip Prindeville <philipp@redfish-solutions.com>
 
-I'd like to know if it's possible tell 'nft' to load a ruleset from
-file *without* applying it (a la 'nft -c -f <ruleset>) *but* also have
-it show the parsed (yet unapplied) ruleset in 'nft list ruleset'
-format as well?
+Use unpack() to separate start/end instead of substr().
 
-I ask because I have a Bash script with a few helper functions for
-nftables and one of the things I'd like to be able to do is to perform
-a diff between a candidate ruleset and the last applied/current
-ruleset. I can already do this by diffing the ruleset from file with
-the last previously saved ruleset from file, but I'd like to be able
-to (instead) compare the ruleset using the "cleaned up" format from
-'nft list ruleset'. I just don't know how to generate a "candidate"
-ruleset in that format without applying it to the kernel first (and
-then it's not longer a "candidate", obviously).
+Signed-off-by: Philip Prindeville <philipp@redfish-solutions.com>
+---
+ geoip/xt_geoip_fetch | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-Hopefully my question makes sense.
+diff --git a/geoip/xt_geoip_fetch b/geoip/xt_geoip_fetch
+index 4a35760b77c9509347a3846f37eeb9574aeb9883..06245195fb5166ac005b5021fa0f811e5e511c78 100755
+--- a/geoip/xt_geoip_fetch
++++ b/geoip/xt_geoip_fetch
+@@ -53,8 +53,9 @@ foreach my $cc (@ARGV) {
+ 		binmode($fh);
+ 
+ 		while (($bytes = read($fh, $buffer, AF_INET_SIZE * 2)) == AF_INET_SIZE * 2) {
+-			my $start = inet_ntop(AF_INET, substr($buffer, 0, AF_INET_SIZE));
+-			my $end = inet_ntop(AF_INET, substr($buffer, AF_INET_SIZE));
++			my ($start, $end) = unpack('a4a4', $buffer);
++			$start = inet_ntop(AF_INET, $start);
++			$end = inet_ntop(AF_INET, $end);
+ 			print $start, '-', $end, "\n";
+ 		}
+ 		close($fh);
+@@ -75,8 +76,9 @@ foreach my $cc (@ARGV) {
+ 		binmode($fh);
+ 
+ 		while (($bytes = read($fh, $buffer, AF_INET6_SIZE * 2)) == AF_INET6_SIZE * 2) {
+-			my $start = inet_ntop(AF_INET6, substr($buffer, 0, AF_INET6_SIZE));
+-			my $end = inet_ntop(AF_INET6, substr($buffer, AF_INET6_SIZE));
++			my ($start, $end) = unpack('a16a16', $buffer);
++			$start = inet_ntop(AF_INET6, $start);
++			$end = inet_ntop(AF_INET6, $end);
+ 			print $start, '-', $end, "\n";
+ 		}
+ 		close($fh);
+-- 
+2.17.2
 
-Thanks,
--Martin
