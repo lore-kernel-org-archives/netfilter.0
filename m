@@ -1,61 +1,52 @@
-From: =?UTF-8?Q?Fred_Maranh=C3=A3o?= <fred.maranhao@gmail.com>
-Subject: possible error in HOWTO
-Date: Tue, 21 Apr 2020 23:56:48 -0300
-Message-ID: <CAPr829kZmhNd7miZawg4wk4RH7D-Lb0gAknXka4yD9biWsMooQ@mail.gmail.com>
+From: trentbuck@gmail.com (Trent W. Buck)
+Subject: Re: Is viewing a "candidate" ruleset in 'nft list ruleset' format possible?
+Date: Wed, 22 Apr 2020 14:51:20 +1000
+Message-ID: <87blnkqg1j.fsf@goll.lan>
+References: <CANf9dFNVrz_YjQ2Xe9vZP=U5h-3C7Hxk+oDz9rTD8Q4nALHO5A@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=tmTVYPM9Iad3Ixt4W0XMEF0ivtDm9dhbpcAUgjwjAxs=;
-        b=n53b060m/EzM91d4f8KqYCRjSPhFRMUMKf3fwugZ8W8XIlIpq36hXcl5PSeemV/vKM
-         /qyNxoFJSyF6aD6JWCNvedRjrW8KymYQnRgP07g92AgmNu/e5CQphk7SSJlpmNhNT6bU
-         nVSwrcVFoLFOVI0420JjJKZ+51nrbkXk+CGkcL4q9Cz03MUdM/XTwxupM9u2tvDTmp34
-         2ouHmhmJNnbbqu+MT2lgQjZossK/POdgLhei3gfW15GE2OrRsjgZwjdz8WxR/WGCf6gk
-         G7+yrHkNIPPxmAPwoeXKGLEAmBsCCD99YpRU9uKzxv+HOlTzae5aXsAxNmKc+kS0ofPB
-         BXbA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-in page
-https://wiki.nftables.org/wiki-nftables/index.php/Configuring_chains
-section 'Deleting chains' says:
+Martin Gignac <martin.gignac@gmail.com> writes:
 
-The only condition is that the chain you want to delete needs to be
-empty, otherwise the kernel will tell you that such chain is in used.
+> I'd like to know if it's possible tell 'nft' to load a ruleset from
+> file *without* applying it (a la 'nft -c -f <ruleset>) *but* also have
+> it show the parsed (yet unapplied) ruleset in 'nft list ruleset'
+> format as well?
 
-it seems that this is no more true. for example:
+I am also interested in this.
 
-# nft add rule inet filter forward tcp dport 1000 accept
-# nft list ruleset
-table inet filter {
-    chain input {
-        type filter hook input priority 0; policy accept;
+You can simply put "list ruleset" at the bottom of the foo.nft file.
+However in my experience this routinely gives outright wrong rulesets
+(as at nftables 0.9.1), so I don't trust it.
+
+A possible short-term workaround would be to spin up a netns, load the
+new ruleset in *there*, then dump it and tear the ns down again...
+
+    $ sudo nft list ruleset | b2sum
+    5524[...]3459  -
+    $ sudo ip netns add delete-me
+    $ sudo ip netns exec delete-me  nft -i
+    nft> list ruleset
+    nft> add table inet filter
+    nft> add chain inet filter frobozz
+    nft> add rule inet filter frobozz  tcp dport ssh accept
+    nft> list ruleset
+    table inet filter {
+            chain frobozz {
+                    tcp dport 22 accept
+            }
     }
+    nft>
+    $ sudo nft list ruleset | b2sum
+    5524[...]3459  -
+    $ # Good, the production ruleset hasn't changed.
+    $ sudo ip netns del delete-me   # clean up
 
-    chain forward {
-        type filter hook forward priority 0; policy accept;
-        tcp dport 1000 accept
-    }
+If you need to do this as unprivileged user,
+I guess look into unshare(1) or bwrap...
 
-    chain output {
-        type filter hook output priority 0; policy accept;
-    }
-}
-# nft delete chain inet filter forward
-# nft list ruleset
-table inet filter {
-    chain input {
-        type filter hook input priority 0; policy accept;
-    }
-
-    chain output {
-        type filter hook output priority 0; policy accept;
-    }
-}
-
-
-Thanks
