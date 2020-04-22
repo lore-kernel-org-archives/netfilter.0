@@ -1,98 +1,61 @@
-From: Duncan Roe <duncan_roe@optusnet.com.au>
-Subject: Re: nfnetlink: This library is not meant as a public API for
- application developers.
-Date: Wed, 22 Apr 2020 11:37:46 +1000
-Message-ID: <20200422013746.GC30155@dimstar.local.net>
-References: <bcff17cd-1457-7454-e00f-22d798afd7e5@tana.it>
- <20200412082153.GG13869@dimstar.local.net>
- <5f066999-b830-07ba-c0f6-6ceba39c580e@tana.it>
+From: =?UTF-8?Q?Fred_Maranh=C3=A3o?= <fred.maranhao@gmail.com>
+Subject: possible error in HOWTO
+Date: Tue, 21 Apr 2020 23:56:48 -0300
+Message-ID: <CAPr829kZmhNd7miZawg4wk4RH7D-Lb0gAknXka4yD9biWsMooQ@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5f066999-b830-07ba-c0f6-6ceba39c580e@tana.it>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=tmTVYPM9Iad3Ixt4W0XMEF0ivtDm9dhbpcAUgjwjAxs=;
+        b=n53b060m/EzM91d4f8KqYCRjSPhFRMUMKf3fwugZ8W8XIlIpq36hXcl5PSeemV/vKM
+         /qyNxoFJSyF6aD6JWCNvedRjrW8KymYQnRgP07g92AgmNu/e5CQphk7SSJlpmNhNT6bU
+         nVSwrcVFoLFOVI0420JjJKZ+51nrbkXk+CGkcL4q9Cz03MUdM/XTwxupM9u2tvDTmp34
+         2ouHmhmJNnbbqu+MT2lgQjZossK/POdgLhei3gfW15GE2OrRsjgZwjdz8WxR/WGCf6gk
+         G7+yrHkNIPPxmAPwoeXKGLEAmBsCCD99YpRU9uKzxv+HOlTzae5aXsAxNmKc+kS0ofPB
+         BXbA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Alessandro Vesely <vesely@tana.it>
-Cc: Netfilter <netfilter@vger.kernel.org>, Netfilter Development <netfilter-devel@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-Hi Ale,
+in page
+https://wiki.nftables.org/wiki-nftables/index.php/Configuring_chains
+section 'Deleting chains' says:
 
-You raise some interesting points. I'm taking this discussion onto the
-netfilter-devel list which I think is more appropriate.
+The only condition is that the chain you want to delete needs to be
+empty, otherwise the kernel will tell you that such chain is in used.
 
-On Mon, Apr 13, 2020 at 08:46:59PM +0200, Alessandro Vesely wrote: [...]
-> On Sun 12/Apr/2020 10:21:53 +0200 Duncan Roe wrote:
-> > On Thu, Feb 13, 2020 at 12:27:41PM +0100, Alessandro Vesely wrote:
-> > > Has that disclaimer always been in libnfnetlink home page[*]?
-> > >
-> > > It is the first time I see it.
-> > >
-> > > I have a userspace filter[???] working with it,
-> > > and it currently works well.
-> > >
-> > > If I remove -lnfnetlink from the link command, I get just one undefined
-> > > reference to symbol 'nfnl_rcvbufsiz'.
-> > > It is used only if there is a command line option
-> > > to set the buffer size to a given size, to avoid enobufs.
-> > > For the rest, the daemon uses libnetfilter_queue.
+it seems that this is no more true. for example:
 
-This is loader trickery.
+# nft add rule inet filter forward tcp dport 1000 accept
+# nft list ruleset
+table inet filter {
+    chain input {
+        type filter hook input priority 0; policy accept;
+    }
 
-You have written your userspace filter using the deprecated interface, which
-uses libnfnetlink under the covers.
+    chain forward {
+        type filter hook forward priority 0; policy accept;
+        tcp dport 1000 accept
+    }
 
-That's fine - the Library Setup module documents how to use the deprecated
-interface. The current functions use libmnl, but documentation for these is
-still under development.
-> > >
-> > > Should I rewrite that?  How?
-> > >
-> >
-> > Yes you can code to avoid using nfnl_rcvbufsiz() from libnfnetlink.
-> >
-> > Thre is no libmnl or libnetfilter_queue function to do it at present, but
-> > libmnl/examples/netfilter/nfct-daemon.c has the code.
-> > In case you haven't git cloned libmnl, here is a summary:
-> >
-> > > socklen_t buffersize; // Set by your command-line option
-> > Your code likely already has:
-> > > struct mnl_socket *nl;
-> > > nl = mnl_socket_open(NETLINK_NETFILTER);
-> > (after mnl_socket_bind)
->
->
-> I don't have mnl_socket_open().  I have struct nfq_handle *h = nfq_open(); and
-> then fd = nfq_fd(h);
->
-> After replacing the call to nfnl_rcvbufsiz() with setsockopt(), I can actually
-> link without -lnfnetlink.  However, I'm not sure it is sane to fiddle with
-> configure macros trying to avoid it.  On my system I have:
->
->     ale@pcale:~$ pkg-config --libs libnetfilter_queue
->     -lnetfilter_queue -lnfnetlink
->     ale@pcale:~$ pkg-config --modversion libnetfilter_queue
->     1.0.2
->
-> Should a future version drop that dependency, my code is ready :-)
->
->
-> > > setsockopt(mnl_socket_get_fd(nl), SOL_SOCKET, SO_RCVBUFFORCE, // You should
-> > >   &buffersize, sizeof(socklen_t));     // check the return code (not shown)
-> > If you like, you can check how big a buffer the kernel gave you
-> > > socklen_t socklen = sizeof buffersize;
-> > > socklen_t read_size = 0;
-> > > getsockopt(mnl_socket_get_fd(nl), SOL_SOCKET, SO_RCVBUF, &read_size, &socklen);
-> > From testing it seems you get a buffer of twice buffersize bytes.
->
->
-> It's stranger than that.  The default value is 0x34000.  If I set that same
-> value or higher, I seem to always get 0x68000.
-> However, if I set 0x33fff I get 0x67ffe, the double, as you say.
-> This strange behavior apparently was the same when using nfnl_rcvbufsiz().
+    chain output {
+        type filter hook output priority 0; policy accept;
+    }
+}
+# nft delete chain inet filter forward
+# nft list ruleset
+table inet filter {
+    chain input {
+        type filter hook input priority 0; policy accept;
+    }
 
-This does look to me like a bug. Perhaps someone on the devel list would have
-something to say about it.
+    chain output {
+        type filter hook output priority 0; policy accept;
+    }
+}
 
-Cheers ... Duncan.
+
+Thanks
