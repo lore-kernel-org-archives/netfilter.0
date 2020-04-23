@@ -1,53 +1,42 @@
-From: zrm <zrm@trustiosity.com>
-Subject: Re: has somebody an idea what fills up the log (5050/udp)?
-Date: Thu, 23 Apr 2020 01:23:27 -0400
-Message-ID: <fcf7ebcd-fd46-6279-8ad8-ab86ae0722de@trustiosity.com>
-References: <d57c8f54-e0c0-1545-6f4c-a5c3ec78763c@mathemainzel.info>
+From: Martin Gignac <martin.gignac@gmail.com>
+Subject: Re: Is viewing a "candidate" ruleset in 'nft list ruleset' format possible?
+Date: Thu, 23 Apr 2020 08:10:24 -0400
+Message-ID: <CANf9dFO1rySYE3hMOk+iC=KOVhyomZ8Rbh9MBH3A=bo=Ns4dRA@mail.gmail.com>
+References: <CANf9dFNVrz_YjQ2Xe9vZP=U5h-3C7Hxk+oDz9rTD8Q4nALHO5A@mail.gmail.com>
+ <87blnkqg1j.fsf@goll.lan> <CANf9dFN=DA1eP6W8A5GOAseXvB57_wf=U9Trjk6fY1M58qgfaA@mail.gmail.com>
+ <20200423020613.GE30155@dimstar.local.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=trustiosity.com;
-        s=mx; t=1587619408; bh=BjZeZw8mr7N0JI4k/8ebOzL5rF2rxMzfQrYCjs2XdvI=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=ijd/K2goyagPu2frAGc0h7cn1KNY9gGiJQ3he9coWMqd7TST861c0y0F2/m/eib6A
-         Z2sL/ZG3KBGSwWocPe5J3gvajKQGCneCMNp+cLzPRx6W2HLMAOYJCN5iFOj4DOnasl
-         xaVk1qAfgOmnsKMQdCoVIQjNB+dD6qhPsnpvP7KM=
-In-Reply-To: <d57c8f54-e0c0-1545-6f4c-a5c3ec78763c@mathemainzel.info>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=I1ze5w5ji5b8DCSRNdW0MpaCr7bQMrHSQyv2Z5zDiBY=;
+        b=q273BmAONgz8UDK4/iM7I48IzmdcZYQnNcGpAAF9aUt7vAAsaDzCsREHZZfhs8kwtU
+         HnvJePymGJCTDjcTNvTt7kq2chmXnmnKxZ7jTpe5bPZbBARoAXXQ0M05PWVGZbX8UT2Y
+         ag7CNjX2o3vkYi5sYT2OeyzdTvzoRjsGUVxwr9PLtx5bk+K/BctlPGtmuT38k71sNAqQ
+         dwOFO4STB1fpc4C3QfkcmIgrwz4S1Qmt5YRlBeq2HFku1jn69o+uofwMH35UP4dY3Vo4
+         U+4ftkD/sCCxrf/5G38e5LhVrh8tBVEwLjzb8cubsqv5k/iSjvJ9djlQY+GDDHpIZ/19
+         HmNQ==
+In-Reply-To: <20200423020613.GE30155@dimstar.local.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "Walter H." <Walter.H@mathemainzel.info>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On 4/23/20 00:56, Walter H. wrote:
-> Hello
-> 
-> my Win10 box fills up the log of my router (Linux box)
-> 
-> [23-Apr-2020; 05:44:11.861029] IP[IN]: IN=br0 OUT= 
-> MAC=ff:ff:ff:ff:ff:ff:a8:5e:11:3d:8f:77:08:00 SRC=192.168.1.10 
-> DST=192.168.1.255 LEN=71 TOS=0x00 PREC=0x00 TTL=128 ID=51279 PROTO=UDP 
-> SPT=5050 DPT=5050 LEN=51
-> [23-Apr-2020; 05:44:16.864767] IP[IN]: IN=br0 OUT= 
-> MAC=ff:ff:ff:ff:ff:ff:a8:5e:11:3d:8f:77:08:00 SRC=192.168.1.10 
-> DST=192.168.1.255 LEN=71 TOS=0x00 PREC=0x00 TTL=128 ID=51280 PROTO=UDP 
-> SPT=5050 DPT=5050 LEN=51
-> 
-> these are 2 entries, nearly every 5 second one entry (source port and 
-> destination port always 5050/udp);
-> what might causing these - I guess broadcast?
-> 
-> Thanks,
-> Walter
-> 
-> 
-> 
+> "list ruleset" at the bottom of an nft script is completely accurate. The
+> command "nft list ruleset" discards portions of rules that are implicit, in the
+> interests of brevity.
 
-192.168.1.255 would be a broadcast address assuming your network is 
-192.168.1.0/24. There isn't really any way to tell what application is 
-sending them based on what you've provided other than to do a search for 
-applications that send broadcasts using port 5050.
+> > Of note is the fact that the 'ct state' line does not contain both
+> > states.
 
-What you might want to do is look at the client machine and see which 
-application is bound to that port, but that's more of a Windows question 
-than a netfilter question.
+> It does show it. There are 2 bits set in 0x6. Perhaps it is an oversight that
+> the code path does not interpret them.
+
+Point taken. I guess it's just because the output of 'nft list
+ruleset' seems more "human readable" to me than "list ruleset" at the
+bottom, and I'd rather use the former output as a base for diffs.
+
+Thanks,
+-Martin
