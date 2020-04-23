@@ -1,96 +1,122 @@
-From: Duncan Roe <duncan_roe@optusnet.com.au>
-Subject: Re: Is viewing a "candidate" ruleset in 'nft list ruleset' format
- possible?
-Date: Thu, 23 Apr 2020 12:06:13 +1000
-Message-ID: <20200423020613.GE30155@dimstar.local.net>
-References: <CANf9dFNVrz_YjQ2Xe9vZP=U5h-3C7Hxk+oDz9rTD8Q4nALHO5A@mail.gmail.com>
- <87blnkqg1j.fsf@goll.lan>
- <CANf9dFN=DA1eP6W8A5GOAseXvB57_wf=U9Trjk6fY1M58qgfaA@mail.gmail.com>
+From: "Walter H." <Walter.H@mathemainzel.info>
+Subject: has somebody an idea what fills up the log (5050/udp)?
+Date: Thu, 23 Apr 2020 06:56:18 +0200
+Message-ID: <d57c8f54-e0c0-1545-6f4c-a5c3ec78763c@mathemainzel.info>
 Mime-Version: 1.0
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms000109050407020102030908"
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CANf9dFN=DA1eP6W8A5GOAseXvB57_wf=U9Trjk6fY1M58qgfaA@mail.gmail.com>
+DKIM-Filter: OpenDKIM Filter v2.11.0 vhost01.ipv6help.de 69BDC64E64
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mathemainzel.info;
+        s=mail; t=1587617779;
+        bh=C/dMjFR2F0d84ccTYPyzrbXkya4UubDUQSqeUQnNUSo=;
+        h=To:From:Subject:Message-ID:Date:MIME-Version:Content-Type:From;
+        b=1kDSnCHEAWi7EgxhyUGlMPqI+Dncyh1PJu624P6hdQd5ctdx7ifn8Rvc0cILE0Cus
+         rXF+PQ/gpFVrMeUofM4lMDkILgm+gg6BaKdZpSc40Z7zslaWljnGjBaiWMzJNs0/Ij
+         QGHfXSAvl6GRhAi0zEBLG0cT4So82e3Ob/ePbYao=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-On Wed, Apr 22, 2020 at 12:34:26PM -0400, Martin Gignac wrote:
-> > You can simply put "list ruleset" at the bottom of the foo.nft file.
-> > However in my experience this routinely gives outright wrong rulesets
-> > (as at nftables 0.9.1), so I don't trust it.
+This is a cryptographically signed message in MIME format.
 
-"list ruleset" at the bottom of an nft script is completely accurate. The
-command "nft list ruleset" discards portions of rules that are implicit, in the
-interests of brevity.
->
-> That's a pretty good tip, thanks!... And you're absolutely right, it
-> gives some weird output. See below the diff of 'nft -c -f foo.nft'
-> with a 'list ruleset' at the bottom and the actual output of 'nft list
-> ruleset' once foot.nft is applied to the kernel:
->
-> [root@bouboule ~]# diff -u /tmp/toto1.txt /tmp/toto2.txt
-> --- /tmp/toto1.txt      2020-04-22 11:55:55.718378603 -0400
-> +++ /tmp/toto2.txt      2020-04-22 11:56:01.888551779 -0400
-> @@ -1,12 +1,12 @@
->  table ip filter {
->         chain input {
->                 type filter hook input priority filter; policy drop;
-> -               ct state 0x6 accept
-> +               ct state established,related accept
->                 ct state invalid drop
->                 iif "lo" accept
-> -               meta l4proto icmp icmp type echo-request accept
-> comment "You can restrict this if you want"
-> -               meta l4proto tcp tcp dport 22 accept comment "You can
-> restrict this if you want"
-> -               meta l4proto tcp tcp dport 179 accept comment "For BGP"
-> +               icmp type echo-request accept comment "You can
-> restrict this if you want"
-> +               tcp dport 22 accept comment "You can restrict this if you want"
-> +               tcp dport 179 accept comment "For BGP"
->         }
->
->         chain output {
-> @@ -15,7 +15,7 @@
->
->         chain forward {
->                 type filter hook forward priority filter; policy drop;
-> -               ct state 0x6 counter packets 0 bytes 0 accept
-> +               ct state established,related counter packets 0 bytes 0 accept
->                 ct state invalid drop
->         }
->  }
->
-> Of note is the fact that the 'ct state' line does not contain both
-> states.
+--------------ms000109050407020102030908
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+Content-Language: de-DE-1901
 
-It does show it. There are 2 bits set in 0x6. Perhaps it is an oversight that
-the code path does not interpret them.
+Hello
 
-> As well, the addition of 'meta l4proto' adds a lot of
-> unecessary verbiage.
+my Win10 box fills up the log of my router (Linux box)
 
-They are necessary *for the kernel*. The nft user interface is smart enough that
-you don't have to specify them.
+[23-Apr-2020; 05:44:11.861029] IP[IN]: IN=3Dbr0 OUT=3D MAC=3Dff:ff:ff:ff:=
+ff:ff:a8:5e:11:3d:8f:77:08:00 SRC=3D192.168.1.10 DST=3D192.168.1.255 LEN=3D=
+71 TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D51279 PROTO=3DUDP SPT=3D5050 DPT=
+=3D5050 LEN=3D51
+[23-Apr-2020; 05:44:16.864767] IP[IN]: IN=3Dbr0 OUT=3D MAC=3Dff:ff:ff:ff:=
+ff:ff:a8:5e:11:3d:8f:77:08:00 SRC=3D192.168.1.10 DST=3D192.168.1.255 LEN=3D=
+71 TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D51280 PROTO=3DUDP SPT=3D5050 DPT=
+=3D5050 LEN=3D51
 
-> But still, good to know that this is somewhat
-> doable as it never dawned on me to put 'list ruleset' at the end of
-> foo.nft.
->
-> > A possible short-term workaround would be to spin up a netns, load the
-> > new ruleset in *there*, then dump it and tear the ns down again...
->
-> This is actually a very cool idea! I never realized that nftables
-> rulesets are bound to a specific namespace, but now it makes perfect
-> sense. The only "drawback" (I guess) is that I cannot use 'iif' for
-> any other interface than 'lo' in the temp namespace; I'll need to use
-> 'iifname' instead since the referenced interfaces won't exist in the
-> temp namespace. But it's not a deal breaker.
->
-> I think I will go with this workaround until (if) nftables supports
-> this functionality natively.
->
-> Thanks!
-> -Martin
+these are 2 entries, nearly every 5 second one entry (source port and des=
+tination port always 5050/udp);
+what might causing these - I guess broadcast?
+
+Thanks,
+Walter
+
+
+
+
+--------------ms000109050407020102030908
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+O0CeAaZtRuijeWciZOzVCLqffvVQbLUTYQIDAQABo4IB2jCCAdYwDgYDVR0PAQH/BAQDAgWg
+MIGeBggrBgEFBQcBAQSBkTCBjjBNBggrBgEFBQcwAoZBaHR0cDovL3NlY3VyZS5nbG9iYWxz
+aWduLmNvbS9jYWNlcnQvZ3NwZXJzb25hbHNpZ24yc2hhMmczb2NzcC5jcnQwPQYIKwYBBQUH
+MAGGMWh0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNvbS9nc3BlcnNvbmFsc2lnbjJzaGEyZzMw
+TAYDVR0gBEUwQzBBBgkrBgEEAaAyASgwNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
+YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBEBgNVHR8EPTA7MDmgN6A1hjNo
+dHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzcGVyc29uYWxzaWduMnNoYTJnMy5jcmwwJQYD
+VR0RBB4wHIEad2FsdGVyLmhAbWF0aGVtYWluemVsLmluZm8wHQYDVR0lBBYwFAYIKwYBBQUH
+AwIGCCsGAQUFBwMEMB8GA1UdIwQYMBaAFGlygmIxZ5VEhXeRgMQENkmdewthMB0GA1UdDgQW
+BBScYWNh3UJj/8tlgoHZqUAieJO3iDANBgkqhkiG9w0BAQsFAAOCAQEADldsDCIGcI8DkF8Z
+oI1afAl6BqOqpSPxYxftUeSAvWV/WDKoc2BCx8kB23MEaRSzwJ7cag0hoYw+7dU24lejflHg
+tMzNnIWp8ZcsRYZ0yP7t7WxxHbuD0Fu9dVR8Yxd3YNhtGDDQhrF++bjSX2prFL4m2o1WrfVQ
+XEuKJ2PGC76cNJos+oYbPeJ50+MbAvRCrugBjun74GN5jOQoJ8yb8p9jf1fdFpNpAey/fq7J
+HsTEHXaEUQYgQsFwaVkFRTaxYHdxzQ3lAEzlk/y5MFyaUS4ai2i+T/vL1ReHGzX0MRSpKKAg
+ycHA+iWsio1vqCmPsu4Rwy4CGHb2NNUy+4xZ5jGCA3EwggNtAgEBMG0wXTELMAkGA1UEBhMC
+QkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYtc2ExMzAxBgNVBAMTKkdsb2JhbFNpZ24gUGVy
+c29uYWxTaWduIDIgQ0EgLSBTSEEyNTYgLSBHMwIMD320dl/PH7rCZxY0MA0GCWCGSAFlAwQC
+AQUAoIIB1TAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yMDA0
+MjMwNDU2MThaMC8GCSqGSIb3DQEJBDEiBCBWs9XCagSVJzkTyX7+cOqf0QlO93F9Svm39am1
+hZ6ktzBsBgkqhkiG9w0BCQ8xXzBdMAsGCWCGSAFlAwQBKjALBglghkgBZQMEAQIwCgYIKoZI
+hvcNAwcwDgYIKoZIhvcNAwICAgCAMA0GCCqGSIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqGSIb3
+DQMCAgEoMHwGCSsGAQQBgjcQBDFvMG0wXTELMAkGA1UEBhMCQkUxGTAXBgNVBAoTEEdsb2Jh
+bFNpZ24gbnYtc2ExMzAxBgNVBAMTKkdsb2JhbFNpZ24gUGVyc29uYWxTaWduIDIgQ0EgLSBT
+SEEyNTYgLSBHMwIMD320dl/PH7rCZxY0MH4GCyqGSIb3DQEJEAILMW+gbTBdMQswCQYDVQQG
+EwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQ
+ZXJzb25hbFNpZ24gMiBDQSAtIFNIQTI1NiAtIEczAgwPfbR2X88fusJnFjQwDQYJKoZIhvcN
+AQEBBQAEggEASVXyru7reCg0ehOdeo6PuLgpdDpYBaThwgtdRRp5BjbWC+/DKS2XYfhCdpTN
+A9zDAmOqDsrFMTKLni8GCbsWxebXYnEPcoQ2wptAFynv1WJRoU+SnRl72qjYJYZc33cXoujE
+miWmQImmjrwtrg2ntyL/DZ06HLQpYBJ3NPv2zgY0qaBlErl0ypjafOsG7IWV+tMZvmh0dzh0
+dajGIOYb6eKHLVWRhINmdvBz1nWX7oGkxxUVbJdyDgMRAqVvVvRB1StKVjhhZxOHTTFHg41v
+0OpFpcO/xZu3MaP/FzDSPIzjAkpZtf4vehoD7/jcEzmwK5v5QXoZc9HX4HmdfcDuBQAAAAAA
+AA==
+--------------ms000109050407020102030908--
