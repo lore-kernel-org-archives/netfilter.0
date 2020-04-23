@@ -1,122 +1,53 @@
-From: "Walter H." <Walter.H@mathemainzel.info>
-Subject: has somebody an idea what fills up the log (5050/udp)?
-Date: Thu, 23 Apr 2020 06:56:18 +0200
-Message-ID: <d57c8f54-e0c0-1545-6f4c-a5c3ec78763c@mathemainzel.info>
+From: zrm <zrm@trustiosity.com>
+Subject: Re: has somebody an idea what fills up the log (5050/udp)?
+Date: Thu, 23 Apr 2020 01:23:27 -0400
+Message-ID: <fcf7ebcd-fd46-6279-8ad8-ab86ae0722de@trustiosity.com>
+References: <d57c8f54-e0c0-1545-6f4c-a5c3ec78763c@mathemainzel.info>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms000109050407020102030908"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Filter: OpenDKIM Filter v2.11.0 vhost01.ipv6help.de 69BDC64E64
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mathemainzel.info;
-        s=mail; t=1587617779;
-        bh=C/dMjFR2F0d84ccTYPyzrbXkya4UubDUQSqeUQnNUSo=;
-        h=To:From:Subject:Message-ID:Date:MIME-Version:Content-Type:From;
-        b=1kDSnCHEAWi7EgxhyUGlMPqI+Dncyh1PJu624P6hdQd5ctdx7ifn8Rvc0cILE0Cus
-         rXF+PQ/gpFVrMeUofM4lMDkILgm+gg6BaKdZpSc40Z7zslaWljnGjBaiWMzJNs0/Ij
-         QGHfXSAvl6GRhAi0zEBLG0cT4So82e3Ob/ePbYao=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=trustiosity.com;
+        s=mx; t=1587619408; bh=BjZeZw8mr7N0JI4k/8ebOzL5rF2rxMzfQrYCjs2XdvI=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=ijd/K2goyagPu2frAGc0h7cn1KNY9gGiJQ3he9coWMqd7TST861c0y0F2/m/eib6A
+         Z2sL/ZG3KBGSwWocPe5J3gvajKQGCneCMNp+cLzPRx6W2HLMAOYJCN5iFOj4DOnasl
+         xaVk1qAfgOmnsKMQdCoVIQjNB+dD6qhPsnpvP7KM=
+In-Reply-To: <d57c8f54-e0c0-1545-6f4c-a5c3ec78763c@mathemainzel.info>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "Walter H." <Walter.H@mathemainzel.info>, netfilter@vger.kernel.org
 
-This is a cryptographically signed message in MIME format.
+On 4/23/20 00:56, Walter H. wrote:
+> Hello
+> 
+> my Win10 box fills up the log of my router (Linux box)
+> 
+> [23-Apr-2020; 05:44:11.861029] IP[IN]: IN=br0 OUT= 
+> MAC=ff:ff:ff:ff:ff:ff:a8:5e:11:3d:8f:77:08:00 SRC=192.168.1.10 
+> DST=192.168.1.255 LEN=71 TOS=0x00 PREC=0x00 TTL=128 ID=51279 PROTO=UDP 
+> SPT=5050 DPT=5050 LEN=51
+> [23-Apr-2020; 05:44:16.864767] IP[IN]: IN=br0 OUT= 
+> MAC=ff:ff:ff:ff:ff:ff:a8:5e:11:3d:8f:77:08:00 SRC=192.168.1.10 
+> DST=192.168.1.255 LEN=71 TOS=0x00 PREC=0x00 TTL=128 ID=51280 PROTO=UDP 
+> SPT=5050 DPT=5050 LEN=51
+> 
+> these are 2 entries, nearly every 5 second one entry (source port and 
+> destination port always 5050/udp);
+> what might causing these - I guess broadcast?
+> 
+> Thanks,
+> Walter
+> 
+> 
+> 
 
---------------ms000109050407020102030908
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-Content-Language: de-DE-1901
+192.168.1.255 would be a broadcast address assuming your network is 
+192.168.1.0/24. There isn't really any way to tell what application is 
+sending them based on what you've provided other than to do a search for 
+applications that send broadcasts using port 5050.
 
-Hello
-
-my Win10 box fills up the log of my router (Linux box)
-
-[23-Apr-2020; 05:44:11.861029] IP[IN]: IN=3Dbr0 OUT=3D MAC=3Dff:ff:ff:ff:=
-ff:ff:a8:5e:11:3d:8f:77:08:00 SRC=3D192.168.1.10 DST=3D192.168.1.255 LEN=3D=
-71 TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D51279 PROTO=3DUDP SPT=3D5050 DPT=
-=3D5050 LEN=3D51
-[23-Apr-2020; 05:44:16.864767] IP[IN]: IN=3Dbr0 OUT=3D MAC=3Dff:ff:ff:ff:=
-ff:ff:a8:5e:11:3d:8f:77:08:00 SRC=3D192.168.1.10 DST=3D192.168.1.255 LEN=3D=
-71 TOS=3D0x00 PREC=3D0x00 TTL=3D128 ID=3D51280 PROTO=3DUDP SPT=3D5050 DPT=
-=3D5050 LEN=3D51
-
-these are 2 entries, nearly every 5 second one entry (source port and des=
-tination port always 5050/udp);
-what might causing these - I guess broadcast?
-
-Thanks,
-Walter
-
-
-
-
---------------ms000109050407020102030908
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-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
-O0CeAaZtRuijeWciZOzVCLqffvVQbLUTYQIDAQABo4IB2jCCAdYwDgYDVR0PAQH/BAQDAgWg
-MIGeBggrBgEFBQcBAQSBkTCBjjBNBggrBgEFBQcwAoZBaHR0cDovL3NlY3VyZS5nbG9iYWxz
-aWduLmNvbS9jYWNlcnQvZ3NwZXJzb25hbHNpZ24yc2hhMmczb2NzcC5jcnQwPQYIKwYBBQUH
-MAGGMWh0dHA6Ly9vY3NwMi5nbG9iYWxzaWduLmNvbS9nc3BlcnNvbmFsc2lnbjJzaGEyZzMw
-TAYDVR0gBEUwQzBBBgkrBgEEAaAyASgwNDAyBggrBgEFBQcCARYmaHR0cHM6Ly93d3cuZ2xv
-YmFsc2lnbi5jb20vcmVwb3NpdG9yeS8wCQYDVR0TBAIwADBEBgNVHR8EPTA7MDmgN6A1hjNo
-dHRwOi8vY3JsLmdsb2JhbHNpZ24uY29tL2dzcGVyc29uYWxzaWduMnNoYTJnMy5jcmwwJQYD
-VR0RBB4wHIEad2FsdGVyLmhAbWF0aGVtYWluemVsLmluZm8wHQYDVR0lBBYwFAYIKwYBBQUH
-AwIGCCsGAQUFBwMEMB8GA1UdIwQYMBaAFGlygmIxZ5VEhXeRgMQENkmdewthMB0GA1UdDgQW
-BBScYWNh3UJj/8tlgoHZqUAieJO3iDANBgkqhkiG9w0BAQsFAAOCAQEADldsDCIGcI8DkF8Z
-oI1afAl6BqOqpSPxYxftUeSAvWV/WDKoc2BCx8kB23MEaRSzwJ7cag0hoYw+7dU24lejflHg
-tMzNnIWp8ZcsRYZ0yP7t7WxxHbuD0Fu9dVR8Yxd3YNhtGDDQhrF++bjSX2prFL4m2o1WrfVQ
-XEuKJ2PGC76cNJos+oYbPeJ50+MbAvRCrugBjun74GN5jOQoJ8yb8p9jf1fdFpNpAey/fq7J
-HsTEHXaEUQYgQsFwaVkFRTaxYHdxzQ3lAEzlk/y5MFyaUS4ai2i+T/vL1ReHGzX0MRSpKKAg
-ycHA+iWsio1vqCmPsu4Rwy4CGHb2NNUy+4xZ5jGCA3EwggNtAgEBMG0wXTELMAkGA1UEBhMC
-QkUxGTAXBgNVBAoTEEdsb2JhbFNpZ24gbnYtc2ExMzAxBgNVBAMTKkdsb2JhbFNpZ24gUGVy
-c29uYWxTaWduIDIgQ0EgLSBTSEEyNTYgLSBHMwIMD320dl/PH7rCZxY0MA0GCWCGSAFlAwQC
-AQUAoIIB1TAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0yMDA0
-MjMwNDU2MThaMC8GCSqGSIb3DQEJBDEiBCBWs9XCagSVJzkTyX7+cOqf0QlO93F9Svm39am1
-hZ6ktzBsBgkqhkiG9w0BCQ8xXzBdMAsGCWCGSAFlAwQBKjALBglghkgBZQMEAQIwCgYIKoZI
-hvcNAwcwDgYIKoZIhvcNAwICAgCAMA0GCCqGSIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqGSIb3
-DQMCAgEoMHwGCSsGAQQBgjcQBDFvMG0wXTELMAkGA1UEBhMCQkUxGTAXBgNVBAoTEEdsb2Jh
-bFNpZ24gbnYtc2ExMzAxBgNVBAMTKkdsb2JhbFNpZ24gUGVyc29uYWxTaWduIDIgQ0EgLSBT
-SEEyNTYgLSBHMwIMD320dl/PH7rCZxY0MH4GCyqGSIb3DQEJEAILMW+gbTBdMQswCQYDVQQG
-EwJCRTEZMBcGA1UEChMQR2xvYmFsU2lnbiBudi1zYTEzMDEGA1UEAxMqR2xvYmFsU2lnbiBQ
-ZXJzb25hbFNpZ24gMiBDQSAtIFNIQTI1NiAtIEczAgwPfbR2X88fusJnFjQwDQYJKoZIhvcN
-AQEBBQAEggEASVXyru7reCg0ehOdeo6PuLgpdDpYBaThwgtdRRp5BjbWC+/DKS2XYfhCdpTN
-A9zDAmOqDsrFMTKLni8GCbsWxebXYnEPcoQ2wptAFynv1WJRoU+SnRl72qjYJYZc33cXoujE
-miWmQImmjrwtrg2ntyL/DZ06HLQpYBJ3NPv2zgY0qaBlErl0ypjafOsG7IWV+tMZvmh0dzh0
-dajGIOYb6eKHLVWRhINmdvBz1nWX7oGkxxUVbJdyDgMRAqVvVvRB1StKVjhhZxOHTTFHg41v
-0OpFpcO/xZu3MaP/FzDSPIzjAkpZtf4vehoD7/jcEzmwK5v5QXoZc9HX4HmdfcDuBQAAAAAA
-AA==
---------------ms000109050407020102030908--
+What you might want to do is look at the client machine and see which 
+application is bound to that port, but that's more of a Windows question 
+than a netfilter question.
