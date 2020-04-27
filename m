@@ -1,35 +1,29 @@
-From: "d.gubin" <d.gubin@mashtab.org>
-Subject: nftables and traffic control utility to QoS
-Date: Mon, 27 Apr 2020 12:04:33 +0300
-Message-ID: <a66c2c02-5966-3f1a-e902-3d12d167b5d2@mashtab.org>
+From: Nikolaos Kakouros <nkak@kth.se>
+Subject: Questions around the use of timestamps
+Date: Mon, 27 Apr 2020 23:41:08 +0000
+Message-ID: <1588030868100.98244@kth.se>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mashtab.org; h=
-        content-language:content-transfer-encoding:content-type
-        :content-type:mime-version:user-agent:date:date:message-id
-        :subject:subject:from:from:to; s=dkim; t=1587978273; x=
-        1588842274; bh=ixhLGkZXBdYTb0OBuE6ZNzjcuLjHVRmzQjeJ0NqOwXk=; b=W
-        gK0n5iZCjX7lxeE1+0VtKRTEQZtj5FXhRIzg0qppoQY4bpPTamhAfwZSB56As5mV
-        QMRU1YtmaRts/xyNsfOJ26QIhkmPKqbNwuo/k6q0+sDkq8zuvxNAcszElL6aZZ2f
-        t8nG2w+oneHlULIXtWYoZ2/WntFZHvvbVRQhQaU41c=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kth.se; s=default;
+        t=1588030870; bh=SZz35o7xDgMxYtskGvJC6nfHbawCecCga/aK80QiSoY=;
+        h=From:To:Subject:Date;
+        b=dG1dZ/vF4wWZDT+rVNBFV9wZDRTwjSZksnAu/L2ncrbVQUH2jmj8Av+2tAZm77l3Z
+         nE4gtRQpvJUAezYKhiqgC7yozflSpUsst+aWWEQj0eGVmzTsYOl9afdoy6MS2G7Bgg
+         sZMMsSwk0dAPIVNYDS3srxHSx4M7r5ksI6fRhB2U=
 Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Dear Sirs!
-
-I need to setup QoS on Debian GNU/Linux.
-I am going to use nftables to modify DSCP field in IPv4 Header and tc to 
-shape traffic.
-
-Where is packets come in first: in nftables or tc (iproute2) ?
-
-Thanks a lot for yours answers!
-
--- 
-Best Regards
-www.mashtab.org
-
+I have two questions that I would like to ask.=0A=
+=0A=
+1. I run conntrack with "-o ktimestamp". The timestamp produced contains up=
+ until the seconds. Is there a way to add milliseconds to this timestamp?=
+=0A=
+=0A=
+2. I have tried "-o timestamp", as well, but this has no effect on the outp=
+ut. How is this supposed to be used?=0A=
+=0A=
+Thank you.=
