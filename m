@@ -1,64 +1,91 @@
-From: Fatih USTA <fatihusta86@gmail.com>
-Subject: Re: nftables
-Date: Tue, 28 Apr 2020 11:45:38 +0300
-Message-ID: <19b20b79-a741-68fa-56da-0e0c16c6d08b@gmail.com>
-References: <c8a517b2-3e1e-f7f5-53d6-b3e4daf638bc@gmx.de>
- <16ac0a06-b73e-dd66-c858-ae9ea26034d6@gmail.com>
- <169e18be-82c8-47b7-2ca6-44e03c86eebd@gmx.de>
+From: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
+Subject: cannot create a nat type base (pre/post routing) chain
+Date: Tue, 28 Apr 2020 15:38:30 +0200
+Message-ID: <690dfdf6-8a72-f6a1-8b36-f92fcc458331@aimvalley.nl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:message-id:date:user-agent:mime-version
-         :in-reply-to:content-transfer-encoding:content-language;
-        bh=qmdFC8b6+paBLvYQH+BFaMC13zDn7/vJlGZ3dQPcFFI=;
-        b=JpwlEOT996/YUjXbpeDFHrZrrb7c6HYhalr7e4i0B+YIEoys0LGuYusx78ABna1lOr
-         pvXMb7iBbC4vcv6f6wDXsovZbFCchgQO9X5AQOzBoU/8PRgNAx6p4bVnvAZQFKwc5V4Z
-         S/7HEiQWEOBKOcTE1ia3WV6WgzsMiDG+uMFExDz2/iGo4a8Nbg9WXYPasCeG7vSa9r1U
-         RyWuenLOanNM5TqVFsQTUBNIhJFBTfTm1a9hFii4Wn9VEOzEaisKpSldltN8sCK/IjDY
-         hVpEzu8qG4ZQgmbK5IQ7euo9pf0nF6vZGxjN90NX+6yhguR7wqVHDZUTzEGOcJH0n6Bw
-         hm6w==
-In-Reply-To: <169e18be-82c8-47b7-2ca6-44e03c86eebd@gmx.de>
 Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Patrick Greiff <Patrick7878@gmx.de>, Netfilter Users Mailing list <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
+Cc: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
 
-http://wiki.nftables.org/wiki-nftables/index.php/Scripting
+Hi All,
 
-I think you should follow this guide and I send to example link to below.
+For some reason I cannot create a base (pre/post routing) chain in my nat table.
+I'm doing:
 
-https://github.com/chr0mag/geoipsets
+# nft list ruleset
+table ip nat {
+}
+
+# nft add chain nat postrouting { type nat hook postrouting priority 100 \; }
+Error: Could not process rule: No such file or directory
+add chain nat postrouting { type nat hook postrouting priority 100 ; }
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+# nft add chain nat prerouting { type nat hook prerouting priority 0 \; }
+Error: Could not process rule: No such file or directory
+add chain nat prerouting { type nat hook prerouting priority 0 ; }
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 
-Fatih USTA
+I'm using:
 
-On 28.04.2020 11:33, Patrick Greiff wrote:
-> hi many thanks i was looking for that :)
-> have a few more questions. I am still a beginner in the field and so I
-> just learn ^^.
-> I created nft add set ip filter blackhole {type ipv4_addr \;} and
-> introduced an ip. but where is this file located?
-> nft add rule ip filter input ip saddr @blackhole drop do I have to add
-> this to my main.conf? or in the standard nftables.conf.
->
-> Am 28.04.2020 um 09:50 schrieb Fatih USTA:
->> Hi
->>
->> You can use sets in nftables like iptables ipset.
->>
->> http://wiki.nftables.org/wiki-nftables/index.php/Sets
->>
->>
->> Fatih USTA
->>
->> On 28.04.2020 10:38, Patrick Greiff wrote:
->>> Hi everyone,
->>> i have a question about nftables.
->>> at iptables i had a blacklist where i wrote in the ip that wanted to
->>> hack me.
->>> how can I integrate something into nftables? and also restart when the
->>> ips are updated.
->>>
+# nft -v
+nftables v0.9.3 (Topsy)
+# uname -a
+Linux OpenWrt 5.4.34 #0 SMP Thu Apr 23 16:39:48 2020 aarch64 GNU/Linux
+
+
+and I'm following:
+
+https://wiki.nftables.org/wiki-nftables/index.php/Performing_Network_Address_Translation_(NAT)
+
+
+I guess all required kernel modules are loaded, see:
+# lsmod | grep nf_table
+nf_tables             122880 22 
+nf_flow_table_ipv6,nf_flow_table_ipv4,nf_flow_table_inet,nft_reject_ipv6,nft_reject_ipv4,nft_reject_inet,nft_reject,nft_redir,nft_quota,nft_objref,nft_numgen,nft_nat,nft_masq,nft_log,nft_limit,nft_hash,nft_fwd_netdev,nft_flow_offload,nft_dup_netdev,nft_ct,nft_counter,nf_tables_set
+nf_tables_set          28672  0
+nfnetlink              16384  1 nf_tables
+# lsmod | grep nft_
+nf_conntrack           86016  8 nft_redir,nft_nat,nft_masq,nft_flow_offload,nft_ct,nf_nat,nf_flow_table,nf_conntrack_rtcache
+nf_dup_netdev          16384  2 nft_fwd_netdev,nft_dup_netdev
+nf_flow_table          24576  5 nf_flow_table_ipv6,nf_flow_table_ipv4,nf_flow_table_inet,nft_flow_offload,nf_flow_table_hw
+nf_nat                 36864  3 nft_redir,nft_nat,nft_masq
+nf_reject_ipv4         16384  2 nft_reject_ipv4,nft_reject_inet
+nf_reject_ipv6         16384  2 nft_reject_ipv6,nft_reject_inet
+nf_tables             122880 22 
+nf_flow_table_ipv6,nf_flow_table_ipv4,nf_flow_table_inet,nft_reject_ipv6,nft_reject_ipv4,nft_reject_inet,nft_reject,nft_redir,nft_quota,nft_objref,nft_numgen,nft_nat,nft_masq,nft_log,nft_limit,nft_hash,nft_fwd_netdev,nft_flow_offload,nft_dup_netdev,nft_ct,nft_counter,nf_tables_set
+nft_counter            16384  0
+nft_ct                 20480  0
+nft_dup_netdev         16384  0
+nft_flow_offload       16384  0
+nft_fwd_netdev         16384  0
+nft_hash               16384  0
+nft_limit              16384  0
+nft_log                16384  0
+nft_masq               16384  0
+nft_nat                16384  0
+nft_numgen             16384  0
+nft_objref             16384  0
+nft_quota              16384  0
+nft_redir              16384  0
+nft_reject             16384  3 nft_reject_ipv6,nft_reject_ipv4,nft_reject_inet
+nft_reject_inet        16384  0
+nft_reject_ipv4        16384  0
+nft_reject_ipv6        16384  0
+
+iptable_nat module isn't loaded:
+# lsmod | grep ipt
+#
+
+
+Anybody know what is wrong? or how I can (easily) find out what is wrong?
+
+Thanks.
+
+---
+Norbert
