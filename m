@@ -1,9 +1,7 @@
 From: trentbuck@gmail.com (Trent W. Buck)
-Subject: Re: nftables
-Date: Thu, 30 Apr 2020 13:52:56 +1000
-Message-ID: <87imhhvdd3.fsf@goll.lan>
-References: <c8a517b2-3e1e-f7f5-53d6-b3e4daf638bc@gmx.de>
-        <16ac0a06-b73e-dd66-c858-ae9ea26034d6@gmail.com>
+Subject: idempotent nft delete table? (or: why does "flush table" delete rules but keep chains?)
+Date: Thu, 30 Apr 2020 14:26:19 +1000
+Message-ID: <87368l38gk.fsf@goll.lan>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
@@ -12,19 +10,72 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Fatih USTA <fatihusta86@gmail.com> writes:
+A typical ruleset looks like
 
-> You can use sets in nftables like iptables ipset.
-> http://wiki.nftables.org/wiki-nftables/index.php/Sets
+    flush ruleset
+    table filter { ... }
 
-See also sshguard[1] or fail2ban, for turnkey Intrusion Prevention Systems
-(i.e. "block attackers by IP address").
+That works fine until I have several partial rulesets (e.g. the
+sysadmin, libvirtd, and sshguard) that manage their own tables in
+parallel, e.g.
 
-Their nft-specific code is not very interesting:
+    foo.nft:
+        flush ruleset
+        table foo { ... }
 
-https://bitbucket.org/sshguard/sshguard/src/master/src/fw/sshg-fw-nft-sets.sh
-https://github.com/fail2ban/fail2ban/blob/bb0f732ae69894b22306dd7efa213513e3acd8a2/config/action.d/nftables.conf
+    bar.nft:
+        flush ruleset
+        table bar { ... }
 
+If I reload either file, both tables are removed, and only one table is
+readded.
 
-[1] don't be fooled by the name; sshguard also handles postfix, dovecot, and NCSA (nginx/apache).
+The obvious thing to try is this:
+
+        flush table foo
+        table foo { ... }
+
+However this doesn't flush the chains, only the rules.
+So if you make an edit like this:
+
+         flush table foo
+         table x {
+       -   chain y {
+       +   chain z {
+             type filter hook input priority filter; policy drop
+             tcp dport ssh accept
+             }
+         }
+
+What you end up with is a ruleset that looks like this:
+
+       table x {
+           chain y {
+               type filter hook input priority filter; policy drop;
+           }
+           chain z {
+               type filter hook input priority filter; policy drop;
+               tcp dport ssh accept
+           }
+       }
+
+...and your SSH stops working.
+
+I also considered this, but it will error out if the table doesn't exist yet:
+
+        flush table foo
+        table foo { ... }
+
+I suppose I could use add table (which is idempotent) and then delete
+table (which isn't), so ending up with
+
+        table foo
+        flush table foo
+        table foo { ... }
+
+Is this sensible?  Have I missed something obvious?
+
+PS: I think the way normal people handle this is with a middleware layer
+like firewalld (Fedora) or ufw (Ubuntu), but those are a bit too
+heavyweight for my taste.
 
