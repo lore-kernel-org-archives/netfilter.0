@@ -1,8 +1,9 @@
 From: trentbuck@gmail.com (Trent W. Buck)
-Subject: Re: nftables and traffic control utility to QoS
-Date: Thu, 30 Apr 2020 13:45:21 +1000
-Message-ID: <87wo5xvdpq.fsf@goll.lan>
-References: <a66c2c02-5966-3f1a-e902-3d12d167b5d2@mashtab.org>
+Subject: Re: nftables
+Date: Thu, 30 Apr 2020 13:52:56 +1000
+Message-ID: <87imhhvdd3.fsf@goll.lan>
+References: <c8a517b2-3e1e-f7f5-53d6-b3e4daf638bc@gmx.de>
+        <16ac0a06-b73e-dd66-c858-ae9ea26034d6@gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
@@ -11,29 +12,19 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-"d.gubin" <d.gubin@mashtab.org> writes:
+Fatih USTA <fatihusta86@gmail.com> writes:
 
-> I need to setup QoS on Debian GNU/Linux.
-> I am going to use nftables to modify DSCP field in IPv4 Header and tc
-> to shape traffic.
->
-> Where is packets come in first: in nftables or tc (iproute2) ?
+> You can use sets in nftables like iptables ipset.
+> http://wiki.nftables.org/wiki-nftables/index.php/Sets
 
-I think this depends on the chain type/hook/priority.
-Also, are you talking about egress QoS, or ingress QoS?
+See also sshguard[1] or fail2ban, for turnkey Intrusion Prevention Systems
+(i.e. "block attackers by IP address").
 
-If you are completely new to QoS, for egress QoS, try tc-fq_codel
-before you resort to hand-tuning DSCP/TOS bits for tc-pfifo_fast.
+Their nft-specific code is not very interesting:
 
-fq_codel is the default on some systems due to:
+https://bitbucket.org/sshguard/sshguard/src/master/src/fw/sshg-fw-nft-sets.sh
+https://github.com/fail2ban/fail2ban/blob/bb0f732ae69894b22306dd7efa213513e3acd8a2/config/action.d/nftables.conf
 
-    https://github.com/systemd/systemd/blob/master/sysctl.d/50-default.conf
 
-If you want an easy test of just the tc qdisc part, OpenSSH sets DSCP bits by default:
-
-    ssh example.com         # defaults to -o IPQoS=lowdelay
-
-    ssh example.com whoami  # defaults to -o IPQoS=throughput
-    sftp example.com        # likewise
-    rsync example.com:      # likewise
+[1] don't be fooled by the name; sshguard also handles postfix, dovecot, and NCSA (nginx/apache).
 
