@@ -1,43 +1,29 @@
-From: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
-Subject: Re: cannot create a nat type base (pre/post routing) chain
-Date: Wed, 29 Apr 2020 11:56:55 +0200
-Message-ID: <340f4e40-de52-d729-af2b-dd1103f1d245@aimvalley.nl>
-References: <690dfdf6-8a72-f6a1-8b36-f92fcc458331@aimvalley.nl>
- <daa384d8-51eb-adfa-4872-fcc188c2b931@aimvalley.nl>
- <20200429094433.GA1539@salvia>
+From: trentbuck@gmail.com (Trent W. Buck)
+Subject: Re: Is viewing a "candidate" ruleset in 'nft list ruleset' format possible?
+Date: Thu, 30 Apr 2020 13:10:10 +1000
+Message-ID: <87pnbpwtwt.fsf@goll.lan>
+References: <CANf9dFNVrz_YjQ2Xe9vZP=U5h-3C7Hxk+oDz9rTD8Q4nALHO5A@mail.gmail.com>
+        <87blnkqg1j.fsf@goll.lan>
+        <CANf9dFN=DA1eP6W8A5GOAseXvB57_wf=U9Trjk6fY1M58qgfaA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20200429094433.GA1539@salvia>
-Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
+Martin Gignac <martin.gignac@gmail.com> writes:
 
+> This is actually a very cool idea! I never realized that nftables
+> rulesets are bound to a specific namespace, but now it makes perfect
+> sense. The only "drawback" (I guess) is that I cannot use 'iif' for
+> any other interface than 'lo' in the temp namespace; I'll need to use
+> 'iifname' instead since the referenced interfaces won't exist in the
+> temp namespace. But it's not a deal breaker.
 
-On 2020-04-29 11:44, Pablo Neira Ayuso wrote:
-> On Wed, Apr 29, 2020 at 11:36:13AM +0200, Norbert van Bolhuis wrote:
-> [...]
->> I guess it's some kind of openwrt nf_tables (module) build/incompatibility problem!?
-> 
-> Your lsmod listing does not show nft_chain_nat, this module should
-> autoload when you invoke:
-> 
->          add chain nat prerouting { type nat hook prerouting priority 0 ; }
-> 
-> Did you try modinfo / modprobe nft_chain_nat manually to check if you
-> can reach this module?
-> 
+You can create dummy interfaces with appropriate names inside your dummy
+namespace.  Something like this (untested):
 
-
-No, I didn't.
-
-I do remember looking for the nft_chain_nat module, but I guess couldn't find it.
-
-I guess this could be it. I may try later to see if this resolves the problem.
-
-Thanks for your answer.
+    ip -namespace delete-me link add name eth0 type dummy
 
