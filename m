@@ -1,52 +1,33 @@
-From: John Haxby <john.haxby@oracle.com>
-Subject: Re: idempotent nft delete table? (or: why does "flush table" delete
- rules but keep chains?)
-Date: Thu, 30 Apr 2020 16:12:00 +0100
-Message-ID: <A462AEC5-923F-4688-9CEF-1E820172EEB0@oracle.com>
-References: <87368l38gk.fsf@goll.lan>
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Content-Transfer-Encoding: quoted-printable
+From: Bob and Sally Public <bobandsally.public@comcast.net>
+Subject: Documentation Error on
+ http://wiki.nftables.org/wiki-nftables/index.php/GeoIP_matching
+Date: Fri, 1 May 2020 12:58:53 -0400
+Message-ID: <bb194828-4636-4c07-92a4-54f9ff28a55e@comcast.net>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=o13TJZmF5qnJR3riJ7VRntOSLhfEUPvXl+PCKGfo+Eg=;
- b=lGz+A2/7tt3+qUEe2rOX9+ob4Pu8QuYGxKnUDEVx/O1WTiARDjBzzb+u9gAfsnTLlUOF
- Dl5lp5zEq63kVFTa/thmfyy40mVoBd0WZUNPeUhcS2pmEu/IWgCBDm1AnAdqE4OLzroS
- 8ztj9RAnPWzupB3QoYc4oxUigeF3rOtC6tbU96GX8sU7fsbvcSFRIBAB/ML7X1875Ae0
- 6BqKaie4DBSECqbU6SP3DyAvOjpGxog3kDIHINLt/Lrzy3nhoO8eKNxWXEQDqpzpqgyU
- XbLjkeO5KjR2x/sHhYiCwyyl+egiTjLfYwDstYAhCnQp7Joho1YLcOC9Ka4thExGIqUX Lw== 
-In-Reply-To: <87368l38gk.fsf@goll.lan>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=comcast.net;
+        s=20190202a; t=1588352302;
+        bh=9zeCahVTPmZpHEpRnnnBf00i3XQLf04bJUZb7AylSz8=;
+        h=Received:Received:From:Subject:To:Message-ID:Date:MIME-Version:
+         Content-Type;
+        b=HCwB+aRWoKKSy4IsA2ajbEn4xe20s3z+PQ2sBKuMcAegK023iSkbE/BXqOHzYK5nK
+         FFpkIQ2BJOnXA6n43Cj+Hz2BHkEYfafX1sYFH+w4tm/W7E+9N7lv+c256W3GVwYR19
+         lLQQmArnHziL/Tm0Y/rXfFhzK3L3tR+5pQWFWfB1h6gl5+POiZRqINRZT2b04azRSy
+         IfNFRiitXJ0Zzk/fe1UXX1eQ4XN3KXbszRG2gZ5pRr5CfwDjZCpxIADY+NMBIiKvy3
+         72uQO8e9y3pD9VqnNWoHTEDSBNbaIrbJExzn3co62XB3Ni2kupxNarzHaSlJWmLr+Z
+         8fDzA0FVB6JBQ==
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: trentbuck@gmail.com
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
+At the bottom of the page, it reads:
 
+type filter hook input priority filter; policy accept;
 
-> On 30 Apr 2020, at 05:26, trentbuck@gmail.com wrote:
->=20
-> A typical ruleset looks like
->=20
->    flush ruleset
->    table filter { ... }
->=20
-> That works fine until I have several partial rulesets (e.g. the
-> sysadmin, libvirtd, and sshguard) that manage their own tables in
-> parallel, e.g.
->=20
+I believe it should read:
 
-For various reasons, I construct a ruleset file and the first line or so =
-comes from
+type filter hook input priority 0 ; policy accept;
 
-	nft list tables | sed -n '/mytablename/s/^/delete /p'
-
-Which leads me to wonder whether there is any meaningful difference =
-between flush and delete unless you don't want to delete sets defined in =
-the table[1].
-
-jch
-
-
-[1] https://wiki.nftables.org/wiki-nftables/index.php/Configuring_tables=
