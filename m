@@ -1,57 +1,86 @@
-From: "" <kfm@plushkava.net>
-Subject: Re: Documentation Error on
- http://wiki.nftables.org/wiki-nftables/index.php/GeoIP_matching
-Date: Fri, 1 May 2020 20:26:04 +0100
-Message-ID: <1223898e-3399-4932-8238-ff8820e0e4a0@plushkava.net>
-References: <bb194828-4636-4c07-92a4-54f9ff28a55e@comcast.net>
+From: Stephen Satchell <list@satchell.net>
+Subject: Using the fib to classify endpoints.
+Date: Sat, 2 May 2020 13:30:54 -0700
+Message-ID: <6356fb62-3b5d-170f-698b-a367c84e8864@satchell.net>
+Reply-To: list@satchell.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-         h=subject:to:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm2; bh=u
-        jWDItFzm5VgzldtDCYSFEjCgJxGU0rSvbTQq1Ln6vc=; b=bH0D4qmc4KTsF15MD
-        W6BTZA14Y4quBwmm3Oz7Zj1+tvX8409c+I3+UDHvEHRMP6sh3bzqmAIB+so06/bF
-        E8x3fzWWlJlyJ5PIl9GbJjvV6SWvx7G12NJERcctuZcT74m7MuU0fHWP04cAQ8O/
-        Kwq4q4FMzLRfRFr6//gSU7odFAhVLvidDaYDpfMbnvI8uaV5dYmc7nHL3RKCBlOM
-        hGuvbO3LZi3dtS61w+Go4/0jNllvvuEGLlqKeS+TzJnQnHm/soV60cnoZojgZKMO
-        C8DqKn2PFpE0RLk71iI0jp8tNV4Zf4o1HtR0aM5cKlOTEjs/VKZ1Y8asbcrCYSuV
-        EGYNw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=ujWDItFzm5VgzldtDCYSFEjCgJxGU0rSvbTQq1Ln6
-        vc=; b=D3OjgwN+fH0vk2EVs29cvKBKg64QpyxsPejmk5NTpgryUSbMeL9W2hPNW
-        NtZhDICUxVKhY+YHoUQAplT5P1rtY1ZGxZj+eM3NotyD9BYcbxpmeJNw0HKG2euA
-        Hd2cGxEHQO2F6TrhVKUP179PZKcTZtgMoPRhdXXcX/wgTFbuvILMqqpqMfNFOMoF
-        4KiOsCTU7S+3IsC8aiR3noJEy7M3i3fKnempE+k/0Q1aeFVHacGtKt21fh4A3LUZ
-        ywAl1ttF6bIq5cZLUrTH3LDSIT++cKouruBFkz4XRnO4RSSTVHkbRiq///V0qRXw
-        lYLTh/zq5ee7OmULvsoJRMGShGDqg==
-In-Reply-To: <bb194828-4636-4c07-92a4-54f9ff28a55e@comcast.net>
-Content-Language: en-GB
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Bob and Sally Public <bobandsally.public@comcast.net>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On 01/05/2020 17:58, Bob and Sally Public wrote:
-> At the bottom of the page, it reads:
+(slight bug: "describe fib_addrtype" isn't working on CentOS 8 version 
+of nft(8))
+
+I have taken the feedback provided by a number of you regarding the 
+maturity of NFTABLES.  So I have decided to implement my new gigabit 
+fireware using the NFTABLES hook.
+
+Looking at the GitHub source, I have found the following Forward 
+Information Base classification specifiers defined:
+
+> static const struct symbol_table addrtype_tbl = {
+> 	.base		= BASE_DECIMAL,
+> 	.symbols	= {
+> 		SYMBOL("unspec",	RTN_UNSPEC),
+> 		SYMBOL("unicast",	RTN_UNICAST),
+> 		SYMBOL("local",		RTN_LOCAL),
+> 		SYMBOL("broadcast",	RTN_BROADCAST),
+> 		SYMBOL("anycast",	RTN_ANYCAST),
+> 		SYMBOL("multicast",	RTN_MULTICAST),
+> 		SYMBOL("blackhole",	RTN_BLACKHOLE),
+> 		SYMBOL("unreachable",	RTN_UNREACHABLE),
+> 		SYMBOL("prohibit",	RTN_PROHIBIT),
+> 		SYMBOL_LIST_END
+> 	}
+> };
+
+Assuming that all the reserved, local, and known netblocks in question 
+have been inserted into the FIB (a.k.a routing table), I can then screen 
+packets according to my specifications, which I have already posted to 
+NANOG, with some specifications referencing the FIB:
+
+> # WAN Incoming filtering
+> #       1.  WAN packets with local/LAN src address
+> #       2.  WAN packets with local/LAN broadcast/net src-dst address
+> #       3.  WAN packets with known broadcast/net src-dst address
+> #       4.  WAN packets with dst small services
+> #       5.  WAN packets with dst unimplemented services
+> #       6.  WAN packets with blackholed source address
 > 
-> type filter hook input priority filter; policy accept;
-> 
-> I believe it should read:
-> 
-> type filter hook input priority 0 ; policy accept;
-> 
+> # WAN outgoing filtering
+> #       1.  WAN packets with local/LAN dst address
+> #       2.  WAN packets with local/LAN broadcast/net src-dst address
+> #       3.  WAN packets with known broadcast/net src-dst address
+> #       4.  WAN packets with dst small services
+> #       5.  WAN packets with unimplemented dst services
+> #       6.  WAN packets with blackholed dst address 
 
-The current nft(8) man page documents that filter is a valid symbolic 
-name, having a value of 0.
+(Concentrating on the internet-facing part for the moment.)
 
-Speaking of which, the man pages at the www.netfilter.org site need to 
-be updated. In the meantime, the asciidoc sources can be found below.
+I'm still trying to figure out the syntax of using the fib queries for 
+source and destination addresses, but that's a learning exercise for me, 
+and not part of my question to you.
 
-https://git.netfilter.org/nftables/tree/doc
+One advantage of using the FIB is that BCP 153 netblocks are all 
+covered, and subnet overrides happen seamlessly; for example in my 
+network, 10.0.0.0/8 would be black-holed, but the longer-prefix netblock 
+10.1.1.0/24 would be usable.  This is an example of letting the computer 
+do the book-keeping.
 
--- 
-Kerin Millar
+So it's easy to block "net", "broadcast", "blackhole" with clear, easy 
+to understand rules, and perhaps even have different ICMP responses for 
+each of these if I so desire.
+
+Well and good.  Last time I brought up this subject, though, some 
+contributors said that IPSET was the way to go, and not "pollute" the 
+routing table.  So my question is this:  does IPSET offer the same 
+capabilities and classification tests as the FIB?  Does IPSET allow for 
+overlapping netblocks?
+
+My search-foo hasn't been good enough to find the answer to this 
+question, so I ask y'all.
+
