@@ -1,86 +1,48 @@
-From: Stephen Satchell <list@satchell.net>
-Subject: Using the fib to classify endpoints.
-Date: Sat, 2 May 2020 13:30:54 -0700
-Message-ID: <6356fb62-3b5d-170f-698b-a367c84e8864@satchell.net>
-Reply-To: list@satchell.net
+From: =?UTF-8?B?U8ahbiDEkOG7lw==?= <sondd1096@gmail.com>
+Subject: [Help] Allow website using iptables
+Date: Mon, 4 May 2020 13:53:49 +0700
+Message-ID: <CAByCkvqDvxqzkCvt+J9tJatSk3K-TW2gAENojtnG7PvWKqO0YA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=1LRPsUuUOzMpup0eT9QFtZb+R4lR6PfOonGUsjjNh30=;
+        b=LTYaYRP/X01yEwQ3Tk9xwZr/I5JrjaEsbuJiPDHEN3VaXTwN2mMC+EPjc1NIatlZTF
+         iTBx01jn9gTg/QaLb19xgMZzeri2KSW2RX9r2pzHlL3lPR+8nrmHsMYWFG7YiCDE+uQX
+         JsnGwURRgHoLgjABmFkppbDT3UpNzHG6Vt2sPKu4QOyvtriciE5B7rjRf0qtOHAC4ofe
+         UhUeWVOtihlWtfwossCDdcPm60tpR2RBqcPRJmtttauF3Ib91Kfa2W3wKStVTHRCA2VH
+         /gusVR5s/prCq6H5QLmjdrQj8L50+f/Xp+Z7vlbPfcLm83pLwvllbn+8cEM2+y0xRFYe
+         6Y8Q==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-(slight bug: "describe fib_addrtype" isn't working on CentOS 8 version 
-of nft(8))
+I have a Linux router and using iptables 1.4 to configure the firewall.
 
-I have taken the feedback provided by a number of you regarding the 
-maturity of NFTABLES.  So I have decided to implement my new gigabit 
-fireware using the NFTABLES hook.
+And I want to permit a device to access a certain website with a
+domain name and block other websites. So I have use some cmds in
+iptables below:
 
-Looking at the GitHub source, I have found the following Forward 
-Information Base classification specifiers defined:
 
-> static const struct symbol_table addrtype_tbl = {
-> 	.base		= BASE_DECIMAL,
-> 	.symbols	= {
-> 		SYMBOL("unspec",	RTN_UNSPEC),
-> 		SYMBOL("unicast",	RTN_UNICAST),
-> 		SYMBOL("local",		RTN_LOCAL),
-> 		SYMBOL("broadcast",	RTN_BROADCAST),
-> 		SYMBOL("anycast",	RTN_ANYCAST),
-> 		SYMBOL("multicast",	RTN_MULTICAST),
-> 		SYMBOL("blackhole",	RTN_BLACKHOLE),
-> 		SYMBOL("unreachable",	RTN_UNREACHABLE),
-> 		SYMBOL("prohibit",	RTN_PROHIBIT),
-> 		SYMBOL_LIST_END
-> 	}
-> };
 
-Assuming that all the reserved, local, and known netblocks in question 
-have been inserted into the FIB (a.k.a routing table), I can then screen 
-packets according to my specifications, which I have already posted to 
-NANOG, with some specifications referencing the FIB:
+iptables -N allow_chain
+iptables -A FORWARD -j allow_chain
+iptables -A allow_chain -m mac --mac-source 11:22:33:44:55:66 -m
+string --algo bm --string youtube -j ACCEPT
+iptables -A allow_chain -m mac --mac-source 11:22:33:44:55:66 -j DROP
 
-> # WAN Incoming filtering
-> #       1.  WAN packets with local/LAN src address
-> #       2.  WAN packets with local/LAN broadcast/net src-dst address
-> #       3.  WAN packets with known broadcast/net src-dst address
-> #       4.  WAN packets with dst small services
-> #       5.  WAN packets with dst unimplemented services
-> #       6.  WAN packets with blackholed source address
-> 
-> # WAN outgoing filtering
-> #       1.  WAN packets with local/LAN dst address
-> #       2.  WAN packets with local/LAN broadcast/net src-dst address
-> #       3.  WAN packets with known broadcast/net src-dst address
-> #       4.  WAN packets with dst small services
-> #       5.  WAN packets with unimplemented dst services
-> #       6.  WAN packets with blackholed dst address 
 
-(Concentrating on the internet-facing part for the moment.)
+In this case, I want computer with MAC address 11:22:33:44:55:66
+connected to my Linux router can only access the youtube . But the
+result was not my expectation, after I apply those rules , my computer
+cannot access to youtube and other web also, it drop all internet
+connection . In my understanding, the rule with ACCEPT target was not
+apply even the package match with the condition, and all packages are
+handled in the rule with DROP target.
 
-I'm still trying to figure out the syntax of using the fib queries for 
-source and destination addresses, but that's a learning exercise for me, 
-and not part of my question to you.
+So is there any thing wrong with my cmd? What was the problem ?
 
-One advantage of using the FIB is that BCP 153 netblocks are all 
-covered, and subnet overrides happen seamlessly; for example in my 
-network, 10.0.0.0/8 would be black-holed, but the longer-prefix netblock 
-10.1.1.0/24 would be usable.  This is an example of letting the computer 
-do the book-keeping.
-
-So it's easy to block "net", "broadcast", "blackhole" with clear, easy 
-to understand rules, and perhaps even have different ICMP responses for 
-each of these if I so desire.
-
-Well and good.  Last time I brought up this subject, though, some 
-contributors said that IPSET was the way to go, and not "pollute" the 
-routing table.  So my question is this:  does IPSET offer the same 
-capabilities and classification tests as the FIB?  Does IPSET allow for 
-overlapping netblocks?
-
-My search-foo hasn't been good enough to find the answer to this 
-question, so I ask y'all.
-
+Please help me, Thanks.
