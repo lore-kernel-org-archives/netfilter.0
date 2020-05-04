@@ -1,98 +1,61 @@
-From: Alessandro Vesely <vesely@tana.it>
+From: Lazuardi Nasution <mrxlazuardin@gmail.com>
 Subject: Re: [Help] Allow website using iptables
-Date: Mon, 4 May 2020 10:43:15 +0200
-Message-ID: <968b51ba-41c2-518f-6019-9912fb408f68@tana.it>
-References: <CAByCkvqDvxqzkCvt+J9tJatSk3K-TW2gAENojtnG7PvWKqO0YA@mail.gmail.com>
+Date: Mon, 4 May 2020 15:54:41 +0700
+Message-ID: <CA+u3GuKsm8o1nv_iJ6kSYHWzrfgCpZsVZKbDq4FmnuCFwOL3BQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tana.it; s=delta;
-        t=1588581796; bh=QCt4f6jae/C1nTrx6Gwx2cEsuhIsdUgCsyNcYwGSkqs=;
-        l=1794; h=To:References:From:Date:In-Reply-To;
-        b=BmmwoAB1X7HTIpmvIkVevSu6Yzrm0SnK6TH6k11SeMUSstFXrdPYKUsqQV0vYd5L/
-         Z1Jh5E6AVqVzlXjx7sKUbuFhlsCVGWV6Lf87kNqv/RulxlWXvXngxYzrYN5gehh2YF
-         M6nzt0iXC2TJhyDoDJmoi6ANf4uwuWM+6gAcvz0wgunb7Bg6R3EA6+jF4SYZD
-In-Reply-To: <CAByCkvqDvxqzkCvt+J9tJatSk3K-TW2gAENojtnG7PvWKqO0YA@mail.gmail.com>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=BvXxGR1hSnVKBtnmRCJmO9Zgom9fPvImWxDV7gh0hjo=;
+        b=h2H9OA4xBu/uupl6biu3bAJpqikKUEyK10NpQ8iIfceCmrD624a7nUQCO7kiIUnexu
+         LyzA1bXjC3A1eA1bPfeMBtUYJUOXs9R3B3JZCTsEHjBLAhWGypyPQMk5m8pN5Kelgd5x
+         CbMJdw5P5KrqLqK/b+kgFO/vlfVHQ3LbGr0cgHJxoZLwdgjgISRnF+gcWiNyr1sm9ryC
+         90ol7+u7SQROX8RJCBDzYNKcc71u0y1CoGjt3by1Glk2kJ1R6Djgyb9KHb0l2oxHFJSL
+         xlfCl7QnQjBA0QUk0RXPIDs+sLm+jqlZue17eob7vLnjvdqwsYf11FEmd3BpYCVGGnv8
+         fbMQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="utf-8"
-To: =?UTF-8?B?U8ahbiDEkOG7lw==?= <sondd1096@gmail.com>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
+Cc: =?UTF-8?B?U8ahbiDEkOG7lw==?= <sondd1096@gmail.com>
 
 Hi,
 
-On 04/05/2020 08:53, Sơn Đỗ wrote:
+YouTube use SSL. So you can't match strings inside the packet, it is
+encrypted.
+
+Best regards,
+
+On Mon, May 4, 2020, 15:40 S=C6=A1n =C4=90=E1=BB=97 <sondd1096@gmail.com> w=
+rote:
+
 > I have a Linux router and using iptables 1.4 to configure the firewall.
-> 
+>
 > And I want to permit a device to access a certain website with a
 > domain name and block other websites. So I have use some cmds in
 > iptables below:
-> 
-> 
-> 
+>
+>
+>
 > iptables -N allow_chain
 > iptables -A FORWARD -j allow_chain
-> iptables -A allow_chain -m mac --mac-source 11:22:33:44:55:66 -m string --algo bm --string youtube -j ACCEPT
+> iptables -A allow_chain -m mac --mac-source 11:22:33:44:55:66 -m
+> string --algo bm --string youtube -j ACCEPT
 > iptables -A allow_chain -m mac --mac-source 11:22:33:44:55:66 -j DROP
-> 
-> 
+>
+>
 > In this case, I want computer with MAC address 11:22:33:44:55:66
-> connected to my Linux router can only access the youtube.
-
-
-Quite problematic, as it has to be able to access a name server to get the
-target IP, at least.  If you mean youtube.com, access to a number of ancillary
-Javascript providers (google.com, gstatic.com, and the like) may also have to
-be granted.
-
-For a different approach, censorship is often applied by controlling the DNS
-resolver.  See:
-https://en.wikipedia.org/wiki/Internet_censorship#Content_suppression_methods
-
-
-> But the result was not my expectation, after I apply those rules , my
-> computer cannot access to youtube and other web also, it drop all internet 
-> connection.
-
-I guess that depends on the default policy (iptables -P) you set.  The rules
-quoted above only affect packets matching the given mac-source.
-
-
-> In my understanding, the rule with ACCEPT target was not apply even the
-> package match with the condition, and all packages are handled in the rule
-> with DROP target.
-
-I don't think that /every/ packet will contain that string.  Typically, a
-"Host: youtube.com", header field will only appear in one of the first packets
-after the TCP handshake.
-
-
-HTH
-
-Ale
--- 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+> connected to my Linux router can only access the youtube . But the
+> result was not my expectation, after I apply those rules , my computer
+> cannot access to youtube and other web also, it drop all internet
+> connection . In my understanding, the rule with ACCEPT target was not
+> apply even the package match with the condition, and all packages are
+> handled in the rule with DROP target.
+>
+> So is there any thing wrong with my cmd? What was the problem ?
+>
+> Please help me, Thanks.
+>
