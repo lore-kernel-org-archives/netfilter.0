@@ -1,61 +1,63 @@
-From: Lazuardi Nasution <mrxlazuardin@gmail.com>
+From: John Haxby <john.haxby@oracle.com>
 Subject: Re: [Help] Allow website using iptables
-Date: Mon, 4 May 2020 15:54:41 +0700
-Message-ID: <CA+u3GuKsm8o1nv_iJ6kSYHWzrfgCpZsVZKbDq4FmnuCFwOL3BQ@mail.gmail.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Date: Mon, 4 May 2020 15:00:04 +0100
+Message-ID: <3EDC495D-8AD1-4687-8496-B17E3CCEB158@oracle.com>
+References: <CA+u3GuKsm8o1nv_iJ6kSYHWzrfgCpZsVZKbDq4FmnuCFwOL3BQ@mail.gmail.com>
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
+Content-Type: multipart/signed;
+        boundary="Apple-Mail=_60A7C4C6-AFB0-4404-BDE3-A61E01BB1037";
+        protocol="application/pgp-signature";
+        micalg=pgp-sha256
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to:cc
-         :content-transfer-encoding;
-        bh=BvXxGR1hSnVKBtnmRCJmO9Zgom9fPvImWxDV7gh0hjo=;
-        b=h2H9OA4xBu/uupl6biu3bAJpqikKUEyK10NpQ8iIfceCmrD624a7nUQCO7kiIUnexu
-         LyzA1bXjC3A1eA1bPfeMBtUYJUOXs9R3B3JZCTsEHjBLAhWGypyPQMk5m8pN5Kelgd5x
-         CbMJdw5P5KrqLqK/b+kgFO/vlfVHQ3LbGr0cgHJxoZLwdgjgISRnF+gcWiNyr1sm9ryC
-         90ol7+u7SQROX8RJCBDzYNKcc71u0y1CoGjt3by1Glk2kJ1R6Djgyb9KHb0l2oxHFJSL
-         xlfCl7QnQjBA0QUk0RXPIDs+sLm+jqlZue17eob7vLnjvdqwsYf11FEmd3BpYCVGGnv8
-         fbMQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : message-id :
+ content-type : mime-version : subject : date : in-reply-to : cc : to :
+ references; s=corp-2020-01-29;
+ bh=YwtkJPBOeSbiKx/rsd+ECV2zf1Ag6Z8kaXUX3FdyuK4=;
+ b=gD2YSY4V+m8+rRATCHMTJuAoZa/a9AxFqdyIevNAcKzvaNvgSSpaA2ohbp6wTbpjl/p6
+ 2wxIibNpGQditcyHrM8HLjqFEJrFghNteOHcbNb58QeW3k+41YZlPUkPTGgaaW754jgw
+ S+axps4VamiukDrFbES4+Pt2ivREeLHG0B9IULF/vklB4irqYGtWp+HY0mu8GJBtJNSu
+ Gni0Z5LAt1EndUjO/9R5VpFVw3ZRZmts6FELp/Phv9mexr9Z+p7atzT/sSjOmyuxkpke
+ DR5Pq1nm+K17mN8egX9WVIsiczEAeDomeaeGILWHtyalM3p2IjDzhuTWiVI9ebcn/kR0 yA== 
+In-Reply-To: <CA+u3GuKsm8o1nv_iJ6kSYHWzrfgCpZsVZKbDq4FmnuCFwOL3BQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@vger.kernel.org
-Cc: =?UTF-8?B?U8ahbiDEkOG7lw==?= <sondd1096@gmail.com>
+To: Lazuardi Nasution <mrxlazuardin@gmail.com>
+Cc: netfilter@vger.kernel.org, =?utf-8?B?U8ahbiDEkOG7lw==?= <sondd1096@gmail.com>
 
-Hi,
 
-YouTube use SSL. So you can't match strings inside the packet, it is
-encrypted.
+--Apple-Mail=_60A7C4C6-AFB0-4404-BDE3-A61E01BB1037
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-Best regards,
 
-On Mon, May 4, 2020, 15:40 S=C6=A1n =C4=90=E1=BB=97 <sondd1096@gmail.com> w=
-rote:
 
-> I have a Linux router and using iptables 1.4 to configure the firewall.
->
-> And I want to permit a device to access a certain website with a
-> domain name and block other websites. So I have use some cmds in
-> iptables below:
->
->
->
-> iptables -N allow_chain
-> iptables -A FORWARD -j allow_chain
-> iptables -A allow_chain -m mac --mac-source 11:22:33:44:55:66 -m
-> string --algo bm --string youtube -j ACCEPT
-> iptables -A allow_chain -m mac --mac-source 11:22:33:44:55:66 -j DROP
->
->
-> In this case, I want computer with MAC address 11:22:33:44:55:66
-> connected to my Linux router can only access the youtube . But the
-> result was not my expectation, after I apply those rules , my computer
-> cannot access to youtube and other web also, it drop all internet
-> connection . In my understanding, the rule with ACCEPT target was not
-> apply even the package match with the condition, and all packages are
-> handled in the rule with DROP target.
->
-> So is there any thing wrong with my cmd? What was the problem ?
->
-> Please help me, Thanks.
->
+> On 4 May 2020, at 09:54, Lazuardi Nasution <mrxlazuardin@gmail.com> =
+wrote:
+>=20
+> YouTube use SSL. So you can't match strings inside the packet, it is
+> encrypted.
+
+Actually, in most cases you can: the first packet set will usually have =
+the hostname in the SNI extension header.
+
+jch
+
+--Apple-Mail=_60A7C4C6-AFB0-4404-BDE3-A61E01BB1037
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iHUEAREIAB0WIQT+pxvb11CFWUkNSOVFC7t+lC+jyAUCXrAf5AAKCRBFC7t+lC+j
+yFWKAPwKtrkvWSHbMnMS4fNvc1RkMmvkZkW55wTN81gRxTlX5AD+PdI7FScN1QE8
+1HxzWhh2rojS6UlVd/0IY2qiTg5mz68=
+=pNvU
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_60A7C4C6-AFB0-4404-BDE3-A61E01BB1037--
