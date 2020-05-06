@@ -1,63 +1,200 @@
-From: John Haxby <john.haxby@oracle.com>
-Subject: Re: [Help] Allow website using iptables
-Date: Mon, 4 May 2020 15:00:04 +0100
-Message-ID: <3EDC495D-8AD1-4687-8496-B17E3CCEB158@oracle.com>
-References: <CA+u3GuKsm8o1nv_iJ6kSYHWzrfgCpZsVZKbDq4FmnuCFwOL3BQ@mail.gmail.com>
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.80.23.2.2\))
-Content-Type: multipart/signed;
-        boundary="Apple-Mail=_60A7C4C6-AFB0-4404-BDE3-A61E01BB1037";
-        protocol="application/pgp-signature";
-        micalg=pgp-sha256
+From: Nick <netfilter@acrasis.net>
+Subject: Firewall sometimes leaking
+Date: Wed, 6 May 2020 12:24:49 +0100
+Message-ID: <20200506112449.GD14154@acrasis.net>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="ZGiS0Q5IWpPtfppv"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : message-id :
- content-type : mime-version : subject : date : in-reply-to : cc : to :
- references; s=corp-2020-01-29;
- bh=YwtkJPBOeSbiKx/rsd+ECV2zf1Ag6Z8kaXUX3FdyuK4=;
- b=gD2YSY4V+m8+rRATCHMTJuAoZa/a9AxFqdyIevNAcKzvaNvgSSpaA2ohbp6wTbpjl/p6
- 2wxIibNpGQditcyHrM8HLjqFEJrFghNteOHcbNb58QeW3k+41YZlPUkPTGgaaW754jgw
- S+axps4VamiukDrFbES4+Pt2ivREeLHG0B9IULF/vklB4irqYGtWp+HY0mu8GJBtJNSu
- Gni0Z5LAt1EndUjO/9R5VpFVw3ZRZmts6FELp/Phv9mexr9Z+p7atzT/sSjOmyuxkpke
- DR5Pq1nm+K17mN8egX9WVIsiczEAeDomeaeGILWHtyalM3p2IjDzhuTWiVI9ebcn/kR0 yA== 
-In-Reply-To: <CA+u3GuKsm8o1nv_iJ6kSYHWzrfgCpZsVZKbDq4FmnuCFwOL3BQ@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acrasis.net;
+        s=selector1; t=1588764290;
+        bh=G1+higEL5udd1nes92el6xzmE3zq6cIJMMH4zA1N8+g=;
+        h=Date:From:To:Subject:From;
+        b=lPNgQ3e+cz0dOXSFrvKBRasApiCbAIn8qK46YK0vlxYqgXn9UoGZPu9AGkwHpY7ZX
+         SRwrSaSQwxG+8uGQngckedcot1Ief2RUs9xkNS9B/7GZJGlzqtLS/8TW4XMPxTVDRl
+         XORWKe6GobMSxjMCPNY/ARFqfLpm4FYLMgKxydP4=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Lazuardi Nasution <mrxlazuardin@gmail.com>
-Cc: netfilter@vger.kernel.org, =?utf-8?B?U8ahbiDEkOG7lw==?= <sondd1096@gmail.com>
+To: netfilter@vger.kernel.org
 
 
---Apple-Mail=_60A7C4C6-AFB0-4404-BDE3-A61E01BB1037
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+--ZGiS0Q5IWpPtfppv
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
+My firewall leaks, sometimes.  I saw this behaviour with FireHOL and
+tried Shorewall instead but it continues.  Advice in #shorewall on
+freenode was that my shorewall configuration is valid.
 
+The firewall has a rule to drop HTTP traffic if the source address is
+in an ipset.  The ipset is maintained by fail2ban and created by
+/etc/shorewall/init:
 
-> On 4 May 2020, at 09:54, Lazuardi Nasution <mrxlazuardin@gmail.com> =
-wrote:
->=20
-> YouTube use SSL. So you can't match strings inside the packet, it is
-> encrypted.
+   ipset create f2b-http4 hash:ip family inet  comment timeout 2147483 -exist
 
-Actually, in most cases you can: the first packet set will usually have =
-the hostname in the SNI extension header.
+This is on debian stable, uname -v prints "#1 SMP Debian
+4.19.98-1+deb10u1 (2020-04-27)".  In debian's "alternatives" system,
+iptables is symlinked to /usr/sbin/iptables-nft.
 
-jch
+The rule is on line 66 in the attached 'iptables-save -c' output.  The
+rule usually works but sometimes it doesn't.  An example occurrence
+follows (times are in BST).
 
---Apple-Mail=_60A7C4C6-AFB0-4404-BDE3-A61E01BB1037
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
+2020-05-02 16:23 last reboot.
+2020-05-04 21:03 shorewall last restarted.
+2020-05-04 21:13 fail2ban last restarted.
+2020-05-05 10:02 I saved the contents of the ipset f2b-http4 to a file.
+2020-05-06 04:22 the webserver logged a request from 193.118.53.194.
+2020-05-06 04:22 fail2ban warned "193.118.53.194 already banned".
 
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
+The address was in my saved file, before the request:
 
-iHUEAREIAB0WIQT+pxvb11CFWUkNSOVFC7t+lC+jyAUCXrAf5AAKCRBFC7t+lC+j
-yFWKAPwKtrkvWSHbMnMS4fNvc1RkMmvkZkW55wTN81gRxTlX5AD+PdI7FScN1QE8
-1HxzWhh2rojS6UlVd/0IY2qiTg5mz68=
-=pNvU
------END PGP SIGNATURE-----
+  # grep '193\.118\.53\.194' ~/f2b-http4-2020-05-05T10:02+01:00.txt 
+  193.118.53.194 timeout 2101355 comment "wronghost"
 
---Apple-Mail=_60A7C4C6-AFB0-4404-BDE3-A61E01BB1037--
+The address was still in the ipset after the request:
+
+  # date +%s && grep '193\.118\.53\.194' <(ipset list f2b-http4)
+  1588750964
+  193.118.53.194 timeout 2019727 comment "wronghost"
+
+The decrement in the timeout (from 2101355 to 2019727) matches the
+time elapsed from saving the file to checking the ipset:
+
+  # date +%s --date="2020-05-05T10:02+01:00"
+  1588669320
+  # echo $((1588669320 + (2101355 - 2019727)))
+  1588750948
+  # echo $((1588750964 - 1588750948))
+  16
+
+i.e. they match to within 16s (my file timestamp has minute resolution).
+
+I think the ip address was in the ipset f2b-http4 continuously before,
+during and after the time of the http request.  Yet the address was
+able to reach port 80 at 04:22 today.  How?
+
+Thanks,
+-- 
+Nick
+
+--ZGiS0Q5IWpPtfppv
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: attachment; filename="iptables-save.txt"
+
+     1	# Generated by xtables-save v1.8.2 on Wed May  6 10:44:54 2020
+     2	*raw
+     3	:PREROUTING ACCEPT [268704:22528984]
+     4	:OUTPUT ACCEPT [16017:1501591]
+     5	COMMIT
+     6	# Completed on Wed May  6 10:44:54 2020
+     7	# Generated by xtables-save v1.8.2 on Wed May  6 10:44:54 2020
+     8	*nat
+     9	:PREROUTING ACCEPT [254501:19507810]
+    10	:INPUT ACCEPT [2822:293211]
+    11	:POSTROUTING ACCEPT [9372:738643]
+    12	:OUTPUT ACCEPT [9371:738603]
+    13	COMMIT
+    14	# Completed on Wed May  6 10:44:54 2020
+    15	# Generated by xtables-save v1.8.2 on Wed May  6 10:44:54 2020
+    16	*mangle
+    17	:PREROUTING ACCEPT [268704:22528984]
+    18	:INPUT ACCEPT [68313:9251380]
+    19	:FORWARD ACCEPT [0:0]
+    20	:OUTPUT ACCEPT [16017:1501591]
+    21	:POSTROUTING ACCEPT [16017:1501591]
+    22	[0:0] -A FORWARD -j MARK --set-xmark 0x0/0xff
+    23	COMMIT
+    24	# Completed on Wed May  6 10:44:54 2020
+    25	# Generated by xtables-save v1.8.2 on Wed May  6 10:44:54 2020
+    26	*filter
+    27	:INPUT DROP [0:0]
+    28	:FORWARD DROP [0:0]
+    29	:OUTPUT ACCEPT [16017:1501591]
+    30	:dbl_log - [0:0]
+    31	:logflags - [0:0]
+    32	:net-fw - [0:0]
+    33	:reject - [0:0]
+    34	:smurflog - [0:0]
+    35	:smurfs - [0:0]
+    36	:tcpflags - [0:0]
+    37	:~log0 - [0:0]
+    38	:~log1 - [0:0]
+    39	:~log2 - [0:0]
+    40	:~log3 - [0:0]
+    41	:~log4 - [0:0]
+    42	:sha-lh-7d55c90e26beacf414af - [0:0]
+    43	:sha-rh-f7dacd76c267f54cf185 - [0:0]
+    44	:shorewall - [0:0]
+    45	[68313:9251380] -A INPUT -i ens3 -j net-fw
+    46	[0:0] -A INPUT -i lo -j ACCEPT
+    47	[0:0] -A INPUT -m addrtype --dst-type BROADCAST -j DROP
+    48	[0:0] -A INPUT -m addrtype --dst-type ANYCAST -j DROP
+    49	[0:0] -A INPUT -m addrtype --dst-type MULTICAST -j DROP
+    50	[0:0] -A INPUT -m hashlimit --hashlimit-upto 1/sec --hashlimit-burst 10 --hashlimit-mode srcip --hashlimit-name lograte -j NFLOG --nflog-prefix  "INPUT DROP "
+    51	[0:0] -A INPUT -j DROP
+    52	[0:0] -A FORWARD -m addrtype --dst-type BROADCAST -j DROP
+    53	[0:0] -A FORWARD -m addrtype --dst-type ANYCAST -j DROP
+    54	[0:0] -A FORWARD -m addrtype --dst-type MULTICAST -j DROP
+    55	[0:0] -A FORWARD -m hashlimit --hashlimit-upto 1/sec --hashlimit-burst 10 --hashlimit-mode srcip --hashlimit-name lograte -j NFLOG --nflog-prefix  "FORWARD DROP "
+    56	[0:0] -A FORWARD -j DROP
+    57	[349:20132] -A dbl_log -m hashlimit --hashlimit-upto 1/sec --hashlimit-burst 10 --hashlimit-mode srcip --hashlimit-name lograte -j NFLOG --nflog-prefix  "dbl_log DROP black4 "
+    58	[349:20132] -A dbl_log -j SET --add-set black4 src --exist --timeout 2147483
+    59	[349:20132] -A dbl_log -j DROP
+    60	[0:0] -A logflags -m hashlimit --hashlimit-upto 1/sec --hashlimit-burst 10 --hashlimit-mode srcip --hashlimit-name lograte -j NFLOG --nflog-prefix  "logflags DROP "
+    61	[0:0] -A logflags -j DROP
+    62	[349:20132] -A net-fw -m conntrack --ctstate INVALID,NEW,UNTRACKED -m set --match-set black4 src -j dbl_log
+    63	[56058:6853054] -A net-fw -m conntrack --ctstate INVALID,NEW,UNTRACKED -j smurfs
+    64	[2309:757149] -A net-fw -p udp -m udp --dport 67:68 -j ACCEPT
+    65	[39568:1840560] -A net-fw -p tcp -j tcpflags
+    66	[372:20257] -A net-fw -p tcp -m tcp --dport 80 -m set --match-set f2b-http4 src -m comment --comment HTTP -g ~log0
+    67	[687:35060] -A net-fw -p tcp -m tcp --dport 25 -m set --match-set f2b-smtp4 src -m comment --comment SMTP -g ~log1
+    68	[11616:2362493] -A net-fw -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+    69	[375:16304] -A net-fw -p tcp -m conntrack --ctstate INVALID -j DROP
+    70	[1425:117990] -A net-fw -p icmp -m icmp --icmp-type 8 -m comment --comment Ping -j ACCEPT
+    71	[385:16548] -A net-fw -p tcp -m tcp --dport 25 -m hashlimit --hashlimit-upto 10/min --hashlimit-burst 15 --hashlimit-name c_smtp -m connlimit --connlimit-upto 3 --connlimit-mask 32 --connlimit-saddr -m comment --comment SMTP -j ACCEPT
+    72	[1:40] -A net-fw -p tcp -m tcp --dport 25 -m comment --comment SMTP -g ~log2
+    73	[0:0] -A net-fw -p tcp -m tcp --dport 22 -m set --match-set ssh4 src -m comment --comment SSH -j ACCEPT
+    74	[505:22272] -A net-fw -p tcp -m tcp --dport 80 -m hashlimit --hashlimit-upto 20/min --hashlimit-burst 40 --hashlimit-mode srcip --hashlimit-name c_http -m hashlimit --hashlimit-upto 50/min --hashlimit-burst 100 --hashlimit-mode dstip --hashlimit-name s_http -m connlimit --connlimit-upto 5 --connlimit-mask 32 --connlimit-saddr -m comment --comment HTTP -j ACCEPT
+    75	[0:0] -A net-fw -p tcp -m tcp --dport 80 -m comment --comment HTTP -g ~log3
+    76	[105:5216] -A net-fw -p tcp -m tcp --dport 443 -m hashlimit --hashlimit-upto 10/min --hashlimit-burst 20 --hashlimit-mode srcip --hashlimit-name c_https -m hashlimit --hashlimit-upto 20/min --hashlimit-burst 40 --hashlimit-mode dstip --hashlimit-name s_https -m connlimit --connlimit-upto 2 --connlimit-mask 32 --connlimit-saddr -m comment --comment HTTPS -j ACCEPT
+    77	[0:0] -A net-fw -p tcp -m tcp --dport 443 -m comment --comment HTTPS -g ~log4
+    78	[14506:4267588] -A net-fw -m addrtype --dst-type BROADCAST -j DROP
+    79	[0:0] -A net-fw -m addrtype --dst-type ANYCAST -j DROP
+    80	[3:96] -A net-fw -m addrtype --dst-type MULTICAST -j DROP
+    81	[30646:1367317] -A net-fw -m hashlimit --hashlimit-upto 1/sec --hashlimit-burst 10 --hashlimit-mode srcip --hashlimit-name lograte -j NFLOG --nflog-prefix  "net-fw DROP "
+    82	[35675:1610235] -A net-fw -j DROP
+    83	[0:0] -A reject -m addrtype --src-type BROADCAST -j DROP
+    84	[0:0] -A reject -s 224.0.0.0/4 -j DROP
+    85	[0:0] -A reject -p igmp -j DROP
+    86	[1:40] -A reject -p tcp -j REJECT --reject-with tcp-reset
+    87	[0:0] -A reject -p udp -j REJECT --reject-with icmp-port-unreachable
+    88	[0:0] -A reject -p icmp -j REJECT --reject-with icmp-host-unreachable
+    89	[0:0] -A reject -j REJECT --reject-with icmp-host-prohibited
+    90	[0:0] -A smurflog -m hashlimit --hashlimit-upto 1/sec --hashlimit-burst 10 --hashlimit-mode srcip --hashlimit-name lograte -j NFLOG --nflog-prefix  "smurfs DROP "
+    91	[0:0] -A smurflog -j DROP
+    92	[2290:751459] -A smurfs -s 0.0.0.0/32 -j RETURN
+    93	[0:0] -A smurfs -m addrtype --src-type BROADCAST -g smurflog
+    94	[0:0] -A smurfs -s 224.0.0.0/4 -g smurflog
+    95	[0:0] -A tcpflags -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG FIN,PSH,URG -g logflags
+    96	[0:0] -A tcpflags -p tcp -m tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -g logflags
+    97	[0:0] -A tcpflags -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -g logflags
+    98	[0:0] -A tcpflags -p tcp -m tcp --tcp-flags FIN,RST FIN,RST -g logflags
+    99	[0:0] -A tcpflags -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -g logflags
+   100	[0:0] -A tcpflags -p tcp -m tcp --tcp-flags FIN,PSH,ACK FIN,PSH -g logflags
+   101	[0:0] -A tcpflags -p tcp -m tcp --sport 0 --tcp-flags FIN,SYN,RST,ACK SYN -g logflags
+   102	[370:20137] -A ~log0 -m hashlimit --hashlimit-upto 1/sec --hashlimit-burst 10 --hashlimit-mode srcip --hashlimit-name lograte -m comment --comment HTTP -j NFLOG --nflog-prefix  "net-fw DROP f2b-http4 "
+   103	[372:20257] -A ~log0 -m comment --comment HTTP -j DROP
+   104	[687:35060] -A ~log1 -m hashlimit --hashlimit-upto 1/sec --hashlimit-burst 10 --hashlimit-mode srcip --hashlimit-name lograte -m comment --comment SMTP -j NFLOG --nflog-prefix  "net-fw DROP f2b-smtp4 "
+   105	[687:35060] -A ~log1 -m comment --comment SMTP -j DROP
+   106	[1:40] -A ~log2 -m hashlimit --hashlimit-upto 1/sec --hashlimit-burst 10 --hashlimit-mode srcip --hashlimit-name lograte -m comment --comment SMTP -j NFLOG --nflog-prefix  "net-fw REJECT r8lim-smtp "
+   107	[1:40] -A ~log2 -m comment --comment SMTP -j reject
+   108	[0:0] -A ~log3 -m hashlimit --hashlimit-upto 1/sec --hashlimit-burst 10 --hashlimit-mode srcip --hashlimit-name lograte -m comment --comment HTTP -j NFLOG --nflog-prefix  "net-fw REJECT r8lim-http "
+   109	[0:0] -A ~log3 -m comment --comment HTTP -j reject
+   110	[0:0] -A ~log4 -m hashlimit --hashlimit-upto 1/sec --hashlimit-burst 10 --hashlimit-mode srcip --hashlimit-name lograte -m comment --comment HTTPS -j NFLOG --nflog-prefix  "net-fw REJECT r8lim-https "
+   111	[0:0] -A ~log4 -m comment --comment HTTPS -j reject
+   112	[0:0] -A shorewall -m recent --set --name %CURRENTTIME --mask 255.255.255.255 --rsource 
+   113	COMMIT
+   114	# Completed on Wed May  6 10:44:54 2020
+
+--ZGiS0Q5IWpPtfppv--
