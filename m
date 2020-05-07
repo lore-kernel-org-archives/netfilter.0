@@ -1,36 +1,63 @@
-From: Nick <netfilter@acrasis.net>
-Subject: Re: Firewall sometimes leaking
-Date: Wed, 6 May 2020 15:57:26 +0100
-Message-ID: <20200506145726.GA9812@acrasis.net>
-References: <20200506112449.GD14154@acrasis.net>
- <alpine.DEB.2.21.2005061619330.4108@blackhole.kfki.hu>
+From: trentbuck@gmail.com (Trent W. Buck)
+Subject: Re: [Help] Allow website using iptables
+Date: Thu, 07 May 2020 11:40:22 +1000
+Message-ID: <87pnbged4p.fsf@goll.lan>
+References: <CAByCkvqDvxqzkCvt+J9tJatSk3K-TW2gAENojtnG7PvWKqO0YA@mail.gmail.com>
+        <968b51ba-41c2-518f-6019-9912fb408f68@tana.it>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acrasis.net;
-        s=selector1; t=1588777047;
-        bh=2aRv18atg01T9l2rFv/DC7ftaxz4aNtq+sVhqAAIMFA=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=SygbozT7fmwDonIpuNqsJtIj512VasWGLAsa4LWsNnTTwBxg+oz91KT9g92OC2oXh
-         s8+Fg3st2aqEOzKpJMcHEkQdC72dseAzBlKAr8qVvhNLUtSWzR7SNWjI9OBwoYcRXY
-         zjks/4Vi1ogIlDWQ4N6P4XuXPbjyLW9m1Xaif6dM=
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.2005061619330.4108@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
 To: netfilter@vger.kernel.org
 
-On 2020-05-06 15:31 BST, Jozsef Kadlecsik wrote:
-> Maybe the fail2ban rule is applied both for http and https, while the
-> rule with the ipset matching is http only?
+Sơn Đỗ, I agree with Alessandro.  Here are some additional comments.
 
-The log file that fail2ban monitors is the log for http requests only.
-No other service writes to that log.  The ipset is for http only.
+Alessandro Vesely <vesely@tana.it> writes:
+> On 04/05/2020 08:53, Sơn Đỗ wrote:
+>> I have a Linux router and using iptables 1.4 to configure the firewall.
 
-I'm unclear about the import of your question though: by the time of the
-http request at 04:22 fail2ban had done its thing and was no longer
-involved.  fail2ban had put the address into the ipset but netfilter,
-for reasons I don't understand, apparently ignored it.
--- 
-Nick
+Note that iptables 1.4 is *really* old - about 2015 I think.
+Consider upgrading if possible.
+
+>> And I want to permit a device to access a certain website with a
+>> domain name and block other websites. So I have use some cmds in
+>> iptables below:
+>> 
+>> iptables -N allow_chain
+>> iptables -A FORWARD -j allow_chain
+>> iptables -A allow_chain -m mac --mac-source 11:22:33:44:55:66 -m string --algo bm --string youtube -j ACCEPT
+>> iptables -A allow_chain -m mac --mac-source 11:22:33:44:55:66 -j DROP
+>> 
+>> In this case, I want computer with MAC address 11:22:33:44:55:66
+>> connected to my Linux router can only access the youtube.
+>
+> Quite problematic, as it has to be able to access a name server to get the
+> target IP, at least.  If you mean youtube.com, access to a number of ancillary
+> Javascript providers (google.com, gstatic.com, and the like) may also have to
+> be granted.
+
+See also https://en.wikipedia.org/wiki/Deep_packet_inspection
+
+> For a different approach, censorship is often applied by controlling the DNS resolver.  See:
+> https://en.wikipedia.org/wiki/Internet_censorship#Content_suppression_methods
+
+Another approach is to disable routing (ip_forward) altogether, and
+instead require clients to use a forward proxy (e.g. squid).
+
+The proxy can then choose what sites to allow.
+HTTPS proxies using CONNECT, so per-domain ACLs are easy.
+To e.g. allow https://example.com/index.html but block https://example.com/email.php,
+you need the proxy to do a MITM attack on your users, see
+
+    http://www.squid-cache.org/Doc/config/ssl_bump/
+
+Note that your jurisdiction's privacy laws may forbid such techniques.
+
+Both DNS and HTTP proxy methods are increasingly difficult to implement
+as GUI web browsers get smarter about e.g. cert pinning and DNSSEC/DANE.
+See e.g.
+
+    https://en.wikipedia.org/wiki/Certificate_Transparency
+
