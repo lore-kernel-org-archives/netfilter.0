@@ -1,63 +1,47 @@
-From: trentbuck@gmail.com (Trent W. Buck)
-Subject: Re: [Help] Allow website using iptables
-Date: Thu, 07 May 2020 11:40:22 +1000
-Message-ID: <87pnbged4p.fsf@goll.lan>
-References: <CAByCkvqDvxqzkCvt+J9tJatSk3K-TW2gAENojtnG7PvWKqO0YA@mail.gmail.com>
-        <968b51ba-41c2-518f-6019-9912fb408f68@tana.it>
+From: b38911 Zxc <b38911@gmail.com>
+Subject: Correct usage of nf_ct_get
+Date: Fri, 8 May 2020 10:10:08 +0200
+Message-ID: <CACWCkhDssWGr3qg73T+Ft_f8jWDaA7wway=so0URwiDRK6hiTQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=MEPx9OZpYC5MR99JRZhnc6eFa/OtpMpGHJnrSuQ4dXg=;
+        b=iRmO2b8v6sRxGiveeOjt52tOrl7EpwNXU5rOCl9FyNL/K3hYMGg42mCh6/aiPuCTbg
+         PiTzi6WJ7lY98E/jzuqHlzunYRJ83fSt8WljVnQzTM2FpfDbQICRH9fmGVTVf8Gcz5GT
+         zS7Vl7+sHOpJ5MqgZsySGQRCU2BXnY8xcUKJS4KGZ6SsYCOnTiI9vUbFHnWZ0TeApIU9
+         FCzvT+mj6MG8ETEPBudnKAXTqraktWyfaHk2/ptANh7cxFjfWEq2iPdOid50NbKpgCGt
+         Ss1PowZsMbsql0zZTqEnq0TKf339e+QrvzRBg8B64lhoRRQbzm0b96Wb3bZO7vhoyfDS
+         i87g==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Sơn Đỗ, I agree with Alessandro.  Here are some additional comments.
+I have a doubt on the correct usage of the conntrack func "nf_ct_get".
 
-Alessandro Vesely <vesely@tana.it> writes:
-> On 04/05/2020 08:53, Sơn Đỗ wrote:
->> I have a Linux router and using iptables 1.4 to configure the firewall.
+I'm calling it in this way in my netfilter, to track UDP traffic:
 
-Note that iptables 1.4 is *really* old - about 2015 I think.
-Consider upgrading if possible.
+-----<Code snippet>-----
 
->> And I want to permit a device to access a certain website with a
->> domain name and block other websites. So I have use some cmds in
->> iptables below:
->> 
->> iptables -N allow_chain
->> iptables -A FORWARD -j allow_chain
->> iptables -A allow_chain -m mac --mac-source 11:22:33:44:55:66 -m string --algo bm --string youtube -j ACCEPT
->> iptables -A allow_chain -m mac --mac-source 11:22:33:44:55:66 -j DROP
->> 
->> In this case, I want computer with MAC address 11:22:33:44:55:66
->> connected to my Linux router can only access the youtube.
->
-> Quite problematic, as it has to be able to access a name server to get the
-> target IP, at least.  If you mean youtube.com, access to a number of ancillary
-> Javascript providers (google.com, gstatic.com, and the like) may also have to
-> be granted.
+      ct = nf_ct_get(skb, &ctinfo);
+      if (ct == NULL)
+      ...
 
-See also https://en.wikipedia.org/wiki/Deep_packet_inspection
+-----<Code snippet>-----
 
-> For a different approach, censorship is often applied by controlling the DNS resolver.  See:
-> https://en.wikipedia.org/wiki/Internet_censorship#Content_suppression_methods
+On some systems it just work. In some others I get the result as NULL
+until I do something like
 
-Another approach is to disable routing (ip_forward) altogether, and
-instead require clients to use a forward proxy (e.g. squid).
+# iptables -A OUTPUT -m conntrack --ctstate NEW,RELATED,ESTABLISHED -j ACCEPT
 
-The proxy can then choose what sites to allow.
-HTTPS proxies using CONNECT, so per-domain ACLs are easy.
-To e.g. allow https://example.com/index.html but block https://example.com/email.php,
-you need the proxy to do a MITM attack on your users, see
+I understand that this is due to some module missing. My question is:
+is this the only way to do it?
+Can I force this programmatically (or by loading/registering specific modules)?
+If I'm not wrong, the modules insertion is not enough to get this
+working, an additional action is required.
+Thanks a lot for your help!
 
-    http://www.squid-cache.org/Doc/config/ssl_bump/
-
-Note that your jurisdiction's privacy laws may forbid such techniques.
-
-Both DNS and HTTP proxy methods are increasingly difficult to implement
-as GUI web browsers get smarter about e.g. cert pinning and DNSSEC/DANE.
-See e.g.
-
-    https://en.wikipedia.org/wiki/Certificate_Transparency
-
+CC
