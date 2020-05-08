@@ -1,47 +1,62 @@
-From: b38911 Zxc <b38911@gmail.com>
-Subject: Correct usage of nf_ct_get
-Date: Fri, 8 May 2020 10:10:08 +0200
-Message-ID: <CACWCkhDssWGr3qg73T+Ft_f8jWDaA7wway=so0URwiDRK6hiTQ@mail.gmail.com>
+From: Mike Dillinger <miked@softtalker.com>
+Subject: nftables: Strange Error When Adding Element to Named Set
+Date: Fri, 8 May 2020 07:06:56 -0700
+Message-ID: <d2711bf1-2a50-ff35-e632-a39ca0df33f4@softtalker.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=MEPx9OZpYC5MR99JRZhnc6eFa/OtpMpGHJnrSuQ4dXg=;
-        b=iRmO2b8v6sRxGiveeOjt52tOrl7EpwNXU5rOCl9FyNL/K3hYMGg42mCh6/aiPuCTbg
-         PiTzi6WJ7lY98E/jzuqHlzunYRJ83fSt8WljVnQzTM2FpfDbQICRH9fmGVTVf8Gcz5GT
-         zS7Vl7+sHOpJ5MqgZsySGQRCU2BXnY8xcUKJS4KGZ6SsYCOnTiI9vUbFHnWZ0TeApIU9
-         FCzvT+mj6MG8ETEPBudnKAXTqraktWyfaHk2/ptANh7cxFjfWEq2iPdOid50NbKpgCGt
-         Ss1PowZsMbsql0zZTqEnq0TKf339e+QrvzRBg8B64lhoRRQbzm0b96Wb3bZO7vhoyfDS
-         i87g==
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
 
-I have a doubt on the correct usage of the conntrack func "nf_ct_get".
+Hello,
 
-I'm calling it in this way in my netfilter, to track UDP traffic:
+This has been a problem since my kernel was upgraded to 5.6. Everything was=
+ fine prior to that where I was running the 5.5 kernel.
 
------<Code snippet>-----
+I'm running Debian testing and here is some information regarding my system:
+$ uname -a
+Linux rockenfield 5.6.0-1-amd64 #1 SMP Debian 5.6.7-1 (2020-04-29) x86_64 G=
+NU/Linux
+$ nft -v
+nftables v0.9.4 (Jive at Five)
 
-      ct = nf_ct_get(skb, &ctinfo);
-      if (ct == NULL)
-      ...
+I have a script that blocks IP's by adding them to a named set, and the nam=
+ed set has a 12 hour expiration.=A0 After about a day of uptime, I start ge=
+tting the following error.=A0 I'm obfuscating the IP address with "a.b.c.d".
 
------<Code snippet>-----
+$ nft add element ip filter blacklist4-ip-12h { a.b.c.d }
+Error: Could not process rule: File exists
+add element ip filter blacklist4-ip-12h { a.b.c.d }
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-On some systems it just work. In some others I get the result as NULL
-until I do something like
+I can check the named set and no such IP address exists, and double checked=
+ using grep.=A0 Here's the kicker: if I reboot, it works fine. The blacklis=
+t4-ip-12h set has 191 IP's so it shouldn't be a matter of too many IP's.=A0=
+ I've had up to 300 in the set before with no problems.=A0 If I had too man=
+y IP's, I'd expect the same behavior after a reboot which is not the case.=
+=A0 It's not an issue with any particular IP address; rather it disallows a=
+nything being added to the named set entirely.=A0 Here are the properties o=
+f the set in case something is wrong there:
 
-# iptables -A OUTPUT -m conntrack --ctstate NEW,RELATED,ESTABLISHED -j ACCEPT
+ =A0=A0=A0 set blacklist4-ip-12h {
+ =A0=A0=A0=A0=A0=A0=A0 type ipv4_addr
+ =A0=A0=A0=A0=A0=A0=A0 flags interval,timeout
+ =A0=A0=A0=A0=A0=A0=A0 timeout 12h
+ =A0=A0=A0=A0=A0=A0=A0 gc-interval 1m
+ =A0=A0=A0 }
 
-I understand that this is due to some module missing. My question is:
-is this the only way to do it?
-Can I force this programmatically (or by loading/registering specific modules)?
-If I'm not wrong, the modules insertion is not enough to get this
-working, an additional action is required.
-Thanks a lot for your help!
+If the set properties look OK, then I'm fairly confident this is a bug.=A0 =
+I wanted to know if it's a kernel issue or an nftables issue, and also wher=
+e to go to file a bug, and I can take it from there. I'm not sure when nfta=
+bles was upgraded if we're suspecting nftables.=A0 I'd need to do some digg=
+ing.
 
-CC
+Any help is greatly appreciated.=A0 Having to reboot daily to work around t=
+his issue is not desirable.
+
+Thank you!
+-MikeD
+
