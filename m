@@ -1,37 +1,34 @@
-From: Nick <netfilter@acrasis.net>
-Subject: Re: Firewall sometimes leaking [solved]
-Date: Sun, 10 May 2020 08:56:05 +0100
-Message-ID: <20200510075605.GB27075@acrasis.net>
-References: <20200506112449.GD14154@acrasis.net>
- <alpine.DEB.2.21.2005061619330.4108@blackhole.kfki.hu>
- <20200506145726.GA9812@acrasis.net>
+From: Mike Dillinger <miked@softtalker.com>
+Subject: nftables NAT & Gaming Consoles
+Date: Sun, 10 May 2020 14:19:03 -0700
+Message-ID: <7f0d599d-8eaa-74ef-37ff-8c56c0ae126b@softtalker.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=acrasis.net;
-        s=selector1; t=1589097369;
-        bh=ZW9ScX+TLityxd/LqSYlHBIeIgCtjFfUMBNYEE4qRMk=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=nu13DexnUIGCn6T9+Nrqr59XzaKs0eMc9Zl6fIXBhKGZgqNsokZ07OrohmoAbV6lM
-         me4jc1Bo3Qcklmc/D2UnaWKDU0ja8o6CmpZcPblvjfFC9OxMgRiJlE5KrataXhd6Su
-         TWzOQ1CtMv+FXY2oQiIH9yfZHMvs+mRIf0hv9QEI=
-Content-Disposition: inline
-In-Reply-To: <20200506145726.GA9812@acrasis.net>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
 
-On 2020-05-06 15:57 BST, Nick wrote:
-> On 2020-05-06 15:31 BST, Jozsef Kadlecsik wrote:
-> > Maybe the fail2ban rule is applied both for http and https, while the
-> > rule with the ipset matching is http only?
-> 
-> The log file that fail2ban monitors is the log for http requests only.
-> No other service writes to that log.
+Hello,
 
-I was mistaken.  Some https requests were in fact getting logged to the
-same file as for http, and that was my trouble.  So this was not an
-issue with netfilter but my misconfiguration of my web server.
--- 
-Nick
+I tried to research this on the Internet, even using iptables, and I couldn=
+'t find anything conclusive so I thought I'd ask here.=A0 There are conflic=
+ting reports regarding if this will work or not.
+
+We have recently acquired a second Xbox and they will need to co-exist behi=
+nd our nftables firewall.=A0 We have an IPv4 setup on both sides (ISP/WAN, =
+LAN) using NAT.=A0 If both consoles are up and running at the same time, we=
+ need a way for NAT'd traffic to be routed to the proper console.
+
+If I were to take a guess, I'm going to assume I need to mark packets using=
+ the nftables meta command, but I'm not sure.=A0 I am assuming a generic NA=
+T setup will not work for both consoles.
+
+If I could get a starter example, I think I can take it from there. I can e=
+ven take a working iptables example and migrate it to nftables using iptabl=
+es-translate.
+
+Thanks a lot!
+-MikeD
