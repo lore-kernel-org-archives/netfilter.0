@@ -1,26 +1,75 @@
-From: Marc SCHAEFER <schaefer@alphanet.ch>
-Subject: Re: [Help] Allow website using iptables
-Date: Mon, 11 May 2020 14:24:52 +0200
-Message-ID: <20200511122452.GA8252@alphanet.ch>
-References: <CA+u3GuKsm8o1nv_iJ6kSYHWzrfgCpZsVZKbDq4FmnuCFwOL3BQ@mail.gmail.com>
- <3EDC495D-8AD1-4687-8496-B17E3CCEB158@oracle.com>
- <CAByCkvp30Pcb3ZfNUQ54mcBZ9HnhYqEJ0R3KZDQM+6_hzNQw7w@mail.gmail.com>
- <4dbf6222-2ead-d2b5-68db-cdd49028b6ef@thelounge.net>
- <CAHEKYV5hraKjimpNu1vOPP=rjKMYGs9yypvEg-jVyD8LLH8iTQ@mail.gmail.com>
+From: Reindl Harald <h.reindl@thelounge.net>
+Subject: -m statistic does not work with 5.6.8
+Date: Mon, 11 May 2020 16:58:30 +0200
+Message-ID: <69c25ef3-5864-42b7-8157-08d5c749037c@thelounge.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAHEKYV5hraKjimpNu1vOPP=rjKMYGs9yypvEg-jVyD8LLH8iTQ@mail.gmail.com>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mauricio Tavares <raubvogel@gmail.com>
-Cc: Reindl Harald <h.reindl@thelounge.net>, S??n ????? <sondd1096@gmail.com>, Netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-On Mon, May 11, 2020 at 07:48:13AM -0400, Mauricio Tavares wrote:
-> valid. I guess offending computer uses DHCP and he is looking for a
-> solution that accounts for that and expects user knows nothing about
-> MAC spoofing.
+last weekend i ported a honesypot-vm from CentOS6 to Fedora running
+5.6.8 but now "-m statistic" no longer works
 
-I have done things like this but more with ebtables than iptables.
+"telnet 8.8.8.8 80" is and was supposed to hit rules 1-6 for 6 alls but
+they are always the first one
+
+$IPTABLES -t nat -N HTTP_NAT
+$IPTABLES -t nat -A HTTP_NAT -m statistic --mode nth --every 1 --packet
+0 -j SNAT --to-source 10.0.0.90
+$IPTABLES -t nat -A HTTP_NAT -m statistic --mode nth --every 2 --packet
+0 -j SNAT --to-source 10.0.0.91
+$IPTABLES -t nat -A HTTP_NAT -m statistic --mode nth --every 3 --packet
+0 -j SNAT --to-source 10.0.0.92
+$IPTABLES -t nat -A HTTP_NAT -m statistic --mode nth --every 4 --packet
+0 -j SNAT --to-source 10.0.0.93
+$IPTABLES -t nat -A HTTP_NAT -m statistic --mode nth --every 5 --packet
+0 -j SNAT --to-source 10.0.0.94
+$IPTABLES -t nat -A HTTP_NAT -m statistic --mode nth --every 6 --packet
+0 -j SNAT --to-source 10.0.0.95
+$IPTABLES -t nat -A HTTP_NAT -m statistic --mode nth --every 7 --packet
+0 -j SNAT --to-source 10.0.0.96
+$IPTABLES -t nat -A POSTROUTING ! -d "$LAN_RANGE" -m conntrack --ctstate
+NEW -p tcp -m multiport --dports 80,443 -j HTTP_NAT
+
+-----------------------------------------------------------------------------------------------
+IPV4 TABLE NAT
+-----------------------------------------------------------------------------------------------
+Chain PREROUTING (policy ACCEPT 136 packets, 6704 bytes)
+num   pkts bytes target     prot opt in     out     source
+ destination
+
+Chain INPUT (policy ACCEPT 110 packets, 5660 bytes)
+num   pkts bytes target     prot opt in     out     source
+ destination
+
+Chain OUTPUT (policy ACCEPT 75 packets, 5342 bytes)
+num   pkts bytes target     prot opt in     out     source
+ destination
+
+Chain POSTROUTING (policy ACCEPT 69 packets, 4982 bytes)
+num   pkts bytes target     prot opt in     out     source
+ destination
+1        6   360 HTTP_NAT   tcp  --  *      *       0.0.0.0/0
+!10.0.0.0/8           ctstate NEW multiport dports 80,443
+
+Chain HTTP_NAT (1 references)
+num   pkts bytes target     prot opt in     out     source
+ destination
+1        6   360 SNAT       all  --  *      *       0.0.0.0/0
+ 0.0.0.0/0            statistic mode nth every 1 to:10.0.0.90
+2        0     0 SNAT       all  --  *      *       0.0.0.0/0
+ 0.0.0.0/0            statistic mode nth every 2 to:10.0.0.91
+3        0     0 SNAT       all  --  *      *       0.0.0.0/0
+ 0.0.0.0/0            statistic mode nth every 3 to:10.0.0.92
+4        0     0 SNAT       all  --  *      *       0.0.0.0/0
+ 0.0.0.0/0            statistic mode nth every 4 to:10.0.0.93
+5        0     0 SNAT       all  --  *      *       0.0.0.0/0
+ 0.0.0.0/0            statistic mode nth every 5 to:10.0.0.94
+6        0     0 SNAT       all  --  *      *       0.0.0.0/0
+ 0.0.0.0/0            statistic mode nth every 6 to:10.0.0.95
+7        0     0 SNAT       all  --  *      *       0.0.0.0/0
+ 0.0.0.0/0            statistic mode nth every 7 to:10.0.0.96
