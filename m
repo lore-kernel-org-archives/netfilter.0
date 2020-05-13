@@ -1,134 +1,67 @@
-From: Walter Laub <walter.laub@schwindt.eu>
-Subject: POSTROUTING doesn't apply on all outgoing packets
-Date: Tue, 12 May 2020 19:53:24 +0000
-Message-ID: <AM4PR08MB2673CD50C1C1CE225DC7A3DEF1BE0@AM4PR08MB2673.eurprd08.prod.outlook.com>
+From: =?UTF-8?B?0IbQstCw0L0g0KnQtdGA0LHQtdC5?= <ivan@intraffic.ua>
+Subject: Dynamic list for net's
+Date: Wed, 13 May 2020 20:40:15 +0300
+Message-ID: <CAPLRfGJXvrwpROcjAsxb-7=dASRO1j0h+UbwKUDhXi1zXV48_g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=schwindtcad.onmicrosoft.com; s=selector2-schwindtcad-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=eogFxEnyI8WM01haaG5bJzFYo/28yUUAhIHC3T07SAI=;
- b=H3QMcpfmQAMqUJcz+H3Gy/DvkzQj432COZP5bkdtAQ53Lci6v37qfJJ2Qd7Iht+WH6EsRA0gIlIKFuKmVQlJcfs3iGxB4o8GrI/NOLcrtvpYL8VEdnfvae1Tsi6N/F3Sj51fIdyb+v/O37l5BKhVW0pQyDsS7HWmotiXOXJycc4=
-Content-Language: de-DE
+        d=intraffic-ua.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=5fionR1buap8CNzgOKJb8l62eV/8c5ek99MztJT5NVw=;
+        b=fwBRnrHQwKaDDrRUMxXro+p/HMcy72UrFYlcfFvz07xMin25cYM7/b609hRqaIkuM0
+         G8jP0rUbPGQaCceTAmKSx3sxmKY05XYLT9PqsMSqwvtPQpqhLdgFWT8DuuSZq/X/2Y0J
+         JETTRrlE/cqzsQZkG18DPO+fNcZ6Cc5Vr3bUhLZh2WFKygVQEcAaNPGmwGlLclftOQgt
+         QtG+DTYNd+Xf3qCI2cTRI/l9bzKMACgUwA59Xy32SFJwB2ZaS3K6T5dFLm8RD1U86ufw
+         Kg3o7m3RLcHIIAcPPQAnBgha41+thMjfV/ShMurWnitP0Z0ZKb6SyTA7dmMtz8TGxnqy
+         9Olw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+To: netfilter@vger.kernel.org
 
-  -----        -----
--| rt2 | --- | rt1 |-=20
-  -----        -----
+Hi all
 
-Two routers with iptables. Packets comes to rt1 from (right) network 172.21=
-.16.0/20, to 10.232.0.0/13 which is accessible though rt2.
-rt1:
-:
-iptables -t nat -A POSTROUTING -s  172.21.16.0/20 -d 10.232.0.0/13 -j SNAT =
---to 172.21.112.1
-:
+I have question about "SET"
 
-All works fine with good performance, but I cannot explain the existence of=
- some few packets on rt2, related to source address 172.21.25.23. This addr=
-ess should be SNAT to 172.21.112.1 - in most packets it is, but not in all =
-!!!
-Log from rt2, all packets come originally from 172.21.25.23:
-:
-2020-05-12T21:13:20.202352+02:00 v1115 kernel: [8213054.473363] iptables.FO=
-RWARD(TEST): IN=3Deth0 OUT=3Dtun0 MAC=3D00:50:56:18:33:41:00:50:56:18:33:34=
-:08:00 SRC=3D172.21.112.1 DST=3D10.232.12.34 LEN=3D40 TOS=3D0x00 PREC=3D0x0=
-0 TTL=3D126 ID=3D2815 DF PROTO=3DTCP SPT=3D54982 DPT=3D80 WINDOW=3D1025 RES=
-=3D0x00 ACK URGP=3D0
-2020-05-12T21:14:00.082258+02:00 v1115 kernel: [8213094.351265] iptables.FO=
-RWARD(TEST): IN=3Deth0 OUT=3Dtun0 MAC=3D00:50:56:18:33:41:00:50:56:18:33:34=
-:08:00 SRC=3D172.21.112.1 DST=3D10.232.12.34 LEN=3D52 TOS=3D0x02 PREC=3D0x0=
-0 TTL=3D126 ID=3D2816 DF PROTO=3DTCP SPT=3D55121 DPT=3D80 WINDOW=3D8192 RES=
-=3D0x00 CWR ECE SYN URGP=3D0
-2020-05-12T21:14:00.102522+02:00 v1115 kernel: [8213094.371619] iptables.FO=
-RWARD(TEST): IN=3Deth0 OUT=3Dtun0 MAC=3D00:50:56:18:33:41:00:50:56:18:33:34=
-:08:00 SRC=3D172.21.112.1 DST=3D10.232.12.34 LEN=3D40 TOS=3D0x00 PREC=3D0x0=
-0 TTL=3D126 ID=3D2817 DF PROTO=3DTCP SPT=3D55121 DPT=3D80 WINDOW=3D1026 RES=
-=3D0x00 ACK URGP=3D0
-2020-05-12T21:14:00.104962+02:00 v1115 kernel: [8213094.371706] iptables.FO=
-RWARD(TEST): IN=3Deth0 OUT=3Dtun0 MAC=3D00:50:56:18:33:41:00:50:56:18:33:34=
-:08:00 SRC=3D172.21.112.1 DST=3D10.232.12.34 LEN=3D364 TOS=3D0x00 PREC=3D0x=
-00 TTL=3D126 ID=3D2818 DF PROTO=3DTCP SPT=3D55121 DPT=3D80 WINDOW=3D1026 RE=
-S=3D0x00 ACK PSH URGP=3D0
-2020-05-12T21:14:00.188715+02:00 v1115 kernel: [8213094.457782] iptables.FO=
-RWARD(TEST): IN=3Deth0 OUT=3Dtun0 MAC=3D00:50:56:18:33:41:00:50:56:18:33:34=
-:08:00 SRC=3D172.21.112.1 DST=3D10.232.12.34 LEN=3D40 TOS=3D0x00 PREC=3D0x0=
-0 TTL=3D126 ID=3D2819 DF PROTO=3DTCP SPT=3D55121 DPT=3D80 WINDOW=3D1025 RES=
-=3D0x00 ACK URGP=3D0
-2020-05-12T21:14:20.125341+02:00 v1115 kernel: [8213114.393465] iptables.FO=
-RWARD(TEST): IN=3Deth0 OUT=3Dtun0 MAC=3D00:50:56:18:33:41:00:50:56:18:33:34=
-:08:00 SRC=3D172.21.112.1 DST=3D10.232.12.34 LEN=3D40 TOS=3D0x00 PREC=3D0x0=
-0 TTL=3D126 ID=3D2820 DF PROTO=3DTCP SPT=3D55121 DPT=3D80 WINDOW=3D1025 RES=
-=3D0x00 ACK URGP=3D0
-2020-05-12T21:14:22.894501+02:00 v1115 kernel: [8213117.162475] iptables.FO=
-RWARD(TEST): IN=3Deth0 OUT=3Dtun0 MAC=3D00:50:56:18:33:41:00:50:56:18:33:34=
-:08:00 SRC=3D172.21.25.23 DST=3D10.232.12.34 LEN=3D40 TOS=3D0x00 PREC=3D0x0=
-0 TTL=3D126 ID=3D2821 DF PROTO=3DTCP SPT=3D54982 DPT=3D80 WINDOW=3D1025 RES=
-=3D0x00 ACK FIN URGP=3D0
-2020-05-12T21:14:22.900959+02:00 v1115 kernel: [8213117.167461] iptables.FO=
-RWARD(TEST): IN=3Deth0 OUT=3Dtun0 MAC=3D00:50:56:18:33:41:00:50:56:18:33:34=
-:08:00 SRC=3D172.21.112.1 DST=3D10.232.12.34 LEN=3D40 TOS=3D0x00 PREC=3D0x0=
-0 TTL=3D126 ID=3D2822 DF PROTO=3DTCP SPT=3D55121 DPT=3D80 WINDOW=3D1025 RES=
-=3D0x00 ACK FIN URGP=3D0
-2020-05-12T21:14:23.191443+02:00 v1115 kernel: [8213117.459406] iptables.FO=
-RWARD(TEST): IN=3Deth0 OUT=3Dtun0 MAC=3D00:50:56:18:33:41:00:50:56:18:33:34=
-:08:00 SRC=3D172.21.25.23 DST=3D10.232.12.34 LEN=3D40 TOS=3D0x00 PREC=3D0x0=
-0 TTL=3D126 ID=3D2823 DF PROTO=3DTCP SPT=3D54982 DPT=3D80 WINDOW=3D1025 RES=
-=3D0x00 ACK FIN URGP=3D0
-2020-05-12T21:14:23.800889+02:00 v1115 kernel: [8213118.068807] iptables.FO=
-RWARD(TEST): IN=3Deth0 OUT=3Dtun0 MAC=3D00:50:56:18:33:41:00:50:56:18:33:34=
-:08:00 SRC=3D172.21.25.23 DST=3D10.232.12.34 LEN=3D40 TOS=3D0x00 PREC=3D0x0=
-0 TTL=3D126 ID=3D2824 DF PROTO=3DTCP SPT=3D54982 DPT=3D80 WINDOW=3D1025 RES=
-=3D0x00 ACK FIN URGP=3D0
-2020-05-12T21:14:25.004095+02:00 v1115 kernel: [8213119.271983] iptables.FO=
-RWARD(TEST): IN=3Deth0 OUT=3Dtun0 MAC=3D00:50:56:18:33:41:00:50:56:18:33:34=
-:08:00 SRC=3D172.21.25.23 DST=3D10.232.12.34 LEN=3D40 TOS=3D0x00 PREC=3D0x0=
-0 TTL=3D126 ID=3D2825 DF PROTO=3DTCP SPT=3D54982 DPT=3D80 WINDOW=3D1025 RES=
-=3D0x00 ACK FIN URGP=3D0
-2020-05-12T21:14:27.410380+02:00 v1115 kernel: [8213121.678145] iptables.FO=
-RWARD(TEST): IN=3Deth0 OUT=3Dtun0 MAC=3D00:50:56:18:33:41:00:50:56:18:33:34=
-:08:00 SRC=3D172.21.25.23 DST=3D10.232.12.34 LEN=3D40 TOS=3D0x00 PREC=3D0x0=
-0 TTL=3D126 ID=3D2826 DF PROTO=3DTCP SPT=3D54982 DPT=3D80 WINDOW=3D1025 RES=
-=3D0x00 ACK FIN URGP=3D0
-2020-05-12T21:14:32.223134+02:00 v1115 kernel: [8213126.490674] iptables.FO=
-RWARD(TEST): IN=3Deth0 OUT=3Dtun0 MAC=3D00:50:56:18:33:41:00:50:56:18:33:34=
-:08:00 SRC=3D172.21.25.23 DST=3D10.232.12.34 LEN=3D40 TOS=3D0x00 PREC=3D0x0=
-0 TTL=3D126 ID=3D2827 DF PROTO=3DTCP SPT=3D54982 DPT=3D80 WINDOW=3D1025 RES=
-=3D0x00 ACK FIN URGP=3D0
-2020-05-12T21:14:41.833023+02:00 v1115 kernel: [8213136.100091] iptables.FO=
-RWARD(TEST): IN=3Deth0 OUT=3Dtun0 MAC=3D00:50:56:18:33:41:00:50:56:18:33:34=
-:08:00 SRC=3D172.21.25.23 DST=3D10.232.12.34 LEN=3D40 TOS=3D0x00 PREC=3D0x0=
-0 TTL=3D126 ID=3D2828 DF PROTO=3DTCP SPT=3D54982 DPT=3D80 WINDOW=3D0 RES=3D=
-0x00 ACK RST URGP=3D0
-2020-05-12T21:15:00.097772+02:00 v1115 kernel: [8213154.363942] iptables.FO=
-RWARD(TEST): IN=3Deth0 OUT=3Dtun0 MAC=3D00:50:56:18:33:41:00:50:56:18:33:34=
-:08:00 SRC=3D172.21.112.1 DST=3D10.232.12.34 LEN=3D52 TOS=3D0x02 PREC=3D0x0=
-0 TTL=3D126 ID=3D2829 DF PROTO=3DTCP SPT=3D55325 DPT=3D80 WINDOW=3D8192 RES=
-=3D0x00 CWR ECE SYN URGP=3D0
-2020-05-12T21:15:00.117084+02:00 v1115 kernel: [8213154.383275] iptables.FO=
-RWARD(TEST): IN=3Deth0 OUT=3Dtun0 MAC=3D00:50:56:18:33:41:00:50:56:18:33:34=
-:08:00 SRC=3D172.21.112.1 DST=3D10.232.12.34 LEN=3D40 TOS=3D0x00 PREC=3D0x0=
-0 TTL=3D126 ID=3D2830 DF PROTO=3DTCP SPT=3D55325 DPT=3D80 WINDOW=3D1026 RES=
-=3D0x00 ACK URGP=3D0
-2020-05-12T21:15:00.117102+02:00 v1115 kernel: [8213154.383309] iptables.FO=
-RWARD(TEST): IN=3Deth0 OUT=3Dtun0 MAC=3D00:50:56:18:33:41:00:50:56:18:33:34=
-:08:00 SRC=3D172.21.112.1 DST=3D10.232.12.34 LEN=3D364 TOS=3D0x00 PREC=3D0x=
-00 TTL=3D126 ID=3D2831 DF PROTO=3DTCP SPT=3D55325 DPT=3D80 WINDOW=3D1026 RE=
-S=3D0x00 ACK PSH URGP=3D0
-2020-05-12T21:15:00.193290+02:00 v1115 kernel: [8213154.459464] iptables.FO=
-RWARD(TEST): IN=3Deth0 OUT=3Dtun0 MAC=3D00:50:56:18:33:41:00:50:56:18:33:34=
-:08:00 SRC=3D172.21.112.1 DST=3D10.232.12.34 LEN=3D40 TOS=3D0x00 PREC=3D0x0=
-0 TTL=3D126 ID=3D2832 DF PROTO=3DTCP SPT=3D55325 DPT=3D80 WINDOW=3D1025 RES=
-=3D0x00 ACK URGP=3D0
-2020-05-12T21:15:00.234317+02:00 v1115 kernel: [8213154.500501] iptables.FO=
-RWARD(TEST): IN=3Deth0 OUT=3Dtun0 MAC=3D00:50:56:18:33:41:00:50:56:18:33:34=
-:08:00 SRC=3D172.21.112.1 DST=3D10.232.12.34 LEN=3D52 TOS=3D0x02 PREC=3D0x0=
-0 TTL=3D126 ID=3D2833 DF PROTO=3DTCP SPT=3D55326 DPT=3D80 WINDOW=3D8192 RES=
-=3D0x00 CWR ECE SYN URGP=3D0
+I read this block on manpage:
+>
+> Using anonymous sets to accept particular subnets and ports.
+>
+>
+> nft add rule filter input ip saddr { 10.0.0.0/8, 192.168.0.0/16 } tcp dpo=
+rt { 22, 443 } accept
+>
+> Named sets are sets that need to be defined first before they can be refe=
+renced in rules. Unlike anonymous sets, elements can be added to or removed=
+ from a named set at any time. Sets are referenced from rules using an @ pr=
+efixed to the sets name.
+>
+> Using named sets to accept addresses and ports.
+>
+>
+> nft add rule filter input ip saddr @allowed_hosts tcp dport @allowed_port=
+s accept
 
-Thanks,
-Walter
+
+But i can't use network how elements in set. because only ipv4_addr or
+ipv6_addr types are supported.
+
+How can I do it in other way?
+
+I need to check large lists of networks ( more than 40k in one list )
+I used to do this with ipset:
+Example:
+create net_allow hash:net family inet hashsize 1024 maxelem 65536
+add net_allow X.X.X.X/X
+
+I am trying this with "vmap".but it doesn=E2=80=99t look very easy and I ne=
+ed
+to use "jump" in rules
+
+
+Regards
+Ivan
+
+P.S. Sorry for my English
