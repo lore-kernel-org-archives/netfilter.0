@@ -1,101 +1,37 @@
-From: =?UTF-8?B?0IbQstCw0L0g0KnQtdGA0LHQtdC5?= <ivan@intraffic.ua>
-Subject: Re: Dynamic list for net's
-Date: Thu, 14 May 2020 13:48:58 +0300
-Message-ID: <CAPLRfGKERnTUD0KfPSVm91jHhv_LpzFXqvYf+7XmJxScce6j6g@mail.gmail.com>
-References: <CAPLRfGJXvrwpROcjAsxb-7=dASRO1j0h+UbwKUDhXi1zXV48_g@mail.gmail.com>
- <c5b80a94-21d8-b672-f9c4-3d99b95164fe@plushkava.net> <CAPLRfG+RCkQ=g5qQN=GrjoHzUxDK78F4=4ZwQ9qQqm2gTJfcQQ@mail.gmail.com>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Subject: Netdev conf 0x14 update
+Date: Thu, 14 May 2020 10:07:34 -0400
+Message-ID: <69564296-2b54-ed57-deff-eb809dbfb8cc@mojatatu.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-owner@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=intraffic-ua.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=335fvq3CGtaXHG57w4ka4vd9MJ01/nzAmVs3stQKW4U=;
-        b=XMSPjlsQVn8v1N8YNUKgys+uqQAxaAY13vFVqnKAA95SYfwqiB7sGJzZmSyPEDAxkU
-         EY7MyFk6h2un4A6IbyYJDFJwNg9q+K+YlDszVvUiw+Qnwy1btcUQxUDWSX0oGoUina1/
-         qzYoCKZIZ/zeWT4Adke/JrYXi8tzsEo7IXbn2lBqmsESjeKgsMNNUpmlWIRJFPU3RRva
-         0bUVWp1p4M34815NNhws06a0OPeicRgh9jvYBCWzNAKXToXnQ/AUdFBV5111RbNGPL1G
-         U9jbUwMB1W/5y50ZNibuvx8fvujMy3kuCnABw8Ar28RiuuRquE/GriVfNkoDVRvP+OmG
-         ofOA==
-In-Reply-To: <CAPLRfG+RCkQ=g5qQN=GrjoHzUxDK78F4=4ZwQ9qQqm2gTJfcQQ@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+        d=mojatatu-com.20150623.gappssmtp.com; s=20150623;
+        h=from:subject:to:cc:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=a5TpeT3R8kSC6vDxpfYUpcyfDnMdVpU9ivHQmQuNncM=;
+        b=Div3duxAwWZBjre4FLiRGrdHK2+0XXX8e8owlNzARvHyHue0FDEAAvxg0cBpvXtm2N
+         b3HkEr989uteCzEvXJUPPeaIFB1tpjNrrevADahkVG262tj+D1WuS5Vk+F6nGRY7Jvc1
+         +QqRw+EowIc7+YX/eX353x/+J+53aMGv0Qdkz9P3L3XVGuKLsCJA4o4tDWiL6I8mnX7O
+         df3B+7DhATMYFtaBC3MBBbKmo8ULAEzxf9aOkTEQ5SvWUSNYe6B6eHAg8YsvhzICATWM
+         gEFIZv1+/0S+w+oSZ0OwK7H+KUayTST6Pqy8MT+Diacd/KQO9N11OHy0UizVpAxIGujX
+         tZYw==
+Content-Language: en-GB
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: kfm@plushkava.net
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: people <people@netdevconf.org>
+Cc: Christie Geldart <christie@ambedia.com>, Kimberley Jeffries <kimberleyjeffries@gmail.com>, prog-committee-0x14@netdevconf.info, attendees-0x14@netdevconf.info, lwn@lwn.net, linux-wireless <linux-wireless@vger.kernel.org>, netfilter@vger.kernel.org, "netdev@vger.kernel.org" <netdev@vger.kernel.org>
 
-Hi again.
+Hi,
 
-How can flush "sets" ?
+Apologies for taking longer than promised to provide an
+update on the conference.
 
-i get this message when try it:
-# nft flush set ip filter ua_ix_list
-<cmdline>:1:1-31: Error: Could not process rule: Invalid argument
-flush set ip filter ua_ix_list
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+We finally have a decision - the conference is going fully
+virtual. For details please see:
 
-But:
-# nft list set ip filter ua_ix_list
-table ip filter {
-        set ua_ix_list {
-                type ipv4_addr
-                flags interval
-        }
-}
+https://netdevconf.info/0x14/news.html?virtual-netdev-0x14
 
-
-
-Install version:
-nftables v0.7 (Scrooge McDuck)
-
-Thanks
-
-=D1=81=D1=80, 13 =D0=BC=D0=B0=D1=8F 2020 =D0=B3. =D0=B2 21:59, =D0=86=D0=B2=
-=D0=B0=D0=BD =D0=A9=D0=B5=D1=80=D0=B1=D0=B5=D0=B9 <ivan@intraffic.ua>:
->
-> Yes, that's what I want
-> Thank you very much.
->
->
->
-> =D1=81=D1=80, 13 =D0=BC=D0=B0=D1=8F 2020 =D0=B3. =D0=B2 21:39, <kfm@plush=
-kava.net>:
-> >
-> > On 13/05/2020 18:40, =D0=86=D0=B2=D0=B0=D0=BD =D0=A9=D0=B5=D1=80=D0=B1=
-=D0=B5=D0=B9 wrote:
-> > > Hi all
-> > >
-> > > I have question about "SET"
-> > >
-> > > I read this block on manpage:
-> > >>
-> > >> Using anonymous sets to accept particular subnets and ports.
-> > >>
-> > >>
-> > >> nft add rule filter input ip saddr { 10.0.0.0/8, 192.168.0.0/16 } tc=
-p dport { 22, 443 } accept
-> > >>
-> > >> Named sets are sets that need to be defined first before they can be=
- referenced in rules. Unlike anonymous sets, elements can be added to or re=
-moved from a named set at any time. Sets are referenced from rules using an=
- @ prefixed to the sets name.
-> > >>
-> > >> Using named sets to accept addresses and ports.
-> > >>
-> > >>
-> > >> nft add rule filter input ip saddr @allowed_hosts tcp dport @allowed=
-_ports accept
-> > >
-> > >
-> > > But i can't use network how elements in set. because only ipv4_addr o=
-r
-> > > ipv6_addr types are supported.
-> >
-> > For named sets, ensure that the "interval" flag is present. See the
-> > discussion that occurred in the following bug:
-> >
-> > https://bugzilla.netfilter.org/show_bug.cgi?id=3D1380
-> >
-> > --
-> > Kerin Millar
+cheers,
+jamal
