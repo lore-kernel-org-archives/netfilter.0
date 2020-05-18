@@ -1,22 +1,23 @@
-From: pedro hills <abhay@dvp24.com>
-Subject: (DONATION) $2 Million Has Been Donated
-Date: Mon, 18 May 2020 11:51:05 +0100
-Message-ID: <85a3a0c43c16aba37f07bc1881513de2__2060.1103709609$1589804225$gmane$org@dvp24.com>
-Reply-To: <pedrohills@outlook.es>
+From: Stephen Satchell <list@satchell.net>
+Subject: Systemd, nftables, and iptables
+Date: Mon, 18 May 2020 07:13:21 -0700
+Message-ID: <db383c6d-952e-1df3-4abb-a03d46d63959@satchell.net>
+Reply-To: list@satchell.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"; format="flowed"
-To: 
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-CgotLSAKJDIgTWlsbGlvbiBIYXMgQmVlbiBEb25hdGVkIFRvIFlvdSxCeSBQRURSTyB0aGlzIGlz
-IFJlYWwgRm9yIE1vcmUgSW5mbwogIENvbnRhY3QgUEVEUk8gaW1tZWRpYXRlbHkgZm9yIHlvdXIg
-Y2xhbWUgVGhpcyBFbWFpbDoKICBwZWRyb2hpbGxzQG91dGxvb2suZXMKCiAgQ29udGFjdCBwaG9u
-ZSBudW1iZXIgKzM0NjMyMjMyODk3CiAgU2VuZCBZb3VyIFJlc3BvbnNlIFRvOiBwZWRyb2hpbGxz
-QG91dGxvb2suZXMKCiAgMiBNaWxsaW9uZW4gVVMtRG9sbGFyIHd1cmRlbiBhbiBTaWUgZ2VzcGVu
-ZGV0LiBWb24gUEVEUk8gaXN0IGRpZXMgZsO8cgp3ZWl0ZXJlIEluZm9ybWF0aW9uZW4gcmVhbAog
-IFdlbmRlbiBTaWUgc2ljaCB1bWdlaGVuZCBhbiBQRURSTy4gRGllc2UgRS1NYWlsOgogIHBlZHJv
-aGlsbHNAb3V0bG9vay5lcwoKICBLb250YWt0dGVsZWZvbm51bW1lciArMzQ2MzIyMzI4OTcKICBT
-ZW5kZW4gU2llIElocmUgQW50d29ydCBhbjogcGVkcm9oaWxsc0BvdXRsb29rLmVzCg==
+I'm building a CentOS 8.1 system on a Protectly four-port appliance, to 
+be my new firewall.  To avoid problems, I'm trying to remove IPTABLES 
+completely from the system so there is no chance of interference between 
+the two firewalls.
+
+Problem:  systemd requires iptables-lib.
+
+1.  Why?
+2.  How to keep systemd from requiring iptables-lib?
