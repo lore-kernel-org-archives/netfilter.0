@@ -1,7 +1,7 @@
 From: Stephen Satchell <list@satchell.net>
-Subject: FIB filtering (comments, please)
-Date: Thu, 21 May 2020 13:10:59 -0700
-Message-ID: <fbd4e0bf-9e17-a54a-e084-bfbbd161c029@satchell.net>
+Subject: FIB filtering (comments, please) (reformatted)
+Date: Thu, 21 May 2020 13:16:44 -0700
+Message-ID: <74901dd8-0b12-b22d-4447-16ad9991298b@satchell.net>
 Reply-To: list@satchell.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -37,20 +37,20 @@ So my attempt at blocking bad traffic looks something like this:
 >     chain wan_prerouting {
 >         fib saddr . mark oif $wan0       counter drop # no in-n-out
 >         fib daddr . iif type broadcast   counter drop # no non-unicast
->         fib daddr . iif type anycast     counter drop 
->         fib daddr . iif type multicast   counter drop 
->         fib daddr . iif type blackhole   counter drop 
->         fib daddr . iif type unreachable counter drop 
->         fib daddr . iif type prohibit    counter drop 
+>         fib daddr . iif type anycast     counter drop
+>         fib daddr . iif type multicast   counter drop
+>         fib daddr . iif type blackhole   counter drop
+>         fib daddr . iif type unreachable counter drop
+>         fib daddr . iif type prohibit    counter drop
 >         }
 > 
 >     chain wan_output {
 >         fib saddr . iif type broadcast   counter drop # no non-unicast
 >        #fib saddr . iif type anycast     counter drop (unicast)
->         fib saddr . iif type multicast   counter drop 
->         fib saddr . iif type blackhole   counter drop 
->         fib saddr . iif type unreachable counter drop 
->         fib saddr . iif type prohibit    counter drop
+>         fib saddr . iif type multicast   counter drop
+>         fib saddr . iif type blackhole   counter drop
+>         fib saddr . iif type unreachable counter drop
+>         fib saddr . iif type prohibit    counter dro
 >         }
 > 
 >     chain prerouting {
