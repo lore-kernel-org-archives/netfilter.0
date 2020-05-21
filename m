@@ -1,49 +1,33 @@
-From: trentbuck@gmail.com (Trent W. Buck)
-Subject: Re: Systemd, nftables, and iptables
-Date: Thu, 21 May 2020 12:23:38 +1000
-Message-ID: <87ftbu58lx.fsf@goll.lan>
-References: <db383c6d-952e-1df3-4abb-a03d46d63959@satchell.net>
+From: Thomas Weberstaedt <thomas.weberstaedt@nebelschwaden.de>
+Subject: nftables: defining variables containing ipv6 adresses
+Date: Thu, 21 May 2020 12:27:20 +0200
+Message-ID: <20200521122720.3a6c264a@kaperfahrt.nebelschwaden.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Stephen Satchell <list@satchell.net> writes:
+Hi,
 
-> I'm building a CentOS 8.1 system on a Protectly four-port appliance,
-> to be my new firewall.  To avoid problems, I'm trying to remove
-> IPTABLES completely from the system so there is no chance of
-> interference between the two firewalls.
->
-> Problem:  systemd requires iptables-lib.
->
-> 1.  Why?
-> 2.  How to keep systemd from requiring iptables-lib?
+I am wondering, how may I define IPv6 variables?
 
-I complained about this a while ago:
+The obvious idea:
 
-    https://bugs.debian.org/934584
-    https://github.com/systemd/systemd/issues/13307
+define IP6PREFIX = fdaa:bbbb:cccc:dddd
 
-You CAN have both nftables and xtables rulesets active at the same time.
-It works for me (for now), it's just EXTREMELY confusing because you
-must know to check both "nft list ruleset" and "iptables-legacy-save".
+produces an error:
 
-systemd is built using meson, not autotools.
-I don't speak meson, but meson_options.txt contains:
+/etc/nftables/setup.conf:7:29-29: Error: syntax error,
+unexpected colon, expecting newline or semicolon
 
-    option('libiptc',
-           type : 'combo',
-           choices : ['auto', 'true', 'false'],
-           description : 'libiptc support')
+define IP6PREFIX = fdaa:bbbb:cccc:dddd
+                            ^
 
-So you can probably do something like "./configure --without-libiptc".
+What would be the proper way to do so? Any documentation on this?
 
-As at systemd v245-125-ga4f4a4e441,
-the only thing using it seems to be systemd-nspawn --port.
-So if you do not use systemd-based containers,
-you will not miss this.
+Thanks
 
+Ede
