@@ -1,72 +1,69 @@
-From: Korodev <korodev@gmail.com>
-Subject: Timestamps, NFLOG, and ULOG
-Date: Thu, 21 May 2020 13:44:08 -0500
-Message-ID: <CAKOsuLo6wdEXEdb9gEbnXhU9uEoFvaWS1SKjaUitm9SaRyz17Q@mail.gmail.com>
+From: Stephen Satchell <list@satchell.net>
+Subject: FIB filtering (comments, please)
+Date: Thu, 21 May 2020 13:10:59 -0700
+Message-ID: <fbd4e0bf-9e17-a54a-e084-bfbbd161c029@satchell.net>
+Reply-To: list@satchell.net
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=9Mpzl/1qii9+nykIqslocDHZP5c0f58zf0qw6j3TWY0=;
-        b=bH8TpCMwVC4tXQdxwZL+hn3pg3mKLoVMqiptEi5vybURj4MHR0onUmvKlFGiDExHvi
-         nf8wFHMNqPDk3PowVcjS2rlNOOi0RB2SkL6RnXHr3JSOklzOEzbG+rQ/RhXMuXYeAchU
-         sxBneVZVdCBo0jhVyY/1539/NGh0+T+N0tHB2+hEF2oL00PKAaLEWfdR8pmvf1tZFGR8
-         NYVBlTFEXHFjvRgtGb5OePiI5rUziYg8kieayg+9ulQ6RG3bZ3rv1Tdhypcpo+WXHqHn
-         MazYsqPwgwX168qWXevb3+t52m5dE2F33MEtN92OP3wpi2zRO8mtlVi4LAzPv+0vbYsn
-         MQhQ==
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Linux Netfilter Users List <netfilter@vger.kernel.org>
 
-Hi all,
+I'm taking a stab at answering my own question about using the FIB to 
+filter unwanted packets, as suggested by BCP-38.
 
-This is my first time posting on this list so please let me know if
-this it not the appropriate list, but I figured I should start here.
-We've been using traditional IP tables LOG targets for some time now
-and in an effort to clean up our kernel logs and boost performance, we
-began looking at NFLOG to ulogd. However, it appears that the packet
-timestamps being shown in the ulogd logs are the timestamps at which
-the packet is processed by a ulogd stack instead of the actual packet
-timestamp.
+Assumption: the FIB (routing table) has entries for all inside networks 
+with proper gateway entries.  For many edge routers, the FIB gains 
+information from the network interfaces configurations.  One of those 
+network interfaces is the WAN, or uplink, interface.
 
-My platform (Ubuntu 16.04 4.15.0-58-generic), provides 2.0.5 and I
-have since compiled and tested 2.0.7, since I saw the JSON output
-plugin had been updated to pull the timestamp from the packets. Here's
-what I'm seeing with the following stacks and IPTables rules.
+Assumption: Non-routed netblocks are in the FIB as "black hole". Ditto 
+netblocks that are administratively blocked.
 
-stack=firewall9:NFLOG,base1:BASE,ifi1:IFINDEX,ip2str1:IP2STR,mac2str1:HWHDR,json9:JSON
-stack=firewall10:NFLOG,base1:BASE,ifi1:IFINDEX,ip2str1:IP2STR,print1:PRINTPKT,emu10:LOGEMU
-stack=firewall11:NFLOG,base1:BASE,ifi1:IFINDEX,ip2str1:IP2STR,print1:PRINTPKT,emu11:LOGEMU
-stack=firewall12:NFLOG,base1:BASE,ifi1:IFINDEX,ip2str1:IP2STR,mac2str1:HWHDR,json12:JSON
+Section 3 of BCP-38 talks about restricting forged traffic.
 
-Chain LOG_DROP (4 references)
- pkts bytes target     prot opt in     out     source               destination
- 6625  440K NFLOG      all  --  *      *       0.0.0.0/0
-0.0.0.0/0            nflog-group 9
-31653 2709K LOG        all  --  *      *       0.0.0.0/0
-0.0.0.0/0             LOG flags 0 level 6
- 6612  438K NFLOG      all  --  *      *       0.0.0.0/0
-0.0.0.0/0            nflog-group 10
- 6611  437K NFLOG      all  --  *      *       0.0.0.0/0
-0.0.0.0/0            nflog-group 11
- 6611  437K NFLOG      all  --  *      *       0.0.0.0/0
-0.0.0.0/0            nflog-group 12
-33437 3119K DROP       all  --  *      *       0.0.0.0/0            0.0.0.0/0
+* edge router MUST NOT send any packet with a source address
+   not in the router itself or in the inside network.
+* edge router MUST NOT send broadcast packets upstream
+* edge router MAY drop received upstream broadcast packet
 
+So my attempt at blocking bad traffic looks something like this:
 
-group 9 (json) - 2020-05-21T14:20:18.663625
-iptables log - 2020-05-21T14:20:17.643629+00:00
-group 10 - May 21 14:20:18
-group 11 - May 21 14:20:18
-group 12 - 2020-05-21T14:20:18.664217:D
+> define wan0 = enp1s0
+> table inet filter {
+>     chain wan_prerouting {
+>         fib saddr . mark oif $wan0       counter drop # no in-n-out
+>         fib daddr . iif type broadcast   counter drop # no non-unicast
+>         fib daddr . iif type anycast     counter drop 
+>         fib daddr . iif type multicast   counter drop 
+>         fib daddr . iif type blackhole   counter drop 
+>         fib daddr . iif type unreachable counter drop 
+>         fib daddr . iif type prohibit    counter drop 
+>         }
+> 
+>     chain wan_output {
+>         fib saddr . iif type broadcast   counter drop # no non-unicast
+>        #fib saddr . iif type anycast     counter drop (unicast)
+>         fib saddr . iif type multicast   counter drop 
+>         fib saddr . iif type blackhole   counter drop 
+>         fib saddr . iif type unreachable counter drop 
+>         fib saddr . iif type prohibit    counter drop
+>         }
+> 
+>     chain prerouting {
+>         type filter hook prerouting priority 0; policy accept;
+> 
+>         iifname $wan0 jump wan_prerouting
+>         }
+> 
+>     chain output {
+>         type filter hook output priority 0; policy accept;
+> 
+>         iifname $wan0 jump wan_output
+>         }
 
-Additionally if I implement any sort of queuing or thresholding, which
-I'd like to eventually, the timestamps are affected. This seems to
-indicate I'm not getting the actual packet timestamps. Any ideas on
-what could be causing this or is this expected behaviour?
-
-
-
-\\korodev
+For those edge routers with full BGP tables, this netfilter code should 
+block packets from being sent to subnet broadcast addresses.
