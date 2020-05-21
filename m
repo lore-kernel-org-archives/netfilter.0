@@ -1,25 +1,49 @@
-From: Stephen Satchell <list@satchell.net>
-Subject: saddr, daddr type determination
-Date: Wed, 20 May 2020 10:55:51 -0700
-Message-ID: <bb6a0ba8-bc8f-3e03-3ec8-d2bae008439b@satchell.net>
-Reply-To: list@satchell.net
+From: trentbuck@gmail.com (Trent W. Buck)
+Subject: Re: Systemd, nftables, and iptables
+Date: Thu, 21 May 2020 12:23:38 +1000
+Message-ID: <87ftbu58lx.fsf@goll.lan>
+References: <db383c6d-952e-1df3-4abb-a03d46d63959@satchell.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-OK, I'm trying to determine if the source address, using the FIB 
-(routing table), is a broadcast or multicast address.  I'm making the 
-rash assumption that the daddr type is accessed by using the meta 
-pkttype in the output and forward chains:
+Stephen Satchell <list@satchell.net> writes:
 
-> define wan0 = enp1s0
-> iifname $wan protocol {tcp,udp} pkttype {broadcast, multicast} counter drop
+> I'm building a CentOS 8.1 system on a Protectly four-port appliance,
+> to be my new firewall.  To avoid problems, I'm trying to remove
+> IPTABLES completely from the system so there is no chance of
+> interference between the two firewalls.
+>
+> Problem:  systemd requires iptables-lib.
+>
+> 1.  Why?
+> 2.  How to keep systemd from requiring iptables-lib?
 
-Is there any way to do with for the source address using the FIB?
+I complained about this a while ago:
 
-I need this to conform to BCP38 in my Linux router.
+    https://bugs.debian.org/934584
+    https://github.com/systemd/systemd/issues/13307
+
+You CAN have both nftables and xtables rulesets active at the same time.
+It works for me (for now), it's just EXTREMELY confusing because you
+must know to check both "nft list ruleset" and "iptables-legacy-save".
+
+systemd is built using meson, not autotools.
+I don't speak meson, but meson_options.txt contains:
+
+    option('libiptc',
+           type : 'combo',
+           choices : ['auto', 'true', 'false'],
+           description : 'libiptc support')
+
+So you can probably do something like "./configure --without-libiptc".
+
+As at systemd v245-125-ga4f4a4e441,
+the only thing using it seems to be systemd-nspawn --port.
+So if you do not use systemd-based containers,
+you will not miss this.
+
