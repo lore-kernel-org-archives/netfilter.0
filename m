@@ -1,83 +1,46 @@
-From: "Oliver O'Boyle" <oliver.oboyle@gmail.com>
-Subject: Re: nftables: defining variables containing ipv6 adresses
-Date: Thu, 21 May 2020 13:29:15 -0400
-Message-ID: <CAMOPTEz6tBM2gNat+GAwf=eweyf7czWigYL83W==PD4sbtZyag@mail.gmail.com>
-References: <20200521122720.3a6c264a@kaperfahrt.nebelschwaden.de>
+From: "ad^2" <adsquaired@gmail.com>
+Subject: Fwd: Raw Expression matching DNS Query?
+Date: Thu, 21 May 2020 13:26:59 -0400
+Message-ID: <CAPdGaa3zxzXL=2SFGFnWBqas_OCTaq3mtkNWEgx=oGOmLidOjA@mail.gmail.com>
+References: <CAPdGaa0mncf4ciz+RuefkRUMu=QL1ukvWnsxrM_o-XxGDwzy7Q@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=u/ZGAMQnHqSviLhxua6Dwydx82weDRVyJdYwarT46EQ=;
-        b=QejRLi+CZphxxXnD0O5LvG73AHbP85zxnRbVASBkKTkF0G3urA/dUYw1CDXuNSzSbJ
-         FDnWaF4XMEsHH37SPs245iQ1BKB5Anup33VV9BfDS58J4xDYphlbGdCW1FoR44GSaqSH
-         GYUIXVyozndfg03i+Dazx/YgPwOvojqL7G9muZUlHWn6gkIWxvxHsytJQgST/y65frcy
-         fa1YuGIRziRoWb28cWzqNfqCiNyUKoifO9wIM91xAMazoi0MpBJk2Cuid00zzAMcT0vn
-         Ddl/vQyy3uwZk6rP6I9BSIVuiqXw+YIc1Fp7Zo2kIFemOPOOUezCQiAxkmTaOBFA6SGu
-         IvQQ==
-In-Reply-To: <20200521122720.3a6c264a@kaperfahrt.nebelschwaden.de>
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=C0bK5HzRdfOfCvRDRtVUdf4CnwVHK2gnWpZJPnJb0AA=;
+        b=DZHLovzcPnIy5Cr2nVNIvlSge9PwND5nylkFTVRufM7nkPtRH/pJICy4fx//9RaMhz
+         RJ84BZNnbjcaifk3MUZc2mfiqwmWueBF3jdoZcOY0NUKNyKyLudY62i5/HSh1SGGEju8
+         ItuZgMwxTwmMKQoi488nzxeYINSx32EJxzl91fmU1MvUXoHLym7I/emT0+d8Jp6Ce9Zq
+         VaPbFGuCT0ZJNVQl0qNm0G5gQdbnIPs7ywagQVwbVKZWZV6wysmpNWfoder3TpbHc9x6
+         J+gjy1xlMcJDatrJNd5dEtePtdUOL64gCQ72V/gYOLbHs18+N/qJM90HDBlzQYUMeC5P
+         x9tw==
+In-Reply-To: <CAPdGaa0mncf4ciz+RuefkRUMu=QL1ukvWnsxrM_o-XxGDwzy7Q@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Thomas Weberstaedt <thomas.weberstaedt@nebelschwaden.de>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-You need to use a valid ipv6 address. E.g.:
+Hello,
 
-define IP6ADDR = 2607:f8b0:400b:80f::2004    <-- a single address with no CIDR
-define IP6PREFIX = 2607:f8b0:400b:80f::/64       <-- prefix with CIDR
+Does anyone have examples showing the use of a raw expression to
+filter DNS domain name information?
 
-If you're referencing the IP6PREFIX variable in a set, then you need
-to set the interval flag in the set. E.g.:
+I'm trying to DNAT a packet to a specific DNS server's IP address when
+the domain name in the query is a match.
 
-set IP6PREFIX_SET {
-    type ipv6_addr
-    flags interval
-    elements = {
-        $IP6PREFIX
-    }
-}
+Ex. if the domain in the query is yahoo.com then redirect to 8.8.8.8
 
-otherwise you do not need the interval flag for single addresses:
+I am not sure on the hex syntax.
 
-set IP6ADDR_SET {
-    type ipv6_addr
-    elements = {
-        $IP6ADDR
-    }
-}
+What is not working:
 
-Oliver
+add rule mytable prerouting meta l4proto udp udp dport 53 @th,160,120
+0x7961686f6f2e636f6d dnat 8.8.8.8
+add rule mytable prerouting meta l4proto udp udp dport 53 @th,160,120
+0x057961686f6f03636f6d00 dnat 8.8.8.8
 
+Thanks in advance,
 
-On Thu, May 21, 2020 at 6:38 AM Thomas Weberstaedt
-<thomas.weberstaedt@nebelschwaden.de> wrote:
->
-> Hi,
->
-> I am wondering, how may I define IPv6 variables?
->
-> The obvious idea:
->
-> define IP6PREFIX = fdaa:bbbb:cccc:dddd
->
-> produces an error:
->
-> /etc/nftables/setup.conf:7:29-29: Error: syntax error,
-> unexpected colon, expecting newline or semicolon
->
-> define IP6PREFIX = fdaa:bbbb:cccc:dddd
->                             ^
->
-> What would be the proper way to do so? Any documentation on this?
->
-> Thanks
->
-> Ede
-
-
-
--- 
-:o@>
+adsquaired
