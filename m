@@ -1,69 +1,24 @@
-From: Stephen Satchell <list@satchell.net>
-Subject: FIB filtering (comments, please) (reformatted)
-Date: Thu, 21 May 2020 13:16:44 -0700
-Message-ID: <74901dd8-0b12-b22d-4447-16ad9991298b@satchell.net>
-Reply-To: list@satchell.net
+From: Florian Westphal <fw@strlen.de>
+Subject: Re: Timestamps, NFLOG, and ULOG
+Date: Fri, 22 May 2020 01:26:26 +0200
+Message-ID: <20200521232626.GA26949@breakpoint.cc>
+References: <CAKOsuLo6wdEXEdb9gEbnXhU9uEoFvaWS1SKjaUitm9SaRyz17Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <CAKOsuLo6wdEXEdb9gEbnXhU9uEoFvaWS1SKjaUitm9SaRyz17Q@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Linux Netfilter Users List <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Korodev <korodev@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-I'm taking a stab at answering my own question about using the FIB to 
-filter unwanted packets, as suggested by BCP-38.
+Korodev <korodev@gmail.com> wrote:
+> Additionally if I implement any sort of queuing or thresholding, which
+> I'd like to eventually, the timestamps are affected. This seems to
+> indicate I'm not getting the actual packet timestamps. Any ideas on
+> what could be causing this or is this expected behaviour?
 
-Assumption: the FIB (routing table) has entries for all inside networks 
-with proper gateway entries.  For many edge routers, the FIB gains 
-information from the network interfaces configurations.  One of those 
-network interfaces is the WAN, or uplink, interface.
-
-Assumption: Non-routed netblocks are in the FIB as "black hole". Ditto 
-netblocks that are administratively blocked.
-
-Section 3 of BCP-38 talks about restricting forged traffic.
-
-* edge router MUST NOT send any packet with a source address
-   not in the router itself or in the inside network.
-* edge router MUST NOT send broadcast packets upstream
-* edge router MAY drop received upstream broadcast packet
-
-So my attempt at blocking bad traffic looks something like this:
-
-> define wan0 = enp1s0
-> table inet filter {
->     chain wan_prerouting {
->         fib saddr . mark oif $wan0       counter drop # no in-n-out
->         fib daddr . iif type broadcast   counter drop # no non-unicast
->         fib daddr . iif type anycast     counter drop
->         fib daddr . iif type multicast   counter drop
->         fib daddr . iif type blackhole   counter drop
->         fib daddr . iif type unreachable counter drop
->         fib daddr . iif type prohibit    counter drop
->         }
-> 
->     chain wan_output {
->         fib saddr . iif type broadcast   counter drop # no non-unicast
->        #fib saddr . iif type anycast     counter drop (unicast)
->         fib saddr . iif type multicast   counter drop
->         fib saddr . iif type blackhole   counter drop
->         fib saddr . iif type unreachable counter drop
->         fib saddr . iif type prohibit    counter dro
->         }
-> 
->     chain prerouting {
->         type filter hook prerouting priority 0; policy accept;
-> 
->         iifname $wan0 jump wan_prerouting
->         }
-> 
->     chain output {
->         type filter hook output priority 0; policy accept;
-> 
->         iifname $wan0 jump wan_output
->         }
-
-For those edge routers with full BGP tables, this netfilter code should 
-block packets from being sent to subnet broadcast addresses.
+Its expected.  If you want rx timestamps you should set
+SO_TIMESTAMP(NS) socket option,
