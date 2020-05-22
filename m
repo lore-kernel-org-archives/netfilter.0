@@ -1,40 +1,81 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: Timestamps, NFLOG, and ULOG
-Date: Fri, 22 May 2020 02:21:34 +0200
-Message-ID: <20200522002134.GB26949@breakpoint.cc>
-References: <CAKOsuLo6wdEXEdb9gEbnXhU9uEoFvaWS1SKjaUitm9SaRyz17Q@mail.gmail.com>
- <20200521232626.GA26949@breakpoint.cc>
- <CAKOsuLopu0VZna9YTK7u-bri7RjodX6ufrqz_n4tLGXHOLNw7w@mail.gmail.com>
+From: Ede Wolf <listac@nebelschwaden.de>
+Subject: Re: nftables: defining variables containing ipv6 adresses
+Date: Fri, 22 May 2020 06:35:48 +0200
+Message-ID: <ca5da6be-335e-c45c-2b4b-8c9c7524e7bb@nebelschwaden.de>
+References: <20200521122720.3a6c264a@kaperfahrt.nebelschwaden.de>
+ <CAMOPTEz6tBM2gNat+GAwf=eweyf7czWigYL83W==PD4sbtZyag@mail.gmail.com>
+Reply-To: listac@nebelschwaden.de
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAKOsuLopu0VZna9YTK7u-bri7RjodX6ufrqz_n4tLGXHOLNw7w@mail.gmail.com>
+In-Reply-To: <CAMOPTEz6tBM2gNat+GAwf=eweyf7czWigYL83W==PD4sbtZyag@mail.gmail.com>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Korodev <korodev@gmail.com>
-Cc: Florian Westphal <fw@strlen.de>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Cc: netfilter@vger.kernel.org
 
-Korodev <korodev@gmail.com> wrote:
-> On Thu, May 21, 2020 at 6:26 PM Florian Westphal <fw@strlen.de> wrote:
-> > Its expected.  If you want rx timestamps you should set
-> > SO_TIMESTAMP(NS) socket option,
+Thanks very much. Works now. I would not have expected nftables to do a 
+semantical check, I believed, I'd had a syntax error somewhere and had 
+put the cidr in the rule, not the variable definition
+
+Ede
+
+
+Am 21.05.20 um 19:29 schrieb Oliver O'Boyle:
+> You need to use a valid ipv6 address. E.g.:
 > 
-> Thank you for your reply. My understanding is that SO_TIMESTAMP is a
-> socket option I could set for an application that I control, but how
-> would I go about enabling that such that IPTables, Netlink, and ULOGd
-> are aware?
+> define IP6ADDR = 2607:f8b0:400b:80f::2004    <-- a single address with no CIDR
+> define IP6PREFIX = 2607:f8b0:400b:80f::/64       <-- prefix with CIDR
+> 
+> If you're referencing the IP6PREFIX variable in a set, then you need
+> to set the interval flag in the set. E.g.:
+> 
+> set IP6PREFIX_SET {
+>      type ipv6_addr
+>      flags interval
+>      elements = {
+>          $IP6PREFIX
+>      }
+> }
+> 
+> otherwise you do not need the interval flag for single addresses:
+> 
+> set IP6ADDR_SET {
+>      type ipv6_addr
+>      elements = {
+>          $IP6ADDR
+>      }
+> }
+> 
+> Oliver
+> 
+> 
+> On Thu, May 21, 2020 at 6:38 AM Thomas Weberstaedt
+> <thomas.weberstaedt@nebelschwaden.de> wrote:
+>>
+>> Hi,
+>>
+>> I am wondering, how may I define IPv6 variables?
+>>
+>> The obvious idea:
+>>
+>> define IP6PREFIX = fdaa:bbbb:cccc:dddd
+>>
+>> produces an error:
+>>
+>> /etc/nftables/setup.conf:7:29-29: Error: syntax error,
+>> unexpected colon, expecting newline or semicolon
+>>
+>> define IP6PREFIX = fdaa:bbbb:cccc:dddd
+>>                              ^
+>>
+>> What would be the proper way to do so? Any documentation on this?
+>>
+>> Thanks
+>>
+>> Ede
+> 
+> 
+> 
 
-Setting this option makes the kernel record a timestamp at reception
-time for all packets it receives (it won't know the socket the packet
-will be delivered to yet, so it can't do this in a fine-grained way).
-
-This is off by default for performance reasons.
-Ideally ulogd should have an option to enable this (it doesn't have
-one).
-
-> I assumed I would at least get the software timestamp at
-> which the kernel received the packet.
-
-No, the kernel does not record a timestamp by default.
