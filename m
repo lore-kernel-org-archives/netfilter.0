@@ -1,81 +1,86 @@
-From: Ede Wolf <listac@nebelschwaden.de>
-Subject: Re: nftables: defining variables containing ipv6 adresses
-Date: Fri, 22 May 2020 06:35:48 +0200
-Message-ID: <ca5da6be-335e-c45c-2b4b-8c9c7524e7bb@nebelschwaden.de>
-References: <20200521122720.3a6c264a@kaperfahrt.nebelschwaden.de>
- <CAMOPTEz6tBM2gNat+GAwf=eweyf7czWigYL83W==PD4sbtZyag@mail.gmail.com>
-Reply-To: listac@nebelschwaden.de
+From: Stephen Satchell <list@satchell.net>
+Subject: Is this a correct usage of the FIB facility of NFTABLES? (BCP-38)
+Date: Sat, 23 May 2020 08:57:43 -0700
+Message-ID: <782e0e4b-f471-9894-6569-a01d8cdeb6f8@satchell.net>
+Reply-To: list@satchell.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAMOPTEz6tBM2gNat+GAwf=eweyf7czWigYL83W==PD4sbtZyag@mail.gmail.com>
 Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Cc: netfilter@vger.kernel.org
+To: Linux Netfilter Users List <netfilter@vger.kernel.org>
 
-Thanks very much. Works now. I would not have expected nftables to do a 
-semantical check, I believed, I'd had a syntax error somewhere and had 
-put the cidr in the rule, not the variable definition
+I'm having quite a bit of difficulty wrapping my head around some of the 
+syntax in nftables' nft utility.  So I'd like to concentrate my question 
+on a set of similar statements that implement a specific idea.  This is 
+part of my firewall implementation for BCP 38 using NFTABLES.
 
-Ede
+Question: what is incorrect about the following?
 
+The goal for incoming WAN packets:
+1.  Reject packets that will be routed right back out the WAN interface.
+2.  Reject packets with destinations that are not unicast.
+3.  Reject packets with sources that are not unicast
+4.  Reject packets with sources not routed out the WAN interface
 
-Am 21.05.20 um 19:29 schrieb Oliver O'Boyle:
-> You need to use a valid ipv6 address. E.g.:
-> 
-> define IP6ADDR = 2607:f8b0:400b:80f::2004    <-- a single address with no CIDR
-> define IP6PREFIX = 2607:f8b0:400b:80f::/64       <-- prefix with CIDR
-> 
-> If you're referencing the IP6PREFIX variable in a set, then you need
-> to set the interval flag in the set. E.g.:
-> 
-> set IP6PREFIX_SET {
->      type ipv6_addr
->      flags interval
->      elements = {
->          $IP6PREFIX
->      }
-> }
-> 
-> otherwise you do not need the interval flag for single addresses:
-> 
-> set IP6ADDR_SET {
->      type ipv6_addr
->      elements = {
->          $IP6ADDR
->      }
-> }
-> 
-> Oliver
-> 
-> 
-> On Thu, May 21, 2020 at 6:38 AM Thomas Weberstaedt
-> <thomas.weberstaedt@nebelschwaden.de> wrote:
->>
->> Hi,
->>
->> I am wondering, how may I define IPv6 variables?
->>
->> The obvious idea:
->>
->> define IP6PREFIX = fdaa:bbbb:cccc:dddd
->>
->> produces an error:
->>
->> /etc/nftables/setup.conf:7:29-29: Error: syntax error,
->> unexpected colon, expecting newline or semicolon
->>
->> define IP6PREFIX = fdaa:bbbb:cccc:dddd
->>                              ^
->>
->> What would be the proper way to do so? Any documentation on this?
->>
->> Thanks
->>
->> Ede
-> 
-> 
-> 
+Assumptions: (1) the routing table will have all non-routable domains 
+defined as black holes.  (ip route add blackhole 10.0.0.0/8 metric 999) 
+(2) the routing table contains all internal netblocks not covered by 
+local interface settings, with proper gateway addresses.
 
+define wan0 = enp1s0
+table inet filter {
+     chain wan_prerouting {
+         fib daddr oifname $wan0    counter drop # no in-n-out
+         fib daddr type broadcast   counter drop # no non-unicast
+         fib daddr type anycast     counter drop
+         fib daddr type multicast   counter drop
+         fib daddr type blackhole   counter drop
+         fib daddr type unreachable counter drop
+         fib daddr type prohibit    counter drop
+
+         fib saddr type broadcast   counter drop # no non-unicast
+        #fib saddr type anycast     counter drop
+         fib saddr type multicast   counter drop
+         fib saddr type blackhole   counter drop
+         fib saddr type unreachable counter drop
+         fib saddr type prohibit    counter drop
+
+	fib saddr oifname $wan0    return
+	counter drop
+        }
+     chain prerouting {
+         type filter hook prerouting priority 0; policy accept;
+
+         iifname $wan0 jump wan_prerouting
+         }
+     }
+
+1.  The wan_prerouting chain will first test the destination address to 
+see if it would be routed right back out the WAN interface, and if true 
+drop it.
+
+I know, I know, a packet that arrives at a router is supposed to have a 
+destination address that relates in some way with that router.  A 
+ne'er-do-well can contrive a way to send a packet with a "forged" 
+destination address, so that the transaction involves *three* addresses: 
+  the source address, the destination address, and an intermediate route 
+address.
+
+2-7.  Then the chain tests to see if the destination address defines 
+something other than a unicast address, and if true drop it.  This 
+blocks broadcast packets from the upstream -- in the current ISP model 
+(and assuming no multicast) there is no reason for an ISP to send a 
+broadcast packet to its client.
+
+8-13.  Finally, the source address is tested to block anything other 
+than sending response unicast packets upstream.  This is part of the 
+requirements for BCP 38.  The reason that "anycast" test is commented 
+out is because the router will convert anycast on output to the unicast. 
+  Research will determine if this test should stand.
+
+14-15.  This final check verifies the incoming WAN packet has a source 
+address that would go out the WAN interface.  This blocks ne'er-do-wells 
+from using the router from DDoSing an internal node.
