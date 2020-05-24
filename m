@@ -1,58 +1,63 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Stephen Satchell <list@satchell.net>
 Subject: Re: WTF, over
-Date: Sun, 24 May 2020 13:09:03 +0200
-Message-ID: <20200524110903.GA4481@salvia>
+Date: Sun, 24 May 2020 08:03:00 -0700
+Message-ID: <627aadf3-c2d8-6815-bb78-903a38c65b44@satchell.net>
 References: <f8b2b366-356a-cca8-ccc5-58a561904dad@satchell.net>
+ <20200524110903.GA4481@salvia>
+Reply-To: list@satchell.net
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <f8b2b366-356a-cca8-ccc5-58a561904dad@satchell.net>
+In-Reply-To: <20200524110903.GA4481@salvia>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Stephen Satchell <list@satchell.net>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: Linux Netfilter Users List <netfilter@vger.kernel.org>
 
-On Sat, May 23, 2020 at 03:02:14PM -0700, Stephen Satchell wrote:
-> This statement works with --check, but this is what I get when I try to
-> insert the rule:
+On 5/24/20 4:09 AM, Pablo Neira Ayuso wrote:
+> fib address type with...
 > 
-> > [root@fiber-fw Desktop]# nft add rule inet filter output meta oif enp1s0 jump wan_output
-> > Error: Could not process rule: Operation not supported
-> > add rule inet filter output meta oif enp1s0 jump wan_output
-> > ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> * iff can only be used in prerouting, input and forward.
+> * oif can only be used in output, postrouting and forward.
 > 
-> Doing a "list ruleset", I find this present in inet filter:
+> I assume your 'output' chain is something like:
 > 
-> > 	chain wan_output {
-> > 		fib saddr . iif type broadcast counter packets 0 bytes 0 drop
-> > 		fib saddr . iif type multicast counter packets 0 bytes 0 drop
-> > 		fib saddr . iif type blackhole counter packets 0 bytes 0 drop
-> > 		fib saddr . iif type unreachable counter packets 0 bytes 0 drop
-> > 		fib saddr . iif type prohibit counter packets 0 bytes 0 drop
-> > 	}
+>          type filter hook output priority 0; policy drop;
 > 
-> Interestingly, a similar expression works just file in the input context:
-> 
-> > 	chain input {
-> > 		type filter hook input priority 0; policy drop;
-> > 		iif "enp1s0" jump wan_input
-> > 		iif "enp2s0" jump lan_input
-> 
-> 
-> Documentation provides NO clue as to what is wrong with the first statement
-> statement.
-> 
-> Can anyone tell me what is going on?
+> Anyway, I agree error reporting and documentation can do better there.
 
-fib address type with...
+Interesting.  Here is the complete fragment, as tested on a virtual machine:
 
-* iff can only be used in prerouting, input and forward.
-* oif can only be used in output, postrouting and forward.
+> table inet filter {
+>     chain wan_output {
+>         fib saddr . iif type broadcast   counter drop # no non-unicast
+>        #fib saddr . iif type anycast     counter drop (unicast)
+>         fib saddr . iif type multicast   counter drop 
+>         fib saddr . iif type blackhole   counter drop 
+>         fib saddr . iif type unreachable counter drop 
+>         fib saddr . iif type prohibit    counter drop
+>         }
+>     chain output {
+>         type filter hook output priority 0; policy accept;
+>         meta oif "lo" accept
+>         meta oif "ens3" goto wan_output
+>         }
+>     }
 
-I assume your 'output' chain is something like:
+The output when I try to load this is:
+> [root@localhost Desktop]# nft  -f x.nft
+> x.nft:13:9-39: Error: Could not process rule: Operation not supported
+>         meta oif "ens3" goto wan_output
+>         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-        type filter hook output priority 0; policy drop;
+*  meta oif is being used in the output chain
+*  replace 'goto wan_output' with drop generates no message
+*  "nft ruleset" echos the rules properly with "drop"
 
-Anyway, I agree error reporting and documentation can do better there.
+What is so special about the jump action?
+
+
+So it appears there is a disconnect when the jump target is specified.
+
