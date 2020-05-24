@@ -1,68 +1,61 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: WTF, over
-Date: Sun, 24 May 2020 18:36:52 +0200
-Message-ID: <20200524163652.GA6565@salvia>
-References: <f8b2b366-356a-cca8-ccc5-58a561904dad@satchell.net>
- <20200524110903.GA4481@salvia>
- <627aadf3-c2d8-6815-bb78-903a38c65b44@satchell.net>
+From: Stephen Satchell <list@satchell.net>
+Subject: iif versus meta fib iif
+Date: Sun, 24 May 2020 15:06:47 -0700
+Message-ID: <f464fa81-93c2-62f4-9703-e84e35fb3d54@satchell.net>
+Reply-To: list@satchell.net
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <627aadf3-c2d8-6815-bb78-903a38c65b44@satchell.net>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Stephen Satchell <list@satchell.net>
-Cc: Linux Netfilter Users List <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Linux Netfilter Users List <netfilter@vger.kernel.org>
 
-On Sun, May 24, 2020 at 08:03:00AM -0700, Stephen Satchell wrote:
-> On 5/24/20 4:09 AM, Pablo Neira Ayuso wrote:
-> > fib address type with...
-> > 
-> > * iff can only be used in prerouting, input and forward.
-> > * oif can only be used in output, postrouting and forward.
-> > 
-> > I assume your 'output' chain is something like:
-> > 
-> >          type filter hook output priority 0; policy drop;
-> 
-[...]
-> > table inet filter {
-> >     chain wan_output {
-> >         fib saddr . iif type broadcast   counter drop # no non-unicast
-> >        #fib saddr . iif type anycast     counter drop (unicast)
-> >         fib saddr . iif type multicast   counter drop         fib saddr
-> > . iif type blackhole   counter drop         fib saddr . iif type
-> > unreachable counter drop         fib saddr . iif type prohibit
-> > counter drop
-> >         }
-> >     chain output {
-> >         type filter hook output priority 0; policy accept;
-> >         meta oif "lo" accept
-> >         meta oif "ens3" goto wan_output
-> >         }
-> >     }
-> 
-> The output when I try to load this is:
-> > [root@localhost Desktop]# nft  -f x.nft
-> > x.nft:13:9-39: Error: Could not process rule: Operation not supported
-> >         meta oif "ens3" goto wan_output
-> >         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+I'm trying to understand why the nft(8) responds the way it does, and 
+perhaps try to understand the underlying operation of a netfilter firewall.
 
-This happens because you cannot use 'fib saddr . iif type' from your
-wan_output chain.
+What is the difference between these selectors?
 
-The error is reported, later on, when you add this rule:
+1. iif eth0
+2. meta fib saddr iif eth0
+3. meta fib daddr iif eth0
 
-        meta oif "ens3" goto wan_output
+4. oif eth0
+5. meta fib saddr oif eth0
+6. meta fib daddr oif eth0
 
-because the jump/goto validates your 'wan_output'. This validation
-fails because your 'wan_output' chain contains rules with:
+(1) tests what interface came from, irrespective of the source and 
+destination address
 
-        fib saddr . iif type
+(2) uses the routing table to find out where the packet would return
 
-which is not supported in the output path.
+(3) uses the routing table to find out where the packet will be routed
 
-You can only use 'fib saddr . iif type' from prerouting, input and
-forward.
+(4) tests the interface associated with the routing decision that has 
+been performed in the packet flow.  In theory. (3), (4) and (6) would 
+return the same result.
+
+(5) uses the routing table to find out where the packet would return
+
+(6) uses the routing table to find out where the packet would be routed. 
+  In theory, (4) and (6) would return the same result.
+
+===
+https://wiki.nftables.org/wiki-nftables/index.php/Netfilter_hooks
+
+So here is the big question:  how can I determine the FIB's 
+classification of the source address in rules in the output and 
+postrouting tables?  In other words, how can I test that the source 
+address denotes a uni-cast address that would return to this router?
+
+The documentation is silent about restrictions on using the routing 
+selectors.
+
+I can understand why "oif eth0" is not permitted in ingress, prerouting 
+and input tables, because the output routing decision hasn't been made yet.
+
+The packet routing decision *has* been made in the forward, output, and 
+postrouting table, so "oif eth0" should be allowed.
+
+
