@@ -1,61 +1,91 @@
-From: Stephen Satchell <list@satchell.net>
-Subject: iif versus meta fib iif
-Date: Sun, 24 May 2020 15:06:47 -0700
-Message-ID: <f464fa81-93c2-62f4-9703-e84e35fb3d54@satchell.net>
-Reply-To: list@satchell.net
+From: Florian Westphal <fw@strlen.de>
+Subject: Re: iif versus meta fib iif
+Date: Mon, 25 May 2020 00:42:23 +0200
+Message-ID: <20200524224223.GC2915@breakpoint.cc>
+References: <f464fa81-93c2-62f4-9703-e84e35fb3d54@satchell.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <f464fa81-93c2-62f4-9703-e84e35fb3d54@satchell.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Linux Netfilter Users List <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Stephen Satchell <list@satchell.net>
+Cc: Linux Netfilter Users List <netfilter@vger.kernel.org>
 
-I'm trying to understand why the nft(8) responds the way it does, and 
-perhaps try to understand the underlying operation of a netfilter firewall.
+Stephen Satchell <list@satchell.net> wrote:
+> I'm trying to understand why the nft(8) responds the way it does, and
+> perhaps try to understand the underlying operation of a netfilter firewall.
+> 
+> What is the difference between these selectors?
+> 
+> 1. iif eth0
 
-What is the difference between these selectors?
+This checks the input interface index.
 
-1. iif eth0
-2. meta fib saddr iif eth0
-3. meta fib daddr iif eth0
+> 2. meta fib saddr iif eth0
+> 3. meta fib daddr iif eth0
 
-4. oif eth0
-5. meta fib saddr oif eth0
-6. meta fib daddr oif eth0
+These two are invalid syntax.
+Did you mean
+fib saddr oif eth0
+fib daddr oif eth0
 
-(1) tests what interface came from, irrespective of the source and 
-destination address
+?
+If so, it tells the kernel to fetch the output interface index that would
+be used when sending a packet to the source (or daddr) of the packet.
 
-(2) uses the routing table to find out where the packet would return
+> 4. oif eth0
 
-(3) uses the routing table to find out where the packet will be routed
+Same as 1, just for the output interface index.
 
-(4) tests the interface associated with the routing decision that has 
-been performed in the packet flow.  In theory. (3), (4) and (6) would 
-return the same result.
+> 5. meta fib saddr oif eth0
+> 6. meta fib daddr oif eth0
 
-(5) uses the routing table to find out where the packet would return
+Again, inalid syntax, I assume this was meant to be
 
-(6) uses the routing table to find out where the packet would be routed. 
-  In theory, (4) and (6) would return the same result.
+fib saddr oif eth0, see above.
 
-===
-https://wiki.nftables.org/wiki-nftables/index.php/Netfilter_hooks
+> (1) tests what interface came from, irrespective of the source and
+> destination address
 
-So here is the big question:  how can I determine the FIB's 
-classification of the source address in rules in the output and 
-postrouting tables?  In other words, how can I test that the source 
-address denotes a uni-cast address that would return to this router?
+Yes.
 
-The documentation is silent about restrictions on using the routing 
-selectors.
+> (2) uses the routing table to find out where the packet would return
 
-I can understand why "oif eth0" is not permitted in ingress, prerouting 
-and input tables, because the output routing decision hasn't been made yet.
+That would be "fib saddr oif eth0"
 
-The packet routing decision *has* been made in the forward, output, and 
-postrouting table, so "oif eth0" should be allowed.
+> (3) uses the routing table to find out where the packet will be routed
 
+Yes, it fetches output interface for the packets ip destination address.
+
+> (4) tests the interface associated with the routing decision that has been
+> performed in the packet flow.  In theory. (3), (4) and (6) would return the
+> same result.
+
+Yes, except that 4) doesn't do a new check, it just returns the output
+interface that the packet is going to use (output happens after initial
+routing decision, re-routing can occur later in the pipeline though).
+
+> So here is the big question:  how can I determine the FIB's classification
+> of the source address in rules in the output and postrouting tables?  In
+> other words, how can I test that the source address denotes a uni-cast
+> address that would return to this router?
+
+This is impossible, as you can't know if the the receiver has
+a route back.
+
+If you are talking about best-effort, "fib saddr type local"
+if you want to match if the soruce address is assigned *locally*
+or "... type { unicast, local }" if any unicast address will do.
+Or "... type unicast" if the FIB considers it non-local unicast.
+
+> The packet routing decision *has* been made in the forward, output, and
+> postrouting table, so "oif eth0" should be allowed.
+
+I'm not following, "oif eth0" is allowed. Its just shorthand for "meta
+oif eth0". And "fib" is supposed to be useable when the routing decision
+has NOT been made yet, as "fib" does a lookup in the FIB based on the
+parameters you provide.
 
