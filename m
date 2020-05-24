@@ -1,7 +1,7 @@
 From: Stephen Satchell <list@satchell.net>
-Subject: Re: WTF, over
-Date: Sun, 24 May 2020 08:03:00 -0700
-Message-ID: <627aadf3-c2d8-6815-bb78-903a38c65b44@satchell.net>
+Subject: Re: WTF, over (reformatted)
+Date: Sun, 24 May 2020 08:05:27 -0700
+Message-ID: <ac0f900c-9b23-994d-610a-9de45590cf6b@satchell.net>
 References: <f8b2b366-356a-cca8-ccc5-58a561904dad@satchell.net>
  <20200524110903.GA4481@salvia>
 Reply-To: list@satchell.net
@@ -34,9 +34,9 @@ Interesting.  Here is the complete fragment, as tested on a virtual machine:
 >     chain wan_output {
 >         fib saddr . iif type broadcast   counter drop # no non-unicast
 >        #fib saddr . iif type anycast     counter drop (unicast)
->         fib saddr . iif type multicast   counter drop 
->         fib saddr . iif type blackhole   counter drop 
->         fib saddr . iif type unreachable counter drop 
+>         fib saddr . iif type multicast   counter drop
+>         fib saddr . iif type blackhole   counter drop
+>         fib saddr . iif type unreachable counter drop
 >         fib saddr . iif type prohibit    counter drop
 >         }
 >     chain output {
