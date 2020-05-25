@@ -1,156 +1,59 @@
-From: =?utf-8?B?VGhvbWFzIELDpHR6bGVy?= <t.baetzler@bringe.com>
-Subject: AW: Raw Expression for DNS name?
-Date: Mon, 25 May 2020 14:19:22 +0000
-Message-ID: <515168F006F2D643952F8FFD24F2E0730454F16E13@sonne2.gw.bringe.net>
+From: "ad^2" <adsquaired@gmail.com>
+Subject: Re: Raw Expression for DNS name?
+Date: Mon, 25 May 2020 11:49:31 -0400
+Message-ID: <CAPdGaa3PK4gh7k5=DYBGYpP0SNaxAM5QBYh64dGarmYodLNnHA@mail.gmail.com>
 References: <CAPdGaa3XsTm1rjUFjUoqKG=fO+9w+xOWvxTuQRL8D+3QXk73fA@mail.gmail.com>
- <198ba667-0ebc-ba8b-bbb1-6faf095cbcc7@thelounge.net>
- <CAPdGaa34jj1+S_o7nc5k3f8frFZGSo=-m57B01ULV63AjccEtg@mail.gmail.com>
+ <198ba667-0ebc-ba8b-bbb1-6faf095cbcc7@thelounge.net> <CAPdGaa34jj1+S_o7nc5k3f8frFZGSo=-m57B01ULV63AjccEtg@mail.gmail.com>
+ <515168F006F2D643952F8FFD24F2E0730454F16E13@sonne2.gw.bringe.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
-        micalg=2.16.840.1.101.3.4.2.3;
-        boundary="----=_NextPart_000_0008_01D632B0.400E4C00"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=bringe.com; h=
-        mime-version:content-type:content-type:content-language
-        :accept-language:in-reply-to:references:message-id:date:date
-        :subject:subject:to:from:from; s=dkim; t=1590416372; x=
-        1591280373; bh=++s3gYBI0WPPb19GY/9GOK37laa/+6/wUn8b6x9IRKc=; b=l
-        DMFg+rBwCYVCeQiKU1o4KiJsaw45PMMdPnr5qSwzNTA1/npTkJ1wHz4MC7vgsQXG
-        pKenespqmaOrafXbbfsgkbtWWVVSpYxGlro82zra790Tj5wgVL7sv5ahbepb2SlU
-        zL+VRvv6S4bPSNd4NRZ2ZaufQoQrmrByq4PH72k9Vw=
-In-Reply-To: <CAPdGaa34jj1+S_o7nc5k3f8frFZGSo=-m57B01ULV63AjccEtg@mail.gmail.com>
-Content-Language: de-DE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=YiZWhB2AW58NymtPA9YQh03AFWY8QyJ1xxbxmIxIlDw=;
+        b=ZfKWlVUsq+MUvVyOTvvQBdVFQpn4+sTVsCn6OIHbe+XDOyzfnMAe9Fo4ZPmWSF8ZT9
+         pF7/tXydjxCPH+rlI2XY7BcFFxyPn+Dx0nQZa2pL/w2SvPpH1+EtP3n2zFBkSTFWrUf4
+         W5KWci9ds9viOGqBPruYRA4TOk7cy5zGGQ35DVvdbdMNPNRX68lyCbVfexEn2ozC+knD
+         JVHDCDobOKNoR6ge2bn6AtF5SmhuScmnhlZjtwgrR2XJFGQs8r9DFLTGb38/rn7MIKI/
+         Bzy/Xp+7eDIfN4wJfT4J6qnX7o7zjScS5ykKLf6Yd1L2gcO6NfPKIhOgfLH561doDxSx
+         H2Jw==
+In-Reply-To: <515168F006F2D643952F8FFD24F2E0730454F16E13@sonne2.gw.bringe.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Cc: ad^2 <adsquaired@gmail.com>
+Content-Type: text/plain; charset="euc-kr"
+To: =?UTF-8?Q?Thomas_B=C3=A4tzler?= <t.baetzler@bringe.com>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-------=_NextPart_000_0008_01D632B0.400E4C00
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+On Mon, May 25, 2020 at 10:19 AM Thomas B=C3=A4tzler <t.baetzler@bringe.com=
+> wrote:
 
-ad^2 top-posted:
-
-> Terrible or not is besides the point. There are numerous occasions =
-where people have used software features to design unique products for =
-special circumstances.
 >
-> If the software allows it then it should work. If it does not then I =
-would like to know.
+> > Terrible or not is besides the point. There are numerous occasions wher=
+e people have used software features to design unique products for special =
+circumstances.
+> >
+> > If the software allows it then it should work. If it does not then I wo=
+uld like to know.
+>
+> See https://en.wikipedia.org/wiki/Law_of_the_instrument
+>
+> Best regards,
+> Thomas B=C3=A4tzler
+> --
+> BRINGE Informationstechnik GmbH
+> Zur Seeplatte 12
+> D-76228 Karlsruhe
+> Germany
+>
+> Fon: +49 721 94246-0
+> Fon: +49 171 5438457
+> Fax: +49 721 94246-66
+> Web: http://www.bringe.de/
+>
+> Gesch=C3=A4ftsf=C3=BChrer: Dipl.-Ing. (FH) Martin Bringe
+> Ust.Id: DE812936645, HRB 108943 Mannheim
+>
 
-See https://en.wikipedia.org/wiki/Law_of_the_instrument
-
-Best regards,
-Thomas B=C3=A4tzler
---=20
-BRINGE Informationstechnik GmbH
-Zur Seeplatte 12
-D-76228 Karlsruhe
-Germany
-
-Fon: +49 721 94246-0
-Fon: +49 171 5438457
-Fax: +49 721 94246-66
-Web: http://www.bringe.de/
-
-Gesch=C3=A4ftsf=C3=BChrer: Dipl.-Ing. (FH) Martin Bringe
-Ust.Id: DE812936645, HRB 108943 Mannheim
-
-
-------=_NextPart_000_0008_01D632B0.400E4C00
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgMFADCABgkqhkiG9w0BBwEAAKCCD5kw
-ggO3MIICn6ADAgECAhAM5+DlF9hG/o/lYPwb8DA5MA0GCSqGSIb3DQEBBQUAMGUxCzAJBgNVBAYT
-AlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAi
-BgNVBAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBDQTAeFw0wNjExMTAwMDAwMDBaFw0zMTEx
-MTAwMDAwMDBaMGUxCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsT
-EHd3dy5kaWdpY2VydC5jb20xJDAiBgNVBAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBDQTCC
-ASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK0OFc7kQ4BcsYfzt2D5cRKlrtwmlIiq9M71
-IDkoWGAM+IDaqRWVMmE8tbEohIqK3J8KDIMXeo+QrIrneVNcMYQq9g+YMjZ2zN7dPKii72r7IfJS
-Yd+fINcf4rHZ/hhk0hJbX/lYGDW8R82hNvlrf9SwOD7BG8OMM9nYLxj+KA+zp4PWw25EwGE1lhb+
-WZyLdm3X8aJLDSv/C3LanmDQjpA1xnhVhyChz+VtCshJfDGYM2wi6YfQMlqiuhOCEe05F52ZOnKh
-5vqk2dUXMXWuhX0irj8BRob2KHnIsdrkVxfEfhwOsLSSplazvbKX7aqn8LfFqD+VFtD/oZbrCF8Y
-d08CAwEAAaNjMGEwDgYDVR0PAQH/BAQDAgGGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFEXr
-oq/0ksuCMS1Ri6enIZ3zbcgPMB8GA1UdIwQYMBaAFEXroq/0ksuCMS1Ri6enIZ3zbcgPMA0GCSqG
-SIb3DQEBBQUAA4IBAQCiDrzf4u3w43JzemSUv/dyZtgy5EJ1Yq6H6/LV2d5Ws5/MzhQouQ2XYFwS
-TFjk0z2DSUVYlzVpGqhH6lbGeasS2GeBhN9/CTyU5rgmLCC9PbMoifdf/yLil4Qf6WXvh+DfwWdJ
-s13rsgkq6ybteL59PyvztyY1bV+JAbZJW58BBZurPSXBzLZ/wvFvhsb6ZGjrgS2U60K3+owe3WLx
-vlBnt2y98/Efaww2BxZ/N3ypW2168RJGYIPXJwS+S86XvsNnKmgR34DnDDNmvxMNFG7zfx9jEB76
-jRslbWyPpbdhAbHSoyahEHGdreLD+cOZUbcrBwjOLuZQsqf6CkUvovDyMIIFiDCCBHCgAwIBAgIQ
-CkIynPMWmvSGAo3jED1rbTANBgkqhkiG9w0BAQsFADBlMQswCQYDVQQGEwJVUzEVMBMGA1UEChMM
-RGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2Vy
-dCBTSEEyIEFzc3VyZWQgSUQgQ0EwHhcNMTkwOTIzMDAwMDAwWhcNMjIxMTExMTIwMDAwWjCBqDEL
-MAkGA1UEBhMCREUxGzAZBgNVBAgMEkJhZGVuLVfDvHJ0dGVtYmVyZzESMBAGA1UEBxMJS2FybHNy
-dWhlMSgwJgYDVQQKEx9CcmluZ2UgSW5mb3JtYXRpb25zdGVjaG5payBHbWJIMRgwFgYDVQQDEw9U
-aG9tYXMgQmFldHpsZXIxJDAiBgkqhkiG9w0BCQEWFXQuYmFldHpsZXJAYnJpbmdlLmNvbTCCASIw
-DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKm/GlvIn3arnh+loy4LB9TMX0yfy716dIJlSHPV
-HVUCHNINbAAyH1WJDpV0K8f/Y++hHL3lQmyu8mtzdZHNwr227ukSbOoTIzth2bcHC4t0K8jzzRje
-vlfZsWv6jTKqA655vhVGw1D6+SNatgJ2jRUCyg13M3UvK+IfhKNxRien7bS1TG2E5ApeyqmFlmDg
-7y4R9FjBl1OB77Sw9el6lfoboC+h0eKxBwaTjwIVfV899CVJPSve8I9bAbimtYK27IU8QPnz7OCK
-D/26DvriD2SL/ct4MVIPtWSnRwDFID3VdoFE6LH5tiPSGbJ8hry1a1kz45Zi8rOMXvdVdDjYhukC
-AwEAAaOCAe4wggHqMB8GA1UdIwQYMBaAFOcCI4AAT9jXvJQL2T90OUkyPIp5MB0GA1UdDgQWBBTA
-brD28WxRAGw1BzeSYGK2FUOzjTAMBgNVHRMBAf8EAjAAMCAGA1UdEQQZMBeBFXQuYmFldHpsZXJA
-YnJpbmdlLmNvbTAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwME
-MEMGA1UdIAQ8MDowOAYKYIZIAYb9bAQBAjAqMCgGCCsGAQUFBwIBFhxodHRwczovL3d3dy5kaWdp
-Y2VydC5jb20vQ1BTMIGIBgNVHR8EgYAwfjA9oDugOYY3aHR0cDovL2NybDMuZGlnaWNlcnQuY29t
-L0RpZ2lDZXJ0U0hBMkFzc3VyZWRJRENBLWcyLmNybDA9oDugOYY3aHR0cDovL2NybDQuZGlnaWNl
-cnQuY29tL0RpZ2lDZXJ0U0hBMkFzc3VyZWRJRENBLWcyLmNybDB5BggrBgEFBQcBAQRtMGswJAYI
-KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmRpZ2ljZXJ0LmNvbTBDBggrBgEFBQcwAoY3aHR0cDovL2Nh
-Y2VydHMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0U0hBMkFzc3VyZWRJRENBLmNydDANBgkqhkiG9w0B
-AQsFAAOCAQEAs2XHpFwzu674xR/n3KKl7Bneiz9BUrpOiJhggOtKLBlU924oszVbuvgYI3MIdDOL
-AV+Jghz+MlSOlNPjiovgIDjHT/CX5tpUSTJl7PkoNFqDd8buHBpVdJGnPJHqjnAbBOI48PrTKFEV
-0R9loHcdM0OpnayrW+uxlZUGA8ZT5hSAQ0IXhtrSN4S093L0J6IFQrrAWYapWZAINHt2CZhuGLQD
-ZAHeYw8aICfHwpMfgFz0InmU1kx3lp15dBp9LFj+99R4wk5SzEY5q6TbE1yTiKz8EJEteykFX62E
-RF4dTSEkKVW7a7zVZsE4vO6rRsRTkE1347Vx7UWFEMvXe+EA6DCCBk4wggU2oAMCAQICEASueWBm
-ZpAaucV/pmxb3M0wDQYJKoZIhvcNAQELBQAwZTELMAkGA1UEBhMCVVMxFTATBgNVBAoTDERpZ2lD
-ZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2ljZXJ0LmNvbTEkMCIGA1UEAxMbRGlnaUNlcnQgQXNz
-dXJlZCBJRCBSb290IENBMB4XDTEzMTEwNTEyMDAwMFoXDTI4MTEwNTEyMDAwMFowZTELMAkGA1UE
-BhMCVVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2ljZXJ0LmNvbTEk
-MCIGA1UEAxMbRGlnaUNlcnQgU0hBMiBBc3N1cmVkIElEIENBMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA3PgRIz9qte/AJ3kbLQWHohBDMd8O1BUbT3ekIs4+jHDwvgeO3ScqvAEdtiwK
-yt1pWB9B7WoFH9pjeFkeIiwr+Lp+yTU7VvEffEJ+JbAjGcZFONc9RPkgfGCuHLBaGAS+jzv3qfCU
-mqYMY0m2QRdTQDK9T+ZQelAfJUXo8Ymvzf9e/1Dz8BcR/73FifW9YrnY+45FBIVtmc3FSE39JqsC
-NkXqNtdfauIagkEK3OnZ9ZEXjsYhrTg8E+Yef2ac1U3ZRtr2z1KnfTskw7TBUTXGm+vU737kewPh
-RL16CzfgT8uCig1xGOSm4IksG/OyczzBsJKeGH29q33FfQihLMKfcwIDAQABo4IC+DCCAvQwEgYD
-VR0TAQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMCAYYwNAYIKwYBBQUHAQEEKDAmMCQGCCsGAQUF
-BzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20wgYEGA1UdHwR6MHgwOqA4oDaGNGh0dHA6Ly9j
-cmw0LmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEFzc3VyZWRJRFJvb3RDQS5jcmwwOqA4oDaGNGh0dHA6
-Ly9jcmwzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEFzc3VyZWRJRFJvb3RDQS5jcmwwHQYDVR0lBBYw
-FAYIKwYBBQUHAwIGCCsGAQUFBwMEMIIBswYDVR0gBIIBqjCCAaYwggGiBgpghkgBhv1sAAIEMIIB
-kjAoBggrBgEFBQcCARYcaHR0cHM6Ly93d3cuZGlnaWNlcnQuY29tL0NQUzCCAWQGCCsGAQUFBwIC
-MIIBVh6CAVIAQQBuAHkAIAB1AHMAZQAgAG8AZgAgAHQAaABpAHMAIABDAGUAcgB0AGkAZgBpAGMA
-YQB0AGUAIABjAG8AbgBzAHQAaQB0AHUAdABlAHMAIABhAGMAYwBlAHAAdABhAG4AYwBlACAAbwBm
-ACAAdABoAGUAIABEAGkAZwBpAEMAZQByAHQAIABDAFAALwBDAFAAUwAgAGEAbgBkACAAdABoAGUA
-IABSAGUAbAB5AGkAbgBnACAAUABhAHIAdAB5ACAAQQBnAHIAZQBlAG0AZQBuAHQAIAB3AGgAaQBj
-AGgAIABsAGkAbQBpAHQAIABsAGkAYQBiAGkAbABpAHQAeQAgAGEAbgBkACAAYQByAGUAIABpAG4A
-YwBvAHIAcABvAHIAYQB0AGUAZAAgAGgAZQByAGUAaQBuACAAYgB5ACAAcgBlAGYAZQByAGUAbgBj
-AGUALjAdBgNVHQ4EFgQU5wIjgABP2Ne8lAvZP3Q5STI8inkwHwYDVR0jBBgwFoAUReuir/SSy4Ix
-LVGLp6chnfNtyA8wDQYJKoZIhvcNAQELBQADggEBAE7UiSe5/R2Hd34PKAWQ8QovyTs+vZOckMav
-+pFRhzJUa+jKwXFRXJmOtfrgYhmZpgeafBMn2+UCooQS2RX2CkRXxDSPbXMfOtagAT3e44LkRWuy
-6yX9gF4dOZC+W0L2zpFg4/mgVgxIEM4zaHvNk6vwastPWA+5e10bBIGepyLiV0kn7pKTCL5pCFMC
-Oi5dyBn0UIBOAtmwXZG0k4f5lpaBVUCOZu2C2LsoX+1MYe0GWCgZUxFEvEcgKbIEbNiJVJk7ddtn
-eCweknjGVT1YEhEybr1DDE0023vGQtvsvqubYUwGkuOO3yEqUFcEwGCiNdUknmY3CUnP1fhls+Di
-bsIxggPfMIID2wIBATB5MGUxCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAX
-BgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAiBgNVBAMTG0RpZ2lDZXJ0IFNIQTIgQXNzdXJlZCBJ
-RCBDQQIQCkIynPMWmvSGAo3jED1rbTANBglghkgBZQMEAgMFAKCCAjcwGAYJKoZIhvcNAQkDMQsG
-CSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAwNTI1MTQxOTIyWjBPBgkqhkiG9w0BCQQxQgRA
-O8HJSTMYfxeVvlPZEtYCEtlEB1J2NMC2bwmqSdacb8oyWCtCUuTjJSXhWAlOAznY6HcaQ5sibj/8
-zTBQ9bp0ZDCBiAYJKwYBBAGCNxAEMXsweTBlMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNl
-cnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBTSEEy
-IEFzc3VyZWQgSUQgQ0ECEApCMpzzFpr0hgKN4xA9a20wgYoGCyqGSIb3DQEJEAILMXugeTBlMQsw
-CQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQu
-Y29tMSQwIgYDVQQDExtEaWdpQ2VydCBTSEEyIEFzc3VyZWQgSUQgQ0ECEApCMpzzFpr0hgKN4xA9
-a20wgZMGCSqGSIb3DQEJDzGBhTCBgjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAoGCCqGSIb3
-DQMHMAsGCWCGSAFlAwQBAjAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwCwYJYIZIAWUD
-BAIDMAsGCWCGSAFlAwQCAjALBglghkgBZQMEAgEwBwYFKw4DAhowDQYJKoZIhvcNAQEBBQAEggEA
-NwsgznshaXM9rH/cdeLZ3c6K2yW8bCPt6mUP+vX23uRu/DAqlqVLiMmDtGJ+udSr8FMFgvl+0wzn
-1CbP3i5AFHE8g46Es6aJyGOBxVID+3JZOmV8ZfFB+lcx63j6f5sCWRI/y/Df2ZL8aCYKQ4bYCjxH
-6tWmtCI1r0rnlhtz1uYbv0lhZ/4bTcXm07FA6M+a7Br5kKydAloZtuEI3+CsoGSWuW8Z+pArTtXG
-VEfxN+P18VoVOLTyQcs6celiTY4JlIr4KonIQV5OiL1auGcZrBbepAg5CHb4khoG7iWh6GtOTxpe
-x92DegGbXarUbM7VMXFad4mW5BhglUWNJFw8sAAAAAAAAA==
-
-------=_NextPart_000_0008_01D632B0.400E4C00--
+I would be nice to hear from developers and not people with opinions only.
