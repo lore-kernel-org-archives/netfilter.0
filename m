@@ -1,51 +1,54 @@
-From: "ad^2" <adsquaired@gmail.com>
-Subject: Value too large for defined data type
-Date: Thu, 28 May 2020 10:01:13 -0400
-Message-ID: <CAPdGaa3Ewu9Ctw2bRMezh5Q=brcYbo3X9PGq7R2SjN6bT8zbuw@mail.gmail.com>
+From: Mike Dillinger <miked@softtalker.com>
+Subject: Re: nftables: Strange Error When Adding Element to Named Set
+Date: Sun, 31 May 2020 10:18:29 -0700
+Message-ID: <10558cf4-649d-2075-857e-cf9abf580de8@softtalker.com>
+References: <d2711bf1-2a50-ff35-e632-a39ca0df33f4@softtalker.com>
+ <20200508160132.GA2278@salvia>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=ME/PXf7kBJrHq2xrixcFWksclTwSTo6ljxddfsTXMvg=;
-        b=FoljDATRQjT8N0mvK64XDJuSg8mNuY5v2Am09kJ6yJcgiMkgloJnQh5byaXgHhwG5X
-         Q722EVXuMkIX/038tJtnQyjBdryt8BYy1u3e69iyqfIFRzzLM9C+vNUG87ekX61T0HHa
-         yrMo4imLKglpCkvLC043kKjARrUgwwkt6NvKh9pNiNi7W+EhiBvnX42nXihQ6UjfWtMJ
-         q6DE3drIJSNZWvHL1aTGzDaVNysn//3taLm4AHi5Ed2cOx3EQHO69ujwNMxi9/WinFgf
-         TeBz+byFRGD94hNZj1NIETRTLtU9IJunlsUYr0g8tJtC3FMpiEBfHzdMqp9+hhVVyE3p
-         ZJ5A==
+In-Reply-To: <20200508160132.GA2278@salvia>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org
 
-DISTRIB_DESCRIPTION="Ubuntu 18.04.4 LTS"
-nftables=0.9.4-1
+> *From:* Pablo Neira Ayuso [mailto:pablo@netfilter.org]
+> *To:* Mike Dillinger <miked@softtalker.com>
+> *Cc:* netfilter@vger.kernel.org
+> *Date:* Friday, May 8, 2020, 9:01 AM PDT
+> *Subject:* nftables: Strange Error When Adding Element to Named Set
+>
+> Please, make sure your Linux kernel version is >=3D 5.6.7 or manually
+> cherry-pick this fix which was included starting that version.
+> Versions from 5.6.0 to 5.6.6 include this problem you describe.
+>
+> See https://cdn.kernel.org/pub/linux/kernel/v5.x/ChangeLog-5.6.7
+>
+> Author: Stefano Brivio <sbrivio@redhat.com>
+> Date:   Wed Apr 1 17:14:38 2020 +0200
+>
+>      netfilter: nft_set_rbtree: Drop spurious condition for overlap detec=
+tion on insertion
+>     =20
+>      commit 72239f2795fab9a58633bd0399698ff7581534a3 upstream.
 
-Hello, I'm trying to manipulate a packet based on the domain in the
-UDP message header.
+If I am reading the output of uname correctly, I am using 5.6.14 which shou=
+ld qualify:
+$ uname -a
+Linux rockenfield 5.6.0-2-amd64 #1 SMP Debian 5.6.14-1 (2020-05-23) x86_64 =
+GNU/Linux
 
-./nft.conf:8:1-138: Error: Could not process rule: Value too large for
-defined data type
-add rule myrule prerouting nftrace set 1 meta l4proto udp udp dport 53
-@th,160,200 0x086163636F756E747306676F6F676C6503636F6D00 dnat 8.8.8.8
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Hex = accounts.google.com
+...yet, the problem still persists:
+$ nft add element ip filter blacklist4-ip-12h { a.b.c.d }
+Error: Could not process rule: File exists
+add element ip filter blacklist4-ip-12h { a.b.c.d }
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Looks like there is a limit on what can be searched.
+To confirm, everything works fine with 5.5.x kernels.=A0 Please advise next=
+ steps with respect to 5.6.7+ kernels.
 
-Using something smaller works fine in nftables.
-
-nft add rule myrule prerouting nftrace set 1 meta l4proto udp udp
-dport 53 @th,160,120 0x03777777057961686f6f03636f6d00 dnat 8.8.8.8
-
-Hex = www.yahoo.com
-
-accounts.google.com works using iptables.
-
--A PREROUTING -s 192.168.254.225/32 -p udp -m string --hex-string
-"|086163636F756E747306676F6F676C6503636F6D00|" --algo bm --from 40
---to 65 -m udp --dport 53 -j DNAT --to-destination 1.0.0.1
-
-Thanks in advance.
+Thanks,
+-MikeD
