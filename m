@@ -1,132 +1,74 @@
-From: Mike Dillinger <miked@softtalker.com>
-Subject: Re: nftables: Strange Error When Adding Element to Named Set
-Date: Mon, 1 Jun 2020 09:07:45 -0700
-Message-ID: <8f6e2bfa-3e79-7ba8-8561-4478fa28e24a@softtalker.com>
-References: <d2711bf1-2a50-ff35-e632-a39ca0df33f4@softtalker.com>
- <20200508160132.GA2278@salvia>
- <10558cf4-649d-2075-857e-cf9abf580de8@softtalker.com>
- <20200601124124.GA12580@salvia>
- <8d9aecd2-6ac4-9395-8bd8-79fb5896f22c@softtalker.com>
+From: Rick van Rein <rick@openfortress.nl>
+Subject: Expressive limitation: (daddr,dport) <--> (daddr',dport')
+Date: Mon, 01 Jun 2020 18:08:21 +0200
+Message-ID: <5ED527F5.9010501@openfortress.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <8d9aecd2-6ac4-9395-8bd8-79fb5896f22c@softtalker.com>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=openfortress.nl; 
+ i=rick@openfortress.nl; q=dns/txt; s=fame; t=1591027726; 
+ h=message-id : date : from : mime-version : to : subject 
+ : content-type : content-transfer-encoding : date : from 
+ : subject; 
+ bh=4Ay9D+ulUsqrGeaQeAvq7Bqr9KT07gUDVT62zgc0Kos=; 
+ b=HYURYn3bD+KiN7phF9Ff6mfp/bkYZ9TmX66GqOh/PofapPsOrXzKsp4C
+ ZGXYBO16Wj1AmeiG0d5PYQ7XmuMkWq/YGONj4GFaY6FGyPE21K+P9Bvfox
+ jci92u+/A60mQpOd/dzjOLhHqJd7MNWp6CwAeLElzMRL1UZOv0WyStjz8=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org, sbrivio@redhat.com
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Yes, I have found a way to reproduce it.
+Hello,
 
-Add the set:
-nft add set ip filter blacklist4-ip-1m {type ipv4_addr\; flags interval,tim=
-eout \; timeout 1m \; gc-interval 1m\;}
+I seem to be running into an expressive limitation of nft while trying
+to do stateless translation.  I prefer statelessness because it has no
+direction, and should support of peer-to-peer mechanisms better than
+stateful dnat/snat.  I also suspect it is more efficient.
 
-We're not concerned about the IP's that are added to the set because there =
-are no rules covering what to do with the set contents.
+After nat64, I have a small set of IPv6 addresses and I would like to
+map their (daddr,dport) or better even (daddr,proto,dport) tuples to
+outgoing (daddr',dport').  Effectively, this is port forwarding.
 
-I wrote a bash script called nftables-bug-repro:
-#!/bin/bash
-nft list set ip filter blacklist4-ip-1m
-for ((i=3D1;i<=3D10;i++)); do
- =A0=A0=A0 nft add element filter blacklist4-ip-1m {$i.$i.$i.$i}
- =A0=A0=A0 sleep 1
-done
-nft list set ip filter blacklist4-ip-1m
+If I specify single rules for single mappings (one direction only for
+now) I can see the expected response to the connection attempt:
 
-This script actually shows some other odd behavior.=A0 In addition to the i=
-naccurate information of IP's already being in the list, the kernel seems t=
-o create its own interval/ranges.=A0 Running the script every minute create=
-s a different set of errors too.=A0 This definitely seems related to the ti=
-meout setting; my other sets are working fine since reboot but I expect tha=
-t to change later after IP's have expired.=A0 Below is a sample output run:
+nft add rule ip6 raw prerouting \
+   ip6 daddr $PREFIX::64:75 \
+   tcp dport 8080 \
+   ip6 daddr set $PREFIX::100:20 \
+   tcp dport set 80 \
+   notrack
 
-$ nftables-bug-repro
-table ip filter {
- =A0=A0=A0=A0=A0=A0=A0 set blacklist4-ip-1m {
- =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 type ipv4_addr
- =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 flags interval,timeout
- =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 timeout 1m
- =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 gc-interval 1m
- =A0=A0=A0=A0=A0=A0=A0 }
-}
-Error: Could not process rule: File exists
-add element filter blacklist4-ip-1m {1.1.1.1}
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Error: Could not process rule: File exists
-add element filter blacklist4-ip-1m {2.2.2.2}
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Error: interval overlaps with an existing one
-add element filter blacklist4-ip-1m {4.4.4.4}
- =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ^^^^^^^
-Error: Could not process rule: File exists
-add element filter blacklist4-ip-1m {4.4.4.4}
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Error: interval overlaps with an existing one
-add element filter blacklist4-ip-1m {5.5.5.5}
- =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ^^^^^^^
-Error: Could not process rule: File exists
-add element filter blacklist4-ip-1m {5.5.5.5}
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Error: interval overlaps with an existing one
-add element filter blacklist4-ip-1m {6.6.6.6}
- =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ^^^^^^^
-Error: Could not process rule: File exists
-add element filter blacklist4-ip-1m {6.6.6.6}
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Error: interval overlaps with an existing one
-add element filter blacklist4-ip-1m {7.7.7.7}
- =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ^^^^^^^
-Error: Could not process rule: File exists
-add element filter blacklist4-ip-1m {7.7.7.7}
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Error: interval overlaps with an existing one
-add element filter blacklist4-ip-1m {8.8.8.8}
- =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ^^^^^^^
-Error: Could not process rule: File exists
-add element filter blacklist4-ip-1m {8.8.8.8}
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Error: interval overlaps with an existing one
-add element filter blacklist4-ip-1m {9.9.9.9}
- =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ^^^^^^^
-Error: Could not process rule: File exists
-add element filter blacklist4-ip-1m {9.9.9.9}
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Error: interval overlaps with an existing one
-add element filter blacklist4-ip-1m {10.10.10.10}
- =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 ^^^^^^^^^^^
-Error: Could not process rule: File exists
-add element filter blacklist4-ip-1m {10.10.10.10}
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-table ip filter {
- =A0=A0=A0=A0=A0=A0=A0 set blacklist4-ip-1m {
- =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 type ipv4_addr
- =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 flags interval,timeout
- =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 timeout 1m
- =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 gc-interval 1m
- =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 elements =3D { 3.3.3.3-255.2=
-55.255.255 }
- =A0=A0=A0=A0=A0=A0=A0 }
-}
+I have problems doing this with the map construct, presumably because it
+does not atomically replace (daddr,dport) by (daddr',dport') but instead
+does two assignments with intermediate alterede state.  This is bound to
+work in many cases, but it can give undesired crossover behaviours
+[namely between incoming IPs if they map to the same daddr' while coming
+from the same dport]:
 
-Notice the bizarre range declaration, as well as 1.1.1.1 and 2.2.2.2 missin=
-g even though the kernel claimed they were already present.
+nft add rule ip6 raw prerouting \
+   ip6 daddr set \
+      ip6 daddr . tcp dport \
+         map { $PREFIX::64:75 . 8080 : $PREFIX::100:20 } \
+   tcp dport set \
+      ip6 daddr . tcp dport \
+         map { $PREFIX::100:20 . 8080 : 80 } \
+   notrack
 
-Here are my kernel and nftables versions:
-$ uname -a
-Linux rockenfield 5.6.0-2-amd64 #1 SMP Debian 5.6.14-1 (2020-05-23) x86_64 =
-GNU/Linux
-$ nft -v
-nftables v0.9.4 (Jive at Five)
+So now I am wondering,
+
+ 0. Is there a way to use maps as atomic setter for (daddr,dport)?
+ 1. Can I reach back to the original value of a just-modified value?
+
+If this won't work, I can still make separate rules for each of the few
+values for daddr, but I wanted to ask just to be sure that this is
+something that cannot be expressed by nft.
+
+That aside, I am making the switch, and I am pleased by the logic of
+nft; just the syntax takes some getting used to; I've seen ":" between
+actions, and wondered if that could be an atomic composer?
+
 
 Thanks!
--MikeD
+ -Rick
