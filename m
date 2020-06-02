@@ -1,58 +1,53 @@
 From: Mike Dillinger <miked@softtalker.com>
 Subject: Re: nftables: Strange Error When Adding Element to Named Set
-Date: Mon, 1 Jun 2020 09:13:10 -0700
-Message-ID: <ec6b660c-e06f-80f5-d865-30985892d546@softtalker.com>
+Date: Tue, 2 Jun 2020 06:28:31 -0700
+Message-ID: <29f39abf-a146-fa5a-6178-574cbfb9c83c@softtalker.com>
 References: <d2711bf1-2a50-ff35-e632-a39ca0df33f4@softtalker.com>
  <20200508160132.GA2278@salvia>
  <10558cf4-649d-2075-857e-cf9abf580de8@softtalker.com>
  <20200601124124.GA12580@salvia>
  <8d9aecd2-6ac4-9395-8bd8-79fb5896f22c@softtalker.com>
- <20200601174814.17bacbd4@elisabeth>
+ <8f6e2bfa-3e79-7ba8-8561-4478fa28e24a@softtalker.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20200601174814.17bacbd4@elisabeth>
+In-Reply-To: <8f6e2bfa-3e79-7ba8-8561-4478fa28e24a@softtalker.com>
 Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Stefano Brivio <sbrivio@redhat.com>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org, sbrivio@redhat.com
 
-> *From:* Stefano Brivio [mailto:sbrivio@redhat.com]
-> *To:* Mike Dillinger <miked@softtalker.com>
-> *Cc:* Pablo Neira Ayuso <pablo@netfilter.org>, netfilter@vger.kernel.org
-> *Date:* Monday, June 1, 2020, 8:48 AM PDT
+> *From:* Mike Dillinger [mailto:miked@softtalker.com]
+> *To:* Pablo Neira Ayuso <pablo@netfilter.org>
+> *Cc:* netfilter@vger.kernel.org, sbrivio@redhat.com
+> *Date:* Monday, June 1, 2020, 9:07 AM PDT
 > *Subject:* nftables: Strange Error When Adding Element to Named Set
 >
-> Yes, that might help. By the way, your kernel (based on 5.6.8 upstream,
-> not 5.6.14 -- that's the Debian package version) also contains:
+> Yes, I have found a way to reproduce it.
 >
-> commit 340eaff651160234bdbce07ef34b92a8e45cd540
-> Author: Phil Sutter <phil@nwl.cc>
-> Date:   Mon May 11 15:31:41 2020 +0200
+> Add the set:
+> nft add set ip filter blacklist4-ip-1m {type ipv4_addr\; flags interval,t=
+imeout \; timeout 1m \; gc-interval 1m\;}
 >
->      netfilter: nft_set_rbtree: Add missing expired checks
+> We're not concerned about the IP's that are added to the set because ther=
+e are no rules covering what to do with the set contents.
 >
-> so any issue in that sense should be fixed. See the changelog at:
-> 	https://metadata.ftp-master.debian.org/changelogs//main/l/linux/linux_5.6.14-1_changelog
->
-> Anyway, my further question is whether at the moment of the insertion
-> there's an overlapping address already in the set, or the inserted
-> address is included in an interval also already present in the set.
-> What is "a.b.c.d" in your earlier report? Is it a single address or an
-> interval?
->
-> Once the failure is detected, would it be possible to automatically dump
-> the ruleset (nft list ruleset)?
->
-Hi Stefan,
+> I wrote a bash script called nftables-bug-repro:
+> #!/bin/bash
+> nft list set ip filter blacklist4-ip-1m
+> for ((i=3D1;i<=3D10;i++)); do
+> =A0=A0=A0 nft add element filter blacklist4-ip-1m {$i.$i.$i.$i}
+> =A0=A0=A0 sleep 1
+> done
+> nft list set ip filter blacklist4-ip-1m
 
-I just saw this message after I sent out my detailed repro scenario.  Please let me know if I did something wrong and/or you would like me to dump the entire ruleset, or anything else for that matter.  I am hoping the repro scenario covers everything.
+Hi Pablo, Stefan, et al,
 
-I can answer one of your questions.  At the moment of insertion, there are no overlapping ranges in my set.  I originally thought I wanted to declare CIDR's/ranges but never ended up doing that, but the table was originally created using intervals.  I've always used individual IP addresses.
-
-"a.b.c.d" is an IP address in all of my correspondence, not a CIDR nor a range.
+I wanted to check and see if anyone was able to reproduce the issue.=A0 If =
+not, I'd like to figure out what's unique about my setup so I can resolve t=
+he issue on my end.
 
 Thanks!
 -MikeD
