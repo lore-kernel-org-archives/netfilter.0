@@ -1,84 +1,47 @@
-From: Max Ehrlich <max.ehr@gmail.com>
-Subject: Simplifying DNAT Rules using Maps
-Date: Wed, 3 Jun 2020 12:08:50 -0400
-Message-ID: <CAPyx93x8RtJA8ghab2W630WwpHZP+K-dA26SWkj7+wstasM5mw@mail.gmail.com>
+From: Harald Welte <laforge@gnumonks.org>
+Subject: Re: [MAINTENANCE] Shutting down FTP services at netfilter.org
+Date: Wed, 3 Jun 2020 19:16:21 +0200
+Message-ID: <20200603171621.GC717800@nataraja>
+References: <20200603113712.GA24918@salvia>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=qNfew/bpoyjoGfZv50FcKnQtowwmeR0D3JHGqzQfyAk=;
-        b=WBFxOKOa3yaUV3QklkoltbF30NdE9p+iMU8Dt/i7yz5rMJy3rCl+YGLAcXG3N3J4GM
-         x7yUy5r0UuaiJAzLfdeq9TrxDHbLEes2u8cVDjrhOaY+fFF7Rsiwd904+xqVFXXUKH81
-         AWeNie2HRUy03ginGLfpedxwTxTBIyatuMsjov9GQcOqNNzx+r5MDBLsQ7KzboQRrWdc
-         tghUxLqrsuhpXCd9tIYvHeYB/jGPfQ6gi7MUGUHrHsNByJkbaqRdKjFM4Vz4qFSdD6U+
-         a9UAYK6joTdlRVs8TMivv4QesfkJOduEILhzN3PCd/OBQVljZex5fHvQLiWdFpURz5EN
-         wRSA==
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20200603113712.GA24918@salvia>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Hi,
+Hi Pablo,
 
-I'm switching from iptables to nftables, specifically from a high
-level translator (awall) to using nftables directly since the
-scripting environment is so expressive.
+On Wed, Jun 03, 2020 at 01:37:12PM +0200, Pablo Neira Ayuso wrote:
+> So netfilter.org will also be shutting down FTP services by
+> June 12th 2020.
 
-I have quite a few ipv4 DNAT rules that I need to translate, and they
-all have a similar form like the following for a web service:
+I always find that somewhat sad, as with HTTP there is no real convenient
+way to get directory listings in a standardized / parseable format.  But
+of course I understand the rationale and I obviously respect your
+decision in that matter.
 
-table ip nat {
-  chain prerouting {
-    ip daddr != 10.0.0.0/8 fib daddr type local tcp dport http dnat
-10.1.1.112:8080
-  }
+> As an alternative, you can still reach the entire netfilter.org
+> software repository through HTTP at this new location:
+> 
+>         https://netfilter.org/pub/
 
-  chain postrouting {
-    ip saddr 10.0.0.0/8 ip daddr 10.1.1.112 tcp dport 8080 masquerade
-  }
-}
+Maybe make http://ftp.netfilter.org/ an alias to it?
 
-table ip filter {
-  chain forward {
-    ip daddr 10.1.1.112 tcp dport 8080 accept
-  }
-}
+I think the important part would be some way to conveniently obtain a
+full clone, e.g. by rsync.  This way both public and private mirrors
+can exist in an efficient way, without having to resort to 'wget -r'
+or related hacks, which then only use file size as an indication if a
+file might have changed, ...
 
-I want to simplify this using a map so that I can add services to the
-map instead of having to copy all three rules every time. Something
-like this
-
-table ip nat {
-  map dnat_services {
-    type inet_service: ipv4_addr . inet_service
-    elements = {
-      http: 10.1.1.112 . 8080
-    }
-  }
-
-  chain prerouting {
-    ip daddr != 10.0.0.0/8 fib daddr type local dnat tcp dport map
-@dnat_services
-  }
-...
-
-would be great but it seems like the dnat target doesnt accept
-concatenations. I get that this can be done with two maps but it makes
-it quite ugly to write although there are performance benefits. Also I
-have no idea what to do about the filter and masquerade rules. For
-example
-
-chain postrouting {
-  ip saddr 10.0.0.0/8 ip daddr tcp dport map @dnat_services masquerade
-}
-
-doesn't parse (my assumption was this would have been that the ip
-daddr would be the result of looking up the tcp dport in the given
-map, it matches the dnat syntax)
-
-So is there a cleaner way to write these rules using maps?
-
-thanks,
-Max
+Regards,
+	Harald
+-- 
+- Harald Welte <laforge@gnumonks.org>           http://laforge.gnumonks.org/
+============================================================================
+"Privacy in residential applications is a desirable marketing option."
+                                                  (ETSI EN 300 175-7 Ch. A6)
