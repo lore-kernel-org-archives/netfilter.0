@@ -1,50 +1,67 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] libnftnl 1.1.7 release
-Date: Fri, 5 Jun 2020 13:39:50 +0200
-Message-ID: <20200605113950.GA8489@salvia>
+From: Maximilian Wilhelm <max@rfc2324.org>
+Subject: "Carrier Grade" NAT44 setup
+Date: Fri, 5 Jun 2020 18:23:10 +0200
+Message-ID: <5c2c7d45-ea99-0f70-04ee-544f9837b8a8@rfc2324.org>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="9amGYk9869ThD9tj"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Language: en-US
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter-devel@vger.kernel.org
-Cc: netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
+Hi,
 
---9amGYk9869ThD9tj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I have to set up a high available and scalable NAT44 solution for 10k
+(up to 20k) users at my university and am looking for options to
+implement such a set up.
 
-Hi!
+The easy way out would be to throw money at some vendor and for exmaple
+get a pair of ASR1k etc. but as I like Linux a lot and am using it for
+other production setup already I'd like to explore what folks deem
+possible or maybe have build with Linux and netfilter in that regard.
 
-The Netfilter project proudly presents:
+My idea would be to set up two boxes with some 10G interfaces, some
+decent CPUs/RAM and write some lines of nftables config (most likely
+Debian buster with backports kernel 5.5.x). All traffic which would have
+to be NATed would be routed through those boxes.
 
-        libnftnl 1.1.7
+I drew a topology diagram to explain what I have in mind [0].
 
-libnftnl is a userspace library providing a low-level netlink
-programming interface (API) to the in-kernel nf_tables subsystem.
-This library is currently used by nftables.
+The primary focus for NATing are our wifi users. Within the university
+network any connections should be made via IPv6 or the RFC1918 IPs, only
+traffic for external destinations should be NATed. This could be
+achieved by policy routing on the Nexus 7000 routers in the DC, which
+would only route traffic for external targets to the NAT boxes. My
+preference would be to set up BGP sessions to our DC routers and be able
+to set up ECMP that way. Each box will get it's own pool of external
+address so answer packets will be routed to the correct NAT box to
+"de-NAT".  So far so straight forward.
 
-See ChangeLog that comes attached to this email for more details.
+What I'm wondering about is:
 
-You can download it from:
+Did anyone here already build such a setup? If so, did you build it as I
+described or different? Would you do it again? :)
 
-http://www.netfilter.org/projects/libnftnl/downloads.html
-ftp://ftp.netfilter.org/pub/libnftnl/
+What ressources would be required on the Linux box? I would assume any
+decent server CPU with 6+ cores will be fine and 16-32GB of RAM would
+suffice for storing the conntrack mappings?
 
-Have fun.
+According to the nft man pages
 
---9amGYk9869ThD9tj
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="changes-libnftnl-1.1.7.txt"
+  snat to address - address [:port - port] [persistent, random,
+fully-random]
 
-Pablo Neira Ayuso (5):
-      udata: add NFTNL_UDATA_SET_DATA_INTERVAL
-      expr: objref: add nftnl_expr_objref_free() to release object name
-      expr: dynset: release stateful expression from .free path
-      flowtable: relax logic to build NFTA_FLOWTABLE_HOOK
-      build: libnftnl 1.1.7 release
+SNATing to a pool of addresses should be possible and I guess
+"persistent" would be a good idea in this case.
 
+Does anyone have thoughts about wether active/active or active/passive,
+most like with conntrack, would be a better move?
 
---9amGYk9869ThD9tj--
+Thanks for any input, stay safe!
+
+Best
+Max
+
+[0] https://homepages.uni-paderborn.de/mwilhelm/NAT-Topology.png
