@@ -1,67 +1,103 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [MAINTENANCE] Shutting down FTP services at netfilter.org
-Date: Wed, 3 Jun 2020 23:32:35 +0200
-Message-ID: <20200603213235.GA31552@salvia>
-References: <20200603113712.GA24918@salvia>
- <20200603171621.GC717800@nataraja>
+From: Florian Westphal <fw@strlen.de>
+Subject: [ANNOUNCE] libnetfilter_queue 1.0.4 release
+Date: Fri, 5 Jun 2020 12:47:16 +0200
+Message-ID: <20200605104716.GJ28263@breakpoint.cc>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="6c2NcOVqGQ03X4Wi"
+Return-path: <netdev-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20200603171621.GC717800@nataraja>
-Sender: netfilter-devel-owner@vger.kernel.org
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Harald Welte <laforge@gnumonks.org>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: netfilter-devel@vger.kernel.org
+Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org
 
-Hi Harald,
 
-On Wed, Jun 03, 2020 at 07:16:21PM +0200, Harald Welte wrote:
-> Hi Pablo,
-> 
-> On Wed, Jun 03, 2020 at 01:37:12PM +0200, Pablo Neira Ayuso wrote:
-> > So netfilter.org will also be shutting down FTP services by
-> > June 12th 2020.
-> 
-> I always find that somewhat sad, as with HTTP there is no real convenient
-> way to get directory listings in a standardized / parseable format.  But
-> of course I understand the rationale and I obviously respect your
-> decision in that matter.
+--6c2NcOVqGQ03X4Wi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-There was a discussion regarding the existing netfilter.org
-infrastructure during the last workshop. People are busy and the
-infrastructure maintainance tasks end up being the last thing on the
-list at the end of the day, unfortunately. Luckly, there is one more
-person volunteering to help maintain the netfilter.org infrastructure
-these days. Still I have to scratch my limited spare time to migrate
-the infrastructure to the new datacenter.
+Hi!
 
-> > As an alternative, you can still reach the entire netfilter.org
-> > software repository through HTTP at this new location:
-> > 
-> >         https://netfilter.org/pub/
-> 
-> Maybe make http://ftp.netfilter.org/ an alias to it?
+The Netfilter project proudly presents:
 
-It's just one extra file in apache and an entry on the DNS server.
-Yes, I can do that. It's probably convenient to keep this at least
-working for a while.
+        libnetfilter_queue 1.0.4
 
-I cannot hide, however, that I would like to simplify the existing
-infrastructure to reduce the maintainance burden to adecuate it to the
-existing resource availability. Including the consolidation of the
-existing virtual servers in apache around one or two instances.
+Major changes in this version:
+ * major updates to documentation, from Duncan Roe.
+ * allow building with clan, also from Duncan.
+ * add new nfq_get_skbinfo() helper.  This allows to detect when
+   packet checksums have been validated already or if they will
+   be filled in by tx checksum offload on transmit later on.
 
-> I think the important part would be some way to conveniently obtain a
-> full clone, e.g. by rsync.  This way both public and private mirrors
-> can exist in an efficient way, without having to resort to 'wget -r'
-> or related hacks, which then only use file size as an indication if a
-> file might have changed, ...
+Notable bug fixes:
+ checksum calculation fixes for UDP checksum helpers and on big endian arches,
+ from Pablo Neira and Alin Nastac.
 
-Regarding rsync: I'm actually considering to propose to remove
-netfilter mirrors or, alternatively, only propose to maintain a number
-of them that have worked reliably along these years. So rsync would be
-only available for those few people that will be maintaining mirrors.
+See ChangeLog that comes attached to this email for more details.
 
-Regards.
+You can download it from:
+
+https://www.netfilter.org/projects/libnetfilter_queue/downloads.html
+
+Have fun!
+
+--6c2NcOVqGQ03X4Wi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="changes-libnetfilter_queue-1.0.4.txt"
+
+Alin Nastac (1):
+      checksum: Fix TCP/UDP checksum computation on big endian arches
+
+Duncan Roe (40):
+      src: Update UDP header length field after mangling
+      src: doc: Miscellaneous updates
+      src: Enable clang build
+      src: Fix invalid conversion specifier
+      src: doc: Minor fix
+      src: doc: Document nfq_nlmsg_verdict_put_mark() and nfq_nlmsg_verdict_put_pkt()
+      src: Eliminate useless spaces before tabs
+      src: doc: Update the Main Page to be nft-focussed
+      src: doc: Fix spelling of CTA_LABELS in examples/nf-queue.c
+      src: doc: Eliminate doxygen warnings from ipv{4,6}.c
+      src: pktb_trim() was not updating tail after updating len
+      src: Make sure pktb_alloc() works for AF_INET6 since we document that it does
+      src: Make sure pktb_alloc() works for IPv6 over AF_BRIDGE
+      src: Fix IPv4 checksum calculation in AF_BRIDGE packet buffer
+      examples: Delete code not needed since Linux 3.8
+      src: Fix test for IPv6 header
+      src: doc: Major re-work of user packet buffer documentation
+      Minor tweak to pktb_len function description
+      src: doc: Update sample code to agree with documentation
+      src: doc: Fully document available verdicts
+      src: Fix value returned by nfq_udp_get_payload_len()
+      src: doc: udp.c: rename 1 more formal pkt arg to pktb
+      src: doc: Eliminate doxygen warnings from udp.c
+      src: more IPv6 checksum fixes
+      src: add mangle functions for IPv6, IPv6/TCP and IPv6/UDP
+      src: pktb_mangle has signed offset arg so can mangle MAC header with -ve one
+      doc: whitespace: Remove trailing spaces from doxygen.cfg.in
+      doc: doxygen.cfg.in: Eliminate 20 doxygen warnings
+      src: doc: tcp.c: fix remaining doxygen warnings
+      src: checksum.c: remove redundant 0xFFFF mask of uint16_t
+      src: libnetfilter_queue.c: whitespace: remove trailing spaces
+      src: doc: Eliminate doxygen warnings from libnetfilter_queue.c
+      src: Always use pktb as formal arg of type struct pkt_buff
+      src: doc: Final polish for current round
+      src: Fix value returned by nfq_tcp_get_payload_len()
+      src: Fix indenting weirdness is pktbuff.c w/out changing indent
+      src: Simplify struct pkt_buff: remove head
+      Simplify struct pkt_buff: remove tail
+      build: doc: "make" builds & installs a full set of man pages
+      src: expose nfq_nlmsg_put
+
+Florian Westphal (3):
+      src: add nfq_get_skbinfo()
+      configure: fix doxygen check
+      configure: prepare for 1.0.4 release
+
+Pablo Neira Ayuso (2):
+      checksum: Fix UDP checksum calculation
+      doxygen: remove EXPORT_SYMBOL from the output
+
+
+--6c2NcOVqGQ03X4Wi--
