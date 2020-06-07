@@ -1,139 +1,96 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Documentation.
-Date: Sun, 7 Jun 2020 23:23:47 +0200
-Message-ID: <20200607212347.GA24054@salvia>
-References: <alpine.DEB.2.21.2006061631470.11442@piplus.local.jubileegroup.co.uk>
+Subject: Re: Simplifying DNAT Rules using Maps
+Date: Sun, 7 Jun 2020 23:40:08 +0200
+Message-ID: <20200607214008.GB24054@salvia>
+References: <CAPyx93x8RtJA8ghab2W630WwpHZP+K-dA26SWkj7+wstasM5mw@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.21.2006061631470.11442@piplus.local.jubileegroup.co.uk>
+In-Reply-To: <CAPyx93x8RtJA8ghab2W630WwpHZP+K-dA26SWkj7+wstasM5mw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "G.W. Haywood" <netfilter@jubileegroup.co.uk>
+To: Max Ehrlich <max.ehr@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-Hi,
-
-On Sat, Jun 06, 2020 at 06:09:22PM +0100, G.W. Haywood wrote:
-[...]
-> Ideally I'd like to know which process ID is using which connection.
-> Because there may be simultaneous connections, if I don't know which
-> one is which, then I have to wait for all of them to go away before
-> cleaning up, and this can sometimes take hours.  When a connection is
-> first created I could mark it from user space.  Then I can look for
-> the mark when it's time to clean up, but I'd prefer not to have to do
-> that if there's a way of identifying it which does not involve this
-> separate marking operation.  Is there such a way?
+On Wed, Jun 03, 2020 at 12:08:50PM -0400, Max Ehrlich wrote:
+> Hi,
 > 
-> Secondly, I wanted to get conntrackd to log via syslog using facility
-> 'mail'.  It won't do it.  It will log using 'local0' etc., but claims
-> that facility 'mail' is not a known syslog facility (even though I am
-> using it extensively in my milters).  This is my configuration, it is
-> only very slightly edited from the Debian original:
+> I'm switching from iptables to nftables, specifically from a high
+> level translator (awall) to using nftables directly since the
+> scripting environment is so expressive.
 > 
-> 8<----------------------------------------------------------------------
-> mail6:/etc/conntrackd# >>> cat conntrackd.conf
-> General {
->         HashSize 8192
->         HashLimit 65535
+> I have quite a few ipv4 DNAT rules that I need to translate, and they
+> all have a similar form like the following for a web service:
 > 
->         Syslog mail
+> table ip nat {
+>   chain prerouting {
+>     ip daddr != 10.0.0.0/8 fib daddr type local tcp dport http dnat
+> 10.1.1.112:8080
+>   }
 > 
->         LockFile /var/lock/conntrackd.lock
-> 
->         UNIX {
->                 Path /var/run/conntrackd.sock
-> #               Backlog 20
->         }
-> 
->         SocketBufferSize 262142
->         SocketBufferSizeMaxGrown 655355
-> 
->         # default debian service unit file is of Type=notify
->         Systemd on
+>   chain postrouting {
+>     ip saddr 10.0.0.0/8 ip daddr 10.1.1.112 tcp dport 8080 masquerade
+>   }
 > }
 > 
-> Stats {
->         LogFile on
->         Syslog mail
+> table ip filter {
+>   chain forward {
+>     ip daddr 10.1.1.112 tcp dport 8080 accept
+>   }
 > }
-> 8<----------------------------------------------------------------------
-> mail6:/etc/conntrackd# >>> service conntrackd restart
-> [....] Stopping conntrackd[Sat Jun  6 17:22:07 2020] (pid=6268) [warning] 'mail' is not a known syslog facility, ignoring
-> [Sat Jun  6 17:22:07 2020] (pid=6268) [warning] 'mail' is not a known syslog facility, ignoring.
-> . ok [....] Starting conntrackd[Sat Jun  6 17:22:09 2020] (pid=6292)
-> [warning] 'mail' is not a known syslog facility, ignoring
-> [Sat Jun  6 17:22:09 2020] (pid=6292) [warning] 'mail' is not a known syslog facility, ignoring.
-> . ok
-> 8<----------------------------------------------------------------------
 > 
-> The man page is not clear on what facilities I can use; if I change
-> facility 'mail' (for example) to 'local1' the warnings go away, but of
-> course I don't want to do that.  It isn't a show-stopper, I can do it
-> some other way, but it's a nuisance.
-
-Probably you may use ulogd2 instead for this use-case? Use the NFLOG
-input driver which includes the process UID and GID. You could match
-on the first packet new packet based on the conntrack information.
-
-conntrackd only supports a limited number of syslog facilities (only
-daemon, local0 to local7), although it should be relatively easy to
-extend it to support for other facilities.
-
-> Thirdly, it seems that
+> I want to simplify this using a map so that I can add services to the
+> map instead of having to copy all three rules every time. Something
+> like this
 > 
-> http://conntrack-tools.netfilter.org/
+> table ip nat {
+>   map dnat_services {
+>     type inet_service: ipv4_addr . inet_service
+>     elements = {
+>       http: 10.1.1.112 . 8080
+>     }
+>   }
 > 
-> and
+>   chain prerouting {
+>     ip daddr != 10.0.0.0/8 fib daddr type local dnat tcp dport map
+> @dnat_services
+>   }
+> ...
 > 
-> http://conntrack-tools.netfilter.org/manual.html
+> would be great but it seems like the dnat target doesnt accept
+> concatenations. I get that this can be done with two maps but it makes
+> it quite ugly to write although there are performance benefits. Also I
+> have no idea what to do about the filter and masquerade rules. For
+> example
 > 
-> haven't been updated since 2012.  Am I expected to be reading these,
-> or is there something else more recent which replaces it?  The latest
-> release of conntrack-tools mentioned on the site is 1.4.0, although my
-> version of conntrack is 1.4.5 (- and it's a Debian package! -) and the
-> man page does refer me to the conntrack-tools.netfilter.org Website.
-
-The manual mostly focuses on conntrackd for state synchronization (high
-availability) and the userspace conntrack helper mode.
-
-> Examples in chapter 5, "Using conntrack: the command line interface":
+> chain postrouting {
+>   ip saddr 10.0.0.0/8 ip daddr tcp dport map @dnat_services masquerade
+> }
 > 
-> [QUOTE]
-> # conntrack -U -p tcp --dport 3486 --mark 10
->  tcp      6 431982 ESTABLISHED src=192.168.2.100 dst=123.59.27.117\
->  sport=34846 dport=993 packets=169 bytes=14322 src=123.59.27.117\
->  dst=192.168.2.100 sport=993 dport=34846 packets=113 bytes=34787\
->  [ASSURED] mark=1 secmark=0 use=1
-> conntrack v0.9.7 (conntrack-tools): 1 flow entries has been updated.
-> [/QUOTE]
+> doesn't parse (my assumption was this would have been that the ip
+> daddr would be the result of looking up the tcp dport in the given
+> map, it matches the dnat syntax)
 > 
-> (1) The mark in the command line is '10', not '1'.
-> (2) The dport in the example is '993', not '3486' and not '34846'.
+> So is there a cleaner way to write these rules using maps?
 
-Fixed upstream, thanks.
+This is supported since nftables >= 0.9.4
 
-> Point (2) applies to other examples in the same section.  All give me
-> the impression of having been hand-crafted, rather than cut-n-pasted,
-> for example because on updates and deletes the tool does not print the
-> text "has been deleted"; it prints "have been deleted".
-> 
-> If the documents I'm reading are obsolete, I would suggest that they
-> should be taken down, and that the man pages for conntrack, conntrackd
-> and conntrackd.conf should be updated.  I'd be very happy to produce a
-> few patches if I can get the right information.
+# cat ruleset.nft
+table ip nat {
+        map destinations {
+                type ipv4_addr . inet_service : ipv4_addr . inet_service
+        }
 
-I made a quick revamp:
+        chain f {
+                type nat hook postrouting priority srcnat; policy accept;
+                snat ip addr . port to ip daddr . tcp dport map @destinations
+        }
+}
+# nft -f ruleset.nft
 
-http://git.netfilter.org/conntrack-tools/log/
+Then, you can add elements to the `destinations' map that contains the
+mapping.
 
-There is information which is not included in the manpage,
-specifically for the state synchronization (HA) and the userspace
-connection tracking helpers.
-
-The statistics mode, which is the one you're interested in, is not
-documented there though.
-
-Thanks.
+nft add element ip nat destinations { 1.1.1.1 . 80 : 2.2.2.2 . 443 }
