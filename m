@@ -1,47 +1,50 @@
-From: "Gaelan Lloyd" <gaelan@fastmail.fm>
-Subject: Looking to contribute to the nftables wiki
-Date: Wed, 10 Jun 2020 15:34:16 -0700
-Message-ID: <352e41a5-5141-4828-b0fc-e375404195e6@www.fastmail.com>
+From: trentbuck@gmail.com (Trent W. Buck)
+Subject: Re: "Carrier Grade" NAT44 setup
+Date: Thu, 11 Jun 2020 15:51:37 +1000
+Message-ID: <87h7vi880m.fsf@goll.lan>
+References: <5c2c7d45-ea99-0f70-04ee-544f9837b8a8@rfc2324.org>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
-        mime-version:message-id:date:from:to:subject:content-type; s=
-        fm3; bh=FN2ZgEzWo7ukwX9sgJ57Wd3hmSASxLix+uxKafMf8YU=; b=elevVP00
-        9Co4VNU/+EtWOaNgLx7fRNnGCG2DqALf4NddzQEBTXEqshpJQCuS5Dd3ONkF07JD
-        5+cEsLjoYGwe5I5TI8jx2WSxvL1JZnMra+egwPxKwTV8E8WjGxp0zla9HzP6JpZb
-        NEbWqwpr0j+Ejr3WoAI0ByikOlCOOGZfrlSWMEbiips16qZHGyDD/un8/IVxf/m5
-        VcvYF/ZPWunKlXtPyxUIa8Gmvmi/npk8LMfNm4GRmUBPsuMeV714Ms3eyc7I+T+L
-        WcTP673gNuPAD+vgYXcEzizR+1FpmgfyL+rIyWYi3de4D49wQYj5egx0Vi2Ei/zQ
-        UiJzWlPIOOer+Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-type:date:from:message-id
-        :mime-version:subject:to:x-me-proxy:x-me-proxy:x-me-sender
-        :x-me-sender:x-sasl-enc; s=fm3; bh=FN2ZgEzWo7ukwX9sgJ57Wd3hmSASx
-        Lix+uxKafMf8YU=; b=BgN5rJmnIYNKi8E1pfwbGxoF3ql5rxn9Gacs4DaapT/GS
-        J1u4Uc/9OOzn0U8Vjn18t1wVld5b8/xu8iX8m77Q2x9WSxFTsqPv7DdqjPdhS4S3
-        FTrD0CaFv4UBv5rtI6Q5L0RBHNAcEQF2Qi7r3WTaPcrZWeFS/K9i7f452WVRwnM2
-        nP0E6xZqBfqX/7KkS7ul85cEoAFATb3iIFMZ3hQ6mRi/haDjbYbUq5KY4F9Dhj5i
-        m2HQl53jUYwFH12Ty60ZRoIXX6DzTU7hBHv2uJ1vpNg4x3nx5UPs5l10q9I2d4Ry
-        P/1W63Q/PjWTJzYZ7RDjN5GikKJpxk1Uu8I75knnw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi there,
+Maximilian Wilhelm <max@rfc2324.org> writes:
+> Did anyone here already build such a setup [linux as CGNAT router]?
 
-First time writing to this project!
+I have some derpy non-expert comments, below.
 
-Are you accepting applications for contributors to the nftables wiki?  I'd enjoy helping, discussing my ideas, and learning how your team works.
+> What resources would be required on the Linux box? I would assume any
+> decent server CPU with 6+ cores will be fine and 16-32GB of RAM would
+> suffice for storing the conntrack mappings?
 
-Based on my recent experience migrating Debian from iptables to nftables, there's a few areas of the wiki that I'd like to expand on:
+Obligatory question whenever CGNAT comes up:
+Can you just use IPv6 instead? ;-)
 
-- More detailed examples on assigning, using, and nesting variables.
-- Examples on whitelisting incoming traffic from given IP ranges.
-- More detail around general traffic rules, rate limiting, etc.
 
-Looking forward to hearing back from your team,
+When I was doing NAT for up to 1000 desktops,
+I looked into conntrack table size, and
+concluded it was not worth even worrying about.
 
-Gaelan Lloyd
-Seattle, WA, USA
+From first principles, the NAT record is basically a struct like
+
+    (orig_ip, orig_port, nat_ip, nat_port)
+
+Which for IPv4 is only like 10 bytes or something.
+So in 10MiB you can remember 10Mi concurrent flows.
+
+I looked for a quick sanity-check of that and I found this old post
+which reckons 32K concurrent flows in 512MB:
+
+    https://wiki.khnet.info/index.php/Conntrack_tuning
+
+Another old post estimates about 350b/flow, so about 10MB = 28K flows:
+
+    https://www.cyberciti.biz/faq/ip_conntrack-table-ful-dropping-packet-error/
+
+Obviously those numbers don't line up too well.
+Next step is probably to dig through the kernel's Documentation/ tree
+for notes about conntrack limits.
+
