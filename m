@@ -1,51 +1,76 @@
-From: paulo bruck <paulobruck1@gmail.com>
-Subject: loadbalance 2 internet links
-Date: Sun, 14 Jun 2020 16:02:55 -0300
-Message-ID: <CANSGRxRvwj59r=Q-XZJBfugLJTLo9L6Sciiou+y=6uP_Cet=+Q@mail.gmail.com>
+From: Maximilian Wilhelm <max@rfc2324.org>
+Subject: Re: "Carrier Grade" NAT44 setup
+Date: Sun, 14 Jun 2020 21:27:34 +0200
+Message-ID: <20200614192734.GA31553@principal.rfc2324.org>
+References: <5c2c7d45-ea99-0f70-04ee-544f9837b8a8@rfc2324.org>
+ <87h7vi880m.fsf@goll.lan>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=7xUsnfENNSfEGLKHC101fHMJdXw/Q2t6l6z7LE/sZyg=;
-        b=G2hvBIcN+6FiyPBoRtHhVMQGUQt3WBj8FqVu2Zb8svxxucJveCXrzuQ9GmvxJG7Xvp
-         Hdmfny54Fvf+SJaGfvWB6aUUNw+ZdA0Sgpu5v/4HJ856F6n+5rrRxsx4BEnDJ4cX3qHY
-         CIzpKel2HbwFrmGAIftaspCXqEtZiEDAafC+y1a51NuPHCHgOePg8wth6KhRw2ODyhta
-         oWCB9mE+PS8cepufUyEvR2/Z7R1xBRVwMY30dX/8d4xfDaLY+zP9w5nHwW1Z+kJAUM5D
-         PshQLpa4lsPjmzLOh4B/w3+BNSFdp1m/LRHrvPmBJu7CnePTxpcbbTLgqteTKh6G8NFq
-         vTiQ==
+Content-Disposition: inline
+In-Reply-To: <87h7vi880m.fsf@goll.lan>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi everyone.
+Anno domini 2020 Trent W. Buck scripsit:
 
-I am  writing the last part of my scripts to use nftables instead of iptables.
+> Maximilian Wilhelm <max@rfc2324.org> writes:
+> > Did anyone here already build such a setup [linux as CGNAT router]?
+> 
+> I have some derpy non-expert comments, below.
+> 
+> > What resources would be required on the Linux box? I would assume any
+> > decent server CPU with 6+ cores will be fine and 16-32GB of RAM would
+> > suffice for storing the conntrack mappings?
+> 
+> Obligatory question whenever CGNAT comes up:
+> Can you just use IPv6 instead? ;-)
 
-Last tasking is part of load balance between 2 internet links.
+"Instead" as in IPv6-only won't work, as people are using all sorts of
+applications we can't control. The final setup will be real dual-stack
+of corse, so we are "only" talking about the bits of traffic which are
+IPv4 and will leave our network. I would expect this to be a lot less
+than the full traffic volume from today, but that's only a guessimate.
 
-I have read this paper about load balance. ( thanks Laura 80)  )
-https://netdevconf.info/1.1/proceedings/papers/Load-balancing-with-nftables.pdf
+> When I was doing NAT for up to 1000 desktops,
+> I looked into conntrack table size, and
+> concluded it was not worth even worrying about.
+> 
+> From first principles, the NAT record is basically a struct like
+> 
+>     (orig_ip, orig_port, nat_ip, nat_port)
+> 
+> Which for IPv4 is only like 10 bytes or something.
+> So in 10MiB you can remember 10Mi concurrent flows.
+> 
+> I looked for a quick sanity-check of that and I found this old post
+> which reckons 32K concurrent flows in 512MB:
+> 
+>     https://wiki.khnet.info/index.php/Conntrack_tuning
+> 
+> Another old post estimates about 350b/flow, so about 10MB = 28K flows:
+> 
+>     https://www.cyberciti.biz/faq/ip_conntrack-table-ful-dropping-packet-error/
+> 
+> Obviously those numbers don't line up too well.
+> Next step is probably to dig through the kernel's Documentation/ tree
+> for notes about conntrack limits.
 
-and those for conntrack
-https://superuser.com/questions/1277697/making-routing-decisions-based-on-uid-using-nftables
+I would expect the conntrack entry for NAT being more like two
+5-tuples (L4 proto, src/dst ip, src/dst port). I guess I'll really have
+to dig through Documentation and/or the code the next days :)
 
-https://wiki.nftables.org/wiki-nftables/index.php/Setting_packet_metainformation
+We're currently looking at boxes with 64GB of RAM as RAM is rather cheap
+compared with CPUs and meaningful NICs. On the latter we're going for
+Mellanox ConnectX 4 with 2x 10/25G ports as of now, they seem to provide
+a lot of queues and I don't hear people complain about problems as I hear
+with bcm or Intel X7xx lately.
 
-If I have this situation:
-              |-------------| ------wan1 ------
-----lan----| Firewall  |
-               |------------|-------wan2 -------
-
-I believe that I'll have to use iproute2 + nftables + mangle + ctmark
-for lan packages and applications that reside in firewall because I
-cant brake connections between lan and internet ( suppose that at lan
-I have an user accessing home bank ( port 443/tcp) . In this situation
-I must consider all traffic from this connection to in/out for the
-same link. Am I correct?
-
-thanks for your time
-
-best regards
+Best
+Max
+-- 
+     "really soon now":      an unspecified period of time, likly to
+                             be greater than any reasonable definition
+                             of "soon".
