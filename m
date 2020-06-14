@@ -1,54 +1,102 @@
-From: Robin Kuiper <kuiper.robin@gmail.com>
-Subject: Re: nftables drops related traffic
-Date: Sun, 14 Jun 2020 10:38:51 +0200
-Message-ID: <f191415454505f73fd86bbd3260fee5f2eae9349.camel@gmail.com>
-References: <4baae47f34b92314090a0cda3b7b50bb3f253b8d.camel@gmail.com>
-         <673e1c37-f74f-717f-ced8-814eb6acb543@plushkava.net>
+From: Alessandro Vesely <vesely@tana.it>
+Subject: Re: Difficulties with ulog / NFCT
+Date: Sun, 14 Jun 2020 13:33:16 +0200
+Message-ID: <23359a19-b348-cf6d-eb96-623ea466babe@tana.it>
+References: <ef15f5cc-1fa3-fe40-3e5e-a463e3f95314@tana.it>
+ <ee17e7ef-8e26-4062-5c2c-b666e9525d59@tana.it>
+ <CAEzD07JoH=KN4z0hN+UXqPr3AJW6cc3maVwMRZUcahSkfL+8WQ@mail.gmail.com>
+ <98ae7d6e-f9f5-477e-469a-7ea7182060db@tana.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=message-id:subject:from:to:date:in-reply-to:references:user-agent
-         :mime-version:content-transfer-encoding;
-        bh=s+OF5qbRSIfACUEZCYjbq+eEUgFe1bS2pAzf5eKNBGo=;
-        b=QYZTBvaqCUZrdFv9b9ROXvEUqv1lCvhHtIGrRCHJKIx+JSXPszkMMcd6FHiemhaqpt
-         dgD+rVunHHPBILwKHuc7wrDF2dXQrU6BCP/k/DWWCTEBWnlxhpoRanXwBcjDZe1AMRgK
-         0FuhBCu9iyFObHm/MzxK8DJ+onXZxbUsgjx76rLfiYmcq820DENJl9+u99KNDiCFj1Q5
-         4dCOWHoOIARvTISQjW1Se3MnL1dUGJ2ghlm7uuB9WsNx5dd/SgahqdXQ1HLY93G/NTRw
-         05Zy3UGTjl6SH/UaB9DyXRbh7yZ/EMV34oRRIjmsaIykh797c4hqweG1O8Zha5ScZ8dn
-         4KeQ==
-In-Reply-To: <673e1c37-f74f-717f-ced8-814eb6acb543@plushkava.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tana.it; s=delta;
+        t=1592134396; bh=D4VlA8de8KpUmB/3m31AmZsXrofzT0YwHFzDcJIANtQ=;
+        l=2101; h=From:To:Cc:References:Date:In-Reply-To;
+        b=B+iIA3m9IZNb9nrup7qBpJ0BV0E+7YerVvakucNg1/wClfjOqWogsL0TXvYVWQCS2
+         jfg7rG7F5+/NAEOlTgBEkEctyjKthKyyb07LOnDXKz3Xm7SD/Odxy4+OCm0nYy161C
+         cYVFw7V149JyWSrNLwtYBse+Q/9wWFbqMbtemrrh4Eo88ClBmcy8F93HjdSHl
+In-Reply-To: <98ae7d6e-f9f5-477e-469a-7ea7182060db@tana.it>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: kfm@plushkava.net, netfilter@vger.kernel.org
+To: Anton Danilov <littlesmilingcloud@gmail.com>
+Cc: netfilter <netfilter@vger.kernel.org>
 
-
-
-On Sun, 2020-06-14 at 02:17 +0100, kfm@plushkava.net wrote:
-> If you want to be able to rely exclusively on the related ct_state
-> to 
-> allow such packets to pass, check that your kernel has 
-> CONFIG_NF_CONNTRACK_TFTP enabled. It's usually enabled as a loadable 
-> kernel module so, if you are able to "modprobe nf_conntrack_tftp"
-> and 
-> observe that the module is listed by "lsmod", you should be in good 
-> standing.
+On Mon 17/Feb/2020 19:01:00 +0100 Alessandro Vesely wrote:
+> On Mon 17/Feb/2020 16:53:23 +0100 Anton Danilov wrote:
+>> Have you enabled the conntrack accounting and conntrack timestamps via sysctl?
 > 
-> The other thing you should know is that nftables has a specific
-> syntax 
-> to register connection tracking helpers and to attach them to a
-> given 
-> rule. The man page contains an example for FTP, which should be 
-> straightforward to adapt:
 > 
-> https://git.netfilter.org/nftables/tree/doc/stateful-objects.txt#n29
+> Nope.  [...]
+> 
+> Now I set nf_conntrack_timestamp=1 and I'm starting to get some non-NULL
+> timestamps.  Great!
 
-Both solutions worked, but for both I needed to enable helpers by
-running `sysctl net/netfilter/nf_conntrack_helper=1`, as specified in:
 
-https://wiki.nftables.org/wiki-nftables/index.php/Setting_packet_connection_tracking_metainformation
+At the time, I also wrote a file:
 
-Thanks for your help!
+# ls -labt /etc/sysctl.d/timestamps*
+-rw-r--r-- 1 root root 65 Feb 17 18:27 /etc/sysctl.d/timestamps_in_nfct_ulog.conf
+
+# cat !$
+cat /etc/sysctl.d/timestamps*
+# start timestamp in ulog
+net.netfilter.nf_conntrack_timestamp=1
+
+Yet, upon reboot, I found:
+net.netfilter.nf_conntrack_timestamp = 0
+
+The only (cryptic) message I found in the logs was:
+[  168.919868] nf_conntrack: default automatic helper assignment has been turned off for security reasons and CT-based firewall rule not found. Use the iptables CT target to attach helpers instead.
+
+Any idea what went wrong?
+
+
+For a second warning to people on this path, the LSB headers in my ulog2 init script missed the following:
+# Should-Start:      mysql
+# Should-Stop:       mysql
+
+I wrote an amended LSB in /etc/insserv/overrides/ulog2
+
+Before doing so, ulogd erred out:
+Jun 12 08:47:59 29 north ulogd[5681]: building new pluginstance stack: 'log1:NFLOG,base1:BASE,ifi1:IFINDEX,ip2str1:IP2STR,print1:PRINTPKT,emu1:LOGEMU'
+Jun 12 08:47:59 27 north ulogd[5681]: can't find requested plugin PRINTPKT
+Jun 12 08:47:59 29 north ulogd[5681]: building new pluginstance stack: 'ct1:NFCT,ip2str1:IP2STR,mysql1:MYSQL'
+Jun 12 08:47:59 29 north ulogd[5681]: (re)configuring
+Jun 12 08:47:59 27 north ulogd[5681]: can't connect to db: Can't connect to local MySQL server through socket '/var/run/mysqld/mysqld.sock' (2 "No such file or directory")
+Jun 12 08:47:59 27 north ulogd[5681]: error in open_db
+Jun 12 08:47:59 27 north ulogd[5681]: error during configure of plugin MYSQL
+Jun 12 08:47:59 26 north ulogd[5681]: not even a single working plugin stack
+
+I restarted it by /etc/init.d/ulogd2 start.  Could that error have cleared nf_conntrack_timestamp??
+
+
+Best
+Ale
+-- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
