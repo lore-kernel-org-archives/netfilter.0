@@ -1,67 +1,48 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] nftables 0.9.6 release
-Date: Mon, 15 Jun 2020 22:43:16 +0200
-Message-ID: <20200615204316.GA24277@salvia>
+From: Hooman <mailinglister.hooman@gmail.com>
+Subject: WiFi Hotspot Disable Neighbor discovery,Ask
+Date: Mon, 15 Jun 2020 23:38:04 -0400
+Message-ID: <e8de3662-249c-598b-cd0d-e97ccc500449@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="6c2NcOVqGQ03X4Wi"
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: netdev-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=MaFf3qfVdxDhwS8g1fGskU3QTkvtlhYJwQHS/CkdF2g=;
+        b=gCPcgbjZBnAfXJxE8RT4dNr2DVZFaDWueZbfMWUVqVtMOd1+t6bhKlf/lxkY4SdJVr
+         oEgZcBSMF0uJ+jkrJdHpdQQuxrMCyflPzYvGVxIy0d/td97KucDZzXU6RilSZJMmncU9
+         LSIxTM/HxYUHXBJGYBt9V6PX+ZC3CD/CmG2Fin2+GqY5gpAN099U14Wek+w696W4cfQR
+         yWJT/44Qq/tHTSEMWKbvvFv8DP+iz2UhlSvMl/R1GnEPVJ55sa9frnWPULrgAVb1RTDV
+         n1j26Bq/7aSHJk0weQlE8H3xIRb2UfqftSoJv/KuVIcDwXUrU8gDB4FktFcCzBE4+XMt
+         OoKg==
+Content-Language: en-US
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter <netfilter@vger.kernel.org>, netfilter-devel <netfilter-devel@vger.kernel.org>
-Cc: netdev@vger.kernel.org, netfilter-announce@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
+Hi,
 
---6c2NcOVqGQ03X4Wi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I am using WiFi hotspot feature of Ubuntu 18.04 to create a hotspot for
+my devices. I need to prevent different devices on the network from
+contacting each other.
 
-Hi!
+More specifically, I have two phones on the network, I would like them
+not to be able to send any packets to each other. Right now if phone 1
+is using IP address 10.42.0.172 and phone 2 is using 10.42.0.59, I can
+use phone 1 to ping 10.42.0.59.
 
-The Netfilter project proudly presents:
+I would like to disable connections between different hosts on the
+network created by the hotspot.
 
-        nftables 0.9.6
+I tried using iptables to drop local traffic. However, it seems like the
+iptables don't have any effect on these packets.
 
-This release fixes vmap support which broke in 0.9.5.
+I do see local packets on wireshark though. I'm wondering if local
+packets are forwarded directly without hitting the iptable rules.
 
-You can download this new release from:
+Is it possible to use iptables or ebtables to filter these packets? Is
+there any other solution to this?
 
-https://www.netfilter.org/projects/nftables/downloads.html#nftables-0.9.6
-https://www.netfilter.org/pub/nftables/
-
-To build the code, libnftnl 1.1.7 and libmnl >= 1.0.4 are required:
-
-* http://netfilter.org/projects/libnftnl/index.html
-* http://netfilter.org/projects/libmnl/index.html
-
-Visit our wikipage for user documentation at:
-
-* http://wiki.nftables.org
-
-For the manpage reference, check man(8) nft.
-
-In case of bugs and feature request, file them via:
-
-* https://bugzilla.netfilter.org
-
-Have fun.
-
---6c2NcOVqGQ03X4Wi
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="changes-nftables-0.9.6.txt"
-
-Fabrice Fontaine (1):
-      main: fix build with gcc <= 4.8
-
-Pablo Neira Ayuso (8):
-      evaluate: missing datatype definition in implicit_set_declaration()
-      evaluate: remove superfluous check in set_evaluate()
-      netlink: release dummy rule object from netlink_parse_set_expr()
-      segtree: fix asan runtime error
-      meta: fix asan runtime error in tc handle
-      cmd: add misspelling suggestions for rule commands
-      tests: shell: rename testcases/map/dump/0009vmap_0dump.nft
-      build: Bump version to v0.9.6
-
-
---6c2NcOVqGQ03X4Wi--
+Thank you
