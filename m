@@ -1,91 +1,67 @@
-From: "G.W. Haywood" <netfilter@jubileegroup.co.uk>
+From: Alex Buie <alex.buie@datto.com>
 Subject: Re: WiFi Hotspot Disable Neighbor discovery,Ask
-Date: Sun, 21 Jun 2020 00:35:58 +0100 (BST)
-Message-ID: <alpine.DEB.2.21.2006210001480.13515@piplus.local.jubileegroup.co.uk>
-References: <alpine.DEB.2.21.2006161012410.11442@piplus.local.jubileegroup.co.uk> <44cc0842-bd3b-986e-9537-bd11d980e61b@gmail.com> <01ddc95d-b6cd-193c-4a8c-4b2a42718441@gmail.com>
+Date: Sat, 20 Jun 2020 22:31:07 -0400
+Message-ID: <CANGix0A5Wq-GmbfgfGVpd4vo9PczshSMPw7jVkKyQWprgiSrWw@mail.gmail.com>
+References: <e8de3662-249c-598b-cd0d-e97ccc500449@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="-1463810772-719546927-1592694954=:13515"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <01ddc95d-b6cd-193c-4a8c-4b2a42718441@gmail.com>
-Content-ID: <alpine.DEB.2.21.2006210016481.13515@piplus.local.jubileegroup.co.uk>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=datto.com;
+        s=mimecast20190208; t=1592706681;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:to:
+         cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=unTnhCKrRRC1r8O3S7veVs+GBTEDD1LHCq1a1RpSBfo=;
+        b=QIADuZr7pZ4eL4MoOKYYSwtu7bHWqvemSO3M7VbKChSKJCqhhCgkGDjaJVhfzQKXOpTpfw
+        j2VBnrGeXHCDXbHBXsgVY66qmrKkk6hbcr2y2B+hnB48JF4J4WPwu5asMU4MN/uFnL7mZP
+        eyo2pfYBm4tfgwi3S6LmKkuXQvcwcrI=
+In-Reply-To: <e8de3662-249c-598b-cd0d-e97ccc500449@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Hooman <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: 
+Cc: netfilter@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+You -might- need to fiddle with the nf-call-iptables sysctls for those
+firewall rules to work. I haven't personally tried this for a wifi
+adapter in infrastructure mode (only wired bridges) but it might
+help/apply to your setup.
 
----1463810772-719546927-1592694954=:13515
-Content-Type: text/plain; charset="iso-8859-15"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
-Content-ID: <alpine.DEB.2.21.2006210016482.13515@piplus.local.jubileegroup.co.uk>
+See https://wiki.libvirt.org/page/Net.bridge.bridge-nf-call_and_sysctl.conf
+for some info.
 
-Hello again,
 
-On Sat, 20 Jun 2020, Hooman wrote:
+R's,
 
-> ... [snip] ...
-> The hotspot creates a network on subnet on my wifi interface ( inet
-> 10.42.0.1 netmask 255.255.255.0 ):
+Alex
 
-It's important to note that netmask here.
-
-> ... [snip] ...
-> The hotspot feature creates some iptable rules:
+On Mon, Jun 15, 2020, 11:38 PM Hooman <mailinglister.hooman@gmail.com> wrot=
+e:
 >
-> root@myuser:~# iptables -vL -t filter
-> Chain INPUT (policy ACCEPT 284K packets, 89M bytes)
-> ... [snip] ...
-> Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Note that although 284K packets were counted into the Ubuntu box by
-the INPUT chain, no packets at all were counted by the FORWARD chain.
-
-> ... [snip] ...
->  0 0 REJECT all -- any wlan1 anywhere anywhere ...
->  0 0 REJECT all -- wlan1 any anywhere anywhere ...
-
-So no packets matched these REJECT rules, because the rules never saw
-the packets that you're concerned about.
-
-> Now as I said, Machine A is on 10.42.0.34 and Machine B is on 10.42.0.57.
-
-On the same subnet.  Yes.  Not *routed* through your Ubuntu box.
-
-> The following iptables rules stop packets from Machine A to Google but
-> not from Machine A to B:
+> Hi,
 >
-> sudo iptables -t mangle=A0 -I PREROUTING -j DROP
-> sudo iptables -t filter -I FORWARD -j DROP
-> sudo iptables -t raw=A0 -I PREROUTING -j DROP
+> I am using WiFi hotspot feature of Ubuntu 18.04 to create a hotspot for
+> my devices. I need to prevent different devices on the network from
+> contacting each other.
+>
+> More specifically, I have two phones on the network, I would like them
+> not to be able to send any packets to each other. Right now if phone 1
+> is using IP address 10.42.0.172 and phone 2 is using 10.42.0.59, I can
+> use phone 1 to ping 10.42.0.59.
+>
+> I would like to disable connections between different hosts on the
+> network created by the hotspot.
+>
+> I tried using iptables to drop local traffic. However, it seems like the
+> iptables don't have any effect on these packets.
+>
+> I do see local packets on wireshark though. I'm wondering if local
+> packets are forwarded directly without hitting the iptable rules.
+>
+> Is it possible to use iptables or ebtables to filter these packets? Is
+> there any other solution to this?
+>
+> Thank you
+>
 
-That's correct.  Packets to Google are *routed* through the box.
-
-> So basically, iptable and ebtable rules have no effect on packets from A
-> to B. However, I see those packets on wireshark and they definitely go
-> through the Ubuntu machine that is hosting the access point.
-
-As you have demonstrated, packets are not going through the FORWARD
-chain in the filter table, so adding rules to drop them there will not
-do what you want.
-
-If you want to drop packets in the FORWARD chain you first need to
-arrange for them to pass through it.  I would not expect packets
-exchanged between 10.42.0.34 to 10.42.0.57 on a network with a netmask
-of 255.255.255.0 to do that, which is why I sugggested playing with
-the netmasks.
-
-> ... I see those packets on wireshark and they definitely go through
-> the Ubuntu machine that is hosting the access point. And that's
-> exactly my dilemma, how to block those packets from going through.
-
-If packets truly are going through the Ubuntu box to get from
-10.42.0.34 to 10.42.0.57 then they must be going via the INPUT and
-OUTPUT chains.  It seems odd to me, but one way to test that is to
-put rules to count 10.42.x.x packets in the INPUT and OUTPUT chains.
-
---=20
-
-73,
-Ged.
----1463810772-719546927-1592694954=:13515--
