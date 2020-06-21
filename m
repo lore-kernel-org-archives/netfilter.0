@@ -1,67 +1,69 @@
-From: Alex Buie <alex.buie@datto.com>
-Subject: Re: WiFi Hotspot Disable Neighbor discovery,Ask
-Date: Sat, 20 Jun 2020 22:31:07 -0400
-Message-ID: <CANGix0A5Wq-GmbfgfGVpd4vo9PczshSMPw7jVkKyQWprgiSrWw@mail.gmail.com>
-References: <e8de3662-249c-598b-cd0d-e97ccc500449@gmail.com>
+From: =?UTF-8?Q?Marek_Gre=C5=A1ko?= <mgresko8@gmail.com>
+Subject: nftables and connection tracking
+Date: Sun, 21 Jun 2020 07:54:14 +0200
+Message-ID: <CAChjPdRd1xePA2fesrj8imCo9gfP_B5bko95MEGEwsAWVX6fjw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=datto.com;
-        s=mimecast20190208; t=1592706681;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:to:
-         cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=unTnhCKrRRC1r8O3S7veVs+GBTEDD1LHCq1a1RpSBfo=;
-        b=QIADuZr7pZ4eL4MoOKYYSwtu7bHWqvemSO3M7VbKChSKJCqhhCgkGDjaJVhfzQKXOpTpfw
-        j2VBnrGeXHCDXbHBXsgVY66qmrKkk6hbcr2y2B+hnB48JF4J4WPwu5asMU4MN/uFnL7mZP
-        eyo2pfYBm4tfgwi3S6LmKkuXQvcwcrI=
-In-Reply-To: <e8de3662-249c-598b-cd0d-e97ccc500449@gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=WzeKk6o/ITCtvLHp//q+WRIsKcTYhaGrfk+kvKO9SZE=;
+        b=M2bNM/bVn65V4H4mNQtQQe2vjjRjKPD26EGo4rZ69T07lcAqOJNQJByA8oAh2TOc4P
+         EssyzIpU7P3ROx3HFTdSB8ZLitZeTXoJfLkpe3QML7JUBeMefakrLzyHrJdrCVcPxNud
+         ArOXLN6NZT4vwtIoY71Y2XU7HJxvFu9Rflk7ls2R5s6oIvfmpSFyCrLClxBCdEx/gCEh
+         sq97h0OfuwtTBXRVJ7MZwrHGoTU0V5AdL76gXn9dayZCCbKeyC8o/MnYAvdgy7a/PUMA
+         Krv02TTGXpKNC54ax6XsQja2OzXA9BlwTkPInmQDe1DVK6icUu4DYiolTb9SfmN57P7z
+         cbpA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: 
-Cc: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-You -might- need to fiddle with the nf-call-iptables sysctls for those
-firewall rules to work. I haven't personally tried this for a wifi
-adapter in infrastructure mode (only wired bridges) but it might
-help/apply to your setup.
+Hello,
 
-See https://wiki.libvirt.org/page/Net.bridge.bridge-nf-call_and_sysctl.conf
-for some info.
+I have problem to get connection tracking work when using nftables. I
+have this setup on my fedora 32:
 
+table ip raw {
+        chain PREROUTING {
+                type filter hook prerouting priority raw; policy accept;
+                meta l4proto udp udp dport 5060 # CT helper sip
+        }
 
-R's,
+        chain OUTPUT {
+                type filter hook output priority raw; policy accept;
+                meta l4proto udp udp dport 5060 # CT helper sip
+        }
+}
 
-Alex
+/etc/modules-load.d/conntrack.conf:
 
-On Mon, Jun 15, 2020, 11:38 PM Hooman <mailinglister.hooman@gmail.com> wrot=
-e:
->
-> Hi,
->
-> I am using WiFi hotspot feature of Ubuntu 18.04 to create a hotspot for
-> my devices. I need to prevent different devices on the network from
-> contacting each other.
->
-> More specifically, I have two phones on the network, I would like them
-> not to be able to send any packets to each other. Right now if phone 1
-> is using IP address 10.42.0.172 and phone 2 is using 10.42.0.59, I can
-> use phone 1 to ping 10.42.0.59.
->
-> I would like to disable connections between different hosts on the
-> network created by the hotspot.
->
-> I tried using iptables to drop local traffic. However, it seems like the
-> iptables don't have any effect on these packets.
->
-> I do see local packets on wireshark though. I'm wondering if local
-> packets are forwarded directly without hitting the iptable rules.
->
-> Is it possible to use iptables or ebtables to filter these packets? Is
-> there any other solution to this?
->
-> Thank you
->
+nf_conntrack_ftp
+nf_conntrack_sip
+nf_conntrack_h323
+nf_conntrack_irc
+nf_conntrack_amanda
+nf_conntrack_netbios_ns
+nf_conntrack_netlink
+nf_conntrack_pptp
+nf_conntrack_tftp
+nf_conntrack_broadcast
+nf_conntrack_snmp
+nf_conntrack_sane
+nf_nat
+nf_nat_ftp
+nf_nat_sip
+nf_nat_h323
+nf_nat_irc
+nf_nat_amanda
+nf_nat_pptp
+nf_nat_snmp_basic
+nf_nat_tftp
 
+but I get no sound. When using iptables, everything is working. Should
+this be configured diffrent way?
+
+Thanks.
+
+Marek
