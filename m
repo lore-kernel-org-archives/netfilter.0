@@ -1,69 +1,46 @@
-From: =?UTF-8?Q?Marek_Gre=C5=A1ko?= <mgresko8@gmail.com>
-Subject: nftables and connection tracking
-Date: Sun, 21 Jun 2020 07:54:14 +0200
-Message-ID: <CAChjPdRd1xePA2fesrj8imCo9gfP_B5bko95MEGEwsAWVX6fjw@mail.gmail.com>
+From: Florian Westphal <fw@strlen.de>
+Subject: Re: nftables and connection tracking
+Date: Sun, 21 Jun 2020 10:06:14 +0200
+Message-ID: <20200621080614.GK26990@breakpoint.cc>
+References: <CAChjPdRd1xePA2fesrj8imCo9gfP_B5bko95MEGEwsAWVX6fjw@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=WzeKk6o/ITCtvLHp//q+WRIsKcTYhaGrfk+kvKO9SZE=;
-        b=M2bNM/bVn65V4H4mNQtQQe2vjjRjKPD26EGo4rZ69T07lcAqOJNQJByA8oAh2TOc4P
-         EssyzIpU7P3ROx3HFTdSB8ZLitZeTXoJfLkpe3QML7JUBeMefakrLzyHrJdrCVcPxNud
-         ArOXLN6NZT4vwtIoY71Y2XU7HJxvFu9Rflk7ls2R5s6oIvfmpSFyCrLClxBCdEx/gCEh
-         sq97h0OfuwtTBXRVJ7MZwrHGoTU0V5AdL76gXn9dayZCCbKeyC8o/MnYAvdgy7a/PUMA
-         Krv02TTGXpKNC54ax6XsQja2OzXA9BlwTkPInmQDe1DVK6icUu4DYiolTb9SfmN57P7z
-         cbpA==
+Content-Disposition: inline
+In-Reply-To: <CAChjPdRd1xePA2fesrj8imCo9gfP_B5bko95MEGEwsAWVX6fjw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Marek =?iso-8859-15?Q?Gre=A8ko?= <mgresko8@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hello,
+Marek Gre=A8ko <mgresko8@gmail.com> wrote:
+> I have problem to get connection tracking work when using nftables. I
+> have this setup on my fedora 32:
+>=20
+> table ip raw {
+>         chain PREROUTING {
+>                 type filter hook prerouting priority raw; policy accept;
+>                 meta l4proto udp udp dport 5060 # CT helper sip
+>         }
+>=20
+>         chain OUTPUT {
+>                 type filter hook output priority raw; policy accept;
+>                 meta l4proto udp udp dport 5060 # CT helper sip
+>         }
 
-I have problem to get connection tracking work when using nftables. I
-have this setup on my fedora 32:
+These rules don't do anything (it matches udp 5060, but no action is
+given).  I suspect this from xtables-translate, which did not understand
+the -j CT --helper sip rule.
 
+This needs something like:
 table ip raw {
-        chain PREROUTING {
-                type filter hook prerouting priority raw; policy accept;
-                meta l4proto udp udp dport 5060 # CT helper sip
-        }
+   ct helper sip {
+     type "sip" protocol udp
+   }
+   chain prerouting {
+       meta l4proto udp udp dport 5060 ct helper set "sip"
+   }
 
-        chain OUTPUT {
-                type filter hook output priority raw; policy accept;
-                meta l4proto udp udp dport 5060 # CT helper sip
-        }
+# same for output
 }
-
-/etc/modules-load.d/conntrack.conf:
-
-nf_conntrack_ftp
-nf_conntrack_sip
-nf_conntrack_h323
-nf_conntrack_irc
-nf_conntrack_amanda
-nf_conntrack_netbios_ns
-nf_conntrack_netlink
-nf_conntrack_pptp
-nf_conntrack_tftp
-nf_conntrack_broadcast
-nf_conntrack_snmp
-nf_conntrack_sane
-nf_nat
-nf_nat_ftp
-nf_nat_sip
-nf_nat_h323
-nf_nat_irc
-nf_nat_amanda
-nf_nat_pptp
-nf_nat_snmp_basic
-nf_nat_tftp
-
-but I get no sound. When using iptables, everything is working. Should
-this be configured diffrent way?
-
-Thanks.
-
-Marek
