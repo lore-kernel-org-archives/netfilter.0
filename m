@@ -1,53 +1,52 @@
-From: =?UTF-8?Q?Marek_Gre=C5=A1ko?= <mgresko8@gmail.com>
-Subject: Re: nftables and connection tracking
-Date: Mon, 22 Jun 2020 19:18:05 +0200
-Message-ID: <CAChjPdTfBB4x9AuQhdhuU_z+Zp=iPHUUDy_+5+YEhhdu+V-oiw@mail.gmail.com>
-References: <CAChjPdRd1xePA2fesrj8imCo9gfP_B5bko95MEGEwsAWVX6fjw@mail.gmail.com>
- <20200622120636.GA17558@salvia>
+From: Adam Degenhardt <degenhardt.adam@gmail.com>
+Subject: "Operation not supported" when using ct mark
+Date: Mon, 22 Jun 2020 15:39:08 -0400
+Message-ID: <CAFQ1GKLFiPs4=uAkExiz9UokecfQ-SrDi_t+z3eWO9o6oh3KmA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=CRGxhO3ZYNBhgIdiL1oGYL/R9KBQbUwyj7Hqc+IJ1/Q=;
-        b=kpL4S0SkOi33fOv7hrKTHfahg7jkQAgJ2bFr9oVnrMvEPiHO2LMhSAWC4CM3lqokRk
-         Ek00vHt78MlCjVQax0rbNJrjHRlgxHbQKKw7Ef0j3geH9wrIYuW+gdLP2vyMopxEQaLh
-         43D0Ajexd8Or4HoBbrEtBBtKmqYibVXl7pvDKzT1JefhqSdAmcJwxftdxbPgEpeAJfuh
-         bagmGExDxmzGZiYWX6SbzlKbpdtaTEJseUGW41FHAPArhN7jxlR7T0tMyb1wgA0FDKLH
-         TsdoLsEq4azToev5Wnl330fzMGAg9ZBEDUg/xXKcKZR+GCokB7loI3VJ7laZ/NR+pMN7
-         g6Dw==
-In-Reply-To: <20200622120636.GA17558@salvia>
+        h=mime-version:from:date:message-id:subject:to;
+        bh=wgod0r5ShbiZGUZGzyNTkTrJmHVXeg3n/yMLM8t9Lxg=;
+        b=YFonC9mne38/k/j6RcQ7QbHEI1FtfxfQlVBYPa77GyckcT9LG0Ys1CCEBa7dhovmJh
+         DqXUJx2hDPSKMak67yjYTzPvM0P2bdQOkqq65FFxNTiI5J971EhHOqqEy8WuNvVs/1T6
+         Vd4cnkjyI0nIaIu/9dMSO+2v+N7l/wqRuFFeMt8agevuFQ3jQuSTKPRbibWz22fgZESm
+         iCJUxyERK8SeOombdaUWJlSwhbHY5b4QsydcXDjvT+8VLcLGwdMwrrU4JQP72UF4WCs7
+         J7133B7uakQQ3ZbZiLqCri7Tbdc0nBkXL+/Q4lsHmjvdS8olpva7DprqKEqNfgew6zOT
+         7OpQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hello,
+Hi,
 
-after changing priority it is working. It was a configuration error or a bu=
-g?
+When I try to add a rule either matching on the conntrack mark or
+setting it, I get "Error: Could not process rule: Operation not
+supported"
+Other conntrack options (i.e. ct state, ct direction, ct expiration,
+etc.) all seem to work fine.
+Do some versions of nftables or conntrack not support connection marks?
 
-Marek
+I'm running nftables v0.9.0 and linux kernel 4.14
+My ruleset looks like
 
+table ip testtable {
+        chain testchain {
+                type filter hook prerouting priority 0; policy accept;
+                ip saddr 192.168.2.0/24 udp dport { 5678, 5679, 5681 }
+# unrelated rule
+        }
+}
 
-2020-06-22 14:06 GMT+02:00, Pablo Neira Ayuso <pablo@netfilter.org>:
-> On Sun, Jun 21, 2020 at 07:54:14AM +0200, Marek Gre=C5=A1ko wrote:
->> Hello,
->>
->> I have problem to get connection tracking work when using nftables. I
->> have this setup on my fedora 32:
->>
->> table ip raw {
->>         chain PREROUTING {
->>                 type filter hook prerouting priority raw; policy accept;
->
-> Could you try from the filter (0) priority instead ?
->
->                   type filter hook prerouting priority filter; policy
-> accept;
->
-> Thanks.
->
+As a specific example, running
+nft add rule testtable testchain ct state new
+works fine, but if I do
+nft add rule testtable testchain ct mark 2
+or
+nft add rule testtable testchain ct mark set 2
+it fails.
+
+Thanks,
+- Adam
