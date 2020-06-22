@@ -1,61 +1,32 @@
-From: =?UTF-8?Q?Marek_Gre=C5=A1ko?= <mgresko8@gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 Subject: Re: nftables and connection tracking
-Date: Sun, 21 Jun 2020 13:33:55 +0200
-Message-ID: <CAChjPdSnqd3p60gRLPNEexi_ABsJAfVgWTZZo3jvYw6wyiUUow@mail.gmail.com>
+Date: Mon, 22 Jun 2020 14:06:36 +0200
+Message-ID: <20200622120636.GA17558@salvia>
 References: <CAChjPdRd1xePA2fesrj8imCo9gfP_B5bko95MEGEwsAWVX6fjw@mail.gmail.com>
- <20200621080614.GK26990@breakpoint.cc> <CAChjPdQtKBGuUvdveCVc5kmhA+fgP4DUDNKhNd11KUVCKNUZLg@mail.gmail.com>
- <20200621090142.GL26990@breakpoint.cc> <CAChjPdT0xHfAy5+=Lf1ua6bSjiZxiH-=424Yb-GLHyrt5BL=Kw@mail.gmail.com>
- <20200621104516.GM26990@breakpoint.cc>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=Ht+YDfBeHCwx4HKiTXmwow4/sPIbQSei/03fn2oMWho=;
-        b=cxKJOIM63ojoz0dNLSRg8kyZVmpmSpWuZii/8PDW6lkvcWL6hYumSVmoxV94bE9sEz
-         8gF3ZgKnlAFq0fyIS4yaBQyG6X8/coCHkTnyrx6IEzYuTCUSfu8HutkAfHolPERNefT8
-         xkiQ1Fi6HozXVbKGjHHAuCc/brpceFoOCQ0usSlzfR5aYXmRuSQjaowHeBmseS1PiyZJ
-         qD6NZGQw7WAu0EnEaQ5tLPY53QJyPBMUeXgS10vqKO0ND8y/RlVs3LEEH/yJOpHtYPzy
-         /2TeRyMQmHK/pmsziZTvtxDLoMWZPSgkc9GhQJgeJulwTwCwvMfPI0sjmOq9LiFy9rf8
-         2L0w==
-In-Reply-To: <20200621104516.GM26990@breakpoint.cc>
+Content-Disposition: inline
+In-Reply-To: <CAChjPdRd1xePA2fesrj8imCo9gfP_B5bko95MEGEwsAWVX6fjw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"
-To: Florian Westphal <fw@strlen.de>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Marek =?utf-8?Q?Gre=C5=A1ko?= <mgresko8@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-Hello,
+On Sun, Jun 21, 2020 at 07:54:14AM +0200, Marek Gre=C5=A1ko wrote:
+> Hello,
+>=20
+> I have problem to get connection tracking work when using nftables. I
+> have this setup on my fedora 32:
+>=20
+> table ip raw {
+>         chain PREROUTING {
+>                 type filter hook prerouting priority raw; policy accept;
 
-thanks for the sysctl tip. It is wokring.
+Could you try from the filter (0) priority instead ?
 
-The iptables-nft does not configure the nftables kernel in the same
-way? Because I did not see the problem when using it.
+                  type filter hook prerouting priority filter; policy accep=
+t;
 
-Marek
-
-
-2020-06-21 12:45 GMT+02:00, Florian Westphal <fw@strlen.de>:
-> Marek Gre=C5=A1ko <mgresko8@gmail.com> wrote:
->> Hello,
->>
->> unfortunately the helper is not there:
->>
->> conntrack -L | grep sip                     -> no output
->>
->> It is strange, that if I use iptables-nft it is working. Some userspace
->> problem?
->
-> No, looks more like a kernel bug to me, I will have a look on
-> Monday.
->
-> In mean time, you can work around this bug by removing the entire "ip
-> raw" / "ct set" stuff.
->
-> and then use:
-> sysctl net.netfilter.nf_conntrack_helper=3D1
->
-> to re-enable the old auto-assign behaviour.
->
+Thanks.
