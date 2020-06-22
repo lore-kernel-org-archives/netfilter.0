@@ -1,52 +1,71 @@
-From: Adam Degenhardt <degenhardt.adam@gmail.com>
-Subject: "Operation not supported" when using ct mark
-Date: Mon, 22 Jun 2020 15:39:08 -0400
-Message-ID: <CAFQ1GKLFiPs4=uAkExiz9UokecfQ-SrDi_t+z3eWO9o6oh3KmA@mail.gmail.com>
+From: =?UTF-8?Q?Marek_Gre=C5=A1ko?= <mgresko8@gmail.com>
+Subject: Re: nftables and connection tracking
+Date: Mon, 22 Jun 2020 23:35:11 +0200
+Message-ID: <CAChjPdQVpDHSY7-PCOBNrY=BqRhouFPtmWDv1Gyeo=5ZjU57Lw@mail.gmail.com>
+References: <CAChjPdRd1xePA2fesrj8imCo9gfP_B5bko95MEGEwsAWVX6fjw@mail.gmail.com>
+ <20200622120636.GA17558@salvia> <CAChjPdTfBB4x9AuQhdhuU_z+Zp=iPHUUDy_+5+YEhhdu+V-oiw@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=wgod0r5ShbiZGUZGzyNTkTrJmHVXeg3n/yMLM8t9Lxg=;
-        b=YFonC9mne38/k/j6RcQ7QbHEI1FtfxfQlVBYPa77GyckcT9LG0Ys1CCEBa7dhovmJh
-         DqXUJx2hDPSKMak67yjYTzPvM0P2bdQOkqq65FFxNTiI5J971EhHOqqEy8WuNvVs/1T6
-         Vd4cnkjyI0nIaIu/9dMSO+2v+N7l/wqRuFFeMt8agevuFQ3jQuSTKPRbibWz22fgZESm
-         iCJUxyERK8SeOombdaUWJlSwhbHY5b4QsydcXDjvT+8VLcLGwdMwrrU4JQP72UF4WCs7
-         J7133B7uakQQ3ZbZiLqCri7Tbdc0nBkXL+/Q4lsHmjvdS8olpva7DprqKEqNfgew6zOT
-         7OpQ==
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=GxVwX01y7TeSgLisqlksO+FzBslUKE1KDv5b4DiGXJ8=;
+        b=bqFKTrdC4mNs0WKzCVm5SjYCOimkSaKHb6DCUahVBZGvPK4kVuBxx5l05XB8fsys5X
+         +H2Qf2Go6s9yw4Bp5y6LZZZhn3Y0uPO9T7tGjtIjnjZo+shatYHgnU11jnXvJVL5TyOs
+         ncJklWxcpZJHD6STidd8gkUgg14kN+SKnWYQQlu9PCkORq3TlsLPb+HbLzkmmSL7rGaA
+         JnwanWJ5FMnDKXybJMC+rAOU3SOrxyecQ14zl6kftWRCbzVoHcM1ofeF1gS9pO4oKtKG
+         /GaCmXZUP/ak53HYjLWqSvBpLcAElX95sF8mBK2FrHGOor2rScKT9237kjh7ietqocGT
+         6Tvw==
+In-Reply-To: <CAChjPdTfBB4x9AuQhdhuU_z+Zp=iPHUUDy_+5+YEhhdu+V-oiw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org
 
-Hi,
+Hello Florian,
 
-When I try to add a rule either matching on the conntrack mark or
-setting it, I get "Error: Could not process rule: Operation not
-supported"
-Other conntrack options (i.e. ct state, ct direction, ct expiration,
-etc.) all seem to work fine.
-Do some versions of nftables or conntrack not support connection marks?
+I am just thinking about what I did now when I changed the priority to
+filter. For prerouting it is clear, since there is no other chain with
+hook prerouting. But for output there is another one in the table
+filter. Which one is proceeded first if they are the same priority?
+what is they have conflicting policy? If the first one is drop, the
+second chain will not proceed if not allowed in the first one?
 
-I'm running nftables v0.9.0 and linux kernel 4.14
-My ruleset looks like
+If these priorities should be filter would not it be making more sense
+to move the rules to the chains in the table filter?
 
-table ip testtable {
-        chain testchain {
-                type filter hook prerouting priority 0; policy accept;
-                ip saddr 192.168.2.0/24 udp dport { 5678, 5679, 5681 }
-# unrelated rule
-        }
-}
+Marek
 
-As a specific example, running
-nft add rule testtable testchain ct state new
-works fine, but if I do
-nft add rule testtable testchain ct mark 2
-or
-nft add rule testtable testchain ct mark set 2
-it fails.
 
-Thanks,
-- Adam
+2020-06-22 19:18 GMT+02:00, Marek Gre=C5=A1ko <mgresko8@gmail.com>:
+> Hello,
+>
+> after changing priority it is working. It was a configuration error or a
+> bug?
+>
+> Marek
+>
+>
+> 2020-06-22 14:06 GMT+02:00, Pablo Neira Ayuso <pablo@netfilter.org>:
+>> On Sun, Jun 21, 2020 at 07:54:14AM +0200, Marek Gre=C5=A1ko wrote:
+>>> Hello,
+>>>
+>>> I have problem to get connection tracking work when using nftables. I
+>>> have this setup on my fedora 32:
+>>>
+>>> table ip raw {
+>>>         chain PREROUTING {
+>>>                 type filter hook prerouting priority raw; policy accept=
+;
+>>
+>> Could you try from the filter (0) priority instead ?
+>>
+>>                   type filter hook prerouting priority filter; policy
+>> accept;
+>>
+>> Thanks.
+>>
+>
