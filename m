@@ -1,32 +1,223 @@
-From: trentbuck@gmail.com (Trent W. Buck)
-Subject: Re: [MAINTENANCE] Shutting down FTP services at netfilter.org
-Date: Tue, 23 Jun 2020 12:37:21 +1000
-Message-ID: <87o8pabj8e.fsf@goll.lan>
-References: <20200603113712.GA24918@salvia> <20200603171621.GC717800@nataraja>
-        <nycvar.YFH.7.77.849.2006032004220.24581@n3.vanv.qr>
+From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+Subject: [nft 0.9.3 | kernel 5.4.48] cannot get NAT to work
+Date: Tue, 23 Jun 2020 20:38:00 +0000
+Message-ID: <87b5491f-dbd3-1f09-a9cb-303596da4e10@gmx.net>
+Reply-To: vtol@gmx.net
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="LpBuEWIMkwGHpUTecob4Fgu3US9BQDPg7"
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1592944717;
+        bh=gQ7O45GTGjvtn8c7V6zO0cbdi6J67K2Z9vRM8GlC8F4=;
+        h=X-UI-Sender-Class:Reply-To:To:From:Subject:Date;
+        b=DV7jLf93993iHHVr6jns89gGHsvw2ixDeCKode69Iw7Cj0G+jbQbd0T9PIdvSXCn3
+         MGTWguGNanX9HrE3TohoBr7CNljFMGd/r6qKwDvLJahS0+BrEm9A2UCMtUDgOt9MtV
+         zyX+OEPYgQWSeAMI5DeCq6QD1UeeGHTOngKZCJas=
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter-devel@vger.kernel.org
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Jan Engelhardt <jengelh@inai.de> writes:
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--LpBuEWIMkwGHpUTecob4Fgu3US9BQDPg7
+Content-Type: multipart/mixed; boundary="e3lqCpyEw19swhMJqp5xCQLFwf8V9HHX5";
+ protected-headers="v1"
+From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+Reply-To: vtol@gmx.net
+To: netfilter@vger.kernel.org
+Message-ID: <87b5491f-dbd3-1f09-a9cb-303596da4e10@gmx.net>
+Subject: [nft 0.9.3 | kernel 5.4.48] cannot get NAT to work
 
-> On Wednesday 2020-06-03 19:16, Harald Welte wrote:
->>On Wed, Jun 03, 2020 at 01:37:12PM +0200, Pablo Neira Ayuso wrote:
->>> So netfilter.org will also be shutting down FTP services
->>
->> with HTTP there is no real convenient way to get directory listings
->> in a standardized / parseable format.
->
-> There was convention, but no standard.
+--e3lqCpyEw19swhMJqp5xCQLFwf8V9HHX5
+Content-Type: multipart/mixed;
+ boundary="------------0BD26E631080BF45B67AE3F7"
+Content-Language: en-GB
 
-IIUC RFC 4918 (WebDAV) can, in principle, do this.
-But it's awful so nobody does. :-)
+This is a multi-part message in MIME format.
+--------------0BD26E631080BF45B67AE3F7
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: base64
 
-I agree that rsync:// is the easy and obvious replacement for anon FTP
-(when HTTP isn't sufficient).
+U2luY2UgdGhlIHJ1bGVzZXQgdGhhdCB3b3JrZWQgd2l0aCBrZXJuZWwgNC4xOSBkaWQgbm90
+IGFueW1vcmUgd2l0aCANCmtlcm5lbCA1LjQgKHRocm93aW5nIHNlZ2ZhdWx0KSBJIHN0YXJ0
+ZWQgZnJvbSBzY3JhdGNoIHRvIHNlZSB3aGF0IGdpdmVzLg0KDQpuZnQgYWRkIHRhYmxlIGlu
+ZXQgZmlsdGVyDQpuZnQgYWRkIGNoYWluIGluZXQgZmlsdGVyIGlucHV0IHsgdHlwZSBmaWx0
+ZXIgaG9vayBpbnB1dCBwcmlvcml0eSAwIFw7IH0NCm5mdCBhZGQgY2hhaW4gaW5ldCBmaWx0
+ZXIgZm9yd2FyZCB7IHR5cGUgZmlsdGVyIGhvb2sgZm9yd2FyZCBwcmlvcml0eSAwIFw7IH0N
+Cm5mdCBhZGQgY2hhaW4gaW5ldCBmaWx0ZXIgb3V0cHV0wqDCoMKgIHsgdHlwZSBmaWx0ZXIg
+aG9vayBvdXRwdXQgcHJpb3JpdHkgMCANClw7IH0NCm5mdCBhZGQgdGFibGUgaW5ldCBuYXQN
+Cg0KVGh1cyBmYXIgZ29vZCBhbmQgdGhlbiB0aGluZ3MgZ28gYXdyeSBhbmQgdGhlIG91dHB1
+dCBkb2VzIG5vdCBoZWxwIHRvIA0KdW5kZXJzdGFuZCB3aGF0IG1pZ2h0IGJlIHdyb25nOg0K
+DQpuZnQgYWRkIGNoYWluIGluZXQgbmF0IHByZXJvdXRpbmcgeyB0eXBlIG5hdCBob29rIHBy
+ZXJvdXRpbmcgcHJpb3JpdHkgDQpcLTEwMCBcOyB9DQpuZnQ6IHVucmVjb2duaXplZCBvcHRp
+b246IDENCg0KYW5kIG5leHQgdXANCg0KbmZ0IGFkZCBjaGFpbiBpbmV0IG5hdCBwb3N0cm91
+dGluZyB7IHR5cGUgbmF0IGhvb2sgcG9zdHJvdXRpbmcgcHJpb3JpdHkgDQoxMDAgXDsgfQ0K
+RXJyb3I6IENvdWxkIG5vdCBwcm9jZXNzIHJ1bGU6IE5vIHN1Y2ggZmlsZSBvciBkaXJlY3Rv
+cnkNCg0KSGFzIHRoZXJlIGJlZW4gc29tZSBzeW50YXggY2hhbmdlIGZvciBOQVQ/wqAgQ2hl
+Y2tlZCB0aGUga2NvbmYgYW5kIGxvYWRlZCANCm1vZHVsZSBidXQgZG9uJ3Qgc2VlIGFueXRo
+aW5nIGFtaXNzPw0KDQp4emdyZXAgX05BVCAvcHJvYy9jb25maWcuZ3oNCkNPTkZJR19ORl9O
+QVQ9bQ0KQ09ORklHX05GX05BVF9BTUFOREE9bQ0KQ09ORklHX05GX05BVF9GVFA9bQ0KQ09O
+RklHX05GX05BVF9JUkM9bQ0KQ09ORklHX05GX05BVF9TSVA9bQ0KQ09ORklHX05GX05BVF9U
+RlRQPW0NCkNPTkZJR19ORl9OQVRfUkVESVJFQ1Q9eQ0KQ09ORklHX05GX05BVF9NQVNRVUVS
+QURFPXkNCkNPTkZJR19ORlRfTkFUPW0NCkNPTkZJR19ORVRGSUxURVJfWFRfTkFUPW0NCkNP
+TkZJR19ORl9OQVRfU05NUF9CQVNJQz1tDQpDT05GSUdfTkZfTkFUX1BQVFA9bQ0KQ09ORklH
+X05GX05BVF9IMzIzPW0NCkNPTkZJR19JUF9ORl9OQVQ9bQ0KQ09ORklHX0lQNl9ORl9OQVQ9
+bQ0KQ09ORklHX0JSSURHRV9FQlRfVF9OQVQ9bQ0KIyBDT05GSUdfTkVUX0FDVF9OQVQgaXMg
+bm90IHNldA0KDQpsc21vZCB8IGdyZXAgJ25mX25hdFx8bmZ0X25hdCcNCm5mX25hdF9hbWFu
+ZGHCoMKgwqDCoMKgwqDCoMKgwqAgMTYzODTCoCAwDQpuZl9jb25udHJhY2tfYW1hbmRhwqDC
+oMKgIDE2Mzg0wqAgNCBuZl9uYXRfYW1hbmRhDQpuZnRfbmF0wqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgIDE2Mzg0wqAgMA0KbmZfdGFibGVzwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgIDExNDY4OMKgIDI4IA0KbmZ0X2N0LG5mdF9yZWplY3RfYnJpZGdlLG5mdF9uYXQsbmZ0
+X251bWdlbixuZnRfZndkX25ldGRldixuZl9mbG93X3RhYmxlX2lwdjYsbmZ0X3JlZGlyLG5m
+X2Zsb3dfdGFibGVfaXB2NCxuZnRfZmliX2luZXQsbmZ0X3JlamVjdCxuZnRfcmVqZWN0X2lw
+djYsbmZ0X3JlamVjdF9pcHY0LG5mdF9saW1pdCxuZl90YWJsZXNfc2V0LG5mdF9kdXBfbmV0
+ZGV2LG5mdF9mbG93X29mZmxvYWQsbmZfZmxvd190YWJsZV9pbmV0LG5mdF9tZXRhX2JyaWRn
+ZSxuZnRfbWFzcSxuZnRfZmliLG5mdF9yZWplY3RfaW5ldCxuZnRfZmliX2lwdjYsbmZ0X29i
+anJlZixuZnRfZmliX2lwdjQsbmZ0X2hhc2gsbmZ0X3F1b3RhLG5mdF9jb3VudGVyLG5mdF9s
+b2cNCm5mX25hdF90ZnRwwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAxNjM4NMKgIDANCm5mX25h
+dF9zbm1wX2Jhc2ljwqDCoMKgwqDCoCAxNjM4NMKgIDANCm5mX25hdF9zaXDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgMjA0ODDCoCAwDQpuZl9uYXRfcHB0cMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqAgMTYzODTCoCAwDQpuZl9uYXRfaXJjwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDE2
+Mzg0wqAgMA0KbmZfbmF0X2gzMjPCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDE2Mzg0wqAgMA0K
+bmZfbmF0X2Z0cMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAxNjM4NMKgIDANCm5mX25hdMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIDMyNzY4wqAgMTQgDQpuZnRfbmF0LG5m
+X25hdF9wcHRwLG5mdF9yZWRpcix4dF9uYXQsbmZfbmF0X2gzMjMsbmZfbmF0X3NpcCxuZl9u
+YXRfaXJjLHh0X01BU1FVRVJBREUsaXB0YWJsZV9uYXQsbmZ0X21hc3EsbmZfbmF0X2Z0cCxu
+Zl9uYXRfYW1hbmRhLHh0X1JFRElSRUNULG5mX25hdF90ZnRwDQpuZl9jb25udHJhY2tfdGZ0
+cMKgwqDCoMKgwqAgMTYzODTCoCA0IG5mX25hdF90ZnRwDQpuZl9jb25udHJhY2tfc25tcMKg
+wqDCoMKgwqAgMTYzODTCoCA0IG5mX25hdF9zbm1wX2Jhc2ljDQpuZl9jb25udHJhY2tfc2lw
+wqDCoMKgwqDCoMKgIDI4NjcywqAgNyBuZl9uYXRfc2lwDQpuZl9jb25udHJhY2tfcHB0cMKg
+wqDCoMKgwqAgMTYzODTCoCA0IG5mX25hdF9wcHRwDQpuZl9jb25udHJhY2tfaXJjwqDCoMKg
+wqDCoMKgIDE2Mzg0wqAgNCBuZl9uYXRfaXJjDQpuZl9jb25udHJhY2tfaDMyM8KgwqDCoMKg
+wqAgNDUwNTbCoCA3IG5mX25hdF9oMzIzDQpuZl9jb25udHJhY2tfZnRwwqDCoMKgwqDCoMKg
+IDE2Mzg0wqAgNCBuZl9uYXRfZnRwDQpuZl9jb25udHJhY2vCoMKgwqDCoMKgwqDCoMKgwqDC
+oCA4MTkyMMKgIDM5IA0KbmZ0X2N0LHh0X3N0YXRlLG5mdF9uYXQsbmZfbmF0X3BwdHAsbmZf
+Y29ubnRyYWNrX3NpcCxuZnRfcmVkaXIsYWN0X2N0aW5mbyxuZl9jb25udHJhY2tfc25tcCxu
+Zl9jb25uY291bnQsbmZfY29ubnRyYWNrX2lyYyx4dF9uYXQsbmZfbmF0X2gzMjMsYWN0X2Nv
+bm5tYXJrLG5mX2Zsb3dfdGFibGUsbmZfY29ubnRyYWNrX2Z0cCxuZl9uYXRfc25tcF9iYXNp
+YyxuZl9uYXRfc2lwLG5mX2Nvbm50cmFja190ZnRwLG5mdF9mbG93X29mZmxvYWQsbmZfbmF0
+X2lyYyx4dF9NQVNRVUVSQURFLHh0X2Nvbm5tYXJrLG5mX2Nvbm50cmFja19wcHRwLG5mdF9t
+YXNxLG5mX2Nvbm50cmFja19hbWFuZGEsbmZfY29ubnRyYWNrX3J0Y2FjaGUseHRfaGVscGVy
+LG5mX2Nvbm50cmFja19icm9hZGNhc3QsbmZfbmF0X2Z0cCxuZl9uYXRfYW1hbmRhLHh0X2Nv
+bm5saW1pdCxuZl9jb25udHJhY2tfbmV0bGluayx4dF9jb25uYnl0ZXMseHRfQ1QsbmZfY29u
+bnRyYWNrX2gzMjMseHRfY29ubnRyYWNrLHh0X1JFRElSRUNULG5mX25hdF90ZnRwLG5mX25h
+dA0KYXNuMV9kZWNvZGVywqDCoMKgwqDCoMKgwqDCoMKgwqAgMTYzODTCoCAyIG5mX25hdF9z
+bm1wX2Jhc2ljLHJzYV9nZW5lcmljDQo=
+--------------0BD26E631080BF45B67AE3F7
+Content-Type: application/pgp-keys;
+ name="OpenPGP_0xF4F735931F05C5CE.asc"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="OpenPGP_0xF4F735931F05C5CE.asc"
 
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+
+xsFNBFnciLoBEADBsoGGx8dPCw216OeILh7+4A851grJgGjBpjv2bjGGxJlCpnevyCHf+D3SM=
+fsz
+ASwV23B1TXsp3YM4X2JVnRr9RAqr8+U8pUDb6c58U1Il182/vlk6utD8q1221o3XDp3RXhEqC=
+FR1
+K+0BlnFnE2//CPnEs94BJ94cksaxy14QpY4VL9w9u1O02KkSXA2f0j/R6sxnHGk6SAWTn7OE7=
+l57
+rJsiklq6AYuEQ2j/5rEa9rMe6yfryXsiuY++bUbAhlhnsWSalA56yl1FbfCW/lXNay9yrjYwi=
+/44
+nEMmuj79kXmMMMX87PpoaoQUGFI0PbkOhO2TkVXqSBY8lolTtMHeGm3XSRUo3LVEFWf2K4zWX=
+AKo
+K4rFg8zKEGzYZy2dlHbY777h6nqLjJ84tSQH7eimouPjuaklwK0ilmyBvpcWRnUpGuZbLv89s=
+p5S
+ThqZ+eYaur4p3mXOXift+vPM9sN9ycXg3SUBcq+Kz+Vo32dAd5jJhiNzW+FqaKMQMNfAsu/9s=
+WgP
+lwVBYywcW+oqN+T+94Vb4qJ8VjooVfSFSGZ+VEkxW9nDXh9TTQb6b0eDysgGiJ2ZaZbrzSQUE=
+fUl
+nAhvFLlfcxWI02EA9Dnj3vPuNPt6/mSV3d83tt8mE9gWMxYkY/aWyGWohczkMlj9vY+G+2k9+=
+AG1
+4BpNiGK7svsr9QARAQABzQx2dG9sQGdteC5uZXTCwZQEEwEIAD4WIQR6bKTYsnyC9Y8mc5H09=
+zWT
+HwXFzgUCWdyIugIbAwUJBhEmdgULCQgHAgYVCAkKCwIEFgIDAQIeAQIXgAAKCRD09zWTHwXFz=
+o0Y
+EACzVvOGrxWq7Igv7s1ikPhrzYLjGqfETgejkfpJ4Sm6A2siidOSvFZYB8UOso2+JSxq1SRIg=
+MvV
+MK/3tObL7yX0lcslg7PDoJ2ZLWIBqWmrtLWHPEubYYkZnPBtEsio/z4lt04Qmz/Ydx2zjR2cS=
+3+0
+k+Jb9qXxHAGynWiaUV4iQ/sIKjBki6okgM3cJTBRr3Y2mvQuf1WoekolqavHp+8yD9ESnGAGw=
+25K
+2Ya4BVQmzvSoK32xLbqIBe+sFfKtc8sjjk7ZR3rliM7+BTqvEYOMlMX9JKTKD9yIh8cYnonkq=
+EP+
+6OqrZFmk7qWVq33PGvl/JLLIA6lNDhDalWhlM5026Ti4g1dtnf6C2vvpPAQZuqKc3DboKkkPi=
++tl
+hyfmnLltUnHVAeu6h1lQjESNuNY0jpKDukchL+9jRBjWg4Tf6PbG5m0z/wMsF6rqJ7MF9V9hT=
+pbX
+hMH1LgA1HMibszs9kNufhZzIp1/ZYtgQp1L4+BDRDtWv1n32C7SBrTVNdhmCqOFGv047g9QIL=
+WlK
+JYUrCby70Lk74xGJeHpPvftXeoR157adv8T1h3o5dc5sLI/FnGJAa6HRRt5PetLc/pTC7qwT2=
+bTS
+tZtpF6KGLHcxR64BAu4uCUbgnl89Q3etEmHU3akDQIhJiM3rG5XjDuq3j6Kb0GPmWElTXWqX+=
+l7V
+Nc7BTQRZ3Ii6ARAA5XGN+cUiahtr/8q4pj7lB5FHlOUmLYRf+rN25Fg0Pr3lxx840wKLHYNxD=
+7Cj
+2XTmsxJseMPy9SbAKgA9uyBe5AaPQA8J2sP6tM0DuIssfuc+uGMgIXb3SnZvLL1ER849HtDGV=
+Jzn
+Oq7Aja5MACNCjWfY4xOA8ReAKK6MaDTO3xKoNSiLrFpA9nvMvMFDPK67pAdM/yeE844mzk4s9=
+UCT
+7fRUkf60YdoxUC6/kHz+6HInerqZQHEBxGkHVq3lkzo5InC0FrWDwmjG+Ol6PlwsWKn3uhMQI=
+6vm
+RlOetr00qRLFTQoGcVmOfZRgk2AoAiBanf9CWYWlRTGS0cgO7UsaLbuhAi24eR+cZccqFQ05V=
+aNN
+hCXZwHJa03riIJoz7LN9RCjd91e5uMs0qjKiMypgRD3K+xjf62VIAEn2d/BM+BwNirwwppqYl=
+d6h
+n4+igv5+ZHcotL7QBZF6+I0pcl4UVjAIJXV/ekW5g/OX0YwyesCh6xG/MukvISrmHadnY5UC8=
+lPA
+8rgNYahAx4jOMsmOdDcBz4gaEBJnssGCfSFvf6BEt2KjLGao7N0Z0s4dyHDosR6lJZEI3XLeq=
+Rgu
+6ZAGaK50V073hQ4GIFeclRA3uNcMUR6jEYw+PFh4KMD1NXuAJy9LI6r1+PBZfgk2F4GFh2rWK=
+Tnf
+kylyGhPqboLrxkUAEQEAAcLBfAQYAQgAJhYhBHpspNiyfIL1jyZzkfT3NZMfBcXOBQJZ3Ii6A=
+hsM
+BQkGESZ2AAoJEPT3NZMfBcXOgdkP/02/0ONJGu6i0lFnIJJ9gPZ4MkJqAqMwY8oUorXtNmmJg=
+YLE
+0CPugmcfSw+ozzPqbNbuPWYLf9UUv1sMI8HyCI4Me7WgUf7FDPU1+Os77W+5Si7o9u/Nuvh8T=
+jn2
+3O6Y+axTzzqdcB4MugkZMlENHdULfizL82SEONng9vK2Q5S76b6Hh0VjNUTv1ZMUjEXrPvFk2=
+Coq
+b+J3Myin3ptT+FKOjOn4UG4ItM88q5IfqPxawWNpbfrXbArmyOT5R9bSldgPejdAEglLSwoBY=
+7gW
+duf1vb28ik9iF1lFK19PYwy0gOQGgWzQTaEgTzREG3PUASeYrvR0O9zs+8jgxDwY9qWt5onsv=
+sLm
+rEkyuOXJYTxuITQ9z7Jgc8Qn0Hum+SvGPyL9n0ONL95X3bWjS8igkSOBopniayWq2Nd2s2fNW=
+mZP
+Nx7da6dJM1wbaeff7QNz8T8H/n62fifjcxWc5et0PH35/fM6u98EdzyUTiaGG+zxbX8AmwSGo=
+h4o
+9yxqayBp5yZ4ovW+tUlXWD6s0MZRdbCixLB18tQlC8VJdPtc2mHPCoC6aQ+XZwypG0j3K2JQp=
+xbH
+0M7nJopBOJZPDWR6TmwgtYjWbYjP23CxaIIgpw+wbWXIFQ9QFJUZlnR3XOBjmxWEHyq/jGqP6=
+68A
+6g49RhefId/b4RJ51vwUuFPvDlmm
+=3DEVfn
+-----END PGP PUBLIC KEY BLOCK-----
+
+--------------0BD26E631080BF45B67AE3F7--
+
+--e3lqCpyEw19swhMJqp5xCQLFwf8V9HHX5--
+
+--LpBuEWIMkwGHpUTecob4Fgu3US9BQDPg7
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+wsF5BAABCAAjFiEEemyk2LJ8gvWPJnOR9Pc1kx8Fxc4FAl7yaE0FAwAAAAAACgkQ9Pc1kx8Fxc7g
+PRAAuvQlK76L4+FwYPPeinSAzjpC3616JvLmHgv8iHaRSAyNOVknAEMc+yQeLUrHAIG+KdpNDCtU
+RDnyQdmi3udTNm1gTKo3zrzwBOjZljKU3+9jxjn8J4qb3hlawxhmn0Ws/alZSpAR9yZYW1ZWhEMw
+KjCQvL+Iv2ab7iOt3dgE5lEGx16tMfQbPYKpLb3dWza/4zX7EQbU6hFv6HK6820cZXVi+qx88gSc
+WzgaWOIIryOvydH/1JlZlOFB8oYme8kXh70S7BLA4qyZPsHHP59CI8GU5fJmV6x2z3EHwS6zJAs8
+1H9ltDpLnJw4QCZFsA+zAzcGFJ+iEtkgyBWRj3e9qMXaTYMWeopJI1IFa2JBThdd3P2UZ4sRIJnK
+70nw0Q7/UrxDY7b+jte5o8mx1Aw8IABOfwW/4qN08STcmubo6vVDA0Cn1a3OnefBdjq4gnbGO+BA
+nVTVPIxuWlecQEY7e04TgPQRR6eqEIqow+fqL5c4FDReGfGFIWnMz33K0LENdFR4Yk8zpXmHkdqS
+/C/enqdfgmQ+K+vFIImxu1NNKjQPz29Fg7P/oubTCYW4DV66U1j4OduAeW9cPpkE3kQn9BsqJCrf
+47mbF/W52qAV7lkBKAFuOZIbWv9xPIpXareqlctMRN/QG9hRECnvRSY/l+uF7/gsjN/OJy0lBACF
+kL4=
+=MCGw
+-----END PGP SIGNATURE-----
+
+--LpBuEWIMkwGHpUTecob4Fgu3US9BQDPg7--
