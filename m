@@ -1,65 +1,155 @@
 From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
-Subject: [nft | wiki] List of updates since Linux kernel 3.13
-Date: Wed, 24 Jun 2020 08:15:00 +0000
-Message-ID: <5a0877ef-2a59-f453-25b0-70c85fb32fd4@gmx.net>
+Subject: Re: [nft 0.9.3 | kernel 5.4.48] cannot get NAT to work
+Date: Wed, 24 Jun 2020 08:47:00 +0000
+Message-ID: <c4212304-c8f3-ebc7-c9cc-101a5e2ef28a@gmx.net>
+References: <87b5491f-dbd3-1f09-a9cb-303596da4e10@gmx.net>
+ <20200623212323.GS26990@breakpoint.cc>
+ <cf63c2f8-3aaf-9af6-739e-8928b803fb8c@gmx.net>
+ <20200623215239.GT26990@breakpoint.cc>
+ <6e919ed9-50d9-7a23-a581-2c6110af5108@gmx.net>
+ <20200623224854.GU26990@breakpoint.cc>
+ <f67206b8-aebc-47b5-a3e2-d2d07d2bb53e@gmx.net>
+ <20200624081443.GV26990@breakpoint.cc>
 Reply-To: vtol@gmx.net
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="BaIS3ocdVCDV9UrNurbl35tz58KUAJK2G"
+ boundary="oLcWxm1dIh6T3fUwbDr9gvje5AEOOHbWK"
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1592986530;
-        bh=CIGUhJqlm5/BPRA03gFMV/yU7zYJHz1tlVUHiJNa+GY=;
-        h=X-UI-Sender-Class:Reply-To:To:From:Subject:Date;
-        b=I4ehTu0DN/7XFTPwioSsB2u1YJr3dBUb+rp+CbTp2RIUDE2BfBpr/uKnHEUd5K9nc
-         JCJ0nZZ4fbkSZkQ90wREKOQuRgVTnssExr8Eqwu0qCNjoIBpKO6MyaRZO0LYdgKb/j
-         OHKVJBdLU+6tjclN3GowiXX58YUR40AcQjp55gt0=
+        s=badeba3b8450; t=1592988479;
+        bh=NoWrtetF6tpeJtjowqErUqqBiixmUw6azAYDWC9Xt10=;
+        h=X-UI-Sender-Class:Reply-To:Subject:To:Cc:References:From:Date:
+         In-Reply-To;
+        b=VqMquDRNoOE/iXgaT5aP4CC6/fTznmhaPWeQPiWSs97AzpBbfrJYXSgrqx+6961uf
+         hfTiCJFBXC+9JohJf/R3ZNEC4zA2LigqEMPZleRmGZ6uaDhI4O1gkxtI/c7LuxwWNl
+         dh0uX8GTBeuEmK2Rukx2NZpPREhsBhHvcrt6jN8E=
+In-Reply-To: <20200624081443.GV26990@breakpoint.cc>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Cc: Florian Westphal <fw@strlen.de>
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---BaIS3ocdVCDV9UrNurbl35tz58KUAJK2G
-Content-Type: multipart/mixed; boundary="9PAqa7UCFpKfhgTV6UmRCT8mPgKDXjSjd";
+--oLcWxm1dIh6T3fUwbDr9gvje5AEOOHbWK
+Content-Type: multipart/mixed; boundary="7gkfXS7bIJX5cTzcMURR1jcWZuioQgPqE";
  protected-headers="v1"
 From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
 Reply-To: vtol@gmx.net
 To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Message-ID: <5a0877ef-2a59-f453-25b0-70c85fb32fd4@gmx.net>
-Subject: [nft | wiki] List of updates since Linux kernel 3.13
+Cc: Florian Westphal <fw@strlen.de>
+Message-ID: <c4212304-c8f3-ebc7-c9cc-101a5e2ef28a@gmx.net>
+Subject: Re: [nft 0.9.3 | kernel 5.4.48] cannot get NAT to work
+References: <87b5491f-dbd3-1f09-a9cb-303596da4e10@gmx.net>
+ <20200623212323.GS26990@breakpoint.cc>
+ <cf63c2f8-3aaf-9af6-739e-8928b803fb8c@gmx.net>
+ <20200623215239.GT26990@breakpoint.cc>
+ <6e919ed9-50d9-7a23-a581-2c6110af5108@gmx.net>
+ <20200623224854.GU26990@breakpoint.cc>
+ <f67206b8-aebc-47b5-a3e2-d2d07d2bb53e@gmx.net>
+ <20200624081443.GV26990@breakpoint.cc>
+In-Reply-To: <20200624081443.GV26990@breakpoint.cc>
 
---9PAqa7UCFpKfhgTV6UmRCT8mPgKDXjSjd
+--7gkfXS7bIJX5cTzcMURR1jcWZuioQgPqE
 Content-Type: multipart/mixed;
- boundary="------------AD1AC2157A740AFD9D9BCFD3"
+ boundary="------------ADAF9D0330B8BD637DA3BBFD"
 Content-Language: en-GB
 
 This is a multi-part message in MIME format.
---------------AD1AC2157A740AFD9D9BCFD3
+--------------ADAF9D0330B8BD637DA3BBFD
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
 
-Since the wiki might be a fist port of call for users and providing=20
-valuable help it would perhaps be beneficial if the list is kept on par=20
-with kernel | nft releases (last mentioned on the wiki is kernel 4.16)=20
-plus provides list of changes or links to the version changes.=20
-Particularly since the ML announcements citing:
+On 24/06/2020 08:14, Florian Westphal wrote:
+> =D1=BD=D2=89=E1=B6=AC=E1=B8=B3=E2=84=A0 <vtol@gmx.net> wrote:
+>> Afraid, neither variation works, each throwing
+>>
+>> /etc/fw/test.conf:2:15-24: Error: Could not process rule: No such file=
+ or
+>> directory
+>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 chain prerouting {
+>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 ^^^^^^^^^^
+>> /etc/fw/test.conf:6:15-19: Error: Could not process rule: No such file=
+ or
+>> directory
+>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 chain input {
+>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 ^^^^^
+>> /etc/fw/test.conf:10:15-20: Error: Could not process rule: No such fil=
+e or
+>> directory
+>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 chain output {
+>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 ^^^^^^
+>> /etc/fw/test.conf:14:15-25: Error: Could not process rule: No such fil=
+e or
+>> directory
+>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 chain postrouting {
+>>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 ^^^^^^^^^^^
+>>
+>> Don't know whether txt attachments are accepted on this ML but enclose=
+d full
+>> debug output (if its gets through), through it does not seem to reveal=
 
-Visit our wikipage for user documentation at:
+>> anything useful?
+> No.
+>
+>> Could this be a bug in the kernel?
+> Its a kernel bug, or misconfiguration. Nat hook is provided via
+>
+>   modinfo nft_chain_nat
+>   filename:
+>   /lib/modules/5.6.18/kernel/net/netfilter/nft_chain_nat.ko.gz
+>   alias:          nft-chain-1-nat
+>   alias:          nft-chain-10-nat
+>   alias:          nft-chain-2-nat
+>   license:        GPL
+>   srcversion:     45E82B99D3993871BD6131E
+>   depends:        nf_nat,nf_tables
+>   intree:         Y
+>   name:           nft_chain_nat
+>   vermagic:       5.6.18 SMP preempt mod_unload modversions
 
-* http://wiki.nftables.org
+Getting somewhere now, unless there are different kconf flags in 5.6 for =
 
-Unless I have missed something it is rather cumbersome, unless being=20
-subscribed to the ML, to discover the specific changes introduced with=20
-new releases since
+building that module, least on this node with 5.4:
 
-* https://www.netfilter.org/projects/nftables
-* https://www.netfilter.org/news.html
+modinfo: ERROR: Module alias nft_chain_nat not found.
 
-does not appear to provide such information readily either and one is=20
-left to search MLs for such information.
+Which kconf flag is supposed to generate that particular module? Looked=20
+into https://github.com/torvalds/linux/blob/v5.4/net/netfilter/Kconfig=20
+but could not find something specific that builds that module.
 
---------------AD1AC2157A740AFD9D9BCFD3
+This node's repo ships:
+
+kmod-nft-core:
+/lib/modules/5.4.48/nft_reject.ko
+/lib/modules/5.4.48/nft_reject_ipv4.ko
+/lib/modules/5.4.48/nf_tables_set.ko
+/lib/modules/5.4.48/nft_numgen.ko
+/lib/modules/5.4.48/nft_counter.ko
+/lib/modules/5.4.48/nft_reject_ipv6.ko
+/lib/modules/5.4.48/nft_ct.ko
+/lib/modules/5.4.48/nf_tables.ko
+/lib/modules/5.4.48/nft_redir.ko
+/lib/modules/5.4.48/nft_limit.ko
+/lib/modules/5.4.48/nft_hash.ko
+/lib/modules/5.4.48/nft_objref.ko
+/lib/modules/5.4.48/nft_reject_inet.ko
+/lib/modules/5.4.48/nft_quota.ko
+/lib/modules/5.4.48/nft_log.ko
+
+kmod-nft-nat:
+/lib/modules/5.4.48/nft_masq.ko
+/lib/modules/5.4.48/nft_nat.ko
+
+kmod-nft-nat6:
+appears to be an empty package
+
+
+--------------ADAF9D0330B8BD637DA3BBFD
 Content-Type: application/pgp-keys;
  name="OpenPGP_0xF4F735931F05C5CE.asc"
 Content-Transfer-Encoding: quoted-printable
@@ -150,29 +240,29 @@ xbH
 =3DEVfn
 -----END PGP PUBLIC KEY BLOCK-----
 
---------------AD1AC2157A740AFD9D9BCFD3--
+--------------ADAF9D0330B8BD637DA3BBFD--
 
---9PAqa7UCFpKfhgTV6UmRCT8mPgKDXjSjd--
+--7gkfXS7bIJX5cTzcMURR1jcWZuioQgPqE--
 
---BaIS3ocdVCDV9UrNurbl35tz58KUAJK2G
+--oLcWxm1dIh6T3fUwbDr9gvje5AEOOHbWK
 Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="OpenPGP_signature"
 
 -----BEGIN PGP SIGNATURE-----
 
-wsF5BAABCAAjFiEEemyk2LJ8gvWPJnOR9Pc1kx8Fxc4FAl7zC6AFAwAAAAAACgkQ9Pc1kx8Fxc75
-5xAApUpzxMvXeiUckw2GOBfmHckIZsud7VvFL+FfVgmwqdfCMQgw0JYf9nM6Bxd5j3fVew4Z0gy8
-LtbfxGOjhI5TNJEjGc1BR6zkO9t1DAlcfI2SjqvJFXZ3UdXJf4E9fm2YnSeC6Y3TmZ7J3zLjiI0b
-zgVN5u5Axi+IswGcF2f9nsWRiu+tWlIqwlJpWSqJr4r+sPQUlyldr3SlQvQSMLriujGSbmAUuuEF
-TmQnTLXUnpRRZq1xvmSgtAvL+mvJ31IrJViKB0hPS7Yi71VjhIUmxIhv7N2gWVc7Cq88IPHELyhY
-sFqGwOqgZ7JvS8DccRxsQqHXmZpklUM7QwN+IW8yimfj13AuS36hQNNtLPMVigZYRSctGzEod6Sg
-1NMtbTYKw+GUo21TmimFDDUQlGbuHrWyBVCF38e+wFLjlIH7tl5PCa8QU+nkYMVSnOxqZ41lbKMm
-G739z1Cx2It4uHGHb+PAqyGe67FxQcPyGWzqCxJD6pZZb94I3kfGwKgvGsSq5QpXslS9xxh7Aowo
-4vRkW9aPZFrfCPySpX8gp3LMxSRnl1zBitOV83Pr+UNDwDnuOj63Zqd7s+wJ74vPxCarphmCBmc4
-mFhMCBs7Qwq2BWS3ZndtD6G5SKyZWRTq2bdRjUrKLThvLtn2Qle3jpXFcbfWuDPMuN9MHUtfcGMi
-SFg=
-=W46u
+wsF5BAABCAAjFiEEemyk2LJ8gvWPJnOR9Pc1kx8Fxc4FAl7zEz0FAwAAAAAACgkQ9Pc1kx8Fxc5m
+vA//QmqI39rorK1RmVeQFsxkrvwSKtOIybNZyavYKvWc+nHwQ3/b71leW6r8WYJ8ZOXLyCOkFSH3
+tYSkXNnFOCElUSL4NMFR1kv0UgkMERt/P8FUm6D6AQJSXLYny7SChcVSdjBHJSUZ+kgT4GvZHiNy
+wdzWgTCMuhNOMOb4GsQIDLKYHy377fgSsdXu8gZ+aXzOMOgGaYZ1J6beIOg13KDQE+aW/IRhr3mm
+OxWK0dcywnoX7AW8Jf/kK9PUdLtO1Y3ktO4ZipXcPfX7WG+n9tBcl1dBSTBlOx+ImRlzHE+AFVhZ
+8Phsd7+eXDDVWe1c6HJA4GgZJYPP4po1yhEEWKa1BH401f5HDleo3IexNB/qKQEEXgsa0DZyKvnI
+sqCyM4BuHa1+anJKGvUkMVZctVd9P93pgW+jWq8AP4fuc1M4FgUgL62PPSYXOmY1B/OBn5DYCkEi
+KaCGs9YQZAGn13COr7ZMth5bGP+P20wDX26FKO98ib/gnMT618s28qyH51YP6pnrJKcTXxp6eLhR
+Lp6nW0MgiwHiaC854+PYMnkItAdHvKrr7YK1XznmY2fq/XLu+3c8d9KyFBlMfXbbFWFu0Rktm0xy
+mcr0ONiHc2o4/VvX93VRhVxRo/kv/Pw+iglTC2Cqt+YxquQlG0mh+YO56c+nBg5n1x2oH1Z7496u
+zBM=
+=el4y
 -----END PGP SIGNATURE-----
 
---BaIS3ocdVCDV9UrNurbl35tz58KUAJK2G--
+--oLcWxm1dIh6T3fUwbDr9gvje5AEOOHbWK--
