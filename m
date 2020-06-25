@@ -1,7 +1,8 @@
 From: Andreas Hoefler <andreas.hoefler@ch.abb.com>
-Subject: callback on adding tables from mnl_cb_run for nftables
-Date: Thu, 25 Jun 2020 07:51:20 +0000
-Message-ID: <AM0PR06MB41960A43994E3A1517E65346CE920@AM0PR06MB4196.eurprd06.prod.outlook.com>
+Subject: RE: callback on adding tables from mnl_cb_run for nftables
+Date: Thu, 25 Jun 2020 08:02:58 +0000
+Message-ID: <AM0PR06MB41961208803001DFE0397B67CE920@AM0PR06MB4196.eurprd06.prod.outlook.com>
+References: <AM0PR06MB41960A43994E3A1517E65346CE920@AM0PR06MB4196.eurprd06.prod.outlook.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
@@ -9,12 +10,22 @@ Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ch.abb.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UFJwHXFgKAFJmmhDKmH3p59bQ9bcSOnMXArn0bpT4aI=;
- b=s758FUrdd6G0ta8L2QRaKMuZKXYQD4VKKhCz8jYOljGemOCLCQusU2daefaYBQbvzeo4xb3mbX7jnO4Wex2sjkl1TJTUr+n0Ik8vrJbOF4o2WYuEUE0f3yd0ZDE4jtgqE2A73+U7ecrqAYEPIlpxdFpX/X+Hqj0Mys/mNVS9UDU=
+ bh=6aznYAqqI3QO8cHmcFtXHOfqZsBoV9tbm6kjw4b5EEE=;
+ b=V/JQlK4WwWWoewzNx2L+vQA8QBkZhlnA3dhqx9hFl96fnt3KVVwTsJg+rX/j1G9NYCYvu/vXUSejGalUw9CzKqtwwSK/TACq7NkzC1ZL0cSDwlqGxvN94hQIf+v2XTut3zh/lDIlnzcCy1qM6tL59+4SYza3ACY3ZbyYdQquItk=
+In-Reply-To: <AM0PR06MB41960A43994E3A1517E65346CE920@AM0PR06MB4196.eurprd06.prod.outlook.com>
 Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+
+Nevermind, figured it out....:-)
+
+-----Original Message-----
+From: netfilter-owner@vger.kernel.org <netfilter-owner@vger.kernel.org> On =
+Behalf Of Andreas Hoefler
+Sent: Donnerstag, 25. Juni 2020 09:51
+To: netfilter@vger.kernel.org
+Subject: callback on adding tables from mnl_cb_run for nftables
 
 Hi all
 
