@@ -1,38 +1,81 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: nftables and connection tracking
-Date: Thu, 2 Jul 2020 00:48:20 +0200
-Message-ID: <20200701224820.GA29407@breakpoint.cc>
-References: <CAChjPdRd1xePA2fesrj8imCo9gfP_B5bko95MEGEwsAWVX6fjw@mail.gmail.com>
- <20200621080614.GK26990@breakpoint.cc>
- <CAChjPdQtKBGuUvdveCVc5kmhA+fgP4DUDNKhNd11KUVCKNUZLg@mail.gmail.com>
- <20200621090142.GL26990@breakpoint.cc>
- <CAChjPdT0xHfAy5+=Lf1ua6bSjiZxiH-=424Yb-GLHyrt5BL=Kw@mail.gmail.com>
- <20200621104516.GM26990@breakpoint.cc>
- <CAChjPdSFWc=XpxX_Nw40hBMyFpyWNyEvru1k1WJpKLZE-7CcfQ@mail.gmail.com>
+From: Alessandro Vesely <vesely@tana.it>
+Subject: Re: Filter source IP with UDP/514 destination port and change to
+ UDP/9000
+Date: Thu, 2 Jul 2020 18:00:20 +0200
+Message-ID: <787848b8-10da-17b3-3272-4a13316ad117@tana.it>
+References: <CAG2Qp6tcb1Ak=0utrF54bLLc5UEqFHWu1WhD9CH3KE3JAG-Q6w@mail.gmail.com>
+ <CAG2Qp6uj10nb0tFcQBTGKJ5KcNhwJwJsRK3UKyceb0=WEF+nRg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAChjPdSFWc=XpxX_Nw40hBMyFpyWNyEvru1k1WJpKLZE-7CcfQ@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tana.it; s=delta;
+        t=1593705620; bh=+bXM7weWLpQfwv8bR6lGeQkKL4zsZLLbrXM4wrovQjU=;
+        l=1174; h=To:References:From:Date:In-Reply-To;
+        b=AXq73zLCa4qnkCX3aBy+e5ZJDW9RdjpQUaNSpLOR61VdVOmQqooL7ZZfjZhoC6TIS
+         rYYMsR/ce0Fhipofw4ZFUElNw6UEoacGhLb2pdQvkCLE3ooF1xZg2KZBPXl4jchdR8
+         Ny1rBFZhRxnQylpmHvwErMm9GcMDdcOuhvke4PqKiNxEfHiN4hIBiKMdkfVkt
+In-Reply-To: <CAG2Qp6uj10nb0tFcQBTGKJ5KcNhwJwJsRK3UKyceb0=WEF+nRg@mail.gmail.com>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Marek =?iso-8859-15?Q?Gre=A8ko?= <mgresko8@gmail.com>
-Cc: Florian Westphal <fw@strlen.de>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: Roberto Carna <robertocarna36@gmail.com>, netfilter@vger.kernel.org
 
-Marek Gre=A8ko <mgresko8@gmail.com> wrote:
-> please is it a bug the rules did not work in the raw table or was it
-> my configuration error?
+On Wed 01/Jul/2020 20:11:38 +0200 Roberto Carna wrote:
+> Hi people, I have a log server with iptables, the IP is 10.10.100.1.
+> 
+> I have several network devices sending logs to my log server
+> 10.10.100.1 on UDP/514 port.
+> 
+> In the log server,  I wanna filter incoming traffic only  from IP
+> 10.10.100.20 to UDP/514 destination port and change to UDP/9000
+> destination port.
+> 
+> How are the iptables rules to achieve what I said?
 
-Config error.
 
-> How is it possible that using iptables-nft the rules are added to the
-> raw table and it is working?
+I have this stuff on "man iptables-extensions":
 
-iptables-nft and fntables are not the same.
--j CT works with 'connection tracking templates',
-but the nft equivalent sets the helper directly.
+   REDIRECT
+        This target is only valid in the nat table, in the  PREROUT‐
+        ING  and  OUTPUT  chains,  and user-defined chains which are
+        only called from those chains.  It redirects the  packet  to
+        the  machine  itself  by  changing the destination IP to the
+        primary address of the incoming interface (locally-generated
+        packets  are  mapped to the localhost address, 127.0.0.1 for
+        IPv4 and ::1 for IPv6).
 
-So, for iptables (and iptables-nft), the rule needs to be
-executed before conntrack lookup.  With nft it has to be done
-after conntrack lookup.
+        --to-ports port[-port]
+               This specifies a destination port or range  of  ports
+               to  use:  without this, the destination port is never
+               altered.  This is only valid if the rule also  speci‐
+               fies  one  of the following protocols: tcp, udp, dccp
+               or sctp.
+
+
+hth
+Ale
+-- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
