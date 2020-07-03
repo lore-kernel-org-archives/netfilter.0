@@ -1,65 +1,83 @@
-From: "Timo Sigurdsson" <public_timo.s@silentcreek.de>
-Subject: Moving from ipset to nftables: Sets not ready for prime time yet?
-Date: Fri,  3 Jul 2020 01:18:12 +0200 (CEST)
-Message-ID: <20200702231812.E43146C80D34@dd34104.kasserver.com>
+From: Andreas Hoefler <andreas.hoefler@hitachi-powergrids.com>
+Subject: libnftnl vlan type filter
+Date: Fri, 3 Jul 2020 06:45:45 +0000
+Message-ID: <VI1PR06MB4639357B62CE26537FF54FE6C56A0@VI1PR06MB4639.eurprd06.prod.outlook.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=silentcreek.de;
-        s=kas202007021019; t=1593731892;
-        bh=4wdOPxA/OsVcXhtlhAicnnBsHYCLlMwjeT7OZvw91RQ=;
-        h=Subject:From:To:Date:From;
-        b=O5JpedTQRKYeAhM4Ef8SFwjstjk5pUgW5EcoeZnzdSxXJcdVdvHTcS7szFkEmpyGB
-         mEVAo8HoFuQrBgLZFJdMXo3DVNJCUrXIxUaoeC+pAfjj3xEr+Lrpu5Mu90ZaD8Ik8A
-         m9EO3BOCqLt0bvH5MnYpx7g3k24ZbSB64SklRiVt89pcj7CRyNgsVS+k8gmTWbeW4b
-         QZY+zunvuu+a6SwQh5kMeBsxpeYYpSEoZleUUN/SdYNGqoHZKayGnbcsbDB7d3AE4C
-         X3UgrsIY2A1qjiM00XL2ZhC/81s3SHbI72wG7WhjvLWKm8EbCwDxEJ9FXgSgWfLhjQ
-         j14/RXCpqW85g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=hitachipowergrids.onmicrosoft.com;
+ s=selector1-hitachipowergrids-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jU+khy8NKsTIkJx7UoVufytQEl8BJie59C+jAY3O660=;
+ b=aeeDGweKSgw2qWSucf8FP2hUyybzdgK7Xpx44k8ZUB0ZA9LwSNn4uKuKkRYe51+WE8LNxEN7quBEereGSICfu8WA9uDTKo+AN2FUbDODJ3zEs9Lox+Xl1HO60Qb+0eukQQSuMGZtU+hunNTOcyqA6IUYNd37Kt9f14F2I8MgH4w=
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>
 
-P.S. Sorry, I sent this message to netfilter-devel first as I was already subscribed to that list and only realized later that the netfilter list would be a better place to post this to. Hence, one more time to this list...
+Hi=20
+I am trying to use libnftnl to construct this:
 
+table netdev filter {
+        chain in {
+                type filter hook ingress device pru20 priority 0; policy ac=
+cept;
+                vlan type 0x88ba
+        }
+}
 
-Hi,
+I do :
+    add_meta(r, NFT_META_IIFTYPE, NFT_REG_1);
+    uint32_t iiftype =3D 1;
+    add_cmp(r, NFT_REG_1, NFT_CMP_EQ, &iiftype, sizeof(iiftype));
 
-I'm currently migrating my various iptables/ipset setups to nftables. The nftables syntax is a pleasure and for the most part the transition of my rulesets has been smooth. Moving my ipsets to nftables sets, however, has proven to be a major pain point - to a degree where I started wondering whether nftables sets are actually ready to replace existing ipset workflows yet.
+    add_payload(r, NFT_PAYLOAD_LL_HEADER, NFT_REG_1, 12, sizeof(uint16_t));
+    uint16_t vtype =3D htons(ETH_P_8021Q);
+    add_cmp(r, NFT_REG_1, NFT_CMP_EQ, &vtype, sizeof(vtype));
 
-Before I go into the various issues I encountered with nftables sets, let me briefly explain what my ipset workflow looked like. On gateways that forward traffic, I use ipsets for blacklisting. I fetch blacklists from various sources regularly, convert them to files that can be loaded with `ipset restore', load them into a new ipset and then replace the old ipset with the new one with `ipset swap`. Since some of my blacklists may contain the same addresses or ranges, I use ipsets' -exist switch when loading multiple blacklists into one ipset. This approach has worked for me for quite some time.
+    add_payload(r, NFT_PAYLOAD_LL_HEADER, NFT_REG_1, 16, sizeof(uint16_t));
+    uint16_t et =3D htons(0x88ba);
+    add_cmp(r, NFT_REG_1, NFT_CMP_EQ, &et, sizeof(et));
 
-Now, let's get to the issues I encountered:
+This produces=A0the following rule
+table netdev filter {
+        chain in {
+                type filter hook ingress device pru20 priority 0; policy dr=
+op;
+                iiftype ether @ll,96,16 33024 @ll,128,16 35002
+        }
+}
+When I manually add the constructed rule:
+#nft add rule netdev filter in iiftype ether @ll,96,16 33024 @ll,128,16 350=
+02
 
-1) Auto-merge issues
-Initially, I intended to use the auto-merge feature as a means of dealing with duplicate addresses in the various source lists I use. The first issue I encountered was that it's currently not possible to add an element to a set if it already exists in the set or is part or an interval in the set, despite the auto-merge flag set. This has been reported already by someone else [1] and the only workaround seems to be to add all addresses at once (within one 'add element' statement).
+then nft list ruleset translates it correctly so I assume that this rule is=
+ built right:
 
-Another issue I stumbled upon was that auto-merge may actually generate wrong/incomplete intervals if you have multiple 'add element' statements within an nftables script file. I consider this a serious issue if you can't be sure whether the addresses or intervals you add to a set actually end up in the set. I reported this here [2]. The workaround for it is - again - to add all addresses in a single statement.
+table netdev filter {
+        chain in {
+                type filter hook ingress device pru20 priority 0; policy dr=
+op;
+                iiftype ether @ll,96,16 33024 @ll,128,16 35002 <- construct=
+ed with code above
+                vlan type 0x88ba <- manually added,  same rule as above but=
+ translated ok
+        }
+}
 
-The third auto-merge issue I encountered is another one that has been reported already by someone else [3]. It is that the auto-merge flag actually makes it impossible to update the set atomically. Oh, well, let's abandon auto-merge altogether for now...
- 
-2) Atomic reload of large sets unbearably slow
-Moving on without the auto-merge feature, I started testing sets with actual lists I use. The initial setup (meaning populating the sets for the first time) went fine. But when I tried to update them atomically, i.e. use a script file that would have a 'flush set' statement in the beginning and then an 'add element' statement with all the addresses I wanted to add to it, the system seemed to lock up. As it turns out, updating existing large sets is excessively slow - to a point where it becomes unusable if you work with multiple large sets. I reported the details including an example and performance indicators here [4]. The only workaround for this (that keeps atomicity) I found so far is to reload the complete firewall configuration including the set definitions. But that has other unwant
- ed side-effects such as resetting all counters and so on.
+My questions:
+- What are the correct enums to use for e.g iiftype =3D1;?
+- Is there something like offsetof(struct ???, vlan) which I could use inst=
+ead of hardcoded offset?
+- Why does list ruleset show the coded rule differently from the manually a=
+dded one?
+- uint16_t vtype =3D htons(ETH_P_8021Q); seems weird to use htons here, is =
+there another enum I should use?
 
-3) Referencing sets within a set not possible
-As a workaround for the auto-merge issues described above (and also for another use case), I was looking into the possibility to reference sets within a set so I could create a set for each source list I use and reference them in a single set so I could match them all at once without duplicating rules for multiple sets. To be clear, I'm not really sure whether this is supposed to work all. I found some commits which suggested to me it might be possible [5][6]. Nevertheless, I couldn't get this to work.
+Any help is highly appreaciated.
+BR
+Andy
 
-Summing up:
-Well, that's quite a number of issues to run into as an nftables newbie. I wouldn't have expected this at all. And frankly, I actually converted my rules first and thought adjusting my scripts around ipset to achieve the same with nftables sets would be straightforward and simple... Maybe my approach or understanding of nftables is wrong. But I don't think that the use case is that extraordinary that it should be that difficult.
-
-In any case, if anyone has any tips or workarounds to speed up the atomic reload of large sets, I'd be happy to hear (or read) them. Same goes for referencing sets within sets. If this should be possible to do, I'd appreaciate any hints to the correct syntax to do so.
-Are there better approaches to deal with large sets regularly updated from various sources?
-
-
-Cheers,
-
-Timo
-
-
-[1] https://www.spinics.net/lists/netfilter/msg58937.html
-[2] https://bugzilla.netfilter.org/show_bug.cgi?id=1438
-[3] https://bugzilla.netfilter.org/show_bug.cgi?id=1404
-[4] https://bugzilla.netfilter.org/show_bug.cgi?id=1439
-[5] http://git.netfilter.org/nftables/commit/?h=v0.9.0&id=a6b75b837f5e851c80f8f2dc508b11f1693af1b3
-[6] http://git.netfilter.org/nftables/commit/?h=v0.9.0&id=bada2f9c182dddf72a6d3b7b00c9eace7eb596c3
