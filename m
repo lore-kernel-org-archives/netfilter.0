@@ -1,129 +1,52 @@
-From: sean darcy <seandarcy2@gmail.com>
-Subject: sets must have more than 2 elements , and can't "include" a set
-Date: Thu, 9 Jul 2020 12:27:04 -0400
-Message-ID: <re7ggq$e6l$1@ciao.gmane.io>
+From: Cristian Cardoso <cristian.cardoso11@gmail.com>
+Subject: Raw table on NFT
+Date: Fri, 10 Jul 2020 14:23:26 -0300
+Message-ID: <CAKeEC-KP4_B8vDZf3U_iuR27W1gwK2kjkmHi8A5Nyj97zPi0Og@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=o8fyS6YnzN8dHLiRYADxShZREWpvYjZYMxmEPteK87o=;
+        b=XtPL7wEKnyviz2YzGaBE0Iz6PNaz2rkEoALQ1CJzAG3QtTpz5ShIfNT08Ao9yQrjiU
+         kBsPdi+seSzm+j+qULMNW6YEUuGS+wJixauJJ+DUplF2som+7pGGRBkqCXaokYIspsKn
+         xZMrBeWju3fZROEC9TxuBT3gCGPQ/yOa3bWBmEHxqCfm3J7VSrPlBkIQDmYmPACtiAWN
+         sBkdqqIZU4PYn5PZU3LovDBdsiSb1f0KJDtAVoCHtWcB+S4ZBXjn9HZs1uKg5y62JnDs
+         zBzGAmN0yn4e8dUgN1zzUuoGCuqmmUVK2YIZmot+EaMSqSCWjMFtqzOwR3+pcVhEQxjR
+         LyMg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Fedora 32 : nftables-0.9.3-3.fc32.x86_64
+Hello
 
-I'm having trouble debugging a netdev script. I'm getting an error 
-including a set definition. So I tried a short test script that shows 
-another problem:
+I'm migrating from iptables to nftables my servers and I have rules in
+the raw table, when reading the nftables wiki I understood that they
+should be placed in the netdev table, but I didn't fully understand
+how to transcribe hexadecimal string rules in nftables, when searching
+the wiki, I couldn't quite understand.
 
+Example of one of the rules I need to carry
+iptables -t raw -A PREROUTING -p tcp -m tcp --dport 53 -m string
+--hex-string "| 0000ff0001 |" --something bm -j DROP
 
-flush ruleset
+The rule would be something like
 
-  define whitelist_ips = {
-     127.0.0.1 ,
-     10.0.0.0/24 ,
-     1.1.1.1
-     }
+add table netdev filter chain ingress {type filter hook ingress
+priority 0; policy accept} '
+'add rule netdev ingress udp --dport 53 metadata "| 0000ff0001 |" drop '
 
-table netdev netdev1 {
-        set whitelist {
-                 type ipv4_addr
-                 flags interval
-                 auto-merge
-                 elements = $whitelist_ips
-         }
+I tried to use the iptables-translate command and it was not possible
+to translate to nft format
 
-         chain ingress1 {
-		type filter hook ingress device enp1s0f1 priority 0; policy accept;
-                 #accept whitelist
-                 ip saddr @whitelist accept
-         }
-}
+iptables-translate -t raw -A PREROUTING -p tcp -m tcp --dport 53 -m
+string --hex-string "|0000ff0001|" --algo bm -j DROP
+nft # -t raw -A PREROUTING -p tcp -m tcp --dport 53 -m string
+--hex-string |0000ff0001| --algo bm -j DROP
 
-This works:
+Does anyone happen to use this type of resource in nft or could you
+guide me how to proceed?
 
-nft list table netdev netdev1
-table netdev netdev1 {
-	set whitelist {
-		type ipv4_addr
-		flags interval
-		auto-merge
-		elements = { 1.1.1.1, 10.0.0.0/24,
-			     127.0.0.1 }
-	}
-
-	chain ingress1 {
-		type filter hook ingress device "enp1s0f1" priority filter; policy accept;
-		ip saddr @whitelist accept
-	}
-}
-
-But if I take out one whitelist element:
-
-cat 5tmp
-flush ruleset
-
-  define whitelist_ips = {
-     127.0.0.1 ,
-     10.0.0.0/24
-     }
-
-table netdev netdev1 {
-        set whitelist {
-                 type ipv4_addr
-                 flags interval
-                 auto-merge
-                 elements = $whitelist_ips
-         }
-
-         chain ingress1 {
-		type filter hook ingress device enp1s0f1 priority 0; policy accept;
-                 #accept whitelist
-                 ip saddr @whitelist accept
-         }
-}
-
-It doesn't work, with odd error messages:
-
-nft -f 5tmp
-5tmp:17:15-22: Error: Could not process rule: No such file or directory
-         chain ingress1 {
-               ^^^^^^^^
-5tmp:20:17-42: Error: Could not process rule: No such file or directory
-                 ip saddr @whitelist accept
-                 ^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-And if I try to use include for the whitelist:
-
-flush ruleset
-include "./w1"
-# define whitelist_ips = {
-#    127.0.0.1 ,
-#    10.0.0.0/24
-#    }
-............
-
-cat ./w1
-define whitelist_ips = {
-     127.0.0.1 ,
-     10.0.0.0/24 ,
-     1.1.1.1 }
-
-I get odder error messages:
-
-nft -f 5tmp
-In file included from 5tmp:3:1-15:
-./w1:18:15-22: Error: Could not process rule: No such file or directory
-
-In file included from 5tmp:3:1-15:
-./w1:21:17-42: Error: Could not process rule: No such file or directory
-
-Which may be related to the first problem.
-
-Any help appreciated.
-
-sean
-
-
-
+Best Regards
