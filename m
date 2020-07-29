@@ -1,63 +1,41 @@
-From: Janosch Maier <janosch@crashtest-security.com>
-Subject: iptables: Log dropped packages due to missing ports when using
- masquerading
-Date: Wed, 29 Jul 2020 09:24:37 +0200
-Message-ID: <3A004111-BD94-4AFB-A20E-10605B6A8EA4@crashtest-security.com>
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Content-Transfer-Encoding: quoted-printable
+From: Florian Westphal <fw@strlen.de>
+Subject: Re: usings sets as input to sets
+Date: Wed, 29 Jul 2020 14:17:12 +0200
+Message-ID: <20200729121712.GA5271@breakpoint.cc>
+References: <20200728092724.677EC40A2A@i-am.a-little-linux-box.at>
+Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=crashtest-security.com; s=google;
-        h=from:content-transfer-encoding:mime-version:subject:message-id:date
-         :to;
-        bh=cl6c18XUbHM+zkC5IHZg2gQEXsx65ONwpbg4WVt+9t8=;
-        b=CcdJY/LD0pIU2fY1ZJ0HkSyNSz8y4Vxu+1vBHSW0JFs5FXYOMyIi6qZuMLjdxsRsrv
-         dIPCKciBOVNlegWcu9MxuobCTj9a+GXkiUarPYrUc+wqfditgQCao0lDSN7lGgWDGdG8
-         dvrFvNtiVxh5gstrDWnYJq7mZq/zImsQPYjd+CBerpTUq5g7HXcHMpiIQsnKoVCm/WFe
-         uxY3nSaSw5VnJdRLbfWrkUa8pcIbeqWBscPhu11F9nxlfCD0iJaCZs05zmuu50p6Px0/
-         mJf4jLxcc67q2uov/5ZPz6FFqQhSjbR1j9fjw+e31XoUM4noIYGO++sulah3ubrDKBPZ
-         2Y9Q==
+Content-Disposition: inline
+In-Reply-To: <20200728092724.677EC40A2A@i-am.a-little-linux-box.at>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: harald@a-little-linux-box.at
+Cc: netfilter@vger.kernel.org
 
-Hello everyone,
+harald@a-little-linux-box.at <harald@a-little-linux-box.at> wrote:
+[..]
+> table inet portknock {
+>         set port2 {
+>                 type inet_service
+[..]
 
-I am setting up iptables for natting of multiple hosts in a server =
-cluster. There will be connection bursts from multiple servers usually =
-to a single system. The natting is needed so that the receivers can =
-whitelist the origin of the requests. The configuration is very basic:
+>         set candidates {
+>                 type ipv4_addr . inet_service
+>                 flags timeout
+>         }
 
-   echo 1 > /proc/sys/net/ipv4/ip_forward
-   iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+[..]
+>                 tcp dport 12345 add @candidates {ip saddr . @port2 timeout 10s}
 
-Due to the burst of messages, I am worried that the number of open =
-connections (or connections in a very short time) to a single =
-destination will provoke the problem that no more ports on the nat host =
-are available to open connections to the single target system.
+What is that supposed to do?
 
-1. Is there a way to log messages for when such a case happens?
+@candidate expects ip address + port.
 
-2. If something like this happens, is there any way to recognise this =
-when setting up logging for the post routing table like this?
+> So my question is is this even supposed to work or not? If not then maybe somebody could tell me why and if it is supposed to work why doesn't it?
 
-iptables -t nat -I POSTROUTING -j LOG
+Its not possible to add a set to a set, if thats what you are asking.
 
-Chain POSTROUTING (policy ACCEPT 0 packets, 0 bytes)
-pkts bytes target     prot opt in     out     source               =
-destination
-421K   25M LOG        all  --  *      *       0.0.0.0/0            =
-0.0.0.0/0            LOG flags 0 level 4
-603K   36M MASQUERADE  all  --  *      eth0    0.0.0.0/0            =
-0.0.0.0/0
-
-3. Can dropping packages be avoided by adding multiple static IP =
-addresses and using SNAT instead of masquerading as follows?
-
-iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to =
-1.2.3.4,1.2.3.5,9.8.7.6
-
-
-Any help is highly appreciated.
-Janosch=
+I suspect you already found
+https://wiki.nftables.org/wiki-nftables/index.php/Port_knocking_example ?
