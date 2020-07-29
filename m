@@ -1,95 +1,64 @@
-From: harald@a-little-linux-box.at
-Subject: usings sets as input to sets
-Date: Tue, 28 Jul 2020 11:27:24 +0200 (CEST)
-Message-ID: <20200728092724.677EC40A2A@i-am.a-little-linux-box.at>
-Mime-Version: 1.0
+From: Janosch Maier <janosch@crashtest-security.com>
+Subject: iptables: Log dropped packages due to missing ports when using
+ masquerading
+Date: Wed, 29 Jul 2020 09:19:30 +0200
+Message-ID: <7D1F3D66-0AD7-463A-8847-BCCDFE0A8868@crashtest-security.com>
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=a-little-linux-box.at;
-        s=dkim; t=1595928444;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=WK4H6mZL37/XQkk+lxTQJFJHur16Tw2uBDsIXtydhXM=;
-        b=hDAPJopG8FUEtK0PpEAEC/Zz7DQwpJeWQev+sC+42MWws1cNc8qZUtCXn55/D9IoYxVy1L
-        cqkMHDQNOe4MWf6XNlOz96x9+wLzk1zxkCexXNMpgTTue/rWojLb8/xlGrfIbv0Tk6pQk7
-        p3Zb1jvmDvIujj6Dpcvd8JY8WmlgHZjOG4Gtw/mJLipEDE5iSZnk5kssWdhZAoI+wF39+9
-        Acw9T3VPfFrZZx3uq1Ij0dr+rw4vjZ81RWtX3ZY9slwiUUEy0RgWaYPbhS8jfTiB31u5RT
-        0bXzvzfcXtiyqOXB9Att6Nc8p0FdEm7ZU87WcBV78z6/jbDT1nuV1YmwFnxztbEl8m5WwF
-        TtU3OTMCwNdCijb6zaCldQMvlhZ2DqIZI8BxJwVyMSZFlGEsOUkpJf6TsEA2IEAAMzz7oL
-        e41rms61tst3Zb2h4//8SAflUmiLOXKPrxriILz 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=crashtest-security.com; s=google;
+        h=from:content-transfer-encoding:mime-version:subject:message-id:date
+         :cc:to;
+        bh=xE3AnnFMq+e5c0hyPnPmK2vIMq7NXU1ZT2HBWYYgyZM=;
+        b=jriyePt9JY7QnAgNKkVS9RJwV24oHAK92lEPoqYHkdcS2p8vz3PrkTgGNBhOlkvqDE
+         guCzMR3rcaLmIfGnvsEs0LmSKdgCuJPCJ6fKt+qH+V8sSXP61kWHn/Wf/fl80Glda/mw
+         5+RM7rgD6ZYqTg8GdPR/7QTG87vaTxLYRpajv7lhCNy1Fr/z4ADuv3UJoiCl3sUIDmF8
+         /ehG5kFpd3GRxPmDMzBwNDaf8BT+Ce5svtPpEYO72oEZ1EQcgGdVUOo1LmsETiXDcWjr
+         RoPl2zVFszHe0LsSN4VTpfUGG0g1nXouuPDDdkDerfZOUCyq+26tu5zj21qCDzsGy2VM
+         7Smg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
+Cc: =?utf-8?Q?Ren=C3=A9_Milzarek?= <rene@crashtest-security.com>, Manuel Kauschinger <manuel@crashtest-security.com>
 
-Hello,
+Hello everyone,
 
-I have the following nftables script:
+I am setting up iptables for natting of multiple hosts in a server =
+cluster. There will be connection bursts from multiple servers usually =
+to a single system. The natting is needed so that the receivers can =
+whitelist the origin of the requests. The configuration is very basic:
 
-define guarded_ports =3D {ssh}
+    echo 1 > /proc/sys/net/ipv4/ip_forward
+    iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 
-table inet portknock {
-        set port2 {
-                type inet_service
-                flags timeout
-                timeout 60m
-        }
+Due to the burst of messages, I am worried that the number of open =
+connections (or connections in a very short time) to a single =
+destination will provoke the problem that no more ports on the nat host =
+are available to open connections to the single target system.
 
-        set port3 {
-                type inet_service
-                flags timeout
-                timeout 60s
-        }
+1. Is there a way to log messages for when such a case happens?
 
-        set clients {
-                type ipv4_addr
-                flags timeout
-        }
+2. If something like this happens, is there any way to recognise this =
+when setting up logging for the post routing table like this?
 
-        set candidates {
-                type ipv4_addr . inet_service
-                flags timeout
-        }
+iptables -t nat -I POSTROUTING -j LOG
 
-        chain input {
-                type filter hook input priority -10; policy accept;
+Chain POSTROUTING (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               =
+destination
+ 421K   25M LOG        all  --  *      *       0.0.0.0/0            =
+0.0.0.0/0            LOG flags 0 level 4
+ 603K   36M MASQUERADE  all  --  *      eth0    0.0.0.0/0            =
+0.0.0.0/0
 
-                iifname "lo" return
+3. Can dropping packages be avoided by adding multiple static IP =
+addresses and using SNAT instead of masquerading as follows?
 
-                tcp dport 12345 add @candidates {ip saddr . @port2 timeout =
-10s}
-                tcp dport @port2 ip saddr . tcp dport @candidates add @cand=
-idates {ip saddr . @port3 timeout 10s}
-                tcp dport @port3 ip saddr . tcp dport @candidates add @clie=
-nts {ip saddr timeout 10s}
+iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to =
+1.2.3.4,1.2.3.5,9.8.7.6
 
-                tcp dport $guarded_ports ip  saddr @clients accept
-                tcp dport $guarded_ports ct state established,related accep=
-t
 
-                tcp dport $guarded_ports reject with tcp reset
-
-        }
-}
-
-When trying to apply it it throws the following error with nftables v0.9.6 =
-(Capital Idea #2):
-
-/tmp/rules:31:48-52: Error: syntax error, unexpected string, expecting ll o=
-r nh or th
-                tcp dport 12345 add @candidates {ip saddr . @port2 timeout =
-10s}
-                                                             ^^^^^
-/tmp/rules:32:82-86: Error: syntax error, unexpected string, expecting ll o=
-r nh or th
-                tcp dport @port2 ip saddr . tcp dport @candidates add @cand=
-idates {ip saddr . @port3 timeout 10s}
-                                                                           =
-                    ^^^^^
-
-So my question is is this even supposed to work or not? If not then maybe s=
-omebody could tell me why and if it is supposed to work why doesn't it?
-
-Kind regards
-Harald Jenny
+Any help is highly appreciated.
+Janosch=
