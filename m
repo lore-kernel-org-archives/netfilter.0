@@ -1,55 +1,51 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: Correct syntax for dnat in inet table?
-Date: Thu, 6 Aug 2020 20:17:19 +0200
-Message-ID: <20200806181719.GD26394@breakpoint.cc>
-References: <6D405016-FCB8-44C5-86CF-EE18A9F75839@plutonium24.de>
- <F31DCA98-C7C6-4C25-9B97-035E10C96ED0@gmail.com>
+From: sean darcy <seandarcy2@gmail.com>
+Subject: ingress hook on interface with multiple addresses ?
+Date: Wed, 12 Aug 2020 11:41:34 -0400
+Message-ID: <rh12jg$1392$1@ciao.gmane.io>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <F31DCA98-C7C6-4C25-9B97-035E10C96ED0@gmail.com>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Frank-Ulrich Sommer <orofuhin@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Frank-Ulrich Sommer <orofuhin@gmail.com> wrote:
-> I'm using "nftables v0.9.0 (Fearless Fosdick)" on a Debian Buster based Raspberry Pi OS.
-> 
-> I'm getting syntax errors when trying to redirect a port to another host via nftables.conf with the two lines starting with "iif eth0.100". The file does not contain a complete setup because I removed all rules not related to the problem.
-> 
-> The first line produces "nftables.conf:10:41-42: Error: syntax error, unexpected to, expecting newline or semicolon". According to the manpage I would have expected the correct syntax for an inet table to be "...dnat ip to..."
-> 
-> The second line without "to" produces "nftables.conf:11:56-56: Error: syntax error, unexpected newline".
-> 
-> What would be the correct syntax if I want e.g. to forward traffic to port 1234 to IPv4 123.123.123.123 in an inet table?
-> 
-> Here is the reduced nftables.conf causing these errors:
-> 
-> #!/usr/sbin/nft -f
-> 
-> flush ruleset
-> 
-> table inet myfilter {
-> 
->   chain port_forwarding {
->     type nat hook prerouting priority 0; policy accept;
-> 
->     iif eth0.100 tcp dport 1234 dnat ip to 123.123.123.123
->     iif eth0.100 tcp dport 2345 dnat ip 123.123.123.123
->   }
-> }
-nft list ruleset
-table inet myfilter {
-        chain port_forwarding {
-                type nat hook prerouting priority filter; policy accept;
-                iif "lo" tcp dport 1234 dnat ip to 123.123.123.123
-        }
+I have an interface with 2 ip addresses:
+
+ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN 
+group default qlen 1000
+............
+2: enp1s0f1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel 
+state UP group default qlen 1000
+     link/ether 98:29:a6:48:49:8e brd ff:ff:ff:ff:ff:ff
+     inet 10.0.0.61/24 brd 10.0.0.255 scope global noprefixroute enp1s0f1
+        valid_lft forever preferred_lft forever
+     inet 10.0.0.2/32 scope global noprefixroute enp1s0f1
+        valid_lft forever preferred_lft forever
+
+When I try to add a chain on ingress hook, nft is unhappy:
+
+nft list table netdev foo
+table netdev foo {
+	set allowlist {
+		type ipv4_addr
+		flags interval
+		auto-merge
+		elements = { 10.0.0.0/8, 127.0.0.1 }
+	}
 }
-nft --version
-nftables v0.9.5 (Capital Idea)
 
-(I had to use different interface name because iif requires the name to exist
-when parsing).
+
+nft 'add chain netdev foo dev0filter { type filter hook ingress device 
+enp1s0f1 priority 0 ; }'
+Error: Could not process rule: No such file or directory
+add chain netdev foo dev0filter { type filter hook ingress device 
+enp1s0f1 priority 0 ; }
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Can you have a chain on ingress hook for an interface that has multiple 
+addresses ? If so, how?
+
+
