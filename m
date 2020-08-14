@@ -1,72 +1,40 @@
-From: Andreas Hoefler <andreas.hoefler@hitachi-powergrids.com>
-Subject: RE: Is it possible to change a chains default policy when rules are
+From: Florian Westphal <fw@strlen.de>
+Subject: Re: Is it possible to change a chains default policy when rules are
  already present?
-Date: Fri, 14 Aug 2020 13:21:08 +0000
-Message-ID: <VI1PR06MB4639D0AB412AA72F75A96A06C5400@VI1PR06MB4639.eurprd06.prod.outlook.com>
+Date: Fri, 14 Aug 2020 15:40:00 +0200
+Message-ID: <20200814134000.GG1660@breakpoint.cc>
 References: <AM0PR06MB4628C196EBABF0FD53AA8006C5430@AM0PR06MB4628.eurprd06.prod.outlook.com>
  <20200814110749.GA30331@salvia>
  <c0afef4e-7276-a368-226a-cb315ea1ab69@tootai.net>
  <1ed447f1-da05-38c7-e86e-4451f8040c88@thelounge.net>
  <2b96d288-50d9-b64b-f5ac-3343d3b9f631@tootai.net>
  <20200814130842.GF1660@breakpoint.cc>
+ <VI1PR06MB4639D0AB412AA72F75A96A06C5400@VI1PR06MB4639.eurprd06.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=hitachi-powergrids.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wWc0M+wk4vbezglfNuhsRssDQBgvMEadMq69WvhWRuc=;
- b=UxXUbh3Y2gQyoW938/kLBn6tYHSTfvbhj8FBfEGduRygth3IRBznNCFPcvXXqABrx4Ad0zMoetr+r51To/9aNTnQfWB4/4qoWMvX+esJrWTZS3nUbd0z4kL57l2JRijDmfX2reMFg1BsMp4UKMs9IPXIJTd2c2/Vd3PpwhIhCoU=
-In-Reply-To: <20200814130842.GF1660@breakpoint.cc>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <VI1PR06MB4639D0AB412AA72F75A96A06C5400@VI1PR06MB4639.eurprd06.prod.outlook.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Florian Westphal <fw@strlen.de>, Daniel <tech@tootai.net>
-Cc: Reindl Harald <h.reindl@thelounge.net>, Pablo Neira Ayuso <pablo@netfilter.org>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Andreas Hoefler <andreas.hoefler@hitachi-powergrids.com>
+Cc: Florian Westphal <fw@strlen.de>, Daniel <tech@tootai.net>, Reindl Harald <h.reindl@thelounge.net>, Pablo Neira Ayuso <pablo@netfilter.org>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-> Daniel <tech@tootai.net> wrote:
-> >
-> > Le 14/08/2020 =E0 13:36, Reindl Harald a =E9crit :
-> > >
-> > > Am 14.08.20 um 13:21 schrieb Daniel:
-> > > > Le 14/08/2020 =E0 13:07, Pablo Neira Ayuso a =E9crit :
-> > > > > On Thu, Aug 13, 2020 at 12:28:34PM +0000, Andreas Hoefler wrote:
-> > > > > > Hi
-> > > > > >
-> > > > > > I have a chain with default policy drop.
-> > > > > > I would like to first have the default policy set to accept,=20
-> > > > > > then add rules and later change it to drop.
-> > > > > > Is this possible?
-> > > > > For the record:
-> > > > >
-> > > > >    nft add chain x y { policy accept\; }
-> > > > >
-> > > > > Assuming an existing basechain 'y'. The backlash (\) before the=20
-> > > > > semicolon is there in case of invoking this from bash.
-> > > >  From bash how to you set priority leaded by - like priority -150=20
-> > > > \; We always get invalid option
-> > > >
-> > > > dh@peech:~$ sudo nft add chain ip6 mangle output { type nat hook=20
-> > > > prerouting priority -350 \; policy accept \; }
-> > > > nft: invalid option -- '3'
-> > > because you don't escape - with \-
-> > I already tested by escaping - sign, same error
-> > > don't nft understand quoted params?
-> > >
-> > > nft add chain ip6 mangle output "{ type nat hook prerouting priority
-> > > -350 ; policy accept ; }"
-> > Not working either
-> >
-> > dh@peech:~$ sudo nft add chain ip6 mangle prerouting "{ type nat hook=20
-> > prerouting priority -350 ; policy accept ; }"
-> > Error: Could not process rule: Operation not supported add chain ip6=20
-> > mangle prerouting { type nat hook prerouting priority -350; policy=20
-> > accept; }
->=20
-> Historic artifact, try a value larger than -200, e.g. -199.
-> I've sent a patch to zap this outdated check.
+Andreas Hoefler <andreas.hoefler@hitachi-powergrids.com> wrote:
+> > Daniel <tech@tootai.net> wrote:
+> > > dh@peech:~$ sudo nft add chain ip6 mangle prerouting "{ type nat hook 
+> > > prerouting priority -350 ; policy accept ; }"
+> > > Error: Could not process rule: Operation not supported add chain ip6 
+> > > mangle prerouting { type nat hook prerouting priority -350; policy 
+> > > accept; }
+> > 
+> > Historic artifact, try a value larger than -200, e.g. -199.
+> > I've sent a patch to zap this outdated check.
+> 
+> Didn't work for me either:
+> #nft add chain ip6 x y {type filter hook input priority \-100\;}
+> nft: invalid option -- '1'
 
-Didn't work for me either:
-#nft add chain ip6 x y {type filter hook input priority \-100\;}
-nft: invalid option -- '1'
+Different problem.  Just follow Daniels example and quote everything,
+i.e.  nft add chain ip6 x y "{ type filter hook input priority -100; }"
