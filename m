@@ -1,57 +1,67 @@
 From: Daniel <tech@tootai.net>
-Subject: Re: Is it possible to change a chains default policy when rules are
- already present?
-Date: Fri, 14 Aug 2020 17:31:50 +0200
-Message-ID: <8524abaa-bc08-8969-6e7b-40cc7f4e5ec7@tootai.net>
-References: <AM0PR06MB4628C196EBABF0FD53AA8006C5430@AM0PR06MB4628.eurprd06.prod.outlook.com>
- <20200814110749.GA30331@salvia>
- <c0afef4e-7276-a368-226a-cb315ea1ab69@tootai.net>
- <1ed447f1-da05-38c7-e86e-4451f8040c88@thelounge.net>
- <2b96d288-50d9-b64b-f5ac-3343d3b9f631@tootai.net>
- <20200814130842.GF1660@breakpoint.cc>
- <VI1PR06MB4639D0AB412AA72F75A96A06C5400@VI1PR06MB4639.eurprd06.prod.outlook.com>
- <20200814134000.GG1660@breakpoint.cc>
- <VI1PR06MB463978C0C72E8CAFFF8CC0ECC5400@VI1PR06MB4639.eurprd06.prod.outlook.com>
+Subject: Nftables 2 WAN
+Date: Fri, 14 Aug 2020 18:27:44 +0200
+Message-ID: <6bd2a7b2-4244-3695-4b62-64957bfd71c5@tootai.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1597419112; bh=EbZgJHVIP49EoIDlNPhFlLyZ+UVWW219LAAxGfcVteQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Mqna7pbKeG/eL09m3BfV/Jtwg5R7/JmcW/N83Ny/l4y79pm4gGsq/FyFRQbElxazQ
-         jSPbn8IK9NMz4blB7TAkphd1YLtz/C8DtYVCHxbLikWK/F4kz+HWQvzZuBc6XPDhUF
-         oLyqxoATGlUynkjpMSq/fbQoJ5speG6zNZ12kPEo=
+        t=1597422466; bh=Q9LHQtuEpBEUZf4/PuYgu5QDDvf0A5zqLywGWPla2xM=;
+        h=To:From:Subject:Date:From;
+        b=NoU0BmGZURx3CdCJDvG7ll4r7jr0y0cn/egVy2aeAVrDzRin3YhI0JrqsaQg9N5gc
+         ZNNfB6ovxsz8aBY1V/SHKbQrd2TIVic0ZHwwOzIv0XXvT7n57YBkco4ibLkWUSSh3/
+         b3LI3SWXuTt8O2Sx2r65RlTEWpW+6toDMBynljKw=
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1597419112; bh=EbZgJHVIP49EoIDlNPhFlLyZ+UVWW219LAAxGfcVteQ=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=Mqna7pbKeG/eL09m3BfV/Jtwg5R7/JmcW/N83Ny/l4y79pm4gGsq/FyFRQbElxazQ
-         jSPbn8IK9NMz4blB7TAkphd1YLtz/C8DtYVCHxbLikWK/F4kz+HWQvzZuBc6XPDhUF
-         oLyqxoATGlUynkjpMSq/fbQoJ5speG6zNZ12kPEo=
-In-Reply-To: <VI1PR06MB463978C0C72E8CAFFF8CC0ECC5400@VI1PR06MB4639.eurprd06.prod.outlook.com>
+        t=1597422465; bh=Q9LHQtuEpBEUZf4/PuYgu5QDDvf0A5zqLywGWPla2xM=;
+        h=To:From:Subject:Date:From;
+        b=Foq+yhde0CmMatrwosW2QDvyK57Ly2hOCbspv40r1cjdCE71EoZJjvcRa++Msmx3H
+         EYkEl+Ce0BopmGh8l0k7Lefwo7eSxhHzwV2HHtrL6RrsyDW5HGcKm1za1n/v4Q1kZm
+         ubffRqnx0G2dGBqptUF9Del1oKO+jxqn3cpCajkk=
 Content-Language: fr-FR
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Andreas Hoefler <andreas.hoefler@hitachi-powergrids.com>, Florian Westphal <fw@strlen.de>
-Cc: Reindl Harald <h.reindl@thelounge.net>, Pablo Neira Ayuso <pablo@netfilter.org>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter list <netfilter@vger.kernel.org>
 
+Hello,
 
-Le 14/08/2020 à 15:44, Andreas Hoefler a écrit :
->> Andreas Hoefler <andreas.hoefler@hitachi-powergrids.com> wrote:
->>>> Daniel <tech@tootai.net> wrote:
->>>>> dh@peech:~$ sudo nft add chain ip6 mangle prerouting "{ type nat
->>>>> hook prerouting priority -350 ; policy accept ; }"
->>>>> Error: Could not process rule: Operation not supported add chain
->>>>> ip6 mangle prerouting { type nat hook prerouting priority -350;
->>>>> policy accept; }
->>>> Historic artifact, try a value larger than -200, e.g. -199.
->>>> I've sent a patch to zap this outdated check.
->>> Didn't work for me either:
->>> #nft add chain ip6 x y {type filter hook input priority \-100\;}
->>> nft: invalid option -- '1'
->> Different problem.  Just follow Daniels example and quote everything, i.e.  nft add chain ip6 x y "{ type filter hook input priority -100; }"
-> ah ok that did the trick, thx a lot.
-Confirmed, thanks.
+I'm configuring a routeur which has 2 WAN, one being a tunnel over gre 
+which is for bgp session accepting all ipv6 routes. I have 2 interfaces, 
+eth0 which has 2 ipv6 addresses and gretunnel which has one ipv6 address.
+
+Problem is that incoming ipv6 traffic to eth0 is going out through 
+gretunnel. My rules are
+
+fwtables="sudo nft"
+myip="sudo ip"
+
+# nft table mangle ip and ip6
+#
+$fwtables delete table ip mangle 2>/dev/null || true
+$fwtables delete table ip6 mangle 2>/dev/null || true
+$fwtables add table ip mangle 2>/dev/null || true
+$fwtables add table ip6 mangle 2>/dev/null || true
+$fwtables add chain ip6 mangle output "{ type nat hook output priority 
+-150 ; policy accept ; }"
+$fwtables add rule ip6 mangle output oifname != gretunnel meta mark set 
+0x254
+$fwtables add rule ip6 mangle output oifname gretunnel meta mark set 0x2
+
+# nft table route
+#
+$fwtables add table ip6 route
+$fwtables add chain ip6 route output
+$fwtables add rule ip6 route output meta oif gretunnel meta mark != 0x2 
+counter drop
+
+# ip route mark
+#
+$myip rule add fwmark 0x254 table default
+$myip rule add fwmark 0x2 table isp2
+$myip route flush table isp2
+$myip route add prohibit default table isp2
+
+What is wrong with this setup ?
 
 -- 
 Daniel Huhardeaux
