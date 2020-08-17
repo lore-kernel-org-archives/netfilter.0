@@ -1,52 +1,85 @@
-From: Reindl Harald <h.reindl@thelounge.net>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 Subject: Re: Grammar in a bash script
-Date: Mon, 17 Aug 2020 10:42:02 +0200
-Message-ID: <df0b8e1e-9227-ff9f-de61-901fa1cfb686@thelounge.net>
-References: <681adee0-91f7-506b-d8f7-c3f270e613aa@tiscali.it>
+Date: Mon, 17 Aug 2020 10:56:58 +0200
+Message-ID: <20200817085658.GA3677@salvia>
+References: <74c7c496-2429-8646-6c1a-9454169498ac@tiscali.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <681adee0-91f7-506b-d8f7-c3f270e613aa@tiscali.it>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <74c7c496-2429-8646-6c1a-9454169498ac@tiscali.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Mario V Guenzi <jclark@tiscali.it>, Netfilter list <netfilter@vger.kernel.org>
-Cc: david@hajes.org
+To: Mario V Guenzi <jclark@tiscali.it>
+Cc: Netfilter list <netfilter@vger.kernel.org>
 
+Hi,
 
+On Mon, Aug 17, 2020 at 07:55:32AM +0200, Mario V Guenzi wrote:
+> Goodmorning everyone,
+> Does it make sense to use this kind of grammar in a bash script?
 
-Am 17.08.20 um 10:09 schrieb Mario V Guenzi:
-> Il 17/08/20 09:58, david@hajes.org ha scritto:
->> Standard firewall strategy - policy DROP all and allow only what you really need.
-> yes, but if I put drop as default policy it doesn't even let me access
-> via ssh, that's why I was forced not to put policy and then drop with
-> the rules, and for this, once finished I wanted to further close
-> Sorry for my poor english
+Please, don't do bash scripting, use native scripting instead for
+nftables. Bash scripting breaks atomicity when applying the ruleset.
 
-your script first set a default drop policy and then opens the ports
-which should be open, including SSH
+You have to remove $NFT from your example below and use 'nft -f ruleset.nft'
 
-* deny policy
-* est/related allow
-* ports to allow
+> $NFT add table inet firewall
+> $NFT add table inet nat
+> $NFT add table netdev noddos
+> 
+> $NFT add chain inet firewall INPUT { type filter hook input priority 0 \;  }
+> $NFT add chain inet firewall OUTPUT { type filter hook output priority 0
+> \; }
+> $NFT add chain inet firewall FORWARD { type filter hook forward priority
+> 0 \; }
+> $NFT add chain inet firewall IPS { type filter hook forward priority 10 \; }
+> $NFT add chain inet firewall POSTROUTING { type filter hook postrouting
+> priority 0 \; }
+> $NFT add chain inet firewall SYN-FLOOD { type filter hook input priority
+> 0 \; }
+> $NFT -- add chain inet  nat PREROUTING { type nat hook prerouting
+> priority -100 \; }
+> $NFT add chain inet nat OUTPUT { type nat hook output priority 0 \; }
+> $NFT add chain inet nat POSTROUTING { type nat hook postrouting priority
+> 100 \; }
+> $NFT -- add chain netdev noddos ingress { type filter hook ingress
+> device $EXTIF priority -500 \; }
+> 
+> my rules
+> my rules
+> my rules
+> .
+> .
+> .
+> $NFT add chain inet firewall INPUT { type filter hook input priority 0
+> \; policy drop \; }
+> $NFT add chain inet firewall OUTPUT { type filter hook output priority 0
+> \; policy drop \; }
+> $NFT add chain inet firewall FORWARD { type filter hook forward priority
+> 0 \; policy drop \; }
+> $NFT -- add chain inet  nat PREROUTING { type nat hook prerouting
+> priority -100 \; policy drop \;  }
+> $NFT add chain inet nat OUTPUT { type nat hook output priority 0
+> \;policy drop \;  }
+> 
+> The reasoning that I have done and of which I ask for confirmation is,
+> after having given permission to what I need, I deny everything as a policy
 
-doing otherwise has a chance that there is a timewindow where you accept
-unwanted connections which then land in conntrack and stay open because
-packets belong to a existing connection
+You can set default policy to drop wehn defining the chain (in the
+same go), no need to call it twice, my suggestion for your ruleset is
+to place this in ruleset.nft:
 
-below how iptables scripts looking for decades and no, you don't lose
-your ssh session when execute it because of how tcp works with re-transmits
+add table inet firewall
+add table inet nat
+add table netdev noddos
 
----------------------------------
+add chain inet firewall INPUT { type filter hook input priority 0; policy drop; }
+add chain inet firewall OUTPUT { type filter hook output priority 0; policy drop; }
+add chain inet firewall FORWARD { type filter hook forward priority 0; policy drop; }
+...
 
-#!/bin/bash
-iptables -P INPUT DROP
-iptables -P FORWARD DROP
-iptables -P OUTPUT ACCEPT
-iptables -F
-iptables -X
-iptables -A INPUT -p all -m conntrack --ctstate RELATED,ESTABLISHED -j
-ACCEPT
-iptables -A INPUT -p tcp --dport 22 -j ACCEPT
-iptables -A INPUT -p all -j DROP
+my rules
+my rules
+my rules
