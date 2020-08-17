@@ -1,50 +1,94 @@
-From: Grant C <grant@gc9.org>
-Subject: error using variable for network device name in 'hook ingress device
- $external_interface'
-Date: Sun, 16 Aug 2020 17:23:38 -0700
-Message-ID: <f05dedbd-3c4c-e31c-80ec-0383e7da1518@gc9.org>
+From: Mario V Guenzi <jclark@tiscali.it>
+Subject: Grammar in a bash script
+Date: Mon, 17 Aug 2020 07:55:32 +0200
+Message-ID: <74c7c496-2429-8646-6c1a-9454169498ac@tiscali.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="dqitcXzUsVjfCl744EgkKhos7sDn9tB6F"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gc9.org; s=google;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-language:content-transfer-encoding;
-        bh=0ngW5TW2EZbzmA6hifMP4y0lP5Tzjr/I6hBCBvcntck=;
-        b=E6F8rY6L1a7CaA5/K56/FytcNBPloCEi9tm6pHUvK60PpyqrMKFSl2V4X6hWor4t8Q
-         ZxJzeOZ6q5XZOuAjWIWSwpKuQsedx/s0ZEbcdZfM7CzwLp/7lhd274qhiUgCBb1Ll166
-         chmG38k0WYrBwnqV4U4Dei2p8fFz8Wl8LFlIbxZMYEuo7ak0F9grQgxLb//zz7q8kCmZ
-         XvJUkCjohMLfaFWMCI3j3cjuI9l4y3OZd7+dsMmWgF+uOPqgsJqaqkrpF9QqjotpIeli
-         lvQLopoORdR5pwB2P6HSRlhc1Pelo6HKXbliaxDP33y2qHU59mQgwGBvIMy/tesfZzvK
-         W90g==
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tiscali.it; s=smtp;
+        t=1597643737; bh=4cl4U4y7eWGJtMcoreLc2WgxWanHVijoRqFr4Ww18xI=;
+        h=To:From:Subject:Date;
+        b=Lw6OKK4uNOsmhMHDW7ZFpfNzOkk2HeKPPMfZqBJ4EbzqYm90EHgtF95wSRm4qx1pm
+         tuftEYJWY6JJX/7rs7ITfnqOnD1FEa/sta7eZ1WxBUh6LiEaze3eUjP6G65F/qAKwD
+         AjkXr9hoNC6U7ZyZlMbkWYVCI7OZyINverSG5imo=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: Netfilter list <netfilter@vger.kernel.org>
 
-Hello,
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--dqitcXzUsVjfCl744EgkKhos7sDn9tB6F
+Content-Type: multipart/mixed; boundary="aNiIxSNWF8YSMNlTh0CciN7jcbpmyUjvo"
 
-Is there special syntax required to use a variable name instead of 
-hard-coding the interface name in a declaration like the following?
+--aNiIxSNWF8YSMNlTh0CciN7jcbpmyUjvo
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: it-IT
+Content-Transfer-Encoding: quoted-printable
 
-chain blackhole {
-   type filter hook ingress device $external_interface priority -500; 
-policy accept
+Goodmorning everyone,
+Does it make sense to use this kind of grammar in a bash script?
 
-Error: syntax error, unexpected '$', expecting string or quoted string 
-or string with a trailing asterisk
-                 type filter hook ingress device $external_interface 
-priority -500; policy accept
+$NFT add table inet firewall
+$NFT add table inet nat
+$NFT add table netdev noddos
 
-using the interface name directly instead of the variable works.
+$NFT add chain inet firewall INPUT { type filter hook input priority 0 \;=
+  }
+$NFT add chain inet firewall OUTPUT { type filter hook output priority 0
+\; }
+$NFT add chain inet firewall FORWARD { type filter hook forward priority
+0 \; }
+$NFT add chain inet firewall IPS { type filter hook forward priority 10 \=
+; }
+$NFT add chain inet firewall POSTROUTING { type filter hook postrouting
+priority 0 \; }
+$NFT add chain inet firewall SYN-FLOOD { type filter hook input priority
+0 \; }
+$NFT -- add chain inet  nat PREROUTING { type nat hook prerouting
+priority -100 \; }
+$NFT add chain inet nat OUTPUT { type nat hook output priority 0 \; }
+$NFT add chain inet nat POSTROUTING { type nat hook postrouting priority
+100 \; }
+$NFT -- add chain netdev noddos ingress { type filter hook ingress
+device $EXTIF priority -500 \; }
 
-Trying the new syntax that allows using a list, 'ingress devices = { }' 
-also fails when using a variable either inside an anonymous list, or as 
-the name of a named list.
+my rules
+my rules
+my rules
+=2E
+=2E
+=2E
+$NFT add chain inet firewall INPUT { type filter hook input priority 0
+\; policy drop \; }
+$NFT add chain inet firewall OUTPUT { type filter hook output priority 0
+\; policy drop \; }
+$NFT add chain inet firewall FORWARD { type filter hook forward priority
+0 \; policy drop \; }
+$NFT -- add chain inet  nat PREROUTING { type nat hook prerouting
+priority -100 \; policy drop \;  }
+$NFT add chain inet nat OUTPUT { type nat hook output priority 0
+\;policy drop \;  }
+
+The reasoning that I have done and of which I ask for confirmation is,
+after having given permission to what I need, I deny everything as a poli=
+cy
+
+Thanks in advance to those who want to answer me.
 
 
-I am using nftables 9.3 from Debian Buster backports.
+--aNiIxSNWF8YSMNlTh0CciN7jcbpmyUjvo--
 
+--dqitcXzUsVjfCl744EgkKhos7sDn9tB6F
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
+iF0EARECAB0WIQTq04Bmf6EVqIWOKVubqqzVmQ2sigUCXzob1AAKCRCbqqzVmQ2s
+itBBAJ9Txpt93MoIRHbk1xrKc7LNLJnU7gCfagYjcUKlVLCYcxjyWbOr0O1yiAA=
+=3nyr
+-----END PGP SIGNATURE-----
+
+--dqitcXzUsVjfCl744EgkKhos7sDn9tB6F--
