@@ -1,47 +1,72 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: error using variable for network device name in 'hook ingress
- device $external_interface'
-Date: Mon, 17 Aug 2020 12:01:58 +0200
-Message-ID: <20200817100158.GA5884@salvia>
-References: <f05dedbd-3c4c-e31c-80ec-0383e7da1518@gc9.org>
- <20200817095839.GA5731@salvia>
+From: Nirgal =?ISO-8859-1?Q?Vourg=E8re?= <contact_vgernf@nirgal.com>
+Subject: Issue migrating "iptables -m socket --transparent" into nftables
+Date: Mon, 17 Aug 2020 16:54:47 +0200
+Message-ID: <30147982.tmreYhUOsE@deimos>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20200817095839.GA5731@salvia>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Grant C <grant@gc9.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-On Mon, Aug 17, 2020 at 11:58:39AM +0200, Pablo Neira Ayuso wrote:
-> On Sun, Aug 16, 2020 at 05:23:38PM -0700, Grant C wrote:
-> > Hello,
-> > 
-> > Is there special syntax required to use a variable name instead of
-> > hard-coding the interface name in a declaration like the following?
-> > 
-> > chain blackhole {
-> >   type filter hook ingress device $external_interface priority -500; policy
-> > accept
-> > 
-> > Error: syntax error, unexpected '$', expecting string or quoted string or
-> > string with a trailing asterisk
-> >                 type filter hook ingress device $external_interface priority -500; policy accept
-> > 
-> > using the interface name directly instead of the variable works.
-> > 
-> > Trying the new syntax that allows using a list, 'ingress devices = { }' also
-> > fails when using a variable either inside an anonymous list, or as the name
-> > of a named list.
-> > 
-> > 
-> > I am using nftables 9.3 from Debian Buster backports.
-> 
-> Support for variable from chain device (as you use above) is available
-> in the nftables release (or using the current git snapshot), this is a
-> recent enhancement.
+Hi
 
-... in the _next_ nftables release
+I have a working haproxy in transparent mode, that analyze the TLS SNI header to choose a route, without decrypting the packets. I use it as a frontal, for several https servers using the same IP address, and I'm very happy to have the pristine client IP address in my httpd.
+
+My kernel have net.ipv4.ip_nonlocal_bind=1.
+
+/etc/iproute2/rt_tables contains:
+
+    100 haproxy
+
+I am using
+
+    ip rule add fwmark 1 lookup haproxy
+    ip route add local default dev lo table haproxy
+
+My firewall rules have
+
+    iptables -t mangle -A PREROUTING -m socket --transparent -j MARK --set-mark 1
+
+This works fine. But iptables is deprecated and will vanish at some point. So I’m trying to replace this by the new nftables system. And miserably fails.
+
+I tried this nft rule:
+
+    table inet haproxy {
+        chain prerouting {
+            type filter hook prerouting priority -150; policy accept;
+            socket transparent 1 mark set 0x00000001
+        }
+    }
+
+It does work, but all traffic is routed to the haproxy socket, including outbound masqueraded connection… I mean when a box on the lan side connects to a foreign https server, the connection is grabbed by haproxy, which is not what I want.
+
+Does any one know the proper equivalent to
+
+    iptables -t mangle -A PREROUTING -m socket --transparent -j MARK --set-mark 1
+
+using nft?
+
+
+
+Here's a useful failure. My haproxy configuration contains:
+
+    frontend https4-in
+        bind :443 strict-sni transparent
+        mode tcp
+        ...
+
+I tried replacing in haproxy.cfg "bind :443" by "bind 1.2.3.4:443" - where 1.2.3.4 is my IP address obviously - and it works ok. But I have some servers with dynamic ip adresses, so this is not a solution for me.
+
+My guess is that the iptables version is adding some logic.
+
+
+
+I also tried "nft add rule inet haproxy prerouting ct state new fib daddr . iif type local socket transparent 1 meta mark set 1", but it doesn't work either.
+
+Any help would be appreciated.
+
+I am using Debian stable (kernel 4.19.132 with nftables 0.9). The haproxy is in LXC container.
+
+
