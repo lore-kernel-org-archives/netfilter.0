@@ -1,128 +1,99 @@
-From: Nirgal =?ISO-8859-1?Q?Vourg=E8re?= <contact_vgernf@nirgal.com>
-Subject: Re: Fwd: Issue migrating "iptables -m socket --transparent" into nftables
-Date: Tue, 18 Aug 2020 13:08:43 +0200
-Message-ID: <32610365.DCq6cjG4UW@deimos>
-References: <CAKcfE+ZhO2O6nanU=ABJB8ptpB8VvjCK1wmzQ8TMFx+U-0_8nw@mail.gmail.com> <CAKcfE+anbh1OoHt7vgyYRt89J-fjsKK48Fzy8SCm3RP=HQQcOw@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Grammar in a bash script
+Date: Wed, 19 Aug 2020 09:55:02 +0200
+Message-ID: <20200819075502.GA3933@salvia>
+References: <74c7c496-2429-8646-6c1a-9454169498ac@tiscali.it>
+ <20200817085658.GA3677@salvia>
+ <3e973ae0-55aa-eabb-adb2-9af5f2bea500@tiscali.it>
+ <20200818101125.GA10691@salvia>
+ <cbfbba54-0bc0-5076-6009-e6b8c4f0da9d@tiscali.it>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="nextPart21026257.Zcmz9MDH7y"
-Content-Transfer-Encoding: 7Bit
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAKcfE+anbh1OoHt7vgyYRt89J-fjsKK48Fzy8SCm3RP=HQQcOw@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <cbfbba54-0bc0-5076-6009-e6b8c4f0da9d@tiscali.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: pablo@netfilter.org, Balazs Scheidler <bazsi77@gmail.com>, netfilter@vger.kernel.org
-
-This is a multi-part message in MIME format.
-
---nextPart21026257.Zcmz9MDH7y
-Content-Transfer-Encoding: 7Bit
 Content-Type: text/plain; charset="us-ascii"
+To: Mario Vittorio Guenzi <jclark@tiscali.it>
+Cc: Netfilter list <netfilter@vger.kernel.org>
 
-On Tuesday, 18 August 2020 11:18:50 CEST Balazs Scheidler wrote:
->> Does any one know the proper equivalent to
->>     iptables -t mangle -A PREROUTING -m socket --transparent -j MARK --set-mark 1
->> using nft?
->
-> The original iptables "socket" match had an extra check so that it wouldn't
-> match listener sockets, at least by default (that is if --nowildcard is not
-> specified).
+On Tue, Aug 18, 2020 at 12:28:04PM +0200, Mario Vittorio Guenzi wrote:
 > 
-> I don't see however how "outbound masqueraded connection" could be
-> impacted. The "socket transparent 1" expression should require that the
-> socket being matched has IP_TRANSPARENT setsockopt set. Are those
-> connections also initiated by haproxy?
 > 
-> In any case, I think the check to ignore wildcard bound listener sockets is
-> definitely missing, however I am not sure how to properly add it to
-> nftables. If I added it to the socket match implementation that might break
-> a few currently well behaving use-cases. @pablo@netfilter.org
-> <pablo@netfilter.org> can you please advise? This is the check that is in
-> iptables -m socket:
+> Il 18/08/20 12:11, Pablo Neira Ayuso ha scritto:
+> > On Tue, Aug 18, 2020 at 07:12:38AM +0200, Mario V Guenzi wrote:
+> >> Il 17/08/20 10:56, Pablo Neira Ayuso ha scritto:
+> >>> Hi,
+> >>
+> >>> You can set default policy to drop wehn defining the chain (in the
+> >>> same go), no need to call it twice, my suggestion for your ruleset is
+> >>> to place this in ruleset.nft:
+> >>>
+> >>> add table inet firewall
+> >>> add table inet nat
+> >>> add table netdev noddos
+> >>>
+> >>> add chain inet firewall INPUT { type filter hook input priority 0; policy drop; }
+> >>> add chain inet firewall OUTPUT { type filter hook output priority 0; policy drop; }
+> >>> add chain inet firewall FORWARD { type filter hook forward priority 0; policy drop; }
+> >>> ...
+> >>>
+> >>> my rules
+> >>> my rules
+> >>> my rules
+> >>>
+> >>
+> >> At first many thanks.
+> >> another question given your kindness,
+> >> I can use bash only to define my variables eg
+> >> EXTIF = "eth0"
+> >> LAN = "192.168.2.0/24"
+> >> etc
+> >> use the variables defined in writing the rules.nft file as per your
+> >> example and then write
+> >> nft -f /path/rules.nft in my bash script?
+> > 
+> > You can define variables in nftables, e.g.
+> > 
+> >   define EXTIF = "eth0"
+> > 
+> >   add rule inet firewall INPUT iifname $EXTIF accept
+> > 
+> Again Thank You.
+> Yes I have read about, but for my convenience I do take the IPs with
+> command and do not believe that nft can execute it.
+> This are my variables You can see how take IP from eth
 > 
->                 wildcard = (!(info->flags & XT_SOCKET_NOWILDCARD) &&
->                             sk_fullsock(sk) &&
->                             inet_sk(sk)->inet_rcv_saddr == 0);
-> 
-> And then if --transparent is used, these sockets are not accepted / the
-> rule does not match.
+> NFT="`whereis -b nft | cut -d \" \" -f 2`"
+> EXTIF="eth0"  ## word interface
+> INTIF="eth1" ## lan interface
+> VPNIF="eth0:0"
+> LO="lo"
+> LO_IP="127.0.0.1"
+> LAN="192.168.2.0/23" #our lan
+> BCAST="192.168.3.255"
+> EXTIP=`ifconfig $EXTIF | awk '$1 == "inet" { print $2 }'`
+> INTIP=`ifconfig $INTIF | awk '$1 == "inet" { print $2 }'`
+> VPNIP=`ifconfig $VPNIF | awk '$1 == "inet" { print $2 }'`
+> CHIMERA="192.168.2.224"
+> GRECALE="192.168.2.251"
+> PERSEO="192.168.2.240"
+> STROMBOLI="192.168.2.232"
+> RESERVED_NET="0.0.0.0/8, 1.0.0.0/8, 2.0.0.0/8, 10.0.0.0/8,
+> 100.64.0.0/10, 127.0.0.0/16, 169.254.0.0/16, 172.16.0.0/12, \
+> 192.0.0.0/24, 192.0.2.0/24, 192.168.0.0/16, 198.18.0.0/15,
+> 198.51.100.0/24, 203.0.113.0/24, 224.0.0.0/4, 240.0.0.0/5"
+> GOOD_BOYS="2.233.119.3, 88.149.179.177, 81.208.25.146, 82.85.80.100"
 
-That's it I guess:
+I suggest:
 
-I tried adding --nowildcard to my working iptables rules and I got the same error, https connections from the lan side are not masqueraded toward the wan, but routed locally to the socket listening to *:443.
-(thanks tcptraceroute for the info)
+1) Add these variables to vars.nft, generate vars.nft via script as it
+   was suggested.
 
-So basically
-    nft > socket transparent 1 meta mark set 1
-may be the equivalent of
-    iptables > -m socket --transparent --nowildcard -j MARK --set-mark 1
-while I'm looking for *not* having "--nowildcard".
+2) From ruleset.nft, use:
 
-Any idea about how work around this? I was thinking of using the "fib" rules to match the wan side packets since they have a destination ip address that match one of the local address, while the wan bound packets don't.
+        include "vars.nft"
 
-
-Regarding your question about IP_TRANSPARENT setsockopt, I don't quite know how to look at that easily. Attached is a fragment from my haproxy.cfg file, the key points being "source 0.0.0.0 usesrc clientip" and "bind :443 strict-sni transparent".
---nextPart21026257.Zcmz9MDH7y
-Content-Disposition: inline; filename="haproxy.cfg"
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="utf-8"; name="haproxy.cfg"
-
-############################################################################
-# DO NOT EDIT THAT FILE
-# Notice: That file was generated using:
-#    /root/bin/update-virtualhosts /etc/haproxy/virtualhosts.haproxy
-# See /etc/haproxy/virtualhosts.haproxy/config
-############################################################################
-global
-	log /dev/log	local0
-	log /dev/log	local1 notice
-	chroot /var/lib/haproxy
-	stats socket /run/haproxy/admin.sock mode 660 level admin
-	stats timeout 30s
-	# user haproxy  # transparent proxying requires root privileges
-	group haproxy
-	daemon
-
-	# Default SSL material locations
-	ca-base /etc/ssl/certs
-	crt-base /etc/ssl/private
-
-	# Default ciphers to use on SSL-enabled listening sockets.
-	# For more information, see ciphers(1SSL). This list is from:
-	#  https://hynek.me/articles/hardening-your-web-servers-ssl-ciphers/
-	# An alternative list with additional directives can be obtained from
-	#  https://mozilla.github.io/server-side-tls/ssl-config-generator/?server=haproxy
-	ssl-default-bind-ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:RSA+AESGCM:RSA+AES:!aNULL:!MD5:!DSS
-	ssl-default-bind-options no-sslv3
-
-defaults
-	source 0.0.0.0 usesrc clientip
-	log	global
-	#mode	http
-	#option	httplog
-	option	dontlognull
-        timeout connect 5000
-        timeout client  50000
-        timeout server  50000
-	errorfile 400 /etc/haproxy/errors/400.http
-	errorfile 403 /etc/haproxy/errors/403.http
-	errorfile 408 /etc/haproxy/errors/408.http
-	errorfile 500 /etc/haproxy/errors/500.http
-	errorfile 502 /etc/haproxy/errors/502.http
-	errorfile 503 /etc/haproxy/errors/503.http
-	errorfile 504 /etc/haproxy/errors/504.http
-
-frontend https4-in
-        bind :443 strict-sni transparent
-        mode tcp
-        tcp-request inspect-delay 5s
-        tcp-request content accept if { req_ssl_hello_type 1 }
-        default_backend https4-www2.in.nirgal.com
-
-backend https4-www2.in.nirgal.com
-	server https4-www2.in.nirgal.com ipv4@192.168.1.99:443
-
-
---nextPart21026257.Zcmz9MDH7y--
-
-
-
+to include your autogenerated variable definitions, so you can keep
+your variables and your ruleset in separated files.
