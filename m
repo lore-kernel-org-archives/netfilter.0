@@ -1,63 +1,143 @@
-From: Ricardo Katz <ricardo.katz@gmail.com>
-Subject: Re: 50k rules and performance issue in nft list table AND iptables-nft
-Date: Fri, 21 Aug 2020 08:50:54 -0300
-Message-ID: <CAG3fPQ7m5L_a3NV-ocGBgBMCzaJb+VXFNkDKmZB44fv419N1zw@mail.gmail.com>
-References: <CAG3fPQ4m9+Wbj3vKPmXbXa9-vH6ABq1eVNGGGzgbY_hNqGtdTw@mail.gmail.com>
- <20200821112049.GA29905@salvia>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Fwd: Issue migrating "iptables -m socket --transparent" into
+ nftables
+Date: Fri, 21 Aug 2020 17:23:33 +0200
+Message-ID: <20200821152333.GA22135@salvia>
+References: <CAKcfE+ZhO2O6nanU=ABJB8ptpB8VvjCK1wmzQ8TMFx+U-0_8nw@mail.gmail.com>
+ <CAKcfE+anbh1OoHt7vgyYRt89J-fjsKK48Fzy8SCm3RP=HQQcOw@mail.gmail.com>
+ <32610365.DCq6cjG4UW@deimos>
+ <20200819075832.GA3994@salvia>
+ <CAKcfE+Yyo-zj9Oxh4Oth6yK7SoXVfa2mQrK9-11Q5NHc09uXzQ@mail.gmail.com>
 Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="vtzGhvizbBRQ85DL"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=wuJ9X5gabJM1CxeBUfX9hghunsIOexgaJe0Yxg7T7pA=;
-        b=D9KuGug+iSFEY5T9Tu+XJne9lvapKgrR4VahsvrivZW5LdiQ9FlM1NpKzGBR5e+Q39
-         ISj1PtIF8ogySmMpgVV7KM1K3ziV7DdxRQ+r0enNlAE90X7Ugaat4Z8lhPtvzBDpbc8C
-         ioe2O/vAKG7wS9l3ku/HPSqjuySFz/Br+kY/NB5ULuRuvCXJ4tfXzB0V5nH8yrDBu2Mj
-         zBAcPumLfMOxfy21P8mmWqYysdMNsu2NfuPiB9gLg1VCtsAJSv5Ki7/Wb4A1bZmAg1Ls
-         gMtp7AGV1foap2TpGs1vsUsWhkUY097t+eGF7qfweGeVN9VUlghS6ROd9BccR6hHOeZn
-         ho7g==
-In-Reply-To: <20200821112049.GA29905@salvia>
+Content-Disposition: inline
+In-Reply-To: <CAKcfE+Yyo-zj9Oxh4Oth6yK7SoXVfa2mQrK9-11Q5NHc09uXzQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
-
-Thank you Pablo.
-
-I'll compile here with the patch ASAP and test in my QA and Prod
-environment, and will provide some further feedback
-
-Best,
+To: Balazs Scheidler <bazsi77@gmail.com>
+Cc: Nirgal =?iso-8859-1?Q?Vourg=E8re?= <contact_vgernf@nirgal.com>, netfilter@vger.kernel.org
 
 
-On Fri, Aug 21, 2020 at 8:20 AM Pablo Neira Ayuso <pablo@netfilter.org> wrote:
->
+--vtzGhvizbBRQ85DL
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Aug 21, 2020 at 05:15:21PM +0200, Balazs Scheidler wrote:
 > Hi,
->
-> On Fri, Aug 14, 2020 at 06:56:32PM -0300, Ricardo Katz wrote:
-> > Hello,
-> >
-> > I've been digging into some performance issue I'm facing in my
-> > production environment and would like to ask if someone has a light
-> > about this.
-> >
-> > My environment has ~50k rules that references some ipsets (it's a
-> > Kubernetes cluster with Calico), and we've seen that sometimes
-> > iptables-nft-save takes more than 20s. So I've tried to search what
-> > was causing that, and have found some interesting behavior:
-> [...]
-> > * nft list table performs WORST than iptables-nft-save, sometimes
-> > taking more than 25s to display the rules. I've made the same test in
-> > a non prod (less load) environment and it takes a little bit less but
-> > yet, it's strange. The measured time is 4s in userspace and the rest
-> > in kernel space, which leads me to ask: is there a way netlink should
-> > be tuned? [...]
->
-> I have posted a patch to improve listing time:
->
-> https://patchwork.ozlabs.org/project/netfilter-devel/patch/20200821111438.5362-2-pablo@netfilter.org/
->
-> Thanks for reporting.
+> 
+> Here's the accompanying nftables patch, just in case Pablo didn't do it.
+
+Thanks Balazs, this looks good to me!
+
+> Pablo do you want me to submit these as a pull request?
+
+You can just send them via git format-patch to
+netfilter-devel@vger.kernel.org.
+
+> All I did for testing was that it did compile this ruleset and attempted to
+> submit it via netlink to the kernel, which it refused, as I didn't patch my
+> kernel.
+
+I'm attaching the kernel patch, compiled-tested only by now.
+
+> ```
+> table inet haproxy {
+>   chain prerouting {
+>      type filter hook prerouting priority -150; policy accept;
+>      socket transparent 1 socket wildcard 0 mark set 0x00000001
+>    }
+> }
+> ```
+
+Thanks.
+
+--vtzGhvizbBRQ85DL
+Content-Type: text/x-diff; charset=us-ascii
+Content-Disposition: attachment; filename="0001-netfilter-nft_socket-add-wildcard-support.patch"
+
+From 6c7ffee435cead6d6b97eef62455e77a35537fd8 Mon Sep 17 00:00:00 2001
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Date: Wed, 19 Aug 2020 09:47:40 +0200
+Subject: [PATCH] netfilter: nft_socket: add wildcard support
+
+Add NFT_SOCKET_WILDCARD to match to wildcard socket listener.
+
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ include/uapi/linux/netfilter/nf_tables.h |  2 ++
+ net/netfilter/nft_socket.c               | 25 ++++++++++++++++++++++++
+ 2 files changed, 27 insertions(+)
+
+diff --git a/include/uapi/linux/netfilter/nf_tables.h b/include/uapi/linux/netfilter/nf_tables.h
+index 42f351c1f5c5..fed3514395a5 100644
+--- a/include/uapi/linux/netfilter/nf_tables.h
++++ b/include/uapi/linux/netfilter/nf_tables.h
+@@ -1008,10 +1008,12 @@ enum nft_socket_attributes {
+  *
+  * @NFT_SOCKET_TRANSPARENT: Value of the IP(V6)_TRANSPARENT socket option
+  * @NFT_SOCKET_MARK: Value of the socket mark
++ * @NFT_SOCKET_WILDCARD: Socket listener is bound to any address
+  */
+ enum nft_socket_keys {
+ 	NFT_SOCKET_TRANSPARENT,
+ 	NFT_SOCKET_MARK,
++	NFT_SOCKET_WILDCARD,
+ 	__NFT_SOCKET_MAX
+ };
+ #define NFT_SOCKET_MAX	(__NFT_SOCKET_MAX - 1)
+diff --git a/net/netfilter/nft_socket.c b/net/netfilter/nft_socket.c
+index 637ce3e8c575..684a7e493f45 100644
+--- a/net/netfilter/nft_socket.c
++++ b/net/netfilter/nft_socket.c
+@@ -14,6 +14,23 @@ struct nft_socket {
+ 	};
+ };
+ 
++static void nft_socket_wildcard(const struct nft_pktinfo *pkt,
++				struct nft_regs *regs, struct sock *sk,
++				u32 *dest)
++{
++	switch (nft_pf(pkt)) {
++	case NFPROTO_IPV4:
++		nft_reg_store8(dest, inet_sk(sk)->inet_rcv_saddr == 0);
++		break;
++	case NFPROTO_IPV6:
++		nft_reg_store8(dest, ipv6_addr_any(&sk->sk_v6_rcv_saddr));
++		break;
++	default:
++		regs->verdict.code = NFT_BREAK;
++		return;
++	}
++}
++
+ static void nft_socket_eval(const struct nft_expr *expr,
+ 			    struct nft_regs *regs,
+ 			    const struct nft_pktinfo *pkt)
+@@ -59,6 +76,13 @@ static void nft_socket_eval(const struct nft_expr *expr,
+ 			return;
+ 		}
+ 		break;
++	case NFT_SOCKET_WILDCARD:
++		if (!sk_fullsock(sk)) {
++			regs->verdict.code = NFT_BREAK;
++			return;
++		}
++		nft_socket_wildcard(pkt, regs, sk, dest);
++		break;
+ 	default:
+ 		WARN_ON(1);
+ 		regs->verdict.code = NFT_BREAK;
+@@ -97,6 +121,7 @@ static int nft_socket_init(const struct nft_ctx *ctx,
+ 	priv->key = ntohl(nla_get_u32(tb[NFTA_SOCKET_KEY]));
+ 	switch(priv->key) {
+ 	case NFT_SOCKET_TRANSPARENT:
++	case NFT_SOCKET_WILDCARD:
+ 		len = sizeof(u8);
+ 		break;
+ 	case NFT_SOCKET_MARK:
+-- 
+2.20.1
+
+
+--vtzGhvizbBRQ85DL--
