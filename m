@@ -1,9 +1,11 @@
 From: Thomas Luening <toml@thlu.de>
-Subject: Explanation of 2 Rules
-Date: Sat, 22 Aug 2020 12:13:23 +0200
-Message-ID: <416b36ac-c17f-0ccd-3d28-cf8e4f3372ae@mail>
+Subject: Re: Explanation of 2 Rules
+Date: Mon, 24 Aug 2020 11:39:14 +0200
+Message-ID: <96ccc7de-4de4-e01f-2270-a1238b4cff1a@mail>
+References: <416b36ac-c17f-0ccd-3d28-cf8e4f3372ae@mail>
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <416b36ac-c17f-0ccd-3d28-cf8e4f3372ae@mail>
 Content-Language: de-DE
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
@@ -11,39 +13,29 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello @ all
+Hi David,
 
-Can anybody help me to explain und understand this 2 statements?
-nft add rule ip filter input "tcp flags & (fin|syn|rst|psh|ack|urg) == fin|syn|rst|psh|ack|urg drop"
-nft add rule ip filter input "tcp flags & (fin|syn|rst|ack) != syn ct state new drop"
+Am 22.08.20 um 21:12 schrieb david@hajes.org:
+ > why don't you simplify and just DROP INVALID?
+ >
+ > INVALID drops any possible incorrect combination. You don't need to write anymore as in iptables
 
-That's what I think I understood....
+thank you for your answer, but that makes it a little more complicated for me now. Now my question has 2 aspects.
 
+The first one is still the syntax question. Detached from the logic (invalid) I would still like to know if I interpreted the 
+syntax of the statement correctly.
 
-TCP-Header first statement:
-Bit          11  12  13  14  15  16
-Type        URG ACK PSH RST SYN FIN
-               0   0   0   0   1   0
+The second (new) aspect is the ct-state "invalid". To help, I looked at 4 presentations by F. Westphal, 1 by P. Ayuso, 1 by R. 
+Spenneberg, plus man-pages and lots of web sites. In fact, I can't find any better explanation of what marks a package as 
+invalid than in linuxtopia:
 
-             URG ACK PSH RST SYN FIN
-XMAS          1   1   1   1   1   1
+https://www.linuxtopia.org/Linux_Firewall_iptables/x1347.html
+"The INVALID state means that the packet can't be identified or that it does not have any state. This may be due to several 
+reasons, such as the system running out of memory or ICMP error messages that do not respond to any known connections. 
+Generally, it is a good idea to DROP everything in this state."
 
-tcp flags & (fin|syn|rst|psh|ack|urg)  111111   = All flags are set (?) in Packet-Header, because  of   '&' = AND
-fin|syn|rst|psh|ack|urg                111111   = Comparison to preprocessor directives = combined with '|' = OR
+Well, why is an xmas packet invalid, if it can be identified and has a status (even several, depending on the view/query).
 
-The result must be 111111 == 111111 to drop. Is that correct?
+BTW, I've been using "invalid" for a long time, but at the moment I can't find out if "state invalid" actually marks xmas packages.
 
-
-
-The second statement:
-             URG ACK PSH RST SYN FIN
-syn-chk       0   1   0   1   1   1
-
-tcp flags & (fin|syn|rst|ack)           010111  = To much flags are set...
-syn ct state new                                = ...because syn-flag is set and ct-state = new
-
-The result must be (10111 != 000010 and ct new) to drop. Is that correct?
-
-
-Thank you, best regards
-Tom
+Best Regards, Tom
