@@ -1,33 +1,40 @@
-From: Amiq Nahas <m992493@gmail.com>
-Subject: Multiple labels with connlabel
-Date: Wed, 26 Aug 2020 15:45:12 +0530
-Message-ID: <CAPicJaHyWhrz8VxZ8tfpSUNcc_KPSF-cHUPYe1JmGwxroAFX8A@mail.gmail.com>
-Mime-Version: 1.0
+From: Thomas Luening <toml@thlu.de>
+Subject: Re: Explanation of 2 Rules
+Date: Wed, 26 Aug 2020 18:01:05 +0200
+Message-ID: <c44a47f2-1de8-8a70-b31d-fa92b2547881@mail>
+References: <416b36ac-c17f-0ccd-3d28-cf8e4f3372ae@mail>
+ <96ccc7de-4de4-e01f-2270-a1238b4cff1a@mail>
+ <c9f61216-e333-6551-e98e-8a5ce015f248@plushkava.net>
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=ox/s5MvB/KAZhC7cGyLsFmTZHTAo3zNE9dujsBv8Bu0=;
-        b=qXZ9rMPlxDE+hkhhiSKadBePGESFu047rL2KgdRxnDOWNcKLn/vUVV6rD3ZYWbBOLh
-         eXtnC+QrbuwF8n6pyIogn2D+0v/OU7cM91Djb8S+OSV/rnVc1OTE19QHPC4ts7CSUoNd
-         BfD44sKCj3sPd32ACTnudcCwt0xNJmy3KlnKlWhTVcRvX88/wBXEWDbPU7bea3WFjWlT
-         W735ioHYEwE+WiSvFc2lZ3+vaqkxXlM2+OekM2KU9O+8Uzbs2dq3MIQFeZpn4LpvZnSq
-         Kc7tHXdFxsFxTWo+vpmQJ+bv1nFv1QSY1APPapOU1DwnKR85nYN9z+aVdId/9sX+Z1HX
-         QMXw==
+In-Reply-To: <c9f61216-e333-6551-e98e-8a5ce015f248@plushkava.net>
+Content-Language: de-DE
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Currently this can be done
-iptables -t mangle -I PREROUTING -m connlabel --label portforward
+Hi Kerin, hi David
 
-What if someone wants to use multiple labels? One would have to write
-this same rules several times.
-Can we do something like this:
-iptables -t mangle -I PREROUTING -m connlabel --label
-portforward-something-somethingelse-...
+Am 26.08.20 um 08:49 schrieb kfm@plushkava.net:
+> Your interpretation appears correct to me.
 
-This way multiple labels can be used with a single rule. Is this
-possible to do, or is there any workaround for this?
+Thank you for your Answer! :-)
+
+> 
+> /*           sNO, sSS, sSR, sES, sFW, sCW, sLA, sTW, sCL, sS2   */
+> /*synack*/ { sIV, sIV, sSR, sIV, sIV, sIV, sIV, sIV, sIV, sSR },
+
+That was a great help, but it is really heavy stuff. It's hard to work through these tables and to understand them in context. 
+While testing I found that the xmas-statement is a rather weak protection, because it seems to check for an explicit match of 
+all given flags. If I use the flags in various combinations...
+
+nmap 10.0.1.200 --scanflags "URG ACK PSH RST SYN FIN" -p 631
+
+...it is noticeable, that some Packages was not recognized at all. But the check for 'invalid' was always successful. 
+Conclusion: The xmas-statement is not a good choice.
+
+I believe that the problem can be closed. Thanks again for your help.
+
+Best Regards, Tom
