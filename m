@@ -1,36 +1,54 @@
-From: =?UTF-8?Q?Luis_Mario_Niedas_Hern=C3=A1ndez?= <lmniedas@gmail.com>
-Subject: How deactivate a rule using nft cli?
-Date: Wed, 26 Aug 2020 13:42:58 -0400
-Message-ID: <CALtjan=Py8Qq95LZCg+kGJrW-MuOFo2+xPdy8-Nhf4a374sd0g@mail.gmail.com>
+From: "" <kfm@plushkava.net>
+Subject: Re: How deactivate a rule using nft cli?
+Date: Wed, 26 Aug 2020 18:52:21 +0100
+Message-ID: <e6034d59-ebbc-870a-40bf-3a4b0e2d2b07@plushkava.net>
+References: <CALtjan=Py8Qq95LZCg+kGJrW-MuOFo2+xPdy8-Nhf4a374sd0g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=r34nOE3r/0mHMmXF+icDWhc53OZW2fzVx1RAE0Iww6s=;
-        b=VpBrAjipACm+hMjlHAVs8DIRvnYHHRVJC48kP12DqB9+V8m/A9JBxUW9oL2t1EMb1H
-         fgSJoPOT9SNhPZcBHy9Wh4DdqhPPz85NP3yopZ8cxZhPE+2h0r3bRMeTESvvEL3EHMGe
-         cTRP7shTuU6XvXWP+JekCGwV7akgJQmqTtXWZbxwP3C+ce5+rqkAtoD2DY0NARfp20+p
-         vmAjduYMxoSnMI65UtGYLSQw69S59RwrU8SqtKlMms/F8KN3U0Xp+MxOw3uHUvB40UK6
-         Stq5OvOfwiXEGQTMCIvTlnNyAwsPHJU1hiv4RP6NsT1IfskKMUpsFEtEwJOhgZDKkNh1
-         HzuQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+         h=subject:to:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=M
+        QaWom41stRlsy2s7980gDRbFxyPrme5j70I2O9mOn8=; b=caJSjI05UIBqW/zB8
+        NL3T+KAjjR1nwg1KonN8XL/Ekl23u6fc4jSJkm+eyqALx3KvghWL/GeXuCV5HbLq
+        4SHJVGiwQvh01vf6MWXe33dCf9tj9IxkmV9dCEc+bChXnGz2le8SNXZcTCPJKwD7
+        op6P7hvelX0GmWIlg2espT1EIONhFe0dZ2+/curTqourrIo/r1vXsZ2oqUkoGpOT
+        Uk3pjOd/pQaS1kcgD6jfEVImTB1C5cn+VQ5qf0EwcH8suXolihWmROr0uz/6J/mi
+        lrED8fEymEJHDgPjtEAX1TynJvUK4vNfKFLhZ3Ov8ys7fNtpoHQXG0SAWKk9Ko6S
+        JuHKA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=MQaWom41stRlsy2s7980gDRbFxyPrme5j70I2O9mO
+        n8=; b=VchpVFV+3Rppje42qMq4SweJ5DhD8cBhSNmCydcfy3XJsEhnGGMfBKsmi
+        e8W6e18hBVxLINUyEaODuYFJr9y5J5d2phGCpVN7xOkgJ8DcZ+9Xt1dK5QhWzfDn
+        nYmyr6NEGsQt+NMZk76JNANcbwsEkcxiBIfgsrFTe5XN6C+BNSNgVDalT1SiJ+fI
+        PVZyv3Ait5kC4D48iujG/K8mIgGB7FlTnikyWsL+l0Ptr3cP6OYsxjXly7igLxdP
+        QPOhC7ZXmJXZ+bWJmRNDZWd5oaid8Vl+CYNRx6CX7VG9oM/5/dHy/RZQyZnDWduK
+        utgjvgGFLD02+XzOKiwlXHvJJzEEA==
+In-Reply-To: <CALtjan=Py8Qq95LZCg+kGJrW-MuOFo2+xPdy8-Nhf4a374sd0g@mail.gmail.com>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"
-To: netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: =?UTF-8?Q?Luis_Mario_Niedas_Hern=c3=a1ndez?= <lmniedas@gmail.com>, netfilter <netfilter@vger.kernel.org>
 
-Hello. I want to deactivate a rule in my nftables.conf. I just want that a
-especific rule it is not considered by netfilter, but I don't want erased.
-It is possible to do it?
+On 26/08/2020 18:42, Luis Mario Niedas Hernández wrote:
+> Hello. I want to deactivate a rule in my nftables.conf. I just want that a
+> especific rule it is not considered by netfilter, but I don't want erased.
+> It is possible to do it?
+> 
+> I am a Spanish speaker, so, sorry if I made a mistake with the grammar.
 
-I am a Spanish speaker, so, sorry if I made a mistake with the grammar.
+Make the line a comment with the # symbol. Alternatively, you could 
+alter the rule so that it effectively does nothing. For example, this:
 
+   tcp dport 22 accept
 
+… could be changed to:
 
---=20
-"El futuro tiene muchos nombres. Para los d=C3=A9biles es lo inalcanzable.
-Para los temerosos, lo desconocido. Para los valientes es la
-oportunidad"
-Victor Hugo
+   tcp dport 22 comment "disabled"
+
+-- 
+Kerin Millar
