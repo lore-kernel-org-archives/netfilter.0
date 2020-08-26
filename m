@@ -1,54 +1,61 @@
-From: "" <kfm@plushkava.net>
-Subject: Re: How deactivate a rule using nft cli?
-Date: Wed, 26 Aug 2020 18:52:21 +0100
-Message-ID: <e6034d59-ebbc-870a-40bf-3a4b0e2d2b07@plushkava.net>
-References: <CALtjan=Py8Qq95LZCg+kGJrW-MuOFo2+xPdy8-Nhf4a374sd0g@mail.gmail.com>
+From: Nirgal =?ISO-8859-1?Q?Vourg=E8re?= <contact_vgernf@nirgal.com>
+Subject: Re: Fwd: Issue migrating "iptables -m socket --transparent" into nftables
+Date: Wed, 26 Aug 2020 20:00:52 +0200
+Message-ID: <3013454.VDAaSrcd8B@deimos>
+References: <CAKcfE+ZhO2O6nanU=ABJB8ptpB8VvjCK1wmzQ8TMFx+U-0_8nw@mail.gmail.com> <CAKcfE+ZHch0LH79Mi2NMM9z4UaoORb09oPur8xrPaK-7F3SRpg@mail.gmail.com> <20200825094530.GA23673@bzorp>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-         h=subject:to:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm3; bh=M
-        QaWom41stRlsy2s7980gDRbFxyPrme5j70I2O9mOn8=; b=caJSjI05UIBqW/zB8
-        NL3T+KAjjR1nwg1KonN8XL/Ekl23u6fc4jSJkm+eyqALx3KvghWL/GeXuCV5HbLq
-        4SHJVGiwQvh01vf6MWXe33dCf9tj9IxkmV9dCEc+bChXnGz2le8SNXZcTCPJKwD7
-        op6P7hvelX0GmWIlg2espT1EIONhFe0dZ2+/curTqourrIo/r1vXsZ2oqUkoGpOT
-        Uk3pjOd/pQaS1kcgD6jfEVImTB1C5cn+VQ5qf0EwcH8suXolihWmROr0uz/6J/mi
-        lrED8fEymEJHDgPjtEAX1TynJvUK4vNfKFLhZ3Ov8ys7fNtpoHQXG0SAWKk9Ko6S
-        JuHKA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=MQaWom41stRlsy2s7980gDRbFxyPrme5j70I2O9mO
-        n8=; b=VchpVFV+3Rppje42qMq4SweJ5DhD8cBhSNmCydcfy3XJsEhnGGMfBKsmi
-        e8W6e18hBVxLINUyEaODuYFJr9y5J5d2phGCpVN7xOkgJ8DcZ+9Xt1dK5QhWzfDn
-        nYmyr6NEGsQt+NMZk76JNANcbwsEkcxiBIfgsrFTe5XN6C+BNSNgVDalT1SiJ+fI
-        PVZyv3Ait5kC4D48iujG/K8mIgGB7FlTnikyWsL+l0Ptr3cP6OYsxjXly7igLxdP
-        QPOhC7ZXmJXZ+bWJmRNDZWd5oaid8Vl+CYNRx6CX7VG9oM/5/dHy/RZQyZnDWduK
-        utgjvgGFLD02+XzOKiwlXHvJJzEEA==
-In-Reply-To: <CALtjan=Py8Qq95LZCg+kGJrW-MuOFo2+xPdy8-Nhf4a374sd0g@mail.gmail.com>
-Content-Language: en-US
+In-Reply-To: <20200825094530.GA23673@bzorp>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: =?UTF-8?Q?Luis_Mario_Niedas_Hern=c3=a1ndez?= <lmniedas@gmail.com>, netfilter <netfilter@vger.kernel.org>
+To: Balazs Scheidler <bazsi77@gmail.com>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter@vger.kernel.org
 
-On 26/08/2020 18:42, Luis Mario Niedas Hernández wrote:
-> Hello. I want to deactivate a rule in my nftables.conf. I just want that a
-> especific rule it is not considered by netfilter, but I don't want erased.
-> It is possible to do it?
+My apologies for the delay.
+I ran into an *unrelated* issue, that troubled ipv6 outbound (masqueraded) connections.
+
+I did some more tests with your patches for linux & nftables.
+
+All look good, both ipv4 & v6, for both inbound (redirected to the socket) and outbound (masqueraded) connections.
+
+Thank you again! :)
+
+On Tuesday, 25 August 2020 11:45:30 CEST Balazs Scheidler wrote:
+> On Sat, Aug 22, 2020 at 08:45:22AM +0200, Balazs Scheidler wrote:
+> > hmm.. judging the code alone, I can't see the difference between xt_socket
+> > and nft_socket, they are checking the same things for ipv6.
+> > 
+> > I am not sure when sk->sk_v6_rcv_saddr is properly set, if that's non-zero
+> > we would yield "socket wildcard 0" and cause a match.
+> > 
+> > I can see that __inet6_bind() sets this properly, so as long as haproxy
+> > binds it to port 80/443 we should be fine.
+> > 
+> > I still cannot get what you mean under "But ipv6 outbound connections still
+> > are grabbed by the socket rather than be routed to the wan and
+> > masqueraded." exactly.
+> > 
+> > 1) haproxy binds to [::0]:80 and I assume it does that to receive external
+> > traffic. Do you use tproxy rules to redirect traffic here?
+> > 2) then haproxy would establish a connection from [clientip]:randomport ->
+> > internal server:80. The return traffic should be matched by "socket
+> > transparent 1 socket wildcard 0" and redirected as such.
+> > 
+> > So which of the two connections above is what you mean?
 > 
-> I am a Spanish speaker, so, sorry if I made a mistake with the grammar.
+> The question still stands, which of the two connection is getting the wrong
+> treatment?
+> 
+> @Pablo: do you want me to test/push the kernel piece to netfilter-devel?
+> Also, I have a usability question in the email I sent there.
+> 
+> Hopefully, by now I can send email to vger :)
+> 
+> Cheers,
+> 
 
-Make the line a comment with the # symbol. Alternatively, you could 
-alter the rule so that it effectively does nothing. For example, this:
 
-   tcp dport 22 accept
 
-… could be changed to:
 
-   tcp dport 22 comment "disabled"
-
--- 
-Kerin Millar
