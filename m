@@ -1,43 +1,37 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Nftables src NAT with port range allocation
-Date: Mon, 31 Aug 2020 17:36:44 +0200
-Message-ID: <20200831153643.GC2725@salvia>
-References: <CAK+5afBrW7h=YQ5eCL0DfDguLd44Os=rwe-_1=xWVMaP8nHR9g@mail.gmail.com>
+From: JM <jeevhi@gmail.com>
+Subject: inserting rule at the top of the chain using libnftnl
+Date: Mon, 31 Aug 2020 22:26:20 +0530
+Message-ID: <CALiWujK6y-dnKywJ+4H5bhKV4T=Qee9oP6KbDaJt3c1dJh1wkw@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAK+5afBrW7h=YQ5eCL0DfDguLd44Os=rwe-_1=xWVMaP8nHR9g@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=R1FHPQyRLzDGu5mnlpbw1u4cdJD49fOdIJlDZK2XX+8=;
+        b=QLtoJNeyVwoPVJS4EFyaeKZqEnoJ64tVL6J19M4XHScHpylu5y8VjZqfYmhFVwZF4G
+         4FxOyUMhpsheteGCRIU1KdzOPwdVMXTjAnzS0LGlKH1xTi6KF24WjkWio3jjsPgIuppb
+         /Zfw5hC5lfI+9JSqCQSoRSaRIDto3eCEtcv9SG9cwZmnOTbucDufpnDpVQcSFNWc3RFc
+         cMsg8C7fqJR1eTGQggOQG+f5WMQxOOHVHA+VvzeNczIT6bixGLYEcDnTnG2WIKF2a2zC
+         9xpWYbWIM4ileaL1+mNyJ30C8E0G6JxSwvlwA8jy879u1v6YSRf0gkUl8TuQ3+fcVoOq
+         Z2bA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Joshua Moore <ridgebacktech@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 06:02:58PM -0500, Joshua Moore wrote:
-> Hello,
-> 
-> I am wanting to do a determinate src NAT IP/port range allocation
-> leveraging nftables. For example, for every "original src
-> address:original src port" there is a mapped "new src address:new src
-> port". The original source address is known but the original source
-> port is unknown. The new src address is known and the new src port is
-> from a known range or ports.
->
-> I thought about leveraging maps to do this but I'm unsure of the best
-> way to dynamically capture the unknown src address. Any suggestions?
+Hi,
 
-table ip nat {
-        chain prerouting {
-                type nat hook prerouting priority dstnat; policy accept;
-                dnat ip addr . port to ip saddr . th dport map { 2.2.2.2 . 80 : 3.3.3.3 . 443 }
-        }
-}
+I use libnftnl to manage our firewall and adding rules to the chain. I
+am using libnftnl-1.1.7/examples/nft-rule-add.c as the reference.
 
-This is mapping:
+I have no issues appending a rule or inserting AFTER a certain rule
+using NFTNL_RULE_POSITION or NFTNL_RULE_POSITION.
 
-       IP saddr     th dport        IP daddr    dport
-        2.2.2.2  .     80     ->     3.3.3.3     443
+However, I am struggling to insert a rule at the top of the chain. I
+am unable to find a way to insert a rule BEFORE another rule or top of
+the chain so that the rule is the first rule.
 
-IIRC, this is available since nft 0.9.4, I'm testing with current git
-snapshot.
+Can someone help, please
+
+Jim
