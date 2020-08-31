@@ -1,30 +1,43 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: nftables map with numgen type, not sure if it was implemented?
-Date: Mon, 31 Aug 2020 17:25:10 +0200
-Message-ID: <20200831152510.GB2725@salvia>
-References: <!&!AAAAAAAAAAAuAAAAAAAAAGg7dk9mYqJGhbBt3m/ghGwBAMO2jhD3dRHOtM0AqgC7tuYAAAAAAA4AABAAAABJQLj6e+mFSq/mTrWisCc4AQAAAAA=@gmail.com>
+Subject: Re: Nftables src NAT with port range allocation
+Date: Mon, 31 Aug 2020 17:36:44 +0200
+Message-ID: <20200831153643.GC2725@salvia>
+References: <CAK+5afBrW7h=YQ5eCL0DfDguLd44Os=rwe-_1=xWVMaP8nHR9g@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <!&!AAAAAAAAAAAuAAAAAAAAAGg7dk9mYqJGhbBt3m/ghGwBAMO2jhD3dRHOtM0AqgC7tuYAAAAAAA4AABAAAABJQLj6e+mFSq/mTrWisCc4AQAAAAA=@gmail.com>
+In-Reply-To: <CAK+5afBrW7h=YQ5eCL0DfDguLd44Os=rwe-_1=xWVMaP8nHR9g@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Eliezer Croitor <ngtech1ltd@gmail.com>
+To: Joshua Moore <ridgebacktech@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-On Thu, Aug 27, 2020 at 06:34:35PM +0300, Eliezer Croitor wrote:
-[...]
-> lb-r4:/tmp# nft add map nftlb m2 '{ type typeof numgen random mod 2 :
-> verdict; }'
-> Error: syntax error, unexpected typeof
-> add map nftlb m2 { type typeof numgen random mod 2 : verdict; }
->                         ^^^^^^
-[...]
+On Thu, Aug 27, 2020 at 06:02:58PM -0500, Joshua Moore wrote:
+> Hello,
 > 
-> Am I right for even trying it?
+> I am wanting to do a determinate src NAT IP/port range allocation
+> leveraging nftables. For example, for every "original src
+> address:original src port" there is a mapped "new src address:new src
+> port". The original source address is known but the original source
+> port is unknown. The new src address is known and the new src port is
+> from a known range or ports.
+>
+> I thought about leveraging maps to do this but I'm unsure of the best
+> way to dynamically capture the unknown src address. Any suggestions?
 
-What nft version are you using?
+table ip nat {
+        chain prerouting {
+                type nat hook prerouting priority dstnat; policy accept;
+                dnat ip addr . port to ip saddr . th dport map { 2.2.2.2 . 80 : 3.3.3.3 . 443 }
+        }
+}
 
-typeof support was introduced in nft >= 0.9.4.
+This is mapping:
+
+       IP saddr     th dport        IP daddr    dport
+        2.2.2.2  .     80     ->     3.3.3.3     443
+
+IIRC, this is available since nft 0.9.4, I'm testing with current git
+snapshot.
