@@ -1,37 +1,29 @@
-From: JM <jeevhi@gmail.com>
-Subject: inserting rule at the top of the chain using libnftnl
-Date: Mon, 31 Aug 2020 22:26:20 +0530
-Message-ID: <CALiWujK6y-dnKywJ+4H5bhKV4T=Qee9oP6KbDaJt3c1dJh1wkw@mail.gmail.com>
-Mime-Version: 1.0
+From: Tomasz W <tomaszw104@gmail.com>
+Subject: netfilter_queue tutorial
+Date: Tue, 1 Sep 2020 13:04:22 +0200
+Message-ID: <2519CEB2-FFCB-42DD-8C71-7077290831E3@gmail.com>
+Mime-Version: 1.0 (1.0)
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=R1FHPQyRLzDGu5mnlpbw1u4cdJD49fOdIJlDZK2XX+8=;
-        b=QLtoJNeyVwoPVJS4EFyaeKZqEnoJ64tVL6J19M4XHScHpylu5y8VjZqfYmhFVwZF4G
-         4FxOyUMhpsheteGCRIU1KdzOPwdVMXTjAnzS0LGlKH1xTi6KF24WjkWio3jjsPgIuppb
-         /Zfw5hC5lfI+9JSqCQSoRSaRIDto3eCEtcv9SG9cwZmnOTbucDufpnDpVQcSFNWc3RFc
-         cMsg8C7fqJR1eTGQggOQG+f5WMQxOOHVHA+VvzeNczIT6bixGLYEcDnTnG2WIKF2a2zC
-         9xpWYbWIM4ileaL1+mNyJ30C8E0G6JxSwvlwA8jy879u1v6YSRf0gkUl8TuQ3+fcVoOq
-         Z2bA==
+        h=content-transfer-encoding:from:mime-version:date:subject:message-id
+         :to;
+        bh=FwsMaX9E5b1+VTQxbZnFWo3Iwb+8xoGB/Jkp4bq6aeg=;
+        b=XBiQ59GWGGYisW2zQutWHJWZuT3vmjfJVwlnCaqvxet/xb2D1s/otR7UXSI6jnY2VX
+         AceFtMLWuiy9JLWC0EIe/xnEyBV5FSQ4zUbTXvbCW4KfSwURWDSAwleTnhFF0rFpm5YB
+         IZaUDGHcoCCMIiOMO/eQ8nI/LVTo7Bwt9vsfsSsO1QC/yDaoOLOuP+e9jEZrhpKydM5Q
+         FvOrFWdBxbkcuyNzAdnflLyv/2SvvGWpYXJsMEsueXQIql8PpM5XuMoFgZrdhWekMFqz
+         sNNY0tLpubUFK5YyvIfRK2tLOmvMmgcP0coABadb4zfnWZD6nLkVKAEpW/Ya5vmtw7sD
+         zzJQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi,
+Good Morning,
 
-I use libnftnl to manage our firewall and adding rules to the chain. I
-am using libnftnl-1.1.7/examples/nft-rule-add.c as the reference.
-
-I have no issues appending a rule or inserting AFTER a certain rule
-using NFTNL_RULE_POSITION or NFTNL_RULE_POSITION.
-
-However, I am struggling to insert a rule at the top of the chain. I
-am unable to find a way to insert a rule BEFORE another rule or top of
-the chain so that the rule is the first rule.
-
-Can someone help, please
-
-Jim
+can anyone, pretty please, guide me or provide me with a decent tutorial on m=
+arking packets? Documents and example files are not very helpful. I am tryin=
+g to integrate netfilter_queue with my software that capture packets with li=
+bpcap and analyse those with nDPI.=
