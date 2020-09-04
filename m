@@ -1,76 +1,63 @@
-From: Chris Hall <nftables@gmch.uk>
-Subject: Re: Failing to construct a 'set' for TCP Flag filtering.
-Date: Thu, 3 Sep 2020 18:44:18 +0100
-Message-ID: <ac91e032-b055-6687-6ec8-a880b16171b6@gmch.uk>
-References: <S1728814AbgIBQSI/20200902161835Z+839@vger.kernel.org>
- <4c39e878-8c4d-24a8-543e-206e1ca0a458@gmch.uk> <20200902175133.GA5283@salvia>
- <ae5d9b55-b77d-0a1e-d236-be67eb9333ce@gmch.uk>
- <20200903142439.GL7319@breakpoint.cc>
+From: Devin Bayer <dev@doubly.so>
+Subject: meter directive
+Date: Fri, 4 Sep 2020 10:38:55 +0200
+Message-ID: <2781f10c-a5e5-0bdc-b701-617f9476c57b@doubly.so>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20200903142439.GL7319@breakpoint.cc>
-Content-Language: en-GB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=doubly.so; s=MBO0001;
+        t=1599208738;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=cb+i56YGpwf2orTo4h1r0lIje962Sv/5WxINY+RpKso=;
+        b=YERcz+44h4OfwV184j63YxCISove07UWHjr6ie92/lMjfsXocKmEoL7HQDnEntiRweiQ4j
+        2lbTArdOpSQPeZDRHCD+AoLRtSOcZa01jYeHvaolsp6qstZ+Owc77MujrXzScFtFLzVSre
+        nDnhLurr8XZbLjXeu8Ecb6b2kyvCbfgQEaHJSHOpYMAzErAjEo8/E7+dNBwknW/0c2Lm4n
+        gy8q2etROQ9IUQUIikq0uElm2Z5NGVwS2NQ9D6PXQLdR8M0Y3JJrVGBxZQ/6OCno441dT+
+        7IzoCBw5A08+qd3bNNxvknT0xPRHrnpDAMlbULDac+V4l/mS14vZbssjyA5uVw==
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-On 03/09/2020 15:24, Florian Westphal wrote:
-...
-> Try
-> 
->   ./configure PKG_CONFIG_PATH=/path/to/where/the/1.1.7.pc-file-is
+Hello,
 
-Thank you.  I have now succeeded in building nft and libnftnl.so.11.3.0, 
-and copying same to the firewall machine.  (Yay!)
+I am looking for some docs on the `meter` directive. Should it still be 
+used instead of `map` or `set` and what are the arguments?
 
-Having applied the suggested patch, I now find that with the (same) file 
-'tryx' as before I now get:
+I see it's used in examples in the man page and also on this page:
 
-# nft -f tryx
-table ip MAIN {
-         set tcp_good_flags {
-                 type tcp_flag
-                 flags constant
-         }
+    https://wiki.nftables.org/wiki-nftables/index.php/Meters
+
+However the example does not work as described. When I do
+
+     nft list map my_filter_table my_ssh_meter
+
+I don't get the output like is described. First, it's a "set", not a 
+"map", so I just see "Error: No such file or directory". But when 
+changing to "list set", I don't see the counters:
+
+table ip my_filter_table {
+	set my_ssh_meter {
+		type ipv4_addr . inet_service
+		size 1000
+		flags dynamic,timeout
+		elements = {
+	3.10.95.11 . 22 expires 14s492ms limit rate 10/second,
+	3.123.217.208 . 22 expires 38s596ms limit rate 10/second,
+	...}
+     }
 }
 
-...which appears to be a step backwards :-(  BUT when I now check the 
-ruleset I get:
+1) I wondering if someone can clarify.
+2) If meter is obsolete, as the wiki suggests, can the examples in the 
+man page be updated?
+3) If meter isn't obsolete, can it's usage be added to the man page?
 
-# nft list ruleset
-table ip MAIN {
-         set tcp_good_flags {
-                 type tcp_flag
-                 flags constant
-                 elements = { fin | psh | ack | urg, fin | psh | ack, 
-fin | ack | urg, fin | ack, syn | psh | ack | urg,
-                              syn | psh | ack, syn | ack | urg, syn | 
-ack, syn, rst | psh | ack | urg,
-                              rst | psh | ack, rst | ack | urg, rst | 
-ack, rst, psh | ack | urg,
-                              psh | ack, ack | urg, ack }
-         }
-}
+I am using nftables v0.9.6 on kernel 5.7.0.
 
-So it's not crashing any more -- hurrah !
-
-BTW: if I have a 'list ruleset' in an .nft script, what should I expect 
-it to show me ?  I ask because if I do (as above):
-
-# nft -f xxxx.nft      -- where the last line is 'list ruleset'
-# nft list ruleset
-
-the second command seems to show a more complete ruleset ?
-
-FWIW:
-
-   add rule ip MAIN FORWARD tcp flags & (fin|syn|rst|ack|psh|urg) \
-     @tcp_good_flags goto FwdTCP
-
-is accepted (and I hope will do what I want !).
 
 Thanks,
-
-Chris
+Devin
