@@ -1,78 +1,65 @@
-From: Daniel <tech@tootai.net>
-Subject: Re: Error adding a DNAT rule
-Date: Tue, 15 Sep 2020 10:57:34 +0200
-Message-ID: <f470070f-4193-8a0d-8407-89b8d3b11d42@tootai.net>
-References: <CAGNib0wnZ-0WmV1quBXGZr3uF7n-ZhDxtiLoeGyea4ygwQvcLw@mail.gmail.com>
+From: Chris Hall <nftables@gmch.uk>
+Subject: 'meta mark' and 'meta mark set' -- any restrictions on their use ?
+Date: Tue, 15 Sep 2020 16:43:30 +0100
+Message-ID: <77ceecee-92a6-b262-881c-9428d1bc5fac@gmch.uk>
+References: <S1728814AbgIBQSI/20200902161835Z+839@vger.kernel.org>
+ <4c39e878-8c4d-24a8-543e-206e1ca0a458@gmch.uk> <20200902175133.GA5283@salvia>
+ <ae5d9b55-b77d-0a1e-d236-be67eb9333ce@gmch.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1600160257; bh=PBgJSw7CUeJj6JGjSZx5nd60B0YOdwnWTweswBP/fqA=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=RLakydB1d5HMWCs0NL/oWyLRqve/bjRIx+losx0C1T6yaawG5qENIzfruPEam0PUn
-         Fe1Cx8w5qjkE2CQHyZYZmbu8M0EZMDLMwevhajf0ScuZDHi/I6KalpIvW+XC0YivJH
-         kKQ11tCFCX1QFC6zljFWawUjAkkGlaDQ39NHd8R8=
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1600160257; bh=PBgJSw7CUeJj6JGjSZx5nd60B0YOdwnWTweswBP/fqA=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=RLakydB1d5HMWCs0NL/oWyLRqve/bjRIx+losx0C1T6yaawG5qENIzfruPEam0PUn
-         Fe1Cx8w5qjkE2CQHyZYZmbu8M0EZMDLMwevhajf0ScuZDHi/I6KalpIvW+XC0YivJH
-         kKQ11tCFCX1QFC6zljFWawUjAkkGlaDQ39NHd8R8=
-In-Reply-To: <CAGNib0wnZ-0WmV1quBXGZr3uF7n-ZhDxtiLoeGyea4ygwQvcLw@mail.gmail.com>
-Content-Language: fr-FR
+In-Reply-To: <ae5d9b55-b77d-0a1e-d236-be67eb9333ce@gmch.uk>
+Content-Language: en-GB
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: vikaig <vikaig99@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Hi
 
-Le 15/09/2020 à 05:07, vikaig a écrit :
-> Hello, I'm trying to add a DNAT rule, I tried many variations from the
-> Internet, in an IRC chat I was confirmed that my rule should work, but
-> I get an error, what could be wrong?(I use Debian 10)
-> $ sudo nft list ruleset
-> table inet nat {
->      chain prerouting {
->          type nat hook prerouting priority dstnat; policy accept;
->      }
->
->      chain postrouting {
->          type nat hook postrouting priority srcnat; policy accept;
->          oifname "ens3" ip6 saddr fd00::/48 masquerade
->          oifname "ens3" ip saddr 10.0.0.0/24 masquerade
->      }
-> }
-> table inet filter {
->      chain input {
->          type filter hook input priority filter; policy accept;
->          ct state { established, related } accept
->          ct state invalid drop
->          iifname "lo" accept
->          ip protocol icmp accept
->          meta l4proto ipv6-icmp accept
->          tcp dport 20414 accept
->          udp dport 51820 accept
->          reject
->      }
->
->      chain forward {
->          type filter hook forward priority filter; policy accept;
->      }
->
->      chain output {
->          type filter hook output priority filter; policy accept;
->      }
-> }
-> $ sudo nft 'add rule inet nat prerouting iifname "ens3" tcp dport
-> 20415 dnat ip to 10.0.0.2'
-> Error: Could not process rule: No such file or directory
-> add rule inet nat prerouting iifname "ens3" tcp dport 20415 dnat ip to 10.0.0.2
-> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Can anyone point me in the direction of some documentation that tells me 
+how my ruleset may use the 'meta mark' ?
 
-Try by removing the ' before add and after 10.0.0.2
+I assume that nothing in the kernel and nothing in nftables itself 
+depends on the value of the 'mark' ?  So I may make whatever use I like 
+of it in my ruleset ?
 
-sudo nft add rule inet nat prerouting iifname "ens3" tcp dport 20415 dnat ip to 10.0.0.2
+I gather that the initial value of the mark may be set by the ConnTrack 
+stuff, if the connection is not new and 'ct mark set <value>' has been 
+used.  Is that true ?
 
--- 
-Daniel
+I guess the default value for the mark is 0.  Is that true ?
+
+I gather that I may
+
+   add rule ... meta mark set xx
+
+in order to set the mark, and later I can:
+
+   add rule meta mark yy ...
+
+to do something if the mark is equal to yy.
+
+Or:
+
+   add rule (meta mark yy & 0x11) != 0 ...
+
+to do something if yy contains either of the bits in 0x11.
+
+I assume I have understood correctly ?
+
+Experiment also suggests that I may:
+
+   add rule ... meta mark set (meta mark | 0x100)
+
+to modify the mark.  I assume that is meant to work ?  (I note that the 
+second 'meta' appears to be redundant.)
+
+There is clearly a quite sophisticated <expression> syntax layered on 
+top of what the man-page calls a "Primary Expression" (and the terms 
+<expr> in 'define <variable> = <expr>' and <value> in 'meta mark set 
+<value>' and elsewhere).  Can anyone point me in the direction of the 
+documentation for all this ?
+
+Thanks,
+
+Chris
