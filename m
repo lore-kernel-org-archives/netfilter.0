@@ -1,65 +1,60 @@
-From: Chris Hall <nftables@gmch.uk>
-Subject: 'meta mark' and 'meta mark set' -- any restrictions on their use ?
-Date: Tue, 15 Sep 2020 16:43:30 +0100
-Message-ID: <77ceecee-92a6-b262-881c-9428d1bc5fac@gmch.uk>
-References: <S1728814AbgIBQSI/20200902161835Z+839@vger.kernel.org>
- <4c39e878-8c4d-24a8-543e-206e1ca0a458@gmch.uk> <20200902175133.GA5283@salvia>
- <ae5d9b55-b77d-0a1e-d236-be67eb9333ce@gmch.uk>
+From: Siebzehn <siebzehntausend@gmail.com>
+Subject: No interval possible on Concatenation-Sets
+Date: Wed, 16 Sep 2020 11:05:41 +0200
+Message-ID: <CAFJ60arM0h53jtvAb6FgzXYeySZ5L7X-_ApU9JbCMRBGi98soA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <ae5d9b55-b77d-0a1e-d236-be67eb9333ce@gmch.uk>
-Content-Language: en-GB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=qP8gD2PxkK3EYy68zxTJ/MeU+tRZqyM5gTLr8rqrgHE=;
+        b=QVmMKyWGvVDCxB6c/Yojw4M9AaWdri5zYBRP0aiwDihZSnx4Mv1MqAsbcPMk92q0VK
+         kvRq7ZZLKwDY1f0MVqsSu2iFkFA1nl371pdkuB01Spd72sq7fFQS9Jy5cKSHFQNtxcPl
+         zZB2gbzjLhk6xhZM+3a1NTqNZNvDWGRsSBgGihtKFxMDdCYqCT6UmI2N6BBBAtkVcfrt
+         MxDWQnH3x47x4+gHARvEvXidkk3w3g84yJiHtnRZlBym+PrgCS3JfPNdMXw7HQyGDbyZ
+         H6dkVQMeDOd7oj5erPsFgvKn7E/BSAg3yDMCRFHNm5+csCQ5iN912eHpedAcYeVfZPMR
+         hbKg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
+Hello,
 
-Can anyone point me in the direction of some documentation that tells me 
-how my ruleset may use the 'meta mark' ?
+I'm filtering Address-Ranges and Ports to let them though. However it
+doesn't seem to accept "flags intervals".
+Even the Example on the wiki isn't getting accepted!
 
-I assume that nothing in the kernel and nothing in nftables itself 
-depends on the value of the 'mark' ?  So I may make whatever use I like 
-of it in my ruleset ?
+Example from
+https://wiki.nftables.org/wiki-nftables/index.php/Concatenations#Network_addresses
+flush ruleset
+table inet mytable {
+    set myset {
+        type ipv4_addr . ipv4_addr
+        flags interval
+        elements = { 192.168.0.0/16 . 172.16.0.0/25,
+                     10.0.0.0/30 . 192.168.1.0/24,
+        }
+    }
 
-I gather that the initial value of the mark may be set by the ConnTrack 
-stuff, if the connection is not new and 'ct mark set <value>' has been 
-used.  Is that true ?
+    chain mychain {
+        ip saddr . ip daddr @myset counter accept
+    }
+}
 
-I guess the default value for the mark is 0.  Is that true ?
 
-I gather that I may
 
-   add rule ... meta mark set xx
+Error:
+nft -f TestD.nft
+TestD.nft:4:9-13: Error: Could not process rule: Invalid argument
+    set myset {
+        ^^^^^
 
-in order to set the mark, and later I can:
+When I do it without " flags interval" it gives no Error, However it
+deletes the Subnet ("/XX"), so it's not a feasible option for me.
+I have already tried adding Semicolons, no effect.
+Simple Sets with just one item (for example just ip ranges) to filter
+work just fine.
 
-   add rule meta mark yy ...
-
-to do something if the mark is equal to yy.
-
-Or:
-
-   add rule (meta mark yy & 0x11) != 0 ...
-
-to do something if yy contains either of the bits in 0x11.
-
-I assume I have understood correctly ?
-
-Experiment also suggests that I may:
-
-   add rule ... meta mark set (meta mark | 0x100)
-
-to modify the mark.  I assume that is meant to work ?  (I note that the 
-second 'meta' appears to be redundant.)
-
-There is clearly a quite sophisticated <expression> syntax layered on 
-top of what the man-page calls a "Primary Expression" (and the terms 
-<expr> in 'define <variable> = <expr>' and <value> in 'meta mark set 
-<value>' and elsewhere).  Can anyone point me in the direction of the 
-documentation for all this ?
-
-Thanks,
-
-Chris
+Hope someone of you has an idea.
