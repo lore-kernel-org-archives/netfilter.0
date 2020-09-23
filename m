@@ -1,25 +1,53 @@
-From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
-Subject: [nftables] possible to utilise sets across different tables?
-Date: Wed, 23 Sep 2020 11:43:00 +0000
-Message-ID: <9454a56c-0efb-2f47-e1b4-7fb24991a0d9@gmx.net>
-Reply-To: vtol@gmx.net
+From: Fred F <frederik.vogelsang@gmail.com>
+Subject: nftables: Define variable with IPv6 suffix match in nft script
+Date: Wed, 23 Sep 2020 21:19:52 +0200
+Message-ID: <CAJqja9fhYzAQ-cYcP_HnB5Mmd2UKZgvL8+DG0nT2GRdhWB9N_g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1600861732;
-        bh=bNcgNl/DpIkNj110zDG/fJaDPEa27jEW4qFWwPwRmHg=;
-        h=X-UI-Sender-Class:Reply-To:To:From:Subject:Date;
-        b=MIp6POMFHiCqVFR7LhRHTsYjIOBHZbEsxg1NpacvkqcD4HuAJvxorLU/Wf4LdS960
-         AXhrH1ITQY6PG+2rwNabYWj1Gp+RkQhIoYd9W16TXBTDVhL/PJEO0x9DKIDNuCh6xu
-         BjAuHMblg2Lm/sDQSJX9EW20g2BHNVH3Dc9o8v88=
-Content-Language: en-GB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=lW1IwlWaQDWXoV2dJr4QTBuNQQbYHz0IQj+QQUWVmwU=;
+        b=haPFvwcE7BXpA5lxXGxn1Ts27qKQHHBfSKnLLj7eoy8VfqletdKOsi/AeUVo7nB4KL
+         6Ce9ngpkQUzkykiyg2rynAUFtMWROS1PyhB/meadz58cy2uiDmeFhItUEkPjdf9Vf6an
+         p8aQsFuWMVAGLpBrJfc0LKIrqPetREhHBNv5yW8zjCoVy1hWmAfTcfW2mAWlmJ/ojkTf
+         mLt1kJTpWnQO0bb4cZGq8arXJ8WUlo6C5SVvY0FVFrJxzEePc2t2u0saaQsA3MZun47b
+         9uO6/XC/TciC7jgqnTHukNCE+Ds29j02AyLFSjpE3O4SqH/L07AIty7ZPnC8LHG+XQyu
+         3t3g==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-9"; format="flowed"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Would it be possible to generate a set in 'table inet' based on 'saddr=C2=
-=A0=20
-ct state invalid drop' and then utilise the same set in a 'table netdev=20
-rule', for offending saddr getting blocked early?
+Hi,
 
+I am having issues defining a variable which contains an IPv6 host
+(actually a suffix match). This is the rule in question which is
+working:
+
+chain forward {
+  # relevant rule:
+  iifname "wan" oifname "lan" ip6 daddr & ::ffff:ffff:ffff:ffff ==
+::192:168:1:1 tcp dport 443 accept
+}
+
+Now I'd like to store the suffix match in a variable, as I need it in
+various places, like this:
+
+define ip6_testserver = "& ::ffff:ffff:ffff:ffff == ::192:168:1:1"
+
+chain forward {
+  # relevant rule:
+  iifname "wan" oifname "lan" ip6 daddr $ip6_testserver tcp dport 443 accept
+}
+
+Unfortunately this is not working. It seems like the value of
+"ip6_testserver" is interpreted as a hostname when written in quotes.
+Without the quotes I am getting a syntax error. Any ideas how I can
+fix this? Are there any other notations for the suffix match? Back in
+the old ip6tables days it was written like
+::192:168:1:1/::ffff:ffff:ffff:ffff.
+
+
+Best regards,
+Frederik
