@@ -1,99 +1,25 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [nftables] netdev rate limiting | timeouts rfq
-Date: Wed, 23 Sep 2020 10:30:42 +0200
-Message-ID: <20200923083042.GB10267@salvia>
-References: <5c60c340-d6d8-1f7c-67da-2782360a92fe@gmx.net>
+From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+Subject: [nftables] possible to utilise sets across different tables?
+Date: Wed, 23 Sep 2020 11:43:00 +0000
+Message-ID: <9454a56c-0efb-2f47-e1b4-7fb24991a0d9@gmx.net>
+Reply-To: vtol@gmx.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5c60c340-d6d8-1f7c-67da-2782360a92fe@gmx.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1600861732;
+        bh=bNcgNl/DpIkNj110zDG/fJaDPEa27jEW4qFWwPwRmHg=;
+        h=X-UI-Sender-Class:Reply-To:To:From:Subject:Date;
+        b=MIp6POMFHiCqVFR7LhRHTsYjIOBHZbEsxg1NpacvkqcD4HuAJvxorLU/Wf4LdS960
+         AXhrH1ITQY6PG+2rwNabYWj1Gp+RkQhIoYd9W16TXBTDVhL/PJEO0x9DKIDNuCh6xu
+         BjAuHMblg2Lm/sDQSJX9EW20g2BHNVH3Dc9o8v88=
+Content-Language: en-GB
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: =?utf-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-9"; format="flowed"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Tue, Sep 22, 2020 at 10:49:00PM +0000, ѽ҉ᶬḳ℠ wrote:
-> kernel 5.9.0-rc6 armv7l | nft 0.9.6
-> 
-> ------
-> 
-> (1) netdev rate limiting
-> 
-> /table netdev filter {//
-> //        set glv4 {//
-> //                type ipv4_addr//
-> //                size 65535//
-> //                flags dynamic,timeout//
-> //                counter//
-> //                timeout 15m//
-> //                gc-interval 10s//
-> //        }//
-> //        chain input {//
-> //                type filter hook ingress device "eth2" priority -500;
-> policy accept;//
-> //                ip saddr @glv4 counter packets 0 bytes 0 log prefix
-> "nd glv4 DROP" flags all drop//
-> //        }
-> 
-> /Then however
-> 
-> /nft add rule netdev filter input ip protocol tcp { ip saddr limit rate
-> over 50/second burst 15 packets } update @glv4 { ip saddr }/
+Would it be possible to generate a set in 'table inet' based on 'saddr=C2=
+=A0=20
+ct state invalid drop' and then utilise the same set in a 'table netdev=20
+rule', for offending saddr getting blocked early?
 
-table ip filter {
-        set glv4 {
-                type ipv4_addr
-                size 65535
-                flags dynamic,timeout
-                timeout 15m
-                gc-interval 10s
-        }
-
-        chain input {
-                ip protocol tcp update @glv4 { ip saddr limit rate over 50/second burst 15 packets }
-        }
-}
-
-This reads: update set 'glv4' with ip saddr using limit rate over
-50/second burst 15 packets.
-
-You cannot combine counter and limit yet though.
-
-> producing:
-> 
-> Error: syntax error, unexpected saddr, expecting comma or '}'
-> add rule netdev filter input ip protocol tcp { ip saddr limit rate over
-> 50/second burst 15 packets } update @glv4 { ip saddr }
-> ^^^^^
-> 
-> Is rate limiting not meant for the netdev chain or where do I go wrong
-> with the syntax?
-> 
-> ----
-> 
-> (2) timeouts
-> 
-> Like in the above statement is the timeout applicable to the entire set,
-> i.e. the entire gets wiped after 15 min, or the timeout applies
-> selectively to each entry?
-> 
-> Perusing
-> https://www.netfilter.org/projects/nftables/manpage.html#lbANhttps://www.netfilter.org/projects/nftables/manpage.html#lbAN
-> 
-> /nft add rule ip filter input tcp flags syn tcp dport ssh meter flood
-> size 128000 { ip saddr *timeout 10s* limit rate over 10/second} add
-> @blackhole { ip saddr *timeout 1m* } drop
-> 
-> /I fail to comprehend what the first statement (/timeout 10s/) achieves;
-> what is the purpose?
-> 
-> As for the second statement (/timeout 1m/) I am wondering whether it
-> would clash with or supersede the statement in the set (e.g. /timeout
-> 15m/ as in the above example)?
-
-timeout in your rule (if specified), eg.
-
-... update @xyz { ip saddr *timeout 1m* }
-
-overrides the global set timeout policy.
