@@ -1,60 +1,70 @@
-From: "Eliezer Croitor" <ngtech1ltd@gmail.com>
-Subject: RE: nftables map with numgen type, not sure if it was implemented?
-Date: Thu, 24 Sep 2020 22:09:34 +0300
-Message-ID: <002201d692a6$3ea3d8c0$bbeb8a40$@gmail.com>
-References: <!&!AAAAAAAAAAAuAAAAAAAAAGg7dk9mYqJGhbBt3m/ghGwBAMO2jhD3dRHOtM0AqgC7tuYAAAAAAA4AABAAAABJQLj6e+mFSq/mTrWisCc4AQAAAAA=@gmail.com> <20200831152510.GB2725@salvia>
+From: Daniel <tech@tootai.net>
+Subject: Re: Howto 2 ipv6 nets, one through ipv4 tun vpn
+Date: Thu, 24 Sep 2020 23:13:24 +0200
+Message-ID: <8853c5d6-cccc-325a-8d75-6aab843372fc@tootai.net>
+References: <3c924831-3660-40a3-7f17-f9607a6dea40@tootai.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:references:in-reply-to:subject:date:message-id:mime-version
-         :content-transfer-encoding:thread-index:content-language;
-        bh=UkEDGZplgCiKpcNjdrkheh4kc1aNPYcQzVyrTgrP2fA=;
-        b=Z7CpZZdC02voYwtKr3UQrVErdnB9oz56/swhYIWqsVEiJ8OeJQtxG9ciB0Jt3pkZwJ
-         gHLB6QLEeQgFmf70RUsdYtHusYXKfgE1aHYaIPQPm+YgXeYNilCt0ZJ08FYh0IAEhu4X
-         dw49qUDrPKr994IEAq7/Qqqq630rKOjs9TDlO/KXBNSMs2bQ5UxGV4Kw37u7U8nRwTWO
-         MzKqgcU8LBrnQcyE/e1OsvmiukrCLtTZHG8iOXBLGdVg5elpB0RFhpLuZn76mJUpgad2
-         XVyo+QM7sLvlsIPJLemPuI94QvLXz3U/mV6ZLU5vSP/xUA4GB56fxHTfwFCE4QbqJQy4
-         Ue6A==
-In-Reply-To: <20200831152510.GB2725@salvia>
-Content-Language: en-us
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
+        t=1600982005; bh=YtKfjEWfcveYkE+NmZJvJH+07X3bVamnX+jGdFd7V0s=;
+        h=Subject:From:To:References:Date:In-Reply-To:From;
+        b=bgrajWH5mpsFcM2oPc/cJ5Xs/atl2vtjclMGdhXR52qqm0Og1wfia2IcW3nzP/aFK
+         M+4bUqmmPMvukUg4cUbVeiKsJ+HS86EpnBIGAv0Edoajx+1QRsSCN0jLNuhHQVjh16
+         zJ/ulROyFo6VzAAZtNJ58XNXUaXr2skfiQIzWbOI=
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
+        t=1600982005; bh=YtKfjEWfcveYkE+NmZJvJH+07X3bVamnX+jGdFd7V0s=;
+        h=Subject:From:To:References:Date:In-Reply-To:From;
+        b=bgrajWH5mpsFcM2oPc/cJ5Xs/atl2vtjclMGdhXR52qqm0Og1wfia2IcW3nzP/aFK
+         M+4bUqmmPMvukUg4cUbVeiKsJ+HS86EpnBIGAv0Edoajx+1QRsSCN0jLNuhHQVjh16
+         zJ/ulROyFo6VzAAZtNJ58XNXUaXr2skfiQIzWbOI=
+In-Reply-To: <3c924831-3660-40a3-7f17-f9607a6dea40@tootai.net>
+Content-Language: fr-FR
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: Netfilter list <netfilter@vger.kernel.org>
 
-I am using 0.9.4:
-https://pkgs.alpinelinux.org/package/v3.12/main/x86_64/nftables
+No one ?
 
-I will try to verify this again later with alpine edge which has 9.6
+If not, does someone knows a clear documentation on how to setup 
+nftables for two or more isp's ?
 
-Thanks,
+Thanks for any hint
 
-----
-Eliezer Croitoru
-Tech Support
-Mobile: +972-5-28704261
-Email: ngtech1ltd@gmail.com
-
------Original Message-----
-From: Pablo Neira Ayuso <pablo@netfilter.org> 
-Sent: Monday, August 31, 2020 6:25 PM
-To: Eliezer Croitor <ngtech1ltd@gmail.com>
-Cc: netfilter@vger.kernel.org
-Subject: Re: nftables map with numgen type, not sure if it was implemented?
-
-On Thu, Aug 27, 2020 at 06:34:35PM +0300, Eliezer Croitor wrote:
-[...]
-> lb-r4:/tmp# nft add map nftlb m2 '{ type typeof numgen random mod 2 :
-> verdict; }'
-> Error: syntax error, unexpected typeof add map nftlb m2 { type typeof 
-> numgen random mod 2 : verdict; }
->                         ^^^^^^
-[...]
-> 
-> Am I right for even trying it?
-
-What nft version are you using?
-
-typeof support was introduced in nft >= 0.9.4.
-
+Le 22/09/2020 à 22:46, Daniel a écrit :
+> Hi,
+>
+> in office we have a /48 ipv6 from our provider and we have our own /48 
+> from RIPE. The provider ipv6 is in place and running well. Now we want 
+> to add ipv6 access in parallel using our own ipv6 range for our 
+> notebooks if outside office where there is no ipv6 possibility. This 
+> one is terminated in a bgp VM outside our office network.
+>
+> We have setup an tun openvpn on notebooks where a /64 is sended 
+> through, all is good. Problem is that when notebooks are in the 
+> office, we can't reach them through their VPN ipv6 IP, packets are 
+> coming in but no answer. What we want to do is that all trafic coming 
+> in from tun interface goes out from this too.
+>
+> What we did where $tmpif is our tun interface:
+>
+> $fwtables add rule ip6 filter input iifname "$tmpif" meta mark set 201 
+> counter
+> $fwtables add rule ip6 filter forward iifname "$tmpif" accept
+> $fwtables add rule ip6 filter output oifname "$tmpif" meta mark == 
+> $mymark accept
+> $fwtables add rule ip6 nat postrouting oifname "$tmpif" counter 
+> masquerade random,persistent
+>
+> ip -6 rule add fwmark 201 table isp1
+> ip -6 r add default via <ipv6 of other VPN end> dev $tmpif table isp1
+>
+> Additionnaly, with this setup, we can't access <ipv6 of other VPN end> 
+> getting permission denied when trying to ping.
+>
+> What is wrong with our setup ?
+>
+> Thanks for any hint
+>
+-- 
+Daniel
