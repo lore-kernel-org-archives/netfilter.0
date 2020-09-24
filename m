@@ -1,53 +1,61 @@
-From: Fred F <frederik.vogelsang@gmail.com>
-Subject: nftables: Define variable with IPv6 suffix match in nft script
-Date: Wed, 23 Sep 2020 21:19:52 +0200
-Message-ID: <CAJqja9fhYzAQ-cYcP_HnB5Mmd2UKZgvL8+DG0nT2GRdhWB9N_g@mail.gmail.com>
+From: Jevin Gala <jevin@softaculous.com>
+Subject: Rule Count limit
+Date: Thu, 24 Sep 2020 16:17:00 +0530
+Message-ID: <CAKw0Lq2f1KbF34gTQyxYiZW8s1Neg-q0x1_FcE=qSrP9joWtqA@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=lW1IwlWaQDWXoV2dJr4QTBuNQQbYHz0IQj+QQUWVmwU=;
-        b=haPFvwcE7BXpA5lxXGxn1Ts27qKQHHBfSKnLLj7eoy8VfqletdKOsi/AeUVo7nB4KL
-         6Ce9ngpkQUzkykiyg2rynAUFtMWROS1PyhB/meadz58cy2uiDmeFhItUEkPjdf9Vf6an
-         p8aQsFuWMVAGLpBrJfc0LKIrqPetREhHBNv5yW8zjCoVy1hWmAfTcfW2mAWlmJ/ojkTf
-         mLt1kJTpWnQO0bb4cZGq8arXJ8WUlo6C5SVvY0FVFrJxzEePc2t2u0saaQsA3MZun47b
-         9uO6/XC/TciC7jgqnTHukNCE+Ds29j02AyLFSjpE3O4SqH/L07AIty7ZPnC8LHG+XQyu
-         3t3g==
+        d=softaculous-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=awA98ajb5PT0QhaoUAHUGh5xV2FQH3Oa3i0qAWUDXno=;
+        b=vhVX3tWwoPLWONSwtgq2hKv8SGasSC2bFZ2MTKLM/nMcayYtIPEliMprAOjVclgxt2
+         K2FgfmvIsqIRAKZQceYhNUCxqN5m0Di7CACpu5qsetDatmGglTobpVtU0NXnSfAKYKsu
+         jYKMeqcC8E7z9Tu7ojSrbHrvFKLXUrokpR0pXIUEl3qiwazhlZUNYj2YeF8S5Pmh3fQb
+         zZgTLyQEIC5rk9mKgGbtOeFdl5crZzs6bq92LPTohz6SfD74SvC2K/GRgBSVZt1xBZSI
+         CJ4igTPLF9fSvMI8o8qDQrqH5ZwgQCw+oVrBtADJdjc6f+HxiGJMeDSxe+Grh6mqm2un
+         +95A==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
 To: netfilter@vger.kernel.org
 
 Hi,
 
-I am having issues defining a variable which contains an IPv6 host
-(actually a suffix match). This is the rule in question which is
-working:
 
-chain forward {
-  # relevant rule:
-  iifname "wan" oifname "lan" ip6 daddr & ::ffff:ffff:ffff:ffff ==
-::192:168:1:1 tcp dport 443 accept
-}
+I couldn=E2=80=99t find much information about the limitation on adding num=
+ber of rules.
 
-Now I'd like to store the suffix match in a variable, as I need it in
-various places, like this:
-
-define ip6_testserver = "& ::ffff:ffff:ffff:ffff == ::192:168:1:1"
-
-chain forward {
-  # relevant rule:
-  iifname "wan" oifname "lan" ip6 daddr $ip6_testserver tcp dport 443 accept
-}
-
-Unfortunately this is not working. It seems like the value of
-"ip6_testserver" is interpreted as a hostname when written in quotes.
-Without the quotes I am getting a syntax error. Any ideas how I can
-fix this? Are there any other notations for the suffix match? Back in
-the old ip6tables days it was written like
-::192:168:1:1/::ffff:ffff:ffff:ffff.
+I tried adding around 26000 rules and starting seeing this message :
 
 
-Best regards,
-Frederik
+Unable to update the kernel. Two possible causes:
+
+1. Multiple ebtables programs were executing simultaneously. The ebtables
+
+   userspace tool doesn't by default support multiple ebtables programs run=
+ning
+
+   concurrently. The ebtables option --concurrent or a tool like flock can =
+be
+
+   used to support concurrent scripts that update the ebtables kernel table=
+s.
+
+2. The kernel doesn't support a certain ebtables extension, consider
+
+   recompiling your kernel or insmod the extension.
+
+
+There is Free RAM while swap is fully used.
+
+Kernel : 3.10.0-957.5.1.el7.x86_64
+
+ebtables.x86_64 2.0.10-16.el7
+
+
+--=20
+Regards,
+Jevin  Gala
+
+Virtualizor support - Softaculous Ltd.
