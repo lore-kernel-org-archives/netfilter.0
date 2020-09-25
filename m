@@ -1,35 +1,32 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [nftables] possible to utilise sets across different tables?
-Date: Fri, 25 Sep 2020 14:11:13 +0200
-Message-ID: <20200925121113.GA25890@salvia>
-References: <9454a56c-0efb-2f47-e1b4-7fb24991a0d9@gmx.net>
- <f1e6e7f6-d9e2-cc93-1a64-acc5599b25a9@gmx.net>
+From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+Subject: [nftables] sets update concatenation?
+Date: Fri, 25 Sep 2020 19:10:00 +0000
+Message-ID: <a629ba84-7c4e-3663-3516-9176d3223965@gmx.net>
+Reply-To: vtol@gmx.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <f1e6e7f6-d9e2-cc93-1a64-acc5599b25a9@gmx.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1601064594;
+        bh=Hbo+MC6fXpAaQbetuPx6MmEJU0AHXGHJo83eh5UUj/0=;
+        h=X-UI-Sender-Class:Reply-To:To:From:Subject:Date;
+        b=IHSMbe8RSmkbOKSgbcMbO7X1wjc+ChfLRYIXPgWB9lgVCHEDL7bGrMVK6SAaDCoOt
+         IJteQB3UCeetiE8iqR9rr25lbYWfRi5Hicm4s8GgFlBcom1521pS+hFSR5ks809D+i
+         2+YlwPeOOcyIQ/h371yaLAOZRKCvL0eXedXl4wL0=
+Content-Language: en-GB
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: =?utf-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Fri, Sep 25, 2020 at 09:52:00AM +0000, ѽ҉ᶬḳ℠ wrote:
-> On 23/09/2020 13:43, ѽ҉ᶬḳ℠ wrote:
-> > Would it be possible to generate a set in 'table inet' based on 'saddr 
-> > ct state invalid drop' and then utilise the same set in a 'table netdev
-> > rule', for offending saddr getting blocked early?
-> > 
-> 
-> Tried some variations but none worked out and thus it seems deployment of
-> sets across families is not supported. Though I reckon it would be a
-> beneficial feature:
-> 
-> * mitigate repetition of same sets that are applicable for different
-> families
-> * gather set data in one family, e.g offenders' saddr from inet, and deploy
-> such set in a rule in a different family, e.g. in netdev for blocking such
-> offenders early on
+Been trying to concatenate sets update:
 
-This is feasible. I have an incomplete patchset to enable this, I'll
-try to scratch some time to finish this.
+tcp dport @b_t update @b_sa4 { ip saddr } drop;
+tcp dport @b_t update @b_sa6 { ip6 saddr } drop;
+
+with:
+
+tcp dport @b_t update @b_sa4 . @b_sa4 { ip saddr . ip6 saddr } drop;
+
+but that did not work out. Is somehow possible to concatenate sets update=
+?
+
