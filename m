@@ -1,69 +1,77 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [nftables] sets update concatenation?
-Date: Sat, 26 Sep 2020 21:47:34 +0200
-Message-ID: <20200926194734.GA4397@salvia>
-References: <a629ba84-7c4e-3663-3516-9176d3223965@gmx.net>
- <20200926182145.GA3628@salvia>
- <3fcc0be7-b4f8-c17e-96bb-8cef53f375c5@gmx.net>
- <20200926190754.GA3748@salvia>
- <9d90c22b-c3ae-8997-e694-6c1bad7c7f00@gmx.net>
+From: sean darcy <seandarcy2@gmail.com>
+Subject: Re: rate limit SIP INVITES
+Date: Sat, 26 Sep 2020 16:26:02 -0400
+Message-ID: <rko84s$9ir$1@ciao.gmane.io>
+References: <rko3n2$jjm$1@ciao.gmane.io>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <9d90c22b-c3ae-8997-e694-6c1bad7c7f00@gmx.net>
+In-Reply-To: <rko3n2$jjm$1@ciao.gmane.io>
+Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: =?utf-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Sat, Sep 26, 2020 at 07:21:00PM +0000, ѽ҉ᶬḳ℠ wrote:
+On 9/26/20 3:10 PM, sean darcy wrote:
+> nftables-0.9.6
 > 
-> On 26/09/2020 21:07, Pablo Neira Ayuso wrote:
-> > On Sat, Sep 26, 2020 at 06:44:00PM +0000, ѽ҉ᶬḳ℠ wrote:
-> > > On 26/09/2020 20:21, Pablo Neira Ayuso wrote:
-> > > > On Fri, Sep 25, 2020 at 07:10:00PM +0000, ѽ҉ᶬḳ℠ wrote:
-> > > > > Been trying to concatenate sets update:
-> > > > > 
-> > > > > tcp dport @b_t update @b_sa4 { ip saddr } drop;
-> > > > > tcp dport @b_t update @b_sa6 { ip6 saddr } drop;
-> > > > > 
-> > > > > with:
-> > > > > 
-> > > > > tcp dport @b_t update @b_sa4 . @b_sa4 { ip saddr . ip6 saddr } drop;
-> > > > What's the intention here?
-> > > > 
-> > > > > but that did not work out. Is somehow possible to concatenate sets update?
-> > > > Yes, you can do:
-> > > > 
-> > > > tcp dport @b_t update @b_sa4 { ip saddr . ip6 saddr } drop
-> > > > 
-> > > > You can update one single set at a time. Not sure what you expect from
-> > > > this concatenating sets instead of keys.
-> > > The two mentioned sets are dynamic, learning ip | ip6 saddrs from hits on
-> > > tcp dport.
-> > > 
-> > > The intended concatenation was to put it into one rule instead of two, like
-> > > if ip saddr then update element in set @b_sa4 and if ip6 saddr then update
-> > > element in set @b_sa6 respectively.
-> > So you would like to consolidate:
-> > 
-> >   tcp dport @b_t update @b_sa4 { ip saddr } drop
-> >   tcp dport @b_t update @b_sa6 { ip6 saddr } drop
-> > 
-> > In one single rule?
-> > 
-> > Something like (hypothetical syntax)
-> > 
-> >   tcp dport @b_t update @b_sa { inet saddr } drop
-> > 
-> > where b_sa is a set with something like type inet_addr.
+> I'm running a VOIP server. There are lots of script kiddies who will 
+> bang away with 10/sec SIP INVITES or REGISTERS .
 > 
-> In a way yes, though this would consolidate also ip and ip6 into the same
-> set and could make viewing (a large) set it bit cumbersome, unless there was
-> an optional view filter something like
+> In iptables you can match on the string:
 > 
-> nft list set [family] [table] filter [set] ( optional [ip] | [ip6] )
+> -A SIP   -i eth0 -p udp -m udp --dport 5060 -m string   --string 
+> "INVITE" --algo bm --from 23 --to 28 -m comment --comment "Catch SIP 
+> INVITEs" -j SIPINVITE
+> 
+> -A SIP   -i eth0 -p udp -m udp --dport 5060 -m string   --string 
+> "REGISTER" --algo bm --from 23 --to 30 -m comment --comment "Catch SIP 
+> REGISTERs" -j SIPREGISTER
+> 
+> I'm looking at RAW to do the same:
+> 
+> meta l4proto udp udp dport 5060 @th,184,224 0x494e56495445 counter
+> 
+> where 184 = 23*8, and 224 = 28*8. INVITE is 0x494e56495445 in hex
+> 
+> I have a prerouting chain:
+> 
+> table ip filter-asterisk {
+>      chain output-asterisk {
+>          ..................
+>      }
+> 
+>      chain prerouting {
+>          type filter hook prerouting priority raw; policy accept;
+>      }
+> }
+> 
+> but no joy when I try to add the rule:
+> 
+> nft add rule filter-asterisk prerouting meta l4proto udp udp dport 5060 
+> @th,184,224 0x494e56495445 counter
+> Error: Could not process rule: Value too large for defined data type
+> add rule filter-asterisk prerouting meta l4proto udp udp dport 5060 
+> @th,184,224 0x494e56495445 counter
+> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ 
+> 
+> 
+> Any help appreciated.
+> 
+> sean
+> 
+> 
 
-General set infrastructure that provides an abstraction for IPv4 and
-IPv6 through inet is possible, yes.
+Closer reading of the man page:
+
+# nft add rule filter-asterisk prerouting meta l4proto udp udp dport 
+5060 @th,184,96 0x494e56495445 counter
+#
+
+The 3rd parameter of the raw expression is bit length (16 * the six 
+characters in INVITE , correct?).
+
+Now let's see if it works.
+
+sean
+
