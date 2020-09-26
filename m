@@ -1,58 +1,58 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [nftables] sets update concatenation?
-Date: Sat, 26 Sep 2020 21:07:54 +0200
-Message-ID: <20200926190754.GA3748@salvia>
-References: <a629ba84-7c4e-3663-3516-9176d3223965@gmx.net>
- <20200926182145.GA3628@salvia>
- <3fcc0be7-b4f8-c17e-96bb-8cef53f375c5@gmx.net>
+From: sean darcy <seandarcy2@gmail.com>
+Subject: rate limit SIP INVITES
+Date: Sat, 26 Sep 2020 15:10:24 -0400
+Message-ID: <rko3n2$jjm$1@ciao.gmane.io>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <3fcc0be7-b4f8-c17e-96bb-8cef53f375c5@gmx.net>
+Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: =?utf-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Sat, Sep 26, 2020 at 06:44:00PM +0000, ѽ҉ᶬḳ℠ wrote:
-> 
-> On 26/09/2020 20:21, Pablo Neira Ayuso wrote:
-> > On Fri, Sep 25, 2020 at 07:10:00PM +0000, ѽ҉ᶬḳ℠ wrote:
-> > > Been trying to concatenate sets update:
-> > > 
-> > > tcp dport @b_t update @b_sa4 { ip saddr } drop;
-> > > tcp dport @b_t update @b_sa6 { ip6 saddr } drop;
-> > > 
-> > > with:
-> > > 
-> > > tcp dport @b_t update @b_sa4 . @b_sa4 { ip saddr . ip6 saddr } drop;
-> > What's the intention here?
-> > 
-> > > but that did not work out. Is somehow possible to concatenate sets update?
-> > Yes, you can do:
-> > 
-> > tcp dport @b_t update @b_sa4 { ip saddr . ip6 saddr } drop
-> > 
-> > You can update one single set at a time. Not sure what you expect from
-> > this concatenating sets instead of keys.
-> 
-> The two mentioned sets are dynamic, learning ip | ip6 saddrs from hits on
-> tcp dport.
-> 
-> The intended concatenation was to put it into one rule instead of two, like
-> if ip saddr then update element in set @b_sa4 and if ip6 saddr then update
-> element in set @b_sa6 respectively.
+nftables-0.9.6
 
-So you would like to consolidate:
+I'm running a VOIP server. There are lots of script kiddies who will 
+bang away with 10/sec SIP INVITES or REGISTERS .
 
- tcp dport @b_t update @b_sa4 { ip saddr } drop
- tcp dport @b_t update @b_sa6 { ip6 saddr } drop
+In iptables you can match on the string:
 
-In one single rule?
+-A SIP   -i eth0 -p udp -m udp --dport 5060 -m string   --string 
+"INVITE" --algo bm --from 23 --to 28 -m comment --comment "Catch SIP 
+INVITEs" -j SIPINVITE
 
-Something like (hypothetical syntax)
+-A SIP   -i eth0 -p udp -m udp --dport 5060 -m string   --string 
+"REGISTER" --algo bm --from 23 --to 30 -m comment --comment "Catch SIP 
+REGISTERs" -j SIPREGISTER
 
- tcp dport @b_t update @b_sa { inet saddr } drop
+I'm looking at RAW to do the same:
 
-where b_sa is a set with something like type inet_addr.
+meta l4proto udp udp dport 5060 @th,184,224 0x494e56495445 counter
+
+where 184 = 23*8, and 224 = 28*8. INVITE is 0x494e56495445 in hex
+
+I have a prerouting chain:
+
+table ip filter-asterisk {
+	chain output-asterisk {
+		..................
+	}
+
+	chain prerouting {
+		type filter hook prerouting priority raw; policy accept;
+	}
+}
+
+but no joy when I try to add the rule:
+
+nft add rule filter-asterisk prerouting meta l4proto udp udp dport 5060 
+@th,184,224 0x494e56495445 counter
+Error: Could not process rule: Value too large for defined data type
+add rule filter-asterisk prerouting meta l4proto udp udp dport 5060 
+@th,184,224 0x494e56495445 counter
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Any help appreciated.
+
+sean
+
