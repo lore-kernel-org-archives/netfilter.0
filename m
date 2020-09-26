@@ -1,7 +1,7 @@
 From: sean darcy <seandarcy2@gmail.com>
 Subject: Re: rate limit SIP INVITES
-Date: Sat, 26 Sep 2020 16:34:45 -0400
-Message-ID: <rko8l5$1282$1@ciao.gmane.io>
+Date: Sat, 26 Sep 2020 16:45:43 -0400
+Message-ID: <rko99o$a11$1@ciao.gmane.io>
 References: <rko3n2$jjm$1@ciao.gmane.io> <rko84s$9ir$1@ciao.gmane.io>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -77,6 +77,7 @@ On 9/26/20 4:26 PM, sean darcy wrote:
 > sean
 > 
 > 
-Or better 192,  32 * the 6 characters in INVITE. It seems there are 2 
-hex numbers for each ascii character.
+I'm quitting for the day. 4 bits = 1 hex number. 6 ascii characters is 
+12 hex numbers
+, or 48 bits.
 
