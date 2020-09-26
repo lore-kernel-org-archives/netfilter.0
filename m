@@ -1,58 +1,80 @@
-From: sean darcy <seandarcy2@gmail.com>
-Subject: rate limit SIP INVITES
-Date: Sat, 26 Sep 2020 15:10:24 -0400
-Message-ID: <rko3n2$jjm$1@ciao.gmane.io>
+From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+Subject: Re: [nftables] sets update concatenation?
+Date: Sat, 26 Sep 2020 19:21:00 +0000
+Message-ID: <9d90c22b-c3ae-8997-e694-6c1bad7c7f00@gmx.net>
+References: <a629ba84-7c4e-3663-3516-9176d3223965@gmx.net>
+ <20200926182145.GA3628@salvia> <3fcc0be7-b4f8-c17e-96bb-8cef53f375c5@gmx.net>
+ <20200926190754.GA3748@salvia>
+Reply-To: vtol@gmx.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1601148087;
+        bh=kmDrT+LP+BAuZ8LYVqsfAHqkb9UuFXrPuZvcBXkjcWI=;
+        h=X-UI-Sender-Class:Reply-To:To:References:From:Subject:Date:
+         In-Reply-To;
+        b=aqRt91ZLQ6hwlR59KOfAq+RsGl8XpIv4HmwTUiDv57/KlbuP+eNQYi4Ho1Cmw6IYO
+         SOvw0Tn5RAxYZv48gIaev7r8QkRiS7myb3MWYX6LNY2bVmbhiNxvzQNja84DzzVCzt
+         kHmIAcqdjlZOvdaolxFsQqmzwK9f8l1pSOhA2L08=
+In-Reply-To: <20200926190754.GA3748@salvia>
+Content-Language: en-GB
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-nftables-0.9.6
 
-I'm running a VOIP server. There are lots of script kiddies who will 
-bang away with 10/sec SIP INVITES or REGISTERS .
+On 26/09/2020 21:07, Pablo Neira Ayuso wrote:
+> On Sat, Sep 26, 2020 at 06:44:00PM +0000, =D1=BD=D2=89=E1=B6=AC=E1=B8=B3=
+=E2=84=A0 wrote:
+>> On 26/09/2020 20:21, Pablo Neira Ayuso wrote:
+>>> On Fri, Sep 25, 2020 at 07:10:00PM +0000, =D1=BD=D2=89=E1=B6=AC=E1=B8=
+=B3=E2=84=A0 wrote:
+>>>> Been trying to concatenate sets update:
+>>>>
+>>>> tcp dport @b_t update @b_sa4 { ip saddr } drop;
+>>>> tcp dport @b_t update @b_sa6 { ip6 saddr } drop;
+>>>>
+>>>> with:
+>>>>
+>>>> tcp dport @b_t update @b_sa4 . @b_sa4 { ip saddr . ip6 saddr } drop;=
 
-In iptables you can match on the string:
+>>> What's the intention here?
+>>>
+>>>> but that did not work out. Is somehow possible to concatenate sets u=
+pdate?
+>>> Yes, you can do:
+>>>
+>>> tcp dport @b_t update @b_sa4 { ip saddr . ip6 saddr } drop
+>>>
+>>> You can update one single set at a time. Not sure what you expect fro=
+m
+>>> this concatenating sets instead of keys.
+>> The two mentioned sets are dynamic, learning ip | ip6 saddrs from hits=
+ on
+>> tcp dport.
+>>
+>> The intended concatenation was to put it into one rule instead of two,=
+ like
+>> if ip saddr then update element in set @b_sa4 and if ip6 saddr then up=
+date
+>> element in set @b_sa6 respectively.
+> So you would like to consolidate:
+>
+>   tcp dport @b_t update @b_sa4 { ip saddr } drop
+>   tcp dport @b_t update @b_sa6 { ip6 saddr } drop
+>
+> In one single rule?
+>
+> Something like (hypothetical syntax)
+>
+>   tcp dport @b_t update @b_sa { inet saddr } drop
+>
+> where b_sa is a set with something like type inet_addr.
 
--A SIP   -i eth0 -p udp -m udp --dport 5060 -m string   --string 
-"INVITE" --algo bm --from 23 --to 28 -m comment --comment "Catch SIP 
-INVITEs" -j SIPINVITE
+In a way yes, though this would consolidate also ip and ip6 into the=20
+same set and could make viewing (a large) set it bit cumbersome, unless=20
+there was an optional view filter something like
 
--A SIP   -i eth0 -p udp -m udp --dport 5060 -m string   --string 
-"REGISTER" --algo bm --from 23 --to 30 -m comment --comment "Catch SIP 
-REGISTERs" -j SIPREGISTER
-
-I'm looking at RAW to do the same:
-
-meta l4proto udp udp dport 5060 @th,184,224 0x494e56495445 counter
-
-where 184 = 23*8, and 224 = 28*8. INVITE is 0x494e56495445 in hex
-
-I have a prerouting chain:
-
-table ip filter-asterisk {
-	chain output-asterisk {
-		..................
-	}
-
-	chain prerouting {
-		type filter hook prerouting priority raw; policy accept;
-	}
-}
-
-but no joy when I try to add the rule:
-
-nft add rule filter-asterisk prerouting meta l4proto udp udp dport 5060 
-@th,184,224 0x494e56495445 counter
-Error: Could not process rule: Value too large for defined data type
-add rule filter-asterisk prerouting meta l4proto udp udp dport 5060 
-@th,184,224 0x494e56495445 counter
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-Any help appreciated.
-
-sean
+nft list set [family] [table] filter [set] ( optional [ip] | [ip6] )
 
