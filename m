@@ -1,44 +1,92 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: sean darcy <seandarcy2@gmail.com>
 Subject: Re: rate limit SIP INVITES
-Date: Sun, 27 Sep 2020 16:03:56 +0200
-Message-ID: <20200927140356.GA8727@salvia>
-References: <rko3n2$jjm$1@ciao.gmane.io>
- <20200927135447.GA8628@salvia>
+Date: Sun, 27 Sep 2020 11:42:08 -0400
+Message-ID: <rkqbsj$top$1@ciao.gmane.io>
+References: <rko3n2$jjm$1@ciao.gmane.io> <20200927135447.GA8628@salvia>
+ <20200927140356.GA8727@salvia>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20200927135447.GA8628@salvia>
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: sean darcy <seandarcy2@gmail.com>
-Cc: netfilter@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <20200927140356.GA8727@salvia>
+Content-Language: en-US
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Sun, Sep 27, 2020 at 03:54:47PM +0200, Pablo Neira Ayuso wrote:
-> On Sat, Sep 26, 2020 at 03:10:24PM -0400, sean darcy wrote:
-> > nftables-0.9.6
-> > 
-> > I'm running a VOIP server. There are lots of script kiddies who will bang
-> > away with 10/sec SIP INVITES or REGISTERS .
-> > 
-> > In iptables you can match on the string:
-> > 
-> > -A SIP   -i eth0 -p udp -m udp --dport 5060 -m string   --string "INVITE"
-> > --algo bm --from 23 --to 28 -m comment --comment "Catch SIP INVITEs" -j
-> > SIPINVITE
-> > 
-> > -A SIP   -i eth0 -p udp -m udp --dport 5060 -m string   --string "REGISTER"
-> > --algo bm --from 23 --to 30 -m comment --comment "Catch SIP REGISTERs" -j
-> > SIPREGISTER
-> > 
-> > I'm looking at RAW to do the same:
+On 9/27/20 10:03 AM, Pablo Neira Ayuso wrote:
+> On Sun, Sep 27, 2020 at 03:54:47PM +0200, Pablo Neira Ayuso wrote:
+>> On Sat, Sep 26, 2020 at 03:10:24PM -0400, sean darcy wrote:
+>>> nftables-0.9.6
+>>>
+>>> I'm running a VOIP server. There are lots of script kiddies who will bang
+>>> away with 10/sec SIP INVITES or REGISTERS .
+>>>
+>>> In iptables you can match on the string:
+>>>
+>>> -A SIP   -i eth0 -p udp -m udp --dport 5060 -m string   --string "INVITE"
+>>> --algo bm --from 23 --to 28 -m comment --comment "Catch SIP INVITEs" -j
+>>> SIPINVITE
+>>>
+>>> -A SIP   -i eth0 -p udp -m udp --dport 5060 -m string   --string "REGISTER"
+>>> --algo bm --from 23 --to 30 -m comment --comment "Catch SIP REGISTERs" -j
+>>> SIPREGISTER
+>>>
+>>> I'm looking at RAW to do the same:
+>>
+>> nft add rule x y udp dport 5060 @th,64,48 0x494e56495445 counter
+>>
+>> @th => transport header
+>> 64  => from bit number 64 (8 bytes after the UDP header)
+>> 48  => extract 48 bits (6 bytes for INVITE)
 > 
-> nft add rule x y udp dport 5060 @th,64,48 0x494e56495445 counter
+> @th,offset,length
 > 
-> @th => transport header
-> 64  => from bit number 64 (8 bytes after the UDP header)
-> 48  => extract 48 bits (6 bytes for INVITE)
+> where offset and length are expressed in bits.
+> 
+Thanks for the response.
 
-@th,offset,length
+I corrected it , but it didn't work:
 
-where offset and length are expressed in bits.
+nft list chain filter raw
+table ip filter {
+	chain raw {
+		type filter hook prerouting priority raw; policy accept;
+		udp dport 5060 @th,184,48 80600803923013 counter packets 0 bytes 0
+		udp dport 5060 @th,184,64 5928222864759342418 counter packets 0 bytes 0
+	}
+}
+
+I've gotten over 100 INVITEs or REGISTERs .
+
+Also nft changes the hex to decimal. Here's the input:
+
+# INVITE ascii = 0x494e56495445 hex , 48 (6 * 8 ) bits long
+# REGISTER ascii = 52 45 47 49 53 54 45 52 ,   64 ( 8 * 8 ) bits long
+         chain raw {
+                 type filter hook prerouting priority raw; policy accept;
+                 udp dport 5060 @th,184,48 0x494e56495445 counter 
+packets 0 bytes 0
+                 udp dport 5060 @th,184,64 0x5245474953544552 counter
+         }
+
+I'd suggest nft should leave it in hex.
+
+Here's the tcpdump output
+
+0x0000:  001f 1249 0acc 5254 00e7 8e30 0800 45a0  ...I..RT...0..E.
+0x0010:  03e1 0000 4000 4011 01dd 511d d3c4 d461  ....@.@...Q....a
+0x0020:  3b4c 13c4 13c4 03cd 386e 494e 5649 5445  ;L......8nINVITE
+
+INVITE starts at bit 337 (128 * 2 ) + ( 5 * 16 ) +1, but this is zero 
+based, so use 336, correct?
+
+As I read your response, it's not the offset from the beginning, but 
+after the UDP header,
+so 336 - 120 , or 216. (BTW, I always thought the UDP header was 160 bits.)
+
+udp dport 5060 @th,216,48 0x494e56495445 counter
+
+Sorry for being so long-winded. I appreciate your help in sorting this out.
+
+sean
+
