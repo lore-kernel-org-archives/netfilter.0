@@ -1,39 +1,45 @@
-From: Eric Peterson <netminder@gmail.com>
-Subject: Re: meter directive
-Date: Mon, 28 Sep 2020 15:17:03 -0500
-Message-ID: <029C8A3B-CD21-410E-A0D1-F64B5D2845AA@gmail.com>
-Mime-Version: 1.0 (1.0)
+From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+Subject: [nftables] packet (filtering) flow NIC vs. PPPoE?
+Date: Mon, 28 Sep 2020 21:35:00 +0000
+Message-ID: <dd201d62-d014-e9e3-254b-f7644bc759d7@gmx.net>
+Reply-To: vtol@gmx.net
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:content-transfer-encoding:mime-version:date:subject:message-id
-         :cc:to;
-        bh=nNfYQXdpic30UefIfs2hbmbP0/c2U27hcE363rb+yKY=;
-        b=HjYoavpjkwjJZIrZr4tUwPxbX15EUQv+VL2tLCM0vjor7KmH7ffPs4H/K3xh4Pk3H5
-         xdwqKtyjQkoPIEwRm39hi9xB8msFnFgaef2eWm3MW2SI1DNuL/0e8AEsdqMCNWkz4zXJ
-         cwDRiFwlCjmt8GVxYiUc+DfneFEcHs2fnMn9E9VxcIUJcdPznAKeCJsH3t0eYHfaBOOZ
-         afHvYnKPj8behGZHOQH0WByWnUT+x85bYoNUXQy512BMA2c4MDz7c84pj04MWL3zH9Ag
-         88ieVS59345021VQrz2R3K+W+3VftCJhRn2qwQKRFACM4g2/JdHFod6LZL+yqA/MFaV4
-         dLhA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1601328901;
+        bh=8bj+DNNNqdBWngf7dtPrlm0EVmIjtA9JlzaBFm3VzGw=;
+        h=X-UI-Sender-Class:Reply-To:To:From:Subject:Date;
+        b=TSiOEGwFcc/F2mk7ZwE3UkhPjh8xUMyuHG30sth69SqGXbd8V+xU+AfO2Ni9jdu11
+         Eg3H17afQnme4OI4HvneffBfeYdI5G/Nd631DJJMiMnVu3NQMd3CMU7JS9N2ucR+cf
+         2IPLTXQ2Z1rGdter9vcnv1rAYPelKo8Bgv/zx4XA=
+Content-Language: en-GB
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Devin Bayer <dev@doubly.so>, duncan_roe@optusnet.com.au, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Gentlemen:=20
+Whilst testing NFTables's flow offload on a node with a PPPoE subscriber =
 
-While I appreciate being cc=E2=80=99d on all of these emails, none of this h=
-as anything to do with me and I have only a vague idea of what you=E2=80=99r=
-e discussing. You can take me off the list.
+line it turned out that the flow offload happens with the NIC netdev and =
 
-Regards,
+not (as I expected) the virtual PPPoE netdev.
 
-Eric Peterson
-netminder@gmail.com
+Just for reference this being the NFT config (eth2 being the NIC)
 
-Sent from my iPhone
+flowtable fte=C2=A0=C2=A0=C2=A0 {
+ =C2=A0 hook ingress priority -100
+ =C2=A0 devices =3D { eth2 }
+ =C2=A0 counter
+}
 
-> On Sep 28, 2020, at 11:40 AM, Pablo Neira Ayuso <pablo@netfilter.org> wrot=
-e:
->=20
+ip protocol { 6, 17 } flow add @fte;
+ip6 nexthdr { 6, 17 } flow add @fte;
+
+
+Why would the packet filtering have to take place on the PPPoE netdev=20
+but the flowatable happens with the NIC instead?
+
+
+
+
+
