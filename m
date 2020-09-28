@@ -1,103 +1,181 @@
-From: sean darcy <seandarcy2@gmail.com>
-Subject: Re: rate limit SIP INVITES
-Date: Mon, 28 Sep 2020 14:09:24 -0400
-Message-ID: <rkt8sl$rfr$1@ciao.gmane.io>
-References: <rko3n2$jjm$1@ciao.gmane.io> <20200927135447.GA8628@salvia>
- <20200927140356.GA8727@salvia> <rkqbsj$top$1@ciao.gmane.io>
- <20200927205918.GA11212@salvia>
+From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+Subject: Re: [nftables] netdev rate limiting | timeouts rfq
+Date: Mon, 28 Sep 2020 18:15:00 +0000
+Message-ID: <23c4b835-489c-2f0e-46a1-f86ad50add8c@gmx.net>
+References: <20200928115210.GA21841@salvia>
+ <f536fd2e-a9f2-730a-d2ae-0579ccb3b48d@gmx.net>
+ <20200928122443.GA24572@salvia>
+ <c9a8646f-69b6-7333-b7ed-74f3d9747665@gmx.net> <20200928154339.GA2605@salvia>
+ <aca6a166-d5be-3d3c-536e-116f1aa65249@gmx.net> <20200928162307.GA3343@salvia>
+ <1d252cae-37cc-f457-932c-2c1ada59e2a0@gmx.net> <20200928170136.GA4278@salvia>
+ <0989cfd6-7966-d1eb-8103-b9d6902b40c0@gmx.net>
+ <20200928175611.GA23901@salvia>
+Reply-To: vtol@gmx.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20200927205918.GA11212@salvia>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1601316908;
+        bh=b350lEmuGdaAu+5uKC5pYCNCzj7l+auPSNI3Ls0/umE=;
+        h=X-UI-Sender-Class:Reply-To:To:Cc:References:From:Subject:Date:
+         In-Reply-To;
+        b=XGtAj8IMDnjqrBjild0JdYApL+ACTDnP/UKZcc//L176hABu61wtFKStOd5mLKsUT
+         znYEHL7tNhaUIQuHax5cHcKyeVQRiIAJ0lQFVqI/MpHjRZv7He/aPqDkYhTM0MKmhM
+         ZB+UCYGSMWAlKSupIr9u8LvNhMN+cafkpeFh1198=
+In-Reply-To: <20200928175611.GA23901@salvia>
+Content-Language: en-GB
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="utf-8"; format="flowed"
 To: netfilter@vger.kernel.org
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>
 
-On 9/27/20 4:59 PM, Pablo Neira Ayuso wrote:
-> On Sun, Sep 27, 2020 at 11:42:08AM -0400, sean darcy wrote:
->> On 9/27/20 10:03 AM, Pablo Neira Ayuso wrote:
->>> On Sun, Sep 27, 2020 at 03:54:47PM +0200, Pablo Neira Ayuso wrote:
->>>> On Sat, Sep 26, 2020 at 03:10:24PM -0400, sean darcy wrote:
->>>>> nftables-0.9.6
->>>>>
->>>>> I'm running a VOIP server. There are lots of script kiddies who will bang
->>>>> away with 10/sec SIP INVITES or REGISTERS .
->>>>>
->>>>> In iptables you can match on the string:
->>>>>
->>>>> -A SIP   -i eth0 -p udp -m udp --dport 5060 -m string   --string "INVITE"
->>>>> --algo bm --from 23 --to 28 -m comment --comment "Catch SIP INVITEs" -j
->>>>> SIPINVITE
->>>>>
->>>>> -A SIP   -i eth0 -p udp -m udp --dport 5060 -m string   --string "REGISTER"
->>>>> --algo bm --from 23 --to 30 -m comment --comment "Catch SIP REGISTERs" -j
->>>>> SIPREGISTER
->>>>>
->>>>> I'm looking at RAW to do the same:
+
+On 28/09/2020 19:56, Pablo Neira Ayuso wrote:
+> On Mon, Sep 28, 2020 at 05:38:00PM +0000, =D1=BD=D2=89=E1=B6=AC=E1=B8=B3=
+=E2=84=A0 wrote:
+>> On 28/09/2020 19:01, Pablo Neira Ayuso wrote:
+>>> On Mon, Sep 28, 2020 at 04:47:00PM +0000, =D1=BD=D2=89=E1=B6=AC=E1=B8=
+=B3=E2=84=A0 wrote:
+>>>> To get a flexible evaluation period for the count value:
 >>>>
->>>> nft add rule x y udp dport 5060 @th,64,48 0x494e56495445 counter
+>>>> * ct state { new , invalid } update @glv4 { ip saddr ct count over 5=
+0
+>>>> timeout 1s } log flags all prefix "glv4 DROP: " drop
 >>>>
->>>> @th => transport header
->>>> 64  => from bit number 64 (8 bytes after the UDP header)
->>>> 48  => extract 48 bits (6 bytes for INVITE)
+>>>> update set element for any saddr that exceeds the count of 50 within=
+ 1 s for
+>>>> ct state new | invalid
+>>>>
+>>>>
+>>>> * ct state { new , invalid } update @glv4 { ip saddr ct count over 7=
+5
+>>>> timeout 1s } log flags all prefix "glv4 DROP: " drop
+>>>>
+>>>> update set element for any saddr that exceeds the count of 75 within=
+ 1 h for
+>>>> ct state new | invalid
+>>>>
+>>>>
+>>>> * ct state { new , invalid } update @glv4 { ip saddr ct count over 7=
+5
+>>>> timeout 1s } log flags all prefix "glv4 DROP: " drop
+>>>>
+>>>> update set element for any saddr that exceeds the count of 150 withi=
+n 1 d
+>>>> for ct state new | invalid
+>>> Thanks, these are looking better, although still not correct.
 >>>
->>> @th,offset,length
+>>> Two issues:
 >>>
->>> where offset and length are expressed in bits.
->>>
->> Thanks for the response.
+>>> * 'ct count' relies on the connection tracking table. This is countin=
+g
+>>>     the number of existing connections in this table according to you=
+r
+>>>     key, ie. ip saddr. You do not have to specify timeouts here becau=
+se
+>>>     it is the connection tracking time that governs when the conntrac=
+k
+>>>     entries expire.
+>> suppose those are stipulated in net.netfilter.nf_conntrack_[proto]_tim=
+eout ?
 >>
->> I corrected it , but it didn't work:
+>> This is a bit inflexible though, an offender might not probe within su=
+ch
+>> conntrack stipulated timeout but say in infrequent intervals, one woul=
+d have
+>> to stipulate a count of 1 to catch such saddr at any given time (connt=
+rack
+>> timeout), which would be fine for ct state new but could lead to some =
+false
+>> positive with ct state invalid.
 >>
->> nft list chain filter raw
->> table ip filter {
->> 	chain raw {
->> 		type filter hook prerouting priority raw; policy accept;
->> 		udp dport 5060 @th,184,48 80600803923013 counter packets 0 bytes 0
->> 		udp dport 5060 @th,184,64 5928222864759342418 counter packets 0 bytes 0
-> 
-> This should be:
->                                 @th,64,48 0x494e56495445 counter
-> 
-> you specify offset to 184, that does not look fine.
-> 
-> If you want to match INVITE right after the UDP header, in the initial
-> 6 bytes of the payload, then offset is 64 bits give that UDP header is
-> 8 bytes (64 bits).
-> 
-> Note that @th specifies that the offset is relative to the transport
-> header offset. Similarly, @nh specifies the offset relative to the
-> network header.
-> 
-> I tried it here with nc -u and sending the string INVITE and it works
-> fine.
-> 
+>> Moreover, if not specifying a timeout for the set then how is the sadd=
+r
+>> element going to be removed ever? As far as I comprehend there are two=
 
-It's working. Thanks for all the quick and responsive help.
+>> parameters (whichever yields first) for elements being purged (save fo=
+r
+>> manual purging)=C2=A0 from a set:
+>>
+>> * size - if exceeded oldest elements being purged first
+>>
+>> or
+>>
+>> * timeout - if counted down to zero element being purged.
+>>
+>> With no timeout in the set elements may live forever, which is not rea=
+lly
+>> wanted for a dynamic sort of set.
+> That's not how it works: ct count implements a garbage collector to
+> purge old list of connections whose key is ip saddr.
+>
+> http://workshop.netfilter.org/2018/wiki/images/2/23/Connlimit.pdf
+>
+> The connection tracking table entries are released once they expire.
+> Connection in TIME_WAIT and CLOSE state are already assumed to be
+> close, hence not being counted.
 
-For those who find this exchange, and are as clueless as I am about bit 
-counting network packets, and the differences between link layer, 
-network header, and transport header:
+How is that in less abstract (sort of layman) terms?
 
-table ip filter {
-	chain raw {
-		type filter hook prerouting priority raw; policy accept;
-		udp dport 5060 @th,64,48 80600803923013 counter packets 221 bytes 162020
-		udp dport 5060 @th,64,64 5928222864759342418 counter packets 67 bytes 
-39671
-		udp dport 5060 @ll,336,48 80600803923013 counter packets 221 bytes 162020
-		udp dport 5060 @ll,336,64 5928222864759342418 counter packets 67 bytes 
-39671
-		udp dport 5060 @nh,224,48 80600803923013 counter packets 221 bytes 
-162020 drop
-		udp dport 5060 @nh,224,64 5928222864759342418 counter packets 67 bytes 
-39671 drop
-	}
-}
+nft_connlimit stores conntrack objects from the conntrack table and once =
 
-I repeat my suggestion that "nft list" show the pattern to be matched in 
-hex, as it is in the command.
+those objects expire in the conntrack table said garbage collector is=20
+retiring elements from the set?
 
-sean
+With 'gc-interval'=C2=A0 one could then exercise some sort of control ove=
+r=20
+the element's lifespan in the ct state set?
+
+
+>
+>>> * You have to use 'add' instead of 'update'. Update makes sense to
+>>>     refresh timeouts when they are in place, but there is no timeouts=
+ in
+>>>     this case.
+>>>
+>>> Therefore, make sure you define the dynamic set with not timeouts at
+>>> all when combining this with ct count.
+>>>
+>>> Using 'update' in your rule with ct count and/or 'timeout' in your se=
+t
+>>> definition will make you hit "Operation not supported".
+>> Having the set then as:
+>>
+>>  =C2=A0 set glv4 {
+>>  =C2=A0=C2=A0=C2=A0 type ipv4_addr
+>>  =C2=A0=C2=A0=C2=A0 size 65535
+>>  =C2=A0=C2=A0=C2=A0 flags dynamic
+>>  =C2=A0=C2=A0=C2=A0 counter
+>>  =C2=A0 }
+>>
+>> and the rule in pre-routing chain
+>>
+>> ct state new add @glv4 { ip saddr ct count over 25 }
+>>
+>> and still been hitting:
+>>
+>>  =C2=A0Error: Could not process rule: Not supported
+>>
+>> until removed 'counter' from the set, then reading
+>>
+>>  =C2=A0 set glv4 {
+>>  =C2=A0=C2=A0=C2=A0 type ipv4_addr
+>>  =C2=A0=C2=A0=C2=A0 size 65535
+>>  =C2=A0=C2=A0=C2=A0 flags dynamic
+>>  =C2=A0 }
+> The counter is a stateful expression and ct count is also a stateful
+> expression too.
+>
+> You can only use one single stateful expression per set set element at
+> this stage.
+
+That is curious/confusing (me) because adding 'counter' to the rule does =
+
+not throw an error:
+
+ct state new add @glv4 { ip saddr ct count over 25 } counter
+
+
+
+
 
