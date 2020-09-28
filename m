@@ -1,97 +1,34 @@
-From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 Subject: Re: [nftables] netdev rate limiting | timeouts rfq
-Date: Mon, 28 Sep 2020 12:08:00 +0000
-Message-ID: <f536fd2e-a9f2-730a-d2ae-0579ccb3b48d@gmx.net>
+Date: Mon, 28 Sep 2020 14:24:43 +0200
+Message-ID: <20200928122443.GA24572@salvia>
 References: <5c60c340-d6d8-1f7c-67da-2782360a92fe@gmx.net>
  <20200923083042.GB10267@salvia>
  <cd739cba-9f79-2669-b5cb-e504e851c49d@gmx.net>
  <20200928115210.GA21841@salvia>
-Reply-To: vtol@gmx.net
+ <f536fd2e-a9f2-730a-d2ae-0579ccb3b48d@gmx.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1601294904;
-        bh=N3SYi8Lgx0UxGbIfCIu5x74tV87+vW5Mp0UnULnjjaM=;
-        h=X-UI-Sender-Class:Reply-To:To:References:From:Subject:Date:
-         In-Reply-To;
-        b=GMEZIKLKRjcKUmHb1tPG5ant3fEtb4Hulwb9ISuscAiXcps1EL6OTYw0A0kQnXcAC
-         yyrZs+JDwTZUXUQQ4GfpsRunNvnieAx2PgLg+HR6+LI/Zjrxv+iun+Ywv+HRwSbjZx
-         IM9ulQdN0x86KjbCy5BH108vFIPr9elB2+SD4nbo=
-In-Reply-To: <20200928115210.GA21841@salvia>
-Content-Language: en-GB
+Content-Disposition: inline
+In-Reply-To: <f536fd2e-a9f2-730a-d2ae-0579ccb3b48d@gmx.net>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: =?utf-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+Cc: netfilter@vger.kernel.org
 
-T24gMjgvMDkvMjAyMCAxMzo1MiwgUGFibG8gTmVpcmEgQXl1c28gd3JvdGU6DQo+IE9uIE1v
-biwgU2VwIDI4LCAyMDIwIGF0IDExOjAyOjAwQU0gKzAwMDAsING90onhtqzhuLPihKAgd3Jv
-dGU6DQo+IFsuLi5dDQo+PiBJdCBzZWVtcyB0aGF0IHVwZGF0aW5nIGEgc2V0IGFuZCBkcm9w
-cGluZyB0aGUgcGFja2V0IGluIHRoZSBzYW1lIHJ1bGVzIGRvZXMNCj4+IG5vdCB3b3JrIGVp
-dGhlciwgZS5nLg0KPj4NCj4+IGlwIHByb3RvY29sIHRjcCB1cGRhdGUgQGdsdjQgeyBpcCBz
-YWRkciBsaW1pdCByYXRlIG92ZXIgNTAvc2Vjb25kIGJ1cnN0IDE1DQo+PiBwYWNrZXRzIH0g
-bG9nIHByZWZpeCAiZm9vICIgZHJvcA0KPj4NCj4+IHdvdWxkIHNlZW0gdG8gb25seSB1cGRh
-dGUgdGhlIG5hbWVkIHNldCBidXQgaXMgbmVpdGhlciBsb2dnaW5nIG5vciBkcm9wcGluZw0K
-Pj4gdGhlIGZyYW1lLg0KPiBUaGlzIGV4YW1wbGUgaXMgd29ya2luZyBmaW5lIGhlcmU6DQo+
-DQo+IHRhYmxlIGlwIHggew0KPiAgICAgICAgICBzZXQgZ2x2NCB7DQo+ICAgICAgICAgICAg
-ICAgICAgdHlwZW9mIGlwIHNhZGRyDQo+ICAgICAgICAgICAgICAgICAgc2l6ZSA2NTUzNQ0K
-PiAgICAgICAgICAgICAgICAgIGZsYWdzIGR5bmFtaWMsdGltZW91dA0KPiAgICAgICAgICAg
-ICAgICAgIHRpbWVvdXQgMTVtDQo+ICAgICAgICAgIH0NCj4NCj4gICAgICAgICAgY2hhaW4g
-eSB7DQo+ICAgICAgICAgICAgICAgICAgdHlwZSBmaWx0ZXIgaG9vayBvdXRwdXQgcHJpb3Jp
-dHkgZmlsdGVyOyBwb2xpY3kgYWNjZXB0Ow0KPiAgICAgICAgICAgICAgICAgIGlwIHByb3Rv
-Y29sIHRjcCB1cGRhdGUgQGdsdjQgeyBpcCBkYWRkciBsaW1pdCByYXRlIG92ZXIgMS9taW51
-dGUgYnVyc3QgMiBwYWNrZXRzIH0gbG9nIHByZWZpeCAiZm9vICIgZHJvcA0KPiAgICAgICAg
-ICB9DQo+IH0NCj4NCj4gaHBpbmczIC1TIHgueC54LnggLXAgODAgLWMgMQ0KPiBIUElORyB4
-LngueC54IChlbnAwczI1IHgueC54LngpOiBTIHNldCwgNDAgaGVhZGVycyArIDAgZGF0YSBi
-eXRlcw0KPiBsZW49NDYgaXA9eC54LngueCB0dGw9NTMgREYgaWQ9MCBzcG9ydD04MCBmbGFn
-cz1TQSBzZXE9MCB3aW49MjkyMDAgcnR0PTMxLjggbXMNCj4NCj4gLS0tIHgueC54LnggaHBp
-bmcgc3RhdGlzdGljIC0tLQ0KPiAxIHBhY2tldHMgdHJhbnNtaXR0ZWQsIDEgcGFja2V0cyBy
-ZWNlaXZlZCwgMCUgcGFja2V0IGxvc3MNCj4gcm91bmQtdHJpcCBtaW4vYXZnL21heCA9IDMx
-LjgvMzEuOC8zMS44IG1zDQo+DQo+IGhwaW5nMyAtUyB4LngueC54IC1wIDgwIC1jIDENCj4g
-SFBJTkcgeC54LngueCAoZW5wMHMyNSB4LngueC54KTogUyBzZXQsIDQwIGhlYWRlcnMgKyAw
-IGRhdGEgYnl0ZXMNCj4gW3NlbmRfaXBdIHNlbmR0bzogT3BlcmF0aW9uIG5vdCBwZXJtaXR0
-ZWQNCj4NCj4gWzEzNzcxMi4xNjIxMTNdIGZvbyBJTj0gT1VUPWVucDBzMjUgU1JDPTEwLjE0
-MS4xLjIxOSBEU1Q9eC54LngueCBMRU49NDAgVE9TPTB4MDAgUFJFQz0weDAwIFRUTD02NCBJ
-RD01Nzc4NyBQUk9UTz1UQ1AgU1BUPTI5MDQgRFBUPTgwIFdJTkRPVz01MTIgUkVTPTB4MDAg
-U1lOIFVSR1A9MA0KPg0KDQpJbiB0aGUgYmVsb3cgZXhhbXBsZSBpdCBkb2VzIG5vdCBwcmlu
-dCBhbnkgbG9ncyBhbmQgc2luY2UgdGhhdCBzdGFuemEgaXMgDQpyaWdodCBwcmlvciBkcm9w
-IEkgcmVja29uIHRoYXQgc2luY2UgdGhlIGxvZyBwcmludGluZyBkb2VzIG5vdCBoYXBwZW4g
-DQp0aGUgZnJhbWUgZHJvcHBpbmcgZG9lcyBuZWl0aGVyLg0KDQp0YWJsZSBpbmV0IGZpbHRl
-ciB7DQogwqDCoMKgwqDCoMKgwqAgc2V0IG5fd2FuIHsNCiDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqAgdHlwZSBpZm5hbWUNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgZmxhZ3MgY29uc3RhbnQNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZWxl
-bWVudHMgPSB7ICJldGgyIiwgInBwcG9lLXdhbiIgfQ0KIMKgwqDCoMKgwqDCoMKgIH0NCiDC
-oMKgwqDCoMKgwqDCoCBzZXQgZ2x2NCB7DQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgIHR5cGUgaXB2NF9hZGRyDQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHNp
-emUgNjU1MzUNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZmxhZ3MgZHluYW1p
-Yyx0aW1lb3V0DQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHRpbWVvdXQgN2QN
-CiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZ2MtaW50ZXJ2YWwgMTBzDQogwqDC
-oMKgwqDCoMKgwqAgfQ0KIMKgwqDCoMKgwqDCoMKgIGZsb3d0YWJsZSBmdGUgew0KIMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBob29rIGluZ3Jlc3MgcHJpb3JpdHkgLTEwMA0K
-IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBkZXZpY2VzID0geyBldGgyIH0NCiDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY291bnRlcg0KIMKgwqDCoMKgwqDCoMKg
-IH0NCiDCoMKgwqDCoMKgwqDCoCBmbG93dGFibGUgZnR3IHsNCiDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgaG9vayBpbmdyZXNzIHByaW9yaXR5IC0xMDANCiDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgZGV2aWNlcyA9IHsgcHBwb2Utd2FuIH0NCiDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgY291bnRlcg0KIMKgwqDCoMKgwqDCoMKgIH0NCiDC
-oMKgwqDCoMKgwqDCoCBjaGFpbiBmb3J3YXJkIHsNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgdHlwZSBmaWx0ZXIgaG9vayBmb3J3YXJkIHByaW9yaXR5IGZpbHRlcjsgcG9s
-aWN5IGRyb3A7DQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGljbXB2NiB0eXBl
-IGVjaG8tcmVxdWVzdCBhY2NlcHQNCiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-Y3Qgc3RhdGUgZXN0YWJsaXNoZWQscmVsYXRlZCBhY2NlcHQNCiDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqAgaWlmbmFtZSAhPSBAbl93YW4gYWNjZXB0DQogwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIHRjcCBmbGFncyBzeW4gdGNwIG9wdGlvbiBtYXhzZWcgc2l6
-ZSBzZXQgcnQgbXR1DQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlwIHByb3Rv
-Y29sIHsgdGNwLCB1ZHAgfSBmbG93IGFkZCBAZnRlDQogwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgIGlwNiBuZXh0aGRyIHsgdGNwLCB1ZHAgfSBmbG93IGFkZCBAZnRlDQogwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlwIHByb3RvY29sIHsgdGNwLCB1ZHAgfSBm
-bG93IGFkZCBAZnR3DQogwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGlwNiBuZXh0
-aGRyIHsgdGNwLCB1ZHAgfSBmbG93IGFkZCBAZnR3DQogwqDCoMKgwqDCoMKgwqAgfQ0KIMKg
-wqDCoMKgwqDCoMKgIGNoYWluIHByZXJvdXRpbmcgew0KIMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoCB0eXBlIGZpbHRlciBob29rIHByZXJvdXRpbmcgcHJpb3JpdHkgbWFuZ2xl
-OyBwb2xpY3kgYWNjZXB0Ow0KIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBpaWZu
-YW1lIEBuX3dhbiBnb3RvIHdhbl9wcg0KIMKgwqDCoMKgwqDCoMKgIH0NCiDCoMKgwqDCoMKg
-wqDCoCBjaGFpbiB3YW5fcHIgew0KIMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBj
-dCBzdGF0ZSB7IG5ldyB9IHVwZGF0ZSBAZ2x2NCB7IGlwIHNhZGRyIGxpbWl0IHJhdGUgDQpv
-dmVyIDE1L2RheSBidXJzdCAzIHBhY2tldHMgfSBsb2cgcHJlZml4ICJnbHY0IERST1A6ICIg
-ZmxhZ3MgYWxsIGRyb3ANCiDCoMKgwqDCoMKgwqDCoCB9DQp9DQoNCg0K
+On Mon, Sep 28, 2020 at 12:08:00PM +0000, ѽ҉ᶬḳ℠ wrote:
+> In the below example it does not print any logs and since that stanza is
+> right prior drop I reckon that since the log printing does not happen the
+> frame dropping does neither.
+> 
+> table inet filter {
+[...]
+>         chain wan_pr {
+>                 ct state { new } update @glv4 { ip saddr limit rate over
+> 15/day burst 3 packets } log prefix "glv4 DROP: " flags all drop
+>         }
+> }
+
+ct state new is restricting to match only on the first packet of the
+connection.
