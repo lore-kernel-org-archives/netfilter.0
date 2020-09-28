@@ -1,63 +1,82 @@
-From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
-Subject: Re: [nftables] netdev rate limiting | timeouts rfq
-Date: Mon, 28 Sep 2020 13:10:00 +0000
-Message-ID: <c9a8646f-69b6-7333-b7ed-74f3d9747665@gmx.net>
-References: <5c60c340-d6d8-1f7c-67da-2782360a92fe@gmx.net>
- <20200923083042.GB10267@salvia>
- <cd739cba-9f79-2669-b5cb-e504e851c49d@gmx.net>
- <20200928115210.GA21841@salvia>
- <f536fd2e-a9f2-730a-d2ae-0579ccb3b48d@gmx.net>
- <20200928122443.GA24572@salvia>
-Reply-To: vtol@gmx.net
+From: Duncan Roe <duncan_roe@optusnet.com.au>
+Subject: Re: meter directive
+Date: Mon, 28 Sep 2020 22:32:13 +1000
+Message-ID: <20200928123213.GF20886@dimstar.local.net>
+References: <2781f10c-a5e5-0bdc-b701-617f9476c57b@doubly.so>
+ <aaa67cc8-c8c0-465b-3fa5-10f62e67795e@doubly.so>
+ <20200928021034.GB20886@dimstar.local.net>
+ <b3d4b568-3d53-a9cf-6730-a47b35132b5f@doubly.so>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1601298625;
-        bh=7nwUY4yGRZpCpa0ROjN34agcnWW/qVfJ6iYdWqkR2KU=;
-        h=X-UI-Sender-Class:Reply-To:To:References:From:Subject:Date:
-         In-Reply-To;
-        b=SLtepjbpF1cD/qdZPzu276p2wFj5DmgQzQqJP91LROUtKRDXlw0dWt2wmkY5jgZO/
-         4+oRC5b87wyAVgoBXlkbF4jVOkntsjKq5z/xgGaEJ2smxnaWObKm5tXDZQe3sX27QU
-         4HbkbAfZNygKLA0YYCQK6sZKE8PFJSbsKSy8UXSU=
-In-Reply-To: <20200928122443.GA24572@salvia>
-Content-Language: en-GB
+Content-Disposition: inline
+In-Reply-To: <b3d4b568-3d53-a9cf-6730-a47b35132b5f@doubly.so>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Devin Bayer <dev@doubly.so>
+Cc: "netminder (Eric Peterson)" <netminder@gmail.com>, netfilter@vger.kernel.org
 
-On 28/09/2020 14:24, Pablo Neira Ayuso wrote:
-> On Mon, Sep 28, 2020 at 12:08:00PM +0000, =D1=BD=D2=89=E1=B6=AC=E1=B8=B3=
-=E2=84=A0 wrote:
->> In the below example it does not print any logs and since that stanza =
-is
->> right prior drop I reckon that since the log printing does not happen =
-the
->> frame dropping does neither.
->>
->> table inet filter {
-> [...]
->>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 chain wan_pr {
->>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 ct state { new } update @glv4 { ip saddr limit rate=
- over
->> 15/day burst 3 packets } log prefix "glv4 DROP: " flags all drop
->>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->> }
-> ct state new is restricting to match only on the first packet of the
-> connection.
+On Mon, Sep 28, 2020 at 12:01:52PM +0200, Devin Bayer wrote:
+> On 28/09/2020 04.10, Duncan Roe wrote:
+> >
+> > Hi Davin,
+>
+> Thanks for the reply Duncan.
+>
+> > a) from b):
+> > > Note that the meter keyword is obsolete, the dynamic set and map syntax is now preferred for consistency.
+>
+> I see. In that case, I would like to update the man page to use the new
+> syntax. The examples there use meter, but without any explanation.
+>
+>
+> For example the blacklist example:
+>
+>
+>
+> 	nft add rule ip filter input tcp flags syn tcp dport ssh meter flood size
+> 128000 { ip saddr timeout 10s limit rate over 10/second} add @blackhole { ip
+> saddr timeout 1m } drop
+>
+> So would this be the set equivalent?
+>
+>     set flood {
+>         type ipv4_addr;
+>         size 128000;
+>         flags dynamic, timeout;
+>         timeout 1m;
+>     }
+>     ...
+>     tcp flags syn tcp dport ssh \
+>         add @flood { ip saddr limit rate over 10/second } \
+>         add @blackhole { ip saddr timeout 1m } drop
+>
+>
+> Is there a map equivalent? I couldn't get anything to work.
+>
+> > b) Still documented at https://wiki.nftables.org/wiki-nftables/index.php/Meters,
+> >     but the examples are updated to use dynamic sets.
+>
+> It's quite confusing and doesn't work as described though.
+>
+> > c) counters in dynamic sets are special: you get a counter for each set member.
+>
+> Right - but how can I see the counters? If you look at my example I just see
+> this:
+>
+> 	3.10.95.11 . 22 expires 14s492ms limit rate 10/second,
+>
+> ~ Devin
 
-Right, it should be then rather something with ct count, like:
+It used to be the case with meters that you could have limit or counter but not
+both.
 
+I don't know if that is still the case with dynamic sets. If it is, you will
+have to have 2 sets: 1 with limits and 1 with counters.
 
-ct state new update @glv4 { ip saddr ct count over 15 } log flags all=20
-prefix "glv4 DROP: " drop
+(counter with limit is ambiguous: do you want to count packets received or
+packets accepted? Both are do-able with 2 sets).
 
+Please post your rules that add set members if you have further questions.
 
-but that produces:
-
-Error: Could not process rule: Not supported
-
-??
-
-
+Cheers ... Duncan.
