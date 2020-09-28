@@ -1,196 +1,39 @@
-From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
-Subject: Re: [nftables] netdev rate limiting | timeouts rfq
-Date: Mon, 28 Sep 2020 19:19:00 +0000
-Message-ID: <d1020bbb-a13b-f95f-4cf5-c44452ed4e93@gmx.net>
-References: <20200928115210.GA21841@salvia>
- <f536fd2e-a9f2-730a-d2ae-0579ccb3b48d@gmx.net>
- <20200928122443.GA24572@salvia>
- <c9a8646f-69b6-7333-b7ed-74f3d9747665@gmx.net> <20200928154339.GA2605@salvia>
- <aca6a166-d5be-3d3c-536e-116f1aa65249@gmx.net> <20200928162307.GA3343@salvia>
- <1d252cae-37cc-f457-932c-2c1ada59e2a0@gmx.net> <20200928170136.GA4278@salvia>
- <0989cfd6-7966-d1eb-8103-b9d6902b40c0@gmx.net>
- <20200928175611.GA23901@salvia>
- <23c4b835-489c-2f0e-46a1-f86ad50add8c@gmx.net>
-Reply-To: vtol@gmx.net
-Mime-Version: 1.0
+From: Eric Peterson <netminder@gmail.com>
+Subject: Re: meter directive
+Date: Mon, 28 Sep 2020 15:17:03 -0500
+Message-ID: <029C8A3B-CD21-410E-A0D1-F64B5D2845AA@gmail.com>
+Mime-Version: 1.0 (1.0)
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1601320759;
-        bh=KX1wz6xzj0greW+7MxCf5NRRScAc+0F/2mVw5VnKEgo=;
-        h=X-UI-Sender-Class:Reply-To:From:To:Cc:References:Subject:Date:
-         In-Reply-To;
-        b=DfA1Hhc5TyniiXjLysVeErJ2dr3BH3Fb4sI6lm4eBIuU7XFjcFMIzqDH6aeOlqLEt
-         iqp1y8xQUkHNkIMb7cE2r5nNS/uiznIQK8131CKPZhBiRXuClRE4197r31bask1fDX
-         NPTCLPi8xFNBDPsQKPyKAa1eVlZ/ESePrB/1/bEg=
-In-Reply-To: <23c4b835-489c-2f0e-46a1-f86ad50add8c@gmx.net>
-Content-Language: en-GB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:content-transfer-encoding:mime-version:date:subject:message-id
+         :cc:to;
+        bh=nNfYQXdpic30UefIfs2hbmbP0/c2U27hcE363rb+yKY=;
+        b=HjYoavpjkwjJZIrZr4tUwPxbX15EUQv+VL2tLCM0vjor7KmH7ffPs4H/K3xh4Pk3H5
+         xdwqKtyjQkoPIEwRm39hi9xB8msFnFgaef2eWm3MW2SI1DNuL/0e8AEsdqMCNWkz4zXJ
+         cwDRiFwlCjmt8GVxYiUc+DfneFEcHs2fnMn9E9VxcIUJcdPznAKeCJsH3t0eYHfaBOOZ
+         afHvYnKPj8behGZHOQH0WByWnUT+x85bYoNUXQy512BMA2c4MDz7c84pj04MWL3zH9Ag
+         88ieVS59345021VQrz2R3K+W+3VftCJhRn2qwQKRFACM4g2/JdHFod6LZL+yqA/MFaV4
+         dLhA==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: netfilter@vger.kernel.org
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+Content-Type: text/plain; charset="utf-8"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Devin Bayer <dev@doubly.so>, duncan_roe@optusnet.com.au, netfilter@vger.kernel.org
 
+Gentlemen:=20
 
-On 28/09/2020 20:15, =D1=BD=D2=89=E1=B6=AC=E1=B8=B3=E2=84=A0 wrote:
->
-> On 28/09/2020 19:56, Pablo Neira Ayuso wrote:
->> On Mon, Sep 28, 2020 at 05:38:00PM +0000, =D1=BD=D2=89=E1=B6=AC=E1=B8=B3=
-=E2=84=A0 wrote:
->>> On 28/09/2020 19:01, Pablo Neira Ayuso wrote:
->>>> On Mon, Sep 28, 2020 at 04:47:00PM +0000, =D1=BD=D2=89=E1=B6=AC=E1=B8=
-=B3=E2=84=A0 wrote:
->>>>> To get a flexible evaluation period for the count value:
->>>>>
->>>>> * ct state { new , invalid } update @glv4 { ip saddr ct count over =
-50
->>>>> timeout 1s } log flags all prefix "glv4 DROP: " drop
->>>>>
->>>>> update set element for any saddr that exceeds the count of 50=20
->>>>> within 1 s for
->>>>> ct state new | invalid
->>>>>
->>>>>
->>>>> * ct state { new , invalid } update @glv4 { ip saddr ct count over =
-75
->>>>> timeout 1s } log flags all prefix "glv4 DROP: " drop
->>>>>
->>>>> update set element for any saddr that exceeds the count of 75=20
->>>>> within 1 h for
->>>>> ct state new | invalid
->>>>>
->>>>>
->>>>> * ct state { new , invalid } update @glv4 { ip saddr ct count over =
-75
->>>>> timeout 1s } log flags all prefix "glv4 DROP: " drop
->>>>>
->>>>> update set element for any saddr that exceeds the count of 150=20
->>>>> within 1 d
->>>>> for ct state new | invalid
->>>> Thanks, these are looking better, although still not correct.
->>>>
->>>> Two issues:
->>>>
->>>> * 'ct count' relies on the connection tracking table. This is counti=
-ng
->>>> =C2=A0=C2=A0=C2=A0 the number of existing connections in this table =
-according to your
->>>> =C2=A0=C2=A0=C2=A0 key, ie. ip saddr. You do not have to specify tim=
-eouts here=20
->>>> because
->>>> =C2=A0=C2=A0=C2=A0 it is the connection tracking time that governs w=
-hen the conntrack
->>>> =C2=A0=C2=A0=C2=A0 entries expire.
->>> suppose those are stipulated in=20
->>> net.netfilter.nf_conntrack_[proto]_timeout ?
->>>
->>> This is a bit inflexible though, an offender might not probe within=20
->>> such
->>> conntrack stipulated timeout but say in infrequent intervals, one=20
->>> would have
->>> to stipulate a count of 1 to catch such saddr at any given time=20
->>> (conntrack
->>> timeout), which would be fine for ct state new but could lead to=20
->>> some false
->>> positive with ct state invalid.
->>>
->>> Moreover, if not specifying a timeout for the set then how is the sad=
-dr
->>> element going to be removed ever? As far as I comprehend there are tw=
-o
->>> parameters (whichever yields first) for elements being purged (save f=
-or
->>> manual purging)=C2=A0 from a set:
->>>
->>> * size - if exceeded oldest elements being purged first
->>>
->>> or
->>>
->>> * timeout - if counted down to zero element being purged.
->>>
->>> With no timeout in the set elements may live forever, which is not=20
->>> really
->>> wanted for a dynamic sort of set.
->> That's not how it works: ct count implements a garbage collector to
->> purge old list of connections whose key is ip saddr.
->>
->> http://workshop.netfilter.org/2018/wiki/images/2/23/Connlimit.pdf
->>
->> The connection tracking table entries are released once they expire.
->> Connection in TIME_WAIT and CLOSE state are already assumed to be
->> close, hence not being counted.
->
-> How is that in less abstract (sort of layman) terms?
->
-> nft_connlimit stores conntrack objects from the conntrack table and=20
-> once those objects expire in the conntrack table said garbage=20
-> collector is retiring elements from the set?
->
-> With 'gc-interval'=C2=A0 one could then exercise some sort of control o=
-ver=20
-> the element's lifespan in the ct state set?
->
+While I appreciate being cc=E2=80=99d on all of these emails, none of this h=
+as anything to do with me and I have only a vague idea of what you=E2=80=99r=
+e discussing. You can take me off the list.
 
-Just figured gc-interval does not work for ct state based sets. With no=20
-timeout control and TIME_WAIT and CLOSE state not counting there is no=20
-use for ct state based dynamic sets to gather meaningful data about=20
-offenders, even saddr ct count over 0 there is hardly any element in the =
+Regards,
 
-set and if there is it is just too short-lived.
+Eric Peterson
+netminder@gmail.com
 
->
->>
->>>> * You have to use 'add' instead of 'update'. Update makes sense to
->>>> =C2=A0=C2=A0=C2=A0 refresh timeouts when they are in place, but ther=
-e is no=20
->>>> timeouts in
->>>> =C2=A0=C2=A0=C2=A0 this case.
->>>>
->>>> Therefore, make sure you define the dynamic set with not timeouts at=
+Sent from my iPhone
 
->>>> all when combining this with ct count.
->>>>
->>>> Using 'update' in your rule with ct count and/or 'timeout' in your s=
-et
->>>> definition will make you hit "Operation not supported".
->>> Having the set then as:
->>>
->>> =C2=A0=C2=A0 set glv4 {
->>> =C2=A0=C2=A0=C2=A0=C2=A0 type ipv4_addr
->>> =C2=A0=C2=A0=C2=A0=C2=A0 size 65535
->>> =C2=A0=C2=A0=C2=A0=C2=A0 flags dynamic
->>> =C2=A0=C2=A0=C2=A0=C2=A0 counter
->>> =C2=A0=C2=A0 }
->>>
->>> and the rule in pre-routing chain
->>>
->>> ct state new add @glv4 { ip saddr ct count over 25 }
->>>
->>> and still been hitting:
->>>
->>> =C2=A0=C2=A0Error: Could not process rule: Not supported
->>>
->>> until removed 'counter' from the set, then reading
->>>
->>> =C2=A0=C2=A0 set glv4 {
->>> =C2=A0=C2=A0=C2=A0=C2=A0 type ipv4_addr
->>> =C2=A0=C2=A0=C2=A0=C2=A0 size 65535
->>> =C2=A0=C2=A0=C2=A0=C2=A0 flags dynamic
->>> =C2=A0=C2=A0 }
->> The counter is a stateful expression and ct count is also a stateful
->> expression too.
->>
->> You can only use one single stateful expression per set set element at=
-
->> this stage.
->
-> That is curious/confusing (me) because adding 'counter' to the rule=20
-> does not throw an error:
->
-> ct state new add @glv4 { ip saddr ct count over 25 } counter
->
->
->
->
->
-
-
+> On Sep 28, 2020, at 11:40 AM, Pablo Neira Ayuso <pablo@netfilter.org> wrot=
+e:
+>=20
