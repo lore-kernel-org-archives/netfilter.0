@@ -1,51 +1,63 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: meter directive
-Date: Mon, 28 Sep 2020 18:21:22 +0200
-Message-ID: <20200928162122.GA3287@salvia>
-References: <2781f10c-a5e5-0bdc-b701-617f9476c57b@doubly.so>
- <aaa67cc8-c8c0-465b-3fa5-10f62e67795e@doubly.so>
- <20200928021034.GB20886@dimstar.local.net>
- <b3d4b568-3d53-a9cf-6730-a47b35132b5f@doubly.so>
- <20200928123213.GF20886@dimstar.local.net>
- <dc380b6d-4085-13c7-9687-405825585823@doubly.so>
- <20200928160809.GB2605@salvia>
- <dcece986-3760-ddab-a726-213ac103e4d8@doubly.so>
+Subject: Re: [nftables] netdev rate limiting | timeouts rfq
+Date: Mon, 28 Sep 2020 18:23:07 +0200
+Message-ID: <20200928162307.GA3343@salvia>
+References: <5c60c340-d6d8-1f7c-67da-2782360a92fe@gmx.net>
+ <20200923083042.GB10267@salvia>
+ <cd739cba-9f79-2669-b5cb-e504e851c49d@gmx.net>
+ <20200928115210.GA21841@salvia>
+ <f536fd2e-a9f2-730a-d2ae-0579ccb3b48d@gmx.net>
+ <20200928122443.GA24572@salvia>
+ <c9a8646f-69b6-7333-b7ed-74f3d9747665@gmx.net>
+ <20200928154339.GA2605@salvia>
+ <aca6a166-d5be-3d3c-536e-116f1aa65249@gmx.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <dcece986-3760-ddab-a726-213ac103e4d8@doubly.so>
+In-Reply-To: <aca6a166-d5be-3d3c-536e-116f1aa65249@gmx.net>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Devin Bayer <dev@doubly.so>
-Cc: duncan_roe@optusnet.com.au, "netminder (Eric Peterson)" <netminder@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: =?utf-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+Cc: netfilter@vger.kernel.org
 
-On Mon, Sep 28, 2020 at 06:12:21PM +0200, Devin Bayer wrote:
-> On 28/09/2020 18.08, Pablo Neira Ayuso wrote:
-> >
-> > Something like this:
-> > 
-> > table ip x {
-> >          set flood2 {
-> >                  type ipv4_addr
-> >                  size 100000
-> >                  flags dynamic,timeout
-> >                  timeout 1m
-> >                  elements = { 150.214.188.80 expires 54s752ms limit rate 1/minute burst 1 packets }
-> >          }
-> > 
-> >          chain output {
-> >                  type filter hook output priority filter; policy drop;
-> >                  ct state new tcp dport 80 add @flood2 { ip daddr limit rate 1/minute burst 1 packets } log prefix "test: " accept
-> >                  ct state established,related accept
-> >          }
-> > }
-> > 
-> > Only one stateful expression is supported a this stage, either you
-> > have ratelimit or you have counters per elements.
+On Mon, Sep 28, 2020 at 04:03:00PM +0000, ѽ҉ᶬḳ℠ wrote:
 > 
-> Thank you; I see how the set syntax works now.
+> On 28/09/2020 17:43, Pablo Neira Ayuso wrote:
+> > On Mon, Sep 28, 2020 at 01:10:00PM +0000, ѽ҉ᶬḳ℠ wrote:
+> > > On 28/09/2020 14:24, Pablo Neira Ayuso wrote:
+> > > > On Mon, Sep 28, 2020 at 12:08:00PM +0000, ѽ҉ᶬḳ℠ wrote:
+> > > > > In the below example it does not print any logs and since that stanza is
+> > > > > right prior drop I reckon that since the log printing does not happen the
+> > > > > frame dropping does neither.
+> > > > > 
+> > > > > table inet filter {
+> > > > [...]
+> > > > >           chain wan_pr {
+> > > > >                   ct state { new } update @glv4 { ip saddr limit rate over
+> > > > > 15/day burst 3 packets } log prefix "glv4 DROP: " flags all drop
+> > > > >           }
+> > > > > }
+> > > > ct state new is restricting to match only on the first packet of the
+> > > > connection.
+> > > Right, it should be then rather something with ct count, like:
+> > > 
+> > > ct state new update @glv4 { ip saddr ct count over 15 } log flags all prefix
+> > > "glv4 DROP: " drop
+> > > 
+> > > but that produces:
+> > > 
+> > > Error: Could not process rule: Not supported
+> > What would you like to achieve in first place?
+> > 
+> > This thread is starting to diverge from the original question.
 > 
-> How do I get the behavior like in the wiki, which uses maps?
+> It is still about (rate) limiting offending saddrs with sets, probably in a
+> staged approach, say log and drop saddrs like
+> 
+> * ct state update @glv4 { new , invalid } count over 50 timeout 1s
+> * ct state update @glv4 { new , invalid } count over 75 timeout 1h
+> * ct state update @glv4 { new , invalid } count over 150 timeout 1d
 
-What example are you referring to?
+Sorry I don't understand what you're trying to express with this
+syntax.
