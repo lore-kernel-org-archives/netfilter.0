@@ -1,92 +1,81 @@
-From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
-Subject: Re: [nftables] netdev rate limiting | timeouts rfq
-Date: Mon, 28 Sep 2020 16:03:00 +0000
-Message-ID: <aca6a166-d5be-3d3c-536e-116f1aa65249@gmx.net>
-References: <5c60c340-d6d8-1f7c-67da-2782360a92fe@gmx.net>
- <20200923083042.GB10267@salvia>
- <cd739cba-9f79-2669-b5cb-e504e851c49d@gmx.net>
- <20200928115210.GA21841@salvia>
- <f536fd2e-a9f2-730a-d2ae-0579ccb3b48d@gmx.net>
- <20200928122443.GA24572@salvia>
- <c9a8646f-69b6-7333-b7ed-74f3d9747665@gmx.net> <20200928154339.GA2605@salvia>
-Reply-To: vtol@gmx.net
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: meter directive
+Date: Mon, 28 Sep 2020 18:08:09 +0200
+Message-ID: <20200928160809.GB2605@salvia>
+References: <2781f10c-a5e5-0bdc-b701-617f9476c57b@doubly.so>
+ <aaa67cc8-c8c0-465b-3fa5-10f62e67795e@doubly.so>
+ <20200928021034.GB20886@dimstar.local.net>
+ <b3d4b568-3d53-a9cf-6730-a47b35132b5f@doubly.so>
+ <20200928123213.GF20886@dimstar.local.net>
+ <dc380b6d-4085-13c7-9687-405825585823@doubly.so>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1601308990;
-        bh=U8miFbi2tSztYMOpADBgIhOvGD9zDtf6t3fdj9fjm1k=;
-        h=X-UI-Sender-Class:Reply-To:To:Cc:References:From:Subject:Date:
-         In-Reply-To;
-        b=ASXRcWJ4r1iBEqDqaKxoyKXI0Xu68oG9r1yJ2NOYq3w5OgsKDWyEuDiIXuCoh3pv2
-         7JtcZB0Y5UJUzIhFxIcCYf96zGCJlPGRayEbTV1r42SrieLvvyflxVxVXJi9gp3wDM
-         iXYmLj0DTjhiMPe82VHvMoF9K4Ws5S42ei1Di1ro=
-In-Reply-To: <20200928154339.GA2605@salvia>
-Content-Language: en-GB
+Content-Disposition: inline
+In-Reply-To: <dc380b6d-4085-13c7-9687-405825585823@doubly.so>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: netfilter@vger.kernel.org
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Devin Bayer <dev@doubly.so>
+Cc: duncan_roe@optusnet.com.au, "netminder (Eric Peterson)" <netminder@gmail.com>, netfilter@vger.kernel.org
 
+On Mon, Sep 28, 2020 at 03:00:59PM +0200, Devin Bayer wrote:
+> On 28/09/2020 14.32, Duncan Roe wrote:
+> > 
+> > It used to be the case with meters that you could have limit or counter but not
+> > both.
+> > 
+> > I don't know if that is still the case with dynamic sets. If it is, you will
+> > have to have 2 sets: 1 with limits and 1 with counters.
+> > 
+> > (counter with limit is ambiguous: do you want to count packets received or
+> > packets accepted? Both are do-able with 2 sets).
+> > 
+> > Please post your rules that add set members if you have further questions.
+> 
+> I think it's clear enough in regards to sets in the manpage - I will submit
+> a patch for that.
+> 
+> However the situation on the wiki is still unclear. It does show counters
+> with limits, but for maps. However, it doesn't show how to create the maps
+> or add to them.
+>  I try something like this:
+> 
+>     map flood2 {
+>         type ipv4_addr : counter;
+>         size 100000;
+>         flags dynamic, timeout;
+>         timeout 1m;
+>     }
+> 
+>     chain prerouting {
+>         tcp flags syn tcp dport 80 \
+>             add @flood2 { ip saddr limit rate over 3/minute } \
+>             log prefix "MAP "
+>     }
+> 
+> But no luck:
+> 
+> 
+>   /etc/nftables.conf:49:9-14: Error: Could not process rule: Operation not
+> supported
 
-On 28/09/2020 17:43, Pablo Neira Ayuso wrote:
-> On Mon, Sep 28, 2020 at 01:10:00PM +0000, =D1=BD=D2=89=E1=B6=AC=E1=B8=B3=
-=E2=84=A0 wrote:
->> On 28/09/2020 14:24, Pablo Neira Ayuso wrote:
->>> On Mon, Sep 28, 2020 at 12:08:00PM +0000, =D1=BD=D2=89=E1=B6=AC=E1=B8=
-=B3=E2=84=A0 wrote:
->>>> In the below example it does not print any logs and since that stanz=
-a is
->>>> right prior drop I reckon that since the log printing does not happe=
-n the
->>>> frame dropping does neither.
->>>>
->>>> table inet filter {
->>> [...]
->>>>   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 chain wan_pr {
->>>>   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 ct state { new } update @glv4 { ip saddr limit r=
-ate over
->>>> 15/day burst 3 packets } log prefix "glv4 DROP: " flags all drop
->>>>   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
->>>> }
->>> ct state new is restricting to match only on the first packet of the
->>> connection.
->> Right, it should be then rather something with ct count, like:
->>
->> ct state new update @glv4 { ip saddr ct count over 15 } log flags all =
-prefix
->> "glv4 DROP: " drop
->>
->> but that produces:
->>
->> Error: Could not process rule: Not supported
-> What would you like to achieve in first place?
->
-> This thread is starting to diverge from the original question.
+Something like this:
 
-It is still about (rate) limiting offending saddrs with sets, probably=20
-in a staged approach, say log and drop saddrs like
+table ip x {
+        set flood2 {
+                type ipv4_addr
+                size 100000
+                flags dynamic,timeout
+                timeout 1m
+                elements = { 150.214.188.80 expires 54s752ms limit rate 1/minute burst 1 packets }
+        }
 
-* ct state update @glv4 { new , invalid } count over 50 timeout 1s
-* ct state update @glv4 { new , invalid } count over 75 timeout 1h
-* ct state update @glv4 { new , invalid } count over 150 timeout 1d
+        chain output {
+                type filter hook output priority filter; policy drop;
+                ct state new tcp dport 80 add @flood2 { ip daddr limit rate 1/minute burst 1 packets } log prefix "test: " accept
+                ct state established,related accept
+        }
+}
 
-similar to what been mentioned here=20
-https://www.spinics.net/lists/netfilter/msg58506.html
-
-where is is mentioned:
-
-This example above also requires kernel >=3D 4.18
-
-This node currently deploys kernel 5.9.0-rc7 and thus I am surprised=20
-about the error printing not supported, also with log stanza removed=20
-from the rule and add instead of update for the set handling.
-
-
-
-
-
-
-
-
+Only one stateful expression is supported a this stage, either you
+have ratelimit or you have counters per elements.
