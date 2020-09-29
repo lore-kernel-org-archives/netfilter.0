@@ -1,51 +1,68 @@
-From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
-Subject: [nftables] multi-level rate limiting with dynamic set
-Date: Tue, 29 Sep 2020 20:28:00 +0000
-Message-ID: <cc0d60cd-05df-e67e-ce7c-c41177db4d69@gmx.net>
-Reply-To: vtol@gmx.net
+From: VDRU VDRU <user.vdr@gmail.com>
+Subject: Re: Redirect traffic to openvpn (client)
+Date: Tue, 29 Sep 2020 15:24:10 -0700
+Message-ID: <CAA7C2qj9rufEP7J--g0FG+0ORPebBQFRrG95HWH+09exAMqLXQ@mail.gmail.com>
+References: <f74104f1-efa5-8f7d-0f72-cd14060ddb4f@bersol.info>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1601411307;
-        bh=50lqv1LfbvxFNSwxAn9JEdnAHrUHW4ZPPRHMz5Ec/V8=;
-        h=X-UI-Sender-Class:Reply-To:To:From:Subject:Date;
-        b=VIHIRVxIlC5BwCE1W7QaQvvBPV4+thOc+chQgPbWuvX+zVaa7mAU+gBYBJDrzcItM
-         Y8uFOCWRa1yLYjLAsIkIInNBRz+KgC5aru0KlU1k7kCO3UM9UK+gNxmFm9NqSIm+6I
-         prl6tQRbXhnfCsNawnmSJRljBfEyuOK1FV8NnjiQ=
-Content-Language: en-GB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=P+Tj89VTS/X1mUJ97jMwQ/zMiZCYBT8G1z3aaJoI63M=;
+        b=U+1+KyU0bm+YMpxVBftSGVI9fZSlOf1wmC+xOe/Q1CMl+ZQa6gCaJ/mvmjyfeHNkrs
+         Hjhiwhc5S6dRg5+1bRDqNZ4GwUg7FgiRRqMht8LJIq4pMrCT7HFRNFgmoXbc1CBogWeN
+         kgN2ycq0mm+Sw7m7Wpfi78CnbsJ9Nys3KC+WyDn8PiKg1GyMjCMxIiqDT3BlIvIYZQcN
+         +UXv5DMkmkpzeKA/W/Eme8orPbfDauPriVvUhWSCZIuNyHav0Ti4X5fAMAXhlfE8LhOe
+         mfgkIi3GHjW+DjYWnbNeKV7ttgO8Bnl2w8xPkAcfC/HybJaTBcSiKApGhRP+L/x/oS2+
+         mTlg==
+In-Reply-To: <f74104f1-efa5-8f7d-0f72-cd14060ddb4f@bersol.info>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Alberto <alberto@bersol.info>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-I am experimenting with a multi-level rate limiting approach via a=20
-dynamic set, to achieve some fine-graining
+Just a note.. You create a network namespace for vpn with an arbitrary
+network and run openvpn inside it. Then you can use a veth pair to
+allow traffic from whatever other boxes on your lan you want to go
+through the vpn. This also stops the traffic from going anywhere if
+openvpn disconnects.
 
-set b_sa6 {
- =C2=A0 type ipv6_addr
- =C2=A0 size 65535
- =C2=A0 flags dynamic, timeout
- =C2=A0 timeout 14d
- =C2=A0 gc-interval 5s
-}
-
-for better reading: icmpv6 type 128 =3D echo-request
-
-these are the rules being in play at the same time:
-
-icmpv6 type 128 update @b_sa6 { ip6 saddr timeout 168h limit rate over=20
-500/day } drop;
-icmpv6 type 128 update @b_sa6 { ip6 saddr timeout 24h limit rate over=20
-150/hour } drop;
-icmpv6 type 128 update @b_sa6 { ip6 saddr timeout 2h limit rate over=20
-50/minute } drop;
-icmpv6 type 128 update @b_sa6 { ip6 saddr timeout 10m limit rate over=20
-15/second burst 2 packets} drop;
-
-
-With only any one rule in play the rate limiting works as expected but=20
-as soon as two or more are in play packets are being dropped well below=20
-the specified=C2=A0 limit.
-
-Is it somehow possible to get this sort of fine-tuning done?
-
+On Tue, Sep 29, 2020 at 10:52 AM Alberto <alberto@bersol.info> wrote:
+>
+> Hi everybody:
+>
+> I have a Linux debian with twice ifaces:
+>
+> - eth0: 192.168.1.1 (WAN)
+>
+> - eth1: 192.168.2.1 (LAN)
+>
+> as Home Router and GW of my Home LAN (192.168.2.0/24).
+>
+> From time to time, I up an tun0 iface as openvpn client in this Home Router.
+>
+> I up this openvpn connection with "--route-nopull" parameter, because I
+> don't want redirect traffic of all my LAN devices through this VPN, but
+> only a few.
+>
+> I set the following rules with IPTABLES to permit traffic from VPN:
+>
+> - iptables -A INPUT -i tun+ -j ACCEPT
+> - iptables -A OUTPUT -o tun+ -j ACCEPT
+> - iptables -A FORWARD -i eth0 -o tun+ -j ACCEPT
+> - iptables -t nat -A POSTROUTING -o tun+ -j MASQUERADE
+>
+>
+> Ok, how can I do to make this redirect to specific hosts?
+>
+>
+> Thanks,
+>
+> Regards,
+>
+>
+>
+>
+>
