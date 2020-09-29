@@ -1,82 +1,49 @@
 From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
-Subject: Re: [nftables] packet (filtering) flow NIC vs. PPPoE?
-Date: Tue, 29 Sep 2020 16:08:00 +0000
-Message-ID: <2a9c013c-5589-6b70-ceb3-83541a065726@gmx.net>
-References: <dd201d62-d014-e9e3-254b-f7644bc759d7@gmx.net>
- <20200929150622.GA30270@salvia>
+Subject: Re: [nftables] icmp type rate limiting - cumulative for the daddr or
+ selectively per saddr?
+Date: Tue, 29 Sep 2020 16:13:00 +0000
+Message-ID: <49153cdf-da9d-c560-d46d-78b61f3783ec@gmx.net>
+References: <407b6fc3-1986-6453-9f68-a066b3ad1974@gmx.net>
+ <20200929144627.GB20140@breakpoint.cc>
 Reply-To: vtol@gmx.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1601395691;
-        bh=avO31Hr7Iaj6/qI84CcIqj4IPi9iZTSdfsvLXxJxij4=;
+        s=badeba3b8450; t=1601395989;
+        bh=F0AKw/1ID6FABYuqQE2g2kwCH7Sn/rWTQEmyfaNZb0w=;
         h=X-UI-Sender-Class:Reply-To:To:Cc:References:From:Subject:Date:
          In-Reply-To;
-        b=ZoT8Th/zgYwpnXiszzizoSxrhCxdVHuNzJh38gmO7Goyq43ChqzhfS4iDBvYZeNrL
-         uAv9AklEDsfKagbYo0GkgkaswkcQKEWwkeNmsYNgNwUIumV9kig8DRdW4urZjnzw+i
-         DfmDffD+M0ZgCj7WvMoxPgLjYxq6S1edT1An77/8=
-In-Reply-To: <20200929150622.GA30270@salvia>
+        b=dqG1h20JgSyRp3EYn2kkh+J5qOCbIXVnO5YsTmaNDGqQam468dps8mNPc7/02fqd/
+         +e0XpO5DD1rh5/CHkyU3EBVd6WW5tP4wiO4HmTpJYhNi6FlosZD7ClW11tt3RzrdZL
+         UjlYeKn7DeVSVqvfwEH9KwTzpjeo7ZWeda66H3TI=
+In-Reply-To: <20200929144627.GB20140@breakpoint.cc>
 Content-Language: en-GB
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Cc: Florian Westphal <fw@strlen.de>
 
-
-On 29/09/2020 17:06, Pablo Neira Ayuso wrote:
-> On Mon, Sep 28, 2020 at 09:35:00PM +0000, =D1=BD=D2=89=E1=B6=AC=E1=B8=B3=
-=E2=84=A0 wrote:
->> Whilst testing NFTables's flow offload on a node with a PPPoE subscrib=
-er
->> line it turned out that the flow offload happens with the NIC netdev a=
-nd not
->> (as I expected) the virtual PPPoE netdev.
+On 29/09/2020 16:46, Florian Westphal wrote:
+> =D1=BD=D2=89=E1=B6=AC=E1=B8=B3=E2=84=A0 <vtol@gmx.net> wrote:
+>> https://wiki.nftables.org/wiki-nftables/index.php/Rate_limiting_matchi=
+ngs is
+>> not clear whether the 'limit rate' stanza applies as:
 >>
->> Just for reference this being the NFT config (eth2 being the NIC)
->>
->> flowtable fte=C2=A0=C2=A0=C2=A0 {
->>  =C2=A0 hook ingress priority -100
->>  =C2=A0 devices =3D { eth2 }
->>  =C2=A0 counter
->> }
-> Could you describe your testbed?
-
-The node being a router that may or may not (travelling) be on a xDSL=20
-PPPoE subscriber line, which needs a bit of working around since nft=20
-fails to init if the PPPoE netdev is in the config (netdev famility a/o=20
-flowtable) but absent from the OS. For that purpose the workflow being:
-
-* nft main conf file sans PPPoE (netdev famility a/o flowtable) when=20
-booting the node
-* loading a supplementary nft conf file in the event of PPPoE being up=20
-with just PPPoE stanza for netdev and flowtable
-
-Then monitored the logs about the flow offload and seen only entries for =
-
-flow offloads with the NIC but not PPPoE.
-
-I suppose supplementing the main conf file is not such a good idea. Now=20
-I copied the main conf file and added the PPPoE parts and getting that=20
-file loaded in the event of PPPoE being up. Since then the logs showing=20
-the offload with PPPoE working.
-
+>> * cummulutive limit (from any/all saddr) for the daddr within the give=
+n
+>> period
+> Its always the same, limit has no internal state other than the rate
+> bucket.
 >
->> ip protocol { 6, 17 } flow add @fte;
->> ip6 nexthdr { 6, 17 } flow add @fte;
-> You can consolidate this rule with:
+> In all these examples the limit applies for every packet that makes
+> it to the limit expression.
 >
->    meta l4proto { tcp, udp } flow add @fte;
-
-Thank you for the hint.
-
+> So, f.e.:
+> nft add rule filter input icmp type echo-request limit rate 10/second
+> accept
 >
-> You might also want to use the existing protocol definitions, instead
-> of numeric protocols to make your ruleset more readable.
+> applies the limit to each icmp echo request.
 >
->> Why would the packet filtering have to take place on the PPPoE netdev =
-but
->> the flowatable happens with the NIC instead?
-> What would you like to achieve with the flowtable?
-
+Thank you for the clarification.
 
