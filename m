@@ -1,44 +1,30 @@
-From: azurit@pobox.sk
-Subject: nftables cgroup accounting problem
-Date: Wed, 30 Sep 2020 19:27:55 +0200
-Message-ID: <20200930192755.Horde.ZHlzJB9_OgMvaVsNNXoPYcf@webmail.inetadmin.eu>
+From: Emilio Augusto Lazo Zaia <emiliolazozaia@gmail.com>
+Subject: end iptables support
+Date: Sat, 3 Oct 2020 01:40:08 -0400
+Message-ID: <660c1cff-64a9-13d3-e219-713d0cd44bd8@gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=pobox.sk; s=dkiminetadmin;
-        t=1601486875;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type;
-        bh=goNCDL2/2Mn82XqHIXyLPk/xFN1tILYesfFNEd2mZtk=;
-        b=a2zwASEVwoRUppp0nDIDBC/QeaHMuYCrelO9q3frmg3cqPQjS3XqZQTVsQWs7v0Od4+9WE
-        96xNUjn3gh0CgxaYM8Hr9AHh96QU4beD4AekiXk6GmlFz30g6FSrJEBmBl5aayUQDPrjWF
-        87KxrRygiROmf9deiDRFG3AqA2fHB1A=
-Content-Disposition: inline
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="Yes"
 Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=to:from:subject:autocrypt:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=D/RamriyqZSRj6hOzAZAMErK+Qp3SuCOKYZhheDs1rE=;
+        b=fMuthv7CLVLjqWu/5JF8D8KT42IQeeySi2My8Cp9/EjeIS567Wr//OVRtJMGPDdfpn
+         rwihX0qbP/6NNJUHjqvIQHxBsUPbRGQJYNDh5ORZ9VdWpbeBo41cV4yQCHCWF8XIWGRp
+         Dma1YU5cNIWjjdjkEZaX3O3m//5eEVTD6y4XsWOUf1Q3U9VU6dx47g2RI3GIBbZk3/W6
+         oK7EMBTtCeKnnzffzUfKAb3Zpl4+wFD12IXxK9VDQN+tJjL06H7biJnHrNar3Qn5C/WS
+         FcHWinYQUjU5EmYBvnnFfnZuD31XSJGETFWYGlsk/HQwBFLXIImeCYzuLRJX8IiyrCg5
+         h41w==
+Content-Language: en-US
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi,
+Hello
 
-i'm migrating from iptables to nftables and i'm having problem with  
-accounting using cgroups. Everything was working on iptables but is  
-printing weird errors with nftables (chain 'accounting' exists):
+When is supposed to be dropped the iptables support in Linux kernel in favor of nft? Currently I'm using iptables in many servers!
 
-# mkdir /sys/fs/cgroup/net_cls,net_prio/12345
-# echo 0x000112345 > /sys/fs/cgroup/net_cls,net_prio/12345/net_cls.classid
-# nfacct add 12345
-# iptables -I accounting -m cgroup --cgroup 0x000112345 -m nfacct  
---nfacct-name 12345
-iptables: No space left on device.
-
-# uname -a
-Linux server 4.9.236 #2 SMP Thu Sep 17 16:32:19 CEST 2020 x86_64 GNU/Linux
-# iptables --version
-iptables v1.8.2 (nf_tables)
-
-
-What am i doing wrong?
-
-azur
-
+-- 
+Emilio Augusto Lazo Zaia
 
