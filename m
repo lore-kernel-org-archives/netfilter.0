@@ -1,39 +1,39 @@
-From: Daniel <tech@tootai.net>
-Subject: Re: nftables cgroup accounting problem
-Date: Mon, 5 Oct 2020 09:53:41 +0200
-Message-ID: <5fb80e78-32f1-70e4-cc73-76dc2c4ddb3b@tootai.net>
-References: <20201005081612.Horde.YsdRRhtDnYTfTD85w2p4wRt@webmail.inetadmin.eu>
+From: =?UTF-8?Q?Laura_Garc=C3=ADa_Li=C3=A9bana?= <nevola@gmail.com>
+Subject: Re: end iptables support
+Date: Mon, 5 Oct 2020 10:05:31 +0200
+Message-ID: <CAF90-WhK7WuBCv1Qwj2ONrHxQd2LJ1cds386vAoDih+Lp2pEYQ@mail.gmail.com>
+References: <660c1cff-64a9-13d3-e219-713d0cd44bd8@gmail.com>
+ <91dc6d18-670e-4435-38b7-3998666ae772@thelounge.net> <dd3f6bee-3e39-48ae-586f-80f96e8da03d@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1601884422; bh=gFHi2Hzf5SdLHVmzpMRM3uRczeCaetYcEHV/e419YTU=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=bWu5NbufKIfgOoRhKMDNySGLkZZeoEziuAf/gbgMTuvD5EA8XhZXk5eX4FPzyf3rs
-         n0y5PvARIKNf3wEOPOb8n8z7fDqXNkzsUcxN2nthAo7dun8BmTvI7Ojn37gijmZTeJ
-         lUKA4hpONnZ5leRWQ2PZiDBcSuaOxZSr6dclHKE8=
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1601884422; bh=gFHi2Hzf5SdLHVmzpMRM3uRczeCaetYcEHV/e419YTU=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=bWu5NbufKIfgOoRhKMDNySGLkZZeoEziuAf/gbgMTuvD5EA8XhZXk5eX4FPzyf3rs
-         n0y5PvARIKNf3wEOPOb8n8z7fDqXNkzsUcxN2nthAo7dun8BmTvI7Ojn37gijmZTeJ
-         lUKA4hpONnZ5leRWQ2PZiDBcSuaOxZSr6dclHKE8=
-In-Reply-To: <20201005081612.Horde.YsdRRhtDnYTfTD85w2p4wRt@webmail.inetadmin.eu>
-Content-Language: fr-FR
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Wp1KKGP0kaHQRWAzzWpv7MsRX9mRjtm8fpOhWV/+uZc=;
+        b=omN5wR7kQYAjRi/EfSnGAr0wY/g5kbZwu9VAEhuKUx9C22bjntIgjQ1HqV7e8IHqOv
+         Yh1e3dgBrVTxxrlnstER9Y8ez+tf5IM4U4QzoNqMcPJaiS/BD4AJv6fVbIJcXzFXhijq
+         C00krCIYIjPnb1lRGxs9BS3lx3p2OHqi9GB99xqaOLMvjL56wm5it9DmQdJCaiWJEd9x
+         KV6pD12yXXkYkAlRaE/6Kh5dnop6bP0isgR8jmTPjljZeL4gVb1iFe0/zQlJydHKleP+
+         QKWZO1IZSA1IizUllidAfp8PfLp5yrviM6iyI/+eOK4fPxCUIeZSNE7Z004GxhU9zblN
+         fZaw==
+In-Reply-To: <dd3f6bee-3e39-48ae-586f-80f96e8da03d@gmail.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Emilio Augusto Lazo Zaia <emiliolazozaia@gmail.com>
+Cc: Reindl Harald <h.reindl@thelounge.net>, Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hello
+Hi!
 
-Le 05/10/2020 à 08:16, azurit@pobox.sk a écrit :
-> Anyone?
+On Mon, Oct 5, 2020 at 7:51 AM Emilio Augusto Lazo Zaia
+<emiliolazozaia@gmail.com> wrote:
 >
->> [...]
->> iptables: No space left on device.
-Perhaps this ...
+> Thanks. But I'm using recent match. I can't switch to nftables if recent match is not supported yet...
+>
 
-[...]
+recent match can be replaced by sets with timeout.
 
--- 
-Daniel
+https://wiki.nftables.org/wiki-nftables/index.php/Supported_features_compared_to_xtables#recent
+
+Cheers.
