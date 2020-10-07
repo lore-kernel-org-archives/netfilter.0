@@ -1,55 +1,69 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [nftables] granular rule for combined tcp & udp sports?
-Date: Tue, 6 Oct 2020 11:04:06 +0200
-Message-ID: <20201006090406.GA16335@salvia>
-References: <47b2582c-1f1e-4761-9be3-22018d7c87a2@gmx.net>
- <20201006083150.GA14996@salvia>
- <1e8b724a-7f94-a05a-d3e6-a45290ae6fe0@gmx.net>
+From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
+Subject: [nftables] frame logging with vmap?
+Date: Wed, 7 Oct 2020 07:38:00 +0000
+Message-ID: <0b6d114f-2baa-d883-5053-a5eb96f6a611@gmx.net>
+Reply-To: vtol@gmx.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1e8b724a-7f94-a05a-d3e6-a45290ae6fe0@gmx.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1602056322;
+        bh=lWw9LBQL1vG9WAKnRnbX1d8APgEwtitkXC0BZK9e78M=;
+        h=X-UI-Sender-Class:From:Reply-To:To:Subject:Date;
+        b=CEkEVIQmzQsTla89o7ggwPEzCuePlalpPk8LOKV9gwrrqJLUo/CjxZ8WEGrkxKrbK
+         gOTTDun0Nv3WfqsoWJTVrzwzs+f0JkW2XK6gWnMCRLMq4Wm2LGEa7Zkk5bHbQYCboc
+         BW7ZyEQfTgry/V41IBdl3IeB2WMYogPOjQoucjC8=
+Content-Language: en-GB
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: =?utf-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Tue, Oct 06, 2020 at 08:54:00AM +0000, ѽ҉ᶬḳ℠ wrote:
-> On 06/10/2020 10:31, Pablo Neira Ayuso wrote:
-> > On Mon, Oct 05, 2020 at 12:56:00PM +0000, ѽ҉ᶬḳ℠ wrote:
-> > > I am trying to get a granular logging rule going, combining tcp and udp
-> > > sports for ip6 saddr but somehow failing:
-> > > 
-> > > 
-> > > tcp sport != { 80, 443, 993, 5228 } udp sport != 19302 ip6 saddr @g_6 log
-> > > flags all prefix "G_C :" continue
-> > > 
-> > > -> Error: conflicting protocols specified: tcp vs. udp
-> > I suggest you express things is less convoluted ways, ie. positive
-> > logic and default action to drop in your ruleset.
-> > 
-> > nft add rule ip6 x y meta l4proto . th dport { tcp . 80, tcp . 443, tcp . 993, tcp . 5228, udp . 19302 } ip6 saddr @y accept
-> > 
-> > You can set default policy in the chain to drop.
-> 
-> Thank you for the input. The rule is just for logging/debugging, not for
-> dropping frames and the logic is not to log:
-> 
-> * frames from tcp sport(s) 80, 443, 993, 5228
-> * frames from udp sport 19302
-> 
-> but log all other frames from ip6 saddr @foo
-> 
-> For that purpose inverting positive (consulted) logic seemed the way to go
-> and this should to work then:
-> 
-> meta l4proto . th sport != { tcp . 80, tcp . 443, tcp . 993, tcp . 5228, udp
-> . 19302 } ip6 saddr @foo flags all prefix "bar :" continue;
+How to log frames that been processed as part of a vmap?
 
-almost...
 
-add rule ip6 x y meta l4proto . th sport != { tcp . 80, tcp . 443, tcp . 993, tcp . 5228, udp . 19302 } \
-        ip6 saddr @foo log flags all prefix "bar :" continue
+map foo {
+ =C2=A0 type icmpv6_type . icmpv6_code : verdict
+ =C2=A0 elements =3D {
+ =C2=A0=C2=A0=C2=A0 1 . 0 : accept,
+ =C2=A0=C2=A0=C2=A0 1 . 1 : accept,
+ =C2=A0=C2=A0=C2=A0 1 . 2 : accept,
+ =C2=A0=C2=A0=C2=A0 1 . 3 : accept,
+ =C2=A0=C2=A0=C2=A0 1 . 4 : accept,
+ =C2=A0=C2=A0=C2=A0 1 . 5 : accept,
+ =C2=A0=C2=A0=C2=A0 1 . 6 : accept,
+ =C2=A0=C2=A0=C2=A0 1 . 7 : accept,
+ =C2=A0=C2=A0=C2=A0 1 . 8 : accept,
+ =C2=A0=C2=A0=C2=A0 2 . 0 : accept,
+ =C2=A0=C2=A0=C2=A0 3 . 0 : accept,
+ =C2=A0=C2=A0=C2=A0 3 . 1 : accept,
+ =C2=A0=C2=A0=C2=A0 4 . 0 : accept,
+ =C2=A0=C2=A0=C2=A0 4 . 1 : accept,
+ =C2=A0=C2=A0=C2=A0 4 . 2 : accept,
+ =C2=A0=C2=A0=C2=A0 128 . 0 : accept,
+ =C2=A0 }
+}
 
-Missing log before flags.
+
+putting the log statement after the vmap, e.g.:
+
+icmpv6 type . icmpv6 code vmap @foo log flags all prefix "bar: ";
+
+
+ =C2=A0does not produce any logging, supposedly since the verdict being=20
+terminal and processed prior the log statement. Putting it before the=20
+rule however:
+
+log flags all prefix "bar: "icmpv6 type . icmpv6 code vmap @foo;
+
+logs frames out of context of this rule, it logs everything frame that=20
+is processed in the chain prior the vmap statement is processed, e.g.:
+
+FW bar: IN=3Dbr-lan OUT=3Dpppoe-wan MACSRC=3Db0:10:41:ba:be:5f=20
+MACDST=3Dd8:58:d7:00:79:7a MACPROTO=3D0800 SRC=3D192.168.84.205=20
+DST=3Dxxx.xxx.59.84 LEN=3D28 TOS=3D0x00 PREC=3D0x00 TTL=3D4 ID=3D25008 DF=
+ PROTO=3DUDP=20
+SPT=3D61905 DPT=3D36653 LEN=3D8
+
+
+
+
