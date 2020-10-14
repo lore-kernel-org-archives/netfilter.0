@@ -1,73 +1,89 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: "Ramsay, Lincoln" <Lincoln.Ramsay@digi.com>
 Subject: Re: cannot use != with ct status
-Date: Wed, 14 Oct 2020 20:54:11 +0200
-Message-ID: <20201014185411.GA18063@salvia>
-References: <CY4PR1001MB23116E94084D4CC5610C79C2E8050@CY4PR1001MB2311.namprd10.prod.outlook.com>
- <20201014100402.GA19556@salvia>
- <alpine.DEB.2.23.453.2010141221380.6472@localhost>
- <20201014103057.GA20717@salvia>
- <alpine.DEB.2.23.453.2010141825050.25415@blackhole.kfki.hu>
+Date: Wed, 14 Oct 2020 23:29:27 +0000
+Message-ID: <CY4PR1001MB2311F902F3F9E05F3F9397E4E8050@CY4PR1001MB2311.namprd10.prod.outlook.com>
+References: <CY4PR1001MB23116E94084D4CC5610C79C2E8050@CY4PR1001MB2311.namprd10.prod.outlook.com>,<20201014100402.GA19556@salvia>
 Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.23.453.2010141825050.25415@blackhole.kfki.hu>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digi.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=NorbaKAWnVnFtvQrXwTbVzKzT5jOMMutbNi2N2lhWcw=;
+ b=guLwNGHrkbQF0mqionDOVmwCf8SfuOQFToJUQX33GlPnd6S9Ti+jFTCCx2Ytc6+RQrmmfGFBohp+/Vdeh2Q/G3TBjjkwCYjEZLAfcwe3gAzPOL0st1Af26EMu00Bm1HS4BEK7wMvXH20FgqjcmN60Rt6IzLHFS/vnk4hMuFZtAM=
+In-Reply-To: <20201014100402.GA19556@salvia>
+Content-Language: en-AU
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@netfilter.org>
-Cc: "Ramsay, Lincoln" <Lincoln.Ramsay@digi.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Wed, Oct 14, 2020 at 08:09:45PM +0200, Jozsef Kadlecsik wrote:
-> On Wed, 14 Oct 2020, Pablo Neira Ayuso wrote:
-> 
-> > > > > I've just confirmed that I can't make a rule that matches ct 
-> > > > > status != dnat.
-> > > > 
-> > > > ct status == dnat and ct state != dnat checks for _exact_ matching.
-> > > > 
-> > > > Then:
-> > > > 
-> > > >         ct status dnat
-> > > > 
-> > > > based on the datatype, provides a shortcut for
-> > > > 
-> > > >         ct status and dnat == dnat
-> > > 
-> > > Sorry, but it looks like really strange. "ct status nat" would be more 
-> > > natural to me.
-> > 
-> > This is based on the ct status bits, so dnat is matching for
-> > destination NAT updates (ie. IPS_DST_NAT). Then, snat is matching for
-> > IPS_SRC_NAT.
-> 
-> I could not express myself properly. I had no problem with the shortcut 
-> "ct status dnat" at all but with the expression "ct status and dnat == 
-> dnat".
-> 
-> One could split it at the "and" part and thus the "dnat == dnat" part 
-> looks confusing. If one splits at "==" then the "and" in "ct status and 
-> dnat" is not quite intuitive. (I could not find the description of "and" 
-> in the manpage, at least at 
-> http://netfilter.org/projects/nftables/index.html.) Why is the "and" 
-> keyword required? Why couldn't the same syntax be used like at "ct state"?
-
-This uses the same syntax as ct state, for most cases:
-
-        ct state new
-
-is just enough.
-
-The original thread refers to matching if the dnat bit is _unset_, ie.
-inverted matching.
-
-        # nft -i
-        # add rule x y (ct status & dnat) != dnat
-
-'&' is equivalent to 'and', it's the same token actually in the
-parser. I was using 'and' instead because I was in the shell, and I
-wanted to avoid escaping the &.
-
-The parens are optional, without the parens, bitwise operation takes
-precedence over comparison.
-
-Still confusing?
+Hi Pablo,=0A=
+=0A=
+> ct status =3D=3D dnat and ct state !=3D dnat checks for _exact_ matching.=
+=0A=
+=0A=
+But if ct status !=3D dnat is an exact equality check... why did it return =
+true for all of the possible values?=0A=
+=0A=
+> Then:=0A=
+> =0A=
+> =A0=A0=A0=A0=A0=A0=A0 ct status dnat=0A=
+> =0A=
+> based on the datatype, provides a shortcut for=0A=
+> =0A=
+> =A0=A0=A0=A0=A0=A0=A0 ct status and dnat =3D=3D dnat=0A=
+> =0A=
+> For inverted matching, please use:=0A=
+> =0A=
+> =A0=A0=A0=A0=A0=A0=A0 ct status and dnat !=3D dnat=0A=
+=0A=
+Aha! I had a suspicion something like this might be possible but I couldn't=
+ figure out how to make it work. Maybe the documentation* for ct status sho=
+uld include examples like this?=0A=
+=0A=
+Here's what I did...=0A=
+=0A=
+        nft add rule inet PerIfRouteTable PerIfRoute_Forward \( ct status \=
+& dnat \) !=3D dnat ct mark !=3D 0 ct mark set 0=0A=
+=0A=
+And how it got reported back to me...=0A=
+=0A=
+        ct status & dnat !=3D dnat ct mark !=3D 0x00000000 ct mark set 0x00=
+000000=0A=
+=0A=
+It works as expected :)=0A=
+=0A=
+=0A=
+* I'm not sure where all the documentation is, but I found this page and it=
+ only suggested no-op, !=3D and {} matching.=0A=
+=0A=
+https://wiki.nftables.org/wiki-nftables/index.php/Quick_reference-nftables_=
+in_10_minutes#Ct=0A=
+=0A=
+I did a bit of experimentation... I failed to make =3D=3D and !=3D do anyth=
+ing useful, at least with ct status (but nftables does not expose all of th=
+e underlying bitmask values, so maybe that's why?). It more or less seems l=
+ike this to me...=0A=
+=0A=
+        ct status =3D=3D value # never matches=0A=
+        ct status !=3D value # always matches=0A=
+=0A=
+But I was able to observe these things working:=0A=
+=0A=
+        ( ct status & token ) =3D=3D token # true if the token bit is set=
+=0A=
+        ct status and token =3D=3D token # shell-friendly alternative=0A=
+        ct status token # convenient alternative=0A=
+=0A=
+        ( ct status & token ) !=3D token # true if the token bit is not set=
+=0A=
+        ct status and token !=3D token # shell-friendly alternative=0A=
+=0A=
+        ct status {token1,token2} # true if either token bit is set=0A=
+        ct status token1,token2 # shell-friendly alternative=0A=
+=0A=
+        ct status token1 ct status token2 # true if both token bits are set=
+=0A=
+=0A=
+=0A=
+Lincoln=
