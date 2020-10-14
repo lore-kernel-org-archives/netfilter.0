@@ -1,46 +1,45 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Jozsef Kadlecsik <kadlec@netfilter.org>
 Subject: Re: cannot use != with ct status
-Date: Wed, 14 Oct 2020 12:30:57 +0200
-Message-ID: <20201014103057.GA20717@salvia>
-References: <CY4PR1001MB23116E94084D4CC5610C79C2E8050@CY4PR1001MB2311.namprd10.prod.outlook.com>
- <20201014100402.GA19556@salvia>
- <alpine.DEB.2.23.453.2010141221380.6472@localhost>
+Date: Wed, 14 Oct 2020 12:25:40 +0200 (CEST)
+Message-ID: <alpine.DEB.2.23.453.2010141221380.6472@localhost>
+References: <CY4PR1001MB23116E94084D4CC5610C79C2E8050@CY4PR1001MB2311.namprd10.prod.outlook.com> <20201014100402.GA19556@salvia>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.23.453.2010141221380.6472@localhost>
+In-Reply-To: <20201014100402.GA19556@salvia>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@netfilter.org>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: "Ramsay, Lincoln" <Lincoln.Ramsay@digi.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi Jozsef,
+On Wed, 14 Oct 2020, Pablo Neira Ayuso wrote:
 
-On Wed, Oct 14, 2020 at 12:25:40PM +0200, Jozsef Kadlecsik wrote:
-> On Wed, 14 Oct 2020, Pablo Neira Ayuso wrote:
+> On Wed, Oct 14, 2020 at 04:16:40AM +0000, Ramsay, Lincoln wrote:
+> > Hi,
+> > 
+> > I've just confirmed that I can't make a rule that matches ct status != dnat.
 > 
-> > On Wed, Oct 14, 2020 at 04:16:40AM +0000, Ramsay, Lincoln wrote:
-> > > Hi,
-> > > 
-> > > I've just confirmed that I can't make a rule that matches ct status != dnat.
-> > 
-> > ct status == dnat and ct state != dnat checks for _exact_ matching.
-> > 
-> > Then:
-> > 
-> >         ct status dnat
-> > 
-> > based on the datatype, provides a shortcut for
-> > 
-> >         ct status and dnat == dnat
+> ct status == dnat and ct state != dnat checks for _exact_ matching.
 > 
-> Sorry, but it looks like really strange. "ct status nat" would be more 
-> natural to me.
+> Then:
+> 
+>         ct status dnat
+> 
+> based on the datatype, provides a shortcut for
+> 
+>         ct status and dnat == dnat
 
-This is based on the ct status bits, so dnat is matching for
-destination NAT updates (ie. IPS_DST_NAT). Then, snat is matching for
-IPS_SRC_NAT.
+Sorry, but it looks like really strange. "ct status nat" would be more 
+natural to me.
 
-It should be possible to add ct status nat but such nat would be
-(IPS_SRC_NAT | IPS_DST_NAT)
+> For inverted matching, please use:
+> 
+>         ct status and dnat != dnat
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
+PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics
+          H-1525 Budapest 114, POB. 49, Hungary
