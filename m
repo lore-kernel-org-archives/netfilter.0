@@ -1,89 +1,76 @@
-From: "Ramsay, Lincoln" <Lincoln.Ramsay@digi.com>
-Subject: Re: cannot use != with ct status
-Date: Wed, 14 Oct 2020 23:29:27 +0000
-Message-ID: <CY4PR1001MB2311F902F3F9E05F3F9397E4E8050@CY4PR1001MB2311.namprd10.prod.outlook.com>
-References: <CY4PR1001MB23116E94084D4CC5610C79C2E8050@CY4PR1001MB2311.namprd10.prod.outlook.com>,<20201014100402.GA19556@salvia>
+From: Robert Sander <r.sander@heinlein-support.de>
+Subject: nftables iifname and currently unknown interfaces
+Date: Fri, 16 Oct 2020 12:37:58 +0200
+Message-ID: <c382354e-4a18-0863-e006-0db6f9fce1f6@heinlein-support.de>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+ protocol="application/pgp-signature";
+ boundary="QMh4zRtbCPODBCKVVWEOdeaAHXLKhgf3y"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=digi.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=NorbaKAWnVnFtvQrXwTbVzKzT5jOMMutbNi2N2lhWcw=;
- b=guLwNGHrkbQF0mqionDOVmwCf8SfuOQFToJUQX33GlPnd6S9Ti+jFTCCx2Ytc6+RQrmmfGFBohp+/Vdeh2Q/G3TBjjkwCYjEZLAfcwe3gAzPOL0st1Af26EMu00Bm1HS4BEK7wMvXH20FgqjcmN60Rt6IzLHFS/vnk4hMuFZtAM=
-In-Reply-To: <20201014100402.GA19556@salvia>
-Content-Language: en-AU
 List-ID: <netfilter.vger.kernel.org>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-Hi Pablo,=0A=
-=0A=
-> ct status =3D=3D dnat and ct state !=3D dnat checks for _exact_ matching.=
-=0A=
-=0A=
-But if ct status !=3D dnat is an exact equality check... why did it return =
-true for all of the possible values?=0A=
-=0A=
-> Then:=0A=
-> =0A=
-> =A0=A0=A0=A0=A0=A0=A0 ct status dnat=0A=
-> =0A=
-> based on the datatype, provides a shortcut for=0A=
-> =0A=
-> =A0=A0=A0=A0=A0=A0=A0 ct status and dnat =3D=3D dnat=0A=
-> =0A=
-> For inverted matching, please use:=0A=
-> =0A=
-> =A0=A0=A0=A0=A0=A0=A0 ct status and dnat !=3D dnat=0A=
-=0A=
-Aha! I had a suspicion something like this might be possible but I couldn't=
- figure out how to make it work. Maybe the documentation* for ct status sho=
-uld include examples like this?=0A=
-=0A=
-Here's what I did...=0A=
-=0A=
-        nft add rule inet PerIfRouteTable PerIfRoute_Forward \( ct status \=
-& dnat \) !=3D dnat ct mark !=3D 0 ct mark set 0=0A=
-=0A=
-And how it got reported back to me...=0A=
-=0A=
-        ct status & dnat !=3D dnat ct mark !=3D 0x00000000 ct mark set 0x00=
-000000=0A=
-=0A=
-It works as expected :)=0A=
-=0A=
-=0A=
-* I'm not sure where all the documentation is, but I found this page and it=
- only suggested no-op, !=3D and {} matching.=0A=
-=0A=
-https://wiki.nftables.org/wiki-nftables/index.php/Quick_reference-nftables_=
-in_10_minutes#Ct=0A=
-=0A=
-I did a bit of experimentation... I failed to make =3D=3D and !=3D do anyth=
-ing useful, at least with ct status (but nftables does not expose all of th=
-e underlying bitmask values, so maybe that's why?). It more or less seems l=
-ike this to me...=0A=
-=0A=
-        ct status =3D=3D value # never matches=0A=
-        ct status !=3D value # always matches=0A=
-=0A=
-But I was able to observe these things working:=0A=
-=0A=
-        ( ct status & token ) =3D=3D token # true if the token bit is set=
-=0A=
-        ct status and token =3D=3D token # shell-friendly alternative=0A=
-        ct status token # convenient alternative=0A=
-=0A=
-        ( ct status & token ) !=3D token # true if the token bit is not set=
-=0A=
-        ct status and token !=3D token # shell-friendly alternative=0A=
-=0A=
-        ct status {token1,token2} # true if either token bit is set=0A=
-        ct status token1,token2 # shell-friendly alternative=0A=
-=0A=
-        ct status token1 ct status token2 # true if both token bits are set=
-=0A=
-=0A=
-=0A=
-Lincoln=
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--QMh4zRtbCPODBCKVVWEOdeaAHXLKhgf3y
+Content-Type: multipart/mixed; boundary="pB7TL3dhnZyK9LB2jHaqNxRfG014jzMIn"
+
+--pB7TL3dhnZyK9LB2jHaqNxRfG014jzMIn
+Content-Type: text/plain; charset=utf-8
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
+
+Hi.
+
+with iptables it was possible to specify "-i ifacename" even when the
+interface was currently not available.
+
+nft bails out with an error:
+
+=2E/nft:225:1-75: Error: Could not process rule: No such file or director=
+y
+add rule ip filter FORWARD iifname bond0.16 oifname bond0.42 accept
+
+We are generating a single firewall configuration for a number of
+firewalls with different interfaces. How do we migrate to nftables?
+
+Regards
+--=20
+Robert Sander
+Heinlein Support GmbH
+Schwedter Str. 8/9b, 10119 Berlin
+
+http://www.heinlein-support.de
+
+Tel: 030 / 405051-43
+Fax: 030 / 405051-19
+
+Zwangsangaben lt. =C2=A735a GmbHG:
+HRB 93818 B / Amtsgericht Berlin-Charlottenburg,
+Gesch=C3=A4ftsf=C3=BChrer: Peer Heinlein -- Sitz: Berlin
+
+
+--pB7TL3dhnZyK9LB2jHaqNxRfG014jzMIn--
+
+--QMh4zRtbCPODBCKVVWEOdeaAHXLKhgf3y
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEEhVXmaPzvl7l1erVE8LuRWCPeWygFAl+JeAYACgkQ8LuRWCPe
+WyjJzA//U9Bkjip3RcM7waV693nrjAjc2KmjYSEZHN9bA+Sy/ng7H95c467C7xki
+S9QfTN93QYY+pKEIGC+hiw+vPvJiKy6UJYkR8O5XYz8m2lbFZOg0Mjawi5oazVgO
+mN7dXYcORfHqdpDuF9G3kVzf77JGeSFSjpG0PstofIkzdNuZCgIxBIYMfbGVMIaH
+a7h5GMrT/JXIt4GbJDcPKzVn+wIcXE7Wvoqkt5/dzlwIcrP4AX9Ul6KDwGjhl/on
+ItBcsHuyby9uOi3eb3C7eO3d2dV1fiCMhsqcXYVLwEGNWj96Z5uY7Z5g/e6AglUv
+iipsuvMaLrLJ7X+nv8UoFEgg+dFvnCYBAogJS4N2woV4S3rQdP6fz4kfJ0X4aMpO
+FNPOjn27AUvqHa48Fj5peTMYL/xy4Bv+/JOfCqzOlBVOi62nYuyRpJXFRNthcdgp
+SBs8oVmmC7yUd45S3cCNv1arhbSFKfvjN7uQrjh/53OzzzlELtdHRRb4jP2qajkt
+x4eg+Qp60Ekqj/9ppnErABBzlhwInattgAxUvHn+dTHhVXWAyXFtA29I2Ovw/srv
+vv3E7TTTp3JhQJSkaO2mS+06kO3vz+SR7der91u108FmcZ1iDoM3DT0KjGEqZYd5
+svj1xpzT1MXsWePNVhxdfb/ls318KY55tYEqGOk1kcMoOm/wOB8=
+=+8ej
+-----END PGP SIGNATURE-----
+
+--QMh4zRtbCPODBCKVVWEOdeaAHXLKhgf3y--
