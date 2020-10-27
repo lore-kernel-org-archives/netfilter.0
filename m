@@ -1,306 +1,56 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] nftables 0.9.7 release
-Date: Tue, 27 Oct 2020 11:45:12 +0100
-Message-ID: <20201027104512.GA30322@salvia>
+From: dirdi <lists@dirdi.name>
+Subject: Wiki inaccuracy regarding the 'redirect' statement
+Date: Tue, 27 Oct 2020 13:03:56 +0100
+Message-ID: <40860804-5378-d32d-371e-a38ab9a43af5@dirdi.name>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="8t9RHnE3ZwKMSgU+"
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dirdi.name;
+        s=kas202010141013; t=1603800236;
+        bh=4VO1kpG9gu9QWo6HcMarj8JxPfUuSQiFnIf4pUW78nk=;
+        h=From:To:Subject:Date:From;
+        b=mXsGepHEAEeLp3MzYX506W2N7kizwctabt1oQBMAEfRCr5AGwaJnaBlapbDvG2s2c
+         8Ai+f0q4xdgYA2gw+K/8Xc4bbSCTGIjH/16SjED/DaDnz4XBH0rLnxWpViHPAYBawo
+         4RIu0w7QweoHDjKIncv5pbLu+nXM6Yly0H7osnel9LK70C/QYHznv4rplpZCUvrzPH
+         84bL4+Z4KNDsvPKPXhGWSLILm6CSiZ/uhEHwdJC/TrebvXtvIbejHtjPBveTTlZTsA
+         kLgk8rQWcYCYwXikXHa3kgggR5xY/p5AlUcbUxE75/Pbl8aM5YT0v+iFuctaZafj3A
+         WeWw1i39aRX2A==
+Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter <netfilter@vger.kernel.org>, netfilter-devel <netfilter-devel@vger.kernel.org>
-Cc: netdev@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
-
-
---8t9RHnE3ZwKMSgU+
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-
-Hi!
-
-The Netfilter project proudly presents:
-
-        nftables 0.9.7
-
-This release contains fixes and new features available up to the Linux
-kernel 5.10-rc1 release.
-
-* Support for implicit chain, e.g.
-
-  table inet x {
-        chain y {
-             type filter hook input priority 0;
-             tcp dport 22 jump {
-                    ip saddr { 127.0.0.0/8, 172.23.0.0/16, 192.168.13.0/24 } accept
-                    ip6 saddr ::1/128 accept;
-             }
-        }
-  }
-
-  This allows you to group rules without the need for an explicit
-  chain definition.
-
-* Support for ingress inet chains:
-
-    table inet filter {
-            chain ingress {
-                    type filter hook ingress device "veth0" priority filter; policy accept;
-            }
-            chain input {
-                    type filter hook input priority filter; policy accept;
-            }
-            chain forward {
-                    type filter hook forward priority filter; policy accept;
-            }
-    }
-
-  The inet family supports the ingress hook since Linux kernel 5.10-rc1,
-  to filter IPv4 and IPv6 packet at the same location as the netdev ingress
-  hook. This inet hook allows you to share sets and maps between the usual
-  prerouting, input, forward, output, postrouting and this ingress hook.
-
-* Support for reject from prerouting chain:
-
-  table inet x {
-      chain y {
-            type filter hook prerouting priority 0; policy accept;
-
-            tcp dport 22 reject with tcp reset
-      }
-  }
-
-* Support for --terse option in json
-
-  # nft --terse -j list ruleset
-
-* Display set counters in json
-
-  # nft -j list set
-
-* Support for the reset command with json, ie.
-
-  # nft -j reset counters
-
-* Match on wildcard socket listeners, eg.
-
-  table inet x {
-       chain y {
-             type filter hook prerouting priority -150; policy accept;
-             socket transparent 1 socket wildcard 0 mark set 0x00000001
-       }
-  }
-
-* Get elements from maps:
-
-  # nft get element inet filter test "{ 18.51.100.17 . ad:c1:ac:c0:ce:c0 . 3761 : 0x42 }"
-  table inet filter {
-        map test {
-                type ipv4_addr . ether_addr . inet_service : mark
-                flags interval,timeout
-                elements = { 18.51.100.17 . ad:c1:ac:c0:ce:c0 . 3761 : 0x00000042 }
-        }
-  }
-
-* Allow to specify comments in sets, eg.
-
-   table ip x {
-        set s {
-                type ipv4_addr;
-                comment "list of unwanted traffic by IP address"
-                elements = { 1.1.1.1, 1.2.3.4 }
-        }
-   }
-
-  You can also specify comments in tables and stateful objects (such
-  as quota, limit and counters).
-
-* Support for defining empty sets in variables:
-
-  define BASE_ALLOWED_INCOMING_TCP_PORTS = {22, 80, 443}
-  define EXTRA_ALLOWED_INCOMING_TCP_PORTS = {}
-
-  table inet x {
-       chain y {
-            type filter hook input priority 0; policy drop;
-            ct state new tcp dport { $BASE_ALLOWED_INCOMING_TCP_PORTS, $EXTRA_ALLOWED_INCOMING_TCP_PORTS } counter accept
-       }
-  }
-
-* Allow to use variables in the log prefix string.
-
-  define foo= "state"
-  define bar = "match"
-
-  table x {
-        chain y {
-            ct state invalid log prefix "invalid $foo $bar:"
-        }
-  }
-
-* Allow to use variables in chain and flowtable definitions, e.g.
-
-  define if_main = lo
-
-  table netdev x {
-        chain y {
-            type filter hook ingress device $if_main priority -500; policy accept;
-        }
-  }
-
-* Allow to define negative values in variables:
-
-  define post = -10
-  define for = "filter - 100"
-
-  table inet global {
-      chain forward {
-          type filter hook prerouting priority $for
-          policy accept
-      }
-      chain postrouting {
-          type filter hook postrouting priority $post
-          policy accept
-      }
-  }
-
-* Improved error reporting on statements:
-
-   # nft add rule x y jump test
-   Error: Could not process rule: No such file or directory
-   add rule x y jump test
-                     ^^^^
-
-   This error is displayed in case that the 'test' chain does not exist.
-
-* Support for SCTP stateless NAT.
-
-You can download this new release from:
-
-https://www.netfilter.org/projects/nftables/downloads.html#nftables-0.9.7
-
-To build the code, libnftnl >= 1.1.8 and libmnl >= 1.0.4 are required:
-
-* https://netfilter.org/projects/libnftnl/index.html
-* https://netfilter.org/projects/libmnl/index.html
-
-Visit our wikipage for user documentation at:
-
-* https://wiki.nftables.org
-
-For the manpage reference, check man(8) nft.
-
-In case of bugs and feature request, file them via:
-
-* https://bugzilla.netfilter.org
-
-Have fun.
-
---8t9RHnE3ZwKMSgU+
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: attachment; filename="changes-nftables-0.9.7.txt"
-
-Arturo Borrero Gonzalez (1):
-      nft: rearrange help output to group related options together
-
-Balazs Scheidler (5):
-      socket: add support for "wildcard" key
-      src/scanner.l: fix whitespace issue for the TRANSPARENT keyword
-      doc: added documentation on "socket wildcard"
-      tests: added "socket wildcard" testcases
-      tests: allow tests/monitor to use a custom nft executable
-
-Devin Bayer (1):
-      nft: migrate man page examples with `meter` directive to sets
-
-Florian Westphal (9):
-      doc: revisit meta/rt primary expressions and ct statement
-      monitor: print "dormant" flag in monitor mode
-      tests: extend existing dormat test case to catch a kernel bug
-      evaluate: permit get element on maps
-      netlink: fix concat range expansion in map case
-      tests: extend 0043concatenated_ranges_0 to cover maps too
-      nftables: dump raw element info from libnftnl when netlink debugging is on
-      proto: add sctp crc32 checksum fixup
-      segtree: copy expr data to closing element
-
-Gopal Yadav (2):
-      json: Combining --terse with --json has no effect
-      Solves Bug 1462 - `nft -j list set` does not show counters
-
-Jeremy Sowden (3):
-      tests: py: add missing JSON output for ct test.
-      tests: py: correct order of set elements in test JSON output.
-      tests: py: add missing test JSON output for TCP flag tests.
-
-Jindrich Makovicka (1):
-      libnftables: avoid repeated command list traversal on errors
-
-Jose M. Guisado Gomez (6):
-      src: fix obj list output when reset command
-      src: add comment support for set declarations
-      src: add comment support when adding tables
-      src: add comment support for objects
-      parser_bison: fail when specifying multiple comments
-      src: add comment support for chains
-
-Pablo Neira Ayuso (45):
-      src: Allow for empty set variable definition
-      segtree: zap element statement when decomposing interval
-      src: use expression to store the log prefix
-      src: allow for variables in the log prefix string
-      datatype: convert chain name from gmp value to string
-      src: support for implicit chain bindings
-      parser_bison: memleak in log prefix string
-      evaluate: UAF in stmt_evaluate_log_prefix()
-      tests: shell: chmod 755 testcases/chains/0030create_0
-      src: allow to use variables in flowtable and chain devices
-      evaluate: use evaluate_expr_variable() for chain policy evaluation
-      tests: shell: remove check for reject from prerouting
-      rule: flush set cache before flush command
-      rule: missing map command expansion
-      evaluate: replace variable expression by the value expression
-      src: allow for negative value in variable definitions
-      evaluate: bail out with concatenations and singleton values
-      evaluate: flush set cache from the evaluation phase
-      src: remove cache lookups after the evaluation phase
-      evaluate: remove table from cache on delete table
-      parser_bison: memleak symbol redefinition
-      evaluate: memleak in invalid default policy definition
-      evaluate: UAF in hook priority expression
-      netlink_delinearize: transform binary operation to prefix only with values
-      evaluate: disregard ct address matching without family
-      segtree: memleaks in interval_map_decompose()
-      src: cache gets out of sync in interactive mode
-      src: add comment support for map too
-      mergesort: unbreak listing with binops
-      src: add expression handler hashtable
-      src: add chain hashtable cache
-      mergesort: find base value expression type via recursion
-      mnl: larger receive socket buffer for netlink errors
-      tests: py: flush log file output before running each command
-      evaluate: remove one indent level in __expr_evaluate_payload()
-      src: context tracking for multiple transport protocols
-      src: ingress inet support
-      doc: nft.8: describe inet ingress hook
-      rule: larger number of error locations
-      src: constify location parameter in cmd_add_loc()
-      src: improve rule error reporting
-      segtree: UAF in interval_map_decompose()
-      monitor: do not print generation ID with --echo
-      Revert "monitor: do not print generation ID with --echo"
-      build: Bump version to v0.9.7
-
-Phil Sutter (4):
-      doc: Document notrack statement
-      json: Expect refcount increment by json_array_extend()
-      evaluate: Reject quoted strings containing only wildcard
-      json: Fix memleak in set_dtype_json()
-
-Stefano Brivio (5):
-      tests: Run in separate network namespace, don't break connectivity
-      tests: shell: Allow wrappers to be passed as nft command
-      tests: 0043concatenated_ranges_0: Fix checks for add/delete failures
-      tests: 0044interval_overlap_0: Repeat insertion tests with timeout
-      tests: sets: Check rbtree overlap detection after tree rotations
-
-
---8t9RHnE3ZwKMSgU+--
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter user mailinglist <netfilter@vger.kernel.org>
+
+Hi there,
+
+https://wiki.nftables.org/wiki-nftables/index.php/Performing_Network_Address_Translation_(NAT)#Redirect
+states that the _redirect_ statement "only makes sense in a prerouting
+chain of NAT type."
+
+This is AFAICS inaccurate. A _redirect_ statement is also useful if one
+wants to redirect outgoing traffic through a local, transparent proxy,
+cf. the example configuration to route traffic through a local tor
+client
+https://trac.torproject.org/projects/tor/wiki/doc/TransparentProxy#LocalRedirectionThroughTor
+.
+
+This is seconded by nft's man page, which states that "dnat and redirect
+statements are only valid in the prerouting and output chains".
+
+Therefore I suggest to patch the aforementioned Wiki page:
+- Note that: ''redirect'' only makes sense in a prerouting chain of NAT
+type.
+---
++ This example redirects outgoing 53/tcp traffic to a local proxy
+listening on port 10053/tcp:
++
++ <source lang="bash">
++ % nft add rule nat output tcp dport 853 redirect to 10053
++ </source>
++
++ Note that: ''redirect'' only makes sense in prerouting and output
+chains of NAT type.
+
+-- 
+Best
+
+dirdi
