@@ -1,47 +1,38 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Wiki inaccuracy regarding the 'redirect' statement
-Date: Wed, 28 Oct 2020 23:23:48 +0100
-Message-ID: <20201028222348.GB25697@salvia>
-References: <40860804-5378-d32d-371e-a38ab9a43af5@dirdi.name>
+Subject: Re: nftables iifname and currently unknown interfaces
+Date: Wed, 28 Oct 2020 23:25:25 +0100
+Message-ID: <20201028222525.GC25697@salvia>
+References: <c382354e-4a18-0863-e006-0db6f9fce1f6@heinlein-support.de>
+ <20201016105612.GH16895@breakpoint.cc>
+ <68b4fcb6-f6cc-d1f0-c194-b0d479386ea3@heinlein-support.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <40860804-5378-d32d-371e-a38ab9a43af5@dirdi.name>
+In-Reply-To: <68b4fcb6-f6cc-d1f0-c194-b0d479386ea3@heinlein-support.de>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: dirdi <lists@dirdi.name>
-Cc: netfilter user mailinglist <netfilter@vger.kernel.org>
+To: Robert Sander <r.sander@heinlein-support.de>
+Cc: Florian Westphal <fw@strlen.de>, netfilter@vger.kernel.org
 
-On Tue, Oct 27, 2020 at 01:03:56PM +0100, dirdi wrote:
-> Hi there,
+On Fri, Oct 16, 2020 at 01:10:21PM +0200, Robert Sander wrote:
+> Am 16.10.20 um 12:56 schrieb Florian Westphal:
 > 
-> https://wiki.nftables.org/wiki-nftables/index.php/Performing_Network_Address_Translation_(NAT)#Redirect
-> states that the _redirect_ statement "only makes sense in a prerouting
-> chain of NAT type."
+> > nft add rule inet filter forwad iifname bond0.16 oifname bond0.42 accept
+> > Error: Could not process rule: No such file or directory
+> > add rule inet filter forwad iifname bond0.16 oifname bond0.42 accept
+> >                      ^^^^^^
+> > (typo in chain name).
 > 
-> This is AFAICS inaccurate. A _redirect_ statement is also useful if one
-> wants to redirect outgoing traffic through a local, transparent proxy,
-> cf. the example configuration to route traffic through a local tor
-> client
-> https://trac.torproject.org/projects/tor/wiki/doc/TransparentProxy#LocalRedirectionThroughTor
-> .
+> Oh, how embarrassing. :)
 > 
-> This is seconded by nft's man page, which states that "dnat and redirect
-> statements are only valid in the prerouting and output chains".
-> 
-> Therefore I suggest to patch the aforementioned Wiki page:
-> - Note that: ''redirect'' only makes sense in a prerouting chain of NAT
-> type.
-> ---
-> + This example redirects outgoing 53/tcp traffic to a local proxy
-> listening on port 10053/tcp:
-> +
-> + <source lang="bash">
-> + % nft add rule nat output tcp dport 853 redirect to 10053
-> + </source>
-> +
-> + Note that: ''redirect'' only makes sense in prerouting and output
-> chains of NAT type.
+> The rule originally contained a jump to a chain that wa slater declared
+> in the nft commands. Bummer. Sorry for the noise.
 
-I have applied this change, thanks.
+For the record, the most recent nftables (0.9.7) with recent kernel
+versions provide a hint for this error:
+
+# nft add rule x y jump test
+Error: Could not process rule: No such file or directory
+add rule x y jump test
+                  ^^^^
