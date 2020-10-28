@@ -1,56 +1,36 @@
-From: dirdi <lists@dirdi.name>
-Subject: Wiki inaccuracy regarding the 'redirect' statement
-Date: Tue, 27 Oct 2020 13:03:56 +0100
-Message-ID: <40860804-5378-d32d-371e-a38ab9a43af5@dirdi.name>
+From: "Wang, Lihua" <lwang2@gc.cuny.edu>
+Subject: nftable rule for VRRP traffic
+Date: Wed, 28 Oct 2020 15:34:34 +0000
+Message-ID: <9e00cb7bb2e944c981e1a9a43278aa2c@wd5b.gc.cuny.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dirdi.name;
-        s=kas202010141013; t=1603800236;
-        bh=4VO1kpG9gu9QWo6HcMarj8JxPfUuSQiFnIf4pUW78nk=;
-        h=From:To:Subject:Date:From;
-        b=mXsGepHEAEeLp3MzYX506W2N7kizwctabt1oQBMAEfRCr5AGwaJnaBlapbDvG2s2c
-         8Ai+f0q4xdgYA2gw+K/8Xc4bbSCTGIjH/16SjED/DaDnz4XBH0rLnxWpViHPAYBawo
-         4RIu0w7QweoHDjKIncv5pbLu+nXM6Yly0H7osnel9LK70C/QYHznv4rplpZCUvrzPH
-         84bL4+Z4KNDsvPKPXhGWSLILm6CSiZ/uhEHwdJC/TrebvXtvIbejHtjPBveTTlZTsA
-         kLgk8rQWcYCYwXikXHa3kgggR5xY/p5AlUcbUxE75/Pbl8aM5YT0v+iFuctaZafj3A
-         WeWw1i39aRX2A==
 Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter user mailinglist <netfilter@vger.kernel.org>
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi there,
+Dear NFTables community,
 
-https://wiki.nftables.org/wiki-nftables/index.php/Performing_Network_Address_Translation_(NAT)#Redirect
-states that the _redirect_ statement "only makes sense in a prerouting
-chain of NAT type."
+We are trying to migrate from firewalld to nftables in our planned upgrade from CentOS 7 to 8. 
 
-This is AFAICS inaccurate. A _redirect_ statement is also useful if one
-wants to redirect outgoing traffic through a local, transparent proxy,
-cf. the example configuration to route traffic through a local tor
-client
-https://trac.torproject.org/projects/tor/wiki/doc/TransparentProxy#LocalRedirectionThroughTor
-.
+We run keepalived on some of our servers and we need to migrate the firewall rule that allows vrrp in and out traffic to nftables format. I googled the topic, searched nftables documentations, and tested a number of possibilities but could not find the solution.
 
-This is seconded by nft's man page, which states that "dnat and redirect
-statements are only valid in the prerouting and output chains".
+the firewalld rules for vrrp is: 
 
-Therefore I suggest to patch the aforementioned Wiki page:
-- Note that: ''redirect'' only makes sense in a prerouting chain of NAT
-type.
----
-+ This example redirects outgoing 53/tcp traffic to a local proxy
-listening on port 10053/tcp:
-+
-+ <source lang="bash">
-+ % nft add rule nat output tcp dport 853 redirect to 10053
-+ </source>
-+
-+ Note that: ''redirect'' only makes sense in prerouting and output
-chains of NAT type.
+firewall-cmd --direct --permanent --add-rule ipv4 filter INPUT 0 --in-interface ens192 --destination 224.0.0.18 --protocol vrrp -j ACCEPT
+firewall-cmd --direct --permanent --add-rule ipv4 filter OUTPUT 0 --out-interface ens192 --destination 224.0.0.18 --protocol vrrp -j ACCEPT
 
--- 
-Best
+which are similar to ipables commands:
 
-dirdi
+# iptables -I INPUT -i ens192 -d 224.0.0.0/8 -p vrrp -j ACCEPT
+# iptables -I OUTPUT -o ens192 -d 224.0.0.0/8 -p vrrp -j ACCEPT
+
+Could you please kindly advise what is the equivalent in nftable command or rule formate?
+
+Thank you very much.
+
+Regards,
+
+Lihua Wang
+Linux admin @ CUNY Graduate Center
