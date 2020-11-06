@@ -1,160 +1,66 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Martin Gignac <martin.gignac@gmail.com>
 Subject: Re: Trying to provision flowtable returns error
-Date: Fri, 6 Nov 2020 18:18:46 +0100
-Message-ID: <20201106171846.GA5114@salvia>
-References: <20201105005345.GA4263@dimstar.local.net>
- <CANf9dFMFqjp7MJQy5B52sz3PVc5wm5DWRMrKKGKtqL9n6rXWYw@mail.gmail.com>
- <20201105153822.GE15770@breakpoint.cc>
- <CANf9dFP5fzK7N3eQ3KyW=zC22dpfMuf=yxX7B9dqTpnb0mThLA@mail.gmail.com>
- <20201105170754.GB25824@breakpoint.cc>
- <CANf9dFM7_P2CJ-zHsTjOwZtAtgkBUMsYEjr_qFu9gm-ibasDZw@mail.gmail.com>
+Date: Fri, 6 Nov 2020 14:20:50 -0500
+Message-ID: <CANf9dFN_8BOBacJjYUBJ2f=OE0QZXp-ZcAssnvURwetBt_XAkw@mail.gmail.com>
+References: <20201105153822.GE15770@breakpoint.cc> <CANf9dFP5fzK7N3eQ3KyW=zC22dpfMuf=yxX7B9dqTpnb0mThLA@mail.gmail.com>
+ <20201105170754.GB25824@breakpoint.cc> <CANf9dFM7_P2CJ-zHsTjOwZtAtgkBUMsYEjr_qFu9gm-ibasDZw@mail.gmail.com>
  <CANf9dFPaiLP-fJVHtKxG2aFO-Q18rEnNgwN4Yoqut4je5wZaig@mail.gmail.com>
- <20201105210146.GA10732@salvia>
- <CANf9dFPDXiO3kYa-=UzknyjCcu4Y5tEkZZnQP9GhD9VG=OcFBw@mail.gmail.com>
- <20201106105833.GA13845@salvia>
+ <20201105210146.GA10732@salvia> <CANf9dFPDXiO3kYa-=UzknyjCcu4Y5tEkZZnQP9GhD9VG=OcFBw@mail.gmail.com>
+ <20201106105833.GA13845@salvia> <CANf9dFNjO+912xTqgheHRB2wqbstMXNv2+VFV6L+QxyyTLVUgA@mail.gmail.com>
+ <CANf9dFPU8e8OC5aJci-0D+awcyNpKL+tCkCZi+0TUZjQ1=p9xg@mail.gmail.com> <20201106162147.GA3647@salvia>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20201106105833.GA13845@salvia>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PAOmWC3m3thQh7C7RzhB5NTe/yu9RiqzqpSJm4/ZHes=;
+        b=ixV8XB6UDLHtyy3C1ulU7anMj237Nc6ZjjA2a6gipOBv5RgHKkhIDzblVFrXmP4l7q
+         kiGOTfHOfOoigIainWHHzecrn1tc0C7hqUy+3edqnt1dhHsLsCcLNqbppyZES8gknHnT
+         8BPCNrCORBhikUMLkdvN5JO/aZl0+wTHPd89Mlqzqn7OeuCqLtRuGls5rJHs43/F8as6
+         LIahUt23u4YIVLLXgXVtTjH5tG4FwDCbvC6AKoyJfQ33Dsba8F+RFdPAFEQErQUQa48+
+         orZwkY0UgyZquBbXAy1yLL47CU8oZqG2bRux67y7iG9jdqkzIfrRlKi3+LETsF48Mg9b
+         r5aA==
+In-Reply-To: <20201106162147.GA3647@salvia>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Martin Gignac <martin.gignac@gmail.com>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: Florian Westphal <fw@strlen.de>, netfilter@vger.kernel.org
 
-On Fri, Nov 06, 2020 at 11:58:33AM +0100, Pablo Neira Ayuso wrote:
-> Hi,
-> 
-> This works fine here, see below.
-> 
-> On Thu, Nov 05, 2020 at 04:45:31PM -0500, Martin Gignac wrote:
-> > Hi Pablo,
-> > 
-> > > You can dynamically add/delete devices to/from flowtables since Linux
-> > > kernel 5.8
-> > 
-> > Are you referring to this patch ?:
-> > https://www.spinics.net/lists/netfilter-devel/msg67310.html
-> > 
-> > I tried with Fedora 33 (5.8.17-300.fc33.x86_64) and this file:
-> > 
-> >     [root@localhost ~]# cat /etc/nftables/firewall.nft
-> >     flush ruleset
-> > 
-> >     table inet x {
-> >         flowtable f {
-> >                 hook ingress priority 0;
-> >     }
-> >             chain y {
-> >                     type filter hook forward priority 0; policy accept;
-> >                     ip protocol tcp flow offload @f
-> >                     counter packets 0 bytes 0
-> >             }
-> >     }
-> > 
-> > and indeed it does load without error, although I had to compile the
-> > latest version of nft (v0.9.7) as v0.9.3 (which comes with Fedora 33)
-> > was giving me this error:
-> > 
-> >     [root@localhost ~]# nft -f /etc/nftables/firewall.nft
-> >     /etc/nftables/firewall.nft:4:12-12: Error: Unbound flowtable not
-> > allowed (must specify devices)
-> >         flowtable f {
-> >                 ^
-> > Once I added my br0 interface wih 'ip link add br0 type bridge' I was
-> > able to run 'nft add flowtable inet x f { devices = { br0 } \; }'
-> > without error.
-> >
-> > However, if I run 'nft -f /etc/nftables/firewall.nft' again and then
-> > 'nft list ruleset', br0 is gone. Does this mean that it is no longer
-> > bound to a flow table?
-> > 
-> > The way I have been handling rule changes so far is to modify a single
-> > '/etc/nftables/firewall.nft' file every time I need to modify rules
-> > and then run 'nft -f /etc/nftables/firewall.nft' to reload and apply
-> > those changes (I don't tend to run single nft commands to update
-> > things here and there -- I prefer to modify a single file as the
-> > source of truth and then reload the ruleset completely). Running
-> > something like 'nft add flowtable inet x f { devices = { br0 } \; }'
-> > once upon boot up when a logical interface comes up is fine, but does
-> > my workflow require that I then run 'nft add flowtable inet x f {
-> > devices = { br0 } \; }' after every time I run 'nft -f
-> > /etc/nftables/firewall.nft'?
-> 
-> # cat firewall.nft
-> table ip x {
->         flowtable y {
->                 hook ingress priority filter
->         }
-> 
->         chain y {
->                 flow add @y
->         }
-> }
-> # nft -f firewall.nft
-> # nft list ruleset
-> table ip x {
->         flowtable y {
->                 hook ingress priority filter
->         }
-> 
->         chain y {
->                 flow add @y
->         }
-> }
-> 
-> This is your base ruleset.
-> 
-> Now you add devices to the flowtable (requirements: kernel >= 5.8
-> and nftables >= 0.9.7):
-> 
-> # nft add flowtable x y { devices = { eth0, eth1 } \; }
-> 
-> Listing shows:
-> 
-> # nft list ruleset
-> table ip x {
->         flowtable y {
->                 hook ingress priority filter
->                 devices = { eth0, eth1 }
->         }
-> 
->         chain y {
->                 flow add @y
->         }
-> }
-> 
-> Note: If eth0 is gone, then this is automatically removed from the
-> flowtable.
-> 
-> Is "flush ruleset" at the very beginning of your firewall.nft file?
-> 
-> If so, that is tearing down everything and creating it from scratch,
-> so the devices you have dynamically added are gone since they are not
-> in the original firewall.nft file.
-> 
-> I would expect you load firewall.nft at boot time, then dynamically
-> add devices as needed in run time.
+> Sorry, I'm getting a bit lost regarding what the problem is at this
+> stage regarding the flowtable infrastructure.
 
-Just to clarify.
+I think the confusion stems from the fact that I have set up an
+nftables workflow for myself that is "opinionated" and that doesn't
+currently fit "out-of-the-box" with the way nft and flowtables
+interact. I wrote a helper/wrapper program for myself that simplifies
+nftables rules management by offering show, edit, check, commit, diff
+and versioning functions to mimic the Juniper firewall behaviors that
+I am accustomed to and find very convenient. Some of these functions
+are plainly just front-ends to 'nft' commands, while some others (such
+as diff and versioning) require more work in order to allow diffs and
+versioning between both 'raw' /etc/nftables/firewall.nft files as well
+as the 'compiled' (pretty-printed, comments removed) result of running
+'nft' on these files. This workflow relied on assumptions that I had
+made that my desire to integrate flow tables suddenly blew out of the
+water. The "destructive" nature of 'flush ruleset' (which I was using
+so far) was not an issue before, but with flow tables it suddenly
+became one simply because I had not understood its reach. Had I been
+using dynamic sets (which I hadn't so far) this likely would have
+presented some issues too. But the fact that 'flush table' statements
+_do_ exhibit the behavior that I had wrongly attributed to 'flush
+ruleset', I now know that I have a way to use my program with flow
+tables; I just need to code some logic to find out the existing table
+names and generate the required 'flush table' statements as part of my
+commit function.
 
-You can still load device at boot time, ie.
+What also doesn't help is that I'm probably not explaining myself
+properly, and as a developer of nftables your intimate knowledge of it
+is at odds with my amateurish understanding of it. :o)
 
-# cat ruleset.nft
-table ip x {
-        flowtable y {
-                hook ingress priority filter
-                devices = { eth0, eth1 }
-        }
+Thanks to both of you for taking the time to answer, and for your work
+on nftables!
 
-        chain y {
-                flow add @y
-        }
-}
-# nft -f ruleset.nft
-
-You can just update the flowtable later on with more (new) devices in
-case you require this. Kernel >= 5.8 and nft >= 0.9.7 are just
-providing a bit more flexibility in case you dynamically load an
-interface and you would like to incrementally update a flowtable
-without reloading the whole ruleset.
+Regards,
+-Martin
