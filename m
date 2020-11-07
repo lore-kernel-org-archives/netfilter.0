@@ -1,66 +1,72 @@
-From: Martin Gignac <martin.gignac@gmail.com>
-Subject: Re: Trying to provision flowtable returns error
-Date: Fri, 6 Nov 2020 14:20:50 -0500
-Message-ID: <CANf9dFN_8BOBacJjYUBJ2f=OE0QZXp-ZcAssnvURwetBt_XAkw@mail.gmail.com>
-References: <20201105153822.GE15770@breakpoint.cc> <CANf9dFP5fzK7N3eQ3KyW=zC22dpfMuf=yxX7B9dqTpnb0mThLA@mail.gmail.com>
- <20201105170754.GB25824@breakpoint.cc> <CANf9dFM7_P2CJ-zHsTjOwZtAtgkBUMsYEjr_qFu9gm-ibasDZw@mail.gmail.com>
- <CANf9dFPaiLP-fJVHtKxG2aFO-Q18rEnNgwN4Yoqut4je5wZaig@mail.gmail.com>
- <20201105210146.GA10732@salvia> <CANf9dFPDXiO3kYa-=UzknyjCcu4Y5tEkZZnQP9GhD9VG=OcFBw@mail.gmail.com>
- <20201106105833.GA13845@salvia> <CANf9dFNjO+912xTqgheHRB2wqbstMXNv2+VFV6L+QxyyTLVUgA@mail.gmail.com>
- <CANf9dFPU8e8OC5aJci-0D+awcyNpKL+tCkCZi+0TUZjQ1=p9xg@mail.gmail.com> <20201106162147.GA3647@salvia>
+From: Ameen Al-Azzawi <ameen.azzawi@gmail.com>
+Subject: IP MASQUERADE isn't being applied on all outgoing packets.
+Date: Sat, 7 Nov 2020 10:07:20 +0100
+Message-ID: <CABcvXqJJg7gv5fFy3dk6qQ1fay-Vq3cFA-GCvwGpcTDuHARo3Q@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PAOmWC3m3thQh7C7RzhB5NTe/yu9RiqzqpSJm4/ZHes=;
-        b=ixV8XB6UDLHtyy3C1ulU7anMj237Nc6ZjjA2a6gipOBv5RgHKkhIDzblVFrXmP4l7q
-         kiGOTfHOfOoigIainWHHzecrn1tc0C7hqUy+3edqnt1dhHsLsCcLNqbppyZES8gknHnT
-         8BPCNrCORBhikUMLkdvN5JO/aZl0+wTHPd89Mlqzqn7OeuCqLtRuGls5rJHs43/F8as6
-         LIahUt23u4YIVLLXgXVtTjH5tG4FwDCbvC6AKoyJfQ33Dsba8F+RFdPAFEQErQUQa48+
-         orZwkY0UgyZquBbXAy1yLL47CU8oZqG2bRux67y7iG9jdqkzIfrRlKi3+LETsF48Mg9b
-         r5aA==
-In-Reply-To: <20201106162147.GA3647@salvia>
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=PzJbbbT6uxCYrVb1rdMihO5D/iMjkwDGhJmWN83/8B4=;
+        b=mDIL//7ZW3pnufL+Ffrfy9r/lxAUvpuy5h31CVKy917edBMPnxrXSKYFBn4jis4iqu
+         MkwWYaam5Rpj5kMhdt2ZkrRLRnqmvY4vf+OXdImLE0tj3w/ss2zgSmJ73SF1AAuKDuv6
+         n6yR9zc4YeTmdrYeiCHLgivh0yBRdUmYNeGnKOlihFvwpLUvcF4Z6q5E5s7/hPu1wW5/
+         2T3B4TwcrMuwRuiRzuRtA6SOSXjrZdzi6hLIVXq3ItE9zR28VhdM0ayTI0UFqw+oVqn8
+         XPJhrwPqJXrE0/he6I1fVnX4+usNdGBvm/LimEyW1nmg5/zXtlHpNmAWNJk0k/FBB7yD
+         ckRQ==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Florian Westphal <fw@strlen.de>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-> Sorry, I'm getting a bit lost regarding what the problem is at this
-> stage regarding the flowtable infrastructure.
+Hello,
 
-I think the confusion stems from the fact that I have set up an
-nftables workflow for myself that is "opinionated" and that doesn't
-currently fit "out-of-the-box" with the way nft and flowtables
-interact. I wrote a helper/wrapper program for myself that simplifies
-nftables rules management by offering show, edit, check, commit, diff
-and versioning functions to mimic the Juniper firewall behaviors that
-I am accustomed to and find very convenient. Some of these functions
-are plainly just front-ends to 'nft' commands, while some others (such
-as diff and versioning) require more work in order to allow diffs and
-versioning between both 'raw' /etc/nftables/firewall.nft files as well
-as the 'compiled' (pretty-printed, comments removed) result of running
-'nft' on these files. This workflow relied on assumptions that I had
-made that my desire to integrate flow tables suddenly blew out of the
-water. The "destructive" nature of 'flush ruleset' (which I was using
-so far) was not an issue before, but with flow tables it suddenly
-became one simply because I had not understood its reach. Had I been
-using dynamic sets (which I hadn't so far) this likely would have
-presented some issues too. But the fact that 'flush table' statements
-_do_ exhibit the behavior that I had wrongly attributed to 'flush
-ruleset', I now know that I have a way to use my program with flow
-tables; I just need to code some logic to find out the existing table
-names and generate the required 'flush table' statements as part of my
-commit function.
+I am doing my research in IPv6 transition technologies, right now I am
+building a test-bed with Debian-based virtual machines, for testing
+purposes.
+There is this topology called 464XLAT, of IPv6-IPv4 transition.
 
-What also doesn't help is that I'm probably not explaining myself
-properly, and as a developer of nftables your intimate knowledge of it
-is at odds with my amateurish understanding of it. :o)
+On VM-3, I am implementing iptables with (-j masquerading) argument.
+Packets leaving from eth2 (of VM-3) have to have the new src address
+(198.51.100.1) on their way out toward VM-4.
 
-Thanks to both of you for taking the time to answer, and for your work
-on nftables!
+|  VM-1  |eth1             |  VM-2  |              |  VM-3  | eth2
+            eth1 |  VM-4  |
 
-Regards,
--Martin
+VM-1 eth1 : 10.0.0.2
+VM-3  eth2 : 198.51.100.1
+VM-4 eth1 : 198.51.100.2
+
+I am flooding (VM-4) with SYN packets using the hping3 command (from
+VM-1 toward VM-4).
+
+hping3 -S  -p 80 198.51.100.2 --flood
+
+The iptables rule is implemented on (VM-3).
+
+iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE
+
+VM-3 is actually using TAYGA software (ipv6-ipv4 translator).
+
+The masquerading isn=E2=80=99t working for some packets and the source IP
+isn=E2=80=99t changing.
+The below tshark results (for some packets) show the original source
+IP address (10.0.0.2) coming out of VM3-eth2.
+
+ root@PLAT:~# tshark -i eth2 -T fields -e ip.src -e tcp.srcport -e
+ip.dst -e tcp.dstport -e ip.proto
+Capturing on 'eth2'
+198.51.100.1    5000    198.51.100.2    80      6
+198.51.100.2    80      198.51.100.1    5000    6
+10.0.0.2        5000    198.51.100.2    80      6
+10.0.0.2        5000    198.51.100.2    80      6
+
+To sum up, the rule is working for most of the packets and doesn=E2=80=99t =
+for others.
+
+Is this a familiar thing? Or I am missing something here?
+Any feedback would be really appreciated.
+
+Kind Regards
+Ameen
