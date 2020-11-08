@@ -1,72 +1,98 @@
-From: Ameen Al-Azzawi <ameen.azzawi@gmail.com>
-Subject: IP MASQUERADE isn't being applied on all outgoing packets.
-Date: Sat, 7 Nov 2020 10:07:20 +0100
-Message-ID: <CABcvXqJJg7gv5fFy3dk6qQ1fay-Vq3cFA-GCvwGpcTDuHARo3Q@mail.gmail.com>
+From: Piotr Jurkiewicz <piotr.jerzy.jurkiewicz@gmail.com>
+Subject: How to update timeout of a map element?
+Date: Sun, 8 Nov 2020 17:57:41 +0100
+Message-ID: <75d70e12-659f-0e56-00d8-380a39cc83ba@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=PzJbbbT6uxCYrVb1rdMihO5D/iMjkwDGhJmWN83/8B4=;
-        b=mDIL//7ZW3pnufL+Ffrfy9r/lxAUvpuy5h31CVKy917edBMPnxrXSKYFBn4jis4iqu
-         MkwWYaam5Rpj5kMhdt2ZkrRLRnqmvY4vf+OXdImLE0tj3w/ss2zgSmJ73SF1AAuKDuv6
-         n6yR9zc4YeTmdrYeiCHLgivh0yBRdUmYNeGnKOlihFvwpLUvcF4Z6q5E5s7/hPu1wW5/
-         2T3B4TwcrMuwRuiRzuRtA6SOSXjrZdzi6hLIVXq3ItE9zR28VhdM0ayTI0UFqw+oVqn8
-         XPJhrwPqJXrE0/he6I1fVnX4+usNdGBvm/LimEyW1nmg5/zXtlHpNmAWNJk0k/FBB7yD
-         ckRQ==
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-language:content-transfer-encoding;
+        bh=2uy1+bwVX6+1jx/rf47Gu+gZ3RasfhQnwy4XWL1mj0k=;
+        b=oGfLbFFMwiczT+C3zsWcq/EuUq2hrDDX7O3vpZmuwk6//4t3Ap7qRYQ/14Sd3kuxz+
+         5TlwaOrVR6S8nr9B8/ckPAMTYyPrKdNFuBhHVNZRtjpuNl0SJF3odOt9Bksb/xHH6EU6
+         xMeOXVi/tUMlGvlTvUwiFYgFt5T+XRE9Hio6JE3Duh+M3c+NHmvNoF3GyWk2b7/xxmFU
+         0ks4hcMhqPwdf8bXGTB2ClFzZeihPNBoNWyaIP+T501dxlMdz24yxpv+F/0fexaBWAEM
+         bgOicGrdqilBuJvxyulBJ/Ye1uemnXK14trlB0CnwqTsZ+KNK1pckIXanlUT7qvo30Y3
+         IkUw==
+Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello,
+Hi,
 
-I am doing my research in IPv6 transition technologies, right now I am
-building a test-bed with Debian-based virtual machines, for testing
-purposes.
-There is this topology called 464XLAT, of IPv6-IPv4 transition.
+I have a question regarding a very basic thing: How to refresh the map 
+element timeout without recreating that element (i.e. without setting 
+its value again)?
 
-On VM-3, I am implementing iptables with (-j masquerading) argument.
-Packets leaving from eth2 (of VM-3) have to have the new src address
-(198.51.100.1) on their way out toward VM-4.
+According to:
 
-|  VM-1  |eth1             |  VM-2  |              |  VM-3  | eth2
-            eth1 |  VM-4  |
+https://wiki.nftables.org/wiki-nftables/index.php/Updating_sets_from_the_packet_path
 
-VM-1 eth1 : 10.0.0.2
-VM-3  eth2 : 198.51.100.1
-VM-4 eth1 : 198.51.100.2
+in the case of sets, the update operation can be used:
 
-I am flooding (VM-4) with SYN packets using the hping3 command (from
-VM-1 toward VM-4).
+update @ctrs { ip saddr . ip daddr . th sport . th dport counter }
 
-hping3 -S  -p 80 198.51.100.2 --flood
+However, in the case of maps, the update operation requires specifying 
+not only the key, but also value of a map element:
 
-The iptables rule is implemented on (VM-3).
+update @flows { ip saddr . ip daddr . th sport . th dport : rt nexthop }
 
-iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE
+Such a value can be unavailable in many cases. For example, let's 
+consider the following configuration which caches flows nexthops (aka 
+poor man's flow table):
 
-VM-3 is actually using TAYGA software (ipv6-ipv4 translator).
+table ip x {
 
-The masquerading isn=E2=80=99t working for some packets and the source IP
-isn=E2=80=99t changing.
-The below tshark results (for some packets) show the original source
-IP address (10.0.0.2) coming out of VM3-eth2.
+     map flows {
+             typeof ip saddr . ip daddr . th sport . th dport : ip daddr
+             timeout 5s
+     }
 
- root@PLAT:~# tshark -i eth2 -T fields -e ip.src -e tcp.srcport -e
-ip.dst -e tcp.dstport -e ip.proto
-Capturing on 'eth2'
-198.51.100.1    5000    198.51.100.2    80      6
-198.51.100.2    80      198.51.100.1    5000    6
-10.0.0.2        5000    198.51.100.2    80      6
-10.0.0.2        5000    198.51.100.2    80      6
+     set ctrs {
+             typeof ip saddr . ip daddr . th sport . th dport
+             flags dynamic
+             timeout 5s
+     }
 
-To sum up, the rule is working for most of the packets and doesn=E2=80=99t =
-for others.
+     chain prerouting {
+         type filter hook prerouting priority -300; policy accept;
+         ip protocol { tcp, udp } dup to ip saddr . ip daddr . th sport 
+. th dport map @flows update @ctrs { ip saddr . ip daddr . th sport . th 
+dport counter } drop
+     }
 
-Is this a familiar thing? Or I am missing something here?
-Any feedback would be really appreciated.
+     chain forward {
+         type filter hook forward priority 0; policy accept;
 
-Kind Regards
-Ameen
+         ip protocol { tcp, udp } add @flows { ip saddr . ip daddr . th 
+sport . th dport : rt nexthop }
+         ip protocol { tcp, udp } add @ctrs { ip saddr . ip daddr . th 
+sport . th dport counter }
+     }
+}
+
+We can update the @ctrs set in prerouting chain to collect per-flow 
+counters. Elements in this set will expire 5s after last flow packet. 
+However, there is no way to refresh timeouts of @flows map elements. We 
+cannot use rt nexthop here, since it would recreate the entry with 
+current nexthop, which would obviously make our cache no op. As a 
+result, element in @flows map will expire 5s after FIRST packet and the 
+entry would be recreated in forward chain with a new nexthop, which also 
+makes the cache pretty useless.
+
+I see two solutions for this problem. The first one would be to allow 
+update operations on maps to refresh timeouts without specifying 
+element's value:
+
+update @flows { ip saddr . ip daddr . th sport . th dport }
+
+The second one would be to add a new flag to maps, which would make maps 
+refresh their elements timeout on every hit (map lookup).
+
+Or there is already some way to achieve this which I missed?
+
+Regards,
+Piotr Jurkiewicz
