@@ -1,79 +1,43 @@
-From: Kyle Rose <krose@krose.org>
-Subject: vmap declaration style
-Date: Thu, 12 Nov 2020 11:33:04 -0500
-Message-ID: <CAJU8_nUA1npZFdxp=tqxUeWWbDJr7CLj9pf9JLTGMm26XHkJeA@mail.gmail.com>
+From: Jonathan Horn <jonathan.horn97@googlemail.com>
+Subject: Filtering and counting traffic based on the ethernet address
+Date: Thu, 12 Nov 2020 18:37:53 +0100
+Message-ID: <CA+Tj7wKAaZ0ssQLmz=T_hCeNBdRwdR53wG-pCLWu5c2ovN7c5A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=krose.org; s=google;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=yAkanrIyNMq+7iC+i1A7jDqpJDxL3j/mmkwOjiU6vC4=;
-        b=blc6CuRgXwGYvYecbshqYMTeATYsyMIFBljebyVtj/XI7rwMjSlWC+XvIwU3MqP9sY
-         aPpL49VCX9++XFIQgMZEgxezA7Qk79/cuBTD8fhqFfhH4d6H8jz4/4Hu42Mr1qQrpiPo
-         G8ioPHc+4+f7Zz+kS2U/6Cli6Few9y2VHDhS0=
+        d=googlemail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=BwYIcbXq3DDiYxnY9NJjGjUqugYneVv1TFRoL3ekXn8=;
+        b=BBTGOwhD2YSy+SMnmye013m975Mh48xcmUwFglSXc7BS72PyyGbeiZOYdHyVtn2Pul
+         obB5zBljJPqN62OT9SfvPfYYSZiyGbxQiHrRQZXV972A8BLLLg8jHT7+YchEzRsoBIHP
+         0xhWLU485VelQsDqreHtmMsK7nOIU9/qrbO+kY9KhIqF2RTYUULvDEOI6XBw8pd9hexY
+         5SA7TAcrvW7SeAgWWq719uNqVVOapz1Fk1iaD08ZVFPenkvMU5PWxFHRW4aumJc/qYqX
+         hPph4CbZeYxEcB9CBPDBbUxuniL7FRzJrRNXIfK1hJ9S8C23khB1DEeP2rhAGdBG6O23
+         BrkA==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-If I declare a vmap and reference it this way:
+Hello,
 
-table inet filter {
-    map dispatch { type ifname : verdict; elements =3D { lo : accept } }
+I'd like to be able to filter and count the traffic caused by hosts
+with known ethernet addresses. But my attempt to use a
+ether_addr->counter name map with ether saddr & daddr failed, only
+counting the part coming from the host, but ignoring everything the
+host receives:
 
-    chain input {
-        type filter hook input priority filter; policy drop;
-        iifname vmap @dispatch
+chain FORWARD {
+                type filter hook forward priority 0; policy accept;
+                iifname "lan0" counter name ether saddr map @internet_test
+}
 
-I can then add elements at the end of the input file imperatively:
+chain POSTROUTING {
+                type filter hook postrouting priority 300; policy accept;
+                oifname "lan0" counter name ether daddr map @internet_testb
+}
 
-add element inet filter dispatch { tun0 : jump guest_in }
+Any help to accomplish this would be highly appreciated.
 
-and the expected thing happens:
-
-$ nft list ruleset
-table inet filter {
-        map dispatch {
-                type ifname : verdict
-                elements =3D { "lo" : accept,
-                             "tun0" : jump guest_in }
-        }
-
-Great. But I would like to have a site-specific include with some
-defines. So, I try to pre-declare the vmap, include the site file, and
-then define the remaining rules:
-
-add table inet filter
-add map inet filter dispatch { type ifname : verdict; elements =3D { lo
-: accept } }
-
-include "/etc/network/site.nft"
-
-table inet filter {
-    chain input {
-        type filter hook input priority filter; policy drop;
-        iifname vmap @dispatch
-
-But this produces the following error on load:
-
-/etc/network/nftables.conf:16:22-30: Error: No such file or directory;
-did you mean map =E2=80=98dispatch=E2=80=99 in table inet =E2=80=98filter=
-=E2=80=99?
-        iifname vmap @dispatch
-                     ^^^^^^^^^
-
-Yet if I remove the reference to eliminate the error, I get the following:
-
-$ nft list ruleset
-table inet filter {
-        map dispatch {
-                type ifname : verdict
-                elements =3D { "lo" : accept,
-                             "tun0" : jump guest_in }
-        }
-
-I cannot see any difference. Any ideas what is going on here?
-
-Thanks,
-Kyle
+Cheers,
+Jonathan
