@@ -1,36 +1,34 @@
 From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
-Subject: [nftables] frame rate limiting clashing with log rate limiting (bug
- ?)
-Date: Sat, 14 Nov 2020 11:22:00 +0000
-Message-ID: <f825a95a-fc00-98ea-a075-c63ba93183f3@gmx.net>
+Subject: [nftables] frame rate limiting per day/minute not working (bug ?)
+Date: Sat, 14 Nov 2020 12:29:00 +0000
+Message-ID: <03028b1e-e7bb-d82a-3697-9783c5f57568@gmx.net>
 Reply-To: vtol@gmx.net
 Mime-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
  protocol="application/pgp-signature";
- boundary="KrqurqpmIqGjuWbctiOU159j9G6yoaTaM"
+ boundary="osegqlkZrTkkalXdJid6PjL3ihTcHn8Tm"
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1605352968;
-        bh=grEsZBwXqoUbuLng4J8DokY92+IzbAjYAq84ajWsEbs=;
+        s=badeba3b8450; t=1605356963;
+        bh=utlLkLqIVV2D2B/Pt0EgaVwaOveFCRv0fekmf7CvctU=;
         h=X-UI-Sender-Class:To:Reply-To:From:Subject:Date;
-        b=Q5OOmgz293OShFcTrU4LplyqKD23gkSUvSmdBJl/UlSw79pe9kKspVhFUGQm4Kbi2
-         yig/zJBk4vpHKMkpXszh5d1zk5RHJ2Cnos1zN4lLnmzLx0VYL7abSg6UiInpjU2hxS
-         FRCmI+2C905c1XMAOTfnyS4YG8wuYmtwbqANR+4U=
+        b=Uu5fMw++qZMlP0tcI/hXRBtlwJgoGxelVdWKNoF+DWd3ZoAsr26ecUhIM2zZqiudy
+         CvOcsdtrcp/1HpuIVkbmu3OQbbpnEr2J0mux3HrD2YJoOED6hL/zmzLIZ434dq+wxz
+         U5V2CachrDIBpL/g15dY7yC/Z9MuwPOV6SzUMMNY=
 List-ID: <netfilter.vger.kernel.org>
 To: netfilter@vger.kernel.org
 
 This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---KrqurqpmIqGjuWbctiOU159j9G6yoaTaM
-Content-Type: multipart/mixed; boundary="58qx1sBqAwpGxZA9ZY5YOjv3kxUMVW2qr";
+--osegqlkZrTkkalXdJid6PjL3ihTcHn8Tm
+Content-Type: multipart/mixed; boundary="5dukNaYoWSgo12nOzsrRkDztiQfrntEYj";
  protected-headers="v1"
 From: =?UTF-8?B?0b3SieG2rOG4s+KEoA==?= <vtol@gmx.net>
 Reply-To: vtol@gmx.net
 To: netfilter@vger.kernel.org
-Message-ID: <f825a95a-fc00-98ea-a075-c63ba93183f3@gmx.net>
-Subject: [nftables] frame rate limiting clashing with log rate limiting (bug
- ?)
+Message-ID: <03028b1e-e7bb-d82a-3697-9783c5f57568@gmx.net>
+Subject: [nftables] frame rate limiting per day/minute not working (bug ?)
 
---58qx1sBqAwpGxZA9ZY5YOjv3kxUMVW2qr
+--5dukNaYoWSgo12nOzsrRkDztiQfrntEYj
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: quoted-printable
 Content-Language: en-GB
@@ -40,66 +38,89 @@ kernel: 5.10.0-rc3-next-20201113
 nftables: v0.9.6
 ______
 
-Whilst rate limiting frames I would like those to be logged but the logs =
+this rule in a > inet filter prerouting chain:
 
-not to be flooded and thus trying to rate limit the log entries as well, =
-
-however it seems that the log rate limiting is interfering with the=20
-frame rate limiting. The observation is that the log rate limit is being =
-
-applied as frame limit instead - am I missing something in the the syntax=
-?
-
-with this rule:
-
-icmp type 8 add @b_sa4_lan_pinger { ip saddr limit rate over 5/day }=C2=A0=
-=20
-log flags all prefix "ping_ip4 from LAN > rate_limit_d DROP: " limit=20
-rate 5/minute drop;
-
-or alternatively:
-
-icmp type 8 add @b_sa4_lan_pinger { ip saddr limit rate over 5/day }=20
-limit rate 5/minute log flags all prefix "ping_ip4 from LAN >=20
-rate_limit_d DROP: " drop;
-
-it is observed that the icmp frames # 1 - 5 are going through, as=20
-expected. Then icmp frames # 6 -10 being dropped but unexpectedly as=20
-from icmp frame # 11 the frames as going through again and not being=20
-dropped - which is unexpected/unwanted.
-
-If the log rate limit is being removed:
-
-icmp type 8 add @b_sa4_lan_pinger { ip saddr limit rate over 5/day } log =
+icmp type 8 add @b_sa4_lan_pinger { ip saddr limit rate over 2/day } log =
 
 flags all prefix "ping_ip4 from LAN > rate_limit_d DROP: " drop;
 
-then all icmp frames exceeding 5 count=C2=A0 being dropped, as expected b=
-ut=20
-the log being flooded.
+Having tried different values, e.g.
+
+limit rate over 2/day
+limit rate over 44/day
+limit rate over 300/day
+
+frames # 1 -5 are always passing through but as of frame count # 6 the=20
+frames always being dropped, no matter the x/day value.
 
 
---58qx1sBqAwpGxZA9ZY5YOjv3kxUMVW2qr--
+A somewhat inconsistent behaviour with x/minute value, e.g.
 
---KrqurqpmIqGjuWbctiOU159j9G6yoaTaM
+icmp type 8 add @b_sa4_lan_pinger { ip saddr limit rate over 13/minute } =
+
+log flags all prefix "ping_ip4 from LAN > rate_limit_d DROP: " drop;
+
+produces on the client side:
+
+ping -4 -n 20 google.com
+
+Pinging google.com [216.58.208.110] with 32 bytes of data:
+Reply from 216.58.208.110: bytes=3D32 time=3D14ms TTL=3D114
+Reply from 216.58.208.110: bytes=3D32 time=3D15ms TTL=3D114
+Reply from 216.58.208.110: bytes=3D32 time=3D14ms TTL=3D114
+Reply from 216.58.208.110: bytes=3D32 time=3D18ms TTL=3D114
+Reply from 216.58.208.110: bytes=3D32 time=3D18ms TTL=3D114
+Reply from 216.58.208.110: bytes=3D32 time=3D13ms TTL=3D114
+Request timed out.
+Reply from 216.58.208.110: bytes=3D32 time=3D14ms TTL=3D114
+Request timed out.
+Reply from 216.58.208.110: bytes=3D32 time=3D16ms TTL=3D114
+Request timed out.
+Reply from 216.58.208.110: bytes=3D32 time=3D16ms TTL=3D114
+Reply from 216.58.208.110: bytes=3D32 time=3D13ms TTL=3D114
+Request timed out.
+Reply from 216.58.208.110: bytes=3D32 time=3D154ms TTL=3D114
+Request timed out.
+Reply from 216.58.208.110: bytes=3D32 time=3D32ms TTL=3D114
+Reply from 216.58.208.110: bytes=3D32 time=3D13ms TTL=3D114
+Request timed out.
+Reply from 216.58.208.110: bytes=3D32 time=3D14ms TTL=3D114
+
+Ping statistics for 216.58.208.110:
+ =C2=A0=C2=A0=C2=A0 Packets: Sent =3D 20, Received =3D 14, Lost =3D 6 (30=
+% loss),
+Approximate round trip times in milli-seconds:
+ =C2=A0=C2=A0=C2=A0 Minimum =3D 13ms, Maximum =3D 154ms, Average =3D 26ms=
+
+
+
+Whilst the count is matching the rule it is not clear why not all 13=20
+initial frames are passing through consistently and the excess being=20
+dropped consistently but instead the first being dropped is earlier?
+
+
+
+--5dukNaYoWSgo12nOzsrRkDztiQfrntEYj--
+
+--osegqlkZrTkkalXdJid6PjL3ihTcHn8Tm
 Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
 Content-Description: OpenPGP digital signature
 Content-Disposition: attachment; filename="OpenPGP_signature"
 
 -----BEGIN PGP SIGNATURE-----
 
-wsF5BAABCAAjFiEEemyk2LJ8gvWPJnOR9Pc1kx8Fxc4FAl+vvgcFAwAAAAAACgkQ9Pc1kx8Fxc5U
-9Q//Y2lvROoaMaud4+RVvHVOtQCC2kVOwjKTVsNZMVu1lPj2c6oECkotfF3ZVuP/WEg60Y7+fxGz
-EH0KlxkFv15Z8wnliIYhKsp5NvaWe3Bov86prZAePDSnv5UEdiM0gqwn32P0vQxtlT4f6Atb6PpB
-IPhqyL54rweb8Sr7P7nclg5iGUI65v8RIilat09hjFGCf0t7VteECsHftTvpcOulVQ+Mk08HXevl
-l0A1Lfk5oJePTUopOAZTvrIX4QiwwA8uXKAatfmaDfq3Skpl47TY6eaLb14eToTu62aW95TJ9rI6
-Toy3EPutGCV85t14TrgkhSx/j2g54hugF2O9ff5cgFQO/W4u0GtFrBr9W8WpgZbCVS88IAhaB7k+
-Mh1oAy1STwJB/SlcUJgUO0K/uH7KpSYTCXNbgTQtcR09MvACPtdvI58hDHIK5lboyuD+CMFamhU0
-Hxo9MvoZIYtrbF1CU2/t+QxD1yv5Zt+MbAmz2ac8Wq9OtJ0uUROH0HI0Q7cYndPWbXe8/TJbXRF5
-A1YtILM6KOt2+gUMj1m/PrQDgfRplfiK3Yi+bkbENLSiihneF68mpHt8lP+yiagmSLraDokXLLYE
-pgyJ+Zy7HEX9xJ10tzJ7kLbA8TOSqQBBboAdc1DJjYe/s1xWOyycyBrJ4x62EdM+JD9NIEIFxE5V
-2gI=
-=sygc
+wsF5BAABCAAjFiEEemyk2LJ8gvWPJnOR9Pc1kx8Fxc4FAl+vzaIFAwAAAAAACgkQ9Pc1kx8Fxc5d
+7Q//QiRzQKHqOlemWA4NhilrWA98/f6KElz3Cdq6RGOPtjkRHGGysGpWOEEUpYYz6LVYO/ucPxJ5
+aUmfInG+B9oeU2IMTK2lZne+HCBhHZ4XdRxCHZwxH0FikfheasOcdnCkGbq8YREO6m8B80UEgdtr
+rGnY25FfGyjXDmkvtZB2oN+Gy+CToM0/yT50pDdZCtKbtGkjjGGHQvVQ262xH0Pkvz5vr9ArIady
+H4ep3vZAuVU2ucH/SrHm0sxlWb8BKhN0n1wdZkg/O0LN2SNRC4UqUVnFECU7AJ4yOe5nJPO3+qQa
+v3hiir5RC3/bFXdJAQbOGC6z9z4lkpwbJk/laMUrC9b5pNLftuY1eBKfIF/Xa6q65IkujB1XnzIM
+eqRYIQiqteempE1l/GMf0Mldq4RYDYgeSMiK3K9VvEqh90Uld9R9WRBt9R7nzZucQKIZSO+cSqkT
+JbnwOlDKOwmQni7pVTpvMKHt8aH7HJD8a87LQwisjnHKjXDT/vs+v9KREMQCVrfX+sUhj11WjpdQ
+u7xSsJiPYALvKGiaVuq9d+drRPH1Conr5wlswK2oEaB/Xf+j94gm34gaUZipJOr5uS3k7lK3TQn/
+xN/hl805SFLExbItoQ8G05s2kxiJKe/GjDQ7pnLSAc9qLHfM2gdD1dfUT6IJKqFiwwJ5Y+gTArWZ
+cjE=
+=goez
 -----END PGP SIGNATURE-----
 
---KrqurqpmIqGjuWbctiOU159j9G6yoaTaM--
+--osegqlkZrTkkalXdJid6PjL3ihTcHn8Tm--
