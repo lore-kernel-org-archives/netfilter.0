@@ -1,130 +1,116 @@
-From: Hildegard Meier <daku8938@gmx.de>
-Subject: Aw: connlimit allows more established conns than the limit set
-Date: Tue, 24 Nov 2020 17:12:01 +0100
-Message-ID: <trinity-250fe6c2-bc11-43ba-afbe-44555997ee2d-1606234321863@3c-app-gmx-bap76>
-References: <trinity-165ef9af-b5d5-42c5-b8de-2d158b86db65-1605190018175@3c-app-gmx-bs44>
+From: "" <kfm@plushkava.net>
+Subject: Re: [nftables] frame rate limiting per day/minute not working (bug ?)
+Date: Tue, 24 Nov 2020 22:08:22 +0000
+Message-ID: <5e427c03-0348-515e-4f35-94ad45faa444@plushkava.net>
+References: <03028b1e-e7bb-d82a-3697-9783c5f57568@gmx.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1606234322;
-        bh=L2W9fS5nRPC3HErcVkfTi39vFW6chf1izYaBrSQ4HS0=;
-        h=X-UI-Sender-Class:From:To:Subject:Date:In-Reply-To:References;
-        b=TYze7tWEfCEl1I9YbqypysU8wQNMqjr33QQsvB/bIKcge/kS+4+2TRGRA0ZOcNLNf
-         i/fHGiJHXjazGPtt6Pv9MdjbYe/C1Rge5X2yHCrAFRahttiwU7RRIf+TAhppxOX9FM
-         gV4heoCQqXkmjRyTernF5H+doHRQ7/FjNr2mCwiM=
-In-Reply-To: <trinity-165ef9af-b5d5-42c5-b8de-2d158b86db65-1605190018175@3c-app-gmx-bs44>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+         h=subject:to:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=7
+        iBOETdcSCtC8F4wsCgTDmRuyc/4urvUTSEFweGiOlA=; b=schiRdLk4aMjEMlhF
+        x+EqHimpck9nplFnVmXGOE59s+ib7qB7oufnmnseYbfE7tWozu/iyqz170i+TOni
+        jQo9aDIvQNK5kGY3tj3qeGav3mYF7LWQ0vElzomNUKTjqQ1VgUSaThz/QWiOskVj
+        nddcp6n8lOE7rxZIoWTWBLWF4KNS0OA+c5E4JvxNfI7HOHOENi8ZmvSUVDHWDZcR
+        buxMt5RVv585Gxks2gUJsG7xPJ1F2kWJcbFag8MOxlcDmdhlw/7L6wPsOZK3r9ho
+        /FxhlWhrGGOV1BKELx8c1ckVK0ixXNzhlWngqsQDM2pt5D1YWWZKJyD+8OE6wXnf
+        OUGxQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=7iBOETdcSCtC8F4wsCgTDmRuyc/4urvUTSEFweGiO
+        lA=; b=r1dVx/e4d8986sVUeAwnyFGnEpKlhJLnnofw6BULFQ8m7Akx19uslthoX
+        JGhzSzs/xXuxAGXLdTtjkQ9oqlHZQF5hzQjWYV03pRwLmz4irlvCYrn1C4AneD6m
+        pvT69JTq+w0Q4pAdnr3KYXxipl443lUIO4q1ohrB8iovNaIeyhTTwwGb1faJw2PW
+        qAbkKXVMO6u0TZ1Z97W+wFIpuvXqB6hrIxydqQ+Vds019jWfmE+UpPuxRhll8B3w
+        yiHlWqJZTbPul6WKBqPrWgGYzZ9cxtCw9AwGmZZXDDsiKxWbHauujmKBa7OPqLdb
+        iDlQWBmwVqS1x+OEa/o0VAxL2aapg==
+In-Reply-To: <03028b1e-e7bb-d82a-3697-9783c5f57568@gmx.net>
+Content-Language: en-GB
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: vtol@gmx.net, netfilter@vger.kernel.org
 
-Environment:
-Ubuntu 18.04.1 LTS
-Kernel 4.15.0-123-generic #126-Ubuntu x86_64
-Packages:
-conntrack                        1:1.4.4+snapshot20161117-6ubuntu2
-libnetfilter-conntrack3:amd64    1.0.6-2
+On 14/11/2020 12:29, ѽ҉ᶬḳ℠ wrote:
+> host: armv7l GNU/Linux
+> kernel: 5.10.0-rc3-next-20201113
+> nftables: v0.9.6
+> ______
+> 
+> this rule in a > inet filter prerouting chain:
+> 
+> icmp type 8 add @b_sa4_lan_pinger { ip saddr limit rate over 2/day } log 
+> flags all prefix "ping_ip4 from LAN > rate_limit_d DROP: " drop;
+> 
+> Having tried different values, e.g.
+> 
+> limit rate over 2/day
+> limit rate over 44/day
+> limit rate over 300/day
+> 
+> frames # 1 -5 are always passing through but as of frame count # 6 the 
+> frames always being dropped, no matter the x/day value.
 
-lsmod | grep conntr
-nf_conntrack_ipv4      16384  1
-nf_defrag_ipv4         16384  1 nf_conntrack_ipv4
-nf_conntrack          131072  2 nf_conntrack_ipv4,xt_connlimit
-libcrc32c              16384  1 nf_conntrack
+That's probably because the default burst value is 5, not that anyone 
+would know this by reading the nft documentation. The terse explanation 
+of the limit module in iptables-extensions(8) applies but there is a 
+better explanation to be found here:
 
+https://www.netfilter.org/documentation/HOWTO/packet-filtering-HOWTO-7.html
 
-Hello,
+Given 2/day, the initial five tokens are being taken from the bucket, 
+following which no token is added until 12 hours have elapsed. Try 
+repeating your experiments with the burst value specified as 1.
 
-looks like it is an Ubuntu 12 bug.
+Documentation aside, it doesn't help that both iptables/xt_limit and 
+nft/limit fail to report the burst value unless it was explicitly defined.
 
-The very same iptables-rule, that does not work correctly on Ubuntu 12, wo=
-rks as expected with Ubuntu 18.
+> 
+> 
+> A somewhat inconsistent behaviour with x/minute value, e.g.
+> 
+> icmp type 8 add @b_sa4_lan_pinger { ip saddr limit rate over 13/minute } 
+> log flags all prefix "ping_ip4 from LAN > rate_limit_d DROP: " drop;
+> 
+> produces on the client side:
+> 
+> ping -4 -n 20 google.com
+> 
+> Pinging google.com [216.58.208.110] with 32 bytes of data:
+> Reply from 216.58.208.110: bytes=32 time=14ms TTL=114
+> Reply from 216.58.208.110: bytes=32 time=15ms TTL=114
+> Reply from 216.58.208.110: bytes=32 time=14ms TTL=114
+> Reply from 216.58.208.110: bytes=32 time=18ms TTL=114
+> Reply from 216.58.208.110: bytes=32 time=18ms TTL=114
+> Reply from 216.58.208.110: bytes=32 time=13ms TTL=114
+> Request timed out.
+> Reply from 216.58.208.110: bytes=32 time=14ms TTL=114
+> Request timed out.
+> Reply from 216.58.208.110: bytes=32 time=16ms TTL=114
+> Request timed out.
+> Reply from 216.58.208.110: bytes=32 time=16ms TTL=114
+> Reply from 216.58.208.110: bytes=32 time=13ms TTL=114
+> Request timed out.
+> Reply from 216.58.208.110: bytes=32 time=154ms TTL=114
+> Request timed out.
+> Reply from 216.58.208.110: bytes=32 time=32ms TTL=114
+> Reply from 216.58.208.110: bytes=32 time=13ms TTL=114
+> Request timed out.
+> Reply from 216.58.208.110: bytes=32 time=14ms TTL=114
+> 
+> Ping statistics for 216.58.208.110:
+>      Packets: Sent = 20, Received = 14, Lost = 6 (30% loss),
+> Approximate round trip times in milli-seconds:
+>      Minimum = 13ms, Maximum = 154ms, Average = 26ms
+> 
+> 
+> Whilst the count is matching the rule it is not clear why not all 13 
+> initial frames are passing through consistently and the excess being 
+> dropped consistently but instead the first being dropped is earlier?
+> 
+> 
 
-Best regards
-
-
-> Gesendet: Donnerstag, 12. November 2020 um 15:06 Uhr
-> Von: "Hildegard Meier" <daku8938@gmx.de>
-> An: netfilter@vger.kernel.org
-> Betreff: connlimit allows more established conns than the limit set
->
-> Environment:
->
-> Ubuntu 12.04.5 LTS
-> Kernel 3.13.0-117-generic #164~precise1-Ubuntu SMP Mon Apr 10 16:16:25 U=
-TC 2017 x86_64
-> Package conntrack 1:1.0.0-2ubuntu1
->
-> lsmod | grep conntr
-> xt_conntrack           12760  0
-> nf_conntrack_netlink    36326  0
-> nfnetlink              14650  1 nf_conntrack_netlink
-> nf_conntrack_ipv4      15063  2
-> nf_defrag_ipv4         12758  1 nf_conntrack_ipv4
-> nf_conntrack           97807  7 xt_conntrack,nf_conntrack_netlink,xt_con=
-nlimit,iptable_nat,nf_conntrack_ipv4,nf_nat_ipv4,nf_nat
-> x_tables               34892  8 xt_conntrack,xt_LOG,xt_connlimit,ipt_REJ=
-ECT,xt_nat,xt_tcpudp,iptable_filter,ip_tables
->
->
->
-> Hello,
->
-> I have an sftp server listening on port 2222 (IP redacted to 1.2.3.4) fo=
-r which I want to limit the TCP connections from source IP address 195.225=
-.2.2 (IP slightly changed for privacy reasons) to a maximum of 5.
->
-> So I setup the following iptables rules (these are all rules in table "f=
-ilter"):
->
-> *filter
-> :INPUT ACCEPT
-> :FORWARD ACCEPT
-> :OUTPUT ACCEPT
-> :LOGDROP
-> -A INPUT -s 195.225.2.2/32 -p tcp -m tcp --dport 2222 --tcp-flags FIN,SY=
-N,RST,ACK SYN -j LOG
-> -A INPUT -s 195.225.2.2/32 -p tcp -m tcp --dport 2222 --tcp-flags FIN,SY=
-N,RST,ACK SYN -m connlimit --connlimit-above 5 --connlimit-mask 32 --connl=
-imit-saddr -j LOGDROP
-> -A LOGDROP -j LOG --log-prefix "INPUT:DROP:"
-> -A LOGDROP -j REJECT --reject-with icmp-port-unreachable
->
-> But after having running this for 1h, there are still 41 established tcp=
- connections, instead of the allowed 5:
->
-> conntrack -L --orig-src 195.225.2.2
->
-> shows roughly 40 (fourty) establsihed TCP connections from 195.225.2.2 t=
-o my sftp server:
->
-> tcp      6 431994 ESTABLISHED src=3D195.225.2.2 dst=3D1.2.3.4 sport=3D49=
-218 dport=3D2222 src=3D1.2.3.4 dst=3D195.225.2.2 sport=3D2222 dport=3D4921=
-8 [ASSURED] mark=3D0 use=3D1
-> [...]
-> tcp      6 431978 ESTABLISHED src=3D195.225.2.2 dst=3D1.2.3.4 sport=3D49=
-668 dport=3D2222 src=3D1.2.3.4 dst=3D195.225.2.2 sport=3D2222 dport=3D4966=
-8 [ASSURED] mark=3D0 use=3D1
-> conntrack v1.0.0 (conntrack-tools): 41 flow entries have been shown.
->
-> I can confirm this with netstat. The tcp sessions are also closed after =
-some minutes and established new, there are no "old" sessions sitting ther=
-e.
->
-> Every SYN packet from 195.225.2.2 I see in the log (so the packets do no=
-t go somewhere else but through this rule), but only roughly every fourth =
-SYN packet is being rejected. The non-rejected packets lead to a new SFTP =
-connection, I see the sftp session opening in the sftp server log right af=
-terwards.
->
-> So, the connlimit rule does not work as I expect. I would expect that co=
-nntrack -L --orig-src 195.225.2.2 does show at maximum 5 flow entries in s=
-tate established, and until there are 5 established connections, _every_ n=
-ew SYN packet gets rejected.
->
-> I know that Ubuntu 12 is rather old software, but it is use now and will=
- be used for some time more before a new server gets to work.
->
-> Did I miss something here?
->
-> Thanks very much
->
+-- 
+Kerin Millar
