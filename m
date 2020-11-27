@@ -1,65 +1,60 @@
-From: =?UTF-8?Q?Jean=2DS=C3=A9bastien_Frerot?= <jsfrerot@ludia.com>
-Subject: Re: FTFW with multicast not working properly
-Date: Fri, 27 Nov 2020 14:04:40 -0500
-Message-ID: <CAP0dHez2k+4sYvidpqpyf4uRFRy+ZsQzWV2gsrmmKNsoTU+8XA@mail.gmail.com>
-References: <CAP0dHewHgdndzpTWrmMfGfkrVukvmV9Luocs-qArZf5UeJepTA@mail.gmail.com>
- <20201127185752.GA24475@salvia>
+From: Daniel Lakeland <dlakelan@street-artists.org>
+Subject: Re: nftables "meta priority set" not working
+Date: Fri, 27 Nov 2020 15:39:11 -0800
+Message-ID: <319c3747-00b6-6f25-53dc-ecfa6063fe59@street-artists.org>
+References: <d3a63d2e-fe28-07f6-305f-3154e5c2094f@street-artists.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ludia.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=hXI9/ZzyHgxlkyjfIhCS1bdge/HaUegTMScjoE0a83o=;
-        b=AdKsT9K+b30dF/u0hs7oGyCdFVMEFiITQ2xCoR5t35R7UqcKGYyt9m37GVgWEj0gO/
-         FwR5eKd/WPPHrojsT7Fp1oIk87y/Dn03dUmfGj2vzz7cs/bqYBTVoxVRKtiIFNRpJMF+
-         ZBCAzK3bqXEmqzK9z6xxgJ4eboNdJsONYru/g=
-In-Reply-To: <20201127185752.GA24475@salvia>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=street-artists.org; h=
+        subject:from:to:references:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=
+        street-artists.org; bh=GsKxy5sUU8hSAMRbwZpLGr02PF8=; b=LKP2/BJZD
+        mLtzG6pUXHv3mwHM0OTQPfgAWNyyrXLwudc5sSqRlaE8f5hyH77/CZxnfowySr37
+        j+S9uwGjLIwO1FHR6F1jfKOLhMEKSAsyfsLviue7n7nKhdehw+WGNl6UCYpX6VeQ
+        J6xWxhD/8rkhByYE2lziiYax32kK2GOnWc=
+In-Reply-To: <d3a63d2e-fe28-07f6-305f-3154e5c2094f@street-artists.org>
+Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Ok, I can understand if it's not working with more than 2 firewalls.
-But it's not working with 2 !
-The details I sent are only for 2 firewalls ATM.
-
-
-Le ven. 27 nov. 2020, =C3=A0 13 h 57, Pablo Neira Ayuso
-<pablo@netfilter.org> a =C3=A9crit :
+On 11/26/20 6:51 PM, Daniel Lakeland wrote:
+> Strangely I can't seem to make a rule that sets the tc class work, 
+> unless it's setting the class of the root qdisc?
+> ....
 >
-> On Fri, Nov 27, 2020 at 11:56:22AM -0500, Jean-S=C3=A9bastien Frerot wrot=
-e:
-> > Hi, I'm trying to set up conntrackd in FTFW mode with the multicast pro=
-tocol.
-> > The problem I'm having is that my BACKUP firewall is not getting the
-> > states as it's supposed to.
-> > It's receiving the packets (confirmed by a tcpdump), but only a few
-> > states are replicated, even when I used the '-B' option to resend all
-> > the states to the slaves.
-> >
-> > If I configure it to use unicast UPD, all is working fine.
-> > I was hoping to use multicast so I can migrate my current active
-> > firewalls, to a new pair of firewalls. But for this to work, I need to
-> > sync the states to all my 4 firewalls.
+> What is going wrong?
 >
-> FT-FW only works with 2 firewalls. For more than 2 firewalls, please
-> try NOTRACK mode.
->
-> FT-FW would need to be extended to support more than 2 firewalls, by
-> adding some sort of node ID and independent retransmissions queues for
-> each firewall in the cluster.
+
+Well, from testing, if I were to guess what's really going on it's that 
+"meta priority set" sets the packet's "priority" field using the 
+**minor** number only, and doesn't really do anything with the major number.
+
+The kernel then always just hands the packet to the top level qdisc, and 
+it tries to interpret the minor number given in the priority field... 
+but if that minor number doesn't exist, then it either drops the packet 
+or uses its default depending on the qdisc.
+
+To make this work, it's extremely useful to **not** reuse minor numbers 
+when creating sub-qdiscs and add some tc filters at the root for example:
+
+tc filter add dev eno1 parent 1: protocol all basic match "meta(priority 
+eq 33)" flowid 2:33
+
+I also found that of course my nftables doesn't have any arp tables or 
+do anything with packets not ipv4 or ipv6 so when I'm using a qfq qdisc 
+which has no default it was useful to have:
+
+tc filter add dev eno1 parent 1: protocol all basic match "not 
+(meta(priority eq 1) or meta(priority eq 2) or meta(priority eq 3))" 
+flowid 1:4
+
+or some such thing, which basically catches packets that don't have any 
+priority and sends them to a default. As soon as I did this my ipv4 
+started working again (ARP packets were being dropped).
+
+Hope this helps some people, and please let me know if I've got it 
+wrong. this is all deduced from empirical testing.
 
 
-
---=20
-Jean-S=C3=A9bastien Frerot
-Senior Linux System Administrator
-jsfrerot@ludia.com
-
-
-
-410 St.Nicolas, suite 400
-Montr=C3=A9al, QC H2Y 2P5
-www.ludia.com
