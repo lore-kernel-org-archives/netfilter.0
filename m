@@ -1,114 +1,96 @@
-From: Daniel Lakeland <dlakelan@street-artists.org>
-Subject: nftables "meta priority set" not working
-Date: Thu, 26 Nov 2020 18:51:26 -0800
-Message-ID: <d3a63d2e-fe28-07f6-305f-3154e5c2094f@street-artists.org>
+From: Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming.com>
+Subject: How to Unblock IP Address of Email Client in Linux iptables Firewall
+ in Linux Mail Server
+Date: Fri, 27 Nov 2020 16:25:31 +0800
+Message-ID: <506d31d3d8f03a2ab00ad7739942dc2e@teo-en-ming.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=street-artists.org; h=to
-        :from:subject:message-id:date:mime-version:content-type
-        :content-transfer-encoding; s=street-artists.org; bh=2OAQUIegEhw
-        XfSLUO00VMgclgZs=; b=B+CdePeRd7SqdSHeKvf7z6EalI2Xo72thjEBHPK6YA8
-        ubsVvMDbfCS/sbVwryQk8fzQd3oKoRqEwe85HDyYyytcVad/VbVHc7vYYUfcjlHZ
-        W9we3uHEJZ0z2tLnvVQczRoUlOLTXnre4jvzBw1SmM2a8VaJI7H8dUZlhhAxgGz4
-        =
-Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
+Cc: ceo@teo-en-ming-corp.com
 
-Strangely I can't seem to make a rule that sets the tc class work,=20
-unless it's setting the class of the root qdisc?
+Subject: How to Unblock IP Address of Email Client in Linux iptables 
+Firewall in Linux Mail Server
 
-Here are some rules I have:
+Good day from Singapore,
 
+I am an IT consultant in Singapore. Today, Black Friday 27 November 
+2020, my client Donald Trump (fictitious name used) informed me that he 
+cannot send and receive emails using his home Wi-Fi connection. But he 
+could send and receive emails using his mobile phone 4G connection.
 
- =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 ip dscp { ef, cs6 } meta priority =
-set 10:1 counter packets 19=20
-bytes 850
- =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 ip dscp { cs5 } meta priority set =
-10:2 counter packets 327=20
-bytes 98340
- =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 ip dscp { af41, af42, af43 } meta =
-priority set 1:30 counter=20
-packets 24 bytes 1584
- =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 ip dscp { cs2 } meta priority set =
-1:50 counter packets 0 bytes 0
- =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 ip dscp { cs1 } meta priority set =
-1:60 counter packets 0 bytes 0
- =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 ip6 dscp { ef, cs6 } meta priority=
- set 10:1 counter packets 2=20
-bytes 98
- =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 ip6 dscp { cs5 } meta priority set=
- 10:2 counter packets 91=20
-bytes 8328
- =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 ip6 dscp { af41, af42, af43 } meta=
- priority set 1:30 counter=20
-packets 0 bytes 0
- =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 ip6 dscp { cs2 } meta priority set=
- 1:50 counter packets 53270=20
-bytes 16712716
- =C2=A0=C2=A0=C2=A0 =C2=A0=C2=A0=C2=A0 ip6 dscp { cs1 } meta priority set=
- 1:60 counter packets 0 bytes 0
+Apparently, the public IP address of his home internet connection was 
+blocked. The IP address is 666.666.666.666 (fictitious IP address used).
 
+I checked the Fortigate 100D firewall but it was not blocked there.
 
-As you can see the first two have hit a combined 346 packets... but yet..
+Then I proceed to check the Linux iptables firewall on my client's Linux 
+mail server. I login/putty/ssh into mail.teo-en-ming-corp.com.sg, which 
+is my client's Linux mail server.
 
-tc -s qdisc show dev eno1
+I executed the following command:
 
-...
+# iptables -S | grep 666.666.666.666
 
-qdisc drr 10: parent 1:10
- =C2=A0Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
- =C2=A0backlog 0b 0p requeues 0
+The output is:
 
+-A DENYIN -s 666.666.666.666/32 ! -i lo -j DROP
+-A DENYOUT -d 666.666.666.666/32 ! -o lo -j LOGDROPOUT
 
-No packets have gone through qdisc 10:
+I proceeded to delete the above 2 Linux iptables firewall rules which 
+blocked the IP address 666.666.666.666, using the following commands:
 
+# iptables -D DENYIN -s 666.666.666.666/32 ! -i lo -j DROP
+# iptables -D DENYOUT -d 666.666.666.666/32 ! -o lo -j LOGDROPOUT
 
-whereas other rules that classify to 1:30 1:50 and 1:60 are hitting and=20
-shoving their packets into the fq_codel below those classes:
+Then I run the following command again to make sure the IP address has 
+been unblocked.
 
-tc -s class show dev eno1
+# iptables -S | grep 666.666.666.666
 
-class hfsc 1: root
- =C2=A0Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
- =C2=A0backlog 0b 0p requeues 0
- =C2=A0period 0 level 2
+There should be no output, confirming that the IP address has been 
+unblocked.
 
-class hfsc 1:10 parent 1:1 leaf 10: rt m1 882Mbit d 20.0ms m2 20Mbit
- =C2=A0Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
- =C2=A0backlog 0b 0p requeues 0
- =C2=A0period 0 level 0
+Now my client Donald Trump is able to send and receive emails using his 
+home Wi-fi connection successfully.
 
-class hfsc 1:1 parent 1: ls m1 0bit d 0us m2 980Mbit ul m1 0bit d 0us m2=20
-980Mbit
- =C2=A0Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
- =C2=A0backlog 0b 0p requeues 0
- =C2=A0period 69795 work 12748919 bytes level 1
+The author, Mr. Turritopsis Dohrnii Teo En Ming, 42 years as of 27 Nov 
+2020 Friday, is a TARGETED INDIVIDUAL (TI) living in Singapore.
 
-class hfsc 1:30 parent 1:1 leaf 30: ls m1 588Mbit d 60.0ms m2 196Mbit
- =C2=A0Sent 436 bytes 4 pkt (dropped 0, overlimits 0 requeues 0)
- =C2=A0backlog 0b 0p requeues 0
- =C2=A0period 4 work 436 bytes level 0
-
-class hfsc 1:40 parent 1:1 leaf 40: ls m1 196Mbit d 60.0ms m2 490Mbit
- =C2=A0Sent 8189138 bytes 54857 pkt (dropped 0, overlimits 0 requeues 0)
- =C2=A0backlog 0b 0p requeues 0
- =C2=A0period 54850 work 8189138 bytes level 0
-
-class hfsc 1:50 parent 1:1 leaf 50: ls m1 147Mbit d 60.0ms m2 196Mbit
- =C2=A0Sent 4559345 bytes 14975 pkt (dropped 0, overlimits 0 requeues 0)
- =C2=A0backlog 0b 0p requeues 0
- =C2=A0period 14941 work 4559345 bytes level 0
-
-class hfsc 1:60 parent 1:1 leaf 60: ls m1 49Mbit d 60.0ms m2 98Mbit ul=20
-m1 0bit d 0us m2 931Mbit
- =C2=A0Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
- =C2=A0backlog 0b 0p requeues 0
- =C2=A0period 0 level 0
-
-What is going wrong?
+Reference Guide: How To List and Delete Iptables Firewall Rules
+Link: 
+https://www.digitalocean.com/community/tutorials/how-to-list-and-delete-iptables-firewall-rules
 
 
 
+
+
+
+-- 
+-----BEGIN EMAIL SIGNATURE-----
+
+The Gospel for all Targeted Individuals (TIs):
+
+[The New York Times] Microwave Weapons Are Prime Suspect in Ills of
+U.S. Embassy Workers
+
+Link: 
+https://www.nytimes.com/2018/09/01/science/sonic-attack-cuba-microwave.html
+
+********************************************************************************************
+
+Singaporean Targeted Individual Mr. Turritopsis Dohrnii Teo En Ming's 
+Academic
+Qualifications as at 14 Feb 2019 and refugee seeking attempts at the 
+United Nations Refugee Agency Bangkok (21 Mar 2017), in Taiwan (5 Aug 
+2019) and Australia (25 Dec 2019 to 9 Jan 2020):
+
+[1] https://tdtemcerts.wordpress.com/
+
+[2] https://tdtemcerts.blogspot.sg/
+
+[3] https://www.scribd.com/user/270125049/Teo-En-Ming
+
+-----END EMAIL SIGNATURE-----
