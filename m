@@ -1,85 +1,109 @@
-From: =?UTF-8?Q?Jean=2DS=C3=A9bastien_Frerot?= <jsfrerot@ludia.com>
-Subject: Re: FTFW with multicast not working properly
-Date: Fri, 4 Dec 2020 13:21:30 -0500
-Message-ID: <CAP0dHewpLo8thdjK1Qk+VofwCHK-CkjhSLrEUX-qohHCy6Zv6g@mail.gmail.com>
-References: <CAP0dHewHgdndzpTWrmMfGfkrVukvmV9Luocs-qArZf5UeJepTA@mail.gmail.com>
- <20201127185752.GA24475@salvia> <CAP0dHez2k+4sYvidpqpyf4uRFRy+ZsQzWV2gsrmmKNsoTU+8XA@mail.gmail.com>
+From: Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming.com>
+Subject: Teo En Ming has been locked out of his CentOS Web Panel (CWP) web
+ hosting control panel
+Date: Sun, 06 Dec 2020 17:37:14 +0800
+Message-ID: <ca59b54ccd199ad72064c2cd1877876a@teo-en-ming.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ludia.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=cxpd6NPEnNxQWRP4WSM5czeY5A/r/WsRwMA82W0bIU0=;
-        b=vIR97KpTHEY3nG5yP78JJyjLYUBY6jmevRzjRAhPZ5ByynlwtD/ditfGqmSZfPogP9
-         uogJFmWwtcgJO+N49UK1QNVH4xICcPJx0362GtYNfwHfZGlIe8szgoNTZASpk0NKixH3
-         VYyXp8e9S2A8Ex324v7bSTi5o4bKjnLh33SuE=
-In-Reply-To: <CAP0dHez2k+4sYvidpqpyf4uRFRy+ZsQzWV2gsrmmKNsoTU+8XA@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
+Cc: ceo@teo-en-ming-corp.com
 
-After further investigation, it seems this is not only related to
-multicast, but also with unicast udp packets.
-So I have moved on to my new firewalls under ubuntu server 20.04 with
-conntrackd 1.4.5.
-I added the "StartupResync on" and The initial states are getting in
-the backup firewall. But all state changes are not updated.
+Subject: Teo En Ming has been locked out of his CentOS Web Panel (CWP) 
+web hosting control panel
 
-I noticed the rsqueue "current elements" is rising constantly.
-# conntrackd -s queue
-allocated queue nodes:            0
+Good day from Singapore,
 
-queue txqueue:
-current elements:            0
-maximum elements:   2147483647
-not enough space errors:            0
+I have been locked out of my CentOS Web Panel (CWP) web hosting control 
+panel due to numerous invalid SMTP authentication attempts. I can't 
+login to CWP any more using my home IP address.
 
-queue errorq:
-current elements:            0
-maximum elements:          128
-not enough space errors:            0
+This is how I solved my problem.
 
-queue rsqueue:
-current elements:         5863
-maximum elements:       131072
-not enough space errors:            0
+1. Connect to a free VPN service.
 
-Any idea what could cause this?
+2. Login to CentOS Web Panel at 
+https://www.teo-en-ming-corp.com.sg:2087/login/index.php
 
-Thank you.
+3. On the left hand side menu, click Security.
 
-Le ven. 27 nov. 2020, =C3=A0 14 h 04, Jean-S=C3=A9bastien Frerot
-<jsfrerot@ludia.com> a =C3=A9crit :
->
-> Ok, I can understand if it's not working with more than 2 firewalls.
-> But it's not working with 2 !
-> The details I sent are only for 2 firewalls ATM.
->
->
-> Le ven. 27 nov. 2020, =C3=A0 13 h 57, Pablo Neira Ayuso
-> <pablo@netfilter.org> a =C3=A9crit :
-> >
-> > On Fri, Nov 27, 2020 at 11:56:22AM -0500, Jean-S=C3=A9bastien Frerot wr=
-ote:
-> > > Hi, I'm trying to set up conntrackd in FTFW mode with the multicast p=
-rotocol.
-> > > The problem I'm having is that my BACKUP firewall is not getting the
-> > > states as it's supposed to.
-> > > It's receiving the packets (confirmed by a tcpdump), but only a few
-> > > states are replicated, even when I used the '-B' option to resend all
-> > > the states to the slaves.
-> > >
-> > > If I configure it to use unicast UPD, all is working fine.
-> > > I was hoping to use multicast so I can migrate my current active
-> > > firewalls, to a new pair of firewalls. But for this to work, I need t=
-o
-> > > sync the states to all my 4 firewalls.
-> >
-> > FT-FW only works with 2 firewalls. For more than 2 firewalls, please
-> > try NOTRACK mode.
-> >
-> > FT-FW would need to be extended to support more than 2 firewalls, by
-> > adding some sort of node ID and independent retransmissions queues for
-> > each firewall in the cluster.
+4. Click "CSF Firewall".
+
+5. Click "Firewall Deny IPs".
+
+Contents of File: /etc/csf/csf.deny
+
+###############################################################################
+# Copyright 2006-2018, Way to the Web Limited
+# URL: http://www.configserver.com
+# Email: sales@waytotheweb.com
+###############################################################################
+# The following IP addresses will be blocked in iptables
+# One IP address per line
+# CIDR addressing allowed with a quaded IP (e.g. 192.168.254.0/24)
+# Only list IP addresses, not domain names (they will be ignored)
+#
+# Note: If you add the text "do not delete" to the comments of an entry 
+then
+# DENY_IP_LIMIT will ignore those entries and not remove them
+#
+# Advanced port+ip filtering allowed with the following format
+# tcp/udp|in/out|s/d=port,port,...|s/d=ip
+#
+# See readme.txt for more information regarding advanced port filtering
+#
+
+6. Delete the line that contains my home IP address.
+
+7. Click "Save changes".
+
+8. On the left hand side menu, click Security.
+
+9. Click "CSF Firewall".
+
+10. Click "Firewall Restart".
+
+11. Logout from CWP.
+
+12. Disconnect from free VPN service.
+
+13. Login to CWP again. It is successful now.
+
+14. My problem is solved!
+
+Mr. Turritopsis Dohrnii Teo En Ming, 42 years old as of 6th Dec 2020 
+Sunday, is a TARGETED INDIVIDUAL (TI) living in Singapore.
+
+
+
+
+
+
+-- 
+-----BEGIN EMAIL SIGNATURE-----
+
+The Gospel for all Targeted Individuals (TIs):
+
+[The New York Times] Microwave Weapons Are Prime Suspect in Ills of
+U.S. Embassy Workers
+
+Link: 
+https://www.nytimes.com/2018/09/01/science/sonic-attack-cuba-microwave.html
+
+********************************************************************************************
+
+Singaporean Targeted Individual Mr. Turritopsis Dohrnii Teo En Ming's 
+Academic
+Qualifications as at 14 Feb 2019 and refugee seeking attempts at the 
+United Nations Refugee Agency Bangkok (21 Mar 2017), in Taiwan (5 Aug 
+2019) and Australia (25 Dec 2019 to 9 Jan 2020):
+
+[1] https://tdtemcerts.wordpress.com/
+
+[2] https://tdtemcerts.blogspot.sg/
+
+[3] https://www.scribd.com/user/270125049/Teo-En-Ming
+
+-----END EMAIL SIGNATURE-----
