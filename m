@@ -1,111 +1,178 @@
-From: =?UTF-8?Q?Jean=2DS=C3=A9bastien_Frerot?= <jsfrerot@ludia.com>
-Subject: Re: FTFW with multicast not working properly
-Date: Mon, 7 Dec 2020 09:03:50 -0500
-Message-ID: <CAP0dHezxi+70e0CRm63HmCRRknn+x4SFTMJTeDnOuqDBvcfcMw@mail.gmail.com>
-References: <CAP0dHewHgdndzpTWrmMfGfkrVukvmV9Luocs-qArZf5UeJepTA@mail.gmail.com>
- <20201127185752.GA24475@salvia> <CAP0dHez2k+4sYvidpqpyf4uRFRy+ZsQzWV2gsrmmKNsoTU+8XA@mail.gmail.com>
- <CAP0dHewpLo8thdjK1Qk+VofwCHK-CkjhSLrEUX-qohHCy6Zv6g@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@netfilter.org>
+Subject: Re: [ANNOUNCE] ipset 7.8 released
+Date: Mon, 7 Dec 2020 15:54:42 +0100 (CET)
+Message-ID: <alpine.DEB.2.23.453.2012071419590.30865@blackhole.kfki.hu>
+References: <alpine.DEB.2.23.453.2011192141150.19567@blackhole.kfki.hu> <c4778467-3abe-b40f-c4f7-945576fa097f@wildgooses.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ludia.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=gbya9wabGgu/R01PO4glSJKnEcp4x4l7L7UHCPGsJgg=;
-        b=lXmS+dJ8QGrSBsIPNklOfkPrhem4ptFzOmZtPcDMB7mkwT672C5LIqcomm7W4sgnk5
-         cAi9XRy+pkM7ojN7YjVec2n+F5JIQTrUSN3Rx6c3eKI8IINks/TWy9a3bv+cjUIpxOR5
-         wws7WLnIaRnx43qrpzwaDh+s0C+ZDktzq4Y+A=
-In-Reply-To: <CAP0dHewpLo8thdjK1Qk+VofwCHK-CkjhSLrEUX-qohHCy6Zv6g@mail.gmail.com>
+Content-Type: multipart/mixed; boundary="110363376-800897950-1607347615=:30865"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <c4778467-3abe-b40f-c4f7-945576fa097f@wildgooses.com>
+Content-ID: <alpine.DEB.2.23.453.2012071553000.30865@blackhole.kfki.hu>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@vger.kernel.org
+To: Ed W <lists@wildgooses.com>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-And what I see after the weekend:
-allocated queue nodes:       131072
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-queue txqueue:
-current elements:            0
-maximum elements:   2147483647
-not enough space errors:            0
+--110363376-800897950-1607347615=:30865
+Content-Type: text/plain; charset=UTF-8
+Content-ID: <alpine.DEB.2.23.453.2012071553001.30865@blackhole.kfki.hu>
+Content-Transfer-Encoding: quoted-printable
 
-queue errorq:
-current elements:            0
-maximum elements:          128
-not enough space errors:            0
+Hi,
 
-queue rsqueue:
-current elements:       131072
-maximum elements:       131072
-not enough space errors:       109663
+On Fri, 4 Dec 2020, Ed W wrote:
 
+> Hi, I'm having some difficulty compiling ipset 7.9 in kernel 4.14.78 as=
+=20
+> provided by Variscite for an arm board
+> =20
+> I've trimmed the build log and errors, but it seems to revolve around:
+>=20
+> Pre kernel 4.18 the header
+>=20
+> =C2=A0=C2=A0=C2=A0 ./include/linux/ipc.h
+>=20
+> would include
+>=20
+> =C2=A0=C2=A0=C2=A0 ./include/linux/rhashtable.h
+>=20
+> (later it includes rhashtable-types.h)
+>=20
+> This in turn draws in the jhash.c copy, which in turn includes=20
+> ip_set_compat.h, which then causes some errors due to drawing in things=
+=20
+> where we haven't yet finished reading all the header files
+>=20
+> I'm not sure how to work around the compile fail in ipset-7.9? I agree =
+I=20
+> can't rule it out to be a problem due to the vendor kernel, but the=20
+> include tree seems to point clearly to the issue above in ipc.h=20
+>=20
+>=20
+> Note: ipset7.7 gives me errors about =C2=A0=C2=A0=C2=A0
+>=20
+> =C2=A0=C2=A0=C2=A0 error: 'fallthrough' undeclared
+>=20
+> Which seems fair enough given the age of my kernel. I could probably fi=
+x this
 
-Le ven. 4 d=C3=A9c. 2020, =C3=A0 13 h 21, Jean-S=C3=A9bastien Frerot
-<jsfrerot@ludia.com> a =C3=A9crit :
->
-> After further investigation, it seems this is not only related to
-> multicast, but also with unicast udp packets.
-> So I have moved on to my new firewalls under ubuntu server 20.04 with
-> conntrackd 1.4.5.
-> I added the "StartupResync on" and The initial states are getting in
-> the backup firewall. But all state changes are not updated.
->
-> I noticed the rsqueue "current elements" is rising constantly.
-> # conntrackd -s queue
-> allocated queue nodes:            0
->
-> queue txqueue:
-> current elements:            0
-> maximum elements:   2147483647
-> not enough space errors:            0
->
-> queue errorq:
-> current elements:            0
-> maximum elements:          128
-> not enough space errors:            0
->
-> queue rsqueue:
-> current elements:         5863
-> maximum elements:       131072
-> not enough space errors:            0
->
-> Any idea what could cause this?
->
-> Thank you.
->
-> Le ven. 27 nov. 2020, =C3=A0 14 h 04, Jean-S=C3=A9bastien Frerot
-> <jsfrerot@ludia.com> a =C3=A9crit :
-> >
-> > Ok, I can understand if it's not working with more than 2 firewalls.
-> > But it's not working with 2 !
-> > The details I sent are only for 2 firewalls ATM.
-> >
-> >
-> > Le ven. 27 nov. 2020, =C3=A0 13 h 57, Pablo Neira Ayuso
-> > <pablo@netfilter.org> a =C3=A9crit :
-> > >
-> > > On Fri, Nov 27, 2020 at 11:56:22AM -0500, Jean-S=C3=A9bastien Frerot =
-wrote:
-> > > > Hi, I'm trying to set up conntrackd in FTFW mode with the multicast=
- protocol.
-> > > > The problem I'm having is that my BACKUP firewall is not getting th=
-e
-> > > > states as it's supposed to.
-> > > > It's receiving the packets (confirmed by a tcpdump), but only a few
-> > > > states are replicated, even when I used the '-B' option to resend a=
-ll
-> > > > the states to the slaves.
-> > > >
-> > > > If I configure it to use unicast UPD, all is working fine.
-> > > > I was hoping to use multicast so I can migrate my current active
-> > > > firewalls, to a new pair of firewalls. But for this to work, I need=
- to
-> > > > sync the states to all my 4 firewalls.
-> > >
-> > > FT-FW only works with 2 firewalls. For more than 2 firewalls, please
-> > > try NOTRACK mode.
-> > >
-> > > FT-FW would need to be extended to support more than 2 firewalls, by
-> > > adding some sort of node ID and independent retransmissions queues fo=
-r
-> > > each firewall in the cluster.
+That is fixed in 7.9.
+
+> ipset 7.6 compiles ok for me.
+> =20
+> Any guidance please?
+
+Please give a try to the next patch on top of ipset 7.9: it separates the=
+=20
+compiler compatibility stuff from the kernel compatibility part and that=20
+helps to resolve the include file issue.
+
+diff --git a/.gitignore b/.gitignore
+index 46a78dd..0e8a087 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -20,6 +20,7 @@ Makefile.in
+ Module.symvers
+ modules.order
+ kernel/include/linux/netfilter/ipset/ip_set_compat.h
++kernel/include/linux/netfilter/ipset/ip_set_compiler.h
+=20
+ /aclocal.m4
+ /autom4te.cache/
+diff --git a/configure.ac b/configure.ac
+index 1086de3..2f06590 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -851,7 +851,8 @@ dnl Checks for library functions.
+ dnl Generate output
+ AC_CONFIG_FILES([Makefile include/libipset/Makefile
+ 	lib/Makefile lib/libipset.pc src/Makefile utils/Makefile
+-	kernel/include/linux/netfilter/ipset/ip_set_compat.h])
++	kernel/include/linux/netfilter/ipset/ip_set_compat.h
++	kernel/include/linux/netfilter/ipset/ip_set_compiler.h])
+ AC_OUTPUT
+=20
+ dnl Summary
+diff --git a/kernel/include/linux/jhash.h b/kernel/include/linux/jhash.h
+index 8df77ec..d144e33 100644
+--- a/kernel/include/linux/jhash.h
++++ b/kernel/include/linux/jhash.h
+@@ -1,6 +1,6 @@
+ #ifndef _LINUX_JHASH_H
+ #define _LINUX_JHASH_H
+-#include <linux/netfilter/ipset/ip_set_compat.h>
++#include <linux/netfilter/ipset/ip_set_compiler.h>
+=20
+ /* jhash.h: Jenkins hash support.
+  *
+diff --git a/kernel/include/linux/netfilter/ipset/ip_set_compat.h.in b/ke=
+rnel/include/linux/netfilter/ipset/ip_set_compat.h.in
+index 8f00e6a..bf99bc0 100644
+--- a/kernel/include/linux/netfilter/ipset/ip_set_compat.h.in
++++ b/kernel/include/linux/netfilter/ipset/ip_set_compat.h.in
+@@ -519,18 +519,5 @@ static inline void *kvzalloc(size_t size, gfp_t flag=
+s)
+ 	return members;
+ }
+ #endif
+-
+-/* Compiler attributes */
+-#ifndef __has_attribute
+-# define __has_attribute(x) __GCC4_has_attribute_##x
+-# define __GCC4_has_attribute___fallthrough__		0
+-#endif
+-
+-#if __has_attribute(__fallthrough__)
+-# define fallthrough			__attribute__((__fallthrough__))
+-#else
+-# define fallthrough			do {} while (0)  /* fallthrough */
+-#endif
+-
+ #endif /* IP_SET_COMPAT_HEADERS */
+ #endif /* __IP_SET_COMPAT_H */
+diff --git a/kernel/include/linux/netfilter/ipset/ip_set_compiler.h.in b/=
+kernel/include/linux/netfilter/ipset/ip_set_compiler.h.in
+new file mode 100644
+index 0000000..1b392f8
+--- /dev/null
++++ b/kernel/include/linux/netfilter/ipset/ip_set_compiler.h.in
+@@ -0,0 +1,15 @@
++#ifndef __IP_SET_COMPILER_H
++#define __IP_SET_COMPILER_H
++
++/* Compiler attributes */
++#ifndef __has_attribute
++# define __has_attribute(x) __GCC4_has_attribute_##x
++# define __GCC4_has_attribute___fallthrough__		0
++#endif
++
++#if __has_attribute(__fallthrough__)
++# define fallthrough			__attribute__((__fallthrough__))
++#else
++# define fallthrough			do {} while (0)  /* fallthrough */
++#endif
++#endif /* __IP_SET_COMPILER_H */
+diff --git a/kernel/net/netfilter/ipset/ip_set_core.c b/kernel/net/netfil=
+ter/ipset/ip_set_core.c
+index dcbc400..85961fc 100644
+--- a/kernel/net/netfilter/ipset/ip_set_core.c
++++ b/kernel/net/netfilter/ipset/ip_set_core.c
+@@ -21,6 +21,7 @@
+ #include <linux/netfilter/x_tables.h>
+ #include <linux/netfilter/nfnetlink.h>
+ #include <linux/netfilter/ipset/ip_set.h>
++#include <linux/netfilter/ipset/ip_set_compiler.h>
+=20
+ static LIST_HEAD(ip_set_type_list);		/* all registered set types */
+ static DEFINE_MUTEX(ip_set_type_mutex);		/* protects ip_set_type_list */
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
+PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics
+          H-1525 Budapest 114, POB. 49, Hungary
+--110363376-800897950-1607347615=:30865--
