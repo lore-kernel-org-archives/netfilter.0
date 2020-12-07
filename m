@@ -1,178 +1,75 @@
-From: Jozsef Kadlecsik <kadlec@netfilter.org>
-Subject: Re: [ANNOUNCE] ipset 7.8 released
-Date: Mon, 7 Dec 2020 15:54:42 +0100 (CET)
-Message-ID: <alpine.DEB.2.23.453.2012071419590.30865@blackhole.kfki.hu>
-References: <alpine.DEB.2.23.453.2011192141150.19567@blackhole.kfki.hu> <c4778467-3abe-b40f-c4f7-945576fa097f@wildgooses.com>
+From: "Eliezer Croitor" <ngtech1ltd@gmail.com>
+Subject: Flowtable in a load balancer
+Date: Mon, 7 Dec 2020 17:18:05 +0200
+Message-ID: <000901d6ccac$2b39fc70$81adf550$@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="110363376-800897950-1607347615=:30865"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <c4778467-3abe-b40f-c4f7-945576fa097f@wildgooses.com>
-Content-ID: <alpine.DEB.2.23.453.2012071553000.30865@blackhole.kfki.hu>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding:thread-index:content-language;
+        bh=j/zVDOhMott5VeLwcgdxm+OJO1BnJQdSdUB3lMLg5Vs=;
+        b=jXb72txYdOtyuKRxc9YuRimNQ3vHlgu4SnS7EM+zxm8QUS67xJFmm2RdHg0r2cV8G/
+         CcrH80TFgFOmPOl/Hv+4UARv0Ziwcbi6u3nHj97lK+DVGxOBvMZTFPD/Hwk0M3GH/CH+
+         YWvTY3GhMvgbZHIf6T0fhf9+e3D/5dUJaIps/WcxU4dWLigwwG6kZo1o2ze+ufVyUrDa
+         I70/6tvBMagmO/38CRNy6HBaGAFIxrND7eBWSd5YGN/bUKiPvP8f/Jy1PYY0rFauIfKo
+         VKy/85XbUQNQfvBs61UIg18h1+A8EAIAtwe6QWXq5AX6g2zTL6fapQfb/Ah4u8z+3L4Y
+         4cOw==
+Content-Language: en-us
 List-ID: <netfilter.vger.kernel.org>
-To: Ed W <lists@wildgooses.com>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+I am trying to understand where can I use flowtable on a load  balancer.
+Also if and how it will work with PBR.
 
---110363376-800897950-1607347615=:30865
-Content-Type: text/plain; charset=UTF-8
-Content-ID: <alpine.DEB.2.23.453.2012071553001.30865@blackhole.kfki.hu>
-Content-Transfer-Encoding: quoted-printable
+I have created a nftables load balancer lab at:
+.	https://github.com/elico/mwan-nft-lb-example
+.	https://github.com/elico/mwan-nft-lb-example/blob/main/run-lab.sh
 
-Hi,
+I know that flow tables cannot work with PBR but not sure on what degree.
+Also maybe something is needed possible..
 
-On Fri, 4 Dec 2020, Ed W wrote:
+I will try to describe the lab:
+1 client 
+  ether0: 192.168.125.100/24 gw 192.168.125.254
+1 Lan GW 
+  ether0: 192.168.125.254/24
+  ether5-15: 192.168.205-215.254/24 (10 ~ wan interfaces with ip addresses)
+15 WAN Routers
+  ether0:  192.168.101.5-15/24( a single ip per WAN Router) (SNAT ie
+MASQUERADE)
+  ether1:  192.168.205-215.254/24( a single ip per WAN Router)
 
-> Hi, I'm having some difficulty compiling ipset 7.9 in kernel 4.14.78 as=
-=20
-> provided by Variscite for an arm board
-> =20
-> I've trimmed the build log and errors, but it seems to revolve around:
->=20
-> Pre kernel 4.18 the header
->=20
-> =C2=A0=C2=A0=C2=A0 ./include/linux/ipc.h
->=20
-> would include
->=20
-> =C2=A0=C2=A0=C2=A0 ./include/linux/rhashtable.h
->=20
-> (later it includes rhashtable-types.h)
->=20
-> This in turn draws in the jhash.c copy, which in turn includes=20
-> ip_set_compat.h, which then causes some errors due to drawing in things=
-=20
-> where we haven't yet finished reading all the header files
->=20
-> I'm not sure how to work around the compile fail in ipset-7.9? I agree =
-I=20
-> can't rule it out to be a problem due to the vendor kernel, but the=20
-> include tree seems to point clearly to the issue above in ipc.h=20
->=20
->=20
-> Note: ipset7.7 gives me errors about =C2=A0=C2=A0=C2=A0
->=20
-> =C2=A0=C2=A0=C2=A0 error: 'fallthrough' undeclared
->=20
-> Which seems fair enough given the age of my kernel. I could probably fi=
-x this
+1 Edge_R_Web_service
+   ether0:  192.168.89.99/24 (SNAT ie MASQUERADE) GW 192.168.89.254
+(MASQUEARDE to the Real WORLD)
+  ether1: 192.168.101.254/24
 
-That is fixed in 7.9.
 
-> ipset 7.6 compiles ok for me.
-> =20
-> Any guidance please?
+This lab tests the LB of the LAN GW towards the WAN Routers and verifies the
+result via a HTTP request.
+The client sends a http request towards 192.168.101.254 and then receives
+the ip address of the WAN Router at the 192.168.101.0/24 net.
 
-Please give a try to the next patch on top of ipset 7.9: it separates the=
-=20
-compiler compatibility stuff from the kernel compatibility part and that=20
-helps to resolve the include file issue.
+If it's possible to use flowtable on any of the Routers on this network I
+would like to make sure I understood right.
 
-diff --git a/.gitignore b/.gitignore
-index 46a78dd..0e8a087 100644
---- a/.gitignore
-+++ b/.gitignore
-@@ -20,6 +20,7 @@ Makefile.in
- Module.symvers
- modules.order
- kernel/include/linux/netfilter/ipset/ip_set_compat.h
-+kernel/include/linux/netfilter/ipset/ip_set_compiler.h
-=20
- /aclocal.m4
- /autom4te.cache/
-diff --git a/configure.ac b/configure.ac
-index 1086de3..2f06590 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -851,7 +851,8 @@ dnl Checks for library functions.
- dnl Generate output
- AC_CONFIG_FILES([Makefile include/libipset/Makefile
- 	lib/Makefile lib/libipset.pc src/Makefile utils/Makefile
--	kernel/include/linux/netfilter/ipset/ip_set_compat.h])
-+	kernel/include/linux/netfilter/ipset/ip_set_compat.h
-+	kernel/include/linux/netfilter/ipset/ip_set_compiler.h])
- AC_OUTPUT
-=20
- dnl Summary
-diff --git a/kernel/include/linux/jhash.h b/kernel/include/linux/jhash.h
-index 8df77ec..d144e33 100644
---- a/kernel/include/linux/jhash.h
-+++ b/kernel/include/linux/jhash.h
-@@ -1,6 +1,6 @@
- #ifndef _LINUX_JHASH_H
- #define _LINUX_JHASH_H
--#include <linux/netfilter/ipset/ip_set_compat.h>
-+#include <linux/netfilter/ipset/ip_set_compiler.h>
-=20
- /* jhash.h: Jenkins hash support.
-  *
-diff --git a/kernel/include/linux/netfilter/ipset/ip_set_compat.h.in b/ke=
-rnel/include/linux/netfilter/ipset/ip_set_compat.h.in
-index 8f00e6a..bf99bc0 100644
---- a/kernel/include/linux/netfilter/ipset/ip_set_compat.h.in
-+++ b/kernel/include/linux/netfilter/ipset/ip_set_compat.h.in
-@@ -519,18 +519,5 @@ static inline void *kvzalloc(size_t size, gfp_t flag=
-s)
- 	return members;
- }
- #endif
--
--/* Compiler attributes */
--#ifndef __has_attribute
--# define __has_attribute(x) __GCC4_has_attribute_##x
--# define __GCC4_has_attribute___fallthrough__		0
--#endif
--
--#if __has_attribute(__fallthrough__)
--# define fallthrough			__attribute__((__fallthrough__))
--#else
--# define fallthrough			do {} while (0)  /* fallthrough */
--#endif
--
- #endif /* IP_SET_COMPAT_HEADERS */
- #endif /* __IP_SET_COMPAT_H */
-diff --git a/kernel/include/linux/netfilter/ipset/ip_set_compiler.h.in b/=
-kernel/include/linux/netfilter/ipset/ip_set_compiler.h.in
-new file mode 100644
-index 0000000..1b392f8
---- /dev/null
-+++ b/kernel/include/linux/netfilter/ipset/ip_set_compiler.h.in
-@@ -0,0 +1,15 @@
-+#ifndef __IP_SET_COMPILER_H
-+#define __IP_SET_COMPILER_H
-+
-+/* Compiler attributes */
-+#ifndef __has_attribute
-+# define __has_attribute(x) __GCC4_has_attribute_##x
-+# define __GCC4_has_attribute___fallthrough__		0
-+#endif
-+
-+#if __has_attribute(__fallthrough__)
-+# define fallthrough			__attribute__((__fallthrough__))
-+#else
-+# define fallthrough			do {} while (0)  /* fallthrough */
-+#endif
-+#endif /* __IP_SET_COMPILER_H */
-diff --git a/kernel/net/netfilter/ipset/ip_set_core.c b/kernel/net/netfil=
-ter/ipset/ip_set_core.c
-index dcbc400..85961fc 100644
---- a/kernel/net/netfilter/ipset/ip_set_core.c
-+++ b/kernel/net/netfilter/ipset/ip_set_core.c
-@@ -21,6 +21,7 @@
- #include <linux/netfilter/x_tables.h>
- #include <linux/netfilter/nfnetlink.h>
- #include <linux/netfilter/ipset/ip_set.h>
-+#include <linux/netfilter/ipset/ip_set_compiler.h>
-=20
- static LIST_HEAD(ip_set_type_list);		/* all registered set types */
- static DEFINE_MUTEX(ip_set_type_mutex);		/* protects ip_set_type_list */
+Thanks,
+Eliezer
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
-PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics
-          H-1525 Budapest 114, POB. 49, Hungary
---110363376-800897950-1607347615=:30865--
+----
+Eliezer Croitoru
+Tech Support
+Mobile: +972-5-28704261
+Email: ngtech1ltd@gmail.com
+
+
+----
+Eliezer Croitoru
+Tech Support
+Mobile: +972-5-28704261
+Email: ngtech1ltd@gmail.com
+
+
