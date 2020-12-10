@@ -1,75 +1,77 @@
-From: "Eliezer Croitor" <ngtech1ltd@gmail.com>
-Subject: Flowtable in a load balancer
-Date: Mon, 7 Dec 2020 17:18:05 +0200
-Message-ID: <000901d6ccac$2b39fc70$81adf550$@gmail.com>
+From: Mike Dillinger <miked@softtalker.com>
+Subject: nftables Set Bug with interval & timeout Flags
+Date: Thu, 10 Dec 2020 09:35:35 -0800
+Message-ID: <5c90f2e3-76ac-1b00-1ca8-fab74bfd97cd@softtalker.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:subject:date:message-id:mime-version
-         :content-transfer-encoding:thread-index:content-language;
-        bh=j/zVDOhMott5VeLwcgdxm+OJO1BnJQdSdUB3lMLg5Vs=;
-        b=jXb72txYdOtyuKRxc9YuRimNQ3vHlgu4SnS7EM+zxm8QUS67xJFmm2RdHg0r2cV8G/
-         CcrH80TFgFOmPOl/Hv+4UARv0Ziwcbi6u3nHj97lK+DVGxOBvMZTFPD/Hwk0M3GH/CH+
-         YWvTY3GhMvgbZHIf6T0fhf9+e3D/5dUJaIps/WcxU4dWLigwwG6kZo1o2ze+ufVyUrDa
-         I70/6tvBMagmO/38CRNy6HBaGAFIxrND7eBWSd5YGN/bUKiPvP8f/Jy1PYY0rFauIfKo
-         VKy/85XbUQNQfvBs61UIg18h1+A8EAIAtwe6QWXq5AX6g2zTL6fapQfb/Ah4u8z+3L4Y
-         4cOw==
-Content-Language: en-us
+Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
 
-I am trying to understand where can I use flowtable on a load  balancer.
-Also if and how it will work with PBR.
-
-I have created a nftables load balancer lab at:
-.	https://github.com/elico/mwan-nft-lb-example
-.	https://github.com/elico/mwan-nft-lb-example/blob/main/run-lab.sh
-
-I know that flow tables cannot work with PBR but not sure on what degree.
-Also maybe something is needed possible..
-
-I will try to describe the lab:
-1 client 
-  ether0: 192.168.125.100/24 gw 192.168.125.254
-1 Lan GW 
-  ether0: 192.168.125.254/24
-  ether5-15: 192.168.205-215.254/24 (10 ~ wan interfaces with ip addresses)
-15 WAN Routers
-  ether0:  192.168.101.5-15/24( a single ip per WAN Router) (SNAT ie
-MASQUERADE)
-  ether1:  192.168.205-215.254/24( a single ip per WAN Router)
-
-1 Edge_R_Web_service
-   ether0:  192.168.89.99/24 (SNAT ie MASQUERADE) GW 192.168.89.254
-(MASQUEARDE to the Real WORLD)
-  ether1: 192.168.101.254/24
-
-
-This lab tests the LB of the LAN GW towards the WAN Routers and verifies the
-result via a HTTP request.
-The client sends a http request towards 192.168.101.254 and then receives
-the ip address of the WAN Router at the 192.168.101.0/24 net.
-
-If it's possible to use flowtable on any of the Routers on this network I
-would like to make sure I understood right.
-
-Thanks,
-Eliezer
-
-----
-Eliezer Croitoru
-Tech Support
-Mobile: +972-5-28704261
-Email: ngtech1ltd@gmail.com
-
-
-----
-Eliezer Croitoru
-Tech Support
-Mobile: +972-5-28704261
-Email: ngtech1ltd@gmail.com
-
-
+R3JlZXRpbmdzIG5ldGZpbHRlciB0ZWFtLA0KDQpJIGJlbGlldmUgSSBoYXZlIHN0dW1ibGVk
+IG9uIGEgYnVnIHdpdGggbmZ0YWJsZXMgbmFtZWQgc2V0cy6gIEknbSBzZWVpbmcgdGltZW91
+dCB2YWx1ZXMgYXJlIGxvc3QgZm9yIG5hbWVkIHNldCBlbGVtZW50cyB1cG9uIHJlYm9vdCBv
+ciBzZXJ2aWNlIHJlc3RhcnQsIGFuZCBpdCByZXZlcnRzIHRvIHRoZSBkZWZhdWx0IHRpbWVv
+dXQgc2V0dGluZyBmb3IgdGhlIHNldC6gIEkgb25seSBvYnNlcnZlIHRoaXMgYmVoYXZpb3Ig
+d2hlbiB0aGUgaW50ZXJ2YWwgZmxhZyBpcyBwcmVzZW50LqAgSSBoYXZlIGJlZW4gYWJsZSB0
+byByZXByb2R1Y2UgcmVsaWFibHkgYW5kIEkgaGF2ZSBpbmNsdWRlZCByZXByb2R1Y3Rpb24g
+c3RlcHMuDQoNCkl0IGlzIGFsc28gd29ydGggbm90aW5nIHRoYXQgdGhpcyBpcyBvbmx5IGFu
+IGlzc3VlIGlmIHRoZSBpbnRlcnZhbCBmbGFnIGlzIHByZXNlbnQuoCBGb3IgbmFtZWQgc2V0
+cyB3aXRob3V0IHRoZSBpbnRlcnZhbCBmbGFnLCB0aW1lb3V0cyBhcmUgcHJlc2VydmVkIGFj
+cm9zcyByZWJvb3RzIGFuZCBzZXJ2aWNlIHJlc3RhcnRzIGFzIGV4cGVjdGVkLiBIb3dldmVy
+LCBJJ20gaW50ZXJlc3RlZCBpbiB1c2luZyB0aGUgaW50ZXJ2YWwgZmxhZyB0byBzcGVjaWZ5
+IENJRFIncyBhbmQgSVAgcmFuZ2VzLg0KDQpTdGVwIDE6IENyZWF0ZSBhIHNldCB3aXRoIGlu
+dGVydmFsIGFuZCB0aW1lb3V0IGZsYWdzLCBzb21lIG90aGVyIG9wdGlvbnMgYXMgd2VsbA0K
+JCBuZnQgYWRkIHNldCBpcCBmaWx0ZXIgdGVzdDIge3R5cGUgaXB2NF9hZGRyIFw7IGZsYWdz
+IHRpbWVvdXQsaW50ZXJ2YWwgXDsgdGltZW91dCAxMG0gXDsgZ2MtaW50ZXJ2YWwgMW1cOyBj
+b3VudGVyXDt9DQokIG5mdCBsaXN0IHNldCBpcCBmaWx0ZXIgdGVzdDINCnRhYmxlIGlwIGZp
+bHRlciB7DQogoKCgoKCgoCBzZXQgdGVzdDIgew0KIKCgoKCgoKCgoKCgoKCgoCB0eXBlIGlw
+djRfYWRkcg0KIKCgoKCgoKCgoKCgoKCgoCBmbGFncyBpbnRlcnZhbCx0aW1lb3V0DQogoKCg
+oKCgoKCgoKCgoKCgIGNvdW50ZXINCiCgoKCgoKCgoKCgoKCgoKAgdGltZW91dCAxMG0NCiCg
+oKCgoKCgoKCgoKCgoKAgZ2MtaW50ZXJ2YWwgMW0NCiCgoKCgoKCgIH0NCn0NCg0KU3RlcCAy
+OiBBZGQgYSBjb3VwbGUgb2YgZWxlbWVudHMgdG8gc2V0OyBPbmUgd2lsbCBiZSBhIHNpbmds
+ZSBJUCBhbmQgb25lIHdpbGwgYmUgYSBDSURSL3JhbmdlDQokIG5mdCBhZGQgZWxlbWVudCBp
+cCBmaWx0ZXIgdGVzdDIgeyAxLjEuMS4xIH0NCiQgbmZ0IGFkZCBlbGVtZW50IGlwIGZpbHRl
+ciB0ZXN0MiB7IDguOC44LjAvMjQgfQ0KJCBuZnQgbGlzdCBzZXQgaXAgZmlsdGVyIHRlc3Qy
+DQp0YWJsZSBpcCBmaWx0ZXIgew0KIKCgoKCgoKAgc2V0IHRlc3QyIHsNCiCgoKCgoKCgoKCg
+oKCgoKAgdHlwZSBpcHY0X2FkZHINCiCgoKCgoKCgoKCgoKCgoKAgZmxhZ3MgaW50ZXJ2YWws
+dGltZW91dA0KIKCgoKCgoKCgoKCgoKCgoCBjb3VudGVyDQogoKCgoKCgoKCgoKCgoKCgIHRp
+bWVvdXQgMTBtDQogoKCgoKCgoKCgoKCgoKCgIGdjLWludGVydmFsIDFtDQogoKCgoKCgoKCg
+oKCgoKCgIGVsZW1lbnRzID0geyAxLjEuMS4xIGV4cGlyZXMgOW00NXMzNDhtcyBjb3VudGVy
+IHBhY2tldHMgMCBieXRlcyAwLCA4LjguOC4wLzI0IGV4cGlyZXMgOW01NXM4MTZtcyBjb3Vu
+dGVyIHBhY2tldHMgMCBieXRlcyAwIH0NCiCgoKCgoKCgIH0NCn0NCg0KU3RlcCAzOiBMZXRz
+IHBhdXNlIHRvIGFsbG93IHRoZSB0aW1lcnMgdG8gZGVjcmVtZW50IHNvbWV3aGF0IGFuZCB0
+aGVuIGJhY2t1cCB0aGUgbmZ0YWJsZXMgY29uZmlnIHNvIHdlIGNhbiByZXN0b3JlIGl0DQok
+IHJtIC1mIC9ldGMvbmZ0YWJsZXMuY29uZiAmJiBuZnQgbGlzdCBydWxlc2V0ID4gL2V0Yy9u
+ZnRhYmxlcy5jb25mDQokIGdyZXAgLS1hZnRlci1jb250ZXh0IDcgdGVzdDIgL2V0Yy9uZnRh
+Ymxlcy5jb25mDQogoKCgoKCgoCBzZXQgdGVzdDIgew0KIKCgoKCgoKCgoKCgoKCgoCB0eXBl
+IGlwdjRfYWRkcg0KIKCgoKCgoKCgoKCgoKCgoCBmbGFncyBpbnRlcnZhbCx0aW1lb3V0DQog
+oKCgoKCgoKCgoKCgoKCgIGNvdW50ZXINCiCgoKCgoKCgoKCgoKCgoKAgdGltZW91dCAxMG0N
+CiCgoKCgoKCgoKCgoKCgoKAgZ2MtaW50ZXJ2YWwgMW0NCiCgoKCgoKCgoKCgoKCgoKAgZWxl
+bWVudHMgPSB7IDEuMS4xLjEgZXhwaXJlcyA2bTRzNzUybXMgY291bnRlciBwYWNrZXRzIDAg
+Ynl0ZXMgMCwgOC44LjguMC8yNCBleHBpcmVzIDZtMTVzMjIwbXMgY291bnRlciBwYWNrZXRz
+IDAgYnl0ZXMgMCB9DQogoKCgoKCgoCB9DQoNClN0ZXAgNDogTm93IHJlc3RhcnQgbmZ0YWJs
+ZXMgYW5kIG9ic2VydmUgdGhlIGZhaWx1cmUgY29uZGl0aW9uDQokIHN5c3RlbWN0bCByZXN0
+YXJ0IG5mdGFibGVzLnNlcnZpY2UNCiQgbmZ0IGxpc3Qgc2V0IGlwIGZpbHRlciB0ZXN0Mg0K
+dGFibGUgaXAgZmlsdGVyIHsNCiCgoKCgoKCgIHNldCB0ZXN0MiB7DQogoKCgoKCgoKCgoKCg
+oKCgIHR5cGUgaXB2NF9hZGRyDQogoKCgoKCgoKCgoKCgoKCgIGZsYWdzIGludGVydmFsLHRp
+bWVvdXQNCiCgoKCgoKCgoKCgoKCgoKAgY291bnRlcg0KIKCgoKCgoKCgoKCgoKCgoCB0aW1l
+b3V0IDEwbQ0KIKCgoKCgoKCgoKCgoKCgoCBnYy1pbnRlcnZhbCAxbQ0KIKCgoKCgoKCgoKCg
+oKCgoCBlbGVtZW50cyA9IHsgMS4xLjEuMSBleHBpcmVzIDltNDhzODY0bXMgY291bnRlciBw
+YWNrZXRzIDAgYnl0ZXMgMCwgOC44LjguMC8yNCBleHBpcmVzIDltNDhzODY0bXMgY291bnRl
+ciBwYWNrZXRzIDAgYnl0ZXMgMCB9DQogoKCgoKCgoCB9DQp9DQoNCk5vdGUgdGhlIHRpbWVy
+cyByZXNldCB3aGVuIHRoZSBzZXJ2aWNlIHJlc3RhcnRlZCBldmVuIHRob3VnaCB0aGV5IHdl
+cmUgc2F2ZWQgdG8gL2V0Yy9uZnRhYmxlcy5jb25mLqAgQW5kIGFnYWluLCB0aGlzIGJlaGF2
+aW9yIGlzIG9ubHkgcHJlc2VudCB3aGVuIHRoZSBpbnRlcnZhbCBmbGFnIGlzIHNldC6gIEkg
+aGF2ZSBvdGhlciBzZXRzIG9mIHR5cGUgaXB2NF9hZGRyIG5vdCB1c2luZyB0aGUgaW50ZXJ2
+YWwgZmxhZyBhbmQgdGhvc2UgdGltZXJzIGFyZSBwcmVzZXJ2ZWQgb24gcmVzZXQvcmVib290
+Lg0KDQpIb3BlZnVsbHkgSSdtIGRvaW5nIHNvbWV0aGluZyB3cm9uZywgYnV0IGlmIG5vdCwg
+cGxlYXNlIGxldCBtZSBrbm93IHlvdXIgdGhvdWdodHMuoCBIZXJlIGlzIHNvbWUgaW5mb3Jt
+YXRpb24gcmVnYXJkaW5nIG15IHNldHVwIChEZWJpYW4gdGVzdGluZyk6DQokIHVuYW1lIC1h
+DQpMaW51eCByb2NrZW5maWVsZCA1LjkuMC00LWFtZDY0ICMxIFNNUCBEZWJpYW4gNS45LjEx
+LTEgKDIwMjAtMTEtMjcpIHg4Nl82NCBHTlUvTGludXgNCiQgbmZ0IC1WDQpuZnRhYmxlcyB2
+MC45LjcgKEFueWZhY2UpDQogoCBjbGk6oKCgoKCgoKCgIHJlYWRsaW5lDQogoCBqc29uOqCg
+oKCgoKCgIHllcw0KIKAgbWluaWdtcDqgoKCgoCBubw0KIKAgbGlieHRhYmxlczqgoCB5ZXMN
+Cg0KVGhhbmtzIQ0KLU1pa2VEDQo=
