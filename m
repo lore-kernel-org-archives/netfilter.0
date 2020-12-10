@@ -1,77 +1,54 @@
-From: Mike Dillinger <miked@softtalker.com>
-Subject: nftables Set Bug with interval & timeout Flags
-Date: Thu, 10 Dec 2020 09:35:35 -0800
-Message-ID: <5c90f2e3-76ac-1b00-1ca8-fab74bfd97cd@softtalker.com>
+From: Jozsef Kadlecsik <kadlec@netfilter.org>
+Subject: Re: ipset 7.9 compilation fix on kernel 4.14
+Date: Thu, 10 Dec 2020 23:19:19 +0100 (CET)
+Message-ID: <alpine.DEB.2.23.453.2012102309430.14614@blackhole.kfki.hu>
+References: <alpine.DEB.2.23.453.2011192141150.19567@blackhole.kfki.hu> <c4778467-3abe-b40f-c4f7-945576fa097f@wildgooses.com> <alpine.DEB.2.23.453.2012071419590.30865@blackhole.kfki.hu> <701adbbb-202a-4ee4-ce2e-ecaaed6dc3b5@wildgooses.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
+Content-Type: multipart/mixed; boundary="110363376-271306815-1607638759=:14614"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <701adbbb-202a-4ee4-ce2e-ecaaed6dc3b5@wildgooses.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+To: Ed W <lists@wildgooses.com>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-R3JlZXRpbmdzIG5ldGZpbHRlciB0ZWFtLA0KDQpJIGJlbGlldmUgSSBoYXZlIHN0dW1ibGVk
-IG9uIGEgYnVnIHdpdGggbmZ0YWJsZXMgbmFtZWQgc2V0cy6gIEknbSBzZWVpbmcgdGltZW91
-dCB2YWx1ZXMgYXJlIGxvc3QgZm9yIG5hbWVkIHNldCBlbGVtZW50cyB1cG9uIHJlYm9vdCBv
-ciBzZXJ2aWNlIHJlc3RhcnQsIGFuZCBpdCByZXZlcnRzIHRvIHRoZSBkZWZhdWx0IHRpbWVv
-dXQgc2V0dGluZyBmb3IgdGhlIHNldC6gIEkgb25seSBvYnNlcnZlIHRoaXMgYmVoYXZpb3Ig
-d2hlbiB0aGUgaW50ZXJ2YWwgZmxhZyBpcyBwcmVzZW50LqAgSSBoYXZlIGJlZW4gYWJsZSB0
-byByZXByb2R1Y2UgcmVsaWFibHkgYW5kIEkgaGF2ZSBpbmNsdWRlZCByZXByb2R1Y3Rpb24g
-c3RlcHMuDQoNCkl0IGlzIGFsc28gd29ydGggbm90aW5nIHRoYXQgdGhpcyBpcyBvbmx5IGFu
-IGlzc3VlIGlmIHRoZSBpbnRlcnZhbCBmbGFnIGlzIHByZXNlbnQuoCBGb3IgbmFtZWQgc2V0
-cyB3aXRob3V0IHRoZSBpbnRlcnZhbCBmbGFnLCB0aW1lb3V0cyBhcmUgcHJlc2VydmVkIGFj
-cm9zcyByZWJvb3RzIGFuZCBzZXJ2aWNlIHJlc3RhcnRzIGFzIGV4cGVjdGVkLiBIb3dldmVy
-LCBJJ20gaW50ZXJlc3RlZCBpbiB1c2luZyB0aGUgaW50ZXJ2YWwgZmxhZyB0byBzcGVjaWZ5
-IENJRFIncyBhbmQgSVAgcmFuZ2VzLg0KDQpTdGVwIDE6IENyZWF0ZSBhIHNldCB3aXRoIGlu
-dGVydmFsIGFuZCB0aW1lb3V0IGZsYWdzLCBzb21lIG90aGVyIG9wdGlvbnMgYXMgd2VsbA0K
-JCBuZnQgYWRkIHNldCBpcCBmaWx0ZXIgdGVzdDIge3R5cGUgaXB2NF9hZGRyIFw7IGZsYWdz
-IHRpbWVvdXQsaW50ZXJ2YWwgXDsgdGltZW91dCAxMG0gXDsgZ2MtaW50ZXJ2YWwgMW1cOyBj
-b3VudGVyXDt9DQokIG5mdCBsaXN0IHNldCBpcCBmaWx0ZXIgdGVzdDINCnRhYmxlIGlwIGZp
-bHRlciB7DQogoKCgoKCgoCBzZXQgdGVzdDIgew0KIKCgoKCgoKCgoKCgoKCgoCB0eXBlIGlw
-djRfYWRkcg0KIKCgoKCgoKCgoKCgoKCgoCBmbGFncyBpbnRlcnZhbCx0aW1lb3V0DQogoKCg
-oKCgoKCgoKCgoKCgIGNvdW50ZXINCiCgoKCgoKCgoKCgoKCgoKAgdGltZW91dCAxMG0NCiCg
-oKCgoKCgoKCgoKCgoKAgZ2MtaW50ZXJ2YWwgMW0NCiCgoKCgoKCgIH0NCn0NCg0KU3RlcCAy
-OiBBZGQgYSBjb3VwbGUgb2YgZWxlbWVudHMgdG8gc2V0OyBPbmUgd2lsbCBiZSBhIHNpbmds
-ZSBJUCBhbmQgb25lIHdpbGwgYmUgYSBDSURSL3JhbmdlDQokIG5mdCBhZGQgZWxlbWVudCBp
-cCBmaWx0ZXIgdGVzdDIgeyAxLjEuMS4xIH0NCiQgbmZ0IGFkZCBlbGVtZW50IGlwIGZpbHRl
-ciB0ZXN0MiB7IDguOC44LjAvMjQgfQ0KJCBuZnQgbGlzdCBzZXQgaXAgZmlsdGVyIHRlc3Qy
-DQp0YWJsZSBpcCBmaWx0ZXIgew0KIKCgoKCgoKAgc2V0IHRlc3QyIHsNCiCgoKCgoKCgoKCg
-oKCgoKAgdHlwZSBpcHY0X2FkZHINCiCgoKCgoKCgoKCgoKCgoKAgZmxhZ3MgaW50ZXJ2YWws
-dGltZW91dA0KIKCgoKCgoKCgoKCgoKCgoCBjb3VudGVyDQogoKCgoKCgoKCgoKCgoKCgIHRp
-bWVvdXQgMTBtDQogoKCgoKCgoKCgoKCgoKCgIGdjLWludGVydmFsIDFtDQogoKCgoKCgoKCg
-oKCgoKCgIGVsZW1lbnRzID0geyAxLjEuMS4xIGV4cGlyZXMgOW00NXMzNDhtcyBjb3VudGVy
-IHBhY2tldHMgMCBieXRlcyAwLCA4LjguOC4wLzI0IGV4cGlyZXMgOW01NXM4MTZtcyBjb3Vu
-dGVyIHBhY2tldHMgMCBieXRlcyAwIH0NCiCgoKCgoKCgIH0NCn0NCg0KU3RlcCAzOiBMZXRz
-IHBhdXNlIHRvIGFsbG93IHRoZSB0aW1lcnMgdG8gZGVjcmVtZW50IHNvbWV3aGF0IGFuZCB0
-aGVuIGJhY2t1cCB0aGUgbmZ0YWJsZXMgY29uZmlnIHNvIHdlIGNhbiByZXN0b3JlIGl0DQok
-IHJtIC1mIC9ldGMvbmZ0YWJsZXMuY29uZiAmJiBuZnQgbGlzdCBydWxlc2V0ID4gL2V0Yy9u
-ZnRhYmxlcy5jb25mDQokIGdyZXAgLS1hZnRlci1jb250ZXh0IDcgdGVzdDIgL2V0Yy9uZnRh
-Ymxlcy5jb25mDQogoKCgoKCgoCBzZXQgdGVzdDIgew0KIKCgoKCgoKCgoKCgoKCgoCB0eXBl
-IGlwdjRfYWRkcg0KIKCgoKCgoKCgoKCgoKCgoCBmbGFncyBpbnRlcnZhbCx0aW1lb3V0DQog
-oKCgoKCgoKCgoKCgoKCgIGNvdW50ZXINCiCgoKCgoKCgoKCgoKCgoKAgdGltZW91dCAxMG0N
-CiCgoKCgoKCgoKCgoKCgoKAgZ2MtaW50ZXJ2YWwgMW0NCiCgoKCgoKCgoKCgoKCgoKAgZWxl
-bWVudHMgPSB7IDEuMS4xLjEgZXhwaXJlcyA2bTRzNzUybXMgY291bnRlciBwYWNrZXRzIDAg
-Ynl0ZXMgMCwgOC44LjguMC8yNCBleHBpcmVzIDZtMTVzMjIwbXMgY291bnRlciBwYWNrZXRz
-IDAgYnl0ZXMgMCB9DQogoKCgoKCgoCB9DQoNClN0ZXAgNDogTm93IHJlc3RhcnQgbmZ0YWJs
-ZXMgYW5kIG9ic2VydmUgdGhlIGZhaWx1cmUgY29uZGl0aW9uDQokIHN5c3RlbWN0bCByZXN0
-YXJ0IG5mdGFibGVzLnNlcnZpY2UNCiQgbmZ0IGxpc3Qgc2V0IGlwIGZpbHRlciB0ZXN0Mg0K
-dGFibGUgaXAgZmlsdGVyIHsNCiCgoKCgoKCgIHNldCB0ZXN0MiB7DQogoKCgoKCgoKCgoKCg
-oKCgIHR5cGUgaXB2NF9hZGRyDQogoKCgoKCgoKCgoKCgoKCgIGZsYWdzIGludGVydmFsLHRp
-bWVvdXQNCiCgoKCgoKCgoKCgoKCgoKAgY291bnRlcg0KIKCgoKCgoKCgoKCgoKCgoCB0aW1l
-b3V0IDEwbQ0KIKCgoKCgoKCgoKCgoKCgoCBnYy1pbnRlcnZhbCAxbQ0KIKCgoKCgoKCgoKCg
-oKCgoCBlbGVtZW50cyA9IHsgMS4xLjEuMSBleHBpcmVzIDltNDhzODY0bXMgY291bnRlciBw
-YWNrZXRzIDAgYnl0ZXMgMCwgOC44LjguMC8yNCBleHBpcmVzIDltNDhzODY0bXMgY291bnRl
-ciBwYWNrZXRzIDAgYnl0ZXMgMCB9DQogoKCgoKCgoCB9DQp9DQoNCk5vdGUgdGhlIHRpbWVy
-cyByZXNldCB3aGVuIHRoZSBzZXJ2aWNlIHJlc3RhcnRlZCBldmVuIHRob3VnaCB0aGV5IHdl
-cmUgc2F2ZWQgdG8gL2V0Yy9uZnRhYmxlcy5jb25mLqAgQW5kIGFnYWluLCB0aGlzIGJlaGF2
-aW9yIGlzIG9ubHkgcHJlc2VudCB3aGVuIHRoZSBpbnRlcnZhbCBmbGFnIGlzIHNldC6gIEkg
-aGF2ZSBvdGhlciBzZXRzIG9mIHR5cGUgaXB2NF9hZGRyIG5vdCB1c2luZyB0aGUgaW50ZXJ2
-YWwgZmxhZyBhbmQgdGhvc2UgdGltZXJzIGFyZSBwcmVzZXJ2ZWQgb24gcmVzZXQvcmVib290
-Lg0KDQpIb3BlZnVsbHkgSSdtIGRvaW5nIHNvbWV0aGluZyB3cm9uZywgYnV0IGlmIG5vdCwg
-cGxlYXNlIGxldCBtZSBrbm93IHlvdXIgdGhvdWdodHMuoCBIZXJlIGlzIHNvbWUgaW5mb3Jt
-YXRpb24gcmVnYXJkaW5nIG15IHNldHVwIChEZWJpYW4gdGVzdGluZyk6DQokIHVuYW1lIC1h
-DQpMaW51eCByb2NrZW5maWVsZCA1LjkuMC00LWFtZDY0ICMxIFNNUCBEZWJpYW4gNS45LjEx
-LTEgKDIwMjAtMTEtMjcpIHg4Nl82NCBHTlUvTGludXgNCiQgbmZ0IC1WDQpuZnRhYmxlcyB2
-MC45LjcgKEFueWZhY2UpDQogoCBjbGk6oKCgoKCgoKCgIHJlYWRsaW5lDQogoCBqc29uOqCg
-oKCgoKCgIHllcw0KIKAgbWluaWdtcDqgoKCgoCBubw0KIKAgbGlieHRhYmxlczqgoCB5ZXMN
-Cg0KVGhhbmtzIQ0KLU1pa2VEDQo=
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+--110363376-271306815-1607638759=:14614
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+
+On Thu, 10 Dec 2020, Ed W wrote:
+
+> There remains a compile warning, just wanted to bring to your attention=
+:
+>=20
+> /var/tmp/portage/net-firewall/ipset-7.9/work/ipset-7.9/kernel/net/netfi=
+lter/ips
+> et/ip_set_core.c: In function 'ip_set_rename':
+> /var/tmp/portage/net-firewall/ipset-7.9/work/ipset-7.9/kernel/net/netfi=
+lter/ips
+> et/ip_set_core.c:1359:2: warning: 'strncpy' specified bound 32 equals
+> destination size [-Wstringop-truncation]
+> =C2=A01359 |=C2=A0 strncpy(set->name, name2, IPSET_MAXNAMELEN);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~=
+~~~~~~~~~~~
+> =C2=A0 LD [M]=C2=A0/var/tmp/portage/net-firewall/ipset-7.9/work/ipset-7=
+.9/kernel/net/netfilter/ips
+> et/ip_set.o
+
+That's a false warning: name2 comes from a netlink attribute which size=20
+is limited to IPSET_MAXNAMELEN-1, including NUL. The compiler can't figur=
+e=20
+it out though.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
+PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics
+          H-1525 Budapest 114, POB. 49, Hungary
+--110363376-271306815-1607638759=:14614--
