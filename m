@@ -1,77 +1,73 @@
-From: Brian Pond <brian@datahenge.com>
-Subject: Correction to nftables wiki
-Date: Wed, 30 Dec 2020 11:17:25 -0800
-Message-ID: <5be52cd79aed99af1b11cbf1400534aa60c849d8.camel@datahenge.com>
+From: "" <kfm@plushkava.net>
+Subject: Re: Correction to nftables wiki
+Date: Wed, 30 Dec 2020 22:37:39 +0000
+Message-ID: <58b7d4f9-f7a7-dc06-01d9-d1bad5e3b8af@plushkava.net>
 References: <76cb4d39d82626ab3d03df4c112ebaf6bdec17de.camel@datahenge.com>
-Reply-To: brian@datahenge.com
+ <5be52cd79aed99af1b11cbf1400534aa60c849d8.camel@datahenge.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=-h/+WlasQSmZIZFRSyKGe"
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <76cb4d39d82626ab3d03df4c112ebaf6bdec17de.camel@datahenge.com>
-List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
-
-
---=-h/+WlasQSmZIZFRSyKGe
-Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+         h=subject:to:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=g
+        Cs+tP0S4cxkCUe/hgXgBCo/JnM3xL62ZsAfl47Adog=; b=ayBCg71oDeiAP46D0
+        wSm5+QDyVlkOKlJACu41+KUuJeefSIlQWVyIgGgMHoQCCWOUuqN48dzGd15k4/cZ
+        2ajZa33qqv1qI2iYj38jMZtK+YkyaRyM4bMDEY2/OUAEq2y8UANfKxdsp6Dy5qup
+        Fl+AU532P89ziEOR5KXPz/aazdzAM6eV7oYWGgf7F5MUyc332tQRiwidjHDHg24x
+        6kyMdPCeKYUbeju5JgevEhDwK09cwJnEpuBTrx48fwosXsffV7WlGm5hAUhnbZpB
+        FhwuuZicQDNWZ5OxthbFd3ToMVUMcZ5LTuo69PHwu6mmGIYyPcZ4+w0lMEursxwp
+        rB/Qw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=gCs+tP0S4cxkCUe/hgXgBCo/JnM3xL62ZsAfl47Ad
+        og=; b=NvAyrxl9AqFaRvDLP/WacxzlTBdUK7b9xns6T94YSpRqgQ1LX67tr94/U
+        i2pGc2XLXfatnybnv1Wgnn41ZxwVjpcTDo6AQ9xQVV8IFtW+unP5OrX1CSGwOKY7
+        Y+ud63XWnZeO3asx6+pfa2c6EWbmnKiiwVQmm7hxy14zRKnH43Vh3NrtWCLuG0TB
+        yyeoOObEXcdDhmmSonzdKy4iTkfhgvs6gYweImucIiB5A3CGL40rYUvQUcBDHOAw
+        SYXBDALCa3dqy0PgvP1xZ6O5uwsUnbOGlNE1sAqMkrMJIFn04awExRnla96QZqHy
+        EN09iNYcTQW13Z24BFg94L9H8k+IQ==
+In-Reply-To: <5be52cd79aed99af1b11cbf1400534aa60c849d8.camel@datahenge.com>
+Content-Language: en-GB
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: brian@datahenge.com, netfilter@vger.kernel.org
 
-Dear Netfilter Team,
+Hi Brian,
 
-I would like to propose a correction to the following Wiki page.
-https://wiki.nftables.org/wiki-nftables/index.php/Configuring_chains#Base_chain_priority
+On 30/12/2020 19:17, Brian Pond wrote:
+> Dear Netfilter Team,
+> 
+> I would like to propose a correction to the following Wiki page.
+> https://wiki.nftables.org/wiki-nftables/index.php/Configuring_chains#Base_chain_priority
+> 
+> After the code block, the following sentence reads:
+> 
+> "If priority of the 'input chain' above would be changed to -1, all
+> packets would be dropped. "
+> 
+> This sentence is incorrect.  All packets will be dropped, regardless of
+> the priority.  Because within the same hook, a "drop" action always
+> takes precedence over "accept".  Even if the "drop" is in a chain with
+> a later priority.
+> 
+> * I have attached an example illustrating this.  If you load this
+> ruleset with nft, browsing the web is impossible.  Regardless of
+> whatever priority value you choose.
+> * I have previously submitted a bug report about this behavior.  I
+> don't believe Netfilter was intended to work this way.
+> 
+> Either way, I feel the wiki should be updated for accuracy.  That way
+> readers understand how Netfilter is currently working, with regard to
+> drop and priority.
+> 
+> Please let me know if you have any questions.  I would be happy to
+> discuss further, meet online, etc.
 
-After the code block, the following sentence reads:
+See the following edit.
 
-"If priority of the 'input chain' above would be changed to -1, all
-packets would be dropped. "
-
-This sentence is incorrect.  All packets will be dropped, regardless of
-the priority.  Because within the same hook, a "drop" action always
-takes precedence over "accept".  Even if the "drop" is in a chain with
-a later priority.
-
-* I have attached an example illustrating this.  If you load this
-ruleset with nft, browsing the web is impossible.  Regardless of
-whatever priority value you choose.
-* I have previously submitted a bug report about this behavior.  I
-don't believe Netfilter was intended to work this way.
-
-Either way, I feel the wiki should be updated for accuracy.  That way
-readers understand how Netfilter is currently working, with regard to
-drop and priority.
-
-Please let me know if you have any questions.  I would be happy to
-discuss further, meet online, etc.
-
-Brian Pond
-
+https://wiki.nftables.org/wiki-nftables/index.php?title=Configuring_chains&diff=610&oldid=534
 
 -- 
-Brian Pond
-Datahenge LLC
-Business Software Consultant
-Web: www.datahenge.com
-Email: brian@datahenge.com
-Tel: 509-808-3255
-
-
---=-h/+WlasQSmZIZFRSyKGe
-Content-Disposition: attachment; filename="nftables_example.conf"
-Content-Type: text/plain; name="nftables_example.conf"; charset="UTF-8"
-Content-Transfer-Encoding: base64
-
-IyEvdXNyL3NiaW4vbmZ0IC1mCgpmbHVzaCBydWxlc2V0Cgp0YWJsZSBpbmV0IGZpbHRlciB7CiAg
-ICBjaGFpbiBpbnB1dCB7CiAgICAgICAgdHlwZSBmaWx0ZXIgaG9vayBpbnB1dCBwcmlvcml0eSAw
-OyBwb2xpY3kgYWNjZXB0OwogICAgfQoKICAgIGNoYWluIHNzaCB7CiAgICAgICAgdHlwZSBmaWx0
-ZXIgaG9vayBvdXRwdXQgcHJpb3JpdHkgMDsgcG9saWN5IGFjY2VwdDsKICAgICAgICB0Y3AgZHBv
-cnQgODAgYWNjZXB0OwogICAgICAgIHRjcCBkcG9ydCA0NDMgYWNjZXB0OwogICAgfQoKICAgIGNo
-YWluIG91dHB1dCB7CiAgICAgICAgdHlwZSBmaWx0ZXIgaG9vayBvdXRwdXQgcHJpb3JpdHkgMTU7
-IHBvbGljeSBkcm9wOwogICAgICAgICMgUHJpb3JpdHkgZG9lcyBub3QgbWF0dGVyOyBvdXRib3Vu
-ZCBwYWNrZXRzIHdpbGwgKmFsd2F5cyogYmUgZHJvcHBlZC4KICAgICAgICAjIERyb3AgaXMgYWN0
-aW5nIGxpa2UgYSBnbG9iYWwsIHRlcm1pbmF0aW5nIGFjdGlvbiBhY3Jvc3MgdGhlIGVudGlyZSBo
-b29rLgogICAgfQp9Cgo=
-
-
---=-h/+WlasQSmZIZFRSyKGe--
-
+Kerin Millar
