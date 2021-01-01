@@ -1,97 +1,121 @@
-From: "G.W. Haywood" <ged@jubileegroup.co.uk>
-Subject: Re: Correction to nftables wiki
-Date: Thu, 31 Dec 2020 09:50:51 +0000 (GMT)
-Message-ID: <alpine.DEB.2.21.2012310910060.20603@piplus.local.jubileegroup.co.uk>
-References: <76cb4d39d82626ab3d03df4c112ebaf6bdec17de.camel@datahenge.com>         <5be52cd79aed99af1b11cbf1400534aa60c849d8.camel@datahenge.com>         <58b7d4f9-f7a7-dc06-01d9-d1bad5e3b8af@plushkava.net>
- <6427cda436b129e110022c59830bb73a5c461543.camel@datahenge.com>
+From: Eyal Birger <eyal.birger@gmail.com>
+Subject: [PATCH libnetfilter_conntrack] examples: check return value of nfct_nlmsg_build()
+Date: Fri,  1 Jan 2021 10:58:29 +0200
+Message-ID: <20210101085829.3234885-1-eyal.birger@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        jubileegroup.co.uk; h=date:from:to:cc:subject:in-reply-to
-        :message-id:references:mime-version:content-type; s=uk; bh=gIsXD
-        ChxGfPP+R8hBmz7Z4dNLh0ghFenjoVJ5Wj/PkM=; b=bWr2JJV1lzHaUXKiEl+/X
-        0ZlnXwHnsILXmbRaTEn8IKZow2PYOjgk/ZILw+oGt1zQ8DI7ZqCqIMZUwR6wIvLw
-        fqbMKCDyK5yYFwZ7jBjY73xfRXRVqpogBP8Sdgryd/X6f/8CUCMAe5Nqxi37eSmq
-        g85xtduX/OQ1bVVx4z1m7w+Yi9AbDwRlWieYCpsCsRQd5xwCCfFbno9F6ikyH8C5
-        KBOH3GRsVTkZgbPyX4bMnsb+Bn4g2AoG+jethtz3mPOTObJq4yYQHmLSXjWDQuGX
-        CizmGE8UZ59tKCPZblSVu3zJVcwZuYIgolTOl/1rHwHjCMHJ2vZjKsyLt1HClLZU
-        w==
-In-Reply-To: <6427cda436b129e110022c59830bb73a5c461543.camel@datahenge.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3rTFGzMpliTK8eU+crhwZi2oWKxeWCChv9Szw1tH6ls=;
+        b=QD+H0uX42igyWks+XcU2Sfw8s4U4aTLUVMSajykjDGOAasKJF0Oaylb+TxDZXybky8
+         9/13eGXJIApY0ZtsfgJcVSr3WwHh/BxyFLL+OlW0s4HXY1PdNxNnwTZqGL25D2GWyZTS
+         Vik6Tmm3ggZKDU7xdORC/tmqh3W02aNRR9lSwfo3jQMonmtij22KczQZrs76jIqOtwEe
+         GiW6t+TDj0DuMJShznEDUBwu9WCrTe7RS4QgvszGKlY/AgSo0hz8d9UmagE+iZjpjh37
+         sbe8axnBIP/RhB95y/kCCtpmvG/vPp6wvxqh59rbO09OgThH9GBR8Zge/gkJUA7cvDnT
+         ZxLQ==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Brian Pond <brian@datahenge.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
+Cc: Eyal Birger <eyal.birger@gmail.com>
 
-Hi there,
+nfct_nlmsg_build() may fail for different reasons, for example if
+insufficient parameters exist in the ct object. The resulting nlh would
+not contain any of the ct attributes.
 
-On Wed, 30 Dec 2020, Brian Pond wrote:
+Some conntrack operations would still operate in such case, for example
+an IPCTNL_MSG_CT_DELETE message would just delete all existing conntrack
+entries.
 
-> ... I've been working a lot on firewall tooling this past year.
-> It's been much easier (and better) using nftables versus the legacy
-> iptables system.
+While the example as it is does supply correct parameters, it's safer
+as reference to validate the return value.
 
-Do you think that you could jot down the main reasons that you've
-found for the improvements?  Mail to the list would be fine for me.
+Signed-off-by: Eyal Birger <eyal.birger@gmail.com>
+---
+ examples/nfct-mnl-create.c    | 6 +++++-
+ examples/nfct-mnl-del.c       | 6 +++++-
+ examples/nfct-mnl-get.c       | 6 +++++-
+ examples/nfct-mnl-set-label.c | 7 ++++++-
+ 4 files changed, 21 insertions(+), 4 deletions(-)
 
-I ask because I've found the change in syntax quite bewildering, and,
-whenever I want to do more or less anything, most of the time I don't
-even know where to start using nft commands so I find myself reverting
-to iptables - because I can do that without really thinking about it,
-and get the job done.  I don't know that I'd ever want to do anything
-that I could do with nft that I couldn't do with iptables.  I don't
-even know if there are such things, nor what those things might be.  I
-have no clue if the things I do could be more efficient with nft.
-
-If it will make any difference to your observations for my purposes,
-typically I use just iptables and ipsets; a couple of dozen iptables
-rules, for example
-
-# iptables -L BLOCKSET --line-numbers
-Chain BLOCKSET (1 references)
-n  targ prot opt source   dest 
-1  DROP tcp  --  anywhere anywhere match-set BLOCKSET08 src
-2  DROP tcp  --  anywhere anywhere match-set BLOCKSET09 src
-3  DROP tcp  --  anywhere anywhere match-set BLOCKSET10 src
-4  DROP tcp  --  anywhere anywhere match-set BLOCKSET11 src
-5  DROP tcp  --  anywhere anywhere match-set BLOCKSET12 src
-6  DROP tcp  --  anywhere anywhere match-set BLOCKSET13 src
-7  DROP tcp  --  anywhere anywhere match-set BLOCKSET14 src
-8  DROP tcp  --  anywhere anywhere match-set BLOCKSET15 src
-9  DROP tcp  --  anywhere anywhere match-set BLOCKSET16 src
-10 DROP tcp  --  anywhere anywhere match-set BLOCKSET17 src
-11 DROP tcp  --  anywhere anywhere match-set BLOCKSET18 src
-12 DROP tcp  --  anywhere anywhere match-set BLOCKSET19 src
-13 DROP tcp  --  anywhere anywhere match-set BLOCKSET20 src
-14 DROP tcp  --  anywhere anywhere match-set BLOCKSET21 src
-15 DROP tcp  --  anywhere anywhere match-set BLOCKSET22 src
-16 DROP tcp  --  anywhere anywhere match-set BLOCKSET23 src
-17 DROP tcp  --  anywhere anywhere match-set BLOCKSET24 src
-18 DROP tcp  --  anywhere anywhere match-set BLOCKSET25 src
-19 DROP tcp  --  anywhere anywhere match-set BLOCKSET26 src
-20 DROP tcp  --  anywhere anywhere match-set BLOCKSET27 src
-21 DROP tcp  --  anywhere anywhere match-set BLOCKSET28 src
-22 DROP tcp  --  anywhere anywhere match-set BLOCKSET29 src
-23 DROP tcp  --  anywhere anywhere match-set BLOCKSET30 src
-24 DROP tcp  --  anywhere anywhere match-set BLOCKSET31 src
-25 DROP tcp  --  anywhere anywhere match-set BLOCKSET32 src
-
-and a few tens of thousands of ipset matches to DROP packets from the
-more troublesome netblocks.  The ipsets are created by a boot script,
-then (most of the time) populated automatically by a Sendmail milter
-as mail is processed; for example when some joker tries to send HTTP
-requests to the mail server his IP will be DROPped for a few days.
-
-There are timeouts on most of the ipset entries.  The main issue I've
-found is that there's an approximately 25 day limit on the timeout, so
-if I want something longer I have to jump through some hoops, but it's
-no big deal.
-
-> Happy New Year!
-
-The same to you, and all.
-
+diff --git a/examples/nfct-mnl-create.c b/examples/nfct-mnl-create.c
+index 64387a7..7fd224d 100644
+--- a/examples/nfct-mnl-create.c
++++ b/examples/nfct-mnl-create.c
+@@ -60,7 +60,11 @@ int main(void)
+ 	nfct_set_attr_u8(ct, ATTR_TCP_STATE, TCP_CONNTRACK_SYN_SENT);
+ 	nfct_set_attr_u32(ct, ATTR_TIMEOUT, 100);
+ 
+-	nfct_nlmsg_build(nlh, ct);
++	ret = nfct_nlmsg_build(nlh, ct);
++	if (ret == -1) {
++		perror("nfct_nlmsg_build");
++		exit(EXIT_FAILURE);
++	}
+ 
+ 	ret = mnl_socket_sendto(nl, nlh, nlh->nlmsg_len);
+ 	if (ret == -1) {
+diff --git a/examples/nfct-mnl-del.c b/examples/nfct-mnl-del.c
+index 91ad9e4..806d9f8 100644
+--- a/examples/nfct-mnl-del.c
++++ b/examples/nfct-mnl-del.c
+@@ -55,7 +55,11 @@ int main(void)
+ 	nfct_set_attr_u16(ct, ATTR_PORT_SRC, htons(20));
+ 	nfct_set_attr_u16(ct, ATTR_PORT_DST, htons(10));
+ 
+-	nfct_nlmsg_build(nlh, ct);
++	ret = nfct_nlmsg_build(nlh, ct);
++	if (ret == -1) {
++		perror("nfct_nlmsg_build");
++		exit(EXIT_FAILURE);
++	}
+ 
+ 	ret = mnl_socket_sendto(nl, nlh, nlh->nlmsg_len);
+ 	if (ret == -1) {
+diff --git a/examples/nfct-mnl-get.c b/examples/nfct-mnl-get.c
+index 4858acf..5be3331 100644
+--- a/examples/nfct-mnl-get.c
++++ b/examples/nfct-mnl-get.c
+@@ -74,7 +74,11 @@ int main(void)
+ 	nfct_set_attr_u16(ct, ATTR_PORT_SRC, htons(20));
+ 	nfct_set_attr_u16(ct, ATTR_PORT_DST, htons(10));
+ 
+-	nfct_nlmsg_build(nlh, ct);
++	ret = nfct_nlmsg_build(nlh, ct);
++	if (ret == -1) {
++		perror("nfct_nlmsg_build");
++		exit(EXIT_FAILURE);
++	}
+ 
+ 	ret = mnl_socket_sendto(nl, nlh, nlh->nlmsg_len);
+ 	if (ret == -1) {
+diff --git a/examples/nfct-mnl-set-label.c b/examples/nfct-mnl-set-label.c
+index c52b267..50bebb0 100644
+--- a/examples/nfct-mnl-set-label.c
++++ b/examples/nfct-mnl-set-label.c
+@@ -19,6 +19,7 @@ static void set_label(struct nf_conntrack *ct, struct callback_args *cbargs)
+ 	char buf[MNL_SOCKET_BUFFER_SIZE];
+ 	struct nlmsghdr *nlh;
+ 	struct nfgenmsg *nfh;
++	int ret;
+ 
+ 	if (b) {
+ 		if (bit < 0)
+@@ -55,7 +56,11 @@ static void set_label(struct nf_conntrack *ct, struct callback_args *cbargs)
+ 	nfh->version = NFNETLINK_V0;
+ 	nfh->res_id = 0;
+ 
+-	nfct_nlmsg_build(nlh, ct);
++	ret = nfct_nlmsg_build(nlh, ct);
++	if (ret == -1) {
++		perror("nfct_nlmsg_build");
++		exit(EXIT_FAILURE);
++	}
+ 
+ 	if (mnl_socket_sendto(cbargs->nl, nlh, nlh->nlmsg_len) < 0)
+ 		perror("mnl_socket_sendto");
 -- 
+2.25.1
 
-73,
-Ged.
