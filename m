@@ -1,115 +1,33 @@
-From: Phil Sutter <phil@netfilter.org>
-Subject: [ANNOUNCE] iptables 1.8.7 release
-Date: Fri, 15 Jan 2021 23:28:57 +0100
-Message-ID: <20210115222857.GA18001@orbyte.nwl.cc>
+From: linux-netfilter-list@dbg.werbittewas.de
+Subject: where in kernel is conntrack-matching done?
+Date: Tue, 19 Jan 2021 05:21:05 +0100
+Message-ID: <c604e1cd-3540-fabd-dadd-78b735dca7cc@dbg.werbittewas.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="0OAP2g/MAC+5xKAE"
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: <n0-1@orbyte.nwl.cc>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Language: de
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
-Cc: netdev@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
+
+hi.
+
+we had recently a problem where we first thought, that there's a problem
+with conntrack, but it was our fault by mis-reading packets...
+
+nevertheless we've not found the kernel-method, where a packet is
+matched against current conntrack-list.
+
+to limit possible answers, we want to start with an UDP-packet.
+
+does anyone have a hint, where to look in kernel to better understand,
+what is happened there with a certain packet? where does it enter
+conntrack-checking? where is checked, if it's a new connection or if it
+matches an existing one?
 
 
---0OAP2g/MAC+5xKAE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+thanks a lot.
 
-Hi!
+regards
 
-The Netfilter project proudly presents:
-
-iptables 1.8.7
-
-This release contains the following fixes and enhancements:
-
-iptables-nft:
-- Improved performance when matching on IP/MAC address prefixes if the
-  prefix is byte-aligned. In ideal cases, this doubles packet processing
-  performance.
-  *NOTE*: Older iptables versions will not recognize the mask and thus
-          omit them when listing the ruleset.
-- Dump user-defined chains in lexical order. This way ruleset dumps
-  become stable and easily comparable.
-- Avoid pointless table/chain creation. For instance, 'iptables-nft -L'
-  no longer creates missing base-chains.
-
-ebtables-nft:
-- Renaming user-defined chains was entirely broken.
-
-extensions:
-- Code for printing and parsing of MAC addresses was consolidated
-  internally, slightly reducing binary size. As a noticeable
-  side-effect, all MAC addresses are now printed in lower-case (affects
-  'mac'-extension).
-- Fixed DCCP extension's match on 'INVALID' type, a meta-type which
-  should match any type value in the range from ten to fifteen. In the
-  past it matched on type value 10 only.
-
-xtables-monitor:
-- Don't print unrelated rules in the same chain when tracing.
-- Flush output buffer after each rule when tracing to improve experience
-  when redirecting output.
-- Print the table's family when tracing instead of whatever the user
-  specified on command line.
-- Print the traced packet before the rule it traverses, not vice-versa.
-- Recognize loopback interface and print "LOOPBACK" for link layer
-  header info instead of "LL=0x304".
-
-xtables-translate:
-- Correctly translate DCCP type matches (including 'INVALID').
-
-See the attached changelog for more details.
-
-You can download it from:
-
-http://www.netfilter.org/projects/iptables/downloads.html#iptables-1.8.7
-
-To build the code, libnftnl 1.1.6 is required:
-
-* http://netfilter.org/projects/libnftnl/downloads.html#libnftnl-1.1.6
-
-In case of bugs and feature requests, file them via:
-
-* https://bugzilla.netfilter.org
-
-Happy firewalling!
-
---0OAP2g/MAC+5xKAE
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="iptables-1.8.7.txt"
-
-Florian Westphal (4):
-  xtables-monitor: fix rule printing
-  xtables-monitor: fix packet family protocol
-  xtables-monitor: print packet first
-  xtables-monitor: 'LL=0x304' is not very convenient, print LOOPBACK instead.
-
-Pablo Neira Ayuso (1):
-  tests: shell: update format of registers in bitwise payloads.
-
-Phil Sutter (21):
-  nft: Optimize class-based IP prefix matches
-  ebtables: Optimize masked MAC address matches
-  tests/shell: Add test for bitwise avoidance fixes
-  ebtables: Fix for broken chain renaming
-  iptables-test.py: Accept multiple test files on commandline
-  iptables-test.py: Try to unshare netns by default
-  libxtables: Extend MAC address printing/parsing support
-  xtables-arp: Don't use ARPT_INV_*
-  xshared: Merge some command option-related code
-  tests/shell: Test for fixed extension registration
-  extensions: dccp: Fix for DCCP type 'INVALID'
-  nft: Fix selective chain compatibility checks
-  nft: cache: Introduce nft_cache_add_chain()
-  nft: Implement nft_chain_foreach()
-  nft: cache: Move nft_chain_find() over
-  nft: Introduce struct nft_chain
-  nft: Introduce a dedicated base chain array
-  nft: cache: Sort custom chains by name
-  tests: shell: Drop any dump sorting in place
-  nft: Avoid pointless table/chain creation
-  tests/shell: Fix nft-only/0009-needless-bitwise_0
-
---0OAP2g/MAC+5xKAE--
+dbg.
