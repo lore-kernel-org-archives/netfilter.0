@@ -1,47 +1,53 @@
-From: Reindl Harald <h.reindl@thelounge.net>
-Subject: Re: Migrate ipsets to nftables
-Date: Wed, 20 Jan 2021 15:48:50 +0100
-Message-ID: <1d88d970-47ea-8093-8cba-39f1d30a661a@thelounge.net>
+From: "" <kfm@plushkava.net>
+Subject: Re: How to edit nftables wiki pages?
+Date: Wed, 20 Jan 2021 21:42:06 +0000
+Message-ID: <bc59ca4e-7a58-6dff-712b-dc087358482c@plushkava.net>
+References: <176bd68f88a.29be878823110.2520411253379674480@tuckey.email>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+         h=subject:to:references:from:message-id:date:mime-version
+        :in-reply-to:content-type:content-transfer-encoding; s=fm1; bh=U
+        54OtpVsMgnJryWwAfXsSW206EE0udi3+c9NzzLPMp0=; b=X7EL/usOzCE32nnFp
+        77qG5UAWRuPpkvzl1aFAqcarXhdP6yliVmVEVZtQq3AqDAVW9Ix4NssZcq17JQJl
+        7tlNiST902i4UKRhAfMrhjuaTwpIFvE9QGYt2s5LHrqootEkB7J3FDpCrpdqDB7k
+        gVqPN/XG+ChbNVQ1dzGXwd/oMqX44qW6+8VKmXxMUPCMfOpzl4WOanqpfZsrpjKn
+        O44mV4EX14P3fNDHzlt1MCHXbjUbLR0P5EnisyckwtknghlYS3Rm2mYmfEHRqvH3
+        oXwwIcU4ZOet5NPH6Jwm643pFDLgSDS6mTuWKqS5jGBIESt0lDVPyH6yL5hNkChA
+        Fffiw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm1; bh=U54OtpVsMgnJryWwAfXsSW206EE0udi3+c9NzzLPM
+        p0=; b=Zzth5IcTn80lPvzu756QGU6evZ5UZF+7hTSR7YIFTpes/X0D0iIc3pmQZ
+        1uHjNkx5s1Uo2sI92A7bgQ6jpoO5so6SBEXAUiPA5+Y4NUUGBNB3g8NbFo9XynaU
+        TFj3GQcw8PPawcQSIva8uy1iVOBIgvw/C7dVnGACGDPVN6V8kYOVYr+Avv9sJYUk
+        ZU1d5fTXm9Wdyao8AoSy9WUf3v7iBEtwfq6eLtgxljfQbq0EbTtkZQcaOLSdHBax
+        TGVflgrJIM94Y89uVmR8orsiQp9hFf8wdQoAZEB487DOU8V9poyBSauCaci+M1QR
+        W8I0vdOPlsGYNqJHEh5q4pKaNq2Yg==
+In-Reply-To: <176bd68f88a.29be878823110.2520411253379674480@tuckey.email>
+Content-Language: en-GB
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: david@hajes.org
-Cc: netfilter@vger.kernel.org
+To: Jay Tuckey <jay@tuckey.email>, netfilter <netfilter@vger.kernel.org>
 
-but it comments out everything it can't translate, ipset as example adn 
-way too much other things here on our datacenter firewall
+Hi Jay,
 
-i also wouldn't know how to get output like below which is easy based on 
-"iptables -L" with a little grep/sed and bash magic
+On 01/01/2021 10:05, Jay Tuckey wrote:
+> Hi, I was trying to make an edit to this page:
+> https://wiki.nftables.org/wiki-nftables/index.php/Queueing_to_userspace
+> 
+> I found that on my machine the commands didn't quite work as they are on the page, so I was going to add corrected commands, but I can't work out how to edit the page. Is this possible?
+> 
+> Regards, Jay Tuckey
+> 
+> 
 
-12M   12M   0  100   100   0   ALL
-6.9M  6.9M  0  56.6  56.6  0   ACCEPT
-5.3M  5.3M  0  43.4  43.4  0   DENY
-4.5M  4.5M  0  36.4  36.4  0   DENY SCAN
-4.1M  4.1M  0  33.6  33.6  0   DENY IPSET
-3.5M  3.5M  0  28.6  28.6  0   ACCEPT OUT
-3.4M  3.4M  0  28    28    0   ACCEPT IN
-478K  478K  0  3.9   3.9   0   RL + CL
-477K  477K  0  3.9   3.9   0   RATELIMIT
-392K  392K  0  3.2   3.2   0   HONEYPOT
-261K  261K  0  2.1   2.1   0   INVALID
-43K   43K   0  0.3   0.3   0   OUT RESTRICT
-1.2K  1.2K  0  0     0     0   OUT DENY
-552   552   0  0     0     0   CONNLIMIT
+Anonymous edits are not permitted. You would need to either request a 
+wiki account from the Netfilter Core Team or for someone with an account 
+to apply the changes that you have in mind.
 
-Am 20.01.21 um 15:07 schrieb david@hajes.org:
-> iptables-translate if I recall correctly. It converts iptables to nft if possible. I started from scratch though.On Jan 20, 2021 13:41, Reindl Harald <h.reindl@thelounge.net> wrote:
->>
->>
->>
->> Am 20.01.21 um 11:41 schrieb Nikolai Lusan:
->>> Hi all,
->>>
->>> I am in the process of migrating from iptables+ipsets to nftables. Is
->>> there an easy way to migrate exisiting ipsets to nftables sets.
->>
->> not really but you can use iptables-nft which is nearly 100% compatible,
->> can use ipset unchanged and behind the scenes uses nft
+-- 
+Kerin Millar
