@@ -1,63 +1,103 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: parser problem in range map?
-Date: Tue, 26 Jan 2021 16:32:06 +0100
-Message-ID: <20210126153206.GT19605@breakpoint.cc>
-References: <CAC=ZbaS3H09px4EfJQx5gaWv9zthVxD3LQHjue9vfsjcfG_zOw@mail.gmail.com>
+From: Bernd Naumann <bena@spreadshirt.net>
+Subject: [ERROR] inject-add2: File exists / [ERROR] inject-upd2: Device or
+ resource busy
+Date: Thu, 28 Jan 2021 13:33:30 +0100
+Message-ID: <7a8c753a-a2d6-cf30-81c2-3d205fba265b@spreadshirt.net>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAC=ZbaS3H09px4EfJQx5gaWv9zthVxD3LQHjue9vfsjcfG_zOw@mail.gmail.com>
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Andreas Schultz <andreas.schultz@travelping.com>
-Cc: netfilter <netfilter@vger.kernel.org>
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Language: en-US
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter <netfilter@vger.kernel.org>
 
-Andreas Schultz <andreas.schultz@travelping.com> wrote:
-> The following simple ruleset fails to load on nftables 0.9.8 (from
-> Ubuntu 21.04):
-> 
-> #!/usr/sbin/nft -f
-> 
-> flush ruleset
-> 
-> table inet nat {
->     chain prerouting {
->         type filter hook prerouting priority -100;
->         ip daddr set numgen inc mod 16 map { 0 - 7 : 10.0.1.1, 8 - 15
-> : 10.0.1.2 }
->     }
-> 
->     chain postrouting {
->         type filter hook postrouting priority 100;
->     }
-> }
-> 
-> It throws this error:
-> 
-> # nft -f test.nft
-> test.nft:12:40-42: Error: Value 100 exceeds valid range 0-15
-> type filter hook postrouting priority 100;
->                                       ^^^
-> test.nft:12:31-42: Error: invalid priority expression value in this context.
-> type filter hook postrouting priority 100;
->                              ^^^^^^^^^^^^
-> 
-> Is there something wrong with my expression or is this a bug?
+Hi *,
 
-Bug.  This looks like the right fix:
+I see some of these error messages every couple of minutes, in the range 
+of 1 in 2-3 minutes and 2-3 per minute.
+Sometimes at the same time on both peers, sometimes not.
 
-diff --git a/src/evaluate.c b/src/evaluate.c
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -3789,8 +3789,8 @@ static bool evaluate_priority(struct eval_ctx *ctx, struct prio_spec *prio,
-        int prio_snd;
-        char op;
- 
--       ctx->ectx.dtype = &priority_type;
--       ctx->ectx.len = NFT_NAME_MAXLEN * BITS_PER_BYTE;
-+       expr_set_context(&ctx->ectx, &priority_type, NFT_NAME_MAXLEN * BITS_PER_BYTE);
-+
-        if (expr_evaluate(ctx, &prio->expr) < 0)
-                return false;
+At first I thought it is somehow related to increasing "no space left in 
+cache", and so I doubled and doubled `HashSize` and `HashLimit` till I 
+did not saw creation failed or update failed when running `conntrackd -s 
+cache` any longer.
 
+However, chances are high both have nothing to do with each other.
+I do not even know if this is a really a thing to be concerned about.
+AFAIK conntrackd re-tries to create/inject/update in case of an error...
+
+
+What could be / is the reason of these errors "inject-add2: File exists" 
+and "inject-upd2: Device or resource busy"?
+
+
+What information can I provide in addition?
+
+The two systems run conntrackd 1.4.5 on a Debian 10 with kernel 5.7
+
+/proc/sys/net/netfilter/nf_conntrack_max
+1048576
+
+
+General {
+   HashSize 1048576
+   HashLimit 2097152
+
+   LogFile on
+   LockFile /var/lock/conntrackd.lock
+   UNIX {
+     Path /var/run/conntrackd.sock
+     Backlog 20
+   }
+
+   NetlinkBufferSize 2097152
+   NetlinkBufferSizeMaxGrowth 8388608
+   NetlinkOverrunResync on
+   NetlinkEventsReliable on
+
+   Filter From Kernelspace {
+     Protocol Accept {
+       TCP
+       UDP
+       ICMP
+       IPv6-ICMP
+     }
+
+     Address Ignore {
+       IPv4_address 127.0.0.0/8
+       IPv4_address PEER_1_LAN/32
+       IPv4_address PEER_2_LAN/32
+       IPv4_address PEER_1_WAN_1/32
+       IPv4_address PEER_2_WAN_1/32
+       IPv4_address PEER_1_WAN_2/32
+       IPv4_address PEER_2_WAN_2/32
+       IPv4_address 169.254.0.0/16
+       IPv6_address ::1
+     }
+   }
+}
+
+Sync {
+   Mode FTFW {
+     DisableExternalCache on
+   }
+
+   UDP {
+     IPv4_address PEER_1_LAN
+     IPv4_Destination_Address PEER_2_LAN
+     Port 3780
+     Interface lan0
+     SndSocketBuffer 1249280
+     RcvSocketBuffer 1249280
+     Checksum on
+   }
+
+   Options {
+     TCPWindowTracking on
+     ExpectationSync On
+   }
+}
+
+
+Thanks for reading and any hints you may can provide.
+Bernd
