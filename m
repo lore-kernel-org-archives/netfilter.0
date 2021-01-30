@@ -1,103 +1,56 @@
-From: Bernd Naumann <bena@spreadshirt.net>
-Subject: [ERROR] inject-add2: File exists / [ERROR] inject-upd2: Device or
- resource busy
-Date: Thu, 28 Jan 2021 13:33:30 +0100
-Message-ID: <7a8c753a-a2d6-cf30-81c2-3d205fba265b@spreadshirt.net>
+From: Frank Myhr <fmyhr@fhmtech.com>
+Subject: nftables typeof concatenation support for vmap?
+Date: Sat, 30 Jan 2021 11:58:50 -0500
+Message-ID: <96359217-05e8-53e7-5700-14484043506d@fhmtech.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=larkmoor.net; s=larkmoor20140928;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:Message-ID:Subject:From:To; bh=El6xWSip8z1y3ww9GLBB2gHgBpGx8bgtIEL96fcTyuI=;
+        b=QToBF50VR03UaHJCiRSmTUZDU5rfMYPK7jQEjVa3LtXTKAgkQBD0L9vKzRcMk1NleC3h84hKfK1ZY9iR/F9eEJjVO7sowZpJZe6FPAtt2HNWk0AAB581g35Wrof2fkTNd3MID+6wvAcHY/SoTEHWFhuBo8c8pyg3sPp0z2snOBU=;
 Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-Hi *,
+Hi,
 
-I see some of these error messages every couple of minutes, in the range 
-of 1 in 2-3 minutes and 2-3 per minute.
-Sometimes at the same time on both peers, sometimes not.
+The typeof concatenation supported by map since nftables 0.95 got me 
+excited about using it to goto a chain based on incoming interface and 
+requested service. There are some service requests I want to dnat, so I 
+tried defining a vmap:
 
-At first I thought it is somehow related to increasing "no space left in 
-cache", and so I doubled and doubled `HashSize` and `HashLimit` till I 
-did not saw creation failed or update failed when running `conntrackd -s 
-cache` any longer.
-
-However, chances are high both have nothing to do with each other.
-I do not even know if this is a really a thing to be concerned about.
-AFAIK conntrackd re-tries to create/inject/update in case of an error...
-
-
-What could be / is the reason of these errors "inject-add2: File exists" 
-and "inject-upd2: Device or resource busy"?
-
-
-What information can I provide in addition?
-
-The two systems run conntrackd 1.4.5 on a Debian 10 with kernel 5.7
-
-/proc/sys/net/netfilter/nf_conntrack_max
-1048576
-
-
-General {
-   HashSize 1048576
-   HashLimit 2097152
-
-   LogFile on
-   LockFile /var/lock/conntrackd.lock
-   UNIX {
-     Path /var/run/conntrackd.sock
-     Backlog 20
-   }
-
-   NetlinkBufferSize 2097152
-   NetlinkBufferSizeMaxGrowth 8388608
-   NetlinkOverrunResync on
-   NetlinkEventsReliable on
-
-   Filter From Kernelspace {
-     Protocol Accept {
-       TCP
-       UDP
-       ICMP
-       IPv6-ICMP
-     }
-
-     Address Ignore {
-       IPv4_address 127.0.0.0/8
-       IPv4_address PEER_1_LAN/32
-       IPv4_address PEER_2_LAN/32
-       IPv4_address PEER_1_WAN_1/32
-       IPv4_address PEER_2_WAN_1/32
-       IPv4_address PEER_1_WAN_2/32
-       IPv4_address PEER_2_WAN_2/32
-       IPv4_address 169.254.0.0/16
-       IPv6_address ::1
-     }
+table ip ip_nat {
+   map dnat_srv {
+     typeof        iifname . ip protocol . th dport : verdict
    }
 }
 
-Sync {
-   Mode FTFW {
-     DisableExternalCache on
-   }
+But this fails:
 
-   UDP {
-     IPv4_address PEER_1_LAN
-     IPv4_Destination_Address PEER_2_LAN
-     Port 3780
-     Interface lan0
-     SndSocketBuffer 1249280
-     RcvSocketBuffer 1249280
-     Checksum on
-   }
+Error: primary expression type 'symbol' lacks typeof serialization
+     typeof        iifname . ip protocol . th dport : verdict
+                                                      ^^^^^^^
 
-   Options {
-     TCPWindowTracking on
-     ExpectationSync On
+nft parses the following similar "plain" (non-verdict) map without error:
+
+table ip ip_nat {
+   map dnat_srv {
+     typeof        iifname . ip protocol . th dport : meta mark
    }
 }
 
+So it appears that vmaps, unlike plain sets and maps, do not support 
+typeof concatenation. I'm running Debian 10 with
 
-Thanks for reading and any hints you may can provide.
-Bernd
+kernel 5.9.15-1~bpo10+1 (2020-12-31) x86_64
+nftables v0.9.6 (Capital Idea #2)
+
+Are there any plans to support typeof concatenation for vmap? (Or maybe 
+it's already supported and I'm botching the syntax or otherwise doing 
+something silly?)
+
+Guess I'll refactor my rules for now...
+
+Thanks,
+Frank
