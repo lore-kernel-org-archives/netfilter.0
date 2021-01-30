@@ -1,33 +1,30 @@
-From: Frank Myhr <fmyhr@fhmtech.com>
+From: Florian Westphal <fw@strlen.de>
 Subject: Re: nftables typeof concatenation support for vmap?
-Date: Sat, 30 Jan 2021 12:52:42 -0500
-Message-ID: <b90733a5-60d8-a98d-5fef-3feceaf3202e@fhmtech.com>
+Date: Sat, 30 Jan 2021 19:26:53 +0100
+Message-ID: <20210130182653.GA12443@breakpoint.cc>
 References: <96359217-05e8-53e7-5700-14484043506d@fhmtech.com>
- <CAF90-WgNpsT9dNZjQaPo18MjQCLUDieP+=8moNy0g81DRwkv0Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=larkmoor.net; s=larkmoor20140928;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject; bh=+uLs1OOF0Pche/P5OzxfA02KVW6KjCq3l0VoPq0Mru8=;
-        b=cxvejQ+Hq1YRw0NWxCU/L3wFlNSGM7rtx3HDeV5ZjbcTafeLQ+Us6+BNVb+BafvsgnPe4/XJYGxSmkSEjmLiQ1lyQikLvXFDVFzJbhmxssJxrr+/lfZn2vgSk+KtWUZ3N1kRd+s+CspgPGtTZmo4/VBJr/opZaf8+htnNWage2M=;
-In-Reply-To: <CAF90-WgNpsT9dNZjQaPo18MjQCLUDieP+=8moNy0g81DRwkv0Q@mail.gmail.com>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <96359217-05e8-53e7-5700-14484043506d@fhmtech.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: =?UTF-8?Q?Laura_Garc=c3=ada_Li=c3=a9bana?= <nevola@gmail.com>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Frank Myhr <fmyhr@fhmtech.com>
+Cc: netfilter@vger.kernel.org
 
-On 2021/01/30 12:48, Laura García Liébana wrote:
-> Hi Frank,
+Frank Myhr <fmyhr@fhmtech.com> wrote:
+> So it appears that vmaps, unlike plain sets and maps, do not support typeof
+> concatenation. I'm running Debian 10 with
 > 
-> Try this:
+> kernel 5.9.15-1~bpo10+1 (2020-12-31) x86_64
+> nftables v0.9.6 (Capital Idea #2)
 > 
-> table ip ip_nat {
->      map dnat_srv {
->          type ifname . inet_proto . inet_service : verdict
->      }
-> }
-> 
+> Are there any plans to support typeof concatenation for vmap? (Or maybe it's
+> already supported and I'm botching the syntax or otherwise doing something
+> silly?)
 
-MAGIC! It works! Thank you!!!
+Its not supported yet, nft is missing some glue code.
+I will work on it next week.
 
+Meanwhile you can use normal "type" as Laura suggested.
