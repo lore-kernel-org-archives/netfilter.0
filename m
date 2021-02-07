@@ -1,69 +1,78 @@
-From: Frank Myhr <fmyhr@fhmtech.com>
-Subject: Re: FTP behind NAT on a non-standard port
-Date: Sun, 31 Jan 2021 12:21:43 -0500
-Message-ID: <818dc3cd-38b9-c21d-6297-30028d87d8f8@fhmtech.com>
-References: <1158703871.20210131190917@gmail.com>
+From: Martin Gignac <martin.gignac@gmail.com>
+Subject: Where is the ICMP *type* information in nft 0.9.8 trace output?
+Date: Sun, 7 Feb 2021 08:21:06 -0500
+Message-ID: <CANf9dFNK+APd2Pn0twresoZic60q+cFJ+yxc77fggYZKsf-11A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=larkmoor.net; s=larkmoor20140928;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject; bh=tuzeLj69Owf6/DNt7a025qcPo/4Qlci9z+7uO/QkGLA=;
-        b=bs6DPtDWoUx1fJq4jAYq3nyJJdONarv03fsdGbYgYJMGVnKobRgXoveOw4Jz3bopwVNVBqjgp9zReYDlVfts/eKFwpkSwLO9d516Dh46d6Z+oof3oaUtuUHxPY9glIxnUxkfFTc7wpLipRBN2ZDUKCq8sNXSRNMzmbpe+/EWLqQ=;
-In-Reply-To: <1158703871.20210131190917@gmail.com>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=zS0923+4WGWu7NH9zYFyXc969P8IRZtKAKZE70AL2S8=;
+        b=dVbdcorLeIjyAuBlj+w9C/mKaLdhSucUIiSaO7FLJLogCGp/hiYtJ3aFdqBK/W7oEv
+         FsB4jRgDtlAviSXUOzfjJxW+vXcKOF+anEPN0fNzZYGXzwZPBw1Iv782GTQFxOJoH6Z8
+         WHvXIKqZF/RzuvoSoy+EmCSiZWPUnMakFzJMf7GSXlMsKu+Rw9khcsjgw9PF0FofJhQ9
+         9xNSNcT78p5/Yap81wwTvDYu/iF26o8z8+zTYRexPnU1kGin4AvlT2ymXs46QQl0UubZ
+         Z7UyKllyF7WD3VCTpwhL0SoxXASXom79aQ+xBq6adTdMVabSnW01tFnv5AiihTAGipUv
+         46dQ==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: mikhalich123 <mikhalich123@gmail.com>, netfilter@vger.kernel.org
-
-On 2021/01/31 11:09, mikhalich123 wrote:
-> Hello
-> 
-> Gateway to Debian 7.11 (3.2.0-4-686-pae), iptables v1.4.14.
-> 
-> external interface ip: 1.1.1.1
-> 
-> internal interface ip: 192.168.1.1
-> 
-> An ftp server works inside the local network, for which you need to organize access from the outside.
-> 
-> ip ftp server on the internal network: 192.168.1.55
-> 
-> Port of ftp server on internal network: 51
-> 
-> Lsmod output | grep ftp
-> 
-> nf_nat_ftp 12 420 0
-> nf_conntrack_ftp 12533 ​​2 nf_nat_ftp
-> nf_nat 17913 2 iptable_nat, nf_nat_ftp
-> nf_conntrack 43121 9 nf_conntrack_ipv4, nf_nat, iptable_nat, xt_conntrack, xt_state, nf_conntrack_ftp, nf_nat_ftp, xt_CT, nf_conntrack_netlink
-> 
-> It doesn't work like this:
-> 
-> iptables -t raw -A PREROUTING --dst 1.1.1.1 -p tcp --dport 55555 -j CT --helper ftp
-> iptables -t nat -A PREROUTING -i ext --dst 1.1.1.1 -p tcp --dport 55555 -j DNAT --to-destination 192.168.1.55:51
-> 
-> The control connection opens, but there is no data flow. conntrack -E expect shows nothing.
-> 
-> If we change so that the ftp server port is standard (ftp server settings and iptables settings), then everything works:
-> 
-> iptables -t nat -A PREROUTING -i ext --dst 1.1.1.1 -p tcp --dport 55555 -j DNAT --to-destination 192.168.1.55:21
-> 
-> Please tell me what settings are needed to make available an ftp server running on a non-standard port?
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
 Hi,
 
-It's been awhile since I tried this, but I'll take a quick stab for what 
-it's worth:
+I'm doing some tracing with nft 0.9.8 and I am seeing something which
+I'm not sure is a bug or just me doing something wrong.
 
-I think the answer depends on whether you're running active or passive 
-mode FTP, as well as whether or not you're doing SNAT (or MASQUERADE) 
-between your networks.
+I've got this chain in my ruleset:
 
-The thread here may be of some help:
-https://www.spinics.net/lists/netfilter/msg44797.html
+  chain trace_chain {
+    type filter hook prerouting priority -301;
+    ip daddr 24.153.88.9 ip protocol icmp meta nftrace set 1
+  }
 
-In general it will probably be easier to get it to work if you can use 
-passive mode FTP.
+When I run 'nft monitor trace' and do a ping to 24.153.88.9 I get this:
 
-Best wishes,
-Frank
+  trace id d89e0527 inet filter trace_chain packet: iif "ens2f4" ether
+saddr 3c:fd:fe:d0:21:31 ether daddr 00:07:43:3e:b5:40 ip saddr
+192.168.1.4 ip daddr 24.153.88.9 ip dscp cs0 ip ecn not-ect ip ttl 64
+ip id 48512 ip protocol icmp ip length 84 icmp code net-unreachable
+icmp id 7698 icmp sequence 1 @th,64,96 70826276232191064865536871936
+
+I didn't understand why I was getting 'icmp code net-unreachable' when
+I should be getting something like 'icmp code echo-request', so I
+re-ran the trace with 'nft -nn monitor trace':
+
+  trace id f3014662 inet filter trace_chain packet: iif "ens2f4" ether
+saddr 3c:fd:fe:d0:21:31 ether daddr 00:07:43:3e:b5:40 ip saddr
+192.168.1.4 ip daddr 24.153.88.9 ip dscp 0x00 ip ecn 0x0 ip ttl 64 ip
+id 56274 ip protocol 1 ip length 84 icmp code 0 icmp id 7700 icmp
+sequence 1 @th,64,96 75468551379511240899085402624
+
+I then realized that 'icmp code net-unreachable' is correct *if* the
+icmp *type* is 1 or 2, but not if the type is 8, which is the case for
+an echo request. I then also realized that the ICMP *type* information
+was missing from the trace.
+
+So my question is this: am I misunderstanding the trace output or is
+there some sort of bug?
+
+Bonus question: if instead of calling the chain "trace_chain", I call
+it "chain", like so:
+
+  chain trace {
+    type filter hook prerouting priority -301;
+    ip daddr 24.153.88.9 ip protocol icmp meta nftrace set 1
+  }
+
+When I try loading the ruleset I get this error:
+
+  /etc/firewall/rules.nft:40:9-13: Error: syntax error, unexpected
+trace, expecting string
+  chain trace {
+        ^^^^^
+Is 'trace' some sort of reserved keyword? I thought chains could be
+called anything. Can they not?
+
+Thanks,
+-Martin
