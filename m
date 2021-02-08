@@ -1,29 +1,38 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: Unable to create a chain called "trace"
-Date: Mon, 8 Feb 2021 18:14:44 +0100
-Message-ID: <20210208171444.GH16570@breakpoint.cc>
-References: <CANf9dFMJN5ZsihtygUnEWB_9T=WLbEHrZY1a5mTqLgN7J39D5w@mail.gmail.com>
- <20210208154915.GF16570@breakpoint.cc>
- <20210208164750.GM3158@orbyte.nwl.cc>
+From: Frank Myhr <fmyhr@fhmtech.com>
+Subject: Re: Constraints on nft expressions and statements in inet ingress
+ chains
+Date: Mon, 8 Feb 2021 13:01:55 -0500
+Message-ID: <9b17af0b-d99d-1925-ef77-d48ef5b593d3@fhmtech.com>
+References: <5959d455-c6b8-acaf-bc1c-9500b4a2716c@fhmtech.com>
+ <20210208163214.GG16570@breakpoint.cc>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20210208164750.GM3158@orbyte.nwl.cc>
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Phil Sutter <phil@nwl.cc>, Florian Westphal <fw@strlen.de>, Martin Gignac <martin.gignac@gmail.com>, netfilter@vger.kernel.org, netfilter-devel <netfilter-devel@vger.kernel.org>
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=larkmoor.net; s=larkmoor20140928;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject; bh=/2bRa74YL9GxVAbHxkh3+3DtojMP+QvaMG9XXEVnQko=;
+        b=DFBIu4KuiJXBjS2TOTdpqHBp2ssJMKeAxO8kW6b/cCs7fu8HsO70Ub9dmEopq0yaDyT2PIbTbvMFI6Rg+PQFUy5StHkrZCGOJ2Yjexk2D1m50zKxnpotVUici6JqhN2hmuLdLRygSLfl19vMQSZMw0O1c3cCM7esOnBNvr/+ECg=;
+In-Reply-To: <20210208163214.GG16570@breakpoint.cc>
+Content-Language: en-US
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Florian Westphal <fw@strlen.de>
+Cc: netfilter@vger.kernel.org
 
-Phil Sutter <phil@nwl.cc> wrote:
-> In general, shells eating the quotes is problematic and users may not be
-> aware of it. This includes scripts that mangle ruleset dumps by
-> accident, etc. (Not sure if it is really a problem as we quote some
-> strings already).
+On 2021/02/08 11:32, Florian Westphal wrote:
+>> - reject statement
+> Should work in recent kernels.
+ >
+> ... >> - packet mark
+> Will be present for loopback and it can be set/assigned.
+ >
+ > ...
+> conntrack info may be present for loopback case.
 > 
-> Using JSON, there are no such limits, BTW. I really wonder if there's
-> really no fix for bison parser to make it "context aware".
+ > ...
+> access to l4 header will not work for subsequent fragments.
 
-Right.  We can probably make lots of keywords available for table/chain names
-by only recognizing them while parsing rules, i.e. via 'start conditions'
-in flex.  But I don't think there is anyone with the time to do the
-needed scanner changes.
+Thanks, Florian! The above is very good to know while working on my 
+rulesets.
+
+Best regards,
+Frank
