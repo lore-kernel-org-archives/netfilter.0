@@ -1,60 +1,68 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: Constraints on nft expressions and statements in inet ingress
- chains
-Date: Mon, 8 Feb 2021 17:32:14 +0100
-Message-ID: <20210208163214.GG16570@breakpoint.cc>
-References: <5959d455-c6b8-acaf-bc1c-9500b4a2716c@fhmtech.com>
+From: Phil Sutter <phil@nwl.cc>
+Subject: Re: Unable to create a chain called "trace"
+Date: Mon, 8 Feb 2021 17:47:50 +0100
+Message-ID: <20210208164750.GM3158@orbyte.nwl.cc>
+References: <CANf9dFMJN5ZsihtygUnEWB_9T=WLbEHrZY1a5mTqLgN7J39D5w@mail.gmail.com>
+ <20210208154915.GF16570@breakpoint.cc>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <5959d455-c6b8-acaf-bc1c-9500b4a2716c@fhmtech.com>
+In-Reply-To: <20210208154915.GF16570@breakpoint.cc>
+Sender: <n0-1@orbyte.nwl.cc>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Frank Myhr <fmyhr@fhmtech.com>
-Cc: netfilter@vger.kernel.org
+To: Florian Westphal <fw@strlen.de>
+Cc: Martin Gignac <martin.gignac@gmail.com>, netfilter@vger.kernel.org, netfilter-devel <netfilter-devel@vger.kernel.org>
 
-Frank Myhr <fmyhr@fhmtech.com> wrote:
+Hi,
+
+On Mon, Feb 08, 2021 at 04:49:15PM +0100, Florian Westphal wrote:
+> Martin Gignac <martin.gignac@gmail.com> wrote:
 > 
-> Some clearly make no sense, like:
-> - anything involving an output interface
+> [ cc devel ]
+> 
+> > Out of curiosity, is there a reason why calling a chain "trace"
+> > results in an error?
+> > 
+> > This configuration:
+> > 
+> >   chain trace {
+> >     type filter hook prerouting priority -301;
+> >     ip daddr 24.153.88.9 ip protocol icmp meta nftrace set 1
+> >   }
+> > 
+> > Results in the following error when I try loading the ruleset:
+> > 
+> >   /etc/firewall/rules.nft:40:9-13: Error: syntax error, unexpected
+> > trace, expecting string
+> >   chain trace {
+> >         ^^^^^
+> 
+> grammar bug.
+> 
+> Pablo, Phil, others, can you remind me why we never did:
 
-yes.
+Because this would be followed up by:
 
-> - anything related to conntrack (I think)
+| Subject: Unable to create a table called "trace"
 
-Depends, conntrack info may be present for loopback case.
+Jokes aside:
 
-> - packet mark (I think)
+I think Pablo didn't like the obvious consequence of having to quote
+*all* string types which are user-defined in output. He played with
+keeping the quotes as part of the name, so they are sent to kernel and
+in listing they would automatically appear quoted. I don't quite
+remember why this was problematic, though.
 
-Will be present for loopback and it can be set/assigned.
+In general, shells eating the quotes is problematic and users may not be
+aware of it. This includes scripts that mangle ruleset dumps by
+accident, etc. (Not sure if it is really a problem as we quote some
+strings already).
 
-> Not sure about:
-> - reject statement (pretty sure not)
+Using JSON, there are no such limits, BTW. I really wonder if there's
+really no fix for bison parser to make it "context aware".
 
-Should work in recent kernels.
+Cheers, Phil
 
-> - ah & esp header expressions?
 
-Why would that not worl?  This is just like tcp/udp header access.
-
-> - raw payload expression?
-
-Same.
-
-> - extension header expressions?
-
-Same.
-
-> Seem to work, but are they a good idea this early in processing?:
-> - tcp header & udp header expressions? If IP datagrams are fragmented, these
-> matches will miss all but first fragment, correct? (Since defragmentation
-> doesn't happen until prerouting?)
-
-Yes, access to l4 header will not work for subsequent fragments.
-
-> My general impression is that inet ingress filtering on L3 IPv4 and IPv6
-> header expressions like ip saddr, ip daddr is okay, but trying to reach into
-> L4 so early will be problematic...
-
-Yes, it might not work in fragmentation case.
