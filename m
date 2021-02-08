@@ -1,50 +1,48 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: [PATCH nft] trace: do not remove icmp type from packet dump
-Date: Mon,  8 Feb 2021 16:08:09 +0100
-Message-ID: <20210208150809.1601-1-fw@strlen.de>
-References: <CANf9dFNK+APd2Pn0twresoZic60q+cFJ+yxc77fggYZKsf-11A@mail.gmail.com>
+From: Martin Gignac <martin.gignac@gmail.com>
+Subject: Unable to create a chain called "trace"
+Date: Mon, 8 Feb 2021 10:37:47 -0500
+Message-ID: <CANf9dFMJN5ZsihtygUnEWB_9T=WLbEHrZY1a5mTqLgN7J39D5w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <CANf9dFNK+APd2Pn0twresoZic60q+cFJ+yxc77fggYZKsf-11A@mail.gmail.com>
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=HV/I7nPUwWg81Oajs+5KZioUnZ+aw7luwm1Xuao3q5k=;
+        b=SVNtNuiHW4ld76j9eYEYDLjIInj2i6yfucP4h0cpkRIMhC/I87RAQkvma2zLbJS20x
+         tkFO+lc7mRT6OndK7cqIwnteh+85b0pF/WkHzL8wa1JPhk2tjPyzKyuL1NDUryquD1Ig
+         dCsBjXgWn1tcSOJuBtLGEVN+nmYwL2GUH47YiIhryw+iiqG7vm8wEwrZFWGsOekSHxQA
+         XCZ/vpM1AVa4DDiVS14ooMjULZbRtgE9ZkLrXYimADcVfxufHF/6lY936A5qPy3O3a4G
+         kwDQky6B4EVwTbsjrBHfy791Y6Db0C6ixPPPQusQ690y1tGmyALkyv2jonkd92R1hHvg
+         kxkA==
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter-devel@vger.kernel.org
-Cc: netfilter@vger.kernel.org, Florian Westphal <fw@strlen.de>, Martin Gignac <martin.gignac@gmail.com>
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-As of 0.9.8 the icmp type is marked as a protocol field, so its
-elided in 'nft monitor trace' output:
+Hi,
 
-   icmp code 0 icmp id 44380 ..
+Out of curiosity, is there a reason why calling a chain "trace"
+results in an error?
 
-Restore it.  Unlike tcp, where 'tcp sport' et. al in the dump
-will make the 'ip protocol tcp' redundant this case isn't obvious
-in the icmp case:
+This configuration:
 
-  icmp type 8 code 0 id ...
+  chain trace {
+    type filter hook prerouting priority -301;
+    ip daddr 24.153.88.9 ip protocol icmp meta nftrace set 1
+  }
 
-Reported-by: Martin Gignac <martin.gignac@gmail.com>
-Fixes: 98b871512c4677 ("src: add auto-dependencies for ipv4 icmp")
-Signed-off-by: Florian Westphal <fw@strlen.de>
----
- src/netlink.c | 4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+Results in the following error when I try loading the ruleset:
 
-diff --git a/src/netlink.c b/src/netlink.c
-index ec2dad29ace1..c3887d5b6662 100644
---- a/src/netlink.c
-+++ b/src/netlink.c
-@@ -1859,7 +1859,9 @@ next:
- 		    pctx->pbase == PROTO_BASE_INVALID) {
- 			payload_dependency_store(pctx, stmt, base - stacked);
- 		} else {
--			payload_dependency_kill(pctx, lhs, ctx->family);
-+			/* Don't strip 'icmp type' from payload dump. */
-+			if (pctx->icmp_type == 0)
-+				payload_dependency_kill(pctx, lhs, ctx->family);
- 			if (lhs->flags & EXPR_F_PROTOCOL)
- 				payload_dependency_store(pctx, stmt, base - stacked);
- 		}
--- 
-2.26.2
+  /etc/firewall/rules.nft:40:9-13: Error: syntax error, unexpected
+trace, expecting string
+  chain trace {
+        ^^^^^
+Calling the chain anything else doesn't give this error.
 
+Is 'trace' some sort of reserved keyword? I thought chains could be
+called anything. Can they not?
+
+This is on nftables 0.9.8.
+
+Thanks,
+-Martin
