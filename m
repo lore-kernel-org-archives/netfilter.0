@@ -1,38 +1,209 @@
-From: Frank Myhr <fmyhr@fhmtech.com>
-Subject: Re: Constraints on nft expressions and statements in inet ingress
- chains
-Date: Mon, 8 Feb 2021 13:01:55 -0500
-Message-ID: <9b17af0b-d99d-1925-ef77-d48ef5b593d3@fhmtech.com>
-References: <5959d455-c6b8-acaf-bc1c-9500b4a2716c@fhmtech.com>
- <20210208163214.GG16570@breakpoint.cc>
+From: Phil Sutter <phil@nwl.cc>
+Subject: Re: Unable to create a chain called "trace"
+Date: Tue, 9 Feb 2021 14:56:25 +0100
+Message-ID: <20210209135625.GN3158@orbyte.nwl.cc>
+References: <CANf9dFMJN5ZsihtygUnEWB_9T=WLbEHrZY1a5mTqLgN7J39D5w@mail.gmail.com>
+ <20210208154915.GF16570@breakpoint.cc>
+ <20210208164750.GM3158@orbyte.nwl.cc>
+ <20210208171444.GH16570@breakpoint.cc>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=larkmoor.net; s=larkmoor20140928;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject; bh=/2bRa74YL9GxVAbHxkh3+3DtojMP+QvaMG9XXEVnQko=;
-        b=DFBIu4KuiJXBjS2TOTdpqHBp2ssJMKeAxO8kW6b/cCs7fu8HsO70Ub9dmEopq0yaDyT2PIbTbvMFI6Rg+PQFUy5StHkrZCGOJ2Yjexk2D1m50zKxnpotVUici6JqhN2hmuLdLRygSLfl19vMQSZMw0O1c3cCM7esOnBNvr/+ECg=;
-In-Reply-To: <20210208163214.GG16570@breakpoint.cc>
-Content-Language: en-US
+Content-Type: multipart/mixed; boundary="dc+cDN39EJAMEtIO"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20210208171444.GH16570@breakpoint.cc>
+Sender: <n0-1@orbyte.nwl.cc>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Florian Westphal <fw@strlen.de>
-Cc: netfilter@vger.kernel.org
+Cc: Martin Gignac <martin.gignac@gmail.com>, netfilter@vger.kernel.org, netfilter-devel <netfilter-devel@vger.kernel.org>
 
-On 2021/02/08 11:32, Florian Westphal wrote:
->> - reject statement
-> Should work in recent kernels.
- >
-> ... >> - packet mark
-> Will be present for loopback and it can be set/assigned.
- >
- > ...
-> conntrack info may be present for loopback case.
+
+--dc+cDN39EJAMEtIO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi,
+
+On Mon, Feb 08, 2021 at 06:14:44PM +0100, Florian Westphal wrote:
+> Phil Sutter <phil@nwl.cc> wrote:
+> > In general, shells eating the quotes is problematic and users may not be
+> > aware of it. This includes scripts that mangle ruleset dumps by
+> > accident, etc. (Not sure if it is really a problem as we quote some
+> > strings already).
+> > 
+> > Using JSON, there are no such limits, BTW. I really wonder if there's
+> > really no fix for bison parser to make it "context aware".
 > 
- > ...
-> access to l4 header will not work for subsequent fragments.
+> Right.  We can probably make lots of keywords available for table/chain names
+> by only recognizing them while parsing rules, i.e. via 'start conditions'
+> in flex.  But I don't think there is anyone with the time to do the
+> needed scanner changes.
 
-Thanks, Florian! The above is very good to know while working on my 
-rulesets.
+Oh, I wasn't aware of start conditions at all, thanks for the pointer.
+Instead of reducing most keyword's scope to rule context, I tried a less
+intrusive approach, namely recognizing "only strings plus some extra" in
+certain conditions. See attached patch for reference. With it in place,
+I was at least able to:
 
-Best regards,
-Frank
+# nft add table inet table
+# nft add chain inet table chain
+# nft add rule inet table chain iifname rule
+
+Cheers, Phil
+
+--dc+cDN39EJAMEtIO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="nftables_start_condition.diff"
+
+diff --git a/src/scanner.l b/src/scanner.l
+index 8bde1fbe912d8..c873cb7c1d226 100644
+--- a/src/scanner.l
++++ b/src/scanner.l
+@@ -107,6 +107,8 @@ static void reset_pos(struct parser_state *state, struct location *loc)
+ extern int	yyget_column(yyscan_t);
+ extern void	yyset_column(int, yyscan_t);
+ 
++static int nspec;
++
+ %}
+ 
+ space		[ ]
+@@ -194,6 +196,8 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ %option nodefault
+ %option warn
+ 
++%x spec
++
+ %%
+ 
+ "=="			{ return EQ; }
+@@ -250,19 +254,19 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ "hook"			{ return HOOK; }
+ "device"		{ return DEVICE; }
+ "devices"		{ return DEVICES; }
+-"table"			{ return TABLE; }
++"table"			{ BEGIN(spec); nspec = 1; return TABLE; }
+ "tables"		{ return TABLES; }
+-"chain"			{ return CHAIN; }
++"chain"			{ BEGIN(spec); nspec = 2; return CHAIN; }
+ "chains"		{ return CHAINS; }
+-"rule"			{ return RULE; }
++"rule"			{ BEGIN(spec); nspec = 2; return RULE; }
+ "rules"			{ return RULES; }
+ "sets"			{ return SETS; }
+-"set"			{ return SET; }
++"set"			{ BEGIN(spec); nspec = 2; return SET; }
+ "element"		{ return ELEMENT; }
+-"map"			{ return MAP; }
++"map"			{ BEGIN(spec); nspec = 2; return MAP; }
+ "maps"			{ return MAPS; }
+ "flowtable"		{ return FLOWTABLE; }
+-"handle"		{ return HANDLE; }
++<*>"handle"		{ return HANDLE; }
+ "ruleset"		{ return RULESET; }
+ "trace"			{ return TRACE; }
+ 
+@@ -280,8 +284,8 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ "return"		{ return RETURN; }
+ "to"			{ return TO; }
+ 
+-"inet"			{ return INET; }
+-"netdev"		{ return NETDEV; }
++<*>"inet"		{ return INET; }
++<*>"netdev"		{ return NETDEV; }
+ 
+ "add"			{ return ADD; }
+ "replace"		{ return REPLACE; }
+@@ -380,7 +384,7 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ "nh"			{ return NETWORK_HDR; }
+ "th"			{ return TRANSPORT_HDR; }
+ 
+-"bridge"		{ return BRIDGE; }
++<*>"bridge"		{ return BRIDGE; }
+ 
+ "ether"			{ return ETHER; }
+ "saddr"			{ return SADDR; }
+@@ -400,7 +404,7 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ "plen"			{ return PLEN; }
+ "operation"		{ return OPERATION; }
+ 
+-"ip"			{ return IP; }
++<*>"ip"			{ return IP; }
+ "version"		{ return HDRVERSION; }
+ "hdrlength"		{ return HDRLENGTH; }
+ "dscp"			{ return DSCP; }
+@@ -451,7 +455,7 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ "igmp"			{ return IGMP; }
+ "mrt"			{ return MRT; }
+ 
+-"ip6"			{ return IP6; }
++<*>"ip6"		{ return IP6; }
+ "priority"		{ return PRIORITY; }
+ "flowlabel"		{ return FLOWLABEL; }
+ "nexthdr"		{ return NEXTHDR; }
+@@ -512,10 +516,10 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ "meta"			{ return META; }
+ "mark"			{ return MARK; }
+ "iif"			{ return IIF; }
+-"iifname"		{ return IIFNAME; }
++"iifname"		{ BEGIN(spec); nspec = 1; return IIFNAME; }
+ "iiftype"		{ return IIFTYPE; }
+ "oif"			{ return OIF; }
+-"oifname"		{ return OIFNAME; }
++"oifname"		{ BEGIN(spec); nspec = 1; return OIFNAME; }
+ "oiftype"		{ return OIFTYPE; }
+ "skuid"			{ return SKUID; }
+ "skgid"			{ return SKGID; }
+@@ -613,7 +617,9 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ 				return STRING;
+ 			}
+ 
+-{numberstring}		{
++<*>{numberstring}	{
++				if (nspec && !--nspec)
++					BEGIN(0);
+ 				errno = 0;
+ 				yylval->val = strtoull(yytext, NULL, 0);
+ 				if (errno != 0) {
+@@ -639,7 +645,9 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ 				return ASTERISK_STRING;
+ 			}
+ 
+-{string}		{
++<*>{string}		{
++				if (nspec && !--nspec)
++					BEGIN(0);
+ 				yylval->string = xstrdup(yytext);
+ 				return STRING;
+ 			}
+@@ -648,23 +656,23 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
+ 				reset_pos(yyget_extra(yyscanner), yylloc);
+ 			}
+ 
+-{newline}		{
++<*>{newline}		{
+ 				reset_pos(yyget_extra(yyscanner), yylloc);
+ 				return NEWLINE;
+ 			}
+ 
+-{tab}+
+-{space}+
+-{comment}
++<*>{tab}+
++<*>{space}+
++<*>{comment}
+ 
+-<<EOF>> 		{
++<*><<EOF>> 		{
+ 				update_pos(yyget_extra(yyscanner), yylloc, 1);
+ 				scanner_pop_buffer(yyscanner);
+ 				if (YY_CURRENT_BUFFER == NULL)
+ 					return TOKEN_EOF;
+ 			}
+ 
+-.			{ return JUNK; }
++<*>.			{ return JUNK; }
+ 
+ %%
+ 
+
+--dc+cDN39EJAMEtIO--
