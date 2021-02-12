@@ -1,95 +1,137 @@
-From: Balazs Scheidler <bazsi77@gmail.com>
+From: Phil Sutter <phil@nwl.cc>
 Subject: Re: Unable to create a chain called "trace"
-Date: Fri, 12 Feb 2021 19:02:21 +0100
-Message-ID: <20210212180221.GA3914830@bzorp>
-References: <CANf9dFMJN5ZsihtygUnEWB_9T=WLbEHrZY1a5mTqLgN7J39D5w@mail.gmail.com>
- <20210208154915.GF16570@breakpoint.cc>
+Date: Fri, 12 Feb 2021 22:07:12 +0100
+Message-ID: <20210212210712.GE3158@orbyte.nwl.cc>
+References: <20210208154915.GF16570@breakpoint.cc>
  <20210208164750.GM3158@orbyte.nwl.cc>
  <20210208171444.GH16570@breakpoint.cc>
  <20210209135625.GN3158@orbyte.nwl.cc>
  <20210212000507.GD2766@breakpoint.cc>
  <20210212114042.GZ3158@orbyte.nwl.cc>
  <20210212122007.GE2766@breakpoint.cc>
+ <20210212170921.GA1119@salvia>
+ <20210212173201.GD3158@orbyte.nwl.cc>
+ <20210212175423.GA3033@salvia>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=GQgEcIkoxwTqPRvy9e36k1BAwElKdvgBPKpg2hQjyqE=;
-        b=o7vlo6QFlFqsHxUV+hZED5V6DNYDvCzdGZU+E0OaoIwWSWWuutrDkEBb+q0wBPMMAL
-         prkJi9bs1JPCG9GYJrdlcDXxkiBZc3Uwe7/NdpvwvJFao3UXCYdq4i26q2QbFcqB129m
-         1kxeU2LOW4o10DtRk7iIW7bqOBLpZWKWZZRIBZgvh8O+Sek2+zIFFMmLFjENHp3tTHKL
-         r9Oh2IrE5X3IKxlqKo6Jsjc9wfyNSCRIbM+ihbCRBQYaCurPo+XVHC+NPsvhHNKdy30T
-         ja7IgkonjRZlxLnaqY5M0mrvJNnmAe3pR7woVdJR8JFr4K8dIkSwH4VPRGsu1qEpxHbb
-         fipg==
+Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20210212122007.GE2766@breakpoint.cc>
+In-Reply-To: <20210212175423.GA3033@salvia>
+Sender: <n0-1@orbyte.nwl.cc>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Florian Westphal <fw@strlen.de>
-Cc: Phil Sutter <phil@nwl.cc>, Martin Gignac <martin.gignac@gmail.com>, netfilter@vger.kernel.org, netfilter-devel <netfilter-devel@vger.kernel.org>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Florian Westphal <fw@strlen.de>, Martin Gignac <martin.gignac@gmail.com>, netfilter@vger.kernel.org, netfilter-devel <netfilter-devel@vger.kernel.org>
 
-On Fri, Feb 12, 2021 at 01:20:07PM +0100, Florian Westphal wrote:
-> Phil Sutter <phil@nwl.cc> wrote:
-> > I didn't find a better way to conditionally parse two following args as
-> > strings instead of just a single one. Basically I miss an explicit end
-> > condition from which to call BEGIN(0).
-> 
-> Yes, thats part of the problem.
-> 
-> > > Seems we need allow "{" for "*" and then count the {} nests so
-> > > we can pop off a scanner state stack once we make it back to the
-> > > same } level that we had at the last state switch.
+On Fri, Feb 12, 2021 at 06:54:23PM +0100, Pablo Neira Ayuso wrote:
+> On Fri, Feb 12, 2021 at 06:32:01PM +0100, Phil Sutter wrote:
+> > On Fri, Feb 12, 2021 at 06:09:21PM +0100, Pablo Neira Ayuso wrote:
+> > > On Fri, Feb 12, 2021 at 01:20:07PM +0100, Florian Westphal wrote:
+> > > > Phil Sutter <phil@nwl.cc> wrote:
+> > > > > I didn't find a better way to conditionally parse two following args as
+> > > > > strings instead of just a single one. Basically I miss an explicit end
+> > > > > condition from which to call BEGIN(0).
+> > > > 
+> > > > Yes, thats part of the problem.
+> > > > 
+> > > > > > Seems we need allow "{" for "*" and then count the {} nests so
+> > > > > > we can pop off a scanner state stack once we make it back to the
+> > > > > > same } level that we had at the last state switch.
+> > > > > 
+> > > > > What is the problem?
+> > > > 
+> > > > Detect when we need to exit the current start condition.
+> > > > 
+> > > > We may not even be able to do BEGIN(0) if we have multiple, nested
+> > > > start conditionals. flex supports start condition stacks, but that
+> > > > still leaves the exit/closure issue.
+> > > > 
+> > > > Example:
+> > > > 
+> > > > table chain {
+> > > >  chain bla {  /* should start to recognize rules, but
+> > > > 		 we did not see 'rule' keyword */
+> > > > 	ip saddr { ... } /* can't exit rule start condition on } ... */
+> > > > 	ip daddr { ... }
+> > > >  }  /* should disable rule keywords again */
+> > > > 
+> > > >  chain dynamic { /* so 'dynamic' is a string here ... */
+> > > >  }
+> > > > }
+> > > > 
+> > > > I don't see a solution, perhaps add dummy bison rule(s)
+> > > > to explicitly signal closure of e.g. a rule context?
+> > > 
+> > > It should also be possible to add an explicit rule to allow for
+> > > keywords to be used as table/chain/... identifier.
 > > 
-> > What is the problem?
+> > Which means we have to collect and maintain a list of all known keywords
+> > which is at least error-prone.
 > 
-> Detect when we need to exit the current start condition.
-> 
-> We may not even be able to do BEGIN(0) if we have multiple, nested
-> start conditionals. flex supports start condition stacks, but that
-> still leaves the exit/closure issue.
-> 
-> Example:
-> 
-> table chain {
->  chain bla {  /* should start to recognize rules, but
-> 		 we did not see 'rule' keyword */
-> 	ip saddr { ... } /* can't exit rule start condition on } ... */
-> 	ip daddr { ... }
->  }  /* should disable rule keywords again */
-> 
->  chain dynamic { /* so 'dynamic' is a string here ... */
->  }
-> }
-> 
-> I don't see a solution, perhaps add dummy bison rule(s)
-> to explicitly signal closure of e.g. a rule context?
+> You mean, someone might forget to update the list of keywords.
 
-You can always push/pop the flexer state from bison code blocks, maybe
-that's what you mean on "dummy bison rules".
+Yes, every time a new keyword is introduced that list has to be updated.
+Right now each introduced keyword may break someone's ruleset. This is
+only avoided if that keyword list you propose is constantly kept up to
+date.
 
-Trigger the state from bison and make sure it ends.
+This is the reason why I prefer to have a more intelligent parser which
+just knows where something user-defined is supposed to be and not even
+tries to parse it as something it knows.
 
-Something like this:
+> That's right.
+> 
+> > > It should be possible to add a test script in the infrastructure to
+> > > create table/chain/... using keywords, to make sure this does not
+> > > break.
+> > 
+> > You mean something that auto-generates the list of keywords to try?
+> 
+> Autogenerating this list would be good, I didn't good that far in
+> exploring this.
 
-diff --git a/src/parser_bison.y b/src/parser_bison.y
-index 11e899ff..d8107181 100644
---- a/src/parser_bison.y
-+++ b/src/parser_bison.y
-@@ -2397,7 +2397,10 @@ chain_policy             :       ACCEPT          { $$ = NF_ACCEPT; }
- identifier             :       STRING
-                        ;
- 
--string                 :       STRING
-+string                 :       { yy_push_state(scanner, STRING); } __string { yy_pop_state(scanner); }
-+                       ;
-+
-+__string               :       STRING
-                        |       QUOTED_STRING
-                        |       ASTERISK_STRING
-                        ;
+Ah, I thought that's implied by your mention of a script. If it is
+possible, it would at least help keep that list from above up to date.
 
--- 
-Bazsi
+> Or just making a shell script that extracts the %token lines to try to
+> create table with a keyword as a name.
+> 
+> The shell script would just have a "list of unallowed keyword" to
+> filter out the %tokens that are not allowed, for those tokens that are
+> really reserved keywords.
+
+sed -n 's/^"\([^"]*\)".*/\1/p' src/scanner.l | exclude_unwanted
+
+> > > It's not nice, but it's simple and we don't mingle with flex.
+> > > 
+> > > I have attached an example patchset (see patch 2/2), it's incomplete.
+> > > I could also have a look at adding such regression test.
+> > 
+> > Ah, I tried that path but always ended with shift/reduce conflicts. They
+> > appear when replacing DYNAMIC with e.g. TABLE, CHAIN or RULE in your
+> > patch.
+> 
+> Probably we have to set some explicit restrictions, like table, chain,
+> rule, set, map and flowtable are reserved keywords. For example, not
+> allowing to call a table '>'. That was not possible since the
+> beginning anyway.
+
+This topic constantly reminds me of C objects named like their type
+'struct foo foo'. That's my personal proof that it must be possible! :)
+
+> The concern is to add a new token and break backward as it happened
+> with 'dynamic' as Florian reported I think.
+> 
+> > Of course we may declare that none of those is a sane name for a
+> > table, but I wonder if we'll discover less obvious cases later.
+> 
+> BTW, Florian mentioned your patch makes unhappy the tests infra?
+> What's the issue?
+
+I didn't check. But I guess the nested syntax (chain within table) is a
+problem with my simple "parse two strings now" approach. I would like to
+play a bit more with that start condition approach. IMO teaching flex
+how to interpret tokens based on earlier ones is a smart way of fixing
+it.
+
+Cheers, Phil
