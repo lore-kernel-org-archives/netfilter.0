@@ -1,98 +1,54 @@
-From: Phil Sutter <phil@nwl.cc>
+From: Florian Westphal <fw@strlen.de>
 Subject: Re: Unable to create a chain called "trace"
-Date: Fri, 12 Feb 2021 12:40:42 +0100
-Message-ID: <20210212114042.GZ3158@orbyte.nwl.cc>
+Date: Fri, 12 Feb 2021 13:20:07 +0100
+Message-ID: <20210212122007.GE2766@breakpoint.cc>
 References: <CANf9dFMJN5ZsihtygUnEWB_9T=WLbEHrZY1a5mTqLgN7J39D5w@mail.gmail.com>
  <20210208154915.GF16570@breakpoint.cc>
  <20210208164750.GM3158@orbyte.nwl.cc>
  <20210208171444.GH16570@breakpoint.cc>
  <20210209135625.GN3158@orbyte.nwl.cc>
  <20210212000507.GD2766@breakpoint.cc>
+ <20210212114042.GZ3158@orbyte.nwl.cc>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20210212000507.GD2766@breakpoint.cc>
-Sender: <n0-1@orbyte.nwl.cc>
+In-Reply-To: <20210212114042.GZ3158@orbyte.nwl.cc>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Florian Westphal <fw@strlen.de>
-Cc: Martin Gignac <martin.gignac@gmail.com>, netfilter@vger.kernel.org, netfilter-devel <netfilter-devel@vger.kernel.org>
+To: Phil Sutter <phil@nwl.cc>, Florian Westphal <fw@strlen.de>, Martin Gignac <martin.gignac@gmail.com>, netfilter@vger.kernel.org, netfilter-devel <netfilter-devel@vger.kernel.org>
 
-On Fri, Feb 12, 2021 at 01:05:07AM +0100, Florian Westphal wrote:
-> Phil Sutter <phil@nwl.cc> wrote:
-> > On Mon, Feb 08, 2021 at 06:14:44PM +0100, Florian Westphal wrote:
-> > > Phil Sutter <phil@nwl.cc> wrote:
-> > > > In general, shells eating the quotes is problematic and users may not be
-> > > > aware of it. This includes scripts that mangle ruleset dumps by
-> > > > accident, etc. (Not sure if it is really a problem as we quote some
-> > > > strings already).
-> > > > 
-> > > > Using JSON, there are no such limits, BTW. I really wonder if there's
-> > > > really no fix for bison parser to make it "context aware".
-> > > 
-> > > Right.  We can probably make lots of keywords available for table/chain names
-> > > by only recognizing them while parsing rules, i.e. via 'start conditions'
-> > > in flex.  But I don't think there is anyone with the time to do the
-> > > needed scanner changes.
-> > 
-> > Oh, I wasn't aware of start conditions at all, thanks for the pointer.
-> > Instead of reducing most keyword's scope to rule context, I tried a less
-> > intrusive approach, namely recognizing "only strings plus some extra" in
-> > certain conditions. See attached patch for reference. With it in place,
-> > I was at least able to:
-> > 
-> > # nft add table inet table
-> > # nft add chain inet table chain
-> > # nft add rule inet table chain iifname rule
+Phil Sutter <phil@nwl.cc> wrote:
+> I didn't find a better way to conditionally parse two following args as
+> strings instead of just a single one. Basically I miss an explicit end
+> condition from which to call BEGIN(0).
+
+Yes, thats part of the problem.
+
+> > Seems we need allow "{" for "*" and then count the {} nests so
+> > we can pop off a scanner state stack once we make it back to the
+> > same } level that we had at the last state switch.
 > 
-> Thanks.  Another bug report about this problem arrived moments ago,
-> this time 'add rule filter dynamic'
-> 
-> Whats worse is that 3rd party tool created a chain with that name.
+> What is the problem?
 
-This is easily possible using JSON API alone as that doesn't have the
-naming limitations. Depending on personal interpretation, this could
-mean the problem is far worse than "some exotic tool is able to disturb
-nft" or it is actually pretty common and "just another case of 'nft list
-ruleset | nft -f -' being broken". I tend towards the latter, but agree
-that it is a serious issue.
+Detect when we need to exit the current start condition.
 
-> So I fear we can't really release a new nft version without a new
-> scanner that passes 'string' outside of rule context.
-> 
-> Phils patch makes this work but breaks the test suite.
+We may not even be able to do BEGIN(0) if we have multiple, nested
+start conditionals. flex supports start condition stacks, but that
+still leaves the exit/closure issue.
 
-It was merely a quick hack. :)
+Example:
 
-> >  "=="			{ return EQ; }
-> >  
-> > -{numberstring}		{
-> > +<*>{numberstring}	{
-> > +				if (nspec && !--nspec)
-> > +					BEGIN(0);
-> >  				errno = 0;
-> >  				yylval->val = strtoull(yytext, NULL, 0);
-> >  				if (errno != 0) {
-> > @@ -639,7 +645,9 @@ addrstring	({macaddr}|{ip4addr}|{ip6addr})
-> >  				return ASTERISK_STRING;
-> >  			}
-> >  
-> > -{string}		{
-> > +<*>{string}		{
-> > +				if (nspec && !--nspec)
-> > +					BEGIN(0);
-> 
-> Not sure this is a good way to go, it looks rather fragile.
+table chain {
+ chain bla {  /* should start to recognize rules, but
+		 we did not see 'rule' keyword */
+	ip saddr { ... } /* can't exit rule start condition on } ... */
+	ip daddr { ... }
+ }  /* should disable rule keywords again */
 
-I didn't find a better way to conditionally parse two following args as
-strings instead of just a single one. Basically I miss an explicit end
-condition from which to call BEGIN(0).
+ chain dynamic { /* so 'dynamic' is a string here ... */
+ }
+}
 
-> Seems we need allow "{" for "*" and then count the {} nests so
-> we can pop off a scanner state stack once we make it back to the
-> same } level that we had at the last state switch.
-
-What is the problem?
-
-Thanks, Phil
+I don't see a solution, perhaps add dummy bison rule(s)
+to explicitly signal closure of e.g. a rule context?
