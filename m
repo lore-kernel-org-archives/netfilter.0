@@ -1,137 +1,89 @@
-From: Phil Sutter <phil@nwl.cc>
-Subject: Re: Unable to create a chain called "trace"
-Date: Fri, 12 Feb 2021 22:07:12 +0100
-Message-ID: <20210212210712.GE3158@orbyte.nwl.cc>
-References: <20210208154915.GF16570@breakpoint.cc>
- <20210208164750.GM3158@orbyte.nwl.cc>
- <20210208171444.GH16570@breakpoint.cc>
- <20210209135625.GN3158@orbyte.nwl.cc>
- <20210212000507.GD2766@breakpoint.cc>
- <20210212114042.GZ3158@orbyte.nwl.cc>
- <20210212122007.GE2766@breakpoint.cc>
- <20210212170921.GA1119@salvia>
- <20210212173201.GD3158@orbyte.nwl.cc>
- <20210212175423.GA3033@salvia>
+From: =?UTF-8?Q?Lars_Nood=c3=a9n?= <lars.nooden@gmx.com>
+Subject: traffic shaping with tc on Linux 5.4.x
+Date: Mon, 15 Feb 2021 21:22:17 +0200
+Message-ID: <672177ad-c6b3-ccd7-d9d5-f5c2291e1628@gmx.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20210212175423.GA3033@salvia>
-Sender: <n0-1@orbyte.nwl.cc>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1613416938;
+        bh=JtiDZd27iGEYR2cwmnmD2dV+cJyWX6tZBOAATJ6pHYE=;
+        h=X-UI-Sender-Class:To:From:Subject:Date;
+        b=T95DRfd78W1w+rCfUEWOCF/4aU0iKkLhtoCdMfCYZ8HAfTAJk4QvBqkv6xerbhbl5
+         6j3hqeOJQ2MqfytWnyD1MPlx5wthiBsmsjhgO/vZpGeBoJI31Hjg7hZdlwckxs6cRY
+         hnJXKwHUoVu5kr8F5+c0jqYGfwOgJVfLg3Kkic5w=
+Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Florian Westphal <fw@strlen.de>, Martin Gignac <martin.gignac@gmail.com>, netfilter@vger.kernel.org, netfilter-devel <netfilter-devel@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-On Fri, Feb 12, 2021 at 06:54:23PM +0100, Pablo Neira Ayuso wrote:
-> On Fri, Feb 12, 2021 at 06:32:01PM +0100, Phil Sutter wrote:
-> > On Fri, Feb 12, 2021 at 06:09:21PM +0100, Pablo Neira Ayuso wrote:
-> > > On Fri, Feb 12, 2021 at 01:20:07PM +0100, Florian Westphal wrote:
-> > > > Phil Sutter <phil@nwl.cc> wrote:
-> > > > > I didn't find a better way to conditionally parse two following args as
-> > > > > strings instead of just a single one. Basically I miss an explicit end
-> > > > > condition from which to call BEGIN(0).
-> > > > 
-> > > > Yes, thats part of the problem.
-> > > > 
-> > > > > > Seems we need allow "{" for "*" and then count the {} nests so
-> > > > > > we can pop off a scanner state stack once we make it back to the
-> > > > > > same } level that we had at the last state switch.
-> > > > > 
-> > > > > What is the problem?
-> > > > 
-> > > > Detect when we need to exit the current start condition.
-> > > > 
-> > > > We may not even be able to do BEGIN(0) if we have multiple, nested
-> > > > start conditionals. flex supports start condition stacks, but that
-> > > > still leaves the exit/closure issue.
-> > > > 
-> > > > Example:
-> > > > 
-> > > > table chain {
-> > > >  chain bla {  /* should start to recognize rules, but
-> > > > 		 we did not see 'rule' keyword */
-> > > > 	ip saddr { ... } /* can't exit rule start condition on } ... */
-> > > > 	ip daddr { ... }
-> > > >  }  /* should disable rule keywords again */
-> > > > 
-> > > >  chain dynamic { /* so 'dynamic' is a string here ... */
-> > > >  }
-> > > > }
-> > > > 
-> > > > I don't see a solution, perhaps add dummy bison rule(s)
-> > > > to explicitly signal closure of e.g. a rule context?
-> > > 
-> > > It should also be possible to add an explicit rule to allow for
-> > > keywords to be used as table/chain/... identifier.
-> > 
-> > Which means we have to collect and maintain a list of all known keywords
-> > which is at least error-prone.
-> 
-> You mean, someone might forget to update the list of keywords.
+If this is the right list to ask about tc, then I have a beginner
+question about traffic shaping.  If not please point me to the correct
+venue.
 
-Yes, every time a new keyword is introduced that list has to be updated.
-Right now each introduced keyword may break someone's ruleset. This is
-only avoided if that keyword list you propose is constantly kept up to
-date.
+My questions is, given the rules below, how would I further subdivide
+the SSH queue so that interactive sessions are prioritized over bulk
+transfers?
 
-This is the reason why I prefer to have a more intelligent parser which
-just knows where something user-defined is supposed to be and not even
-tries to parse it as something it knows.
+The goal of the rules below are to give top priority to SSH, next
+priority to HTTP/HTTPS, third priority to everything else, and, then,
+with what's left over give something to IPFS.  General tips and
+corrections also welcome, especially about nft instead of iptables.
 
-> That's right.
-> 
-> > > It should be possible to add a test script in the infrastructure to
-> > > create table/chain/... using keywords, to make sure this does not
-> > > break.
-> > 
-> > You mean something that auto-generates the list of keywords to try?
-> 
-> Autogenerating this list would be good, I didn't good that far in
-> exploring this.
+Regards,
+Lars
 
-Ah, I thought that's implied by your mention of a script. If it is
-possible, it would at least help keep that list from above up to date.
+=2D--
 
-> Or just making a shell script that extracts the %token lines to try to
-> create table with a keyword as a name.
-> 
-> The shell script would just have a "list of unallowed keyword" to
-> filter out the %tokens that are not allowed, for those tokens that are
-> really reserved keywords.
+#!/bin/sh
 
-sed -n 's/^"\([^"]*\)".*/\1/p' src/scanner.l | exclude_unwanted
+PATH=3D/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin
 
-> > > It's not nice, but it's simple and we don't mingle with flex.
-> > > 
-> > > I have attached an example patchset (see patch 2/2), it's incomplete.
-> > > I could also have a look at adding such regression test.
-> > 
-> > Ah, I tried that path but always ended with shift/reduce conflicts. They
-> > appear when replacing DYNAMIC with e.g. TABLE, CHAIN or RULE in your
-> > patch.
-> 
-> Probably we have to set some explicit restrictions, like table, chain,
-> rule, set, map and flowtable are reserved keywords. For example, not
-> allowing to call a table '>'. That was not possible since the
-> beginning anyway.
+if=3Dwlp1s0
 
-This topic constantly reminds me of C objects named like their type
-'struct foo foo'. That's my personal proof that it must be possible! :)
+# remove existing qdiscs, classes, and filters from interface
+tc qdisc del dev $if ingress
+tc qdisc del dev $if root
 
-> The concern is to add a new token and break backward as it happened
-> with 'dynamic' as Florian reported I think.
-> 
-> > Of course we may declare that none of those is a sane name for a
-> > table, but I wonder if we'll discover less obvious cases later.
-> 
-> BTW, Florian mentioned your patch makes unhappy the tests infra?
-> What's the issue?
+# default class for unclassified traffic
+tc qdisc replace dev $if root handle 1: htb default 30
 
-I didn't check. But I guess the nested syntax (chain within table) is a
-problem with my simple "parse two strings now" approach. I would like to
-play a bit more with that start condition approach. IMO teaching flex
-how to interpret tokens based on earlier ones is a smart way of fixing
-it.
+# top level class with handle 1:1
+tc class add dev $if parent 1: classid 1:1 htb rate 800kbit
 
-Cheers, Phil
+# Class 1:10 is highest priority, SSH/SFTP
+# Class 1:20 is next highest priority, HTTP/HTTPS
+# Class 1:30 is next lowest priority, default traffic
+# Class 1:40 is lowest priority but highest bandwidth, IPFS
+
+tc class add dev $if parent 1:1 classid 1:10 htb rate 1mbit \
+	ceil 200kbit prio 1
+tc class add dev $if parent 1:1 classid 1:20 htb rate 1mbit \
+	ceil 100kbit prio 2
+tc class add dev $if parent 1:1 classid 1:30 htb rate 1mbit \
+	ceil 100kbit prio 3
+tc class add dev $if parent 1:1 classid 1:40 htb rate 1mbit \
+	ceil 400kbit prio 4
+
+# leaf qdisc to each child class
+tc qdisc add dev $if parent 1:10 fq_codel
+tc qdisc add dev $if parent 1:20 fq_codel
+tc qdisc add dev $if parent 1:30 fq_codel
+tc qdisc add dev $if parent 1:40 fq_codel
+
+# add filters to prioritize traffic
+tc filter add dev $if parent 1: handle 100 fw classid 1:10
+tc filter add dev $if parent 1: handle 200 fw classid 1:20
+tc filter add dev $if parent 1: handle 400 fw classid 1:40
+
+# label outgoing traffic
+iptables -Z; # zero counters
+iptables -F; # flush (delete) rules
+iptables -X; # delete all extra chains
+
+iptables -t mangle -A OUTPUT -p tcp --match multiport \
+	--sports 22 -j MARK --set-mark 100
+iptables -t mangle -A OUTPUT -p tcp --match multiport \
+	--sports 80,443 -j MARK --set-mark 200
+iptables -t mangle -A OUTPUT -p tcp --match multiport \
+	--sports 4001 -j MARK --set-mark 400
