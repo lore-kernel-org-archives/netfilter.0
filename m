@@ -1,82 +1,49 @@
-From: Frank Myhr <fmyhr@fhmtech.com>
-Subject: Re: traffic shaping with tc on Linux 5.4.x
-Date: Tue, 16 Feb 2021 06:32:15 -0500
-Message-ID: <34cc2cd5-eb50-51b6-86bd-47fd41338fd1@fhmtech.com>
-References: <672177ad-c6b3-ccd7-d9d5-f5c2291e1628@gmx.com>
+From: Martin Bochenek <bochi2006@gmail.com>
+Subject: Initial loading of ruleset slower than subsequent tries
+Date: Tue, 16 Feb 2021 17:49:28 +0100
+Message-ID: <CAHb6YP+415eVAH2yh5MwUhvHZuo_7xV9s1DvA_=0rPcgoUVjgQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=larkmoor.net; s=larkmoor20140928;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject; bh=pC9r3DCqgaB8fU1yCvy09fq2Pwg+oQIddVEt2bEDjOY=;
-        b=aDlH1KZlUbCjKxllWit/6meksaz+CwgUhc6MFxiPgLrMz2QWLOtepdColC3BQLVd5151BtuN4qyFeVV6EQBNbfC+L4QxmWsAz8awaSvf0oKmKdXfONFyvflaMJkojWfovNLdnD8dI6ssH+O+SeTHA6WpGOCCpdT6LdblrdxMqAw=;
-In-Reply-To: <672177ad-c6b3-ccd7-d9d5-f5c2291e1628@gmx.com>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=gOWa/2yyQNx+jV8cccdPUXZtnu4Oc19x689BAgUNahk=;
+        b=gYnXExvOopGSS9AMZITNDaiLqip/aC09QUkUnFWseJYq39vm6yk6AZ3UyQVyF0toHK
+         gsQUdxLUdxX6BfmgrwrnCJ/j6NnIJhbutR71W0ijFNTthXhdcxybZPr33VERmp5s0woW
+         jGBlN+E2g8KjUc4+/86wkFk6qm/T/hLc7IllliVeNe7lXjcezj4e98eepVSf9pWjZIN7
+         JYUk6HIZh52wHRJkudK1n7mjSEkGhNEKHMMnF44R2r+vRFR1SiWzGZc5EqDQdRallpvP
+         sD39Mxemgo7YiGZJV4wj7ResAh3K92zMJgCJxVCcvTD6O0NsvjwiD0/C4hSq/hqdKX0O
+         Dhog==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: =?UTF-8?Q?Lars_Nood=c3=a9n?= <lars.nooden@gmx.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On 2021/02/15 14:22, Lars Nood=C3=A9n wrote:
-> If this is the right list to ask about tc, then I have a beginner
-> question about traffic shaping.  If not please point me to the correct
-> venue.
+Hi @all,
 
-Hi Lars,
+I got myself a pretty strange situation here, that I am stuck at
+debugging any further myself - not even sure if this might be expected
+behavior.
 
-Probably you should ask your question on the LARTC mailing list:
-https://lartc.org/#mailinglist
+Setup is the following:
+- custom built linux kernel v4.14.137 (with preempt_rt patch, aarch64)
+- nft v0.9.8 (and matching libraries)
 
-You could also try
-https://serverfault.com/
+One of the first things I do after entering userspace is loading a
+rather simple ruleset (containing ~100 rules in 7 chains) via "nft -f
+ruleset.conf".
+I want to get this done even before setting up the network interfaces,
+so it's just nft being executed - nothing else at this point in time.
+What I observe here is a total setup time of about 300ms on the
+initial call, but about 150ms on subsequent calls or when called again
+later when the system is fully up and running (and even more loaded).
+Most of the time is consumed during the sendmsg call to the kernel.
 
+So my questions would be:
+- Is a setup time of 300ms in line with what would be generally
+expected for a small ruleset? Are there any reference values
+available?
+- What is happening behind the scenes that would explain the
+difference between the first and the subsequent calls?
 
-> My questions is, given the rules below, how would I further subdivide
-> the SSH queue so that interactive sessions are prioritized over bulk
-> transfers?
-
-Just some general comments:
-
-Your question boils down to how to distinguish between interactive and=20
-bulk transfer SSH sessions. Some different cases:
-
-* If interactive and bulk sessions typically originate from different=20
-hosts, then you could mark packets based on ip saddr and assign the=20
-marks to different routing classes.
-
-* If the same hosts initiate both interactive and bulk transfers, then=20
-you could run sshd on two different ports, one for interactive, one for=20
-bulk transfers, and mark packets based on tcp dport. That would require=20
-you/your users to remember to use the correct ssh port depending on=20
-their intention.
-
-* If you don't want to depend on clients connecting to a particular sshd=20
-port, you could try using SFQ to at least give interactive sessions a=20
-chance during bulk transfers. This *might* be enough, but is probably=20
-not the optimal way to achieve your goal.
-https://lartc.org/howto/lartc.qdisc.classless.html#LARTC.SFQ
-
-* Your general problem of achieving reasonable latency for interactive=20
-sessions while simultaneously providing high bandwidth for bulk=20
-transfers is exactly what HFSC is intended to solve:
-https://en.wikipedia.org/wiki/Hierarchical_fair-service_curve
-
-Worth a look!
-
-* If none of the above ends up suitable for your purpose, you could use=20
-a meter with key ip saddr . tcp sport to mark ssh connections consuming=20
-more than a critical bandwidth for assignment to a bulk transfer class=20
-that gets lower priority. I'd use a set rather than a map because maps=20
-don't support timeouts, and you probably want the elements to expire=20
-automatically. I think a simple PRIO queue (within your ssh class) would=20
-work well with this config.
-
-https://wiki.nftables.org/wiki-nftables/index.php/Meters
-https://wiki.nftables.org/wiki-nftables/index.php/Rate_limiting_matchings
-https://lartc.org/howto/lartc.qdisc.classful.html#AEN902
-
-~
-
-Would be interested in what you end up using... it would be great if you=20
-could follow up with a summary later. Good luck!
-
-Best regards,
-Frank
+Regards, Martin
