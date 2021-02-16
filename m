@@ -1,89 +1,82 @@
-From: =?UTF-8?Q?Lars_Nood=c3=a9n?= <lars.nooden@gmx.com>
-Subject: traffic shaping with tc on Linux 5.4.x
-Date: Mon, 15 Feb 2021 21:22:17 +0200
-Message-ID: <672177ad-c6b3-ccd7-d9d5-f5c2291e1628@gmx.com>
+From: Frank Myhr <fmyhr@fhmtech.com>
+Subject: Re: traffic shaping with tc on Linux 5.4.x
+Date: Tue, 16 Feb 2021 06:32:15 -0500
+Message-ID: <34cc2cd5-eb50-51b6-86bd-47fd41338fd1@fhmtech.com>
+References: <672177ad-c6b3-ccd7-d9d5-f5c2291e1628@gmx.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1613416938;
-        bh=JtiDZd27iGEYR2cwmnmD2dV+cJyWX6tZBOAATJ6pHYE=;
-        h=X-UI-Sender-Class:To:From:Subject:Date;
-        b=T95DRfd78W1w+rCfUEWOCF/4aU0iKkLhtoCdMfCYZ8HAfTAJk4QvBqkv6xerbhbl5
-         6j3hqeOJQ2MqfytWnyD1MPlx5wthiBsmsjhgO/vZpGeBoJI31Hjg7hZdlwckxs6cRY
-         hnJXKwHUoVu5kr8F5+c0jqYGfwOgJVfLg3Kkic5w=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=larkmoor.net; s=larkmoor20140928;
+        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject; bh=pC9r3DCqgaB8fU1yCvy09fq2Pwg+oQIddVEt2bEDjOY=;
+        b=aDlH1KZlUbCjKxllWit/6meksaz+CwgUhc6MFxiPgLrMz2QWLOtepdColC3BQLVd5151BtuN4qyFeVV6EQBNbfC+L4QxmWsAz8awaSvf0oKmKdXfONFyvflaMJkojWfovNLdnD8dI6ssH+O+SeTHA6WpGOCCpdT6LdblrdxMqAw=;
+In-Reply-To: <672177ad-c6b3-ccd7-d9d5-f5c2291e1628@gmx.com>
 Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: =?UTF-8?Q?Lars_Nood=c3=a9n?= <lars.nooden@gmx.com>, netfilter@vger.kernel.org
 
-If this is the right list to ask about tc, then I have a beginner
-question about traffic shaping.  If not please point me to the correct
-venue.
+On 2021/02/15 14:22, Lars Nood=C3=A9n wrote:
+> If this is the right list to ask about tc, then I have a beginner
+> question about traffic shaping.  If not please point me to the correct
+> venue.
 
-My questions is, given the rules below, how would I further subdivide
-the SSH queue so that interactive sessions are prioritized over bulk
-transfers?
+Hi Lars,
 
-The goal of the rules below are to give top priority to SSH, next
-priority to HTTP/HTTPS, third priority to everything else, and, then,
-with what's left over give something to IPFS.  General tips and
-corrections also welcome, especially about nft instead of iptables.
+Probably you should ask your question on the LARTC mailing list:
+https://lartc.org/#mailinglist
 
-Regards,
-Lars
+You could also try
+https://serverfault.com/
 
-=2D--
 
-#!/bin/sh
+> My questions is, given the rules below, how would I further subdivide
+> the SSH queue so that interactive sessions are prioritized over bulk
+> transfers?
 
-PATH=3D/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/bin:/sbin
+Just some general comments:
 
-if=3Dwlp1s0
+Your question boils down to how to distinguish between interactive and=20
+bulk transfer SSH sessions. Some different cases:
 
-# remove existing qdiscs, classes, and filters from interface
-tc qdisc del dev $if ingress
-tc qdisc del dev $if root
+* If interactive and bulk sessions typically originate from different=20
+hosts, then you could mark packets based on ip saddr and assign the=20
+marks to different routing classes.
 
-# default class for unclassified traffic
-tc qdisc replace dev $if root handle 1: htb default 30
+* If the same hosts initiate both interactive and bulk transfers, then=20
+you could run sshd on two different ports, one for interactive, one for=20
+bulk transfers, and mark packets based on tcp dport. That would require=20
+you/your users to remember to use the correct ssh port depending on=20
+their intention.
 
-# top level class with handle 1:1
-tc class add dev $if parent 1: classid 1:1 htb rate 800kbit
+* If you don't want to depend on clients connecting to a particular sshd=20
+port, you could try using SFQ to at least give interactive sessions a=20
+chance during bulk transfers. This *might* be enough, but is probably=20
+not the optimal way to achieve your goal.
+https://lartc.org/howto/lartc.qdisc.classless.html#LARTC.SFQ
 
-# Class 1:10 is highest priority, SSH/SFTP
-# Class 1:20 is next highest priority, HTTP/HTTPS
-# Class 1:30 is next lowest priority, default traffic
-# Class 1:40 is lowest priority but highest bandwidth, IPFS
+* Your general problem of achieving reasonable latency for interactive=20
+sessions while simultaneously providing high bandwidth for bulk=20
+transfers is exactly what HFSC is intended to solve:
+https://en.wikipedia.org/wiki/Hierarchical_fair-service_curve
 
-tc class add dev $if parent 1:1 classid 1:10 htb rate 1mbit \
-	ceil 200kbit prio 1
-tc class add dev $if parent 1:1 classid 1:20 htb rate 1mbit \
-	ceil 100kbit prio 2
-tc class add dev $if parent 1:1 classid 1:30 htb rate 1mbit \
-	ceil 100kbit prio 3
-tc class add dev $if parent 1:1 classid 1:40 htb rate 1mbit \
-	ceil 400kbit prio 4
+Worth a look!
 
-# leaf qdisc to each child class
-tc qdisc add dev $if parent 1:10 fq_codel
-tc qdisc add dev $if parent 1:20 fq_codel
-tc qdisc add dev $if parent 1:30 fq_codel
-tc qdisc add dev $if parent 1:40 fq_codel
+* If none of the above ends up suitable for your purpose, you could use=20
+a meter with key ip saddr . tcp sport to mark ssh connections consuming=20
+more than a critical bandwidth for assignment to a bulk transfer class=20
+that gets lower priority. I'd use a set rather than a map because maps=20
+don't support timeouts, and you probably want the elements to expire=20
+automatically. I think a simple PRIO queue (within your ssh class) would=20
+work well with this config.
 
-# add filters to prioritize traffic
-tc filter add dev $if parent 1: handle 100 fw classid 1:10
-tc filter add dev $if parent 1: handle 200 fw classid 1:20
-tc filter add dev $if parent 1: handle 400 fw classid 1:40
+https://wiki.nftables.org/wiki-nftables/index.php/Meters
+https://wiki.nftables.org/wiki-nftables/index.php/Rate_limiting_matchings
+https://lartc.org/howto/lartc.qdisc.classful.html#AEN902
 
-# label outgoing traffic
-iptables -Z; # zero counters
-iptables -F; # flush (delete) rules
-iptables -X; # delete all extra chains
+~
 
-iptables -t mangle -A OUTPUT -p tcp --match multiport \
-	--sports 22 -j MARK --set-mark 100
-iptables -t mangle -A OUTPUT -p tcp --match multiport \
-	--sports 80,443 -j MARK --set-mark 200
-iptables -t mangle -A OUTPUT -p tcp --match multiport \
-	--sports 4001 -j MARK --set-mark 400
+Would be interested in what you end up using... it would be great if you=20
+could follow up with a summary later. Good luck!
+
+Best regards,
+Frank
