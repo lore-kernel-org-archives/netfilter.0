@@ -1,49 +1,40 @@
-From: Martin Bochenek <bochi2006@gmail.com>
-Subject: Initial loading of ruleset slower than subsequent tries
-Date: Tue, 16 Feb 2021 17:49:28 +0100
-Message-ID: <CAHb6YP+415eVAH2yh5MwUhvHZuo_7xV9s1DvA_=0rPcgoUVjgQ@mail.gmail.com>
+From: Frank Myhr <fmyhr@fhmtech.com>
+Subject: Wildcards / large ranges in concatenations
+Date: Tue, 16 Feb 2021 22:09:25 -0500
+Message-ID: <f3caadb1-4c04-c1b2-96df-8ed4f08698db@fhmtech.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=gOWa/2yyQNx+jV8cccdPUXZtnu4Oc19x689BAgUNahk=;
-        b=gYnXExvOopGSS9AMZITNDaiLqip/aC09QUkUnFWseJYq39vm6yk6AZ3UyQVyF0toHK
-         gsQUdxLUdxX6BfmgrwrnCJ/j6NnIJhbutR71W0ijFNTthXhdcxybZPr33VERmp5s0woW
-         jGBlN+E2g8KjUc4+/86wkFk6qm/T/hLc7IllliVeNe7lXjcezj4e98eepVSf9pWjZIN7
-         JYUk6HIZh52wHRJkudK1n7mjSEkGhNEKHMMnF44R2r+vRFR1SiWzGZc5EqDQdRallpvP
-         sD39Mxemgo7YiGZJV4wj7ResAh3K92zMJgCJxVCcvTD6O0NsvjwiD0/C4hSq/hqdKX0O
-         Dhog==
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=larkmoor.net; s=larkmoor20140928;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:Message-ID:Subject:From:To; bh=NqaGj1fzClKbMh8DiNg59g4BGcrCdIWaFuiFLW/X73U=;
+        b=jdIBBSpBQDXvOi8nlFqXMNJz2INEGytSuZrAW6ZuPFqYs/YuYkUbODlpg3V02Hquze7gTuHWz7r+OTK/NzuJWAzNrwsCL6xvancbQxWJTTQttoscttHnDl5qOzrZ63O/29f0IMwKkaPCyygWjbqgqP3gGMgBMHRBlXAmwDZQV+o=;
+Content-Language: en-US
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi @all,
+Hi,
 
-I got myself a pretty strange situation here, that I am stuck at
-debugging any further myself - not even sure if this might be expected
-behavior.
+A couple of weeks ago I played around a bit with using ranges in 
+concatenations, a very cool feature added in nftables 0.9.4. Somehow I 
+wound up with set with nonsensical keys, and not long after a kernel 
+oops. I suppose this was very likely my own fault and/or due to very 
+limited memory inside a virtual machine. I ended up going with a 
+different ruleset config.
 
-Setup is the following:
-- custom built linux kernel v4.14.137 (with preempt_rt patch, aarch64)
-- nft v0.9.8 (and matching libraries)
+But I have a couple lingering questions about using ranges in 
+concatenations:
 
-One of the first things I do after entering userspace is loading a
-rather simple ruleset (containing ~100 rules in 7 chains) via "nft -f
-ruleset.conf".
-I want to get this done even before setting up the network interfaces,
-so it's just nft being executed - nothing else at this point in time.
-What I observe here is a total setup time of about 300ms on the
-initial call, but about 150ms on subsequent calls or when called again
-later when the system is fully up and running (and even more loaded).
-Most of the time is consumed during the sendmsg call to the kernel.
+1) Would it be possible to specify a wildcard (* or similar) for one of 
+the constituent values? I had a vmap (if I remember correctly) using 
+concatenated keys like ifname . ifname . inet_service . inet_service. 
+For one element I didn't care about one of the inet_service values, and 
+since '*' didn't seem to work, specified a range of all possible values 
+0-65535. The oops happened not long after this.
 
-So my questions would be:
-- Is a setup time of 300ms in line with what would be generally
-expected for a small ruleset? Are there any reference values
-available?
-- What is happening behind the scenes that would explain the
-difference between the first and the subsequent calls?
+2) Are concatenations of large (or wildcard) ranges inefficient (in 
+execution speed and/or memory use), even if they work? I started to 
+suspect this might be the case, and so changed my ruleset design.
 
-Regards, Martin
+Thanks,
+Frank
