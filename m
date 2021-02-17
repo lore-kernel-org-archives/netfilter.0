@@ -1,7 +1,7 @@
-From: Phil Sutter <phil@nwl.cc>
+From: Florian Westphal <fw@strlen.de>
 Subject: Re: Unable to create a chain called "trace"
-Date: Wed, 17 Feb 2021 20:59:37 +0100
-Message-ID: <20210217195937.GA22016@orbyte.nwl.cc>
+Date: Wed, 17 Feb 2021 21:16:18 +0100
+Message-ID: <20210217201618.GI2766@breakpoint.cc>
 References: <CANf9dFMJN5ZsihtygUnEWB_9T=WLbEHrZY1a5mTqLgN7J39D5w@mail.gmail.com>
  <20210208154915.GF16570@breakpoint.cc>
  <20210208164750.GM3158@orbyte.nwl.cc>
@@ -10,73 +10,36 @@ References: <CANf9dFMJN5ZsihtygUnEWB_9T=WLbEHrZY1a5mTqLgN7J39D5w@mail.gmail.com>
  <20210212000507.GD2766@breakpoint.cc>
  <20210212114042.GZ3158@orbyte.nwl.cc>
  <20210212122007.GE2766@breakpoint.cc>
+ <20210217195937.GA22016@orbyte.nwl.cc>
 Mime-Version: 1.0
 Return-path: <netfilter-devel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20210212122007.GE2766@breakpoint.cc>
-Sender: <n0-1@orbyte.nwl.cc>
+In-Reply-To: <20210217195937.GA22016@orbyte.nwl.cc>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Florian Westphal <fw@strlen.de>
-Cc: Martin Gignac <martin.gignac@gmail.com>, netfilter@vger.kernel.org, netfilter-devel <netfilter-devel@vger.kernel.org>
+To: Phil Sutter <phil@nwl.cc>, Florian Westphal <fw@strlen.de>, Martin Gignac <martin.gignac@gmail.com>, netfilter@vger.kernel.org, netfilter-devel <netfilter-devel@vger.kernel.org>
 
-Hi,
-
-On Fri, Feb 12, 2021 at 01:20:07PM +0100, Florian Westphal wrote:
-> Phil Sutter <phil@nwl.cc> wrote:
-> > I didn't find a better way to conditionally parse two following args as
-> > strings instead of just a single one. Basically I miss an explicit end
-> > condition from which to call BEGIN(0).
+Phil Sutter <phil@nwl.cc> wrote:
+> > I don't see a solution, perhaps add dummy bison rule(s)
+> > to explicitly signal closure of e.g. a rule context?
 > 
-> Yes, thats part of the problem.
-> 
-> > > Seems we need allow "{" for "*" and then count the {} nests so
-> > > we can pop off a scanner state stack once we make it back to the
-> > > same } level that we had at the last state switch.
-> > 
-> > What is the problem?
-> 
-> Detect when we need to exit the current start condition.
+> We can't influence start conditions from within bison (if that's what
+> you had in mind).
 
-I explored my approach further but ended up in an ugly situation due to
-the use of 'set' keyword in rules: My code is not context-aware, so upon
-recognizing 'set' keyword it switches to spec-condition. I can't simply
-detect preceding command-keywords due to them being implicit in nested
-notation.
+Why not?  in scanner.l:
 
-> We may not even be able to do BEGIN(0) if we have multiple, nested
-> start conditionals. flex supports start condition stacks, but that
-> still leaves the exit/closure issue.
-> 
-> Example:
-> 
-> table chain {
->  chain bla {  /* should start to recognize rules, but
-> 		 we did not see 'rule' keyword */
+void scanner_pop_start_cond(void *scanner)
+{
+        yy_pop_state(scanner);
+}
 
-My code worked with this after enabling detection of '{' in all
-conditions and making it call BEGIN(0) (regardless of nspec value).
+And then call it from bison as 'scanner_pop_start_cond(nft->scanner)'.
 
-> 	ip saddr { ... } /* can't exit rule start condition on } ... */
+Needs %stack in scanner.l so yy_pop_state() is defined.
 
-Maybe we could track nesting block depth in a simple counter?
+bison has more clue as to when a expression/rule/set block etc
+has finished parsing than the scanner.
 
-> 	ip daddr { ... }
->  }  /* should disable rule keywords again */
-> 
->  chain dynamic { /* so 'dynamic' is a string here ... */
->  }
-> }
-> 
-> I don't see a solution, perhaps add dummy bison rule(s)
-> to explicitly signal closure of e.g. a rule context?
-
-We can't influence start conditions from within bison (if that's what
-you had in mind). All we can do is try make flex aware of the current
-input context. For instance, detect 'table' followed by '{' to open
-"table definition context" and start tracking braces to detect its end.
-Though after all I think your assessment of all this being "fragile" is
-appropriate. :/
-
-Cheers, Phil
+Not sure tracking { } nesting depth is enough with a pure scanner.l
+approach.
