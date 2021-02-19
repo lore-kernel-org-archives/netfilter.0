@@ -1,19 +1,19 @@
 From: Psyspy 22 <psyspy2020@gmail.com>
-Subject: libnetfilter_queue example
-Date: Thu, 18 Feb 2021 17:57:35 -0700
-Message-ID: <CAFqmWq_i8Qrc8pKeS_fEM5QeEYOwps5YFfGkFcOY9QJ8NJTtpQ@mail.gmail.com>
+Subject: libnetfilter_queue : Parsing payload
+Date: Fri, 19 Feb 2021 08:38:14 -0700
+Message-ID: <CAFqmWq-LNUpD0OFtxaz-KxUJ0nA_pPBRn_B_P2_UhfnzU=JcvA@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:from:date:message-id:subject:to;
-        bh=ahU50AiOr/ZM2bRI96G1IsN2Zyl/d5rcZmTVKl8yGFc=;
-        b=dF0HgxrjigkqGEIz0LUkgTGqPSCnUBKlilTkKGNAMOpKoEI4qB8cleKpeLQWF/zaId
-         yi/W7adAz9jMi0S4YNFD9/Ppa9fs0a+enkiPQX1fnyy8xQ5CRPRACxdBe/IBdGtlun3w
-         nybOWHn4sNC+WlX3i8QlwpA6+bgSGxjOHQFohX7LKAQeq/Cmm4Nf9JbsaapNP+2NWXkb
-         1+d/NqfNrY9ePj9df2ci/rDThetnHQDIsyMlhix/rDmqR+g56rWvEp4wc9WdEQZVFRBb
-         6imeR+uKdTDPk6z7r7hEsNd0y00OWt4qSCAeOj4MGomCTMdzWzkeeXKmQTCHRbtv7h1p
-         k+/g==
+        bh=w1JNdTdKv6qhZDIm2f3gjH1l3XDCs/pLjM7rbg3IaeY=;
+        b=qUZ/X48ChMIRk3MXOdCIasecJSMXBep89SywqyvCWfMtKzrTZxfYMGwAP12KQII/Ho
+         PjpdJ2BUk4ydIuSHp7h3Nh5tb0nq4W5hWFDERMdSTG97xRETSR84k262QSqUDfa7r+4m
+         t/M2V6nRvDhidWjIfIF5ghaYsO8DrEEelzoSbTDwE9YAHYKiesq/+kO3rTblGEWUBxf2
+         uouAuV6xlEQgUng9q5eDnHP/OWWwIvcvpR4rsUuIFsMGtcPejSgqu1+U+IpK+OtmAp4z
+         gXFt7ebepZRj9HWwawVy+0Glv7M5/xbxHMbIWHJMYW+2b10oTznbkD62LmZPm6Szl288
+         8rvg==
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -21,14 +21,14 @@ To: netfilter@vger.kernel.org
 
 Hello,
 
-I am trying to write a simple application using netfilter_queue. There
-is this example in the git repo:
-https://git.netfilter.org/libnetfilter_queue/tree/examples/nf-queue.c
-I also found this example:
-https://www.apriorit.com/dev-blog/598-linux-mitm-nfqueue
+I am using the example in the library's git repo.
 
-The former is more verbose and seems to use libmnl calls while the
-latter seems to use libnetfilter_queue calls. Which one should I use?
+1. Do I need to copy the payload to another buffer? I saw a few
+examples (using the deprecated API) that use pktb_alloc to allocate
+memory and then copy payload to it.
+
+2. How do I parse the payload? Let's say the IP and TCP headers. Can I
+use the nfq_ip_get_hdr helper function or is it deprecated too?
 
 Thanks,
 psyspy
