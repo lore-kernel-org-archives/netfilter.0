@@ -1,52 +1,46 @@
-From: Psyspy 22 <psyspy2020@gmail.com>
-Subject: Re: libnetfilter_queue : Parsing payload
-Date: Sat, 20 Feb 2021 11:40:15 -0700
-Message-ID: <CAFqmWq8PqEu8wX3zUyKzCs6WPiydMn2WHjkPK23XD7kepzyrNA@mail.gmail.com>
-References: <CAFqmWq-LNUpD0OFtxaz-KxUJ0nA_pPBRn_B_P2_UhfnzU=JcvA@mail.gmail.com>
- <20210220082716.GC2979@dimstar.local.net>
+From: Martin Gignac <martin.gignac@gmail.com>
+Subject: 'Did not kill' written out when redirecting 'nft list ruleset' in 0.9.8
+Date: Wed, 24 Feb 2021 18:00:23 -0500
+Message-ID: <CANf9dFOxZ9VyjyruHuU3OJu0+-1-Bsnhaw2u8XfqyDpmK26mRg@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=mOONzSobiTGySx6E5QRjEhA56cgEMTUCLnQKAcDOq4w=;
-        b=ZEkJ/WHL9sDIlps/85fDcWPwblKuUNAaG79NXOSJ51NVpNdnCkPrv36HObUNHu5elI
-         pXt1q2n6P+KEKODcxyX2z2Cz4RkboWFcdbsxS14Xmc6EcsdaU+LeHAKfsIYwFDNpNTIb
-         NUEaFcZyP7dwu6t5nwETjhoRG9cG+uDyOo80fcMgi/NtagMSpKaXv9yxVmU2KqWbFuCp
-         80dxos2Zry0bRA45fCu1GBo+yjeHGDWaMa7/3QMBb3i9VK2lJeeTNuRlMuDlP2Zc8fyL
-         exTdPfwXiyA83vbrRjjVlIDOLnyLeytg6LSx/YvSZVKefC4cfUa+HNahs1vmbG6XjDDf
-         TUHQ==
-In-Reply-To: <20210220082716.GC2979@dimstar.local.net>
+        h=mime-version:from:date:message-id:subject:to;
+        bh=KTPKEiZDbdRVtfH0i4Tq8MGrTMILtM9xhHRR6wFHWus=;
+        b=fdMUjYaJf2wm84wuYOpHIrgLVdW146Wq0R3OY9lZStnsFUYUggPgR2f+vAof5dPCh2
+         aXanZXrA5LeV29JqjEs8/GXN2s2cTKxuH/7JMYnQux/57ATHUevL50FOAATU1TIXPNDs
+         QauOd8BNBfld/wU6QKdgPxIqyqcPGT/O/whANE5Ie5b0MGngAGxxwYSin0SIZ42OdtEz
+         zwHZ1hFXsudps7N6NFMaVR79sbUJK1x8biKJx8yPOmNHrkfalKCroYmoF6sQwLiSqDb0
+         kNpP6NeSOHfPCJsITvC7J8ZO67yBwi6TfXq2OmLKaHxnBRdtC5Ky6ZJh3ztCbcs/amb9
+         cH1g==
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Psyspy 22 <psyspy2020@gmail.com>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Thanks again, Duncan! Have a wonderful weekend.
+Hi,
 
-On Sat, Feb 20, 2021 at 1:27 AM Duncan Roe <duncan_roe@optusnet.com.au> wrote:
->
-> On Fri, Feb 19, 2021 at 08:38:14AM -0700, Psyspy 22 wrote:
-> > Hello,
-> >
-> > I am using the example in the library's git repo.
-> >
-> > 1. Do I need to copy the payload to another buffer? I saw a few
-> > examples (using the deprecated API) that use pktb_alloc to allocate
-> > memory and then copy payload to it.
->
-> At the moment, yes.
-> >
-> > 2. How do I parse the payload? Let's say the IP and TCP headers. Can I
-> > use the nfq_ip_get_hdr helper function or is it deprecated too?
->
-> nfq_ip_get_hdr is part of the modern interface. Anything using struct pkt_buff
-> is (the old ones use struct nfq_data).
->
-> https://netfilter.org/projects/libnetfilter_queue/doxygen/html/modules.html
-> documents all functions and whether they are deprecated
-> >
-> > Thanks,
-> > psyspy
->
-> Cheers ... Duncan.
+With nft 0.9.8, if I run 'nft list ruleset' and redirect to a file, it
+prints out "Did not kill":
+
+    [root@s116r2l1fw01b magi]# nft -v
+    nftables v0.9.8 (E.D.S.)
+    [root@s116r2l1fw01b magi]# nft list ruleset > /dev/null
+    Did not kill
+    [root@s116r2l1fw01b magi]#
+
+On 0.9.7, it does not:
+
+    [root@s116r2l1fw01b magi]# nft -v
+    nftables v0.9.7 (Anyface)
+    [root@s116r2l1fw01b magi]# nft list ruleset > /dev/null
+    [root@s116r2l1fw01b magi]#
+
+Does anyone else see this behavior? If so, do you know what "Did not
+kill" is/means?
+
+I am on Fedora 33 (5.10.16-200.fc33.x86_64).
+
+Thanks,
+-Martin
