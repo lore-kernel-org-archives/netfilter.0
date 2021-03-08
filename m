@@ -1,54 +1,53 @@
-From: Ameen Al-Azzawi <ameen.azzawi@gmail.com>
-Subject: IP MASQUERADE isn't working properly
-Date: Mon, 8 Mar 2021 22:00:40 +0100
-Message-ID: <CABcvXqJmjvSG5anjZYFGBUfoQyFLZSTPfnzHLkpQse9eGufn1w@mail.gmail.com>
+From: Florian Westphal <fw@strlen.de>
+Subject: Re: nftables carefully open the related-flow: ct state related ct
+ helper "ftp-21" ...
+Date: Mon, 8 Mar 2021 22:05:18 +0100
+Message-ID: <20210308210518.GC10808@breakpoint.cc>
+References: <ae754fef-dbae-6a71-b7d5-b730bc21c363@hafenthal.de>
+ <052d6523-bf4b-fadf-b95d-15bd63457cef@fhmtech.com>
+ <1b961364-e014-57c9-5849-eb67c05b3a76@hafenthal.de>
+ <5f52d13e-d135-7cb2-707f-2037ba041c87@fhmtech.com>
+ <375f428e-f37b-551a-e09d-1024f00abb3d@hafenthal.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=ez+K5rQKCIbIMORLCAePaq+NWmA6pEWHYeQCCKrenEw=;
-        b=cxWOs0781a3cKN2hT0JR3L5A7F34VCD1fXz1O0RT1JFtZFnwGxkrxN6ySBOjQAOyoy
-         mQcuAYsZ2SUjjEdzfS10fhFVx6B5UvJXIYwX5xGQ3/k+AFRKd30JWxHImhRqgLalGpTg
-         subsNJ6c2Y6C02lUlsT1mIDyP31aurMHnnflaiGNT5HbvKXxsKY8iD3VKGJFxC5QoITX
-         NTYvhUNv3YciPID7pxyaVioIGXONv4UpdZdbeucsRdTQC6eRS8I4RXXuUdw5gmC/CKYO
-         vSZ2tj3xfTLkbDRIiRjjxMqPN7qKJbPQkx8CkkPG4jkkc1A0ANSUJgxrZCZwOUFnVH8J
-         Ilzw==
+Content-Disposition: inline
+In-Reply-To: <375f428e-f37b-551a-e09d-1024f00abb3d@hafenthal.de>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Stefan Hartmann <stefanh@hafenthal.de>
+Cc: Frank Myhr <fmyhr@fhmtech.com>, "netfilter.org" <netfilter@vger.kernel.org>
 
-Hello,
+Stefan Hartmann <stefanh@hafenthal.de> wrote:
+> I tested with this sequence, with multiple counters and no verdicts and
+> nflog:
+> 
+> chain INPUT4 {
+> 	type filter hook input priority 0; policy drop;
+> 	iifname "lo" accept
+> 	ct state established counter packets 403 bytes 26976 accept
+> 	ct state related counter packets 1 bytes 60
+> 	ct helper "ftp-21" counter packets 0 bytes 0
+> 	ct state related ct helper "ftp-21" counter packets 0 bytes 0 accept
+> 	ct state related counter packets 1 bytes 60 log group 10
+> 	ct state related counter packets 1 bytes 60 accept
+> 	ip protocol icmp accept
+> 	tcp dport ssh accept
+> 	tcp dport ftp ip daddr 10.18.16.143 counter packets 1 bytes 60 ct helper
+> set "ftp-21" accept
+> 	counter packets 0 bytes 0 log prefix "NFT: FILTER4/INPUT4: p. died: " group
+> 0 drop
+> 	}
+> 
+> And indeed, the RELATED packet going through is the SYN packet from the FTP
+> DATA flow.
+> 
+> The ct helper "ftp-21" matches NOT on the RELATED packets, it matches pretty
+> sure on the master connection.
+> I will try to verificate this.
 
-It's about IPv6 transition technology.
-The topology is available through this like:
-https://drive.google.com/file/d/1_1SMCXUJOYr0nguT-0wVvwyDz-ewfxTT/view?usp=
-=3Dsharing
+'ct state related ct helper "ftp"' should work for data connections.
 
-I am testing an attack with hping3 command the clients on the left
-side of the topology to the IPv4 server on the right side using this
-command: -
-
-hping3 -S  -p 80 198.51.100.2 --flood
-
-On PLAT (nat64 translator), I applied the following iptables command: -
-
-iptables -t nat -A POSTROUTING -o eth2 -j MASQUERADE
-
-The masquerading isn=E2=80=99t working for some packets and the source IP
-isn=E2=80=99t changing.
-
-tshark at ipv4 server still shows some packets with their original src
-IP addresses, as shown in the snapshot from the link below:-
-https://drive.google.com/file/d/1WFMmmg-lqEesbUYZltb4KJQ4NibkgEJr/view?usp=
-=3Dsharing
-
-The infrastructure is based on 464XLAT technology proposed by T-Mobile
-in the US.
-the software within the translators called "TAYGA".
-Any help would be appreciated.
-
-Kind Regards
-Ameen
+Problem is that 'ct helper' fetches the in-kernel name of the helper
+("ftp" in this case) and not the object name defined in the ruleset or
+used for assignment.
