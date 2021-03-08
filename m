@@ -1,63 +1,49 @@
-From: Frank Myhr <fmyhr@fhmtech.com>
-Subject: Re: nftables carefully open the related-flow: ct state related ct
- helper "ftp-21" ...
-Date: Mon, 8 Mar 2021 07:48:55 -0500
-Message-ID: <5f52d13e-d135-7cb2-707f-2037ba041c87@fhmtech.com>
-References: <ae754fef-dbae-6a71-b7d5-b730bc21c363@hafenthal.de>
- <052d6523-bf4b-fadf-b95d-15bd63457cef@fhmtech.com>
- <1b961364-e014-57c9-5849-eb67c05b3a76@hafenthal.de>
+From: Amish <anon.amish@gmail.com>
+Subject: when will nftables have ability to delete matching rule like
+ iptables?
+Date: Mon, 8 Mar 2021 18:44:38 +0530
+Message-ID: <d27a2a67-6739-6ade-d822-bbefd9c8bcd4@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=larkmoor.net; s=larkmoor20140928;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject; bh=1dT8K2iI0KJDuVzsNQ9OZZB3/dUzebdiWgQ7hre9zQg=;
-        b=smKdr4EtniYcMmsHHK/8CRvVHdTU0voIaXi84ygmYVCqyywuJPeKphjSWn3NRWqfs4GxhbpaKStb+jjYqcrjD70lSW2p7vYJqQegsQ564q7jiAJRbghwGEMCniVO7wlv8+sHHtvcJ+tUzPwF46RF3xQGatU49Sp4r/C5/RBWl24=;
-In-Reply-To: <1b961364-e014-57c9-5849-eb67c05b3a76@hafenthal.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:subject:to:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=3zJKCgxUuEpyz4dJV9pljM8ti9TRPbnL4D/NgqElAkQ=;
+        b=tu26J165A5gG5TV1y7AhDpqGUVRuGBEG9TWn9CiAvWcY+pK7qXtO8twUerpj7TQTVD
+         IQWPIp4j0/eYUMjx3ojg5Z2H2tFC1N6Xm+gjLB7S9t/hiwl05n44lA4QS9F77xZdJocz
+         xmW+Ob6JaWSHJIVKeSI4GGZz9b2zO1CfZdGy6rwMS64AHJ8i/9f2ukReEwPI2CWhCsVe
+         miyZDyn0JQ9HhT+pRpZUdJtx2b243KbJvNUoBdFgkWK0gChb8hqGZQKJMHQ9RmdT4K/H
+         olb9kLnoUnIXafAtpDYh4hH+J8wmsr0Y2+KeEF/SmPimTf8DMGFJ5Lniy8DJO9zQqcxf
+         VV/A==
 Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Stefan Hartmann <stefanh@hafenthal.de>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On 2021/03/08 04:24, Stefan Hartmann wrote:
+Hello,
 
-> In chain INPUT4 {
-> 
->      your mentioned rule
->      ct helper "ftp-21" tcp dport {1024-65535} counter accept
-> 
-> did not match in my test.
-> 
-> Eventually the ct helper "ftp-21" matches only on the master connection 
-> and not for the expects?
+I have few programs that currently use iptables to add / delete firewall 
+rules.
 
-What if you do (untested):
+I have been waiting to migrate to nftables from 3-4 years. (I do not 
+want to use nft based iptables)
 
-table my_table {
+But roadblock for me is inability of nftables to delete a matching rule. 
+(similart to iptables -D INPUT -s 192.168.1.10 -j ACCEPT)
 
-   ct helper ftp-21 {
-     type "ftp" protocol tcp;
-   }
+Obtaining the handle first and then deleting is difficult programmatically.
 
-   chain ct_helper_assign {
-     type filter hook prerouting priority filter;
+Have I missed any easy way out here?
 
-       ct state new tcp dport 21 ct helper set "ftp-21"
-   }
+Why is it difficult for nftables to find and delete matching rule?
 
-   chain INPUT4 {
-     type filter hook input priority filter; policy drop;
-     ...
-     tcp dport 21 counter accept   # accept ftp control packets
-     ct helper "ftp-21" tcp dport {1024-65535} counter accept
-     ...
-     limit rate 15/hour burst 30 packets     log prefix "drop: "
-   }
-   ...
-}
+Is there any ETA for this?
 
-Differences from previous ruleset:
-1) Add accept rule to tcp/21 for ftp control packets
-2) Add log rule (at least during debug) to see dropped packets.
+Curious to know,
 
-Best Wishes,
-Frank
+Thank you,
+
+Amish.
+
