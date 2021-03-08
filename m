@@ -1,53 +1,54 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: nftables carefully open the related-flow: ct state related ct
- helper "ftp-21" ...
-Date: Mon, 8 Mar 2021 22:05:18 +0100
-Message-ID: <20210308210518.GC10808@breakpoint.cc>
-References: <ae754fef-dbae-6a71-b7d5-b730bc21c363@hafenthal.de>
- <052d6523-bf4b-fadf-b95d-15bd63457cef@fhmtech.com>
- <1b961364-e014-57c9-5849-eb67c05b3a76@hafenthal.de>
- <5f52d13e-d135-7cb2-707f-2037ba041c87@fhmtech.com>
- <375f428e-f37b-551a-e09d-1024f00abb3d@hafenthal.de>
-Mime-Version: 1.0
+From: Amish V <anon.amish@gmail.com>
+Subject: Re: when will nftables have ability to delete matching rule like iptables?
+Date: Tue, 9 Mar 2021 04:16:14 +0530
+Message-ID: <D0655906-0F05-4EDE-AE96-AE153DA2A856@gmail.com>
+References: <d27a2a67-6739-6ade-d822-bbefd9c8bcd4@gmail.com> <0a56115b-e5aa-81a9-2b69-3cd5d11609c9@plushkava.net>
+Mime-Version: 1.0 (1.0)
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <375f428e-f37b-551a-e09d-1024f00abb3d@hafenthal.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=rlqGEvF3RMpr9T5pkDqqIMFWRRlt1ilE4pWhhsD9/0c=;
+        b=t7F0vJWdkv6Ya4irpbuh1qnE+dg1/2hF7CXP6bjIpasg+McEhh0jr5+pS64OsR/CPF
+         JuxsC/wAKvzXhpiSoSoptATJYToWwBx34FjKcBm+rZnTvUh+8/eATIWS6fpoD6YYdKVe
+         yxI+EwOX3AtMaoWy/3plr8xNaVeE11fypifPL4CCq+Oa+hosUQ3355+1jyHzLhxucd7E
+         5cUQKWnji1CDPTgMqnDx0Iy49+ME1u63HTs/B+hXO9XcIf/VMT4v5+tVGnK6JwKzYJ7d
+         remVJBBVNduTu5mh1IIGCX6O7ione7wv/1g4sXVncOCGbSnj+Nr6RYqKFopqG5UXYPAt
+         owWQ==
+In-Reply-To: <0a56115b-e5aa-81a9-2b69-3cd5d11609c9@plushkava.net>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Stefan Hartmann <stefanh@hafenthal.de>
-Cc: Frank Myhr <fmyhr@fhmtech.com>, "netfilter.org" <netfilter@vger.kernel.org>
+To: kfm@plushkava.net
+Cc: netfilter@vger.kernel.org
 
-Stefan Hartmann <stefanh@hafenthal.de> wrote:
-> I tested with this sequence, with multiple counters and no verdicts and
-> nflog:
-> 
-> chain INPUT4 {
-> 	type filter hook input priority 0; policy drop;
-> 	iifname "lo" accept
-> 	ct state established counter packets 403 bytes 26976 accept
-> 	ct state related counter packets 1 bytes 60
-> 	ct helper "ftp-21" counter packets 0 bytes 0
-> 	ct state related ct helper "ftp-21" counter packets 0 bytes 0 accept
-> 	ct state related counter packets 1 bytes 60 log group 10
-> 	ct state related counter packets 1 bytes 60 accept
-> 	ip protocol icmp accept
-> 	tcp dport ssh accept
-> 	tcp dport ftp ip daddr 10.18.16.143 counter packets 1 bytes 60 ct helper
-> set "ftp-21" accept
-> 	counter packets 0 bytes 0 log prefix "NFT: FILTER4/INPUT4: p. died: " group
-> 0 drop
-> 	}
-> 
-> And indeed, the RELATED packet going through is the SYN packet from the FTP
-> DATA flow.
-> 
-> The ct helper "ftp-21" matches NOT on the RELATED packets, it matches pretty
-> sure on the master connection.
-> I will try to verificate this.
 
-'ct state related ct helper "ftp"' should work for data connections.
+> On 08-Mar-2021, at 8:54 PM, "" <kfm@plushkava.net> <kfm@plushkava.net> wro=
+te:
+>=20
+>> On 08/03/2021 13:14, Amish wrote:
+>> Hello,
+>> I have few programs that currently use iptables to add / delete firewall r=
+ules.
+>> I have been waiting to migrate to nftables from 3-4 years. (I do not want=
+ to use nft based iptables)
+>> But roadblock for me is inability of nftables to delete a matching rule. (=
+similart to iptables -D INPUT -s 192.168.1.10 -j ACCEPT)
+>> Obtaining the handle first and then deleting is difficult programmaticall=
+y.
+>> Have I missed any easy way out here?
+>=20
+> Assuming that "-D INPUT -s 192.168.1.10 -j ACCEPT" is indicative of the ru=
+les that are being added and removed, the easy way would be to manipulate a s=
+et rather than a chain. That also goes for iptables, given the existence of i=
+pset.
 
-Problem is that 'ct helper' fetches the in-kernel name of the helper
-("ftp" in this case) and not the object name defined in the ruleset or
-used for assignment.
+No I have many complex rules. Above was just an example.
+
+When rules are complex parsing the nft output programmatically to find the h=
+andle of the rule is not easy.
+
+Regards,
+
+Amish=
