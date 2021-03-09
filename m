@@ -1,57 +1,115 @@
-From: "" <kfm@plushkava.net>
-Subject: Re: [HEADS UP] bugzilla.netfilter.org is under maintainance
-Date: Tue, 9 Mar 2021 15:40:31 +0000
-Message-ID: <3ade6824-e805-b43c-ecc4-e906cdfb5f22@plushkava.net>
-References: <20210308232625.GA24396@salvia> <20210309130417.GA1642@salvia>
+From: Stefan Hartmann <stefanh@hafenthal.de>
+Subject: Re: nftables carefully open the related-flow: ct state related ct
+ helper "ftp-21" ...
+Date: Tue, 9 Mar 2021 17:13:10 +0100
+Message-ID: <624d2626-2fdc-a1d8-825c-81891488bf9d@hafenthal.de>
+References: <ae754fef-dbae-6a71-b7d5-b730bc21c363@hafenthal.de>
+ <052d6523-bf4b-fadf-b95d-15bd63457cef@fhmtech.com>
+ <1b961364-e014-57c9-5849-eb67c05b3a76@hafenthal.de>
+ <5f52d13e-d135-7cb2-707f-2037ba041c87@fhmtech.com>
+ <375f428e-f37b-551a-e09d-1024f00abb3d@hafenthal.de>
+ <20210308210518.GC10808@breakpoint.cc>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-         h=subject:to:references:from:message-id:date:mime-version
-        :in-reply-to:content-type:content-transfer-encoding; s=fm2; bh=q
-        oY0FXDn89OIlquWCo02Ec01LEnn/jo8zbH7e7R1rto=; b=VCAKz0aeD0HALB4kU
-        xecyeG1zrNptuH92BxrbVEmu/kb8RV7CuMCuMTnMPwgRC3fbMi3DLKTgufZ/F2U5
-        /OYmwUs1HO+yuhikLFNVM/ggLMJ3cS/3NVnvbHHL+SvGs+YcFOvRVG9DZVa9TVGf
-        mMVJyq1SB7iwGv/Xz0hPeeh2j2YqFX/Ghiha1G+wgZvSKWszGPk6XMbvioMqiwFZ
-        UOXtAUQ2jauCT+7XpB1+Mbmq+MIm4kra6/mZJ91MR2/R+SV0LgiRrnbWb7JKknf1
-        lrS6/siy/+m10jjO918GaKBHlX55xYQKLJ23cz1PxKknXva1OZU7i00HxphGqSf6
-        h8E6A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; bh=qoY0FXDn89OIlquWCo02Ec01LEnn/jo8zbH7e7R1r
-        to=; b=d2iMeBU98lkauby2YL9vKbmkyREObirPm6+rVpmLtFVXSyPEScnx4WRg2
-        ga6jYaCHNn/739JB4DMr1f5wDAE2VjAc1TvkncZH7k6awf9orYoDZxmTnZf2ZKqu
-        sMu685k64jniWTivwrw63cIgrd2XloyLll4G1dEiS/xGw2HZ8AP5BD2A6UM+oxlN
-        Y1CvNfRaVAWXQmirmp1ZLej3JrvVdCYYnaVr6BRPXqLvfStMP0xi6sYTqmc6ajKm
-        TP6X1Ln4MrL4DyAHJuLWNPMdZgBoB/ziNy9ikmnJG+kzi+X5jOXD7GXCbMr5wjhm
-        MBWtkcRpTx8taFWWQ5xB1f+hcWhEw==
-In-Reply-To: <20210309130417.GA1642@salvia>
-Content-Language: en-GB
+In-Reply-To: <20210308210518.GC10808@breakpoint.cc>
+Content-Language: de-DE
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter@vger.kernel.org
+To: Florian Westphal <fw@strlen.de>
+Cc: Frank Myhr <fmyhr@fhmtech.com>, "netfilter.org" <netfilter@vger.kernel.org>
 
-Hi,
+On 08.03.21 22:05, Florian Westphal wrote:
+> 'ct helper' fetches the in-kernel name of the helper
+> ("ftp" in this case) and not the object name defined in the ruleset or
+> used for assignment
 
-On 09/03/2021 13:04, Pablo Neira Ayuso wrote:
-> On Tue, Mar 09, 2021 at 12:26:25AM +0100, Pablo Neira Ayuso wrote:
->> Hi!
->>
->> Short notice:
->>
->> bugzilla.netfilter.org is currently down / under maintainance, we're
->> expecting to bring it back soon.
->>
->> I will keep you all posted with updates.
-> 
-> Netfilter's bugzilla is back to operation.
-> 
-> Thanks for your patience.
+Thank you, this is the necessary hint!
 
-I just tried to submit a new bug but posting to /post_bug.cgi results in 
-HTTP 403 (Forbidden).
+The ct helper "ftp" matches on the RELATED packets.
+
+It matches not on the master connection, my previous sugestion was wrong.
+
+
+For the sake of completeness, here my nftables ftp-helper test ruleset:
+
+Active ruleset: ================.
+table ip FILTER4 {
+	ct helper ftp-21 {
+		type "ftp" protocol tcp
+		l3proto ip
+	}
+
+	chain PREROUTING-EARLY4 {
+		type filter hook prerouting priority -300; policy accept;
+	}
+
+	chain PREROUTING-MANGLE4 {
+		type filter hook prerouting priority -150; policy accept;
+	}
+
+	chain PREROUTING-NAT4 {
+		type nat hook prerouting priority -100; policy accept;
+	}
+
+	chain PREROUTING-FILTER4 {
+		type filter hook prerouting priority 0; policy accept;
+	}
+
+	chain FORWARD4 {
+		type filter hook forward priority 0; policy drop;
+		counter packets 0 bytes 0 log prefix "NFT: FILTER4/FORWARD4: p. died: 
+" group 0 drop
+	}
+
+	chain INPUT4 {
+		type filter hook input priority 0; policy drop;
+		iifname "lo" accept
+		ct state established counter packets 317 bytes 20876 accept
+		ct state related ct helper "ftp" tcp dport { 1024-65535 } ip saddr 
+10.18.0.0/19 counter packets 3 bytes 180 accept
+		ct state related ct helper "ftp" counter packets 0 bytes 0 log prefix 
+"NFT: FILTER4/INPUT4: p. died :" group 0 drop
+		ct state related counter packets 0 bytes 0 accept
+		ip protocol icmp accept
+		tcp dport ssh accept
+		tcp dport ftp ip daddr 10.18.16.143 counter packets 2 bytes 120 ct 
+helper set "ftp-21" accept
+		counter packets 0 bytes 0 log prefix "NFT: FILTER4/INPUT4: p. died: " 
+group 0 drop
+	}
+
+	chain OUTPUT-MANGLE4 {
+		type route hook output priority -150; policy accept;
+	}
+
+	chain OUTPUT4 {
+		type filter hook output priority 0; policy drop;
+		oifname "lo" accept
+		ct state established counter packets 250 bytes 1073349 accept
+		ct state related ct helper "ftp" tcp sport ftp-data ip daddr 
+10.18.0.0/19 counter packets 3 bytes 180 accept
+		ct state related ct helper "ftp" counter packets 0 bytes 0 log prefix 
+"NFT: FILTER4/OUTPUT4: p. died :" group 0 drop
+		ct state related counter packets 0 bytes 0 accept
+		ip protocol icmp accept
+		udp dport { domain, ntp } ip daddr 10.18.0.0/19 accept
+		tcp dport { domain, 3128 } ip daddr 10.18.0.0/19 accept
+		counter packets 0 bytes 0 log prefix "NFT: FILTER4/OUTPUT4: p. died :" 
+group 0 drop
+	}
+
+	chain POSTROUTING-MANGLE4 {
+		type filter hook postrouting priority -150; policy accept;
+	}
+
+	chain POSTROUTING-NAT4 {
+		type nat hook postrouting priority 100; policy accept;
+	}
+}
+[info] End of ruleset: ================.
+
 
 -- 
-Kerin Millar
+Cheers Stefan Hartmann
+
