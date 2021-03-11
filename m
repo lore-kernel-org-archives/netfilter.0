@@ -1,77 +1,79 @@
-From: Frank Myhr <fmyhr@fhmtech.com>
-Subject: Re: nftables carefully open the related-flow: ct state related ct
- helper "ftp-21" ...
-Date: Tue, 9 Mar 2021 19:13:06 -0500
-Message-ID: <8ca2f0c4-6f52-d02b-5a9c-84680cba9747@fhmtech.com>
-References: <ae754fef-dbae-6a71-b7d5-b730bc21c363@hafenthal.de>
- <052d6523-bf4b-fadf-b95d-15bd63457cef@fhmtech.com>
- <1b961364-e014-57c9-5849-eb67c05b3a76@hafenthal.de>
- <5f52d13e-d135-7cb2-707f-2037ba041c87@fhmtech.com>
- <375f428e-f37b-551a-e09d-1024f00abb3d@hafenthal.de>
- <20210308210518.GC10808@breakpoint.cc>
- <624d2626-2fdc-a1d8-825c-81891488bf9d@hafenthal.de>
- <af7cddce-b8cf-1a01-1b71-130ea452c84b@fhmtech.com>
- <20210309172428.GF10808@breakpoint.cc> <20210309210606.GA6016@salvia>
+From: tech <tech@format-tv.net>
+Subject: Traffic drops when using flow offload for nftables based NAT
+Date: Thu, 11 Mar 2021 12:17:18 +0200
+Message-ID: <4986dab7b8162afc20ee5d21e42cca80@format-tv.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=larkmoor.net; s=larkmoor20140928;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject; bh=6XwNEPaj84z+fre55A5U9z/bxEUj7scExUovbhs3T+8=;
-        b=PXLajyhcN863+nU4OOZIonlOwgoAyplIMBrRE7ZAmCkSvuVmLzUsJOBRPtJYCMJjb6A5CE931dX9sX268TYlNBMiGnh7ArQxkrUTz5W5YctKl2p2RShTIa/31DoHNmso3UCCrkcZr/icl071bbFivkqI5bvpRkoUgI+YC+o4+2g=;
-In-Reply-To: <20210309210606.GA6016@salvia>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha1; c=simple; d=format-tv.net; h=
+        mime-version:content-type:content-transfer-encoding:date:from:to
+        :subject:message-id; s=mainsel; bh=lyMWxdRZRocNlhpXgQLGKDo0ieY=; b=
+        kz3m6YBsgHDy5dJ3Sxrm//IMh6LRsYr0IXIlE5/N63LBJcmE6sILBuv6zaje0QtV
+        cwZQfWzWAW9b6yhV+6pKaZq1eFLNLiVnEUcHhxMSXQqJX6VAMYL4WQaW39QTRhOV
+        IDyjJS+TpD537wseE0LiD3ck/SJqIE5QSAZImBc+d2E=
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pablo Neira Ayuso <pablo@netfilter.org>, Florian Westphal <fw@strlen.de>
-Cc: Stefan Hartmann <stefanh@hafenthal.de>, "netfilter.org" <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-On 2021/03/09 16:06, Pablo Neira Ayuso wrote:
-> On Tue, Mar 09, 2021 at 06:24:28PM +0100, Florian Westphal wrote:
->> Frank Myhr <fmyhr@fhmtech.com> wrote:
->>> 1) I will look at the code, but am surprised that "ct helper" uses the
->>> in-kernel name "ftp" rather than that of the stateful object "ftp-21" that
->>> the ruleset goes to the trouble of explicitly defining.
->>>
->>> a) Is this simply a parsing artifact -- if the helper were called "abcd"
->>> would the expression 'ct helper "abcd"' match it?
->>>
->>> b) If it is NOT a parsing artifact but by design: why? It would be more
->>> intuitive to use the name of the explicitly-named helper object. Another way
->>> to ask the same thing: why bother with the explicit helper object at all,
->>> rather than just use "ftp" (which implies the ip & tcp protocols in "ftp-21"
->>> definition anyway) in both match and statement, like 'ct helper set "ftp"'?
->>
->> Its a design fuckup.  When I made the objref patches to attach the
->> defined helpers I did not consider that we already had a 'ct helper'
->> with existing behaviour.
->>
->> The explicit helper objects were done this way to allow defining
->> multiple helpers wuth different settings.
->>
->> There are helpers that can be tuned by options and users might want to
->> use different settings in each.
-> 
-> Just posted a patchset, maybe we can address this inconsistency moving
-> forward:
-> 
-> https://patchwork.ozlabs.org/project/netfilter-devel/patch/20210309210134.13620-2-pablo@netfilter.org/
-> https://patchwork.ozlabs.org/project/netfilter-devel/patch/20210309210134.13620-3-pablo@netfilter.org/
+Hi,
+I'm trying to augment my nft based NAT server with flow offload feature.
+Prerequisites:
+# uname -a
+Linux nat40g 5.4.0-66-generic #74-Ubuntu SMP Wed Jan 27 22:54:38 UTC 
+2021 x86_64 x86_64 x86_64 GNU/Linux
+ethtool -G enp1s0f0 tx 8192
+ethtool -G enp1s0f0 rx 8192
+ethtool -K enp1s0f0 hw-tc-offload on
 
-Cool! Thanks!!!
+Ethernet controller: Mellanox Technologies MT27700 Family [ConnectX-4]
+
+# cat /opt/nftables.conf
+flush ruleset
+
+table ip filter {
+         chain input {
+                 type filter hook input priority 0; policy accept;
+                 ct state established accept
+                 iif "vlan4" counter drop
+                 iif "vlan5" counter drop
+         }
+
+         flowtable fastnat {
+                 hook ingress priority 0
+                 devices = { vlan4, vlan5 }
+         }
+
+         chain forward {
+                 type filter hook forward priority 0; policy accept;
+                 ip protocol { tcp , udp } flow offload @fastnat;
+         }
+}
 
 
->>> 2) Does it make a difference whether 'ct helper set' is done in input (as in
->>> below ruleset) or in prerouting? Maybe it has to be in prerouting only in
->>> case of forwarded traffic?
->>
->> It can be in input if the traffic is not forwarded.
-> 
-> Actually it can be place in forward chain too IIRC.
-> 
-> If the rule is added to prerouting, then the ct helper is attached to
-> both input and forward traffic.
+table ip nat {
+         chain post {
+                 type nat hook postrouting priority 100; policy accept;
+                 ip saddr 10.0.0.0/8 oif "vlan5" snat to 
+19.2.5.1-19.2.5.125 persistent
+         }
 
-Thanks - I will add to the wiki page.
+         chain pre {
+                 type nat hook prerouting priority -100; policy accept;
+         }
+}
 
-Best Wishes,
-Frank
+All good when there is up to 12G overall traffic volume, but when my 
+traffic overall volume exceeds 12+G I experience input drops.
+If I comment out this portion of configuration:
+flowtable fastnat {
+         hook ingress priority 0
+         devices = { vlan4, vlan5 }
+}
+
+chain forward {
+         type filter hook forward priority 0; policy accept;
+         ip protocol { tcp , udp } flow offload @fastnat;
+}
+The result no drops up to 21.5G and occur when CPU utilization up to 
+85%.
+P.S. If someone interested I can share images.
