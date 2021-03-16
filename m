@@ -1,33 +1,89 @@
-From: Frank Myhr <fmyhr@fhmtech.com>
-Subject: Re: How to concatenate subnet with port in a set?
-Date: Tue, 16 Mar 2021 12:04:22 -0400
-Message-ID: <95b92126-5d58-c8ef-1510-d2797488f14e@fhmtech.com>
-References: <5q7dsb7wp.iCi4WV@prvy.eu>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Traffic drops when using flow offload for nftables based NAT
+Date: Tue, 16 Mar 2021 23:36:56 +0100
+Message-ID: <20210316223656.GA981@salvia>
+References: <4986dab7b8162afc20ee5d21e42cca80@format-tv.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=larkmoor.net; s=larkmoor20140928;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:To:Subject; bh=z27nq8U64tnQ7cjlaRsVW1nD82jKKANraUGbYylowRo=;
-        b=MA7gJlAOozJccy1ffwSaZcLE/Ny3SEomycMV1Hc8qwGFpY2eswtrt2yeMwdFHPgrkSBFSWy4FpyACrqnnx3+eovKeGUtNFeXqkguTYadEmIOTHzHJD3K/TfHxjCoktyekR+doqoqJVN73S5wNwlaUQpGe5ZooQ3/sz62wMSy+Ag=;
-In-Reply-To: <5q7dsb7wp.iCi4WV@prvy.eu>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <4986dab7b8162afc20ee5d21e42cca80@format-tv.net>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: lists.netfilter.org+0cvssbcc2j@prvy.eu, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: tech <tech@format-tv.net>
+Cc: netfilter@vger.kernel.org
 
-On 2021/03/16 11:34, etkaar wrote:
-> Hello!
-> I am currently using <nftables v0.9.0 (Fearless Fosdick)> on Debian 10 (Buster). For a whitelist, I thought about a set like this:
-> 1> set whitelist_ipv4_tcp {2>     type inet_service . ipv4_addr3>     elements = {4>      22 . 255.255.255.255,5>      22 . 255.255.255.0/246>     }7> }
-> You can see, that on line 5 I used a port concatenated by an IPv4 subnet. Unfortunately, this will not work. I could use subnets, but only as a simple unconcatenated set.
-> My question is: When will it be possible to concatenate subnets with different types such as inet_service (= port) in sets? Or is it already possible in a newer version than 0.9.0?
+On Thu, Mar 11, 2021 at 12:17:18PM +0200, tech wrote:
+> Hi,
+> I'm trying to augment my nft based NAT server with flow offload feature.
+> Prerequisites:
+> # uname -a
+> Linux nat40g 5.4.0-66-generic #74-Ubuntu SMP Wed Jan 27 22:54:38 UTC 2021
 
-Hi Etkaar,
+What kernel version are you using specifically as of kernel.org?
 
-https://marc.info/?l=netfilter&m=158575148505527&w=2
+> x86_64 x86_64 x86_64 GNU/Linux
+> ethtool -G enp1s0f0 tx 8192
+> ethtool -G enp1s0f0 rx 8192
+> ethtool -K enp1s0f0 hw-tc-offload on
+> 
+> Ethernet controller: Mellanox Technologies MT27700 Family [ConnectX-4]
+> 
+> # cat /opt/nftables.conf
+> flush ruleset
+> 
+> table ip filter {
+>         chain input {
+>                 type filter hook input priority 0; policy accept;
+>                 ct state established accept
+>                 iif "vlan4" counter drop
+>                 iif "vlan5" counter drop
+>         }
+> 
+>         flowtable fastnat {
+>                 hook ingress priority 0
+>                 devices = { vlan4, vlan5 }
+>         }
+> 
+>         chain forward {
+>                 type filter hook forward priority 0; policy accept;
+>                 ip protocol { tcp , udp } flow offload @fastnat;
+>         }
+> }
+> 
+> 
+> table ip nat {
+>         chain post {
+>                 type nat hook postrouting priority 100; policy accept;
+>                 ip saddr 10.0.0.0/8 oif "vlan5" snat to 19.2.5.1-19.2.5.125
+> persistent
+>         }
+> 
+>         chain pre {
+>                 type nat hook prerouting priority -100; policy accept;
+>         }
+> }
+> 
+> All good when there is up to 12G overall traffic volume, but when my traffic
+> overall volume exceeds 12+G I experience input drops.
 
-nftables 0.9.4 / Linux kernel 5.6 added support for ranges in 
-concatenations.
+Probably you are missing this fix?
 
-Best Wishes,
-Frank
+commit 8d6bca156e47d68551750a384b3ff49384c67be3
+Author: Sven Auhagen <sven.auhagen@voleatech.de>
+Date:   Tue Feb 2 18:01:16 2021 +0100
+
+    netfilter: flowtable: fix tcp and udp header checksum update
+
+> If I comment out this portion of configuration:
+> flowtable fastnat {
+>         hook ingress priority 0
+>         devices = { vlan4, vlan5 }
+> }
+> 
+> chain forward {
+>         type filter hook forward priority 0; policy accept;
+>         ip protocol { tcp , udp } flow offload @fastnat;
+> }
+> The result no drops up to 21.5G and occur when CPU utilization up to 85%.
+> P.S. If someone interested I can share images.
