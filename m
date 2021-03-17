@@ -1,77 +1,59 @@
-From: ilker <ilkery@gmail.com>
-Subject: Re: nfqueue ethernet packet frame capture
-Date: Wed, 17 Mar 2021 20:49:18 +0300
-Message-ID: <CADtAAp55F0KjqS6VCT4NZwzAG5XCk+Z__vum_suL+E2o5tDo9w@mail.gmail.com>
-References: <CADtAAp7ReZoa1kLSm4oc7um9-vQ_XUnq9t80mN4T8igZQjyxUA@mail.gmail.com>
- <20210317143713.GA3781@salvia> <CADtAAp7Da8BtAK2zvhnT-RTG1myzbZ6k0xZgmifhsuYLAukDCQ@mail.gmail.com>
- <20210317155251.GA1140@salvia> <20210317155309.GB1140@salvia> <20210317155414.GA1197@salvia>
+From: Martin Gignac <martin.gignac@gmail.com>
+Subject: Re: How to troubleshoot (suspected) flowtable lockups/packet drops?
+Date: Wed, 17 Mar 2021 15:07:55 -0400
+Message-ID: <CANf9dFPDyAU-WKD5SSBv2M+PUoUmT5jQAjLcD1jcwEYzWKPqXQ@mail.gmail.com>
+References: <CANf9dFO+CAuiugQjwKDZ+tOVYuB+HMKeJzDVqekY=vVFE-rxFw@mail.gmail.com>
+ <20210316230521.GB981@salvia> <CANf9dFMxabVweO2ipnPL8Ncemc9wQaxeJQs0dazrgf=VeXVjbA@mail.gmail.com>
+ <20210317103443.GA18462@salvia>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=M9Py232JoYPbUg1IbTepw+/ppXusZff3N0thqDofzmA=;
-        b=TKyMHbssIfbmfs9rMj0BaSTd8GeTAZAUMXBKoB6SfIH6KJMzKv8xdRJBAOWAd1ZDPF
-         9miXiE0TV5iDh74MPRdsNFvKJeqWTFIKJdw1Qa8MpoTA5aScjobCuc4iaUY+3FDwoXet
-         4CYwHwQKoLDDOAlbyxhAqUcIvQ/cnQFnmVrCzo+cfwb6KQ6h1xwyrLGmmtZTVbG0SVJt
-         ferFChMNXUQ9CYaXtnVM16MMndytNdHDeEBOzzfXapRiYgKX6tNs+zFcRThdPErAkbNG
-         O7/JxOmW/2IfGAb2wZDWels/ezHVIcYWo2Z/W7Qu2VulXg1auDz3p74iVEhbK05F38vc
-         HA5g==
-In-Reply-To: <20210317155414.GA1197@salvia>
+        bh=UamCpShMpF4A8snoZF1sPYVtyocYCIUuMfCOsAvYJvk=;
+        b=I9zmmQhpOkb+ZYCeeSMqGjdk3aKn2xtJjEOl45uJDKa2DBi8q9nq9cLBDwX5+M3kTY
+         1F8rQ9uiyBP63DOvnmLrrjvPSWZyWfB5RCRvDBJZnT/GdxToZDmd+GmjIFPuI6oXhvmX
+         7H6IavDs16y9SKHkAlX9VXILdf7QIXQZ7MGRoGP9y7GS10W4RLXGxsPC12Rs8oGB5o74
+         gsFEBFagkT8yr9Z/EkIV+jMwglw1ZiAP0ciKIX6a04GqAdpzhJt8SiDaJhfXasgcU1gr
+         hgJijprojlozI4SyBmM0Epgm5jZB23fBl/eRcSTYsI0e7NyCFHt1CfosdFGA0moiQqaT
+         ZDvA==
+In-Reply-To: <20210317103443.GA18462@salvia>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter@vger.kernel.org
 
-What i get from indev from a sample capture are as follows;
-indev_name = *
-outdev_name = wlan0
-physindev_name = *
-physoutdev_name = *
+> Set on the counter flags at flowtable creation time, ie. flowtable 'f'
+> should not exist.
 
-nfq_get_physindev_name returns device name on my host. I can retrieve
-wlan0 mac but this would be the MAC address on my host. (I am testing
-my application on PC for now but the target is a router as you said)
+I tried creating a file like this:
 
-What I am looking for is a destination MAC address. e.g. when I
-capture the network on the same host via libpcap, I get following dump
-17:29:34.575912 AA:AA:AA:AA:AA:AA > BB:BB:BB:BB:BB:BB, ethertype IPv4
-(0x0800), length 1197: (tos 0x0, ttl 57, id 37046, offset 0, flags
-[DF], proto TCP (6), length 1183)
+    delete flowtable inet filter f
 
-where AA:AA:AA:AA:AA:AA is the gateway_MAC_address that my PC
-connected and BB:BB:BB:BB:BB:BB is the wlan_interface_mac of my PC.
-My aim is to capture my gateway mac address (AA:AA:AA:AA:AA:AA) as a
-destination MAC from my PC via NFQUEUE. (like tcpdump example)
+    table inet filter {
 
-Is that possible?
+        flowtable f {
+            hook ingress priority filter - 1
+            devices = { tun0, bond0, dummy0, bond1.999, bond1,
+vrf-conntrackd, vrf-mgmt, enp66s0f1, enp66s0f0, enp5s0f1, enp5s0f0,
+eno4, eno3, eno2, eno1 }
+            counter
+        }
+    }
 
-Thanks for your help
-regards,
+And then running nft -f <filename> on it, but I got these errors:
 
-On Wed, Mar 17, 2021 at 6:54 PM Pablo Neira Ayuso <pablo@netfilter.org> wrote:
->
-> On Wed, Mar 17, 2021 at 04:53:09PM +0100, Pablo Neira Ayuso wrote:
-> > On Wed, Mar 17, 2021 at 05:41:53PM +0300, ilker wrote:
-> > > it only gives the source MAC address:(
-> > > I need the destination MAC address.. I will use
-> > > src_mac+dst_mac+ethertype and reconstruct the full ETH header.
-> > > I tried
-> > > nfq_get_physindev_name
-> > > nfq_get_physoutdev_name
-> > > nfq_get_indev_name
-> > > nfq_get_outdev_name
-> > >
-> > > but neither of them gave me a MAC.
-> > > A libpcap fanboy said that netfilter can not and libpcap can give.. I
-> > > don't want to convert my code to pcap that is why I am looking for a
-> > > solution.
-> >
-> > nfq_get_indev_name provides the input device. From userspace, you can
-> > retrieve the destination MAC from the indev. The ethernet protocol is
-> > coming in the ->hw_protocol field.
->
-> I'm assuming your setup is a router, then destination MAC can be
-> infered.
+    <filename>:1:30-30: Error: Could not process rule: Device or resource busy
+    delete flowtable inet filter f
+
+I assume this is because the flowtable is in use, so it can not be deleted.
+
+Short of rebooting the Linux server (which I cannot do right now since
+I have many people relying on it), is there any kind of way for me to
+re-create the flowtable with the added 'counter' parameter without
+impacting traffic?
+
+Thanks,
+-Martin
