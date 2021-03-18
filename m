@@ -1,49 +1,58 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: How to troubleshoot (suspected) flowtable lockups/packet drops?
-Date: Wed, 17 Mar 2021 23:28:54 +0100
-Message-ID: <20210317222854.GA24692@salvia>
-References: <CANf9dFO+CAuiugQjwKDZ+tOVYuB+HMKeJzDVqekY=vVFE-rxFw@mail.gmail.com>
- <20210316230521.GB981@salvia>
- <CANf9dFMxabVweO2ipnPL8Ncemc9wQaxeJQs0dazrgf=VeXVjbA@mail.gmail.com>
- <20210317103443.GA18462@salvia>
- <CANf9dFPDyAU-WKD5SSBv2M+PUoUmT5jQAjLcD1jcwEYzWKPqXQ@mail.gmail.com>
- <20210317204220.GA13211@salvia>
- <CANf9dFOHgb+QNqVkWVsnP6ALSQxbPzyv8xA0LXyck39w3bUjwg@mail.gmail.com>
+Subject: Re: nfqueue ethernet packet frame capture
+Date: Thu, 18 Mar 2021 01:39:36 +0100
+Message-ID: <20210318003936.GA23475@salvia>
+References: <CADtAAp7ReZoa1kLSm4oc7um9-vQ_XUnq9t80mN4T8igZQjyxUA@mail.gmail.com>
+ <20210317143713.GA3781@salvia>
+ <CADtAAp7Da8BtAK2zvhnT-RTG1myzbZ6k0xZgmifhsuYLAukDCQ@mail.gmail.com>
+ <20210317155251.GA1140@salvia>
+ <20210317155309.GB1140@salvia>
+ <20210317155414.GA1197@salvia>
+ <CADtAAp55F0KjqS6VCT4NZwzAG5XCk+Z__vum_suL+E2o5tDo9w@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CANf9dFOHgb+QNqVkWVsnP6ALSQxbPzyv8xA0LXyck39w3bUjwg@mail.gmail.com>
+In-Reply-To: <CADtAAp55F0KjqS6VCT4NZwzAG5XCk+Z__vum_suL+E2o5tDo9w@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Martin Gignac <martin.gignac@gmail.com>
+To: ilker <ilkery@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-On Wed, Mar 17, 2021 at 06:01:43PM -0400, Martin Gignac wrote:
-> If I just run:
-> 
->     nft list ruleset > rules.txt
-> 
-> add:
-> 
->     flush ruleset
-> 
-> to the top of the file, add the:
-> 
->     counter
-> 
-> statement to the flowtable section, and then:
-> 
->     nft -f rules.txt
-> 
-> This should atomically add the "counter", but not impact traffic in
-> any way, shape or form, correct?
+On Wed, Mar 17, 2021 at 08:49:18PM +0300, ilker wrote:
+> What i get from indev from a sample capture are as follows;
+> indev_name = *
+> outdev_name = wlan0
+> physindev_name = *
+> physoutdev_name = *
 
-It turns on packets and bytes counters:
+I see, so you'd like to catch the packet from the output path.
 
-# conntrack -L
-tcp      6 src=10.141.10.2 dst=192.168.10.2 sport=57758 dport=5201 packets=1998758 bytes=87532896157 src=192.168.10.2 dst=192.168.10.1 sport=5201 dport=57758 packets=1966493 bytes=102257896 [OFFLOAD] mark=0 use=2
+> nfq_get_physindev_name returns device name on my host. I can retrieve
+> wlan0 mac but this would be the MAC address on my host. (I am testing
+> my application on PC for now but the target is a router as you said)
+> 
+> What I am looking for is a destination MAC address. e.g. when I
+> capture the network on the same host via libpcap, I get following dump
+> 17:29:34.575912 AA:AA:AA:AA:AA:AA > BB:BB:BB:BB:BB:BB, ethertype IPv4
+> (0x0800), length 1197: (tos 0x0, ttl 57, id 37046, offset 0, flags
+> [DF], proto TCP (6), length 1183)
+> 
+> where AA:AA:AA:AA:AA:AA is the gateway_MAC_address that my PC
+> connected and BB:BB:BB:BB:BB:BB is the wlan_interface_mac of my PC.
+> My aim is to capture my gateway mac address (AA:AA:AA:AA:AA:AA) as a
+> destination MAC from my PC via NFQUEUE. (like tcpdump example)
+> 
+> Is that possible?
 
-You also have to enable counters in conntrack:
+The problem is that the MAC address is not yet know from the output
+path (postrouting hook) since it comes before the neighbour layer.
+So the MAC address is not yet know.
 
-echo 1 > /proc/sys/net/netfilter/nf_conntrack_acct 
+You could catch the packet via nfqueue and then send a query to obtain
+the destination MAC address by the IP destination through rtnetlink
+(neighbour cache lookup from userspace).
+
+An alternative would be to have netfilter egress hook (layer 2 MAC
+information is already available from there) and add nfqueue support
+too, but that's not available upstream.
