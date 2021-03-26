@@ -1,31 +1,41 @@
-From: Frank Wunderlich <frank-w@public-files.de>
-Subject: Aw: hw flow offload - nft crosscompile
-Date: Sun, 21 Mar 2021 16:02:12 +0100
-Message-ID: <trinity-c583801e-440f-4896-b57b-50538760320d-1616338932701@3c-app-gmx-bap32>
-References: <trinity-69642984-5c45-4c9a-ab31-b7585e0351b9-1616260101092@3c-app-gmx-bs65>
- <trinity-48a4e364-4207-4305-9d25-7ce61a6b167b-1616327912998@3c-app-gmx-bap32>
+From: <paul.guijt@gmail.com>
+Subject: Creating named set
+Date: Fri, 26 Mar 2021 18:27:05 +0100
+Message-ID: <037901d72265$3e58d790$bb0a86b0$@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1616338932;
-        bh=iz6FxR/L0z/clIFghHGGwsFDf+PY9kq/cEtKz80xiWY=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=POn96RhzPAFENqcqNpucearjKvFN29Ix8o0SDd0iu9b7ysPdAjnllc+aBTe1uhmGD
-         In7TZQ0vzpwWtoGIWSMGVq8C8edJkaTP8Rzxu6qUYCOWNguYeLibu3DN6FkXwvzgwq
-         +Iwip5M5cBXJj9uSLqAR5Eb5fgfKcsjpj5uu676M=
-In-Reply-To: <trinity-48a4e364-4207-4305-9d25-7ce61a6b167b-1616327912998@3c-app-gmx-bap32>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding:thread-index:content-language;
+        bh=+sK7DCcVDUY/HRfufoou5d9n4NAsfFOYs2soncjZOjk=;
+        b=rvLG7FflHtU7DUHi+XV6CjZ5kcRTYeMpLwULzEf0/jDXzs+loXZ0EepwxKhWiWe7ce
+         vxkr/QclW27yCsoU4jzGjq8jCj5112ANBQ22wWHbmceH5LVQuvY5sUjrX/Yi2sITa5Ua
+         HmtLPQF+fPsPmk0WnPyxZYdVs3NAUJcYgQcHlhiRt1s9LjkX05AY50RvTSJf48z12YRH
+         Clabv5sj+zHXj+9zCMd8TyBWHsR2NanAu9smUsiCJJAM7QUf58Mcfe4Nd8cASatEfMCs
+         yNf5/z28lE2XLQArQFVP9RY4n99ERPMwfddHv81O3HPuB+fCii20JfNkD6hmPRTNnCpe
+         NHdQ==
+Content-Language: nl
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Frank Wunderlich <frank-w@public-files.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; boundary="----=_NextPart_000_0371_01D7226D.6A553E30"; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-Hi,
+Hi all,
+On Raspbian I tried:
+	sudo nft add set inet filter blocklist { type inet_proto \; flags =
+timeout \; }
+	Error: Could not process rule: No such file or directory
+	add set inet filter blocklist { type inet_proto ; flags timeout ; }
+	             ^^^^^^
+I have tried all sorts of syntax, but every time that error comes up. =
+Even with =E2=80=9C% nft add set ip filter blackhole { type =
+ipv4_addr\;}=E2=80=9D from the wiki.=20
+I have an inet table, and in it I want to drop anything coming from =
+@blocklist. Can anyone please hand me the correct syntax, either for =
+command line (sudo nft =E2=80=A6) or for a rules file?=20
 
-i got it working
+Best wishes, stay safe,
+Paul
 
-http://forum.banana-pi.org/t/new-netfilter-flow-table-based-hnat/12049/30
 
-except a printing issue on list ruleset it works as expected :) maybe i can fix this too
-
-regards Frank
