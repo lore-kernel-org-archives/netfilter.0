@@ -1,81 +1,34 @@
-From: <paul.guijt@gmail.com>
-Subject: RE: Creating named set
-Date: Sat, 27 Mar 2021 10:41:08 +0100
-Message-ID: <04bc01d722ed$50cc2a70$f2647f50$@gmail.com>
-References: <037901d72265$3e58d790$bb0a86b0$@gmail.com> <20210326233151.GD8998@breakpoint.cc>
+From: =?UTF-8?Q?Major_D=c3=a1vid?= <major.david@balasys.hu>
+Subject: Keep track extra information about conntrack entries
+Date: Mon, 29 Mar 2021 12:21:14 +0200
+Message-ID: <ef1ed01e-329a-dc03-78d2-bf14da602f91@balasys.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:references:in-reply-to:subject:date:message-id:mime-version
-         :content-transfer-encoding:thread-index:content-language;
-        bh=Hwx9gIsPEg8psFb1uNlt08S6h3oTOjkhyLwJJWXbKfA=;
-        b=ow/rNhBaeQkrfJY0IBce/5AZtF7mV70oKgIIOURgazzoTtYkOhXbxOfZ2/VoStMylB
-         PI9hWbthstVhBdtIfZjk74zWWcO1CxqPuMBPWj4RduPXfbCl3nNUr5smcXdHvs16Mjip
-         tIF954TbdYqSaYMD9+YJopL02R2kLXk41080rEO65errR3vA5eMWsppQHl1P1GETVUPF
-         gevLSqTJR5STsNbdBi+O/al1w0z9f1CNSPKYF8hIHT5KKqsjnM/lp4r+ugw6K/PIakdG
-         MA72L7BOLN1Y3jO7jUCbobUGoMYNfW1AX7CQA/5W3KQN6bTu/HG0GaTBroCCHv0Z6USx
-         g9Hg==
-In-Reply-To: <20210326233151.GD8998@breakpoint.cc>
-Content-Language: nl
+Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Thanks.=20
+Hi All,
 
-This morning I had a brainwave, and inserted it into /etc/nftables.conf:
+I am working on a small kernel module and iptables target which try to
+associate some extra information to conntrack entries. I've created a
+hash table (struct rhashtable) with u32 hash keys generated from the
+conntrack entry's tuple (struct nf_conntrack_tuple). When a connection
+ends and the conntrack entries are destroyed I have to remove my own
+data as well, for this purpose I've registered with
+nf_conntrack_register_notifier to IPCT_DESTROY events. This works
+almost every time but there are cases when (as I saw when a connection
+is not became ESTABLISHED) there is no destroy event.
 
-> #!/usr/sbin/nft -f
-> flush ruleset
->
-> table inet filter {
->
->         set blocklist { type inet_proto ; flags timeout ; }
->
->         chain input {
->                 type filter hook input priority 0;      policy drop;
- >        }
->         chain forward {
->                 type filter hook forward priority 0;    policy drop;
->         }
->         chain output {
->                 type filter hook output priority 0;     policy accept;
->         }
->
-> }
->
-> include "/etc/nftables/include/*.nft"
+What I would like to ask that is there any reason why the IPCT_DESTROY
+event is omitted in some cases or is there a different better approach
+to "attach" information to conntrack entries?
 
-Nft accepted it.=20
+I thought maybe I have to implement some kind of time based GC to
+remove my entries regardless of the conntrack entry status.
 
-Best wishes, stay safe,
-Paul
-
------Original Message-----
-From: Florian Westphal <fw@strlen.de>=20
-Sent: Saturday, March 27, 2021 12:32 AM
-To: paul.guijt@gmail.com
-Cc: netfilter@vger.kernel.org
-Subject: Re: Creating named set
-
-paul.guijt@gmail.com <paul.guijt@gmail.com> wrote:
-> Hi all,
-> On Raspbian I tried:
-> 	sudo nft add set inet filter blocklist { type inet_proto \; flags =
-timeout \; }
-> 	Error: Could not process rule: No such file or directory
-> 	add set inet filter blocklist { type inet_proto ; flags timeout ; }
- 	             ^^^^^^
-> I have tried all sorts of syntax, but every time that error comes up. =
-Even with =E2=80=9C% nft add set ip filter blackhole { type =
-ipv4_addr\;}=E2=80=9D from the wiki.=20
-> I have an inet table, and in it I want to drop anything coming from =
-@blocklist. Can anyone please hand me the correct syntax, either for =
-command line (sudo nft =E2=80=A6) or for a rules file?=20
-
-This syntax is fine.  The error comes from the kernel.
-Either no 'inet filter' table exists, or your kernel lacks set =
-functionality.
+Thanks for your help,
+David Major
 
