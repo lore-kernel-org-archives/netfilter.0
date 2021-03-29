@@ -1,34 +1,32 @@
-From: =?UTF-8?Q?Major_D=c3=a1vid?= <major.david@balasys.hu>
-Subject: Keep track extra information about conntrack entries
-Date: Mon, 29 Mar 2021 12:21:14 +0200
-Message-ID: <ef1ed01e-329a-dc03-78d2-bf14da602f91@balasys.hu>
+From: Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>
+Subject: bridge-nf-call-iptables: checking bridge vs. IP context?
+Date: Mon, 29 Mar 2021 20:08:27 +0200
+Message-ID: <20210329180827.GE2742@otheros>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
+Content-Disposition: inline
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi All,
+Hi,
 
-I am working on a small kernel module and iptables target which try to
-associate some extra information to conntrack entries. I've created a
-hash table (struct rhashtable) with u32 hash keys generated from the
-conntrack entry's tuple (struct nf_conntrack_tuple). When a connection
-ends and the conntrack entries are destroyed I have to remove my own
-data as well, for this purpose I've registered with
-nf_conntrack_register_notifier to IPCT_DESTROY events. This works
-almost every time but there are cases when (as I saw when a connection
-is not became ESTABLISHED) there is no destroy event.
+I'm wondering whether I'm currently overlooking a simple solution
+for the following:
 
-What I would like to ask that is there any reason why the IPCT_DESTROY
-event is omitted in some cases or is there a different better approach
-to "attach" information to conntrack entries?
+When setting bridge-nf-call-iptables = 1, is there a simple way to
+check within one iptables rule whether it matched from a bridge
+netfilter hook or from an IP netfilter hook?
 
-I thought maybe I have to implement some kind of time based GC to
-remove my entries regardless of the conntrack entry status.
+"--physdev-is-bridged" seemingly is not quite what I'm looking
+for, as it will only match after a bridging decision, in the
+FORWARD or POSTROUTING chains.
 
-Thanks for your help,
-David Major
 
+If that does not exist yet, what would be the preferred,
+upstreamable format: Adding a flag to "struct nf_bridge_info" or
+are there some other, already existing fields I could use to
+verify the context?
+
+Regards, Linus
