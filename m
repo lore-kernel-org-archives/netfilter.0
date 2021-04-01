@@ -1,116 +1,61 @@
-From: Frank Wunderlich <frank-w@public-files.de>
-Subject: Aw: Re: nft show counter
-Date: Thu, 1 Apr 2021 10:08:32 +0200
-Message-ID: <trinity-e144cb32-0c89-44a6-b0f6-5b9edcf5e457-1617264512699@3c-app-gmx-bap06>
+From: Anton Rieger <rieger@jikken.de>
+Subject: Re: nft show counter
+Date: Thu, 1 Apr 2021 18:42:47 +0200
+Message-ID: <20210401164247.ng3na2sbvrsqzcti@nisshoku.fritz.box>
 References: <trinity-08431e16-b4eb-4bb7-8b36-df2084481611-1617212862528@3c-app-gmx-bap62>
  <20210331214053.GB13699@breakpoint.cc>
  <d5770849-515b-5514-39ab-bb6907023ca2@fhmtech.com>
+ <trinity-e144cb32-0c89-44a6-b0f6-5b9edcf5e457-1617264512699@3c-app-gmx-bap06>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1617264512;
-        bh=nVxlJvevPYZ+z4Jnk3pEIOGdX5ibb6ScuGwQ3Li+6TU=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=kcamek8uaLPKaFtephn0SmfEo83FOro5mrQJH6l6sOdLl/oi3sRem/Y9Q6fuelIVm
-         pqJio79NyYO6Ii6Zk6GCdl0m1RICeF3bP0usoiNMxQYYTyA+LxzFMtmbTxF/W76rZx
-         idZHpr4I1ezsLQwvmxv/7MPYVmo02iqeqCSq0COk=
-In-Reply-To: <d5770849-515b-5514-39ab-bb6907023ca2@fhmtech.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=jikken.de;
+        s=Mv0BmWWr5KBeokdR; t=1617295368;
+        bh=/6hew0oADwi9cqr0DRjV4EF0m6kQP1hiP9LOxT2r9BA=;
+        h=Date:From:To:Subject:References:In-Reply-To;
+        b=YVN2u1FXlCTTBRGtNSCjUwe1jagMkoei8T/oA6BGtkgacf7p6QhkMcw+lPrxmQ615
+         TtIRL2+AvSae3Lyo/RmG96G3MI5SCGNssnpNxDZaYg/YmKfD3RyNd327/+Wm3D+REg
+         3gitbm+ROs/ZLHIjurrhOzNvcTZCHEqmRmRVkVqU=
+Content-Disposition: inline
+In-Reply-To: <trinity-e144cb32-0c89-44a6-b0f6-5b9edcf5e457-1617264512699@3c-app-gmx-bap06>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Frank Myhr <fmyhr@fhmtech.com>
-Cc: Florian Westphal <fw@strlen.de>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-> Gesendet: Donnerstag, 01. April 2021 um 01:08 Uhr
-> Von: "Frank Myhr" <fmyhr@fhmtech.com>
-> An: "Florian Westphal" <fw@strlen.de>, "Frank Wunderlich" <frank-w@publi=
-c-files.de>
-> Cc: netfilter@vger.kernel.org
-> Betreff: Re: nft show counter
+On Thu, Apr 01, 2021 at 10:08:32AM +0200, Frank Wunderlich wrote:
+>made a little python-script (not yet with error-handling) to read out the bytes:
 >
-> On 2021/03/31 17:40, Florian Westphal wrote:
-> > You could use a named counter and then fetch it via 'nft list counter
-> > inet tablenam countername'.
+>import os
+>import json
 >
-> This is the straightforward solution!
 >
-> Florian, is it correct that *all* counters are stateful objects, they're
-> just anonymous stateful objects if used in a rule without first
-> declaring them with a name? The wiki reads as if they're 2 separate
-> things (I'm happy to fix but want to check with you first):
+>def getCounter(countername):
+>    stream = os.popen('nft list counter filter '+countername+' -j')
+>    output = stream.read()
+>    #print(output)
+>    j=json.loads(output)
+>    return j["nftables"][0]["counter"]["bytes"]
 >
-> https://wiki.nftables.org/wiki-nftables/index.php/Counters
+>print(getCounter("voip1"),"bytes")
+>print(getCounter("voip2"),"bytes")
 
-Hi,
+Here's above using the nftables python module:
 
-thank you, i saw the named counters before, but i have thought i can read =
-out the "normal" counters too...
-
-have now changed to named counters (instead of jump to voipX-chain)
-
-my rules-file looks like this now (just for anybody wants do do similar):
-
-table ip filter {
-    ...
-    chain FORWARD {
-        type filter hook forward priority 0; policy drop;
-        #...
-        ip saddr $ipvoipbox udp dport 5160 counter name voip1 comment "cou=
-nting packets for SIP1"
-        ip daddr $ipvoipbox udp dport 5160 counter name voip1 comment "cou=
-nting packets for SIP1"
-        ip saddr $ipvoipbox udp sport 5161 counter name voip2 comment "cou=
-nting packets for SIP2"
-        ip daddr $ipvoipbox udp dport 5161 counter name voip2 comment "cou=
-nting packets for SIP2"
-        #...
-    }
-
-    counter voip1 {
-    }
-
-    counter voip2 {
-    }
-}
-
-one thing:
-
-# nft list counter filter voip2
-table ip mangle {
-}
-table ip nat {
-}
-table ip filter {
-	counter voip2 {
-		packets 124 bytes 7440
-	}
-}
+```
+from nftables import Nftables
+from nftables import json
 
 
-tables mangle and nat should not be printed (still have them separately fr=
-om converting iptables to nft)...in json-format it is right
+def getCounter(countername, family='ip'):
+     nft = Nftables()
+     nft.set_json_output(True)
+	_, output, _ = nft.cmd(f"list counter {family} filter {countername}")
+     j = json.loads(output)
+     return j['nftables'][1]["counter"]["bytes"]
 
-# nft list counter filter voip2 -j
-{"nftables": [{"counter": {"family": "ip", "name": "voip2", "table": "filt=
-er", "handle": 6, "packets": 136, "bytes": 8160}}]}
+print(getCounter('voip1'), 'bytes')
+print(getCounter('voip2'), 'bytes')
+```
 
-made a little python-script (not yet with error-handling) to read out the =
-bytes:
-
-import os
-import json
-
-
-def getCounter(countername):
-    stream =3D os.popen('nft list counter filter '+countername+' -j')
-    output =3D stream.read()
-    #print(output)
-    j=3Djson.loads(output)
-    return j["nftables"][0]["counter"]["bytes"]
-
-print(getCounter("voip1"),"bytes")
-print(getCounter("voip2"),"bytes")
-
-
-
-regards Frank
+Greetings
+Anton
