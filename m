@@ -1,35 +1,58 @@
 From: Florian Westphal <fw@strlen.de>
-Subject: Re: nft show counter
-Date: Thu, 1 Apr 2021 20:21:04 +0200
-Message-ID: <20210401182104.GG13699@breakpoint.cc>
+Subject: Re: Re: nft show counter
+Date: Thu, 1 Apr 2021 22:03:33 +0200
+Message-ID: <20210401200333.GH13699@breakpoint.cc>
 References: <trinity-08431e16-b4eb-4bb7-8b36-df2084481611-1617212862528@3c-app-gmx-bap62>
  <20210331214053.GB13699@breakpoint.cc>
  <d5770849-515b-5514-39ab-bb6907023ca2@fhmtech.com>
+ <trinity-e144cb32-0c89-44a6-b0f6-5b9edcf5e457-1617264512699@3c-app-gmx-bap06>
+ <20210401181414.GF13699@breakpoint.cc>
+ <902B82E6-79AE-4C04-B2CA-C860662911EC@public-files.de>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <d5770849-515b-5514-39ab-bb6907023ca2@fhmtech.com>
+In-Reply-To: <902B82E6-79AE-4C04-B2CA-C860662911EC@public-files.de>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Frank Myhr <fmyhr@fhmtech.com>
-Cc: Florian Westphal <fw@strlen.de>, Frank Wunderlich <frank-w@public-files.de>, netfilter@vger.kernel.org
+To: Frank Wunderlich <frank-w@public-files.de>
+Cc: Florian Westphal <fw@strlen.de>, Frank Myhr <fmyhr@fhmtech.com>, netfilter@vger.kernel.org
 
-Frank Myhr <fmyhr@fhmtech.com> wrote:
-> On 2021/03/31 17:40, Florian Westphal wrote:
-> > You could use a named counter and then fetch it via 'nft list counter
-> > inet tablenam countername'.
+Frank Wunderlich <frank-w@public-files.de> wrote:
+> Am 1. April 2021 20:14:14 MESZ schrieb Florian Westphal <fw@strlen.de>:
+> >map voipcounters {
+> > type ipv4_addr . inet_service : counter
+> > elements = { 10.0.1.1 . 5160 : "voip1", 10.2.1.1 . 5161 : ...
+> >
+> >and then count with one rule only:
+> >
+> >counter name ip saddr . udp dport map @voipcounters
 > 
-> This is the straightforward solution!
-> 
-> Florian, is it correct that *all* counters are stateful objects, they're
-> just anonymous stateful objects if used in a rule without first declaring
-> them with a name? The wiki reads as if they're 2 separate things (I'm happy
-> to fix but want to check with you first):
-> 
-> https://wiki.nftables.org/wiki-nftables/index.php/Counters
+> Have seen maps,but have not understood them :(
 
-The normal counters do not have a 'hidden' internal name.
+Its just a set that returns a value instead of simple 'in set/not in
+set'.
 
-Thats also the reason why simple counters do not show up in 'nft list counters',
-they only exist in the context of the rule they are used in.
+> The ip is always same ($ipvoipbox),only port differs (sip1+sip2) and this bidirectional (saddr/daddr,sport/dport) to catch traffic from/to this ip separated by sip-streams.
+> 
+> Your example seems to match only source-addr and destination port.
+
+Yes, it was an example.
+
+> Maybe its possible to match "addr" (saddr or daddr) and "port" (sport or dport),so i can have only 2 rules...with map maybe only 1
+
+There is no 'or', so you will need two rules at a minimum if you want to
+match in either direction.
+
+map voipcounters {
+	type inet_service : counter
+	elements = { 5160 : "voip1", 5161 : "voip2" }
+}
+
+ip saddr $ipvoipbox counter name udp sport map @voipcounters
+ip daddr $ipvoipbox counter name udp dport map @voipcounters
+
+This says 'fetch name of counter to use from @voipcounters, with 'udp
+sport/udp dport' as search key.
+
+but with just two counters its not worth it.
