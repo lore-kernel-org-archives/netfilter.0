@@ -1,34 +1,78 @@
-From: Frank Myhr <fmyhr@fhmtech.com>
-Subject: Re: nft show counter
-Date: Wed, 31 Mar 2021 19:08:36 -0400
-Message-ID: <d5770849-515b-5514-39ab-bb6907023ca2@fhmtech.com>
-References: <trinity-08431e16-b4eb-4bb7-8b36-df2084481611-1617212862528@3c-app-gmx-bap62>
- <20210331214053.GB13699@breakpoint.cc>
+From: Pavan Amancherla <pavan.ramanaiah@gmail.com>
+Subject: SNAT/Masquerade not modifying the Source IP randomly
+Date: Thu, 1 Apr 2021 12:48:04 +0530
+Message-ID: <CABXv9e_UJ7cN+Gw-q9M2PYdhptDMu7afW3O-M+3uH8Xmrvtcag@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=larkmoor.net; s=larkmoor20140928;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject; bh=wPZxfGdA5EaD5yev8Stc4dunh3/4M/zFaf0l/+BLufg=;
-        b=N/pYzkJ3Rt/D75WHE4Aj3mV79aoCja0Z2FEeOsCBBZYA5nnJ06ote4SCsgfiF2PvRYAn90fwgPpPrCXCOte/1xMcHDy7pIeUOqkRjDIGXdmauiM/5G12gLGYgIejDz5GXzz5ubC/C9vctIQwK/pddoS4FWZT+YrFJiIg1Qyoa4Q=;
-In-Reply-To: <20210331214053.GB13699@breakpoint.cc>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=xPyJmCaMswRDdFQ4uCNQLLmowQFBcmy04YWZ5gRiruM=;
+        b=N26g0LGonKQIEMMIq6s8Hvx3/iafG666r/vbBaBy4GSm3+ZxrE8R9fCJMjvC9/Tt+z
+         KrO6dYnsj7TANY255NnHTQ84r4eAN8USwv4zi7Mceejsx4U/0yKdv/UrpZEVD40+O167
+         tooPdAWu9tjq4kr/nm0wdn+vYmUnvezEQkMQP5nLLLPtCXeH5VRrKoWKxNRZrKjMY0AN
+         96KFfoPrK4WJytzZUb3ef/5Eqsx0BZkcHLBoYwUUgIgkY+ta3DiDN67njM/OolIvT4oa
+         +0s2H20hsMtqHk5Z1k/7fXfabxmpk/88vraj9Y+JT3HZNDLNUF1Sey7ZOZzRP/jA6Seu
+         tNxg==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Florian Westphal <fw@strlen.de>, Frank Wunderlich <frank-w@public-files.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On 2021/03/31 17:40, Florian Westphal wrote:
-> You could use a named counter and then fetch it via 'nft list counter
-> inet tablenam countername'.
+We do SNAT in our system in the POSTROUTING chain. But we find that
+once in a while the source IP did not get modified. The packet is
+going out with the internal IP. We are using IP Tables version - 1.6.2
+Linux Kernel version - 4.14.78
 
-This is the straightforward solution!
+Following are the NAT rules - ~ # iptables -S -t nat
 
-Florian, is it correct that *all* counters are stateful objects, they're 
-just anonymous stateful objects if used in a rule without first 
-declaring them with a name? The wiki reads as if they're 2 separate 
-things (I'm happy to fix but want to check with you first):
+-P PREROUTING ACCEPT
 
-https://wiki.nftables.org/wiki-nftables/index.php/Counters
+-P INPUT ACCEPT
 
-Thanks,
-Frank M.
+-P OUTPUT ACCEPT
+
+-P POSTROUTING ACCEPT
+
+-A POSTROUTING -o wwan0 -j MASQUERADE
+
+wwan0 is the default gateway.
+
+How to fix this problem.
+
+Snapshot of TCP Dump. The internal IP's (172.16..) are highlighted.
+The translated IP is 100.86.203.169. We can find several NAT happening
+correctly. Once in 10 to 15 minutes we find few entries of source IP
+not translated.
+
+17:13:51.939700 IP 100.86.203.169.47554 >
+135.sub-198-224-172.myvzw.com.domain: 64282+ AAAA?
+connectivitycheck.gstatic.com. (47)
+
+17:13:52.033482 IP 135.sub-198-224-172.myvzw.com.domain >
+100.86.203.169.47554: 63258 1/0/0 A 172.217.11.163 (63)
+
+17:13:52.033598 IP 100.86.203.169.hostmon > 224.0.0.252.hostmon: UDP, length 27
+
+17:13:52.042355 IP 135.sub-198-224-172.myvzw.com.domain >
+100.86.203.169.47554: 64282 1/0/0 AAAA 2607:f8b0:4007:804::2003 (75)
+
+17:13:52.043389 IP 100.86.203.169 > lax28s15-in-f3.1e100.net: ICMP
+echo request, id 34628, seq 0, length 64
+
+17:13:52.132848 IP lax28s15-in-f3.1e100.net > 100.86.203.169: ICMP
+echo reply, id 34628, seq 0, length 64
+
+17:13:52.237290 IP 172.16.9.59.63478 > lax31s14-in-f14.1e100.net.443:
+UDP, length 1350
+
+17:13:52.366892 IP 100.86.203.169.hostmon > 224.0.0.252.hostmon: UDP, length 27
+
+17:13:52.416431 IP 172.16.9.68.45839 >
+lax17s14-in-f14.1e100.net.https: Flags [F.], seq 1838160668, ack
+751548505, win 373, options [nop,nop,TS val 31214649 ecr 2926508259],
+length 0
+
+17:13:52.419421 IP 172.16.9.68.45840 >
+lax17s14-in-f14.1e100.net.https: Flags [F.], seq 3938547017, ack
+4273274368, win 373, options [nop,nop,TS
