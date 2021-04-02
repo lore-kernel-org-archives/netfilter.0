@@ -1,58 +1,81 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: Re: nft show counter
-Date: Thu, 1 Apr 2021 22:03:33 +0200
-Message-ID: <20210401200333.GH13699@breakpoint.cc>
+From: Frank Wunderlich <frank-w@public-files.de>
+Subject: Aw: Re: Re: nft show counter
+Date: Fri, 2 Apr 2021 13:58:38 +0200
+Message-ID: <trinity-5952d750-31c3-468f-9c47-86937547349b-1617364718637@3c-app-gmx-bs22>
 References: <trinity-08431e16-b4eb-4bb7-8b36-df2084481611-1617212862528@3c-app-gmx-bap62>
  <20210331214053.GB13699@breakpoint.cc>
  <d5770849-515b-5514-39ab-bb6907023ca2@fhmtech.com>
  <trinity-e144cb32-0c89-44a6-b0f6-5b9edcf5e457-1617264512699@3c-app-gmx-bap06>
  <20210401181414.GF13699@breakpoint.cc>
- <902B82E6-79AE-4C04-B2CA-C860662911EC@public-files.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <902B82E6-79AE-4C04-B2CA-C860662911EC@public-files.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1617364718;
+        bh=XCbkYOMqzpprpi+9xlqR0rltuTrI57hiINusGU3t3mo=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=Ms0zP7XtS2XRakcDheNVTpffEmGFq4Dbr8uONsDg1mowwPW5pszXLLALfi8nStJYM
+         b3H8VLNLVz4LRBAcR8J9o8SsIIFwmSFkkJsS09JFK5ONi7mKeXhZrfwwob+LXXpqqP
+         GkVjqE892Z2c29xjmW6wQ38zUzLp8NnOlg+/sndk=
+In-Reply-To: <20210401181414.GF13699@breakpoint.cc>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Frank Wunderlich <frank-w@public-files.de>
-Cc: Florian Westphal <fw@strlen.de>, Frank Myhr <fmyhr@fhmtech.com>, netfilter@vger.kernel.org
+To: Florian Westphal <fw@strlen.de>
+Cc: Frank Myhr <fmyhr@fhmtech.com>, Florian Westphal <fw@strlen.de>, netfilter@vger.kernel.org
 
-Frank Wunderlich <frank-w@public-files.de> wrote:
-> Am 1. April 2021 20:14:14 MESZ schrieb Florian Westphal <fw@strlen.de>:
-> >map voipcounters {
-> > type ipv4_addr . inet_service : counter
-> > elements = { 10.0.1.1 . 5160 : "voip1", 10.2.1.1 . 5161 : ...
+> Gesendet: Donnerstag, 01. April 2021 um 20:14 Uhr
+> Von: "Florian Westphal" <fw@strlen.de>
+> Frank Wunderlich <frank-w@public-files.de> wrote:
+> > one thing:
 > >
-> >and then count with one rule only:
-> >
-> >counter name ip saddr . udp dport map @voipcounters
-> 
-> Have seen maps,but have not understood them :(
+> > # nft list counter filter voip2
+> > table ip mangle {
+> > }
+> > table ip nat {
+> > }
+> > table ip filter {
+> > 	counter voip2 {
+> > 		packets 124 bytes 7440
+> > 	}
+> > }
+>
+> Can't repro so looks like this is already fixed.
+>
+> > tables mangle and nat should not be printed (still have them separatel=
+y from converting iptables to nft)...in json-format it is right
+>
+> Yes, they should not be printed.
 
-Its just a set that returns a value instead of simple 'in set/not in
-set'.
+tested with my self-compiled nftables, and indeed it seems to be fixed:
 
-> The ip is always same ($ipvoipbox),only port differs (sip1+sip2) and this bidirectional (saddr/daddr,sport/dport) to catch traffic from/to this ip separated by sip-streams.
-> 
-> Your example seems to match only source-addr and destination port.
-
-Yes, it was an example.
-
-> Maybe its possible to match "addr" (saddr or daddr) and "port" (sport or dport),so i can have only 2 rules...with map maybe only 1
-
-There is no 'or', so you will need two rules at a minimum if you want to
-match in either direction.
-
-map voipcounters {
-	type inet_service : counter
-	elements = { 5160 : "voip1", 5161 : "voip2" }
+root@bpi-r2:~# nft -f ruleset_new.nft
+root@bpi-r2:~# nft list counter filter voip1    #using debian buster versi=
+on
+table ip mangle {
 }
+table ip nat {
+}
+table ip filter {
+        counter voip1 {
+                packets 0 bytes 0
+        }
+}
+root@bpi-r2:~# /home/frank/nftables/install/sbin/nft list counter filter v=
+oip1 #self compiled
+table ip filter {
+        counter voip1 {
+                packets 0 bytes 0
+        }
+}
+root@bpi-r2:~#
 
-ip saddr $ipvoipbox counter name udp sport map @voipcounters
-ip daddr $ipvoipbox counter name udp dport map @voipcounters
+anyway i have now moved the mangle/nat chains into my filter table in newe=
+r version of my ruleset to have only an ip(v4) and an ipv6 table (still se=
+parated as v4 is much more complicated than v6)
 
-This says 'fetch name of counter to use from @voipcounters, with 'udp
-sport/udp dport' as search key.
+Thanks, i will now test the mapping for log-counters, here it will be good=
+ to have addr/port (instead of saddr/daddr + sport/dport) too. Is there a =
+way to filter deeper into protocol stack (SIP data ignoring start registra=
+tion traffic)
 
-but with just two counters its not worth it.
+regards Frank
