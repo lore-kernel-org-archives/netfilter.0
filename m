@@ -1,40 +1,59 @@
 From: Frank Myhr <fmyhr@fhmtech.com>
-Subject: Re: nft show counter
-Date: Sat, 3 Apr 2021 13:04:18 -0400
-Message-ID: <71f75809-0fc4-2ddb-9b32-a16e580cce83@fhmtech.com>
-References: <trinity-08431e16-b4eb-4bb7-8b36-df2084481611-1617212862528@3c-app-gmx-bap62>
- <20210331214053.GB13699@breakpoint.cc>
- <d5770849-515b-5514-39ab-bb6907023ca2@fhmtech.com>
- <trinity-e144cb32-0c89-44a6-b0f6-5b9edcf5e457-1617264512699@3c-app-gmx-bap06>
- <20210401164247.ng3na2sbvrsqzcti@nisshoku.fritz.box>
- <7fe793ae-1474-883e-1f75-4746ee7a9070@fhmtech.com>
- <3A06821B-F0D1-4925-9E89-25C279EDA979@public-files.de>
+Subject: nftables "stateful object" nomenclature
+Date: Mon, 5 Apr 2021 13:19:47 -0400
+Message-ID: <76bb6b11-8d1f-d2ae-21f9-1d95c4bf5d53@fhmtech.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=larkmoor.net; s=larkmoor20140928;
-        h=Content-Transfer-Encoding:Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject; bh=f2Am2kceFY9g+1OWu+938HEnde0K9srWmLpJNOLdew0=;
-        b=MmukmPqhDk+0gubnfZZ40tU4m+QD4hfzh0WL2S6hh6Q4X5nf3AIPAHjywl4q6AMApcBJMUT8pj9ncttF2E6gK1d9QdeuPue7G6vdSjfxEYDQwfJIZExEBaq0iMj3i+r2j7RUHswoghVNgghJoZodZKaP+6SPGMPa2O473Poq+4M=;
-In-Reply-To: <3A06821B-F0D1-4925-9E89-25C279EDA979@public-files.de>
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:Message-ID:Cc:Subject:From:To; bh=H+SycnkCzUjNxQZ9fz41gN3dZNSmCwQbkGUscTEWtmg=;
+        b=V9uvoXzG58xPDr5eRDO+k2MHc2VRk76fjOCCkMkAQZUO+SZjI1ss1ou+eta9AEHjqjx4oTPkOIkylNidkdeUFwsHMhXcXb77KqI+6/QdmeX7eb71IV5OUe2i6lOdVsEXSqYTmdiXrvdWJ5qvt/WFIELU4HQVJd10Lkg0diudfhs=;
 Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: frank-w@public-files.de, netfilter@vger.kernel.org
-Cc: rieger@jikken.de
+To: netfilter@vger.kernel.org
+Cc: Florian Westphal <fw@strlen.de>
 
-On 2021/04/02 13:42, Frank Wunderlich wrote:
->> Anton & Frank W., is it OK with you if I include your examples in the
->> nftables wiki?
-> 
-> My part is ok to include in wiki...i have posted to share :) maybe in combination with the rules (old version commented out and with map) to have full example
+Hi,
 
-On 2021/04/02 18:22, Anton Rieger wrote:
-> Sure 
+I hope a developer (Florian?) can weigh in on the following terminology 
+question:
 
-Thanks, guys! I posted your example:
-https://wiki.nftables.org/wiki-nftables/index.php/Counters#Reading_named_counters_from_Python
+Linux kernel has in include/uapi/linux/netfilter/nf_tables.h:
+#define NFT_OBJECT_UNSPEC	0
+#define NFT_OBJECT_COUNTER	1
+#define NFT_OBJECT_QUOTA	2
+#define NFT_OBJECT_CT_HELPER	3
+#define NFT_OBJECT_LIMIT	4
+#define NFT_OBJECT_CONNLIMIT	5
+#define NFT_OBJECT_TUNNEL	6
+#define NFT_OBJECT_CT_TIMEOUT	7
+#define NFT_OBJECT_SECMARK	8
+#define NFT_OBJECT_CT_EXPECT	9
+#define NFT_OBJECT_SYNPROXY	10
+#define __NFT_OBJECT_MAX	11
+#define NFT_OBJECT_MAX		(__NFT_OBJECT_MAX - 1)
 
-Please let me know if you find mistakes.
+The nft man page calls only 5 of these "stateful objects":
+   ct helper
+   ct timeout
+   ct expectation
+   counter
+   quota
+
+The wiki currently calls only 2 of these "stateful objects":
+   counter
+   quota
+I'm fairly sure these are the only two that allow "nft reset".
+
+So my question is: which of the 10 objects currently in nf_tables.h are 
+properly called "stateful objects"? I mean, they're all named objects, 
+they all carry state information, they follow much (but not all) of the 
+same syntax...
+
+I'm guessing that all are "stateful objects" and the presence of "reset" 
+is just a special feature of 2 of them. But I'll wait on editing wiki 
+until getting confirmation / clarification.
 
 Thanks,
-Frank M.
+Frank
