@@ -1,30 +1,57 @@
-From: mose@onionmail.info
-Subject: Fail-closed option? (Make all policies "drop" by default for newly created
-        namespaces)
-Date: Tue, 13 Apr 2021 23:25:49 GMT
-Message-ID: <u11ahpbsujy4632sneges8wa3@onionmail.info>
-Reply-To: mose@onionmail.info
+From: =?UTF-8?Q?Pekka_J=C3=A4rvinen?= <pekka.jarvinen@gmail.com>
+Subject: nftables port forward on DHCP interface to static IP
+Date: Sun, 18 Apr 2021 18:59:42 +0300
+Message-ID: <CABvnMci0-E23tAVE3MVgToSdbNuECqtMOe2wWimMmqZ9HZ9dHg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
-Sender: mose@onionmail.info
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=+8FteVRHEYrnbAzO9qmHcSL0TMQE1/FCoCf+B2MaqJ4=;
+        b=D//Zv744l7ZV7aFK9dvnRc5R8Ky7dbiD+Z/fO+R5of9wh4TgtrEQMJ+aKxW1qGLlMC
+         nVtKwuY6VKrRuGhs+PkotHiLUUM7P+gTNoOhKyUs2Z/+B1OEZ9/eCtF2aroz18O/vDc4
+         rwSck6sg4/DTVONMNV06s4GLxmVtFFoNEvW5FAF3shWHSPhyYHAlsWDy9nKDyZRhHIx8
+         Ycp7ObM5z/v5cwFg8bgneK7dQNFT9EwlAu+Dh0fRU41jvbOcR0Inny6AhgnJA7W+GULl
+         Kzn/GThxdqHZ4BQHmO/g0S5WyEHz2bIHHOTAd++LZMA8U/sYp/Yu6LOW2LeVzPlXOwem
+         9eag==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
 Hi,
 
-Is there any option to make newly created namespaces start in a 
-fail-closed (policy drop) state by default? For example a sysctl option 
-perhaps? I want traffic to be dropped in case nftables fails due to a 
-syntax error or a missing interface or any other problem. The assumption 
-being that a valid, atomically-loaded, nftables.conf will override it 
-from inside the container at some point.
+I'm trying to setup port forward for interface which uses DHCP. I
+don't want to reference the interface's public IP in a rule. Is it
+possible? My attempt:
 
-I came up with a workaround in a few of my containers by creating a 
-separate "nftables-early.service" systemd service which happens 
-Before=network.target and is WantedBy=network-pre.target (if I recall 
-correctly). However this is dependent on the container OS (e.g. 
-non-systemd OSes) and will never be as robust as a fail-closed kernel 
-option would be.
+iifname $wanif tcp dport {12345} dnat ip to 192.168.1.11
+
+Error: Could not process rule: No such file or directory
+
+Kernel 5.11.2.
+
+define wanif =3D wan0
+define lanif =3D lan0
+define home_net =3D 192.168.1.0/24
+define home_net_gw =3D 192.168.1.1
+
+table inet filter {
+  # ...
+
+  chain prerouting {
+    type nat hook prerouting priority dstnat; policy accept;
+    ct state invalid drop
+  }
+
+  chain postrouting {
+    type nat hook postrouting priority srcnat; policy accept;
+    ct state invalid drop
+    oifname $wanif masquerade persistent comment "MasqNAT"
+    drop
+  }
+}
+
+--=20
+Pekka J=C3=A4rvinen
