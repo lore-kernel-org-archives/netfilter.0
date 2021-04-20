@@ -1,53 +1,38 @@
-From: Frank Wunderlich <frank-w@public-files.de>
-Subject: Re: device list reversed
-Date: Tue, 20 Apr 2021 13:47:16 +0200
-Message-ID: <74A02E9E-AE0B-414F-9F3F-E3A016CE1966@public-files.de>
-References: <trinity-199f77e0-dc05-45d9-85a6-3b583adcee10-1618146461717@3c-app-gmx-bap41> <20210420112804.GA26530@salvia>
-Reply-To: frank-w@public-files.de
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: nftables support for cgroup v2 filtering by path
+Date: Wed, 21 Apr 2021 01:48:26 +0200
+Message-ID: <20210420234826.GA29895@salvia>
+References: <c6823afc-70cf-3517-b464-339eb1b6554c@xpand.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1618919240;
-        bh=DThvsHp5/E1bPSgRE/MwQ3kiHHhRlWIYqpmJcxsMHn8=;
-        h=X-UI-Sender-Class:Date:In-Reply-To:References:Subject:Reply-to:To:
-         CC:From;
-        b=byOmMAj5Z9oE3fDM58XqBRkzbfML44tiQixwDeoQADBMMgNA7+m2iTscP3bjclvUF
-         5MAYjMPXGrD29dOEpEHvHuWqgrNA/g7EK5i6p+JfnTj/yB6uEZOvmeyusAZzDtjnPn
-         qqC6vYt7Bs4UIIOBb169dMA511UPcSYkvrk95S5s=
-In-Reply-To: <20210420112804.GA26530@salvia>
+Content-Disposition: inline
+In-Reply-To: <c6823afc-70cf-3517-b464-339eb1b6554c@xpand.org>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
+Content-Transfer-Encoding: 7bit
+To: Yves Perrenoud <yves-netfilter@xpand.org>
 Cc: netfilter@vger.kernel.org
 
-Am 20=2E April 2021 13:28:04 MESZ schrieb Pablo Neira Ayuso <pablo@netfilte=
-r=2Eorg>:
->On Sun, Apr 11, 2021 at 03:07:41PM +0200, Frank Wunderlich wrote:
->> Hi,
->>=20
->> i import ruleset by file with a devicelist (flowtable)
->>=20
->> devices =3D { wan, lan0, lan3 }
->>=20
->> and if i do a nft list ruleset, it gets reversed
->>=20
->> devices =3D { lan3, lan0, wan }
+On Sun, Apr 18, 2021 at 06:13:39PM -0700, Yves Perrenoud wrote:
+> Hi,
+> 
+> I'm trying to convert from iptables/ip6tables (legacy) to nftables, but
+> unfortunately, there seems to be a key element missing for me to be able to
+> achieve that, and that's for cgroup v2 support in nftables.
+> 
+> As of systemd v248 (the latest stable version), systemd now defaults to only
+> using cgroup v2. However, "meta cgroup" only works against a
+> "net_cls.classid" from cgroup v1. There seems to be no way (in 0.9.8) to
+> filter by cgroup v2 path.
+> 
+> iptables's cgroup module has a "--path" option that allows one to apply
+> rules to a given cgroup v2. It would seem that nftables should have a meta
+> "cgroup2" keyword that matches against cgroup v2 paths, to match the
+> iptables functionality.
+> 
+> So unless I'm missing something, nftables currently doesn't support cgroup
+> v2. Is there a plan to support it in the future?
 
->Each device is represented as a hook, and hook are registered using
->list_add() IIRC, which is reversing the order=2E
+JFYI: Patch has been submitted to the nf-next tree:
 
-Should list_add not append (instead of insert at 0) and if devices read fr=
-om left to right it should not reverse?
-
->Probably just sort device names alphanumerically?
-
-From=20user pov i expect the order i have used for importing=2E As far as i =
-understand internally order does not matter,only if device is listed or not=
-=2E Maybe reversing it (again) on printing? Maybe user wants wan first and =
-lan-ports after it=2E
-
-But as far as i've wrote=2E=2E=2Eit's cosmetic=2E=2E=2Ejust stumbled over =
-it
-Hi Pablo,
-regards Frank
+https://patchwork.ozlabs.org/project/netfilter-devel/patch/20210420231244.10766-1-pablo@netfilter.org/
