@@ -1,89 +1,60 @@
-From: Tao Gong <gongtao0607@gmail.com>
-Subject: Re: conntrackd inverted NAT address, endianness issue?
-Date: Wed, 21 Apr 2021 09:28:42 -0700
-Message-ID: <CAOAu+x+mHmTPi0Q9dND7WOaCNTBP0_VvJqTv=8eZOcthv-Lwhg@mail.gmail.com>
-References: <CAOAu+xL2ao_r-FK=XYFR3PORvE-E7zLOx0giRGjbB1E5cpUhrw@mail.gmail.com>
- <20210420091853.GA23774@salvia>
+From: =?utf-8?B?RnLDtm1tZWwsIENocmlzdGlhbg==?= 
+        <christian.froemmel@charite.de>
+Subject: nftables auto-merge on combined sets
+Date: Sat, 24 Apr 2021 11:08:20 +0000
+Message-ID: <ABB1C3DA-882A-4D0C-B573-C1F634F718D6@charite.de>
 Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zJEGe9FciEr5p/3dpcaMymnFX5CRmgADRl7XKgXshDg=;
-        b=QnHFV6ssO7JRpPsmeifIAGcr1IqdLAcnS/z7Dxe+7AmLCyHLeewX2dgsDIdFwQ2/4g
-         jTcIIFbJZM8TXYhOsidiJ/tlfMqisha2FIcB6hgerlk+kei+DqCi3AnBqbCVbIVCk2sQ
-         NSYSmxJ9ei1fXSt+e01AcOeG0xbN3o383wDAkJj1yeNORD2XNWpqpjOzEruU81xY8nSw
-         hWafASyTw4FzDGhyqDAnBqiqfgCoebGXzKVUiPO6Vw8t/n3OVV4PKJyecDslVXGENtF7
-         i6dtcHsLG+5PtuctDEkqOZ3EDBWBmsnJZKFAZiD+cAYK/p4ToF0rr/j1f13fpzRglRHB
-         p3YQ==
-In-Reply-To: <20210420091853.GA23774@salvia>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=charite.de; s=jun2018;
+        t=1619262501;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=uxs2UxvtJQIAis6uIdYgTuY1weALVgIaQbmPUY5OYBM=;
+        b=z5JnzZpYln/j97X7poVHJrXI68GE0T/HT3+HGbsGTQlUtXfCkJCgN77ijKpAZ8Am6s3zS8
+        l7cQ35PsP92yCmjcyqNdxRHJb1SE5+dTmjAqZ0GZed4RDoCHFhJw+S2mluxVma1DEsmFs0
+        PSA8DKmsklM4jJ2zrmOiHoI/L5e0h3w=
+Content-Language: de-DE
+Content-ID: <CD5F49D30EE909409E236627743E3D3F@charite.de>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi Pablo,
-
-Thanks. Just had it tested (x64 -> mips and x64 -> x64). Failover is
-working now. Awesome!
-
-On Tue, Apr 20, 2021 at 2:19 AM Pablo Neira Ayuso <pablo@netfilter.org> wrote:
->
-> *Message sent from a system outside of UConn.*
->
->
-> Hi,
->
-> On Mon, Apr 19, 2021 at 01:03:47PM -0700, Tao Gong wrote:
-> > Hi,
-> >
-> > I'm using conntrackd for firewall failovers. When I examine the
-> > conntrack table, I found the second firewall (the rule it is syncing
-> > to) has inverted natdst (or reply_dst) addresses:
-> >
-> > Firewall1:
-> > ```
-> > root@OpenWrt:~# conntrackd -i |grep "66.x.25.6"
-> > udp      17 src=172.25.100.137 dst=66.x.25.6 sport=53093 dport=443
-> > src=66.x.25.6 dst=76.y.1.128 sport=443 dport=53093 [ASSURED] [active
-> > since 7128s]
-> > tcp      6 ESTABLISHED src=172.25.100.137 dst=66.x.25.6 sport=58033
-> > dport=443 src=66.x.25.6 dst=76.y.1.128 sport=443 dport=58033 [ASSURED]
-> > [active since 7129s]
-> > ```
-> >
-> > Firewall2:
-> > ```
-> > root@OpenWrt2:~# conntrackd -e |grep "66.x.25.6"
-> > tcp      6 ESTABLISHED src=172.25.100.137 dst=66.x.25.6 sport=58033
-> > dport=443 [ASSURED] [active since 7234s]
-> > udp      17 src=172.25.100.137 dst=66.x.25.6 sport=53093 dport=443
-> > [ASSURED] [active since 7233s]
-> > root@OpenWrt2:~# conntrackd -c
-> > root@OpenWrt2:~# conntrackd -i |grep "66.x.25.6"
-> > tcp      6 ESTABLISHED src=172.25.100.137 dst=66.x.25.6 sport=58033
-> > dport=443 src=66.x.25.6 dst=128.1.y.76 sport=443 dport=58033 [ASSURED]
-> > mark=0 [active since 5s]
-> > udp      17 src=172.25.100.137 dst=66.x.25.6 sport=53093 dport=443
-> > src=66.x.25.6 dst=128.1.y.76 sport=443 dport=53093 [ASSURED] mark=0
-> > [active since 5s]
-> > ```
-> >
-> > Note how the second dst (natdst) is inverted. Surely the traffic isn't
-> > going through on a failover.
-> > Is this an endianness bug in encoding/decoding?
-> >
-> > Setup: (Yes I'm mixing big and little endians)
-> > Firewall1: OpenWrt on a x86_64 (little endian), kernel 4.14.180
-> > Firewall2: OpenWrt on a MIPS (big endian), kernel 4.14.209
-> > conntrack-tools 1.4.5 for both
->
-> It's a bug. Could you try this patch that I'm attaching?
-
-
-
--- 
-Best regards,
-Tao
+SGVsbG8sDQoNCndlIGFyZSBpbiB0aGUgcHJvY2VzcyBvZiBtaWdyYXRpbmcgb3VyIE9wZW5WUE4t
+R2F0ZXdheXMgZnJvbSBpcHRhYmxlcyB0byBuZnRhYmxlcy4gT3VyIG1vdGl2YXRpb246IHNpbmNl
+IHdlIGhhdmUgdXNlci1pbmRpdmlkdWFsIHJ1bGVzZXRzIGZvciBlYWNoIHVzZXIsIHdlIGhhdmUg
+c29tZSBpc3N1ZXMgd2l0aCBpcHRhYmxlcyB3aXRoIHRoZSBzZXF1ZW50aWFsIHByb2Nlc3Npbmcg
+YW5kICh3aGF0IGlzIHRoZSBiaWdnZXIgaXNzdWUpIHRoZSBnbG9iYWwgbG9ja2luZyB3aGVuIHRo
+ZSBydWxlc2V0IGNoYW5nZXMsIHdoaWNoIGhhcHBlbnMgZXZlcnkgdGltZSBhIHVzZXIgbG9ncyBp
+biBvciBvdXQuIFRoZXJlZm9yZSwgd2UgZGVjaWRlZCB0byBzd2l0Y2ggdG8gbmZ0YWJsZXMgd2l0
+aCB0aGUgYXRvbWljIHVwZGF0ZXMuDQoNCkluIHRoaXMgcHJvY2VzcyB3ZSBhcmUgY3VycmVudGx5
+IHRyeWluZyB0byBjb252ZXJ0IHRoZSBydWxlc2V0IGZyb20gdGhlIHNlcXVlbnRpYWwgaXB0YWJs
+ZXMtd2F5LCB0byB0aGUgbmZ0YWJsZXMgInNldC9jb21iaW5lZC1zZXRzIiBtZXRob2Qgb2YgbWF0
+Y2hpbmcgcGFja2V0cy4NCg0KDQpXZSBidWlsZCBjb21iaW5lZCBzZXRzIGZvciB0aGUgdXNlciBp
+biB0aGlzIHdheSAoYXMgYW4gZXhhbXBsZSBmb3IgVENQIG9ubHkpOg0KDQp0YWJsZSBpcCBvcGVu
+dnBuIHsNCiAgc2V0IHVzZXItdXNlcm5hbWVfdGNwIHsNCiAgICB0eXBlb2YgaXAgZGFkZHIgLiB0
+Y3AgZHBvcnQ7DQogICAgZmxhZ3MgaW50ZXJ2YWw7DQogICAgYXV0by1tZXJnZTsNCiAgfQ0KfQ0K
+DQoNCk5vdyB3ZSBoYXZlIHRoZSBwcm9ibGVtLCB0aGF0IHNvbWUgdXNlci1ydWxlc2V0cyBoYXZl
+IG92ZXJsYXBwaW5nIHJ1bGVzLiBUaGVzZSBhcmUgZ3JhbnRlZCBkdWUgdG8gZGlmZmVyZW50IHJ1
+bGUtZ3JvdXBzIHRoZSB1c2VyIGlzIG1lbWJlciBvZi4gaS5lLiB0aGUgdXNlciBoYXMgdGhpcyBy
+dWxlIGZyb20gZ3JvdXAgQToNCg0KICAtIDEyMy40NS42LjAvMjQgLiA4MCAjIChodHRwIHRvIHRo
+ZSB3aG9sZSBuZXR3b3JrKQ0KDQphbmQgdGhpcyBmcm9tIGdyb3VwIEI6DQoNCiAgLSAxMjMuNDUu
+Ni43IC4gODAgIyAoaHR0cCB0byBqdXN0IG9uZSBob3N0KQ0KDQoNClRoZW4gb3VyIHBhcnNlciBj
+b21iaW5lcyBib3RoIGludG8gdGhlIHNldCB3aXRoDQoNCiAgZWxlbWVudHMgPSB7DQogICAgICAx
+MjMuNDUuNi4wLzI0IC4gODAsDQogICAgICAxMjMuNDUuNi43IC4gODAsDQogICAgfQ0KDQpXaGVu
+IGluc3RhbGxpbmcgdGhpcyB3ZSBnZXQNCg0KLi9kZWJ1Z191c2VybmFtZS5uZnQ6NDo3LTIzOiBF
+cnJvcjogQ291bGQgbm90IHByb2Nlc3MgcnVsZTogRmlsZSBleGlzdHMNCiAgc2V0IHVzZXItdXNl
+cm5hbWVfdGNwIHsNCiAgICAgIF5eXl5eXl5eXl5eXl5eXl5eDQoNClRoaXMgaXNuJ3QgImF1dG8t
+bWVyZ2VkIiBhcyB3ZSBleHBlY3RlZC4gVG8gbWFrZSBpdCBhIGxpdHRsZSBtb3JlIGNvbXBsZXgs
+IHdlIGhhdmUgbmV0d29yay1yYW5nZXMgYW5kIHBvcnQtcmFuZ2VzIG9uIHNvbWUgcnVsZXMuIFRo
+ZXJlZm9yZSwgdGhlIGF1dG8tbWVyZ2Ugd291bGQgaGF2ZSB0byAidW5yb2xsIiBhbmQgbWVyZ2Ug
+Ym90aCBwYXJ0cy4NCg0KDQpJcyB0aGVyZSBhbnkgd2F5IHRvIGFjaGlldmUgdGhpcyBjb21iaW5l
+ZC1zZXRzIHdpdGggYXV0by1tZXJnZT8NCg0KDQooVG8gZ2V0IGFyb3VuZCB0aGlzLCBvbmUgY291
+bGQgY2hlY2sgaWYgaG9zdCwgbmV0d29ya3MsIHBvcnQtcmFuZ2VzIG9yIHBvcnRzIG92ZXJsYXAs
+IGFuZCBkaXNjYXJkIHRoZSAic21hbGxlciIgZGVmaW5pdGlvbi4gQnV0IHRoaXMgY291bGQgYWxz
+byBiZSBkb25lIGJ5IGF1dG8tbWVyZ2UsIGlmIEkgdW5kZXJzdGFuZCB0aGUgZmVhdHVyZSBjb3Jy
+ZWN0bHkpLg0KDQoNClJlZ2FyZHMsDQpDaHJpc3RpYW4NCg0KLS0gDQpDaGFyaXTDqSDigJMgVW5p
+dmVyc2l0w6R0c21lZGl6aW4gQmVybGluDQpCdXNpbmVzcyBkaXZpc2lvbiBJVCB8IERlcHQuIE5l
+dHdvcmsNCg0KQ2FtcHVzIENoYXJpdMOpIEJlbmphbWluIEZyYW5rbGluIChDQkYpDQpIaW5kZW5i
+dXJnZGFtbSAzMCB8IDEyMjAwIEJlcmxpbg0KDQo=
