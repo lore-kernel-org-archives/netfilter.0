@@ -1,60 +1,36 @@
-From: =?utf-8?B?RnLDtm1tZWwsIENocmlzdGlhbg==?= 
-        <christian.froemmel@charite.de>
-Subject: nftables auto-merge on combined sets
-Date: Sat, 24 Apr 2021 11:08:20 +0000
-Message-ID: <ABB1C3DA-882A-4D0C-B573-C1F634F718D6@charite.de>
+From: Frank Wunderlich <frank-w@public-files.de>
+Subject: Flowtable with ppp/bridge
+Date: Mon, 26 Apr 2021 17:30:47 +0200
+Message-ID: <16CF72C8-335A-48D2-BA6F-FF632735DCFD@public-files.de>
+Reply-To: frank-w@public-files.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=charite.de; s=jun2018;
-        t=1619262501;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=uxs2UxvtJQIAis6uIdYgTuY1weALVgIaQbmPUY5OYBM=;
-        b=z5JnzZpYln/j97X7poVHJrXI68GE0T/HT3+HGbsGTQlUtXfCkJCgN77ijKpAZ8Am6s3zS8
-        l7cQ35PsP92yCmjcyqNdxRHJb1SE5+dTmjAqZ0GZed4RDoCHFhJw+S2mluxVma1DEsmFs0
-        PSA8DKmsklM4jJ2zrmOiHoI/L5e0h3w=
-Content-Language: de-DE
-Content-ID: <CD5F49D30EE909409E236627743E3D3F@charite.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1619451052;
+        bh=63Z/oCDVAITePu3EtlJbRzOUJ65AIfbfkqRBbge7zFo=;
+        h=X-UI-Sender-Class:Date:Subject:Reply-to:To:From;
+        b=FIGkbw8FpL/DP2nIajqXMXwJX6O4t1wtqUbRqXMIH5KAnVWk3j2UR89zdoB/iymB4
+         cqubAajzUYwzBoEJSZQe9sZINoPiOcNVqoKodwEu08lKmbA6n4QhmnaGfLKwH7iIIY
+         16ynoSdmnT+geI3vvdd87nAUKoomaSqw81Uk1wuU=
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-SGVsbG8sDQoNCndlIGFyZSBpbiB0aGUgcHJvY2VzcyBvZiBtaWdyYXRpbmcgb3VyIE9wZW5WUE4t
-R2F0ZXdheXMgZnJvbSBpcHRhYmxlcyB0byBuZnRhYmxlcy4gT3VyIG1vdGl2YXRpb246IHNpbmNl
-IHdlIGhhdmUgdXNlci1pbmRpdmlkdWFsIHJ1bGVzZXRzIGZvciBlYWNoIHVzZXIsIHdlIGhhdmUg
-c29tZSBpc3N1ZXMgd2l0aCBpcHRhYmxlcyB3aXRoIHRoZSBzZXF1ZW50aWFsIHByb2Nlc3Npbmcg
-YW5kICh3aGF0IGlzIHRoZSBiaWdnZXIgaXNzdWUpIHRoZSBnbG9iYWwgbG9ja2luZyB3aGVuIHRo
-ZSBydWxlc2V0IGNoYW5nZXMsIHdoaWNoIGhhcHBlbnMgZXZlcnkgdGltZSBhIHVzZXIgbG9ncyBp
-biBvciBvdXQuIFRoZXJlZm9yZSwgd2UgZGVjaWRlZCB0byBzd2l0Y2ggdG8gbmZ0YWJsZXMgd2l0
-aCB0aGUgYXRvbWljIHVwZGF0ZXMuDQoNCkluIHRoaXMgcHJvY2VzcyB3ZSBhcmUgY3VycmVudGx5
-IHRyeWluZyB0byBjb252ZXJ0IHRoZSBydWxlc2V0IGZyb20gdGhlIHNlcXVlbnRpYWwgaXB0YWJs
-ZXMtd2F5LCB0byB0aGUgbmZ0YWJsZXMgInNldC9jb21iaW5lZC1zZXRzIiBtZXRob2Qgb2YgbWF0
-Y2hpbmcgcGFja2V0cy4NCg0KDQpXZSBidWlsZCBjb21iaW5lZCBzZXRzIGZvciB0aGUgdXNlciBp
-biB0aGlzIHdheSAoYXMgYW4gZXhhbXBsZSBmb3IgVENQIG9ubHkpOg0KDQp0YWJsZSBpcCBvcGVu
-dnBuIHsNCiAgc2V0IHVzZXItdXNlcm5hbWVfdGNwIHsNCiAgICB0eXBlb2YgaXAgZGFkZHIgLiB0
-Y3AgZHBvcnQ7DQogICAgZmxhZ3MgaW50ZXJ2YWw7DQogICAgYXV0by1tZXJnZTsNCiAgfQ0KfQ0K
-DQoNCk5vdyB3ZSBoYXZlIHRoZSBwcm9ibGVtLCB0aGF0IHNvbWUgdXNlci1ydWxlc2V0cyBoYXZl
-IG92ZXJsYXBwaW5nIHJ1bGVzLiBUaGVzZSBhcmUgZ3JhbnRlZCBkdWUgdG8gZGlmZmVyZW50IHJ1
-bGUtZ3JvdXBzIHRoZSB1c2VyIGlzIG1lbWJlciBvZi4gaS5lLiB0aGUgdXNlciBoYXMgdGhpcyBy
-dWxlIGZyb20gZ3JvdXAgQToNCg0KICAtIDEyMy40NS42LjAvMjQgLiA4MCAjIChodHRwIHRvIHRo
-ZSB3aG9sZSBuZXR3b3JrKQ0KDQphbmQgdGhpcyBmcm9tIGdyb3VwIEI6DQoNCiAgLSAxMjMuNDUu
-Ni43IC4gODAgIyAoaHR0cCB0byBqdXN0IG9uZSBob3N0KQ0KDQoNClRoZW4gb3VyIHBhcnNlciBj
-b21iaW5lcyBib3RoIGludG8gdGhlIHNldCB3aXRoDQoNCiAgZWxlbWVudHMgPSB7DQogICAgICAx
-MjMuNDUuNi4wLzI0IC4gODAsDQogICAgICAxMjMuNDUuNi43IC4gODAsDQogICAgfQ0KDQpXaGVu
-IGluc3RhbGxpbmcgdGhpcyB3ZSBnZXQNCg0KLi9kZWJ1Z191c2VybmFtZS5uZnQ6NDo3LTIzOiBF
-cnJvcjogQ291bGQgbm90IHByb2Nlc3MgcnVsZTogRmlsZSBleGlzdHMNCiAgc2V0IHVzZXItdXNl
-cm5hbWVfdGNwIHsNCiAgICAgIF5eXl5eXl5eXl5eXl5eXl5eDQoNClRoaXMgaXNuJ3QgImF1dG8t
-bWVyZ2VkIiBhcyB3ZSBleHBlY3RlZC4gVG8gbWFrZSBpdCBhIGxpdHRsZSBtb3JlIGNvbXBsZXgs
-IHdlIGhhdmUgbmV0d29yay1yYW5nZXMgYW5kIHBvcnQtcmFuZ2VzIG9uIHNvbWUgcnVsZXMuIFRo
-ZXJlZm9yZSwgdGhlIGF1dG8tbWVyZ2Ugd291bGQgaGF2ZSB0byAidW5yb2xsIiBhbmQgbWVyZ2Ug
-Ym90aCBwYXJ0cy4NCg0KDQpJcyB0aGVyZSBhbnkgd2F5IHRvIGFjaGlldmUgdGhpcyBjb21iaW5l
-ZC1zZXRzIHdpdGggYXV0by1tZXJnZT8NCg0KDQooVG8gZ2V0IGFyb3VuZCB0aGlzLCBvbmUgY291
-bGQgY2hlY2sgaWYgaG9zdCwgbmV0d29ya3MsIHBvcnQtcmFuZ2VzIG9yIHBvcnRzIG92ZXJsYXAs
-IGFuZCBkaXNjYXJkIHRoZSAic21hbGxlciIgZGVmaW5pdGlvbi4gQnV0IHRoaXMgY291bGQgYWxz
-byBiZSBkb25lIGJ5IGF1dG8tbWVyZ2UsIGlmIEkgdW5kZXJzdGFuZCB0aGUgZmVhdHVyZSBjb3Jy
-ZWN0bHkpLg0KDQoNClJlZ2FyZHMsDQpDaHJpc3RpYW4NCg0KLS0gDQpDaGFyaXTDqSDigJMgVW5p
-dmVyc2l0w6R0c21lZGl6aW4gQmVybGluDQpCdXNpbmVzcyBkaXZpc2lvbiBJVCB8IERlcHQuIE5l
-dHdvcmsNCg0KQ2FtcHVzIENoYXJpdMOpIEJlbmphbWluIEZyYW5rbGluIChDQkYpDQpIaW5kZW5i
-dXJnZGFtbSAzMCB8IDEyMjAwIEJlcmxpbg0KDQo=
+Hi,
+I try to setup a flowtable for use with ppp(oe) and bridge interface=2E
+
+http://forum=2Ebanana-pi=2Eorg/t/new-netfilter-flow-table-based-hnat/12049=
+/60?u=3Dfrank-w
+
+table ip filter {
+flowtable ft {
+hook ingress priority 10;
+devices =3D {"ppp8","lanbr0"};
+flags offload
+}
+
+I cannot get nft (0=2E9=2E8) apply this
+
+Any idea? Is there a kernel option or something in nft missing?
+regards Frank
