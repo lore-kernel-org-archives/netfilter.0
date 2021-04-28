@@ -1,66 +1,48 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Frank Wunderlich <frank-w@public-files.de>
 Subject: Re: Flowtable with ppp/bridge
-Date: Wed, 28 Apr 2021 01:49:29 +0200
-Message-ID: <20210427234929.GA19570@salvia>
-References: <16CF72C8-335A-48D2-BA6F-FF632735DCFD@public-files.de>
- <20210426172924.GA3178@salvia>
- <8AA68E42-DE50-4591-BCF0-18A058FA93F8@public-files.de>
- <20210426175703.GA3590@salvia>
- <B1C290C8-8CF7-435B-88B0-29A09E4B0CA6@public-files.de>
+Date: Wed, 28 Apr 2021 10:07:09 +0200
+Message-ID: <F9658CCF-3C23-4921-B27A-5EA1963BF33C@public-files.de>
+References: <16CF72C8-335A-48D2-BA6F-FF632735DCFD@public-files.de> <20210426172924.GA3178@salvia> <8AA68E42-DE50-4591-BCF0-18A058FA93F8@public-files.de> <20210426175703.GA3590@salvia> <B1C290C8-8CF7-435B-88B0-29A09E4B0CA6@public-files.de> <20210427234929.GA19570@salvia>
+Reply-To: frank-w@public-files.de
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <B1C290C8-8CF7-435B-88B0-29A09E4B0CA6@public-files.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1619597234;
+        bh=hguFBAgB7MkRHh0WdsQhbJ1aJG36KXtbeuuGQquB9yM=;
+        h=X-UI-Sender-Class:Date:In-Reply-To:References:Subject:Reply-to:To:
+         CC:From;
+        b=dnLsXBSGtFAelBMHveXbmV2j2zMeQLSSv+V1IJ5pjWB93T4Q174zFl+OyQGDDkMNF
+         Z0NrHdZ4yjMykMOYyHpu1Y8qVVmLGNenl3R8HUTcwZcV+QNcmNMAiOb/mIb14R1xv6
+         8h9er9XL44qzckK6YRRSOWMMfFustXcsgP5OVKq0=
+In-Reply-To: <20210427234929.GA19570@salvia>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Frank Wunderlich <frank-w@public-files.de>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter@vger.kernel.org
 
-On Mon, Apr 26, 2021 at 08:08:05PM +0200, Frank Wunderlich wrote:
-> Am 26. April 2021 19:57:03 MESZ schrieb Pablo Neira Ayuso <pablo@netfilter.org>:
-> >On Mon, Apr 26, 2021 at 07:51:11PM +0200, Frank Wunderlich wrote:
-> >> Hi Pablo,
-> >> 
-> >> Is alex' guess right and i need to use physical interface instead of
-> >> the virtual one?
-> >
-> >Confusing, you reported an example that works:
-> >
-> >http://forum.banana-pi.org/t/new-netfilter-flow-table-based-hnat/12049/30
-> >
-> >That was in March 2021.
-> 
-> That was a test without ppp/vlan/bridge on my test device (to make
-> performance test and looking for bindings on simple setup). Now i'm
-> working on my main router where i use pppoe to my isp which needs to
-> be encapsulated into a vlan (to separate from voip).
-> 
-> >> In my case i have ppp connection over vlan on wan port.
-> >> 
-> >> ppp8 => wan.110 => wan
-> >> 
-> >> Lan side (bridge) may work,but for ppp it sounds wrong to me.
-> >
-> >Just add the 'wan' device to the flowtable, as you did back in March.
-> 
-> Ok, i try it...If this works also for traffic routed to the ppp
-> interface then it is ok. Forwarding is done from lanbr0 to ppp8
-> virtual interfaces not to physical interfaces directly like i've
-> done on test in March
+Hi
 
-Since Linux kernel 3.13-rc, the flowtable is capable of autodetecting
-your existing network device configurations. Therefore, you only have
-to add the physical devices in the flowtable definition.
+Does it depend on any other recent changes?
 
-The flowtable offload supports for:
+I have backported v1 of the offload-series to 5=2E10 ([1] maybe i did any =
+mistake there) to have lts kernel running while testing on main-router=2E
 
-- VLAN device.
-- Bridge VLAN filtering.
-- PPPoE device.
-- Bridge device.
+Direct lan-wan hnat works,forward to pppoe is broken (i can apply with wan=
+/lan physical devices,but no traffic through ppp)=2Eon client i get connect=
+ion-reset,pppoe session on router stays alive=2E
 
-and combinations of these devices.
+This is an entry from the mtk entries (mt7623):
 
-PPPoE over VLAN is also supported, I tested this specifically before
-submission upstream.
+01ac6 UNB IPv4 5T orig=3D192=2E168=2E0=2E21:52136->195=2E20=2E250=2E26:443=
+ new=3D217=2E61=2E147=2Exx:57010->217=2E72=2E196=2E71:443 eth=3D02:11:02:03=
+:04:05->00:00:5e:00:01:02 etype=3D0101 vlan=3D140,0 ib1=3D1000019d ib2=3D00=
+7ff020
+
+Vlan140 is correct (accidentally wrote 110 above)=2E Sourceip is correctly=
+ changed from private to public=2E I wonder about etype and target ip=2E I =
+think target ip should stay same and etype imho should be 88xx (vlan/pppoe-=
+s)=2E
+
+[1] https://github=2Ecom/frank-w/BPI-R2-4=2E14/commits/5=2E10-hnat
+regards Frank
