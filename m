@@ -1,7 +1,7 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Re: Flowtable with ppp/bridge
-Date: Mon, 3 May 2021 00:11:22 +0200
-Message-ID: <20210502221122.GA19395@salvia>
+From: Frank Wunderlich <frank-w@public-files.de>
+Subject: Aw: Re: Re: Flowtable with ppp/bridge
+Date: Mon, 3 May 2021 20:56:48 +0200
+Message-ID: <trinity-140ff956-faa3-4db5-a7b5-b89f01c7b715-1620068208738@3c-app-gmx-bap65>
 References: <16CF72C8-335A-48D2-BA6F-FF632735DCFD@public-files.de>
  <20210426172924.GA3178@salvia>
  <8AA68E42-DE50-4591-BCF0-18A058FA93F8@public-files.de>
@@ -12,37 +12,41 @@ References: <16CF72C8-335A-48D2-BA6F-FF632735DCFD@public-files.de>
  <4119615D-30F5-4A05-A206-5B7E97754F57@public-files.de>
  <trinity-f42dffe4-8c59-4f94-85ad-415d83452465-1619704777495@3c-app-gmx-bs69>
  <trinity-ff6011a6-3075-4189-8283-8dab8158b881-1619963468385@3c-app-gmx-bs63>
+ <20210502221122.GA19395@salvia>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <trinity-ff6011a6-3075-4189-8283-8dab8158b881-1619963468385@3c-app-gmx-bs63>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1620068208;
+        bh=jcqDN3mmLszI7U3ENs3TpabhiW6fepSFVHdW9eLKAuA=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=c77/bTjhcxRFN9tP7jBsO2bTOiy3Up4jxi0T2ACroUV1jyWJB00WkTGmvuW4yfSKx
+         Nomxb3a+yggE7N3y8QDobcLwSp7xxSsBHFLFj+ohhxT4KDvxOT/pMemn0QVKRveV4n
+         JTJsCb0/eYNMtG9Q8kcs5edt2hyFUFr8yPKFuu4k=
+In-Reply-To: <20210502221122.GA19395@salvia>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Frank Wunderlich <frank-w@public-files.de>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter@vger.kernel.org
 
-On Sun, May 02, 2021 at 03:51:08PM +0200, Frank Wunderlich wrote:
-> Hi,
-> 
-> i got a bit further and it looks like an MTU-Issue
-> 
-> i tested now with my 5.10 bridges,vlan and pppoe
-> 
-> first 2 working without problems, pppoe works only if i reduce mtu to e.g. 1480 (pppoe has 1492).
+Hi Pablo
+
+> Gesendet: Montag, 03. Mai 2021 um 00:11 Uhr
+> Von: "Pablo Neira Ayuso" <pablo@netfilter.org>
+
+> You have to add a rule to clamp TCP mss to path MTU.
 >
-> i tried with this patch (found as difference between my 5.10 and 5.12 hnat trees), but this does not solve it.
-> 
-> https://github.com/frank-w/BPI-R2-4.14/commit/5f7d57280c1982d993d5f4ff0edac310f820f607 (bpf: Drop MTU check when doing TC-BPF redirect to ingress)
-> 
-> any idea? i wonder why mtu is a problem here, as with 1500 default i
-> still got internet-connection (over pppoe on main-router too) and
-> due to Pathdiscovery it should fragment. Seems this is not working
-> in 5.10 for flowtable. Without flowtable (disable "flow add" line,
-> disabling "flags offload" is not enough) i have no issues.
-> 
-> any idea?
+> ... tcp flags syn tcp option maxseg size set rt mtu
 
-You have to add a rule to clamp TCP mss to path MTU.
+Thanks i try this like described here (just for reference):
 
-... tcp flags syn tcp option maxseg size set rt mtu
+https://wiki.nftables.org/wiki-nftables/index.php/Mangling_packet_headers
+
+my MTU broadcast via dnsmasq does not work for all client-devices
+
+but imho this should affect 5.12 and 5.10 without flowtable too (because l=
+imit is the ppp-tunnel in default Gateway), right?? so it looks like flowt=
+able in 5.10 breaks the Path Discovery or prevents fragmentation which sho=
+uld normally happen if packets are too big.
+
+regards Frank
