@@ -1,74 +1,148 @@
-From: =?UTF-8?Q?Przemys=c5=82aw_Kowalczyk?= <pkowalczyk@efigence.com>
-Subject: nf does not DNAT, but also does not not-NAT
-Date: Wed, 5 May 2021 15:43:38 +0200
-Message-ID: <91e09af5-84f8-8d6d-7b03-a74f6a355cf6@efigence.com>
+From: Turritopsis Dohrnii Teo En Ming <ceo.teo.en.ming@gmail.com>
+Subject: [SOLVED] Webmin web user interface on Linux mail server is inaccessible
+Date: Wed, 5 May 2021 22:05:13 +0800
+Message-ID: <CAMEJMGHrC4-qETY_wJwXgf29Fg5xAMkGwQEEPkpf=aCNbYaDYw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=Efigence.onmicrosoft.com; s=selector1-Efigence-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=IuxaA8Qf6ACELg4Gccug38rLO+O03bG7vp9sJPCJRPU=;
- b=n65oaFVkBYPdz0m8+MgdRKdaL6UYOdP4C1CDPYU038opRjEpZpL0oCzrBnNfqAmQxI3eDz+ieGhN1Z3FAiVumoMro1wKmGirA1EdssLrUjIOfvwA6w2FPXUS7xUni5QTfolopEqYkjqLmtFo4QYn5BA8Q8FHCvhDGBJiBIDZWqM=
-Content-Language: en-GB
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=+kUG2TF6F8iWfu+HwbHtfgMioS65PmKIUJ2leMhWyQE=;
+        b=RZobEzB3txbKPu+R2neeGzM6dsvQVzLdb2djIHG1gVDJABj1TksFXGSM+oS/I25JGN
+         CRvvhKpHt1MpuLve80gk6c57+hUkEzdei7ENwRGyB5en3+qDv3ph1NXLf3R8Js1j4QsI
+         O/pQ32K4sa2CPYqXITgGOq0ZHT0un6lT0JibJnd4g3YJMzlXLdY8XiIe/17ZmaiXRLtr
+         VBS1R6AN1OBNOc1ZyHz+oWuXuO4JPoyWgyRCVS229A7YgqeUAEHajRa3DYJ2y0BiCglU
+         5oYWWOXwG+9zI3DEQm6ua6jN7eCH8jAJUHLHyjatZq3jNq9qKQnToBB8X+CB7x7xvwCI
+         pzoQ==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
+Cc: ceo@teo-en-ming-corp.com
 
-Hello,
+Subject: [SOLVED] Webmin web user interface on Linux mail server is inaccessible
 
-I have a VPN server (StrongSwan IPSEC, OpenVPN), where multiple peers
-have different network address translations (SNAT, DNAT, SNAT + DNAT)
-configured and it worked until recently, when after small
-reconfiguration one of the peers doesn't work properly.
-SNAT works but DNAT doesn't in general. For further analysis I chose a
-particular host pair. I can connect to 172.25.6.21 and the source
-address is rewritten to 100.64.104.5, but that host cannot connect to
-100.64.104.129, which should DNAT to 10.0.10.12. When I tcpdump the
-traffic, I can only see 172.25.6.16/28 -> 100.64.104.129 [S], where
-normally it should be followed by 172.25.6.16/28 -> 10.0.10.12 [S].
-xtables-monitor tracing shows that this packet matches the DNAT rule,
-but is discarded by the end of PREROUTING chain, having in fact its
-destination address untouched.
-At first, I wanted to check whether this packet is actually DNATted or
-not and came up with the following ruleset:
+Good day from Singapore,
 
-=A0pkts bytes target=A0=A0=A0=A0 prot opt in=A0=A0=A0=A0 out=A0=A0=A0=A0 so=
-urce=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0
-destination
-=A0=A0 81=A0 4124 DNAT=A0=A0=A0=A0=A0=A0 tcp=A0 --=A0 *=A0=A0=A0=A0=A0 *=A0=
-=A0=A0=A0=A0=A0 172.25.6.16/28=A0=A0=A0=A0=A0=A0
-100.64.104.129=A0=A0=A0=A0=A0=A0 to:10.0.10.12
-=A0=A0=A0 0=A0=A0=A0=A0 0 RETURN=A0=A0=A0=A0 all=A0 --=A0 *=A0=A0=A0=A0=A0=
-=20
-*=A0=A0=A0=A0=A0=A0 172.25.6.16/28=A0=A0=A0=A0=A0=A0
-10.0.10.12
-=A0=A0=A0 0=A0=A0=A0=A0 0 RETURN=A0=A0=A0=A0 all=A0 --=A0 *=A0=A0=A0=A0=A0=
-=20
-*=A0=A0=A0=A0=A0=A0 172.25.6.16/28=A0=A0=A0=A0=A0=A0
-100.64.104.129
+Today 5th May 2021 Wed, my colleague Edward Joseph Snowden (fictitious
+name used here) told me that Webmin web user interface on client's
+Linux mail server is not accessible.
 
-And this got me to the conclusion written in the subject. Notice the
-packet counters - packet gets allegedly DNATted, but later matches
-neither original nor translated destination.
-What's important - there is one UDP service on my side, for which DNAT
-works (!) until the remote application using it gets restarted - then it
-doesn't (!!!).
+So I putty/ssh into the Linux mail server, which is a CentOS 6.8.
 
-What I've tried: kernel update, reboot, rephrasing the rules to match
-different IPs, ports - to no avail.
+First thing, I checked the configuration of Webmin.
 
-AFAIK other peers that we DNAT have no problems.
+# ps -ef | grep webmin
 
-# uname -a
-Linux hq-sitevpn 4.19.0-16-amd64 #1 SMP Debian 4.19.181-1 (2021-03-19)
-x86_64 GNU/Linux
+/usr/bin/perl /usr/libexec/webmin/miniserv.pl /etc/webmin/miniserv.conf
 
-# iptables -V
-iptables v1.8.2 (nf_tables)
+# nano /etc/webmin/miniserv.conf
 
-strongswan: 5.7.2-1
+Partial Contents of /etc/webmin/miniserv.conf:
 
---
-Przemyslaw Kowalczyk
+port=10101
 
+listen=10101
+
+From the above snippets, Webmin is not listening on the default port
+of 10000 but 10101.
+
+Then I proceeded to check the running Linux iptables firewall rules.
+
+# iptables -S | grep 10101
+
+I noticed that TCP port 10101 is NOT open.
+
+I checked /etc/init.d/iptables
+
+Partial Contents of /etc/init.d/iptables
+
+IPTABLES=iptables
+
+IPTABLES_DATA=/etc/sysconfig/$IPTABLES
+
+IPTABLES_FALLBACK_DATA=${IPTABLES_DATA}.fallback
+
+IPTABLES_CONFIG=/etc/sysconfig/${IPTABLES}-config
+
+IPV=${IPTABLES%tables} # ip for ipv4 | ip6 for ipv6
+
+[ "$IPV" = "ip" ] && _IPV="ipv4" || _IPV="ipv6"
+
+PROC_IPTABLES_NAMES=/proc/net/${IPV}_tables_names
+
+VAR_SUBSYS_IPTABLES=/var/lock/subsys/$IPTABLES
+
+From the above snippet, Linux iptables firewall rules are saved in
+/etc/sysconfig/iptables
+
+I checked /etc/sysconfig/iptables and noticed that it contains the
+following line:
+
+[root@mail.teo-en-ming-corp.com init.d]# cat /etc/sysconfig/iptables |
+grep 10101
+
+-A INPUT ! -i lo -p tcp -m state --state NEW -m tcp --dport 10101 -j ACCEPT
+
+Apparently the saved iptables firewall rules DO allow TCP port 10101.
+
+To solve the problem, I executed the following command.
+
+# service iptables restart
+
+This allows the saved iptables firewall rules to be reloaded. Now TCP
+port 10101 is open in the Linux iptables firewall.
+
+Besides the above issue, I also noticed that new iptables firewall
+rules were added to block the Windows Server in the same subnet from
+accessing it.
+
+# iptables -S | grep xxx
+
+-A DENYIN -s 192.168.1.xxx/32 ! -i lo -j DROP
+
+-A DENYOUT -d 192.168.1.xxx/32 ! -o lo -j LOGDROPOUT
+
+I proceeded to delete the above 2 iptables firewall rules.
+
+# iptables -D DENYIN -s 192.168.1.xxx/32 ! -i lo -j DROP
+
+# iptables -D DENYOUT -d 192.168.1.xxx/32 ! -o lo -j LOGDROPOUT
+
+Now Webmin web user interface is accessible from the Windows Server in
+the same subnet. Turritopsis Dohrnii Teo En Ming has solved the
+problem.
+
+Mr. Turritopsis Dohrnii Teo En Ming, 43 years old as of 5th May 2021,
+is a TARGETED INDIVIDUAL living in Singapore. He is an IT Consultant
+with a System Integrator (SI)/computer firm in Singapore. He is an IT
+enthusiast.
+
+
+
+
+
+-----BEGIN EMAIL SIGNATURE-----
+
+The Gospel for all Targeted Individuals (TIs):
+
+[The New York Times] Microwave Weapons Are Prime Suspect in Ills of
+U.S. Embassy Workers
+
+Link:
+https://www.nytimes.com/2018/09/01/science/sonic-attack-cuba-microwave.html
+
+********************************************************************************************
+
+Singaporean Targeted Individual Mr. Turritopsis Dohrnii Teo En Ming's
+Academic Qualifications as at 14 Feb 2019 and refugee seeking attempts
+at the United Nations Refugee Agency Bangkok (21 Mar 2017), in Taiwan
+(5 Aug 2019) and Australia (25 Dec 2019 to 9 Jan 2020):
+
+[1] https://tdtemcerts.wordpress.com/
+
+[2] https://tdtemcerts.blogspot.sg/
+
+[3] https://www.scribd.com/user/270125049/Teo-En-Ming
+
+-----END EMAIL SIGNATURE-----
