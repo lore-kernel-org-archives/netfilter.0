@@ -1,7 +1,7 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Re: Re: Re: Flowtable with ppp/bridge
-Date: Tue, 4 May 2021 13:42:56 +0200
-Message-ID: <20210504114256.GA6473@salvia>
+From: Frank Wunderlich <frank-w@public-files.de>
+Subject: Aw: Re: Re: Re: Re: Flowtable with ppp/bridge
+Date: Wed, 5 May 2021 10:55:24 +0200
+Message-ID: <trinity-95c69486-d51d-4c21-8923-e845e0c04269-1620204924394@3c-app-gmx-bs20>
 References: <B1C290C8-8CF7-435B-88B0-29A09E4B0CA6@public-files.de>
  <20210427234929.GA19570@salvia>
  <F9658CCF-3C23-4921-B27A-5EA1963BF33C@public-files.de>
@@ -12,84 +12,56 @@ References: <B1C290C8-8CF7-435B-88B0-29A09E4B0CA6@public-files.de>
  <trinity-140ff956-faa3-4db5-a7b5-b89f01c7b715-1620068208738@3c-app-gmx-bap65>
  <20210503213213.GA17087@salvia>
  <trinity-13a72f9d-3ac6-45a0-a24d-05d3415697a6-1620125664660@3c-app-gmx-bap14>
+ <20210504114256.GA6473@salvia>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <trinity-13a72f9d-3ac6-45a0-a24d-05d3415697a6-1620125664660@3c-app-gmx-bap14>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1620204924;
+        bh=hRsYZjdOjmuAGHSnZS4ESzWG6FVXjJri6n8zXbCLQsE=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=ab18J+0tBRiH/k2hMYIlrc684Li2mFiKy9yDghbip8SxwJoKZALSXMZSE9cvQOnWv
+         mszW+zu/KKfBB0C6imVQTp8Kc98gSysV0TX1rtA2aOPlMlX7YBS74R2KCn77A2kGb0
+         8V5dZQ5v0oTbDqqMIhVG3cq/lLqlil7ci0vy081M=
+In-Reply-To: <20210504114256.GA6473@salvia>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Frank Wunderlich <frank-w@public-files.de>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter@vger.kernel.org
 
-On Tue, May 04, 2021 at 12:54:24PM +0200, Frank Wunderlich wrote:
-> > Gesendet: Montag, 03. Mai 2021 um 23:32 Uhr
-> > Von: "Pablo Neira Ayuso" <pablo@netfilter.org>
-> 
-> > On Mon, May 03, 2021 at 08:56:48PM +0200, Frank Wunderlich wrote:
-> > I have updated the wiki: you have to mangle the TCP MSS options of the
-> > original syn and the reply syn+ack packets.
-> 
-> does old rule not match both directions (syn and syn+ack)? it looks like
-> you have only removed the "oifname ppp0"
+Hi,
+> Gesendet: Dienstag, 04. Mai 2021 um 13:42 Uhr
+> Von: "Pablo Neira Ayuso" <pablo@netfilter.org>
+
+> You also need TCP clamp MTU in a non-flowtable setup.
+hi,
+thats clear now, but i guess i had not much problems till now because of P=
+ath discovery
+
+> > $ifwan is my ppp8, and "tcp flags syn" imho should match syn and syn+a=
+ck.
 >
-> > > but imho this should affect 5.12 and 5.10 without flowtable too
-> > > (because limit is the ppp-tunnel in default Gateway), right?? so it
-> > > looks like flowtable in 5.10 breaks the Path Discovery or prevents
-> > > fragmentation which should normally happen if packets are too big.
-> >
-> > Did you try with the rule that mangles both the original syn and the
-> > reply syn+ack packets? Do not restrict mangling to oifname pppoe0.
-> 
-> my last tests were completely without any mss fix, so i should have
-> always the problem with and without flowtable in all
-> Kernel-versions. but i had the problem only in 5.10 with flowtable,
-> so i guess flowtable in 5.10 blocks the normal behaviour or adding
-> additional headers internally which prevents a normal forward.
+> syn+ack matches iifname $ifwan.
 
-You also need TCP clamp MTU in a non-flowtable setup.
+imho this depends on the initiator of the connection. if i try to establis=
+h connection from my lan, this is true, and mss is set by oifname ppp0. Af=
+air SYN-ACK from "Server" does use my size for syn-ack (if it is smaller t=
+hat its size), or am i wrong?
 
-> my current rule is this (only on main-router without any extensive tests...):
-> 
->     chain FORWARD {
->         type filter hook forward priority 0; policy drop;
->         #https://wiki.nftables.org/wiki-nftables/index.php/Mangling_packet_headers
->         #MSS fix for pppoe 1500 - 8 (pppoe) - 20 (ipv4) - 20 (TCP)
->         oifname $ifwan tcp flags syn tcp option maxseg size set 1452
-> 
-> $ifwan is my ppp8, and "tcp flags syn" imho should match syn and syn+ack.
+if i initiate a connection from the public internet, i need to match iifna=
+me ppp0, but only if my ISP does not modify mss on pushing the initial SYN=
+-Packet through the ppp-tunnel. But afair in this case i modify mss with o=
+ifname, but on response (SYN-ACK) i send back to the initiator.
 
-syn+ack matches iifname $ifwan.
-
-> Dropping the "oifname pppX" makes no sense for me as the
-> ppp-interface is the bottleneck. why should i watch for tcp-packets
-> on lan-only where every interface has the mtu 1500? imho i need to
-> limit only the packets going through the bottleneck on my side. The
-> other side should be handled by ISP (but with syn and syn-ack i
-> watch both directions and modify if needed).
-> 
-> btw. i read that the flow offload makes a bypass resulting that
-> further rules are not processed, right?
+> Only the two initial syn and syn+ack packets follow the classic
+> forwarding path. Therefore, the FORWARD chain in your example above is
+> evaluated only for the two initial packets of the TCP connection.
 >
-> i have some limits in formward-chain, that may be skipped.
-> 
-> example:
-> 
->    chain FORWARD {
->         type filter hook forward priority 0; policy drop;
->         oifname $ifwan tcp flags syn tcp option maxseg size set 1452
->         ip protocol { tcp, udp } flow add @f
->         oifname $ifexternal ip saddr $iprangesblocked jump REJECTED comment "block internal ip ranges to have only internal access"
->         udp dport {41,43,44,58,59,60} jump REJECTED comment "block ipv6 in ipv4 tunnel"
-> 
-> is it true that bottom 2 rules are not processed due to the
-> flowtable? i guess (!) flowtable only affects established
-> connections where bottom 2 rules prevent this ("connections" do not
-> enter established state because dropped on first packet).
+> You should add the 'flow add' rule at the bottom of your ruleset in
+> your example above.
 
-Only the two initial syn and syn+ack packets follow the classic
-forwarding path. Therefore, the FORWARD chain in your example above is
-evaluated only for the two initial packets of the TCP connection.
+good to know, so flowtable does always "accept" matching packets (here all=
+ udp/tcp), right?
+and final foward-policy does neyer hit if flowtable condition matches.
 
-You should add the 'flow add' rule at the bottom of your ruleset in
-your example above.
+regards Frank
