@@ -1,67 +1,74 @@
-From: Frank Wunderlich <frank-w@public-files.de>
-Subject: Aw: Re: Re: Re: Re: Flowtable with ppp/bridge
-Date: Wed, 5 May 2021 10:55:24 +0200
-Message-ID: <trinity-95c69486-d51d-4c21-8923-e845e0c04269-1620204924394@3c-app-gmx-bs20>
-References: <B1C290C8-8CF7-435B-88B0-29A09E4B0CA6@public-files.de>
- <20210427234929.GA19570@salvia>
- <F9658CCF-3C23-4921-B27A-5EA1963BF33C@public-files.de>
- <4119615D-30F5-4A05-A206-5B7E97754F57@public-files.de>
- <trinity-f42dffe4-8c59-4f94-85ad-415d83452465-1619704777495@3c-app-gmx-bs69>
- <trinity-ff6011a6-3075-4189-8283-8dab8158b881-1619963468385@3c-app-gmx-bs63>
- <20210502221122.GA19395@salvia>
- <trinity-140ff956-faa3-4db5-a7b5-b89f01c7b715-1620068208738@3c-app-gmx-bap65>
- <20210503213213.GA17087@salvia>
- <trinity-13a72f9d-3ac6-45a0-a24d-05d3415697a6-1620125664660@3c-app-gmx-bap14>
- <20210504114256.GA6473@salvia>
+From: =?UTF-8?Q?Przemys=c5=82aw_Kowalczyk?= <pkowalczyk@efigence.com>
+Subject: nf does not DNAT, but also does not not-NAT
+Date: Wed, 5 May 2021 15:43:38 +0200
+Message-ID: <91e09af5-84f8-8d6d-7b03-a74f6a355cf6@efigence.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1620204924;
-        bh=hRsYZjdOjmuAGHSnZS4ESzWG6FVXjJri6n8zXbCLQsE=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=ab18J+0tBRiH/k2hMYIlrc684Li2mFiKy9yDghbip8SxwJoKZALSXMZSE9cvQOnWv
-         mszW+zu/KKfBB0C6imVQTp8Kc98gSysV0TX1rtA2aOPlMlX7YBS74R2KCn77A2kGb0
-         8V5dZQ5v0oTbDqqMIhVG3cq/lLqlil7ci0vy081M=
-In-Reply-To: <20210504114256.GA6473@salvia>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=Efigence.onmicrosoft.com; s=selector1-Efigence-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=IuxaA8Qf6ACELg4Gccug38rLO+O03bG7vp9sJPCJRPU=;
+ b=n65oaFVkBYPdz0m8+MgdRKdaL6UYOdP4C1CDPYU038opRjEpZpL0oCzrBnNfqAmQxI3eDz+ieGhN1Z3FAiVumoMro1wKmGirA1EdssLrUjIOfvwA6w2FPXUS7xUni5QTfolopEqYkjqLmtFo4QYn5BA8Q8FHCvhDGBJiBIDZWqM=
+Content-Language: en-GB
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-Hi,
-> Gesendet: Dienstag, 04. Mai 2021 um 13:42 Uhr
-> Von: "Pablo Neira Ayuso" <pablo@netfilter.org>
+Hello,
 
-> You also need TCP clamp MTU in a non-flowtable setup.
-hi,
-thats clear now, but i guess i had not much problems till now because of P=
-ath discovery
+I have a VPN server (StrongSwan IPSEC, OpenVPN), where multiple peers
+have different network address translations (SNAT, DNAT, SNAT + DNAT)
+configured and it worked until recently, when after small
+reconfiguration one of the peers doesn't work properly.
+SNAT works but DNAT doesn't in general. For further analysis I chose a
+particular host pair. I can connect to 172.25.6.21 and the source
+address is rewritten to 100.64.104.5, but that host cannot connect to
+100.64.104.129, which should DNAT to 10.0.10.12. When I tcpdump the
+traffic, I can only see 172.25.6.16/28 -> 100.64.104.129 [S], where
+normally it should be followed by 172.25.6.16/28 -> 10.0.10.12 [S].
+xtables-monitor tracing shows that this packet matches the DNAT rule,
+but is discarded by the end of PREROUTING chain, having in fact its
+destination address untouched.
+At first, I wanted to check whether this packet is actually DNATted or
+not and came up with the following ruleset:
 
-> > $ifwan is my ppp8, and "tcp flags syn" imho should match syn and syn+a=
-ck.
->
-> syn+ack matches iifname $ifwan.
+=A0pkts bytes target=A0=A0=A0=A0 prot opt in=A0=A0=A0=A0 out=A0=A0=A0=A0 so=
+urce=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0
+destination
+=A0=A0 81=A0 4124 DNAT=A0=A0=A0=A0=A0=A0 tcp=A0 --=A0 *=A0=A0=A0=A0=A0 *=A0=
+=A0=A0=A0=A0=A0 172.25.6.16/28=A0=A0=A0=A0=A0=A0
+100.64.104.129=A0=A0=A0=A0=A0=A0 to:10.0.10.12
+=A0=A0=A0 0=A0=A0=A0=A0 0 RETURN=A0=A0=A0=A0 all=A0 --=A0 *=A0=A0=A0=A0=A0=
+=20
+*=A0=A0=A0=A0=A0=A0 172.25.6.16/28=A0=A0=A0=A0=A0=A0
+10.0.10.12
+=A0=A0=A0 0=A0=A0=A0=A0 0 RETURN=A0=A0=A0=A0 all=A0 --=A0 *=A0=A0=A0=A0=A0=
+=20
+*=A0=A0=A0=A0=A0=A0 172.25.6.16/28=A0=A0=A0=A0=A0=A0
+100.64.104.129
 
-imho this depends on the initiator of the connection. if i try to establis=
-h connection from my lan, this is true, and mss is set by oifname ppp0. Af=
-air SYN-ACK from "Server" does use my size for syn-ack (if it is smaller t=
-hat its size), or am i wrong?
+And this got me to the conclusion written in the subject. Notice the
+packet counters - packet gets allegedly DNATted, but later matches
+neither original nor translated destination.
+What's important - there is one UDP service on my side, for which DNAT
+works (!) until the remote application using it gets restarted - then it
+doesn't (!!!).
 
-if i initiate a connection from the public internet, i need to match iifna=
-me ppp0, but only if my ISP does not modify mss on pushing the initial SYN=
--Packet through the ppp-tunnel. But afair in this case i modify mss with o=
-ifname, but on response (SYN-ACK) i send back to the initiator.
+What I've tried: kernel update, reboot, rephrasing the rules to match
+different IPs, ports - to no avail.
 
-> Only the two initial syn and syn+ack packets follow the classic
-> forwarding path. Therefore, the FORWARD chain in your example above is
-> evaluated only for the two initial packets of the TCP connection.
->
-> You should add the 'flow add' rule at the bottom of your ruleset in
-> your example above.
+AFAIK other peers that we DNAT have no problems.
 
-good to know, so flowtable does always "accept" matching packets (here all=
- udp/tcp), right?
-and final foward-policy does neyer hit if flowtable condition matches.
+# uname -a
+Linux hq-sitevpn 4.19.0-16-amd64 #1 SMP Debian 4.19.181-1 (2021-03-19)
+x86_64 GNU/Linux
 
-regards Frank
+# iptables -V
+iptables v1.8.2 (nf_tables)
+
+strongswan: 5.7.2-1
+
+--
+Przemyslaw Kowalczyk
+
