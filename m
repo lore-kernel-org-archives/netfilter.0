@@ -1,344 +1,591 @@
-From: Paul Robert Marino <prmarino1@gmail.com>
+From: Oliver Freyermuth <freyermuth@physik.uni-bonn.de>
 Subject: Re: Running an active/active firewall/router (xt_cluster?)
-Date: Mon, 10 May 2021 18:55:13 -0400
-Message-ID: <CAPJdpdD9LEG7q6MwioRmWoqSdV4gj7xgFCEor1nphAiX8smy7g@mail.gmail.com>
+Date: Tue, 11 May 2021 00:58:06 +0200
+Message-ID: <d05f4990-b3d3-52e6-ac22-ad55620b866a@physik.uni-bonn.de>
 References: <3a995078-6bdf-f1c6-0a88-bc56fca55714@physik.uni-bonn.de>
- <CAPJdpdAyqmKtRnnKDqyEOSnpVVJMNMdYjyuT7dNL+6CNDLwB6Q@mail.gmail.com> <4113e9ec-225e-75d5-b221-996c00f9b060@physik.uni-bonn.de>
+ <20210510221907.GA15863@salvia>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms030809070703050607020708"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=7lUz/hmfvDYgZqz2M20KOx7XPn2fz+os/PLi+6eKZ1Y=;
-        b=pBQrDi0fZrxe2Z+nISwX3VtNOVWa0RFkv8kKhV6nwKrqMuS8PphpLkdvF/TjVphf8x
-         VMP66tM7UafUR+Ad8XvtQF8AafjiDWi0iaJ+UwEuXZupt1D0xEWjjg+VIcSv4faP2RK0
-         QtqkaN0iU7P/IyRwpsKdlOqCiFq/LcMFULxKGOdst+pppM2fmpzCeKn93NGCNNeoIiS2
-         9/XaUVV8xZwz3HqedqcbA5af8EPQZQ4NLLKtpAeDS/zqQgq15DPSQPNhnJGU874seHS9
-         3GSJH/gATd3cdShe3rlpwTSuxR8dlH2eKxQCbSzwYaLqLPt518bPATbr8lKnvTfxAsbi
-         MGNg==
-In-Reply-To: <4113e9ec-225e-75d5-b221-996c00f9b060@physik.uni-bonn.de>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=physik.uni-bonn.de; s=mail;
+        bh=kUMd6/AJ2hh6rPNG5h+R/vjvo0sCfY2j3o/LIXVXflM=;
+        h=Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To
+        :Subject; b=D5+KRfC187i8tz9z56Det/c4PC42z6hz5sgvyWF33i5Iw8mNhMeilzCZ6ye4Nwp4R
+        3uJyUDzP0GKij72quW7o4gO6Cd1ZHe5jqWU3zlFb5Q6ELbtoK1BC/ewox9ysqif0tomsi1Xr2ClXu
+        q/VaVRmXqZbeZRCCb0hlinjjZ4bmU=
+In-Reply-To: <20210510221907.GA15863@salvia>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Oliver Freyermuth <freyermuth@physik.uni-bonn.de>
-Cc: netfilter <netfilter@vger.kernel.org>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org
 
-I'm adding replies to your replies inline below
+This is a cryptographically signed message in MIME format.
 
-On Mon, May 10, 2021, 5:55 PM Oliver Freyermuth
-<freyermuth@physik.uni-bonn.de> wrote:
->
-> Hey Paul,
->
-> many thanks for the detailed reply!
-> Some comments inline.
->
-> Am 10.05.21 um 18:57 schrieb Paul Robert Marino:
-> > hey Oliver,
-> > I've done similar things over the years, a lot of fun lab experiments
-> > and found it really it comes down to a couple of things.
-> > I did some POC testing with contrackd and some experimental code
-> > around trunking across multiple firewalls with a sprinkling of
-> > virtualization.
-> > There were a few scenarios I tried, some involving OpenVSwitch
-> > (because I was experimenting with SPBM) and some not, with contrackd
-> > similarly configured.
-> > All the scenarios were interesting but they all had relatively rare on
-> > slow (<1Gbs) network issues that grew exponentially in frequency on
-> > higher speed networks (>1Gbs) with latency in contrackd syncing.
->
-> Indeed, we'd strive for ~20 Gb/s in our case, so this experience surely i=
-s important to hear about.
->
-> > What i found is the best scenario was to use Quagga for dynamic
-> > routing to load balance the traffic between the firewall IP's,
-> > keepalived to load handle IP failover, and contrackd (in a similar
-> > configuration to the one you described) to keep the states in sync
-> > there are a few pitfalls in going down this route caused by bad and or
-> > outdated documentation for both Quagga and keepalived. I'm also going
-> > to give you some recommendations about some hardware topology stuff
-> > you may not think about initially.
->
-> I'm still a bit unsure if we are on the same page, but that may just be c=
-aused by my limited knowledge of Quagga.
-> To my understanding, Quagga uses e.g. OSPF and hence can, if the routes h=
-ave the same path, load-balance.
->
-> However, in our case, we'd want to go for active/active firewalls (which =
-of course are also routers).
-> But that means we have internal machines on one side, which use a single =
-default gateway (per VLAN),
-> then our active/active firewall, and then the outside world (actually a P=
-tP connection to an upstream router).
->
-> Can Quagga help me to actively use both firewalls in a load-balancing and=
- redundant way?
-> The idea here is that the upstream router has high bandwidth, so using mo=
-re than one firewall allows to achieve better throughput,
-> and with active/active we'd also strive for redundancy (i.e. reduced thro=
-ughput if one firewall fails).
-> To my understanding, OSPF / Quagga could do this if the firewalls are pla=
-ced between routers also joining via OSPF.
-> But is there also a way to have the clients directly talk to our firewall=
-s, and the firewalls to a single upstream router (which we don't control)?
->
-> A simple drawing may help:
->
->               ____  FW A ____
->              /               \
-> Client(s) --                 --PtP-- upstream router
->              \____  FW B ____/
->
-> This is why I thought about using xt_cluster and giving both FW A and FW =
-B the very same IP (the default gateway of the clients)
-> and the very same MAC at the same time, so the switch duplicates the pack=
-ets, and then FW A accepts some packets and FW B the remaining ones
-> via filtering with xt_cluster.
->
-> Can Quagga do something in this picture, or simplify this picture?
-> The upstream router also sends all incoming packets to a single IP in the=
- PtP network, i.e. the firewall nodes need to show up as "one converged sys=
-tem"
-> to both the clients on one side and the upstream router on the other side=
-.
+--------------ms030809070703050607020708
+Content-Type: multipart/mixed;
+ boundary="------------4F83EF6430CD081C7E5CF332"
+Content-Language: en-GB
 
+This is a multi-part message in MIME format.
+--------------4F83EF6430CD081C7E5CF332
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-I understand what you are shooting for but it's dangerous at those
-data rates and not achievable via stock existing software.
-I did write some POC code years ago for a previous employer but
-determined it was too dangerous to put into production without some
-massive kernel changes such as using something like RDMA over
-dedicated high speed interfaces or linking the systems over the PCI
-express busses to sync the states instead of using contrackd.
+Hi,
 
-So load balancing is a better choice in this case, and many middle to
-higher end managed switches that have routers built in can do OSPF.
-I've seen many stackable switches that can do it. By the way Quagga
-supports several other dynamic routing protocols not just just OSPF.
+many thanks for this elaborate reply!
 
-The safest and easiest option for you would be to use 100Gbs fibre
-connection instead, possibly with direct attach cables if you want to
-save on optics, and do primary secondary failover.
+Am 11.05.21 um 00:19 schrieb Pablo Neira Ayuso:
+> Hi,
+>=20
+> On Sun, May 09, 2021 at 07:52:27PM +0200, Oliver Freyermuth wrote:
+>> Dear netfilter experts,
+>>
+>> we are trying to setup an active/active firewall, making use of
+>> "xt_cluster".  We can configure the switch to act like a hub, i.e.
+>> both machines can share the same MAC and IP and get the same packets
+>> without additional ARPtables tricks.
+>>
+>> So we set rules like:
+>>
+>>   iptables -I PREROUTING -t mangle -i external_interface -m cluster --=
+cluster-total-nodes 2 --cluster-local-node 1 --cluster-hash-seed 0xdeadbe=
+ef -j MARK --set-mark 0xffff
+>>   iptables -A PREROUTING -t mangle -i external_interface -m mark ! --m=
+ark 0xffff -j DROP
+>=20
+> I'm attaching an old script to set up active-active I remember to have
+> used time ago, I never found the time to upstream this.
 
+this is really helpful indeed.
+While we use Shorewall (which simplifies many things, but has no abstract=
+ion for xt_cluster as far as I am aware of),
+it helps to see all rules written up together to translate them for Shore=
+wall, and also the debugging rules are very helpful.
 
-
-> > I will start with Quagga because the bad documentation part is easy to =
-cover.
-> > in the Quagga documentation they recommend that you put a routable IP
-> > on a loopback interface and attach Quagga the daemon for the dynamic
-> > routing service of your choice to it, That works fine on BSD and old
-> > versions of Linux from 20 years ago but any thing running a Linux
-> > kernel version of 2.4 or higher will not allow it unless you change
-> > setting in /etc/sysctrl.conf and the Quagga documentation tells you to
-> > make those changes. DO NOT DO WHAT THEY SAY, its wrong and dangerous.
-> > Instead create a "dummy" interface with a routable IP for this
-> > purpose. a dummy interface is a special kind of interface meant for
-> > exactly the scenario described and works well without compromising the
-> > security of your firewall.
->
-> Thanks for this helpful advice!
-> Even though I am not sure yet Quagga will help me out in this picture,
-> I am now already convinced we will have a situation in which Quagga will =
-help us out.
-> So this is noted down for future use :-).
->
-> > Keepalived
-> > the main error in keepalived's documentation is is most of the
-> > documentation and howto's you will find about it on the web are based
-> > on a 15 year old howto which had a fundamental mistake in how VRRP
-> > works, and what the "state"  flag actually does because its not
-> > explained well in the man file. "state" in a "vrrp_instance" should
-> > always be set to "MASTER" on all nodes and the priority should be used
-> > to determine which node should be the preferred master. the only time
-> > you should ever set state to "BACKUP" is if you have a 3rd machine
-> > that you never want to become the master which you are just using for
-> > quorum and in that case its priority should also be set to "0"
-> > (failed) . setting the state to "BACKUP" will seem to work fine until
-> > you have a failover event when the interface will continually go ip
-> > and done on the backup node. on the mac address issue keepalived will
-> > apr ping the subnets its attached to so that's generally not an issue
-> > but I would recommend using vmac's (virtual mac addresses) assuming
-> > the kernel for your distro and your network cards support it because
-> > that way it just looks to the switch like it changed a port due to
-> > some physical topology change and switches usually handle that very
-> > gracefully, but don't always handle the mac address change for IP
-> > addresses as quickly.
-> > I also recommend reading the RFC's on VRRP particularly the parts that
-> > explain how the elections and priorities work, they are a quick and
-> > easy read and will really give you a good idea of how to configure
-> > keepalived properly to achieve the failover and recovery behavior you
-> > want.
->
-> See above on the virtual MACs =E2=80=94 if the clients should use both fi=
-rewalls at the same time,
-> I think I'd need a single MAC for both, so the clients only see a single =
-default gateway.
-> In a more classic setup, we've used pcs (pacemaker and corosync) to succe=
-ssfully migrate virtual IPs and MAC addresses.
-> It has worked quite reliable (using Kronosnet for communication).
-> But we've also used Keepalived some years ago successfully :-).
->
-> > On the hardware topology
-> > I recommend using dedicated interfaces for contrackd, really you don't
-> > need anything faster than 100Mbps even if the data interfaces are
-> > 100Gbps but i usually use 1 Gbps interfaces for this. they can be on
-> > their own dedicated switches or crossover interfaces. the main concern
-> > here is securely handling a large number of tiny packets so having
-> > dedicated network card buffers to handle microburst  is useful and if
-> > you can avoid latency from a switch that's trying to be too smart for
-> > its own good that's for the best.
->
-> Indeed, we have 1 Gb/s crossover link, and use a 1 Gb/s connection throug=
-h a switch in case this would ever fail for some reason =E2=80=94
-> we use these links both for conntrackd and for Kronosnet communication by=
- corosync.
->
-> > For keepalived use dedicated VLAN's on each physical interface to
-> > handle the heartbeats and group the VRRP interfaces. to insure the
-> > failovers of the IP's on both sides are handled correctly.
-> > If you only have 2 firewalls I recommend using a an additional device
-> > on each side for quorum in a backup/failed mode as described above.
-> > Assuming a 1 second or greater interval the device could be something
-> > as simple as a Raspberry PI it really doesn't need to be anything
-> > powerful because its just adding a heartbeat to the cluster, but for
-> > sub second intervals you may need something more powerful because sub
-> > second intervals can eat a surprising amount of CPU.
->
-> We currently went without an external third party and let corosync/pacema=
-ker use a STONITH device to explicitly kill the other node
-> and establish a defined state if heartbeats get lost. We might think abou=
-t a third machine at some point to get an actual quorum, indeed.
-
-
-I get why you might think to use corosync/pacemaker for this if you
-weren't familiar with keepalived and LVS in the kernel,  but it's
-hammering a square peg in a round hole when you have a perfectly
-shaped and sized peg available to you that's actually been around a
-lot longer and works a lot more predictably, faster and more reliably
-by leveraging parts of the kernels network stack designed specifically
-for this use case. I've done explicit kills of the other device via
-cross connected hardware watchdog devices via keepalived before and it
-was easy.
-By the way if you don't know what LVS is it's the kernels builtin
-layer 3 network load balancer stack that was designed with these kind
-of failover scenarios in mind keepalived is just a wrapper around LVS
-that adds VRRP based heartbeating and hooks to allow you to call
-external scripts for actions based on heart beat state change events
-and additional watchdog scripts which can also trigger state changes.
-To be clear i wouldn't use keepalived to handle process master slave
-failovers i would use corosync and pacemaker, or in some cases
-Clusterd for that because they are usually the right tool for the job,
-but for firewall and or network load balancer failover i would always
-use keepalived because its the right tool for that job.
-
-
->
-> Cheers and thanks again,
->         Oliver
->
-> >
-> >
-> > On Sun, May 9, 2021 at 3:16 PM Oliver Freyermuth
-> > <freyermuth@physik.uni-bonn.de> wrote:
-> >>
-> >> Dear netfilter experts,
-> >>
-> >> we are trying to setup an active/active firewall, making use of "xt_cl=
-uster".
-> >> We can configure the switch to act like a hub, i.e. both machines can =
-share the same MAC and IP and get the same packets without additional ARPta=
-bles tricks.
-> >>
-> >> So we set rules like:
-> >>
-> >>    iptables -I PREROUTING -t mangle -i external_interface -m cluster -=
--cluster-total-nodes 2 --cluster-local-node 1 --cluster-hash-seed 0xdeadbee=
-f -j MARK --set-mark 0xffff
-> >>    iptables -A PREROUTING -t mangle -i external_interface -m mark ! --=
-mark 0xffff -j DROP
-> >>
-> >> Ideally, it we'd love to have the possibility to scale this to more th=
-an two nodes, but let's stay with two for now.
-> >>
-> >> Basic tests show that this works as expected, but the details get mess=
+>=20
+>> Ideally, it we'd love to have the possibility to scale this to more
+>> than two nodes, but let's stay with two for now.
+>=20
+> IIRC, up to two nodes should be easy with the existing codebase. To
+> support more than 2 nodes, conntrackd needs to be extended, but it
+> should be doable.
+>=20
+>> Basic tests show that this works as expected, but the details get mess=
 y.
-> >>
-> >> 1. Certainly, conntrackd is needed to synchronize connection states.
-> >>      But is it always "fast enough"?
-> >>      xt_cluster seems to match by the src_ip of the original direction=
- of the flow[0] (if I read the code correctly),
-> >>      but what happens if the reply to an outgoing packet arrives at bo=
-th firewalls before state is synchronized?
-> >>      We are currently using conntrackd in FTFW mode with a direct link=
-, set "DisableExternalCache", and additonally set "PollSecs 15" since witho=
-ut that it seems
-> >>      only new and destroyed connections are synced, but lifetime updat=
-es for existing connections do not propagate without polling.
-> >>      Maybe another way which e.g. may use XOR(src,dst) might work arou=
-nd tight synchronization requirements, or is it possible to always uses the=
- "internal" source IP?
-> >>      Is anybody doing that with a custom BPF?
-> >>
-> >> 2. How to do failover in such cases?
-> >>      For failover we'd need to change these rules (if one node fails, =
-the total-nodes will change).
-> >>      As an alternative, I found [1] which states multiple rules can be=
- used and enabled / disabled,
-> >>      but does somebody know of a cleaner (and easier to read) way, als=
-o not costing extra performance?
-> >>
-> >> 3. We have several internal networks, which need to talk to each other=
- (partially with firewall rules and NATting),
-> >>      so we'd also need similar rules there, complicating things more. =
-That's why a cleaner way would be very welcome :-).
-> >>
-> >> 4. Another point is how to actually perform the failover. Classical cl=
-uster suites (corosync + pacemaker)
-> >>      are rather used to migrate services, but not to communicate node =
-ids and number of total active nodes.
-> >>      They can probably be tricked into doing that somehow, but they ar=
-e not designed this way.
-> >>      TIPC may be something to use here, but I found nothing "ready to =
-use".
-> >>
-> >> You may also tell me there's a better way to do this than use xt_clust=
-er (custom BPF?) =E2=80=94 we've up to now only done "classic" active/passi=
-ve setups,
-> >> but maybe someone on this list has already done active/active without =
-commercial hardware, and can share experience from this?
-> >>
-> >> Cheers and thanks in advance,
-> >>          Oliver
-> >>
-> >> PS: Please keep me in CC, I'm not subscribed to the list. Thanks!
-> >>
-> >> [0] https://github.com/torvalds/linux/blob/10a3efd0fee5e881b1866cf4595=
-0808575cb0f24/net/netfilter/xt_cluster.c#L16-L19
-> >> [1] https://lore.kernel.org/netfilter-devel/499BEBBF.7080705@netfilter=
-.org/
-> >>
-> >> --
-> >> Oliver Freyermuth
-> >> Universit=C3=A4t Bonn
-> >> Physikalisches Institut, Raum 1.047
-> >> Nu=C3=9Fallee 12
-> >> 53115 Bonn
-> >> --
-> >> Tel.: +49 228 73 2367
-> >> Fax:  +49 228 73 7869
-> >> --
-> >>
->
->
-> --
-> Oliver Freyermuth
-> Universit=C3=A4t Bonn
-> Physikalisches Institut, Raum 1.047
-> Nu=C3=9Fallee 12
-> 53115 Bonn
-> --
-> Tel.: +49 228 73 2367
-> Fax:  +49 228 73 7869
-> --
->
+>>
+>> 1. Certainly, conntrackd is needed to synchronize connection states.
+>>     But is it always "fast enough"?  xt_cluster seems to match by the
+>>     src_ip of the original direction of the flow[0] (if I read the cod=
+e
+>>     correctly), but what happens if the reply to an outgoing packet
+>>     arrives at both firewalls before state is synchronized?
+>=20
+> You can avoid this by setting DisableExternalCache to off. Then, in
+> case one of your firewall node goes off, update the cluster rules and
+> inject the entries (via keepalived, or your HA daemon of choice).
+>=20
+> Recommended configuration is DisableExternalCache off and properly
+> configure your HA daemon to assist conntrackd. Then, the conntrack
+> entries in the "external cache" of conntrackd are added to the kernel
+> when needed.
+
+You caused a classic "facepalming" moment. Of course, that will solve (1)=
+
+completely. My initial thinking when disabling the external cache
+was before I understood how xt_cluster works, and before I found that it =
+uses the direction
+of the flow, and then it just escaped my mind.
+Thanks for clearing this up! :-)
+
+>=20
+>>     We are currently using conntrackd in FTFW mode with a direct
+>>     link, set "DisableExternalCache", and additonally set "PollSecs
+>>     15" since without that it seems only new and destroyed
+>>     connections are synced, but lifetime updates for existing
+>>     connections do not propagate without polling.
+>=20
+> No need to set on PollSecs. Polling should be disabled. Did you enable
+> event filtering? You should synchronize receive update too. Could you
+> post your configuration file?
+
+Sure, it's attached =E2=80=94 I'm doing event filtering, but only by addr=
+ess and protocol,
+not by flow state, so I thought it to be harmless in this regard.
+For my test, I just sent a continuous ICMP through the node,
+and the flow itself was synced fine, but then the lifetime was not update=
+d on the partner node unless polling was active,
+and finally the flow was removed on the partner machine (lifetime expired=
+) while it was being kept alive by updates
+on the primary node.
+
+This was with "DisableExternalCache on", on a CentOS 8.2 node, i.e.:
+   Kernel 4.18.0-193.19.1.el8_2.x86_64
+   conntrackd v1.4.4
+
+>=20
+> [...]
+>> 2. How to do failover in such cases?
+>>     For failover we'd need to change these rules (if one node fails,
+>>     the total-nodes will change).  As an alternative, I found [1]
+>>     which states multiple rules can be used and enabled / disabled,
+>>     but does somebody know of a cleaner (and easier to read) way,
+>>     also not costing extra performance?
+>=20
+> If you use iptables, you'll have to update the rules on failure as you
+> describe. What performance cost are you refering to?
+
+This was based on your comment here:
+  https://lore.kernel.org/netfilter-devel/499BEBBF.7080705@netfilter.org/=
+
+
+But probably, this is indeed premature thinking on my end =E2=80=94
+with two firewalls, having two rules after failover should have even less=
+ impact than what you measured there.
+I still think something like the /proc interface you described there woul=
+d be cleaner, but I also don't know of a failover daemon
+which could make use of it.
+
+>> 3. We have several internal networks, which need to talk to each
+>>     other (partially with firewall rules and NATting), so we'd also ne=
+ed
+>>     similar rules there, complicating things more. That's why a cleane=
+r
+>>     way would be very welcome :-).
+>=20
+> Cleaner way, it should be possible to simplify this setup with
+> nftables.
+
+Since we currently use Shorewall as simplification layer (which eases man=
+y things by its abstraction,
+but still uses iptables behind the scenes), it's probably best for sanity=
+ not to mix here.
+So the less "clean" way is likely the easier one for now.
+
+>> 4. Another point is how to actually perform the failover. Classical
+>>     cluster suites (corosync + pacemaker) are rather used to migrate
+>>     services, but not to communicate node ids and number of total acti=
+ve
+>>     nodes.  They can probably be tricked into doing that somehow, but
+>>     they are not designed this way.  TIPC may be something to use here=
+,
+>>     but I found nothing "ready to use".
+>=20
+> I have used keepalived in the past with very simple configuration
+> files, and use their shell script API to interact with conntrackd.
+> I did not spend much time on corosync/pacemaker so far.
+
+I was mostly thinking about the cluster rules =E2=80=94
+I'd love to have a daemon which could adjust cluster-total-nodes and clus=
+ter-local-nodes,
+instead of having two rules on one firewall when the other fails.
+
+I think I can make the latter work with pacemaker/corosync, and also have=
+ it support conntrackd, though,
+it might be fiddly, but should be doable.
+
+Many thanks for the elaborate answer,
+	Oliver
+
+--=20
+Oliver Freyermuth
+Universit=C3=A4t Bonn
+Physikalisches Institut, Raum 1.047
+Nu=C3=9Fallee 12
+53115 Bonn
+--
+Tel.: +49 228 73 2367
+Fax:  +49 228 73 7869
+--
+
+--------------4F83EF6430CD081C7E5CF332
+Content-Type: text/plain; charset=UTF-8;
+ name="conntrackd.conf"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="conntrackd.conf"
+
+CiMgU2VlIGFsc286IGh0dHA6Ly9jb25udHJhY2stdG9vbHMubmV0ZmlsdGVyLm9yZy9zdXBw
+b3J0Lmh0bWwKIyAKIyBUaGVyZSBhcmUgMyBkaWZmZXJlbnQgbW9kZXMgb2YgcnVubmluZyBj
+b25udHJhY2tkOiAiYWxhcm0iLCAibm90cmFjayIgYW5kICJmdGZ3IgojCiMgVGhlIGRlZmF1
+bHQgcGFja2FnZSBzaGlwcyB3aXRoIGEgRlRGVyBjb25maWd1cmF0aW9uLCBzZWUgL3Vzci9z
+aGFyZS9kb2MvY29ubnRyYWNrZCoKIyBmb3IgZXhhbXBsZSBjb25maWd1cmF0aW9ucyBmb3Ig
+b3RoZXIgbW9kZXMuCgoKIwojIFN5bmNocm9uaXplciBzZXR0aW5ncwojClN5bmMgewoJTW9k
+ZSBGVEZXIHsKCQkjCgkJIyBTaXplIG9mIHRoZSByZXNlbmQgcXVldWUgKGluIG9iamVjdHMp
+LiBUaGlzIGlzIHRoZSBtYXhpbXVtCgkJIyBudW1iZXIgb2Ygb2JqZWN0cyB0aGF0IGNhbiBi
+ZSBzdG9yZWQgd2FpdGluZyB0byBiZSBjb25maXJtZWQKCQkjIHZpYSBhY2tub2xlZGdtZW50
+LiBJZiB5b3Uga2VlcCB0aGlzIHZhbHVlIGxvdywgdGhlIGRhZW1vbgoJCSMgd2lsbCBoYXZl
+IGxlc3MgY2hhbmNlcyB0byByZWNvdmVyIHN0YXRlLWNoYW5nZXMgdW5kZXIgbWVzc2FnZQoJ
+CSMgb21pc3Npb24uIE9uIHRoZSBvdGhlciBoYW5kLCBpZiB5b3Uga2VlcCB0aGlzIHZhbHVl
+IGhpZ2gsCgkJIyB0aGUgZGFlbW9uIHdpbGwgY29uc3VtZSBtb3JlIG1lbW9yeSB0byBzdG9y
+ZSBkZWFkIG9iamVjdHMuCgkJIyBEZWZhdWx0IGlzIDEzMTA3MiBvYmplY3RzLgoJCSMKCQkj
+IFJlc2VuZFF1ZXVlU2l6ZSAxMzEwNzIKCgkJIwoJCSMgVGhpcyBwYXJhbWV0ZXIgYWxsb3dz
+IHlvdSB0byBzZXQgYW4gaW5pdGlhbCBmaXhlZCB0aW1lb3V0CgkJIyBmb3IgdGhlIGNvbW1p
+dHRlZCBlbnRyaWVzIHdoZW4gdGhpcyBub2RlIGdvZXMgZnJvbSBiYWNrdXAKCQkjIHRvIHBy
+aW1hcnkuIFRoaXMgbWVjaGFuaXNtIHByb3ZpZGVzIGEgd2F5IHRvIHB1cmdlIGVudHJpZXMK
+CQkjIHRoYXQgd2VyZSBub3QgcmVjb3ZlcmVkIGFwcHJvcHJpYXRlbHkgYWZ0ZXIgdGhlIHNw
+ZWNpZmllZAoJCSMgZml4ZWQgdGltZW91dC4gSWYgeW91IHNldCBhIGxvdyB2YWx1ZSwgVENQ
+IGVudHJpZXMgaW4KCQkjIEVzdGFibGlzaGVkIHN0YXRlcyB3aXRoIG5vIHRyYWZmaWMgbWF5
+IGhhbmcuIEZvciBleGFtcGxlLAoJCSMgYW4gU1NIIGNvbm5lY3Rpb24gd2l0aG91dCBLZWVw
+QWxpdmUgZW5hYmxlZC4gSWYgbm90IHNldCwKCQkjIHRoZSBkYWVtb24gdXNlcyBhbiBhcHBy
+b3hpbWF0ZSB0aW1lb3V0IHZhbHVlIGNhbGN1bGF0aW9uCgkJIyBtZWNoYW5pc20uIEJ5IGRl
+ZmF1bHQsIHRoaXMgb3B0aW9uIGlzIG5vdCBzZXQuCgkJIwoJCSMgQ29tbWl0VGltZW91dCAx
+ODAKCgkJIwoJCSMgSWYgdGhlIGZpcmV3YWxsIHJlcGxpY2EgZ29lcyBmcm9tIHByaW1hcnkg
+dG8gYmFja3VwLAoJCSMgdGhlIGNvbm50cmFja2QgLXQgY29tbWFuZCBpcyBpbnZva2VkIGlu
+IHRoZSBzY3JpcHQuIAoJCSMgVGhpcyBjb21tYW5kIHNjaGVkdWxlcyBhIGZsdXNoIG9mIHRo
+ZSB0YWJsZSBpbiBOIHNlY29uZHMuCgkJIyBUaGlzIGlzIHVzZWZ1bCB0byBwdXJnZSB0aGUg
+Y29ubmVjdGlvbiB0cmFja2luZyB0YWJsZSBvZgoJCSMgem9tYmllIGVudHJpZXMgYW5kIGF2
+b2lkIGNsYXNoZXMgd2l0aCBvbGQgZW50cmllcyBpZiB5b3UKCQkjIHRyaWdnZXIgc2V2ZXJh
+bCBjb25zZWN1dGl2ZSBoYW5kLW92ZXJzLiBEZWZhdWx0IGlzIDYwIHNlY29uZHMuCgkJIwoJ
+CSMgUHVyZ2VUaW1lb3V0IDYwCgoJCSMgU2V0IHRoZSBhY2tub3dsZWRnZW1lbnQgd2luZG93
+IHNpemUuIElmIHlvdSBkZWNyZWFzZSB0aGlzCgkJIyB2YWx1ZSwgdGhlIG51bWJlciBvZiBh
+Y2tub3dsZWdkbWVudHMgaW5jcmVhc2VzLiBNb3JlCgkJIyBhY2tub3dsZWRnbWVudHMgbWVh
+bnMgbW9yZSBvdmVyaGVhZCBhcyBjb25udHJhY2tkIGhhcyB0bwoJCSMgaGFuZGxlIG1vcmUg
+Y29udHJvbCBtZXNzYWdlcy4gT24gdGhlIG90aGVyIGhhbmQsIGlmIHlvdQoJCSMgaW5jcmVh
+c2UgdGhpcyB2YWx1ZSwgdGhlIHJlc2VuZCBxdWV1ZSBnZXRzIG1vcmUgcG9wdWxhdGVkLgoJ
+CSMgVGhpcyByZXN1bHRzIGluIG1vcmUgb3ZlcmhlYWQgaW4gdGhlIHF1ZXVlIHJlbGVhc2lu
+Zy4KCQkjIFRoZSBmb2xsb3dpbmcgdmFsdWUgaXMgYmFzZWQgb24gc29tZSBwcmFjdGljYWwg
+ZXhwZXJpbWVudHMKCQkjIG1lYXN1cmluZyB0aGUgY3ljbGVzIHNwZW50IGJ5IHRoZSBhY2tu
+b3dsZWRnbWVudCBoYW5kbGluZwoJCSMgd2l0aCBvcHJvZmlsZS4gSWYgbm90IHNldCwgZGVm
+YXVsdCB3aW5kb3cgc2l6ZSBpcyAzMDAuCgkJIwoJCSMgQUNLV2luZG93U2l6ZSAzMDAKCgkJ
+IwoJCSMgVGhpcyBjbGF1c2UgYWxsb3dzIHlvdSB0byBkaXNhYmxlIHRoZSBleHRlcm5hbCBj
+YWNoZS4gVGh1cywKCQkjIHRoZSBzdGF0ZSBlbnRyaWVzIGFyZSBkaXJlY3RseSBpbmplY3Rl
+ZCBpbnRvIHRoZSBrZXJuZWwKCQkjIGNvbm50cmFjayB0YWJsZS4gQXMgYSByZXN1bHQsIHlv
+dSBzYXZlIG1lbW9yeSBpbiB1c2VyLXNwYWNlCgkJIyBidXQgeW91IGNvbnN1bWUgc2xvdHMg
+aW4gdGhlIGtlcm5lbCBjb25udHJhY2sgdGFibGUgZm9yCgkJIyBiYWNrdXAgc3RhdGUgZW50
+cmllcy4gTW9yZW92ZXIsIGRpc2FibGluZyB0aGUgZXh0ZXJuYWwgY2FjaGUKCQkjIG1lYW5z
+IG1vcmUgQ1BVIGNvbnN1bXB0aW9uLiBZb3UgbmVlZCBhIExpbnV4IGtlcm5lbAoJCSMgPj0g
+Mi42LjI5IHRvIHVzZSB0aGlzIGZlYXR1cmUuIEJ5IGRlZmF1bHQsIHRoaXMgY2xhdXNlIGlz
+CgkJIyBzZXQgb2ZmLiBJZiB5b3UgYXJlIGluc3RhbGxpbmcgY29ubnRyYWNrZCBmb3IgZmly
+c3QgdGltZSwKCQkjIHBsZWFzZSByZWFkIHRoZSB1c2VyIG1hbnVhbCBhbmQgSSBlbmNvdXJh
+Z2UgeW91IHRvIGNvbnNpZGVyCgkJIyB1c2luZyB0aGUgZmFpbC1vdmVyIHNjcmlwdHMgaW5z
+dGVhZCBvZiBlbmFibGluZyB0aGlzIG9wdGlvbiEKCQkjCgkJRGlzYWJsZUV4dGVybmFsQ2Fj
+aGUgT24KCX0KCgkjCgkjIE11bHRpY2FzdCBJUCBhbmQgaW50ZXJmYWNlIHdoZXJlIG1lc3Nh
+Z2VzIGFyZQoJIyBicm9hZGNhc3RlZCAoZGVkaWNhdGVkIGxpbmspLiBJTVBPUlRBTlQ6IE1h
+a2Ugc3VyZQoJIyB0aGF0IGlwdGFibGVzIGFjY2VwdHMgdHJhZmZpYyBmb3IgZGVzdGluYXRp
+b24KCSMgMjI1LjAuMC41MCwgZWc6CgkjCgkjCWlwdGFibGVzIC1JIElOUFVUIC1kIDIyNS4w
+LjAuNTAgLWogQUNDRVBUCgkjCWlwdGFibGVzIC1JIE9VVFBVVCAtZCAyMjUuMC4wLjUwIC1q
+IEFDQ0VQVAoJIwoJI011bHRpY2FzdCB7CgkJIyAKCQkjIE11bHRpY2FzdCBhZGRyZXNzOiBU
+aGUgYWRkcmVzcyB0aGF0IHlvdSB1c2UgYXMgZGVzdGluYXRpb24KCQkjIGluIHRoZSBzeW5j
+aHJvbml6YXRpb24gbWVzc2FnZXMuIFlvdSBkbyBub3QgaGF2ZSB0byBhZGQKCQkjIHRoaXMg
+SVAgdG8gYW55IG9mIHlvdXIgZXhpc3RpbmcgaW50ZXJmYWNlcy4gSWYgYW55IGRvdWJ0LAoJ
+CSMgZG8gbm90IG1vZGlmeSB0aGlzIHZhbHVlLgoJCSMKCSMJSVB2NF9hZGRyZXNzIDIyNS4w
+LjAuNTAKCgkJIwoJCSMgVGhlIG11bHRpY2FzdCBncm91cCB0aGF0IGlkZW50aWZpZXMgdGhl
+IGNsdXN0ZXIuIElmIGFueQoJCSMgZG91YnQsIGRvIG5vdCBtb2RpZnkgdGhpcyB2YWx1ZS4K
+CQkjCgkjCUdyb3VwIDM3ODAKCgkJIwoJCSMgSVAgYWRkcmVzcyBvZiB0aGUgaW50ZXJmYWNl
+IHRoYXQgeW91IGFyZSBnb2luZyB0byB1c2UgdG8KCQkjIHNlbmQgdGhlIHN5bmNocm9uaXph
+dGlvbiBtZXNzYWdlcy4gUmVtZW1iZXIgdGhhdCB5b3UgbXVzdAoJCSMgdXNlIGEgZGVkaWNh
+dGVkIGxpbmsgZm9yIHRoZSBzeW5jaHJvbml6YXRpb24gbWVzc2FnZXMuCgkJIwoJIwlJUHY0
+X2ludGVyZmFjZSAxOTIuMTY4LjEwMC4xMDAKCgkJIwoJCSMgVGhlIG5hbWUgb2YgdGhlIGlu
+dGVyZmFjZSB0aGF0IHlvdSBhcmUgZ29pbmcgdG8gdXNlIHRvCgkJIyBzZW5kIHRoZSBzeW5j
+aHJvbml6YXRpb24gbWVzc2FnZXMuCgkJIwoJIwlJbnRlcmZhY2UgZXRoMgoKCQkjIFRoZSBt
+dWx0aWNhc3Qgc2VuZGVyIHVzZXMgYSBidWZmZXIgdG8gZW5xdWV1ZSB0aGUgcGFja2V0cwoJ
+CSMgdGhhdCBhcmUgZ29pbmcgdG8gYmUgdHJhbnNtaXR0ZWQuIFRoZSBkZWZhdWx0IHNpemUg
+b2YgdGhpcwoJCSMgc29ja2V0IGJ1ZmZlciBpcyBhdmFpbGFibGUgYXQgL3Byb2Mvc3lzL25l
+dC9jb3JlL3dtZW1fZGVmYXVsdC4KCQkjIFRoaXMgdmFsdWUgZGV0ZXJtaW5lcyB0aGUgY2hh
+bmNlcyB0byBoYXZlIGFuIG92ZXJydW4gaW4gdGhlCgkJIyBzZW5kZXIgcXVldWUuIFRoZSBv
+dmVycnVuIHJlc3VsdHMgcGFja2V0IGxvc3MsIHRodXMsIGxvc2luZwoJCSMgc3RhdGUgaW5m
+b3JtYXRpb24gdGhhdCB3b3VsZCBoYXZlIHRvIGJlIHJldHJhbnNtaXR0ZWQuIElmIHlvdQoJ
+CSMgbm90aWNlIHNvbWUgcGFja2V0IGxvc3MsIHlvdSBtYXkgd2FudCB0byBpbmNyZWFzZSB0
+aGUgc2l6ZQoJCSMgb2YgdGhlIHNlbmRlciBidWZmZXIuIFRoZSBkZWZhdWx0IHNpemUgaXMg
+dXN1YWxseSBhcm91bmQKCQkjIH4xMDAgS0J5dGVzIHdoaWNoIGlzIGZhaXJseSBzbWFsbCBm
+b3IgYnVzeSBmaXJld2FsbHMuCgkJIwoJIwlTbmRTb2NrZXRCdWZmZXIgMTI0OTI4MAoKCQkj
+IFRoZSBtdWx0aWNhc3QgcmVjZWl2ZXIgdXNlcyBhIGJ1ZmZlciB0byBlbnF1ZXVlIHRoZSBw
+YWNrZXRzCgkJIyB0aGF0IHRoZSBzb2NrZXQgaXMgcGVuZGluZyB0byBoYW5kbGUuIFRoZSBk
+ZWZhdWx0IHNpemUgb2YgdGhpcwoJCSMgc29ja2V0IGJ1ZmZlciBpcyBhdmFpbGFibGUgYXQg
+L3Byb2Mvc3lzL25ldC9jb3JlL3JtZW1fZGVmYXVsdC4KCQkjIFRoaXMgdmFsdWUgZGV0ZXJt
+aW5lcyB0aGUgY2hhbmNlcyB0byBoYXZlIGFuIG92ZXJydW4gaW4gdGhlCgkJIyByZWNlaXZl
+ciBxdWV1ZS4gVGhlIG92ZXJydW4gcmVzdWx0cyBwYWNrZXQgbG9zcywgdGh1cywgbG9zaW5n
+CgkJIyBzdGF0ZSBpbmZvcm1hdGlvbiB0aGF0IHdvdWxkIGhhdmUgdG8gYmUgcmV0cmFuc21p
+dHRlZC4gSWYgeW91CgkJIyBub3RpY2Ugc29tZSBwYWNrZXQgbG9zcywgeW91IG1heSB3YW50
+IHRvIGluY3JlYXNlIHRoZSBzaXplIG9mCgkJIyB0aGUgcmVjZWl2ZXIgYnVmZmVyLiBUaGUg
+ZGVmYXVsdCBzaXplIGlzIHVzdWFsbHkgYXJvdW5kCgkJIyB+MTAwIEtCeXRlcyB3aGljaCBp
+cyBmYWlybHkgc21hbGwgZm9yIGJ1c3kgZmlyZXdhbGxzLgoJCSMKCSMJUmN2U29ja2V0QnVm
+ZmVyIDEyNDkyODAKCgkJIyAKCQkjIEVuYWJsZS9EaXNhYmxlIG1lc3NhZ2UgY2hlY2tzdW1t
+aW5nLiBUaGlzIGlzIGEgZ29vZAoJCSMgcHJvcGVydHkgdG8gYWNoaWV2ZSBmYXVsdC10b2xl
+cmFuY2UuIEluIGNhc2Ugb2YgZG91YnQsIGRvCgkJIyBub3QgbW9kaWZ5IHRoaXMgdmFsdWUu
+CgkJIwoJIwlDaGVja3N1bSBvbgoJI30KCSMKCSMgWW91IGNhbiBzcGVjaWZ5IG1vcmUgdGhh
+biBvbmUgZGVkaWNhdGVkIGxpbmsuIFRodXMsIGlmIG9uZSBkZWRpY2F0ZWQKCSMgbGluayBm
+YWlscywgY29ubnRyYWNrZCBjYW4gZmFpbC1vdmVyIHRvIGFub3RoZXIuIE5vdGUgdGhhdCBh
+ZGRpbmcKCSMgbW9yZSB0aGFuIG9uZSBkZWRpY2F0ZWQgbGluayBkb2VzIG5vdCBtZWFuIHRo
+YXQgc3RhdGUtdXBkYXRlcyB3aWxsCgkjIGJlIHNlbnQgdG8gYWxsIG9mIHRoZW0uIFRoZXJl
+IGlzIG9ubHkgb25lIGFjdGl2ZSBkZWRpY2F0ZWQgbGluayBhdAoJIyBhIGdpdmVuIG1vbWVu
+dC4gVGhlIGBEZWZhdWx0JyBrZXl3b3JkIGluZGljYXRlcyB0aGF0IHRoaXMgaW50ZXJmYWNl
+CgkjIHdpbGwgYmUgc2VsZWN0ZWQgYXMgdGhlIGluaXRpYWwgZGVkaWNhdGVkIGxpbmsuIFlv
+dSBjYW4gaGF2ZSAKCSMgdXAgdG8gNCByZWR1bmRhbnQgZGVkaWNhdGVkIGxpbmtzLiBOb3Rl
+OiBVc2UgZGlmZmVyZW50IG11bHRpY2FzdCAKCSMgZ3JvdXBzIGZvciBldmVyeSByZWR1bmRh
+bnQgbGluay4KCSMKCSMgTXVsdGljYXN0IERlZmF1bHQgewoJIwlJUHY0X2FkZHJlc3MgMjI1
+LjAuMC41MQoJIwlHcm91cCAzNzgxCgkjCUlQdjRfaW50ZXJmYWNlIDE5Mi4xNjguMTAwLjEw
+MQoJIwlJbnRlcmZhY2UgZXRoMwoJIwkjIFNuZFNvY2tldEJ1ZmZlciAxMjQ5MjgwCgkjCSMg
+UmN2U29ja2V0QnVmZmVyIDEyNDkyODAKCSMJQ2hlY2tzdW0gb24KCSMgfQoKCSMKCSMgWW91
+IGNhbiB1c2UgVW5pY2FzdCBVRFAgaW5zdGVhZCBvZiBNdWx0aWNhc3QgdG8gcHJvcGFnYXRl
+IGV2ZW50cy4KCSMgTm90ZSB0aGF0IHlvdSBjYW5ub3QgdXNlIHVuaWNhc3QgVURQIGFuZCBN
+dWx0aWNhc3QgYXQgdGhlIHNhbWUKCSMgdGltZSwgeW91IGNhbiBvbmx5IHNlbGVjdCBvbmUu
+CgkjIAoJI1VEUCB7CgkJIyAKCQkjIFVEUCBhZGRyZXNzIHRoYXQgdGhpcyBmaXJld2FsbCB1
+c2VzIHRvIGxpc3RlbiB0byBldmVudHMuCgkJIwoJCSMgSVB2NF9hZGRyZXNzIDE5Mi4xNjgu
+Mi4xMDAKCQkjCgkJIyBvciB5b3UgbWF5IHdhbnQgdG8gdXNlIGFuIElQdjYgYWRkcmVzczoK
+CQkjCgkJIyBJUHY2X2FkZHJlc3MgZmU4MDo6MjE1OjU4ZmY6ZmUyODo1YTI3CgoJCSMKCQkj
+IERlc3RpbmF0aW9uIFVEUCBhZGRyZXNzIHRoYXQgcmVjZWl2ZXMgZXZlbnRzLCBpZS4gdGhl
+IG90aGVyCgkJIyBmaXJld2FsbCdzIGRlZGljYXRlZCBsaW5rIGFkZHJlc3MuCgkJIwoJCSMg
+SVB2NF9EZXN0aW5hdGlvbl9BZGRyZXNzIDE5Mi4xNjguMi4xMDEKCQkjCgkJIyBvciB5b3Ug
+bWF5IHdhbnQgdG8gdXNlIGFuIElQdjYgYWRkcmVzczoKCQkjCgkJIyBJUHY2X0Rlc3RpbmF0
+aW9uX0FkZHJlc3MgZmU4MDo6MmQwOjU5ZmY6ZmUyYTo3NzVjCgoJCSMKCQkjIFVEUCBwb3J0
+IHVzZWQKCQkjCgkJIyBQb3J0IDM3ODAKCgkJIwoJCSMgVGhlIG5hbWUgb2YgdGhlIGludGVy
+ZmFjZSB0aGF0IHlvdSBhcmUgZ29pbmcgdG8gdXNlIHRvCgkJIyBzZW5kIHRoZSBzeW5jaHJv
+bml6YXRpb24gbWVzc2FnZXMuCgkJIwoJCSMgSW50ZXJmYWNlIGV0aDIKCgkJIyAKCQkjIFRo
+ZSBzZW5kZXIgc29ja2V0IGJ1ZmZlciBzaXplCgkJIwoJCSMgU25kU29ja2V0QnVmZmVyIDEy
+NDkyODAKCgkJIwoJCSMgVGhlIHJlY2VpdmVyIHNvY2tldCBidWZmZXIgc2l6ZQoJCSMKCQkj
+IFJjdlNvY2tldEJ1ZmZlciAxMjQ5MjgwCgoJCSMgCgkJIyBFbmFibGUvRGlzYWJsZSBtZXNz
+YWdlIGNoZWNrc3VtbWluZy4gCgkJIwoJCSMgQ2hlY2tzdW0gb24KCSMgfQoKCSMgbWFpbiBj
+b25uZWN0aW9uIHZpYSBjcm9zc292ZXIgY2FibGUKCVVEUCBEZWZhdWx0IHsKICAgICAgICAg
+ICAgICAgIElQdjRfYWRkcmVzcyAxOTIuMTY4LjEuMQogICAgICAgICAgICAgICAgSVB2NF9E
+ZXN0aW5hdGlvbl9BZGRyZXNzIDE5Mi4xNjguMS4yCiAgICAgICAgICAgICAgICBQb3J0IDM3
+ODAKICAgICAgICAgICAgICAgIEludGVyZmFjZSBlbm8xCiAgICAgICAgICAgICAgICBTbmRT
+b2NrZXRCdWZmZXIgMjQ5ODU2MDAKICAgICAgICAgICAgICAgIFJjdlNvY2tldEJ1ZmZlciAy
+NDk4NTYwMAogICAgICAgICAgICAgICAgQ2hlY2tzdW0gb24KICAgICAgICB9CgkjIGJhY2t1
+cCB2aWEgdmlydCBuZXR3b3JrCglVRFAgewogICAgICAgICAgICAgICBJUHY0X2FkZHJlc3Mg
+MTAuMTYwLjUuMjA0CiAgICAgICAgICAgICAgIElQdjRfRGVzdGluYXRpb25fQWRkcmVzcyAx
+MC4xNjAuNS4yMDUKICAgICAgICAgICAgICAgUG9ydCAzNzgwCiAgICAgICAgICAgICAgIElu
+dGVyZmFjZSBlbm8yCiAgICAgICAgICAgICAgIFNuZFNvY2tldEJ1ZmZlciAyNDk4NTYwMAog
+ICAgICAgICAgICAgICBSY3ZTb2NrZXRCdWZmZXIgMjQ5ODU2MDAKICAgICAgICAgICAgICAg
+Q2hlY2tzdW0gb24KICAgICAgICB9CgoJIyAKCSMgT3RoZXIgdW5zb3J0ZWQgb3B0aW9ucyB0
+aGF0IGFyZSByZWxhdGVkIHRvIHRoZSBzeW5jaHJvbml6YXRpb24uCgkjIAoJT3B0aW9ucyB7
+CgkJIwoJCSMgVENQIHN0YXRlLWVudHJpZXMgaGF2ZSB3aW5kb3cgdHJhY2tpbmcgZGlzYWJs
+ZWQgYnkgZGVmYXVsdCwKCQkjIHlvdSBjYW4gZW5hYmxlIGl0IHdpdGggdGhpcyBvcHRpb24u
+IEFzIHNhaWQsIGRlZmF1bHQgaXMgb2ZmLgoJCSMgVGhpcyBmZWF0dXJlIHJlcXVpcmVzIGEg
+TGludXgga2VybmVsID49IDIuNi4zNi4KCQkjCgkJIyBUQ1BXaW5kb3dUcmFja2luZyBPZmYK
+CQlUQ1BXaW5kb3dUcmFja2luZyBPbgoKCQkjRXhwZWN0YXRpb25TeW5jIG9uCgkJI0V4cGVj
+dGF0aW9uU3luYyB7CgkJIwloLjMyMwoJCSN9Cgl9Cn0KCiMKIyBHZW5lcmFsIHNldHRpbmdz
+CiMKR2VuZXJhbCB7CgkjCgkjIFNldCB0aGUgbmljZSB2YWx1ZSBvZiB0aGUgZGFlbW9uLCB0
+aGlzIHZhbHVlIGdvZXMgZnJvbSAtMjAKCSMgKG1vc3QgZmF2b3JhYmxlIHNjaGVkdWxpbmcp
+IHRvIDE5IChsZWFzdCBmYXZvcmFibGUpLiBVc2luZyBhCgkjIHZlcnkgbG93IHZhbHVlIHJl
+ZHVjZXMgdGhlIGNoYW5jZXMgdG8gbG9zZSBzdGF0ZS1jaGFuZ2UgZXZlbnRzLgoJIyBEZWZh
+dWx0IGlzIDAgYnV0IHRoaXMgZXhhbXBsZSBmaWxlIHNldHMgaXQgdG8gbW9zdCBmYXZvdXJh
+YmxlCgkjIHNjaGVkdWxpbmcgYXMgdGhpcyBpcyBnZW5lcmFsbHkgYSBnb29kIGlkZWEuIFNl
+ZSBtYW4gbmljZSgxKSBmb3IKCSMgbW9yZSBpbmZvcm1hdGlvbi4KCSMKCU5pY2UgLTIwCgoJ
+IwoJIyBTZWxlY3QgYSBkaWZmZXJlbnQgc2NoZWR1bGVyIGZvciB0aGUgZGFlbW9uLCB5b3Ug
+Y2FuIHNlbGVjdCBiZXR3ZWVuCgkjIFJSIGFuZCBGSUZPIGFuZCB0aGUgcHJvY2VzcyBwcmlv
+cml0eSAobWluaW11bSBpcyAwLCBtYXhpbXVtIGlzIDk5KS4KCSMgU2VlIG1hbiBzY2hlZF9z
+ZXRzY2hlZHVsZXIoMikgZm9yIG1vcmUgaW5mb3JtYXRpb24uIFVzaW5nIGEgUlQKCSMgc2No
+ZWR1bGVyIHJlZHVjZXMgdGhlIGNoYW5jZXMgdG8gb3ZlcnJ1biB0aGUgTmV0bGluayBidWZm
+ZXIuCgkjCgkjIFNjaGVkdWxlciB7CgkjCVR5cGUgRklGTwoJIwlQcmlvcml0eSA5OQoJIyB9
+CgoJIwoJIyBOdW1iZXIgb2YgYnVja2V0cyBpbiB0aGUgY2FjaGUgaGFzaHRhYmxlLiBUaGUg
+YmlnZ2VyIGl0IGlzLAoJIyB0aGUgY2xvc2VyIGl0IGdldHMgdG8gTygxKSBhdCB0aGUgY29z
+dCBvZiBjb25zdW1pbmcgbW9yZSBtZW1vcnkuCgkjIFJlYWQgc29tZSBkb2N1bWVudHMgYWJv
+dXQgdHVuaW5nIGhhc2h0YWJsZXMgZm9yIGZ1cnRoZXIgcmVmZXJlbmNlLgoJIwoJSGFzaFNp
+emUgMzI3NjgKCgkjCgkjIE1heGltdW0gbnVtYmVyIG9mIGNvbm50cmFja3MsIGl0IHNob3Vs
+ZCBiZSBkb3VibGUgb2Y6IAoJIyAkIGNhdCAvcHJvYy9zeXMvbmV0L25ldGZpbHRlci9uZl9j
+b25udHJhY2tfbWF4CgkjIHNpbmNlIHRoZSBkYWVtb24gbWF5IGtlZXAgc29tZSBkZWFkIGVu
+dHJpZXMgY2FjaGVkIGZvciBwb3NzaWJsZQoJIyByZXRyYW5zbWlzc2lvbiBkdXJpbmcgc3Rh
+dGUgc3luY2hyb25pemF0aW9uLgoJIwoJSGFzaExpbWl0IDEzMTA3MgoKCSMKCSMgTG9nZmls
+ZTogb24gKC92YXIvbG9nL2Nvbm50cmFja2QubG9nKSwgb2ZmLCBvciBhIGZpbGVuYW1lCgkj
+IERlZmF1bHQ6IG9mZgoJIwoJTG9nRmlsZSBvbgoKCSMKCSMgU3lzbG9nOiBvbiwgb2ZmIG9y
+IGEgZmFjaWxpdHkgbmFtZSAoZGFlbW9uIChkZWZhdWx0KSBvciBsb2NhbDAuLjcpCgkjIERl
+ZmF1bHQ6IG9mZgoJIwoJI1N5c2xvZyBvbgoKCSMKCSMgTG9ja2ZpbGUKCSMgCglMb2NrRmls
+ZSAvdmFyL2xvY2svY29ubnRyYWNrLmxvY2sKCgkjCgkjIFVuaXggc29ja2V0IGNvbmZpZ3Vy
+YXRpb24KCSMKCVVOSVggewoJCVBhdGggL3Zhci9ydW4vY29ubnRyYWNrZC5jdGwKCQlCYWNr
+bG9nIDIwCgl9CgoJIwoJIyBOZXRsaW5rIGV2ZW50IHNvY2tldCBidWZmZXIgc2l6ZS4gSWYg
+eW91IGRvIG5vdCBzcGVjaWZ5IHRoaXMgY2xhdXNlLAoJIyB0aGUgZGVmYXVsdCBidWZmZXIg
+c2l6ZSB2YWx1ZSBpbiAvcHJvYy9uZXQvY29yZS9ybWVtX2RlZmF1bHQgaXMKCSMgdXNlZC4g
+VGhpcyBkZWZhdWx0IHZhbHVlIGlzIHVzdWFsbHkgYXJvdW5kIDEwMCBLYnl0ZXMgd2hpY2gg
+aXMKCSMgZmFpcmx5IHNtYWxsIGZvciBidXN5IGZpcmV3YWxscy4gVGhpcyBsZWFkcyB0byBl
+dmVudCBtZXNzYWdlIGRyb3BwaW5nCgkjIGFuZCBoaWdoIENQVSBjb25zdW1wdGlvbi4gVGhp
+cyBleGFtcGxlIGNvbmZpZ3VyYXRpb24gZmlsZSBzZXRzIHRoZQoJIyBzaXplIHRvIDIgTUJ5
+dGVzIHRvIGF2b2lkIHRoaXMgc29ydCBvZiBwcm9ibGVtcy4KCSMKCU5ldGxpbmtCdWZmZXJT
+aXplIDIwOTcxNTIKCgkjCgkjIFRoZSBkYWVtb24gZG91YmxlcyB0aGUgc2l6ZSBvZiB0aGUg
+bmV0bGluayBldmVudCBzb2NrZXQgYnVmZmVyIHNpemUKCSMgaWYgaXQgZGV0ZWN0cyBuZXRs
+aW5rIGV2ZW50IG1lc3NhZ2UgZHJvcHBpbmcuIFRoaXMgY2xhdXNlIHNldHMgdGhlCgkjIG1h
+eGltdW0gYnVmZmVyIHNpemUgZ3Jvd3RoIHRoYXQgY2FuIGJlIHJlYWNoZWQuIFRoaXMgZXhh
+bXBsZSBmaWxlCgkjIHNldHMgdGhlIHNpemUgdG8gOCBNQnl0ZXMuCgkjCglOZXRsaW5rQnVm
+ZmVyU2l6ZU1heEdyb3d0aCA4Mzg4NjA4CgoJIwoJIyBJZiB0aGUgZGFlbW9uIGRldGVjdHMg
+dGhhdCBOZXRsaW5rIGlzIGRyb3BwaW5nIHN0YXRlLWNoYW5nZSBldmVudHMsCgkjIGl0IGF1
+dG9tYXRpY2FsbHkgc2NoZWR1bGVzIGEgcmVzeW5jaHJvbml6YXRpb24gYWdhaW5zdCB0aGUg
+S2VybmVsCgkjIGFmdGVyIDMwIHNlY29uZHMgKGRlZmF1bHQgdmFsdWUpLiBSZXN5bmNocm9u
+aXphdGlvbnMgYXJlIGV4cGVuc2l2ZQoJIyBpbiB0ZXJtcyBvZiBDUFUgY29uc3VtcHRpb24g
+c2luY2UgdGhlIGRhZW1vbiBoYXMgdG8gZ2V0IHRoZSBmdWxsCgkjIGtlcm5lbCBzdGF0ZS10
+YWJsZSBhbmQgcHVyZ2Ugc3RhdGUtZW50cmllcyB0aGF0IGRvIG5vdCBleGlzdCBhbnltb3Jl
+LgoJIyBCZSBjYXJlZnVsIG9mIHNldHRpbmcgYSB2ZXJ5IHNtYWxsIHZhbHVlIGhlcmUuIFlv
+dSBoYXZlIHRoZSBmb2xsb3dpbmcKCSMgY2hvaWNlczogT24gKGVuYWJsZWQsIHVzZSBkZWZh
+dWx0IDMwIHNlY29uZHMgdmFsdWUpLCBPZmYgKGRpc2FibGVkKQoJIyBvciBWYWx1ZSAoaW4g
+c2Vjb25kcywgdG8gc2V0IGEgc3BlY2lmaWMgYW1vdW50IG9mIHRpbWUpLiBJZiBub3QKCSMg
+c3BlY2lmaWVkLCB0aGUgZGFlbW9uIGFzc3VtZXMgdGhhdCB0aGlzIG9wdGlvbiBpcyBlbmFi
+bGVkLgoJIwoJIyBOZXRsaW5rT3ZlcnJ1blJlc3luYyBPbgoKCSMKCSMgSWYgeW91IHdhbnQg
+cmVsaWFibGUgZXZlbnQgcmVwb3J0aW5nIG92ZXIgTmV0bGluaywgc2V0IG9uIHRoaXMKCSMg
+b3B0aW9uLiBJZiB5b3Ugc2V0IG9uIHRoaXMgY2xhdXNlLCBpdCBpcyBhIGdvb2QgaWRlYSB0
+byBzZXQgb2ZmCgkjIE5ldGxpbmtPdmVycnVuUmVzeW5jLiBUaGlzIG9wdGlvbiBpcyBvZmYg
+YnkgZGVmYXVsdCBhbmQgeW91IG5lZWQKCSMgYSBMaW51eCBrZXJuZWwgPj0gMi42LjMxLgoJ
+IwoJIyBOZXRsaW5rRXZlbnRzUmVsaWFibGUgT2ZmCglOZXRsaW5rRXZlbnRzUmVsaWFibGUg
+T24KCgkjIAoJIyBCeSBkZWZhdWx0LCB0aGUgZGFlbW9uIHJlY2VpdmVzIHN0YXRlIHVwZGF0
+ZXMgZm9sbG93aW5nIGFuCgkjIGV2ZW50LWRyaXZlbiBtb2RlbC4gWW91IGNhbiBtb2RpZnkg
+dGhpcyBiZWhhdmlvdXIgYnkgc3dpdGNoaW5nIHRvCgkjIHBvbGxpbmcgbW9kZSB3aXRoIHRo
+ZSBQb2xsU2VjcyBjbGF1c2UuIFRoaXMgY2xhdXNlIHRlbGxzIGNvbm50cmFja2QKCSMgdG8g
+ZHVtcCB0aGUgc3RhdGVzIGluIHRoZSBrZXJuZWwgZXZlcnkgTiBzZWNvbmRzLiBXaXRoIHJl
+Z2FyZHMgdG8KCSMgc3luY2hyb25pemF0aW9uIG1vZGUsIHRoZSBwb2xsaW5nIG1vZGUgY2Fu
+IG9ubHkgZ3VhcmFudGVlIHRoYXQKCSMgbG9uZy1saWZldGltZSBzdGF0ZXMgYXJlIHJlY292
+ZXJlZC4gVGhlIG1haW4gYWR2YW50YWdlIG9mIHRoaXMgbWV0aG9kCgkjIGlzIHRoZSByZWR1
+Y3Rpb24gaW4gdGhlIHN0YXRlIHJlcGxpY2F0aW9uIGF0IHRoZSBjb3N0IG9mIHJlZHVjaW5n
+IHRoZQoJIyBjaGFuY2VzIG9mIHJlY292ZXJpbmcgY29ubmVjdGlvbnMuCgkjCglQb2xsU2Vj
+cyAxNQoKCSMKCSMgVGhlIGRhZW1vbiBwcmlvcml0aXplcyB0aGUgaGFuZGxpbmcgb2Ygc3Rh
+dGUtY2hhbmdlIGV2ZW50cyBjb21pbmcKCSMgZnJvbSB0aGUgY29yZS4gV2l0aCB0aGlzIGNs
+YXVzZSwgeW91IGNhbiBzZXQgdGhlIG1heGltdW0gbnVtYmVyIG9mCgkjIHN0YXRlLWNoYW5n
+ZSBldmVudHMgKHRob3NlIGNvbWluZyBmcm9tIGtlcm5lbC1zcGFjZSkgdGhhdCB0aGUgZGFl
+bW9uCgkjIHdpbGwgaGFuZGxlIGFmdGVyIHdoaWNoIGl0IHdpbGwgaGFuZGxlIG90aGVyIGV2
+ZW50cyBjb21pbmcgZnJvbSB0aGUKCSMgbmV0d29yayBvciB1c2Vyc3BhY2UuIEEgbG93IHZh
+bHVlIGltcHJvdmVzIGludGVyYWN0aXZpdHkgKGluIHRlcm1zIG9mCgkjIHJlYWwtdGltZSBi
+ZWhhdmlvdXIpIGF0IHRoZSBjb3N0IG9mIGV4dHJhIENQVSBjb25zdW1wdGlvbi4KCSMgRGVm
+YXVsdCAoaWYgbm90IHNldCkgaXMgMTAwLgoJIwoJIyBFdmVudEl0ZXJhdGlvbkxpbWl0IDEw
+MAoKCSMKCSMgRXZlbnQgZmlsdGVyaW5nOiBUaGlzIGNsYXVzZSBhbGxvd3MgeW91IHRvIGZp
+bHRlciBjZXJ0YWluIHRyYWZmaWMsCgkjIFRoZXJlIGFyZSBjdXJyZW50bHkgdGhyZWUgZmls
+dGVyLXNldHM6IFByb3RvY29sLCBBZGRyZXNzIGFuZAoJIyBTdGF0ZS4gVGhlIGZpbHRlciBp
+cyBhdHRhY2hlZCB0byBhbiBhY3Rpb24gdGhhdCBjYW4gYmU6IEFjY2VwdCBvcgoJIyBJZ25v
+cmUuIFRodXMsIHlvdSBjYW4gZGVmaW5lIHRoZSBldmVudCBmaWx0ZXJpbmcgcG9saWN5IG9m
+IHRoZQoJIyBmaWx0ZXItc2V0cyBpbiBwb3NpdGl2ZSBvciBuZWdhdGl2ZSBsb2dpYyBkZXBl
+bmRpbmcgb24geW91ciBuZWVkcy4KCSMgWW91IGNhbiBzZWxlY3QgaWYgY29ubnRyYWNrZCBm
+aWx0ZXJzIHRoZSBldmVudCBtZXNzYWdlcyBmcm9tIAoJIyB1c2VyLXNwYWNlIG9yIGtlcm5l
+bC1zcGFjZS4gVGhlIGtlcm5lbC1zcGFjZSBldmVudCBmaWx0ZXJpbmcKCSMgc2F2ZXMgc29t
+ZSBDUFUgY3ljbGVzIGJ5IGF2b2lkaW5nIHRoZSBjb3B5IG9mIHRoZSBldmVudCBtZXNzYWdl
+CgkjIGZyb20ga2VybmVsLXNwYWNlIHRvIHVzZXItc3BhY2UuIFRoZSBrZXJuZWwtc3BhY2Ug
+ZXZlbnQgZmlsdGVyaW5nCgkjIGlzIHByZWZlcmVkLCBob3dldmVyLCB5b3UgcmVxdWlyZSBh
+IExpbnV4IGtlcm5lbCA+PSAyLjYuMjkgdG8KCSMgZmlsdGVyIGZyb20ga2VybmVsLXNwYWNl
+LiBJZiB5b3Ugd2FudCB0byBzZWxlY3Qga2VybmVsLXNwYWNlIAoJIyBldmVudCBmaWx0ZXJp
+bmcsIHVzZSB0aGUga2V5d29yZCAnS2VybmVsc3BhY2UnIGluc3RlYWQgb2YgCgkjICdVc2Vy
+c3BhY2UnLgoJIwoJRmlsdGVyIEZyb20gS2VybmVsc3BhY2UgewoJCSMKCQkjIEFjY2VwdCBv
+bmx5IGNlcnRhaW4gcHJvdG9jb2xzOiBZb3UgbWF5IHdhbnQgdG8gcmVwbGljYXRlCgkJIyB0
+aGUgc3RhdGUgb2YgZmxvd3MgZGVwZW5kaW5nIG9uIHRoZWlyIGxheWVyIDQgcHJvdG9jb2wu
+CgkJIwoJCVByb3RvY29sIEFjY2VwdCB7CgkJCVRDUAoJCQlTQ1RQCgkJCURDQ1AKICAgICAg
+ICAgICAgICAgICAgICAgICAgVURQCiAgICAgICAgICAgICAgICAgICAgICAgIElDTVAKICAg
+ICAgICAgICAgICAgICAgICAgICAgSVB2Ni1JQ01QCgkJCSMgVURQCgkJCSMgSUNNUCAjIFRo
+aXMgcmVxdWlyZXMgYSBMaW51eCBrZXJuZWwgPj0gMi42LjMxCgkJCSMgSVB2Ni1JQ01QICMg
+VGhpcyByZXF1aXJlcyBhIExpbnV4IGtlcm5lbCA+PSAyLjYuMzEKCQl9CgoJCSMKCQkjIEln
+bm9yZSB0cmFmZmljIGZvciBhIGNlcnRhaW4gc2V0IG9mIElQJ3M6IFVzdWFsbHkgYWxsIHRo
+ZQoJCSMgSVAgYXNzaWduZWQgdG8gdGhlIGZpcmV3YWxsIHNpbmNlIGxvY2FsIHRyYWZmaWMg
+bXVzdCBiZQoJCSMgaWdub3JlZCwgb25seSBmb3J3YXJkZWQgY29ubmVjdGlvbnMgYXJlIHdv
+cnRoIHRvIHJlcGxpY2F0ZS4KCQkjIE5vdGUgdGhhdCB0aGVzZSB2YWx1ZXMgZGVwZW5kcyBv
+biB0aGUgbG9jYWwgSVBzIHRoYXQgYXJlCgkJIyBhc3NpZ25lZCB0byB0aGUgZmlyZXdhbGwu
+CgkJIwoJCUFkZHJlc3MgSWdub3JlIHsKCQkJSVB2NF9hZGRyZXNzIDEyNy4wLjAuMSAjIGxv
+b3BiYWNrCiAgICAgICAgICAgICAgICAgICAgICAgIElQdjRfYWRkcmVzcyAxMC4xNjAuNS4y
+MDMgIyBWSVAKCQkJSVB2NF9hZGRyZXNzIDEwLjE2MC41LjIwNCAjIElQIEZXIDEKCQkJSVB2
+NF9hZGRyZXNzIDEwLjE2MC41LjIwNSAjIElQIEZXIDIKCQkJSVB2NF9hZGRyZXNzIDE5Mi4x
+NjguMS4wLzI0ICMgQ3Jvc3NvdmVyIElQcwogICAgICAgICAgICAgICAgICAgICAgICBJUHY2
+X2FkZHJlc3MgOjoxICMgbG9vcGJhY2sKCQkJI0lQdjRfYWRkcmVzcyAxOTIuMTY4LjEwMC4x
+MDAgIyBkZWRpY2F0ZWQgbGluayBpcAoJCQkjCgkJCSMgWW91IGNhbiBhbHNvIHNwZWNpZnkg
+bmV0d29ya3MgaW4gZm9ybWF0IElQL2NpZHIuCgkJCSMgSVB2NF9hZGRyZXNzIDE5Mi4xNjgu
+MC4wLzI0CgkJCSMKCQkJIyBZb3UgY2FuIGFsc28gc3BlY2lmeSBhbiBJUHY2IGFkZHJlc3MK
+CQkJIyBJUHY2X2FkZHJlc3MgOjoxCgkJfQoKCQkjCgkJIyBVbmNvbW1lbnQgdGhpcyBsaW5l
+IGJlbG93IGlmIHlvdSB3YW50IHRvIGZpbHRlciBieSBmbG93IHN0YXRlLgoJCSMgVGhpcyBv
+cHRpb24gaW50cm9kdWNlcyBhIHRyYWRlLW9mZiBpbiB0aGUgcmVwbGljYXRpb246IGl0CgkJ
+IyByZWR1Y2VzIENQVSBjb25zdW1wdGlvbiBhdCB0aGUgY29zdCBvZiBoYXZpbmcgbGF6eSBi
+YWNrdXAgCgkJIyBmaXJld2FsbCByZXBsaWNhcy4gVGhlIGV4aXN0aW5nIFRDUCBzdGF0ZXMg
+YXJlOiBTWU5fU0VOVCwKCQkjIFNZTl9SRUNWLCBFU1RBQkxJU0hFRCwgRklOX1dBSVQsIENM
+T1NFX1dBSVQsIExBU1RfQUNLLAoJCSMgVElNRV9XQUlULCBDTE9TRUQsIExJU1RFTi4KCQkj
+CgkJIyBTdGF0ZSBBY2NlcHQgewoJCSMJRVNUQUJMSVNIRUQgQ0xPU0VEIFRJTUVfV0FJVCBD
+TE9TRV9XQUlUIGZvciBUQ1AKCQkjIH0KCX0KfQo=
+--------------4F83EF6430CD081C7E5CF332--
+
+--------------ms030809070703050607020708
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
+EOswggUSMIID+qADAgECAgkA4wvV+K8l2YEwDQYJKoZIhvcNAQELBQAwgYIxCzAJBgNVBAYT
+AkRFMSswKQYDVQQKDCJULVN5c3RlbXMgRW50ZXJwcmlzZSBTZXJ2aWNlcyBHbWJIMR8wHQYD
+VQQLDBZULVN5c3RlbXMgVHJ1c3QgQ2VudGVyMSUwIwYDVQQDDBxULVRlbGVTZWMgR2xvYmFs
+Um9vdCBDbGFzcyAyMB4XDTE2MDIyMjEzMzgyMloXDTMxMDIyMjIzNTk1OVowgZUxCzAJBgNV
+BAYTAkRFMUUwQwYDVQQKEzxWZXJlaW4genVyIEZvZXJkZXJ1bmcgZWluZXMgRGV1dHNjaGVu
+IEZvcnNjaHVuZ3NuZXR6ZXMgZS4gVi4xEDAOBgNVBAsTB0RGTi1QS0kxLTArBgNVBAMTJERG
+Ti1WZXJlaW4gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkgMjCCASIwDQYJKoZIhvcNAQEBBQAD
+ggEPADCCAQoCggEBAMtg1/9moUHN0vqHl4pzq5lN6mc5WqFggEcVToyVsuXPztNXS43O+FZs
+FVV2B+pG/cgDRWM+cNSrVICxI5y+NyipCf8FXRgPxJiZN7Mg9mZ4F4fCnQ7MSjLnFp2uDo0p
+eQcAIFTcFV9Kltd4tjTTwXS1nem/wHdN6r1ZB+BaL2w8pQDcNb1lDY9/Mm3yWmpLYgHurDg0
+WUU2SQXaeMpqbVvAgWsRzNI8qIv4cRrKO+KA3Ra0Z3qLNupOkSk9s1FcragMvp0049ENF4N1
+xDkesJQLEvHVaY4l9Lg9K7/AjsMeO6W/VRCrKq4Xl14zzsjz9AkH4wKGMUZrAcUQDBHHWekC
+AwEAAaOCAXQwggFwMA4GA1UdDwEB/wQEAwIBBjAdBgNVHQ4EFgQUk+PYMiba1fFKpZFK4OpL
+4qIMz+EwHwYDVR0jBBgwFoAUv1kgNgB5oKAia4zV8mHSuCzLgkowEgYDVR0TAQH/BAgwBgEB
+/wIBAjAzBgNVHSAELDAqMA8GDSsGAQQBga0hgiwBAQQwDQYLKwYBBAGBrSGCLB4wCAYGZ4EM
+AQICMEwGA1UdHwRFMEMwQaA/oD2GO2h0dHA6Ly9wa2kwMzM2LnRlbGVzZWMuZGUvcmwvVGVs
+ZVNlY19HbG9iYWxSb290X0NsYXNzXzIuY3JsMIGGBggrBgEFBQcBAQR6MHgwLAYIKwYBBQUH
+MAGGIGh0dHA6Ly9vY3NwMDMzNi50ZWxlc2VjLmRlL29jc3ByMEgGCCsGAQUFBzAChjxodHRw
+Oi8vcGtpMDMzNi50ZWxlc2VjLmRlL2NydC9UZWxlU2VjX0dsb2JhbFJvb3RfQ2xhc3NfMi5j
+ZXIwDQYJKoZIhvcNAQELBQADggEBAIcL/z4Cm2XIVi3WO5qYi3FP2ropqiH5Ri71sqQPrhE4
+eTizDnS6dl2e6BiClmLbTDPo3flq3zK9LExHYFV/53RrtCyD2HlrtrdNUAtmB7Xts5et6u5/
+MOaZ/SLick0+hFvu+c+Z6n/XUjkurJgARH5pO7917tALOxrN5fcPImxHhPalR6D90Bo0fa3S
+PXez7vTXTf/D6OWST1k+kEcQSrCFWMBvf/iu7QhCnh7U3xQuTY+8npTD5+32GPg8SecmqKc2
+2CzeIs2LgtjZeOJVEqM7h0S2EQvVDFKvaYwPBt/QolOLV5h7z/0HJPT8vcP9SpIClxvyt7bP
+ZYoaorVyGTkwggWsMIIElKADAgECAgcbY7rQHiw9MA0GCSqGSIb3DQEBCwUAMIGVMQswCQYD
+VQQGEwJERTFFMEMGA1UEChM8VmVyZWluIHp1ciBGb2VyZGVydW5nIGVpbmVzIERldXRzY2hl
+biBGb3JzY2h1bmdzbmV0emVzIGUuIFYuMRAwDgYDVQQLEwdERk4tUEtJMS0wKwYDVQQDEyRE
+Rk4tVmVyZWluIENlcnRpZmljYXRpb24gQXV0aG9yaXR5IDIwHhcNMTYwNTI0MTEzODQwWhcN
+MzEwMjIyMjM1OTU5WjCBjTELMAkGA1UEBhMCREUxRTBDBgNVBAoMPFZlcmVpbiB6dXIgRm9l
+cmRlcnVuZyBlaW5lcyBEZXV0c2NoZW4gRm9yc2NodW5nc25ldHplcyBlLiBWLjEQMA4GA1UE
+CwwHREZOLVBLSTElMCMGA1UEAwwcREZOLVZlcmVpbiBHbG9iYWwgSXNzdWluZyBDQTCCASIw
+DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJ07eRxH3h+Gy8Zp1xCeOdfZojDbchwFfylf
+S2jxrRnWTOFrG7ELf6Gr4HuLi9gtzm6IOhDuV+UefwRRNuu6cG1joL6WLkDh0YNMZj0cZGnl
+m6Stcq5oOVGHecwX064vXWNxSzl660Knl5BpBb+Q/6RAcL0D57+eGIgfn5mITQ5HjUhfZZkQ
+0tkqSe3BuS0dnxLLFdM/fx5ULzquk1enfnjK1UriGuXtQX1TX8izKvWKMKztFwUkP7agCwf9
+TRqaA1KgNpzeJIdl5Of6x5ZzJBTN0OgbaJ4YWa52fvfRCng8h0uwN89Tyjo4EPPLR22MZD08
+WkVKusqAfLjz56dMTM0CAwEAAaOCAgUwggIBMBIGA1UdEwEB/wQIMAYBAf8CAQEwDgYDVR0P
+AQH/BAQDAgEGMCkGA1UdIAQiMCAwDQYLKwYBBAGBrSGCLB4wDwYNKwYBBAGBrSGCLAEBBDAd
+BgNVHQ4EFgQUazqYi/nyU4na4K2yMh4JH+iqO3QwHwYDVR0jBBgwFoAUk+PYMiba1fFKpZFK
+4OpL4qIMz+EwgY8GA1UdHwSBhzCBhDBAoD6gPIY6aHR0cDovL2NkcDEucGNhLmRmbi5kZS9n
+bG9iYWwtcm9vdC1nMi1jYS9wdWIvY3JsL2NhY3JsLmNybDBAoD6gPIY6aHR0cDovL2NkcDIu
+cGNhLmRmbi5kZS9nbG9iYWwtcm9vdC1nMi1jYS9wdWIvY3JsL2NhY3JsLmNybDCB3QYIKwYB
+BQUHAQEEgdAwgc0wMwYIKwYBBQUHMAGGJ2h0dHA6Ly9vY3NwLnBjYS5kZm4uZGUvT0NTUC1T
+ZXJ2ZXIvT0NTUDBKBggrBgEFBQcwAoY+aHR0cDovL2NkcDEucGNhLmRmbi5kZS9nbG9iYWwt
+cm9vdC1nMi1jYS9wdWIvY2FjZXJ0L2NhY2VydC5jcnQwSgYIKwYBBQUHMAKGPmh0dHA6Ly9j
+ZHAyLnBjYS5kZm4uZGUvZ2xvYmFsLXJvb3QtZzItY2EvcHViL2NhY2VydC9jYWNlcnQuY3J0
+MA0GCSqGSIb3DQEBCwUAA4IBAQCBeEWkTqR/DlXwCbFqPnjMaDWpHPOVnj/z+N9rOHeJLI21
+rT7H8pTNoAauusyosa0zCLYkhmI2THhuUPDVbmCNT1IxQ5dGdfBi5G5mUcFCMWdQ5UnnOR7L
+n8qGSN4IFP8VSytmm6A4nwDO/afr0X9XLchMX9wQEZc+lgQCXISoKTlslPwQkgZ7nu7YRrQb
+tQMMONncsKk/cQYLsgMHM8KNSGMlJTx6e1du94oFOO+4oK4v9NsH1VuEGMGpuEvObJAaguS5
+Pfp38dIfMwK/U+d2+dwmJUFvL6Yb+qQTkPp8ftkLYF3sv8pBoGH7EUkp2KgtdRXYShjqFu9V
+NCIaE40GMIIGITCCBQmgAwIBAgIMIAznfcQsmKMHwKpYMA0GCSqGSIb3DQEBCwUAMIGNMQsw
+CQYDVQQGEwJERTFFMEMGA1UECgw8VmVyZWluIHp1ciBGb2VyZGVydW5nIGVpbmVzIERldXRz
+Y2hlbiBGb3JzY2h1bmdzbmV0emVzIGUuIFYuMRAwDgYDVQQLDAdERk4tUEtJMSUwIwYDVQQD
+DBxERk4tVmVyZWluIEdsb2JhbCBJc3N1aW5nIENBMB4XDTE4MTExNTEyNDMyOFoXDTIxMTEx
+NDEyNDMyOFowgbIxCzAJBgNVBAYTAkRFMRwwGgYDVQQIDBNOb3JkcmhlaW4tV2VzdGZhbGVu
+MQ0wCwYDVQQHDARCb25uMTgwNgYDVQQKDC9SaGVpbmlzY2hlIEZyaWVkcmljaC1XaWxoZWxt
+cy1Vbml2ZXJzaXRhZXQgQm9ubjEgMB4GA1UECwwXUGh5c2lrYWxpc2NoZXMgSW5zdGl0dXQx
+GjAYBgNVBAMMEU9saXZlciBGcmV5ZXJtdXRoMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIB
+CgKCAQEAwKdVNE7QbQkmWwUVE7N+izRfbbEalPrylpwB9Mgm/YIjJCVfzpcdF7g63VY1TSFP
+Uxh4yDSpw0lVruJZ6Gd6A1JCQEcw/yiG88Y806POHQEM0LTOYYmkKKG+iz8DEvTQbxC5+DyQ
+shU2tYSi5druehKqylyReTun9NfJ1gTdLueKjpGqJnsG3CZOaVUx4eMFj7pMmHzPnZsfe/Nr
+w3lTdmtaG0RoKHLDq3jK2LkDC3vgej/FyOVclUfwkEpxrm1l1GegqYMRZ5qAhwJ0d/FdD1Gt
+HVdISFHrpHDDJAFZ2dVB+G4bhif1dvXsQK4qWOWT6M2+71xLhDdf9Qawci+isQIDAQABo4IC
+WDCCAlQwQAYDVR0gBDkwNzAPBg0rBgEEAYGtIYIsAQEEMBEGDysGAQQBga0hgiwBAQQDCDAR
+Bg8rBgEEAYGtIYIsAgEEAwgwCQYDVR0TBAIwADAOBgNVHQ8BAf8EBAMCBeAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMB0GA1UdDgQWBBRVYUmFlJJi/QG+QVTQn2tfh4wnhTAf
+BgNVHSMEGDAWgBRrOpiL+fJTidrgrbIyHgkf6Ko7dDAoBgNVHREEITAfgR1mcmV5ZXJtdXRo
+QHBoeXNpay51bmktYm9ubi5kZTCBjQYDVR0fBIGFMIGCMD+gPaA7hjlodHRwOi8vY2RwMS5w
+Y2EuZGZuLmRlL2Rmbi1jYS1nbG9iYWwtZzIvcHViL2NybC9jYWNybC5jcmwwP6A9oDuGOWh0
+dHA6Ly9jZHAyLnBjYS5kZm4uZGUvZGZuLWNhLWdsb2JhbC1nMi9wdWIvY3JsL2NhY3JsLmNy
+bDCB2wYIKwYBBQUHAQEEgc4wgcswMwYIKwYBBQUHMAGGJ2h0dHA6Ly9vY3NwLnBjYS5kZm4u
+ZGUvT0NTUC1TZXJ2ZXIvT0NTUDBJBggrBgEFBQcwAoY9aHR0cDovL2NkcDEucGNhLmRmbi5k
+ZS9kZm4tY2EtZ2xvYmFsLWcyL3B1Yi9jYWNlcnQvY2FjZXJ0LmNydDBJBggrBgEFBQcwAoY9
+aHR0cDovL2NkcDIucGNhLmRmbi5kZS9kZm4tY2EtZ2xvYmFsLWcyL3B1Yi9jYWNlcnQvY2Fj
+ZXJ0LmNydDANBgkqhkiG9w0BAQsFAAOCAQEARUAUNWOOOT8zUouetmweHEU3pYU3Wt5yEWao
+KoayF1t5FTdeY9nvOrTss2kKzskO1lH5QodZP+nYGF4nA1YI37J115K8YJN+tjx7A8bVc34C
+RAX6R2KXhTM6ToVTr6IsROkO7kj0HMLBcxbCgui635+Pu2PuPw86cd9rP+PxjHIXfQc0dIRi
+z2eWG+nY7GwBZDBhpyQwqEBVBD09h8TN9Nz40WrO6fTu3unq7+JV5n7ccqef2ioc6fmI8Aqp
+GBK1sl8MUuqD0e7gBdYqGwmZsB/faEgIRC1dKugq5UngD68gfn5rUzchoBAMWxoRcfQ+NEpb
+8cw+P7/rk+/cwdD1vTGCBAswggQHAgEBMIGeMIGNMQswCQYDVQQGEwJERTFFMEMGA1UECgw8
+VmVyZWluIHp1ciBGb2VyZGVydW5nIGVpbmVzIERldXRzY2hlbiBGb3JzY2h1bmdzbmV0emVz
+IGUuIFYuMRAwDgYDVQQLDAdERk4tUEtJMSUwIwYDVQQDDBxERk4tVmVyZWluIEdsb2JhbCBJ
+c3N1aW5nIENBAgwgDOd9xCyYowfAqlgwDQYJYIZIAWUDBAIBBQCgggI9MBgGCSqGSIb3DQEJ
+AzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIxMDUxMDIyNTgwN1owLwYJKoZIhvcN
+AQkEMSIEILGUw8aKJVL3tDP93glJrWwckQcXbStFTrk9TNb80IhBMGwGCSqGSIb3DQEJDzFf
+MF0wCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgIC
+AIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwga8GCSsGAQQBgjcQ
+BDGBoTCBnjCBjTELMAkGA1UEBhMCREUxRTBDBgNVBAoMPFZlcmVpbiB6dXIgRm9lcmRlcnVu
+ZyBlaW5lcyBEZXV0c2NoZW4gRm9yc2NodW5nc25ldHplcyBlLiBWLjEQMA4GA1UECwwHREZO
+LVBLSTElMCMGA1UEAwwcREZOLVZlcmVpbiBHbG9iYWwgSXNzdWluZyBDQQIMIAznfcQsmKMH
+wKpYMIGxBgsqhkiG9w0BCRACCzGBoaCBnjCBjTELMAkGA1UEBhMCREUxRTBDBgNVBAoMPFZl
+cmVpbiB6dXIgRm9lcmRlcnVuZyBlaW5lcyBEZXV0c2NoZW4gRm9yc2NodW5nc25ldHplcyBl
+LiBWLjEQMA4GA1UECwwHREZOLVBLSTElMCMGA1UEAwwcREZOLVZlcmVpbiBHbG9iYWwgSXNz
+dWluZyBDQQIMIAznfcQsmKMHwKpYMA0GCSqGSIb3DQEBAQUABIIBALWgVA7QdAu7ImEKezBp
+chNVUwKznBWGfcoT21yZps8+9fMnAb4oBbVL9vMjrLSYmLEZe5yi3DNH80tHDYL2JWtt0wWU
+EtouqR9pvYO/7zfq4/6D+sl+8WDyISO70NARKo7qyEgTr3HoAnZ7FtN3kzqtpW2BTwke7Bsg
+3CkaW36IZGzTqyEKvZxb5KL0H3Wq3FrmRfUaC/0u6Ehp8v86spmaIyGb/iOpZrnK9aDpKS2X
+FKOryr9Wvk+5K6awHVcpjXV1EimlSz4UiEJ4h5qFrS5+SzdcZjZQJU82oZStsTKomafLSxUq
+AYi1RRnyano/xs95UR3HGDlqokSc8JEwvsAAAAAAAAA=
+--------------ms030809070703050607020708--
