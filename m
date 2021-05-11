@@ -1,412 +1,560 @@
 From: Oliver Freyermuth <freyermuth@physik.uni-bonn.de>
 Subject: Re: Running an active/active firewall/router (xt_cluster?)
-Date: Tue, 11 May 2021 01:21:02 +0200
-Message-ID: <16bf545a-6adc-5470-2cb7-f6992ef46e77@physik.uni-bonn.de>
+Date: Tue, 11 May 2021 11:08:15 +0200
+Message-ID: <4bfd159a-1714-958f-6aa3-c6155626d3d8@physik.uni-bonn.de>
 References: <3a995078-6bdf-f1c6-0a88-bc56fca55714@physik.uni-bonn.de>
  <CAPJdpdAyqmKtRnnKDqyEOSnpVVJMNMdYjyuT7dNL+6CNDLwB6Q@mail.gmail.com>
  <4113e9ec-225e-75d5-b221-996c00f9b060@physik.uni-bonn.de>
  <CAPJdpdD9LEG7q6MwioRmWoqSdV4gj7xgFCEor1nphAiX8smy7g@mail.gmail.com>
+ <16bf545a-6adc-5470-2cb7-f6992ef46e77@physik.uni-bonn.de>
+ <CAPJdpdDNmTq_yafDU12w1xz7PUTm4zZr6vt2nGciv=baGYwP1A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms050702040300030501050707"
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms000005030003000304080504"
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=physik.uni-bonn.de; s=mail;
-        bh=RmCUJFN9BSIN9JeeIMB8uby+PYQlpVhA6yBBvm3g/z4=;
+        bh=iQd/uhXVvbvJAIULvDLbyNwR/DGzg8TsCgpXUSUJmiY=;
         h=Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To
-        :Subject; b=cmlQclDu3xd7fH8H81UbRDPRwSia6qQRih9h2p6vNJJdHb/BLhxrHyf4/2E7k38Jd
-        ZN/z9DRxPiu+p61uoyxa4KifSbUzDlUmmxU4qhWYCj517SSIQN6i6P4qh7yAT6y9AHmaM2FjmiYwX
-        3likXyrnFT7R4v2L1FOpSi9y6DVI0=
-In-Reply-To: <CAPJdpdD9LEG7q6MwioRmWoqSdV4gj7xgFCEor1nphAiX8smy7g@mail.gmail.com>
+        :Subject; b=y63Dcty3hCwGWEbVW1Z7U4P+1l+kZAnNakMXmKBoTOlYW9w3yaWXi7QLVRsbMznrB
+        jfp155SxqwTrzzL9Eq6imvw9BfPb22JG1VF+WEgpTeRHNS3B7AoTAi+AC+m/yni0+MgY9fRmGMwpm
+        16NGb6l9AiH/w0zAXPi7cBC8L1kBU=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=physik.uni-bonn.de; s=mail;
+        bh=iQd/uhXVvbvJAIULvDLbyNwR/DGzg8TsCgpXUSUJmiY=;
+        h=Content-Type:In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To
+        :Subject; b=y63Dcty3hCwGWEbVW1Z7U4P+1l+kZAnNakMXmKBoTOlYW9w3yaWXi7QLVRsbMznrB
+        jfp155SxqwTrzzL9Eq6imvw9BfPb22JG1VF+WEgpTeRHNS3B7AoTAi+AC+m/yni0+MgY9fRmGMwpm
+        16NGb6l9AiH/w0zAXPi7cBC8L1kBU=
+In-Reply-To: <CAPJdpdDNmTq_yafDU12w1xz7PUTm4zZr6vt2nGciv=baGYwP1A@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
 To: Paul Robert Marino <prmarino1@gmail.com>
 Cc: netfilter <netfilter@vger.kernel.org>
 
 This is a cryptographically signed message in MIME format.
 
---------------ms050702040300030501050707
+--------------ms000005030003000304080504
 Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-GB
 Content-Transfer-Encoding: quoted-printable
 
-Also answering inline.
+Am 11.05.21 um 03:00 schrieb Paul Robert Marino:
+> Well In the scenario where you don't control the upstream router I woul=
+d recommend putting a small routing switch stack in the middle. The reaso=
+n being it solves a lot of the potential hardware issues as well around r=
+edundancy and loadbalancing. Ideally I always like to see a separate rout=
+ing switch stack on both sides that can only be managed by an OOB network=
+ on dedicated ports.=20
 
-Am 11.05.21 um 00:55 schrieb Paul Robert Marino:
-> I'm adding replies to your replies inline below
->=20
-> On Mon, May 10, 2021, 5:55 PM Oliver Freyermuth
-> <freyermuth@physik.uni-bonn.de> wrote:
->>
->> Hey Paul,
->>
->> many thanks for the detailed reply!
->> Some comments inline.
->>
->> Am 10.05.21 um 18:57 schrieb Paul Robert Marino:
->>> hey Oliver,
->>> I've done similar things over the years, a lot of fun lab experiments=
+We actually have a (non-redundant) routing switch on one end, and a the m=
+entioned routing stack on the other end, but _both_ are not controlled by=
+ us (we could take control of one,
+but since the operators maintain the full switch infrastructure and are v=
+ery cooperative and experienced, we preferred to leave also this componen=
+t to them for now).
+So we'll definitely seek contact to the operators and try to convince the=
+m to save extra hardware (but since the infrastructure on one end is shar=
+ed, this may need some discussion).
 
->>> and found it really it comes down to a couple of things.
->>> I did some POC testing with contrackd and some experimental code
->>> around trunking across multiple firewalls with a sprinkling of
->>> virtualization.
->>> There were a few scenarios I tried, some involving OpenVSwitch
->>> (because I was experimenting with SPBM) and some not, with contrackd
->>> similarly configured.
->>> All the scenarios were interesting but they all had relatively rare o=
-n
->>> slow (<1Gbs) network issues that grew exponentially in frequency on
->>> higher speed networks (>1Gbs) with latency in contrackd syncing.
->>
->> Indeed, we'd strive for ~20 Gb/s in our case, so this experience surel=
-y is important to hear about.
->>
->>> What i found is the best scenario was to use Quagga for dynamic
->>> routing to load balance the traffic between the firewall IP's,
->>> keepalived to load handle IP failover, and contrackd (in a similar
->>> configuration to the one you described) to keep the states in sync
->>> there are a few pitfalls in going down this route caused by bad and o=
-r
->>> outdated documentation for both Quagga and keepalived. I'm also going=
+> Back when I did this stuff on a regular large scale (managed hundreds o=
+f firewalls) basis I would use cheep Avaya (originally Nortel, now Extrea=
+m Networks) ERS or VSP with stack for this because they had the right fea=
+tures at a reasonable price, but any switches that do stacking or can do =
+multiple 10Gbps uplinks with routing should do. That was what I always fo=
+und to be the most stable configuration. There also may be advantages to =
+using a switch stack from the same manufacturer as the up stream router. =
+That also opens up the possibility of doing 100Gbps to the intermediate s=
+witches and doing a more=20
+> traditional primary backup configuration on the firewalls.
 
->>> to give you some recommendations about some hardware topology stuff
->>> you may not think about initially.
->>
->> I'm still a bit unsure if we are on the same page, but that may just b=
-e caused by my limited knowledge of Quagga.
->> To my understanding, Quagga uses e.g. OSPF and hence can, if the route=
-s have the same path, load-balance.
->>
->> However, in our case, we'd want to go for active/active firewalls (whi=
-ch of course are also routers).
->> But that means we have internal machines on one side, which use a sing=
-le default gateway (per VLAN),
->> then our active/active firewall, and then the outside world (actually =
-a PtP connection to an upstream router).
->>
->> Can Quagga help me to actively use both firewalls in a load-balancing =
-and redundant way?
->> The idea here is that the upstream router has high bandwidth, so using=
- more than one firewall allows to achieve better throughput,
->> and with active/active we'd also strive for redundancy (i.e. reduced t=
-hroughput if one firewall fails).
->> To my understanding, OSPF / Quagga could do this if the firewalls are =
-placed between routers also joining via OSPF.
->> But is there also a way to have the clients directly talk to our firew=
-alls, and the firewalls to a single upstream router (which we don't contr=
-ol)?
->>
->> A simple drawing may help:
->>
->>                ____  FW A ____
->>               /               \
->> Client(s) --                 --PtP-- upstream router
->>               \____  FW B ____/
->>
->> This is why I thought about using xt_cluster and giving both FW A and =
-FW B the very same IP (the default gateway of the clients)
->> and the very same MAC at the same time, so the switch duplicates the p=
-ackets, and then FW A accepts some packets and FW B the remaining ones
->> via filtering with xt_cluster.
->>
->> Can Quagga do something in this picture, or simplify this picture?
->> The upstream router also sends all incoming packets to a single IP in =
-the PtP network, i.e. the firewall nodes need to show up as "one converge=
-d system"
->> to both the clients on one side and the upstream router on the other s=
-ide.
->=20
->=20
-> I understand what you are shooting for but it's dangerous at those
-> data rates and not achievable via stock existing software.
-> I did write some POC code years ago for a previous employer but
-> determined it was too dangerous to put into production without some
-> massive kernel changes such as using something like RDMA over
-> dedicated high speed interfaces or linking the systems over the PCI
-> express busses to sync the states instead of using contrackd.
->=20
-> So load balancing is a better choice in this case, and many middle to
-> higher end managed switches that have routers built in can do OSPF.
-> I've seen many stackable switches that can do it. By the way Quagga
-> supports several other dynamic routing protocols not just just OSPF.
+Thanks! We actually have a general contract to "prefer" components from o=
+ne of the (expensive) manufacturers, which is good to get things more hom=
+ogeneous at least.
+Let's see how the discussion turns out :-).
 
-Thanks, now I understand your answer much better =E2=80=94 the classical =
-case of intention getting lost between the lines.
-Indeed, this is important experience, many thanks for sharing it!
-
-I was already unsure if with such a solution I could really expect to ach=
-ieve these data rates,
-so this warning is worth its weight in gold.
-I'll still play around with this setup in the lab, but testing at scale i=
-s also not easy
-(for us) in the lab, so again this warning is very useful so we won't tak=
-e this into production.
-
-The problem which made me think about all this is that we don't have cont=
-rol of the upstream router.
-That made me hope for a solution which does not require changes on that e=
-nd.
-But of course we can communicate with the operators
-and see if we can find a way to use dynamic routing on that end.
-
-> The safest and easiest option for you would be to use 100Gbs fibre
-> connection instead, possibly with direct attach cables if you want to
-> save on optics, and do primary secondary failover.
-
-Sadly, the infrastructure further upstream is not yet upgraded to support=
- 100 Gb/s (and will not be in the near future),
-otherwise, this surely would have been the easier option.
-
->>> I will start with Quagga because the bad documentation part is easy t=
-o cover.
->>> in the Quagga documentation they recommend that you put a routable IP=
-
->>> on a loopback interface and attach Quagga the daemon for the dynamic
->>> routing service of your choice to it, That works fine on BSD and old
->>> versions of Linux from 20 years ago but any thing running a Linux
->>> kernel version of 2.4 or higher will not allow it unless you change
->>> setting in /etc/sysctrl.conf and the Quagga documentation tells you t=
-o
->>> make those changes. DO NOT DO WHAT THEY SAY, its wrong and dangerous.=
-
->>> Instead create a "dummy" interface with a routable IP for this
->>> purpose. a dummy interface is a special kind of interface meant for
->>> exactly the scenario described and works well without compromising th=
-e
->>> security of your firewall.
->>
->> Thanks for this helpful advice!
->> Even though I am not sure yet Quagga will help me out in this picture,=
-
->> I am now already convinced we will have a situation in which Quagga wi=
-ll help us out.
->> So this is noted down for future use :-).
->>
->>> Keepalived
->>> the main error in keepalived's documentation is is most of the
->>> documentation and howto's you will find about it on the web are based=
-
->>> on a 15 year old howto which had a fundamental mistake in how VRRP
->>> works, and what the "state"  flag actually does because its not
->>> explained well in the man file. "state" in a "vrrp_instance" should
->>> always be set to "MASTER" on all nodes and the priority should be use=
-d
->>> to determine which node should be the preferred master. the only time=
-
->>> you should ever set state to "BACKUP" is if you have a 3rd machine
->>> that you never want to become the master which you are just using for=
-
->>> quorum and in that case its priority should also be set to "0"
->>> (failed) . setting the state to "BACKUP" will seem to work fine until=
-
->>> you have a failover event when the interface will continually go ip
->>> and done on the backup node. on the mac address issue keepalived will=
-
->>> apr ping the subnets its attached to so that's generally not an issue=
-
->>> but I would recommend using vmac's (virtual mac addresses) assuming
->>> the kernel for your distro and your network cards support it because
->>> that way it just looks to the switch like it changed a port due to
->>> some physical topology change and switches usually handle that very
->>> gracefully, but don't always handle the mac address change for IP
->>> addresses as quickly.
->>> I also recommend reading the RFC's on VRRP particularly the parts tha=
-t
->>> explain how the elections and priorities work, they are a quick and
->>> easy read and will really give you a good idea of how to configure
->>> keepalived properly to achieve the failover and recovery behavior you=
-
->>> want.
->>
->> See above on the virtual MACs =E2=80=94 if the clients should use both=
- firewalls at the same time,
->> I think I'd need a single MAC for both, so the clients only see a sing=
-le default gateway.
->> In a more classic setup, we've used pcs (pacemaker and corosync) to su=
-ccessfully migrate virtual IPs and MAC addresses.
->> It has worked quite reliable (using Kronosnet for communication).
->> But we've also used Keepalived some years ago successfully :-).
->>
->>> On the hardware topology
->>> I recommend using dedicated interfaces for contrackd, really you don'=
-t
->>> need anything faster than 100Mbps even if the data interfaces are
->>> 100Gbps but i usually use 1 Gbps interfaces for this. they can be on
->>> their own dedicated switches or crossover interfaces. the main concer=
-n
->>> here is securely handling a large number of tiny packets so having
->>> dedicated network card buffers to handle microburst  is useful and if=
-
->>> you can avoid latency from a switch that's trying to be too smart for=
-
->>> its own good that's for the best.
->>
->> Indeed, we have 1 Gb/s crossover link, and use a 1 Gb/s connection thr=
-ough a switch in case this would ever fail for some reason =E2=80=94
->> we use these links both for conntrackd and for Kronosnet communication=
- by corosync.
->>
->>> For keepalived use dedicated VLAN's on each physical interface to
->>> handle the heartbeats and group the VRRP interfaces. to insure the
->>> failovers of the IP's on both sides are handled correctly.
->>> If you only have 2 firewalls I recommend using a an additional device=
-
->>> on each side for quorum in a backup/failed mode as described above.
->>> Assuming a 1 second or greater interval the device could be something=
-
->>> as simple as a Raspberry PI it really doesn't need to be anything
->>> powerful because its just adding a heartbeat to the cluster, but for
->>> sub second intervals you may need something more powerful because sub=
-
->>> second intervals can eat a surprising amount of CPU.
->>
->> We currently went without an external third party and let corosync/pac=
-emaker use a STONITH device to explicitly kill the other node
->> and establish a defined state if heartbeats get lost. We might think a=
-bout a third machine at some point to get an actual quorum, indeed.
->=20
->=20
-> I get why you might think to use corosync/pacemaker for this if you
-> weren't familiar with keepalived and LVS in the kernel,  but it's
-> hammering a square peg in a round hole when you have a perfectly
-> shaped and sized peg available to you that's actually been around a
-> lot longer and works a lot more predictably, faster and more reliably
-> by leveraging parts of the kernels network stack designed specifically
-> for this use case. I've done explicit kills of the other device via
-> cross connected hardware watchdog devices via keepalived before and it
-> was easy.
-> By the way if you don't know what LVS is it's the kernels builtin
-> layer 3 network load balancer stack that was designed with these kind
-> of failover scenarios in mind keepalived is just a wrapper around LVS
-> that adds VRRP based heartbeating and hooks to allow you to call
-> external scripts for actions based on heart beat state change events
-> and additional watchdog scripts which can also trigger state changes.
-> To be clear i wouldn't use keepalived to handle process master slave
-> failovers i would use corosync and pacemaker, or in some cases
-> Clusterd for that because they are usually the right tool for the job,
-> but for firewall and or network load balancer failover i would always
-> use keepalived because its the right tool for that job.
->=20
-
-Our main reasoning for corosync/pacemaker was that we've used it for the =
-predecessor setup quite successfully for ~7 years,
-while we have only used keepalived in smaller configurations (but it also=
- served us well).
-You raise many valid points, so even though pacemaker/corosync has not di=
-sappointed us (as of yet), we might indeed reconsider this decision.
-
-Cheers and thanks,
+Cheers and many thanks,
 	Oliver
 
 >=20
->>
->> Cheers and thanks again,
->>          Oliver
->>
->>>
->>>
->>> On Sun, May 9, 2021 at 3:16 PM Oliver Freyermuth
->>> <freyermuth@physik.uni-bonn.de> wrote:
->>>>
->>>> Dear netfilter experts,
->>>>
->>>> we are trying to setup an active/active firewall, making use of "xt_=
-cluster".
->>>> We can configure the switch to act like a hub, i.e. both machines ca=
-n share the same MAC and IP and get the same packets without additional A=
-RPtables tricks.
->>>>
->>>> So we set rules like:
->>>>
->>>>     iptables -I PREROUTING -t mangle -i external_interface -m cluste=
-r --cluster-total-nodes 2 --cluster-local-node 1 --cluster-hash-seed 0xde=
-adbeef -j MARK --set-mark 0xffff
->>>>     iptables -A PREROUTING -t mangle -i external_interface -m mark !=
- --mark 0xffff -j DROP
->>>>
->>>> Ideally, it we'd love to have the possibility to scale this to more =
-than two nodes, but let's stay with two for now.
->>>>
->>>> Basic tests show that this works as expected, but the details get me=
-ssy.
->>>>
->>>> 1. Certainly, conntrackd is needed to synchronize connection states.=
+> On Mon, May 10, 2021, 7:21 PM Oliver Freyermuth <freyermuth@physik.uni-=
+bonn.de <mailto:freyermuth@physik.uni-bonn.de>> wrote:
+>=20
+>     Also answering inline.
+>=20
+>     Am 11.05.21 um 00:55 schrieb Paul Robert Marino:
+>      > I'm adding replies to your replies inline below
+>      >
+>      > On Mon, May 10, 2021, 5:55 PM Oliver Freyermuth
+>      > <freyermuth@physik.uni-bonn.de <mailto:freyermuth@physik.uni-bon=
+n.de>> wrote:
+>      >>
+>      >> Hey Paul,
+>      >>
+>      >> many thanks for the detailed reply!
+>      >> Some comments inline.
+>      >>
+>      >> Am 10.05.21 um 18:57 schrieb Paul Robert Marino:
+>      >>> hey Oliver,
+>      >>> I've done similar things over the years, a lot of fun lab expe=
+riments
+>      >>> and found it really it comes down to a couple of things.
+>      >>> I did some POC testing with contrackd and some experimental co=
+de
+>      >>> around trunking across multiple firewalls with a sprinkling of=
 
->>>>       But is it always "fast enough"?
->>>>       xt_cluster seems to match by the src_ip of the original direct=
-ion of the flow[0] (if I read the code correctly),
->>>>       but what happens if the reply to an outgoing packet arrives at=
- both firewalls before state is synchronized?
->>>>       We are currently using conntrackd in FTFW mode with a direct l=
-ink, set "DisableExternalCache", and additonally set "PollSecs 15" since =
-without that it seems
->>>>       only new and destroyed connections are synced, but lifetime up=
-dates for existing connections do not propagate without polling.
->>>>       Maybe another way which e.g. may use XOR(src,dst) might work a=
-round tight synchronization requirements, or is it possible to always use=
-s the "internal" source IP?
->>>>       Is anybody doing that with a custom BPF?
->>>>
->>>> 2. How to do failover in such cases?
->>>>       For failover we'd need to change these rules (if one node fail=
-s, the total-nodes will change).
->>>>       As an alternative, I found [1] which states multiple rules can=
- be used and enabled / disabled,
->>>>       but does somebody know of a cleaner (and easier to read) way, =
-also not costing extra performance?
->>>>
->>>> 3. We have several internal networks, which need to talk to each oth=
-er (partially with firewall rules and NATting),
->>>>       so we'd also need similar rules there, complicating things mor=
-e. That's why a cleaner way would be very welcome :-).
->>>>
->>>> 4. Another point is how to actually perform the failover. Classical =
-cluster suites (corosync + pacemaker)
->>>>       are rather used to migrate services, but not to communicate no=
-de ids and number of total active nodes.
->>>>       They can probably be tricked into doing that somehow, but they=
- are not designed this way.
->>>>       TIPC may be something to use here, but I found nothing "ready =
-to use".
->>>>
->>>> You may also tell me there's a better way to do this than use xt_clu=
-ster (custom BPF?) =E2=80=94 we've up to now only done "classic" active/p=
-assive setups,
->>>> but maybe someone on this list has already done active/active withou=
-t commercial hardware, and can share experience from this?
->>>>
->>>> Cheers and thanks in advance,
->>>>           Oliver
->>>>
->>>> PS: Please keep me in CC, I'm not subscribed to the list. Thanks!
->>>>
->>>> [0] https://github.com/torvalds/linux/blob/10a3efd0fee5e881b1866cf45=
-950808575cb0f24/net/netfilter/xt_cluster.c#L16-L19
->>>> [1] https://lore.kernel.org/netfilter-devel/499BEBBF.7080705@netfilt=
-er.org/
->>>>
->>>> --
->>>> Oliver Freyermuth
->>>> Universit=C3=A4t Bonn
->>>> Physikalisches Institut, Raum 1.047
->>>> Nu=C3=9Fallee 12
->>>> 53115 Bonn
->>>> --
->>>> Tel.: +49 228 73 2367
->>>> Fax:  +49 228 73 7869
->>>> --
->>>>
->>
->>
->> --
->> Oliver Freyermuth
->> Universit=C3=A4t Bonn
->> Physikalisches Institut, Raum 1.047
->> Nu=C3=9Fallee 12
->> 53115 Bonn
->> --
->> Tel.: +49 228 73 2367
->> Fax:  +49 228 73 7869
->> --
->>
+>      >>> virtualization.
+>      >>> There were a few scenarios I tried, some involving OpenVSwitch=
+
+>      >>> (because I was experimenting with SPBM) and some not, with con=
+trackd
+>      >>> similarly configured.
+>      >>> All the scenarios were interesting but they all had relatively=
+ rare on
+>      >>> slow (<1Gbs) network issues that grew exponentially in frequen=
+cy on
+>      >>> higher speed networks (>1Gbs) with latency in contrackd syncin=
+g.
+>      >>
+>      >> Indeed, we'd strive for ~20 Gb/s in our case, so this experienc=
+e surely is important to hear about.
+>      >>
+>      >>> What i found is the best scenario was to use Quagga for dynami=
+c
+>      >>> routing to load balance the traffic between the firewall IP's,=
+
+>      >>> keepalived to load handle IP failover, and contrackd (in a sim=
+ilar
+>      >>> configuration to the one you described) to keep the states in =
+sync
+>      >>> there are a few pitfalls in going down this route caused by ba=
+d and or
+>      >>> outdated documentation for both Quagga and keepalived. I'm als=
+o going
+>      >>> to give you some recommendations about some hardware topology =
+stuff
+>      >>> you may not think about initially.
+>      >>
+>      >> I'm still a bit unsure if we are on the same page, but that may=
+ just be caused by my limited knowledge of Quagga.
+>      >> To my understanding, Quagga uses e.g. OSPF and hence can, if th=
+e routes have the same path, load-balance.
+>      >>
+>      >> However, in our case, we'd want to go for active/active firewal=
+ls (which of course are also routers).
+>      >> But that means we have internal machines on one side, which use=
+ a single default gateway (per VLAN),
+>      >> then our active/active firewall, and then the outside world (ac=
+tually a PtP connection to an upstream router).
+>      >>
+>      >> Can Quagga help me to actively use both firewalls in a load-bal=
+ancing and redundant way?
+>      >> The idea here is that the upstream router has high bandwidth, s=
+o using more than one firewall allows to achieve better throughput,
+>      >> and with active/active we'd also strive for redundancy (i.e. re=
+duced throughput if one firewall fails).
+>      >> To my understanding, OSPF / Quagga could do this if the firewal=
+ls are placed between routers also joining via OSPF.
+>      >> But is there also a way to have the clients directly talk to ou=
+r firewalls, and the firewalls to a single upstream router (which we don'=
+t control)?
+>      >>
+>      >> A simple drawing may help:
+>      >>
+>      >>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ____=C2=A0=
+ FW A ____
+>      >>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0/=C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0\
+>      >> Client(s) --=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0--PtP-- upstream router
+>      >>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0\____=C2=A0=
+ FW B ____/
+>      >>
+>      >> This is why I thought about using xt_cluster and giving both FW=
+ A and FW B the very same IP (the default gateway of the clients)
+>      >> and the very same MAC at the same time, so the switch duplicate=
+s the packets, and then FW A accepts some packets and FW B the remaining =
+ones
+>      >> via filtering with xt_cluster.
+>      >>
+>      >> Can Quagga do something in this picture, or simplify this pictu=
+re?
+>      >> The upstream router also sends all incoming packets to a single=
+ IP in the PtP network, i.e. the firewall nodes need to show up as "one c=
+onverged system"
+>      >> to both the clients on one side and the upstream router on the =
+other side.
+>      >
+>      >
+>      > I understand what you are shooting for but it's dangerous at tho=
+se
+>      > data rates and not achievable via stock existing software.
+>      > I did write some POC code years ago for a previous employer but
+>      > determined it was too dangerous to put into production without s=
+ome
+>      > massive kernel changes such as using something like RDMA over
+>      > dedicated high speed interfaces or linking the systems over the =
+PCI
+>      > express busses to sync the states instead of using contrackd.
+>      >
+>      > So load balancing is a better choice in this case, and many midd=
+le to
+>      > higher end managed switches that have routers built in can do OS=
+PF.
+>      > I've seen many stackable switches that can do it. By the way Qua=
+gga
+>      > supports several other dynamic routing protocols not just just O=
+SPF.
+>=20
+>     Thanks, now I understand your answer much better =E2=80=94 the clas=
+sical case of intention getting lost between the lines.
+>     Indeed, this is important experience, many thanks for sharing it!
+>=20
+>     I was already unsure if with such a solution I could really expect =
+to achieve these data rates,
+>     so this warning is worth its weight in gold.
+>     I'll still play around with this setup in the lab, but testing at s=
+cale is also not easy
+>     (for us) in the lab, so again this warning is very useful so we won=
+'t take this into production.
+>=20
+>     The problem which made me think about all this is that we don't hav=
+e control of the upstream router.
+>     That made me hope for a solution which does not require changes on =
+that end.
+>     But of course we can communicate with the operators
+>     and see if we can find a way to use dynamic routing on that end.
+>=20
+>      > The safest and easiest option for you would be to use 100Gbs fib=
+re
+>      > connection instead, possibly with direct attach cables if you wa=
+nt to
+>      > save on optics, and do primary secondary failover.
+>=20
+>     Sadly, the infrastructure further upstream is not yet upgraded to s=
+upport 100 Gb/s (and will not be in the near future),
+>     otherwise, this surely would have been the easier option.
+>=20
+>      >>> I will start with Quagga because the bad documentation part is=
+ easy to cover.
+>      >>> in the Quagga documentation they recommend that you put a rout=
+able IP
+>      >>> on a loopback interface and attach Quagga the daemon for the d=
+ynamic
+>      >>> routing service of your choice to it, That works fine on BSD a=
+nd old
+>      >>> versions of Linux from 20 years ago but any thing running a Li=
+nux
+>      >>> kernel version of 2.4 or higher will not allow it unless you c=
+hange
+>      >>> setting in /etc/sysctrl.conf and the Quagga documentation tell=
+s you to
+>      >>> make those changes. DO NOT DO WHAT THEY SAY, its wrong and dan=
+gerous.
+>      >>> Instead create a "dummy" interface with a routable IP for this=
+
+>      >>> purpose. a dummy interface is a special kind of interface mean=
+t for
+>      >>> exactly the scenario described and works well without compromi=
+sing the
+>      >>> security of your firewall.
+>      >>
+>      >> Thanks for this helpful advice!
+>      >> Even though I am not sure yet Quagga will help me out in this p=
+icture,
+>      >> I am now already convinced we will have a situation in which Qu=
+agga will help us out.
+>      >> So this is noted down for future use :-).
+>      >>
+>      >>> Keepalived
+>      >>> the main error in keepalived's documentation is is most of the=
+
+>      >>> documentation and howto's you will find about it on the web ar=
+e based
+>      >>> on a 15 year old howto which had a fundamental mistake in how =
+VRRP
+>      >>> works, and what the "state"=C2=A0 flag actually does because i=
+ts not
+>      >>> explained well in the man file. "state" in a "vrrp_instance" s=
+hould
+>      >>> always be set to "MASTER" on all nodes and the priority should=
+ be used
+>      >>> to determine which node should be the preferred master. the on=
+ly time
+>      >>> you should ever set state to "BACKUP" is if you have a 3rd mac=
+hine
+>      >>> that you never want to become the master which you are just us=
+ing for
+>      >>> quorum and in that case its priority should also be set to "0"=
+
+>      >>> (failed) . setting the state to "BACKUP" will seem to work fin=
+e until
+>      >>> you have a failover event when the interface will continually =
+go ip
+>      >>> and done on the backup node. on the mac address issue keepaliv=
+ed will
+>      >>> apr ping the subnets its attached to so that's generally not a=
+n issue
+>      >>> but I would recommend using vmac's (virtual mac addresses) ass=
+uming
+>      >>> the kernel for your distro and your network cards support it b=
+ecause
+>      >>> that way it just looks to the switch like it changed a port du=
+e to
+>      >>> some physical topology change and switches usually handle that=
+ very
+>      >>> gracefully, but don't always handle the mac address change for=
+ IP
+>      >>> addresses as quickly.
+>      >>> I also recommend reading the RFC's on VRRP particularly the pa=
+rts that
+>      >>> explain how the elections and priorities work, they are a quic=
+k and
+>      >>> easy read and will really give you a good idea of how to confi=
+gure
+>      >>> keepalived properly to achieve the failover and recovery behav=
+ior you
+>      >>> want.
+>      >>
+>      >> See above on the virtual MACs =E2=80=94 if the clients should u=
+se both firewalls at the same time,
+>      >> I think I'd need a single MAC for both, so the clients only see=
+ a single default gateway.
+>      >> In a more classic setup, we've used pcs (pacemaker and corosync=
+) to successfully migrate virtual IPs and MAC addresses.
+>      >> It has worked quite reliable (using Kronosnet for communication=
+).
+>      >> But we've also used Keepalived some years ago successfully :-).=
+
+>      >>
+>      >>> On the hardware topology
+>      >>> I recommend using dedicated interfaces for contrackd, really y=
+ou don't
+>      >>> need anything faster than 100Mbps even if the data interfaces =
+are
+>      >>> 100Gbps but i usually use 1 Gbps interfaces for this. they can=
+ be on
+>      >>> their own dedicated switches or crossover interfaces. the main=
+ concern
+>      >>> here is securely handling a large number of tiny packets so ha=
+ving
+>      >>> dedicated network card buffers to handle microburst=C2=A0 is u=
+seful and if
+>      >>> you can avoid latency from a switch that's trying to be too sm=
+art for
+>      >>> its own good that's for the best.
+>      >>
+>      >> Indeed, we have 1 Gb/s crossover link, and use a 1 Gb/s connect=
+ion through a switch in case this would ever fail for some reason =E2=80=94=
+
+>      >> we use these links both for conntrackd and for Kronosnet commun=
+ication by corosync.
+>      >>
+>      >>> For keepalived use dedicated VLAN's on each physical interface=
+ to
+>      >>> handle the heartbeats and group the VRRP interfaces. to insure=
+ the
+>      >>> failovers of the IP's on both sides are handled correctly.
+>      >>> If you only have 2 firewalls I recommend using a an additional=
+ device
+>      >>> on each side for quorum in a backup/failed mode as described a=
+bove.
+>      >>> Assuming a 1 second or greater interval the device could be so=
+mething
+>      >>> as simple as a Raspberry PI it really doesn't need to be anyth=
+ing
+>      >>> powerful because its just adding a heartbeat to the cluster, b=
+ut for
+>      >>> sub second intervals you may need something more powerful beca=
+use sub
+>      >>> second intervals can eat a surprising amount of CPU.
+>      >>
+>      >> We currently went without an external third party and let coros=
+ync/pacemaker use a STONITH device to explicitly kill the other node
+>      >> and establish a defined state if heartbeats get lost. We might =
+think about a third machine at some point to get an actual quorum, indeed=
+=2E
+>      >
+>      >
+>      > I get why you might think to use corosync/pacemaker for this if =
+you
+>      > weren't familiar with keepalived and LVS in the kernel,=C2=A0 bu=
+t it's
+>      > hammering a square peg in a round hole when you have a perfectly=
+
+>      > shaped and sized peg available to you that's actually been aroun=
+d a
+>      > lot longer and works a lot more predictably, faster and more rel=
+iably
+>      > by leveraging parts of the kernels network stack designed specif=
+ically
+>      > for this use case. I've done explicit kills of the other device =
+via
+>      > cross connected hardware watchdog devices via keepalived before =
+and it
+>      > was easy.
+>      > By the way if you don't know what LVS is it's the kernels builti=
+n
+>      > layer 3 network load balancer stack that was designed with these=
+ kind
+>      > of failover scenarios in mind keepalived is just a wrapper aroun=
+d LVS
+>      > that adds VRRP based heartbeating and hooks to allow you to call=
+
+>      > external scripts for actions based on heart beat state change ev=
+ents
+>      > and additional watchdog scripts which can also trigger state cha=
+nges.
+>      > To be clear i wouldn't use keepalived to handle process master s=
+lave
+>      > failovers i would use corosync and pacemaker, or in some cases
+>      > Clusterd for that because they are usually the right tool for th=
+e job,
+>      > but for firewall and or network load balancer failover i would a=
+lways
+>      > use keepalived because its the right tool for that job.
+>      >
+>=20
+>     Our main reasoning for corosync/pacemaker was that we've used it fo=
+r the predecessor setup quite successfully for ~7 years,
+>     while we have only used keepalived in smaller configurations (but i=
+t also served us well).
+>     You raise many valid points, so even though pacemaker/corosync has =
+not disappointed us (as of yet), we might indeed reconsider this decision=
+=2E
+>=20
+>     Cheers and thanks,
+>      =C2=A0 =C2=A0 =C2=A0 =C2=A0 Oliver
+>=20
+>      >
+>      >>
+>      >> Cheers and thanks again,
+>      >>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 Oliver
+>      >>
+>      >>>
+>      >>>
+>      >>> On Sun, May 9, 2021 at 3:16 PM Oliver Freyermuth
+>      >>> <freyermuth@physik.uni-bonn.de <mailto:freyermuth@physik.uni-b=
+onn.de>> wrote:
+>      >>>>
+>      >>>> Dear netfilter experts,
+>      >>>>
+>      >>>> we are trying to setup an active/active firewall, making use =
+of "xt_cluster".
+>      >>>> We can configure the switch to act like a hub, i.e. both mach=
+ines can share the same MAC and IP and get the same packets without addit=
+ional ARPtables tricks.
+>      >>>>
+>      >>>> So we set rules like:
+>      >>>>
+>      >>>>=C2=A0 =C2=A0 =C2=A0iptables -I PREROUTING -t mangle -i extern=
+al_interface -m cluster --cluster-total-nodes 2 --cluster-local-node 1 --=
+cluster-hash-seed 0xdeadbeef -j MARK --set-mark 0xffff
+>      >>>>=C2=A0 =C2=A0 =C2=A0iptables -A PREROUTING -t mangle -i extern=
+al_interface -m mark ! --mark 0xffff -j DROP
+>      >>>>
+>      >>>> Ideally, it we'd love to have the possibility to scale this t=
+o more than two nodes, but let's stay with two for now.
+>      >>>>
+>      >>>> Basic tests show that this works as expected, but the details=
+ get messy.
+>      >>>>
+>      >>>> 1. Certainly, conntrackd is needed to synchronize connection =
+states.
+>      >>>>=C2=A0 =C2=A0 =C2=A0 =C2=A0But is it always "fast enough"?
+>      >>>>=C2=A0 =C2=A0 =C2=A0 =C2=A0xt_cluster seems to match by the sr=
+c_ip of the original direction of the flow[0] (if I read the code correct=
+ly),
+>      >>>>=C2=A0 =C2=A0 =C2=A0 =C2=A0but what happens if the reply to an=
+ outgoing packet arrives at both firewalls before state is synchronized?
+>      >>>>=C2=A0 =C2=A0 =C2=A0 =C2=A0We are currently using conntrackd i=
+n FTFW mode with a direct link, set "DisableExternalCache", and additonal=
+ly set "PollSecs 15" since without that it seems
+>      >>>>=C2=A0 =C2=A0 =C2=A0 =C2=A0only new and destroyed connections =
+are synced, but lifetime updates for existing connections do not propagat=
+e without polling.
+>      >>>>=C2=A0 =C2=A0 =C2=A0 =C2=A0Maybe another way which e.g. may us=
+e XOR(src,dst) might work around tight synchronization requirements, or i=
+s it possible to always uses the "internal" source IP?
+>      >>>>=C2=A0 =C2=A0 =C2=A0 =C2=A0Is anybody doing that with a custom=
+ BPF?
+>      >>>>
+>      >>>> 2. How to do failover in such cases?
+>      >>>>=C2=A0 =C2=A0 =C2=A0 =C2=A0For failover we'd need to change th=
+ese rules (if one node fails, the total-nodes will change).
+>      >>>>=C2=A0 =C2=A0 =C2=A0 =C2=A0As an alternative, I found [1] whic=
+h states multiple rules can be used and enabled / disabled,
+>      >>>>=C2=A0 =C2=A0 =C2=A0 =C2=A0but does somebody know of a cleaner=
+ (and easier to read) way, also not costing extra performance?
+>      >>>>
+>      >>>> 3. We have several internal networks, which need to talk to e=
+ach other (partially with firewall rules and NATting),
+>      >>>>=C2=A0 =C2=A0 =C2=A0 =C2=A0so we'd also need similar rules the=
+re, complicating things more. That's why a cleaner way would be very welc=
+ome :-).
+>      >>>>
+>      >>>> 4. Another point is how to actually perform the failover. Cla=
+ssical cluster suites (corosync + pacemaker)
+>      >>>>=C2=A0 =C2=A0 =C2=A0 =C2=A0are rather used to migrate services=
+, but not to communicate node ids and number of total active nodes.
+>      >>>>=C2=A0 =C2=A0 =C2=A0 =C2=A0They can probably be tricked into d=
+oing that somehow, but they are not designed this way.
+>      >>>>=C2=A0 =C2=A0 =C2=A0 =C2=A0TIPC may be something to use here, =
+but I found nothing "ready to use".
+>      >>>>
+>      >>>> You may also tell me there's a better way to do this than use=
+ xt_cluster (custom BPF?) =E2=80=94 we've up to now only done "classic" a=
+ctive/passive setups,
+>      >>>> but maybe someone on this list has already done active/active=
+ without commercial hardware, and can share experience from this?
+>      >>>>
+>      >>>> Cheers and thanks in advance,
+>      >>>>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0Oliver
+>      >>>>
+>      >>>> PS: Please keep me in CC, I'm not subscribed to the list. Tha=
+nks!
+>      >>>>
+>      >>>> [0] https://github.com/torvalds/linux/blob/10a3efd0fee5e881b1=
+866cf45950808575cb0f24/net/netfilter/xt_cluster.c#L16-L19 <https://github=
+=2Ecom/torvalds/linux/blob/10a3efd0fee5e881b1866cf45950808575cb0f24/net/n=
+etfilter/xt_cluster.c#L16-L19>
+>      >>>> [1] https://lore.kernel.org/netfilter-devel/499BEBBF.7080705@=
+netfilter.org/ <https://lore.kernel.org/netfilter-devel/499BEBBF.7080705@=
+netfilter.org/>
+>      >>>>
+>      >>>> --
+>      >>>> Oliver Freyermuth
+>      >>>> Universit=C3=A4t Bonn
+>      >>>> Physikalisches Institut, Raum 1.047
+>      >>>> Nu=C3=9Fallee 12
+>      >>>> 53115 Bonn
+>      >>>> --
+>      >>>> Tel.: +49 228 73 2367
+>      >>>> Fax:=C2=A0 +49 228 73 7869
+>      >>>> --
+>      >>>>
+>      >>
+>      >>
+>      >> --
+>      >> Oliver Freyermuth
+>      >> Universit=C3=A4t Bonn
+>      >> Physikalisches Institut, Raum 1.047
+>      >> Nu=C3=9Fallee 12
+>      >> 53115 Bonn
+>      >> --
+>      >> Tel.: +49 228 73 2367
+>      >> Fax:=C2=A0 +49 228 73 7869
+>      >> --
+>      >>
+>=20
+>=20
+>     --=20
+>     Oliver Freyermuth
+>     Universit=C3=A4t Bonn
+>     Physikalisches Institut, Raum 1.047
+>     Nu=C3=9Fallee 12
+>     53115 Bonn
+>     --
+>     Tel.: +49 228 73 2367
+>     Fax:=C2=A0 +49 228 73 7869
+>     --
+>=20
 
 
 --=20
@@ -421,7 +569,7 @@ Fax:  +49 228 73 7869
 --
 
 
---------------ms050702040300030501050707
+--------------ms000005030003000304080504
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -512,8 +660,8 @@ GBK1sl8MUuqD0e7gBdYqGwmZsB/faEgIRC1dKugq5UngD68gfn5rUzchoBAMWxoRcfQ+NEpb
 VmVyZWluIHp1ciBGb2VyZGVydW5nIGVpbmVzIERldXRzY2hlbiBGb3JzY2h1bmdzbmV0emVz
 IGUuIFYuMRAwDgYDVQQLDAdERk4tUEtJMSUwIwYDVQQDDBxERk4tVmVyZWluIEdsb2JhbCBJ
 c3N1aW5nIENBAgwgDOd9xCyYowfAqlgwDQYJYIZIAWUDBAIBBQCgggI9MBgGCSqGSIb3DQEJ
-AzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIxMDUxMDIzMjEwMlowLwYJKoZIhvcN
-AQkEMSIEIDY7Uw1HmgLIrpYsXS9tZe4Y05f4Y68YomWlU7LPQlttMGwGCSqGSIb3DQEJDzFf
+AzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIxMDUxMTA5MDgxNVowLwYJKoZIhvcN
+AQkEMSIEINwWjZ2BYIzHr2X6xkBH9d0mgu1auBPXlV320fb32asVMGwGCSqGSIb3DQEJDzFf
 MF0wCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgIC
 AIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwga8GCSsGAQQBgjcQ
 BDGBoTCBnjCBjTELMAkGA1UEBhMCREUxRTBDBgNVBAoMPFZlcmVpbiB6dXIgRm9lcmRlcnVu
@@ -522,10 +670,10 @@ LVBLSTElMCMGA1UEAwwcREZOLVZlcmVpbiBHbG9iYWwgSXNzdWluZyBDQQIMIAznfcQsmKMH
 wKpYMIGxBgsqhkiG9w0BCRACCzGBoaCBnjCBjTELMAkGA1UEBhMCREUxRTBDBgNVBAoMPFZl
 cmVpbiB6dXIgRm9lcmRlcnVuZyBlaW5lcyBEZXV0c2NoZW4gRm9yc2NodW5nc25ldHplcyBl
 LiBWLjEQMA4GA1UECwwHREZOLVBLSTElMCMGA1UEAwwcREZOLVZlcmVpbiBHbG9iYWwgSXNz
-dWluZyBDQQIMIAznfcQsmKMHwKpYMA0GCSqGSIb3DQEBAQUABIIBALC8A1uYFsYGdpX860+g
-AIzXUXJMgP13RmhoZFG8oEEF+iuXQ1wSgNGVy3Cc5ChfHaHnTX0FPNxdG1LMkxO32sMXZ9ss
-BZAl+VUXT1kf/nSfPmAJtFSKVBhPK6/B1YNrD5nH8ZgbKDsAJCJZdwRnzpx/idyY2Nowak1a
-mwMO5UMOZqxSAFf4KthH45iWDKza29r0PinGIMwvqiEmvtfqZAltcJyEENynSpJ6uhSvODmt
-EneltsJ/QgMvBfS0uF8fdP9Z5fMb7cr3pkLkx3z4iSmmNCrI/VpUGjStgyTCmjH8zEJeziDA
-v+7bTFMP8ypYrKi2xqnqrcYmbIh7/1vWZhkAAAAAAAA=
---------------ms050702040300030501050707--
+dWluZyBDQQIMIAznfcQsmKMHwKpYMA0GCSqGSIb3DQEBAQUABIIBAEfWO3SWLXSfzIqHKvsP
+FeRfuSluCuSAo9pXHdiC2UVT9MMzauW2NskBFAxxzwfWo1dSoFHKqi/zA4r2SB+ej3NtLJmz
+6VwdTjkmxXZluPN8N3TNQMnH1C+seTeJBJr6b07BM31NlgIdDqZYL7aEZJ1WForWDeHZwhIV
+Ub3AlOB5agzWI7p+aIksvD7aluF+VO4PGjNnpCSMdWUySalKmReYeLJYWb9B+mE/J2YZih6W
+IdO43sYpPmq8+uyAtFt2wjmtL/J2blEabZCNHvRKhSg/2LHulmjVS6mBbPZD0CX1aujiasdk
+cWhUu0u1ujUjGvvOOr54Zezpnftbo38Q0ZcAAAAAAAA=
+--------------ms000005030003000304080504--
