@@ -1,165 +1,51 @@
-From: Carsten Aulbert <carsten.aulbert@aei.mpg.de>
-Subject: Possible to load balance (nftlb) mostly NFS traffic with important
- connections?
-Date: Sat, 15 May 2021 09:21:59 +0200
-Message-ID: <9cbbeb2e-f09c-5eca-f86c-6f3b25cd9ea3@aei.mpg.de>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Fail-closed option? (Make all policies "drop" by default for
+ newly created namespaces)
+Date: Wed, 19 May 2021 13:49:31 +0200
+Message-ID: <20210519114931.GB2151@salvia>
+References: <u11ahpbsujy4632sneges8wa3@onionmail.info>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms030400060204060001060406"
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <u11ahpbsujy4632sneges8wa3@onionmail.info>
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: mose@onionmail.info
+Cc: netfilter@vger.kernel.org
 
-This is a cryptographically signed message in MIME format.
+Hi,
 
---------------ms030400060204060001060406
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+On Tue, Apr 13, 2021 at 11:25:49PM +0000, mose@onionmail.info wrote:
+> Hi,
+> 
+> Is there any option to make newly created namespaces start in a fail-closed
+> (policy drop) state by default? For example a sysctl option perhaps? I want
+> traffic to be dropped in case nftables fails due to a syntax error or a
+> missing interface or any other problem. The assumption being that a valid,
+> atomically-loaded, nftables.conf will override it from inside the container
+> at some point.
+> 
+> I came up with a workaround in a few of my containers by creating a separate
+> "nftables-early.service" systemd service which happens Before=network.target
+> and is WantedBy=network-pre.target (if I recall correctly). However this is
+> dependent on the container OS (e.g. non-systemd OSes) and will never be as
+> robust as a fail-closed kernel option would be.
 
-Dear experts,
+I'm using 'ip netns' for instance.
 
-we are operating a compute cluster with a number of storage systems=20
-serving data via NFS via LACP-bonded 10 Gbit/s links (usually 2 or 4).
+# ip netns add test
+# cat x.nft
+table inet global {
+        chain input {
+                type filter hook input priority 0; policy drop;
+        }
+}
+# ip netns exec test nft -f x.nft
+# ... now attach your veth to your container
 
- From time to time, users may overload a server and use up all available =
+Would this work for you?
 
-bandwidth for hours and sometimes days at a time and I am currently=20
-exploring if we could use tools like nftlb[1] to achieve the following:
+Or you mean: No ruleset inside container => drop packets.
 
-(a) For (NFS|any) traffic have at least two tiers (farms?), one are=20
-standard compute nodes and one are interactive log-in nodes/web servers. =
-
-The former should have a much lower bandwidth priority as the latter.=20
-These targets can easily be distinguished by IP ranges/netmasks.
-
-(b) Sometimes we need to perform bandwidth intensive/sensitive=20
-operations, e.g. just today I would like to move a user's file system=20
-from one too busy box to another but sending the ZFS snapshot over via=20
-mbuffer takes really long and I would like to prioritize this connection =
-
-as well, i.e. I know the source and destination IP as well as target TCP =
-
-port.
-
-I am still learning to migrate from iptables to nft while I stumbled=20
-over nftlb which looks to support what I want, but I am not sure yet -=20
-and I have not found many documents describing potential set-ups and=20
-thus I wanted to ask the experts here first.
-
-Base of all our systems is currently Debian 10 (buster) and thus kernel=20
-4.19.
-
-Cheers and thanks a lot in advance for any insights/pointers/...!
-
-Carsten
-
-[1] https://github.com/zevenet/nftlb
---=20
-Dr. Carsten Aulbert, Max Planck Institute for Gravitational Physics,
-Callinstra=C3=9Fe 38, 30167 Hannover, Germany, Phone +49 511 762 17185
-
-
-
---------------ms030400060204060001060406
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
-EF4wggUSMIID+qADAgECAgkA4wvV+K8l2YEwDQYJKoZIhvcNAQELBQAwgYIxCzAJBgNVBAYT
-AkRFMSswKQYDVQQKDCJULVN5c3RlbXMgRW50ZXJwcmlzZSBTZXJ2aWNlcyBHbWJIMR8wHQYD
-VQQLDBZULVN5c3RlbXMgVHJ1c3QgQ2VudGVyMSUwIwYDVQQDDBxULVRlbGVTZWMgR2xvYmFs
-Um9vdCBDbGFzcyAyMB4XDTE2MDIyMjEzMzgyMloXDTMxMDIyMjIzNTk1OVowgZUxCzAJBgNV
-BAYTAkRFMUUwQwYDVQQKEzxWZXJlaW4genVyIEZvZXJkZXJ1bmcgZWluZXMgRGV1dHNjaGVu
-IEZvcnNjaHVuZ3NuZXR6ZXMgZS4gVi4xEDAOBgNVBAsTB0RGTi1QS0kxLTArBgNVBAMTJERG
-Ti1WZXJlaW4gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkgMjCCASIwDQYJKoZIhvcNAQEBBQAD
-ggEPADCCAQoCggEBAMtg1/9moUHN0vqHl4pzq5lN6mc5WqFggEcVToyVsuXPztNXS43O+FZs
-FVV2B+pG/cgDRWM+cNSrVICxI5y+NyipCf8FXRgPxJiZN7Mg9mZ4F4fCnQ7MSjLnFp2uDo0p
-eQcAIFTcFV9Kltd4tjTTwXS1nem/wHdN6r1ZB+BaL2w8pQDcNb1lDY9/Mm3yWmpLYgHurDg0
-WUU2SQXaeMpqbVvAgWsRzNI8qIv4cRrKO+KA3Ra0Z3qLNupOkSk9s1FcragMvp0049ENF4N1
-xDkesJQLEvHVaY4l9Lg9K7/AjsMeO6W/VRCrKq4Xl14zzsjz9AkH4wKGMUZrAcUQDBHHWekC
-AwEAAaOCAXQwggFwMA4GA1UdDwEB/wQEAwIBBjAdBgNVHQ4EFgQUk+PYMiba1fFKpZFK4OpL
-4qIMz+EwHwYDVR0jBBgwFoAUv1kgNgB5oKAia4zV8mHSuCzLgkowEgYDVR0TAQH/BAgwBgEB
-/wIBAjAzBgNVHSAELDAqMA8GDSsGAQQBga0hgiwBAQQwDQYLKwYBBAGBrSGCLB4wCAYGZ4EM
-AQICMEwGA1UdHwRFMEMwQaA/oD2GO2h0dHA6Ly9wa2kwMzM2LnRlbGVzZWMuZGUvcmwvVGVs
-ZVNlY19HbG9iYWxSb290X0NsYXNzXzIuY3JsMIGGBggrBgEFBQcBAQR6MHgwLAYIKwYBBQUH
-MAGGIGh0dHA6Ly9vY3NwMDMzNi50ZWxlc2VjLmRlL29jc3ByMEgGCCsGAQUFBzAChjxodHRw
-Oi8vcGtpMDMzNi50ZWxlc2VjLmRlL2NydC9UZWxlU2VjX0dsb2JhbFJvb3RfQ2xhc3NfMi5j
-ZXIwDQYJKoZIhvcNAQELBQADggEBAIcL/z4Cm2XIVi3WO5qYi3FP2ropqiH5Ri71sqQPrhE4
-eTizDnS6dl2e6BiClmLbTDPo3flq3zK9LExHYFV/53RrtCyD2HlrtrdNUAtmB7Xts5et6u5/
-MOaZ/SLick0+hFvu+c+Z6n/XUjkurJgARH5pO7917tALOxrN5fcPImxHhPalR6D90Bo0fa3S
-PXez7vTXTf/D6OWST1k+kEcQSrCFWMBvf/iu7QhCnh7U3xQuTY+8npTD5+32GPg8SecmqKc2
-2CzeIs2LgtjZeOJVEqM7h0S2EQvVDFKvaYwPBt/QolOLV5h7z/0HJPT8vcP9SpIClxvyt7bP
-ZYoaorVyGTkwggWNMIIEdaADAgECAgwcOtRQhH7u81j4jncwDQYJKoZIhvcNAQELBQAwgZUx
-CzAJBgNVBAYTAkRFMUUwQwYDVQQKEzxWZXJlaW4genVyIEZvZXJkZXJ1bmcgZWluZXMgRGV1
-dHNjaGVuIEZvcnNjaHVuZ3NuZXR6ZXMgZS4gVi4xEDAOBgNVBAsTB0RGTi1QS0kxLTArBgNV
-BAMTJERGTi1WZXJlaW4gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkgMjAeFw0xNjExMDMxNTI0
-NDhaFw0zMTAyMjIyMzU5NTlaMGoxCzAJBgNVBAYTAkRFMQ8wDQYDVQQIDAZCYXllcm4xETAP
-BgNVBAcMCE11ZW5jaGVuMSAwHgYDVQQKDBdNYXgtUGxhbmNrLUdlc2VsbHNjaGFmdDEVMBMG
-A1UEAwwMTVBHIENBIC0gRzAyMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnhx4
-59Lh4WqgOs/Md04XxU2yFtfM15ZuJV0PZP7BmqSJKLLPyqmOrADfNdJ5PIGBto2JBhtRRBHd
-G0GROOvTRHjzOga95WOTeura79T21FWwwAwa29OFnD3ZplQs6HgdwQrZWNi1WHNJxn/4mA19
-rNEBUc5urSIpZPvZi5XmlF3v3JHOlx3KWV7mUteB4pwEEfGTg4npPAJbp2o7arxQdoIq+Pu2
-OsvqhD7Rk4QeaX+EM1QS4lqd1otW4hE70h/ODPy1xffgbZiuotWQLC6nIwa65Qv6byqlIX0q
-Zuu99Vsu+r3sWYsL5SBkgecNI7fMJ5tfHrjoxfrKl/ErTAt8GQIDAQABo4ICBTCCAgEwEgYD
-VR0TAQH/BAgwBgEB/wIBATAOBgNVHQ8BAf8EBAMCAQYwKQYDVR0gBCIwIDANBgsrBgEEAYGt
-IYIsHjAPBg0rBgEEAYGtIYIsAQEEMB0GA1UdDgQWBBTEiKUH7rh7qgwTv9opdGNSG0lwFjAf
-BgNVHSMEGDAWgBST49gyJtrV8UqlkUrg6kviogzP4TCBjwYDVR0fBIGHMIGEMECgPqA8hjpo
-dHRwOi8vY2RwMS5wY2EuZGZuLmRlL2dsb2JhbC1yb290LWcyLWNhL3B1Yi9jcmwvY2Fjcmwu
-Y3JsMECgPqA8hjpodHRwOi8vY2RwMi5wY2EuZGZuLmRlL2dsb2JhbC1yb290LWcyLWNhL3B1
-Yi9jcmwvY2FjcmwuY3JsMIHdBggrBgEFBQcBAQSB0DCBzTAzBggrBgEFBQcwAYYnaHR0cDov
-L29jc3AucGNhLmRmbi5kZS9PQ1NQLVNlcnZlci9PQ1NQMEoGCCsGAQUFBzAChj5odHRwOi8v
-Y2RwMS5wY2EuZGZuLmRlL2dsb2JhbC1yb290LWcyLWNhL3B1Yi9jYWNlcnQvY2FjZXJ0LmNy
-dDBKBggrBgEFBQcwAoY+aHR0cDovL2NkcDIucGNhLmRmbi5kZS9nbG9iYWwtcm9vdC1nMi1j
-YS9wdWIvY2FjZXJ0L2NhY2VydC5jcnQwDQYJKoZIhvcNAQELBQADggEBABLpeD5FygzqOjj+
-/lAOy20UQOGWlx0RMuPcI4nuyFT8SGmK9lD7QCg/HoaJlfU/r78ex+SEide326evlFAoJXIF
-jVyzNltDhpMKrPIDuh2N12zyn1EtagqPL6hu4pVRzcBpl/F2HCvtmMx5K4WN1L1fmHWLcSap
-dhXLvAZ9RG/B3rqyULLSNN8xHXYXpmtvG0VGJAndZ+lj+BH7uvd3nHWnXEHC2q7iQlDUqg0a
-wIqWJgdLlx1Q8Dg/sodv0m+LN0kOzGvVDRCmowBdWGhhusD+duKV66pBl+qhC+4LipariWaM
-qK5ppMQROATjYeNRvwI+nDcEXr2vDaKmdbxgDVwwggWzMIIEm6ADAgECAgwg58YXNwJRN5b3
-IDkwDQYJKoZIhvcNAQELBQAwajELMAkGA1UEBhMCREUxDzANBgNVBAgMBkJheWVybjERMA8G
-A1UEBwwITXVlbmNoZW4xIDAeBgNVBAoMF01heC1QbGFuY2stR2VzZWxsc2NoYWZ0MRUwEwYD
-VQQDDAxNUEcgQ0EgLSBHMDIwHhcNMTkwNDMwMTMwNzIwWhcNMjIwNDI5MTMwNzIwWjCBijEL
-MAkGA1UEBhMCREUxIDAeBgNVBAoMF01heC1QbGFuY2stR2VzZWxsc2NoYWZ0MT8wPQYDVQQL
-DDZNUEkgZnVlciBHcmF2aXRhdGlvbnNwaHlzaWsgKEFsYmVydC1FaW5zdGVpbi1JbnN0aXR1
-dCkxGDAWBgNVBAMMD0NhcnN0ZW4gQXVsYmVydDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCC
-AQoCggEBAKtFOsZ+sqCCC6ZFVkDw9DTbnFGt4y6c2SkDZaykBaxvv0Cz5V+GOHBfBK7/n2oD
-EaxFvv7HL5mHHU2X8spo2dJPrUh3F0VqHsU5Cc0ixwaKPRRvZ+x2R3PwZzwG7SYaMEhRHM2i
-T4iFbtF/V+eDkXal0+41yYr/XLSMtqEeTbue8LLhuiUpc8L8Hhf6SKyI1RDqA0Epr8bpyn0+
-HERNaH4389b0eoFbe17QK3OKb4TvgDASVX9hrZTZK0l7znEs+fZmsK8RiSAqBzbm2/KBgYfL
-KMKKvb2OLcguv4FQlolrcjLnYmTAx/U0rWTTFOtVzYwLjzon02hPkaYizVXb+ocCAwEAAaOC
-AjYwggIyMAkGA1UdEwQCMAAwDgYDVR0PAQH/BAQDAgXgMB0GA1UdJQQWMBQGCCsGAQUFBwMC
-BggrBgEFBQcDBDAdBgNVHQ4EFgQUYqiVpoQJ1+6qj5UD21yOzPr2tOYwHwYDVR0jBBgwFoAU
-xIilB+64e6oME7/aKXRjUhtJcBYwJQYDVR0RBB4wHIEaY2Fyc3Rlbi5hdWxiZXJ0QGFlaS5t
-cGcuZGUwfQYDVR0fBHYwdDA4oDagNIYyaHR0cDovL2NkcDEucGNhLmRmbi5kZS9tcGctZzIt
-Y2EvcHViL2NybC9jYWNybC5jcmwwOKA2oDSGMmh0dHA6Ly9jZHAyLnBjYS5kZm4uZGUvbXBn
-LWcyLWNhL3B1Yi9jcmwvY2FjcmwuY3JsMIHNBggrBgEFBQcBAQSBwDCBvTAzBggrBgEFBQcw
-AYYnaHR0cDovL29jc3AucGNhLmRmbi5kZS9PQ1NQLVNlcnZlci9PQ1NQMEIGCCsGAQUFBzAC
-hjZodHRwOi8vY2RwMS5wY2EuZGZuLmRlL21wZy1nMi1jYS9wdWIvY2FjZXJ0L2NhY2VydC5j
-cnQwQgYIKwYBBQUHMAKGNmh0dHA6Ly9jZHAyLnBjYS5kZm4uZGUvbXBnLWcyLWNhL3B1Yi9j
-YWNlcnQvY2FjZXJ0LmNydDBABgNVHSAEOTA3MA8GDSsGAQQBga0hgiwBAQQwEQYPKwYBBAGB
-rSGCLAEBBAMJMBEGDysGAQQBga0hgiwCAQQDCTANBgkqhkiG9w0BAQsFAAOCAQEAEXa2NEVw
-EmwvSgF5nDV4gErUgHdholTTgzzVEc367hWjVyd1rCNttYq3yUhOTV6rxU7E84soD9k+47rD
-v5BLfcMpkuOM0S5XA68aEy61NYc4GM4GMTmsiRUj4gFth2pO3S6bErMEset5mVpaXIsj/YFh
-LAryuoFs3zRNe/sY3ugUWo8MWjveuMCs43ywbMWM77b5d+RQ8Sn/Qn86pQlnPU1u7Z5yzTde
-BcVVEoz2UZebMjFhtqoOtVbvgPh3QckhD30p993SIMkncajRCCwPdF7GegSXTk5DwmMvPzn2
-+d70FqElQEVN3DRABEjHOi4wZnTKsApbit50o2ElIKNRUDGCA5owggOWAgEBMHowajELMAkG
-A1UEBhMCREUxDzANBgNVBAgMBkJheWVybjERMA8GA1UEBwwITXVlbmNoZW4xIDAeBgNVBAoM
-F01heC1QbGFuY2stR2VzZWxsc2NoYWZ0MRUwEwYDVQQDDAxNUEcgQ0EgLSBHMDICDCDnxhc3
-AlE3lvcgOTANBglghkgBZQMEAgEFAKCCAfEwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAc
-BgkqhkiG9w0BCQUxDxcNMjEwNTE1MDcyMTU5WjAvBgkqhkiG9w0BCQQxIgQgoNwYs7Gm8UUH
-ImkRhK1jpn+zIBKpVrNUqywNgM3cOt4wbAYJKoZIhvcNAQkPMV8wXTALBglghkgBZQMEASow
-CwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDANBggqhkiG9w0DAgIB
-QDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDCBiQYJKwYBBAGCNxAEMXwwejBqMQswCQYDVQQG
-EwJERTEPMA0GA1UECAwGQmF5ZXJuMREwDwYDVQQHDAhNdWVuY2hlbjEgMB4GA1UECgwXTWF4
-LVBsYW5jay1HZXNlbGxzY2hhZnQxFTATBgNVBAMMDE1QRyBDQSAtIEcwMgIMIOfGFzcCUTeW
-9yA5MIGLBgsqhkiG9w0BCRACCzF8oHowajELMAkGA1UEBhMCREUxDzANBgNVBAgMBkJheWVy
-bjERMA8GA1UEBwwITXVlbmNoZW4xIDAeBgNVBAoMF01heC1QbGFuY2stR2VzZWxsc2NoYWZ0
-MRUwEwYDVQQDDAxNUEcgQ0EgLSBHMDICDCDnxhc3AlE3lvcgOTANBgkqhkiG9w0BAQEFAASC
-AQCkO02rJ9fWjeMUpF7u3jh1UAO0GJG6ze+iqb6nkEfX7ZZO0PzetquOH+q9U3vYI4FScYYf
-Xi1YdlDcaTwivIA+kIR69dUpz/Y2K5+PwPyQxrMZ8hiojh27tnEthHRihVl7wvLu8HGeq/o9
-Ybub9OtZGk/2uUfUkQC7dgiGPV/OEKCWrpGiuiUt+AvanOIX65f6vggjZvQ09r1n+7jRl4ci
-Plxyt+/RstG2yKzp6FaYLFODRT7IsierDshVueUq0GJJkjtn3NsMc1GY9vZhgilMUth0I2dX
-/Wcr+XaNiCif4jng8ZpE1Up/PV+PeFdNFJar+/hAxS6pkISGnq3pBrYiAAAAAAAA
---------------ms030400060204060001060406--
+ie. make ruleset mandatory inside your container.
