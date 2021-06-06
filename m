@@ -1,39 +1,178 @@
-From: =?UTF-8?B?5rSq5rmY5pm0?= <susan60628@gmail.com>
-Subject: Question regarding licensing terms and compliance
-Date: Fri, 4 Jun 2021 13:21:09 +0800
-Message-ID: <CAJhk_4p87YVgo9YieF6s4E+VtBxRbir8tyeU6dna6F_zNE7PCg@mail.gmail.com>
+From: Thomas Conrath <conrath@tropos.de>
+Subject: How to rewrite dest.IP of UDP packets, cloned by TEE target?
+Date: Sun, 6 Jun 2021 23:10:02 +0200
+Message-ID: <815ffb67-f804-7d95-cafc-cc72a7f24206@tropos.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; protocol="application/pkcs7-signature";
+        micalg=sha-256; boundary="------------ms070006040206040808050207"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=SQ1f0gbpsA7pH09+0wUllRcMM7GVW7BICINQttGmSAg=;
-        b=GP5u9mkth3CWCwjoUHGCwr6UiGjNYsMJZ0JPOCYBGCbdOA2b4Q0pemw9F9JxEUEZ/f
-         NCP7R79iMhPV42455dgZScmvkHSP0kI9mvgJlSsdMFjli9bznARfTf4p/QSotI2fMAVG
-         2udfC4WuHc9fmcIHT1vB/mcs2lGj3EI7Quq4Z/MDZubHqUgYFEpJVFYwcIzK8RHoN4g8
-         siGSE4g/n7y+Od1Vv64HnCW1sVETkmU4ov3ggGlR+ci/TtHnNVXeWAmKB0ng3dFnXknA
-         92BgsWSBbAjEuIagg2rUCdBjlXDlXl6bk4AF/aBiA040SZZGW4fr35YsKHFfzewjLcGp
-         AxKw==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"
 To: netfilter@vger.kernel.org
 
-Hi,
+--------------ms070006040206040808050207
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: de-DE
+Content-Transfer-Encoding: quoted-printable
 
 
-I am a master student, and currently my school laboratory is
-developing a router for linux embedded systems.
-In the router, I used iptables as my firewall setting, and triggered
-the iptables service in the form of command line through a program
-written by myself. I did not modify any source code of iptables, and
-used it by using "/sbin/iptables".
-If, I want my router to be published as a product, but at the same
-time, I don=E2=80=99t want to disclose the source code of the program I wro=
-te,
-so will my program violate the license?
+Hi all,
+
+I think I need help with the following problem:
+
+there's a XUbuntu 20.04 LTS box with 2 NICs:
+
+eth0 on 192.168.100.0/24 (Network A)
+eth1 on 192.168.200.0/24 (Network B)
+
+The Linux box is supposed to forward (only) all UDP broadcasts to port=20
+34567 in network A to network B.
+
+For this purpose I have a rule
+
+iptables -t mangle -A INPUT -d 192.168.100.255 -i eth0 -p udp -m udp=20
+--dport 34567 -j TEE --gateway 192.168.200.255
+
+This works well and you can see the cloned UDP packets in network B=20
+(e.g. with Wireshark or TCPDUMP). However, the default policy of=20
+filter/OUTPUT must be set to ACCEPT. If this is set to DROP, I've had no =
+
+success so far, even though I've inserted what I consider to be a=20
+suitable OUTPUT rule. Probably I've made a mistake.
+
+But that's not the main problem, unfortunately. The cloned UDP packets=20
+are not recognized/received by computers in network B, because they=20
+still have the original destination address directed to the broadcast=20
+address of network A: 192.168.100.255 !!!
+
+I know reports of others who have observed the same behavior:
+
+e.g.=20
+https://unix.stackexchange.com/questions/477462/iptables-change-destinati=
+on-ip-of-teed-packets
+
+I believe that for a clean solution, you would have to rewrite the=20
+destination address in the nat/OUTPUT chain (on the same gateway machine =
+
+where the TEE rule is applied) to network B's broadcast address using=20
+DNAT. So something like this:
+
+iptables -t nat -A OUTPUT -o eth1 -d 192.168.100.255 -p udp -j DNAT=20
+--to-destination 192.168.200.255
+
+Unfortunately, that didn't work either and the UDP packets on network B=20
+still have the destination address 192.168.100.255 (which is actually=20
+wrong on this network) and they are therefore not recognized.
+
+What am I doing wrong?
+
+Best,
+Thomas
 
 
-Susan Hung
-Best Regards
+--------------ms070006040206040808050207
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
+ELgwggUSMIID+qADAgECAgkA4wvV+K8l2YEwDQYJKoZIhvcNAQELBQAwgYIxCzAJBgNVBAYT
+AkRFMSswKQYDVQQKDCJULVN5c3RlbXMgRW50ZXJwcmlzZSBTZXJ2aWNlcyBHbWJIMR8wHQYD
+VQQLDBZULVN5c3RlbXMgVHJ1c3QgQ2VudGVyMSUwIwYDVQQDDBxULVRlbGVTZWMgR2xvYmFs
+Um9vdCBDbGFzcyAyMB4XDTE2MDIyMjEzMzgyMloXDTMxMDIyMjIzNTk1OVowgZUxCzAJBgNV
+BAYTAkRFMUUwQwYDVQQKEzxWZXJlaW4genVyIEZvZXJkZXJ1bmcgZWluZXMgRGV1dHNjaGVu
+IEZvcnNjaHVuZ3NuZXR6ZXMgZS4gVi4xEDAOBgNVBAsTB0RGTi1QS0kxLTArBgNVBAMTJERG
+Ti1WZXJlaW4gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkgMjCCASIwDQYJKoZIhvcNAQEBBQAD
+ggEPADCCAQoCggEBAMtg1/9moUHN0vqHl4pzq5lN6mc5WqFggEcVToyVsuXPztNXS43O+FZs
+FVV2B+pG/cgDRWM+cNSrVICxI5y+NyipCf8FXRgPxJiZN7Mg9mZ4F4fCnQ7MSjLnFp2uDo0p
+eQcAIFTcFV9Kltd4tjTTwXS1nem/wHdN6r1ZB+BaL2w8pQDcNb1lDY9/Mm3yWmpLYgHurDg0
+WUU2SQXaeMpqbVvAgWsRzNI8qIv4cRrKO+KA3Ra0Z3qLNupOkSk9s1FcragMvp0049ENF4N1
+xDkesJQLEvHVaY4l9Lg9K7/AjsMeO6W/VRCrKq4Xl14zzsjz9AkH4wKGMUZrAcUQDBHHWekC
+AwEAAaOCAXQwggFwMA4GA1UdDwEB/wQEAwIBBjAdBgNVHQ4EFgQUk+PYMiba1fFKpZFK4OpL
+4qIMz+EwHwYDVR0jBBgwFoAUv1kgNgB5oKAia4zV8mHSuCzLgkowEgYDVR0TAQH/BAgwBgEB
+/wIBAjAzBgNVHSAELDAqMA8GDSsGAQQBga0hgiwBAQQwDQYLKwYBBAGBrSGCLB4wCAYGZ4EM
+AQICMEwGA1UdHwRFMEMwQaA/oD2GO2h0dHA6Ly9wa2kwMzM2LnRlbGVzZWMuZGUvcmwvVGVs
+ZVNlY19HbG9iYWxSb290X0NsYXNzXzIuY3JsMIGGBggrBgEFBQcBAQR6MHgwLAYIKwYBBQUH
+MAGGIGh0dHA6Ly9vY3NwMDMzNi50ZWxlc2VjLmRlL29jc3ByMEgGCCsGAQUFBzAChjxodHRw
+Oi8vcGtpMDMzNi50ZWxlc2VjLmRlL2NydC9UZWxlU2VjX0dsb2JhbFJvb3RfQ2xhc3NfMi5j
+ZXIwDQYJKoZIhvcNAQELBQADggEBAIcL/z4Cm2XIVi3WO5qYi3FP2ropqiH5Ri71sqQPrhE4
+eTizDnS6dl2e6BiClmLbTDPo3flq3zK9LExHYFV/53RrtCyD2HlrtrdNUAtmB7Xts5et6u5/
+MOaZ/SLick0+hFvu+c+Z6n/XUjkurJgARH5pO7917tALOxrN5fcPImxHhPalR6D90Bo0fa3S
+PXez7vTXTf/D6OWST1k+kEcQSrCFWMBvf/iu7QhCnh7U3xQuTY+8npTD5+32GPg8SecmqKc2
+2CzeIs2LgtjZeOJVEqM7h0S2EQvVDFKvaYwPBt/QolOLV5h7z/0HJPT8vcP9SpIClxvyt7bP
+ZYoaorVyGTkwggWsMIIElKADAgECAgcbY7rQHiw9MA0GCSqGSIb3DQEBCwUAMIGVMQswCQYD
+VQQGEwJERTFFMEMGA1UEChM8VmVyZWluIHp1ciBGb2VyZGVydW5nIGVpbmVzIERldXRzY2hl
+biBGb3JzY2h1bmdzbmV0emVzIGUuIFYuMRAwDgYDVQQLEwdERk4tUEtJMS0wKwYDVQQDEyRE
+Rk4tVmVyZWluIENlcnRpZmljYXRpb24gQXV0aG9yaXR5IDIwHhcNMTYwNTI0MTEzODQwWhcN
+MzEwMjIyMjM1OTU5WjCBjTELMAkGA1UEBhMCREUxRTBDBgNVBAoMPFZlcmVpbiB6dXIgRm9l
+cmRlcnVuZyBlaW5lcyBEZXV0c2NoZW4gRm9yc2NodW5nc25ldHplcyBlLiBWLjEQMA4GA1UE
+CwwHREZOLVBLSTElMCMGA1UEAwwcREZOLVZlcmVpbiBHbG9iYWwgSXNzdWluZyBDQTCCASIw
+DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAJ07eRxH3h+Gy8Zp1xCeOdfZojDbchwFfylf
+S2jxrRnWTOFrG7ELf6Gr4HuLi9gtzm6IOhDuV+UefwRRNuu6cG1joL6WLkDh0YNMZj0cZGnl
+m6Stcq5oOVGHecwX064vXWNxSzl660Knl5BpBb+Q/6RAcL0D57+eGIgfn5mITQ5HjUhfZZkQ
+0tkqSe3BuS0dnxLLFdM/fx5ULzquk1enfnjK1UriGuXtQX1TX8izKvWKMKztFwUkP7agCwf9
+TRqaA1KgNpzeJIdl5Of6x5ZzJBTN0OgbaJ4YWa52fvfRCng8h0uwN89Tyjo4EPPLR22MZD08
+WkVKusqAfLjz56dMTM0CAwEAAaOCAgUwggIBMBIGA1UdEwEB/wQIMAYBAf8CAQEwDgYDVR0P
+AQH/BAQDAgEGMCkGA1UdIAQiMCAwDQYLKwYBBAGBrSGCLB4wDwYNKwYBBAGBrSGCLAEBBDAd
+BgNVHQ4EFgQUazqYi/nyU4na4K2yMh4JH+iqO3QwHwYDVR0jBBgwFoAUk+PYMiba1fFKpZFK
+4OpL4qIMz+EwgY8GA1UdHwSBhzCBhDBAoD6gPIY6aHR0cDovL2NkcDEucGNhLmRmbi5kZS9n
+bG9iYWwtcm9vdC1nMi1jYS9wdWIvY3JsL2NhY3JsLmNybDBAoD6gPIY6aHR0cDovL2NkcDIu
+cGNhLmRmbi5kZS9nbG9iYWwtcm9vdC1nMi1jYS9wdWIvY3JsL2NhY3JsLmNybDCB3QYIKwYB
+BQUHAQEEgdAwgc0wMwYIKwYBBQUHMAGGJ2h0dHA6Ly9vY3NwLnBjYS5kZm4uZGUvT0NTUC1T
+ZXJ2ZXIvT0NTUDBKBggrBgEFBQcwAoY+aHR0cDovL2NkcDEucGNhLmRmbi5kZS9nbG9iYWwt
+cm9vdC1nMi1jYS9wdWIvY2FjZXJ0L2NhY2VydC5jcnQwSgYIKwYBBQUHMAKGPmh0dHA6Ly9j
+ZHAyLnBjYS5kZm4uZGUvZ2xvYmFsLXJvb3QtZzItY2EvcHViL2NhY2VydC9jYWNlcnQuY3J0
+MA0GCSqGSIb3DQEBCwUAA4IBAQCBeEWkTqR/DlXwCbFqPnjMaDWpHPOVnj/z+N9rOHeJLI21
+rT7H8pTNoAauusyosa0zCLYkhmI2THhuUPDVbmCNT1IxQ5dGdfBi5G5mUcFCMWdQ5UnnOR7L
+n8qGSN4IFP8VSytmm6A4nwDO/afr0X9XLchMX9wQEZc+lgQCXISoKTlslPwQkgZ7nu7YRrQb
+tQMMONncsKk/cQYLsgMHM8KNSGMlJTx6e1du94oFOO+4oK4v9NsH1VuEGMGpuEvObJAaguS5
+Pfp38dIfMwK/U+d2+dwmJUFvL6Yb+qQTkPp8ftkLYF3sv8pBoGH7EUkp2KgtdRXYShjqFu9V
+NCIaE40GMIIF7jCCBNagAwIBAgIMI2gWwtK5cLl0AUOXMA0GCSqGSIb3DQEBCwUAMIGNMQsw
+CQYDVQQGEwJERTFFMEMGA1UECgw8VmVyZWluIHp1ciBGb2VyZGVydW5nIGVpbmVzIERldXRz
+Y2hlbiBGb3JzY2h1bmdzbmV0emVzIGUuIFYuMRAwDgYDVQQLDAdERk4tUEtJMSUwIwYDVQQD
+DBxERk4tVmVyZWluIEdsb2JhbCBJc3N1aW5nIENBMB4XDTIwMDgyODA1NDIxMVoXDTIzMDgy
+ODA1NDIxMVowdDELMAkGA1UEBhMCREUxOjA4BgNVBAoMMUxlaWJuaXotSW5zdGl0dXQgZnVl
+ciBUcm9wb3NwaGFlcmVuZm9yc2NodW5nIGUuVi4xEDAOBgNVBAsMB0V4QVdvTVAxFzAVBgNV
+BAMMDlRob21hcyBDb25yYXRoMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnlWc
+jHeH3uRfQdo8r4Jy/BvNa0UPf7ECyWgk8+Ld6dCW01skowmvse0ppsi8uAEK8Gq/ZkAg3tFm
+Mc5JWn5xt7Lf5pfZyv618F6Wh02z4kjU+pC9HmrSdzFNbDjzTRGsNNC8rMCO6XPD9PsuiZA3
+oAd/MiDwJ9Xsa6mZ/XqD8MDM04cl5E131d1XTwn95+dRBdMQ/F77dhxFPYJ3eBgbsS0nij7A
+MfEKwVPWNsLkHNsL+M9NlMzQZb8CcR48t0N5+ZXKy+ROtvzJHDwS0wnkObAOCUdxZTm6LZW+
+jDKjhZSdjKwrOk8XA1oQHr/qm0zurRpDJbtbDrpsBSuOxgU5CQIDAQABo4ICZDCCAmAwPgYD
+VR0gBDcwNTAPBg0rBgEEAYGtIYIsAQEEMBAGDisGAQQBga0hgiwBAQQHMBAGDisGAQQBga0h
+giwCAQQHMAkGA1UdEwQCMAAwDgYDVR0PAQH/BAQDAgXgMB0GA1UdJQQWMBQGCCsGAQUFBwMC
+BggrBgEFBQcDBDAdBgNVHQ4EFgQU9DbJLwNDwPCrbfJFzpKB4wKL23MwHwYDVR0jBBgwFoAU
+azqYi/nyU4na4K2yMh4JH+iqO3QwNgYDVR0RBC8wLYEYdGhvbWFzLmNvbnJhdGhAdHJvcG9z
+LmRlgRFjb25yYXRoQHRyb3Bvcy5kZTCBjQYDVR0fBIGFMIGCMD+gPaA7hjlodHRwOi8vY2Rw
+MS5wY2EuZGZuLmRlL2Rmbi1jYS1nbG9iYWwtZzIvcHViL2NybC9jYWNybC5jcmwwP6A9oDuG
+OWh0dHA6Ly9jZHAyLnBjYS5kZm4uZGUvZGZuLWNhLWdsb2JhbC1nMi9wdWIvY3JsL2NhY3Js
+LmNybDCB2wYIKwYBBQUHAQEEgc4wgcswMwYIKwYBBQUHMAGGJ2h0dHA6Ly9vY3NwLnBjYS5k
+Zm4uZGUvT0NTUC1TZXJ2ZXIvT0NTUDBJBggrBgEFBQcwAoY9aHR0cDovL2NkcDEucGNhLmRm
+bi5kZS9kZm4tY2EtZ2xvYmFsLWcyL3B1Yi9jYWNlcnQvY2FjZXJ0LmNydDBJBggrBgEFBQcw
+AoY9aHR0cDovL2NkcDIucGNhLmRmbi5kZS9kZm4tY2EtZ2xvYmFsLWcyL3B1Yi9jYWNlcnQv
+Y2FjZXJ0LmNydDANBgkqhkiG9w0BAQsFAAOCAQEAnR97bnmKcPWfbb81ctxXHo4mR3qWtG1/
+htec80Sq4f/dduCRhv5hB81ahWq9FIEF2LxG1qAAQ++UJfYSP/1OPE1K1mMnTaIBCqDS72xX
+afmqXUqiQkQGJ+Pz2TjenYw+bbRwLQOXtRDDjwVNTVOn5S+WSERlGZwwuPRZn3AFQmThc6re
+RIEjPAnie7Kse7MmjMfMvaRLXFr2rXwZnYmG5msqhxC0iWzUdNyyHHNxdSFpsrZc7oQH5XaF
+Lqj1fKMgBp21o+t+5g02mGIcFgKuWapMkjPwwwElzJJL2sOL+lQDtE0kYqxOpikBUu7zmzZ9
+5kP+gzYMafQFSfpkTGAqkDGCBAswggQHAgEBMIGeMIGNMQswCQYDVQQGEwJERTFFMEMGA1UE
+Cgw8VmVyZWluIHp1ciBGb2VyZGVydW5nIGVpbmVzIERldXRzY2hlbiBGb3JzY2h1bmdzbmV0
+emVzIGUuIFYuMRAwDgYDVQQLDAdERk4tUEtJMSUwIwYDVQQDDBxERk4tVmVyZWluIEdsb2Jh
+bCBJc3N1aW5nIENBAgwjaBbC0rlwuXQBQ5cwDQYJYIZIAWUDBAIBBQCgggI9MBgGCSqGSIb3
+DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIxMDYwNjIxMTAwMlowLwYJKoZI
+hvcNAQkEMSIEII3LuzG5QVtEzjN4Gua45ghVU0swEBZgBC70sYzyngGwMGwGCSqGSIb3DQEJ
+DzFfMF0wCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggqhkiG9w0D
+AgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwga8GCSsGAQQB
+gjcQBDGBoTCBnjCBjTELMAkGA1UEBhMCREUxRTBDBgNVBAoMPFZlcmVpbiB6dXIgRm9lcmRl
+cnVuZyBlaW5lcyBEZXV0c2NoZW4gRm9yc2NodW5nc25ldHplcyBlLiBWLjEQMA4GA1UECwwH
+REZOLVBLSTElMCMGA1UEAwwcREZOLVZlcmVpbiBHbG9iYWwgSXNzdWluZyBDQQIMI2gWwtK5
+cLl0AUOXMIGxBgsqhkiG9w0BCRACCzGBoaCBnjCBjTELMAkGA1UEBhMCREUxRTBDBgNVBAoM
+PFZlcmVpbiB6dXIgRm9lcmRlcnVuZyBlaW5lcyBEZXV0c2NoZW4gRm9yc2NodW5nc25ldHpl
+cyBlLiBWLjEQMA4GA1UECwwHREZOLVBLSTElMCMGA1UEAwwcREZOLVZlcmVpbiBHbG9iYWwg
+SXNzdWluZyBDQQIMI2gWwtK5cLl0AUOXMA0GCSqGSIb3DQEBAQUABIIBAHEbYpHCg5H5NLhW
+xoac0VfBMZP2p3OYFWMThYszFbpg8NXQNHjikaXLFm+wEMVrnBCt5InYfqDSd0ATF9UsyiCc
+Q0rfWMiMeVd90wAyfe1A2Yf5/NvC6ygHU47aCBF8PDEBCaBDdrAmM2qTJGNXEqgNOCsnrAF6
+VOdOeTUKdHmjQHu8vkjJU+ArJobWss7O6pXkoMmFET6vMcLsbWNy6ZSIww7lpxyPZi8nIPyL
+JMfNdrdxmXBM8qMN3MJjLdX6fH/nY5OzHrtFPRsWyFZsb4+wXlyC5RfXZI8ZK1nVMb2VxIAg
+jpjhuaTsxSj+4DSC8NEg0zMl9o6Ss5dkjLA2dBUAAAAAAAA=
+--------------ms070006040206040808050207--
