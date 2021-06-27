@@ -1,81 +1,71 @@
-From: "G.W. Haywood" <netfilter@jubileegroup.co.uk>
+From: Kerin Millar <kfm@plushkava.net>
 Subject: Re: Reload IPtables
-Date: Sun, 27 Jun 2021 16:46:18 +0100 (BST)
-Message-ID: <alpine.DEB.2.21.2106271613030.19074@piplus.local.jubileegroup.co.uk>
-References: <08f069e3-914f-204a-dfd6-a56271ec1e55.ref@att.net> <08f069e3-914f-204a-dfd6-a56271ec1e55@att.net> <4ac5ff0d-4c6f-c963-f2c5-29154e0df24b@hajes.org> <6430a511-9cb0-183d-ed25-553b5835fa6a@att.net> <877683bf-6ea4-ca61-ba41-5347877d3216@thelounge.net>
- <d2156e5b-2be9-c0cf-7f5b-aaf8b81769f8@att.net> <f5314629-8a08-3b5f-cfad-53bf13483ec3@hajes.org> <291b9611-62ed-6000-6d4b-36d4b9196698@att.net>
+Date: Sun, 27 Jun 2021 19:11:07 +0100
+Message-ID: <20210627191107.79ca63b9cf4dfe9028649524@plushkava.net>
+References: <08f069e3-914f-204a-dfd6-a56271ec1e55.ref@att.net>
+        <08f069e3-914f-204a-dfd6-a56271ec1e55@att.net>
+        <4ac5ff0d-4c6f-c963-f2c5-29154e0df24b@hajes.org>
+        <6430a511-9cb0-183d-ed25-553b5835fa6a@att.net>
+        <877683bf-6ea4-ca61-ba41-5347877d3216@thelounge.net>
+        <d2156e5b-2be9-c0cf-7f5b-aaf8b81769f8@att.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; BOUNDARY="-1463810772-1428951008-1624808659=:19074"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <291b9611-62ed-6000-6d4b-36d4b9196698@att.net>
-Content-ID: <alpine.DEB.2.21.2106271644310.19074@piplus.local.jubileegroup.co.uk>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+         h=date:from:to:cc:subject:message-id:in-reply-to:references
+        :mime-version:content-type:content-transfer-encoding; s=fm3; bh=
+        Xx0feDlhQ/Zy3wu+ChppLmqiUIeV3j3M49m3qmoCVVw=; b=Jfd+0MuRPq0IAhep
+        KYOK7tuQb94KkAQ5yweTtgF0en16rBEqPupGDf9XcTGVSYjQ1ymsDcGEwKDbez9X
+        0mAjKOtauwsnAjKGJY73Mx9/xwgSuvHo/D9BtLeonD4G02l50mF5fRuu45fYNmz3
+        2Rc7k7Ucty7qeaD1vdoJfTbxkKE12+91eN9qoUsqlMKnJT7Nqed6CsQXehtb37JH
+        eXDmElbehpTwdvHKiavbsXcGRQiSmm76E67UsbE2eH6pw2wbZXDAifEmz0kKrLTY
+        DOlzh1oR9nprcf+Xby8tv+J88E1fiXHH3cRqu1JCNPqIqOQcsJAPijpALPsXYcIE
+        8AZR9A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=Xx0feDlhQ/Zy3wu+ChppLmqiUIeV3j3M49m3qmoCV
+        Vw=; b=mZrMO7cs98cyUVf+hVkEez2NRFpgn/YJAAxwniXZYofYSejtQWflkyYPW
+        XMgg270ycQKxnQTK+TwZYStoYyaX2TXLXUSc1JcyNDFZw3xs0ATYUylSzvo0XqhW
+        kJsi9j8GXHcOtukT+Vq8NBZACCBTE0PciNfYN4l9wGYzI+93qCCyZiw9Ytzp2qWU
+        /j89VxCBOwKKs7dSAhbMo/MJS9vkz56KEMgGJiAJtQ/4mNbEch3fzZLiFiJiAYjF
+        j2xyuZAyi7+CvFanmt8ctIWSdU3KFBHeZ76wmlI7bUrasIHc305tNdzRrBqvmUyb
+        WpAMvJV7CPU68NUCUug2ivFpo8nGw==
+In-Reply-To: <d2156e5b-2be9-c0cf-7f5b-aaf8b81769f8@att.net>
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
 To: slow_speed@att.net
 Cc: netfilter@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Fri, 25 Jun 2021 19:47:02 -0400
+slow_speed@att.net wrote:
 
----1463810772-1428951008-1624808659=:19074
-Content-Type: text/plain; charset="iso-8859-15"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
-Content-ID: <alpine.DEB.2.21.2106271644311.19074@piplus.local.jubileegroup.co.uk>
-
-Hi there,
-
-On Sun, 27 Jun 2021, slow_speed@att.net wrote:
-> On 6/26/21 3:19 AM, David Hajes wrote:
+> Yes, that was exactly my initial question.=A0 I couldn't agree more.
 >=20
->> it seems to me that you need to learn basics of firewalling and Linux=20
->> management.=20
->=20
-> A most fundamental part of learning is asking questions.=A0 That is what =
-I'm=20
-> doing here.
+> The issue was knowing the correct command to use force the reload. I=20
+> remain unclear on that if my files are in either /etc/iptables.up.rules=20
+> or /etc/iptables/rules.v4.
 
-Mailing lists are not usually intended to replace doing your homework.
+Debian offers an iptables-persistent package which, if installed, will prov=
+ide a plugin for their netfilter-persistent package. In turn, that implemen=
+ts a pseudo-service that is capable of automatically loading iptables rules=
+ from "/etc/iptables/rules.v4" upon being started, and saving them there up=
+on being stopped. It does so by executing iptables-restore(8) and iptables-=
+save(8) behind the scenes and the decision to use this particular location =
+is an arbitrary one made by the Debian maintainers. As for "/etc/iptables.u=
+p.rules", it has no significance beyond serving as one example of how to ma=
+nually deal with ruleset persistence, as far as the author of the https://w=
+iki.debian.org/iptables article is concerned.
 
-People tire of answering questions which wouldn't need to be asked if
-the questioner had dome some modest amount of reading.  There are
-numerous documents, not least those already on your computer, and many
-on the netfilter Website
-
-https://www.netfilter.org/documentation/
-
-the study of which would greatly enhance your understanding without
-causing friction on this list.
-
-In the case of a firewall (not that to use iptables is necessarily to
-implement a firewall, but in the case of a firewall) it's a matter of
-"drink deep, or taste not the Pierian spring" - because if you get it
-wrong with a firewall it might not be obvious and you might well live
-to rue the day.
-
-> And I'd still like some verification of the exact command to reload the=20
-> tables.
-
-There isn't an "exact command to reload the iptables".  Even supposing
-there was some exact command which answers whatever question you're
-really asking, to get to it you'd need to put a great deal more work
-into the question.  The packet filtering susbsystem is a very complex
-beast and there are numerous tools available to help you work with it.
-The iptables command is one of them.  Like many commands it has what's
-known as a "man page"; we say that as a kind of shorthand for starting
-a shell and at the shell prompt then (in the case of iptables) running
-the command
-
-man iptables
-
-which I urge you to try.  The man pages have a standard format and you
-should make yourself familiar with it and be familiar with using them.
-Although they're called pages, in reality each page can be a document
-many pages (screens, whatever) in length.  When you're familiar with
-them you'll have a wealth of information at your fingertips which will
-most often answer your questions in much less time than starting some
-thread on a mailing list.
+So, if you needed to manually (re)load an iptables ruleset that had previou=
+sly been saved through the use of the iptables-persistent plugin, you might=
+ run `iptables-restore /etc/iptables/rules.v4` but it would probably be wis=
+er to run `netfilter-persistent start` instead. For further information, re=
+fer to the netfilter-persistent(8) man page. On the other hand, should you =
+choose not to use iptables-persistent, the decision of where exactly to sav=
+e rulesets is yours to make. If in doubt, observe the conventions chosen by=
+ your distribution.
 
 --=20
-
-73,
-Ged.
----1463810772-1428951008-1624808659=:19074--
+Kerin Millar
