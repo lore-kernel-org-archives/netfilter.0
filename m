@@ -1,25 +1,26 @@
-From: Reindl Harald <h.reindl@thelounge.net>
+From: slow_speed@att.net
 Subject: Re: IP Addresses Changed to Hostnames in IPTables
-Date: Mon, 28 Jun 2021 23:06:13 +0200
-Message-ID: <ebd2e4e4-0fb1-77bf-3e5d-373d4c61d85f@thelounge.net>
+Date: Mon, 28 Jun 2021 17:06:44 -0400
+Message-ID: <5a2e7de6-af79-bcaa-d84e-b3bd91647c72@att.net>
 References: <bda96448-fbd7-0c99-1bff-c3776bdfafff.ref@att.net>
  <bda96448-fbd7-0c99-1bff-c3776bdfafff@att.net>
  <20210628213643.468805a4c8f262984ee530a6@plushkava.net>
  <cb8649b5-a2aa-8101-7701-9fc13e2f5db0@att.net>
  <20210628215811.55a87828961dcd87ae1f4612@plushkava.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=att.net; s=s1024; t=1624914410; bh=5KKGmJob2MbyQeQ3BbKhkNVqT/eegmNSuv133a5xu78=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=49jrkXwQy3SFNuCqRZNnAW69J/3y8bTDoqhdUeZdVuq62PM1bAS5MFFaOcwOG8DR8+S6xmb7fI6xBD5d/gzW3NFpBWuMkaWpbNReosH48kuBrC9jc41R3GurzTryutB1fFA3oBHRARYgV88vhkLN6sC68W6eZASaCc0S0oB/kD8=
 In-Reply-To: <20210628215811.55a87828961dcd87ae1f4612@plushkava.net>
 Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Kerin Millar <kfm@plushkava.net>, slow_speed@att.net
+To: Kerin Millar <kfm@plushkava.net>
 Cc: netfilter@vger.kernel.org
 
 
 
-Am 28.06.21 um 22:58 schrieb Kerin Millar:
+On 6/28/21 4:58 PM, Kerin Millar wrote:
 > On Mon, 28 Jun 2021 16:47:46 -0400
 > slow_speed@att.net wrote:
 > 
@@ -49,12 +50,12 @@ Am 28.06.21 um 22:58 schrieb Kerin Millar:
 > 
 > The -L format is deficient in several respects. About the only thing it's good for is displaying counters (with -v), yet iptables-save already does this. My suggestion would be to avoid -L outright. If you want to list rules with iptables instead of iptables-save, the -S option is much more useful.
 > 
-> Also, please use Reply All next time. I am adding the list back to the CC field
+> Also, please use Reply All next time. I am adding the list back to the CC field.
+> 
+Thanks for the Reply All tip.  (This is one of the reasons I hate mail 
+lists.  They make us jump thru unnecessary hoops, when forums are free 
+and so useful; especially for searching.)
 
-the real problem is talking about "However, when viewing the file" when 
-doing "iptables -L" in fact
+By the way, -S is good, but -nL has a very nice layout that is far superior.
 
-"iptables --list --numeric --line-numbers --verbose" is no rocket 
-science, documented and that you need "-n" is not that uncommon
-
-see "netstat-nat" or "route" as example
+Thanks again.
