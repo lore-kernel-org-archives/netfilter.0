@@ -1,7 +1,7 @@
-From: Alessandro Vesely <vesely@tana.it>
+From: Reindl Harald <h.reindl@thelounge.net>
 Subject: Re: Reload IPtables
-Date: Mon, 28 Jun 2021 13:47:03 +0200
-Message-ID: <fc8a9cbf-7424-1d14-e927-bbf454733434@tana.it>
+Date: Mon, 28 Jun 2021 14:03:30 +0200
+Message-ID: <ef5d64c7-2297-1e97-c6f9-29adbc915f60@thelounge.net>
 References: <08f069e3-914f-204a-dfd6-a56271ec1e55.ref@att.net>
  <08f069e3-914f-204a-dfd6-a56271ec1e55@att.net>
  <4ac5ff0d-4c6f-c963-f2c5-29154e0df24b@hajes.org>
@@ -16,68 +16,77 @@ References: <08f069e3-914f-204a-dfd6-a56271ec1e55.ref@att.net>
  <f0daea91-4d12-1605-e6df-e7f95ba18cac@thelounge.net>
  <8395d083-022b-f6f7-b2d3-e2a83b48c48a@tana.it>
  <83719383-c18d-dcb6-07f6-f123872fa68b@thelounge.net>
+ <fc8a9cbf-7424-1d14-e927-bbf454733434@tana.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tana.it; s=delta;
-        t=1624880824; bh=rNawX8TDL8X9j/LUiMd6FC2RexnHfexgFiCLH/Z9MDQ=;
-        l=917; h=To:References:From:Date:In-Reply-To;
-        b=B8HV+hLe3ZxyrtqNCY2ASheJLNlKxXyvVJ0/v2/zwX3X3zqxnyPdJvEUO62+42M0z
-         FYgX6LQ6pwUGZw0mwO55+6B6BSnNJWBZB1f5e+v4LVbf6Q3OmUphfeuMaxGAXkqV0G
-         zaI4W38vm7lh+EPQSqa3qcfM6MD827oXbVu9R1h7LUGw2ApTQBhd0WQuL7UdI
-From: Alessandro Vesely <vesely@tana.it>
-In-Reply-To: <83719383-c18d-dcb6-07f6-f123872fa68b@thelounge.net>
+In-Reply-To: <fc8a9cbf-7424-1d14-e927-bbf454733434@tana.it>
 Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Reindl Harald <h.reindl@thelounge.net>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: Alessandro Vesely <vesely@tana.it>, netfilter@vger.kernel.org
 
-On Mon 28/Jun/2021 12:17:11 +0200 Reindl Harald wrote:
-> Am 28.06.21 um 11:23 schrieb Alessandro Vesely:
->> A complex script doesn't have to be error prone.
+
+
+Am 28.06.21 um 13:47 schrieb Alessandro Vesely:
+> On Mon 28/Jun/2021 12:17:11 +0200 Reindl Harald wrote:
+>> Am 28.06.21 um 11:23 schrieb Alessandro Vesely:
+>>> A complex script doesn't have to be error prone.
+>>
+>> it is by definition more error prone than a simple restore which has 
+>> exactly that job and it makes no sense to argue about such simple facts
 > 
-> it is by definition more error prone than a simple restore which has exactly 
-> that job and it makes no sense to argue about such simple facts
+> 
+> As Kerin showed, restore is not intrinsically simpler, as it has to deal 
+> with the same amount of data.  It is only laid down in a different 
+> format.  
 
+for the sake of god you are not supposed to deal with that format as 
+human at all - you only need to know where you write it and load it from 
+there
 
-As Kerin showed, restore is not intrinsically simpler, as it has to deal with 
-the same amount of data.  It is only laid down in a different format.  The 
-shell format is more verbose, but has some advantages:
+> The shell format is more verbose, but has some advantages:
 
-* it allows to test each single command separately, and
+not at boot time
 
-* its format is time-honored and fully documented.
+> * it allows to test each single command separately
 
+off-topic in the case of reload the complete ruleset
 
-> do what you want but stop talking nonsense when it comes to best practice 
+> * its format is time-honored and fully documented.
 
+off-topic in the case of reload the complete ruleset
 
-One "best practice" that I'd object to is blindly restoring whatever was saved 
-on shutdown.  How can one control that?  Booting with some clean, well-defined 
-data looks safer.
+>> do what you want but stop talking nonsense when it comes to best practice 
+> 
+> One "best practice" that I'd object to is blindly restoring whatever was 
+> saved on shutdown.  How can one control that?  Booting with some clean, 
+> well-defined data looks safer
 
+WTF: there is nothing magically or blindly saved and changed at 
+shutdown, it's the whole state as it was, the outcome from your script
 
-Best
-Ale
--- 
+do you guys not realize that your shellscripts are fine as mine are but 
+at the end the iptables ruleset has a defined state which want you have 
+restored 1:1 at boot
 
+this whole discusssion is embarrassing and especially when the target 
+audience in this case is a noob-user it's idiotic not follow best practices
 
+nobody gives a shit how you create the ruleset and nobody right in his 
+mind would touch the save-file by anything else but "iptables-save 
+--file path" as nobody right in his mind would load it by anything else 
+than  "iptables-nft-restore path"
 
+arguments like "i don't care if it's atomic in my special situation" and 
+"i don't care how long it takes in my special situation" are dumb in 
+context of the subject
 
+please stop spreading bullshit - we have enough idiots out there blindly 
+follow whatever they read whereever on the internet without the 
+slightest clue what they are doing
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+YOU can do what you want on YOUR machine but best practices are there to 
+avoid endless threads over and over again when someone has a problem and 
+nobody knows about his setup and your "i do everything like i want" is 
+off-topic
