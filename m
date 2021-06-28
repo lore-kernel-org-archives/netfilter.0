@@ -1,51 +1,33 @@
-From: Reindl Harald <h.reindl@thelounge.net>
-Subject: Re: Reload IPtables
-Date: Sun, 27 Jun 2021 23:33:25 +0200
-Message-ID: <6e0a9e55-bef3-0cad-9869-2a89928c07a9@thelounge.net>
-References: <08f069e3-914f-204a-dfd6-a56271ec1e55.ref@att.net>
- <08f069e3-914f-204a-dfd6-a56271ec1e55@att.net>
- <4ac5ff0d-4c6f-c963-f2c5-29154e0df24b@hajes.org>
- <6430a511-9cb0-183d-ed25-553b5835fa6a@att.net>
- <877683bf-6ea4-ca61-ba41-5347877d3216@thelounge.net>
- <d2156e5b-2be9-c0cf-7f5b-aaf8b81769f8@att.net>
- <20210627191107.79ca63b9cf4dfe9028649524@plushkava.net>
- <227edb33-b86d-2310-bc63-c6d903bea95d@att.net>
- <bc2e17dc-76ad-cc86-733b-32700b5adc07@thelounge.net>
- <d03acc84-93b2-c901-d897-f93748c5babd@att.net>
+From: Psyspy 22 <psyspy2020@gmail.com>
+Subject: libnetfilter_queue: Access conntrack info
+Date: Sun, 27 Jun 2021 22:07:18 -0600
+Message-ID: <CAFqmWq_4_8ubgpfdEfhhQ=+7YbKCrPp=aTXsixAeYrK5VA+B2w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <d03acc84-93b2-c901-d897-f93748c5babd@att.net>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=ONeomOns0iFcEhjDVpaYAneENoIUv67H1dqluGQDSZE=;
+        b=LWXNoGgCgatCBNV4zG+ZL+3CgMkWKK7NUM4/2cweAnwbS719rboz/YbtIKSNDdIits
+         Zm8ufPiuJB/r6qJVfkBQJUaGMO0GzVyHTv4MTpLjiWbU3iIacFTosCYmwLTnv3M9HYTM
+         3r4z0sWTiKK2eQUhpezreJUmnlMNKxNCJQ5PFojO0RQS2x9RyClaa8m2ZvbPp8CjUi3Z
+         jQwE9Es3uAFxUuApXPzVOgR86PMcTilHIooOKdpRAxmJ6tiFdW9aI+nw5OacLauu2Oq1
+         aRYEPFUz8E97d3YUjiOHHR587lxXYazSxkuyHuWBkE5l7i5Q3Z3tJtLWqpk9468CYZNy
+         HwAw==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: slow_speed@att.net, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
+Hello,
 
+Good morning! I am using the nf-queue.c example from
+libnetfilter_queue repo. In the queue_cb() function, I am trying to
+get the conntrack info but this condition is always false.
 
-Am 27.06.21 um 22:57 schrieb slow_speed@att.net:
-> 
-> On 6/27/21 2:57 PM, Reindl Harald wrote:
->>
->> it's very distribution specific and that's why this is likely the 
->> wrong mailing list
-> Yes, I understand the distribution issue; I was just pointing that out. 
-> However, netfilter@vger.kernel.org appears to be the end-all and be-all 
-> of netfilter issues.  Thus, one should address this list.
-> 
-> Further, we should not learn just for one distro.  That would be a huge 
-> mistake.
+if(attr[NFQA_CT])
 
-exactly, but which file is where holding your config is distribution 
-specific unless you ignore all that stuff and start standing on your own 
-feet
+I can see the flow in conntrack -L output. Anyone know what I am
+missing? Appreciate your help!
 
->> why do you think you need a manual flush? 
-> 
-> Because I do not have the experience regarding the internal workings of 
-> iptables/nftables in this regard.
-> 
-> It is very simply; does one need to flush before reloading or not?
-
-no and the word "reload" is simply wrong
-you *load* a saved rulestate as you do at boot time
+Kind regards.
