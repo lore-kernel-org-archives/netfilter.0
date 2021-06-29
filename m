@@ -1,41 +1,45 @@
-From: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
-Subject: Re: Reload IPtables
-Date: Mon, 28 Jun 2021 22:02:41 -0400
-Message-ID: <20210628220241.64f9af54@playground>
-References: <08f069e3-914f-204a-dfd6-a56271ec1e55.ref@att.net>
-        <08f069e3-914f-204a-dfd6-a56271ec1e55@att.net>
-        <4ac5ff0d-4c6f-c963-f2c5-29154e0df24b@hajes.org>
-        <6430a511-9cb0-183d-ed25-553b5835fa6a@att.net>
-        <877683bf-6ea4-ca61-ba41-5347877d3216@thelounge.net>
-        <d2156e5b-2be9-c0cf-7f5b-aaf8b81769f8@att.net>
-        <f5314629-8a08-3b5f-cfad-53bf13483ec3@hajes.org>
-        <adc28927-724f-2cdb-ca6a-ff39be8de3ba@thelounge.net>
-        <96559e16-e3a6-cefd-6183-1b47f31b9345@hajes.org>
-        <16b55f10-5171-590f-f9d2-209cfaa7555d@thelounge.net>
-        <54e70d0a-0398-16e4-a79e-ec96a8203b22@tana.it>
-        <f0daea91-4d12-1605-e6df-e7f95ba18cac@thelounge.net>
-        <8395d083-022b-f6f7-b2d3-e2a83b48c48a@tana.it>
-        <20210628104310.61bd287ff147a59b12e23533@plushkava.net>
+From: Duncan Roe <duncan_roe@optusnet.com.au>
+Subject: Re: libnetfilter_queue: Access conntrack info
+Date: Tue, 29 Jun 2021 12:20:11 +1000
+Message-ID: <YNqDW5tRMVkjrXfC@slk1.local.net>
+References: <CAFqmWq_4_8ubgpfdEfhhQ=+7YbKCrPp=aTXsixAeYrK5VA+B2w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alum.wpi.edu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WxqEMlHI93HrYORHlhS1Gc8VwRsS4LvGj4Brh6RyWbg=;
- b=nXoKm2B9zMNNkKTcQYnj0E/lEuP7rvX6Zk75OmroyCBivfNlvBkjm9PODkH7yKqK2ywlyCo8b8AXU2DVE1kAkRPk5ZXDiVpeE2SE2vvrgYr7pE+hVaC9f0KN0sk74xZB2AkJ4F8OU4fiVInaNW9gd869Cqblpr6DuR+gq+JvMxA=
-In-Reply-To: <20210628104310.61bd287ff147a59b12e23533@plushkava.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8Qnetr/a2lZSad8KllzdmHp1QCwLakcjQVl67jonOmA=;
+        b=TFowBV6Ro1EiWqwmQyPBSMQLgdJ/6K7kVqd7z6RrTuQ/3rpvwSNeLGGNsuecJSss0e
+         OKqjhRlHp7vn/IG+w9ET/OeQ3v9ZqFSNOYExDBdUfhe5MtWmfeVI+uj2SMUZfv88k0ht
+         hz1MSNswxc9WuxV+ETaGUSBxhP1Na7OVrAV+CziavJdbGJCzwwvQ2ZLetcwzrWLpkjzm
+         MK91X4OHSK2PkgCT8yf8QG1U0PTMAwrNd7Y54KXYZEj6rlRtmGZQag0Vc/lFp0m5V+FT
+         883sRg2MZZzE3VYtwmckh1J0qe6XoGfc+vnXXSF/4x6Mil5ix+39feoAdrTdF2iYG6rW
+         To8A==
+Sender: Duncan Roe <duncan.roe2@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <CAFqmWq_4_8ubgpfdEfhhQ=+7YbKCrPp=aTXsixAeYrK5VA+B2w@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: 
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On Mon, 28 Jun 2021 10:43:10 +0100
-Kerin Millar <kfm@plushkava.net> wrote:
+On Sun, Jun 27, 2021 at 10:07:18PM -0600, Psyspy 22 wrote:
+> Hello,
+>
+> Good morning! I am using the nf-queue.c example from
+> libnetfilter_queue repo. In the queue_cb() function, I am trying to
+> get the conntrack info but this condition is always false.
+>
+> if(attr[NFQA_CT])
+>
+> I can see the flow in conntrack -L output. Anyone know what I am
+> missing? Appreciate your help!
+>
+> Kind regards.
 
-> Now you benefit from atomicity (the rules will either be committed at once, in full, or not at all) and proper error handling (the exit status value of iptables-restore is meaningful and acted upon). Further, should you prefer to indent the body of the heredoc, you may write <<-EOF, though only leading tab characters will be stripped out.
-> 
+attr[NFQA_CT] is for a connmark. Please try attr[NFQA_CT_INFO].
 
-[minor digression]
+Tell the list how that went,
 
-Is iptables-restore truly atomic in *all* cases? Some years ago, I found through experimentation that some rules were 'lost' when restoring more than 25 000 rules. If I placed a COMMIT every 20 000 rules or so, then all rules would be properly loaded. I think COMMITs break atomicity. I tested with 100k to 1M rules. I was comparing the efficiency of iptables-restore with another tool that read from STDIN; the other tool was about 5% more efficient.
+Cheers ... Duncan.
