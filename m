@@ -1,61 +1,41 @@
-From: slow_speed@att.net
-Subject: Re: IP Addresses Changed to Hostnames in IPTables
-Date: Mon, 28 Jun 2021 17:06:44 -0400
-Message-ID: <5a2e7de6-af79-bcaa-d84e-b3bd91647c72@att.net>
-References: <bda96448-fbd7-0c99-1bff-c3776bdfafff.ref@att.net>
- <bda96448-fbd7-0c99-1bff-c3776bdfafff@att.net>
- <20210628213643.468805a4c8f262984ee530a6@plushkava.net>
- <cb8649b5-a2aa-8101-7701-9fc13e2f5db0@att.net>
- <20210628215811.55a87828961dcd87ae1f4612@plushkava.net>
+From: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
+Subject: Re: Reload IPtables
+Date: Mon, 28 Jun 2021 22:02:41 -0400
+Message-ID: <20210628220241.64f9af54@playground>
+References: <08f069e3-914f-204a-dfd6-a56271ec1e55.ref@att.net>
+        <08f069e3-914f-204a-dfd6-a56271ec1e55@att.net>
+        <4ac5ff0d-4c6f-c963-f2c5-29154e0df24b@hajes.org>
+        <6430a511-9cb0-183d-ed25-553b5835fa6a@att.net>
+        <877683bf-6ea4-ca61-ba41-5347877d3216@thelounge.net>
+        <d2156e5b-2be9-c0cf-7f5b-aaf8b81769f8@att.net>
+        <f5314629-8a08-3b5f-cfad-53bf13483ec3@hajes.org>
+        <adc28927-724f-2cdb-ca6a-ff39be8de3ba@thelounge.net>
+        <96559e16-e3a6-cefd-6183-1b47f31b9345@hajes.org>
+        <16b55f10-5171-590f-f9d2-209cfaa7555d@thelounge.net>
+        <54e70d0a-0398-16e4-a79e-ec96a8203b22@tana.it>
+        <f0daea91-4d12-1605-e6df-e7f95ba18cac@thelounge.net>
+        <8395d083-022b-f6f7-b2d3-e2a83b48c48a@tana.it>
+        <20210628104310.61bd287ff147a59b12e23533@plushkava.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=att.net; s=s1024; t=1624914410; bh=5KKGmJob2MbyQeQ3BbKhkNVqT/eegmNSuv133a5xu78=; h=Subject:To:Cc:References:From:Date:In-Reply-To:From:Subject:Reply-To; b=49jrkXwQy3SFNuCqRZNnAW69J/3y8bTDoqhdUeZdVuq62PM1bAS5MFFaOcwOG8DR8+S6xmb7fI6xBD5d/gzW3NFpBWuMkaWpbNReosH48kuBrC9jc41R3GurzTryutB1fFA3oBHRARYgV88vhkLN6sC68W6eZASaCc0S0oB/kD8=
-In-Reply-To: <20210628215811.55a87828961dcd87ae1f4612@plushkava.net>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alum.wpi.edu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=WxqEMlHI93HrYORHlhS1Gc8VwRsS4LvGj4Brh6RyWbg=;
+ b=nXoKm2B9zMNNkKTcQYnj0E/lEuP7rvX6Zk75OmroyCBivfNlvBkjm9PODkH7yKqK2ywlyCo8b8AXU2DVE1kAkRPk5ZXDiVpeE2SE2vvrgYr7pE+hVaC9f0KN0sk74xZB2AkJ4F8OU4fiVInaNW9gd869Cqblpr6DuR+gq+JvMxA=
+In-Reply-To: <20210628104310.61bd287ff147a59b12e23533@plushkava.net>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Kerin Millar <kfm@plushkava.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: 
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
+On Mon, 28 Jun 2021 10:43:10 +0100
+Kerin Millar <kfm@plushkava.net> wrote:
 
-
-On 6/28/21 4:58 PM, Kerin Millar wrote:
-> On Mon, 28 Jun 2021 16:47:46 -0400
-> slow_speed@att.net wrote:
+> Now you benefit from atomicity (the rules will either be committed at once, in full, or not at all) and proper error handling (the exit status value of iptables-restore is meaningful and acted upon). Further, should you prefer to indent the body of the heredoc, you may write <<-EOF, though only leading tab characters will be stripped out.
 > 
->> On 6/28/21 4:36 PM, Kerin Millar wrote:
->>> On Mon, 28 Jun 2021 15:57:30 -0400
->>> slow_speed@att.net wrote:
->>>
->>>> I created a ruleset in iptables and it was saved in
->>>> /etc/iptables.up.rules as expected.  However, when viewing the file, all
->>>> IP addresses had been translated to hostnames.
->>>>
->>>> Why would it ever do such a thing, when I had entered them as IP
->>>> addresses and they would have to be converted to IP addresses anyway?
->>>
->>> Here's how it works. One may supply hostnames to iptables/iptables-restore but they will be resolved at the point that the rule/ruleset is loaded into the kernel. If using `iptables -L` to list the currently loaded ruleset, reverse DNS lookups will be performed upon IP addresses before displaying. This behaviour can be suppressed by also using the -n option. As for `iptables -S` and `iptables-save`, neither of these will perform reverse DNS lookups.
->>>
->>> In summary, it's not at all clear how you ended up with hostnames in your iptables.up.rules file. Can you reduce this phenomonen to a simple, well-defined test case?
->>>
->>
->> Okay, I was incorrect.  The viewing of the file showed just numbers.  It
->> was the iptables -L that caused the misinformation.  It should
->> definitely default to -n.  That is a big issue to the new person in this
->> area.  Bad programming strikes again.
->>
->> Thank you so much for pointing that out.  I will add that to my
->> instructions.
-> 
-> The -L format is deficient in several respects. About the only thing it's good for is displaying counters (with -v), yet iptables-save already does this. My suggestion would be to avoid -L outright. If you want to list rules with iptables instead of iptables-save, the -S option is much more useful.
-> 
-> Also, please use Reply All next time. I am adding the list back to the CC field.
-> 
-Thanks for the Reply All tip.  (This is one of the reasons I hate mail 
-lists.  They make us jump thru unnecessary hoops, when forums are free 
-and so useful; especially for searching.)
 
-By the way, -S is good, but -nL has a very nice layout that is far superior.
+[minor digression]
 
-Thanks again.
+Is iptables-restore truly atomic in *all* cases? Some years ago, I found through experimentation that some rules were 'lost' when restoring more than 25 000 rules. If I placed a COMMIT every 20 000 rules or so, then all rules would be properly loaded. I think COMMITs break atomicity. I tested with 100k to 1M rules. I was comparing the efficiency of iptables-restore with another tool that read from STDIN; the other tool was about 5% more efficient.
