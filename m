@@ -1,68 +1,47 @@
-From: Kerin Millar <kfm@plushkava.net>
-Subject: Re: Reload IPtables
-Date: Tue, 29 Jun 2021 10:10:05 +0100
-Message-ID: <20210629101005.925203afb065a9afa807daad@plushkava.net>
-References: <08f069e3-914f-204a-dfd6-a56271ec1e55.ref@att.net>
-        <08f069e3-914f-204a-dfd6-a56271ec1e55@att.net>
-        <4ac5ff0d-4c6f-c963-f2c5-29154e0df24b@hajes.org>
-        <6430a511-9cb0-183d-ed25-553b5835fa6a@att.net>
-        <877683bf-6ea4-ca61-ba41-5347877d3216@thelounge.net>
-        <d2156e5b-2be9-c0cf-7f5b-aaf8b81769f8@att.net>
-        <f5314629-8a08-3b5f-cfad-53bf13483ec3@hajes.org>
-        <adc28927-724f-2cdb-ca6a-ff39be8de3ba@thelounge.net>
-        <96559e16-e3a6-cefd-6183-1b47f31b9345@hajes.org>
-        <16b55f10-5171-590f-f9d2-209cfaa7555d@thelounge.net>
-        <54e70d0a-0398-16e4-a79e-ec96a8203b22@tana.it>
-        <f0daea91-4d12-1605-e6df-e7f95ba18cac@thelounge.net>
-        <8395d083-022b-f6f7-b2d3-e2a83b48c48a@tana.it>
-        <20210628104310.61bd287ff147a59b12e23533@plushkava.net>
-        <20210628220241.64f9af54@playground>
+From: Psyspy 22 <psyspy2020@gmail.com>
+Subject: Re: libnetfilter_queue: Access conntrack info
+Date: Tue, 29 Jun 2021 08:22:23 -0600
+Message-ID: <CAFqmWq-J8zkO8_nHUh=eS_AyhHJ6kAgPiODXu5wKNQM-d7TRLQ@mail.gmail.com>
+References: <CAFqmWq_4_8ubgpfdEfhhQ=+7YbKCrPp=aTXsixAeYrK5VA+B2w@mail.gmail.com>
+ <YNqDW5tRMVkjrXfC@slk1.local.net> <CAFqmWq-kOQbjQ=tNWGuk=+yOtuoG98cvRueoT5oK_zNHy8Jfvw@mail.gmail.com>
+ <20210629063802.GD24271@breakpoint.cc>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-         h=date:from:to:cc:subject:message-id:in-reply-to:references
-        :mime-version:content-type:content-transfer-encoding; s=fm3; bh=
-        z4y93Lw46VeFgoH3tHbHx6wJdSjXfTHyovL2GbszPhs=; b=JVY35KkRYQVvIg55
-        rz22na6td/PZNKul/LpGxjYsxWbLiST3Af59HJKvQXZ8IMZyjtEEXQBF/1eNEwJC
-        u37TuyIb6pmytiQWGt7oq3xepj04ClhyzyzjYLd9cpXcg3oCUNPbUzWlHUO7YQQY
-        qIKT9YoeY8LQj99elo6Is9qW93GQZro0rixpP7oTKgMssAx+q+psgXBQtGz3+jTA
-        8uZL+snvBcQJULk5pEe8WrAH2cm+gUoe9H0GSQK7Ehe7rLuixGn7gAxcEehH41wW
-        N6xdPzLyax32vUteJ/iilo45Y0x0XT0DfKaSrvGmoNrCc2tCyF4J839+mUWiW+Yq
-        i7WVSA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=z4y93Lw46VeFgoH3tHbHx6wJdSjXfTHyovL2GbszP
-        hs=; b=viUYlmZAGP/z9rqW2SEds5jhuK33uvS90yyfUgffs0blfhXR2KSLQTQpg
-        kWiiv5uPRefaw0wcsk/1u1JW//LLeqXfPV2em6vHjRoZlRPuXyQvY0USMW1BNAlh
-        VqbeYcD7w/inXBupoHbe4jSpKPnM56efLv9n/Wu3AXFmSpbTWEiDpWTMscpwZJCF
-        O/mehUxdJ1BQlT4/r/M/IL51yt4tYTLRZ6yX9BA6vClggWboNDH/YJNQQ8D5x8En
-        meAHmQ8qmXnUy66QEQ42zk6bEnuapgs+BUrDBOrF38lWoOBG0GTsjpwqBLEk920j
-        l7fSK31qcqodY/npBxS8VhpDHIYhg==
-In-Reply-To: <20210628220241.64f9af54@playground>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V7UERpivZQ3ix087h3oQS3Djh5mZ0nojND+xtah4iI4=;
+        b=WlmH0bL7MDjuqoi8Sy4rrthHcGq3z8a3zsKcGaqGK8TAMs1nE8cqJukzrBq8S9YUiF
+         WG/vasTzcobIuum2zemusfoxWi6hiqVdEG2XVhfuT5dlePX77BwrX0VrSwkjpuQ5j4fI
+         Sh73HgjGNm/HHJxkhuyYiXaEU8PiM+YDcBYkDL4kG2tkmPPGpnI6ZzUCjLkIwtTXMh67
+         MQz40HPp+oeZoaL6uNdmKguB5lp4TctLFWzd3moxWT4/cpamjt5Oz4CATd++7Wqgvj3p
+         caCqW4AU2Bumlj9EY9bJdkb004Xqb9WobfgHC1Dcv+D10buRFSyR67AAiNkkAspDlWpo
+         KHLQ==
+In-Reply-To: <20210629063802.GD24271@breakpoint.cc>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
+Content-Transfer-Encoding: 7bit
+To: Florian Westphal <fw@strlen.de>
 Cc: netfilter@vger.kernel.org
 
-On Mon, 28 Jun 2021 22:02:41 -0400
-"Neal P. Murphy" <neal.p.murphy@alum.wpi.edu> wrote:
+Thanks Florian. I added that flag, no dice.
 
-> On Mon, 28 Jun 2021 10:43:10 +0100
-> Kerin Millar <kfm@plushkava.net> wrote:
-> 
-> > Now you benefit from atomicity (the rules will either be committed at once, in full, or not at all) and proper error handling (the exit status value of iptables-restore is meaningful and acted upon). Further, should you prefer to indent the body of the heredoc, you may write <<-EOF, though only leading tab characters will be stripped out.
-> > 
-> 
-> [minor digression]
-> 
-> Is iptables-restore truly atomic in *all* cases? Some years ago, I found through experimentation that some rules were 'lost' when restoring more than 25 000 rules. If I placed a COMMIT every 20 000 rules or so, then all rules would be properly loaded. I think COMMITs break atomicity. I tested with 100k to 1M rules. I was comparing the efficiency of iptables-restore with another tool that read from STDIN; the other tool was about 5% more efficient.
+If  I run the libmnl dump example, it successfully prints all
+conntrack entries. I would assume all the conntrack related kernel
+modules are loaded. I am on 4.1 kernel. I could be missing something.
 
-I believe that you are correct on both counts; at least, as far as iptables-legacy-restore is concerned. My understanding is that iptables-nft-restore should not 'lose' rules because there is an initial parsing stage, after which it conveys the payload as a series of netlink packets to nftables, which is supposed to be immune to this issue. It would be nice to get a confirmation one way or the other from a Netfilter developer.
-
-Until now, I had thought that iptables-nft-restore addressed the issue of committing large batches of rules but, having just conducted a quick test, it does not appear to be the case. While I wasn't able to induce either utility to partially load a ruleset, I found that both fail outright upon pushing the number of rules beyond a certain threshold within a given chain. To my surprise, that threshold appears to be lower in the case of iptables-nft-restore.
-
--- 
-Kerin Millar
+On Tue, Jun 29, 2021 at 12:38 AM Florian Westphal <fw@strlen.de> wrote:
+>
+> Psyspy 22 <psyspy2020@gmail.com> wrote:
+> > Hello Duncan,
+> >
+> > I actually need connmark and other conntrack fields like secmark etc.
+> > I think attr[NFQA_CT] is the correct way to access it but it's empty
+> > in my case.
+> > The libnetfilter_queue example sets connmark but doesn't show a way to
+> > get connmark from the packet.
+>
+> IIRC you need to set NFQA_CFG_F_CONNTRACK in NFQA_CFG_FLAGS when setting
+> up the queue.  The example only sets F_GSO, so no conntrack info is
+> added.
