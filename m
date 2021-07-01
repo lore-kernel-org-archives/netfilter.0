@@ -1,81 +1,46 @@
-From: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
-Subject: Re: Reload IPtables
-Date: Wed, 30 Jun 2021 21:49:38 -0400
-Message-ID: <20210630214938.1396b4a0@playground>
-References: <f5314629-8a08-3b5f-cfad-53bf13483ec3@hajes.org>
-        <adc28927-724f-2cdb-ca6a-ff39be8de3ba@thelounge.net>
-        <96559e16-e3a6-cefd-6183-1b47f31b9345@hajes.org>
-        <16b55f10-5171-590f-f9d2-209cfaa7555d@thelounge.net>
-        <54e70d0a-0398-16e4-a79e-ec96a8203b22@tana.it>
-        <f0daea91-4d12-1605-e6df-e7f95ba18cac@thelounge.net>
-        <8395d083-022b-f6f7-b2d3-e2a83b48c48a@tana.it>
-        <20210628104310.61bd287ff147a59b12e23533@plushkava.net>
-        <20210628220241.64f9af54@playground>
-        <20210629083652.GA10896@salvia>
-        <20210629083718.GA10943@salvia>
+From: Psyspy 22 <psyspy2020@gmail.com>
+Subject: Re: libnetfilter_queue: Access conntrack info
+Date: Thu, 1 Jul 2021 12:13:45 -0600
+Message-ID: <CAFqmWq_UtswKNqexNZaBgi-mDEdZm8QizifhfN84m4N9ay2sMA@mail.gmail.com>
+References: <CAFqmWq_4_8ubgpfdEfhhQ=+7YbKCrPp=aTXsixAeYrK5VA+B2w@mail.gmail.com>
+ <YNqDW5tRMVkjrXfC@slk1.local.net> <CAFqmWq-kOQbjQ=tNWGuk=+yOtuoG98cvRueoT5oK_zNHy8Jfvw@mail.gmail.com>
+ <20210629063802.GD24271@breakpoint.cc> <CAFqmWq-J8zkO8_nHUh=eS_AyhHJ6kAgPiODXu5wKNQM-d7TRLQ@mail.gmail.com>
+ <20210629143821.GF24271@breakpoint.cc>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alum.wpi.edu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=2tsKr9os6qOU2Bx+mURG7jsOC1E9FWXxofTaUx1DEsM=;
- b=PN7SOKVWgPs1UYf7oP3mvBcB0nkFPEUIoZxVjkh8BEvo4a5MiPOIfxfLIhH08nctNvGRmumxmUo8jdBNhPZcmFR/RBnaHLG3Nhiu6jAzOjBa4uAjpEBGbfz+WXeRmYl0ONjFRBjhM9tjlFdKTLHMF35P/RIXC6SA31tiEtJM83c=
-In-Reply-To: <20210629083718.GA10943@salvia>
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=b8+pLWuZmBpuef2Nk7p4Nt8aYOS1o2rhVhIMMlouLh0=;
+        b=t0Mm2adkE9OtIEoZ+x0pjlsel2300cf/+5vtMAQMWAGg45G8CoKNM57UhHEyPfuDhx
+         v6EmWvDkaL5F1sMfygBkepTZyd4WruPWeI4bL9FFoQVKikkYvNVnFj9LUponG5fUasZW
+         VKlhFMXeRMw+HrPvh60jMC76cNR+pC8TrMH+CCKgAisRshHNgYObPcf5VAd9CQyE8wQq
+         WRaeUocH7/o6ifso9JuvzExcCKZ7vHrXjKmc/p85fP3wUW535F/n09EWag4mj7LoyaQS
+         1FmA+0fIMlu8DxSBeINmYA6BSEXX3d4/bWjssRqpb4TVj+uypvUHZqdyh93dbks/zess
+         GR/g==
+In-Reply-To: <20210629143821.GF24271@breakpoint.cc>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: 
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: Florian Westphal <fw@strlen.de>
+Cc: netfilter@vger.kernel.org
 
-On Tue, 29 Jun 2021 10:37:18 +0200
-Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+Maybe I haven't set up iptables rules properly? This is the first rule
+in INPUT table:
+iptables -I INPUT -p udp -m udp --sport 10080 -j NFQUEUE --queue-num 5
+--queue-bypass
 
-> On Mon, Jun 28, 2021 at 10:02:41PM -0400, Neal P. Murphy wrote:
-> > On Mon, 28 Jun 2021 10:43:10 +0100
-> > Kerin Millar <kfm@plushkava.net> wrote:
-> >   
-> > > Now you benefit from atomicity (the rules will either be committed at once, in full, or not at all) and proper error handling (the exit status value of iptables-restore is meaningful and acted upon). Further, should you prefer to indent the body of the heredoc, you may write <<-EOF, though only leading tab characters will be stripped out.
-> > >   
-> > 
-> > [minor digression]
-> > 
-> > Is iptables-restore truly atomic in *all* cases?  
-> 
-> Packets either see the old table or the new table, no intermediate
-> ruleset state is exposed to packet path.
-> 
-> > Some years ago, I found through experimentation that some rules were
-> > 'lost' when restoring more than 25 000 rules.  
-> 
-> Could you specify kernel and userspace versions? Rules are not 'lost'
-> when restoring large rulesets.
+Thanks!
 
-This goes back to late '10, early '11: linux 2.6.35, iptables 1.4.10; possibly even earlier releases. I don't recall trying the experiment since.
-
-> 
-> > If I placed a COMMIT every 20 000 rules or so, then all rules would
-> > be properly loaded. I think COMMITs break atomicity.  
-> 
-> Why are you placing COMMIT in every few rules 20 000 rules?
-
-If I recall correctly, when I attempted to restore/load more than 'N' rules or so back then, a few rules at that 'N' 'boundary' would not be in the final iptables ruleset. IIRC, it didn't matter how quickly or slowly I added the rules. By including a COMMIT every 20k rules or so, all of the rules I loaded would be added, be it 10k or 100k (or more).
-
-There was also a vmalloc failure up around 130k-150k rules.
-
-A couple references:
-  - https://marc.info/?l=netfilter&m=133814281919741&w=2
-  - https://community.smoothwall.org/forum/viewtopic.php?p=292390#p292390
-
-> 
-> > I tested with 100k to 1M rules.  
-> 
-> iptables is handling very large rulesets already.
-> 
-> > I was comparing the efficiency of iptables-restore with another tool
-> > that read from STDIN; the other tool was about 5% more efficient.  
-> 
-> Could you please specify what other tool are you refering to?
-
-The tool is ipbatch (part of Smoothwall Express). It was written because, at least back then, iptables was not able to read from STDIN. Smoothwall Express reads its config/settings files and generates the firewall rules on the fly and pipes them to ipbatch. Also, the rules are generated by function/application, not by table; iptables-restore would not be usable without major changes to the way Smoothwall Express generates its firewall rules.
-
-Neal
+On Tue, Jun 29, 2021 at 8:38 AM Florian Westphal <fw@strlen.de> wrote:
+>
+> Psyspy 22 <psyspy2020@gmail.com> wrote:
+> > Thanks Florian. I added that flag, no dice.
+> >
+> > If  I run the libmnl dump example, it successfully prints all
+> > conntrack entries. I would assume all the conntrack related kernel
+> > modules are loaded. I am on 4.1 kernel. I could be missing something.
+>
+> No idea.  attr[NFQA_CT] is set as expected on 5.12.12 when I enable
+> NFQA_CFG_F_CONNTRACK in example/nf-queue.c
