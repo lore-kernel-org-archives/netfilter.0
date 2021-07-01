@@ -1,49 +1,81 @@
-From: CoD DoC <coddoc37@gmail.com>
-Subject: Strange behavior of the ctdir option
-Date: Wed, 30 Jun 2021 17:38:35 +0300
-Message-ID: <CAHtYmdGHdL98aytRB=YQ3fz3Go5-1h-P+_d6ji4ZEm1x-rQEmg@mail.gmail.com>
+From: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
+Subject: Re: Reload IPtables
+Date: Wed, 30 Jun 2021 21:49:38 -0400
+Message-ID: <20210630214938.1396b4a0@playground>
+References: <f5314629-8a08-3b5f-cfad-53bf13483ec3@hajes.org>
+        <adc28927-724f-2cdb-ca6a-ff39be8de3ba@thelounge.net>
+        <96559e16-e3a6-cefd-6183-1b47f31b9345@hajes.org>
+        <16b55f10-5171-590f-f9d2-209cfaa7555d@thelounge.net>
+        <54e70d0a-0398-16e4-a79e-ec96a8203b22@tana.it>
+        <f0daea91-4d12-1605-e6df-e7f95ba18cac@thelounge.net>
+        <8395d083-022b-f6f7-b2d3-e2a83b48c48a@tana.it>
+        <20210628104310.61bd287ff147a59b12e23533@plushkava.net>
+        <20210628220241.64f9af54@playground>
+        <20210629083652.GA10896@salvia>
+        <20210629083718.GA10943@salvia>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=qx9OB0dETTgYhShRpseZprFIqKu51AdyEPvVErHu1Jc=;
-        b=LzgfyUHEkB9kBSY7p2xozcToYnu9NjfyKKop8gr8vNAkvJQkGc5CJp7S14gf/E3A7S
-         S+8kGvWQ73/6cavR8afVOvLNbWtEFwA7tloE1W5qTtm2ss9YSENuU2EG0pfx6/KNH8iK
-         oz3/IE+pyv+qu7lIm2XQ5SMliK8DzWwdpXQ5cx79e4RhCJwv3rJ/L0Hp9rjHUozVYHNJ
-         1iBzWCjEKD/u+awXTUzcgtMAtQS4IaA04iu595ANepaUeEKLAGdRNyulm6GMWv1jS/tH
-         ltCoQKHpcXJ+QYeGsL3p+Xsu9mZXcDP20/jbY39obEMZZrmWs37gkElKgRPVvf6mSjr4
-         rOBQ==
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alum.wpi.edu;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2tsKr9os6qOU2Bx+mURG7jsOC1E9FWXxofTaUx1DEsM=;
+ b=PN7SOKVWgPs1UYf7oP3mvBcB0nkFPEUIoZxVjkh8BEvo4a5MiPOIfxfLIhH08nctNvGRmumxmUo8jdBNhPZcmFR/RBnaHLG3Nhiu6jAzOjBa4uAjpEBGbfz+WXeRmYl0ONjFRBjhM9tjlFdKTLHMF35P/RIXC6SA31tiEtJM83c=
+In-Reply-To: <20210629083718.GA10943@salvia>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: 
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-Hello to ALL!
+On Tue, 29 Jun 2021 10:37:18 +0200
+Pablo Neira Ayuso <pablo@netfilter.org> wrote:
 
-I'm slightly confused about the values of the --ctdir option.
+> On Mon, Jun 28, 2021 at 10:02:41PM -0400, Neal P. Murphy wrote:
+> > On Mon, 28 Jun 2021 10:43:10 +0100
+> > Kerin Millar <kfm@plushkava.net> wrote:
+> >   
+> > > Now you benefit from atomicity (the rules will either be committed at once, in full, or not at all) and proper error handling (the exit status value of iptables-restore is meaningful and acted upon). Further, should you prefer to indent the body of the heredoc, you may write <<-EOF, though only leading tab characters will be stripped out.
+> > >   
+> > 
+> > [minor digression]
+> > 
+> > Is iptables-restore truly atomic in *all* cases?  
+> 
+> Packets either see the old table or the new table, no intermediate
+> ruleset state is exposed to packet path.
+> 
+> > Some years ago, I found through experimentation that some rules were
+> > 'lost' when restoring more than 25 000 rules.  
+> 
+> Could you specify kernel and userspace versions? Rules are not 'lost'
+> when restoring large rulesets.
 
-If I understand correctly, the ORIGINAL direction is from the
-initiator to the replier, and the REPLY is the other way around.
+This goes back to late '10, early '11: linux 2.6.35, iptables 1.4.10; possibly even earlier releases. I don't recall trying the experiment since.
 
-If so, suppose the following rules:
+> 
+> > If I placed a COMMIT every 20 000 rules or so, then all rules would
+> > be properly loaded. I think COMMITs break atomicity.  
+> 
+> Why are you placing COMMIT in every few rules 20 000 rules?
 
--A INPUT -p tcp -s 1.1.1.1 -d 2.2.2.2 -m conntrack --ctstate NEW
---ctdir ORIGINAL -j LOGMARK
--A INPUT -p tcp -s 1.1.1.1 -d 2.2.2.2 -m conntrack --ctstate NEW
---ctdir ORIGINAL -j DROP
+If I recall correctly, when I attempted to restore/load more than 'N' rules or so back then, a few rules at that 'N' 'boundary' would not be in the final iptables ruleset. IIRC, it didn't matter how quickly or slowly I added the rules. By including a COMMIT every 20k rules or so, all of the rules I loaded would be added, be it 10k or 100k (or more).
 
-Then I send a SYN packet from 1.1.1.1 to 2.2.2.2. I assume this is the
-ORIGINAL direction. So I expect my request to be logged against the
-LOGMARK target and then dropped.
-But nothing happens.
+There was also a vmalloc failure up around 130k-150k rules.
 
-Then I change --ctdir ORIGINAL to --ctdir REPLY and repeat my test.
-Now I see exactly what I expected: dropped connection and LOGMARK
-output. But with the REPLY value of the --ctdir option.
+A couple references:
+  - https://marc.info/?l=netfilter&m=133814281919741&w=2
+  - https://community.smoothwall.org/forum/viewtopic.php?p=292390#p292390
 
-By the way, in the LOGMARK output I see: hook = INPUT ... ctdir =
-ORIGINAL ... ctstate = NEW
-And I agree with that. This is really ORIGINAL direction, not REPLY.
+> 
+> > I tested with 100k to 1M rules.  
+> 
+> iptables is handling very large rulesets already.
+> 
+> > I was comparing the efficiency of iptables-restore with another tool
+> > that read from STDIN; the other tool was about 5% more efficient.  
+> 
+> Could you please specify what other tool are you refering to?
 
-So where am I going wrong?
+The tool is ipbatch (part of Smoothwall Express). It was written because, at least back then, iptables was not able to read from STDIN. Smoothwall Express reads its config/settings files and generates the firewall rules on the fly and pipes them to ipbatch. Also, the rules are generated by function/application, not by table; iptables-restore would not be usable without major changes to the way Smoothwall Express generates its firewall rules.
+
+Neal
