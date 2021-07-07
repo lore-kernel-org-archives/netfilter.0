@@ -1,39 +1,56 @@
 From: Daniel <tech@tootai.net>
-Subject: Redirect all traffic or range of ports to an IP
-Date: Sat, 3 Jul 2021 16:13:50 +0200
-Message-ID: <f6701047-5ad2-2204-9eee-d8c3ca325574@tootai.net>
+Subject: Re: Redirect all traffic or range of ports to an IP
+Date: Wed, 7 Jul 2021 18:35:14 +0200
+Message-ID: <3c300d1c-91cd-9dea-44f1-0130de4f6021@tootai.net>
+References: <f6701047-5ad2-2204-9eee-d8c3ca325574@tootai.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1625321631; bh=MXedrfAQxRB8tTUG99ovHCyfoqNYCrOmSgCR5e9MNOw=;
-        h=To:From:Subject:Date:From;
-        b=dWkv0WZV5ed0sn5phKSJyuh2QfE5PsqlZFUU1Xn5pTJwzPiIgVmFfTSYkb+6gh62e
-         SljN165z3Lghl4kuXp4qzX6FWvpFpCp/jJZNzI4HTm0O4dBL/2q3kZJhd74A3vC5U1
-         gdXuThlVwlfSSvyQ87Tfd0+1QorB6TpFMjcz9iRU=
+        t=1625675715; bh=r01oj76zs6yd3r1ixdCLbFwP6SdFc5RS4d6979tcYag=;
+        h=Subject:From:To:References:Date:In-Reply-To:From;
+        b=P22WtVGG/GQ6wPMOwcAUftiOJwwXMMDzPoIdtLcgioqXxAbi2Ex0w4YqBDcIlmpSH
+         oeLAnofgVgYzNdiphngId1BWEZXn2sX2czPD7N+/s+uKOIUuud6+SVuxVZ4wYM1RUe
+         uX8e5tfB48Y7sDHO8cCWODQy5+6o6AIR6W3fYGCU=
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1625321631; bh=MXedrfAQxRB8tTUG99ovHCyfoqNYCrOmSgCR5e9MNOw=;
-        h=To:From:Subject:Date:From;
-        b=dWkv0WZV5ed0sn5phKSJyuh2QfE5PsqlZFUU1Xn5pTJwzPiIgVmFfTSYkb+6gh62e
-         SljN165z3Lghl4kuXp4qzX6FWvpFpCp/jJZNzI4HTm0O4dBL/2q3kZJhd74A3vC5U1
-         gdXuThlVwlfSSvyQ87Tfd0+1QorB6TpFMjcz9iRU=
+        t=1625675714; bh=r01oj76zs6yd3r1ixdCLbFwP6SdFc5RS4d6979tcYag=;
+        h=Subject:From:To:References:Date:In-Reply-To:From;
+        b=rGxx13DhpTuuepc3pzT/wzXxk6Sx9f3LIIv8IhMlzPeIDs5wfO0MB7LVf+MdkVc7D
+         pDTNy5MOIWoVEh+P4wWQ0pPtcLeCe6oqC2gCU2gMLxGtNq52r445FxBnE+eVCIoh+q
+         tTPi9ycYxFNU/gz09VXSe02BnmTQ8OqiC2UESy70=
+In-Reply-To: <f6701047-5ad2-2204-9eee-d8c3ca325574@tootai.net>
 Content-Language: fr-FR
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"; format="flowed"
+Content-Type: text/plain; charset="utf-8"; format="flowed"
 To: Netfilter list <netfilter@vger.kernel.org>
 
-SGkgbGlzdCwKCkkgZmFjZSBhbiBlcnJvciB3aGlsZSB0cnlpbmcgdG8gcmVkaXJlY3QgYWxsIHRy
-YWZmaWMgdG8gYW4gSVAuIExldMWbIHNheSAKSSB3YW50IHRvIHJlZGlyZWN0IGFsbCBpbmNvbWlu
-dCB1ZHAgdG8gMTAuMTAuMTAuMTAgaW50ZXJuYWwgYWRkcmVzcy4KCk15IHJ1bGVzIGFyZSB3b3Jr
-aW5nIHByZWZlY3RseSB3aGVuIHJlZGlyZWN0aW5nIHVuaXF1ZSBwb3J0cy4gSSB1c2UgCnRob3Nl
-IHJ1bGVzCgokZnd0YWJsZXMgYWRkIGVsZW1lbnQgaXAgbmF0IGZ3ZHRvaXBfdWRwLmV0aDAgeyAk
-c3JjcG9ydCA6ICRteWRhZGRyIH0KJGZ3dGFibGVzIGFkZCBlbGVtZW50IGlwIG5hdCBmd2R0b3Bv
-cnRfdWRwLmV0aDAgeyAkc3JjcG9ydCA6ICRkc3Rwb3J0IH0KCmFuZCB0aGVuCgokZnd0YWJsZXMg
-YWRkIHJ1bGUgaXAgbmF0IHByZXJvdXRpbmcgZG5hdCB1ZHAgZHBvcnQgbWFwIApAZndkdG9pcF91
-ZHAuZXRoMCA6IHVkcCBkcG9ydCBtYXAgQGZ3ZHRvcG9ydF91ZHAuZXRoMAoKSWYgJHNyY3BvcnQ9
-JGRzdHBvcnQ9MS02NTUzNCBJIGdldCAiRXJyb3I6IHZhbHVlIG11c3QgYmUgYSBzaW5nbGV0b24i
-IApmb3IgdGhlICRkc3Rwb3J0IHdoZW4gYWRkaW5nIGVsZW1lbnQuCgpJcyB0aGVyZSBhIHdheSB0
-byAgdXNlIHRoaXMgY29uZmlndXJhdGlvbiB0byByZWRpcmVjdCBhbGwgdHJhZmZpYyB0byBhbiAK
-SVAgb3Igc2hvdWxkIEkgY3JlYXRlIG90aGVyIHJ1bGVzID8gQlRXLCBwcm9ibGVtIGlzIGFsc28g
-ZXhpc3RpbmcgaWYgSSAKd2FudCBybyByZWRpcmVjdCBwb3J0cyBsaWtlIDIwMDAwLTMwMDAwIGZv
-ciBlZyBSVFAuCgpUaGFua3MgZm9yIGFueSBoaW50Ci0tIApEYW5pZWwK
+No one ?
+
+Le 03/07/2021 à 16:13, Daniel a écrit :
+> Hi list,
+> 
+> I face an error while trying to redirect all traffic to an IP. Letś say 
+> I want to redirect all incomint udp to 10.10.10.10 internal address.
+> 
+> My rules are working prefectly when redirecting unique ports. I use 
+> those rules
+> 
+> $fwtables add element ip nat fwdtoip_udp.eth0 { $srcport : $mydaddr }
+> $fwtables add element ip nat fwdtoport_udp.eth0 { $srcport : $dstport }
+> 
+> and then
+> 
+> $fwtables add rule ip nat prerouting dnat udp dport map 
+> @fwdtoip_udp.eth0 : udp dport map @fwdtoport_udp.eth0
+> 
+> If $srcport=$dstport=1-65534 I get "Error: value must be a singleton" 
+> for the $dstport when adding element.
+> 
+> Is there a way to  use this configuration to redirect all traffic to an 
+> IP or should I create other rules ? BTW, problem is also existing if I 
+> want ro redirect ports like 20000-30000 for eg RTP.
+> 
+> Thanks for any hint
+
+-- 
+Daniel
