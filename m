@@ -1,122 +1,82 @@
-From: Eugene Crosser <crosser@average.org>
-Subject: Handle a packet by netfilter after traversing a veth pair
-Date: Tue, 13 Jul 2021 21:14:11 +0200
-Message-ID: <42f01b6d-e2ae-deb6-f4ea-7c755fdd0210@average.org>
+From: Stephen Satchell <list@satchell.net>
+Subject: ip[6]tables implementation of rf_filter
+Date: Sun, 18 Jul 2021 11:25:16 -0700
+Message-ID: <c934e627-af1c-370d-cf3b-c1e45eb4290d@satchell.net>
+Reply-To: list@satchell.net
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="ojelZnwm6riM0axIF2vHyA4YkrLEmWG2L"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=average.org; s=mail;
-        t=1626203664; bh=bLIOTJR3Oya5zPS4T38ncv+PqaWIUnAcGJnDHzCW04Q=;
-        h=To:From:Subject:Date:From;
-        b=HIgsNIUUwgcXrWJcCwuZZNKPKJrTWQ8Zba/81Flf5FD2DUEX5irdocIpI7EWi5B77
-         UCVBP+4ci3UxcJz7fOG3v2Js1q4qf8u8uiHJy+yKgA2r+7NKt2wross8u0cSAqgbyk
-         Rj8BE65JxE0VPI8zCirnlvSS1o4Xwlql3hsSrpBY=
-List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
-
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---ojelZnwm6riM0axIF2vHyA4YkrLEmWG2L
-Content-Type: multipart/mixed; boundary="SyDGp8HTfOwfC4S9FiAW9rcU4htlHS1cN";
- protected-headers="v1"
-From: Eugene Crosser <crosser@average.org>
-To: netfilter@vger.kernel.org
-Message-ID: <42f01b6d-e2ae-deb6-f4ea-7c755fdd0210@average.org>
-Subject: Handle a packet by netfilter after traversing a veth pair
-
---SyDGp8HTfOwfC4S9FiAW9rcU4htlHS1cN
-Content-Type: text/plain; charset=koi8-r
 Content-Language: en-US
-Content-Transfer-Encoding: quoted-printable
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Linux Netfilter Users List <netfilter@vger.kernel.org>
 
-Hello,
+I'm in the process of updating everything in my little to support 
+dual-stack IPv4/IPv6.  The firewall for the bridge between LAN and 
+Internet needs to be updated. A working draft of the firewall generator 
+specification may be found at:
 
-I have a use case when I may want to DNAT different addresses to a potent=
-ially
-_same_ destination address that belongs to _different_ (virtual) hosts th=
-at are
-connected to different VRFs. To achieve that, I plan to route the origina=
-l
-packet to a veth interface leading to the "right" VRF based on the packet=
-'s
-original destination address. As the packet exists the peer of the veth p=
-air,
-(that is enslaved in the VRF), I want to apply DNAT rule in the preroutin=
-g hook.
-"Dnated" destination address may be anything, and may happen to be the sa=
-me in
-different VRFs. This is how it looks:
+> https://www.satchell.net/firewall_v2_specification.txt
 
+for those who need more context understanding my questions. For example, 
+details about the interface names can be found there.
 
-+-------------+        +-------------+
-|   GuestA    |        |   GuestB    |
-| 192.168.1.2 |        | 192.168.1.2 |
-+------|------+        +------|------+
-       | tapA                 | tapB
-+------|------+        +------|------+
-| 192.168.1.1 |        | 192.168.1.1 |
-|    VRF-A    |        |    VRF-B    |
-| 100.64.10.2 |        | 100.64.20.2 |
-+------|------+        +------|------+
-       |                      |
-     vethA                  vethB
+I had a question about using the iptables(8) and ip6tables(8)  extension 
+rp_filter.  Using the shorthand schematic form that is in my firewall 
+generator specification, I think I have the inbound test just fine. I think.
 
-    route:                 route:
-100.64.10.2/32         100.64.20.2/32
-  dev vethA              dev vethB
-            \           /
-             \         /
+> -t raw PREROUTING
+>   -i enp1s0 -m rpfilter --loose --invert -j DROP
 
-        default routing space
+What I'm questioning is whether I have the outbound test also working. 
+My goal is to prevent any packet being sent from my system that has a 
+non-local IP address as the source.  So this is what I thought I would try:
 
+> -t mangle POSTROUTING                            (ip6tables only)
+>   -o enp1s0 -m rpfilter --loose --invert -j DROP
+> -t nat POSTROUTING                               (iptables only)
+>   -o enp1s0 -j MASQUERADE
+>   -o enp1s0 -m rpfilter --loose --invert -j DROP
 
-The problem that I see is that after the packet has traversed the veth, i=
-t
-apparently is not handled by any netfilter hooks at all! I am assuming th=
-at a
-veth pair ought to behave like two physical NICs connected by a crossover=
+In the case of ip6tables, the test would be in the common output path in 
+the mangle table.  In the case of iptables, either the MASQUERADE target 
+would stop processing of the chain, or the source test would come after 
+the packet source address has been updated.  In either case, BCP38 would 
+be effected for all outgoing packets.
 
-Ethernet cable. That is, as the packet sent to one NIC enters from the ot=
-her,
-the system has no knowledge that the packet has visited before, treat it =
-as a
-fresh new packet of unknown origin, and let it pass through the whole sta=
-ck of
-routing and filtering. But I observe different behaviour.
+RATIONALE:  Looking at the packet path diagrams I have found on the 
+Internet, the only common tables for locally generated packets and 
+forwarded packets are:
+      mangle POSTROUTING
+      nat    POSTROUTING
 
-I cannot apply DNAT to the packet _before_ it enters the VRF, because the=
-n
-information needed to chose the right VRF will be lost.
+For IPv6, we aren't supposed to use NAT.  That's why the difference.
 
-My question is - how can I overcome this problem? Is there a way to ensur=
-e that
-after traversing the veth the packet is treated as a new packet? Are ther=
-e other
-tricks, maybe, that would allow configuration as described?
+Now, if I could put the rule in the nat POSTROUTING table for both IPv4 
+and IPv6, then the question becomes moot.
 
-Thank you,
-
-Eugene
+Yes, yes, yes, I know, I should be using nftables(8) so things like this 
+would be easier to deal with.  Ubuntu programs still use iptables(8) at 
+its foundation.  (UFW and OpenVPN are the two examples I know; there may 
+be others.)
 
 
---SyDGp8HTfOwfC4S9FiAW9rcU4htlHS1cN--
+FUTURE ISSUE:
 
---ojelZnwm6riM0axIF2vHyA4YkrLEmWG2L
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+I have the problem of how to handle OpenVPN on IPv6.  Out of the box, 
+OpenVPN (using the Ubuntu script) is IPv4 only.  The OpenVPN version 
+2.4.7, as the script I used to install, has these rules added to the 
+firewall:
 
------BEGIN PGP SIGNATURE-----
+> From /etc/systemd/system/openvpn-iptables.service:
+> -t filter INPUT
+>   -p tcp --dport 443 -j ACCEPT
+> -t filter FORWARD
+>   -s 10.8.0.0/24 -j ACCEPT
+>   -m state --state RELATED,ESTABLISHED -j ACCEPT
+> -t nat POSTROUTING
+>   -s 10.8.0.0/24 -d 10.1.1.0/24 -o enp2s0 -j MASQUERADE
+>   -t nat -A POSTROUTING -s 10.8.0.0/24 ! -d 10.8.0.0/24 -j SNAT --to 76.209.1.165
 
-iQEzBAEBCgAdFiEEnAziRJw3ydIzIkaHfKQHw5GdRYwFAmDt5gMACgkQfKQHw5Gd
-RYzNaQf9FFolrwUsHGHPtT3D48YJGZeZQ3FPGyjbgR4w86fXXh4UNRA2sXsxmfha
-DU5obfQLvlOMDNREaP4Ye2xO+UQrBbhznjwXYdaZjbb4/6WehpRKJscAsQ93Wj73
-9rTfz681Ik68po9Mp1c8Wu+oLzN7wVPYLW4iOEgoKYiknpzQrdZenCWLfDXkzcVP
-F6q1D02o9wP3jrOxqTYT2hVa6RKm/fdAF0iFUh0VRaBAp54YmxR5eIHunUhuKqKs
-qAKQSjSFCjbcDIC1sGHfIorVzxqdvAwzZX5gvLCUTeW2MppVIHFBDmjHt8AoKyRI
-4CxydVOOoWwwAlavjVx/FRN83QRnUg==
-=wRR0
------END PGP SIGNATURE-----
-
---ojelZnwm6riM0axIF2vHyA4YkrLEmWG2L--
+Of course, these are IPv4 rules only, nothing for IPv6.  That's a 
+conundrum for a later time, though.
