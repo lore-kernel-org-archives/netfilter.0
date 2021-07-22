@@ -1,74 +1,45 @@
-From: Stephen Satchell <list@satchell.net>
-Subject: Criticism welcome: nftables rp_filtering in and out
-Date: Wed, 21 Jul 2021 19:42:28 -0700
-Message-ID: <29f40838-4371-2768-fcae-59becd824f4f@satchell.net>
-Reply-To: list@satchell.net
+From: pauloric@contatogs.com.br
+Subject: manual : CONNTRACK EXPRESSIONS
+Date: Thu, 22 Jul 2021 16:57:37 -0300 (BRT)
+Message-ID: <328573485.4.1626983857363.JavaMail.zimbra@contatogs.com.br>
+References: <trinity-08431e16-b4eb-4bb7-8b36-df2084481611-1617212862528@3c-app-gmx-bap62> <20210331214053.GB13699@breakpoint.cc>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
+DKIM-Filter: OpenDKIM Filter v2.10.3 mercurio.contatogs.com.br 7D4FD4005B
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=contatogs.com.br;
+        s=547D7A06-2322-11E9-835A-A37390E63B7D; t=1626983860;
+        bh=U6/x5QU/MRvHaWvkyte92w3GoFNkPBOOFiqVVXCcbN0=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=c6btFX0pgT9RpgxkpGdXKyRLWZolUW7QeWzQ+ISEqchboTm3jXrGBQKl+OCpphkGz
+         UeSWQDncQ7hLvM1aXYjAkY9264VHHYsTAmG2qL/0iqi3AjLKwRBglt2uR6A830GSSz
+         GFdhv5wtXHTy9jQgSLjluhqNsUhZaxqWm8RmbOI+Nupgkh4cYdIDAnxjs5U22ZAGYw
+         syMEwfeHiphgLX+nLAdTA+Y9v7xpVHel14Izf2wcCH1O6MHF37kfOUSrIeFSuul/lr
+         h1xwhsdJd8qakzpRjodHWJwhYEkkLBmLX6xkotBknA5w/TAvBNK8C6B+wbvUL7BNvL
+         LfqKFbbBBYadA==
+In-Reply-To: <20210331214053.GB13699@breakpoint.cc>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Linux Netfilter Users List <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Goal: to block the transfer of packets with bogus source addresses, in 
-and out.  Also, block non-unicast packets out to the Internet.  "enp1s0" 
-is the Internet uplink interface, "enp2s0" is the LAN interface.table
+Hi
 
-raw/PREROUTING is the first table/chain an incoming packet takes from 
-the Internet or from the LAN.  The mangle/POSTROUTING is the first 
-table/chain hit from either forwarding or from locally generated packets.
+Near  CONNTRACK EXPRESSIONS at manual I think that should be good to insert something like:
 
-If the system in which this nftables implementation were living had 
-uncontrolled users, I'd also put in some fences in raw/OUTPUT.  Not the 
-case, in this instance.
+ct {state | direction | status | mark | expiration | helper | label}
+....
+ct count [over]    <-------
+
+and just a little bellow it has already an example of it.
+...
+filter input tcp dport 22 meter test { ip saddr ct count over 2 } reject
+
+Maybe a include at Table 55. Conntrack expressions  too ??? <----
+
+Could it be inserted at https://wiki.nftables.org/wiki-nftables/index.php/Quick_reference-nftables_in_10_minutes#Ct    ???
+
+best regards
 
 
-> inet raw {
-> 	chain PREROUTING {
-> 		type filter hook prerouting priority mangle; policy accept;
-> 		
-> 		iifname "enp1s0" fib saddr type != unicast drop
-> 		fib saddr oif 0 drop
-> 	}
-> 
-> 	chain INPUT {
-> 		type filter hook input priority mangle; policy accept;
-> 	}
-> 
-> 	chain FORWARD {
-> 		type filter hook forward priority mangle; policy accept;
-> 	}
-> 
-> 	chain OUTPUT {
-> 		type route hook output priority mangle; policy accept;
-> 	}
-> 
-> 	chain POSTROUTING {
-> 		type filter hook postrouting priority mangle; policy accept;
-> 	}
-> }
-> table inet mangle {
-> 	chain PREROUTING {
-> 		type filter hook prerouting priority mangle; policy accept;
-> 	}
-> 
-> 	chain INPUT {
-> 		type filter hook input priority mangle; policy accept;
-> 	}
-> 
-> 	chain FORWARD {
-> 		type filter hook forward priority mangle; policy accept;
-> 	}
-> 
-> 	chain OUTPUT {
-> 		type route hook output priority mangle; policy accept;
-> 	}
-> 
-> 	chain POSTROUTING {
-> 		type filter hook postrouting priority mangle; policy accept;
-> 		
-> 		oifname "enp1s0" fib saddr type != unicast drop
-> 		fib saddr oif 0 drop
-> 	}
-> }
+-- 
+Paulo Ricardo Bruck consultor 
