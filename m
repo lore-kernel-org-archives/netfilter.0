@@ -1,48 +1,61 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: manual : CONNTRACK EXPRESSIONS
-Date: Fri, 23 Jul 2021 17:00:43 +0200
-Message-ID: <20210723150043.GA16034@salvia>
-References: <trinity-08431e16-b4eb-4bb7-8b36-df2084481611-1617212862528@3c-app-gmx-bap62>
- <20210331214053.GB13699@breakpoint.cc>
- <328573485.4.1626983857363.JavaMail.zimbra@contatogs.com.br>
+From: Stephen Satchell <list@satchell.net>
+Subject: OK, IPv4 vs IPv6 is driving me crazy
+Date: Fri, 23 Jul 2021 08:09:31 -0700
+Message-ID: <957e7c3e-1494-1688-8074-d0ae68716a29@satchell.net>
+Reply-To: list@satchell.net
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <328573485.4.1626983857363.JavaMail.zimbra@contatogs.com.br>
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: pauloric@contatogs.com.br
-Cc: netfilter@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Language: en-US
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Hi,
+At one point, a member here -- when asked what the difference in 
+defining rules in nftables between the two systems -- said "they are the 
+same."
 
-On Thu, Jul 22, 2021 at 04:57:37PM -0300, pauloric@contatogs.com.br wrote:
-> Hi
+As I read the documentation on wiki.nftables.org:  NO!
+
+The hooker here is the requirement thatt IPv6 header examination 
+requires "nexthdr" to examine tcp, udp, and icmp packets.  How about 
+other protocols: do I need to do something like this?
+
+> nexthdr inet protocol {gre, esp, ah} jump other_protocols
+
+If this is the case, than the "inet" combined table is useless, as my 
+filters will need to be in separate "ip" and "ip6" tables.
+
+Fortunately, I'm building a parameter-based firewall generator, so 
+details like this can be hidden from the person specifying the pinholes 
+for the firewall, if this is the case.
+
+Or does nft(8) do the smart thing and, for IPv6, put the "nexthop" in 
+the v6 rules for you?
+
+Maybe this excerpt from wiki.nftables.org answers my question:
+
+> inet
+> Tables of this family see both IPv4 and IPv6 traffic/packets, simplifying dual stack support.
 > 
-> Near  CONNTRACK EXPRESSIONS at manual I think that should be good to insert something like:
+> Within a table of inet family, both IPv4 and IPv6 packets traverse the same rules. Rules for IPv4 packets don't affect IPv6 packets. Rules for both L3 protocols affect both.
 > 
-> ct {state | direction | status | mark | expiration | helper | label}
-> ....
-> ct count [over]    <------->
+> Examples:
 > 
-> and just a little bellow it has already an example of it.
-> ...
-> filter input tcp dport 22 meter test { ip saddr ct count over 2 } reject
+> # This rule affects only IPv4 packets:
+> add rule inet filter input ip saddr 1.1.1.1 counter accept
 > 
-> Maybe a include at Table 55. Conntrack expressions  too ??? <----
+> # This rule affects only IPv6 packets:
+> add rule inet filter input ip6 daddr fe00::2 counter accept
+> 
+> # These rules affect both IPv4 and IPv6 packets:
+> add rule inet filter input ct state established,related counter accept
+> add rule inet filter input udp dport 53 accept
 
-Since 0.9.7, manpage contains a reference to 'ct count'.
+The thing is, the specification of "inet" is shorthand for inserting the 
+same rule into two tables, "ip" and "ip6".  So, if I'm constructing a 
+table I need to separate the "inet" table into two separate tables, "ip" 
+and "ip6".
 
-There is also an example usage:
+Someone please disabuse me of any incorrect notions.
 
-       restrict the number of parallel connections to a server.
-
-           nft add set filter ssh_flood '{ type ipv4_addr; flags dynamic; }'
-           nft add rule filter input tcp dport 22 add @ssh_flood '{ ip saddr ct count over 2 }' reject
-
-> Could it be inserted at https://wiki.nftables.org/wiki-nftables/index.php/Quick_reference-nftables_in_10_minutes#Ct    ???
-
-Updated.
-
-Thanks
