@@ -1,57 +1,104 @@
-From: Jozsef Kadlecsik <kadlec@netfilter.org>
-Subject: [ANNOUNCE] ipset 7.13 released
-Date: Tue, 27 Jul 2021 12:35:16 +0200 (CEST)
-Message-ID: <f5d9071-7558-17a-9cd1-6ac0922710@netfilter.org>
+From: Tom Yan <tom.ty89@gmail.com>
+Subject: [nft] Regarding `tcp flags` (and a potential bug)
+Date: Tue, 27 Jul 2021 19:18:55 +0800
+Message-ID: <CAGnHSEkt4xLAO_T9KNw2xGjjvC4y=E0LjX-iAACUktuCy0J7gw@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=1JX+ZuxpFYJrHa2C/X3TLcDrsbZOOIKz4FHeTxuU2/k=;
+        b=kwk6OU2heV4rRnyasqjIsQ69eFLv9M2vvZ/jDt4lHvD3Fk+UiOn86sH7RCKRG8tfN9
+         sNMwFlJOWbFA6scJNdLHO2aq0jKBABLAGIBl63VEefqDwZHaTUFvpg5Z46qqeT3b8NmN
+         qncw1cg/2hufOVdC3Dl2I4FjX9eZmR9W+IhxCZEbx4ZJ5Qta5Fli0jQGTsc6hiDyigQF
+         M682vwa6AajPtVVPtQSOagCd6yI0W3uk3xkKO63jBLaTSHNMOnIp+7VSaME16mKe8EE+
+         7uckdGSvCJpWV2ps6cFQ/a6apUKsd69qg29yJq4zAo50CSg6CkpUJ8HUnPQf4wEunuEJ
+         XocQ==
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Hi,
+Hi all,
 
-I'm happy to announce ipset 7.13 - 7.12 was released but not announced due 
-to additional fixes required in two patches.
+I'm a bit uncertain how `tcp flags` works exactly. I once thought `tcp
+flags syn` checks whether "syn and only syn is set", but after tests,
+it looks more like it checks only whether "syn is set" (and it appears
+that the right expression for the former is `tcp flags == syn`):
 
-Thanks to Pablo for the ipset to nftables translation infrastructure!
+# nft add rule meh tcp_flags 'tcp flags syn'
+# nft add rule meh tcp_flags 'tcp flags ! syn'
+# nft add rule meh tcp_flags 'tcp flags == syn'
+# nft add rule meh tcp_flags 'tcp flags != syn'
+# nft list table meh
+table ip meh {
+    chain tcp_flags {
+        tcp flags syn
+        tcp flags ! syn
+        tcp flags == syn
+        tcp flags != syn
+    }
+}
 
-Userspace changes:
-7.13
-  - When parsing protocols by number, do not check it in /etc/protocols.
-  - Add missing hunk to patch "Allow specifying protocols by number"
+Then I test the above respectively with a flag mask:
 
-7.12
-  - Allow specifying protocols by number (Haw Loeung)
-  - Fix example in ipset.8 manpage discovered by Pablo Neira Ayuso.
-  - tests: add tests ipset to nftables (Pablo Neira Ayuso)
-  - add ipset to nftables translation infrastructure (Pablo Neira Ayuso)
-  - lib: Detach restore routine from parser (Pablo Neira Ayuso)
-  - lib: split parser from command execution (Pablo Neira Ayuso)
-  - Fix patch "Parse port before trying by service name"
+# nft add rule meh tcp_flags 'tcp flags & (fin | syn | rst | ack) syn'
+# nft add rule meh tcp_flags 'tcp flags & (fin | syn | rst | ack) ! syn'
+# nft add rule meh tcp_flags 'tcp flags & (fin | syn | rst | ack) == syn'
+# nft add rule meh tcp_flags 'tcp flags & (fin | syn | rst | ack) != syn'
+# nft list table meh
+table ip meh {
+    chain tcp_flags {
+        tcp flags & (fin | syn | rst | ack) syn
+        tcp flags & (fin | syn | rst | ack) ! syn
+        tcp flags syn / fin,syn,rst,ack
+        tcp flags syn / fin,syn,rst,ack
+    }
+}
 
-Kernel part changes:
-7.13
-  - Limit the maximal range of consecutive elements to add/delete fix
+I don't suppose the mask in the first two rules would matter. And with
+`tcp flags syn / fin,syn,rst,ack`, I assume it would be false when
+"syn is cleared and/or any/all of fin/rst/ack is/are set"?
 
-7.12
-  - Limit the maximal range of consecutive elements to add/delete
-  - Backport "netfilter: use nfnetlink_unicast()"
-  - Backport "netfilter: nfnetlink: consolidate callback type"
-  - Backport "netfilter: nfnetlink: add struct nfnl_info and
-    pass it to callbacks"
-  - Backport "netfilter: add helper function to set up the
-    nfnetlink header and use it"
+Also, as you can see, for the last two rules, `nft` interpreted them
+as an identical rule, which I assume to be a bug. These does NOT seem
+to workaround it either:
 
-You can download the source code of ipset from:
-        http://ipset.netfilter.org
-        ftp://ftp.netfilter.org/pub/ipset/
-        git://git.netfilter.org/ipset.git
+# nft flush chain meh tcp_flags
+# nft add rule meh tcp_flags 'tcp flags == syn / fin,syn,rst,ack'
+# nft add rule meh tcp_flags 'tcp flags != syn / fin,syn,rst,ack'
+# nft list table meh
+table ip meh {
+    chain tcp_flags {
+        tcp flags syn / fin,syn,rst,ack
+        tcp flags syn / fin,syn,rst,ack
+    }
+}
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
-PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+I'm not sure if `! --syn` in iptables (legacy) is affected by this as
+well. Anyway, I'm doing the following for now as a workaround:
+
+# nft flush chain meh tcp_flags
+# nft add rule meh tcp_flags 'tcp flags ! syn reject with tcp reset'
+# nft add rule meh tcp_flags 'tcp flags { fin, rst, ack } reject with tcp reset'
+# nft list table meh
+table ip meh {
+    chain tcp_flags {
+        tcp flags ! syn reject with tcp reset
+        # syn: 1, other bits: not checked
+        tcp flags { fin, rst, ack } reject with tcp reset
+        # syn: 1, fin: 0, rst: 0, ack: 0, other bits: not checked
+        ct state != invalid accept
+    }
+}
+
+Are the comments in above correct? Are any of the assumptions in this
+email incorrect?
+
+As a side question, is it even possible that any packet will be
+considered `invalid` with (syn: 1, fin: 0, rst: 0, ack: 0)?
+
+Thanks in advance!
+
+Regards,
+Tom
