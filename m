@@ -1,34 +1,37 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [nft] Regarding `tcp flags` (and a potential bug)
-Date: Tue, 27 Jul 2021 23:11:16 +0200
-Message-ID: <20210727211116.GA13897@salvia>
-References: <CAGnHSEkt4xLAO_T9KNw2xGjjvC4y=E0LjX-iAACUktuCy0J7gw@mail.gmail.com>
- <CAGnHSEncHuO2BduzGx1L9eVtAozdGb-XabQyrS7S+CO2swa1dw@mail.gmail.com>
+From: Jan Engelhardt <jengelh@inai.de>
+Subject: Re: [ANNOUNCE] ipset 7.13 released
+Date: Wed, 28 Jul 2021 13:16:33 +0200 (CEST)
+Message-ID: <2233nn0-11ns-4o5s-r629-n3n7p0q7r223@vanv.qr>
+References: <f5d9071-7558-17a-9cd1-6ac0922710@netfilter.org>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAGnHSEncHuO2BduzGx1L9eVtAozdGb-XabQyrS7S+CO2swa1dw@mail.gmail.com>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <f5d9071-7558-17a-9cd1-6ac0922710@netfilter.org>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Tom Yan <tom.ty89@gmail.com>
+To: Jozsef Kadlecsik <kadlec@netfilter.org>
 Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-On Tue, Jul 27, 2021 at 10:52:39PM +0800, Tom Yan wrote:
-> Just noticed something that is even worse:
-> 
-> # nft add rule meh tcp_flags 'tcp flags { fin, rst, ack }'
-> # nft add rule meh tcp_flags 'tcp flags == { fin, rst, ack }'
-> # nft add rule meh tcp_flags 'tcp flags & ( fin | rst | ack ) != 0'
-> # nft add rule meh tcp_flags 'tcp flags & ( fin | rst | ack ) == 0'
-> # nft list table meh
-> table ip meh {
->     chain tcp_flags {
->         tcp flags { fin, rst, ack }
->         tcp flags { fin, rst, ack }
->         tcp flags fin,rst,ack
->         tcp flags ! fin,rst,ack
->     }
-> }
+On Tuesday 2021-07-27 12:35, Jozsef Kadlecsik wrote:
+>
+>I'm happy to announce ipset 7.13 - 7.12 was released but not announced due 
+>to additional fixes required in two patches.
 
-Could you develop the issue you're seeing here?
+Did you really try building that?
+
+[   19s] Making all in src
+[   19s] make[2]: Entering directory '/home/abuild/rpmbuild/BUILD/ipset-7.13/src'
+[   19s] gcc -DHAVE_CONFIG_H -I. -I..    -I../include  -std=gnu99  -O2 -DNDEBUG -O2 -Wall -D_FORTIFY_SOURCE=2 -fstack-protector-strong -funwind-tables -fasynchr
+onous-unwind-tables -fstack-clash-protection -Werror=return-type  -g -c -o ipset.o ipset.c
+[   19s] /bin/sh ../libtool  --tag=CC   --mode=link gcc -std=gnu99  -O2 -DNDEBUG -O2 -Wall -D_FORTIFY_SOURCE=2 -fstack-protector-strong -funwind-tables -fasynch
+ronous-unwind-tables -fstack-clash-protection -Werror=return-type  -g   -o ipset ipset.o ../lib/libipset.la
+[   19s] libtool: link: gcc -std=gnu99 -O2 -DNDEBUG -O2 -Wall -D_FORTIFY_SOURCE=2 -fstack-protector-strong -funwind-tables -fasynchronous-unwind-tables -fstack-
+clash-protection -Werror=return-type -g -o .libs/ipset ipset.o  ../lib/.libs/libipset.so -lmnl -ldl -Wl,-rpath -Wl,/usr/lib64
+[   19s] /usr/lib64/gcc/x86_64-suse-linux/11/../../../../x86_64-suse-linux/bin/ld: ipset.o: in function `main':
+[   19s] /home/abuild/rpmbuild/BUILD/ipset-7.13/src/ipset.c:35: undefined reference to `ipset_xlate_argv'
+[   19s] collect2: error: ld returned 1 exit status
+
+abuild@a4:~/rpmbuild/BUILD/ipset-7.13> readelf -aW lib/.libs/libipset.so.13.2.0 | grep ipset_xlate_argv
+   199: 0000000000019c40  4361 FUNC    LOCAL  DEFAULT   15 ipset_xlate_argv
+
+Function not exported, hence link failure.
