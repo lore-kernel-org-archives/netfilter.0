@@ -1,49 +1,95 @@
-From: Jozsef Kadlecsik <kadlec@netfilter.org>
-Subject: Re: [ANNOUNCE] ipset 7.13 released
-Date: Wed, 28 Jul 2021 14:44:10 +0200 (CEST)
-Message-ID: <fa47f565-f7ea-1b98-718a-6c4251e1cdf@netfilter.org>
-References: <f5d9071-7558-17a-9cd1-6ac0922710@netfilter.org> <2233nn0-11ns-4o5s-r629-n3n7p0q7r223@vanv.qr>
+From: Turritopsis Dohrnii Teo En Ming <ceo@teo-en-ming-corp.com>
+Subject: How to restrict Fortigate firewall WAN-side GUI to certain IP
+ addresses (Untested CLI commands)
+Date: Wed, 28 Jul 2021 21:09:21 +0800
+Message-ID: <de6d4f8002102732ef96dbb0000be744@teo-en-ming-corp.com>
+Reply-To: ceo@teo-en-ming-corp.com
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <2233nn0-11ns-4o5s-r629-n3n7p0q7r223@vanv.qr>
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@inai.de>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
+        teo-en-ming-corp.com; h=content-transfer-encoding:content-type
+        :organization:message-id:user-agent:reply-to:subject:to:from
+        :date:mime-version; s=dkim; t=1627477761; x=1630069762; bh=M1Feb
+        hWZu7fBdbbNRawgQ2fbkzlinS+coovLbR4V+Zk=; b=ua4mwRj0nfFl1NsowOlmP
+        v/9XEFic1ThLrcG8JgnpAfolXrPQOsPs6HsEfZNgV+NUiUerxbbs9ksRSNgSi8os
+        ZYrhX0IT3+uZrRVEcaWzzIEBxsUrIVrj1+SdhDg+j1vg0rq/NkfZRNGKjQTfy4MQ
+        k7xSXAEdOu5Sk+aBxwi0W8FHmaBR9oIA/aLF52P58PigBvWHgKRZNMBes+yAU39G
+        D/AsfLPLSNm8m3MznTgTXryHvDTtZf3gAfHBFo2LIsfHH/83mkaBayPRKpB2CYzx
+        bZaGMY4YN3OrLfQj5lv7mzt/zLUqyhsDMM5AgaKvnugR0IGkwSx5j9XfdHOIZWUu
+        A==
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Wed, 28 Jul 2021, Jan Engelhardt wrote:
+Subject: How to restrict Fortigate firewall WAN-side GUI to certain IP 
+addresses (Untested CLI commands)
 
-> On Tuesday 2021-07-27 12:35, Jozsef Kadlecsik wrote:
-> >
-> >I'm happy to announce ipset 7.13 - 7.12 was released but not announced due 
-> >to additional fixes required in two patches.
-> 
-> Did you really try building that?
-> 
-> [   19s] Making all in src
-> [   19s] make[2]: Entering directory '/home/abuild/rpmbuild/BUILD/ipset-7.13/src'
-> [   19s] gcc -DHAVE_CONFIG_H -I. -I..    -I../include  -std=gnu99  -O2 -DNDEBUG -O2 -Wall -D_FORTIFY_SOURCE=2 -fstack-protector-strong -funwind-tables -fasynchr
-> onous-unwind-tables -fstack-clash-protection -Werror=return-type  -g -c -o ipset.o ipset.c
-> [   19s] /bin/sh ../libtool  --tag=CC   --mode=link gcc -std=gnu99  -O2 -DNDEBUG -O2 -Wall -D_FORTIFY_SOURCE=2 -fstack-protector-strong -funwind-tables -fasynch
-> ronous-unwind-tables -fstack-clash-protection -Werror=return-type  -g   -o ipset ipset.o ../lib/libipset.la
-> [   19s] libtool: link: gcc -std=gnu99 -O2 -DNDEBUG -O2 -Wall -D_FORTIFY_SOURCE=2 -fstack-protector-strong -funwind-tables -fasynchronous-unwind-tables -fstack-
-> clash-protection -Werror=return-type -g -o .libs/ipset ipset.o  ../lib/.libs/libipset.so -lmnl -ldl -Wl,-rpath -Wl,/usr/lib64
-> [   19s] /usr/lib64/gcc/x86_64-suse-linux/11/../../../../x86_64-suse-linux/bin/ld: ipset.o: in function `main':
-> [   19s] /home/abuild/rpmbuild/BUILD/ipset-7.13/src/ipset.c:35: undefined reference to `ipset_xlate_argv'
-> [   19s] collect2: error: ld returned 1 exit status
-> 
-> abuild@a4:~/rpmbuild/BUILD/ipset-7.13> readelf -aW lib/.libs/libipset.so.13.2.0 | grep ipset_xlate_argv
->    199: 0000000000019c40  4361 FUNC    LOCAL  DEFAULT   15 ipset_xlate_argv
-> 
-> Function not exported, hence link failure.
+Good day from Singapore,
 
-Ohh right, got it. I'm going to release the next version today. 
+Fortigate firewall appliances are based on Linux.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
-PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+I came up with the following CLI commands after studying an existing 
+Fortigate 60F firewall configuration. These are untested CLI commands. 
+Use them at your own risk!
+The objective is to restrict Fortigate firewall WAN-side GUI to certain 
+IP addresses.
+
+config firewall address
+     edit "SKYNET_1"
+	set subnet 1.2.3.4 255.255.255.255
+     next
+
+     edit "SKYNET_2"
+	set subnet 5.6.7.8 255.255.255.255
+     next
+
+config firewall addrgrp
+     edit "SKYNET"
+         set member "SKYNET_1" "SKYNET_2"
+     next
+
+config firewall local-in-policy
+     edit 1
+	set intf "wan1"
+	set srcaddr "SKYNET"
+	set dstaddr "all"
+	set action accept
+	set service "Fortigate_HTTPS" "SSH"
+	set schedule "always"
+     next
+
+Mr. Turritopsis Dohrnii Teo En Ming, 43 years old as of 28 July 2021, is 
+a TARGETED INDIVIDUAL living in Singapore. He is an IT Consultant with a 
+System Integrator (SI)/computer firm in Singapore. He is an IT 
+enthusiast.
+
+
+
+
+
+-- 
+-----BEGIN EMAIL SIGNATURE-----
+
+The Gospel for all Targeted Individuals (TIs):
+
+[The New York Times] Microwave Weapons Are Prime Suspect in Ills of
+U.S. Embassy Workers
+
+Link:
+https://www.nytimes.com/2018/09/01/science/sonic-attack-cuba-microwave.html
+
+********************************************************************************************
+
+Singaporean Targeted Individual Mr. Turritopsis Dohrnii Teo En Ming's
+Academic Qualifications as at 14 Feb 2019 and refugee seeking attempts
+at the United Nations Refugee Agency Bangkok (21 Mar 2017), in Taiwan
+(5 Aug 2019) and Australia (25 Dec 2019 to 9 Jan 2020):
+
+[1] https://tdtemcerts.wordpress.com/
+
+[2] https://tdtemcerts.blogspot.sg/
+
+[3] https://www.scribd.com/user/270125049/Teo-En-Ming
+
+-----END EMAIL SIGNATURE-----
