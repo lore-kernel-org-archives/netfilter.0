@@ -1,32 +1,33 @@
-From: =?UTF-8?Q?St=C3=A9phane_Charette?= <stephanecharette@gmail.com>
-Subject: which example to use?
-Date: Mon, 9 Aug 2021 14:48:36 -0700
-Message-ID: <CA+HxBUKWTvC4u_xFmdF34BH1kEr9aSmDawujF9aXe=a3eTekFQ@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@netfilter.org>
+Subject: [ANNOUNCE] ipset 7.15 released
+Date: Tue, 10 Aug 2021 11:20:51 +0200 (CEST)
+Message-ID: <37635e40-d279-8f10-a3d1-c33d36923836@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to
-         :content-transfer-encoding;
-        bh=zzid1vs4cyQg8Otle0hq8g3uM+ZwBNySSQXJy3x3HVo=;
-        b=DC7Ho+ccPdS+iaObWYxF+a6GGmAqtOv+awv1ZvPP6wAEjOQRbbdOCsvq40tQX33gWf
-         19TDzEgI2UETYUJsN1Gyj3iDfARvX7Wp0dLcYI0PUOBtYKHQ5k1hV4Rkm6tj5FR4GYw6
-         8oGHVmPxHV0dOX39h1X0YkA8d0A0nQCXua8sinN8JikAzAOT3TBoYbhNG1yAQUhD46Lz
-         VUnPGJhE4WoKHgnQwo/nF2GPLFpzw/acZz55S9KzHp1mJ+R2UOhVudQ2EBH2BgXskMwv
-         PLGhDyBmFL/aRjOEKHnpq0wNGgTyHHEMZEsu1CHk/vHcHZRrVJu70mYzSMzJYXUHGxt3
-         iblg==
+Return-path: <netfilter-devel-owner@vger.kernel.org>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-I'm looking through the examples trying to figure out what they do.
-Which one should I be using to get a callback when an interface goes
-up/down, or when an ip address changes?
+Hi,
 
-(Would be nice if there was a readme in the examples folder with maybe
-just 1 line explaining what the various samples are attempting to do.)
+The new ipset 7.15 release contains a single fix against the previous 
+version: a condition was wrongly placed in the hash:ip,port,net kernel 
+module. Please upgrade to the new release.
 
-Thanks,
+Kernel part changes:
+  - netfilter: ipset: Fix maximal range check in hash_ipportnet4_uadt() 
+    (Nathan Chancellor)
 
-St=C3=A9phane Charette
+You can download the source code of ipset from:
+        https://ipset.netfilter.org
+        ftp://ftp.netfilter.org/pub/ipset/
+        git://git.netfilter.org/ipset.git
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
