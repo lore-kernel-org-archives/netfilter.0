@@ -1,71 +1,69 @@
-From: Fatih USTA <fatihusta86@gmail.com>
+From: =?UTF-8?B?Qmxhxb5laiBLcmFqxYjDoWs=?= <blazej.krajnak@gmail.com>
 Subject: Re: ulogd packet based logging with CT info
-Date: Tue, 17 Aug 2021 18:05:11 +0300
-Message-ID: <CAN_K0LQESjR-g02cebseiNkoxMEf28cgcEt8eJpOJcWsVKpD9w@mail.gmail.com>
+Date: Tue, 17 Aug 2021 17:06:50 +0200
+Message-ID: <CAMEa=f=mnxifQkZ326dSAJYM_BMB3aLwevWvqfc18+Bp1jt7XQ@mail.gmail.com>
 References: <CAMEa=f=5g4rE42ii+HLXpiJ9LQshoVwfVfaGcEqrsSsXsgmh=A@mail.gmail.com>
  <20210815143118.GA15248@salvia> <CAMEa=fkU4sJjtPHkJ-ZvPOUtnZtOUJmfSqMy+Q4CKf4Lqdde4Q@mail.gmail.com>
- <CAMEa=f=nzCzM-9a5B0VEkjN5zXgCTqobGe-sgN2K0G_5QgjdAQ@mail.gmail.com>
+ <CAMEa=f=nzCzM-9a5B0VEkjN5zXgCTqobGe-sgN2K0G_5QgjdAQ@mail.gmail.com> <CAN_K0LQESjR-g02cebseiNkoxMEf28cgcEt8eJpOJcWsVKpD9w@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=vKVZUo7c1YadR3pTI3fXHdPy5SPB1IOg03+JWKXoOQI=;
-        b=X8Dj9uH3bDR8NQeDgVBrbJCErCPxnJzesRZw16WqM7dmuq/qGtYtKgcJ5Yi8jJcQSu
-         oLPvVAfnPeeLxc3NA6UhoEKFIy2koN27vBnHKi8PnmbIO1MOnBfevpvDs2jXGPdEZl5x
-         rDJLU4PcVC3MMEKzup8o69uMhBxp3J2uPanxbYOwUzLOgWmDljBfZIA4GwqM5rds/LmK
-         4Tq1WM8IlxFx/IYYrm33KKJ1RlrpZfX4ucNEjGEQMNov/gZRmC1zBi+NUKiVGS6RdxPL
-         k/FvhpbUJPG05BqQl4lHIQrSVLToxnBdD2yAeJ84ZRLkpnVsuHmoaXOun0D2y4OdHXld
-         uzUA==
-In-Reply-To: <CAMEa=f=nzCzM-9a5B0VEkjN5zXgCTqobGe-sgN2K0G_5QgjdAQ@mail.gmail.com>
+        bh=Tm9h/pTf+3uPLThbh1ejiDyCBBQPuy5SibC/P+hcMcg=;
+        b=ckq4EPhONvqZLlQFFvreQXv7mSbZY7GhquKYrw2KoGXpDp4BgRdoNBp1jaBQZ+zK6b
+         WsB+n1voBIQOUWBG+qfrxwLhUHyKOpU0V3cGAwRKC6qhUZ/VZzLKokzIsupEZj5lKEWi
+         R7V9Ygvoa1FcAbrCQ6qO90bGpGfmcb/6/OWBF9VEFOk0yE0AHsSJm/EEjRUPsYzg1Wky
+         amYRnUyDppI0tadf1P7f3qyeU7d35HjqB6j7mDtaVGwKz5PUSj0yMP9OkQ7HDj8z1hY7
+         /JWUkvJ3jNIFpTkphQVTCF7cWLd9tCeP1Rg2pDSdprwYJq28qy8KDpq+O8hCI6CU3Asp
+         KDFw==
+In-Reply-To: <CAN_K0LQESjR-g02cebseiNkoxMEf28cgcEt8eJpOJcWsVKpD9w@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: =?UTF-8?B?Qmxhxb5laiBLcmFqxYjDoWs=?= <blazej.krajnak@gmail.com>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Fatih USTA <fatihusta86@gmail.com>
 Cc: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter@vger.kernel.org
 
-0
-Hi
-Did you enable sysctl parameters.
+ut 17. 8. 2021 o 17:05 Fatih USTA <fatihusta86@gmail.com> nap=C3=ADsal(a):
+> Hi
+> Did you enable sysctl parameters.
+>
+> sysctl -w nf_conntrack_acct=3D1
+> sysctl -w nf_conntrack_timestamp=3D1
+>
 
-sysctl -w nf_conntrack_acct=3D1
-sysctl -w nf_conntrack_timestamp=3D1
+Yes, both are enabled. conntrack -L displays counters and delta-time correc=
+tly.
 
-On 8/17/21, Bla=C5=BEej Kraj=C5=88=C3=A1k <blazej.krajnak@gmail.com> wrote:
-> Hello Pablo,
->
-> I'm just rewriting input plugin ulog_inppkt_NFLOG.c to include
-> conntrack params. I successfully included CT flags from enum
-> ip_conntrack_status (assured, reply seen, ...) and CT state and
-> direction from NFULA_CT_INFO.
->
-> However, in NFULA_CT few counters from enum nf_conntrack_attr are
-> still 0 value. For ex. ATTR_TIMESTAMP_START / STOP and
-> ATTR_ORIG/REPL_COUNTER_PACKETS/BYTES.
-> Is it normal, or am I missing some bug at parsing?
->
-> ne 15. 8. 2021 o 18:23 Bla=C5=BEej Kraj=C5=88=C3=A1k <blazej.krajnak@gmai=
-l.com>
-> nap=C3=ADsal(a):
->>
->> ne 15. 8. 2021 o 16:31 Pablo Neira Ayuso <pablo@netfilter.org> wrote
->> >
->> > From the example ulogd2 configuration file in the tree:
->> >
->> > http://git.netfilter.org/ulogd2/tree/ulogd.conf.in#n77
->> >
->> > # this is a stack for flow-based logging via XML
->> > #stack=3Dct1:NFCT,xml1:XML
->>
->> At first, thank you for fast response. Of course I saw this example,
->> but I have situation, where I need to know packet details (pktlen,
->> mac, ifindex) along with information of conntrack entry which this
->> packet triggered.
->> I modified one of the libnetfilter_log example utilities to print both
->> (packet and conntrack) information together.
->> https://drive.google.com/file/d/1wx_LAjH57czHyFwTBSUvSnOkMchWEiiq/view?u=
-sp=3Dsharing
->>
->> Is there any way to do the same in ulogd?
->
+u_int32_t pkts =3D nfct_get_attr_u32(ct, ATTR_ORIG_COUNTER_PACKETS );
+printf("  Packet counter: %d", ntohs(pkts));
+printf(" (%s)\n", strerror(errno));
+
+returns 0 (No data available)
+
+I'm attaching draft-work of module to check.
+https://drive.google.com/file/d/1KouPKrrANvOihBuQH8Uwslk3pBkmP95q/view?usp=
+=3Dsharing
+
+I'm not sure about parsing
+
+static inline int
+interp_packet(struct ulogd_pluginstance *upi, uint8_t pf_family,
+      struct nflog_data *ldata)
+{
+    struct ulogd_key *ret =3D upi->output.keys;
+
+    struct nfulnl_msg_packet_hdr *ph =3D nflog_get_msg_packet_hdr(ldata);
+    .......
+    retb =3D nflog_nlmsg_parse(ph, attrs);
+    if (retb !=3D MNL_CB_OK) {
+        printf("something went wrong");
+        printf(" (%s)\n", strerror(errno));
+        return retb;
+    }
+
+    nfg =3D mnl_nlmsg_get_payload(ph);
+
+    print_nfct(nfg->nfgen_family, attrs[NFULA_CT_INFO], attrs[NFULA_CT], re=
+t);
