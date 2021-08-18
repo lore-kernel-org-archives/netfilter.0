@@ -1,77 +1,72 @@
-From: Adam Casella <ihateprod@gmail.com>
-Subject: [PATCH] conntrackd: cache: fix zone entry uniqueness in external cache
-Date: Tue, 17 Aug 2021 13:31:25 -0700
-Message-ID: <20210817203125.20128-1-adam.casella1984@gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: ulogd packet based logging with CT info
+Date: Wed, 18 Aug 2021 09:22:56 +0200
+Message-ID: <20210818072256.GA4640@salvia>
+References: <CAMEa=f=5g4rE42ii+HLXpiJ9LQshoVwfVfaGcEqrsSsXsgmh=A@mail.gmail.com>
+ <20210815143118.GA15248@salvia>
+ <CAMEa=fkU4sJjtPHkJ-ZvPOUtnZtOUJmfSqMy+Q4CKf4Lqdde4Q@mail.gmail.com>
+ <CAMEa=f=nzCzM-9a5B0VEkjN5zXgCTqobGe-sgN2K0G_5QgjdAQ@mail.gmail.com>
 Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="u3/rZRmxL6MmkK24"
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Wit2Kh7CslS+sGiL7V2V65u+evKZ44Wi3SvSxMD1dgQ=;
-        b=ls46qutHY3za8EwUYBpHDbDx2tv/7mPhF94K2fWtkdMQ03KYGUPlf3sigvPChroe4i
-         f2YRamIycXwpr1Kej2ivU9YHrBydJWzHAkm3TpqhGFszStJ3miuyH0f/vJUo7LefskgS
-         zhFXEdleIYsxP75l9SZnctn6iQrSy8UbVTe3S8X+uzTYhzDh7P4qyuHUn2EQuFI3L8r7
-         4UD7UqTaZ8HjMio+s/2/5jGUAiWx/R826CCc6gyClaFmCLZuEkGMLitkj19iWYZHf7GM
-         i2/0ksX+Fp4Fi3vXodOQtax9rpNkpdVuTPPb9k/lJ7H3RWgFQg2oJGtEduuAPX/HKkgV
-         AcqQ==
+Content-Disposition: inline
+In-Reply-To: <CAMEa=f=nzCzM-9a5B0VEkjN5zXgCTqobGe-sgN2K0G_5QgjdAQ@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
-Cc: Adam Casella <adam.casella1984@gmail.com>
+To: =?utf-8?B?Qmxhxb5laiBLcmFqxYjDoWs=?= <blazej.krajnak@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-In some use-cases, zone is used to differetiate conntrack state.  This preserves that uniqueness by adding zone into the cache in addtion to 5-tuple data
-This preserves external-cache uniqueness per zone when synced.
 
-Follow up fix to: https://git.netfilter.org/conntrack-tools/commit/?id=a08af5d26297eb85218a3c3a9e0991001a88cf10
+--u3/rZRmxL6MmkK24
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Signed-off-by: Adam Casella <adam.casella1984@gmail.com>
----
- src/cache-ct.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+On Tue, Aug 17, 2021 at 04:42:12PM +0200, Blažej Krajňák wrote:
+> Hello Pablo,
+> 
+> I'm just rewriting input plugin ulog_inppkt_NFLOG.c to include
+> conntrack params. I successfully included CT flags from enum
+> ip_conntrack_status (assured, reply seen, ...) and CT state and
+> direction from NFULA_CT_INFO.
 
-diff --git a/src/cache-ct.c b/src/cache-ct.c
-index abcfde4..7e788d2 100644
---- a/src/cache-ct.c
-+++ b/src/cache-ct.c
-@@ -41,7 +41,8 @@ cache_hash4_ct(const struct nf_conntrack *ct, const struct hashtable *table)
- 			  nfct_get_attr_u8(ct, ATTR_L4PROTO),
- 		[3]	= nfct_get_attr_u16(ct, ATTR_PORT_SRC) << 16 |
- 			  nfct_get_attr_u16(ct, ATTR_PORT_DST),
--	};
-+                [4]     = nfct_get_attr_u16(ct, ATTR_ZONE),
-+        };
- 
- 	/*
- 	 * Instead of returning hash % table->hashsize (implying a divide)
-@@ -50,13 +51,13 @@ cache_hash4_ct(const struct nf_conntrack *ct, const struct hashtable *table)
- 	 * but using a multiply, less expensive than a divide. See:
- 	 * http://www.mail-archive.com/netdev@vger.kernel.org/msg56623.html
- 	 */
--	return ((uint64_t)jhash2(a, 4, 0) * table->hashsize) >> 32;
-+	return ((uint64_t)jhash2(a, 5, 0) * table->hashsize) >> 32;
- }
- 
- static uint32_t
- cache_hash6_ct(const struct nf_conntrack *ct, const struct hashtable *table)
- {
--	uint32_t a[10];
-+	uint32_t a[11];
- 
- 	memcpy(&a[0], nfct_get_attr(ct, ATTR_IPV6_SRC), sizeof(uint32_t)*4);
- 	memcpy(&a[4], nfct_get_attr(ct, ATTR_IPV6_DST), sizeof(uint32_t)*4);
-@@ -64,8 +65,9 @@ cache_hash6_ct(const struct nf_conntrack *ct, const struct hashtable *table)
- 	       nfct_get_attr_u8(ct, ATTR_ORIG_L4PROTO);
- 	a[9] = nfct_get_attr_u16(ct, ATTR_ORIG_PORT_SRC) << 16 |
- 	       nfct_get_attr_u16(ct, ATTR_ORIG_PORT_DST);
-+        a[10] = nfct_get_attr_u16(ct, ATTR_ZONE);
- 
--	return ((uint64_t)jhash2(a, 10, 0) * table->hashsize) >> 32;
-+	return ((uint64_t)jhash2(a, 11, 0) * table->hashsize) >> 32;
- }
- 
- static uint32_t
--- 
-2.30.1 (Apple Git-130)
+Great.
 
+> However, in NFULA_CT few counters from enum nf_conntrack_attr are
+> still 0 value. For ex. ATTR_TIMESTAMP_START / STOP and
+> ATTR_ORIG/REPL_COUNTER_PACKETS/BYTES.
+> Is it normal, or am I missing some bug at parsing?
+
+You need this kernel patch to add this information to nfnetlink_queue,
+compile-tested only.
+
+--u3/rZRmxL6MmkK24
+Content-Type: text/x-diff; charset=utf-8
+Content-Disposition: attachment; filename="x.patch"
+
+diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
+index eb35c6151fb0..0677531ce8db 100644
+--- a/net/netfilter/nf_conntrack_netlink.c
++++ b/net/netfilter/nf_conntrack_netlink.c
+@@ -2669,6 +2669,8 @@ ctnetlink_glue_build_size(const struct nf_conn *ct)
+ 	       + nla_total_size(0) /* CTA_HELP */
+ 	       + nla_total_size(NF_CT_HELPER_NAME_LEN) /* CTA_HELP_NAME */
+ 	       + ctnetlink_secctx_size(ct)
++	       + ctnetlink_acct_size(ct)
++	       + ctnetlink_timestamp_size(ct)
+ #if IS_ENABLED(CONFIG_NF_NAT)
+ 	       + 2 * nla_total_size(0) /* CTA_NAT_SEQ_ADJ_ORIG|REPL */
+ 	       + 6 * nla_total_size(sizeof(u_int32_t)) /* CTA_NAT_SEQ_OFFSET */
+@@ -2726,6 +2728,10 @@ static int __ctnetlink_glue_build(struct sk_buff *skb, struct nf_conn *ct)
+ 	if (ctnetlink_dump_protoinfo(skb, ct, false) < 0)
+ 		goto nla_put_failure;
+ 
++	if (ctnetlink_dump_acct(skb, ct, IPCTNL_MSG_CT_GET) < 0 ||
++	    ctnetlink_dump_timestamp(skb, ct) < 0)
++		goto nla_put_failure;
++
+ 	if (ctnetlink_dump_helpinfo(skb, ct) < 0)
+ 		goto nla_put_failure;
+ 
+
+--u3/rZRmxL6MmkK24--
