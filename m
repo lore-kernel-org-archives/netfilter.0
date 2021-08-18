@@ -1,72 +1,61 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: =?UTF-8?B?Qmxhxb5laiBLcmFqxYjDoWs=?= <blazej.krajnak@gmail.com>
 Subject: Re: ulogd packet based logging with CT info
-Date: Wed, 18 Aug 2021 09:22:56 +0200
-Message-ID: <20210818072256.GA4640@salvia>
+Date: Wed, 18 Aug 2021 12:06:40 +0200
+Message-ID: <CAMEa=fkLW2jCoQj982VtZe84YtXdTerZTyOMUaMK+5v0-EhUXQ@mail.gmail.com>
 References: <CAMEa=f=5g4rE42ii+HLXpiJ9LQshoVwfVfaGcEqrsSsXsgmh=A@mail.gmail.com>
- <20210815143118.GA15248@salvia>
- <CAMEa=fkU4sJjtPHkJ-ZvPOUtnZtOUJmfSqMy+Q4CKf4Lqdde4Q@mail.gmail.com>
- <CAMEa=f=nzCzM-9a5B0VEkjN5zXgCTqobGe-sgN2K0G_5QgjdAQ@mail.gmail.com>
+ <20210815143118.GA15248@salvia> <CAMEa=fkU4sJjtPHkJ-ZvPOUtnZtOUJmfSqMy+Q4CKf4Lqdde4Q@mail.gmail.com>
+ <CAMEa=f=nzCzM-9a5B0VEkjN5zXgCTqobGe-sgN2K0G_5QgjdAQ@mail.gmail.com> <20210818072256.GA4640@salvia>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="u3/rZRmxL6MmkK24"
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAMEa=f=nzCzM-9a5B0VEkjN5zXgCTqobGe-sgN2K0G_5QgjdAQ@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=itLo4a9V2AvK7CcMgqUUeWRiHzpp1zpqE5uhwjfm06U=;
+        b=aND+czxT/Cb0D9OVzVHbBRyXiiEDtBeUwbEEzrKL2PGQzzPxentM3bUcQWBko2fibK
+         Xi4O9rg0J/PcP53y7IDanq3cCkgOdGXuB5MsZHSVf29ZKyL90k32qMKAlehELiZ3ugCI
+         CWcCK7xraCIxGOCId03+eobhAjl5js7Q4BkG+lO5sH8STPiTAu7xGBIT1XPgweWiY9YT
+         vU4Du0EmF74qQff230+2k8i0FGHRn7jlCM80j2vQpHwR19pKGFBQePj6bOGfyAAYTnoS
+         0nh1JPros0Cy4IhUI6uX/8RPxhS7704P7HXfcVLYPeUGczEVML6FPyfCpMUI69IFuHQp
+         HzEA==
+In-Reply-To: <20210818072256.GA4640@salvia>
 List-ID: <netfilter.vger.kernel.org>
-To: =?utf-8?B?Qmxhxb5laiBLcmFqxYjDoWs=?= <blazej.krajnak@gmail.com>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter@vger.kernel.org
 
+st 18. 8. 2021 o 9:23 Pablo Neira Ayuso <pablo@netfilter.org> nap=C3=ADsal(=
+a):
+> You need this kernel patch to add this information to nfnetlink_queue,
+> compile-tested only.
 
---u3/rZRmxL6MmkK24
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Hey Pablo,
+patch is working like a charm. Thank you! Now I see timestamps and
+packets/bytes counters in JSON output correctly.
+At the end I will post customized input plugin for everyone.
 
-On Tue, Aug 17, 2021 at 04:42:12PM +0200, Blažej Krajňák wrote:
-> Hello Pablo,
-> 
-> I'm just rewriting input plugin ulog_inppkt_NFLOG.c to include
-> conntrack params. I successfully included CT flags from enum
-> ip_conntrack_status (assured, reply seen, ...) and CT state and
-> direction from NFULA_CT_INFO.
+The last thing I want to ask is what's correct way to get
 
-Great.
+attrs[NFULA_CT]
 
-> However, in NFULA_CT few counters from enum nf_conntrack_attr are
-> still 0 value. For ex. ATTR_TIMESTAMP_START / STOP and
-> ATTR_ORIG/REPL_COUNTER_PACKETS/BYTES.
-> Is it normal, or am I missing some bug at parsing?
+from
 
-You need this kernel patch to add this information to nfnetlink_queue,
-compile-tested only.
+struct nfulnl_msg_packet_hdr *ph =3D nflog_get_msg_packet_hdr(ldata);
 
---u3/rZRmxL6MmkK24
-Content-Type: text/x-diff; charset=utf-8
-Content-Disposition: attachment; filename="x.patch"
 
-diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index eb35c6151fb0..0677531ce8db 100644
---- a/net/netfilter/nf_conntrack_netlink.c
-+++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -2669,6 +2669,8 @@ ctnetlink_glue_build_size(const struct nf_conn *ct)
- 	       + nla_total_size(0) /* CTA_HELP */
- 	       + nla_total_size(NF_CT_HELPER_NAME_LEN) /* CTA_HELP_NAME */
- 	       + ctnetlink_secctx_size(ct)
-+	       + ctnetlink_acct_size(ct)
-+	       + ctnetlink_timestamp_size(ct)
- #if IS_ENABLED(CONFIG_NF_NAT)
- 	       + 2 * nla_total_size(0) /* CTA_NAT_SEQ_ADJ_ORIG|REPL */
- 	       + 6 * nla_total_size(sizeof(u_int32_t)) /* CTA_NAT_SEQ_OFFSET */
-@@ -2726,6 +2728,10 @@ static int __ctnetlink_glue_build(struct sk_buff *skb, struct nf_conn *ct)
- 	if (ctnetlink_dump_protoinfo(skb, ct, false) < 0)
- 		goto nla_put_failure;
- 
-+	if (ctnetlink_dump_acct(skb, ct, IPCTNL_MSG_CT_GET) < 0 ||
-+	    ctnetlink_dump_timestamp(skb, ct) < 0)
-+		goto nla_put_failure;
-+
- 	if (ctnetlink_dump_helpinfo(skb, ct) < 0)
- 		goto nla_put_failure;
- 
+Now I use the following code which is working but throwing random
+errors "something went wrong (Numerical result out of range)" I'm
+mixing struct nfulnl_msg_packet_hdr with const struct nlmsghdr *nlh
 
---u3/rZRmxL6MmkK24--
+
+struct nfulnl_msg_packet_hdr *ph =3D nflog_get_msg_packet_hdr(ldata);
+struct nlattr *attrs[NFULA_MAX + 1] =3D { NULL };
+int retb;
+
+retb =3D nflog_nlmsg_parse(ph, attrs);
+if (retb !=3D MNL_CB_OK) {
+    printf("something went wrong");
+    printf(" (%s)\n", strerror(errno));
+    return retb;
+}
