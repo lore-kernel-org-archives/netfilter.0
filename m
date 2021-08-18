@@ -1,32 +1,61 @@
-From: Mathieu Ruellan <mathieu.ruellan@gmail.com>
-Subject: nftables support for cgroup v2 filtering by path
-Date: Wed, 18 Aug 2021 12:36:43 +0200
-Message-ID: <CANsv5MQYbEeFg1J+MO6EO-ZWLbsy-Ro3B3PWTfzpKK7L3FxBrQ@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: ulogd packet based logging with CT info
+Date: Wed, 18 Aug 2021 13:52:28 +0200
+Message-ID: <20210818115228.GA9294@salvia>
+References: <CAMEa=f=5g4rE42ii+HLXpiJ9LQshoVwfVfaGcEqrsSsXsgmh=A@mail.gmail.com>
+ <20210815143118.GA15248@salvia>
+ <CAMEa=fkU4sJjtPHkJ-ZvPOUtnZtOUJmfSqMy+Q4CKf4Lqdde4Q@mail.gmail.com>
+ <CAMEa=f=nzCzM-9a5B0VEkjN5zXgCTqobGe-sgN2K0G_5QgjdAQ@mail.gmail.com>
+ <20210818072256.GA4640@salvia>
+ <CAMEa=fkLW2jCoQj982VtZe84YtXdTerZTyOMUaMK+5v0-EhUXQ@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=GrRJl1tp5+UCeeEA4YVkLeshZt/c8XV1OMWHcuQ3wH0=;
-        b=LGUOEb82F6PD9wLv5u9mblNpijKfbLYv9BImxTCjqwDm0PVBB8tNTPnBnAvPHpWwCZ
-         l0nrc7GjleC9J42dsZYkM3azWpSmw3MkgoEs72SlIR35JnO5b+t2+JiotOmr79pe8Tlc
-         pB3gRcFYpygZuyOrbJRfMfeRRHeAb0bSI8K1RyP/XoysYtgYOtJ61qxu8cc7pkf4pZj+
-         ieCOrj73eIm79rhl97VDyzMXNIVGbIlQxZDYSD3qiq26nY8RpCMeJzL11LPbJi6eks6/
-         o8Z2h2ol+29Z3vOvj3fa4wW6Vhmj85RaGsISm/G1gbzxSNJ2ANk7iBe7tqi7TnXEnmV3
-         66qQ==
+Content-Disposition: inline
+In-Reply-To: <CAMEa=fkLW2jCoQj982VtZe84YtXdTerZTyOMUaMK+5v0-EhUXQ@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: =?utf-8?B?Qmxhxb5laiBLcmFqxYjDoWs=?= <blazej.krajnak@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hello,
+Hi Blažej,
 
-I'm facing the same issue than here:
-https://marc.info/?l=netfilter&m=161896252706060&w=2
+On Wed, Aug 18, 2021 at 12:06:40PM +0200, Blažej Krajňák wrote:
+> st 18. 8. 2021 o 9:23 Pablo Neira Ayuso <pablo@netfilter.org> napísal(a):
+> > You need this kernel patch to add this information to nfnetlink_queue,
+> > compile-tested only.
+> 
+> Hey Pablo,
+> patch is working like a charm. Thank you! Now I see timestamps and
+> packets/bytes counters in JSON output correctly.
+> At the end I will post customized input plugin for everyone.
+> 
+> The last thing I want to ask is what's correct way to get
+> 
+> attrs[NFULA_CT]
+> 
+> from
+> 
+> struct nfulnl_msg_packet_hdr *ph = nflog_get_msg_packet_hdr(ldata);
+> 
+> 
+> Now I use the following code which is working but throwing random
+> errors "something went wrong (Numerical result out of range)" I'm
+> mixing struct nfulnl_msg_packet_hdr with const struct nlmsghdr *nlh
 
-I'm using the last release 0.9.9. Is there somewhere a documentation
-or a syntax example?
+That might be a bug in nflog_nlmsg_parse(): maybe
+nflog_parse_attr_cb() is finding a mismatch in the datatype of the
+attribute payload.
 
-Kind regards,
+Could you have a look at what attribute is hitting this error?
 
-Mathieu
+> struct nfulnl_msg_packet_hdr *ph = nflog_get_msg_packet_hdr(ldata);
+> struct nlattr *attrs[NFULA_MAX + 1] = { NULL };
+> int retb;
+> 
+> retb = nflog_nlmsg_parse(ph, attrs);
+> if (retb != MNL_CB_OK) {
+>     printf("something went wrong");
+>     printf(" (%s)\n", strerror(errno));
+>     return retb;
+> }
