@@ -1,184 +1,48 @@
-From: =?utf-8?B?VGhvbWFzIELDpHR6bGVy?= <t.baetzler@bringe.com>
-Subject: AW: NAT - how external source port is selected
-Date: Wed, 18 Aug 2021 14:52:54 +0000
-Message-ID: <515168F006F2D643952F8FFD24F2E07304551DFE55@sonne2.gw.bringe.net>
+From: Daniel <tech@tootai.net>
+Subject: Re: NAT - how external source port is selected
+Date: Wed, 18 Aug 2021 17:12:28 +0200
+Message-ID: <771b005e-4127-7065-7bc8-8ca6b71eee64@tootai.net>
 References: <9cc05668-b4fb-4ed8-1588-7a0f5c378b3a@tootai.net>
+ <20210818144615.GQ607@breakpoint.cc>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
-        micalg=2.16.840.1.101.3.4.2.3;
-        boundary="----=_NextPart_000_001B_01D79451.88D41060"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=bringe.com; h=
-        mime-version:content-type:content-type:content-language
-        :accept-language:in-reply-to:references:message-id:date:date
-        :subject:subject:to:from:from; s=dkim; t=1629298396; x=
-        1630162397; bh=nGitX9BLPPhtJZAi7/THlsKSg1ylIEC8x1XB81Ryqew=; b=G
-        VdR7TjT1oUlocEpJQJBQx9RBMWWIW9SOnd8aROHLbOz1C9MJVAiQY28CqvXLJaHH
-        K3FdIOq/M3AMWTK+85/kqOsi2+9zL8AQFWtX7jTy/p6El5ULA33U1JT4dJ7tZlQ0
-        65SPbVmB/TugTk99g+G165Jx/9u7ByTxHGJh49B7q8=
-In-Reply-To: <9cc05668-b4fb-4ed8-1588-7a0f5c378b3a@tootai.net>
-Content-Language: de-DE
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
+        t=1629299549; bh=KKYzfsSYR3PH29K0kWqrWdkYVB3dF7/geVXbXswZMro=;
+        h=Subject:Cc:References:From:Date:In-Reply-To:From;
+        b=XaXBZpj+RrmL9YZQQ8TRylWUFIuBjahtHdRI0g4XczQLUmHCxAZP7/wkejinFAmep
+         m9yqCGvL5B4fyCBntnJNGGae2gytCfIQH/8KvTjgyc72fTq2GSmUI/NHv6IhhNg7dv
+         tCJpZoAaWCPzX7kd2X30DryryzNUeh8FRcEB0wYg=
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
+        t=1629299548; bh=KKYzfsSYR3PH29K0kWqrWdkYVB3dF7/geVXbXswZMro=;
+        h=Subject:Cc:References:From:Date:In-Reply-To:From;
+        b=IIe+dc4klBpLIsPrqcV/Ncop1NEm5LDzoYszuv1U6CQw/5APmGyLpbULw15egpB4t
+         3rASWgMAA3o2Sqlf0CE7We42j4Ae5sr/FmaEKTjG5YOi7R+viICLJnwsjo6Pnlz0ye
+         Pc/GMuNx/V/9OUlFMbK2P/KrNpOWm4RXmJpBmfAE=
+In-Reply-To: <20210818144615.GQ607@breakpoint.cc>
+Content-Language: fr-FR
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Cc: Daniel <tech@tootai.net>
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: 
+Cc: netfilter@vger.kernel.org
 
-------=_NextPart_000_001B_01D79451.88D41060
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
 
-Hi Daniel,
+Le 18/08/2021 à 16:46, Florian Westphal a écrit :
+> Daniel <tech@tootai.net> wrote:
+>> how on a NAT firewall server using iptables or nftables, are the external
+>> source ports choosen ? I would say range is 1024-65535 but if for instance I
+>> use port 5060 for SIP this one can not be used as source port. Is there a
+>> table of at time used ports ?
+> Are you talking about SNAT/MASQUERADE?
+Yes
+> It will try to use whatever port is used.  If the source address
+> replacement results in a collision, it tries to pick a different source
+> port between 1024 and 65535.
+OK
+>> Also, SNOM phones are systematically using port 2048 as source port of the
+>> WAN ip. Is there a mechanism to allow such behavior ?
+> What do you mean? The initiator is free to pick whatever source port they like.
+Well, how he will know that the port is free ?
 
-the port number for outgoing NATted connections is chosen from the =
-emphemeral port number range, which can be read and configured via the =
-/proc/sys/net/ipv4/ip_local_port_range file.
-
-While one probably could use NAT rules to force an outgoing connection =
-to use a particular source port, it would not make sense to do so =
-because that would lead to problems when two hosts on the internal =
-network would try to connect to the same outside service, since the port =
-tuple for both connections would be identical, which means that they =
-would be mapped to the same connection.
-
-I'm guessing that on the system that establishes an outgoing connection, =
-i.e. a SNOM phone, one can chose to use a fixed source port =
-programmatically by setting a port number in the sockaddr_in structure =
-that's passed to the connect() syscall. I'm presuming you'd get a =
-EADDRNOTAVAIL error when that port is already in use. You can probably =
-look this up in Stevens' TCP/IP Illustrated.
-
-HTH,
-i.A. Thomas B=C3=A4tzler
---=20
-BRINGE Informationstechnik GmbH
-Zur Seeplatte 12
-D-76228 Karlsruhe
-Germany
-
-Fon: +49 721 94246-0
-Fon: +49 171 5438457
-Fax: +49 721 94246-66
-Web: http://www.bringe.de/
-
-Gesch=C3=A4ftsf=C3=BChrer: Dipl.-Ing. (FH) Martin Bringe
-Ust.Id: DE812936645, HRB 108943 Mannheim
-
------Urspr=C3=BCngliche Nachricht-----
-Von: Daniel <tech@tootai.net>=20
-Gesendet: Mittwoch, 18. August 2021 15:54
-An: netfilter@vger.kernel.org
-Betreff: NAT - how external source port is selected
-
-Hello,
-
-how on a NAT firewall server using iptables or nftables, are the =
-external source ports choosen ? I would say range is 1024-65535 but if =
-for instance I use port 5060 for SIP this one can not be used as source =
-port. Is there a table of at time used ports ?
-
-Also, SNOM phones are systematically using port 2048 as source port of =
-the WAN ip. Is there a mechanism to allow such behavior ?
-
-If you know any good documentation about this (without reading source =
-code ;)) will also be accepted :)
-
-Thanks for your great job
---
+-- 
 Daniel
-
-------=_NextPart_000_001B_01D79451.88D41060
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgMFADCABgkqhkiG9w0BBwEAAKCCD5kw
-ggO3MIICn6ADAgECAhAM5+DlF9hG/o/lYPwb8DA5MA0GCSqGSIb3DQEBBQUAMGUxCzAJBgNVBAYT
-AlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAi
-BgNVBAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBDQTAeFw0wNjExMTAwMDAwMDBaFw0zMTEx
-MTAwMDAwMDBaMGUxCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsT
-EHd3dy5kaWdpY2VydC5jb20xJDAiBgNVBAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBDQTCC
-ASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK0OFc7kQ4BcsYfzt2D5cRKlrtwmlIiq9M71
-IDkoWGAM+IDaqRWVMmE8tbEohIqK3J8KDIMXeo+QrIrneVNcMYQq9g+YMjZ2zN7dPKii72r7IfJS
-Yd+fINcf4rHZ/hhk0hJbX/lYGDW8R82hNvlrf9SwOD7BG8OMM9nYLxj+KA+zp4PWw25EwGE1lhb+
-WZyLdm3X8aJLDSv/C3LanmDQjpA1xnhVhyChz+VtCshJfDGYM2wi6YfQMlqiuhOCEe05F52ZOnKh
-5vqk2dUXMXWuhX0irj8BRob2KHnIsdrkVxfEfhwOsLSSplazvbKX7aqn8LfFqD+VFtD/oZbrCF8Y
-d08CAwEAAaNjMGEwDgYDVR0PAQH/BAQDAgGGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFEXr
-oq/0ksuCMS1Ri6enIZ3zbcgPMB8GA1UdIwQYMBaAFEXroq/0ksuCMS1Ri6enIZ3zbcgPMA0GCSqG
-SIb3DQEBBQUAA4IBAQCiDrzf4u3w43JzemSUv/dyZtgy5EJ1Yq6H6/LV2d5Ws5/MzhQouQ2XYFwS
-TFjk0z2DSUVYlzVpGqhH6lbGeasS2GeBhN9/CTyU5rgmLCC9PbMoifdf/yLil4Qf6WXvh+DfwWdJ
-s13rsgkq6ybteL59PyvztyY1bV+JAbZJW58BBZurPSXBzLZ/wvFvhsb6ZGjrgS2U60K3+owe3WLx
-vlBnt2y98/Efaww2BxZ/N3ypW2168RJGYIPXJwS+S86XvsNnKmgR34DnDDNmvxMNFG7zfx9jEB76
-jRslbWyPpbdhAbHSoyahEHGdreLD+cOZUbcrBwjOLuZQsqf6CkUvovDyMIIFiDCCBHCgAwIBAgIQ
-CkIynPMWmvSGAo3jED1rbTANBgkqhkiG9w0BAQsFADBlMQswCQYDVQQGEwJVUzEVMBMGA1UEChMM
-RGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2Vy
-dCBTSEEyIEFzc3VyZWQgSUQgQ0EwHhcNMTkwOTIzMDAwMDAwWhcNMjIxMTExMTIwMDAwWjCBqDEL
-MAkGA1UEBhMCREUxGzAZBgNVBAgMEkJhZGVuLVfDvHJ0dGVtYmVyZzESMBAGA1UEBxMJS2FybHNy
-dWhlMSgwJgYDVQQKEx9CcmluZ2UgSW5mb3JtYXRpb25zdGVjaG5payBHbWJIMRgwFgYDVQQDEw9U
-aG9tYXMgQmFldHpsZXIxJDAiBgkqhkiG9w0BCQEWFXQuYmFldHpsZXJAYnJpbmdlLmNvbTCCASIw
-DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKm/GlvIn3arnh+loy4LB9TMX0yfy716dIJlSHPV
-HVUCHNINbAAyH1WJDpV0K8f/Y++hHL3lQmyu8mtzdZHNwr227ukSbOoTIzth2bcHC4t0K8jzzRje
-vlfZsWv6jTKqA655vhVGw1D6+SNatgJ2jRUCyg13M3UvK+IfhKNxRien7bS1TG2E5ApeyqmFlmDg
-7y4R9FjBl1OB77Sw9el6lfoboC+h0eKxBwaTjwIVfV899CVJPSve8I9bAbimtYK27IU8QPnz7OCK
-D/26DvriD2SL/ct4MVIPtWSnRwDFID3VdoFE6LH5tiPSGbJ8hry1a1kz45Zi8rOMXvdVdDjYhukC
-AwEAAaOCAe4wggHqMB8GA1UdIwQYMBaAFOcCI4AAT9jXvJQL2T90OUkyPIp5MB0GA1UdDgQWBBTA
-brD28WxRAGw1BzeSYGK2FUOzjTAMBgNVHRMBAf8EAjAAMCAGA1UdEQQZMBeBFXQuYmFldHpsZXJA
-YnJpbmdlLmNvbTAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwME
-MEMGA1UdIAQ8MDowOAYKYIZIAYb9bAQBAjAqMCgGCCsGAQUFBwIBFhxodHRwczovL3d3dy5kaWdp
-Y2VydC5jb20vQ1BTMIGIBgNVHR8EgYAwfjA9oDugOYY3aHR0cDovL2NybDMuZGlnaWNlcnQuY29t
-L0RpZ2lDZXJ0U0hBMkFzc3VyZWRJRENBLWcyLmNybDA9oDugOYY3aHR0cDovL2NybDQuZGlnaWNl
-cnQuY29tL0RpZ2lDZXJ0U0hBMkFzc3VyZWRJRENBLWcyLmNybDB5BggrBgEFBQcBAQRtMGswJAYI
-KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmRpZ2ljZXJ0LmNvbTBDBggrBgEFBQcwAoY3aHR0cDovL2Nh
-Y2VydHMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0U0hBMkFzc3VyZWRJRENBLmNydDANBgkqhkiG9w0B
-AQsFAAOCAQEAs2XHpFwzu674xR/n3KKl7Bneiz9BUrpOiJhggOtKLBlU924oszVbuvgYI3MIdDOL
-AV+Jghz+MlSOlNPjiovgIDjHT/CX5tpUSTJl7PkoNFqDd8buHBpVdJGnPJHqjnAbBOI48PrTKFEV
-0R9loHcdM0OpnayrW+uxlZUGA8ZT5hSAQ0IXhtrSN4S093L0J6IFQrrAWYapWZAINHt2CZhuGLQD
-ZAHeYw8aICfHwpMfgFz0InmU1kx3lp15dBp9LFj+99R4wk5SzEY5q6TbE1yTiKz8EJEteykFX62E
-RF4dTSEkKVW7a7zVZsE4vO6rRsRTkE1347Vx7UWFEMvXe+EA6DCCBk4wggU2oAMCAQICEASueWBm
-ZpAaucV/pmxb3M0wDQYJKoZIhvcNAQELBQAwZTELMAkGA1UEBhMCVVMxFTATBgNVBAoTDERpZ2lD
-ZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2ljZXJ0LmNvbTEkMCIGA1UEAxMbRGlnaUNlcnQgQXNz
-dXJlZCBJRCBSb290IENBMB4XDTEzMTEwNTEyMDAwMFoXDTI4MTEwNTEyMDAwMFowZTELMAkGA1UE
-BhMCVVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2ljZXJ0LmNvbTEk
-MCIGA1UEAxMbRGlnaUNlcnQgU0hBMiBBc3N1cmVkIElEIENBMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA3PgRIz9qte/AJ3kbLQWHohBDMd8O1BUbT3ekIs4+jHDwvgeO3ScqvAEdtiwK
-yt1pWB9B7WoFH9pjeFkeIiwr+Lp+yTU7VvEffEJ+JbAjGcZFONc9RPkgfGCuHLBaGAS+jzv3qfCU
-mqYMY0m2QRdTQDK9T+ZQelAfJUXo8Ymvzf9e/1Dz8BcR/73FifW9YrnY+45FBIVtmc3FSE39JqsC
-NkXqNtdfauIagkEK3OnZ9ZEXjsYhrTg8E+Yef2ac1U3ZRtr2z1KnfTskw7TBUTXGm+vU737kewPh
-RL16CzfgT8uCig1xGOSm4IksG/OyczzBsJKeGH29q33FfQihLMKfcwIDAQABo4IC+DCCAvQwEgYD
-VR0TAQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMCAYYwNAYIKwYBBQUHAQEEKDAmMCQGCCsGAQUF
-BzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20wgYEGA1UdHwR6MHgwOqA4oDaGNGh0dHA6Ly9j
-cmw0LmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEFzc3VyZWRJRFJvb3RDQS5jcmwwOqA4oDaGNGh0dHA6
-Ly9jcmwzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEFzc3VyZWRJRFJvb3RDQS5jcmwwHQYDVR0lBBYw
-FAYIKwYBBQUHAwIGCCsGAQUFBwMEMIIBswYDVR0gBIIBqjCCAaYwggGiBgpghkgBhv1sAAIEMIIB
-kjAoBggrBgEFBQcCARYcaHR0cHM6Ly93d3cuZGlnaWNlcnQuY29tL0NQUzCCAWQGCCsGAQUFBwIC
-MIIBVh6CAVIAQQBuAHkAIAB1AHMAZQAgAG8AZgAgAHQAaABpAHMAIABDAGUAcgB0AGkAZgBpAGMA
-YQB0AGUAIABjAG8AbgBzAHQAaQB0AHUAdABlAHMAIABhAGMAYwBlAHAAdABhAG4AYwBlACAAbwBm
-ACAAdABoAGUAIABEAGkAZwBpAEMAZQByAHQAIABDAFAALwBDAFAAUwAgAGEAbgBkACAAdABoAGUA
-IABSAGUAbAB5AGkAbgBnACAAUABhAHIAdAB5ACAAQQBnAHIAZQBlAG0AZQBuAHQAIAB3AGgAaQBj
-AGgAIABsAGkAbQBpAHQAIABsAGkAYQBiAGkAbABpAHQAeQAgAGEAbgBkACAAYQByAGUAIABpAG4A
-YwBvAHIAcABvAHIAYQB0AGUAZAAgAGgAZQByAGUAaQBuACAAYgB5ACAAcgBlAGYAZQByAGUAbgBj
-AGUALjAdBgNVHQ4EFgQU5wIjgABP2Ne8lAvZP3Q5STI8inkwHwYDVR0jBBgwFoAUReuir/SSy4Ix
-LVGLp6chnfNtyA8wDQYJKoZIhvcNAQELBQADggEBAE7UiSe5/R2Hd34PKAWQ8QovyTs+vZOckMav
-+pFRhzJUa+jKwXFRXJmOtfrgYhmZpgeafBMn2+UCooQS2RX2CkRXxDSPbXMfOtagAT3e44LkRWuy
-6yX9gF4dOZC+W0L2zpFg4/mgVgxIEM4zaHvNk6vwastPWA+5e10bBIGepyLiV0kn7pKTCL5pCFMC
-Oi5dyBn0UIBOAtmwXZG0k4f5lpaBVUCOZu2C2LsoX+1MYe0GWCgZUxFEvEcgKbIEbNiJVJk7ddtn
-eCweknjGVT1YEhEybr1DDE0023vGQtvsvqubYUwGkuOO3yEqUFcEwGCiNdUknmY3CUnP1fhls+Di
-bsIxggPfMIID2wIBATB5MGUxCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAX
-BgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAiBgNVBAMTG0RpZ2lDZXJ0IFNIQTIgQXNzdXJlZCBJ
-RCBDQQIQCkIynPMWmvSGAo3jED1rbTANBglghkgBZQMEAgMFAKCCAjcwGAYJKoZIhvcNAQkDMQsG
-CSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjEwODE4MTQ1MzEzWjBPBgkqhkiG9w0BCQQxQgRA
-+nKdq5CQQv9gwrPDK+2UZnMIKQUB1fyXtmY4bL+FSz10Uv/7UWJdQqvvFV5gttakyIwL3VpXjnvy
-DasS471EdzCBiAYJKwYBBAGCNxAEMXsweTBlMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNl
-cnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBTSEEy
-IEFzc3VyZWQgSUQgQ0ECEApCMpzzFpr0hgKN4xA9a20wgYoGCyqGSIb3DQEJEAILMXugeTBlMQsw
-CQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQu
-Y29tMSQwIgYDVQQDExtEaWdpQ2VydCBTSEEyIEFzc3VyZWQgSUQgQ0ECEApCMpzzFpr0hgKN4xA9
-a20wgZMGCSqGSIb3DQEJDzGBhTCBgjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAoGCCqGSIb3
-DQMHMAsGCWCGSAFlAwQBAjAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwCwYJYIZIAWUD
-BAIDMAsGCWCGSAFlAwQCAjALBglghkgBZQMEAgEwBwYFKw4DAhowDQYJKoZIhvcNAQEBBQAEggEA
-bHROlr+kU0d61xWqvPfLziu36S5ssKMsH0WQRVdxSK+i7+LCslia/bnuyqAQv4+PCzZKiZiX/Kae
-CrF8V3rbF8ELFAHOc5rlWR52D5IdEA6oobg1hC6BvbUT5fFj48cGlaEgV46HM1jBfOGP7Vh4eOuo
-ZJEP/GYVfFOVD8jPHL8Y4qxo+H0Vv9t2O4WW5DeKNBKSnQasW48A4GyfaihZWThzqdE+sAkVMGwV
-5qhVe0qAQgaYukc4tthKNXEqAXXOJaJ5crvHA+qJ/ZZq5DV7EBVt1hntw1NyBqqvpjlmLKShPE6K
-/UwdWL7ikLfJNaM75Vuv0MHwTJNMVIq1m8kPvAAAAAAAAA==
-
-------=_NextPart_000_001B_01D79451.88D41060--
