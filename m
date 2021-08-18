@@ -1,46 +1,49 @@
-From: Daniel <tech@tootai.net>
-Subject: Re: NAT - how external source port is selected
-Date: Wed, 18 Aug 2021 18:43:07 +0200
-Message-ID: <82442129-99d3-8add-cd6f-8882070eb000@tootai.net>
-References: <9cc05668-b4fb-4ed8-1588-7a0f5c378b3a@tootai.net>
- <20210818144615.GQ607@breakpoint.cc>
- <771b005e-4127-7065-7bc8-8ca6b71eee64@tootai.net>
- <20210818161622.GS607@breakpoint.cc>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: nftables support for cgroup v2 filtering by path
+Date: Wed, 18 Aug 2021 20:38:30 +0200
+Message-ID: <20210818183830.GA3505@salvia>
+References: <CANsv5MQYbEeFg1J+MO6EO-ZWLbsy-Ro3B3PWTfzpKK7L3FxBrQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1629304987; bh=MYfNs/36du41Gwpo+D40beDGC1aAf46yTgzKTripRfs=;
-        h=Subject:Cc:References:From:Date:In-Reply-To:From;
-        b=PtN4n3fXG1XfloE8ERw25j9xuMBhLElSjCOvhHbEBSjK6viswNNGHfDitwj5h5UA/
-         7WvZZh+DIzaOv8JufTY/AEPuU5W13JRYb9NcTmdUOivPbFa3OMzmmIvuHby0llRdtm
-         mz4hV26bPUeebl5MiPYAi6JE/ASNzw4U8ApcqkIk=
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1629304987; bh=MYfNs/36du41Gwpo+D40beDGC1aAf46yTgzKTripRfs=;
-        h=Subject:Cc:References:From:Date:In-Reply-To:From;
-        b=PtN4n3fXG1XfloE8ERw25j9xuMBhLElSjCOvhHbEBSjK6viswNNGHfDitwj5h5UA/
-         7WvZZh+DIzaOv8JufTY/AEPuU5W13JRYb9NcTmdUOivPbFa3OMzmmIvuHby0llRdtm
-         mz4hV26bPUeebl5MiPYAi6JE/ASNzw4U8ApcqkIk=
-In-Reply-To: <20210818161622.GS607@breakpoint.cc>
-Content-Language: fr-FR
+Content-Disposition: inline
+In-Reply-To: <CANsv5MQYbEeFg1J+MO6EO-ZWLbsy-Ro3B3PWTfzpKK7L3FxBrQ@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: 
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Mathieu Ruellan <mathieu.ruellan@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-Le 18/08/2021 à 18:16, Florian Westphal a écrit :
+Hi,
 
-> Daniel <tech@tootai.net> wrote:
->>>> Also, SNOM phones are systematically using port 2048 as source port of the
->>>> WAN ip. Is there a mechanism to allow such behavior ?
->>> What do you mean? The initiator is free to pick whatever source port they like.
->> Well, how he will know that the port is free ?
-> bind() fails for listener socket, connect() fails for outgoing (if
-> everything is full).
->
-> On conntrack machine, connection tracking table gets queried after SNAT
-> to see if the new tuple is still unique.
-Thanks to all for the explanation.
+On Wed, Aug 18, 2021 at 12:36:43PM +0200, Mathieu Ruellan wrote:
+> Hello,
+> 
+> I'm facing the same issue than here:
+> https://marc.info/?l=netfilter&m=161896252706060&w=2
+> 
+> I'm using the last release 0.9.9. Is there somewhere a documentation
+> or a syntax example?
 
--- 
-Daniel
+man nft(8) provides a description and an example.
+
+You can also use it with maps to define your policy based on the
+cgroupsv2 hierarchy.
+
+Another quick example with a verdict map:
+
+ table inet x {
+        chain user_slice {
+                counter packets 147 bytes 117478
+                socket cgroupv2 level 2 "user.slice/user-1000.slice" counter packets 147 bytes 117478
+        }
+
+        chain system_slice {
+                counter packets 0 bytes 0
+                socket cgroupv2 level 2 "system.slice/foo.service" counter packets 0 bytes 0
+        }
+
+        chain y {
+                type filter hook input priority filter; policy accept;
+                socket cgroupv2 level 1 vmap { "system.slice" : jump system_slice, "user.slice" : jump user_slice }
+        }
+ }
