@@ -1,65 +1,84 @@
-From: =?UTF-8?B?Qmxhxb5laiBLcmFqxYjDoWs=?= <blazej.krajnak@gmail.com>
-Subject: Re: ulogd packet based logging with CT info
-Date: Thu, 19 Aug 2021 16:05:41 +0200
-Message-ID: <CAMEa=f=Or70aNKCiw6=SRG0wQxbdG51HhP6jBZsbKhUcTqaNqA@mail.gmail.com>
-References: <CAMEa=f=5g4rE42ii+HLXpiJ9LQshoVwfVfaGcEqrsSsXsgmh=A@mail.gmail.com>
- <20210815143118.GA15248@salvia> <CAMEa=fkU4sJjtPHkJ-ZvPOUtnZtOUJmfSqMy+Q4CKf4Lqdde4Q@mail.gmail.com>
- <CAMEa=f=nzCzM-9a5B0VEkjN5zXgCTqobGe-sgN2K0G_5QgjdAQ@mail.gmail.com>
- <20210818072256.GA4640@salvia> <CAMEa=fkLW2jCoQj982VtZe84YtXdTerZTyOMUaMK+5v0-EhUXQ@mail.gmail.com>
- <20210818115228.GA9294@salvia> <CAMEa=f=Z0Uh9jtLi_Le4pR9PSmoUxs71fb_73OHngSwXF4PTyA@mail.gmail.com>
- <20210819101628.GA2036@salvia>
+From: Florian Westphal <fw@strlen.de>
+Subject: Re: conntrack: confirm existing but do not create new entries
+Date: Thu, 19 Aug 2021 16:18:02 +0200
+Message-ID: <20210819141802.GU607@breakpoint.cc>
+References: <1e7f26ea-426f-0c32-829e-123cdd6c9f68@average.org>
+ <20210818161340.GR607@breakpoint.cc>
+ <2ff25113-05c9-bf14-30bd-09bc21ed5a05@average.org>
+ <20210819090905.GT607@breakpoint.cc>
+ <0c0ec75c-8862-bb7e-65d0-a7e7101c4b3f@average.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=uwDTjcW9FlvxIBu8D0fz0ZXg1EHX30k44/lFcrJ3m3c=;
-        b=ZkaIaMp9krv3dukFRVOJNqc6yTQMci9b5w8OFbKg9pab/DXIGCyqjwesFpAyRxVgrN
-         ceJiGTPP91K7CUCQeXIGX6ey6VxAwoPkrPV70i7jH+73cRpT3A4BrkUsSzNHpK98uEoH
-         uaY3KrjXCVn9+1vaBG4xY86ZRjqazT+F1+5ewV/7e+c+E41LIKUshYIQHsfOhMbwkdu4
-         gPgNlL4S3AGmijITO1nFV1CqTUmACihtcT/2NeifRZRSFfiJ5/Z71JQguIkKtOiqmPnJ
-         ls0uoVdGdXa+I8jkaibtxdk2MHBBq1UNb+/olpzWISxesd1WD9MVvTntDbsf9u60ng/b
-         Hspg==
-In-Reply-To: <20210819101628.GA2036@salvia>
+Content-Disposition: inline
+In-Reply-To: <0c0ec75c-8862-bb7e-65d0-a7e7101c4b3f@average.org>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Eugene Crosser <crosser@average.org>
+Cc: Florian Westphal <fw@strlen.de>, netfilter@vger.kernel.org
 
-=C5=A1t 19. 8. 2021 o 12:16 Pablo Neira Ayuso <pablo@netfilter.org> nap=C3=
-=ADsal(a):
->
-> Better to stick to use nflog_nlmsg_parser(), my suggestion is:
->
-> #1 msg_cb() provides struct nfgenmsg *nfmsg, you could retrieve the nlmsg
->    from there since the nlmsghdr comes before nfgenmsg:
->
->         struct nlmsghdr *nlh;
->
->         nlh =3D (struct nlmsghdr *)((void *)nfg - sizeof(*nlh));
->
->         err =3D nflog_nlmsg_parse(nlh, attrs);
->         if (err < 0)
->                 ... error path
->
-> #2 once you have access to attrs[NFULA_CT], from there on:
->
->         struct nf_conntrack *ct;
->
->         ct =3D nfct_new();
->         if (!ct)
->                 ... error path
->
->         err =3D nfct_nlmsg_parse(nlh, ct);
->         if (err < 0)
->                 ... error path
->
-> Then, you get the pointer to conntrack object.
+Eugene Crosser <crosser@average.org> wrote:
+> On 19/08/2021 11:09, Florian Westphal wrote:
+> > You might have to clarify what you are looking for.
+> 
+> Yes, I oversimplified our case and omitted the part that turned to be important.
+> This is a host for multiple VMs. We want VM traffic to go through unfiltered and
+> _untracked_ because tracking _this_ traffic overflows the table.
+> 
+> Traffic to the host itself (management and configuration) needs to be filtered,
+> and to do it effectively we need stateful firewall, hence it should be tracked.
+> Flooding of the table by traffic that ends up in the INPUT path is not really a
+> concern, and we would drop bad traffic anyway, preventing ct entries from being
+> committed (as far as I understood your explanation).
+> 
+> So the problem, as far as I understand it, is that decision to track or not
+> track has to be taken _before_ the decision between FORWARD and INPUT. We want
+> FORWARD to go (ahem) forward without modifying the table, and INPUT to be
+> processed against the table to be able to decide if it belongs to an existing
+> outgoing connection.
 
-Great, your suggestions perfectly work. Thank you.
-Little later I will post complete code to everyone.
+Yes, conntrack hooks at prerouting and output, so by the the input or
+forward are reached the conntrack lookup was already done.
 
-Could it be useful to prepare patch to add this to ulogd2? As new
-input plugin or as a upgrade to inppkt_UFLOG?
+Hence, NOTRACK has to be decided before conntrack lookup/create.
+
+> >> Yet I am surprised that a flag meaning "conntrack, but only to confirm exiting
+> >> entries" does not exist. Would not it be useful to have?..
+> > 
+> > How would that even work?
+> >
+> > To know if a given packet is a reply there needs to be a record in the
+> > state table.
+> 
+> I was guessing this piece of code
+> 
+> =====
+>         /* look for tuple match */
+>         zone = nf_ct_zone_tmpl(tmpl, skb, &tmp);
+>         hash = hash_conntrack_raw(&tuple, state->net);
+>         h = __nf_conntrack_find_get(state->net, zone, &tuple, hash);
+>         if (!h) {
+>                 h = init_conntrack(state->net, tmpl, &tuple,
+>                                    skb, dataoff, hash);
+>                 if (!h)
+>                         return 0;
+>                 if (IS_ERR(h))
+>                         return PTR_ERR(h);
+>         }
+>         ct = nf_ct_tuplehash_to_ctrack(h);
+> =====
+> 
+> could _not_ call `init_conntrack()` depending on the (hypothetical) "track only
+> when entry exists" flag, and return early otherwise?.. But my understanding of
+> the workings of netfilter is really poor, it is very likely that I am missing
+> something crucial.
+
+I don't see how it can work, something does need to create entries, else
+__nf_conntrack_find_get() never finds an entry, so init_conntrack() is
+never called, so table is always empty.
+
+> While I am here, may I ask: is there a "correct" way to re-enable conntrack that
+> was disabled in someone else's chain that happened to run before mine?
+
+You mean, 'cancelling' earlier NOTRACK rule? I'm not aware of such a
+feature.
