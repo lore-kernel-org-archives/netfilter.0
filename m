@@ -1,60 +1,45 @@
-From: =?UTF-8?B?Qmxhxb5laiBLcmFqxYjDoWs=?= <blazej.krajnak@gmail.com>
-Subject: Re: ulogd packet based logging with CT info
-Date: Sat, 21 Aug 2021 15:03:10 +0200
-Message-ID: <CAMEa=f=ooH=KVS753j7ByYGgG0HB=f_fGY6Q57aCO-vMAPY4vw@mail.gmail.com>
-References: <CAMEa=f=5g4rE42ii+HLXpiJ9LQshoVwfVfaGcEqrsSsXsgmh=A@mail.gmail.com>
- <20210815143118.GA15248@salvia> <CAMEa=fkU4sJjtPHkJ-ZvPOUtnZtOUJmfSqMy+Q4CKf4Lqdde4Q@mail.gmail.com>
- <CAMEa=f=nzCzM-9a5B0VEkjN5zXgCTqobGe-sgN2K0G_5QgjdAQ@mail.gmail.com>
- <20210818072256.GA4640@salvia> <CAMEa=fkLW2jCoQj982VtZe84YtXdTerZTyOMUaMK+5v0-EhUXQ@mail.gmail.com>
- <20210818115228.GA9294@salvia> <CAMEa=f=Z0Uh9jtLi_Le4pR9PSmoUxs71fb_73OHngSwXF4PTyA@mail.gmail.com>
- <20210819101628.GA2036@salvia> <CAMEa=f=Or70aNKCiw6=SRG0wQxbdG51HhP6jBZsbKhUcTqaNqA@mail.gmail.com>
- <20210819170330.GA7011@salvia> <CAMEa=f=wHTwJX6CjgOROcStTgDo-TdU6jb2xtpmNi=coHuPboA@mail.gmail.com>
+From: Sheran <specify@mailbox.org>
+Subject: How to disable network access for certain applications via
+ nftables?
+Date: Sat, 21 Aug 2021 16:54:32 +0200 (CEST)
+Message-ID: <1041550812.134073.1629557672733@office.mailbox.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=gwsH9ikGyVN3OFhBXmOcC+TpbY01uPZ8Bi/yTmf9GgY=;
-        b=eCmXlec1M2Ig3SQ32TZavViQm5Rj1Y6YjaVRmhxTPh/YilNOe+qVGqJFb851SZp0z1
-         2qwvO+4IR0FSX3M0z44zg/cyewimYevoJvnKoKg4Azr9k4CS3/4k4DAC2e9g698MxAKB
-         rQ10CLY6WXwmfR53H/Nl3oIOUIDGQSmbNft0WMqalhmDBHxsjlqec2SAE/jSx/fTGi0p
-         27ajZyH3BJzJE1xIzSv8JpfULDp0CiHWfSfeX6/IH+mpH73QXOyf8h91nY/yEkz6kWga
-         d2QXdFB6+M0auxlk4XJDII1X+CLKuv1lWWVL83WxvtdeAPio/bupDJ37iQwQwnlgl9+/
-         2YjQ==
-In-Reply-To: <CAMEa=f=wHTwJX6CjgOROcStTgDo-TdU6jb2xtpmNi=coHuPboA@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mailbox.org; h=
+        content-transfer-encoding:content-type:content-type:mime-version
+        :subject:subject:message-id:from:from:date:date:received; s=
+        mail20150812; t=1629557672; bh=kAT8mMeDZG1Z6TdnUTMRbjtDO7nGdPDoJ
+        J+gmagAkJM=; b=XOd75gq5ZDh5yC5V6zSkBYhfSKQVpMubwRNSR5Wg+GEP+0zZj
+        8yWKC6EC819f5YxZDujzmC/u+9caiDixAgJFCeA6gy5Rtu+q3n2uiOrg6VcjdXFm
+        vNh6T3TqUMSmMTNW32RD9Ww1Lax04DciMamJLT1J5yCL5suSF0jDvPugCyUSOtiS
+        ql2lvFqzi6gYFnxVelwZyFodw8LM0U6+mHRR/ZobB4pda4ane64Viin0iU8u1+5+
+        8InzZ5kbhaGGYSo5mJgD/TFJAqaxapV6cKezuhqBr2TFj/XMc+lTIU7SBQTzAyDp
+        8ihq+Gr+K1TnlqD73wAdeOyXEoo4aCNAbTHRQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+        t=1629557677;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=kAT8mMeDZG1Z6TdnUTMRbjtDO7nGdPDoJJ+gmagAkJM=;
+        b=dkLYJ0GVzY1oSGwLiiJerpOhkxkZWvuSnplYl8gb4TA+0Bv1lIfjhZE1LpS0Ld/e1otOqw
+        IiHaY5ne/omhCicaRdrdiDdh5cZurCJbYlHDfJeaVmxlcMH6wklbLXQ4ffeRrSl2JNC3lS
+        UxGvbPP7R35jXgDsXpaO2s7xvRmMRTpJKRQ9j3+fyWWaT81EaqYBa0M9sWYkXqnWjjD0Wj
+        6aaiDwkj3sjzOTxmpjgUY0Q+e2gyoA+RS5HE+rSjLp20veAfxw1sXNk9+qm+MQJpnZP3DP
+        IykY8ZEJ0yQ7wqJVXaD8g+W4RWz232FCGbUDsOtcWyLwjMVW2iMZOK96xFQ30w==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-I'm not sure if previous message was delivered to the list members (I
-don't see it on web archive).
-So once again:
+Hi,
 
-=C5=A1t 19. 8. 2021 o 19:03 Pablo Neira Ayuso <pablo@netfilter.org> nap=C3=
-=ADsal(a):
->
-> Better if you integrate it into the existing plugin.
->
-> Please, go ahead post it for review, it might just need a few
-> iterations before it gets merged into master.
->
-> Thanks.
+I want to use nftables to disable all network access of certain applications. In case it matters, these are applications run through the Wine compatibility layer (https://winehq.org). I'm new to nftables, but I have read a few guides and reference pages, and I can't figure out how to edit my nftables.conf to do that.
 
-Okay, I will prepare my first ever patch to open source world :)
+If it's possible with nftables, can you walk me through how?
 
-I just found an another strange behaviour of conntrack. I'm mirroring
-port on switch and mirrored data are coming to Linux server. That port
-on server is in bridge. In nftables I created table bridge filter with
-some CT rule to enable connection tracking on bridge.
-As I found I had to add another dummy interface to bridge, because
-conntrack was not working at all, if just one port in bridge.
-Now I see conntrack entries but all of them as UNREPLIED and just one
-way byte/packet counters are increasing (see attachment). Is it
-because the both ways are coming to server on the same port? Any easy
-workaround?
+If it's not, what other tool should I use?
 
-https://drive.google.com/file/d/1-aIXA13IicHcKHIaxkC1Hz2tRckU3YDm/view?usp=
-=3Dsharing
+Debian 11, kernel 5.10.0-8-amd64.
+
+Thank you
+Sheran
