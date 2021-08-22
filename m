@@ -1,48 +1,110 @@
-From: =?UTF-8?B?Qmxhxb5laiBLcmFqxYjDoWs=?= <blazej.krajnak@gmail.com>
-Subject: Re: ulogd packet based logging with CT info
-Date: Sat, 21 Aug 2021 18:21:34 +0200
-Message-ID: <CAMEa=f=F-eNh1MwsxF2ynFYSEAZ6Z1yRX-oNzpZSZrdLcREsDg@mail.gmail.com>
-References: <CAMEa=f=5g4rE42ii+HLXpiJ9LQshoVwfVfaGcEqrsSsXsgmh=A@mail.gmail.com>
- <20210815143118.GA15248@salvia> <CAMEa=fkU4sJjtPHkJ-ZvPOUtnZtOUJmfSqMy+Q4CKf4Lqdde4Q@mail.gmail.com>
- <CAMEa=f=nzCzM-9a5B0VEkjN5zXgCTqobGe-sgN2K0G_5QgjdAQ@mail.gmail.com>
- <20210818072256.GA4640@salvia> <CAMEa=fkLW2jCoQj982VtZe84YtXdTerZTyOMUaMK+5v0-EhUXQ@mail.gmail.com>
- <20210818115228.GA9294@salvia> <CAMEa=f=Z0Uh9jtLi_Le4pR9PSmoUxs71fb_73OHngSwXF4PTyA@mail.gmail.com>
- <20210819101628.GA2036@salvia> <CAMEa=f=Or70aNKCiw6=SRG0wQxbdG51HhP6jBZsbKhUcTqaNqA@mail.gmail.com>
- <20210819170330.GA7011@salvia> <CAMEa=f=wHTwJX6CjgOROcStTgDo-TdU6jb2xtpmNi=coHuPboA@mail.gmail.com>
- <CAMEa=f=ooH=KVS753j7ByYGgG0HB=f_fGY6Q57aCO-vMAPY4vw@mail.gmail.com>
+From: Turritopsis Dohrnii Teo En Ming <ceo.teo.en.ming@gmail.com>
+Subject: How to install iptables as a systemd service and allow outgoing
+ connection to Synology NAS
+Date: Sun, 22 Aug 2021 17:01:00 +0800
+Message-ID: <CAMEJMGHM0KACoXgB_UHOm9Uc9j_VRmDUR4G-6Gt+3_o+hMVerA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=kWSLEfmOuYOpuAdakVlSeH76cN/ZxpD5Yrna4GIEXQ0=;
-        b=nsfb02J9WE9ATEceyrPej1Oruwm3NUk/sfQYTaBwJEhDHD5QDCKSW2CG/WyQv/BoNK
-         cc4l+FB72UGdQK05y7hAKBE2RcEiYfnAM+4P7H8g24cF/Xyxn2SRvYyRFBUzJ0uxymnG
-         SPO7i082cegXjsz5Tr9chFZO7pHIHpRuPDrU10tKz45yKXHHZ8rJmao3ZZdNxtW+6b5n
-         PnoNtBArkOGcex9fbO0l9P6TAdZ1oI/851CFC+zV/aIx+8Fp0UDKEwNmKcCKyqSq7kqm
-         MhxT11ZzlgSGnUO6EdwmISn3BkGu+XxRdOOdX4/kq70Ad5xt28pAfTctagXFb2HGXZ/R
-         hbVw==
-In-Reply-To: <CAMEa=f=ooH=KVS753j7ByYGgG0HB=f_fGY6Q57aCO-vMAPY4vw@mail.gmail.com>
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=zrFBmnSSvhl4EwzdB4AFevTFLJRhnLw0LG46tKYlflM=;
+        b=RL25lzfcbItnBhSgQpDBkFAuqrzR90LGlOgPpB4z1mvjwbTHrL8sr+Bhbd66L7KitN
+         wIYXx6eDH1qJtqqKrTRbYjyeMVal/Jr3yxQDrmKHlrBYWWzMmPRPbo6LRXVkI9YXB7Yr
+         af4ZPlbLt1M6WDbcpkcFTYq4yCUhScIuB2eOwDHZ02PG/WJ2qP/bkCZdyNm1zMr+WgJv
+         ek1CNO/EELc+Uvx/jpBOcRBNUT3nQIbgt979AGVl1DqtrIGCGBUBASF3dcQ5e2QuYSF3
+         3IhfOowFrn7AkYCxd2oJvYJEdDhdj9nkXGw/un7nbeXQmhYQpf+6Hbw2uB6lPCSBQGh6
+         Ydlg==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
+Cc: ceo@teo-en-ming-corp.com
 
-so 21. 8. 2021 o 15:03 Bla=C5=BEej Kraj=C5=88=C3=A1k <blazej.krajnak@gmail.=
-com> nap=C3=ADsal(a):
-> I just found an another strange behaviour of conntrack. I'm mirroring
-> port on switch and mirrored data are coming to Linux server. That port
-> on server is in bridge. In nftables I created table bridge filter with
-> some CT rule to enable connection tracking on bridge.
-> As I found I had to add another dummy interface to bridge, because
-> conntrack was not working at all, if just one port in bridge.
-> Now I see conntrack entries but all of them as UNREPLIED and just one
-> way byte/packet counters are increasing (see attachment). Is it
-> because the both ways are coming to server on the same port? Any easy
-> workaround?
+Subject: How to install iptables as a systemd service and allow
+outgoing connection to Synology NAS
 
-I just figure it out. Switch was sending one way of traffic tagged
-with vlan. And also I had to turn off bridge MAC addresses learning
-(a.k.a ageing to 0). Now it works.
+Author: Mr. Turritopsis Dohrnii Teo En Ming (TARGETED INDIVIDUAL)
+Country: Singapore
+Date: 22 August 2021 Sunday Singapore Time
+
+Type of Publication: Plain Text
+
+Document version: 20210822.01
+
+DETAILED STEPS
+===============
+
+Save the existing iptables firewall rules to a file named
+/etc/sysconfig/iptables.
+
+# iptables-save > /etc/sysconfig/iptables
+
+Add the following lines to /etc/sysconfig/iptables, to allow outgoing
+connection to Synology NAS.
+Assume 192.168.1.5 is the IP address of the Synology NAS.
+
+# nano /etc/sysconfig/iptables
+
+-A OUTPUT -d 192.168.1.5/32 ! -o lo -p tcp -m tcp --dport 135:139 -j ACCEPT
+-A OUTPUT -d 192.168.1.5/32 ! -o lo -p udp -m udp --dport 135:139 -j ACCEPT
+-A OUTPUT -d 192.168.1.5/32 ! -o lo -p tcp -m tcp --sport 135:139 -j ACCEPT
+-A OUTPUT -d 192.168.1.5/32 ! -o lo -p udp -m udp --sport 135:139 -j ACCEPT
+-A OUTPUT -d 192.168.1.5/32 ! -o lo -p tcp -m tcp --dport 445 -j ACCEPT
+-A OUTPUT -d 192.168.1.5/32 ! -o lo -p udp -m udp --dport 445 -j ACCEPT
+-A OUTPUT -d 192.168.1.5/32 ! -o lo -p tcp -m tcp --sport 445 -j ACCEPT
+-A OUTPUT -d 192.168.1.5/32 ! -o lo -p udp -m udp --sport 445 -j ACCEPT
+
+Reload iptables firewall rules from /etc/sysconfig/iptables.
+
+# iptables-restore < /etc/sysconfig/iptables
+
+Install iptables systemd service.
+
+# yum install iptables-services
+
+Start iptables systemd service.
+
+# systemctl start iptables
+
+Allow iptables systemd service to start across reboots.
+
+# systemctl enable iptables
+
+# service iptables save
+
+Above command will save iptables firewall rules into /etc/sysconfig/iptables.
+
+Mr. Turritopsis Dohrnii Teo En Ming, 43 years old as of 22 August
+2021, is a TARGETED INDIVIDUAL living in Singapore. He is an IT
+Consultant with a System Integrator (SI)/computer firm in Singapore.
+He is an IT enthusiast.
+
+
+
+
+
+-----BEGIN EMAIL SIGNATURE-----
+
+The Gospel for all Targeted Individuals (TIs):
+
+[The New York Times] Microwave Weapons Are Prime Suspect in Ills of
+U.S. Embassy Workers
+
+Link:
+https://www.nytimes.com/2018/09/01/science/sonic-attack-cuba-microwave.html
+
+********************************************************************************************
+
+Singaporean Targeted Individual Mr. Turritopsis Dohrnii Teo En Ming's
+Academic Qualifications as at 14 Feb 2019 and refugee seeking attempts
+at the United Nations Refugee Agency Bangkok (21 Mar 2017), in Taiwan
+(5 Aug 2019) and Australia (25 Dec 2019 to 9 Jan 2020):
+
+[1] https://tdtemcerts.wordpress.com/
+
+[2] https://tdtemcerts.blogspot.sg/
+
+[3] https://www.scribd.com/user/270125049/Teo-En-Ming
+
+-----END EMAIL SIGNATURE-----
