@@ -1,80 +1,71 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: nft tool slow down due to large ipv4 addresses sets
-Date: Tue, 24 Aug 2021 12:07:15 +0200
-Message-ID: <20210824100715.GA1566@salvia>
-References: <CANCV4NNzVz-Ld+rgJ4a0ZLKXmkY6Xka1aEaV5TAGy-qS_QwEAg@mail.gmail.com>
+From: =?UTF-8?Q?Niko_Kortstr=C3=B6m?= <niko.kortstrom@gmail.com>
+Subject: Fwd: IP daddr filtering not working for non-routable address
+Date: Wed, 1 Sep 2021 10:40:06 +0300
+Message-ID: <CADjU3LkCskd4XSEWKX_WzWbwMmhd6hPhLT+zqGDE_-Ubch4V2Q@mail.gmail.com>
+References: <CADjU3LmddfsRShNVx-hArmivM=iUGvEFg28Gd90qyg7VRGqvbw@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CANCV4NNzVz-Ld+rgJ4a0ZLKXmkY6Xka1aEaV5TAGy-qS_QwEAg@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=hCTW/F1KXkmBaq70zWDajHV01ot5TBLzgV8yI3YhKdg=;
+        b=PJuq7h5b1yA8Quxf7qgjM5LUyiNES7EecX0IMfN8amecFeucHakeplWSwCJHL9jsYl
+         1LleKDl1Cu44WGfl39TfohK6lER+Iie5J4sm/mU14g0h0GqQ4F2LrAtNkwoQFx9fMVcV
+         4I9k+0gyoR42hngV2Bk9x0zK/oIMG8SRoC8azeUz1LXnUprZ9qWigld4vKiCmYTWrXPM
+         HG4eIx+YP+IEWNK8YiZ21v0/qOVS1I4a+StIOP8CRBaohuJOdhhL/vqUVAL5BbELlN12
+         CHm3lBs5i0E5aL3QV2+Qz1jTqZh2dFk1bdx1JmEhiuOl8Eo8yE3mmbhoktb9lvrulwZ9
+         ExAA==
+In-Reply-To: <CADjU3LmddfsRShNVx-hArmivM=iUGvEFg28Gd90qyg7VRGqvbw@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Cristian Constantin <const.crist@googlemail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="macroman"
+To: netfilter@vger.kernel.org
 
-Hi,
+Hi!
 
-On Wed, Aug 18, 2021 at 03:35:05PM +0200, Cristian Constantin wrote:
-> hi!
-> 
-> while running some tests on my system I have noticed a (pretty big)
-> slow down of the nft tool when manipulating ipv4 address sets.
-> 
-> system details:
-> root@firiel:/home/cco# nft -v
-> nftables v0.9.6 (Capital Idea #2)
-> root@firiel:/home/cco# uname -a
-> Linux firiel 5.8.0-63-generic #71-Ubuntu SMP Tue Jul 13 15:59:12 UTC
-> 2021 x86_64 x86_64 x86_64 GNU/Linux
-> 
-> there are 2 ipv4 sets, "blackhole-0" and "blackhole-1" which contain
-> about 1.3 million ip addresses. they were set up using something like
-> this:
-> 
-> nft add set ip filter blackhole-* {type ipv4_addr;}
-> 
-> this sets were not used in any rule and there was no significant
-> traffic on the machine.
-> the next step in my test was to add _one_ new ip address in either one
-> of the large sets or in a new empty one by using the 'nft' command
-> line.
-> this operation took a lot of time and 'top' showed the 'nft' process
-> using a lot of CPU time.
-> 
-> ## adding an ipv4 addr to a new almost empty set
-> root@firiel:/home/cco/nftables# time nft add element ip filter
-> blackhole-test "{10.0.0.3}"
-> 
-> real 0m22,652s
-> user 0m2,997s
-> sys 0m19,512s
-> 
-> ## adding an ipv4 address to an existing large set
-> root@firiel:/home/cco/nftables# time nft add element ip filter
-> blackhole-0 "{10.127.0.3}"
-> 
-> real 0m22,520s
-> user 0m2,939s
-> sys 0m19,485s
-> 
-> after removing the large ipv4 address sets, everything seems to be
-> back to normal in terms of how fast 'nft' utility is.
-> blackhole-test has at most 10 ipv4 addresses.
-> 
-> root@firiel:/home/cco/nftables# time nft add element ip filter
-> blackhole-test "{10.0.0.7}"
-> 
-> real 0m0,004s
-> user 0m0,001s
-> sys 0m0,004s
-> 
-> is this behaviour known and expected? or is there something
-> misconfigured on my system?
+We are testing following nftables rules (counters added for debugging purpo=
+ses):
 
-It's the userspace cache logic: it should skip populating the set for
-add / delete element commands.
+chain forward {
+    type filter hook forward priority filter - 1; policy drop;
+    jump ecpri-ip-filtering
+}
+chain filtering-logging {
+    counter packets 0 bytes 0 drop
+}
+chain ip-filtering {
+    iifname "rfo*" counter packets 835 bytes 615040
+    iifname "rfo*" ip daddr 172.21.1.18 accept
+    iifname "rfo*" counter packets 0 bytes 0
+    iifname "gre11E" accept
+    iifname "rfo*" counter packets 0 bytes 0
+    iifname "lo" accept
+    iifname "rfo*" counter packets 0 bytes 0
+    goto filtering-logging
+}
 
-Patch:
+We are sending test packets from a neighbouring host to an IP address
+that cannot be routed on this host.
+# tcpdump -i rfoe4.295
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on rfoe4.295, link-type EN10MB (Ethernet), capture size 262144 by=
+tes
+09:34:42.657004 IP 172.22.48.18.54178 > 10.0.0.1.51000: UDP, length 733
+09:34:43.975378 IP 172.22.48.18.54178 > 10.0.0.1.51000: UDP, length 325
+09:34:44.046110 IP 172.22.48.18.54178 > 10.0.0.1.51000: UDP, length 113
+09:34:44.187158 IP 172.22.48.18.54178 > 10.0.0.1.51000: UDP, length 106
+09:34:44.428949 IP 172.22.48.18.54178 > 10.0.0.1.51000: UDP, length 347
+09:34:44.854991 IP 172.22.48.18.54178 > 10.0.0.1.51000: UDP, length 130
+09:34:45.284802 IP 172.22.48.18.54178 > 10.0.0.1.51000: UDP, length 101
+09:34:45.446108 IP 172.22.48.18.54178 > 10.0.0.1.51000: UDP, length 733
+09:34:46.537990 IP 172.22.48.18.54178 > 10.0.0.1.51000: UDP, length 269
+09:34:46.572270 IP 172.22.48.18.54178 > 10.0.0.1.51000: UDP, length 269
+09:34:46.602943 IP 172.22.48.18.54178 > 10.0.0.1.51000: UDP, length 269
+09:34:46.673617 IP 172.22.48.18.54178 > 10.0.0.1.51000: UDP, length 325
+09:34:46.754555 IP 172.22.48.18.54178 > 10.0.0.1.51000: UDP, length 113
 
-https://patchwork.ozlabs.org/project/netfilter-devel/patch/20210824100418.29423-1-pablo@netfilter.org/
+Why are these packets being accepted as daddr matches?
+
+
+Niko Kortstr=C3=B6m
