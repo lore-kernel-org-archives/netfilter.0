@@ -1,47 +1,86 @@
-From: martin f krafft <madduck@madduck.net>
-Subject: Re: Cannot reference sets in later rules until next nft run
-Date: Fri, 3 Sep 2021 21:51:48 +1200
-Message-ID: <20210903095148.GB265393@lotus.rw.madduck.net>
-References: <20210903012502.GA246533@lotus.rw.madduck.net>
- <20210903074228.GA22010@salvia>
+From: Marcel Menzel <mail@mcl.gg>
+Subject: Upgrading from kernel 5.12.19 to 5.13.13 made "ct state invalid"
+ match IPv6 link-local addresses in tunnels
+Date: Sun, 5 Sep 2021 23:53:50 +0200
+Message-ID: <3c01d58e-7c52-7177-c101-f9c765360515@mcl.gg>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=madduck.net;
-        s=2015-11-14; t=1630662712;
-        bh=MqGzeein5+b83ie0cWE/UhPlRGRP968gUn+q3uI8POE=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=GxGVTnypYole3UkpIOM56oAdYLYNSHq8iJeRBKUrvaRjrC9u+tRSUhpgVB9mf7lEU
-         63GgK/HujGXir3mH8Pc+h9nJGev5lr11TKfGilQU/3eRHTi0vJa4Icm/1Mo/SP5jMf
-         PB5DIhy2kJwUTgBtG0efNUoAMApXMuvixMcjp3Ho=
-Content-Disposition: inline
-In-Reply-To: <20210903074228.GA22010@salvia>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mcl.gg; s=mail;
+        t=1630878830; bh=MzOje+OpAmXT/rBK5zS9K9+jeRGto+Yh7hO/EyDRiuI=;
+        h=From:Subject:To:Date;
+        b=PnCy+QpZtBYG0dF2MHvamnYgeew1vC1KZS6NzPwkHfXZiZcIx/yO3r2OPP/RMvZlX
+         Yp/8Nrnwrl3CB55fXI674v8fj/sFBcdKspRlQwiZ4qC4q46VEhsByxMSTZzLy4iYUq
+         N8pfRCLPBeYXm/8VrXCZ5jLT5oN8T2EVYtmfsdN9sfUiqEXJuwCrW4Q5P9y77chkD7
+         XI+g7zdpMUH7uCxshtxhXFH0zZWxIht5b7XCM+u5z8nGE4P7naMpgGJFY7ctSNUfA6
+         IaQ48c9dyiZc0AIjmu8YQNXAvnCqwTeugymcZZa6TlstKkfPQLq5lRmU88ZBUpO9dI
+         gnMQl2EqUoxsA==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"; format="flowed"; markup="markdown"
-To: netfilter users list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-Regarding the following, written by "Pablo Neira Ayuso" on 2021-09-03 at 09=
-:42 Uhr +0200:
->Just tried it here with lastest:
->
-># nft -v=20
->nftables v1.0.0 (Fearless Fosdick #2)
->
->WorksForMe(tm)
-[=E2=80=A6]
->This is an old cache bug that was fixed starting 0.9.9 IIRC.
+Hello list,
 
-Thanks for that. I failed to check that the version I had was way=20
-out of date. I have now installed 0.9.9 from Debian experimental and=20
-can confirm that this has been fixed.
+I have the following /etc/nftables.conf file:
 
-Thanks for your patience and sorry to everyone for the noise.
+        flush ruleset
 
---=20
-@martinkrafft | https://matrix.to/#/#madduck:madduck.net
- =20
-seen on an advertising for an elaborate swiss men's watch:
-   "almost as complicated as a woman. except it's on time"
- =20
-spamtraps: madduck.bogus@madduck.net
+        table inet firewall {
+            chain filter_input {
+                type filter hook input priority 0;
+
+                ct state invalid counter log drop
+
+                icmpv6 type { destination-unreachable, packet-too-big,
+time-exceeded, parameter-problem, echo-request } counter accept
+
+                iifname enp0s3 tcp dport 22 accept
+
+                accept
+            }
+        }
+
+I am running the following commands on two virtual machines (with GRE
+underlay IPs swapped of course):
+
+        ip l add vrf-test type vrf table 1
+        ip l set vrf-test up
+        ip tunnel add gre99 mode gre remote 10.10.10.37 local
+10.10.10.80 ttl 255
+        ip l set gre99 up
+
+Up to this point, I am still able to ping the link-local GRE overlay
+address between the VMs:
+
+        ping fe80::5efe:a0a:a50%gre99
+        PING fe80::5efe:a0a:a50%gre99(fe80::5efe:a0a:a50%gre99) 56 data
+bytes
+        64 Bytes from fe80::5efe:a0a:a50%gre99: icmp_seq=1 ttl=64
+time=0.187 ms
+
+Running the next command on one VM:
+
+        ip l set gre99 master vrf-test
+
+... I am no longer able to ping the overlay link-local address. For the
+"ct state invalid counter log drop", the kernel is logging the following:
+
+        IN=vrf-test OUT= MAC=45:00:00:80:ff:1d:40:00:ff:2f:53:a8:0a:0a
+SRC=fe80:0000:0000:0000:0000:5efe:0a0a:0a25
+DST=fe80:0000:0000:0000:0000:5efe:0a0a:0a50 LEN=104 TC=0 HOPLIMIT=64
+FLOWLBL=648307 PROTO=ICMPv6 TYPE=128 CODE=0 ID=2 SEQ=1
+
+Downgrading to kernel 5.12.19, I am able to ping the link-local address
+again with the above firewall rules active. This behavior triggers on
+GRE and on XFRM tunnels, haven't tested others (for example real NICs in
+a VRF).
+
+Is this intended behavior? When I have more time, I am going to try to
+see which version in between introduced this issue for me.
+
+Kind regards,
+
+Marcel
+
+
 
