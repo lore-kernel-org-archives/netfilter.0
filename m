@@ -1,43 +1,44 @@
-From: Daniel <tech@tootai.net>
-Subject: Error: conflicting intervals specified - Bullseye 0.9.8
-Date: Wed, 8 Sep 2021 11:33:02 +0200
-Message-ID: <ab060c71-e640-a67e-347f-60cd1d800932@tootai.net>
+From: Fatih USTA <fatihusta86@gmail.com>
+Subject: nft set type list
+Date: Thu, 9 Sep 2021 18:39:00 +0300
+Message-ID: <c2c8c1f2-05f0-be0d-0bc4-3f4ca23cc57d@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1631093583; bh=3NRqRJYier9+Xx8OJqf0cxxYOP3zGVu2bDvZ7gj09ws=;
-        h=To:From:Subject:Date:From;
-        b=oogL3oMOJmSmDa7QBJDpvsg6tLERn0jrMoDIulbSKFzQOVOqm0SFKxJd6qOgAORJS
-         ngRo46T7oq4vT+pikGNLhMKDBLyK3w5Lu+zRSLoFMblviRLehZRU2U8uwvD8FGjdHu
-         sANN0qGzNjaUmPZQc+2gTxJ1U5Hm/O0ZUEbrgTVU=
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1631093583; bh=3NRqRJYier9+Xx8OJqf0cxxYOP3zGVu2bDvZ7gj09ws=;
-        h=To:From:Subject:Date:From;
-        b=oogL3oMOJmSmDa7QBJDpvsg6tLERn0jrMoDIulbSKFzQOVOqm0SFKxJd6qOgAORJS
-         ngRo46T7oq4vT+pikGNLhMKDBLyK3w5Lu+zRSLoFMblviRLehZRU2U8uwvD8FGjdHu
-         sANN0qGzNjaUmPZQc+2gTxJ1U5Hm/O0ZUEbrgTVU=
-Content-Language: fr-FR
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=to:from:subject:message-id:date:user-agent:mime-version
+         :content-transfer-encoding:content-language;
+        bh=Shx0qZOy5g+t/6a9pKGJ9MVphodIQZ2rAUdGNz7PjuE=;
+        b=at1x6lT+jZ2xgHNLAhKV5V/u4T28MzHNu+o11ll/nleEdZAaYAEkEgvD13ZUqC9nKl
+         CVbl0heVaCb5muovCTzm6dl9R8QClwjhvP+ol6cJ3vnr6bNE6iFfazrFMsoJCt4toNo1
+         oU4Hcomf8yhr8ovqBZpwZT3+TEI6a6uqFh4gkC1QG3sRX6HQsGpAejrCjGi3ar6l+1gp
+         BdEokkNMqcWnOSMt4VBlKXCXO3sQHxHfLNjUTd40jypP1qgRXiivugAcSnP1ORvm7HjG
+         RYNTk2zJzI/hgU4jA3jLtLvZRFmkrVyg9hEirelIwIdol/lSpGM0zATX3vy/Bub6F3qW
+         7INQ==
+Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter list <netfilter@vger.kernel.org>
+To: Netfilter Users Mailing list <netfilter@vger.kernel.org>
 
 Hi,
 
-I get the following error with the above nft version, lan being the 
-interface name:
+I'm searching like "ipset list:set" type functionality for nft. I 
+couldn't find any documentation. I tried to translate with 
+"ipset-translate".
 
-add element ip6 nat fwdtoip_tcp.lan { 1-65534 : 2001:db8:27b:10:ff9b::, 
-1-65534 : 2001:db8:27b:ff9b::c0a8:ad1}
+Here ise return.
 
-with
+ipset-translate restore <<EOF
+create test list:set
+EOF
+add table inet global
+add set inet global test { type unknown; }
 
-add map ipv6_addr nat fwdtoip_tcp.lan { type inet_service : ipv6_addr\; 
-flags interval\; }
+Is there any other way for this?
 
-What's wrong here ? My goal being to redirect all (or range ports) 
-external traffic to another server.
+Thanks
 
-Thanks for any hint
--- 
-Daniel
+--
+Fatih USTA
+
