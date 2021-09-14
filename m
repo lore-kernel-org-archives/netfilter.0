@@ -1,43 +1,30 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: Haproxy's "send-proxy-v2" =?utf-8?Q?do?=
- =?utf-8?B?ZXNu4oCZdA==?= work when conntrack is disabled
-Date: Tue, 14 Sep 2021 16:30:23 +0200
-Message-ID: <20210914143023.GC25110@breakpoint.cc>
-References: <e15f6ae7-2a80-3dc2-2092-b59312a6e2cb@internetx.com>
+From: Matt Zagrabelny <mzagrabe@d.umn.edu>
+Subject: wiki.nftables.org down?
+Date: Tue, 14 Sep 2021 11:47:01 -0500
+Message-ID: <CAOLfK3V4v5SDZ0VJ+kQDDgnvP-xbb2+AgdRAmqTU4Y_ugVL=Pw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <e15f6ae7-2a80-3dc2-2092-b59312a6e2cb@internetx.com>
+DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p6.oit.umn.edu 4H88QT367Kz9vC9m
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=d.umn.edu; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=PWE6FcLGGfIxirIPPgo7maLwR8ZXeqaYYu3mIwsiROU=;
+        b=ccD4TksglIsYSqzUJYblPOKKCzasrAZbN6E2SED2qISCbcqaO/4+FAc63FBug13k8A
+         suLoGsAVXb4oZCLtm5H+t7GjdWx9BQGmwxlRlaI7LizyR42zSk/5wcQpkz/k+hTWEA3V
+         cCUjS+12CEysDu6NaRUOKU4X/kVX0WPLOd1qjuh4hcXiTpjiD3bpOJGzXSg///Z27Q5D
+         1VDTUJHjg9iOj9hrBN1yYWCt7krlQrzOltRqbgnuprJQfkQ81Yl039cKUMRa8GNYDbVg
+         Wqtdlyo/+1VKG6hk5EYmJ0Fm7+Pl8xWPxsT5xY4Es/tNVTlskqAfy/vx3Yy5vw2Q93NY
+         NPLQ==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"
-To: InterNetX - Marc Reymann <marc.reymann@internetx.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@vger.kernel.org>
 
-InterNetX - Marc Reymann <marc.reymann@internetx.com> wrote:
-> Haproxy and our Proxy app are running on the same server. Haproxy sends
-> requests to the Proxy app via the proxy prototcol:
->=20
-> listen web_proxy_app
->         bind *:443 ssl crt /etc/ssl/our-certs no-sslv3
->         server proxy-app /tmp/proxy.sock send-proxy-v2
->=20
-> As soon as we exclude port 443 from the conntrack table via nft like this:
->=20
-> chain PREROUTING_NOTRACK {
->         type filter hook prerouting priority -300 policy accept
->         iif VLAN1012 tcp dport { 80, 443 } notrack
->=20
-> the proxy app doesn=E2=80=99t receive the correct IP values:
->=20
-> -   Proxy          2 123.123.129.3 57893 234.236.46.5 443   <--- before,
-> good
-> -   Proxy          2 123.123.129.3 58217 123.123.129.3  58217  <--- after,
-> bad
->=20
-> Somehow the destination IP and port information gets lost.
+Greetings,
 
-<wild guess> "app" uses getsockopt SO_ORIGINAL_DST to fetch the
-destination address and has no error handling for this.
+It looks like wiki.nftables.org is down. Is anyone else experiencing
+this? Any idea about an ETA for restoring service?
 
-Really, no idea.  How does the application obtain those addresses?
+Thanks,
+
+-m
