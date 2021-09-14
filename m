@@ -1,44 +1,158 @@
-From: Fatih USTA <fatihusta86@gmail.com>
-Subject: nft set type list
-Date: Thu, 9 Sep 2021 18:39:00 +0300
-Message-ID: <c2c8c1f2-05f0-be0d-0bc4-3f4ca23cc57d@gmail.com>
+From: InterNetX - Marc Reymann <marc.reymann@internetx.com>
+Subject: =?UTF-8?Q?Haproxy=27s_=22send-proxy-v2=22_doesn=e2=80=99t_work_when?=
+ =?UTF-8?Q?_conntrack_is_disabled?=
+Date: Tue, 14 Sep 2021 15:40:44 +0200
+Message-ID: <e15f6ae7-2a80-3dc2-2092-b59312a6e2cb@internetx.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256; boundary="------------ms030506090106050507060203"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:from:subject:message-id:date:user-agent:mime-version
-         :content-transfer-encoding:content-language;
-        bh=Shx0qZOy5g+t/6a9pKGJ9MVphodIQZ2rAUdGNz7PjuE=;
-        b=at1x6lT+jZ2xgHNLAhKV5V/u4T28MzHNu+o11ll/nleEdZAaYAEkEgvD13ZUqC9nKl
-         CVbl0heVaCb5muovCTzm6dl9R8QClwjhvP+ol6cJ3vnr6bNE6iFfazrFMsoJCt4toNo1
-         oU4Hcomf8yhr8ovqBZpwZT3+TEI6a6uqFh4gkC1QG3sRX6HQsGpAejrCjGi3ar6l+1gp
-         BdEokkNMqcWnOSMt4VBlKXCXO3sQHxHfLNjUTd40jypP1qgRXiivugAcSnP1ORvm7HjG
-         RYNTk2zJzI/hgU4jA3jLtLvZRFmkrVyg9hEirelIwIdol/lSpGM0zATX3vy/Bub6F3qW
-         7INQ==
-Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter Users Mailing list <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-Hi,
+This is a cryptographically signed message in MIME format.
 
-I'm searching like "ipset list:set" type functionality for nft. I 
-couldn't find any documentation. I tried to translate with 
-"ipset-translate".
+--------------ms030506090106050507060203
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-Here ise return.
+Hello netfilter team,
 
-ipset-translate restore <<EOF
-create test list:set
-EOF
-add table inet global
-add set inet global test { type unknown; }
+We have the following (working) setup:
 
-Is there any other way for this?
+Haproxy and our Proxy app are running on the same server. Haproxy sends=20
+requests to the Proxy app via the proxy prototcol:
 
-Thanks
+listen web_proxy_app
+         bind *:443 ssl crt /etc/ssl/our-certs no-sslv3
+         server proxy-app /tmp/proxy.sock send-proxy-v2
 
---
-Fatih USTA
+As soon as we exclude port 443 from the conntrack table via nft like this=
+:
 
+chain PREROUTING_NOTRACK {
+         type filter hook prerouting priority -300 policy accept
+         iif VLAN1012 tcp dport { 80, 443 } notrack
+
+the proxy app doesn=E2=80=99t receive the correct IP values:
+
+-   Proxy          2 123.123.129.3 57893 234.236.46.5 443   <--- before, =
+
+good
+-   Proxy          2 123.123.129.3 58217 123.123.129.3  58217  <---=20
+after, bad
+
+Somehow the destination IP and port information gets lost.
+
+I've asked the Haproxy community if their software uses information from =
+
+the conntrack table in any way which is apparently not the case:
+
+https://discourse.haproxy.org/t/send-proxy-v2-doesnt-work-when-conntrack-=
+is-disabled/6891
+
+Could this have something to do with netfilter?
+
+Marc Reymann
+System Engineer
+Team Technical Projects & Solutions
+
+--=20
+InterNetX GmbH
+Johanna-Dachs-Str. 55
+93055 Regensburg
+Germany
+
+Tel. +49 941 59559-489
+Fax +49 941 59579-55
+
+www.internetx.com
+www.facebook.com/InterNetX
+www.twitter.com/InterNetX
+
+Gesch=C3=A4ftsf=C3=BChrer:
+Thomas M=C3=B6rz (CEO), Hakan Ali
+Amtsgericht Regensburg, HRB 7142
+
+
+--------------ms030506090106050507060203
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCC
+C9cwggWBMIIEaaADAgECAhAOpcAmnby/IYsJT24AKwIjMA0GCSqGSIb3DQEBCwUAMGUxCzAJ
+BgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2Vy
+dC5jb20xJDAiBgNVBAMTG0RpZ2lDZXJ0IFNIQTIgQXNzdXJlZCBJRCBDQTAeFw0yMDEyMDgw
+MDAwMDBaFw0yMzEyMDcyMzU5NTlaMIGcMQswCQYDVQQGEwJERTEPMA0GA1UECBMGQmF5ZXJu
+MRMwEQYDVQQHEwpSZWdlbnNidXJnMRcwFQYDVQQKEw5JbnRlck5ldFggR21iSDEjMCEGA1UE
+AwwabWFyYy5yZXltYW5uQGludGVybmV0eC5jb20xKTAnBgkqhkiG9w0BCQEWGm1hcmMucmV5
+bWFubkBpbnRlcm5ldHguY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAowzG
+mrpVUa6yNJKNquPHC2mrUhA26HBzMw0Dtoudhu6K5tpHmd0kde7DGEVVzVCFTVvR8hXSiLr5
+3ZmY+hqbj3AbkWVBZWq+ef13Fo4NWsoigCjkqjugnX54RHave0tENE8MdXO1QTd2Q7tZkAc0
+D8voGofKfVXPVna0GiooUU4LqjHmeElXvA9k7y3QyKYNud8CaWgv9ohyTrXCsL/mO7zGQS+8
+AfJOzqLxUJCZz18ZkIiDUIxJgL1R2S2Hz8PfEZB1LG/hwwWa0Lp1LiBS6g5n1h1cgmIcJ3Kh
+d1FhgO2lmDo0FQGgE9vhXnLkc6YSBhtzPTxh2YRBcISwckwfBQIDAQABo4IB8zCCAe8wHwYD
+VR0jBBgwFoAU5wIjgABP2Ne8lAvZP3Q5STI8inkwHQYDVR0OBBYEFBKhgcoBBcb4TDSTR/Ui
+CbCBr9IkMAwGA1UdEwEB/wQCMAAwJQYDVR0RBB4wHIEabWFyYy5yZXltYW5uQGludGVybmV0
+eC5jb20wDgYDVR0PAQH/BAQDAgWgMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDBD
+BgNVHSAEPDA6MDgGCmCGSAGG/WwEAQIwKjAoBggrBgEFBQcCARYcaHR0cHM6Ly93d3cuZGln
+aWNlcnQuY29tL0NQUzCBiAYDVR0fBIGAMH4wPaA7oDmGN2h0dHA6Ly9jcmwzLmRpZ2ljZXJ0
+LmNvbS9EaWdpQ2VydFNIQTJBc3N1cmVkSURDQS1nMy5jcmwwPaA7oDmGN2h0dHA6Ly9jcmw0
+LmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydFNIQTJBc3N1cmVkSURDQS1nMy5jcmwweQYIKwYBBQUH
+AQEEbTBrMCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20wQwYIKwYBBQUH
+MAKGN2h0dHA6Ly9jYWNlcnRzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydFNIQTJBc3N1cmVkSURD
+QS5jcnQwDQYJKoZIhvcNAQELBQADggEBABBIh0XN3OfukMc8FHWFBZ1cnJ1otyzligZV0NGL
+jd0A1UQ7z9i+6lhmoXWFA8zolJnznnWNVOl50GtnejgQcUSadhBbZ6ytTWqNFCHYb4RY+eK5
+MBKG2rXqf24vxqTc0YcTgGILZ/QfnNg22mY69wJ58akxKYS0SV0lIfJfzrTjpHd3ze3cxoK/
+47t8UW8I/MvRFY4lx+G9HEJALB1VbbqD59yh5pBs1IE00e1kvIJwPE0ZwE1mprTdrQdzj34p
+Zu5VFWbREqog3efrhRzrMaJ87SYwjUmIhdoR4DmnEL9fn42xGeUpNJSdb1nZx8FV247zuG5T
+NNYbMyp6U0uFChkwggZOMIIFNqADAgECAhAErnlgZmaQGrnFf6ZsW9zNMA0GCSqGSIb3DQEB
+CwUAMGUxCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3
+dy5kaWdpY2VydC5jb20xJDAiBgNVBAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBDQTAe
+Fw0xMzExMDUxMjAwMDBaFw0yODExMDUxMjAwMDBaMGUxCzAJBgNVBAYTAlVTMRUwEwYDVQQK
+EwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAiBgNVBAMTG0Rp
+Z2lDZXJ0IFNIQTIgQXNzdXJlZCBJRCBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
+ggEBANz4ESM/arXvwCd5Gy0Fh6IQQzHfDtQVG093pCLOPoxw8L4Hjt0nKrwBHbYsCsrdaVgf
+Qe1qBR/aY3hZHiIsK/i6fsk1O1bxH3xCfiWwIxnGRTjXPUT5IHxgrhywWhgEvo8796nwlJqm
+DGNJtkEXU0AyvU/mUHpQHyVF6PGJr83/Xv9Q8/AXEf+9xYn1vWK52PuORQSFbZnNxUhN/Sar
+AjZF6jbXX2riGoJBCtzp2fWRF47GIa04PBPmHn9mnNVN2Uba9s9Sp307JMO0wVE1xpvr1O9+
+5HsD4US9egs34E/LgooNcRjkpuCJLBvzsnM8wbCSnhh9vat9xX0IoSzCn3MCAwEAAaOCAvgw
+ggL0MBIGA1UdEwEB/wQIMAYBAf8CAQAwDgYDVR0PAQH/BAQDAgGGMDQGCCsGAQUFBwEBBCgw
+JjAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZGlnaWNlcnQuY29tMIGBBgNVHR8EejB4MDqg
+OKA2hjRodHRwOi8vY3JsNC5kaWdpY2VydC5jb20vRGlnaUNlcnRBc3N1cmVkSURSb290Q0Eu
+Y3JsMDqgOKA2hjRodHRwOi8vY3JsMy5kaWdpY2VydC5jb20vRGlnaUNlcnRBc3N1cmVkSURS
+b290Q0EuY3JsMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEFBQcDBDCCAbMGA1UdIASCAaow
+ggGmMIIBogYKYIZIAYb9bAACBDCCAZIwKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3LmRpZ2lj
+ZXJ0LmNvbS9DUFMwggFkBggrBgEFBQcCAjCCAVYeggFSAEEAbgB5ACAAdQBzAGUAIABvAGYA
+IAB0AGgAaQBzACAAQwBlAHIAdABpAGYAaQBjAGEAdABlACAAYwBvAG4AcwB0AGkAdAB1AHQA
+ZQBzACAAYQBjAGMAZQBwAHQAYQBuAGMAZQAgAG8AZgAgAHQAaABlACAARABpAGcAaQBDAGUA
+cgB0ACAAQwBQAC8AQwBQAFMAIABhAG4AZAAgAHQAaABlACAAUgBlAGwAeQBpAG4AZwAgAFAA
+YQByAHQAeQAgAEEAZwByAGUAZQBtAGUAbgB0ACAAdwBoAGkAYwBoACAAbABpAG0AaQB0ACAA
+bABpAGEAYgBpAGwAaQB0AHkAIABhAG4AZAAgAGEAcgBlACAAaQBuAGMAbwByAHAAbwByAGEA
+dABlAGQAIABoAGUAcgBlAGkAbgAgAGIAeQAgAHIAZQBmAGUAcgBlAG4AYwBlAC4wHQYDVR0O
+BBYEFOcCI4AAT9jXvJQL2T90OUkyPIp5MB8GA1UdIwQYMBaAFEXroq/0ksuCMS1Ri6enIZ3z
+bcgPMA0GCSqGSIb3DQEBCwUAA4IBAQBO1Iknuf0dh3d+DygFkPEKL8k7Pr2TnJDGr/qRUYcy
+VGvoysFxUVyZjrX64GIZmaYHmnwTJ9vlAqKEEtkV9gpEV8Q0j21zHzrWoAE93uOC5EVrsusl
+/YBeHTmQvltC9s6RYOP5oFYMSBDOM2h7zZOr8GrLT1gPuXtdGwSBnqci4ldJJ+6Skwi+aQhT
+AjouXcgZ9FCATgLZsF2RtJOH+ZaWgVVAjmbtgti7KF/tTGHtBlgoGVMRRLxHICmyBGzYiVSZ
+O3XbZ3gsHpJ4xlU9WBIRMm69QwxNNNt7xkLb7L6rm2FMBpLjjt8hKlBXBMBgojXVJJ5mNwlJ
+z9X4ZbPg4m7CMYIDlzCCA5MCAQEweTBlMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNl
+cnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBT
+SEEyIEFzc3VyZWQgSUQgQ0ECEA6lwCadvL8hiwlPbgArAiMwDQYJYIZIAWUDBAIBBQCgggHv
+MBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZIhvcNAQkFMQ8XDTIxMDkxNDEzNDA0
+NFowLwYJKoZIhvcNAQkEMSIEIIu86BJq2+tv3W8dgnmNFn894Zm2DloPrflprL7Q+ZtuMGwG
+CSqGSIb3DQEJDzFfMF0wCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAO
+BggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgw
+gYgGCSsGAQQBgjcQBDF7MHkwZTELMAkGA1UEBhMCVVMxFTATBgNVBAoTDERpZ2lDZXJ0IElu
+YzEZMBcGA1UECxMQd3d3LmRpZ2ljZXJ0LmNvbTEkMCIGA1UEAxMbRGlnaUNlcnQgU0hBMiBB
+c3N1cmVkIElEIENBAhAOpcAmnby/IYsJT24AKwIjMIGKBgsqhkiG9w0BCRACCzF7oHkwZTEL
+MAkGA1UEBhMCVVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2lj
+ZXJ0LmNvbTEkMCIGA1UEAxMbRGlnaUNlcnQgU0hBMiBBc3N1cmVkIElEIENBAhAOpcAmnby/
+IYsJT24AKwIjMA0GCSqGSIb3DQEBAQUABIIBAJpBy+fZP96n6mWTSau+hgFjLGl7Lm9zc4xX
+3AlPMn2YhJru+Px/UfDXrzsBsYvwC/XLh3vDbKH6KU5oUa2wN22i5GwQJtxEyE+beIzSON9f
+JFCn2xvnRL5VjUv9e/YiKenojdowmjM47QMBmi7K3HDqo2MDE2RRdFTGrh4aI3APUSlJcdds
+eHcta0G5jeWfqsJWxEyQFjBzDALxDZQw8KD6G1iTsqA3csAu/RHeOYUdl1jdaX6QLfsxWZRv
+bMrGnsfWIqTSV1uyQ818AOGLRQxhzZqTb8936UJ+YFHHRgvLuPav9oBx02v2FzqaHzIeBmrN
+rxPpKhXmkjhdCcDgMW8AAAAAAAA=
+--------------ms030506090106050507060203--
