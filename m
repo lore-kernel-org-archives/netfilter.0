@@ -1,77 +1,35 @@
-From: Cristian Constantin <const.crist@googlemail.com>
-Subject: Re: base chains with same hook, same priority
-Date: Wed, 15 Sep 2021 13:44:47 +0200
-Message-ID: <CANCV4NOfOrfqeeNsQU5_Fkgn0k_FXj0paYBt2Gcz78-CJXeU2A@mail.gmail.com>
-References: <CANCV4NPRwaBeu5R4q90PeTwSgj7hD7wVhGVDAPX7rR7JHP-hvQ@mail.gmail.com>
+From: l0f4r0@tuta.io
+Subject: Re: wiki.nftables.org down?
+Date: Wed, 15 Sep 2021 20:01:39 +0200 (CEST)
+Message-ID: <Mjebk----3-2@tuta.io>
+References: <CAOLfK3V4v5SDZ0VJ+kQDDgnvP-xbb2+AgdRAmqTU4Y_ugVL=Pw@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=6xXr+jagwMXCXZceSBvKwXXsozMidYquiOKLbiofUcA=;
-        b=PsjJ6yHZ26XSyk9vp1iDqld42C1jLzlrd5bsP1N1173ZW2D5Mqoo9XC8e9ZH8VQRMJ
-         1zv6f4zrkibcf4wBZzXbie7v92ciNA80KqtG8FiLhXSqKRU04wW9jwXThFb4SeiOI5kl
-         e2LN/4zbeN+BOyne06AfaPQJWPqAwzWMbOlqzRVrn9tWfW3Z/PKAdLWIGSubwgY9tSS5
-         WGrIKUgkmnouSQ2BkdhvaK0RJ/QgtUdw2odzA20xMZUd2K4L9pNSCG9IK8FqEq0O7g2z
-         o4nf07+pjYHIkKxTClnYrDmY4k5Y38fHUQfFCoZAw7OF43PK0t5MJqqWLHv9aOU6TsU1
-         zhcQ==
-In-Reply-To: <CANCV4NPRwaBeu5R4q90PeTwSgj7hD7wVhGVDAPX7rR7JHP-hvQ@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1631728899;
+        s=s1; d=tuta.io;
+        h=From:From:To:To:Subject:Subject:Content-Description:Content-ID:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Cc:Date:Date:In-Reply-To:In-Reply-To:MIME-Version:MIME-Version:Message-ID:Message-ID:Reply-To:References:References:Sender;
+        bh=4vsZj2cU3fYyPtrN04JdlbXx3qjyq+e9jXorl6pNefo=;
+        b=ZU/RAAMr9NUJYxs/1JxC078bqBCttu5AtJhLCN9N2gHcFN9OV6LkLalCPl9+BzZJ
+        yz3u4zmbqgQmD2y4u3XfRW0JG9WQ2ChW/+pYahdYckclvIAK2kcIrX4UJSlnBNBdyUF
+        mAQ9/Y701ldYFyFvLfUK0QigLsXyMDTGkUE6kPTaIx3Rcvmd/Y8nowTxtDDUqP0XXGQ
+        3bruBd6P+FZx6ei9quByJrp5LrUPZRTgzNcQLy+pqIp+HTJhMZKu5SqPlB9Fy5JPwOG
+        fIwboJCvD64A2amqbt+VWfmy5St1vog+f3i2qKIhA8cifBSvs9gJns4cXf8DmErEXwH
+        OkUzwRSsUQ==
+In-Reply-To: <CAOLfK3V4v5SDZ0VJ+kQDDgnvP-xbb2+AgdRAmqTU4Y_ugVL=Pw@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-cristian: one interesting side-effect...
+Hi,
 
-after having two chains with the same hook, priority in the same table
-(as above), `iptables` cmd line tool reports the respective table as
-incompatible...
+14 sept. 2021, 18:47 de mzagrabe@d.umn.edu:
 
-# /usr/sbin/iptables -t filter -S --wait
-iptables v1.8.5 (nf_tables): table `filter' is incompatible, use 'nft' tool.
+> It looks like wiki.nftables.org is down. Is anyone else experiencing
+> this?=20
+>
+UP for me, including using web services like=C2=A0https://downforeveryoneor=
+justme.com/wiki.nftables.org?proto=3Dhttps
 
-# iptables -L
-iptables v1.8.5 (nf_tables): table `filter' is incompatible, use 'nft' tool.
-
-
-On Wed, Sep 15, 2021 at 11:38 AM Cristian Constantin
-<const.crist@googlemail.com> wrote:
->
-> hi!
->
-> quote from the wiki page:
->
-> https://wiki.nftables.org/wiki-nftables/index.php/Configuring_chains
->
-> "[...] It's possible to give two base chains the same priority, but
-> there is no guaranteed evaluation order of base chains with identical
-> priority that are attached to the same hook location."
-> I have tested this on my system and it is actually allowed by `nft`, kernel.
->
-> root@firiel:/home/cco# uname -a
-> Linux firiel 5.8.0-63-generic #71-Ubuntu SMP Tue Jul 13 15:59:12 UTC
-> 2021 x86_64 x86_64 x86_64 GNU/Linux
-> root@firiel:/home/cco# lsb_release
-> LSB Version: core-11.1.0ubuntu2-noarch:printing-11.1.0ubuntu2-noarch:security-11.1.0ubuntu2-noarch
-> root@firiel:/home/cco# nft -v
-> nftables v0.9.6 (Capital Idea #2)
-> root@firiel:/home/cco# nft -a list table filter
-> table ip filter { # handle 3
-> chain INPUT { # handle 1
-> type filter hook input priority filter; policy accept;
-> }
-> ...
-> chain TEST { # handle 579
-> type filter hook input priority filter; policy accept;
-> }
->
-> could someone please show me a use case for using multiple chains
-> having the same hook and the same priority? (i.e. taking into account
-> that _most of the time_ rule priority and thus evaluation order is
-> important)
->
-> and, in a more general sense, why is this configuration allowed (i.e.
-> base chains with same hook, same priority)?
->
-> thanks,
-> cristian
+Best regards,
+l0f4r0
