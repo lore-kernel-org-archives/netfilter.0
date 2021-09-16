@@ -1,35 +1,36 @@
-From: l0f4r0@tuta.io
-Subject: Re: wiki.nftables.org down?
-Date: Wed, 15 Sep 2021 20:01:39 +0200 (CEST)
-Message-ID: <Mjebk----3-2@tuta.io>
-References: <CAOLfK3V4v5SDZ0VJ+kQDDgnvP-xbb2+AgdRAmqTU4Y_ugVL=Pw@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Error: conflicting intervals specified - Bullseye 0.9.8
+Date: Thu, 16 Sep 2021 11:29:24 +0200
+Message-ID: <20210916092924.GB31336@salvia>
+References: <ab060c71-e640-a67e-347f-60cd1d800932@tootai.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1631728899;
-        s=s1; d=tuta.io;
-        h=From:From:To:To:Subject:Subject:Content-Description:Content-ID:Content-Type:Content-Type:Content-Transfer-Encoding:Content-Transfer-Encoding:Cc:Date:Date:In-Reply-To:In-Reply-To:MIME-Version:MIME-Version:Message-ID:Message-ID:Reply-To:References:References:Sender;
-        bh=4vsZj2cU3fYyPtrN04JdlbXx3qjyq+e9jXorl6pNefo=;
-        b=ZU/RAAMr9NUJYxs/1JxC078bqBCttu5AtJhLCN9N2gHcFN9OV6LkLalCPl9+BzZJ
-        yz3u4zmbqgQmD2y4u3XfRW0JG9WQ2ChW/+pYahdYckclvIAK2kcIrX4UJSlnBNBdyUF
-        mAQ9/Y701ldYFyFvLfUK0QigLsXyMDTGkUE6kPTaIx3Rcvmd/Y8nowTxtDDUqP0XXGQ
-        3bruBd6P+FZx6ei9quByJrp5LrUPZRTgzNcQLy+pqIp+HTJhMZKu5SqPlB9Fy5JPwOG
-        fIwboJCvD64A2amqbt+VWfmy5St1vog+f3i2qKIhA8cifBSvs9gJns4cXf8DmErEXwH
-        OkUzwRSsUQ==
-In-Reply-To: <CAOLfK3V4v5SDZ0VJ+kQDDgnvP-xbb2+AgdRAmqTU4Y_ugVL=Pw@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <ab060c71-e640-a67e-347f-60cd1d800932@tootai.net>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Daniel <tech@tootai.net>
+Cc: Netfilter list <netfilter@vger.kernel.org>
 
-Hi,
+On Wed, Sep 08, 2021 at 11:33:02AM +0200, Daniel wrote:
+> Hi,
+> 
+> I get the following error with the above nft version, lan being the
+> interface name:
+> 
+> add element ip6 nat fwdtoip_tcp.lan { 1-65534 : 2001:db8:27b:10:ff9b::,
+> 1-65534 : 2001:db8:27b:ff9b::c0a8:ad1}
+> 
+> with
+> 
+> add map ipv6_addr nat fwdtoip_tcp.lan { type inet_service : ipv6_addr\;
+> flags interval\; }
+> 
+> What's wrong here ? My goal being to redirect all (or range ports) external
+> traffic to another server.
 
-14 sept. 2021, 18:47 de mzagrabe@d.umn.edu:
+Could you develop what your use-case is?
 
-> It looks like wiki.nftables.org is down. Is anyone else experiencing
-> this?=20
->
-UP for me, including using web services like=C2=A0https://downforeveryoneor=
-justme.com/wiki.nftables.org?proto=3Dhttps
-
-Best regards,
-l0f4r0
+Keys uniquely identify an entry in a map, if you define two entries
+with the same key, you hit this conflict interval error.
