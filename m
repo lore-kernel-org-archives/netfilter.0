@@ -1,49 +1,43 @@
-From: Daniel <tech@tootai.net>
-Subject: Re: Error: conflicting intervals specified - Bullseye 0.9.8
-Date: Thu, 16 Sep 2021 15:33:10 +0200
-Message-ID: <ba21fb74-2e97-7c86-685f-841abae7413f@tootai.net>
-References: <ab060c71-e640-a67e-347f-60cd1d800932@tootai.net>
- <20210916092924.GB31336@salvia>
- <48e95c8a-2469-08dd-0620-55187252653c@tootai.net>
- <20210916125858.GA9451@salvia>
+From: Martin Gignac <martin.gignac@gmail.com>
+Subject: Re: wiki.nftables.org down?
+Date: Thu, 16 Sep 2021 14:43:26 -0400
+Message-ID: <CANf9dFMPkm+iSit6JZ-4fxAq069HM9VpG33TWNTDEeHhYMNvXQ@mail.gmail.com>
+References: <CAOLfK3V4v5SDZ0VJ+kQDDgnvP-xbb2+AgdRAmqTU4Y_ugVL=Pw@mail.gmail.com>
+ <Mjebk----3-2@tuta.io>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1631799191; bh=xrWtAmUZO0hnjMsPGy1cNq8LBP0EJ0EaQ6oZz6jd9x0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=dKyGu7O8VBVoxtv1HfaMIBwzQ14P11s2EbxXxYtshtRVower5YEARwvsl3a/xduvk
-         995O8Cb2u1MsVj2EESDEuyxTES2r29TvK6M2TBPuO+Hz4kV/J1ZzdnWn9WdkxeoNxy
-         k2VlZFaZA2bxwM8rvC7N/RUEMrDJqrkF3BEjpTqU=
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1631799190; bh=xrWtAmUZO0hnjMsPGy1cNq8LBP0EJ0EaQ6oZz6jd9x0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=LAo5MBC6U83ffwUhu286D4vBnhPBCUHIRCJOL/Iy1tGTypGP4Xk8yHkf6JFkI17HY
-         e7COL5VagUEZS+w8MjCRBaCjbAajCEtypsY+ogVhrfZfevD7zthkZ9QgomfmFc1E/8
-         VrV6Ql74TH2VkecFvSi9omuFzmdEaaB6hI32B0Js=
-In-Reply-To: <20210916125858.GA9451@salvia>
-Content-Language: fr-FR
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=Ueq8pSugBHmll9Co8hMF8zJbiRO5G6H6RGpVuOdBIC0=;
+        b=DxhcwexVOnzccWhyyt42pU9h9nKrrUWhgnf7v3VflYE3SBaQ2laIu6snSIzew2ew1G
+         h4gAre/Df4kRUUrhsKxt8jwupX1nIqHV8cStdJVsRawPYif0lLZUIYwRs9aC0bFnc2w/
+         xkoaOyYwOH9w7ES99RV34oUapeB+bl1rb2Pyg2FZsowARW9IEUPc2xOg4a7adOIv2lEJ
+         rGGOTpLsN9dW2yXuq2HolEFs4KfCA/xh+bLbKNGPVGHDk8mCves2XQgkPg/ck9DDV0QX
+         KHWlBmhbfSsbaol+7F1ijy12sGUlXoPpwtQQ6ZTSGJijOAl4fHR8bLmCzTaG99zTxmo6
+         0doA==
+In-Reply-To: <Mjebk----3-2@tuta.io>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Netfilter list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Le 16/09/2021 à 14:58, Pablo Neira Ayuso a écrit :
+It's up for me now, but Matt Zagrabelny, it was indeed down for me as
+well when you originally wrote your mail.
 
-[...]
-> Keys uniquely identify an entry in a map, if you define two entries
->>> with the same key, you hit this conflict interval error.
->> I see this like forward port:ip to port:anotherip
-> so you want to redirect all ports except a few of them?
->
->    add map x mymap { type ipv4_addr : ipv4_addr ; }
->    add rule x y ip protocol { tcp, udp } th dport 1-65534 dnat to ip saddr map @mymap
->
-> This allows you to dnat depending on the IP source address, skipping 0
-> and 65535 for TCP and UDP.
->
-> I'm not sure yet if this is what you need though
-That's my goal,  thanks !
+-Martin
 
--- 
-Daniel
+
+On Wed, Sep 15, 2021 at 2:09 PM <l0f4r0@tuta.io> wrote:
+>
+> Hi,
+>
+> 14 sept. 2021, 18:47 de mzagrabe@d.umn.edu:
+>
+> > It looks like wiki.nftables.org is down. Is anyone else experiencing
+> > this?
+> >
+> UP for me, including using web services like https://downforeveryoneorjustme.com/wiki.nftables.org?proto=https
+>
+> Best regards,
+> l0f4r0
