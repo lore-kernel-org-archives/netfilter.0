@@ -1,98 +1,124 @@
-From: Daniel <tech@tootai.net>
-Subject: Re: Error: conflicting intervals specified - Bullseye 0.9.8
-Date: Fri, 17 Sep 2021 12:18:12 +0200
-Message-ID: <24b4d340-d951-103b-27d4-9bb97afd9c4c@tootai.net>
-References: <ab060c71-e640-a67e-347f-60cd1d800932@tootai.net>
- <20210916092924.GB31336@salvia>
- <48e95c8a-2469-08dd-0620-55187252653c@tootai.net>
- <20210916125858.GA9451@salvia>
+From: Matt Mercer <matt.mercer@menlosecurity.com>
+Subject: conntrackd internal cache growing indefinitely in active-active setup
+Date: Fri, 17 Sep 2021 12:37:12 -0700
+Message-ID: <CANQxXxoHEb=v8WoFPsr29cNPBYo5NYAOH4UoPNkDUX8DRk_jrg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1631873893; bh=nIOanO5FQKIL/d9fMTS3nlanA8/Mspk9GHn0zuV9S7s=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=XucD1Z5g0fDsEOWj+Eun4jjir6YyRhipFEq6QdYXKsdN5DQGHFwxIgvt+0DF7VAL2
-         cvBBs9C6xyuQnz3cgl44yWelUuoZBcrcQfB/p4IW79yLWD6N8R1724DqYZMp/y6Iy1
-         e6v3JIYkWJW4rERNLt7er7UUxRIvUuwk35ucLygQ=
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1631873893; bh=nIOanO5FQKIL/d9fMTS3nlanA8/Mspk9GHn0zuV9S7s=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=XucD1Z5g0fDsEOWj+Eun4jjir6YyRhipFEq6QdYXKsdN5DQGHFwxIgvt+0DF7VAL2
-         cvBBs9C6xyuQnz3cgl44yWelUuoZBcrcQfB/p4IW79yLWD6N8R1724DqYZMp/y6Iy1
-         e6v3JIYkWJW4rERNLt7er7UUxRIvUuwk35ucLygQ=
-In-Reply-To: <20210916125858.GA9451@salvia>
-Content-Language: fr-FR
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=menlosecurity.com; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=69GeeW0ai24k+2np/1fSb0YtWXiYurgBXFeKmGRemkU=;
+        b=EGRcEXPdfXCvGBeZhMoRpzRPr+g2Iz9bHZFuDmXWrYZgyEbAj05LCV1SP35jXgOc+S
+         GJT1IVb+mh1o9nw07Pz90GyIeCL+PO+ssSzX48G/ObP3pJPFW0MKnn9cpa+bcWDOxxAJ
+         jzckbJM06B1914AnsM0d+hWV7ey9lHcbLBgPw=
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Netfilter list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Le 16/09/2021 à 14:58, Pablo Neira Ayuso a écrit :
-> [...]
-> so you want to redirect all ports except a few of them?
->
->    add map x mymap { type ipv4_addr : ipv4_addr ; }
->    add rule x y ip protocol { tcp, udp } th dport 1-65534 dnat to ip saddr map @mymap
->
-> This allows you to dnat depending on the IP source address, skipping 0
-> and 65535 for TCP and UDP.
+Hello!
 
-I don't get I so lets be more explicite with an example.
+My team has been working on a proof of concept 3-node active-active
+NAT cluster using BGP and conntrackd v1.4.6 with NOTRACK and
+multicast, all atop Debian 11 amd64.
 
-I want to redirect udp port 10000-20000 to another IP (typically 
-asterisk RTP ports from host to a VM) What I have today which work with 
-single ports (bash script, yes I know ;))
+While load testing by simulating many short-lived HTTP sessions per
+second, we noticed the "current active connections" count in
+conntrackd's internal cache continued to grow, but only when traffic
+flowed asymmetrically (that is, when a TCP session initially egressed
+on host A but responses returned on host C). Depending on conntrackd's
+configuration, the internal cache eventually either fills (blocking
+further updates to kernel conntrack state) or grows large enough to
+trigger oomkiller against the conntrackd process. It seems to happen
+eventually regardless of request rate.
 
-     $fwtables add map $1 nat fwdtoip_tcp.$IFACE { type inet_service : 
-$mytype\; flags interval\; }
-     $fwtables add map $1 nat fwdtoip_udp.$IFACE { type inet_service : 
-$mytype\; flags interval\; }
-     $fwtables add map $1 nat fwdtoport_tcp.$IFACE { type inet_service : 
-inet_service\; flags interval\;}
-     $fwtables add map $1 nat fwdtoport_udp.$IFACE { type inet_service : 
-inet_service\; flags interval\;}
-     $fwtables add map $1 nat redirect_tcp.$IFACE { type inet_service : 
-inet_service\; flags interval\;}
-     $fwtables add map $1 nat redirect_udp.$IFACE { type inet_service : 
-inet_service\; flags interval\;}
+While investigating, we noticed a pattern in the conntrack sessions
+remaining unexpectedly in conntrackd internal cache. Via conntrack -E,
+we saw that every one of the tuples which seem to persist indefinitely
+(visible via "conntrackd -i ct" on the original egress host and
+present long after the conntrack entry has gone from kernel state)
+changed conntrack IDs during the initial NEW/DESTROY/NEW as a TCP
+session was established asymmetrically. For example:
 
-where $1 is ip or ip6, $mytype is ipv4_addr or ipv6_addr
+[1631731439.021758]     [NEW] ipv4     2 tcp      6 30 SYN_SENT
+src=169.254.130.193 dst=169.254.194.193 sport=15850 dport=80
+[UNREPLIED] src=169.254.194.193 dst=169.254.1.160 sport=80 dport=30383
+id=1501842515
+[1631731439.022775] [DESTROY] ipv4     2 tcp      6
+src=169.254.130.193 dst=169.254.194.193 sport=15850 dport=80
+[UNREPLIED] src=169.254.194.193 dst=169.254.1.160 sport=80 dport=30383
+id=1501842515 [USERSPACE]
+[1631731439.022833]     [NEW] ipv4     2 tcp      6 30 SYN_RECV
+src=169.254.130.193 dst=169.254.194.193 sport=15850 dport=80
+src=169.254.194.193 dst=169.254.1.160 sport=80 dport=30383 mark=0
+id=2178269770 [USERSPACE]
+[1631731439.024738] [UPDATE] ipv4     2 tcp      6 432000 ESTABLISHED
+src=169.254.130.193 dst=169.254.194.193 sport=15850 dport=80
+src=169.254.194.193 dst=169.254.1.160 sport=80 dport=30383 [ASSURED]
+id=2178269770
+[1631731440.621886] [UPDATE] ipv4     2 tcp      6 120 FIN_WAIT
+src=169.254.130.193 dst=169.254.194.193 sport=15850 dport=80
+src=169.254.194.193 dst=169.254.1.160 sport=80 dport=30383 [ASSURED]
+id=2178269770
+[1631731440.623111] [DESTROY] ipv4     2 tcp      6
+src=169.254.130.193 dst=169.254.194.193 sport=15850 dport=80
+src=169.254.194.193 dst=169.254.1.160 sport=80 dport=30383 [ASSURED]
+id=2178269770 [USERSPACE]
+[1631731440.623186]     [NEW] ipv4     2 tcp      6 120 FIN_WAIT
+src=169.254.130.193 dst=169.254.194.193 sport=15850 dport=80
+src=169.254.194.193 dst=169.254.1.160 sport=80 dport=30383 [ASSURED]
+mark=0 id=2178269770 [USERSPACE]
+[1631731440.624771] [UPDATE] ipv4     2 tcp      6 60 CLOSE_WAIT
+src=169.254.130.193 dst=169.254.194.193 sport=15850 dport=80
+src=169.254.194.193 dst=169.254.1.160 sport=80 dport=30383 [ASSURED]
+id=2178269770
 
-Then from a list of ports I extract each value -including ranges like 
-above exemple- and do
+I believe active-passive is the preferred and far more common
+configuration. Before we abandon our approach, I hoped we could
+understand whether this is a hard constraint in an active-active setup
+or due to some other issue.
 
-If src address != to dst address
-$fwtables add element $1 nat fwdtoip_$myproto.$IFACE { $tmpsport : 
-$mydaddr }
-$fwtables add element $1 nat fwdtoport_$myproto.$IFACE { $tmpsport : 
-$tmpdport } ; this is not accepted when a range is given like 10000-20000
+Our conntrackd.conf is as follows:
 
-If src address = dst address
-$fwtables add element $1 nat redirect_$myproto.$IFACE { $tmpsport : 
-$tmpdport }
+General {
+    HashSize 33554432
+    HashLimit 134217728
+    NetlinkBufferSize 2097152
+    NetlinkBufferSizeMaxGrowth 134217728
+    LogFile off
+    Syslog on
+    LockFile /var/lock/conntrackd.lock
+    UNIX {
+        Path /var/run/conntrackd.sock
+    }
+    Systemd on
+    NetlinkOverrunResync off
+    NetlinkEventsReliable off
+    Filter From Userspace {
+         Address Ignore {
+              IPv4_address 127.0.0.1
+              IPv6_address ::1
+         }
+    }
+}
+Sync {
+    Mode NOTRACK {
+        DisableExternalCache on
+        DisableInternalCache off
+        StartupResync on
+    }
+    Multicast {
+         IPv4_address 225.0.0.51
+         IPv4_interface 169.254.169.1
+         Group 3780
+         Interface bond0.1000
+         SndSocketBuffer 1249280
+         RcvSocketBuffer 1249280
+         Checksum on
+    }
+}
 
-where $1 is ip or ip6, $myproto is udp or tcp, $tmpsport port or range 
-of port to redirect, $myaddr is destination ip. $tmpdport can be equal 
-or a different value from $tmpsport
+Thank you for your time, and thanks to the conntrack-tools
+contributors for all of their work.
 
-Finally rules
-
-$fwtables add rule ip nat prerouting ip daddr == $myaddripv4 dnat tcp 
-dport map @fwdtoip_tcp.$IFACE : tcp dport map @fwdtoport_tcp.$IFACE
-$fwtables add rule ip nat prerouting ip daddr == $myaddripv4 dnat udp 
-dport map @fwdtoip_udp.$IFACE : udp dport map @fwdtoport_udp.$IFACE
-$fwtables add rule ip nat prerouting ip daddr == $myaddripv4 meta 
-l4proto tcp dnat to : tcp dport map @redirect_tcp.$IFACE
-$fwtables add rule ip nat prerouting ip daddr == $myaddripv4 meta 
-l4proto udp dnat to : udp dport map @redirect_udp.$IFACE
-
-This works perfectly with single ports but as soon as I want to redirect 
-a range of ports it fail.
-
-Where is my mistake ? Is it to complicate to achieve something which 
-should be easy ?
-
-Thanks for your support and ideas
-
--- 
-Daniel
+-Matt
