@@ -1,46 +1,33 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: wiki.nftables.org down?
-Date: Fri, 17 Sep 2021 10:44:29 +0200
-Message-ID: <20210917084429.GA31888@salvia>
-References: <CAOLfK3V4v5SDZ0VJ+kQDDgnvP-xbb2+AgdRAmqTU4Y_ugVL=Pw@mail.gmail.com>
- <Mjebk----3-2@tuta.io>
- <CANf9dFMPkm+iSit6JZ-4fxAq069HM9VpG33TWNTDEeHhYMNvXQ@mail.gmail.com>
+From: Cristian Constantin <const.crist@googlemail.com>
+Subject: integers byte order in netlink/NETLINK_NETFILTER messages
+Date: Fri, 17 Sep 2021 10:45:30 +0200
+Message-ID: <CANCV4NPXskt-r4RNfQJeacoOAmKFjuV6CSKtqEe=gyCbpiZMaQ@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CANf9dFMPkm+iSit6JZ-4fxAq069HM9VpG33TWNTDEeHhYMNvXQ@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=a5mEMnxv1TazVzOwYUHd4+IkOJd+7B/JPZ+7ksKfAQ4=;
+        b=hXcIBc+szgnqBDAQcWWX2V2JjztOd+u18BdiOlhYsWEJkHTWuuxrb942kFIVejwCcy
+         SDWlKnUTGp8/Pj5NUSxb0d5V7GSgMz4RWbTZf/eC0EL2Fhgw5isfSJecRhqn9dC3rea9
+         43b7/7gszXhfHo4Nxiu6pqX8ByGNJvy+ynI7O9AOzUIeUPULTbrzimbjv04cn3ts0RdF
+         Ojt4Qypvu3fhPIHK/NQe7jdSIaOWmik/mEaAclKMb3cXcCQJgymJFyyGVoJnA0Nd7wmy
+         iQS2AQqgVYLX4838o2w9IW+mnSuxz76M0DIgG9CHpotbGanX/UBcXFw5zFuTgDo1jdxa
+         yYKA==
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Martin Gignac <martin.gignac@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Hi,
+hi!
 
-JFYI: I confirm we've been experiencing a number of infrastructure
-issues on the wiki.nftables.org this week that have made it
-unavailable from time to time. We decided to migrate the wiki to a new
-location / server.
+in general, how are the integers encoded in the attributes of the
+NETLINK_NETFILTER messages: host byte order or network byte order? is
+the same byte order supposed to be used by both user space tools and
+the kernel?
 
-Sorry for the inconvenience.
+in particular, how is the chain policy attribute encoded by the kernel
+when it sends an reply to a NFT_MSG_GETCHAIN request?
 
-On Thu, Sep 16, 2021 at 02:43:26PM -0400, Martin Gignac wrote:
-> It's up for me now, but Matt Zagrabelny, it was indeed down for me as
-> well when you originally wrote your mail.
-> 
-> -Martin
-> 
-> 
-> On Wed, Sep 15, 2021 at 2:09 PM <l0f4r0@tuta.io> wrote:
-> >
-> > Hi,
-> >
-> > 14 sept. 2021, 18:47 de mzagrabe@d.umn.edu:
-> >
-> > > It looks like wiki.nftables.org is down. Is anyone else experiencing
-> > > this?
-> > >
-> > UP for me, including using web services like https://downforeveryoneorjustme.com/wiki.nftables.org?proto=https
-> >
-> > Best regards,
-> > l0f4r0
+thanks,
+cristian
