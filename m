@@ -1,175 +1,154 @@
-From: Matt Mercer <matt.mercer@menlosecurity.com>
-Subject: Re: conntrackd internal cache growing indefinitely in active-active setup
-Date: Mon, 27 Sep 2021 13:05:54 -0700
-Message-ID: <CANQxXxpDvsyZ-LGd1tYx8xBwM+JJ09NyBBZ=X8PRtiH72G+0Vw@mail.gmail.com>
-References: <CANQxXxoHEb=v8WoFPsr29cNPBYo5NYAOH4UoPNkDUX8DRk_jrg@mail.gmail.com>
- <YUkvvO3HnXVJiV+R@salvia>
+From: Daniel <tech@tootai.net>
+Subject: Re: Error: conflicting intervals specified - Bullseye 0.9.8
+Date: Tue, 28 Sep 2021 13:05:06 +0200
+Message-ID: <e60b7109-c570-881f-3ba5-8496bf436559@tootai.net>
+References: <ab060c71-e640-a67e-347f-60cd1d800932@tootai.net>
+ <20210916092924.GB31336@salvia>
+ <48e95c8a-2469-08dd-0620-55187252653c@tootai.net>
+ <20210916125858.GA9451@salvia>
+ <24b4d340-d951-103b-27d4-9bb97afd9c4c@tootai.net> <YUkjwU8YNmogNY8d@salvia>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=menlosecurity.com; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jzN9EQN+18575q8xj82EBSuBmrtLVk/1ho5XsadKXw0=;
-        b=EI8+BcCTulQbL/1R5eOwo/tzNQRpZ4Xh3YztkweboKfuO1fd8XHJ8SQGHg31ItX8LW
-         i2pu+LV0P7yGiWII2Lxl+ZZHHt1xNKnqw+eSacBePKVMDEBoaS5uO91Lh1JZMFRUA+9H
-         2v9zluuf11o+UDVgDCDNo3kR2TpFNDD6rr/tE=
-In-Reply-To: <YUkvvO3HnXVJiV+R@salvia>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
+        t=1632827106; bh=P2dvCHgTE1tqPw1Re3rZjTtQSGjViWdArO+dY08cVxI=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=k8FbVxyDgUHwelbdrWkCRMpo+z/4iY9NZaPv46SwDlLbohEUiVgGlqDhe9o5PmIoJ
+         lGxu8vtYU5fDTB+30zY7+sxHYbDxPDxhevWrO44jo68oheeKg736T3CioV6w+llPms
+         XFxxrD2bEynqxmWAPVsjWu08Izyfg6BzxOvXEOBA=
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
+        t=1632827106; bh=P2dvCHgTE1tqPw1Re3rZjTtQSGjViWdArO+dY08cVxI=;
+        h=Subject:To:References:From:Date:In-Reply-To:From;
+        b=k8FbVxyDgUHwelbdrWkCRMpo+z/4iY9NZaPv46SwDlLbohEUiVgGlqDhe9o5PmIoJ
+         lGxu8vtYU5fDTB+30zY7+sxHYbDxPDxhevWrO44jo68oheeKg736T3CioV6w+llPms
+         XFxxrD2bEynqxmWAPVsjWu08Izyfg6BzxOvXEOBA=
+In-Reply-To: <YUkjwU8YNmogNY8d@salvia>
+Content-Language: fr-FR
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: Netfilter list <netfilter@vger.kernel.org>
 
 Hi Pablo,
 
-On Mon, Sep 20, 2021 at 6:05 PM Pablo Neira Ayuso <pablo@netfilter.org> wrote:
->
-> Hi,
->
-> On Fri, Sep 17, 2021 at 12:37:12PM -0700, Matt Mercer wrote:
-> > Hello!
-> >
-> > My team has been working on a proof of concept 3-node active-active
-> > NAT cluster using BGP and conntrackd v1.4.6 with NOTRACK and
-> > multicast, all atop Debian 11 amd64.
->
-> Did you get this to work with 2-node active-active?
+sorry for delay, I had to install 1.0.0 from snap on my Ubuntu 20.04.
 
-It appears to behave the same way with 2 nodes. I tried a 2-node
-active-active setup with the same underlying configuration, and it
-accumulates stray internal cache entries.
+Le 21/09/2021 à 02:13, Pablo Neira Ayuso a écrit :
+> On Fri, Sep 17, 2021 at 12:18:12PM +0200, Daniel wrote:
+>> Le 16/09/2021 à 14:58, Pablo Neira Ayuso a écrit :
+>>> [...]
+>>> so you want to redirect all ports except a few of them?
+>>>
+>>>     add map x mymap { type ipv4_addr : ipv4_addr ; }
+>>>     add rule x y ip protocol { tcp, udp } th dport 1-65534 dnat to ip saddr map @mymap
+>>>
+>>> This allows you to dnat depending on the IP source address, skipping 0
+>>> and 65535 for TCP and UDP.
+>> I don't get I so lets be more explicite with an example.
+>>
+>> I want to redirect udp port 10000-20000 to another IP (typically asterisk
+>> RTP ports from host to a VM) What I have today which work with single ports
+>> (bash script, yes I know ;))
+>>
+>>      nft add map $1 nat fwdtoip_tcp.$IFACE { type inet_service :
+>> $mytype\; flags interval\; }
+>>      nft add map $1 nat fwdtoip_udp.$IFACE { type inet_service :
+>> $mytype\; flags interval\; }
+>>      nft add map $1 nat fwdtoport_tcp.$IFACE { type inet_service :
+>> inet_service\; flags interval\;}
+>>      nft add map $1 nat fwdtoport_udp.$IFACE { type inet_service :
+>> inet_service\; flags interval\;}
+>>      nft add map $1 nat redirect_tcp.$IFACE { type inet_service :
+>> inet_service\; flags interval\;}
+>>      nft add map $1 nat redirect_udp.$IFACE { type inet_service :
+>> inet_service\; flags interval\;}
+>>
+>> where $1 is ip or ip6, $mytype is ipv4_addr or ipv6_addr
+>>
+>> Then from a list of ports I extract each value -including ranges like above
+>> exemple- and do
+>>
+>> If src address != to dst address
+>> nft add element $1 nat fwdtoip_$myproto.$IFACE { $tmpsport : $mydaddr
+>> }
+>> nft add element $1 nat fwdtoport_$myproto.$IFACE { $tmpsport :
+>> $tmpdport } ; this is not accepted when a range is given like 10000-20000
+>>
+>> If src address = dst address
+>> nft add element $1 nat redirect_$myproto.$IFACE { $tmpsport :
+>> $tmpdport }
+>>
+>> where $1 is ip or ip6, $myproto is udp or tcp, $tmpsport port or range of
+>> port to redirect, $myaddr is destination ip. $tmpdport can be equal or a
+>> different value from $tmpsport
+>>
+>> Finally rules
+>>
+>> nft add rule ip nat prerouting ip daddr == $myaddripv4 dnat tcp dport
+>> map @fwdtoip_tcp.$IFACE : tcp dport map @fwdtoport_tcp.$IFACE
+>> nft add rule ip nat prerouting ip daddr == $myaddripv4 dnat udp dport
+>> map @fwdtoip_udp.$IFACE : udp dport map @fwdtoport_udp.$IFACE
+>> nft add rule ip nat prerouting ip daddr == $myaddripv4 meta l4proto
+>> tcp dnat to : tcp dport map @redirect_tcp.$IFACE
+>> nft add rule ip nat prerouting ip daddr == $myaddripv4 meta l4proto
+>> udp dnat to : udp dport map @redirect_udp.$IFACE
+>>
+>> This works perfectly with single ports but as soon as I want to redirect a
+>> range of ports it fail.
+>>
+>> Where is my mistake ? Is it to complicate to achieve something which should
+>> be easy ?
+> You require nftables 1.0.0 for the snippet below:
+>
+> table ip nat {
+>          map fwdtoip_th {
+>                  type ipv4_addr . inet_service : interval ipv4_addr . inet_service
+>                  flags interval
+>                  elements = { 1.2.3.4 . 10000-20000 : 192.168.3.4 . 30000-40000 }
+>          }
+>
+>          chain prerouting {
+>                  type nat hook prerouting priority dstnat; policy accept;
+>                  meta l4proto { tcp, udp } dnat to ip daddr . th dport map @fwdtoip_th
+>          }
+> }
 
-> > While load testing by simulating many short-lived HTTP sessions per
-> > second, we noticed the "current active connections" count in
-> > conntrackd's internal cache continued to grow, but only when traffic
-> > flowed asymmetrically (that is, when a TCP session initially egressed
-> > on host A but responses returned on host C).
-> >
-> > Depending on conntrackd's configuration, the internal cache
-> > eventually either fills (blocking further updates to kernel
-> > conntrack state) or grows large enough to trigger oomkiller against
-> > the conntrackd process. It seems to happen eventually regardless of
-> > request rate.
-> >
-> > While investigating, we noticed a pattern in the conntrack sessions
-> > remaining unexpectedly in conntrackd internal cache. Via conntrack -E,
-> > we saw that every one of the tuples which seem to persist indefinitely
-> > (visible via "conntrackd -i ct" on the original egress host and
-> > present long after the conntrack entry has gone from kernel state)
-> > changed conntrack IDs during the initial NEW/DESTROY/NEW as a TCP
-> > session was established asymmetrically. For example:
-> >
-> > [1631731439.021758] [NEW] ipv4 2 tcp 6 30 SYN_SENT
-> > src=169.254.130.193 dst=169.254.194.193 sport=15850 dport=80
-> > [UNREPLIED] src=169.254.194.193 dst=169.254.1.160 sport=80 dport=30383
-> > id=1501842515
-> > [1631731439.022775] [DESTROY] ipv4 2 tcp 6
-> > src=169.254.130.193 dst=169.254.194.193 sport=15850 dport=80
-> > [UNREPLIED] src=169.254.194.193 dst=169.254.1.160 sport=80 dport=30383
-> > id=1501842515 [USERSPACE]
->
-> userspace cannot update the existing entry for some reason, so the
-> entry id=1501842515 is removed.
->
-> > [1631731439.022833] [NEW] ipv4 2 tcp 6 30 SYN_RECV
-> > src=169.254.130.193 dst=169.254.194.193 sport=15850 dport=80
-> > src=169.254.194.193 dst=169.254.1.160 sport=80 dport=30383 mark=0
-> > id=2178269770 [USERSPACE]
->
-> userspace re-adds the the same entry in SYN_RECV state.
->
-> > [1631731439.024738] [UPDATE] ipv4 2 tcp 6 432000 ESTABLISHED
-> > src=169.254.130.193 dst=169.254.194.193 sport=15850 dport=80
-> > src=169.254.194.193 dst=169.254.1.160 sport=80 dport=30383 [ASSURED]
-> > id=2178269770
-> > [1631731440.621886] [UPDATE] ipv4 2 tcp 6 120 FIN_WAIT
-> > src=169.254.130.193 dst=169.254.194.193 sport=15850 dport=80
-> > src=169.254.194.193 dst=169.254.1.160 sport=80 dport=30383 [ASSURED]
-> > id=2178269770
-> > [1631731440.623111] [DESTROY] ipv4 2 tcp 6
-> > src=169.254.130.193 dst=169.254.194.193 sport=15850 dport=80
-> > src=169.254.194.193 dst=169.254.1.160 sport=80 dport=30383 [ASSURED]
-> > id=2178269770 [USERSPACE]
->
-> userspace cannot update the existing entry again and remove it.
->
-> > [1631731440.623186] [NEW] ipv4 2 tcp 6 120 FIN_WAIT
-> > src=169.254.130.193 dst=169.254.194.193 sport=15850 dport=80
-> > src=169.254.194.193 dst=169.254.1.160 sport=80 dport=30383 [ASSURED]
-> > mark=0 id=2178269770 [USERSPACE]
->
-> and re-add it again.
->
-> > [1631731440.624771] [UPDATE] ipv4 2 tcp 6 60 CLOSE_WAIT
-> > src=169.254.130.193 dst=169.254.194.193 sport=15850 dport=80
-> > src=169.254.194.193 dst=169.254.1.160 sport=80 dport=30383 [ASSURED]
-> > id=2178269770
->
-> packet path updates the entry.
->
-> > I believe active-passive is the preferred and far more common
-> > configuration. Before we abandon our approach, I hoped we could
-> > understand whether this is a hard constraint in an active-active setup
-> > or due to some other issue.
->
-> I would need to debug why userspace cannot update the existing entry
-> (hence triggering the removal to get it back to sync).
->
-> BTW, did you consider active-active with the cluster match? I have
-> just pushed out this commit:
->
-> https://git.netfilter.org/conntrack-tools/commit/?id=5f5ed5102c5a36ff16aeddb2aab01b51c75d5dc5
->
-> it's a script from... 2010. The idea is to use the cluster match to
-> avoid having to deal with asymmetric path (which is tricky), since it
-> is prone to races between state synchronization and packet updates.
+I can't get it, map is OK but creating rule fail
 
-Interesting - thank you! I wonder if the reliance on multicast is a
-concern for our particular circumstances, but I'm going to take a
-closer look.
+map in nat prerouting:
 
-> > Our conntrackd.conf is as follows:
-> >
-> > General {
-> > HashSize 33554432
-> > HashLimit 134217728
-> > NetlinkBufferSize 2097152
-> > NetlinkBufferSizeMaxGrowth 134217728
-> > LogFile off
-> > Syslog on
-> > LockFile /var/lock/conntrackd.lock
-> > UNIX {
-> > Path /var/run/conntrackd.sock
-> > }
-> > Systemd on
-> > NetlinkOverrunResync off
-> > NetlinkEventsReliable off
-> > Filter From Userspace {
-> > Address Ignore {
-> > IPv4_address 127.0.0.1
-> > IPv6_address ::1
-> > }
-> > }
-> > }
-> > Sync {
-> > Mode NOTRACK {
-> > DisableExternalCache on
-> > DisableInternalCache off
-> > StartupResync on
-> > }
-> > Multicast {
-> > IPv4_address 225.0.0.51
-> > IPv4_interface 169.254.169.1
-> > Group 3780
-> > Interface bond0.1000
-> > SndSocketBuffer 1249280
-> > RcvSocketBuffer 1249280
-> > Checksum on
-> > }
-> > }
-> >
-> > Thank you for your time, and thanks to the conntrack-tools
-> > contributors for all of their work.
-> >
-> > -Matt
+map fwdtoip_th {
+         type ipv4_addr . inet_service : interval ipv4_addr . inet_service
+         flags interval
+         elements = { 192.168.10.24 . 58194-58198 : 192.168.10.254 . 
+58194-58198 }
+     }
+
+Now I add the rule
+
+sudo nft add rule ip nat prerouting meta l4proto { tcp, udp } dnat to ip 
+daddr . th dport map @fwdtoip_th ; from your example
+
+and error is
+
+Error: datatype mismatch: expected IPv4 address, expression has type 
+concatenation of (IPv4 address, internet network service)
+add rule ip nat prerouting meta l4proto { tcp, udp } dnat to ip daddr . 
+th dport map @fwdtoip_th
+
+OK, after to ip should be the daddr so I insert it
+
+sudo nft add rule ip nat prerouting meta l4proto { tcp, udp } dnat to ip 
+daddr daddr . th dport map @fwdtoip_th
+
+and error is
+
+Error: syntax error, unexpected newline
+add rule ip nat prerouting meta l4proto { tcp, udp } dnat to ip daddr 
+daddr . th dport map @fwdtoip_th
+
+What's wrong ?
+
+Thanks for your help
+
+-- 
+Daniel
