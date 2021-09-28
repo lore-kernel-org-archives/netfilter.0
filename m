@@ -1,56 +1,41 @@
-From: Paulo Ricardo Bruck <paulobruck1@gmail.com>
-Subject: invalid type
-Date: Tue, 28 Sep 2021 14:39:25 -0300
-Message-ID: <CANSGRxSmW1HZwtZReU10S0Yf1bN2B1f1cV=P1OMbig2mx8=j4Q@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Error: conflicting intervals specified - Bullseye 0.9.8
+Date: Tue, 28 Sep 2021 22:58:42 +0200
+Message-ID: <YVOCAvkLQFiise9G@salvia>
+References: <ab060c71-e640-a67e-347f-60cd1d800932@tootai.net>
+ <20210916092924.GB31336@salvia>
+ <48e95c8a-2469-08dd-0620-55187252653c@tootai.net>
+ <20210916125858.GA9451@salvia>
+ <24b4d340-d951-103b-27d4-9bb97afd9c4c@tootai.net>
+ <YUkjwU8YNmogNY8d@salvia>
+ <e60b7109-c570-881f-3ba5-8496bf436559@tootai.net>
+ <82b7ac87-ace3-d235-4b7a-2890ed7705b6@tootai.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=fXtfYGMZZ+kkkU+9AnczIw9Ve9eJ55tdVUgkkcjYLRs=;
-        b=kSjQneOr0SFg1OY1Is9INoWyo1t70vVgLsK10mFMXCwy4PnPmTEpocQFy7EDitX2Lc
-         41gOIvFW2bFf9J5O3bwviIIjWKrs9Px03ByPWctNQhP3SbDhxgcszTkzm2hBiL5dZ/cg
-         MoPRTtS4FEDdXhgGzViOMmR7TXNWE0MxEaPmRT44Gjn96+6lcRyCs6bNDGr5YRpHKINg
-         /Hs1vMlwyCIc07h0SOHHI8Xn4naUFaTPp/V6bwQwB8kgTjUlj2qtAwrQrDlvTWokIpy0
-         /Ub1Wz+EK1ZRI5S8QADdYiqddACEU5Vkk7E2W6K1U3hlvAlNZpI1bE+Ow3ZPl2S8Yyo6
-         K44w==
+Content-Disposition: inline
+In-Reply-To: <82b7ac87-ace3-d235-4b7a-2890ed7705b6@tootai.net>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: Daniel <tech@tootai.net>
+Cc: Netfilter list <netfilter@vger.kernel.org>
 
-Hi All
+On Tue, Sep 28, 2021 at 02:41:57PM +0200, Daniel wrote:
+> Le 28/09/2021 à 13:05, Daniel a écrit :
+[...]
+> everything is fine. But if I call the map like
+> 
+> sudo nft add rule ip nat prerouting meta l4proto { tcp, udp } dnat to ip
+> daddr . th dport map @fwdtoip_th
+> 
+> I get
+> 
+> Error: datatype mismatch: expected IPv4 address, expression has type
+> concatenation of (IPv4 address, internet network service)
+> add rule ip nat prerouting meta l4proto { tcp, udp } dnat to ip daddr . th
+> dport map @fwdtoip_th
+> 
+> Expression recognize that map is a concatenation but not that the "to ip
+> daddr . th dport" should also be treated as concatenation
 
-I have been studing portknocking and I see a problem like mine that
-someone observed (  https://bbs.archlinux.org/viewtopic.php?id=239378)
-and I have no clue how to solve.
-
-This example is almost the same as nftables wiki:
-https://wiki.nftables.org/wiki-nftables/index.php/Port_knocking_example
-and result at same problem....
-
-add set inet filter clientes_ipv4 { type ipv4_addr; flags timeout; }
-add set inet filter clientes_ipv6 { type ipv6_addr; flags timeout; }
-
-add set inet filter toctoc_aberta_ipv4 { type ipv4_addr . inet_service;
-flags timeout; }
-add set inet filter toctoc_aberta_ipv6 { type ipv6_addr . inet_service;
-flags timeout; }
-
-add inet filter INPUT tcp dport 21 add @toctoc_aberta_ipv4 {ip saddr . 2
-2 timeout 60s}
-add inet filter INPUT tcp dport 21 add @toctoc_aberta_ipv6 {ip6 saddr
-. 22 timeout 60s}
-
-after that:
-nft list rulerset
-.......
-tcp dport 21 add @toctoc_aberta_ipv4 { ip saddr . 0x16 [invalid type]
-timeout 1m }
-
-
-Ubuntu 20.04
-nftables 0.9.3-2
-
---
-Paulo Ricardo Bruck consultor
+Fix: https://patchwork.ozlabs.org/project/netfilter-devel/patch/20210928205543.368551-1-pablo@netfilter.org/
