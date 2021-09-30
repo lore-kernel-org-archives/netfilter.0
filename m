@@ -1,52 +1,32 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: upper limit on number of ip addresses in an
- NFNL_SUBSYS_NFTABLES<<8|NFT_MSG_NEWSETELEM message
-Date: Thu, 30 Sep 2021 16:00:44 +0200
-Message-ID: <YVXDDF324iNl7gux@salvia>
-References: <CANCV4NNc+FETTN5t+qQqSVugJBGAQJebiCHSDX9iHqUvJUtU0w@mail.gmail.com>
+Subject: Re: base chains with same hook, same priority
+Date: Thu, 30 Sep 2021 16:02:01 +0200
+Message-ID: <YVXDWXR2oCU6sDR5@salvia>
+References: <CANCV4NPRwaBeu5R4q90PeTwSgj7hD7wVhGVDAPX7rR7JHP-hvQ@mail.gmail.com>
+ <CANCV4NOfOrfqeeNsQU5_Fkgn0k_FXj0paYBt2Gcz78-CJXeU2A@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CANCV4NNc+FETTN5t+qQqSVugJBGAQJebiCHSDX9iHqUvJUtU0w@mail.gmail.com>
+In-Reply-To: <CANCV4NOfOrfqeeNsQU5_Fkgn0k_FXj0paYBt2Gcz78-CJXeU2A@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: Cristian Constantin <const.crist@googlemail.com>
 Cc: netfilter@vger.kernel.org
 
-On Wed, Sep 29, 2021 at 04:06:23PM +0200, Cristian Constantin wrote:
-> hi!
+On Wed, Sep 15, 2021 at 01:44:47PM +0200, Cristian Constantin wrote:
+> cristian: one interesting side-effect...
 > 
-> suppose new ip addresses are added to nft set using a message of type:
+> after having two chains with the same hook, priority in the same table
+> (as above), `iptables` cmd line tool reports the respective table as
+> incompatible...
 > 
-> NFNL_SUBSYS_NFTABLES<<8|NFT_MSG_NEWSETELEM
+> # /usr/sbin/iptables -t filter -S --wait
+> iptables v1.8.5 (nf_tables): table `filter' is incompatible, use 'nft' tool.
 > 
-> over netlink sockets; e.g. (from an strace capture):
-> 
-> sendmsg(7, {msg_name={sa_family=AF_NETLINK, nl_pid=0,
-> nl_groups=00000000}, msg_namelen=12, msg_iov=[{iov_base=[{{len=20,
-> type=NFNL_MSG_BATCH_BEGIN, flags=NLM_F_REQUEST, seq=1112598292,
-> pid=2460867}, {nfgen_family=AF_UNSPEC, version=NFNETLINK_V0,
-> res_id=htons(10)}, {{len=28732,
-> type=NFNL_SUBSYS_NFTABLES<<8|NFT_MSG_NEWSETELEM,
-> flags=NLM_F_REQUEST|NLM_F_ACK|NLM_F_CREATE, seq=1112598293,
-> pid=2460867}, {nfgen_family=AF_INET, version=NFNETLINK_V0,
-> res_id=htons(0), [{{nla_len=13, nla_type=0x2},
-> "\x68\x6f\x6e\x65\x79\x6e\x65\x74\x00"}, {{nla_len=8, nla_type=0x4},
-> "\x00\x00\x00\x02"}, {{nla_len=11, nla_type=NFNETLINK_V1},
-> "\x66\x69\x6c\x74\x65\x72\x00"}, {{nla_len=28676,
-> nla_type=NLA_F_NESTED|0x3},
-> "\x1c\x00\x01\x80\x0c\x00\x01\x80\x08\x00\x01\x00\x23\x9c\x55\x4b\x0c\x00\x04\x00\x00\x00\x00\x00\x05\x26\x5c\x00\x1c\x00\x02\x80"...}]},
-> {{len=20, type=NFNL_MSG_BATCH_END, flags=NLM_F_REQUEST,
-> seq=1112598294, pid=2460867}, {nfgen_family=AF_UNSPEC,
-> version=NFNETLINK_V0, res_id=htons(10)}], iov_len=28772}],
-> msg_iovlen=1, msg_controllen=0, msg_flags=0}, 0) = 28772
-> 
-> what limits the number of ip addresses which can be pushed, using one
-> write on the socket to the kernel nft set?
-> 
-> a. the socket write buffer itself
-> b. some kind of netlink specific limit; how to detect it automatically?
+> # iptables -L
+> iptables v1.8.5 (nf_tables): table `filter' is incompatible, use 'nft' tool.
 
-The upper limit is the maximum netlink message header field, which is
-16-bits long.
+IIRC interaction between iptables-nft and nft has got better over the
+recent version (latest is v1.8.7), and there are also recent patches
+to improve it more.
