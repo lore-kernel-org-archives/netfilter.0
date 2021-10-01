@@ -1,68 +1,49 @@
-From: Cristian Constantin <const.crist@googlemail.com>
-Subject: Re: nft set load metrics
-Date: Thu, 30 Sep 2021 21:01:01 +0200
-Message-ID: <CANCV4NOYjECUywOcB9Bpi0oq+f_mO+Orb5TcsFCog4ibvF5t+A@mail.gmail.com>
-References: <CANCV4NMrw5m_-DCwnFGahygVnMGuVnU-RouBCqOsg6QX7z4AKQ@mail.gmail.com>
- <YVXC5cPRHyaE3VRL@salvia> <CANCV4NP-9qTA+ehWNMT5-WEkomWkKrLWg30vcuEYaihs6a3sww@mail.gmail.com>
- <b943f279-73a-303e-3244-ed7fd4d4949@jubileegroup.co.uk>
+From: Mike Lee <curby@cur.by>
+Subject: Hashlimit without meters in nftables?
+Date: Fri, 1 Oct 2021 01:52:43 -0600
+Message-ID: <CALgOszUWXW0Os10SfhafRXjV19J4B9eHaGqyuYMvroONcoJG7A@mail.gmail.com>
+Reply-To: curby@cur.by
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=9vnpkT6yPslejrw2H6vjiWzQUog6iM2fHkIW+BCNKyM=;
-        b=N4BnnD+9CjsOnByiSOHXrDTLfUlydPQQ3zjgZGzkoRU2q+jsNbyACFseSfbU5Oy2eZ
-         2oOJHzHfy3W8SFT5eHcifj2lFZebDuJr2qv3xYgPBjuJqjaQ1Ggs2A9YdRYbit52c+f6
-         Ntouga7MGRfEKZDc6tSBQCAFh2FeGHYX6wACY9ZmNqzaw58Ui66aMiV/upCmMyH9enC5
-         kpAjs7l9XFduE8Tw4VLxpE1iCSrerZ/y0HJjlM8lt44KSUpFQHhJDPF7C3gM27S/sgwH
-         bTkPgMLrj1E1AERKLzG8a1lJu+5kHuoktX+9kNMdWu/gzDpDr00YW8rAwVbKL73t/eix
-         E3Yg==
-In-Reply-To: <b943f279-73a-303e-3244-ed7fd4d4949@jubileegroup.co.uk>
+        d=cur.by; s=google;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=kIefTTSzVxUg1jHco0HozQrGJhUggEHpIzumEMOFrlg=;
+        b=CA0K4JFGx0kUU+JP7aT3Zw0WBLE17EGpo5/Pf0jQBCqLduXxudOcrLKdHTuVyLE3vm
+         7n3poQD5ebyLAMM0x/LO75B5d3h+zHQ4UBJmQpPUG5nREGfD8VR+onThcQMmN0MVcOmp
+         UicZm3Djx6aJz3SxagA5XTWu3V8sA9AQLLgnE=
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "G.W. Haywood" <ged@jubileegroup.co.uk>
-Cc: netfilter@vger.kernel.org
+To: Netfilter mailing list <netfilter@vger.kernel.org>
 
-> Presumably it was you who created the elements, can you not simply
-> store them e.g. in a Perl hash at the time they're created?  I do
-> something similar using Net::CIDR::Lite.  (I would never claim that a
-> Perl script is the most efficient way of doing it, nor anything else
-> for that matter, but it gets the job done. :)
+Hi folks, I have a ruleset that I'm migrating from iptables to
+nftables. The translation tool used meters for some hashlimit rules,
+and I currently have the following lines after some modifications:
 
-cristian: you are basically proposing a kind of user space cache of
-kernel nft sets maintained by the application which pushes the
-rules/sets to the kernel.
+tcp dport 22 meter ssh size 65535 { ip saddr timeout 1m limit rate
+1/minute burst 1 packets } counter packets 0 bytes 0 accept
+ip saddr $trusted_hosts tcp dport 22 meter trustedssh { ip saddr
+timeout 1m limit rate 1/minute burst 2 packets} counter accept
 
-I have also thought of that. it can get complicated though especially
-when the sets are dynamic, with their entries expiring. implementing
-performant timers in application is yet another beast to deal with...
+The intention is to allow trusted hosts to connect three times within
+a minute, but for other hosts to only be allowed to connect once per
+minute. This works fine, but uses the meters feature which the
+nftables wiki says is obsolete. I have two sets of questions:
 
-On Thu, Sep 30, 2021 at 7:35 PM G.W. Haywood <ged@jubileegroup.co.uk> wrote:
->
-> Hi there,
->
-> On Thu, 30 Sep 2021, Cristian Constantin wrote:
->
-> > ... reading large packets over netlink sockets just to count the
-> > elements in the sets does not seem very efficient.
->
-> Agreed.
->
-> It seems to me that if you need to read what you've put in the sets
-> for the purposes of some facility, then you need to store it in RAM.
->
-> It doesn't make sense to me to try to use netfilter as a kind of RAM;
-> as you say that will be very inefficient.
->
-> Presumably it was you who created the elements, can you not simply
-> store them e.g. in a Perl hash at the time they're created?  I do
-> something similar using Net::CIDR::Lite.  (I would never claim that a
-> Perl script is the most efficient way of doing it, nor anything else
-> for that matter, but it gets the job done. :)
->
-> --
->
-> 73,
-> Ged.
+1) What are the main downsides of using meters as shown above? Even
+the nft wiki Metering page [1] uses meters for hashlimit rules from
+iptables, which lends some appearance of endorsement. Will meters go
+away in the future?
+
+2) If I wanted to replicate the above behavior using sets, how would I
+do so? I spent some time trying to make it work, and modified RedHat's
+guide [2] to replicate the behavior of the first rule, but I can't
+figure out a way to exempt the trusted hosts.
+
+[1] https://wiki.nftables.org/wiki-nftables/index.php/Meters#Doing_iptables_hashlimit_with_nft
+[2] https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/7/html/security_guide/sec-using_nftables_to_limit_the_amount_of_connections
+
+Thanks a million!
+
+--Mike
