@@ -1,59 +1,66 @@
-From: Kerin Millar <kfm@plushkava.net>
+From: Matt Zagrabelny <mzagrabe@d.umn.edu>
 Subject: Re: testing if a named set exists?
-Date: Sat, 2 Oct 2021 03:57:07 +0100
-Message-ID: <20211002035707.bf92730b8f667517ba53dfad@plushkava.net>
+Date: Sat, 2 Oct 2021 06:50:35 -0500
+Message-ID: <CAOLfK3VJ28CLb5K-gbKVHO+F+vQh5wywb65wbFnAdsSpq2DQ-Q@mail.gmail.com>
 References: <CAOLfK3UBEvRg8AQbLibVo9xp6tZjaE7_S1+uDyhhbR7Nj_eYhA@mail.gmail.com>
+ <20211002035707.bf92730b8f667517ba53dfad@plushkava.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-         h=date:from:to:cc:subject:message-id:in-reply-to:references
-        :mime-version:content-type:content-transfer-encoding; s=fm3; bh=
-        ifeHqVfNx/uLRWP5dIq2TFHeLfFQMpumm0MpNTkCbbE=; b=UjDgSMy406XU34U5
-        VHFbeY6bytT8h5VOXMcl1DnL5vYzXSmnXmJPgJQT11+5gqFBB9S04jylewRS3aDU
-        1sc1ekwPM10oCfdQz+W7MKACPvBIHt3xr9Pwo+fb0hMcprO8l0tad2A9OJ+DXhB7
-        A0t2cxat9mDq2cibxWrizqbaPIGSgagxEFSGiMO7pJA52Mn2sOOTSGlvJNNryuk2
-        Q+nOAwrDOHhQLatJE1gf1PnF5hu8QP3SOrqZVvIKoqUFEjsrWnxPFLbyNGV6AKQL
-        i4BVnwXZcLkXfCmxNT4SwPxxITPyj0HOD27B/VXjjogEkj2IN7Um8V2Wst8TMEw4
-        oEQLIw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:from:in-reply-to:message-id:mime-version:references
-        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm3; bh=ifeHqVfNx/uLRWP5dIq2TFHeLfFQMpumm0MpNTkCb
-        bE=; b=f8P/33s+g5YBlqRTlvV+c7ALmbLKW+jkSN26j4+ewgYoFTrdlDGDh6IAS
-        AEiqtTbJE46d6voYHu9eBIoten70yacvOT6iejDjdy+OTNnLcMdNjP6UnKc5BPmh
-        O91VdTyGQCAtixIwbAyePSmU+ZSUVqcJPhsjcG2fW2h+tZuZkKZ1m27snl0raYFi
-        hLnUsRKJ/X31WYlU9PpKjnnlJ4I2BxvuodTu2Zv2n6i7BKldVpxD8pMdEP3FyUKm
-        +N4b3S29PQLWAGStqDY8N5LN/WvnYUope8rmeoAHSyfIgozBTAVnRjpheFOluXic
-        ds/pLxnx8WL+Y8xRNpibALlKDAn0g==
-In-Reply-To: <CAOLfK3UBEvRg8AQbLibVo9xp6tZjaE7_S1+uDyhhbR7Nj_eYhA@mail.gmail.com>
+DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p7.oit.umn.edu 4HM5074L5Bz9v8y8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=d.umn.edu; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=Pq4dveKI/N9mx6fsFCB836ACPwyBujekEELnWqLfmaM=;
+        b=SYof4DpRVobRgTS+/gnB1E1H948HYnfZe3zxV58QvDl87PM/A1F3JrOMjC1DIis1+D
+         IoyByWlz/X2o+EfrL9O/315rdaxXkbN5SBVbJD7ORJGEX20bowZgYx/1v7p9qhG+dawd
+         unxL+ned9gtghpxxWhN8EH2ZDZGdtDU44nG7Q1CNIgtAZSVqacCZG44FgoFZSsLaBR0e
+         jUicvMAAgS3/NFNwjsB5r3OPhwACCEun7mnTvp10zHalEcY9BnRe+5/gQi4f/4Q8LcIb
+         X4mFE6KTU0KdlGF3jffJD2dfeYxOKGy5CVQNTodZObufuyGywfm5cMZ2XJkBeKCvCemI
+         lK5g==
+In-Reply-To: <20211002035707.bf92730b8f667517ba53dfad@plushkava.net>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Matt Zagrabelny <mzagrabe@d.umn.edu>
-Cc: netfilter <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@vger.kernel.org>
 
-On Fri, 1 Oct 2021 20:16:17 -0500
-Matt Zagrabelny <mzagrabe@d.umn.edu> wrote:
+Hey Kerin (and Duncan),
 
-> Hello,
-> 
-> I'd like to do something like the following:
-> 
-> if exists $named_set
->     nft add rule ip filter output ip daddr $named_set accept
-> else
->     nft add rule ip filter output ip daddr $default_set accept
-> 
-> Does anyone know if I can accomplish this with nftables?
-> 
-> Thanks,
-> 
-> -m
+Thanks for the replies.
 
-The output of nft isn't particularly amenable to parsing unless it is instructed to produce JSON. The simplest way is to act upon the exit status value of a list set command.
+On Fri, Oct 1, 2021 at 9:57 PM Kerin Millar <kfm@plushkava.net> wrote:
+>
+> On Fri, 1 Oct 2021 20:16:17 -0500
+> Matt Zagrabelny <mzagrabe@d.umn.edu> wrote:
+>
+> > I'd like to do something like the following:
+> >
+> > if exists $named_set
+> >     nft add rule ip filter output ip daddr $named_set accept
+> > else
+> >     nft add rule ip filter output ip daddr $default_set accept
+> >
+> > Does anyone know if I can accomplish this with nftables?
+> >
+>
+> The output of nft isn't particularly amenable to parsing unless it is instructed to produce JSON. The simplest way is to act upon the exit status value of a list set command.
+>
+> if nft --terse list set ip filter "$named_set" >/dev/null 2>&1; then ...
 
-if nft --terse list set ip filter "$named_set" >/dev/null 2>&1; then ...
+I should have been more specific...
 
--- 
-Kerin Millar
+I'm hoping to do this all in nft without hitting the shell. For
+example, from "man bash" we have:
+
+       ${parameter:-word}
+              Use Default Values.  If parameter is unset or null, the
+expansion of word is  substituted.   Otherwise,
+              the value of parameter is substituted.
+
+I was hoping for some sort of similar mechanism in nft. Like:
+
+nft add rule ip filter output ip daddr
+${named_set_does_not_exist:-default_named_set} accept
+
+Thanks for the help!
+
+-m
