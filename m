@@ -1,54 +1,59 @@
-From: Duncan Roe <duncan_roe@optusnet.com.au>
+From: Kerin Millar <kfm@plushkava.net>
 Subject: Re: testing if a named set exists?
-Date: Sat, 2 Oct 2021 12:52:45 +1000
-Message-ID: <YVfJfRVCARWtZVCI@slk1.local.net>
+Date: Sat, 2 Oct 2021 03:57:07 +0100
+Message-ID: <20211002035707.bf92730b8f667517ba53dfad@plushkava.net>
 References: <CAOLfK3UBEvRg8AQbLibVo9xp6tZjaE7_S1+uDyhhbR7Nj_eYhA@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=sender:from:date:to:cc:subject:message-id:mail-followup-to
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=1+A9UkOiSDNJd/dyEjBAyB3ATBU7Is6mwIUxcQxkwkA=;
-        b=RsJPFDOr2cPjiEaF1Yxac4QuNOFAEStxG7a3NSzybjArSXyhRHvOHEG0z+vESi6jZX
-         YAEkL9a9miRjiYGwL+KuQmK8HG+ob2fn8CgJXcQcvNpnBQd7aGt+ZCkze7e3SCfQpnHx
-         mdeAXn0h5HZc9ytzfXxpyO9yACwx6yXhagv2dLbg1QXC9nPKkuOdMeTgG+sphfyJBmVj
-         VqdufaEJXFmtt0yfzPmtUV52v3eGp1J+mv6z0REDTXikc/XnXPsY2vp0d3pMUmPiYUhz
-         Jn6Y6jKw64Ix65MliAnLdQ8WFQ7LB3i3WpgxGjkqePnsUd5F8O7TAn3zVkSfkaxWAt0P
-         gFdw==
-Sender: Duncan Roe <duncan.roe2@gmail.com>
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+         h=date:from:to:cc:subject:message-id:in-reply-to:references
+        :mime-version:content-type:content-transfer-encoding; s=fm3; bh=
+        ifeHqVfNx/uLRWP5dIq2TFHeLfFQMpumm0MpNTkCbbE=; b=UjDgSMy406XU34U5
+        VHFbeY6bytT8h5VOXMcl1DnL5vYzXSmnXmJPgJQT11+5gqFBB9S04jylewRS3aDU
+        1sc1ekwPM10oCfdQz+W7MKACPvBIHt3xr9Pwo+fb0hMcprO8l0tad2A9OJ+DXhB7
+        A0t2cxat9mDq2cibxWrizqbaPIGSgagxEFSGiMO7pJA52Mn2sOOTSGlvJNNryuk2
+        Q+nOAwrDOHhQLatJE1gf1PnF5hu8QP3SOrqZVvIKoqUFEjsrWnxPFLbyNGV6AKQL
+        i4BVnwXZcLkXfCmxNT4SwPxxITPyj0HOD27B/VXjjogEkj2IN7Um8V2Wst8TMEw4
+        oEQLIw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-transfer-encoding:content-type
+        :date:from:in-reply-to:message-id:mime-version:references
+        :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm3; bh=ifeHqVfNx/uLRWP5dIq2TFHeLfFQMpumm0MpNTkCb
+        bE=; b=f8P/33s+g5YBlqRTlvV+c7ALmbLKW+jkSN26j4+ewgYoFTrdlDGDh6IAS
+        AEiqtTbJE46d6voYHu9eBIoten70yacvOT6iejDjdy+OTNnLcMdNjP6UnKc5BPmh
+        O91VdTyGQCAtixIwbAyePSmU+ZSUVqcJPhsjcG2fW2h+tZuZkKZ1m27snl0raYFi
+        hLnUsRKJ/X31WYlU9PpKjnnlJ4I2BxvuodTu2Zv2n6i7BKldVpxD8pMdEP3FyUKm
+        +N4b3S29PQLWAGStqDY8N5LN/WvnYUope8rmeoAHSyfIgozBTAVnRjpheFOluXic
+        ds/pLxnx8WL+Y8xRNpibALlKDAn0g==
 In-Reply-To: <CAOLfK3UBEvRg8AQbLibVo9xp6tZjaE7_S1+uDyhhbR7Nj_eYhA@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: Matt Zagrabelny <mzagrabe@d.umn.edu>
-Cc: Netfilter <netfilter@vger.kernel.org>
+Cc: netfilter <netfilter@vger.kernel.org>
 
-On Fri, Oct 01, 2021 at 08:16:17PM -0500, Matt Zagrabelny wrote:
+On Fri, 1 Oct 2021 20:16:17 -0500
+Matt Zagrabelny <mzagrabe@d.umn.edu> wrote:
+
 > Hello,
->
+> 
 > I'd like to do something like the following:
->
+> 
 > if exists $named_set
 >     nft add rule ip filter output ip daddr $named_set accept
 > else
 >     nft add rule ip filter output ip daddr $default_set accept
->
+> 
 > Does anyone know if I can accomplish this with nftables?
->
+> 
 > Thanks,
->
+> 
 > -m
-How about
 
-> if nft list ruleset | grep -q "$named_set"; then
->   nft add rule ip filter output ip daddr $named_set accept
-> else
->   nft add rule ip filter output ip daddr $default_set accept
-> fi
+The output of nft isn't particularly amenable to parsing unless it is instructed to produce JSON. The simplest way is to act upon the exit status value of a list set command.
 
-You can restrict the search to a table, e.g. instead of "ruleset"
-put "table $my_table"
+if nft --terse list set ip filter "$named_set" >/dev/null 2>&1; then ...
 
-Cheers ... Duncan.
+-- 
+Kerin Millar
