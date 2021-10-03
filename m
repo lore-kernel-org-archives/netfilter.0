@@ -1,88 +1,86 @@
-From: "Jeff" <jnewman67@gmx.com>
-Subject: RE: netfilter 10,000' overview
-Date: Sat, 2 Oct 2021 22:01:53 -0400
-Message-ID: <015801d7b7fa$a434a6e0$ec9df4a0$@gmx.com>
-References: <010901d7b70a$86c8edf0$945ac9d0$@gmx.com>   <20211003004937.acbbc610fc32536fcdd9f736@plushkava.net> <015701d7b7f5$2d07dec0$87179c40$@gmx.com> <20211003023615.10f438fe018df4608587aef5@plushkava.net>
+From: Simon Mullis <simon@mullis.co.uk>
+Subject: How to load-balance tcp flows to internal dummy interfaces for
+ parallel traffic capture?
+Date: Sun, 3 Oct 2021 12:15:27 +0200
+Message-ID: <CANnvYi5CLPK7ZAN5ihsmuLQByGU8R9+2wAYugZO2uvLdWf-pyw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1633226515;
-        bh=lLobq2PvxSe5PajUkDu9fExBFnu0XEFvqka3DyD+JSQ=;
-        h=X-UI-Sender-Class:From:To:Cc:References:In-Reply-To:Subject:Date;
-        b=MIisktBaboQti5ZiqAw29vAUzDmrkCz1ulkmDzDKoifXbgWz+8Fl56DYsthxAUVfu
-         AtBdXuc2x6i9iX1HfOlYvPMIjS3LAOJrsOWTznA7qWNuCoQTfWawE2p3aU6gLiN8EQ
-         ebvdfyBSqX9iHFOe9o1o3/YuOeZwPyRdviuHb9gg=
-In-Reply-To: <20211003023615.10f438fe018df4608587aef5@plushkava.net>
-Content-Language: en-us
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Kerin Millar' <kfm@plushkava.net>
-Cc: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Thank you.
+Hi Everyone
 
-I actually found a set instructions online for converting iptables rules t=
-o
-nft rules using iptables-restore-translate.  It had me save the current
-iptables config, translate it, flush the ruleset, then import the new
-commands into nft, but it threw errors on the security filter commands, an=
-d
-failed to bring in my specific INPUT rules, so I just flushed the ruleset,
-restored my iptables config, and then disabled iptables :)
+Background - I would like to horizontally scale a packet capture and
+analysis tool running on a Linux appliance. The capture uses two
+processes to capture and process the captured traffic. The raw capture
+is multithreaded and is attached to a physical (or virtual) interface.
+The metadata extraction process is single-threaded. The rate
+determining step of the whole thing is the single-threaded process.
 
-I did compare the iptables save file and the nft translation, and the nft
-rules read a little like Cisco- or MikroTik-style configuration commands.
+My idea is to split the traffic captured on the external interface to
+N internal dummy interfaces and spawn a new extraction process in
+parallel for each of them. Where N is derived from how many cores the
+capture device has.
 
-I'll figure out nft and start using that.
+I need TCP flows to be persistently sent to one interface to capture
+and be able to extract correct metadata (as it is stateful).
 
-Again, very appreciative of your time.
+So, I need to load-balance TCP flows seen on the capture interface in
+a deterministic way to the dummy interfaces.
 
-Jeff
+This is all complicated by the fact the traffic I am handling is
+entirely unrelated to the host (in terms of L2 and L3 paths) and I
+don't want to change it (i.e. NAT etc).
 
-=2D----Original Message-----
-From: Kerin Millar <kfm@plushkava.net>
-Sent: Saturday, October 2, 2021 9:36 PM
-To: Jeff <jnewman67@gmx.com>
-Cc: netfilter@vger.kernel.org
-Subject: Re: netfilter 10,000' overview
+I am looking at:
 
-(re-copying the list into CC ...)
+iptables -t mangle with CONNMARK and RESTOREMARK, allowing me to mark
+discrete flows.
+Then I use iptables -t mangle ... -m statistic --mode nth
+<some key step here that I cannot figure out>
+Then some kind of postrouting forwarding iptables -A POSTROUTING -o
+dummyN -j CONNMARK
+Then I was thinking to route the marked flows to one of the N dummy
+interfaces using new iproute2 tables in /etc/iproute2/rt_tables and ip
+rule add fwmark X table <tablename>
 
-On Sat, 2 Oct 2021 21:22:46 -0400
-"Jeff" <jnewman67@gmx.com> wrote:
+I don't care about return paths. I only want the traffic to hit the
+dummy interface and then it can be blackholed, as it's only destined
+for capture and analysis).
 
-[...]
+The traffic hitting the external capture interface could be anything -
+with any source or destination IP or Port (but limited to UDP or TCP).
+The IPs could be Public or private RFC1918 addresses which I don't
+want to change so I cannot use NAT.
 
-> Looking at the Redhat article you linked to, it appears that Fedora
-> implements nftables under iptables, which I assume affect the
-> nf_tables ruleset.  However, it mentions the inclusion of xtables
-> utilities, but it appears those are just used to convert xtable-like
-> rules compatible with nf_tables.  So it appears nf_tables  is the
-underlying ruleset.
+For step 3 from the list above, I am a bit stuck:
 
-Since Fedora 32, apparently.
+I don't think I can change anything in the packet (at least not DST
+IP) or will impact my analysis. (Maybe DST MAC?)
+I don't want to have to give my dummy interfaces real addresses as the
+addresses in the captured traffic may overlap and cause problems
 
-https://fedoraproject.org/wiki/Changes/iptables-nft-default
+What I really want is to just move packets from marked flows from one
+interface to another.
 
-On such a system, you may find it interesting to compare the output of
-"iptables-save" and "nft list ruleset".
+Should I try ebtables and rewrite the dst MAC to that of the dummy
+interface? Can I do this based on the iptables CONNMARK?
 
->
-> I'll do some learning on how to make rules in nftables, and get some
-> of my scripts converted over, and see how I get along.
+I realised that I am trying to make L2 decisions based on L4
+information which makes me uneasy, but I will be discarding all
+traffic on the interfaces after capture.
 
-See, also, "iptables-translate" and "iptables-restore-translate". While no=
-t
-perfect, they are definitely useful.
+Normally, I write out a problem like this for public consumption and
+as I write it out, it all becomes clear.
 
->
-> If I got anything wrong in this response, I'd appreciate knowing.
-> Otherwise, I really do appreciate your time, and I'll leave you to
-> what must be much more important things :)
->
-> Jeff
+This time no luck so far.
 
-=2D-
-Kerin Millar
+Any ideas or suggestions? Am I missing something really obvious?
 
+Should I be looking at doing this properly with eBPF and XDP? (I am
+planning on this route later, but wanted a quick workaround to scale
+the existing solution while I work on an improvement).
+
+Thank you in advance
