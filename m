@@ -1,82 +1,71 @@
 From: Kerin Millar <kfm@plushkava.net>
-Subject: Re: testing if a named set exists?
-Date: Sun, 3 Oct 2021 00:50:51 +0100
-Message-ID: <20211003005051.b704c8386455400360bcc636@plushkava.net>
-References: <CAOLfK3UBEvRg8AQbLibVo9xp6tZjaE7_S1+uDyhhbR7Nj_eYhA@mail.gmail.com>
-        <20211002035707.bf92730b8f667517ba53dfad@plushkava.net>
-        <CAOLfK3VJ28CLb5K-gbKVHO+F+vQh5wywb65wbFnAdsSpq2DQ-Q@mail.gmail.com>
+Subject: Re: netfilter 10,000' overview
+Date: Sun, 3 Oct 2021 02:36:15 +0100
+Message-ID: <20211003023615.10f438fe018df4608587aef5@plushkava.net>
+References: <010901d7b70a$86c8edf0$945ac9d0$@gmx.com>
+        <20211003004937.acbbc610fc32536fcdd9f736@plushkava.net>
+        <015701d7b7f5$2d07dec0$87179c40$@gmx.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
          h=date:from:to:cc:subject:message-id:in-reply-to:references
         :mime-version:content-type:content-transfer-encoding; s=fm3; bh=
-        K+LNc8WZV8GVHrKKtD5y/iu5NQI6ztvABov1y/nLkUo=; b=ZZe9l5Ux7V1Acjcf
-        Ec6oc9E3H5x3KRwE12P7Vwd388f001FvDHYWz4SOJwtN43z3wDMcfanFGp3vnR89
-        M2P1lVrDwJ1Enxmk+OG07eXvWFhCKk2pWKG7NONKr+meKqC99IS7i1/stDF6VWXi
-        qM1zzTE086w/yUs20SJyewokDyfolcrWRqjPdnhPWMwkd5jRxh1EOD+wLON2DQkK
-        b4FZ4bDC+BadyC+7Mr0M+0qGxsJCPqo/HVy1VNpc/hsas6uvjvuHIpYdYH04RukH
-        lvYqvWYB8cqbxPCFgITdwa7ugabSiX6I84L2J2EmpJOqL7dGcPjHoRd9AGWa8hF+
-        tRgKnw==
+        KLFTWi9cKYU06vjou2Dtuew3XpOg71/fTIdTF1NmYHM=; b=m4xWtrdRidDE+EJ0
+        s16B2OuicER6XGOqMBrC3LPues2ZBkhA2FJTuxG63mRdZqUTY1BKLcmdnQQ4rJMI
+        g2XzFwE2dM4FRaU9T3DeqWWAZSwbtWfC4ng3e2SjFd4ND2K+RsNIDAeGcHWdwZeh
+        DGlyvKUACNf+V9gAB8PIVL8/k9l+RNelipQkw3PdbTIxyZr3PH4RsU3GmyeswCPb
+        CgoxOASqTxAVk0J7KC9wwcvTHIMTPkcKbU+6bwyrMRPeQdIIbESysuto+ef+Abhk
+        gnUNjhi4hKq87WPaTOiujTzgL9CPcc6SuFzZ3/YuWHPOOSsAm58dWE0mztBsrJ+u
+        lBSFQA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:content-type
         :date:from:in-reply-to:message-id:mime-version:references
         :subject:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm1; bh=K+LNc8WZV8GVHrKKtD5y/iu5NQI6ztvABov1y/nLk
-        Uo=; b=Dk2nFNK3g4Vvbn0bdL0peTfvMh1530MtneOF75GDCOJVWA8hKNS8OTCu3
-        ioLzwgpUwP6zjM7BEkKcGknvaeVzObkWT+2pI8d99gHk/PPCBalqffmevH37qFsQ
-        m6hSFjhayd6gtMRksg05aKoCpZ6lIV9gDCXpKH1td+SyxRgOaLMvtnuZwUNpa7OQ
-        Yba65O9il+wQJCxKGc9T6J2Xa58d6szEgO9mFDzgiqz60SZc7YZlS6vPGAu7fSlz
-        vJbvvNFS6Ta3VoEJtZ2BJTLvp6v2TuT74M3cHWLwwnbwyVnvqLdIzSxcI8UxaTwV
-        L88uNZv+3Pg4eRTaSPld+mQhTotaA==
-In-Reply-To: <CAOLfK3VJ28CLb5K-gbKVHO+F+vQh5wywb65wbFnAdsSpq2DQ-Q@mail.gmail.com>
+        :x-sasl-enc; s=fm1; bh=KLFTWi9cKYU06vjou2Dtuew3XpOg71/fTIdTF1NmY
+        HM=; b=eCl3JLVfsY9BF6Lk6L6N34t4inZ86F7on+7Hwd2v9vvIbTKKMieEbsrn9
+        XX+LJ2UEjaELX9JcZIMfU4YiWKaX2p5PXLEBNjn1HzNkW0TiiTprHHlPQek1yWOe
+        ykUwQvodCAYTZVSS1xoxEASxOxy9DPk1FS91BayjJ+L4kAIEOtSLaqvukAHCdPpQ
+        Jl1HbfTuziGHiOPkz1vB7PeuuhIyfDXtM8FCbyZrKqKh2IaywuAm3z5gKJzLo8km
+        wELCevydtQC7iEftdkEo6zranicadIGlz1FZ14R+HGKR6atZ/GztbJ6JMBFOxyHY
+        OgS+B2iLtz6JzRsvYvmgYI6OrGt3g==
+In-Reply-To: <015701d7b7f5$2d07dec0$87179c40$@gmx.com>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Matt Zagrabelny <mzagrabe@d.umn.edu>
-Cc: netfilter <netfilter@vger.kernel.org>
+To: Jeff <jnewman67@gmx.com>
+Cc: netfilter@vger.kernel.org
 
-On Sat, 2 Oct 2021 06:50:35 -0500
-Matt Zagrabelny <mzagrabe@d.umn.edu> wrote:
+(re-copying the list into CC ...)
 
-> Hey Kerin (and Duncan),
-> 
-> Thanks for the replies.
-> 
-> On Fri, Oct 1, 2021 at 9:57 PM Kerin Millar <kfm@plushkava.net> wrote:
-> >
-> > On Fri, 1 Oct 2021 20:16:17 -0500
-> > Matt Zagrabelny <mzagrabe@d.umn.edu> wrote:
-> >
-> > > I'd like to do something like the following:
-> > >
-> > > if exists $named_set
-> > >     nft add rule ip filter output ip daddr $named_set accept
-> > > else
-> > >     nft add rule ip filter output ip daddr $default_set accept
-> > >
-> > > Does anyone know if I can accomplish this with nftables?
-> > >
-> >
-> > The output of nft isn't particularly amenable to parsing unless it is instructed to produce JSON. The simplest way is to act upon the exit status value of a list set command.
-> >
-> > if nft --terse list set ip filter "$named_set" >/dev/null 2>&1; then ...
-> 
-> I should have been more specific...
-> 
-> I'm hoping to do this all in nft without hitting the shell. For
-> example, from "man bash" we have:
-> 
->        ${parameter:-word}
->               Use Default Values.  If parameter is unset or null, the
-> expansion of word is  substituted.   Otherwise,
->               the value of parameter is substituted.
-> 
-> I was hoping for some sort of similar mechanism in nft. Like:
-> 
-> nft add rule ip filter output ip daddr
-> ${named_set_does_not_exist:-default_named_set} accept
+On Sat, 2 Oct 2021 21:22:46 -0400
+"Jeff" <jnewman67@gmx.com> wrote:
 
-I see. As far as I'm aware, no such feature exists in nft at the current time.
+[...]
+
+> Looking at the Redhat article you linked to, it appears that Fedora
+> implements nftables under iptables, which I assume affect the nf_tables
+> ruleset.  However, it mentions the inclusion of xtables utilities, but it
+> appears those are just used to convert xtable-like rules compatible with
+> nf_tables.  So it appears nf_tables  is the underlying ruleset.
+
+Since Fedora 32, apparently.
+
+https://fedoraproject.org/wiki/Changes/iptables-nft-default
+
+On such a system, you may find it interesting to compare the output of "iptables-save" and "nft list ruleset".
+
+> 
+> I'll do some learning on how to make rules in nftables, and get some of my
+> scripts converted over, and see how I get along.
+
+See, also, "iptables-translate" and "iptables-restore-translate". While not perfect, they are definitely useful.
+
+> 
+> If I got anything wrong in this response, I'd appreciate knowing.
+> Otherwise, I really do appreciate your time, and I'll leave you to what must
+> be much more important things :)
+> 
+> Jeff
 
 -- 
 Kerin Millar
