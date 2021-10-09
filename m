@@ -1,70 +1,50 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: How to add overlapping CIDR blocks in a set and have a way
- delete them ?
-Date: Thu, 7 Oct 2021 14:08:55 +0200
-Message-ID: <YV7jV0j3LE8C2bHH@salvia>
-References: <CAEOQC3M3qUF-Ds6gGP=9d00uQUE36QzBovDjuvgAnuA8WdxMZg@mail.gmail.com>
- <YV7iv721TKI3EVKD@salvia>
+From: halfdog <me@halfdog.net>
+Subject: Re: Invalidate conntrack using iptables rule
+Date: Sat, 09 Oct 2021 15:40:49 +0000
+Message-ID: <3542-1633794049.505584@Ajb7.dwP8.GSCy>
+References: <2015-1629793795.014053@4P1Y.V0pY.lR6P>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <YV7iv721TKI3EVKD@salvia>
-List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Return-path: <netfilter-owner@vger.kernel.org>
+In-reply-to: <2015-1629793795.014053@4P1Y.V0pY.lR6P>
+List-ID: <netfilter.vger.kernel.org>
 Content-Transfer-Encoding: 7bit
-To: Shivam Sandbhor <shivam@crowdsec.net>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Thu, Oct 07, 2021 at 02:06:26PM +0200, Pablo Neira Ayuso wrote:
-> On Mon, Oct 04, 2021 at 02:45:37PM +0530, Shivam Sandbhor wrote:
-> > For context, we are detecting nefarious IP ranges/CIDR blocks by
-> > parsing the live logs of various services (eg nginx, apache etc) using
-> > the crowdsec agent. After the agent detects a nefarious IP range, we
-> > want to block the range using nftables. To do this we tried adding IP
-> > range to a nftables set, with appropriate rules in place.
-> > 
-> > The problem we are facing is when the agent detects IP ranges which
-> > overlap. In such cases, nftables rejects the newer overlapping range.
-> > Even if the previous range is smaller.
-> > 
-> > We tried using the "auto-merge" flag for the set but it doesn't solve
-> > the problem because only ranges present in the same
-> > transaction/command are auto-merged.
-> 
-> Automerge does not support for running updates, ie. it does not merges
-> interval for incremental updates.
-> 
-> > Also we want to provide users an option to delete a range. But this
-> > won't be possible if this range was merged to some other range by
-> > nftables.
-> > 
-> > So how do we add IP ranges in a nftables set which are potentially
-> > overlapping and have a way to delete the originally provided ranges ?
-> 
-> You could do an incremental update in a batch file, deleting first the
-> range you want to remove and then adding the new range:
-> 
-> # cat file.nft
-> delete element x y { 1.1.1.0/24 }
-> add element x y { 1.1.1.0/23 }
-> # nft -f file.nft
+Hi,
 
-Oh, I forgot to mention, you can use this command to check if a range
-already exists in the set:
+Any comments on this? Without any feedback I would try the policy
+timeout -1 method and dig into the kernel code to see if that
+should really work without side effects.
 
-# nft get element x y { 1.1.1.0/24 }
+hd
 
-Users do not need to specify an exact match for this 'get' command. If
-you specify 
+halfdog writes:
+> Hello List,
+>
+> Is there a way to (mis-)use an iptables rule to invalidate the
+> currently established conntrack entry related to an packet being
+> processed? The packet can be identified due to violating connbytes
+> and u32 match criteria.
+>
+> One solution I came up so far to emulate that behaviour was to
+> set a mark/label on the conntrack when the criteria is met the
+> first time and then DROP all packets with that mark/label from
+> here on. But that somehow would bloat the ruleset and keep an
+> useless conntrack entry in memory where just terminating the
+> conntrack would do all of it at once.
+>
+> Another solution might be to modify the conntrack timeout later
+> in the raw table using "-j CT --timeout [policy]" applying a
+> timer value of "-1" and thus hopefully immediately invalidating
+> the conntrack entry.
+>
+>
+>
+> Is there an easier solution to that problem? If no, which one
+> of the two solutions from above seems to be easier to implement
+> and maintain in a stable, riskfree way in the long run?
+>
+> Kind regards,
+> hd
 
-# nft get element x y { 1.1.1.1 }
-table ip x {
-        set m {
-                type ipv4_addr
-                flags interval
-                elements = { 1.1.1.0/24 }
-        }
-}
-
-This is actually also allowing you to query for a potential overlap
-before hand.
