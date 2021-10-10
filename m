@@ -1,50 +1,53 @@
-From: halfdog <me@halfdog.net>
-Subject: Re: Invalidate conntrack using iptables rule
-Date: Sat, 09 Oct 2021 15:40:49 +0000
-Message-ID: <3542-1633794049.505584@Ajb7.dwP8.GSCy>
-References: <2015-1629793795.014053@4P1Y.V0pY.lR6P>
+From: Andrew Bate <mail@andrewbate.com>
+Subject: Netfilter flow schematic: routing decision and output hook question
+Date: Mon, 11 Oct 2021 00:52:58 +0100
+Message-ID: <CAELCRPeqs4kxLcFDh0jvH1u2MeRZVwCnZTLt+tu0ZyYhqPV4vQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-reply-to: <2015-1629793795.014053@4P1Y.V0pY.lR6P>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=andrewbate.com; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=mnOYwwAwpAFKsR8w/H3PfG7itVYYia26b4iWx4TfFu0=;
+        b=VHWMNHlLYI3XA8MmpCUNMGI9FghoFVi4dbF/TJtPIYkD/NGTjU1eALHIWyQZyCT/QJ
+         p79sO6TRxs3Sw3NbvDDmfacqqgsXvaSVb/FOHydbA5EdXlwzqtf6JVsTNXtJWAItk/B5
+         p6HkjSxzb53D45LOGlOgaxC0DJ9SI+fM8g+8PMRzXZwmub5jDxWDzDEEEup6vZKQLOvm
+         IppBeGMVx5CPILPoYe5mMGNzk7SJdyu3woaNxDasm5ynfKfC8HJWksfFkgFwMUCEsQwW
+         uvQ4UKXBjNKGDpKl3DiCKzyVdu4YsgmNNu2UNNnVP+3tWzdgTEZ/nwoGA9vpEEE9uW3j
+         fJNw==
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi,
+Hi all,
 
-Any comments on this? Without any feedback I would try the policy
-timeout -1 method and dig into the kernel code to see if that
-should really work without side effects.
+(This is my first time posting to this list, so apologies if this is
+not the correct place to ask.)
 
-hd
+This page on the Netfilter wiki puts the output hook after the routing decision:
+https://wiki.nftables.org/wiki-nftables/index.php/Netfilter_hooks
 
-halfdog writes:
-> Hello List,
->
-> Is there a way to (mis-)use an iptables rule to invalidate the
-> currently established conntrack entry related to an packet being
-> processed? The packet can be identified due to violating connbytes
-> and u32 match criteria.
->
-> One solution I came up so far to emulate that behaviour was to
-> set a mark/label on the conntrack when the criteria is met the
-> first time and then DROP all packets with that mark/label from
-> here on. But that somehow would bloat the ruleset and keep an
-> useless conntrack entry in memory where just terminating the
-> conntrack would do all of it at once.
->
-> Another solution might be to modify the conntrack timeout later
-> in the raw table using "-j CT --timeout [policy]" applying a
-> timer value of "-1" and thus hopefully immediately invalidating
-> the conntrack entry.
->
->
->
-> Is there an easier solution to that problem? If no, which one
-> of the two solutions from above seems to be easier to implement
-> and maintain in a stable, riskfree way in the long run?
->
-> Kind regards,
-> hd
+However, the iptables man page says that mangle/OUTPUT, nat/OUTPUT and
+security/OUTPUT are "for altering locally-generated packets before
+routing", whereas raw/OUTPUT and filter/OUTPUT are "for
+locally-generated packets" (before routing I assume).
 
+This seems to contradict the schematic (or perhaps the schematic is
+incomplete and there is more than one routing decision on the path
+from the local process to the output interface).
+
+Combining what the man page says with the table of priorities given on
+the above wiki page, I get the following:
+Local process -> routing decision -> raw/OUTPUT -> connection tracking
+-> mangle/OUTPUT -> nat/OUTPUT -> routing decision -> filter/OUTPUT ->
+security/OUTPUT -> routing decision -> ...
+
+Is this right? If so, why was Netfilter designed to have so many
+routing decision points?
+
+Why doesn't the schematic on the wiki show all of the points where a
+routing decision happens on the path from local process to output
+interface?
+
+Thanks!
+Andrew
