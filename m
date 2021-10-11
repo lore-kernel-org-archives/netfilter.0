@@ -1,53 +1,46 @@
-From: Andrew Bate <mail@andrewbate.com>
-Subject: Netfilter flow schematic: routing decision and output hook question
-Date: Mon, 11 Oct 2021 00:52:58 +0100
-Message-ID: <CAELCRPeqs4kxLcFDh0jvH1u2MeRZVwCnZTLt+tu0ZyYhqPV4vQ@mail.gmail.com>
+From: Arturo Borrero Gonzalez <arturo@netfilter.org>
+Subject: Re: conntrackd internal cache growing indefinitely in active-active
+ setup
+Date: Mon, 11 Oct 2021 14:27:51 +0200
+Message-ID: <b686a9f6-7147-63bf-5db8-ae9214b854a5@netfilter.org>
+References: <CANQxXxoHEb=v8WoFPsr29cNPBYo5NYAOH4UoPNkDUX8DRk_jrg@mail.gmail.com>
+ <YUkvvO3HnXVJiV+R@salvia>
+ <CANQxXxpDvsyZ-LGd1tYx8xBwM+JJ09NyBBZ=X8PRtiH72G+0Vw@mail.gmail.com>
+ <CANQxXxqt48dD2kUSj8YYicKfvSKWtgi-RQX1=OU8p02uyt157A@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=andrewbate.com; s=google;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=mnOYwwAwpAFKsR8w/H3PfG7itVYYia26b4iWx4TfFu0=;
-        b=VHWMNHlLYI3XA8MmpCUNMGI9FghoFVi4dbF/TJtPIYkD/NGTjU1eALHIWyQZyCT/QJ
-         p79sO6TRxs3Sw3NbvDDmfacqqgsXvaSVb/FOHydbA5EdXlwzqtf6JVsTNXtJWAItk/B5
-         p6HkjSxzb53D45LOGlOgaxC0DJ9SI+fM8g+8PMRzXZwmub5jDxWDzDEEEup6vZKQLOvm
-         IppBeGMVx5CPILPoYe5mMGNzk7SJdyu3woaNxDasm5ynfKfC8HJWksfFkgFwMUCEsQwW
-         uvQ4UKXBjNKGDpKl3DiCKzyVdu4YsgmNNu2UNNnVP+3tWzdgTEZ/nwoGA9vpEEE9uW3j
-         fJNw==
+In-Reply-To: <CANQxXxqt48dD2kUSj8YYicKfvSKWtgi-RQX1=OU8p02uyt157A@mail.gmail.com>
+Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Matt Mercer <matt.mercer@menlosecurity.com>
+Cc: netfilter@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>
 
-Hi all,
+On 10/4/21 9:07 PM, Matt Mercer wrote:
+> Hi Pablo,
+> 
+> We tested a very silly patch to internal_cache_ct_event_del() that
+> skips the CTD_ORIGIN_INJECT check:
+> 
 
-(This is my first time posting to this list, so apologies if this is
-not the correct place to ask.)
+Hi Matt,
 
-This page on the Netfilter wiki puts the output hook after the routing decision:
-https://wiki.nftables.org/wiki-nftables/index.php/Netfilter_hooks
+wanted to chime in to confirm that I've been experiencing the same issue you're 
+describing.
 
-However, the iptables man page says that mangle/OUTPUT, nat/OUTPUT and
-security/OUTPUT are "for altering locally-generated packets before
-routing", whereas raw/OUTPUT and filter/OUTPUT are "for
-locally-generated packets" (before routing I assume).
+There were only 2 differences in our setup compared to yours:
+* both internal & external caches were disabled
+* using TCP as transport method
 
-This seems to contradict the schematic (or perhaps the schematic is
-incomplete and there is more than one routing decision on the path
-from the local process to the output interface).
+I had problems debugging the setup, because the firewall was a live system, 
+receiving 6Gbps of traffic. Obtaining a clear pattern was difficult.
+I couldn't replicate the problem when replicating the setup on a system with 
+more "manageable" traffic. So I only observed the bug when conntrackd was under 
+high load (which probably means: under "real world" traffic patterns).
 
-Combining what the man page says with the table of priorities given on
-the above wiki page, I get the following:
-Local process -> routing decision -> raw/OUTPUT -> connection tracking
--> mangle/OUTPUT -> nat/OUTPUT -> routing decision -> filter/OUTPUT ->
-security/OUTPUT -> routing decision -> ...
+Eventually lost my time budget to work on this (and interest) and moved on...
 
-Is this right? If so, why was Netfilter designed to have so many
-routing decision points?
-
-Why doesn't the schematic on the wiki show all of the points where a
-routing decision happens on the path from local process to output
-interface?
-
-Thanks!
-Andrew
+So, just wanted to confirm that this bug exists, thanks for the report!
+We should probably track something on https://bugzilla.netfilter.org/ for the 
+time being.
