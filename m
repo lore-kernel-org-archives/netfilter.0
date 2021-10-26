@@ -1,57 +1,86 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: nft list empty
-Date: Wed, 27 Oct 2021 00:40:04 +0200
-Message-ID: <YXiDxDKfBLbZCaIy@salvia>
-References: <YXhWwPas9vnN2XDi@granicus.if.org>
+Subject: Re: nft numeric output translates tcp flags rule so it cannot be
+ loaded again
+Date: Wed, 27 Oct 2021 00:52:58 +0200
+Message-ID: <YXiGylj/YMaSPKP7@salvia>
+References: <b02e9c0a-281d-02d1-d876-b0b997b6d8c2@freenet.de>
+ <YXLWuHabUtY9wKXq@salvia>
+ <9d7cf59f-eb61-5914-cbd5-83e5dd053684@freenet.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <YXhWwPas9vnN2XDi@granicus.if.org>
+In-Reply-To: <9d7cf59f-eb61-5914-cbd5-83e5dd053684@freenet.de>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Nathan Wagner <nw@hydaspes.if.org>
+Content-Type: text/plain; charset="utf-8"
+To: Benno <b.ohnsorg@freenet.de>
 Cc: netfilter@vger.kernel.org
 
-On Tue, Oct 26, 2021 at 07:28:00PM +0000, Nathan Wagner wrote:
-> For some reason, 'nft list ...' doesn't seem to print anything out.
-> A nft create table seems to create the table, but other than an
-> error if I try to create it again, I don't have any way to tell.
+On Fri, Oct 22, 2021 at 08:10:07PM +0200, Benno wrote:
+> Am 22.10.21 um 17:20 schrieb Pablo Neira Ayuso:
+> > On Fri, Oct 22, 2021 at 03:51:04PM +0200, Benno wrote:
+> […]
+> > 
+> > What nftables version are you using there? Using nftables 1.0.0.
+> > 
+> > Reload works fine here:
+> > 
+> > # nft -f ruleset.nft
+> > # nft -n list ruleset > /tmp/ruleset2.nft
+> > # nft flush ruleset
+> > # nft -f /tmp/ruleset2.nft
+> > # nft list ruleset
+> > table inet firewall {
+> >         chain inbound_ipv4 {
+> >         }
+> > 
+> >         chain inbound_ipv6 {
+> >         }
+> > 
+> >         chain inbound {
+> >                 type filter hook input priority filter; policy drop;
+> >                 ct state vmap { invalid : drop, established : accept, related : accept }
+> >                 tcp flags != syn / fin,syn,rst,ack ct state new counter packets 0 bytes 0 drop
+> >                 iifname "lo" accept
+> >                 meta protocol vmap { ip : jump inbound_ipv4, ip6 : jump inbound_ipv6 }
+> >                 tcp dport { 22, 80, 443 } accept
+> >                 udp dport 1900 meta pkttype multicast limit rate 4/second burst 20 packets accept comment "Accept UPnP IGD port mapping reply"
+> >                 log prefix "[nftables] Inbound Denied: " counter packets 20 bytes 6180 drop
+> >         }
+> > }
+> > 
+> >> For example connections to sshd on port 22 is not possible anymore.
+> >> There are also no logs about the dropped traffic.
+> > 
+> > Works also fine here.
+> > 
+> I fast forwarded to (not yet stable 1.0 on Gentoo) and tried a restart
+> with same result. But restoring the working rule set, saving through the
+> init script and restarting yields a working rule set.
 > 
-> I am probably missing something, but I have looked around and
-> don't see what it could be.  I worked up a script to reproduce
-> the issue, the output of which is below.
+> And instead of numeric variant of 0.9.9 which was
 > 
-> What is especially puzzling is that a 'list ruleset' within the same
-> nft process shows output, so it's like nft just isn't committing the
-> changes for some reason.  Except that doing two creates in a row
-> generates an error that I interpret to mean that the table already
-> exists.  This also implies that the table create persisted across
-> separate nft processes.
+> tcp flags 0x2 / 0x1,0x2,0x4,0x10 ct state 0x8 counter packets 0 bytes 0 drop
 > 
-> Finally and separately, I tried doing an 'echo list ruleset | nft -f -'
-> and it errors out with a missing /dev/stdin.  Ok, my /dev filesystem is
-> probably broken, but why is it trying to open /dev/stdin in the first
-> place instead of just reading from fd 0?  I imagine that somewhere
-> there's the equivalent of an "if filename = '-' then filename =
-> '/dev/stdin' and then it goes through the same process it uses for named
-> files.  I'd do this the other way around.
+> it looks now different with 1.0:
 > 
-> + uname -r
-> 4.15.10-2-zoranix
+> tcp flags != 0x2 / 0x1,0x2,0x4,0x10 ct state 0x8 counter packets 0 bytes
+> 0 drop
+> 
+> Interestingly both variants are syntactically correct according to nft
+> -c but I'm not experienced enough to interprete the consquences of the
+> missing operator != for 0.9.9.
+> 
+> Replacing the now working 1.0 variant of tcp flags with the broken
+> variant from 0.9.9 causes failed connections again.
+> 
+> It'd be great if you could explain the effects of the subtle change of
+> the rule. Since I'd like to use nftables to be verbose/ easier to
+> maintain. Both numeric variants look complicated to the untrained eye.
+> 
+> I can match the different string tcp flags to their numeric values. But
+> I'm unable to get the difference between tcp flags 0x2 and tcp flags !=
+> 0x2… It looks like a not-equal-operator that clearly lacks in the 0.9.9
+> variant. Is it because of polish notation/ operator first?
 
-There's a fix in master (to be included in the upcoming 1.0.1 release)
-which fixes nftables with older kernels:
-
-commit 058a943cefbdde9aee273115624de27cf15dd3f3
-[...]
-
-    cache: provide a empty list for flowtables and objects when request fails
-    
-    Old kernels do not support for dumping the flowtable and object lists,
-    provide an empty list instead to unbreak the cache initialization.
-    
-    Fixes: 560963c4d41e ("cache: add hashtable cache for flowtable")
-    Fixes: 45a84088ecbd ("cache: add hashtable cache for object")
-
-Could you give a try to a nftables git HEAD snapshot?
+0.9.9 listing is buggy for tcp flags !=.
