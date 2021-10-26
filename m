@@ -1,44 +1,90 @@
-From: pupilla@libero.it
-Subject: capwap protocol nested header
-Date: Tue, 26 Oct 2021 16:54:32 +0200 (CEST)
-Message-ID: <352502450.203840.1635260072685@mail1.libero.it>
+From: Nathan Wagner <nw@hydaspes.if.org>
+Subject: nft list empty
+Date: Tue, 26 Oct 2021 19:28:00 +0000
+Message-ID: <YXhWwPas9vnN2XDi@granicus.if.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
-        t=1635260072; bh=zaaj/zlPqerW0rUMJVvZz08IZCa/ImvltBxuEFl3vgA=;
-        h=From;
-        b=b0DxNl2d9UjCmaKH5E9019466LI80//OIjrgOHZsiVrmfZNy5vk3BhGqkmfKf1Y/J
-         F3X6x+a7DAtxp4CxlcwFKJsZWP1Vp/TIoydQlxTR0wY45NzRZApQ1oX1Z2rp7rc/DP
-         3mRx9r3guYbBvT16Y+UMJ5xGpEokDp69QamilaAG7swFaPC1l6eIllsRhlngZUCcgV
-         iIPPMJdcbmL+aVQPDkVaFf2lIBkYqgir/R5/nSQ3mPdCTvhbqX4DtThg7Z1/+t27NL
-         B7aLy8/BfBtjnUoTpfg+mDh2rLAGy5AQoFY6fuypfYa6/UmYTYbi0sEK/hshG130oL
-         GCsN/F8z3s9Zg==
+Content-Disposition: inline
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hello everyone,
+For some reason, 'nft list ...' doesn't seem to print anything out.
+A nft create table seems to create the table, but other than an
+error if I try to create it again, I don't have any way to tell.
 
-I would like to know if it's possible to mangle a
-packet like this one with linux netfilter (linux
-kernel 5.14 or 5.15).
+I am probably missing something, but I have looked around and
+don't see what it could be.  I worked up a script to reproduce
+the issue, the output of which is below.
 
-My goal is to match the innermost ip header
-(23.200.208.68/10.18.102.237) and then change the
-mss of the tcp packet.
+What is especially puzzling is that a 'list ruleset' within the same
+nft process shows output, so it's like nft just isn't committing the
+changes for some reason.  Except that doing two creates in a row
+generates an error that I interpret to mean that the table already
+exists.  This also implies that the table create persisted across
+separate nft processes.
 
-Frame 48007: 1450 bytes on wire (11600 bits), 1450 bytes captured (11600 bits)
-Ethernet II, Src: LcfcHefe_32:48:cf, Dst: HewlettP_da:f5:07
-Internet Protocol Version 4, Src: 10.18.46.63, Dst: 10.18.153.156
-User Datagram Protocol, Src Port: 5247, Dst Port: 5248
-Control And Provisioning of Wireless Access Points - Data
-IEEE 802.11 Data, Flags: ......F.
-Logical-Link Control
-Internet Protocol Version 4, Src: 23.200.208.68, Dst: 10.18.102.237
-Transmission Control Protocol, Src Port: 443, Dst Port: 52500, Seq: 2753105, Ack: 1818, Len: 1316
+Finally and separately, I tried doing an 'echo list ruleset | nft -f -'
+and it errors out with a missing /dev/stdin.  Ok, my /dev filesystem is
+probably broken, but why is it trying to open /dev/stdin in the first
+place instead of just reading from fd 0?  I imagine that somewhere
+there's the equivalent of an "if filename = '-' then filename =
+'/dev/stdin' and then it goes through the same process it uses for named
+files.  I'd do this the other way around.
 
-Is there any way to do this?
++ uname -r
+4.15.10-2-zoranix
++ lsmod
++ grep nf
+nft_set_rbtree         16384  0
+nft_set_hash           24576  0
+nft_set_bitmap         16384  0
+nft_reject             16384  0
+nft_counter            16384  0
+nf_tables_inet         16384  0
+nf_tables_ipv6         16384  1 nf_tables_inet
+nf_tables_ipv4         16384  5 nf_tables_inet
+nf_tables              94208  8 nft_set_bitmap,nft_reject,nft_set_hash,nf_tables_ipv6,nf_tables_ipv4,nft_set_rbtree,nft_counter,nf_tables_inet
+configs                45056  0
++ nft flush ruleset
++ nft list ruleset
++ nft create table ip filter
++ nft list ruleset
++ nft create table ip filter
+Error: Could not process rule: File exists
+create table ip filter
+^^^^^^^^^^^^^^^^^^^^^^^
++ cat new/bare
+#!/usr/sbin/nft -f
 
-Thanks in advance
-Marco
+flush ruleset
+
+table ip filter {
+   chain input { type filter hook input priority 0; policy accept; }
+   chain forward { type filter hook forward priority 0; policy accept; }
+   chain output { type filter hook output priority 0; policy accept; }
+}
+
+list ruleset
++ /usr/sbin/nft -f new/bare
+table ip filter {
+	chain input {
+		type filter hook input priority filter; policy accept;
+	}
+
+	chain forward {
+		type filter hook forward priority filter; policy accept;
+	}
+
+	chain output {
+		type filter hook output priority filter; policy accept;
+	}
+}
++ nft list ruleset
++ echo flush ruleset
++ /usr/sbin/nft -f -
+internal:0:0-0: Error: Could not open file "/dev/stdin": No such file or directory
+
+-- 
+nw
