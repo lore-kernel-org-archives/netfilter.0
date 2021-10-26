@@ -1,63 +1,44 @@
-From: Daniel <tech@tootai.net>
-Subject: Re: Need help
-Date: Tue, 26 Oct 2021 09:14:07 +0200
-Message-ID: <147618b6-d98f-9413-61e1-e3e9b488344d@tootai.net>
-References: <dc004311d37bb7332b649c4973b0cbed@mail.gmail.com>
+From: pupilla@libero.it
+Subject: capwap protocol nested header
+Date: Tue, 26 Oct 2021 16:54:32 +0200 (CEST)
+Message-ID: <352502450.203840.1635260072685@mail1.libero.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1635232448; bh=K4/qBe0TUQzq9fZkDm6VBlcHkdSosITflB8DrPxoFC8=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=azceVCT5akF7dXZOkKPHMqTE+TESfUDl6VDDAa4/X16QOqNqBoO7B3J7bhbrSN5Dy
-         Atd5voSeJPTn9xGTLSAEvu+F+cg8s9iBZy0sd4nmAQRQxdotZYacvchOR3Csjf4iRK
-         cdf/mPM9VNyJXZqmxw4wZs13p5wev5kekVqQMQXY=
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1635232447; bh=K4/qBe0TUQzq9fZkDm6VBlcHkdSosITflB8DrPxoFC8=;
-        h=Subject:To:References:From:Date:In-Reply-To:From;
-        b=pILlyKFc3viVSO5ieDzKIj4QdEcc0V1rgGtMOGwN2FTwHqsQu83vbjSbFee03Krhn
-         pFPxhQtm2m/YVvRA+fV8QX3GrS8yQTddmDoCt3XEk38jJf2O7oaAI9GrqLKmh8sK/A
-         8/nrx5eb818B/Y41aJ2K89ohgHemnq4/L8K2f7vc=
-In-Reply-To: <dc004311d37bb7332b649c4973b0cbed@mail.gmail.com>
-Content-Language: fr-FR
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=libero.it; s=s2021;
+        t=1635260072; bh=zaaj/zlPqerW0rUMJVvZz08IZCa/ImvltBxuEFl3vgA=;
+        h=From;
+        b=b0DxNl2d9UjCmaKH5E9019466LI80//OIjrgOHZsiVrmfZNy5vk3BhGqkmfKf1Y/J
+         F3X6x+a7DAtxp4CxlcwFKJsZWP1Vp/TIoydQlxTR0wY45NzRZApQ1oX1Z2rp7rc/DP
+         3mRx9r3guYbBvT16Y+UMJ5xGpEokDp69QamilaAG7swFaPC1l6eIllsRhlngZUCcgV
+         iIPPMJdcbmL+aVQPDkVaFf2lIBkYqgir/R5/nSQ3mPdCTvhbqX4DtThg7Z1/+t27NL
+         B7aLy8/BfBtjnUoTpfg+mDh2rLAGy5AQoFY6fuypfYa6/UmYTYbi0sEK/hshG130oL
+         GCsN/F8z3s9Zg==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hello Brad
+Hello everyone,
 
-Le 26/10/2021 à 06:53, Brad Knorr a écrit :
-> I am new to nft commands.  I wish to use the map feature for port
-> forwarding.  What I want to achieve is the following
->
-> Sftp  incoming  to port 2222 on the public IP to be port forwarded to
-> private IP on port 22.  So what I found in the docs is this.
->
-> % nft add map nat foo { type inet_service : ipv4_addr . inet_service \; }
->
-> % nft add element nat foo { \
->      1100 : 192.168.1.2 . 5061, \
->      1101 : 192.168.1.3 . 5061, \
->      1400 : 192.168.1.4 . 5061 \
-> }
-> % nft add rule nat pre ip protocol tcp dnat ip addr . port to tcp dport
-> map @foo
->
->
-> So when I issue the first command I get the following error:
-> Error: unqualified mapping data type specified in map definition
->
-> When I issue the command:  nft add map nat foo { type inet_service :
-> ipv4_addr \; }
->
-> It works just fine.  I am at a loss as to why this is happening.  The
-> reason I need the mapping is I need to add and remove port forwarding
-> rules easily with a simple command.
->
-> Any help would be greatly appreciated.
-> Brad
+I would like to know if it's possible to mangle a
+packet like this one with linux netfilter (linux
+kernel 5.14 or 5.15).
 
-% nft add map nat foo { type inet_service : ipv4_addr \; flags interval \; } should do the job
+My goal is to match the innermost ip header
+(23.200.208.68/10.18.102.237) and then change the
+mss of the tcp packet.
 
--- 
-Daniel
+Frame 48007: 1450 bytes on wire (11600 bits), 1450 bytes captured (11600 bits)
+Ethernet II, Src: LcfcHefe_32:48:cf, Dst: HewlettP_da:f5:07
+Internet Protocol Version 4, Src: 10.18.46.63, Dst: 10.18.153.156
+User Datagram Protocol, Src Port: 5247, Dst Port: 5248
+Control And Provisioning of Wireless Access Points - Data
+IEEE 802.11 Data, Flags: ......F.
+Logical-Link Control
+Internet Protocol Version 4, Src: 23.200.208.68, Dst: 10.18.102.237
+Transmission Control Protocol, Src Port: 443, Dst Port: 52500, Seq: 2753105, Ack: 1818, Len: 1316
+
+Is there any way to do this?
+
+Thanks in advance
+Marco
