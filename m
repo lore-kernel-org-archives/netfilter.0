@@ -1,88 +1,63 @@
-From: Kevin P <petrilli.kevin@gmail.com>
-Subject: Getting systemd-nspawn to work with my ruleset
-Date: Thu, 28 Oct 2021 16:38:41 +0200
-Message-ID: <CABuDAEaZ0VG28jvCd0gYs01U-ELakneny=Que6NNenOOORB+iQ@mail.gmail.com>
-Mime-Version: 1.0
+From: Philip Prindeville <philipp_subx@redfish-solutions.com>
+Subject: Iptables, et al best practices for protecting KVM host sharing
+ "hostdev" (ixgbe-vf) interfaces with guests
+Date: Thu, 28 Oct 2021 18:31:05 -0600
+Message-ID: <6B834239-0EC5-497F-9E1E-00972F712CF4@redfish-solutions.com>
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=Mx6aPeJmwC+maGSROhp3XWqNsdQ4MnGuZiV3eg3a4iE=;
-        b=kDhysKPIKZ21GgxVCYAr0bZvFGKhFfjiEB2/n1bAusVR8RJHqdPmW4CP1RlrSK2Qhs
-         8KCWKLAlKxevHuX3AxVDBZiVSYymsH5R0pDsJbNpS0TQiKMGKKx8Th5HSNdYnz1OGJXg
-         nudhp7AtjRTkTKrKWkh6iC6dPO2kSNGJgn/CjsCzgJ9c3oSNpRm13X5LSkDm6YGGjmsI
-         vLY4t9h+oyJ9JolW51jsZvTijTQkn3HGDd9w0N4/ChvX21/q71QRTsO+uVEsZrTQOsUP
-         1xDyp+SqFhN3JOBE3Tks7EQIc28UWPAo6JejfCK9ava7BPWIpODM1GmeZ0AT7TWv7Sbn
-         KNZQ==
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
+Cc: libvirt-users@redhat.com
 
-Good afternoon everyone
-I've been trying to work this out for over a week but I really don't
-have a clue past this point.
-My notebook runs Arch Linux, running systemd-networkd as network
-manager and (trying to) have systemd-nspawn
-to work for containers.
-I have a few rules in  /etc/nftables.conf :
+Hi,
 
-table inet filter {
-    chain input {
-        type filter hook input priority filter; policy drop;
-        ct state { established, related } accept
-        ct state invalid drop
-        ip protocol icmp accept
-        meta l4proto ipv6-icmp accept
-        udp dport 5353 accept
-        reject
-    }
+I'm a developer and I use VM's for testing patches before submitting them (for various linux-* projects, as well as downstream things like OpenWrt, EPEL, etc).
 
-    chain forward {
-        type filter hook forward priority filter; policy accept;
-    }
+I have a trunked 10Gb/s Ethernet connection coming into my KVM servers (all of which are Supermicro x86_servers running CentOS 8) that have igb and ixgbe NIC's, so SR-IOV capable.
 
-    chain output {
-    }
-}
+Here's the situation:
 
-That somehow conflict with those added by systemd-nspawn, after I
-start a container with -n option:
+* the host is on a secured internal network, called "sandbox", which is VLAN 4.
 
-table ip io.systemd.nat {
-    set masq_saddr {
-        type ipv4_addr
-        flags interval
-        elements = { 192.168.240.176/28 }
-    }
+* the "external" network (i.e. public facing on my ISP) is "dirty", and is VLAN 66.
 
-    map map_port_ipport {
-        type inet_proto . inet_service : ipv4_addr . inet_service
-    }
+* the main subnet that laptops, WAPs, desktops, etc. sit on is "main", and is VLAN 1.
 
-    chain prerouting {
-        type nat hook prerouting priority dstnat + 1; policy accept;
-        fib daddr type local dnat ip to meta l4proto . th dport map
-@map_port_ipport
-    }
+The KVM hosts sit wholly inside "sandbox".
 
-    chain output {
-        type nat hook output priority -99; policy accept;
-        ip daddr != 127.0.0.0/8 oif "lo" dnat ip to meta l4proto . th
-dport map @map_port_ipport
-    }
+They host, however, several guests some of which sit on "main", and some of which sit on "main" and "external" (for instance, if I'm testing an OpenWrt firewall configuration with patches and it needs to be publicly accessible so that my testers can peer with it via IPsec).  Oh, and one production guest which hosts "git" and sits only on "sandbox".
 
-    chain postrouting {
-        type nat hook postrouting priority srcnat + 1; policy accept;
-        ip saddr @masq_saddr masquerade
-    }
-}
+Guests can be CentOS 8S, Windows 11, Ubuntu 20, Debian whatever, Fedora 33 or 34, OpenWrt, etc.
 
-Even though I fail to understand how. If, before starting a container,
-I flush my ruleset, the networking works as expected within
-the container, but if I don't, and my rules are active, I get no
-internet connection for the containers.
-Any help explaining why and how to fix this problem would be MUCH appreciated.
-Thanks
+My question is this: what's best practices for making sure that a switch VLAN misconfiguration issue, a cabling to the wrong port, etc. doesn't compromise the KVM server itself?
 
-Kevin P.
+How do I allow my KVM server to *not* be on "external", but some of its guests to be, without compromising security?
+
+Being the paranoid sort, I'd like to use defense-in-depth so I'm not counting on any single step to protect me.
+
+For instance, I might use ebtables or iptables rules to block VLAN traffic on hosts/guests that I don't want to see certain VLAN's under any circumstances.
+
+But I might also add interfaces to the list of things that NetworkManager ignores as /etc/NetworkManager/NetworkManager.conf lines like:
+
+[keyfile]
+unmanaged-devices=interface-name:eno*,except:interface-name:eno1
+unmanaged-devices=interface-name:enp*
+
+Thinking about that, I'm wondering what the notation is for telling NetworkManager to ignore all interfaces except those on VLAN 3, for instance.  Would that be:
+
+unmanaged-devices=interface-name:eno*.*,except:interface-name:eno*.3
+
+Or something else?
+
+And what else can I do to further secure my KVM host?
+
+I thought about using one untagged (non VLAN'd) Ethernet for the host, and another tagged Ethernet for the guests, but that just seemed like a false sense of security...
+
+Apologies for the cross posting... these questions seems to touch on iptables, libvirt, and NetworkManager all at the same time...
+
+Thanks,
+
+-Philip
+
