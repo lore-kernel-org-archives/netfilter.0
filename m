@@ -1,40 +1,72 @@
-From: Marc <Marc-yG4tGvGIC004hcxptnrGZodd74u8MsAO@public.gmane.org>
-Subject: RE: Iptables, et al best practices for protecting KVM host sharing
-	"hostdev" (ixgbe-vf) interfaces with guests
-Date: Sun, 31 Oct 2021 20:00:50 +0000
-Message-ID: <bd9c0603b35c43d28dd48dd3f0be783f@f1-outsourcing.eu>
-References: <6B834239-0EC5-497F-9E1E-00972F712CF4@redfish-solutions.com>
+From: Jelle de Jong <jelledejong@powercraft.nl>
+Subject: Re: how to mark a prerouting package so it will go through my ip
+ route rule
+Date: Sun, 31 Oct 2021 21:43:57 +0100
+Message-ID: <992cb9e1-f330-4450-6c12-2581372c1fb0@powercraft.nl>
+References: <11bdb458-222c-ebe8-f1ca-c8414da66020@powercraft.nl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <libvirt-users-bounces-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-In-Reply-To: <6B834239-0EC5-497F-9E1E-00972F712CF4-9z15yex7P+UJvtFkdXX2HpqQE7yCjDx5@public.gmane.org>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://listman.redhat.com/mailman/options/libvirt-users>, 
-	<mailto:libvirt-users-request-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org?subject=unsubscribe>
-List-Archive: <https://listman.redhat.com/archives/libvirt-users>
-List-Post: <mailto:libvirt-users-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
-List-Help: <mailto:libvirt-users-request-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org?subject=help>
-List-Subscribe: <https://listman.redhat.com/mailman/listinfo/libvirt-users>,
-	<mailto:libvirt-users-request-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org?subject=subscribe>
-Sender: libvirt-users-bounces-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org
-Errors-To: libvirt-users-bounces-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org
-Content-Language: en-US
-Content-Type: text/plain; charset="us-ascii"
-To: Philip Prindeville <philipp_subx-9z15yex7P+UJvtFkdXX2HpqQE7yCjDx5@public.gmane.org>, "netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org" <netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Cc: "libvirt-users-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org" <libvirt-users-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <11bdb458-222c-ebe8-f1ca-c8414da66020@powercraft.nl>
+Content-Language: en-GB
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: netfilter@vger.kernel.org
 
+On 10/31/21 8:24 PM, Jelle de Jong wrote:
+> Hello everybody,
 > 
-> My question is this: what's best practices for making sure that a switch
-> VLAN misconfiguration issue, a cabling to the wrong port, etc. doesn't
-> compromise the KVM server itself?
+> I got the problem that I got multiple interfaces and routing and I got a 
+> nat subnet and the packages coming back from the nat network go trough 
+> my default routing table instead of one for the interface the package 
+> entered the nftable, so I need to have a way to have the package coming 
+> back in from the nat network to be marked.
+> 
+> I found the following wiki page and tried the following:
+> https://wiki.nftables.org/wiki-nftables/index.php/Setting_packet_metainformation 
+> 
+> 
+> # ip rule show from all fwmark 0x1 lookup 100
+> 32762:    from all fwmark 0x1 lookup 100
+> 
+> table ip nat {
+>      chain prerouting {
+>          type nat hook prerouting priority 0; policy accept;
+>          iifname "enp8s0" ip daddr 123.45.67.89 icmp type echo-request 
+> mark set 0x00000001 ct mark set mark dnat to 192.168.25.25
+>      }
+>      chain postrouting {
+>      }
+> }
+> 
+> But the icmp reply coming back from 192.168.25.25 is not being picked by 
+> my ip rule fwmark.
+> 
+> Can somebody give me an example how to track prerouting nat with an 
+> fwmark for ip rule?
 
-Not sure about best practice. But what about using a macvtap. That by default does not allow host communication and only allows the guests connected to the same master to communicate with each other.
+I managed to get the following working!!
 
-> How do I allow my KVM server to *not* be on "external", but some of its
-> guests to be, without compromising security?
+# ip rule show from all fwmark 0x1 lookup 100
+32762:  from all fwmark 0x1 lookup 100
 
-Do not configure the interface with an ip address on the host, and make sure you do not have daemons binding to 0.0.0.0 on the host.
+table ip mangle {
+         chain prerouting {
+                 type filter hook prerouting priority -150; policy accept;
+                 counter meta mark set ct mark
+                 mark != 0x0 counter accept
+                 iifname "enp8s0" ip daddr 185.40.94.87 counter meta 
+mark set 0x1
+         }
 
+         chain postrouting {
+                 type filter hook postrouting priority -150; policy accept;
+                 counter ct mark set mark
+         }
+}
 
- 
+Is this the most optimal way of configuring this?
 
+Kind regards,
+
+Jelle de Jong
