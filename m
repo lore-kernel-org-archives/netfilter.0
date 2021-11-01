@@ -1,72 +1,59 @@
-From: Jelle de Jong <jelledejong@powercraft.nl>
-Subject: Re: how to mark a prerouting package so it will go through my ip
- route rule
-Date: Sun, 31 Oct 2021 21:43:57 +0100
-Message-ID: <992cb9e1-f330-4450-6c12-2581372c1fb0@powercraft.nl>
-References: <11bdb458-222c-ebe8-f1ca-c8414da66020@powercraft.nl>
+From: Matt Zagrabelny <mzagrabe@d.umn.edu>
+Subject: nft named set address types
+Date: Mon, 1 Nov 2021 15:46:13 -0500
+Message-ID: <CAOLfK3UFmzPfaqZbB5z6kvRuvpmHrFptbf1_LLBfJdPPzVHwqQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <11bdb458-222c-ebe8-f1ca-c8414da66020@powercraft.nl>
-Content-Language: en-GB
+DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p7.oit.umn.edu 4HjlSK1ZqNz9vLH3
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=d.umn.edu; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=I9b/NIDZaH73H6jQdmSkCjTUFOfrY3U8b8eK5Q56scU=;
+        b=fYiegIdXkoyIG36CIglgBXqrkQvpNYbtud1Ctsxp11gOTXrnLyYuvqknK5ugrcukWQ
+         qIY1bUhhGNYZCxR6HRmGiaq57mZ74soGZcE92HVp0OFOkZehnzD0Z/vYwQ7cbnu0TGE5
+         tSkpjxFJxXE9Wlo0SJnN/Mxjy+wAkPS+7W003eDdEFOL1QvZVZ5Q76+J2dX/0Pru6cSd
+         gMWRrlBTfHDaTkYB/lZ67h+F6kEUz0Gvb7v+jAj5cAAXQS+iO/pNmT385ss89wYJwneE
+         gOBYgAV7lRzb8D//idhHf6US58y/5Uui5ghVWWJO/8wcEIVyCTvz4AvKEghbWcudw4ru
+         VGKA==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@vger.kernel.org>
 
-On 10/31/21 8:24 PM, Jelle de Jong wrote:
-> Hello everybody,
-> 
-> I got the problem that I got multiple interfaces and routing and I got a 
-> nat subnet and the packages coming back from the nat network go trough 
-> my default routing table instead of one for the interface the package 
-> entered the nftable, so I need to have a way to have the package coming 
-> back in from the nat network to be marked.
-> 
-> I found the following wiki page and tried the following:
-> https://wiki.nftables.org/wiki-nftables/index.php/Setting_packet_metainformation 
-> 
-> 
-> # ip rule show from all fwmark 0x1 lookup 100
-> 32762:    from all fwmark 0x1 lookup 100
-> 
-> table ip nat {
->      chain prerouting {
->          type nat hook prerouting priority 0; policy accept;
->          iifname "enp8s0" ip daddr 123.45.67.89 icmp type echo-request 
-> mark set 0x00000001 ct mark set mark dnat to 192.168.25.25
->      }
->      chain postrouting {
->      }
-> }
-> 
-> But the icmp reply coming back from 192.168.25.25 is not being picked by 
-> my ip rule fwmark.
-> 
-> Can somebody give me an example how to track prerouting nat with an 
-> fwmark for ip rule?
+Hello,
 
-I managed to get the following working!!
+I'd like to use the "inet" address family in a named set. I see nft
+supports the following address families [AF] (among others):
 
-# ip rule show from all fwmark 0x1 lookup 100
-32762:  from all fwmark 0x1 lookup 100
+       ip       IPv4 address family.
 
-table ip mangle {
-         chain prerouting {
-                 type filter hook prerouting priority -150; policy accept;
-                 counter meta mark set ct mark
-                 mark != 0x0 counter accept
-                 iifname "enp8s0" ip daddr 185.40.94.87 counter meta 
-mark set 0x1
-         }
+       ip6      IPv6 address family.
 
-         chain postrouting {
-                 type filter hook postrouting priority -150; policy accept;
-                 counter ct mark set mark
-         }
-}
+       inet     Internet (IPv4/IPv6) address
+                family.
 
-Is this the most optimal way of configuring this?
+However, looking at the named sets, I do not see the "inet" AF:
 
-Kind regards,
+type  string: ipv4_addr, ipv6_addr, ether_addr, inet_proto, inet_service, mark
 
-Jelle de Jong
+Are there plans to add "inet_addr" AF to the types of named sets?
+
+I wouldn't mind using the symbolic variables (define variable = expr)
+to achieve a combined ipv4, ipv6 set, but from the docs the variable
+doesn't appear to be global in scope - unless they are defined at a
+top level.
+
+"""
+Symbolic variables can be defined using the define statement. Variable
+references are
+expressions and can be used to initialize other variables. The scope
+of a definition is the
+current block and all blocks contained within.
+"""
+
+Any feedback about combined ipv4 and ipv6 address families in named
+sets? or why an inet family does not exist for named sets?
+
+Thanks for the help!
+
+-m
