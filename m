@@ -1,37 +1,63 @@
 From: Matt Zagrabelny <mzagrabe@d.umn.edu>
-Subject: reporting a bug?
-Date: Tue, 2 Nov 2021 14:32:09 -0500
-Message-ID: <CAOLfK3Um0=RsfUXSrXWvSXnbkxn2daqc1afEE9uk5mOua=NR2A@mail.gmail.com>
+Subject: Re: nft named set address types
+Date: Tue, 2 Nov 2021 14:39:33 -0500
+Message-ID: <CAOLfK3XW28kgrBGpQvi9eO3h2oQD80kU6tqz0obgSfvkgbF5-A@mail.gmail.com>
+References: <CAOLfK3UFmzPfaqZbB5z6kvRuvpmHrFptbf1_LLBfJdPPzVHwqQ@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p7.oit.umn.edu 4HkKmP4Z3Xz9xKL2
+DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p5.oit.umn.edu 4HkKwx2CRFz9vlkW
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=d.umn.edu; s=google;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=1z9Qm4AHirj8aiauYPHvjeAWlmAIh8dOI1wYdCsxvy0=;
-        b=QgZ/8YkiUmqHxcIx3X7jS1DjvVGr72bcvq3RY5Ybj73anyp0Hy8oTvM4GOPKuQA2zo
-         rhWGucmDycjyyqfLD1N73Az/KRa4REAVR/beoMI5L3x/sa+wn50Xoq1RX04Ih1Wv1D1o
-         EayePJD9S4SoE/FJ+tLF+QMYQVQTjrsQbcfKEWojggKofXb9Ua6KAJn/OU16SO4pusMI
-         syxkemd2zA1VpL6YfcbecnyQjNM0atrKKSyJyYSdPQOShZezfaNsPpQ7lo+qnb+EdQfK
-         D3/SuBs6wKQFQHqYJmMfhUS+VWuKAQbKMUP+uERXTFFoby9AilEGr5IzhQrSswf3rp9m
-         KYeQ==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=J73FLgQbRO++vYkXCDC1q1E4TpKM2kORVkay2ccvcNc=;
+        b=a2KuFWQQItWKvR5BWCA1bQLktFnL3agzL/d0ypmvi97ZDQQ/QnKcF1WToHvKT2WsEa
+         bTCk6Uifv81d44opLwaQ2Z8zrzfW3d8L1UIYmJTLCiaW1hcn8Dt8nSoSsFzUw1Vi3Njp
+         Bxoxm4nlbBNCQTa6z+z6Z6FbddO9jfK03dvfvI76UFajMfxgezgsVZWP5TeU15vBDVd5
+         bbGUukpUvVcWMyp9uSEAbWCZrPi7ZBthBHDX9CW72ay1kYWFfJV+UJ9V1m23llLnyxRu
+         5uz9ny+YRXXnz7Rpj8VoE/PcqTpIxd3uU5oKSI0h7sL5C+2z6QgAleGpyMVCdyxtqJy7
+         G7sg==
+In-Reply-To: <CAOLfK3UFmzPfaqZbB5z6kvRuvpmHrFptbf1_LLBfJdPPzVHwqQ@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter <netfilter@vger.kernel.org>
 
-Hello,
+Replying to myself...
 
-Is
+On Mon, Nov 1, 2021 at 3:46 PM Matt Zagrabelny <mzagrabe@d.umn.edu> wrote:
+>
+> Hello,
+>
+> I'd like to use the "inet" address family in a named set. I see nft
+> supports the following address families [AF] (among others):
+>
+>        ip       IPv4 address family.
+>
+>        ip6      IPv6 address family.
+>
+>        inet     Internet (IPv4/IPv6) address
+>                 family.
 
-https://bugzilla.netfilter.org/
 
-still the location for submitting bugs for nftables/netfilter?
+I'm not sure nftables even would allow an "inet" to be used in a rule such as:
 
-If so, does the bug tracker allow anyone to create an account and submit bugs?
+table inet filter {
+    chain input {
+        inet saddr { 127.0.0.1, ::1 } tcp dport 22 accept
+    }
+}
 
-I cannot find how to create an account at the aforementioned site.
+Instead, it seems I must do:
 
-Thanks,
+table inet filter {
+    chain input {
+        ip saddr 127.0.0.1 tcp dport 22 accept
+        ip6 saddr ::1 tcp dport 22 accept
+    }
+}
+
+Why does inet not work in the way I am expecting it to?
+
+Thanks for any answers!
 
 -m
