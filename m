@@ -1,59 +1,136 @@
-From: Matt Zagrabelny <mzagrabe@d.umn.edu>
-Subject: nft named set address types
-Date: Mon, 1 Nov 2021 15:46:13 -0500
-Message-ID: <CAOLfK3UFmzPfaqZbB5z6kvRuvpmHrFptbf1_LLBfJdPPzVHwqQ@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Improvements to the Home Router Wiki page
+Date: Tue, 2 Nov 2021 12:31:37 +0100
+Message-ID: <YYEhmehrFUc8c1Ok@salvia>
+References: <9EwLs4Z4lDrYS0hyZoApmQ2StFQlMHrKwhKRXtSsUCDf0G6p5_e5JCcrjz9T4vCV7TXVYZHX_egqjtKbSsPBoBMl2SAEODG-kOU1u8j-LgY=@protonmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p7.oit.umn.edu 4HjlSK1ZqNz9vLH3
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=d.umn.edu; s=google;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=I9b/NIDZaH73H6jQdmSkCjTUFOfrY3U8b8eK5Q56scU=;
-        b=fYiegIdXkoyIG36CIglgBXqrkQvpNYbtud1Ctsxp11gOTXrnLyYuvqknK5ugrcukWQ
-         qIY1bUhhGNYZCxR6HRmGiaq57mZ74soGZcE92HVp0OFOkZehnzD0Z/vYwQ7cbnu0TGE5
-         tSkpjxFJxXE9Wlo0SJnN/Mxjy+wAkPS+7W003eDdEFOL1QvZVZ5Q76+J2dX/0Pru6cSd
-         gMWRrlBTfHDaTkYB/lZ67h+F6kEUz0Gvb7v+jAj5cAAXQS+iO/pNmT385ss89wYJwneE
-         gOBYgAV7lRzb8D//idhHf6US58y/5Uui5ghVWWJO/8wcEIVyCTvz4AvKEghbWcudw4ru
-         VGKA==
+Content-Disposition: inline
+In-Reply-To: <9EwLs4Z4lDrYS0hyZoApmQ2StFQlMHrKwhKRXtSsUCDf0G6p5_e5JCcrjz9T4vCV7TXVYZHX_egqjtKbSsPBoBMl2SAEODG-kOU1u8j-LgY=@protonmail.com>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter <netfilter@vger.kernel.org>
+To: Timothy Ham <timothyham@protonmail.com>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hello,
+On Sat, Oct 30, 2021 at 09:39:07PM +0000, Timothy Ham wrote:
+> Hello,
+> 
+> I have benefited from the wiki page "Simple ruleset for a home router" found here:
+> 
+> https://wiki.nftables.org/wiki-nftables/index.php/Simple_ruleset_for_a_home_router
+> 
+> Still, it doesn't cover port forwarding and hairpin NAT. So after several hours of trying different things, I've finally figured out how to do them, and improved the example config. Could someone in charge please update the example on the wiki? Specifically the example config given in the section "Simple router using ppp interface". I've kept everything the same except the few lines I've added.
+> 
+> If my config can be improved further, please suggest more changes as well.
 
-I'd like to use the "inet" address family in a named set. I see nft
-supports the following address families [AF] (among others):
+I'm assuming nftables 1.0.0 for the comments below.
 
-       ip       IPv4 address family.
+> Thank you.
+> 
+> ==== begin ====
+> flush ruleset
+> 
+> define DEV_PRIVATE = eth1
+> define DEV_WORLD = ppp0
+> define NET_PRIVATE = 192.168.0.0/16
+> define IP_WAN = x.x.x.x
+> define IP_ROUTER = 192.168.0.1
+> define IP_SERVER = 192.168.0.10
+> 
+> table ip global {
+>     chain prerouting {
+>           type nat hook prerouting priority dstnat;
+> 
+>           # Hairpin NAT part 1/2. WAN IP address must be known
+>           ip daddr $IP_WAN tcp dport 443 dnat to $IP_SERVER:8443
+>           ip daddr $IP_WAN tcp dport 80 dnat to $IP_SERVER:8080
 
-       ip6      IPv6 address family.
+Consolidate this rule using a map:
 
-       inet     Internet (IPv4/IPv6) address
-                family.
+            ip daddr $IP_WAN dnat to tcp dport map { 443 : $IP_SERVER . 8443, 80 : $IP_SERVER . 8080 }
 
-However, looking at the named sets, I do not see the "inet" AF:
+>           # Port forwarding part 1/2
+>           iifname $DEV_WORLD tcp dport 443 dnat to $IP_SERVER:8443
+>           iifname $DEV_WORLD tcp dport 80 dnat to $IP_SERVER:8080
 
-type  string: ipv4_addr, ipv6_addr, ether_addr, inet_proto, inet_service, mark
+Is this rule is redundant? is $IP_WAN the IP address of $DEV_WORLD?
 
-Are there plans to add "inet_addr" AF to the types of named sets?
+>     }
+> 
+>     chain inbound_world {
+>         # accepting ping (icmp-echo-request) for diagnostic purposes.
+>         # However, it also lets probes discover this host is alive.
+>         # This sample accepts them within a certain rate limit:
+>         #
+>         # icmp type echo-request limit rate 5/second accept
+> 
+>         # allow SSH connections from some well-known internet host
+>         ip saddr 81.209.165.42 tcp dport ssh accept
+>     }
+> 
+>     chain inbound_private {
+>         # accepting ping (icmp-echo-request) for diagnostic purposes.
+>         icmp type echo-request limit rate 5/second accept
+> 
+>         # allow DHCP, DNS and SSH from the private network
+>         ip protocol . th dport vmap { tcp . 22 : accept, udp . 53 : accept, tcp . 53 : accept, udp . 67 : accept}
+>     }
+> 
+>     chain inbound {
+>         type filter hook input priority 0; policy drop;
+> 
+>         # Allow traffic from established and related packets, drop invalid
+>         ct state vmap { established : accept, related : accept, invalid : drop }
+> 
+>         # allow loopback traffic, anything else jump to chain for further evaluation
+>         iifname vmap { lo : accept, $DEV_WORLD : jump inbound_world, $DEV_PRIVATE : jump inbound_private }
+> 
+>         # the rest is dropped by the above policy
+>     }
+> 
+>     chain forward {
+>         type filter hook forward priority 0; policy drop;
 
-I wouldn't mind using the symbolic variables (define variable = expr)
-to achieve a combined ipv4, ipv6 set, but from the docs the variable
-doesn't appear to be global in scope - unless they are defined at a
-top level.
+You could move these rules below the verdict map...
 
-"""
-Symbolic variables can be defined using the define statement. Variable
-references are
-expressions and can be used to initialize other variables. The scope
-of a definition is the
-current block and all blocks contained within.
-"""
+>         # port forwarding part 2/2
+>         meta iifname $DEV_WORLD ip daddr $IP_SERVER tcp dport 8443 ct state new accept
+>         meta iifname $DEV_WORLD ip daddr $IP_SERVER tcp dport 8080 ct state new accept
+> 
+>         # Allow traffic from established and related packets, drop invalid
+>         ct state vmap { established : accept, related : accept, invalid : drop }
 
-Any feedback about combined ipv4 and ipv6 address families in named
-sets? or why an inet family does not exist for named sets?
+... 'ct state new,untracked' is implicitly assumed after vmap, so you
+could move (and consolidate) this rule:
 
-Thanks for the help!
+          meta iifname $DEV_WORLD ip daddr $IP_SERVER tcp dport { 8443, 8080 } accept
 
--m
+>         # connections from the internal net to the internet or to other
+>         # internal nets are allowed
+>         iifname $DEV_PRIVATE accept
+> 
+>         # the rest is dropped by the above policy
+>     }
+> 
+>     chain postrouting {
+>         type nat hook postrouting priority 100; policy accept;
+> 
+>         # hairpin part 2/2
+>         ip saddr $NET_PRIVATE ip daddr $IP_SERVER tcp dport 8443 snat $ROUTER
+>         ip saddr $NET_PRIVATE ip daddr $IP_SERVER tcp dport 8080 snat $ROUTER
+
+Consolidate rule:
+
+          ip saddr $NET_PRIVATE ip daddr $IP_SERVER tcp dport { 8080, 8443 } snat $ROUTER
+
+however, if the routing table allows to reach your $IP_SERVER from
+$NET_PRIVATE, then you do not need this NAT rule.
+
+>         # masquerade private IP addresses
+>         ip saddr $NET_PRIVATE oifname $DEV_WORLD masquerade
+>     }
+> }
+> ==== end ====
+> 
+> 
