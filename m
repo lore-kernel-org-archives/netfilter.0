@@ -1,76 +1,55 @@
-From: "G.W. Haywood" <ged@jubileegroup.co.uk>
+From: serando <serando@sunrise.ch>
 Subject: Re: learning to understand iptables
-Date: Wed, 3 Nov 2021 15:51:33 +0000 (GMT)
-Message-ID: <85e869fc-bded-c41-db86-91dfbcf5de@jubileegroup.co.uk>
+Date: Wed, 3 Nov 2021 19:25:54 +0100
+Message-ID: <cf3ef7ac-41b2-7c89-9de5-6ad2dfc5f6fd@sunrise.ch>
 References: <b4aec750-bbeb-eb72-33f6-01d1e64c6949@sunrise.ch>
+ <85e869fc-bded-c41-db86-91dfbcf5de@jubileegroup.co.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <b4aec750-bbeb-eb72-33f6-01d1e64c6949@sunrise.ch>
+In-Reply-To: <85e869fc-bded-c41-db86-91dfbcf5de@jubileegroup.co.uk>
+Content-Language: en-GB
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: serando <serando@sunrise.ch>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Hi there,
+Hello Ged and all other
 
-On Wed, 3 Nov 2021, serando wrote:
 
-> At the moment I am reading a book about iptables. It's very hard to 
-> understand.
+Thank you very much.
 
-My guess is that it is hard to understand because you do not have a
-sufficient background understanding of networking in general.
 
-> My system:
-> An office desktop PC i5-4570.
-> My PC does not offer any services for the internet. It is used for serving 
-> the web only. And I have installed a virtual machine (with a windows guest). 
-> Samba is used to communicate with my virtual-machine (VirtualBox).
-> I have no (internal) network. And the PC is behind a router.
+Here is my first question:
+The iptables configuration is as follows:
 
-Your description gives me confidence that my guess is right.  For
-example, if your PC is behind a router then indeed you do have an
-internal network; that is how the PC communicates with the router.
+$ sudo iptables -L
+Output:
+Chain INPUT (policy ACCEPT)
+target=A0=A0=A0=A0 prot opt source=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0 destination
 
-> I know, that my system does not need an iptables firewall.
+Chain FORWARD (policy ACCEPT)
+target=A0=A0=A0=A0 prot opt source=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0 destination
 
-Perhaps.  Perhaps not.  I am inclined to think that it can't hurt, if
-it's done properly. :)
+Chain OUTPUT (policy ACCEPT)
+target=A0=A0=A0=A0 prot opt source=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0 destination
 
-> But I am just interested to understand the very basics of iptables.
 
-Good. :)
+I have read that with this configuration, my browser only accepts data=20
+from the Internet, if it has requested the data. This means that all=20
+packets that the browser has not requested are dropped.
 
-> This is why I am reading a book about iptables. So I would be happy to ask 
-> questions about iptables from time to time.
->
-> Is this OK for you?
+Question 1:
+Which programme now ensures that data acceptance of unrequested packets=20
+is dropped with the above iptables configuration? Is it Netfilter? In=20
+this case, does Netfilter filter out these unrequested packets?
 
-It's perfectly OK for me, but you might find that you will get more
-and better responses from others if your questions are very specific.
+Question 2:
+If Netfilter is filtering out these packets: I assume that if we would=20
+switch off or uninstall Netfilter, then the browser would also accept=20
+packets from the Internet that the browser has not requested. Right?
 
-To begin with, look at the netfilter site documentation page:
+Very interested in this. Thank you.
 
-https://netfilter.org/documentation/index.html
-
-Be aware that iptables is
-
-(a) confusing enough in itself, partly because it can be used to refer
-to a simple command-line tool or an entire packet filtering framework,
-sometimes in the same breath, and
-
-(b) gradually being replaced, currently by 'netfilter', which I find
-_very_ much more confusing than ever I found iptables.
-
-Long ago I started to learn about networking with the Net-3-HOWTO.  It
-will still be available online, and if I had to start again that's the
-place I'd probably start.  The nearest that I can see on the netfilter
-documentation page is the "Networking Concepts HOWTO" but that's even
-older than the Net-3-HOWTO.  I'm neither an expert nor current on the
-state of the documentation, others here might have better suggestions.
-
--- 
-
-73,
-Ged.
