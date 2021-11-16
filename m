@@ -1,92 +1,76 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 Subject: Re: nft named set address types
-Date: Mon, 15 Nov 2021 20:47:06 +0100
-Message-ID: <YZK5OsnQjzhbBOD3@salvia>
+Date: Tue, 16 Nov 2021 03:20:50 +0100
+Message-ID: <YZMVgt18aNFWZqqI@salvia>
 References: <CAOLfK3UFmzPfaqZbB5z6kvRuvpmHrFptbf1_LLBfJdPPzVHwqQ@mail.gmail.com>
  <CAOLfK3XW28kgrBGpQvi9eO3h2oQD80kU6tqz0obgSfvkgbF5-A@mail.gmail.com>
  <YYGeTgBAZfM76k4h@salvia>
  <CAOLfK3XJHhm5z6b1MOaMFjK2P2V9jyPgOtSOFZUswPSxuEZLEA@mail.gmail.com>
+ <YZK5OsnQjzhbBOD3@salvia>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAOLfK3XJHhm5z6b1MOaMFjK2P2V9jyPgOtSOFZUswPSxuEZLEA@mail.gmail.com>
+In-Reply-To: <YZK5OsnQjzhbBOD3@salvia>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: Matt Zagrabelny <mzagrabe@d.umn.edu>
 Cc: netfilter <netfilter@vger.kernel.org>
 
-On Mon, Nov 15, 2021 at 11:40:43AM -0600, Matt Zagrabelny wrote:
-> Hello Pablo and others,
+On Mon, Nov 15, 2021 at 08:47:10PM +0100, Pablo Neira Ayuso wrote:
+> On Mon, Nov 15, 2021 at 11:40:43AM -0600, Matt Zagrabelny wrote:
+[...]
+> > Is there no vmap for icmp?
 > 
-> I'm attempting to have a similar ICMP{4,6} ruleset as I have for TCP -
-> thanks Pablo for the vmap hint.
+> instead of:
 > 
-> On Tue, Nov 2, 2021 at 3:23 PM Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+>          meta protocol {icmp, icmpv6} vmap {
+>              icmp: jump icmp_ipv4,
+>              icmpv6: jump icmp_ipv6,
+>          }
 > 
-> > Better split your ruleset in a tree using verdict maps:
-> >
-> > table inet filter {
-> >     chain input_ip4 {
-> >         ip saddr 127.0.0.1 accept
-> >     }
-> >
-> >     chain input_ip6 {
-> >         ip6 saddr ::1 accept
-> >     }
-> >
-> >     chain input {
-> >         type filter hook input priority filter; policy drop;
-> >         ct state vmap { established : accept, related : accept, invalid : drop }
-> >         # implicit match on 'ct state new,untracked'
-> >         tcp dport 22 meta protocol vmap { ip : jump input_ip4, ip6 : jump input_ip6 }
-> >     }
-> > }
+> this should be:
 > 
-> I see there is an icmpx for reject packets. Is there something
-> equivalent for destination packets?
-> 
-> I've tried:
-> 
-> table inet filter {
->     chain icmp_ipv4 {
->         ip  saddr $icmp_networks_ipv4 accept
->     }
-> 
->     chain icmp_ipv6 {
->         ip6 saddr $icmp_networks_ipv6 accept
->     }
-> 
->     chain input {
->         meta protocol {icmp, icmpv6} vmap {
->             icmp: jump icmp_ipv4,
->             icmpv6: jump icmp_ipv6,
->         }
->     }
-> }
-> 
-> Nov 15 11:39:05 watchtower nft[3709857]: In file included from
-> /etc/nftables.conf.d/100-include.nft:5:1-48:
-> Nov 15 11:39:05 watchtower nft[3709857]:                  from
-> /etc/nftables.conf:3:1-37:
-> Nov 15 11:39:05 watchtower nft[3709857]:
-> /etc/nftables.conf.d/600-host.d/100-icmp.nft:11:38-41: Error: syntax
-> error, unexpected vmap, expecting newline or semicolon
-> Nov 15 11:39:05 watchtower nft[3709857]:         meta protocol {icmp,
-> icmpv6} vmap {
-> 
-> Is there no vmap for icmp?
+>          meta protocol vmap {
+>              icmp: jump icmp_ipv4,
+>              icmpv6: jump icmp_ipv6,
+>          }
 
-instead of:
+Wrong selector actually:
 
-         meta protocol {icmp, icmpv6} vmap {
-             icmp: jump icmp_ipv4,
-             icmpv6: jump icmp_ipv6,
-         }
+# nft describe meta protocol
+meta expression, datatype ether_type (Ethernet protocol) (basetype integer), 16 bits
 
-this should be:
+pre-defined symbolic constants (in hexadecimal):
+        ip                              0x0800
+        arp                             0x0806
+        ip6                             0x86dd
+        8021q                           0x8100
+        8021ad                          0x88a8
+        vlan                            0x8100
 
-         meta protocol vmap {
-             icmp: jump icmp_ipv4,
-             icmpv6: jump icmp_ipv6,
-         }
+you should used meta l4proto instead
+
+# nft describe meta l4proto
+meta expression, datatype inet_proto (Internet protocol) (basetype integer), 8 bits
+        ip                              0
+        icmp                            1
+        igmp                            2
+        ggp                             3
+        ipencap                         4
+        st                              5
+        tcp                             6
+        ...
+
+Therefore:
+
+          meta l4proto vmap {
+              icmp: jump icmp_ipv4,
+              icmpv6: jump icmp_ipv6,
+          }
+
+Careful with this idiom, because it might not do what you want.
+
+If you do not previously classify traffic at layer 3, then depending
+on your ruleset, this might allow for packet crafting such as
+IPv4/ICMPv6 and IPv6/ICMPv4.
