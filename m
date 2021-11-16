@@ -1,102 +1,60 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: nft named set address types
-Date: Tue, 16 Nov 2021 09:35:25 +0100
-Message-ID: <YZNtTRijDHe41jNl@salvia>
-References: <CAOLfK3UFmzPfaqZbB5z6kvRuvpmHrFptbf1_LLBfJdPPzVHwqQ@mail.gmail.com>
- <CAOLfK3XW28kgrBGpQvi9eO3h2oQD80kU6tqz0obgSfvkgbF5-A@mail.gmail.com>
- <YYGeTgBAZfM76k4h@salvia>
- <CAOLfK3XJHhm5z6b1MOaMFjK2P2V9jyPgOtSOFZUswPSxuEZLEA@mail.gmail.com>
- <YZK5OsnQjzhbBOD3@salvia>
- <YZMVgt18aNFWZqqI@salvia>
- <CAOLfK3XahvuNNJbB2Ji-SwsiQT5vrJy8O_adidy+qPbMh5p3DA@mail.gmail.com>
+From: Amish Chana <amish@3g.co.za>
+Subject: bridge-nf-filter-pppoe-tagged not working as expected
+Date: Tue, 16 Nov 2021 20:11:08 +0200
+Message-ID: <5c23297e-2943-2868-a1c7-acdb3172bd3a@3g.co.za>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAOLfK3XahvuNNJbB2Ji-SwsiQT5vrJy8O_adidy+qPbMh5p3DA@mail.gmail.com>
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Matt Zagrabelny <mzagrabe@d.umn.edu>
-Cc: netfilter <netfilter@vger.kernel.org>
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Language: en-US
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Mon, Nov 15, 2021 at 08:55:19PM -0600, Matt Zagrabelny wrote:
-> Hey Pablo and others...
-> 
-> On Mon, Nov 15, 2021 at 8:22 PM Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> >
-> > On Mon, Nov 15, 2021 at 08:47:10PM +0100, Pablo Neira Ayuso wrote:
-> > > On Mon, Nov 15, 2021 at 11:40:43AM -0600, Matt Zagrabelny wrote:
-> > [...]
-> > > > Is there no vmap for icmp?
-> > >
-> > > instead of:
-> > >
-> > >          meta protocol {icmp, icmpv6} vmap {
-> > >              icmp: jump icmp_ipv4,
-> > >              icmpv6: jump icmp_ipv6,
-> > >          }
-> > >
-> > > this should be:
-> > >
-> > >          meta protocol vmap {
-> > >              icmp: jump icmp_ipv4,
-> > >              icmpv6: jump icmp_ipv6,
-> > >          }
-> >
-> > Wrong selector actually:
-> 
-> 
-> Ha. Yup. I'm just discovering this as you sent your email. I was going
-> to reply with a few questions. So your reply was well timed.
-> 
-> 
-> > # nft describe meta protocol
-> > meta expression, datatype ether_type (Ethernet protocol) (basetype integer), 16 bits
-> >
-> > pre-defined symbolic constants (in hexadecimal):
-> >         ip                              0x0800
-> >         arp                             0x0806
-> >         ip6                             0x86dd
-> >         8021q                           0x8100
-> >         8021ad                          0x88a8
-> >         vlan                            0x8100
-> >
-> > you should used meta l4proto instead
-> >
-> > # nft describe meta l4proto
-> > meta expression, datatype inet_proto (Internet protocol) (basetype integer), 8 bits
-> >         ip                              0
-> >         icmp                            1
-> >         igmp                            2
-> >         ggp                             3
-> >         ipencap                         4
-> >         st                              5
-> >         tcp                             6
-> >         ...
-> >
-> > Therefore:
-> >
-> >           meta l4proto vmap {
-> >               icmp: jump icmp_ipv4,
-> >               icmpv6: jump icmp_ipv6,
-> >           }
-> 
-> Agreed. This is working better than the previous vmap.
-> 
-> I search for "nftables icmp" on the interwebs and found these rules:
-> 
->         meta nfproto ipv4 icmp type { echo-request } counter accept
->         meta nfproto ipv6 icmpv6 type echo-request counter accept
+Hi,
 
-The following is just fine:
+I have a fibre to Ethernet converter from my ISP connected to an 
+Ethernet router.
+The IP packets between the router and the fibre to ethernet converter 
+are encapsulated in PPPoE packets.
 
-        icmp type echo-request counter accept
-        icmpv6 type echo-request counter accept
+I've setup a Linux box with 2 ethernet ports between the fibre to 
+ethernet converter and the router.
 
-but the problem is that you will end up with an IPv4 rule and an IPv6
-rule, that's why I suggest you to split the IP-dependent part into
-chains, ie.
+The configuration is as follows:
+brctl addbr br0
+brctl addif br0 eth0 eth1
+ifconfig br0 up
 
-        meta protocol vmap { ip : jump ipv4_input, ip6 : ipv6_input }
+If I use tcpdump on eth0 and eth1 I can see the PPPoE packets.
 
-Please, have a look at the nft manpage and wiki.
+I would like to setup a transparent firewall on the Linux box. br0, eth0 
+and eth1 are not assigned an IP address and there in no routing table 
+(except for the lo interface). I currently have no entries in iptables 
+and the default policy for INPUT, OUTPUT and FORWARD is ACCEPT.
+
+My understanding from 
+https://ebtables.netfilter.org/documentation/bridge-nf.html is that the 
+br_netfilter module with bridge-nf-filter-pppoe-tagged enabled will 
+allow me to use iptables to filter the PPPoE traffic.
+
+I start a ping from a computer on the network behind the router.
+If I run "echo 1 > bridge-nf-filter-pppoe-tagged" in 
+/proc/sys/net/bridge then all PPPoE traffic to the fibre to ethernet 
+converter is dropped.
+"echo 0 > bridge-nf-filter-pppoe-tagged" is required to allow traffic to 
+pass again.
+
+If I enable logging in iptables and netfilter I see that the PPPoE 
+packets are received by iptables. It passes through the PREROUTING, 
+FORWARD and POSTROUTING chains.
+However, the IP packets are not leaving the computer encapsulated in PPPoE.
+
+I've tested with bridge-nf-filter-vlan-tagged and 802.1Q traffic, and IP 
+filtering works as expected with packets entering and leaving as expected.
+
+PPPoE packets are not leaving when bridge-nf-filter-pppoe-tagged is enabled.
+Any ideas on how I can get it to work.
+
+Thank you,
+Amish
+
