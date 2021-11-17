@@ -1,60 +1,60 @@
-From: Amish Chana <amish@3g.co.za>
-Subject: bridge-nf-filter-pppoe-tagged not working as expected
-Date: Tue, 16 Nov 2021 20:11:08 +0200
-Message-ID: <5c23297e-2943-2868-a1c7-acdb3172bd3a@3g.co.za>
+From: Florian Westphal <fw@strlen.de>
+Subject: Re: bridge-nf-filter-pppoe-tagged not working as expected
+Date: Wed, 17 Nov 2021 11:33:10 +0100
+Message-ID: <20211117103310.GH6326@breakpoint.cc>
+References: <5c23297e-2943-2868-a1c7-acdb3172bd3a@3g.co.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <5c23297e-2943-2868-a1c7-acdb3172bd3a@3g.co.za>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Amish Chana <amish@3g.co.za>
+Cc: netfilter@vger.kernel.org
 
-Hi,
+Amish Chana <amish@3g.co.za> wrote:
+> I start a ping from a computer on the network behind the router.
+> If I run "echo 1 > bridge-nf-filter-pppoe-tagged" in /proc/sys/net/bridge
+> then all PPPoE traffic to the fibre to ethernet converter is dropped.
+> "echo 0 > bridge-nf-filter-pppoe-tagged" is required to allow traffic to
+> pass again.
+> 
+> If I enable logging in iptables and netfilter I see that the PPPoE packets
+> are received by iptables. It passes through the PREROUTING, FORWARD and
+> POSTROUTING chains.
+> However, the IP packets are not leaving the computer encapsulated in PPPoE.
 
-I have a fibre to Ethernet converter from my ISP connected to an 
-Ethernet router.
-The IP packets between the router and the fibre to ethernet converter 
-are encapsulated in PPPoE packets.
+Uhm.  Does this fix it? (wild guess, not even compile tested):
 
-I've setup a Linux box with 2 ethernet ports between the fibre to 
-ethernet converter and the router.
-
-The configuration is as follows:
-brctl addbr br0
-brctl addif br0 eth0 eth1
-ifconfig br0 up
-
-If I use tcpdump on eth0 and eth1 I can see the PPPoE packets.
-
-I would like to setup a transparent firewall on the Linux box. br0, eth0 
-and eth1 are not assigned an IP address and there in no routing table 
-(except for the lo interface). I currently have no entries in iptables 
-and the default policy for INPUT, OUTPUT and FORWARD is ACCEPT.
-
-My understanding from 
-https://ebtables.netfilter.org/documentation/bridge-nf.html is that the 
-br_netfilter module with bridge-nf-filter-pppoe-tagged enabled will 
-allow me to use iptables to filter the PPPoE traffic.
-
-I start a ping from a computer on the network behind the router.
-If I run "echo 1 > bridge-nf-filter-pppoe-tagged" in 
-/proc/sys/net/bridge then all PPPoE traffic to the fibre to ethernet 
-converter is dropped.
-"echo 0 > bridge-nf-filter-pppoe-tagged" is required to allow traffic to 
-pass again.
-
-If I enable logging in iptables and netfilter I see that the PPPoE 
-packets are received by iptables. It passes through the PREROUTING, 
-FORWARD and POSTROUTING chains.
-However, the IP packets are not leaving the computer encapsulated in PPPoE.
-
-I've tested with bridge-nf-filter-vlan-tagged and 802.1Q traffic, and IP 
-filtering works as expected with packets entering and leaving as expected.
-
-PPPoE packets are not leaving when bridge-nf-filter-pppoe-tagged is enabled.
-Any ideas on how I can get it to work.
-
-Thank you,
-Amish
-
+diff --git a/net/bridge/br_netfilter_hooks.c b/net/bridge/br_netfilter_hooks.c
+--- a/net/bridge/br_netfilter_hooks.c
++++ b/net/bridge/br_netfilter_hooks.c
+@@ -743,6 +743,9 @@ static int br_nf_dev_queue_xmit(struct net *net, struct sock *sk, struct sk_buff
+ 	if (nf_bridge->frag_max_size && nf_bridge->frag_max_size < mtu)
+ 		mtu = nf_bridge->frag_max_size;
+ 
++	nf_bridge_update_protocol(skb);
++	nf_bridge_push_encap_header(skb);
++
+ 	if (skb_is_gso(skb) || skb->len + mtu_reserved <= mtu) {
+ 		nf_bridge_info_free(skb);
+ 		return br_dev_queue_push_xmit(net, sk, skb);
+@@ -760,8 +763,6 @@ static int br_nf_dev_queue_xmit(struct net *net, struct sock *sk, struct sk_buff
+ 
+ 		IPCB(skb)->frag_max_size = nf_bridge->frag_max_size;
+ 
+-		nf_bridge_update_protocol(skb);
+-
+ 		data = this_cpu_ptr(&brnf_frag_data_storage);
+ 
+ 		if (skb_vlan_tag_present(skb)) {
+@@ -789,8 +790,6 @@ static int br_nf_dev_queue_xmit(struct net *net, struct sock *sk, struct sk_buff
+ 
+ 		IP6CB(skb)->frag_max_size = nf_bridge->frag_max_size;
+ 
+-		nf_bridge_update_protocol(skb);
+-
+ 		data = this_cpu_ptr(&brnf_frag_data_storage);
+ 		data->encap_size = nf_bridge_encap_header_len(skb);
+ 		data->size = ETH_HLEN + data->encap_size;
