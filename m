@@ -1,261 +1,73 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] nftables 1.0.1 release
-Date: Thu, 18 Nov 2021 14:32:19 +0100
-Message-ID: <YZZV42ERgpDbk/zL@salvia>
+From: Matt Zagrabelny <mzagrabe@d.umn.edu>
+Subject: Both { tcp, udp} in meta vmap
+Date: Thu, 18 Nov 2021 18:44:22 -0600
+Message-ID: <CAOLfK3XWGpo9OdjQy68DRp2BQ0ttaNsAznO3ed=Xg6Uky4mC0w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="FkOIYs09g3NxOPaL"
-Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p7.oit.umn.edu 4HwHxG3hRsz9vZ8G
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=d.umn.edu; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=nzMK1AapIdW5uVZDdLU+OG7XHFOXC+C9YPp3j0H6Ie0=;
+        b=W86nUPurWAW720IQ50JBHVDGXPXJxf2VlArznSYLn4P1ghmOZ9UcjFpiMpKAPFTfDv
+         DTZN+iuAq5RXZDozWJBORtbnDquoWpvLKn2ISqnI5qPIuVunu0prgi8q5M74pqHUFUcX
+         w5NZBUIg8JgcTY/UbqYVX7202ZlcT7It/Ue1qdInXyOUxUP1RVIZhYHiKfQA/b0mzFV/
+         UVsJrEF4m1CBgnybJ4HkZp4IqypVgjdlqPetxNs+EQtF6WEpYCwTPioL5Kdz1tBQ9vdZ
+         +sQq3K3QnlhhrB06P/aJ1tr307O5i1IxU9lpB+bGn2WpFhx1Zh0wKUMcCkiCXEE88U25
+         tq4w==
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter <netfilter@vger.kernel.org>, netfilter-devel <netfilter-devel@vger.kernel.org>
-Cc: netdev@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@vger.kernel.org>
 
+Greetings,
 
---FkOIYs09g3NxOPaL
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+I have the following rules:
 
-Hi!
-
-The Netfilter project proudly presents:
-
-        nftables 1.0.1
-
-This release contains new features available up to the Linux kernel
-5.16-rc1 release:
-
-* Reduce memory footprint when loading large sets/maps.
-* Speed up reload of large sets/maps.
-* Speed up listing of specific tables in large ruleset, eg. large ruleset
-  with ~100k lines.
-
-     # nft list ruleset &> /dev/null
-     real    0m3,049s
-     user    0m2,080s
-     sys     0m0,968s
-
-    - Listing per table is now faster:
-
-     # nft list table nat &> /dev/null
-     real    0m1,969s
-     user    0m1,412s
-     sys     0m0,556s
-
-     # nft list table filter &> /dev/null
-     real    0m0,697s
-     user    0m0,478s
-     sys     0m0,220s
-
-  Same speed up applies to listing specific chains/sets/maps.
-
-* Speed up --terse option when listing a ruleset large sets/maps.
-* Print raw payload expression in hexadecimal, eg. @ll,0,8 & 0x80 == 0x80
-
-* egress hook support (available since 5.16-rc1).
-
-  table netdev filter {
-        chain egress {
-                type filter hook egress devices = { eth0, eth1 } priority 0;
-                meta priority set ip saddr map { 192.168.10.2 : abcd:2, 192.168.10.3 : abcd:3 }
+table inet filter {
+        chain input {
+                type filter hook input priority 0; policy drop;
+                ip6 nexthdr ipv6-icmp icmpv6 type { nd-router-advert,
+nd-neighbor-solicit, nd-neighbor-advert } accept
+                ct state vmap { invalid : drop, established : accept,
+related : accept }
+                tcp dport { 1812, 1813 } meta protocol vmap { ip :
+jump radius_ipv4, ip6 : jump radius_ipv6 }
         }
-  }
 
-* Allow to match and update bytes at inner header/payload offset
-  (available  since 5.16-rc1).
+        # contrived chains...
+        chain radius_ipv4 {
+                ip saddr { 127.0.0.0/8, } accept
+        }
 
-  # nft add rule x y @ih,32,32 0x14000000 counter
-  # nft add rule x y @ih,32,32 set 0x14000000 counter
+        chain radius_ipv6 {
+                ip6 saddr { ::1 } accept
+        }
+}
 
-... and fixes:
+I'd like to change the "tcp dport { 1812, 1813 }" to "{ tcp, udp }
+dport { 1812, 1813 }", but I'm getting the error:
 
-- Fix split declaration of set accross different files using the
-  nested notation.
-- Fix crash in python support with two instances of nftables handler.
-- Fix incorrect range to prefix conversion.
-- Fix -T/--numeric-time
-- Incorrect meta protocol dependency removal in bridge, netdev and
-  inet families.
-- Unbreak support for older kernels (tested with Linux kernel 4.9.x)
-- Optimize prefix match only for matching on big-endian.
-- Restore use of variables with queue statement, eg. queue num $myq bypass
-- Honor insert command and rule position handle in monitor mode.
-- Bogus error in dynamic NAT map, eg.
-- Disallow setuid on the nft executable.
+Error: syntax error, unexpected dport
+Nov 18 18:14:52 localhost nft[5816]: { tcp, udp } dport { 1812, 1813 }
+meta protocol vmap {
 
-  #nft add rule nat x y meta l4proto { tcp, udp } dnat ip to ip daddr . th dport map @fwdtoip_th
+I see in the man page under the "RAW PAYLOAD EXPRESSION" there exists
+the idea of giving a list or protocols...
 
-- Fix combination of map, concatenation with intervals and stateful
-  expressions, eg.
+       Matching destination port of both UDP and TCP.
 
-  table ip filter {
-       map forwport {
-               type ipv4_addr . inet_proto . inet_service : verdict
-               flags interval
-               counter
-               elements = { 10.133.89.138 . tcp . 8081 counter packets 0 bytes 0 : accept }
-       }
+           inet filter input meta l4proto {tcp, udp} @th,16,16 { 53, 80 }
 
-       chain FORWARD {
-               type filter hook forward priority filter; policy drop;
-               iifname "enp0s8" ip daddr . ip protocol . th dport vmap @forwport counter
-       }
-  }
+       The above can also be written as
 
-- Fix incorrect vlan offset when matching and updating tag, eg.
+           inet filter input meta l4proto {tcp, udp} th dport { 53, 80 }
 
-  # nft add rule bridge filter forward vlan id 100 vlan id set 200
+Is what I'm trying to do solvable with meta and vmap in one rule, or
+should I just create two meta vmap rules?
 
-- Fix use of constant in dynamic set, eg.
+Thanks for helping me learn and use nftables.
 
-  table inet t {
-       set s {
-               type ipv4_addr . inet_service
-               size 65536
-               flags dynamic,timeout
-               elements = { 192.168.7.1 . 22 }
-       }
+Cheers,
 
-       chain c {
-               type filter hook input priority 0;
-               tcp dport 21 add @s { ip saddr . 22 timeout 1m }
-       }
-  }
-
-... and incremental documentation updates.
-
-The autotools build system now defaults to libedit/editline for the
-nft --interactive shell.
-
-You can download this new release from:
-
-https://www.netfilter.org/projects/nftables/downloads.html
-https://www.netfilter.org/pub/nftables/
-
-To build the code, libnftnl >= 1.2.1 and libmnl >= 1.0.4 are required:
-
-* https://netfilter.org/projects/libnftnl/index.html
-* https://netfilter.org/projects/libmnl/index.html
-
-Visit our wikipage for user documentation at:
-
-* https://wiki.nftables.org
-
-For the manpage reference, check man(8) nft.
-
-In case of bugs and feature request, file them via:
-
-* https://bugzilla.netfilter.org
-
-Happy firewalling.
-
---FkOIYs09g3NxOPaL
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: attachment; filename="changes-nftables-1.0.1.txt"
-Content-Transfer-Encoding: 8bit
-
-Chris Arges (1):
-      cache: ensure evaluate_cache_list flags are set correctly
-
-Duncan Roe (1):
-      doc: libnflog handles `log group`, not libnfq
-
-Florian Westphal (7):
-      parser: permit symbolic define for 'queue num' again
-      payload: don't adjust offsets of autogenerated dependency expressions
-      netlink: dynset: set compound expr dtype based on set key definition
-      tests: shell: auto-removal of chain hook on netns removal
-      main: _exit() if setuid
-      doc: update ct timeout section with the state names
-      monitor: do not call interval_map_decompose() for concat intervals
-
-Jeremy Sowden (6):
-      rule: remove fake stateless output of named counters
-      rule: fix stateless output after listing sets containing counters
-      rule: replace three conditionals with one
-      parser: add new `limit_bytes` rule
-      parser: add `limit_rate_pkts` and `limit_rate_bytes` rules
-      parser: extend limit syntax
-
-Lukas Wunner (2):
-      tests: py: Move netdev-specific tests to appropriate subdirectory
-      src: Support netdev egress hook
-
-Pablo Neira Ayuso (54):
-      src: queue: consolidate queue statement syntax
-      tests: shell: add nft-f/0022variables_0 dump file
-      cache: skip set element netlink dump for add/delete element command
-      cache: provide a empty list for flowtables and objects when request fails
-      netlink_delinearize: incorrect meta protocol dependency kill
-      netlink_delinearize: incorrect meta protocol dependency kill again
-      rule: remove redundant meta protocol from the evaluation step
-      datatype: time_print() ignores -T
-      include: add NFT_CTX_OUTPUT_NUMERIC_TIME to NFT_CTX_OUTPUT_NUMERIC_ALL
-      doc: Missing NFT_CTX_OUTPUT_NUMERIC_SYMBOL in libnftables documentation
-      doc: refer to ulogd manpage
-      meta: skip -T for hour and date format
-      netlink: rework range_expr_to_prefix()
-      doc: nfnetlink_log allows one single process through unicast
-      src: revert hashtable for expression handlers
-      tests: py: update ct expiration
-      doc: fix synopsis of named counter, quota and ct {helper,timeout,expect}
-      netlink: reset temporary set element stmt list after list splice
-      monitor: display rule position handle
-      monitor: honor NLM_F_APPEND flag for rules
-      tests: monitor: update insert and replace commands
-      monitor: honor NLM_F_EXCL netlink flag
-      evaluate: check for concatenation in set data datatype
-      evaluate: check for missing transport protocol match in nat map with concatenations
-      cache: set on cache flags for nested notation
-      cache: finer grain cache population for list commands
-      cache: filter out tables that are not requested
-      cache: filter out sets and maps that are not requested
-      cache: unset NFT_CACHE_SETELEM with --terse listing
-      configure: default to libedit for cli
-      cache: always set on NFT_CACHE_REFRESH for listing
-      cache: honor filter in set listing commands
-      cache: honor table in set filtering
-      cache: disable NFT_CACHE_SETELEM_BIT on --terse listing only
-      tests: shell: add testcase for --terse
-      evaluate: postpone transport protocol match check after nat expression evaluation
-      datatype: add xinteger_type alias to print in hexadecimal
-      src: raw payload match and mangle on inner header / payload data
-      tests: py: remove verdict from closing end interval
-      mnl: do not build nftnl_set element list
-      evaluate: clone variable expression if there is more than one reference
-      evaluate: grab reference in set expression evaluation
-      tests: py: update rawpayload.t.json
-      cache: move list filter under struct
-      cache: do not populate cache if it is going to be flushed
-      cache: missing family in cache filtering
-      cache: filter out rules by chain
-      tests: py: missing ip/dnat.t json updates
-      tests: py: missing ip/snat.t json updates
-      tests: py: missing json output update in ip6/meta.t
-      tests: py: remove netdev coverage in ip/ip_tcp.t
-      parser: allow for string raw payload base
-      parser_json: add raw payload inner header match support
-      build: Bump version to 1.0.1
-
-Phil Sutter (5):
-      tests: json_echo: Print errors to stderr
-      tests: monitor: Print errors to stderr
-      tests: monitor: Continue on error
-      parser_json: Fix error reporting for invalid syntax
-      tests: shell: Fix bogus testsuite failure with 250Hz
-
-Xiao Liang (2):
-      src: Optimize prefix match only if is big-endian
-      src: Check range bounds before converting to prefix
-
-Štěpán Němec (7):
-      doc: libnftables-json: make the example valid libnftables JSON input
-      tests: cover baecd1cf2685 ("segtree: Fix segfault when restoring a huge interval set")
-      tests: run-tests.sh: ensure non-zero exit when $failed != 0
-      tests: shell: README: copy edit
-      tests: shell: README: $NFT does not have to be a path to a binary
-      tests: shell: README: clarify test file name convention
-      tests: shell: $NFT needs to be invoked unquoted
-
-
---FkOIYs09g3NxOPaL--
+-m
