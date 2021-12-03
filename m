@@ -1,45 +1,34 @@
-From: Vladimir Nikishkin <lockywolf@gmail.com>
-Subject: What is the GPRINT output plugin for?
-Date: Tue, 30 Nov 2021 10:30:17 +0800
-Message-ID: <87y256gyti.fsf@laptop.lockywolf.net>
+From: Michael Dickensheets <michael.dickensheets@ionos.com>
+Subject: Recovery of packet size
+Date: Fri, 3 Dec 2021 14:16:42 +0100
+Message-ID: <CAOuTwgT6D1sYxKSO-5M98NzmUScvTLpS8_iVH6qWOFtbv4TFDg@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=user-agent:from:to:subject:date:message-id:mime-version;
-        bh=JU2cohmdzKt2xJ+8uEQCIarBuw1KPy6ZEopzMfn0dd0=;
-        b=DPeidZtAHoe+zWIE9CgQS1IsPRY4H3sWQg/ce45Wk7fp08XVcgsetaTswRTUAffdsh
-         K3p6CLi7DKAxz0duMECzU6Rxh7m6MrxVXceZ9QUvoG99EJOcsKJ+FqDI0vRcedlL4Eqi
-         bGLgI6SAep8R7D8qafp/gF31CG1uYoUNWsN4QM2eeg/NFW7sBYMW8YUesSBz7m2Bq7L0
-         kYKnHkTlbP3X0Yqj8H/EIqYcOYx4pbVLfoa49TWNR5WFrUsOG2D3X0wTLjnQK9ev8toA
-         iPa+GoPu+W8UrNdqb9YN5D5nSoq1fAzWK2BByV1oltDGFjnSt/b2F/67qPVMvylpMG/g
-         PfSA==
+        d=ionos.com; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=IuwvDJs4wPzqR7EVn8t0s/iQplK40fYn/q1xBS/N7vY=;
+        b=KC0JHRXrUuWYsOiDzi+5rWH9Ms/XU3s6lhGpXWcfRaRi6INiQ3DIdtMHdnIxe4vGKS
+         H5YfbuGfCTSnGRxnHZMmqTAJic3gs85608Pkndzm2zGXMYurxp4WyjbymXX1ROBbJuNQ
+         g82+wlwqlGmds9BYTAG3+Cy3E73STECeeMX+731FDV1D4jJr+9DvIRbckGUFniXU11cg
+         UWvt6GS19cUWvBpqLEeECiWptsKOXfqQddmBGc1gkcZCI143EIAhMUW6qgtKjZNBuu+t
+         m5GPbV9yxSAINoLlCO/Mq5NvywahMR+nygkLB3MvDYW+PZbaSoCq8txJVu4GEjKhZ83s
+         hFtA==
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Dear Netfilter users,
+Hello,
 
-I have been recently trying to find out how to efficiently log
-suspicious packets passing through my firewall. While perusing ulogd2
-examples, as well as netfilter mailing list, I found about the existence
-of the GPRINT output plugin.
+We are trying to build fine-grained traffic accounting. Counters do
+not provide sufficient details; we need timestamps for individual
+packets, etc. We are trying to use logging target with the 'snaplen'
+option to minimize overhead. What we are missing though is the size of
+the original packet (skb->len). Is there a way to retrieve this value?
 
-However, the basic stack suggested in ulogd.conf:
-```
-stack=log4:NFLOG,gp1:GPRINT
-```
-did not really work for me, ulogd was complaining about
-```
-ulogd.c:854 type mismatch between GPRINT and NFLOG in stack
-```
-And the log file was empty.
+If this is not currently possible, how would we best go about adding
+this functionality?
 
-I haven't found any other documentation for GPRINT.
-What is it and what is it for?
-
--- 
-Your sincerely,
-Vladimir Nikishkin (MiEr, lockywolf)
-(Laptop)
+Best regards,
+Michael Dickensheets
