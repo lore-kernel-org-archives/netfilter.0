@@ -1,169 +1,23 @@
-From: =?utf-8?B?VGhvbWFzIELDpHR6bGVy?= <t.baetzler@bringe.com>
-Subject: AW: Recovery of packet size
-Date: Fri, 3 Dec 2021 13:20:10 +0000
-Message-ID: <515168F006F2D643952F8FFD24F2E07304552581B1@sonne2.gw.bringe.net>
-References: <CAOuTwgT6D1sYxKSO-5M98NzmUScvTLpS8_iVH6qWOFtbv4TFDg@mail.gmail.com>
+From: Ross Boylan <rossboylan@stanfordalumni.org>
+Subject: Meaning of "." (dot) in netfilter
+Date: Fri, 3 Dec 2021 22:33:55 -0800
+Message-ID: <CAK3NTRAQE7UD9_0EuzyS0UGQ_s++Dg_hbZPXscHBrStnGJHGjw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
-        micalg=2.16.840.1.101.3.4.2.3;
-        boundary="----=_NextPart_000_0010_01D7E850.F5ACCFD0"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=bringe.com; h=
-        mime-version:content-type:content-type:content-language
-        :accept-language:in-reply-to:references:message-id:date:date
-        :subject:subject:to:from:from; s=dkim; t=1638537647; x=
-        1639401648; bh=mn+LpqBS813qF4UY37fx99HSNr9NrEY56bJq4s8/AOM=; b=u
-        6s5eoEsqEHviI5TpA1P75TOtMAhP7TIcu1k+Npu7JYstMlWlpvwpOfbnNP8LfOV9
-        RqGhZAtVToHnzQbnnSMK++0+TysWTmSneU6A44Ch/8SUIFXioOcQeLnPKAgQTfJ/
-        pXIebJSKlTYSPo76Yv2bXvM/jUp5Ua9N8snlhS5uoA=
-In-Reply-To: <CAOuTwgT6D1sYxKSO-5M98NzmUScvTLpS8_iVH6qWOFtbv4TFDg@mail.gmail.com>
-Content-Language: de-DE
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Cc: Michael Dickensheets <michael.dickensheets@ionos.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-------=_NextPart_000_0010_01D7E850.F5ACCFD0
-Content-Type: text/plain;
-	charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+https://wiki.nftables.org/wiki-nftables/index.php/Simple_ruleset_for_a_home_router
+include a number of rules like
 
-Hi Michael,
+        ip protocol . th dport vmap { tcp . 22 : accept, udp . 53 :
+accept, tcp . 53 : accept, udp . 67 : accept}
+with possibly 2 different uses of ".", namely 'ip protocol .'  and 'udp . 67'.
+What do those "."'s mean?
 
-depending on your expected throughput, net-acct might do what you want. =
-We've put a tap on our uplink and used that for accounting. Worked =
-pretty well for 1Gbit/s streams. The package has some problems with lots =
-of small packets, though. For higher bandwidths it makes sense to move =
-to something like S/FLOW and live with the approximation.
+I've looked in available documentation, but can't tell.
 
-Best regards,
-i.A. Thomas B=C3=A4tzler
---=20
-BRINGE Informationstechnik GmbH
-Zur Seeplatte 12
-D-76228 Karlsruhe
-Germany
-
-Fon: +49 721 94246-0
-Fon: +49 171 5438457
-Fax: +49 721 94246-66
-Web: http://www.bringe.de/
-
-Gesch=C3=A4ftsf=C3=BChrer: Dipl.-Ing. (FH) Martin Bringe
-Ust.Id: DE812936645, HRB 108943 Mannheim
-
------Urspr=C3=BCngliche Nachricht-----
-Von: Michael Dickensheets <michael.dickensheets@ionos.com>=20
-Gesendet: Freitag, 3. Dezember 2021 14:17
-An: netfilter@vger.kernel.org
-Betreff: Recovery of packet size
-
-Hello,
-
-We are trying to build fine-grained traffic accounting. Counters do not =
-provide sufficient details; we need timestamps for individual packets, =
-etc. We are trying to use logging target with the 'snaplen'
-option to minimize overhead. What we are missing though is the size of =
-the original packet (skb->len). Is there a way to retrieve this value?
-
-If this is not currently possible, how would we best go about adding =
-this functionality?
-
-Best regards,
-Michael Dickensheets
-
-------=_NextPart_000_0010_01D7E850.F5ACCFD0
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgMFADCABgkqhkiG9w0BBwEAAKCCD5kw
-ggO3MIICn6ADAgECAhAM5+DlF9hG/o/lYPwb8DA5MA0GCSqGSIb3DQEBBQUAMGUxCzAJBgNVBAYT
-AlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAi
-BgNVBAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBDQTAeFw0wNjExMTAwMDAwMDBaFw0zMTEx
-MTAwMDAwMDBaMGUxCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAXBgNVBAsT
-EHd3dy5kaWdpY2VydC5jb20xJDAiBgNVBAMTG0RpZ2lDZXJ0IEFzc3VyZWQgSUQgUm9vdCBDQTCC
-ASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAK0OFc7kQ4BcsYfzt2D5cRKlrtwmlIiq9M71
-IDkoWGAM+IDaqRWVMmE8tbEohIqK3J8KDIMXeo+QrIrneVNcMYQq9g+YMjZ2zN7dPKii72r7IfJS
-Yd+fINcf4rHZ/hhk0hJbX/lYGDW8R82hNvlrf9SwOD7BG8OMM9nYLxj+KA+zp4PWw25EwGE1lhb+
-WZyLdm3X8aJLDSv/C3LanmDQjpA1xnhVhyChz+VtCshJfDGYM2wi6YfQMlqiuhOCEe05F52ZOnKh
-5vqk2dUXMXWuhX0irj8BRob2KHnIsdrkVxfEfhwOsLSSplazvbKX7aqn8LfFqD+VFtD/oZbrCF8Y
-d08CAwEAAaNjMGEwDgYDVR0PAQH/BAQDAgGGMA8GA1UdEwEB/wQFMAMBAf8wHQYDVR0OBBYEFEXr
-oq/0ksuCMS1Ri6enIZ3zbcgPMB8GA1UdIwQYMBaAFEXroq/0ksuCMS1Ri6enIZ3zbcgPMA0GCSqG
-SIb3DQEBBQUAA4IBAQCiDrzf4u3w43JzemSUv/dyZtgy5EJ1Yq6H6/LV2d5Ws5/MzhQouQ2XYFwS
-TFjk0z2DSUVYlzVpGqhH6lbGeasS2GeBhN9/CTyU5rgmLCC9PbMoifdf/yLil4Qf6WXvh+DfwWdJ
-s13rsgkq6ybteL59PyvztyY1bV+JAbZJW58BBZurPSXBzLZ/wvFvhsb6ZGjrgS2U60K3+owe3WLx
-vlBnt2y98/Efaww2BxZ/N3ypW2168RJGYIPXJwS+S86XvsNnKmgR34DnDDNmvxMNFG7zfx9jEB76
-jRslbWyPpbdhAbHSoyahEHGdreLD+cOZUbcrBwjOLuZQsqf6CkUvovDyMIIFiDCCBHCgAwIBAgIQ
-CkIynPMWmvSGAo3jED1rbTANBgkqhkiG9w0BAQsFADBlMQswCQYDVQQGEwJVUzEVMBMGA1UEChMM
-RGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2Vy
-dCBTSEEyIEFzc3VyZWQgSUQgQ0EwHhcNMTkwOTIzMDAwMDAwWhcNMjIxMTExMTIwMDAwWjCBqDEL
-MAkGA1UEBhMCREUxGzAZBgNVBAgMEkJhZGVuLVfDvHJ0dGVtYmVyZzESMBAGA1UEBxMJS2FybHNy
-dWhlMSgwJgYDVQQKEx9CcmluZ2UgSW5mb3JtYXRpb25zdGVjaG5payBHbWJIMRgwFgYDVQQDEw9U
-aG9tYXMgQmFldHpsZXIxJDAiBgkqhkiG9w0BCQEWFXQuYmFldHpsZXJAYnJpbmdlLmNvbTCCASIw
-DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAKm/GlvIn3arnh+loy4LB9TMX0yfy716dIJlSHPV
-HVUCHNINbAAyH1WJDpV0K8f/Y++hHL3lQmyu8mtzdZHNwr227ukSbOoTIzth2bcHC4t0K8jzzRje
-vlfZsWv6jTKqA655vhVGw1D6+SNatgJ2jRUCyg13M3UvK+IfhKNxRien7bS1TG2E5ApeyqmFlmDg
-7y4R9FjBl1OB77Sw9el6lfoboC+h0eKxBwaTjwIVfV899CVJPSve8I9bAbimtYK27IU8QPnz7OCK
-D/26DvriD2SL/ct4MVIPtWSnRwDFID3VdoFE6LH5tiPSGbJ8hry1a1kz45Zi8rOMXvdVdDjYhukC
-AwEAAaOCAe4wggHqMB8GA1UdIwQYMBaAFOcCI4AAT9jXvJQL2T90OUkyPIp5MB0GA1UdDgQWBBTA
-brD28WxRAGw1BzeSYGK2FUOzjTAMBgNVHRMBAf8EAjAAMCAGA1UdEQQZMBeBFXQuYmFldHpsZXJA
-YnJpbmdlLmNvbTAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwME
-MEMGA1UdIAQ8MDowOAYKYIZIAYb9bAQBAjAqMCgGCCsGAQUFBwIBFhxodHRwczovL3d3dy5kaWdp
-Y2VydC5jb20vQ1BTMIGIBgNVHR8EgYAwfjA9oDugOYY3aHR0cDovL2NybDMuZGlnaWNlcnQuY29t
-L0RpZ2lDZXJ0U0hBMkFzc3VyZWRJRENBLWcyLmNybDA9oDugOYY3aHR0cDovL2NybDQuZGlnaWNl
-cnQuY29tL0RpZ2lDZXJ0U0hBMkFzc3VyZWRJRENBLWcyLmNybDB5BggrBgEFBQcBAQRtMGswJAYI
-KwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmRpZ2ljZXJ0LmNvbTBDBggrBgEFBQcwAoY3aHR0cDovL2Nh
-Y2VydHMuZGlnaWNlcnQuY29tL0RpZ2lDZXJ0U0hBMkFzc3VyZWRJRENBLmNydDANBgkqhkiG9w0B
-AQsFAAOCAQEAs2XHpFwzu674xR/n3KKl7Bneiz9BUrpOiJhggOtKLBlU924oszVbuvgYI3MIdDOL
-AV+Jghz+MlSOlNPjiovgIDjHT/CX5tpUSTJl7PkoNFqDd8buHBpVdJGnPJHqjnAbBOI48PrTKFEV
-0R9loHcdM0OpnayrW+uxlZUGA8ZT5hSAQ0IXhtrSN4S093L0J6IFQrrAWYapWZAINHt2CZhuGLQD
-ZAHeYw8aICfHwpMfgFz0InmU1kx3lp15dBp9LFj+99R4wk5SzEY5q6TbE1yTiKz8EJEteykFX62E
-RF4dTSEkKVW7a7zVZsE4vO6rRsRTkE1347Vx7UWFEMvXe+EA6DCCBk4wggU2oAMCAQICEASueWBm
-ZpAaucV/pmxb3M0wDQYJKoZIhvcNAQELBQAwZTELMAkGA1UEBhMCVVMxFTATBgNVBAoTDERpZ2lD
-ZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2ljZXJ0LmNvbTEkMCIGA1UEAxMbRGlnaUNlcnQgQXNz
-dXJlZCBJRCBSb290IENBMB4XDTEzMTEwNTEyMDAwMFoXDTI4MTEwNTEyMDAwMFowZTELMAkGA1UE
-BhMCVVMxFTATBgNVBAoTDERpZ2lDZXJ0IEluYzEZMBcGA1UECxMQd3d3LmRpZ2ljZXJ0LmNvbTEk
-MCIGA1UEAxMbRGlnaUNlcnQgU0hBMiBBc3N1cmVkIElEIENBMIIBIjANBgkqhkiG9w0BAQEFAAOC
-AQ8AMIIBCgKCAQEA3PgRIz9qte/AJ3kbLQWHohBDMd8O1BUbT3ekIs4+jHDwvgeO3ScqvAEdtiwK
-yt1pWB9B7WoFH9pjeFkeIiwr+Lp+yTU7VvEffEJ+JbAjGcZFONc9RPkgfGCuHLBaGAS+jzv3qfCU
-mqYMY0m2QRdTQDK9T+ZQelAfJUXo8Ymvzf9e/1Dz8BcR/73FifW9YrnY+45FBIVtmc3FSE39JqsC
-NkXqNtdfauIagkEK3OnZ9ZEXjsYhrTg8E+Yef2ac1U3ZRtr2z1KnfTskw7TBUTXGm+vU737kewPh
-RL16CzfgT8uCig1xGOSm4IksG/OyczzBsJKeGH29q33FfQihLMKfcwIDAQABo4IC+DCCAvQwEgYD
-VR0TAQH/BAgwBgEB/wIBADAOBgNVHQ8BAf8EBAMCAYYwNAYIKwYBBQUHAQEEKDAmMCQGCCsGAQUF
-BzABhhhodHRwOi8vb2NzcC5kaWdpY2VydC5jb20wgYEGA1UdHwR6MHgwOqA4oDaGNGh0dHA6Ly9j
-cmw0LmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEFzc3VyZWRJRFJvb3RDQS5jcmwwOqA4oDaGNGh0dHA6
-Ly9jcmwzLmRpZ2ljZXJ0LmNvbS9EaWdpQ2VydEFzc3VyZWRJRFJvb3RDQS5jcmwwHQYDVR0lBBYw
-FAYIKwYBBQUHAwIGCCsGAQUFBwMEMIIBswYDVR0gBIIBqjCCAaYwggGiBgpghkgBhv1sAAIEMIIB
-kjAoBggrBgEFBQcCARYcaHR0cHM6Ly93d3cuZGlnaWNlcnQuY29tL0NQUzCCAWQGCCsGAQUFBwIC
-MIIBVh6CAVIAQQBuAHkAIAB1AHMAZQAgAG8AZgAgAHQAaABpAHMAIABDAGUAcgB0AGkAZgBpAGMA
-YQB0AGUAIABjAG8AbgBzAHQAaQB0AHUAdABlAHMAIABhAGMAYwBlAHAAdABhAG4AYwBlACAAbwBm
-ACAAdABoAGUAIABEAGkAZwBpAEMAZQByAHQAIABDAFAALwBDAFAAUwAgAGEAbgBkACAAdABoAGUA
-IABSAGUAbAB5AGkAbgBnACAAUABhAHIAdAB5ACAAQQBnAHIAZQBlAG0AZQBuAHQAIAB3AGgAaQBj
-AGgAIABsAGkAbQBpAHQAIABsAGkAYQBiAGkAbABpAHQAeQAgAGEAbgBkACAAYQByAGUAIABpAG4A
-YwBvAHIAcABvAHIAYQB0AGUAZAAgAGgAZQByAGUAaQBuACAAYgB5ACAAcgBlAGYAZQByAGUAbgBj
-AGUALjAdBgNVHQ4EFgQU5wIjgABP2Ne8lAvZP3Q5STI8inkwHwYDVR0jBBgwFoAUReuir/SSy4Ix
-LVGLp6chnfNtyA8wDQYJKoZIhvcNAQELBQADggEBAE7UiSe5/R2Hd34PKAWQ8QovyTs+vZOckMav
-+pFRhzJUa+jKwXFRXJmOtfrgYhmZpgeafBMn2+UCooQS2RX2CkRXxDSPbXMfOtagAT3e44LkRWuy
-6yX9gF4dOZC+W0L2zpFg4/mgVgxIEM4zaHvNk6vwastPWA+5e10bBIGepyLiV0kn7pKTCL5pCFMC
-Oi5dyBn0UIBOAtmwXZG0k4f5lpaBVUCOZu2C2LsoX+1MYe0GWCgZUxFEvEcgKbIEbNiJVJk7ddtn
-eCweknjGVT1YEhEybr1DDE0023vGQtvsvqubYUwGkuOO3yEqUFcEwGCiNdUknmY3CUnP1fhls+Di
-bsIxggPfMIID2wIBATB5MGUxCzAJBgNVBAYTAlVTMRUwEwYDVQQKEwxEaWdpQ2VydCBJbmMxGTAX
-BgNVBAsTEHd3dy5kaWdpY2VydC5jb20xJDAiBgNVBAMTG0RpZ2lDZXJ0IFNIQTIgQXNzdXJlZCBJ
-RCBDQQIQCkIynPMWmvSGAo3jED1rbTANBglghkgBZQMEAgMFAKCCAjcwGAYJKoZIhvcNAQkDMQsG
-CSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjExMjAzMTMyMDQ0WjBPBgkqhkiG9w0BCQQxQgRA
-8PEL2obt0+2K5dm343tYS4VglT3EfSq6DZqrxjikR1dy4iKGCh7bxFRLgOU5hx8wv6muu8Gy48Xj
-7j7ADamw+DCBiAYJKwYBBAGCNxAEMXsweTBlMQswCQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNl
-cnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQuY29tMSQwIgYDVQQDExtEaWdpQ2VydCBTSEEy
-IEFzc3VyZWQgSUQgQ0ECEApCMpzzFpr0hgKN4xA9a20wgYoGCyqGSIb3DQEJEAILMXugeTBlMQsw
-CQYDVQQGEwJVUzEVMBMGA1UEChMMRGlnaUNlcnQgSW5jMRkwFwYDVQQLExB3d3cuZGlnaWNlcnQu
-Y29tMSQwIgYDVQQDExtEaWdpQ2VydCBTSEEyIEFzc3VyZWQgSUQgQ0ECEApCMpzzFpr0hgKN4xA9
-a20wgZMGCSqGSIb3DQEJDzGBhTCBgjALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAoGCCqGSIb3
-DQMHMAsGCWCGSAFlAwQBAjAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwCwYJYIZIAWUD
-BAIDMAsGCWCGSAFlAwQCAjALBglghkgBZQMEAgEwBwYFKw4DAhowDQYJKoZIhvcNAQEBBQAEggEA
-hi154vUYvFqoPDWOr5OgbTZvWxlhDJwMuSGXKpsXIB9A7L6HxzPFNiRHc1ZpM6ZldHu9N4kZGpgq
-yFTrJeNR5Skc4IIIbvA0PiMe6CbTSsKc5pl8KQpQa/AgoaliGY+Dq+7WRE6mgRFHKOg2ZEbc64Mm
-IZtmkkpDTEfCv8NIa5ZwjrUlQmdgBERZgLC8qTX3ZDLsGyzqvUQDdyCybKEk5Wr3nOevuCjAzKeH
-oBMEFjKeqgiWWIg2deTKbQ4dKmWviOWX88wcaWk2hVrm4+SzmbKGHPhSxg5X0ZcxsRU1xOZH5xZK
-Av7khjdAOgtJmxMLNcMcZ1Jt2ONdxUkmiAq8IgAAAAAAAA==
-
-------=_NextPart_000_0010_01D7E850.F5ACCFD0--
+Thanks.
+Ross Boylan
