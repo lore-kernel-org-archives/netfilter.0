@@ -1,51 +1,49 @@
-From: Duncan Roe <duncan_roe@optusnet.com.au>
-Subject: Re: Meaning of "." (dot) in netfilter
-Date: Sun, 5 Dec 2021 12:34:04 +1100
-Message-ID: <YawXDEt0yjUQadKC@slk1.local.net>
-References: <CAK3NTRAQE7UD9_0EuzyS0UGQ_s++Dg_hbZPXscHBrStnGJHGjw@mail.gmail.com>
- <YascpztWuzJgKRgq@slk1.local.net>
- <9d66247c-51c5-b2d9-584b-0422c99d08bd@average.org>
+From: Amish <anon.amish@gmail.com>
+Subject: delete matching rule like it can be done in case of iptables
+Date: Sun, 5 Dec 2021 17:25:29 +0530
+Message-ID: <5e5887f6-69f4-7aca-175c-d4b6faf90eb1@gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:from:date:to:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=HSu5QIKy/jOkeLrHT2aR9NRCh5+6hFGsAB+C91G37kQ=;
-        b=KMFRaG5eoacMOg6+WbBWa5z4WivDNCCCVei5nhKjl+7JD/2+5JXlSyr4iCNQqV9vA8
-         QVUBmVilKXVYlHD6C0oFjE0y5L5BbKhkS7aLPSprvH0Z//Wyi78tq817W+g85vIUJL6t
-         LNc+W5e8bj85uFlWw/Qcloptj3fEO4xWnnvcl+Bw4v1ijQnToqXKoEwzLg7GLatpfeVM
-         zdlKz1x4zYB+xIsViP14Q2EVJ5aDFZmywvq9toNcPAAFvS/Ts1uztUqM5+9E/y2nRaH2
-         RlpS/SDqtTmBedZzOnrtGp8PproCO6MsM9A2NuRL/Us+YF+V8W8mRtuRXUpIDB0EkQZ1
-         YuHg==
-Sender: Duncan Roe <duncan.roe2@gmail.com>
-Content-Disposition: inline
-In-Reply-To: <9d66247c-51c5-b2d9-584b-0422c99d08bd@average.org>
+        h=message-id:date:mime-version:user-agent:from:subject:to
+         :content-language:content-transfer-encoding;
+        bh=Z9mgsmA4kPn8GcGNNXDbhMGXNMSOb0ZYpNLrk4boL0o=;
+        b=eZCtR2AiJZG/pLOT+3Ji7Jnpcvlmj6PjZWjShtgIJclrlw7wlvXrvXpXYY7nuR9BBn
+         8C4eMYbj4lBPO62aFdEOgkeYlRbPrI1+t+ON6yOSfxDOkX385r1UoTX3OXvJSsESg1ND
+         AQhTbbVTd3dnjDjlnttcLm4oQTGXEoBkDShlh0l6YgH+SSMiecUsMdE8D79rPRLgkMQq
+         pwSMvdAQR0oUKcR4ScevpY5Z9w5VaCzuDOlYEaXFaCLLY14fZ+i4JZez0gDyB1uTHLKy
+         whIW+aKozCuEJ75sIqC/Kasp8HEaANiUdN45+P6nCFTiTGksf1z3cazULy9Esei4L/hn
+         1zJg==
+Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, Netfilter Development <netfilter-devel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Sat, Dec 04, 2021 at 01:05:21PM +0100, Eugene Crosser wrote:
-> Hi Duncan,
->
-> On 04/12/2021 08:45, Duncan Roe wrote:
->
-> > "." is the symbol for concatenation. It's been missing from the man page
-> > forever.
-> >
-> > I was going to submit a patch to add "." but wasn't really sure when you could
-> > use it so I never did.
->
-> It is my understanding that the only use for concatenation is to define
-> composite value for the key in a `map` / `vmap` or the element in a `set`. Maybe
-> someone more knowledgeable can correct me.
->
-> Regards,
->
-> Eugene
+Hello,
 
-I thought it was set definition in general. Again, someone more knowledgeable
-can correct me.
+nftables wiki [1] mentions this:
 
-Cheers ... Duncan.
+ > Note: There are plans to support rule deletion by passing:
+ > % nft delete rule filter output ip saddr 192.168.1.1 counter
+
+Any idea when will this happen? Because I thought it was very important 
+feature. (unless I missed an alternate way to do it)
+
+I want to migrate from iptables to nftables (from many years) but 
+deleting a rule via script is not as easy as in case of iptables.
+
+Obtaining the handle first and then deleting it is difficult 
+programmatically.
+
+Why is it difficult for nftables to find and delete matching rule?
+
+Is there any ETA for this because its a roadblock for migrating my scripts.
+
+Thank you,
+
+Amish.
+
+[1] 
+https://wiki.nftables.org/wiki-nftables/index.php/Simple_rule_management#Removing_rules
