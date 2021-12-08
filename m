@@ -1,45 +1,67 @@
-From: "G.W. Haywood" <netfilter@jubileegroup.co.uk>
-Subject: Re: delete matching rule like it can be done in case of iptables
-Date: Wed, 8 Dec 2021 14:03:54 +0000 (GMT)
-Message-ID: <4b7275b8-dea-f5b5-bcfc-42a56156a7f0@jubileegroup.co.uk>
-References: <5e5887f6-69f4-7aca-175c-d4b6faf90eb1@gmail.com> <Ya4L/rS/mCwzqt25@salvia> <af021a3d-b4d4-28d4-df66-12a16f7977f2@gmail.com> <4bc86df1-3971-7729-6a41-477262879b90@tootai.net> <742f7f1d-a182-c1a1-7f7e-788f51fb03fb@gmail.com>
- <72cffe4b-aee3-abd4-042b-83f576f4be13@tootai.net> <a3b6fdcb-daca-53f4-2640-aef7d3258f77@jubileegroup.co.uk> <b2a3f94-ee47-1751-5e9b-c772a2e5a29d@netfilter.org>
+From: Martin Gignac <martin.gignac@gmail.com>
+Subject: Re: Matching metainformation cgroup fails on input, works on output.
+Date: Wed, 8 Dec 2021 09:07:32 -0500
+Message-ID: <CANf9dFMcpnqO-at25EKfxad7fX=yT9s0A7EDBgac1doL3fGxpg@mail.gmail.com>
+References: <874k7j31no.fsf@laptop.lockywolf.net>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <b2a3f94-ee47-1751-5e9b-c772a2e5a29d@netfilter.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Hat0FPflogtC7heS/OmZ9sck6vWm0NktBt3pY1vUOlE=;
+        b=ULpbXQlGm38pQICnByt4WxoBuxawTz6Cum7NAmBhDUHyvnQgJp0+N8I2rFGfOcXZVI
+         U206eAw3AJ3fMC5vftDfAUJxRbzDwTcGJohEDEYB7ULm0FxoW7WQuoskWLAXZ2YORqUh
+         vbsY6BNfBI71vXST9taTFl6A222jiGpzbw5ZPna+aR1aEhmFVS/9PhdvGxVnZQFV/iij
+         gbQQEITj31glKfCMbL/1TPTj3RUsR/Du21I893fkxNs3c5XsP9cP6IgRKssEb6P2ELc5
+         TBz+qF8RpalSuBYW9MGqyWNdZaLi4DvXylEnDMomUEtTJs0K888yDKqYoRhydjMA+cZ9
+         SE8A==
+In-Reply-To: <874k7j31no.fsf@laptop.lockywolf.net>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@netfilter.org>
-Cc: Netfilter list <netfilter@vger.kernel.org>
+To: Vladimir Nikishkin <lockywolf@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hi there,
+What is the complete output of 'nft list ruleset'?
 
-On Wed, 8 Dec 2021, Jozsef Kadlecsik wrote:
+Is it possible you have an earlier INPUT rule that matches and allows
+packets that match connection-tracking "established" state, such as:
 
-> On Wed, 8 Dec 2021, G.W. Haywood wrote:
->> On Tue, 7 Dec 2021, Daniel wrote:
->>
->>> myhandle=$(echo `$nft -sa list chain $1 $2 $3 |grep -F $4|grep -oP '(#
->>> handle ).*'`|cut -d " " -f 3)
->>
->> To me, quite apart from the reliance on a bunch of system utilities
->> which I'd really prefer to avoid in an operation of this kind, that
->> looks unnecessarily complex and rather fragile.
->>
->> This whole discussion suggests that something is missing from nft.
+        chain INPUT {
+                type filter hook input priority filter; policy drop;
+                ct state established,related counter packets 391638047
+bytes 93651768866 accept
+                ct state invalid drop
+                [...]
+
+-Martin
+
+
+On Wed, Dec 8, 2021 at 4:39 AM Vladimir Nikishkin <lockywolf@gmail.com> wrote:
 >
-> I know not all kind of rulesets can be managed thus, but I suggest to rely
-> heavily on sets, maps in nft. In lots of cases one can achieve technically
-> static rules while the ruleset is fully dynamic, because all the
-> modifications happen in the sets/maps.
-
-With your help, as you know, I already do that using ipsets - but the few
-'technically static' rules are all iptables rules.  I have tried very hard
-to find a reason to switch from iptables to nft, but so far I have failed
-(a) fully to grasp the nft syntax and (b) to find that (e|i)llusive reason. :)
-
--- 
-
-73,
-Ged.
+> Hello, everyone.
+>
+> I have a weird problem!
+>
+> This is my nft code:
+>
+> ```
+> nft add counter filter test-icmp-output
+> nft add counter filter test-icmp-input
+> nft add rule filter OUTPUT meta cgroup != 0x001000 ip daddr 8.8.8.8 ip protocol icmp counter name test-icmp-output
+> nft add rule filter INPUT  meta cgroup != 0x001000 ip saddr 8.8.8.8 ip protocol icmp counter name test-icmp-input
+> ```
+>
+> Pinging 8.8.8.8 works. The packets are visible on tcpdump too.
+> The cgroup id 0x001000 does not exist, so every packet should match.
+>
+> Still, the output counter counts the expected number of packets, the
+> second stays 0.
+>
+> What am I doing wrong?
+>
+> --
+> Your sincerely,
+> Vladimir Nikishkin (MiEr, lockywolf)
+> (Laptop)
