@@ -1,118 +1,58 @@
-From: Martin Gignac <martin.gignac@gmail.com>
-Subject: Re: Matching metainformation cgroup fails on input, works on output.
-Date: Wed, 8 Dec 2021 09:51:03 -0500
-Message-ID: <CANf9dFPwOmwCMKCrQgz8s5A5X+cxF2T9saCh2johU8j9XFB97A@mail.gmail.com>
-References: <874k7j31no.fsf@laptop.lockywolf.net> <CANf9dFMcpnqO-at25EKfxad7fX=yT9s0A7EDBgac1doL3fGxpg@mail.gmail.com>
- <8735n32nax.fsf@laptop.lockywolf.net>
+From: Amish <anon.amish@gmail.com>
+Subject: Re: delete matching rule like it can be done in case of iptables
+Date: Thu, 9 Dec 2021 14:05:50 +0530
+Message-ID: <b57982b8-36ff-05b8-8697-3b3e61875831@gmail.com>
+References: <5e5887f6-69f4-7aca-175c-d4b6faf90eb1@gmail.com>
+ <Ya4L/rS/mCwzqt25@salvia> <af021a3d-b4d4-28d4-df66-12a16f7977f2@gmail.com>
+ <4bc86df1-3971-7729-6a41-477262879b90@tootai.net>
+ <742f7f1d-a182-c1a1-7f7e-788f51fb03fb@gmail.com>
+ <72cffe4b-aee3-abd4-042b-83f576f4be13@tootai.net>
+ <a3b6fdcb-daca-53f4-2640-aef7d3258f77@jubileegroup.co.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RYiUA7oV2NjSvTGeX4TvlE9TKKPi1atcA/vjlycMXjA=;
-        b=COfmCHpxbAyPn/mG+1SpYQ2KaponkkKSF/ZXa9yhdoAS7yCIvd/bFcVwS/QYueD82h
-         HbZ/c+04LXk8vGSoMdyZdHPFnyoskTyS+0//m1JCCUF2G6I984/j7BwaUPSp0n3xxqr5
-         Azk+BS5lsu2i9B9tTF0E/AR+Drxp0SYt5S4prf5biBgbblXWdIoARcLcxGKxkcT7eaZc
-         uCuu10HBN0aHyDOM++36n7455vxqiXQIQ9wHNN3G09ljz5m3sFZvsl32K+NlShSt9M1S
-         GSfwMoKIp8YVy4nj4mv/D5cJdrYokQAzb0TSwDhIJuM+Unx4FoIwFaXE5mC9loaf+90S
-         RN7A==
-In-Reply-To: <8735n32nax.fsf@laptop.lockywolf.net>
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=pDelQHE6zB+QYgE5N21sZ5VGGJCnluNtfRvd1UsTWYI=;
+        b=PZr0zO6eSDVZofHd010ciqtAvVWwC5rQZxnJWdUPMo1r7HrZAxbc9qpUjMmCKT4SyO
+         5819Dy/TwYSUgsJvzrTXr2rTD3lWQraUnzakxdrMZJuMLiBBTH6f1NoLQC+NWKmK9dRc
+         eW5EYnFlhWZLKwV/dT2Ioj8DEd9CquHzGMof/dtYwwT4/EubKqC3Km7yfo0zVOyoapIr
+         tPTf6rozq77YArB4PP2LRNVLVDYSKpL2hNoj144ZXnDRBtwZjnqV5vsgAFNdJKHttrJo
+         vymUYlhXfD1jndunbzoMc5Rc7v9JdTS89RxXKSMlO+deDvdJ3yB5BUeIu0h2v7Gceko3
+         dCMg==
+Content-Language: en-US
+In-Reply-To: <a3b6fdcb-daca-53f4-2640-aef7d3258f77@jubileegroup.co.uk>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Vladimir Nikishkin <lockywolf@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "G.W. Haywood" <netfilter@jubileegroup.co.uk>
+Cc: Netfilter list <netfilter@vger.kernel.org>
 
-I tried the same setup as you, and indeed I get the same result (i.e.
-no counter increase on INPUT). nftrace also shows that the packet
-doesn't match the INPUT rule.
 
-This is just a stab in the dark, but isn't it possible that the INPUT
-rule doesn't match because nftables has no way to filter random
-INCOMING packets on cgroups? I mean, how would nftables know which
-cgroup any incoming packet would be associated with?
+On 08/12/21 15:25, G.W. Haywood wrote:
+> Hi there,
+>
+> On Tue, 7 Dec 2021, Daniel wrote:
+>
+>> myhandle=$(echo `$nft -sa list chain $1 $2 $3 |grep -F $4|grep -oP 
+>> '(# handle ).*'`|cut -d " " -f 3)
+>
+> To me, quite apart from the reliance on a bunch of system utilities
+> which I'd really prefer to avoid in an operation of this kind, that
+> looks unnecessarily complex and rather fragile.
+>
+> This whole discussion suggests that something is missing from nft.
 
--Martin
+Yes, its a blocker for me.
 
-On Wed, Dec 8, 2021 at 9:22 AM Vladimir Nikishkin <lockywolf@gmail.com> wrote:
->
-> I have just tested it (again) by flushing the old ruleset and using the
-> following ruleset:
->
-> ```
-> table ip filter {
->         counter test-icmp-output {
->                 packets 3 bytes 252
->         }
->
->         counter test-icmp-input {
->                 packets 0 bytes 0
->         }
->
->         chain INPUT {
->                 type filter hook input priority filter; policy accept;
->                 meta cgroup != 4096 ip saddr 8.8.8.8 ip protocol icmp counter name "test-icmp-input"
->         }
->
->         chain OUTPUT {
->                 type filter hook output priority filter; policy accept;
->                 meta cgroup != 4096 ip daddr 8.8.8.8 ip protocol icmp counter name "test-icmp-output"
->         }
-> }
-> ```
->
-> As previously, the cgroup 0x001000 does not exist. The three outbound
-> packets are the three ping packets, and they were successfully replied
-> to.
->
-> Martin Gignac <martin.gignac@gmail.com> writes:
->
-> > What is the complete output of 'nft list ruleset'?
-> >
-> > Is it possible you have an earlier INPUT rule that matches and allows
-> > packets that match connection-tracking "established" state, such as:
-> >
-> >         chain INPUT {
-> >                 type filter hook input priority filter; policy drop;
-> >                 ct state established,related counter packets 391638047
-> > bytes 93651768866 accept
-> >                 ct state invalid drop
-> >                 [...]
-> >
-> > -Martin
-> >
-> >
-> > On Wed, Dec 8, 2021 at 4:39 AM Vladimir Nikishkin <lockywolf@gmail.com> wrote:
-> >>
-> >> Hello, everyone.
-> >>
-> >> I have a weird problem!
-> >>
-> >> This is my nft code:
-> >>
-> >> ```
-> >> nft add counter filter test-icmp-output
-> >> nft add counter filter test-icmp-input
-> >> nft add rule filter OUTPUT meta cgroup != 0x001000 ip daddr 8.8.8.8 ip protocol icmp counter name test-icmp-output
-> >> nft add rule filter INPUT  meta cgroup != 0x001000 ip saddr 8.8.8.8 ip protocol icmp counter name test-icmp-input
-> >> ```
-> >>
-> >> Pinging 8.8.8.8 works. The packets are visible on tcpdump too.
-> >> The cgroup id 0x001000 does not exist, so every packet should match.
-> >>
-> >> Still, the output counter counts the expected number of packets, the
-> >> second stays 0.
-> >>
-> >> What am I doing wrong?
-> >>
-> >> --
-> >> Your sincerely,
-> >> Vladimir Nikishkin (MiEr, lockywolf)
-> >> (Laptop)
->
->
-> --
-> Your sincerely,
-> Vladimir Nikishkin (MiEr, lockywolf)
-> (Laptop)
+As a workaround I switched from iptables-legacy to iptables-nft. (So 
+atleast I am using nft backend)
+
+Irony is that iptables (nft backend) can actually delete the matching 
+rule (via -D option) but native nft itself can not delete a matching rule.
+
+Regards
+
+Amish.
+
