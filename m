@@ -1,7 +1,7 @@
-From: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-Subject: RE: [RFC PATCH 0/2] Landlock network PoC implementation
-Date: Mon, 20 Dec 2021 03:52:45 +0000
-Message-ID: <dc1866cec3134c51939a5fa104359b6c@huawei.com>
+From: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Subject: Re: [RFC PATCH 0/2] Landlock network PoC implementation
+Date: Tue, 21 Dec 2021 22:15:21 +0100
+Message-ID: <ea3b1671-95b3-3cf0-9d0e-8b4c3303ad4d@digikod.net>
 References: <20211210072123.386713-1-konstantin.meskhidze@huawei.com>
  <b50ed53a-683e-77cf-9dc2-f4ae1b5fa0fd@digikod.net>
  <12467d8418f04fbf9fd4a456a2a999f1@huawei.com>
@@ -9,74 +9,79 @@ References: <20211210072123.386713-1-konstantin.meskhidze@huawei.com>
  <c8588051-8795-9b8a-cb36-f5440b590581@digikod.net>
  <a1769c4239ee4e8aadb65f9ebb6061d8@huawei.com>
  <c325e5f6-d8d5-b085-fd2d-7f454629a1ec@digikod.net>
+ <dc1866cec3134c51939a5fa104359b6c@huawei.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <c325e5f6-d8d5-b085-fd2d-7f454629a1ec@digikod.net>
+Content-Transfer-Encoding: 8bit
+Return-path: <linux-security-module-owner@vger.kernel.org>
 Content-Language: en-US
+In-Reply-To: <dc1866cec3134c51939a5fa104359b6c@huawei.com>
 List-ID: <netfilter.vger.kernel.org>
-To: =?utf-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
 Cc: yusongping <yusongping@huawei.com>, Artem Kuzin <artem.kuzin@huawei.com>, linux-security-module <linux-security-module@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>
 
-SGksIE1pY2th0ZFsIQ0KDQotLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogTWlja2HD
-q2wgU2FsYcO8biA8bWljQGRpZ2lrb2QubmV0PiANClNlbnQ6IFNhdHVyZGF5LCBEZWNlbWJlciAx
-OCwgMjAyMSA3OjAxIFBNDQpUbzogS29uc3RhbnRpbiBNZXNraGlkemUgPGtvbnN0YW50aW4ubWVz
-a2hpZHplQGh1YXdlaS5jb20+DQpDYzogeXVzb25ncGluZyA8eXVzb25ncGluZ0BodWF3ZWkuY29t
-PjsgQXJ0ZW0gS3V6aW4gPGFydGVtLmt1emluQGh1YXdlaS5jb20+OyBsaW51eC1zZWN1cml0eS1t
-b2R1bGUgPGxpbnV4LXNlY3VyaXR5LW1vZHVsZUB2Z2VyLmtlcm5lbC5vcmc+OyBOZXR3b3JrIERl
-dmVsb3BtZW50IDxuZXRkZXZAdmdlci5rZXJuZWwub3JnPjsgbmV0ZmlsdGVyQHZnZXIua2VybmVs
-Lm9yZzsgV2lsbGVtIGRlIEJydWlqbiA8d2lsbGVtZGVicnVpam4ua2VybmVsQGdtYWlsLmNvbT4N
-ClN1YmplY3Q6IFJlOiBbUkZDIFBBVENIIDAvMl0gTGFuZGxvY2sgbmV0d29yayBQb0MgaW1wbGVt
-ZW50YXRpb24NCg0KDQpPbiAxOC8xMi8yMDIxIDA5OjI2LCBLb25zdGFudGluIE1lc2toaWR6ZSB3
-cm90ZToNCj4gSGksIE1pY2th0ZFsDQo+IFRoYW5rcyBhZ2FpbiBmb3IgeW91ciBvcGluaW9uIGFi
-b3V0IG1pbmltYWwgTGFuZGxvY2sgSVB2NCBuZXR3b3JrIHZlcnNpb24uDQo+IEkgaGF2ZSBhbHJl
-YWR5IHN0YXJ0ZWQgcmVmYWN0b3JpbmcgdGhlIGNvZGUuDQo+IEhlcmUgYXJlIHNvbWUgYWRkaXRp
-b25hbCB0aG91Z2h0cyBhYm91dCB0aGUgZGVzaWduLg0KDQpbLi4uXQ0KDQo+Pj4NCj4+PiBBY2Nl
-c3Nlcy9zdWZmaXhlcyBzaG91bGQgYmU6DQo+Pj4gLSBDUkVBVEUNCj4+PiAtIEFDQ0VQVA0KPj4+
-IC0gQklORA0KPj4+IC0gTElTVEVODQo+Pj4gLSBDT05ORUNUDQo+Pj4gLSBSRUNFSVZFIChSRUNF
-SVZFX0ZST00gYW5kIFNFTkRfVE8gc2hvdWxkIG5vdCBiZSBuZWVkZWQpDQo+Pj4gLSBTRU5EDQo+
-Pj4gLSBTSFVURE9XTg0KPj4+IC0gR0VUX09QVElPTiAoR0VUU09DS09QVCkNCj4+PiAtIFNFVF9P
-UFRJT04gKFNFVFNPQ0tPUFQpDQo+IA0KPj4+IEZvciBub3csIHRoZSBvbmx5IGFjY2VzcyByaWdo
-dHMgc2hvdWxkIGJlIExBTkRMT0NLX0FDQ0VTU19ORVRfQklORF9UQ1AgYW5kIExBTkRMT0NLX0FD
-Q0VTU19ORVRfQ09OTkVDVF9UQ1AgKHRpZSB0byB0d28gTFNNIGhvb2tzIHdpdGggc3RydWN0IHNv
-Y2thZGRyKS4NCj4gDQo+Pj4gVGhlc2UgYXR0cmlidXRlIGFuZCBhY2Nlc3MgcmlnaHQgY2hhbmdl
-cyByZWR1Y2UgdGhlIHNjb3BlIG9mIHRoZSANCj4+PiBuZXR3b3JrIGFjY2VzcyBjb250cm9sIGFu
-ZCBtYWtlIGl0IHNpbXBsZXIgYnV0IHN0aWxsIHJlYWxseSB1c2VmdWwuIERhdGFncmFtIChlLmcu
-IFVEUCwgd2hpY2ggY291bGQgYWRkIEJJTkRfVURQIGFuZCBTRU5EX1VEUCkgc29ja2V0cyB3aWxs
-IGJlIG1vcmUgY29tcGxleCB0byByZXN0cmljdCBjb3JyZWN0bHkgYW5kIHNob3VsZCB0aGVuIGNv
-bWUgaW4gYW5vdGhlciBwYXRjaCBzZXJpZXMsIG9uY2UgVENQIGlzIHN1cHBvcnRlZC4NCj4gDQo+
-IEkgdGhpbmsgdGhhdCBoYXZpbmcgYWNjZXNzIHJpZ2h0cyBsaWtlIExBTkRMT0NLX0FDQ0VTU19O
-RVRfQ1JFQVRFX1RDUF9TT0NLRVRfREVOWS9MQU5ETE9DS19BQ0NFU1NfTkVUX0NSRUFURV9VRFBf
-U09DS0VUX0RFTlkgbWlnaHQgYmUgdXNlZnVsIGR1cmluZyBpbml0aWFsaXphdGlvbiBwaGFzZSBv
-ZiBjb250YWluZXIvc2FuZGJveCwgY2F1c2UgYSB1c2VyIGNvdWxkIGhhdmUgdGhlIHBvc3NpYmls
-aXR5IHRvIHJlc3RyaWN0IHRoZSBjcmVhdGlvbiBvZiBzb21lIHR5cGUgb2Ygc29ja2V0cyBhdCBh
-bGwsIGFuZCB0byByZWR1Y2UgdGhlIGF0dGFjayBzdXJmYWNlIHJlbGF0ZWQgdG8gc2VjdXJpdHkg
-YXNwZWN0Lg0KPiBTbyB0aGUgbG9naWMgY291bGQgYmUgdGhlIGZvbGxvd2luZzoNCj4gCTEuIFBy
-b2Nlc3MgcmVzdHJpY3RzIGNyZWF0aW9uIFVEUCBzb2NrZXRzLCBhbGxvd3MgVENQIG9uZS4NCj4g
-CQktIExBTkRMT0NLX0FDQ0VTU19ORVRfQ1JFQVRFXypfU09DS0VUX0RFTlkgcnVsZXMgYXJlIHRp
-ZWQgdG8gcHJvY2VzcyB0YXNrX3N0cnVjdCBjYXVzZSB0aGVyZSBhcmUgbm8gc29ja2V0cyBpbm9k
-ZXMgY3JlYXRlZCBhdCB0aGlzIG1vbWVudC4NCj4gCTIuIENyZWF0ZXMgbmVjZXNzYXJ5IG51bWJl
-ciBvZiBzb2NrZXRzLg0KPiAJMy4gUmVzdHJpY3RzIHNvY2tldHMnIGFjY2VzcyByaWdodHMuDQo+
-IAkJLSBMQU5ETE9DS19BQ0NFU1NfTkVUX0JJTkRfKiAvIExBTkRMT0NLX0FDQ0VTU19ORVRfQ09O
-TkVDVF8qIGFjY2VzcyByaWdodHMgYXJlIHRpZWQgdG8gc29ja2V0cyBpbm9kZXMgaW5kaXZpZHVh
-bGx5LgkNCj4gDQoNCj4gIFJlZHVjaW5nIHRoZSBhdHRhY2sgc3VyZmFjZSBvbiB0aGUga2VybmVs
-IGlzIHZhbHVhYmxlIGJ1dCBub3QgdGhlIHByaW1hcnkgZ29hbCBvZiBMYW5kbG9jay4gc2VjY29t
-cCBpcyBkZXNpZ25lZCBmb3IgdGhpcyB0YXNrIGFuZCBhIHNlY2NvbXAgZmlsdGVycyBjYW4gZWFz
-aWx5IGZvcmJpZCBjcmVhdGlvbiBvZiBzcGVjaWZpYyBzb2NrZXRzLiBXZSBzaG91bGQgY29uc2lk
-ZXIgdXNpbmcgPiBib3RoIExhbmRsb2NrIGFuZCBzZWNjb21wLCBhbmQgeW91ciB1c2UgY2FzZSBv
-ZiBkZW55aW5nIFVEUCB2cy4gVENQIGlzIGdvb2QuDQoNCj4gQW55d2F5LCB0aGUgTEFORExPQ0tf
-QUNDRVNTX05FVF9DUkVBVEVfVENQX1NPQ0tFVF9ERU5ZIG5hbWUgaW4gbm90IGFwcHJvcHJpYXRl
-LiBJbmRlZWQsIG1peGluZyAiYWNjZXNzIiBhbmQgImRlbnkiIGRvZXNuJ3QgbWFrZSBzZW5zZS4g
-QSBMQU5ETE9DS19BQ0NFU1NfTkVUX0NSRUFURV9UQ1AgYWNjZXNzIGNvdWxkIGJlIHVzZWZ1bCBp
-ZiA+ID4gd2UgY2FuIGRlZmluZSBzdWNoIFRDUCBzb2NrZXQgc2VtYW50aWMsIGUuZy4gd2l0aCBh
-IHBvcnQsIHdoaWNoIGlzIG5vdCBwb3NzaWJsZSB3aGVuIGNyZWF0aW5nIGEgc29ja2V0LCBhbmQg
-aXQgaXMgT0suDQoNCkkgdGhpbmsgd2UgY2FuIGRlZmluZSBpZiBpdOKAmXMgYSBUQ1Agb3IgVURQ
-IHNvY2tldCBpbiB0aGUgbW9tZW50IG9mIGl0cyBjcmVhdGluZyB1c2luZyBUWVBFIGZpZWxkIGlu
-IHNvY2tldChkb21haW4sIFRZUEUsIHByb3RvY29sKSBmdW5jdGlvbjoNCgktIFRDUCBzZXJ2aWNl
-cyB1c2UgU09DS19TVFJFQU0gdHlwZS4NCgktIFVEUCBvbmVzIHVzZSBTT0NLX0RHUkFNIHR5cGUu
-DQpTbyB3ZSBjYW4gaGF2ZSBMQU5ETE9DS19BQ0NFU1NfTkVUX0NSRUFURV9UQ1AgYWNjZXNzIHJ1
-bGUgaW4gVENQIHNvY2tldCBzZW1hbnRpYywgYW5kIHRoZXJlZm9yZSBjaGVjayBzb2NrZXRfY3Jl
-YXRlKGRvbWFpbiwgU09DS19TVFJFQU0sIHByb3RvY29sKSBob29rLg0KVGhlIHNpbWlsYXIgcnVs
-ZSggTEFORExPQ0tfQUNDRVNTX05FVF9DUkVBVEVfVVBEKSBjb3VsZCBiZSB1c2VkIGZvciByZWNv
-Z25pemluZyBVRFAgc29ja2V0cyBpbiBmdXR1cmUgcGF0Y2hlcy4NCg==
+
+On 20/12/2021 04:52, Konstantin Meskhidze wrote:
+> Hi, Mickaёl!
+> 
+> -----Original Message-----
+> From: Mickaël Salaün <mic@digikod.net>
+> Sent: Saturday, December 18, 2021 7:01 PM
+> To: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+> Cc: yusongping <yusongping@huawei.com>; Artem Kuzin <artem.kuzin@huawei.com>; linux-security-module <linux-security-module@vger.kernel.org>; Network Development <netdev@vger.kernel.org>; netfilter@vger.kernel.org; Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+> Subject: Re: [RFC PATCH 0/2] Landlock network PoC implementation
+> 
+> 
+> On 18/12/2021 09:26, Konstantin Meskhidze wrote:
+>> Hi, Mickaёl
+>> Thanks again for your opinion about minimal Landlock IPv4 network version.
+>> I have already started refactoring the code.
+>> Here are some additional thoughts about the design.
+> 
+> [...]
+> 
+>>>>
+>>>> Accesses/suffixes should be:
+>>>> - CREATE
+>>>> - ACCEPT
+>>>> - BIND
+>>>> - LISTEN
+>>>> - CONNECT
+>>>> - RECEIVE (RECEIVE_FROM and SEND_TO should not be needed)
+>>>> - SEND
+>>>> - SHUTDOWN
+>>>> - GET_OPTION (GETSOCKOPT)
+>>>> - SET_OPTION (SETSOCKOPT)
+>>
+>>>> For now, the only access rights should be LANDLOCK_ACCESS_NET_BIND_TCP and LANDLOCK_ACCESS_NET_CONNECT_TCP (tie to two LSM hooks with struct sockaddr).
+>>
+>>>> These attribute and access right changes reduce the scope of the
+>>>> network access control and make it simpler but still really useful. Datagram (e.g. UDP, which could add BIND_UDP and SEND_UDP) sockets will be more complex to restrict correctly and should then come in another patch series, once TCP is supported.
+>>
+>> I think that having access rights like LANDLOCK_ACCESS_NET_CREATE_TCP_SOCKET_DENY/LANDLOCK_ACCESS_NET_CREATE_UDP_SOCKET_DENY might be useful during initialization phase of container/sandbox, cause a user could have the possibility to restrict the creation of some type of sockets at all, and to reduce the attack surface related to security aspect.
+>> So the logic could be the following:
+>> 	1. Process restricts creation UDP sockets, allows TCP one.
+>> 		- LANDLOCK_ACCESS_NET_CREATE_*_SOCKET_DENY rules are tied to process task_struct cause there are no sockets inodes created at this moment.
+>> 	2. Creates necessary number of sockets.
+>> 	3. Restricts sockets' access rights.
+>> 		- LANDLOCK_ACCESS_NET_BIND_* / LANDLOCK_ACCESS_NET_CONNECT_* access rights are tied to sockets inodes individually.	
+>>
+> 
+>>   Reducing the attack surface on the kernel is valuable but not the primary goal of Landlock. seccomp is designed for this task and a seccomp filters can easily forbid creation of specific sockets. We should consider using > both Landlock and seccomp, and your use case of denying UDP vs. TCP is good.
+> 
+>> Anyway, the LANDLOCK_ACCESS_NET_CREATE_TCP_SOCKET_DENY name in not appropriate. Indeed, mixing "access" and "deny" doesn't make sense. A LANDLOCK_ACCESS_NET_CREATE_TCP access could be useful if > > we can define such TCP socket semantic, e.g. with a port, which is not possible when creating a socket, and it is OK.
+> 
+> I think we can define if it’s a TCP or UDP socket in the moment of its creating using TYPE field in socket(domain, TYPE, protocol) function:
+> 	- TCP services use SOCK_STREAM type.
+> 	- UDP ones use SOCK_DGRAM type.
+> So we can have LANDLOCK_ACCESS_NET_CREATE_TCP access rule in TCP socket semantic, and therefore check socket_create(domain, SOCK_STREAM, protocol) hook.
+> The similar rule( LANDLOCK_ACCESS_NET_CREATE_UPD) could be used for recognizing UDP sockets in future patches.
+> 
+
+Allowing or forbidding socket creation is easy (and can also be done 
+with seccomp), but it is not an access control per se (i.e. a socket 
+doesn't give access to any data, but communicating with a peer does). 
+Restricting access to network peers makes sense for Landlock, but not 
+(only) file descriptor creation for now. In the future, this kind of 
+restriction could make sense to implement Capsicum but it would probably 
+be another interface.
