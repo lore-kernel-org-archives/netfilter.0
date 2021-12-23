@@ -1,87 +1,36 @@
-From: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Subject: Re: [RFC PATCH 0/2] Landlock network PoC implementation
-Date: Tue, 21 Dec 2021 22:15:21 +0100
-Message-ID: <ea3b1671-95b3-3cf0-9d0e-8b4c3303ad4d@digikod.net>
-References: <20211210072123.386713-1-konstantin.meskhidze@huawei.com>
- <b50ed53a-683e-77cf-9dc2-f4ae1b5fa0fd@digikod.net>
- <12467d8418f04fbf9fd4a456a2a999f1@huawei.com>
- <b535d1d4-3564-b2af-a5e8-3ba6c0fa86c9@digikod.net>
- <c8588051-8795-9b8a-cb36-f5440b590581@digikod.net>
- <a1769c4239ee4e8aadb65f9ebb6061d8@huawei.com>
- <c325e5f6-d8d5-b085-fd2d-7f454629a1ec@digikod.net>
- <dc1866cec3134c51939a5fa104359b6c@huawei.com>
+From: Gio <gioflux@gmail.com>
+Subject: nftables character limits?
+Date: Thu, 23 Dec 2021 03:10:28 -0500
+Message-ID: <CADhidkqEE_Pud167s6-AXJ1rBuODQFkbDUUB+nCvDhFs805xkA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-security-module-owner@vger.kernel.org>
-Content-Language: en-US
-In-Reply-To: <dc1866cec3134c51939a5fa104359b6c@huawei.com>
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=cQ+pOqaRoE394i6f9ktZHKOICxQ2GU7b96+1PH7E8FA=;
+        b=hPJVWjpVbpcsU+NLucxTqvLPbHia8OQbdE3C+fyFaQ7iX9CY62UWOjUNXWi8N4RXyT
+         muAMwC9yAtxqRrV+LCXrpOGmqwRoHHdXZqohCNCm1Mczglp70D+4c/L/fculnhF35oXl
+         T83LJzR68YlYdecreIyj5cQ3pY8c0mSnshDsW/sCjKkurGcEyE9t9Lqjgosy7zw3scZg
+         zDU3C+aDWQyFUGN52WjM9cXeUZuKtzIYFfVcMqXNVUbSMynw6RNrc8MeUKsWPIiZNNv3
+         ZCWWZEWVrutn/3dZb2xcXOOpV0jWNb7vt7CpYOxk4vjUd/iqrajSQgl9cmtt7GeABdFU
+         wjnA==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-Cc: yusongping <yusongping@huawei.com>, Artem Kuzin <artem.kuzin@huawei.com>, linux-security-module <linux-security-module@vger.kernel.org>, Network Development <netdev@vger.kernel.org>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
+I'm writing a script that converts firewall policies from one platform
+format to .nft format to use inside VMs.
 
-On 20/12/2021 04:52, Konstantin Meskhidze wrote:
-> Hi, Mickaёl!
-> 
-> -----Original Message-----
-> From: Mickaël Salaün <mic@digikod.net>
-> Sent: Saturday, December 18, 2021 7:01 PM
-> To: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-> Cc: yusongping <yusongping@huawei.com>; Artem Kuzin <artem.kuzin@huawei.com>; linux-security-module <linux-security-module@vger.kernel.org>; Network Development <netdev@vger.kernel.org>; netfilter@vger.kernel.org; Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-> Subject: Re: [RFC PATCH 0/2] Landlock network PoC implementation
-> 
-> 
-> On 18/12/2021 09:26, Konstantin Meskhidze wrote:
->> Hi, Mickaёl
->> Thanks again for your opinion about minimal Landlock IPv4 network version.
->> I have already started refactoring the code.
->> Here are some additional thoughts about the design.
-> 
-> [...]
-> 
->>>>
->>>> Accesses/suffixes should be:
->>>> - CREATE
->>>> - ACCEPT
->>>> - BIND
->>>> - LISTEN
->>>> - CONNECT
->>>> - RECEIVE (RECEIVE_FROM and SEND_TO should not be needed)
->>>> - SEND
->>>> - SHUTDOWN
->>>> - GET_OPTION (GETSOCKOPT)
->>>> - SET_OPTION (SETSOCKOPT)
->>
->>>> For now, the only access rights should be LANDLOCK_ACCESS_NET_BIND_TCP and LANDLOCK_ACCESS_NET_CONNECT_TCP (tie to two LSM hooks with struct sockaddr).
->>
->>>> These attribute and access right changes reduce the scope of the
->>>> network access control and make it simpler but still really useful. Datagram (e.g. UDP, which could add BIND_UDP and SEND_UDP) sockets will be more complex to restrict correctly and should then come in another patch series, once TCP is supported.
->>
->> I think that having access rights like LANDLOCK_ACCESS_NET_CREATE_TCP_SOCKET_DENY/LANDLOCK_ACCESS_NET_CREATE_UDP_SOCKET_DENY might be useful during initialization phase of container/sandbox, cause a user could have the possibility to restrict the creation of some type of sockets at all, and to reduce the attack surface related to security aspect.
->> So the logic could be the following:
->> 	1. Process restricts creation UDP sockets, allows TCP one.
->> 		- LANDLOCK_ACCESS_NET_CREATE_*_SOCKET_DENY rules are tied to process task_struct cause there are no sockets inodes created at this moment.
->> 	2. Creates necessary number of sockets.
->> 	3. Restricts sockets' access rights.
->> 		- LANDLOCK_ACCESS_NET_BIND_* / LANDLOCK_ACCESS_NET_CONNECT_* access rights are tied to sockets inodes individually.	
->>
-> 
->>   Reducing the attack surface on the kernel is valuable but not the primary goal of Landlock. seccomp is designed for this task and a seccomp filters can easily forbid creation of specific sockets. We should consider using > both Landlock and seccomp, and your use case of denying UDP vs. TCP is good.
-> 
->> Anyway, the LANDLOCK_ACCESS_NET_CREATE_TCP_SOCKET_DENY name in not appropriate. Indeed, mixing "access" and "deny" doesn't make sense. A LANDLOCK_ACCESS_NET_CREATE_TCP access could be useful if > > we can define such TCP socket semantic, e.g. with a port, which is not possible when creating a socket, and it is OK.
-> 
-> I think we can define if it’s a TCP or UDP socket in the moment of its creating using TYPE field in socket(domain, TYPE, protocol) function:
-> 	- TCP services use SOCK_STREAM type.
-> 	- UDP ones use SOCK_DGRAM type.
-> So we can have LANDLOCK_ACCESS_NET_CREATE_TCP access rule in TCP socket semantic, and therefore check socket_create(domain, SOCK_STREAM, protocol) hook.
-> The similar rule( LANDLOCK_ACCESS_NET_CREATE_UPD) could be used for recognizing UDP sockets in future patches.
-> 
+During conversion of data from one format to another I need to
+consider maximum character limits in fields like comments, chain
+names, etc.
 
-Allowing or forbidding socket creation is easy (and can also be done 
-with seccomp), but it is not an access control per se (i.e. a socket 
-doesn't give access to any data, but communicating with a peer does). 
-Restricting access to network peers makes sense for Landlock, but not 
-(only) file descriptor creation for now. In the future, this kind of 
-restriction could make sense to implement Capsicum but it would probably 
-be another interface.
+I have not been able to find a central place documenting the maximum
+character limits for certain fields, the only reference I found so far
+"Set names must be 16 characters or less" from
+https://wiki.nftables.org/wiki-nftables/index.php/Sets
+
+Are there any better places or could someone help fill in the blanks
+for me, for example are there any limits on how long of a string
+`comment` may be?
