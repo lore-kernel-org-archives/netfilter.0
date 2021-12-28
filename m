@@ -1,46 +1,71 @@
-From: Casey Schaufler <casey@schaufler-ca.com>
+From: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
 Subject: Re: [RFC PATCH 0/1] Landlock network PoC
-Date: Tue, 28 Dec 2021 10:14:07 -0800
-Message-ID: <ea82de6a-0b28-7d96-a84e-49fa0be39f0e@schaufler-ca.com>
+Date: Tue, 28 Dec 2021 23:09:05 +0100
+Message-ID: <d9aa57a7-9978-d0a4-3aa0-4512fd9459df@digikod.net>
 References: <20211228115212.703084-1-konstantin.meskhidze@huawei.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <linux-security-module-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1640715253; bh=PmHJ+xMEzT5KgyH+LFo/bvxFzD3JcKMpzt3yZH6AjAA=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=O79CJrG/4obSpT26BkAVsnaQHnaKOIBlgvGvfZvNe5jDtniXwlEdX2qPFF3cKkaO3iimxcE/OTtWVzvLF9p7OBubvdHV/cFFOvJ8+hmoX5vPtGVXdqCRg8p+OOpOvBKVfWHcUFiBGvGm6A4Z6/RzLYf5hWzfAbLaG8rRCsLjgqEXnD7Ae0Z5Ek0A5RgmIk81/ozao0JIJLpnsuR2oHiVL2tZELuPBJpcj3ce0LqP1cLM7nL2c+FdE2RHjL1l/NZlS7t5P0ejNzbzPhDn8rzsvcU4V7oQVlogLpnlY38HHee4OTBIYYpUwpYpbqJsWVmBzTq0ZU7EqJ8ouathdsjm/Q==
 Content-Language: en-US
 In-Reply-To: <20211228115212.703084-1-konstantin.meskhidze@huawei.com>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>, mic@digikod.net
-Cc: linux-security-module@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, yusongping@huawei.com, artem.kuzin@huawei.com, Casey Schaufler <casey@schaufler-ca.com>
+To: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+Cc: linux-security-module@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, yusongping@huawei.com, artem.kuzin@huawei.com
 
-On 12/28/2021 3:52 AM, Konstantin Meskhidze wrote:
+Hi Konstantin,
+
+Please read the full how-to about sending patches: 
+https://www.kernel.org/doc/html/latest/process/submitting-patches.html
+
+There are at least these issues:
+- no link to the previous version: 
+https://lore.kernel.org/linux-security-module/20211210072123.386713-1-konstantin.meskhidze@huawei.com/
+- no version: [RFC PATCH v2 0/1]
+- even if there is only one patch, please make the cover letter a 
+separate email (i.e. git format-patch --cover-letter).
+
+It seems that you missed some of my previous (inlined) comments, you 
+didn't reply to most of them: 
+https://lore.kernel.org/linux-security-module/b50ed53a-683e-77cf-9dc2-f4ae1b5fa0fd@digikod.net/
+
+Did you test your changes before submitting this patch series?
+
+This series can only forbids TCP connects and binds to processes other 
+than the one creating the ruleset, which doesn't make sense here (as I 
+already explained). TCP ports are not checked.
+
+If you have any doubts about any of the comments, please rephrase, 
+challenge them and ask questions.
+
+
+On 28/12/2021 12:52, Konstantin Meskhidze wrote:
 > Hi, all!
 > Here is another PoC patch for Landlock network confinement.
 > Now 2 hooks are supported for TCP sockets:
 > 	- hook_socket_bind()
 > 	- hook_socket_connect()
->
+> 
 > After architectuire has been more clear, there will be a patch with
 > selftests.
->
+> 
 > Please welcome with any comments and suggestions.
->
->
+> 
+> 
 > Implementation related issues
 > =============================
->
+> 
 > 1. It was suggested by Mickaёl using new network rules
 > attributes, like:
->
+> 
 > struct landlock_net_service_attr {
 >        __u64 allowed_access; // LANDLOCK_NET_*_TCP
 >        __u16 port;
 > } __attribute__((packed));
->
+> 
 > I found that, if we want to support inserting port attributes,
 > it's needed to add port member into struct landlock_rule:
->
+> 
 > struct landlock_rule {
 > 	...
 > 	struct landlock_object *object;
@@ -48,16 +73,44 @@ On 12/28/2021 3:52 AM, Konstantin Meskhidze wrote:
 > 	 * @num_layers: Number of entries in @layers.
 > 	 */
 > 	u32 num_layers;
->
+> 
 > 	u16 port;
+
+In this case the "object" is indeed defined by a port. You can then 
+create an union containing either a struct landlock_object pointer or a 
+raw value (here a u16 port). Of course, every code that use the object 
+field must be audited and updated accordingly. I think the following 
+update should be a good approach (with updated documentation):
+
+struct landlock_rule {
+[...]
+	union {
+		struct landlock_object *ptr;
+		uintptr_t data;
+	} object;
+[...]
+};
+
+…and then a function helper to convert raw data to/from port.
+
+It would be a good idea to use a dedicated tree for objects identified 
+by (typed) data vs. pointer:
+
+struct landlock_ruleset {
+	struct rb_root root_inode; // i.e. the current "root" field.
+	struct rb_root root_net_port;
+[...]
+};
+
+
 > 	...
 > };
->
+> 
 > In this case 2 functions landlock_insert_rule() and insert_rule()
 > must be refactored;
->
+> 
 > But, if struct landlock_layer be modified -
->
+> 
 > struct landlock_layer {
 > 	/**
 > 	 * @level: Position of this layer in the layer stack.
@@ -68,20 +121,29 @@ On 12/28/2021 3:52 AM, Konstantin Meskhidze wrote:
 > 	 * relative to the object type (e.g. %LANDLOCK_ACTION_FS_READ).
 > 	 */
 > 	u16 access;
->
+> 
 > 	u16 port;
+
+No, struct landlock_layer doesn't need to be modified. This struct is 
+independent from the type of object. I talked about that in the previous 
+series.
+
 > };
 > so, just one landlock_insert_rule() must be slightly refactored.
 > Also many new attributes could be easily supported in future versions.
->
+> 
 > 2. access_masks[] member of struct landlock_ruleset was modified
 > to support multiple rule type masks.
 > I suggest using 2D array semantic for convenient usage:
 > 	access_masks[rule_type][layer_level]
->
+> 
 > But its also possible to use 1D array with modulo arithmetic:
 > 	access_masks[rule_type % layer_level]
->
+
+What about my previous suggestion to use a (well defined) upper bit to 
+identify the type of access?
+
+> 
 > 3. Kernel objects.
 > As was disscussed earlier, base Landlock version supports some file access
 > rules, and inodes objects (files' and directories' inodes) are used to tie
@@ -89,43 +151,16 @@ On 12/28/2021 3:52 AM, Konstantin Meskhidze wrote:
 > For socket operations it makes sense tagging underlying socket inode by
 > landlock rules and it's perfectly fits to subject-object concept where
 > proccess is a subject and object is one of kernel objects: inodes, sockets,
-
-I will repeat myself this one time and then be quiet.
-Sockets are not objects. A socket is a collection of
-data used to identify the endpoints of an interprocess
-communication. Objects are passive. If process A writes
-to socket SA and process B reads from socket SB what
-subject is responsible for moving the message from
-SA to SB? Are you proposing that SA is a subject, which
-writes to SB? If you do that, you have to identify the
-subject attributes of SA as well as the object attributes
-of SB. No doubt you will choose to use the attributes of
-A. Since the object attributes on SB undoubtedly came
-from B (passed descriptors excepted, of course) you are
-making it unnecessarily complicated to introduce a socket
-as an object. The access is A writes B. Store all the
-attributes in the socket, that's fine. But that doesn't
-make the socket an object.
-
-On the other hand, the code doesn't care if you call
-the socket an object, and you have to store the access
-attributes in the socket for a number of reasons. Also,
-the restrictions you're proposing aren't really access
-controls, so it doesn't matter if you call a socket an
-object. I doubt you're going to be taking this through
-any sort of formal analysis.
-
-
 > ect. But here is one issue that should be also discussed and solved.
 > Now there is an undergoing work for Landlock support in RUNC and other
 > container environments:
 > 	https://github.com/opencontainers/runtime-spec/issues/1110
 > 	https://github.com/opencontainers/runc/issues/2859
->
+> 
 > When RUNC wants to launch a container it first reads a spec.json file
 > with container specification. Here is an example landlock rules
 > specification in spec.json:
->
+> 
 > 	"landlock": {
 > 		"rules": [
 >              	{
@@ -155,7 +190,7 @@ any sort of formal analysis.
 > 			}
 >              	},
 > 	]
->
+> 
 > For fs part RUNC can easily create rules and tie them to underlying
 > inodes of filesystem. Then, when it starts a container all fs rules will
 > be inherited by the container proccess.
@@ -169,10 +204,14 @@ any sort of formal analysis.
 >   proccess. These rules are global for all sockets in a container and,
 >   then user could add additional restrictions to any socket connection,
 >   imposing some kind of granularity.
->
+
+The proposed net_service mechanism doesn't tie anything to socket. I 
+don't see any issue here.
+
+> 
 > Konstantin Meskhidze (1):
 >    landlock: TCP network hooks implementation
->
+> 
 >   include/uapi/linux/landlock.h |  52 +++++++++
 >   security/landlock/Makefile    |   2 +-
 >   security/landlock/fs.c        |   8 +-
@@ -186,20 +225,23 @@ any sort of formal analysis.
 >   10 files changed, 487 insertions(+), 66 deletions(-)
 >   create mode 100644 security/landlock/net.c
 >   create mode 100644 security/landlock/net.h
->
+> 
 > --
 > 2.25.1
->
-> >From fee4f0dbec1e4a8fa8d34cec57a8cdbf351e9c12 Mon Sep 17 00:00:00 2001
+> 
+
+The following should be an independent email.
+
+>>From fee4f0dbec1e4a8fa8d34cec57a8cdbf351e9c12 Mon Sep 17 00:00:00 2001
 > From: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
 > Date: Tue, 28 Dec 2021 14:47:39 +0800
 > Subject: [RFC PATCH 1/1] landlock: TCP network hooks implementation
->
+> 
 > Support of socket_bind() and socket_connect() hooks.
 > Current prototype can restrict binding and connecting of TCP
 > types of sockets. Its just basic idea how Landlock could support
 > network confinement.
->
+> 
 > Signed-off-by: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
 > ---
 >   include/uapi/linux/landlock.h |  52 +++++++++
@@ -215,7 +257,7 @@ any sort of formal analysis.
 >   10 files changed, 487 insertions(+), 66 deletions(-)
 >   create mode 100644 security/landlock/net.c
 >   create mode 100644 security/landlock/net.h
->
+> 
 > diff --git a/include/uapi/linux/landlock.h b/include/uapi/linux/landlock.h
 > index b3d952067f59..1745a3a2f7a9 100644
 > --- a/include/uapi/linux/landlock.h
@@ -234,7 +276,7 @@ any sort of formal analysis.
 > +	__u64 handled_access_net;
 > +
 >   };
->
+> 
 >   /*
 > @@ -46,6 +55,12 @@ enum landlock_rule_type {
 >   	 * landlock_path_beneath_attr .
@@ -247,14 +289,17 @@ any sort of formal analysis.
 > +	 */
 > +	LANDLOCK_RULE_NET_SERVICE = 2,
 >   };
->
+> 
 >   /**
 > @@ -70,6 +85,24 @@ struct landlock_path_beneath_attr {
 >   	 */
 >   } __attribute__((packed));
->
+> 
 > +/**
 > + * struct landlock_net_service_attr - TCP subnet definition
+
+No subnet here.
+
 > + *
 > + * Argument of sys_landlock_add_rule().
 > + */
@@ -277,7 +322,7 @@ any sort of formal analysis.
 > @@ -134,4 +167,23 @@ struct landlock_path_beneath_attr {
 >   #define LANDLOCK_ACCESS_FS_MAKE_BLOCK			(1ULL << 11)
 >   #define LANDLOCK_ACCESS_FS_MAKE_SYM			(1ULL << 12)
->
+> 
 > +/**
 > + * DOC: net_access
 > + *
@@ -290,8 +335,14 @@ any sort of formal analysis.
 > + * TCP sockets with allowed actions:
 > + *
 > + * - %LANDLOCK_ACCESS_NET_BIND_TCP: Bind a TCP socket to a IP address.
+
+Bind a TCP socket to a local port.
+
 > + * - %LANDLOCK_ACCESS_NET_CONNECT_TCP: Connect an active TCP socket to
 > + *   a listening one.
+
+Connect a TCP socket to a remote port.
+
 > + */
 > +#define LANDLOCK_ACCESS_NET_BIND_TCP			(1ULL << 0)
 > +#define LANDLOCK_ACCESS_NET_CONNECT_TCP			(1ULL << 1)
@@ -304,7 +355,7 @@ any sort of formal analysis.
 > +++ b/security/landlock/Makefile
 > @@ -1,4 +1,4 @@
 >   obj-$(CONFIG_SECURITY_LANDLOCK) := landlock.o
->
+> 
 >   landlock-y := setup.o syscalls.o object.o ruleset.o \
 > -	cred.o ptrace.o fs.o
 > +	cred.o ptrace.o fs.o net.o
@@ -317,13 +368,13 @@ any sort of formal analysis.
 >   	int err;
 >   	struct landlock_object *object;
 > +	u8 rule_fs_type;
->
+> 
 >   	/* Files only get access rights that make sense. */
 >   	if (!d_is_dir(path->dentry) && (access_rights | ACCESS_FILE) !=
 > @@ -162,8 +163,9 @@ int landlock_append_fs_rule(struct landlock_ruleset *const ruleset,
 >   	if (WARN_ON_ONCE(ruleset->num_layers != 1))
 >   		return -EINVAL;
->
+> 
 > +	rule_fs_type = LANDLOCK_RULE_PATH_BENEATH - 1;
 >   	/* Transforms relative access rights to absolute ones. */
 > -	access_rights |= LANDLOCK_MASK_ACCESS_FS & ~ruleset->fs_access_masks[0];
@@ -336,13 +387,13 @@ any sort of formal analysis.
 >   	u64 layer_mask;
 >   	size_t i;
 > +	u8 rule_fs_type;
->
+> 
 >   	/* Make sure all layers can be checked. */
 >   	BUILD_BUG_ON(BITS_PER_TYPE(layer_mask) < LANDLOCK_MAX_NUM_LAYERS);
 > @@ -249,10 +252,11 @@ static int check_access_path(const struct landlock_ruleset *const domain,
 >   	if (WARN_ON_ONCE(domain->num_layers < 1))
 >   		return -EACCES;
->
+> 
 > +	rule_fs_type = LANDLOCK_RULE_PATH_BENEATH - 1;
 >   	/* Saves all layers handling a subset of requested accesses. */
 >   	layer_mask = 0;
@@ -359,7 +410,7 @@ any sort of formal analysis.
 > @@ -18,4 +18,9 @@
 >   #define LANDLOCK_LAST_ACCESS_FS		LANDLOCK_ACCESS_FS_MAKE_SYM
 >   #define LANDLOCK_MASK_ACCESS_FS		((LANDLOCK_LAST_ACCESS_FS << 1) - 1)
->
+> 
 > +#define LANDLOCK_LAST_ACCESS_NET	LANDLOCK_ACCESS_NET_CONNECT_TCP
 > +#define LANDLOCK_MASK_ACCESS_NET	((LANDLOCK_LAST_ACCESS_NET << 1) - 1)
 > +
@@ -464,6 +515,12 @@ any sort of formal analysis.
 > +	task = current;
 > +
 > +	rule = landlock_find_rule(domain, landlock_task(task)->object);
+
+Again, it doesn't make sense to check tasks in this use case. The 
+subject is already the current task. The object should be a TCP port.
+
+Please take a look at my previous review.
+
 > +
 > +	/* Grant access if there is no rule for an oject */
 > +	if (!rule)
@@ -553,6 +610,9 @@ any sort of formal analysis.
 > +		return 0;
 > +
 > +	return check_socket_access(dom, LANDLOCK_ACCESS_NET_BIND_TCP);
+
+There is no port check.
+
 > +}
 > +
 > +static int hook_socket_connect(struct socket *sock, struct sockaddr *address, int addrlen)
@@ -573,6 +633,9 @@ any sort of formal analysis.
 > +		return 0;
 > +
 > +	return check_socket_access(dom, LANDLOCK_ACCESS_NET_CONNECT_TCP);
+
+There is no port check.
+
 > +}
 > +
 > +static struct security_hook_list landlock_hooks[] __lsm_ro_after_init = {
@@ -643,6 +706,9 @@ any sort of formal analysis.
 > +
 > +	new_ruleset = kzalloc(sizeof *new_ruleset +
 > +			      sizeof *(new_ruleset->access_masks),
+
+sizeof(access_masks) is 0.
+
 > +			      GFP_KERNEL_ACCOUNT);
 > +
 > +	rules_types_num = LANDLOCK_RULE_TYPE_NUM;
@@ -656,9 +722,16 @@ any sort of formal analysis.
 > +		for (col = 0; col < num_layers; col++)
 > +			new_ruleset->access_masks[row][col] = 0;
 > +	}
->
+
+This code may segfault. I guess it wasn't tested. Please enable most 
+test/check features as I suggested in the previous series.
+
+> 
 > -	new_ruleset = kzalloc(struct_size(new_ruleset, fs_access_masks,
 > -				num_layers), GFP_KERNEL_ACCOUNT);
+
+What about my comment in the previous series?
+
 >   	if (!new_ruleset)
 >   		return ERR_PTR(-ENOMEM);
 >   	refcount_set(&new_ruleset->usage, 1);
@@ -671,14 +744,14 @@ any sort of formal analysis.
 >   	 */
 >   	return new_ruleset;
 >   }
->
+> 
 > -struct landlock_ruleset *landlock_create_ruleset(const u32 fs_access_mask)
 > +struct landlock_ruleset *landlock_create_ruleset(const u32 fs_access_mask,
 > +						 const u32 net_access_mask)
 >   {
 >   	struct landlock_ruleset *new_ruleset;
 > +	u8 rule_fs_type, rule_net_type;
->
+> 
 >   	/* Informs about useless ruleset. */
 > -	if (!fs_access_mask)
 > +	if (!fs_access_mask && !net_access_mask)
@@ -697,9 +770,9 @@ any sort of formal analysis.
 > +
 >   	return new_ruleset;
 >   }
->
+> 
 > @@ -112,15 +136,23 @@ static void free_rule(struct landlock_rule *const rule)
->
+> 
 >   static void build_check_ruleset(void)
 >   {
 > +	u8 rule_fs_type, rule_net_type;
@@ -715,13 +788,13 @@ any sort of formal analysis.
 > +
 > +	typeof(ruleset.access_masks[rule_fs_type][0]) fs_access_mask = ~0;
 > +	typeof(ruleset.access_masks[rule_net_type][0]) net_access_mask = ~0;
->
+> 
 >   	BUILD_BUG_ON(ruleset.num_rules < LANDLOCK_MAX_NUM_RULES);
 >   	BUILD_BUG_ON(ruleset.num_layers < LANDLOCK_MAX_NUM_LAYERS);
 >   	BUILD_BUG_ON(fs_access_mask < LANDLOCK_MASK_ACCESS_FS);
 > +	BUILD_BUG_ON(net_access_mask < LANDLOCK_MASK_ACCESS_NET);
 >   }
->
+> 
 >   /**
 > @@ -260,8 +292,12 @@ static int merge_ruleset(struct landlock_ruleset *const dst,
 >   		struct landlock_ruleset *const src)
@@ -729,7 +802,7 @@ any sort of formal analysis.
 >   	struct landlock_rule *walker_rule, *next_rule;
 > +	u8 rule_fs_type, rule_net_type;
 >   	int err = 0;
->
+> 
 > +	rule_fs_type = LANDLOCK_RULE_PATH_BENEATH - 1;
 > +	rule_net_type = LANDLOCK_RULE_NET_SERVICE - 1;
 > +
@@ -749,7 +822,7 @@ any sort of formal analysis.
 > +	dst->access_masks[rule_net_type][dst->num_layers - 1] =
 > +					src->access_masks[rule_net_type][0];
 > +
->
+> 
 >   	/* Merges the @src tree. */
 >   	rbtree_postorder_for_each_entry_safe(walker_rule, next_rule,
 > @@ -336,9 +379,12 @@ static int inherit_ruleset(struct landlock_ruleset *const parent,
@@ -765,7 +838,7 @@ any sort of formal analysis.
 > +	memcpy(child->access_masks, parent->access_masks,
 > +			flex_array_size(parent, access_masks, LANDLOCK_RULE_TYPE_NUM *
 > +							      parent->num_layers));
->
+> 
 >   	if (WARN_ON_ONCE(!parent->hierarchy)) {
 >   		err = -EINVAL;
 > diff --git a/security/landlock/ruleset.h b/security/landlock/ruleset.h
@@ -799,11 +872,11 @@ any sort of formal analysis.
 >   		};
 >   	};
 >   };
->
+> 
 > -struct landlock_ruleset *landlock_create_ruleset(const u32 fs_access_mask);
 > +struct landlock_ruleset *landlock_create_ruleset(const u32 fs_access_mask,
 > +						 const u32 net_access_mask);
->
+> 
 >   void landlock_put_ruleset(struct landlock_ruleset *const ruleset);
 >   void landlock_put_ruleset_deferred(struct landlock_ruleset *const ruleset);
 > diff --git a/security/landlock/setup.c b/security/landlock/setup.c
@@ -815,16 +888,16 @@ any sort of formal analysis.
 >   #include "ptrace.h"
 >   #include "setup.h"
 > +#include "net.h"
->
+> 
 >   bool landlock_initialized __lsm_ro_after_init = false;
->
+> 
 > @@ -21,6 +22,7 @@ struct lsm_blob_sizes landlock_blob_sizes __lsm_ro_after_init = {
 >   	.lbs_cred = sizeof(struct landlock_cred_security),
 >   	.lbs_inode = sizeof(struct landlock_inode_security),
 >   	.lbs_superblock = sizeof(struct landlock_superblock_security),
 > +	.lbs_task = sizeof(struct landlock_task_security),
 >   };
->
+> 
 >   static int __init landlock_init(void)
 > @@ -28,6 +30,7 @@ static int __init landlock_init(void)
 >   	landlock_add_cred_hooks();
@@ -843,7 +916,7 @@ any sort of formal analysis.
 >   #include "ruleset.h"
 >   #include "setup.h"
 > +#include "net.h"
->
+> 
 >   /**
 >    * copy_min_struct_from_user - Safe future-proof argument copying
 > @@ -73,7 +74,8 @@ static void build_check_abi(void)
@@ -853,7 +926,7 @@ any sort of formal analysis.
 > -	size_t ruleset_size, path_beneath_size;
 > +	struct landlock_net_service_attr net_service_attr;
 > +	size_t ruleset_size, path_beneath_size, net_service_size;
->
+> 
 >   	/*
 >   	 * For each user space ABI structures, first checks that there is no
 > @@ -81,17 +83,22 @@ static void build_check_abi(void)
@@ -864,7 +937,7 @@ any sort of formal analysis.
 >   	BUILD_BUG_ON(sizeof(ruleset_attr) != ruleset_size);
 > -	BUILD_BUG_ON(sizeof(ruleset_attr) != 8);
 > +	BUILD_BUG_ON(sizeof(ruleset_attr) != 16);
->
+> 
 >   	path_beneath_size = sizeof(path_beneath_attr.allowed_access);
 >   	path_beneath_size += sizeof(path_beneath_attr.parent_fd);
 >   	BUILD_BUG_ON(sizeof(path_beneath_attr) != path_beneath_size);
@@ -875,14 +948,14 @@ any sort of formal analysis.
 > +	BUILD_BUG_ON(sizeof(net_service_attr) != net_service_size);
 > +	BUILD_BUG_ON(sizeof(net_service_attr) != 10);
 >   }
->
+> 
 >   /* Ruleset handling */
 > -
 >   static int fop_ruleset_release(struct inode *const inode,
 >   		struct file *const filp)
 >   {
 > @@ -176,18 +183,24 @@ SYSCALL_DEFINE3(landlock_create_ruleset,
->
+> 
 >   	/* Copies raw user space buffer. */
 >   	err = copy_min_struct_from_user(&ruleset_attr, sizeof(ruleset_attr),
 > -			offsetofend(typeof(ruleset_attr), handled_access_fs),
@@ -890,13 +963,13 @@ any sort of formal analysis.
 >   			attr, size);
 >   	if (err)
 >   		return err;
->
+> 
 > -	/* Checks content (and 32-bits cast). */
 > +	/* Checks fs content (and 32-bits cast). */
 >   	if ((ruleset_attr.handled_access_fs | LANDLOCK_MASK_ACCESS_FS) !=
 >   			LANDLOCK_MASK_ACCESS_FS)
 >   		return -EINVAL;
->
+> 
 > +	/* Checks network content (and 32-bits cast). */
 > +	if ((ruleset_attr.handled_access_net | LANDLOCK_MASK_ACCESS_NET) !=
 > +			LANDLOCK_MASK_ACCESS_NET)
@@ -908,7 +981,7 @@ any sort of formal analysis.
 > +					  ruleset_attr.handled_access_net);
 >   	if (IS_ERR(ruleset))
 >   		return PTR_ERR(ruleset);
->
+> 
 > @@ -306,6 +319,7 @@ SYSCALL_DEFINE4(landlock_add_rule,
 >   		const void __user *const, rule_attr, const __u32, flags)
 >   {
@@ -920,12 +993,12 @@ any sort of formal analysis.
 > @@ -317,47 +331,90 @@ SYSCALL_DEFINE4(landlock_add_rule,
 >   	if (flags)
 >   		return -EINVAL;
->
+> 
 > -	if (rule_type != LANDLOCK_RULE_PATH_BENEATH)
 > +	if ((rule_type != LANDLOCK_RULE_PATH_BENEATH) &&
 > +		(rule_type != LANDLOCK_RULE_NET_SERVICE))
 >   		return -EINVAL;
->
+> 
 > -	/* Copies raw user space buffer, only one type for now. */
 > -	res = copy_from_user(&path_beneath_attr, rule_attr,
 > -			sizeof(path_beneath_attr));
@@ -970,7 +1043,7 @@ any sort of formal analysis.
 > +			return -EFAULT;
 > +		break;
 >   	}
->
+> 
 > -	/* Gets and checks the new rule. */
 > -	err = get_path_from_fd(path_beneath_attr.parent_fd, &path);
 > -	if (err)
@@ -1009,7 +1082,7 @@ any sort of formal analysis.
 > +				path_beneath_attr.allowed_access);
 > +		path_put(&path);
 > +	}
->
+> 
 > -	/* Imports the new rule. */
 > -	err = landlock_append_fs_rule(ruleset, &path,
 > -			path_beneath_attr.allowed_access);
@@ -1041,9 +1114,10 @@ any sort of formal analysis.
 > +		/* Imports the new rule. */
 > +		err = landlock_append_net_rule(ruleset, net_service_attr.allowed_access);
 > +	}
->
+> 
 >   out_put_ruleset:
 >   	landlock_put_ruleset(ruleset);
 > --
 > 2.25.1
->
+> 
+
