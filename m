@@ -1,405 +1,420 @@
-From: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-Subject: Re: [RFC PATCH 0/1] Landlock network PoC
-Date: Fri, 31 Dec 2021 12:50:25 +0300
-Message-ID: <174f2bef-f005-c29a-1ef7-7eea96516b10@huawei.com>
-References: <20211228115212.703084-1-konstantin.meskhidze@huawei.com>
- <d9aa57a7-9978-d0a4-3aa0-4512fd9459df@digikod.net>
- <02806c8e-e255-232b-1722-65ea1dba2948@huawei.com>
- <bdbae25f-5136-8905-ca64-03314b125a40@digikod.net>
+From: Steffen Weinreich <steve@weinreich.org>
+Subject: nftables stateless NAT in raw table mangles fragmented UDP packets
+Date: Fri, 31 Dec 2021 13:02:13 +0100
+Message-ID: <cdb7af33-1e07-05b7-a9d9-142d06d9cbfe@weinreich.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Language: ru
-In-Reply-To: <bdbae25f-5136-8905-ca64-03314b125a40@digikod.net>
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=weinreich.org;
+        s=dkim; t=1640952134;
+        h=from:subject:date:message-id:to:cc:mime-version:content-type:
+         content-transfer-encoding:content-language;
+        bh=+/3BMAFpXq9pUTF72ya4jXBlkquvaVz27hEQrbFdjKI=;
+        b=AtG5EIG7oCXvrppkwxVXCOrdpSsl3M/f1uPTUH6jS2f0DWe7P3mMlIWQV8N30yQJoztsjX
+        oy1wC5qvg3tMIuwpkc6Z9NvFApRdFgoYO+G/fSRNiaEbNQ3MtftnyCABwHsX5dHksHinmt
+        n/dodg8TbePGRkNFi1iDRdu5bTA/HiNJiXA8EwWhvgapFkJPofWtIN4ZUSffP4Ds4pn4If
+        gZ9xmncq8CiKrOoiwiYug75VVJoLuSOrRRi8Hy71tTmyS6V+A0OY6YXY0LR/d9HFIQMB4e
+        Yi43Y6j9c/OqxwWTOz7bowqG2sQ7liKMy49An6OZxnzRD/cmb2elFonTvj9HcA==
+Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Cc: linux-security-module@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, yusongping@huawei.com, artem.kuzin@huawei.com
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
+Cc: steve@weinreich.org
+
+Hi
+
+We have using kernel 5.10 and nftables(0.9.8-3.1) from debian for a
+stateless NAT GW. We are using the nftables "raw" tables to replace
+statically source and destination addresses for pakets traversing the
+host with two nftables map, without any connection tracking. The bug is
+also reproducible in a Debian 5.16 kernel from experimental.
+
+If fragmented UDP packets are traversing the gateway the second fragment
+gets modified at the location where in a non fragmented packet the UDP
+checksum would be located.
+
+On the Sample below the packet content at 0x1a-0x1b was changes from
+0x61 0x61 to 0xba 0x9e 
+
+
+This is a minimized version of the ruleset which expedites the bug:
+
+nft list ruleset
+
+table ip raw {
+    map M_publicip_in {
+        type ipv4_addr : ipv4_addr
+        elements = { 100.64.1.1 : 10.1.2.3 }
+
+    }
+
+    map M_publicip_out {
+        type ipv4_addr : ipv4_addr
+        elements = { 10.1.2.3 : 100.64.1.1 }
+    }
+
+    chain PREROUTING {
+        type filter hook prerouting priority -300; policy accept;
+
+        jump publicip_out
+        jump publicip_in
+    }
+
+    chain publicip_out {
+        ip saddr set ip saddr map @M_publicip_out accept
+    }
+
+    chain publicip_in {
+        ip daddr set ip daddr map @M_publicip_in accept
+    }
+}
+
+
+This is a fragmented udp packet before NAT:
+
+root@debian:~# tcpdump -l  -i eth0 -nvvvx
+tcpdump: listening on eth0, link-type EN10MB (Ethernet), snapshot length
+262144 bytes
+21:50:15.314671 IP (tos 0x0, ttl 64, id 3756, offset 0, flags [+], proto
+UDP (17), length 1500)
+    10.2.1.1.45866 > 100.64.1.1.9999: UDP, length 2013
+    0x0000:  4500 05dc 0eac 2000 4011 d621 0a02 0101
+    0x0010:  6440 0101 b32a 270f 07e5 0016 4865 6c6c
+    0x0020:  6f2c 2057 6f72 6c64 2161 6161 6161 6161
+    0x0030:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0040:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0050:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0060:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0070:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0080:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0090:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x00a0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x00b0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x00c0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x00d0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x00e0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x00f0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0100:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0110:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0120:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0130:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0140:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0150:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0160:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0170:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0180:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0190:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x01a0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x01b0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x01c0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x01d0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x01e0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x01f0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0200:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0210:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0220:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0230:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0240:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0250:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0260:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0270:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0280:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0290:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x02a0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x02b0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x02c0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x02d0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x02e0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x02f0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0300:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0310:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0320:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0330:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0340:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0350:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0360:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0370:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0380:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0390:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x03a0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x03b0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x03c0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x03d0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x03e0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x03f0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0400:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0410:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0420:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0430:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0440:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0450:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0460:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0470:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0480:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0490:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x04a0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x04b0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x04c0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x04d0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x04e0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x04f0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0500:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0510:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0520:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0530:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0540:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0550:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0560:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0570:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0580:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0590:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x05a0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x05b0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x05c0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x05d0:  6161 6161 6161 6161 6161 6161
+21:50:15.314687 IP (tos 0x0, ttl 64, id 3756, offset 1480, flags [none],
+proto UDP (17), length 561)
+    10.2.1.1 > 100.64.1.1: ip-proto-17
+    0x0000:  4500 0231 0eac 00b9 4011 f913 0a02 0101
+    0x0010:  6440 0101 6161 6161 6161 6161 6161 6161
+    0x0020:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0030:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0040:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0050:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0060:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0070:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0080:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0090:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x00a0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x00b0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x00c0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x00d0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x00e0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x00f0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0100:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0110:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0120:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0130:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0140:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0150:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0160:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0170:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0180:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0190:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x01a0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x01b0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x01c0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x01d0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x01e0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x01f0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0200:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0210:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0220:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0230:  61
+
+
+This is a fragmented udp packet after NAT. See the second fragment at
+offset 0x1a and compare it with the previous example
+
+21:49:32.999088 IP (tos 0x0, ttl 63, id 87, offset 0, flags [+], proto
+UDP (17), length 1500)
+    10.2.1.1.46549 > 10.1.2.3.9999: UDP, length 2013
+    0x0000:  4500 05dc 0057 2000 3f11 3eb4 0a02 0101
+    0x0010:  0a01 0203 b5d5 270f 07e5 56a8 4865 6c6c
+    0x0020:  6f2c 2057 6f72 6c64 2161 6161 6161 6161
+    0x0030:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0040:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0050:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0060:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0070:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0080:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0090:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x00a0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x00b0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x00c0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x00d0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x00e0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x00f0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0100:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0110:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0120:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0130:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0140:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0150:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0160:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0170:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0180:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0190:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x01a0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x01b0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x01c0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x01d0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x01e0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x01f0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0200:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0210:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0220:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0230:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0240:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0250:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0260:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0270:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0280:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0290:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x02a0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x02b0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x02c0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x02d0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x02e0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x02f0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0300:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0310:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0320:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0330:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0340:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0350:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0360:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0370:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0380:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0390:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x03a0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x03b0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x03c0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x03d0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x03e0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x03f0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0400:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0410:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0420:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0430:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0440:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0450:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0460:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0470:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0480:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0490:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x04a0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x04b0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x04c0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x04d0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x04e0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x04f0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0500:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0510:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0520:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0530:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0540:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0550:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0560:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0570:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0580:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0590:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x05a0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x05b0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x05c0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x05d0:  6161 6161 6161 6161 6161 6161
+21:49:32.999096 IP (tos 0x0, ttl 63, id 87, offset 1480, flags [none],
+proto UDP (17), length 561)
+    10.2.1.1 > 10.1.2.3: ip-proto-17
+    0x0000:  4500 0231 0057 00b9 3f11 61a6 0a02 0101
+    0x0010:  0a01 0203 6161 6161 6161 ba9e 6161 6161
+    0x0020:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0030:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0040:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0050:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0060:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0070:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0080:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0090:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x00a0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x00b0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x00c0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x00d0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x00e0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x00f0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0100:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0110:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0120:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0130:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0140:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0150:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0160:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0170:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0180:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0190:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x01a0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x01b0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x01c0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x01d0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x01e0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x01f0:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0200:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0210:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0220:  6161 6161 6161 6161 6161 6161 6161 6161
+    0x0230:  61
+
+
+The behaviour could be reproduced using the VM with a freshly installed
+debian bullseye and the following script. The script setups two
+different  Network namespaces which are used for reproducing the bug.
+(On our prodcution Setup no NNS are used)
+
+
+#!/bin/bash
+
+# ============================================================
+# setup nns test
+# here traffic for ip 100.64.1.1 will be rewritten to 10.1.2.3
+ip netns add test
+ip link add eth1 type veth
+ip link set dev veth0 netns test name eth0
+
+ip link set dev eth1 up
+ip address add 10.2.1.1/30 dev eth1
+
+ip netns exec test ip link set dev eth0 up
+ip netns exec test ip address add 10.2.1.2/30 dev eth0
+
+ip route add 100.64.1.1/32 via 10.2.1.2
+
+# Load nftables rules for stateless nat
+ip netns exec test /usr/sbin/nft -f test.nft
+
+
+# ============================================================
+# setup nns test2
+# here the ip adress 10.1.2.3 is bound
+ip netns add test2
+ip netns exec test2 ip link add eth0 type veth
+ip netns exec test2 ip link set dev veth0 netns test name eth1
+ip netns exec test2 ip link set dev eth0 up
+ip netns exec test2 ip address add 10.1.2.3/28 dev eth0
+
+ip netns exec test ip link set dev eth1 up
+ip netns exec test ip address add 10.1.2.1/28 dev eth1
+
+
+# =================
+# Enable forwarding
+# =================
+/sbin/sysctl net.ipv4.conf.all.forwarding=1
+ip netns exec test /sbin/sysctl net.ipv4.conf.all.forwarding=1
+ip netns exec test2 /sbin/sysctl net.ipv4.conf.all.forwarding=1
+
+
+The following python script is used to send  fragmented UDP frames from
+the root NNS to the test NNS
+
+
+#!env python3
+import socket
+
+byte_message = bytes("Hello, World!" + "a"*2000, "utf-8")
+
+opened_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+opened_socket.sendto(byte_message, ("100.64.1.1", 9999))
 
 
 
-12/31/2021 2:26 AM, Mickaël Salaün wrote:
-> 
-> On 30/12/2021 02:43, Konstantin Meskhidze wrote:
->> Hi Mickaël,
->> Thanks for the quick reply.
->> I apologise that I did not follow some rules here.
->> I'm a newbie in the Linux community communication and probably missed 
->> some important points.
->> Thank you for noticing about them - I will fix my misses.
-> 
-> No worries, these RFCs are here to improve the proposition but also to 
-> learn.
-
-OK. Thank you.
-> 
->>
->> 12/29/2021 1:09 AM, Mickaël Salaün wrote:
->>> Hi Konstantin,
->>>
->>> Please read the full how-to about sending patches: 
->>> https://www.kernel.org/doc/html/latest/process/submitting-patches.html
->>>
->>> There are at least these issues:
->>> - no link to the previous version: 
->>> https://lore.kernel.org/linux-security-module/20211210072123.386713-1-konstantin.meskhidze@huawei.com/ 
->>>
->>> - no version: [RFC PATCH v2 0/1]
->>> - even if there is only one patch, please make the cover letter a 
->>> separate email (i.e. git format-patch --cover-letter).
->>
->> I got it. My mistake.
->> Anyway I can resend the patch ,if you would like, with all corrections.
-> 
-> No need to resend the same patch series, just follow these rules for the 
-> next patch series.
-
-  Ok. I got it.
-> 
->>
->>>
->>> It seems that you missed some of my previous (inlined) comments, you 
->>> didn't reply to most of them: 
->>> https://lore.kernel.org/linux-security-module/b50ed53a-683e-77cf-9dc2-f4ae1b5fa0fd@digikod.net/ 
->>>
->>
->> Sorry about that. I will take it into account.
->> I will reply your previous comments.
->>
->>>
->>> Did you test your changes before submitting this patch series?
->>
->> I tested it into QEMU environment. I wrote net_sandboxer.c
->> file just for test insering network rules and bind() and connect() 
->> syscalls.
-> 
-> Ok, but I'm wondering about the content if this code and what you 
-> actually tested with it. This is one reason why included standalone 
-> tests are useful.
-
-  It's just a simple test, like this:
-	
-	[...]
-
-         struct landlock_ruleset_attr ruleset_attr = {
-		.handled_access_net = LANDLOCK_ACCESS_NET_BIND_TCP |
-			              LANDLOCK_ACCESS_NET_CONNECT_TCP,
-	};
 
 
-	ruleset_fd = landlock_create_ruleset(&ruleset_attr,    	
-                                              sizeof(ruleset_attr), 0);
-
-	[...]
-
-	if (populate_ruleset(ruleset_fd, LANDLOCK_ACCESS_NET_BIND_TCP)) 
-
-         {
-		goto err_close_ruleset;
-	}
-	if (prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0)) {
-		perror("Failed to restrict privileges\n");
-		goto err_close_ruleset;
-	}
-	if (landlock_restrict_self(ruleset_fd, 0)) {
-		perror("Failed to enforce ruleset\n");
-		goto err_close_ruleset;
-	}
-	close(ruleset_fd);
-
-	/* Create a stream socket(TCP) */
-	sock_inet = socket(AF_INET, SOCK_STREAM, 0);
-	if (sock_inet < 0) {
-		fprintf(stderr, "Failed to create INET socket: %s\n",
-			strerror(errno));
-	}
-
-	/* Set socket address parameters */
-	sock_addr.sin_family = AF_INET;
-	sock_addr.sin_port = htons(SOCK_PORT);
-	sock_addr.sin_addr.s_addr = inet_addr("127.0.0.1");
-
-	/* Bind the socket to IP address */
-	err = bind(sock_inet, (struct sockaddr*)&sock_addr,
-					sizeof(sock_addr));
-	if (err < 0) {
-		fprintf(stderr, "Failed to bind the socket: %s\n",
-			strerror(errno));
-	} else {
-		printf("The socket has been bound successfuly!\n");
-		close(sock_inet);
-	}
-	[...]
-
-But I agree its not enough, so selftests will be provided.
-> 
->> Also I launched your sandboxer.c and it worked well.
->> I'm going to provide seltests in another patch series.
-> 
-> Great!
-> 
->>
->>>
->>> This series can only forbids TCP connects and binds to processes 
->>> other than the one creating the ruleset, which doesn't make sense 
->>> here (as I already explained). TCP ports are not checked.
->>
->> Yes. I provided just inserting network access rules into a prosess 
->> ruleset.For the port checking, I wanted to ask your opinion about how 
->> it would possible to insert port rule. Cause I have my view, that 
->> differs from your one.
->>
->>>
->>> If you have any doubts about any of the comments, please rephrase, 
->>> challenge them and ask questions.
->>>
->>>
->>> On 28/12/2021 12:52, Konstantin Meskhidze wrote:
->>>> Hi, all!
->>>> Here is another PoC patch for Landlock network confinement.
->>>> Now 2 hooks are supported for TCP sockets:
->>>>     - hook_socket_bind()
->>>>     - hook_socket_connect()
->>>>
->>>> After architectuire has been more clear, there will be a patch with
->>>> selftests.
->>>>
->>>> Please welcome with any comments and suggestions.
->>>>
->>>>
->>>> Implementation related issues
->>>> =============================
->>>>
->>>> 1. It was suggested by Mickaёl using new network rules
->>>> attributes, like:
->>>>
->>>> struct landlock_net_service_attr {
->>>>        __u64 allowed_access; // LANDLOCK_NET_*_TCP
->>>>        __u16 port;
->>>> } __attribute__((packed));
->>>>
->>>> I found that, if we want to support inserting port attributes,
->>>> it's needed to add port member into struct landlock_rule:
->>>>
->>>> struct landlock_rule {
->>>>     ...
->>>>     struct landlock_object *object;
->>>>     /**
->>>>      * @num_layers: Number of entries in @layers.
->>>>      */
->>>>     u32 num_layers;
->>>>
->>>>     u16 port;
->>>
->>> In this case the "object" is indeed defined by a port. You can then 
->>> create an union containing either a struct landlock_object pointer or 
->>> a raw value (here a u16 port). Of course, every code that use the 
->>> object field must be audited and updated accordingly. I think the 
->>> following update should be a good approach (with updated documentation):
->>>
->>> struct landlock_rule {
->>> [...]
->>>      union {
->>>          struct landlock_object *ptr;
->>>          uintptr_t data;
->>>      } object;
->>> [...]
->>> };
->>>
->>> …and then a function helper to convert raw data to/from port.
->>>
->>> It would be a good idea to use a dedicated tree for objects 
->>> identified by (typed) data vs. pointer:
->>>
->>> struct landlock_ruleset {
->>>      struct rb_root root_inode; // i.e. the current "root" field.
->>>      struct rb_root root_net_port;
->>> [...]
->>> };
->>>
->>
->> This approach makes sense. I did not think in this way. I was 
->> following the concept that every rule must be tied to a real kernel 
->> object. Using pseudo "object" defined by a port is a good idea. Thanks.
->>
->>>
->>>>     ...
->>>> };
->>>>
->>>> In this case 2 functions landlock_insert_rule() and insert_rule()
->>>> must be refactored;
->>>>
->>>> But, if struct landlock_layer be modified -
->>>>
->>>> struct landlock_layer {
->>>>     /**
->>>>      * @level: Position of this layer in the layer stack.
->>>>      */
->>>>     u16 level;
->>>>     /**
->>>>      * @access: Bitfield of allowed actions on the kernel object. 
->>>> They are
->>>>      * relative to the object type (e.g. %LANDLOCK_ACTION_FS_READ).
->>>>      */
->>>>     u16 access;
->>>>
->>>>     u16 port;
->>>
->>> No, struct landlock_layer doesn't need to be modified. This struct is 
->>> independent from the type of object. I talked about that in the 
->>> previous series.
->>
->> I got it. Thanks for the comment.
->>
->>>
->>>> };
->>>> so, just one landlock_insert_rule() must be slightly refactored.
->>>> Also many new attributes could be easily supported in future versions.
->>>>
->>>> 2. access_masks[] member of struct landlock_ruleset was modified
->>>> to support multiple rule type masks.
->>>> I suggest using 2D array semantic for convenient usage:
->>>>     access_masks[rule_type][layer_level]
->>>>
->>>> But its also possible to use 1D array with modulo arithmetic:
->>>>     access_masks[rule_type % layer_level]
->>>
->>> What about my previous suggestion to use a (well defined) upper bit 
->>> to identify the type of access?
->>>
->>
->> Maybe I missed your point here. But I can't see how to identify 
->> different rule types here. If there just one ruleset created, so there 
->> is just one access_mask[0] in the ruleset. Its either can be used for 
->> filesystem mask or for network one. To support both rule type we need 
->> to use at least access_mask[] array with size of 2.
->> Also using upper bit to identify access rule type will narrow down
->> possible access ammount in future version.
->> Anyway please corrent me if I'm wrong here.
-> 
-> We should avoid using multi-dimentional arrays because it makes the code 
-> more complex (e.g. when allocating memory).
-> 
-> The idea is to split the access masks' u16 to the actual access masks 
-> and a bit to identify the type of access. Because there is no more than 
-> 13 access rights for now (per access type, i.e. for the file system), 
-> the 3 upper bits are unused. A simple bit mask (and a shift) can get 
-> these 3 upper bits or the 13 lower bits. If/when new access bits will be 
-> used, we'll just need to upgrade the u16 to a u32, but the logic will be 
-> the same and the userspace ABI unchanged.
-> 
-> [...]
-> 
->>>> diff --git a/security/landlock/ruleset.c b/security/landlock/ruleset.c
->>>> index ec72b9262bf3..a335c475965c 100644
->>>> --- a/security/landlock/ruleset.c
->>>> +++ b/security/landlock/ruleset.c
->>>> @@ -27,9 +27,24 @@
->>>>   static struct landlock_ruleset *create_ruleset(const u32 num_layers)
->>>>   {
->>>>       struct landlock_ruleset *new_ruleset;
->>>> +    u16 row, col, rules_types_num;
->>>> +
->>>> +    new_ruleset = kzalloc(sizeof *new_ruleset +
->>>> +                  sizeof *(new_ruleset->access_masks),
->>>
->>> sizeof(access_masks) is 0.
->>
->> Actually sizeof *(new_ruleset->access_masks) is 8.
->> It's a 64 bit pointer to u16 array[]. I checked this
->> 2D FAM array implementation in a standalone test.
-> 
-> Yes, this gives the size of the pointed element, but I wanted to point 
-> out that access_masks doesn't have a size (actually a sizeof() call on 
-> it would failed). This kzalloc() only allocates one element in the 
-> array. What happen when there is more than one layer?
-
-Here kzalloc() only allocates a pointer to the array;
-The whole array is allocated here:
-
-rules_types_num = LANDLOCK_RULE_TYPE_NUM;
-     /* Initializes access_mask array for multiple rule types.
-      * Double array semantic is used convenience:
-      * access_mask[rule_type][num_layer].
-      */
-     for (row = 0; row < rules_types_num; row++) {
-         new_ruleset->access_masks[row] = kzalloc(sizeof
-                     *(new_ruleset->access_masks[row]),
-                     GFP_KERNEL_ACCOUNT);
-         for (col = 0; col < num_layers; col++)
-             new_ruleset->access_masks[row][col] = 0;
-
-If it's needed more the one layer, the code above supports creating
-array of LANDLOCK_RULE_TYPE_NUM*num_layer size (see create_ruleset() 
-function)
-> 
->>
->>>
->>>> +                  GFP_KERNEL_ACCOUNT);
->>>> +
->>>> +    rules_types_num = LANDLOCK_RULE_TYPE_NUM;
->>>> +    /* Initializes access_mask array for multiple rule types.
->>>> +     * Double array semantic is used convenience: 
->>>> access_mask[rule_type][num_layer].
->>>> +     */
->>>> +    for (row = 0; row < rules_types_num; row++) {
->>>> +        new_ruleset->access_masks[row] = kzalloc(sizeof
->>>> +                    *(new_ruleset->access_masks[row]),
->>>> +                    GFP_KERNEL_ACCOUNT);
->>>> +        for (col = 0; col < num_layers; col++)
->>>> +            new_ruleset->access_masks[row][col] = 0;
->>>> +    }
->>>
->>> This code may segfault. I guess it wasn't tested. Please enable most 
->>> test/check features as I suggested in the previous series.
->>
->> I compiled the kernel 5.13 with this patch and tested it in QEMU. No 
->> crashes. I tested your sandboxer.c and it works without segfaults.
->> But I will provide seltests in future patch.
-> 
-> Did you run the current selftests?
-
-I did not. But I will.
-
-> 
-> fakeroot make -C tools/testing/selftests TARGETS=landlock gen_tar
-> tar -xf 
-> tools/testing/selftests/kselftest_install/kselftest-packages/kselftest.tar.gz 
-> 
-> # as root in a VM with Landlock enabled:
-> ./run_kselftest.sh
-
-Ok. Thanks.
-
-> 
-> BTW, you should test with the latest kernel (i.e. latest Linus's tag).
-> 
-I thought it was not even important what kernel version to use.
-So I started with the first one with Landlock support. Anyway in future
-it would be easy to rebase landlock network branch or cherry-pick all 
-necessary commits to the latest Linus's tag.
->>
->>
->>>
->>>>
->>>> -    new_ruleset = kzalloc(struct_size(new_ruleset, fs_access_masks,
->>>> -                num_layers), GFP_KERNEL_ACCOUNT);
->>>
->>> What about my comment in the previous series?
->>
->> As I replied above.
->> Maybe I missed your point here. But I can't see how to identify 
->> different rule types here. If there just one ruleset created, so there 
->> is just one access_mask[0] in the ruleset. Its either can be used for 
->> filesystem mask or for network one. To support both rule type we need 
->> to use at least access_mask[] array with size of 2.
->> Also using upper bit to identify access rule type will narrow down
->> possible access ammount in future version.
->> I suggest using 2D array or 1D array with module arithmetic to
->> support different rule type masks.
->> Anyway please corrent me if I'm wrong here.
-> 
-> See my above comment.
-> 
-> [...]
-> .
