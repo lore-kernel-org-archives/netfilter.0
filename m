@@ -1,182 +1,170 @@
-From: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+From: Casey Schaufler <casey@schaufler-ca.com>
 Subject: Re: [RFC PATCH 0/1] Landlock network PoC
-Date: Fri, 31 Dec 2021 01:00:00 +0100
-Message-ID: <a24ffb44-8f3c-e043-61fa-3652e3e648b1@digikod.net>
+Date: Thu, 30 Dec 2021 16:21:46 -0800
+Message-ID: <3a389006-6080-575f-37a1-364c5e1a3773@schaufler-ca.com>
 References: <20211228115212.703084-1-konstantin.meskhidze@huawei.com>
  <ea82de6a-0b28-7d96-a84e-49fa0be39f0e@schaufler-ca.com>
  <62cf5983-2a81-a273-d892-58b014a90997@huawei.com>
  <f7c587ab-5449-8c9f-aace-4ca60c60663f@schaufler-ca.com>
  <bf9e42b5-5034-561e-b872-7ab20738326b@digikod.net>
  <15442102-8fa7-8665-831a-dc442f1fa073@schaufler-ca.com>
+ <a24ffb44-8f3c-e043-61fa-3652e3e648b1@digikod.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1640910109; bh=nxhR7UYX/odb7gfWh6xmKUk4pkVVvEwbriMukrNU3tE=; h=Date:Subject:To:Cc:References:From:In-Reply-To:From:Subject:Reply-To; b=lsFM2oKFcvE3pu7kuen9fagcpKxN+H6nLlPYKAuqoTo5Q9ysgUT1Ooni7ZVGnVg4D9Wis8e9yaSebtU7c0h9MYY/zceDify8eYFOvFEPI1p86LHu6i2uF/oWgIq5JzY8t6GfW0cZL/WZY+w5+hh0ztaaB6vEy31Yt9eG/XD7Av/56+tLiWIsWKaBkhOwKzreNelpXuI7PDcO1VX1iKlujlRR6q2QcwdyxykAabydRbTaR1u9R9br9PYTBxTcNGaaFYCNGxKYBSa1RGxdPAbz1rTUwTbHFNC1iRGBB1QtLIGvJ7eDC3zX2EXMr+gAmc4FqiGPs9YcUdezvH87FR10rQ==
 Content-Language: en-US
-In-Reply-To: <15442102-8fa7-8665-831a-dc442f1fa073@schaufler-ca.com>
+In-Reply-To: <a24ffb44-8f3c-e043-61fa-3652e3e648b1@digikod.net>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Casey Schaufler <casey@schaufler-ca.com>, Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-Cc: linux-security-module@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, yusongping@huawei.com, artem.kuzin@huawei.com
+To: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>, Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+Cc: linux-security-module@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, yusongping@huawei.com, artem.kuzin@huawei.com, Casey Schaufler <casey@schaufler-ca.com>
 
-
-On 31/12/2021 00:23, Casey Schaufler wrote:
-> On 12/30/2021 2:50 PM, Mickaël Salaün wrote:
->>
->> On 30/12/2021 18:59, Casey Schaufler wrote:
->>> On 12/29/2021 6:56 PM, Konstantin Meskhidze wrote:
->>
->> [...]
->>
+On 12/30/2021 4:00 PM, Mickaël Salaün wrote:
+>
+> On 31/12/2021 00:23, Casey Schaufler wrote:
+>> On 12/30/2021 2:50 PM, Mickaël Salaün wrote:
 >>>
->>>> But I agree, that socket itself (as collection of data used for 
->>>> interproccess communication) could be not be an object.
+>>> On 30/12/2021 18:59, Casey Schaufler wrote:
+>>>> On 12/29/2021 6:56 PM, Konstantin Meskhidze wrote:
+>>>
+>>> [...]
+>>>
 >>>>
->>>> Anyway, my approach would not work in containerized environment: 
->>>> RUNC, containerd ect. Mickaёl suggested to go another way for 
->>>> Landlock network confinement: Defining "object" with connection port.
->>>
->>> Oh, the old days of modeling ...
->>>
->>> A port number is a name. It identifies a subject. A subject
->>> "names" itself by binding to a port number. The port itself
->>> isn't a thing.
->>
->> It depends on the definition of subject, object and action.
-> 
-> You are correct. And I am referring to the classic computer security
-> model definitions.
-
-Me too! :)
-
-> If you want to redefine those terms to justify your
-> position it isn't going to make me very happy.
-> 
-> 
->> The action can be connect or bind,
-> 
-> Nope. Sorry. Bind isn't an "action" because it does not involve a subject
-> and an object.
-
-In this context, the subject is the process calling bind. In a 
-traditional model, we would probably identify the socket as the object 
-though.
-
-> 
->> and the object a TCP port,
-> 
-> As I pointed out earlier, a port isn't an object, it is a name.
-> A port as no security attributes. "Privileged ports" are a convention.
-> A port is meaningless unless it is bond, in which case all meaning is
-> tied up with the process that bound it.
-
-A port is not a kernel object, but in this case it can still be defined 
-as an (abstract) object in a security policy. I think this is the 
-misunderstanding here.
-
-> 
-> 
->> i.e. a subject doing an action on an object may require a 
->> corresponding access right.
-> 
-> You're claiming that because you want to restrict what processes can
-> bind a port, ports must be objects. But that's not what you're doing here.
-> You are making the problem harder than it needs to be
-> 
->>
->>>
->>> You could change that. In fact, Smack includes port labeling
->>> for local IPv6. I don't recommend it, as protocol correctness
->>> is very difficult to achieve. Smack will forgo port labeling
->>> as soon as CALIPSO support (real soon now - priorities permitting)
->>> is available.
->> Please keep in mind that Landlock is a feature available to 
->> unprivileged (then potentially malicious) processes. I'm not sure 
->> packet labeling fits this model, but if it does and there is a need, 
->> we may consider it in the future. Let's first see with Smack. ;)
->>
->> Landlock is also designed to be extensible. It makes sense to start 
->> with an MVP network access control. Being able to restrict TCP connect 
->> and bind actions, with exception for a set of ports, is simple, 
->> pragmatic and useful. Let's start with that.
-> 
-> I'm not saying it isn't useful, I'm saying that it has nothing to do
-> with subjects, objects and accesses. A process changing it's own state
-> does not require access to any object.
-> 
->>
->>>
->>> Again, on the other hand, you're not doing anything that's an
->>> access control decision. You're saying "I don't want to bind to
->>> port 3920, stop me if I try".
->>
->> This is an access control.
-> 
-> No.
-
-:)
-
-> 
->> A subject can define restrictions for itself and others (e.g. future 
->> child processes).
-> 
-> The "others" are subjects whose initial state is defined to be the
-> state of the parent at time of exec. This is trivially modeled.
-
-This doesn't change much.
-
-> 
->> We may also consider that the same process can transition from one 
->> subject to another over time.
-> 
-> No, you cannot. A process pretty well defines a subject on a Linux system.
-> Where the blazes did you get this notion?
-
-I'm thinking in a more abstract way. I wanted to give this example 
-because of your thinking about what is an access control or not. We 
-don't have to tie semantic to concrete kernel data/objects. Because a 
-process fits well to a subject for some use cases, it may not for 
-others. In the end it doesn't matter much.
-
-> 
->> This may be caused by a call to landlock_restrict_self(2) or, more 
->> abstractly, by an exploited vulnerability (e.g. execve, ROP…). Not 
->> everyone may agree with this lexical point of view (e.g. we can 
->> replace "subject" with "role"…), but the important point is that 
->> Landlock is an access control system, which is not (only) configured 
->> by the root user.
-> 
-> No. Landlock is a mechanism for processes to prevent themselves from 
-> performing
-> operations they would normally be allowed. No access control, subjects or
-> objects are required to do this is many cases. Including bind.
-
-I don't agree. An access control is a mechanism, backed by a security 
-policy, which enforces restrictions on a system. Landlock is a way to 
-drop privileges but also to enforce a set of security policies. We can 
-see Smack, SELinux or others as a way for root to drop privileges too 
-and for other users to restrict accesses they could have otherwise.
-
-> 
->>
->>> All you're doing is asking the
->>> kernel to remember something for you, on the off chance you
->>> forget. There isn't any reason I can see for this to be associated
->>> with the port. It should be associated with the task.
->>
->> I don't understand your point. What do you want to associate with a 
->> task? Landlock domains are already tied to a set of tasks.
-> 
-> That's pretty much what I'm saying. It's all task data.
-
-OK
-
-> 
->>
->>>
->>>> Can be checked here:
->>>> https://lore.kernel.org/netdev/d9aa57a7-9978-d0a4-3aa0-4512fd9459df@digikod.net 
+>>>>> But I agree, that socket itself (as collection of data used for interproccess communication) could be not be an object.
+>>>>>
+>>>>> Anyway, my approach would not work in containerized environment: RUNC, containerd ect. Mickaёl suggested to go another way for Landlock network confinement: Defining "object" with connection port.
 >>>>
+>>>> Oh, the old days of modeling ...
 >>>>
->>>> Hope I exlained my point. Thanks again for your comments.
+>>>> A port number is a name. It identifies a subject. A subject
+>>>> "names" itself by binding to a port number. The port itself
+>>>> isn't a thing.
+>>>
+>>> It depends on the definition of subject, object and action.
 >>
->> [...]
+>> You are correct. And I am referring to the classic computer security
+>> model definitions.
+>
+> Me too! :)
+>
+>> If you want to redefine those terms to justify your
+>> position it isn't going to make me very happy.
+>>
+>>
+>>> The action can be connect or bind,
+>>
+>> Nope. Sorry. Bind isn't an "action" because it does not involve a subject
+>> and an object.
+>
+> In this context, the subject is the process calling bind. In a traditional model, we would probably identify the socket as the object though.
+
+Neither a socket nor a port meet the traditional definition of an object.
+You don't need to have either a socket or port be an object to decide
+that your process shouldn't bind to a port. All you have to do is mark
+yourself as "unable to bind to port 7843". No access is required.
+
+>
+>>
+>>> and the object a TCP port,
+>>
+>> As I pointed out earlier, a port isn't an object, it is a name.
+>> A port as no security attributes. "Privileged ports" are a convention.
+>> A port is meaningless unless it is bond, in which case all meaning is
+>> tied up with the process that bound it.
+>
+> A port is not a kernel object, but in this case it can still be defined as an (abstract) object in a security policy. I think this is the misunderstanding here.
+
+"When I use a word," Humpty Dumpty said, in rather a scornful tone, "it means just what I
+choose it to mean—neither more nor less."
+
+>
+>>
+>>
+>>> i.e. a subject doing an action on an object may require a corresponding access right.
+>>
+>> You're claiming that because you want to restrict what processes can
+>> bind a port, ports must be objects. But that's not what you're doing here.
+>> You are making the problem harder than it needs to be
+>>
+>>>
+>>>>
+>>>> You could change that. In fact, Smack includes port labeling
+>>>> for local IPv6. I don't recommend it, as protocol correctness
+>>>> is very difficult to achieve. Smack will forgo port labeling
+>>>> as soon as CALIPSO support (real soon now - priorities permitting)
+>>>> is available.
+>>> Please keep in mind that Landlock is a feature available to unprivileged (then potentially malicious) processes. I'm not sure packet labeling fits this model, but if it does and there is a need, we may consider it in the future. Let's first see with Smack. ;)
+>>>
+>>> Landlock is also designed to be extensible. It makes sense to start with an MVP network access control. Being able to restrict TCP connect and bind actions, with exception for a set of ports, is simple, pragmatic and useful. Let's start with that.
+>>
+>> I'm not saying it isn't useful, I'm saying that it has nothing to do
+>> with subjects, objects and accesses. A process changing it's own state
+>> does not require access to any object.
+>>
+>>>
+>>>>
+>>>> Again, on the other hand, you're not doing anything that's an
+>>>> access control decision. You're saying "I don't want to bind to
+>>>> port 3920, stop me if I try".
+>>>
+>>> This is an access control.
+>>
+>> No.
+>
+> :)
+>
+>>
+>>> A subject can define restrictions for itself and others (e.g. future child processes).
+>>
+>> The "others" are subjects whose initial state is defined to be the
+>> state of the parent at time of exec. This is trivially modeled.
+>
+> This doesn't change much.
+>
+>>
+>>> We may also consider that the same process can transition from one subject to another over time.
+>>
+>> No, you cannot. A process pretty well defines a subject on a Linux system.
+>> Where the blazes did you get this notion?
+>
+> I'm thinking in a more abstract way. I wanted to give this example because of your thinking about what is an access control or not. We don't have to tie semantic to concrete kernel data/objects. Because a process fits well to a subject for some use cases, it may not for others. In the end it doesn't matter much.
+
+Then don't use the terminology. You'll confuse the next generation.
+
+>
+>>
+>>> This may be caused by a call to landlock_restrict_self(2) or, more abstractly, by an exploited vulnerability (e.g. execve, ROP…). Not everyone may agree with this lexical point of view (e.g. we can replace "subject" with "role"…), but the important point is that Landlock is an access control system, which is not (only) configured by the root user.
+>>
+>> No. Landlock is a mechanism for processes to prevent themselves from performing
+>> operations they would normally be allowed. No access control, subjects or
+>> objects are required to do this is many cases. Including bind.
+>
+> I don't agree. An access control is a mechanism, backed by a security policy, which enforces restrictions on a system. 
+
+No, that's the definition of privilege.
+
+> Landlock is a way to drop privileges but also to enforce a set of security policies. We can see Smack, SELinux or others as a way for root to drop privileges too and for other users to restrict accesses they could have otherwise.
+>
+>>
+>>>
+>>>> All you're doing is asking the
+>>>> kernel to remember something for you, on the off chance you
+>>>> forget. There isn't any reason I can see for this to be associated
+>>>> with the port. It should be associated with the task.
+>>>
+>>> I don't understand your point. What do you want to associate with a task? Landlock domains are already tied to a set of tasks.
+>>
+>> That's pretty much what I'm saying. It's all task data.
+>
+> OK
+>
+>>
+>>>
+>>>>
+>>>>> Can be checked here:
+>>>>> https://lore.kernel.org/netdev/d9aa57a7-9978-d0a4-3aa0-4512fd9459df@digikod.net
+>>>>>
+>>>>> Hope I exlained my point. Thanks again for your comments.
+>>>
+>>> [...]
