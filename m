@@ -1,84 +1,71 @@
-From: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Subject: Re: [RFC PATCH 0/1] Landlock network PoC
-Date: Mon, 3 Jan 2022 12:23:20 +0100
-Message-ID: <a1a17348-61f3-9524-c76a-513422ed0332@digikod.net>
-References: <20211228115212.703084-1-konstantin.meskhidze@huawei.com>
- <d9aa57a7-9978-d0a4-3aa0-4512fd9459df@digikod.net>
- <02806c8e-e255-232b-1722-65ea1dba2948@huawei.com>
- <bdbae25f-5136-8905-ca64-03314b125a40@digikod.net>
- <174f2bef-f005-c29a-1ef7-7eea96516b10@huawei.com>
+From: Florian Westphal <fw@strlen.de>
+Subject: Re: Consolidating rules
+Date: Mon, 3 Jan 2022 15:56:03 +0100
+Message-ID: <20220103145603.GB22312@breakpoint.cc>
+References: <CAF1QswjecENZyrGsCtot4dH1xPmDKyG6csk00O7+A6stPP_Lrg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Language: en-US
-In-Reply-To: <174f2bef-f005-c29a-1ef7-7eea96516b10@huawei.com>
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAF1QswjecENZyrGsCtot4dH1xPmDKyG6csk00O7+A6stPP_Lrg@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-Cc: linux-security-module@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, yusongping@huawei.com, artem.kuzin@huawei.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: yves baumes <ybaumes@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-
-On 31/12/2021 10:50, Konstantin Meskhidze wrote:
-> 12/31/2021 2:26 AM, Mickaël Salaün wrote:
-
-[...]
-
->>>>> diff --git a/security/landlock/ruleset.c b/security/landlock/ruleset.c
->>>>> index ec72b9262bf3..a335c475965c 100644
->>>>> --- a/security/landlock/ruleset.c
->>>>> +++ b/security/landlock/ruleset.c
->>>>> @@ -27,9 +27,24 @@
->>>>>   static struct landlock_ruleset *create_ruleset(const u32 num_layers)
->>>>>   {
->>>>>       struct landlock_ruleset *new_ruleset;
->>>>> +    u16 row, col, rules_types_num;
->>>>> +
->>>>> +    new_ruleset = kzalloc(sizeof *new_ruleset +
->>>>> +                  sizeof *(new_ruleset->access_masks),
->>>>
->>>> sizeof(access_masks) is 0.
->>>
->>> Actually sizeof *(new_ruleset->access_masks) is 8.
->>> It's a 64 bit pointer to u16 array[]. I checked this
->>> 2D FAM array implementation in a standalone test.
->>
->> Yes, this gives the size of the pointed element, but I wanted to point 
->> out that access_masks doesn't have a size (actually a sizeof() call on 
->> it would failed). This kzalloc() only allocates one element in the 
->> array. What happen when there is more than one layer?
+yves baumes <ybaumes@gmail.com> wrote:
+> Here is my problem: when I create a table to let DHCP and DNS requests
+> pass through, my packets are still getting dropped.
+> ```
+> # nft list ruleset
+> table inet mytable {
+> chain inbound {
+> ip protocol . th dport vmap { tcp . 22 : accept, tcp . 53 : accept,
+> udp . 53 : accept, udp . 67 : accept }
+> }
 > 
-> Here kzalloc() only allocates a pointer to the array;
-> The whole array is allocated here:
+> chain ssh_inbound {
+> tcp dport 22 accept
+> }
 > 
-> rules_types_num = LANDLOCK_RULE_TYPE_NUM;
->      /* Initializes access_mask array for multiple rule types.
->       * Double array semantic is used convenience:
->       * access_mask[rule_type][num_layer].
->       */
->      for (row = 0; row < rules_types_num; row++) {
->          new_ruleset->access_masks[row] = kzalloc(sizeof
->                      *(new_ruleset->access_masks[row]),
->                      GFP_KERNEL_ACCOUNT);
->          for (col = 0; col < num_layers; col++)
->              new_ruleset->access_masks[row][col] = 0;
+> chain input {
+> type filter hook input priority filter - 1; policy drop;
+> ct state vmap { invalid : drop, established : accept, related : accept }
+> iifname vmap { "eth2" : jump inbound, "eth2.103" : jump inbound,
+> "eth2.3163" : jump inbound }
+> iifname vmap { "eth0" : jump ssh_inbound }
+> iifname "lo" accept
+> iifname "tun0" tcp dport 22 accept
+> }
+> [...]
+> ```
 > 
-> If it's needed more the one layer, the code above supports creating
-> array of LANDLOCK_RULE_TYPE_NUM*num_layer size (see create_ruleset() 
-> function)
+> So I read about that issue in the wiki:
+> https://wiki.nftables.org/wiki-nftables/index.php/Configuring_chains#Base_chain_priority
+> . Which states that the default filter/INPUT chain will be run either
+> before or after my own chain (depending on the priority I set) and
+> will drop the packets silently, since its default policy is DROP and
+> no rules match the packets in this filter/INPUT chain.
+> Indeed if I change the default policy of filter/INPUT to ACCEPT, my
+> DHCP/DNS packets are getting accepted.
 
-Indeed, this should work, but using a 1D array is less complex and 
-enables to easily allocate the whole struct+array on contiguous memory.
+They are accepted regardless, the policy is not relevant for them.
 
-[...]
+[..]
 
->>
->> BTW, you should test with the latest kernel (i.e. latest Linus's tag).
->>
-> I thought it was not even important what kernel version to use.
-> So I started with the first one with Landlock support. Anyway in future
-> it would be easy to rebase landlock network branch or cherry-pick all 
-> necessary commits to the latest Linus's tag.
+> Second solution would be to let the default filter/INPUT policy to
+> DROP and centralize my configuration into the filter/INPUT chain,
 
-For this patch it should be straightforward because the updated part 
-didn't change, but it may not always be the case. Anyway, we always work 
-on up-to-date code.
+Thats what you are doing?
+In the ruleset you provided there is only on base chain (input),
+so 'chain inbound' is called in the context of the input base chain.
+
+> So how would you tackle this issue, that is: letting the packets go
+> through while still having a default policy to DROP? Is there a
+> simpler way that I did not find?
+
+If the 'accept policy' solves your problem, your ruleset is tossing
+packets that it should not be dropping.
+
+For example, your ruleset breaks ipv6 since it discards icmpv6
+neighbour solicitiation packets.
