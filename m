@@ -1,47 +1,51 @@
-From: Olivier <oza.4h07@gmail.com>
-Subject: How to log NAT connections with nftables ?
-Date: Tue, 4 Jan 2022 17:41:53 +0100
-Message-ID: <CAPeT9jgLrpcstTQ-tQBM6HFbfPKHT3RcDNXFD50Pnv-nM9BZYg@mail.gmail.com>
+From: Steffen Weinreich <steve@weinreich.org>
+Subject: Re: nftables stateless NAT in raw table mangles fragmented UDP
+ packets
+Date: Tue, 4 Jan 2022 19:38:51 +0100
+Message-ID: <b68d1a2f-b930-a1dc-df5f-5ed79af18497@weinreich.org>
+References: <cdb7af33-1e07-05b7-a9d9-142d06d9cbfe@weinreich.org>
+ <Yc8Hpu/5LPyT5HIU@salvia> <Yc8H9sHapPLHKWXV@salvia>
+ <6df4612e-717e-9392-97f7-724c006a64f7@weinreich.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=2eruh9/+vddMyWR5NgI/vMGQAn3QSJDv6YYM5+gCu04=;
-        b=gp0/S9geeCjcj6DONovQA2CWUdMFVJK8wupT17j03ltf4zPa7Ugri679pGa2W9wsA2
-         9/Wa4OVcHTHfdSTbmN/U9h0uX6T54DpMJT9PqAQlFGVIPRp2HdleG9aYukYf6ZzxzSvP
-         NsL+HH3PwuvcB9UuBjMj9pQrro0hzg5QJuOc1bID5+29GQr+CJsqpis2vGZgQp5KrSbl
-         haQZK33X69vkKTDHY58krKk8s06a1k7tyl/29H5ITZRfo3o1cmfJUL0JlLkMKrHJX/ob
-         UvWcwsvxYMqFpF5XYbhtek9X7kWacc7rMdpWE/I/XzRJA0Mj5YKRUK6Zw58hOF8EIPjg
-         GtQg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=weinreich.org;
+        s=dkim; t=1641321532;
+        h=from:subject:date:message-id:to:cc:mime-version:content-type:
+         content-transfer-encoding:content-language:in-reply-to:references;
+        bh=C1t6FCJHKWEQu5iRIYJjshcnIvl5dWCzOpXM/96zVgQ=;
+        b=PkVE0/UvPCO/BzLlNqvXNz0DKowkTdln0X241GmCeZaF+NhwKuD8Z52fM0zf7s0WBcfAEW
+        iH65y11UfPRAseTZUP2e/y105Kbqp0fvbrcTnBZvI/386p4XU94heg5d7u5lQBKiKQF1ua
+        KtH3ME2OeJAV0ksmDHapHAp6S36aox0GybCWXrQM7pAea7wdLn/tgVmY0GUKuUcBRTn55I
+        b5bX2xSdRczN5Eo9g0F9/2boCXe3acFfRPWDvcSc8jxUlwrqa7iB9s9o0LrEb2uOXJpNF0
+        2IcnIlmKqn9e9V4+yHsRaGmpMjBDQhdlv6WGrFEW/vmrHeDpuUYDZnrWIpDykg==
+In-Reply-To: <6df4612e-717e-9392-97f7-724c006a64f7@weinreich.org>
+Content-Language: de-AT-frami
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org
 
-Hello,
+Hi Pablo
 
-I've got a Debian Bullseye host acting as a gateway to the Internet.
-It serves around 100 simultaneous end users for mainstream usage (web
-surfing, email, You Tube, ...).
+Am 04.01.22 um 12:27 schrieb Steffen Weinreich:
+> Hi Pablo,
+>
+> Am 31.12.21 um 14:39 schrieb Pablo Neira Ayuso:
+>>> Could you give a try to this kernel patch?
+>> Wrong patch, attaching again.
+> Yes, that patch fixes the issue.
 
-For compliance reasons, I need to log NAT connections ie:
-a timestamp, a private IPv4:port, a NATed IPv4:port and a destination IPv4:port.
+Meanwhile I tried that patch on a 4.19 Kernel. Since the struct
+nft_pktinfo pkt does not have a member fragoff the patch does not work
+on 4.19
 
-Upon request, given a timestamp, a NATed IPv4 and a port, I must be
-able to find the corresponding  IPv4 and port.
-I don't mind collecting data files with a shell script before
-processing files somewhere else and pushing data into an SQL database
-later on.
-Data retention period is 1 year.
+Any chance to get a patch for a 4.19?  We are still using the debian
+buster 4.19 kernel  series on out production systems and are currently
+not able to move to a newer kernel due to issues with the userland nft
+tools and our wrapper around them..
 
-1. How can I best produce these logs with netfilter ?
-What are your recommendations ?
+cheerio
 
-2. From previous experience, is it worth the effort to remove DNS or
-other traffic from such logs to save disk space ?
+Steve
 
-3. Does it make sense to use Netflow/IPfix to separate log production
-from log consolidation and storage ?
-
-Cheers
