@@ -1,41 +1,80 @@
-From: Steffen Weinreich <steve@weinreich.org>
-Subject: Re: nftables stateless NAT in raw table mangles fragmented UDP
- packets
-Date: Tue, 4 Jan 2022 20:41:23 +0100
-Message-ID: <8ebd2425-7cef-8d75-784f-a86517a52dc8@weinreich.org>
-References: <cdb7af33-1e07-05b7-a9d9-142d06d9cbfe@weinreich.org>
- <Yc8Hpu/5LPyT5HIU@salvia> <Yc8H9sHapPLHKWXV@salvia>
- <6df4612e-717e-9392-97f7-724c006a64f7@weinreich.org>
- <b68d1a2f-b930-a1dc-df5f-5ed79af18497@weinreich.org>
- <20220104184149.GA938@breakpoint.cc>
+From: Florian Westphal <fw@strlen.de>
+Subject: Re: nftables >= 0.9.8: atomic update (nft -f ...) of a set not
+ possible any more
+Date: Tue, 4 Jan 2022 20:57:28 +0100
+Message-ID: <20220104195728.GB938@breakpoint.cc>
+References: <5tg3b13w5.PCaY2G@prvy.eu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=weinreich.org;
-        s=dkim; t=1641325284;
-        h=from:subject:date:message-id:to:cc:mime-version:content-type:
-         content-transfer-encoding:content-language:in-reply-to:references;
-        bh=269eIByxAyrb36EtQWmYd1lWmY8Ab18iWqNC5UAEvD0=;
-        b=WrWzziZmzeVqviGZ82ZkQLi0b0lJSm+99JQ12aeDBRx+Ght70zQRjCcGuynT7Hkf50mC4G
-        viOSmIGp69K0namXX3bJ9AD4GPiYdHkkLz4UZu1ezZq3HQDMbMePPFxwOHWkzfxEmQNjqF
-        P1+X23U5HznTcw3Vf8HYGHWSU3OhzDLKxbgZQvmCA3d3cDuduKFOvKO3/UVhgbaWp1G5mN
-        H8iYO/D2Y7aDaPwvC6gwRoX6RVQOBADaZOYp0yIrdcvKCcsNxr22TMVI30kRnKoxq7hxNd
-        OzQZgVmdCJFxh4cSCal/MwAYGSAXMiTLcFb1R5ndEZZobqFiIy+eCVhXooU0bQ==
-In-Reply-To: <20220104184149.GA938@breakpoint.cc>
-Content-Language: de-AT-frami
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <5tg3b13w5.PCaY2G@prvy.eu>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Florian Westphal <fw@strlen.de>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-9"
+To: etkaar <lists.netfilter.org@prvy.eu>
+Cc: netfilter@vger.kernel.org, netfilter-devel <netfilter-devel@vger.kernel.org>, sbrivio@redhat.com
 
-Hi Florian,
+etkaar <lists.netfilter.org@prvy.eu> wrote:
 
-> You can substitute it with 'pkt->xt.fragoff'.
+[ CC Stefano ]
 
-Many thank for the prompt hint! Using this on 4.19 get the kernel
-compiled and the issue is also gone!
+> Dear colleagues,
+>=20
+> given is following perfectly working ruleset (nft list ruleset), which dr=
+ops almost all of the IPv4 traffic, but grants access to port 22 (SSH) for =
+two IPv4 addresses provided by the set named 'whitelist_ipv4_tcp':
 
-cheerio
+Thanks for reporting, I can reproduce this.
 
-Steve
+> +++
+> table inet filter {
+> 	set whitelist_ipv4_tcp {
+> 		type inet_service . ipv4_addr
+> 		flags interval
+> 		elements =3D { 22 . 111.222.333.444,
+> 			=A0 =A0 =A022 . 555.666.777.888 }
+> 	}
 
+I can repro this, looks like missing scratchpad cloning in the set
+backend.
+
+I can see that after second 'nft -f', avx2_lookup takes the 'if (unlikely(!=
+scratch)) {' branch.
+
+Can you try this (kernel) patch below?
+
+As a workaround, you could try removing the 'interval' flag so that
+kernel uses a hash table as set backend instead.
+
+Stefano, does that patch make sense to you?
+Thanks!
+
+diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipapo.c
+--- a/net/netfilter/nft_set_pipapo.c
++++ b/net/netfilter/nft_set_pipapo.c
+@@ -1271,7 +1271,7 @@ static struct nft_pipapo_match *pipapo_clone(struct n=
+ft_pipapo_match *old)
+ {
+ 	struct nft_pipapo_field *dst, *src;
+ 	struct nft_pipapo_match *new;
+-	int i;
++	int i, err;
+=20
+ 	new =3D kmalloc(sizeof(*new) + sizeof(*dst) * old->field_count,
+ 		      GFP_KERNEL);
+@@ -1291,6 +1291,14 @@ static struct nft_pipapo_match *pipapo_clone(struct =
+nft_pipapo_match *old)
+ 		goto out_scratch;
+ #endif
+=20
++	err =3D pipapo_realloc_scratch(new, old->bsize_max);
++	if (err) {
++#ifdef NFT_PIPAPO_ALIGN
++		free_percpu(new->scratch_aligned);
++#endif
++		goto out_scratch;
++	}
++
+ 	rcu_head_init(&new->rcu);
+=20
+ 	src =3D old->f;
