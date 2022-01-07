@@ -1,112 +1,35 @@
-From: Stefano Brivio <sbrivio@redhat.com>
-Subject: Re: nftables >= 0.9.8: atomic update (nft -f ...) of a set not
- possible any more
-Date: Wed, 5 Jan 2022 00:22:22 +0100
-Message-ID: <20220105002222.6695b8f7@elisabeth>
-References: <5tg3b13w5.PCaY2G@prvy.eu>
-        <20220104195728.GB938@breakpoint.cc>
+From: "etkaar" <lists.netfilter.org@prvy.eu>
+Subject: Re: nftables =?UTF-8?Q?=3E=3D=20=30=2E=39=2E=38=3A=20atomic=20update=20?=
+ =?UTF-8?Q?=28nft=20-f=20=2E=2E=2E=29=20of=20a=20set=20not=20possible=20an?=
+ =?UTF-8?Q?y=20more?=
+Date: Fri, 07 Jan 2022 15:54:13 +0100
+Message-ID: <5th97l2av.OyLNSq@prvy.eu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1641338558;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=APTNjtc/NVeYk8GhPpMv5eoWks1kKQ6Uvjyyq82/v/0=;
-        b=LMftvNvyOQk3gM9xz17H/4zSqVNY7Vhh1brWYDm3LhfXeqi2Ia17/NFufBT12nA4ydrB8v
-        3vRktywtGJ8IfW91SNnyKWKZduy2FlisYqlksiWAdWaqL/O2MVdx2y3A+rubKipSNLo+0w
-        bNQKh0dhzsQXV877aSBswBU4YuOv83w=
-In-Reply-To: <20220104195728.GB938@breakpoint.cc>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=prvy.eu; s=20180701;
+        t=1641567253; bh=hYnM9qtGv0xFYndsY0HaX05oL4ZbukATljWFD0joN0I=;
+        h=Date:From:To:Subject:From;
+        b=mUFgAQ6TgMZ0voy7enZfP75OScSAv0nmL/25gTZeHm9GpBRJcBH+vmb1h5AL8ZPmx
+         LhFfFFhqScX91G+Lw2fgQHR2AFBx+/cTAk7I8kBCIvOQBMeb+/q3LIUYQ3OUKaAgax
+         rxwc4EW53MfX97/1tVGXJdvTM/3dsp8Xo71bVSWxIFu+v5XsQuG+5AhVycUne210/f
+         tTX1XrQgDzJkU/sNDd03qMNdsM8HjiKugr33jQeb17xJFVm43yl7uaEoF1gpOKcPE5
+         ZyNAPTn3lV3VLkE5cI1EsyTtHFjKWXB25GYrhXcRNQYi/jd85Uw6U5FMsmTu8PB043
+         DS+70fYvMeb6g==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Florian Westphal <fw@strlen.de>
-Cc: etkaar <lists.netfilter.org@prvy.eu>, netfilter@vger.kernel.org, netfilter-devel <netfilter-devel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Hi Florian,
-
-On Tue, 4 Jan 2022 20:57:28 +0100
-Florian Westphal <fw@strlen.de> wrote:
-
-> etkaar <lists.netfilter.org@prvy.eu> wrote:
->=20
-> [ CC Stefano ]
->=20
-> > Dear colleagues,
-> >=20
-> > given is following perfectly working ruleset (nft list ruleset), which =
-drops almost all of the IPv4 traffic, but grants access to port 22 (SSH) fo=
-r two IPv4 addresses provided by the set named 'whitelist_ipv4_tcp': =20
->=20
-> Thanks for reporting, I can reproduce this.
->=20
-> > +++
-> > table inet filter {
-> > 	set whitelist_ipv4_tcp {
-> > 		type inet_service . ipv4_addr
-> > 		flags interval
-> > 		elements =3D { 22 . 111.222.333.444,
-> > 			=C2=A0 =C2=A0 =C2=A022 . 555.666.777.888 }
-> > 	} =20
->=20
-> I can repro this, looks like missing scratchpad cloning in the set
-> backend.
->=20
-> I can see that after second 'nft -f', avx2_lookup takes the 'if (unlikely=
-(!scratch)) {' branch.
->=20
-> Can you try this (kernel) patch below?
->=20
-> As a workaround, you could try removing the 'interval' flag so that
-> kernel uses a hash table as set backend instead.
->=20
-> Stefano, does that patch make sense to you?
-> Thanks!
-
-Thanks for checking and fixing this!
-
-Yes, it makes sense, a clone without a subsequent new insertion
-wouldn't have a scratchpad otherwise -- I wonder how I missed this.
-Just perhaps:
-
-> diff --git a/net/netfilter/nft_set_pipapo.c b/net/netfilter/nft_set_pipap=
-o.c
-> --- a/net/netfilter/nft_set_pipapo.c
-> +++ b/net/netfilter/nft_set_pipapo.c
-> @@ -1271,7 +1271,7 @@ static struct nft_pipapo_match *pipapo_clone(struct=
- nft_pipapo_match *old)
->  {
->  	struct nft_pipapo_field *dst, *src;
->  	struct nft_pipapo_match *new;
-> -	int i;
-> +	int i, err;
-> =20
->  	new =3D kmalloc(sizeof(*new) + sizeof(*dst) * old->field_count,
->  		      GFP_KERNEL);
-> @@ -1291,6 +1291,14 @@ static struct nft_pipapo_match *pipapo_clone(struc=
-t nft_pipapo_match *old)
->  		goto out_scratch;
->  #endif
-> =20
-> +	err =3D pipapo_realloc_scratch(new, old->bsize_max);
-> +	if (err) {
-> +#ifdef NFT_PIPAPO_ALIGN
-> +		free_percpu(new->scratch_aligned);
-> +#endif
-
-I would use another label for this, "out_scratch_aligned", for
-consistency with the rest of the error handling, but it's not a strong
-preference.
-
-> +		goto out_scratch;
-> +	}
-> +
->  	rcu_head_init(&new->rcu);
-> =20
->  	src =3D old->f;
->=20
-
---=20
-Stefano
+Dear Florian and Stefano,=0A=0Athanks so much for your fast response!=0A=0A=
+Unfortunately I am not really able yet to apply a kernel patch, because tha=
+t would be the first time at all I modify the kernel and I am afraid of bei=
+ng locked-out again in case Debian afterwards updates the kernel with a new=
+er version which still is affected of the bug. I am not so familiar with th=
+at, because for stability and security reasons I usually always leave my De=
+bian installation as they are.=0A=0AHowever, I am able to compile nftables =
+itself and replace Debian 11 Bullseyes version 0.9.8 with 1.0.1, but this v=
+ersion still contains the bug. Once there is an update to 1.0.2 and this bu=
+g is fixed, compiling and replacing the 0.9.8 version with it should be eno=
+ugh, or is still a kernel patch required in that case?=0A=0AKind Regards,=
+=0Aetkaar
 
