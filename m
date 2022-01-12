@@ -1,35 +1,56 @@
-From: "etkaar" <lists.netfilter.org@prvy.eu>
-Subject: Re: nftables =?UTF-8?Q?=3E=3D=20=30=2E=39=2E=38=3A=20atomic=20update=20?=
- =?UTF-8?Q?=28nft=20-f=20=2E=2E=2E=29=20of=20a=20set=20not=20possible=20an?=
- =?UTF-8?Q?y=20more?=
-Date: Fri, 07 Jan 2022 15:54:13 +0100
-Message-ID: <5th97l2av.OyLNSq@prvy.eu>
+From: Vivek Thrivikraman <vivek.thrivikraman@est.tech>
+Subject: RE: Query on CLOSED conntrack entry for sctp
+Date: Wed, 12 Jan 2022 08:12:15 +0000
+Message-ID: <DB8P189MB06017BBE0D1616220E8A24CDE7529@DB8P189MB0601.EURP189.PROD.OUTLOOK.COM>
+References: <DB8P189MB06011947CC4F1B180AD1CE12E7769@DB8P189MB0601.EURP189.PROD.OUTLOOK.COM>
 Mime-Version: 1.0
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=prvy.eu; s=20180701;
-        t=1641567253; bh=hYnM9qtGv0xFYndsY0HaX05oL4ZbukATljWFD0joN0I=;
-        h=Date:From:To:Subject:From;
-        b=mUFgAQ6TgMZ0voy7enZfP75OScSAv0nmL/25gTZeHm9GpBRJcBH+vmb1h5AL8ZPmx
-         LhFfFFhqScX91G+Lw2fgQHR2AFBx+/cTAk7I8kBCIvOQBMeb+/q3LIUYQ3OUKaAgax
-         rxwc4EW53MfX97/1tVGXJdvTM/3dsp8Xo71bVSWxIFu+v5XsQuG+5AhVycUne210/f
-         tTX1XrQgDzJkU/sNDd03qMNdsM8HjiKugr33jQeb17xJFVm43yl7uaEoF1gpOKcPE5
-         ZyNAPTn3lV3VLkE5cI1EsyTtHFjKWXB25GYrhXcRNQYi/jd85Uw6U5FMsmTu8PB043
-         DS+70fYvMeb6g==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=estab.onmicrosoft.com;
+ s=selector2-estab-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Uo5+G8DYRCSnCuI+aDPkgFqE2WkGzH1/kujJlrDuovQ=;
+ b=WSB7/MEosP9ciTQjqMI2HrnbYFMnU7gDmD3H+atF+TsL+h9kXIMVXov+IWo681RFB7j8eTRJhrKrf9ALDLwxowPrIfsqHkO4nzGCKOxHMWc6AamV4C8KXK8pWn449qGIaKsKf8BXvPmdS0u7CucE0ULEHn0tSQ5gURb+oqCbIxg=
+In-Reply-To: <DB8P189MB06011947CC4F1B180AD1CE12E7769@DB8P189MB0601.EURP189.PROD.OUTLOOK.COM>
+Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Dear Florian and Stefano,=0A=0Athanks so much for your fast response!=0A=0A=
-Unfortunately I am not really able yet to apply a kernel patch, because tha=
-t would be the first time at all I modify the kernel and I am afraid of bei=
-ng locked-out again in case Debian afterwards updates the kernel with a new=
-er version which still is affected of the bug. I am not so familiar with th=
-at, because for stability and security reasons I usually always leave my De=
-bian installation as they are.=0A=0AHowever, I am able to compile nftables =
-itself and replace Debian 11 Bullseyes version 0.9.8 with 1.0.1, but this v=
-ersion still contains the bug. Once there is an update to 1.0.2 and this bu=
-g is fixed, compiling and replacing the 0.9.8 version with it should be eno=
-ugh, or is still a kernel patch required in that case?=0A=0AKind Regards,=
-=0Aetkaar
+Hi ,
+
+I have raised a bug for this around a month back, and have added a reproduc=
+er for the issue. Can someone please look into the issue :
+
+https://bugzilla.netfilter.org/show_bug.cgi?id=3D1579
+
+Thanks & Regards,
+Vivek
+
+-----Original Message-----
+From: Vivek Thrivikraman=20
+Sent: 15 December 2021 17:11
+To: netfilter@vger.kernel.org
+Subject: Query on CLOSED conntrack entry for sctp
+
+Hi ,
+
+We are having an SCTP server application which is accessed continuously by =
+SCTP client application, when the session disconnects the client retries to=
+ establish a connection every 7 seconds. The issue that we are seeing is th=
+at,when we kill the application serving SCTP and restart it, after the rest=
+art of sctp server application also the session is not established because =
+of stale conntrack entry with connection state CLOSED as below(removing thi=
+s entry manually established new connection) :
+
+sctp=A0=A0=A0=A0 132 9 CLOSED src=3D10.141.189.233 dst=3D10.8.146.193 sport=
+=3D10100 dport=3D3868 src=3D192.168.160.22 dst=3D192.168.226.64 sport=3D386=
+8 dport=3D64782 [ASSURED] mark=3D0 use=3D1=20
+
+Looks like the CLOSED conntrack entry is getting refreshed and does not exp=
+ire because the client is retrying continuously. Shouldn't CLOSED conntrack=
+ entry expire irrespective of client retries?
+
+Thanks,
+Vivek
 
