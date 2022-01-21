@@ -1,56 +1,60 @@
-From: Vivek Thrivikraman <vivek.thrivikraman@est.tech>
-Subject: RE: Query on CLOSED conntrack entry for sctp
-Date: Wed, 12 Jan 2022 08:12:15 +0000
-Message-ID: <DB8P189MB06017BBE0D1616220E8A24CDE7529@DB8P189MB0601.EURP189.PROD.OUTLOOK.COM>
-References: <DB8P189MB06011947CC4F1B180AD1CE12E7769@DB8P189MB0601.EURP189.PROD.OUTLOOK.COM>
+From: Jerome Barotin <jbn@s4e.fr>
+Subject: How to understand causes of invalid state for an OUPUT SYNACK
+ packet
+Date: Fri, 21 Jan 2022 12:23:32 +0100
+Message-ID: <20220121122332.1501d9ba@glazard>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=estab.onmicrosoft.com;
- s=selector2-estab-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Uo5+G8DYRCSnCuI+aDPkgFqE2WkGzH1/kujJlrDuovQ=;
- b=WSB7/MEosP9ciTQjqMI2HrnbYFMnU7gDmD3H+atF+TsL+h9kXIMVXov+IWo681RFB7j8eTRJhrKrf9ALDLwxowPrIfsqHkO4nzGCKOxHMWc6AamV4C8KXK8pWn449qGIaKsKf8BXvPmdS0u7CucE0ULEHn0tSQ5gURb+oqCbIxg=
-In-Reply-To: <DB8P189MB06011947CC4F1B180AD1CE12E7769@DB8P189MB0601.EURP189.PROD.OUTLOOK.COM>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=s4e.fr; s=google;
+        h=date:from:to:subject:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NHajWdO7oRrNqSWfZH29E+nkenJh1RPMqlSDq/tMku8=;
+        b=RoR2mxBY/au76gnJ4Yx36oeHPlcO/cE6U8WZwQNuSIZf61AHgmDeYlMdImOVj/OZMk
+         IYD/xgaZCepUSprZLmFke/Ds8IsnYsq/Y9VZX0MI3ckiiu17fGpFSgx/7JbwW/QjFcz7
+         2gTc1ybzXKprvuKw2upJScQJ8yWJhpZThgqqw=
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-
-Hi ,
-
-I have raised a bug for this around a month back, and have added a reproduc=
-er for the issue. Can someone please look into the issue :
-
-https://bugzilla.netfilter.org/show_bug.cgi?id=3D1579
-
-Thanks & Regards,
-Vivek
-
------Original Message-----
-From: Vivek Thrivikraman=20
-Sent: 15 December 2021 17:11
+Content-Type: text/plain; charset="utf-8"
 To: netfilter@vger.kernel.org
-Subject: Query on CLOSED conntrack entry for sctp
 
-Hi ,
+Hello,
 
-We are having an SCTP server application which is accessed continuously by =
-SCTP client application, when the session disconnects the client retries to=
- establish a connection every 7 seconds. The issue that we are seeing is th=
-at,when we kill the application serving SCTP and restart it, after the rest=
-art of sctp server application also the session is not established because =
-of stale conntrack entry with connection state CLOSED as below(removing thi=
-s entry manually established new connection) :
+I've got a specific device (industrial computer) where its
+TCP connection are always blocked by netfilter when it tries to
+connect to my server.=20
 
-sctp=A0=A0=A0=A0 132 9 CLOSED src=3D10.141.189.233 dst=3D10.8.146.193 sport=
-=3D10100 dport=3D3868 src=3D192.168.160.22 dst=3D192.168.226.64 sport=3D386=
-8 dport=3D64782 [ASSURED] mark=3D0 use=3D1=20
+Exactly the SYN packet is forwarded to my local process, but, the
+SYN-ACK answer is always tagged as invalid by the conntrack
+module,=20
 
-Looks like the CLOSED conntrack entry is getting refreshed and does not exp=
-ire because the client is retrying continuously. Shouldn't CLOSED conntrack=
- entry expire irrespective of client retries?
+I noticed this behaviour in the following line in kern.log :
 
-Thanks,
-Vivek
+Jan 14 11:26:15 myhostname kernel: [260283.271861] nf_ct_proto_6:
+invalid packet ignored in state SYN_RECV  IN=3D OUT=3D SRC=3D10.1.1.4
+DST=3D10.1.1.3 LEN=3D52 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF PROTO=3DT=
+CP SPT=3D21
+DPT=3D64004 SEQ=3D1624381780 ACK=3D2190670817 WINDOW=3D64240 RES=3D0x00 ACK=
+ SYN
+URGP=3D0 OPT (020405B40101040201030307)=20
 
+The corresponding pcap file can be found here :
+https://filebin.net/yazmmekhrdiu4dh8/capture_not_work_ano.pcap
+
+Also, I do not understand how this connection could be in SYN_RECV
+conntrack state. This state means that SYN-ACK packet has already been
+received and I'm sure that no such packet has already been submitted.
+
+I  also checked with conntrack -L that there is no phantom states
+before trying to establish a connection with the client.
+
+It happens for a specific client, on each of
+these connection, otherwise the traffic is working very well on the
+machine for all the other clients. I tried different Linux
+distribution (kernel version 5.13.0-20-generic or 5.4.0-96-generic), and
+my packet is always tagged as invalid.
+
+Do I miss something ? Anybody has got idea to help me understand (and
+fix) this case ?
+
+J=C3=A9r=C3=B4me
