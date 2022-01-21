@@ -1,60 +1,91 @@
-From: Jerome Barotin <jbn@s4e.fr>
-Subject: How to understand causes of invalid state for an OUPUT SYNACK
+From: Florian Westphal <fw@strlen.de>
+Subject: Re: How to understand causes of invalid state for an OUPUT SYNACK
  packet
-Date: Fri, 21 Jan 2022 12:23:32 +0100
-Message-ID: <20220121122332.1501d9ba@glazard>
+Date: Fri, 21 Jan 2022 13:40:59 +0100
+Message-ID: <20220121124059.GA14018@breakpoint.cc>
+References: <20220121122332.1501d9ba@glazard>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=s4e.fr; s=google;
-        h=date:from:to:subject:message-id:mime-version
-         :content-transfer-encoding;
-        bh=NHajWdO7oRrNqSWfZH29E+nkenJh1RPMqlSDq/tMku8=;
-        b=RoR2mxBY/au76gnJ4Yx36oeHPlcO/cE6U8WZwQNuSIZf61AHgmDeYlMdImOVj/OZMk
-         IYD/xgaZCepUSprZLmFke/Ds8IsnYsq/Y9VZX0MI3ckiiu17fGpFSgx/7JbwW/QjFcz7
-         2gTc1ybzXKprvuKw2upJScQJ8yWJhpZThgqqw=
+Content-Disposition: inline
+In-Reply-To: <20220121122332.1501d9ba@glazard>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Jerome Barotin <jbn@s4e.fr>
+Cc: netfilter@vger.kernel.org
 
-Hello,
+Jerome Barotin <jbn@s4e.fr> wrote:
+> I've got a specific device (industrial computer) where its
+> TCP connection are always blocked by netfilter when it tries to
+> connect to my server. 
+> 
+> Exactly the SYN packet is forwarded to my local process, but, the
+> SYN-ACK answer is always tagged as invalid by the conntrack
+> module, 
 
-I've got a specific device (industrial computer) where its
-TCP connection are always blocked by netfilter when it tries to
-connect to my server.=20
+Its not, the message is misleading.
 
-Exactly the SYN packet is forwarded to my local process, but, the
-SYN-ACK answer is always tagged as invalid by the conntrack
-module,=20
+> I noticed this behaviour in the following line in kern.log :
+> 
+> Jan 14 11:26:15 myhostname kernel: [260283.271861] nf_ct_proto_6:
+> invalid packet ignored in state SYN_RECV  IN= OUT= SRC=10.1.1.4
+> DST=10.1.1.3 LEN=52 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=TCP SPT=21
+> DPT=64004 SEQ=1624381780 ACK=2190670817 WINDOW=64240 RES=0x00 ACK SYN
+> URGP=0 OPT (020405B40101040201030307) 
 
-I noticed this behaviour in the following line in kern.log :
+Maybe we should just axe this message.  The packet is *ignored*, not
+marked as invalid.  Such packet will NOT trigger -m conntrack --ctstate
+INVALID.  The wording was slightly changed in 5.12 kernel, where this is
+now:
 
-Jan 14 11:26:15 myhostname kernel: [260283.271861] nf_ct_proto_6:
-invalid packet ignored in state SYN_RECV  IN=3D OUT=3D SRC=3D10.1.1.4
-DST=3D10.1.1.3 LEN=3D52 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D0 DF PROTO=3DT=
-CP SPT=3D21
-DPT=3D64004 SEQ=3D1624381780 ACK=3D2190670817 WINDOW=3D64240 RES=3D0x00 ACK=
- SYN
-URGP=3D0 OPT (020405B40101040201030307)=20
+nf_ct_proto_6: packet (index 1) in dir 1 ignored, state SYN_RECV IN=...
 
-The corresponding pcap file can be found here :
-https://filebin.net/yazmmekhrdiu4dh8/capture_not_work_ano.pcap
+> The corresponding pcap file can be found here :
+> https://filebin.net/yazmmekhrdiu4dh8/capture_not_work_ano.pcap
 
-Also, I do not understand how this connection could be in SYN_RECV
-conntrack state. This state means that SYN-ACK packet has already been
-received and I'm sure that no such packet has already been submitted.
+Thanks, lets see (trimmed line length):
+.3.64004 > 10.1.1.4.21: Flags [S], seq 2190670816, win 8192, options [mss 1330,nop,wscale 8,nop,nop,sackOK], length 0
 
-I  also checked with conntrack -L that there is no phantom states
-before trying to establish a connection with the client.
+This packets gets us to SYN_SENT state:
+tcp      6 116 SYN_SENT src=10.1.1.3 dst=10.1.1.4 sport=64004 dport=21 [UNREPLIED] src=10.1.1.4 dst=10.1.1.3 sport=21 dport=64004 mark=0 use=1
 
-It happens for a specific client, on each of
-these connection, otherwise the traffic is working very well on the
-machine for all the other clients. I tried different Linux
-distribution (kernel version 5.13.0-20-generic or 5.4.0-96-generic), and
-my packet is always tagged as invalid.
+... packet would match --ctstate NEW.
 
-Do I miss something ? Anybody has got idea to help me understand (and
-fix) this case ?
+.4.21 > 10.1.1.3.64004: Flags [S.], seq 1624381780, ack 2190670817, win 64240, options [mss 1460,nop,nop,sackOK,nop,wscale 7], length 0
 
-J=C3=A9r=C3=B4me
+This packet gets us to SYN_RECV state.
+... packet would match --ctstate ESTABLISHED.
+
+.4.21 > 10.1.1.3.64004: Flags [S.], seq 1624381780, ack 2190670817, win 64240, options [mss 1460,nop,nop,sackOK,nop,wscale 7], length 0
+
+This packet produces the 'ignored' message quoted above, its ignored
+because we already saw such packet before, so packet matches ESTABLISHED
+state.
+
+.4.21 > 10.1.1.3.64004: Flags [S.], seq 1624381780, ack 2190670817, win 64240, options [mss 1460,nop,nop,sackOK,nop,wscale 7], length 0
+
+This repeats the message, no other side effects.
+
+.3.64004 > 10.1.1.4.21: Flags [S], seq 2190670816, win 65535, options [mss 1330,nop,nop,sackOK], length 0
+
+Similar message, this is for 'index 0'
+
+4.21 > 10.1.1.3.64004: Flags [S.], seq 1624381780, ack 2190670817, win 64240, options [mss 1460,nop,nop,sackOK,nop,wscale 7], length 0
+
+> Also, I do not understand how this connection could be in SYN_RECV
+> conntrack state. This state means that SYN-ACK packet has already been
+> received and I'm sure that no such packet has already been submitted.
+
+Where was that dump taken?  Its what I used to tcpreplay into a vm.
+
+> Do I miss something ? Anybody has got idea to help me understand (and
+> fix) this case ?
+
+Is the conntrack machine forwarding or an endpoint?
+
+If forwarding, can you provide pcaps from the inbound
+and outbound interfaces?
+
+You could also -j LOG packets in state INVALID to pinpoint which
+packet really does get marked as INVALID, but afaict its not a
+packet contained in the provided pcap.
