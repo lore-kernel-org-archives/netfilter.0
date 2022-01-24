@@ -1,50 +1,45 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] Settlement with Patrick McHardy
-Date: Mon, 24 Jan 2022 14:00:57 +0100
-Message-ID: <Ye6jCQm7z0Yr3bqA@salvia>
+From: Steffen Weinreich <steve@weinreich.org>
+Subject: Re: nftables stateless NAT in raw table mangles fragmented UDP
+ packets
+Date: Mon, 24 Jan 2022 17:49:49 +0100
+Message-ID: <69389be8-79d7-2c66-4cb9-1c3ea84c62fd@weinreich.org>
+References: <cdb7af33-1e07-05b7-a9d9-142d06d9cbfe@weinreich.org>
+ <Yc8Hpu/5LPyT5HIU@salvia> <Yc8H9sHapPLHKWXV@salvia>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=weinreich.org;
+        s=dkim; t=1643042991;
+        h=from:subject:date:message-id:to:cc:mime-version:content-type:
+         content-transfer-encoding:content-language:in-reply-to:references;
+        bh=NJ9QrS7JlO9qXAc2O9qCjlRmiNpmKxrpMDeTfQ01xk4=;
+        b=IRD5Qf62cvXnox/En/6snwpL0sO52oUrm51KvAUILRJV3CB8zgxBUBHm745a8rYHdvxf1v
+        VG1zn6Z+hlVwnWENdkRv3dr5uhRFniriH69c+Wd2rfd+snhW7OUuYTf4BXgADGDtXO2SBE
+        5FsesOterdvDoQGm8yobcDNCfyYyRvXr3Y+i81QN4JKe6THrfR58cKigrYfQb3/Ph0Lnjn
+        kF3BUuC4FhaEpKTWnIGYF/Odn1ptv98qRpIjmDRab2pgkU4SkanwN5bqeXDu4KuG/Ix2GT
+        SR/O4much2nLdTAGpGO2/WuT8B+2pT+RDWHYs7qg7dtyN3ZqhuxYCHf2KPq+Gg==
+In-Reply-To: <Yc8H9sHapPLHKWXV@salvia>
+Content-Language: de-AT-frami
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter-announce@lists.netfilter.org
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org
 
-The netfilter project announces a settlement with Patrick McHardy.
-This settlement is legally binding and it governs any legal enforcement
-activities concerning all programs and program libraries published by
-the netfilter/iptables project on its website [1] as well as the Linux
-kernel [2]. Please, see the court order [3] (in German) and/or the
-translation of the court order for further details [4].
+Hi Pablo,
 
-After losing contact with Patrick in regard to questions about his
-unilateral enforcement activities and his subsequent suspension from
-the core team in 2016, three current and former core team members
-decided to file a lawsuit against Patrick in 2020. During this
-lawsuit, communication with Patrick was re-established in 2021, and a
-settlement could be reached.
 
-This settlement establishes that any decision-making around
-netfilter-related enforcement activities should be based on a majority
-vote. Thus, each active coreteam member [5] at the time of the
-enforcement request holds one right to vote. This settlement covers
-past and new enforcement, as well as the enforcement of contractual
-penalties related to past declarations to cease-and-desist.
+>> Could you give a try to this kernel patch?
+>> Wrong patch, attaching again.
+>> Thanks for reporting.
 
-The netfilter project continues to endorse "The Principles of
-Community-Oriented GPL Enforcement" [6]. Therefore, this settlement does
-not release third parties from their obligations to comply with the
-license [7] hereinafter.
+The=C2=A0 patch works in our Test Envirnoment for the last 3 Weeks without a
+problem.
 
-The netfilter coreteam and I personally would like to thank everyone
-that has been helping and supportive in these difficult years for making
-possible this legal solution.
+How do we get the patch into to the Mainline Kernel, so that we do not
+need a separate kernel package for these maschines?
 
-[1] https://www.netfilter.org
-[2] https://www.kernel.org
-[3] https://www.netfilter.org/files/2022-01-24-Beschluss_und_Vergleich.pdf
-[4] https://www.netfilter.org/files/2022-01-24-Translation_Court_Order_and_Settlement.pdf
-[5] https://www.netfilter.org/about.html#coreteam
-[6] http://www.netfilter.org/files/statement.pdf
-[7] https://www.netfilter.org/licensing.html
+
+cheerio
+
+Steve
+
