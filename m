@@ -1,141 +1,118 @@
 From: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Subject: Re: [RFC PATCH 1/2] landlock: TCP network hooks implementation
-Date: Tue, 1 Feb 2022 13:33:46 +0100
-Message-ID: <0d33f7cd-6846-5e7e-62b9-fbd0b28ecea9@digikod.net>
+Subject: Re: [RFC PATCH 0/2] landlock network implementation cover letter
+Date: Tue, 1 Feb 2022 18:53:18 +0100
+Message-ID: <85450679-51fd-e5ae-b994-74bda3041739@digikod.net>
 References: <20220124080215.265538-1-konstantin.meskhidze@huawei.com>
- <20220124080215.265538-2-konstantin.meskhidze@huawei.com>
- <CA+FuTSf4EjgjBCCOiu-PHJcTMia41UkTh8QJ0+qdxL_J8445EA@mail.gmail.com>
- <0934a27a-d167-87ea-97d2-b3ac952832ff@huawei.com>
- <CA+FuTSc8ZAeaHWVYf-zmn6i5QLJysYGJppAEfb7tRbtho7_DKA@mail.gmail.com>
- <d84ed5b3-837a-811a-6947-e857ceba3f83@huawei.com>
- <CA+FuTSeVhLdeXokyG4x__HGJyNOwsSicLOb4NKJA-gNp59S5uA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-owner@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-security-module-owner@vger.kernel.org>
 Content-Language: en-US
-In-Reply-To: <CA+FuTSeVhLdeXokyG4x__HGJyNOwsSicLOb4NKJA-gNp59S5uA@mail.gmail.com>
+In-Reply-To: <20220124080215.265538-1-konstantin.meskhidze@huawei.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
 Cc: linux-security-module@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, yusongping@huawei.com, artem.kuzin@huawei.com
 
 
-On 31/01/2022 18:14, Willem de Bruijn wrote:
-> On Fri, Jan 28, 2022 at 10:12 PM Konstantin Meskhidze
-> <konstantin.meskhidze@huawei.com> wrote:
->>
->>
->>
->> 1/26/2022 5:15 PM, Willem de Bruijn пишет:
->>> On Wed, Jan 26, 2022 at 3:06 AM Konstantin Meskhidze
->>> <konstantin.meskhidze@huawei.com> wrote:
->>>>
->>>>
->>>>
->>>> 1/25/2022 5:17 PM, Willem de Bruijn пишет:
->>>>> On Mon, Jan 24, 2022 at 3:02 AM Konstantin Meskhidze
->>>>> <konstantin.meskhidze@huawei.com> wrote:
->>>>>>
->>>>>> Support of socket_bind() and socket_connect() hooks.
->>>>>> Current prototype can restrict binding and connecting of TCP
->>>>>> types of sockets. Its just basic idea how Landlock could support
->>>>>> network confinement.
->>>>>>
->>>>>> Changes:
->>>>>> 1. Access masks array refactored into 1D one and changed
->>>>>> to 32 bits. Filesystem masks occupy 16 lower bits and network
->>>>>> masks reside in 16 upper bits.
->>>>>> 2. Refactor API functions in ruleset.c:
->>>>>>        1. Add void *object argument.
->>>>>>        2. Add u16 rule_type argument.
->>>>>> 3. Use two rb_trees in ruleset structure:
->>>>>>        1. root_inode - for filesystem objects
->>>>>>        2. root_net_port - for network port objects
->>>>>>
->>>>>> Signed-off-by: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
->>>>>
->>>>>> +static int hook_socket_connect(struct socket *sock, struct sockaddr *address, int addrlen)
->>>>>> +{
->>>>>> +       short socket_type;
->>>>>> +       struct sockaddr_in *sockaddr;
->>>>>> +       u16 port;
->>>>>> +       const struct landlock_ruleset *const dom = landlock_get_current_domain();
->>>>>> +
->>>>>> +       /* Check if the hook is AF_INET* socket's action */
->>>>>> +       if ((address->sa_family != AF_INET) && (address->sa_family != AF_INET6))
->>>>>> +               return 0;
->>>>>
->>>>> Should this be a check on the socket family (sock->ops->family)
->>>>> instead of the address family?
->>>>
->>>> Actually connect() function checks address family:
->>>>
->>>> int __inet_stream_connect(... ,struct sockaddr *uaddr ,...) {
->>>> ...
->>>>           if (uaddr) {
->>>>                   if (addr_len < sizeof(uaddr->sa_family))
->>>>                   return -EINVAL;
->>>>
->>>>                   if (uaddr->sa_family == AF_UNSPEC) {
->>>>                           err = sk->sk_prot->disconnect(sk, flags);
->>>>                           sock->state = err ? SS_DISCONNECTING :
->>>>                           SS_UNCONNECTED;
->>>>                   goto out;
->>>>                   }
->>>>           }
->>>>
->>>> ...
->>>> }
->>>
->>> Right. My question is: is the intent of this feature to be limited to
->>> sockets of type AF_INET(6) or to addresses?
->>>
->>> I would think the first. Then you also want to catch operations on
->>> such sockets that may pass a different address family. AF_UNSPEC is
->>> the known offender that will effect a state change on AF_INET(6)
->>> sockets.
->>
->>    The intent is to restrict INET sockets to bind/connect to some ports.
->>    You can apply some number of Landlock rules with port defenition:
->>          1. Rule 1 allows to connect to sockets with port X.
->>          2. Rule 2 forbids to connect to socket with port Y.
->>          3. Rule 3 forbids to bind a socket to address with port Z.
->>
->>          and so on...
->>>
->>>>>
->>>>> It is valid to pass an address with AF_UNSPEC to a PF_INET(6) socket.
->>>>> And there are legitimate reasons to want to deny this. Such as passing
->>>>> a connection to a unprivileged process and disallow it from disconnect
->>>>> and opening a different new connection.
->>>>
->>>> As far as I know using AF_UNSPEC to unconnect takes effect on
->>>> UDP(DATAGRAM) sockets.
->>>> To unconnect a UDP socket, we call connect but set the family member of
->>>> the socket address structure (sin_family for IPv4 or sin6_family for
->>>> IPv6) to AF_UNSPEC. It is the process of calling connect on an already
->>>> connected UDP socket that causes the socket to become unconnected.
->>>>
->>>> This RFC patch just supports TCP connections. I need to check the logic
->>>> if AF_UNSPEC provided in connenct() function for TCP(STREAM) sockets.
->>>> Does it disconnect already established TCP connection?
->>>>
->>>> Thank you for noticing about this issue. Need to think through how
->>>> to manage it with Landlock network restrictions for both TCP and UDP
->>>> sockets.
->>>
->>> AF_UNSPEC also disconnects TCP.
->>
->> So its possible to call connect() with AF_UNSPEC and make a socket
->> unconnected. If you want to establish another connection to a socket
->> with port Y, and if there is a landlock rule has applied to a process
->> (or container) which restricts to connect to a socket with port Y, it
->> will be banned.
->> Thats the basic logic.
+On 24/01/2022 09:02, Konstantin Meskhidze wrote:
+> Hi, all!
 > 
-> Understood, and that works fine for connect. It would be good to also
-> ensure that a now-bound socket cannot call listen. Possibly for
-> follow-on work.
+> This is a new bunch of RFC patches related to Landlock LSM network confinement.
+> Here are previous discussions:
+> 1. https://lore.kernel.org/linux-security-module/20211210072123.386713-1-konstantin.meskhidze@huawei.com/
+> 2. https://lore.kernel.org/linux-security-module/20211228115212.703084-1-konstantin.meskhidze@huawei.com/
+> 
+> As in previous RFCs, 2 hooks are supported:
+>    - hook_socket_bind()
+>    - hook_socket_connect()
+> 
+> Selftest are provided in tools/testing/selftests/landlock/network_test.c;
+> Implementation was tested in QEMU invironment with 5.13 kernel version:
 
-Are you thinking about a new access right for listen? What would be the 
-use case vs. the bind access right?
+Again, you need to base your work on the latest kernel version.
+
+
+>   1. base_test - passed all tests
+>   2. fs_test - passed 44/46 tests. 2 tests related to overlayfs failed.
+>      Probably, I have wrong config options for overlayfs.
+
+The minimal required configuration is listed in the "config" file. You 
+need to update it for the network tests as well. You missed the 
+ptrace_test. To test everything you can run:
+fakeroot make -C tools/testing/selftests TARGETS=landlock gen_tar
+and then extract 
+tools/testing/selftests/kselftest_install/kselftest-packages/kselftest.tar.gz 
+and execute run_kselftest.sh on your VM.
+
+
+>   3. network_test - passed all tests.
+>      Please give your suggestions about test cover in network_test.c
+> 
+> Implementation related issues
+> =============================
+
+It is more a changelog than issues. ;)
+
+
+> 
+> 1. Access masks array refactored into 1D one and changed
+> to 32 bits. Filesystem masks occupy 16 lower bits and network
+> masks reside in 16 upper bits.
+> 
+>        struct landlock_ruleset {
+>              ...
+>              ...
+>              u32 access_masks[];
+>        }
+> 
+> 2. Refactor API functions in ruleset.c:
+>      1. Add (void *)object argument.
+>      2. Add u16 rule_type argument.
+> 
+>    - In filesystem case the "object" is defined by underlying inode.
+>    In network case the "object" is defined by a port. There is
+>    a union containing either a struct landlock_object pointer or a
+>    raw data (here a u16 port):
+>      union {
+>          struct landlock_object *ptr;
+>          uintptr_t data;
+>      } object;
+> 
+>    - Everytime when a rule is inserted it's needed to provide a rule type:
+> 
+>      landlock_insert_rule(ruleset, (void *)object, access, rule_type)
+>        1. A rule_type could be or LANDLOCK_RULE_NET_SERVICE or
+>        LANDLOCK_RULE_PATH_BENEATH;
+>        2. (void *) object - is either landlock_object *ptr or port value;
+> 
+> 3. Use two rb_trees in ruleset structure:
+>      1. root_inode - for filesystem objects (inodes).
+>      2. root_net_port - for network port objects.
+
+Thanks for these explanations!
+
+
+> 
+> Konstantin Meskhidze (2):
+>    landlock: TCP network hooks implementation
+>    landlock: selftests for bind and connect hooks
+> 
+>   include/uapi/linux/landlock.h                 |  52 +++
+>   security/landlock/Makefile                    |   2 +-
+>   security/landlock/fs.c                        |  12 +-
+>   security/landlock/limits.h                    |   6 +
+>   security/landlock/net.c                       | 175 +++++++++
+>   security/landlock/net.h                       |  21 ++
+>   security/landlock/ruleset.c                   | 167 ++++++---
+>   security/landlock/ruleset.h                   |  40 +-
+>   security/landlock/setup.c                     |   3 +
+>   security/landlock/syscalls.c                  | 142 ++++---
+>   .../testing/selftests/landlock/network_test.c | 346 ++++++++++++++++++
+>   11 files changed, 860 insertions(+), 106 deletions(-)
+>   create mode 100644 security/landlock/net.c
+>   create mode 100644 security/landlock/net.h
+>   create mode 100644 tools/testing/selftests/landlock/network_test.c
+> 
+> --
+> 2.25.1
+> 
