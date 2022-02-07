@@ -1,106 +1,143 @@
-From: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Subject: Re: [RFC PATCH 2/2] landlock: selftests for bind and connect hooks
-Date: Mon, 7 Feb 2022 13:49:51 +0100
-Message-ID: <ae0fcafa-3e8d-d6f2-26a8-ae74dda8371c@digikod.net>
+From: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+Subject: Re: [RFC PATCH 0/2] landlock network implementation cover letter
+Date: Mon, 7 Feb 2022 16:18:47 +0300
+Message-ID: <51967ba5-519a-8af2-76ce-eafa8c1dea33@huawei.com>
 References: <20220124080215.265538-1-konstantin.meskhidze@huawei.com>
- <20220124080215.265538-3-konstantin.meskhidze@huawei.com>
- <4d54e3a9-8a26-d393-3c81-b01389f76f09@digikod.net>
- <ae5ca74d-ce5f-51e8-31c1-d02744ec92f8@huawei.com>
+ <85450679-51fd-e5ae-b994-74bda3041739@digikod.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Language: en-US
-In-Reply-To: <ae5ca74d-ce5f-51e8-31c1-d02744ec92f8@huawei.com>
+Return-path: <linux-security-module-owner@vger.kernel.org>
+Content-Language: ru
+In-Reply-To: <85450679-51fd-e5ae-b994-74bda3041739@digikod.net>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+To: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
 Cc: linux-security-module@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, yusongping@huawei.com, artem.kuzin@huawei.com
 
 
-On 07/02/2022 08:11, Konstantin Meskhidze wrote:
+
+2/1/2022 8:53 PM, Mickaël Salaün пишет:
 > 
-> 
-> 2/1/2022 9:31 PM, Mickaël Salaün пишет:
+> On 24/01/2022 09:02, Konstantin Meskhidze wrote:
+>> Hi, all!
 >>
->> On 24/01/2022 09:02, Konstantin Meskhidze wrote:
->>> Support 4 tests for bind and connect networks actions:
+>> This is a new bunch of RFC patches related to Landlock LSM network 
+>> confinement.
+>> Here are previous discussions:
+>> 1. 
+>> https://lore.kernel.org/linux-security-module/20211210072123.386713-1-konstantin.meskhidze@huawei.com/ 
 >>
->> Good to see such tests!
+>> 2. 
+>> https://lore.kernel.org/linux-security-module/20211228115212.703084-1-konstantin.meskhidze@huawei.com/ 
 >>
 >>
->>> 1. bind() a socket with no landlock restrictions.
->>> 2. bind() sockets with landllock restrictions.
-
-[...]
-
->>> + */
->>> +
->>> +#define _GNU_SOURCE
->>> +#include <errno.h>
->>> +#include <fcntl.h>
->>> +#include <linux/landlock.h>
->>> +#include <string.h>
->>> +#include <sys/prctl.h>
->>> +#include <sys/socket.h>
->>> +#include <sys/types.h>
->>> +#include <netinet/in.h>
->>> +#include <arpa/inet.h>
+>> As in previous RFCs, 2 hooks are supported:
+>>    - hook_socket_bind()
+>>    - hook_socket_connect()
 >>
->> To make it determinisitic (and ease patching/diff/merging), you should 
->> sort all the included files (in tests and in the kernel code).
+>> Selftest are provided in tools/testing/selftests/landlock/network_test.c;
+>> Implementation was tested in QEMU invironment with 5.13 kernel version:
 > 
->    Sorry. Did not get your point here. Could you explain in a bit more
->    details please.
+> Again, you need to base your work on the latest kernel version.
+> 
+   Is it because there are new Landlock features in a latest kernel
+   version?
+   I thought 5.13 kernel version and the latest one have the same
+   Landlock functionality and there will not be rebasing problems in
+   future. But anyway I will base the work on the latest kernel.
+   Which kernel version do you work on now?
 
-It will be easier to sort all the #include lines with the "sort -u" command.
+> 
+>>   1. base_test - passed all tests
+>>   2. fs_test - passed 44/46 tests. 2 tests related to overlayfs failed.
+>>      Probably, I have wrong config options for overlayfs.
+> 
+> The minimal required configuration is listed in the "config" file. You 
+> need to update it for the network tests as well. You missed the 
+> ptrace_test. To test everything you can run:
+> fakeroot make -C tools/testing/selftests TARGETS=landlock gen_tar
+> and then extract 
+> tools/testing/selftests/kselftest_install/kselftest-packages/kselftest.tar.gz 
+> and execute run_kselftest.sh on your VM.
 
-[...]
-
->>> +    /* Create a socket 3 */
->>> +    sockfd_3 = socket(AF_INET, SOCK_STREAM, 0);
->>> +    ASSERT_LE(0, sockfd_3);
->>> +    /* Allow reuse of local addresses */
->>> +    ASSERT_EQ(0, setsockopt(sockfd_3, SOL_SOCKET, SO_REUSEADDR, 
->>> &one, sizeof(one)));
->>> +
->>> +    /* Set socket 3 address parameters */
->>> +    addr_3.sin_family = AF_INET;
->>> +    addr_3.sin_port = htons(SOCK_PORT_3);
->>> +    addr_3.sin_addr.s_addr = inet_addr(IP_ADDRESS);
->>> +    memset(&(addr_3.sin_zero), '\0', 8);
->>> +    /* Bind the socket 3 to IP address */
->>> +    ASSERT_EQ(0, bind(sockfd_3, (struct sockaddr *)&addr_3, 
->>> sizeof(addr_3)));
+   Thank you. I missed config file in landlock selftests.
+   I will launch all landlock tests.
+> 
+> 
+>>   3. network_test - passed all tests.
+>>      Please give your suggestions about test cover in network_test.c
 >>
->> Why is it allowed to bind to SOCK_PORT_3 whereas net_service_3 forbids 
->> it?
+>> Implementation related issues
+>> =============================
 > 
->    It's allowed cause net_service_3 has empty access field.
-> 
->     /* Empty allowed_access (i.e. deny rules) are ignored in network
->      *  actions for SOCK_PORT_3 socket "object"
->      */
->      ASSERT_EQ(-1, landlock_add_rule(ruleset_fd,
->                                      LANDLOCK_RULE_NET_SERVICE,
->                                      &net_service_3, 0));
->      ASSERT_EQ(ENOMSG, errno);
-> 
->    Applying this rule returns ENOMSG errno:
-> 
->    /* Informs about useless rule: empty allowed_access (i.e. deny rules)
->     * are ignored in network actions
->     */
->          if (!net_service_attr.allowed_access) {
->              err = -ENOMSG;
->              goto out_put_ruleset;
->          }
->    This means binding socket 3 is not restricted.
->    For path_beneath_attr.allowed_access = 0 there is the same logic.
+> It is more a changelog than issues. ;)
 
-I missed the ENOMSG check; the third rule has nothing to do with it. 
-However, because the ruleset handles bind and connect actions, they must 
-be denied by default. There is no rule allowing binding to SOCK_PORT_3. 
-Why is it allowed?
+   Ok. Thanks. I will add a changelog into the next patches.
+> 
+> 
+>>
+>> 1. Access masks array refactored into 1D one and changed
+>> to 32 bits. Filesystem masks occupy 16 lower bits and network
+>> masks reside in 16 upper bits.
+>>
+>>        struct landlock_ruleset {
+>>              ...
+>>              ...
+>>              u32 access_masks[];
+>>        }
+>>
+>> 2. Refactor API functions in ruleset.c:
+>>      1. Add (void *)object argument.
+>>      2. Add u16 rule_type argument.
+>>
+>>    - In filesystem case the "object" is defined by underlying inode.
+>>    In network case the "object" is defined by a port. There is
+>>    a union containing either a struct landlock_object pointer or a
+>>    raw data (here a u16 port):
+>>      union {
+>>          struct landlock_object *ptr;
+>>          uintptr_t data;
+>>      } object;
+>>
+>>    - Everytime when a rule is inserted it's needed to provide a rule 
+>> type:
+>>
+>>      landlock_insert_rule(ruleset, (void *)object, access, rule_type)
+>>        1. A rule_type could be or LANDLOCK_RULE_NET_SERVICE or
+>>        LANDLOCK_RULE_PATH_BENEATH;
+>>        2. (void *) object - is either landlock_object *ptr or port value;
+>>
+>> 3. Use two rb_trees in ruleset structure:
+>>      1. root_inode - for filesystem objects (inodes).
+>>      2. root_net_port - for network port objects.
+> 
+> Thanks for these explanations!
 
-You can test with another SOCK_PORT_4, not covered by any rule. As for 
-SOCK_PORT_3, it must be forbidden to bind on it.
+   Thanks for the review!!!
+> 
+> 
+>>
+>> Konstantin Meskhidze (2):
+>>    landlock: TCP network hooks implementation
+>>    landlock: selftests for bind and connect hooks
+>>
+>>   include/uapi/linux/landlock.h                 |  52 +++
+>>   security/landlock/Makefile                    |   2 +-
+>>   security/landlock/fs.c                        |  12 +-
+>>   security/landlock/limits.h                    |   6 +
+>>   security/landlock/net.c                       | 175 +++++++++
+>>   security/landlock/net.h                       |  21 ++
+>>   security/landlock/ruleset.c                   | 167 ++++++---
+>>   security/landlock/ruleset.h                   |  40 +-
+>>   security/landlock/setup.c                     |   3 +
+>>   security/landlock/syscalls.c                  | 142 ++++---
+>>   .../testing/selftests/landlock/network_test.c | 346 ++++++++++++++++++
+>>   11 files changed, 860 insertions(+), 106 deletions(-)
+>>   create mode 100644 security/landlock/net.c
+>>   create mode 100644 security/landlock/net.h
+>>   create mode 100644 tools/testing/selftests/landlock/network_test.c
+>>
+>> -- 
+>> 2.25.1
+>>
+> .
