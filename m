@@ -1,12 +1,13 @@
 From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
 Subject: Re: [RFC PATCH 1/2] landlock: TCP network hooks implementation
-Date: Mon, 7 Feb 2022 11:00:34 -0500
-Message-ID: <CA+FuTScaoby-=xRKf_Dz3koSYHqrMN0cauCg4jMmy_nDxwPADA@mail.gmail.com>
+Date: Mon, 7 Feb 2022 11:17:13 -0500
+Message-ID: <CA+FuTSc6BfWKu1taQr7wPoQ4VJg3Au1PH-rbTa71-srLzARL-A@mail.gmail.com>
 References: <20220124080215.265538-1-konstantin.meskhidze@huawei.com>
  <20220124080215.265538-2-konstantin.meskhidze@huawei.com> <CA+FuTSf4EjgjBCCOiu-PHJcTMia41UkTh8QJ0+qdxL_J8445EA@mail.gmail.com>
  <0934a27a-d167-87ea-97d2-b3ac952832ff@huawei.com> <CA+FuTSc8ZAeaHWVYf-zmn6i5QLJysYGJppAEfb7tRbtho7_DKA@mail.gmail.com>
  <d84ed5b3-837a-811a-6947-e857ceba3f83@huawei.com> <CA+FuTSeVhLdeXokyG4x__HGJyNOwsSicLOb4NKJA-gNp59S5uA@mail.gmail.com>
  <0d33f7cd-6846-5e7e-62b9-fbd0b28ecea9@digikod.net> <91885a8f-b787-62ff-1abb-700641f7c2cb@huawei.com>
+ <CA+FuTScaoby-=xRKf_Dz3koSYHqrMN0cauCg4jMmy_nDxwPADA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netdev-owner@vger.kernel.org>
@@ -14,235 +15,140 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=7K869A6tEFT6j5avj9Nj8LDlCMczRFWKyU/2tyGK1kg=;
-        b=bfJhPXpMHTfixkAHAc2h5hRg2WTUb0AFw8vVXRv/GLK9oMUvLT+lc8CgeaBk72GAhU
-         gOBvl8PP58+eaq4V1EH5KAF5/X1bvUH3FPUWoXsw1EsoXJZmnI5Ct44M6u7wZrWsCelT
-         a+hwnLXRW+nhzhwhhsNSIQSfNC4uTN1btW7hyxDLJOOl/2nNG8mp2kL8io6UdpmKDhAw
-         W9V4geLA4PP3GpUfggHxQEft1snCW6I29Yrxm9JVZ+inRGMs76eDKx23jOWUXchoMTlR
-         az2v0eGoJATSj+ujSbpG/hyprtRJ5cYzx9I9QpraghdP4D0mP1b3ox5F4MPxcLjMD8EI
-         AfcA==
-In-Reply-To: <91885a8f-b787-62ff-1abb-700641f7c2cb@huawei.com>
+        bh=Gw/4UW15eYzSdi+TxSzYDRCdQSLS3TL9tdscCSdyYxg=;
+        b=InXVv1jEZyzsy5z7eBG0uEfkymyD+xApXVpYh2qTWDc4lE+xqmJZ9QWZ4+UoK7Ii1s
+         uoNEovvqySCIDsLm+OG4eWryIzbsCGkRVNqhr0/4iIstT4vsLOFtHFLYukv+kK3eVBs7
+         chVNMKIbOiU9O57WWrbsitI4a7ccgHFvPrhPulfHmDSyVZzmZM8yYeMuRMYMPYRXUwQB
+         egv/iqGX8AhyWnq+x5SPFiW7E8gT29om3mtDOrWofXM0Iwuds2J5FcaEhjvmLe+ZUaLR
+         cshrxapm87uGiOSw34GBJN26WykSBTlGfw+Sf17dTTRRpGvXN5kCtlyYDGSGQRtM+FTI
+         2Ziw==
+In-Reply-To: <CA+FuTScaoby-=xRKf_Dz3koSYHqrMN0cauCg4jMmy_nDxwPADA@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-Cc: =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, Willem de Bruijn <willemdebruijn.kernel@gmail.com>, linux-security-module@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, yusongping@huawei.com, artem.kuzin@huawei.com
+Content-Type: text/plain; charset="windows-1252"
+To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Cc: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>, =?UTF-8?B?TWlja2HDq2wgU2FsYcO8bg==?= <mic@digikod.net>, linux-security-module@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, yusongping@huawei.com, artem.kuzin@huawei.com
 
-On Mon, Feb 7, 2022 at 12:51 AM Konstantin Meskhidze
-<konstantin.meskhidze@huawei.com> wrote:
+> >   If bind() function has already been restricted so the following
+> > listen() function is automatically banned. I agree with Micka=D1=91l ab=
+out
+> > the usecase here. Why do we need new-bound socket with restricted liste=
+ning?
 >
+> The intended use-case is for a privileged process to open a connection
+> (i.e., bound and connected socket) and pass that to a restricted
+> process. The intent is for that process to only be allowed to
+> communicate over this pre-established channel.
 >
+> In practice, it is able to disconnect (while staying bound) and
+> elevate its privileges to that of a listening server:
 >
-> 2/1/2022 3:33 PM, Micka=C3=ABl Sala=C3=BCn =D0=BF=D0=B8=D1=88=D0=B5=D1=82=
-:
-> >
-> > On 31/01/2022 18:14, Willem de Bruijn wrote:
-> >> On Fri, Jan 28, 2022 at 10:12 PM Konstantin Meskhidze
-> >> <konstantin.meskhidze@huawei.com> wrote:
-> >>>
-> >>>
-> >>>
-> >>> 1/26/2022 5:15 PM, Willem de Bruijn =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >>>> On Wed, Jan 26, 2022 at 3:06 AM Konstantin Meskhidze
-> >>>> <konstantin.meskhidze@huawei.com> wrote:
-> >>>>>
-> >>>>>
-> >>>>>
-> >>>>> 1/25/2022 5:17 PM, Willem de Bruijn =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >>>>>> On Mon, Jan 24, 2022 at 3:02 AM Konstantin Meskhidze
-> >>>>>> <konstantin.meskhidze@huawei.com> wrote:
-> >>>>>>>
-> >>>>>>> Support of socket_bind() and socket_connect() hooks.
-> >>>>>>> Current prototype can restrict binding and connecting of TCP
-> >>>>>>> types of sockets. Its just basic idea how Landlock could support
-> >>>>>>> network confinement.
-> >>>>>>>
-> >>>>>>> Changes:
-> >>>>>>> 1. Access masks array refactored into 1D one and changed
-> >>>>>>> to 32 bits. Filesystem masks occupy 16 lower bits and network
-> >>>>>>> masks reside in 16 upper bits.
-> >>>>>>> 2. Refactor API functions in ruleset.c:
-> >>>>>>>        1. Add void *object argument.
-> >>>>>>>        2. Add u16 rule_type argument.
-> >>>>>>> 3. Use two rb_trees in ruleset structure:
-> >>>>>>>        1. root_inode - for filesystem objects
-> >>>>>>>        2. root_net_port - for network port objects
-> >>>>>>>
-> >>>>>>> Signed-off-by: Konstantin Meskhidze
-> >>>>>>> <konstantin.meskhidze@huawei.com>
-> >>>>>>
-> >>>>>>> +static int hook_socket_connect(struct socket *sock, struct
-> >>>>>>> sockaddr *address, int addrlen)
-> >>>>>>> +{
-> >>>>>>> +       short socket_type;
-> >>>>>>> +       struct sockaddr_in *sockaddr;
-> >>>>>>> +       u16 port;
-> >>>>>>> +       const struct landlock_ruleset *const dom =3D
-> >>>>>>> landlock_get_current_domain();
-> >>>>>>> +
-> >>>>>>> +       /* Check if the hook is AF_INET* socket's action */
-> >>>>>>> +       if ((address->sa_family !=3D AF_INET) &&
-> >>>>>>> (address->sa_family !=3D AF_INET6))
-> >>>>>>> +               return 0;
-> >>>>>>
-> >>>>>> Should this be a check on the socket family (sock->ops->family)
-> >>>>>> instead of the address family?
-> >>>>>
-> >>>>> Actually connect() function checks address family:
-> >>>>>
-> >>>>> int __inet_stream_connect(... ,struct sockaddr *uaddr ,...) {
-> >>>>> ...
-> >>>>>           if (uaddr) {
-> >>>>>                   if (addr_len < sizeof(uaddr->sa_family))
-> >>>>>                   return -EINVAL;
-> >>>>>
-> >>>>>                   if (uaddr->sa_family =3D=3D AF_UNSPEC) {
-> >>>>>                           err =3D sk->sk_prot->disconnect(sk, flags=
+> static void child_process(int fd)
+> {
+>         struct sockaddr addr =3D { .sa_family =3D AF_UNSPEC };
+>         int client_fd;
+>
+>         if (listen(fd, 1) =3D=3D 0)
+>                 error(1, 0, "listen succeeded while connected");
+>
+>         if (connect(fd, &addr, sizeof(addr)))
+>                 error(1, errno, "disconnect");
+>
+>         if (listen(fd, 1))
+>                 error(1, errno, "listen");
+>
+>         client_fd =3D accept(fd, NULL, NULL);
+>         if (client_fd =3D=3D -1)
+>                 error(1, errno, "accept");
+>
+>         if (close(client_fd))
+>                 error(1, errno, "close client");
+> }
+>
+> int main(int argc, char **argv)
+> {
+>         struct sockaddr_in6 addr =3D { 0 };
+>         pid_t pid;
+>         int fd;
+>
+>         fd =3D socket(PF_INET6, SOCK_STREAM, 0);
+>         if (fd =3D=3D -1)
+>                 error(1, errno, "socket");
+>
+>         addr.sin6_family =3D AF_INET6;
+>         addr.sin6_addr =3D in6addr_loopback;
+>
+>         addr.sin6_port =3D htons(8001);
+>         if (bind(fd, (void *)&addr, sizeof(addr)))
+>                 error(1, errno, "bind");
+>
+>         addr.sin6_port =3D htons(8000);
+>         if (connect(fd, (void *)&addr, sizeof(addr)))
+>                 error(1, errno, "connect");
+>
+>         pid =3D fork();
+>         if (pid =3D=3D -1)
+>                 error(1, errno, "fork");
+>
+>         if (pid)
+>                 wait(NULL);
+>         else
+>                 child_process(fd);
+>
+>         if (close(fd))
+>                 error(1, errno, "close");
+>
+>         return 0;
+> }
+>
+> It's fine to not address this case in this patch series directly, of
+> course. But we should be aware of the AF_UNSPEC loophole.
+
+I did just notice that with autobind (i.e., without the explicit call
+to bind), the socket gets a different local port after listen. So
+internally a bind call may be made, which may or may not be correctly
+handled by the current landlock implementation already:
+
++static void show_local_port(int fd)
++{
++       char addr_str[INET6_ADDRSTRLEN];
++       struct sockaddr_in6 addr =3D { 0 };
++       socklen_t alen;
++
++       alen =3D sizeof(addr);
++       if (getsockname(fd, (void *)&addr, &alen))
++               error(1, errno, "getsockname");
++
++       if (addr.sin6_family !=3D AF_INET6)
++               error(1, 0, "getsockname: family");
++
++       if (!inet_ntop(AF_INET6, &addr.sin6_addr, addr_str, sizeof(addr_str=
+)))
++               error(1, errno, "inet_ntop");
++       fprintf(stderr, "server: %s:%hu\n", addr_str, ntohs(addr.sin6_port)=
 );
-> >>>>>                           sock->state =3D err ? SS_DISCONNECTING :
-> >>>>>                           SS_UNCONNECTED;
-> >>>>>                   goto out;
-> >>>>>                   }
-> >>>>>           }
-> >>>>>
-> >>>>> ...
-> >>>>> }
-> >>>>
-> >>>> Right. My question is: is the intent of this feature to be limited t=
-o
-> >>>> sockets of type AF_INET(6) or to addresses?
-> >>>>
-> >>>> I would think the first. Then you also want to catch operations on
-> >>>> such sockets that may pass a different address family. AF_UNSPEC is
-> >>>> the known offender that will effect a state change on AF_INET(6)
-> >>>> sockets.
-> >>>
-> >>>    The intent is to restrict INET sockets to bind/connect to some por=
-ts.
-> >>>    You can apply some number of Landlock rules with port defenition:
-> >>>          1. Rule 1 allows to connect to sockets with port X.
-> >>>          2. Rule 2 forbids to connect to socket with port Y.
-> >>>          3. Rule 3 forbids to bind a socket to address with port Z.
-> >>>
-> >>>          and so on...
-> >>>>
-> >>>>>>
-> >>>>>> It is valid to pass an address with AF_UNSPEC to a PF_INET(6) sock=
-et.
-> >>>>>> And there are legitimate reasons to want to deny this. Such as
-> >>>>>> passing
-> >>>>>> a connection to a unprivileged process and disallow it from
-> >>>>>> disconnect
-> >>>>>> and opening a different new connection.
-> >>>>>
-> >>>>> As far as I know using AF_UNSPEC to unconnect takes effect on
-> >>>>> UDP(DATAGRAM) sockets.
-> >>>>> To unconnect a UDP socket, we call connect but set the family
-> >>>>> member of
-> >>>>> the socket address structure (sin_family for IPv4 or sin6_family fo=
-r
-> >>>>> IPv6) to AF_UNSPEC. It is the process of calling connect on an alre=
-ady
-> >>>>> connected UDP socket that causes the socket to become unconnected.
-> >>>>>
-> >>>>> This RFC patch just supports TCP connections. I need to check the
-> >>>>> logic
-> >>>>> if AF_UNSPEC provided in connenct() function for TCP(STREAM) socket=
-s.
-> >>>>> Does it disconnect already established TCP connection?
-> >>>>>
-> >>>>> Thank you for noticing about this issue. Need to think through how
-> >>>>> to manage it with Landlock network restrictions for both TCP and UD=
-P
-> >>>>> sockets.
-> >>>>
-> >>>> AF_UNSPEC also disconnects TCP.
-> >>>
-> >>> So its possible to call connect() with AF_UNSPEC and make a socket
-> >>> unconnected. If you want to establish another connection to a socket
-> >>> with port Y, and if there is a landlock rule has applied to a process
-> >>> (or container) which restricts to connect to a socket with port Y, it
-> >>> will be banned.
-> >>> Thats the basic logic.
-> >>
-> >> Understood, and that works fine for connect. It would be good to also
-> >> ensure that a now-bound socket cannot call listen. Possibly for
-> >> follow-on work.
-> >
-> > Are you thinking about a new access right for listen? What would be the
-> > use case vs. the bind access right?
-> > .
->
->   If bind() function has already been restricted so the following
-> listen() function is automatically banned. I agree with Micka=D1=91l abou=
-t
-> the usecase here. Why do we need new-bound socket with restricted listeni=
-ng?
-
-The intended use-case is for a privileged process to open a connection
-(i.e., bound and connected socket) and pass that to a restricted
-process. The intent is for that process to only be allowed to
-communicate over this pre-established channel.
-
-In practice, it is able to disconnect (while staying bound) and
-elevate its privileges to that of a listening server:
-
-static void child_process(int fd)
-{
-        struct sockaddr addr =3D { .sa_family =3D AF_UNSPEC };
-        int client_fd;
-
-        if (listen(fd, 1) =3D=3D 0)
-                error(1, 0, "listen succeeded while connected");
-
++
++}
++
+@@ -23,6 +42,8 @@ static void child_process(int fd)
         if (connect(fd, &addr, sizeof(addr)))
                 error(1, errno, "disconnect");
 
++       show_local_port(fd);
++
         if (listen(fd, 1))
                 error(1, errno, "listen");
 
-        client_fd =3D accept(fd, NULL, NULL);
-        if (client_fd =3D=3D -1)
-                error(1, errno, "accept");
++       show_local_port(fd);
++
 
-        if (close(client_fd))
-                error(1, errno, "close client");
-}
-
-int main(int argc, char **argv)
-{
-        struct sockaddr_in6 addr =3D { 0 };
-        pid_t pid;
-        int fd;
-
-        fd =3D socket(PF_INET6, SOCK_STREAM, 0);
-        if (fd =3D=3D -1)
-                error(1, errno, "socket");
-
+@@ -47,10 +68,6 @@ int main(int argc, char **argv)
         addr.sin6_family =3D AF_INET6;
         addr.sin6_addr =3D in6addr_loopback;
 
-        addr.sin6_port =3D htons(8001);
-        if (bind(fd, (void *)&addr, sizeof(addr)))
-                error(1, errno, "bind");
-
+-       addr.sin6_port =3D htons(8001);
+-       if (bind(fd, (void *)&addr, sizeof(addr)))
+-               error(1, errno, "bind");
+-
         addr.sin6_port =3D htons(8000);
         if (connect(fd, (void *)&addr, sizeof(addr)))
                 error(1, errno, "connect");
-
-        pid =3D fork();
-        if (pid =3D=3D -1)
-                error(1, errno, "fork");
-
-        if (pid)
-                wait(NULL);
-        else
-                child_process(fd);
-
-        if (close(fd))
-                error(1, errno, "close");
-
-        return 0;
-}
-
-It's fine to not address this case in this patch series directly, of
-course. But we should be aware of the AF_UNSPEC loophole.
