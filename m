@@ -1,327 +1,97 @@
-From: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-Subject: Re: [RFC PATCH 1/2] landlock: TCP network hooks implementation
-Date: Tue, 8 Feb 2022 10:55:57 +0300
-Message-ID: <cc023cc4-043b-c67e-1e6e-acf1eb18d155@huawei.com>
+From: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Subject: Re: [RFC PATCH 2/2] landlock: selftests for bind and connect hooks
+Date: Tue, 8 Feb 2022 13:17:27 +0100
+Message-ID: <d09ac689-b1bf-86fa-4da5-3a0ade7fd552@digikod.net>
 References: <20220124080215.265538-1-konstantin.meskhidze@huawei.com>
- <20220124080215.265538-2-konstantin.meskhidze@huawei.com>
- <ed2bd420-a22b-2912-1ff5-f48ab352d8e7@digikod.net>
- <5cd5b983-32a5-97ec-0835-f0c96d86e805@huawei.com>
- <10999c72-93eb-4db2-e536-a92187545bdb@digikod.net>
+ <20220124080215.265538-3-konstantin.meskhidze@huawei.com>
+ <4d54e3a9-8a26-d393-3c81-b01389f76f09@digikod.net>
+ <ae5ca74d-ce5f-51e8-31c1-d02744ec92f8@huawei.com>
+ <ae0fcafa-3e8d-d6f2-26a8-ae74dda8371c@digikod.net>
+ <9a77fc40-4463-4344-34d0-184d427d32cf@huawei.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <linux-security-module-owner@vger.kernel.org>
-Content-Language: ru
-In-Reply-To: <10999c72-93eb-4db2-e536-a92187545bdb@digikod.net>
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Language: en-US
+In-Reply-To: <9a77fc40-4463-4344-34d0-184d427d32cf@huawei.com>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+To: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
 Cc: linux-security-module@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, yusongping@huawei.com, artem.kuzin@huawei.com
 
 
-
-2/7/2022 5:17 PM, Mickaël Salaün пишет:
+On 08/02/2022 04:01, Konstantin Meskhidze wrote:
 > 
-> On 07/02/2022 14:09, Konstantin Meskhidze wrote:
+> 
+> 2/7/2022 3:49 PM, Mickaël Salaün пишет:
+
+>> [...]
 >>
->>
->> 2/1/2022 3:13 PM, Mickaël Salaün пишет:
->>>
->>> On 24/01/2022 09:02, Konstantin Meskhidze wrote:
->>>> Support of socket_bind() and socket_connect() hooks.
->>>> Current prototype can restrict binding and connecting of TCP
->>>> types of sockets. Its just basic idea how Landlock could support
->>>> network confinement.
+>>>>> +    /* Create a socket 3 */
+>>>>> +    sockfd_3 = socket(AF_INET, SOCK_STREAM, 0);
+>>>>> +    ASSERT_LE(0, sockfd_3);
+>>>>> +    /* Allow reuse of local addresses */
+>>>>> +    ASSERT_EQ(0, setsockopt(sockfd_3, SOL_SOCKET, SO_REUSEADDR, 
+>>>>> &one, sizeof(one)));
+>>>>> +
+>>>>> +    /* Set socket 3 address parameters */
+>>>>> +    addr_3.sin_family = AF_INET;
+>>>>> +    addr_3.sin_port = htons(SOCK_PORT_3);
+>>>>> +    addr_3.sin_addr.s_addr = inet_addr(IP_ADDRESS);
+>>>>> +    memset(&(addr_3.sin_zero), '\0', 8);
+>>>>> +    /* Bind the socket 3 to IP address */
+>>>>> +    ASSERT_EQ(0, bind(sockfd_3, (struct sockaddr *)&addr_3, 
+>>>>> sizeof(addr_3)));
 >>>>
->>>> Changes:
->>>> 1. Access masks array refactored into 1D one and changed
->>>> to 32 bits. Filesystem masks occupy 16 lower bits and network
->>>> masks reside in 16 upper bits.
->>>> 2. Refactor API functions in ruleset.c:
->>>>      1. Add void *object argument.
->>>>      2. Add u16 rule_type argument.
->>>> 3. Use two rb_trees in ruleset structure:
->>>>      1. root_inode - for filesystem objects
->>>>      2. root_net_port - for network port objects
+>>>> Why is it allowed to bind to SOCK_PORT_3 whereas net_service_3 
+>>>> forbids it?
 >>>
->>> It's good to add a changelog, but they must not be in commit messages 
->>> that get copied by git am. Please use "---" to separate this 
->>> additionnal info (but not the Signed-off-by). Please also include a 
->>> version in the email subjects (this one should have been "[RFC PATCH 
->>> v3 1/2] landlock: …"), e.g. using git format-patch --reroll-count=X .
+>>>    It's allowed cause net_service_3 has empty access field.
 >>>
->>> Please follow these rules: 
->>> https://www.kernel.org/doc/html/latest/process/submitting-patches.html
->>> You can take some inspiration from this patch series: 
->>> https://lore.kernel.org/lkml/20210422154123.13086-1-mic@digikod.net/
+>>>     /* Empty allowed_access (i.e. deny rules) are ignored in network
+>>>      *  actions for SOCK_PORT_3 socket "object"
+>>>      */
+>>>      ASSERT_EQ(-1, landlock_add_rule(ruleset_fd,
+>>>                                      LANDLOCK_RULE_NET_SERVICE,
+>>>                                      &net_service_3, 0));
+>>>      ASSERT_EQ(ENOMSG, errno);
+>>>
+>>>    Applying this rule returns ENOMSG errno:
+>>>
+>>>    /* Informs about useless rule: empty allowed_access (i.e. deny rules)
+>>>     * are ignored in network actions
+>>>     */
+>>>          if (!net_service_attr.allowed_access) {
+>>>              err = -ENOMSG;
+>>>              goto out_put_ruleset;
+>>>          }
+>>>    This means binding socket 3 is not restricted.
+>>>    For path_beneath_attr.allowed_access = 0 there is the same logic.
 >>
->>   Ok. I will add patch vervison in next patch. So it will be "[RFC PATCH
->>   v4 ../..] landlock: ..."
->>   But the previous patches remain with no version, correct?
-> 
-> Right, you can't change the subject of already sent emails. ;)
-
-   Ok. But I can add previous patches like:
-    v1: 
-https://lore.kernel.org/linux-security-module/20211210072123.386713-1-konstantin.meskhidze@huawei.com
-    v2: 
-https://lore.kernel.org/netdev/20211228115212.703084-1-konstantin.meskhidze@huawei.com/
-    v3: ....
-
-  right ?
-> 
-> [...]
-> 
->>>> diff --git a/security/landlock/net.c b/security/landlock/net.c
->>>> new file mode 100644
->>>> index 000000000000..0b5323d254a7
->>>> --- /dev/null
->>>> +++ b/security/landlock/net.c
->>>> @@ -0,0 +1,175 @@
->>>> +// SPDX-License-Identifier: GPL-2.0-only
->>>> +/*
->>>> + * Landlock LSM - Filesystem management and hooks
->>>> + *
->>>> + * Copyright © 2016-2020 Mickaël Salaün <mic@digikod.net>
->>>> + * Copyright © 2018-2020 ANSSI
->>>> + */
->>>> +
->>>> +#include <linux/socket.h>
->>>> +#include <linux/net.h>
->>>> +#include <linux/in.h>
->>>
->>> Why is linux/in.h required?
->>>
->>    Struct sockaddr_in is described in this header.
->>    A pointer to struct sockaddr_in is used in hook_socket_connect()
->>    and hook_socket_bind() to get socket's family and port values.
-> 
-> OK, good point.
-> 
-> [...]
-> 
->>>> +        return 0;
->>>> +
->>>> +    socket_type = sock->type;
->>>> +    /* Check if it's a TCP socket */
->>>> +    if (socket_type != SOCK_STREAM)
->>>> +        return 0;
->>>> +
->>>> +    if (!dom)
->>>> +        return 0;
->>>
->>> This must be at the top of *each* hook to make it clear that they 
->>> don't impact non-landlocked processes.
->>>
->>    They don't impact. It does not matter what to check first socket
->>    family/type or landlocked process.
-> 
-> It doesn't change the semantic but it changes the reviewing which is 
-> easier with common and consistent sequential checks (and could avoid 
-> future mistakes). This rule is followed by all Landlock hooks.
-
-   Ok.
-> 
-> [...]
-> 
->>>> @@ -67,10 +76,11 @@ static void build_check_rule(void)
->>>>   }
->>>>   static struct landlock_rule *create_rule(
->>>> -        struct landlock_object *const object,
->>>> +        void *const object,
->>>
->>> Instead of shoehorning two different types into one (and then loosing 
->>> the typing), you should rename object to object_ptr and add a new 
->>> object_data argument. Only one of these should be set according to 
->>> the rule_type. However, if there is no special action performed on 
->>> one of these type (e.g. landlock_get_object), only one uintptr_t 
->>> argument should be enough.
->>>
->>   Do you mean using 2 object arguments in create_rule():
+>> I missed the ENOMSG check; the third rule has nothing to do with it. 
+>> However, because the ruleset handles bind and connect actions, they 
+>> must be denied by default. There is no rule allowing binding to 
+>> SOCK_PORT_3. Why is it allowed?
 >>
->>      1. create_rule( object_ptr = landlock_object , object_data = 0,
->>                                 ...,  fs_rule_type);
->>          2. create_rule( object_ptr = NULL , object_data = port, .... ,
->>                           net_rule_type);
+>> You can test with another SOCK_PORT_4, not covered by any rule. As for 
+>> SOCK_PORT_3, it must be forbidden to bind on it.
 > 
-> Yes, and you can add a WARN_ON_ONCE() in these function to check that 
-> only one argument is set (but object_data could be 0 in each case). The 
-> landlock_get_object() function should only require an object_data though.
-> 
-   Sorry. As you said in previous comment in landlock_get_object, only
-   one  uintptr_t argument should be enough. But, I did not get: "The
-   landlock_get_object() function should only require an object_data
-   though".
-   uintptr_t is the only argument in landlock_get_object?
+>    Apllying the third rule (net_service_3.access is empty) returns ENOMSG
+>    error. That means a process hasn't been restricted by the third rule,
+>    cause during search  process in network rb_tree the process won't find
+>    the third rule, so binding to SOCK_PORT_3 is allowed.
 
-> [...]
-> 
->>>> @@ -142,26 +159,36 @@ static void build_check_ruleset(void)
->>>>    * access rights.
->>>>    */
->>>>   static int insert_rule(struct landlock_ruleset *const ruleset,
->>>> -        struct landlock_object *const object,
->>>> -        const struct landlock_layer (*const layers)[],
->>>> -        size_t num_layers)
->>>> +        void *const obj, const struct landlock_layer (*const 
->>>> layers)[],
->>>
->>> same here
->>       Do you mean using 2 object arguments in insert_rule():
->>
->>      1. insert_rule( object_ptr = landlock_object , object_data = 0,
->>                                 ...,  fs_rule_type);
->>          2. insert_rule( object_ptr = NULL , object_data = port, .... ,
->>                           net_rule_type);
-> 
-> Yes
-> 
-> [...]
-> 
->>>> @@ -336,9 +399,11 @@ static int inherit_ruleset(struct 
->>>> landlock_ruleset *const parent,
->>>>           err = -EINVAL;
->>>>           goto out_unlock;
->>>>       }
->>>> -    /* Copies the parent layer stack and leaves a space for the new 
->>>> layer. */
->>>> -    memcpy(child->fs_access_masks, parent->fs_access_masks,
->>>> -            flex_array_size(parent, fs_access_masks, 
->>>> parent->num_layers));
->>>> +    /* Copies the parent layer stack and leaves a space for the new 
->>>> layer.
->>>
->>> ditto
->>        Do you mean comments style here?
-> 
-> Yes
-> 
-> [...]
-> 
->>>> @@ -317,47 +331,91 @@ SYSCALL_DEFINE4(landlock_add_rule,
->>>>       if (flags)
->>>>           return -EINVAL;
->>>> -    if (rule_type != LANDLOCK_RULE_PATH_BENEATH)
->>>> +    if ((rule_type != LANDLOCK_RULE_PATH_BENEATH) &&
->>>> +        (rule_type != LANDLOCK_RULE_NET_SERVICE))
->>>
->>> Please replace with a switch/case.
->>
->>    Ok. I got it.
->>>
->>>
->>>>           return -EINVAL;
->>>> -    /* Copies raw user space buffer, only one type for now. */
->>>> -    res = copy_from_user(&path_beneath_attr, rule_attr,
->>>> -            sizeof(path_beneath_attr));
->>>> -    if (res)
->>>> -        return -EFAULT;
->>>> -
->>>> -    /* Gets and checks the ruleset. */
->>>> -    ruleset = get_ruleset_from_fd(ruleset_fd, FMODE_CAN_WRITE);
->>>> -    if (IS_ERR(ruleset))
->>>> -        return PTR_ERR(ruleset);
->>>> -
->>>> -    /*
->>>> -     * Informs about useless rule: empty allowed_access (i.e. deny 
->>>> rules)
->>>> -     * are ignored in path walks.
->>>> -     */
->>>> -    if (!path_beneath_attr.allowed_access) {
->>>> -        err = -ENOMSG;
->>>> -        goto out_put_ruleset;
->>>> -    }
->>>> -    /*
->>>> -     * Checks that allowed_access matches the @ruleset constraints
->>>> -     * (ruleset->fs_access_masks[0] is automatically upgraded to 
->>>> 64-bits).
->>>> -     */
->>>> -    if ((path_beneath_attr.allowed_access | 
->>>> ruleset->fs_access_masks[0]) !=
->>>> -            ruleset->fs_access_masks[0]) {
->>>> -        err = -EINVAL;
->>>> -        goto out_put_ruleset;
->>>> +    switch (rule_type) {
->>>> +    case LANDLOCK_RULE_PATH_BENEATH:
->>>> +        /* Copies raw user space buffer, for fs rule type. */
->>>> +        res = copy_from_user(&path_beneath_attr, rule_attr,
->>>> +                    sizeof(path_beneath_attr));
->>>> +        if (res)
->>>> +            return -EFAULT;
->>>> +        break;
->>>> +
->>>> +    case LANDLOCK_RULE_NET_SERVICE:
->>>> +        /* Copies raw user space buffer, for net rule type. */
->>>> +        res = copy_from_user(&net_service_attr, rule_attr,
->>>> +                sizeof(net_service_attr));
->>>> +        if (res)
->>>> +            return -EFAULT;
->>>> +        break;
->>>>       }
->>>> -    /* Gets and checks the new rule. */
->>>> -    err = get_path_from_fd(path_beneath_attr.parent_fd, &path);
->>>> -    if (err)
->>>> -        goto out_put_ruleset;
->>>> +    if (rule_type == LANDLOCK_RULE_PATH_BENEATH) {
->>>> +        /* Gets and checks the ruleset. */
->>>> +        ruleset = get_ruleset_from_fd(ruleset_fd, FMODE_CAN_WRITE);
->>>> +        if (IS_ERR(ruleset))
->>>> +            return PTR_ERR(ruleset);
->>>> +
->>>> +        /*
->>>> +         * Informs about useless rule: empty allowed_access (i.e. 
->>>> deny rules)
->>>> +         * are ignored in path walks.
->>>> +         */
->>>> +        if (!path_beneath_attr.allowed_access) {
->>>> +            err = -ENOMSG;
->>>> +            goto out_put_ruleset;
->>>> +        }
->>>> +        /*
->>>> +         * Checks that allowed_access matches the @ruleset constraints
->>>> +         * (ruleset->access_masks[0] is automatically upgraded to 
->>>> 64-bits).
->>>> +         */
->>>> +        if ((path_beneath_attr.allowed_access | 
->>>> ruleset->access_masks[0]) !=
->>>> +                            ruleset->access_masks[0]) {
->>>> +            err = -EINVAL;
->>>> +            goto out_put_ruleset;
->>>> +        }
->>>> +
->>>> +        /* Gets and checks the new rule. */
->>>> +        err = get_path_from_fd(path_beneath_attr.parent_fd, &path);
->>>> +        if (err)
->>>> +            goto out_put_ruleset;
->>>> +
->>>> +        /* Imports the new rule. */
->>>> +        err = landlock_append_fs_rule(ruleset, &path,
->>>> +                path_beneath_attr.allowed_access);
->>>> +        path_put(&path);
->>>> +    }
->>>> -    /* Imports the new rule. */
->>>> -    err = landlock_append_fs_rule(ruleset, &path,
->>>> -            path_beneath_attr.allowed_access);
->>>> -    path_put(&path);
->>>> +    if (rule_type == LANDLOCK_RULE_NET_SERVICE) {
->>>> +        /* Gets and checks the ruleset. */
->>>> +        ruleset = get_ruleset_from_fd(ruleset_fd, FMODE_CAN_WRITE);
->>>
->>> You need to factor out more code.
->>
->>    Sorry. I did not get you here. Please could you explain more detailed?
-> 
-> Instead of duplicating similar function calls (e.g. get_ruleset_from_fd) 
-> or operations, try to use one switch statement where you put the checks 
-> that are different (you can move the 
-> copy_from_user(&path_beneath_attr...) call). It may be a good idea to 
-> split this function into 3: one handling each rule_attr, which enables 
-> to not mix different attr types in the same function. A standalone patch 
-> should be refactoring the code to add and use a new function 
-> add_rule_path_beneath(ruleset, rule_attr) (only need the "landlock_" 
-> prefix for exported functions).
+Landlock is designed to deny every access rights that are handled (by a 
+ruleset) by default. All rules added to a ruleset are exceptions to 
+allow a subset of the handled access rights on a specific object/port.
 
-   Sorry again. Still don't get the point. What function do you suggetst
-   to split in 3? Can you please give detailed template of these
-   functions and the logic?
+With the current networking code, a sandboxed process can still bind or 
+connect to any port except, in this test, partially for two ports. This 
+approach doesn't help to isolate a process from the network.
 
-> .
+> 
+>    Maybe there is a misunderstanding here. You mean that if there is just
+>    only one network rule for a particular port has been applied to a
+>    process, other ports' networks actions are automatically restricted
+>    until they will be added into landlock newtwork rb_tree?
+
+Right! That is how it should be.
