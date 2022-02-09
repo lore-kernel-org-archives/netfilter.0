@@ -1,111 +1,81 @@
-From: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-Subject: Re: [RFC PATCH 2/2] landlock: selftests for bind and connect hooks
-Date: Wed, 9 Feb 2022 06:03:58 +0300
-Message-ID: <2aae376f-14df-2c69-204a-0de8e4b0dd74@huawei.com>
-References: <20220124080215.265538-1-konstantin.meskhidze@huawei.com>
- <20220124080215.265538-3-konstantin.meskhidze@huawei.com>
- <4d54e3a9-8a26-d393-3c81-b01389f76f09@digikod.net>
- <ae5ca74d-ce5f-51e8-31c1-d02744ec92f8@huawei.com>
- <ae0fcafa-3e8d-d6f2-26a8-ae74dda8371c@digikod.net>
- <9a77fc40-4463-4344-34d0-184d427d32cf@huawei.com>
- <d09ac689-b1bf-86fa-4da5-3a0ade7fd552@digikod.net>
+From: Eugene Crosser <crosser@average.org>
+Subject: Named sets/maps and atomic reload of the ruleset
+Date: Wed, 9 Feb 2022 22:50:44 +0100
+Message-ID: <63da5cd7-9afe-431f-e3b9-f1c62c96f652@average.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-security-module-owner@vger.kernel.org>
-Content-Language: ru
-In-Reply-To: <d09ac689-b1bf-86fa-4da5-3a0ade7fd552@digikod.net>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------H0JBU8hYE2MpuSRUQR9Vht0H"
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=average.org; s=mail;
+        t=1644443452; bh=KXCchqirTnMfnjdtVqFIDJVKFUJqCTYBHy4rOHc+UNw=;
+        h=Date:To:From:Subject:From;
+        b=f1B7l8/3DrfZQLmKy2YZIpp0apo3yePkaYW9gMMf1p/IS0lBJmR7e6nOjp13rkSOV
+         hjz3TpI8jxM+eTMVTAKwu5k5HlMMBaNn6KuoZoIPJjYgKsbgudc8q1W3yHHD2nC+EP
+         wtiIk7bb2XyKFmz9RtR4DWF8ZX40cEhag6IqMlGs=
+Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Cc: linux-security-module@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, yusongping@huawei.com, artem.kuzin@huawei.com
+To: netfilter@vger.kernel.org
 
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------H0JBU8hYE2MpuSRUQR9Vht0H
+Content-Type: multipart/mixed; boundary="------------X2qxQ1RfNDVau31WSMmSB08V";
+ protected-headers="v1"
+From: Eugene Crosser <crosser@average.org>
+To: netfilter@vger.kernel.org
+Message-ID: <63da5cd7-9afe-431f-e3b9-f1c62c96f652@average.org>
+Subject: Named sets/maps and atomic reload of the ruleset
 
+--------------X2qxQ1RfNDVau31WSMmSB08V
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-2/8/2022 3:17 PM, Mickaël Salaün пишет:
-> 
-> On 08/02/2022 04:01, Konstantin Meskhidze wrote:
->>
->>
->> 2/7/2022 3:49 PM, Mickaël Salaün пишет:
-> 
->>> [...]
->>>
->>>>>> +    /* Create a socket 3 */
->>>>>> +    sockfd_3 = socket(AF_INET, SOCK_STREAM, 0);
->>>>>> +    ASSERT_LE(0, sockfd_3);
->>>>>> +    /* Allow reuse of local addresses */
->>>>>> +    ASSERT_EQ(0, setsockopt(sockfd_3, SOL_SOCKET, SO_REUSEADDR, 
->>>>>> &one, sizeof(one)));
->>>>>> +
->>>>>> +    /* Set socket 3 address parameters */
->>>>>> +    addr_3.sin_family = AF_INET;
->>>>>> +    addr_3.sin_port = htons(SOCK_PORT_3);
->>>>>> +    addr_3.sin_addr.s_addr = inet_addr(IP_ADDRESS);
->>>>>> +    memset(&(addr_3.sin_zero), '\0', 8);
->>>>>> +    /* Bind the socket 3 to IP address */
->>>>>> +    ASSERT_EQ(0, bind(sockfd_3, (struct sockaddr *)&addr_3, 
->>>>>> sizeof(addr_3)));
->>>>>
->>>>> Why is it allowed to bind to SOCK_PORT_3 whereas net_service_3 
->>>>> forbids it?
->>>>
->>>>    It's allowed cause net_service_3 has empty access field.
->>>>
->>>>     /* Empty allowed_access (i.e. deny rules) are ignored in network
->>>>      *  actions for SOCK_PORT_3 socket "object"
->>>>      */
->>>>      ASSERT_EQ(-1, landlock_add_rule(ruleset_fd,
->>>>                                      LANDLOCK_RULE_NET_SERVICE,
->>>>                                      &net_service_3, 0));
->>>>      ASSERT_EQ(ENOMSG, errno);
->>>>
->>>>    Applying this rule returns ENOMSG errno:
->>>>
->>>>    /* Informs about useless rule: empty allowed_access (i.e. deny 
->>>> rules)
->>>>     * are ignored in network actions
->>>>     */
->>>>          if (!net_service_attr.allowed_access) {
->>>>              err = -ENOMSG;
->>>>              goto out_put_ruleset;
->>>>          }
->>>>    This means binding socket 3 is not restricted.
->>>>    For path_beneath_attr.allowed_access = 0 there is the same logic.
->>>
->>> I missed the ENOMSG check; the third rule has nothing to do with it. 
->>> However, because the ruleset handles bind and connect actions, they 
->>> must be denied by default. There is no rule allowing binding to 
->>> SOCK_PORT_3. Why is it allowed?
->>>
->>> You can test with another SOCK_PORT_4, not covered by any rule. As 
->>> for SOCK_PORT_3, it must be forbidden to bind on it.
->>
->>    Apllying the third rule (net_service_3.access is empty) returns ENOMSG
->>    error. That means a process hasn't been restricted by the third rule,
->>    cause during search  process in network rb_tree the process won't find
->>    the third rule, so binding to SOCK_PORT_3 is allowed.
-> 
-> Landlock is designed to deny every access rights that are handled (by a 
-> ruleset) by default. All rules added to a ruleset are exceptions to 
-> allow a subset of the handled access rights on a specific object/port.
-> 
-> With the current networking code, a sandboxed process can still bind or 
-> connect to any port except, in this test, partially for two ports. This 
-> approach doesn't help to isolate a process from the network.
-   I got it. Thanks.
-> 
->>
->>    Maybe there is a misunderstanding here. You mean that if there is just
->>    only one network rule for a particular port has been applied to a
->>    process, other ports' networks actions are automatically restricted
->>    until they will be added into landlock newtwork rb_tree?
-> 
-> Right! That is how it should be.
+Hello all,
 
-   So it possible to check network rb_tree for emptiness before
-   every rule search caused by bind/connect hooks.
-   Am I corrent that if there is a proccess with Landlcok restrictions
-   applied for the filesystem, but landlock networtk rb_tree is empty
-   that means the proccess is not isolated from the network? I suppose it
-   would be an additional test case.
-> .
+Both the ability to flush the ruleset and replace it with the new one
+atomically, without leaving an unprotected window, and the existence of n=
+amed
+sets and maps, that can be updated dynamically when e.g. interfaces or ro=
+utes
+are added and removed, are awesome features of nftables.
+
+The problem is, though, how to make these two features play nice with one=
+
+another. One use case that I have in mind is to replace the collection of=
+ rules
+in chains with a new improved version, while keeping (or dumping and late=
+r
+restoring) the contents of named maps and sets. Saving the data from maps=
+ and
+sets with a separate command before reload of the ruleset, and repopulati=
+ng
+after leaves a window during which dynamic updates may be lost, and a win=
+dow
+during which the set operates with unpopulated maps/sets.
+
+What would be the recommended way to solve this problem?
+
+Thanks,
+
+Eugene
+
+--------------X2qxQ1RfNDVau31WSMmSB08V--
+
+--------------H0JBU8hYE2MpuSRUQR9Vht0H
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEnAziRJw3ydIzIkaHfKQHw5GdRYwFAmIENzQACgkQfKQHw5Gd
+RYxggwgAyNukc4vW1OK5RBK9JWjrdC4YnFlrmdtIqRVSPyOMebz1ZMnqpsX4x4sD
+kAb/TL6qpGxJcYqX1pUMhSxevAloRbpzWBNYakk3PkLWu1Q9h+bFpOxhotK1Il+t
+C7gFspVQP7Kb6E+iQGOIUR2JQx5ys6ouj7Jr5OCL0wclHC2JQcSuhNVBEjOAtWWS
+w7D8zszGyh7nqcBRnnD3YYj2u6XbtyxmgIiBtlVVLC1RgTyZkfn5eZ5EL68oTWLl
+jpPtpi9msfHlFGhylrFWSY3Z759L663hDSC83teyAksUiyB0uFev9eVIVUOKtAN/
+auXQdgh1Yin/4mkZ3oH3knGMxYnpTQ==
+=jxJC
+-----END PGP SIGNATURE-----
+
+--------------H0JBU8hYE2MpuSRUQR9Vht0H--
