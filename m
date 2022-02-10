@@ -1,129 +1,48 @@
-From: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
-Subject: Re: [RFC PATCH 2/2] landlock: selftests for bind and connect hooks
-Date: Thu, 10 Feb 2022 11:16:36 +0100
-Message-ID: <dc58d69f-57f2-897d-8b6a-1243817a4104@digikod.net>
-References: <20220124080215.265538-1-konstantin.meskhidze@huawei.com>
- <20220124080215.265538-3-konstantin.meskhidze@huawei.com>
- <4d54e3a9-8a26-d393-3c81-b01389f76f09@digikod.net>
- <ae5ca74d-ce5f-51e8-31c1-d02744ec92f8@huawei.com>
- <ae0fcafa-3e8d-d6f2-26a8-ae74dda8371c@digikod.net>
- <9a77fc40-4463-4344-34d0-184d427d32cf@huawei.com>
- <d09ac689-b1bf-86fa-4da5-3a0ade7fd552@digikod.net>
- <2aae376f-14df-2c69-204a-0de8e4b0dd74@huawei.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Named sets/maps and atomic reload of the ruleset
+Date: Fri, 11 Feb 2022 00:14:10 +0100
+Message-ID: <YgWcQrSbXh/rKfYJ@salvia>
+References: <63da5cd7-9afe-431f-e3b9-f1c62c96f652@average.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <linux-security-module-owner@vger.kernel.org>
-Content-Language: en-US
-In-Reply-To: <2aae376f-14df-2c69-204a-0de8e4b0dd74@huawei.com>
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <63da5cd7-9afe-431f-e3b9-f1c62c96f652@average.org>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-Cc: linux-security-module@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, yusongping@huawei.com, artem.kuzin@huawei.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Eugene Crosser <crosser@average.org>
+Cc: netfilter@vger.kernel.org
 
-
-On 09/02/2022 04:03, Konstantin Meskhidze wrote:
+On Wed, Feb 09, 2022 at 10:50:44PM +0100, Eugene Crosser wrote:
+> Hello all,
 > 
+> Both the ability to flush the ruleset and replace it with the new one
+> atomically, without leaving an unprotected window, and the existence of named
+> sets and maps, that can be updated dynamically when e.g. interfaces or routes
+> are added and removed, are awesome features of nftables.
 > 
-> 2/8/2022 3:17 PM, Mickaël Salaün пишет:
->>
->> On 08/02/2022 04:01, Konstantin Meskhidze wrote:
->>>
->>>
->>> 2/7/2022 3:49 PM, Mickaël Salaün пишет:
->>
->>>> [...]
->>>>
->>>>>>> +    /* Create a socket 3 */
->>>>>>> +    sockfd_3 = socket(AF_INET, SOCK_STREAM, 0);
->>>>>>> +    ASSERT_LE(0, sockfd_3);
->>>>>>> +    /* Allow reuse of local addresses */
->>>>>>> +    ASSERT_EQ(0, setsockopt(sockfd_3, SOL_SOCKET, SO_REUSEADDR, 
->>>>>>> &one, sizeof(one)));
->>>>>>> +
->>>>>>> +    /* Set socket 3 address parameters */
->>>>>>> +    addr_3.sin_family = AF_INET;
->>>>>>> +    addr_3.sin_port = htons(SOCK_PORT_3);
->>>>>>> +    addr_3.sin_addr.s_addr = inet_addr(IP_ADDRESS);
->>>>>>> +    memset(&(addr_3.sin_zero), '\0', 8);
->>>>>>> +    /* Bind the socket 3 to IP address */
->>>>>>> +    ASSERT_EQ(0, bind(sockfd_3, (struct sockaddr *)&addr_3, 
->>>>>>> sizeof(addr_3)));
->>>>>>
->>>>>> Why is it allowed to bind to SOCK_PORT_3 whereas net_service_3 
->>>>>> forbids it?
->>>>>
->>>>>    It's allowed cause net_service_3 has empty access field.
->>>>>
->>>>>     /* Empty allowed_access (i.e. deny rules) are ignored in network
->>>>>      *  actions for SOCK_PORT_3 socket "object"
->>>>>      */
->>>>>      ASSERT_EQ(-1, landlock_add_rule(ruleset_fd,
->>>>>                                      LANDLOCK_RULE_NET_SERVICE,
->>>>>                                      &net_service_3, 0));
->>>>>      ASSERT_EQ(ENOMSG, errno);
->>>>>
->>>>>    Applying this rule returns ENOMSG errno:
->>>>>
->>>>>    /* Informs about useless rule: empty allowed_access (i.e. deny 
->>>>> rules)
->>>>>     * are ignored in network actions
->>>>>     */
->>>>>          if (!net_service_attr.allowed_access) {
->>>>>              err = -ENOMSG;
->>>>>              goto out_put_ruleset;
->>>>>          }
->>>>>    This means binding socket 3 is not restricted.
->>>>>    For path_beneath_attr.allowed_access = 0 there is the same logic.
->>>>
->>>> I missed the ENOMSG check; the third rule has nothing to do with it. 
->>>> However, because the ruleset handles bind and connect actions, they 
->>>> must be denied by default. There is no rule allowing binding to 
->>>> SOCK_PORT_3. Why is it allowed?
->>>>
->>>> You can test with another SOCK_PORT_4, not covered by any rule. As 
->>>> for SOCK_PORT_3, it must be forbidden to bind on it.
->>>
->>>    Apllying the third rule (net_service_3.access is empty) returns 
->>> ENOMSG
->>>    error. That means a process hasn't been restricted by the third rule,
->>>    cause during search  process in network rb_tree the process won't 
->>> find
->>>    the third rule, so binding to SOCK_PORT_3 is allowed.
->>
->> Landlock is designed to deny every access rights that are handled (by 
->> a ruleset) by default. All rules added to a ruleset are exceptions to 
->> allow a subset of the handled access rights on a specific object/port.
->>
->> With the current networking code, a sandboxed process can still bind 
->> or connect to any port except, in this test, partially for two ports. 
->> This approach doesn't help to isolate a process from the network.
->    I got it. Thanks.
->>
->>>
->>>    Maybe there is a misunderstanding here. You mean that if there is 
->>> just
->>>    only one network rule for a particular port has been applied to a
->>>    process, other ports' networks actions are automatically restricted
->>>    until they will be added into landlock newtwork rb_tree?
->>
->> Right! That is how it should be.
-> 
->    So it possible to check network rb_tree for emptiness before
->    every rule search caused by bind/connect hooks.
+> The problem is, though, how to make these two features play nice with one
+> another. One use case that I have in mind is to replace the collection of rules
+> in chains with a new improved version, while keeping (or dumping and later
+> restoring) the contents of named maps and sets.
 
-I'm not sure to understand but the rbtree macros should do the job.
+So you would like to replace one chain and its rules by a new chain
+also containing new rules...
 
+> Saving the data from maps and sets with a separate command before
+> reload of the ruleset, and repopulating after leaves a window during
+> which dynamic updates may be lost, and a window during which the set
+> operates with unpopulated maps/sets.
 
->    Am I corrent that if there is a proccess with Landlcok restrictions
->    applied for the filesystem, but landlock networtk rb_tree is empty
->    that means the proccess is not isolated from the network? I suppose it
->    would be an additional test case.
+... and you would like that sets/maps remain in the kernel while this
+chain replacement operation happens.
 
-If the ruleset/domain doesn't handle network actions, Landlock just 
-ignores network access request (i.e. allow them). A Landlock domain 
-denies handled network actions by default, but allows those that are 
-identified as such in the rbtree. Some network actions can be denied 
-whatever the network rbtree is empty or not. Please take a look at how 
-the filesystem actions are allowed.
+> What would be the recommended way to solve this problem?
 
-It is indeed a legitimate test case.
+If what I describe above is accurate, then you could run a batch like this:
+
+# nft -f update.nft
+flush chain x y
+chain x y {
+        ... # new rules here
+}
