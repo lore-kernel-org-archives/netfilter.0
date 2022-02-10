@@ -1,238 +1,129 @@
-From: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
-Subject: Re: [RFC PATCH 1/2] landlock: TCP network hooks implementation
-Date: Thu, 10 Feb 2022 05:04:46 +0300
-Message-ID: <1b1aebc0-2915-0720-24c6-ba67ac0255f0@huawei.com>
+From: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Subject: Re: [RFC PATCH 2/2] landlock: selftests for bind and connect hooks
+Date: Thu, 10 Feb 2022 11:16:36 +0100
+Message-ID: <dc58d69f-57f2-897d-8b6a-1243817a4104@digikod.net>
 References: <20220124080215.265538-1-konstantin.meskhidze@huawei.com>
- <20220124080215.265538-2-konstantin.meskhidze@huawei.com>
- <CA+FuTSf4EjgjBCCOiu-PHJcTMia41UkTh8QJ0+qdxL_J8445EA@mail.gmail.com>
- <0934a27a-d167-87ea-97d2-b3ac952832ff@huawei.com>
- <CA+FuTSc8ZAeaHWVYf-zmn6i5QLJysYGJppAEfb7tRbtho7_DKA@mail.gmail.com>
- <d84ed5b3-837a-811a-6947-e857ceba3f83@huawei.com>
- <CA+FuTSeVhLdeXokyG4x__HGJyNOwsSicLOb4NKJA-gNp59S5uA@mail.gmail.com>
- <0d33f7cd-6846-5e7e-62b9-fbd0b28ecea9@digikod.net>
- <91885a8f-b787-62ff-1abb-700641f7c2cb@huawei.com>
- <CA+FuTScaoby-=xRKf_Dz3koSYHqrMN0cauCg4jMmy_nDxwPADA@mail.gmail.com>
+ <20220124080215.265538-3-konstantin.meskhidze@huawei.com>
+ <4d54e3a9-8a26-d393-3c81-b01389f76f09@digikod.net>
+ <ae5ca74d-ce5f-51e8-31c1-d02744ec92f8@huawei.com>
+ <ae0fcafa-3e8d-d6f2-26a8-ae74dda8371c@digikod.net>
+ <9a77fc40-4463-4344-34d0-184d427d32cf@huawei.com>
+ <d09ac689-b1bf-86fa-4da5-3a0ade7fd552@digikod.net>
+ <2aae376f-14df-2c69-204a-0de8e4b0dd74@huawei.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: ru
-In-Reply-To: <CA+FuTScaoby-=xRKf_Dz3koSYHqrMN0cauCg4jMmy_nDxwPADA@mail.gmail.com>
+Return-path: <linux-security-module-owner@vger.kernel.org>
+Content-Language: en-US
+In-Reply-To: <2aae376f-14df-2c69-204a-0de8e4b0dd74@huawei.com>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Cc: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>, linux-security-module@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, yusongping@huawei.com, artem.kuzin@huawei.com
+To: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+Cc: linux-security-module@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, yusongping@huawei.com, artem.kuzin@huawei.com
 
 
-
-2/7/2022 7:00 PM, Willem de Bruijn пишет:
-> On Mon, Feb 7, 2022 at 12:51 AM Konstantin Meskhidze
-> <konstantin.meskhidze@huawei.com> wrote:
+On 09/02/2022 04:03, Konstantin Meskhidze wrote:
+> 
+> 
+> 2/8/2022 3:17 PM, Mickaël Salaün пишет:
 >>
->>
->>
->> 2/1/2022 3:33 PM, Mickaël Salaün пишет:
+>> On 08/02/2022 04:01, Konstantin Meskhidze wrote:
 >>>
->>> On 31/01/2022 18:14, Willem de Bruijn wrote:
->>>> On Fri, Jan 28, 2022 at 10:12 PM Konstantin Meskhidze
->>>> <konstantin.meskhidze@huawei.com> wrote:
->>>>>
->>>>>
->>>>>
->>>>> 1/26/2022 5:15 PM, Willem de Bruijn пишет:
->>>>>> On Wed, Jan 26, 2022 at 3:06 AM Konstantin Meskhidze
->>>>>> <konstantin.meskhidze@huawei.com> wrote:
->>>>>>>
->>>>>>>
->>>>>>>
->>>>>>> 1/25/2022 5:17 PM, Willem de Bruijn пишет:
->>>>>>>> On Mon, Jan 24, 2022 at 3:02 AM Konstantin Meskhidze
->>>>>>>> <konstantin.meskhidze@huawei.com> wrote:
->>>>>>>>>
->>>>>>>>> Support of socket_bind() and socket_connect() hooks.
->>>>>>>>> Current prototype can restrict binding and connecting of TCP
->>>>>>>>> types of sockets. Its just basic idea how Landlock could support
->>>>>>>>> network confinement.
->>>>>>>>>
->>>>>>>>> Changes:
->>>>>>>>> 1. Access masks array refactored into 1D one and changed
->>>>>>>>> to 32 bits. Filesystem masks occupy 16 lower bits and network
->>>>>>>>> masks reside in 16 upper bits.
->>>>>>>>> 2. Refactor API functions in ruleset.c:
->>>>>>>>>         1. Add void *object argument.
->>>>>>>>>         2. Add u16 rule_type argument.
->>>>>>>>> 3. Use two rb_trees in ruleset structure:
->>>>>>>>>         1. root_inode - for filesystem objects
->>>>>>>>>         2. root_net_port - for network port objects
->>>>>>>>>
->>>>>>>>> Signed-off-by: Konstantin Meskhidze
->>>>>>>>> <konstantin.meskhidze@huawei.com>
->>>>>>>>
->>>>>>>>> +static int hook_socket_connect(struct socket *sock, struct
->>>>>>>>> sockaddr *address, int addrlen)
->>>>>>>>> +{
->>>>>>>>> +       short socket_type;
->>>>>>>>> +       struct sockaddr_in *sockaddr;
->>>>>>>>> +       u16 port;
->>>>>>>>> +       const struct landlock_ruleset *const dom =
->>>>>>>>> landlock_get_current_domain();
->>>>>>>>> +
->>>>>>>>> +       /* Check if the hook is AF_INET* socket's action */
->>>>>>>>> +       if ((address->sa_family != AF_INET) &&
->>>>>>>>> (address->sa_family != AF_INET6))
->>>>>>>>> +               return 0;
->>>>>>>>
->>>>>>>> Should this be a check on the socket family (sock->ops->family)
->>>>>>>> instead of the address family?
->>>>>>>
->>>>>>> Actually connect() function checks address family:
->>>>>>>
->>>>>>> int __inet_stream_connect(... ,struct sockaddr *uaddr ,...) {
->>>>>>> ...
->>>>>>>            if (uaddr) {
->>>>>>>                    if (addr_len < sizeof(uaddr->sa_family))
->>>>>>>                    return -EINVAL;
->>>>>>>
->>>>>>>                    if (uaddr->sa_family == AF_UNSPEC) {
->>>>>>>                            err = sk->sk_prot->disconnect(sk, flags);
->>>>>>>                            sock->state = err ? SS_DISCONNECTING :
->>>>>>>                            SS_UNCONNECTED;
->>>>>>>                    goto out;
->>>>>>>                    }
->>>>>>>            }
->>>>>>>
->>>>>>> ...
->>>>>>> }
->>>>>>
->>>>>> Right. My question is: is the intent of this feature to be limited to
->>>>>> sockets of type AF_INET(6) or to addresses?
->>>>>>
->>>>>> I would think the first. Then you also want to catch operations on
->>>>>> such sockets that may pass a different address family. AF_UNSPEC is
->>>>>> the known offender that will effect a state change on AF_INET(6)
->>>>>> sockets.
->>>>>
->>>>>     The intent is to restrict INET sockets to bind/connect to some ports.
->>>>>     You can apply some number of Landlock rules with port defenition:
->>>>>           1. Rule 1 allows to connect to sockets with port X.
->>>>>           2. Rule 2 forbids to connect to socket with port Y.
->>>>>           3. Rule 3 forbids to bind a socket to address with port Z.
->>>>>
->>>>>           and so on...
->>>>>>
->>>>>>>>
->>>>>>>> It is valid to pass an address with AF_UNSPEC to a PF_INET(6) socket.
->>>>>>>> And there are legitimate reasons to want to deny this. Such as
->>>>>>>> passing
->>>>>>>> a connection to a unprivileged process and disallow it from
->>>>>>>> disconnect
->>>>>>>> and opening a different new connection.
->>>>>>>
->>>>>>> As far as I know using AF_UNSPEC to unconnect takes effect on
->>>>>>> UDP(DATAGRAM) sockets.
->>>>>>> To unconnect a UDP socket, we call connect but set the family
->>>>>>> member of
->>>>>>> the socket address structure (sin_family for IPv4 or sin6_family for
->>>>>>> IPv6) to AF_UNSPEC. It is the process of calling connect on an already
->>>>>>> connected UDP socket that causes the socket to become unconnected.
->>>>>>>
->>>>>>> This RFC patch just supports TCP connections. I need to check the
->>>>>>> logic
->>>>>>> if AF_UNSPEC provided in connenct() function for TCP(STREAM) sockets.
->>>>>>> Does it disconnect already established TCP connection?
->>>>>>>
->>>>>>> Thank you for noticing about this issue. Need to think through how
->>>>>>> to manage it with Landlock network restrictions for both TCP and UDP
->>>>>>> sockets.
->>>>>>
->>>>>> AF_UNSPEC also disconnects TCP.
->>>>>
->>>>> So its possible to call connect() with AF_UNSPEC and make a socket
->>>>> unconnected. If you want to establish another connection to a socket
->>>>> with port Y, and if there is a landlock rule has applied to a process
->>>>> (or container) which restricts to connect to a socket with port Y, it
->>>>> will be banned.
->>>>> Thats the basic logic.
+>>>
+>>> 2/7/2022 3:49 PM, Mickaël Salaün пишет:
+>>
+>>>> [...]
 >>>>
->>>> Understood, and that works fine for connect. It would be good to also
->>>> ensure that a now-bound socket cannot call listen. Possibly for
->>>> follow-on work.
+>>>>>>> +    /* Create a socket 3 */
+>>>>>>> +    sockfd_3 = socket(AF_INET, SOCK_STREAM, 0);
+>>>>>>> +    ASSERT_LE(0, sockfd_3);
+>>>>>>> +    /* Allow reuse of local addresses */
+>>>>>>> +    ASSERT_EQ(0, setsockopt(sockfd_3, SOL_SOCKET, SO_REUSEADDR, 
+>>>>>>> &one, sizeof(one)));
+>>>>>>> +
+>>>>>>> +    /* Set socket 3 address parameters */
+>>>>>>> +    addr_3.sin_family = AF_INET;
+>>>>>>> +    addr_3.sin_port = htons(SOCK_PORT_3);
+>>>>>>> +    addr_3.sin_addr.s_addr = inet_addr(IP_ADDRESS);
+>>>>>>> +    memset(&(addr_3.sin_zero), '\0', 8);
+>>>>>>> +    /* Bind the socket 3 to IP address */
+>>>>>>> +    ASSERT_EQ(0, bind(sockfd_3, (struct sockaddr *)&addr_3, 
+>>>>>>> sizeof(addr_3)));
+>>>>>>
+>>>>>> Why is it allowed to bind to SOCK_PORT_3 whereas net_service_3 
+>>>>>> forbids it?
+>>>>>
+>>>>>    It's allowed cause net_service_3 has empty access field.
+>>>>>
+>>>>>     /* Empty allowed_access (i.e. deny rules) are ignored in network
+>>>>>      *  actions for SOCK_PORT_3 socket "object"
+>>>>>      */
+>>>>>      ASSERT_EQ(-1, landlock_add_rule(ruleset_fd,
+>>>>>                                      LANDLOCK_RULE_NET_SERVICE,
+>>>>>                                      &net_service_3, 0));
+>>>>>      ASSERT_EQ(ENOMSG, errno);
+>>>>>
+>>>>>    Applying this rule returns ENOMSG errno:
+>>>>>
+>>>>>    /* Informs about useless rule: empty allowed_access (i.e. deny 
+>>>>> rules)
+>>>>>     * are ignored in network actions
+>>>>>     */
+>>>>>          if (!net_service_attr.allowed_access) {
+>>>>>              err = -ENOMSG;
+>>>>>              goto out_put_ruleset;
+>>>>>          }
+>>>>>    This means binding socket 3 is not restricted.
+>>>>>    For path_beneath_attr.allowed_access = 0 there is the same logic.
+>>>>
+>>>> I missed the ENOMSG check; the third rule has nothing to do with it. 
+>>>> However, because the ruleset handles bind and connect actions, they 
+>>>> must be denied by default. There is no rule allowing binding to 
+>>>> SOCK_PORT_3. Why is it allowed?
+>>>>
+>>>> You can test with another SOCK_PORT_4, not covered by any rule. As 
+>>>> for SOCK_PORT_3, it must be forbidden to bind on it.
 >>>
->>> Are you thinking about a new access right for listen? What would be the
->>> use case vs. the bind access right?
->>> .
+>>>    Apllying the third rule (net_service_3.access is empty) returns 
+>>> ENOMSG
+>>>    error. That means a process hasn't been restricted by the third rule,
+>>>    cause during search  process in network rb_tree the process won't 
+>>> find
+>>>    the third rule, so binding to SOCK_PORT_3 is allowed.
 >>
->>    If bind() function has already been restricted so the following
->> listen() function is automatically banned. I agree with Mickaёl about
->> the usecase here. Why do we need new-bound socket with restricted listening?
+>> Landlock is designed to deny every access rights that are handled (by 
+>> a ruleset) by default. All rules added to a ruleset are exceptions to 
+>> allow a subset of the handled access rights on a specific object/port.
+>>
+>> With the current networking code, a sandboxed process can still bind 
+>> or connect to any port except, in this test, partially for two ports. 
+>> This approach doesn't help to isolate a process from the network.
+>    I got it. Thanks.
+>>
+>>>
+>>>    Maybe there is a misunderstanding here. You mean that if there is 
+>>> just
+>>>    only one network rule for a particular port has been applied to a
+>>>    process, other ports' networks actions are automatically restricted
+>>>    until they will be added into landlock newtwork rb_tree?
+>>
+>> Right! That is how it should be.
 > 
-> The intended use-case is for a privileged process to open a connection
-> (i.e., bound and connected socket) and pass that to a restricted
-> process. The intent is for that process to only be allowed to
-> communicate over this pre-established channel.
-> 
-> In practice, it is able to disconnect (while staying bound) and
-> elevate its privileges to that of a listening server:
-> 
-> static void child_process(int fd)
-> {
->          struct sockaddr addr = { .sa_family = AF_UNSPEC };
->          int client_fd;
-> 
->          if (listen(fd, 1) == 0)
->                  error(1, 0, "listen succeeded while connected");
-> 
->          if (connect(fd, &addr, sizeof(addr)))
->                  error(1, errno, "disconnect");
-> 
->          if (listen(fd, 1))
->                  error(1, errno, "listen");
-> 
->          client_fd = accept(fd, NULL, NULL);
->          if (client_fd == -1)
->                  error(1, errno, "accept");
-> 
->          if (close(client_fd))
->                  error(1, errno, "close client");
-> }
-> 
-> int main(int argc, char **argv)
-> {
->          struct sockaddr_in6 addr = { 0 };
->          pid_t pid;
->          int fd;
-> 
->          fd = socket(PF_INET6, SOCK_STREAM, 0);
->          if (fd == -1)
->                  error(1, errno, "socket");
-> 
->          addr.sin6_family = AF_INET6;
->          addr.sin6_addr = in6addr_loopback;
-> 
->          addr.sin6_port = htons(8001);
->          if (bind(fd, (void *)&addr, sizeof(addr)))
->                  error(1, errno, "bind");
-> 
->          addr.sin6_port = htons(8000);
->          if (connect(fd, (void *)&addr, sizeof(addr)))
->                  error(1, errno, "connect");
-> 
->          pid = fork();
->          if (pid == -1)
->                  error(1, errno, "fork");
-> 
->          if (pid)
->                  wait(NULL);
->          else
->                  child_process(fd);
-> 
->          if (close(fd))
->                  error(1, errno, "close");
-> 
->          return 0;
-> }
-> 
-> It's fine to not address this case in this patch series directly, of
-> course. But we should be aware of the AF_UNSPEC loophole.
+>    So it possible to check network rb_tree for emptiness before
+>    every rule search caused by bind/connect hooks.
 
-  Thank you so much. I will check it and think about a test logic.
-> .
+I'm not sure to understand but the rbtree macros should do the job.
+
+
+>    Am I corrent that if there is a proccess with Landlcok restrictions
+>    applied for the filesystem, but landlock networtk rb_tree is empty
+>    that means the proccess is not isolated from the network? I suppose it
+>    would be an additional test case.
+
+If the ruleset/domain doesn't handle network actions, Landlock just 
+ignores network access request (i.e. allow them). A Landlock domain 
+denies handled network actions by default, but allows those that are 
+identified as such in the rbtree. Some network actions can be denied 
+whatever the network rbtree is empty or not. Please take a look at how 
+the filesystem actions are allowed.
+
+It is indeed a legitimate test case.
