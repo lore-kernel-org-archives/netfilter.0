@@ -1,48 +1,49 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Named sets/maps and atomic reload of the ruleset
-Date: Fri, 11 Feb 2022 00:14:10 +0100
-Message-ID: <YgWcQrSbXh/rKfYJ@salvia>
-References: <63da5cd7-9afe-431f-e3b9-f1c62c96f652@average.org>
+From: Kyle Rose <krose@krose.org>
+Subject: Want to match on a value from a map lookup
+Date: Thu, 10 Feb 2022 19:48:42 -0500
+Message-ID: <CAJU8_nWjJFYeYhuF7AzoDbeT2Kai=cEDTatPTROKCzSSCsd18Q@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <63da5cd7-9afe-431f-e3b9-f1c62c96f652@average.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=krose.org; s=google;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=m4CCIf4bmx1RfGfk8w9AvslzisjKvaW935YtY4udpVs=;
+        b=rCj+PMM8cGdq2wweRqkS0VzNo6dnuKkWi3n4wgI6J0mdqSTPZ5mKXlx9p59IxQh5t6
+         CDldLO6AQVItw7HvxKPHYRK0xR0lAeV/H51VxyjJtavvByiFwZA7HglWG1cnnITVDNqg
+         1GWiU+KVuO1lSm6r7HyFLu5nuOdSTIkxjXtL4=
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Eugene Crosser <crosser@average.org>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Wed, Feb 09, 2022 at 10:50:44PM +0100, Eugene Crosser wrote:
-> Hello all,
-> 
-> Both the ability to flush the ruleset and replace it with the new one
-> atomically, without leaving an unprotected window, and the existence of named
-> sets and maps, that can be updated dynamically when e.g. interfaces or routes
-> are added and removed, are awesome features of nftables.
-> 
-> The problem is, though, how to make these two features play nice with one
-> another. One use case that I have in mind is to replace the collection of rules
-> in chains with a new improved version, while keeping (or dumping and later
-> restoring) the contents of named maps and sets.
+Currently on Linux 5.15 with nft 0.9.8.
 
-So you would like to replace one chain and its rules by a new chain
-also containing new rules...
+I'd like to be able to match on the value of a map lookup. For
+instance, something like:
 
-> Saving the data from maps and sets with a separate command before
-> reload of the ruleset, and repopulating after leaves a window during
-> which dynamic updates may be lost, and a window during which the set
-> operates with unpopulated maps/sets.
+ip saddr iifname map { eth0 : 192.168.1.1, eth1 : 192.168.2.1 } ...
 
-... and you would like that sets/maps remain in the kernel while this
-chain replacement operation happens.
+meaning "map the input interface to an IP address and match the result
+against the source address". But if this is supported, I can't figure
+out the syntax.
 
-> What would be the recommended way to solve this problem?
+More complicatedly, I'd also like to be able to reference individual
+elements in a value tuple. For example, I'd like to be able to do
+something like:
 
-If what I describe above is accurate, then you could run a batch like this:
+    map iface_to_net {
+        type ifname : ipv4_addr . ipv4_addr;
+        elements = { eth0 : 192.168.1.1 . 255.255.255.0, eth1 :
+192.168.2.1 . 255.255.255.0 }
+    }
+ip saddr & iifname map @iface_to_net [0] vmap { iifname map
+@iface_to_net [0] &iifname map @iface_to_net [1] : accept }
 
-# nft -f update.nft
-flush chain x y
-chain x y {
-        ... # new rules here
-}
+That is, "accept if the source address is on the same network as the interface".
+
+Also, is there any plan to allow for CIDR blocks to be values of their
+own instead of intervals? It would be nice to be able to map keys to
+CIDR blocks that can be directly used in address matching.
+
+Thanks,
+Kyle
