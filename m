@@ -1,79 +1,111 @@
-From: Eugene Crosser <crosser@average.org>
-Subject: Re: Named sets/maps and atomic reload of the ruleset
-Date: Fri, 11 Feb 2022 09:52:25 +0100
-Message-ID: <ecedf5b0-a4c2-8902-187a-3339b5f0f779@average.org>
-References: <63da5cd7-9afe-431f-e3b9-f1c62c96f652@average.org>
- <YgWcQrSbXh/rKfYJ@salvia> <0841290b-07e8-df8d-12ea-b4de414e795c@average.org>
+From: Florian Westphal <fw@strlen.de>
+Subject: [ANNOUNCE] libnetfilter_conntrack 1.0.9 release
+Date: Mon, 14 Feb 2022 12:44:08 +0100
+Message-ID: <YgpAiCXVTPZEK6Qq@strlen.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------0rJ0GMQjIrFmE0e3vjefTwUK"
+Content-Type: multipart/mixed; boundary="5j6Eu2BS301oJprp"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=average.org; s=mail;
-        t=1644569552; bh=o+AZIbwpC7WGEPTGrgZDXhOnxzEDN6YqmU3m87gjB+o=;
-        h=Date:From:To:Cc:References:Subject:In-Reply-To:From;
-        b=Zn/CpFDwNK8f0EVB1zM9x5r+02S0u8XZBIlvIx9xUr/8fifk0crSHN8nmyJNz28sm
-         06blY61UWgpAtyOWwF1w5enZV+sS11fDThLB7gUQ4OhKgryPIzo3v3UPca/C2qCsP0
-         M/8rrIAxSP0KcYnbJ8RlZ2yQ7uk1u6zHnaq/wRWY=
-Content-Language: en-US
-In-Reply-To: <0841290b-07e8-df8d-12ea-b4de414e795c@average.org>
+Content-Disposition: inline
 List-ID: <netfilter.vger.kernel.org>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+To: netfilter-devel@vger.kernel.org
+Cc: netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------0rJ0GMQjIrFmE0e3vjefTwUK
-Content-Type: multipart/mixed; boundary="------------aw1Tfx1Ydjdsc2ZVD9YvzUGD";
- protected-headers="v1"
-From: Eugene Crosser <crosser@average.org>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
-Message-ID: <ecedf5b0-a4c2-8902-187a-3339b5f0f779@average.org>
-Subject: Re: Named sets/maps and atomic reload of the ruleset
-References: <63da5cd7-9afe-431f-e3b9-f1c62c96f652@average.org>
- <YgWcQrSbXh/rKfYJ@salvia> <0841290b-07e8-df8d-12ea-b4de414e795c@average.org>
-In-Reply-To: <0841290b-07e8-df8d-12ea-b4de414e795c@average.org>
 
---------------aw1Tfx1Ydjdsc2ZVD9YvzUGD
-Content-Type: text/plain; charset=UTF-8
+--5j6Eu2BS301oJprp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi!
+
+The Netfilter project proudly presents:
+
+        libnetfilter_conntrack 1.0.9
+
+This release comes with the new nfct_nlmsg_build_filter() function that
+allows to add metadata for kernel-side filtering of conntrack entries
+during conntrack table dump.
+
+The nfct_query() API supports the new NFCT_Q_FLUSH_FILTER argument,
+it allows to flush only ipv4 or ipv6 entries from the connection
+tracking table.
+
+nfct_snprint family of functions have been updated.
+SCTP conntrack entries now support 'heartbeat sent/acked' state.
+Entries offloaded to hardware include '[HW_OFFLOAD]' in the formatted
+output string.
+
+Notable bugs fixed with this release include:
+Fix buffer overflows and out-of-bounds accesses in the
+nfct_snprintf() functions.
+
+nfct_nlmsg_build() did not work for ICMP flows unless all ICMP attributes
+were set in the reply tuple too, this affected the 'conntrack' tool
+where updates (e.g. setting the conntrack mark to a different value)
+of ICMP flows would not work.
+
+See ChangeLog that comes attached to this email for more details.
+
+You can download it from:
+
+https://www.netfilter.org/projects/libnetfilter_conntrack/downloads.html
+
+--5j6Eu2BS301oJprp
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: attachment;
+	filename="changes-libnetfilter_conntrack-1.0.9.txt"
 Content-Transfer-Encoding: quoted-printable
 
-On 11/02/2022 09:41, Eugene Crosser wrote:
+Daniel Gr=F6ber (9):
+      src: Handle negative snprintf return values properly
+      src: Fix nfexp_snprintf return value docs
+      conntrack: Replace strncpy with snprintf to improve null byte handling
+      conntrack: Fix incorrect snprintf size calculation
+      include: Add ARRAY_SIZE() macro
+      conntrack: Fix buffer overflow on invalid icmp type in setters
+      conntrack: Move icmp request>reply type mapping to common file
+      conntrack: Fix buffer overflow in protocol related snprintf functions
+      conntrack: Fix buffer overflows in __snprintf_protoinfo* like in *2st=
+r fns
 
-> More like, potentially multiple chains changed / added / removed, but t=
-he new
-> chains continue to reference the same maps and sets (precisely because =
-I want to
-> preserve dynamically accumulated state).
+Eyal Birger (1):
+      examples: check return value of nfct_nlmsg_build()
 
-To make the use case more clear: _because_ I can use named sets and maps,=
- I can
-get away with constant and small collection of rules, and keep all dynami=
-c
-configuration in named maps and sets. As opposed to iptables where rules
-themselves have to be dynamically added and removed, making maintenance r=
-ather
-more difficult.
+Fabrice Fontaine (1):
+      libnetfilter_conntrack.pc.in: add LIBMNL_LIBS to Libs.Private
 
-Eugene
+Florian Westphal (7):
+      conntrack: dccp print function should use dccp state
+      conntrack: sctp: update states
+      include: add CTA_STATS_CLASH_RESOLVE
+      include: sync uapi header with nf-next
+      src: add support for status dump filter
+      include: add CTA_STATS_CHAIN_TOOLONG from linux 5.15 uapi
+      libnetfilter_conntrack: bump version to 1.0.9
 
---------------aw1Tfx1Ydjdsc2ZVD9YvzUGD--
+Jan Engelhardt (2):
+      build: use the right automake variables
+      Update .gitignore
 
---------------0rJ0GMQjIrFmE0e3vjefTwUK
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+Jeremy Sowden (1):
+      build: update obsolete autoconf macros
 
------BEGIN PGP SIGNATURE-----
+Ken-ichirou MATSUZAWA (1):
+      conntrack: fix invmap_icmpv6 entries
 
-iQEzBAEBCgAdFiEEnAziRJw3ydIzIkaHfKQHw5GdRYwFAmIGI8kACgkQfKQHw5Gd
-RYysegf7BzUSTYv+9qn++Gu+3HzmzwUalM/t1OmV3rbein+fs7WJV8uWf165eGEG
-55DxduWzWAaxaKZVJyLDaFvsNOdF/+/lOqdGfYLA8XNDp3X2m4/mQu5NemBBxYJw
-9eO+xOfyR/27uvPT+LgLBLUFL3ki66+Ljxnj/aKwa+u/2eIvTwpBoreF+AhEmQib
-QnLjaeVmxiH4Gkgal5IkLlus4nyB/DCoGfITtwUeKiwUh1OmDN5hhu97x7/nk+6B
-qcn4si33VbMTANXutZfZU2nBtwoGwpkVuaWoC/Wo//Lk6LB9uHx6iW67wwWaLKuJ
-I9lNaS4VCJ/BTJfKYA2ROxqNZsFmmA==
-=m5pi
------END PGP SIGNATURE-----
+Luuk Paulussen (1):
+      conntrack: Don't use ICMP attrs in decision to build repl tuple
 
---------------0rJ0GMQjIrFmE0e3vjefTwUK--
+Pablo Neira Ayuso (5):
+      src: add IPS_HW_OFFLOAD flag
+      conntrack: add flush filter command
+      build: missing internal/proto.h in Makefile.am
+      conntrack: add nfct_nlmsg_build_filter() helper
+      conntrack: don't cancel nest on unknown layer 4 protocols
+
+Phil Sutter (2):
+      tests: Fix for missing qa-connlabel.conf in tarball
+      tests: Add simple tests to TESTS variable
+
+
+--5j6Eu2BS301oJprp--
