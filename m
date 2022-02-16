@@ -1,111 +1,123 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: [ANNOUNCE] libnetfilter_conntrack 1.0.9 release
-Date: Mon, 14 Feb 2022 12:44:08 +0100
-Message-ID: <YgpAiCXVTPZEK6Qq@strlen.de>
+From: Vivek Thrivikraman <vivek.thrivikraman@est.tech>
+Subject: UDP IPVS: Incorrect conntrack entry in reply tuple
+Date: Wed, 16 Feb 2022 08:38:19 +0000
+Message-ID: <DB8P189MB06018A3459E97B07B0DB2074E7359@DB8P189MB0601.EURP189.PROD.OUTLOOK.COM>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="5j6Eu2BS301oJprp"
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-List-ID: <netfilter.vger.kernel.org>
-To: netfilter-devel@vger.kernel.org
-Cc: netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
-
-
---5j6Eu2BS301oJprp
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi!
-
-The Netfilter project proudly presents:
-
-        libnetfilter_conntrack 1.0.9
-
-This release comes with the new nfct_nlmsg_build_filter() function that
-allows to add metadata for kernel-side filtering of conntrack entries
-during conntrack table dump.
-
-The nfct_query() API supports the new NFCT_Q_FLUSH_FILTER argument,
-it allows to flush only ipv4 or ipv6 entries from the connection
-tracking table.
-
-nfct_snprint family of functions have been updated.
-SCTP conntrack entries now support 'heartbeat sent/acked' state.
-Entries offloaded to hardware include '[HW_OFFLOAD]' in the formatted
-output string.
-
-Notable bugs fixed with this release include:
-Fix buffer overflows and out-of-bounds accesses in the
-nfct_snprintf() functions.
-
-nfct_nlmsg_build() did not work for ICMP flows unless all ICMP attributes
-were set in the reply tuple too, this affected the 'conntrack' tool
-where updates (e.g. setting the conntrack mark to a different value)
-of ICMP flows would not work.
-
-See ChangeLog that comes attached to this email for more details.
-
-You can download it from:
-
-https://www.netfilter.org/projects/libnetfilter_conntrack/downloads.html
-
---5j6Eu2BS301oJprp
 Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: attachment;
-	filename="changes-libnetfilter_conntrack-1.0.9.txt"
 Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=estab.onmicrosoft.com;
+ s=selector2-estab-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=MttottENj+Av2yX8AeR27aiLIf8qLBdzDdYN26OwoHc=;
+ b=cI5rFojpFTFzFPr42Y6QGMvkDxMvlV6E8Wkhtc2Nrk3oHaTdjmCFJxPKzBYLOCK002240gq6OZsCrrveoQt3eWl20MqV7pZ76pYSmjpu8HOUxboJAx0dpe4vyPP8ScOE8GiC2jbEjL5HclayZanq/soT4EkcOEI/fhlNuOJN7/o=
+Content-Language: en-US
+List-ID: <netfilter.vger.kernel.org>
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Daniel Gr=F6ber (9):
-      src: Handle negative snprintf return values properly
-      src: Fix nfexp_snprintf return value docs
-      conntrack: Replace strncpy with snprintf to improve null byte handling
-      conntrack: Fix incorrect snprintf size calculation
-      include: Add ARRAY_SIZE() macro
-      conntrack: Fix buffer overflow on invalid icmp type in setters
-      conntrack: Move icmp request>reply type mapping to common file
-      conntrack: Fix buffer overflow in protocol related snprintf functions
-      conntrack: Fix buffer overflows in __snprintf_protoinfo* like in *2st=
-r fns
+Hi
 
-Eyal Birger (1):
-      examples: check return value of nfct_nlmsg_build()
+We are using Kubernetes in IPVS mode, we have a scaled set up with 159 node=
+s, ~11k pods and ~1500 services(k8s in ipvs mode). We have many pods which =
+acts as UDP clients, which tries to access multiple VIP, on every node rest=
+art we are seeing many client UDP requests to multiple VIP:port serving UDP=
+ traffic is getting black holed because of invalid conntrack entry(here the=
+ UDP servers/Real servers are not restarted as they are not in the restarte=
+d node).=20
+The client udp pods keeps on retrying connection with the same udp source p=
+ort(we reuse source port) and because of the incorrect conntrack entry and =
+frequent connections, conntrack entry stays and traffic is never restored. =
+From the logs it was clear that the first packet came after the ipvs rules =
+were programmed, but still the reply tuple did not contain the real server =
+ip, the reply tuple was just a reverse of original direction(ie reply tuple=
+ had source as VIP and destination as the actual source)
 
-Fabrice Fontaine (1):
-      libnetfilter_conntrack.pc.in: add LIBMNL_LIBS to Libs.Private
+Invalid conntrack:
+[1644409107.142928] [NEW] udp 17 30 src=3D50.117.79.3 dst=3D64.64.64.59 spo=
+rt=3D42467 dport=3D8890 [UNREPLIED] src=3D64.64.64.59 dst=3D50.117.79.3 spo=
+rt=3D8890 dport=3D42467
+Timestamp above translates to : GMT: Wednesday, February 9, 2022 12:18:27.1=
+42 PM
+VIP IP:64.64.64.59 , udp client pod:50.117.79.3
+If you see the 2nd tuple(reverse direction) does not have NAT'ed entries(bu=
+t from below logs looks like by that time ipvs rules were already written).
 
-Florian Westphal (7):
-      conntrack: dccp print function should use dccp state
-      conntrack: sctp: update states
-      include: add CTA_STATS_CLASH_RESOLVE
-      include: sync uapi header with nf-next
-      src: add support for status dump filter
-      include: add CTA_STATS_CHAIN_TOOLONG from linux 5.15 uapi
-      libnetfilter_conntrack: bump version to 1.0.9
+Logs which clearly shows ipvs rules were added before first packet(conntrac=
+k entry above):
+I0209 12:17:52.516740 1 endpointslicecache.go:358] "Setting endpoints for s=
+ervice port name" portName=3D"bat-t2/cnf-cp-sfs-t2-46-net-udp:tapp-udp" end=
+points=3D[192.168.11.237:8890 192.168.110.139:8890 192.168.135.77:8890 192.=
+168.183.209:8890 192.168.200.199:8890 192.168.214.234:8890 192.168.215.32:8=
+890 192.168.219.117:8890 192.168.219.222:8890 192.168.220.125:8890 192.168.=
+247.165:8890 192.168.248.97:8890 192.168.250.78:8890 192.168.255.76:8890 19=
+2.168.37.61:8890 192.168.55.131:8890 192.168.57.24:8890 192.168.59.101:8890=
+ 192.168.7.62:8890 192.168.88.125:8890]
+I0209 12:17:56.325097 1 proxier.go:1972] "Adding new service" serviceName=
+=3D"bat-t2/cnf-cp-sfs-t2-46-net-udp:tapp-udp" virtualServer=3D"64.64.64.59:=
+8890/UDP"
+I0209 12:17:56.325126 1 proxier.go:1996] "Bind address" address=3D"64.64.64=
+.59"
+I0209 12:18:01.339193 1 ipset.go:176] "Successfully added ip set entry to i=
+p set" ipSetEntry=3D"64.64.64.59,udp:8890" ipSet=3D"KUBE-LOAD-BALANCER"
+I0209 12:18:11.338453 1 proxier.go:1008] "syncProxyRules complete" elapsed=
+=3D"18.876838575s"
 
-Jan Engelhardt (2):
-      build: use the right automake variables
-      Update .gitignore
+So the first packet came at 12:18:27.142 but the rules for the same service=
+ with endpoints were programmed well before at 12:18:11.338453. And there w=
+ere no other events related to this service/endpoint until the first packet=
+ came.
 
-Jeremy Sowden (1):
-      build: update obsolete autoconf macros
+Adding output of ipvadm commands, below command shows that ipvsadm has one =
+hit(1 inactconn) for the packet in question:
+UDP 05:00=A0 UDP=A0=A0=A0=A0=A0=A0=A0=A0 50.117.79.3:42467=A0 64.64.64.59:8=
+890 =A0=A0192.168.88.125:8890
 
-Ken-ichirou MATSUZAWA (1):
-      conntrack: fix invmap_icmpv6 entries
+UDP=A0 64.64.64.59:8890 rr
+=A0 -> 192.168.7.62:8890=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 Masq=A0=A0=A0 1=
+=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 1=A0=A0=A0=A0=A0=A0=A0=A0=20
+=A0=A0-> 192.168.11.237:8890=A0=A0=A0=A0=A0=A0=A0=A0=A0 Masq=A0=A0=A0 1=A0=
+=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=20
+=A0=A0-> 192.168.37.61:8890=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 Masq=A0=A0=A0 1=
+=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 1=A0=A0=A0=A0 =A0=A0=A0=A0
+=A0=A0-> 192.168.55.131:8890=A0=A0=A0=A0=A0=A0=A0=A0=A0 Masq=A0=A0=A0 1=A0=
+=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 1=A0=A0=A0=A0=A0=A0=A0=A0=20
+=A0=A0-> 192.168.57.24:8890=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 Masq=A0=A0=A0 1=
+=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 1=A0=A0=A0=A0=A0=A0=A0=A0=20
+=A0=A0-> 192.168.59.101:8890=A0=A0=A0=A0=A0=A0=A0=A0=A0 Masq=A0=A0=A0 1=A0=
+=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 1=A0=A0=A0=A0=A0=A0=A0=A0=20
+=A0=A0-> 192.168.88.125:8890=A0=A0=A0=A0=A0=A0=A0=A0=A0 Masq=A0=A0=A0 1=A0=
+=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 1=A0=A0=A0=A0=A0=A0=A0=A0=20
+=A0=A0-> 192.168.110.139:8890=A0=A0=A0=A0=A0=A0=A0=A0 Masq=A0=A0=A0 1=A0=A0=
+=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=20
+=A0=A0-> 192.168.135.77:8890=A0=A0=A0=A0=A0=A0=A0=A0=A0 Masq=A0=A0=A0 1=A0=
+=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=20
+=A0=A0-> 192.168.183.209:8890=A0=A0=A0=A0=A0=A0=A0=A0 Masq=A0=A0=A0 1=A0=A0=
+=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=20
+=A0=A0-> 192.168.200.199:8890=A0=A0=A0=A0=A0=A0=A0=A0 Masq=A0=A0=A0 1=A0=A0=
+=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=20
+=A0=A0-> 192.168.214.234:8890=A0=A0=A0=A0=A0=A0=A0=A0 Masq=A0=A0=A0 1=A0=A0=
+=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=20
+=A0=A0-> 192.168.215.32:8890=A0=A0=A0=A0=A0=A0=A0=A0=A0 Masq=A0=A0=A0 1=A0=
+=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=20
+=A0=A0-> 192.168.219.117:8890=A0=A0=A0=A0=A0=A0=A0=A0 Masq=A0=A0=A0 1=A0=A0=
+=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=20
+=A0=A0-> 192.168.219.222:8890=A0=A0=A0=A0=A0=A0=A0=A0 Masq=A0=A0=A0 1=A0=A0=
+=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=20
+=A0=A0-> 192.168.220.125:8890=A0=A0=A0=A0=A0=A0=A0=A0 Masq=A0=A0=A0 1=A0=A0=
+=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=20
+=A0=A0-> 192.168.247.165:8890=A0=A0=A0=A0=A0=A0=A0=A0 Masq=A0=A0=A0 1=A0=A0=
+=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=20
+=A0=A0-> 192.168.248.97:8890=A0=A0=A0=A0=A0=A0=A0=A0=A0 Masq=A0=A0=A0 1=A0=
+=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=20
+=A0=A0-> 192.168.250.78:8890=A0=A0=A0=A0=A0=A0=A0=A0=A0 Masq=A0=A0=A0 1=A0=
+=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0=A0=20
+=A0=A0-> 192.168.255.76:8890=A0=A0=A0=A0=A0=A0=A0=A0=A0 Masq=A0=A0=A0 1=A0=
+=A0=A0=A0=A0 0=A0=A0=A0=A0=A0=A0=A0 =A0=A00=A0=A0=A0=A0=A0=A0=A0=20
 
-Luuk Paulussen (1):
-      conntrack: Don't use ICMP attrs in decision to build repl tuple
+Can anyone please help with any specific scenario where the reply tuple is =
+not populated with real server ip? Or if someone could help with what other=
+ logs/data to be collected to move forward.
 
-Pablo Neira Ayuso (5):
-      src: add IPS_HW_OFFLOAD flag
-      conntrack: add flush filter command
-      build: missing internal/proto.h in Makefile.am
-      conntrack: add nfct_nlmsg_build_filter() helper
-      conntrack: don't cancel nest on unknown layer 4 protocols
+Thanks,
+Vivek
 
-Phil Sutter (2):
-      tests: Fix for missing qa-connlabel.conf in tarball
-      tests: Add simple tests to TESTS variable
-
-
---5j6Eu2BS301oJprp--
