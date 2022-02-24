@@ -1,246 +1,493 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] nftables 1.0.2 release
-Date: Mon, 21 Feb 2022 17:09:34 +0100
-Message-ID: <YhO5Pn+6+dgAgSd9@salvia>
+From: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+Subject: Re: [RFC PATCH 2/2] landlock: selftests for bind and connect hooks
+Date: Thu, 24 Feb 2022 06:18:34 +0300
+Message-ID: <a95b208c-5377-cf5c-0b4d-ce6b4e4b1b05@huawei.com>
+References: <20220124080215.265538-1-konstantin.meskhidze@huawei.com>
+ <20220124080215.265538-3-konstantin.meskhidze@huawei.com>
+ <4d54e3a9-8a26-d393-3c81-b01389f76f09@digikod.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="idxEts+FEiNamxS2"
 Content-Transfer-Encoding: 8bit
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
+Return-path: <linux-security-module-owner@vger.kernel.org>
+Content-Language: ru
+In-Reply-To: <4d54e3a9-8a26-d393-3c81-b01389f76f09@digikod.net>
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter <netfilter@vger.kernel.org>, netfilter-devel <netfilter-devel@vger.kernel.org>
-Cc: netdev@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: =?UTF-8?Q?Micka=c3=abl_Sala=c3=bcn?= <mic@digikod.net>
+Cc: linux-security-module@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, yusongping@huawei.com, artem.kuzin@huawei.com
 
 
---idxEts+FEiNamxS2
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 
-Hi!
+2/1/2022 9:31 PM, Mickaël Salaün пишет:
+> 
+> On 24/01/2022 09:02, Konstantin Meskhidze wrote:
+>> Support 4 tests for bind and connect networks actions:
+> 
+> Good to see such tests!
+> 
+> 
+>> 1. bind() a socket with no landlock restrictions.
+>> 2. bind() sockets with landllock restrictions.
+> 
+> You can leverage the FIXTURE_VARIANT helpers to factor out this kind of 
+> tests (see ptrace_test.c).
+> 
+> 
+>> 3. connect() a socket to listening one with no landlock restricitons.
+>> 4. connect() sockets with landlock restrictions.
+> 
+> Same here, you can factor out code. I guess you could create helpers for 
+> client and server parts.
+> 
+> We also need to test with IPv4, IPv6 and the AF_UNSPEC tricks.
+> 
+> Please provide the kernel test coverage and explain why the uncovered 
+> code cannot be covered: 
+> https://www.kernel.org/doc/html/latest/dev-tools/gcov.html
 
-The Netfilter project proudly presents:
-
-        nftables 1.0.2
-
-This release contains new features available up to the Linux kernel
-5.17-rc release:
-
-* New ruleset optimization -o/--optimize option. You can combine this
-  option with the dry run mode (--check) to review the proposed ruleset
-  updates without actually loading the ruleset, e.g.
-
-        # nft -c -o -f ruleset.test
-        Merging:
-                 ruleset.nft:16:3-37:           ip daddr 192.168.0.1 counter accept
-                 ruleset.nft:17:3-37:           ip daddr 192.168.0.2 counter accept
-                 ruleset.nft:18:3-37:           ip daddr 192.168.0.3 counter accept
-        into:
-                 ip daddr { 192.168.0.1, 192.168.0.2, 192.168.0.3 } counter packets 0 bytes 0 accept
-
-  This option also coalesces rules using concatenation+set, e.g.
-
-      meta iifname eth1 ip saddr 1.1.1.1 ip daddr 2.2.2.3 accept
-      meta iifname eth1 ip saddr 1.1.1.2 ip daddr 2.2.2.5 accept
-
-   into:
-
-      meta iifname . ip saddr . ip daddr { eth1 . 1.1.1.1 . 2.2.2.3, eth1 . 1.1.1.2 . 2.2.2.5 } accept
-
-   and it uses verdict maps to coalesce rules with same selectors but different
-   verdicts, e.g.
-
-      ip saddr 1.1.1.1 ip daddr 2.2.2.2 accept
-      ip saddr 2.2.2.2 ip daddr 3.3.3.3 drop
-
-   into:
-
-      ip saddr . ip daddr vmap { 1.1.1.1 . 2.2.2.2 : accept, 2.2.2.2 . 3.3.3.3 : drop }
-
-- Support for ip and tcp options and sctp chunks in sets, e.g.
-
-        set s5 {
-               typeof ip option ra value
-               elements = { 1, 1024 }
-        }
-
-        set s7 {
-               typeof sctp chunk init num-inbound-streams
-               elements = { 1, 4 }
-        }
-
-        chain c5 {
-               ip option ra value @s5 accept
-        }
-
-        chain c7 {
-               sctp chunk init num-inbound-streams @s7 accept
-        }
-
-- Support for tcp fastopen, md5sig and mptcp options.
-
-- mp-tcp subtype matching support, e.g.
-
-        tcp option mptcp subtype 1
-
-- Improved kernel-side filtering via listing options.
-
-- complete JSON support for flowtables.
-
-... this release also include fixes (highlights):
-
-- fix --terse option with anonymous sets.
-- fix crash with `nft describe' on invalid field or datatype.
-- Big Endian fixes for ct expiration, meta sk{u,g}uid, meta hour,
-  ct label, meta {i,o}ifname with wildcard, payload matching with
-  bitmasks.
-- allow for quote strings as device names in flowtable declarations.
-- ethernet matching with reject, e.g.
-
-        ether saddr aa:bb:cc:dd:ee:ff ip daddr 192.168.0.1 reject
-
-- turn on dynamic flag if rule dynamically updates a set.
-
-... and incremental documentation updates.
-
-This release also includes libnftables C example code now available
-under the examples/ folder.
-
-You can download this new release from:
-
-https://www.netfilter.org/projects/nftables/downloads.html
-https://www.netfilter.org/pub/nftables/
-
-To build the code, libnftnl >= 1.2.1 and libmnl >= 1.0.4 are required:
-
-* https://netfilter.org/projects/libnftnl/index.html
-* https://netfilter.org/projects/libmnl/index.html
-
-Visit our wikipage for user documentation at:
-
-* https://wiki.nftables.org
-
-For the manpage reference, check man(8) nft.
-
-In case of bugs and feature request, file them via:
-
-* https://bugzilla.netfilter.org
-
-Happy firewalling.
-
---idxEts+FEiNamxS2
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: attachment; filename="changes-nftables-1.0.2.txt"
-Content-Transfer-Encoding: 8bit
-
-Eugene Crosser (1):
-      netlink: Use abort() in case of netlink_abi_error
-
-Florian Westphal (24):
-      exthdr: fix type number saved in udata
-      netlink_delinearize: use correct member type
-      netlink_delinearize: rename misleading variable
-      netlink_delinearize: binop: make accesses to expr->left/right conditional
-      tcpopt: remove KIND keyword
-      scanner: add tcp flex scope
-      parser: split tcp option rules
-      tcpopt: add md5sig, fastopen and mptcp options
-      tests: py: add test cases for md5sig, fastopen and mptcp mnemonics
-      mptcp: add subtype matching
-      exthdr: fix tcpopt_find_template to use length after mask adjustment
-      tests: py: add tcp subtype match test cases
-      ipopt: drop unused 'ptr' argument
-      exthdr: support ip/tcp options and sctp chunks in typeof expressions
-      iptopt: fix crash with invalid field/type combo
-      tests: add shift+and typeof test cases
-      payload: skip templates with meta key set
-      netlink_delinearize: and/shift postprocessing
-      netlink_delinearize: zero shift removal
-      evaluate: attempt to set_eval flag if dynamic updates requested
-      src: silence compiler warnings
-      json: add flow statement json export + parser
-      parser_json: fix flowtable device datatype
-      parser_json: permit empty device list
-
-Jeremy Sowden (18):
-      proto: short-circuit loops over upper protocols
-      evaluate: correct typo's
-      evaluate: reject: support ethernet as L2 protocol for inet table
-      tests: shell: remove stray debug flag.
-      build: fix autoconf warnings
-      build: remove scanner.c and parser_bison.c with `maintainer-clean`
-      tests: py: fix inet/sets.t netdev payload
-      tests: py: fix inet/ip.t payloads
-      tests: py: fix inet/ip_tcp.t test
-      netlink_delinearize: fix typo
-      src: remove arithmetic on booleans
-      src: reduce indentation
-      src: simplify logic governing storing payload dependencies
-      tests: py: fix inet/ip.t bridge payload
-      src: add a helper that returns a payload dependency for a particular base
-      src: store more than one payload dependency
-      tests: py: remove redundant payload expressions
-      tests: shell: remove redundant payload expressions
-
-Pablo Neira Ayuso (30):
-      cache: do not skip populating anonymous set with -t
-      mnl: different signedness compilation warning
-      cli: remove #include <editline/history.h>
-      cli: save history on ctrl-d with editline
-      tests: shell: extend catchall tests for maps
-      proto: revisit short-circuit loops over upper protocols
-      erec: expose print_location() and line_location()
-      src: error reporting with -f and read from stdin
-      src: remove '$' in symbol_expr_print
-      src: add ruleset optimization infrastructure
-      optimize: merge rules with same selectors into a concatenation
-      optimize: merge same selector with different verdict into verdict map
-      optimize: merge several selectors with different verdict into verdict map
-      src: do not use the nft_cache_filter object from mnl.c
-      cache: do not set error code twice
-      cache: add helper function to fill up the rule cache
-      src: 'nft list chain' prints anonymous chains correctly
-      libnftables: use xrealloc()
-      parser_bison: missing synproxy support in map declarations
-      optimize: add __expr_cmp()
-      optimize: merge verdict maps with same lookup key
-      optimize: check for payload base and offset when searching for mergers
-      optimize: do not merge raw payload expressions
-      iface: handle EINTR case when creating the cache
-      examples: add libnftables example program
-      examples: load ruleset from JSON
-      netlink: check key is EXPR_CONCAT before accessing field
-      segtree: memleak get element command
-      build: Bump version to 1.0.2
-      build: missing SUBIRS update
-
-Phil Sutter (18):
-      tests/py: Avoid duplicate records in *.got files
-      exthdr: Fix for segfault with unknown exthdr
-      mnl: Fix for missing info in rule dumps
-      src: Fix payload statement mask on Big Endian
-      meta: Fix {g,u}id_type on Big Endian
-      meta: Fix hour_type size
-      datatype: Fix size of time_type
-      ct: Fix ct label value parser
-      netlink_delinearize: Fix for escaped asterisk strings on Big Endian
-      cache: Filter tables on kernel side
-      cache: Filter rule list on kernel side
-      cache: Filter chain list on kernel side
-      cache: Filter set list on server side
-      cache: Support filtering for a specific flowtable
-      tests: py: Test connlimit statement
-      scanner: Move 'maps' keyword into list cmd scope
-      scanner: Some time units are only used in limit scope
-      scanner: rt: Move seg-left keyword into scope
-
-Pierre Ducroquet (1):
-      doc: add undefine and redefine keywords
-
-Stijn Tintel (1):
-      parser: allow quoted string in flowtable_expr_member
-
-Štěpán Němec (1):
-      tests: shell: better parameters for the interval stack overflow test
-
-
---idxEts+FEiNamxS2--
+  Hi Mickaёl!
+  Could you please provide the example of your test coverage build
+  process? Cause as I undersatand there is no need to get coverage data
+  for the entire kernel, just for landlock files.
+> 
+> You'll probably see that there are a multiple parts of the kernel that 
+> are not covered. For instance, it is important to test different 
+> combinations of layered network rules (see layout1/ruleset_overlap, 
+> layer_rule_unions, non_overlapping_accesses, 
+> interleaved_masked_accesses… in fs_test.c). Tests in fs_test.c are more 
+> complex because handling file system rules is more complex, but you can 
+> get some inspiration in it, especially the edge cases.
+> 
+> We also need to test invalid user space supplied data (see layout1/inval 
+> test in fs_test.c).
+> 
+> 
+>>
+>> Signed-off-by: Konstantin Meskhidze <konstantin.meskhidze@huawei.com>
+>> ---
+>>   .../testing/selftests/landlock/network_test.c | 346 ++++++++++++++++++
+>>   1 file changed, 346 insertions(+)
+>>   create mode 100644 tools/testing/selftests/landlock/network_test.c
+>>
+>> diff --git a/tools/testing/selftests/landlock/network_test.c 
+>> b/tools/testing/selftests/landlock/network_test.c
+>> new file mode 100644
+>> index 000000000000..9dfe37a2fb20
+>> --- /dev/null
+>> +++ b/tools/testing/selftests/landlock/network_test.c
+>> @@ -0,0 +1,346 @@
+>> +// SPDX-License-Identifier: GPL-2.0
+>> +/*
+>> + * Landlock tests - Common user space base
+>> + *
+>> + * Copyright © 2017-2020 Mickaël Salaün <mic@digikod.net>
+>> + * Copyright © 2019-2020 ANSSI
+> 
+> You need to update this header with an appropriate description and the 
+> copyright holder (your employer).
+> 
+> 
+>> + */
+>> +
+>> +#define _GNU_SOURCE
+>> +#include <errno.h>
+>> +#include <fcntl.h>
+>> +#include <linux/landlock.h>
+>> +#include <string.h>
+>> +#include <sys/prctl.h>
+>> +#include <sys/socket.h>
+>> +#include <sys/types.h>
+>> +#include <netinet/in.h>
+>> +#include <arpa/inet.h>
+> 
+> To make it determinisitic (and ease patching/diff/merging), you should 
+> sort all the included files (in tests and in the kernel code).
+> 
+> 
+>> +
+>> +#include "common.h"
+>> +
+>> +#define SOCK_PORT_1 3470
+>> +#define SOCK_PORT_2 3480
+>> +#define SOCK_PORT_3 3490
+> 
+> To avoid port collision and create a clean and stable test environement 
+> (to avoid flaky tests), you should create a network namespace with 
+> FIXTURE_SETUP, test with TEST_F_FORK (to not polute the parent process, 
+> and which works with test variants), and use the set_cap and clear_cap 
+> helpers (see fs_test.c).
+> 
+> 
+>> +
+>> +#define IP_ADDRESS "127.0.0.1"
+>> +
+>> +/* Number pending connections queue tobe hold */
+>> +#define BACKLOG 10
+>> +
+>> +TEST(socket_bind_no_restrictions) {
+>> +
+>> +    int sockfd;
+>> +    struct sockaddr_in addr;
+>> +    const int one = 1;
+>> +
+>> +    /* Create a socket */
+>> +    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+>> +    ASSERT_LE(0, sockfd);
+>> +    /* Allow reuse of local addresses */
+>> +    ASSERT_EQ(0, setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &one, 
+>> sizeof(one)));
+> 
+> With a dedicated namespace, SO_REUSEADDR should not be required.
+> 
+> 
+>> +
+>> +    /* Set socket address parameters */
+>> +    addr.sin_family = AF_INET;
+>> +    addr.sin_port = htons(SOCK_PORT_1);
+>> +    addr.sin_addr.s_addr = inet_addr(IP_ADDRESS);
+>> +    memset(&(addr.sin_zero), '\0', 8);
+>> +
+>> +    /* Bind the socket to IP address */
+>> +    ASSERT_EQ(0, bind(sockfd, (struct sockaddr *)&addr, sizeof(addr)));
+>> +}
+>> +
+>> +TEST(sockets_bind_with_restrictions) {
+>> +
+>> +    int sockfd_1, sockfd_2, sockfd_3;
+>> +    struct sockaddr_in addr_1, addr_2, addr_3;
+>> +    const int one = 1;
+>> +
+>> +    struct landlock_ruleset_attr ruleset_attr = {
+>> +        .handled_access_net = LANDLOCK_ACCESS_NET_BIND_TCP |
+>> +                      LANDLOCK_ACCESS_NET_CONNECT_TCP,
+>> +    };
+>> +    struct landlock_net_service_attr net_service_1 = {
+>> +        .allowed_access = LANDLOCK_ACCESS_NET_BIND_TCP |
+>> +                  LANDLOCK_ACCESS_NET_CONNECT_TCP,
+>> +        .port = SOCK_PORT_1,
+>> +    };
+>> +    struct landlock_net_service_attr net_service_2 = {
+>> +        .allowed_access = LANDLOCK_ACCESS_NET_CONNECT_TCP,
+>> +        .port = SOCK_PORT_2,
+>> +    };
+>> +    struct landlock_net_service_attr net_service_3 = {
+>> +        .allowed_access = 0,
+>> +        .port = SOCK_PORT_3,
+>> +    };
+> 
+> Good to have these three different rules!
+> 
+> 
+>> +
+>> +    const int ruleset_fd = landlock_create_ruleset(&ruleset_attr,
+>> +            sizeof(ruleset_attr), 0);
+>> +    ASSERT_LE(0, ruleset_fd);
+>> +
+>> +    /* Allow connect and bind operations to the SOCK_PORT_1 socket 
+>> "object" */
+> 
+> You can omit "object" but use full sentences at the third person 
+> (because it explains what do the next lines).
+> 
+> 
+>> +    ASSERT_EQ(0, landlock_add_rule(ruleset_fd, 
+>> LANDLOCK_RULE_NET_SERVICE,
+>> +                &net_service_1, 0));
+>> +    /* Allow connect and deny bind operations to the SOCK_PORT_2 
+>> socket "object" */
+>> +    ASSERT_EQ(0, landlock_add_rule(ruleset_fd, 
+>> LANDLOCK_RULE_NET_SERVICE,
+>> +                &net_service_2, 0));
+>> +    /* Empty allowed_access (i.e. deny rules) are ignored in network 
+>> actions
+>> +     * for SOCK_PORT_3 socket "object"
+>> +     */
+>> +    ASSERT_EQ(-1, landlock_add_rule(ruleset_fd, 
+>> LANDLOCK_RULE_NET_SERVICE,
+>> +                &net_service_3, 0));
+>> +    ASSERT_EQ(ENOMSG, errno);
+>> +
+>> +    /* Enforces the ruleset. */
+>> +    ASSERT_EQ(0, prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0));
+>> +    ASSERT_EQ(0, landlock_restrict_self(ruleset_fd, 0));
+>> +    ASSERT_EQ(0, close(ruleset_fd));
+>> +
+>> +    /* Create a socket 1 */
+>> +    sockfd_1 = socket(AF_INET, SOCK_STREAM, 0);
+> 
+> Please create all FD with SOCK_CLOEXEC and also close them when not 
+> needed. This could also reduce the number of FD.
+> 
+> 
+>> +    ASSERT_LE(0, sockfd_1);
+>> +    /* Allow reuse of local addresses */
+>> +    ASSERT_EQ(0, setsockopt(sockfd_1, SOL_SOCKET, SO_REUSEADDR, &one, 
+>> sizeof(one)));
+>> +
+>> +    /* Set socket 1 address parameters */
+>> +    addr_1.sin_family = AF_INET;
+>> +    addr_1.sin_port = htons(SOCK_PORT_1);
+>> +    addr_1.sin_addr.s_addr = inet_addr(IP_ADDRESS);
+>> +    memset(&(addr_1.sin_zero), '\0', 8);
+>> +    /* Bind the socket 1 to IP address */
+>> +    ASSERT_EQ(0, bind(sockfd_1, (struct sockaddr  *)&addr_1, 
+>> sizeof(addr_1)));
+>> +
+>> +    /* Create a socket 2 */
+>> +    sockfd_2 = socket(AF_INET, SOCK_STREAM, 0);
+>> +    ASSERT_LE(0, sockfd_2);
+>> +    /* Allow reuse of local addresses */
+>> +    ASSERT_EQ(0, setsockopt(sockfd_2, SOL_SOCKET, SO_REUSEADDR, &one, 
+>> sizeof(one)));
+>> +
+>> +    /* Set socket 2 address parameters */
+>> +    addr_2.sin_family = AF_INET;
+>> +    addr_2.sin_port = htons(SOCK_PORT_2);
+>> +    addr_2.sin_addr.s_addr = inet_addr(IP_ADDRESS);
+>> +    memset(&(addr_2.sin_zero), '\0', 8);
+> 
+> These part could be factored out with helpers or/and test variants.
+> 
+> 
+>> +    /* Bind the socket 2 to IP address */
+>> +    ASSERT_EQ(-1, bind(sockfd_2, (struct sockaddr *)&addr_2, 
+>> sizeof(addr_2)));
+>> +    ASSERT_EQ(EACCES, errno);
+>> +
+>> +    /* Create a socket 3 */
+>> +    sockfd_3 = socket(AF_INET, SOCK_STREAM, 0);
+>> +    ASSERT_LE(0, sockfd_3);
+>> +    /* Allow reuse of local addresses */
+>> +    ASSERT_EQ(0, setsockopt(sockfd_3, SOL_SOCKET, SO_REUSEADDR, &one, 
+>> sizeof(one)));
+>> +
+>> +    /* Set socket 3 address parameters */
+>> +    addr_3.sin_family = AF_INET;
+>> +    addr_3.sin_port = htons(SOCK_PORT_3);
+>> +    addr_3.sin_addr.s_addr = inet_addr(IP_ADDRESS);
+>> +    memset(&(addr_3.sin_zero), '\0', 8);
+>> +    /* Bind the socket 3 to IP address */
+>> +    ASSERT_EQ(0, bind(sockfd_3, (struct sockaddr *)&addr_3, 
+>> sizeof(addr_3)));
+> 
+> Why is it allowed to bind to SOCK_PORT_3 whereas net_service_3 forbids it?
+> 
+> 
+>> +}
+>> +
+>> +TEST(socket_connect_no_restrictions) {
+>> +
+>> +    int sockfd, new_fd;
+>> +    struct sockaddr_in addr;
+>> +    pid_t child;
+>> +    int status;
+>> +    const int one = 1;
+>> +
+>> +    /* Create a server socket */
+>> +    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+>> +    ASSERT_LE(0, sockfd);
+>> +    /* Allow reuse of local addresses */
+>> +    ASSERT_EQ(0, setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &one, 
+>> sizeof(one)));
+>> +
+>> +    /* Set socket address parameters */
+>> +    addr.sin_family = AF_INET;
+>> +    addr.sin_port = htons(SOCK_PORT_1);
+>> +    addr.sin_addr.s_addr = inet_addr(IP_ADDRESS);
+>> +    memset(&(addr.sin_zero), '\0', 8);
+>> +
+>> +    /* Bind the socket to IP address */
+>> +    ASSERT_EQ(0, bind(sockfd, (struct sockaddr *)&addr, sizeof(addr)));
+>> +
+>> +    /* Make listening socket */
+>> +    ASSERT_EQ(0, listen(sockfd, BACKLOG));
+>> +
+>> +    child = fork();
+>> +    ASSERT_LE(0, child);
+>> +    if (child == 0) {
+>> +        int child_sockfd;
+>> +        struct sockaddr_in connect_addr;
+>> +
+>> +        /* Close listening socket for the child */
+>> +        ASSERT_EQ(0, close(sockfd));
+>> +        /* Create a stream client socket */
+>> +        child_sockfd = socket(AF_INET, SOCK_STREAM, 0);
+>> +        ASSERT_LE(0, child_sockfd);
+>> +
+>> +        /* Set server's socket address parameters*/
+>> +        connect_addr.sin_family = AF_INET;
+>> +        connect_addr.sin_port = htons(SOCK_PORT_1);
+>> +        connect_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+>> +        memset(&(connect_addr.sin_zero), '\0', 8);
+>> +
+>> +        /* Make connection to the listening socket */
+>> +        ASSERT_EQ(0, connect(child_sockfd, (struct sockaddr 
+>> *)&connect_addr,
+>> +                       sizeof(struct sockaddr)));
+>> +        _exit(_metadata->passed ? EXIT_SUCCESS : EXIT_FAILURE);
+>> +        return;
+>> +    }
+>> +    /* Accept connection from the child */
+>> +    new_fd = accept(sockfd, NULL, 0);
+>> +    ASSERT_LE(0, new_fd);
+>> +
+>> +    /* Close connection */
+>> +    ASSERT_EQ(0, close(new_fd));
+>> +
+>> +    ASSERT_EQ(child, waitpid(child, &status, 0));
+>> +    ASSERT_EQ(1, WIFEXITED(status));
+>> +    ASSERT_EQ(EXIT_SUCCESS, WEXITSTATUS(status));
+>> +}
+>> +
+>> +TEST(sockets_connect_with_restrictions) {
+>> +
+>> +    int new_fd;
+>> +    int sockfd_1, sockfd_2;
+>> +    struct sockaddr_in addr_1, addr_2;
+>> +    pid_t child_1, child_2;
+>> +    int status;
+>> +    const int one = 1;
+>> +
+>> +    struct landlock_ruleset_attr ruleset_attr = {
+>> +        .handled_access_net = LANDLOCK_ACCESS_NET_BIND_TCP |
+>> +                      LANDLOCK_ACCESS_NET_CONNECT_TCP,
+>> +    };
+>> +    struct landlock_net_service_attr net_service_1 = {
+>> +        .allowed_access = LANDLOCK_ACCESS_NET_BIND_TCP |
+>> +                  LANDLOCK_ACCESS_NET_CONNECT_TCP,
+>> +        .port = SOCK_PORT_1,
+>> +    };
+>> +    struct landlock_net_service_attr net_service_2 = {
+>> +        .allowed_access = LANDLOCK_ACCESS_NET_BIND_TCP,
+>> +        .port = SOCK_PORT_2,
+>> +    };
+>> +
+>> +    const int ruleset_fd = landlock_create_ruleset(&ruleset_attr,
+>> +            sizeof(ruleset_attr), 0);
+>> +    ASSERT_LE(0, ruleset_fd);
+>> +
+>> +    /* Allow connect and bind operations to the SOCK_PORT_1 socket 
+>> "object" */
+>> +    ASSERT_EQ(0, landlock_add_rule(ruleset_fd, 
+>> LANDLOCK_RULE_NET_SERVICE,
+>> +                &net_service_1, 0));
+>> +    /* Allow connect and deny bind operations to the SOCK_PORT_2 
+>> socket "object" */
+>> +    ASSERT_EQ(0, landlock_add_rule(ruleset_fd, 
+>> LANDLOCK_RULE_NET_SERVICE,
+>> +                &net_service_2, 0));
+>> +
+>> +    /* Enforces the ruleset. */
+>> +    ASSERT_EQ(0, prctl(PR_SET_NO_NEW_PRIVS, 1, 0, 0, 0));
+>> +    ASSERT_EQ(0, landlock_restrict_self(ruleset_fd, 0));
+>> +    ASSERT_EQ(0, close(ruleset_fd));
+>> +
+>> +    /* Create a server socket 1 */
+>> +    sockfd_1 = socket(AF_INET, SOCK_STREAM, 0);
+>> +    ASSERT_LE(0, sockfd_1);
+>> +    /* Allow reuse of local addresses */
+>> +    ASSERT_EQ(0, setsockopt(sockfd_1, SOL_SOCKET, SO_REUSEADDR, &one, 
+>> sizeof(one)));
+>> +
+>> +    /* Set socket 1 address parameters */
+>> +    addr_1.sin_family = AF_INET;
+>> +    addr_1.sin_port = htons(SOCK_PORT_1);
+>> +    addr_1.sin_addr.s_addr = inet_addr(IP_ADDRESS);
+>> +    memset(&(addr_1.sin_zero), '\0', 8);
+>> +
+>> +    /* Bind the socket 1 to IP address */
+>> +    ASSERT_EQ(0, bind(sockfd_1, (struct sockaddr *)&addr_1, 
+>> sizeof(addr_1)));
+>> +
+>> +    /* Make listening socket 1 */
+>> +    ASSERT_EQ(0, listen(sockfd_1, BACKLOG));
+>> +
+>> +    child_1 = fork();
+>> +    ASSERT_LE(0, child_1);
+>> +    if (child_1 == 0) {
+>> +        int child_sockfd;
+>> +        struct sockaddr_in connect_addr;
+>> +
+>> +        /* Close listening socket for the child */
+>> +        ASSERT_EQ(0, close(sockfd_1));
+>> +        /* Create a stream client socket */
+>> +        child_sockfd = socket(AF_INET, SOCK_STREAM, 0);
+>> +        ASSERT_LE(0, child_sockfd);
+>> +
+>> +        /* Set server's socket 1 address parameters*/
+>> +        connect_addr.sin_family = AF_INET;
+>> +        connect_addr.sin_port = htons(SOCK_PORT_1);
+>> +        connect_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+>> +        memset(&(connect_addr.sin_zero), '\0', 8);
+>> +
+>> +        /* Make connection to the listening socket 1 */
+>> +        ASSERT_EQ(0, connect(child_sockfd, (struct sockaddr 
+>> *)&connect_addr,
+>> +                       sizeof(struct sockaddr)));
+>> +        _exit(_metadata->passed ? EXIT_SUCCESS : EXIT_FAILURE);
+>> +        return;
+>> +    }
+>> +    /* Accept connection from the child 1 */
+>> +    new_fd = accept(sockfd_1, NULL, 0);
+>> +    ASSERT_LE(0, new_fd);
+>> +
+>> +    /* Close connection */
+>> +    ASSERT_EQ(0, close(new_fd));
+>> +
+>> +    ASSERT_EQ(child_1, waitpid(child_1, &status, 0));
+>> +    ASSERT_EQ(1, WIFEXITED(status));
+>> +    ASSERT_EQ(EXIT_SUCCESS, WEXITSTATUS(status));
+>> +
+>> +    /* Create a server socket 2 */
+>> +    sockfd_2 = socket(AF_INET, SOCK_STREAM, 0);
+>> +    ASSERT_LE(0, sockfd_2);
+>> +    /* Allow reuse of local addresses */
+>> +    ASSERT_EQ(0, setsockopt(sockfd_2, SOL_SOCKET, SO_REUSEADDR, &one, 
+>> sizeof(one)));
+>> +
+>> +    /* Set socket 2 address parameters */
+>> +    addr_2.sin_family = AF_INET;
+>> +    addr_2.sin_port = htons(SOCK_PORT_2);
+>> +    addr_2.sin_addr.s_addr = inet_addr(IP_ADDRESS);
+>> +    memset(&(addr_2.sin_zero), '\0', 8);
+>> +
+>> +    /* Bind the socket 2 to IP address */
+>> +    ASSERT_EQ(0, bind(sockfd_2, (struct sockaddr *)&addr_2, 
+>> sizeof(addr_2)));
+>> +
+>> +    /* Make listening socket 2 */
+>> +    ASSERT_EQ(0, listen(sockfd_2, BACKLOG));
+>> +
+>> +    child_2 = fork();
+>> +    ASSERT_LE(0, child_2);
+>> +    if (child_2 == 0) {
+>> +        int child_sockfd;
+>> +        struct sockaddr_in connect_addr;
+>> +
+>> +        /* Close listening socket for the child */
+>> +        ASSERT_EQ(0, close(sockfd_2));
+>> +        /* Create a stream client socket */
+>> +        child_sockfd = socket(AF_INET, SOCK_STREAM, 0);
+>> +        ASSERT_LE(0, child_sockfd);
+>> +
+>> +        /* Set server's socket address parameters*/
+>> +        connect_addr.sin_family = AF_INET;
+>> +        connect_addr.sin_port = htons(SOCK_PORT_2);
+>> +        connect_addr.sin_addr.s_addr = htonl(INADDR_ANY);
+>> +        memset(&(connect_addr.sin_zero), '\0', 8);
+>> +
+>> +        /* Make connection to the listening socket */
+>> +        ASSERT_EQ(-1, connect(child_sockfd, (struct sockaddr 
+>> *)&connect_addr,
+>> +                       sizeof(struct sockaddr)));
+>> +        ASSERT_EQ(EACCES, errno);
+>> +        _exit(_metadata->passed ? EXIT_SUCCESS : EXIT_FAILURE);
+>> +        return;
+>> +    }
+>> +
+>> +    ASSERT_EQ(child_2, waitpid(child_2, &status, 0));
+>> +    ASSERT_EQ(1, WIFEXITED(status));
+>> +    ASSERT_EQ(EXIT_SUCCESS, WEXITSTATUS(status));
+>> +}
+>> +
+>> +TEST_HARNESS_MAIN
+> .
