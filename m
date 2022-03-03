@@ -1,55 +1,47 @@
-From: Jarno Pelkonen <jarno.pelkonen@gmail.com>
-Subject: Re: nftables + docker
-Date: Wed, 2 Mar 2022 20:44:41 +0200
-Message-ID: <CAKv8qLmc=2tvhoSVYNZrVyuZ3SgcRDmgYtoQzE-+3DE_=nb=ag@mail.gmail.com>
-References: <CAOBAZ9COSZ6WcjGoQFNWhUPZsyefd49uWrgiVkeMjnHLsr8yKA@mail.gmail.com>
+From: Marc SCHAEFER <schaefer@alphanet.ch>
+Subject: IP SNAT in a bridge
+Date: Thu, 3 Mar 2022 21:45:46 +0100
+Message-ID: <20220303204545.GA6798@alphanet.ch>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qtB8K/DxCvSfV5TWjnqc7hCfiGWqljFh7DiZticd1zw=;
-        b=Vun8R3LvWgSqkxMy6qJNjjjhDdIv3VR5tbjJQpnnhyBE37F1NuKI1UkzvJZ7B1m7YD
-         StsnEn4Hz9jHY7xJ/lKhfeynkKe+QDvvhzDmf94f7mH2NbPXnf+U2+lazsvBmmn24vNl
-         VWSGXFVG+iNZcixYBNCmJmkTaNB08lkG1uEU8Fowrp7n/AyEn2x3XBwqC2nN6UlY4l8M
-         FwtIMYFzy1WBccjEsn9E9KxcPG07GLpwM465vAObj1nz7xQv6o25xm8uEvh+1Mh9b5RW
-         tR7ICllGALIL26Kk0eTBoY8NGi9nFTD8csMuc7to+bzlhzlgHItEWmE8En0W05N+8RJw
-         DMyQ==
-In-Reply-To: <CAOBAZ9COSZ6WcjGoQFNWhUPZsyefd49uWrgiVkeMjnHLsr8yKA@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alphanet.ch; s=mail;
+        t=1646340346; bh=cVoP0y1WKEa2QUspewgQV0tboo/I3G9bUwmuTD+kxZs=;
+        h=Date:From:To:Subject:From;
+        b=kR4fxrNLGbQ9i/igY2vu8Z5Em0T4INfGSRWGYDseMXqHF+OhBEe09MSKls6/ECq3N
+         crwZs+KPPtlEGd487NeZkZUtwK2pEg7yErxfvHJS/yNxBBJUdJtRQr+2vsCP9Q5F6r
+         tGbxogHj5cyZYr3QCYlEv1XG0T0Js6rC9PnqkwE5ZbwIogF6uy5i1rAoK8U7yU5R8h
+         s+Y05dhXr6dg+gWLPxXAdFgWxX1A2sE+4WkDYCGRpLHTUfGJlxsvuWqGCY90Wd75+x
+         CFeWo8VGrw7yrKaCbRc6Mh2mhyU/m7KWnOlQORaAx7soeOhEbZGSOGKDDf3Agosd8f
+         qAxJqkTX0lYOg==
+Content-Disposition: inline
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Matthew Ellquist <mellqui@d.umn.edu>
-Cc: NFTables Mailing List <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hi,
+Hello,
 
-Restarting nftables.service completely flushes the nftables so
-docker=E2=80=99s rules go with it. See the nftables.service unit contents.
+I have two containers connected to a bridge. Let's assume the following
+IP packet goes through the bridge:
 
-If you are using systemd you can use =E2=80=9CPartOf=E2=80=9D directive to =
-have
-systemd take care of restarting services.
+192.168.101.3:80 > 192.168.101.4:12345
 
-Alternative option is to customize nftables.service to not to
-completely flush the tables, but remove everything else but docker
-rules and its entry point.
+I would like to change the packet as follows:
 
-Cheers,
+1.2.3.4:80 > 192.168.101.4:12345
 
-Jarno
+am I right that this has to be done as a -t nat POSTROUTING -j SNAT
+iptables, but that will only work if ebtables forces the packet into
+BROUTE mode first?
 
+Something like:
 
-On Wed, Mar 2, 2022 at 12:45 PM Matthew Ellquist <mellqui@d.umn.edu> wrote:
->
-> Greetings,
->
-> I'm very new to nftables and thought I'd throw this question out there
-> while I researched it.
->
-> Is there a way to not have to restart the docker.server to rebuild the
-> nftables rules, after restarting the nftables service?
->
-> Thanks,
-> Matt
+   ebtables -t broute -I BROUTING -p 0x800 -i bridge \
+      --ip-proto tcp --ip-sport 80 --ip-src 192.168.101.3/32 \
+      -j DROP
+   iptables -t nat -I POSTROUTING -s 192.168.101.3/32 -p tcp --sport 80 \
+      -j SNAT --to-source 1.2.3.4:80
+
+Or am I completely mistaken?
+
+Thank you.
