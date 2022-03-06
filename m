@@ -1,32 +1,31 @@
-From: Marc SCHAEFER <schaefer@alphanet.ch>
-Subject: Re: IP SNAT in a bridge
-Date: Fri, 4 Mar 2022 15:25:14 +0100
-Message-ID: <20220304142514.GA17205@alphanet.ch>
-References: <20220303204545.GA6798@alphanet.ch>
- <20220304081050.GA2392@alphanet.ch>
+From: Ameen Al-Azzawi <ameen.azzawi@gmail.com>
+Subject: Port pool of CentOS machine
+Date: Sun, 6 Mar 2022 19:56:07 +0100
+Message-ID: <CABcvXqKUqz=86zbwZDWbhLQSwgUUgYtG0UuocHtUX56qNLjUJA@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alphanet.ch; s=mail;
-        t=1646403914; bh=vLuAgkPFu2wnLCDsRFk4iXxdfltM2Gub/sNUWOZgz10=;
-        h=Date:From:To:Subject:References:In-Reply-To:From;
-        b=ohCZ2RYz8tA3xsForvF6ZGScv/1WpzBZz870UOFYNZnUgcVqPZMfKvcg+sNr/3B2Z
-         /71W+99CvMkBUJCzz7jj7IKWAVysFJytShKwGxP+oEsumDRYh4GbOeS0eYMxGSNw2M
-         WuN1XwsYTIoihskNK+snVwCfrpjXnU5MKyW3qq97is232HAB+thgZMA2imlQUf02BO
-         n9OG7M9z9TSU9KIkttm+/BiVr9hpeOloJIKoLdPt1+LdEzN+w/Y7ATk4Y4pT1Yz+G8
-         jc19me0GBHsXCRBgvWiRIj5rsuP/l1F+3GiZM/0Sm0shAiRQh6e0cENCgwHZCnVRP9
-         o/KBt+Nd9ddaQ==
-Content-Disposition: inline
-In-Reply-To: <20220304081050.GA2392@alphanet.ch>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=qYoX8jpons/Ya9B3LRVeMRpx0FaoecE6lqSfm/Vrlpg=;
+        b=H/o+2xwZ+O5O3DxqYgtCcdyA0apwFWY8Az6Cg0DiZntsCvfaNvNLUZb+zvfzXT9RxK
+         V1GPUaLpCUsMEfLM0f/sg5Jz1Ab8CWFfMzrLUNGw6Oy+tkA03Y1fg5NgOx7NeQ9HYNJt
+         Rywl/5YLlH/uEO0dzekZIKdO4rEAEZoLfy3KmtYlRqUl7NEU5DOvHxgrgRQkGO17J5l/
+         BSROSPQRMDkkFWImOvn9I8a6cg7IkMa6sAnA2DfIkls/JQRTJ9PDvmWSevHnB9Oivv1/
+         PKz4JFMuiBkw0YH4YBM4fEwXmjjdchNTU52wX0+MNFwdgD8kX86PHENlCM06hjWsqhPw
+         Juww==
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-On Fri, Mar 04, 2022 at 09:10:50AM +0100, Marc SCHAEFER wrote:
-> I found out that if the br_netfilter module is loaded, it works without
-> the BROUTE.  I will investigate if there is a way to do it less globally.
+Hello everyone,
 
-Apparently through ip link set dev BRIDGE type bridge nf_call_iptables 1
+I am trying to build an attacking scenario where I can exhaust the
+port pool of my Linux machine (CentOS 7).
+I am using a tool to send too many AAAA queries to my machine.
+The question is, how can I monitor this process of exhausting my
+source port pool using Netfilter ??
 
-However, ebtables BROUTE seems incompatible with basic iptables (nft
-only).
+Regards
+Ameen
