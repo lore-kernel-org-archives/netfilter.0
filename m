@@ -1,40 +1,97 @@
-From: Francisco Albani <francisco.albani@protonmail.com>
-Subject: json_cmd not working as intended
-Date: Fri, 18 Mar 2022 14:21:11 +0000
-Message-ID: <uHSFrk1rZGQ1Q18XE415Rn-mCIl3BfZ8Gafuz8KTHku5GOGqGrX_1p4mZV6qSArpk5qFNrHuLh91XkgZUcS2F8bk14M1_2Pr2VIwjgtGpHs=@protonmail.com>
-References: <rzuZZzgYS-alXXtKqSijqGY4qzRePPZDzK2WhOHyf9XM7VFftiTeOdCsLqlX9-H38XkwHr9x9RP2hgY4L1SKTx6KPSXLqoOrMGBggu7IzCw=@protonmail.com>
-Reply-To: Francisco Albani <francisco.albani@protonmail.com>
-Mime-Version: 1.0
+From: Martin Zaharinov <micron10@gmail.com>
+Subject: bug report and future request
+Date: Mon, 21 Mar 2022 22:44:20 +0200
+Message-ID: <AE6DAC96-EC3E-43C9-A95A-B230842DD7B1@gmail.com>
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail3; t=1647613273;
-        bh=P7pGcHyUuu73HyPOSQqK7KkZMOttD+LSZn6Fbc0CopA=;
-        h=Date:To:From:Reply-To:Subject:Message-ID:In-Reply-To:References:
-         From:To:Cc:Date:Subject:Reply-To:Feedback-ID:Message-ID;
-        b=SVayS2ATSepNk3RUpfIBrYQRmzzlP+w+BjGJDK98S4ok8eHHD+Pgdgp0EZ7hbiRiM
-         0alV3GojPmXh/gSOesGPEGPgXjKF0BdWt1iU9sTcMn3jaEVBaYyy6+cLgfl3rNBWBM
-         KSE/+h6ys3kZLhlNhymltcrHbjtTmgLpsbs+TzWgRtIWpgcjfKavLC6nt4JTjgrXtI
-         p5bTVp9owGSljtb7kS4ydiRHKOjaxHW6OIPBxM63jdY9csLKjvE9eSEoxKSPSs3LFF
-         z3IBPQ6PlUN4ZVwZjt4PeTkEXYKQ6/4lN2kTFxUEwW5w9XdRWHSLjR2AW6WMfzxFbk
-         3Bgom1EJonW+A==
-In-Reply-To: <rzuZZzgYS-alXXtKqSijqGY4qzRePPZDzK2WhOHyf9XM7VFftiTeOdCsLqlX9-H38XkwHr9x9RP2hgY4L1SKTx6KPSXLqoOrMGBggu7IzCw=@protonmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=from:content-transfer-encoding:mime-version:subject:message-id:date
+         :to;
+        bh=sCcxXQ3JXyyUY+QKQmyB4kqCuQx/Wl1tefqbMGnUfP4=;
+        b=jrdmQ3vRDmw38RvQzgh1WAbGn7EPwhZpg3JALGChC/a9Sfp0cGAcZEC/JyoBq6RGdO
+         sty92u8hLeox7ILLT7axeeSLHKgNj1YD0BQl0Fnk49pOPtkw0+iWPkSparthzkPAXJFg
+         ByLkvULbFAOCEBwnR6O3qRw/N39FNLgFTIcH7IjGsjgIvsfNKdrakEsDjIRFCuPTnMyf
+         8IDTJkz5GiZbmjYvUfg2++gi5eSMR4dZFc+x+b8B3UsEmhuApmEYWea48W+sAvUX6RXx
+         5TeuYhyhOX+4SWbqBv8IJjTualHE4Zz79//m75h25MRm5St2VeUG/eKYJbsHtfISqcBf
+         0b/A==
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: Florian Westphal <fw@strlen.de>, netfilter <netfilter@vger.kernel.org>, netfilter-devel@vger.kernel.org, pablo@netfilter.org
 
-Hi!
+Hi Netfilter team
 
-I was translating some nft cli bash scripts to python and tried to apply wh=
-at I learned in https://man.archlinux.org/man/extra/nftables/libnftables-js=
-on.5.en , but I could not make it work.
+first is it posible to fix this:=20
 
-I made a repo with the minimal example that shows the difference: https://g=
-ithub.com/franalbani/nftableson
+You can delete the rule whose handle is 5 with the following command:
+% nft delete rule filter output handle 5
+Note: There are plans to support rule deletion by passing:
+% nft delete rule filter output ip saddr 192.168.1.1 counter
 
-I hope you can help me.
+but this is not yet implemented. So you'll have to use the handle to =
+delete rules until that feature is implemented
 
-Thanks for your time.
-Bye!
+This is from Docs:
 
-Francisco.
+=
+https://wiki.nftables.org/wiki-nftables/index.php/Simple_rule_management#R=
+emoving_rules
+
+
+if have 1k rule
+
+table inet nft-qos-static {
+        chain upload {
+                type filter hook postrouting priority filter; policy =
+accept;
+                ip saddr 10.0.0.9 limit rate over 12 mbytes/second burst =
+50000 kbytes drop
+.........
+ip saddr 10.0.0.254 limit rate over 12 mbytes/second burst 50000 kbytes =
+drop
+        }
+
+
+        chain download {
+                type filter hook prerouting priority filter; policy =
+accept;
+                ip daddr 10.0.0.9 limit rate over 12 mbytes/second burst =
+50000 kbytes drop
+........
+ip saddr 10.0.0.254 limit rate over 12 mbytes/second burst 50000 kbytes =
+drop
+        }
+}
+
+and problem is not easy to delete rule for ip 10.0.0.100 or othere in =
+list .
+if use handle and list all rule  for example 4k and parse handle on =
+every 10-15 sec will load cpu with this.
+
+
+and second:
+
+is it posible in this rule ppp*
+
+table inet filter {
+        flowtable fastnat {
+                hook ingress priority 0; devices =3D { eth0, ppp* };
+        }
+
+        chain forward {
+                type filter hook forward priority 0; policy accept;
+                ip protocol { tcp , udp } flow offload @fastnat;
+        }
+}
+
+
+or vlan* , the problem is on system dynamic up vlan or ppp is auto up =
+when user is connect
+
+
+If there options to fix and add this options will be great,
+
+thanks in advance
+
+Martin.=
