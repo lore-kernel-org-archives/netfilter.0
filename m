@@ -1,217 +1,67 @@
-From: Martin Zaharinov <micron10@gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 Subject: Re: bug report and future request
-Date: Thu, 24 Mar 2022 14:09:25 +0200
-Message-ID: <DB57EE0F-F4CE-4198-89E0-F25ED3C321A5@gmail.com>
+Date: Thu, 24 Mar 2022 13:20:23 +0100
+Message-ID: <YjxiB6Jk4plpx48G@salvia>
 References: <AE6DAC96-EC3E-43C9-A95A-B230842DD7B1@gmail.com>
  <20220321212750.GB24574@breakpoint.cc>
  <4B0C8933-C7D8-49BA-B7F2-29625B0865C1@gmail.com>
  <20220322103203.GD24574@breakpoint.cc>
  <04C4931B-553E-4FEA-85D4-B3E186520EE5@gmail.com>
  <FE0EEED5-48C9-412F-81BA-0028818C2EE8@gmail.com>
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=67MXo1aMhvDYPdJZM5L7/bTsYDHo83mYbC1B3w+pFmU=;
-        b=NVfnhBjf2cNRWv7VdnLwj459SDVzhkBuRf2JVF05+z7Y8jd4DnKU//emVkjuKJsIEi
-         DKM5na5sKS/QYbzshP9VnUCqGea78zm2dxbOxmL9xyZXtq89imrUG1P/x0OzfCamegws
-         vFRZaW1It2njxpFEDZPrL9w5gcfaW4V1RsfMMPMYud9um0Go8b0yLBcL43TKWxXgudO7
-         9nEx/pSIh8txj8YhoTj0bbSeRsxcb7b6gHdk0WPfBYNBBLe+vhueLMKNio1nzusZi5g0
-         OgKAwiTUnhqBun9Zib9mquOKP59XNVyV+b+odDkaLrmB8A6KKHMnvK59GeNQXjyOhYF/
-         EIQQ==
-In-Reply-To: <FE0EEED5-48C9-412F-81BA-0028818C2EE8@gmail.com>
+ <DB57EE0F-F4CE-4198-89E0-F25ED3C321A5@gmail.com>
+Mime-Version: 1.0
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <DB57EE0F-F4CE-4198-89E0-F25ED3C321A5@gmail.com>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Florian Westphal <fw@strlen.de>
-Cc: netfilter <netfilter@vger.kernel.org>, netfilter-devel@vger.kernel.org, pablo@netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Martin Zaharinov <micron10@gmail.com>
+Cc: Florian Westphal <fw@strlen.de>, netfilter <netfilter@vger.kernel.org>, netfilter-devel@vger.kernel.org
 
-One more update=20
+On Thu, Mar 24, 2022 at 02:09:25PM +0200, Martin Zaharinov wrote:
+> One more update 
+> 
+> I try to make rule for limiter in offload mode :
+> 
+> table inet nft-qos-static {
+>         set limit_ul {
+>                 typeof ip saddr
+>                 flags dynamic
+>         }
+>         set limit_dl {
+>                 typeof ip daddr
+>                 flags dynamic
+>         }
+> 
+>         chain upload {
+>                 type filter hook prerouting priority filter ; policy accept;
+>                 ip saddr @limit_ul drop;
+>         }
+> 
+>         chain download {
+>                 type filter hook postrouting priority filter; policy accept;
+>                 ip daddr @limit_dl drop;
+> 
+>         }
+>         flowtable fastnat {
+>                 hook ingress priority filter; devices = { eth0, eth1 };
+>         }
+>         chain forward {
+>                 type filter hook forward priority filter; policy accept;
+>                 ip protocol { tcp , udp } flow offload @fastnat;
+>         }
+> }
+> 
+> its not work perfect only upload limit work , download get full channel 
+> 
+> in test i set 100mbit up/down  upload is stay on ~100mbit , but download up to 250-300mbit (i have this limit be my isp).
+> 
+> the problem is limiter work only for Upload , is it posible to make work on download rule ?
 
-I try to make rule for limiter in offload mode :
+If you want to combine ratelimit/policing with flowtable, then you
+have to use the ingress and egress hooks, not prerouting and
+postrouting.
 
-table inet nft-qos-static {
-        set limit_ul {
-                typeof ip saddr
-                flags dynamic
-        }
-        set limit_dl {
-                typeof ip daddr
-                flags dynamic
-        }
-
-        chain upload {
-                type filter hook prerouting priority filter ; policy =
-accept;
-                ip saddr @limit_ul drop;
-        }
-
-        chain download {
-                type filter hook postrouting priority filter; policy =
-accept;
-                ip daddr @limit_dl drop;
-
-        }
-        flowtable fastnat {
-                hook ingress priority filter; devices =3D { eth0, eth1 =
-};
-        }
-        chain forward {
-                type filter hook forward priority filter; policy accept;
-                ip protocol { tcp , udp } flow offload @fastnat;
-        }
-}
-
-
-
-its not work perfect only upload limit work , download get full channel=20=
-
-
-in test i set 100mbit up/down  upload is stay on ~100mbit , but download =
-up to 250-300mbit (i have this limit be my isp).
-
-the problem is limiter work only for Upload , is it posible to make work =
-on download rule ?
-
-Martin
-
-> On 24 Mar 2022, at 9:52, Martin Zaharinov <micron10@gmail.com> wrote:
->=20
-> HI all
->=20
-> One more after switch to all rule and use only nft (remove qdisc from =
-kernel config, and remove all iptables tables) in perf top see =
-nft_do_chain is up to 3-4% on all core and if isolate with perf top -C X =
-i see on one core is up to 10-15% :
->=20
->  31.26%  [pppoe]                  [k] pppoe_rcv
->     3.19%  [nf_tables]              [k] nft_do_chain
->     2.46%  [kernel]                 [k] =
-__netif_receive_skb_core.constprop.0
->     2.18%  [kernel]                 [k] fib_table_lookup
->     2.07%  [i40e]                   [k] i40e_clean_rx_irq
->     1.51%  [kernel]                 [k] __dev_queue_xmit
->     1.23%  [kernel]                 [k] dev_queue_xmit_nit
->     1.23%  [nf_conntrack]           [k] __nf_conntrack_find_get.isra.0
->     1.20%  [kernel]                 [k] __copy_skb_header
->     1.19%  [kernel]                 [k] kmem_cache_free
->     1.17%  [kernel]                 [k] skb_release_data
->     1.06%  [nf_tables]              [k] nft_rhash_lookup=20
->=20
->=20
-> Is have options to optimize work of nft rule set.
->=20
-> and for second question is it posible to make work this limiter in =
-flow table rule set :=20
->=20
-> #table inet filter {
-> #        flowtable fastnat {
-> #                hook ingress priority 0; devices =3D { eth0, eth1 };
-> #        }
-> #
-> #        chain forward {
-> #                type filter hook forward priority 0; policy accept;
-> #                ip protocol { tcp , udp } flow offload @fastnat;
-> #        }
-> #}
->=20
-> Like this and if have options to make devices list dynamic to add =
-device automatic or to add device with *=20
-> If limiter work in flow table will make offload traffic and reduce cpu =
-load
->=20
-> Martin
->=20
->> On 23 Mar 2022, at 0:55, Martin Zaharinov <micron10@gmail.com> wrote:
->>=20
->> Hi Florian
->>=20
->> yes now work perfect
->> i will test with 1-4k ips to see performance vs qdisc or iptables.
->>=20
->> for second offload question:
->>=20
->> is it possible to make limiter work in offload mode and ia it posible =
-to add dynamic interface like ppp* or vlan* or other type.
->>=20
->>=20
->>=20
->> P.S.
->>=20
->> thanks for fast reply for first part!
->>=20
->> P.S.2=20
->>=20
->> resend mail to netfilter group
->>=20
->> Martin
->>=20
->>> On 22 Mar 2022, at 12:32, Florian Westphal <fw@strlen.de> wrote:
->>>=20
->>> Martin Zaharinov <micron10@gmail.com> wrote:
->>>> Hi Florian
->>>>=20
->>>> Look good this config but not work after set user not limit by =
-speed.
->>>=20
->>> Works for me.  Before:
->>> [ ID] Interval           Transfer     Bitrate         Retr
->>> [  5]   0.00-10.00  sec  5.09 GBytes  4.37 Gbits/sec    0 sender
->>> [  5]   0.00-10.00  sec  5.08 GBytes  4.36 Gbits/sec receiver
->>>=20
->>> After:
->>> [  5]   0.00-10.00  sec  62.9 MBytes  52.7 Mbits/sec    0 sender
->>> [  5]   0.00-10.00  sec  59.8 MBytes  50.1 Mbits/sec receiver
->>>=20
->>>> table inet nft-qos-static {
->>>>      set limit_ul {
->>>>              typeof ip saddr
->>>>              flags dynamic
->>>>              elements =3D { 10.0.0.1 limit rate over 5 =
-mbytes/second burst 6000 kbytes, 10.0.0.254 limit rate over 12 =
-mbytes/second burst 6000 kbytes }
->>>>      }
->>>> 		set limit_dl {
->>>>              typeof ip saddr
->>>>              flags dynamic
->>>>              elements =3D { 10.0.0.1 limit rate over 5 =
-mbytes/second burst 6000 kbytes, 10.0.0.254 limit rate over 12 =
-mbytes/second burst 6000 kbytes }
->>>>     }
->>>>=20
->>>>      chain upload {
->>>> 			type filter hook postrouting priority filter; =
-policy accept;
->>>> 			ip saddr @limit_ul drop
->>>>      }
->>>> 		chain download {
->>>> 			type filter hook prerouting priority filter; =
-policy accept;
->>>> 			ip saddr @limit_dl drop
->>>> 		}
->>>=20
->>> daddr?
->>>=20
->>>> With this config user with ip 10.0.0.1 not limited to 5 mbytes ,=20
->>>=20
->>>> When back to this config :
->>>>=20
->>>> table inet nft-qos-static {
->>>> 	chain upload {
->>>> 		type filter hook postrouting priority filter; policy =
-accept;
->>>> 		ip saddr 10.0.0.1 limit rate over 5 mbytes/second burst =
-6000 kbytes drop
->>>> 	}
->>>>=20
->>>> 	chain download {
->>>> 		type filter hook prerouting priority filter; policy =
-accept;
->>>> 		ip daddr 10.0.0.1 limit rate over 5 mbytes/second burst =
-6000 kbytes drop
->>> 	           ~~~~~
->>=20
->=20
-
+Make sure you place the flowtable in a priority that comes after the
+priority of your ingress hook.
