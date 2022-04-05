@@ -1,189 +1,173 @@
-From: Martin Zaharinov <micron10@gmail.com>
-Subject: Re: bug report and future request
-Date: Tue, 5 Apr 2022 17:12:44 +0300
-Message-ID: <144C98D5-5AB0-4671-A7CC-8B3DACCC1299@gmail.com>
-References: <AE6DAC96-EC3E-43C9-A95A-B230842DD7B1@gmail.com>
- <20220321212750.GB24574@breakpoint.cc>
- <4B0C8933-C7D8-49BA-B7F2-29625B0865C1@gmail.com>
- <20220322103203.GD24574@breakpoint.cc>
- <04C4931B-553E-4FEA-85D4-B3E186520EE5@gmail.com>
- <FE0EEED5-48C9-412F-81BA-0028818C2EE8@gmail.com>
- <DB57EE0F-F4CE-4198-89E0-F25ED3C321A5@gmail.com> <YjxiB6Jk4plpx48G@salvia>
- <9ED435A1-F1B8-4220-9466-FA3E9D100B1D@gmail.com>
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
+From: "Boyd, Patrick" <Patrick.Boyd@dell.com>
+Subject: Redirect rule directly dropping packet
+Date: Tue, 5 Apr 2022 14:41:21 +0000
+Message-ID: <MW3PR19MB4186C2664AAB13CC233EE7C88DE49@MW3PR19MB4186.namprd19.prod.outlook.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=sGpuw8JqpUFELXXqahafGc9bWb54PbVZRX+27M+j+VI=;
-        b=M+tbOpOFOnC5sh6lCPb9ThZEDV/JfMh6mdwXHyEafmw8uaQKHaXdoQieKBePCpZ74a
-         TElfZ6gYZX7gfqyrdk06UnGwkRk+jalgIcokFzs93qtk9aeE/mOeXINjMzMBEGxeTcbk
-         eQyX8hGiipseCOYK0TsLnd0REVoRtG1GdaEMtdyns0n8GquUsuuGibpG9J2cki2CloKa
-         LvC1iixzx8Dh6Dza8aqWLE1T3d5C8QMBV4aTGm5L8DRgolWbgV3Qeoc9aeg/nlmhvNkQ
-         UQSwuRXOjg4mYSKevwiK2KQwp2iYEV3ZX+uNO+s+sYTMTn29kSHTOWu+s5N6vFSUk/1d
-         wezg==
-In-Reply-To: <9ED435A1-F1B8-4220-9466-FA3E9D100B1D@gmail.com>
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : subject :
+ date : message-id : content-type : content-transfer-encoding :
+ mime-version; s=smtpout1; bh=qDvUgHE51KG3kBqyUdosi+chVEF1t1Id+VWg8Ssy874=;
+ b=pnuRasJRY/HnS7kqRSg5ipjJ5SAx/KV/IKKbLIdISp2eCcOTmEmrHT12TxTtipwqCnM9
+ mwGkS+5DmAsaO/gz70+vV7B9tvMTVk4xJdRdLMYAO4DPA/Xz37eo6imbbpEfaUr8Ob3y
+ jfpRqXqNdx7MtSE5NpNxkiwG9Tigq1UXAzvioP7K6138ZKPazwhga4iPUA3WVG9lBGiG
+ SQI/8JlCJRzWA8kEsTGRnitv1KxUNzRJ9G5fKR6SFmeaMoyk+VJ29P1RzsdxKkrwBFkT
+ IuCUtOQtmIEMsC+2lje+REiL9K1IgMz+HmvSOQscOy3fdgiEukzyndq2N68W2tiqTxZL Tw== 
+Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1254"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Florian Westphal <fw@strlen.de>, netfilter <netfilter@vger.kernel.org>, netfilter-devel@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hello Pablo and Florian=20
+I have a system that we recently updated from CentOS to Suse. As part of th=
+at firewalld switched from iptables to nftables. Most everything works grea=
+t and isn't presenting any problems, except redirect rules.
 
-i try to make this work on egress or ingress but limiter not work=20
+For firewalld we have a couple of simple rich rules:
+rich rules:
+        rule family=3D"ipv6" forward-port port=3D"8080" protocol=3D"tcp" to=
+-port=3D"443"
+        rule family=3D"ipv4" forward-port port=3D"8080" protocol=3D"tcp" to=
+-port=3D"443"
 
-
-setup is :=20
-
-eth0 uplink - WAN
-
-ppp0 ,ppp1,pppX users
-
-table netdev nft-qos-ingress {
-	set limit_ul {
-		typeof ip saddr
-		flags dynamic
-		elements =3D { 10.0.0.11 limit rate over 12800 =
-kbytes/second burst 600 kbytes }
-	}
-
-	chain upload {
-		type filter hook ingress device "ppp0" priority -450; =
-policy accept;
-		ip saddr @limit_ul drop
-	}
+These are correctly translating to nftables as:
+chain nat_PRE_customer_allow { # handle 54
+                tcp dport 8080 redirect to :443 # handle 61
 }
 
+However, despite that rule looking correct the packets are still getting dr=
+opped. I added a meta trace rule in raw and get the following trace:
+trace id ba82f3e9 inet firewalld raw_PREROUTING packet: iif "internalpub" e=
+ther saddr 00:01:e8:8b:47:dd ether daddr 18:66:da:b1:17:57 ip saddr 100.71.=
+132.102 ip daddr 100.69.124.209 ip dscp cs0 ip ecn not-ect ip ttl 61 ip id =
+24586 ip protocol tcp ip length 60 tcp sport 54004 tcp dport 8080 tcp flags=
+ =3D=3D syn tcp window 29200
+trace id ba82f3e9 inet firewalld raw_PREROUTING rule tcp dport 8080 meta nf=
+trace set 1 (verdict continue)
+trace id ba82f3e9 inet firewalld raw_PREROUTING verdict continue
+trace id ba82f3e9 inet firewalld raw_PREROUTING policy accept
+trace id ba82f3e9 inet firewalld mangle_PREROUTING packet: iif "internalpub=
+" ether saddr 00:01:e8:8b:47:dd ether daddr 18:66:da:b1:17:57 ip saddr 100.=
+71.132.102 ip daddr 100.69.124.209 ip dscp cs0 ip ecn not-ect ip ttl 61 ip =
+id 24586 ip protocol tcp ip length 60 tcp sport 54004 tcp dport 8080 tcp fl=
+ags =3D=3D syn tcp window 29200
+trace id ba82f3e9 inet firewalld mangle_PREROUTING rule jump mangle_PREROUT=
+ING_POLICIES_pre (verdict jump mangle_PREROUTING_POLICIES_pre)
+trace id ba82f3e9 inet firewalld mangle_PREROUTING_POLICIES_pre rule jump m=
+angle_PRE_policy_allow-host-ipv6 (verdict jump mangle_PRE_policy_allow-host=
+-ipv6)
+trace id ba82f3e9 inet firewalld mangle_PRE_policy_allow-host-ipv6 rule jum=
+p mangle_PRE_policy_allow-host-ipv6_pre (verdict jump mangle_PRE_policy_all=
+ow-host-ipv6_pre)
+trace id ba82f3e9 inet firewalld mangle_PRE_policy_allow-host-ipv6_pre verd=
+ict continue
+trace id ba82f3e9 inet firewalld mangle_PRE_policy_allow-host-ipv6 rule jum=
+p mangle_PRE_policy_allow-host-ipv6_log (verdict jump mangle_PRE_policy_all=
+ow-host-ipv6_log)
+trace id ba82f3e9 inet firewalld mangle_PRE_policy_allow-host-ipv6_log verd=
+ict continue
+trace id ba82f3e9 inet firewalld mangle_PRE_policy_allow-host-ipv6 rule jum=
+p mangle_PRE_policy_allow-host-ipv6_deny (verdict jump mangle_PRE_policy_al=
+low-host-ipv6_deny)
+trace id ba82f3e9 inet firewalld mangle_PRE_policy_allow-host-ipv6_deny ver=
+dict continue
+trace id ba82f3e9 inet firewalld mangle_PRE_policy_allow-host-ipv6 rule jum=
+p mangle_PRE_policy_allow-host-ipv6_allow (verdict jump mangle_PRE_policy_a=
+llow-host-ipv6_allow)
+trace id ba82f3e9 inet firewalld mangle_PRE_policy_allow-host-ipv6_allow ve=
+rdict continue
+trace id ba82f3e9 inet firewalld mangle_PRE_policy_allow-host-ipv6 rule jum=
+p mangle_PRE_policy_allow-host-ipv6_post (verdict jump mangle_PRE_policy_al=
+low-host-ipv6_post)
+trace id ba82f3e9 inet firewalld mangle_PRE_policy_allow-host-ipv6_post ver=
+dict continue
+trace id ba82f3e9 inet firewalld mangle_PRE_policy_allow-host-ipv6 verdict =
+continue
+trace id ba82f3e9 inet firewalld mangle_PREROUTING_POLICIES_pre verdict con=
+tinue
+trace id ba82f3e9 inet firewalld mangle_PREROUTING rule jump mangle_PREROUT=
+ING_ZONES (verdict jump mangle_PREROUTING_ZONES)
+trace id ba82f3e9 inet firewalld mangle_PREROUTING_ZONES rule iifname "inte=
+rnalpub" goto mangle_PRE_customer (verdict goto mangle_PRE_customer)
+trace id ba82f3e9 inet firewalld mangle_PRE_customer rule jump mangle_PRE_c=
+ustomer_pre (verdict jump mangle_PRE_customer_pre)
+trace id ba82f3e9 inet firewalld mangle_PRE_customer_pre verdict continue
+trace id ba82f3e9 inet firewalld mangle_PRE_customer rule jump mangle_PRE_c=
+ustomer_log (verdict jump mangle_PRE_customer_log)
+trace id ba82f3e9 inet firewalld mangle_PRE_customer_log verdict continue
+trace id ba82f3e9 inet firewalld mangle_PRE_customer rule jump mangle_PRE_c=
+ustomer_deny (verdict jump mangle_PRE_customer_deny)
+trace id ba82f3e9 inet firewalld mangle_PRE_customer_deny verdict continue
+trace id ba82f3e9 inet firewalld mangle_PRE_customer rule jump mangle_PRE_c=
+ustomer_allow (verdict jump mangle_PRE_customer_allow)
+trace id ba82f3e9 inet firewalld mangle_PRE_customer_allow verdict continue
+trace id ba82f3e9 inet firewalld mangle_PRE_customer rule jump mangle_PRE_c=
+ustomer_post (verdict jump mangle_PRE_customer_post)
+trace id ba82f3e9 inet firewalld mangle_PRE_customer_post verdict continue
+trace id ba82f3e9 inet firewalld mangle_PRE_customer verdict continue
+trace id ba82f3e9 inet firewalld mangle_PREROUTING rule jump mangle_PREROUT=
+ING_POLICIES_post (verdict jump mangle_PREROUTING_POLICIES_post)
+trace id ba82f3e9 inet firewalld mangle_PREROUTING_POLICIES_post verdict co=
+ntinue
+trace id ba82f3e9 inet firewalld mangle_PREROUTING verdict continue
+trace id ba82f3e9 inet firewalld mangle_PREROUTING policy accept
+trace id ba82f3e9 ip firewalld nat_PREROUTING packet: iif "internalpub" eth=
+er saddr 00:01:e8:8b:47:dd ether daddr 18:66:da:b1:17:57 ip saddr 100.71.13=
+2.102 ip daddr 100.69.124.209 ip dscp cs0 ip ecn not-ect ip ttl 61 ip id 24=
+586 ip length 60 tcp sport 54004 tcp dport 8080 tcp flags =3D=3D syn tcp wi=
+ndow 29200
+trace id ba82f3e9 ip firewalld nat_PREROUTING rule jump nat_PREROUTING_POLI=
+CIES_pre (verdict jump nat_PREROUTING_POLICIES_pre)
+trace id ba82f3e9 ip firewalld nat_PREROUTING_POLICIES_pre rule jump nat_PR=
+E_policy_allow-host-ipv6 (verdict jump nat_PRE_policy_allow-host-ipv6)
+trace id ba82f3e9 ip firewalld nat_PRE_policy_allow-host-ipv6 rule jump nat=
+_PRE_policy_allow-host-ipv6_pre (verdict jump nat_PRE_policy_allow-host-ipv=
+6_pre)
+trace id ba82f3e9 ip firewalld nat_PRE_policy_allow-host-ipv6_pre verdict c=
+ontinue
+trace id ba82f3e9 ip firewalld nat_PRE_policy_allow-host-ipv6 rule jump nat=
+_PRE_policy_allow-host-ipv6_log (verdict jump nat_PRE_policy_allow-host-ipv=
+6_log)
+trace id ba82f3e9 ip firewalld nat_PRE_policy_allow-host-ipv6_log verdict c=
+ontinue
+trace id ba82f3e9 ip firewalld nat_PRE_policy_allow-host-ipv6 rule jump nat=
+_PRE_policy_allow-host-ipv6_deny (verdict jump nat_PRE_policy_allow-host-ip=
+v6_deny)
+trace id ba82f3e9 ip firewalld nat_PRE_policy_allow-host-ipv6_deny verdict =
+continue
+trace id ba82f3e9 ip firewalld nat_PRE_policy_allow-host-ipv6 rule jump nat=
+_PRE_policy_allow-host-ipv6_allow (verdict jump nat_PRE_policy_allow-host-i=
+pv6_allow)
+trace id ba82f3e9 ip firewalld nat_PRE_policy_allow-host-ipv6_allow verdict=
+ continue
+trace id ba82f3e9 ip firewalld nat_PRE_policy_allow-host-ipv6 rule jump nat=
+_PRE_policy_allow-host-ipv6_post (verdict jump nat_PRE_policy_allow-host-ip=
+v6_post)
+trace id ba82f3e9 ip firewalld nat_PRE_policy_allow-host-ipv6_post verdict =
+continue
+trace id ba82f3e9 ip firewalld nat_PRE_policy_allow-host-ipv6 verdict conti=
+nue
+trace id ba82f3e9 ip firewalld nat_PREROUTING_POLICIES_pre verdict continue
+trace id ba82f3e9 ip firewalld nat_PREROUTING rule jump nat_PREROUTING_ZONE=
+S (verdict jump nat_PREROUTING_ZONES)
+trace id ba82f3e9 ip firewalld nat_PREROUTING_ZONES rule iifname "internalp=
+ub" goto nat_PRE_customer (verdict goto nat_PRE_customer)
+trace id ba82f3e9 ip firewalld nat_PRE_customer rule jump nat_PRE_customer_=
+pre (verdict jump nat_PRE_customer_pre)
+trace id ba82f3e9 ip firewalld nat_PRE_customer_pre verdict continue
+trace id ba82f3e9 ip firewalld nat_PRE_customer rule jump nat_PRE_customer_=
+log (verdict jump nat_PRE_customer_log)
+trace id ba82f3e9 ip firewalld nat_PRE_customer_log verdict continue
+trace id ba82f3e9 ip firewalld nat_PRE_customer rule jump nat_PRE_customer_=
+deny (verdict jump nat_PRE_customer_deny)
+trace id ba82f3e9 ip firewalld nat_PRE_customer_deny verdict continue
+trace id ba82f3e9 ip firewalld nat_PRE_customer rule jump nat_PRE_customer_=
+allow (verdict jump nat_PRE_customer_allow)
+trace id ba82f3e9 ip firewalld nat_PRE_customer_allow rule tcp dport 8080 r=
+edirect to :443 (verdict drop)
 
-Here problem is when ppp user disconnect rule for ppp0 remove from =
-nftable (is there options to set here ppp* to list all ppp interface )
+It looks to me like the redirect rule itself is dropping the packet and I c=
+an't figure out why. What can I do to further debug this issue?
 
+-Patrick Boyd
 
-for egress i try this setup but not work on egress:=20
-
-table netdev nft-qos-egress {
-	set limit_dl {
-		typeof ip daddr
-		flags dynamic
-		elements =3D { 10.0.0.11 limit rate over 12800 =
-kbytes/second burst 600 kbytes }
-	}
-
-	chain download {
-		type filter hook egress device =E2=80=9Ceth0" priority =
--450; policy accept;
-		ip daddr @limit_dl drop
-	}
-}
-
-
-Idea is to move limiter in egress and ingress.
-
-which should reduce the CPU load perhaps
-
-
-Best regards,
-Martin
-
-> On 24 Mar 2022, at 14:23, Martin Zaharinov <micron10@gmail.com> wrote:
->=20
-> Hi Pablo
->=20
-> base on this rule :=20
->=20
-> table inet nft-qos-static {
->        set limit_ul {
->                typeof ip saddr
->                flags dynamic
->        }
->        set limit_dl {
->                typeof ip daddr
->                flags dynamic
->        }
->=20
->        chain download {
->                type filter hook postrouting priority filter; policy =
-accept;
->                ip daddr @limit_dl drop
->=20
->        }
->        chain upload {
->                type filter hook prerouting priority filter ; policy =
-accept;
->                ip saddr @limit_ul drop;
->        }
->        flowtable fastnat {
->                hook ingress priority filter; devices =3D { eth0, eth1 =
-};
->        }
->        chain forward {
->                type filter hook forward priority filter; policy =
-accept;
->                ip protocol { tcp , udp } flow offload @fastnat;
->        }
-> }
->=20
->=20
-> where to set this , please help.
->=20
->=20
->> On 24 Mar 2022, at 14:20, Pablo Neira Ayuso <pablo@netfilter.org> =
-wrote:
->>=20
->> On Thu, Mar 24, 2022 at 02:09:25PM +0200, Martin Zaharinov wrote:
->>> One more update=20
->>>=20
->>> I try to make rule for limiter in offload mode :
->>>=20
->>> table inet nft-qos-static {
->>>       set limit_ul {
->>>               typeof ip saddr
->>>               flags dynamic
->>>       }
->>>       set limit_dl {
->>>               typeof ip daddr
->>>               flags dynamic
->>>       }
->>>=20
->>>       chain upload {
->>>               type filter hook prerouting priority filter ; policy =
-accept;
->>>               ip saddr @limit_ul drop;
->>>       }
->>>=20
->>>       chain download {
->>>               type filter hook postrouting priority filter; policy =
-accept;
->>>               ip daddr @limit_dl drop;
->>>=20
->>>       }
->>>       flowtable fastnat {
->>>               hook ingress priority filter; devices =3D { eth0, eth1 =
-};
->>>       }
->>>       chain forward {
->>>               type filter hook forward priority filter; policy =
-accept;
->>>               ip protocol { tcp , udp } flow offload @fastnat;
->>>       }
->>> }
->>>=20
->>> its not work perfect only upload limit work , download get full =
-channel=20
->>>=20
->>> in test i set 100mbit up/down  upload is stay on ~100mbit , but =
-download up to 250-300mbit (i have this limit be my isp).
->>>=20
->>> the problem is limiter work only for Upload , is it posible to make =
-work on download rule ?
->>=20
->> If you want to combine ratelimit/policing with flowtable, then you
->> have to use the ingress and egress hooks, not prerouting and
->> postrouting.
->>=20
->> Make sure you place the flowtable in a priority that comes after the
->> priority of your ingress hook.
->=20
-
+Internal Use - Confidential
