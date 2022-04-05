@@ -1,17 +1,17 @@
 From: Phil Sutter <phil@netfilter.org>
-Subject: [ANNOUNCE] libmnl 1.0.5 release
-Date: Tue, 5 Apr 2022 14:55:48 +0200
-Message-ID: <Ykw8VBenlUgEVPvl@orbyte.nwl.cc>
+Subject: [ANNOUNCE] libnfnetlink 1.0.2 release
+Date: Tue, 5 Apr 2022 16:39:42 +0200
+Message-ID: <YkxUru2QG/o1BlTV@orbyte.nwl.cc>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="FgAyCt4XeABDY93x"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="PfK1Du911qYl3QzP"
+Return-path: <netdev-owner@vger.kernel.org>
 Content-Disposition: inline
 List-ID: <netfilter.vger.kernel.org>
 To: netfilter <netfilter@vger.kernel.org>, netfilter-devel <netfilter-devel@vger.kernel.org>
 Cc: netdev@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
 
 
---FgAyCt4XeABDY93x
+--PfK1Du911qYl3QzP
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
@@ -19,81 +19,62 @@ Hi!
 
 The Netfilter project proudly presents:
 
-        libmnl 1.0.5
+        libnfnetlink 1.0.2
 
-This release contains new features:
+This release contains only fixes:
 
-* Two new examples:
-  * rtnl-neigh-dump, dumping ARP cache
-  * rtnl-addr-add, adding an IP address to an interface
-* MNL_SOCKET_DUMP_SIZE define, holding a recommended buffer size for
-  netlink dumps
-
-... and fixes:
-
-* nfct-daemon example compile error with musl libc
-* Compiler warning when passing a const 'cb_ctl_array' to mnl_cb_run2()
-* Typo in rtnl-addr-dump example
+* Warnings with automake-1.12
+* Update header comments to reflect GPLv2+ license
+* Allow building on uclinux
 * Valgrind warnings due to uninitialized padding in netlink messages
-* Misc fixes in doxygen documentation
-* Misc build system fixes
+* Hide private library symbols
+* Support builds with newer doxygen versions
+* Failing calls to getsockname() were left unnoticed
 
-You can download this new release from:
+You can download the new release from:
 
-https://netfilter.org/projects/libmnl/downloads.html#libmnl-1.0.5
+https://netfilter.org/projects/libnfnetlink/downloads.html#libnfnetlink-1.0.2
 
-Check out the doxygen documentation at:
+Note that despite the new release, this library remains deprecated and
+users should migrate to libmnl if possible.
 
-https://netfilter.org/projects/libmnl/doxygen/html/
-
-In case of bugs and feature requests, file them via:
+In case of bugs, file them via:
 
 * https://bugzilla.netfilter.org
 
 Happy firewalling!
 
---FgAyCt4XeABDY93x
+--PfK1Du911qYl3QzP
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="changes-libmnl-1.0.5.txt"
+Content-Disposition: attachment; filename="changes-libnfnetlink-1.0.2.txt"
 
-Duncan Roe (5):
-      nlmsg: Fix a missing doxygen section trailer
-      build: doc: "make" builds & installs a full set of man pages
-      build: doc: get rid of the need for manual updating of Makefile
-      build: If doxygen is not available, be sure to report "doxygen: no" to ./configure
-      src: doc: Fix messed-up Netlink message batch diagram
+Duncan Roe (2):
+      Minimally resurrect doxygen documentation
+      Make it clear that this library is deprecated
 
-Fernando Fernandez Mancera (1):
-      src: fix doxygen function documentation
+Felix Janda (2):
+      include: Sync with kernel headers
+      src: Use stdint types everywhere
 
-Florian Westphal (1):
-      libmnl: zero attribute padding
+Gustavo Zacarias (1):
+      configure: uclinux is also linux
 
-Guillaume Nault (1):
-      callback: mark cb_ctl_array 'const' in mnl_cb_run2()
+Jan Engelhardt (1):
+      build: resolve automake-1.12 warnings
 
-Kylie McClain (1):
-      examples: nfct-daemon: Fix test building on musl libc
+Pablo Neira Ayuso (5):
+      src: get source code license header in sync with current licensing terms
+      libnfnetlink: initialize attribute padding to resolve valgrind warnings
+      autogen: don't convert __u16 to u_int16_t
+      bump version to 1.0.2
+      build: add nfnl.version to sources
 
-Laura Garcia Liebana (4):
-      examples: add arp cache dump example
-      examples: fix neigh max attributes
-      examples: fix print line format
-      examples: reduce LOCs during neigh attributes validation
+Phil Sutter (2):
+      include: Silence gcc warning in linux_list.h
+      libnfnetlink: Check getsockname() return code
 
-Pablo Neira Ayuso (3):
-      doxygen: remove EXPORT_SYMBOL from the output
-      include: add MNL_SOCKET_DUMP_SIZE definition
-      build: libmnl 1.0.5 release
-
-Petr Vorel (1):
-      examples: Add rtnl-addr-add.c
-
-Stephen Hemminger (1):
-      examples: rtnl-addr-dump: fix typo
-
-igo95862 (1):
-      doxygen: Fixed link to the git source tree on the website.
+Yury Gribov (1):
+      libnfnetlink: hide private symbols
 
 
---FgAyCt4XeABDY93x--
+--PfK1Du911qYl3QzP--
