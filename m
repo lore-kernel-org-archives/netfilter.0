@@ -1,25 +1,39 @@
-From: Joseph Richard <joseph.richard@redhat.com>
-Subject: Dropping L2 PTP packets using nftables
-Date: Wed, 6 Apr 2022 15:50:08 -0600
-Message-ID: <CAC6fUJ3C26tGnLvmwtL5ZeAoyKcAcGx3HzQe_y9bqfVB+ymOHg@mail.gmail.com>
+From: Martin Gignac <martin.gignac@gmail.com>
+Subject: Error when using 'time' statement in nftables 1.0.2 rule
+Date: Thu, 7 Apr 2022 22:19:30 -0400
+Message-ID: <CANf9dFMQO4mHXFd88BHL5u9BWyp-v-Tu2L6x_oS1OdMp8UrhhA@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1649281821;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type;
-        bh=OJ7729k46nkYvaSrWV8h2WoGe43tDwJ+vxv3iME9ieE=;
-        b=IMzwgV5LyhQTm26yDylqezBW5sviZLyAkX2uTzjITLF/WqqS9sYwel6ahjoFH3aCNO5ZyU
-        9plTC3gTOiwqTEBsqJAbaclKOrq5HHm4M1qzp2IisWyDGtanFHENkRDqoOVXDEuxqhG+m3
-        rvUPs5h3HYkzfLqr+CBQv9qMvUjLG1A=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=3hnd+m7/FhQqBY15RA98TFD9NiIyd2f5OMWSct7LaMY=;
+        b=G+4TjGBL3Thk/GskDfsbQQCVO8N+OSvCejoOWnihubADcDtzLPV382Ii0gMqqGdcKo
+         4NOVna0EgjbDdmxysBYC8gaQFfZ4xS3VszCyBR0UL7KXAeC6eTxJdeCe3omEqNHgibKJ
+         p7f12HTl5jbEwdRhQ75tTZnLyn+gDNnQdykGRKWqEJFtY5nFB9CCO1bAAxLrKWa4PhHg
+         dXq3uO+JqhIqu0j0kmKzp9fDemOiyo3KTzHNx41rJp8bUqRmdsVZ/2IVnaM2bqm/jc3V
+         cU9DVTQfalXK3x/reMQI2HGtfMDI6KDOqh2K8poWuM0kWZvmWYbaFzftQm+h6TYTFNf9
+         4Dmg==
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-I'm trying to create a rule that will drop every 100th PTP packet
-(Ethertype 0x88F7), but haven't found a way to get this working.
-This is using a 4.18.0-305.40.2.rt7.113.el8_4.x86_64 kernel with
-nftables-0.9.3-18.el8.x86_64.
-Is this something that is supported in nftables?  Any suggestions?
+Hello,
 
+On nftables 1.0.1, I can run this command just fine:
+
+    nft> add rule inet filter input iif lo time < "2022-07-01 11:00" accept
+    nft>
+
+On 1.0.2, however, it gives me this error:
+
+    nft> add rule inet filter input iif lo time < "2022-07-01 11:00" accept
+    Error: No symbol type information
+    add rule inet filter input iif lo time < "2022-07-01 11:00" accept
+                                    ^^^^
+Have I encountered a bug, or has the usage of the 'time' statement
+simply changed?
+
+Thanks,
+-Martin
