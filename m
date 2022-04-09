@@ -1,44 +1,46 @@
-From: Martin Gignac <martin.gignac@gmail.com>
-Subject: Re: Error when using 'time' statement in nftables 1.0.2 rule
-Date: Fri, 8 Apr 2022 08:24:50 -0400
-Message-ID: <CANf9dFProONAntMU2mtKLV7dHHsOvsBVrm1N6x010Oqa6z73Nw@mail.gmail.com>
-References: <CANf9dFMQO4mHXFd88BHL5u9BWyp-v-Tu2L6x_oS1OdMp8UrhhA@mail.gmail.com>
- <Yk/vi+/HGMjfhjpr@salvia>
+From: =?UTF-8?B?Q8OpZHJpYyBNYXJ0w61uZXogQ2FtcG9z?= 
+        <cedricmartinezcampos@gmail.com>
+Subject: ebtables complains about the speeding up example
+Date: Sat, 9 Apr 2022 16:13:53 +0200
+Message-ID: <CAMjZu9NUzT__WUyb0jzX=oeAiJrzp6oaPJwY=UHwN_PDhPtBiw@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=IZdrbeJNk6e4ELWWjEtMyHpOJYHfL4sREWmgdRJOCR8=;
-        b=oqgq2YMwP24CNILYg2mwuuVT97IBaMi6SRy7Gnhd8uJ68zWzDdUegUQzzbzR07IqSw
-         m1/XJZGgdiPC0PrwVYdvhK5mwsanVRoOmjj9gepPi4mL75Y5DRAFXYjymwYPnvxm4OQA
-         I8TebONk7KshhmYZz+JO0c8CvP2540JEWd31irCB1P/Q/qHDp4X2NC8ljaCwgVeghZtd
-         yJxI0PhNhYAUqLcN8HFAeexMKXtRliT/hVSkMANwHylxBSxdc8egFBsCyq8g8x2cHgp5
-         0D86ClQ6qPtn9fYEoXeWinN34zNA+ScFi+yA7w/BjKWcU3GVdiwFz6rDiEDWW1Asd8WU
-         YG9A==
-In-Reply-To: <Yk/vi+/HGMjfhjpr@salvia>
+        h=mime-version:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=ZG3+P4qm8zAuwEQ60v4HoWlLs3QN1FYbuVv3dK8A4p8=;
+        b=WQtvkVwSS2St0i/veRsYssWM34o/GLdwT5gra21d68sqfuIhwlNb6HCRLYpo+JJ1ce
+         MfD7iYCAvxxaQfnEUW58vK5v+4Nhov4TjNRh/JjkyjzPiNBneXhauEWv4eTijOwXLdIk
+         7lPYPbf4djy9AG5efSeYPxsX6gfr0kTJeDaCjugebVCVPv//IzH70K+dTMN0Rcy5igL0
+         zm++PxamS9wUvNOZG+lmsowGtaSC5AQSiC7Ei+4/7xl/0lrOtR+I1xiXqiyOnWmwQShb
+         w5WpR6nV+ek5ODoe1Bs98SjY2kpnpVaMM+AmfeIPnrA2w6SNswwErrYxsmsbkQbVkwxL
+         Kccw==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-> It appears to be a bug.  I shall send a fix.
-> No need.  Somebody else has already committed one.
+Hi, there!
 
-> I can reproduce it, this is a bug.
-> I cannot reproduce it though with current nftables git snapshot (it's
-basically 1.0.2 with a few patches on top).
+In one of the basic examples of ebtable's documentation, "Speeding up
+traffic destinated to the bridge itself", it is suggested to issue the
+command
 
-Thanks guys.
+    # ebtables -t broute \
+               -A BROUTING \
+               -d $MAC_OF_BR0 \
+               -p ipv4 \
+               -j redirect \
+               --redirect-target DROP
 
-By the way, I have just noticed that while this gives an error on 1.0.2:
+This however returns the error
 
-    add rule inet filter input iif lo time < "2022-07-01 11:00" accept
+    ebtables: No chain/target/match by that name
 
-This does not:
 
-    add rule inet filter input iif lo meta time < "2022-07-01 11:00" accept
+I guess it is because there is no chain called BROUTING. Is this
+really necessary? In such a case, how could I solve this?
 
-The use of 'meta' in front of 'time' works around the bug.
-
--Martin
+Thank you for your time,
+C=C3=A9dric
