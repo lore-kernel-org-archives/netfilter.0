@@ -1,41 +1,50 @@
-From: Gio <gioflux@gmail.com>
-Subject: Proper way to use counters for a specific child chain
-Date: Thu, 14 Apr 2022 14:20:33 -0400
-Message-ID: <CADhidkp1nsbujcayMVVyTPfuncxOuCosy1N4VnHVvVb2dSgSQA@mail.gmail.com>
+From: =?iso-8859-2?Q?Kamil_Jo=F1ca?= <kjonca@op.pl>
+Subject: Proper way to ipsec filtering
+Date: Sun, 17 Apr 2022 08:37:47 +0200
+Message-ID: <878rs48bb8.fsf@alfa.kjonca>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=sTDAsxxcV9rYQ/0CWlY/jo79onlSLe9pGir8Fo8FlGQ=;
-        b=i4itaiqsws2Q1d0bKi7GLRI/CD6RsyJ7UaJqamj6VcdDYDTNqX0ot/s7JbdJPR1hLa
-         w++rxmVMzth1GLX8ii/mDDxXiYzoguC6WSyzBYh8Il8uWLVGKpeJzMPlzMxnfstDZsJO
-         9ZS1/SjhsmUw56IoPv7LqZSHOVwYFOIf9Kz/LSdU7ksUxml0c/KBsBIMIdbnPyS2G3kF
-         qOeu1n0hptdclf18PCY57Hyy23y1U2/w9/TpygdYnEXeKbmbScCBhFHndYcIBDc9aKRH
-         PhQOxTCC88wDQr9FDYFSuSJLEzXGe6VMpCLbgn6nwhvDwYMaXtF3pk5H8gsY+NQ0yyFJ
-         F9Xw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=op.pl; s=2011;
+        t=1650177468; bh=pG2oWTRwDdupWzFYgRn3HTzyYpBzeUjUjfFb3O1Tqow=;
+        h=From:To:Subject:Date:From;
+        b=eF4yEL4ymTPGKuJHaYVDtJykLmM4tHWg2+9jtDgrB0T9SasPYhPpuS3w2l656phyX
+         mRhw4LGoYoKEwbuTa9FDQ8d3WF8vhYeKhy7lyBlayO02Me9zRpofff3TwlUqOsDL5U
+         D9fNi5FoPV1U7tCSZ/o1rkT31oy6jAx467otxEvo=
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Do 'counters' work inside child chains when using 'jump' and 'goto'
-statements when I want to only count matches to the full ruleset
-inside the child chain?
 
-https://wiki.nftables.org/wiki-nftables/index.php/Counters does not
-explain if this is feasible or possible.
+What is the best way to create rules used to ipsec traffic filtering?
 
-My use case: I have a base chain which then uses 'jump' statements to
-a children chain which has a more complete rule. Example:
+So far I have bunch rules created per reqid like that:
+table ip filter { # handle 13
 
-chain child {
-ip saddr 1.2.3.4 ip daddr 1.1.1.1 tcp dport 22 accept
+chain INPUT { # handle 1
+                type filter hook input priority filter; policy drop;
+                iif "eth0" ipsec in reqid 1 counter packets 100672 bytes 11492891 jump ipsec-in-1 comment "ed19af3c-f504-11e9-b59d-00e081736ba6/1/in" # handle 326
+                [...]
+
+ }
+
+[...]
+        chain ipsec-in-1 { # handle 323
+                ip saddr yyy ip daddr xxxx/24 counter packets 50871 bytes 5614784 jump c1 # handle 325
+                ip protocol ipencap ip daddr zzzz counter packets 49801 bytes 5878107 accept # handle 324
+        }
+
 }
 
-I wanted to count all hits to 'ip saddr 1.2.3.4 ip daddr 1.1.1.1 tcp
-dport 22 accept' - I did not see any 'accept' in the example
-documentation, if I replace "accept" above with "counter" does it
-result in an implicit accept verdict?
+And insert / remove rules from INPUT  (and add / delete ipsec-in-*
+chains) during connecting disconnecting clients.
+This was I configured when I migrated from iptables some time ago.
+But I believe this is not the best method for nftables. So has anybody
+suggestion what is the best practicte to handle this situation?
+I tried to use maps/vmaps but reqid cannot be use as index.
 
-Thanks
+Am I missing something?
+KJ
+
+-- 
+http://stopstopnop.pl/stop_stopnop.pl_o_nas.html
