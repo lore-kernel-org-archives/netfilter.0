@@ -1,22 +1,32 @@
-From: flyingrhino <flyingrhino@orcon.net.nz>
-Subject: New tool to watch nftables counters - nftwatch
-Date: Mon, 18 Apr 2022 13:13:10 +1200
-Message-ID: <eea549e25552a3e8dddf18efc4a576c0@webmail.orcon.net.nz>
+From: Florian Westphal <fw@strlen.de>
+Subject: Re: Proper way to ipsec filtering
+Date: Mon, 18 Apr 2022 12:14:44 +0200
+Message-ID: <20220418101444.GB15183@breakpoint.cc>
+References: <878rs48bb8.fsf@alfa.kjonca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <878rs48bb8.fsf@alfa.kjonca>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="macroman"
+To: Kamil =?utf-8?B?Sm/FhGNh?= <kjonca@op.pl>
+Cc: netfilter@vger.kernel.org
 
-I love nftables and use it every day.
-Rule counters are great and give visibility into what's going on.
-
-Here's a little tool I created to make this even easier:
-
-https://github.com/flyingrhinonz/nftwatch
-
-Hope this helps the nft community.
-
-Ken.
-
+S2FtaWwgSm/FhGNhIDxram9uY2FAb3AucGw+IHdyb3RlOgo+IFdoYXQgaXMgdGhlIGJlc3Qgd2F5
+IHRvIGNyZWF0ZSBydWxlcyB1c2VkIHRvIGlwc2VjIHRyYWZmaWMgZmlsdGVyaW5nPwo+IAo+IFNv
+IGZhciBJIGhhdmUgYnVuY2ggcnVsZXMgY3JlYXRlZCBwZXIgcmVxaWQgbGlrZSB0aGF0Ogo+IHRh
+YmxlIGlwIGZpbHRlciB7ICMgaGFuZGxlIDEzCj4gCj4gY2hhaW4gSU5QVVQgeyAjIGhhbmRsZSAx
+Cj4gICAgICAgICAgICAgICAgIHR5cGUgZmlsdGVyIGhvb2sgaW5wdXQgcHJpb3JpdHkgZmlsdGVy
+OyBwb2xpY3kgZHJvcDsKPiAgICAgICAgICAgICAgICAgaWlmICJldGgwIiBpcHNlYyBpbiByZXFp
+ZCAxIGNvdW50ZXIgcGFja2V0cyAxMDA2NzIgYnl0ZXMgMTE0OTI4OTEganVtcCBpcHNlYy1pbi0x
+IGNvbW1lbnQgImVkMTlhZjNjLWY1MDQtMTFlOS1iNTlkLTAwZTA4MTczNmJhNi8xL2luIiAjIGhh
+bmRsZSAzMjYKPiAgICAgICAgICAgICAgICAgWy4uLl0KWy4uXQoKPiBCdXQgSSBiZWxpZXZlIHRo
+aXMgaXMgbm90IHRoZSBiZXN0IG1ldGhvZCBmb3IgbmZ0YWJsZXMuIFNvIGhhcyBhbnlib2R5Cj4g
+c3VnZ2VzdGlvbiB3aGF0IGlzIHRoZSBiZXN0IHByYWN0aWN0ZSB0byBoYW5kbGUgdGhpcyBzaXR1
+YXRpb24/Cj4gSSB0cmllZCB0byB1c2UgbWFwcy92bWFwcyBidXQgcmVxaWQgY2Fubm90IGJlIHVz
+ZSBhcyBpbmRleC4KClRoYXRzIGEgYnVnIC8gbWlzc2luZyBmZWF0dXJlLCBpdCBzaG91bGQgYmUg
+cG9zc2libGUgdG8gdXNlIHJlcWlkIGluIGNvbmNhdGVuYXRlZCBrZXlzCnRvby4gIEkndmUgc2Vu
+dCBhIHBhdGNoIGZvciB0aGlzOgoKaHR0cHM6Ly9wYXRjaHdvcmsub3psYWJzLm9yZy9wcm9qZWN0
+L25ldGZpbHRlci1kZXZlbC9wYXRjaC8yMDIyMDQxODEwMDkyNC41NjY5LTItZndAc3RybGVuLmRl
+Lwo=
