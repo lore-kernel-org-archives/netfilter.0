@@ -1,32 +1,41 @@
-From: Florian Westphal <fw@strlen.de>
+From: =?iso-8859-2?Q?Kamil_Jo=F1ca?= <kjonca@op.pl>
 Subject: Re: Proper way to ipsec filtering
-Date: Mon, 18 Apr 2022 12:14:44 +0200
-Message-ID: <20220418101444.GB15183@breakpoint.cc>
+Date: Mon, 18 Apr 2022 22:41:13 +0200
+Message-ID: <8735ia86qe.fsf@alfa.kjonca>
 References: <878rs48bb8.fsf@alfa.kjonca>
+        <20220418101444.GB15183@breakpoint.cc>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <878rs48bb8.fsf@alfa.kjonca>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=op.pl; s=2011;
+        t=1650314475; bh=cQ9KA25/6EnN7h8a/T7wqHverlrQq3eeIq+7bOCuj+Y=;
+        h=From:To:Subject:References:Date:In-Reply-To:From;
+        b=Rq1bSreNOXpVBmL/Ea22yiSMv6P6ftB6Up5U8YbGZa/TqizuuIcrwT0btm44JybDS
+         0T/5irgnsojMeebeAcmTKIui3iQ80ZPHgvytKc8+R7HYGOcyr4NTkIXLQ8P2JCBSJb
+         0W/ZCfB3i87nqGEddj4GVjMJ/h05TbWwXUUUxoJA=
+In-Reply-To: <20220418101444.GB15183@breakpoint.cc> (Florian Westphal's
+        message of "Mon, 18 Apr 2022 12:14:44 +0200")
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"
-To: Kamil =?utf-8?B?Sm/FhGNh?= <kjonca@op.pl>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-S2FtaWwgSm/FhGNhIDxram9uY2FAb3AucGw+IHdyb3RlOgo+IFdoYXQgaXMgdGhlIGJlc3Qgd2F5
-IHRvIGNyZWF0ZSBydWxlcyB1c2VkIHRvIGlwc2VjIHRyYWZmaWMgZmlsdGVyaW5nPwo+IAo+IFNv
-IGZhciBJIGhhdmUgYnVuY2ggcnVsZXMgY3JlYXRlZCBwZXIgcmVxaWQgbGlrZSB0aGF0Ogo+IHRh
-YmxlIGlwIGZpbHRlciB7ICMgaGFuZGxlIDEzCj4gCj4gY2hhaW4gSU5QVVQgeyAjIGhhbmRsZSAx
-Cj4gICAgICAgICAgICAgICAgIHR5cGUgZmlsdGVyIGhvb2sgaW5wdXQgcHJpb3JpdHkgZmlsdGVy
-OyBwb2xpY3kgZHJvcDsKPiAgICAgICAgICAgICAgICAgaWlmICJldGgwIiBpcHNlYyBpbiByZXFp
-ZCAxIGNvdW50ZXIgcGFja2V0cyAxMDA2NzIgYnl0ZXMgMTE0OTI4OTEganVtcCBpcHNlYy1pbi0x
-IGNvbW1lbnQgImVkMTlhZjNjLWY1MDQtMTFlOS1iNTlkLTAwZTA4MTczNmJhNi8xL2luIiAjIGhh
-bmRsZSAzMjYKPiAgICAgICAgICAgICAgICAgWy4uLl0KWy4uXQoKPiBCdXQgSSBiZWxpZXZlIHRo
-aXMgaXMgbm90IHRoZSBiZXN0IG1ldGhvZCBmb3IgbmZ0YWJsZXMuIFNvIGhhcyBhbnlib2R5Cj4g
-c3VnZ2VzdGlvbiB3aGF0IGlzIHRoZSBiZXN0IHByYWN0aWN0ZSB0byBoYW5kbGUgdGhpcyBzaXR1
-YXRpb24/Cj4gSSB0cmllZCB0byB1c2UgbWFwcy92bWFwcyBidXQgcmVxaWQgY2Fubm90IGJlIHVz
-ZSBhcyBpbmRleC4KClRoYXRzIGEgYnVnIC8gbWlzc2luZyBmZWF0dXJlLCBpdCBzaG91bGQgYmUg
-cG9zc2libGUgdG8gdXNlIHJlcWlkIGluIGNvbmNhdGVuYXRlZCBrZXlzCnRvby4gIEkndmUgc2Vu
-dCBhIHBhdGNoIGZvciB0aGlzOgoKaHR0cHM6Ly9wYXRjaHdvcmsub3psYWJzLm9yZy9wcm9qZWN0
-L25ldGZpbHRlci1kZXZlbC9wYXRjaC8yMDIyMDQxODEwMDkyNC41NjY5LTItZndAc3RybGVuLmRl
-Lwo=
+Florian Westphal <fw@strlen.de> writes:
+
+[...]
+> Thats a bug / missing feature, it should be possible to use reqid in concatenated keys
+> too.  I've sent a patch for this:
+>
+> https://patchwork.ozlabs.org/project/netfilter-devel/patch/20220418100924.5669-2-fw@strlen.de/
+>
+
+Well, I cloned repo, and compiled against my debian test sid box. Seems to
+work as expected.
+
+Thank you.
+So now I have to wait when debian adopt it. :)
+Thanks again.
+
+KJ
+
+-- 
+http://wolnelektury.pl/wesprzyj/teraz/
