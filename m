@@ -1,88 +1,45 @@
-From: Linux Scoop <linuxscoop@gmail.com>
-Subject: cannot allow outbound ping traffic
-Date: Tue, 3 May 2022 09:59:00 -0400
-Message-ID: <CAE-E4dTvSS6oG9aE5wWnhhQRmD1sqd2+CFYxRcCpKX9Ev64Duw@mail.gmail.com>
-References: <CAE-E4dSkxc9d4sCWAs6dC=NjH3x6NuEKxyv9O9N4fG0hSncydQ@mail.gmail.com>
+From: Paulo Ricardo Bruck <pauloric@contatogs.com.br>
+Subject: Re: cannot allow outbound ping traffic
+Date: Tue, 3 May 2022 11:02:36 -0300 (BRT)
+Message-ID: <1702744278.936.1651586556340.JavaMail.zimbra@contatogs.com.br>
+References: <CAE-E4dSkxc9d4sCWAs6dC=NjH3x6NuEKxyv9O9N4fG0hSncydQ@mail.gmail.com> <CAE-E4dTvSS6oG9aE5wWnhhQRmD1sqd2+CFYxRcCpKX9Ev64Duw@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
-        bh=L+k4X54jw1nY6iSGX6/a0nrJO+82fbfqz6/wSZtyprE=;
-        b=Wx4jEdYOguxdf6s1pimiC67EU/mT12a/t81N/CB8DObqdVU7688h/HIsvwgnk/OFKJ
-         Dk/3iunKuJpyAcCVnskHGaxfXv1gVG4guXkFjKLqQLukWHEZ0TNttJEB3m1Cof+rHe2F
-         cStC8By0s2t8kOzkwGnaQsay2WMJcRClnW2khb7qDoGf8IjkWHa9fQSgwo0VW1ghf6Ao
-         +SgtvqA2ZEHcPi3uw8vz/FbeR27MsTS/+SfYg42ixl8/IVw/0PbjPRQ51UpygrG7FoBr
-         55e+Yk6OlCPyPN264aaDo6rUJq2DNgIjn6yAfnzQNMmOqUOb+XUMRUjiXh03vK7jIt5C
-         F3rw==
-In-Reply-To: <CAE-E4dSkxc9d4sCWAs6dC=NjH3x6NuEKxyv9O9N4fG0hSncydQ@mail.gmail.com>
+In-Reply-To: <CAE-E4dTvSS6oG9aE5wWnhhQRmD1sqd2+CFYxRcCpKX9Ev64Duw@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="macroman"
+To: Linux Scoop <linuxscoop@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hello netfilter community,
-
-
-I am running into a problem where I cannot ping other hosts if I have
-nftables service turned on.
-
-I have the following rule for outgoing traffic (basically allows all
-outgoing traffic)
-
-
-
-        chain OUTBOUND {
-
-                type filter hook output priority 0; policy accept;
-
-        }
-
-
-
-But I cannot ping any inside or outside IPs, eg.
-
-
-
-[root@lxdvfs1a nftables]# ping -vv 172.29.28.1
-
-ping: socket: Permission denied, attempting raw socket...
-
-PING 172.29.28.1 (172.29.28.1) 56(84) bytes of data.
-
-153 packets transmitted, 0 received, 100% packet loss, time 151999ms
-
-
-
-If I turn off nftables service, I can ping any IPs normally.
-
-[root@lxdvfs1a nftables]# ping 172.29.28.1
-
-PING 172.29.28.1 (172.29.28.1) 56(84) bytes of data.
-
-64 bytes from 172.29.28.1: icmp_seq=1 ttl=64 time=1.64 ms
-
-64 bytes from 172.29.28.1: icmp_seq=2 ttl=64 time=0.446 ms
-
-64 bytes from 172.29.28.1: icmp_seq=3 ttl=64 time=0.488 ms
-
-
-
-I also tried adding the following to explicitly allow outgoing ping,
-but it did not work either.
-
-
-
-icmp type echo-request ct state new,established accept
-
-
-
-Any insight/help would be appreciated.
-
-
-
-Thanks,
-
-Lihua Wang
-
-Sysadmin at CUNY Graduate Center
+cmVtZW1iZXIgdGhhdCBpcyBhIHBhaXIuIE91dHB1dCArIElucHV0Li4uCgpZb3Ugb25seSBsZXQg
+b3V0cHV0IGFzIGFjY2VwdC4gV2hhdCBhYm91dCBpbnB1dD8KCmJlc3QgcmVnYXJkcwoKLS0tLS0g
+TWVuc2FnZW0gb3JpZ2luYWwgLS0tLS0KRGU6ICJMaW51eCBTY29vcCIgPGxpbnV4c2Nvb3BAZ21h
+aWwuY29tPgpQYXJhOiBuZXRmaWx0ZXJAdmdlci5rZXJuZWwub3JnCkVudmlhZGFzOiBUZXLDp2Et
+ZmVpcmEsIDMgZGUgbWFpbyBkZSAyMDIyIDEwOjU5OjAwCkFzc3VudG86IGNhbm5vdCBhbGxvdyBv
+dXRib3VuZCBwaW5nIHRyYWZmaWMKCkhlbGxvIG5ldGZpbHRlciBjb21tdW5pdHksCgoKSSBhbSBy
+dW5uaW5nIGludG8gYSBwcm9ibGVtIHdoZXJlIEkgY2Fubm90IHBpbmcgb3RoZXIgaG9zdHMgaWYg
+SSBoYXZlCm5mdGFibGVzIHNlcnZpY2UgdHVybmVkIG9uLgoKSSBoYXZlIHRoZSBmb2xsb3dpbmcg
+cnVsZSBmb3Igb3V0Z29pbmcgdHJhZmZpYyAoYmFzaWNhbGx5IGFsbG93cyBhbGwKb3V0Z29pbmcg
+dHJhZmZpYykKCgoKICAgICAgICBjaGFpbiBPVVRCT1VORCB7CgogICAgICAgICAgICAgICAgdHlw
+ZSBmaWx0ZXIgaG9vayBvdXRwdXQgcHJpb3JpdHkgMDsgcG9saWN5IGFjY2VwdDsKCiAgICAgICAg
+fQoKCgpCdXQgSSBjYW5ub3QgcGluZyBhbnkgaW5zaWRlIG9yIG91dHNpZGUgSVBzLCBlZy4KCgoK
+W3Jvb3RAbHhkdmZzMWEgbmZ0YWJsZXNdIyBwaW5nIC12diAxNzIuMjkuMjguMQoKcGluZzogc29j
+a2V0OiBQZXJtaXNzaW9uIGRlbmllZCwgYXR0ZW1wdGluZyByYXcgc29ja2V0Li4uCgpQSU5HIDE3
+Mi4yOS4yOC4xICgxNzIuMjkuMjguMSkgNTYoODQpIGJ5dGVzIG9mIGRhdGEuCgoxNTMgcGFja2V0
+cyB0cmFuc21pdHRlZCwgMCByZWNlaXZlZCwgMTAwJSBwYWNrZXQgbG9zcywgdGltZSAxNTE5OTlt
+cwoKCgpJZiBJIHR1cm4gb2ZmIG5mdGFibGVzIHNlcnZpY2UsIEkgY2FuIHBpbmcgYW55IElQcyBu
+b3JtYWxseS4KCltyb290QGx4ZHZmczFhIG5mdGFibGVzXSMgcGluZyAxNzIuMjkuMjguMQoKUElO
+RyAxNzIuMjkuMjguMSAoMTcyLjI5LjI4LjEpIDU2KDg0KSBieXRlcyBvZiBkYXRhLgoKNjQgYnl0
+ZXMgZnJvbSAxNzIuMjkuMjguMTogaWNtcF9zZXE9MSB0dGw9NjQgdGltZT0xLjY0IG1zCgo2NCBi
+eXRlcyBmcm9tIDE3Mi4yOS4yOC4xOiBpY21wX3NlcT0yIHR0bD02NCB0aW1lPTAuNDQ2IG1zCgo2
+NCBieXRlcyBmcm9tIDE3Mi4yOS4yOC4xOiBpY21wX3NlcT0zIHR0bD02NCB0aW1lPTAuNDg4IG1z
+CgoKCkkgYWxzbyB0cmllZCBhZGRpbmcgdGhlIGZvbGxvd2luZyB0byBleHBsaWNpdGx5IGFsbG93
+IG91dGdvaW5nIHBpbmcsCmJ1dCBpdCBkaWQgbm90IHdvcmsgZWl0aGVyLgoKCgppY21wIHR5cGUg
+ZWNoby1yZXF1ZXN0IGN0IHN0YXRlIG5ldyxlc3RhYmxpc2hlZCBhY2NlcHQKCgoKQW55IGluc2ln
+aHQvaGVscCB3b3VsZCBiZSBhcHByZWNpYXRlZC4KCgoKVGhhbmtzLAoKTGlodWEgV2FuZwoKU3lz
+YWRtaW4gYXQgQ1VOWSBHcmFkdWF0ZSBDZW50ZXIKLS0gClBhdSBsbyBSaWNhcmRvIEJydWNrIGNv
+bnN1bHRvciAKdGVsIDAxMSAzNTk2LTQ4ODIgCmNlbCA5ODE0MC05MTg0KFRJTS9XaGF0cykgClsg
+aHR0cDovL3d3dy5jb250YXRvZ3MuY29tLmJyLyB8IGh0dHAgXSBbIGh0dHA6Ly93d3cuY29udGF0
+b2dzLmNvbS5ici8gfCBzOi8vd3d3LmNvbnRhdG9nbG9iYWwuY29tLmJyIF0gCgoKRG9tb3UgYXJp
+Z2F0b3UgZ296YWltYXN1Cg==
