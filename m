@@ -1,82 +1,88 @@
-From: Jesper Dybdal <netfilter@dybdal.dk>
-Subject: Re: Conditional inclusion of parts of nft file?
-Date: Sun, 1 May 2022 18:42:39 +0200
-Message-ID: <4c415208-f13b-86c4-0126-44abb53c99b1@dybdal.dk>
-References: <950f8e47-fba0-33d9-786e-a48c31c3c775@dybdal.dk>
+From: Linux Scoop <linuxscoop@gmail.com>
+Subject: cannot allow outbound ping traffic
+Date: Tue, 3 May 2022 09:59:00 -0400
+Message-ID: <CAE-E4dTvSS6oG9aE5wWnhhQRmD1sqd2+CFYxRcCpKX9Ev64Duw@mail.gmail.com>
+References: <CAE-E4dSkxc9d4sCWAs6dC=NjH3x6NuEKxyv9O9N4fG0hSncydQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dybdal.dk; h=
-        content-transfer-encoding:content-type:content-type:in-reply-to
-        :references:from:from:content-language:subject:subject
-        :user-agent:mime-version:date:date:message-id:received; s=
-        dybdal-20171111; t=1651423359; x=1653237760; bh=YTsw8kQWDTCDAcav
-        OVM73NmyaTaTQIvvz7yEXFih9DQ=; b=BGs+Tx1Vik0TAzug2IYhvUOdlN+Stn7F
-        pRL0JnlTQP61O6mOAo7aB474PH3uEosweciJJXPWnkBkt/ooI4t5c66Birz6rUyR
-        3+6jiYuLmB4ma1ACY66QL7HnIGUQK7ZUI3dbc1TEvVnL/X5CFYTh56nVy0fCfP1W
-        d45SceH4LeA7SbvFMhJrrnmdZz4mnls+mjyl0xkmjoQ5sMf44utOCCg430CIBWZ+
-        oGiIoLIdjcenIgFNNaNlz/vGW8lD1LZ9ksK/UZmIjJhuQd+xGCn5k7IohB5A+2N/
-        mUbbbvk240eliN30h3x0Qh3CAGs5ZNsnHnk+KLavzyCXlFxED3i1FA==
-Content-Language: en-US
-In-Reply-To: <950f8e47-fba0-33d9-786e-a48c31c3c775@dybdal.dk>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=L+k4X54jw1nY6iSGX6/a0nrJO+82fbfqz6/wSZtyprE=;
+        b=Wx4jEdYOguxdf6s1pimiC67EU/mT12a/t81N/CB8DObqdVU7688h/HIsvwgnk/OFKJ
+         Dk/3iunKuJpyAcCVnskHGaxfXv1gVG4guXkFjKLqQLukWHEZ0TNttJEB3m1Cof+rHe2F
+         cStC8By0s2t8kOzkwGnaQsay2WMJcRClnW2khb7qDoGf8IjkWHa9fQSgwo0VW1ghf6Ao
+         +SgtvqA2ZEHcPi3uw8vz/FbeR27MsTS/+SfYg42ixl8/IVw/0PbjPRQ51UpygrG7FoBr
+         55e+Yk6OlCPyPN264aaDo6rUJq2DNgIjn6yAfnzQNMmOqUOb+XUMRUjiXh03vK7jIt5C
+         F3rw==
+In-Reply-To: <CAE-E4dSkxc9d4sCWAs6dC=NjH3x6NuEKxyv9O9N4fG0hSncydQ@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-I wrote the question quoted below some days ago.
+Hello netfilter community,
 
-There have been no answers, which surprises mu - I would have thought 
-that just about everybody would want a way to conditionally in- or 
-exclude rules.
 
-I have now chosen to assume that there is no such possibility in nft, 
-and I am now writing a simple preprocessor that will solve my problem.
+I am running into a problem where I cannot ping other hosts if I have
+nftables service turned on.
 
-Another and somewhat related thing I miss is empty anonymous sets. If I 
-have an nft file containing.
-     define AllowedIps = { 1.2.3.4, 5.6.7.8 }
-     ...
-     ... daddr $AllowedIps accept
+I have the following rule for outgoing traffic (basically allows all
+outgoing traffic)
 
-then it might happen that some day both ip addresses are no longer 
-allowed, and I would then expect that when I changed the "define" 
-statement to
-     define AllowedIps = {  }
-then the rule further below would become a NOP.  But nft does not accept 
-an empty set.
 
-Regards,
-Jesper
 
-On 2022-04-27 12:24, Jesper Dybdal wrote:
-> I am beginning to plan my change from iptables to native nft.
->
-> My iptables shell script has some conditionals where rules are 
-> included or not depending on environment variables or other conditions 
-> that are known beforehand.  Example: whether or not all interfaces, or 
-> only some, are up.
->
-> Is this possible with nft?  I.e., something like:
->
->    define externalinterfaceready = 1
->    ...
->    if ( externalinterfaceready) {
->         ... add rules depending on the external interface being up
->    }
->
-> And even better if it could query environment variables.
->
-> I haven't seen any description of something like this being possible 
-> in a less clumsy way than dynamically building an include file for 
-> every "if" and include them in the ruleset at suitable points.
->
-> Have I overlooked something?
->
-> Thanks,
-> Jesper
->
+        chain OUTBOUND {
 
--- 
-Jesper Dybdal
-https://www.dybdal.dk
+                type filter hook output priority 0; policy accept;
 
+        }
+
+
+
+But I cannot ping any inside or outside IPs, eg.
+
+
+
+[root@lxdvfs1a nftables]# ping -vv 172.29.28.1
+
+ping: socket: Permission denied, attempting raw socket...
+
+PING 172.29.28.1 (172.29.28.1) 56(84) bytes of data.
+
+153 packets transmitted, 0 received, 100% packet loss, time 151999ms
+
+
+
+If I turn off nftables service, I can ping any IPs normally.
+
+[root@lxdvfs1a nftables]# ping 172.29.28.1
+
+PING 172.29.28.1 (172.29.28.1) 56(84) bytes of data.
+
+64 bytes from 172.29.28.1: icmp_seq=1 ttl=64 time=1.64 ms
+
+64 bytes from 172.29.28.1: icmp_seq=2 ttl=64 time=0.446 ms
+
+64 bytes from 172.29.28.1: icmp_seq=3 ttl=64 time=0.488 ms
+
+
+
+I also tried adding the following to explicitly allow outgoing ping,
+but it did not work either.
+
+
+
+icmp type echo-request ct state new,established accept
+
+
+
+Any insight/help would be appreciated.
+
+
+
+Thanks,
+
+Lihua Wang
+
+Sysadmin at CUNY Graduate Center
