@@ -1,58 +1,33 @@
-From: Phil Sutter <phil@netfilter.org>
-Subject: [ANNOUNCE] libnetfilter_cttimeout 1.0.1 release
-Date: Thu, 5 May 2022 13:50:21 +0200
-Message-ID: <YnO5/SN2W7IJ9mpM@orbyte.nwl.cc>
+From: Olivier <oza.4h07@gmail.com>
+Subject: Multiple protocols in conntrack tool filtering
+Date: Fri, 6 May 2022 12:00:29 +0200
+Message-ID: <CAPeT9jhDM4i+xE3ynHd4z++b-cvd57THBJw28iNst8RRgziSdA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="qhvWvKzBXMBwWaf7"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=lAJ7ptLukLHamAsOjbUmAiTm+hPdoE4CJHUvUS8gSsQ=;
+        b=oX4bPwZrTxVjeM34hgHV+rqqw+U4BNzOcOGj656lhJazAmx8Qz+OrbVtLd+r6u9C+c
+         fjwr0t5mWgvCIJs+gb73hhGI+D3ixWB9D0pLzcOp5HU2hqbeejHGL0DuhW7djwhCehcH
+         BBXvE1vQ5+M63qgExUW7D819T11x8QQilLHTl/Yd7lf74DCGt1K2HbvT9uPEKmpisT/g
+         zB8w4qfhNAoIKEwckG5XxDWQaFc4w3uJq0fhDf+A+YSfj49PnRwX/PclY4ChAor+UvKO
+         +eeH3L0ALmocnE53ftCQYlJN/JGN+j6X2lQ33G3rTEqNIcyQKcplYFO5DLrA8Ty2mSW4
+         WB8g==
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter <netfilter@vger.kernel.org>, netfilter-devel <netfilter-devel@vger.kernel.org>
-Cc: netdev@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
+Hello,
 
---qhvWvKzBXMBwWaf7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Current conntrack --proto filter allow a single layer 4 protocol to be
+specified (se [1]).
+Could it be possible to either:
 
-Hi!
+- define a way to pass several protocols (meaning protocol1 OR protocol2)
+- define a accept several instances of --proto argument to be passed
 
-The Netfilter project proudly presents:
+[1] https://manpages.debian.org/bullseye/conntrack/conntrack.8.en.html
 
-        libnetfilter_cttimeout 1.0.1
-
-This release contains only fixes:
-
-* Warnings with automake-1.12
-* Allow building on uclinux
-* Fix building with clang
-
-You can download the new release from:
-
-https://netfilter.org/projects/libnetfilter_cttimeout/downloads.html#libnetfilter_cttimeout-1.0.1
-
-In case of bugs, file them via:
-
-* https://bugzilla.netfilter.org
-
-Happy firewalling!
-
---qhvWvKzBXMBwWaf7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment;
-	filename="changes-libnetfilter_cttimeout-1.0.1.txt"
-
-Felix Janda (1):
-  include: Sync with kernel headers
-
-Gustavo Zacarias (1):
-  configure: uclinux is also linux
-
-Jan Engelhardt (2):
-  build: remove unnecessary pkgconfig->config.status dependency
-  build: resolve automake-1.12 warnings
-
-Kevin Cernekee (1):
-  Use __EXPORTED rather than EXPORT_SYMBOL
-
---qhvWvKzBXMBwWaf7--
+Best regards
