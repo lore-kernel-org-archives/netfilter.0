@@ -1,59 +1,64 @@
-From: "Alov, Igor" <alov.igor@gmail.com>
-Subject: it is possible to use link group or vrf to make a netdev hook?
-Date: Sun, 15 May 2022 15:38:06 +0300
-Message-ID: <50b53772-45f6-8bfd-fbeb-aefc7332803f@gmail.com>
+From: Alexander Helmer <a.helmer@internett.de>
+Subject: "nft --check" not warning about missing statement in rule
+Date: Mon, 16 May 2022 07:50:08 +0000
+Message-ID: <C928E2C92BFA9E4DA6068EBF01B2EC27A6DE31E9@tt-05.im.internett.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:to:content-language:from
-         :subject:content-transfer-encoding;
-        bh=JBvsoaxCIKFgB7h32mj/7nC1grFTU06ZfOu/ZfxLHMc=;
-        b=TlnPbH+/c4lhShA+r2dXbTrQIOuW3/Q7vOlumZtfgIGf5jMqvOJI6YG8qcuWPJKid1
-         dBHKGmZtkvpWU9SpbFgmsPla9SkPf+TxIYHqUrcdLVr0P7YmMxULI0W78/wQXK6D0F5a
-         aNW2XflnCnQ/3AW70GtUZpvIUrQK5KGnizKDFnK4pcaprV18Jtuvw6kjaAbT9BXD1B9V
-         kPi32rKtVAo7R2E9B3UvPCEJS1gl+ocwZESdsQnVkPr7H47YA4yE7SOVhetHXa06EjNO
-         wASFqjzEwgmqSPeX/ljh2hw50ClkSi7bdP9dnlVXF4k2wTewl3IZ4/B40v8q1miN7imN
-         awwA==
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=internett.de; s=20200219; h=MIME-Version:Content-Transfer-Encoding:
+        Content-Type:Message-ID:Date:Subject:To:From:Sender:Reply-To:Cc:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=yCU693Oj90fSHEwWnjxNJ/fp3AVM/W5fAh5/THjLNyI=; b=j0OaT0Rlh9/anuTQPJIjb+KEpW
+        SSFJ2mMFdlRYIaf1iIuEPLmfNOai9Ay3dEEDds9NDyyz42rAG/jbE4AhQ6U2Cb7pwwoOp0MjQo9Y8
+        UDakO4e2uZUT1lDFUCJ+C+HADlQtaNAXqN/VjfMVnW+ENPGhgM5R4Ufy1s3w+cKTAe4k=;
+Content-Language: de-DE
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: netfilter@vger.kernel.org
+To: "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
 
-Howdy Folks!
+Hi everyone!
 
-I'm currently on switching to nftables framework, but I'm stalled a 
-little bit, my question is about table netdev and hook for ingress devices.
+I got my first nftables-based firewall in production after many years with =
+iptables. I opted to use a nft-script to manage the ruleset.=20
+A small bash wrapper does some checks first and then loads the new ruleset.
 
-is there are possible ways  to specify devices that are join to link 
-groups ( /etc/iproute2/group)  like (type filter hook ingress devices [ 
-group "bgpext" ] priority -400; policy accept;)?
+One of those checks is a syntax-check with:
+	"nft -c -f #path-to-ruleset-file#"
 
-# ip -br link show *group bgpext*
-vmbr140018       UP             00:d8:79:fe:c7:ae 
-<BROADCAST,MULTICAST,UP,LOWER_UP>
-vmbr140444       UP             00:d8:79:fe:c7:ab 
-<BROADCAST,MULTICAST,UP,LOWER_UP>
+For better readability I used newlines in some rules. Unfortunately at two =
+places in the 2k lines script I failed to put a '\' at the end of a line wh=
+ich caused nftables to create two seperate rules instead of one.
+I do not understand how nftables interpreted the rules and why nft -c did n=
+ot throw an error.
 
-or there are exist possible ways  to specify devices that are join to 
-specific vrf  like (type filter hook ingress devices [ vrf "bgp" ] 
-priority -400; policy accept;)? I know I can specify device "bgp", but 
-this hook  will not work, until I specify exact ether devices.
+Both rules looked something like this (forward chain, drop policy):
 
-# ip -br link show *vrf bgp*
-vmbr5000            UP             86:ec:4d:d2:61:32 
-<BROADCAST,MULTICAST,UP,LOWER_UP>
-vmbr140018       UP             00:d8:79:fe:c7:ae 
-<BROADCAST,MULTICAST,UP,LOWER_UP>
-vmbr140444       UP             00:d8:79:fe:c7:ab 
-<BROADCAST,MULTICAST,UP,LOWER_UP>
-
-Yes, i know that I can manually add variables like that {dev1, 
-dev2....devn}, but I would more flex configuration template.
+ip saddr { xxxxx } \
+	ip daddr { yyyyy }  		< missing \ here
+	ct state new accept;
 
 
--- 
-With Best Regards
-Alov, igor
+Nftables created the rules like this:
 
+1. ip saddr { xxxxx } ip daddr { yyyyy }
+2. ct state new accept
+
+
+I guess I do not have to tell u why this was catastrophic.=20
+
+I do not understand why the first rule has is a valid rule since it does no=
+t contain a statement.
+"nft -c" usually found other issues in the script and even in other include=
+d script-files (although the line numbers where never correct) so I assume =
+it can check nft-scripts.
+
+Is my understanding of the syntax wrong? Does a nftables rule not need a st=
+atement? If so is no statement equal to the statement "continue"?
+Or is nft -c not checking this case?
+
+kind regards
+
+Alexander
