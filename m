@@ -1,51 +1,62 @@
-From: Benno <b.ohnsorg@freenet.de>
+From: Andrew Clark <andrewclarkii@gmail.com>
 Subject: Re: exclude named sets
-Date: Fri, 20 May 2022 12:57:49 +0200
-Message-ID: <a2155df3-e6ae-e659-5cf7-7a43b89556c6@freenet.de>
-References: <CAMsxNkSkjBkwS=AhJpG+GPTfz1nYsH4YjLVJ56DxvW9hAVeoCg@mail.gmail.com>
+Date: Fri, 20 May 2022 14:04:12 +0300
+Message-ID: <CAMsxNkQ7rGoEuqgEFtmyGab6+HyPr0MO33DDbWZD-rtfgjTEcw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=freenet.de;
-        s=mjaymdexmjqk; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=jnEJ9pI6KoXWGS3N3UEFM5F0ikkmMtlunrRvFNK8zJM=; b=hlxafHZQfVru5bUrLWRMHILF7L
-        SU29Q3c5fyw1nbAwPLJ0fSXuY37GZ7Z+JGDLZm3qXrJbe8IG62J+McBZqtAuxNNv8IP2v47tE2UYI
-        hWYkGHTWIs0vbwXslueHpIaaNvZh+yL3Tu6pSobgWPpGUgJvXrEYU20fPKmHWhFeZp5y3CNJGa5uw
-        b/XoLFbxqm8TE5a+DS2+lNoDHNt3stlOofR5DukGoEGGbq2sQB8K5B0wlfziyMxUdTtpChUBS87ae
-        32Q1MfpPxgVfYqzMCLERjpwEVmWQvNOW5/gS+xf83XLQ8hihppHrKuJpn+y/XpINIUdHvUWW9JsID
-        L50 
-Content-Language: de-DE
-In-Reply-To: <CAMsxNkSkjBkwS=AhJpG+GPTfz1nYsH4YjLVJ56DxvW9hAVeoCg@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=yJ290FS+bhdvl1v778q9DFk5SXRc2P5GFRgvawE5/f4=;
+        b=oF2LEerEVovlMTpJVLtrg7teahnIpBxwLPiZNZYPM5rCt/CpH0Q+79WYoJcyDUfrzV
+         pXT5P/ZtW+xQLN66SEN+lIhlQl7LSHrfHfwqvda+T8ogn43IXa0Pf53hRoidAKMt8wZ+
+         KRyyNBN5sC++6/JSp9lwZ6m4DKEc+N83EG0mlDnsJZ7KSWz2HMd+5YZ2b5LRWrPzbBo1
+         yWAU+4UIl+tBJWm5BC2XRUKTCZ6XCBJrPPnH7vdx6AWwnlzCQbH3wjIiLG9bEzLBJSAo
+         lDiQd6/WpN+YkNhsH3DCWg57ukTk15Hme84g4Cg+44EMa5R/nQEpvTlVTbwxjAJ3GB/c
+         Ghvg==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Andrew Clark <andrewclarkii@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
+Yes they are named sets. I define them like this:
 
+root@anvil:~# grep "include" /etc/nftables.conf
+include "/etc/nftables/*.nft"
+root@anvil:~# cat /etc/nftables/nftables-stormwall.nft
+table ip nat {
 
+        set stormwall {
+                type ipv4_addr;
+                flags interval;
+                auto-merge;
+                elements = { 185.121.240.0/22,
+        185.121.240.0/24,
+        185.121.241.0/24,
+        185.121.242.0/24,
+        185.121.243.0/24,
+        185.71.64.0/24,
+        185.71.66.0/24,
+        193.84.85.0/24,
+        193.84.88.0/24,
+        193.84.90.0/24,
+        5.252.32.0/24,
+        5.252.33.0/24,
+        5.252.34.0/24,
+        5.252.35.0/24
+        }
+    }
+}
+root@anvil:~#
 
-Am 20.05.22 um 05:49 schrieb Andrew Clark:
-> […] to route all
-> traffic in the TOR network, but I have a bunch of addresses which
-> should be passed directly, without using TOR.
-> 
-> This is valid rule: iifname $int_ifs ip daddr @rkn meta l4proto tcp
-> redirect to :9051
-> But this one is not: iifname $int_ifs ip daddr != { @akamai,
-> @stormwall } meta l4proto tcp redirect to :9051
-> 
-> […]
+According to nftables wiki
+(https://wiki.nftables.org/wiki-nftables/index.php/Sets)
+I can do like this:
 
-Would it be sufficient to have only one list and work with the default
-package handling? For example a single whitelist causes direct package
-routing without Tor. The default rule forwards to the Tor network.
+nft add rule ip filter output ip daddr != @blackhole accept
 
-The other way around a blacklist would force packages through Tor while
-the rest via default rule goes through!?
+But, probably not like this
+nft add rule ip filter output ip daddr != {@akamai, @stromwall} accept
 
-Out already pointed out that one rule is the other's negation.
-
-Is there a third route? Or even more?
+-- 
+Talk is cheap, show me the code (c) Linus Torvalds
