@@ -1,54 +1,36 @@
-From: Matt Zagrabelny <mzagrabe@d.umn.edu>
-Subject: set of sets
-Date: Thu, 19 May 2022 16:40:10 -0500
-Message-ID: <CAOLfK3VDFFCfTdNSCtHFTs_wU5a8o9gB+=GvACF6nMTv6Tx_eQ@mail.gmail.com>
+From: Andrew Clark <andrewclarkii@gmail.com>
+Subject: exclude named sets
+Date: Fri, 20 May 2022 06:49:10 +0300
+Message-ID: <CAMsxNkSkjBkwS=AhJpG+GPTfz1nYsH4YjLVJ56DxvW9hAVeoCg@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p5.oit.umn.edu 4L43Dk1Dwgz9vgQd
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=d.umn.edu; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:from:date:message-id:subject:to;
-        bh=TueOz4cTgct9MFZNJRIwlMrRBawTmswQxfJlmUoB+dA=;
-        b=hgZVvRhHUZgwG+q3Yt70IhjUB361GI8DMJQ+YYHhDIofVAYelnhGaR8/qHz2pnqAZI
-         rkNjsFWlmMQWWViK4C9dhCXpIVg/C2BojJ/3kz04pp/Q9Z5eK7PqRwuIUbHecvRULi0U
-         m2rovCXlpdFyFC9L/8MniSApvl7KQq+8B+PKgi4GhG2Eso6M49v7AIBZv00SV2qKc/3G
-         +HoTPYldGaMgOiHZsTLjhGMyDN394QHo7IXKYLC0qYCZwP4FuhQekW1M280RPP0xZ9Sl
-         W/5EyrSr+K1CZKM+D1FGX9sTNOOefztTsBcv2zEhGVZ6AcrPxuOSPZWOPlzZ/cCeQQcv
-         SQtA==
+        bh=YL5DK+4gGTIOWwdvPilP2c5whpuYF2cwnaRe2QM/+cs=;
+        b=Dt/V3c+2qxx0c4BzYSt+XWm6Ncs4/6CPoeo0FJ7/zYoZVuKoJp6gY6ityvLQ2SchFZ
+         V8Ou00XsiB3vmTF5KxQu14qo7LUlRK0fBHF30j7yKyITuCgys+XoiPK6tN6Tunqvg7xE
+         OVf662Nac8+eNZakpLq6EcAL7hYG1fK7bpGSXKWCBwHm/E/ZOvjGxW4Dy/UdnXdj63Z7
+         RCeTbXecp1QLtTtBkSX0H5hlOmC9JfcLJsAI8hzYrdiMJHzNxCUP3f/yURN/Vzwzq+FZ
+         YAP2jEXyz0eSwOo8dCObSDrZe9JDavi6KUmZfY+gYko86RNGRyLxMiRyGiP0Yp/8o7VW
+         zOog==
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-Greetings netfilter,
+I use Debian 11 as my home router, and I have a script for workaround
+blocked addresses. Alas Roskomnadzor lists are getting bigger, so I
+came to the simple thought that it would be much easier to route all
+traffic in the TOR network, but I have a bunch of addresses which
+should be passed directly, without using TOR.
 
-I'm running nftables 1.0.2.
+This is valid rule: iifname $int_ifs ip daddr @rkn meta l4proto tcp
+redirect to :9051
+But this one is not: iifname $int_ifs ip daddr != { @akamai,
+@stormwall } meta l4proto tcp redirect to :9051
 
-I have some timeout sets:
+How to exclude couple of named sets properly?
 
-table inet filter {
-        set timed_web_allow_set_0_ipv4 {
-                type ipv4_addr
-                timeout 30m
-        }
-
-        set timed_web_allow_set_1_ipv4 {
-                type ipv4_addr
-                timeout 4h
-        }
-[...]
-
-I'd like to be able to reference the sets in one rule:
-
-        chain timed_web_allow_ipv4 {
-                ip saddr { @timed_web_allow_set_0_ipv4,
-@timed_web_allow_set_1_ipv4 } accept
-        }
-
-...but this doesn't seem possible.
-
-Any suggestions on how to achieve sets of sets in nftables?
-
-Thanks for the help!
-
--m
+-- 
+Talk is cheap, show me the code (c) Linus Torvalds
