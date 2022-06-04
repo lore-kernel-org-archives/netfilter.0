@@ -1,231 +1,68 @@
-From: pigi@frumar.it
-Subject: Re: Possibly dangerous interpretation of address/prefix pair in -s option
-Date: Sat, 04 Jun 2022 07:29:28 +0200
-Message-ID: <4825064.GzlxMrEDrV@topolinux>
-References: <mail.629a20b0.7e37.7f80bf761b5d8a04@storage.wm.amazon.com> <010201812aced64c-cfcce59b-f83c-4892-b6eb-43b9b0a2fc64-000000@eu-west-1.amazonses.com> <mI_weL3h1lp4FFWpWqJgYZxIQq8seM3cNR8euOxiT4dtBMTbOQjbjVE5rtGXWzwUgyExLwXhtVTJEJFiEHD4b1Wh0SZ9xRSOAjVXlftILk8=@protonmail.com>
+From: =?UTF-8?Q?Stefan_Riha?= <stefan@sriha.net>
+Subject: RE: Possibly dangerous interpretation of address/prefix pair in -s
+ option
+Date: Sat, 4 Jun 2022 06:45:29 +0000
+Message-ID: <010201812d7632b0-1fa6a570-192e-423c-ba87-558c0d650ac9-000000@eu-west-1.amazonses.com>
+References: <mail.629a20b0.7e37.7f80bf761b5d8a04@storage.wm.amazon.com> 
+ <010201812a366a81-2f2bc7f3-e142-4807-9742-bfa7b19dd468-000000@eu-west-1.amazonses.com> 
+ <e2ba2738-2eff-3e97-a389-77abd17664dd@thelounge.net> 
+ <mail.629a2dfb.57ab.496a0a414c9495b2@storage.wm.amazon.com> 
+ <010201812a43a0d9-c4953858-f0e1-48db-a7a3-420d53a11cd7-000000@eu-west-1.amazonses.com> 
+ <df64386a-5daf-6f97-3d37-b0c9b7c25537@thelounge.net> 
+ <mail.629a3289.7fbb.1b2912350cfc7c1b@storage.wm.amazon.com> 
+ <010201812a556c50-7856ee86-1a5a-4135-8acf-869a930d54c8-000000@eu-west-1.amazonses.com> 
+ <768e4d99-0c50-01af-4434-20378c06a3cf@thelounge.net> 
+ <mail.629a35d7.2a64.4a0b184f3a85fa1c@storage.wm.amazon.com> 
+ <010201812a625427-9b51500d-3126-4b6f-95d0-d71702c349a7-000000@eu-west-1.amazonses.com> 
+ <b6945516-3120-24f0-9990-294f1653c9a4@thelounge.net> 
+ <mail.629a388a.7bba.0e9843742ea45568@storage.wm.amazon.com> 
+ <010201812a6ce183-1a849304-791a-4874-9668-23f871060bac-000000@eu-west-1.amazonses.com> 
+ <mail.629a3f4f.4e0b.2e3e82745c98ed1d@storage.wm.amazon.com> 
+ <06924b12-8664-1e96-2a0b-d3711bbb67d7@thelounge.net> 
+ <010201812a875150-65c17845-7e32-4eac-8c72-28bf90279b54-000000@eu-west-1.amazonses.com> 
+ <CANGix0CNMH0yhVSxaVqX5DnuZs0oNc6fKMDX=BAm=+PzhFVKSg@mail.gmail.com> 
+ <CANGix0Ddy_BW5wgUbmEmMiJajs_FxEFRcYDPuzNL3aaBxnCtoQ@mail.gmail.com> 
+ <mail.629a519e.0cd7.3039eb4576cddb5d@storage.wm.amazon.com> 
+ <010201812aced64c-cfcce59b-f83c-4892-b6eb-43b9b0a2fc64-000000@eu-west-1.amazonses.com> 
+ <2ae6f4de-e03c-1fab-c1fa-68915b3837d8@netfilter.org> 
+ <mail.629aff89.73ff.3ae87c7606a48613@storage.wm.amazon.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=frumar.it;
-        s=scnd; h=DKIM-Filter:From:To:Subject:Date:Message-ID:
-        Organization:In-Reply-To:References:MIME-Version:
-        Content-Transfer-Encoding:Content-Type; bh=CjkMN0evgmCsRLBBCzOXY
-        eb2ZXQ=; b=qZi/n5c3C4esVrWgyz30jNjGQ34MRBfDKhCLnxcbwuA68a6Th/NSR
-        ubc2jNN02fcqTJspirttrWC94w0dApp8iz3yUfcAhDPScQKk48GiB9+Zqbb9qwfs
-        x40b5zO1Wfx08HiMmMP9eb5BqNCLiSSwOo8NsZqaGjBpdBQfrZMX7E=
-DKIM-Filter: OpenDKIM Filter v2.10.3 orca.frumar.it 2545TK3k011276
-DKIM-Signature: v=1; a=rsa-sha1; c=simple/simple; d=frumar.it; s=orca;
-        t=1654320561; bh=PKJGbaf2XjlFH6qrf43TwXFxO7A=;
-        h=From:To:Subject:Date:In-Reply-To:References;
-        b=FoUggI2B5Pet6vyI9T21oKMguINZzQi/cNXGMkiDDsL++PYwBGlZjhXL42VvxkkBF
-         8jmOeosLBMf52stggZqaTUAI9KDy4lvtoVdmHiAnwjgibnviTfzA5RWqgE5LMQa8lm
-         FcvD0vRywqxoPJ6kwRz/oA/h8G01Av3K5m+BMLmY=
-In-Reply-To: <mI_weL3h1lp4FFWpWqJgYZxIQq8seM3cNR8euOxiT4dtBMTbOQjbjVE5rtGXWzwUgyExLwXhtVTJEJFiEHD4b1Wh0SZ9xRSOAjVXlftILk8=@protonmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=3yk3epreue6hqzjk7k5x3u3k6qklparn; d=sriha.net; t=1654325130;
+        h=Subject:From:To:Cc:Date:Mime-Version:Content-Type:Content-Transfer-Encoding:In-Reply-To:References:Message-Id;
+        bh=eUs02EORNEQ6wKQXniagcpAP2LuVJRWkqiVJxZ6hHOk=;
+        b=Lq7nvUFyKf2gzBGBHQW3ne9PMhK2WJjtPL7jIPEvdMqYGgx2r6wbBmLPrhd4+nWT
+        VUy4YgFoGZigLdoFJvXhfC0hU/0Dv9FjEn17WWh9VPsFpyuP1IEZWFFQW4RVm0PlVMm
+        /bRKK99gKF1HzxRXs1+JSy42zJp1FWJOSxWaLaK0=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+        s=ihchhvubuqgjsxyuhssfvqohv7z3u4hn; d=amazonses.com; t=1654325130;
+        h=Subject:From:To:Cc:Date:Mime-Version:Content-Type:Content-Transfer-Encoding:In-Reply-To:References:Message-Id:Feedback-ID;
+        bh=eUs02EORNEQ6wKQXniagcpAP2LuVJRWkqiVJxZ6hHOk=;
+        b=dZfBvhoY0thb3+0uQUs26WciQ2ikuWygvObxVm9u98w1dqbqEsPktG+mcKifcNE7
+        EpAvo9yhhZBp6LWfmDLnw6PX0J1wHSRUjoWRryiJAx+T7dDVhIu6JbwjYMaQlCLTKBI
+        dgE1v6uVcyBTzrxq+qUmrnTUTHrLwcfVMFnwVxnY=
+In-Reply-To: <2ae6f4de-e03c-1fab-c1fa-68915b3837d8@netfilter.org>
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: =?UTF-8?Q?Jozsef_Kadlecsik?= <kadlec@netfilter.org>
+Cc: =?UTF-8?Q?Alex_Buie?= <alex.buie@datto.com>, =?UTF-8?Q?netfilter=40vge?= =?UTF-8?Q?r=2Ekernel=2Eorg?= <netfilter@vger.kernel.org>, =?UTF-8?Q?h=2Ereindl=40thelounge=2Enet?= <h.reindl@thelounge.net>
 
-I think you are wrong:
-10.0.0.1/25
-IP Address:	10.0.0.1
-Network Address:	10.0.0.0  <====== It's "0", not "1"
-Usable Host IP Range:	10.0.0.1 - 10.0.0.126
-Broadcast Address:	10.0.0.127
-
-10.0.0.129/25
-IP Address:	10.0.0.129
-Network Address:	10.0.0.128  <===== It's "128" not "129"
-Usable Host IP Range:	10.0.0.129 - 10.0.0.254
-Broadcast Address:	10.0.0.255
-
-In iptables notation, 10.0.0.1/25 should sound as "syntax error" ( and so should 10.0.0.129/25) 
-
-Just my 2 cents.
-
-Pigi
-
-
-On Saturday, June 4, 2022 1:37:57 AM CEST Timothy Ham wrote:
-> Here is an example network that wouldn't work with your proposed "syntax error":
-> 
-> 10.0.0.1/25
-> IP Address:	10.0.0.1
-> Network Address:	10.0.0.1
-> Usable Host IP Range:	10.0.0.1 - 10.0.0.126
-> Broadcast Address:	10.0.0.127
-> 
-> 10.0.0.129/25
-> IP Address:	10.0.0.129
-> Network Address:	10.0.0.129
-> Usable Host IP Range:	10.0.0.129 - 10.0.0.254
-> Broadcast Address:	10.0.0.255
-> 
-> This is a bit convoluted, but are perfectly valid subnets. And in order to specify them, the current behavior is needed.
-> 
-> Cheers,
-> 
-> 
-> Sent with Proton Mail secure email.
-> ------- Original Message -------
-> On Friday, June 3rd, 2022 at 11:23 AM, Stefan Riha <stefan@sriha.net> wrote:
-> 
-> 
-> > > > Whoops - just noticed, XOR should be AND in my message. My apologies!
-> >
-> >
-> > No problem:) Thanks for taking the time and answer so comprehensively!
-> >
-> > > There is no reinterpretation going on - the rule is simply being
-> > > processed exactly as you added it, and the behavior you suggest would
-> > > be introducing reinterpretation.
-> >
-> >
-> > Hmm, but don't other programs do indeed interpret 10.0.0.2/24 differently? For example systemd-networkd interprets 10.0.0.2/24 as a single Ip address in the subnet 10.0.0.0/24. Which makes a lot of sense to me, because why would one specify the .2 at the end, if one meant the subnet? There is the unambiguous 10.0.0.0/24 to identify the subnet itself. In the Wikipedia article about Ip addresses [1] it says:
-> >
-> > > > For example, the destination address used for directed broadcast to devices on the network 192.0.2.0/24 is 192.0.2.255.
-> >
-> >
-> > So they too interpret 192.0.2.0/24 as the network, and 192.0.2.255 as broadcast address, my point being that those two Ip addresses (i.e. beginning and end of the subnet) have two special meanings, the former representing the network.
-> >
-> > I guess my impression is that other user space programs (e.g. systemd-networkd), interpret 10.0.0.2/24 as pair: a single ip address and a mask identifying the corresponding subnet. I am confused that iptables picks one of them without telling me to be more specific.
-> >
-> > Why would a user space program not take advantage of that fact and unambiguously accept 10.0.0.0/24 to specify that specific subnet, and nothing else?
-> >
-> >
-> > [1] https://en.wikipedia.org/wiki/IP_address
-> >
-> > -----Original message-----
-> > From: Alex Buie
-> > Sent: Friday, June 3 2022, 7:30 pm
-> > To: Stefan Riha
-> > Cc: netfilter@vger.kernel.org; h.reindl@thelounge.net
-> > Subject: Re: Possibly dangerous interpretation of address/prefix pair in -s option
-> >
-> > Whoops - just noticed, XOR should be AND in my message. My apologies!
-> >
-> > On Fri, Jun 3, 2022 at 1:28 PM Alex Buie <alex.buie@datto.com mailto:alex.buie@datto.com> wrote:
-> >
-> > > Underneath, it's all just binary math.
-> > > Even though you enter 10.0.0.0 or 10.0.0.2, they are converted to
-> > > their binary representation.
-> > >
-> > > EG:
-> > > 10.0.0.0: 00001010.00000000.00000000.00000000
-> > > 10.0.0.2: 00001010.00000000.00000000.00000010
-> > >
-> > > Then you are providing a bitmask (the /24 or /32 part) to tell the
-> > > kernel which parts of the address should be checked for matching.
-> > >
-> > > /24: 11111111.11111111.11111111.00000000
-> > > /32: 11111111.11111111.11111111.111111111
-> > >
-> > > The /24 at the end tells the kernel "allow 10.0.0.2, but only check to
-> > > make sure the first 24 bits match 10.0.0.2".
-> > >
-> > > 1- 10.0.0.50: 00001010.00000000.00000000.00110010
-> > > 2- /24: 11111111.11111111.11111111.00000000
-> > > ---------------------------------------------------------------
-> > > XOR 1 with 2 00001010.00000000.00000000.00000000 (result 1)
-> > >
-> > > 1- 10.0.0.2: 00001010.00000000.00000000.00000010
-> > > 2- /24: 11111111.11111111.11111111.00000000
-> > > ---------------------------------------------------------------
-> > > XOR 1 with 2 00001010.00000000.00000000.00000000 (result 2)
-> > >
-> > > Result 1 == Result 2, so the source match passes.
-> > >
-> > > This is functionally equivalent to telling the kernel "allow all of
-> > > 10.0.0" as 10.0.0 is the contents of the first 24 bits of 10.0.0.2
-> > >
-> > > There is no reinterpretation going on - the rule is simply being
-> > > processed exactly as you added it, and the behavior you suggest would
-> > > be introducing reinterpretation.
-> > >
-> > > Hopefully that helps :)
-> > >
-> > > Alex
-> > >
-> > > On Fri, Jun 3, 2022 at 1:08 PM Stefan Riha <stefan@sriha.net mailto:stefan@sriha.net> wrote:
-> > >
-> > > > Sorry - I just realized I did not send the messages to the netfilter list, but replied to Reindl Harald directly. Harald patiently makes the point that
-> > > >
-> > > > > > how do you expect your calculator "error out" when you type "1+3" but
-> > > > > > meant "1+2"?
-> > > >
-> > > > I'm not sure I understand the analogy, because 1+3 is correct and unambiguous input. Why would the program then invent a different meaningful input, say "1+2"? Instead, 10.0.0.2/24 for the -s option is ambiguous (and I would argue incorrect), because the correct inputs should have been
-> > > >
-> > > > 10.0.0.0/24 (that's what iptables assumed I meant)
-> > > >
-> > > > or
-> > > >
-> > > > 10.0.0.2/32 (or equivalently 10.0.0.2)
-> > > >
-> > > > The latter is what I actually meant. I guess the question is, why does iptables re-interpret an incorrect (ambiguous) input, and not error? 10.0.0.2/24 makes no sense, right? Picking up the calculator analogy: if I open a python terminal, and type
-> > > >
-> > > > In [3]: 3)4
-> > > >
-> > > > python errors due to syntax error. It doesn't just re-intepret it to '3+4' or '3-4'
-> > > >
-> > > > Thanks again for your patience!
-> > > >
-> > > > -----Original message-----
-> > > > From: Reindl Harald
-> > > > Sent: Friday, June 3 2022, 6:42 pm
-> > > > To: Stefan Riha
-> > > > Subject: Re: Possibly dangerous interpretation of address/prefix pair in -s option
-> > > >
-> > > > Am 03.06.22 um 18:36 schrieb Stefan Riha:
-> > > >
-> > > > > But it assumed that when I put in 10.0.0.2/24
-> > > >
-> > > > you braindead moron IT CALCULATED
-> > > >
-> > > > 10.0.0.2/24 is for a computer similar to "1+2" for a human
-> > > >
-> > > > > I actually meant 10.0.0.0/24
-> > > >
-> > > > then write it
-> > > >
-> > > > > That's possibly dangerous
-> > > >
-> > > > operate a firewall as beginner is in generall dangerous
-> > > >
-> > > > > because what I actually meant was 10.0.0.2 (or equivalently 10.0.0.2/32).
-> > > >
-> > > > then write it
-> > > >
-> > > > > As you said, it can't smell what I meant when I supplied an incorrect
-> > > > > input. So the right thing would be to error, and not do anything.
-> > > >
-> > > > how do you expect your calculator "error out" when you type "1+3" but
-> > > > meant "1+2"?
-> > > >
-> > > > > Instead it re-interprets my incorrect input
-> > > >
-> > > > FUCK IT - it DID NOT interprete - IT IT A CALCULATION
-> > >
-> > > --
-> > > Alex Buie
-> > > Senior Networking Software Engineer
-> > > Datto, Inc.
-> > > 475-288-4550 (o)
-> > > 585-653-8779 (c)
-> > > www.datto.com http://www.datto.com
-> > >
-> > > Join the conversation!
-> >
-> >
-> > --
-> > Alex Buie
-> > Senior Networking Software Engineer
-> > Datto, Inc.
-> > 475-288-4550 (o)
-> > 585-653-8779 (c)
-> > www.datto.com http://www.datto.com
-> >
-> >
-> > Join the conversation!
-> 
-
-
-
+>> Read the manpage: "Address can=20=0D=0Abe either a network name, a net=
+work IP address (with /mask), or a plain IP=20=0D=0Aaddress".=0D=0A=0D=0A=
+The manpage states that the input can be either of three:=0D=0A=0D=0A1) a=
+ network name=0D=0A2) network IP address (with /mask)  (i.e. 10.0.0.0/24 =
+in the example)=0D=0A3) a plain IP address (i.e. 10.0.0.2 or equivalently=
+ 10.0.0.2/32 in the example)=0D=0A=0D=0Aand the input 10.0.0.2/24 is neit=
+her of those three (it's a contextually inappropriate combination of 2 an=
+d 3). It therefore should be rejected, but instead it is reinterpreted to=
+ be of type 2), i.e. a network IP address (with /mask). What do you think=
+=3F=0D=0A=0D=0AMy point is, I think this re-interpretation dangerous. I t=
+hink the appropriate behaviour would be to error on incorrect/ambiguous i=
+nput.=0D=0A=0D=0A>> The input is interpreted accordingly, therefore 10.0.=
+0.2/24 is=20=0D=0Aequal to 10.0.0.0/24.=0D=0A=0D=0ABut would you agree th=
+at if the input isn't of the 3 three types explicitly allowed in the manp=
+age, it should be rejected=3F The word "either" in the manpage gives the =
+impression that the three options are mutually exclusive, and not a conte=
+xtually inappropriate mixture.=0D=0A=0D=0A=0D=0A
