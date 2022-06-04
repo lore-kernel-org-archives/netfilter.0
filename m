@@ -1,56 +1,72 @@
-From: Reindl Harald <h.reindl@thelounge.net>
-Subject: Re: Possibly dangerous interpretation of address/prefix pair in -s
- option
-Date: Sat, 4 Jun 2022 15:11:09 +0200
-Message-ID: <7cd001c2-ae89-f854-994b-87adafb7b4cb@thelounge.net>
-References: <mail.629a20b0.7e37.7f80bf761b5d8a04@storage.wm.amazon.com>
- <010201812a6ce183-1a849304-791a-4874-9668-23f871060bac-000000@eu-west-1.amazonses.com>
- <mail.629a3f4f.4e0b.2e3e82745c98ed1d@storage.wm.amazon.com>
- <06924b12-8664-1e96-2a0b-d3711bbb67d7@thelounge.net>
- <010201812a875150-65c17845-7e32-4eac-8c72-28bf90279b54-000000@eu-west-1.amazonses.com>
- <CANGix0CNMH0yhVSxaVqX5DnuZs0oNc6fKMDX=BAm=+PzhFVKSg@mail.gmail.com>
- <CANGix0Ddy_BW5wgUbmEmMiJajs_FxEFRcYDPuzNL3aaBxnCtoQ@mail.gmail.com>
- <mail.629a519e.0cd7.3039eb4576cddb5d@storage.wm.amazon.com>
- <010201812aced64c-cfcce59b-f83c-4892-b6eb-43b9b0a2fc64-000000@eu-west-1.amazonses.com>
- <2ae6f4de-e03c-1fab-c1fa-68915b3837d8@netfilter.org>
- <mail.629aff89.73ff.3ae87c7606a48613@storage.wm.amazon.com>
- <010201812d7632b0-1fa6a570-192e-423c-ba87-558c0d650ac9-000000@eu-west-1.amazonses.com>
- <4df0f9c3-5617-e798-56d9-d24725250906@thelounge.net>
- <efe54ba7-fca1-e95-2ded-d83c5e144987@netfilter.org>
+From: Marc Haber <mh+netfilter@zugschlus.de>
+Subject: mixed address family sets and rules in nft
+Date: Sat, 4 Jun 2022 15:45:48 +0200
+Message-ID: <YptiDLW0raHPYCgg@torres.zugschlus.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
-In-Reply-To: <efe54ba7-fca1-e95-2ded-d83c5e144987@netfilter.org>
+Content-Disposition: inline
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@netfilter.org>
-Cc: Stefan Riha <stefan@sriha.net>, Alex Buie <alex.buie@datto.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
+Hi,
 
+I am somewhat a newbie to nft, but I have been doing Linux packet
+filtering for way more than 20 years, starting with ipfwadm back in 1997
+or 1998.
 
-Am 04.06.22 um 15:06 schrieb Jozsef Kadlecsik:
-> On Sat, 4 Jun 2022, Reindl Harald wrote:
-> 
->> Am 04.06.22 um 08:45 schrieb Stefan Riha:
->>> My point is, I think this re-interpretation dangerous
->> and my point is when you come up with "I'm a beginner" you should fro
->> the sake of go dlisten what people explain and stop using the word
->> "interpretation"
->>
->> binary math != interpretation
->> damned stop wasting peoples time
->> your way of communication makes me sick and tired
->>
->> it won't be changed - live with it or just hire somebody who can but het
->> rid of the idea that you are coming out of the blue after 30 years
->> changing the world
-> 
-> There's no need to be hostile, everyone was a newcomer once. It seems
-> people can come to wrong conclusions due to the syntax which is used at
-> different systems with different internal meanings. The feature cannot of
-> course be changed, but maybe it'd worth to update the documentation.
+In nft, I would like to be able to write something along the lines of
 
-the point was if you are a newcomer lisyten what people are telling you 
-and when 5 different people on an doff list telling you it's not 
-"interpretation" stop repeating yourself again and again
+|@@def $host = (85.214.160.151 2a01:238:42bc:a101::2:100)
+|
+|chain INPUT saddr $host proto tcp dport 22 ACCEPT
+
+(this is code from ferm, iptables' macro assembler I have been using for
+the last decade, the code will result in one rule in the IPv4 INPUT
+chain and one rule in the IPv6 INPUT chain, implcitly doing exactly
+what I mean it to do.).
+
+Is there a way to write this in nft? So far, both using a define and a
+set, I haven't been able to do it any easier than to write dedicated
+definitions and rules for IPv4 and IPv6, which is ugly. I thought I
+would have left problems like this behind ten years ago.
+
+This thing is not mentioned in the wiki and it is also not in the FAQ.
+Is there an easier way to write this?
+
+Please note that while it seems trivial and not-so-ugly when dealing
+with single IP addresses, but having an access list of tens or hundreds
+of addresses becomes an issue of manageability once one is no longer
+able to write IPv4 and IPv6 addresses belonging together in adjacent
+places.
+
+I think the nicest way to have this would be a way to write "inet"
+rules:
+
+|define host = { 85.214.160.151, 2a01:238:42bc:a101::2:100 }
+|table inet filter {
+|  chain INPUT {
+|                inet  saddr $host tcp dport ssh accept
+|  }
+|}
+
+or the respective code using sets. I don't know enough about nft and
+nftables inner works to be able to judge whether this should be
+expanded/solved inside the front-end, filtering the list and creating
+dedicated rules for IPv4 and IPv6, or whether the kernel code should be
+able to handle inet codes and mixed address-family rules itself, or
+whether one should have a preprocessor for this.
+
+I am sure this has been discussed a gazillion of times, but I was not
+able yet to find the discusions and their result. Pointers would be
+appreciated. Thanks for helping.
+
+Greetings
+Marc
+
+-- 
+-----------------------------------------------------------------------------
+Marc Haber         | "I don't trust Computers. They | Mailadresse im Header
+Leimen, Germany    |  lose things."    Winona Ryder | Fon: *49 6224 1600402
+Nordisch by Nature |  How to make an American Quilt | Fax: *49 6224 1600421
