@@ -1,25 +1,25 @@
 From: Shirisha Dasari <shirishadasari@gmail.com>
 Subject: IP DNAT on bridged packets destined to local process
-Date: Tue, 7 Jun 2022 13:55:36 +0530
-Message-ID: <CACnkxm-=kXAoFLHnJFrjoDHakvaxqmgJDdzXQcpyRzP0FBSWDQ@mail.gmail.com>
+Date: Tue, 7 Jun 2022 14:50:31 +0530
+Message-ID: <CACnkxm_o6G4DR3J5hwW3tnzbkskOCqLVDuNkdq+ARzT7P1qcAg@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
         h=mime-version:from:date:message-id:subject:to;
-        bh=74lQ7GWlFkuOjc7Ectz3G6hmrMyIyfQMMOI6SMMFjcQ=;
-        b=ptAG8ZyvW7XmNIg4b2k7uYLFC01FWbTy2HI+XlJpbtZZJ8/HVGwmv6WseBiakFc53m
-         D9t+WvAWGxCYkoqxUkeRG2n6Ss022nwIC7AWuX6FlvbgznoIrfngvfxSk4FdOIDSrx50
-         UV+b8KnDEbXgttm6OgAM5n4xUZ01/fr1zV/zkab1LcuIwfwwVOtpMs2cWPHZSrOArvq6
-         aW0V/7obc74UhP3QaJzd45ptPZcJpJQQC0DMSQixiGKCSRn/AeuYwI6cVDQ3sGApBcyF
-         ZwlhJz0bcYQSQ9BMPZlExkO/yFhkd/rlw4FCCHOTTUUWCqTPVP1XKdmfB0YiKg0Qj4pn
-         9sjw==
+        bh=gi7LCTA6Zs8xXGkuwkaPf/Xv7DuwqQKVtv0Jzon+INo=;
+        b=eyUjIbF6eCzoN+1u+Vk1JTMfzZ63BK0hJx2ndmJnQsLZhbkE9OzM1qjhxr1HAHIpWZ
+         ZsUbJ12HhMhR9/7ITL2TV1pv7yQghIRQfWqfJokFzpq19lBkF8tdoYER32JW4NAPifNe
+         nh6bsaaFwdCzVBoujhbgV0FqZSYHGmYlXVhNoZkybmr2gBq1rGgZ+Gb1Aq2p7R4bh0Yc
+         ZkxUwkSOqbDOZePx1n2miBDtTvzS8ov1Drh9cxKxV8osDLzhagb9Ci8f+ivt2DV+stB1
+         nwVkiNIXTn3P64cALrDSJkc0AMaTeQ+yK1SlOkC7kDEw4eT51qS+K6MwC5l1dcvEMJ2V
+         0prA==
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-  Hi,
+Hi,
 
 I need some help to understand if IP DNAT can be achieved on bridged
 packets (IP packets arriving on a bridge port). The packets first need
