@@ -1,133 +1,48 @@
-From: Shirisha Dasari <shirishadasari@gmail.com>
-Subject: IP DNAT on bridged packets destined to local process
-Date: Tue, 7 Jun 2022 18:35:29 +0530
-Message-ID: <CACnkxm-L7Nxa3aDWtWn25ynsh-88vSRoT4nL_i=u5VND+skonA@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] libnftnl 1.2.2 release
+Date: Tue, 7 Jun 2022 16:37:18 +0200
+Message-ID: <Yp9intemtsFLlZWh@salvia>
 Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="9dxThqyU9FsFkAsw"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=gi7LCTA6Zs8xXGkuwkaPf/Xv7DuwqQKVtv0Jzon+INo=;
-        b=pTaUmcMIVXW7aUKLWarutDqRsN52FGlfR57O7hOdpubOLg1EoPpW7jwuaaNnPkD3h5
-         2E58pSeBXlfGbOrccGGpXTJ2CwdpTjwhu8Tjb1KyDUEqOv+HhA7WesqRcvc7fm4uYMB7
-         RVcfynST8IqxW/gJV+IK+MkML0JtNYM1gbhwU6zmMOYepAKctgksKavmrypedlHTodD1
-         sbd2XNBjZaOZByGThQoTdlIWroZ/8FDjayby0uO48L/wTECvmSFPRmmz3CsL9eNgjBO3
-         wYsQfIUVF6ysF3j2dIwneBnFkYPj1uJPrQBPwp2rxQlty2+Pux3mqgHbQkRK2Vs+9tX5
-         G3AQ==
+Content-Disposition: inline
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: netfilter-devel@vger.kernel.org
+Cc: netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
 
-Hi,
 
-I need some help to understand if IP DNAT can be achieved on bridged
-packets (IP packets arriving on a bridge port). The packets first need
-to undergo DMAC NAT in the bridge filter layer of Netfilter and then
-also need to undergo IP DNAT. This is because I need to have the
-incoming bridged IP packets redirected to a local process.
+--9dxThqyU9FsFkAsw
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
-From my experimentation so far, I'm only able to have the packet
-undergo DMAC NAT using bridge NF rules but these packets do not hit
-the ingress L3 stack prerouting chains. The packets undergo DMAC NAT
-and are redirected to the bridge INPUT chain from where they undergo
-routing lookup directly and take appropriate route to be forwarded. I
-however need to NAT the DIP before the routing lookup happens.  From
-https://wiki.nftables.org/wiki-nftables/index.php/Netfilter_hooks,
-http://ebtables.netfilter.org/br_fw_ia/br_fw_ia.html#section5 and
-https://upload.wikimedia.org/wikipedia/commons/3/37/Netfilter-packet-flow.svg,
-I feel the packet should have hit the IP PREROUTING chain and
-undergone NAT but this doesn't happen in my case.
+Hi!
 
-I've already tried the following:
+The Netfilter project proudly presents:
 
-1)  net.bridge.bridge-nf-call-iptables = 1.
-The packets still do not hit the L3 IP NAT PREROUTING chain still.
+        libnftnl 1.2.2
 
-2) ebtables rules to BROUTE the packet to the L3 layer.  My ebtables
-rules added via ebtables-legacy do not get hit at all.
+libnftnl is a userspace library providing a low-level netlink
+programming interface (API) to the in-kernel nf_tables subsystem.
+This library is currently used by nftables.
 
-3) The packet seems to be hitting the inet chains but I cannot add a
-NAT rule in the inet chain as this support is only available in the
-later kernels.
+See ChangeLog that comes attached to this email for more details.
 
-Some info about the system I'm trying this on:
-root@sonic:/home/admin# uname -a
-Linux sonic 4.19.0-9-2-amd64 #1 SMP Debian 4.19.118-2+deb10u1
-(2020-06-07) x86_64 GNU/Linux
+You can download it from:
 
-root@sonic:/home/admin# ebtables -V
-ebtables 1.8.2 (nf_tables)
-root@sonic:/home/admin# ebtables-legacy -V
-ebtables v2.0.10.4 (legacy) (December 2011)
+https://www.netfilter.org/projects/libnftnl/downloads.html
 
-Following are the rules in my nftables and the trace of the packet
-traversing nftables:
+Happy firewalling.
 
-table bridge filter {
-               chain PREROUTING {
-                                  type filter hook prerouting priority
--300; policy accept;
-                                  tcp dport http ip saddr 10.10.10.10
-ether daddr set 00:00:00:0a:0b:0c counter packets 0 bytes 0
-                }
+--9dxThqyU9FsFkAsw
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: attachment; filename="changes-libnftnl-1.2.2.txt"
 
-               chain trace_chain {
-                                 type filter hook prerouting priority
--301; policy accept;
-                                 nftrace set 1
-                }
-}
+Florian Westphal (1):
+      exthdr: tcp option reset support
 
-root@sonic:/home/admin# nft list table nat
-table ip nat {
-        chain PREROUTING {
-                type nat hook prerouting priority -100; policy accept;
-        }
+Pablo Neira Ayuso (2):
+      set_elem: missing export symbol
+      build: libnftnl 1.2.2 release
 
-        chain INPUT {
-                type nat hook input priority 100; policy accept;
-        }
 
-        chain POSTROUTING {
-                type nat hook postrouting priority 100; policy accept;
-                meta l4proto udp udp dport 53 counter packets 0 bytes
-0 jump DNS_SNAT_RULE
-        }
-
-        chain OUTPUT {
-                type nat hook output priority -100; policy accept;
-        }
-
-        chain DOCKER {
-        }
-
-        chain DNS_SNAT_RULE {
-        }
-
-        chain redir {
-               type nat hook prerouting priority -101; policy accept;
-               ip saddr 10.10.10.10 tcp dport { http, https } counter
-packets 0 bytes 0 dnat to 60.60.60.60
-        }
-}
-
-Packet trace:
-
-packet: iif "Ethernet38" ether saddr 00:00:09:00:10:00 ether daddr
-00:00:09:00:11:00 vlan pcp 0 vlan cfi 0 vlan id 10 ip saddr
-10.10.10.10 ip daddr 20.20.20.20 ip dscp cs0 ip ecn not-ect ip ttl 2
-ip id 0 ip protocol tcp ip length 82 tcp sport http tcp dport http tcp
-flags == 0x0 tcp window 0
-trace id e19ef0d4 bridge filter PREROUTING rule  tcp dport http ip
-saddr 10.10.10.10 ether daddr set 00:00:00:0a:0b:0c counter packets 52
-bytes 4264  (verdict continue)
-trace id e19ef0d4 bridge filter PREROUTING verdict continue
-trace id e19ef0d4 bridge filter PREROUTING
-trace id e19ef0d4 bridge filter INPUT verdict continue
-trace id e19ef0d4 bridge filter INPUT
-trace id 00027106 ip filter FORWARD verdict continue
-trace id 00027106 ip filter FORWARD
-
-Thanks,
-Shirisha.
+--9dxThqyU9FsFkAsw--
