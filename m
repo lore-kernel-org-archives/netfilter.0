@@ -1,67 +1,62 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] nftables 1.0.4 release
-Date: Tue, 7 Jun 2022 16:41:43 +0200
-Message-ID: <Yp9jp9XwOtcNaBCe@salvia>
+From: Gio <gioflux@gmail.com>
+Subject: Re: Validating this is the right conntrack ruleset
+Date: Tue, 7 Jun 2022 12:08:48 -0400
+Message-ID: <CADhidkr_khLDNYCgAHT1dQosfz-qizKdM1vFXosNhA2YqBD4iw@mail.gmail.com>
+References: <CADhidkpx+3=1aZj5OF11JR6y_g16xqV=tyx5Bn=dG_kisJwP2w@mail.gmail.com>
+ <20220606163048.de7ca3450ec3048fb9c3e3ba@plushkava.net> <20220606165118.a91d1d2e153fba420ef18f76@plushkava.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="uYBAG99Q7XAC+1B/"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=H7OMUonEAzIlUS/P9JfYO872ChNGvo+hgW9ccltd+Mk=;
+        b=emBlA2hrHtldCvFH0HzM0HB2+d04/QAnA6lX3atmQcr7izN5bcHJfrUf6M0ynL0pol
+         PFLnLVrOHa9tuMy1riwDGoKlClbJvk76xzeJvkMDB3JNlMPwtz51P5C/uL8IPe8EeKuV
+         WXbSSVmikXVnzWlsutdHoqt3CnLMgfpadIl6ltERXBxsShWO60idLmH2WYsRzR2MRTCM
+         S3qjZRIftdqc2I7x8K9uXXPnwwTIt/EM85T6S1qP5KMorGO9dPpmPEVPo1MaZub8kTMk
+         WWdyyUBT6HI3y8tqY8FTNN1NlawOcigMDSQ6nDpjXmLhxXj0kFpp7iE/vmRSmczqcjkW
+         53Ew==
+In-Reply-To: <20220606165118.a91d1d2e153fba420ef18f76@plushkava.net>
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter <netfilter@vger.kernel.org>, netfilter-devel <netfilter-devel@vger.kernel.org>
-Cc: netdev@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Kerin Millar <kfm@plushkava.net>
+Cc: netfilter@vger.kernel.org
 
+Thank you; I appreciate the help with clarity. The most important
+takeaway for me was that there are implicit return packet/replies
+rules that don't need to be in the opposite hook (output for input,
+etc).
 
---uYBAG99Q7XAC+1B/
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+The example was excellent to illustrate this too.
 
-Hi!
+For the sake of completeness; would the 'implicit' return packet rule
+be 'ct state established,related ct direction reply' ? Example:
 
-The Netfilter project proudly presents:
+table inet legacy {
+    chain root_in {
+        type filter hook input priority filter; policy drop;
+        ct state established,related accept
+        iifname "lo" accept
+        meta l4proto ipv6-icmp accept
+        tcp dport 80 fib daddr type local ct state new accept
+    }
+    chain root_out {
+        type filter hook output priority filter; policy drop;
+        ct state established,related ct direction reply accept
+        iifname "lo" accept
+    }
+}
 
-        nftables 1.0.4
-
-This is an incremental release accumulating bugfixes for two
-regressions that were introduced in 1.0.3:
-
-* Fix segfault in -o/--optimize with unsupported statements:
-  http://git.netfilter.org/nftables/commit/?id=59bd944f6d75e99fe0c8d743e7fd482672640c2d
-
-* Bogus datatype mismatch error report in sets:
-  http://git.netfilter.org/nftables/commit/?id=818f7dded9c9e8a89a2de98801425536180ae307
-
-You can download this new release from:
-
-https://www.netfilter.org/projects/nftables/downloads.html
-https://www.netfilter.org/pub/nftables/
-
-To build the code, libnftnl >= 1.2.2 and libmnl >= 1.0.4 are required:
-
-* https://netfilter.org/projects/libnftnl/index.html
-* https://netfilter.org/projects/libmnl/index.html
-
-Visit our wikipage for user documentation at:
-
-* https://wiki.nftables.org
-
-For the manpage reference, check man(8) nft.
-
-In case of bugs and feature request, file them via:
-
-* https://bugzilla.netfilter.org
-
-Happy firewalling.
-
---uYBAG99Q7XAC+1B/
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: attachment; filename="changes-nftables-1.0.4.txt"
-
-Pablo Neira Ayuso (5):
-      optimize: segfault when releasing unsupported statement
-      tests: shell: sets_with_ifnames release netns on exit
-      evaluate: reset ctx->set after set interval evaluation
-      tests: shell: remove leftover modules on cleanup
-      build: Bump version to 1.0.4
-
-
---uYBAG99Q7XAC+1B/--
+On Mon, Jun 6, 2022 at 11:51 AM Kerin Millar <kfm@plushkava.net> wrote:
+>
+> On Mon, 6 Jun 2022 16:30:48 +0100
+> Kerin Millar <kfm@plushkava.net> wrote:
+>
+> >         tcp dport 80 fib daddr type local ctstate new accept
+>
+> Please excuse the typo. Of course, I meant to write "ct state" there.
+>
+> --
+> Kerin Millar
