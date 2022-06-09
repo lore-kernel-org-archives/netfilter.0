@@ -1,35 +1,44 @@
-From: Reindl Harald <h.reindl@thelounge.net>
-Subject: Re: Possibly dangerous interpretation of address/prefix pair in -s
- option
-Date: Thu, 9 Jun 2022 20:38:06 +0200
-Message-ID: <3530fa1d-0ce3-37a8-884d-921907b780e2@thelounge.net>
-References: <mail.629a20b0.7e37.7f80bf761b5d8a04@storage.wm.amazon.com>
- <010201812a0fb624-e64464be-4c31-4d01-afb6-1cbfab70e333-000000@eu-west-1.amazonses.com>
- <60e26dbd-93a8-1c2a-5204-66bbdffb1291@thelounge.net>
- <c4a18871-d4e7-ce65-eaaa-55c58b230077@gmch.uk>
- <20220608112135.GC11923@breakpoint.cc>
- <85215dc8-2d1b-7b64-02a9-f0ed1f397bc1@gmch.uk>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: Joshua Moore <j@jcm.me>
+Subject: Re: Possibly dangerous interpretation of address/prefix pair in -s option
+Date: Thu, 9 Jun 2022 12:21:58 -0700
+Message-ID: <E24384BE-A4C0-491D-8876-C43BA0DAF4EA@jcm.me>
+References: <3530fa1d-0ce3-37a8-884d-921907b780e2@thelounge.net>
+Mime-Version: 1.0 (1.0)
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
-In-Reply-To: <85215dc8-2d1b-7b64-02a9-f0ed1f397bc1@gmch.uk>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jcm.me; s=google;
+        h=content-transfer-encoding:from:mime-version:subject:date:message-id
+         :references:cc:in-reply-to:to;
+        bh=ib8Zi94NZ/tWwfswcF7C3JQ+L6zJ5Vk76Lz/o6hnIV8=;
+        b=MVlbUI8byMIown732ALH60V+qvQlEm6j8LQNpOdpLGborBm389aTyw98UVX6rWtzm1
+         tKjWqCXPgpxsxojCaTWcty+C4XmTSQ/yKka4h0CLE0SoQBRi7c7IDI+xTx+aag9j3laA
+         zjokjIPlScLROqK8rtx03emjw9Q8OitIpm1XA=
+In-Reply-To: <3530fa1d-0ce3-37a8-884d-921907b780e2@thelounge.net>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Chris Hall <netfilter@gmch.uk>, netfilter@vger.kernel.org
-Cc: Florian Westphal <fw@strlen.de>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Reindl Harald <h.reindl@thelounge.net>
+Cc: Chris Hall <netfilter@gmch.uk>, netfilter@vger.kernel.org, Florian Westphal <fw@strlen.de>
+
+Agreed as a user that netmask =3D=3D more specific filtering. No netmask =3D=
+=3D use the /32 host as presented.
 
 
 
-Am 09.06.22 um 19:52 schrieb Chris Hall:
-> I am hoping that it is agreed that it is a mistake for the parser to 
-> silently accept unspecified input
+> On Jun 9, 2022, at 12:11 PM, Reindl Harald <h.reindl@thelounge.net> wrote:=
 
-it is *not* unspecified input
-
-with /24 you *clearly* say "only use the first 3 octets of the address"
-
-when you use a netmask you are supposed to know what it does and if not 
-just don't specify it - the address alone would have had the assumed result
-
-it's dead simple and there is nothing to agree
+>=20
+> =EF=BB=BF
+>=20
+>> Am 09.06.22 um 19:52 schrieb Chris Hall:
+>> I am hoping that it is agreed that it is a mistake for the parser to sile=
+ntly accept unspecified input
+>=20
+> it is *not* unspecified input
+>=20
+> with /24 you *clearly* say "only use the first 3 octets of the address"
+>=20
+> when you use a netmask you are supposed to know what it does and if not ju=
+st don't specify it - the address alone would have had the assumed result
+>=20
+> it's dead simple and there is nothing to agree
