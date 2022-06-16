@@ -1,16 +1,19 @@
-From: Jordan Griege <jgriege@cloudflare.com>
-Subject: nf_queue flush on deletion
-Date: Mon, 13 Jun 2022 15:36:55 -0500
-Message-ID: <CA+=Uk6bgPJtcF3XDtraF0vHL8EmY+hqAwXhmzqka5HwDL_jnBg@mail.gmail.com>
+From: Gmail Support <testingforadept@gmail.com>
+Subject: Support for String Match Blocking in NFTables
+Date: Thu, 16 Jun 2022 10:15:55 +0100
+Message-ID: <CANKwiJVSW3RjhHDnziGjWenApAcvdSAqBTi7MfHqyiyHd4_F=A@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google;
+        d=gmail.com; s=20210112;
         h=mime-version:from:date:message-id:subject:to;
-        bh=JqrxzV5Mqcn0Dz5krJogkZPbo7ognd/hlEQ4b6EZib4=;
-        b=e9QQa1OkfdoJRbqzcmh5ggso79WQT1Vdu6BGbelWLrgD6y5LdW0MKTpOgRlJTtbsc1
-         bXDM6eIeRWYcTbVacLS7fh1QIUcBgWS7CT8tOYYjlwIGHUsEKMuTRPa/N4ZjXUYkJ7b3
-         TIKvxpJbRcTMEsnY0MROgvjSCV4WlMGipZlLU=
+        bh=F6DRWrLfrBZ9oCbxDsWb27fext5gqG/HsKzgiU6+z8k=;
+        b=TFcvZAxvyKt1sQc+GRJvOogp8KCr0paiAho+S6qrum5JEbHYP32d7TaKbu3ReL9Vbe
+         KRcL+y2KIL3/5U3YEhITqXfcgEJHiWgr9LkVn9K/gNSJOfKwNlTdh+kT7E54Tcj2QKQi
+         u3qxnnxocxXNFXjGkeyv2xim4N35ZeSRQo5OGNj4ZAIYwD48yXdXaECUmUhH9EEI0lcg
+         N1ZPK9kdEqd49FJpJTZL9B6t30wMITrvZIJBjWO1KMwPfjERluJxYjKHD6J+JdBDnd4Z
+         YsTwQ0bDL86gwdmRzahStN6AR+1RutgPvedivJijNItCk6mBVvW0U8ZnJr5JPkoXK8ab
+         ydRw==
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
@@ -18,46 +21,22 @@ To: netfilter@vger.kernel.org
 
 Hello,
 
-I am looking for a way to run a userspace firewall and came across
-nf_queue.  The library documentation and examples were easy enough to
-follow, but I found some unexpected behavior when setting up a
-proof-of-concept.  Say I have the following nftables configuration
-loaded:
+We recently migrated our servers from RedHat to Ubuntu based systems.
+We used to have an IPtables rule that was blocking packets matching a
+specific application file and below was the rule we had deployed.
 
-table ip test-queue {
-  chain prerouting {
-    type filter hook prerouting priority filter; policy accept;
-    queue num 0 bypass
-  }
-}
-table ip unrelated {
-  chain input {
-    type filter hook input priority mangle; policy accept;
-  }
-}
+-A INPUT -p udp -m udp --dport 514 -m string --string
+"someapplication.exe" --algo bm -j DROP
 
-and a program running that reads packets from queue 0.  If at any
-point I run a command that deletes a base chain, e.g.
+In NFtables, I read in the blogs that string based blocking is not
+possible. In the man page of Ubuntu, I see a note "The  string  type
+is  used  to  for character strings. A string begins with an
+alphabetic character (a-zA-Z) followed by zero or more alphanumeric
+characters or the  characters  /, -, _ and .. In addition anything
+enclosed in double quotes (") is recognized as a string."
 
-nft delete table ip unrelated
+Can you please confirm if string based blocking is supported in Nftables.
 
-Then all the packets in queue 0 are dropped.  When the program sends a
-verdict for any packets it had received before the queue was flushed,
-the nf_queue system responds with an ENOENT message (wrapped in a
-header with NLMSG_ERROR) through the netlink socket.
+Respectfully,
 
-This appears to be the intended behavior by what I could make of the
-kernel code.  Is that correct, and if so, what is the motivation?
-
-I understand that it would be possible for the deleted chain to have a
-rule that also sends packets to queue 0, which might necessitate this
-behavior.  But in my case, I can guarantee that only one table/chain
-submits packets to any given queue.
-
-Would it be possible to develop a patch that determines queue 0 should
-be unaffected by that chain deletion and preserves the queue contents?
- Has such a change been attempted before?  Or is there some other
-workaround for this behavior?
-
-Thanks,
-Jordan
+Eli Yam
