@@ -1,42 +1,106 @@
-From: Gmail Support <testingforadept@gmail.com>
-Subject: Support for String Match Blocking in NFTables
-Date: Thu, 16 Jun 2022 10:15:55 +0100
-Message-ID: <CANKwiJVSW3RjhHDnziGjWenApAcvdSAqBTi7MfHqyiyHd4_F=A@mail.gmail.com>
+From: Eugene Crosser <crosser@average.org>
+Subject: Bridge table: binding the rules to specific instances of the bridge
+Date: Thu, 16 Jun 2022 12:00:17 +0200
+Message-ID: <009db61d-47a6-ef30-7e9f-791e1b17b98b@average.org>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------oJ7hJseD6a5KRpQ1Qq0utSee"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=F6DRWrLfrBZ9oCbxDsWb27fext5gqG/HsKzgiU6+z8k=;
-        b=TFcvZAxvyKt1sQc+GRJvOogp8KCr0paiAho+S6qrum5JEbHYP32d7TaKbu3ReL9Vbe
-         KRcL+y2KIL3/5U3YEhITqXfcgEJHiWgr9LkVn9K/gNSJOfKwNlTdh+kT7E54Tcj2QKQi
-         u3qxnnxocxXNFXjGkeyv2xim4N35ZeSRQo5OGNj4ZAIYwD48yXdXaECUmUhH9EEI0lcg
-         N1ZPK9kdEqd49FJpJTZL9B6t30wMITrvZIJBjWO1KMwPfjERluJxYjKHD6J+JdBDnd4Z
-         YsTwQ0bDL86gwdmRzahStN6AR+1RutgPvedivJijNItCk6mBVvW0U8ZnJr5JPkoXK8ab
-         ydRw==
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=average.org; s=mail;
+        t=1655373650; bh=5hXd2f3scsSmGdJahtSIQ43PRbvwZH6/uI7bLQSB4SM=;
+        h=Date:To:From:Subject:From;
+        b=QYdRUid+5vHzAbI+8/mmXxVS+rpJYhP0uNw5/TDISNyZtSU0ekprKZXh/b/xjIYEQ
+         x9vORfQlc/Cemq4DuIHbQfutJR2hovvPcRNox/gcVyl0v3JsER+b8OnoRQNrxkosZo
+         2DvYLLA2EVk9F7YgcanTT01MoWTGyF/p3odxlAX0=
+Content-Language: en-GB
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------oJ7hJseD6a5KRpQ1Qq0utSee
+Content-Type: multipart/mixed; boundary="------------IXMfuqRndCqgsAnXM7kicv8r";
+ protected-headers="v1"
+From: Eugene Crosser <crosser@average.org>
+To: netfilter@vger.kernel.org
+Message-ID: <009db61d-47a6-ef30-7e9f-791e1b17b98b@average.org>
+Subject: Bridge table: binding the rules to specific instances of the bridge
+
+--------------IXMfuqRndCqgsAnXM7kicv8r
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
 Hello,
 
-We recently migrated our servers from RedHat to Ubuntu based systems.
-We used to have an IPtables rule that was blocking packets matching a
-specific application file and below was the rule we had deployed.
+I need to block all traffic that may arrive from the "master interface"
+of some, but not all, bridges. This is mainly to prevent ARP packets
+from reaching the network stack, but I would prefer to drop everything
+to be certain, rather than just ARPs.
 
--A INPUT -p udp -m udp --dport 514 -m string --string
-"someapplication.exe" --algo bm -j DROP
+This works:
 
-In NFtables, I read in the blogs that string based blocking is not
-possible. In the man page of Ubuntu, I see a note "The  string  type
-is  used  to  for character strings. A string begins with an
-alphabetic character (a-zA-Z) followed by zero or more alphanumeric
-characters or the  characters  /, -, _ and .. In addition anything
-enclosed in double quotes (") is recognized as a string."
+table bridge brtable {
+	chain inp {
+		type filter hook input priority 300; policy accept;
 
-Can you please confirm if string based blocking is supported in Nftables.
+		log prefix "INP-" drop
+	}
 
-Respectfully,
+}
 
-Eli Yam
+but it works for _all_ bridges. I would like to decide if packet must be
+dropped or not based on the instance of the bridge, like so:
+
+table bridge brtable {
+
+	set to_drop {
+
+		typeof oif
+
+		elements =3D { "br5", "br6" }
+
+	}
+
+
+	chain inp {
+
+		type filter hook input priority 400; policy accept;
+
+		oif @to_drop drop
+
+	}
+
+}
+
+
+but that does not work. Indeed in the log, the output interface is
+empty. Iif is not empty, and filtering by iif would probably work, but
+it would be much more convenient to filter by the bridge instance than
+to keep track of all interfaces that were enslaved into it.
+
+Any suggestions?
+
+Thank you,
+
+Eugene
+
+--------------IXMfuqRndCqgsAnXM7kicv8r--
+
+--------------oJ7hJseD6a5KRpQ1Qq0utSee
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEnAziRJw3ydIzIkaHfKQHw5GdRYwFAmKq/zEACgkQfKQHw5Gd
+RYxzrQf/cXO0ltptN0kWPrwrM2MWU56bjayo/QxYRBNCatZJRiHmUgKXLuX6Lh7z
+HTtyZQ+wKpl0AaBislLqfMAEPJtlPH2MuzMZpZO0RAAJpqGAwRKTg/45PiwwLdjH
+nEu4K7YlKhADygfSSPdW0GqTHtxC8QSbkwhk7OKpVU8416sw4cCYGRa4nBfcyDdS
+2rK6lIzsovAv+ETix0fLfpRrVuVzI3BKutyMjRwu/v4dxaecJxG28uA2amsJeXkT
+U2um88M6W5uwnOMBhizNaI9ZWzVYylNrJdqlmVtTF1qKp5OmGB3bMoMmzR1VF3oA
+Ich2TwKtPXnzqJFgUBPYqv+VsAwRzw==
+=sibK
+-----END PGP SIGNATURE-----
+
+--------------oJ7hJseD6a5KRpQ1Qq0utSee--
