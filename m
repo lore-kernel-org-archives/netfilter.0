@@ -1,106 +1,63 @@
-From: Eugene Crosser <crosser@average.org>
-Subject: Bridge table: binding the rules to specific instances of the bridge
-Date: Thu, 16 Jun 2022 12:00:17 +0200
-Message-ID: <009db61d-47a6-ef30-7e9f-791e1b17b98b@average.org>
+From: Kerin Millar <kfm@plushkava.net>
+Subject: Re: Support for String Match Blocking in NFTables
+Date: Thu, 16 Jun 2022 20:20:14 +0100
+Message-ID: <20220616202014.e7ebc6df8f8f0f1fdce27e12@plushkava.net>
+References: <CANKwiJVSW3RjhHDnziGjWenApAcvdSAqBTi7MfHqyiyHd4_F=A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------oJ7hJseD6a5KRpQ1Qq0utSee"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=average.org; s=mail;
-        t=1655373650; bh=5hXd2f3scsSmGdJahtSIQ43PRbvwZH6/uI7bLQSB4SM=;
-        h=Date:To:From:Subject:From;
-        b=QYdRUid+5vHzAbI+8/mmXxVS+rpJYhP0uNw5/TDISNyZtSU0ekprKZXh/b/xjIYEQ
-         x9vORfQlc/Cemq4DuIHbQfutJR2hovvPcRNox/gcVyl0v3JsER+b8OnoRQNrxkosZo
-         2DvYLLA2EVk9F7YgcanTT01MoWTGyF/p3odxlAX0=
-Content-Language: en-GB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+         h=cc:cc:content-transfer-encoding:content-type:date:date:from
+        :from:in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm3; t=1655407216; x=
+        1655493616; bh=pgds9aDkyaZNSiFLvIx5nASHgek8LOIAZbDnde+txhI=; b=a
+        bqWtsBq43PP6Nyeq0IOgspWKDiDWMov43nEamxADCDKFBXy/ljGnNNo+BFRS3ABw
+        P2/wAR9obq9sDB3T1W72ct9K+kWtn/IYpokeLYEQCZKhLSgY73PZGdzu5fnqbDvI
+        iAnHcs9i5WxXSCg+hMSZapgathesZthWFUaP0jLGICgjSBqeAKmBCHJ2DNtmiWYg
+        DH1TVDF3l+KPUSGNOj5YtTGwN8oV8U83IrceacBCXjSPV56G3Resj4jWhGqXg9KF
+        m412ddpeY0/XZd1onM/XyKwp210ZYBv9mMP+np0+6L/BYNHcTsCwqYGsu8XHDZyx
+        ++WMehP/2PZMlHnorxJmA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1655407216; x=
+        1655493616; bh=pgds9aDkyaZNSiFLvIx5nASHgek8LOIAZbDnde+txhI=; b=F
+        M0fmWH7mpHDIdj+KTW73BaRCDAuI9u9tBJFXOjFsKQ/GiMnZkqC/SdtLve/FQf7Y
+        2YeCyxgRjmo7eNIoioiIIYg4dIRNu5Kav2sJnv2+7uzKT600D63ILFIRsyuC6KMM
+        NAxFhpG5xsEuf85n9+JUmge2fyw10gZtXHLVTh1KN80KEo4NXnLfKfGLIyP9HLnF
+        WKsqiDlrvmuBA5gYo12Th/CkuA10IsIJFlxvH8ZQvDWsID6oJv0uHiZJAhZjp9Hy
+        ctYJAZ6fPDGNLedbiKxlPQfJh3it/o6I4g1YLssWC2pmhh8t406pP29Z7OOXRYq1
+        SAeSPteJPVVg2Q9xi1ATA==
+In-Reply-To: <CANKwiJVSW3RjhHDnziGjWenApAcvdSAqBTi7MfHqyiyHd4_F=A@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Gmail Support <testingforadept@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------oJ7hJseD6a5KRpQ1Qq0utSee
-Content-Type: multipart/mixed; boundary="------------IXMfuqRndCqgsAnXM7kicv8r";
- protected-headers="v1"
-From: Eugene Crosser <crosser@average.org>
-To: netfilter@vger.kernel.org
-Message-ID: <009db61d-47a6-ef30-7e9f-791e1b17b98b@average.org>
-Subject: Bridge table: binding the rules to specific instances of the bridge
+On Thu, 16 Jun 2022 10:15:55 +0100
+Gmail Support <testingforadept@gmail.com> wrote:
 
---------------IXMfuqRndCqgsAnXM7kicv8r
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+> Hello,
+> 
+> We recently migrated our servers from RedHat to Ubuntu based systems.
+> We used to have an IPtables rule that was blocking packets matching a
+> specific application file and below was the rule we had deployed.
+> 
+> -A INPUT -p udp -m udp --dport 514 -m string --string
+> "someapplication.exe" --algo bm -j DROP
+> 
+> In NFtables, I read in the blogs that string based blocking is not
+> possible. In the man page of Ubuntu, I see a note "The  string  type
+> is  used  to  for character strings. A string begins with an
+> alphabetic character (a-zA-Z) followed by zero or more alphanumeric
+> characters or the  characters  /, -, _ and .. In addition anything
+> enclosed in double quotes (") is recognized as a string."
+> 
+> Can you please confirm if string based blocking is supported in Nftables.
 
-Hello,
+There is no equivalent to the string extension in nftables. While it is possible to match against a portion of the packet's payload using a raw payload expression, doing so requires that the offset and length of the data be specified. That is, it cannot search for a pattern and, thus, match at any potential offset.
 
-I need to block all traffic that may arrive from the "master interface"
-of some, but not all, bridges. This is mainly to prevent ARP packets
-from reaching the network stack, but I would prefer to drop everything
-to be certain, rather than just ARPs.
-
-This works:
-
-table bridge brtable {
-	chain inp {
-		type filter hook input priority 300; policy accept;
-
-		log prefix "INP-" drop
-	}
-
-}
-
-but it works for _all_ bridges. I would like to decide if packet must be
-dropped or not based on the instance of the bridge, like so:
-
-table bridge brtable {
-
-	set to_drop {
-
-		typeof oif
-
-		elements =3D { "br5", "br6" }
-
-	}
-
-
-	chain inp {
-
-		type filter hook input priority 400; policy accept;
-
-		oif @to_drop drop
-
-	}
-
-}
-
-
-but that does not work. Indeed in the log, the output interface is
-empty. Iif is not empty, and filtering by iif would probably work, but
-it would be much more convenient to filter by the bridge instance than
-to keep track of all interfaces that were enslaved into it.
-
-Any suggestions?
-
-Thank you,
-
-Eugene
-
---------------IXMfuqRndCqgsAnXM7kicv8r--
-
---------------oJ7hJseD6a5KRpQ1Qq0utSee
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEnAziRJw3ydIzIkaHfKQHw5GdRYwFAmKq/zEACgkQfKQHw5Gd
-RYxzrQf/cXO0ltptN0kWPrwrM2MWU56bjayo/QxYRBNCatZJRiHmUgKXLuX6Lh7z
-HTtyZQ+wKpl0AaBislLqfMAEPJtlPH2MuzMZpZO0RAAJpqGAwRKTg/45PiwwLdjH
-nEu4K7YlKhADygfSSPdW0GqTHtxC8QSbkwhk7OKpVU8416sw4cCYGRa4nBfcyDdS
-2rK6lIzsovAv+ETix0fLfpRrVuVzI3BKutyMjRwu/v4dxaecJxG28uA2amsJeXkT
-U2um88M6W5uwnOMBhizNaI9ZWzVYylNrJdqlmVtTF1qKp5OmGB3bMoMmzR1VF3oA
-Ich2TwKtPXnzqJFgUBPYqv+VsAwRzw==
-=sibK
------END PGP SIGNATURE-----
-
---------------oJ7hJseD6a5KRpQ1Qq0utSee--
+-- 
+Kerin Millar
