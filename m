@@ -1,55 +1,79 @@
-From: Florian Westphal <fw@strlen.de>
+From: Jeremy Sowden <jeremy@azazel.net>
 Subject: Re: iptables 1.8.8 fails with error code 111 but iptables 1.8.7
  succeeds with same script
-Date: Fri, 17 Jun 2022 17:09:31 +0200
-Message-ID: <20220617150931.GA19244@breakpoint.cc>
+Date: Fri, 17 Jun 2022 15:56:37 +0100
+Message-ID: <YqyWJaA282jxUabT@ulthar.dreamlands>
 References: <f8b1ba7f-2d59-e068-92ca-a139959aa2fd@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="VCIaVIusKP5gQ+mr"
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+        s=20190108; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=zQswC+Sx2tkqUQQPKGK+eU+TwTogzaW+WtO4IhvXJu0=; b=U9IPSC88AqM36V0+Dadt8aR26B
+        liwaYbUqImZWvlkxTMkIPUA4dBXQHwUHK71QgRWIUkbaH/O7+BW0UGAzIEdJ+T6EQDXLuHyh79UhQ
+        gEhUxPrKx63xdMFwiZNXdC6+U3XRNUo6zWGcpeUYAPsGJx7RbZmkilLAFYCh9YP0KMeYSXhO0WbTa
+        S5E8P/kqHWgDCUGK53Lp+u6NHOISTMa9pQVQ+zNQdptVoHPci+sY7i9bBbqJcr5AKTFo2k/WryUW1
+        Iv+ROaOQFaGJiLcTQ+Rl4BlX+LTe+B7czqkeTDURLZEv0hVgqLg1bAGzdWMzNZrw2+RJna9JymZ7X
+        ogCCn/Q 
 Content-Disposition: inline
 In-Reply-To: <f8b1ba7f-2d59-e068-92ca-a139959aa2fd@gmail.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
 To: Amish <anon.amish@gmail.com>
 Cc: netfilter <netfilter@vger.kernel.org>
 
-Amish <anon.amish@gmail.com> wrote:
+
+--VCIaVIusKP5gQ+mr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On 2022-06-17, at 20:02:13 +0530, Amish wrote:
 > I use Arch Linux. Apache 2.4.54 and iptables 1.8.8 (nft based).
->=20
-> I have a setuid script, given below, which runs via apache httpd and simp=
-ly
-> calls "iptables -w -nvL INPUT" and gives the output.
->=20
-> But with iptables 1.8.8 it fails with error code 111 (undocumented code)
->=20
+>
+> I have a setuid script, given below, which runs via apache httpd and
+> simply calls "iptables -w -nvL INPUT" and gives the output.
+>
+> But with iptables 1.8.8 it fails with error code 111 (undocumented
+> code)
+>
 > > curl http://127.0.0.1/ipt.e
-> EUID =3D 0, EGID=3D33
-> iptables exited with exit code=3D111
-> iptables exited with exit code=3D111
+> EUID = 0, EGID=33
+> iptables exited with exit code=111
+> iptables exited with exit code=111
+>
+> It doesn't even print any error message. (not even to httpd error log
+> - via stderr)
 
-I plan to add this to the manual page:
+It is no longer possible to run iptables under seteuid, since it is not
+possible to do so safely.  From 1.8.8, iptables checks whether the UID
+matches the EUID and exits with 111 if they differ:
 
-iptables will exit immediately with an error code of 111 if it finds
-that it was called as a setuid-to-root program.
-iptables cannot be used safely in this manner because it trusts
-the shared libraries (matches, targets) loaded at run time, the search
-path can be set using environment variables.
+  https://git.netfilter.org/iptables/commit/?id=ef7781eb1437a2d6fd37eb3567c599e3ea682b96
 
-> So it appears to be some kind of bug introduced in 1.8.8.
+J.
 
-Its intentional.
+--VCIaVIusKP5gQ+mr
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> The C script follows: (Can be used for testing)
-> int my_system(const char *program, char *const argv[])
-> {
-> =A0=A0=A0 pid_t pid =3D fork();
-> =A0=A0=A0 if (pid=3D=3D(pid_t)-1) return -1;
-> =A0=A0=A0 if (!pid) { execve(program, argv, environ); exit(127); }
+-----BEGIN PGP SIGNATURE-----
 
-iptables evaluates some environment variables and trusts that info.
-If you absolutely have to do this, re-set environ so that someone
-else calling this wrapper can't use it to load their own
-modules/targets.
+iQIzBAABCgAdFiEEbB20U2PvQDe9VtUXKYasCr3xBA0FAmKsliUACgkQKYasCr3x
+BA2BdBAAusb85ZBxW6XmWm4zjFvv9EfUdqs8dZnWM701nIQRSMr1rVEdATEmY+11
+bwOKIC+rbIv7lr1zcVIO2TgLL2RMV41qKbQO21779FvfaH5nH3AdfnyOAMTm80/L
+/heztCGZitqXQ3RuhM6mMt4Jxd4lrM89MbP73AF2xX2CBgtXUHsLcnge8m/WTi9H
+Qp7tvlj35tFdzkU/IC59XBG88pkluSlks6NlU5rmaJem3PBtIMVOEHATOea2zoyc
+XBYdnVk2KPSdtxxGGxYD4IvjSEfPYvkevLBNJ/htACAQz7Y8A8CA5N/uNiR6+l3R
+rgumVhUlwaIlu9UPDdyDbCspvR1hilC/n2o6kNZR7j8ZfZwpA4xJjYLHY9Pkw2iy
+k2axlwSlqXZa86uGpARIHvdP8Md88chvGPfUiciXJtdWWsJerpgUxIjcZACV8ofQ
+p0F54aiBBwC9ePQs48489e5apazveedkVdo8eU2bH7RrVXDtz6pIqlN+pAo62iCt
+Vh2m5Zq646bm0KHUYarlzA6XOn0T8CPcsO8SsSbSJwFpps8eg73eCW1ezvvQXzJk
+tHbcJx5EnnDTdnYS7rJdZFvVHSUpMDLtgpRmc/FnnLQ3kBXBRiYo+WdhN6OvWi/f
+onCy31kbZIIn+bcY1PhXPuVTYhLSlz7bvLKN1n4xb3RvisbBmr4=
+=uhLI
+-----END PGP SIGNATURE-----
 
-Then add a 'setuid(0)' before execve.
+--VCIaVIusKP5gQ+mr--
