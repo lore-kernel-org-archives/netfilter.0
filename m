@@ -1,63 +1,82 @@
-From: Kerin Millar <kfm@plushkava.net>
-Subject: Re: Support for String Match Blocking in NFTables
-Date: Thu, 16 Jun 2022 20:20:14 +0100
-Message-ID: <20220616202014.e7ebc6df8f8f0f1fdce27e12@plushkava.net>
-References: <CANKwiJVSW3RjhHDnziGjWenApAcvdSAqBTi7MfHqyiyHd4_F=A@mail.gmail.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: Tito Sacchi <tito@tilde.team>
+Subject: Routing table does not assign correct output IP address after
+ nftables "chain" chain
+Date: Fri, 17 Jun 2022 12:33:13 +0200
+Message-ID: <F5251F29-58F9-4448-90FB-4B1CED573E76@tilde.team>
+Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-         h=cc:cc:content-transfer-encoding:content-type:date:date:from
-        :from:in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm3; t=1655407216; x=
-        1655493616; bh=pgds9aDkyaZNSiFLvIx5nASHgek8LOIAZbDnde+txhI=; b=a
-        bqWtsBq43PP6Nyeq0IOgspWKDiDWMov43nEamxADCDKFBXy/ljGnNNo+BFRS3ABw
-        P2/wAR9obq9sDB3T1W72ct9K+kWtn/IYpokeLYEQCZKhLSgY73PZGdzu5fnqbDvI
-        iAnHcs9i5WxXSCg+hMSZapgathesZthWFUaP0jLGICgjSBqeAKmBCHJ2DNtmiWYg
-        DH1TVDF3l+KPUSGNOj5YtTGwN8oV8U83IrceacBCXjSPV56G3Resj4jWhGqXg9KF
-        m412ddpeY0/XZd1onM/XyKwp210ZYBv9mMP+np0+6L/BYNHcTsCwqYGsu8XHDZyx
-        ++WMehP/2PZMlHnorxJmA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1655407216; x=
-        1655493616; bh=pgds9aDkyaZNSiFLvIx5nASHgek8LOIAZbDnde+txhI=; b=F
-        M0fmWH7mpHDIdj+KTW73BaRCDAuI9u9tBJFXOjFsKQ/GiMnZkqC/SdtLve/FQf7Y
-        2YeCyxgRjmo7eNIoioiIIYg4dIRNu5Kav2sJnv2+7uzKT600D63ILFIRsyuC6KMM
-        NAxFhpG5xsEuf85n9+JUmge2fyw10gZtXHLVTh1KN80KEo4NXnLfKfGLIyP9HLnF
-        WKsqiDlrvmuBA5gYo12Th/CkuA10IsIJFlxvH8ZQvDWsID6oJv0uHiZJAhZjp9Hy
-        ctYJAZ6fPDGNLedbiKxlPQfJh3it/o6I4g1YLssWC2pmhh8t406pP29Z7OOXRYq1
-        SAeSPteJPVVg2Q9xi1ATA==
-In-Reply-To: <CANKwiJVSW3RjhHDnziGjWenApAcvdSAqBTi7MfHqyiyHd4_F=A@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tilde.team; s=mail;
+        t=1655461995; bh=tjmBwCpr/XCBFfuXTqjMDkwyTUhHDgDDpHcU68u2F9g=;
+        h=From:Subject:Date:To:From;
+        b=RxByuEcy6mN5xKxvFsTo6gz1F2BjNkCx2LXphDJ5CQRTZ6yvuRJ+Jb9ifVFQW7ozp
+         zuL25ang1q8/ieGserm5+MJpGiTKkoi0Ex0eoozOFYq1SgyfYcQbrx1LhSA8EWK/UL
+         g4nCzUdssT6hmBZCUm1qGAEEaiLugZjEWIts6YB8=
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Gmail Support <testingforadept@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-On Thu, 16 Jun 2022 10:15:55 +0100
-Gmail Support <testingforadept@gmail.com> wrote:
+Hi,
+I am using nftables to mark packets according to skuid, and I want to =
+make routing decisions with that mark. The use-case is letting the =
+traffic of a single application flow outside of my VPN tunnel.
+I am using a =E2=80=9Croute=E2=80=9D chain to set the mark and I have a =
+routing policy rule set up with iproute2 that will use a custom routing =
+table.
+However, it seems to me that the source IP address is not updated when =
+the routing table is visited the second time. Therefore, an IP packet is =
+sent to my home router, but its source IP is set to the IP assigned to =
+the VPN interface. The packet gets dropped.
+Is this expected behaviour? Shouldn=E2=80=99t the routing table update =
+the source IP according to the entries? I can manually set the source ip =
+with nftables (in the same chain where I set the mark), but I think this =
+should not be needed.
 
-> Hello,
-> 
-> We recently migrated our servers from RedHat to Ubuntu based systems.
-> We used to have an IPtables rule that was blocking packets matching a
-> specific application file and below was the rule we had deployed.
-> 
-> -A INPUT -p udp -m udp --dport 514 -m string --string
-> "someapplication.exe" --algo bm -j DROP
-> 
-> In NFtables, I read in the blogs that string based blocking is not
-> possible. In the man page of Ubuntu, I see a note "The  string  type
-> is  used  to  for character strings. A string begins with an
-> alphabetic character (a-zA-Z) followed by zero or more alphanumeric
-> characters or the  characters  /, -, _ and .. In addition anything
-> enclosed in double quotes (") is recognized as a string."
-> 
-> Can you please confirm if string based blocking is supported in Nftables.
+I am debugging all this with nftrace. As you can see in the following =
+trace, the packet correctly changes output interface but keeps the old =
+source IP.
 
-There is no equivalent to the string extension in nftables. While it is possible to match against a portion of the packet's payload using a raw payload expression, doing so requires that the offset and length of the data be specified. That is, it cannot search for a pattern and, thus, match at any potential offset.
+trace id e310c10c inet filter routes packet: oif "wg0" ip saddr =
+10.8.1.10 ip daddr 1.1.1.1 [...]
+trace id e310c10c inet filter routes rule meta skuid 970 meta nftrace =
+set 1 (verdict continue)
+trace id e310c10c inet filter routes rule meta skuid 970 counter packets =
+2 bytes 120 meta mark set 0x0000000f (verdict continue)
+trace id e310c10c inet filter routes verdict continue meta mark =
+0x0000000f
+trace id e310c10c inet filter routes policy accept meta mark 0x0000000f
+trace id e310c10c inet nat postrouting packet: oif "public" ip saddr =
+10.8.1.10 ip daddr 1.1.1.1 [...]
+                                                                     =
+^^^^^^^^^ --> saddr should be updated to reflect "public" interface IP
+trace id e310c10c inet nat postrouting verdict continue meta mark =
+0x0000000f
+trace id e310c10c inet nat postrouting policy accept meta mark =
+0x0000000f
 
--- 
-Kerin Millar
+
+The routing table used for marked packets contains a single entry: =
+default via 192.168.1.1 dev public src 192.168.1.102.
+
+Relevant firewall configuration:
+        chain routes {
+                type route hook output priority mangle; policy accept;
+                meta skuid 970 log
+                meta skuid 970 meta nftrace set 1
+                meta skuid 970 counter meta mark set 0x0000000f
+        }
+
+I face the same issue with iptables.
+
+Thanks in advance,
+Tito
+
+=E2=80=94 =E2=80=94 =E2=80=94
+https://tilde.team/~tito/
+
+PGP key: 0x6BED3002CF25C4D2 (4096R)
+(https://keys.openpgp.org/search?q=3D0x6BED3002CF25C4D2)
+
+Keybase: @tauroh
+(https://keybase.io/tauroh)
+
