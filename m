@@ -1,82 +1,130 @@
-From: Tito Sacchi <tito@tilde.team>
-Subject: Routing table does not assign correct output IP address after
- nftables "chain" chain
-Date: Fri, 17 Jun 2022 12:33:13 +0200
-Message-ID: <F5251F29-58F9-4448-90FB-4B1CED573E76@tilde.team>
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.100.0.2.22\))
-Content-Transfer-Encoding: quoted-printable
+From: Amish <anon.amish@gmail.com>
+Subject: iptables 1.8.8 fails with error code 111 but iptables 1.8.7 succeeds
+ with same script
+Date: Fri, 17 Jun 2022 20:02:13 +0530
+Message-ID: <f8b1ba7f-2d59-e068-92ca-a139959aa2fd@gmail.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tilde.team; s=mail;
-        t=1655461995; bh=tjmBwCpr/XCBFfuXTqjMDkwyTUhHDgDDpHcU68u2F9g=;
-        h=From:Subject:Date:To:From;
-        b=RxByuEcy6mN5xKxvFsTo6gz1F2BjNkCx2LXphDJ5CQRTZ6yvuRJ+Jb9ifVFQW7ozp
-         zuL25ang1q8/ieGserm5+MJpGiTKkoi0Ex0eoozOFYq1SgyfYcQbrx1LhSA8EWK/UL
-         g4nCzUdssT6hmBZCUm1qGAEEaiLugZjEWIts6YB8=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:content-language:from
+         :subject:to:content-transfer-encoding;
+        bh=A9FoS/8n4TCVtap/oBZ8mSPExs/8hEEW6eOt7wS7EU4=;
+        b=hHBid/mcV+J2UuIYcviu9MSkJyXoj8v2ZKLQxAmSlaex9QyKvZTKG1PJKicAmF0W8/
+         X48kJ0HRJ7EcDV79GkkEZ4LC1wjsQcIeTm0tJb+RzTEhyYnQrUuhvvOa6Q41vekZatx8
+         q5KhGtxOikeDFxm/WIOjBrgwAZ4l/5FZGPPBEE3sU7TzmSUQ0nSPyEQc7LOxm6yWd+qj
+         yuMBkVxh4Qzf8KYbtT4P+GFNIZUFVxgJsBAhL9hZfQC4YTF9jjgVN63/EiBGhj5UwXCI
+         35K3m7o0pO2qvDkrdi6YFjYrzcacOE9xdDnL0hRWZEBvJN09RtIpG+lBZD/JXbUd3ZgH
+         beXQ==
+Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: netfilter <netfilter@vger.kernel.org>
 
-Hi,
-I am using nftables to mark packets according to skuid, and I want to =
-make routing decisions with that mark. The use-case is letting the =
-traffic of a single application flow outside of my VPN tunnel.
-I am using a =E2=80=9Croute=E2=80=9D chain to set the mark and I have a =
-routing policy rule set up with iproute2 that will use a custom routing =
-table.
-However, it seems to me that the source IP address is not updated when =
-the routing table is visited the second time. Therefore, an IP packet is =
-sent to my home router, but its source IP is set to the IP assigned to =
-the VPN interface. The packet gets dropped.
-Is this expected behaviour? Shouldn=E2=80=99t the routing table update =
-the source IP according to the entries? I can manually set the source ip =
-with nftables (in the same chain where I set the mark), but I think this =
-should not be needed.
+Hello,
 
-I am debugging all this with nftrace. As you can see in the following =
-trace, the packet correctly changes output interface but keeps the old =
-source IP.
+I use Arch Linux. Apache 2.4.54 and iptables 1.8.8 (nft based).
 
-trace id e310c10c inet filter routes packet: oif "wg0" ip saddr =
-10.8.1.10 ip daddr 1.1.1.1 [...]
-trace id e310c10c inet filter routes rule meta skuid 970 meta nftrace =
-set 1 (verdict continue)
-trace id e310c10c inet filter routes rule meta skuid 970 counter packets =
-2 bytes 120 meta mark set 0x0000000f (verdict continue)
-trace id e310c10c inet filter routes verdict continue meta mark =
-0x0000000f
-trace id e310c10c inet filter routes policy accept meta mark 0x0000000f
-trace id e310c10c inet nat postrouting packet: oif "public" ip saddr =
-10.8.1.10 ip daddr 1.1.1.1 [...]
-                                                                     =
-^^^^^^^^^ --> saddr should be updated to reflect "public" interface IP
-trace id e310c10c inet nat postrouting verdict continue meta mark =
-0x0000000f
-trace id e310c10c inet nat postrouting policy accept meta mark =
-0x0000000f
+I have a setuid script, given below, which runs via apache httpd and 
+simply calls "iptables -w -nvL INPUT" and gives the output.
+
+But with iptables 1.8.8 it fails with error code 111 (undocumented code)
+
+ > curl http://127.0.0.1/ipt.e
+EUID = 0, EGID=33
+iptables exited with exit code=111
+iptables exited with exit code=111
 
 
-The routing table used for marked packets contains a single entry: =
-default via 192.168.1.1 dev public src 192.168.1.102.
+It doesn't even print any error message. (not even to httpd error log - 
+via stderr)
 
-Relevant firewall configuration:
-        chain routes {
-                type route hook output priority mangle; policy accept;
-                meta skuid 970 log
-                meta skuid 970 meta nftrace set 1
-                meta skuid 970 counter meta mark set 0x0000000f
-        }
+But if I downgrade to iptables 1.8.7, it works as expected.
 
-I face the same issue with iptables.
+ > curl http://127.0.0.1/ipt.e
+EUID = 0, EGID=33
+iptables v1.8.7 (nf_tables)
+iptables exited with exit code=0
+Chain INPUT (policy DROP 290 packets, 27644 bytes)
+  pkts bytes target     prot opt in     out source               
+destination
+<output cut>
+iptables exited with exit code=0
 
-Thanks in advance,
-Tito
 
-=E2=80=94 =E2=80=94 =E2=80=94
-https://tilde.team/~tito/
+So it appears to be some kind of bug introduced in 1.8.8.
 
-PGP key: 0x6BED3002CF25C4D2 (4096R)
-(https://keys.openpgp.org/search?q=3D0x6BED3002CF25C4D2)
+Can someone guide / check?
 
-Keybase: @tauroh
-(https://keybase.io/tauroh)
+The C script follows: (Can be used for testing)
+
+ > cat ipt.c
+#include <unistd.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <sys/wait.h>
+
+extern char **environ;
+
+pid_t my_wait(int *status, pid_t pid, int options)
+{
+     pid_t got_pid;
+     while ((got_pid = waitpid(pid, status, options)) == (pid_t)-1) {
+         if (errno != EINTR) return -1;
+         errno = 0;
+     }
+     return got_pid;
+}
+
+int my_system(const char *program, char *const argv[])
+{
+     pid_t pid = fork();
+     if (pid==(pid_t)-1) return -1;
+     if (!pid) { execve(program, argv, environ); exit(127); }
+
+     int status = -1;
+     return ((my_wait(&status, pid, 0) == (pid_t)-1) ? -1 : status);
+}
+
+int main(int argc, char **main_argv)
+{
+     printf ("Content-type: text/plain\n\n");
+     printf ("EUID = %d, EGID=%d\n", geteuid(), getegid());
+     fflush (stdout);
+
+     int i = 0;
+     static char *argv[10];
+     argv[i++] = (char *) "iptables";
+     argv[i++] = (char *) "-w";
+     argv[i++] = (char *) "--version";
+     argv[i++] = NULL;
+     int wstatus = my_system ("/usr/bin/iptables", argv);
+     fflush (stdout);
+     if (WIFEXITED(wstatus)) printf("iptables exited with exit 
+code=%d\n", WEXITSTATUS(wstatus));
+     else printf("something went wrong in calling iptables\n");
+     fflush (stdout);
+
+     i = 2;
+     argv[i++] = (char *) "-nvL";
+     argv[i++] = (char *) "INPUT";
+     argv[i++] = NULL;
+     wstatus = my_system ("/usr/bin/iptables", argv);
+     fflush (stdout);
+     if (WIFEXITED(wstatus)) printf("iptables exited with exit 
+code=%d\n", WEXITSTATUS(wstatus));
+     else printf("something went wrong in calling iptables\n");
+     fflush (stdout);
+
+     return 0;
+}
+
+# compiling and setting setuid bit
+ > cc ipt.c
+ > mv a.out /srv/http/ipt.e
+ > chown root:http /srv/http/ipt.e
+ > chmod 750 /srv/http/ipt.e
+ > chmod u+s /srv/http/ipt.e
 
