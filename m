@@ -1,79 +1,60 @@
-From: Jeremy Sowden <jeremy@azazel.net>
-Subject: Re: iptables 1.8.8 fails with error code 111 but iptables 1.8.7
- succeeds with same script
-Date: Fri, 17 Jun 2022 15:56:37 +0100
-Message-ID: <YqyWJaA282jxUabT@ulthar.dreamlands>
-References: <f8b1ba7f-2d59-e068-92ca-a139959aa2fd@gmail.com>
+From: Gmail Support <testingforadept@gmail.com>
+Subject: Re: Support for String Match Blocking in NFTables
+Date: Fri, 17 Jun 2022 17:14:53 +0100
+Message-ID: <CANKwiJX5_67uPPqdwoH3-gbY11Dmj29Hjse+8m3-bsJD0hHVEg@mail.gmail.com>
+References: <CANKwiJVSW3RjhHDnziGjWenApAcvdSAqBTi7MfHqyiyHd4_F=A@mail.gmail.com>
+ <20220616202014.e7ebc6df8f8f0f1fdce27e12@plushkava.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="VCIaVIusKP5gQ+mr"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-        s=20190108; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=zQswC+Sx2tkqUQQPKGK+eU+TwTogzaW+WtO4IhvXJu0=; b=U9IPSC88AqM36V0+Dadt8aR26B
-        liwaYbUqImZWvlkxTMkIPUA4dBXQHwUHK71QgRWIUkbaH/O7+BW0UGAzIEdJ+T6EQDXLuHyh79UhQ
-        gEhUxPrKx63xdMFwiZNXdC6+U3XRNUo6zWGcpeUYAPsGJx7RbZmkilLAFYCh9YP0KMeYSXhO0WbTa
-        S5E8P/kqHWgDCUGK53Lp+u6NHOISTMa9pQVQ+zNQdptVoHPci+sY7i9bBbqJcr5AKTFo2k/WryUW1
-        Iv+ROaOQFaGJiLcTQ+Rl4BlX+LTe+B7czqkeTDURLZEv0hVgqLg1bAGzdWMzNZrw2+RJna9JymZ7X
-        ogCCn/Q 
-Content-Disposition: inline
-In-Reply-To: <f8b1ba7f-2d59-e068-92ca-a139959aa2fd@gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=4mhJxY5yQytGYhWbo0MHe6HhzxUw6DnD+T/pPHBlOn4=;
+        b=eRP0qVg0DTTtAUdtx8NlYP7QmtT3d38fNund5GXqNU4rrTSCvG9pXKteVefUvhf6b0
+         4OGZFsCcgrRgpiMxYNlAJafq0VAZilZ2PEVRps+heLPgFSSEfuBi9vuG/iTPo8HrbHwM
+         rS7C8t3q3eZ3xbsHvMK0ZvcfcdaYfJKxH0p0oO4hh991y/zYlXaYmF+w00BAYbug0zr8
+         qF2Ht9uOUWYFKlkY7EtrZxwhrfQ7kF04fao7msaFriKoQpNTPxgfvDG2Fsdnz/bzAca2
+         ewB9Cwo9gq+fT59n8j6XMzMTlgJaoowBxiH0ypQwzWsXeIS+i8JpFdcyigsLbhmQhkpp
+         ApKQ==
+In-Reply-To: <20220616202014.e7ebc6df8f8f0f1fdce27e12@plushkava.net>
 List-ID: <netfilter.vger.kernel.org>
-To: Amish <anon.amish@gmail.com>
-Cc: netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Kerin Millar <kfm@plushkava.net>
+Cc: netfilter@vger.kernel.org
 
+Okay thank you, is there any plans to support this extension in the future?
 
---VCIaVIusKP5gQ+mr
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-On 2022-06-17, at 20:02:13 +0530, Amish wrote:
-> I use Arch Linux. Apache 2.4.54 and iptables 1.8.8 (nft based).
+On Thu, Jun 16, 2022 at 8:20 PM Kerin Millar <kfm@plushkava.net> wrote:
 >
-> I have a setuid script, given below, which runs via apache httpd and
-> simply calls "iptables -w -nvL INPUT" and gives the output.
+> On Thu, 16 Jun 2022 10:15:55 +0100
+> Gmail Support <testingforadept@gmail.com> wrote:
 >
-> But with iptables 1.8.8 it fails with error code 111 (undocumented
-> code)
+> > Hello,
+> >
+> > We recently migrated our servers from RedHat to Ubuntu based systems.
+> > We used to have an IPtables rule that was blocking packets matching a
+> > specific application file and below was the rule we had deployed.
+> >
+> > -A INPUT -p udp -m udp --dport 514 -m string --string
+> > "someapplication.exe" --algo bm -j DROP
+> >
+> > In NFtables, I read in the blogs that string based blocking is not
+> > possible. In the man page of Ubuntu, I see a note "The  string  type
+> > is  used  to  for character strings. A string begins with an
+> > alphabetic character (a-zA-Z) followed by zero or more alphanumeric
+> > characters or the  characters  /, -, _ and .. In addition anything
+> > enclosed in double quotes (") is recognized as a string."
+> >
+> > Can you please confirm if string based blocking is supported in Nftable=
+s.
 >
-> > curl http://127.0.0.1/ipt.e
-> EUID = 0, EGID=33
-> iptables exited with exit code=111
-> iptables exited with exit code=111
+> There is no equivalent to the string extension in nftables. While it is p=
+ossible to match against a portion of the packet's payload using a raw payl=
+oad expression, doing so requires that the offset and length of the data be=
+ specified. That is, it cannot search for a pattern and, thus, match at any=
+ potential offset.
 >
-> It doesn't even print any error message. (not even to httpd error log
-> - via stderr)
-
-It is no longer possible to run iptables under seteuid, since it is not
-possible to do so safely.  From 1.8.8, iptables checks whether the UID
-matches the EUID and exits with 111 if they differ:
-
-  https://git.netfilter.org/iptables/commit/?id=ef7781eb1437a2d6fd37eb3567c599e3ea682b96
-
-J.
-
---VCIaVIusKP5gQ+mr
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEbB20U2PvQDe9VtUXKYasCr3xBA0FAmKsliUACgkQKYasCr3x
-BA2BdBAAusb85ZBxW6XmWm4zjFvv9EfUdqs8dZnWM701nIQRSMr1rVEdATEmY+11
-bwOKIC+rbIv7lr1zcVIO2TgLL2RMV41qKbQO21779FvfaH5nH3AdfnyOAMTm80/L
-/heztCGZitqXQ3RuhM6mMt4Jxd4lrM89MbP73AF2xX2CBgtXUHsLcnge8m/WTi9H
-Qp7tvlj35tFdzkU/IC59XBG88pkluSlks6NlU5rmaJem3PBtIMVOEHATOea2zoyc
-XBYdnVk2KPSdtxxGGxYD4IvjSEfPYvkevLBNJ/htACAQz7Y8A8CA5N/uNiR6+l3R
-rgumVhUlwaIlu9UPDdyDbCspvR1hilC/n2o6kNZR7j8ZfZwpA4xJjYLHY9Pkw2iy
-k2axlwSlqXZa86uGpARIHvdP8Md88chvGPfUiciXJtdWWsJerpgUxIjcZACV8ofQ
-p0F54aiBBwC9ePQs48489e5apazveedkVdo8eU2bH7RrVXDtz6pIqlN+pAo62iCt
-Vh2m5Zq646bm0KHUYarlzA6XOn0T8CPcsO8SsSbSJwFpps8eg73eCW1ezvvQXzJk
-tHbcJx5EnnDTdnYS7rJdZFvVHSUpMDLtgpRmc/FnnLQ3kBXBRiYo+WdhN6OvWi/f
-onCy31kbZIIn+bcY1PhXPuVTYhLSlz7bvLKN1n4xb3RvisbBmr4=
-=uhLI
------END PGP SIGNATURE-----
-
---VCIaVIusKP5gQ+mr--
+> --
+> Kerin Millar
