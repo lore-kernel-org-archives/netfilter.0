@@ -1,60 +1,53 @@
-From: Gmail Support <testingforadept@gmail.com>
+From: Kerin Millar <kfm@plushkava.net>
 Subject: Re: Support for String Match Blocking in NFTables
-Date: Fri, 17 Jun 2022 17:14:53 +0100
-Message-ID: <CANKwiJX5_67uPPqdwoH3-gbY11Dmj29Hjse+8m3-bsJD0hHVEg@mail.gmail.com>
+Date: Sat, 18 Jun 2022 01:54:10 +0100
+Message-ID: <20220618015410.38f7c7c2850e0257653685f2@plushkava.net>
 References: <CANKwiJVSW3RjhHDnziGjWenApAcvdSAqBTi7MfHqyiyHd4_F=A@mail.gmail.com>
- <20220616202014.e7ebc6df8f8f0f1fdce27e12@plushkava.net>
+        <20220616202014.e7ebc6df8f8f0f1fdce27e12@plushkava.net>
+        <CANKwiJX5_67uPPqdwoH3-gbY11Dmj29Hjse+8m3-bsJD0hHVEg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=4mhJxY5yQytGYhWbo0MHe6HhzxUw6DnD+T/pPHBlOn4=;
-        b=eRP0qVg0DTTtAUdtx8NlYP7QmtT3d38fNund5GXqNU4rrTSCvG9pXKteVefUvhf6b0
-         4OGZFsCcgrRgpiMxYNlAJafq0VAZilZ2PEVRps+heLPgFSSEfuBi9vuG/iTPo8HrbHwM
-         rS7C8t3q3eZ3xbsHvMK0ZvcfcdaYfJKxH0p0oO4hh991y/zYlXaYmF+w00BAYbug0zr8
-         qF2Ht9uOUWYFKlkY7EtrZxwhrfQ7kF04fao7msaFriKoQpNTPxgfvDG2Fsdnz/bzAca2
-         ewB9Cwo9gq+fT59n8j6XMzMTlgJaoowBxiH0ypQwzWsXeIS+i8JpFdcyigsLbhmQhkpp
-         ApKQ==
-In-Reply-To: <20220616202014.e7ebc6df8f8f0f1fdce27e12@plushkava.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+         h=cc:cc:content-transfer-encoding:content-type:date:date:from
+        :from:in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm3; t=1655513653; x=
+        1655600053; bh=kDeuEh9mT2bkz2OEUiK5Qzri5NQ1w2BxyASIAJfxyw0=; b=J
+        MS8gmhY5QXj4iQolvMkAI0FMYu1NvXMOeZr7l2l631ZButtM0Uah5rLF8Op/Qir+
+        IBzvO4t+1+hw6FtaupfD8lBaFCDVqfXPJ93dZchzhimGA8emcPIEs+KLGJSle7va
+        bWnwfUvyrhbm4TH8n9J9TnpqmDWWHv0SVGsMTg6xOTE4Vpl/riyvYdY9y4ZeiNG0
+        VroGAydSFZNBqrUrP9ZwIntzgemNeMbfnfbBJHRoxVcI+cQnOHxP2Z6dMDkCd6Tl
+        T7oxGOMDFBlHvMytcH+/2RuLWmFnn1H0RPgHh72IPypzib3rNPuGE8WPhS3vCH1t
+        eZcJYy5/o7QcU7gFkj67w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1655513653; x=
+        1655600053; bh=kDeuEh9mT2bkz2OEUiK5Qzri5NQ1w2BxyASIAJfxyw0=; b=N
+        yOyv3s/4L+i9Vt8xkJXrGnSy5MPRgCXIeT0HO9/PykWjXJXVK0P4EQG+Yf+JXnyk
+        royXg2YIWD7uw7er/dxUcv+ICuBkzPznLwPdO4Pn/N5woYZtOAK4NnlOziXVyNQ2
+        d100+v90uze5ertUogTjCzWo25hUuBJBoW22k5ky5n7NAPty2Z0hQbsw1jHxuKhI
+        XBgZ8xtJD5SH+11/nbhqF+b8FmR7Ov52xmT0BzYpMkwhlAyXqvFc6XBRQ1QjoEDS
+        t1XGNeMN0WI55bAjNf58uLNk9RX5MwTkD7fXC7Kg16I2Uge6AoYKYSiha3RKIfJm
+        JK0kYw0Fn/ATTu2shtwJA==
+In-Reply-To: <CANKwiJX5_67uPPqdwoH3-gbY11Dmj29Hjse+8m3-bsJD0hHVEg@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Kerin Millar <kfm@plushkava.net>
+To: Gmail Support <testingforadept@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-Okay thank you, is there any plans to support this extension in the future?
+On Fri, 17 Jun 2022 17:14:53 +0100
+Gmail Support <testingforadept@gmail.com> wrote:
 
-On Thu, Jun 16, 2022 at 8:20 PM Kerin Millar <kfm@plushkava.net> wrote:
->
-> On Thu, 16 Jun 2022 10:15:55 +0100
-> Gmail Support <testingforadept@gmail.com> wrote:
->
-> > Hello,
-> >
-> > We recently migrated our servers from RedHat to Ubuntu based systems.
-> > We used to have an IPtables rule that was blocking packets matching a
-> > specific application file and below was the rule we had deployed.
-> >
-> > -A INPUT -p udp -m udp --dport 514 -m string --string
-> > "someapplication.exe" --algo bm -j DROP
-> >
-> > In NFtables, I read in the blogs that string based blocking is not
-> > possible. In the man page of Ubuntu, I see a note "The  string  type
-> > is  used  to  for character strings. A string begins with an
-> > alphabetic character (a-zA-Z) followed by zero or more alphanumeric
-> > characters or the  characters  /, -, _ and .. In addition anything
-> > enclosed in double quotes (") is recognized as a string."
-> >
-> > Can you please confirm if string based blocking is supported in Nftable=
-s.
->
-> There is no equivalent to the string extension in nftables. While it is p=
-ossible to match against a portion of the packet's payload using a raw payl=
-oad expression, doing so requires that the offset and length of the data be=
- specified. That is, it cannot search for a pattern and, thus, match at any=
- potential offset.
->
-> --
-> Kerin Millar
+> Okay thank you, is there any plans to support this extension in the future?
+
+I do not know. This is the last public post that I'm aware of in which the technical possibilities were being discussed.
+
+https://marc.info/?l=netfilter-devel&m=150530745129704&w=2
+
+If defining a fixed offset isn't an option for you, using a filtering syslog service/forwarder could be another course of action to consider.
+
+-- 
+Kerin Millar
