@@ -1,75 +1,75 @@
-From: Duncan Roe <duncan_roe@optusnet.com.au>
-Subject: Re: Support for String Match Blocking in NFTables
-Date: Sat, 18 Jun 2022 11:29:11 +1000
-Message-ID: <Yq0qZwKKsWziXJda@slk15.local.net>
-References: <CANKwiJVSW3RjhHDnziGjWenApAcvdSAqBTi7MfHqyiyHd4_F=A@mail.gmail.com>
- <20220616202014.e7ebc6df8f8f0f1fdce27e12@plushkava.net>
- <CANKwiJX5_67uPPqdwoH3-gbY11Dmj29Hjse+8m3-bsJD0hHVEg@mail.gmail.com>
- <Yq0mDdXioEEC10KN@slk15.local.net>
-Reply-To: duncan_roe@optusnet.com.au
+From: Amish <anon.amish@gmail.com>
+Subject: Re: iptables 1.8.8 fails with error code 111 but iptables 1.8.7
+ succeeds with same script
+Date: Sat, 18 Jun 2022 10:57:41 +0530
+Message-ID: <f92c8f5d-4a39-ac08-749e-3f6c5206d329@gmail.com>
+References: <f8b1ba7f-2d59-e068-92ca-a139959aa2fd@gmail.com>
+ <20220617150931.GA19244@breakpoint.cc>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=sender:from:date:to:subject:message-id:reply-to:mail-followup-to
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=nQudMtFlx8pRbwNTA0WxAt/gguZbNmqcRx5kLIU4k9g=;
-        b=G0pcibkMWmPwA9W6gf0Js6iey9EZHPoRReizTSoua3qt2IdhKpgbQBe0rlYg1oGX2o
-         c2X48u4bsgOjKmmh4nIhSh0ixGs8MoNTmqMIP1fAki3PI5qqA1xfcg7WZQ9x047YEThg
-         QHA8dndYcGKFObth/YkTqmv09FxjA4h7qRkOCZcpi+yHaSwl3Icy5Q2Q9rXFYfnBhkRe
-         rPSUUmtK893G4C7d9s6a4bib1YQ/58tMWpyrGwBjZgikCP34mrwGgTkkqjHjYX3PZvWL
-         YcUG6nmkxsxi24Tho6YhFmA6cGcXDMxlYpnNLvHYlO573AWUHe6uLM7RLuFMdT3vJxlw
-         2aBQ==
-Sender: Duncan Roe <duncan.roe2@gmail.com>
-Content-Disposition: inline
-In-Reply-To: <Yq0mDdXioEEC10KN@slk15.local.net>
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :cc:references:from:in-reply-to:content-transfer-encoding;
+        bh=WdT1qlrktoKxw2WOCuRjhn6/gzNxRGDlmPmvhZVo9W8=;
+        b=f/KNoTp5Yt9IuLlt1rodZw6b3cxBT99i49paCX+TuF6sQ/Q2PreqVIFEWYN3tZzNOb
+         agVKdo2heaUHLEJRRyQv2I0YRiqPx/F1ZmBpkqBXruF6WyUqxuc25nfpFIxWrGi9ZKqV
+         VTxHlRyNXZW/9qlf9QjQbhd8awZJvvdrX9cgLD01O/g/18oWHw7ftq0DQsBP/Ljl51/E
+         OLlw01FVnAHRdgWUlas9Bagdawyi8uKtYQNDPxd2IEJiNgd96iDe4FPnCMbMK+dOsyhW
+         960z8iCwE4Zqo649Pb/zwGjyJMhZ7Y1wDfQJNVZGJw1Mj7W/gzJgO5fC5x+4oUaQAwpg
+         wncQ==
+Content-Language: en-US
+In-Reply-To: <20220617150931.GA19244@breakpoint.cc>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: Florian Westphal <fw@strlen.de>
+Cc: netfilter <netfilter@vger.kernel.org>
 
-On Fri, Jun 17, 2022 at 05:14:53PM +0100, Gmail Support wrote:
-> Okay thank you, is there any plans to support this extension in the future?
+
+On 17/06/22 20:39, Florian Westphal wrote:
+> Amish <anon.amish@gmail.com> wrote:
+>> I use Arch Linux. Apache 2.4.54 and iptables 1.8.8 (nft based).
+>>
+>> I have a setuid script, given below, which runs via apache httpd and simply
+>> calls "iptables -w -nvL INPUT" and gives the output.
+>>
+>> But with iptables 1.8.8 it fails with error code 111 (undocumented code)
+>>
+>>> curl http://127.0.0.1/ipt.e
+>> EUID = 0, EGID=33
+>> iptables exited with exit code=111
+>> iptables exited with exit code=111
 >
-> On Thu, Jun 16, 2022 at 8:20 PM Kerin Millar <kfm@plushkava.net> wrote:
-> >
-> > On Thu, 16 Jun 2022 10:15:55 +0100
-> > Gmail Support <testingforadept@gmail.com> wrote:
-> >
-> > > Hello,
-> > >
-> > > We recently migrated our servers from RedHat to Ubuntu based systems.
-> > > We used to have an IPtables rule that was blocking packets matching a
-> > > specific application file and below was the rule we had deployed.
-> > >
-> > > -A INPUT -p udp -m udp --dport 514 -m string --string
-> > > "someapplication.exe" --algo bm -j DROP
-> > >
-> > > In NFtables, I read in the blogs that string based blocking is not
-> > > possible. In the man page of Ubuntu, I see a note "The  string  type
-> > > is  used  to  for character strings. A string begins with an
-> > > alphabetic character (a-zA-Z) followed by zero or more alphanumeric
-> > > characters or the  characters  /, -, _ and .. In addition anything
-> > > enclosed in double quotes (") is recognized as a string."
-> > >
-> > > Can you please confirm if string based blocking is supported in Nftables.
-> >
-> > There is no equivalent to the string extension in nftables. While it
-> > is possible to match against a portion of the packet's payload using a
-> > raw payload expression, doing so requires that the offset and length
-> > of the data be specified. That is, it cannot search for a pattern and,
-> > thus, match at any potential offset.
-> >
-> > --
-> > Kerin Millar
+>> The C script follows: (Can be used for testing)
+>> int my_system(const char *program, char *const argv[])
+>> {
+>>      pid_t pid = fork();
+>>      if (pid==(pid_t)-1) return -1;
+>>      if (!pid) { execve(program, argv, environ); exit(127); }
+> iptables evaluates some environment variables and trusts that info.
+> If you absolutely have to do this, re-set environ so that someone
+> else calling this wrapper can't use it to load their own
+> modules/targets.
+>
+> Then add a 'setuid(0)' before execve.
 
-You can do string matching by writing a libnetfilter_queue program.
+Great thank you very much for your clarification.
 
-Follow the documentation at
-https://netfilter.org/projects/libnetfilter_queue/doxygen/html/
+For those who use setuid scripts, here is what I did:
 
-There are 2 sets of functions: the "deprecated" functions will run faster with
-your requirements. They're not deprecated at all, only the underlying library
-used by the current implementation is deprecated.
+For safety I added this in main() function:
 
-Cheers ... Duncan.
+unsetenv("XTABLES_LIBDIR");
+unsetenv("IPTABLES_LIB_DIR");
+unsetenv("IP6TABLES_LIB_DIR");
+
+And just before execve() I added:
+setuid(geteuid());
+
+Hope it helps.
+
+Thanks and regards,
+
+Amish
+
