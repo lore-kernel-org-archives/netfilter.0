@@ -1,40 +1,64 @@
-From: Kiernan George <kbg98@vt.edu>
-Subject: Create Rule w/ Source IP Example
-Date: Tue, 21 Jun 2022 15:41:39 +0000
-Message-ID: <1e1957fe-2bbf-699e-bdfd-28c88fff363a@vt.edu>
+From: Florian Westphal <fw@strlen.de>
+Subject: Re: Create Rule w/ Source IP Example
+Date: Tue, 21 Jun 2022 18:23:28 +0200
+Message-ID: <20220621162328.GB12815@breakpoint.cc>
+References: <1e1957fe-2bbf-699e-bdfd-28c88fff363a@vt.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:content-language:to:from
-         :subject:content-transfer-encoding;
-        bh=LUIjUUmuaMeWyIm7OUHlMOyuwh4EVSUUJ2Bh5jvLrVE=;
-        b=Bb68BdABIBsZOJTczru+dRr223m1E3oascWd6wmmuMZy48S0LWXU79ZdZ14JvDTWQp
-         SXKrSRSe1RhUFgmIuGgQ5iX7cYjLaLMVauPG7Co1NIvktT8f1VlhbG8xic0Z9SPWNWQ4
-         oVSJjMaALj6QsXXRpxPMWGji7W3xy21aJ08C4mJUYh/JhfLYEazszymkQ48HI6xeKqmR
-         z3OaD/eFf5W8wBEwPrRa+RJGLa1VjRTyLqkpt/aobAr1yU+UPHRWDwI9NTySYTeAB/CK
-         ApP4g3LKLzbd7jTlXSCTELDDRssq8p+V1b4asMm7YbN6N4VpOvKns8eO9/Xhcdck1feS
-         5TKA==
-Content-Language: en-US
+Content-Disposition: inline
+In-Reply-To: <1e1957fe-2bbf-699e-bdfd-28c88fff363a@vt.edu>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Kiernan George <kbg98@vt.edu>
+Cc: netfilter@vger.kernel.org
 
-Hi,
+Kiernan George <kbg98@vt.edu> wrote:
+> Hi,
+> 
+> Could you provide an example for adding a rule with an IP address and a
+> protocol in it? I am currently getting this error with libnftnl version
+> 1.2.2:
+> 
+> nf_tables kernel ABI is broken, contact your vendor.
+> rule.c:355 reason: Numerical result out of range
+> 
+> I tried following the examples, but unfortunately there is not one that does
+> what I am trying to do, and I can't find any documentation on how to use the
+> API past what the examples show. I can create tables, chains, maps, but I
+> can't get this to work.
 
-Could you provide an example for adding a rule with an IP address and a 
-protocol in it? I am currently getting this error with libnftnl version 
-1.2.2:
+examples/nft-rule-add.c is (almost) doing what you want.
 
-nf_tables kernel ABI is broken, contact your vendor.
-rule.c:355 reason: Numerical result out of range
+diff --git a/examples/nft-rule-add.c b/examples/nft-rule-add.c
+index 77ee4805f4a4..a1d41b358eb8 100644
+--- a/examples/nft-rule-add.c
++++ b/examples/nft-rule-add.c
+@@ -84,7 +84,7 @@ static struct nftnl_rule *setup_rule(uint8_t family, const char *table,
+ {
+        struct nftnl_rule *r = NULL;
+        uint8_t proto;
+-       uint16_t dport;
++       uint32_t addr;
+        uint64_t handle_num;
+ 
+        r = nftnl_rule_alloc();
+@@ -107,10 +107,10 @@ static struct nftnl_rule *setup_rule(uint8_t family, const char *table,
+                    offsetof(struct iphdr, protocol), sizeof(uint8_t));
+        add_cmp(r, NFT_REG_1, NFT_CMP_EQ, &proto, sizeof(uint8_t));
+ 
+-       dport = htons(22);
+-       add_payload(r, NFT_PAYLOAD_TRANSPORT_HEADER, NFT_REG_1,
+-                   offsetof(struct tcphdr, dest), sizeof(uint16_t));
+-       add_cmp(r, NFT_REG_1, NFT_CMP_EQ, &dport, sizeof(uint16_t));
++       inet_pton(AF_INET, "10.1.2.3", &addr);
++       add_payload(r, NFT_PAYLOAD_NETWORK_HEADER, NFT_REG_1,
++                   offsetof(struct iphdr, saddr), sizeof(uint32_t));
++       add_cmp(r, NFT_REG_1, NFT_CMP_EQ, &addr, sizeof(uint32_t));
+ 
+        add_counter(r);
 
-I tried following the examples, but unfortunately there is not one that 
-does what I am trying to do, and I can't find any documentation on how 
-to use the API past what the examples show. I can create tables, chains, 
-maps, but I can't get this to work.
 
-Thanks for your help,
-Kiernan
+... gives
+ ip protocol tcp ip saddr 10.1.2.3 counter
 
