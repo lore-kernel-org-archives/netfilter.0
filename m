@@ -1,64 +1,43 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: Create Rule w/ Source IP Example
-Date: Tue, 21 Jun 2022 18:23:28 +0200
-Message-ID: <20220621162328.GB12815@breakpoint.cc>
-References: <1e1957fe-2bbf-699e-bdfd-28c88fff363a@vt.edu>
+From: Kiernan George <kbg98@vt.edu>
+Subject: ABI Breakage - nftnl_rule_parse_attr_cb
+Date: Tue, 21 Jun 2022 20:07:24 +0000
+Message-ID: <fb274774-b42e-fce8-7018-2c21a93a4d38@vt.edu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1e1957fe-2bbf-699e-bdfd-28c88fff363a@vt.edu>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vt-edu.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:content-language:to:from
+         :subject:content-transfer-encoding;
+        bh=/gIQyP4895HIwnQ0QD8Ye9WgecP7zbRvsY8AVfgCxY0=;
+        b=p9thcrf8bkx1lnLN7pxyIkx8oWaNOqTuXx0HcA70MzyKk6f/AlK3PLJX3LCVigW1YW
+         fYLeiYhaTH1aBbLsNix4M76Zi/jYsZH9DXAGiwaY4NK9TL1s8eHBJZk3jiW9LsZHgk6L
+         d9u95n91LnUfg7rlb7tWVACamTlHQ5ipBTmU/KJR2kagN2WgzMvT2bDtdhLq4eNkgrwe
+         WySIfstydZWm0axkdtr83AUSbAv6V7lFWB42U9ZtBsyJFSJMmCnRGCl7+pcB/mhMpmp8
+         9p9vuwE33oXF5f+K+IXHJCcU48o+iFZe1JqwItJd5Y3PM1eFdavsjg3tTtVW3MXg3Vr7
+         fRaw==
+Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Kiernan George <kbg98@vt.edu>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Kiernan George <kbg98@vt.edu> wrote:
-> Hi,
-> 
-> Could you provide an example for adding a rule with an IP address and a
-> protocol in it? I am currently getting this error with libnftnl version
-> 1.2.2:
-> 
-> nf_tables kernel ABI is broken, contact your vendor.
-> rule.c:355 reason: Numerical result out of range
-> 
-> I tried following the examples, but unfortunately there is not one that does
-> what I am trying to do, and I can't find any documentation on how to use the
-> API past what the examples show. I can create tables, chains, maps, but I
-> can't get this to work.
+Hi,
 
-examples/nft-rule-add.c is (almost) doing what you want.
+I am getting an ABI breakage error at these lines in rule.c:
 
-diff --git a/examples/nft-rule-add.c b/examples/nft-rule-add.c
-index 77ee4805f4a4..a1d41b358eb8 100644
---- a/examples/nft-rule-add.c
-+++ b/examples/nft-rule-add.c
-@@ -84,7 +84,7 @@ static struct nftnl_rule *setup_rule(uint8_t family, const char *table,
- {
-        struct nftnl_rule *r = NULL;
-        uint8_t proto;
--       uint16_t dport;
-+       uint32_t addr;
-        uint64_t handle_num;
- 
-        r = nftnl_rule_alloc();
-@@ -107,10 +107,10 @@ static struct nftnl_rule *setup_rule(uint8_t family, const char *table,
-                    offsetof(struct iphdr, protocol), sizeof(uint8_t));
-        add_cmp(r, NFT_REG_1, NFT_CMP_EQ, &proto, sizeof(uint8_t));
- 
--       dport = htons(22);
--       add_payload(r, NFT_PAYLOAD_TRANSPORT_HEADER, NFT_REG_1,
--                   offsetof(struct tcphdr, dest), sizeof(uint16_t));
--       add_cmp(r, NFT_REG_1, NFT_CMP_EQ, &dport, sizeof(uint16_t));
-+       inet_pton(AF_INET, "10.1.2.3", &addr);
-+       add_payload(r, NFT_PAYLOAD_NETWORK_HEADER, NFT_REG_1,
-+                   offsetof(struct iphdr, saddr), sizeof(uint32_t));
-+       add_cmp(r, NFT_REG_1, NFT_CMP_EQ, &addr, sizeof(uint32_t));
- 
-        add_counter(r);
+case NFTA_RULE_HANDLE:
+         if (mnl_attr_validate(attr, MNL_TYPE_U64) < 0)
+             abi_breakage();
+         break;
 
+It only seems to happen when I set the flag NLM_F_ECHO in 
+nftnl_rule_nlmsg_build_hdr. I want to hold onto the rule handle of the 
+returned rule, which is why I set it to echo. This error was not 
+affecting me in Ubuntu 20.04, but started as soon as I upgraded to 
+22.04. I am running Linux kernel version 5.15.0-39-generic with 
+libnftnl-dev version 1.2.1-1build1.
 
-... gives
- ip protocol tcp ip saddr 10.1.2.3 counter
+Thanks,
+
+Kiernan
 
