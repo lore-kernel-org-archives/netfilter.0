@@ -1,141 +1,54 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: IP DNAT on bridged packets destined to local process
-Date: Wed, 22 Jun 2022 09:40:57 +0200
-Message-ID: <YrLHibnTxB1Z+jpo@salvia>
-References: <CACnkxm-=kXAoFLHnJFrjoDHakvaxqmgJDdzXQcpyRzP0FBSWDQ@mail.gmail.com>
- <YrLHNTOtENA1UKO4@salvia>
+From: Kiernan George <kbg98@vt.edu>
+Subject: Re: ABI Breakage - nftnl_rule_parse_attr_cb
+Date: Wed, 22 Jun 2022 09:24:25 -0400
+Message-ID: <CAOg40qjdS1VA9tOOVitryo7eB4HFk5x0Gzp4JX8e5=LSa6RDEw@mail.gmail.com>
+References: <fb274774-b42e-fce8-7018-2c21a93a4d38@vt.edu> <YrLGi2k9+PvMJepi@salvia>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <YrLHNTOtENA1UKO4@salvia>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vt-edu.20210112.gappssmtp.com; s=20210112;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to;
+        bh=IjKiil8dfdKujY5hCvLE3b6f6q0CMcR2f7kptv/cAXE=;
+        b=lYeQhRCz57Ci/NbWhUpxd7palCOsGF928ZRU6hoDprZvhJ3naw64p+RCSuztRu9UH1
+         FA1rbCZQY6Smir4FFpJ8EmPK/4dJ7bnICQ8MfZ08PW4n/ImkInK/h7xu0VuckWdBq+09
+         L/SqES7JllFY21CL56yLFEGn9fyhQeiH9Z34O6JSbfDRX2XmrqosFBA0FPbaRdQXrInU
+         UMF/MU8E/AELDlv3feTx3szdLREVqCZdxbsY2ew0O1i/uWdOh8Rf9kjpA9FCbMmgo15c
+         DqGiz9XbScfD66ngKFdsmZUrCFqSLkdnoP9tADEjGMGG6ZSmAOZCiq9EuDU3n7mNURYK
+         fSkA==
+In-Reply-To: <YrLGi2k9+PvMJepi@salvia>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Shirisha Dasari <shirishadasari@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Wed, Jun 22, 2022 at 09:39:38AM +0200, Pablo Neira Ayuso wrote:
-> Hi,
-> 
-> On Tue, Jun 07, 2022 at 01:55:36PM +0530, Shirisha Dasari wrote:
-> >   Hi,
-> > 
-> > I need some help to understand if IP DNAT can be achieved on bridged
-> > packets (IP packets arriving on a bridge port). The packets first need
-> > to undergo DMAC NAT in the bridge filter layer of Netfilter and then
-> > also need to undergo IP DNAT. This is because I need to have the
-> > incoming bridged IP packets redirected to a local process.
-> > 
-> > From my experimentation so far, I'm only able to have the packet
-> > undergo DMAC NAT using bridge NF rules but these packets do not hit
-> > the ingress L3 stack prerouting chains. The packets undergo DMAC NAT
-> > and are redirected to the bridge INPUT chain from where they undergo
-> > routing lookup directly and take appropriate route to be forwarded. I
-> > however need to NAT the DIP before the routing lookup happens.  From
-> > https://wiki.nftables.org/wiki-nftables/index.php/Netfilter_hooks,
-> > http://ebtables.netfilter.org/br_fw_ia/br_fw_ia.html#section5 and
-> > https://upload.wikimedia.org/wikipedia/commons/3/37/Netfilter-packet-flow.svg,
-> > I feel the packet should have hit the IP PREROUTING chain and
-> > undergone NAT but this doesn't happen in my case.
-> > 
-> > I've already tried the following:
-> > 
-> > 1)  net.bridge.bridge-nf-call-iptables = 1.
-> > The packets still do not hit the L3 IP NAT PREROUTING chain still.
-> 
-> With nftables there is no need to use br_netfilter, such module is deprecated.
-> 
-> You should be able to mangle the destination MAC of the packet, so the
-> bridge bits forwards the packet to the bridge LOCAL_IN path. Then, you
-> add a rule to redirect traffic for that port to your local process.
+This is the relevant line where I build my header:
+nlh = nftnl_rule_nlmsg_build_hdr(mnl_nlmsg_batch_current(batch),
+NFT_MSG_NEWRULE, family, NLM_F_APPEND | NLM_F_EXCL | NLM_F_CREATE |
+NLM_F_ECHO | NLM_F_ACK, seq++);
 
-Such redirect rule should be place in an inet prerouting chain whose
-type is nat.
+If I remove NLM_F_ECHO, it fixes my issue, but I would prefer to keep
+this unless there is a better way to get the created rule's handle. I
+also set the handle directly:
+mnl_attr_put_u64(nlh, NFTNL_RULE_POSITION, htobe64(handle));
 
-> > 2) ebtables rules to BROUTE the packet to the L3 layer.  My ebtables
-> > rules added via ebtables-legacy do not get hit at all.
-> > 
-> > 3) The packet seems to be hitting the inet chains but I cannot add a
-> > NAT rule in the inet chain as this support is only available in the
-> > later kernels.
-> > 
-> > Some info about the system I'm trying this on:
-> > root@sonic:/home/admin# uname -a
-> > Linux sonic 4.19.0-9-2-amd64 #1 SMP Debian 4.19.118-2+deb10u1
-> > (2020-06-07) x86_64 GNU/Linux
-> > 
-> > root@sonic:/home/admin# ebtables -V
-> > ebtables 1.8.2 (nf_tables)
-> > root@sonic:/home/admin# ebtables-legacy -V
-> > ebtables v2.0.10.4 (legacy) (December 2011)
-> > 
-> > Following are the rules in my nftables and the trace of the packet
-> > traversing nftables:
-> > 
-> > table bridge filter {
-> >                chain PREROUTING {
-> >                                   type filter hook prerouting priority
-> > -300; policy accept;
-> >                                   tcp dport http ip saddr 10.10.10.10
-> > ether daddr set 00:00:00:0a:0b:0c counter packets 0 bytes 0
-> >                 }
-> > 
-> >                chain trace_chain {
-> >                                  type filter hook prerouting priority
-> > -301; policy accept;
-> >                                  nftrace set 1
-> >                 }
-> > }
-> > 
-> > root@sonic:/home/admin# nft list table nat
-> > table ip nat {
-> >         chain PREROUTING {
-> >                 type nat hook prerouting priority -100; policy accept;
-> >         }
-> > 
-> >         chain INPUT {
-> >                 type nat hook input priority 100; policy accept;
-> >         }
-> > 
-> >         chain POSTROUTING {
-> >                 type nat hook postrouting priority 100; policy accept;
-> >                 meta l4proto udp udp dport 53 counter packets 0 bytes
-> > 0 jump DNS_SNAT_RULE
-> >         }
-> > 
-> >         chain OUTPUT {
-> >                 type nat hook output priority -100; policy accept;
-> >         }
-> > 
-> >         chain DOCKER {
-> >         }
-> > 
-> >         chain DNS_SNAT_RULE {
-> >         }
-> > 
-> >         chain redir {
-> >                type nat hook prerouting priority -101; policy accept;
-> >                ip saddr 10.10.10.10 tcp dport { http, https } counter
-> > packets 0 bytes 0 dnat to 60.60.60.60
-> >         }
-> > }
-> > 
-> > Packet trace:
-> > 
-> > packet: iif "Ethernet38" ether saddr 00:00:09:00:10:00 ether daddr
-> > 00:00:09:00:11:00 vlan pcp 0 vlan cfi 0 vlan id 10 ip saddr
-> > 10.10.10.10 ip daddr 20.20.20.20 ip dscp cs0 ip ecn not-ect ip ttl 2
-> > ip id 0 ip protocol tcp ip length 82 tcp sport http tcp dport http tcp
-> > flags == 0x0 tcp window 0
-> > trace id e19ef0d4 bridge filter PREROUTING rule  tcp dport http ip
-> > saddr 10.10.10.10 ether daddr set 00:00:00:0a:0b:0c counter packets 52
-> > bytes 4264  (verdict continue)
-> > trace id e19ef0d4 bridge filter PREROUTING verdict continue
-> > trace id e19ef0d4 bridge filter PREROUTING
-> > trace id e19ef0d4 bridge filter INPUT verdict continue
-> > trace id e19ef0d4 bridge filter INPUT
-> > trace id 00027106 ip filter FORWARD verdict continue
-> > trace id 00027106 ip filter FORWARD
-> > 
-> > Thanks,
-> > Shirisha.
+
+On Wed, Jun 22, 2022 at 3:36 AM Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+>
+> On Tue, Jun 21, 2022 at 08:07:24PM +0000, Kiernan George wrote:
+> > Hi,
+> >
+> > I am getting an ABI breakage error at these lines in rule.c:
+> >
+> > case NFTA_RULE_HANDLE:
+> >         if (mnl_attr_validate(attr, MNL_TYPE_U64) < 0)
+> >             abi_breakage();
+> >         break;
+> >
+> > It only seems to happen when I set the flag NLM_F_ECHO in
+> > nftnl_rule_nlmsg_build_hdr. I want to hold onto the rule handle of the
+> > returned rule, which is why I set it to echo. This error was not affecting
+> > me in Ubuntu 20.04, but started as soon as I upgraded to 22.04. I am running
+> > Linux kernel version 5.15.0-39-generic with libnftnl-dev version
+> > 1.2.1-1build1.
+>
+> That's very strange. Could you post a sample code?
