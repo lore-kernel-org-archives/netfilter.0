@@ -1,55 +1,77 @@
-From: Kiernan George <kbg98@vt.edu>
-Subject: Creating a map with libnftnl
-Date: Thu, 30 Jun 2022 13:19:13 +0000
-Message-ID: <fbaccc73-c98c-4a21-bc12-0c89b041ae32@vt.edu>
+From: Kerin Millar <kfm@plushkava.net>
+Subject: Re: Creating a map with libnftnl
+Date: Thu, 30 Jun 2022 16:03:03 +0100
+Message-ID: <20220630160303.ed722cd8c3a70facdf133f14@plushkava.net>
+References: <fbaccc73-c98c-4a21-bc12-0c89b041ae32@vt.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:content-language:to:from
-         :subject:content-transfer-encoding;
-        bh=qK0kRLNdq368dCXm35tLIbQf05Lsvjpx6r8lUZCQQjY=;
-        b=wH6xIrJnMgSpyfZGLfVMDkYmN828geOVEUiEWv337V7FGEjOX6M5c5dUpawE2hnQs0
-         yLolx9s0GNbi2/YCkuoyYdGbv/EqnI9DpglA+9iAQzJdzD9XNDZ8SfVsczMyOo7M80vI
-         FcOqJp9UXOk4GYSr5EEr+y3EGtlHyD2QX4qgU6RD7wFdQ0BqQhvMFiBGUfHpOPZjyvyv
-         QskLeBS6uUA3NCgEUqXkyjQKwVyKQDutmvTU3q2NPjslHocPgWaNNQy3s2SLArE+CxFy
-         RTwaZuA4lrjzQ3Dv4UtX6aRh0nnztsWHGjmIp4v22HgdLLO2Hs6du+/qLb0e8SS5L/O8
-         mN6A==
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+         h=cc:cc:content-transfer-encoding:content-type:date:date:from
+        :from:in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm3; t=1656601386; x=
+        1656687786; bh=HcABbCtcvZjqN/cLx3f9vNFHhNrM6a5f00Hmz2elvrM=; b=B
+        ufTBE7qknbfRybchJo41j8HTESTnkxE82ih86MC/ISCpIsyNc3tn1iGDeNi42nCV
+        JR5to45VGeI+tcyEh4v6IBJ/1Oe+RsbdW9gcQFNTMtasqDKfrexc9JEJd5tm47MO
+        KB1HrUonb0e5o6DLGShyfXLcOwNQsLIDeMsSzAN0OGbLBMbNzQa12th2aO+xyUlP
+        xZzUN/9gP0UHLqAyU1Iy7rCnzHBIjy199M9i4k9ndgksi3XRWYlT2ITTGSi91XX2
+        gIOT43Z+Nv2p+JThQ8Rhlkara90EUG7blANL/+vFFdt9+f4Z0UEUwdo0/MoRLDpj
+        mu9CBJ0ZKrLv4QfwGQmHQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1656601386; x=
+        1656687786; bh=HcABbCtcvZjqN/cLx3f9vNFHhNrM6a5f00Hmz2elvrM=; b=a
+        /5GcMjhBR+qFR0zeLWr8kjFThi/NJTbhCIzMF/cqMBJVVNtwiQCSARkOGK8FIPyB
+        niLXaCJg+bO9ASA4r02R1IBNro18MTUv85j3RgCyWYQ6dTAuqXj/kc9hnXa4U7MR
+        ARRy3nxHJJrqIpcT9GBSc3c/hl+P36yM0YMB7foxf8hEIt1QqUp5YUFlbCRpAl8a
+        oYQ4H/yCvatxOMIz0KwjsJ2XRTaDlSdnQvNa/1IATb9ZeY10Zc/Ua40YW3aLnpc6
+        gl0FjhR8LeVyuqyVFDv2ynVmcZ3khzfgBGWJj2bwsWEzCQtSHaMLVRUvYBygFyer
+        2GErPbWky/C5IeqcvnCTQ==
+In-Reply-To: <fbaccc73-c98c-4a21-bc12-0c89b041ae32@vt.edu>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Kiernan George <kbg98@vt.edu>
+Cc: netfilter@vger.kernel.org
 
-Hi,
+Hi Kiernan,
 
-Is there an example for creating a map using libnftnl in the form of:
+On Thu, 30 Jun 2022 13:19:13 +0000
+Kiernan George <kbg98@vt.edu> wrote:
 
-map name {
-                 type ipv4_addr . inet_service : ipv4_addr
+> Hi,
+>=20
+> Is there an example for creating a map using libnftnl in the form of:
+>=20
+> map name {
+>  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 type ipv4_addr . inet_serv=
+ice : ipv4_addr
+>=20
+> }
+>=20
+>=20
+> I see the example for creating a map in the form of:
+>=20
+> map name {
+>  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 type inet_service : inet_s=
+ervice
+>  =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 flags constant
+>  =A0=A0=A0=A0=A0=A0=A0 }
+>=20
+> I'm not sure how to extend this example to my use case. I thought I had=20
+> it working, but when I try to add an element manually, it gives me this=20
+> error:
+>=20
+> invalid data type, expected concatenation of (IPv4 address)
+> add element ip testtable testmap {1.1.1.1 . 20 : _2.2.2.2_}
 
-}
+Please specify:
 
+- a listing of the presently defined map
+- the command that was issued, verbatim
+- the shell in use, if applicable
 
-I see the example for creating a map in the form of:
-
-map name {
-                 type inet_service : inet_service
-                 flags constant
-         }
-
-I'm not sure how to extend this example to my use case. I thought I had 
-it working, but when I try to add an element manually, it gives me this 
-error:
-
-invalid data type, expected concatenation of (IPv4 address)
-add element ip testtable testmap {1.1.1.1 . 20 : _2.2.2.2_}
-
-
-Any tips would be appreciated.
-
-
-Thank you,
-
-Kiernan
-
+--=20
+Kerin Millar
