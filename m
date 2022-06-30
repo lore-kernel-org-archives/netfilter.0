@@ -1,39 +1,55 @@
-From: Ignacio Freyre <nachofw@hotmail.com>
-Subject: limit usage
-Date: Tue, 28 Jun 2022 11:26:17 +0000
-Message-ID: <FRBP284MB01856E4314EE564A2124614BB5B89@FRBP284MB0185.BRAP284.PROD.OUTLOOK.COM>
+From: Kiernan George <kbg98@vt.edu>
+Subject: Creating a map with libnftnl
+Date: Thu, 30 Jun 2022 13:19:13 +0000
+Message-ID: <fbaccc73-c98c-4a21-bc12-0c89b041ae32@vt.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=hotmail.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wsGW2B8eg8pCiLI9nd5TXAHQ36uggujCg8NCdMNsWWo=;
- b=VIFVsd9vMdeR87MoMosChLBH0qtv4c4ZnAYQQHC7VcMFOT2ikQhxQ6m4FGgmPM/L/slC7A5cbxbYeILq3Q6c5IJ8lesyGlLbhCXPHFWDH7k7n85pvP4oJXCBVdsetUwtERkQ35ZAl/Cd5r45E4C0W1zByCpSHAkuApWLqcfqOcV5g18abHaykF5JmqzYYLnPAr7vAlIBcd9pbqkw3Cx9iKM/twdOMNeV7zLqW7gupHIkyypijgrb35Zc0PIPmY/FRFfYykZW0YGKkBVTOsEFPygPU5zl8KmOt8BKHGFABE4GPlrmAQGMooazse9URDW2drM2VruuIMTuwXMwr0HTBA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vt-edu.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:content-language:to:from
+         :subject:content-transfer-encoding;
+        bh=qK0kRLNdq368dCXm35tLIbQf05Lsvjpx6r8lUZCQQjY=;
+        b=wH6xIrJnMgSpyfZGLfVMDkYmN828geOVEUiEWv337V7FGEjOX6M5c5dUpawE2hnQs0
+         yLolx9s0GNbi2/YCkuoyYdGbv/EqnI9DpglA+9iAQzJdzD9XNDZ8SfVsczMyOo7M80vI
+         FcOqJp9UXOk4GYSr5EEr+y3EGtlHyD2QX4qgU6RD7wFdQ0BqQhvMFiBGUfHpOPZjyvyv
+         QskLeBS6uUA3NCgEUqXkyjQKwVyKQDutmvTU3q2NPjslHocPgWaNNQy3s2SLArE+CxFy
+         RTwaZuA4lrjzQ3Dv4UtX6aRh0nnztsWHGjmIp4v22HgdLLO2Hs6du+/qLb0e8SS5L/O8
+         mN6A==
 Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Hi guys, i'm hoping you clarify nftables usage of the kernels conntrack.=0A=
-=0A=
-I've been having some ddos attacks on my dns servers so I used the notrack =
-flag to avoid filling the conntrack table like so:=0A=
-=0A=
-> add table ip raw=0A=
-> add chain ip raw PREROUTING { type filter hook prerouting priority -300; =
-policy accept; }=0A=
-> add rule ip raw PREROUTING iif eno1 ip protocol {tcp, udp} th dport 53 co=
-unter notrack=0A=
-=0A=
-But then i though of also rate limiting by ipv4 source address, i was wande=
-ring if you could clarify in the case of the usage of the "limit" functiona=
-lity if nftables is using the conntrack table or its own memory for the fol=
-lowing config for the purpose of tracking the amount of packets that alread=
-y arrived on the interface by source IP.=0A=
-=0A=
-> add set my_filter_table dns_meter { type ipv4_addr . inet_service\; flags=
- timeout, dynamic \;}=0A=
-> add rule my_filter_table my_input_chain tcp dport 53 ct state new add u/d=
-ns_meter { ip saddr . tcp dport timeout 60s limit rate 20/second } accept=
-=0A=
+Hi,
+
+Is there an example for creating a map using libnftnl in the form of:
+
+map name {
+                 type ipv4_addr . inet_service : ipv4_addr
+
+}
+
+
+I see the example for creating a map in the form of:
+
+map name {
+                 type inet_service : inet_service
+                 flags constant
+         }
+
+I'm not sure how to extend this example to my use case. I thought I had 
+it working, but when I try to add an element manually, it gives me this 
+error:
+
+invalid data type, expected concatenation of (IPv4 address)
+add element ip testtable testmap {1.1.1.1 . 20 : _2.2.2.2_}
+
+
+Any tips would be appreciated.
+
+
+Thank you,
+
+Kiernan
+
