@@ -1,48 +1,45 @@
-From: =?UTF-8?Q?Nuno_Gon=C3=A7alves?= <nunojpg@gmail.com>
-Subject: Re: Bug in the wiki
-Date: Wed, 6 Jul 2022 12:46:41 +0100
-Message-ID: <CAEXMXLSZsU9XY6QwrS1UAVSErb1Kg=M5JPx_GHCgbDG4hXO9eA@mail.gmail.com>
-References: <CAEXMXLRwFcx4UdjFe_15Q26iuT4K=coZLvBgYfkow_8o9=iB9Q@mail.gmail.com>
- <600cead8-acad-0be6-bfe4-33cee996ccd9@fhmtech.com> <CAEXMXLRqUgFmME_8OKpAWRog3dqRCG+veHbJsZPKh9xOZ98D=Q@mail.gmail.com>
- <16130a18-e4c1-a1b7-1414-7025389efca0@fhmtech.com> <CAEXMXLSGWtT_6JrCEFhRgvG4-Ssj1jnVUs_r4JjoFzwjiip=mA@mail.gmail.com>
- <d8aa9eed-4e9f-7385-6908-438e71c8c2d1@fhmtech.com>
+From: Richard Lucassen <mailinglists@xaq.nl>
+Subject: CONNMARK rules
+Date: Thu, 7 Jul 2022 15:17:39 +0200
+Message-ID: <20220707151739.06206fa5b2536669309e8041@xaq.nl>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zOZo2Q7lrQz/K8D5Muuc6kxgsFNLQ92Mm6HWvZAOTCw=;
-        b=Ykgg1RQIAhDWHZutiQBT6I9uzUTHSxNkPsGi+SnvStm/8j/yuN1Akmw3UB91pvvSXW
-         WGAmtTNqDZeRCp+GzBK9148bOd3WPi8X9m6dS/hLXfsCucZ7ZI5+Tkw3wte4uZed4pwQ
-         XcgaQpZpa4H7Iu1NgMCFMWJa86IU9V4KGTH21LaWdaJcRTxi4cUQFWo0z0OoryC/5mdm
-         8E1jhSU+SDlGRvWqXsVgFtyQVaNPWuhaLcHyD6TtqgT1nXLTAjGHlxh8l75idy9WeNWn
-         JPRdfEsYb/XumEmTFLNtFeX+W7m4RJwPSny5fYuVGBB0CiuYlUhKYmskY/TZqljfwAZc
-         1UfQ==
-In-Reply-To: <d8aa9eed-4e9f-7385-6908-438e71c8c2d1@fhmtech.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=xaq.nl; s=202104;
+        t=1657199859; bh=ia2qd7GZTFQDhuTc5f2TzCJNSG/GfZmv/2YVf/kspJo=;
+        h=Date:From:To:Subject:Reply-To;
+        b=XOveHzPo7M/XBmETHq552iwCoViiVXhgPJLPZ3hQADySvkrqrbRLIs86UxIQbygLM
+         0vEzA1JZTsLPO0FIqJ5ExlGkl27XDkfNsqimuxUJqGlJERLAFj++uew/MoCLRNwRBY
+         UMB6QGkeqUdg08qLdiVxR7xNYoo3QKMgM7wOOQlYMUDFYUk8QxryaloBoFYI0CqFYf
+         dqGZpsdIlrAI0BOZISoenx+D2ZhwRg/815UHPwFR9Hg+nth+23GLddsNCn/KM3xRDq
+         OKcMX7GTzS+i5zY+t8OWXlnbSQRXMojs8i6ONk09wppmCNX8yIBgvbjiPNhbC9NeFL
+         Pvl5yta28F6BQ==
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Frank Myhr <fmyhr@fhmtech.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Wed, Jul 6, 2022 at 12:26 PM Frank Myhr <fmyhr@fhmtech.com> wrote:
-> * I agree that your modifications will counter a single-ip ping flood
-> attack. Whether that attack is significant compared with, say, DDoS ping
-> floods or attacks against other services, will depend on the particulars
-> of your installation. If the single-ip ping flood *is* a big concern, it
-> may be better to use a different ruleset construction with icmp in a
-> dedicated chain.
+Hello list,
 
-The discussion about netfilter/conntrack approach is really not at my
-level, but regarding the attack scenario, It's more of a total packets
-issue.
+I have two lines in the iptables PREROUTING mangle table to split up
+traffic from even and odd ip numbers:
 
-If each source is allowed to send unlimited (let's say 100) packets,
-then the attack could ramp at 100*5 packets per second, so after 60
-minute could be at 1.8M packets/s.
+-s 10.32.24.0/23 -j CONNMARK --set-mark 0x1001
+-s 10.32.24.0/255.255.254.1 -j CONNMARK --set-mark 0x1000
 
-This limits the reach of my knowledge about any of this :D I just
-tried to get this configuration working for me.
+But I noticed that rules in this order does not work (everything
+gets 0x1001):
 
-Thanks
+-s 10.32.24.0/255.255.254.1 -j CONNMARK --set-mark 0x1000
+-s 10.32.24.0/23 -j CONNMARK --set-mark 0x1001
+
+So I assume the the CONNMARK rules are not end rules (hit = exit)
+
+Is that correct?
+
+R.
+
+
+-- 
+richard lucassen
+http://contact.xaq.nl/
