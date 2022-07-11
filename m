@@ -1,44 +1,69 @@
-From: Kiernan George <kbg98@vt.edu>
-Subject: Re: Creating a map with libnftnl
-Date: Mon, 11 Jul 2022 14:55:00 +0000
-Message-ID: <6350f4d6-76ab-c8e6-80d3-9b817fc6f6d1@vt.edu>
-References: <fbaccc73-c98c-4a21-bc12-0c89b041ae32@vt.edu>
- <20220630160303.ed722cd8c3a70facdf133f14@plushkava.net>
- <20220630160628.f7bd5dd1f234d834be19aed6@plushkava.net>
- <a751cf13-8ca9-7d9d-e1d7-6f4242ae8860@vt.edu>
- <20220630165409.7c3d0d1920ba9163ab057386@plushkava.net>
- <cc75919c-63ad-7255-1c60-63f266ba244c@vt.edu>
- <20220630171153.f6db1674be194c72ca6d17e7@plushkava.net>
+From: Florian Westphal <fw@strlen.de>
+Subject: Re: nf_queue flush on deletion
+Date: Mon, 11 Jul 2022 21:52:33 +0200
+Message-ID: <20220711195233.GA11099@breakpoint.cc>
+References: <CA+=Uk6bgPJtcF3XDtraF0vHL8EmY+hqAwXhmzqka5HwDL_jnBg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20210112.gappssmtp.com; s=20210112;
-        h=message-id:date:mime-version:user-agent:subject:content-language:to
-         :references:from:in-reply-to:content-transfer-encoding;
-        bh=W0dSEK250DGRCJmeGhst8RL+a+YHkUmAYeoSBSL2CZE=;
-        b=bgVNRpf5j95ATeeUdFzKj1B6zjZIkPHXl4QkZ4xSY+aRSZp4/K6TDXGnDRaUhLYq4I
-         yZwE3rLw/VXEPc/PXBjbSBKK3e1mqeSqiMno4u7biYpz85yX5bXpImfFQbflVvrmC0dD
-         m98PPJbt7nTqez3DeixqW2E+TpnE2sMgueWa7IOYM6fUiVgJcSMxQeciEtRIXWIgLRcz
-         tRrU4L5atcBncnQr24RFClywY6FXW/2T/85i6+SgxxOUWbwpsRiOkfhnvDO1oAuKPdsH
-         PNgHpaVhGTfZwLlmp4o123HUE0t/QlqV7ejvwoeT+nS1ayPJkkNpbnbUtsJH/8Jp/Swx
-         K6Rw==
-Content-Language: en-US
-In-Reply-To: <20220630171153.f6db1674be194c72ca6d17e7@plushkava.net>
+Content-Disposition: inline
+In-Reply-To: <CA+=Uk6bgPJtcF3XDtraF0vHL8EmY+hqAwXhmzqka5HwDL_jnBg@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jordan Griege <jgriege@cloudflare.com>
+Cc: netfilter@vger.kernel.org
 
-Could someone modify the nft-set-add example to show me how to do this? 
-I was able to read the netfilter messages to determine the appropriate 
-key length/type and data length/type, but I'm not sure how those were 
-calculated.
+Jordan Griege <jgriege@cloudflare.com> wrote:
+> I am looking for a way to run a userspace firewall and came across
+> nf_queue.  The library documentation and examples were easy enough to
+> follow, but I found some unexpected behavior when setting up a
+> proof-of-concept.  Say I have the following nftables configuration
+> loaded:
+> 
+> table ip test-queue {
+>   chain prerouting {
+>     type filter hook prerouting priority filter; policy accept;
+>     queue num 0 bypass
+>   }
+> }
+> table ip unrelated {
+>   chain input {
+>     type filter hook input priority mangle; policy accept;
+>   }
+> }
+> 
+> and a program running that reads packets from queue 0.  If at any
+> point I run a command that deletes a base chain, e.g.
+> 
+> nft delete table ip unrelated
+> 
+> Then all the packets in queue 0 are dropped.  When the program sends a
+> verdict for any packets it had received before the queue was flushed,
+> the nf_queue system responds with an ENOENT message (wrapped in a
+> header with NLMSG_ERROR) through the netlink socket.
+> 
+> This appears to be the intended behavior by what I could make of the
+> kernel code.  Is that correct, and if so, what is the motivation?
 
-On 6/30/22 16:11, Kerin Millar wrote:
-> On Thu, 30 Jun 2022 15:59:12 +0000
-> Kiernan George <kbg98@vt.edu> wrote:
->
->> That's actually what I had, I got screwed up when copying it over.
->> Regardless, do you know how to set that up correctly with libnftnl?
-> I do not. I'll leave it to one of the resident API experts to chime in.
->
+Sorry for late reply.  While packet is out, the list of active hooks
+leaves RCU protection, so, when reinject happens we need to re-fetch the
+list.  The alternative to just dropping is to possibly queue the packet
+again (when hooks were inserted before reinjection position), or skip
+existing hooks (in case ofhook deletion).
+
+> Would it be possible to develop a patch that determines queue 0 should
+> be unaffected by that chain deletion and preserves the queue contents?
+>  Has such a change been attempted before?  Or is there some other
+> workaround for this behavior?
+
+This was the old behaviour, but this made it necessary to do acquire a
+reference count on the base hooks to prevent their removal while packets
+the packet is queued.
+
+If the only problem is the ENOENT, then i'd suggest to remove the
+hook drop and store (u32)nf_hook_entries_head(net, pf, state->hook)
+at nf_queue() time, then re-check that at nf_reinject() time.
+
+Another option would be to store a 'u32 genid' struct netns_nf, store
+that at nf_queue time, revalidate at nf_reinject and increment it instead
+of dropping queued packets at hook deletion time.
