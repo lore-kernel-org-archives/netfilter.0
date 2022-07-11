@@ -1,62 +1,44 @@
-From: "B. Ohnsorg" <b.ohnsorg@freenet.de>
-Subject: Re: Bug in the wiki
-Date: Fri, 8 Jul 2022 08:32:23 +0200
-Message-ID: <01db9f19-67d9-b493-4443-c59102cd70ca@freenet.de>
-References: <CAEXMXLRwFcx4UdjFe_15Q26iuT4K=coZLvBgYfkow_8o9=iB9Q@mail.gmail.com>
- <600cead8-acad-0be6-bfe4-33cee996ccd9@fhmtech.com>
- <CAEXMXLRqUgFmME_8OKpAWRog3dqRCG+veHbJsZPKh9xOZ98D=Q@mail.gmail.com>
- <16130a18-e4c1-a1b7-1414-7025389efca0@fhmtech.com>
- <CAEXMXLSGWtT_6JrCEFhRgvG4-Ssj1jnVUs_r4JjoFzwjiip=mA@mail.gmail.com>
- <d8aa9eed-4e9f-7385-6908-438e71c8c2d1@fhmtech.com>
+From: Kiernan George <kbg98@vt.edu>
+Subject: Re: Creating a map with libnftnl
+Date: Mon, 11 Jul 2022 14:55:00 +0000
+Message-ID: <6350f4d6-76ab-c8e6-80d3-9b817fc6f6d1@vt.edu>
+References: <fbaccc73-c98c-4a21-bc12-0c89b041ae32@vt.edu>
+ <20220630160303.ed722cd8c3a70facdf133f14@plushkava.net>
+ <20220630160628.f7bd5dd1f234d834be19aed6@plushkava.net>
+ <a751cf13-8ca9-7d9d-e1d7-6f4242ae8860@vt.edu>
+ <20220630165409.7c3d0d1920ba9163ab057386@plushkava.net>
+ <cc75919c-63ad-7255-1c60-63f266ba244c@vt.edu>
+ <20220630171153.f6db1674be194c72ca6d17e7@plushkava.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=freenet.de;
-        s=mjaymdexmjqk; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-        References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-        Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-        Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=yUn4FVx6DNXK1/MMhAFNjkoFT0rrampmAsVe51naHfo=; b=mkn/Eo6aIAFA4u+Ihq/mR0m0Co
-        aIaSNTLqycwdWeLawnqePoOge+uLTVAOISrcMD0sHGpVSL6EFm8xnW/LM9UUwdv76tZaxZ43qhxyB
-        btDqziY4yn9QaaqtHGM9nrFodAk1LbWLWmZGCmy1s1JIrEczOrnyR2UXAp/bHg1bC2oCwISPSBVpE
-        RqWoirtcO7FaLSAP3uqbyup65mdvq/RivJBJ9JkmtWeUeMu8+AGSEDesNjte9bVDY8iOcY7Va0fe+
-        Q0G0CiNlcbYb/bRqVsYzD93nZtx5osmBvAZrBv82SS3j6VVMj/O5Ykzuagwo1N9jE14fHB+AXtOEd
-        XTl 
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vt-edu.20210112.gappssmtp.com; s=20210112;
+        h=message-id:date:mime-version:user-agent:subject:content-language:to
+         :references:from:in-reply-to:content-transfer-encoding;
+        bh=W0dSEK250DGRCJmeGhst8RL+a+YHkUmAYeoSBSL2CZE=;
+        b=bgVNRpf5j95ATeeUdFzKj1B6zjZIkPHXl4QkZ4xSY+aRSZp4/K6TDXGnDRaUhLYq4I
+         yZwE3rLw/VXEPc/PXBjbSBKK3e1mqeSqiMno4u7biYpz85yX5bXpImfFQbflVvrmC0dD
+         m98PPJbt7nTqez3DeixqW2E+TpnE2sMgueWa7IOYM6fUiVgJcSMxQeciEtRIXWIgLRcz
+         tRrU4L5atcBncnQr24RFClywY6FXW/2T/85i6+SgxxOUWbwpsRiOkfhnvDO1oAuKPdsH
+         PNgHpaVhGTfZwLlmp4o123HUE0t/QlqV7ejvwoeT+nS1ayPJkkNpbnbUtsJH/8Jp/Swx
+         K6Rw==
 Content-Language: en-US
-In-Reply-To: <d8aa9eed-4e9f-7385-6908-438e71c8c2d1@fhmtech.com>
+In-Reply-To: <20220630171153.f6db1674be194c72ca6d17e7@plushkava.net>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Frank Myhr <fmyhr@fhmtech.com>, =?UTF-8?Q?Nuno_Gon=c3=a7alves?= <nunojpg@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
+Could someone modify the nft-set-add example to show me how to do this? 
+I was able to read the netfilter messages to determine the appropriate 
+key length/type and data length/type, but I'm not sure how those were 
+calculated.
 
-
-
-Am 06.07.22 um 13:26 schrieb Frank Myhr:
-> On 2022/07/06 06:27, Nuno Gonçalves wrote:
-> 
->> Yes. I am testing and always and the bug is exposed with a flood ping,
->> for example, so from the same IP.
->>
->> Yes, I agree that this should accept 5 new sources per second, but
->> each can then do unlimited requests.
->>
->> That is why I suggest the wiki to be updated.
-> 
-> Thanks for clarifying. Now I understand your need to also move the ct 
-> accept rule to the end of the "inbound" base chain to counter the ping 
-> flood from a single ip address.
-> 
-> I'm not going to update the wiki page just yet, for several reasons:
-> 
-> * I'm not the author of the example ruleset.
-> 
-> […]
-> 
-> Best regards,
-> Frank
-
-Add the suggested rule and add explanations to existing and new instead 
-of replacing existing content? Let the reader choose who presumably 
-knows best whether throughput or security is more important.
+On 6/30/22 16:11, Kerin Millar wrote:
+> On Thu, 30 Jun 2022 15:59:12 +0000
+> Kiernan George <kbg98@vt.edu> wrote:
+>
+>> That's actually what I had, I got screwed up when copying it over.
+>> Regardless, do you know how to set that up correctly with libnftnl?
+> I do not. I'll leave it to one of the resident API experts to chime in.
+>
