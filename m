@@ -1,49 +1,52 @@
-From: Dominique MARTINET <dominique.martinet@atmark-techno.com>
-Subject: Re: Requirements for nft nat pre/postrouting chains?
-Date: Wed, 27 Jul 2022 21:04:15 +0900
-Message-ID: <YuEpv1o07HjUZgLk@atmark-techno.com>
-References: <YuDxVBz7FVqk+FHz@atmark-techno.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] libnftnl 1.2.3 release
+Date: Tue, 9 Aug 2022 20:37:28 +0200
+Message-ID: <YvKpaFTOlsXWtS68@salvia>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="fa4xOUHTKoNpPHhp"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <YuDxVBz7FVqk+FHz@atmark-techno.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
-
-Dominique MARTINET wrote on Wed, Jul 27, 2022 at 05:03:32PM +0900:
-> I've boiled down the reproducer to this:
-> 
-> ---
-> nft add table ip test
-> nft chain ip test test '{ type nat hook prerouting priority -100; policy accept; }'
-> nft add rule ip test test log prefix "test-pre-" counter packets 0 bytes 0
-> 
-> # at this point do some network activity;
-> # since there is no match specified new connections should trigger
-> # the log and increment counters for the rule
-> nft list table test
-> 
-> # (and cleanup)
-> nft delete table test
-> ---
-
-Florian Westphal replied off list (thanks!)
-
-After a couple of mails the problem just boils down to conntrack not
-being loaded by a log rule.
-Adding a ct state rule in filter or any masquerade/redirect/snat/dnat in
-here enables it and everything works well.
-
-I was just double-confused because my initial test machine, which had
-dnat rules was down to the other problem of older kernels:
-> (I've also seen on the internet that for older kernels iptable_nat is
-> incompatible with nft nat chains and tried taking it out, but that
-> shouldn't be relevant anymore)
+To: netfilter-devel@vger.kernel.org
+Cc: netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
 
 
-So all is cleared up now,
-thanks!
--- 
-Dominique
+--fa4xOUHTKoNpPHhp
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+
+Hi!
+
+The Netfilter project proudly presents:
+
+        libnftnl 1.2.3
+
+libnftnl is a userspace library providing a low-level netlink
+programming interface (API) to the in-kernel nf_tables subsystem.
+This library is currently used by nftables.
+
+This release includes a compile time bugfix with clang and
+-D_FORTIFY_SOURCE=2. This bug can be emulated using GCC by undefining
+the __va_arg_pack macro before stdio.h
+
+See ChangeLog that comes attached to this email for more details.
+
+You can download it from:
+
+https://www.netfilter.org/projects/libnftnl/downloads.html
+
+Happy firewalling.
+
+
+--fa4xOUHTKoNpPHhp
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: attachment; filename="changes-libnftnl-1.2.3.txt"
+
+Nicholas Vinson (1):
+      build: fix clang+glibc snprintf substitution error
+
+Pablo Neira Ayuso (1):
+      build: libnftnl 1.2.3 release
+
+
+--fa4xOUHTKoNpPHhp--
