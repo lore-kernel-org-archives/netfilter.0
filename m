@@ -1,174 +1,44 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] nftables 1.0.5 release
-Date: Tue, 9 Aug 2022 21:54:38 +0200
-Message-ID: <YvK7fkPf6P52MV+w@salvia>
+From: Turritopsis Dohrnii Teo En Ming <tdtemccna@gmail.com>
+Subject: Upgrading iptables firewall on Red Hat Enterprise Linux 9.0
+Date: Thu, 11 Aug 2022 15:37:37 +0800
+Message-ID: <CACsrZYYqnegWpwEqr_ZCnLQm9UvDjXYB=irTx25WU_E=UzK1iw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="fzRi0kwIlpLps75v"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc;
+        bh=XTwyKaGHj3IXogitBMLRWL2Q8J8Oh92B5S3HF1hLg34=;
+        b=DqPGEOCVcGUwrb3jY90WHaizSI7jVy71OELV3VUGXFQWTh/vrjwiUJ3ncnKtvapbKi
+         esJJmAXqaH10z/KRyw94pHRmXWLLe+TT28Q1VtrxiYjBuobeJflxoIc3k8ykNKlxx5jj
+         EcWGjdqlp+25/iuIklPISc+ClY4rHulotj9smesRJw6MLRdjSBGnYEbrIwxgKPSuzQYj
+         BykzAbdt+ToWSJXllFK3buZLevaIO7udjD5ou0MaNEuh6O+SKhP+VpTryBTRNlli6Kpv
+         EcqinUn59AR4U9Ob1ulHEIPPoAEnm1eq4fYVwuZwZKXap6vj+fUwjg1wjQFa2ZgRzvJ4
+         UoFA==
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter <netfilter@vger.kernel.org>, netfilter-devel <netfilter-devel@vger.kernel.org>
-Cc: netdev@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
+Cc: ceo@teo-en-ming-corp.com
 
+Subject: Upgrading iptables firewall on Red Hat Enterprise Linux 9.0
 
---fzRi0kwIlpLps75v
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+Good day from Singapore,
 
-Hi!
+The following RPM packages are installed on my Red Hat Enterprise
+Linux 9.0 virtual machine.
 
-The Netfilter project proudly presents:
+iptables-libs-1.8.7-28.el9.x86_64
+iptables-nft-1.8.7-28.el9.x86_64
 
-        nftables 1.0.5
+Is it possible to upgrade iptables firewall to the latest version 1.8.8?
 
-This release contains bugfixes (highlights):
+Thank you.
 
-- Fixes for the -o/--optimize, run this --optimize option to automagically
-  compact your ruleset using sets, maps and concatenations, eg.
+Regards,
 
-     # cat ruleset.nft
-     table ip x {
-            chain y {
-                    type nat hook postrouting priority srcnat; policy drop;
-                    ip saddr 1.1.1.1 tcp dport 8000 snat to 4.4.4.4:80
-                    ip saddr 2.2.2.2 tcp dport 8001 snat to 5.5.5.5:90
-            }
-     }
-
-     # nft -o -c -f ruleset.nft
-     Merging:
-     ruleset.nft:4:3-52:                ip saddr 1.1.1.1 tcp dport 8000 snat to 4.4.4.4:80
-     ruleset.nft:5:3-52:                ip saddr 2.2.2.2 tcp dport 8001 snat to 5.5.5.5:90
-     into:
-            snat to ip saddr . tcp dport map { 1.1.1.1 . 8000 : 4.4.4.4 . 80, 2.2.2.2 . 8001 : 5.5.5.5 . 90 }
-
-- Fix ethernet and vlan concatenations, eg. define a dynamic set which
-  is populated from the packet path.
-
-     add table netdev x
-     add chain netdev x y { type filter hook ingress device enp0s25 priority 0; }
-     add set netdev x macset { typeof ether daddr . vlan id; flags dynamic,timeout; }
-     add rule netdev x y update @macset { ether daddr . vlan id timeout 60s }
-
-  or simply match using a concatenation:
-
-     add rule netdev x y ether saddr . vlan id { 0a:0b:0c:0d:0e:0f . 42, 0a:0b:0c:0d:0e:0f . 4095 } counter accept
-
-- Fix ruleset listing with interface wildcard map, eg.
-
-     table inet filter {
-        chain INPUT {
-            iifname vmap {
-                "eth0" : jump input_lan,
-                "wg*" : jump input_vpn
-            }
-        }
-        chain input_lan {}
-        chain input_vpn {}
-     }
-
-- Fix several regressions in the input lexer which broke valid rulesets.
-- Fix slowdown with large lists of singleton interval elements.
-- Fix set automerge feature for large lists of singleton interval elements.
-- Fix bogus error reporting for exact overlaps.
-- Fix segfault when adding elements to invalid set.
-- fix device parsing in netdev family in json.
-
-See changelog for more details (attached to this email).
-
-You can download this new release from:
-
-https://www.netfilter.org/projects/nftables/downloads.html
-https://www.netfilter.org/pub/nftables/
-
-To build the code, libnftnl >= 1.2.3 and libmnl >= 1.0.4 are required:
-
-* https://netfilter.org/projects/libnftnl/index.html
-* https://netfilter.org/projects/libmnl/index.html
-
-Visit our wikipage for user documentation at:
-
-* https://wiki.nftables.org
-
-For the manpage reference, check man(8) nft.
-
-In case of bugs and feature requests, file them via:
-
-* https://bugzilla.netfilter.org
-
-Happy firewalling.
-
---fzRi0kwIlpLps75v
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: attachment; filename="changes-nftables-1.0.5.txt"
-
-Florian Westphal (12):
-      Revert "scanner: flags: move to own scope"
-      parser: add missing synproxy scope closure
-      scanner: don't pop active flex scanner scope
-      scanner: allow prefix in ip6 scope
-      netlink_delinearize: allow postprocessing on concatenated elements
-      netlink_delinearize: postprocess binary ands in concatenations
-      proto: track full stack of seen l2 protocols, not just cumulative offset
-      debug: dump the l2 protocol stack
-      tests: add a test case for ether and vlan listing
-      netlink_delinearize: also postprocess OP_AND in set element context
-      evaluate: search stacked header list for matching payload dep
-      src: allow anon set concatenation with ether and vlan
-
-Jo-Philipp Wich (1):
-      meta: don't use non-POSIX formats in strptime()
-
-Oleksandr Natalenko (1):
-      src: proto: support DF, LE PHB, VA for DSCP
-
-Pablo Neira Ayuso (38):
-      tests: shell: runtime set element automerge
-      rule: collapse set element commands
-      intervals: do not report exact overlaps for new elements
-      intervals: do not empty cache for maps
-      optimize: do not compare relational expression rhs when collecting statements
-      optimize: do not merge rules with set reference in rhs
-      optimize: do not print stateful information
-      optimize: remove comment after merging
-      optimize: fix reject statement
-      optimize: fix verdict map merging
-      optimize: add osf expression support
-      optimize: add xfrm expression support
-      optimize: add fib expression support
-      optimize: add binop expression support
-      optimize: add numgen expression support
-      optimize: add hash expression support
-      optimize: add unsupported statement
-      tests: shell: run -c -o on ruleset
-      optimize: only merge OP_IMPLICIT and OP_EQ relational
-      optimize: assume verdict is same when rules have no verdict
-      optimize: limit statement is not supported yet
-      libnftables: release top level scope
-      netlink_delinearize: memleak when parsing concatenation data
-      intervals: fix crash when trying to remove element in empty set
-      intervals: check for EXPR_F_REMOVE in case of element mismatch
-      parser_bison: fix error location for set elements
-      src: remove NFT_NLATTR_LOC_MAX limit for netlink location error reporting
-      mnl: store netlink error location for set elements
-      segtree: fix map listing with interface wildcard
-      evaluate: report missing interval flag when using prefix/range in concatenation
-      cache: release pending rules when chain binding lookup fails
-      rule: crash when uncollapsing command with unexisting table or set
-      cache: prepare nft_cache_evaluate() to return error
-      cache: validate handle string length
-      cache: report an error message if cache initialization fails
-      parser_json: fix device parsing in netdev family
-      tests/py: disable arp family for queue statement
-      build: Bump version to 1.0.5
-
-Peter Tirsek (1):
-      evaluate: fix segfault when adding elements to invalid set
-
-Phil Sutter (3):
-      intervals: Do not sort cached set elements over and over again
-      tests/py: Add a test for failing ipsec after counter
-      doc: Document limitations of ipsec expression with xfrm_interface
-
-
---fzRi0kwIlpLps75v--
+Mr. Turritopsis Dohrnii Teo En Ming
+Targeted Individual in Singapore
+11 Aug 2022 Thursday
+Blogs:
+https://tdtemcerts.blogspot.com
+https://tdtemcerts.wordpress.com
