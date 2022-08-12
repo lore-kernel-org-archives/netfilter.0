@@ -1,25 +1,27 @@
-From: Florian Westphal <fw@strlen.de>
+From: Peter Hoeg <peter@hoeg.com>
 Subject: Re: Running nft --check as non-root
-Date: Thu, 11 Aug 2022 18:15:00 +0200
-Message-ID: <20220811161500.GF8667@breakpoint.cc>
-References: <874jyiu661.fsf@hoeg.com>
+Date: Fri, 12 Aug 2022 13:15:41 +0800
+Message-ID: <87v8qy9gzg.fsf@hoeg.com>
+References: <874jyiu661.fsf@hoeg.com> <20220811161500.GF8667@breakpoint.cc>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <874jyiu661.fsf@hoeg.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=hoeg.com; s=google;
+        h=mime-version:message-id:in-reply-to:date:subject:from:to:user-agent
+         :references:from:to:cc;
+        bh=BsB3oiw4igUtHY9vRrDsxo36pjOt4nLqO9flZGof5Qc=;
+        b=OVUIAEJZfnE2uOHgx+iaZlKu+j81F9EFddzH6t5V0mPsx68x3qkGF6qHxikYzhTCmJ
+         m0EynwdibtIt+7byubtzVlT0sjZi2QF8UARX7SY8lWE+DTpf30w6GO7PcNqdrBIfZwVH
+         6rzgsFYA/bzt4g4Zfxt89Zsvf2TdjnBFVml7Y=
+In-reply-to: <20220811161500.GF8667@breakpoint.cc>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; format=flowed; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Peter Hoeg <peter@hoeg.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Peter Hoeg <peter@hoeg.com> wrote:
-> as part of deploying nftables rules on NixOS, I want to check the syntax before actually trying to deploy them.
-> 
-> Now, nft --check --file works fine when run as root but the builder used does not have root permissions (or access to sudo or anything like that). Is there any particular reason why nft --check needs to run as root or any way to make it work as !root?
 
-Yes, this not a syntax check. The ruleset is passed to the kernel.
+> Yes, this not a syntax check. The ruleset is passed to the kernel.
 
-The only difference is the lack of the final 'commit' instruction to
-activate the ruleset, this makes the kernel abort/unwind the entire
-transaction.
+Is there any other way we can verify that at least the syntax is valid? Maybe have a --syntax flag that just invokes the scanner and parser without needing any privileged access?
+
+I know nothing of the internals, so that might of course be completely impossible given the current architecture.
