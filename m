@@ -1,46 +1,59 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] 17th Netfilter Workshop in Seville, Spain
-Date: Wed, 31 Aug 2022 18:02:04 +0200
-Message-ID: <Yw+F/N3y9vIHnY+3@salvia>
+From: "Vink, Ronald" <ronald.vink@boskalis.com>
+Subject: RE: [ANNOUNCE] 17th Netfilter Workshop in Seville, Spain
+Date: Thu, 1 Sep 2022 05:07:38 +0000
+Message-ID: <AS1PR04MB9501282712816CD553AEB936997B9@AS1PR04MB9501.eurprd04.prod.outlook.com>
+References: <Yw+F/N3y9vIHnY+3@salvia>
 Mime-Version: 1.0
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=boskalis.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HVhO2C0qKZ9n1akp4bEbF9haTxka5RpaNXvzBScLL/c=;
+ b=iDUzH3eK9QRF7W0dEYXJLT1rKaj2fElLBrg9NZE1zDWBJrl2h+UTtufEXg8S6d0mR4OqByn7m9gYxCn9x4XH5qcpnH0Tg9ujCS0XZJFz5CFG58wUO8KoythpNgqsEGlz+m9flB4yG0w8plTc0hIkVn+j53Q3w/2UhkRivKRlzFebL4NVx74MxLeqeNmx0yfX1zUP+HRPDf9gDkE/emS3NcrNhRjkYVaq4iJB6cGOq15aamcHlsAobTE7A4MJ+vYpGfQOrKJBE0ZWihDU0/4uGx8BIFLVesQ8zUVjEF/NFVM/8FbQOxjK8H1oWjq/Lw10tz2VDaNL0tt6zi5CiaRf5g==
+In-Reply-To: <Yw+F/N3y9vIHnY+3@salvia>
+Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter-devel@vger.kernel.org
-Cc: netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
+To: Pablo Neira Ayuso <pablo@netfilter.org>, "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>
+Cc: "lwn@lwn.net" <lwn@lwn.net>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, "netfilter-announce@lists.netfilter.org" <netfilter-announce@lists.netfilter.org>
 
-Hi,
-
-We are pleased to announce a new round in the Netfilter workshop series.
-This year this event will take place from October 20 to October 21, 2022.
-The event will be held at Zevenet [1] facilities in Mairena del Aljarafe,
-Seville, Spain.
-
-The Netfilter Workshop (NFWS) is the premier event organized by and for
-the Netfilter community. During the workshop days, Linux network and
-Netfilter developers meet and discuss the status of ongoing developments
-related to Netfilter and plans for the future.
-
-Attendance requires an invitation. Linux network developers with
-significant contributions to any of the Netfilter subsystems and users
-with interesting use cases and open problems are also welcome. We have
-traditionally held a space for sister projects that build on the
-Netfilter infrastructure such as the Linux Virtual Server project.
-
-You can send us a proposal to coreteam@netfilter.org in a very light
-format: title and quick abstract (no more than 500 words!), as well as
-the estimated time. Not later than September 30.
-
-We are also looking for sponsors to cover expenses, if you think you can
-help us raise funds to hold the workshop, please contact us at
-coreteam@netfilter.org and we will be glad to send you our sponsorship
-policy.
-
-Join us.
-
-[1] https://www.zevenet.com
-
-P.S: This edition will celebrate 24 years since this project began in the
-     fall of 1998.
+UGxlYXNlIHVuc3Vic2NyaWJlIG1lIGZyb20gdGhlIGxpc3QNCg0KLS0tLS1PcmlnaW5hbCBNZXNz
+YWdlLS0tLS0NCkZyb206IG5ldGZpbHRlci1hbm5vdW5jZSA8bmV0ZmlsdGVyLWFubm91bmNlLWJv
+dW5jZXNAbGlzdHMubmV0ZmlsdGVyLm9yZz4gT24gQmVoYWxmIE9mIFBhYmxvIE5laXJhIEF5dXNv
+DQpTZW50OiB3b2Vuc2RhZyAzMSBhdWd1c3R1cyAyMDIyIDE4OjAyDQpUbzogbmV0ZmlsdGVyLWRl
+dmVsQHZnZXIua2VybmVsLm9yZw0KQ2M6IGx3bkBsd24ubmV0OyBuZXRmaWx0ZXJAdmdlci5rZXJu
+ZWwub3JnOyBuZXRmaWx0ZXItYW5ub3VuY2VAbGlzdHMubmV0ZmlsdGVyLm9yZw0KU3ViamVjdDog
+W0FOTk9VTkNFXSAxN3RoIE5ldGZpbHRlciBXb3Jrc2hvcCBpbiBTZXZpbGxlLCBTcGFpbg0KDQpI
+aSwNCg0KV2UgYXJlIHBsZWFzZWQgdG8gYW5ub3VuY2UgYSBuZXcgcm91bmQgaW4gdGhlIE5ldGZp
+bHRlciB3b3Jrc2hvcCBzZXJpZXMuDQpUaGlzIHllYXIgdGhpcyBldmVudCB3aWxsIHRha2UgcGxh
+Y2UgZnJvbSBPY3RvYmVyIDIwIHRvIE9jdG9iZXIgMjEsIDIwMjIuDQpUaGUgZXZlbnQgd2lsbCBi
+ZSBoZWxkIGF0IFpldmVuZXQgWzFdIGZhY2lsaXRpZXMgaW4gTWFpcmVuYSBkZWwgQWxqYXJhZmUs
+DQpTZXZpbGxlLCBTcGFpbi4NCg0KVGhlIE5ldGZpbHRlciBXb3Jrc2hvcCAoTkZXUykgaXMgdGhl
+IHByZW1pZXIgZXZlbnQgb3JnYW5pemVkIGJ5IGFuZCBmb3INCnRoZSBOZXRmaWx0ZXIgY29tbXVu
+aXR5LiBEdXJpbmcgdGhlIHdvcmtzaG9wIGRheXMsIExpbnV4IG5ldHdvcmsgYW5kDQpOZXRmaWx0
+ZXIgZGV2ZWxvcGVycyBtZWV0IGFuZCBkaXNjdXNzIHRoZSBzdGF0dXMgb2Ygb25nb2luZyBkZXZl
+bG9wbWVudHMNCnJlbGF0ZWQgdG8gTmV0ZmlsdGVyIGFuZCBwbGFucyBmb3IgdGhlIGZ1dHVyZS4N
+Cg0KQXR0ZW5kYW5jZSByZXF1aXJlcyBhbiBpbnZpdGF0aW9uLiBMaW51eCBuZXR3b3JrIGRldmVs
+b3BlcnMgd2l0aA0Kc2lnbmlmaWNhbnQgY29udHJpYnV0aW9ucyB0byBhbnkgb2YgdGhlIE5ldGZp
+bHRlciBzdWJzeXN0ZW1zIGFuZCB1c2Vycw0Kd2l0aCBpbnRlcmVzdGluZyB1c2UgY2FzZXMgYW5k
+IG9wZW4gcHJvYmxlbXMgYXJlIGFsc28gd2VsY29tZS4gV2UgaGF2ZQ0KdHJhZGl0aW9uYWxseSBo
+ZWxkIGEgc3BhY2UgZm9yIHNpc3RlciBwcm9qZWN0cyB0aGF0IGJ1aWxkIG9uIHRoZQ0KTmV0Zmls
+dGVyIGluZnJhc3RydWN0dXJlIHN1Y2ggYXMgdGhlIExpbnV4IFZpcnR1YWwgU2VydmVyIHByb2pl
+Y3QuDQoNCllvdSBjYW4gc2VuZCB1cyBhIHByb3Bvc2FsIHRvIGNvcmV0ZWFtQG5ldGZpbHRlci5v
+cmcgaW4gYSB2ZXJ5IGxpZ2h0DQpmb3JtYXQ6IHRpdGxlIGFuZCBxdWljayBhYnN0cmFjdCAobm8g
+bW9yZSB0aGFuIDUwMCB3b3JkcyEpLCBhcyB3ZWxsIGFzDQp0aGUgZXN0aW1hdGVkIHRpbWUuIE5v
+dCBsYXRlciB0aGFuIFNlcHRlbWJlciAzMC4NCg0KV2UgYXJlIGFsc28gbG9va2luZyBmb3Igc3Bv
+bnNvcnMgdG8gY292ZXIgZXhwZW5zZXMsIGlmIHlvdSB0aGluayB5b3UgY2FuDQpoZWxwIHVzIHJh
+aXNlIGZ1bmRzIHRvIGhvbGQgdGhlIHdvcmtzaG9wLCBwbGVhc2UgY29udGFjdCB1cyBhdA0KY29y
+ZXRlYW1AbmV0ZmlsdGVyLm9yZyBhbmQgd2Ugd2lsbCBiZSBnbGFkIHRvIHNlbmQgeW91IG91ciBz
+cG9uc29yc2hpcA0KcG9saWN5Lg0KDQpKb2luIHVzLg0KDQpbMV0gaHR0cHM6Ly9ldXIwMy5zYWZl
+bGlua3MucHJvdGVjdGlvbi5vdXRsb29rLmNvbS8/dXJsPWh0dHBzJTNBJTJGJTJGd3d3LnpldmVu
+ZXQuY29tJTJGJmFtcDtkYXRhPTA1JTdDMDElN0NSLlZpbmslNDBib3NrYWxpcy5ubCU3Qzg0YjRi
+ZTg5NTQyYzQ3YjhiMDcwMDhkYThiNmIyY2UzJTdDZTkwNTlkZjRmMmE5NDhkNjgxODI3ZjU2NmVh
+MTVhZmElN0MwJTdDMCU3QzYzNzk3NTU4OTY3MTgxMDE5NSU3Q1Vua25vd24lN0NUV0ZwYkdac2Iz
+ZDhleUpXSWpvaU1DNHdMakF3TURBaUxDSlFJam9pVjJsdU16SWlMQ0pCVGlJNklrMWhhV3dpTENK
+WFZDSTZNbjAlM0QlN0MzMDAwJTdDJTdDJTdDJmFtcDtzZGF0YT05Z2I3MENOSWp3Ynd3JTJCbm1J
+T2poMmVFVlZYQVMlMkZERVVuQiUyRlFkUXZ1QiUyRkklM0QmYW1wO3Jlc2VydmVkPTANCg0KUC5T
+OiBUaGlzIGVkaXRpb24gd2lsbCBjZWxlYnJhdGUgMjQgeWVhcnMgc2luY2UgdGhpcyBwcm9qZWN0
+IGJlZ2FuIGluIHRoZQ0KICAgICBmYWxsIG9mIDE5OTguDQo=
