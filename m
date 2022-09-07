@@ -1,41 +1,32 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Raw payload matching beyond 2040 bits
-Date: Wed, 7 Sep 2022 16:55:38 +0200
-Message-ID: <Yxiw6g7/NpotoRqJ@salvia>
-References: <20220819100738.63yvp7iggoilt2uc@sourcephile.fr>
+From: Florian Westphal <fw@strlen.de>
+Subject: Re: proper ICMPv6 syntax for specific daddr
+Date: Wed, 7 Sep 2022 16:58:37 +0200
+Message-ID: <20220907145837.GA20812@breakpoint.cc>
+References: <dc512913-d28a-9224-ad5a-e68828975766@foscore.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20220819100738.63yvp7iggoilt2uc@sourcephile.fr>
+In-Reply-To: <dc512913-d28a-9224-ad5a-e68828975766@foscore.com>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Julien Moutinho <julm+netfilter@sourcephile.fr>
-Cc: netfilter@vger.kernel.org, Dominique Martinet <asmadeus@codewreck.org>
+To: Tom <tom@foscore.com>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Fri, Aug 19, 2022 at 12:07:38PM +0200, Julien Moutinho wrote:
-> Hi netfilter@,
+Tom <tom@foscore.com> wrote:
+> I can successfully enable ping for IPv6 using this rule:
 > 
-> Apparently matching beyond 2040 bits (255 bytes) starts again at 0 or something like that.
-> Not sure whether this is intended or not,
-> but in this case a warning would be appreciated.
-> 
-> Thanks for your work,
-> Julien
-> 
-> # nft add rule inet nat prerouting udp dport 4242 @th,2040,128 0x12345678912345678912345678912345 log
-> 
-> # nft add rule inet nat prerouting udp dport 4242 @th,2048,128 0x12345678912345678912345678912345 log
-> 
-> # nft list ruleset | grep 4242
-> udp dport 4242 @th,2040,128 0x12345678912345678912345678912345 log
-> udp dport 4242 udp sport 4660 udp dport 22136 udp length 37155 udp checksum 17767 @th,64,64 0x8912345678912345 log
+> nft add rule ip6 filter input ip6 nexthdr icmpv6 counter limit rate 5/second accept
 
-Upstream kernel fix:
+This is not related to ping, this ratelimits ALL of icmpv6.
 
-commit 94254f990c07e9ddf1634e0b727fab821c3b5bf9
-Author: Pablo Neira Ayuso <pablo@netfilter.org>
-Date:   Sun Aug 21 11:47:04 2022 +0200
+Please use 'icmpv6 type { echo-request, echo-reply}'.
 
-    netfilter: nft_payload: report ERANGE for too long offset and length
+> nft add rule ip6 filter input ip6 daddr xxxx:43:a:83::5 ip6 nexthdr icmpv6 counter limit rate 5/second accept
+> nft add rule ip6 filter input ip6 daddr xxxx:43:a:83::6 ip6 nexthdr icmpv6 counter limit rate 5/second accept
+> 
+> ...but what happens is that the first IPv6 will work, but not the second. If I reverse the order, sometimes the second
+> rule still works but now the first doesn't.  I've tried using sets like so:
 
+icmpv6 is integral part of ipv6, the above will ratelimit neighbour
+solicitations, pmtu updates and so on as well.
