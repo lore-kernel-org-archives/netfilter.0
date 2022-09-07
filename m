@@ -1,86 +1,109 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Segmentation fault when starting conntrackd
-Date: Wed, 7 Sep 2022 16:50:56 +0200
-Message-ID: <Yxiv0GT2iyuHTWo7@salvia>
-References: <PR3PR07MB8130E53D6E800C939928AE66FF7F9@PR3PR07MB8130.eurprd07.prod.outlook.com>
+Subject: Re: conntrackd "issue" in asymmetric scenario with TCP vs ICMP
+Date: Wed, 7 Sep 2022 16:52:24 +0200
+Message-ID: <YxiwKBIbUmjUyjQA@salvia>
+References: <CANf9dFNw9cOQ_mnViaTyZMcJAdsScAX9e6fvV0wb1LW7RYuoCg@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <PR3PR07MB8130E53D6E800C939928AE66FF7F9@PR3PR07MB8130.eurprd07.prod.outlook.com>
+In-Reply-To: <CANf9dFNw9cOQ_mnViaTyZMcJAdsScAX9e6fvV0wb1LW7RYuoCg@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Viton, Pedro (Nokia - ES/Madrid)" <pedro.viton@nokia.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: Martin Gignac <martin.gignac@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-On Mon, Sep 05, 2022 at 06:08:43AM +0000, Viton, Pedro (Nokia - ES/Madrid) wrote:
-> Hi:
+On Fri, Sep 02, 2022 at 06:22:16PM -0400, Martin Gignac wrote:
+> Hi,
 > 
-> I'm trying to have conntrackd working, but after creating a configuration file for FTFW over UDP , I get a Segmentation Fault error when staring it up
-> I've also tried with NOTRACK over TCP, but same result.
+> (Apologies in advance if this is not the right place for this question).
 > 
-> [root@luna38 ~]# /usr/sbin/conntrackd -C /opt/AAA/load-balancer/run/conntrackd/conntrackd.conf
-> Segmentation fault
-
-You have tools to get a backtrace on were the problem is going on if
-you report an issue upstream.
-
-> [root@luna38 ~]#
+> I am running conntrackd between two Linux firewalls running on Fedora
+> 35 using the following configuration:
 > 
-> 
-> In my case, I'm running the conntrackd that comes with default package in RHEL 7.9 (kernel 3.10.0-1127), which is version 1.4.4 (I'm aware it is not the latest one)
-> 
-> My configuration file is the following one:
-> 
-> Sync {
+>     Sync {
 >         Mode FTFW {
+>             ResendQueueSize 131072
+>             PurgeTimeout 60
+>             ACKWindowSize 300
+>             DisableExternalCache On
+>             StartupResync On
 >         }
-> 
 >         UDP {
->             IPv4_address 10.10.10.38
->             IPv4_Destination_Address 10.10.10.33
->             Interface ens256
->             Port 3780
+>             IPv4_address 172.16.1.1
+>             IPv4_Destination_Address 172.16.1.2
+>             Port 3781
+>             Interface bond0
+>             SndSocketBuffer 1249280
+>             RcvSocketBuffer 1249280
+>             Checksum on
 >         }
-> }
-> 
-> General {
->         Nice -20
+>         Options {
+>             TCPWindowTracking Off
+>             ExpectationSync On
+>         }
+>     }
+>     General {
+>         Systemd on
+>         HashSize 32768
+>         HashLimit 131072
 >         LogFile on
+>         Syslog off
 >         LockFile /var/lock/conntrack.lock
 >         UNIX {
->                 Path /var/run/conntrackd.ctl
->                 Backlog 20
+>             Path /var/run/conntrackd.ctl
 >         }
+>         NetlinkBufferSize 2097152
+>         #NetlinkBufferSizeMaxGrowth 8388608
+>         NetlinkBufferSizeMaxGrowth 83886080
+>         NetlinkOverrunResync On
+>         NetlinkEventsReliable Off
+>         EventIterationLimit 100
 >         Filter From Userspace {
->                 Protocol Accept {
->                         TCP
->                 }
->                 Address Ignore {
->                         IPv4_address 127.0.0.1
->                         IPv4_address 10.10.10.38
->                         IPv4_address 10.10.10.33
->                 }
->          }
-> }
+>             Protocol Accept {
+>                 TCP
+>                 UDP
+>                 ICMP
+>             }
+>             Address Ignore {
+>                 IPv4_address 127.0.0.1
+>                 IPv4_address 172.16.1.0/29
+>                 IPv4_address 192.168.1.24/29
+>                 IPv6_address ::1
+>             }
+>         }
+>     }
 > 
-> The IP address of the server where I'm trying to start conntrackd has 10.10.10.38 IP address, and it is on ens256 interface. And the 10.10.10.33 is the replicated one
-> $ ip addr
-> ...
-> 4: ens256: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP group default qlen 10000
->     link/ether 00:0c:29:ef:63:30 brd ff:ff:ff:ff:ff:ff
->     inet 10.10.10.38/24 brd 10.10.10.255 scope global ens256
->        valid_lft forever preferred_lft forever
->     inet6 2001:db0:10:10::38/64 scope global
->        valid_lft forever preferred_lft forever
->     inet6 fe80::20c:29ff:feef:6330/64 scope link
->        valid_lft forever preferred_lft forever
+> In an asymmetric scenario where incoming traffic flows through
+> firewall "A" and outgoing traffic through firewall "B", I've noticed
+> that pings work, but that SSH does not. In the case of pings, the
+> first ICMP echo reply flowing through firewall "B" sent in response to
+> the first ICMP echo request is dropped by "B" because the traffic is
+> "invalid" according to the nft trace, but subequent echo replies make
+> it through as they are recognized as being part of an existing state.
+> So far I assumed that the first packet was dropped because "B" hadn't
+> yet received the [NEW] conntrack state from "A" by the way it received
+> the echo reply.
 > 
+> However, in the case of an SSH session establishment where the SYN
+> packet goes through "A" and the SYN-ACK packet goes through "B", nft
+> trace always shows the SYN-ACK (including retransmissions) as being
+> dropped because it is "invalid".
 > 
-> Is there any other log file where I could see the root cause of the Segmantation Fault?
-> The /var/log/conntrackd.log doesn't give any clue.
+> Why does the ping reply eventually get recognized as being part of an
+> established state, but not the SYN-ACK? Is it a misconfiguration in my
+> conntrackd.conf? Are TCP 3-way handshakes supported by conntrackd in
+> asymmetric flows?
 > 
-> Or maybe my configuration file is not correct?
+> I'm not sure exactly if I missed some deeper trace I can perform on
+> the states being sent/received by conntrackd between each firewall. I
+> thought if I could get more visibility in those that it might become
+> obvious why the scenario isn't working.
+> 
+> If anyone has hints to help me troubleshoot, or can point to mistakes
+> in my configuration, my setup, or even my expectations, I would
+> appreciate it.
 
-For community support, you have to try latest version first, it might
-be a bug already fixed upstream.
+Flow should be distributed evenly between routers, pure assymetric
+packet-based distribution is prone to race between internal state
+updates triggered by packets and the state synchronization itself.
