@@ -1,93 +1,45 @@
-From: "Viton, Pedro (Nokia - ES/Madrid)" <pedro.viton@nokia.com>
-Subject: Segmentation fault when starting conntrackd
-Date: Mon, 5 Sep 2022 06:08:43 +0000
-Message-ID: <PR3PR07MB8130E53D6E800C939928AE66FF7F9@PR3PR07MB8130.eurprd07.prod.outlook.com>
+From: Tom <tom@foscore.com>
+Subject: proper ICMPv6 syntax for specific daddr
+Date: Wed, 7 Sep 2022 10:10:41 -0400
+Message-ID: <dc512913-d28a-9224-ad5a-e68828975766@foscore.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nokia.onmicrosoft.com;
- s=selector1-nokia-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Ev+MF5Aimf2rx889gpNcrDnm84kyLZ+HufxNSniz2C4=;
- b=SwnFt+/8bfoHS56mrTTZnUfxc8MyIcckrJTF1T57YceOYa2aPcd/TDYRd/5+V3LWVmK4895tXkdAxckgb1zeVOOI2m/iVpfOKT8FgCVshKSV7fhx7yJVkUAG9jmHd8yzxoCLujkgSrjE0xbjMmS52ecQKvTbyPIcSvayKENS9O8=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foscore.com;
+        s=deliv; t=1662559844;
+        bh=wr9pSLBgarpoyyM9qcnhVj/MQJzQz/KMRqEgKE9BD60=;
+        h=Date:To:From:Subject:From;
+        b=XXDI5tNP4GO+/22FyVrfjw9QSN7I84s+G3Dxf5bJPC0IINK136DKA1DVPCzhnygvB
+         neiPljaXmG8lRgsqL4vji3hhLhtIIHtLAETzo1DjAeVgeIHKCtb6JxRhcxx96EUzCW
+         bbUVKVaCbC/z3j99JDMHomGcV4a4BEkxQf9IEWPk=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foscore.com;
+        s=deliv; t=1662559842;
+        bh=wr9pSLBgarpoyyM9qcnhVj/MQJzQz/KMRqEgKE9BD60=;
+        h=Date:To:From:Subject:From;
+        b=OAuqOuz/qAKuskA+j5XJZe9/cH7LJfeCLZxyWRXU5Zh39gd80N56cLG5ygkpBiXFh
+         IFnxb61Cf2BdFtL3CDlsocOZyG/WXKXoQucz5WYc3byoKVgPIDnfUzxn0FMNroLK9G
+         yXvaPKl50W3kGOHTu8BYpB/O+FvQBfoq7EpjCutQ=
 Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi:
+I can successfully enable ping for IPv6 using this rule:
 
-I'm trying to have conntrackd working, but after creating a configuration f=
-ile for FTFW over UDP , I get a Segmentation Fault error when staring it up
-I've also tried with NOTRACK over TCP, but same result.
+nft add rule ip6 filter input ip6 nexthdr icmpv6 counter limit rate 5/second accept
 
-[root@luna38 ~]# /usr/sbin/conntrackd -C /opt/AAA/load-balancer/run/conntra=
-ckd/conntrackd.conf
-Segmentation fault
-[root@luna38 ~]#
+I have one physical ethernet card which is assigned five IPv6 addresses.
+What I want to do is enable it for only 2 of 5 IPv6 addresses, like so:
 
+nft add rule ip6 filter input ip6 daddr xxxx:43:a:83::5 ip6 nexthdr icmpv6 counter limit rate 5/second accept
+nft add rule ip6 filter input ip6 daddr xxxx:43:a:83::6 ip6 nexthdr icmpv6 counter limit rate 5/second accept
 
-In my case, I'm running the conntrackd that comes with default package in R=
-HEL 7.9 (kernel 3.10.0-1127), which is version 1.4.4 (I'm aware it is not t=
-he latest one)
+...but what happens is that the first IPv6 will work, but not the second. If I reverse the order, sometimes the second
+rule still works but now the first doesn't.  I've tried using sets like so:
 
-My configuration file is the following one:
+nft add rule ip6 filter input ip6 daddr @trusted ip6 nexthdr icmpv6 counter limit rate 5/second accept
+nft add rule ip6 filter input ip6 daddr @admin ip6 nexthdr icmpv6 counter limit rate 5/second accept
 
-Sync {
-        Mode FTFW {
-        }
+... with the same result: the second rule is ignored. What am I doing wrong? Is there something about ICMP and multiple IP addresses
 
-        UDP {
-            IPv4_address 10.10.10.38
-            IPv4_Destination_Address 10.10.10.33
-            Interface ens256
-            Port 3780
-        }
-}
-
-General {
-        Nice -20
-        LogFile on
-        LockFile /var/lock/conntrack.lock
-        UNIX {
-                Path /var/run/conntrackd.ctl
-                Backlog 20
-        }
-        Filter From Userspace {
-                Protocol Accept {
-                        TCP
-                }
-                Address Ignore {
-                        IPv4_address 127.0.0.1
-                        IPv4_address 10.10.10.38
-                        IPv4_address 10.10.10.33
-                }
-         }
-}
-
-The IP address of the server where I'm trying to start conntrackd has 10.10=
-.10.38 IP address, and it is on ens256 interface. And the 10.10.10.33 is th=
-e replicated one
-$ ip addr
-...
-4: ens256: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP gro=
-up default qlen 10000
-    link/ether 00:0c:29:ef:63:30 brd ff:ff:ff:ff:ff:ff
-    inet 10.10.10.38/24 brd 10.10.10.255 scope global ens256
-       valid_lft forever preferred_lft forever
-    inet6 2001:db0:10:10::38/64 scope global
-       valid_lft forever preferred_lft forever
-    inet6 fe80::20c:29ff:feef:6330/64 scope link
-       valid_lft forever preferred_lft forever
-
-
-Is there any other log file where I could see the root cause of the Segmant=
-ation Fault?
-The /var/log/conntrackd.log doesn't give any clue.
-
-Or maybe my configuration file is not correct?
-
-Any help will be appreciated.
-
-Thanks a lot:
-  Pedro
+on one interface that I'm not aware of? How do I write multiple rules that each enable one daddr?
