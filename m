@@ -1,50 +1,41 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: List chain during attack high CPU usage
-Date: Wed, 7 Sep 2022 16:54:42 +0200
-Message-ID: <YxiwsmThXAYt3kml@salvia>
-References: <b5e3e3d3-9631-31a4-7fc0-7193bdc10176@brskt.be>
- <YxCKp2yQT1mu096e@salvia>
+Subject: Re: Raw payload matching beyond 2040 bits
+Date: Wed, 7 Sep 2022 16:55:38 +0200
+Message-ID: <Yxiw6g7/NpotoRqJ@salvia>
+References: <20220819100738.63yvp7iggoilt2uc@sourcephile.fr>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <YxCKp2yQT1mu096e@salvia>
+In-Reply-To: <20220819100738.63yvp7iggoilt2uc@sourcephile.fr>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Brskt <contact@brskt.be>
-Cc: netfilter@vger.kernel.org
+To: Julien Moutinho <julm+netfilter@sourcephile.fr>
+Cc: netfilter@vger.kernel.org, Dominique Martinet <asmadeus@codewreck.org>
 
-On Thu, Sep 01, 2022 at 12:34:15PM +0200, Pablo Neira Ayuso wrote:
-> On Wed, Aug 31, 2022 at 02:18:17AM +0200, Brskt wrote:
-> > Hello,
-> > 
-> > I'm using some filter which uses sets with meters. When the server is
-> > receiving a lot of packets per seconds (~800k+) and using the command to
-> > list the chain, it does take ~80% of CPU and take a long time to return an
-> > output.
-> > 
-> > # cat /etc/issue
-> > Welcome to Alpine Linux 3.16
-> > 
-> > # nft -v
-> > nftables v1.0.5 (Lester Gooch #4)
-> > 
-> > # uname -r
-> > 5.15.62-1-lts
+On Fri, Aug 19, 2022 at 12:07:38PM +0200, Julien Moutinho wrote:
+> Hi netfilter@,
 > 
-> Could you provide more information on your setup? ruleset?
+> Apparently matching beyond 2040 bits (255 bytes) starts again at 0 or something like that.
+> Not sure whether this is intended or not,
+> but in this case a warning would be appreciated.
 > 
-> Ruleset listing is also lockless.
+> Thanks for your work,
+> Julien
 > 
-> It is hard to guess with this short notice.
+> # nft add rule inet nat prerouting udp dport 4242 @th,2040,128 0x12345678912345678912345678912345 log
+> 
+> # nft add rule inet nat prerouting udp dport 4242 @th,2048,128 0x12345678912345678912345678912345 log
+> 
+> # nft list ruleset | grep 4242
+> udp dport 4242 @th,2040,128 0x12345678912345678912345678912345 log
+> udp dport 4242 udp sport 4660 udp dport 22136 udp length 37155 udp checksum 17767 @th,64,64 0x8912345678912345 log
 
-For the record, the existing userspace cache logic in nftables is
-retrieving the elements in your set, and I suspect you have a lot of
-elements, that is why:
+Upstream kernel fix:
 
-        nft list chain x y
+commit 94254f990c07e9ddf1634e0b727fab821c3b5bf9
+Author: Pablo Neira Ayuso <pablo@netfilter.org>
+Date:   Sun Aug 21 11:47:04 2022 +0200
 
-is likely taking time there to show the listing.
+    netfilter: nft_payload: report ERANGE for too long offset and length
 
-It should be possible to improve this cache logic, it will only
-require a userspace software update.
