@@ -1,41 +1,71 @@
-From: Reindl Harald <h.reindl@thelounge.net>
-Subject: Re: proper ICMPv6 syntax for specific daddr
-Date: Thu, 8 Sep 2022 16:23:58 +0200
-Message-ID: <a161b909-8459-2450-f260-f846cd0f3eae@thelounge.net>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Fwd: proper ICMPv6 syntax for specific daddr
+Date: Thu, 8 Sep 2022 17:13:08 +0200
+Message-ID: <YxoGhE3IGFzehyo0@salvia>
 References: <dea61421-4ce1-bb68-2a74-88b6f42c299e@foscore.com>
  <22a53086-4479-c142-6415-06e1e42ebeca@foscore.com>
- <75d06629-de72-651f-4167-82d9a973b442@thelounge.net>
- <be7347ec-4aad-92ea-9c87-925f3cad8c62@foscore.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
-In-Reply-To: <be7347ec-4aad-92ea-9c87-925f3cad8c62@foscore.com>
+Content-Disposition: inline
+In-Reply-To: <22a53086-4479-c142-6415-06e1e42ebeca@foscore.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: Tom <tom@foscore.com>
 Cc: netfilter@vger.kernel.org
 
-
-
-Am 08.09.22 um 15:31 schrieb Tom:
-> On 2022-09-08 04:46, Reindl Harald wrote:
->> why do you make all that so complicated instead write a simple 
->> ratelimit rule for ping apply to everyone and *before* have a set 
->> which ACCEPTs a specific list of ip's if that's needed at all
+On Wed, Sep 07, 2022 at 11:57:16AM -0400, Tom wrote:
+> On 2022-09-07 11:25, Pablo Neira Ayuso wrote:
+> > On Wed, Sep 07, 2022 at 11:22:24AM -0400, Tom wrote:
+> > > table ip6 filter {
+> > > 	set ping6 {
+> > > 		typeof ip6 daddr . meta l4proto
+> > > 		limit rate 5/second
+> > > 		elements = { xxxx:43:a:83::2 . ipv6-icmp limit rate 5/second,
+> > > 			     xxxx:43:a:83::3 . ipv6-icmp limit rate 5/second,
+> > > 			     xxxx:43:a:83::4 . ipv6-icmp limit rate 5/second }
+> > > 	}
+> > > 	chain input {
+> > > 		type filter hook input priority filter; policy drop;
+> > > 		ip6 daddr . meta l4proto @ping6 accept
+> > > 	}
+> > > 
+> > > Is this OK?
+> > 
+> > My recommendation is to use concatenations and sets, not to ratelimit
+> > _all_ icmpv6 traffic ;-)
 > 
-> OK, sounds good. Perhaps you're under the mistaken impression I'm a NFT 
-> expert. Clearly I'm not. Perhaps you could suggest a resource where I 
-> might find examples which solve my problem. Better yet, you could 
-> provide a practical example. It would be appreciated
+> Now I'm confused. I'd like to avoid ping floods if possible, but I can't seem to get the syntax right, so:
+> table ip6 filter {
+> 	set ping6 {
+> 		typeof ip6 daddr . meta l4proto
 
-in a rulset any rule which is final (DROP, JEJECT, ACCEPT) skips 
-anything below
+you removed the limit line in the set declaration ?
 
-so you have a chain where you send only ICMP, write first the specific 
-rules and at last one the "everything else" decision not matter if it's 
-ACCEPT/DROP/REJECT
+> 		elements = { xxxx:43:a:83::2 . ipv6-icmp,
+> 			     xxxx:43:a:83::3 . ipv6-icmp,
+> 			     xxxx:43:a:83::4 . ipv6-icmp }
+> 	}
+> 	chain input {
+> 		type filter hook input priority filter; policy drop;
+> 		ip6 daddr . meta l4proto @ping6 accept
+> 	}
+> }
 
-i use iptables-nft because i hate the new syntax and have thousands of 
-lines in scripts for configure and dispaly status of rulesets - but the 
-principles are the same for every firewall
+If you would like to throttle icmpv6 echo-request, the::
+
+table ip6 filter {
+        set ping6 {
+                typeof ip6 daddr . icmpv6 type
+                limit rate 5/second
+                elements = { aaaa:43:a:83::2 . echo-request,
+                             aaaa:43:a:83::3 . echo-request,
+                             aaaa:43:a:83::4 . echo-request }
+        }
+        chain input {
+                type filter hook input priority filter; policy drop;
+                ip6 daddr . icmpv6 type @ping6 accept
+        }
+}
+
+Please, see the wiki for more examples on concatenations and sets/maps.
