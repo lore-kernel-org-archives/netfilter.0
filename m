@@ -1,70 +1,36 @@
-From: =?iso-8859-2?Q?Kamil_Jo=F1ca?= <kjonca@op.pl>
-Subject: Re: how to use meters?
-Date: Mon, 19 Sep 2022 12:00:44 +0200
-Message-ID: <87czbrn0oj.fsf@alfa.kjonca>
-References: <871qs9neip.fsf@alfa.kjonca> <Yygss6Pkwuwgmy4o@salvia>
+From: grin <grin@grin.hu>
+Subject: [doc?] nftables; symbolic variable definition only allows suffixed
+ comments
+Date: Mon, 19 Sep 2022 12:46:58 +0200
+Message-ID: <20220919124658.27922d64@narya.grin.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=op.pl; s=2011;
-        t=1663581646; bh=+dkgUvQj87R3kaGPfnMHWJxpvXHnHaOMhLynAx8yt2Y=;
-        h=From:To:Subject:References:Date:In-Reply-To:From;
-        b=KPwtqGLGyW7AZ8ePQ9ZBGEPIGLBqX0iwhOf2JsiNBmHLUeeSY8X4nL2KqaLGjBj7+
-         0CBhXirqF+L0Fcp8Vx6QsqrVC1+8B4bIHANjAzk2HRsQx19qgcVqEoej9HTWk4ymvK
-         UG043YWJ4WOYWyEW1J+Up2MTtfUf60tYDQdgx8PQ=
-In-Reply-To: <Yygss6Pkwuwgmy4o@salvia> (Pablo Neira Ayuso's message of "Mon,
-        19 Sep 2022 10:47:47 +0200")
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=grin.hu;
+        s=foobar; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:
+        Subject:To:From:Date:Sender:Reply-To:Cc:Content-ID:Content-Description:
+        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=giE0+BY7ef4hzvXFfpw+0xFde+RFf7Cpp0FzVuG8UmU=; b=TWw235cHepbSpXsZS3yDhUvlhq
+        16CZ4B3Ilb1LuSlV1BkdU/D40sdachFzxSxFbfvlVmd/+TKhMvqDDG6t+0dLjtTjME2rQzbBF5+Uv
+        EDW/88QasYNMUXNCBKJKZgRWvs6cvvSGnAq5S+YPBwR3kWKmo8RyefkWdC55+fb0Zv8nkjPUEOEL5
+        Tmr0DSbdoX2aXuD8MPrOko8O492rBlZz4g5Qxf4JA1YiI1sab4WjhNKl0PqODETv8jAmscQ3uEoOH
+        rXkmXSUCwcF1VqBpS+UqDfg+iIJu1HT1ZfiVgzhfGOtlS1jmQ14cjCUUwzX2jAa2kw2uQK5vTujL3
+        yq4OMq2g==;
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Pablo Neira Ayuso <pablo@netfilter.org> writes:
+Hello,
 
-> On Sun, Sep 18, 2022 at 12:49:34PM +0200, Kamil Jo=F1ca wrote:
-> [...]
->> For example:
->> https://wiki.archlinux.org/title/Nftables#Dynamic_blackhole
->> --8<---------------cut here---------------start------------->8---
->>  ct state new tcp dport 443 \
->>                 meter flood size 128000 { ip saddr timeout 10s limit rat=
-e over 10/second } \
->>                 add @blackhole { ip saddr timeout 1m }
->> --8<---------------cut here---------------end--------------->8---
->>=20
->> I understand " add @blackhole { ip saddr timeout 1m }" - adds address to
->> set for 1 min.
->> but what is
->> "meter flood size 128000 { ip saddr timeout 10s limit rate over 10/secon=
-d }"
->>=20
->> (I can guess but I cannot see proper doc of this)
->> Any hint?
->
-> I'd suggest you use a set declaration for this, instead of the meter synt=
-ax.
->
-> This example shows how to ratelimit new connections to 10 per second:
->
+I see no signs of this in neither the docs (manpages) nor the wiki: it seems that in variable definitions comments are only allowed as a line ending comment but not as a standalone one, contrary to the documentation:
 
-[... snip ...]
-Thank you. After some digging and reading manual (especially "SET
-STATEMET" ) i wrote similar thing (two tables flood +blaclist, etc)
-So thanks for confirmation. :)
+# this is allowed
+define meh = { 1.2.3.4, # this is allowed
+# this is a syntax error
+5.6.7.8 } 
 
-The only thing is
-"    set flood {
-        type ipv4_addr
-        flags dynamic
-        timeout 1m
-        limit rate over 10/second
-        size 65536
-    }
-"
+I believe this is acceptable but the documentation shall reflect that.
 
-I did not found "limit" statement in set definition in manual.
-Am I overlooked something?
-
-KJ
-
---=20
-http://wolnelektury.pl/wesprzyj/teraz/
+g
