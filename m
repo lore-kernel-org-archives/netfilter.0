@@ -1,36 +1,68 @@
-From: grin <grin@grin.hu>
-Subject: [doc?] nftables; symbolic variable definition only allows suffixed
- comments
-Date: Mon, 19 Sep 2022 12:46:58 +0200
-Message-ID: <20220919124658.27922d64@narya.grin.hu>
+From: Bruno de Paula Larini <bruno.larini@riosoft.com.br>
+Subject: BUG: soft lockup on kernel 5.19.9 when attempting FTP connections
+Date: Tue, 20 Sep 2022 11:12:56 -0300
+Message-ID: <b2f301f6-d335-04bd-43b2-001e5dcacc09@riosoft.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=grin.hu;
-        s=foobar; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:
-        Subject:To:From:Date:Sender:Reply-To:Cc:Content-ID:Content-Description:
-        Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-        In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-        List-Post:List-Owner:List-Archive;
-        bh=giE0+BY7ef4hzvXFfpw+0xFde+RFf7Cpp0FzVuG8UmU=; b=TWw235cHepbSpXsZS3yDhUvlhq
-        16CZ4B3Ilb1LuSlV1BkdU/D40sdachFzxSxFbfvlVmd/+TKhMvqDDG6t+0dLjtTjME2rQzbBF5+Uv
-        EDW/88QasYNMUXNCBKJKZgRWvs6cvvSGnAq5S+YPBwR3kWKmo8RyefkWdC55+fb0Zv8nkjPUEOEL5
-        Tmr0DSbdoX2aXuD8MPrOko8O492rBlZz4g5Qxf4JA1YiI1sab4WjhNKl0PqODETv8jAmscQ3uEoOH
-        rXkmXSUCwcF1VqBpS+UqDfg+iIJu1HT1ZfiVgzhfGOtlS1jmQ14cjCUUwzX2jAa2kw2uQK5vTujL3
-        yq4OMq2g==;
+dkim-signature: v=1; c=relaxed; h=message-id:date:mime-version:to:from:subject:content-type:content-transfer-encoding;
+ d=riosoft.com.br; s=default; a=rsa-sha256;
+ bh=nQ/IuFpNGADLj54IvezZYnQPybfCzBIuMVl0WcaLO9I=;
+ b=gJikpp7KfPUYF8LrZiee9065BeiHtkTAdaqSMH0neoBTxKg3DA+yoxKBXa8Igsvft
+ i0Gi4dMfem76qwXwUNPbFgcF2jhmamtXBQzPw5bCiXOUeAr1mnzWAzjWUzR9/McxKWS
+ 4X5k8W1VTpDYr4K15ocavqVsYJgrcXJZRkfMdp4=;
+Content-Language: pt-BR
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hello,
+Hi,
+While testing my iptables ruleset on a Fedora 36, I've encountered an=20
+unexpected behaviour regarding FTP connection forwarding.
+I've reduced the ruleset to look like below.
+I've tried to "modprobe nf_conntrack_ftp" alone, but external clients=20
+still won't get data connections.
+Then I "modprobe nf_nat_ftp". It loads normally but after the first=20
+attempt to establish an FTP connection, the system freezes and sometimes=20
+prints the following message:
 
-I see no signs of this in neither the docs (manpages) nor the wiki: it seems that in variable definitions comments are only allowed as a line ending comment but not as a standalone one, contrary to the documentation:
+Message from syslogd@fw1-test at Sep 20 09:33:28 ...
+ =C2=A0kernel:watchdog: BUG: soft lockup - CPU#1 stuck for 26s! [swapper/1:=
+0]
 
-# this is allowed
-define meh = { 1.2.3.4, # this is allowed
-# this is a syntax error
-5.6.7.8 } 
+This problem happens on the newest Fedora 36 stock kernel as of=20
+20/09/2022, version 5.19.9-200.fc36.x86_64 (and at least on the previous=20
+5.19.8-200.fc36.x86_64), but (apparently) works normally on version=20
+5.17.5-300.fc36.x86_64, which was the default kernel from ISO install.
 
-I believe this is acceptable but the documentation shall reflect that.
+Is it a bug, maybe?
+Just wanted to report this, maybe someone on this list can do something=20
+about it.
 
-g
+
+### My eclipsed ruleset in which this problem happens
+# eth0: LAN
+# eth1: Public
+# 192.168.22.5: internal FTP server
+
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+echo 1 > /proc/sys/net/netfilter/nf_conntrack_helper
+
+modprobe nf_conntrack_ftp
+modprobe nf_nat_ftp
+
+iptables -A INPUT -i lo -j ACCEPT
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -i eth0 -s 192.168.22.0/24 -j ACCEPT
+
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -i eth0 -s 192.168.22.0/24 -j ACCEPT
+iptables -A FORWARD -i eth1 -d 192.168.22.5 -p tcp --dport 21 -j ACCEPT
+
+iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 21 -j DNAT=20
+--to-destination 192.168.22.5
+iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE
+
