@@ -1,27 +1,107 @@
-From: Bruno de Paula Larini <bruno.larini@riosoft.com.br>
-Subject: Re: BUG: soft lockup on kernel 5.19.9 when attempting FTP connections
-Date: Tue, 20 Sep 2022 15:53:05 -0300
-Message-ID: <f735370d-fdc7-b7df-0e96-599f3c230058@riosoft.com.br>
-References: <b2f301f6-d335-04bd-43b2-001e5dcacc09@riosoft.com.br>
- <20220920151952.GD30575@breakpoint.cc>
- <37c01892-11ea-4347-7eae-871d46fecf41@riosoft.com.br>
- <20220920162401.GE30575@breakpoint.cc>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Change in nft set element add syntax?
+Date: Thu, 22 Sep 2022 07:40:20 +0200
+Message-ID: <Yyv1RIjX0pGSbAMP@salvia>
+References: <20220922021238.donues3tuiufzbsn@sarek.home.aplund.id.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-dkim-signature: v=1; c=relaxed; h=message-id:date:mime-version:subject:to:references:from:in-reply-to:content-type:content-transfer-encoding;
- d=riosoft.com.br; s=default; a=rsa-sha256;
- bh=7soMIbdhMlMD+sEkHedfZRTNUG9efhlTnq7CNbrSWII=;
- b=AnzHjhgfOVOMxJ6LVeBXpwLX0JAiHNqkA9Ba4n+fm2WIdJqAypCV8oH94NucixBzj
- m2dUsr43YidPdzR6ywDbJ6ZxWAY0ZpoTCfA4zgEq+1a8akPIWKZvHlftpIMnnadrriD
- hPOeb9Gx66ZrSsmoYBZQvHixHhPOLzbWqYLJa0Q=;
-Content-Language: pt-BR
-In-Reply-To: <20220920162401.GE30575@breakpoint.cc>
+Content-Disposition: inline
+In-Reply-To: <20220922021238.donues3tuiufzbsn@sarek.home.aplund.id.au>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Florian Westphal <fw@strlen.de>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Austin Lund <austin.lund@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Em 20/09/2022 13:24, Florian Westphal escreveu:
-> Thanks, this is enough info.  I'll work on a fix.
-I see you already issued the fix. That was quick!
-Thanks a lot!
+Hi,
+
+No syntax updates have been done, see below.
+
+On Thu, Sep 22, 2022 at 12:12:38PM +1000, Austin Lund wrote:
+> Hi,
+> 
+> I upgraded from nft 1.0.1 to 1.0.5 and found some of the rules I have
+> gave some errors.  I narrowed it down to adding to sets.  It's all
+> pretty simple; the error is
+> 
+> > # /usr/bin/nft -c -f /etc/nftables.conf
+> > /etc/nftables.conf:44:3-37: Error: Could not process rule: Operation not supported
+> > 	ip saddr @badconns goto update_drop
+> > 	^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> > /etc/nftables.conf:64:3-28: Error: Could not process rule: Invalid argument
+> > 	add @badconns { ip saddr }
+> > 	^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+> I have my nftables.conf stuff like this:
+> 
+> > table inet filter {
+> >         set badconns { typeof ip saddr; timeout 1h; }
+> >         set badconns6 { typeof ip6 saddr; timeout 1h; }
+> > ...
+> >         chain input {
+> > ...
+> >                 ip saddr @badconns goto update_drop
+> >                 ip6 saddr @badconns6 goto update_drop
+> > ...
+> >         }
+> >
+> >         chain update_drop {
+> >                 update @badconns { ip saddr }
+> >                 update @badconns6 { ip6 saddr }
+> >                 drop
+> >         }
+> > ...
+> 
+> This logic is probably somewhat broken, but it does work in the older
+> version.  Should this give an error in the new version? 
+
+This loads fine here.
+
+# cat test.nft
+table inet filter {
+         set badconns { typeof ip saddr; timeout 1h; }
+         set badconns6 { typeof ip6 saddr; timeout 1h; }
+
+         chain input {
+                 ip saddr @badconns goto update_drop
+                 ip6 saddr @badconns6 goto update_drop
+         }
+
+         chain update_drop {
+                 update @badconns { ip saddr }
+                 update @badconns6 { ip6 saddr }
+                 drop
+         }
+}
+# nft -f test.nft
+# echo $?
+# nft list ruleset
+table inet filter {
+        set badconns {
+                typeof ip saddr
+                size 65535
+                flags dynamic,timeout
+                timeout 1h
+        }
+
+        set badconns6 {
+                typeof ip6 saddr
+                size 65535
+                flags dynamic,timeout
+                timeout 1h
+        }
+
+        chain input {
+                ip saddr @badconns goto update_drop
+                ip6 saddr @badconns6 goto update_drop
+        }
+
+        chain update_drop {
+                update @badconns { ip saddr }
+                update @badconns6 { ip6 saddr }
+                drop
+        }
+}
+
+# nft -v
+nftables v1.0.5 (Lester Gooch #4)
