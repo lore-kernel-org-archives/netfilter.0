@@ -1,85 +1,102 @@
-From: Eugene Crosser <crosser@average.org>
-Subject: Re: Reliably flushing individual tables in nftables
-Date: Sat, 8 Oct 2022 20:00:36 +0200
-Message-ID: <689adccc-8bb4-9363-a281-91952cd06365@average.org>
-References: <CAE+Udoq40XMVyx34hiEjLzVVitJC8ZcsR19aMawNYPZP4NRJVg@mail.gmail.com>
- <f057a62a-1f4d-cc84-53ee-f767757a2a40@average.org>
- <CAE+UdoooNrM6khxmgz1MB_cnspZpBa=oA8OTxi7zLm4NK3O-Zw@mail.gmail.com>
+From: Eric <evil.function@proton.me>
+Subject: Updating set elements from command line
+Date: Sat, 08 Oct 2022 18:31:01 +0000
+Message-ID: <Eio6D1ukecFTMx3qFhiCTbHRPOiSKqei5fvfeaGcMc4SfXxZriRAXGFv_HgaBa-wVulHKr7D-6mE6RNQOJztUM1tooTU5nCqQ1Z9AO_o_IM=@proton.me>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------7yh9KXOeGTs0CNerpOr7T0jf"
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=average.org; s=mail;
-        t=1665252055; bh=C+4qqpZpjowCnfxyItnZ76CSqKZBv0O/GlkqTdztspA=;
-        h=Date:To:Cc:References:From:Subject:In-Reply-To:From;
-        b=YF9bNjMZwxBztG/ap+6c+AX6YF4moHohH/xoP8kuWx+7ooO0dY6LYWnxoMog5t6Hd
-         wrTHOrgcq1H5E26HY58dtWJtQL4LdrHV0vlN6wimlrzrc+JbOtIBsxYwamsuX4uxLd
-         yr4zRKX7mB5vhENjGxBRtWPOULlqMDR0KRwIb2z0=
-Content-Language: en-US
-In-Reply-To: <CAE+UdoooNrM6khxmgz1MB_cnspZpBa=oA8OTxi7zLm4NK3O-Zw@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=unbdoqmbg5hnjc74btt2jlcx2e.protonmail; t=1665253868; x=1665513068;
+        bh=PCltfir4MVqTANNBKLpRR4CMHxUWKxKXgUi3Loh0KwE=;
+        h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+         Subject:Reply-To:Feedback-ID:Message-ID;
+        b=WISPZh6NsM2b2DFiQz4nrQuPBUZqjEWj1bE9sxNXaeUBErZNNREvlm1E4p/8flSiv
+         HmTnnzBEizAQ9y1L7/RvU33jBCvaT036Q0ohocvSnKQXwAQ9CnMWCEBEEg+vt9f5nt
+         KxTD4hgMBlDzjsrOkQjZdinl7WY2hd08CkovODJCVCO+vlfSzA6eYHnR9YMZ9r0/m0
+         Ucr79VT2NcKPEXu1Yu0YD8bPF6xyqybvEvzPLHTzQij2N6G3FuBdPtpI3oTn+/Azb9
+         dvCkCxQNTG0k0rRG2R3CwoTatcaPP6qx/xy3odyFYlDRA6P+I3ngzvshsen7ym+5Z0
+         CgJDsmXN/9qkA==
 List-ID: <netfilter.vger.kernel.org>
-To: "Kevin P. Fleming" <kevin@km6g.us>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---------------7yh9KXOeGTs0CNerpOr7T0jf
-Content-Type: multipart/mixed; boundary="------------lraZR05GsC7HeX16BEI1qHoi";
- protected-headers="v1"
-From: Eugene Crosser <crosser@average.org>
-To: "Kevin P. Fleming" <kevin@km6g.us>
-Cc: netfilter@vger.kernel.org
-Message-ID: <689adccc-8bb4-9363-a281-91952cd06365@average.org>
-Subject: Re: Reliably flushing individual tables in nftables
-References: <CAE+Udoq40XMVyx34hiEjLzVVitJC8ZcsR19aMawNYPZP4NRJVg@mail.gmail.com>
- <f057a62a-1f4d-cc84-53ee-f767757a2a40@average.org>
- <CAE+UdoooNrM6khxmgz1MB_cnspZpBa=oA8OTxi7zLm4NK3O-Zw@mail.gmail.com>
-In-Reply-To: <CAE+UdoooNrM6khxmgz1MB_cnspZpBa=oA8OTxi7zLm4NK3O-Zw@mail.gmail.com>
+Is it possible to update set elements outside the packet path?
+https://wiki.nftables.org/wiki-nftables/index.php/Updating_sets_from_the_pa=
+cket_path
 
---------------lraZR05GsC7HeX16BEI1qHoi
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: base64
+I'm using a blacklist set, which is populated from an external source and
+updated nightly in a cron job.  Current set definition is:
 
-T24gMDgvMTAvMjAyMiAxOTozOSwgS2V2aW4gUC4gRmxlbWluZyB3cm90ZToNCg0KPj4gV2Ug
-bmVlZCB0byBkZWFsIHdpdGggYSBzaW1pbGFyIHNpdHVhdGlvbiwgd2hlbiB0aGVyZSBtYXkg
-YmUgbW9yZSB0aGFuIG9uZSBlbnRpdHkNCj4+IG11Y2tpbmcgd2l0aCB0aGUgcnVsZXNldC4g
-VGhlIGFwcHJvYWNoIHRoYXQgd2UgdGFrZSBub3cgaXMgdGhhdCBldmVyeW9uZSB3aG8NCj4+
-IGNoYW5nZXMgdGhlIHJ1bGVzZXQgbXVzdCByZWZsZWN0IHRoZSBjaGFuZ2UgaW4gZmlsZSBp
-biAvZXRjL25mdGFibGVkLmQvDQo+PiBkaXJlY3RvcnksIHRoYXQgaXMgaW5jbHVkZWQgZnJv
-bSAvZXRjL25mdGFibGVzLmNvbmYuIEFzIGxvbmcgYXMgdGhlcmUgYXJlIG5vDQo+PiBleGNl
-cHRpb25zIHRvIHRoYXQsIGl0IGlzIGFsd2F5cyBzYWZlIHRvIGZsdXNoIGFuZCByZWxvYWQg
-ZXZlcnl0aGluZywgYW5kIGFsc28NCj4+IHNob3VsZCBiZSBwb3NzaWJsZSB0byBydW4gLS1j
-aGVjay4NCj4gDQo+IEkgd2lzaCBJIGNvdWxkIGRvIHRoYXQsIGJ1dCB0aGUgVGFpbHNjYWxl
-IFZQTiB3b24ndCBzdG9yZSB0aGUgcnVsZXMgaXQNCj4gbmVlZHMgaW4gYSBmaWxlOyBpdCBj
-YW4gYmUgdG9sZCAqbm90KiB0byBtdWNoIHdpdGggdGhlIGZpcmV3YWxsIGF0DQo+IGFsbCwg
-d2hpY2ggbWVhbnMgSSBjb3VsZCBpbmplY3QgdGhlIG5lY2Vzc2FyeSBydWxlcyBteXNlbGYs
-IGJ1dCBJDQo+IHdvdWxkbid0IGJlIGFibGUgdG8ga25vdyB3aGVuIGEgbmV3IHZlcnNpb24g
-bmVlZHMgZGlmZmVyZW50IHJ1bGVzLiBGb3INCj4gbm93LCBqdXN0IHVzaW5nIHNlcGFyYXRl
-IHRhYmxlcyAod2l0aCBwcmlvcml0aWVzIHNldCBhcHByb3ByaWF0ZWx5KQ0KPiB3aWxsIHdv
-cmsgZmluZS4NCg0KSWYgeW91IGNhbiBleGVjdXRlIHNvbWV0aGluZyBhdXRvbWF0aWNhbGx5
-IGFmdGVyIHRhaWxzY2FsZSBpbnN0YWxscyBpdHMgcnVsZXMsIA0KeW91IGNvdWxkIGFsc28g
-ZHVtcCB0aGVtIGludG8gYSBmaWxlIGF0IHRoYXQgbW9tZW50IHlvdXJzZWxmLi4uIEUuZy4g
-ZGVmaW5lIGFuIA0KRXhlY1Bvc3QgaW4gYSBzeXN0ZW1kIHVuaXQgZXh0ZW5zaW9uLg0KDQpK
-dXN0IGFuIGlkZWEuIEkgaGF2ZSBubyBleHBlcmllbmNlIHdpdGggdGFpbHNjYWxlLg0KDQpF
-dWdlbmUNCg==
+    table ... {
+        set doh_ipv4 {
+            typeof ip daddr
+            counter
+        }
+        ...
 
---------------lraZR05GsC7HeX16BEI1qHoi--
+My update script currently maintains counter values by a kludge,
+dump-flush-repopulate:
 
---------------7yh9KXOeGTs0CNerpOr7T0jf
-Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="OpenPGP_signature"
+    # Dump the current set in json
+    json=3D$(nft -j list set inet firewall doh_ipv4)
+    ... select out the current counts into a map indexed by IP ...
 
------BEGIN PGP SIGNATURE-----
+    ips=3D$(curl https://some/ip4.list)
+    nft flush set ...  # Thus losing all statistics.
+    for ip in $ips; do
+        ... fetch $packets and $bytes from map using $ip ...
+        nft add element ... { $ip counter packets $packets bytes $bytes }
+    done
 
-iQEzBAEBCgAdFiEEnAziRJw3ydIzIkaHfKQHw5GdRYwFAmNBusQACgkQfKQHw5Gd
-RYz05wgAj5GxKW0/9yTBKXj/wrSg2ZTpmIxbzaKyPg9+3G0JaldmryD1kFyQ5qQB
-vX5U9FzlIEsjkWOJqioQ0Fw06cUNSnpkKxuveR6xHOzzxf6VDjykoGa2AwPq69kg
-Sk18khUPTCiDPMVpabpfkJbpbTs6cIvgS7egLSj0wM+r3HsbgLQNp9DkPilsDX0d
-xT5ef5GIz6OXNodjbLCoTfXDe4YmV7aqsejXO0LhsaMHsm2ctEkVhIjZGOE3q2em
-u3fZtfGK9503pQ/NwnllOpcldwUVM8GzcPvnE4rS38g2QMBLqJ672+cJHn4vIMC9
-vEC8U9J31aU6TxYSdHcbS+ppeup9pg==
-=xh8Z
------END PGP SIGNATURE-----
+I would much rather use timeouts to remove old elements, thus eliminating
+the kludge.  First, redefine the set with timeouts:
 
---------------7yh9KXOeGTs0CNerpOr7T0jf--
+    table ... {
+        set doh_ipv4 {
+            typeof ip daddr
+            counter
+            flags timeout
+            timeout 3d
+            gc_interval 1h
+        }
+        ...
+
+Then my cron script would just run through the list of addresses something =
+like:
+
+    ips=3D$(curl https://some/ip4.list)
+    for ip in $ips; do
+        nft update element ... { $ip expires 3d }
+    done
+
+But...
+
+$ nft -v
+nftables v1.0.2 (Lester Gooch)
+$ nft update element ... { 1.1.1.1 expires 3d }
+Error: syntax error, unexpected update
+update element
+^^^^^^
+
+The problem is that 'update' only appears to be implemented in the packet p=
+ath,
+according to the wiki article mentioned at top.
+
+So again, is there some way to get 'update' behavior from the cli tool?
+
+-
+As an aside, this would solve two other problems with my current scheme:
+
+  1) There's a windows during the update after the set is flushed, but befo=
+re
+     the element is added back and queries can sneak past (that window is o=
+nly
+     5-10sec, so not a real issue);
+
+  2) Sometimes blacklisted hosts "bounce" in and out of the downloaded list
+     (this is a real issue, as these hosts might come back online and bypas=
+s the
+     firewall for the 24h period between cron updates, having a 3d expirati=
+on
+     would be a significant mitigation).
+
