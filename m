@@ -1,48 +1,79 @@
-From: "Kevin P. Fleming" <kevin@km6g.us>
-Subject: Reliably flushing individual tables in nftables
-Date: Sat, 8 Oct 2022 09:04:04 -0400
-Message-ID: <CAE+Udoq40XMVyx34hiEjLzVVitJC8ZcsR19aMawNYPZP4NRJVg@mail.gmail.com>
+From: Eugene Crosser <crosser@average.org>
+Subject: Re: Reliably flushing individual tables in nftables
+Date: Sat, 8 Oct 2022 18:47:00 +0200
+Message-ID: <f057a62a-1f4d-cc84-53ee-f767757a2a40@average.org>
+References: <CAE+Udoq40XMVyx34hiEjLzVVitJC8ZcsR19aMawNYPZP4NRJVg@mail.gmail.com>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------U5bTbesYMl1thgRTfYUXYiTu"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=km6g.us; s=google;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=BdTLWC2Aok34NfOh+R+GHU62NJZHg/512T/L5Cp5iVQ=;
-        b=ODXIbTeoQKH5inimC3w2aeFxvr6LJ5HtJAuqjfxH/5pWKN89SsAJW+gBnwklPoRJX+
-         IRlH3CwRvokDBvItfhSLNi8ZYuA03tPBBYFDtRAwR//zEYgtbwIu5HjC+a64uc05GD7b
-         nZSr0BaSkwBjQt8PhDh9PPrZngi+XBuir3nXzAdKvIoG3+uvYN2eINODlhgszdZStTPW
-         vD5fZU6dbYY1fsqFl0UQpZeAo+IlAVP0S3rkTmPjaMjkbHvFWBZ4/wHS7yL/+JnrkptN
-         z4EETpAImkrZhTVVo/Djx0pDQ7/0rmoITsDhCkF6JQG6W868oa82PgFgMpM9h2t/afjT
-         4Qdg==
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=average.org; s=mail;
+        t=1665247628; bh=4aGquPXfRnCHlnfWC+JvHPJCxe4QzDTe2jGLgTAfXxg=;
+        h=Date:To:References:From:Subject:In-Reply-To:From;
+        b=cx+CjOsqrRzTW4PeYXYaG7LTSGBJJmhF0g0XZfFBfvDksCynHkg2pSo1PvFhfHYSf
+         fD9EQuLviSLo6ld0+1ju6MaWrfN/Ucr20fkN8K4R7zjcp7xF/BzfGCj0sUiijFNfpH
+         Qa9QvVbG7rAddIgOy67HpHLX/a2zjojV+dicKMX8=
+Content-Language: en-US
+In-Reply-To: <CAE+Udoq40XMVyx34hiEjLzVVitJC8ZcsR19aMawNYPZP4NRJVg@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: "Kevin P. Fleming" <kevin@km6g.us>, netfilter@vger.kernel.org
 
-On my firewall machines the nft ruleset contains tables I created
-(using a systemd unit similar to Debian's nftables.service unit) and
-also tables created by Tailscale.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------U5bTbesYMl1thgRTfYUXYiTu
+Content-Type: multipart/mixed; boundary="------------wLfcRo0GFczWB9r9g6d0mOC6";
+ protected-headers="v1"
+From: Eugene Crosser <crosser@average.org>
+To: "Kevin P. Fleming" <kevin@km6g.us>, netfilter@vger.kernel.org
+Message-ID: <f057a62a-1f4d-cc84-53ee-f767757a2a40@average.org>
+Subject: Re: Reliably flushing individual tables in nftables
+References: <CAE+Udoq40XMVyx34hiEjLzVVitJC8ZcsR19aMawNYPZP4NRJVg@mail.gmail.com>
+In-Reply-To: <CAE+Udoq40XMVyx34hiEjLzVVitJC8ZcsR19aMawNYPZP4NRJVg@mail.gmail.com>
 
-When reloading my own rules, I'd like to be able to use 'nft --check'
-to validate the candidate rules before attempting to apply them, in
-case a failed application would leave the firewall more open than it
-should be. However, I can't do that at the moment because '--check'
-assumes that the commands supplied to it are being applied to an
-'empty' environment, or something similar to that.
+--------------wLfcRo0GFczWB9r9g6d0mOC6
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-Normally this would be solved by including 'flush ruleset' in the
-rules file passed to '--check', but I can't do that because it would
-flush the Tailscale tables too.
+T24gMDgvMTAvMjAyMiAxNTowNCwgS2V2aW4gUC4gRmxlbWluZyB3cm90ZToNCj4gT24gbXkg
+ZmlyZXdhbGwgbWFjaGluZXMgdGhlIG5mdCBydWxlc2V0IGNvbnRhaW5zIHRhYmxlcyBJIGNy
+ZWF0ZWQNCj4gKHVzaW5nIGEgc3lzdGVtZCB1bml0IHNpbWlsYXIgdG8gRGViaWFuJ3MgbmZ0
+YWJsZXMuc2VydmljZSB1bml0KSBhbmQNCj4gYWxzbyB0YWJsZXMgY3JlYXRlZCBieSBUYWls
+c2NhbGUuDQpbLi4uXQ0KPiBJJ3ZlIGdvdCBhbiB1Z2x5IHdvcmthcm91bmQgYXQgdGhlIG1v
+bWVudCBidXQgSSdkIGxpa2UgdG8gYXZvaWQgdGhhdC4NCj4gSSB0aGluayB0aGUgc2ltcGxl
+c3Qgc29sdXRpb24gaGVyZSB3b3VsZCBiZSB0byBlbmhhbmNlICduZnQgZmx1c2gNCj4gdGFi
+bGUgPHRhYmxlPicgdG8gbm90IHJlcG9ydCBhbiBlcnJvciBpZiB0aGUgdGFibGUgZG9lcyBu
+b3QgZXhpc3QsDQo+IHNpbmNlIGluIHRoZSBlbmQgdGhhdCB3YXMgYWxtb3N0IHRoZSBzYW1l
+IGdvYWwgYXMgdGhlIGNvbW1hbmQgaXRzZWxmLg0KPiBEb2VzIHRoaXMgc2VlbSByZWFzb25h
+YmxlPw0KDQpZb3UgY2FuIGRlZmluZSB0aGUgdGFibGUgYW5kIHRoZW4gcmVtb3ZlIGl0IGlu
+IHRoZSBuZXh0IGxpbmUuIERlZmluaXRpb24gd2lsbCBkbyANCm5vdGhpbmcgaWYgdGhlIHRh
+YmxlIGV4aXN0cywgYW5kIHdpbGwgY3JlYXRlIGFuZCBlbXB0eSBvbmUgd2hlbiBpdCBkb2Vz
+IG5vdC4NCg0KV2UgbmVlZCB0byBkZWFsIHdpdGggYSBzaW1pbGFyIHNpdHVhdGlvbiwgd2hl
+biB0aGVyZSBtYXkgYmUgbW9yZSB0aGFuIG9uZSBlbnRpdHkgDQptdWNraW5nIHdpdGggdGhl
+IHJ1bGVzZXQuIFRoZSBhcHByb2FjaCB0aGF0IHdlIHRha2Ugbm93IGlzIHRoYXQgZXZlcnlv
+bmUgd2hvIA0KY2hhbmdlcyB0aGUgcnVsZXNldCBtdXN0IHJlZmxlY3QgdGhlIGNoYW5nZSBp
+biBmaWxlIGluIC9ldGMvbmZ0YWJsZWQuZC8gDQpkaXJlY3RvcnksIHRoYXQgaXMgaW5jbHVk
+ZWQgZnJvbSAvZXRjL25mdGFibGVzLmNvbmYuIEFzIGxvbmcgYXMgdGhlcmUgYXJlIG5vIA0K
+ZXhjZXB0aW9ucyB0byB0aGF0LCBpdCBpcyBhbHdheXMgc2FmZSB0byBmbHVzaCBhbmQgcmVs
+b2FkIGV2ZXJ5dGhpbmcsIGFuZCBhbHNvIA0Kc2hvdWxkIGJlIHBvc3NpYmxlIHRvIHJ1biAt
+LWNoZWNrLg0KDQpFdWdlbmUNCg==
 
-I've tried using 'flush table <table>' commands in the rules file, and
-that works as long as the rules have been previously loaded (in tables
-with the same names). It fails at system startup though, because 'nft
-flush table <table>' fails with an error if the named table does not
-exist.
+--------------wLfcRo0GFczWB9r9g6d0mOC6--
 
-I've got an ugly workaround at the moment but I'd like to avoid that.
-I think the simplest solution here would be to enhance 'nft flush
-table <table>' to not report an error if the table does not exist,
-since in the end that was almost the same goal as the command itself.
-Does this seem reasonable?
+--------------U5bTbesYMl1thgRTfYUXYiTu
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCgAdFiEEnAziRJw3ydIzIkaHfKQHw5GdRYwFAmNBqYQACgkQfKQHw5Gd
+RYwnrQgAxZIOJoaTRHXWh3G3FzrCm/1fplMDJD/lyb/bRqf62HeSz0U+LcsCi5pz
+7e2e9spQNPOuNSUSw5n2yUJUr+6l/2Xemzjlz/QL3QuRGfNdA5mInwzuHON1awns
+7sHih2OQU/66bALdYbW9XD1rfPtWrTaO/9NVwsU2IVyToKZGvYJOsQ0L7q3VnUFR
+MG7ea/ApcCd+SNvVzRGEoN0OJ9CHu8VnjsqE6YXM9KdT/by2Q+G2zX/e0XHYXLVM
+OnK6vsNPEp3CJi6JGzDxMgI/zS30q0eA9mLMqzSYRqJBjAQkN0EKU+Phs2KJtpQI
+QGs8DjnGoJ48zNFwsTWovDwYYwF/7g==
+=H9Tn
+-----END PGP SIGNATURE-----
+
+--------------U5bTbesYMl1thgRTfYUXYiTu--
