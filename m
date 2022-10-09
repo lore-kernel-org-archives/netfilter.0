@@ -1,80 +1,48 @@
-From: Eric <evil.function@proton.me>
-Subject: Re: Updating set elements from command line
-Date: Sun, 09 Oct 2022 14:34:22 +0000
-Message-ID: <GYed1LiiUbZ_boa2g0lkRtQWWNc-5rwhwNR8x_LfDAm8iffWDAZjCg7QdGZoqB6nAbHZNVcTFPSNyADz_3zwQKR1234-I4Z8fKSnaQnwqz4=@proton.me>
-References: <Eio6D1ukecFTMx3qFhiCTbHRPOiSKqei5fvfeaGcMc4SfXxZriRAXGFv_HgaBa-wVulHKr7D-6mE6RNQOJztUM1tooTU5nCqQ1Z9AO_o_IM=@proton.me> <20221009053950.be64bd6555d9c7060e363136@plushkava.net>
+From: Bruno Meirelles <bmeirelles@gmail.com>
+Subject: Re: Rule does not work. This is configuration error or bug?
+Date: Sun, 9 Oct 2022 15:14:32 -0300
+Message-ID: <9cb837d0-2c24-b1e0-74ca-be77773343fd@gmail.com>
+References: <88178cba-fbcf-70d0-bf11-380c4260d0cc@gmail.com>
+ <Yz4Ecl0JWtxPYMsc@salvia>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=protonmail; t=1665326071; x=1665585271;
-        bh=A/XT9HaiC8m7/NWwiWO0t88PrUDBPparvfJOwKWBZIM=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID;
-        b=MwhS40TMjvRhlaAjU8ff2G6+xQ/Lv/rHNhokUddoya0IE1/Snh+P+2JpoBvgDdJ0/
-         QwTQgpvrwBpYMyNw4f/JMkHHyBTNqGMsPavyvW4jq1rmj+pRAcSW8RiSiOAjrrjAmv
-         nbbOkG7JdoMyshj1zlrix3RkQCM5z7qb5h25ajIytmSQGy1rkmwkbPOJIYWxJHw5dF
-         bO+Vjc3vDQ+mXZgrmN1wc1lkavcj2oqTGrYIMhvfPkfyo7eOO5tx+ipdCLy5t1KHos
-         XziWl/MyQk8cRXpbZCZmQqeYc+XLSHfExGcGTwF8vkgqc7uf8LMUvTzfwRJUF6DpGD
-         LmGgci0rHaoZg==
-In-Reply-To: <20221009053950.be64bd6555d9c7060e363136@plushkava.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aFz5n2dKSVpKX5ElaKEAWK+Hibtn2AIiDqrtIvZjy14=;
+        b=hX3hWtIMfS4WYBQN3YttBygZXI1zwTiCpIzPRgVSKbON2SIUyTqZih0E642N3Kf1ru
+         oYZ/0NkXFCdb5We5dB/BcVTfowApcH9JppPH8WZQC9d6AKXHk8StLTD6J/0Yp3ol4HbV
+         YW3LV0wJBNcYsXuXFCCMVui9XjytxMkeg9Q54ZNvxlvX2tYTHas4i8BTPXRCuB1cm7aB
+         /d5RcK3HB3eLHqw6/ucVmJ3Sl6Hda/7ptvkDQmyLdBlgx9PMlHFF3vXMnyN3x/7YDlgo
+         URSujMjPXLqlco+M5vV/JqAya0cTV3sJJ0OoAoovTjhH9DJ6ShLRjoWM+jhSrJh8ByxM
+         lbHQ==
+Content-Language: pt-BR
+In-Reply-To: <Yz4Ecl0JWtxPYMsc@salvia>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Kerin Millar <kfm@plushkava.net>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org
 
-On Saturday, October 8th, 2022 at 21:39, Kerin Millar <kfm@plushkava.net> w=
-rote:
-> Firstly, for reasons of efficiency and atomicity, you should compose a co=
-mmand stream that is executed once by nft(8). Here is one example of how to=
- go about it.
->=20
-> {
-> echo "add element ip filter doh_ipv4 {"
-> curl https://some/ip4.list | paste -d, -s -
-> echo "}"
-> } | nft -f -
+Hi Pablo,
 
-Thanks for that.  An earlier version of my script built a single blob comma=
-nd similar in function to that, but I stripped it down in my email examples=
- for clarity.   I will cherry pick your example and clean up my code.
+Thanks a lot for the help.
 
-> As you pointed out, there does not appear to be any way to "update" other=
- than in the packet path. One applicable kludge would be to enable auto-mer=
-ge, along with the interval flag.
->=20
-> table ip filter doh_ipv4 {
-> type ipv4_addr
-> flags interval,timeout
-> counter
-> auto-merge
-> timeout 3d
-> }
->=20
-> Given such a set, re-adding an existing /32 will reset the timeout to 3d =
-(the timeout need not be specified by the add element command). Unfortunate=
-ly, its counters will be reset to 0 also, so this method confers no advanta=
-ge over keeping the set as it currently stands and, instead, incorporating =
-a flush command into the stream conveyed to nft(8).
+I did a test replacing the dns dnscrypt-proxy for bind9 and the rule worked.
 
-Aha, I hadn't realized that you could use intervals with auto-merge like th=
-at, this does open up some possibilities.
+I asked on the dnscrypt-proxy forum and nobody knows.
 
-> In summary, I think that nftables would need to be changed in order to su=
-pport your use case, and that it ought to be.
+The service is configured to listen on [any] and works without port 
+redirection. If I apply the rule stop listening to ipv6. IPv4 works 
+perfectly.
 
-Yeah, it seems to me that this is simply an oversight.
+Very strange. I will continue bind9 for now. Thanks a lot for the help.
 
-My current experiments are playing with adding a dummy rule, updating via t=
-he in-path solution via a netcat packet, then deleting the rule.  We'll see=
- how it goes.
+Bruno.
 
-nft add rule ...   upd dport 12345   update @doh_ipv4 { ip daddr expires 3d=
- }  drop
-for ip...
-   nc -4 -u $ip 12345
-nft delete rule ...
-
-Eric
-
+Em 05/10/2022 19:25, Pablo Neira Ayuso escreveu:
+> Could you check if packets are being marked as invalid by conntrack?
+> In such case packets get no conntrack entry attached, in such case NAT
+> cannot be applied.
