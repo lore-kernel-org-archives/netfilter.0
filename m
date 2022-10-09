@@ -1,66 +1,80 @@
-From: Kerin Millar <kfm@plushkava.net>
+From: Eric <evil.function@proton.me>
 Subject: Re: Updating set elements from command line
-Date: Sun, 9 Oct 2022 06:05:30 +0100
-Message-ID: <20221009060530.2c9abac3abc199bfffb49e5f@plushkava.net>
-References: <Eio6D1ukecFTMx3qFhiCTbHRPOiSKqei5fvfeaGcMc4SfXxZriRAXGFv_HgaBa-wVulHKr7D-6mE6RNQOJztUM1tooTU5nCqQ1Z9AO_o_IM=@proton.me>
-        <20221009053950.be64bd6555d9c7060e363136@plushkava.net>
+Date: Sun, 09 Oct 2022 14:34:22 +0000
+Message-ID: <GYed1LiiUbZ_boa2g0lkRtQWWNc-5rwhwNR8x_LfDAm8iffWDAZjCg7QdGZoqB6nAbHZNVcTFPSNyADz_3zwQKR1234-I4Z8fKSnaQnwqz4=@proton.me>
+References: <Eio6D1ukecFTMx3qFhiCTbHRPOiSKqei5fvfeaGcMc4SfXxZriRAXGFv_HgaBa-wVulHKr7D-6mE6RNQOJztUM1tooTU5nCqQ1Z9AO_o_IM=@proton.me> <20221009053950.be64bd6555d9c7060e363136@plushkava.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-         h=cc:cc:content-transfer-encoding:content-type:date:date:from
-        :from:in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm1; t=1665291932; x=
-        1665378332; bh=7ZIm323GAAYAEMzWkrZovxt+UM2fU6vsKgXToq+n6Nk=; b=D
-        ao/RkvzulY8Sgj6cOgsCxnBzaaZZ+XknUHZIFApriMZwsgwer1KodSFBUE3BwRQD
-        VUEBQzwAniYnp70Mlnp8O3qsCXW93s/O6/9lo3mkYqT085yRzb52o+fvKC7fTsf4
-        dsqMic5CJluzdWS+vZSwnZRifx6oEeVehJm3X1EKA3KfuL1+yEOb4YBRFn6DftR7
-        3EJw5qvdz9lKhOFTeDnkSJuIx+LogiVFsAIvvl9eooNN4P+mYgUfs9AKKx2JhhA5
-        coyzRa8tNDK2u3KEg+/nrC4fibwis+VPZpn1zMouDEumcanv/12kFmKARaFDbBrh
-        TFnhqwwM9TpMmCQBkJ7iw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:date:date:feedback-id:feedback-id:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
-        :x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1665291932; x=
-        1665378332; bh=7ZIm323GAAYAEMzWkrZovxt+UM2fU6vsKgXToq+n6Nk=; b=p
-        7aXLV+ueMSGVr9K5gAUU7F2rJxjwMsXdZhgm1ldRBP23Yhq47SRmxe5WRqohXwRj
-        W+UPfeANPT1IgcH7cSDzuogcpnsqwq/GFUvA6o9ep+UJmAZMS+28DWlNzvMq0Wv1
-        ot+6WCbbbJbRXWVBcj893p7KFQo+Q81sukKV60c+h6yma3vsdEMLdRyFchuqJzSk
-        EGgRjGIviU9qrZ7G1ISvRjivALFJHxk66IshvpvkSBgQ55ig8z5MGquawt/MMNIY
-        g7jKpAQcGO4CVRqICxv21yj52C3yfV6BA0w2dLX1oIz2k1TdqqT6C+zekSPU3/73
-        RA3iRLJ1S+x6UKq+s1VRw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=protonmail; t=1665326071; x=1665585271;
+        bh=A/XT9HaiC8m7/NWwiWO0t88PrUDBPparvfJOwKWBZIM=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID;
+        b=MwhS40TMjvRhlaAjU8ff2G6+xQ/Lv/rHNhokUddoya0IE1/Snh+P+2JpoBvgDdJ0/
+         QwTQgpvrwBpYMyNw4f/JMkHHyBTNqGMsPavyvW4jq1rmj+pRAcSW8RiSiOAjrrjAmv
+         nbbOkG7JdoMyshj1zlrix3RkQCM5z7qb5h25ajIytmSQGy1rkmwkbPOJIYWxJHw5dF
+         bO+Vjc3vDQ+mXZgrmN1wc1lkavcj2oqTGrYIMhvfPkfyo7eOO5tx+ipdCLy5t1KHos
+         XziWl/MyQk8cRXpbZCZmQqeYc+XLSHfExGcGTwF8vkgqc7uf8LMUvTzfwRJUF6DpGD
+         LmGgci0rHaoZg==
 In-Reply-To: <20221009053950.be64bd6555d9c7060e363136@plushkava.net>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: Kerin Millar <kfm@plushkava.net>
-Cc: Eric <evil.function@proton.me>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-This is just to correct a silly mistake in my previous message.
+On Saturday, October 8th, 2022 at 21:39, Kerin Millar <kfm@plushkava.net> w=
+rote:
+> Firstly, for reasons of efficiency and atomicity, you should compose a co=
+mmand stream that is executed once by nft(8). Here is one example of how to=
+ go about it.
+>=20
+> {
+> echo "add element ip filter doh_ipv4 {"
+> curl https://some/ip4.list | paste -d, -s -
+> echo "}"
+> } | nft -f -
 
-On Sun, 9 Oct 2022 05:39:50 +0100
-Kerin Millar <kfm@plushkava.net> wrote:
+Thanks for that.  An earlier version of my script built a single blob comma=
+nd similar in function to that, but I stripped it down in my email examples=
+ for clarity.   I will cherry pick your example and clean up my code.
 
+> As you pointed out, there does not appear to be any way to "update" other=
+ than in the packet path. One applicable kludge would be to enable auto-mer=
+ge, along with the interval flag.
+>=20
 > table ip filter doh_ipv4 {
-> 	type ipv4_addr
-> 	flags interval,timeout
-> 	counter
-> 	auto-merge
-> 	timeout 3d
+> type ipv4_addr
+> flags interval,timeout
+> counter
+> auto-merge
+> timeout 3d
 > }
+>=20
+> Given such a set, re-adding an existing /32 will reset the timeout to 3d =
+(the timeout need not be specified by the add element command). Unfortunate=
+ly, its counters will be reset to 0 also, so this method confers no advanta=
+ge over keeping the set as it currently stands and, instead, incorporating =
+a flush command into the stream conveyed to nft(8).
 
-Of course, that example should have been presented as follows.
+Aha, I hadn't realized that you could use intervals with auto-merge like th=
+at, this does open up some possibilities.
 
-table ip filter {
-	set doh_ipv4 {
-		type ipv4_addr
-		flags interval,timeout
-		counter
-		auto-merge
-		timeout 3d
-	}
-}
+> In summary, I think that nftables would need to be changed in order to su=
+pport your use case, and that it ought to be.
 
--- 
-Kerin Millar
+Yeah, it seems to me that this is simply an oversight.
+
+My current experiments are playing with adding a dummy rule, updating via t=
+he in-path solution via a netcat packet, then deleting the rule.  We'll see=
+ how it goes.
+
+nft add rule ...   upd dport 12345   update @doh_ipv4 { ip daddr expires 3d=
+ }  drop
+for ip...
+   nc -4 -u $ip 12345
+nft delete rule ...
+
+Eric
+
