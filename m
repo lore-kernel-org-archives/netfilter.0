@@ -1,31 +1,34 @@
-From: "Ms. Kelvin Lin" <mail@redington.com>
-Subject: Re: {Contract/Job Offer}Liaison Needed In Your State...
-Date: Tue, 11 Oct 2022 09:52:58 +0000 (UTC)
-Message-ID: <bON7hJUbShuBFaMaf9Dfng@geopod-ismtpd-1-5>
-Reply-To: mail@gukaimail.com
+From: Ian Pilcher <arequipeno@gmail.com>
+Subject: How to add set element with libnftnl?
+Date: Mon, 17 Oct 2022 07:58:26 -0500
+Message-ID: <tijjhi$el0$1@ciao.gmane.io>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sendgrid.net;
-        h=content-type:mime-version:content-transfer-encoding:
-        content-description:subject:from:reply-to:to:cc;
-        s=smtpapi; bh=GXTi/ZBQpeGAqgz6fULJ1fEYyfHK+LA3nuX5jsJBDF4=;
-        b=EvX8tqpZfM5XpA8C1S48i9yO8sjDBBUND1qGqQH33XrDuq2nALPa+4E4ukGkE1EVSOil
-        ZELMPdEWXVEEqFv/V+apIheMqQD6SvsiMnQA9ZVM1h7iK4ajVy0QAi7KcDHdfla2MzRK89
-        bd2EGYqrdX86RmhZUO3v1YeUPcno86y1U=
-Content-Description: Mail message body
+Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Recipients <mail@redington.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Dear Sir/Ma,
+I have some C code that uses libmnl to add entries to old style IP sets.
+I am trying to port this code to nftables, using libnftnl.
 
+I haven't found any documentation other than the examples, and
+unfortunately nft-set-elem-add.c seems to completely ignore the actual
+type of the data that it's putting into the set.
 
-A reputable pharmaceutical company from Vietnam is in need of a reliable in=
-dividual or corporate entity in your state to act as their Liaison; this wi=
-ll not affect your current job or business operations in anyway.  If intere=
-sted, reply for more information.
+Can anyone help me figure out how do use libnftnl to perform the
+equivalent of the following?
 
+   * nft add element TYPE TABLE SET_NAME '{ IPV4_ADDRESS }'
+   * nft add element TYPE TABLE SET_NAME '{ IPV4_ADDRESS timeout TIME }'
+   * nft add element TYPE TABLE SET_NAME '{ IPV6_ADDRESS }'
+   * nft add element TYPE TABLE SET_NAME '{ IPV6_ADDRESS timeout TIME }'
 
-Sincerely,
-Ms. Lan Nguyen
+TIA!
+
+-- 
+========================================================================
+Google                                      Where SkyNet meets Idiocracy
+========================================================================
+
