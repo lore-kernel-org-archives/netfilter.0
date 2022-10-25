@@ -1,34 +1,33 @@
-From: Ian Pilcher <arequipeno@gmail.com>
-Subject: How to add set element with libnftnl?
-Date: Mon, 17 Oct 2022 07:58:26 -0500
-Message-ID: <tijjhi$el0$1@ciao.gmane.io>
+From: Arturo Borrero Gonzalez <arturo@netfilter.org>
+Subject: Re: [ANNOUNCE] 17th Netfilter Workshop in Seville, Spain
+Date: Tue, 25 Oct 2022 12:10:31 +0200
+Message-ID: <a9d40594-f05d-f669-3a7b-f2f3924f14c4@netfilter.org>
+References: <Yw+F/N3y9vIHnY+3@salvia>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
 Content-Language: en-US
+In-Reply-To: <Yw+F/N3y9vIHnY+3@salvia>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: netfilter-devel <netfilter-devel@vger.kernel.org>
+Cc: netfilter@vger.kernel.org
 
-I have some C code that uses libmnl to add entries to old style IP sets.
-I am trying to port this code to nftables, using libnftnl.
 
-I haven't found any documentation other than the examples, and
-unfortunately nft-set-elem-add.c seems to completely ignore the actual
-type of the data that it's putting into the set.
 
-Can anyone help me figure out how do use libnftnl to perform the
-equivalent of the following?
+On 8/31/22 18:02, Pablo Neira Ayuso wrote:
+> Hi,
+> 
+> We are pleased to announce a new round in the Netfilter workshop series.
+> This year this event will take place from October 20 to October 21, 2022.
+> The event will be held at Zevenet [1] facilities in Mairena del Aljarafe,
+> Seville, Spain.
+> 
 
-   * nft add element TYPE TABLE SET_NAME '{ IPV4_ADDRESS }'
-   * nft add element TYPE TABLE SET_NAME '{ IPV4_ADDRESS timeout TIME }'
-   * nft add element TYPE TABLE SET_NAME '{ IPV6_ADDRESS }'
-   * nft add element TYPE TABLE SET_NAME '{ IPV6_ADDRESS timeout TIME }'
+Hi there,
 
-TIA!
+let me share my report/summary of what happened during the workshop:
 
--- 
-========================================================================
-Google                                      Where SkyNet meets Idiocracy
-========================================================================
+https://ral-arturo.org/2022/10/25/nfws2022.html
 
+regards.
