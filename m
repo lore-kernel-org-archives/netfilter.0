@@ -1,31 +1,50 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [ANNOUNCE] ulogd 2.0.8 release
-Date: Wed, 2 Nov 2022 19:04:36 +0100
-Message-ID: <Y2KxNLwxbo2zN28J@salvia>
-References: <Y2JE0PygwmrhC6Q1@salvia>
- <65o51noo-oo7n-5325-p7q-5734s0pr24os@vanv.qr>
+From: Ian Pilcher <arequipeno@gmail.com>
+Subject: nftables and IPv6 prefix delegation (regression vs ip6tables)
+Date: Thu, 3 Nov 2022 14:57:32 -0500
+Message-ID: <tk16fd$hd2$1@ciao.gmane.io>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <65o51noo-oo7n-5325-p7q-5734s0pr24os@vanv.qr>
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@inai.de>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Language: en-US
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Wed, Nov 02, 2022 at 12:51:34PM +0100, Jan Engelhardt wrote:
-> 
-> On Wednesday 2022-11-02 11:22, Pablo Neira Ayuso wrote:
-> >
-> >You can download it from:
-> >
-> >https://www.netfilter.org/projects/ulogd/downloads.html
-> 
-> The git repo is still missing the 2.0.8 tag.
+My plan to migrate from iptables to nftables seems to have hit a major
+snag.  nftables seems to lack the ability to use prefix-independent
+masks when matching IPv6 addresses.
 
-Just pushed out the commit and tag, sorry.
+For example, my ISP delegates a /56 prefix, which I can divide into as
+many as 256 separate /64 subnets.  So a routable IPv6 address in my
+network can be broken down like this.
 
-> Is it also possible to have git-over-https?
+   pppp:pppp:pppp:ppNN:hhhh:hhhh:hhhh:hhhh
 
-I'll try to take a look before end of year, but no promises.
+Where the p's represent the delegated prefix, the N's represent an
+internal "network ID", and the h's represent the host address.  The
+prefix is relatively stable, but it can change occasionally, so hard-
+coding it into firewall rules is not really an option.
+
+Assume that I want to match a particular host (pppp:pppp:pppp:ppc8::1)
+in a rule.  With ip6tables, I can match this address with this
+expression:
+
+   0:0:0:c8::1/::ff:ffff:ffff:ffff:ffff
+
+I can match the whole /64 subnet with:
+
+   0:0:0:c8::/0:0:0:ff::
+
+(Neither is particularly readable, but they do work.)
+
+I cannot figure out how to accomplish this with nftables.  Any attempt
+to use the same sort of expression with the nft command just results in
+a syntax error.
+
+Am I missing something, or am I stuck with ip6tables?
+
+-- 
+========================================================================
+Google                                      Where SkyNet meets Idiocracy
+========================================================================
+
