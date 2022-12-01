@@ -1,57 +1,33 @@
-From: Reindl Harald <h.reindl@thelounge.net>
+From: Brskt <me@brskt.be>
 Subject: Re: Which of these 2 rules will consume more CPU? Please guide.
-Date: Thu, 1 Dec 2022 13:07:57 +0100
-Message-ID: <f6a726a9-c6ec-bd0d-fc01-dbace18a9c08@thelounge.net>
+Date: Thu, 01 Dec 2022 12:31:53 +0000
+Message-ID: <em2a539bbd-3a83-48d0-8e9e-df4f6211c2e9@2c5303e8.com>
 References: <c8a98a59-7ff1-6a2f-f579-d604848074d3@gmail.com>
+Reply-To: Brskt <me@brskt.be>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brskt-be.20210112.gappssmtp.com; s=20210112;
+        h=content-transfer-encoding:mime-version:user-agent:reply-to
+         :references:in-reply-to:message-id:date:subject:to:from:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tFwsdB78tudZQfekZobt7pqS5qRpwUgSsN34tZi6NK8=;
+        b=ZjB7Jw4ULlHjg21ZJCrA0GPOeF028h25/xAa9r8HSSHaBA/BnGsYeQ2EaifnYGF32k
+         y6uF9ssbMhFZVEggqmdJXbopg7feBOW7gIGrUSl6520KxFxA1xy8oxJD/HRQ8GFUACor
+         sjN4dZLW87r84uLrhBwd4Rhhplp5zAFCV/hHMhCiNW64LJ0c22CHyyaBtuOHiHX144Sw
+         m3rOIUU54Ad9nuphXZhdEsJ4ULf5Zw6s9ObY4pGDdWw7NwZXdMCl19+c1GzBAjPe7jw8
+         Q0T2la8ZSrywG3omWfMydI3uYM9g/2Dww/TCcbGyjMUZi9GZL0PulaGbqbOlvCTMX4vs
+         rc9A==
 In-Reply-To: <c8a98a59-7ff1-6a2f-f579-d604848074d3@gmail.com>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Amish <anon.amish@gmail.com>, netfilter <netfilter@vger.kernel.org>
 
+Hi,
 
+Using mangle table means that in any case, even if the packet is in the=20
+NEW or any other state, it's in the conntrack.
 
-Am 01.12.22 um 12:32 schrieb Amish:
-> Hello everyone,
-> 
-> I have a hash:net IP set (with name say inblock) which has 2500 network 
-> blocks.
-> 
-> It is taken from 
-> http://rules.emergingthreatspro.com/fwrules/emerging-Block-IPs.txt
-> 
-> But let us assume that it can go up to 3000-5000 entries in future.
-> 
-> Now I have following rule right at the top.
-> 
-> # iptables -t mangle -I PREROUTING 1 -m set --match-set inblock src -j DROP
-> 
-> This rule will process each and every packet that is coming in and match 
-> it against the IP set.
-> 
-> So if I have a 200mbps line and then at its peak, above rule will go 
-> through data equal to 200mbits per second.
-> 
-> I am curious to know if I change the above line to:
-> 
-> # iptables -t mangle -I PREROUTING 1 -m conntrack --ctstate NEW,INVALID 
-> -m set --match-set inblock src -j DROP
-
-normally you start with ACCEPT "ctstate RELATED,ESTABLISHED" as first 
-rule because that hits 99% of all packets and skips any other rules
-
-than you DROP "ctstate INVALID" no matter what
-
-and between that DROP-rules and your ACCEPT-Rules you place additional 
-DROP-Rules
-
-No matter INBOUND or PREROUTING
-
-so your "--match-set inblock src -j DROP" can only hit NEW and valid 
-packets at all, and since you DROP initial packets from these sources 
-they never can hit the ctstate-rules
-
-
+The raw table is before mangle which does not have conntrack, it will=20
+gain CPU usage and drop packets more efficiently.
