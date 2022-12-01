@@ -1,76 +1,73 @@
-From: Jozsef Kadlecsik <kadlec@netfilter.org>
-Subject: [ANNOUNCE] ipset 7.16 released
-Date: Mon, 21 Nov 2022 20:31:34 +0100 (CET)
-Message-ID: <d65fe5d8-d5ea-ef7-102d-aa1d15bb4d69@netfilter.org>
+From: Amish <anon.amish@gmail.com>
+Subject: Which of these 2 rules will consume more CPU? Please guide.
+Date: Thu, 1 Dec 2022 17:02:28 +0530
+Message-ID: <c8a98a59-7ff1-6a2f-f579-d604848074d3@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="110363376-945108895-1669059094=:505418"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20210112;
+        h=content-transfer-encoding:to:subject:from:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IhZtH+TiNf+5+RvDJxaBVlu+nz9IlAVASrCvUP+R/m0=;
+        b=IPUP4u4l0PuQ1jfc56iEDU7pHJ+uqp7n1GMB5I27PqxWTSdwoqUvBKuGdwttMEMI1v
+         Y2C1JXNZJMFneBt9jmpuWHU3WO205Qp/KmBsQs/8gh+UNdD+0gNgd0nkzE3A3YHaOr8k
+         QZxp4R4CMu+DbxKaffFd9PNnOoKWZ9K1E2kx8XUrYca43ylEwAf3FKOA3pYgFuTgn7BI
+         BEupiDtUclTc2wAa8gbvc4TSrDOCDPrJ0bvuGotT+g7zdLR6nj/h550tvVA7BQPNnfuK
+         phpx/mt0cd356WDXbn33Q6FnUjO9F1iC/zujsFxWqbUFuuzPjGMebIdTZFMoSMbUmlyZ
+         PKXQ==
+Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter <netfilter@vger.kernel.org>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Hello everyone,
 
---110363376-945108895-1669059094=:505418
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+I have a hash:net IP set (with name say inblock) which has 2500 network 
+blocks.
 
-Hi,
+It is taken from 
+http://rules.emergingthreatspro.com/fwrules/emerging-Block-IPs.txt
 
-I'm happy to announce ipset 7.16, which includes a few fixes,
-compatibility patches to support recent kernels and a new "bitmask"
-option for the hash:ip, hash:ipport, hash:netnet types to use
-any kind of netmask, from Vishwanath Pai.
+But let us assume that it can go up to 3000-5000 entries in future.
 
-Userspace changes:
-  - Add new ipset_parse_bitmask() function to the library interface
-  - test: Make sure no more than 64 clashing elements can be added
-    to hash:net,iface sets
-  - Fix all debug mode warnings
-  - netfilter: ipset: add tests for the new bitmask feature (Vishwanath=20
-    Pai)
-  - netfilter: ipset: Update the man page to include netmask/bitmask=20
-    options (Vishwanath Pai)
-  - netfilter: ipset: Add bitmask support to hash:netnet (Vishwanath Pai)
-  - netfilter: ipset: Add bitmask support to hash:ipport (Vishwanath Pai)
-  - netfilter: ipset: Add bitmask support to hash:ip (Vishwanath Pai)
-  - netfilter: ipset: Add support for new bitmask parameter (Vishwanath=20
-    Pai)
-  - ipset-translate: allow invoking with a path name (Quentin Armitage)
-  - Fix IPv6 sets nftables translation (Pablo Neira Ayuso)
-  - Fix typo in ipset-translate man page (Bernhard M. Wiedemann)
+Now I have following rule right at the top.
 
-Kernel part changes:
-  - netfilter: ipset: restore allowing 64 clashing elements in=20
-    hash:net,iface
-  - netfilter: ipset: Add support for new bitmask parameter (Vishwanath=20
-    Pai)
-  - netfilter: ipset: regression in ip_set_hash_ip.c (Vishwanath Pai)
-  - netfilter: move from strlcpy with unused retval to strscpy
-    (Wolfram Sang)
-  - compatibility: handle unsafe_memcpy()
-  - netlink: Bounds-check struct nlmsgerr creation (Kees Cook)
-  - compatibility: move to skb_protocol in the code from tc_skb_protocol
-  - Compatibility: check kvcalloc, kvfree, kvzalloc in slab.h too
-  - sched: consistently handle layer3 header accesses in the presence
-    of VLANs (Toke H=C3=B8iland-J=C3=B8rgensen)
-  - treewide: Replace GPLv2 boilerplate/reference with SPDX
-    - rule 500 (Thomas Gleixner)
-  - headers: Remove some left-over license text in=20
-    include/uapi/linux/netfilter/ (Christophe JAILLET)
-  - netfilter: ipset: enforce documented limit to prevent allocating
-    huge memory
-  - netfilter: ipset: Fix oversized kvmalloc() calls
+# iptables -t mangle -I PREROUTING 1 -m set --match-set inblock src -j DROP
 
-You can download the source code of ipset from:
-        https://ipset.netfilter.org
-        git://git.netfilter.org/ipset.git
+This rule will process each and every packet that is coming in and match 
+it against the IP set.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
-PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics
-          H-1525 Budapest 114, POB. 49, Hungary
---110363376-945108895-1669059094=:505418--
+So if I have a 200mbps line and then at its peak, above rule will go 
+through data equal to 200mbits per second.
+
+I am curious to know if I change the above line to:
+
+# iptables -t mangle -I PREROUTING 1 -m conntrack --ctstate NEW,INVALID 
+-m set --match-set inblock src -j DROP
+
+Now above rule will send only NEW and INVALID packets to match for set. 
+And skip ESTABLISHED packets to match against IP set.
+
+But conntrack table itself can have 5000-10000 entries at its peak. 
+(assumption)
+
+So which rule will be more efficient?
+
+In short:
+
+First rule will process ALL the packets and test each packet against IP 
+set containing 3000-5000 entries.
+Second rule will first process ALL the packets against conntrack table 
+containing 5000-10000 entries but will save CPU from matching 
+ESTABLISHED packets against IP set.
+
+So what would be more efficient?
+
+We assume that NEW,INVALID packets would be far far less than 
+ESTABLISHED packets.
+
+Thank you and regards,
+
+Amish.
