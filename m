@@ -1,53 +1,41 @@
-From: Illuminati Invitation <musarabiuinusa123@gmail.com>
-Subject: WILLKOMMEN BEI DER ILLUMINATI-GESELLSCHAFT
-Date: Wed, 14 Dec 2022 19:54:53 +0100
-Message-ID: <CALQYZvCSqDZ4+X2f0qCzzV1iDgaD2S5-iPy4ura7kz+GNdVOcA@mail.gmail.com>
-Reply-To: illuminatilord1945@gmail.com
+From: ToddAndMargo <ToddAndMargo@zoho.com>
+Subject: nf_conntrack_helper replacement?
+Date: Tue, 20 Dec 2022 11:00:43 -0800
+Message-ID: <518aeae6-e89b-62f0-0a5b-86264a51edde@zoho.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=content-transfer-encoding:to:subject:message-id:date:from:reply-to
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=BRQm+z5zZvqAspvybGyHhPMRJtHnBkC47At9BzYrF4Y=;
-        b=NO8Juz3wu8Hqh7w4yiz3ZLSzaZpNGcPG2CpcP3LxlGQyXN3tJ6+TWekCQu6fKlV4Gb
-         cT+fxxlgUdSzyjhLQt3+5dY2Zwvyio6B40eYvmQuTRGmb6nXoGEBpAsa2NUSbmk7c9za
-         E8x41cW1WGt2PoBSRFExhHoU42LjGVw/RITDgRoPgRWbT6C5OOzUNeJIxPU/a/W+eApu
-         A66NcMoqq9sdgo178ITgIwF+h1NPcLT/EIclML+i57/i+BgkYFyG73TnDnYZqSVSziC/
-         iQLnUqXM2OU/9CPKkJfeFmq0h+jtm74RuJtChMp9iyNaGi1D/8F1PopUXkVH9C9t5teh
-         5uPg==
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1671562846;
+        s=zm2022; d=zoho.com; i=ToddAndMargo@zoho.com;
+        h=Message-ID:Date:Date:MIME-Version:To:To:From:From:Subject:Subject:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To:Cc;
+        bh=8vAtbKfIYbOwhvczvzE5HkCiZ0brtKUA7sYRmm/yua4=;
+        b=W/1h1fvm8sfvzW+5da9K32Xq7nUdW5QoOgJWihYK9pTbJBi/yzCC3Lr5AV362RMV
+        2mztz26l9FDQhjtX10I1FjRKnVotGnQlrtQEkRu7bpC+FQhyWUwYnFIjpSzvhsRJFlG
+        lu1i2jMkoTq+zkRulVT19n6mlQQ60T8fyuxYZPzI=
+Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: 
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
---=20
-EINLADUNG ZUR GRO=C3=9FEN ILLUMINATI-GESELLSCHAFT
+Hi All,
 
-GL=C3=9CCKWUNSCH AN SIE....
-Du wurdest unter den Menschen ausgew=C3=A4hlt, denen diesen November die
-M=C3=B6glichkeit gegeben wurde, reich und beliebt zu werden, indem du dich
-den Gro=C3=9Fen ILLUMINATI anschlie=C3=9Ft.
+$ uname -r
+6.0.12-300.fc37.x86_64
 
-Treten Sie uns noch heute bei und verwirklichen Sie Ihre Tr=C3=A4ume und
-leben Sie ein besseres Leben. Es ist wichtig zu wissen, dass Sie daf=C3=BCr
-bezahlt werden, Mitglied zu werden. Sie verdienen monatlich ein
-Mitgliedsgehalt. Es sind keine Menschenopfer erforderlich, nur Ihre
-Loyalit=C3=A4t und Ihr Engagement. Nutzen Sie diese "GOLDENEN
-GELEGENHEITEN". Die Organisation macht Sie reich und ber=C3=BChmt in der
-Welt ...
+Since kernel 6.0.1,
+    /proc/sys/net/netfilter/nf_conntrack_helper
+has been removed.
 
-F=C3=9CLLEN SIE BITTE DIE FOLGENDEN DETAILS AUS UND SENDEN SIE JETZT ZUR=C3=
-=9CCK.....
+This breaks passive ftp.
 
-Ganze Namen:
-Land:
-Das Alter:
-Familienstand:
-Beruf:
-Monatliches Einkommen:
-Telefonnummer:
+What do you guys do to work around the problem?
 
-Bitte senden Sie diese Informationen jetzt an die ILLUMINATI-E-Mail unten.
+Many thanks,
+-T
 
-E-Mail: illuminatilord1945@gmail.com
+
+-- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Computers are like air conditioners.
+They malfunction when you open windows
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
