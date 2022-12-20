@@ -1,43 +1,66 @@
-From: Reindl Harald <h.reindl@thelounge.net>
+From: Kerin Millar <kfm@plushkava.net>
 Subject: Re: nf_conntrack_helper replacement?
-Date: Tue, 20 Dec 2022 21:09:35 +0100
-Message-ID: <660f2be3-07bf-f6df-5c70-b39f04cd46ff@thelounge.net>
+Date: Tue, 20 Dec 2022 20:23:53 +0000
+Message-ID: <20221220202353.6931dae178b54a3ece13b06f@plushkava.net>
 References: <518aeae6-e89b-62f0-0a5b-86264a51edde@zoho.com>
- <eff246c8-14b1-c0e9-15e1-0650afdd780c@thelounge.net>
- <f9f9e14c-fee3-b09f-a32b-876783e14feb@zoho.com>
- <38b6e874-69f9-dd0a-6b60-269502405d0c@thelounge.net>
- <a39f6206-cb82-d8e4-c8ae-ba56be27d7a4@zoho.com>
- <92e2e512-5d88-4146-6921-d365e8990ae7@thelounge.net>
- <78479036-266c-5e4b-daa0-84a462a7aae6@zoho.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
-In-Reply-To: <78479036-266c-5e4b-daa0-84a462a7aae6@zoho.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+         h=cc:cc:content-transfer-encoding:content-type:date:date:from
+        :from:in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm3; t=1671567836; x=
+        1671654236; bh=PSl8ZH5YaW/bXFSSdYYOU7YKD47/X7O7aUdx6Dwm55c=; b=A
+        jucIAjwiom7sxHkqoQXu+d0mwTrxMhsG+e+As8f0EdQEFThGWYZbwJ7M7+MuVOsM
+        Cm76km/GCkmYbwJs8akvMunJWDwUrXojPvWlDvwzPPjp8YSes4dI4RYWPgEYNB9/
+        66M9bgLYV6avY2jO28+QgWX0VIxufSRQDwoBkEylMB+u6bggLqjtXK+JhkMbbAbD
+        J9EXkRtZRPflD3gUICi/SmbBw4gUitQQxYdC5zNnb1sRgiPbbXBg/yItTMnpksCT
+        ZH7L0X9iVUqPkLo7q1PCvfWW+txrnhkkw0cNZnEaGJFiXHHm3ZrVzSdJxJvAm/po
+        Mg4uCSJQ+VQi+SqFDEncg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:date:date:feedback-id:feedback-id:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to:x-me-proxy:x-me-proxy
+        :x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1671567836; x=
+        1671654236; bh=PSl8ZH5YaW/bXFSSdYYOU7YKD47/X7O7aUdx6Dwm55c=; b=s
+        O6j513bwNUsqVQgEkOb+q3kJCTOrm4uiw1wqktwJlbJGUZ2rmwNgSlUg7hKYN/rU
+        XfPyVqggb0n4VI/nUixncykSCHCKdtc9xdSAgJGV+QQRIg5zrUq0Wv7pP7Frsg+g
+        /xq8HtlZTFVJ33AnyC8NXy8r6K+DGG3BOschWxvyN3FESjmBnnzHITn/uGGzhKt1
+        yK98644nDPRWC9pYonOmqmHfO4Xat3B9roVihcpL6JwMo3KIK1hWBGaxeookRsbM
+        f8RDMCfOTN7R9u68T1TwSpAFJ7h1LHyJcDh3UbijlmKdOOL8AJN2suM/RKP0dl8e
+        l35oXY7juF6gjpijMqIiQ==
+In-Reply-To: <518aeae6-e89b-62f0-0a5b-86264a51edde@zoho.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: ToddAndMargo <ToddAndMargo@zoho.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: ToddAndMargo <ToddAndMargo@zoho.com>
+Cc: netfilter@vger.kernel.org
 
+On Tue, 20 Dec 2022 11:00:43 -0800
+ToddAndMargo <ToddAndMargo@zoho.com> wrote:
 
-
-Am 20.12.22 um 21:05 schrieb ToddAndMargo:
-> On 12/20/22 12:01, Reindl Harald wrote:
->>
->> no you need to understand the rule above
->> it's RAW PREROUTING, all your rules below are INPUT
+> Hi All,
 > 
+> $ uname -r
+> 6.0.12-300.fc37.x86_64
 > 
-> Do you have a link for that?
+> Since kernel 6.0.1,
 
-i gave you the link already: 
-https://gitlab.alpinelinux.org/alpine/awall/-/issues/1540
+Since 6.0-rc4.
 
-for any other information type "iptables CT target" in any random search 
-engine
+>     /proc/sys/net/netfilter/nf_conntrack_helper
+> has been removed.
+> 
+> This breaks passive ftp.
 
-for understanding of basics like RAW/M;ANGLE/PREROUTING you need to read 
-docs and google for "iptables flowchart"
+Specifically, it removes automatic conntrack helper assignment, which was a security hazard.
 
-sorry, a maling-list can't replace reading docs and understand how 
-iptables is working - that should be done before creating rulesets to 
-begin with
+> 
+> What do you guys do to work around the problem?
+
+You should assign the desired conntrack helper as a part of your ruleset. For example, "-t raw -A OUTPUT -p tcp --dport 21 -j CT --helper ftp". Or, "-A PREROUTING" if running an FTP server. The CT module is described by iptables-extensions(8) and, if needs be, you may refer to iptables(8) for the distinction between the OUTPUT and PREROUTING chains.
+
+Should you decide to use nft(8) at some point in the future, see https://wiki.nftables.org/wiki-nftables/index.php/Conntrack_helpers.
+
+-- 
+Kerin Millar
