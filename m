@@ -1,230 +1,84 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] nftables 1.0.6 release
-Date: Thu, 22 Dec 2022 00:30:52 +0100
-Message-ID: <Y6OXLMinA/lCWNsB@salvia>
+From: Reindl Harald <h.reindl@thelounge.net>
+Subject: Re: nf_conntrack_helper replacement?
+Date: Thu, 22 Dec 2022 01:41:31 +0100
+Message-ID: <97a04de0-1207-0e97-1b8f-b351b3cecf3a@thelounge.net>
+References: <518aeae6-e89b-62f0-0a5b-86264a51edde@zoho.com>
+ <eff246c8-14b1-c0e9-15e1-0650afdd780c@thelounge.net>
+ <f9f9e14c-fee3-b09f-a32b-876783e14feb@zoho.com>
+ <38b6e874-69f9-dd0a-6b60-269502405d0c@thelounge.net>
+ <a39f6206-cb82-d8e4-c8ae-ba56be27d7a4@zoho.com>
+ <92e2e512-5d88-4146-6921-d365e8990ae7@thelounge.net>
+ <6a09b9ef-49b3-74b7-21e4-7937bd3f84da@zoho.com>
+ <a2cb3788-5027-ff14-b9d0-20a2ef370475@thelounge.net>
+ <4dc5f220-ceee-f003-ce93-85fadf08663c@zoho.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="+r3PbvtDuakQOpYM"
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Language: en-US
+In-Reply-To: <4dc5f220-ceee-f003-ce93-85fadf08663c@zoho.com>
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter <netfilter@vger.kernel.org>, netfilter-devel <netfilter-devel@vger.kernel.org>
-Cc: netdev@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: ToddAndMargo <ToddAndMargo@zoho.com>, netfilter@vger.kernel.org
 
 
---+r3PbvtDuakQOpYM
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 
-Hi!
+Am 21.12.22 um 20:58 schrieb ToddAndMargo:
+> On 12/20/22 18:11, Reindl Harald wrote:
+>>
+>>
+>> Am 20.12.22 um 23:55 schrieb ToddAndMargo:
+>>> On 12/20/22 12:01, Reindl Harald wrote:
+>>>> you need exactly ONE "-m conntrack --ctstate RELATED,ESTABLISHED -j 
+>>>> ACCEPT" rule as the first of your ruleset which handles UDP and TCP 
+>>>> (aka don't specify -p)
+>>>
+>>> [!] -p, --protocol protocol
+>>>        The  protocol of the rule or of the packet to check.
+>>>        The specified protocol can be one of tcp, udp,
+>>>        udplite, icmp, icmpv6,esp, ah,  sctp,  mh  or
+>>>        the special keyword "all"
+>>>
+>>> Is leavingf off the "-p xxx" the same and "-p all"?
+>>
+>> surely
+>>
+>>> If so, I am no sure tht I feel confortable opening
+>>> up "udplite, icmp, icmpv6, esp, ah,  sctp,  mh"
+>>> as well.
+>>
+>> you do not open anything - when you don't even understand that 
+>> "RELATED,ESTABLISHED" only hits RESPONSE packets and so there must 
+>> have been any rule accepting the initial packet of a connection please 
+>> refrain for setup fireall rules
+>>
+>> how do you imagine a ESTABLISHED state packet can exist in a protocl 
+>> you didn't accept the initial connect packet?
+> 
+> Bad guys fussing with packets to trick your stuff.
 
-The Netfilter project proudly presents:
+bad guys can't change how things are working
 
-        nftables 1.0.6
+> Hi Reindl,
+> 
+> I think that my level of paranoia is higher that
+> yours.  It may comes from you understand this stuff
+> many times more than I do
 
-This release contains enhancements and fixes:
+your level of paranoia is fore sure not higher that mine but i don't 
+throw rules which make no sense and which i don't understand in my 
+infrastructure because every single rule i don't undertand in doubt does 
+either hram or is useless
 
-- Fixes for the -o/--optimize, run this --optimize option to automagically
-  compact your ruleset using sets, maps and concatenations.
+technical rules have nothing to do with paranoia
 
-eg.
+when you don't accept any inital packet of a connection there is no way 
+that it falls under ctstate RELATED,ESTABLISHED
 
-     # cat ruleset.nft
-     table ip x {
-            chain y {
-                   type filter hook input priority filter; policy drop;
-                   meta iifname eth1 ip saddr 1.1.1.1 ip daddr 2.2.2.3 accept
-                   meta iifname eth1 ip saddr 1.1.1.2 ip daddr 2.2.2.4 accept
-                   meta iifname eth1 ip saddr 1.1.1.2 ip daddr 2.2.3.0/24 accept
-                   meta iifname eth1 ip saddr 1.1.1.2 ip daddr 2.2.4.0-2.2.4.10 accept
-                   meta iifname eth2 ip saddr 1.1.1.3 ip daddr 2.2.2.5 accept
-            }
-     }
-     # nft -o -c -f ruleset.nft
-     Merging:
-     ruleset.nft:4:17-74:                 meta iifname eth1 ip saddr 1.1.1.1 ip daddr 2.2.2.3 accept
-     ruleset.nft:5:17-74:                 meta iifname eth1 ip saddr 1.1.1.2 ip daddr 2.2.2.4 accept
-     ruleset.nft:6:17-77:                 meta iifname eth1 ip saddr 1.1.1.2 ip daddr 2.2.3.0/24 accept
-     ruleset.nft:7:17-83:                 meta iifname eth1 ip saddr 1.1.1.2 ip daddr 2.2.4.0-2.2.4.10 accept
-     ruleset.nft:8:17-74:                 meta iifname eth2 ip saddr 1.1.1.3 ip daddr 2.2.2.5 accept
-     into:
-             iifname . ip saddr . ip daddr { eth1 . 1.1.1.1 . 2.2.2.3, eth1 . 1.1.1.2 . 2.2.2.4, eth1 . 1.1.1.2 . 2.2.3.0/24, eth1 . 1.1.1.2 . 2.2.4.0-2.2.4.10, eth2 . 1.1.1.3 . 2.2.2.5 } accept
+if you don't accept a sctp packet there is no way that any sctp could 
+hit RELATED,ESTABLISHED
 
-+ The optimizer also compacts ruleset representations that already use simple
-  sets, to turn them into set with concatenations, eg.
-
-     # cat ruleset.nft
-     table ip filter {
-            chain input {
-                   type filter hook input priority filter; policy drop;
-                   iifname "lo" accept
-                   ct state established,related accept comment "In traffic we originate, we trust"
-                   iifname "enp0s31f6" ip saddr { 209.115.181.102, 216.197.228.230 } ip daddr 10.0.0.149 udp sport 123 udp dport 32768-65535 accept
-                   iifname "enp0s31f6" ip saddr { 64.59.144.17, 64.59.150.133 } ip daddr 10.0.0.149 udp sport 53 udp dport 32768-65535 accept
-           }
-     }
-     # nft -o -c -f ruleset.nft
-     Merging:
-     ruleset.nft:6:22-149:                      iifname "enp0s31f6" ip saddr { 209.115.181.102, 216.197.228.230 } ip daddr 10.0.0.149 udp sport 123 udp dport 32768-65535 accept
-     ruleset.nft:7:22-143:                      iifname "enp0s31f6" ip saddr { 64.59.144.17, 64.59.150.133 } ip daddr 10.0.0.149 udp sport 53 udp dport 32768-65535 accept
-     into:
-                iifname . ip saddr . ip daddr . udp sport . udp dport { enp0s31f6 . 209.115.181.102 . 10.0.0.149 . 123 . 32768-65535, enp0s31f6 . 216.197.228.230 . 10.0.0.149 . 123 . 32768-65535, enp0s31f6 . 64.59.144.17 . 10.0.0.149 . 53 . 32768-65535, enp0s31f6 . 64.59.150.133 . 10.0.0.149 . 53 . 32768-65535 } accept
-
-- Fix bytecode generation for concatenation of intervals where selectors use
-  different byteorder datatypes, eg. IPv4 (network byte order) and meta mark
-  (host byte order).
-
-    table ip x {
-           map w {
-                 typeof ip saddr . meta mark : verdict
-                 flags interval
-                 counter
-                 elements = {
-                         127.0.0.1-127.0.0.4 . 0x123434-0xb00122 : accept,
-                         192.168.0.10-192.168.1.20 . 0x0000aa00-0x0000aaff : accept,
-                 }
-          }
-          chain k {
-                 type filter hook input priority filter; policy drop;
-                 ip saddr . meta mark vmap @w
-          }
-    }
-
-- fix match of uncommon protocol matches with raw expressions, eg.
-
-     meta l4proto 91 @th,400,16 0x0 accept
-
-- unbreak insertion of rules with intervals:
-
-     insert rule x y tcp sport { 3478-3497, 16384-16387 } counter accept
-
-- enhancements for the JSON API, including support for statements in sets and
-  maps, and asorted fixes.
-- extensions for the python nftables library to allow to load ruleset and
-  perform dry run, support for external definition of variables, among others.
-- allow to intercalate comments in set elements.
-- allow for zero burst in byte ratelimits.
-- fix element collapse routine when same set name and different family is used.
-- ... and manpage updates.
-
-See changelog for more details (attached to this email).
-
-You can download this new release from:
-
-https://www.netfilter.org/projects/nftables/downloads.html
-https://www.netfilter.org/pub/nftables/
-
-[ NOTE: We have switched to .tar.xz files for releases. ]
-
-To build the code, libnftnl >= 1.2.4 and libmnl >= 1.0.4 are required:
-
-* https://netfilter.org/projects/libnftnl/index.html
-* https://netfilter.org/projects/libmnl/index.html
-
-Visit our wikipage for user documentation at:
-
-* https://wiki.nftables.org
-
-For the manpage reference, check man(8) nft.
-
-In case of bugs and feature requests, file them via:
-
-* https://bugzilla.netfilter.org
-
-Happy firewalling.
-
---+r3PbvtDuakQOpYM
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: attachment; filename="changes-nftables-1.0.6.txt"
-
-Alex Forster (1):
-      json: fix 'add flowtable' command
-
-Derek Hageman (1):
-      rule: check address family in set collapse
-
-Fernando Fernandez Mancera (8):
-      json: add set statement list support
-      json: add table map statement support
-      json: fix json schema version verification
-      json: fix empty statement list output in sets and maps
-      json: add secmark object reference support
-      json: add stateful object comment support
-      py: support variables management and fix formatting
-      doc: add nft_ctx_add_var() and nft_ctx_clear_vars() docs
-
-Florian Westphal (11):
-      tests: shell: check for a tainted kernel
-      expr: update EXPR_MAX and add missing comments
-      evaluate: un-break rule insert with intervals
-      evaluate: allow implicit ether -> vlan dep
-      doc: mention vlan matching in ip/ip6/inet families
-      evaluate: add ethernet header size offset for implicit vlan dependency
-      tests: py: add vlan test case for ip/inet family
-      netlink_delinearize: fix decoding of concat data element
-      netlink_linearize: fix timeout with map updates
-      tests: add a test case for map update from packet path with concat
-      doc: add/update can be used with maps too
-
-Harald Welte (1):
-      doc: payload-expression.txt: Mention that 'ih' exists
-
-Jeremy Sowden (3):
-      segtree: refactor decomposition of closed intervals
-      segtree: fix decomposition of unclosed intervals containing address prefixes
-      doc, src: make some spelling and grammatical improvements
-
-Michael Braun (1):
-      concat with dynamically sized fields like vlan id
-
-Pablo Neira Ayuso (31):
-      optimize: merging concatenation is unsupported
-      optimize: check for mergeable rules
-      optimize: expand implicit set element when merging into concatenation
-      src: allow burst 0 for byte ratelimit and use it as default
-      tests/py: missing userdata in netlink payload
-      include: resync nf_tables.h cache copy
-      evaluate: bogus datatype assertion in binary operation evaluation
-      evaluate: datatype memleak after binop transfer
-      parser_bison: display too many levels of nesting error
-      rule: do not display handle for implicit chain
-      netlink_delinearize: do not transfer binary operation to non-anonymous sets
-      tests: shell: deletion from interval concatenation
-      netlink_delinearize: complete payload expression in payload statement
-      payload: do not kill dependency for proto_unknown
-      optimize: handle prefix and range when merging into set + concatenation
-      doc: document a few reset commands supported by the parser
-      doc: no reset support for limit
-      monitor: missing cache and set handle initialization
-      src: support for selectors with different byteorder with interval concatenations
-      doc: statements: fwd supports for sending packets via neighbouring layer
-      scanner: munch full comment lines
-      tests: py: missing json for different byteorder selector with interval concatenation
-      netlink: swap byteorder of value component in concatenation of intervals
-      evaluate: do not crash on runaway number of concatenation components
-      netlink: statify __netlink_gen_data()
-      netlink: add function to generate set element key data
-      netlink: unfold function to generate concatenations for keys and data
-      scanner: match full comment line in case of tie
-      evaluate: fix compilation warning
-      owner: Fix potential array out of bounds access
-      build: Bump version to 1.0.6
-
-Peter Collinson (1):
-      py: extend python API to support libnftables API
-
-Phil Sutter (9):
-      doc: nft.8: Add missing '-T' in synopsis
-      erec: Dump locations' expressions only if set
-      monitor: Sanitize startup race condition
-      Warn for tables with compat expressions in rules
-      Makefile: Create LZMA-compressed dist-files
-      xt: Delay libxtables access until translation
-      xt: Purify enum nft_xt_type
-      xt: Rewrite unsupported compat expression dumping
-      xt: Fall back to generic printing from translation
-
-Xiao Liang (1):
-      src: Don't parse string as verdict in map
+the problem with your curent ruleset ist that you did copy&paste rules 
+from wherever without understanding what they are doing - that's the 
+worst case szart of a firewall ruleset
 
 
---+r3PbvtDuakQOpYM--
