@@ -1,60 +1,50 @@
-From: "Atkins, Brian" <Brian.Atkins@netapp.com>
-Subject: RE: nftables tutorial for dummies?
-Date: Fri, 23 Dec 2022 17:02:16 +0000
-Message-ID: <DM8PR06MB7717024A696385FE163875FCF9E99@DM8PR06MB7717.namprd06.prod.outlook.com>
-References: <47d2afb3-7911-a903-d36b-6b231b4524a2@zoho.com>
- <c22a1be1-c761-d5fe-13d9-9896c9e79fbd@gmx.com>
- <5b6be8b3-341e-f8ec-dd65-6cd235f8de4f@zoho.com>
+From: ToddAndMargo <ToddAndMargo@zoho.com>
+Subject: bftables and scripts question
+Date: Fri, 23 Dec 2022 18:30:02 -0800
+Message-ID: <b928e785-3108-088f-905f-3228e742b165@zoho.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netapp.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qV7RCXKQ8TbB4ghgPZBPuLQWd0lKeDIZ+2pWo19NQkQ=;
- b=UUbN3XtXteJ8XjthisyCfE69gbbTYKXI6Bosxyc90rdhfIYiBuHPizangZDg7ILET5YKMlMG8iHZXx45pg9PWwaqm6I1PLXBIqAISRDOkdjpKylGh+jFayuUa6Qcu5V/DvnXSYCDcF5qreQqtRQBLP67S6/dTk67RhaQP20OsKi8kSPOlCI6oaDb3R9tmYRuIct39YuFN/yBvyVceufQ0OsE7oDvdGF2jlUwL4QfejQ7yPpCh64m6jjCZJBeWbE+93tXDKxYH0COkIOvkX4qoMLnrkssWEZhhd24VZBLIFAFHIXWBr96mC4LiCvfAm1jDeji5BKAk2y4FQJHbHi9AQ==
-In-Reply-To: <5b6be8b3-341e-f8ec-dd65-6cd235f8de4f@zoho.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1671849004;
+        s=zm2022; d=zoho.com; i=ToddAndMargo@zoho.com;
+        h=Message-ID:Date:Date:MIME-Version:To:To:From:From:Subject:Subject:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To:Cc;
+        bh=n/iBOaCHVdHT3FI9cmtqTSnCGWBjnimEhEjIJN0KmNY=;
+        b=E0PYULO85Ss1/weKv/1XPpLldr+VCsaL+izQTHQNF+/mPmMV97T0QXuJKDpKYXu/
+        GJ/a1MT+Ov3xmBcVhREwpIvkpsrc5E1jw0fY3QFxVMEm+eoErBVakDHvDQzrwzyP7lU
+        28fxFHkPrdQ3Bgm/cWT2LKQBM3UiZEtOVOnMrsSY=
 Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-To: ToddAndMargo <ToddAndMargo@zoho.com>, =?utf-8?B?TGFycyBOb29kw6lu?= <lars.nooden@gmx.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-SSBmb3VuZCBvbmUgb2YgdGhlIGJlc3Qgd2F5cyB0byB1bmRlcnN0YW5kIHdoYXQncyBoYXBwZW5p
-bmcgaXMgdG8gdXNlIHRyYWNpbmcgKGh0dHBzOi8vd2lraS5uZnRhYmxlcy5vcmcvd2lraS1uZnRh
-Ymxlcy9pbmRleC5waHAvUnVsZXNldF9kZWJ1Zy90cmFjaW5nKSAuICBZb3UgY2FuIHNlZSB0aGUg
-dHJhZmZpYyBtb3ZlIHRocm91Z2ggdGhlIGNoYWlucyBhbmQgcnVsZXMgYW5kIGdldCBhIGJldHRl
-ciB1bmRlcnN0YW5kaW5nIG9mIGhvdyB5b3VyIG1hdGNoaW5nIGlzIG9yIGlzbid0IHdvcmtpbmcu
-ICBJIG9mdGVuIGp1c3Qgc2V0IGl0IG9uIG15IGlucHV0IGNoYWluLCBvciBvbiBhbm90aGVyIGNo
-YWluIHdoZXJlIEkgd2FudCB0byBmb2N1czsgeW91IGRvbid0IGhhdmUgdG8gdXNlIGEgcHJlLXJv
-dXRpbmcgY2hhaW4gdW5sZXNzIHlvdSBuZWVkIHRvIGNhdGNoIHRoZSB0cmFmZmljIGVhcmxpZXIu
-DQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBUb2RkQW5kTWFyZ28gPFRvZGRB
-bmRNYXJnb0B6b2hvLmNvbT4gDQpTZW50OiBUaHVyc2RheSwgRGVjZW1iZXIgMjIsIDIwMjIgMToz
-NSBQTQ0KVG86IExhcnMgTm9vZMOpbiA8bGFycy5ub29kZW5AZ214LmNvbT47IG5ldGZpbHRlckB2
-Z2VyLmtlcm5lbC5vcmcNClN1YmplY3Q6IFJlOiBuZnRhYmxlcyB0dXRvcmlhbCBmb3IgZHVtbWll
-cz8NCg0KTmV0QXBwIFNlY3VyaXR5IFdBUk5JTkc6IFRoaXMgaXMgYW4gZXh0ZXJuYWwgZW1haWwu
-IERvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRzIHVubGVzcyB5b3UgcmVjb2du
-aXplIHRoZSBzZW5kZXIgYW5kIGtub3cgdGhlIGNvbnRlbnQgaXMgc2FmZS4NCg0KDQoNCg0KT24g
-MTIvMjIvMjIgMDE6MTMsIExhcnMgTm9vZMOpbiB3cm90ZToNCj4gT24gMjEuMTIuMjAyMiAxLjQ1
-LCBUb2RkQW5kTWFyZ28gd3JvdGU6DQo+PiBIaSBBbGwsDQo+Pg0KPj4gQW55b25lIGhhdmUgYSBm
-YXZvcml0ZSBuZnRhYmxlcyB0dXRvcmlhbCBmb3IgZHVtbWllcz8NCj4+DQo+PiBJIGFtIGZhbWls
-aWFyIHdpdGggaXB0YWJsZXMsIGlmIHRoYXQgaGVscHMuDQo+Pg0KPj4gVGhpcyBsb29rcyBhIGJp
-dCBjb21wbGljYXRlZDoNCj4+DQo+PiBodHRwczovL3dpa2kubmZ0YWJsZXMub3JnL3dpa2ktbmZ0
-YWJsZXMvaW5kZXgucGhwL01haW5fUGFnZQ0KPj4NCj4+IE1hbnkgdGhhbmtzLA0KPj4gLVQNCj4N
-Cj4gRGlkIHlvdSBzZWUgdGhlICJRdWljayByZWZlcmVuY2UtbmZ0YWJsZXMgaW4gMTAgbWludXRl
-cyIgbGluayBmb3VuZCANCj4gbmVhciB0aGUgYm90dG9tIG9mIHRoZSBwYWdlIHlvdSBsaW5rIHRv
-IGFib3ZlPyAgSXQncyByZWFsbHkgd29ydGggYSBsb29rOg0KPg0KPiBodHRwczovL3dpa2kubmZ0
-YWJsZXMub3JnL3dpa2ktbmZ0YWJsZXMvaW5kZXgucGhwL1F1aWNrX3JlZmVyZW5jZS1uZnRhDQo+
-IGJsZXNfaW5fMTBfbWludXRlcw0KDQpJIGRpZCBub3Qgc2VlIHRoYXQuICBNZSB0aGluZ3MgSSB3
-aWxsIGJlIHVzaW5nIHRoZSBoZWNrIG91dCBvZiBpdCB3aGVuIEkgZ2V0IHRoZSBoYW5nIG9mIGl0
-Lg0KDQo+DQo+IE5GVGFibGVzIGlzIGRpZmZlcmVudCBmcm9tIElQVGFibGVzLCBidXQgZm9yIG1l
-IGl0IGlzIGRpZmZlcmVudCBpbiANCj4gd2F5cyB3aGljaCBtYWtlIGl0IGVhc2llciB0byB1c2Ug
-ZGVzcGl0ZSBoYXZpbmcgc3BlbnQgYSBsb25nZXIgdGltZSANCj4gdXNpbmcgSVBUYWJsZXMuICBZ
-TU1WLg0KDQpNeSB0d28gYmlnIGZlYXJzIGFyZToNCg0KMSkgIGlmIEkgZG8gbm90IG1hbmFnZXIg
-dG8gZG93bmxvYWQgZW5vdWdoIG9mIHRoZSByZWZlcmVuY2UgZ3VpZGVzL3R1dG9yaWFsIGluIGFk
-dmFuY2UsIHRoYXQgSSB3aWxsIGJlaW5nIGdvaW5nIGJhY2sgYW5kIGZvcnRoIHdpdGggYSBsaXZl
-IFVTQiByZXNlYXJjaGluZyB0aGluZ3MuDQoNCjIpICBJdCBsb29rcyBsaWtlIEkgd2lsbCBoYXZl
-IHRvIGxlYXJuIHRoZSBzeW50YXggb2YgYSBuZXcgbGFuZ3VhZ2UuICAoSSBhbSBmYW1pbGlhciB3
-aXRoIHNldmVyYWwgb2YgdGhlbS4gIEN1cnJlbnRseSwgSSB3cml0ZSBhIGxvdCBpbiBSYWt1IFtQ
-ZXJsIDZdLikNCg0KVGhhbmsgeW91IGZvciB0aGUgaGVscCENCg0KPiAvTGFycw0KPg0KPiBQUy4g
-IFRoYW5rIHlvdSBpbiBhZHZhbmNlIGZvciBub3QgdG9wLXBvc3RpbmcuDQoNCllvdSBhcmUgd2Vs
-Y29tZSENCg0KDQoNCg0K
+Hi All,
+
+I am currently using iptables but and starting the process
+of learning nftables.
+
+Question.  My iptables are in a bash programs (scripts).
+
+For instance:
+
+if [ "$enable_rdp" = "yes" ]; then
+    # Warning: this user is given access to SYN's
+    # rdp is M$ Terminal Services
+    <lots of iptables>
+    logger -p user.notice -t firewall "Firewall external rules warning: 
+$ts_server (Terminal Server) accepts SYN's on Port $rdp_port"
+fi
+
+Will nftables work the same way?
+
+And, will the converters also roll over the bash code?
+
+Many thanks,
+-T
+
+
+
+-- 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Computers are like air conditioners.
+They malfunction when you open windows
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
