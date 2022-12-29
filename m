@@ -1,71 +1,101 @@
-From: Martin Zaharinov <micron10@gmail.com>
-Subject: NFT Flowtable HW Offload
-Date: Thu, 29 Dec 2022 10:02:58 +0200
-Message-ID: <80DB4032-71C6-416B-BB13-9DE27F77E8EC@gmail.com>
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112;
-        h=to:date:message-id:subject:mime-version:content-transfer-encoding
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=OEFmaE8vXuT1bXy7yU8jjxYv0zU/2yLIaM/Pfg2f0Zo=;
-        b=lsjuTcy9EjIE/7Po1Y2eftkPLTomQCui9qj/3oSzSqE4Iz9MOGyXGim4uesm//XrIl
-         c2qGWgiZF/IUsRviumYeZ92ZOYt8tFVXYNlL+kNFdDHscsL+c9eqgJ+q3EQKSquQHw63
-         qqe1F0JnnDCTQMNvUuL2rENy7MiiFm/KjTP/6/BBFS2WsxWl68chw3Aqf53leJg/VklT
-         qy4EWIEVOLwgFO7NBV2qqFK+D9FwHtiin5WNGeKgAFa2JED8vZql/zDucsBPkoXSVxIN
-         R4Mk45KOoWd8YEePiQcBV8j3rnmC45J8pHd8pt95QPDilX1mxmC7GB4ZbgyW91RjQkNX
-         FNnA==
+From: Jozsef Kadlecsik <kadlec@netfilter.org>
+Subject: Re: ipset bug (kernel hang)
+Date: Thu, 29 Dec 2022 14:14:07 +0100 (CET)
+Message-ID: <ce3bf2f0-526f-b2c7-77c2-24ed28cede8e@netfilter.org>
+References: <CAEmTpZFTQVDYw4w2LgTmABZ8ygJtwtLj+Kj9CsZmNARpuB2oHQ@mail.gmail.com>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="1393428146-1304804731-1672319647=:1214071"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <CAEmTpZFTQVDYw4w2LgTmABZ8ygJtwtLj+Kj9CsZmNARpuB2oHQ@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Florian Westphal <fw@strlen.de>, pablo@netfilter.org, Paolo Abeni <pabeni@redhat.com>, netfilter <netfilter@vger.kernel.org>
+To: =?UTF-8?B?0JzQsNGA0Log0JrQvtGA0LXQvdCx0LXRgNCz?= <socketpair@gmail.com>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Hi=20
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
+--1393428146-1304804731-1672319647=:1214071
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-I try to run offload table in hw mode
+Hello,
 
-but receive this error when try to load rule
+On Fri, 23 Dec 2022, =D0=9C=D0=B0=D1=80=D0=BA =D0=9A=D0=BE=D1=80=D0=B5=D0=
+=BD=D0=B1=D0=B5=D1=80=D0=B3 wrote:
 
-./test-nft:125:19-25: Error: Could not process rule: Operation not =
-supported
-        flowtable testflow {
-                  ^^^^^^^
-./test-nft:134:48-64: Error: Could not process rule: No such file or =
-directory
-                ip protocol { tcp, udp, icmp } flow add @testflow;
-                                               ^^^^^^^^^^^^^^^^^
+> ipset create acl_cdc_cert hash:net,port,net
+> ipset add acl_cdc_cert 0.0.0.0/0,tcp:1-2,192.168.230.128/25
+>=20
+> and kernel 6.0.12 hangs (!)
+>=20
+> Seems the problem happens only if both 0.0.0.0/0 and port range
+> specified at the same time.
 
+Thanks for the bugreport, I'm going to submit then next patch to fix it:
 
+diff --git a/net/netfilter/ipset/ip_set_hash_netportnet.c b/net/netfilter=
+/ipset/ip_set_hash_netportnet.c
+index 19bcdb3141f6..b3616f5e1f6a 100644
+--- a/net/netfilter/ipset/ip_set_hash_netportnet.c
++++ b/net/netfilter/ipset/ip_set_hash_netportnet.c
+@@ -173,6 +173,16 @@ hash_netportnet4_kadt(struct ip_set *set, const stru=
+ct sk_buff *skb,
+ 	return adtfn(set, &e, &ext, &opt->ext, opt->cmdflags);
+ }
+=20
++static u32
++hash_netportnet4_range_to_cidr(u32 from, u32 to, u8 *cidr)
++{
++	if (from =3D=3D 0 && to =3D=3D UINT_MAX) {
++		*cidr =3D 0;
++		return to;
++	}
++	return ip_set_range_to_cidr(from, to, cidr);
++}
++
+ static int
+ hash_netportnet4_uadt(struct ip_set *set, struct nlattr *tb[],
+ 		      enum ipset_adt adt, u32 *lineno, u32 flags, bool retried)
+@@ -287,12 +297,12 @@ hash_netportnet4_uadt(struct ip_set *set, struct nl=
+attr *tb[],
+ 	}
+ 	ipn =3D ip;
+ 	do {
+-		ipn =3D ip_set_range_to_cidr(ipn, ip_to, &e.cidr[0]);
++		ipn =3D hash_netportnet4_range_to_cidr(ipn, ip_to, &e.cidr[0]);
+ 		n++;
+ 	} while (ipn++ < ip_to);
+ 	ipn =3D ip2_from;
+ 	do {
+-		ipn =3D ip_set_range_to_cidr(ipn, ip2_to, &e.cidr[1]);
++		ipn =3D hash_netportnet4_range_to_cidr(ipn, ip2_to, &e.cidr[1]);
+ 		m++;
+ 	} while (ipn++ < ip2_to);
+=20
+@@ -310,13 +320,13 @@ hash_netportnet4_uadt(struct ip_set *set, struct nl=
+attr *tb[],
+=20
+ 	do {
+ 		e.ip[0] =3D htonl(ip);
+-		ip =3D ip_set_range_to_cidr(ip, ip_to, &e.cidr[0]);
++		ip =3D hash_netportnet4_range_to_cidr(ip, ip_to, &e.cidr[0]);
+ 		for (; p <=3D port_to; p++) {
+ 			e.port =3D htons(p);
+ 			do {
+ 				e.ip[1] =3D htonl(ip2);
+-				ip2 =3D ip_set_range_to_cidr(ip2, ip2_to,
+-							   &e.cidr[1]);
++				ip2 =3D hash_netportnet4_range_to_cidr(ip2,
++							ip2_to, &e.cidr[1]);
+ 				ret =3D adtfn(set, &e, &ext, &ext, flags);
+ 				if (ret && !ip_set_eexist(ret, flags))
+ 					return ret;
 
-this is rule :
-
-
-table inet filter {
-        flowtable testflow {
-                hook ingress priority 0
-                devices =3D { eth0, eth1 };
-                flags offload;
-        }
-
-        chain forward {
-                type filter hook forward priority -400; policy accept;
-                ip protocol { tcp, udp, icmp } flow add @testflow;
-               =20
-        }
-}
-
-
-
-Receive Ethernet card : Mellanox Technologies MT27800 Family =
-[ConnectX-5]
-
-This is Mellanox ConnectX5 100Gbe Dual port card, MCX516A-CCAT
-
-I think this card support hw offload ,
-Kernel is 6.1.1=20
-
-How to enablee hw offload is there need other config ?
-
-Best Regards,
-Martin=
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
+PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics
+          H-1525 Budapest 114, POB. 49, Hungary
+--1393428146-1304804731-1672319647=:1214071--
