@@ -1,101 +1,52 @@
-From: Jozsef Kadlecsik <kadlec@netfilter.org>
-Subject: Re: ipset bug (kernel hang)
-Date: Thu, 29 Dec 2022 14:14:07 +0100 (CET)
-Message-ID: <ce3bf2f0-526f-b2c7-77c2-24ed28cede8e@netfilter.org>
-References: <CAEmTpZFTQVDYw4w2LgTmABZ8ygJtwtLj+Kj9CsZmNARpuB2oHQ@mail.gmail.com>
+From: Eric <evil.function@proton.me>
+Subject: Re: NFT Flowtable HW Offload
+Date: Thu, 29 Dec 2022 15:57:21 +0000
+Message-ID: <NLwpgtobAC8slS8sdLCSLimsjkHkz8gZf-r_2me75YbQUgNTLvURrlRfhQ6kQP_vN6CptFjf3d2mNGtOyVRyt0Qb6U9sCNkMsl-uPpt4f3o=@proton.me>
+References: <80DB4032-71C6-416B-BB13-9DE27F77E8EC@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="1393428146-1304804731-1672319647=:1214071"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <CAEmTpZFTQVDYw4w2LgTmABZ8ygJtwtLj+Kj9CsZmNARpuB2oHQ@mail.gmail.com>
-List-ID: <netfilter.vger.kernel.org>
-To: =?UTF-8?B?0JzQsNGA0Log0JrQvtGA0LXQvdCx0LXRgNCz?= <socketpair@gmail.com>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
-
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---1393428146-1304804731-1672319647=:1214071
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+        s=protonmail; t=1672329451; x=1672588651;
+        bh=Saj2hVZGb7fdGBRYsVqnzE87B2yXl7HAQIcK5OiXOas=;
+        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+         Message-ID:BIMI-Selector;
+        b=MP0Vy356tWWVXB+hBM9jS1DNis2pB+uyLfPKwlWrR04RZxZZWhDUGSghQvl9tnngm
+         uJXH36kMuV2IpG2AvW7sh1gyN+HySWVrFhbfdWjEZP1J+I5dErP6wUwUgrA1XrLZkJ
+         Q4kED4hVYSUpgdww1DxUTiVrpeQubr/LcS7+4axDvysiblOYvoEkPK3vudFH6MNmJE
+         E3DXjsmbklQm+QwRTX+IZ/Cjetam8HmHn1aoZZOWEURuDkm0B7d2liSeXXkfV823wV
+         wrLDbJiXJI9xpNnCq6oAyLIyCZhXr8ZLOJgPj0CAXGsue0fXGfy+34gzvBHNQXVZ1k
+         iZ6vQOM/K0Vgw==
+In-Reply-To: <80DB4032-71C6-416B-BB13-9DE27F77E8EC@gmail.com>
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Martin Zaharinov <micron10@gmail.com>
+Cc: Florian Westphal <fw@strlen.de>, pablo@netfilter.org, Paolo Abeni <pabeni@redhat.com>, netfilter <netfilter@vger.kernel.org>
 
-Hello,
-
-On Fri, 23 Dec 2022, =D0=9C=D0=B0=D1=80=D0=BA =D0=9A=D0=BE=D1=80=D0=B5=D0=
-=BD=D0=B1=D0=B5=D1=80=D0=B3 wrote:
-
-> ipset create acl_cdc_cert hash:net,port,net
-> ipset add acl_cdc_cert 0.0.0.0/0,tcp:1-2,192.168.230.128/25
+------- Original Message -------
+On Thursday, December 29th, 2022 at 00:02, Martin Zaharinov <micron10@gmail=
+.com> wrote:
+> Kernel is 6.1.1
 >=20
-> and kernel 6.0.12 hangs (!)
->=20
-> Seems the problem happens only if both 0.0.0.0/0 and port range
-> specified at the same time.
+> How to enablee hw offload is there need other config ?
 
-Thanks for the bugreport, I'm going to submit then next patch to fix it:
+I'll make a guess that your kernel build config doesn't include the NFT_FLO=
+W_OFFLOAD setting.  The OpenWrt list has a couple of similar issues with du=
+p and connlimit not being built in resulting in errors like yours, so it ma=
+kes me suspect the same is going on here.
 
-diff --git a/net/netfilter/ipset/ip_set_hash_netportnet.c b/net/netfilter=
-/ipset/ip_set_hash_netportnet.c
-index 19bcdb3141f6..b3616f5e1f6a 100644
---- a/net/netfilter/ipset/ip_set_hash_netportnet.c
-+++ b/net/netfilter/ipset/ip_set_hash_netportnet.c
-@@ -173,6 +173,16 @@ hash_netportnet4_kadt(struct ip_set *set, const stru=
-ct sk_buff *skb,
- 	return adtfn(set, &e, &ext, &opt->ext, opt->cmdflags);
- }
-=20
-+static u32
-+hash_netportnet4_range_to_cidr(u32 from, u32 to, u8 *cidr)
-+{
-+	if (from =3D=3D 0 && to =3D=3D UINT_MAX) {
-+		*cidr =3D 0;
-+		return to;
-+	}
-+	return ip_set_range_to_cidr(from, to, cidr);
-+}
-+
- static int
- hash_netportnet4_uadt(struct ip_set *set, struct nlattr *tb[],
- 		      enum ipset_adt adt, u32 *lineno, u32 flags, bool retried)
-@@ -287,12 +297,12 @@ hash_netportnet4_uadt(struct ip_set *set, struct nl=
-attr *tb[],
- 	}
- 	ipn =3D ip;
- 	do {
--		ipn =3D ip_set_range_to_cidr(ipn, ip_to, &e.cidr[0]);
-+		ipn =3D hash_netportnet4_range_to_cidr(ipn, ip_to, &e.cidr[0]);
- 		n++;
- 	} while (ipn++ < ip_to);
- 	ipn =3D ip2_from;
- 	do {
--		ipn =3D ip_set_range_to_cidr(ipn, ip2_to, &e.cidr[1]);
-+		ipn =3D hash_netportnet4_range_to_cidr(ipn, ip2_to, &e.cidr[1]);
- 		m++;
- 	} while (ipn++ < ip2_to);
-=20
-@@ -310,13 +320,13 @@ hash_netportnet4_uadt(struct ip_set *set, struct nl=
-attr *tb[],
-=20
- 	do {
- 		e.ip[0] =3D htonl(ip);
--		ip =3D ip_set_range_to_cidr(ip, ip_to, &e.cidr[0]);
-+		ip =3D hash_netportnet4_range_to_cidr(ip, ip_to, &e.cidr[0]);
- 		for (; p <=3D port_to; p++) {
- 			e.port =3D htons(p);
- 			do {
- 				e.ip[1] =3D htonl(ip2);
--				ip2 =3D ip_set_range_to_cidr(ip2, ip2_to,
--							   &e.cidr[1]);
-+				ip2 =3D hash_netportnet4_range_to_cidr(ip2,
-+							ip2_to, &e.cidr[1]);
- 				ret =3D adtfn(set, &e, &ext, &ext, flags);
- 				if (ret && !ip_set_eexist(ret, flags))
- 					return ret;
+Just for reference, here is a snippet from the current OpenWrt config (note=
+ specifically the last line that I've included)
+https://github.com/openwrt/openwrt/blob/master/target/linux/generic/config-=
+5.15#L4249-L4250
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
-PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics
-          H-1525 Budapest 114, POB. 49, Hungary
---1393428146-1304804731-1672319647=:1214071--
+# CONFIG_NFT_CONNLIMIT is not set
+# CONFIG_NFT_DUP_IPV4 is not set
+# CONFIG_NFT_DUP_IPV6 is not set
+# CONFIG_NFT_FIB_IPV4 is not set
+# CONFIG_NFT_FIB_IPV6 is not set
+# CONFIG_NFT_FIB_NETDEV is not set
+# CONFIG_NFT_FLOW_OFFLOAD is not set
+
+Eric
