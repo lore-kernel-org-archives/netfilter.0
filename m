@@ -1,207 +1,95 @@
-From: Martin Zaharinov <micron10@gmail.com>
-Subject: Re: [nft] src: allow for updating devices on existing netdev chain -
- Test result
-Date: Fri, 6 Jan 2023 17:23:45 +0200
-Message-ID: <72087908-1387-4D9F-A4D1-7DC5C276155E@gmail.com>
-References: <DD658C3B-2FB9-451E-893C-EE37ABDC678A@gmail.com>
-Mime-Version: 1.0 (Mac OS X Mail 14.0 \(3654.120.0.1.13\))
-Content-Transfer-Encoding: quoted-printable
+From: Gio <gioflux@gmail.com>
+Subject: Re: nftables character limits?
+Date: Wed, 11 Jan 2023 21:04:51 -0500
+Message-ID: <CADhidkpgNX81zBcUerSAe+9VKgTcNbi8e8TvqEguY948c-n54Q@mail.gmail.com>
+References: <CADhidkqEE_Pud167s6-AXJ1rBuODQFkbDUUB+nCvDhFs805xkA@mail.gmail.com>
+Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20210112;
-        h=message-id:in-reply-to:to:references:date:subject:mime-version
-         :content-transfer-encoding:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=VbT9pMUaSCmN3XabeekxLiKw6la9cHdMDU5rqXhfx3w=;
-        b=Qc9vMHprdRN1AB/k+9J7m8vxDC/YjIJnZ+3okfTBRSWz8dLDkTSjUpf62+Cj6YdWcz
-         Vw3dnqhJUu7MkxhTgMAzBqySzK57ysUpLBGd433EDZp3jFLV5jgdHHS/cj5Mwp9vYU6d
-         ARsFrhzvjSwZDkW5oBjutHXQj5GXwYdpEXUNa7QPz9a7ojbPAmh4uMMYy+sIgYpSxybI
-         uPBPEmY6ECB4hso0oyC6QK1fgzJCCy+Zakgr6BYfCBzYM85JlrtHdBJ5ptczmy1mEwzU
-         Iv0NTcga1+yy5zwKxnIx3p6Dsa9cy1JMo7yw0iPZvvoyLw+JL7RFu7XOEVN5oNB0Yc23
-         r8Ag==
-In-Reply-To: <DD658C3B-2FB9-451E-893C-EE37ABDC678A@gmail.com>
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=VNsuRYJLpsg4IDgsesfSPFlvZlletPtBFfxUkOrumDw=;
+        b=J3FEspNb13ypkgFaHblQcNqXPxaANqNtyQBBCnR3ZQCyr5m6hR6CXjH2SLC2NWHwfg
+         tBp00nGv+q4YbQKjGwSC793FohsxjQl3tO/fdxmBgFeHhvS6AqONrvhQZEIhwv29/8bR
+         GO1HvPQsK0JrXlKy3wPtLdgJdhGxUVo7I6nSMBkfzG03fispNPP9ZG17uys+HhUI5SvN
+         eOn76XS9eb64JTX7ZFB2H7wlY2xoKU6DXfjAOy/36KflyQAcVcQ/qxlrS3HW/JranSGt
+         d4twT03+WRb4+l9edc+SPxugLG00sXHkxR+c45JFvsJidVB+X5ps+hMLaOpjuWQQjIEF
+         21cQ==
+In-Reply-To: <CADhidkqEE_Pud167s6-AXJ1rBuODQFkbDUUB+nCvDhFs805xkA@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: pablo@netfilter.org, netfilter <netfilter@vger.kernel.org>, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-And one more this is BUG in delete :=20
+Circling back on this as I never heard back.
 
-When run delete :=20
-for i in `seq 2 9999`; do nft delete  chain netdev x int$i '{ devices =3D =
-{ ppp0 }; }'; done
+Looks like there is a hardcoding of "comment" limit to 127 characters
+and also there cannot be multiple comment lines? Any reason for this
+very small limit? could this be removed please? I'm using comments for
+specific security references.
+
+Here's a NFT config you can use to reproduce this bug (I don't
+consider 127 char limit a feature):
+
+table inet filter {
+        chain input {
+                 type filter hook input priority 0; policy drop;
+
+                 # accept any localhost traffic
+                 iif lo accept
+
+                 # accept traffic originated from us
+                 ct state established,related accept
+
+                 # accept neighbour discovery otherwise IPv6 connectivity breaks
+                 icmpv6 type { nd-neighbor-solicit, nd-router-advert,
+nd-neighbor-advert } accept
+
+        }
+    chain root0 {
+        comment "version:
+KM3Xi-8BOkAvcGxhY2VyL3Byb2QvaG9tZS9zZWNvcHMtbmV0LWFjbC1wbGFjZXIvc25hcHNob3RzL3BhcnRpdGlvbj1zc2QvQgYIzMr7nQZKBgj9y_udBlIGCL7L-50GWgYIzMr7nQZqBgjpzvudBnIGCPXP-50GegYIy7v7nQaCAQYIuM37nQaKAQYIps_7nQaSAQYI58j7nQY="
+        comment "Policy name: host"
+        comment "Restrictions enabled"
+}
 
 
+----
+error
+root@nf:~# nft -f verb.nft
+verb.nft:16:17-235: Error: comment too long, 128 characters maximum allowed
+        comment "version:
+KM3Xi-8BOkAvcGxhY2VyL3Byb2QvaG9tZS9zZWNvcHMtbmV0LWFjbC1wbGFjZXIvc25hcHNob3RzL3BhcnRpdGlvbj1zc2QvQgYIzMr7nQZKBgj9y_udBlIGCL7L-50GWgYIzMr7nQZqBgjpzvudBnIGCPXP-50GegYIy7v7nQaCAQYIuM37nQaKAQYIps_7nQaSAQYI58j7nQY="
 
-Jan  6 16:19:20 78.142.32.70 [ 2982.211837][T21662] BUG: kernel NULL =
-pointer dereference, address: 0000000000000000
-Jan  6 16:19:20 78.142.32.70 [ 2982.212414][T21662] #PF: supervisor =
-write access in kernel mode
-Jan  6 16:19:20 78.142.32.70 [ 2982.212858][T21662] #PF: =
-error_code(0x0002) - not-present page
-Jan  6 16:19:20 78.142.32.70 [ 2982.213285][T21662] PGD 132f8d067 P4D =
-132f8d067 PUD 101afe067 PMD 0
-Jan  6 16:19:20 78.142.32.70 [ 2982.213751][T21662] Oops: 0002 [#1] SMP
-Jan  6 16:19:20 78.142.32.70 [ 2982.214048][T21662] CPU: 5 PID: 21662 =
-Comm: nft Tainted: G           O       6.1.3 #1
-Jan  6 16:19:20 78.142.32.70 [ 2982.214609][T21662] Hardware name: QEMU =
-Standard PC (Q35 + ICH9, 2009), BIOS =
-rel-1.16.0-0-gd239552ce722-prebuilt.qemu.org 04/01/2014
-Jan  6 16:19:20 78.142.32.70 [ 2982.215479][T21662] RIP: =
-0010:nf_tables_fill_chain_info+0x57a/0x590 [nf_tables]
-Jan  6 16:19:20 78.142.32.70 [ 2982.216026][T21662] Code: 48 89 df e8 58 =
-19 e9 f6 85 c0 0f 84 48 fe ff ff e9 d0 fd ff ff 8b 83 b4 00 00 00 48 8b =
-7c 24 18 48 03 83 c0 00 00 00 48 29 f8 <66> 89 07 e9 26 fe ff ff 0f 0b =
-e9 bc fd ff ff 0f 1f 80 00 00 00 00
-Jan  6 16:19:20 78.142.32.70 [ 2982.217400][T21662] RSP: =
-0018:ffffb1c247b3fb48 EFLAGS: 00010286
-Jan  6 16:19:20 78.142.32.70 [ 2982.217836][T21662] RAX: =
-ffff90e372777ec0 RBX: ffff90e37c725300 RCX: 0000000000000000
-Jan  6 16:19:20 78.142.32.70 [ 2982.218399][T21662] RDX: =
-0000000000000000 RSI: 0000000000000004 RDI: 0000000000000000
-Jan  6 16:19:20 78.142.32.70 [ 2982.218970][T21662] RBP: =
-ffff90e372777e78 R08: 0000000000000009 R09: ffff90e372777ec0
-Jan  6 16:19:20 78.142.32.70 [ 2982.219180][T21662] R10: =
-0000000000008000 R11: 0000000000000008 R12: ffff90e341bbb350
-Jan  6 16:19:20 78.142.32.70 [ 2982.219180][T21662] R13: =
-0000000000000000 R14: ffff90e372777ec0 R15: ffff90e341bbb328
-Jan  6 16:19:20 78.142.32.70 [ 2982.220416][T21662] FS:  =
-00007f43e82f2740(0000) GS:ffff90e3bbd40000(0000) knlGS:0000000000000000
-Jan  6 16:19:20 78.142.32.70 [ 2982.220416][T21662] CS:  0010 DS: 0000 =
-ES: 0000 CR0: 0000000080050033
-Jan  6 16:19:20 78.142.32.70 [ 2982.220416][T21662] CR2: =
-0000000000000000 CR3: 000000010020e000 CR4: 00000000003506e0
-Jan  6 16:19:20 78.142.32.70 [ 2982.220416][T21662] Call Trace:
-Jan  6 16:19:20 78.142.32.70 [ 2982.223811][T21662]  <TASK>
-Jan  6 16:19:20 78.142.32.70 [ 2982.223811][T21662]  =
-nf_tables_dump_chains+0x103/0x1b0 [nf_tables]
-Jan  6 16:19:20 78.142.32.70 [ 2982.223811][T21662]  =
-netlink_dump+0x181/0x470
-Jan  6 16:19:20 78.142.32.70 [ 2982.223811][T21662]  =
-netlink_recvmsg+0x21d/0x320
-Jan  6 16:19:20 78.142.32.70 [ 2982.223811][T21662]  =
-____sys_recvmsg+0x6d/0x150
-Jan  6 16:19:20 78.142.32.70 [ 2982.223811][T21662]  ? =
-__mod_lruvec_state+0x56/0xa0
-Jan  6 16:19:20 78.142.32.70 [ 2982.223811][T21662]  ? =
-_copy_from_user+0x3f/0x60
-Jan  6 16:19:20 78.142.32.70 [ 2982.227253][T21662]  ? =
-iovec_from_user.part.0+0x48/0x170
-Jan  6 16:19:20 78.142.32.70 [ 2982.227253][T21662]  ? =
-page_add_new_anon_rmap+0x94/0x100
-Jan  6 16:19:20 78.142.32.70 [ 2982.227253][T21662]  =
-__x64_sys_recvmsg+0x17d/0x1f0
-Jan  6 16:19:20 78.142.32.70 [ 2982.227253][T21662]  ? =
-__handle_mm_fault+0x7bc/0x810
-Jan  6 16:19:20 78.142.32.70 [ 2982.227253][T21662]  ? =
-handle_mm_fault+0x233/0x380
-Jan  6 16:19:20 78.142.32.70 [ 2982.227253][T21662]  ? =
-do_user_addr_fault+0x16a/0x540
-Jan  6 16:19:20 78.142.32.70 [ 2982.227253][T21662]  =
-do_syscall_64+0x2b/0x50
-Jan  6 16:19:20 78.142.32.70 [ 2982.227253][T21662]  =
-entry_SYSCALL_64_after_hwframe+0x46/0xb0
-Jan  6 16:19:20 78.142.32.70 [ 2982.227253][T21662] RIP: =
-0033:0x7f43e83f8a15
-Jan  6 16:19:20 78.142.32.70 [ 2982.230533][T21662] Code: 21 54 0c 00 f7 =
-d8 64 89 02 48 c7 c0 ff ff ff ff eb b5 0f 1f 00 53 48 83 ec 10 80 3d 0c =
-da 0c 00 00 74 22 b8 2f 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 5b 48 63 =
-d8 48 83 c4 10 48 89 d8 5b c3 0f 1f
-Jan  6 16:19:20 78.142.32.70 [ 2982.230533][T21662] RSP: =
-002b:00007ffea3775ab0 EFLAGS: 00000202 ORIG_RAX: 000000000000002f
-Jan  6 16:19:20 78.142.32.70 [ 2982.230533][T21662] RAX: =
-ffffffffffffffda RBX: 00007ffea3787c60 RCX: 00007f43e83f8a15
-Jan  6 16:19:20 78.142.32.70 [ 2982.230533][T21662] RDX: =
-0000000000000000 RSI: 00007ffea3775af0 RDI: 0000000000000003
-Jan  6 16:19:20 78.142.32.70 [ 2982.230533][T21662] RBP: =
-00007ffea3786b90 R08: 0000000000000007 R09: 0000000000000020
-Jan  6 16:19:20 78.142.32.70 [ 2982.230533][T21662] R10: =
-00007f43e86cbb80 R11: 0000000000000202 R12: 00007ffea3775b40
-Jan  6 16:19:20 78.142.32.70 [ 2982.230533][T21662] R13: =
-0000000000010fff R14: 0000000000000001 R15: 0000000000000000
-Jan  6 16:19:20 78.142.32.70 [ 2982.247266][T21662]  </TASK>
-Jan  6 16:19:20 78.142.32.70 [ 2982.260937][T21662] Modules linked in: =
-nft_limit  pppoe pppox ppp_generic slhc nft_flow_offload =
-nf_flow_table_inet nf_flow_table nft_objref nft_nat nft_ct nft_chain_nat =
-nf_tables netconsole igb i2c_algo_bit e1000e virtio_net net_failover =
-failover virtio_pci virtio_pci_legacy_dev virtio_pci_modern_dev virtio =
-virtio_ring vmxnet3 i40e ixgbe mdio_devres libphy mdio nf_nat_sip =
-nf_conntrack_sip nf_nat_pptp nf_conntrack_pptp nf_nat_tftp =
-nf_conntrack_tftp nf_nat_ftp nf_conntrack_ftp nf_nat nf_conntrack =
-nf_defrag_ipv6 nf_defrag_ipv4ipmi_devintf ipmi_msghandler rtc_cmos
-Jan  6 16:19:20 78.142.32.70 [ 2982.341896][T21662] CR2: =
-0000000000000000
-Jan  6 16:19:20 78.142.32.70 [ 2982.357264][T21662] ---[ end trace =
-0000000000000000 ]---
-Jan  6 16:19:20 78.142.32.70 [ 2982.372595][T21662] RIP: =
-0010:nf_tables_fill_chain_info+0x57a/0x590 [nf_tables]
-Jan  6 16:19:20 78.142.32.70 [ 2982.387271][T21662] Code: 48 89 df e8 58 =
-19 e9 f6 85 c0 0f 84 48 fe ff ff e9 d0 fd ff ff 8b 83 b4 00 00 00 48 8b =
-7c 24 18 48 03 83 c0 00 00 00 48 29 f8 <66> 89 07 e9 26 fe ff ff 0f 0b =
-e9 bc fd ff ff 0f 1f 80 00 00 00 00
-Jan  6 16:19:20 78.142.32.70 [ 2982.422874][T21662] RSP: =
-0018:ffffb1c247b3fb48 EFLAGS: 00010286
-Jan  6 16:19:20 78.142.32.70 [ 2982.437260][T21662] RAX: =
-ffff90e372777ec0 RBX: ffff90e37c725300 RCX: 0000000000000000
-Jan  6 16:19:20 78.142.32.70 [ 2982.453222][T21662] RDX: =
-0000000000000000 RSI: 0000000000000004 RDI: 0000000000000000
-Jan  6 16:19:20 78.142.32.70 [ 2982.467263][T21662] RBP: =
-ffff90e372777e78 R08: 0000000000000009 R09: ffff90e372777ec0
-Jan  6 16:19:20 78.142.32.70 [ 2982.483588][T21662] R10: =
-0000000000008000 R11: 0000000000000008 R12: ffff90e341bbb350
-Jan  6 16:19:20 78.142.32.70 [ 2982.497260][T21662] R13: =
-0000000000000000 R14: ffff90e372777ec0 R15: ffff90e341bbb328
-Jan  6 16:19:20 78.142.32.70 [ 2982.517260][T21662] FS:  =
-00007f43e82f2740(0000) GS:ffff90e3bbd40000(0000) knlGS:0000000000000000
-Jan  6 16:19:20 78.142.32.70 [ 2982.528527][T21662] CS:  0010 DS: 0000 =
-ES: 0000 CR0: 0000000080050033
-Jan  6 16:19:20 78.142.32.70 [ 2982.547265][T21662] CR2: =
-0000000000000000 CR3: 000000010020e000 CR4: 00000000003506e0
-Jan  6 16:19:20 78.142.32.70 [ 2982.564542][T21662] Kernel panic - not =
-syncing: Fatal exception
-Jan  6 16:19:20 78.142.32.70 [ 2982.577260][T21662] Kernel Offset: =
-0x36000000 from 0xffffffff81000000 (relocation range: =
-0xffffffff80000000-0xffffffffbfffffff)
-Jan  6 16:19:20 78.142.32.70 [ 2982.577260][T21662] Rebooting in 10 =
-seconds..
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+verb.nft:18:9-38: Error: You can only specify this once. This
+statement is duplicated.
+        comment "Restrictions enabled"
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+verb.nft:20:1-1: Error: syntax error, unexpected end of file
+}
+^
 
 
 
-> On 6 Jan 2023, at 17:17, Martin Zaharinov <micron10@gmail.com> wrote:
->=20
-> Hi Pablo
->=20
-> Patch look good and work but in my test after try to add ppp0 on over =
-chain 1024 receive : Error: Could not process rule: Argument list too =
-long
->=20
->=20
-> Test is make like this :
->=20
->=20
-> create chain :
->=20
-> for i in `seq 2 9999`; do nft create chain netdev x int$i \{ type =
-filter hook egress priority -500\; policy accept\; \}; done
->=20
->=20
-> after that add device:=20
->=20
-> for i in `seq 2 9999`; do nft add chain netdev qos int$i '{ devices =3D =
-{ ppp0 }; }'; done
->=20
->=20
-> when reach int1023 all is fine but in next 1024 receive this error .
->=20
-> change device from ppp0 to eth0 add device on int1024.
->=20
-> =E2=80=94=E2=80=94=E2=80=94=E2=80=94=E2=80=94
->=20
-> And one more when run add device line this for 1023 line added for 30 =
-sec
->=20
-> Is there options to optimize little more.
->=20
->=20
-> Best regards,
-> Martin
 
+
+
+On Thu, Dec 23, 2021 at 3:10 AM Gio <gioflux@gmail.com> wrote:
+>
+> I'm writing a script that converts firewall policies from one platform
+> format to .nft format to use inside VMs.
+>
+> During conversion of data from one format to another I need to
+> consider maximum character limits in fields like comments, chain
+> names, etc.
+>
+> I have not been able to find a central place documenting the maximum
+> character limits for certain fields, the only reference I found so far
+> "Set names must be 16 characters or less" from
+> https://wiki.nftables.org/wiki-nftables/index.php/Sets
+>
+> Are there any better places or could someone help fill in the blanks
+> for me, for example are there any limits on how long of a string
+> `comment` may be?
