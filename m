@@ -1,32 +1,32 @@
-From: Stewart Nelson <sn@aokgo.com>
+From: Stewart Nelson <voip@aokgo.com>
 Subject: drop first SYN packet with nftables
-Date: Sat, 21 Jan 2023 11:25:18 +0700
-Message-ID: <af77a393-3897-c0b4-c0b8-6d6bbb370239@aokgo.com>
+Date: Sat, 21 Jan 2023 11:31:01 +0700
+Message-ID: <07c91998-e6eb-6a2d-b5aa-c0d8392eaf9a@aokgo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aokgo.com; h=cc
         :content-transfer-encoding:content-type:date:date:from:from
         :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to; s=fm3; t=1674275122; x=1674361522; bh=O/qWFusd/J
-        6ZsF3qF/E31ceauSxTMVYtHne8E0yeNtk=; b=hcp9ANRj1gZI7uRdfd4o/MehFD
-        IvW7Is+whmfARvKWbRluFMVEmEG2gKyJPtvLRNBgy5eJUBVvN5hNoeIUwihbiFWR
-        foSWxOqmnx2BUZM1FLzi6b/IZfZw60kJnYyhpBkPaPumSK2qsLC24CbFp0V2rACk
-        61qhhrtEiqtkz5mzZ6UObvOZsCIVc2q4mot8yy0ytcGoYMY9O+aPcF3gj0hDFPTO
-        Qluhz4U4KlSGTLsE+LUHkieUseWwn6WCqZKNHIh6V9X12Em1YOMC69dHTfUKTQbi
-        5tp7fXgD9mJ+cLZa/aOj9em0PtmSHbJIGZsoNSFHDAdiHnFNQ4uV8rUxhM+Q==
+        :subject:to:to; s=fm3; t=1674275465; x=1674361865; bh=O/qWFusd/J
+        6ZsF3qF/E31ceauSxTMVYtHne8E0yeNtk=; b=YaMnGnlnSK6TuHbzorr/aHyFr8
+        hbsauQOZL+fGmWGp7OntExmlXmyvlSdOUMobyx1zqlZ9EqHQf132bDWO3hyObmvw
+        wuKLV9HHsZhZ6CIwJDVz8C+d6fznZQlSjekTJCbsoqtMHlnyvB65Y5EQY+48H4Id
+        77KU0LVl0Wq9CAXaGjlxbDPyeW+j8QCKOUf21xsYKLYEcOUQv5dQ8bRc1ls1YRHL
+        6TCidROLah4Vxny191ZLG8JjuEeXlJtaxWV5FEFlGWyRD6uxyqL0Kjb61b3ny5vd
+        dQdZzu1nRgypHE997JZfre3gGfBNaHY8j2GqFFnmFYE/8kYhX01TnQX4zwpg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:content-type
         :date:date:feedback-id:feedback-id:from:from:in-reply-to
         :message-id:mime-version:reply-to:sender:subject:subject:to:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; t=1674275122; x=1674361522; bh=O/qWFusd/J6ZsF3qF/E31ceauSxT
-        MVYtHne8E0yeNtk=; b=q+MR48VzvzMCfbA6d5ShMDKSiyO38LIK7z2ft9oQ9o03
-        obGBDRs4UadtKjan4K89vBEB4Z1C9guc23UpTNeK5inefQ+tqD37SdFc88EJCeOa
-        Tyy2b+KO3JEximginHYK7c+Ll2ZRWzw/JO5fjERJpSNV4mPqSGajANRb+hLa4U7R
-        uK44DuH8SwKuQI7DFtOC4Vc3b2frO/DTs5S1thDmIRht4A1YOC0AiyKZobh49akF
-        9hIsscNqA7FglDJRrTYv45wGMiWdPbOoXYMzzgO0Vwfc06ocjh1414YM6Wtp8oAS
-        aiDhw6kT8OkEvF87VyRFg55uDEtNNOndu1E3HJ9X6Q==
+        fm3; t=1674275465; x=1674361865; bh=O/qWFusd/J6ZsF3qF/E31ceauSxT
+        MVYtHne8E0yeNtk=; b=TxOPmXu033uarYi4mdQ/MCzrh/7YEtRkRr61Rfhr0Tz1
+        5Z6dR7P0PxelpSlm9WmEQ7IZOseR6h37SfCGhN/JORIDAmM6j5cuPnQsGKWdmuN0
+        HYhBbZshmceR7cSRoYL06idMCiM68TRGSHl6VhnuQMAVaAE/IRRhSBgD6RqvUT3Y
+        qAN0OjzhjotFqKvopBhskt1jKIWlBAjgGLN823y5ykIgSx5O8+p972MTgN7vpTtg
+        /9D53yk08o4M/iMLsLlKzNYVwbJ34uopCKdh+aJMAtaL1KZaKULvgWjhGEjTY+9Z
+        Iix4ItYPaR8FariUjwY/qSSYv46N0PuIB2XPqg1kMg==
 Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="utf-8"; format="flowed"
