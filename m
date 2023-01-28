@@ -1,84 +1,168 @@
-From: Stewart Nelson <voip@aokgo.com>
-Subject: drop first SYN packet with nftables
-Date: Sat, 21 Jan 2023 11:31:01 +0700
-Message-ID: <07c91998-e6eb-6a2d-b5aa-c0d8392eaf9a@aokgo.com>
+From: Christian Worm Mortensen <opensource@epust.dk>
+Subject: Subject: Flowtables send packets to broadcast MAC address.
+Date: Sat, 28 Jan 2023 13:26:29 +0100
+Message-ID: <CAFu8dVrNZ5zoWon5HS-f2Wv6=GqJcBNJ1yxBz=YpaXqybUtorg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aokgo.com; h=cc
-        :content-transfer-encoding:content-type:date:date:from:from
-        :in-reply-to:message-id:mime-version:reply-to:sender:subject
-        :subject:to:to; s=fm3; t=1674275465; x=1674361865; bh=O/qWFusd/J
-        6ZsF3qF/E31ceauSxTMVYtHne8E0yeNtk=; b=YaMnGnlnSK6TuHbzorr/aHyFr8
-        hbsauQOZL+fGmWGp7OntExmlXmyvlSdOUMobyx1zqlZ9EqHQf132bDWO3hyObmvw
-        wuKLV9HHsZhZ6CIwJDVz8C+d6fznZQlSjekTJCbsoqtMHlnyvB65Y5EQY+48H4Id
-        77KU0LVl0Wq9CAXaGjlxbDPyeW+j8QCKOUf21xsYKLYEcOUQv5dQ8bRc1ls1YRHL
-        6TCidROLah4Vxny191ZLG8JjuEeXlJtaxWV5FEFlGWyRD6uxyqL0Kjb61b3ny5vd
-        dQdZzu1nRgypHE997JZfre3gGfBNaHY8j2GqFFnmFYE/8kYhX01TnQX4zwpg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-transfer-encoding:content-type
-        :date:date:feedback-id:feedback-id:from:from:in-reply-to
-        :message-id:mime-version:reply-to:sender:subject:subject:to:to
-        :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm3; t=1674275465; x=1674361865; bh=O/qWFusd/J6ZsF3qF/E31ceauSxT
-        MVYtHne8E0yeNtk=; b=TxOPmXu033uarYi4mdQ/MCzrh/7YEtRkRr61Rfhr0Tz1
-        5Z6dR7P0PxelpSlm9WmEQ7IZOseR6h37SfCGhN/JORIDAmM6j5cuPnQsGKWdmuN0
-        HYhBbZshmceR7cSRoYL06idMCiM68TRGSHl6VhnuQMAVaAE/IRRhSBgD6RqvUT3Y
-        qAN0OjzhjotFqKvopBhskt1jKIWlBAjgGLN823y5ykIgSx5O8+p972MTgN7vpTtg
-        /9D53yk08o4M/iMLsLlKzNYVwbJ34uopCKdh+aJMAtaL1KZaKULvgWjhGEjTY+9Z
-        Iix4ItYPaR8FariUjwY/qSSYv46N0PuIB2XPqg1kMg==
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=epust-dk.20210112.gappssmtp.com; s=20210112;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=qXxp8wvDhyXq6nnXjqOlv1YzGHA80GuYhGZfC3wuUJk=;
+        b=LG5fXlQ5XVhIFWKQNBc4k+qjVZbWkWHABwYGU9YQGGVZy4lSl3hOGsb4e2P4E771L5
+         1hZ3KULM4SVXkJhrf4/s0bZopG+Pm3vMMu8LbNPnCjwqiqlLc6aegWE+30BGJTa7kgfQ
+         apKt7FiPBJah1QozWq0VdR6UwkiEY+kT2e84eYa0MCsbLSSd6TniRQEGjsbamzBhlZxW
+         PXe/BTmEACqbl+0jlXeNNJ+FTet5mXNBiYgHsyWRAv/RsDfw1zjxmbkOzCJja1Rnfupn
+         z+zYt22JTG6RSH8lqtvP3wyXiciw9YAHzJn+Vr241qlNNb8LiltbP1XLeUQo/8im4zLN
+         0faw==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-How can I drop the first SYN packet received by my server (or the first 
-SYN/ACK packet sent by the server)?
+Hi,
 
-I have a test VPS set up to capture and analyze malicious traffic 
-directed to non-standard TCP ports, for example attacks on sshd running 
-on a high port. Using BGP, an IPv4 /23 is routed to the VPS. With the 
-nftables rules below, connection attempts to any port 20000-60000 are 
-redirected to sshd.
+I am new to flowtables and I see a very wired behaviour. I wonder if I
+do something wrong or if this is a (known) bug/limitation.
 
-flush ruleset
-table ip nat {
-   chain prerouting {
-     type nat hook prerouting priority -100;
-     tcp dport 20000-60000 counter redirect to 22
-   }
-   chain postrouting {
-     type nat hook postrouting priority 100;
-   }
-}
-table filter {
-   chain input {
-     type filter hook input priority 0; policy accept;
-   }
-   chain output {
-     type filter hook output priority 0; policy accept;
-   }
-}
+I have made a very simple setup:
 
-This works and results in ~20,000,000 address/port combinations that 
-will connect to sshd.
++---------------+      +---------------------------+      +---------------+
+|Namespace left |      |  Namespace forward        |      |Namespace right|
+|               |      |                           |      |               |
+| +-----------+ |      | +----------+ +----------+ |      | +-----------+ |
+| |eth0       | | veth | |left      | |right     | | veth | |eth0       | |
+| |1.1.1.1    |----------|fe80::1/64| |fe80::1/64|----------|2.2.2.2    | |
+| |fe80::2/64 | |      | |          | |          | |      | |fe80::2/64 | |
+| +-----------+ |      | +----------+ +----------+ |      | +-----------+ |
++---------------+      +---------------------------+      +---------------+
 
-The problem is that I'm only interested in attacks that retransmit an 
-unanswered SYN (the vast majority probe with only one SYN, as scanning 
-all ports on all IPv4 addresses is quite expensive). I've tried various 
-methods, based on conntrack state, packet count and even expiration, all 
-to no avail. I suspect that they are somehow interacting with the redirect.
+With this script:
 
-For example, adding this to the output chain:
+ip netns delete forward
+ip netns delete left
+ip netns delete right
 
-tcp sport 22 ct expiration > 55 counter drop
+ip netns add forward
 
-causes all SYN packets to be dropped. Using 'conntrack -E', you can see 
-the expiration timer going down with each subsequent SYN, but when it 
-gets below 55, the packets keep getting dropped.
+ip netns add left
+ip netns exec left ip link add eth0 type veth peer name left netns forward
+ip netns exec left ip link set up dev eth0
+ip netns exec left ip addr add 1.1.1.1/32 dev eth0
+ip netns exec left ip addr add fe80::2/64 dev eth0
+ip netns exec left ip route add 2.2.2.2/32 via inet6 fe80::1 dev eth0
 
-Environment: Debian bullseye, kernel 5.10.0, nftables v0.9.8, conntrack 
-v1.4.6.
+ip netns add right
+ip netns exec right ip link add eth0 type veth peer name right netns forward
+ip netns exec right ip link set up dev eth0
+ip netns exec right ip addr add 2.2.2.2/32 dev eth0
+ip netns exec right ip addr add fe80::2/64 dev eth0
+ip netns exec right ip route add 1.1.1.1/32 via inet6 fe80::1 dev eth0
 
-What am I doing wrong? TIA for any suggestions.
+ip netns exec forward ip link set up dev right
+ip netns exec forward ip link set up dev left
+ip netns exec forward sysctl -w net.ipv4.ip_forward=1
+ip netns exec forward ip route add 1.1.1.1/32 via inet6 fe80::2 dev left
+ip netns exec forward ip route add 2.2.2.2/32 via inet6 fe80::2 dev right
+ip netns exec forward ip addr add fe80::1/64 dev left
+ip netns exec forward ip addr add fe80::1/64 dev right
 
+ip netns exec forward nft add table ip flowtbl
+ip netns exec forward nft add flowtable ip flowtbl f "{ hook ingress
+priority 0; devices = { left,right }; }"
+ip netns exec forward nft add chain ip flowtbl forward "{ type filter
+hook forward priority 0; }"
+ip netns exec forward nft add rule ip flowtbl forward flow add @f
+
+If I make a TCP connection from left to right to port 4444 I get this
+output from conntrack -L as expected:
+
+tcp      6 src=1.1.1.1 dst=2.2.2.2 sport=42126 dport=4444 src=2.2.2.2
+dst=1.1.1.1 sport=4444 dport=42126 [OFFLOAD] mark=0 use=2
+
+However, after the first SYN packets, the destination MAC addresses
+sent by forward to right are ff:ff:ff:ff:ff:ff. This is shown here:
+
+$ sudo ip netns exec right tcpdump -nle -i eth0
+13:01:01.198035 86:d2:45:09:ab:d3 > 33:33:ff:00:00:02, ethertype IPv6
+(0x86dd), length 86: fe80::84d2:45ff:fe09:abd3 > ff02::1:ff00:2:
+ICMP6, neighbor solicitation, who has fe80::2, length 32
+13:01:01.198047 d2:a3:e7:c6:e4:49 > 86:d2:45:09:ab:d3, ethertype IPv6
+(0x86dd), length 86: fe80::2 > fe80::84d2:45ff:fe09:abd3: ICMP6,
+neighbor advertisement, tgt is fe80::2, length 32
+13:01:01.198056 86:d2:45:09:ab:d3 > d2:a3:e7:c6:e4:49, ethertype IPv4
+(0x0800), length 74: 1.1.1.1.42126 > 2.2.2.2.4444: Flags [S], seq
+2864317901, win 64240, options [mss 1460,sackOK,TS val 2553558989 ecr
+0,nop,wscale 7], length 0
+13:01:01.198077 d2:a3:e7:c6:e4:49 > 33:33:ff:00:00:01, ethertype IPv6
+(0x86dd), length 86: fe80::2 > ff02::1:ff00:1: ICMP6, neighbor
+solicitation, who has fe80::1, length 32
+13:01:01.198086 86:d2:45:09:ab:d3 > d2:a3:e7:c6:e4:49, ethertype IPv6
+(0x86dd), length 86: fe80::1 > fe80::2: ICMP6, neighbor advertisement,
+tgt is fe80::1, length 32
+13:01:01.198089 d2:a3:e7:c6:e4:49 > 86:d2:45:09:ab:d3, ethertype IPv4
+(0x0800), length 74: 2.2.2.2.4444 > 1.1.1.1.42126: Flags [S.], seq
+414776630, ack 2864317902, win 65160, options [mss 1460,sackOK,TS val
+185470387 ecr 2553558989,nop,wscale 7], length 0
+13:01:01.198132 86:d2:45:09:ab:d3 > d2:a3:e7:c6:e4:49, ethertype IPv4
+(0x0800), length 66: 1.1.1.1.42126 > 2.2.2.2.4444: Flags [.], ack 1,
+win 502, options [nop,nop,TS val 2553558989 ecr 185470387], length 0
+13:01:03.216513 86:d2:45:09:ab:d3 > ff:ff:ff:ff:ff:ff, ethertype IPv4
+(0x0800), length 70: 1.1.1.1.42126 > 2.2.2.2.4444: Flags [P.], seq
+1:5, ack 1, win 502, options [nop,nop,TS val 2553561008 ecr
+185470387], length 4
+13:01:03.436382 86:d2:45:09:ab:d3 > ff:ff:ff:ff:ff:ff, ethertype IPv4
+(0x0800), length 70: 1.1.1.1.42126 > 2.2.2.2.4444: Flags [P.], seq
+1:5, ack 1, win 502, options [nop,nop,TS val 2553561227 ecr
+185470387], length 4
+13:01:03.656379 86:d2:45:09:ab:d3 > ff:ff:ff:ff:ff:ff, ethertype IPv4
+(0x0800), length 70: 1.1.1.1.42126 > 2.2.2.2.4444: Flags [P.], seq
+1:5, ack 1, win 502, options [nop,nop,TS val 2553561447 ecr
+185470387], length 4
+
+Without flow tables things work fine:
+
+13:05:03.792972 6a:4c:8d:2f:83:ca > 33:33:ff:00:00:02, ethertype IPv6
+(0x86dd), length 86: fe80::684c:8dff:fe2f:83ca > ff02::1:ff00:2:
+ICMP6, neighbor solicitation, who has fe80::2, length 32
+13:05:03.792977 a2:5b:e9:1d:cb:70 > 6a:4c:8d:2f:83:ca, ethertype IPv6
+(0x86dd), length 86: fe80::2 > fe80::684c:8dff:fe2f:83ca: ICMP6,
+neighbor advertisement, tgt is fe80::2, length 32
+13:05:03.792981 6a:4c:8d:2f:83:ca > a2:5b:e9:1d:cb:70, ethertype IPv4
+(0x0800), length 74: 1.1.1.1.44964 > 2.2.2.2.4444: Flags [S], seq
+946152499, win 64240, options [mss 1460,sackOK,TS val 2553801584 ecr
+0,nop,wscale 7], length 0
+13:05:03.792989 a2:5b:e9:1d:cb:70 > 33:33:ff:00:00:01, ethertype IPv6
+(0x86dd), length 86: fe80::2 > ff02::1:ff00:1: ICMP6, neighbor
+solicitation, who has fe80::1, length 32
+13:05:03.792992 6a:4c:8d:2f:83:ca > a2:5b:e9:1d:cb:70, ethertype IPv6
+(0x86dd), length 86: fe80::1 > fe80::2: ICMP6, neighbor advertisement,
+tgt is fe80::1, length 32
+13:05:03.792994 a2:5b:e9:1d:cb:70 > 6a:4c:8d:2f:83:ca, ethertype IPv4
+(0x0800), length 74: 2.2.2.2.4444 > 1.1.1.1.44964: Flags [S.], seq
+3915576590, ack 946152500, win 65160, options [mss 1460,sackOK,TS val
+185712982 ecr 2553801584,nop,wscale 7], length 0
+13:05:03.793004 6a:4c:8d:2f:83:ca > a2:5b:e9:1d:cb:70, ethertype IPv4
+(0x0800), length 66: 1.1.1.1.44964 > 2.2.2.2.4444: Flags [.], ack 1,
+win 502, options [nop,nop,TS val 2553801584 ecr 185712982], length 0
+13:05:04.256467 6a:4c:8d:2f:83:ca > 33:33:00:00:00:02, ethertype IPv6
+(0x86dd), length 70: fe80::684c:8dff:fe2f:83ca > ff02::2: ICMP6,
+router solicitation, length 16
+13:05:04.896443 a2:5b:e9:1d:cb:70 > 33:33:00:00:00:02, ethertype IPv6
+(0x86dd), length 70: fe80::2 > ff02::2: ICMP6, router solicitation,
+length 16
+13:05:05.806836 6a:4c:8d:2f:83:ca > a2:5b:e9:1d:cb:70, ethertype IPv4
+(0x0800), length 70: 1.1.1.1.44964 > 2.2.2.2.4444: Flags [P.], seq
+1:5, ack 1, win 502, options [nop,nop,TS val 2553803598 ecr
+185712982], length 4
+13:05:05.806928 a2:5b:e9:1d:cb:70 > 6a:4c:8d:2f:83:ca, ethertype IPv4
+(0x0800), length 66: 2.2.2.2.4444 > 1.1.1.1.44964: Flags [.], ack 5,
+win 510, options [nop,nop,TS val 185714996 ecr 2553803598], length 0
+
+I use Linux version 5.15.74.2 on a Windows WSL 2 system
+(https://github.com/microsoft/WSL2-Linux-Kernel)
+
+
+Best,
+
+Christian
