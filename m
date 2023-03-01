@@ -1,24 +1,24 @@
 From: Binarus <lists@binarus.de>
 Subject: Could somebody please explain priorities correctly and in an
  understandable way?
-Date: Wed, 1 Mar 2023 11:55:13 +0100
-Message-ID: <53517f61-03d3-d196-0b5b-8ef5a76833d7@binarus.de>
+Date: Wed, 1 Mar 2023 12:16:37 +0100
+Message-ID: <50521c01-3751-3882-1dd8-cd86be205d7b@binarus.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=binarus.de; s=b201601;
-        t=1677668114; bh=6cINm+mxbJA9BSWunYTjA8QFXLdz5WrjCddE3eKd6go=;
-        h=Date:To:From:Subject:From:Reply-To:Subject:Date:To:Cc:Resent-Date:
+        t=1677669398; bh=6cINm+mxbJA9BSWunYTjA8QFXLdz5WrjCddE3eKd6go=;
+        h=Date:From:Subject:To:From:Reply-To:Subject:Date:To:Cc:Resent-Date:
          Resent-From:Resent-To:Resent-Cc:In-Reply-To:References:List-Id:
          List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
          List-Archive;
-        b=IjL1pDXCw1IKjyDa7Lb8AAUncDyviGKA33FdsIfvqdBitjPgkGYb7zuabmsBQG9PD
-         FI5qAf3mi/1Dnu+6cNWhX7zz5j3wqDt2t0Ks+fmmDDd8sopvNqdzw6xyDUHxCB+lBH
-         8IaL0PmsLkJcNxEr0DHRe3c+2+thNE/JsG6j55Ul+86tOatIJcEhBV+Q8MuhAuJtXu
-         Xz8sJurYja4Rsr1DiNFzlJJVmwqQ6J8IRP3Q6qGgd/gYTZBVzm+s7yLZYBSqIvpNhp
-         AlzHmztY7J1bgkUB62/fMtfgMqvP2xDogHashj/nM2Rl/sxeOg+iO/cH4t5pguzgBc
-         GHBMi4dLMQrpipMTSTpYRKyYWlhWVGoTbWUnKV38T8Utk5jWRJZzYM+WgQMbagWmiE
-         UuJV8Anh1tC8gfGyOVnIRCJiL1ILvgjyT33wgCo3z 
+        b=dzy3Qh7WRWce6sr7RwDIFBdo/cnFYgL+7T0nfa40e5NpSLrJCkKsKG1TnL17h35vR
+         kJxcwn863tNUqKIS20PJcNR81tLPPc/ZZX2K4O6zWlVxtbSQmE/8zQsj7Xtl6tfKHb
+         QFreWmeIgmCy/In8Gc3mIISzw4+bLCHPZ3lfdAh4X6V5lBf+HnzIQU8Tj6WByGSoWP
+         Q5yDWcwVsu6p5+l+580xPB8keFlEUE0ZwVH3bZmci3kqEbXdvsH6fpvXORrTbclI+T
+         S4HsddffhBk0gEu/Ch+Uqgq/Y023qCXTUQhKY/mRMbmX7Ry3IGELOPSFyk5Jn4aHi4
+         HfaZbrqO45RIerGeOCJxjbNubnd4tvKxVCCWCx4B/jBfkOV8kdiBlF9YKZdfQnaM5m
+         elj5TXJhzTtmfumOj1RpdCpoNZDygE0qb9NsyTj3O 
 Content-Language: en-US, de-DE
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
