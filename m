@@ -1,62 +1,73 @@
-From: =?UTF-8?Q?Thomas_Gr=c3=bcnert?= 
-        <thomas.gruenert@realestatepilot.com>
-Subject: =?UTF-8?Q?DNS_answer_packet_=28UDP=29_can=c2=b4t_catch=c2=b4d_by_ap?=
- =?UTF-8?Q?plication?=
-Date: Fri, 24 Feb 2023 15:59:05 +0100
-Message-ID: <939767da-66bb-e6b2-29fc-01e5a0d8a73d@realestatepilot.com>
+From: Binarus <lists@binarus.de>
+Subject: Could somebody please explain priorities correctly and in an
+ understandable way?
+Date: Wed, 1 Mar 2023 11:55:13 +0100
+Message-ID: <53517f61-03d3-d196-0b5b-8ef5a76833d7@binarus.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: de-DE, en-GB
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=binarus.de; s=b201601;
+        t=1677668114; bh=6cINm+mxbJA9BSWunYTjA8QFXLdz5WrjCddE3eKd6go=;
+        h=Date:To:From:Subject:From:Reply-To:Subject:Date:To:Cc:Resent-Date:
+         Resent-From:Resent-To:Resent-Cc:In-Reply-To:References:List-Id:
+         List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+         List-Archive;
+        b=IjL1pDXCw1IKjyDa7Lb8AAUncDyviGKA33FdsIfvqdBitjPgkGYb7zuabmsBQG9PD
+         FI5qAf3mi/1Dnu+6cNWhX7zz5j3wqDt2t0Ks+fmmDDd8sopvNqdzw6xyDUHxCB+lBH
+         8IaL0PmsLkJcNxEr0DHRe3c+2+thNE/JsG6j55Ul+86tOatIJcEhBV+Q8MuhAuJtXu
+         Xz8sJurYja4Rsr1DiNFzlJJVmwqQ6J8IRP3Q6qGgd/gYTZBVzm+s7yLZYBSqIvpNhp
+         AlzHmztY7J1bgkUB62/fMtfgMqvP2xDogHashj/nM2Rl/sxeOg+iO/cH4t5pguzgBc
+         GHBMi4dLMQrpipMTSTpYRKyYWlhWVGoTbWUnKV38T8Utk5jWRJZzYM+WgQMbagWmiE
+         UuJV8Anh1tC8gfGyOVnIRCJiL1ILvgjyT33wgCo3z 
+Content-Language: en-US, de-DE
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: 
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Hello,
+Dear all,
 
-first of all - i am new to this list. please be tolerant of minor 
-mistakes on my side.
+I am currently migrating our iptables-based firewall scripts to nft / netfilter, and I am having an extremely hard time with trying to understand priorities. Let's start with a citation from the manual (https://www.netfilter.org/projects/nftables/manpage.html):
 
-I am running into a problem where DNS queries get a timeout. The 
-original post is https://github.com/rancher/rke2/issues/3924
+"The priority parameter accepts a signed integer value or a standard priority name which specifies the order in which chains with same hook value are traversed. The ordering is ascending, i.e. lower priority values have precedence over higher ones."
 
+Well, that should be clear so far. At least I thought.
 
-After some tests and research we saw that a DNS answer packet (UDP) does 
-not reach the application. But tcpdump shows that the answer packet 
-comes into container right in time. Application sends another packet 
-after 5 sec. If the answer packet drops three times the application 
-reports an IO timeout.
+My problems began when I had the following configuration file (nonsense of course, just for testing)
 
-Problem occurs more often some minutes after having high network load 
-inside the container.
+table ip t_IP {
+   chain nat-prerouting {
+     type nat hook prerouting priority -500; policy drop;
+     log prefix "foo: " drop;
+   }
+}
 
-netstat presents a counter  "|packet receive errors". This counter 
-increments if a packet get lost.|
+and tried to load it:
 
-Udp:
-     1482 packets received
-     0 packets to unknown port received
-     217 packet receive errors
-     1699 packets sent
-     0 receive buffer errors
+nft flush ruleset
+nft -f nftables.conf
 
-All measures are made in inside container. The application runs inside 
-this container too.
+Output:
 
-Host runs on:
+nftables.conf ... Error: Could not process rule: Operation not supported
+nftables.conf ... Error: Could not process rule: No such file or directory
 
-Linux version 5.10.0-20-amd64 (debian-kernel@lists.debian.org) (gcc-10 
-(Debian 10.2.1-6) 10.2.1 20210110, GNU ld (GNU Binutils for Debian) 
-2.35.2) #1 SMP Debian 5.10.158-2 (2022-12-13)
+Because of respective hints in the netfilter wiki, I spent the next few hours with checking whether my kernel had all modules and with re-reading the documentation to verify that nat chains provide a prerouting hook. (Of course they do, and everything was OK with my kernel).
 
-containerd github.com/k3s-io/containerd v1.6.14-k3s1 
-6f9c63d571f5026e85a0768f0f2ef03d1c8dbc6e
+Several hours later I noticed by accident that no more errors occurred with a slight change in the test configuration:
 
+table ip t_IP {
+   chain nat-prerouting {
+     type nat hook prerouting priority -200; policy drop;
+     log prefix "foo: " drop;
+   }
+}
 
-Does anybody know how to fix the problem, how to do better diagnostic or 
-where to go with that?
+So the reason for the errors was the wrong priority; that took me half a day to find out due to the misleading description of possible sources of that error in the wiki.
 
-Thank you in advance!
+Now this error is quite beyond my horizon. According to the docs (see citation above), the priority only effects something at all when there is the same hook in multiple chains. This is clearly not the case here, because there is only one table with one chain. Second, I am understanding that citation in the sense that the priority only changes hook evaluation order; that is, I can freely choose that order. But this is obviously not the case; instead, there seems to be one or several undocumented rules which must be followed when choosing priorities.
 
+Could somebody please explain priorities correctly and in an understandable way, or direct me to a reasonable documentation? The netfilter wiki and manual are misleading or wrong in this respect, unless I'm just not able to get it (which might very well be the case). I am particularly interested into the (undocumented) rules mentioned above (if they really exist).
 
+Thank you very much in advance, and best regards,
+
+Binarus
