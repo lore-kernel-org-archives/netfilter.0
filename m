@@ -1,36 +1,35 @@
-From: "Kamil Tralewski" <kamil.tralewski@craftsplex.pl>
-Subject: =?UTF-8?Q?S=C5=82owa_kluczowe_do_wypozycjonowania?=
-Date: Thu,  2 Mar 2023 09:15:25 GMT
-Message-ID: <20230302074501-0.1.4n.f6de.0.fywbn8bpg8@craftsplex.pl>
+From: Florian Westphal <fw@strlen.de>
+Subject: Re: Bug report DNAT destination not work
+Date: Thu, 2 Mar 2023 11:43:37 +0100
+Message-ID: <20230302104337.GA23204@breakpoint.cc>
+References: <CALidq=VJF36a6DWf8=PNahwHLJd5FKspXVJfmzK3NFCxb6zKbg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=craftsplex.pl;
-        s=mail; t=1677748592;
-        bh=PcMncQpBfIZCnTOfZJY5G1G+gaLn4c9QPfFvoXrE4rA=;
-        h=Date:From:To:Subject:From;
-        b=b4RU/meIYsAnVofLoU3GAsc/Bk++Vyb6usdBtfpOUmBD70K1vf9Vvm9DKoeGGG0JJ
-         eX5d+/ipaf3Jg2QltmtIZVQEitvA+OzF7+1IYUhQJPvWaZv9xAAm0otmk7EnMRN08w
-         XKJyGFdUK0TnfDb2arNoaGvUF8xlwjTZcvHuWFaNqZmIxW0Jc1qqB5rwC+8XS26GBc
-         3a3IFqz+ouKGauwfyYKqH67VK4wRpAilMmbIjM1nw07vRw4wzkGIBWSo8HcAWFHYIO
-         B4yd7vE7f4YSherkGbH8hX6DYbISJP5qk/W7pF68OEO1Y6cYUm5hmnQ5aA6+0LDo5p
-         D0YW2dtZNi+Eg==
+Content-Disposition: inline
+In-Reply-To: <CALidq=VJF36a6DWf8=PNahwHLJd5FKspXVJfmzK3NFCxb6zKbg@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Martin Zaharinov <micron10@gmail.com>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Florian Westphal <fw@strlen.de>, netfilter <netfilter@vger.kernel.org>, netfilter-devel@vger.kernel.org
 
-Dzie=C5=84 dobry,
+Martin Zaharinov <micron10@gmail.com> wrote:
+> iptables -t nat -A PREROUTING -d 100.91.1.238/32 -i bond0 -p tcp --dport
+> 7878 -j DNAT --to-destination 10.240.241.99:7878
+> iptables v1.8.9 (legacy): unknown option "--to-destination"
+> Try `iptables -h' or 'iptables --help' for more information.
 
-zapozna=C5=82em si=C4=99 z Pa=C5=84stwa ofert=C4=85 i z przyjemno=C5=9Bci=
-=C4=85 przyznaj=C4=99, =C5=BCe przyci=C4=85ga uwag=C4=99 i zach=C4=99ca d=
-o dalszych rozm=C3=B3w.=20
+Looks like a problem with your iptables installation which can't find
+libxt_DNAT.so?  In v1.8.9 this should be a symlink to libxt_NAT.so.
 
-Pomy=C5=9Bla=C5=82em, =C5=BCe mo=C5=BCe m=C3=B3g=C5=82bym mie=C4=87 sw=C3=
-=B3j wk=C5=82ad w Pa=C5=84stwa rozw=C3=B3j i pom=C3=B3c dotrze=C4=87 z t=C4=
-=85 ofert=C4=85 do wi=C4=99kszego grona odbiorc=C3=B3w. Pozycjonuj=C4=99 =
-strony www, dzi=C4=99ki czemu generuj=C4=85 =C5=9Bwietny ruch w sieci.
+If you run 'iptables -j DNAT --help' and it doesn't say
 
-Mo=C5=BCemy porozmawia=C4=87 w najbli=C5=BCszym czasie?
+"DNAT target options:" at the end then it very much looks like a
+problem with your iptables installation and not the kernel.
 
-Pozdrawiam
-Kamil Tralewski
+> try with kernel 6.1.11 6.1.12 6.1.13
+
+Tested iptables-nft and iptables-legacy on 1.8.9 with kernel 6.1.14, no problems.
+
+There were no significant kernel changes in this area that I know of in
+6.1 either.
