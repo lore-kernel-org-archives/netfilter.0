@@ -1,58 +1,46 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: Bug report DNAT destination not work
-Date: Thu, 2 Mar 2023 20:40:05 +0100
-Message-ID: <20230302194005.GA9239@breakpoint.cc>
-References: <CALidq=VJF36a6DWf8=PNahwHLJd5FKspXVJfmzK3NFCxb6zKbg@mail.gmail.com>
- <20230302104337.GA23204@breakpoint.cc>
- <ABA514EB-3C64-4A16-8D07-1318FB9AB63F@gmail.com>
+From: gaaimen1997 <gaaimen1997@protonmail.com>
+Subject: Translating iptables rules with TTL, HL and physdev to nftables
+Date: Sat, 04 Mar 2023 07:46:10 +0000
+Message-ID: <hqPvtHzm3I0cxzrsj43wW11hd31Sxw36pN25SObh8dvW-0HotwJyND64l-aj9I4hR-yZyxxAnQabaueZNKo2haeejKFSI8AkB4Jgh0UG8i8=@protonmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <ABA514EB-3C64-4A16-8D07-1318FB9AB63F@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+        s=protonmail3; t=1677915984; x=1678175184;
+        bh=Id5NMwjU3gxvk0HIEA76E0rynL3FQ0TQywuNgQoYNio=;
+        h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+        b=Gzsda6J0wgFUv7/5A9NNTJg7NBOliiOB7qwnjSlghWr5ffkeWFrXpRZK2oFYI4XZ7
+         Gv/7a5Sqkiorrb+m99EFwYvqLF5coeF4T1+KgAIbCKRxRFja7qTjpLhqS6DBxfhep3
+         1+i0KnKWfA/QYEE17XGRkDTak2Gd7Y9FU8pv5EvlbT0EecYk8JqxguZPXrrquIr1r3
+         IEUb1+ZylTMdIPa+y2JbFI81NTABkqREQhpQDrhn8qVvlQkkrPUsmTuN04AoGtarM/
+         ZnCVedAaxjwJZLGZzULqoYsFxmBoamgmNg3JSBos+682VDmZrayC/Oc6HEBEKEzVZC
+         x2jCUW7PjtkTw==
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Martin Zaharinov <micron10@gmail.com>
-Cc: Florian Westphal <fw@strlen.de>, Pablo Neira Ayuso <pablo@netfilter.org>, netfilter <netfilter@vger.kernel.org>, netfilter-devel@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Martin Zaharinov <micron10@gmail.com> wrote:
-> Hi Florian
-> 
-> 
-> i recheck and libxt_DNAT.so is symlink to libxt_NAT.so
-> 
-> and i try : 
-> 
-> iptables v1.8.9 (nf_tables)
-
-What did you try?
-
->   --modprobe=<command>		try to insert modules using this command
->   --set-counters -c PKTS BYTES	set the counter during insert/append
-> [!] --version	-V		print package version.
-> 
-> 
-> and show help .
-
-No idea what you did or what you are trying to show.
-IFF you ran "iptables -j DNAT --help", then libxt_DNAT is not
-found resp. iptables is looking at the wrong place.
-
-$ iptables-legacy -V
-iptables v1.8.9 (legacy)
-$ iptables -j DNAT --help
-[..]
-DNAT target options:
- --to-destination [<ipaddr>[-<ipaddr>]][:port[-port[/port]]]
-                  Address to map destination to.
-[--random] [--persistent]
-$
-
-I can only guess what the problem might be.
-
-Maybe 'strace -f -e file iptables -j DNAT --help' will give a clue,
-there should be lines like this:
-
-newfstatat(AT_FDCWD, "/usr/lib64/xtables/libipt_DNAT.so", 0x7ffe94e3f180, 0) = -1 ENOENT
-newfstatat(AT_FDCWD, "/usr/lib64/xtables/libxt_DNAT.so", {st_mode=S ... = 0
-openat(AT_FDCWD, "/usr/lib64/xtables/libxt_DNAT.so", O_RDONLY|O_CLOEXEC) = 4
+Hi,=20
+I am translating iptables and ip6tables rules to nftables rules to set up m=
+y portable router. However, the following commands did not translate correc=
+tly when I used iptables-translate (ip6tables-translate)
+=20
+iptables -t mangle -A POSTROUTING -o eth0 -j TTL --ttl-inc 1
+ip6tables -t mangle -A POSTROUTING -o eth0 -j HL --hl-inc 1
+=20
+iptables -t mangle -I POSTROUTING -m physdev --physdev-out usb0 -j TTL --tt=
+l-inc 1
+ip6tables -t mangle -I POSTROUTING -m physdev --physdev-out usb0 -j HL --hl=
+-inc 1
+=20
+For the ttl and hl modules, I tried "ip ttl set 88" and "ip6 hoplimit set 9=
+9" on my own, and they worked fine. However, I am unable to increase or dec=
+rease ttl (or hoplimit) as --ttl-inc or --ttl-dec.
+=20
+=20
+The first two rules and the last two rules operate under different conditio=
+ns and they won't work simultaneously.
+System: Debian 11, nftables v0.9.8 (E.D.S.)
+=20
+Can you help me with the correct nftables rules?
+Thank you in advance!
