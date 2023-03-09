@@ -1,46 +1,56 @@
-From: gaaimen1997 <gaaimen1997@protonmail.com>
-Subject: Translating iptables rules with TTL, HL and physdev to nftables
-Date: Sat, 04 Mar 2023 07:46:10 +0000
-Message-ID: <hqPvtHzm3I0cxzrsj43wW11hd31Sxw36pN25SObh8dvW-0HotwJyND64l-aj9I4hR-yZyxxAnQabaueZNKo2haeejKFSI8AkB4Jgh0UG8i8=@protonmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] libnftnl 1.2.5 release
+Date: Thu, 9 Mar 2023 20:54:43 +0100
+Message-ID: <ZAo5g2gfD8z4OEs0@salvia>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail3; t=1677915984; x=1678175184;
-        bh=Id5NMwjU3gxvk0HIEA76E0rynL3FQ0TQywuNgQoYNio=;
-        h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-        b=Gzsda6J0wgFUv7/5A9NNTJg7NBOliiOB7qwnjSlghWr5ffkeWFrXpRZK2oFYI4XZ7
-         Gv/7a5Sqkiorrb+m99EFwYvqLF5coeF4T1+KgAIbCKRxRFja7qTjpLhqS6DBxfhep3
-         1+i0KnKWfA/QYEE17XGRkDTak2Gd7Y9FU8pv5EvlbT0EecYk8JqxguZPXrrquIr1r3
-         IEUb1+ZylTMdIPa+y2JbFI81NTABkqREQhpQDrhn8qVvlQkkrPUsmTuN04AoGtarM/
-         ZnCVedAaxjwJZLGZzULqoYsFxmBoamgmNg3JSBos+682VDmZrayC/Oc6HEBEKEzVZC
-         x2jCUW7PjtkTw==
+Content-Type: multipart/mixed; boundary="wwWqwfWRtgetfK/F"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: netfilter-devel@vger.kernel.org
+Cc: netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
 
-Hi,=20
-I am translating iptables and ip6tables rules to nftables rules to set up m=
-y portable router. However, the following commands did not translate correc=
-tly when I used iptables-translate (ip6tables-translate)
-=20
-iptables -t mangle -A POSTROUTING -o eth0 -j TTL --ttl-inc 1
-ip6tables -t mangle -A POSTROUTING -o eth0 -j HL --hl-inc 1
-=20
-iptables -t mangle -I POSTROUTING -m physdev --physdev-out usb0 -j TTL --tt=
-l-inc 1
-ip6tables -t mangle -I POSTROUTING -m physdev --physdev-out usb0 -j HL --hl=
--inc 1
-=20
-For the ttl and hl modules, I tried "ip ttl set 88" and "ip6 hoplimit set 9=
-9" on my own, and they worked fine. However, I am unable to increase or dec=
-rease ttl (or hoplimit) as --ttl-inc or --ttl-dec.
-=20
-=20
-The first two rules and the last two rules operate under different conditio=
-ns and they won't work simultaneously.
-System: Debian 11, nftables v0.9.8 (E.D.S.)
-=20
-Can you help me with the correct nftables rules?
-Thank you in advance!
+
+--wwWqwfWRtgetfK/F
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+
+Hi!
+
+The Netfilter project proudly presents:
+
+        libnftnl 1.2.5
+
+libnftnl is a userspace library providing a low-level netlink
+programming interface (API) to the in-kernel nf_tables subsystem.
+This library is currently used by nftables.
+
+This release includes two fixes for the printing of the set element
+user data area and the removal of an internal function without any
+clients.
+
+See ChangeLog that comes attached to this email for more details on
+the updates.
+
+You can download it from:
+
+https://www.netfilter.org/projects/libnftnl/downloads.html
+
+Happy firewalling.
+
+--wwWqwfWRtgetfK/F
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: attachment; filename="changes-libnftnl-1.2.5.txt"
+
+Pablo Neira Ayuso (5):
+      examples: remove nftnl_batch_is_supported() call
+      src: replace nftnl_*_nlmsg_build_hdr() by nftnl_nlmsg_build_hdr()
+      expr: add inner support
+      chain: relax logic to build NFTA_CHAIN_HOOK
+      build: libnftnl 1.2.5 release
+
+Phil Sutter (1):
+      Makefile: Create LZMA-compressed dist-files
+
+
+--wwWqwfWRtgetfK/F--
