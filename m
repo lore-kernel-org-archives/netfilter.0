@@ -1,44 +1,35 @@
-From: Serg <seentr@at.encryp.ch>
-Subject: Re: nftables: Internal error when checking rules
-Date: Mon, 27 Mar 2023 18:33:22 +0300
-Message-ID: <fba11b8b-2c0c-5b2d-f9f5-1f327d931c31@at.encryp.ch>
-References: <9a42b3af-8451-8fc2-2565-a60b1c846358@at.encryp.ch>
- <ZCCvj7XxHDFr7QXf@salvia> <4e3d7257-d89e-dad6-53d2-70adad755d7e@at.encryp.ch>
- <ZCGwxl79yXfvybsk@salvia>
+From: Kiernan George <kbg98@vt.edu>
+Subject: Creating a map programmatically with libnftnl
+Date: Mon, 27 Mar 2023 13:22:37 -0400
+Message-ID: <CAOg40qgbgCoVZbv5UFhR9Gxp2MSYsAuBMs4nFeAyzj5imqSfCw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=at.encryp.ch;
-        s=flopster; t=1679931205;
-        bh=KuPZhTZi0OFI/W4mWhBjSRn3qb/Pasz42H7dK773MR8=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=qPSE2tcpGxvOXIHf2hsd79IDV3DFFgRlYpTQHMOnGkmdjSmUClT100MtoEOsp6TPL
-         wPlobHTPohq9HEGzKGePK2H0miH2svDootZleZt/whAFx8I96bJczv6oerZQM6lf4X
-         Et14587lDSMKenzzs83/54kRe60cgl/4+wMn+AJ0=
-In-Reply-To: <ZCGwxl79yXfvybsk@salvia>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=vt-edu.20210112.gappssmtp.com; s=20210112; t=1679937768;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Qt8So4YybQScj0GBLN9HZwEoSaWwde8R2ro4twtbJ88=;
+        b=Vv8CExMle0ATXXBi5Mn5DqzgkCZ3bh5GrUu+7zUC0ND/zCAtnxrLQMJRHeBQ21WSBh
+         R5V33dMHePIXa7MhdY7biPJ2P2x2q8opfEzSOhRIjzFdTWvJ5v3RLVToSLTEQcc0YM7S
+         +KFW9Yb6b9J41kaLripLTaKZz+tgysedZn5cpf3le5rw28nhlC1HiV37AEXvj4c8XnAM
+         fixalV2u/JVJBvkHVer/HAq11TwwJf0V2cSMk4T44SmDPj10RZTQ8BZTVPH+THGpqMDM
+         oJ39rLa9RxiF7KZWb5wSO93jjQAZ0Ungy0bIGrubVnkoZamilLlQV5RShPFThmcTNr/x
+         aVAw==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 3/27/23 18:05, Pablo Neira Ayuso wrote:
-> It is a userspace bug in error reporting, patch is here:
-> 
-> https://patchwork.ozlabs.org/project/netfilter-devel/patch/20230327145045.33797-1-pablo@netfilter.org/
-> 
-> I recommend you split that superlong line
-> 
-> Now it shows this:
-> 
-> # nft -f ruleset.nft
-> ruleset.nft:402:1-16: Error: Could not process rule: File exists
-> 8.9.10.11/30,
-> ^^^^^^^^^^^^^
-> 
-> instead of the internal location.
-> 
+Hello,
 
-Thanks for pointing out this. Now I have figured out that the behaviour 
-of nftables is different from my expectation due to absence of the line 
-"flush ruleset" at the beginning of the main ruleset file, thus reload 
-caused entries addition and not atomic replacement to the newest config.
+I asked this on 2022-06-30, but never received a response. Could you
+post an example using the libnftnl functions to create a map of the
+following type and insert elements:
+
+type ipv4_addr . inet_service : ipv4_addr
+
+I see an example for creating a set, but I can't figure out how to
+create a map and insert elements into it.
+
+Thanks,
+Kiernan George
