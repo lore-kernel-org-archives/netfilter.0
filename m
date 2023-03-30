@@ -1,32 +1,36 @@
-From: Kiernan George <kbg98@vt.edu>
-Subject: Programmatically adding an element into a map using libnftnl
-Date: Thu, 30 Mar 2023 15:41:01 -0400
-Message-ID: <CAOg40qhcAoSdiTV5ievXf5wrQfoh_ZfF+GDVHqZ-Bhpf_JgCPQ@mail.gmail.com>
+From: Florian Westphal <fw@strlen.de>
+Subject: Re: Creating a map programmatically using the C library libnftnl
+Date: Thu, 30 Mar 2023 21:55:53 +0200
+Message-ID: <20230330195553.GC22079@breakpoint.cc>
+References: <CAOg40qh_1Fse-qHwBMZW9mQdbMma9VPMbOkr6d1wpF9YeUYdFg@mail.gmail.com>
+ <20230328150941.GB25361@breakpoint.cc>
+ <CAOg40qhR5vXo=tkNThLTbZ3nK0MZDf=VwONarYBg4KFokYCqcg@mail.gmail.com>
+ <20230330160954.GA22225@breakpoint.cc>
+ <CAOg40qjrXRQyMic-KSEA16rxfT4zBPRmPEOkLx-49x9EQPtZew@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=vt-edu.20210112.gappssmtp.com; s=20210112; t=1680205272;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=OZp+OQf0hLbeXWyvgEii3KnYE1+71Bml/FckT9q7L3U=;
-        b=emOnjDDGcCtNlxs8k/cCehurausVcNZKEkdpXmjuA6BYP1LKuGBXLn4Hhg8IBHLcSE
-         IO7o6lCsRpCnB0qQcbwAkC13FnEUXYLDiQ/fHvjQphQ3P5JzLXsixOV5Ekpihe9ptKmj
-         /27Uk9eRCIcur5v+goBJ9FsKUT4EJE8H2aUkMa5eo0oUBU1CBIVXCF24zIE3IBp9hjbt
-         +y7AiDC1ROeg8+ahsqffthA/vEXYQytVUY4t7fDdjh/JwTQ1dE5r1Ol8ABqYdnBu1xZ5
-         FqYvrjlyIww0dRPXrQY3hctuuQGX3ZXuC83mQEtP0Fgb79Z7hAGU9iJ3ZfavRyDhrIUi
-         1Xuw==
+Content-Disposition: inline
+In-Reply-To: <CAOg40qjrXRQyMic-KSEA16rxfT4zBPRmPEOkLx-49x9EQPtZew@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Kiernan George <kbg98@vt.edu>
+Cc: Florian Westphal <fw@strlen.de>, netfilter@vger.kernel.org
 
-I have a map of the following format:
+Kiernan George <kbg98@vt.edu> wrote:
+> That works to create the map, but when I go to add an element through
+> the command line it fails with this error:
+> 
+> root@laptop:/tmp# nft add element netdev example test2 { 1.1.1.1 .
+> 1111 : 2.2.2.2 }
+> Error: Could not process rule: File exists 
+> add element netdev example test2 { 1.1.1.1 . 1111 : 2.2.2.2 }
+> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ 
+> Do you have any insight?
 
-{ type ipv4_addr . inet_service : ipv4_addr }
+Worksforme.  'File exists' hints that you are adding the same element
+again.  The key has to be unique, so:
 
-How do I add an element into the map using the libnftnl API? I see the
-example nft-set-elem-add.c, but it is not clear on how to modify this
-for different types of elements like concatenated IP/port above or
-IPV6.
-
-I hate to ask again, but is there documentation for the library somewhere?
+add element netdev example test2 { 1.1.1.1 . 1111 : 2.2.2.2 }
+add element netdev example test2 { 1.1.1.1 . 1111 : 2.2.2.3 } // Fails even if value is different
