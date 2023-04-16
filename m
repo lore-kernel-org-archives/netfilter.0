@@ -1,155 +1,72 @@
-From: "Gabriel L. Somlo" <gsomlo@gmail.com>
-Subject: Re: Help/Advice with Ethernet NAT or "hub-mode" bridge
-Date: Sat, 1 Apr 2023 14:59:32 -0400
-Message-ID: <ZCh/FHuJ/AJ8Onxz@errol.ini.cmu.edu>
-References: <ZCdWKnTTy+0owQZr@errol.ini.cmu.edu>
+From: Johannes Erwerle <jo@swagspace.org>
+Subject: iptables 1.4.16.3 on a Zyxel Router: NOTRACK / CT --notrack not
+ available
+Date: Sun, 16 Apr 2023 12:23:14 +0200
+Message-ID: <f4d3374f-41e7-771a-1655-ef4c2b16347c@swagspace.org>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20210112; t=1680375575;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=K5dZMSHJDrzD8W+IMxivyedpuHCjj2iNDMCaEzVsYQM=;
-        b=NRYFoOfz7N9d0dciYcBeYqHGcrsmIr7+aAOr87fO6hsEZTkfQOxe9Mom5gaTi5/Bo3
-         056Cy8qNSFeu/8Yy7b8hMVGHGhe4xW7yooZQaKUxpU1gNAlK63eKy9ZevCHICcS8n5rd
-         b0q8VxiDAF1Vb9mPzqxkPia9J2u+JoLHpKcdyDHmSKNyT0j9VcJjmdSh5DckuAdNAhuG
-         +q46T2Cjd4MRdHIzlUlzA2xGmSRfLgAGaVxjgjcs9WeUepmcOR+gH4aUA0atZYHjbJQb
-         9HV9hratr6DSUvchJIBP2BWiszjSACOqHhV9Gia41wG/6l3mL3sjDj6wFhQsWMfu/oXZ
-         T+OQ==
-Content-Disposition: inline
-In-Reply-To: <ZCdWKnTTy+0owQZr@errol.ini.cmu.edu>
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=swagspace.org;
+        s=mail; t=1681640595;
+        bh=qdrp3LqMeG3kqEUg7Kdx+wWBYpEnfNHK4SzqrkTcraM=;
+        h=Date:To:From:Subject;
+        b=qe9AC9iPzqP9AxHJWdsBHDgpvtPzWn//kEIzi4JtI3PXtgByFPKwF5vQjbbe1VxaK
+         V4kaGyz09LxvirpjG3e4iB7xOXPoPH0u8kc08bR7qPO9zJi36XWXItzN8wA2Ccbya1
+         GtJ9J/FxLEIaeHdsugtYSW8ITMnxvFwcxHRVl2r9rX+o4V4W5S28V9tk/2yxlC8ygv
+         vW6yGZt/Cm8MSi37gSImTJW1IstlT09K60Mi1nmAf91EGYkO1PBDn7mFM3/X2whWCv
+         KVY3iczauYOD+VcFMTHPUQdEk+YsRzRoSTkubloIa0se/Qtub3W8cyTSc/u4HlljrH
+         eu7ADXKXB4+Pw==
+Content-Language: en-US
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Here's my current (working!) solution, but I feel I shouldn't have to
-jump to *this* many hoops (see below) to make it work, there should be
-an easier less painful way to pull it off! :)
+Hello!
 
-On Fri, Mar 31, 2023 at 05:52:44PM -0400, Gabriel L. Somlo wrote:
-> I have several VMs networked together on a cloud-based hypervisor
-> solution, where the "vswitch" connecting the VMs enforces a strict
-> "one MAC per VM network interface" policy.
-> 
-> Typically, one of the VMs has no problem being the "default gateway"
-> on such a "vswitch", serving all other VMs connected to the same
-> virtualized "LAN" switch.
-> 
-> In my case, the default gateway is inside a container running inside
-> a network simulator on one of the VMs (many containers in that simulation
-> are used to connect groups of VMs on this "router's" several interfaces
-> across a simulated multi-hop "internet".
-> 
-> The trouble is, if I use the simulator VM's interfaces as bridge ports
-> into the simulation, the container-as-default gateway will have its
-> traffic dropped by the vswitch outside its host VM. Here's an ASCII
-> picture of the setup: 
-> 
-> -----------------------------
-> VM running simulation       |
->                             |
-> sim. node,                  |
-> (container),                |
-> dflt gateway                |
-> -----------    - br0 -      |             -----------------
->           |   /       \     |  inter-VM   | External VM   |
->      eth0 + veth0    ens32  +-- vswitch --+ using in-sim  |
->   Sim.MAC |          VM.MAC |             | dflt. gateway |
-> -----------                 |             -----------------
-> -----------------------------
-> 
-> IOW, the "inter-VM vswitch" only allows <VM.MAC> ethernet frames
-> from/to the VM running the simulation.
+I have a Zyxel NR7101 5G router. This device has to handle a lot of 
+sessions and we had events in the past, where the conntrack table was 
+full, leading to dropping new sessions.
+An other issue is, that the device can only handle ~250 new sessions per 
+second. (At 250 sessions/s one CPU core is completely utilized and it 
+starts sending pause frames).
+
+Since we don't need any firewalling for the traffic that is only routed 
+through the device I wanted to disable connection tracking for some 
+connections to reduce the size of the conntrack table and hopefully 
+increase the amount of new sessions that the device can handle)
+However neither the NOTRACK target nor the --notrack option for the CT 
+target are available.
+
+Here are a couple of infos regarding the OS/Kernel/iptables version:
+
+root@NR7101:~# uname -a
+Linux NR7101 3.10.14 #1 SMP Tue Nov 29 09:49:05 CST 2022 mips 
+GNU/Linuxroot@NR7101:~# iptables -V
+iptables v1.4.16.3
+
+When I am trying to add rules to disable tracking I get the following 
+errors:
+
+root@NR7101:/# iptables -t raw -A PREROUTING -d 1.2.3.4 -j CT --notrack
+iptables v1.4.16.3: unknown option "--notrack"
+Try `iptables -h' or 'iptables --help' for more information.
+root@NR7101:/# iptables -t raw -A PREROUTING -d 1.2.3.4 -j NOTRACK
+iptables v1.4.16.3: Couldn't find target `NOTRACK'
+
+Try `iptables -h' or 'iptables --help' for more information.
 
 
-#1. On the simulator VM, create a veth pair (`vi` facing the container):
+Since this is a small embedded device man pages and other nice things 
+one would expect from a modern linux distribution are usually not available.
 
-	ip link add vi0 type veth peer name vo0
+ From what I found while digging through the change logs, at least one 
+of the notrack options was available in iptables 1.4.16.3. However the 
+device does not know them. Might this be a compile-time option and the 
+feature was simply left out by the manufacturer? Or do I have to load a 
+kernel module explicitly? Is there any way to get this working?
 
-#2. create a bridge between "outward" facing `vo0` and `ens32`:
+One workaround for the first issue would be to increase the conntrack 
+table and hashsize, there is some RAM available, but it is not limitless.
 
-	ip link add br0 type bridge
-	ip link set vo0 master br0 
-	ip link set ens32 master br0 
-
-#3. bring up the "outward" facing bridge and its ports:
-
-	ip link set dev br0 up
-	ip link set dev vo0 up
-	ip link set dev ens32 up
-
-#4. assign `vi0` as the "bridge" interface in the Net.Sim. (e.g., gns3
-#   or CORE network simulators):
-
-#5. after Net.Sim. starts, we have a situation like the following:
-
- ---------------------------------------------
- |-------------       bXYZ          br0      |               ---------
- || container |       /  \         /   \     |               | other |
- ||      eth0 + vethXYZ  vi0 --- vo0   ens32 + -- vswitch -- + guest |
- ||           |                      Pub.MAC |               | VM(s) |
- |-------------               |              |               ---------
- | < controlled by Net.Sim.>  | <manual conf>| 
- |                                           |
- |                 Simulator VM              |
- ---------------------------------------------
-
-#6. Set up "double MAC NAT" allowing container `eth0` to use `Pub.MAC`:
-
-	ebtables -t nat -F
-	ebtables -t nat -A PREROUTING  -i ens32 -d <Pub.MAC> \
-	         -j dnat --to-destination de:ad:be:ef:00:01
-	ebtables -t nat -A POSTROUTING -o ens32 -s de:ad:be:ef:00:01 \
-	         -j snat --to-source <Pub.MAC>
-	ebtables -t nat -A PREROUTING  -i vi0   -d de:ad:be:ef:00:01 \
-	         -j dnat --to-destination <Pub.MAC>
-	ebtables -t nat -A POSTROUTING -o vi0   -s <Pub.MAC> \
-	         -j snat --to-source de:ad:be:ef:00:01
-
-# NOTE: If traffic arrives on a bridge with a destination MAC belonging
-#       to one of its own ports (a "permanent" FDB entry), it will not
-#       be forwarded. Therefore `de:ad:be:ef:00:01` is subtituted for
-#       <Pub.MAC> on the `vi0` <--> `vo0` link, and NAT-ed back to the
-#       real <Pub.MAC> after the two bridges have been "tricked" into
-#       forwarding the frame!
-
-#7. Set <Pub.MAC> as the mac address of the container's `eth0`:
-
-	ip link set dev eth0 down
-	ip link set dev eth0 address <Pub.MAC>
-	ip link set dev eth0 up
-
-#8. Restart dhcp inside the container, and we're good to go!
-
-# The Net.Sim. can have multiple containers assigned to multiple ens*
-# interfaces, with multiple "enclaves" connected to different
-# vswitches. Each "enclave" vswitch will see the simulator VM
-# communicate using its assigned MAC address, but that traffic will
-# actually originate from each respective "passed-through" container.
-
-
-Anyway, once I realized that:
-
-	- a single bridge refuses to forward frames destined to
-	  addresses present as "permanent" in its own fdb,
-
-	- snat is only available in POSTROUTING,
-
-	- dnat is only available in PREROUTING,
-
-I decided to add an extra bridge hop and translate <Pub.MAC> back and
-forth, to allow the inner container `eth0` to also use it, thus
-solving the issue of ARP packets having mismatched "inner" and "outer"
-mac addresses for the default gateway :)
-
-If anyone else knows of a way to further "dumb down" a bridge to the
-point where it can be convinced to ignore its "permanent" fdb entries
-when making a forwarding decision, I can further simplify this setup.
-
-Thanks much,
---Gabriel
-
-PS. Figured I'd post my current solution in case anyone else ends up
-looking for a neat workaround to a problem similar to mine, assuming
-nothing cleaner and simpler becomes known or available :)
+Greetings and thank you very much
+Jo
