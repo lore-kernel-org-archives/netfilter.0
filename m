@@ -1,66 +1,42 @@
-From: Rvfg <i@rvf6.com>
-Subject: Re: ct state vmap no longer works on 6.3 kernel
-Date: Wed, 3 May 2023 19:33:35 +0800
-Message-ID: <9252665d-7d18-099f-dad2-e3ee882591fd@rvf6.com>
-References: <a2c6386f-d339-9774-387a-f20fa8aa28e6@rvf6.com>
- <ZFH86op04R2rWPbi@calendula> <03175e31-29bd-1588-1042-5931af102348@rvf6.com>
- <20230503081920.GA9674@breakpoint.cc>
-Mime-Version: 1.0
+From: Glen Huang <heyhgl@gmail.com>
+Subject: Re: Possible to check if ip daddr belongs to an interface in the
+ prerouting chain?
+Date: Thu, 4 May 2023 10:55:55 +0800
+Message-ID: <AF79CB30-4C30-4876-967C-B817104EAECB@gmail.com>
+References: <D797AC4D-8B12-4F80-8C82-1591C3658D0B@gmail.com>
+ <37bf019b-6c6e-4e97-a121-91a38270d845@at.encryp.ch>
+ <9C3F0DD4-E1F2-4B21-AAF4-5779F0D9655E@gmail.com>
+ <0f7066ff-d885-4726-80e8-31df1465a274@at.encryp.ch>
+ <4F769A3B-272B-44A2-81A0-4B9AF437FA80@gmail.com>
+ <388bf505-89e7-a4c8-29c9-af7b784a3dd1@at.encryp.ch>
+ <A7DA2776-4665-48DD-979D-41B4DCB31D7E@gmail.com>
+ <20230429092606.b243cfb662aefccebae2d0e2@plushkava.net>
+ <459668A7-0536-41CE-990C-2B3E535A5595@gmail.com>
+ <20230429095714.c7bb680249a95c1ace3707e2@plushkava.net>
+ <259EB616-F421-469C-89E1-12496603999F@gmail.com>
+ <20230430200934.91ef05c51eb2e053a51a00d4@plushkava.net>
+Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=rvf6.com; s=dkim;
-        t=1683113620; bh=Nb652fdgo1uu4VBlgJPPJNlMsloj529cqYQG9i0X7oo=;
-        h=Date:Subject:To:Cc:References:From:In-Reply-To;
-        b=kVZQQIiXUDP8N64TzLL1JEiHpB6xSxO8AdSgyBhbkj2Ytuk7CcflZaikUCiVk9zZX
-         ak0uE94hYfSPGROCZ2O+Fcj4GZv+x4kQOEgKEO6EzYGSY/M33Fqo8FsdMbrCjKKYeh
-         I1pqXtljWUvGngR+lnOfIAtW2MKXy/2oCZ51MVTIWWz/+FR127wrYyTDUUh1x7E2oq
-         oubEQhV95/TeuFHv0DGD7k82r9YsJXm2kIAu3OgDeSpFE2He+WRXQkWNWyTSSnpd/e
-         1vJv+3GnopQuM06hIyML6WrWflFEMmXgfS5NPqJvICZBIAWtMuvhLE7h6Kfd3MUu1Q
-         0x37UL5NYYobA==
-Content-Language: en-US
-In-Reply-To: <20230503081920.GA9674@breakpoint.cc>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683168959; x=1685760959;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:sender:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=LELqvZ7cZJ+cQ/ijeL5DWI1yObLD9y8vXN1JwUGes+s=;
+        b=qfUovCqBLel/oKR3/9wDClz37NJ35mWE23QrszWz1kjtHDHrWjc30H2iDaqPrfLm8q
+         1XmDrfO3s8OAPxR5o2BaDRYsb4Hy37ic+eD1+RK5AcelKxREQxEtZ80n/s9pjt2zC+bC
+         dFdgi4sCNNztRHWf1aJb3H0YLvBuqLCt7tXkNNEHIat6c6qkluzn44FXLQ0xIAWNEd6G
+         56cswn/dO/V2SgNI8xqLZ1yEoN9CIf2AelW/pLGWTe8uinH1yu/NpAJOpww7xfPIydlA
+         rJoKmJctZHQX+H6M38JSDe0LLYdor9wQcCEOUnHzYOckyx/U9tj0C3IyljAz6QUC4SSX
+         HudQ==
+Sender: Glen Huang <hey.hgl@gmail.com>
+In-Reply-To: <20230430200934.91ef05c51eb2e053a51a00d4@plushkava.net>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Florian Westphal <fw@strlen.de>
+Content-Type: text/plain; charset="us-ascii"
+To: Kerin Millar <kfm@plushkava.net>
 Cc: netfilter@vger.kernel.org
 
+Crystal clear.
 
-
-On 5/3/23 16:19, Florian Westphal wrote:
-> Thanks, the BREAK in the referenced patch is the problem.
-> 
-> Please give this fix a try:
-> 
-> diff --git a/net/netfilter/nft_ct_fast.c b/net/netfilter/nft_ct_fast.c
-> --- a/net/netfilter/nft_ct_fast.c
-> +++ b/net/netfilter/nft_ct_fast.c
-> @@ -15,10 +15,6 @@ void nft_ct_get_fast_eval(const struct nft_expr *expr,
->   	unsigned int state;
->   
->   	ct = nf_ct_get(pkt->skb, &ctinfo);
-> -	if (!ct) {
-> -		regs->verdict.code = NFT_BREAK;
-> -		return;
-> -	}
->   
->   	switch (priv->key) {
->   	case NFT_CT_STATE:
-> @@ -30,6 +26,16 @@ void nft_ct_get_fast_eval(const struct nft_expr *expr,
->   			state = NF_CT_STATE_INVALID_BIT;
->   		*dest = state;
->   		return;
-> +	default:
-> +		break;
-> +	}
-> +
-> +	if (!ct) {
-> +		regs->verdict.code = NFT_BREAK;
-> +		return;
-> +	}
-> +
-> +	switch (priv->key) {
->   	case NFT_CT_DIRECTION:
->   		nft_reg_store8(dest, CTINFO2DIR(ctinfo));
->   		return;
-
-This patch fixed my problem on 6.3.0 kernel. Thank you!
+Thank you very much Kerin.
