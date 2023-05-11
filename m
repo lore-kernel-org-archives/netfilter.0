@@ -1,48 +1,51 @@
-From: Turritopsis Dohrnii Teo En Ming <teo.en.ming@protonmail.com>
-Subject: New Linux kernel NetFilter flaw gives attackers root privileges
-Date: Wed, 10 May 2023 16:05:40 +0000
-Message-ID: <6CdB5UZeMFJ0jV4vxjibOs9snaLu5heC5fU1srPg_GXqLGTUIBA0dsNXUBc6MuoujoNIa4SrC-XDE0huu3HjQWMtmyMjLh77J1apV_iWubE=@protonmail.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+From: Martin Zaharinov <micron10@gmail.com>
+Subject: Nft nat map/set net to net multi time
+Date: Thu, 11 May 2023 09:16:54 +0300
+Message-ID: <FECBC35B-6FBA-4C30-8F74-6B66EF5C5315@gmail.com>
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.500.231\))
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-        s=protonmail3; t=1683734765; x=1683993965;
-        bh=pSLaPRG119Zjlc00d6madstQ6YOF1X5bxvNlgAjUduw=;
-        h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-        b=Hhn6klur1m7liq2kACPv0QrMnHftMegiW3F4qWj5saG6cIsFTMf1CgbSepD4sViud
-         0Psn3l/hmYPLGWJE/uUlN9UCTVZwOVDVJ3QyDD9qyP2j8NxKmsqyPdV5ILBbtzxY+8
-         yADqpy/Kafw9YG60TsyLSzcP/X0JEKqLdJaJEVgdEczM33LiNWq48WevEs84ixM4Rk
-         bI/ayStaanLgq4okyCU9OyjIQvZlWIg+nXnMHSoyGuB6HcB1xnMq/4X31GPSvcg6P0
-         VJkKsfXGmvQl1s3TyeItFrxWkn87FuOKxNgW5canZySc9vIjlTyDj1kDPsPsYEhnMI
-         0j4OP5noUeBgA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1683785826; x=1686377826;
+        h=to:date:message-id:subject:mime-version:content-transfer-encoding
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wqYe2qFfnWpDzs64LIdkepqRUoKibHwijQ4m+YckJD0=;
+        b=N8Bj2EtsHY0LQR3+ifQeAReVQmNg8aNJOcr+M9llmsUGuUOpo753q/oDzqAuSIFpXc
+         mTVJzB4Vfk8PaEnNRTqt3Ai4TUULgyF/TsGsnxicgrVbmepF8c/2x0jq99hy74MXBMzC
+         doEctNP8CdlQqu1a9q7+BKrH6+ET//yo3lLWkWjmriyjyVuLTns5ii+cQzFWRJkRcTl3
+         Ss3INt8H4FsS6KUcaD6CIGAbZYEG5mN41u3Ub35k/al5onSmvhvigH/n3biRpgVZ4VoR
+         x8pjQDMHqtcQTpxmMwj4IT5Wcll3bFMcmVAPLoVeKJcxdNXK0F4mB/nMJtS5Tqa/zDuS
+         9oYw==
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Cc: "ceo@teo-en-ming-corp.com" <ceo@teo-en-ming-corp.com>
+To: netfilter <netfilter@vger.kernel.org>, Pablo Neira Ayuso <pablo@netfilter.org>, Paolo Abeni <pabeni@redhat.com>, Florian Westphal <fw@strlen.de>
 
-Subject: New Linux kernel NetFilter flaw gives attackers root privileges
+Hi
 
-Good day from Singapore,
-
-I have just come across this article. Thought of sharing it.
-
-Article: New Linux kernel NetFilter flaw gives attackers root privileges
-Link: https://www.bleepingcomputer.com/news/security/new-linux-kernel-netfi=
-lter-flaw-gives-attackers-root-privileges/
-
-Thank you.
-
-Regards,
-
-Mr. Turritopsis Dohrnii Teo En Ming
-Targeted Individual in Singapore
-Blogs:
-https://tdtemcerts.blogspot.com
-https://tdtemcerts.wordpress.com
-GIMP also stands for Government-Induced Medical Problems.
+I try to make nat snat net to net
 
 
+map nat  {
+        type ipv4_addr : ipv4_addr
+        flags interval
+        elements = { 10.0.0.0/8 : 103.23.24.50, 10.0.0.0/8 : 103.23.24.45 }
+        }
 
 
-Sent with Proton Mail secure email.
+chain nat {
+        type nat hook postrouting priority mangle; policy accept;
+        snat to ip saddr map @nat_list
+
+
+and after try to run script get : 
+
+Error: Could not process rule: File exists 
+
+elements = { 10.0.0.0/8 : 103.23.24.50, 10.0.0.0/8 : 103.23.24.45 }
+		    ^^^^^^^^^^^
+
+
+
+idea is have multiple public ip addr  and private ips 10.0.0.0/8
+
+ m.
