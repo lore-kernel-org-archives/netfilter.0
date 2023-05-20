@@ -1,126 +1,98 @@
-From: <imnozi@gmail.com>
-Subject: Re: How to configure "full cone" NAT using iptables
-Date: Tue, 16 May 2023 14:36:18 -0400
-Message-ID: <20230516143618.6ad67810@playground>
-References: <167f2029-5978-dffa-3cf2-0ede9ade4fdf@thelounge.net>
-        <F42FAE74-FDFE-4DC8-896A-2CFBDCCB6D84@jcm.me>
+From: =?UTF-8?B?RWNrbCwgTcOhdMOp?= <ecklm94@gmail.com>
+Subject: Re: Why tproxy to 127.0.0.1:port doesn't make packets go through the
+ input chain with iifname lo?
+Date: Sat, 20 May 2023 16:19:13 +0200
+Message-ID: <CAPFYX+JE_9UhOe_Oe7CsHBdZ4-kY=fi=zyfPt_DYFDRXwOnmqw@mail.gmail.com>
+References: <B4205731-F80B-4A87-B932-8749C51A06FB@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-devel-owner@vger.kernel.org>
+Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684262182; x=1686854182;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+        d=gmail.com; s=20221208; t=1684592380; x=1687184380;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5gA/ZhK6rG1w7UVEKWB315CkZf+v0mhXE8jp3JzXj7E=;
-        b=pd9n7qvS1PL27YiPlclBotRTByA80goGg+6VR3nBEb4ZMDEHGq/g1Y/9jIlIAU74nM
-         FWNdilFyNvTt1MK4cEMkJ2KSkYdwo7TW9JNOWYPGihrcJVVdo/PLtzYd6Smf/7NWiMUE
-         aS961AlI9IKUwZzB31w20+/Jv2Yx+vTn6sbbmZxzFEejffioWNvOs0lBgKjBSgJToR9o
-         vobxP7ei1G+Rl/vAfKZ27vLo4DpDiovdA8J5+7Ge0Klr62V4xf3JZaSRlgJt2OgC5Sv4
-         VbWA4lxfQxp3RmrjCSOiZeo4C5Q4/Oay2QQzsD3GcOcxUWFkusJE3nq0kBbkEH+74q0L
-         f3Ow==
-In-Reply-To: <F42FAE74-FDFE-4DC8-896A-2CFBDCCB6D84@jcm.me>
+        bh=NDIJnTjDCoRlWTrPsH6rIGdkjh2qmWzZVDXQJ0i8wNk=;
+        b=c+R9lje60g/vTMNJmqqwWUjzh62G/d2DfYtcWcXeQJRk64mR96wDLjGM7mNqZfAFf2
+         GrVzfe8+Ng6GCRUEaZYRb7/QNDN4y4jHJeRLbqrSEQtJA2+7wHcD7EsBOANvREtFcPGl
+         ozGN/bTWuaGRz/TTczukBjgKGbUrpCexYaDgcQ9wwrbpl4SmMIVL7tZhxNqbhxWpd/cx
+         Z+mcb3x5cDiG0IhRmGjzE7PgY8oor16r4EzTsGfBsS+vg0NFcQHLSPgCqu0+tZpdt+2l
+         B2R5KyvPHxLDIIF8U//r2FnrU7/wgzfltNOkQPi5lNhpfNFGlOo9Y3ptgh5JY0UY8Bd8
+         LWFQ==
+In-Reply-To: <B4205731-F80B-4A87-B932-8749C51A06FB@gmail.com>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="utf-8"
-To: Joshua Moore <j@jcm.me>
-Cc: netfilter-devel@vger.kernel.org, Reindl Harald <h.reindl@thelounge.net>, "Kevin P. Fleming" <lists.netfilter@kevin.km6g.us>, netfilter@vger.kernel.org
+To: Glen Huang <heyhgl@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Would an example of full cone NAT be the following?
-  - Site A uses 192.168.100.0/24 internally
-  - Site B uses 192.168.100/0/24 internally
-  - There is a VPN between the two sites
-  - Site A addresses hosts at Site B using 10.168.255.0/24
-  - Site B addresses hosts at Site A using 10.168.1.0/24
-  - Site A SNATs packets sent from 192.168.100.0/24 to 10.168.1.0/24, and S=
-ite B
-    DNATs packets sent to 10.168.255.0/24 to 192.168.100.0/24
-  - Site B SNATs packets sent from 192.168.100.0/24 to 10.168.255.0/24, and=
- Site A
-    DNATs packets sent to 10.168.1.0/24 to 192.168.100.0/24
+Hi Glen,
 
-The result is that packets at either site have a 192.* and a 10.* address, =
-and packets in transit between the sites have only 10.* addresses. In short=
-, each site uses the same LAN address and cannot ordinarily exchange packet=
-s using normal packet routing. But they *are* able to exchange packets by u=
-sing full-cone NAT to translate their addresses to and from intermediary LA=
-N addresses.
+It's been a while but I'll try to reply to your questions inline.
 
-Full cone NAT allows Linux to do the impossible right away.
+Bests,
+M=C3=A1t=C3=A9
 
-N
+Glen Huang <heyhgl@gmail.com> ezt =C3=ADrta (id=C5=91pont: 2023. m=C3=A1j. =
+14., V, 9:24):
+>
+> Hi,
+>
+> I think I mostly understand how TPROXY works, thanks to M=C3=A1t=C3=A9=E2=
+=80=99s super helpful article [1].
+>
+> However, I still don=E2=80=99t understand how the "to address:port=E2=80=
+=9D part work. Given this rule:
+>
+> nft add rule nat prerouting iifname lan tproxy to 127.0.0.1:1234 meta mar=
+k set 1 accept
+>
+> And this policy based routing:
+>
+> ip rule add mark 1 lookup 100
+> ip route add local default dev lo table 100
+>
+> When does a packet arriving on =E2=80=9Clan" get redirected to 127.0.0.1:=
+1234? Is it before or after the routing decision? It seems it should be aft=
+er, but from trace, it shows that the packet goes through the input chain a=
+nd its iifname is lan. Since tproxy redirects it to 127.0.0.1, shouldn=E2=
+=80=99t it be =E2=80=9Clo" instead?
 
+The rule is added to the prerouting table so the rule is applied
+before the routing decision. It's exactly because otherwise you
+wouldn't be able to route it to the localhost. You can't make a
+routing decision after it's already been made. And even though you do
+the redirection, the interface it entered the system is still lan, not
+lo. (The firs i in iifname stands for input.) The output interface may
+be lo because that's where your proxy is probably listening, but it's
+not quite important in the tproxy rule.
 
-On Tue, 16 May 2023 07:59:40 -0700
-Joshua Moore <j@jcm.me> wrote:
+>
+> I wonder what the flow chart is like? My current guess is that packets ar=
+riving on =E2=80=9Clan" first get routed to =E2=80=9Clo", because of the ma=
+rk and the policy routing, then tproxy redirects it to 127.0.0.1:1234, but =
+again, this is probably wrong given iifname being lan. I also wonder do <ad=
+dr> and <interface> have to match in "tproxy to <addr>:port =E2=80=9C and "=
+dev <interface> table 100=E2=80=9D? What the flow chart is like if they don=
+=E2=80=99t?
 
-> Full cone isn=E2=80=99t about accepting incoming connections on the same =
-public IP:port and then translating to different local IPs. This is a misun=
-derstanding. It=E2=80=99s about accepting connections from different REMOTE=
- IPs and allowing it to the same local IP on the same original source port.
->=20
-> The practical purpose here is for a more transparent connection and allow=
-ing NAT pinholes to poke a hole through the firewall so any destination on =
-the Internet can now communicate on that port to the host.
->=20
-> > On May 16, 2023, at 7:48 AM, Reindl Harald <h.reindl@thelounge.net> wro=
-te:
-> >=20
-> > =EF=BB=BF
-> >  =20
-> >> Am 16.05.23 um 16:32 schrieb Joshua Moore:
-> >> =EF=BB=BF=E2=80=9CFull cone=E2=80=9D NAT simply means that there is no=
- longer a strict connection tracking or enforcement of what IPs can connect=
- back to the ports that are associated with the internal IP.
-> >> Traditional NAT:
-> >> - TCP connection to 1.1.1.1 from 192.168.1.10 over outside translated =
-TCP source port 45619. All packets destined to port 45619 MUST come from 1.=
-1.1.1.
-> >> Full cone NAT:
-> >> - TCP connection to 1.1.1.1 from 192.168.1.10 over outside translated =
-TCP source port 45619. All packets destined to port 45619 are allowed from =
-ANY IP.
-> >> Another word for this behavior is =E2=80=9Cendpoint independent=E2=80=
-=9D NAT/filtering. =20
-> >=20
-> > but it can not work like that which don't make any sense:
-> > iptables -t nat -A PREROUTING -i eth0 -j DNAT --to-destination 10.0.0.1
-> > iptables -t nat -A PREROUTING -i eth0 -j DNAT --to-destination 10.0.0.2
-> >=20
-> > offlist the OP pointed me to https://github.com/Chion82/netfilter-full-=
-cone-nat where i ask myself who needs that nonsense which sounds to be writ=
-ten by someone which hasn't more clues about networking/NAT the the OP
-> >=20
-> > Implementation of RFC3489-compatible full cone SNAT
-> > https://www.rfc-editor.org/rfc/rfc3489 =3D STUN
-> >  =20
-> > >> iptables -t nat -A POSTROUTING -o eth0 -j FULLCONENAT
-> > >> #same as MASQUERADE =20
-> >=20
-> > so who needs that module?
-> >  =20
-> > >> iptables -t nat -A PREROUTING -i eth0 -j FULLCONENAT
-> > >> #automatically restore NAT for inbound packets =20
-> >=20
-> > restore WHAT based on WHAT for new packets?
-> >=20
-> > it's simple: when you only have a single public IP there is no way to a=
-ccept NEW incoming packets to different local machines without explicit por=
-t-forwarding
-> >=20
-> > and ESTABLISHED/RELATED is the job of conntrack
-> >  =20
-> >>>> On May 16, 2023, at 4:46 AM, Kevin P. Fleming <lists.netfilter@kevin=
-.km6g.us> wrote: =20
-> >>>=20
-> >>> =EF=BB=BFOn Tue, May 16, 2023, at 07:07, Shane Wang wrote: =20
-> >>>> Thanks for your reply.
-> >>>> I think the "--to-destination 10.0.0.1" rule will be matched, and the
-> >>>> "--to-destination 10.0.0.2" rule will never be matched.
-> >>>> Does iptables unsupported "full cone" NAT for multiple internal IP a=
-ddresses? =20
-> >>>=20
-> >>> Does *any* platform support such a configuration? Based on my underst=
-anding of what 'full cone' means, every internal address needs a separate e=
-xternal address to be fully mapped to it. Your example shows that you have =
-one external address,  =20
+As far as I remember, your description is true except for the
+confusion around the iifname value. It's just the input interface. It
+doesn't change on routing.
 
+To be honest I'm not sure what the address is good for in the "tproxy
+to" part. Maybe it's useful if your proxy uses a listening address
+other than 0.0.0.0 or 127.0.0.1. So you could use "tproxy to
+192.0.2.1" in case it's a local address too. What the routing
+interface would be in that case, I'm not sure. The examples in [2]
+only use a port number. Maybe someone else can halp you out with this
+more precisely.
+
+>
+> PS: In my case, lan is actually an XFRM interface, not sure if that matte=
+rs.
+>
+> Could someone offer some pointers? Thanks in advance.
+>
+> [1] https://gsoc-blog.ecklm.com/iptables-redirect-vs.-dnat-vs.-tproxy/
+
+[2]: https://www.kernel.org/doc/Documentation/networking/tproxy.txt
