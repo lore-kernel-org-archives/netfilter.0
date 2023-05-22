@@ -1,54 +1,38 @@
-From: Glen Huang <heyhgl@gmail.com>
-Subject: Re: Why tproxy to 127.0.0.1:port doesn't make packets go through the
- input chain with iifname lo?
-Date: Mon, 22 May 2023 22:52:11 +0800
-Message-ID: <D8DF58A3-003F-4C57-9FF3-937E2246B7A0@gmail.com>
-References: <B4205731-F80B-4A87-B932-8749C51A06FB@gmail.com>
- <CAPFYX+JE_9UhOe_Oe7CsHBdZ4-kY=fi=zyfPt_DYFDRXwOnmqw@mail.gmail.com>
- <CAKcfE+bo1hJXF4M1rm2KfWGZ7meYKtfWfGBd6+Rktd2XiUMfdg@mail.gmail.com>
- <E442FE0A-FCDA-4CE9-9C17-E7C73949BA67@gmail.com>
- <CAKcfE+bewEQq2BPNAwaHM99NDwmDMRtu9qPcAdkC=5J5k+7tvg@mail.gmail.com>
-Mime-Version: 1.0 (Mac OS X Mail 11.5 \(3445.9.7\))
-Content-Transfer-Encoding: quoted-printable
+From: Rob Hutton <justlikeef@gmail.com>
+Subject: dst NETMAP
+Date: Mon, 22 May 2023 14:11:36 -0400
+Message-ID: <CAGWgwrPXvZ-eVbsYp-zi0thV4=vz=nfj0jQ-_oEZo3e8TdOzeA@mail.gmail.com>
+Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1684767136; x=1687359136;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:sender:from:to:cc:subject
+        d=gmail.com; s=20221208; t=1684779109; x=1687371109;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=JdfXC3RoXy5tZLl3DiuFWLPljfgdsN8Y/o+TdL8upis=;
-        b=p/nneuUFSHqNJb0q+UeMdJQ8xdMUk5zIhMMkjcng3b21to/iQ7D/r/8BhDMEshubD9
-         RVPgWbx1U5+bj38DOXsgKfx+vBTXiZvJXhIiT9qWQWNfSaCRlEl7soj/Eg0W9Q2KF+Ls
-         k0EusMiVS1XJkyADedXdLYxQ1Pa5WWzVsGiMS0pdxc5PjXiA2O2AsKt2WbOkOYRVUwGV
-         xQYtBCmlhaBSsPlE6hSYs3e9M8/5SyTYQQuUmTOsVNdyxI/YHFYC5sa0+EENtKdNHSqU
-         7y0qBd3UyMEOPtSaqxBQOx1SSDaQ+0Bj0nAXZ5x5/Bh2is9JeXHLLiC94KQ1NZxa+1vJ
-         W9hQ==
-Sender: Glen Huang <hey.hgl@gmail.com>
-In-Reply-To: <CAKcfE+bewEQq2BPNAwaHM99NDwmDMRtu9qPcAdkC=5J5k+7tvg@mail.gmail.com>
+        bh=Vto7tmTrRWhHdPYPQylgMub4A4iV2Po+Mh/tEwvvqRU=;
+        b=aGYQOZeyBWIDI/BzDZY8DVaBewTUFQeGuMJvExJF39SVod6qPLawJkp/lF/iuLNvCA
+         GaeeHknGqSZNnY90JGw6YrL5jfrUHCV9dSCwef2m+UaEu4nayzZqRgE1DBmjCLtj+FjT
+         /x1q/OF+k3UDnOW7fa7wNPo86rpmbHyAd8NcjciGhexUQdagF5fMmuMREf4fM8scTTYl
+         e2uR4OvuRK3yW2l6Bjj52mUmC0ocuNo08a0hsxFikW09TnMruQBtp7JybrHLGPonf/bK
+         dbvfSvJAkJ0E6tIXRAD1Jmibf+KYKBUNpM6evEGMJfrta3LPFeNGPWBZD5u2As2vbT14
+         Ljgg==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"
-To: Balazs Scheidler <bazsi77@gmail.com>
-Cc: =?utf-8?B?IkVja2wsIE3DoXTDqSI=?= <ecklm94@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
+I am trying to set up a NAT gateway between two businesses where one
+initiates the connection outbound to the other, so therefore have dst
+nat entries in the following form:
 
-> Without "mark set" your normal routing tables would be used for the =
-routing decision.
+ip daddr 10.192.3.0/24 dnat ip to ip daddr map { 10.192.3.0/24 : 10.12.3.0/24 }
 
-I thought you meant the whole ip rule was unnecessary. Your new detailed =
-explanation made everything crystal clear, thank you!
+and masquerade is enabled on the external interface.
 
-> Using the mark should work.
+The netmap is translating the network portion correctly, but the host
+portion is not being preserved and is simply being chosen as if from a
+NAT pool.  So pinging 10.192.3.254 should be translated to 10.12.3.254
+and instead it is translated to 10.12.3.64 (for example).  How do I
+preserve the host portion during the NETMAP translation?
 
-Thanks for the tip, mark works flawlessly.
-
-> It should not do that. That's probably an explicit rule that does it.
-
-It seems nft doesn=E2=80=99t always print mark in the trace log, I =
-mistakenly thought it got cleared. Like previously mentioned, matching =
-the mark value works flawlessly.
-
-Thanks again for your help Bazsi, and thanks for writing the tproxy =
-target, it helped me tremendously.
-
-Regards,
-Glen=
+Thanks,
+Rob
