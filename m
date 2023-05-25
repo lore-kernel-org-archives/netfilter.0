@@ -1,41 +1,46 @@
-From: "Grzegorz Larek" <grzegorz.larek@diwhide.pl>
-Subject: Centrala- system telefoniczny
-Date: Thu, 25 May 2023 07:36:18 GMT
-Message-ID: <20230525084500-0.1.j.1sx3.0.dldlmmoh45@diwhide.pl>
+From: Igor de Paula <igordptx@gmail.com>
+Subject: Help use parsing to get a promiscuous level
+Date: Thu, 25 May 2023 15:12:02 +0100
+Message-ID: <CALDr01RD6Sxgc972JOjAufWP-4akGSHzbA93PaWOPo7uughMGw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=diwhide.pl; s=mail;
-        t=1685000207; bh=INjgM7SITbB4go/F9DclwIxKofyle/AtsZfR3aWEixo=;
-        h=Date:From:To:Subject:From;
-        b=wFNNTsvwIYFA/PN2I0eF8Ox0PsNpojdcVqYYVYc/ecK9LevwThVdzDl7snypZN1xz
-         2fHO+KAUOwLTw4EPmOBptp4eQAQp4XBXFBE0mBOpFrYLV+aA1zN+arjVB2v375/q/4
-         ywwIWtlqgEdlogLNKiXKffCXlUM9v4BgxLeR5jlLTQbNFRZFbyxbodVYIe2cuTvoHD
-         ge58z/D3AJhbkj5OFMeB76jmC44LsXq4eCp2GEyZO4D8bYJvGX1w+tqwWRaiA0xGBl
-         mAf2PWiT9MeywM6OW2u2Bkksz3DE3i3cZ/y1hkEAS+WKBwhOo0s2AxZFwcdjSgfPpM
-         EoYc0DlBLJafA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1685023933; x=1687615933;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=/iYOpo8t0Kqe02ZSAZBBgTlQZo/FoPoZZi2ilLyuGBU=;
+        b=ATCqMEWjEpurznINcffX/gzVMS/PGpL8NMQ4NB5Obn14OAaHN+x1Rzx5K/JkyNPXcE
+         HiMfpc3de8Rl4/4gPJpFqZ4q7hkRjBTz/mdD+aASfNZJFN8ebVyxrf1GhKCoG8R7oYrd
+         cuu1p96AKzk8kJaQC+u/iT2amdcpjcE+YsDHuHCsqaVbZsVVSWou4p7RGHnbFoLq2Ycd
+         m0CdtZPKpSJHDBxoBwHc9LbrrW/yf6URDVgWqBt4KPTEF8a+qOsfohgb0/m0pfc7fj4q
+         MKBP+q6DT12l0wFdBAx2BnrRvQekcLGR84iTyC+fbKUK+735T551IDc4Lxn+Ye7hJ4YP
+         vCww==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Dzie=C5=84 dobry,
+Hi,
+I have a DPDK application holding some ports, and I want to have a
+virtio_user port to interface with the kernel stack, For example, I
+want to use tcpdump on a virtual interface. So I understand I need to
+create a netlink listener which I did. And using some print statements
+I am getting a packet on the netlink port when I try to use tcpdump on
+the virtual interface.
+My problem is that I can't figure out how to parse the packet. For
+example I expect that calling TCP dump should trigger a packet to set
+a promiscuous flag, and stopping tcpdump should trigger a packet to
+disable promiscuous mode.
 
-chcia=C5=82bym zaproponowa=C4=87 wst=C4=99pn=C4=85 rozmow=C4=99 na temat =
-wsp=C3=B3=C5=82pracy z Pa=C5=84stwem.
+Currently from the example here:
+git.netfilter.org/libmnl/tree/examples/rtnl/rtnl-link-event.c
+I have a parser.
+But this doesn't give any information. Any help on how to understand
+this packet would be appreciated. I thought as there is a next
+attribute and maybe nested attributes if I kept getting the next
+attribute I might get to the promiscuous flag (30), but I am printing
+like 100 of those per packet. And from what I read the payload also
+has attributes. This might be a stupid question but any help on
+understanding this would be appreciated.
 
-Zapewniamy wirtualny system telefoniczny, kt=C3=B3ry usprawnia kontakt z =
-Klientami, jednocze=C5=9Bnie redukuj=C4=85c koszty rozm=C3=B3w telefonicz=
-nych.
-
-Nasza autorska platforma, z kt=C3=B3rej korzysta ju=C5=BC ponad 2500 firm=
-, pozwala przyj=C4=85=C4=87 100% zg=C5=82osze=C5=84 od klient=C3=B3w z ba=
-rdzo wielu kana=C5=82=C3=B3w - telefon, e-mail, sms, czat czy formularzy =
-do zamawiania rozm=C3=B3w telefonicznych bezpo=C5=9Brednio ze strony www.=
-=20
-
-Ch=C4=99tnie zaprezentuj=C4=99 Pa=C5=84stwu rezultaty, jakie mogliby=C5=9B=
-cie osi=C4=85gn=C4=85=C4=87. Mo=C5=BCemy porozmawia=C4=87?
-
-
-Pozdrawiam
-Grzegorz Larek
+I tried to attach snippets of code but the mail system seems to have blocked it.
