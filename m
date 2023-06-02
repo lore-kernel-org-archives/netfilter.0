@@ -1,45 +1,77 @@
-From: "Schewe, Jon     RTX" <jon.schewe@rtx.com>
-Subject: Filter access to user process sockets
-Date: Tue, 30 May 2023 18:21:01 +0000
-Message-ID: <105d714b9a754c4c81063a614ad19517@PH1P110MB1148.NAMP110.PROD.OUTLOOK.COM>
+From: Daniel <tech@tootai.net>
+Subject: nftables mark - tshark show [Frame is marked: False]
+Date: Fri, 2 Jun 2023 18:47:28 +0200
+Message-ID: <a06475d5-848c-188f-0ea9-549655c0a9f9@tootai.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rtx.com; h=from : to : subject :
- date : message-id : content-type : content-transfer-encoding :
- mime-version; s=POD2020; bh=EAPMw+5Y2561NuK+/+xjpASvckzl1vE7ZpKgdmtnDQ0=;
- b=ehZ7F9ZZ2RAcYJQGMku53v98S4eNRtoIfmokTGesz3iMAWqwOrM0vkiNrWkXXvUwPK+3
- +BWv42Vatim/6cuoXwqm4z73akmb+1r8ox5JpueLzGHS2tns85YOKjcu8jPmv6Op4xug
- JV35pgV9+nb9cIHrkc2gvCtqZcBLpWrdWI9N99Jws5TYK9IodO7C8RoH6fAlLDHUI8xn
- eMx/zZ0whTM0JtY1jcVEzV54O1UcGBnp1Qsf3VuFhKq89u/lRgOMhxGp7sodkBpuYb8p
- VIaQJK2UhUL1z2c5zYJYzSTmpBv4ZZ7B3xUV+92IVlYoQ/iv4JLsiymWcM7FWfbVs+79 Sg== 
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=rtxusers.onmicrosoft.us; s=selector1-rtxusers-onmicrosoft-us;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EAPMw+5Y2561NuK+/+xjpASvckzl1vE7ZpKgdmtnDQ0=;
- b=hSMW4rD0ITA7xbRY4nNPEWFhIDd8Kqi9sy/dPQddTcCqgAkk+lRazejN6oV+GK3TGXKfVGe/1alRrGAbeRR6ZwAsi+T5hhIroLeZ3NCjkTlYWFOy14y41mpZg+KzfOSa0r+WWvU7fWt863UU14eYgyBo9480BmxsyLqQmouyVsk=
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
+        t=1685724449; bh=Xd06ytiA+taZVKZPOfkiPYd+QdQn6uaNIB00h5tBTpg=;
+        h=Date:To:From:Subject:From;
+        b=hrPlJ90WsUbHiUlDOTaesrW7wwi8jY1i+crnSLwly2y9yxWvBXG2uUOtqCr6TmWw2
+         filj7UnFk8ai8i/yAk4oyrWDyw5LpCFtkPtFzTzyCWMXGjPkL405GLVbn3rCYkI0c+
+         QNArHVESbZiBvLIbOMfsIFEOHCN0Z0yW9EU1NFTk=
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
+        t=1685724449; bh=Xd06ytiA+taZVKZPOfkiPYd+QdQn6uaNIB00h5tBTpg=;
+        h=Date:To:From:Subject:From;
+        b=hrPlJ90WsUbHiUlDOTaesrW7wwi8jY1i+crnSLwly2y9yxWvBXG2uUOtqCr6TmWw2
+         filj7UnFk8ai8i/yAk4oyrWDyw5LpCFtkPtFzTzyCWMXGjPkL405GLVbn3rCYkI0c+
+         QNArHVESbZiBvLIbOMfsIFEOHCN0Z0yW9EU1NFTk=
+Content-Language: fr-FR
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-I have recently learned about using "meta skgid" and "meta skuid" to limit =
-network access based on primary group and user id. I would like to ensure t=
-hat a user can only connect to sockets where the uid of the running process=
- matches that user. =0A=
-=0A=
-Example:=0A=
-User A starts web server process on port 8000 in 1 shell=0A=
-User A logs into the same host in another shell. Processes running in this =
-shell should be able to access localhost:8000=0A=
-User B logs into the same host . Processes running in this shell should be =
-denied access to localhost:8000.=0A=
-=0A=
-Ideally I'd like to allow the users access to certain common ports under 10=
-24 and any local ports that they create processes on themselves.=0A=
-=0A=
-Is this something that netfilter can provide? =0A=
-=0A=
-Thank you for your time=0A=
-Jon Schewe=0A=
-=0A=
+Hi.
+
+I try on Debian 11/nftables v0.9.8 (E.D.S.) following setup for ipv6, 
+nftrace being activated.
+
+Traffic coming on wireguard IF fo IP 2001:xxxx::5870/128 should go out 
+through the wireguard IF, other traffic using default gw.
+
+main and default IF=enp35s0
+wireguard if=wig0
+
+On incoming packet, in table mangle
+
+chain INPUT {
+    type filter hook input priority mangle; policy accept;
+    meta mark set ct mark
+    mark != 0x0 accept
+    iif "wig0" ip6 daddr { 2001:67c:1298::/48 } meta mark set 0x100 ct 
+mark set meta mark
+}
+
+following nftrace I see that incoming packets are going till
+
+trace id dc77c61b ip6 filter INPUT packet: iif "wig0" ip6 saddr 
+2001:yyyy::24 ip6 daddr 2001:xxxx::5870 ip6 dscp cs0 ip6 ecn not-ect ip6 
+hoplimit
+  6 ip6 flowlabel 729556 ip6 length 24 icmpv6 type echo-request icmpv6 
+code no-route icmpv6 parameter-problem 772505885 @th,64,96 0 
+
+trace id dc77c61b ip6 filter INPUT rule meta mark 0x00000100 accept 
+(verdict accept)
+
+First problem, a tshark capture shows [Frame is marked: False]: 
+shouldn't this frame marked as 0x00000100 as shown per nft trace ?
+
+Second: I add a table in rt_tables and did
+#ip -6 rule add from all table <mytable>
+#ip -6 route add default via <mygw> dev wig0
+#ip -6 route flush cache
+
+Output
+#ip -6 rule sh
+0:      from all lookup local
+32765:  from all fwmark 0x100 lookup <mytable>
+32766:  from all lookup main
+
+but my packet are still going out using enp35s0 as default route. What 
+am I missing knowing that ct established,related is setted in nftables 
+rules.
+
+Thanks for any hint
+-- 
+Daniel
