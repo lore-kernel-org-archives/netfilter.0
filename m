@@ -1,77 +1,49 @@
-From: Daniel <tech@tootai.net>
-Subject: nftables mark - tshark show [Frame is marked: False]
-Date: Fri, 2 Jun 2023 18:47:28 +0200
-Message-ID: <a06475d5-848c-188f-0ea9-549655c0a9f9@tootai.net>
+From: "Leos Sladek" <leos.sladek@paretdee.com>
+Subject: =?UTF-8?Q?Fotovoltaick=C3=A9_rozvodnice?=
+Date: Mon,  5 Jun 2023 07:30:43 GMT
+Message-ID: <20230605064520-0.1.6h.d8r4.0.cuhb5scwkd@paretdee.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1685724449; bh=Xd06ytiA+taZVKZPOfkiPYd+QdQn6uaNIB00h5tBTpg=;
-        h=Date:To:From:Subject:From;
-        b=hrPlJ90WsUbHiUlDOTaesrW7wwi8jY1i+crnSLwly2y9yxWvBXG2uUOtqCr6TmWw2
-         filj7UnFk8ai8i/yAk4oyrWDyw5LpCFtkPtFzTzyCWMXGjPkL405GLVbn3rCYkI0c+
-         QNArHVESbZiBvLIbOMfsIFEOHCN0Z0yW9EU1NFTk=
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1685724449; bh=Xd06ytiA+taZVKZPOfkiPYd+QdQn6uaNIB00h5tBTpg=;
-        h=Date:To:From:Subject:From;
-        b=hrPlJ90WsUbHiUlDOTaesrW7wwi8jY1i+crnSLwly2y9yxWvBXG2uUOtqCr6TmWw2
-         filj7UnFk8ai8i/yAk4oyrWDyw5LpCFtkPtFzTzyCWMXGjPkL405GLVbn3rCYkI0c+
-         QNArHVESbZiBvLIbOMfsIFEOHCN0Z0yW9EU1NFTk=
-Content-Language: fr-FR
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=paretdee.com; s=mail;
+        t=1685950262; bh=YtPWhpqttWkror/OXW+RT7d5qvBhyF8jxaFrqRhKfz8=;
+        h=Date:From:To:Subject:From;
+        b=WdgyHQsp0YH3luT3aqVbneuuakcOiyi+hYxuk9Qhtln7SD3NTTpzgm0+NZg4iM0t4
+         vnrNHAGnvHOl7+uF8izA+jFOlgWLOmQmusy//RZZ1aq2Ulk4mrP+m3u4v3qtdr6hxZ
+         mJesi4+qiO2HziTneE+SN5aKQP9lIYN9RtwHexbpzqkHCTTmq6oopY8nKEQMGLIMKi
+         /5D25aBuksTPDHLb7EiwAS20XqkvFoBmapi3rqwyD8SYVCh7P4iVXzuinNWiNswYuO
+         2oEQJRCr/JeoziLclGXcv9aUW3s95ej8y0thVztCkrlybvt+mOLf5d5qPuocb1TPsw
+         7KRaamCfaYpaA==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="utf-8"
 To: netfilter@vger.kernel.org
 
-Hi.
+Dobr=C3=BD den,
 
-I try on Debian 11/nftables v0.9.8 (E.D.S.) following setup for ipv6, 
-nftrace being activated.
+obrac=C3=ADm se na V=C3=A1s jm=C3=A9nem dlouholet=C3=A9ho v=C3=BDrobce fo=
+tovoltaick=C3=BDch rozvodnic ur=C4=8Den=C3=BDch pro
+soukrom=C3=A9 i pr=C5=AFmyslov=C3=A9 pou=C5=BEit=C3=AD.
 
-Traffic coming on wireguard IF fo IP 2001:xxxx::5870/128 should go out 
-through the wireguard IF, other traffic using default gw.
+Dod=C3=A1v=C3=A1me fotovoltaick=C3=A9 rozvodnice na zak=C3=A1zku a jsme s=
+chopni realizovat i ty nejn=C3=A1ro=C4=8Dn=C4=9Bj=C5=A1=C3=AD
+po=C5=BEadavky instala=C4=8Dn=C3=ADch firem, velkoobchod=C5=AF a distribu=
+tor=C5=AF.
 
-main and default IF=enp35s0
-wireguard if=wig0
+Vyu=C5=BE=C3=ADv=C3=A1me nejkvalitn=C4=9Bj=C5=A1=C3=AD komponenty a mater=
+i=C3=A1ly, =C4=8D=C3=ADm=C5=BE dosahujeme vy=C5=A1=C5=A1=C3=AD odolnost, =
+stabilitu
+provozu a ochranu proti vod=C4=9B, vlku, prachu a n=C3=A1raz=C5=AFm.
 
-On incoming packet, in table mangle
+V na=C5=A1em sortimentu jsou tak=C3=A9 omezova=C4=8De p=C5=99ep=C4=9Bt=C3=
+=AD AC/DC, kter=C3=A9 zaji=C5=A1=C5=A5uj=C3=AD ochranu
+fotovoltaick=C3=BDch nap=C3=A1jec=C3=ADch instalac=C3=AD p=C5=99ed negati=
+vn=C3=ADmi efekty p=C5=99ep=C4=9Bt=C3=AD a chr=C3=A1n=C3=AD za=C5=99=C3=AD=
+zen=C3=AD p=C5=99ed
+efekty p=C5=AFsoben=C3=AD p=C5=99ep=C4=9Bt=C3=AD a bleskov=C3=BDch proud=C5=
+=AF.
 
-chain INPUT {
-    type filter hook input priority mangle; policy accept;
-    meta mark set ct mark
-    mark != 0x0 accept
-    iif "wig0" ip6 daddr { 2001:67c:1298::/48 } meta mark set 0x100 ct 
-mark set meta mark
-}
+Chcete si vyzkou=C5=A1et na=C5=A1e =C5=99e=C5=A1en=C3=AD?
 
-following nftrace I see that incoming packets are going till
 
-trace id dc77c61b ip6 filter INPUT packet: iif "wig0" ip6 saddr 
-2001:yyyy::24 ip6 daddr 2001:xxxx::5870 ip6 dscp cs0 ip6 ecn not-ect ip6 
-hoplimit
-  6 ip6 flowlabel 729556 ip6 length 24 icmpv6 type echo-request icmpv6 
-code no-route icmpv6 parameter-problem 772505885 @th,64,96 0 
-
-trace id dc77c61b ip6 filter INPUT rule meta mark 0x00000100 accept 
-(verdict accept)
-
-First problem, a tshark capture shows [Frame is marked: False]: 
-shouldn't this frame marked as 0x00000100 as shown per nft trace ?
-
-Second: I add a table in rt_tables and did
-#ip -6 rule add from all table <mytable>
-#ip -6 route add default via <mygw> dev wig0
-#ip -6 route flush cache
-
-Output
-#ip -6 rule sh
-0:      from all lookup local
-32765:  from all fwmark 0x100 lookup <mytable>
-32766:  from all lookup main
-
-but my packet are still going out using enp35s0 as default route. What 
-am I missing knowing that ct established,related is setted in nftables 
-rules.
-
-Thanks for any hint
--- 
-Daniel
+S pozdravem
+Leos Sladek
