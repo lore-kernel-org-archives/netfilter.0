@@ -1,22 +1,22 @@
-From: Daniel <tech@tootai.net>
+From: Daniel <33.368460088@tootai.net>
 Subject: nftables 0.9.8 - unknown rule handle
-Date: Tue, 6 Jun 2023 12:30:36 +0200
-Message-ID: <06d3308e-1fc8-95d6-692e-5794fc83f564@tootai.net>
+Date: Tue, 6 Jun 2023 12:30:06 +0200
+Message-ID: <1ab13330-2469-adf1-89cb-96bb17c576d6@tootai.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1686047437; bh=EJWZRCTXGhYPmb4kIlaX2Qh2D/oazXBGIVYugpQ3WUk=;
-        h=Date:From:Subject:To:From;
-        b=pO43puKjx+QWrF3kYXH2gmpygaT8XrukwNFDIKpkQVX8eqbmkKxQMGJJi6aQylwAc
-         9Nz1WyZAclCGDZ4i23mXiCXtdOX7ESn1knvkQ+9av8gpf8eD7zR0wOJa1aPgnIbehw
-         JiEWVIQEnZsLejWLjuUGX89QB6wXsqVzdXQ43Sls=
+        t=1686047407; bh=BHCba9iHxUnFN66MdzSqlgg2aFVEV+OxckgmYu2dXd0=;
+        h=Date:To:From:Subject:From;
+        b=KaDuIfsEnQ2wqo9DgpnvhlZj2mcFVZA93aJdW9V/6oEE03+t5vaia+hW6zYClAmFy
+         uccYrW9+DYGJq33Om5ZJuGax0rrdL6TzwKhU6Cuw4LVkTjk4+XAIvdquX++rCjP2TC
+         fq+a0j0PNnGyu4n+t7xISoX00hKiDixBYMMmT6vw=
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1686047437; bh=EJWZRCTXGhYPmb4kIlaX2Qh2D/oazXBGIVYugpQ3WUk=;
-        h=Date:From:Subject:To:From;
-        b=pO43puKjx+QWrF3kYXH2gmpygaT8XrukwNFDIKpkQVX8eqbmkKxQMGJJi6aQylwAc
-         9Nz1WyZAclCGDZ4i23mXiCXtdOX7ESn1knvkQ+9av8gpf8eD7zR0wOJa1aPgnIbehw
-         JiEWVIQEnZsLejWLjuUGX89QB6wXsqVzdXQ43Sls=
+        t=1686047407; bh=BHCba9iHxUnFN66MdzSqlgg2aFVEV+OxckgmYu2dXd0=;
+        h=Date:To:From:Subject:From;
+        b=KaDuIfsEnQ2wqo9DgpnvhlZj2mcFVZA93aJdW9V/6oEE03+t5vaia+hW6zYClAmFy
+         uccYrW9+DYGJq33Om5ZJuGax0rrdL6TzwKhU6Cuw4LVkTjk4+XAIvdquX++rCjP2TC
+         fq+a0j0PNnGyu4n+t7xISoX00hKiDixBYMMmT6vw=
 Content-Language: fr-FR
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
@@ -76,8 +76,3 @@ aso.
 What's going on here ?
 -- 
 Daniel
-
--- 
-Daniel Huhardeaux
-+33.368460088@tootai.net	      sip:820@sip.tootai.net
-+41.445532125@swiss-itech.ch		    tootaiNET
