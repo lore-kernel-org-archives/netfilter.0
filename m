@@ -1,78 +1,41 @@
-From: Daniel <33.368460088@tootai.net>
-Subject: nftables 0.9.8 - unknown rule handle
-Date: Tue, 6 Jun 2023 12:30:06 +0200
-Message-ID: <1ab13330-2469-adf1-89cb-96bb17c576d6@tootai.net>
+From: Tushar Shinde <mtk.tushar@gmail.com>
+Subject: nftables: How to stop further chain traversal after accept verdict
+Date: Tue, 6 Jun 2023 21:09:32 +0530
+Message-ID: <CABQpAL4Me34uEDnOi9t=98w+qnGKw6Op+f+XTB9by1uTdv3iUA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1686047407; bh=BHCba9iHxUnFN66MdzSqlgg2aFVEV+OxckgmYu2dXd0=;
-        h=Date:To:From:Subject:From;
-        b=KaDuIfsEnQ2wqo9DgpnvhlZj2mcFVZA93aJdW9V/6oEE03+t5vaia+hW6zYClAmFy
-         uccYrW9+DYGJq33Om5ZJuGax0rrdL6TzwKhU6Cuw4LVkTjk4+XAIvdquX++rCjP2TC
-         fq+a0j0PNnGyu4n+t7xISoX00hKiDixBYMMmT6vw=
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1686047407; bh=BHCba9iHxUnFN66MdzSqlgg2aFVEV+OxckgmYu2dXd0=;
-        h=Date:To:From:Subject:From;
-        b=KaDuIfsEnQ2wqo9DgpnvhlZj2mcFVZA93aJdW9V/6oEE03+t5vaia+hW6zYClAmFy
-         uccYrW9+DYGJq33Om5ZJuGax0rrdL6TzwKhU6Cuw4LVkTjk4+XAIvdquX++rCjP2TC
-         fq+a0j0PNnGyu4n+t7xISoX00hKiDixBYMMmT6vw=
-Content-Language: fr-FR
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20221208; t=1686065984; x=1688657984;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=48Mtm1h5SiSeKPEGR6COTqAY25QVaYAy1qamxwalL48=;
+        b=ARUkahUnpnNzr6QC/rvHn+nCGIrt1pzfmznwUyGM0bTeU6hW8OS3RBSjMI91mXdoF+
+         L8beYlusZX3ui29ERRL/7CMk1TZ0tt2Bsdb/vJOAMV5Aqw8Qi8mJHCR15d2qx4MlsVmU
+         23rbCXtUzFA3659kvevbweDL4dLFCH2yFwNZ7a99JiH50myICoEujOrtdu4lN91QkSg6
+         vmCiZNNdE3jMVmPqRnHS5UA5EDb2u1ixccQq67iyiAj+IGspZEWZbS+/3pRLQFsrjp8O
+         Peq2WriAoNEffvMqXwoquwP9SoIvAxh4JKwq8jXAiwamTOXA0LXC+FSdnouaGUPZHY/g
+         MfuA==
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
 Hi,
 
-I face the above failure on mark rules. Ex:
+I have asked the same question to super users. But I looks like I need
+help from experts.
 
-chain TRACE_IN { # handle 6
-  type filter hook prerouting priority -500; policy accept;
-  iif "wig0" ip6 daddr fd99:a:b:98:10::ff1 meta nftrace set 1 # handle 7
-}
+https://superuser.com/questions/1787416/nftables-how-to-stop-further-chain-traversal-after-accept-verdict
 
-chain TRACE_OUT { # handle 8
-  type route hook output priority -500; policy accept;
-  oif "lan" ip6 saddr fd99:a:b:98:10::ff1 meta nftrace set 1 # handle 9
-}
+Question is, If there are multiple tables (possibly owned by multiple
+teams/projects ), if a rule is accepted by one of the tables in the
+chain, how to stop looking into the next high priority chain. Right
+now my observation is ACCEPT just stops processing the current chain
+and jump to next table. If this is last table then only ACCEPT will
+work, otherwise this ACCEPT is useless.
+Logs are on SU post.
 
-nft monitor shows
+Kindly correct me if I am wrong.
 
-trace id b606126c ip6 mangle TRACE_IN unknown rule handle 7 (verdict 
-continue)
-trace id b606126c ip6 mangle TRACE_IN verdict continue
-trace id b606126c ip6 mangle TRACE_IN policy accept
-
-trace id a7b94fc8 ip6 mangle TRACE_OUT packet: oif "lan" ip6 saddr 
-fd99:a:b:98:10::ff1 ip6 daddr 2001:db8:c:b::1 ip6 dscp cs0 ip6 ecn 
-not-ect ip6 hoplimit 64 ip6 flowlabel 283281 ip6 length 40 tcp sport 
-5555 tcp dport 34618 tcp flags == 0x12 tcp window 65320
-trace id a7b94fc8 ip6 mangle TRACE_OUT unknown rule handle 9 (verdict 
-continue)
-trace id a7b94fc8 ip6 mangle TRACE_OUT verdict continue
-trace id a7b94fc8 ip6 mangle TRACE_OUT policy accept
-
-I have this behavior also on all mark rules, ex:
-
-chain output { # handle 2
-  type route hook output priority mangle; policy accept;
-  oif "lan" ip6 saddr fd99:a:b:98:10::ff1 meta mark set 0x00000100 ct 
-mark set meta mark accept # handle 11
-  oif "lan" meta mark set 0x00000000 ct mark set meta mark # handle 13
-}
-
-trace id a7b94fc8 ip6 mangle output unknown rule handle 11 (verdict accept)
-
-chain postrouting { # handle 5
-  type filter hook postrouting priority mangle; policy accept;
-  meta mark 0x00000100 accept # handle 12
-}
-
-trace id a7b94fc8 ip6 mangle postrouting unknown rule handle 12 (verdict 
-accept)
-
-aso.
-
-What's going on here ?
--- 
-Daniel
+Thank you,
+Tushar.
