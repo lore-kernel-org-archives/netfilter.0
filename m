@@ -1,68 +1,69 @@
-From: Reindl Harald <h.reindl@thelounge.net>
-Subject: Re: nftables: How to stop further chain traversal after accept
- verdict
-Date: Wed, 7 Jun 2023 14:57:26 +0200
-Message-ID: <a9b8cd69-bbb8-4466-7bfc-61d1263442ee@thelounge.net>
-References: <CABQpAL4Me34uEDnOi9t=98w+qnGKw6Op+f+XTB9by1uTdv3iUA@mail.gmail.com>
- <4e78b0e0-0e40-4b6e-b886-168f3b64d30e@at.encryp.ch>
- <CABQpAL50eaRfRsdNON3r3hNqEafJE7KdRYC8z3YM4LPu7NHc2g@mail.gmail.com>
+From: Kerin Millar <kfm@plushkava.net>
+Subject: Re: IPv4 Evil Bit
+Date: Wed, 7 Jun 2023 14:30:19 +0100
+Message-ID: <20230607143019.65e7f5ec1a21db391071a4d4@plushkava.net>
+References: <20230607131743.309d5aff@parrot>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
-In-Reply-To: <CABQpAL50eaRfRsdNON3r3hNqEafJE7KdRYC8z3YM4LPu7NHc2g@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+         h=cc:cc:content-transfer-encoding:content-type:content-type
+        :date:date:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to;
+         s=fm2; t=1686144621; x=1686231021; bh=WIrNIH1GOnOKrk4+TwobrEZn1
+        YPp8pLTFhxijNhNBoI=; b=fF6VvXr0rsQm9xPDVwtw2ciJ5yRPbgBnLFw8zLs7K
+        040z8fxFG1L8wGN8eOPipL1lfWIr7omDWOjbxIPAMhFMNqu1YUxxc8ZOLhQsTYSv
+        aDHO9g/pisGtRgEV1RnVYiYfjh8gZGf/+S7QF3oEidFzjJfe42SA8N/taj4wvIFA
+        H4Vgv3K5xojmGDBZU9UxIj7l75kKG6m+tiB1z2l8rHnL8ykrT6KnmugIrPxO+7uI
+        xs0mJuzb3AkyMw8Ai07J1597aGAvLDmAOZzbM3jq8iwj+LZv37rgIyZ7E0g9vgRN
+        WzP5oyYprSb+V7LsI/NF+lWkiV73nBo2O3SSeUv320vNA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+        1686144621; x=1686231021; bh=WIrNIH1GOnOKrk4+TwobrEZn1YPp8pLTFhx
+        ijNhNBoI=; b=r/+I1vrFu9ZaEl4iF9Ei9kyJw5re1cTDbkwvkTVowhqEtLvywFU
+        6TJxz5IxBaLaiSjQhx4QOxKFbm6l0Q5idSlXzdHw7TkrVqbuHqhW6NasgAJWgTLe
+        HEvHzX09I1gfV8Iv91Jeo9sx/IZDdngH+Ttt73tPUwxcfSRwtMK9JCFRFs3pM+cK
+        GLTS82v6KCii44JNCfUIvKlUBr/hAdBA2RJ6q1GjbC5UCNaPLGX/VwVH1QtD5aTX
+        CqUzK6QnTGfW2LXqrmrywlxkfDSnUX68+4sG2Q4MuRk9GhsQVLmYUlbRUdBXuLje
+        OeRrLIbKoRqvRoEkq+exXZCxERj0HALN9+A==
+In-Reply-To: <20230607131743.309d5aff@parrot>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"; format="flowed"
-To: Tushar Shinde <mtk.tushar@gmail.com>, seentr@at.encryp.ch
+Content-Type: text/plain; charset="iso-8859-1"
+To: Marek =?ISO-8859-1?Q?K=FCthe?= <m-k-mailling-list@mk16.de>
 Cc: netfilter@vger.kernel.org
 
+On Wed, 7 Jun 2023 13:17:43 +0200
+Marek K=FCthe <m-k-mailling-list@mk16.de> wrote:
 
+> Hello,
+>=20
+> I hope I am in the right place. I have two questions about nftables:
+>=20
+> 1) Is it possible to perform OR operations in nftables? For example
+> `ip6 saddr ::/128 OR ip saddr 127.0.0.1/8 accept;` As far as I
+> understand it, everything else is concatenated with AND.
 
-Am 07.06.23 um 13:15 schrieb Tushar Shinde:
-> What is use of table chains if they are not decision makers in accept cas=
-e?
-> We mostly know what to accept and deny everything else. Is this cannot
-> be done with nftables?
+No. Nor would a set suffice, as ipv4_addr and ipv6_addr elements cannot be =
+mixed.
 
-exactly the same as in iptables for example PREROUTING it don't matter=20
-if you have a ACCEPT rule or nothing matches which would DROP a packet -=20
-default policy is ACCEPT
+>=20
+> 2) I want to see how many IPv4 packets I can get with the Evil Bit
+> (RFC3514). Since there seems to be no native function for this in
+> nftables, I seem to have to use raw payload expression. So I have
+> set up the following:
+>=20
+> @th,6,1 & 0x80 =3D 0x80 \
+>     log prefix "[nftables] Evil bit: " counter reject;
+>=20
+> However, `Error: syntax error, unexpected '=3D'` appears. What is the
+> reason for this? How can I formulate this expression correctly?
 
-but just because it passed PREROUTING/MANGLE/RAW by ACCEPT it there=20
-don't mean you want to accept the package in FORWARD/INPUT chains
+Try @nh,48,8 & 0x80 =3D=3D 0x80. The offset and length values are expressed=
+ in bits, not bytes.
 
-that's the whole point of chains at all
-
-Chain PREROUTING (policy ACCEPT 64M packets, 4408M bytes)
-num   pkts bytes target     prot opt in     out     source=20
-destination
-1     799M  827G ACCEPT     all  --  *      *       0.0.0.0/0=20
-0.0.0.0/0            ctstate RELATED,ESTABLISHED
-2      44M 2500M INBOUND    all  --  wan    *       0.0.0.0/0=20
-0.0.0.0/0            ! match-set EXCLUDES_IPV4 src
-
-> On Tue, Jun 6, 2023 at 9:29=E2=80=AFPM <seentr@at.encryp.ch> wrote:
->>
->> You can try to set mark as well as accept them. This way you will be abl=
-e to determine in the following chains that some of previous ones had accep=
-ted it.
->>
->> 2023-06-06T15:40:03Z Tushar Shinde <mtk.tushar@gmail.com>:
->>
->>> Hi,
->>>
->>> I have asked the same question to super users. But I looks like I need
->>> help from experts.
->>>
->>> https://superuser.com/questions/1787416/nftables-how-to-stop-further-ch=
-ain-traversal-after-accept-verdict
->>>
->>> Question is, If there are multiple tables (possibly owned by multiple
->>> teams/projects ), if a rule is accepted by one of the tables in the
->>> chain, how to stop looking into the next high priority chain. Right
->>> now my observation is ACCEPT just stops processing the current chain
->>> and jump to next table. If this is last table then only ACCEPT will
->>> work, otherwise this ACCEPT is useless.
->>> Logs are on SU post.
->>>
->>> Kindly correct me if I am wrong.
+--=20
+Kerin Millar
