@@ -1,60 +1,110 @@
-From: Kerin Millar <kfm@plushkava.net>
-Subject: Re: IPv4 Evil Bit
-Date: Thu, 8 Jun 2023 09:07:33 +0100
-Message-ID: <20230608090733.5d106bee71a9b944e9444e6b@plushkava.net>
-References: <20230607131743.309d5aff@parrot>
-        <CAPJdpdCeuST=ac0K5oQQq=THOPZqnXESQivLqMK0yDRfq3ZeoA@mail.gmail.com>
-        <20230608095839.076d212d@parrot>
+From: Wojciech Wrona <w0jtas@w0jtas.com>
+Subject: HW Offload to Mellanox ConnectX-5
+Date: Thu, 8 Jun 2023 11:39:16 +0200
+Message-ID: <fb4a4aa4-d0b0-c61d-697a-462020138eed@w0jtas.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-         h=cc:cc:content-transfer-encoding:content-type:content-type
-        :date:date:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to;
-         s=fm2; t=1686211655; x=1686298055; bh=0Rl3CJ0WeQNIyjnPxiEpe1J8H
-        0MjhcLsAY6UCyTe720=; b=I7VgrFXaVjIXFkt/hz9kLGXWE5ZNYM7P2ml3rD2J/
-        AFiKkLYVfye7P89iR97oMSeRQT2mLXw30YyZKUiVm9BnNa20QAr9vZB50K4If3tz
-        lInrgAEJ3L9rqsfLJZc/Goju8YH9C9iNQCJA6Fjwfc8ERXnr/H2k71l3Q5HXJz+2
-        w9N0YlqFBjT1aEaIxSqpAwOW9NPHzSqaEGTeU6fy/MuTsPx+mQlMzvfxi1cBMZhk
-        joiwtY0YWpdHD3PsZ2GfXZOwC+CXGwoUONbk5XOdymoXZgzGt2r4/4nbqHlmH8kH
-        qWgLTEST50zI2Jrn2rdB639DNbI2N2M4CkswCxUQxSVkQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-        1686211655; x=1686298055; bh=0Rl3CJ0WeQNIyjnPxiEpe1J8H0MjhcLsAY6
-        UCyTe720=; b=AEZ6ABqbgpjoxkVMa3zCLcFPYSj6hMoaZ7MPxDVDu8y2x3vY97V
-        ylqJM1Nxhw3DBNWZIw2hOv5fHSGkGoZJT3ufzYSKtmtj9ogo7z0PyxhtfvKVpH45
-        VYLLBEd/Ww4M0u79aRV/lKvUtGC3/UCXAR3Ba1x2FC4zp/oCmSiS23rxTN1Xw6OJ
-        L19paQXT2uH8YFBsa4OYeP+1/1AHm9SaiOYi1dreFQK4Nc0lseMevCyPo1W05tVP
-        hMurClbH6Q+cFZEYDDj6Q7PkKN75WYXZHAosBEiaqn1PBfiyQq56jzC4X+ukBAWi
-        H7VHBP/21uD8y0me62ZiNNC0s+vhJyRbiVQ==
-In-Reply-To: <20230608095839.076d212d@parrot>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=w0jtas.com; s=keyb;
+        t=1686217156; bh=KNtJ4Hi7JnAtm8Y0VOkc8a/5vVGoGbuB1DPbUkbdX+o=;
+        h=To:From:Subject:Date:From;
+        b=m4GGugDnTeXoopOr7W4nwW9WvfQeLtm/0drYUR4RnKiWCgrRexxH2feFcm3wgSD/o
+         Q7C+RDhyQcrJtNionlzd1p10oQ0TlqRRxhZZTJ6US+PNne07iTCxGLB92L1iUAkIKn
+         xAE0KFYOkxL8koWqrcG+wJcCEfZZDmgtzxetBhhvcTz1XMX/1t66GbniMg5HG1aG+O
+         R6WDWIPzE4VRsdWR9LcqfhoUHXkZy+Ox7dYGhZ5YwHnDpzSUquE6tUYYeLeSpISxRP
+         HSLIN+BGjz0fu9dBKpT4fDKpmSO6uEDyGOQkOOH65yNic9g/O6SGbMhdGKYTdTzaZY
+         BOUlUSCWaA9lQ==
+Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="utf-8"
 To: netfilter@vger.kernel.org
-Cc: Marek =?ISO-8859-1?Q?K=FCthe?= <m-k-mailling-list@mk16.de>, Paul Robert Marino <prmarino1@gmail.com>
 
-On Thu, 8 Jun 2023 09:58:39 +0200
-Marek K=FCthe <m-k-mailling-list@mk16.de> wrote:
+Hi, everyone. I'm having problems running nftables with hardware
+offload. Every time keyword "flags offload" is added to flowtable
+definition i get "Could not process rule: Operation not supported". For
+now tried everything, i feel like nothing left to check, can anyone
+point me the way ?
 
-> On Wed, 7 Jun 2023 10:38:23 -0400
-> Paul Robert Marino <prmarino1@gmail.com> wrote:
->=20
-> > Answering the first question i think you may be looking for sets
-> > https://wiki.nftables.org/wiki-nftables/index.php/Sets
->=20
-> Thanks for the answer. Is there a possibility to combine sets (i.e. to
-> perform a kind of merge)?
-> iifname @dnet_interfaces oifname {
-> @client_interfaces, @dnet_interfaces } goto dnet_forward;
+*My Config:*
+OS: Ubuntu 20.04.6 LTS
 
-Named sets cannot be aggregated. This can only be accomplished with symboli=
-c variables those values define anonymous sets. See https://bugzilla.netfil=
-ter.org/show_bug.cgi?id=3D1539#c6 for an example.
+Kernel: 5.15.0-73-generic #80~20.04.1-Ubuntu SMP Wed May 17 14:58:14 UTC
+2023 x86_64 x86_64 x86_64 GNU/Linux
 
---=20
-Kerin Millar
+Ethernet controller: Mellanox Technologies MT27800 Family [ConnectX-5]
+(MCX516A-CCAT)
+
+Device driver: mlx5_core
+In fact i tried driver included in kernel and also compiled from sources
+latest 5.8-2.0.3.0 version from Nvidia/Mellanox - same result on both.
+
+root@nat-router2004:~# mlxburn -query -d /dev/mst/mt4119_pciconf0
+-I- Image type:            FS4
+-I- FW Version:            16.35.2000
+-I- FW Release Date:       24.11.2022
+-I- Product Version:       16.35.2000
+-I- Rom Info:              type=UEFI version=14.28.16 cpu=AMD64
+-I-                        type=PXE version=3.6.805 cpu=AMD64
+-I- Description:           UID                GuidsNumber
+-I- Base GUID:             1070fd0300b346d6        8
+-I- Base MAC:              1070fdb346d6            8
+-I- Image VSD:             N/A
+-I- Device VSD:            N/A
+-I- PSID:                  MT_0000000012
+-I- Security Attributes:   N/A
+
+root@nat-router2004:~# ethtool -k eth1 | grep tc-off
+hw-tc-offload: on
+root@nat-router2004:~# ethtool -k eth2 | grep tc-off
+hw-tc-offload: on
+
+root@nat-router2004:~# nft --version
+nftables v1.0.7 (Old Doc Yak)
+*This one was compiled from sources.*
+
+root@nat-router2004:~# conntrack --version
+conntrack v1.4.7 (conntrack-tools)
+*This one was compiled from sources.*
+
+nftables.conf
+#!/usr/local/sbin/nft -f
+
+flush ruleset
+
+table ip filter {
+    flowtable f {
+    hook ingress priority filter; devices = { eth1, eth2 };
+    flags offload;
+    }
+
+    chain input {
+    type filter hook input priority filter; policy drop;
+    ct state { related, established } accept
+    iif "lo" accept
+    iif "eth0" accept
+    ip protocol icmp accept
+    }
+
+    chain forward {
+    type filter hook forward priority filter; policy accept;
+    ip protocol { tcp, udp } flow add @f
+    }
+
+    chain output {
+    type filter hook output priority filter; policy accept;
+    }
+}
+
+When i remove "flags offload" definition from flowtable everything works
+fine, but in "conntrack -L" i see only [OFFLOAD] sign, instead of
+[HW_OFFLOAD].
+
+Anyone managed to force it to work as intended ? I am seeing only same
+kind of questions on different internet maling lists but every subject
+ends without any solution.
+
+Best regards,
+
+-- 
+Wojciech Wrona
+
