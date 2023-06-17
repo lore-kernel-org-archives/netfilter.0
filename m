@@ -1,32 +1,38 @@
-From: public1020 <public1020@proton.me>
-Subject: Modify packet without NAT
-Date: Sat, 17 Jun 2023 03:22:46 +0000
-Message-ID: <GYTTaXkbSkEr3VAyArWUUy2ZOCgqBJ91AiJN2WBVdBUQrUJaHAUkn42u5EVDlPZXwlUJW49u1XMxGnJku_TPIRqLB4KXyBWUsEnw2LWef-k=@proton.me>
+From: Serg <seentr@at.encryp.ch>
+Subject: Re: Modify packet without NAT
+Date: Sat, 17 Jun 2023 11:51:37 +0300
+Message-ID: <7b90de24-a2c9-a007-010d-ec79db65bbe0@at.encryp.ch>
+References: <GYTTaXkbSkEr3VAyArWUUy2ZOCgqBJ91AiJN2WBVdBUQrUJaHAUkn42u5EVDlPZXwlUJW49u1XMxGnJku_TPIRqLB4KXyBWUsEnw2LWef-k=@proton.me>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=protonmail; t=1686972175; x=1687231375;
-        bh=Xo4Cr0GrcoRjdKNRwlRT0efnLHHRoGpqiidgRUcSXsM=;
-        h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-         Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-        b=eI5MBY4qJw+PPh8RWYa1qjDJWZeuTmF3fphcYsa6wQpED5bEeDxeuXmb8fYaiXE2q
-         DuxfwPHU7ZEezCLxhFDktMw2S2eX7b8tWotsBEdWYGwE+q+U8AY4ORaLw19wlaBT87
-         Dj4y4jjDl89xKDCRNNZbxfaKD+O+QTMrVTBVWekQtZps33hqzd7CHMyfdC0C9w6ehi
-         PDNfS1AdyJ1IcZBrz83sIDJHfzbiXd5rJazWoqSoQFpc5SPhk/yrp4bqeiw0KeMrOe
-         ztUQO/ODm2CxXeT3GfUw7JN7iZdFZ+ZBlU83wITM4cWGVbOdAvBkrPbmQU8JIQgVpO
-         b0rANVXnsRquA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=at.encryp.ch;
+        s=flopster; t=1686991898;
+        bh=w47cdz6DHugjFmBOzp3ZPXUvupyfS2Azc+paPkrPodg=;
+        h=Date:Subject:To:References:From:Cc:In-Reply-To;
+        b=IqQaco0v6ogIbUxechvkYjIKo/gyO1rH+v/rp8aDzpnbmENUGQVvT3a2nKSQdWnD3
+         8yNbI2xhkGuv5eFvEq0kA3TpJYBny5ztPDtpDfywp0e0JYctDSbYfrylqK0Vev5Q4v
+         WhtTIDDPJv09dqfMqVyDrvNYz2HsiO2HC+/ottcs=
+In-Reply-To: <GYTTaXkbSkEr3VAyArWUUy2ZOCgqBJ91AiJN2WBVdBUQrUJaHAUkn42u5EVDlPZXwlUJW49u1XMxGnJku_TPIRqLB4KXyBWUsEnw2LWef-k=@proton.me>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Cc: public1020 <public1020@proton.me>
 
-I have a simple nat configuration to forward certain access to a gateway:
+I am aware only about nftables based solution: 
+https://wiki.nftables.org/wiki-nftables/index.php/Mangling_packet_headers
 
-iptables -t nat -A PREROUTING -p tcp -m set --match-set http_port dst,dst -=
-j DNAT --to-destination XXX:80
-iptables -t nat -A POSTROUTING -j MASQUERADE
+As far as I understand, your case uses "http_port" ipset with ports 
+other than 80. In this scenario you will need to listen all required 
+ports on the backend so nftables will just modify src/dst IP addresses 
+accordingly. Otherwise it is impossible to do this conntrackless.
 
-Can I do that without nat? Just trying to avoid the "conntrack table full" =
-issue.
-Is there a non-stateful solution?
-
+On 6/17/23 06:22, public1020 wrote:
+> I have a simple nat configuration to forward certain access to a gateway:
+> 
+> iptables -t nat -A PREROUTING -p tcp -m set --match-set http_port dst,dst -j DNAT --to-destination XXX:80
+> iptables -t nat -A POSTROUTING -j MASQUERADE
+> 
+> Can I do that without nat? Just trying to avoid the "conntrack table full" issue.
+> Is there a non-stateful solution?
+> 
