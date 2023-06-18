@@ -1,38 +1,28 @@
-From: Serg <seentr@at.encryp.ch>
-Subject: Re: Modify packet without NAT
-Date: Sat, 17 Jun 2023 11:51:37 +0300
-Message-ID: <7b90de24-a2c9-a007-010d-ec79db65bbe0@at.encryp.ch>
-References: <GYTTaXkbSkEr3VAyArWUUy2ZOCgqBJ91AiJN2WBVdBUQrUJaHAUkn42u5EVDlPZXwlUJW49u1XMxGnJku_TPIRqLB4KXyBWUsEnw2LWef-k=@proton.me>
+From: nft.ogxzcrqhuhgchbvxcs4j7wws@qmail.sunbirdgrove.com
+Subject: nft list sets changed behavior
+Date: Sun, 18 Jun 2023 02:42:46 +0200
+Message-ID: <60e59333-3d37-5b66-e0ed-8e7d4c01d956@qmail.sunbirdgrove.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=at.encryp.ch;
-        s=flopster; t=1686991898;
-        bh=w47cdz6DHugjFmBOzp3ZPXUvupyfS2Azc+paPkrPodg=;
-        h=Date:Subject:To:References:From:Cc:In-Reply-To;
-        b=IqQaco0v6ogIbUxechvkYjIKo/gyO1rH+v/rp8aDzpnbmENUGQVvT3a2nKSQdWnD3
-         8yNbI2xhkGuv5eFvEq0kA3TpJYBny5ztPDtpDfywp0e0JYctDSbYfrylqK0Vev5Q4v
-         WhtTIDDPJv09dqfMqVyDrvNYz2HsiO2HC+/ottcs=
-In-Reply-To: <GYTTaXkbSkEr3VAyArWUUy2ZOCgqBJ91AiJN2WBVdBUQrUJaHAUkn42u5EVDlPZXwlUJW49u1XMxGnJku_TPIRqLB4KXyBWUsEnw2LWef-k=@proton.me>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qmail.sunbirdgrove.com;
+        s=dkim; t=1687048967;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=TDhQRszybJOSX6s+13uK8i7Vpp2F4g2chokrHrqMB7M=;
+        b=oJvz6bi9VAPhv00NwB7R1Ps0dV1jrFb4FF09MvT/zRWoUT0RIWQfB7x7DuRWEJYYZmNWMW
+        0nhn4v528V1gllR5J0sSsXFxdTti3opSe2h1NKhdv7gxKYHQZILZdwjUlNSnujb9CkW2mV
+        zuR+miUlJ7o5RdvbY67rkM7xPPaPlYg=
+Content-Language: en-US
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Cc: public1020 <public1020@proton.me>
+To: netfilter@vger.kernel.org
 
-I am aware only about nftables based solution: 
-https://wiki.nftables.org/wiki-nftables/index.php/Mangling_packet_headers
+After updating to Debian 12 my tools relying on 'nft -j list sets' fail. 
+It now does not include the elements in those lists like it did on 11.
 
-As far as I understand, your case uses "http_port" ipset with ports 
-other than 80. In this scenario you will need to listen all required 
-ports on the backend so nftables will just modify src/dst IP addresses 
-accordingly. Otherwise it is impossible to do this conntrackless.
+Is this hidden behind an 'anti-terse' flag now?
 
-On 6/17/23 06:22, public1020 wrote:
-> I have a simple nat configuration to forward certain access to a gateway:
-> 
-> iptables -t nat -A PREROUTING -p tcp -m set --match-set http_port dst,dst -j DNAT --to-destination XXX:80
-> iptables -t nat -A POSTROUTING -j MASQUERADE
-> 
-> Can I do that without nat? Just trying to avoid the "conntrack table full" issue.
-> Is there a non-stateful solution?
-> 
+Web searches, the changelog on the site, and manpages didn't reveal 
+anything.
