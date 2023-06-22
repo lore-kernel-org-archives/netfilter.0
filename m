@@ -1,49 +1,69 @@
-From: Kerin Millar <kfm@plushkava.net>
-Subject: Re: Modify packet without NAT
-Date: Sun, 18 Jun 2023 17:18:33 +0100
-Message-ID: <20230618171833.6ce0835a22deed6aa70b4145@plushkava.net>
-References: <GYTTaXkbSkEr3VAyArWUUy2ZOCgqBJ91AiJN2WBVdBUQrUJaHAUkn42u5EVDlPZXwlUJW49u1XMxGnJku_TPIRqLB4KXyBWUsEnw2LWef-k=@proton.me>
-        <68081ede-21a0-48be-aecc-d959f317bcb5@thelounge.net>
-        <Yx2SfoKfezY0BYo1HR62Qk9XK3cFc2OmDz23H29qQEJiSjDuWurALweCqK8aup09tG3q59mUU6_8UFBYCXMC3Y3GMQsqvqhiBaFgYVGZDQY=@proton.me>
+From: Jacek Tomasiak <jtomasiak@arista.com>
+Subject: Matching on protocols inside IPv6 IPSec AH (legacy vs nft)
+Date: Thu, 22 Jun 2023 15:25:44 +0200
+Message-ID: <CAPEBPyMNe5dPTC9Dwp888M5RR-2ThC7ZtuaQPxNG+5VqbJinsQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-         h=cc:cc:content-transfer-encoding:content-type:content-type
-        :date:date:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to;
-         s=fm3; t=1687105115; x=1687191515; bh=3h582xMbE/gv3NJnNT1Dgra0V
-        lOwL4KuTUS8odqfX38=; b=R8iGGvENtudtNaFyirjht+GdDcnWtGsJ232vPUznZ
-        oHR1wBACMbrVrCuGLlvtpqu2RaFyV/Zt3r6UnXXAz5JKxpO2TPWs51G2tFu5rIha
-        6Wq6Jcx6D/gBAHzjWm9JCSfongBEfa65vqCfZmcWRtnoeRqM1pn8sTPRwSPx0TxE
-        aHQtJUe5HAcNZjQ+sxCV+UzrQs/FgU1F8DS+VQZbWPhXFNZYMoZ1NFNXsGnRhCBX
-        vKaZWDN0mwqUnGplUz5PmOsJfdUzAjxHFpI+rKbD66P9ewmgh1MrP0XEALQNw0q3
-        h8oieDRIScvf4MIerR4y1sv1mLpB6XPJN531el/M08M5Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-        1687105115; x=1687191515; bh=3h582xMbE/gv3NJnNT1Dgra0VlOwL4KuTUS
-        8odqfX38=; b=l9Gs/ly3t38QQcNT/ENRNdWHTw7dluZjgSJP3OjpNayhIDbcYE+
-        hKr6qaJJ4aEfvsZIsK4zMlItbbc2ySO4wmt70ivl6g0pdEnL24+SmRn4ZiOdlksl
-        e5Fqny+UXIGuMItY/jTLycF/b/r6fs6+4LMFIzgKabdSEBwS13mArhwA4WGs01Aa
-        QuZYe/hb1rFH+rsUe//tg0XgOZxFKylBIFmbH/gjQMKDq5W1FHsgUDwOKAmsH2Pe
-        M96J6+ubKR9XqZtdFx9nSvmsCEfSDoaDd5ajIeLEUk8LO15ZoyiDP7UX1k7qWkre
-        YaSwAfJtgyFUpIErZQPZLcc/3zJjPsVWzdw==
-In-Reply-To: <Yx2SfoKfezY0BYo1HR62Qk9XK3cFc2OmDz23H29qQEJiSjDuWurALweCqK8aup09tG3q59mUU6_8UFBYCXMC3Y3GMQsqvqhiBaFgYVGZDQY=@proton.me>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google; t=1687440355; x=1690032355;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=WhPjw545Ihkp/pKrkm4t0rzMp8dJ/tFpD47YlNq2r5s=;
+        b=h2EJOze8aiQ5tm0TUq1la8OWBqge+Ddo+eAuNVAiE/klB2cUB+AVf/6JtO6VwOMkeE
+         Li1J+ug6QiIUwJ+bjIQGhc9NdISzNVmxPWNOZVzrPiJQtr3eNrV5RvQt67F6oAvUxVf0
+         JC9/6uCeMYEeKHTWUo3OWug9NVoMu7BiZjcKy0NP6wdv/baYC67IfME4yB/VszmP9DkY
+         9Vwbc+xKeGjV4GK30GCqOQuCzhCciURl+w4fPxaL4LkBP/lGsGodUiJrvtle/3yNnAcX
+         X5MP1//hUnj97YSceLlc7LHSNeSBO4gZJ+q80nNzWY/tU4U9bnqXZriq91j0UJdQxpKn
+         7haA==
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: public1020 <public1020@proton.me>
-Cc: Reindl Harald <h.reindl@thelounge.net>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On Sun, 18 Jun 2023 14:34:31 +0000
-public1020 <public1020@proton.me> wrote:
+Hello,
 
-> The system is IPv4 and intranet only, suppose I'm going to increase the hash size, 
+I'm working on migrating from legacy iptables to iptables-nft and I encountered
+a change in behaviour in handling the IPSec AH protocol.
 
-You should definitely increase the capacity of the conntrack table. I would just add that many rulesets have no particular need for traffic traversing the loopback interface to be tracked. Should this apply to you, some memory can be saved by implementing a rule such as "-t raw -A OUTPUT -o lo -j CT --notrack".
+With following two ipv6 rules:
+-A INPUT -p ipv6-icmp --icmpv6-type echo-request -j ACCEPT
+-A INPUT -m ipv6header --header ah --soft -j ACCEPT
 
--- 
-Kerin Millar
+After sending packets with following scapy code:
+# ping6 without AH
+pck = IPv6()/ICMPv6EchoRequest()
+send(pck)
+# ping6 with AH
+sa = SecurityAssociation(AH, spi=0)
+apck = sa.encrypt(pck)
+send(apck)
+
+I get this from ip6tables-nft -vS:
+-P INPUT ACCEPT -c 0 0
+-P FORWARD ACCEPT -c 0 0
+-P OUTPUT ACCEPT -c 0 0
+-A INPUT -p ipv6-icmp -m icmp6 --icmpv6-type 128 -c 1 48 -j ACCEPT
+-A INPUT -m ipv6header --header ah --soft -c 1 64 -j ACCEPT
+
+Hovewer, with ip6tables-legacy -vS:
+-P INPUT ACCEPT -c 1 48
+-P FORWARD ACCEPT -c 0 0
+-P OUTPUT ACCEPT -c 1 48
+-A INPUT -p ipv6-icmp -m icmp6 --icmpv6-type 128 -c 2 112 -j ACCEPT
+-A INPUT -m ipv6header --header ah --soft -c 0 0 -j ACCEPT
+
+My main concern is that in the nft version the AH rule matches one of the ICMP
+packets even though the ICMP rule is higher up on the list.
+
+I tried to debug this and it seems to be related to this change:
+https://github.com/torvalds/linux/commit/568af6de058cb2b0c5b98d98ffcf37cdc6bc38a7
+IIUC, this "stop ipv6_find_hdr on AH" is not a regression but intended behavior.
+
+Now the question: is there some way to define rules which will match
+the same way
+as it works in iptables-legacy? That is, look at the inner protocol
+and not stop on
+AH?
+
+Best Regards,
+Jacek Tomasiak
