@@ -1,42 +1,64 @@
-From: =?UTF-8?B?0JzQsNGA0Log0JrQvtGA0LXQvdCx0LXRgNCz?= 
-        <socketpair@gmail.com>
-Subject: ipset hash:net:port:net
-Date: Thu, 22 Jun 2023 17:50:43 +0300
-Message-ID: <CAEmTpZGTbHcd84vA5VL6FfDc8+n+E0VMt+GpPkVLw5Vijp5iLA@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Matching on protocols inside IPv6 IPSec AH (legacy vs nft)
+Date: Fri, 23 Jun 2023 00:00:40 +0200
+Message-ID: <ZJTEiNy6v0QR+ovT@calendula>
+References: <CAPEBPyMNe5dPTC9Dwp888M5RR-2ThC7ZtuaQPxNG+5VqbJinsQ@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1687445455; x=1690037455;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=h8i9k7iv1RVJET/Cr/juNPiq2j0xcHXuSj+X6Emo+kQ=;
-        b=TR6LpoiLpjDe4ONbyiH/m3qEgmQB3C8zRmRRQZUq3ZyMsIWg9cr1iem7vnC6S8DsFS
-         dIxVIm3xtHjWFOKe5Z7/UUHd5LEYQbXeeQ+DDxb6aIGtp2ZhQAcjs7nXDg1DMc6P1O/5
-         QPpkFNsEWP60Zg1JJdJqlCPYOqCUncsMySfoR1jkuh3O6Wnmpc5ff5WQsKhuRnctC4Sq
-         hLKBxrPheccHBRGUlEAytiJa4mzHz7m6ZRUWr8srJS2xCi/HRVJUfK9DC4kNWE2dRXDt
-         u7qNtBv/IuEKEtIONF8psmei4YIYstPhxF3srTq6/VQRqW70/MkBLvuCg8+eXRULXYQP
-         uIhA==
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAPEBPyMNe5dPTC9Dwp888M5RR-2ThC7ZtuaQPxNG+5VqbJinsQ@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, kadlecsik.jozsef@wigner.hu, kadlec@sunserv.kfki.hu
+To: Jacek Tomasiak <jtomasiak@arista.com>
+Cc: netfilter@vger.kernel.org
 
-Hi everyone.
+On Thu, Jun 22, 2023 at 03:25:44PM +0200, Jacek Tomasiak wrote:
+> Hello,
+> 
+> I'm working on migrating from legacy iptables to iptables-nft and I encountered
+> a change in behaviour in handling the IPSec AH protocol.
+> 
+> With following two ipv6 rules:
+> -A INPUT -p ipv6-icmp --icmpv6-type echo-request -j ACCEPT
+> -A INPUT -m ipv6header --header ah --soft -j ACCEPT
+> 
+> After sending packets with following scapy code:
+> # ping6 without AH
+> pck = IPv6()/ICMPv6EchoRequest()
+> send(pck)
+> # ping6 with AH
+> sa = SecurityAssociation(AH, spi=0)
+> apck = sa.encrypt(pck)
+> send(apck)
+> 
+> I get this from ip6tables-nft -vS:
+> -P INPUT ACCEPT -c 0 0
+> -P FORWARD ACCEPT -c 0 0
+> -P OUTPUT ACCEPT -c 0 0
+> -A INPUT -p ipv6-icmp -m icmp6 --icmpv6-type 128 -c 1 48 -j ACCEPT
+> -A INPUT -m ipv6header --header ah --soft -c 1 64 -j ACCEPT
+> 
+> Hovewer, with ip6tables-legacy -vS:
+> -P INPUT ACCEPT -c 1 48
+> -P FORWARD ACCEPT -c 0 0
+> -P OUTPUT ACCEPT -c 1 48
+> -A INPUT -p ipv6-icmp -m icmp6 --icmpv6-type 128 -c 2 112 -j ACCEPT
+> -A INPUT -m ipv6header --header ah --soft -c 0 0 -j ACCEPT
+> 
+> My main concern is that in the nft version the AH rule matches one of the ICMP
+> packets even though the ICMP rule is higher up on the list.
+> 
+> I tried to debug this and it seems to be related to this change:
+> https://github.com/torvalds/linux/commit/568af6de058cb2b0c5b98d98ffcf37cdc6bc38a7
+> IIUC, this "stop ipv6_find_hdr on AH" is not a regression but intended behavior.
+> 
+> Now the question: is there some way to define rules which will match
+> the same way
+> as it works in iptables-legacy? That is, look at the inner protocol
+> and not stop on AH?
 
-1. In the latest ipset, adding "1.2.3.4/0,tcp:0,1.2.3.0/24" is not
-allowed. I would like it to be allowed. It should match on any TCP
-traffic that matches source and destination.
-2. The same for protocol number 0. I want  "1.2.3.4/0,0:0,1.2.3.0/24"
-to match all traffic that matches source and destination.
-
-These requirements come from the real cases, where an administrator
-adds rules to control access to his networks.
-
-Is it possible to make such changes? TCP port 0 is not real thing, as
-well as IP protocol 0. So we can give them special meaning in IPSets.
-
-although icmp:0 is not so clear in this case. Possibly allow to set -1
-? as protocol or port for matching any ?
-
--- 
-Segmentation fault
+IIRC behaviour between iptables-legacy and ip6tables-legacy with
+regards to AH is inconsistent, because ip6tables-legacy -p matches on
+the inner header encapsulated by AH, but iptables-legacy matches on AH
+with -p.
