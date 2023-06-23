@@ -1,64 +1,55 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Matching on protocols inside IPv6 IPSec AH (legacy vs nft)
-Date: Fri, 23 Jun 2023 00:00:40 +0200
-Message-ID: <ZJTEiNy6v0QR+ovT@calendula>
-References: <CAPEBPyMNe5dPTC9Dwp888M5RR-2ThC7ZtuaQPxNG+5VqbJinsQ@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@netfilter.org>
+Subject: Re: ipset hash:net:port:net
+Date: Fri, 23 Jun 2023 20:30:40 +0200 (CEST)
+Message-ID: <4d4b3ca0-e994-3f29-e5da-a828d6a1c13@netfilter.org>
+References: <CAEmTpZGTbHcd84vA5VL6FfDc8+n+E0VMt+GpPkVLw5Vijp5iLA@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAPEBPyMNe5dPTC9Dwp888M5RR-2ThC7ZtuaQPxNG+5VqbJinsQ@mail.gmail.com>
+Content-Type: multipart/mixed; boundary="1393428146-1108618937-1687545040=:7658"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <CAEmTpZGTbHcd84vA5VL6FfDc8+n+E0VMt+GpPkVLw5Vijp5iLA@mail.gmail.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jacek Tomasiak <jtomasiak@arista.com>
-Cc: netfilter@vger.kernel.org
+To: =?UTF-8?B?0JzQsNGA0Log0JrQvtGA0LXQvdCx0LXRgNCz?= <socketpair@gmail.com>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-On Thu, Jun 22, 2023 at 03:25:44PM +0200, Jacek Tomasiak wrote:
-> Hello,
-> 
-> I'm working on migrating from legacy iptables to iptables-nft and I encountered
-> a change in behaviour in handling the IPSec AH protocol.
-> 
-> With following two ipv6 rules:
-> -A INPUT -p ipv6-icmp --icmpv6-type echo-request -j ACCEPT
-> -A INPUT -m ipv6header --header ah --soft -j ACCEPT
-> 
-> After sending packets with following scapy code:
-> # ping6 without AH
-> pck = IPv6()/ICMPv6EchoRequest()
-> send(pck)
-> # ping6 with AH
-> sa = SecurityAssociation(AH, spi=0)
-> apck = sa.encrypt(pck)
-> send(apck)
-> 
-> I get this from ip6tables-nft -vS:
-> -P INPUT ACCEPT -c 0 0
-> -P FORWARD ACCEPT -c 0 0
-> -P OUTPUT ACCEPT -c 0 0
-> -A INPUT -p ipv6-icmp -m icmp6 --icmpv6-type 128 -c 1 48 -j ACCEPT
-> -A INPUT -m ipv6header --header ah --soft -c 1 64 -j ACCEPT
-> 
-> Hovewer, with ip6tables-legacy -vS:
-> -P INPUT ACCEPT -c 1 48
-> -P FORWARD ACCEPT -c 0 0
-> -P OUTPUT ACCEPT -c 1 48
-> -A INPUT -p ipv6-icmp -m icmp6 --icmpv6-type 128 -c 2 112 -j ACCEPT
-> -A INPUT -m ipv6header --header ah --soft -c 0 0 -j ACCEPT
-> 
-> My main concern is that in the nft version the AH rule matches one of the ICMP
-> packets even though the ICMP rule is higher up on the list.
-> 
-> I tried to debug this and it seems to be related to this change:
-> https://github.com/torvalds/linux/commit/568af6de058cb2b0c5b98d98ffcf37cdc6bc38a7
-> IIUC, this "stop ipv6_find_hdr on AH" is not a regression but intended behavior.
-> 
-> Now the question: is there some way to define rules which will match
-> the same way
-> as it works in iptables-legacy? That is, look at the inner protocol
-> and not stop on AH?
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-IIRC behaviour between iptables-legacy and ip6tables-legacy with
-regards to AH is inconsistent, because ip6tables-legacy -p matches on
-the inner header encapsulated by AH, but iptables-legacy matches on AH
-with -p.
+--1393428146-1108618937-1687545040=:7658
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+
+Hello,
+
+On Thu, 22 Jun 2023, =D0=9C=D0=B0=D1=80=D0=BA =D0=9A=D0=BE=D1=80=D0=B5=D0=
+=BD=D0=B1=D0=B5=D1=80=D0=B3 wrote:
+
+> 1. In the latest ipset, adding "1.2.3.4/0,tcp:0,1.2.3.0/24" is not
+> allowed. I would like it to be allowed. It should match on any TCP
+> traffic that matches source and destination.
+> 2. The same for protocol number 0. I want  "1.2.3.4/0,0:0,1.2.3.0/24"
+> to match all traffic that matches source and destination.
+>=20
+> These requirements come from the real cases, where an administrator add=
+s=20
+> rules to control access to his networks.
+>=20
+> Is it possible to make such changes? TCP port 0 is not real thing, as=20
+> well as IP protocol 0. So we can give them special meaning in IPSets.
+>=20
+> although icmp:0 is not so clear in this case. Possibly allow to set -1 =
+?=20
+> as protocol or port for matching any ?
+
+Sorry, no. It could ony be implemented with the price of doubling the=20
+lookup time in the set.
+
+Why don't you simply use a hash:net,net type of set?
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
+PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics
+          H-1525 Budapest 114, POB. 49, Hungary
+--1393428146-1108618937-1687545040=:7658--
