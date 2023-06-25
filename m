@@ -1,55 +1,83 @@
-From: Jozsef Kadlecsik <kadlec@netfilter.org>
-Subject: Re: ipset hash:net:port:net
-Date: Fri, 23 Jun 2023 20:30:40 +0200 (CEST)
-Message-ID: <4d4b3ca0-e994-3f29-e5da-a828d6a1c13@netfilter.org>
-References: <CAEmTpZGTbHcd84vA5VL6FfDc8+n+E0VMt+GpPkVLw5Vijp5iLA@mail.gmail.com>
+From: "Jason Vas Dias" <jason.vas.dias@ptt.ie>
+Subject: Linux netfilter / iptables : How to enable iptables TRACE chain
+ handling with nf_log_syslog on RHEL8+?
+Date: Sun, 25 Jun 2023 14:25:02 +0100
+Message-ID: <hhttuv65e9.fsf@jvdspc.jvds.net>
+Reply-To: "Jason Vas Dias" <jason.vas.dias@ptt.ie>,
+          "Jason Vas Dias" <jason.vas.dias@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="1393428146-1108618937-1687545040=:7658"
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <CAEmTpZGTbHcd84vA5VL6FfDc8+n+E0VMt+GpPkVLw5Vijp5iLA@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ptt-ie.20221208.gappssmtp.com; s=20221208; t=1687699504; x=1690291504;
+        h=mime-version:message-id:date:reply-to:cc:subject:to:from:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rdx+jmpZvU2v1S6IQOE0hbmqHzeCs2MU52rIPQmTrDI=;
+        b=GKXN7WTTkBZsPTq5uXszzK7LhaJmNvfszWgpK4YmwlLFc54cgYsH7QN5OoAzaY82n5
+         wTyke1eUmYzAmDj5kgvVFt0LKJG4qwFjF82VT6ZKawtI6dZs3RX4st0ig4L6IwLAnAMH
+         PB0w0TxomQ2jtFh302AoZTjwnDAcbqS/ymTafravne1Hx5GnHVr/vvnyuv0sRQLapjHX
+         8RRTnWj4MV6WlfLn1Si85IKun3sGg5Es3BgkRgw1ExsZO0FRHSlJMHL0KCsuT/jYXiTs
+         RchtO7MLa4/z+CJkkwl/xWRg0EvfThy2Tog69IRCrRcPOXiIDeWMFKM2WlsW/V9LRcIU
+         NsGQ==
 List-ID: <netfilter.vger.kernel.org>
-To: =?UTF-8?B?0JzQsNGA0Log0JrQvtGA0LXQvdCx0LXRgNCz?= <socketpair@gmail.com>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Cc: Jason Vas Dias <jason.vas.dias@gmail.com>, Jason Vas Dias <jason.vas.dias@ptt.ie>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
 
---1393428146-1108618937-1687545040=:7658
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Good day -
 
-Hello,
+  On a Linux RHEL8 system, I have enabled these iptables rules,
+  which I am led to believe should enable ICMP packet syslog
+  logging on interface ingress & egress :
 
-On Thu, 22 Jun 2023, =D0=9C=D0=B0=D1=80=D0=BA =D0=9A=D0=BE=D1=80=D0=B5=D0=
-=BD=D0=B1=D0=B5=D1=80=D0=B3 wrote:
+    # iptables -L -t raw
+    Chain PREROUTING (policy ACCEPT)
+    target     prot opt source               destination         
+    TRACE      icmp --  anywhere             anywhere            
 
-> 1. In the latest ipset, adding "1.2.3.4/0,tcp:0,1.2.3.0/24" is not
-> allowed. I would like it to be allowed. It should match on any TCP
-> traffic that matches source and destination.
-> 2. The same for protocol number 0. I want  "1.2.3.4/0,0:0,1.2.3.0/24"
-> to match all traffic that matches source and destination.
->=20
-> These requirements come from the real cases, where an administrator add=
-s=20
-> rules to control access to his networks.
->=20
-> Is it possible to make such changes? TCP port 0 is not real thing, as=20
-> well as IP protocol 0. So we can give them special meaning in IPSets.
->=20
-> although icmp:0 is not so clear in this case. Possibly allow to set -1 =
-?=20
-> as protocol or port for matching any ?
+    Chain OUTPUT (policy ACCEPT)
+    target     prot opt source               destination         
+    TRACE      icmp --  anywhere             anywhere            
 
-Sorry, no. It could ony be implemented with the price of doubling the=20
-lookup time in the set.
+  As described at : https://access.redhat.com/solutions/2313671 I have done :
 
-Why don't you simply use a hash:net,net type of set?
+    # modprobe  nf_log_ipv4
+    # sysctl -w net.netfilter.nf_log.2=nf_log_ipv4
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
-PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics
-          H-1525 Budapest 114, POB. 49, Hungary
---1393428146-1108618937-1687545040=:7658--
+  I also did:
+
+    # modprobe nf_log_syslog
+
+  which I am led to believe replaces all previous nf_log* or ipt_LOG
+  modules in modern (RHEL8 4.18.x+) kernels.
+
+  But, when I 'ping' a NAT'd (with iptables) IP address,
+  no TRACE log messages appear in 'dmesg -c' output or in
+  syslog (systemd.journald in use).
+
+  What am I missing ?
+
+  The most comprehensive discussion I have found on this issue so far on the web is at :
+
+  https://backreference.org/2010/06/11/iptables-debugging/ (thanks waldner!)
+
+  But this is getting rather old (2010-06-11) , and evidently does not
+  apply to kernel 4.18+(RHEL) .
+
+  I have duplicated precisely the steps above on Fedora-36
+  (kernel v6.2.16) system , and it DOES work, TRACE log messages ARE generated :
+
+  # iptables -t raw -A PREROUTING -p icmp -j TRACE
+  # iptables -t raw -A OUTPUT -p icmp -j TRACE
+  # modprobe nf_log_ipv4
+  # echo nf_log_ipv4 > /proc/sys/net/netfilter/nf_log/2
+
+  But, these steps, when repeated on a RHEL8 kernel 4.18.0-477.13.1
+  host, do not work or produce any packet TRACE output in logs -
+  this is what I am tearing what remains of my hair out trying to resolve.
+
+  Thanks in advance for any informative replies .
+
+Best Regards,
+Jason Vas Dias (SW+SYS+NET)-Engineer, West Cork, Eire.
