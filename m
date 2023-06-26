@@ -1,86 +1,98 @@
-From: Eric <evil.function@proton.me>
-Subject: Re: wiki documentation error
-Date: Sun, 25 Jun 2023 21:50:44 +0000
-Message-ID: <om-be6P8E-nyvhRJhp7MDC0HyKHBqwlh1Ln3q4CJCTnJSXPdwyfOlF9LjVEq42Dl6jNSX7Otwlu329rv1cudQcWn4AOUWXTF2RjMkRf9eto=@proton.me>
-References: <ZJfigQmqgt3X5pnW@deegan.id.au> <20230625220427.2d024d2c37d2b5a266f9ceb6@plushkava.net>
+From: Michael Deegan <michael@deegan.id.au>
+Subject: Re: wiki documentation error (derp, false alarm...)
+Date: Mon, 26 Jun 2023 08:51:02 +0800
+Message-ID: <ZJjg9hFCfLe07dDc@deegan.id.au>
+References: <ZJfigQmqgt3X5pnW@deegan.id.au>
+ <20230625220427.2d024d2c37d2b5a266f9ceb6@plushkava.net>
+ <om-be6P8E-nyvhRJhp7MDC0HyKHBqwlh1Ln3q4CJCTnJSXPdwyfOlF9LjVEq42Dl6jNSX7Otwlu329rv1cudQcWn4AOUWXTF2RjMkRf9eto=@proton.me>
 Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=protonmail; t=1687729857; x=1687989057;
-        bh=6BrWZHkw+g5uXfzTqh9wg/2rfBZpFLh/fDkBIVG+T9Y=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=i7cz2k5VaEKtY4Yn79wDoWJlSUP+Vpiwqm6vqIxQ+nv2ge8ccRMTqEAjvXHKhSKJU
-         XhbmDEKaASek5BwvJJ0hwDpB8cokVCs8m9CA9IaN2OzaCDUVH63Oq8uR7mauGPNYSJ
-         yaU7xwPs4EsR3ug04XGc1S0H0y9BJN3SCBeQE5qNgGTWRsvcjtjPl+GMpPtvrHJA+E
-         SQJ7xmeKbMMOrVUIEP57uw4WAVUZbdw0yRkHHXQMTRDLPQ/oeG5tXsvSgyJrDYsGmI
-         vC0oAs/ch47wYOka4Glkw3aZX5/ZautV9fN4WR81hniHAsyR3jL4UMg5JONjwzsw8z
-         UOn1Ig8DeWuIA==
-In-Reply-To: <20230625220427.2d024d2c37d2b5a266f9ceb6@plushkava.net>
+Content-Disposition: inline
+In-Reply-To: <om-be6P8E-nyvhRJhp7MDC0HyKHBqwlh1Ln3q4CJCTnJSXPdwyfOlF9LjVEq42Dl6jNSX7Otwlu329rv1cudQcWn4AOUWXTF2RjMkRf9eto=@proton.me>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Kerin Millar <kfm@plushkava.net>
-Cc: Michael Deegan <michael@deegan.id.au>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="windows-1252"
+To: Eric <evil.function@proton.me>
+Cc: Kerin Millar <kfm@plushkava.net>, netfilter@vger.kernel.org
 
-On Sunday, June 25th, 2023 at 14:04, Kerin Millar <kfm@plushkava.net> wrote=
-:
+Morning,
 
-
-> On Sun, 25 Jun 2023 14:45:21 +0800
-> Michael Deegan michael@deegan.id.au wrote:
+On Sun, Jun 25, 2023 at 09:50:44PM +0000, Eric <evil.function@proton.me> wr=
+ote:
+> >=20
+> >=20
+> > The syntax of the ruleset is valid. Please ensure that you have not ina=
+dvertently introduced a linefeed character anywhere within a given set elem=
+ent (immediately before or after a comma is fine). Also, please convey the =
+error message that you are encountering.
 >=20
-> > Hello,
-> >=20
-> > (please CC me on replies, I'm not subscribed)
-> >=20
-> > It looks like I'm the first to attempt cutting and pasting the ruleset =
-from
-> > https://wiki.nftables.org/wiki-nftables/index.php?title=3DSimple_rulese=
-t_for_a_home_router,
-> > as it...doesn't work. :P
-> >=20
-> > The main problem is this line:
-> >=20
-> > ip protocol . th dport vmap { tcp . 22 : accept, udp . 53 : accept, tcp=
- . 53 : accept, udp . 67 : accept}
+> Yup, like Kerin says, works for me (I picked the 'input' chain just becau=
+se it's easy).
+
+Okay, I worked it out. I had originally cut and pasted rules from elinks
+running in a screen session on my router PC (because of course my local
+browser had no networking...). The resulting error message that probably
+would have gone away had I found every nonbreaking space:
+
+    homerouter.nft-rules:33:48-48: Error: syntax error, unexpected junk, ex=
+pecting colon
+             ip protocol . th dport vmap { tcp . 22=C2=A0: accept, udp . 53=
+=C2=A0: accept, tcp . 53=C2=A0: accept, udp . 67=C2=A0: accept}
+                                                   ^
+
+"expecting colon" suggested to me that whitespace was invalid at that
+location, hence my original (misguided) complaint.
+
+Hexdump of the line in question:
+
+    00000000  20 20 20 20 20 20 20 20  20 69 70 20 70 72 6f 74  |         i=
+p prot|
+    00000010  6f 63 6f 6c 20 2e 20 74  68 20 64 70 6f 72 74 20  |ocol . th =
+dport |
+    00000020  76 6d 61 70 20 7b 20 74  63 70 20 2e 20 32 32 c2  |vmap { tcp=
+ . 22.|
+    00000030  a0 3a 20 61 63 63 65 70  74 2c 20 75 64 70 20 2e  |.: accept,=
+ udp .|
+    00000040  20 35 33 c2 a0 3a 20 61  63 63 65 70 74 2c 20 74  | 53..: acc=
+ept, t|
+    00000050  63 70 20 2e 20 35 33 c2  a0 3a 20 61 63 63 65 70  |cp . 53..:=
+ accep|
+    00000060  74 2c 20 75 64 70 20 2e  20 36 37 c2 a0 3a 20 61  |t, udp . 6=
+7..: a|
+    00000070  63 63 65 70 74 7d 0a                              |ccept}.|
+
+Hmm, C2 A0 is...nonbreaking space! Let's look at the wiki HTML source
+(wordwrapping is mine)...
+
+    ip protocol .  th dport vmap <span class=3D"o">{</span> tcp .  <span
+    class=3D"m">22</span>&#160;: accept, udp .  <span
+    class=3D"m">53</span>&#160;: accept, tcp .  <span
+    class=3D"m">53</span>&#160;: accept, udp .  <span
+    class=3D"m">67</span>&#160;: accept<span class=3D"o">}</span> <span
+    class=3D"o">}</span>
+
+Oh, there you go, it's mediawiki's fault for randomly replacing spaces with
+nonbreaking spaces. I guess some browsers (elinks) preserve whitespace when
+copying text, whereas others don't (chromium).
+
+> To decipher the parts of the match expression, this might help (scan for =
+"transport header").
 >=20
->=20
-> The syntax of the ruleset is valid. Please ensure that you have not inadv=
-ertently introduced a linefeed character anywhere within a given set elemen=
-t (immediately before or after a comma is fine). Also, please convey the er=
-ror message that you are encountering.
+> https://wiki.nftables.org/wiki-nftables/index.php/Matching_packet_headers
 
-Yup, like Kerin says, works for me (I picked the 'input' chain just because=
- it's easy).
+Ta, I'll (re)read this in the hope of getting better understanding of the
+grammar, which I'll need to do if I'm to work out why changing my table from
+"ip" to "inet" at the top of my ruleset breaks everything even though the
+ruleset loads fine. =F0=9F=98=85
 
-$ nft --version
-nftables v1.0.7 (Old Doc Yak)
+Thanks for humouring me,
 
-~$ nft -e add rule inet fw4 input 'ip protocol . th dport vmap { tcp . 22 :=
- accept, udp . 53 : accept, tcp . 53 : accept, udp . 67 : accept}'
-add rule inet fw4 input ip protocol . th dport vmap { tcp . 22 : accept, ud=
-p . 53 : accept, tcp . 53 : accept, udp . 67 : accept }
-# new generation 83 by process 6770 (nft)
+-MD
 
-$ nft list chain inet fw4 input
-table inet fw4 {
-        chain input {
-                type filter hook input priority filter; policy drop;
-... trimmed the noise ...
-                ip protocol . th dport vmap { tcp . 22 : accept, tcp . 53 :=
- accept, udp . 53 : accept, udp . 67 : accept }
-        }
-}
-
-To decipher the parts of the match expression, this might help (scan for "t=
-ransport header").
-
-https://wiki.nftables.org/wiki-nftables/index.php/Matching_packet_headers
-
-The rule is basically saying, "if the packet is IPv4, then concatenate the =
-protocol and port from the transport header, use that as a key into the ver=
-dict map."
-
-
+--=20
+---------------------------------------------------------------------------=
+--
+Michael Deegan               Hugaholic              https://www.deegan.id.a=
+u/
+------------------------  Jung, zr jbeel?  --------------------------------=
+--
