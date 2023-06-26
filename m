@@ -1,62 +1,49 @@
-From: Kerin Millar <kfm@plushkava.net>
-Subject: Re: wiki documentation error (derp, false alarm...)
-Date: Mon, 26 Jun 2023 02:08:27 +0100
-Message-ID: <20230626020827.f47c365baa90a799cca72a4e@plushkava.net>
-References: <ZJfigQmqgt3X5pnW@deegan.id.au>
-        <20230625220427.2d024d2c37d2b5a266f9ceb6@plushkava.net>
-        <om-be6P8E-nyvhRJhp7MDC0HyKHBqwlh1Ln3q4CJCTnJSXPdwyfOlF9LjVEq42Dl6jNSX7Otwlu329rv1cudQcWn4AOUWXTF2RjMkRf9eto=@proton.me>
-        <ZJjg9hFCfLe07dDc@deegan.id.au>
+From: Jacek Tomasiak <jtomasiak@arista.com>
+Subject: Re: Matching on protocols inside IPv6 IPSec AH (legacy vs nft)
+Date: Mon, 26 Jun 2023 14:06:47 +0200
+Message-ID: <CAPEBPyMWBzsROxN5Em7dGCpG2TXncC+Gu_1BD81vV2HysLo2Ow@mail.gmail.com>
+References: <CAPEBPyMNe5dPTC9Dwp888M5RR-2ThC7ZtuaQPxNG+5VqbJinsQ@mail.gmail.com>
+ <ZJTEiNy6v0QR+ovT@calendula>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-         h=cc:cc:content-transfer-encoding:content-type:content-type
-        :date:date:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to;
-         s=fm3; t=1687741709; x=1687828109; bh=aI/jchCIYGdAbKbBer40A610l
-        IvDDpj6tFQfTdIxSLQ=; b=mnrDpLCTz79GUOvm0WlTUdvvwhEADBI2yROeka5o/
-        NnZd27rCRPd251rZj+EUdDc9kzrQ4Qg6GhER6sgdvMCwDMRJ04U2Xm+Pm6DMOfez
-        9z6aM2gLlUa3mBarUT83mhT6gsehu5g3zfYWVJKmuuqtQX0bo01J4ovIqWl9ENQH
-        RJqD1NnNG+ScjABNlNRwPCrJpPQJnji8a4QAe3S2QN0U8nTrF+yOqBTxeNfvZHjk
-        L+rYOApNVduAT4PuKVuIHnkoiwY01k+Y/1/H/uH44/kYW4z+nRbD7i9gGPDVYiKc
-        wAIxlmnglsB//pCkXo36wNlP6RLjLiL0eDxiL0i2lK36g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-        1687741709; x=1687828109; bh=aI/jchCIYGdAbKbBer40A610lIvDDpj6tFQ
-        fTdIxSLQ=; b=OUR+YFa7rZhQIPrW865yRlzUL5MVkhOrW7z1gt2kbukKFwtGrKF
-        l2MHnIrZ9r4/axlwctODHpHGhTXvRse/cuWxIwLaEEu+i5yq5WZqhmGqVE6qTxLW
-        iGwqDm9j0+/21LG/DxGD4n8UQixLIF+0RUB6s/oSM9GtEIxD+QNTLvh8xJ18LxZJ
-        XlYdPe0q0rsdJxelMQvqlCtlHW/ix+0OCvFKLuRgj5kWKtPnxrElNiyqrFNyYLrr
-        SpytwQGeKuT2snbSU+CpCztqBpEEBCcY4Xm4p4DnNWvTofJPr+D1UkrC9zKkB+/a
-        fi2dxlLhBy9I4bR6X7WfiPnHMm15s6mnKIA==
-In-Reply-To: <ZJjg9hFCfLe07dDc@deegan.id.au>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=arista.com; s=google; t=1687781219; x=1690373219;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=PRZhX2OedO6yvy8le6qjqBiOXWwhqwkwfvnbxnNZWRQ=;
+        b=Wo2lY5t1f7qnY1bGdUCTr2JTck3ieG15EmKmK0QCqyjfGda4PMxY7eof2wHnyudnOt
+         RvswsaZYPTb7F4eAwFiYdFDSqT0M45rE85x1gCk8+ofcFcPySW1m28lJhpp2b/lYZEOw
+         uJcAkfG86Pcg9ddaDx9ka6fKLCeXsmMNYYALTpJ2e6aHMi8CwjmERcKu8ByQPXJmNTrs
+         8NWUn0DGBiJf236JYW777PLvR+i4amY6zG252BuI5t5j+qedlPm4UM+5F/68Oz+uC5vP
+         yH65XCoWocXWjtmyfy5azlfkJvDFUxugarBlgN4V6ZgEWFlxmgVFpaln4EsairNXRq0s
+         QxHg==
+In-Reply-To: <ZJTEiNy6v0QR+ovT@calendula>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"
-To: Michael Deegan <michael@deegan.id.au>
-Cc: Eric <evil.function@proton.me>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org
 
-On Mon, 26 Jun 2023 08:51:02 +0800
-Michael Deegan <michael@deegan.id.au> wrote:
+> > My main concern is that in the nft version the AH rule matches one of the ICMP
+> > packets even though the ICMP rule is higher up on the list.
+> >
+> > I tried to debug this and it seems to be related to this change:
+> > https://github.com/torvalds/linux/commit/568af6de058cb2b0c5b98d98ffcf37cdc6bc38a7
+> > IIUC, this "stop ipv6_find_hdr on AH" is not a regression but intended behavior.
+> >
+> > Now the question: is there some way to define rules which will match
+> > the same way
+> > as it works in iptables-legacy? That is, look at the inner protocol
+> > and not stop on AH?
+>
+> IIRC behaviour between iptables-legacy and ip6tables-legacy with
+> regards to AH is inconsistent, because ip6tables-legacy -p matches on
+> the inner header encapsulated by AH, but iptables-legacy matches on AH
+> with -p.
 
-> > To decipher the parts of the match expression, this might help (scan fo=
-r "transport header").
-> >=20
-> > https://wiki.nftables.org/wiki-nftables/index.php/Matching_packet_heade=
-rs
->=20
-> Ta, I'll (re)read this in the hope of getting better understanding of the
-> grammar, which I'll need to do if I'm to work out why changing my table f=
-rom
-> "ip" to "inet" at the top of my ruleset breaks everything even though the
-> ruleset loads fine. =F0=9F=98=85
-
-Note that "ip protocol" constitutes an IPv4 header expression. It can be re=
-placed with "meta l4proto", in which case the rule(s) will apply for both I=
-Pv4 and IPv6.
-
---=20
-Kerin Millar
+OK, I understand that this was an inconsistency and it was fixed with
+above change
+in the kernel but does this mean that there is currently no way to
+check the inner
+protocol? Or maybe there is some other match or extension which could be used
+to get the "old iptables style" behaviour?
