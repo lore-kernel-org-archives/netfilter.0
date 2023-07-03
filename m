@@ -1,36 +1,39 @@
-From: chatchunsearch@gmail.com
-Subject: nftables Wiki! Enhance user experience with a chat widget!
-Date: Thu, 29 Jun 2023 19:05:36 -0700 (PDT)
-Message-ID: <649e3870.a70a0220.e6fc2.e91f@mx.google.com>
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1688097629; x=1690689629;
-        h=subject:from:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=9ISj3kmU3jjwPu0O7fz7JaphDyWC6FJUe7VUGZimBko=;
-        b=HR7Vm+/yXpUnrgYpvoE2cjTO7BqEJvEzstIgq4EYGXoaMTE1crtxGej6d8YEHMuMod
-         8nbxAeCQNPXu/ljFFpjzW7D7V5e+Sf8xF/XenyfO/50HnsjvBeTqmqnjJOLip6+q36vA
-         niyTiwZoW/pjXnnGg9XEMd9d+3/E6Tna0Lbhlp8sCNBZtt4NxmKdIc8aOUvp8M4QfqQ1
-         pDib7DKzB5dNlaivsAqee+Lqx9yagsDDT3T/8TxSKMjycYlvBH2i/0BtlG45dSg01Ltq
-         dAUhKIXCp5HNMUICOA8YLneIgsAvSSiiYsZLUNuklsDYri0pVSQ7F/Bh33ldBTCyRPAt
-         UUeA==
-List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+From: Serg <seentr@at.encryp.ch>
+Subject: Best practices on iif usage at persistent ruleset
+Date: Mon, 3 Jul 2023 10:40:26 +0300
+Message-ID: <ede291f8-c556-0d0c-d598-7c69f387ed74@at.encryp.ch>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-To: 
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=at.encryp.ch;
+        s=flopster; t=1688370027;
+        bh=lbEEid1qzfGsxhijSmFcuy9OrLm1y5InGeh3zs0F1Ek=;
+        h=Date:From:To:Subject;
+        b=xBM7/03Kr5JydEl2nRyYlUk5iCToiaRgOaL7bSA9CdF2+55XDHNBwKtF7c6/kMVdm
+         8/G/GDiAvBzMSGFB15yVhlQFICh+a14XgDJUEhroKonTnrCXP/yGt9CgB+kACCyUIk
+         WIEboj+dQmhCQ9w5q3uJ51lpqZqSBeXspSNyA9KQ=
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Dear nftables Wiki Team,
+Hello netfilter community,
 
-I recently visited your website and found it to be a valuable resource for understanding and implementing nftables.
+How do you deal with iif used at persistent ruleset? Personally, my 
+issue is that VLAN device is not created at the moment when 
+nftables.service is started on boot, thus the following error happens:
 
-I wanted to introduce you to chatchun.com, a live chat service widget developed by our team at Chatchun. Our widget provides a convenient way to incorporate a chat functionality into your website, allowing you to enhance user engagement and support. With Chatchun, you can provide real-time assistance to users, helping them navigate and utilize nftables effectively.
+> Error: Interface does not exist
 
-If you're interested in exploring how Chatchun can benefit your website, please reach out to us at chatchunreach@gmail.com. We would be happy to answer any questions you may have or schedule a demonstration for you.
+To solve this issue I use this systemd service override configuration:
 
-Best regards,
+> # /etc/systemd/system/nftables.service.d/override.conf
+> # Configuring the nftables to start after the network has been started
+> [Unit]
+> Before=
+> After=network-online.target
 
-Albert
-Chatchun
+But are there any alternatives approaches to this issue?
 
-Website: https://chatchun.com/
+I know that there is iifname as a safe alternative, but as far as I know 
+it has huge performance drawback and thus its' usage is discouraged in 
+my case.
