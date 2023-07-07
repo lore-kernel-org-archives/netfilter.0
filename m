@@ -1,27 +1,49 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: Best practices on iif usage at persistent ruleset
-Date: Tue, 4 Jul 2023 15:09:21 +0200
-Message-ID: <20230704130921.GA3751@breakpoint.cc>
-References: <ede291f8-c556-0d0c-d598-7c69f387ed74@at.encryp.ch>
- <20230703152544.GD7043@breakpoint.cc>
- <66270f9c-6465-62bd-e100-c6615df86ac2@gmail.com>
+From: Holzwarth Dominique <Dominique.Holzwarth@haslerrail.com>
+Subject: input rule for "related" UDP traffic
+Date: Fri, 7 Jul 2023 05:04:28 +0000
+Message-ID: <VI1PR04MB4463531FF258785208DFD8C78C2DA@VI1PR04MB4463.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <66270f9c-6465-62bd-e100-c6615df86ac2@gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=haslerrail.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=fJP3AooPdXBg+hUEyAUpVZTmG0LefJ+T2hbsPgJeGjM=;
+ b=VwDXcW4R/GVT+C0GiHLDE2WScg6xNuoFCAiRfByx8e9im1PLsNkc6vTuCa7qH/1ln/zabFBq273JEaDSsTgj6xiANhml9yiM8PUIfKh+vNyiP59nrI2oL67nMW7ZFm0pCOKPYIfbo/ZldkOH40ZJBVpjaFElxR5K/cKbkvwjF54=
+Content-Language: de-CH
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: George Shuklin <george.shuklin@gmail.com>
-Cc: Florian Westphal <fw@strlen.de>, Serg <seentr@at.encryp.ch>, netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-George Shuklin <george.shuklin@gmail.com> wrote:
-> On 03/07/2023 18:25, Florian Westphal wrote:
-> > Serg <seentr@at.encryp.ch> wrote:
-> > > I know that there is iifname as a safe alternative, but as far as I know it
-> > > has huge performance drawback and thus its' usage is discouraged in my case.
-> > Not really. Its copy and compare 4 bytes vs. copy and compare 16 bytes.
-> 
-> Is iface name lookup o(1)?
-
-Yes, its just dev->name vs. dev->ifindex.
+SGVsbG8gZXZlcnlvbmUKCkkgaGF2ZSBhIHByb3RvY29sIHRoYXQgZG9lcyB0aGUgZm9sbG93aW5n
+OgoKaG9zdEHigILigILigILigILigILigILigILigILigILigILigILigILigILigILigILigILi
+gILigILigILigILigILigILigILigILigILigILigILigILigILigILigILigILigILCoCAgICAg
+ICAgIGhvc3RCCgpJUHY0IHNvdXJjZSBhZGRyZXNzIDHigILigILigILigILigILigILigILigILi
+gILigILigILigILigILigILigILigILigILigILigILigILigIIgICAgICAgSVB2NCBkZXN0aW5h
+dGlvbiBhZGRyZXNzIDIKUmFuZG9tIFVEUCBzb3VyY2UgcG9ydCB4wqAgwqAgwqAgwqAgwqAtLS0t
+LS0tLS0tLT7igILigILigILCoOKAgndlbGwta25vd24gVURQIHBvcnQgQQoKUmFuZG9tIFVEUCBk
+ZXN0aW5hdGlvbiBwb3J0IHjigII8LS0tLS0tLS0tLS3CoCDCoCDCoMKgwqAgwqBSYW5kb20gVURQ
+IHNvdXJjZSBwb3J0IHkKCnNvIGJhc2ljYWxseSwgaXQgaXMgc29tZSBraW5kIG9mICJyZXF1ZXN0
+LXJlcGx5IiBwcm90b2NvbCB3aGVyZSB0aGUgcmVwbHkgaXMgc2VudCBiYWNrIHRvIHRoZSByYW5k
+b20gc291cmNlIHBvcnQgb2YgdGhlIHJlcXVlc3QuCgpJJ2QgbGlrZSB0byBoYXZlIGFuIGlucHV0
+IGNoYWluICh0eXBlIGZpbHRlciwgaG9vayBpbnB1dCkgd2l0aCBhIGRlZmF1bHQgcG9saWN5IHRo
+YXQgZHJvcHMgZXZlcnl0aGluZy4gVGhlbiwgSSdkIGxpa2UgdG8gYWNjZXB0IHNwZWNpZmljIHNl
+cnZpY2VzL3BvcnRzIG9ubHkuCklzIGl0IHBvc3NpYmxlIHRvIGRvIHRoaXMgZm9yIHRoZSBhYm92
+ZSBzY2VuYXJpbz8KSSBvYnZpb3VzbHkgY2Fubm90IGFkZCBhIHNpbXBsZSBydWxlIGJhc2VkIG9u
+ICJkYWRkciIgYW5kICJkcG9ydCIgYXMgdGhlIGRlc3RpbmF0aW9uIHBvcnQgb2YgdGhlIGluY29t
+aW5nIHJlcGx5IGlzIHJhbmRvbS4KSSd2ZSB0cmllZCB0byBkbzoKaXAgZGFkZHIgMTAuMTAuMS4x
+MDAgY3Qgc3RhdGUgZXN0YWJsaXNoZWQscmVsYXRlZCBhY2NlcHQgKEkgYWxzbyB3YW50IHRvIHJl
+c3RyaWN0IHRoZSBkZXN0aW5hdGlvbiBhZGRyZXNzIG9mIGluY29taW5nIHBhY2tldHMgYXMgdGhl
+IHN5c3RlbSBjYW4gaGF2ZSBtdWx0aXBsZSBuZXR3b3JrcyBvbiB0aGUgc2FtZSBwaHlzaWNhbCBk
+ZXZpY2UpCgpidXQgdGhpcyBhKSBpcyBub3QgcmVsYXRlZCB0byB0aGUgd2VsbC1rbm93biBkZXN0
+aW5hdGlvbiBwb3J0IG9mIHRoZSByZXF1ZXN0IChzbyBub3QgcmVzdHJpY3RlZCB0byB0aGlzIHNw
+ZWNpZmljIHByb3RvY29sKSBhbmQgYikgZG9lc24ndCB3b3JrIGFueXdheS4uLgoKSSB3YXMgdGhp
+bmtpbmcgaWYgaXQncyBwb3NzaWJsZSB0byB0ZWxsIG5ldGZpbHRlciB0aGF0IHRoZSBwYWlyICJk
+ZXN0aW5hdGlvbiBwb3J0ICsgc291cmNlIGFkZHJlc3MiIG9mIHRoZSByZXF1ZXN0IGlzIGEgImNv
+bm5lY3Rpb24iLiBTbyB0aGF0IGl0IG1heWJlIGxpbmtzIHRoZSBzb3VyY2UgcG9ydCB0byB0aGlz
+IGNvbm5lY3Rpb24gYXMgd2VsbCBhbmQgYWZ0ZXJ3YXJkcywgd2hlbiBpdCBzZWVzIHRoZSBzb3Vy
+Y2UgcG9ydCBhbmQgc291cmNlIGFkZHJlc3MgYXMgZGVzdGluYXRpb25zIGl0IG1heSBhc3NvY2lh
+dGUgdGhpcyBpbmNvbWluZyBwYWNrZXQgdG8gbXkgY29ubmVjdGlvbiAoYW5kIGkgY291bGQgdGVs
+bCBpdCB0byBhY2NlcHQgaW5jb21pbmcgcGFja2V0cyBmb3IgdGhpcyBjb25uZWN0aW9uKS4KCkkg
+aG9wZSB5b3UgY2FuIHVuZGVyc3RhbmQgd2hhdCBJJ20gdHJ5aW5nIHRvIGFyY2hpdmUgYW5kIGNh
+biBoZWxwIG1lIHdpdGghCgpLaW5kIHJlZ2FyZHMKRG9taW5pcXVl
