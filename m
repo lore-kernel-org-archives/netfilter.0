@@ -1,35 +1,54 @@
-From: Nayan Gadre <beejoy.nayan@gmail.com>
-Subject: Doubt on Iptables protocol extension
-Date: Tue, 11 Jul 2023 19:20:34 +0530
-Message-ID: <CABTgHButSdTAUEh0j7YApZKB9MddnGHvKT-Bn35DwxrduHzo-Q@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] libnftnl 1.2.6 release
+Date: Tue, 11 Jul 2023 18:58:58 +0200
+Message-ID: <ZK2KUlzZzlQ8/mKa@calendula>
 Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="mSGEbGQnIBDK8HSy"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1689083446; x=1691675446;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=wRHrLbHDRmRebUrrWEuElnIT9hqJDry4iE/6qkcOxd4=;
-        b=IlPSNTPVKTZ1chBW9xiP9ZYM4JsR5iWh5jS+Sxt1K7jLynhBDLmnEECi+6IpPKi5X2
-         Ot2caOkXzylZmbLgEn42AzC8xO3JV28G7wE0NSEEA9Cf5fr1Ep00pvPD5XkbKYbYjxZF
-         1vO1ceFKItXDRMRgrM+R9tOtDFlSInu4NugMJu1BudGEaaTTvS3Wat+teoBY7xCapb9G
-         5yPsnzGVifLY0VuoZ8mcevv29Y/rT3dPk2NxYZQrWrCrifFbbmmiGDVNrsOtxVbimQ6m
-         yPM1E/YDOsTUCGeOn2qAoGxGobuuNFvBEFqTirYE7Ba4PtbqkzBtZXAc45+bj4wCQSpQ
-         unjw==
+Content-Disposition: inline
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: netfilter-devel@vger.kernel.org
+Cc: netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
 
-Hi,
 
-I was reading difference between iptables and nftables and why
-nftables are better.
-I came across this statement "The user space tools simply generate the
-bytecode and pass it to the kernel for execution allowing new
-protocols to be supported without kernel changes.". I wanted to know,
-example of any protocol (which would have to be compiled as separate
-kernel module in case of iptables) that nftables solves without
-compiling kernel modules.
+--mSGEbGQnIBDK8HSy
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
-Thanks
-N Gadre
+Hi!
+
+The Netfilter project proudly presents:
+
+        libnftnl 1.2.6
+
+libnftnl is a userspace library providing a low-level netlink
+programming interface (API) to the in-kernel nf_tables subsystem.
+This library is currently used by nftables.
+
+This release includes meta broute support.
+
+See ChangeLog that comes attached to this email for more details on
+the updates.
+
+You can download it from:
+
+https://www.netfilter.org/projects/libnftnl/downloads.html
+
+Happy firewalling.
+
+--mSGEbGQnIBDK8HSy
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: attachment; filename="changes-libnftnl-1.2.6.txt"
+
+Pablo Neira Ayuso (1):
+      build: libnftnl 1.2.6 release
+
+Sriram Yagnaraman (1):
+      expr: meta: introduce broute meta expression
+
+shixuantong (2):
+      tests: nft-table-test: fix typo
+      tests: nft-rule-test: Add test cases to improve code coverage
+
+
+--mSGEbGQnIBDK8HSy--
