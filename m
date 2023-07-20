@@ -1,47 +1,65 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: nftables 1.0.8 showing invalid type for ip dscp
-Date: Wed, 19 Jul 2023 02:16:07 +0200
-Message-ID: <ZLcrR3/BdjsvDQIF@calendula>
-References: <CAOoaxdHd1RHx8o4uWFtMAVV0D59uNv7_JApfC1S6uoUGrsf_2A@mail.gmail.com>
+From: Kuniyuki Iwashima <kuniyu@amazon.com>
+Subject: Re: skb->mark not cleared for MLDv2 Reports? (skb->mark == 212 / 0xd4)
+Date: Thu, 20 Jul 2023 13:05:27 -0700
+Message-ID: <20230720200527.25978-1-kuniyu@amazon.com>
+References: <ZLUkWyFiwEqi721V@sellars>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAOoaxdHd1RHx8o4uWFtMAVV0D59uNv7_JApfC1S6uoUGrsf_2A@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1689883548; x=1721419548;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=n0V9Ssl4foYYslO6teD3c2aPdxXDj7QzX+mBq/yTlwU=;
+  b=ipeaJGuz+0rhl7DCw0FaVWpuTTsk3W2p1GVvysrBFA7M48/CycM6okWf
+   qEtOLa9sAci6nFBgMxS0nDFbtnNtUjEss/RE6TbQoewY/HbhzPfdb8gBK
+   lg+C7KtPpVGi+s1Q1zzt/1ZmPH9JjCHh2pnTl7oa3a4YnakYbfVgZYJ78
+   U=;
+In-Reply-To: <ZLUkWyFiwEqi721V@sellars>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Brian Davidson <davidson.brian@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: linus.luessing@c0d3.blue
+Cc: edumazet@google.com, netdev@vger.kernel.org, netfilter@vger.kernel.org, kuniyu@amazon.com
 
-Hi,
-
-Thanks for reporting.
-
-On Tue, Jul 18, 2023 at 11:31:38AM -0400, Brian Davidson wrote:
-> The following ruleset setting ct mark from ip dscp does not display
-> the right-hand expression 'ip dscp' correctly when listing the
-> ruleset.
-
-This patch fixes this issue:
-
-https://patchwork.ozlabs.org/project/netfilter-devel/patch/20230719001444.154070-1-pablo@netfilter.org/
-
-> It instead displays '@nh,8,8 & 0xfc [invalid type]'.  'ip6 dscp' looks normal.
+From: Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>
+Date: Mon, 17 Jul 2023 13:22:03 +0200
+> Hi,
 > 
-> table inet x {
->         chain y {
->                 type filter hook postrouting priority mangle + 1; policy accept;
->                 ct mark set ip dscp | 0x40 counter
->                 ct mark set ip6 dscp | 0x40 counter
->         }
-> }
+> I noticed that MLDv2 Reports don't seem to have a default
+> skb->mark of 0. Instead it is 212 / 0xd4 for me:
 > 
-> # nft list table inet x
-> table inet x {
->         chain y {
->                 type filter hook postrouting priority mangle + 1; policy accept;
->                 meta nfproto ipv4 ct mark set @nh,8,8 & 0xfc [invalid
-> type] | 0x40 counter packets 3584 bytes 575402
->                 ct mark set ip6 dscp | 0x40 counter packets 755 bytes 255731
->         }
-> }
+> ```
+> $ ip link add dummy0 type dummy
+> $ ip link set up dummy0 arp on
+> $ ip6tables -I INPUT -i dummy0 -j LOG --log-ip-options
+> [ send an MLDv2 Query, for instance via the ipv6toolkit
+>   https://github.com/T-X/ipv6toolkit/tree/pr-mldq6-mldv2
+
+I haven't looked yet though, a complete repro would make
+us debug it easier.  (Same for MLDv1)
+
+Thanks!
+
+
+> ]
+> $ dmesg
+> ...
+> [38336.524879] IN= OUT=dummy0 SRC=fe80:0000:0000:0000:1c01:1cff:fec1:5669 DST=ff02:0000:0000:0000:0000:0000:0000:0016 LEN=76 TC=0 HOPLIMIT=1 FLOWLBL=0 OPT ( ) PROTO=ICMPv6 TYPE=143 CODE=0 MARK=0xd4
+> ...
+> ```
+> 
+> For MLDv1 Reports I don't see this issue, there it's always
+> 0 by default.
+> 
+> I'm wondering if this 212 value comes from the
+> skb->reserved_tailroom (formerly avail_size) which the skb->mark
+> is unioned with? Am I reading
+> a21d45726a ("tcp: avoid order-1 allocations on wifi and tx path")
+> correctly that the IPv6 stack should have reset skb->mark to 0
+> before transmission?
+> 
+> Initially observed on a Linux 5.10.184. But I can reproduce
+> this on a Linux 6.3.7, too.
+> 
+> Regards, Linus
