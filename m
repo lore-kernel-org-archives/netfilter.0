@@ -1,65 +1,90 @@
-From: Kuniyuki Iwashima <kuniyu@amazon.com>
-Subject: Re: skb->mark not cleared for MLDv2 Reports? (skb->mark == 212 / 0xd4)
-Date: Thu, 20 Jul 2023 13:05:27 -0700
-Message-ID: <20230720200527.25978-1-kuniyu@amazon.com>
-References: <ZLUkWyFiwEqi721V@sellars>
+From: Matt Zagrabelny <mzagrabe@d.umn.edu>
+Subject: ct state module issue
+Date: Tue, 25 Jul 2023 14:11:04 -0500
+Message-ID: <CAOLfK3WzBo=dPJ0WEvpO4wFPnSp1uEkBXRWpxRSz7Guou3z7kw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p5.oit.umn.edu 4R9RTK58dgz9vFPp
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1689883548; x=1721419548;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=n0V9Ssl4foYYslO6teD3c2aPdxXDj7QzX+mBq/yTlwU=;
-  b=ipeaJGuz+0rhl7DCw0FaVWpuTTsk3W2p1GVvysrBFA7M48/CycM6okWf
-   qEtOLa9sAci6nFBgMxS0nDFbtnNtUjEss/RE6TbQoewY/HbhzPfdb8gBK
-   lg+C7KtPpVGi+s1Q1zzt/1ZmPH9JjCHh2pnTl7oa3a4YnakYbfVgZYJ78
-   U=;
-In-Reply-To: <ZLUkWyFiwEqi721V@sellars>
+        d=d.umn.edu; s=google; t=1690312276; x=1690917076;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=XPXbboa/X/kR5YtlBZn1YKVxtwQ2Ux7fhv5UYZLfwKs=;
+        b=RDe6kOrsLmANUvnb3bm303AnkIq1GHPL8bkQcM26VkrVf7ZjJcT5cDPVJNghkkgPXf
+         JCCzYAqzzdbfSRZmCiHZGAnBZ/1Ll4UFMqHbDRVWHMz1vAwsEQjJtbGzw63J3wf02ysS
+         jkgZ9BohnWrYgjOsDYr8zTuuc00PoTgIl+xp8+mPXTNloTdEIYlmZh2xOqUxB6c2UImE
+         MIJWE4weyhxxdC7TWmqCodl0q5uMO+xndalFeVxyK+eXi1EEbeF8+ctfiqVCi+k4McBo
+         K3gZFXwjgKjv4je868IzMbtCBF7zEddMU8AUB9sHY19n86TkNgJ5MFssoxZzso3cB7tI
+         Qc8Q==
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: linus.luessing@c0d3.blue
-Cc: edumazet@google.com, netdev@vger.kernel.org, netfilter@vger.kernel.org, kuniyu@amazon.com
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@vger.kernel.org>
 
-From: Linus =?utf-8?Q?L=C3=BCssing?= <linus.luessing@c0d3.blue>
-Date: Mon, 17 Jul 2023 13:22:03 +0200
-> Hi,
-> 
-> I noticed that MLDv2 Reports don't seem to have a default
-> skb->mark of 0. Instead it is 212 / 0xd4 for me:
-> 
-> ```
-> $ ip link add dummy0 type dummy
-> $ ip link set up dummy0 arp on
-> $ ip6tables -I INPUT -i dummy0 -j LOG --log-ip-options
-> [ send an MLDv2 Query, for instance via the ipv6toolkit
->   https://github.com/T-X/ipv6toolkit/tree/pr-mldq6-mldv2
+Greetings netfilter,
 
-I haven't looked yet though, a complete repro would make
-us debug it easier.  (Same for MLDv1)
+I'm running kernel: 6.1.0-10-amd64
+and
+nftables v1.0.6 (Lester Gooch #5)
 
-Thanks!
+I have a set of nftables rules that have served me well for Debian 11
+- thanks in large part to the netfilter mailing list, so...thank you!
+nftables on Debian 11 is: 0.9.8-3.1+deb11u1
 
+I have recently installed Debian 12 and tried my nftables rules and
+have hit a snag with the connection tracking and a verdict map.
+nftables on Debian 12 is: 1.0.6-2+deb12u1
 
-> ]
-> $ dmesg
-> ...
-> [38336.524879] IN= OUT=dummy0 SRC=fe80:0000:0000:0000:1c01:1cff:fec1:5669 DST=ff02:0000:0000:0000:0000:0000:0000:0016 LEN=76 TC=0 HOPLIMIT=1 FLOWLBL=0 OPT ( ) PROTO=ICMPv6 TYPE=143 CODE=0 MARK=0xd4
-> ...
-> ```
-> 
-> For MLDv1 Reports I don't see this issue, there it's always
-> 0 by default.
-> 
-> I'm wondering if this 212 value comes from the
-> skb->reserved_tailroom (formerly avail_size) which the skb->mark
-> is unioned with? Am I reading
-> a21d45726a ("tcp: avoid order-1 allocations on wifi and tx path")
-> correctly that the IPv6 stack should have reset skb->mark to 0
-> before transmission?
-> 
-> Initially observed on a Linux 5.10.184. But I can reproduce
-> this on a Linux 6.3.7, too.
-> 
-> Regards, Linus
+When I run the offending snippet:
+
+# nft -f /etc/nftables.conf.d/300-common.d/200-connection-tracking.nft
+/etc/nftables.conf.d/300-common.d/200-connection-tracking.nft:4:9-16:
+Error: Could not process rule: No such file or directory
+        ct state vmap {
+        ^^^^^^^^
+# cat /etc/nftables.conf.d/300-common.d/200-connection-tracking.nft
+table inet filter {
+    chain input {
+        # accept traffic originated from us
+        ct state vmap {
+            established: accept,
+            related:     accept,
+            invalid:     drop,
+        }
+    }
+}
+
+When I watch the kernel logs (journalctl), I see:
+
+Jul 25 13:44:04 localhost kernel: BPF: [99725] STRUCT
+Jul 25 13:44:04 localhost kernel: BPF: size=104 vlen=12
+Jul 25 13:44:04 localhost kernel: BPF:
+Jul 25 13:44:04 localhost kernel: BPF: Invalid name
+Jul 25 13:44:04 localhost kernel: BPF:
+Jul 25 13:44:04 localhost kernel: failed to validate module
+[nf_conntrack] BTF: -22
+Jul 25 13:44:04 localhost kernel: missing module BTF, cannot register kfuncs
+
+I've tried to load the module manually:
+
+# lsmod | rg nf
+nf_defrag_ipv6         24576  0
+nf_defrag_ipv4         16384  0
+nf_tables             290816  0
+libcrc32c              16384  1 nf_tables
+nfnetlink              20480  1 nf_tables
+binfmt_misc            24576  1
+configfs               57344  1
+
+# modprobe nft_ct
+modprobe: ERROR: could not insert 'nft_ct': Unknown symbol in module,
+or unknown parameter (see dmesg)
+
+dmesg shows the same as the kernel message as above.
+
+I'm starting to struggle with where to look for debugging clues. Any
+help would be very appreciated.
+
+Thank you!
+
+-m
