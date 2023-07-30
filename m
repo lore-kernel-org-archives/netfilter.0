@@ -1,115 +1,67 @@
-From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Subject: Re: ct state module issue
-Date: Wed, 26 Jul 2023 09:19:10 -0700
-Message-ID: <CAADnVQ+PHXbeGjm6ty6f7KbGZGinvng1SG_BdDh85T=1tvHoXQ@mail.gmail.com>
-References: <CAOLfK3WzBo=dPJ0WEvpO4wFPnSp1uEkBXRWpxRSz7Guou3z7kw@mail.gmail.com>
- <20230725193346.GA5720@breakpoint.cc> <CAADnVQJ+bQ=2XJgY815TfAK-K8BgDAD6n9pLXBHbwBZhsxnUtA@mail.gmail.com>
- <ZMDNywzqUqjmdhOO@calendula>
+From: Tim Mooney <Tim.Mooney@ndsu.edu>
+Subject: converting iptables/ip6tables to efficient nftables rules
+Date: Sun, 30 Jul 2023 15:30:14 -0500 (CDT)
+Message-ID: <924b35f-bda5-6ae5-efe-d05a8de7aec__42971.3546576508$1690749545$gmane$org@ndsu.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1690388362; x=1690993162;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CfaC9K7AqxGN6MEogR0sLkTz3CLcnEyvD5fFKZave0o=;
-        b=OHc15JB4eCNfL01BE/0pcgcCKs/JsOn9sIzlzgOHzgpSveViDn7GBZvfjgMl90NnJe
-         UJwfnMw61noay5LQGtp6FAFFYwFYBz2Ybq3Owx0sQ+787H8QNq3Ya6/M1WMwttG5OzFo
-         vl5mW12olIDPt2nTgqjCTk4qNyxs034tKGuIsKmyFYiQ1sJj098h2F9384BUhLEH9FWz
-         7cQvFEHgYZcfB61/muC3A9t6NrAzZGHRGUdd0SyuGOpdmkuqZWWtclbIbAgkUOZBB6Nn
-         4FxNxvj1FPHkzGaRypO0hMNhYfWh+/RPG4yTfzmwp8VckL4ieojNlX4dqb43OfdSJDnw
-         IfnQ==
-In-Reply-To: <ZMDNywzqUqjmdhOO@calendula>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Florian Westphal <fw@strlen.de>, Matt Zagrabelny <mzagrabe@d.umn.edu>, netfilter <netfilter@vger.kernel.org>, bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; format="flowed"; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On Wed, Jul 26, 2023 at 12:40=E2=80=AFAM Pablo Neira Ayuso <pablo@netfilter=
-.org> wrote:
->
-> Hi Alexei,
->
-> On Tue, Jul 25, 2023 at 12:57:13PM -0700, Alexei Starovoitov wrote:
-> > On Tue, Jul 25, 2023 at 12:33=E2=80=AFPM Florian Westphal <fw@strlen.de=
-> wrote:
-> > >
-> > > Matt Zagrabelny <mzagrabe@d.umn.edu> wrote:
-> > >
-> > > [ CCing bpf/btf experts ]
-> > >
-> > > > I'm running kernel: 6.1.0-10-amd64
-> > > > and
-> > > > nftables v1.0.6 (Lester Gooch #5)
-> > > >
-> > > > I have a set of nftables rules that have served me well for Debian =
-11
-> > > > - thanks in large part to the netfilter mailing list, so...thank yo=
-u!
-> > > > nftables on Debian 11 is: 0.9.8-3.1+deb11u1
-> > > >
-> > > > I have recently installed Debian 12 and tried my nftables rules and
-> > > > have hit a snag with the connection tracking and a verdict map.
-> > > > nftables on Debian 12 is: 1.0.6-2+deb12u1
-> > > >
-> > > > When I run the offending snippet:
-> > > >
-> > > > # nft -f /etc/nftables.conf.d/300-common.d/200-connection-tracking.=
-nft
-> > > > /etc/nftables.conf.d/300-common.d/200-connection-tracking.nft:4:9-1=
-6:
-> > > > Error: Could not process rule: No such file or directory
-> > > >         ct state vmap {
-> > >
-> > > [..]
-> > >         ^^^^^^^^
-> > > > When I watch the kernel logs (journalctl), I see:
-> > > >
-> > > > Jul 25 13:44:04 localhost kernel: BPF: [99725] STRUCT
-> > > > Jul 25 13:44:04 localhost kernel: BPF: size=3D104 vlen=3D12
-> > > > Jul 25 13:44:04 localhost kernel: BPF:
-> > > > Jul 25 13:44:04 localhost kernel: BPF: Invalid name
-> > > > Jul 25 13:44:04 localhost kernel: BPF:
-> > > > Jul 25 13:44:04 localhost kernel: failed to validate module
-> > > > [nf_conntrack] BTF: -22
-> > > > Jul 25 13:44:04 localhost kernel: missing module BTF, cannot regist=
-er kfuncs
-> > >
-> > > So nf_conntrack.ko fails to load because of a btf issue.
-> > >
-> > > My question to bpf folks is:
-> > >
-> > > Should we make register_nf_conntrack_bpf() return 'void'?
-> > >
-> > > This way normal conntrack would still work.  bpf programs using
-> > > conntrack kfuncs would fail, but above dmesg splat already gives
-> > > a clue as to why conntrack kfuncs aren't there.
-> > >
-> > > No idea about the actual problem or how to debug that, but bpf
-> > > people should know.
-> >
-> > The pr_err() was changed to pr_warn() in
-> > commit 3de4d22cc9ac ("bpf, btf: Warn but return no error for NULL btf
-> > from __register_btf_kfunc_id_set()").
->
-> OK, no ENOENT anymore, hence no bail out.
->
-> > Please upgrade the kernel and ignore the warn if you don't need bpf/btf=
-/kfuncs.
-> >
-> > Three links in that commit provide more details.
->
-> Jul 25 13:44:04 localhost kernel: BPF: [99725] STRUCT
-> Jul 25 13:44:04 localhost kernel: BPF: size=3D104 vlen=3D12
-> Jul 25 13:44:04 localhost kernel: BPF:
-> Jul 25 13:44:04 localhost kernel: BPF: Invalid name
-> Jul 25 13:44:04 localhost kernel: BPF:
->
-> Are these debugging logs above still displayed? Maybe remove them too
-> or only display them when all required things are in place and users
-> opt-in to use this new infrastructure?
 
-Kernel doesn't print them to console. These messages go to BTF verifier log
-supplied by user space. It's not clear what process sends them to journalct=
-l.
+All-
+
+I haven't been able to find anywhere in the nftables wiki that talks
+about "Dos and Don'ts" from an efficiency perspective, especially for
+people that may be coming from iptables/ip6tables to nftables.  If it's
+there and I've missed it, please point me at it.
+
+I have a mix of 32 iptables and ip6tables rules on a RHEL 7 box that I
+want to convert to nftables for RHEL 9 (kernel 5.14.0 + Red Hat vendor
+sauce, nftables 1.0.4).
+
+The obvious thing to do would be to just directly translate each rule to
+nftables, and have 32 nftables rules.
+
+However, the iptables rules are all pairs of
+
+ 	-A ports_allow -p tcp -m tcp -s X.Y.0.0/16 --dport 80 -j ACCEPT
+ 	-A ports_allow -p tcp -m tcp -s X.Y.0.0/16 --dport 443 -j ACCEPT
+
+ 	-A ports_allow -p tcp -m tcp -s A.B.C.D/32 --dport 80 -j ACCEPT
+ 	-A ports_allow -p tcp -m tcp -s A.B.C.D/32 --dport 443 -j ACCEPT
+
+So I could cut the number of ntables rules in half just by using
+
+ 	dport { 80, 443 }
+
+in the translated rule.
+
+The question is, *is it more efficient*, from a packet processing
+perspective, to do that?  My guess is that it is, but can anyone with
+expertise confirm?  If it is more efficient, what type of efficiency
+improvement are we talking about, roughly?
+
+Similarly, all of the rules list CIDR ranges or individual IPs, though
+there are a mix of IPv4 and IPv6 ranges.  I therefore could greatly reduce
+the number of rules by creating a couple of named sets, one for IPv4 and
+one for IPv6, and match the 'ip saddr' against the sets.
+
+Again, the question is, *is that more efficient* for the kernel to process
+than just having individual rules that each list a CIDR range or IP?  If
+using the two sets are more efficient, roughly how much so?
+
+I appreciate any information people can offer.  As my site converts more and
+more of our systems to using nftables, I would like to feel confident that
+we're writing updated rules that are at least as efficient (preferrably
+more so) as our old iptables/ip6tables rules.
+
+Thanks,
+
+Tim
+-- 
+Tim Mooney                                             Tim.Mooney@ndsu.edu
+Enterprise Computing & Infrastructure /
+Division of Information Technology    /                701-231-1076 (Voice)
+North Dakota State University, Fargo, ND 58105-5164
