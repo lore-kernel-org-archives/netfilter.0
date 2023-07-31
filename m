@@ -1,101 +1,77 @@
-From: Kerin Millar <kfm@plushkava.net>
-Subject: Re: converting iptables/ip6tables to efficient nftables rules
-Date: Sun, 30 Jul 2023 22:14:47 +0100
-Message-ID: <20230730221447.af1b866bdddfe794be4d9b47@plushkava.net>
-References: <924b35f-bda5-6ae5-efe-d05a8de7aec@ndsu.edu>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: toml <toml@thlu.de>
+Subject: Nftables + ALG + Linux 6.1.0-10-amd64
+ =?UTF-8?Q?=E2=80=A6=3F=2E=2E=2E?= is it a kown Problem?
+Date: Mon, 31 Jul 2023 09:57:51 +0200
+Message-ID: <51c40f7943609435e914c4f1fd43a98e6c579b83.camel@mail>
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-         h=cc:cc:content-transfer-encoding:content-type:content-type
-        :date:date:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to;
-         s=fm1; t=1690751689; x=1690838089; bh=bfE2OL8qVVBmdqxk0PSauRtiS
-        co+4rCbDVknxjeNWsM=; b=QOuxebo67t/334EfoERz7Yz8/9+lu5P7d2PPEU78x
-        jSo97VdwBRA0HBgR667ofMv86tKKGi8qodLKljCpdG6QsPOIHwrNyR73/2/jHOyE
-        z6cHaTi1jePomPrCfA0ArkOOW94bXfTDUsBF4VxP4+3LoWQxBb0UEPFbqHVgE5Wm
-        AjqrrU8MB8xPTWkDxuD5pWQaiamLc1Wm8m/VOv28CCzvWBnb9OmzneuYLFf9dCsP
-        ZBTObHBqwU9HkXg1n+sZuL9I1mLj5Vkb/2/HH6P0DszEPGH9yvbaVl+tBKPAox9t
-        PZsE60ufQn2xjwP/4thdtRqcLWHdtfHpXBAXtCfvTD18g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1690751689; x=1690838089; bh=bfE2OL8qVVBmdqxk0PSauRtiSco+4rCbDVk
-        nxjeNWsM=; b=l8tV8PAGHrzGJQCQD4VsV6PRNQOkS6Jk/yYeVuIeQkmrE2AE5AL
-        Mrl8SHB/r3K8peVcoUHBn/84+9i3lRFCZ5xw/OYvpwkpjIw5GOmV57IlouQ9wcz+
-        +DLjC2LuIxpS/JVsFbTU/siWEpTJHh0ejm3EB0dPMzGkTkfjwBymcF9t9yGm4dKx
-        NDvOnbVRP6k6mQ3OXWOsDbUBcCGfHzkZTwWv6tNbWsdZ2IKCkelHnoU0o0aWgPx9
-        mwsOO3G0QzQSRJshl2pdrQzKfXfg15Thg8BQ9EkOUaDyYmn8gtWiM6p/GxY2xIXP
-        8j35SET81XaeH5eOot59coyeozGq+mPO4Fw==
-In-Reply-To: <924b35f-bda5-6ae5-efe-d05a8de7aec@ndsu.edu>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Tim Mooney <Tim.Mooney@ndsu.edu>
-Cc: netfilter@vger.kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-On Sun, 30 Jul 2023 15:30:14 -0500 (CDT)
-Tim Mooney <Tim.Mooney@ndsu.edu> wrote:
+Good morning
 
-> 
-> All-
-> 
-> I haven't been able to find anywhere in the nftables wiki that talks
-> about "Dos and Don'ts" from an efficiency perspective, especially for
-> people that may be coming from iptables/ip6tables to nftables.  If it's
-> there and I've missed it, please point me at it.
-> 
-> I have a mix of 32 iptables and ip6tables rules on a RHEL 7 box that I
-> want to convert to nftables for RHEL 9 (kernel 5.14.0 + Red Hat vendor
-> sauce, nftables 1.0.4).
-> 
-> The obvious thing to do would be to just directly translate each rule to
-> nftables, and have 32 nftables rules.
-> 
-> However, the iptables rules are all pairs of
-> 
->  	-A ports_allow -p tcp -m tcp -s X.Y.0.0/16 --dport 80 -j ACCEPT
->  	-A ports_allow -p tcp -m tcp -s X.Y.0.0/16 --dport 443 -j ACCEPT
-> 
->  	-A ports_allow -p tcp -m tcp -s A.B.C.D/32 --dport 80 -j ACCEPT
->  	-A ports_allow -p tcp -m tcp -s A.B.C.D/32 --dport 443 -j ACCEPT
-> 
-> So I could cut the number of ntables rules in half just by using
-> 
->  	dport { 80, 443 }
-> 
-> in the translated rule.
-> 
-> The question is, *is it more efficient*, from a packet processing
-> perspective, to do that?  My guess is that it is, but can anyone with
-> expertise confirm?  If it is more efficient, what type of efficiency
-> improvement are we talking about, roughly?
+After updating my server from Bullseye to Bookworm I noticed that my
+NFT rules seem to be causing problems lately. Upon closer inspection,
+the running process came to a virtual halt with a kernel-panic-message
+in the journal. I was able to somehow narrow down the cause of the
+error to the application layer gateway - because it was running without
+it. Interestingly, I was able to open other consoles during the crash
+with ctrl-alt-f2/5, with (except for the network) apparently full
+functionality, to restart the machine. However, that Shutdown didn't
+work in the normal way either, but only with clear coercion: 'systemctl
+poweroff -f -f'.  Finally I reverted back to Bullseye, because
+stability was more important to me.
 
-# nft -d netlink -c -f - <<<'table ip t { chain c { ip saddr 10.0.0.0/16 tcp dport { 80, 443 } accept; }; }'
-ip (null) (null) use 0
-__set%d t 3 size 2
-__set%d t 0
-	element 00005000  : 0 [end]	element 0000bb01  : 0 [end]
-ip t c
-  [ payload load 2b @ network header + 12 => reg 1 ]
-  [ cmp eq reg 1 0x0000000a ]
-  [ meta load l4proto => reg 1 ]
-  [ cmp eq reg 1 0x00000006 ]
-  [ payload load 2b @ transport header + 2 => reg 1 ]
-  [ lookup reg 1 set __set%d ]
-  [ immediate reg 0 accept ]
+I then looked at the problem further in a Bookworm-VM, same problem,
+same cause, but without this dramatic effect. It seems, my problem is
+the ALG-FTP and the passive mode during file transfer... this obviously
+doesn't work anymore with Linux 6.1.0-10-amd64 at the moment. On my VM
+it looks like this:
 
-Unsurprisingly, repeating the rule can be shown to demonstrate twice the number of instructions. You may find it difficult to measure the difference, however.
+# cat /etc/modules-load.d/modules.conf
+    # /etc/modules: kernel modules to load at boot time.
+    #
+    # This file contains the names of kernel modules=C2=A0
+    # that should be loaded at boot time, one per line.=C2=A0
+    # Lines beginning with "#" are ignored.
 
-> 
-> Similarly, all of the rules list CIDR ranges or individual IPs, though
-> there are a mix of IPv4 and IPv6 ranges.  I therefore could greatly reduce
-> the number of rules by creating a couple of named sets, one for IPv4 and
-> one for IPv6, and match the 'ip saddr' against the sets.
+    nf_conntrack
+    nf_conntrack_ftp
+    nf_conntrack_tftp
 
-You are definitely on the right track. Maps and/or verdict maps incorporating concatenations of the form "ipv4_addr . inet_service" and "ipv6_addr . inet_service" might also prove useful, depending on your exact requirements.
+# journalctl -b | grep -i conntrack
+    Jul 30 20:33:31 ftps systemd-modules-load[238]:=C2=A0
+    Inserted module 'nf_conntrack'
+    Jul 30 20:33:31 ftps systemd-modules-load[238]:=C2=A0
+    Inserted module 'nf_conntrack_ftp'
+    Jul 30 20:33:31 ftps systemd-modules-load[238]:=C2=A0
+    Inserted module 'nf_conntrack_tftp'
 
--- 
-Kerin Millar
+# lsmod | grep nf_
+    nf_reject_ipv4         16384  1 nft_reject_ipv4
+    nf_tables             290816  119 nft_reject_ipv4,nft_ct,nft_reject
+    nfnetlink              20480  1 nf_tables
+    nf_conntrack_tftp      20480  0
+    nf_conntrack_ftp       24576  0
+    nf_conntrack          188416  3=C2=A0
+nf_conntrack_tftp,nft_ct,nf_conntrack_ftp
+    nf_defrag_ipv6         24576  1 nf_conntrack
+    nf_defrag_ipv4         16384  1 nf_conntrack
+    libcrc32c              16384  2 nf_conntrack,nf_tables
+
+# ls /proc/sys/net/netfilter/net.netfilter.nf_conntrack_helper
+    ls: File not found
+
+I cannot enable the conntrack-helper with '1'.
+
+Does anyone know if this is a known problem? What irritates me about
+the whole thing is the fact, that connection/file transfer with 'active
+mode' still seems to work, despite missing (!) open ports 1024-65535.=20
+That is, I am currently at a loss.
+
+Best regards
+Thomas
+
+(Translated with deepl)
