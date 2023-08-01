@@ -1,64 +1,68 @@
-From: hack3rcon@mail2tor.com
-Subject: I need help about to rewrite some iptables rules
-Date: Tue, 1 Aug 2023 06:01:11 -0400
-Message-ID: <ab5de8002b9af064582103c4ae386878.squirrel@_>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+From: toml <toml@thlu.de>
+Subject: Re: Nftables + ALG + Linux 6.1.0-10-amd64
+ =?UTF-8?Q?=E2=80=A6=3F=2E=2E=2E?= is it a kown Problem?
+Date: Tue, 01 Aug 2023 16:20:57 +0200
+Message-ID: <b47e1dc20a97eb4e6972d5cbfd2cf9dcaaab7e06.camel@mail>
+References: <51c40f7943609435e914c4f1fd43a98e6c579b83.camel@mail>
+         <20230731133608.GA21425@breakpoint.cc>
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <20230731133608.GA21425@breakpoint.cc>
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hello,
-I have an OpenVPN server that has a NIC with two virtual IP addresses:
+Hello Florian
 
-enp3s0     :  1.2.3.4
-enp3s0:1   :  1.2.3.5
-enp3s0:2   :  1.2.3.6
+Thank you for your response!=20
 
-Each NIC runs two OpenVPN servers:
+Am Montag, dem 31.07.2023 um 15:36 +0200 schrieb Florian Westphal:
+> You need to assign the helper to use in your nftables ruleset.
+>=20
 
-Server1.conf :
-Tun1
-1194
-10.10.0.0/16
+> You might need to do this from output too if you need
+> this to work from the machine itself as well.
 
-Server2.conf :
-Tun2
-1195
-10.11.0.0/16
+That is my test rule. My Server is both, FTP-Server (Web-Cams) and FTP-
+Client for various uploads.
 
-Server3.conf :
-Tun3
-1196
-10.12.0.0/16
+If I understand correctly, incoming packets (as FTP-Server) will first
+activate the helper in prerouting. The input rules then allow the
+control channel port 21 and the helper the (related) data channel port
+n.
 
-Server4.conf :
-Tun4
-1197
-10.13.0.0/16
+For outgoing packets (as FTP-Client) first the helper is activated in
+the output chain, then port 21 is allowed again, the helper handles the
+related data channel.=20
+
+Have I understood this correctly?
 
 
-I use the following iptables rules:
+table ip filter {
+  ct helper ftp-helper {
+      type "ftp" protocol tcp
+      l3proto ip
+  }
 
+  chain prerouting {
+      type filter hook prerouting priority -100; policy accept;
+      ct state 0x8 tcp dport 21 ct helper set "ftp-helper"
+  }
 
-# IF_MAIN=enp0s3
-# IF_TUNNEL=tun2
-# YOUR_OPENVPN_SUBNET=IP/16
-# iptables -I INPUT -p udp --dport PORT -j ACCEPT
-# iptables -A FORWARD -i $IF_MAIN -o $IF_TUNNEL -m state --state
-ESTABLISHED,RELATED -j ACCEPT
-# iptables -A FORWARD -s $YOUR_OPENVPN_SUBNET -o $IF_MAIN -j ACCEPT
-# iptables -t nat -A POSTROUTING -s $YOUR_OPENVPN_SUBNET -o $IF_MAIN -j
-MASQUERADE
-# iptables -t nat -A POSTROUTING -s $YOUR_OPENVPN_SUBNET -j SNAT --to
-$Virtual_NIC_IP
+  chain input {
+      type filter hook input priority 0; policy accept;
+      tcp dport 21 accept
+      ct helper "ftp" accept
+  }
 
+  chain output {
+      type filter hook output priority 0; policy accept;
+      ct state 0x8 tcp dport 21 ct helper set "ftp-helper"
+      ct state 0x8 tcp dport 21 accept
+      ct helper "ftp" accept
+  }
+}
 
-And for each IP address I must rewrite them. When the number of my servers
-increases, this is a hard task. How can I reduce these iptables rules?
-I'm thankful if anyone write some rules.
-
-
-Thank you.
-
+Best Regards
+Thomas
