@@ -1,44 +1,52 @@
-From: Eric <evil.function@proton.me>
-Subject: Re: nftables 1.0.6:  snat with maps
-Date: Wed, 02 Aug 2023 14:36:03 +0000
-Message-ID: <eajtHN1X5SQfn-dagoPk2oYxeIlA4_TrjP-DS2YR2pH4JkIgOIFMFfJEKWC-pLSafs8li8RLfUl_0JJYKWrq5F3DW9gIwDZ2xd4vB75of8E=@proton.me>
-References: <34f5ce6552e75f830d9340e8d576b73e@sieciuch.com>
+From: Tim Mooney <Tim.Mooney@ndsu.edu>
+Subject: Re: converting iptables/ip6tables to efficient nftables rules
+Date: Wed, 2 Aug 2023 13:48:35 -0500 (CDT)
+Message-ID: <3334ffcd-fa0-de56-408f-9d519fce87__45535.3486280487$1691002152$gmane$org@ndsu.edu>
+References: <924b35f-bda5-6ae5-efe-d05a8de7aec@ndsu.edu> <20230731125739.GC7056@breakpoint.cc>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
-        s=protonmail; t=1690986969; x=1691246169;
-        bh=Xnr6sIeYc5eqmPOsd4WN6DYFmyk/JL7IeX4dbNY+OKs=;
-        h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-         Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-         Message-ID:BIMI-Selector;
-        b=Cc51qDZdL9IOEHOjMCIdmjtfr00XJjXFmwNr5+gHBultMgoJUwKU9TdPUmPkKWh69
-         EM5SQa1aHFutJ7tu/KDm8q1+0uJv39lLp8eRBczFnpvHiNwXcC0tBYAqxcuU9NgtJ8
-         QbrQ/x+UcLlMAPaR6xqO+/jz+rbGk6sRcAiKRj1lGEb0VzGpiwZ4EBaeSiSobKG46+
-         LNbsm1qISUU6GfmTptZz2He4fO/FMPdI1rPTptGEVY3MXJBWV0r6A4Wz5pL7BGd5ej
-         0wjh0aQsVSI4T6DfiEZzNSq9sMptFk2z4khGW0X9tmAkY1xSatO6Gthl4NuxrWAuiK
-         YkhVFt7PZZ3ZQ==
-In-Reply-To: <34f5ce6552e75f830d9340e8d576b73e@sieciuch.com>
+In-Reply-To: <20230731125739.GC7056@breakpoint.cc>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: "Mucha Marcin, Sieciuch.com" <m.mucha@sieciuch.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Florian Westphal <fw@strlen.de>
 Cc: netfilter@vger.kernel.org
 
-On Wednesday, August 2nd, 2023 at 03:17, Mucha Marcin, Sieciuch.com <m.much=
-a@sieciuch.com> wrote:
->=20
-> chain source-nat {
-> type nat hook postrouting priority 100; policy accept;
-> ct state invalid drop;
-> oif enp7s0 ip saddr maps {10.0.0.0/24 : 192.168.10.8, 10.1.0.0/24 : 192.1=
-68.10.9};
-> }
+In regard to: Re: converting iptables/ip6tables to efficient nftables...:
 
-I believe you are missing the "snat" operation in the second clause of the =
-rule:
+> For the record, nft -o suggest to merge into one rule:
+>
+> nft -o -f example
+> Merging:
+> Y:3:3-68:               ip saddr 10.2.0.0/16 tcp dport 80 counter packets 0 bytes 0 accept
+> Y:4:3-69:               ip saddr 10.2.0.0/16 tcp dport 443 counter packets 0 bytes 0 accept
+> Y:5:3-68:               ip saddr 10.20.30.40 tcp dport 80 counter packets 0 bytes 0 accept
+> Y:6:3-69:               ip saddr 10.20.30.40 tcp dport 443 counter packets 0 bytes 0 accept
+> into:
+>
+> ip saddr . tcp dport { 10.2.0.0/16 . 80, 10.2.0.0/16 . 443, 10.20.30.40 . 80, 10.20.30.40 . 443 } counter accept
+>
+> depending on the number of elements you might want to use
+> a named set for this, so you can add/remove to it later.
 
-    oif enp7s0  snat ip saddr maps {10.0.0.0/24 : 192.168.10.8,
-This guy ------ ^^^^
+Thanks Florian!
 
+I really appreciate you taking the time to answer my questions.
 
-Eric
+The version of nft I've mainly been working with (0.9.3 on RHEL 8) doesn't
+document '-o' (--optimize), but I see the version on RHEL 9 does document it.
+
+I'm probably going to proceed with the named set approach, mainly because
+it will be easier for my coworkers to read.  The sysadmins I work with
+are all very smart people, but many of them don't work with Linux as much
+as I do.  Using named sets (one for IPv4, one for IPv6) is a little more
+"obvious".
+
+Thanks again,
+
+Tim
+-- 
+Tim Mooney                                             Tim.Mooney@ndsu.edu
+Enterprise Computing & Infrastructure /
+Division of Information Technology    /                701-231-1076 (Voice)
+North Dakota State University, Fargo, ND 58105-5164
