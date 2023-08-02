@@ -1,26 +1,47 @@
-From: toml <toml@thlu.de>
-Subject: Re: Nftables + ALG + Linux 6.1.0-10-amd64
- =?UTF-8?Q?=E2=80=A6=3F=2E=2E=2E?= is it a kown Problem?
-Date: Wed, 02 Aug 2023 09:27:57 +0200
-Message-ID: <08850c8497ab9b713a0f52c73e8877ca0ec86d74.camel@mail>
-References: <51c40f7943609435e914c4f1fd43a98e6c579b83.camel@mail>
-         <20230731133608.GA21425@breakpoint.cc>
-         <b47e1dc20a97eb4e6972d5cbfd2cf9dcaaab7e06.camel@mail>
-         <20230801201148.GB32288@breakpoint.cc>
-Content-Transfer-Encoding: quoted-printable
+From: "Mucha Marcin, Sieciuch.com" <m.mucha@sieciuch.com>
+Subject: nftables 1.0.6: snat with maps
+Date: Wed, 02 Aug 2023 12:45:06 +0200
+Message-ID: <2c9ac3368f42c585331d044a51f56e94@sieciuch.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20230801201148.GB32288@breakpoint.cc>
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Am Dienstag, dem 01.08.2023 um 22:11 +0200 schrieb Florian Westphal:
-> > Have I understood this correctly?
->=20
-> Sounds about right, helper assignment looks correct to me.
+Hello,
+I'm having trouble with moving from these snat rules:
 
-Thank you!   :-)
+chain source-nat {
+        type nat hook postrouting priority 100; policy accept;
+        ct state invalid drop;
+        ip saddr 10.0.0.0/24 oif enp7s0 snat to 192.168.10.8 persistent;
+        ip saddr 10.1.0.0/24 oif enp7s0 snat to 192.168.10.9 persistent;
+        }
+to the one that uses maps based on 
+https://wiki.nftables.org/wiki-nftables/index.php/Multiple_NATs_using_nftables_maps 
+:
 
-Best Regards
-Thomas
+chain source-nat {
+         type nat hook postrouting priority 100; policy accept;
+         ct state invalid drop;
+         oif enp7s0 ip saddr maps {10.0.0.0/24 : 192.168.10.8, 
+10.1.0.0/24 : 192.168.10.9};
+}
+
+My problem is - I'm getting syntax error after checking config with "nft 
+-cf /etc/nftables.conf":
+"/etc/nftables.conf:43:83-83: Error: syntax error, unexpected newline
+     oif enp7s0 ip saddr maps {10.0.0.0/24 : 192.168.10.8, 10.1.0.0/24 : 
+192.168.10.9};
+                                                                          
+             ^"
+Could I ask you for a help?
+System: Debian 12, Nftables 1.0.6
+uname -a: 6.1.0-10-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.38-2 
+(2023-07-27) x86_64 GNU/Linux
+
+
+-
+Thank you for your help!
+Mucha Marcin
