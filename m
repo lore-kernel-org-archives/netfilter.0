@@ -1,48 +1,39 @@
-From: "Mucha Marcin, Sieciuch.com" <m.mucha@sieciuch.com>
-Subject: nftables 1.0.6:  snat with maps
-Date: Wed, 02 Aug 2023 12:17:58 +0200
-Message-ID: <34f5ce6552e75f830d9340e8d576b73e@sieciuch.com>
+From: "Mucha Marcin  (Sieciuch.com)" <m.mucha@sieciuch.com>
+Subject: Re: nftables 1.0.6: snat with maps
+Date: Wed, 02 Aug 2023 13:54:00 +0200
+Message-ID: <a6ea4a1156cf77ab8a236f08679483a6@sieciuch.com>
+References: <2c9ac3368f42c585331d044a51f56e94@sieciuch.com>
+ <20230802111030.GA27982@breakpoint.cc>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <20230802111030.GA27982@breakpoint.cc>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="windows-1254"; format="flowed"
+To: Florian Westphal <fw@strlen.de>
+Cc: netfilter@vger.kernel.org
 
-Hello,
-I'm having trouble with moving from this snat rule:
-
-chain source-nat {
-        type nat hook postrouting priority 100; policy accept;
-        ct state invalid drop;
-        ip saddr 10.0.0.0/24 oif enp7s0 snat to 192.168.10.8 persistent;
-        ip saddr 10.1.0.0/24 oif enp7s0 snat to 192.168.10.9 persistent;
-        }
-to the one that uses maps based on 
-https://wiki.nftables.org/wiki-nftables/index.php/Multiple_NATs_using_nftables_maps 
-:
-
-chain source-nat {
-         type nat hook postrouting priority 100; policy accept;
-         ct state invalid drop;
-         oif enp7s0 ip saddr maps {10.0.0.0/24 : 192.168.10.8, 
-10.1.0.0/24 : 192.168.10.9};
-}
-
-My problem is - I'm getting syntax error after checking config with "nft 
--cf /etc/nftables.conf":
-"/etc/nftables.conf:43:83-83: Error: syntax error, unexpected newline
-     oif enp7s0 ip saddr maps {10.0.0.0/24 : 192.168.10.8, 10.1.0.0/24 : 
-192.168.10.9};
-                                                                          
-             ^"
-Could I ask you for a help?
-System: Debian 12, Nftables 1.0.6
-uname -a: 6.1.0-10-amd64 #1 SMP PREEMPT_DYNAMIC Debian 6.1.38-2 
-(2023-07-27) x86_64 GNU/Linux
-
-
---
-Thank you for your help!
-Mucha Marcin
-
+VyBkbml1IDIwMjMtMDgtMDIgMTM6MTAsIEZsb3JpYW4gV2VzdHBoYWwgbmFwaXNhxYIoYSk6Cj4g
+TXVjaGEgTWFyY2luLCBTaWVjaXVjaC5jb20gPG0ubXVjaGFAc2llY2l1Y2guY29tPiB3cm90ZToK
+Pj4gSGVsbG8sCj4+IEknbSBoYXZpbmcgdHJvdWJsZSB3aXRoIG1vdmluZyBmcm9tIHRoZXNlIHNu
+YXQgcnVsZXM6Cj4+IAo+PiBjaGFpbiBzb3VyY2UtbmF0IHsKPj4gICAgICAgIHR5cGUgbmF0IGhv
+b2sgcG9zdHJvdXRpbmcgcHJpb3JpdHkgMTAwOyBwb2xpY3kgYWNjZXB0Owo+PiAgICAgICAgY3Qg
+c3RhdGUgaW52YWxpZCBkcm9wOwo+PiAgICAgICAgaXAgc2FkZHIgMTAuMC4wLjAvMjQgb2lmIGVu
+cDdzMCBzbmF0IHRvIDE5Mi4xNjguMTAuOCAKPj4gcGVyc2lzdGVudDsKPj4gICAgICAgIGlwIHNh
+ZGRyIDEwLjEuMC4wLzI0IG9pZiBlbnA3czAgc25hdCB0byAxOTIuMTY4LjEwLjkgCj4+IHBlcnNp
+c3RlbnQ7Cj4+ICAgICAgICB9Cj4+IHRvIHRoZSBvbmUgdGhhdCB1c2VzIG1hcHMgYmFzZWQgb24g
+Cj4+IGh0dHBzOi8vd2lraS5uZnRhYmxlcy5vcmcvd2lraS1uZnRhYmxlcy9pbmRleC5waHAvTXVs
+dGlwbGVfTkFUc191c2luZ19uZnRhYmxlc19tYXBzCj4+IDoKPj4gCj4+IGNoYWluIHNvdXJjZS1u
+YXQgewo+PiAgICAgICAgIHR5cGUgbmF0IGhvb2sgcG9zdHJvdXRpbmcgcHJpb3JpdHkgMTAwOyBw
+b2xpY3kgYWNjZXB0Owo+PiAgICAgICAgIGN0IHN0YXRlIGludmFsaWQgZHJvcDsKPj4gICAgICAg
+ICBvaWYgZW5wN3MwIGlwIHNhZGRyIG1hcHMgezEwLjAuMC4wLzI0IDogMTkyLjE2OC4xMC44LCAK
+Pj4gMTAuMS4wLjAvMjQgOgo+PiAxOTIuMTY4LjEwLjl9Owo+PiB9Cj4+IAo+PiBNeSBwcm9ibGVt
+IGlzIC0gSSdtIGdldHRpbmcgc3ludGF4IGVycm9yIGFmdGVyIGNoZWNraW5nIGNvbmZpZyB3aXRo
+IAo+PiAibmZ0IC1jZgo+PiAvZXRjL25mdGFibGVzLmNvbmYiOgo+PiAiL2V0Yy9uZnRhYmxlcy5j
+b25mOjQzOjgzLTgzOiBFcnJvcjogc3ludGF4IGVycm9yLCB1bmV4cGVjdGVkIG5ld2xpbmUKPj4g
+ICAgIG9pZiBlbnA3czAgaXAgc2FkZHIgbWFwcyB7MTAuMC4wLjAvMjQgOiAxOTIuMTY4LjEwLjgs
+IDEwLjEuMC4wLzI0IAo+PiA6Cj4+IDE5Mi4xNjguMTAuOX07Cj4+ICAgICAgICAgICAgXiIKPj4g
+Q291bGQgSSBhc2sgeW91IGZvciBhIGhlbHA/Cj4gCj4gRGlkIHlvdSBtZWFuCj4gb2lmIGVucDdz
+MCBzbmF0IHRvIGlwIHNhZGRyIG1hcCB7MTAuMC4wLjAvMjQgOiAxOTIuMTY4LjEwLjgsIAo+IDEw
+LjEuMC4wLzI0IDogMTkyLjE2OC4xMC45IH0KPiA/CgpUaGFuayB5b3UsIG5vdyBJIHVuZGVyc3Rh
+bmQgbXkgbWlzdGFrZS4K
