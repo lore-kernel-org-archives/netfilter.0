@@ -1,39 +1,42 @@
-From: Tim Mooney <Tim.Mooney@ndsu.edu>
-Subject: Re: converting iptables/ip6tables to efficient nftables rules
-Date: Wed, 2 Aug 2023 13:37:53 -0500 (CDT)
-Message-ID: <835ec4a-548f-783-937f-4c3b4520eb7f__7307.61054889939$1691002493$gmane$org@ndsu.edu>
-References: <924b35f-bda5-6ae5-efe-d05a8de7aec@ndsu.edu> <20230730221447.af1b866bdddfe794be4d9b47@plushkava.net>
+From: Brskt <contact@brskt.be>
+Subject: Re: List chain during attack high CPU usage
+Date: Thu, 03 Aug 2023 11:49:59 +0000
+Message-ID: <em36be3a75-afb4-4570-a9eb-bcdcdf9648af@68036a95.com>
+Reply-To: Brskt <contact@brskt.be>
 Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20230730221447.af1b866bdddfe794be4d9b47@plushkava.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=brskt-be.20221208.gappssmtp.com; s=20221208; t=1691063400; x=1691668200;
+        h=content-transfer-encoding:mime-version:user-agent:reply-to
+         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FLEbqKc8W3ZW/iDf5XlqyMqNNjxTswnRFGEGW4Wauhw=;
+        b=Ft40Gc+s+IAdewvvWxb9FqsZSwSjV3K5vwJAjtiAUdpVFYzADrjttyHPKMpjFuxRpY
+         E2SbFn87wzBWRjqrwoxWkdXCGZ9fubAZ8XQctQL6HFJ0KNx7k9DUcWKPtbl0ac167UwK
+         wcv4IPKKzacwShvqZFIm0ygCL3zrjZ7bl+c+6uuZr7BsaqEwwD/Jgg//HsKIvollYiLI
+         A+vC7ipHdrOZbEz2JuKz5F2yIvuyW/itoqO6M7G9Wcr3Cf8VAUBEI5jE0tgikcCDfllt
+         tET0XU0mThp+HXa/4LbvippnDTSgMub7FjBof9hX6C6qYvrhMvJxMnoCZf0bCXvRt/IJ
+         vPNQ==
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Kerin Millar <kfm@plushkava.net>
-Cc: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-In regard to: Re: converting iptables/ip6tables to efficient nftables...:
+Hi,
 
->> Similarly, all of the rules list CIDR ranges or individual IPs, though
->> there are a mix of IPv4 and IPv6 ranges.  I therefore could greatly reduce
->> the number of rules by creating a couple of named sets, one for IPv4 and
->> one for IPv6, and match the 'ip saddr' against the sets.
->
-> You are definitely on the right track. Maps and/or verdict maps
-> incorporating concatenations of the form "ipv4_addr . inet_service" and
-> "ipv6_addr . inet_service" might also prove useful, depending on your
-> exact requirements.
->
+Is there any updates on this ?
 
-Thanks Kerin!
+https://marc.info/?l=3Dnetfilter&m=3D166256224929259&w=3D2
 
-I really appreciate you taking the time to reply.  It was very helpful.
+I don't understand why using "nft list chain netdev firewall filter"=20
+take time and CPU usage even if a set have a high numbers of elements=20
+since we don't show the elements in the set.
 
-Cheers!
+There is the filter command in the chain "nft add rule netdev firewall=20
+filter update @ratelimit_test { ip saddr . ip daddr . th dport } counter=20
+drop" which use the set but, we don't see how many elements and/or which=20
+elements are in the set.
 
-Tim
--- 
-Tim Mooney                                             Tim.Mooney@ndsu.edu
-Enterprise Computing & Infrastructure /
-Division of Information Technology    /                701-231-1076 (Voice)
-North Dakota State University, Fargo, ND 58105-5164
+Listing a chain should not try to load the elements in the set(s) that=20
+are used in a filter like iptables with ipset does not.
+It also do the same even if "counter" is not used.
