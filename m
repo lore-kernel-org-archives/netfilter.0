@@ -1,40 +1,33 @@
-From: Florian Westphal <fw@strlen.de>
+From: toml <toml@thlu.de>
 Subject: Re: Incomprehensible behavior
-Date: Thu, 3 Aug 2023 17:04:57 +0200
-Message-ID: <20230803150457.GF30550@breakpoint.cc>
+Date: Thu, 03 Aug 2023 17:59:53 +0200
+Message-ID: <fb6da1ac6350d0461f9cffe7d42cf3a15dcaf879.camel@mail>
 References: <0d41d9238002f90a1c5a2c7702f675ccd17736bb.camel@mail>
-Mime-Version: 1.0
+         <20230803150457.GF30550@breakpoint.cc>
+Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <0d41d9238002f90a1c5a2c7702f675ccd17736bb.camel@mail>
+In-Reply-To: <20230803150457.GF30550@breakpoint.cc>
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: toml <toml@thlu.de>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-toml <toml@thlu.de> wrote:
-> (I'm so sorry... my previous post is in failed format... please ignore)
-> 
-> Hello @ all
-> 
-> I'm still struggling anymore with the new syntax at
-> ApplicationLayerGateway/FTP and testing with smallest steps. In doing
-> so I have now come across the following effect. I have 2 test-rules
-> here, both of which i expected to completely block any outgoing
-> traffic.
-> 
-> But as you can see from the second example in the counter, only here is
-> blocked. The first example has no effect at all, everything works as if
-> it was not blocked.
-> 
-> # nft list ruleset
-> table ip filter {
->  chain output {
->  type filter hook output priority 0; policy drop;
->  meta pkttype { 0, 1, 2 } accep
+Am Donnerstag, dem 03.08.2023 um 17:04 +0200 schrieb Florian Westphal:
+>=20
+> What do you expect that line to do?
+>=20
+> This accepts all packets, so all trailing rules
+> are bypassed and chain policy has no effect.
 
-What do you expect that line to do?
+Yes, it is so.
 
-This accepts all packets, so all trailing rules
-are bypassed and chain policy has no effect.
+Obviously, I completely misunderstood. I had always assumed that
+unicast, multicast and broadcast were something like a lan-technical
+messaging system, such as is needed (as example) for router
+advertisements or icmp. I assumed, that they must not be blocked for
+error-free LAN operations, a bit like ICMP-V6.=20
+
+It is really complicated to find the right way.=20
+
+Thomas
+
