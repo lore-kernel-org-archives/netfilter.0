@@ -1,79 +1,71 @@
-From: =?UTF-8?Q?Fran=c3=a7ois_Patte?= <francois.patte@gmx.fr>
-Subject: Re: unable to start nftables
-Date: Sat, 12 Aug 2023 18:53:03 +0200
-Message-ID: <2d987f2b-a910-05d3-c69f-809697cce2f0@gmx.fr>
-References: <7953ed4a-eaaf-feb6-bc09-e1179b754253@gmx.fr>
- <4193c7c1-6fb7-769d-a2f4-d02819a6ea38@thelounge.net>
- <f1ee7ea5-9790-6fb7-8f77-f8e8ac637abb@gmx.fr>
- <72f1558f-2c2d-4bc2-5138-de31c9ae8f40@thelounge.net>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: failing fail-over - commit still in progress
+Date: Sat, 12 Aug 2023 23:08:39 +0200
+Message-ID: <ZNf013cGy81TcxoN@calendula>
+References: <910b44e4-06e8-19d6-45f0-06f886a2e812@nethence.com>
+ <ZNYTF+uCod++Htl9@calendula>
+ <df659821-cee6-9702-e259-9db8cf290316@nethence.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.fr;
- s=s31663417; t=1691859183; x=1692463983; i=francois.patte@gmx.fr;
- bh=IBGYd6Wp/BfC9+tS+v5d086kGK88zCLyYwIsNCFIdfc=;
- h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
- b=cwUvhEovjP9nK9uW7Sqrzdtt88QBf/Pxa8HIB+blTQDb9PGZ3P7YMJ5WTZCe2n8c58zLA1Q
- 3mog4BXLGdNX8Kd9IrQGymIwYMS/eTM/D8YLcuBGwvuDt+20Q2GBQQkQQ4ki0vuqrUDiw9maY
- qW7D+BcFB+c78ahmhSDlF8ShGO7QOucdh8uMo5ztAK/e4HU/oh1mQudVhMIdnDnYuNgPX8ipx
- wbUlpsCgTVZh8i8qQ3qokduQAHBv1LBvfOZULg1M0V5NH5YOMRf9ND7Aibuz3ogTb96dY3yon
- INmHi+e1nwpYSkB3OyJH7enlIg/7p5f2EzosWW+jsU41aZlwUrZA==
-Content-Language: fr-FR
-In-Reply-To: <72f1558f-2c2d-4bc2-5138-de31c9ae8f40@thelounge.net>
+Content-Disposition: inline
+In-Reply-To: <df659821-cee6-9702-e259-9db8cf290316@nethence.com>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Reindl Harald <h.reindl@thelounge.net>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Pierre-Philipp Braun <pbraun@nethence.com>
+Cc: netfilter@vger.kernel.org
 
-Le 12/08/2023 =C3=A0 18:41, Reindl Harald a =C3=A9crit=C2=A0:
->
->
-> Am 12.08.23 um 18:36 schrieb Fran=C3=A7ois Patte:
->> Le 12/08/2023 =C3=A0 18:29, Reindl Harald a =C3=A9crit=C2=A0:
->>>
->>>
->>> Am 12.08.23 um 17:18 schrieb Fran=C3=A7ois Patte:
->>>> Bonjour,
->>>>
->>>> I am currently unable to start nftables service, the answer is:
->>>>
->>>> internal:0:0-0: Error: Could not open file
->>>> "/etc/sysconfig/nftables.conf": Permission denied
->>>>
->>>> file /etc/sysconfig/nftables.conf exists and have 755 permissions.
->>>>
->>>> What can I do?
->>>
->>> sounds like SELinux / AppAmor problem - that's why you should provide
->>> informations about your system - we don't even know your distribution
->>> nor do you provide your service unit or even the init-system
->>
->> system is fedora 36
->
-> EOL since 2023=E2=80=9105=E2=80=9116 which is *3 months ago*
-> F37 was released 2022-11-16
-> it's time to plan upgrade to F38 currently
->
-> don't run a bleeding edge distro when you can't cope with updates!
+On Sat, Aug 12, 2023 at 12:52:19PM +0300, Pierre-Philipp Braun wrote:
+> 
+> > Three nodes and FT-FW mode will not work. FT-FW would need to be
+> > extended to maintain sequence tracking for more than one single node.
+> > It is doable but this requires development effort.
+> > 
+> > For three node, you should try NOTRACK which means sync messages are
+> > sent from active to passive nodes without any kind of sequence
+> > tracking (best effort approach).
+> 
+> I switched to NOTRACK UDP but I get the same issue with the commit.
+> 
+> The inbound session is seen alright on all the nodes, although node3 (active vrrp) sees it both in internal and external cache.
+> The host where the guest lives sees it only in the internal cache this time.
 
-It is a server at ovh and they installed this version... Now they
-propose f38, I'll upgrade.
+You should see:
 
->
->> selinux policy is enforced
->> nftables is enabled
->>
->> And yes, it is a selinux problem: if I setenforce to 0, I can start
->> nftables (but I found this solution after posting....)
->>
->> I can go back to setenforce 1 without annoying nftables but, the proble=
-m
->> remains if I reboot the machine.
->
-> Google: "fedora restore selinux context of a specific file"
->
-> https://www.thegeekstuff.com/2017/05/restorecon-examples/
+- active: internal cache contains the flow that represents the SSH
+  connection.
+- backup: external cache contains the flow that represents the SSH
+  connection.
 
-Thank you, this solved the problem.
+on failover, what you see in the external cache in the backup node
+will be visible in the internal cache.
 
-F.P.
+By "inbound session", I guess you refer to the SSH connection you use
+for testing, but is this a SSH connection to the guest VM? Is this
+DNAT to the guest VM or simply routing?
 
+Such guess VM gets migrated to the active node and the active node
+forwards traffic to the guest VM?
+
+From what you write, there is no state synchronization issue with
+NOTRACK with three nodes.
+
+If connection gets lost on failover, it might be also be related to
+your firewall policy. If the state is not yet in conntrack, NAT
+packets will be handled as local packet by the router, not the guess
+itself, likely being rejecting them with TCP RST.
+
+Dropping packets that are in invalid state is important to make sure
+no races occur with state injection, your basechain policy is also set
+to accept as default.
+
+Please also check that you set:
+
+/proc/sys/net/netfilter/nf_conntrack_tcp_loose
+
+to zero to disable TCP connection tracking pick up on failover.
+Otherwise, conntrack creates an entry from the middle.
+
+Moreover, you will need to drop packets in invalid state in your
+policy in combination with this sysctl toggle, both at input and
+forward chains.
