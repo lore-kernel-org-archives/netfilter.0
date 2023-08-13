@@ -1,54 +1,62 @@
-From: Joshua Moore <j@jcm.me>
+From: <imnozi@gmail.com>
 Subject: Re: Iptables and DDoS attacks
-Date: Sun, 13 Aug 2023 17:07:33 -0400
-Message-ID: <30DBBFA4-8D58-4400-8531-50EB288D1CAB@jcm.me>
-Mime-Version: 1.0 (1.0)
-Content-Transfer-Encoding: quoted-printable
+Date: Sun, 13 Aug 2023 17:41:48 -0400
+Message-ID: <20230813174148.506d3e92@playground>
+References: <37c5f1638836cb490a3369d01c5edec1.squirrel@_>
+        <ec98fc0a-1f7c-bb0e-3e96-9092516a2038@thelounge.net>
+        <c614ef650022a572493960711294723a.squirrel@_>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jcm.me; s=google; t=1691960869; x=1692565669;
-        h=to:cc:date:message-id:subject:mime-version:from
-         :content-transfer-encoding:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20221208; t=1691962911; x=1692567711;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:to:from:date:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=MslndnfOuiGzJ0FtoKXLolua9qkC4BxG8Mh+8NzjhaM=;
-        b=grWeeYnYMUj2EIGx7It1zyO5KOKj0SoFLMImQRFPil/Iq+wxB/7uuZxJQXE4r6R+Cl
-         6PUdDQ+UyD0RAgM+WKstNXOmZ8naPPXASzQnoccBRkL1EWV2Yg6aA1SFX9JSwMzxNQHy
-         pexsqDRUNv0Sm9lDM657o/bbXcXRzwN9Kg9oI=
+        bh=8KQQpMHu4dK0YGihYBVhDIp2kzEhlcv3kgsQJQY3prw=;
+        b=hU1ArYv93BqzIBO9zxs6JTk9DuH3uGw2hez5far5B60j7KdEBKAvfAFRGvUoW7C3ta
+         Bffs4Nr5HgGCAPLc7y8KbJlOii6AYWZ+cuXGW88SDg+XqD8DJAHPTeeYkt3E6hpLhbjK
+         qkPqIncLT4YCwTwwjj63hMOVgt5mwn43W/vvyV2iUDVtLVrMQEPPeTbtWG+aON0re9d+
+         3TVa7KDAGgwzuughWuEd4yPdKa5gZEYtsKwyAPRANTELPBqwbxr7boQHXMME/Ks+M9x4
+         LW1KCPI308+YyQFykfK92yIq5o3C9bnXyFrKOCcaNKeLPXkPMWeW3VimNUrwRNxWPNj/
+         uzpQ==
+In-Reply-To: <c614ef650022a572493960711294723a.squirrel@_>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8-sig"
-To: Hack3rcon@mail2tor.com
-Cc: Reindl Harald <h.reindl@thelounge.net>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-=EF=BB=BFFor volumetric attacks (bandwidth), hardware routers/firewalls expo=
-rt flow analytics to a flow analyzer which then in turn has detection logic w=
-hich triggers scripts. One example is triggering a script for a remotely tri=
-ggered black hole (RTBH) which signals to upstream ISPs to drop traffic to t=
-he destination /32 host that is attacked. Other mitigation mechanisms includ=
-e triggering traffic to be redirected to a scrubbing server to consume the a=
-ttack and =E2=80=9Cscrub=E2=80=9D the traffic clean and to redirect traffic t=
-o a low bandwidth =E2=80=9Cgarbage=E2=80=9D ISP connection intended to drop t=
-he attack at the edge.
+The first thing to do is:
+  iptables -t mangle -I 1 PREROUTING -m state --state INVALID -j DROP
 
-In all cases, you cannot stop the attacks with simple iptables/nftable rules=
- because they by nature need to drop packets AFTER they hit the wire which i=
-s too late.
+This will drop all TCP packets that have an INVALID state (to wit, netfilter is unable to correlate these packets to an existing connection). Since they are INVALID, do not spend even a nanosecond more time processing them; just dump them in the bit bucket.
 
-The *right* solution for you would all depend on your network and goals. Hap=
-py to discuss more if you want to ping my company email directly as we imple=
-ment this kind of thing regularly: jmoore@archous.tech
+After that, add rules that drop all packets to and from internet hosts and networks that you already know you want no contact with (pron, sleaze, warez, et alia); ipset is good for this.
 
-> On Aug 13, 2023, at 4:23 PM, Hack3rcon@mail2tor.com wrote:
->=20
-> =EF=BB=BF
->>> Am 10.08.23 um 09:16 schrieb Hack3rcon@mail2tor.com:
->>> Hello iptables Team,
->>> Is it possible to protect a server against DDoS attacks using iptables?
->> depends on the attack - if it's bandwith *nothing* on your side can do
->> anything against it
->> for request-based attacks xt_recent for ratelimits works well
->=20
+In order to reduce said traffic on your downlink, you would have to ask your upstream (ISP?) to implement some sort of rate limiting on your link to let more legitimate traffic through.
+
+The only way to possibly thwart DDoS is to require all ISPs and other leaf providers to implement reverse path filtering. Packets that claim to arrive on their downstream links that have IP addresses that do not reside on their DS links are to be dropped. E.g., if a Comcrash customer started sending packets purporting to be from 8.8.8.8, Comcrash should silently drop those packets (well, unless Google is a customer), and warn the security team when a customer persists in spoofing SRC IP addresses. (Of course, this likely doesn't address all forms of DDoS; your mileage will vary.)
+
+N
+
+On Sun, 13 Aug 2023 15:34:32 -0400
+Hack3rcon@mail2tor.com wrote:
+
+> >
+> >
+> > Am 10.08.23 um 09:16 schrieb Hack3rcon@mail2tor.com:  
+> >> Hello iptables Team,
+> >> Is it possible to protect a server against DDoS attacks using iptables?  
+> >
+> > depends on the attack - if it's bandwith *nothing* on your side can do
+> > anything against it
+> >
+> > for request-based attacks xt_recent for ratelimits works well
+> >  
+> 
 > Hello,
 > Thank you so much for your reply.
 > How do hardware firewalls that use Linux prevent these attacks?
->=20
+> 
 > Can you show me some iptables rules about limitation?
+> 
+
