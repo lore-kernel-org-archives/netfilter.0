@@ -1,10 +1,11 @@
 From: Hack3rcon@mail2tor.com
 Subject: iptables cannot perform forwarding operations correctly
-Date: Sun, 13 Aug 2023 15:42:52 -0400
-Message-ID: <5a307381db5eaa7224be3c48bb0ddb0f.squirrel@_>
+Date: Sun, 13 Aug 2023 15:47:08 -0400
+Message-ID: <a310fc060400bf83c7e43868e54aa878.squirrel@_>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
+References: In-Reply-To: 
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
@@ -67,8 +68,8 @@ explicit-exit-notify 1
 
 I started the OpenVPN service and it worked:
 
-tun20: flags=4305<UP,POINTOPOINT,RUNNING,NOARP,MULTICAST> mtu 1500
-inet 10.10.0.1 netmask 255.255.255.255 destination 10.10.0.2
+tun20: flags=4305<UP,POINTOPOINT,RUNNING,NOARP,MULTICAST> mtu 1500 inet
+10.10.0.1 netmask 255.255.255.255 destination 10.10.0.2
 inet6 fe80::11e1:ca11:30b1:2f04 prefixlen 64 scopeid 0x20<link>
 unspec 00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00 txqueuelen 500
 (UNSPEC)
@@ -142,10 +143,10 @@ Sun Aug 13 11:12:33 2023 MANAGEMENT: CMD 'hold off'
 Sun Aug 13 11:12:33 2023 MANAGEMENT: CMD 'hold release'
 Sun Aug 13 11:12:33 2023 TCP/UDP: Preserving recently used remote address:
 [AF_INET]192.168.1.20:2000
-Sun Aug 13 11:12:33 2023 Socket Buffers: R=[8192->8192] S=[8192->8192]
-Sun Aug 13 11:12:33 2023 UDPv4 link local: (not bound)
-Sun Aug 13 11:12:33 2023 UDPv4 link remote: [AF_INET]192.168.1.20:2000
-Sun Aug 13 11:12:33 2023 MANAGEMENT: >STATE:1691908953,WAIT,,,,,,
+Sun Aug 13 11:12:33 2023 Socket Buffers: R=[8192->8192] S=[8192->8192] Sun
+Aug 13 11:12:33 2023 UDPv4 link local: (not bound)
+Sun Aug 13 11:12:33 2023 UDPv4 link remote: [AF_INET]192.168.1.20:2000 Sun
+Aug 13 11:12:33 2023 MANAGEMENT: >STATE:1691908953,WAIT,,,,,,
 Sun Aug 13 11:12:33 2023 read UDPv4: Connection reset by peer
 (WSAECONNRESET) (fd=f4,code=10054)
 Sun Aug 13 11:12:35 2023 read UDPv4: Connection reset by peer
