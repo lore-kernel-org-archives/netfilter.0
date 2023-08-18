@@ -1,62 +1,58 @@
-From: <imnozi@gmail.com>
-Subject: Re: Iptables and DDoS attacks
-Date: Sun, 13 Aug 2023 17:41:48 -0400
-Message-ID: <20230813174148.506d3e92@playground>
-References: <37c5f1638836cb490a3369d01c5edec1.squirrel@_>
-        <ec98fc0a-1f7c-bb0e-3e96-9092516a2038@thelounge.net>
-        <c614ef650022a572493960711294723a.squirrel@_>
+From: Alessandro Vesely <vesely@tana.it>
+Subject: Extending an IPv4 filter to IPv6
+Date: Fri, 18 Aug 2023 12:56:38 +0200
+Message-ID: <9d98b203-b22a-898c-1a4f-c83e706bc411@tana.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1691962911; x=1692567711;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:to:from:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8KQQpMHu4dK0YGihYBVhDIp2kzEhlcv3kgsQJQY3prw=;
-        b=hU1ArYv93BqzIBO9zxs6JTk9DuH3uGw2hez5far5B60j7KdEBKAvfAFRGvUoW7C3ta
-         Bffs4Nr5HgGCAPLc7y8KbJlOii6AYWZ+cuXGW88SDg+XqD8DJAHPTeeYkt3E6hpLhbjK
-         qkPqIncLT4YCwTwwjj63hMOVgt5mwn43W/vvyV2iUDVtLVrMQEPPeTbtWG+aON0re9d+
-         3TVa7KDAGgwzuughWuEd4yPdKa5gZEYtsKwyAPRANTELPBqwbxr7boQHXMME/Ks+M9x4
-         LW1KCPI308+YyQFykfK92yIq5o3C9bnXyFrKOCcaNKeLPXkPMWeW3VimNUrwRNxWPNj/
-         uzpQ==
-In-Reply-To: <c614ef650022a572493960711294723a.squirrel@_>
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=tana.it;
+        s=epsilon; t=1692356198;
+        bh=HWRRPQs0ECs9HGW73kcuSWqjk0xgCe9kA90T8w40zVk=;
+        h=Author:Date:To:From:Subject;
+        b=AGNvjjhTlufPSaxZ2IrlG2QlNHz11yo3aPQeIj4nYICT5BaXDs3ktyjQCJifIA7BN
+         aUY+/DVx1aeM1eHE4PuCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tana.it; s=delta;
+        t=1692356198; bh=HWRRPQs0ECs9HGW73kcuSWqjk0xgCe9kA90T8w40zVk=;
+        h=Date:To:From:Subject;
+        b=DGLT84338Ldv0WYZI/Mc84GVu/nPwd4nwFu61M/hxNx8ZAJSGfzmd5XHLBs2XDPyB
+         VYe2U0D3lghSX8kBuvNBkaRzE1aGqZFVLgpRHGiTX5EL0pjiV+KEDMwVLhqG+7pcru
+         UIRV7wvOfvug/g8WGLcO17DObDX8ERw1FdRiClMch3beqjegH9t0qp0DizDAz
+Subject: Extending an IPv4 filter to IPv6
+Content-Language: en-US, it-IT
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-The first thing to do is:
-  iptables -t mangle -I 1 PREROUTING -m state --state INVALID -j DROP
+Hi all,
 
-This will drop all TCP packets that have an INVALID state (to wit, netfilter is unable to correlate these packets to an existing connection). Since they are INVALID, do not spend even a nanosecond more time processing them; just dump them in the bit bucket.
+I have an old program (ipqbdb) which filters IPv4 packets using 
+libnetfilter_queue.  I want to extend it to also filter IPv6, now that at last 
+I can use some of those addresses.
 
-After that, add rules that drop all packets to and from internet hosts and networks that you already know you want no contact with (pron, sleaze, warez, et alia); ipset is good for this.
+The program obtains a handle by nfq_open(), and then (after unbind) binds by 
+nfq_bind_pf(h, AF_INET).  Afterwards it creates the configured number of queues 
+and filters the packets it finds there.
 
-In order to reduce said traffic on your downlink, you would have to ask your upstream (ISP?) to implement some sort of rate limiting on your link to let more legitimate traffic through.
+There is a big DEPRECATED in the documentation, and the generated doc for 
+nfq_bind_pf() parameters says "This call is obsolete, Linux kernels from 3.8 
+onwards ignore it" (which is obviously false).
+https://netfilter.org/projects/libnetfilter_queue/doxygen/
 
-The only way to possibly thwart DDoS is to require all ISPs and other leaf providers to implement reverse path filtering. Packets that claim to arrive on their downstream links that have IP addresses that do not reside on their DS links are to be dropped. E.g., if a Comcrash customer started sending packets purporting to be from 8.8.8.8, Comcrash should silently drop those packets (well, unless Google is a customer), and warn the security team when a customer persists in spoofing SRC IP addresses. (Of course, this likely doesn't address all forms of DDoS; your mileage will vary.)
+So, the first question: Can I keep using these functions?  What is the alternative?
 
-N
+Second question: Is there a "mixed mode" parameter, besides PF_INET and 
+PF_INET6, that allows to capture both types?  In that case, can a queue receive 
+either packet?
 
-On Sun, 13 Aug 2023 15:34:32 -0400
-Hack3rcon@mail2tor.com wrote:
 
-> >
-> >
-> > Am 10.08.23 um 09:16 schrieb Hack3rcon@mail2tor.com:  
-> >> Hello iptables Team,
-> >> Is it possible to protect a server against DDoS attacks using iptables?  
-> >
-> > depends on the attack - if it's bandwith *nothing* on your side can do
-> > anything against it
-> >
-> > for request-based attacks xt_recent for ratelimits works well
-> >  
-> 
-> Hello,
-> Thank you so much for your reply.
-> How do hardware firewalls that use Linux prevent these attacks?
-> 
-> Can you show me some iptables rules about limitation?
-> 
+Any other suggestion about extending to IPv6 is probably going to be appreciated.
+
+
+Thank you
+Ale
+-- 
+
+
+
+
 
