@@ -1,42 +1,44 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Extending an IPv4 filter to IPv6
-Date: Sun, 20 Aug 2023 23:41:43 +0200
-Message-ID: <ZOKIl6qWCdLCTPPT@calendula>
-References: <9d98b203-b22a-898c-1a4f-c83e706bc411@tana.it>
+From: =?UTF-8?Q?Anselm_Sch=C3=BCler?= <mail@anselmschueler.com>
+Subject: Why does the cgroup iptables extension not work generally with the
+ INPUT chain?
+Date: Sun, 20 Aug 2023 23:44:37 +0200
+Message-ID: <4632b041-7f66-454e-be35-d0a00e5700ba@anselmschueler.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <9d98b203-b22a-898c-1a4f-c83e706bc411@tana.it>
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Alessandro Vesely <vesely@tana.it>
-Cc: netfilter@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Language: en-US
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Fri, Aug 18, 2023 at 12:56:38PM +0200, Alessandro Vesely wrote:
-> Hi all,
-> 
-> I have an old program (ipqbdb) which filters IPv4 packets using
-> libnetfilter_queue.  I want to extend it to also filter IPv6, now that at
-> last I can use some of those addresses.
-> 
-> The program obtains a handle by nfq_open(), and then (after unbind) binds by
-> nfq_bind_pf(h, AF_INET).  Afterwards it creates the configured number of
-> queues and filters the packets it finds there.
-> 
-> There is a big DEPRECATED in the documentation, and the generated doc for
-> nfq_bind_pf() parameters says "This call is obsolete, Linux kernels from 3.8
-> onwards ignore it" (which is obviously false).
-> https://netfilter.org/projects/libnetfilter_queue/doxygen/
-> 
-> So, the first question: Can I keep using these functions?  What is the alternative?
+Note: This question concerns the kernel component part of the iptables 
+system. I am not sure if this is the appropriate place for discussion on 
+this or if it's only for the userland utilities. If this message is not 
+in the right place, please inform me.
 
-The alternative is the libmnl-based API which is the way to go for new
-applications.
+I recently wanted to use the cgroup iptables extension to allow incoming 
+traffic for ports with a certain cgroup listening on them. Unfortunately 
+I discovered the disclaimer in iptables-extensions(8), which states that 
+the extension "will only match on packets that are processed for local 
+sockets through early socket demuxing" on the INPUT chain. I must 
+confess I do not know precisely what early socket demuxing is, but brief 
+testing seemed to reveal that my packets weren't doing it. This leads me 
+to ask: Why is this the case? Is there a workaround? Could this be fixed?
 
-> Second question: Is there a "mixed mode" parameter, besides PF_INET and
-> PF_INET6, that allows to capture both types?  In that case, can a queue
-> receive either packet?
+A cursory glance through the kernel git tree revealed to the novice's 
+eye no obvious hacky logic or similar that might lead to this. Is there 
+some general iptables-extensions-specific configuration logic that 
+requires some conditions, not in the logic, but in the infrastructure 
+code (extension registration or what have you) for this to work?
 
-Using the 'inet' family in nftables, it should be possible to send
-both IPv4 and IPv6 packets to one single queue in userspace.
+I considered attempting to fix the problem myself but I realized I can't 
+without even knowing what the issue is.
+
+Preempting X/Y problem accusations, here is the motivation: I use 
+iptables to operate a generic home user firewall for my system but I 
+want to allow GNOME file sharing (which doesn't use a designated port, 
+but is assigned to a cgroup by systemd) through the firewall.
+
+I am currently not subscribed to the netfilter mailing list. If 
+subscribing is necessary to participate please let me know.
+
