@@ -1,40 +1,68 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Fwd: question about using conntrack to change the mark
-Date: Mon, 21 Aug 2023 14:02:42 +0200
-Message-ID: <ZONSYn2VHXlbRHX8@calendula>
-References: <CAAUX2SVTLxtpzsMnKWCpjRZwAKn391rm5T=y=oHPQ_T1w2UpBA@mail.gmail.com>
- <CAAUX2SXBVr5pG0vWvhkvrRLJv+ym6i34UrkUpRzS5FQHxh5ivg@mail.gmail.com>
- <ZOM8e8u+BK3jBNrE@calendula>
- <CAAUX2SVPgu5Mp8DAhEGzW7Y3UB2k++_qaVeZ3NbHZu4Yfw4bkw@mail.gmail.com>
+From: Alessandro Vesely <vesely@tana.it>
+Subject: Re: Extending an IPv4 filter to IPv6
+Date: Mon, 21 Aug 2023 19:18:46 +0200
+Message-ID: <29680eb6-1004-f1af-38bb-f9da49712d58@tana.it>
+References: <9d98b203-b22a-898c-1a4f-c83e706bc411@tana.it>
+ <ZOKIl6qWCdLCTPPT@calendula>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAAUX2SVPgu5Mp8DAhEGzW7Y3UB2k++_qaVeZ3NbHZu4Yfw4bkw@mail.gmail.com>
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=tana.it;
+        s=epsilon; t=1692638327;
+        bh=Ay7TcNhcfyzoOjIJhYu15iLz70EDL6Vl/EfJpVHWKbg=;
+        h=Author:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=eeZp8bhzET2nUl0O8m6TV62tNYnFwWVmtviQ+rPHVwx56owfd6szZtmBy1oLyCfL/
+         +F7GXyZLRVakURLvE7ICg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tana.it; s=delta;
+        t=1692638327; bh=Ay7TcNhcfyzoOjIJhYu15iLz70EDL6Vl/EfJpVHWKbg=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=DO7x270XgrDgOAEIaCVw99szpg/T3kO2TSjpUYfrpjfiz2FM8HQsZLcl6JVveD4V7
+         0C5NTT2PMntsJQOCGFzg30wxOUHDYGT1TvmU4D9LLreBfYpQHJ1A5YQfpyPjxjT5y4
+         sgHUHg7BbGu9/hqFDYsu9fyBxizeBD/7aBPEuYHQORj32coArZ9AgdNUW6HIX
+Subject: Re: Extending an IPv4 filter to IPv6
+Content-Language: en-US, it-IT
+In-Reply-To: <ZOKIl6qWCdLCTPPT@calendula>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Tony He <huangya90@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org, netfilter@vger.kernel.org
 
-On Mon, Aug 21, 2023 at 07:26:54PM +0800, Tony He wrote:
-> Pablo Neira Ayuso <pablo@netfilter.org> 于2023年8月21日周一 18:29写道：
-[...]
-> > https://patchwork.ozlabs.org/project/netfilter-devel/patch/20230821101751.4083-1-pablo@netfilter.org/
+On Sun 20/Aug/2023 23:41:43 +0200 Pablo Neira Ayuso wrote:
+> On Fri, Aug 18, 2023 at 12:56:38PM +0200, Alessandro Vesely wrote:
+>> [...]
+>>
+>> So, the first question: Can I keep using these functions?  What is the alternative?
 >
-> This patch works when the conntrack sessions are not many. When there are about
-> 300 sessions, another error "No buffer space available" is reported.
-> 
-> Works when sessions are not many:
-> root@OpenWrt:~# ./conntrack -L -p tcp |wc -l
-> conntrack v1.4.7 (conntrack-tools): 204 flow entries have been shown.
-> 204
-> root@OpenWrt:~# ./conntrack -U -p tcp -m 1
-[...]
-> tcp      6 96 TIME_WAIT src=192.168.1.30 dst=10.40.9.83 sport=45714
-> dport=80 packets=7 bytes=450 src=10.40.9.83 dst=10.40.9.165 sport=80
-> dport=45714 packets=6 bytes=11265 [ASSURED] mark=1 use=2
-> conntrack v1.4.7 (conntrack-tools): Operation failed: No buffer space available
+> The alternative is the libmnl-based API which is the way to go for new 
+> applications.
 
-Another patch to fix this issue, thanks for reporting:
 
-https://patchwork.ozlabs.org/project/netfilter-devel/patch/20230821120105.29538-1-pablo@netfilter.org/
+The nf-queue.c[*] example that illustrates libmnl is strange.  It show a 
+function nfq_nlmsg_put() (libnetfilter-queue).  I have two questions about it:
+
+1) In the example it is called twice, the second time after setting attrs. 
+What purpose does the first call serve?
+
+2) Is it fine to use a small buffer?  My filter only looks at addresses, so it 
+should be enough to copy 40 bytes.  Can it be on stack?
+
+
+>> Second question: Is there a "mixed mode" parameter, besides PF_INET and 
+>> PF_INET6, that allows to capture both types?  In that case, can a queue 
+>> receive either packet?
+>
+> Using the 'inet' family in nftables, it should be possible to send 
+> both IPv4 and IPv6 packets to one single queue in userspace.
+
+
+Yes, or two calls to iptables and ip6tables.  However, nfq_nlmsg_cfg_put_cmd() 
+takes a pf argument, AF_INET in the example.  Is that argument used at all?
+
+
+Thanks
+Ale
+-- 
+[*] https://git.netfilter.org/libnetfilter_queue/tree/examples/nf-queue.c
+
+
+
