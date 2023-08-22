@@ -1,118 +1,64 @@
-From: Tony He <huangya90@gmail.com>
-Subject: Re: Fwd: question about using conntrack to change the mark
-Date: Tue, 22 Aug 2023 18:09:07 +0800
-Message-ID: <CAAUX2SUxjrweJ0-Fd9Taz97xTAqPYZhGfg2nMuEfMCHe7TDwUw@mail.gmail.com>
-References: <CAAUX2SVTLxtpzsMnKWCpjRZwAKn391rm5T=y=oHPQ_T1w2UpBA@mail.gmail.com>
- <CAAUX2SXBVr5pG0vWvhkvrRLJv+ym6i34UrkUpRzS5FQHxh5ivg@mail.gmail.com>
- <ZOM8e8u+BK3jBNrE@calendula> <CAAUX2SVPgu5Mp8DAhEGzW7Y3UB2k++_qaVeZ3NbHZu4Yfw4bkw@mail.gmail.com>
- <ZONSYn2VHXlbRHX8@calendula> <CAAUX2SWXrkXKM_mNuc-4Sg7QTmPVt8JjE6GwWqSarmqFW1d46w@mail.gmail.com>
- <ZOR2+GwyMzPrECmd@calendula> <CAAUX2SUve335kp+RhWi6AxGZz0YXi9ArtJPswvTgNKv_qrQMLQ@mail.gmail.com>
- <ZOSHLPD0hiCW32ZS@calendula>
+From: Carl Lei <me@xecycle.info>
+Subject: Re: nft tproxy failed to redirect on one system
+Date: Tue, 22 Aug 2023 18:16:31 +0800
+Message-ID: <327D57E822A265D5+20230822181631.528b64c2@xcws1>
+References: <20230811120043.0c3c6302@xcws1>
+        <196291AF4921A1FE+20230821154807.270690a5@xcws1>
+        <ZOSITfIcAHBrXpUi@calendula>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1692698958; x=1693303758;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ly0egp5VOcl3X+G6C0uwCQCFwcvwj/i+N4fbduYPoGw=;
-        b=NWeOxL7sdUHim41x0czQkYP2xf8hpV3xAE1Lp/J33zXAUgqlpkAQmlpmnhWi8BKTxb
-         TbyVeGkkynMMnq5+kdgpZkGv6QGoNRrfVGP1Y8OInKWkgIaeAq5y28FQAOfOMD/PxuYk
-         ZF3tVcAkGQS7zlnlo/RTz/VDG1wF5lbKJs7QyfQ2J+RikG/7C1qv8VwSkNx3PL7GFDr5
-         dwYBLo4+iTsc+1GKULvcy2wpJM7YCwhgGDyVp/a/UJc+4TgQVVxTqNMYmcJe4hLAtEK0
-         nzoWkkcsMIb2jqvFKj3mO6vtBzgAUEKMM8/GM8F/VsZinOBZPd0IDC685JnaWhy/SScR
-         zVtw==
-In-Reply-To: <ZOSHLPD0hiCW32ZS@calendula>
+In-Reply-To: <ZOSITfIcAHBrXpUi@calendula>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter@vger.kernel.org
 
-OK, thanks for clarifying. Below mail causes the misunderstanding.
+On Tue, 22 Aug 2023 12:05:01 +0200
+Pablo Neira Ayuso <pablo@netfilter.org> wrote:
 
-> > I need to add option "-f ipv4", but not all entries can be updated
-> > successfully. "Protocol error" is reported.
->
-> EPROTO means netlink sequence numbers are not fine, which might refer
-> to another userspace bug.
->
-> I made another patch, error handling was not robust in the -U case (no
-> exit_error was used, instead printf).
->
-> Also try this patch on of the previous patch.
->
-> https://patchwork.ozlabs.org/project/netfilter-devel/patch/20230821102739=
-.4893-1-pablo@netfilter.org/
+> On Mon, Aug 21, 2023 at 03:48:07PM +0800, Carl Lei wrote:
+> > Btw: sent to wrong address, re-sent to list...
+> > 
+> > On Fri, 11 Aug 2023 12:00:43 +0800
+> > Carl Lei <me@xecycle.info> wrote:
+> > 
+> > > Sorry for being incomplete, but I added nftrace before these
+> > > rules and saw packets went through the same chain of rules, first
+> > > hitting tproxy in mangle, then meta mark 42 counter accept in
+> > > input-new-isolated. But on one system it works for local programs
+> > > AND network-received packets, on another system it works only for
+> > > local programs.  On the bad system the packets instead gets
+> > > directed to whatever program originally listening on the original
+> > > port, or rejected; e.g. I have an nginx listening on 0.0.0.0:80
+> > > but no programs on 443, then curl http in a vm connected to vbr0
+> > > goes to my nginx, and curl https gets rejected.  I expect them to
+> > > go to that program listening on 1081.  
+> > 
+> > Looked closer at the trace, I found that on the bad system, when the
+> > packet goes back to input rules, its trace id changed; on the good
+> > system it does not change.  Perhaps this explains it, but I don't
+> > know why it was changed?
+> 
+> Could you provide more detailed information on your setup? You refer
+> to a system where this works fine and another where this does not, but
+> you do not specify kernel and userspace versions?
 
-Pablo Neira Ayuso <pablo@netfilter.org> =E4=BA=8E2023=E5=B9=B48=E6=9C=8822=
-=E6=97=A5=E5=91=A8=E4=BA=8C 18:00=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Tue, Aug 22, 2023 at 05:46:06PM +0800, Tony He wrote:
-> > Pablo Neira Ayuso <pablo@netfilter.org> =E4=BA=8E2023=E5=B9=B48=E6=9C=
-=8822=E6=97=A5=E5=91=A8=E4=BA=8C 16:51=E5=86=99=E9=81=93=EF=BC=9A
-> > >
-> > > On Tue, Aug 22, 2023 at 10:11:00AM +0800, Tony He wrote:
-> > > [...]
-> > > > I confirm this issue have been fixed. I even tried about 1000 flow =
-entries.
-> > > > root@OpenWrt:~# ./conntrack -L -p tcp |wc -l
-> > > > conntrack v1.4.7 (conntrack-tools): 1024 flow entries have been sho=
-wn.
-> > > > 1024
-> > > > root@OpenWrt:~# ./conntrack -U -p tcp  -m 1
-> > > > tcp      6 7423 ESTABLISHED src=3D192.168.1.30 dst=3D10.40.9.83
-> > > > sport=3D53786 dport=3D80 packets=3D2 bytes=3D112 src=3D10.40.9.83
-> > > > dst=3D10.40.9.165 sport=3D80 dport=3D53786 packets=3D1 bytes=3D60 [=
-ASSURED]
-> > > > mark=3D1 use=3D2
-> > > > tcp      6 103 TIME_WAIT src=3D192.168.1.30 dst=3D10.40.9.83 sport=
-=3D57656
-> > > > dport=3D80 packets=3D6 bytes=3D398 src=3D10.40.9.83 dst=3D10.40.9.1=
-65 sport=3D80
-> > > > dport=3D57656 packets=3D6 bytes=3D11265 [ASSURED] mark=3D1 use=3D2
-> > > > tcp      6 103 TIME_WAIT src=3D192.168.1.30 dst=3D10.40.9.83 sport=
-=3D57000
-> > > > dport=3D80 packets=3D7 bytes=3D450 src=3D10.40.9.83 dst=3D10.40.9.1=
-65 sport=3D80
-> > > > dport=3D57000 packets=3D7 bytes=3D11317 [ASSURED] mark=3D1 use=3D2
-> > > > tcp      6 103 TIME_WAIT src=3D192.168.1.30 dst=3D10.40.9.83 sport=
-=3D55730
-> > > > dport=3D80 packets=3D6 bytes=3D398 src=3D10.40.9.83 dst=3D10.40.9.1=
-65 sport=3D80
-> > > > dport=3D55730 packets=3D6 bytes=3D11265 [ASSURED] mark=3D1 use=3D2
-> > > > ......
-> > > > conntrack v1.4.7 (conntrack-tools): 1023 flow entries have been upd=
-ated.
-> > > >
-> > > > After above issue is fixed, I can not reproduce "-f ipv4" issue. Se=
-ems
-> > > > that we don't need patch
-> > > >
-> > > > https://patchwork.ozlabs.org/project/netfilter-devel/patch/20230821=
-102739.4893-1-pablo@netfilter.org/
-> > >
-> > > This is also required because conntrack -U/-D dumps the table from th=
-e
-> > > kernel, then it iterates over the list of entries. If the entry
-> > > expires, -U/-D will hit ENOENT, which should be ignored. This is
-> > > another regressions from 1.4.6.
-> >
-> > Sorry, I still don't quite understand. I mean if we don't add [1] and
-> > [2] , I can reproduce "Protocol error".
-> > However, after adding above [1] and [2], I can not reproduce "Protocol
-> > error" even though [3] is not added.
-> > Is [3] used to fix "Protocol error"? If yes, why it can not be
-> > reproduced by me? My test env is not changed.
-> >
-> > [1] https://patchwork.ozlabs.org/project/netfilter-devel/patch/20230821=
-101751.4083-1-pablo@netfilter.org/
-> > [2] https://patchwork.ozlabs.org/project/netfilter-devel/patch/20230821=
-120105.29538-1-pablo@netfilter.org/
-> > [3] https://patchwork.ozlabs.org/project/netfilter-devel/patch/20230821=
-102739.4893-1-pablo@netfilter.org/
->
-> [1] and [2] are sufficient to fix the problems that you reported.
->
-> [3] is a different issue that you did not report that I found while
-> reviewing this code.
+Sorry I forgot that in my first email, indeed I replied to myself
+several times and already provided versions, but I did not realize I
+sent to a wrong address.  My used versions are (copying from my
+previous mails):
+
+"they are both running Arch Linux, the good system running kernel
+6.4.8-arch1-1, the bad system I tried both 6.4.4 and 6.4.9; nftables
+version both 1:1.0.7-2; the proxy program on 1081 is also identical,
+running identical config."
+
+> Some simple script with 'ip netns' as a reproducer might also help
+> that might help people jump in a provide feedback.
+
+I will try ASAP to make a reproducer.
+
+Thank you.
+
+
