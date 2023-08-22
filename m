@@ -1,73 +1,46 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Fwd: question about using conntrack to change the mark
-Date: Tue, 22 Aug 2023 12:00:12 +0200
-Message-ID: <ZOSHLPD0hiCW32ZS@calendula>
-References: <CAAUX2SVTLxtpzsMnKWCpjRZwAKn391rm5T=y=oHPQ_T1w2UpBA@mail.gmail.com>
- <CAAUX2SXBVr5pG0vWvhkvrRLJv+ym6i34UrkUpRzS5FQHxh5ivg@mail.gmail.com>
- <ZOM8e8u+BK3jBNrE@calendula>
- <CAAUX2SVPgu5Mp8DAhEGzW7Y3UB2k++_qaVeZ3NbHZu4Yfw4bkw@mail.gmail.com>
- <ZONSYn2VHXlbRHX8@calendula>
- <CAAUX2SWXrkXKM_mNuc-4Sg7QTmPVt8JjE6GwWqSarmqFW1d46w@mail.gmail.com>
- <ZOR2+GwyMzPrECmd@calendula>
- <CAAUX2SUve335kp+RhWi6AxGZz0YXi9ArtJPswvTgNKv_qrQMLQ@mail.gmail.com>
+Subject: Re: nft tproxy failed to redirect on one system
+Date: Tue, 22 Aug 2023 12:05:01 +0200
+Message-ID: <ZOSITfIcAHBrXpUi@calendula>
+References: <20230811120043.0c3c6302@xcws1>
+ <196291AF4921A1FE+20230821154807.270690a5@xcws1>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAAUX2SUve335kp+RhWi6AxGZz0YXi9ArtJPswvTgNKv_qrQMLQ@mail.gmail.com>
+In-Reply-To: <196291AF4921A1FE+20230821154807.270690a5@xcws1>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Tony He <huangya90@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Carl Lei <me@xecycle.info>
 Cc: netfilter@vger.kernel.org
 
-On Tue, Aug 22, 2023 at 05:46:06PM +0800, Tony He wrote:
-> Pablo Neira Ayuso <pablo@netfilter.org> 于2023年8月22日周二 16:51写道：
-> >
-> > On Tue, Aug 22, 2023 at 10:11:00AM +0800, Tony He wrote:
-> > [...]
-> > > I confirm this issue have been fixed. I even tried about 1000 flow entries.
-> > > root@OpenWrt:~# ./conntrack -L -p tcp |wc -l
-> > > conntrack v1.4.7 (conntrack-tools): 1024 flow entries have been shown.
-> > > 1024
-> > > root@OpenWrt:~# ./conntrack -U -p tcp  -m 1
-> > > tcp      6 7423 ESTABLISHED src=192.168.1.30 dst=10.40.9.83
-> > > sport=53786 dport=80 packets=2 bytes=112 src=10.40.9.83
-> > > dst=10.40.9.165 sport=80 dport=53786 packets=1 bytes=60 [ASSURED]
-> > > mark=1 use=2
-> > > tcp      6 103 TIME_WAIT src=192.168.1.30 dst=10.40.9.83 sport=57656
-> > > dport=80 packets=6 bytes=398 src=10.40.9.83 dst=10.40.9.165 sport=80
-> > > dport=57656 packets=6 bytes=11265 [ASSURED] mark=1 use=2
-> > > tcp      6 103 TIME_WAIT src=192.168.1.30 dst=10.40.9.83 sport=57000
-> > > dport=80 packets=7 bytes=450 src=10.40.9.83 dst=10.40.9.165 sport=80
-> > > dport=57000 packets=7 bytes=11317 [ASSURED] mark=1 use=2
-> > > tcp      6 103 TIME_WAIT src=192.168.1.30 dst=10.40.9.83 sport=55730
-> > > dport=80 packets=6 bytes=398 src=10.40.9.83 dst=10.40.9.165 sport=80
-> > > dport=55730 packets=6 bytes=11265 [ASSURED] mark=1 use=2
-> > > ......
-> > > conntrack v1.4.7 (conntrack-tools): 1023 flow entries have been updated.
-> > >
-> > > After above issue is fixed, I can not reproduce "-f ipv4" issue. Seems
-> > > that we don't need patch
-> > >
-> > > https://patchwork.ozlabs.org/project/netfilter-devel/patch/20230821102739.4893-1-pablo@netfilter.org/
-> >
-> > This is also required because conntrack -U/-D dumps the table from the
-> > kernel, then it iterates over the list of entries. If the entry
-> > expires, -U/-D will hit ENOENT, which should be ignored. This is
-> > another regressions from 1.4.6.
->
-> Sorry, I still don't quite understand. I mean if we don't add [1] and
-> [2] , I can reproduce "Protocol error".
-> However, after adding above [1] and [2], I can not reproduce "Protocol
-> error" even though [3] is not added.
-> Is [3] used to fix "Protocol error"? If yes, why it can not be
-> reproduced by me? My test env is not changed.
+On Mon, Aug 21, 2023 at 03:48:07PM +0800, Carl Lei wrote:
+> Btw: sent to wrong address, re-sent to list...
 > 
-> [1] https://patchwork.ozlabs.org/project/netfilter-devel/patch/20230821101751.4083-1-pablo@netfilter.org/
-> [2] https://patchwork.ozlabs.org/project/netfilter-devel/patch/20230821120105.29538-1-pablo@netfilter.org/
-> [3] https://patchwork.ozlabs.org/project/netfilter-devel/patch/20230821102739.4893-1-pablo@netfilter.org/
+> On Fri, 11 Aug 2023 12:00:43 +0800
+> Carl Lei <me@xecycle.info> wrote:
+> 
+> > Sorry for being incomplete, but I added nftrace before these rules and
+> > saw packets went through the same chain of rules, first hitting tproxy
+> > in mangle, then meta mark 42 counter accept in input-new-isolated.
+> > But on one system it works for local programs AND network-received
+> > packets, on another system it works only for local programs.  On the
+> > bad system the packets instead gets directed to whatever program
+> > originally listening on the original port, or rejected; e.g. I have
+> > an nginx listening on 0.0.0.0:80 but no programs on 443, then curl
+> > http in a vm connected to vbr0 goes to my nginx, and curl https gets
+> > rejected.  I expect them to go to that program listening on 1081.  
+> 
+> Looked closer at the trace, I found that on the bad system, when the
+> packet goes back to input rules, its trace id changed; on the good
+> system it does not change.  Perhaps this explains it, but I don't know
+> why it was changed?
 
-[1] and [2] are sufficient to fix the problems that you reported.
+Could you provide more detailed information on your setup? You refer
+to a system where this works fine and another where this does not, but
+you do not specify kernel and userspace versions?
 
-[3] is a different issue that you did not report that I found while
-reviewing this code.
+Some simple script with 'ip netns' as a reproducer might also help
+that might help people jump in a provide feedback.
+
+Thanks.
