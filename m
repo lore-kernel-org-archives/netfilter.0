@@ -1,152 +1,178 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: failing fail-over - commit still in progress
-Date: Mon, 28 Aug 2023 10:02:40 +0200
-Message-ID: <ZOxUoB6Qze1dtWYh@calendula>
-References: <910b44e4-06e8-19d6-45f0-06f886a2e812@nethence.com>
- <ZNYTF+uCod++Htl9@calendula>
- <df659821-cee6-9702-e259-9db8cf290316@nethence.com>
- <ZNf013cGy81TcxoN@calendula>
- <18a0e2b8-dc7c-b9c6-77a7-8cfbe5fddb68@nethence.com>
- <ZOMtqtvQLZE38sfm@calendula>
- <0865d2fb-8720-efd8-39a1-61e22ae9acca@nethence.com>
+From: Alessandro Vesely <vesely@tana.it>
+Subject: Re: Extending an IPv4 filter to IPv6
+Date: Thu, 31 Aug 2023 11:22:13 +0200
+Message-ID: <57aa5744-4cf3-ebfa-5f5a-21a630b9c09a@tana.it>
+References: <9d98b203-b22a-898c-1a4f-c83e706bc411@tana.it>
+ <ZOKIl6qWCdLCTPPT@calendula> <29680eb6-1004-f1af-38bb-f9da49712d58@tana.it>
+ <ZOO2q6mJZQZR+QM7@calendula> <b736646f-016d-3775-fa06-2babf1612dc1@tana.it>
+ <ZOu2pbmm7mdTC5xQ@calendula>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <0865d2fb-8720-efd8-39a1-61e22ae9acca@nethence.com>
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Pierre-Philipp Braun <pbraun@nethence.com>
-Cc: netfilter@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=tana.it;
+        s=epsilon; t=1693473734;
+        bh=1rStuMnqX/jeEcC0tJqVcyJvi1s03RwIRcu1F7A8PrM=;
+        h=Author:Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=Ku0cqrKrW+/IJclvFUgSjicTo6ulWTR7iu5niC1sRbF2TwtZmQtPVi6EXc0ZkxZ2P
+         YXpZlqG/bfWbT9lUrlhBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tana.it; s=delta;
+        t=1693473734; bh=1rStuMnqX/jeEcC0tJqVcyJvi1s03RwIRcu1F7A8PrM=;
+        h=Date:Subject:To:Cc:References:From:In-Reply-To;
+        b=AoYZs0NuPONNast/0pjI6BAbgbO90i0aeIXuVgcXxEEvliYciCBfQptfEVkTBBPNf
+         lL0s/hhjBmo1TXcihKz91m1kBsgE0KgaZsvLgJA5dvHiB/ai+O9jnvAQJB4oOOHWHZ
+         7BKsagZOy/gCqxfN+T/CC9gRqtrAsFqfBuBNjyzO72YpYibcg58ddlQhk5y9f
+Subject: Re: Extending an IPv4 filter to IPv6
+Content-Language: en-US, it-IT
+In-Reply-To: <ZOu2pbmm7mdTC5xQ@calendula>
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org, netfilter@vger.kernel.org
 
-On Thu, Aug 24, 2023 at 12:59:47PM +0300, Pierre-Philipp Braun wrote:
-> On 8/21/23 12:26, Pablo Neira Ayuso wrote:
-> > As I said before, you have to have a stateful ruleset which does not
-> > pick up states from the middle.
-> 
-> I am now filtering both interfaces, the front-facing and the internal one, on the FORWARD chain.
-> 
-> table inet filter {
->         chain input {
->                 type filter hook input priority filter; policy accept;
->         }
-> 
->         chain forward {
->                 type filter hook forward priority filter; policy drop;
->                 ip protocol icmp accept
->                 ct state invalid log prefix "INVALID: " drop
->                 ct state established,related,new accept
->                 log prefix "DROP POLICY: "
->         }
-> 
->         chain output {
->                 type filter hook output priority filter; policy accept;
->         }
-> }
-> table ip nat {
->         chain postrouting {
->                 type nat hook postrouting priority srcnat; policy accept;
->                 ip saddr 10.1.0.0/16 oif "eth0" snat to 217.19.208.157
->         }
-> 
->         chain prerouting {
->                 type nat hook prerouting priority dstnat; policy accept;
->                 iif "eth0" tcp dport 50 dnat to 10.1.0.50:22
->         }
-> }
-> 
-> However it looks like I am still tracking in the middle.
-> 
-> > nftables is completely irrelevant in this picture. State
-> > synchronization relies on ctnetlink and userspace conntrackd for state
-> > synchronization. nftables is only the packet classification framework.
-> 
-> I was just wondering if I absolutely had to use the iptables example from the testcase sample.
-> I notice that example has additional SYN flag.
-> Basically I am doing things the other way around, DNAT instead of SNAT.
->
-> > Rule of thumb is: You have disable nf_conntrack_tcp_loose from
-> > conntrack and a stateful ruleset which drops packets that are in
-> > invalid state.
-> 
-> tcp_loose is zero and as for the stateful ruleset, I am still not sure.
-> 
-> > Otherwise, state synchronization does not make sense because conntrack
-> > can pick connections from the middle, ie. you can implement "poor man"
-> > failover and let conntrack recover the history from the middle.
-> 
-> This seems to be what is happening (correct me if I am wrong).  I sometimes manage to successfully fail-over after checking carefully that things are in order, namely that the state is there on internal and external cache respectively.  Anyhow the commit error remains.
-> 
-> > Can you see events on the active node with `conntrack -E`?
-> 
-> No, and I have to restart conntrackd to actually be able to see the states (I guess thanks to `StartupResync on`).
+Thanks for all the tips and the comments in the example.  I now seem to be able 
+to code something...
 
-Did you enable CONFIG_NF_CONNTRACK_EVENTS in your kernel?
 
-CONFIG_NF_CONNTRACK_EVENTS=y
+Best
+Ale
 
-`conntrack -E' should show events regardless your conntrackd
-configuration when you create new flows.
 
-> > Did you debug with tcpdump on both ends to check to see if conntrackd
-> > delivers the synchronization messages?
+On Sun 27/Aug/2023 22:48:37 +0200 Pablo Neira Ayuso wrote:
+> On Tue, Aug 22, 2023 at 08:09:53PM +0200, Alessandro Vesely wrote:
+>> On Mon 21/Aug/2023 21:10:35 +0200 Pablo Neira Ayuso wrote:
+>> > On Mon, Aug 21, 2023 at 07:18:46PM +0200, Alessandro Vesely wrote:
+>> > > On Sun 20/Aug/2023 23:41:43 +0200 Pablo Neira Ayuso wrote:
+>> > > > On Fri, Aug 18, 2023 at 12:56:38PM +0200, Alessandro Vesely wrote:
+>> > > > > [...]
+>> > > > > 
+>> > > > > So, the first question: Can I keep using these functions?  What is the alternative?
+>> > > > 
+>> > > > The alternative is the libmnl-based API which is the way to go
+>> > > > for new applications.
+>> > > 
+>> > > 
+>> > > The nf-queue.c[*] example that illustrates libmnl is strange.  It
+>> > > show a function nfq_nlmsg_put() (libnetfilter-queue).
+>> > 
+>> > Yes, that is a helper function that is provided by libnetfilter_queue to
+>> > assist a libmnl-based program in building the netlink headers:
+>> > 
+>> > EXPORT_SYMBOL
+>> > struct nlmsghdr *nfq_nlmsg_put(char *buf, int type, uint32_t queue_num)
+>> > {
+>> >          [...]
+>> > }
+>> > 
+>> > This sets up two headers, one is the netlink header, that tells the
+>> > subsystem and the type of request. Then it follows the nfgenmsg header
+>> > which is specific of the nfnetlink_queue subsystem. It stores the queue
+>> > number, family and version are set up to unspec and version_0
+>> > respectively.
+>> > 
+>> > There helpers function are offered in libnetfilter_queue, it is up to
+>> > you to opt-in to use them or not.
+>> 
+>> 
+>> I'm starting to understand.  The example reuses the big buffer to set up the
+>> queue parameters via mnl_socket_sendto(), received by nfqnl_recv_config().
+>> The old API had specific calls instead, nfq_create_queue(),
+>> nfq_set_mode(),... It is this style which makes everything look more
+>> complicated, as it requires several calls.
 > 
-> Yes I noticed an UDP datagram that is larger than the other ones.
-
-You should see UDP traffic in port 3780, unless you have changed your
-Port in your conntrackd.conf configuration file.
-
-> > What do conntrackd stats tell you? There is a good number of options
-> > that allow you debug your setup.
+> I agree it is more low level.
 > 
-> right after a successful fail-over
+>> > > I have two questions about it:
+>> > > 
+>> > > 1) In the example it is called twice, the second time after setting attrs.
+>> > > What purpose does the first call serve?
+>> > 
+>> > There are two sections in the nf-queue example:
+>> > 
+>> > Section #1 (main function)
+>> >    Set up and configure the pipeline between kernel and
+>> >    userspace.  This creates the netlink socket and you send the
+>> >    configuration to the kernel for this pipeline.
+>> 
+>> Now I gathered the first call creates the queue, the second one sets a flag.
+>> It's not clear why that needs to be two calls.  Could all have been stuffed
+>> in a single buffer and delivered by a single call?  Hm... perhaps it is
+>> split just to show that it doesn't have to be monolithic.  If I want to set
+>> queue maxlen do I have to add a third call?
 > 
-> root@vrrp1:~# conntrackd -s
-> cache internal:
-> current active connections:                2
-> connections created:                       4    failed:            0
-> connections updated:                       0    failed:            0
-> connections destroyed:                     2    failed:            0
+> It should be possible to batch three netlink messages in one single
+> buffer, there is a batch API in libmnl. You will have to assign
+> different sequence numbers to each message in the batch to identify
+> errors, because kernel tells you what message has failed (including
+> the original sequence number) and the reason (expressed as errno).
 > 
-> cache external:
-> current active connections:                2
-> connections created:                       4    failed:            0
-> connections updated:                       0    failed:            0
-> connections destroyed:                     2    failed:            0
+> Since this is only called once to set up the data pipeline between
+> kernel and userspace, I do not think the batching is worth the effort.
 > 
-> traffic processed:
->                    0 Bytes                         0 Pckts
+>> > Section #2 (packet processing loop)
+>> >     This is an infinite loop where your software reads for packets
+>> >     to come from the kernel and it calls a callback to handle the
+>> >     netlink message that encapsulates the packet and its metadata.
+>> 
+>> 
+>> In this section the example has a single call to mnl_socket_sendto() per packet.
 > 
-> UDP traffic (active device=eth2):
->                 8384 Bytes sent                 8216 Bytes recv
->                  499 Pckts sent                  498 Pckts recv
->                    0 Error send                    0 Error recv
+> This is to send a verdict back to kernel space on the packet that
+> userspace has received.
 > 
-> message tracking:
->                    0 Malformed msgs                    0 Lost msgs
+>> > You full have control on the socket, so you instantiate a non-blocking
+>> > socket and use select()/poll() if your software handles more that one
+>> > single socket for I/O multiplexing. This examples uses a blocking socket.
+>> 
+>> But I can handle multiple queues using the same socket, can't I?  Are there
+>> any advantages handling, say a netlink socket for each queue?
 > 
-> root@vrrp2:~# conntrackd -s
-> cache internal:
-> current active connections:                2
-> connections created:                       2    failed:            0
-> connections updated:                       0    failed:            0
-> connections destroyed:                     0    failed:            0
+> Yes you can handle all queues with one single socket.
 > 
-> cache external:
-> current active connections:                2
-> connections created:                       6    failed:            0
-> connections updated:                       0    failed:            0
-> connections destroyed:                     4    failed:            0
+> Splitting queues in sockets combined with CPU pinning allows you to
+> improve CPU utilization. There is a number of options to fan out
+> packets between several queues, see documntation.
 > 
-> traffic processed:
->                    0 Bytes                         0 Pckts
+>> > > 2) Is it fine to use a small buffer?  My filter only looks at
+>> > > addresses, so it should be enough to copy 40 bytes.  Can it be on
+>> > > stack?
+>> > 
+>> > You can specify NFQNL_COPY_PACKET in your configuration to tell the
+>> > kernel to send you 40 bytes only, when setting up the pipeline. The
+>> > kernel sends you a netlink message that contains attributes to
+>> > encapsulate packet metadata and the actual payload. The attribute comes
+>> > as an attribute of the netlink message.
+>> 
+>> So the buffer must be bigger than just the payload.  libmnl.h defines a
+>> large MNL_SOCKET_BUFFER_SIZE...
 > 
-> UDP traffic (active device=eth2):
->                 8552 Bytes sent                 8704 Bytes recv
->                  519 Pckts sent                  519 Pckts recv
->                    0 Error send                    0 Error recv
+> That is a generic buffer definition. In the specific case of nfqueue,
+> you have to allocate a buffer to accomodate enough data to be received
+> from the kernel.
 > 
-> message tracking:
->                    0 Malformed msgs                    0 Lost msgs
+>> > You can fetch the payload directly from the attribute:
+>> > 
+>> >          data = mnl_attr_get_payload(attr[NFQA_PAYLOAD]);
+>> 
+>> 
+>> Yup, that's what the example does.
+>> 
+>> > This is accessing the data that is stored in the onstack buffer that
+>> > stores the netlink message that your software have received.
+>> 
+>> 
+>> It seems a buffer can contain several packets.  Is that related with the
+>> queue maxlen?
 > 
-> but the commit error is always there in the logs.
+> Linux provides GSO/GRO support, if it is turned on as it is by
+> default, then you might be receiving a large large whose size might be
+> larger than your device MTU. The nfqueue subsystem reports this via
+> NFQA_CFG_F_GSO flag.
+> 
+>> > You can obtain the packet payload length via:
+>> > 
+>> >          len = mnl_attr_get_payload_len(attr[NFQA_PAYLOAD]);
+>> 
+>> 
+>> And this should be the length specified with NFQNL_COPY_PACKET (or less), correct?
+> 
+> Exactly.
