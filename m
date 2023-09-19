@@ -1,55 +1,54 @@
-From: =?UTF-8?Q?Laura_Garc=C3=ADa_Li=C3=A9bana?= <nevola@gmail.com>
-Subject: [ANNOUNCE] nftlb 1.0.9 release
-Date: Wed, 13 Sep 2023 17:32:33 +0200
-Message-ID: <CAF90-Wg4NTjfUE7pomw8VnQAjSQC2OXa5FQFH_XwK=zf1nOn4A@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@netfilter.org>
+Subject: [ANNOUNCE] ipset 7.18 released
+Date: Tue, 19 Sep 2023 20:26:38 +0200 (CEST)
+Message-ID: <55c2bf9d-ec58-8db-e457-8a36ebbbc4c0@blackhole.kfki.hu>
 Mime-Version: 1.0
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20221208; t=1694619211; x=1695224011; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=LsIGUVYLG51ZiWYJq7FwzO7gDs/2DvpvrxoOWIorm5c=;
-        b=YVAsNLcw19E+fD/tOBmYWo16Cx0Z+hK1DpZVcdGzfUs7OAp3Gg8urLA9E/JIhpBL0u
-         WPujZQBaUINbV/ky5RopMd6oKB0oRDGYL7NJWtNMyGRJr432+LjUJFoyTh/6pqqO9KCv
-         ukYq/vR/ugr2HUmKrNE1WnSkm7dQNMQNGHc5oggrS9Mje4mH7mPuu2Yxs7fgeIu+eqXC
-         Ygtns4cnXNZlA3Ft6iRWQU/RYMY0WchxelN0V73FYRsvMfbAvHWeEAMl18jbLpvTSmYY
-         F+drOKKuXf4vffnJWBgTooKSdB5UMJQB5x8OyjWpZq4Ubahi1gEg5Oh0lvxSyfUn6ji2
-         eq1w==
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Mail List - Netfilter <netfilter@vger.kernel.org>, Netfilter Development Mailing list <netfilter-devel@vger.kernel.org>
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Hi!
+Hi,
 
-I'm honored to present
+I'm happy to announce ipset 7.18, which brings a few fixes, backports, 
+tests suite fixes and json output support.
 
-    nftlb 1.0.9
+Userspace changes:
+  - Add json output to list command (Thomas Oberhammer)
+  - tests: hash:ip,port.t: Replace VRRP by GRE protocol (Phil Sutter)
+  - tests: hash:ip,port.t: 'vrrp' is printed as 'carp' (Phil Sutter)
+  - tests: cidr.sh: Add ipcalc fallback (Phil Sutter)
+  - tests: xlate: Make test input valid (Phil Sutter)
+  - tests: xlate: Test built binary by default (Phil Sutter)
+  - xlate: Drop dead code (Phil Sutter)
+  - xlate: Fix for fd leak in error path (Phil Sutter)
+  - configure.ac: fix bashisms (Sam James)
+  - lib/Makefile.am: fix pkgconfig dir (Sam James)
 
-nftlb stands for nftables load balancer, a user-space tool
-that builds a complete load balancer and traffic distributor
-using the nft infrastructure.
+Kernel part changes:
+ - netfilter: ipset: Fix race between IPSET_CMD_CREATE and IPSET_CMD_SWAP
+    (reported by Kyle Zeng)
+  - netfilter: ipset: add the missing IP_SET_HASH_WITH_NET0 macro for
+    ip_set_hash_netportnet.c (Kyle Zeng)
+  - compatibility: handle strscpy_pad()
+  - netfilter: ipset: refactor deprecated strncpy (Justin Stitt)
+  - netfilter: ipset: remove rcu_read_lock_bh pair from ip_set_test
+    (Florian Westphal)
+  - netfilter: ipset: Replace strlcpy with strscpy (Azeem Shaikh)
+  - netfilter: ipset: Add schedule point in call_ad(). (Kuniyuki Iwashima)
+  - net: Kconfig: fix spellos (Randy Dunlap)
+  - netfilter: ipset: Fix overflow before widen in the bitmap_ip_create()
+    function. (Gavrilov Ilia)
 
-nftlb is a nftables rules manager that creates virtual services
-for load balancing at layer 2, layer 3 and layer 4, minimizing
-the number of rules and using structures to match efficiently the
-packets. It comes with an easy JSON API service to control,
-to monitor and automate the configuration.
+You can download the source code of ipset from:
+        https://ipset.netfilter.org
+        git://git.netfilter.org/ipset.git
 
-Most important changes in this version are:
-
-* Protect daemon authentication key against timing attack
-* Fix bulk application of farm policies with PATCH
-
-
-For further details, please refer to the official repository:
-
-https://github.com/relianoid/nftlb
-
-You can download this tool from:
-
-https://github.com/relianoid/nftlb/releases/tag/v1.0.9
-
-Special thanks to the contribution of Samuel Forestier.
-
-Happy load balancing!
+Best regards,
+Jozsef
+-
+E-mail:  kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
+PGP key: https://wigner.hu/~kadlec/pgp_public_key.txt
+Address: Wigner Research Centre for Physics
+         H-1525 Budapest 114, POB. 49, Hungary
