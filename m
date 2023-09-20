@@ -1,55 +1,54 @@
 From: Sam James <sam@gentoo.org>
-Subject: Re: [ANNOUNCE] ipset 7.18 released
-Date: Wed, 20 Sep 2023 14:03:18 +0100
-Message-ID: <21CF8732-712C-463C-9DA7-A40DA6A1A9B8@gentoo.org>
-References: <20230920125056.GA25778@breakpoint.cc>
-Mime-Version: 1.0 (1.0)
-Content-Transfer-Encoding: quoted-printable
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20230920125056.GA25778@breakpoint.cc>
+Subject: [PATCH] build: Fix double-prefix w/ pkgconfig
+Date: Wed, 20 Sep 2023 14:34:17 +0100
+Message-ID: <20230920133418.1893675-1-sam@gentoo.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-devel-owner@vger.kernel.org>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Florian Westphal <fw@strlen.de>
-Cc: Jan Engelhardt <jengelh@inai.de>, Jozsef Kadlecsik <kadlec@netfilter.org>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
+Cc: netfilter-devel@vger.kernel.org, Jan Engelhardt <jengelh@inai.de>, Florian Westphal <fw@strlen.de>, Jozsef Kadlecsik <kadlec@netfilter.org>, Sam James <sam@gentoo.org>
 
+First, apologies - 326932be0c4f47756f9809cad5a103ac310f700d clearly introduced
+a double prefix and I can't tell you what my thought process was 9 months ago
+but it was obviously wrong (my guess is I rebased some old patch and didn't
+think properly, no idea).
 
+Anyway, let's just drop the extraneous pkgconfigdir definition and use the
+proper one from pkg.m4 via PKG_INSTALLDIR.
 
-> On 20 Sep 2023, at 13:51, Florian Westphal <fw@strlen.de> wrote:
->=20
-> =EF=BB=BFJan Engelhardt <jengelh@inai.de> wrote:
->=20
-> You might want to CC author of that change.
->=20
-Yeah, happy to fix my error - although being polite wouldn't go amiss.
+Fixes: 326932be0c4f47756f9809cad5a103ac310f700d
+Signed-off-by: Sam James <sam@gentoo.org>
+---
+ configure.ac    | 1 +
+ lib/Makefile.am | 1 -
+ 2 files changed, 1 insertion(+), 1 deletion(-)
 
->>> On Wednesday 2023-09-20 13:20, Jan Engelhardt wrote:
->>> On Tuesday 2023-09-19 20:26, Jozsef Kadlecsik wrote:
->>>>=20
->>>> I'm happy to announce ipset 7.18, which brings a few fixes, backports,=
-=20
->>>> tests suite fixes and json output support.
->>>=20
->>> The installation of the pkgconfig file is now broken.
->>>=20
->>>> - lib/Makefile.am: fix pkgconfig dir (Sam James)
->>>=20
->>> Aaaaagh.. that change completely broke installation and must be reverte=
-d.
->>=20
->> commit 326932be0c4f47756f9809cad5a103ac310f700d
->> Author: Sam James <sam@gentoo.org>
->> Date:   Sat Jan 28 19:23:54 2023 +0100
->>=20
->>    lib/Makefile.am: fix pkgconfig dir
->>=20
->>    Signed-off-by: Sam James <sam@gentoo.org>
->>    Signed-off-by: Jozsef Kadlecsik <kadlec@netfilter.org>
->>=20
->> Can I just take a moment to vent about this some more.
->> The change is, in the words of another Linux developer, utter garbage.
->> ${libdir} contains ${prefix} and did so for eternities.
->>=20
->> The commit message is utter garbage too, because it does not
->> even try to make an argument to even _have_ the change in the
->> first place. Allowing such an underdocumented change is a
->> failure in the review process itself.
+diff --git a/configure.ac b/configure.ac
+index cad93af..6c26645 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -14,6 +14,7 @@ LT_CONFIG_LTDL_DIR([libltdl])
+ LTDL_INIT([nonrecursive])
+ 
+ PKG_PROG_PKG_CONFIG
++PKG_INSTALLDIR
+ 
+ dnl Shortcut: Linux supported alone
+ case "$host" in
+diff --git a/lib/Makefile.am b/lib/Makefile.am
+index 50d937d..a9edf95 100644
+--- a/lib/Makefile.am
++++ b/lib/Makefile.am
+@@ -46,7 +46,6 @@ EXTRA_libipset_la_SOURCES = \
+ 
+ EXTRA_DIST = $(IPSET_SETTYPE_LIST) libipset.map
+ 
+-pkgconfigdir = $(prefix)/$(libdir)/pkgconfig
+ pkgconfig_DATA = libipset.pc
+ 
+ dist_man_MANS = libipset.3
+-- 
+2.42.0
+
