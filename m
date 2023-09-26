@@ -1,45 +1,25 @@
-From: Jozsef Kadlecsik <kadlec@netfilter.org>
-Subject: Re: [ANNOUNCE] ipset 7.18 released
-Date: Thu, 21 Sep 2023 08:56:59 +0200 (CEST)
-Message-ID: <62d31829-d130-2e80-e7c-d3da4f19e90@netfilter.org>
-References: <55c2bf9d-ec58-8db-e457-8a36ebbbc4c0@blackhole.kfki.hu> <382279q3-6on5-32rq-po59-6r18os6934n9@vanv.qr>
+From: "Louis R. Fasullo" <contact@louisfasullo.com>
+Subject: Drop tcp close tcp
+Date: Tue, 26 Sep 2023 01:11:55 -0500
+Message-ID: <1a44a2f7cf8867be3f64a2a9f6c066655be2f32f.camel@louisfasullo.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <382279q3-6on5-32rq-po59-6r18os6934n9@vanv.qr>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=louisfasullo.com;
+        s=gm1; t=1695708723;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=PSu32CnRmiCrwSAgOzoaFQl/VIwFbpC7wow/88WdN9s=;
+        b=XU6qThS6YAhVOwru2WcXtQjq5dfP0icpHn/pkWEwYDO0Pa15C0kHgGnIE8UqirjX+JvzXD
+        1qgDvhJx340vjweviw9uGzS0HDTDMP6bhF+PK5DBoXGL2TCtpKCOmg92Mop9GCXQetMtrW
+        rmI/N21BsL1O37je1pGGCa/3dn/pzDQoMp0/teG3P+xcXllCNtfVGOjxytqx/4Kr622Mql
+        0vgyoroo4L2FEigXVs1uuaorljtCWQXvdLAfkF/IwQKgDLkCwPp3WsDO2G9gsngzJ9MOXq
+        UL2ZTuGIo35B6TJLWBEzTu6gHSDBfwc23ocxbsCpwIHoZtl/luq+xj5HSczZ+A==
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@inai.de>, Sam James <sam@gentoo.org>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Hi Jan,
-
-On Wed, 20 Sep 2023, Jan Engelhardt wrote:
-
-> 
-> On Tuesday 2023-09-19 20:26, Jozsef Kadlecsik wrote:
-> >
-> >I'm happy to announce ipset 7.18, which brings a few fixes, backports, 
-> >tests suite fixes and json output support.
-> 
-> The installation of the pkgconfig file is now broken.
-> 
-> >  - lib/Makefile.am: fix pkgconfig dir (Sam James)
-> 
-> Aaaaagh.. that change completely broke installation and must be reverted.
-> 
-> [   44s] RPM build errors:
-> [   44s]     Installed (but unpackaged) file(s) found:
-> [   44s]    /usr/usr/lib64/pkgconfig/libipset.pc
-
-Thanks for quickly noticing the issue - the new release is already out.
-
-Even two persons can make mistakes.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
-PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Can you send me something to stop listening a port I opened with
+minisipserver.
+Thank you
