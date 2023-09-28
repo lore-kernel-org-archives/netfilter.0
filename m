@@ -1,25 +1,41 @@
-From: "Louis R. Fasullo" <contact@louisfasullo.com>
-Subject: Drop tcp close tcp
-Date: Tue, 26 Sep 2023 01:11:55 -0500
-Message-ID: <1a44a2f7cf8867be3f64a2a9f6c066655be2f32f.camel@louisfasullo.com>
+From: List Support <list@tootai.net>
+Subject: Detecting socks5 frames on server side
+Date: Thu, 28 Sep 2023 18:35:33 +0200
+Message-ID: <1a260552-0b2e-4732-87c3-ce2bd75ff827@tootai.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=louisfasullo.com;
-        s=gm1; t=1695708723;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=PSu32CnRmiCrwSAgOzoaFQl/VIwFbpC7wow/88WdN9s=;
-        b=XU6qThS6YAhVOwru2WcXtQjq5dfP0icpHn/pkWEwYDO0Pa15C0kHgGnIE8UqirjX+JvzXD
-        1qgDvhJx340vjweviw9uGzS0HDTDMP6bhF+PK5DBoXGL2TCtpKCOmg92Mop9GCXQetMtrW
-        rmI/N21BsL1O37je1pGGCa/3dn/pzDQoMp0/teG3P+xcXllCNtfVGOjxytqx/4Kr622Mql
-        0vgyoroo4L2FEigXVs1uuaorljtCWQXvdLAfkF/IwQKgDLkCwPp3WsDO2G9gsngzJ9MOXq
-        UL2ZTuGIo35B6TJLWBEzTu6gHSDBfwc23ocxbsCpwIHoZtl/luq+xj5HSczZ+A==
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
+        t=1695918933; bh=tCzveesXCPy8EVPRNjnw72MBHhLgjC0eXq4IT8OSMLQ=;
+        h=Date:To:From:Subject:From;
+        b=deElL9//5GasqUAtZh4d3/9nIxLLtXS++/N+u3IEp9S8j1b9/ezEcZJYVhFToNxyU
+         VUPoJS2ho+OEcoYsyL8pkbgNLgPhR7FLD9pEf1yZ/GWWdAykJg5nEBTFSrtYV3+tTa
+         YBqnHppMvI0PQHOSNv6+1SiFK0T9UQagNLILpXJ4=
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
+        t=1695918933; bh=tCzveesXCPy8EVPRNjnw72MBHhLgjC0eXq4IT8OSMLQ=;
+        h=Date:To:From:Subject:From;
+        b=deElL9//5GasqUAtZh4d3/9nIxLLtXS++/N+u3IEp9S8j1b9/ezEcZJYVhFToNxyU
+         VUPoJS2ho+OEcoYsyL8pkbgNLgPhR7FLD9pEf1yZ/GWWdAykJg5nEBTFSrtYV3+tTa
+         YBqnHppMvI0PQHOSNv6+1SiFK0T9UQagNLILpXJ4=
+Content-Language: fr-FR
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter list <netfilter@vger.kernel.org>
 
-Can you send me something to stop listening a port I opened with
-minisipserver.
-Thank you
+Hello,
+
+ist it possible on *socks server side* to identify frames coming using 
+socks5 ?
+
+Set up is
+
+, WorkStation browser set to socks5 localhost:1080 =>
+. ssh DynamicForward *:1080 to server =>
+. server with multiple ipv6 IPs and nftables will
+output to 80/443/8080 to Internet
+
+Idea being to snat ipv6 addr depending on visited host or source Workstation
+
+Thanks for any hint
+-- 
+Daniel
