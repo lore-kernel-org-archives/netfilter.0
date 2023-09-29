@@ -1,88 +1,79 @@
 From: "Kerin Millar" <kfm@plushkava.net>
 Subject: Re: ipset swap to nftables set
-Date: Fri, 29 Sep 2023 15:41:51 +0100
-Message-ID: <198a0e49-7406-45b8-9e7b-4c074a7b31dc@app.fastmail.com>
+Date: Fri, 29 Sep 2023 15:59:35 +0100
+Message-ID: <e1fd3920-5ce2-4a73-9985-ea9fdb12358d@app.fastmail.com>
 References: <befa0f8e-e76f-8671-81b1-587351b0cf53@gmail.com>
+ <BjREwaQOkZH39wBPsI8ssbjemY70ncttNem9PHtJiq-_5H7NfnmFDCyS7nf6pPMtUR2BCZS_KG2SMuMyXZfL7gUdsM_93_kLkCdQWG-H2lg=@proton.me>
+ <540ed704-0167-821c-48fb-f6f1d3579b33@thelounge.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-         h=cc:cc:content-transfer-encoding:content-type:content-type
-        :date:date:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to;
-         s=fm3; t=1695998532; x=1696084932; bh=IrUWacBoUU+XJIYuWoD9shI6t
-        0YmbybyZ8gq/5ZPgBc=; b=AyANVaW1v0KCo51Dr6Gssmin2yS6wC33mFvd0It7e
-        PKCR/QiUN+ltWbqG54HeJqEgB+iWVOd5aFLmiw54QRkbt60MbaUZvDFxa6OBLBUV
-        pj7vM7k404mXpcctxASFlzIrlqmY/o4iy2FqxJ3NvBdnK+fMLWyj/Pj/sbeePGap
-        Q4+zbHLAFWQJ1+FxZKbLl69bO/vHlHxgYIiQLMea6qsjhI+Sxi9Vr3SPxT1MxgQT
-        I0J9toAvZFUX11InMPZjLztDDVcSr04RmIYB+sJ48qULZkN+tFmwMEf+QGYjY9a8
-        nBx8pru6Zq8oASPZahMja2Buf/EmdCpO/SCZ30DXK0Afg==
+         h=cc:cc:content-type:content-type:date:date:from:from
+        :in-reply-to:in-reply-to:message-id:mime-version:references
+        :reply-to:sender:subject:subject:to:to; s=fm3; t=1695999608; x=
+        1696086008; bh=0f9PVzDopty3NYSn/CnTpDi6cQ/7PEttOUaCutnZRc0=; b=C
+        qwHpoZSnSI09t+RHcBArebSdLXp0h6/h27zM4/dN1+Ruug41k3ocKtnLDPwUVHLt
+        l576MtFFQnWx6lg9wdcDLb7AYTJPpfZFZC9pnPxJaswgISGhsmqMxIKmo411RRLB
+        2cs7nqycc/1gWD1o6+lVQGApzZjbh2WdGaVmG/s+/jjAuvFIVZJTq/ykeg5OAPlH
+        SxfcquUWDegDkX4uRJsK2mGhe8RsQ9HLO17jURpNSR0YHOEER5DASv2/cMDiJ9RL
+        IgcQ9ZENPC+H1toaQhSnry8wLfWE1a5FC2Pt6upZlFo01UwoBaE6gCUbnwSWvq30
+        Op47r9bYIC6nVUTAR/Hbg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-        1695998532; x=1696084932; bh=IrUWacBoUU+XJIYuWoD9shI6t0YmbybyZ8g
-        q/5ZPgBc=; b=DkurxQcsTT+tYA0IpWMxJy7cnZp+iGnSKyqBgRBJBqYfJcYgaly
-        HEMZcAskivDxXiyObDhnwvcV9EMNVRLOwigbzR3OXr96CfhOR8hfLIyQbWLUoOwk
-        amV6ezltSk92yoaAkBR26oPHPA7GvLqXNFXte8p11PvRTaHdTIjCMUJvfi5xNabG
-        uHEs1iMsOH9voHUGi4qh4UAM5KZ3e/P2dMxVx0H1lZXfdjWMckDDj/UWIRNdJtj2
-        4cwvxdCGrzazMrZAghgl8TSIZd55M+37aigGuz3/87IaPAGAoZWNU8gv/d1LYYih
-        ETCuhaiYcy4k4A2XTdwv9MK9+GbuUUmSLQQ==
-In-Reply-To: <befa0f8e-e76f-8671-81b1-587351b0cf53@gmail.com>
+        messagingengine.com; h=cc:cc:content-type:content-type:date:date
+        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+        :message-id:mime-version:references:reply-to:sender:subject
+        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
+        :x-sasl-enc; s=fm2; t=1695999608; x=1696086008; bh=0f9PVzDopty3N
+        YSn/CnTpDi6cQ/7PEttOUaCutnZRc0=; b=Qb1353H+EMr5PJMeI/Jc1uAZzHs2j
+        9dBTHA2JSUeURw+KTLA8dtgn8qcH/qRzh4S3g6nT5ovMARHlJ5L8xZsHhszAZJQE
+        EMOwhwZQ1/VaUvM/OblqNGo+WdqaNxvGga+Y5ybn+V2GwN6LR1zTPBgncY21seRF
+        RO3Q6lqvn0oaxnUcFn9+0R3YyR8jNNSQ8lAUhQdw0TtJF9Qe2n5CLziPgXCz9nwr
+        7eswmQzRlY9odAkYkaqGhl/RouuVa4Nez9c5ZGW03fHWHfOmQdZQmp3T/yZMVKP7
+        6HjunhwEcs2cYT+FY+4hQwu3mmHdYaFculP5Vw91S/pdG7C3wsJo9c5Iw==
+In-Reply-To: <540ed704-0167-821c-48fb-f6f1d3579b33@thelounge.net>
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@vger.kernel.org
-Cc: marek <cervajs64@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Reindl Harald <h.reindl@thelounge.net>, Eric <evil.function@proton.me>, marek <cervajs64@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-On Fri, 29 Sep 2023, at 2:44 PM, marek wrote:
-> hi,
+On Fri, 29 Sep 2023, at 3:36 PM, Reindl Harald wrote:
+> Am 29.09.23 um 16:30 schrieb Eric:
+>> On Friday, September 29th, 2023 at 06:44, marek <cervajs64@gmail.com> wrote:
+>>> - nft flush set ip filter blackhole
+>>>
+>>> - nft add element ip filter blackhole { X } (bash for loop)
+>> 
+>> Hi Marek,
+>> 
+>> Do that last step atomically and it should be plenty fast.
+>> 
+>> nft flush set ip filter blackhole
+>> nft add element ip filter blackhole {\
+>>      1.0.0.1, \
+>>      1.0.0.2, \
+>>      1.0.0.3, \
+>>      1.1.1.1, \
+>>      1.1.1.2, \
+>>      1.1.1.3, \
+>>      1.193.146.35, \
+>> ...
+>>      99.99.99.99, \
+>> }
 >
-> i'm using in production ipset swap with ~3000 ip addr
->
-> i.e.
->
-> - change coming from customer (new ips, old ips deprecated)
->
-> - generation of new list /etc/sysconfig/ipset-new
->
-> - swap ipset-new with ipset
->
-> transaction is near real-time
->
->
-> now i'm moving from RHEL7 to RHEL9 (rocky, kernel 5.14, nftables 1.0.4=
-)=20
-> and trying move from ipset to nftables sets
->
-> nft add set ip filter blackhole { type ipv4_addr\; comment \"drop all=20
-> packets from these hosts\" \; }
-> fill the set
->
-> now the new flow is
->
-> - change coming from customer (new ips, old ips deprecated)
->
-> - nft flush set ip filter blackhole
->
-> - nft add element ip filter blackhole { X }=C2=A0=C2=A0 (bash for loop)
+> still horrible ciomoared to ipset swap beause it is *not* atomically
 
-Executing nft repeatedly will certainly be slow, if that is what you are=
- currently doing. I'd be interested to know what you are using for to it=
-erate over precisely because there's a fair chance that your use of for =
-is an anti-pattern to begin with.
+It should be atomic, provided that the command stream conveyed to a single invocation of nft includes both the flush and add command. That's how I've been going about it for years now. 
 
->
->
-> it tooks 10sec
->
-> can you recommend better way? (performance similar to ipset swap)
+Here is an example, in which a list of newline-delimited IPv4 addresses is consumed from a file named "ipv4-list.txt".
 
-Yes, definitely. However, I would prefer to see some of the existing cod=
-e first. This will make it easier to provide clear guidance as to how to=
- modify your script. In particular, please make it clear where the input=
- data comes from, and the precise format of this data.
+{
+    set="ip filter blackhole"
+    echo "flush set $set"
+    echo "add element $set {"
+    sed -e 's/$/,/'
+    echo "}"
+} < ipv4-list.txt | nft -f -
 
---=20
+-- 
 Kerin Millar
