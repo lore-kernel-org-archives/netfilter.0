@@ -1,41 +1,81 @@
-From: List Support <list@tootai.net>
-Subject: Detecting socks5 frames on server side
-Date: Thu, 28 Sep 2023 18:35:33 +0200
-Message-ID: <1a260552-0b2e-4732-87c3-ce2bd75ff827@tootai.net>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] conntrack-tools 1.4.8 release
+Date: Fri, 29 Sep 2023 13:18:10 +0200
+Message-ID: <ZRaycoBMnOsxHNK8@calendula>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1695918933; bh=tCzveesXCPy8EVPRNjnw72MBHhLgjC0eXq4IT8OSMLQ=;
-        h=Date:To:From:Subject:From;
-        b=deElL9//5GasqUAtZh4d3/9nIxLLtXS++/N+u3IEp9S8j1b9/ezEcZJYVhFToNxyU
-         VUPoJS2ho+OEcoYsyL8pkbgNLgPhR7FLD9pEf1yZ/GWWdAykJg5nEBTFSrtYV3+tTa
-         YBqnHppMvI0PQHOSNv6+1SiFK0T9UQagNLILpXJ4=
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-        t=1695918933; bh=tCzveesXCPy8EVPRNjnw72MBHhLgjC0eXq4IT8OSMLQ=;
-        h=Date:To:From:Subject:From;
-        b=deElL9//5GasqUAtZh4d3/9nIxLLtXS++/N+u3IEp9S8j1b9/ezEcZJYVhFToNxyU
-         VUPoJS2ho+OEcoYsyL8pkbgNLgPhR7FLD9pEf1yZ/GWWdAykJg5nEBTFSrtYV3+tTa
-         YBqnHppMvI0PQHOSNv6+1SiFK0T9UQagNLILpXJ4=
-Content-Language: fr-FR
+Content-Type: multipart/mixed; boundary="iSyG50L6krH8poFB"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter list <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Cc: lwn@lwn.net, netfilter-announce@lists.netfilter.org
 
-Hello,
 
-ist it possible on *socks server side* to identify frames coming using 
-socks5 ?
+--iSyG50L6krH8poFB
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
-Set up is
+Hi!
 
-, WorkStation browser set to socks5 localhost:1080 =>
-. ssh DynamicForward *:1080 to server =>
-. server with multiple ipv6 IPs and nftables will
-output to 80/443/8080 to Internet
+The Netfilter project proudly presents:
 
-Idea being to snat ipv6 addr depending on visited host or source Workstation
+        conntrack-tools 1.4.8
 
-Thanks for any hint
--- 
-Daniel
+This release contains bugfixes:
+
+- fix spurious EOPNOSUPP and ENOBUFS errors with -U/--update command.
+- fix spurious ENOENT -D/--delete.
+
+You can download the new release from:
+
+https://netfilter.org/projects/conntrack-tools/downloads.html#conntrack-tools-1.4.8
+
+To build the code, updated libnetfilter_conntrack 1.0.9 is required:
+
+https://netfilter.org/projects/libnetfilter_conntrack/downloads.html#libnetfilter_conntrack-1.0.9
+
+In case of bugs and feature requests, file them via:
+
+* https://bugzilla.netfilter.org
+
+Happy firewalling!
+
+--iSyG50L6krH8poFB
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: attachment;
+	filename="changes-conntrack-tools-1.4.8.txt"
+
+Jacek Tomasiak (1):
+      conntrack: don't override mark when filtering by status
+
+Jeremy Sowden (5):
+      conntrack, nfct: fix some typo's
+      build: reformat and sort `conntrack_LDADD` and `conntrackd_SOURCES`
+      build: stop suppressing warnings for generated sources
+      read_config_yy: correct `yyerror` prototype
+      read_config_yy: correct arguments passed to `inet_aton`
+
+Pablo Neira Ayuso (8):
+      build: conntrack-tools requires libnetfilter_conntrack >= 1.0.9
+      conntrack: do not silence EEXIST error, use NLM_F_EXCL
+      conntrack: unbreak -U command, use correct family
+      conntrack: skip ENOENT when -U/-D finds a stale conntrack entry
+      conntrack: do not set on NLM_F_ACK in IPCTNL_MSG_CT_GET requests
+      tests/conntrack: add initial stress test for conntrack
+      conntrackd: consolidate check for maximum number of channels
+      conntrack-tools 1.4.8 release
+
+Phil Sutter (5):
+      Makefile: Create LZMA-compressed dist-files
+      conntrack: Fix potential array out of bounds access
+      conntrack: Fix for unused assignment in do_command_ct()
+      conntrack: Fix for unused assignment in ct_save_snprintf()
+      conntrack: Sanitize free_tmpl_objects()
+
+Sam James (3):
+      build: don't suppress various warnings
+      network: Fix -Wstrict-prototypes
+      config: Fix -Wimplicit-function-declaration
+
+
+--iSyG50L6krH8poFB--
