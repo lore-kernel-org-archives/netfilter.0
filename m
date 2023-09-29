@@ -1,79 +1,70 @@
-From: "Kerin Millar" <kfm@plushkava.net>
-Subject: Re: ipset swap to nftables set
-Date: Fri, 29 Sep 2023 15:59:35 +0100
-Message-ID: <e1fd3920-5ce2-4a73-9985-ea9fdb12358d@app.fastmail.com>
-References: <befa0f8e-e76f-8671-81b1-587351b0cf53@gmail.com>
- <BjREwaQOkZH39wBPsI8ssbjemY70ncttNem9PHtJiq-_5H7NfnmFDCyS7nf6pPMtUR2BCZS_KG2SMuMyXZfL7gUdsM_93_kLkCdQWG-H2lg=@proton.me>
- <540ed704-0167-821c-48fb-f6f1d3579b33@thelounge.net>
+From: Kerin Millar <kfm@plushkava.net>
+Subject: Re: Detecting socks5 frames on server side
+Date: Fri, 29 Sep 2023 17:33:26 +0100
+Message-ID: <20230929173326.aec3c633205f36fb4038b4f1@plushkava.net>
+References: <1a260552-0b2e-4732-87c3-ce2bd75ff827@tootai.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-         h=cc:cc:content-type:content-type:date:date:from:from
-        :in-reply-to:in-reply-to:message-id:mime-version:references
-        :reply-to:sender:subject:subject:to:to; s=fm3; t=1695999608; x=
-        1696086008; bh=0f9PVzDopty3NYSn/CnTpDi6cQ/7PEttOUaCutnZRc0=; b=C
-        qwHpoZSnSI09t+RHcBArebSdLXp0h6/h27zM4/dN1+Ruug41k3ocKtnLDPwUVHLt
-        l576MtFFQnWx6lg9wdcDLb7AYTJPpfZFZC9pnPxJaswgISGhsmqMxIKmo411RRLB
-        2cs7nqycc/1gWD1o6+lVQGApzZjbh2WdGaVmG/s+/jjAuvFIVZJTq/ykeg5OAPlH
-        SxfcquUWDegDkX4uRJsK2mGhe8RsQ9HLO17jURpNSR0YHOEER5DASv2/cMDiJ9RL
-        IgcQ9ZENPC+H1toaQhSnry8wLfWE1a5FC2Pt6upZlFo01UwoBaE6gCUbnwSWvq30
-        Op47r9bYIC6nVUTAR/Hbg==
+         h=cc:cc:content-transfer-encoding:content-type:content-type
+        :date:date:from:from:in-reply-to:in-reply-to:message-id
+        :mime-version:references:reply-to:sender:subject:subject:to:to;
+         s=fm3; t=1696005209; x=1696091609; bh=+VfQ7R4Geod9Vmu8z8wEPjV0K
+        Rp7UPpYQukVxcPfm2A=; b=IHaAdSQu1OkD91Vu8izAvJanR+YZ7pLrMVVCwTNi6
+        nB/SmkapbtM+vbd4IVt4l/wEACpYwz1mJhyvWKK+OJvrmEL7qCnFShyPH+H3qgTo
+        KMG6P4rDTB0i2IJtJQqjQoOcCcrhCuZkzreNLC6bjFMngKhWrZctRxVFcYGX5Qms
+        2e+NrZbazI9ZD+8AlfxqGsJeXVHo9ScHhszOS0dwAshTKJToE+NPoc6fAOc73ndv
+        MwANg9fHFgvL1FBhpI8lkknaFr7lG1y7k64zzqcOzl9FtRsThmWq6fGi/EN6+XD8
+        FX7gUaonmptzCXECHflszRTpLhJgofpq/c8AQhYKgA5nw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-type:content-type:date:date
-        :feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-        :message-id:mime-version:references:reply-to:sender:subject
-        :subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-        :x-sasl-enc; s=fm2; t=1695999608; x=1696086008; bh=0f9PVzDopty3N
-        YSn/CnTpDi6cQ/7PEttOUaCutnZRc0=; b=Qb1353H+EMr5PJMeI/Jc1uAZzHs2j
-        9dBTHA2JSUeURw+KTLA8dtgn8qcH/qRzh4S3g6nT5ovMARHlJ5L8xZsHhszAZJQE
-        EMOwhwZQ1/VaUvM/OblqNGo+WdqaNxvGga+Y5ybn+V2GwN6LR1zTPBgncY21seRF
-        RO3Q6lqvn0oaxnUcFn9+0R3YyR8jNNSQ8lAUhQdw0TtJF9Qe2n5CLziPgXCz9nwr
-        7eswmQzRlY9odAkYkaqGhl/RouuVa4Nez9c5ZGW03fHWHfOmQdZQmp3T/yZMVKP7
-        6HjunhwEcs2cYT+FY+4hQwu3mmHdYaFculP5Vw91S/pdG7C3wsJo9c5Iw==
-In-Reply-To: <540ed704-0167-821c-48fb-f6f1d3579b33@thelounge.net>
+        messagingengine.com; h=cc:cc:content-transfer-encoding
+        :content-type:content-type:date:date:feedback-id:feedback-id
+        :from:from:in-reply-to:in-reply-to:message-id:mime-version
+        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+        1696005209; x=1696091609; bh=+VfQ7R4Geod9Vmu8z8wEPjV0KRp7UPpYQuk
+        VxcPfm2A=; b=HZe6go9YQORxuuZAlW9gjv9lrtRuTsfgerSzroJcYnD25E0uHOv
+        ESEalJSwOC6W4lVlz7jjjeUcWBhJAKdUJICU8h0HgjQlkjBn/n9But/UEpIXAYsI
+        vvYjSVJbSqtN1IRScDS0jzmS1o6RfzrXsmUDwV+xIaVZwbQe9jPHGD2TluVdO/eJ
+        LCEqYM5mnjwpWFZKSa3pcN7RDRDVty31XJcOJ2nzSQltYbs2lqAhZKO8GiYzoeYe
+        E3J87ik35pxc31KCCt3olMvkeNw/T7ofivlSn3C7+UnhvtS+Fno/CLF07Swqq972
+        lzhis8TgoQefcWP2yyt2I//DnmLbBw1B91A==
+In-Reply-To: <1a260552-0b2e-4732-87c3-ce2bd75ff827@tootai.net>
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Reindl Harald <h.reindl@thelounge.net>, Eric <evil.function@proton.me>, marek <cervajs64@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: List Support <list@tootai.net>
+Cc: Netfilter list <netfilter@vger.kernel.org>
 
-On Fri, 29 Sep 2023, at 3:36 PM, Reindl Harald wrote:
-> Am 29.09.23 um 16:30 schrieb Eric:
->> On Friday, September 29th, 2023 at 06:44, marek <cervajs64@gmail.com> wrote:
->>> - nft flush set ip filter blackhole
->>>
->>> - nft add element ip filter blackhole { X } (bash for loop)
->> 
->> Hi Marek,
->> 
->> Do that last step atomically and it should be plenty fast.
->> 
->> nft flush set ip filter blackhole
->> nft add element ip filter blackhole {\
->>      1.0.0.1, \
->>      1.0.0.2, \
->>      1.0.0.3, \
->>      1.1.1.1, \
->>      1.1.1.2, \
->>      1.1.1.3, \
->>      1.193.146.35, \
->> ...
->>      99.99.99.99, \
->> }
->
-> still horrible ciomoared to ipset swap beause it is *not* atomically
+On Thu, 28 Sep 2023 18:35:33 +0200
+List Support <list@tootai.net> wrote:
 
-It should be atomic, provided that the command stream conveyed to a single invocation of nft includes both the flush and add command. That's how I've been going about it for years now. 
+> Hello,
+> 
+> ist it possible on *socks server side* to identify frames coming using 
+> socks5 ?
+> 
+> Set up is
+> 
+> , WorkStation browser set to socks5 localhost:1080 =>
+> . ssh DynamicForward *:1080 to server =>
+> . server with multiple ipv6 IPs and nftables will
+> output to 80/443/8080 to Internet
+> 
+> Idea being to snat ipv6 addr depending on visited host or source Workstation
 
-Here is an example, in which a list of newline-delimited IPv4 addresses is consumed from a file named "ipv4-list.txt".
+Initially, I wondered whether matching against the sshd.service group on a systemd-based distribution might be useful.
 
-{
-    set="ip filter blackhole"
-    echo "flush set $set"
-    echo "add element $set {"
-    sed -e 's/$/,/'
-    echo "}"
-} < ipv4-list.txt | nft -f -
+table inet filter {
+	chain output {
+		type filter hook output priority filter; policy accept;
+		socket cgroupv2 level 2 "system.slice/sshd.service" tcp dport { 80, 443, 1080 } log
+	}
+}
+
+Unfortunately, it isn't. A probable reason for this is that sshd(8) implements privilege separation by forking off a new instance of sshd(8) in the name of the connecting user.
+
+Running sshd(8) in a dedicated network namespace could make for an idea worth exploring, though I don't think that doing so would address all of your requirements.
 
 -- 
 Kerin Millar
