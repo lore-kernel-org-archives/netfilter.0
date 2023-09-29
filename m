@@ -1,81 +1,61 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] conntrack-tools 1.4.8 release
-Date: Fri, 29 Sep 2023 13:18:10 +0200
-Message-ID: <ZRaycoBMnOsxHNK8@calendula>
+From: marek <cervajs64@gmail.com>
+Subject: ipset swap to nftables set
+Date: Fri, 29 Sep 2023 15:44:14 +0200
+Message-ID: <befa0f8e-e76f-8671-81b1-587351b0cf53@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="iSyG50L6krH8poFB"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1695995057; x=1696599857; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:to:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=r3Tka524mDD+J576uZllQwxvBMTwSzdEMJb97GgdKkw=;
+        b=N2iA7KLcS6dkUQ7omwbwVFdDqRozLABfzbPiWwHUdZsT+cyrDYtJp7qSFPRAlqI3QF
+         wfrMBumvq6N5uPIwsGU50GOJE1WQiSeXhsAxKzATcWeMyOKKvlJO4qm6N0KtcBfV7o3c
+         tTPmCVMkRpAXTtofRoJjCswlx7WgfNmBVEF+HuMHgZj06UpXR8ZtmuB0zPRAdI1MpK61
+         +gDnSsePwUDHgSkHGJN5xO9prcLzENfY/fd9oBFZkRHCVLXs70gtMPCeF3zA7Rj8sWl5
+         FNG2ObLJyq5CkdVOBHxGK/fKOihW/aW+XWAk02S3yf1k+oIvmbhgMqh68Z5QJq8DcpMo
+         WGRw==
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
-Cc: lwn@lwn.net, netfilter-announce@lists.netfilter.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: netfilter@vger.kernel.org
+
+hi,
+
+i'm using in production ipset swap with ~3000 ip addr
+
+i.e.
+
+- change coming from customer (new ips, old ips deprecated)
+
+- generation of new list /etc/sysconfig/ipset-new
+
+- swap ipset-new with ipset
+
+transaction is near real-time
 
 
---iSyG50L6krH8poFB
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+now i'm moving from RHEL7 to RHEL9 (rocky, kernel 5.14, nftables 1.0.4) 
+and trying move from ipset to nftables sets
 
-Hi!
+nft add set ip filter blackhole { type ipv4_addr\; comment \"drop all 
+packets from these hosts\" \; }
+fill the set
 
-The Netfilter project proudly presents:
+now the new flow is
 
-        conntrack-tools 1.4.8
+- change coming from customer (new ips, old ips deprecated)
 
-This release contains bugfixes:
+- nft flush set ip filter blackhole
 
-- fix spurious EOPNOSUPP and ENOBUFS errors with -U/--update command.
-- fix spurious ENOENT -D/--delete.
-
-You can download the new release from:
-
-https://netfilter.org/projects/conntrack-tools/downloads.html#conntrack-tools-1.4.8
-
-To build the code, updated libnetfilter_conntrack 1.0.9 is required:
-
-https://netfilter.org/projects/libnetfilter_conntrack/downloads.html#libnetfilter_conntrack-1.0.9
-
-In case of bugs and feature requests, file them via:
-
-* https://bugzilla.netfilter.org
-
-Happy firewalling!
-
---iSyG50L6krH8poFB
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: attachment;
-	filename="changes-conntrack-tools-1.4.8.txt"
-
-Jacek Tomasiak (1):
-      conntrack: don't override mark when filtering by status
-
-Jeremy Sowden (5):
-      conntrack, nfct: fix some typo's
-      build: reformat and sort `conntrack_LDADD` and `conntrackd_SOURCES`
-      build: stop suppressing warnings for generated sources
-      read_config_yy: correct `yyerror` prototype
-      read_config_yy: correct arguments passed to `inet_aton`
-
-Pablo Neira Ayuso (8):
-      build: conntrack-tools requires libnetfilter_conntrack >= 1.0.9
-      conntrack: do not silence EEXIST error, use NLM_F_EXCL
-      conntrack: unbreak -U command, use correct family
-      conntrack: skip ENOENT when -U/-D finds a stale conntrack entry
-      conntrack: do not set on NLM_F_ACK in IPCTNL_MSG_CT_GET requests
-      tests/conntrack: add initial stress test for conntrack
-      conntrackd: consolidate check for maximum number of channels
-      conntrack-tools 1.4.8 release
-
-Phil Sutter (5):
-      Makefile: Create LZMA-compressed dist-files
-      conntrack: Fix potential array out of bounds access
-      conntrack: Fix for unused assignment in do_command_ct()
-      conntrack: Fix for unused assignment in ct_save_snprintf()
-      conntrack: Sanitize free_tmpl_objects()
-
-Sam James (3):
-      build: don't suppress various warnings
-      network: Fix -Wstrict-prototypes
-      config: Fix -Wimplicit-function-declaration
+- nft add element ip filter blackhole { X }   (bash for loop)
 
 
---iSyG50L6krH8poFB--
+it tooks 10sec
+
+can you recommend better way? (performance similar to ipset swap)
+
+thanks
+
+Marek
+
