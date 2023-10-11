@@ -2,245 +2,139 @@ Return-Path: <netfilter-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A9F93CD80A3
-	for <netfilter@archiver.kernel.org>; Tue, 10 Oct 2023 11:05:34 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id CFBDECDB464
+	for <netfilter@archiver.kernel.org>; Wed, 11 Oct 2023 16:25:19 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230364AbjJJLFc (ORCPT <rfc822;netfilter@archiver.kernel.org>);
-        Tue, 10 Oct 2023 07:05:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53238 "EHLO
+        id S232570AbjJKQZS (ORCPT <rfc822;netfilter@archiver.kernel.org>);
+        Wed, 11 Oct 2023 12:25:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44388 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230223AbjJJLFb (ORCPT
-        <rfc822;netfilter@vger.kernel.org>); Tue, 10 Oct 2023 07:05:31 -0400
-Received: from orbyte.nwl.cc (orbyte.nwl.cc [IPv6:2001:41d0:e:133a::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6F00AC;
-        Tue, 10 Oct 2023 04:05:29 -0700 (PDT)
-Received: from n0-1 by orbyte.nwl.cc with local (Exim 4.94.2)
-        (envelope-from <n0-1@orbyte.nwl.cc>)
-        id 1qqAYF-0001Ys-Q0; Tue, 10 Oct 2023 13:05:23 +0200
-Date:   Tue, 10 Oct 2023 13:05:23 +0200
-From:   Phil Sutter <phil@netfilter.org>
-To:     netfilter <netfilter@vger.kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>
-Cc:     netdev@vger.kernel.org, netfilter-announce@lists.netfilter.org,
-        lwn@lwn.net
-Subject: [ANNOUNCE] iptables 1.8.10 release
-Message-ID: <ZSUv81gBDQb2kqHs@orbyte.nwl.cc>
-Mail-Followup-To: Phil Sutter <phil@netfilter.org>,
-        netfilter <netfilter@vger.kernel.org>,
-        netfilter-devel <netfilter-devel@vger.kernel.org>,
-        netdev@vger.kernel.org, netfilter-announce@lists.netfilter.org,
-        lwn@lwn.net
+        with ESMTP id S230271AbjJKQZR (ORCPT
+        <rfc822;netfilter@vger.kernel.org>); Wed, 11 Oct 2023 12:25:17 -0400
+X-Greylist: delayed 308 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Wed, 11 Oct 2023 09:25:14 PDT
+Received: from mout2.freenet.de (mout2.freenet.de [IPv6:2001:748:100:40::2:4])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B18CB8F
+        for <netfilter@vger.kernel.org>; Wed, 11 Oct 2023 09:25:14 -0700 (PDT)
+Received: from [195.4.92.127] (helo=sub8.freenet.de)
+        by mout2.freenet.de with esmtpa (ID b.ohnsorg@freenet.de) (port 25) (Exim 4.94.2 #2)
+        id 1qqbwJ-008HGR-Kc
+        for netfilter@vger.kernel.org; Wed, 11 Oct 2023 18:20:03 +0200
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=freenet.de;
+        s=mjaymdexmjqk; h=Content-Transfer-Encoding:Content-Type:Subject:From:To:
+        MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=H0pJj/crvsRuGp/ZIr+ucp9z8b4mj41YA7iq3EuBnFI=; b=XOKY4CdMzOEFFwilEUbroA0BVG
+        Ozk8x+ef5SXPTGied7i0aLCBgPAPPvLgj2Eyftum529TRR9ZIDQsI61tp7jYFVUtA+ylLkZwv2cY+
+        BOA315MhAEviLVOnq1UeAmZPlR6H9IErq1VXfTYUjNFfO9jfzjEzema9mENAwKyMZ7FSGyO+hOJve
+        haZ0ok0c3TKBHz/lz854pQO16vjVk3MN20lazDcL7i6XwSH/5miBmw42Bu678S4eX18LyCAPa2iwj
+        5triKRMGpKZ+LCR/wV5Joa/+YwIKWsZLywowNCHT/lj3sGV7EKvoMIxJhlAwbqcsiCfn9IVXX6U4P
+        smsZT+dQ==;
+Received: from dslb-094-217-225-143.094.217.pools.vodafone-ip.de ([94.217.225.143]:60824 helo=[192.168.2.50])
+        by sub8.freenet.de with esmtpsa (ID b.ohnsorg@freenet.de) (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (port 465) (Exim 4.94.2 #2)
+        id 1qqbwJ-00H5Tc-Ay
+        for netfilter@vger.kernel.org; Wed, 11 Oct 2023 18:20:03 +0200
+Message-ID: <87ce6944-cba9-0189-a55f-fe9e5e74b08f@freenet.de>
+Date:   Wed, 11 Oct 2023 18:17:42 +0200
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="2gznOYqojtGKBm51"
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:102.0) Gecko/20100101
+ Thunderbird/102.15.1
+To:     netfilter@vger.kernel.org
+Content-Language: de-DE
+From:   Benno <b.ohnsorg@freenet.de>
+Subject: Efficient and correct time based bandwidth monitoring
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-FN-MUUID: 1697041203B9829B5A142DO
+X-Originated-At: 94.217.225.143!60824
+X-Scan-TS: Wed, 11 Oct 2023 18:20:03 +0200
 Precedence: bulk
 List-ID: <netfilter.vger.kernel.org>
 X-Mailing-List: netfilter@vger.kernel.org
 
+Hi there,
 
---2gznOYqojtGKBm51
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+I want to monitor bandwidth/ throughput (on a NAT-ing IPv4 router) in a 
+sliding window of n minutes correctly. Just from the wiki or the docs 
+some uncertainties remain.
 
-Hi!
+Named counter could be a first approach:
 
-The Netfilter project proudly presents:
+table inet filter {
 
-        iptables 1.8.10
+   counter accept_https {}
 
-This release contains new features:
+   tcp dport 443 counter name accept_https accept comment "accept https"
+}
 
-- xtables-translate: Support rule insert with index
-- Broute table support in ebtables-nft
-- nft-variants' debug output (pass multiple '-v' flags) now contains
-  sets if present
-- Add mld-listener type names to icmp6 match
-- Correctly parse meta mark statements in rules even though iptables-nft
-  does not emit those
+Current state is to be queried with nft list ruleset | grep counter. 
+Such a counter will gather statistics from start of loading the ruleset 
+until eternity. A delta analysis for a 15min window could be solved in a 
+later stage by a little math of a scraping tool.
 
-... and fixes:
+A set would serve a similar purpose. This example is already more 
+sophisticated to distinguish (internal) IP(v4) addresses:
 
-- Compiler warnings with -Werror=format-security
-- Needless install of unsupported xtables.conf file
-- Wrong "unknown argument" error message in some corner cases
-- ebtables-nft allowed implicitly calling targets by one of their
-  options, require '-j <target>' first for consistency with legacy
-- Various bugs in ebtables-translate
-- Corner-case bug in iptables-nft-restore when deleting a rule inside
-  the batch file
-- Sloppy rule check command in ip6tables-legacy, producing
-  false-positives
-- Arptables-nft omitted some inverted options when listing rules
-- Parser would not accept long-options with appended argument
-  (in form '--opt=arg')
-- Ip6tables-nft ignored counter argument ('-c')
-- Wrong error message when listing a non-existent chain with
-  iptables-nft
-- Pointless creation of unused anonymous sets when deleting an
-  ebtables-nft rule containing an among match
-- Ineffective among match comparison causing ebtables-nft to potentially
-  delete the wrong rule
-- Sloppy iptables-restore parser accepting junk where chain counters are
-  expected
-- Missing target name validation in chain rename command
-- Icmp match confused type 255 and code 255 with special type "any"
-- NDEBUG compiler flag breaks iptables-nft
-- Non-functional chain policy counters with iptables-nft
-- Zeroing a rule's counters would zero chain policy counters with legacy
-  iptables
-- Reject '-m conntrack --ctproto 0', it will never match
-- Stale meta expression when stripping a match on interface "+" (i.e.,
-  any interface name)
-- Harmless compiler warning with recent Linux headers
+define private_net = 192.168.2.0/24
 
-... and documentation updates:
+table inet nftmon {
+         set ip4counters {
+                 type ipv4_addr
+                 size 65535
+                 flags dynamic
+                 counter
+         }
 
-- Add missing chunk types to SCTP match help text (use 'iptables -p sctp
-  --help' to see them)
-- Document possible false negatives when using 'string' match's BM
-  algorithm
-- Missing return codes 3 and 4 descriptions in iptables man page
-- Misc minor fixes in man pages
+         chain forward {
+                 type filter hook postrouting priority filter + 1; 
+policy accept;
+                 ip saddr $private_net add @ip4counters { ip saddr }
+                 ip daddr $private_net add @ip4counters { ip daddr }
+         }
+}
 
-You can download the new release from:
+Querying it with:
 
-https://netfilter.org/projects/iptables/downloads.html#iptables-1.8.10
+nft list set inet nftmon ip4counters
 
-To build the code, libnftnl 1.2.6 is required:
+is more straightforward listing only the relevant metrics.
 
-* http://netfilter.org/projects/libnftnl/downloads.html#libnftnl-1.2.6
+I could further enhance this with flags timeout for the set and add a 
+timeout of 15min in the add part of the rule filling the set:
 
-In case of bugs, file them via:
+ip saddr 192.168.1.0/24 add @ip4counters { ip saddr timeout 15m }
 
-* https://bugzilla.netfilter.org
+1. The first approach with a named counter and a diff logic in a later 
+stage (scraping script, piece of code) moves load from nftables 
+somewhere else. Is this recommended in comparison to the 
+timeout-flagging of set-variant? Will a counter overflow and break 
+subtraction from time to time? (Uptime is multiple months with 
+sufficient traffic.)
 
-Happy firewalling!
+2. For the 2nd approach I assume the single packet matching the rule 
+will end up with a 15m timeout in the set. Thus no entry in the set is 
+older than 15min. So the metrics from this set only span a 15min 
+interval. Is this correct? Asked from a different point of view: when 
+will garbage collection take place clearing the timed out values from 
+the set?
 
---2gznOYqojtGKBm51
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="changes-iptables-1.8.10.txt"
+3. The pure counter approach cannot be improved with a garbage 
+collection configuration? This would create 24x4 15min-intervals when 
+running every 15min. Scraping this in between garbage collection runs 
+means missing bandwidth/ packets?
 
-Alyssa Ross (1):
-  build: use pkg-config for libpcap
 
-Arturo Borrero Gonzalez (1):
-  iptables-test.py: make explicit use of python3
+4. Is there a third more efficient/ cheaper approach to define a rule or 
+rules to yield bandwidth/ througput metrics grouped by IP (or port or 
+whatever the rule is made of) so that only the last n minutes are taken 
+into consideration? (Precise to the minute.)
 
-Florian Westphal (6):
-  xtables-eb: fix crash when opts isn't reallocated
-  iptables-nft: make builtin tables static
-  iptables-nft: remove unused function argument
-  include: update nf_tables uapi header
-  ebtables-nft: add broute table emulation
-  nft-ruleparse: parse meta mark set as MARK target
+5. Querying conntrack would be later stage if bandwidth monitoring 
+yields unusual activity. A counter or the set approach requires less 
+ressources (CPU, memory). Is this correct?
 
-Jacek Tomasiak (2):
-  iptables: Fix setting of ipv6 counters
-  iptables: Fix handling of non-existent chains
 
-Jan Engelhardt (1):
-  xshared: dissolve should_load_proto
+Thanks in advance,
 
-Jan Palus (1):
-  nft: move processing logic out of asserts
-
-Jeremy Sowden (1):
-  man: string: document BM false negatives
-
-Markus Boehme (1):
-  ip6tables: Fix checking existence of rule
-
-Pablo Neira Ayuso (3):
-  nft: check for source and destination address in first place
-  nft: use payload matching for layer 4 protocol
-  nft-bridge: pass context structure to ops->add() to improve anonymous
-    set support
-
-Phil Sutter (76):
-  extensions: NAT: Fix for -Werror=format-security
-  etc: Drop xtables.conf
-  Proper fix for "unknown argument" error message
-  ebtables: Refuse unselected targets' options
-  ebtables-translate: Drop exec_style
-  ebtables-translate: Use OPT_* from xshared.h
-  ebtables-translate: Ignore '-j CONTINUE'
-  ebtables-translate: Print flush command after parsing is finished
-  tests: xlate: Support testing multiple individual files
-  tests: CLUSTERIP: Drop test file
-  nft-shared: Lookup matches in iptables_command_state
-  nft-shared: Use nft_create_match() in one more spot
-  nft-shared: Simplify using nft_create_match()
-  tests: xlate: Properly split input in replay mode
-  tests: xlate: Print file names even if specified
-  extensions: libebt_redirect: Fix target translation
-  extensions: libebt_redirect: Fix for wrong syntax in translation
-  extensions: libebt_ip: Do not use 'ip dscp' for translation
-  extensions: libebt_ip: Translation has to match on ether type
-  ebtables: ip and ip6 matches depend on protocol match
-  xtables-translate: Support insert with index
-  include: Add missing linux/netfilter/xt_LOG.h
-  nft-restore: Fix for deletion of new, referenced rule
-  tests: shell: Test for false-positive rule check
-  utils: nfbpf_compile: Replace pcap_compile_nopcap()
-  nft-shared: Drop unused include
-  arptables: Fix parsing of inverted 'arp operation' match
-  arptables: Don't omit standard matches if inverted
-  xshared: Fix parsing of option arguments in same word
-  nft: Introduce nft-ruleparse.{c,h}
-  nft: Extract rule parsing callbacks from nft_family_ops
-  nft: ruleparse: Create family-specific source files
-  tests: shell: Sanitize nft-only/0009-needless-bitwise_0
-  nft: Special casing for among match in compare_matches()
-  nft: More verbose extension comparison debugging
-  nft: Do not pass nft_rule_ctx to add_nft_among()
-  nft: Include sets in debug output
-  *tables-restore: Enforce correct counters syntax if present
-  *tables: Reject invalid chain names when renaming
-  ebtables: Improve invalid chain name detection
-  tests: shell: Fix and extend chain rename test
-  iptables-restore: Drop dead code
-  iptables-apply: Eliminate shellcheck warnings
-  extensions: libipt_icmp: Fix confusion between 255/255 and any
-  tests: libipt_icmp.t: Enable tests with numeric output
-  man: iptables.8: Extend exit code description
-  man: iptables.8: Trivial spelling fixes
-  man: iptables.8: Fix intra page reference
-  man: iptables.8: Clarify --goto description
-  man: Use HTTPS for links to netfilter.org
-  man: iptables.8: Trivial font fixes
-  man: iptables-restore.8: Fix --modprobe description
-  man: iptables-restore.8: Consistently document -w option
-  man: iptables-restore.8: Drop -W option from synopsis
-  man: iptables-restore.8: Put 'file' in italics in synopsis
-  man: iptables-restore.8: Start paragraphs in upper-case
-  man: Trivial: Missing space after comma
-  man: iptables-save.8: Clarify 'available tables'
-  man: iptables-save.8: Fix --modprobe description
-  man: iptables-save.8: Start paragraphs in upper-case
-  extensions: libip6t_icmp: Add names for mld-listener types
-  nft-ruleparse: Introduce nft_create_target()
-  tests: iptables-test: Fix command segfault reports
-  nft: Create builtin chains with counters enabled
-  Revert "libiptc: fix wrong maptype of base chain counters on restore"
-  tests: shell: Test chain policy counter behaviour
-  Use SOCK_CLOEXEC/O_CLOEXEC where available
-  nft: Pass nft_handle to add_{target,action}()
-  nft: Introduce and use bool nft_handle::compat
-  Add --compat option to *tables-nft and *-nft-restore commands
-  tests: Test compat mode
-  Revert --compat option related commits
-  tests: shell: Fix for ineffective 0007-mid-restore-flush_0
-  nft: Fix for useless meta expressions in rule
-  include: linux: Update kernel.h
-  build: Bump dependency on libnftnl
-
-Quentin Armitage (1):
-  extensions: Fix checking of conntrack --ctproto 0
-
-Victor Julien (1):
-  doc: fix example of xt_cpu
-
-Xin Long (1):
-  xt_sctp: add the missing chunk types in sctp_help
-
---2gznOYqojtGKBm51--
+Benno
