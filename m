@@ -2,123 +2,263 @@ Return-Path: <netfilter-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 2BF71CDB465
-	for <netfilter@archiver.kernel.org>; Sat, 14 Oct 2023 14:24:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 34E2ECDB47E
+	for <netfilter@archiver.kernel.org>; Sun, 15 Oct 2023 20:20:10 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S233192AbjJNOYe (ORCPT <rfc822;netfilter@archiver.kernel.org>);
-        Sat, 14 Oct 2023 10:24:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44692 "EHLO
+        id S229649AbjJOUUI (ORCPT <rfc822;netfilter@archiver.kernel.org>);
+        Sun, 15 Oct 2023 16:20:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51876 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S233033AbjJNOYd (ORCPT
-        <rfc822;netfilter@vger.kernel.org>); Sat, 14 Oct 2023 10:24:33 -0400
-Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [IPv6:2001:738:5001::45])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56DCACA
-        for <netfilter@vger.kernel.org>; Sat, 14 Oct 2023 07:24:28 -0700 (PDT)
-Received: from localhost (localhost [127.0.0.1])
-        by smtp0.kfki.hu (Postfix) with ESMTP id BF05B67400EA;
-        Sat, 14 Oct 2023 16:24:26 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at smtp0.kfki.hu
-Received: from smtp0.kfki.hu ([127.0.0.1])
-        by localhost (smtp0.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP; Sat, 14 Oct 2023 16:24:24 +0200 (CEST)
-Received: from mentat.rmki.kfki.hu (host-94-248-211-167.kabelnet.hu [94.248.211.167])
-        (Authenticated sender: kadlecsik.jozsef@wigner.hu)
-        by smtp0.kfki.hu (Postfix) with ESMTPSA id 5B3A267400D5;
-        Sat, 14 Oct 2023 16:24:24 +0200 (CEST)
-Received: by mentat.rmki.kfki.hu (Postfix, from userid 1000)
-        id 0262D27F6; Sat, 14 Oct 2023 16:24:23 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by mentat.rmki.kfki.hu (Postfix) with ESMTP id 003272B96;
-        Sat, 14 Oct 2023 16:24:23 +0200 (CEST)
-Date:   Sat, 14 Oct 2023 16:24:23 +0200 (CEST)
-From:   Jozsef Kadlecsik <kadlec@netfilter.org>
-To:     "U.Mutlu" <um@mutluit.com>
-cc:     netfilter@vger.kernel.org
-Subject: Re: [libipset] How to read packet counter of a single item?
-In-Reply-To: <652A6F4C.2040200@mutluit.com>
-Message-ID: <f9cc1e2-b5de-dc80-a874-21c7f42dca28@netfilter.org>
-References: <65289DC7.9090603@mutluit.com> <64f2f344-e83a-cbbe-b8e8-a81dfacbca98@netfilter.org> <652A6F4C.2040200@mutluit.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-deepspam: ham 0%
+        with ESMTP id S229500AbjJOUUI (ORCPT
+        <rfc822;netfilter@vger.kernel.org>); Sun, 15 Oct 2023 16:20:08 -0400
+Received: from ciao.gmane.io (ciao.gmane.io [116.202.254.214])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF2F7AB
+        for <netfilter@vger.kernel.org>; Sun, 15 Oct 2023 13:20:04 -0700 (PDT)
+Received: from list by ciao.gmane.io with local (Exim 4.92)
+        (envelope-from <gnng-netfilter@m.gmane-mx.org>)
+        id 1qs7ak-0008dF-4e
+        for netfilter@vger.kernel.org; Sun, 15 Oct 2023 22:20:02 +0200
+X-Injected-Via-Gmane: http://gmane.org/
+To:     netfilter@vger.kernel.org
+From:   Vladimir Smelhaus <vl.sm@email.cz>
+Subject: Flowtables ignore timeout settings in recent kernels
+Date:   Sun, 15 Oct 2023 21:56:14 +0200
+Message-ID: <ughg4v$130b$1@ciao.gmane.io>
+Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="------------iNK0On0aHdXr0SHafVXqGosL"
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
 Precedence: bulk
 List-ID: <netfilter.vger.kernel.org>
 X-Mailing-List: netfilter@vger.kernel.org
 
-On Sat, 14 Oct 2023, U.Mutlu wrote:
+This is a multi-part message in MIME format.
+--------------iNK0On0aHdXr0SHafVXqGosL
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> Jozsef Kadlecsik wrote on 10/13/23 21:05:
-> > On Fri, 13 Oct 2023, U.Mutlu wrote:
-> > 
-> > > 1) Which libipset function can be used for getting
-> > > the packet counter value of a single entry in the set/list?
-> > > 
-> > > Using the function ipset_parse_line(ips, line) I can issue most of the
-> > > ipset functions, but I need also a method for getting the packet counter
-> > > for just a single item only, ie. not the output of all items as "ipset
-> > > save" does. I need to do this in C/C++ (hence libipset in Linux), ie.
-> > > not in script.
-> > 
-> > There is no such functionality in ipset. You can test the existence of an
-> > element in a set or list/save all of them with all of the attached
-> > attributes.
-> 
-> I guess you mean just the ipset command line tool, whereas I explicitly 
-> stated libipset.
+Netfilter ignores the timeout settings for a flowtable
 
-No, the functionality is missing both from the kernel and the user parts. 
-Have a look at the ip_set_utest() function in the kernel which answers the 
-test requests: just an error/success code is returned to userspace and 
-nothing else. While the dump function (for save/restore) works for whole 
-sets only. There is no "get_element" like functionality.
+# sysctl -a -r flowtable
+net.netfilter.nf_flowtable_tcp_timeout = 30
+net.netfilter.nf_flowtable_udp_timeout = 30
 
-> After researching it further I think it should be possible to read the 
-> counter of a single item via libipset & co., or at least testing the 
-> item for having a counter value "gt" etc, as is already possible in the 
-> iptables extensions, ie. "-m set --packets-gt value" etc.
+Situation. A long udp connection (tunnel) with some data flowing through a router. The connection is sent to a flowtable on the router. It's a few packets per second, more here and there, a pause here and there, and so on over and over. The pauses are 
+minimal and are also limited by the tunnel settings to be no longer than 25 seconds. Everything is satisfying to make the connection last continuously in the flowtable and not reappear in forward. However, the connection keeps dropping out of the 
+flowtable. It stays in the flowtable (offloaded) for a second at most and then it is kicked out, back to forward.
 
-That is for the kernel match functions to find matching elements in the 
-sets with given criteria.
- 
-> > > 2) man ipset says
-> > > "test SETNAME TEST-ENTRY [ TEST-OPTIONS ]
-> > >     Test whether an entry is in a set or not. Exit status number is zero
-> > > if the
-> > > tested entry is in the set and nonzero if it is missing from the set."
-> > > 
-> > > But the TEST-OPTIONS are not further described or documented.
-> > > What test options are possible?
-> > 
-> > There's a single one in the case of list:set: to test the element before
-> > or after a reference one.
-> 
-> Can you give a practical example for this?
+In an attached test script you can see counters that should be zero but are not. If I watch the normal packet flow on a particular router, I can see packets in the conntrack table that should be OFFLOAD as ASSURED.
 
-I can give you an example but I don't think it's practical.
+Tested in kernel 6.5.6. In an old(er) kernel 5.10 it works as expected.
 
-# Create a few sets
-ipset n hosts hash:ip
-ipset n nets hash:net
-ipset n hostswithports hash:ip,port
-ipset n netswithports hash:net,port
+Regards
 
-# "Aggregate" them in one single set so that you can refer them
-# in a singe ip[6]tables rule
-ipset n access list:set
-ipset a access netswithports
-ipset a access hostswithports
-ipset a access nets
-ipset a access hosts 
+Vladimir Smelhaus
+--------------iNK0On0aHdXr0SHafVXqGosL
+Content-Type: application/x-shellscript; name="test_flowtable.sh"
+Content-Disposition: attachment; filename="test_flowtable.sh"
+Content-Transfer-Encoding: base64
 
-# If you want to make sure the order is right in the "access" set
-# ... but listing is more straightforward
-ipset t access nets before hosts		# returns ture
-ipset t access nets before hostswithports	# returns false
+IyEvYmluL2Jhc2gKIy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiMg
+ICBjbGllbnQxICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJvdXRlcjEg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJvdXRlcjIgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjbGllbnQyCiMgICAgIG5zMSAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbnNyMSAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgbnNyMiAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgIG5zMgojIFtjbGllbnQgMV0gZXRoMCAgICAgICAgICA8LS0tPiAg
+ICAgICAgICBldGgwIFtyb3V0ZXIgMV0gZXRoMSAgICAgICAgICA8LS0tPiAgICAgICAgICBl
+dGgxIFtyb3V0ZXIgMl0gZXRoMCAgICAgICAgICA8LS0tPiAgICAgICAgICBldGgwIFtjbGll
+bnQgMl0KIyAgICAgICAgICAgIDEwLjAuMS45OS8yNCAgICAgICAgICAxMC4wLjEuMS8yNCAg
+ICAgICAgICAgIDE5Mi4xNjguMTAuMS8yNCAgIDE5Mi4xNjguMTAuMi8yNCAgICAgICAgICAg
+IDEwLjAuMi4xLzI0ICAgICAgICAgIDEwLjAuMS45OS8yNAojICAgICAgICAgICAgZGVhZDox
+Ojo5OS82NCAgICAgICAgIGRlYWQ6MTo6MS82NCAgICAgICAgICAgZmVlMToyOjoxLzY0ICAg
+ICAgZmVlMToyOjoyLzY0ICAgICAgICAgICAgICAgZGVhZDoyOjoxLzY0ICAgICAgICAgZGVh
+ZDoyOjo5OS82NAojCiMtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoj
+ICAgICAgICAgICAgd2cwICAgICAgICAgICAgICAgICAgICAgPC0tLSAgICAgICAgICAgICAg
+ICAgICAgICAgLS0tPiAgICAgICAgICAgICAgICAgICB3ZzAKIyAgICAgICAgICAgIDE3Mi4z
+MC4xNi4xLzI0ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgIDE3Mi4zMC4xNi4yLzI0CiMgICAgICAgICAgICBmZDAwOjoxLzExMiAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBmZDAwOjoyLzExMgoj
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIyAKIyBUaGVyZSBpcyBh
+IGNsaWVudDEgYmVoaW5kIE5BVGluZyByb3V0ZXIxIGFuZCB0aGVyZSBpcyBhbiBhbm90aGVy
+IHJvdXRlcjIsIHdoaWNoIGVzdGFibGlzaGVzIGEgd2lyZWd1YXJkIHVkcCBjb25uZWN0aW9u
+IHRvIGFuIG91dHNpZGUgaXAgYWRkcmVzcyBvZiB0aGUgcm91dGVyMSwgCiMgd2hlcmUgaXQg
+aXMgZm9yd2FyZGVkIHRvIGNsaWVudDEuIFNvIHdlIGhhdmUgYSB0dW5uZWwgYmV0d2VlbiBy
+b3V0ZXIyIGFuZCBjbGllbnQxLgojIAojIE9uIHRoZSByb3V0ZXIxIHdlIGhhdmUgbmZ0YWJs
+ZXMgZmlyZXdhbGwgcnVsZXMsIHdoaWNoIHNlbmQgd2lyZWd1YXJkIHBhY2tldHMgdG8gYSBm
+bG93dGFibGUuCiMgbmV0Lm5ldGZpbHRlci5uZl9mbG93dGFibGVfdGNwX3RpbWVvdXQgPSAz
+MAojIG5ldC5uZXRmaWx0ZXIubmZfZmxvd3RhYmxlX3VkcF90aW1lb3V0ID0gMzAKIwojIE5l
+dCBmbG93IGlzIHNpbXVsYXRlZCBieSBmbG9vZCBwaW5naW5nIGZyb20gb25lIHdpcmVndWFy
+ZCBlbmRwb2ludCB0byBhbm90aGVyLgojIENvbmRpdGlvbnMgYXJlIHByZXBhcmVkIHNvIHRo
+YXQgZXZlcnkgd2lyZWd1YXJkIHVkcCBwYWNrZXQgc2hvdWxkIG1hdGNoIHRvIHRoZSBmbG93
+dGFibGUgb24gdGhlIHJvdXRlcjEuIAojCiMgQlVUIElUIERPRVMgTk9ULgojCiMgSXQgc2Vl
+bXMsIHRoYXQgbmV0ZmlsdGVyIGluIGtlcm5lbHMgNi54LnkgY29tcGxlZXRseSBpZ25vcmVz
+IHNldHRpbmdzIG9mIHRpbWVvdXQgYW5kIGtpa3Mgb3V0IGNvbm5lY3Rpb25zIGZyb20gZmxv
+d3RhYmxlIGV2ZXJ5IHNlY29uZCBldmVuIGlmIHRoZXJlIGlzIGEgY29udGludW91cwojIGZs
+b3cgb2YgcGFja2V0cy4gSW4gYW4gb2xkIGtlcm5lbCA1LjEwIGl0IHdvcmtzIGFzIGV4cGVj
+dGVkLgojIAojCiMgY2xpZW50MiBhbmQgYWxsIGlwdjYgYWRkcmVzc2VzIGFyZSBub3QgdXNl
+ZCBpbiB0aGlzIHRlc3QKIwojLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0KCmNoZWNrdG9vbCAoKXsKCWlmICEgJDEgPiAvZGV2L251bGwgMj4mMTsgdGhlbgoJCWVj
+aG8gIlNLSVA6IENhbm5vdCAkMiIKCQlleGl0ICRrc2Z0X3NraXAKCWZpCn0KCiMtLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLQojIE5hbWVzIG9mIG5ldHdvcmsgbmFtZXNwYWNlcwojIHJhbmRvbWl6ZSB0aGUgbmFt
+ZXMKc2Z4PSQobWt0ZW1wIC11ICJfWFhYWFhYWFhYWCIpCiMgYnV0IG5vdCB0b2RheQojIHNm
+eD0iIgoKbnMxPSJuczEkc2Z4IgpuczI9Im5zMiRzZngiCm5zcjE9Im5zcjEkc2Z4Igpuc3Iy
+PSJuc3IyJHNmeCIKCmNoZWNrdG9vbCAibmZ0IC0tdmVyc2lvbiIgInJ1biB0ZXN0IHdpdGhv
+dXQgbmZ0IChuZnRhYmxlcykiCmNoZWNrdG9vbCAiaXAgLVZlcnNpb24iICJydW4gdGVzdCB3
+aXRob3V0IGlwIChpcHJvdXRlMikiCmNoZWNrdG9vbCAid2hpY2ggbmMiICJydW4gdGVzdCB3
+aXRob3V0IG5jIChuZXRjYXQpIgpjaGVja3Rvb2wgIndoaWNoIHdnIiAicnVuIHRlc3Qgd2l0
+aG91dCB3ZyAod2lyZWd1YXJkLXRvb2xzKSIKY2hlY2t0b29sICJpcCBuZXRucyBhZGQgJG5z
+MSIgImNyZWF0ZSBuZXR3b3JrIG5hbWVzcGFjZSBuczEgKCRuczEpIgoKIy0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+CiMgaXAgbmV0bnMgYWRkICRuczEKaXAgbmV0bnMgYWRkICRuczIKaXAgbmV0bnMgYWRkICRu
+c3IxCmlwIG5ldG5zIGFkZCAkbnNyMgoKY2xlYW51cCgpIHsKCWlwIG5ldG5zIGRlbCAkbnMx
+CglpcCBuZXRucyBkZWwgJG5zMgoJaXAgbmV0bnMgZGVsICRuc3IxCglpcCBuZXRucyBkZWwg
+JG5zcjIKfQoKdHJhcCBjbGVhbnVwIEVYSVQKCiMgY3JlYXRlIHZldGggcGFpcnMgb24gY2xp
+ZW50cy9yb3V0ZXJzCmlwIGxpbmsgYWRkIGV0aDAgbmV0bnMgJG5zcjEgdHlwZSB2ZXRoIHBl
+ZXIgbmFtZSBldGgwIG5ldG5zICRuczEKaXAgbGluayBhZGQgZXRoMSBuZXRucyAkbnNyMSB0
+eXBlIHZldGggcGVlciBuYW1lIGV0aDEgbmV0bnMgJG5zcjIKaXAgbGluayBhZGQgZXRoMCBu
+ZXRucyAkbnNyMiB0eXBlIHZldGggcGVlciBuYW1lIGV0aDAgbmV0bnMgJG5zMgoKIyBzZXQg
+aW50ZXJmYWNlcyB1cCBvbiByb3V0ZXJzCmZvciBkZXYgaW4gbG8gZXRoMCBldGgxOyBkbwog
+ICAgaXAgLW5ldCAkbnNyMSBsaW5rIHNldCAkZGV2IHVwCiAgICBpcCAtbmV0ICRuc3IyIGxp
+bmsgc2V0ICRkZXYgdXAKZG9uZQoKIyBzZXQgaXAgYWRkcmVzc2VzIG9uIHJvdXRlciBpbnRl
+cmZhY2VzIHRvIGNsaWVudHMKaXAgLW5ldCAkbnNyMSBhZGRyIGFkZCAxMC4wLjEuMS8yNCBk
+ZXYgZXRoMAppcCAtbmV0ICRuc3IxIGFkZHIgYWRkIGRlYWQ6MTo6MS82NCBkZXYgZXRoMAoK
+aXAgLW5ldCAkbnNyMiBhZGRyIGFkZCAxMC4wLjIuMS8yNCBkZXYgZXRoMAppcCAtbmV0ICRu
+c3IyIGFkZHIgYWRkIGRlYWQ6Mjo6MS82NCBkZXYgZXRoMAoKCiMgbmV0d29yayBiZXR3ZWVu
+IG5zcjEgYW5kIG5zcjIuCmlwIC1uZXQgJG5zcjEgYWRkciBhZGQgMTkyLjE2OC4xMC4xLzI0
+IGRldiBldGgxCmlwIC1uZXQgJG5zcjEgYWRkciBhZGQgZmVlMToyOjoxLzY0IGRldiBldGgx
+CgppcCAtbmV0ICRuc3IyIGFkZHIgYWRkIDE5Mi4xNjguMTAuMi8yNCBkZXYgZXRoMQppcCAt
+bmV0ICRuc3IyIGFkZHIgYWRkIGZlZTE6Mjo6Mi82NCBkZXYgZXRoMQoKIyBhbGxvdyBmb3J3
+YXJkaW5nIG9uIHJvdXRlcnMKZm9yIGkgaW4gMCAxOyBkbwogIGlwIG5ldG5zIGV4ZWMgJG5z
+cjEgc3lzY3RsIG5ldC5pcHY0LmNvbmYuZXRoJGkuZm9yd2FyZGluZz0xID4gL2Rldi9udWxs
+CiAgaXAgbmV0bnMgZXhlYyAkbnNyMiBzeXNjdGwgbmV0LmlwdjQuY29uZi5ldGgkaS5mb3J3
+YXJkaW5nPTEgPiAvZGV2L251bGwKZG9uZQoKZm9yIG5zIGluICRuczEgJG5zMjtkbwogIGlw
+IC1uZXQgJG5zIGxpbmsgc2V0IGxvIHVwCiAgaXAgLW5ldCAkbnMgbGluayBzZXQgZXRoMCB1
+cApkb25lCgppcCAtbmV0ICRuczEgYWRkciBhZGQgMTAuMC4xLjk5LzI0IGRldiBldGgwCmlw
+IC1uZXQgJG5zMiBhZGRyIGFkZCAxMC4wLjIuOTkvMjQgZGV2IGV0aDAKaXAgLW5ldCAkbnMx
+IHJvdXRlIGFkZCBkZWZhdWx0IHZpYSAxMC4wLjEuMQppcCAtbmV0ICRuczIgcm91dGUgYWRk
+IGRlZmF1bHQgdmlhIDEwLjAuMi4xCgppcCAtbmV0ICRuczEgYWRkciBhZGQgZGVhZDoxOjo5
+OS82NCBkZXYgZXRoMAppcCAtbmV0ICRuczIgYWRkciBhZGQgZGVhZDoyOjo5OS82NCBkZXYg
+ZXRoMAppcCAtbmV0ICRuczEgcm91dGUgYWRkIGRlZmF1bHQgdmlhIGRlYWQ6MTo6MQppcCAt
+bmV0ICRuczIgcm91dGUgYWRkIGRlZmF1bHQgdmlhIGRlYWQ6Mjo6MQoKaXAgLW5ldCAkbnNy
+MSByb3V0ZSBhZGQgZGVmYXVsdCB2aWEgMTkyLjE2OC4xMC4yCmlwIC1uZXQgJG5zcjIgcm91
+dGUgYWRkIGRlZmF1bHQgdmlhIDE5Mi4xNjguMTAuMQoKIy0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgojIGNvbmZp
+Z3VyZSB3aXJlZ3VhcmQKCmlwIG5ldG5zIGV4ZWMgJG5zMSAgaXAgbGluayBhZGQgZGV2IHdn
+MCB0eXBlIHdpcmVndWFyZAppcCBuZXRucyBleGVjICRuc3IyIGlwIGxpbmsgYWRkIGRldiB3
+ZzAgdHlwZSB3aXJlZ3VhcmQKCmtleTE9IiQod2cgZ2Vua2V5KSIKa2V5cjI9IiQod2cgZ2Vu
+a2V5KSIKcHViMT0iJCh3ZyBwdWJrZXkgPDw8IiRrZXkxIikiCnB1YnIyPSIkKHdnIHB1Ymtl
+eSA8PDwiJGtleXIyIikiCnBzaz0iJCh3ZyBnZW5wc2spIgoKY29uZmlndXJlX3BlZXJzKCkg
+ewoJaXAgbmV0bnMgZXhlYyAkbnMxICBpcCBhZGRyIGFkZCAxNzIuMzAuMTYuMS8yNCBkZXYg
+d2cwCglpcCBuZXRucyBleGVjICRuczEgIGlwIGFkZHIgYWRkIGZkMDA6OjEvMTEyICAgIGRl
+diB3ZzAKCglpcCBuZXRucyBleGVjICRuc3IyIGlwIGFkZHIgYWRkIDE3Mi4zMC4xNi4yLzI0
+IGRldiB3ZzAKCWlwIG5ldG5zIGV4ZWMgJG5zcjIgaXAgYWRkciBhZGQgZmQwMDo6Mi8xMTIg
+ICAgZGV2IHdnMAoKCWlwIG5ldG5zIGV4ZWMgJG5zMSAgd2cgc2V0IHdnMCBcCgkJcHJpdmF0
+ZS1rZXkgPChlY2hvICIka2V5MSIpIFwKCQlsaXN0ZW4tcG9ydCAxIFwKCQlwZWVyICIkcHVi
+cjIiIFwKCQkJcHJlc2hhcmVkLWtleSA8KGVjaG8gIiRwc2siKSBcCgkJCWFsbG93ZWQtaXBz
+IDE3Mi4zMC4xNi4yLGZkMDA6OjIKCWlwIG5ldG5zIGV4ZWMgJG5zcjIgd2cgc2V0IHdnMCBc
+CgkJcHJpdmF0ZS1rZXkgPChlY2hvICIka2V5cjIiKSBcCgkJcGVlciAiJHB1YjEiIFwKCQkJ
+ZW5kcG9pbnQgMTkyLjE2OC4xMC4xOjEgXAoJCQlwcmVzaGFyZWQta2V5IDwoZWNobyAiJHBz
+ayIpIFwKCQkJYWxsb3dlZC1pcHMgMTcyLjMwLjE2LjEsZmQwMDo6MQoKCWlwIG5ldG5zIGV4
+ZWMgJG5zMSAgaXAgbGluayBzZXQgdXAgZGV2IHdnMAoJaXAgbmV0bnMgZXhlYyAkbnNyMiBp
+cCBsaW5rIHNldCB1cCBkZXYgd2cwCn0KY29uZmlndXJlX3BlZXJzCgoKIyBjb25maWd1cmUg
+bmZ0YWJsZXMgaW4gbnNyMQoKaXAgbmV0bnMgZXhlYyAkbnNyMSBuZnQgLWYgLSA8PEVPRgoj
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQp0
+YWJsZSBpbmV0IGZpbHRlciB7CiAgICAgICAgY291bnRlciBmb3J3YXJkX3dnX2Zsb3d0YWJs
+ZSB7IH0KICAgICAgICBjb3VudGVyIGZvcndhcmRfZXN0YWJsaXNoZWRfcmVsYXRlZCB7IH0K
+ICAgICAgICBjb3VudGVyIGZvcndhcmRfd2cgeyB9CgogICAgICAgIGZsb3d0YWJsZSBmbCB7
+CiAgICAgICAgICAgICAgICBob29rIGluZ3Jlc3MgcHJpb3JpdHkgMAogICAgICAgICAgICAg
+ICAgZGV2aWNlcyA9IHsgZXRoMCwgZXRoMSB9CiAgICAgICAgICAgICAgICBjb3VudGVyCiAg
+ICAgICAgfQogICAgICAgIGNoYWluIGZvcndhcmQgewogICAgICAgICAgICAgICAgdHlwZSBm
+aWx0ZXIgaG9vayBmb3J3YXJkIHByaW9yaXR5IDA7IHBvbGljeSBhY2NlcHQ7CiAgICAgICAg
+ICAKICAgICAgICAgICAgICAgICMgU3RhcnQgd2l0aG91dCB1c2luZyBmbG93dGFibGUKICAg
+ICAgICAgICAgICAgICMgdWRwIGRwb3J0IDEgY291bnRlciBuYW1lIGZvcndhcmRfd2dfZmxv
+d3RhYmxlIGZsb3cgYWRkIEBmbAogICAgICAgICAgCiAgICAgICAgICAgICAgICBjdCBzdGF0
+ZSBlc3RhYmxpc2hlZCxyZWxhdGVkIGNvdW50ZXIgbmFtZSBmb3J3YXJkX2VzdGFibGlzaGVk
+X3JlbGF0ZWQgYWNjZXB0CiAgICAgICAgICAKICAgICAgICAgICAgICAgIGlwIGRhZGRyIDEw
+LjAuMS45OSB1ZHAgZHBvcnQgMSBjb3VudGVyIG5hbWUgZm9yd2FyZF93ZyBhY2NlcHQKICAg
+ICAgICB9Cn0KIy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0KdGFibGUgaXAgbmF0IHsKICAgICAgICBjaGFpbiBwcmVyb3V0aW5nIHsKICAg
+ICAgICAgICAgICAgIHR5cGUgbmF0IGhvb2sgcHJlcm91dGluZyBwcmlvcml0eSAwOyBwb2xp
+Y3kgYWNjZXB0OwogICAgICAgICAgICAgICAgbWV0YSBpaWYgImV0aDEiIGlwIGRhZGRyIDE5
+Mi4xNjguMTAuMSB1ZHAgZHBvcnQgMSBkbmF0IGlwIHRvIDEwLjAuMS45OToxCiAgICAgICAg
+fQp9CiMtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tCnRhYmxlIG5ldGRldiB0YWJsZS1uZXRkZXYtY291bnRlcnMgewogICAgICAgIGNvdW50
+ZXIgbmV0ZGV2X2luZ3Jlc3Nfd2dfZXRoMCB7IH0KICAgICAgICBjb3VudGVyIG5ldGRldl9p
+bmdyZXNzX3dnX2V0aDEgeyB9CgogICAgICAgIGNvdW50ZXIgbmV0ZGV2X2VncmVzc193Z19l
+dGgwIHsgfQogICAgICAgIGNvdW50ZXIgbmV0ZGV2X2VncmVzc193Z19ldGgxIHsgfQoKICAg
+ICAgICBjaGFpbiBuZXRkZXYtaW5ncmVzcy1jb3VudCB7CiAgICAgICAgICAgICAgICB0eXBl
+IGZpbHRlciBob29rIGluZ3Jlc3MgZGV2aWNlcyA9IHsgZXRoMCwgZXRoMSB9IHByaW9yaXR5
+IC0xMDAwMDA7IHBvbGljeSBhY2NlcHQ7CgogICAgICAgICAgICAgICAgaWlmbmFtZSBldGgw
+IHVkcCBzcG9ydCAxIGNvdW50ZXIgbmFtZSBuZXRkZXZfaW5ncmVzc193Z19ldGgwCiAgICAg
+ICAgICAgICAgICBpaWZuYW1lIGV0aDEgdWRwIGRwb3J0IDEgY291bnRlciBuYW1lIG5ldGRl
+dl9pbmdyZXNzX3dnX2V0aDEKICAgICAgICB9CgogICAgICAgIGNoYWluIG5ldGRldi1lZ3Jl
+c3MtY291bnQgewogICAgICAgICAgICAgICAgdHlwZSBmaWx0ZXIgaG9vayBlZ3Jlc3MgZGV2
+aWNlcyA9IHsgZXRoMCwgZXRoMSB9IHByaW9yaXR5IC0xMDAwMDA7IHBvbGljeSBhY2NlcHQ7
+CgogICAgICAgICAgICAgICAgb2lmbmFtZSBldGgwIHVkcCBkcG9ydCAxIGNvdW50ZXIgbmFt
+ZSBuZXRkZXZfZWdyZXNzX3dnX2V0aDAKICAgICAgICAgICAgICAgIG9pZm5hbWUgZXRoMSB1
+ZHAgc3BvcnQgMSBjb3VudGVyIG5hbWUgbmV0ZGV2X2VncmVzc193Z19ldGgxCiAgICAgICAg
+fQp9CiMtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tCnRhYmxlIGluZXQgdGFibGUtaW5ldC1jb3VudGVycyB7CiAgICAgICAgY291bnRlciBp
+bmV0X2luZ3Jlc3Nfd2dfZXRoMCB7IH0KICAgICAgICBjb3VudGVyIGluZXRfaW5ncmVzc193
+Z19ldGgxIHsgfQoKICAgICAgICBjb3VudGVyIGluZXRfcG9zdHJvdXRpbmdfd2dfZXRoMCB7
+IH0KICAgICAgICBjb3VudGVyIGluZXRfcG9zdHJvdXRpbmdfd2dfZXRoMSB7IH0KCiAgICAg
+ICAgY2hhaW4gaW5ldC1pbmdyZXNzLWNvdW50IHsKICAgICAgICAgICAgICAgIHR5cGUgZmls
+dGVyIGhvb2sgaW5ncmVzcyBkZXZpY2VzID0geyBldGgwLCBldGgxIH0gcHJpb3JpdHkgLTEw
+MDAwMDsgcG9saWN5IGFjY2VwdDsKCiAgICAgICAgICAgICAgICBpaWZuYW1lIGV0aDAgdWRw
+IHNwb3J0IDEgY291bnRlciBuYW1lIGluZXRfaW5ncmVzc193Z19ldGgwCiAgICAgICAgICAg
+ICAgICBpaWZuYW1lIGV0aDEgdWRwIGRwb3J0IDEgY291bnRlciBuYW1lIGluZXRfaW5ncmVz
+c193Z19ldGgxCiAgICAgICAgfQoKICAgICAgICBjaGFpbiBpbmV0LXBvc3Ryb3V0aW5nLWNv
+dW50IHsKICAgICAgICAgICAgICAgIHR5cGUgZmlsdGVyIGhvb2sgcG9zdHJvdXRpbmcgcHJp
+b3JpdHkgLTEwMDAwOyBwb2xpY3kgYWNjZXB0OwoKICAgICAgICAgICAgICAgIG9pZm5hbWUg
+ZXRoMCB1ZHAgZHBvcnQgMSBjb3VudGVyIG5hbWUgaW5ldF9wb3N0cm91dGluZ193Z19ldGgw
+CiAgICAgICAgICAgICAgICBvaWZuYW1lIGV0aDEgdWRwIHNwb3J0IDEgY291bnRlciBuYW1l
+IGluZXRfcG9zdHJvdXRpbmdfd2dfZXRoMQogICAgICAgIH0KCn0KIy0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KRU9GCgp0ZXN0X2FuZF9j
+YWxjdWxhdGVfcGFja2V0X2Zsb3coKSB7CiAgICAgICAgIyBlc3RhYmxpc2ggd2lyZWd1YXJk
+IGNvbm5lY3Rpb24sIHBhY2tldHMgYXJlIG5vdCBjb3VudGVkCiAgICAgICAgaXAgbmV0bnMg
+ZXhlYyAkbnNyMiBwaW5nIDE3Mi4zMC4xNi4xIC1jIDEgPi9kZXYvbnVsbAogICAgICAgIAog
+ICAgICAgIGVjaG8gIioqIGNsZWFyIGNvdW50ZXJzIgogICAgICAgICMgcmVzZXQgKGNsZWFy
+KSBjb3VudGVycwogICAgICAgIGlwIG5ldG5zIGV4ZWMgJG5zcjEgbmZ0IHJlc2V0IGNvdW50
+ZXJzID4gL2Rldi9udWxsIAogICAgICAgIAogICAgICAgIGVjaG8gIioqIFBpbmcgZmxvb2Qg
+b25lIGRpcmVjdGlvbiIKICAgICAgICAKICAgICAgICBpcCBuZXRucyBleGVjICRuc3IyIHBp
+bmcgMTcyLjMwLjE2LjEgLWMgMTAwMDAwIC1mCiAgICAgICAgCiAgICAgICAgIyBTaG93IGNv
+dW50ZXJzIGFuZCByZXNldCB0aGVtCiAgICAgICAgaXAgbmV0bnMgZXhlYyAkbnNyMSBuZnQg
+cmVzZXQgY291bnRlcnMKICAgICAgICBlY2hvICIqKiBjbGVhciBjb3VudGVycyIKCiAgICAg
+ICAgZWNobyAiKiogUGluZyBmbG9vZCBvdGhlciBkaXJlY3Rpb24iCiAgICAgICAgaXAgbmV0
+bnMgZXhlYyAkbnMxIHBpbmcgMTcyLjMwLjE2LjIgLWMgMTAwMDAwIC1mCiAgICAgICAgCiAg
+ICAgICAgIyBTaG93IGNvdW50ZXJzIGFuZCByZXNldCB0aGVtCiAgICAgICAgaXAgbmV0bnMg
+ZXhlYyAkbnNyMSBuZnQgcmVzZXQgY291bnRlcnMKfQoKZWNobyAiPT09PT09PT09PT09PT09
+PT09PT0gdGVzdCBhbmQgY291bnQgcGFja2V0cyBmbG93IHdpdGhvdXQgZmxvd3RhYmxlID09
+PT09PT09PT09PT09PT09PT09Igp0ZXN0X2FuZF9jYWxjdWxhdGVfcGFja2V0X2Zsb3cKCiMg
+d2FpdCBhIGxpdHRsZSBiaXQKc2xlZXAgMQoKZWNobyAiKiogaW5zZXJ0IGEgcnVsZSBmb3Ig
+dGhlIGZsb3d0YWJsZSIKaXAgbmV0bnMgZXhlYyAkbnNyMSBuZnQgaW5zZXJ0IHJ1bGUgaW5l
+dCBmaWx0ZXIgZm9yd2FyZCAgdWRwIGRwb3J0IDEgY291bnRlciBuYW1lIGZvcndhcmRfd2df
+Zmxvd3RhYmxlIGZsb3cgYWRkIEBmbAoKZWNobyAiPT09PT09PT09PT09PT09PT09PT0gdGVz
+dCBhbmQgY291bnQgcGFja2V0cyBmbG93IHdpdGggZmxvd3RhYmxlID09PT09PT09PT09PT09
+PT09PT09Igp0ZXN0X2FuZF9jYWxjdWxhdGVfcGFja2V0X2Zsb3cKCmV4aXQK
 
-Best regards,
-Jozsef
--- 
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
-PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+--------------iNK0On0aHdXr0SHafVXqGosL--
+
