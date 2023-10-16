@@ -2,263 +2,128 @@ Return-Path: <netfilter-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 34E2ECDB47E
-	for <netfilter@archiver.kernel.org>; Sun, 15 Oct 2023 20:20:10 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 370D4CDB47E
+	for <netfilter@archiver.kernel.org>; Mon, 16 Oct 2023 00:20:16 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229649AbjJOUUI (ORCPT <rfc822;netfilter@archiver.kernel.org>);
-        Sun, 15 Oct 2023 16:20:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51876 "EHLO
+        id S230034AbjJPAUP (ORCPT <rfc822;netfilter@archiver.kernel.org>);
+        Sun, 15 Oct 2023 20:20:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49064 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229500AbjJOUUI (ORCPT
-        <rfc822;netfilter@vger.kernel.org>); Sun, 15 Oct 2023 16:20:08 -0400
-Received: from ciao.gmane.io (ciao.gmane.io [116.202.254.214])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF2F7AB
-        for <netfilter@vger.kernel.org>; Sun, 15 Oct 2023 13:20:04 -0700 (PDT)
-Received: from list by ciao.gmane.io with local (Exim 4.92)
-        (envelope-from <gnng-netfilter@m.gmane-mx.org>)
-        id 1qs7ak-0008dF-4e
-        for netfilter@vger.kernel.org; Sun, 15 Oct 2023 22:20:02 +0200
-X-Injected-Via-Gmane: http://gmane.org/
-To:     netfilter@vger.kernel.org
-From:   Vladimir Smelhaus <vl.sm@email.cz>
-Subject: Flowtables ignore timeout settings in recent kernels
-Date:   Sun, 15 Oct 2023 21:56:14 +0200
-Message-ID: <ughg4v$130b$1@ciao.gmane.io>
-Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="------------iNK0On0aHdXr0SHafVXqGosL"
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
+        with ESMTP id S229459AbjJPAUO (ORCPT
+        <rfc822;netfilter@vger.kernel.org>); Sun, 15 Oct 2023 20:20:14 -0400
+Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E957E95;
+        Sun, 15 Oct 2023 17:20:12 -0700 (PDT)
+Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-564b6276941so2913880a12.3;
+        Sun, 15 Oct 2023 17:20:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1697415612; x=1698020412; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=J7+oJHozaJp3ARwDpXhkbVM/mB5nFnC7YhE1nMQs+T4=;
+        b=H5Lioq5qmpGifqA6SvWPci0idUCzLn1sTwxXBI44W7s7aACMgPxsIx9a/ZfaMdxJqq
+         /gPD9xwnTamQLP/WUxu/D8hkV++dFwuRTLJoGRyrayzjMNXgxsRtS3AA7kjXAAgSidLR
+         0z09wb4m6u038ZHU+uRICQZ6f8BGdRkWqx++ffMAUn75feSQmW7kTcN6yRAZ1bjcjTeW
+         13VdwJG1vKrBDfOjdVnBEyD684YWvf+9G1CW5s7OEFKT+hZJUkXv4r+pNbWZYEphBHLS
+         3VVP9IjDI8RLdBXSZkMP+ch8D2PWF9DrYNhLOrpG/8z8BurFT7P9jNoafqajv+swiJtO
+         wXhw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1697415612; x=1698020412;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=J7+oJHozaJp3ARwDpXhkbVM/mB5nFnC7YhE1nMQs+T4=;
+        b=kAuvRCrKLCVbErky284Rq36AmGHLIZbhGVLOn1yiB8zBXIX5y7jFOaFyV0LNPVa/RC
+         C4j3yWvzIQkJKux/hx8QLcth2ECMOy9I+xjKV/aruy2SOFRu/N2Pg2n6tkXoaVvnmOLP
+         yLoFdegkLDX6OCjuIDWjMTCyjT9QW3lsc91pQ/ys0ctH9f+am1Yw9su8475kr2Jqp2qx
+         jDQMBFCDXfqxQI7N95fh5cXgy7jmgxsAN2yMb2ny5vJMnnDpvjtb6EkPqmXChPGuxyKO
+         gg81pqFJ3ydLiGpk05E0R2erQ11SnkLn5nKA8fJ384BDPLG0A1qOmXhtaDfXbAWchQ1X
+         2sQQ==
+X-Gm-Message-State: AOJu0Yyjp6UVBYhjzWiZygBCiyJmHQ18i6ydKlhXlPOHERqcQNCPPeQ1
+        5sXtLHh4otjJYft3v8OkNx0=
+X-Google-Smtp-Source: AGHT+IH2laczeXL+VN9BrWY3NVZ8iTr+4c1jER2bvqsu4716PkKX0BkrL3EJtryJWJwyVs5iZp4OAg==
+X-Received: by 2002:a05:6a20:7f95:b0:140:3aa:e2ce with SMTP id d21-20020a056a207f9500b0014003aae2cemr43344864pzj.42.1697415612184;
+        Sun, 15 Oct 2023 17:20:12 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id x6-20020a170902ec8600b001c44c8d857esm7208939plg.120.2023.10.15.17.20.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 15 Oct 2023 17:20:11 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id 3520A801B59F; Mon, 16 Oct 2023 07:20:07 +0700 (WIB)
+Date:   Mon, 16 Oct 2023 07:20:06 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Vladimir Smelhaus <vl.sm@email.cz>,
+        Linux Netfilter <netfilter@vger.kernel.org>,
+        coreteam@netfilter.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>
+Subject: Re: Flowtables ignore timeout settings in recent kernels
+Message-ID: <ZSyBtn8cplLWoNn-@debian.me>
+References: <ughg4v$130b$1@ciao.gmane.io>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="N2rAuLPZGqdFV0iZ"
+Content-Disposition: inline
+In-Reply-To: <ughg4v$130b$1@ciao.gmane.io>
 Precedence: bulk
 List-ID: <netfilter.vger.kernel.org>
 X-Mailing-List: netfilter@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------iNK0On0aHdXr0SHafVXqGosL
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-Netfilter ignores the timeout settings for a flowtable
+--N2rAuLPZGqdFV0iZ
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-# sysctl -a -r flowtable
-net.netfilter.nf_flowtable_tcp_timeout = 30
-net.netfilter.nf_flowtable_udp_timeout = 30
+On Sun, Oct 15, 2023 at 09:56:14PM +0200, Vladimir Smelhaus wrote:
+> Netfilter ignores the timeout settings for a flowtable
+>=20
+> # sysctl -a -r flowtable
+> net.netfilter.nf_flowtable_tcp_timeout =3D 30
+> net.netfilter.nf_flowtable_udp_timeout =3D 30
+>=20
+> Situation. A long udp connection (tunnel) with some data flowing through a
+> router. The connection is sent to a flowtable on the router. It's a few
+> packets per second, more here and there, a pause here and there, and so on
+> over and over. The pauses are minimal and are also limited by the tunnel
+> settings to be no longer than 25 seconds. Everything is satisfying to make
+> the connection last continuously in the flowtable and not reappear in
+> forward. However, the connection keeps dropping out of the flowtable. It
+> stays in the flowtable (offloaded) for a second at most and then it is
+> kicked out, back to forward.
+>=20
+> In an attached test script you can see counters that should be zero but a=
+re not. If I watch the normal packet flow on a particular router, I can see=
+ packets in the conntrack table that should be OFFLOAD as ASSURED.
+>=20
+> Tested in kernel 6.5.6. In an old(er) kernel 5.10 it works as expected.
+>=20
 
-Situation. A long udp connection (tunnel) with some data flowing through a router. The connection is sent to a flowtable on the router. It's a few packets per second, more here and there, a pause here and there, and so on over and over. The pauses are 
-minimal and are also limited by the tunnel settings to be no longer than 25 seconds. Everything is satisfying to make the connection last continuously in the flowtable and not reappear in forward. However, the connection keeps dropping out of the 
-flowtable. It stays in the flowtable (offloaded) for a second at most and then it is kicked out, back to forward.
+Then please perform bisection to find a culprit that introduces your
+regression (see Documentation/admin-guide/bug-bisect.rst in the kernel
+sources for reference). Also, it'd been great if you also post the
+reproducer script inline (within your email) instead, as some MUAs
+(like mutt that I'm using now) may ignore the attachment.
 
-In an attached test script you can see counters that should be zero but are not. If I watch the normal packet flow on a particular router, I can see packets in the conntrack table that should be OFFLOAD as ASSURED.
+Anyway, thanks for the regression report. I'm adding it to regzbot:
 
-Tested in kernel 6.5.6. In an old(er) kernel 5.10 it works as expected.
+#regzbot ^introduced: v5.10..v6.5
 
-Regards
+--=20
+An old man doll... just what I always wanted! - Clara
 
-Vladimir Smelhaus
---------------iNK0On0aHdXr0SHafVXqGosL
-Content-Type: application/x-shellscript; name="test_flowtable.sh"
-Content-Disposition: attachment; filename="test_flowtable.sh"
-Content-Transfer-Encoding: base64
+--N2rAuLPZGqdFV0iZ
+Content-Type: application/pgp-signature; name="signature.asc"
 
-IyEvYmluL2Jhc2gKIy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCiMg
-ICBjbGllbnQxICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJvdXRlcjEg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJvdXRlcjIgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBjbGllbnQyCiMgICAgIG5zMSAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgbnNyMSAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgbnNyMiAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgIG5zMgojIFtjbGllbnQgMV0gZXRoMCAgICAgICAgICA8LS0tPiAg
-ICAgICAgICBldGgwIFtyb3V0ZXIgMV0gZXRoMSAgICAgICAgICA8LS0tPiAgICAgICAgICBl
-dGgxIFtyb3V0ZXIgMl0gZXRoMCAgICAgICAgICA8LS0tPiAgICAgICAgICBldGgwIFtjbGll
-bnQgMl0KIyAgICAgICAgICAgIDEwLjAuMS45OS8yNCAgICAgICAgICAxMC4wLjEuMS8yNCAg
-ICAgICAgICAgIDE5Mi4xNjguMTAuMS8yNCAgIDE5Mi4xNjguMTAuMi8yNCAgICAgICAgICAg
-IDEwLjAuMi4xLzI0ICAgICAgICAgIDEwLjAuMS45OS8yNAojICAgICAgICAgICAgZGVhZDox
-Ojo5OS82NCAgICAgICAgIGRlYWQ6MTo6MS82NCAgICAgICAgICAgZmVlMToyOjoxLzY0ICAg
-ICAgZmVlMToyOjoyLzY0ICAgICAgICAgICAgICAgZGVhZDoyOjoxLzY0ICAgICAgICAgZGVh
-ZDoyOjo5OS82NAojCiMtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQoj
-ICAgICAgICAgICAgd2cwICAgICAgICAgICAgICAgICAgICAgPC0tLSAgICAgICAgICAgICAg
-ICAgICAgICAgLS0tPiAgICAgICAgICAgICAgICAgICB3ZzAKIyAgICAgICAgICAgIDE3Mi4z
-MC4xNi4xLzI0ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgIDE3Mi4zMC4xNi4yLzI0CiMgICAgICAgICAgICBmZDAwOjoxLzExMiAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBmZDAwOjoyLzExMgoj
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KIyAKIyBUaGVyZSBpcyBh
-IGNsaWVudDEgYmVoaW5kIE5BVGluZyByb3V0ZXIxIGFuZCB0aGVyZSBpcyBhbiBhbm90aGVy
-IHJvdXRlcjIsIHdoaWNoIGVzdGFibGlzaGVzIGEgd2lyZWd1YXJkIHVkcCBjb25uZWN0aW9u
-IHRvIGFuIG91dHNpZGUgaXAgYWRkcmVzcyBvZiB0aGUgcm91dGVyMSwgCiMgd2hlcmUgaXQg
-aXMgZm9yd2FyZGVkIHRvIGNsaWVudDEuIFNvIHdlIGhhdmUgYSB0dW5uZWwgYmV0d2VlbiBy
-b3V0ZXIyIGFuZCBjbGllbnQxLgojIAojIE9uIHRoZSByb3V0ZXIxIHdlIGhhdmUgbmZ0YWJs
-ZXMgZmlyZXdhbGwgcnVsZXMsIHdoaWNoIHNlbmQgd2lyZWd1YXJkIHBhY2tldHMgdG8gYSBm
-bG93dGFibGUuCiMgbmV0Lm5ldGZpbHRlci5uZl9mbG93dGFibGVfdGNwX3RpbWVvdXQgPSAz
-MAojIG5ldC5uZXRmaWx0ZXIubmZfZmxvd3RhYmxlX3VkcF90aW1lb3V0ID0gMzAKIwojIE5l
-dCBmbG93IGlzIHNpbXVsYXRlZCBieSBmbG9vZCBwaW5naW5nIGZyb20gb25lIHdpcmVndWFy
-ZCBlbmRwb2ludCB0byBhbm90aGVyLgojIENvbmRpdGlvbnMgYXJlIHByZXBhcmVkIHNvIHRo
-YXQgZXZlcnkgd2lyZWd1YXJkIHVkcCBwYWNrZXQgc2hvdWxkIG1hdGNoIHRvIHRoZSBmbG93
-dGFibGUgb24gdGhlIHJvdXRlcjEuIAojCiMgQlVUIElUIERPRVMgTk9ULgojCiMgSXQgc2Vl
-bXMsIHRoYXQgbmV0ZmlsdGVyIGluIGtlcm5lbHMgNi54LnkgY29tcGxlZXRseSBpZ25vcmVz
-IHNldHRpbmdzIG9mIHRpbWVvdXQgYW5kIGtpa3Mgb3V0IGNvbm5lY3Rpb25zIGZyb20gZmxv
-d3RhYmxlIGV2ZXJ5IHNlY29uZCBldmVuIGlmIHRoZXJlIGlzIGEgY29udGludW91cwojIGZs
-b3cgb2YgcGFja2V0cy4gSW4gYW4gb2xkIGtlcm5lbCA1LjEwIGl0IHdvcmtzIGFzIGV4cGVj
-dGVkLgojIAojCiMgY2xpZW50MiBhbmQgYWxsIGlwdjYgYWRkcmVzc2VzIGFyZSBub3QgdXNl
-ZCBpbiB0aGlzIHRlc3QKIwojLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0KCmNoZWNrdG9vbCAoKXsKCWlmICEgJDEgPiAvZGV2L251bGwgMj4mMTsgdGhlbgoJCWVj
-aG8gIlNLSVA6IENhbm5vdCAkMiIKCQlleGl0ICRrc2Z0X3NraXAKCWZpCn0KCiMtLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLQojIE5hbWVzIG9mIG5ldHdvcmsgbmFtZXNwYWNlcwojIHJhbmRvbWl6ZSB0aGUgbmFt
-ZXMKc2Z4PSQobWt0ZW1wIC11ICJfWFhYWFhYWFhYWCIpCiMgYnV0IG5vdCB0b2RheQojIHNm
-eD0iIgoKbnMxPSJuczEkc2Z4IgpuczI9Im5zMiRzZngiCm5zcjE9Im5zcjEkc2Z4Igpuc3Iy
-PSJuc3IyJHNmeCIKCmNoZWNrdG9vbCAibmZ0IC0tdmVyc2lvbiIgInJ1biB0ZXN0IHdpdGhv
-dXQgbmZ0IChuZnRhYmxlcykiCmNoZWNrdG9vbCAiaXAgLVZlcnNpb24iICJydW4gdGVzdCB3
-aXRob3V0IGlwIChpcHJvdXRlMikiCmNoZWNrdG9vbCAid2hpY2ggbmMiICJydW4gdGVzdCB3
-aXRob3V0IG5jIChuZXRjYXQpIgpjaGVja3Rvb2wgIndoaWNoIHdnIiAicnVuIHRlc3Qgd2l0
-aG91dCB3ZyAod2lyZWd1YXJkLXRvb2xzKSIKY2hlY2t0b29sICJpcCBuZXRucyBhZGQgJG5z
-MSIgImNyZWF0ZSBuZXR3b3JrIG5hbWVzcGFjZSBuczEgKCRuczEpIgoKIy0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-CiMgaXAgbmV0bnMgYWRkICRuczEKaXAgbmV0bnMgYWRkICRuczIKaXAgbmV0bnMgYWRkICRu
-c3IxCmlwIG5ldG5zIGFkZCAkbnNyMgoKY2xlYW51cCgpIHsKCWlwIG5ldG5zIGRlbCAkbnMx
-CglpcCBuZXRucyBkZWwgJG5zMgoJaXAgbmV0bnMgZGVsICRuc3IxCglpcCBuZXRucyBkZWwg
-JG5zcjIKfQoKdHJhcCBjbGVhbnVwIEVYSVQKCiMgY3JlYXRlIHZldGggcGFpcnMgb24gY2xp
-ZW50cy9yb3V0ZXJzCmlwIGxpbmsgYWRkIGV0aDAgbmV0bnMgJG5zcjEgdHlwZSB2ZXRoIHBl
-ZXIgbmFtZSBldGgwIG5ldG5zICRuczEKaXAgbGluayBhZGQgZXRoMSBuZXRucyAkbnNyMSB0
-eXBlIHZldGggcGVlciBuYW1lIGV0aDEgbmV0bnMgJG5zcjIKaXAgbGluayBhZGQgZXRoMCBu
-ZXRucyAkbnNyMiB0eXBlIHZldGggcGVlciBuYW1lIGV0aDAgbmV0bnMgJG5zMgoKIyBzZXQg
-aW50ZXJmYWNlcyB1cCBvbiByb3V0ZXJzCmZvciBkZXYgaW4gbG8gZXRoMCBldGgxOyBkbwog
-ICAgaXAgLW5ldCAkbnNyMSBsaW5rIHNldCAkZGV2IHVwCiAgICBpcCAtbmV0ICRuc3IyIGxp
-bmsgc2V0ICRkZXYgdXAKZG9uZQoKIyBzZXQgaXAgYWRkcmVzc2VzIG9uIHJvdXRlciBpbnRl
-cmZhY2VzIHRvIGNsaWVudHMKaXAgLW5ldCAkbnNyMSBhZGRyIGFkZCAxMC4wLjEuMS8yNCBk
-ZXYgZXRoMAppcCAtbmV0ICRuc3IxIGFkZHIgYWRkIGRlYWQ6MTo6MS82NCBkZXYgZXRoMAoK
-aXAgLW5ldCAkbnNyMiBhZGRyIGFkZCAxMC4wLjIuMS8yNCBkZXYgZXRoMAppcCAtbmV0ICRu
-c3IyIGFkZHIgYWRkIGRlYWQ6Mjo6MS82NCBkZXYgZXRoMAoKCiMgbmV0d29yayBiZXR3ZWVu
-IG5zcjEgYW5kIG5zcjIuCmlwIC1uZXQgJG5zcjEgYWRkciBhZGQgMTkyLjE2OC4xMC4xLzI0
-IGRldiBldGgxCmlwIC1uZXQgJG5zcjEgYWRkciBhZGQgZmVlMToyOjoxLzY0IGRldiBldGgx
-CgppcCAtbmV0ICRuc3IyIGFkZHIgYWRkIDE5Mi4xNjguMTAuMi8yNCBkZXYgZXRoMQppcCAt
-bmV0ICRuc3IyIGFkZHIgYWRkIGZlZTE6Mjo6Mi82NCBkZXYgZXRoMQoKIyBhbGxvdyBmb3J3
-YXJkaW5nIG9uIHJvdXRlcnMKZm9yIGkgaW4gMCAxOyBkbwogIGlwIG5ldG5zIGV4ZWMgJG5z
-cjEgc3lzY3RsIG5ldC5pcHY0LmNvbmYuZXRoJGkuZm9yd2FyZGluZz0xID4gL2Rldi9udWxs
-CiAgaXAgbmV0bnMgZXhlYyAkbnNyMiBzeXNjdGwgbmV0LmlwdjQuY29uZi5ldGgkaS5mb3J3
-YXJkaW5nPTEgPiAvZGV2L251bGwKZG9uZQoKZm9yIG5zIGluICRuczEgJG5zMjtkbwogIGlw
-IC1uZXQgJG5zIGxpbmsgc2V0IGxvIHVwCiAgaXAgLW5ldCAkbnMgbGluayBzZXQgZXRoMCB1
-cApkb25lCgppcCAtbmV0ICRuczEgYWRkciBhZGQgMTAuMC4xLjk5LzI0IGRldiBldGgwCmlw
-IC1uZXQgJG5zMiBhZGRyIGFkZCAxMC4wLjIuOTkvMjQgZGV2IGV0aDAKaXAgLW5ldCAkbnMx
-IHJvdXRlIGFkZCBkZWZhdWx0IHZpYSAxMC4wLjEuMQppcCAtbmV0ICRuczIgcm91dGUgYWRk
-IGRlZmF1bHQgdmlhIDEwLjAuMi4xCgppcCAtbmV0ICRuczEgYWRkciBhZGQgZGVhZDoxOjo5
-OS82NCBkZXYgZXRoMAppcCAtbmV0ICRuczIgYWRkciBhZGQgZGVhZDoyOjo5OS82NCBkZXYg
-ZXRoMAppcCAtbmV0ICRuczEgcm91dGUgYWRkIGRlZmF1bHQgdmlhIGRlYWQ6MTo6MQppcCAt
-bmV0ICRuczIgcm91dGUgYWRkIGRlZmF1bHQgdmlhIGRlYWQ6Mjo6MQoKaXAgLW5ldCAkbnNy
-MSByb3V0ZSBhZGQgZGVmYXVsdCB2aWEgMTkyLjE2OC4xMC4yCmlwIC1uZXQgJG5zcjIgcm91
-dGUgYWRkIGRlZmF1bHQgdmlhIDE5Mi4xNjguMTAuMQoKIy0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCgojIGNvbmZp
-Z3VyZSB3aXJlZ3VhcmQKCmlwIG5ldG5zIGV4ZWMgJG5zMSAgaXAgbGluayBhZGQgZGV2IHdn
-MCB0eXBlIHdpcmVndWFyZAppcCBuZXRucyBleGVjICRuc3IyIGlwIGxpbmsgYWRkIGRldiB3
-ZzAgdHlwZSB3aXJlZ3VhcmQKCmtleTE9IiQod2cgZ2Vua2V5KSIKa2V5cjI9IiQod2cgZ2Vu
-a2V5KSIKcHViMT0iJCh3ZyBwdWJrZXkgPDw8IiRrZXkxIikiCnB1YnIyPSIkKHdnIHB1Ymtl
-eSA8PDwiJGtleXIyIikiCnBzaz0iJCh3ZyBnZW5wc2spIgoKY29uZmlndXJlX3BlZXJzKCkg
-ewoJaXAgbmV0bnMgZXhlYyAkbnMxICBpcCBhZGRyIGFkZCAxNzIuMzAuMTYuMS8yNCBkZXYg
-d2cwCglpcCBuZXRucyBleGVjICRuczEgIGlwIGFkZHIgYWRkIGZkMDA6OjEvMTEyICAgIGRl
-diB3ZzAKCglpcCBuZXRucyBleGVjICRuc3IyIGlwIGFkZHIgYWRkIDE3Mi4zMC4xNi4yLzI0
-IGRldiB3ZzAKCWlwIG5ldG5zIGV4ZWMgJG5zcjIgaXAgYWRkciBhZGQgZmQwMDo6Mi8xMTIg
-ICAgZGV2IHdnMAoKCWlwIG5ldG5zIGV4ZWMgJG5zMSAgd2cgc2V0IHdnMCBcCgkJcHJpdmF0
-ZS1rZXkgPChlY2hvICIka2V5MSIpIFwKCQlsaXN0ZW4tcG9ydCAxIFwKCQlwZWVyICIkcHVi
-cjIiIFwKCQkJcHJlc2hhcmVkLWtleSA8KGVjaG8gIiRwc2siKSBcCgkJCWFsbG93ZWQtaXBz
-IDE3Mi4zMC4xNi4yLGZkMDA6OjIKCWlwIG5ldG5zIGV4ZWMgJG5zcjIgd2cgc2V0IHdnMCBc
-CgkJcHJpdmF0ZS1rZXkgPChlY2hvICIka2V5cjIiKSBcCgkJcGVlciAiJHB1YjEiIFwKCQkJ
-ZW5kcG9pbnQgMTkyLjE2OC4xMC4xOjEgXAoJCQlwcmVzaGFyZWQta2V5IDwoZWNobyAiJHBz
-ayIpIFwKCQkJYWxsb3dlZC1pcHMgMTcyLjMwLjE2LjEsZmQwMDo6MQoKCWlwIG5ldG5zIGV4
-ZWMgJG5zMSAgaXAgbGluayBzZXQgdXAgZGV2IHdnMAoJaXAgbmV0bnMgZXhlYyAkbnNyMiBp
-cCBsaW5rIHNldCB1cCBkZXYgd2cwCn0KY29uZmlndXJlX3BlZXJzCgoKIyBjb25maWd1cmUg
-bmZ0YWJsZXMgaW4gbnNyMQoKaXAgbmV0bnMgZXhlYyAkbnNyMSBuZnQgLWYgLSA8PEVPRgoj
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQp0
-YWJsZSBpbmV0IGZpbHRlciB7CiAgICAgICAgY291bnRlciBmb3J3YXJkX3dnX2Zsb3d0YWJs
-ZSB7IH0KICAgICAgICBjb3VudGVyIGZvcndhcmRfZXN0YWJsaXNoZWRfcmVsYXRlZCB7IH0K
-ICAgICAgICBjb3VudGVyIGZvcndhcmRfd2cgeyB9CgogICAgICAgIGZsb3d0YWJsZSBmbCB7
-CiAgICAgICAgICAgICAgICBob29rIGluZ3Jlc3MgcHJpb3JpdHkgMAogICAgICAgICAgICAg
-ICAgZGV2aWNlcyA9IHsgZXRoMCwgZXRoMSB9CiAgICAgICAgICAgICAgICBjb3VudGVyCiAg
-ICAgICAgfQogICAgICAgIGNoYWluIGZvcndhcmQgewogICAgICAgICAgICAgICAgdHlwZSBm
-aWx0ZXIgaG9vayBmb3J3YXJkIHByaW9yaXR5IDA7IHBvbGljeSBhY2NlcHQ7CiAgICAgICAg
-ICAKICAgICAgICAgICAgICAgICMgU3RhcnQgd2l0aG91dCB1c2luZyBmbG93dGFibGUKICAg
-ICAgICAgICAgICAgICMgdWRwIGRwb3J0IDEgY291bnRlciBuYW1lIGZvcndhcmRfd2dfZmxv
-d3RhYmxlIGZsb3cgYWRkIEBmbAogICAgICAgICAgCiAgICAgICAgICAgICAgICBjdCBzdGF0
-ZSBlc3RhYmxpc2hlZCxyZWxhdGVkIGNvdW50ZXIgbmFtZSBmb3J3YXJkX2VzdGFibGlzaGVk
-X3JlbGF0ZWQgYWNjZXB0CiAgICAgICAgICAKICAgICAgICAgICAgICAgIGlwIGRhZGRyIDEw
-LjAuMS45OSB1ZHAgZHBvcnQgMSBjb3VudGVyIG5hbWUgZm9yd2FyZF93ZyBhY2NlcHQKICAg
-ICAgICB9Cn0KIy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0KdGFibGUgaXAgbmF0IHsKICAgICAgICBjaGFpbiBwcmVyb3V0aW5nIHsKICAg
-ICAgICAgICAgICAgIHR5cGUgbmF0IGhvb2sgcHJlcm91dGluZyBwcmlvcml0eSAwOyBwb2xp
-Y3kgYWNjZXB0OwogICAgICAgICAgICAgICAgbWV0YSBpaWYgImV0aDEiIGlwIGRhZGRyIDE5
-Mi4xNjguMTAuMSB1ZHAgZHBvcnQgMSBkbmF0IGlwIHRvIDEwLjAuMS45OToxCiAgICAgICAg
-fQp9CiMtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tCnRhYmxlIG5ldGRldiB0YWJsZS1uZXRkZXYtY291bnRlcnMgewogICAgICAgIGNvdW50
-ZXIgbmV0ZGV2X2luZ3Jlc3Nfd2dfZXRoMCB7IH0KICAgICAgICBjb3VudGVyIG5ldGRldl9p
-bmdyZXNzX3dnX2V0aDEgeyB9CgogICAgICAgIGNvdW50ZXIgbmV0ZGV2X2VncmVzc193Z19l
-dGgwIHsgfQogICAgICAgIGNvdW50ZXIgbmV0ZGV2X2VncmVzc193Z19ldGgxIHsgfQoKICAg
-ICAgICBjaGFpbiBuZXRkZXYtaW5ncmVzcy1jb3VudCB7CiAgICAgICAgICAgICAgICB0eXBl
-IGZpbHRlciBob29rIGluZ3Jlc3MgZGV2aWNlcyA9IHsgZXRoMCwgZXRoMSB9IHByaW9yaXR5
-IC0xMDAwMDA7IHBvbGljeSBhY2NlcHQ7CgogICAgICAgICAgICAgICAgaWlmbmFtZSBldGgw
-IHVkcCBzcG9ydCAxIGNvdW50ZXIgbmFtZSBuZXRkZXZfaW5ncmVzc193Z19ldGgwCiAgICAg
-ICAgICAgICAgICBpaWZuYW1lIGV0aDEgdWRwIGRwb3J0IDEgY291bnRlciBuYW1lIG5ldGRl
-dl9pbmdyZXNzX3dnX2V0aDEKICAgICAgICB9CgogICAgICAgIGNoYWluIG5ldGRldi1lZ3Jl
-c3MtY291bnQgewogICAgICAgICAgICAgICAgdHlwZSBmaWx0ZXIgaG9vayBlZ3Jlc3MgZGV2
-aWNlcyA9IHsgZXRoMCwgZXRoMSB9IHByaW9yaXR5IC0xMDAwMDA7IHBvbGljeSBhY2NlcHQ7
-CgogICAgICAgICAgICAgICAgb2lmbmFtZSBldGgwIHVkcCBkcG9ydCAxIGNvdW50ZXIgbmFt
-ZSBuZXRkZXZfZWdyZXNzX3dnX2V0aDAKICAgICAgICAgICAgICAgIG9pZm5hbWUgZXRoMSB1
-ZHAgc3BvcnQgMSBjb3VudGVyIG5hbWUgbmV0ZGV2X2VncmVzc193Z19ldGgxCiAgICAgICAg
-fQp9CiMtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tCnRhYmxlIGluZXQgdGFibGUtaW5ldC1jb3VudGVycyB7CiAgICAgICAgY291bnRlciBp
-bmV0X2luZ3Jlc3Nfd2dfZXRoMCB7IH0KICAgICAgICBjb3VudGVyIGluZXRfaW5ncmVzc193
-Z19ldGgxIHsgfQoKICAgICAgICBjb3VudGVyIGluZXRfcG9zdHJvdXRpbmdfd2dfZXRoMCB7
-IH0KICAgICAgICBjb3VudGVyIGluZXRfcG9zdHJvdXRpbmdfd2dfZXRoMSB7IH0KCiAgICAg
-ICAgY2hhaW4gaW5ldC1pbmdyZXNzLWNvdW50IHsKICAgICAgICAgICAgICAgIHR5cGUgZmls
-dGVyIGhvb2sgaW5ncmVzcyBkZXZpY2VzID0geyBldGgwLCBldGgxIH0gcHJpb3JpdHkgLTEw
-MDAwMDsgcG9saWN5IGFjY2VwdDsKCiAgICAgICAgICAgICAgICBpaWZuYW1lIGV0aDAgdWRw
-IHNwb3J0IDEgY291bnRlciBuYW1lIGluZXRfaW5ncmVzc193Z19ldGgwCiAgICAgICAgICAg
-ICAgICBpaWZuYW1lIGV0aDEgdWRwIGRwb3J0IDEgY291bnRlciBuYW1lIGluZXRfaW5ncmVz
-c193Z19ldGgxCiAgICAgICAgfQoKICAgICAgICBjaGFpbiBpbmV0LXBvc3Ryb3V0aW5nLWNv
-dW50IHsKICAgICAgICAgICAgICAgIHR5cGUgZmlsdGVyIGhvb2sgcG9zdHJvdXRpbmcgcHJp
-b3JpdHkgLTEwMDAwOyBwb2xpY3kgYWNjZXB0OwoKICAgICAgICAgICAgICAgIG9pZm5hbWUg
-ZXRoMCB1ZHAgZHBvcnQgMSBjb3VudGVyIG5hbWUgaW5ldF9wb3N0cm91dGluZ193Z19ldGgw
-CiAgICAgICAgICAgICAgICBvaWZuYW1lIGV0aDEgdWRwIHNwb3J0IDEgY291bnRlciBuYW1l
-IGluZXRfcG9zdHJvdXRpbmdfd2dfZXRoMQogICAgICAgIH0KCn0KIy0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KRU9GCgp0ZXN0X2FuZF9j
-YWxjdWxhdGVfcGFja2V0X2Zsb3coKSB7CiAgICAgICAgIyBlc3RhYmxpc2ggd2lyZWd1YXJk
-IGNvbm5lY3Rpb24sIHBhY2tldHMgYXJlIG5vdCBjb3VudGVkCiAgICAgICAgaXAgbmV0bnMg
-ZXhlYyAkbnNyMiBwaW5nIDE3Mi4zMC4xNi4xIC1jIDEgPi9kZXYvbnVsbAogICAgICAgIAog
-ICAgICAgIGVjaG8gIioqIGNsZWFyIGNvdW50ZXJzIgogICAgICAgICMgcmVzZXQgKGNsZWFy
-KSBjb3VudGVycwogICAgICAgIGlwIG5ldG5zIGV4ZWMgJG5zcjEgbmZ0IHJlc2V0IGNvdW50
-ZXJzID4gL2Rldi9udWxsIAogICAgICAgIAogICAgICAgIGVjaG8gIioqIFBpbmcgZmxvb2Qg
-b25lIGRpcmVjdGlvbiIKICAgICAgICAKICAgICAgICBpcCBuZXRucyBleGVjICRuc3IyIHBp
-bmcgMTcyLjMwLjE2LjEgLWMgMTAwMDAwIC1mCiAgICAgICAgCiAgICAgICAgIyBTaG93IGNv
-dW50ZXJzIGFuZCByZXNldCB0aGVtCiAgICAgICAgaXAgbmV0bnMgZXhlYyAkbnNyMSBuZnQg
-cmVzZXQgY291bnRlcnMKICAgICAgICBlY2hvICIqKiBjbGVhciBjb3VudGVycyIKCiAgICAg
-ICAgZWNobyAiKiogUGluZyBmbG9vZCBvdGhlciBkaXJlY3Rpb24iCiAgICAgICAgaXAgbmV0
-bnMgZXhlYyAkbnMxIHBpbmcgMTcyLjMwLjE2LjIgLWMgMTAwMDAwIC1mCiAgICAgICAgCiAg
-ICAgICAgIyBTaG93IGNvdW50ZXJzIGFuZCByZXNldCB0aGVtCiAgICAgICAgaXAgbmV0bnMg
-ZXhlYyAkbnNyMSBuZnQgcmVzZXQgY291bnRlcnMKfQoKZWNobyAiPT09PT09PT09PT09PT09
-PT09PT0gdGVzdCBhbmQgY291bnQgcGFja2V0cyBmbG93IHdpdGhvdXQgZmxvd3RhYmxlID09
-PT09PT09PT09PT09PT09PT09Igp0ZXN0X2FuZF9jYWxjdWxhdGVfcGFja2V0X2Zsb3cKCiMg
-d2FpdCBhIGxpdHRsZSBiaXQKc2xlZXAgMQoKZWNobyAiKiogaW5zZXJ0IGEgcnVsZSBmb3Ig
-dGhlIGZsb3d0YWJsZSIKaXAgbmV0bnMgZXhlYyAkbnNyMSBuZnQgaW5zZXJ0IHJ1bGUgaW5l
-dCBmaWx0ZXIgZm9yd2FyZCAgdWRwIGRwb3J0IDEgY291bnRlciBuYW1lIGZvcndhcmRfd2df
-Zmxvd3RhYmxlIGZsb3cgYWRkIEBmbAoKZWNobyAiPT09PT09PT09PT09PT09PT09PT0gdGVz
-dCBhbmQgY291bnQgcGFja2V0cyBmbG93IHdpdGggZmxvd3RhYmxlID09PT09PT09PT09PT09
-PT09PT09Igp0ZXN0X2FuZF9jYWxjdWxhdGVfcGFja2V0X2Zsb3cKCmV4aXQK
+-----BEGIN PGP SIGNATURE-----
 
---------------iNK0On0aHdXr0SHafVXqGosL--
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZSyBsAAKCRD2uYlJVVFO
+oxD9AQDAp/pXr+d44wTxEyg9copCJnaEVKIixfFsamXwbWpI/QD/W2ZAb9J8yPcv
+V/en2pgBB1CgZDhm7JzlxcWUrsKROwM=
+=u4d8
+-----END PGP SIGNATURE-----
 
+--N2rAuLPZGqdFV0iZ--
