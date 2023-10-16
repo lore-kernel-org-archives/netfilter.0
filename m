@@ -2,128 +2,82 @@ Return-Path: <netfilter-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 370D4CDB47E
-	for <netfilter@archiver.kernel.org>; Mon, 16 Oct 2023 00:20:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 5A5C4CDB465
+	for <netfilter@archiver.kernel.org>; Mon, 16 Oct 2023 19:22:48 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230034AbjJPAUP (ORCPT <rfc822;netfilter@archiver.kernel.org>);
-        Sun, 15 Oct 2023 20:20:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49064 "EHLO
+        id S232152AbjJPTWr (ORCPT <rfc822;netfilter@archiver.kernel.org>);
+        Mon, 16 Oct 2023 15:22:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42118 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229459AbjJPAUO (ORCPT
-        <rfc822;netfilter@vger.kernel.org>); Sun, 15 Oct 2023 20:20:14 -0400
-Received: from mail-pg1-x534.google.com (mail-pg1-x534.google.com [IPv6:2607:f8b0:4864:20::534])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E957E95;
-        Sun, 15 Oct 2023 17:20:12 -0700 (PDT)
-Received: by mail-pg1-x534.google.com with SMTP id 41be03b00d2f7-564b6276941so2913880a12.3;
-        Sun, 15 Oct 2023 17:20:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697415612; x=1698020412; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=J7+oJHozaJp3ARwDpXhkbVM/mB5nFnC7YhE1nMQs+T4=;
-        b=H5Lioq5qmpGifqA6SvWPci0idUCzLn1sTwxXBI44W7s7aACMgPxsIx9a/ZfaMdxJqq
-         /gPD9xwnTamQLP/WUxu/D8hkV++dFwuRTLJoGRyrayzjMNXgxsRtS3AA7kjXAAgSidLR
-         0z09wb4m6u038ZHU+uRICQZ6f8BGdRkWqx++ffMAUn75feSQmW7kTcN6yRAZ1bjcjTeW
-         13VdwJG1vKrBDfOjdVnBEyD684YWvf+9G1CW5s7OEFKT+hZJUkXv4r+pNbWZYEphBHLS
-         3VVP9IjDI8RLdBXSZkMP+ch8D2PWF9DrYNhLOrpG/8z8BurFT7P9jNoafqajv+swiJtO
-         wXhw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697415612; x=1698020412;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=J7+oJHozaJp3ARwDpXhkbVM/mB5nFnC7YhE1nMQs+T4=;
-        b=kAuvRCrKLCVbErky284Rq36AmGHLIZbhGVLOn1yiB8zBXIX5y7jFOaFyV0LNPVa/RC
-         C4j3yWvzIQkJKux/hx8QLcth2ECMOy9I+xjKV/aruy2SOFRu/N2Pg2n6tkXoaVvnmOLP
-         yLoFdegkLDX6OCjuIDWjMTCyjT9QW3lsc91pQ/ys0ctH9f+am1Yw9su8475kr2Jqp2qx
-         jDQMBFCDXfqxQI7N95fh5cXgy7jmgxsAN2yMb2ny5vJMnnDpvjtb6EkPqmXChPGuxyKO
-         gg81pqFJ3ydLiGpk05E0R2erQ11SnkLn5nKA8fJ384BDPLG0A1qOmXhtaDfXbAWchQ1X
-         2sQQ==
-X-Gm-Message-State: AOJu0Yyjp6UVBYhjzWiZygBCiyJmHQ18i6ydKlhXlPOHERqcQNCPPeQ1
-        5sXtLHh4otjJYft3v8OkNx0=
-X-Google-Smtp-Source: AGHT+IH2laczeXL+VN9BrWY3NVZ8iTr+4c1jER2bvqsu4716PkKX0BkrL3EJtryJWJwyVs5iZp4OAg==
-X-Received: by 2002:a05:6a20:7f95:b0:140:3aa:e2ce with SMTP id d21-20020a056a207f9500b0014003aae2cemr43344864pzj.42.1697415612184;
-        Sun, 15 Oct 2023 17:20:12 -0700 (PDT)
-Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id x6-20020a170902ec8600b001c44c8d857esm7208939plg.120.2023.10.15.17.20.11
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Oct 2023 17:20:11 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id 3520A801B59F; Mon, 16 Oct 2023 07:20:07 +0700 (WIB)
-Date:   Mon, 16 Oct 2023 07:20:06 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Vladimir Smelhaus <vl.sm@email.cz>,
-        Linux Netfilter <netfilter@vger.kernel.org>,
-        coreteam@netfilter.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>
-Subject: Re: Flowtables ignore timeout settings in recent kernels
-Message-ID: <ZSyBtn8cplLWoNn-@debian.me>
-References: <ughg4v$130b$1@ciao.gmane.io>
+        with ESMTP id S231478AbjJPTWq (ORCPT
+        <rfc822;netfilter@vger.kernel.org>); Mon, 16 Oct 2023 15:22:46 -0400
+Received: from mail.mutluit.com (mail.mutluit.com [195.201.130.20])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 045449F
+        for <netfilter@vger.kernel.org>; Mon, 16 Oct 2023 12:22:42 -0700 (PDT)
+Received: from [127.0.0.1] (mail.mutluit.com [195.201.130.20]:42524)
+        by mail.mutluit.com (mail.mutluit.com [195.201.130.20]:50025) with ESMTP ([XMail 1.27 ESMTP Server])
+        id <S1723095> for <netfilter@vger.kernel.org> from <um@mutluit.com>;
+        Mon, 16 Oct 2023 21:22:41 +0200
+To:     netfilter@vger.kernel.org
+From:   "U.Mutlu" <um@mutluit.com>
+Subject: [iptables/ipset] Bug? -m set --match-set myset src --packets-gt 2 -j
+ ...
+Organization: mutluit.com
+Message-ID: <652D8D7C.4080803@mutluit.com>
+Date:   Mon, 16 Oct 2023 21:22:37 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:40.0) Gecko/20100101
+ Firefox/40.0 SeaMonkey/2.37a1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="N2rAuLPZGqdFV0iZ"
-Content-Disposition: inline
-In-Reply-To: <ughg4v$130b$1@ciao.gmane.io>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <netfilter.vger.kernel.org>
 X-Mailing-List: netfilter@vger.kernel.org
 
+Hi,
+could a kind soul please check why the ipset "match-set" rule below isn't working.
 
---N2rAuLPZGqdFV0iZ
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It jumps to the chain MY2 only if "--packets-gt 0" or
+"--packets-gt 1" is used, but not for any higher values! :-)
 
-On Sun, Oct 15, 2023 at 09:56:14PM +0200, Vladimir Smelhaus wrote:
-> Netfilter ignores the timeout settings for a flowtable
->=20
-> # sysctl -a -r flowtable
-> net.netfilter.nf_flowtable_tcp_timeout =3D 30
-> net.netfilter.nf_flowtable_udp_timeout =3D 30
->=20
-> Situation. A long udp connection (tunnel) with some data flowing through a
-> router. The connection is sent to a flowtable on the router. It's a few
-> packets per second, more here and there, a pause here and there, and so on
-> over and over. The pauses are minimal and are also limited by the tunnel
-> settings to be no longer than 25 seconds. Everything is satisfying to make
-> the connection last continuously in the flowtable and not reappear in
-> forward. However, the connection keeps dropping out of the flowtable. It
-> stays in the flowtable (offloaded) for a second at most and then it is
-> kicked out, back to forward.
->=20
-> In an attached test script you can see counters that should be zero but a=
-re not. If I watch the normal packet flow on a particular router, I can see=
- packets in the conntrack table that should be OFFLOAD as ASSURED.
->=20
-> Tested in kernel 6.5.6. In an old(er) kernel 5.10 it works as expected.
->=20
+I'm new to ipset, but this very much looks like a bug in iptables or ipset, IMHO.
 
-Then please perform bisection to find a culprit that introduces your
-regression (see Documentation/admin-guide/bug-bisect.rst in the kernel
-sources for reference). Also, it'd been great if you also post the
-reproducer script inline (within your email) instead, as some MUAs
-(like mutt that I'm using now) may ignore the attachment.
 
-Anyway, thanks for the regression report. I'm adding it to regzbot:
+firewall.sh :
+-------------
+#...
+ipset destroy blacklist
+ipset create blacklist hash:ip hashsize 4096 timeout 300 counters
+ipset destroy bl2
+ipset create bl2 hash:ip hashsize 4096 timeout 600 counters
+#...
+iptables -N MY2
+#...
+iptables -A MY2 -j RETURN
+#...
+iptables -A INPUT -j SET --exist --add-set blacklist src
+iptables -A INPUT -m set --match-set blacklist src --packets-gt 2 -j MY2
+#...
 
-#regzbot ^introduced: v5.10..v6.5
 
---=20
-An old man doll... just what I always wanted! - Clara
+Thx
 
---N2rAuLPZGqdFV0iZ
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
+OS is stock Debian 11 ("bullseye"):
 
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZSyBsAAKCRD2uYlJVVFO
-oxD9AQDAp/pXr+d44wTxEyg9copCJnaEVKIixfFsamXwbWpI/QD/W2ZAb9J8yPcv
-V/en2pgBB1CgZDhm7JzlxcWUrsKROwM=
-=u4d8
------END PGP SIGNATURE-----
+# iptables --version
+iptables v1.8.7 (nf_tables)
 
---N2rAuLPZGqdFV0iZ--
+# ipset --version
+ipset v7.10, protocol version: 7
+
+# uname -a
+Linux p21 6.1.0-0.deb11.11-amd64 #1 SMP PREEMPT_DYNAMIC Debian 
+6.1.38-4~bpo11+1 (2023-08-08) x86_64 GNU/Linux
+
+# cat /etc/os-release
+PRETTY_NAME="Debian GNU/Linux 11 (bullseye)"
+NAME="Debian GNU/Linux"
+VERSION_ID="11"
+VERSION="11 (bullseye)"
+...
