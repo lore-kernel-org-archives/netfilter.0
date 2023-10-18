@@ -2,114 +2,121 @@ Return-Path: <netfilter-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id CFB2ECDB483
-	for <netfilter@archiver.kernel.org>; Wed, 18 Oct 2023 11:07:16 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 1D8C8CDB483
+	for <netfilter@archiver.kernel.org>; Wed, 18 Oct 2023 11:31:42 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229956AbjJRLHP (ORCPT <rfc822;netfilter@archiver.kernel.org>);
-        Wed, 18 Oct 2023 07:07:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51956 "EHLO
+        id S230329AbjJRLbl (ORCPT <rfc822;netfilter@archiver.kernel.org>);
+        Wed, 18 Oct 2023 07:31:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43762 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229510AbjJRLHO (ORCPT
-        <rfc822;netfilter@vger.kernel.org>); Wed, 18 Oct 2023 07:07:14 -0400
-Received: from mail.mutluit.com (mail.mutluit.com [195.201.130.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 8E7B8112
-        for <netfilter@vger.kernel.org>; Wed, 18 Oct 2023 04:07:08 -0700 (PDT)
-Received: from [127.0.0.1] (mail.mutluit.com [195.201.130.20]:44680)
-        by mail.mutluit.com (mail.mutluit.com [195.201.130.20]:50025) with ESMTP ([XMail 1.27 ESMTP Server])
-        id <S1723126> for <netfilter@vger.kernel.org> from <um@mutluit.com>;
-        Wed, 18 Oct 2023 13:07:07 +0200
-Subject: Re: [nftables/nft] nft equivalent of "ipset test"
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     imnozi@gmail.com, netfilter-devel@vger.kernel.org,
-        netfilter@vger.kernel.org
-References: <652EC034.7090501@mutluit.com>
- <20231017213507.GD5770@breakpoint.cc> <652F02EC.2050807@mutluit.com>
- <20231017220539.GE5770@breakpoint.cc> <652F0C75.8010006@mutluit.com>
- <20231017200057.57cfce21@playground> <ZS+nJS/4dolCsIk8@calendula>
- <652FAB56.5060200@mutluit.com> <ZS+srsBsJSynJ7Tm@calendula>
-From:   "U.Mutlu" <um@mutluit.com>
-Organization: mutluit.com
-Message-ID: <652FBC5B.5000006@mutluit.com>
-Date:   Wed, 18 Oct 2023 13:07:07 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:40.0) Gecko/20100101
- Firefox/40.0 SeaMonkey/2.37a1
+        with ESMTP id S230245AbjJRLbh (ORCPT
+        <rfc822;netfilter@vger.kernel.org>); Wed, 18 Oct 2023 07:31:37 -0400
+Received: from mx02.bht-berlin.de (mx02.bht-berlin.de [141.64.5.24])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A234010F
+        for <netfilter@vger.kernel.org>; Wed, 18 Oct 2023 04:31:35 -0700 (PDT)
+Received: from post.beuth-hochschule.de (exch1.beuth-hochschule.de [IPv6:2001:638:812:12::101])
+        by mx02.bht-berlin.de (Postfix) with ESMTPS id 44C041FC75;
+        Wed, 18 Oct 2023 13:31:28 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bht-berlin.de;
+        s=dkim1-aes2048; t=1697628688;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZJvt8qc3kDtMI9hEMo2vkpL2PBPLk1235m9posfdolo=;
+        b=BYUMyEin8ss/1JiUJMy+FZC7+EVX6oUJVkFg6t6S5E+NhK+uBrBrkbpW0elH2HSU+ywu0I
+        avtsPK+PFP++FoLA4duBdMtpSZMWskO6S+1hoVZ10gCKI3xQnuwLBIPw2PRK0uQFk3yayf
+        Flc+dm84b2WrIOMZxmOOqoP7CMLZv3n/H7oRGHjTnai7FzTDqhV2Q05XiMR4GfW4mZSGTM
+        6+REz4+up7S2TzFm6nEm2bBORIMDNqSFM1a6JT+GnazIq88BWUhQ8uiQB34pooO/tWvQZd
+        TCNo1QzemNmPU5uF3p3bK7kKlmlP86u2tHcyBriKgIucMhe4r5FRItoKzxNl2w==
+Received: from [10.128.255.2] (141.64.12.127) by EXCH1.beuth-hochschule.de
+ (2001:638:812:12::101) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.27; Wed, 18 Oct
+ 2023 13:31:27 +0200
+Message-ID: <0f294468-d7c5-477c-b95f-6a5ce68fd79e@bht-berlin.de>
+Date:   Wed, 18 Oct 2023 13:31:26 +0200
 MIME-Version: 1.0
-In-Reply-To: <ZS+srsBsJSynJ7Tm@calendula>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: commit to kernel fails since Debian 12 (bookworm)
+Content-Language: en-US
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+CC:     <netfilter@vger.kernel.org>
+References: <faf92623-95a9-4999-b02a-e40108f133ca@bht-berlin.de>
+ <ZSlXJdqfKFxF0OcO@calendula>
+ <6289ae8d-7d8e-40a5-a012-3e6e32251942@bht-berlin.de>
+ <ZS0TvfCRySTWfdW6@calendula>
+ <43708702-0f37-4ea6-9b3d-4dc8ac2913a1@bht-berlin.de>
+ <ZS2qCnq6c+mKyDa3@calendula>
+From:   Markus Wigge <wigge@bht-berlin.de>
+In-Reply-To: <ZS2qCnq6c+mKyDa3@calendula>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: EXCH2.beuth-hochschule.de (2001:638:812:12::102) To
+ EXCH1.beuth-hochschule.de (2001:638:812:12::101)
+X-TM-AS-Product-Ver: SMEX-14.0.0.3092-9.0.1002-27942.006
+X-TM-AS-Result: No-10--9.547600-8.000000
+X-TMASE-MatchedRID: zGP2F0O7j/tJFtr9dvFSJfHkpkyUphL9J7TAdoWYpOfkMnUVL5d0E0NK
+        xNfKw7Si3yUMI3JRg8+mruCS2CN5rSd144Bsl1p5owvZ4t/MYW7YUDvAr2Y/11gLks93sG9t1we
+        kTm8GZ3cyagPvoxWFg/iTV1io6Fjd1ZWTH/reat01yhbbA7We0yFq4bKNOR/1ABWQdS+vSZ6eAi
+        CmPx4NwLTrdaH1ZWqCZYJ9vPJ1vSDiaBcE8wFw3o2j49Ftap9Eymsk/wUE4hqCQhop20yfUBpw/
+        2I7plwkMwr/eoeTAUJ8JHiFUV6LZpNAIHOA8Vgi
+X-TM-AS-User-Approved-Sender: Yes
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--9.547600-8.000000
+X-TMASE-Version: SMEX-14.0.0.3092-9.0.1002-27942.006
+X-TM-SNTS-SMTP: 349373658D49160EF9AFA2B7AF840797D0522ED6AB585C8ECC8BC2C12C878D442000:8
+X-Rspamd-UID: 5c0fce
 Precedence: bulk
 List-ID: <netfilter.vger.kernel.org>
 X-Mailing-List: netfilter@vger.kernel.org
 
-Pablo Neira Ayuso wrote on 10/18/23 12:00:
-> On Wed, Oct 18, 2023 at 11:54:30AM +0200, U.Mutlu wrote:
->> Pablo Neira Ayuso wrote on 10/18/23 11:36:
->>> On Tue, Oct 17, 2023 at 08:00:57PM -0400, imnozi@gmail.com wrote:
->>>> On Wed, 18 Oct 2023 00:36:37 +0200
->>>> "U.Mutlu" <um@mutluit.com> wrote:
->>>>
->>>>> ...
->>>>> Actualy I need to do this monster:   :-)
->>>>>
->>>>> IP="1.2.3.4"
->>>>> ! nft "get element inet mytable myset  { $IP }" > /dev/null 2>&1 && \
->>>>> ! nft "get element inet mytable myset2 { $IP }" > /dev/null 2>&1 && \
->>>>>      nft "add element inet mytable myset  { $IP }"
->>>>
->>>> Try using '||', akin to:
->>>
->>> Please, use 'nft create' for this, no need for an explicit test and
->>> then add from command line.
->>>
->>> The idiom above is an antipattern, because it is not atomic, the
->>> 'create' command provides a way to first test if the element exists
->>> (if so it fails) then add it.
+Hello,
+
+
+> So VLAN interfaces are distributed between nodes and, on failover, one
+> node picks up the VLAN interfaces of the node that is failing? I am
+> trying to understand if, in your setup, one node is active but is is
+> also at the same time a backup for the flows that are handled by the
+> other node.
+Yes, the VLAN interfaces are available on both nodes but only one nodes 
+has configured IP addresses on the interface. The other nodes only takes 
+over the address with keepalived if necessary.
+
+So could it be possible, that the kernel notices flows on the passive 
+VLAN interface?
+
+
+
+> This is how it works with net.netfilter.nf_conntrack_tcp_loose = 1,
+> that toggle enables "poor man" connection pickup, that is, the kernel
+> infers from the middle of the connection the current state.
+But why does the kernel see this connection at all when it flow over the 
+other node?
+
+
+>>> Is your ruleset dropping invalid packets?
 >>
->> Pablo, unfortunately your solution with 'create' cannot be used
->> in my above said special use-case of testing first in BOTH sets...
->
-> 'ipset test' also requires a set to be specified.
+>> Only for smurfs as far as I can see:
+>>>   203M   19G smurfs     0    --  *      *       0.0.0.0/0            0.0.0.0/0            ctstate INVALID,NEW,UNTRACKED
+>>
+>>> Chain smurfs (7 references)
+>>>   pkts bytes target     prot opt in     out     source               destination
+>>>    19M 6211M RETURN     0    --  *      *       0.0.0.0              0.0.0.0/0
+>>>      0     0 smurflog   0    --  *      *       0.0.0.0/0            0.0.0.0/0           [goto]  ADDRTYPE match src-type BROADCAST
+>>>      0     0 smurflog   0    --  *      *       224.0.0.0/4          0.0.0.0/0           [goto]
+> 
+> This RETURN means you take back invalid packets to the chain where the
+> jump to smurfs happen.
+Yes and there are dedicated chains for the configured zones which each 
+drop INVALID packets.
 
-Of course, what else! :-) And I haven't said anything different.
+>> Following the logs it appears to me that every single entry is getting
+>> late then. I doubt that and don't see where state should come from
+>> beforehand.
+> 
+>  From datapath itself, from the _loose mechanism that is enabled.
+What datapath? The passive node should not be involved with the flows of 
+the other node?
 
->> I just don't understand why the author cannot simply add a real 'test'
->> function to the nft tool...
->
-> I just don't understand your usecase :-), why do you need this atomic
-> check on two different sets?
->
-> Could you explain your ruleset in more detail?
-
-It's maybe complicated: I've a restrictive firewall where
-the default is to block all ports for traffic from INPUT,
-except those explicitly allowed.
-
-Then, at the end of the firewall rules I can _auto-add_ all
-the unhandled IPs to such a set for blocking. The blocking
-happens at top by testing whether the IP is in that set.
-
-But another feature of this solution is that not only
-the firewall can (auto-) add IPs to the set for blocking,
-but also the external handlers after ACCEPT can do it,
-ie. say a mailserver. It too has to be able to add an IP
-to the same set for  blocking. The blockign itself happens
-centrally in the firewall script at the next attempt of the attacker.
-
-Lately I've extended this to make it a 2-stage: if blocked IP
-continues sending more than x packets while in timeout of y minutes,
-then add this attacker to the second set that has a much higher timeout of z 
-minutes.
-One additional practical benefit of this approach is that
-now one sees the hardcore attackers grouped (they are those in set2).
-
-The correct managing of these two sets requires the said
-atomicity by testing of BOTH sets before adding the IP to the first set...
-
-If you have got a better solution for this use-case,
-so let me/us know please. As said I'm new even to ipset
-but which I find very effective & useful in practice.
-As said I'm still continuing using iptables with ipset,
-just evaluating whether it would make sense to switch to nftables/nft,
-though the learning-curve seems not that small, IMO.
-
-
+Kind Regards
+Markus
