@@ -2,152 +2,106 @@ Return-Path: <netfilter-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 681BACDB483
-	for <netfilter@archiver.kernel.org>; Wed, 18 Oct 2023 11:54:33 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 32C70CDB482
+	for <netfilter@archiver.kernel.org>; Wed, 18 Oct 2023 12:05:31 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230057AbjJRLyc (ORCPT <rfc822;netfilter@archiver.kernel.org>);
-        Wed, 18 Oct 2023 07:54:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35980 "EHLO
+        id S230131AbjJRMFa (ORCPT <rfc822;netfilter@archiver.kernel.org>);
+        Wed, 18 Oct 2023 08:05:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41924 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229846AbjJRLyb (ORCPT
-        <rfc822;netfilter@vger.kernel.org>); Wed, 18 Oct 2023 07:54:31 -0400
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1962F7;
-        Wed, 18 Oct 2023 04:54:29 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailout.west.internal (Postfix) with ESMTP id D66713200A63;
-        Wed, 18 Oct 2023 07:54:28 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Wed, 18 Oct 2023 07:54:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-         h=cc:cc:content-transfer-encoding:content-type:content-type
-        :date:date:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to;
-         s=fm1; t=1697630068; x=1697716468; bh=1gGqnibbva9eW14coSmCGtj86
-        v04dw3N2U7HGKRvwCg=; b=kAlLpF1FoRfr1dvl+XNacQGvNpGd6KiKGig7YGJPu
-        KJNf4Lxm3L/6mq/gNrIffZ9KAFT38duKe2YXjdMe+j6RF/tHo2Gz87QRr3uH+ca6
-        yPSF/zNsoNXt1Tzeh33RYj9Ibv3SYZhSXF6HKc0RrM6FUwDrz1ahvqOzmHi0F/9a
-        727D5Qtz8BKkC7zHWsrIX7TUcjHybsEVr6zozDH2MLsalhsYAO2Jjq0zd2wwI8E7
-        Fuwd/E7XBH69p6SMfnvm5Wi0rDBGB7FrwdbDzFTFdZ7tLNhw/6PMiNq7OPF0qW4Q
-        VQAkBMjlXTL6dwebSX38UNAAT3d/gyFUmc7guqnF7LVsQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1697630068; x=1697716468; bh=1gGqnibbva9eW14coSmCGtj86v04dw3N2U7
-        HGKRvwCg=; b=ACZ63ga+1D16m3MQ0K1Egncs+YjwW2/AC5Lq75/cUPOtb6XzJ/K
-        YcPiMeW/VrsVbb3s5+MswXq+llgpnAwu6nInfh4uxf+iyMg0itGKqXnCt81l5LEr
-        Ystvjl4rYthvh60UZ3NEKWAlkg8YQ9tZgP/28+LEBLrj/skuen+GXAG011bQBU9H
-        RpDq/4P5LnLz5Xk9o6ooMh0zpCVbR0FPtJgn01Y7dkO0v9Fu5FMBNt54NGcVgvqn
-        YoNlMmIJi5NurDmqdWDHSip+2fH4v9lYbXa532zkhoSg7gvEC6ujy7O4PEIqlalS
-        y0rOaGb82vsb0JGlt/uZ+/8fTkR/tSGKiYw==
-X-ME-Sender: <xms:dMcvZVfmGlIfRoxPw0KwyCzYeGN9SGkEd8CQqC7DZn7PQ0Pvr1oNfw>
-    <xme:dMcvZTNZkDIeLAFPrbLdkeJtFclbS80iS9OoyWgwY1KTa5QTgOrRDFzxE-Be0duir
-    lChh2Qyk5DXefSD>
-X-ME-Received: <xmr:dMcvZegk_qMBlwL7_F-QSy1g8sW1nBLKaQ_d54hAKUbUl62tuBPWAJG1qZEEO3iGUOXxD8ztx_RAxOCOP76q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrjeeggdeggecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfgjfhfogggtgfesthejredtjfdtvdenucfhrhhomhepmfgvrhhi
-    nhcuofhilhhlrghruceokhhfmhesphhluhhshhhkrghvrgdrnhgvtheqnecuggftrfgrth
-    htvghrnhepiefhteethfegfeetgfehueegfeefheekudekfeffjeeguedtgeegjedtieeh
-    hfevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepkh
-    hfmhesphhluhhshhhkrghvrgdrnhgvth
-X-ME-Proxy: <xmx:dMcvZe-SIaOiMNWxr_M67VjBnlkKq35ydMGkhAYZS5WNv0mWMBZBSA>
-    <xmx:dMcvZRsO5pGnV_igN8J6Dz-KA0w9zBlH6gtHqi6hVGMMnxEBDGC6vA>
-    <xmx:dMcvZdHfarsExeCU1c-RqjFKjq1pqAfGHgYax3GqmclFzHdsPmHmqg>
-    <xmx:dMcvZZIOp5cnCmwHvVR6pipbcuW7uLEHmdjl90JWcUCsvyLVkyiWQw>
-Feedback-ID: i2431475f:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 18 Oct 2023 07:54:25 -0400 (EDT)
-Date:   Wed, 18 Oct 2023 12:54:23 +0100
-From:   Kerin Millar <kfm@plushkava.net>
-To:     "U.Mutlu" <um@mutluit.com>
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>, imnozi@gmail.com,
-        netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
-Subject: Re: [nftables/nft] nft equivalent of "ipset test"
-Message-Id: <20231018125423.a165a43e90e7f93994677244@plushkava.net>
-In-Reply-To: <652FAB56.5060200@mutluit.com>
-References: <652EC034.7090501@mutluit.com>
-        <20231017213507.GD5770@breakpoint.cc>
-        <652F02EC.2050807@mutluit.com>
-        <20231017220539.GE5770@breakpoint.cc>
-        <652F0C75.8010006@mutluit.com>
-        <20231017200057.57cfce21@playground>
-        <ZS+nJS/4dolCsIk8@calendula>
-        <652FAB56.5060200@mutluit.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-unknown-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        with ESMTP id S230233AbjJRMF2 (ORCPT
+        <rfc822;netfilter@vger.kernel.org>); Wed, 18 Oct 2023 08:05:28 -0400
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 64657112
+        for <netfilter@vger.kernel.org>; Wed, 18 Oct 2023 05:05:26 -0700 (PDT)
+Received: from [78.30.34.192] (port=45014 helo=gnumonks.org)
+        by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <pablo@gnumonks.org>)
+        id 1qt5Ig-00Cp0w-Df; Wed, 18 Oct 2023 14:05:24 +0200
+Date:   Wed, 18 Oct 2023 14:05:21 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Markus Wigge <wigge@bht-berlin.de>
+Cc:     netfilter@vger.kernel.org
+Subject: Re: commit to kernel fails since Debian 12 (bookworm)
+Message-ID: <ZS/KAY6Jss8TbOr/@calendula>
+References: <faf92623-95a9-4999-b02a-e40108f133ca@bht-berlin.de>
+ <ZSlXJdqfKFxF0OcO@calendula>
+ <6289ae8d-7d8e-40a5-a012-3e6e32251942@bht-berlin.de>
+ <ZS0TvfCRySTWfdW6@calendula>
+ <43708702-0f37-4ea6-9b3d-4dc8ac2913a1@bht-berlin.de>
+ <ZS2qCnq6c+mKyDa3@calendula>
+ <0f294468-d7c5-477c-b95f-6a5ce68fd79e@bht-berlin.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <0f294468-d7c5-477c-b95f-6a5ce68fd79e@bht-berlin.de>
 Precedence: bulk
 List-ID: <netfilter.vger.kernel.org>
 X-Mailing-List: netfilter@vger.kernel.org
 
-On Wed, 18 Oct 2023 11:54:30 +0200
-"U.Mutlu" <um@mutluit.com> wrote:
-
-> Pablo Neira Ayuso wrote on 10/18/23 11:36:
-> > On Tue, Oct 17, 2023 at 08:00:57PM -0400, imnozi@gmail.com wrote:
-> >> On Wed, 18 Oct 2023 00:36:37 +0200
-> >> "U.Mutlu" <um@mutluit.com> wrote:
-> >>
-> >>> ...
-> >>> Actualy I need to do this monster:   :-)
-> >>>
-> >>> IP="1.2.3.4"
-> >>> ! nft "get element inet mytable myset  { $IP }" > /dev/null 2>&1 && \
-> >>> ! nft "get element inet mytable myset2 { $IP }" > /dev/null 2>&1 && \
-> >>>     nft "add element inet mytable myset  { $IP }"
-> >>
-> >> Try using '||', akin to:
-> >
-> > Please, use 'nft create' for this, no need for an explicit test and
-> > then add from command line.
-> >
-> > The idiom above is an antipattern, because it is not atomic, the
-> > 'create' command provides a way to first test if the element exists
-> > (if so it fails) then add it.
+On Wed, Oct 18, 2023 at 01:31:26PM +0200, Markus Wigge wrote:
+> Hello,
 > 
-> Pablo, unfortunately your solution with 'create' cannot be used
-> in my above said special use-case of testing first in BOTH sets...
+> > So VLAN interfaces are distributed between nodes and, on failover, one
+> > node picks up the VLAN interfaces of the node that is failing? I am
+> > trying to understand if, in your setup, one node is active but is is
+> > also at the same time a backup for the flows that are handled by the
+> > other node.
+>
+> Yes, the VLAN interfaces are available on both nodes but only one nodes has
+> configured IP addresses on the interface. The other nodes only takes over
+> the address with keepalived if necessary.
 > 
-> I just don't understand why the author cannot simply add a real 'test' 
-> function to the nft tool...
+> So could it be possible, that the kernel notices flows on the passive VLAN
+> interface?
 
-One a feature has been added, it usually has to be maintained forever so it is to be expected that the use case has to be strongly justified. In my opinion, the principal shortcomings of "get element" are twofold.
+Then, I assume there is HA daemon that sets this IP on the VLAN
+interface. From what you describe, disabling _loose connection pickup
+should be safe.
 
-Firstly, there is no way to distinguish between nft(8) failing because it did not find the specified element or for some other, wholly unrelated, reason. In both cases, the exit status is likely to be 1. That makes it a poor interface. One solution could be for nft to at least promise to exit >=2 in the case of syntax errors, syscall failures etc.
+> > This is how it works with net.netfilter.nf_conntrack_tcp_loose = 1,
+> > that toggle enables "poor man" connection pickup, that is, the kernel
+> > infers from the middle of the connection the current state.
+>
+> But why does the kernel see this connection at all when it flow over the
+> other node?
+> 
+> > > > Is your ruleset dropping invalid packets?
+> > > 
+> > > Only for smurfs as far as I can see:
+> > > >   203M   19G smurfs     0    --  *      *       0.0.0.0/0            0.0.0.0/0            ctstate INVALID,NEW,UNTRACKED
+> > > 
+> > > > Chain smurfs (7 references)
+> > > >   pkts bytes target     prot opt in     out     source               destination
+> > > >    19M 6211M RETURN     0    --  *      *       0.0.0.0              0.0.0.0/0
+> > > >      0     0 smurflog   0    --  *      *       0.0.0.0/0            0.0.0.0/0           [goto]  ADDRTYPE match src-type BROADCAST
+> > > >      0     0 smurflog   0    --  *      *       224.0.0.0/4          0.0.0.0/0           [goto]
+> > 
+> > This RETURN means you take back invalid packets to the chain where the
+> > jump to smurfs happen.
+>
+> Yes and there are dedicated chains for the configured zones which each drop
+> INVALID packets.
 
-Secondly, the use of "get element" entails spewing a diagnostic message to STDERR in the case that the element isn't found. The user is thus presented with the unenviable choice of silencing STDERR. This is a bad thing because, in doing so, *all* errors and dignostics will be silenced.
+Yes, but _loose is disabled. And I suspect _be_liberal is disabled
+too, invalid packets are unlikely with this configuration.
 
-Now, as concerns the matter of producing monstrosities, there is always the option to write the code in a more elegant fashion. One way would be to compose a function.
+> > > Following the logs it appears to me that every single entry is getting
+> > > late then. I doubt that and don't see where state should come from
+> > > beforehand.
+> > 
+> >  From datapath itself, from the _loose mechanism that is enabled.
+>
+> What datapath? The passive node should not be involved with the flows of the
+> other node?
 
-in_all_sets() {
-	local ip=$1 set
-	shift
-	for set; do
-		nft -t "get element $set { $ip }" >/dev/null 2>&1 || return
-	done
-}
+As said, EBUSY means conntrackd is trying to update an existing entry
+in the kernel.
 
-if ! in_all_sets "$ip" "inet mytable myset" "inet mytable myset"; then
-	nft "add element inet mytable myset { $ip }"
-fi
+How is all this going on, you have to diagnose in your setup.
 
-Of course, this does not address the aformentioned shortcomings of the interface but the legibility and maintainability of the code is improved.
+There is `conntrack -E` which shows the tag [USERSPACE] for entries
+that are created by conntrackd.
 
-Another would be to apply the redirections to a compound command.
-
-{
-	# Neither of the following will be seen
-	echo "stdout"
-	echo "stderr" >&2
-} >/dev/null 2>&1
-
-Though Pablo already mentioned it, the overall approach amounts to a TOCTOU race. The prospect of being able to atomically check for the existence of an element in multiple sets is a curious one. I, too, would be interested in understanding the underlying use case.
-
--- 
-Kerin Millar
+    [NEW] tcp      6 10 ESTABLISHED src=1.1.1.1 dst=2.2.2.2 sport=10 dport=20 [UNREPLIED] src=2.2.2.2 dst=1.1.1.1 sport=20 dport=10 mark=0 [USERSPACE] portid=2149
