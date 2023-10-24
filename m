@@ -2,84 +2,83 @@ Return-Path: <netfilter-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id EDBEDC001DF
-	for <netfilter@archiver.kernel.org>; Fri, 20 Oct 2023 14:02:31 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id DE5F7C00A8F
+	for <netfilter@archiver.kernel.org>; Tue, 24 Oct 2023 20:11:55 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1377504AbjJTOCa (ORCPT <rfc822;netfilter@archiver.kernel.org>);
-        Fri, 20 Oct 2023 10:02:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53842 "EHLO
+        id S1344300AbjJXULy (ORCPT <rfc822;netfilter@archiver.kernel.org>);
+        Tue, 24 Oct 2023 16:11:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49124 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1377419AbjJTOC3 (ORCPT
-        <rfc822;netfilter@vger.kernel.org>); Fri, 20 Oct 2023 10:02:29 -0400
-Received: from mail-yw1-x1132.google.com (mail-yw1-x1132.google.com [IPv6:2607:f8b0:4864:20::1132])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 600C191
-        for <netfilter@vger.kernel.org>; Fri, 20 Oct 2023 07:02:27 -0700 (PDT)
-Received: by mail-yw1-x1132.google.com with SMTP id 00721157ae682-59b5484fbe6so9449947b3.1
-        for <netfilter@vger.kernel.org>; Fri, 20 Oct 2023 07:02:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1697810546; x=1698415346; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pgh7ybEThPvJYPTFbEZad0mrD+3px7yxT6S9a4OjTls=;
-        b=bnc3nc0Ba3hPDX4hjqgViG9jyIp0aQrm2ua8oFo9XJAEmbpSp2duEOUAvgKoGK0xyj
-         yWreaWte5Xzs3e4fK53U+q2vO/UKxDZb9pguyLfHtt28yqap5HjphjdKSYF7CbqxyQyU
-         7P1euG+H1qqGPo1he0RL+bYb1+sn/ROar/3BTw1E0KOwc9BOurp7yoOkd89rduXb++lC
-         UGj3LP93GHQfnHmn2Y9nOmVod10qk7vnDPpeXdijEKurfxW3nzwhRi50dYgCI8TwPVqh
-         NBr7VUbAK8gDckc9syE8xz6EDNharptWW9OLqpj+xXk2tOD+Ji5x7MBq+IskUs0igIHc
-         aFvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1697810546; x=1698415346;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pgh7ybEThPvJYPTFbEZad0mrD+3px7yxT6S9a4OjTls=;
-        b=AJkc9ACfKxR81dVcAXalMH8SNpz71/xNXMY0kkuu5qbhHNfS5Nqriboqn0xHrXuqaW
-         Vw/NU8QKMV1qpQ0nr17/bHfK6zTVZYhqOeU7p1nJKAGjr8KFuI26W1zoyd1brOX6SKHg
-         /Lp/qpaldoVSdj7DQhkz1+FByavZMMvso/Ezc4q1kHg78X4k+hk/t4Drq/f3ZCmudvU/
-         Idov5cEOZzVdGBU1U4U0N8vG988aXl0cl4NG/L9SLMkhRQl1UGsw8a0NjPE/+o9c+FU/
-         qH7n96jkvDgwlSm76Nh7TplTUz/c8bPqbMTFbj0uKHNAM3C1XsNtgh7yldWVcgs94jUF
-         Hjdw==
-X-Gm-Message-State: AOJu0YxR5UpQTqcBgLjKgX1GscaG6PuskEZcC3XUmKimtol4tN2aY2ta
-        0G5Z7cosOs2FYNOH1Trt83jgwcgOJUoHbfwAO501x71VXwQg4A==
-X-Google-Smtp-Source: AGHT+IEKv9iEjxGT8B0VHtgvePcTKc8jaGkMlujuKa6XFSmZUJGOtnteuZH172OT0iMu0sE1LTPzIUJvhZJzdsgoY/Y=
-X-Received: by 2002:a0d:e80c:0:b0:5a7:af97:c787 with SMTP id
- r12-20020a0de80c000000b005a7af97c787mr2136192ywe.11.1697810546266; Fri, 20
- Oct 2023 07:02:26 -0700 (PDT)
+        with ESMTP id S1343896AbjJXULx (ORCPT
+        <rfc822;netfilter@vger.kernel.org>); Tue, 24 Oct 2023 16:11:53 -0400
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D149FD7A;
+        Tue, 24 Oct 2023 13:11:49 -0700 (PDT)
+Received: from [78.30.35.151] (port=58754 helo=gnumonks.org)
+        by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <pablo@gnumonks.org>)
+        id 1qvNkf-008pvw-J8; Tue, 24 Oct 2023 22:11:47 +0200
+Date:   Tue, 24 Oct 2023 22:11:44 +0200
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Bagas Sanjaya <bagasdotme@gmail.com>
+Cc:     Vladimir Smelhaus <vl.sm@email.cz>,
+        Linux Netfilter <netfilter@vger.kernel.org>,
+        coreteam@netfilter.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>
+Subject: Re: Flowtables ignore timeout settings in recent kernels
+Message-ID: <ZTglADWVBgKxKOIC@calendula>
+References: <ughg4v$130b$1@ciao.gmane.io>
+ <ZSyBtn8cplLWoNn-@debian.me>
 MIME-Version: 1.0
-References: <CAPDoCBaxucyu2R_=UyHdr6L5wGno6qbYBbhnmxJDBH_7pbuFcg@mail.gmail.com>
- <20231017213135.GC5770@breakpoint.cc> <CAPDoCBYC61XDROuR4q7zX=MggF2nfG76_UxkrX5wVDXMxvoaXA@mail.gmail.com>
- <20231019084740.GB12544@breakpoint.cc>
-In-Reply-To: <20231019084740.GB12544@breakpoint.cc>
-From:   sun miller <sunminlei@gmail.com>
-Date:   Fri, 20 Oct 2023 22:02:14 +0800
-Message-ID: <CAPDoCBZ=MCunJTEvvaWe-vQNsWE4NE3giFp7rky5s1ORA4HyWA@mail.gmail.com>
-Subject: Re: nf_nat_icmp_reply_translation dropped icmp redirect packet
-To:     Florian Westphal <fw@strlen.de>
-Cc:     netfilter@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZSyBtn8cplLWoNn-@debian.me>
 Precedence: bulk
 List-ID: <netfilter.vger.kernel.org>
 X-Mailing-List: netfilter@vger.kernel.org
 
-> A -> B, A sends packet to R.  R has a DNAT rule to redirect to C
-> (or redirect to R).
->
-> If we let icmp redirect through, this won't work.
+On Mon, Oct 16, 2023 at 07:20:06AM +0700, Bagas Sanjaya wrote:
+> On Sun, Oct 15, 2023 at 09:56:14PM +0200, Vladimir Smelhaus wrote:
+> > Netfilter ignores the timeout settings for a flowtable
+> > 
+> > # sysctl -a -r flowtable
+> > net.netfilter.nf_flowtable_tcp_timeout = 30
+> > net.netfilter.nf_flowtable_udp_timeout = 30
+> > 
+> > Situation. A long udp connection (tunnel) with some data flowing through a
+> > router. The connection is sent to a flowtable on the router. It's a few
+> > packets per second, more here and there, a pause here and there, and so on
+> > over and over. The pauses are minimal and are also limited by the tunnel
+> > settings to be no longer than 25 seconds. Everything is satisfying to make
+> > the connection last continuously in the flowtable and not reappear in
+> > forward. However, the connection keeps dropping out of the flowtable. It
+> > stays in the flowtable (offloaded) for a second at most and then it is
+> > kicked out, back to forward.
+> > 
+> > In an attached test script you can see counters that should be zero but are not. If I watch the normal packet flow on a particular router, I can see packets in the conntrack table that should be OFFLOAD as ASSURED.
+> > 
+> > Tested in kernel 6.5.6. In an old(er) kernel 5.10 it works as expected.
+> > 
+> 
+> Then please perform bisection to find a culprit that introduces your
+> regression (see Documentation/admin-guide/bug-bisect.rst in the kernel
+> sources for reference). Also, it'd been great if you also post the
+> reproducer script inline (within your email) instead, as some MUAs
+> (like mutt that I'm using now) may ignore the attachment.
+> 
+> Anyway, thanks for the regression report. I'm adding it to regzbot:
+> 
+> #regzbot ^introduced: v5.10..v6.5
 
-Thank you very much for your response.
+Fix here:
 
-I had previously encountered an issue with the correctness of the
-ip_rt_send_redirect function when the firewall was disabled. I
-overlooked the fact that the packet goes through DNAT in the
-PREROUTING chain before entering the ip_rt_send_redirect function. In
-my test environment, there were no DNAT policies, so I overlooked this
-scenario.
+https://patchwork.ozlabs.org/project/netfilter-devel/patch/20231024193815.1987-1-pablo@netfilter.org/
 
-Indeed, with the firewall enabled, DNAT rules will modify the
-destination IP address, and sending ICMP redirects in such cases can
-cause confusion. However, when the firewall is disabled, both SRC and
-DST remain unchanged, so the kernel can safely send ICMP redirects.
+it is a bug from Jun 2023, regression was introduced in the v6.5
+development cycle.
 
-Once again, thank you for your response.
-
-Best regards.
+Thanks for reporting.
