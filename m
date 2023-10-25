@@ -2,181 +2,155 @@ Return-Path: <netfilter-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 1F312C07545
-	for <netfilter@archiver.kernel.org>; Tue, 24 Oct 2023 23:50:04 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09826C25B6D
+	for <netfilter@archiver.kernel.org>; Wed, 25 Oct 2023 00:56:43 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1344679AbjJXXuE (ORCPT <rfc822;netfilter@archiver.kernel.org>);
-        Tue, 24 Oct 2023 19:50:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53888 "EHLO
+        id S229662AbjJYA4l (ORCPT <rfc822;netfilter@archiver.kernel.org>);
+        Tue, 24 Oct 2023 20:56:41 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52666 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1344663AbjJXXuD (ORCPT
-        <rfc822;netfilter@vger.kernel.org>); Tue, 24 Oct 2023 19:50:03 -0400
-X-Greylist: delayed 400 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Tue, 24 Oct 2023 16:50:00 PDT
-Received: from lax.catastrophe.net (lax.catastrophe.net [IPv6:2607:f2f8:a9a0::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A0ECEA2
-        for <netfilter@vger.kernel.org>; Tue, 24 Oct 2023 16:50:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; s=20220406; bh=nOJh8L5352m
-        w0NNit10HSenUsRW3SNOX4dOMYgfh92Q=; h=subject:to:from:date;
-        d=catastrophe.net; b=JcUGfhOxW9XwZHNJ7MV3pKX067X0g+o4E7rWhdONq/mEWwdu+
-        4OwzxD7tH9ghe/6hO70vopri5+ShColhN9dVt8uXlaSxt/BMOY2wOTyLvKL6Bp/o+zpyno
-        Ous7S5aQ8ybB/dRkEh09ptQSglTkOKcI3XMgj3A7/hTLSdujmBU1wYSgeXvhtY6JxY8yWg
-        3clumVXUguZI1QUYCELQ0YWahRensPpUV36DJjpQTwf8tW2SRfEk/8vCLUkkGdJ7MmTp6t
-        TOHHsBEWNwThfJZZLRWeZARzELdUG3ej4mhXlX2rRjN3JNjuXxKD9qwVuMzvD1Vh2CYeP5
-        /jjqSUsaTEYgA==
-Received: from localhost (lax.catastrophe.net [local])
-        by lax.catastrophe.net (OpenSMTPD) with ESMTPA id d1326eca
-        for <netfilter@vger.kernel.org>;
-        Tue, 24 Oct 2023 18:43:19 -0500 (CDT)
-Date:   Tue, 24 Oct 2023 18:43:19 -0500
-From:   readme@catastrophe.net
-To:     netfilter@vger.kernel.org
-Subject: Masquerading clients while trying to send traffic over ipsec tunnel
-Message-ID: <ZThWlmG0O5H88NkX@catastrophe.net>
+        with ESMTP id S229763AbjJYA4k (ORCPT
+        <rfc822;netfilter@vger.kernel.org>); Tue, 24 Oct 2023 20:56:40 -0400
+Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE93D128;
+        Tue, 24 Oct 2023 17:56:38 -0700 (PDT)
+Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c9e06f058bso2681965ad.0;
+        Tue, 24 Oct 2023 17:56:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1698195398; x=1698800198; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=idCmePkmuapOmhTFu8C7IFO+GDsYxAan7/9IMTzaD9M=;
+        b=MnI655B7tqkLj/TW2nlBTVXGPLScrq5SDXe/igQ2nO7+hzq8AA1RXUTqzzODw/wMiZ
+         sKp2vdqXUaeKLqPyD42Xu2aaHmRrgn9pmCTd/sDgo4JhGTBQYNzc1Q3flppa1FnD84vT
+         S8pVLvhseex+/HfViQO4tFNNGyAkmwR067TfFeo/uQRzeL6K85jLTaoI0vWBx9yQSqXN
+         iNy42DM/E1Oqxh0c5fHbs2GHIKiKQQ+8j7Z1hz2L2FrBu5McSCqIfRoXLVgnr/aREVw2
+         MThgkDDy0VYd14UTwyHH9F/R06VWUFxoLKTzWcWiuXAEVbDc2Ud6jFvE7vCaBJcuEMoP
+         kJQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1698195398; x=1698800198;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=idCmePkmuapOmhTFu8C7IFO+GDsYxAan7/9IMTzaD9M=;
+        b=xKLfjIzAXxbX0jDZ5Ifef7fa0NiwXWeNLQWXZYP9tA3tixkAILKekDuZW6g7tlSWyQ
+         K0bIW35SVXE6zwCsasIMcWJAhbc5F1IBihhOjge+fCHOvPwiFCy5WPimMLiLh4COyLQi
+         Pu6WYzRIrAOkQngg/aJAY5HVGvJr7QEt+N5UJlJpTyznM4GGyKGoHB+yUfSIVBwGmznZ
+         IIt9mr7kHYZSCfQYh/y6g5Hb7kNF052/Smhi9I4o8WVVa1WpbYWqSSYDxULQhrMwaSkg
+         XJjvSoKNtMlEbYQX5LfRBde26kvTYc8sUQI8H93d+sz6h4Pjwdcl5EFPfm1/M0xL6GKg
+         vplA==
+X-Gm-Message-State: AOJu0YxJb2ntnuYAAxMEyf073/+t2oIW8x5TE6zZ6lt+P4ZmgOuyfCTA
+        KhqZtBVWNlRXtqDO7TR7Cuq6/PORr1A=
+X-Google-Smtp-Source: AGHT+IGJgyhZvs/DxUdMPw6LHhjYzSVzjI+gdVIZdAFLgzhN4L4CKfQAIgUW6oEW7DPYNUXPlg8zzA==
+X-Received: by 2002:a17:903:6cc:b0:1c3:868f:5958 with SMTP id kj12-20020a17090306cc00b001c3868f5958mr17419062plb.20.1698195397893;
+        Tue, 24 Oct 2023 17:56:37 -0700 (PDT)
+Received: from debian.me ([103.131.18.64])
+        by smtp.gmail.com with ESMTPSA id e17-20020a17090301d100b001b898595be7sm7917360plh.291.2023.10.24.17.56.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Oct 2023 17:56:37 -0700 (PDT)
+Received: by debian.me (Postfix, from userid 1000)
+        id C6D39819CFF3; Wed, 25 Oct 2023 07:56:34 +0700 (WIB)
+Date:   Wed, 25 Oct 2023 07:56:34 +0700
+From:   Bagas Sanjaya <bagasdotme@gmail.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>
+Cc:     Vladimir Smelhaus <vl.sm@email.cz>,
+        Linux Netfilter <netfilter@vger.kernel.org>,
+        coreteam@netfilter.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Regressions <regressions@lists.linux.dev>,
+        Jozsef Kadlecsik <kadlec@netfilter.org>,
+        Florian Westphal <fw@strlen.de>
+Subject: Re: Flowtables ignore timeout settings in recent kernels
+Message-ID: <ZThnwhWD308vrkUP@debian.me>
+References: <ughg4v$130b$1@ciao.gmane.io>
+ <ZSyBtn8cplLWoNn-@debian.me>
+ <ZTglADWVBgKxKOIC@calendula>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="cM5L7aeMb6NeOAH/"
 Content-Disposition: inline
+In-Reply-To: <ZTglADWVBgKxKOIC@calendula>
 Precedence: bulk
 List-ID: <netfilter.vger.kernel.org>
 X-Mailing-List: netfilter@vger.kernel.org
 
-Greetings -
 
-I have a rapsberrypi running OpenIKED whose clients I'm both trying to 
-masquerade, as well as allow traffic to flow across the ipsec tunnel for
-access to resources behind that tunnel. The raspi has two interfaces,
-wlan0 (WAN interface with a dynamic address) and eth0 for it's clients.
+--cM5L7aeMb6NeOAH/
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-When iked is running without masquerading, I can establish TCP sessions with
-remote devices on the far side of the tunnel but clients behind the rpi
-device obviously can't get anywhere else. When enabling masquerading with
-`iptables -A POSTROUTING -o wlan0 -j MASQUERADE', all traffic from LAN
-clients work over wlan0, but the ipsec traffic drops (logs below).
+On Tue, Oct 24, 2023 at 10:11:44PM +0200, Pablo Neira Ayuso wrote:
+> On Mon, Oct 16, 2023 at 07:20:06AM +0700, Bagas Sanjaya wrote:
+> > On Sun, Oct 15, 2023 at 09:56:14PM +0200, Vladimir Smelhaus wrote:
+> > > Netfilter ignores the timeout settings for a flowtable
+> > >=20
+> > > # sysctl -a -r flowtable
+> > > net.netfilter.nf_flowtable_tcp_timeout =3D 30
+> > > net.netfilter.nf_flowtable_udp_timeout =3D 30
+> > >=20
+> > > Situation. A long udp connection (tunnel) with some data flowing thro=
+ugh a
+> > > router. The connection is sent to a flowtable on the router. It's a f=
+ew
+> > > packets per second, more here and there, a pause here and there, and =
+so on
+> > > over and over. The pauses are minimal and are also limited by the tun=
+nel
+> > > settings to be no longer than 25 seconds. Everything is satisfying to=
+ make
+> > > the connection last continuously in the flowtable and not reappear in
+> > > forward. However, the connection keeps dropping out of the flowtable.=
+ It
+> > > stays in the flowtable (offloaded) for a second at most and then it is
+> > > kicked out, back to forward.
+> > >=20
+> > > In an attached test script you can see counters that should be zero b=
+ut are not. If I watch the normal packet flow on a particular router, I can=
+ see packets in the conntrack table that should be OFFLOAD as ASSURED.
+> > >=20
+> > > Tested in kernel 6.5.6. In an old(er) kernel 5.10 it works as expecte=
+d.
+> > >=20
+> >=20
+> > Then please perform bisection to find a culprit that introduces your
+> > regression (see Documentation/admin-guide/bug-bisect.rst in the kernel
+> > sources for reference). Also, it'd been great if you also post the
+> > reproducer script inline (within your email) instead, as some MUAs
+> > (like mutt that I'm using now) may ignore the attachment.
+> >=20
+> > Anyway, thanks for the regression report. I'm adding it to regzbot:
+> >=20
+> > #regzbot ^introduced: v5.10..v6.5
+>=20
+> Fix here:
+>=20
+> https://patchwork.ozlabs.org/project/netfilter-devel/patch/20231024193815=
+=2E1987-1-pablo@netfilter.org/
+>=20
+> it is a bug from Jun 2023, regression was introduced in the v6.5
+> development cycle.
+>=20
 
-Traffic originating from the far end of the tunnel (10.88.0.0/22) to
-eth0 on the raspi (10.88.12.1) works both with, and without, masquerading 
-enabled.
+Telling regzbot:
 
-My question is: at what stage do I need an entry to send traffic from
-both the raspi device, and it's clients, over the tunnel?
+#regzbot fix: netfilter: nf_flow_table: GC pushes back packets to classic p=
+ath
 
-Many thanks in advance for any assistance.
+Thanks.
 
+--=20
+An old man doll... just what I always wanted! - Clara
 
-iptables output of existing policies
-------------------------------------
+--cM5L7aeMb6NeOAH/
+Content-Type: application/pgp-signature; name="signature.asc"
 
-raspi# iptables-save
-# Generated by iptables-save v1.8.9 (nf_tables) on Tue Oct 24 17:56:29 2023
-*filter
--A INPUT -i lo -j ACCEPT
--A INPUT -s 10.88.12.0/24 -i eth0 -p tcp -m tcp --dport 22 -j ACCEPT
--A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
--A INPUT -s 203.0.113.92/32 -i wlan0 -p esp -j ACCEPT
--A INPUT -s 203.0.113.92/32 -i wlan0 -p udp -m udp --sport 500 --dport 500 -j ACCEPT
--A INPUT -s 203.0.113.92/32 -i wlan0 -p udp -m udp --sport 4500 --dport 4500 -j ACCEPT
--A INPUT -m state --state INVALID -j LOG --log-prefix "INVALID Input: "
--A INPUT -m state --state INVALID -j DROP
--A INPUT -j LOG --log-prefix "filtered on INPUT "
--A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
--A FORWARD -m state --state INVALID -j LOG --log-prefix "INVALID Forward: "
--A FORWARD -m state --state INVALID -j DROP
--A FORWARD -j LOG --log-prefix "filtered on FORWARD "
--A FORWARD -s 10.88.0.0/22 -i wlan0 -j ACCEPT
--A FORWARD -d 10.88.0.0/22 -o wlan0 -j ACCEPT
--A OUTPUT -o lo -j ACCEPT
--A OUTPUT -d 10.88.12.0/24 -o eth0 -p tcp -m tcp --sport 22 -j ACCEPT
--A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
--A OUTPUT -d 203.0.113.92/32 -o wlan0 -p esp -j ACCEPT
--A OUTPUT -d 203.0.113.92/32 -o wlan0 -p udp -m udp --sport 500 --dport 500 -j ACCEPT
--A OUTPUT -d 203.0.113.92/32 -o wlan0 -p udp -m udp --sport 4500 --dport 4500 -j ACCEPT
--A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
--A OUTPUT -m state --state INVALID -j LOG --log-prefix "INVALID Output: "
--A OUTPUT -m state --state INVALID -j DROP
--A OUTPUT -j LOG --log-prefix "filtered on OUTPUT "
-COMMIT
-# Completed on Tue Oct 24 17:56:29 2023
-# Generated by iptables-save v1.8.9 (nf_tables) on Tue Oct 24 17:56:29 2023
-*nat
-:PREROUTING ACCEPT [190:39368]
-:INPUT ACCEPT [0:0]
-:OUTPUT ACCEPT [20:1514]
-:POSTROUTING ACCEPT [0:0]
--A POSTROUTING -o wlan0 -j MASQUERADE
-COMMIT
-# Completed on Tue Oct 24 17:56:29 2023
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZThnvgAKCRD2uYlJVVFO
+o8J0AQD7MDH2zNbKZM6ZlcvUYRSmRK0rvX6lR+6/MFllgRlZnAEA7GV4EePorg3E
+0xZhimBiax8M/oW2TAW86qCo9VyAegY=
+=3CKf
+-----END PGP SIGNATURE-----
 
-Network interfaces
-------------------
-eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-        inet 10.88.12.1  netmask 255.255.255.128  broadcast 10.88.12.127
-        ether b8:27:eb:AA:AA:AA  txqueuelen 1000  (Ethernet)
-
-wlan0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
-        inet 10.88.87.244  netmask 255.255.255.0  broadcast 10.88.87.255
-        ether b8:27:eb:BB:BB:BB  txqueuelen 1000  (Ethernet)
-
-
-sysctl entries
---------------
-net.ipv4.ip_forward=1
-net.ipv4.conf.all.log_martians = 1
-net.ipv4.ip_forward = 1
-net.ipv6.conf.all.forwarding = 1
-net.ipv4.conf.all.accept_redirects = 0
-net.ipv4.conf.all.send_redirects = 0
-net.ipv4.conf.eth0.route_localnet=1
-net.ipv4.conf.wlan0.route_localnet=1
-
-
-Logs generated when trying to ping from 10.88.12.33 to 10.88.2.1
-----------------------------------------------------------------
-Oct 24 17:53:17 raspi kernel: [ 2378.215277] filtered on FORWARD IN=eth0 OUT=wlan0 MAC=b8:27:eb:AA:AA:AA:00:e0:4c:XX:XX:XX:08:00:45:00:00:54:7c:14:00:00:3f:01:dc:c3 SRC=10.88.12.33 DST=10.88.2.1 LEN=84 TOS=0x00 PREC=0x00 TTL=63 ID=31764 PROTO=ICMP TYPE=8 CODE=0 ID=39742 SEQ=53 
-Oct 24 17:53:18 raspi kernel: [ 2379.215437] filtered on FORWARD IN=eth0 OUT=wlan0 MAC=b8:27:eb:AA:AA:AA:00:e0:4c:XX:XX:XX:08:00:45:00:00:54:0d:70:00:00:3f:01:4b:68 SRC=10.88.12.33 DST=10.88.2.1 LEN=84 TOS=0x00 PREC=0x00 TTL=63 ID=3440 PROTO=ICMP TYPE=8 CODE=0 ID=39742 SEQ=54 
-Oct 24 17:53:19 raspi kernel: [ 2380.216018] filtered on FORWARD IN=eth0 OUT=wlan0 MAC=b8:27:eb:AA:AA:AA:00:e0:4c:XX:XX:XX:08:00:45:00:00:54:12:01:00:00:3f:01:46:d7 SRC=10.88.12.33 DST=10.88.2.1 LEN=84 TOS=0x00 PREC=0x00 TTL=63 ID=4609 PROTO=ICMP TYPE=8 CODE=0 ID=39742 SEQ=55 
-Oct 24 17:53:20 raspi kernel: [ 2381.221037] filtered on FORWARD IN=eth0 OUT=wlan0 MAC=b8:27:eb:AA:AA:AA:00:e0:4c:XX:XX:XX:08:00:45:00:00:54:20:f6:00:00:3f:01:37:e2 SRC=10.88.12.33 DST=10.88.2.1 LEN=84 TOS=0x00 PREC=0x00 TTL=63 ID=8438 PROTO=ICMP TYPE=8 CODE=0 ID=39742 SEQ=56 
-Oct 24 17:53:21 raspi kernel: [ 2382.224893] filtered on FORWARD IN=eth0 OUT=wlan0 MAC=b8:27:eb:AA:AA:AA:00:e0:4c:XX:XX:XX:08:00:45:00:00:54:69:3f:00:00:3f:01:ef:98 SRC=10.88.12.33 DST=10.88.2.1 LEN=84 TOS=0x00 PREC=0x00 TTL=63 ID=26943 PROTO=ICMP TYPE=8 CODE=0 ID=39742 SEQ=57 
-Oct 24 17:53:22 raspi kernel: [ 2383.229580] filtered on FORWARD IN=eth0 OUT=wlan0 MAC=b8:27:eb:AA:AA:AA:00:e0:4c:XX:XX:XX:08:00:45:00:00:54:93:4e:00:00:3f:01:c5:89 SRC=10.88.12.33 DST=10.88.2.1 LEN=84 TOS=0x00 PREC=0x00 TTL=63 ID=37710 PROTO=ICMP TYPE=8 CODE=0 ID=39742 SEQ=58 
-Oct 24 17:53:23 raspi kernel: [ 2384.206943] filtered on OUTPUT IN= OUT=wlan0 SRC=172.20.10.7 DST=193.187.181.6 LEN=76 TOS=0x18 PREC=0xA0 TTL=64 ID=58576 DF PROTO=UDP SPT=123 DPT=123 LEN=56 
-Oct 24 17:53:23 raspi kernel: [ 2384.231952] filtered on FORWARD IN=eth0 OUT=wlan0 MAC=b8:27:eb:AA:AA:AA:00:e0:4c:XX:XX:XX:08:00:45:00:00:54:ed:bb:00:00:3f:01:6b:1c SRC=10.88.12.33 DST=10.88.2.1 LEN=84 TOS=0x00 PREC=0x00 TTL=63 ID=60859 PROTO=ICMP TYPE=8 CODE=0 ID=39742 SEQ=59 
-Oct 24 17:53:24 raspi kernel: [ 2385.236071] filtered on FORWARD IN=eth0 OUT=wlan0 MAC=b8:27:eb:AA:AA:AA:00:e0:4c:XX:XX:XX:08:00:45:00:00:54:f5:56:00:00:3f:01:63:81 SRC=10.88.12.33 DST=10.88.2.1 LEN=84 TOS=0x00 PREC=0x00 TTL=63 ID=62806 PROTO=ICMP TYPE=8 CODE=0 ID=39742 SEQ=60 
-Oct 24 17:53:25 raspi kernel: [ 2386.239202] filtered on FORWARD IN=eth0 OUT=wlan0 MAC=b8:27:eb:AA:AA:AA:00:e0:4c:XX:XX:XX:08:00:45:00:00:54:68:27:00:00:3f:01:f0:b0 SRC=10.88.12.33 DST=10.88.2.1 LEN=84 TOS=0x00 PREC=0x00 TTL=63 ID=26663 PROTO=ICMP TYPE=8 CODE=0 ID=39742 SEQ=61 
-^C
-
-
-OpenIKED Security Associations
-------------------------------
-raspi# ikectl show sa
-iked_sas: 0x521cd0 rspi 0xfc372dd59a6a7135 ispi 0xe807599ca44293b8 10.88.87.244:500->203.0.113.92:500<FQDN/openbsd-server.example.com>[] ESTABLISHED i nexti (nil) pol 0x522dc0
-  sa_childsas: 0x544fa8 ESP 0x25dbb484 out 10.88.87.244:500 -> 203.0.113.92:500 (L) B=(nil) P=0x545d10 @0x521cd0
-  sa_childsas: 0x545d10 ESP 0xa8c1ee0a in 203.0.113.92:500 -> 10.88.87.244:500 (LA) B=(nil) P=0x544fa8 @0x521cd0
-  sa_flows: 0x54a0c8 ESP out 10.88.0.0/22 -> 10.88.12.0/25 [0]@-1 (L) @0x521cd0
-  sa_flows: 0x549ce8 ESP out 10.88.12.0/25 -> 10.88.0.0/22 [0]@-1 (L) @0x521cd0
-  sa_flows: 0x549ed8 ESP in 10.88.0.0/22 -> 10.88.12.0/25 [0]@-1 (L) @0x521cd0
-  sa_flows: 0x54a698 ESP out 10.88.0.0/22 -> 10.88.12.128/25 [0]@-1 (L) @0x521cd0
-  sa_flows: 0x54a2b8 ESP out 10.88.12.128/25 -> 10.88.0.0/22 [0]@-1 (L) @0x521cd0
-  sa_flows: 0x54a4a8 ESP in 10.88.0.0/22 -> 10.88.12.128/25 [0]@-1 (L) @0x521cd0
-  sa_flows: 0x54ad68 ESP out 203.0.113.92/32 -> 10.88.12.0/25 [0]@-1 (L) @0x521cd0
-  sa_flows: 0x54a888 ESP out 10.88.12.0/25 -> 203.0.113.92/32 [0]@-1 (L) @0x521cd0
-  sa_flows: 0x54aa78 ESP in 203.0.113.92/32 -> 10.88.12.0/25 [0]@-1 (L) @0x521cd0
-  sa_flows: 0x54b338 ESP out 203.0.113.92/32 -> 10.88.12.128/25 [0]@-1 (L) @0x521cd0
-  sa_flows: 0x54af58 ESP out 10.88.12.128/25 -> 203.0.113.92/32 [0]@-1 (L) @0x521cd0
-  sa_flows: 0x54b148 ESP in 203.0.113.92/32 -> 10.88.12.128/25 [0]@-1 (L) @0x521cd0
-iked_activesas: 0x544fa8 ESP 0x25dbb484 out 10.88.87.244:500 -> 203.0.113.92:500 (L) B=(nil) P=0x545d10 @0x521cd0
-iked_activesas: 0x545d10 ESP 0xa8c1ee0a in 203.0.113.92:500 -> 10.88.87.244:500 (LA) B=(nil) P=0x544fa8 @0x521cd0
-iked_flows: 0x549ed8 ESP in 10.88.0.0/22 -> 10.88.12.0/25 [0]@-1 (L) @0x521cd0
-iked_flows: 0x54aa78 ESP in 203.0.113.92/32 -> 10.88.12.0/25 [0]@-1 (L) @0x521cd0
-iked_flows: 0x54a4a8 ESP in 10.88.0.0/22 -> 10.88.12.128/25 [0]@-1 (L) @0x521cd0
-iked_flows: 0x54b148 ESP in 203.0.113.92/32 -> 10.88.12.128/25 [0]@-1 (L) @0x521cd0
-iked_flows: 0x549ce8 ESP out 10.88.12.0/25 -> 10.88.0.0/22 [0]@-1 (L) @0x521cd0
-iked_flows: 0x54a2b8 ESP out 10.88.12.128/25 -> 10.88.0.0/22 [0]@-1 (L) @0x521cd0
-iked_flows: 0x54a888 ESP out 10.88.12.0/25 -> 203.0.113.92/32 [0]@-1 (L) @0x521cd0
-iked_flows: 0x54af58 ESP out 10.88.12.128/25 -> 203.0.113.92/32 [0]@-1 (L) @0x521cd0
-iked_flows: 0x54a0c8 ESP out 10.88.0.0/22 -> 10.88.12.0/25 [0]@-1 (L) @0x521cd0
-iked_flows: 0x54ad68 ESP out 203.0.113.92/32 -> 10.88.12.0/25 [0]@-1 (L) @0x521cd0
-iked_flows: 0x54a698 ESP out 10.88.0.0/22 -> 10.88.12.128/25 [0]@-1 (L) @0x521cd0
-iked_flows: 0x54b338 ESP out 203.0.113.92/32 -> 10.88.12.128/25 [0]@-1 (L) @0x521cd0
-iked_dstid_sas: 0x521cd0 rspi 0xfc372dd59a6a7135 ispi 0xe807599ca44293b8 10.88.87.244:500->203.0.113.92:500<FQDN/openbsd-server.example.com>[] ESTABLISHED i nexti (nil) pol 0x522dc0
-
-
-
+--cM5L7aeMb6NeOAH/--
