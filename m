@@ -2,155 +2,74 @@ Return-Path: <netfilter-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 09826C25B6D
-	for <netfilter@archiver.kernel.org>; Wed, 25 Oct 2023 00:56:43 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id E6060C0032E
+	for <netfilter@archiver.kernel.org>; Sat, 28 Oct 2023 08:25:49 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229662AbjJYA4l (ORCPT <rfc822;netfilter@archiver.kernel.org>);
-        Tue, 24 Oct 2023 20:56:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52666 "EHLO
+        id S229500AbjJ1IZt (ORCPT <rfc822;netfilter@archiver.kernel.org>);
+        Sat, 28 Oct 2023 04:25:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58652 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229763AbjJYA4k (ORCPT
-        <rfc822;netfilter@vger.kernel.org>); Tue, 24 Oct 2023 20:56:40 -0400
-Received: from mail-pl1-x62a.google.com (mail-pl1-x62a.google.com [IPv6:2607:f8b0:4864:20::62a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE93D128;
-        Tue, 24 Oct 2023 17:56:38 -0700 (PDT)
-Received: by mail-pl1-x62a.google.com with SMTP id d9443c01a7336-1c9e06f058bso2681965ad.0;
-        Tue, 24 Oct 2023 17:56:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1698195398; x=1698800198; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=idCmePkmuapOmhTFu8C7IFO+GDsYxAan7/9IMTzaD9M=;
-        b=MnI655B7tqkLj/TW2nlBTVXGPLScrq5SDXe/igQ2nO7+hzq8AA1RXUTqzzODw/wMiZ
-         sKp2vdqXUaeKLqPyD42Xu2aaHmRrgn9pmCTd/sDgo4JhGTBQYNzc1Q3flppa1FnD84vT
-         S8pVLvhseex+/HfViQO4tFNNGyAkmwR067TfFeo/uQRzeL6K85jLTaoI0vWBx9yQSqXN
-         iNy42DM/E1Oqxh0c5fHbs2GHIKiKQQ+8j7Z1hz2L2FrBu5McSCqIfRoXLVgnr/aREVw2
-         MThgkDDy0VYd14UTwyHH9F/R06VWUFxoLKTzWcWiuXAEVbDc2Ud6jFvE7vCaBJcuEMoP
-         kJQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1698195398; x=1698800198;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=idCmePkmuapOmhTFu8C7IFO+GDsYxAan7/9IMTzaD9M=;
-        b=xKLfjIzAXxbX0jDZ5Ifef7fa0NiwXWeNLQWXZYP9tA3tixkAILKekDuZW6g7tlSWyQ
-         K0bIW35SVXE6zwCsasIMcWJAhbc5F1IBihhOjge+fCHOvPwiFCy5WPimMLiLh4COyLQi
-         Pu6WYzRIrAOkQngg/aJAY5HVGvJr7QEt+N5UJlJpTyznM4GGyKGoHB+yUfSIVBwGmznZ
-         IIt9mr7kHYZSCfQYh/y6g5Hb7kNF052/Smhi9I4o8WVVa1WpbYWqSSYDxULQhrMwaSkg
-         XJjvSoKNtMlEbYQX5LfRBde26kvTYc8sUQI8H93d+sz6h4Pjwdcl5EFPfm1/M0xL6GKg
-         vplA==
-X-Gm-Message-State: AOJu0YxJb2ntnuYAAxMEyf073/+t2oIW8x5TE6zZ6lt+P4ZmgOuyfCTA
-        KhqZtBVWNlRXtqDO7TR7Cuq6/PORr1A=
-X-Google-Smtp-Source: AGHT+IGJgyhZvs/DxUdMPw6LHhjYzSVzjI+gdVIZdAFLgzhN4L4CKfQAIgUW6oEW7DPYNUXPlg8zzA==
-X-Received: by 2002:a17:903:6cc:b0:1c3:868f:5958 with SMTP id kj12-20020a17090306cc00b001c3868f5958mr17419062plb.20.1698195397893;
-        Tue, 24 Oct 2023 17:56:37 -0700 (PDT)
-Received: from debian.me ([103.131.18.64])
-        by smtp.gmail.com with ESMTPSA id e17-20020a17090301d100b001b898595be7sm7917360plh.291.2023.10.24.17.56.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Oct 2023 17:56:37 -0700 (PDT)
-Received: by debian.me (Postfix, from userid 1000)
-        id C6D39819CFF3; Wed, 25 Oct 2023 07:56:34 +0700 (WIB)
-Date:   Wed, 25 Oct 2023 07:56:34 +0700
-From:   Bagas Sanjaya <bagasdotme@gmail.com>
-To:     Pablo Neira Ayuso <pablo@netfilter.org>
-Cc:     Vladimir Smelhaus <vl.sm@email.cz>,
-        Linux Netfilter <netfilter@vger.kernel.org>,
-        coreteam@netfilter.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Regressions <regressions@lists.linux.dev>,
-        Jozsef Kadlecsik <kadlec@netfilter.org>,
-        Florian Westphal <fw@strlen.de>
-Subject: Re: Flowtables ignore timeout settings in recent kernels
-Message-ID: <ZThnwhWD308vrkUP@debian.me>
-References: <ughg4v$130b$1@ciao.gmane.io>
- <ZSyBtn8cplLWoNn-@debian.me>
- <ZTglADWVBgKxKOIC@calendula>
+        with ESMTP id S229458AbjJ1IZs (ORCPT
+        <rfc822;netfilter@vger.kernel.org>); Sat, 28 Oct 2023 04:25:48 -0400
+X-Greylist: delayed 292 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Sat, 28 Oct 2023 01:25:46 PDT
+Received: from filter.openoffice.nl (filter.openoffice.nl [144.76.204.185])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 46B54F4
+        for <netfilter@vger.kernel.org>; Sat, 28 Oct 2023 01:25:46 -0700 (PDT)
+Received: from localhost (localhost [127.0.0.1])
+        by filter.openoffice.nl (Postfix) with ESMTP id 4C9D4100842
+        for <netfilter@vger.kernel.org>; Sat, 28 Oct 2023 10:20:52 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at filter.openoffice.nl
+Received: from filter.openoffice.nl ([IPv6:::1])
+        by localhost (filter.openoffice.nl [IPv6:::1]) (amavisd-new, port 10024)
+        with ESMTP id UD_ulevcbYPb for <netfilter@vger.kernel.org>;
+        Sat, 28 Oct 2023 10:20:52 +0200 (CEST)
+Received: from blub.net (mail.blub.net [95.97.76.243])
+        by filter.openoffice.nl (Postfix) with ESMTP id 205561006FA
+        for <netfilter@vger.kernel.org>; Sat, 28 Oct 2023 10:20:52 +0200 (CEST)
+Received: from [IPV6:2a02:a46d:bbe9:0:414e:1e72:5c46:1f10] (2a02-a46d-bbe9-0-414e-1e72-5c46-1f10.fixed6.kpn.net [IPv6:2a02:a46d:bbe9:0:414e:1e72:5c46:1f10])
+        by blub.net (Postfix) with ESMTPSA id E53F3300026
+        for <netfilter@vger.kernel.org>; Sat, 28 Oct 2023 10:20:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=sessink.nl; s=201802;
+        t=1698481251; bh=xRfAeDJ3gxuwh9/8hmIFl0PsoWJAuYX9iS6J9ugtP5M=;
+        h=Date:To:From:Subject:From;
+        b=Nxf3JSKbPvt1x6SttXjpXXunNQibIOQv2+eFkdjVIGLJ962ZPbbIKNkeFII71HY9T
+         6WI828FuE4G0m3Ic4aulo1vkchvFUlMIr7ZfWJD06OXW8o38WytFf4p3ZWZS8TC/En
+         cb9OYnCsjNVNxM5uIf7yuM7tCeib67zXPdNmW7AM=
+Message-ID: <8108fd99-25f2-49a9-8ef8-18c2de253163@sessink.nl>
+Date:   Sat, 28 Oct 2023 10:20:51 +0200
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="cM5L7aeMb6NeOAH/"
-Content-Disposition: inline
-In-Reply-To: <ZTglADWVBgKxKOIC@calendula>
+User-Agent: Mozilla Thunderbird
+To:     netfilter@vger.kernel.org
+Content-Language: nl-NL
+From:   Valentijn Sessink <valentijn@sessink.nl>
+Subject: arptables-nft and comments in nft output
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <netfilter.vger.kernel.org>
 X-Mailing-List: netfilter@vger.kernel.org
 
+Hi list,
 
---cM5L7aeMb6NeOAH/
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I'm using arptables (nft iptables version 1.8.7) with
+arptables -A OUTPUT -d 10.21.22.129 -j mangle --mangle-ip-s 10.21.22.161
 
-On Tue, Oct 24, 2023 at 10:11:44PM +0200, Pablo Neira Ayuso wrote:
-> On Mon, Oct 16, 2023 at 07:20:06AM +0700, Bagas Sanjaya wrote:
-> > On Sun, Oct 15, 2023 at 09:56:14PM +0200, Vladimir Smelhaus wrote:
-> > > Netfilter ignores the timeout settings for a flowtable
-> > >=20
-> > > # sysctl -a -r flowtable
-> > > net.netfilter.nf_flowtable_tcp_timeout =3D 30
-> > > net.netfilter.nf_flowtable_udp_timeout =3D 30
-> > >=20
-> > > Situation. A long udp connection (tunnel) with some data flowing thro=
-ugh a
-> > > router. The connection is sent to a flowtable on the router. It's a f=
-ew
-> > > packets per second, more here and there, a pause here and there, and =
-so on
-> > > over and over. The pauses are minimal and are also limited by the tun=
-nel
-> > > settings to be no longer than 25 seconds. Everything is satisfying to=
- make
-> > > the connection last continuously in the flowtable and not reappear in
-> > > forward. However, the connection keeps dropping out of the flowtable.=
- It
-> > > stays in the flowtable (offloaded) for a second at most and then it is
-> > > kicked out, back to forward.
-> > >=20
-> > > In an attached test script you can see counters that should be zero b=
-ut are not. If I watch the normal packet flow on a particular router, I can=
- see packets in the conntrack table that should be OFFLOAD as ASSURED.
-> > >=20
-> > > Tested in kernel 6.5.6. In an old(er) kernel 5.10 it works as expecte=
-d.
-> > >=20
-> >=20
-> > Then please perform bisection to find a culprit that introduces your
-> > regression (see Documentation/admin-guide/bug-bisect.rst in the kernel
-> > sources for reference). Also, it'd been great if you also post the
-> > reproducer script inline (within your email) instead, as some MUAs
-> > (like mutt that I'm using now) may ignore the attachment.
-> >=20
-> > Anyway, thanks for the regression report. I'm adding it to regzbot:
-> >=20
-> > #regzbot ^introduced: v5.10..v6.5
->=20
-> Fix here:
->=20
-> https://patchwork.ozlabs.org/project/netfilter-devel/patch/20231024193815=
-=2E1987-1-pablo@netfilter.org/
->=20
-> it is a bug from Jun 2023, regression was introduced in the v6.5
-> development cycle.
->=20
+Now I'm a bit confused by the nft output:
 
-Telling regzbot:
+table arp filter {
+	chain OUTPUT {
+		type filter hook output priority filter; policy accept;
+		arp htype 1 arp hlen 6 arp plen 4 arp daddr ip 10.21.22.129 counter 
+packets 1288 bytes 54096 # --mangle-ip-s 10.21.22.161	}
+}
 
-#regzbot fix: netfilter: nf_flow_table: GC pushes back packets to classic p=
-ath
+The nft wiki only says "In the case of some missing translation, you 
+will see a commented rule in nftables" - but it doesn't say what to do.
 
-Thanks.
+Now I'm confused. Does this mean that I cannot use "nft" to setup this 
+very rule? Should I use "arptables-nft" to set this rule? Or is there 
+another way?
 
---=20
-An old man doll... just what I always wanted! - Clara
+Best regards,
 
---cM5L7aeMb6NeOAH/
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZThnvgAKCRD2uYlJVVFO
-o8J0AQD7MDH2zNbKZM6ZlcvUYRSmRK0rvX6lR+6/MFllgRlZnAEA7GV4EePorg3E
-0xZhimBiax8M/oW2TAW86qCo9VyAegY=
-=3CKf
------END PGP SIGNATURE-----
-
---cM5L7aeMb6NeOAH/--
+Valentijn
