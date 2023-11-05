@@ -2,85 +2,101 @@ Return-Path: <netfilter-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5CB74C4332F
-	for <netfilter@archiver.kernel.org>; Fri,  3 Nov 2023 21:59:09 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 0D94AC4332F
+	for <netfilter@archiver.kernel.org>; Sun,  5 Nov 2023 14:58:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S230332AbjKCV7K (ORCPT <rfc822;netfilter@archiver.kernel.org>);
-        Fri, 3 Nov 2023 17:59:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50970 "EHLO
+        id S230048AbjKEO6f (ORCPT <rfc822;netfilter@archiver.kernel.org>);
+        Sun, 5 Nov 2023 09:58:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44168 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S229512AbjKCV7J (ORCPT
-        <rfc822;netfilter@vger.kernel.org>); Fri, 3 Nov 2023 17:59:09 -0400
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [IPv6:2a0a:51c0:0:237:300::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A82B8A2
-        for <netfilter@vger.kernel.org>; Fri,  3 Nov 2023 14:59:06 -0700 (PDT)
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-        (envelope-from <fw@strlen.de>)
-        id 1qz2C0-0008Jk-5S; Fri, 03 Nov 2023 22:59:04 +0100
-Date:   Fri, 3 Nov 2023 22:59:04 +0100
-From:   Florian Westphal <fw@strlen.de>
-To:     Florian Westphal <fw@strlen.de>
-Cc:     Brian Davidson <davidson.brian@gmail.com>,
-        netfilter@vger.kernel.org, pablo@netfilter.org
-Subject: Re: ip6 dscp fails map lookup
-Message-ID: <20231103215904.GA23268@breakpoint.cc>
-References: <CAOoaxdEpJDAQMYxRCC6rUVc=sMY=YXxF42LSeDvMQUPC5sahLA@mail.gmail.com>
- <20231103193704.GI8035@breakpoint.cc>
+        with ESMTP id S229608AbjKEO6e (ORCPT
+        <rfc822;netfilter@vger.kernel.org>); Sun, 5 Nov 2023 09:58:34 -0500
+Received: from tootai.net (mail1.tootai.net [IPv6:2a01:4f8:a0:821b::58:14])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A317CC
+        for <netfilter@vger.kernel.org>; Sun,  5 Nov 2023 06:58:31 -0800 (PST)
+Received: from tootai.net (localhost [127.0.0.1])
+        by mail1.tootai.net (Postfix) with ESMTP id 40802608142E
+        for <netfilter@vger.kernel.org>; Sun,  5 Nov 2023 15:58:29 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
+        t=1699196309; bh=vl5gRtErl5fl6dOWSdmaPtZvf9XPzp3vc5UPn15sPxo=;
+        h=Date:To:From:Subject:From;
+        b=NL3SCWwPgxTuui+lDP1NqAcIeK0dgt7eXBfsI4mWVmQ1bahppvaDfUxSBm9d9rr/X
+         hdg6Y3U6aTORIzOc6GXoqxXDZa2MFNPfB9AE+yjHRet3vJrEGc0Tm0xv7bmNsM0uVb
+         3zY8t4wjtrQNeYjPpkB28sekxbX9gcB9bgDPHrIo=
+Received: from [IPV6:fd99:1234:beef:cafe::14] (unknown [IPv6:fd99:1234:beef:cafe::14])
+        by mail1.tootai.net (Postfix) with ESMTPSA id 104606081A3F
+        for <netfilter@vger.kernel.org>; Sun,  5 Nov 2023 15:58:29 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
+        t=1699196309; bh=vl5gRtErl5fl6dOWSdmaPtZvf9XPzp3vc5UPn15sPxo=;
+        h=Date:To:From:Subject:From;
+        b=NL3SCWwPgxTuui+lDP1NqAcIeK0dgt7eXBfsI4mWVmQ1bahppvaDfUxSBm9d9rr/X
+         hdg6Y3U6aTORIzOc6GXoqxXDZa2MFNPfB9AE+yjHRet3vJrEGc0Tm0xv7bmNsM0uVb
+         3zY8t4wjtrQNeYjPpkB28sekxbX9gcB9bgDPHrIo=
+Message-ID: <71be06b8-6aa0-4cf9-9e0b-e2839b01b22f@tootai.net>
+Date:   Sun, 5 Nov 2023 15:58:30 +0100
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231103193704.GI8035@breakpoint.cc>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+User-Agent: Mozilla Thunderbird
+Content-Language: fr, fr-FR
+To:     Netfilter list <netfilter@vger.kernel.org>
+From:   Tech <tech@tootai.net>
+Subject: Redirect doesn't do the job as dnat does
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <netfilter.vger.kernel.org>
 X-Mailing-List: netfilter@vger.kernel.org
 
-Florian Westphal <fw@strlen.de> wrote:
-> Brian Davidson <davidson.brian@gmail.com> wrote:
-> > Using 'ip6 dscp' in a map lookup does not give expected results. It
-> > seems to always match the zero value (cs0). It appears in the first
-> > rule that the byteorder is not being converted between the two bitwise
-> > operations, which is what happens when using ip6 dscp directly in the
-> > second rule.
-> > 
-> > # nft -f - <<EOF
-> > add table ip6 t
-> > add chain ip6 t c
-> > add map ip6 t mapv6 { typeof ip6 dscp : meta mark; }
-> > EOF
-> > 
-> > # nft -d netlink add rule ip6 t c meta mark set ip6 dscp map @mapv6
-> > ip6 t c
-> >   [ payload load 2b @ network header + 0 => reg 1 ]
-> >   [ bitwise reg 1 = ( reg 1 & 0x0000c00f ) ^ 0x00000000 ]
-> >   [ bitwise reg 1 = ( reg 1 >> 0x00000006 ) ]
-> >   [ lookup reg 1 set mapv6 dreg 1 ]
-> >   [ meta set mark with reg 1 ]
-> > 
-> > # nft -d netlink add rule ip6 t c meta mark set ip6 dscp
-> > ip6 t c
-> >   [ payload load 2b @ network header + 0 => reg 1 ]
-> >   [ bitwise reg 1 = ( reg 1 & 0x0000c00f ) ^ 0x00000000 ]
-> >   [ byteorder reg 1 = ntoh(reg 1, 2, 2) ]
-> >   [ bitwise reg 1 = ( reg 1 >> 0x00000006 ) ]
-> >   [ meta set mark with reg 1 ]
-> 
-> Uhm.  Pablo, any idea why the byte-swap-or-not logic depends
-> on something *other* than if the mask length is > 8 bit or not?
-> 
-> diff --git a/src/evaluate.c b/src/evaluate.c
-> --- a/src/evaluate.c
-> +++ b/src/evaluate.c
-> @@ -545,7 +545,7 @@ static void expr_evaluate_bits(struct eval_ctx *ctx, struct expr **exprp)
->  	and->len	= masklen;
->  
->  	if (shift) {
-> -		if (ctx->stmt_len > 0 && div_round_up(masklen, BITS_PER_BYTE) > 1) {
-> +		if (masklen > BITS_PER_BYTE) {
+Hi,
 
-I think this is right but binop xfer
-won't remove the inserted byteorder conversion
-in case the shift is to be removed by adjusting
-a constant right hand side value.
+nftables v1.0.6 (Lester Gooch #5) on debian bookworm kernel 6.5 from 
+unstable. Simple test
 
-I will have a look.
+#!/bin/sh
+
+sudo nft flush ruleset
+sudo nft add table ip6 nat
+sudo nft add chain ip6 nat prerouting { type nat hook prerouting 
+priority 0 \; }
+sudo nft add chain ip6 nat postrouting { type nat hook postrouting 
+priority 100 \; }
+
+#sudo nft add rule ip6 nat prerouting ip6 daddr 2001:db8::1 tcp dport { 
+58194-58197 } dnat to :58198
+#sudo nft add rule ip6 nat prerouting ip6 daddr 2001:db8::1 tcp dport { 
+58194-58197 } dnat to [fd99:d:e:f::1]:58198
+
+sudo nft add rule ip6 nat prerouting ip6 daddr 2001:db8::1 tcp dport 
+58194 redirect to :58198 ; <= this one doesn't work
+
+#sudo nft add rule ip6 nat prerouting ip6 daddr ::/0 tcp dport 58194 
+dnat to :58198
+#sudo nft add rule ip6 nat prerouting ip6 daddr ::/0 tcp dport 58194 
+dnat to [fd99:d:e:f::1]:58198
+
+in another terminal I run
+nc -vl :: 58198
+Listening on :: 58198
+
+ From another computer
+nc -v 2001:db8::1 58194
+nc: connect to 2001:db8::1 port 58194 (tcp) failed: Connection timed out
+
+As you see I never get input on port 58198 with redirect, also tested by 
+activating forwarding like below but no luck
+echo 1 > /proc/sys/net/ipv6/conf/all/forwarding
+
+Replacing the redirect rule with any on the 4 others rules above, I get 
+the right behavior
+
+nc -vl :: 58198
+Listening on :: 58198
+Connection received on 2001:db8:a:b::c 54748
+
+nc -v 2001:db8::1 58194
+Connection to 2001:db8::1 58194 port [tcp/*] succeeded!
+
+Does it mean that redirect is broken or abandonned or did I miss something ?
+
+-- 
+Daniel
