@@ -2,109 +2,71 @@ Return-Path: <netfilter-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 5EAB2C4332F
-	for <netfilter@archiver.kernel.org>; Mon, 13 Nov 2023 02:36:36 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47320C2BB3F
+	for <netfilter@archiver.kernel.org>; Wed, 15 Nov 2023 18:33:22 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S232584AbjKMCgg (ORCPT <rfc822;netfilter@archiver.kernel.org>);
-        Sun, 12 Nov 2023 21:36:36 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35476 "EHLO
+        id S229521AbjKOSdW (ORCPT <rfc822;netfilter@archiver.kernel.org>);
+        Wed, 15 Nov 2023 13:33:22 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38004 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230044AbjKMCgf (ORCPT
-        <rfc822;netfilter@vger.kernel.org>); Sun, 12 Nov 2023 21:36:35 -0500
-Received: from wout4-smtp.messagingengine.com (wout4-smtp.messagingengine.com [64.147.123.20])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DE59109
-        for <netfilter@vger.kernel.org>; Sun, 12 Nov 2023 18:36:32 -0800 (PST)
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.west.internal (Postfix) with ESMTP id 29E3D3200437;
-        Sun, 12 Nov 2023 21:36:29 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute4.internal (MEProxy); Sun, 12 Nov 2023 21:36:29 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-         h=cc:cc:content-transfer-encoding:content-type:content-type
-        :date:date:from:from:in-reply-to:in-reply-to:message-id
-        :mime-version:references:reply-to:sender:subject:subject:to:to;
-         s=fm1; t=1699842988; x=1699929388; bh=V7oOPLOKEcAZtbY+Cmcu8ZmwH
-        M/XfmsFfUl92iF+v6U=; b=MplpExHwaxfuW97MYTVGhWlIK4g0csNY6LvO+rwF3
-        aiLsXnoB/rbDSqgJSHTFyk8+L225CbjImIOYUF3yMIAkrntQhwDGx/yafnWMCDXW
-        g1kbcnjDAetPgta7X8VCofcLdrWswVicyjIXPwkH9/yAufw3+PbjyN+12XivGH2X
-        acDeq1UT1S3nccneVlUzeBobUfl1DLViJAUfSkrjjY82TSG9bMxNbT8tpQmElmXe
-        XXsbLpwxlHY0T3uav44nM66ahcks47/5f+61d+av3Pk2SD1KMcxcDeAYuXFQHXpv
-        /sEMdo9FF7Lh1RAALJvdOrbzBVLMVg32MeE7lnN1ovOUg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:cc:content-transfer-encoding
-        :content-type:content-type:date:date:feedback-id:feedback-id
-        :from:from:in-reply-to:in-reply-to:message-id:mime-version
-        :references:reply-to:sender:subject:subject:to:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-        1699842988; x=1699929388; bh=V7oOPLOKEcAZtbY+Cmcu8ZmwHM/XfmsFfUl
-        92iF+v6U=; b=nncW4xuvaH5X/jsaC2fekFP0EoT8/E7zSvWxzPWIUjf6w+o5WwP
-        kumyZ8QeCeDP91jXtLMiYBD0LhZx1ZWIcunvChJu1Cwa4MAy2pmMsiR6l0p/fDSc
-        juObzbDmhsSn+2vj3OrI9nA17eLucaUnGM3AEmNIQEt1oaNHe2lVn9hGL0YtwwYR
-        nAYHM2GBFK3Af999UUumBuhmqaYgECTPEe8Q8PbUAh77qhnZhskhzPucaB/50HD+
-        BqjXaLl0+ainpkZZKlyEj2tlo5d5Euyc+8tkad529+t0vRhLvjtuwP6nVvhskaD8
-        4xtuLTL7wUsfmtiW05e8WTuS70Vmclw7mDA==
-X-ME-Sender: <xms:rItRZVVf7B9qaw8Eyh43SOFWjEz4uQEDxnAQTQkxo98OieGviwLX4A>
-    <xme:rItRZVkRndWTNlTBMwp72Ro4EDu4jNMGKYIPaKw-HBwwVvVSQe5kW3YaZCmWCbtnz
-    zkmu1sH2b8jfZyx>
-X-ME-Received: <xmr:rItRZRax4jT5IjSG3VdX2YohLRBrF590aI4jw5jg78Ruxm7TcNxC4-bvo0mN8_i16c-XxNYt-K7AUdsT8RjF>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedruddvledggeekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfgjfhfogggtgfesth
-    hqredtjfdtudenucfhrhhomhepmfgvrhhinhcuofhilhhlrghruceokhhfmhesphhluhhs
-    hhhkrghvrgdrnhgvtheqnecuggftrfgrthhtvghrnhepledtgfelgfekudfhheduffeitd
-    fgvefgtdevkeeuvdfhgfelgeejkeduteegtdehnecuvehluhhsthgvrhfuihiivgeptden
-    ucfrrghrrghmpehmrghilhhfrhhomhepkhhfmhesphhluhhshhhkrghvrgdrnhgvth
-X-ME-Proxy: <xmx:rItRZYWWysiPIPCeN3hYxg8q0wdou-0hGXxBA7w9Q3JfzUOP6ZxpkA>
-    <xmx:rItRZflYXdbOd33xG0ci6oyFQsSq3S-2Aptkz2P_uGQpWEKIL-3qQg>
-    <xmx:rItRZVc0IZhvMQvCC5XNAZkYVFqcxgWJl4BnOqwQg_0qx_AG8Zdnog>
-    <xmx:rItRZeuasAf0_UpmdhnctM8n1xGwwisGOrZTNiOZKQkymLKtDrSxwQ>
-Feedback-ID: i2431475f:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sun,
- 12 Nov 2023 21:36:27 -0500 (EST)
-Date:   Mon, 13 Nov 2023 02:36:25 +0000
-From:   Kerin Millar <kfm@plushkava.net>
-To:     =?ISO-8859-1?Q?Rub=E9n_M=E9ndez_Hern=E1ndez?= 
-        <rmendezh@ies-sabadell.cat>
-Cc:     netfilter@vger.kernel.org
-Subject: Re: Problems getting started with dnat and port forwarding
-Message-Id: <20231113023625.daf9eb47e3ecf9e8514f0c78@plushkava.net>
-In-Reply-To: <CAHpzd2o47vs=yA28FzMMjYvYfU1iPsDM_9fopXrwk9pWfLcHnw@mail.gmail.com>
-References: <CAHpzd2o47vs=yA28FzMMjYvYfU1iPsDM_9fopXrwk9pWfLcHnw@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-unknown-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+        with ESMTP id S229500AbjKOSdW (ORCPT
+        <rfc822;netfilter@vger.kernel.org>); Wed, 15 Nov 2023 13:33:22 -0500
+Received: from mail-ed1-x52f.google.com (mail-ed1-x52f.google.com [IPv6:2a00:1450:4864:20::52f])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 62B4E182
+        for <netfilter@vger.kernel.org>; Wed, 15 Nov 2023 10:33:18 -0800 (PST)
+Received: by mail-ed1-x52f.google.com with SMTP id 4fb4d7f45d1cf-5401bab7525so11403920a12.2
+        for <netfilter@vger.kernel.org>; Wed, 15 Nov 2023 10:33:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1700073196; x=1700677996; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=uTXTemcbou/w1ZD86wHyowfwIjX8mveVI9fUXpHrxPM=;
+        b=ldZtiNR2/TSKw8aYmifAanI6ckAPmeXOv6rECZoS9RY1LYvr5AMFetMZz6r9t4pFUD
+         yeB9mdoS2/q7L8qUfL90OxcSB/EeO0CuD1tw8pTxoAsv3q/lEecjoWltJRRq3WCipxvX
+         35FY6GQXFTdouX9YEuC9ET3kg8scLMd3z5B2sqnk/TyGclYGrQUqFg9sE/5O94FrlxxN
+         h3pfV6UMSNT9/mIw2cKRolVKEStkcf5YYJ+s1qgnB2+vGH4i+hc0LsqVaPdvaqo5Y38Z
+         XFwNEJ63PIcNgOYoinAGii6jQdwfArfBJLFpdtkNYoTnyhjqO8/oKy1jBmjwCmtpGjLN
+         6Ovw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1700073196; x=1700677996;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=uTXTemcbou/w1ZD86wHyowfwIjX8mveVI9fUXpHrxPM=;
+        b=nZTgPadRm29cNfX3QiAwVJTvJj+BHGw+Fyeo37fhx/K/45p67WsDVF0pB7ZqeLGVPE
+         JcKmxls10RVdAKMx5XB6ogg9ymSNkqk/CVNQ1uXmweVMv3V5u2mvY5LhsAzylJhg9vRD
+         Ed1dIp06eV+xRl7LCDOuvpvl0QTsxf/bg/p97WsM4l2j0JRxQ+ZIPZe5q/1hreEbjjfW
+         kuUYV50OVHoL1Nh3nR5mWyxS9YQ4Su7+n2/L/es/XUsgzufcox/CWe+ggxJFea6Yl48V
+         eYjX8xQXG2JhyCvIcPbnUbcyGatM7BskYHKML/AwMhoYwOHe6U55gAAzs01+xBBk8+MN
+         Vb/w==
+X-Gm-Message-State: AOJu0YzGyo9TRSVzb6D8+s9lOuLbwQNPrK1kUL89pJeJ3EEP6jW+pl2Y
+        gjRAtGasRHlJGXuj7+DEoKJEzy6GkN7gXdbM0o/EpSFyDGqYGw==
+X-Google-Smtp-Source: AGHT+IEVsAmQRZKmjyxGxd1N37sQ5JfZSPT0ur0ECTI8OGrxrRqlrcZKIx8alk0YYxhn1iZTiK5ORdFzzFoKiSzPQC0=
+X-Received: by 2002:aa7:d943:0:b0:544:b880:b316 with SMTP id
+ l3-20020aa7d943000000b00544b880b316mr11540053eds.30.1700073196454; Wed, 15
+ Nov 2023 10:33:16 -0800 (PST)
+MIME-Version: 1.0
+From:   Brian Davidson <davidson.brian@gmail.com>
+Date:   Wed, 15 Nov 2023 13:33:05 -0500
+Message-ID: <CAOoaxdH25O+QYWkzGQ7uOU5NLqROHu-WfpY4AZtVwb4V80=F=g@mail.gmail.com>
+Subject: meta time/hour questions
+To:     netfilter@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter.vger.kernel.org>
 X-Mailing-List: netfilter@vger.kernel.org
 
-On Sun, 12 Nov 2023 18:31:58 +0100
-Rub=E9n M=E9ndez Hern=E1ndez  <rmendezh@ies-sabadell.cat> wrote:
+The man page states that meta time and meta hour optionally accept
+seconds, but I get errors on v1.0.6 or v1.0.8. meta time doesn't even
+like the dash date separator.
 
-> Dear netfilter team.
-> I'm starting with nftables and trying to set an ssh port forwarding
-> from my firewall IP 192.168.1.252 to my dmz IP 10.0.0.2. But I get
-> this error:
-> -------
-> nft -cf nft/test.nft
-> nft/test.nft:30:62-65: Error: ip or ip6 must be specified with address
-> for inet tables.
-> add rule inet nat prerouting iifname $int_ext tcp dport 2222 dnat to 10.0=
-.0.2:22
->                                                              ^^^^
+# nft -c add rule inet t c meta hour "17:00:01" drop
+Error: syntax error, unexpected colon, expecting end of file or
+newline or semicolon
+add rule inet t c meta hour 17:00:01 drop
+                                 ^
+# nft -c add rule inet t c meta time "2023-12-24 17:00:01" drop
+Error: syntax error, unexpected -, expecting end of file or newline or semicolon
+add rule inet t c meta time 2023-12-24 17:00:01 drop
+                                   ^
 
-The synopsis of the dnat statement is as follows.
-
-dnat [[ip | ip6] [ prefix ] to] ADDR_SPEC [:PORT_SPEC] [FLAGS]
-
-The square brackets indicate components of syntax that are optional, or opt=
-ional under certain circumstances. The error message indicates that [ip | i=
-p6] is not optional under the circumstance that your rule is expected to re=
-side in an inet table. Therefore, you must specify "ip" immediately after "=
-dnat".
-
-Your nftables version must be out of date because the error message has sin=
-ce been improved.
-
---=20
-Kerin Millar
+Documentation problems or legitimate defects?
