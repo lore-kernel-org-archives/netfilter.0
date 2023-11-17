@@ -2,41 +2,54 @@ Return-Path: <netfilter-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 9347EC197A0
-	for <netfilter@archiver.kernel.org>; Fri, 17 Nov 2023 15:54:54 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 47CA0C072A2
+	for <netfilter@archiver.kernel.org>; Fri, 17 Nov 2023 16:53:00 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S231727AbjKQPyz (ORCPT <rfc822;netfilter@archiver.kernel.org>);
-        Fri, 17 Nov 2023 10:54:55 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52068 "EHLO
+        id S1346091AbjKQQxB convert rfc822-to-8bit (ORCPT
+        <rfc822;netfilter@archiver.kernel.org>);
+        Fri, 17 Nov 2023 11:53:01 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S230383AbjKQPyy (ORCPT
-        <rfc822;netfilter@vger.kernel.org>); Fri, 17 Nov 2023 10:54:54 -0500
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75E49B9
-        for <netfilter@vger.kernel.org>; Fri, 17 Nov 2023 07:54:51 -0800 (PST)
-Received: from [78.30.43.141] (port=40200 helo=gnumonks.org)
-        by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94.2)
-        (envelope-from <pablo@gnumonks.org>)
-        id 1r41B9-005WOr-0Z; Fri, 17 Nov 2023 16:54:49 +0100
-Date:   Fri, 17 Nov 2023 16:54:45 +0100
-From:   Pablo Neira Ayuso <pablo@netfilter.org>
-To:     Sixene <notsixene@gmail.com>
-Cc:     netfilter@vger.kernel.org
-Subject: Re: Optimize fails on a large ruleset
-Message-ID: <ZVeMxYsNEgr7ZblO@calendula>
-References: <CABGCCVc7Qb5U131xUL3mwGtok61=2mwMUOqpe7B_8D+S0VNngA@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+        with ESMTP id S235340AbjKQQxA (ORCPT
+        <rfc822;netfilter@vger.kernel.org>); Fri, 17 Nov 2023 11:53:00 -0500
+X-Greylist: delayed 483 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 17 Nov 2023 08:52:53 PST
+Received: from ste-pvt-msa2.bahnhof.se (ste-pvt-msa2.bahnhof.se [213.80.101.71])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B523DD56
+        for <netfilter@vger.kernel.org>; Fri, 17 Nov 2023 08:52:53 -0800 (PST)
+Received: from localhost (localhost [127.0.0.1])
+        by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTP id 3127B3F84C;
+        Fri, 17 Nov 2023 17:44:48 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at bahnhof.se
+Received: from ste-pvt-msa2.bahnhof.se ([127.0.0.1])
+        by localhost (ste-pvt-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id bnvZ_DVXWYhP; Fri, 17 Nov 2023 17:44:47 +0100 (CET)
+Received: by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 0B0B13F83C;
+        Fri, 17 Nov 2023 17:44:46 +0100 (CET)
+Received: from [192.168.0.132] (port=45240)
+        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+        (Exim 4.96.2)
+        (envelope-from <mail@lechevalier.se>)
+        id 1r41xV-000N7U-0F;
+        Fri, 17 Nov 2023 17:44:46 +0100
+Date:   Fri, 17 Nov 2023 17:44:44 +0100 (GMT+01:00)
+From:   A L <mail@lechevalier.se>
+To:     Sixene <notsixene@gmail.com>, netfilter@vger.kernel.org
+Message-ID: <fd4f5a.99940919.18bde2ba570@lechevalier.se>
 In-Reply-To: <CABGCCVc7Qb5U131xUL3mwGtok61=2mwMUOqpe7B_8D+S0VNngA@mail.gmail.com>
+References: <CABGCCVc7Qb5U131xUL3mwGtok61=2mwMUOqpe7B_8D+S0VNngA@mail.gmail.com>
+Subject: Re: Optimize fails on a large ruleset
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 8BIT
+X-Mailer: R2Mail2
 Precedence: bulk
 List-ID: <netfilter.vger.kernel.org>
 X-Mailing-List: netfilter@vger.kernel.org
 
-Hi,
 
-On Fri, Nov 17, 2023 at 03:40:09PM +0100, Sixene wrote:
+
+---- From: Sixene <notsixene@gmail.com> -- Sent: 2023-11-17 - 15:40 ----
+
 > Hi,
 > I hope this is the right channel to reach out for support, the wiki
 > mentioned this mailing list.
@@ -45,15 +58,21 @@ On Fri, Nov 17, 2023 at 03:40:09PM +0100, Sixene wrote:
 > get the following error:
 > nft: optimize.c:423: merge_verdict_stmts: Assertion `0' failed.
 > Aborted (core dumped)
-
-Please, make sure you you run on latest nftables version.
-
+> 
 > My ruleset mostly consists of just 'ip saddr x.x.x.x/xx counter
 > packets 0 bytes 0 drop'
 > Hope you can help, as I'm facing very bad performance with this list,
 > however I have no choice because I need to block all of these
 > addresses.
+> Thanks!
 
-Please, send a simple reproducer.
+A workaround would be to use ipset. But it only works with the iptables version netfilter, AFAIK. Ipset is optimised to handle large sets of addresses. 
 
-Thanks.
+https://ipset.netfilter.org/
+
+
+> 
+> (i could not attach the file due to your service's policies, however i
+> am using x4bnet's lists_vpn on github)
+
+
