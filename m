@@ -2,77 +2,111 @@ Return-Path: <netfilter-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id 47CA0C072A2
-	for <netfilter@archiver.kernel.org>; Fri, 17 Nov 2023 16:53:00 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 09EF6C54E76
+	for <netfilter@archiver.kernel.org>; Sat, 18 Nov 2023 18:35:17 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1346091AbjKQQxB convert rfc822-to-8bit (ORCPT
-        <rfc822;netfilter@archiver.kernel.org>);
-        Fri, 17 Nov 2023 11:53:01 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56248 "EHLO
+        id S229717AbjKRSfS (ORCPT <rfc822;netfilter@archiver.kernel.org>);
+        Sat, 18 Nov 2023 13:35:18 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33234 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S235340AbjKQQxA (ORCPT
-        <rfc822;netfilter@vger.kernel.org>); Fri, 17 Nov 2023 11:53:00 -0500
-X-Greylist: delayed 483 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 17 Nov 2023 08:52:53 PST
-Received: from ste-pvt-msa2.bahnhof.se (ste-pvt-msa2.bahnhof.se [213.80.101.71])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B523DD56
-        for <netfilter@vger.kernel.org>; Fri, 17 Nov 2023 08:52:53 -0800 (PST)
-Received: from localhost (localhost [127.0.0.1])
-        by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTP id 3127B3F84C;
-        Fri, 17 Nov 2023 17:44:48 +0100 (CET)
-X-Virus-Scanned: Debian amavisd-new at bahnhof.se
-Received: from ste-pvt-msa2.bahnhof.se ([127.0.0.1])
-        by localhost (ste-pvt-msa2.bahnhof.se [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id bnvZ_DVXWYhP; Fri, 17 Nov 2023 17:44:47 +0100 (CET)
-Received: by ste-pvt-msa2.bahnhof.se (Postfix) with ESMTPA id 0B0B13F83C;
-        Fri, 17 Nov 2023 17:44:46 +0100 (CET)
-Received: from [192.168.0.132] (port=45240)
-        by tnonline.net with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-        (Exim 4.96.2)
-        (envelope-from <mail@lechevalier.se>)
-        id 1r41xV-000N7U-0F;
-        Fri, 17 Nov 2023 17:44:46 +0100
-Date:   Fri, 17 Nov 2023 17:44:44 +0100 (GMT+01:00)
-From:   A L <mail@lechevalier.se>
-To:     Sixene <notsixene@gmail.com>, netfilter@vger.kernel.org
-Message-ID: <fd4f5a.99940919.18bde2ba570@lechevalier.se>
-In-Reply-To: <CABGCCVc7Qb5U131xUL3mwGtok61=2mwMUOqpe7B_8D+S0VNngA@mail.gmail.com>
-References: <CABGCCVc7Qb5U131xUL3mwGtok61=2mwMUOqpe7B_8D+S0VNngA@mail.gmail.com>
+        with ESMTP id S229463AbjKRSfS (ORCPT
+        <rfc822;netfilter@vger.kernel.org>); Sat, 18 Nov 2023 13:35:18 -0500
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 912D0A4
+        for <netfilter@vger.kernel.org>; Sat, 18 Nov 2023 10:35:12 -0800 (PST)
+Received: from [78.30.43.141] (port=43970 helo=gnumonks.org)
+        by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94.2)
+        (envelope-from <pablo@gnumonks.org>)
+        id 1r4Q9r-00BGpg-7P; Sat, 18 Nov 2023 19:35:09 +0100
+Date:   Sat, 18 Nov 2023 19:35:05 +0100
+From:   Pablo Neira Ayuso <pablo@netfilter.org>
+To:     Sixene <notsixene@gmail.com>
+Cc:     netfilter@vger.kernel.org
 Subject: Re: Optimize fails on a large ruleset
+Message-ID: <ZVkD2Yu9oKoyilC0@calendula>
+References: <CABGCCVc7Qb5U131xUL3mwGtok61=2mwMUOqpe7B_8D+S0VNngA@mail.gmail.com>
+ <ZVeMxYsNEgr7ZblO@calendula>
+ <CABGCCVeMFcQvetiSLUhjOudvz3mLeo7quPLtHDkVQQobLHwfAA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 8BIT
-X-Mailer: R2Mail2
+Content-Type: multipart/mixed; boundary="QL+4ZueWO0qU0k1H"
+Content-Disposition: inline
+In-Reply-To: <CABGCCVeMFcQvetiSLUhjOudvz3mLeo7quPLtHDkVQQobLHwfAA@mail.gmail.com>
 Precedence: bulk
 List-ID: <netfilter.vger.kernel.org>
 X-Mailing-List: netfilter@vger.kernel.org
 
 
+--QL+4ZueWO0qU0k1H
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
----- From: Sixene <notsixene@gmail.com> -- Sent: 2023-11-17 - 15:40 ----
-
+On Fri, Nov 17, 2023 at 05:42:59PM +0100, Sixene wrote:
 > Hi,
-> I hope this is the right channel to reach out for support, the wiki
-> mentioned this mailing list.
-> I'm having trouble optimizing my large ruleset of 26000+ lines.
-> When I run 'nft -c -o -f ruleset.nft', after the while processes, I
-> get the following error:
-> nft: optimize.c:423: merge_verdict_stmts: Assertion `0' failed.
-> Aborted (core dumped)
-> 
-> My ruleset mostly consists of just 'ip saddr x.x.x.x/xx counter
-> packets 0 bytes 0 drop'
-> Hope you can help, as I'm facing very bad performance with this list,
-> however I have no choice because I need to block all of these
-> addresses.
-> Thanks!
+> After checking via dnf, it seems I'm running the latest version already.
+> After some investigation I found out I had a lot of duplicate entries,
+> after fixing this, I now get the error "Segmentation fault (core
+> dumped)" with the same command.
 
-A workaround would be to use ipset. But it only works with the iptables version netfilter, AFAIK. Ipset is optimised to handle large sets of addresses. 
+No crash with nftables 1.0.9, what nftables version are you using?
 
-https://ipset.netfilter.org/
+I am attaching the output with your ruleset, running:
 
+nft -c -o -f notsixene.nft
 
-> 
-> (i could not attach the file due to your service's policies, however i
-> am using x4bnet's lists_vpn on github)
+--QL+4ZueWO0qU0k1H
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: attachment; filename="output.txt"
 
+Merging:
+notsixene.nft:4:9-60:         ip saddr 1.12.32.0/23 counter packets 0 bytes 0 drop
+notsixene.nft:5:9-59:         ip saddr 1.14.0.0/15 counter packets 0 bytes 0 drop
+notsixene.nft:6:9-60:         ip saddr 1.44.96.0/24 counter packets 0 bytes 0 drop
+notsixene.nft:7:9-60:         ip saddr 1.116.0.0/15 counter packets 0 bytes 0 drop
+notsixene.nft:8:9-61:         ip saddr 1.178.32.0/19 counter packets 0 bytes 0 drop
+notsixene.nft:9:9-60:         ip saddr 1.247.4.0/24 counter packets 0 bytes 0 drop
+notsixene.nft:10:9-61:         ip saddr 1.255.30.0/24 counter packets 0 bytes 0 drop
+into:
+	ip saddr { 1.12.32.0/23, 1.14.0.0/15, 1.44.96.0/24, 1.116.0.0/15, 1.178.32.0/19, 1.247.4.0/24, 1.255.30.0/24 } counter drop
+Merging:
+notsixene.nft:172:9-57:         tcp dport 9090 ct state { new, untracked } accept
+notsixene.nft:173:9-55:         tcp dport 80 ct state { new, untracked } accept
+notsixene.nft:174:9-58:         tcp dport 25565 ct state { new, untracked } accept
+notsixene.nft:175:9-58:         tcp dport 25566 ct state { new, untracked } accept
+into:
+	tcp dport . ct state { 9090 . new, 9090 . untracked, 80 . new, 80 . untracked, 25565 . new, 25565 . untracked, 25566 . new, 25566 . untracked } accept
+Merging:
+notsixene.nft:176:9-58:         udp dport 25565 ct state { new, untracked } accept
+notsixene.nft:177:9-58:         udp dport 25566 ct state { new, untracked } accept
+into:
+	ct state . udp dport { new . 25565, untracked . 25565, new . 25566, untracked . 25566 } accept
+Merging:
+notsixene.nft:178:9-58:         tcp dport 27015 ct state { new, untracked } accept
+notsixene.nft:179:9-56:         tcp dport 443 ct state { new, untracked } accept
+notsixene.nft:180:9-57:         tcp dport 8092 ct state { new, untracked } accept
+notsixene.nft:181:9-57:         tcp dport 8093 ct state { new, untracked } accept
+into:
+	tcp dport . ct state { 27015 . new, 27015 . untracked, 443 . new, 443 . untracked, 8092 . new, 8092 . untracked, 8093 . new, 8093 . untracked } accept
+Merging:
+notsixene.nft:182:9-57:         udp dport 8092 ct state { new, untracked } accept
+notsixene.nft:183:9-57:         udp dport 8093 ct state { new, untracked } accept
+into:
+	ct state . udp dport { new . 8092, untracked . 8092, new . 8093, untracked . 8093 } accept
+Merging:
+notsixene.nft:184:9-57:         tcp dport 8080 ct state { new, untracked } accept
+notsixene.nft:185:9-57:         tcp dport 8181 ct state { new, untracked } accept
+notsixene.nft:186:9-57:         tcp dport 4430 ct state { new, untracked } accept
+notsixene.nft:187:9-58:         tcp dport 34523 ct state { new, untracked } accept
+notsixene.nft:188:9-57:         tcp dport 8000 ct state { new, untracked } accept
+notsixene.nft:189:9-57:         tcp dport 8010 ct state { new, untracked } accept
+into:
+	tcp dport . ct state { 8080 . new, 8080 . untracked, 8181 . new, 8181 . untracked, 4430 . new, 4430 . untracked, 34523 . new, 34523 . untracked, 8000 . new, 8000 . untracked, 8010 . new, 8010 . untracked } accept
+Merging:
+notsixene.nft:314:9-45:         icmpv6 type nd-neighbor-advert accept
+notsixene.nft:315:9-46:         icmpv6 type nd-neighbor-solicit accept
+notsixene.nft:316:9-43:         icmpv6 type nd-router-advert accept
+notsixene.nft:317:9-38:         icmpv6 type nd-redirect accept
+into:
+	icmpv6 type { nd-neighbor-advert, nd-neighbor-solicit, nd-router-advert, nd-redirect } accept
 
+--QL+4ZueWO0qU0k1H--
