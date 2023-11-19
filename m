@@ -2,52 +2,52 @@ Return-Path: <netfilter-owner@vger.kernel.org>
 X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
 	aws-us-west-2-korg-lkml-1.web.codeaurora.org
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id C2CB7C54FB9
-	for <netfilter@archiver.kernel.org>; Sun, 19 Nov 2023 14:44:49 +0000 (UTC)
+	by smtp.lore.kernel.org (Postfix) with ESMTP id A073BC54FB9
+	for <netfilter@archiver.kernel.org>; Sun, 19 Nov 2023 21:37:35 +0000 (UTC)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S229501AbjKSOou (ORCPT <rfc822;netfilter@archiver.kernel.org>);
-        Sun, 19 Nov 2023 09:44:50 -0500
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60848 "EHLO
+        id S231553AbjKSVhf (ORCPT <rfc822;netfilter@archiver.kernel.org>);
+        Sun, 19 Nov 2023 16:37:35 -0500
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55842 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S231321AbjKSOku (ORCPT
-        <rfc822;netfilter@vger.kernel.org>); Sun, 19 Nov 2023 09:40:50 -0500
-Received: from mail-ej1-x636.google.com (mail-ej1-x636.google.com [IPv6:2a00:1450:4864:20::636])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D9CF9F9
-        for <netfilter@vger.kernel.org>; Sun, 19 Nov 2023 06:40:45 -0800 (PST)
-Received: by mail-ej1-x636.google.com with SMTP id a640c23a62f3a-9becde9ea7bso916091966b.0
-        for <netfilter@vger.kernel.org>; Sun, 19 Nov 2023 06:40:45 -0800 (PST)
+        with ESMTP id S231390AbjKSVhe (ORCPT
+        <rfc822;netfilter@vger.kernel.org>); Sun, 19 Nov 2023 16:37:34 -0500
+Received: from mail-ej1-x62b.google.com (mail-ej1-x62b.google.com [IPv6:2a00:1450:4864:20::62b])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4095FE0
+        for <netfilter@vger.kernel.org>; Sun, 19 Nov 2023 13:37:31 -0800 (PST)
+Received: by mail-ej1-x62b.google.com with SMTP id a640c23a62f3a-9d0b4dfd60dso492383066b.1
+        for <netfilter@vger.kernel.org>; Sun, 19 Nov 2023 13:37:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1700404844; x=1701009644; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1700429849; x=1701034649; darn=vger.kernel.org;
         h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=4jdNWgSQpgsQu48cyXC+nFC81cqQuWgTb4CLU941ID8=;
-        b=PMe8XxraYvzlsLJpyrQm36ZUlmNC4jREKfL4Afd88QDuTZZiBFWCq2/1Nj4uVqslAR
-         obbraK5fkkkSSAdNRIu8haq3hRwppvthBrMO7gLT2NWs7YLNZV0xhYMOOXN5q6y1ppsn
-         5eGbDtIZwAJ34pC/sF4AmG0CIBe7CA+KPIxWUXF2SQ3K9BikLhV74MnwxYsmggEIxAy9
-         gIIZZBmapekorYmDOYcHs1cioTg8uYLW27gnU291HRXeh7o6XLxSJ0PH5Zasj/s+H71b
-         B32jcDF0Zq5wMad/gVF6Leq1GEWm+HRKyNENzeeGwkkEImMeXylsDJ3xeYOfhFI8UOOk
-         Lvsw==
+        bh=kaD6Oi0TXrbOHVlknI00X1UZSADUzcMnwhZsUk7xU1A=;
+        b=iYmIsyKscIes3Es8RJNUFkQMVz14dqFwM4BDjkR4fbf5d5eD+D/ZJp8GUPfVqbmoIH
+         /dYqLpyyXvVYCFgayyhu/P+xl9vGQSDD6dxvrwbeaYKklnjgzLYE9d+t+12eKYpVShK0
+         wAcS/cvlBwcqV8Oux/kECbblmcMm3JxGQhVTXLIfURL50T8S14RQOPkjTADeTbKBCxcI
+         i+WvGdcyYsXGwdLROhxjqF17NVGnkRR5ASPVDQt98/lVGohyasSvNLxZeqyatjcsUI5Z
+         +XmHTRayKwY9rCjiTdPUm/P83tUz7/kPfDMbSmpvdc59bPtpSWaU+LN2lVhn0h/pSS3q
+         edlg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1700404844; x=1701009644;
+        d=1e100.net; s=20230601; t=1700429849; x=1701034649;
         h=to:subject:message-id:date:from:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=4jdNWgSQpgsQu48cyXC+nFC81cqQuWgTb4CLU941ID8=;
-        b=shO343kFacqAEsdWL7aVm9PxcsL6uasf4jS4v1IkYwD4w0npS3Ml11YG7C6banXOIL
-         JaqPWCuJUhYDhGswz63YPqwzzdS++08ZtpKK5ouwWyVWH9ccBzJdVgfuBPrzwgDgWiC5
-         0KaRhr1L3d5KkNFgV3ibivhELESvWpFoxj/xTNiCuqqXjHNTBkT2yIKqZVTlhEycEwoO
-         DulZfkfeBAKHOxAV5vE+I61eafdqmLy/Bkkvr3tJohLzu99D0jvJ0yUZmTZO/TIJ5/RE
-         OrRy9MDEpaxur89U+Tdpgc2/WZ6icQ6DZDNdg6zr/CtV5La8aIT+yZ1Ssp0rHJlUvl5R
-         9nrA==
-X-Gm-Message-State: AOJu0YyauVDZr0cFEnol2WQMmEW1RM8U8nQhqFEFhzjthSdJeb3x62Gr
-        d822/D1tbmTIUBD7se2gUCe6/9qZEteAPNj3dihn3xvl68I=
-X-Google-Smtp-Source: AGHT+IGBfhOR5Zhj411prfmeoLsy1kvL2Ov7VMqnfPGNYLutQjlW87bA00zTebOdC9ckPikghbnD290Wexen0F2ER3Y=
-X-Received: by 2002:a17:906:51dc:b0:9b2:b15b:383d with SMTP id
- v28-20020a17090651dc00b009b2b15b383dmr4575169ejk.11.1700404843751; Sun, 19
- Nov 2023 06:40:43 -0800 (PST)
+        bh=kaD6Oi0TXrbOHVlknI00X1UZSADUzcMnwhZsUk7xU1A=;
+        b=VvC5pGhcJZb4cvepPADmZ60A9PlIa0D32mmOjSa7SsipMOlDKnxvMPO+/KwoBqVDoV
+         hO/h/bXKvp6Dj5crMjC1RNu8Z38EP0VKcmspiCG/2TkI8vSByxR41+b2CvD2yxYL2/MT
+         WeBFMHZLEVzZeOd3DqGGQP0I012Sym/r9WxsFQ9e2SvWW72ckTtJ/QLCy2LJCMAQ3OEc
+         hEHJ3bytpSNJUOGOEPk2b5qNV6XhNE/SKcgDFvYIlAKrNSJ94cec5BqvTVY5qZfOpCyp
+         Jjy5Je+7qmfB3jzGtr6F4TcAfTpvWghMk+L99jBJUdWm9bl6kFHWyiFLu2vd36hTYmOw
+         DuyQ==
+X-Gm-Message-State: AOJu0YzG7ME5xDL+eQB30COKHxZT8KjAY71aN+lOHiF938vgTeML5gYA
+        xJx/9IGTfSjcgAv9UFwDtRIagb8fNGS9LqAu/2UcWcFuhdY=
+X-Google-Smtp-Source: AGHT+IFn5f9fbWFYwq2Ske9e0n62Pgb95ROiqllEqFxDBNIpmnFBtJM22zVYuqdAazKfM45D35ZeIhiCWp4jWbX77ig=
+X-Received: by 2002:a17:907:914d:b0:9e0:5dab:a0f6 with SMTP id
+ l13-20020a170907914d00b009e05daba0f6mr4133063ejs.22.1700429849186; Sun, 19
+ Nov 2023 13:37:29 -0800 (PST)
 MIME-Version: 1.0
 From:   Martin Gignac <martin.gignac@gmail.com>
-Date:   Sun, 19 Nov 2023 09:40:07 -0500
-Message-ID: <CANf9dFOQJvW8AOBdJ327sb8hnJAyonpnRYe1kvEYKGYn=BXqKg@mail.gmail.com>
+Date:   Sun, 19 Nov 2023 16:36:53 -0500
+Message-ID: <CANf9dFNCeUf20yza=ika3YYGH1RjUwagWOkoCCg8=aGnNCQs3Q@mail.gmail.com>
 Subject: Getting error "Error: missing hook and priority in flowtable
  declaration" in nftables 1.0.9
 To:     netfilter@vger.kernel.org
@@ -55,6 +55,8 @@ Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <netfilter.vger.kernel.org>
 X-Mailing-List: netfilter@vger.kernel.org
+
+(resending because not sure the first time went through)
 
 Hi,
 
