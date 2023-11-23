@@ -1,24 +1,20 @@
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1CAD15BC
-	for <netfilter@vger.kernel.org>; Thu, 23 Nov 2023 02:46:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="023bHfWv"
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38A16C433C7;
-	Thu, 23 Nov 2023 02:46:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1700707600;
-	bh=rRbIXqjq8DKBA6vW+7glleky65j8TQodsqrm6IeWtY0=;
-	h=Date:From:To:Subject:From;
-	b=023bHfWvr813etv2P1oDgKxiH8+EbeKeixHRotlrlLMhpsS+23r5oDy6xH1kTcNaR
-	 5j15NfpbEiOjnozejq1P7i2nl6Zu4J8hwXchAqncKl1X/TftlJfFI0qKelpjQZNynx
-	 JsLDrIzYnlfJQlzUxOzljTb8HJNpQR97Kg/K+1nk=
-Date: Wed, 22 Nov 2023 21:46:39 -0500
-From: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
-To: netfilter@vger.kernel.org
-Subject: PSA: this list has moved to new vger infra (no action required)
-Message-ID: <20231122-cheerful-masked-degu-ae0507@nitro>
+Authentication-Results: smtp.subspace.kernel.org; dkim=none
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [IPv6:2001:780:45:1d:225:90ff:fe52:c662])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 489F91B3
+	for <netfilter@vger.kernel.org>; Thu, 23 Nov 2023 13:33:34 -0800 (PST)
+Received: from [78.30.43.141] (port=55776 helo=gnumonks.org)
+	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <pablo@gnumonks.org>)
+	id 1r6HKD-001o81-KP; Thu, 23 Nov 2023 22:33:31 +0100
+Date: Thu, 23 Nov 2023 22:33:28 +0100
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Kamil =?utf-8?B?Sm/FhGNh?= <kjonca@op.pl>
+Cc: netfilter@vger.kernel.org
+Subject: Re: nft ends with error
+Message-ID: <ZV/FKMPgPA1UVGy0@calendula>
+References: <8734wxtz3k.fsf@alfa.kjonca>
+ <ZV5sxC/YNUDeFgcE@calendula>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
@@ -27,18 +23,38 @@ List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZV5sxC/YNUDeFgcE@calendula>
+X-Spam-Score: -1.8 (-)
 
-Hello, all:
+On Wed, Nov 22, 2023 at 10:04:04PM +0100, Pablo Neira Ayuso wrote:
+> On Wed, Nov 22, 2023 at 07:35:59PM +0100, Kamil Jońca wrote:
+[...]
+> > --8<---------------cut here---------------start------------->8---
+> > table ip filter {
+> > ...
+> >         map ipsec_in {
+> >                 typeof ipsec in reqid . iif : verdict
+> >                 flags interval
+> >         }
+> > ...
+> > 
+> >   chain INPUT {
+> >         type filter hook input priority 0; policy drop
+> >         ...
+> >         ipsec in reqid . iif vmap @ipsec_in
+> >         ...
+> >     }
+> > ...
+> > }
+> > --8<---------------cut here---------------end--------------->8---
+> > 
+> > rules seems to be loaded entirely and works.
+> 
+> Thanks for this reproducer. Proposed fix:
+> 
+> https://patchwork.ozlabs.org/project/netfilter-devel/patch/20231122210106.183932-1-pablo@netfilter.org/
 
-This list has been migrated to the new vger infrastructure. No action is
-required on your part and there should be no change in how you interact with
-this list.
+For the record:
 
-This message acts as a verification test that the archives are properly
-updating.
-
-If something isn't working or looking right, please reach out to
-helpdesk@kernel.org.
-
-Best regards,
--K
+https://git.netfilter.org/nftables/commit/?id=faa6908fad6053ae9549c45b88d0402cc69cf1ed
