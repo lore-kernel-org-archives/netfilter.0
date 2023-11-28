@@ -1,77 +1,59 @@
-Authentication-Results: smtp.subspace.kernel.org; dkim=none
-X-Greylist: delayed 1042 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Fri, 24 Nov 2023 09:21:10 PST
-Received: from mail.thelounge.net (mail.thelounge.net [91.118.73.15])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5A3CD10E7
-	for <netfilter@vger.kernel.org>; Fri, 24 Nov 2023 09:21:10 -0800 (PST)
-Received: from [10.10.10.2] (rh.vpn.thelounge.net [10.10.10.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: h.reindl@thelounge.net)
-	by mail.thelounge.net (THELOUNGE MTA) with ESMTPSA id 4ScLsq3QhPzXLP
-	for <netfilter@vger.kernel.org>; Fri, 24 Nov 2023 18:03:43 +0100 (CET)
-Message-ID: <d7f20cf4-d7c5-420f-b2a8-c33af55d0d38@thelounge.net>
-Date: Fri, 24 Nov 2023 18:03:43 +0100
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cp6S03Pp"
+Received: from mail-ed1-x529.google.com (mail-ed1-x529.google.com [IPv6:2a00:1450:4864:20::529])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12CD71A1;
+	Mon, 27 Nov 2023 20:30:00 -0800 (PST)
+Received: by mail-ed1-x529.google.com with SMTP id 4fb4d7f45d1cf-54afdbdb7d2so4741532a12.3;
+        Mon, 27 Nov 2023 20:29:59 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701145798; x=1701750598; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=e8KRWz2Kig8DZydBY6sQt8MlKK8crA4v1g4vQbuYdQ8=;
+        b=Cp6S03PpnSV6WI4Io/a0b9LlwdPOUmytJ8m6A0YjBRMGJOlQC2Xh6Vd7cOTzj1QDYN
+         Zg0SsFfSE7UB6ipURKuHfWFvO/gttrFusYwh2M6gxXLn2UvUXM8YPH4ogdperRYU+9GF
+         2RtH6tuiXrP9druzdcCqrh1SiL9ysa+Gz8GPJ/xYCWS1KxbiJR6tUtxtweXzjT1BmOb+
+         cZzKPMdCm84N1fx/04VNtzaSoDDnkiENA34xS7vcV6VAs230mw8pdXlAxY0zRVXYpG3D
+         w4cgA8aG0ZQYWcyptemkuwURFHyqE0yDYwfc68qmDE3m8lPUrt5fxhnWmAXwC8sAQE9o
+         8aPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701145798; x=1701750598;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=e8KRWz2Kig8DZydBY6sQt8MlKK8crA4v1g4vQbuYdQ8=;
+        b=hXIcTty/hkxE83x2URCLZO40FoZ98uw+IETF6clUx2ZNeYRfj5v1dJgoELOrNjl1f+
+         KBRp3hFuRNM6WWtCx5lPlKb6MVn4prTB5hUH7KMIIy1r3titiuuHdlhM+FUHpuMYdO10
+         gQ7L6suySSF4RWPSaREH87yGL1m+jPaGOAXGguwWX3fuwjopFUlaE2h4BlZemsRNNUTJ
+         EWhvPRs9yaH9VZf30ImEB1Cd/ysgvQESZ4DG/yYnOWo6gdtdcUEsFo4/K97sBZe48DhH
+         zK3fMPVBF/TPkLo8UpjkuuEHcGSapzsj5rxh3enlQ7bY/f75Qa8WBwd1lTwlS9UKjmRO
+         wpMg==
+X-Gm-Message-State: AOJu0YyKmH4Hi43OYl2svLdX3z4qgkj9NPXQ36RA0Lgqf5/DCJ+PeIQT
+	nqeCN53R8s+572lbOKpZOCIWMQtC//EWI1iVB9Y=
+X-Google-Smtp-Source: AGHT+IEWCOb1hpXMkkdVf/pGRKpsM5aDSSTvq0QZHmVaxcISI5j2gWsQF5bAGiKqa0kqhJFZ+PADFTv53awM2mBmmoY=
+X-Received: by 2002:a17:906:c9d3:b0:9e0:2319:16d4 with SMTP id
+ hk19-20020a170906c9d300b009e0231916d4mr10187560ejb.40.1701145798060; Mon, 27
+ Nov 2023 20:29:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [nftables] Multiple reject withs in a single rule
-Content-Language: en-US
-To: netfilter@vger.kernel.org
-References: <CALqmkGz7HqTeAvyZwJDTcZsuSUVi6usAD8P6XwTnfMxzBSs=Fw@mail.gmail.com>
-From: Reindl Harald <h.reindl@thelounge.net>
-Autocrypt: addr=h.reindl@thelounge.net; keydata=
- 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
- K4rYsjPimkSIVdrNM//wVKdCTbO+
-Organization: the lounge interactive design
-In-Reply-To: <CALqmkGz7HqTeAvyZwJDTcZsuSUVi6usAD8P6XwTnfMxzBSs=Fw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: =?UTF-8?B?0JzQsNGA0Log0JrQvtGA0LXQvdCx0LXRgNCz?= <socketpair@gmail.com>
+Date: Tue, 28 Nov 2023 06:29:46 +0200
+Message-ID: <CAEmTpZH5Kt-uBwU9be-UaS1wi-nJtoYAh78UFio_Op7j3CH6jw@mail.gmail.com>
+Subject: ipset hash:net,iface - can not add more than 64 interfaces
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, netfilter@vger.kernel.org, 
+	netfilter-devel@vger.kernel.org, kadlecsik.jozsef@wigner.hu, 
+	kadlec@sunserv.kfki.hu
+Content-Type: text/plain; charset="UTF-8"
 
+for i in `seq 0 70`; do ip link del dummy$i; done;
+for i in `seq 0 70`; do ip link add type dummy; done;
+for i in `seq 0 70`; do ipset add qwe 0.0.0.0/0,dummy$i; done;
 
+Reveals the problem. Only 64 records can be added, but there are no
+obvious restrictions on that. I s it possible to increase the limit ?
 
-Am 24.11.23 um 15:57 schrieb Edward Dickson:
-> Is there a way to specify multiple rejection types in a single nftables rule?
-
-how would this make sense?
-
-you can use only one for the same packet and different protocols with 
-different reject-types need differnt rules - you don't gain anything 
-with overloaded rules
-
-https://en.wikipedia.org/wiki/Overengineering
+-- 
+Segmentation fault
