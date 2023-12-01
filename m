@@ -1,15 +1,15 @@
 Received: from mail.thelounge.net (mail.thelounge.net [91.118.73.15])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44C832125
-	for <netfilter@vger.kernel.org>; Fri,  1 Dec 2023 07:16:25 -0800 (PST)
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 117221707
+	for <netfilter@vger.kernel.org>; Fri,  1 Dec 2023 07:27:29 -0800 (PST)
 Received: from [10.10.10.2] (rh.vpn.thelounge.net [10.10.10.2])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: h.reindl@thelounge.net)
-	by mail.thelounge.net (THELOUNGE MTA) with ESMTPSA id 4Shc8k2PKRzXLT
-	for <netfilter@vger.kernel.org>; Fri,  1 Dec 2023 16:16:22 +0100 (CET)
-Message-ID: <0f0e1e78-7ce1-48fc-845e-4fc6f7f4167d@thelounge.net>
-Date: Fri, 1 Dec 2023 16:16:22 +0100
+	by mail.thelounge.net (THELOUNGE MTA) with ESMTPSA id 4ShcPT4qShzXLT
+	for <netfilter@vger.kernel.org>; Fri,  1 Dec 2023 16:27:20 +0100 (CET)
+Message-ID: <b099f6c0-095f-4b6e-98f7-4202d71ea6e4@thelounge.net>
+Date: Fri, 1 Dec 2023 16:27:20 +0100
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
@@ -25,6 +25,8 @@ References: <CAA=+QiiS_FZnaGNjx7kGYqJgkMTE48z7nHn1VREcV4PoD3GyZQ@mail.gmail.com>
  <7a610cb2-391f-4f34-99c1-6c1f38243dda@at.encryp.ch>
  <38c83f6f-1f82-4e17-8543-1073e8ade314@thelounge.net>
  <fe1a8ff1-57f2-4e30-ba69-eb57041ddcc4@at.encryp.ch>
+ <0f0e1e78-7ce1-48fc-845e-4fc6f7f4167d@thelounge.net>
+ <CAOLfK3Wh+fhZZG-2c79q-1E-0St2i1cdikNR9WrK34OGqBrcsQ@mail.gmail.com>
 From: Reindl Harald <h.reindl@thelounge.net>
 Autocrypt: addr=h.reindl@thelounge.net; keydata=
  xsDNBFq9ahEBDADEQKxJxY4WUy7Ukg6JbzwAUI+VQYpnRuFKLIvcU+2x8zzf8cLaPUiNhJKN
@@ -61,19 +63,58 @@ Autocrypt: addr=h.reindl@thelounge.net; keydata=
  cTqn2HJNlhMSV0ZocQ0888Zaq2S5totXr7yuiDzwrp70m9bJY+VPDjaUtWruf2Yiez3EAhtU
  K4rYsjPimkSIVdrNM//wVKdCTbO+
 Organization: the lounge interactive design
-In-Reply-To: <fe1a8ff1-57f2-4e30-ba69-eb57041ddcc4@at.encryp.ch>
+In-Reply-To: <CAOLfK3Wh+fhZZG-2c79q-1E-0St2i1cdikNR9WrK34OGqBrcsQ@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
 
-
-Am 01.12.23 um 15:12 schrieb Serg:
-> On 12/1/23 14:04, Reindl Harald wrote:
->> keep your dirty fingers from files which are part of a package while 
->> the package manager keeps it's dirty fingers from /etc
+Am 01.12.23 um 16:19 schrieb Matt Zagrabelny:
+> On Fri, Dec 1, 2023 at 9:16 AM Reindl Harald <h.reindl@thelounge.net 
+> <mailto:h.reindl@thelounge.net>> wrote:
 > 
-> When systemctl edit nftables.service is used it does not modify original 
-> file, instead it creates override configuration.
+>     Am 01.12.23 um 15:12 schrieb Serg:
+>      > On 12/1/23 14:04, Reindl Harald wrote:
+>      >> keep your dirty fingers from files which are part of a package
+>     while
+>      >> the package manager keeps it's dirty fingers from /etc
+>      >
+>      > When systemctl edit nftables.service is used it does not modify
+>     original
+>      > file, instead it creates override configuration.
+> 
+>     but you *can not* remove "Before=network-pre.target" with a drop-in,
+>     you
+>     can only add additional "Before" conditions
+> 
+> 
+> I believe you can clear various attributes:
+> 
+> Before=
+> Before=foo
+> 
+> That will set Before to be only "foo"
 
-but you *can not* remove "Before=network-pre.target" with a drop-in, you 
-can only add additional "Before" conditions
+that could be interesting in case there are more than one drop-ins which 
+is very common - i use systemd-units and driop-ins from day one excessive
+
+anyways, 9 out of 10 people don't know what they are doing when they 
+deal with systemd configs and wonder what happens after random updates 
+because they touch stuff in /usr, don't know about drop-ins, don't know 
+about overrides and don't understand the conecpt of system versus local 
+configs
+
+otherwise that thread won't exist:
+
+  * upstream mailing list for a distribution-unit
+  * asking why common sense is default
+  * asking if it's fine to edit it
+
+that would lead in touching /lib/systemd/system/nftables.service and 
+last only until the next update
+
+----------------
+
+What is the reason to start nftable service before networkd configured
+by default? Is this the intended behavior for nftable? Or is it fine to 
+modify the service unit file and change the dependency to fit different 
+use cases?
