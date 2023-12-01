@@ -1,120 +1,49 @@
-Received: from mail.thelounge.net (mail.thelounge.net [91.118.73.15])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 117221707
-	for <netfilter@vger.kernel.org>; Fri,  1 Dec 2023 07:27:29 -0800 (PST)
-Received: from [10.10.10.2] (rh.vpn.thelounge.net [10.10.10.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: h.reindl@thelounge.net)
-	by mail.thelounge.net (THELOUNGE MTA) with ESMTPSA id 4ShcPT4qShzXLT
-	for <netfilter@vger.kernel.org>; Fri,  1 Dec 2023 16:27:20 +0100 (CET)
-Message-ID: <b099f6c0-095f-4b6e-98f7-4202d71ea6e4@thelounge.net>
-Date: Fri, 1 Dec 2023 16:27:20 +0100
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nO2N0nxk"
+Received: from mail-ot1-x32b.google.com (mail-ot1-x32b.google.com [IPv6:2607:f8b0:4864:20::32b])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3314F194
+	for <netfilter@vger.kernel.org>; Fri,  1 Dec 2023 07:48:36 -0800 (PST)
+Received: by mail-ot1-x32b.google.com with SMTP id 46e09a7af769-6cd0a8bc6dcso415787a34.2
+        for <netfilter@vger.kernel.org>; Fri, 01 Dec 2023 07:48:36 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1701445715; x=1702050515; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=tubVBf6bAYCyZfxOtrcSY4cfVJ/sBegMyF7tLfPbTB0=;
+        b=nO2N0nxkj8jRqqHbl+XfXQ8g3S+uPeJFs8F6vH2kJjEhcncDt30aqtNpDW0qTosKHU
+         /fKA1FXMR7hlh49rxKfl5/wJNrj//PFtcO9jTIDU3HCFwQRM+4Eo4H8Tq7t/vnm7R40m
+         maPYkNrLZ3FAYU0Sjhe2ZpW0odONI9oozMlqcG/5uK+V1foaPS/VduWDb9DAtiNFKaN5
+         9gzXlp18K8yQlq9+jgo5xX+BtwDpsKW6toPF0ejrOcJa7o8ErZhwnKcaMn7LGqpuKYRM
+         6HyDac/l1elpwo99cFJWsA8U+84RUIbAY+gcraqf/bz0WUJWiv1WE8DwKlp0ho623S4M
+         riVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701445715; x=1702050515;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tubVBf6bAYCyZfxOtrcSY4cfVJ/sBegMyF7tLfPbTB0=;
+        b=JDODa7r9wMLlLEdpnR5eNII1Oi+DFu+sdn4k7rAlPXR8yDlYfVD6iXfAsLUpi6ng8l
+         rZddSkKtoUUCNwOGFEAyuEoEuKqFXLmNdcLVFrA5rL1SUobnjAP4Oba9Jz+sc+HiX1wH
+         87FjGo3a1cyLSo5dvQP+38bgtoaVL9mMaZ6wbAEd5ye7TRlUAvKBTBZSup3hTDYE+PDh
+         WW70kCstMPg9DwEWqYQwCvdd5PQyM5UqQewxJ4KjYDjTbyCCTIjako2hnsrrJjQKFuKR
+         o9sT3ksdJKKe6wO8p9Qp4Yl5uYIPErXfOeLrvzbTndbDhsAkjkS0dQX6SSJ6uPjltM2r
+         s63w==
+X-Gm-Message-State: AOJu0YwVfcIpPR1EKlwra+P+Unshbb/iOirgYZ8CCt33o4HqB0Ue1IuM
+	ZxWYvkP7cc487VBVUDqnwnNhq1neA+0aq9/oSeiwrJjOsHM=
+X-Google-Smtp-Source: AGHT+IGXihA7qtzGiIxoCJbADMUxKY1/RrHr68hJl+jpVQfo+UfPVKTWk4+C92ecTYvZ5JUN3pw/pUGgwHUp+srJR1c=
+X-Received: by 2002:a05:6830:4a:b0:6b9:14bf:7097 with SMTP id
+ d10-20020a056830004a00b006b914bf7097mr3539316otp.9.1701445715327; Fri, 01 Dec
+ 2023 07:48:35 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Unit dependency of network-pre.target in nftables.service
-Content-Language: en-US
+From: You Yu Lu <zxc70208@gmail.com>
+Date: Fri, 1 Dec 2023 16:47:59 +0100
+Message-ID: <CAA=+Qij_F04zT6kmM+gd8xn=Pa-moPuQ7=CqpkpyAgCJND7qTg@mail.gmail.com>
+Subject: 
 To: netfilter@vger.kernel.org
-References: <CAA=+QiiS_FZnaGNjx7kGYqJgkMTE48z7nHn1VREcV4PoD3GyZQ@mail.gmail.com>
- <84d15779-675a-4c2d-a287-49dd39a9313f@thelounge.net>
- <7a610cb2-391f-4f34-99c1-6c1f38243dda@at.encryp.ch>
- <38c83f6f-1f82-4e17-8543-1073e8ade314@thelounge.net>
- <fe1a8ff1-57f2-4e30-ba69-eb57041ddcc4@at.encryp.ch>
- <0f0e1e78-7ce1-48fc-845e-4fc6f7f4167d@thelounge.net>
- <CAOLfK3Wh+fhZZG-2c79q-1E-0St2i1cdikNR9WrK34OGqBrcsQ@mail.gmail.com>
-From: Reindl Harald <h.reindl@thelounge.net>
-Autocrypt: addr=h.reindl@thelounge.net; keydata=
- xsDNBFq9ahEBDADEQKxJxY4WUy7Ukg6JbzwAUI+VQYpnRuFKLIvcU+2x8zzf8cLaPUiNhJKN
- 3fD8fhCc2+nEcSVwLDMoVZfsg3BKM/uE/d2XNb3K4s13g3ggSYW9PCeOrbcRwuIvK5gsUqbj
- vXSAOcrR7gz/zD6wTYSNnaj+VO4gsoeCzBkjy9RQlHBfW+bkW3coDCK7DocqmSRTNRYrkZNR
- P1HJBUvK3YOSawbeEa8+l7EbHiW+sdlc79qi8dkHavn/OqiNJQErQQaS9FGR7pA5SvMvG5Wq
- 22I8Ny00RPhUOMbcNTOIGUY/ZP8KPm5mPfa9TxrJXavpGL2S1DE/q5t4iJb4GfsEMVCNCw9E
- 6TaW7x6t1885YF/IZITaOzrROfxapsi/as+aXrJDuUq09yBCimg19mXurnjiYlJmI6B0x7S9
- wjCGP+aZqhqW9ghirM82U/CVeBQx7afi29y6bogjl6eBP7Z3ZNmwRBC3H23FcoloJMXokUm3
- p2DiTcs2XViKlks6Co/TqFEAEQEAAc0mUmVpbmRsIEhhcmFsZCA8aC5yZWluZGxAdGhlbG91
- bmdlLm5ldD7CwREEEwEIADsCGyMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AWIQSdK0bNvBQK
- NnU65NczF01aWJK3uAUCWr1qowIZAQAKCRAzF01aWJK3uEznDACGncwi0KfKOltOBmzIQNIn
- 7kPOBFU8KGIjONpg/5r82zwDEpFOTKw+hCttokV6+9K+j8Iut0u9o7iSQNA70cXqkaqPndxB
- uRIi/L6nm2ZlUMvQj9QD5U+mdTtSQH5WrC5lo2RYT2sTWoAFQ6CSnxxJd9Ud7rjbDy7GRnwv
- IRMfFJZtTf6HAKj8dZecwnBaHqgZQgRAhdsUtH8ejDsWlfxW1Qp3+Vq008OE3XXOFQX5qXWK
- MESOnTtGMq1mU/Pesmyp0+z58l6HyUmcoWruyAmjX7yGQPOT5APg2LFpMHA6LIu40mbb/pfg
- 5am8LWLBXQRCP1D/XLOuQ5DO6mWY0rtQ8ztZ5Wihi5qA9QKcJxmZcdmurlaxi3mavR3VgCIc
- 3hDPcvUqBwB5boNZspowYoHQ21g9qyFHOyeS69SNYhsHPCTr6+mSyn+p4ou4JTKiDRR16q5X
- hHfXO9Ao9zvVVhuw+P4YySmTRRlgJtcneniH8CBbr9PsjzhVcX2RkOCC+ObOwM0EWr1qEQEM
- ANIkbSUr1zk5kE8aXQgt4NFRfkngeDLrvxEgaiTZp93oSkd7mYDVBE3bA4g4tng2WPQL+vnb
- 371eaROa+C7/6CNYJorBx79l+J5qZGXiW56btJEIER0R5yuxIZ9CH+qyO1X47z8chbHHuWrZ
- bTyq4eDrF7dTnEKIHFH9wF15yfKuiSuUg4I2Gdk9eg4vv9Eyy/RypBPDrjoQmfsKJjKN81Hy
- AP6hP9hXL4Wd68VBFBpFCb+5diP+CKo+3xSZr4YUNr3AKFt/19j2jJ8LWqt0Gyf87rUIzAN8
- TgLKITW8kH8J1hiy/ofOyMH1AgBJNky1YHPZU3z1FWgqeTCwlCiPd6cQfuTXrIFP1dHciLpj
- 8haE7f2d4mIHPEFcUXTL0R6J1G++7/EDxDArUJ9oUYygVLQ0/LnCPWMwh7xst8ER994l9li3
- PA9k9zZ3OYmcmB7iqIB+R7Z8gLbqjS+JMeyqKuWzU5tvV9H3LbOw86r2IRJp3J7XxaXigJJY
- 7HoOBA8NwQARAQABwsD2BBgBCAAgFiEEnStGzbwUCjZ1OuTXMxdNWliSt7gFAlq9ahECGwwA
- CgkQMxdNWliSt7hVMwwAmzm7mHYGuChRV3hbI3fjzH+S6+QtiAH0uPrApvTozu8u72pcuvJW
- J4qyK5V/0gsFS8pwdC9dfF8FGMDbHprs6wK0rMqaDawAL8xWKvmyi6ZLsjVScA6aM307CEVr
- v5FJiibO+te+FkzaO9+axEjloSQ9DbJHbE3Sh7tLhpBmDQVBCzfSV7zQtsy9L3mDKJf7rW+z
- hqO9JA885DHHsVPPhA9mNgfRvzQJn/3fFFzqmRVf7mgBV8Wn8aepEUGAd2HzVAb3f1+TS04P
- +RI8qKoqeVdZlbwJD59XUDJrnetQrBEfhEd8naW8mHyEWHVJZnSTUIfPz2sneW1Zu2XkfqwV
- eW+IyDAcYyTXqnEGdFSEgwgzliPJDWm5CHbsU++7Kzar5d5flRgGbtcxqkpl8j0N0BUlN4fA
- cTqn2HJNlhMSV0ZocQ0888Zaq2S5totXr7yuiDzwrp70m9bJY+VPDjaUtWruf2Yiez3EAhtU
- K4rYsjPimkSIVdrNM//wVKdCTbO+
-Organization: the lounge interactive design
-In-Reply-To: <CAOLfK3Wh+fhZZG-2c79q-1E-0St2i1cdikNR9WrK34OGqBrcsQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
 
-
-Am 01.12.23 um 16:19 schrieb Matt Zagrabelny:
-> On Fri, Dec 1, 2023 at 9:16 AM Reindl Harald <h.reindl@thelounge.net 
-> <mailto:h.reindl@thelounge.net>> wrote:
-> 
->     Am 01.12.23 um 15:12 schrieb Serg:
->      > On 12/1/23 14:04, Reindl Harald wrote:
->      >> keep your dirty fingers from files which are part of a package
->     while
->      >> the package manager keeps it's dirty fingers from /etc
->      >
->      > When systemctl edit nftables.service is used it does not modify
->     original
->      > file, instead it creates override configuration.
-> 
->     but you *can not* remove "Before=network-pre.target" with a drop-in,
->     you
->     can only add additional "Before" conditions
-> 
-> 
-> I believe you can clear various attributes:
-> 
-> Before=
-> Before=foo
-> 
-> That will set Before to be only "foo"
-
-that could be interesting in case there are more than one drop-ins which 
-is very common - i use systemd-units and driop-ins from day one excessive
-
-anyways, 9 out of 10 people don't know what they are doing when they 
-deal with systemd configs and wonder what happens after random updates 
-because they touch stuff in /usr, don't know about drop-ins, don't know 
-about overrides and don't understand the conecpt of system versus local 
-configs
-
-otherwise that thread won't exist:
-
-  * upstream mailing list for a distribution-unit
-  * asking why common sense is default
-  * asking if it's fine to edit it
-
-that would lead in touching /lib/systemd/system/nftables.service and 
-last only until the next update
-
-----------------
-
-What is the reason to start nftable service before networkd configured
-by default? Is this the intended behavior for nftable? Or is it fine to 
-modify the service unit file and change the dependency to fit different 
-use cases?
+subscribe netfilter
