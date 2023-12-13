@@ -1,101 +1,137 @@
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SiBjqFHl"
-Received: from mail-oo1-xc36.google.com (mail-oo1-xc36.google.com [IPv6:2607:f8b0:4864:20::c36])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF414B7
-	for <netfilter@vger.kernel.org>; Tue, 12 Dec 2023 12:14:22 -0800 (PST)
-Received: by mail-oo1-xc36.google.com with SMTP id 006d021491bc7-59148c1ad35so181982eaf.2
-        for <netfilter@vger.kernel.org>; Tue, 12 Dec 2023 12:14:22 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702412062; x=1703016862; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=xGrzBxAjqVIPcu9tQRPmZ8E17qbFI7dTdLcgtc70p9I=;
-        b=SiBjqFHl1MY2jbqdoJ8S+u3zT4W8w7ir0TRzA6MVT7q+LR6gRStcRwOhRRwlkYdIbv
-         U4ivIdngQjeoWVKjfCV6rwBKDaVEdYA3au/HJAVJ1OiQGeYoyQ9PPRhEhlhokgTgtRu7
-         OaIUViFlurPKKI8xeyu6SHdQUL7Loeex/wemeCmkzW799ow/yvQIPEvVzE9kAO4myJmo
-         YWxof6CrVAozMo8t1YWsD+eST+WTfe4B2RdllPqdqwOuISyqID33B3YKyuCKXnHx+58j
-         280BzzdQakjhza+R9ZMnihppQSC48U+v/i3+P6ZEB6hy+QEkOU+IYh950oLLR8XvJd/9
-         doHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702412062; x=1703016862;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xGrzBxAjqVIPcu9tQRPmZ8E17qbFI7dTdLcgtc70p9I=;
-        b=NfTj6o0NfOTty9/IaFcFnXK5e72vunB29jZAaemsb71d/YWtvpfeiHeg9enMMrLUfO
-         JrQHArFtPEkLnCE5Mk3P1GrbxvSn1B84+ZxMzI6xm0i7XrLazrVqXdXFh/gE7R5lzTM0
-         3itgmC1WM6JGb0x9Wr5DiBtPeYIUbLuM8+AmpwFlw7/14GYehPdcCiyUTir6SndMZtex
-         wh+zJpPIxNlbpsdgRBunRBHAkLO1Ot0Ktl3dkRGRgQMbSm/15yt2x4xpcXoG5fp5Jalm
-         X8icUYbhp7hne4abuoCFhy8vBAhlPAgV38k9sv0JdeuxE8TIq9dPSjiTSQ2AHlXEQjHG
-         0ZsA==
-X-Gm-Message-State: AOJu0YynHR7PAmPM2FE8W4yoVsZUdSfCkBxCVTymXtTV/NItoxHmijcJ
-	4ADo8cxVy8iHUW7DEV7Avzt7fm37dPQO1dL1Lx9DRSgn28k=
-X-Google-Smtp-Source: AGHT+IHqtbfzD/7xHFwQVRm8YWS8AuNJD14uC/35nmvo1dE7un6JX4f6olK++9oItibT8g7HE7IJnl09h+crKW4ZjNI=
-X-Received: by 2002:a05:6871:292:b0:1fb:75c:4007 with SMTP id
- i18-20020a056871029200b001fb075c4007mr8079637oae.103.1702412062077; Tue, 12
- Dec 2023 12:14:22 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="STYNXTwh"
+Received: from APC01-PSA-obe.outbound.protection.outlook.com (mail-psaapc01olkn2100.outbound.protection.outlook.com [40.92.52.100])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43CEE99
+	for <netfilter@vger.kernel.org>; Tue, 12 Dec 2023 22:56:44 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IHbQGRKtVBFzRDDweE9fJe1V5NX2jz37hhW645JlC4J0sYfyxMti9ZHToVqnluEKMKU9kR4a1L2QAqjLInJGg0/IJrTnZzEItX2M6a1D5vmmnjpSvVg/mh7/Epe3EC+HlYMunHeNP1h++RSRiebdqkW+CLIgoWSXLnI1g3a6hsYEUtIY3zYCL0yWwne/8J1Dc5/lAJ8Z9RZ0S0S8VefHKTnFxp+HxbYUjhcrkQbpkZjJO/JPiBmyPc1lydG7Es2Ps6EzZGLDQIt059UCoxhIdOzZiybepE9r9WlPEU4/oj5DTR6BDtm0TniIZK+QAxZvdlJBu3Fq5ZVQQrY2Ym5vUQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=2Ita7AKyzmkUjxHCLRr+W/8lXf4zigddzQgI9lFnL+4=;
+ b=SJ0yWjFm0VBBTnHCsFAvNDGO2zWvfQ5JVlmLTOOf+eXmwEF+1oySbt3gtOqGcgchwcWVEG8886E2qx7VjDa/M8BuqdcRvECtWbu0VkovqpXO8xWFPstX7QiD8+kXwo5CgPGJ7ZbpDEGSEoTD+8RFv8NejE/jnVyq7AEC0gtYPC/q51OmbEXmLIYPeW0uFDkgjRZyXmkcHwXtS0P7OktP/bCtJVaZsZjkDqvsc8DoCal+LNfsUq3Jrf+6B4i/YsMtuAXZSlkf26UbJv8fagykOvpLwmai9KJgg8si6aWBobWmMJQWcc95rFhpw33B3BkxK9TvbFtx3Hdv9vYmYCfFRQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=2Ita7AKyzmkUjxHCLRr+W/8lXf4zigddzQgI9lFnL+4=;
+ b=STYNXTwhpnOEBIMoT9LaPe5/TqzLooAW4zVCzxonaIrsxmS7LHjjCL3fbbmPpSfFBgx8ERe2DP2SL35msrVHmxb78/3CYlCAc8jIQ04n/5E3KyZx2UgPqIeSPJZQw4md7XSIOH5GErf0JW9nROpxepp4dHlxhaC8Lle+9lbRx5e+7FnM6pEu+hSR+KfDJuGUXzlApxoWRCt5bCAv4FQ/ovt2NTKALdAVYq+DolK9DikK5+c3BclP2tucV/kx9BhNL+v2idbhsc+Q3M8dThKn4SOkY8RqUz2k37Lj1agWoprPBH0C94ErirX0JkGq6gXmjwv4BRg/njvSi0EVTVr/lQ==
+Received: from SEZPR01MB5047.apcprd01.prod.exchangelabs.com
+ (2603:1096:101:97::11) by OSQPR01MB6126.apcprd01.prod.exchangelabs.com
+ (2603:1096:604:27f::5) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7091.26; Wed, 13 Dec
+ 2023 06:56:40 +0000
+Received: from SEZPR01MB5047.apcprd01.prod.exchangelabs.com
+ ([fe80::aafa:dbfb:b7ae:b35b]) by SEZPR01MB5047.apcprd01.prod.exchangelabs.com
+ ([fe80::aafa:dbfb:b7ae:b35b%7]) with mapi id 15.20.7091.022; Wed, 13 Dec 2023
+ 06:56:40 +0000
+From: ye4 yu3 <ye4yu3@outlook.com>
+To: Eric <evil.function@proton.me>
+CC: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Subject: =?utf-8?B?5Zue5aSNOiBuZnRhYmxlcyBwcm9ibGVtIGNvbnN1bHRhdGlvbg==?=
+Thread-Topic: nftables problem consultation
+Thread-Index: AQHaLP57Hk9Vc87nx06u5VjrLfHSxbCl2FWAgADwhTY=
+Date: Wed, 13 Dec 2023 06:56:40 +0000
+Message-ID:
+ <SEZPR01MB504716A57016E9B43D326034CB8DA@SEZPR01MB5047.apcprd01.prod.exchangelabs.com>
+References:
+ <PUZPR01MB5044183AE828E0A504D4014ACB8EA@PUZPR01MB5044.apcprd01.prod.exchangelabs.com>
+ <zg20uRQPjgqpXOGX2T-AaXxj14SLjreS1CgEezKdQ8MOE_u_H3zY09OM4qYxEjKF_LJW6yrotM0eChbOChTIYLH_PnO7YmemsBXMvdz1b0U=@proton.me>
+In-Reply-To:
+ <zg20uRQPjgqpXOGX2T-AaXxj14SLjreS1CgEezKdQ8MOE_u_H3zY09OM4qYxEjKF_LJW6yrotM0eChbOChTIYLH_PnO7YmemsBXMvdz1b0U=@proton.me>
+Accept-Language: zh-CN, en-US
+Content-Language: zh-CN
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+x-tmn: [MjkXjUjkR4r1xwkn28tTsgXIOlbDaAZY]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SEZPR01MB5047:EE_|OSQPR01MB6126:EE_
+x-ms-office365-filtering-correlation-id: db6ebd9e-26da-4a44-6ad8-08dbfba8a890
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ naxDMRwJCqadrj9/6lKk2pKdtsKVxBH5uAJOh1DBt7CxM8fonKIy/dhRy5jgGyljLxYvgv9+kwcQlO5b3xmTu6j8AFVfu4d1Bge3gzPAVN62LYdn4zVlkZjhxQCDkHTX+6qlKj+h3R2ovg/WW3vhWkD3fsAsdejiUZSOisUJerwFr04HT4/LiP8mNoLoFKu1OYw3CdnenlQdn+SWtOe4kIR7LsVFNOsihHZAMyWu4ZboLZ82E6jbgnxKkREi4vZH2hSOz6EsWoqPqUW5qE49quUGkk4mu1JNwASvE0DuvhWcUfWZu4JJzr+BGImOXPA7MPM2sW6HL5oV6eRYkiJrgX1Rh1oAq7iFTWXd8tOf0RSidsKrbvdwI6y8wZktOevwPSIe7jNGC1nX8zUpFB/JEZPnKGX9hU39rAL2bXY7O4MFWM2o9OgJwUx2by9moLu/Lj7bfOHWGxLPv8Zq6KB/0RzULqa3oBCnLFLT7UhX9GOXwW2lG0MB3goKKT+00UxGp77PoUnu50xgk7FAaF/qAY5+ocj62XDGw0ffGOAcFFVYdF1gGocx3j2ByRI05WfP7BBvQ3IkWHslHd7oAAkA9cxINRMGLWeYZUiVQ9K+ZZY=
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?SGVYU1laU05pZlVEU3NVQVViYlhCQlgxaVpaSTAxYUdoU1FEcGlYWjAwOFNv?=
+ =?utf-8?B?cXFnUkJxUlBNQTZrd1gyNUNid3FVU2JoYm9RaEoybUdWNWpEUlVIejhQdFk4?=
+ =?utf-8?B?bklPajlqempyNHlmZWRlVHA2b1NkNjNhMUtYSDdXTy9HQ1JZYmgvMEN3cWlu?=
+ =?utf-8?B?OHFEeUZ5V0dGanpRbjZTSG16cCtuYnlvNVFJYk9vMEp2Z3FIVFZxL0RBWnh6?=
+ =?utf-8?B?OHFhME9la2RCNmRPOVZkWE5kVFNDbjY4dWlvYmswWFB2S25JNU9RUXhKMDh1?=
+ =?utf-8?B?SlU1cUFoNm5SR3ZMdy9xMW9ub0lrK0FFMlkzV1hlQllGSWtNYnJ0QnRLayth?=
+ =?utf-8?B?MmNRM2kyR2Q4RjluRHdCekcrbDZsMmY1THJhZjFrZW1jdnczSHNmd2tpNlNo?=
+ =?utf-8?B?b0YrSExGSkZ5citDUy9YM1dXTWxzZ3FZd3NOV1ZDSHhJMVBnaGRTZjg2VG5w?=
+ =?utf-8?B?YWdackp5eTN3QkFORzVEK09lNUhFVENwYWw1cFpNWWwrUmthc3dsSDhtT2tV?=
+ =?utf-8?B?dHBxdnBKcStLNm5yZThXWXY4MGhpQjdneFpXanRmT3ptWmdrc211cnJrRnVL?=
+ =?utf-8?B?ZnpMazlKMHhnWExUS1pQM3FqbjNFVGVSaHhOZFM4SWJKWnJTZjVtNlhBeXhT?=
+ =?utf-8?B?NXVJWkpCNCtLWjBkUDFFNVFjVmthbjdjZ1dnVmNRcEVCbWdWd3ZFb3E4Sk5N?=
+ =?utf-8?B?Y0ozdVAvMDZOdHErUk5ZR1FvOEw4a1h5OXUxWlhhZytwS1BvNlgrQ2N2S0FW?=
+ =?utf-8?B?eThBYXE1Q2E3QUVKMGloTVVPaEdlNnc2OGx0ZkpqVE5EQlVMa3JVd3JLZmRa?=
+ =?utf-8?B?Vy9vYVRGazR3Tk4vN0ZnS3prU2JLNHpuQnN3ckoxMlMzOTRlWGh0bjExT09Y?=
+ =?utf-8?B?WnU5cHoyaVJBR1hrVVBncDVRSk9zK25WOHVIcEVVQ0RPMXl0QmdybEdWaDNO?=
+ =?utf-8?B?V1BPOWpKOXZGUnhON1ZVNE8rNnRkOE9CY0ExN2s5K2VPcW8wdXhQR2EvSGhP?=
+ =?utf-8?B?UE1wVHVOdEZ1Q1kzTnVpUFNjcitoSEp0MjBQWW5WQnlxNTJZQUpvTlFNUzhB?=
+ =?utf-8?B?U2cxK1plMnpmOXVLNXcwclU4eGRpOUcySVhvRlA5SmRodUFjQS83cjNUYXJS?=
+ =?utf-8?B?dVFzb0w3L3Q4RDNpUExCN0tIQ2I4TUdHcSswUFpQemxJTFJJRDY3Y0RFZmZr?=
+ =?utf-8?B?anltNlFTSjNvd1NXdkRocHRQZDdOUUhBaENBNGprWnR0SjlScmxpeVhDWmRX?=
+ =?utf-8?B?ckNjNVZlSDZWeDNlOTBPb3RrTTlFZHZURU1ZSzRMN3AwRGVHS21ucmUzRStN?=
+ =?utf-8?B?QlI2cHZuMmExRVlSS2Y0bkM4RmtiUjV5ZnBOYXFJUUV0TmZrVWRsNWVkWjZG?=
+ =?utf-8?B?Qis3Q25ISjU5MDZyTXB4TmxYVTBvQVM4bERIMWNMZlpQNjlVMThlQ1Q1b2FP?=
+ =?utf-8?B?NU9FbjRHNnF6bjlvaEhGcHliSXRNSURLb1pib0gxRHRVV0hENEZwKysxUUpI?=
+ =?utf-8?B?REJkUXVnNGZMZW1UaVBzTjRQQUVnMFpHK0hDb0p0WFJKdXBqZG9BVElMK3pU?=
+ =?utf-8?Q?ofV0XzUxoomVDPAV8sLmfdp0pifDb4kXC8CFXSrgb1C38/?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: You Yu Lu <zxc70208@gmail.com>
-Date: Tue, 12 Dec 2023 21:13:46 +0100
-Message-ID: <CAA=+Qij3_FY==-OtG-qoY8b9ZwGyXYCt9Gt+LDn8xPO2caf9og@mail.gmail.com>
-Subject: tcpdump output changes after restarting nftable
-To: netfilter@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SEZPR01MB5047.apcprd01.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: db6ebd9e-26da-4a44-6ad8-08dbfba8a890
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 13 Dec 2023 06:56:40.3883
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: OSQPR01MB6126
 
-Hello netfilter community,
-
-On my system, I have an ethernet network eth0 and a bridge eth0_bridge
-and several vlan interfaces(vlan.x) assigned to eth0.
-
-OS: Ubuntu 22.04.1 LTS
-kernel: 5.15.0-43
-tcpdump: 4.99.1
-nftable: 1.0.2-1ubuntu2
-
-The problem that I am facing is that the behavior of tcpdump on eth0
-is inconsistent before and after I restart the nftables.service. This
-is the rule that I have to redirect the destination of the vlan tagged
-packets coming from VLAN interfaces.
-
-iifname vlan.1 ip protocol udp ip daddr set $dst_ip udp dport set $dst_port1
-iifname vlan.2 ip protocol udp ip daddr set $dst_ip udp dport set $dst_port2
-iifname vlan.3 ip protocol udp ip daddr set $dst_ip udp dport set $dst_port3
-iifname vlan.4 ip protocol udp ip daddr set $dst_ip udp dport set $dst_port4
-
-After a reboot, the ruleset is applied properly when I run the nft list
-ruleset and tcpdump(tcpdump -nei eth0) captures the raw UDP packets
-that are not redirected.
-
-vlan 1, x.x.x.x.12345 > x.x.x.x.54321: UDP
-vlan 2, x.x.x.x.12345 > x.x.x.x.54321: UDP
-vlan 3, x.x.x.x.12345 > x.x.x.x.54321: UDP
-vlan 4, x.x.x.x.12345 > x.x.x.x.54321: UDP
-
-However, after I restart the nftables.service manually(basically flush
-and reload the rules), the output of exactly the same tcpdump command
-on eth0 looks different. It seems like tcpdump is getting the
-redirected packets with $dst_ip, $dst_port, but it looks random and
-does not match the 1-1 correspondence in the nft rules.
-
-vlan 1, x.x.x.x.12345 > $dst_ip.$dst_port3: UDP
-vlan 2, x.x.x.x.12345 > $dst_ip.$dst_port3: UDP
-vlan 3, x.x.x.x.12345 > $dst_ip.$dst_port1: UDP
-vlan 4, x.x.x.x.12345 > $dst_ipx.$dst_port1: UDP
-vlan 1, x.x.x.x.12345 > $dst_ip.$dst_port1: UDP
-vlan 2, x.x.x.x.12345 > $dst_ip.$dst_port4: UDP
-vlan 3, x.x.x.x.12345 > $dst_ip.$dst_port4: UDP
-vlan 4, x.x.x.x.12345 > $dst_ipx.$dst_port2: UDP
-
-On the other hand, if I listen to eth0_bridge, the tcpdump output is
-consistent before and after nftables.service and I am getting the
-correct 1-1 match according to the nft ruleset.
-Does this behavior make sense? Or is tcpdump not the right tool to
-verify the nftable rule
-in this case?
-
-Best regards,
-You-Yu Lu
+Rmlyc3Qgb2YgYWxsLCB0aGFuayB5b3UgZm9yIHlvdXIgcmVwbHkuCgpZZXMsIEkgdXNlIGtlcm5l
+bCA2LjEsIFNvIHRoZSBydWxlIGNhbiBiZSBzdWNjZXNzZnVsbHkgYWRkZWQgd2l0aG91dCBhbnkg
+ZXJyb3JzLCBBbmQgc2V0IHRoZSBzb3VyY2Ugb3IgZGVzdGluYXRpb24gYWRkcmVzcyBjYW4gYmUg
+c3VjY2Vzc2Z1bGx5IGV4ZWN1dGVkLgoKQXMgeW91IHNhaWQsIEkgdXNlZCB0Y3BkdW1wIHRvIGNo
+ZWNrIHRoZSBzdGF0dXMgb2YgdGhlIGlwIHBhY2tldHMsVGhlIHJ1bGUgdG8gc2V0IHRoZSBwb3J0
+IGNhbm5vdCBiZSBzdWNjZXNzZnVsbHkgZXhlY3V0ZWQsIEFuZCBpIHNlZSB0aGUgaXAgcGFja2V0
+IGFwcGVhcnMgdG8gYmUgZGFtYWdlZCBpbiB0aGUgdGNwZHVtcCAodGhleSBubyBsb25nZXIgaGF2
+ZSBzb3VyY2UgYW5kIGRlc3RpbmF0aW9uIHBvcnRzKS4KCkZpbmFsbHksTXkgc29tZSBqb2JzIHJl
+cXVpcmUgdGhlIHVzZSBvZiBlZ3Jlc3MgaG9va3MgdG8gbW9kaWZ5IGFkZHJlc3Mgb3IgcG9ydCxE
+byBub3QgdXNlIHByZXJvdXRpbmcvcG9zdHJvdXRpbmcgaG9va3MgYmVjYXVzZSB0aGV5IG11c3Qg
+aGF2ZSBzdGF0ZS4KCk9uIFR1ZXNkYXksIERlY2VtYmVyIDEydGgsIDIwMjMgYXQgMDU6MjUsIHll
+NCB5dTMgPHllNHl1M0BvdXRsb29rLmNvbT4gd3JvdGU6Cj4gSSBoYXZlIGEgcXVlc3Rpb24gcmVn
+YXJkaW5nIHRoZSBlZ3Jlc3MgaG9vayBvZiBuZnRhYmxlcywgSSB3YW50IHRvIG1ha2UgbW9kaWZ5
+IGlwIHBhY2tldCBzb3VyY2Ugb3IgZGVzdGluYXRpb24gcG9ydCBvbiBlZ3Jlc3MgaG9vaywgSSB1
+c2UgdGhpcyBydWxlIGluIGVncmVzcyBjaGFpbiAodGNwIGRwb3J0IDgwIHRjcCBkcG9ydCBzZXQg
+ODA4MCkgaXQgc3VjY2Vzc2Z1bGx5IGxvYWRlZCxidXQgaXQgZGlkbid0IGhhdmUgYW55IGVmZmVj
+dC4gaWYgaSBvbmx5Cj4gCj4gbW9kaWZ5IGlwIHBhY2tldCBzb3VyY2Ugb3IgZGVzdGluYXRpb24g
+YWRkcmVzcyB3aWxsIGhhdmUgZWZmZWN0IChpcCBkYWRkciAxMC4wLjAuMSBpcCBkYWRkciBzZXQg
+MTAuMC4wLjIpLGkgdXNlIHNldCBwb3J0IHJ1bGUgb24gYW55IG90aGVyIGhvb2sgYW5kIGl0IHdv
+cmtzIGluY2x1ZGUgaW5ncmVzcyxJIGRvbid0IGtub3cgd2h5IHRoZSBlZ3Jlc3MgaG9vayBpcyBp
+bmVmZmVjdGl2ZSxwZXJoYXBzIHRoZXJlIGlzIHNvbWUgd2F5IHRvIHNvbHZlIHRoaXMgcHJvYmxl
+bT8KCkhlbGxvIFllIFl1LAoKRmlyc3QsIGRvIHlvdSBoYXZlIGtlcm5lbCA1LjE2Kz/CoCBUaGF0
+IGlzIG5lZWRlZCB0byBnZXQgdGhlIGVncmVzcyBob29rIGZ1bmN0aW9uYWxpdHkgKEkgYXNzdW1l
+ICJ5ZXMiLCBzaW5jZSB5b3UgYXJlIG5vdCBnZXR0aW5nIGFuIGVycm9yIHdoZW4geW91IGFkZCB5
+b3VyIHJ1bGUpLgoKTmV4dCwgaG93IGFyZSB5b3UgdmVyaWZ5aW5nIHRoYXQgaXQgZG9lc24ndCB3
+b3JrP8KgIEFyZSB5b3UgcnVubmluZyB0Y3BkdW1wIChvciBlcXVpdmFsZW50KSBhbmQgd2F0Y2hp
+bmcgdGhlIHBhY2tldHMgY29tZSBvdXQgb2YgdGhlIHNwZWNpZmllZCBpbnRlcmZhY2Ugd2l0aG91
+dCB0aGUgcG9ydCB0cmFuc2xhdGlvbj8KCkZpbmFsbHksIEkgaGF2ZSBub3Qgc2VlbiB0aGUgZWdy
+ZXNzIGhvb2sgdXNlZCB0byBkbyBwb3J0IHRyYW5zbGF0aW9ucywgdHlwaWNhbGx5IHRoYXQgaXMg
+ZG9uZSBpbiB0aGUgaW5ldC9pcCB0YWJsZXMgdXNpbmcgdGhlIHByZXJvdXRpbmcvcG9zdHJvdXRp
+bmcgaG9va3Mgd2l0aCBOQVQgcnVsZXMuwqAgQXJlIHlvdSB0cnlpbmcgdG8gZG8gc29tZXRoaW5n
+IHRoYXQgc3BlY2lmaWNhbGx5IHJlcXVpcmVzIHRoZSB1c2Ugb2YgdGhlIGVncmVzcyBob29rP8Kg
+IAoKaHR0cHM6Ly93aWtpLm5mdGFibGVzLm9yZy93aWtpLW5mdGFibGVzL2luZGV4LnBocC9OZXRm
+aWx0ZXJfaG9va3MjSG9va3NfYnlfZmFtaWx5X2FuZF9jaGFpbl90eXBlCgpFcmlj
