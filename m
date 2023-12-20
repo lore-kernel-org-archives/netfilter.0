@@ -1,97 +1,67 @@
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B11518EA1
-	for <netfilter@vger.kernel.org>; Tue, 19 Dec 2023 13:23:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E22651C695
+	for <netfilter@vger.kernel.org>; Wed, 20 Dec 2023 09:41:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="NmGsL228";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="DBkt9pW2"
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailout.west.internal (Postfix) with ESMTP id 26D743200A2D;
-	Tue, 19 Dec 2023 08:23:16 -0500 (EST)
-Received: from imap50 ([10.202.2.100])
-  by compute4.internal (MEProxy); Tue, 19 Dec 2023 08:23:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-	 h=cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1702992195; x=1703078595; bh=iCmLG2PvhV
-	aFjSnzP3UuvXtqThdabwX1xgZMc07RG50=; b=NmGsL228BH3I0forAP9EFq3KtK
-	wamo/bee9a2eV2P8mgTGIkhEbayMewyqn0QdS26zjl47HH4twjbuOxyPGiDEzSgl
-	Whl+26UtHp3bVKHT3zrclCSgpnaLuKQFcsCBaWHbvPBbZMGTvJ5RtT9g+AcW+jRo
-	7R1mRviy/m2g/SNvxOM2MpBPDQNkMsjwNqj0zNrn6AQ0Ehyp6WPX69IYf39W1ExQ
-	UnBbKP6pux0VA4C8FZfD3ERc6S5ygEPI1F8n9aV3VVOgHOXgvfUAjGrtUDHN8PeI
-	/8Ikx3t0xfnj69XSpAbk+3kiunRn+/lLRhH//biFrU0beuJetHdNsbAB7l3A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1702992195; x=1703078595; bh=iCmLG2PvhVaFjSnzP3UuvXtqThda
-	bwX1xgZMc07RG50=; b=DBkt9pW2Y2pF4IsxVl9aXzf8xo4IFQMzFNUxds91A/yU
-	80nTY7AdecIAsvAIIegW4lamb7Z3wJPeXpN41B4NOQXlIfwS4M0G0l54weMH3ShL
-	f+7IQKKcDI37SsNKXGYcb3hUJ1rx4iDqnwXBhTFtgqKf6ciNVrOVSoR5DkkTE5FH
-	9UHZJVE1HQnxR0uAVTIGta52TmiI1zEl0YenzlyK7g65TymQTa0uRMsS7F/R7Guk
-	atvTIJ0pGYMF8IhRxY7Y308N89ZTJq85Zm1aWZnrCwWpHN84KrKDV1q/CI8E1J2p
-	R05q0eb/UuPdQvNtRPStM8tm+nozi/+PNF6TmaqjXg==
-X-ME-Sender: <xms:Q5mBZTrWyX_qNN-AYi6BQDlD1E6Df8rpVBvjEcwYqE6hcY0n5VNlvQ>
-    <xme:Q5mBZdpu1tBGbReeyizZHFwvWLBilx2XcNJ0NZur0i__LlT_ZcmLonOoPpP3SDZKo
-    9RTJjKzy2QVJbaN>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddutddgheduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefofgggkfgjfhffhffvufgtsehttd
-    ertderredtnecuhfhrohhmpedfmfgvrhhinhcuofhilhhlrghrfdcuoehkfhhmsehplhhu
-    shhhkhgrvhgrrdhnvghtqeenucggtffrrghtthgvrhhnpeeutdfgtedtheeitddugffghf
-    dugfejjeeikeefieffveduleegveektdeggeegteenucffohhmrghinhepkhgvrhhnvghl
-    rdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomh
-    epkhhfmhesphhluhhshhhkrghvrgdrnhgvth
-X-ME-Proxy: <xmx:Q5mBZQNnPcfTjswcDPxzkFOkqYX-ypkGf8a1dymej3acuGJhGE8Cog>
-    <xmx:Q5mBZW76WNUGNrXdUCUMatgToKRcBH0tsos7vqReCw5S5sBJsEyRAw>
-    <xmx:Q5mBZS45jUUYsOnaTNEQYbPz5Aie_9oyRwO4Yi3xQjSP2mzgUMjDZw>
-    <xmx:Q5mBZfXiw_XW-0MtbtkuOeIyj1aoV1maSOfoDpfmx6fT6gLAL2p9ug>
-Feedback-ID: i2431475f:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 45FD21700093; Tue, 19 Dec 2023 08:23:15 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.9.0-alpha0-1350-g1d0a93a8fb-fm-20231218.001-g1d0a93a8
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LsmYW3S4"
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6da5d2c3ec7so3290355a34.2
+        for <netfilter@vger.kernel.org>; Wed, 20 Dec 2023 01:41:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1703065268; x=1703670068; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=fEcgq9sY6vsZsRmj0sERWu5017EJGrY5xRxj2ZhDOZw=;
+        b=LsmYW3S4TxtSjRCp9Z94S65efglorFRjlJE7t4URaYJ3kya6XvYmnn/uE41NAhlROw
+         i06J85wpK1VjTeP13V8lASPM0z6r/dTlB7K8U/unrcwrcPPbc8hS8/7eQTvlPNzS9rwh
+         4DSMOCVmMMUdX67Zba6RLTLRGjvhBIJt9xIYClL8kiWyR6WpOjOny1rwekFjHtcn9Akm
+         WZWUwkdsRionyHoF2sBktYxP+oRQMuW89gma30mEIicmsaqIFcXHFSdl+PQw0aDkH2Vx
+         C8nf3j+6beFPE/PAmUR8xn+UZ3WUVR10IeJ043chVcnmGDJFrFr493cPqBML1f/bXa4m
+         nMVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703065268; x=1703670068;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=fEcgq9sY6vsZsRmj0sERWu5017EJGrY5xRxj2ZhDOZw=;
+        b=aPHOhXBK9C5DfE6UoKkjLbFV7tIMCJ7ZKlc9/P1Lw9A/7qspuq4eMkS7nmqrXXqGwm
+         ReUVJiS7zTMZvAq9MKnT+rved+2SpmV5ikLRjBwm4De9SKvBQFTZm/lctxL/ZCxepPax
+         fV8un7s1zzEYuZr5rJZJT+ZH3Y4GHIOE6M5WbrZmULHiWGOmVml2240rxWpZhbBqm8k6
+         f5p05L+n4iBN2XZ6HvkG+qKXaVKpYWDjDWN//eUspNrmqtY7ON8hLsxAuUJriQIGGLLU
+         EumQjRxHmOBQkCZGBxQLm8jCgk5bVMv9VbGxbQsLKFrRSzHeDT+JwLTXyqIJv4iK0Wyh
+         Z7lQ==
+X-Gm-Message-State: AOJu0Ywj7NI5A9m70AeaZyx+hfF05Rnl3tbAvaC6cT0M5LJRdcdMhNea
+	1FWEVPuIwJa5h1FXRVHI//FNbYFNdESCnOsIBbuZeeg3ntM=
+X-Google-Smtp-Source: AGHT+IGegpQgOgxJOrXDs4ZCG8P7oENpIgCigS4TRt3M0VzWfHeSbu4LVchgoRivnldG/upghlTQInrQIw554F8YE18=
+X-Received: by 2002:a9d:75ca:0:b0:6d9:9fea:3328 with SMTP id
+ c10-20020a9d75ca000000b006d99fea3328mr19747861otl.13.1703065268330; Wed, 20
+ Dec 2023 01:41:08 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <6e536dae-3a06-4980-98d3-bc52d8690a16@app.fastmail.com>
-In-Reply-To: 
- <ZdqLNLBbGjZ0siZOeMmxYkCvDyQO6M9e-UxKXnR4qaH4Cw9kHMR-5VVaNfnncHZfRoe-6uUr-xogQM4srVoz4Q1396B3uVPJ0O1hq7atttQ=@protonmail.ch>
-References: <4Svb6P0lWsz3wZY@mail-02.mail-europe.com>
- <ZdqLNLBbGjZ0siZOeMmxYkCvDyQO6M9e-UxKXnR4qaH4Cw9kHMR-5VVaNfnncHZfRoe-6uUr-xogQM4srVoz4Q1396B3uVPJ0O1hq7atttQ=@protonmail.ch>
-Date: Tue, 19 Dec 2023 13:22:27 +0000
-From: "Kerin Millar" <kfm@plushkava.net>
-To: Zounp <zounp@protonmail.ch>,
- "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Subject: Re: Undelivered Mail Returned to Sender
-Content-Type: text/plain
+References: <CAA=+QiiS_FZnaGNjx7kGYqJgkMTE48z7nHn1VREcV4PoD3GyZQ@mail.gmail.com>
+ <CAA=+QigdCVDHgmDq8G+4U+SjYOGPQ8TrBXAcD8UXYxgJ4Dqtiw@mail.gmail.com> <d75fe7fb-f5ba-421b-940a-09383d8bbf86@app.fastmail.com>
+In-Reply-To: <d75fe7fb-f5ba-421b-940a-09383d8bbf86@app.fastmail.com>
+From: You Yu Lu <zxc70208@gmail.com>
+Date: Wed, 20 Dec 2023 10:40:32 +0100
+Message-ID: <CAA=+Qij5nxLOuj79Zc6T-XkDvUfPzuBaaYJDaiO5i4ZROSKYAw@mail.gmail.com>
+Subject: Re: Unit dependency of network-pre.target in nftables.service
+To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 19 Dec 2023, at 12:19 PM, Zounp wrote:
-> Hello,
->
-> If this works at all.
->
-> I just send a regular reply and got
->
-> "<netfilter@vger.kernel.org>: host 
-> smtp.subspace.kernel.org[44.238.234.78] said:
->     550 5.7.1 Your message looked spammy to us. Please check
->     https://subspace.kernel.org/etiquette.html and resend. (in reply to 
-> end of DATA command)"
->
-> Nice. I am not going to try to jump through your hoops which is mostly 
-> fruitless. So I register kernel.org as unreachable.
-> That means, no feedback on the bug reports I submitted.
-> But then, I presume this e-mail will be rejected as well.
+Thank you so much for this example. It is very clear and useful.
+I will try this out on my system and see if the inconsistent behavior
+is still there.
 
-It was not, possibly because the payload was a text/plain part this time, rather than base64 encoded HTML. In any case, the ulogd link has been corrected.
+Just wondering, what is the reason you decided to use udev rule to
+trigger the service, instead of a script in /etc/network/if-up.d/ or
+/etc/networkd-dispatcher/?
 
--- 
-Kerin Millar
+>
+> /etc/udev/rules.d/99-nftables-netdev.rules
+> ----
+> SUBSYSTEM=="net", KERNEL=="enp1s0f0", ACTION=="add", ENV{SYSTEMD_WANTS}+="nftables-netdev@enp1s0f0.service"
