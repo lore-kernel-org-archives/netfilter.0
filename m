@@ -1,124 +1,87 @@
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0D2EBA5F
-	for <netfilter@vger.kernel.org>; Thu, 21 Dec 2023 18:43:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jcm.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jcm.me
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3601627E3
+	for <netfilter@vger.kernel.org>; Thu, 21 Dec 2023 19:12:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=jcm.me header.i=@jcm.me header.b="YSotJOr9"
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5cd8879ce18so635242a12.1
-        for <netfilter@vger.kernel.org>; Thu, 21 Dec 2023 10:43:07 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DB0fr4r6"
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-33680da01d6so988727f8f.2
+        for <netfilter@vger.kernel.org>; Thu, 21 Dec 2023 11:12:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=jcm.me; s=google; t=1703184187; x=1703788987; darn=vger.kernel.org;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=RGeXPoc06fo757BVXfVehuEM3kaP8SWqOFiR+gDDtCI=;
-        b=YSotJOr9gU7rz+37IjzuR/9jfiN2/z0/AbqKXB7RirVdd5mc5TcNjGAqeMHphHSUgW
-         RWBjOM0G46ApbBT3872QQXHqBfqqI4RwIxONckhBnBaSX9YYR3QKZLeuzYVZF9dBNv9K
-         LN7CZc7xh0zw1h38oF6rs23dhB2GbRiAhG2/w=
+        d=gmail.com; s=20230601; t=1703185935; x=1703790735; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VNWr7x1G9JYpzGqn4sonodyCJbyOmriisWbBQCFG1qs=;
+        b=DB0fr4r6YFsXBzMFSomeD9V7DTVHdJILA+mlo+EVzAXCx9C78WFAZnEQ3DjFs+kNtS
+         HIhwMxLftppqH/BuY9fUPIUYdyHqpq7Ey0847FEiHRBkUR82UhgzdDTfvLmhibRrgOcp
+         Mu19FJ9iyAoykQq/vBDF2GFwIyi4Tc2nwAQIQRTMXZgJWUjWW6No/lzizmXirYPT/kj1
+         IPd+yw6q6mhSiQMY4bvRsCriC5DsJKl/GOWDTcI1L5aiFIro74B7dyTFuoRk+1s/DosQ
+         /dlg7XerjmHGrBdWReI05uiD9uJzCI+l+hUoAEuU9Wyu5nvJXGvXshPQLp+szjs1CEdP
+         OvwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703184187; x=1703788987;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1703185935; x=1703790735;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RGeXPoc06fo757BVXfVehuEM3kaP8SWqOFiR+gDDtCI=;
-        b=ljQI/w9MySavF/VUOpJC1yIY18McZD2rXDgktA3Y54xbN5PjNNsnbSaDS+6kiLReIX
-         wrEzvsdbC3IKz0QlNnbPEYYIejgsj1/EpcG1w+kac8fwyfUDLqRQj0g7fZrZFOElqhd3
-         vhVk72qVy9Ek61fHcjQsUwbGXgMrvoTSxuwysgMl8fipYfS/4Sq2O4Vo2+ZUbsN+y49d
-         5JmIZfBr3jmVY9uyKlqXqVOxqwNTslAH/5vEmH9icHAsEM+D6fHbD+eZ3UbRxhSav33+
-         E1QCPDpHzo7lnKM21Nf1UDn6qg1xhCQpAKzpbSw4F1ns7SCWTntaJDx5SOL2cCaVwT2R
-         qUng==
-X-Gm-Message-State: AOJu0Yx3eXgoNdqHlTBBAo1PfcVI/zvFIxmk47YAQ5EV5CuHueEBNFu1
-	+7v6QfkhLMkBwh5lo/xRwYEPwyLFgd/azI7C3rHsAcSGxfw3IFiZ
-X-Google-Smtp-Source: AGHT+IEkVTaH/hjQtRzKWPG77npXPUts9HdnqlCUnwuEJGFqJir9BwkEAn0jNcqGeHBSf+9XYLHLRg==
-X-Received: by 2002:a05:6a20:430e:b0:190:86b:cce9 with SMTP id h14-20020a056a20430e00b00190086bcce9mr159118pzk.24.1703184186971;
-        Thu, 21 Dec 2023 10:43:06 -0800 (PST)
-Received: from smtpclient.apple ([50.46.51.4])
-        by smtp.gmail.com with ESMTPSA id h6-20020aa79f46000000b006ce835b77d9sm1942993pfr.20.2023.12.21.10.43.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Dec 2023 10:43:06 -0800 (PST)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From: Joshua Moore <j@jcm.me>
+        bh=VNWr7x1G9JYpzGqn4sonodyCJbyOmriisWbBQCFG1qs=;
+        b=H7ousN9aes/IHWf0CCjW5Ck+5kfabzXkKFBfY/B43KJzH4xxjVF3qKDf+gaTG8b43q
+         Z3TeToBg+4n0BOyTCv1OsSQpseCCkmQvkRF+8Ldy8skFsIAbxTYVlituIeJ2x5zcP5oW
+         FUNrmgkrqzx6ipxkCISkunN4V7E5x8TZsLvDmRhnQSyaPwC1Q2Qm6am0pSUEbMyGRuEt
+         h8bJwz34mmsOYEftP89tSZMtlTDHJE9lWlKMQhVj51UTs9AEzrd29cWuEk+pS1xSMOHU
+         w0LJvmzQq7Fr7pkAY9UDNioxz+bDouBwTtXGeb63b+uAlhdb6JgFj2GOo4U3BmwnRv+z
+         Jjgw==
+X-Gm-Message-State: AOJu0Yzh6ZGOgJbSCKHzz3LjNfETmUV9r5JLRRVCpOJpvp5pNijMhAKO
+	hFTZ+kC/h8Vzi8hFZQa/0MqZpwzTcsqhXDuEzInt8IHNNvbylg==
+X-Google-Smtp-Source: AGHT+IFUtxTYHlGGTsoJrojeAfETe83IKwgUtd6oQcAdBA6Q7/3PPKJyvHuHKiGntJQuo6vXrSA5ARr6AJG3V80fnhU=
+X-Received: by 2002:a5d:42cc:0:b0:336:6e12:7c66 with SMTP id
+ t12-20020a5d42cc000000b003366e127c66mr135757wrr.111.1703185934704; Thu, 21
+ Dec 2023 11:12:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: Netfilter, IPVLAN, L3S and NAT64
-Date: Thu, 21 Dec 2023 10:42:55 -0800
-Message-Id: <6A64CF4E-1BE3-4E68-98E7-FD0106DA173C@jcm.me>
+MIME-Version: 1.0
 References: <CANn7yVZ_uPzyp=yMm3zN+LsAQu6exn=H=a-ND3XV=tXx+ciL9Q@mail.gmail.com>
-Cc: netfilter@vger.kernel.org
-In-Reply-To: <CANn7yVZ_uPzyp=yMm3zN+LsAQu6exn=H=a-ND3XV=tXx+ciL9Q@mail.gmail.com>
-To: Rob Ert <ertr3960@gmail.com>
-X-Mailer: iPhone Mail (21B101)
+ <6A64CF4E-1BE3-4E68-98E7-FD0106DA173C@jcm.me> <CANn7yVZkCm5KbRxDhJ78TCvBwj7P2adEuqWE+0EQxHAen_YFbA@mail.gmail.com>
+In-Reply-To: <CANn7yVZkCm5KbRxDhJ78TCvBwj7P2adEuqWE+0EQxHAen_YFbA@mail.gmail.com>
+From: Rob Ert <ertr3960@gmail.com>
+Date: Thu, 21 Dec 2023 13:12:03 -0600
+Message-ID: <CANn7yVadxP=_fQGcFWamX7KpvccW0BLiqBm1f2u7fp808v=WAg@mail.gmail.com>
+Subject: Fwd: Netfilter, IPVLAN, L3S and NAT64
+To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Is there a reason you cannot place a router in front of the ipvlan device an=
-d make the forwarding decision in the router. If the traffic needs to be ipv=
-lan then send it to the ipvlan device, otherwise NAT64 etc.
+---------- Forwarded message ---------
+From: Rob Ert <ertr3960@gmail.com>
+Date: Thu, Dec 21, 2023 at 1:08=E2=80=AFPM
+Subject: Re: Netfilter, IPVLAN, L3S and NAT64
+To: Joshua Moore <j@jcm.me>
 
 
-> On Dec 21, 2023, at 10:38=E2=80=AFAM, Rob Ert <ertr3960@gmail.com> wrote:
->=20
-> =EF=BB=BFHello all,
->=20
-> I need IPv4 connectivity for my particular ipvlan server setup and was
-> hoping someone might be able to help.  My grasp of the subject matter
-> is too limited, but more knowledgeable people are telling me that
-> NAT64 will be difficult if not impossible to get working with ipvlan:
->=20
-> https://mail-lists.nic.mx/pipermail/jool-list/2023-December/000498.html
->=20
-> I am a little reluctant to do away with my ipvlan setup (described in
-> the link above), as it works very well, albeit minus IPv4 connectivity
-> :-).
->=20
-> Since =E2=80=9CTundra-NAT64=E2=80=9D is designed as a translator for one h=
-ost, I was
-> thinking, maybe NAT64 could be realized with Tundra-NAT64 running
-> inside the individual systemd-nspawn containers as an alternative to
-> setting up full dual-stack IPv6 and IPv4-rfc1918 with masquerading for
-> the individual containers? I can install Tundra-NAT64 in a
-> systemd-nspawn container with the following systemd.nspawn overrides:
->=20
-> [Exec]
-> PrivateUsers=3Doff
-> Timezone=3Doff
-> Capability=3DCAP_NET_BIND_SERVICE CAP_NET_RAW CAP_NET_ADMIN CAP_SYS_NICE
-> CAP_CHOWN CAP_IPC_LOCK
->=20
-> [Network]
-> IPVLAN=3Denp1s0
->=20
-> I would rather not keep these overrides in production, but I assume if
-> it works with the overrides, it can be set up beforehand with
-> systemd-networkd without overrides.
->=20
-> According to the documentation, ipvlan in L3S mode provides netfilter hook=
-s:
->=20
-> =E2=80=9CIn L3S mode, virtual devices process the same way as in L3 mode,
-> except that both egress and ingress traffics of a relevant container
-> are landed on netfilter chain in the default namespace. L3S mode
-> behaves in a similar way to L3 mode but provides greater control of
-> the network.=E2=80=9D
->=20
-> I was hoping someone might be able to give me some pointers as to how
-> to get something like this to work, or tell me definitively that it is
-> not practically possible; but then, I really don=E2=80=99t understand what=
- L3S
-> mode is good for.
->=20
-> I am also open to using =E2=80=9CJool=E2=80=9D or =E2=80=9CTayga=E2=80=9D f=
-or NAT64.
->=20
-> Many thanks,
-> all the best and
-> Happy Holidays,
->=20
-> Rob
->=20
+On Thu, Dec 21, 2023 at 12:43=E2=80=AFPM Joshua Moore <j@jcm.me> wrote:
+>
+> Is there a reason you cannot place a router in front of the ipvlan device=
+ and make the forwarding decision in the router. If the traffic needs to be=
+ ipvlan then send it to the ipvlan device, otherwise NAT64 etc.
+>
+>
+It's a dual-stack Cloud-VM with 1 IPv4 and an IPv6 /64 subnet as
+described in the jool mailing list link above. I have it set up with
+IPv6-only systemd-nspawn containerized machine instances using IPVLAN.
+Also, I am using WireGuard and Unbound/DNS to realize IPv6
+connectivity to the containers and the wider Internet over my
+otherwise IPv4-only Internet connection; this setup works very well,
+and I am a bit reluctant to do away with IPVLAN, if it is avoidable. I
+would like to understand why NAT64 is not doable with IPVLAN L3S mode,
+if that is truly the case. I don't think it is possible to integrate a
+containerized router with this IPVLAN setup; I believe I would have to
+switch to a setup where all the containers are connected over a
+virtual bridge.
+
+All the best,
+Rob
