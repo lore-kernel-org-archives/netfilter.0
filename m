@@ -1,74 +1,86 @@
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE7E0651B3
-	for <netfilter@vger.kernel.org>; Thu, 21 Dec 2023 19:48:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC447F4E2
+	for <netfilter@vger.kernel.org>; Sat, 23 Dec 2023 22:37:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N+JyTDqy"
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-40c2db2ee28so14299165e9.2
-        for <netfilter@vger.kernel.org>; Thu, 21 Dec 2023 11:48:40 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1703188119; x=1703792919; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oa3SX1fy28fjP1o/93912ocjS6EQQDs1dFONBeqy+bU=;
-        b=N+JyTDqyUVwrT4hnyj2YVEry7I4DDOpZw+PWEftt5siXCu+BzleMxr6yHB4ZV74c3z
-         9DZxuTS0QSufcf5b9R7HxBuzChgdmQZ4yZdfo9NXUSwxookbqrXfcMywen770NbTz8LI
-         Lm9L+pqhc8oU5+eCqf84zUcQGYQQ8PuwFnLP/ZaMMaVhMVRHGYotFqoeEnrDcpqYw0Wz
-         RAdycLjOO5E0DYfT+ahLr6g0H43dbco8/un4sTT/ZuGIhfQI2QDupSvrO60CeIAQnk0C
-         2FbZYLEhPCEYw31rVPFp8Vhhpfv26uO1RL0AtkhYhexE9VKwR4q15wuD1gqCWP9KPGar
-         hITA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703188119; x=1703792919;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oa3SX1fy28fjP1o/93912ocjS6EQQDs1dFONBeqy+bU=;
-        b=TxeFHK4tD1/jtFjN+JFZ0E7wlw+hFDP9M4hmM/Z/AgnUfCk324/RIBRBRlRI1EITAK
-         YkJQaU0t0ZLrG0nx7GlgE0f6mzXY2/L8dJTdSHjkrVhS1CmH7tF5gxFmI/KKTolF/bPq
-         VF0BaqaRy2QnE3MBpZMcTbT/jkRGIOxaNWfmVw51Olc0EyOu7+nj7ZmnytFBgctxIjIf
-         Fk6wUf4rXpChpl51ZLKUmzb08M7HarAWFtHwevF61kDDaitTP5cPoQJLyIOpKJn+8dEb
-         uFpOaUbmJtshh+G1mMh3UfCY+22iYFT4rMEIZjFcdPJEJ3sW4DYIrlT6P7yZ1jnUWBCy
-         PS7w==
-X-Gm-Message-State: AOJu0YyeCXhJaL0V6ew5GNjt4OizIpbW4E2Wj2PGJjtNVT0q8+S/njse
-	h9dKq8ktq9OdiwT9tLdX4/u5mx6xhkw00EbcDnTqJG4G1SxymgGT
-X-Google-Smtp-Source: AGHT+IGL+m7RI2g0mCTBhgMqIgR4cQSK1TUnWw2nF79dAZzMGNlSXu42kVd6zhF++lNmspViDqtJDDoW4y7WPEoKQu0=
-X-Received: by 2002:a05:600c:4208:b0:40d:39bb:b8eb with SMTP id
- x8-20020a05600c420800b0040d39bbb8ebmr149959wmh.118.1703188118565; Thu, 21 Dec
- 2023 11:48:38 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b="OVpIwx0i";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="E+tqLovD"
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.west.internal (Postfix) with ESMTP id DAD77320014C
+	for <netfilter@vger.kernel.org>; Sat, 23 Dec 2023 17:37:06 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Sat, 23 Dec 2023 17:37:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com; h=
+	cc:content-type:content-type:date:date:from:from:in-reply-to
+	:message-id:mime-version:reply-to:subject:subject:to:to; s=fm2;
+	 t=1703371026; x=1703457426; bh=Op+kI4EeGWCuOZImIa27b44W8hgY7wvr
+	Mxv/DrstE4Q=; b=OVpIwx0iYURA7cepFOEfpCEn68Uh+4z3VRqRTqGhSlGVCtHV
+	4k4PSQ6KknZNvcSTsOav8wU6++cPpQtu5+WaNETopGKExquwJ7oZYsj4s3IwZH7k
+	kk71Lym1L9SjOxr9v2lNc68u9CfivEWyCiesZzUbJKg9/WxYM0stuWWIVkSoa6Q1
+	xucWgtA+I1hy+tDr32M9bGlfh2eB9K0bxFkxSemd3BtkzMlUYlX4VeNCNBUtyym7
+	4/NAbK3xabNbL3xly5f+g/LofVjWp7knCj/SbjgsLeW35gqlVZz9CzXryEu8n4//
+	rrcqnjwpOtmJrHZK4JAd86X/O3bKFTtHEjda3w==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:message-id
+	:mime-version:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
+	1703371026; x=1703457426; bh=Op+kI4EeGWCuOZImIa27b44W8hgY7wvrMxv
+	/DrstE4Q=; b=E+tqLovDImCO+TLALz0+ceUPg03RbBjrYLVeXm0BFbne+l7lKUu
+	rOZ5d3wYCUPIqAzSCS577IzFYfO7cgfbeY+gNZGLB3M2qMqPJXvjtOhLyJRyebEV
+	7e9WugnK46oLqDmzwF06pRSiZQgYhyngs/NmFIJvglwhGjspc1KHr9vMug1JCwWC
+	lsI7qbxNVHwsS/7xfrgbCEp3icKBx/tBe+3Cr0oNmAqjkQBC7pfIEMKDqL4SBJd6
+	WhBNbCBDCLvOGVGt6xS9sh94Ig1otYvPl77/z7h56QO8lfMETwdzLWo9ABRIfj9L
+	jGexyTQYTyi1k15iz+dAGQS0uz/92yCGLXQ==
+X-ME-Sender: <xms:EmGHZT7LkYU63VRFpH3oGvr0Y1WzicMOGOXXD9FSfv_TATayhL3VWA>
+    <xme:EmGHZY5Zy0SjHA-7fVRlL0sscgo-_PwdZUGv5a80eUBLsS_XGyCIxsBfAGECAdZ0E
+    fZIMyBYihtiTb48hUk>
+X-ME-Received: <xmr:EmGHZacNU6fOZ51b1njUaR5iRcJ3JGNFJorZcltsdI1H498rmjaEiauh2cMTszemmA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdduledgudeihecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
+    necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhuffvkffogggtsehttdertd
+    ertddvnecuhfhrohhmpeetuhhrvghlucghihhsshgvuceorghurhgvlhifihhsshgvsehf
+    rghsthhmrghilhdrtghomheqnecuggftrfgrthhtvghrnhepieefkefhgeejjeefieetke
+    ffgfelveduffelkeehvefhjeegvedugefgteeihfdvnecuffhomhgrihhnpehgihhthhhu
+    sgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
+    hmpegruhhrvghlfihishhsvgesfhgrshhtmhgrihhlrdgtohhm
+X-ME-Proxy: <xmx:EmGHZUJGeIkTbY9-wgBc7ug1tV61KAy4znCvjNZ1yVBkNLtDagZXlw>
+    <xmx:EmGHZXL6cNSeNjs-4m-_gwcpYwy-lKYApViDK3_VyNNkDM_4PcBK4g>
+    <xmx:EmGHZdyqGzN5pjqEbtPa-V1on2j34aMnWtACol6MGAtaQAcHGvx4Og>
+    <xmx:EmGHZSnwH76DAXSSqwO0nOYVFU6vMAIM173avJsz6xPUW9R4_RUkCg>
+Feedback-ID: i7911475c:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA for
+ <netfilter@vger.kernel.org>; Sat, 23 Dec 2023 17:37:05 -0500 (EST)
+Date: Sat, 23 Dec 2023 17:36:59 -0500
+From: Aurel Wisse <aurelwisse@fastmail.com>
+Subject: Vim Syntax Highlighting
+To: netfilter@vger.kernel.org
+Message-Id: <NH556S.G06QA55ATDUA@fastmail.com>
+X-Mailer: geary/40.0
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CANn7yVadxP=_fQGcFWamX7KpvccW0BLiqBm1f2u7fp808v=WAg@mail.gmail.com>
- <A74105B3-C9FF-4BD3-8269-4431BBAACDEE@jcm.me>
-In-Reply-To: <A74105B3-C9FF-4BD3-8269-4431BBAACDEE@jcm.me>
-From: Rob Ert <ertr3960@gmail.com>
-Date: Thu, 21 Dec 2023 13:48:27 -0600
-Message-ID: <CANn7yVbt3nqerwU-_OjKFpD56RkqdgG5aUj_5FVoR1SOi3MrBw@mail.gmail.com>
-Subject: Re: Netfilter, IPVLAN, L3S and NAT64
-To: Joshua Moore <j@jcm.me>
-Cc: netfilter@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii; format=flowed
 
-On Thu, Dec 21, 2023 at 1:31=E2=80=AFPM Joshua Moore <j@jcm.me> wrote:
->
-> Would have to see a diagram with traffic flows illustrated to understand =
-your use case more.
->
+Hello,
 
-My setup is as described in Fig1. of the following three page document,
-with my WireGuard wg0-tun-device in the default-ns:
+I wrote a new syntax highlighting package for the Vim editor at 
+https://github.com/awisse/vim-nftables,
+starting from the "official" version 
+https://github.com/nfnty/vim-nftables.
 
-"This can be worked-around by assigning one of the
-virtual devices to the host and eliminating the
-configuration on the master interface, as shown in Fig1."
+All 400+ reserved words of nftables are highlighted in a (hopefully) 
+meaningful way, distinguishing
+objects, types, constants, expressions and statements whenever 
+possible. Comments and suggestions
+welcome in "Issues".
 
-https://people.netfilter.org/pablo/netdev0.1/papers/IPVLAN-The-beginning.pd=
-f
+Aurel
+
+
