@@ -1,86 +1,95 @@
-Received: from wout3-smtp.messagingengine.com (wout3-smtp.messagingengine.com [64.147.123.19])
+Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC447F4E2
-	for <netfilter@vger.kernel.org>; Sat, 23 Dec 2023 22:37:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A69D468E
+	for <netfilter@vger.kernel.org>; Sun, 24 Dec 2023 05:23:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fastmail.com header.i=@fastmail.com header.b="OVpIwx0i";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="E+tqLovD"
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.west.internal (Postfix) with ESMTP id DAD77320014C
-	for <netfilter@vger.kernel.org>; Sat, 23 Dec 2023 17:37:06 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Sat, 23 Dec 2023 17:37:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.com; h=
-	cc:content-type:content-type:date:date:from:from:in-reply-to
-	:message-id:mime-version:reply-to:subject:subject:to:to; s=fm2;
-	 t=1703371026; x=1703457426; bh=Op+kI4EeGWCuOZImIa27b44W8hgY7wvr
-	Mxv/DrstE4Q=; b=OVpIwx0iYURA7cepFOEfpCEn68Uh+4z3VRqRTqGhSlGVCtHV
-	4k4PSQ6KknZNvcSTsOav8wU6++cPpQtu5+WaNETopGKExquwJ7oZYsj4s3IwZH7k
-	kk71Lym1L9SjOxr9v2lNc68u9CfivEWyCiesZzUbJKg9/WxYM0stuWWIVkSoa6Q1
-	xucWgtA+I1hy+tDr32M9bGlfh2eB9K0bxFkxSemd3BtkzMlUYlX4VeNCNBUtyym7
-	4/NAbK3xabNbL3xly5f+g/LofVjWp7knCj/SbjgsLeW35gqlVZz9CzXryEu8n4//
-	rrcqnjwpOtmJrHZK4JAd86X/O3bKFTtHEjda3w==
+	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="mQEqIHtK";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="6vpvC0a8"
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailout.west.internal (Postfix) with ESMTP id 48E36320099B;
+	Sun, 24 Dec 2023 00:23:07 -0500 (EST)
+Received: from imap50 ([10.202.2.100])
+  by compute4.internal (MEProxy); Sun, 24 Dec 2023 00:23:07 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+	 h=cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1703395386; x=1703481786; bh=sb/WVBzQ+N
+	vP6INRteu+HnsasgQtaKzr8f6TDQnPGUQ=; b=mQEqIHtKY9z87TzPde9n03t9VX
+	4twE6OuRowKvBa9gaIdZ0y/ajvmL/XOPkc8ZVf6jNqWaWa2CCfIG9ylZc8Lpm/nU
+	YHIi6l3Qj/fyPMuwdqW6AfhUEZNwiHqL/g+DkfZiWARmTjiQMyvyo4+3Nzk/0A8S
+	5zmNq76w5/wycoDfISJ8idrKko+Xiq2mwqjuPEj7oA4/z2KVHicKjQQ465nUsTHv
+	oyfYn6Lwm3aY5ebn5XKMH5wNvTWpMjw6m03QnAEYL8Ue25Ir73mug1No+Eh6jK6Z
+	j+IRCCi9D+k2qA5uxpDn/xYYqTr5caXA/1+m3b3nP/bJEm+UgGZzuJP5fecg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:message-id
-	:mime-version:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=
-	1703371026; x=1703457426; bh=Op+kI4EeGWCuOZImIa27b44W8hgY7wvrMxv
-	/DrstE4Q=; b=E+tqLovDImCO+TLALz0+ceUPg03RbBjrYLVeXm0BFbne+l7lKUu
-	rOZ5d3wYCUPIqAzSCS577IzFYfO7cgfbeY+gNZGLB3M2qMqPJXvjtOhLyJRyebEV
-	7e9WugnK46oLqDmzwF06pRSiZQgYhyngs/NmFIJvglwhGjspc1KHr9vMug1JCwWC
-	lsI7qbxNVHwsS/7xfrgbCEp3icKBx/tBe+3Cr0oNmAqjkQBC7pfIEMKDqL4SBJd6
-	WhBNbCBDCLvOGVGt6xS9sh94Ig1otYvPl77/z7h56QO8lfMETwdzLWo9ABRIfj9L
-	jGexyTQYTyi1k15iz+dAGQS0uz/92yCGLXQ==
-X-ME-Sender: <xms:EmGHZT7LkYU63VRFpH3oGvr0Y1WzicMOGOXXD9FSfv_TATayhL3VWA>
-    <xme:EmGHZY5Zy0SjHA-7fVRlL0sscgo-_PwdZUGv5a80eUBLsS_XGyCIxsBfAGECAdZ0E
-    fZIMyBYihtiTb48hUk>
-X-ME-Received: <xmr:EmGHZacNU6fOZ51b1njUaR5iRcJ3JGNFJorZcltsdI1H498rmjaEiauh2cMTszemmA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvdduledgudeihecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhepfffhuffvkffogggtsehttdertd
-    ertddvnecuhfhrohhmpeetuhhrvghlucghihhsshgvuceorghurhgvlhifihhsshgvsehf
-    rghsthhmrghilhdrtghomheqnecuggftrfgrthhtvghrnhepieefkefhgeejjeefieetke
-    ffgfelveduffelkeehvefhjeegvedugefgteeihfdvnecuffhomhgrihhnpehgihhthhhu
-    sgdrtghomhenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpegruhhrvghlfihishhsvgesfhgrshhtmhgrihhlrdgtohhm
-X-ME-Proxy: <xmx:EmGHZUJGeIkTbY9-wgBc7ug1tV61KAy4znCvjNZ1yVBkNLtDagZXlw>
-    <xmx:EmGHZXL6cNSeNjs-4m-_gwcpYwy-lKYApViDK3_VyNNkDM_4PcBK4g>
-    <xmx:EmGHZdyqGzN5pjqEbtPa-V1on2j34aMnWtACol6MGAtaQAcHGvx4Og>
-    <xmx:EmGHZSnwH76DAXSSqwO0nOYVFU6vMAIM173avJsz6xPUW9R4_RUkCg>
-Feedback-ID: i7911475c:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA for
- <netfilter@vger.kernel.org>; Sat, 23 Dec 2023 17:37:05 -0500 (EST)
-Date: Sat, 23 Dec 2023 17:36:59 -0500
-From: Aurel Wisse <aurelwisse@fastmail.com>
-Subject: Vim Syntax Highlighting
-To: netfilter@vger.kernel.org
-Message-Id: <NH556S.G06QA55ATDUA@fastmail.com>
-X-Mailer: geary/40.0
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1703395386; x=1703481786; bh=sb/WVBzQ+NvP6INRteu+HnsasgQt
+	aKzr8f6TDQnPGUQ=; b=6vpvC0a8PWtJQb0vlHMW1WKjfAR3MfqXkXIuwXnH6+F3
+	f4Sp17sG6xXEs0zuvgHmN6UyS76yM6WTYOxSjTXiZpXw6GPU5jA8LGW1lLqeY5GC
+	gmNDSOOTGXErgj0aCPfCoWKZsbrFnoa7fU7tOPsl3KAU/epTkfOAkFXzA0FsAhB5
+	YvdTzDpDmiaBlDYjLUfgngg2Gnou1yWCmYKkMN49/5vWLu5xqqYhv2YISA+cAUKB
+	8FWcZ8FoDG+EcgDCczY87vUTavvL79kXCALPomTkFF4t6LEpXk21hRTX7YviREuq
+	vnWjaTlYwWr6Azs4wUMVboXglfDDlRBRaTZG2m9X6Q==
+X-ME-Sender: <xms:OsCHZQ5olyIFXjusBCYN7G9mPNLNEtPG9uwamJjl1FD2ECYjHS4Wag>
+    <xme:OsCHZR7-0Rq4QO7r3MN1fvQ8HHt7GVUBqmUKLfotPPAGPsPZ3qzo6-yU_SnBnlntO
+    I3FZeh-zlF-NuOK>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrvddvtddgkedvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvffutgesthdtredtreertdenucfhrhhomhepfdfmvghr
+    ihhnucfoihhllhgrrhdfuceokhhfmhesphhluhhshhhkrghvrgdrnhgvtheqnecuggftrf
+    grthhtvghrnhepgedvveejfeelgfehvefhudetkeekffffteeggeejjedtffevleejfefh
+    uddvgeegnecuffhomhgrihhnpehgihhthhhusgdrtghomhdpghgvnhhtohhordhorhhgne
+    cuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepkhhfmhes
+    phhluhhshhhkrghvrgdrnhgvth
+X-ME-Proxy: <xmx:OsCHZfd-wFRIMOFD4Qzaq2EOZ5GagLVa-jajOmpLnlDR7AkZdArQbA>
+    <xmx:OsCHZVJln4ondMvqIwwm0ibq4LTeIPjGTA0YWqEzs7S2qRmDm018uw>
+    <xmx:OsCHZUKUwfqjP5ZrTXLI13rBeepQHcUVdRNd0RGmGdNZz18TpbDhJw>
+    <xmx:OsCHZbmWAK7yNbDUtS5YUPojTG0UZpuWgknzxp6JVy-q-ovxmDB0Cw>
+Feedback-ID: i2431475f:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 7FB971700093; Sun, 24 Dec 2023 00:23:06 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.9.0-alpha0-1364-ga51d5fd3b7-fm-20231219.001-ga51d5fd3
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Message-Id: <26a7f756-d64f-450a-a290-21d01c9b3bb5@app.fastmail.com>
+In-Reply-To: <NH556S.G06QA55ATDUA@fastmail.com>
+References: <NH556S.G06QA55ATDUA@fastmail.com>
+Date: Sun, 24 Dec 2023 05:22:08 +0000
+From: "Kerin Millar" <kfm@plushkava.net>
+To: "Aurel Wisse" <aurelwisse@fastmail.com>, netfilter@vger.kernel.org
+Subject: Re: Vim Syntax Highlighting
+Content-Type: text/plain
 
-Hello,
+On Sat, 23 Dec 2023, at 10:36 PM, Aurel Wisse wrote:
+> Hello,
+>
+> I wrote a new syntax highlighting package for the Vim editor at 
+> https://github.com/awisse/vim-nftables,
+> starting from the "official" version 
+> https://github.com/nfnty/vim-nftables.
+>
+> All 400+ reserved words of nftables are highlighted in a (hopefully) 
+> meaningful way, distinguishing
+> objects, types, constants, expressions and statements whenever 
+> possible. Comments and suggestions
+> welcome in "Issues".
+>
+> Aurel
 
-I wrote a new syntax highlighting package for the Vim editor at 
-https://github.com/awisse/vim-nftables,
-starting from the "official" version 
-https://github.com/nfnty/vim-nftables.
+Thank you for this. Would you consider incorporating the following?
 
-All 400+ reserved words of nftables are highlighted in a (hopefully) 
-meaningful way, distinguishing
-objects, types, constants, expressions and statements whenever 
-possible. Comments and suggestions
-welcome in "Issues".
+https://gitweb.gentoo.org/repo/gentoo.git/tree/app-vim/vim-nftables/files/vim-nftables-0_pre2020062901-no-expandtab.patch
 
-Aurel
-
-
+-- 
+Kerin Millar
