@@ -1,124 +1,90 @@
-Received: from azazel.net (taras.nevrast.org [35.176.194.208])
+Received: from wmail.tana.it (wmail.tana.it [94.198.96.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B5ED219FA
-	for <netfilter@vger.kernel.org>; Wed, 17 Jan 2024 15:30:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.176.194.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DFD51B96D
+	for <netfilter@vger.kernel.org>; Thu, 18 Jan 2024 09:05:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.198.96.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705505458; cv=none; b=Xgjel3nzc/y2UWx7XYe9PAYORtUufNVHgEY3f6WAxDQCdcO3FHdnJhnSC8MJa05rzfCtQFtOeUfsXVdFfYdkiLRBmkVPbo0iGU0FEhcyHic73wuiBQ5hTKjxWu4c8H46+ObKHGzur+wa6hVX6tAaFmt73C7+hX811s7WqNUJSi0=
+	t=1705568744; cv=none; b=IT2JayUa5rZDsfd2uftszDIyPx/GUUt0zsnJpLWmUQatq80Uyi4vM34YyXYUBJhM4Zw90tU7rrn81my0ZW3Iv5gt6AltnDviu1C6T2Ecs/En47/onZtYWhzYVEZBNceBXGieLOTPq0XixAMzsJnDKryBnk03mAEYZr1p/GdRDHs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705505458; c=relaxed/simple;
-	bh=6pwjzXAovvodo+OFjeNawQ+Ch74DR2Xdh9QbqWU3j0U=;
-	h=DKIM-Signature:Received:Date:From:To:Cc:Subject:Message-ID:
-	 References:MIME-Version:Content-Type:Content-Disposition:
-	 In-Reply-To:X-SA-Exim-Connect-IP:X-SA-Exim-Mail-From:
-	 X-SA-Exim-Scanned; b=AvANJ0Zj8J/P/tTCac1SIkFTICiuRTSVTfgRztfkvXrPKjf2Va7gol/yyNGfDp6gDKOzBY4qzygnVeaY6/dsTAPAdgRPOiQ2tbbOZbxNmktXt5ZLYg05+WX2Uczd+KH6Iw7mcRlpFJJjsSzYh4HjTH2e8w5Ax3Purc9fRb9Rtc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net; spf=pass smtp.mailfrom=azazel.net; dkim=pass (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b=dxy8KX7W; arc=none smtp.client-ip=35.176.194.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=azazel.net
+	s=arc-20240116; t=1705568744; c=relaxed/simple;
+	bh=VzANumGpaG7aGgBDn5eQFtD55MJhssb9STelEEQnhYc=;
+	h=DKIM-Signature:DKIM-Signature:Original-Subject:Author:Original-Cc:
+	 Received:Message-ID:Date:MIME-Version:User-Agent:Subject:
+	 Content-Language:To:Cc:References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding; b=VJhqVLFJY3vfrJGFC4GaDaNqmaHuUvl/Ayu58mIL0v05wdY5EYrHEa6rYFwOO2uReWxCcHCBAL2N9vmY+Mdwv6FeeAU/BzDpQtqLVcfUVDV5e9adRURDTbUkWpoP3qBkNF0/W8hA5Tly/BlDkAf0Fh3cHSqyt2ItPKHCKGahfP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tana.it; spf=pass smtp.mailfrom=tana.it; dkim=permerror (0-bit key) header.d=tana.it header.i=@tana.it header.b=Uo6Lj9sE; dkim=pass (1152-bit key) header.d=tana.it header.i=@tana.it header.b=AqwdBd4k; arc=none smtp.client-ip=94.198.96.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tana.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tana.it
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="dxy8KX7W"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-	s=20220717; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=3ffWS0QGgEbpuTB84P63mrrLZROkSKs21+JD9ac60Fc=; b=dxy8KX7WMqLGcyeGFctRq/CA3N
-	8oVF1mTbhFP86RM05kBUnCN5X2y6+u00n0Ytq6r4AsEDfLVXO6KYkvYqsnUK6rav+7Yx/22sDKP7u
-	4pZIdwkjYaacbM0UbpL544EV97bY0zxuRK8ia2pAaYdbM14ZNzMbXbB2oLUpSvRIAFh9/qiKeBOkk
-	HqLyT4QKuXUALkLGkOFGMEG3JQjgy4OyQMNXu1hs4oI79fke02lqbjv0wANpTlhG3gwwZ9QbMOoIo
-	YXiPbxIPNQ8s36vRvwWfmv7HdG7nN9Bdivc7hl2gQKNYf8BcfLz5UOqNTdqSgxsafde/ldWIQZAy9
-	vXYKaa9A==;
-Received: from celephais.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:3c21:9cff:fe2f:35f] helo=celephais.dreamlands)
-	by taras.nevrast.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <jeremy@azazel.net>)
-	id 1rQ7IG-00EXDf-1I;
-	Wed, 17 Jan 2024 14:53:28 +0000
-Date: Wed, 17 Jan 2024 14:53:26 +0000
-From: Jeremy Sowden <jeremy@azazel.net>
-To: Alessandro Vesely <vesely@tana.it>
-Cc: netfilter@vger.kernel.org
-Subject: Re: Debugging libmnl client
-Message-ID: <20240117145326.GC213513@celephais.dreamlands>
-References: <50854203-77c6-4145-8d87-8b493ac492a5@tana.it>
+	dkim=permerror (0-bit key) header.d=tana.it header.i=@tana.it header.b="Uo6Lj9sE";
+	dkim=pass (1152-bit key) header.d=tana.it header.i=@tana.it header.b="AqwdBd4k"
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=tana.it;
+	s=epsilon; t=1705568734;
+	bh=FwKl9hcs0midgyDCptU7/Wn9y7BBhOPzy7UJ+iP/9BQ=;
+	h=Author:Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=Uo6Lj9sEr6alcL0KbjoQQ/vpui5eN3uep6IsTVb3CDuPs0SjqgutmC+iJFc+1dP0h
+	 ytDjEk/3y5rA6K1ubq1Cg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tana.it; s=delta;
+	t=1705568734; bh=FwKl9hcs0midgyDCptU7/Wn9y7BBhOPzy7UJ+iP/9BQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=AqwdBd4kJNbd8HeQwVhVPNPh1/XjJbnVga9o5qPtE3PaX3z6dZt4UZs87LKrIxRRJ
+	 7aPgM/Z9JNnDYSQ72pgCgxMYATrhfVyQW4yHWTuUhYOBe3dPHPuOFfgtddJSpFtwbD
+	 JSpG6zc73THGLO/siuolJQpBxsefVrGxUmiADEg1LomDHYeZx8bu8++u/vjD4
+Original-Subject: Re: Debugging libmnl client
+Author: Alessandro Vesely <vesely@tana.it>
+Original-Cc: netfilter@vger.kernel.org
+Received: from [172.25.197.120] (pcale.tana [172.25.197.120])
+  (AUTH: CRAM-MD5 uXDGrn@SYT0/k, TLS: TLS1.3,128bits,ECDHE_RSA_AES_128_GCM_SHA256)
+  by wmail.tana.it with ESMTPSA
+  id 00000000005DC1EA.0000000065A8E9DE.00002D7E; Thu, 18 Jan 2024 10:05:34 +0100
+Message-ID: <d80d5d52-0209-4144-9b7c-51194935e9cd@tana.it>
+Date: Thu, 18 Jan 2024 10:05:35 +0100
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="6uXBjaU7aZ3/i6fq"
-Content-Disposition: inline
-In-Reply-To: <50854203-77c6-4145-8d87-8b493ac492a5@tana.it>
-X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:3c21:9cff:fe2f:35f
-X-SA-Exim-Mail-From: jeremy@azazel.net
-X-SA-Exim-Scanned: No (on taras.nevrast.org); SAEximRunCond expanded to false
+User-Agent: Mozilla Thunderbird
+Subject: Re: Debugging libmnl client
+Content-Language: en-US, it-IT
+To: Jeremy Sowden <jeremy@azazel.net>
+Cc: netfilter@vger.kernel.org
+References: <50854203-77c6-4145-8d87-8b493ac492a5@tana.it>
+ <20240117145326.GC213513@celephais.dreamlands>
+Authentication-Results: tana.it; auth=pass (details omitted)
+From: Alessandro Vesely <vesely@tana.it>
+In-Reply-To: <20240117145326.GC213513@celephais.dreamlands>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+
+On Wed 17/Jan/2024 15:53:26 +0100 Jeremy Sowden wrote:
+> On 2024-01-17, at 14:21:07 +0100, Alessandro Vesely wrote:
+>> are libmnl debug symbols available?
+> 
+> The details depend on how the library was built and installed.  Based on
+> the location of libmnl.so.0 listed below, I'm guessing that you're using
+> Debian or Ubuntu and have installed libmnl0 with apt.  In that case, for
+> recent versions, you should be able to `apt-get install libmnl0-dbgsym`.
 
 
---6uXBjaU7aZ3/i6fq
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Didn't work:
+root@pcale:~# apt-get install libmnl0-dbgsym
+Reading package lists... Done
+Building dependency tree... Done
+Reading state information... Done
+E: Unable to locate package libmnl0-dbgsym
 
-On 2024-01-17, at 14:21:07 +0100, Alessandro Vesely wrote:
-> are libmnl debug symbols available?
 
-The details depend on how the library was built and installed.  Based on
-the location of libmnl.so.0 listed below, I'm guessing that you're using
-Debian or Ubuntu and have installed libmnl0 with apt.  In that case, for
-recent versions, you should be able to `apt-get install libmnl0-dbgsym`.
+Alternatively, is there a tool to check how queues are configured in the kernel?
 
-J.
 
-> mnl_cb_run() returns -1 without calling the cb().  I found a file using d=
-ebuginfod-find, and did so in gdb:
->=20
-> (gdb) add-symbol-file /home/ale/.cache/debuginfod_client/c27acdf07e5746f0=
-a6c74055e6b21dbe700e054d/debuginfo
-> add symbol table from file "/home/ale/.cache/debuginfod_client/c27acdf07e=
-5746f0a6c74055e6b21dbe700e054d/debuginfo"
-> (y or n) y
-> Reading symbols from /home/ale/.cache/debuginfod_client/c27acdf07e5746f0a=
-6c74055e6b21dbe700e054d/debuginfo...
-> (gdb) break mnl_cb_run
-> Breakpoint 1 at 0x2860
-> (gdb) run
-> Starting program: /my/client
-> [Thread debugging using libthread_db enabled]
-> Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
->=20
-> Breakpoint 1.2, 0x00007ffff7cb9860 in mnl_cb_run () from /usr/lib/x86_64-=
-linux-gnu/libmnl.so.0
-> (gdb) n
-> Single stepping until exit from function mnl_cb_run,
-> which has no line number information.
->=20
->=20
-> So it's not a good debug symbol file, is it?
->=20
-> What am I missing?
+Thank you
+Ale
+-- 
 
---6uXBjaU7aZ3/i6fq
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
 
-iQIzBAABCgAdFiEEbB20U2PvQDe9VtUXKYasCr3xBA0FAmWn6eYACgkQKYasCr3x
-BA0M+Q//d3Rm34guLBhYjHyb8glFJdznmAMmRk1pdDaMlEwN1S1T2/m+MiL6QEuX
-iJ6985fSM6jzvNNjCzZCKT7B6/3q6zeDHLhtGUFDlK76LOEAsba1LJ7LD2cm1c/Y
-ZeDudUeK9fMy9ass8veUc9NRLnOffv7HFhX8ehEBGBHe5xzthJNCZdkx88N4azvH
-bJdUL3riA0F1WltM0DeiTpsIXxzs8iqqwN+ekCz0jEAuEpDA8tmjjnGiTWMFePtJ
-64Hq9Ku+LXOIDA059vbVvAtdHodQdjKh7xVuMKldgKrxEvlrpJGikWduz01jLnE6
-y/TgjjXv+iaD8Yi/u1YtMFNfOpUoK6ytM56kaA7ZwcEYucYzG1fgFi8YiOpV4loe
-GFmlUXcOhj8V/yIh4pLmgHNmLOcytQRNSY/3Lin52OAMGRq6luOWarNqSBbLOciC
-weEgAanCf3cRs35EeJ0v7MMCrxAcEy4658X7skwjHn2hlZmLGcWu2CyENRXHqUx8
-trKXEhuSVwQFAUI0TuWjvLZ9ekkhAfRAtN5pbJV6DowQ4q1TcQW8W1WUS+wF8zf6
-mShRfc4p7f119kyPcjienp5uR7HQ3hTOpOS5qa07YJwJkw/tBIgpVE/j7jfJkoRB
-hIinBpiQ3zkGqxYV2ATwnVUatZKakNxQzUkETeagvrJXydfU4V4=
-=mJOb
------END PGP SIGNATURE-----
 
---6uXBjaU7aZ3/i6fq--
+
