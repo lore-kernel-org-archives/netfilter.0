@@ -1,148 +1,151 @@
-Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from meesny.iki.fi (meesny.iki.fi [195.140.195.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C3627B3C4
-	for <netfilter@vger.kernel.org>; Tue, 30 Jan 2024 19:34:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706643283; cv=none; b=PHub+rKX4sap5yaZI2Ci4vXXLp0zXZP9sq6Wf1vZzmSCcXZrO8ob07jVSCrFZx6Yk63AJcqmuzRr1ij4M5+xAJbjl6EO3SUQDKDzZIXK3M0TBcAVXQ9x5TaoXmU8oYEFgCzvrJHq2ISvDn5bzE5yS2cSsRe8Tj6JcJSAjQws8i8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706643283; c=relaxed/simple;
-	bh=CjrHkwqKsXmj4K4Pr5KN2E/DowgpSRiSWw0Dyt9T470=;
-	h=Date:From:To:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=OFAypSQtD1mUC7/HxA9RvWKVRZsa+ODvsg1sV1MegnjRD3SkI+m11hf2Z603+9W4ywcAOt9njiJAhrkAK9SjkRrfmjj1w57dB8Oa4pLoUqAbSJ4bnPyxdjUw4nexpwqpkQckztqv5fsRvK5i5r3a3RMFBpbegeejBZhIjWKzTUA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=ahllM36+; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=w/cnp7f1; arc=none smtp.client-ip=185.25.250.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EE89762C8
+	for <netfilter@vger.kernel.org>; Tue, 30 Jan 2024 20:13:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=195.140.195.201
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1706645613; cv=pass; b=N8h1ikn6gGzv2U+GG3PqVIaJxA+UBzLk3cDqAh9+ZB8lK66MExoORwwZnN+tyomQfwNg+jKx9vrSF2KChlOEB4JyqCg9jU/wJSSAPstbFXYURpZ2V/7drAwt9uCNdc/YUStn5vOAGyC8ozKmVEy7ZfWsquSwJy88B1A6syUy0rI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1706645613; c=relaxed/simple;
+	bh=C528mfPnvq15ZfQ1xcRsVnCzw6x7IpVXWfDXGHVpMvU=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=RLclh6+57dWewCgb4bQsTBxatxFOsEwS0mgLpGUcO6nxYOuHomrwd78J+cyeQ0vUYQvlYaEFdp5i+BHjbvVyimGMCWzUkKKSFUgrLrMvncAgI/LaiBIEY2d5e8K0bjsZGQsgrsFlwLlys58mant6si3Z+R9Wg3TvSaehAlXrNy0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi; spf=pass smtp.mailfrom=iki.fi; dkim=pass (1024-bit key) header.d=iki.fi header.i=@iki.fi header.b=owDU6lGa; arc=pass smtp.client-ip=195.140.195.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iki.fi
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iki.fi
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="ahllM36+";
-	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="w/cnp7f1"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
-	s=r2023; h=Content-Type:MIME-Version:Message-ID:References:In-Reply-To:
-	Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:
-	Message-Id:Content-Type:In-Reply-To:References;
-	bh=BYcuvcEgEKboUpTKym2+k0CFCt27UpWtU+SChTVYULo=; t=1706643278; x=1707852878; 
-	b=ahllM36+M/3Yq5Lk79NiX5F6V/8urgrCY2ZywB3dj1mgWYIjT6MuyMsjKHOs6NQOxgLTg0DiIvX
-	2XPEyehm7Yq+f2z0D8E5fUsUegj8RBlUpJ+Jf8nNH0icSeEfjgqNxuWRPUMJdk6LaznO0LuVj+x4B
-	cw6QjfYo4paVowzv7b8=;
-DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=slavino.sk; s=e2023; h=Content-Type:MIME-Version:Message-ID:References:
-	In-Reply-To:Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:
-	MIME-Version:Message-Id:Content-Type:In-Reply-To:References;
-	bh=BYcuvcEgEKboUpTKym2+k0CFCt27UpWtU+SChTVYULo=; t=1706643278; x=1707852878; 
-	b=w/cnp7f1XhNYQEmpWfzuVypq5xUhg3ycw89A/IEqf2bLS2rh9VA9g4qkwDHfk5plYRVLEGqQ/iA
-	32guEe8zMDQ==;
-Received: from dovex.skk ([192.168.10.12])
-	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96)
-	(envelope-from <linux@slavino.sk>)
-	id 1rUtsQ-001cmd-2L
-	for netfilter@vger.kernel.org;
-	Tue, 30 Jan 2024 20:34:35 +0100
-Date: Tue, 30 Jan 2024 19:34:30 +0000
-From: Slavko <linux@slavino.sk>
+	dkim=pass (1024-bit key) header.d=iki.fi header.i=@iki.fi header.b="owDU6lGa"
+Received: from mail.home (82-181-196-180.bb.dnainternet.fi [82.181.196.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: timo.lindfors)
+	by meesny.iki.fi (Postfix) with ESMTPSA id 4TPbvq4KhRzyVW
+	for <netfilter@vger.kernel.org>; Tue, 30 Jan 2024 22:13:26 +0200 (EET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi; s=meesny;
+	t=1706645607;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type;
+	bh=sCOJCHLp2+vwqruEc/LF53WG+UEEdVK3IgAO3xbwUis=;
+	b=owDU6lGalFwp1iMiRWCPvdKfumJjSt/ny7GiuEVBlWcNi1yCnyVZWYzS6pzb33NhHUf1+N
+	mDsX+9+mGj7blxqUaU1veiVdbB4TNm1xRzUxx+FCxztgBSH4Ur7pPEPVziRtlUYirXs4CR
+	GlsisqikuYFXSzwjtEY3gZYWKq6Qjvs=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=iki.fi;
+	s=meesny; t=1706645607;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type;
+	bh=sCOJCHLp2+vwqruEc/LF53WG+UEEdVK3IgAO3xbwUis=;
+	b=V0a9f72FW+y4Dn8wE87HCFpvHvtYd58sazEm7oXiqOtfdiO/Hu58AfAL6TdGg+DcX9QigO
+	c1RlNmRyBSMyU6sRqfUYYC9Ur7vxkGTxCB4s5lVC1ozgnXC8kocG+pEJhJvEQQ+oL5RmlU
+	L8M0O/CNuWVP/RVSldORpz/BejUrBKU=
+ARC-Authentication-Results: i=1;
+	ORIGINATING;
+	auth=pass smtp.auth=timo.lindfors smtp.mailfrom=timo.lindfors@iki.fi
+ARC-Seal: i=1; s=meesny; d=iki.fi; t=1706645607; a=rsa-sha256; cv=none;
+	b=eEIgQGFYxbzvhMI37sHWM9OxGTOqF2M5Ac1o+KLqT9vqzdwGgzHEq3V/HEmjNB1+yxSxz4
+	sasfEW/hgdiFbRYdxMxzKNsdZT4akGN+eSgqNf7SBa21BpCh8sbSYJWdUh+WRC8+NgusYn
+	oc9BiTQfYL3n+VKYh59fV0usFzFZ/hw=
+Received: from localhost ([127.0.0.1])
+	by mail.home with esmtp (Exim 4.89)
+	(envelope-from <timo.lindfors@iki.fi>)
+	id 1rUuU2-0007BA-5H
+	for netfilter@vger.kernel.org; Tue, 30 Jan 2024 22:13:26 +0200
+Date: Tue, 30 Jan 2024 22:13:26 +0200 (EET)
+From: Timo Lindfors <timo.lindfors@iki.fi>
 To: Netfilter list <netfilter@vger.kernel.org>
-Subject: Re: Combine ipv4 and ipv6 in a set
-In-Reply-To: <eb589516-f7a2-4c17-81fc-fe2eecc6855b@app.fastmail.com>
-References: <be623941-d82e-4430-b6ea-5bdbc5b48da8@tootai.net> <e0e61628-b7b4-4df7-9665-0168fa741fe0@app.fastmail.com> <Zbj04V-90zpQwEzl@torres.zugschlus.de> <cd7cbfc0-b7d4-4713-9e2d-f92596fb4844@app.fastmail.com> <05FFEAEF-0123-4A2B-9607-B162D0AA6C61@slavino.sk> <eb589516-f7a2-4c17-81fc-fe2eecc6855b@app.fastmail.com>
-Message-ID: <47667AAA-1B0B-4262-AC20-2F224B2BB092@slavino.sk>
+Subject: Analyzing firewall rules programmatically
+Message-ID: <alpine.DEB.2.20.2401302150460.27550@mail.home>
+User-Agent: Alpine 2.20 (DEB 67 2015-01-07)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; format=flowed; charset=US-ASCII
 
-D=C5=88a 30=2E janu=C3=A1ra 2024 17:57:21 UTC pou=C5=BE=C3=ADvate=C4=BE Ker=
-in Millar <kfm@plushkava=2Enet> nap=C3=ADsal:
+Hi,
 
->It is easy to say that it is pointless if not the one to be responsible f=
-or implementing and maintaining the code and trying to take into account di=
-verse - and occasionally conflicting - user desires=2E There have been vari=
-ous set-related bugs in nftables over the years=2E Complexity surely matter=
-s to someone=2E There are multiple open bugs now that concern both performa=
-nce and memory usage=2E Efficiency surely matters to someone=2E
+I spent some time trying to figure out how to programmatically answer 
+questions like "Does the ruleset R allow reaching service listening on port P from 
+interface I?" or "Does the ruleset R1 allow something that ruleset R2 does 
+not allow?".
 
-Please, aproximate my English, it is far from good=2E=2E=2E
+I tried to find prior work on this area and was able to find "Verified 
+iptables Firewall Analysis and Verification" [1] that uses 
+the Isabelle proof assistant for iptables rules and "Automated Analysis 
+and Debugging of Network Connectivity Policies" [2, 3] that uses Z3 for 
+some simple Azure firewall ACL rules.
 
-I mean mostly that, that IPv6 becomes reality, and soon or later (the late=
-r
-is IMO more realistic) will replace IPv4 at all, thus all L3 addresses wil=
-l
-become 128 bites long=2E Sure, here will be always penalty in using 128b
-addresses in compare to 32b addresses, but world is (slowly) moving
-to IPv6, thus that penalty is something, which cannot be avoided=2E
+I could not find anything relevant for netfilter so I began experimenting 
+a bit by writing a python function that tries to simulate nftables 
+behavior given a ruleset and a packet. I used output of "nft --json list 
+ruleset" to and soon noticed that it doesn't quite contain all the 
+necessary information for this task.
 
-Debate these penalties sounds for me exactly as debate when 64b
-OSs started=2E I remember "arguments" in that time -- twice of memory
-consumption, twice of binary sizes, etc=2E=2E=2E While all these arguments
-are (or can be) right, they are pointless, as IPv6 is here and is not
-avoidable in future and we all should to learn to live with that, despite
-if we want or don't want it=2E
+For example, the default ufw configuration uses iptables to setup
 
->For it to improve, you could put forward a concrete suggestion as to how =
-it might be improved, be it supporting logical disjunctions in rules, suppo=
-rting a generic address type in sets or whatever else=2E
+Chain ufw-not-local (1 references)
+  pkts bytes target     prot opt in     out     source               destination
+   779 46756 RETURN     0    --  *      *       0.0.0.0/0            0.0.0.0/0            ADDRTYPE match dst-type LOCAL
 
-I am not able to provide real suggestions, as i don't speak C and i
-have minimal knowledge about netfilter/nftables/kernel internals,
-thus i can be totally wrong=2E
+which shows up as
 
-Anyway, i  have some ideas from user (admin) point of view, of
-course=2E I can imagine this:
+$ sudo nft -a list ruleset | grep "handle 247"
+ 		fib daddr type local counter packets 772 bytes 46336
 
-+ sets will store protocol agnostic L3 addresses and it doesn't
-  matter (for me) if IPv4 will be mapped to IPv6 or these L3 sets
-  will internally maintain two sets -- one for IPv4 and one for IPv6
-+ nftables syntax will provide some sort of abstraction, as it already
-  provides eg=2E for UDP/TCP ports (th dport), eg=2E "nh saddr" (nh as
-  network header)
-+ nftables will provide abstraction for ICMP(v6) types, something
-  as it already provides for reject, to one can build common rule
-  for both, including the one common set/verdict map -- for me
-  it doesn't matter if it will internally map namex to protocol's proper
-  values, or specific names must be prefixed eg=2E by ipv4 and/or ipv6
+in in the "normal" output. However, in the JSON output critical 
+information (mainly "LOCAL") is entirely missing:
 
-> That would, at least, be a step along the road to (potentially) convinci=
-ng whoever is going to do the work that it is justified=2E
-
-Yes, that was initial idea of my reply, we all (users, admins, devs)
-have to provide own point of view and find best possible solution=2E
-
->On my part, and despite having been a user of nftables for many years now=
-, I would prefer to see its QA and documentation improve ahead of - though =
-not wholly at the expense of - new features being added=2E
-
-While i played with nftables for years, i use it only on one of
-my servers yet, and even this machine uses mix of iptables
-and nftables rules (the real blocklists are still using ipset),
-the ip(6)tables is used only to drop traffic, all other logic is
-done from nftables=2E Nothing extra, just slightly more than
-basic firewall, it uses sets to limit (per IP/net) logging,
-connections, dynamic blocking, and every used set must be
-doubled=2E=2E=2E
-
-My nft sets doesn't contain huge amount of addresses, as long
-time blocking is done by ipsets, with (semi) persistent and from
-fail2ban (up some tens of days)=2E
-
-I implemented it about year ago, and yes, the documentation
-is hard to read=2E Most of it is ip family only, some parts are
-hard to understand, and even more hard to combine together=2E
-But i cannot be sure, if it is not by lack of my English=2E=2E=2E But
-my feel from docs is, that they are exactly as my notes --
-perfect for me, but hard to understand for all others ;-)
-
-I found as very useful examples from announces in this ML's
-archive=2E IMO these announces should be copied to (or be
-linked from) the wiki=2E
-
-regards
+$ sudo nft -a --json list ruleset | jq . | grep -B5 -A19 '"handle": 247'
+     {
+       "rule": {
+         "family": "ip",
+         "table": "filter",
+         "chain": "ufw-not-local",
+         "handle": 247,
+         "expr": [
+           {
+             "xt": {
+               "type": "match",
+               "name": "addrtype"
+             }
+           },
+           {
+             "counter": {
+               "packets": 778,
+               "bytes": 46696
+             }
+           },
+           {
+             "return": null
+           }
+         ]
+       }
+     },
 
 
---=20
-Slavko
-https://www=2Eslavino=2Esk/
+I understand that ufw is using a compatibility interface. Nevertheless, 
+I'm in need of a way to analyze firewall configurations of large number of 
+real-world systems programmatically. Can you suggest how I should approach 
+this? I can think of at least the following options:
+
+1) Fix the JSON output.
+
+2) Ignore the JSON output and try to parse the output of "nft list 
+ruleset".
+
+3) Use JSON output of most of the stuff but fill the gaps by also 
+parsing "nft list ruleset".
+
+4) Try to parse the raw netlink traffic seen in "nft --debug=netlink list 
+ruleset".
+
+4) Create separate tools for parsing iptables and netfilter rules and 
+hope that no system mixes these two.
+
+
+[1] https://link.springer.com/article/10.1007/s10817-017-9445-1
+[2] https://www.microsoft.com/en-us/research/wp-content/uploads/2016/02/secguru.pdf
+[3] https://github.com/Z3Prover/FirewallChecker
+
+
