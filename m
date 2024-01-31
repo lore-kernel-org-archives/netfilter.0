@@ -1,189 +1,81 @@
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0DD37D3FC
-	for <netfilter@vger.kernel.org>; Tue, 30 Jan 2024 22:05:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E50CA605A9
+	for <netfilter@vger.kernel.org>; Wed, 31 Jan 2024 08:14:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706652354; cv=none; b=XnCenhLxhs6aw/+eWBovLUHz35DBLgrC6oWkg9pN82qNG7oWHYP2fFhqCX5iWfoPnN8tmcivzAwM/awA69ppV6N2UDsPOkXwmmyXjMRLZoJJgnnD7n8UnUiRU5n5Q5xpgwW07J78Z37/PIuWycZn9BJTWPjhnh5BZMghv0bJN1I=
+	t=1706688898; cv=none; b=aKy1+yYL1It4pZH5wTCe//83IMfmGkvuj/1FBDxuXhOY5wnJT7Vla/e6SLReY++9MzbCyC6mQG0A8nDAKpa291bBIRflY33JljaMq+TbfnQ0f8d0Y1TRww9DekZmUn00NLq+duyfdu+5qWCiH+i95LvLhPbgiSUZz7w3jzyDOYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706652354; c=relaxed/simple;
-	bh=PR99aYlB/djB/UPM8UX9sYW7NaeUp2Wj/NTbH5qvqFo=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=GQB6lRAgpV4HI9V9ag9Zftw5aX2brkgp7LCHK7ZWtLsivtMO3IMUAjdTxUwwOXp0gcVsgNScjeHGltN5wevS76AdoIWc2RWjSMbLoiOsb8OwmpV192uicru5yVLUEZYleBPIvh/gyzf9YzgEmz23QLEwryTM1e9Qf9Tw9sXxwd8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=DJpx5j+A; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=IneS00BI; arc=none smtp.client-ip=66.111.4.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
+	s=arc-20240116; t=1706688898; c=relaxed/simple;
+	bh=WmHj9oWmVUg5sQAPB6tjL7U87ulzyCRcnqANIhi6oP8=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=tYQcsHWo5e7amCcoyIfCQnGeRUa1yshCHCjFuSrqO+xTD51waSiofh1+acOaM1VDjBQ4SbScl5oZrl1w5earQVB5KF5KGSZYC0/EnLNohXM5z9WEKfnhgutHO/96OisFmOzVhHlDqn/HOuupbby505Lj4YErlNadUXo1RI3b+pw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BY3weeGA; arc=none smtp.client-ip=209.85.128.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="DJpx5j+A";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="IneS00BI"
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.nyi.internal (Postfix) with ESMTP id DDBF55C007C;
-	Tue, 30 Jan 2024 17:05:50 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Tue, 30 Jan 2024 17:05:50 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-	 h=cc:cc:content-transfer-encoding:content-type:content-type
-	:date:date:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=fm1;
-	 t=1706652350; x=1706738750; bh=yJAOuXXSL/Z0Oa8yCwwyPunTgvGfQLAz
-	uOyWAoMJ8P8=; b=DJpx5j+A1UHBBHFwBVQgAVLOXBVbChNLcZu65tdm0k+cYN/c
-	DmZni7X3etpoX6Mu1s4oiJK1vh+u8Ni5QadtsMSLdCB4LqLOgTgE8d5Tg6UyNX9E
-	JMfKdO6BZl0efF/ppngXkSIne6AA4oDysbvPZcY8QNWa0qpPnOlz2OSR/tJZz3fI
-	PgMoSkWSQ3AP8vwWuWSdsn++yV+yZcK+C284S8zedQZYB/maXs0x+RKjk6EBjLlG
-	j4M+B2JPipVUcMAv6hBYUd9d6AtBC90Pgo9OAxyRretrCy0dFJo7Gd1VVK9HHle9
-	LXZVsl47n+QwGb7dEYwK3haIm7HiPBSoNN3bmg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1706652350; x=
-	1706738750; bh=yJAOuXXSL/Z0Oa8yCwwyPunTgvGfQLAzuOyWAoMJ8P8=; b=I
-	neS00BIcdBWzwfp80HRaIyvY8Bx/Z4LtKLX9m8R+5D0qGN4QaNtOiiCqyCX5zCqz
-	AHlkZxtigyKikEyw+LghLFYUPElix+wF3FkkAOCjyz4ZQJNY5q8izWmMUlXxKEvR
-	E4qXWn1YQh4w8RUUw9wsH+ChJfa6DcC5AHPmQwAqAQz34gBUG8+h6rMYRBZM8xRP
-	r9D/eorOpdebHW8G7ilWbsBhafzJ+0O+pjW9WxpuiH4qpq1sJ33fthk+ZP0sZSN0
-	NGxmwjyhNVENLikWTMxJYxfjZ1m86A37yxYs+E1Mjkbea/QrXJyAKJhIptblr2qp
-	yYxYhvfhbByLgChBu6DRg==
-X-ME-Sender: <xms:vnK5ZdH23hKzTs5v0olJdSEWo9FL3opd789HbvPEHptAPj56V50O8A>
-    <xme:vnK5ZSX5UGlzJ0dVxhDG4zybo6sTugoSFT3k0dW9otC0ix--6tYsptTQzfollQHKf
-    EjbGjMZkSzYrh8F>
-X-ME-Received: <xmr:vnK5ZfKqzVKzUoVAbNWaeBw1kAiI9IvK1hjdmo6ooXU92UdNR-RVaxJSV10Bq10GhoVnjeleQZUP2HyF6iEO>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtjedgledtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkjghfofggtgfgsehtkeertdfjtdejnecuhfhrohhmpefmvghr
-    ihhnucfoihhllhgrrhcuoehkfhhmsehplhhushhhkhgrvhgrrdhnvghtqeenucggtffrrg
-    htthgvrhhnpeduheevfeffudeffedvfeeigffhheekueejueegvefhgedtheelieetjeel
-    tdeljeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hkfhhmsehplhhushhhkhgrvhgrrdhnvght
-X-ME-Proxy: <xmx:vnK5ZTGhIsGw5_C8-rmXcgC0I9C-cETvvnPU5v5qkElL-37wP8k7Jw>
-    <xmx:vnK5ZTVsAKzFmrf_pGBaUnk8uz7wqklutCVMjsZF1zyKCuRGsTryRw>
-    <xmx:vnK5ZeNMKNVR9ijsWubmVVri9CPbX4MFU9WKTPQ1_1n4MAgk703QmQ>
-    <xmx:vnK5ZadBAD7T6JAJN3vyULiC_x4d_U2OgMf4P9VuFCxKCdxdMMWX5w>
-Feedback-ID: i2431475f:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 30 Jan 2024 17:05:49 -0500 (EST)
-Date: Tue, 30 Jan 2024 22:05:48 +0000
-From: Kerin Millar <kfm@plushkava.net>
-To: Slavko <linux@slavino.sk>
-Cc: Netfilter list <netfilter@vger.kernel.org>
-Subject: Re: Combine ipv4 and ipv6 in a set
-Message-Id: <20240130220548.e8ef0afd93b2443beb347883@plushkava.net>
-In-Reply-To: <47667AAA-1B0B-4262-AC20-2F224B2BB092@slavino.sk>
-References: <be623941-d82e-4430-b6ea-5bdbc5b48da8@tootai.net>
-	<e0e61628-b7b4-4df7-9665-0168fa741fe0@app.fastmail.com>
-	<Zbj04V-90zpQwEzl@torres.zugschlus.de>
-	<cd7cbfc0-b7d4-4713-9e2d-f92596fb4844@app.fastmail.com>
-	<05FFEAEF-0123-4A2B-9607-B162D0AA6C61@slavino.sk>
-	<eb589516-f7a2-4c17-81fc-fe2eecc6855b@app.fastmail.com>
-	<47667AAA-1B0B-4262-AC20-2F224B2BB092@slavino.sk>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-unknown-linux-gnu)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BY3weeGA"
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-602c714bdbeso5341687b3.1
+        for <netfilter@vger.kernel.org>; Wed, 31 Jan 2024 00:14:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706688896; x=1707293696; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=WmHj9oWmVUg5sQAPB6tjL7U87ulzyCRcnqANIhi6oP8=;
+        b=BY3weeGA5l+fvq4QIgYOIdQnCsMVuygyUJD5r9jMAAJeFIcXEOWIbYyfyNeY+oLS4q
+         UFtROat8CrYjR1UEdlkPuvRIG8P32UR1M39ICeH2HLSReE0fQEBfia6p61/eDFgX1okU
+         whqQnz/1sbTBNMgHWhkuODIv/4Eu+5mqqE5m8xsmdr4eC0WtMZBwyioF+6EKmWdHe6XY
+         HDCNh5c3zWbDCinrUxeF7SXRdJ+79sXmUBZ/CpeSem++Eh8Uh/v/ilDzvYpWKe8kjN5D
+         Xwx/tOZrLWsj/n8XMuNstBcXgD0lfjmtR4dMdC1qcGfALXpjOPGTD7StrVvIA9cC7z8g
+         yAMA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706688896; x=1707293696;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WmHj9oWmVUg5sQAPB6tjL7U87ulzyCRcnqANIhi6oP8=;
+        b=m1UFJDCmPASElsIRxxUAJF8RvQ+qMAbZOB6K9sT/5T5QzGIxQSPsjn2tXrgmcJyJWv
+         eT6Gs/qRjeAULC6J76PFklFWxfRMy4GjY9WruoG3yHEVh/oljdPgXEIky1DPte5lVUBl
+         HmH+N19iqPaMRTLxH5gOQPw5GLAg19M9O8QETQj48dBF8gCUryr0yIHMIl77z8Vu1JeM
+         HnuFrYQweeCU+x8psli/ypD6A2yitTYEaR7pUVINCInXIP26FXofeQIINr0oNmeeeCfz
+         akQA6uB7f6WD5zUnJ53Qkb6KRNv2ln5+uDPpx+lT9muleFX+za47Mam1U2Sn1t0RdVba
+         i7Eg==
+X-Gm-Message-State: AOJu0YyLuir7BWvS0TwUjV/UGvCD59QNlxSgwNEwePYV13IOCQYaUc9f
+	jaktDaDNBmHrmGlU9dK8Ucvw0yUs9QF+DcHECSL8wG9+fRlisfUGyRlZTUgMTzS/H8aEj7kN4Xx
+	T3BJwRcPckKi5DWsDH+Y/kSaUjib3A9h9lWQ=
+X-Google-Smtp-Source: AGHT+IEkn9w4D7g6e+zug7c39k8OzNiQSSt5cDllZlOUGcXKRUjwFoxYqtx6amSDX+h4jv5auJsnGB4kPEdGfOp0Rpw=
+X-Received: by 2002:a0d:d64e:0:b0:5ed:b2a2:1279 with SMTP id
+ y75-20020a0dd64e000000b005edb2a21279mr424119ywd.16.1706688895719; Wed, 31 Jan
+ 2024 00:14:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+From: Anton <anton.khazan@gmail.com>
+Date: Wed, 31 Jan 2024 10:14:41 +0200
+Message-ID: <CAJE3=wmAh5Ne9fWdrHOyZx9uuz+_g4+PhVXnfr+pS417mVWfhA@mail.gmail.com>
+Subject: Is there an efficient way to delete multiple elements from a set?
+To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Slavko,
+Hello, I've been experimenting with nftables sets for the purpose of
+geoip blocking. Let's say I'd like to add ip blocks for multiple
+countries to a blacklist or to a whitelist. Perhaps the most efficient
+way to do that would be by combining all required ip blocks in one set
+(for each family). However since country ip blocks are a moving
+target, I would need to regularly refresh parts of that set. My idea
+was to delete all ip addresses corresponding to an ip block from the
+set and then add the updated ip block. The problem is, this is very
+slow. While adding an ip block takes (in my VM) 0.09s, deleting all
+ip's from that same block takes 14.5s.
 
-On Tue, 30 Jan 2024 19:34:30 +0000
-Slavko <linux@slavino.sk> wrote:
+This is how I'm doing the deletion and the time measurement:
+printf '%s\n' "delete element inet test testset { $(cat test.set) };"
+| /usr/bin/time -f %es nft -f -
 
-> Dňa 30. januára 2024 17:57:21 UTC používateľ Kerin Millar <kfm@plushkava.net> napísal:
-> 
-> >It is easy to say that it is pointless if not the one to be responsible for implementing and maintaining the code and trying to take into account diverse - and occasionally conflicting - user desires. There have been various set-related bugs in nftables over the years. Complexity surely matters to someone. There are multiple open bugs now that concern both performance and memory usage. Efficiency surely matters to someone.
-> 
-> Please, aproximate my English, it is far from good...
-> 
-> I mean mostly that, that IPv6 becomes reality, and soon or later (the later
-> is IMO more realistic) will replace IPv4 at all, thus all L3 addresses will
-> become 128 bites long. Sure, here will be always penalty in using 128b
-> addresses in compare to 32b addresses, but world is (slowly) moving
-> to IPv6, thus that penalty is something, which cannot be avoided.
-> 
-> Debate these penalties sounds for me exactly as debate when 64b
-> OSs started. I remember "arguments" in that time -- twice of memory
-> consumption, twice of binary sizes, etc... While all these arguments
-> are (or can be) right, they are pointless, as IPv6 is here and is not
-> avoidable in future and we all should to learn to live with that, despite
-> if we want or don't want it.
+(the test.set file stores a comma-separated list of subnets)
 
-I see. Fair enough.
-
-> 
-> >For it to improve, you could put forward a concrete suggestion as to how it might be improved, be it supporting logical disjunctions in rules, supporting a generic address type in sets or whatever else.
-> 
-> I am not able to provide real suggestions, as i don't speak C and i
-> have minimal knowledge about netfilter/nftables/kernel internals,
-> thus i can be totally wrong.
-> 
-> Anyway, i  have some ideas from user (admin) point of view, of
-> course. I can imagine this:
-> 
-> + sets will store protocol agnostic L3 addresses and it doesn't
->   matter (for me) if IPv4 will be mapped to IPv6 or these L3 sets
->   will internally maintain two sets -- one for IPv4 and one for IPv6
-
-Now that you mention it, I thought that I recalled someone filing a related issue at bugzilla but it seems that my memory is playing tricks on me. I can find no such issue now, although there is one that (sort of) proposed an equivalent to the list:set type of ipset. That one was rejected.
-
-> + nftables syntax will provide some sort of abstraction, as it already
->   provides eg. for UDP/TCP ports (th dport), eg. "nh saddr" (nh as
->   network header)
-
-It would require some new syntax and/or grammar, indeed.
-
-> + nftables will provide abstraction for ICMP(v6) types, something
->   as it already provides for reject, to one can build common rule
->   for both, including the one common set/verdict map -- for me
->   it doesn't matter if it will internally map namex to protocol's proper
->   values, or specific names must be prefixed eg. by ipv4 and/or ipv6
-
-I could see that working well enough for types that both protocols have in common, such as echo-request.
-
-> 
-> > That would, at least, be a step along the road to (potentially) convincing whoever is going to do the work that it is justified.
-> 
-> Yes, that was initial idea of my reply, we all (users, admins, devs)
-> have to provide own point of view and find best possible solution.
-
-Yes, absolutely.
-
-> 
-> >On my part, and despite having been a user of nftables for many years now, I would prefer to see its QA and documentation improve ahead of - though not wholly at the expense of - new features being added.
-> 
-> While i played with nftables for years, i use it only on one of
-> my servers yet, and even this machine uses mix of iptables
-> and nftables rules (the real blocklists are still using ipset),
-> the ip(6)tables is used only to drop traffic, all other logic is
-> done from nftables. Nothing extra, just slightly more than
-> basic firewall, it uses sets to limit (per IP/net) logging,
-> connections, dynamic blocking, and every used set must be
-> doubled...
-> 
-> My nft sets doesn't contain huge amount of addresses, as long
-> time blocking is done by ipsets, with (semi) persistent and from
-> fail2ban (up some tens of days).
-> 
-> I implemented it about year ago, and yes, the documentation
-> is hard to read. Most of it is ip family only, some parts are
-> hard to understand, and even more hard to combine together.
-> But i cannot be sure, if it is not by lack of my English... But
-> my feel from docs is, that they are exactly as my notes --
-> perfect for me, but hard to understand for all others ;-)
-
-That seems a fair assessment to me. While iptables has the advantage of being simpler in many ways, the iptables(8) man page probably does a better job of on-boarding new users to the underlying concepts. Rusty Russell's guides and HOWTOs were also rather good in their day. Technical writing is a talent unto itself and some people are just naturally good at it (no offense intended to the current team, of course).
-
-> 
-> I found as very useful examples from announces in this ML's
-> archive. IMO these announces should be copied to (or be
-> linked from) the wiki.
-
-I agree. We (this includes myself) could be making more of an effort to do this.
-
--- 
-Kerin Millar
+Is there a more efficient way to do this? I could of course flush the
+set and rebuild it every time I need to update some part of it, but I
+thought I'd ask before deciding to implement that.
