@@ -1,219 +1,117 @@
-Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D0B739AF6
-	for <netfilter@vger.kernel.org>; Wed, 31 Jan 2024 22:10:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04A7E39FCF
+	for <netfilter@vger.kernel.org>; Wed, 31 Jan 2024 22:13:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706739020; cv=none; b=qj8hWK3bcFEc3D/EOBCDm2U3cSn1XDO/DmLCcDqluHLVx/rTYoGFmRi9cORsA4wnouMTkLqP1K1lnRRgPY/AoWCcWFi+kwqK3xeV6FO7EHw5yc0e38MwYodikRxfki6SZEShNKL+fEehp66EOOfEXReoTASDJ4+i6QGa3veMCcM=
+	t=1706739235; cv=none; b=A1Rl1iHGujV2/JjQSgrNXXnrVtPXMnF02Z75XXvbMNJ6UkoaGe//u+QEDRYBlVkKK5oG93LQE4Tc37MEdDHtNJRzDeWix+5S1JfiR7OSmniI/kRRirxUsdwbGeQPO9R479jdAuR462PTdrfqPVrjprh43UUd6aB+tAJUJPhfDU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706739020; c=relaxed/simple;
-	bh=lS6G9x/Ajw99C2Fpz7TbEKnRnwtElY61pY6sw+Gfkwk=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=lxl2suRuZJJ3nm0K8qbuwSphQDvZinx3j0l0DvvgvD0Xv1lBrxYYf/E8rFEV1lBmEyZYRH7D11L9Da79fRwlHDACI6R2y4lijP4xVFgF7WC9QH9Wtx+POmxvgrLlGKC8c6z4O3OmfN3ZhQi1mbTg9KxqrEmVkVgMHSaqAiBxtVw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=WD5DX4fC; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=YvPlpxe0; arc=none smtp.client-ip=64.147.123.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
+	s=arc-20240116; t=1706739235; c=relaxed/simple;
+	bh=NX5LBqniZK7exf1Rrctlgk6VoJQEM788es9Ge0xddZk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=JMH08jHJYm//9EmkoUjxglLsvtl93JaxNuEQfC8YZBaFyepVK5EklaSt/I/ZZ9nZYcvMISl/sRc1iqhDxIVqE7xh4JzLZt257EcKjdNIdodQbM1iKhVpF3oOeFGvm1P8WmG29+37SHxuL5UG8ZLD1VxcNps5mJRieNGNen9fUNk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h0qEui7e; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="WD5DX4fC";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="YvPlpxe0"
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailout.west.internal (Postfix) with ESMTP id 620C93200B50;
-	Wed, 31 Jan 2024 17:10:16 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 31 Jan 2024 17:10:16 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-	 h=cc:cc:content-transfer-encoding:content-type:content-type
-	:date:date:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=fm1;
-	 t=1706739015; x=1706825415; bh=5FWH3J/bd+H4xwFhGWey3MteIvGzDFKW
-	0WhfVunZHmg=; b=WD5DX4fCUdeU9IBwcXz9FZbSbOruO9iT79IGF4Txd36fpe1l
-	etL/+o97ZykJhfQTXuHZ1U16lTv1HiZpBC9B8PvvbTNMIOjZqhAMy0okrYEt4OXr
-	CyNCBVQBxodFJEOJFvZlKa4hDez6/ie2lPfZvNeP0Eev6KaRUfP1zSvTEwC/+x/O
-	sNaWbjSXzK8ws/aOssz62wylsnf2fe9EY5qcD54tGgZMLwnv/ygrCfNvY2r8rMF3
-	4/lZVj0t8b27uXaDLi5GhBtklPPC28nNTrgXEVvQ4X8d2eCxNL9d8n0avCZYagtE
-	SIxgWgmvdYRpCUHXpExYE/9eeMwP7dCzTyNoGg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1706739015; x=
-	1706825415; bh=5FWH3J/bd+H4xwFhGWey3MteIvGzDFKW0WhfVunZHmg=; b=Y
-	vPlpxe0s9FNAntFtd/n8Sf023UxyddAzw8mKc5I595XNe8ucOnfb9TtsqhXl6F7n
-	tlzWIab22dpitsIA+9z95oocZx9bDeegxPSim2yg2o3L7z7bM0mlGtGmWWRb7iAD
-	ffOLlUVC9u1J5ltZ25JiY4zwVwEPqp6cCxvYDKv4nhuOxxoSCE9kTK05Jfk3X0du
-	vHSyywS9ERT1Q5NUGnHkch6R+ygef+8v4gzGxqqHqCngBPOE6U3GYSNODAJy82av
-	mgSHq79cRcWYMpqGzQvDX5+ASBv8cAaf+SoHTy28PWyUw1GyklzAQ/FZVDqvi0TV
-	k7zrVy72Zl5H1gyZaZ91A==
-X-ME-Sender: <xms:R8W6ZRz_tFf-9sGpf05Jj_nL6zIZ_ZEaLNPAZ4C3IS063GIQ0vYQIQ>
-    <xme:R8W6ZRTjCbMRX2vTBm2j5zvPlIJB_T17ANYy-naF2RD-KOyRCtiHx_tTMjQEsTzQp
-    VSRfbhUMn7rW96I>
-X-ME-Received: <xmr:R8W6ZbX_CcMz0ngzFJ_9TthMMfD9zcJI-tju3WVB_4XjiU1cGEdF-oFaHFn83vHdY1eeYgPoPS_2SAhpK5YT>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedtledgudehhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmd
-    enucfjughrpeffhffvvefukfgjfhfogggtgfesthekredtjfdtjeenucfhrhhomhepmfgv
-    rhhinhcuofhilhhlrghruceokhhfmhesphhluhhshhhkrghvrgdrnhgvtheqnecuggftrf
-    grthhtvghrnhepudeukeehfffhveeitdeiteeugedvfeeivefhleefjeelteelteevhfel
-    udefleelnecuffhomhgrihhnpehnvghtfhhilhhtvghrrdhorhhgpdhvrghlghhrihhnug
-    drohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhm
-    pehkfhhmsehplhhushhhkhgrvhgrrdhnvght
-X-ME-Proxy: <xmx:R8W6ZTjqvfxmuM7QwHNkE4-AGYBd7X7GczEn-sy6QTS4pjId5OizOw>
-    <xmx:R8W6ZTDOLvW6ur3p4q4nmhKDAqZPRpxlt7fhT5288MEDGJw1OfB2pw>
-    <xmx:R8W6ZcKGU6cmO0ZeWSm18H4_aaW2aqGSv5x8e9AoHmAc4VfELL8klA>
-    <xmx:R8W6ZY4EY0aSpZ2Hk3oFdJDlGZY-YuDqJs34u8wbtHkOCXejMQMVCQ>
-Feedback-ID: i2431475f:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 31 Jan 2024 17:10:14 -0500 (EST)
-Date: Wed, 31 Jan 2024 22:10:12 +0000
-From: Kerin Millar <kfm@plushkava.net>
-To: Slavko <linux@slavino.sk>
-Cc: Netfilter list <netfilter@vger.kernel.org>
-Subject: Re: Combine ipv4 and ipv6 in a set
-Message-Id: <20240131221012.289b2a17152cbcae39132ab1@plushkava.net>
-In-Reply-To: <83255444-F0BF-4340-B721-976AC8E5B6AC@slavino.sk>
-References: <be623941-d82e-4430-b6ea-5bdbc5b48da8@tootai.net>
-	<e0e61628-b7b4-4df7-9665-0168fa741fe0@app.fastmail.com>
-	<Zbj04V-90zpQwEzl@torres.zugschlus.de>
-	<cd7cbfc0-b7d4-4713-9e2d-f92596fb4844@app.fastmail.com>
-	<Zbom4bTPnkTMbLNE@torres.zugschlus.de>
-	<5f76a328-4018-43c7-9f4a-86a1e2a4a94c@app.fastmail.com>
-	<83255444-F0BF-4340-B721-976AC8E5B6AC@slavino.sk>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-unknown-linux-gnu)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h0qEui7e"
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-60406dba03cso3535627b3.0
+        for <netfilter@vger.kernel.org>; Wed, 31 Jan 2024 14:13:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706739233; x=1707344033; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YHWYVquzc5AuySfO2Mnw9yO8QbhSkuXcq4zdjHRCWjA=;
+        b=h0qEui7esDkNpd8EiLUVB1B18nNIgHoRyUeSTC1APnwVVY4/RSRWjVC/K18EiroUJC
+         SrfNTxSpXTTXdvxMuManDdtRBiCajlhhz+7YVmMFAm8rp0os7cLlA7k1wE7GBdofwvN5
+         TCCvs9MJ6Tqe16k3AgCTGC+FzukJsW7B75Zv6NSDJDDuSA2Nh+aX2sdIb4kVur04vfXJ
+         um9sEgTnoXCHt9pzQi6DkgCdo70a47mgYSw3MeHoO/vLRpKxOuunrTA8fPYvaYbfpYK0
+         cehgTVg/88Y7znmtqHWYlNpvMxYglDpOebCyIdX6glkQsztlpx0k3TSA89zpCvw6PEB6
+         7lSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706739233; x=1707344033;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=YHWYVquzc5AuySfO2Mnw9yO8QbhSkuXcq4zdjHRCWjA=;
+        b=qGkj3F5DYVgbk3GSGCSjhpREKaFgG0hqGwD4IEmTNkZy8RPQTVqWLGlBW2pIym/UGB
+         7KOEBjmP7Uc9088PyQovVTPi6GYQL1Sr9KA1ee3YAdbAPgpfdk699N+GfozGlDfmcIay
+         eLuVNg8/qc6CSap9juFZkVIPSWp8zRI+C2UdxKcO7FPavlX7Nt4ScbPhGd6Y6CsO4miZ
+         /ybII2idTjnbc3m7vSwEsMAJCfa3vEKISNkHbwzdin3maCJUyi8sOqVXheMt/CXQpUO/
+         seWoVXyirSFmQwXpxlpVPJYe4xD1fB2CfwTK5QK7z+iTDyHii/H67JetsDi10EsqLlJ3
+         cSPA==
+X-Gm-Message-State: AOJu0Yyig991JThzIYW/oUwJC3PrtZr9PAFh00aTipzARwRDwihahDwS
+	U0Ux9803K7YwRecQX6XXu2Pytf3yLG5N1O5wf175uuB6nzFvogTdq3jTLR98cOBBe/HNX/CPWqz
+	fN7p1ADpUkkpFZtAt/GZsn8lN3DEbjyxf
+X-Google-Smtp-Source: AGHT+IGLyHIfRbXnisupMl56XT2Jbk3F0qS+jN4eiyS08VLAmORzmsTuSjA115PrQESsPABWEhnC09d1KfIOo74kpDw=
+X-Received: by 2002:a81:8350:0:b0:5ff:63ae:4f56 with SMTP id
+ t77-20020a818350000000b005ff63ae4f56mr481224ywf.17.1706739232805; Wed, 31 Jan
+ 2024 14:13:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+References: <CAJE3=wmAh5Ne9fWdrHOyZx9uuz+_g4+PhVXnfr+pS417mVWfhA@mail.gmail.com>
+ <3cfd95bb-93ca-4f40-9e1e-bb2526789161@app.fastmail.com>
+In-Reply-To: <3cfd95bb-93ca-4f40-9e1e-bb2526789161@app.fastmail.com>
+From: Anton <anton.khazan@gmail.com>
+Date: Thu, 1 Feb 2024 00:13:37 +0200
+Message-ID: <CAJE3=wmhLSHY7Gqg7vHX_SAAYKx-PMQFC_i2iEek4mBnghyAbg@mail.gmail.com>
+Subject: Re: Is there an efficient way to delete multiple elements from a set?
+To: Kerin Millar <kfm@plushkava.net>
+Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Slavko,
+While this is better in theory, in practice no performance improvement
+is observed. This sort of detail is worth paying attention to in a
+loop. In a single operation, the 0.01s saved is insignificant.
 
-On Wed, 31 Jan 2024 20:23:54 +0000
-Slavko <linux@slavino.sk> wrote:
-
-> Dňa 31. januára 2024 13:02:57 UTC používateľ Kerin Millar <kfm@plushkava.net> napísal:
-> 
-> >Firstly, I mentioned both tables and the "inet" family. If you search for inet in the man page, you should land in the ADDRESS FAMILY section, which indicates that the purpose of an address family is to define the type of packets that can be processed. It goes on to say that "all nftables objects exist in address family specific namespaces, therefore all identifiers include an address family".
-> 
-> I check manpage now, 1.0.6 (as is in debian bookworm) and from its
-> ADDRESS FAMILY section is nor clean (at least for me) the order of
-> inet and ip/ip6 tables processing. It is even not clearly stated here,
-> that packet will be processed in both, the inet and the ip/ip6.
-
-I think that the effect of "inet" family is to register hooks - if any - for both the ip and ip6 families. Yet, even knowing that doesn't help to address the question.
-
-> 
-> I know, that hook's priority comes into play, it is worth to mention,
-> if here are hooks with the same priority in both (as inet and ip/ip6)
-> the order is ... or order is not defined.
-
-Yes, it should be made clear - even if only to explicitly say that the behaviour is undefined (it would be better than nothing).
-
-> 
-> >>> table inet filter {
-> >>>         set block4 {
-> >>>                 type ipv4_addr
-> >>>         }
-> >>>         set block6 {
-> >>>                 type ipv6_addr
-> >>>         }
-> >>>         chain INPUT {
-> >>>                 type filter hook input priority filter; policy accept
-> >>>                 ip saddr @block4 drop
-> >>>                 ip6 saddr @block6 drop
-> >>>         }
-> >>> }
-> 
-> This can be OK with two sets, as it really doesn't matter if you have
-> one ot two rules/sets. But when you start to really use them and you
-> need eg. 10 sets, you have to define every twice, things become
-> more complicated...
-> 
-> When i start to play with these sets i was too constrained by iptables's
-> approach by that, that every iptables's table becomed separate
-> nftables table, thus one cannot share common sets between eg. raw
-> and filter tables. It took some time to realize, that i need to switch my
-> mind and that i can define "raw" and "filter" hooks in one table and thus
-> share the same set in both (eg. fill content in filter and drop in raw).
-
-This has also annoyed me on several occasions. Though I have been using nftables for a fairly long time, I still find it more natural to organise rulesets based on the conventions of iptables. Old habits die hard, as the saying goes. Incidentally, there is an open bug concerning this.
-
-https://bugzilla.netfilter.org/show_bug.cgi?id=1472
-
-> 
-> Second thing which took time to understand was, why in hell i need
-> as many sets. After some time i realized, that it is price for flexibility.
-> In iptables many extensions uses some storage (recent, limit,
-> hashlimit, connlimit) and these storages are managed by extension
-> itself, and user needs only to setup its name or even nothing (for
-> limit). In nftables world one can use sets to achieve the same result,
-> but have to create sets/storage by self, but can customize them in
-> simple way (without change kernel module options) and that is
-> great.
-> 
-> But if one use these features intensive, all sets and rules must
-> be twiced in inet table (exactly as in separated ip/ip6 tables), the
-> amount of sets increases significantly. Yes, these "sets" was twiced
-> in ip(6)tables too, but that was "hidden" in extension code, now the
-> inet table exposes that twicing. And as amount of sets increases,
-> listing them becomes more and more not user friendly, as one can
-> list either all table's sets or one concrete set, nothing in between.
-
-All of this is true.
-
-> 
-> BTW, i am curious, how big difference (in performance/time) is to
-> search IPv4 vs. IPv6 address in set? Is it worth to consider?
-
-I do not know but I would expect a lookup to be very efficient in both cases.
-
-> 
-> I start to more and more think, that using of inet family (as in current
-> state) is good only for simple/basic FWs, without any advanced
-> features, where are L3 addresses used only to static distingushing
-> of access or where rulesets are maintained by some external tool
-> (in separate tables).
-> 
-> From my point of view, integration of sets created impressive
-> features in nftables, but in result they are too constrained (in L3
-> mean), by the same way as they was in iptables, or even worse,
-> as now ipset allow to use combined sets and add/update it from
-> the same name (thus rule too) in both, the iptables and ip6tables
-> (yes, as mentioned already, that is not possible from command
-> line -- yet?).
-> 
-> Another thing, which is not clean for me, is memory usage of sets.
-> I read on multiple places about huge memory usage with big sets,
-> but nowhere i found real comparison. Nor in memory usage, nor in
-> performance of nftables's sets vs. ipset sets. Now i don't know
-> if these memory problems was in early stage of sets development
-> (and are solved now), or they was caused by suboptimal usage of
-> tools, or it is by design. Recently i noticed in docs, that there is
-> memory/performance switch for sets, but what that means in
-> real usage? Again, no benchmark is documented, to one can
-> properly decide which one to use. Or, at least, commands/way
-> how to measure difference by self...
-
-I haven't paid much attention to memory usage. Benchmarking performance is fairly straightforward with the use of the shell, especially bash because it offers some useful features such as:
-
-- a time builtin that can measure arbitrarily complex commands (not only "SIMPLE COMMANDS" as defined by the manual)
-- C-style for loops: for ((i = 0; i < 1000; i++)); do ...; done
-- a printf builtin that can print timestamps without the need for an external utility
-
-As concerns timestamps, bash >=5.0 can even produce timestamps with microsecond resolution.
-
-$ printf '%(%F %T)T.%s\n' -1 "${EPOCHREALTIME: -6}"
-2024-01-31 22:01:42.286354
-
-You might find it interesting to look at existing issues concerning the use of sets by visiting the following link.
-
-https://bugzilla.netfilter.org/showdependencytree.cgi?id=1461&hide_resolved=0
-
-Of those, #1584 concerns "high memory requirements", where Pablo appears to be using https://valgrind.org/docs/manual/ms-manual.html to profile memory usage.
-
--- 
-Kerin Millar
+On Wed, Jan 31, 2024 at 2:20=E2=80=AFPM Kerin Millar <kfm@plushkava.net> wr=
+ote:
+>
+> On Wed, 31 Jan 2024, at 8:14 AM, Anton wrote:
+> > Hello, I've been experimenting with nftables sets for the purpose of
+> > geoip blocking. Let's say I'd like to add ip blocks for multiple
+> > countries to a blacklist or to a whitelist. Perhaps the most efficient
+> > way to do that would be by combining all required ip blocks in one set
+> > (for each family). However since country ip blocks are a moving
+> > target, I would need to regularly refresh parts of that set. My idea
+> > was to delete all ip addresses corresponding to an ip block from the
+> > set and then add the updated ip block. The problem is, this is very
+> > slow. While adding an ip block takes (in my VM) 0.09s, deleting all
+> > ip's from that same block takes 14.5s.
+> >
+> > This is how I'm doing the deletion and the time measurement:
+> > printf '%s\n' "delete element inet test testset { $(cat test.set) };"
+> > | /usr/bin/time -f %es nft -f -
+> >
+> > (the test.set file stores a comma-separated list of subnets)
+> >
+> > Is there a more efficient way to do this? I could of course flush the
+> > set and rebuild it every time I need to update some part of it, but I
+> > thought I'd ask before deciding to implement that.
+>
+> Indeed there is. Your method isn't optimal because the command substituti=
+on causes the shell to needlessly assign memory for the sole purpose of con=
+taining the entirety of the output of cat(1). Further, cat(1) will have to =
+complete before the printf builtin can even be executed, which defeats the =
+asynchronicity of the pipeline. You should feed nft(8) with a command list =
+instead.
+>
+> {
+>         printf 'delete element inet test testset { '
+>         cat test.set
+>         printf ' }'
+> } | nft -f -
+>
+> If you would prefer to express it as a one-liner then you may, in which c=
+ase you must also terminate each of the three commands in the { command lis=
+t } with a semicolon.
+>
+> --
+> Kerin Millar
