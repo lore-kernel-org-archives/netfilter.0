@@ -1,135 +1,100 @@
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+Received: from wout2-smtp.messagingengine.com (wout2-smtp.messagingengine.com [64.147.123.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEA1A210FE
-	for <netfilter@vger.kernel.org>; Wed, 31 Jan 2024 22:36:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2710039FE0
+	for <netfilter@vger.kernel.org>; Wed, 31 Jan 2024 22:39:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706740622; cv=none; b=XYVEJusrUQOsdbYpVo2chNrC7qxBYy0nqFFeCDPvMC/ykaFxIOhoqDq7STn/6OjD8PPdN27vSpbNB9ANd5BIVnXf40UGKbrxL3uAbJjjXBFsbpOP9rlGMhWdBEwBbahNwnxeDA9m1bJKl++xa2bMNtNPpJKgu0pXcEHIakPHtCQ=
+	t=1706740792; cv=none; b=dNPM7C2SCZX+FUoYZBevSmJtR3qRT2rwFR0ebX0LGNxHWENPKf7OuPMEI2PJyFt8bnJa4CX1KTNT8Uay6z6V6AnOotBdL/T4BK1RRWBFy/SkI4tluQ/iZzJpRNa4j8glaN+jlHiWZChu7obtXCUw6y9W5ZA67Hx2wOO9TtihQNk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706740622; c=relaxed/simple;
-	bh=pMcA+oTTX3qjpDfr+ZJUhyyzNpYPL7CTM/RFYpbr2ks=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MY4XqmI3HLM91/CU/kwSzli/H+iyyk+AqPF3qEJZejM8yN+SikpVesIKbePXggsDMzaDNW3DYbpoQ25RtpRbytABRre5XQhOupIE364QChWuYIGtxBNXwq63WGcNZctZ8kp0P8NbjfVtX2PzU5UFHXXXqEW7eDTUp4U1LjMiH0I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
-Received: from [78.30.41.52] (port=35768 helo=gnumonks.org)
-	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <pablo@gnumonks.org>)
-	id 1rVJCO-00HKhH-Tp; Wed, 31 Jan 2024 23:36:54 +0100
-Date: Wed, 31 Jan 2024 23:36:51 +0100
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Slavko <linux@slavino.sk>
-Cc: Netfilter list <netfilter@vger.kernel.org>
-Subject: Re: Combine ipv4 and ipv6 in a set
-Message-ID: <ZbrLg8luc8tbZALr@calendula>
-References: <be623941-d82e-4430-b6ea-5bdbc5b48da8@tootai.net>
- <e0e61628-b7b4-4df7-9665-0168fa741fe0@app.fastmail.com>
- <Zbj04V-90zpQwEzl@torres.zugschlus.de>
- <cd7cbfc0-b7d4-4713-9e2d-f92596fb4844@app.fastmail.com>
- <Zbom4bTPnkTMbLNE@torres.zugschlus.de>
- <5f76a328-4018-43c7-9f4a-86a1e2a4a94c@app.fastmail.com>
- <83255444-F0BF-4340-B721-976AC8E5B6AC@slavino.sk>
+	s=arc-20240116; t=1706740792; c=relaxed/simple;
+	bh=WiI6QKo5oM+FBEVCt/mKZfz/JzxHx90xWXuytt0TEyU=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=UpPhzpi3r5sYPr+PBAQCKkDgPwB/qgatV38kSu+mvXbCqzbLydH8c7pM5jS8jLpIhetUlKBevo7qdW5mrsL/wA5H6nKFD4xwSMGVQ9qdGUjpzXA164yEUCweKoIOReuzwfRnXy74E9QWB6ohWAi+PtJ9GVT4LjM1H7Zq4oVsGkU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=2sSWMtCQ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=v0XFZlOM; arc=none smtp.client-ip=64.147.123.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="2sSWMtCQ";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="v0XFZlOM"
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.west.internal (Postfix) with ESMTP id F1F733200B4F;
+	Wed, 31 Jan 2024 17:39:49 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Wed, 31 Jan 2024 17:39:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+	 h=cc:cc:content-transfer-encoding:content-type:content-type
+	:date:date:from:from:in-reply-to:in-reply-to:message-id
+	:mime-version:references:reply-to:subject:subject:to:to; s=fm1;
+	 t=1706740789; x=1706827189; bh=hFczB1RNmtjI1pGC2ptZwYWWq/FrM68Z
+	Ai9JxSMm6ok=; b=2sSWMtCQtNcmiO1JpRIGQ028mJNNPAVNaFqgCsNVuL0MzMtE
+	VQy1MlbZDPAOSmyAH0LqgJdNd2FGIeBt99CfMXfqSkhOtZws8dt5zadfIKA8NBYp
+	j09PwjOqGLkzV3XK5CSpeaWWsIka3Y8q7ksjHgcTHwEBG0Byz1VpWlCwNaoBZGQr
+	4P8/tlfUiWcBKxs2NJueLHJP9Ajhdl+LmUIEWGOFzw/hCUlt7ujgXUiNSEBA3qW4
+	BC/z3Jsm7V3bNh7RGtw8nAyamPyd9VcDJPShGbvdy9c5KlVy/L1lLQqS1irF4hjy
+	bt+5sii1apH3dSLS8/55sgN8E+DNsx/chvVLWw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1706740789; x=
+	1706827189; bh=hFczB1RNmtjI1pGC2ptZwYWWq/FrM68ZAi9JxSMm6ok=; b=v
+	0XFZlOMQ1z9u1WVeaoKou0saKjdKFIP8qQX6YFVaitDvRawKrGcyTtmqZ/qblU4Y
+	2Qzqh3sFWj5OY7ETAHZbdRJS5QEZUUGW8OEDzm7bV9IS3AKzo+RP8IusrwHZroS9
+	6fgWA2eQ6+XtBEgm0Ga/mlCHLm0Ti/6yggJQ3I20EiFwu/qR+UaTCe9t5t5ghmZi
+	IyKbJkwvq7INFNg0IsGEbSWE1yhNb0ydS1zHOg9b/mng9R9ImQNBmb1hh5Rzj2/r
+	pLOceb9+tVNjOlzv26PbqmuaszL0+5+Rs0VpKdhvMgAiFaSPQvMZ5mxjycZYT40d
+	MqZh0OwzIHqS1AUFOtXrg==
+X-ME-Sender: <xms:Ncy6ZXIYoG2kf_Vs5okCr25NODxgGebPo35JYyjN0qTTPjMSTgweHw>
+    <xme:Ncy6ZbLwLjBGDMBeEF8NZMxDoyUCFVcOCn7jROVzj0TElhBny6awO5FXCyvs781rd
+    6lUPL-z4fGkNGlL>
+X-ME-Received: <xmr:Ncy6Zfu_tOcsNIWJOv4FnYMyLBbIYf9iJvU0g4Cv3N4WP4gy3uIgixET55g-p-opTvpji6UdEJJAHllwMY2C>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedutdcutefuodetggdotefrodftvfcurf
+    hrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecunecujfgurhepfffhvfevuffkjghfofggtgfgsehtjeertd
+    fjtddvnecuhfhrohhmpefmvghrihhnucfoihhllhgrrhcuoehkfhhmsehplhhushhhkhgr
+    vhgrrdhnvghtqeenucggtffrrghtthgvrhhnpeeihfettefhgeeftefgheeugeeffeehke
+    dukeefffejgeeutdeggeejtdeihefhveenucevlhhushhtvghrufhiiigvpedtnecurfgr
+    rhgrmhepmhgrihhlfhhrohhmpehkfhhmsehplhhushhhkhgrvhgrrdhnvght
+X-ME-Proxy: <xmx:Ncy6ZQasuPYItTzlV6zhuPjR2Why_KIEtCWarQgCE2TzhGHfRsQOfA>
+    <xmx:Ncy6ZeZm-vyPl06YO7IJAF7iMiOrDCbfTCPG3uaQ-UV4bZAme9NahQ>
+    <xmx:Ncy6ZUAQ_396h3qrIHzUrdQvzJs3P79Niuwv9n0psl6NcEc9ggeqPQ>
+    <xmx:Ncy6ZRzy2jKdV_2Pv5S9op0ZDkWq1PuWoOBBnOzuzw9K5icRhOOzAA>
+Feedback-ID: i2431475f:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 31 Jan 2024 17:39:48 -0500 (EST)
+Date: Wed, 31 Jan 2024 22:39:47 +0000
+From: Kerin Millar <kfm@plushkava.net>
+To: Anton <anton.khazan@gmail.com>
+Cc: netfilter@vger.kernel.org
+Subject: Re: Is there an efficient way to delete multiple elements from a
+ set?
+Message-Id: <20240131223947.525533518741b6cae01e2d6d@plushkava.net>
+In-Reply-To: <CAJE3=wmhLSHY7Gqg7vHX_SAAYKx-PMQFC_i2iEek4mBnghyAbg@mail.gmail.com>
+References: <CAJE3=wmAh5Ne9fWdrHOyZx9uuz+_g4+PhVXnfr+pS417mVWfhA@mail.gmail.com>
+	<3cfd95bb-93ca-4f40-9e1e-bb2526789161@app.fastmail.com>
+	<CAJE3=wmhLSHY7Gqg7vHX_SAAYKx-PMQFC_i2iEek4mBnghyAbg@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-unknown-linux-gnu)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <83255444-F0BF-4340-B721-976AC8E5B6AC@slavino.sk>
-X-Spam-Score: -1.9 (-)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jan 31, 2024 at 08:23:54PM +0000, Slavko wrote:
-> Dňa 31. januára 2024 13:02:57 UTC používateľ Kerin Millar <kfm@plushkava.net> napísal:
-> 
-[...]
-> I check manpage now, 1.0.6 (as is in debian bookworm) and from its
-> ADDRESS FAMILY section is nor clean (at least for me) the order of
-> inet and ip/ip6 tables processing. It is even not clearly stated here,
-> that packet will be processed in both, the inet and the ip/ip6.
+On Thu, 1 Feb 2024 00:13:37 +0200
+Anton <anton.khazan@gmail.com> wrote:
 
-There is a command to display the datapath hook pipeline per device:
+> While this is better in theory, in practice no performance improvement
+> is observed. This sort of detail is worth paying attention to in a
+> loop. In a single operation, the 0.01s saved is insignificant.
 
-# nft list hooks device eth0
-family ip {
-        hook ingress {
-                 0000000000 chain netdev x y [nf_tables]
-        }
-        hook input {
-                 0000000000 chain inet x y [nf_tables]
-        }
-        hook forward {
-                -0000000225 selinux_ip_forward
-        }
-        hook output {
-                -0000000225 selinux_ip_output
-        }
-        hook postrouting {
-                +0000000225 selinux_ip_postroute
-        }
-}
-family ip6 {
-        hook ingress {
-                 0000000000 chain netdev x y [nf_tables]
-        }
-        hook input {
-                 0000000000 chain inet x y [nf_tables]
-        }
-        hook forward {
-                -0000000225 selinux_ip_forward
-        }
-        hook output {
-                -0000000225 selinux_ip_output
-        }
-        hook postrouting {
-                +0000000225 selinux_ip_postroute
-        }
-}
-family bridge {
-        hook ingress {
-                 0000000000 chain netdev x y [nf_tables]
-        }
-}
+It's not true that it is only worth paying attention to in a loop but I won't argue about it here. Suffice to say that it depends, in part, upon the ability of the program reading from the pipe to perform useful work while reading. There are plenty of programs that can. It seems that nft is not such a program, which I suppose makes sense.
 
-[ The quick example above is rather silly, because it was taken from a
-  VM with selinux hooks, one single inet/chain at input and one hook at
-  netdev. ]
+Anyway, if the performance of nft seems unusually bad for deletions, it could be bug material.
 
-But it shows a view per family, for an IPv6 packet...
-
-- going for local process follows ingress hook, entering nf_tables
-  chain netdev x y, then in case it is local traffic it enters chain
-  inet x y [nf_tables].
-
-- being forwarded goes through ingress, then forward selinux hook at
-  priority -225, then postrouting selinux hook again.
-
-- leaving from local process follows output and postrouting selinux
-  hooks.
-
-- entering the bridge layer, it gets evaluated by the ingress hook
-  too.
-
-It is a flat representation, so you still have to understand how
-routing determines what hook the packet visits.
-
-There is a terse refering in the manpage:
-
-LISTING
-           list { secmarks | synproxys | flow tables | meters | hooks } [family]
-           list { secmarks | synproxys | flow tables | meters | hooks } table [family] table
-           list ct { timeout | expectation | helper | helpers } table [family] table
-
-       Inspect configured objects. list hooks shows the full hook
-       pipeline, including those registered by kernel modules,
-       such as nf_conntrack.
-
-which is a really shame :)
-
-Someone up for contributing an improvement for the manpage, including
-a better example than above and the explaination?
+-- 
+Kerin Millar
