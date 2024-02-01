@@ -1,78 +1,54 @@
-Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D32684A28
-	for <netfilter@vger.kernel.org>; Thu,  1 Feb 2024 06:06:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.24
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05504158D7C
+	for <netfilter@vger.kernel.org>; Thu,  1 Feb 2024 08:22:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706767594; cv=none; b=OxgKLFgoUvAzjxs62VQZiNpCB8Oq5HQOYCYWLpFpfBoE7pjmQd2+sqcjWE4T5V52v0OkEyXLeVyS2oM2C+QBMq0c3I0Gr9dGzy2sBMPMlt0ORD11VPcva+hn5kOG+k1+6/KsdwLShPSig6YkSXRs3Fcc4e1hjpSL6bZaOqOxRYM=
+	t=1706775781; cv=none; b=ETTmWaTi9QU2GsHy/CoQO6nhMQrelbJ4sjANCUpIe8VdblsD0gUuWSo/XJ2PLBk17aN97hwXh9qQ0zKpgBGhsFrEdMzVjoqeQiixxUBLiTezNvwCzgLfKh1nRltw2zt89B7KgsUeL2yw+KLVqPzss6RG1QWwocZSu3ZAbiSglK0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706767594; c=relaxed/simple;
-	bh=MIOhWRvMuriflW/8JMC4dRBOW5xg0al580/zbGThxH4=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:Cc:
-	 Subject:Content-Type; b=hIUMQiVamY9MaIJ8pHjVwX3yY8FErFceemTMQlU+Qsd0dSmPg4I1rcvg9QZ3MB1rrXitOeOUsittOIUy8S8mYWqJz6YRlJNBmyi+sPv5YNvF5SOoAQiSFiqTTX8Pv9SGZAi5ZoFQHE9JfIVyt0OmfPHt3oNSoR8UeWeUHQDvEp4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kevin.km6g.us; spf=pass smtp.mailfrom=kevin.km6g.us; dkim=pass (2048-bit key) header.d=km6g.us header.i=@km6g.us header.b=ZbynBh+8; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=LZGrEEFP; arc=none smtp.client-ip=64.147.123.24
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kevin.km6g.us
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kevin.km6g.us
+	s=arc-20240116; t=1706775781; c=relaxed/simple;
+	bh=+b0IAWBvI0IJRg3ZFUq839DyMXqj2CY60lkfdk/VMEc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=PWlSHEDngtCqfp32S9ifP5jjZw+OmRrcck7eqjxCzlyPyH7ZiLGT8Cc10DJasGH1FD33wul9NPYhGgTWX511N5D6UsKofxQv98WkPshGU73ypdin2bHmyo+VwTdlveV6fjnkXOz5sbUQmHSB0bfTCsRoiLeCjmDRWmtDHGmGwow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=CFJcdscp; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=jcF/IdZY; arc=none smtp.client-ip=185.25.250.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=km6g.us header.i=@km6g.us header.b="ZbynBh+8";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="LZGrEEFP"
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
-	by mailout.west.internal (Postfix) with ESMTP id 0574F3200AF6
-	for <netfilter@vger.kernel.org>; Thu,  1 Feb 2024 01:06:29 -0500 (EST)
-Received: from imap50 ([10.202.2.100])
-  by compute6.internal (MEProxy); Thu, 01 Feb 2024 01:06:30 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=km6g.us; h=cc:cc
-	:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to; s=fm1; t=1706767589; x=1706853989; bh=jOElYeDyhZ2mO
-	M6FPda1Djd1oOQ/jpuW79Lz5DEw4QY=; b=ZbynBh+8tG0eIt7I/ZHsl6pySs3fL
-	PPeTnejLQGLzZC7aGrpnm5kLrcbRw8DKNRcgcwQQYO2QHjG/pYeEEP60MBLCbMPV
-	valIZ+uAjc2o9byypyhxLVOqwIOv17EPgbo6DY6Hkc79RRzkzx8iF/xUcN/2rJ+L
-	g8uX8NwCajMgvw/rn7MGns09wCga9AcZ/7THmdn0EoG8nHqcvktcht+xw77Eq7Xb
-	t3HQsepRoh7SHSwszBNAnb3JCIMC8SSXo/miFBRjTjPi4jWNf09/QUuiEGuxH5Bg
-	h4wKsAm6n5XxkhWSpo/RU63Kp1dG3pZqZZVJSgbd3Bb0oYSOPA2DLcAjA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1706767589; x=1706853989; bh=jOElYeDyhZ2mOM6FPda1Djd1oOQ/
-	jpuW79Lz5DEw4QY=; b=LZGrEEFPa/9hYV+rv1DKqRqlXAuW1tvmVDZIePFEP/sD
-	4ix1Gi62vh6uVlI/UX4snOEOApW0ajQAlVtVD0QBa77Ga7Lr7TeFa5ssj/REB61r
-	e8YvoYBxEp9ZhvxmVndhCmhnjkSSN834thKXkQdEQUeET2H3Nis3ZAQrnxFvVzZE
-	Hw1eVbcPF6ewSyR4cxXu2pGydkC646ss60HcWrwU6gshEooYJUS/6py9f4LYnosa
-	8xNzXY4M+qbeiInO9+aGkQYpvvm8IOoKheiCo+kATj+45hSvtBBkVSi5cqFnyDYG
-	1P89407td2y6U0ReNQLyVPkK7ojjwL9+lgFzi/Hzzw==
-X-ME-Sender: <xms:5TS7ZeBBkVa2dz8EJBfzFneB3PeDUL-IBsq1rZ1aWCQYiDPw6gJXug>
-    <xme:5TS7ZYhofp8NL-QL1pBFFE-AVQtKF4Y3iOr-BOGIhjuFdDOtWmAVOSWXlNPeJIagG
-    OHiX_TKKsR0ofx98YU>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedutddgledtucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    hmihhsshhinhhgucfvqfcufhhivghlugculdeftddmnecujfgurhepofgfggfkjghffffh
-    vefutgesthdtredtreertdenucfhrhhomhepfdfmvghvihhnucfrrdcuhfhlvghmihhngh
-    dfuceolhhishhtshdrnhgvthhfihhlthgvrheskhgvvhhinhdrkhhmiehgrdhusheqnecu
-    ggftrfgrthhtvghrnhepjeeuleetjeehhfeiteekteeiffeivdfgfeekhedvvddutdevie
-    ehieffvddukeeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
-    rhhomheplhhishhtshdrnhgvthhfihhlthgvrheskhgvvhhinhdrkhhmiehgrdhush
-X-ME-Proxy: <xmx:5TS7ZRkKfb8_II1u8Ey3JS4P3wqyrgAKPZ3NNdB9DMLYuQa7ab_QgA>
-    <xmx:5TS7ZcwuPyHm5IIVCfSk0omKPXXBFAfF9ae4YUmwZ6N5xKag0sVbFQ>
-    <xmx:5TS7ZTT5RTQnFiP-pZG8P-DyY2Qr19sXotgsJ1DZsbRP2wo3afsC9A>
-    <xmx:5TS7ZWMkpBVwsmohOLgvbfYKcSOF3OxCT_wkV5xGFEaw6G-7ivKwaQ>
-Feedback-ID: i1309466e:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 1D87E1700093; Thu,  1 Feb 2024 01:06:29 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
+	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="CFJcdscp";
+	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="jcF/IdZY"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
+	s=r2023; h=Content-Type:In-Reply-To:Autocrypt:From:References:To:Subject:
+	MIME-Version:Date:Message-ID:From:Reply-To:Sender:Subject:To:Cc:Date:
+	MIME-Version:Message-Id:Content-Type:In-Reply-To:References:Autocrypt;
+	bh=jl9l7QdrVmvWkAZ9WQ4YZ/1T5FhnsJDw/SCtOkcq2ZA=; t=1706775775; x=1707985375; 
+	b=CFJcdscpArnL8OwO0f78fO4Clv7BKnvCXeB6bMc0Q2dbyNPb4BWlBVsBdJZukPzhCWhy5Z99D7h
+	eRUZSJof7mQDEcwD0MY+yBn9JXTYQbH8Q+SxbN8h2yYjwxsBOacJM+WNCGUqR3XtwYxXAICJih43i
+	FPUyt34Vj+jlEArEJOs=;
+DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=slavino.sk; s=e2023; h=Content-Type:In-Reply-To:Autocrypt:From:References:
+	To:Subject:MIME-Version:Date:Message-ID:From:Reply-To:Sender:Subject:To:Cc:
+	Date:MIME-Version:Message-Id:Content-Type:In-Reply-To:References:Autocrypt;
+	bh=jl9l7QdrVmvWkAZ9WQ4YZ/1T5FhnsJDw/SCtOkcq2ZA=; t=1706775775; x=1707985375; 
+	b=jcF/IdZY0yyFfdam7OCMSfhAFG8vw/xoAUH2pAVQBeEjx8uwJRGUW5ze9leEHPoX1GgoL3TGiRn
+	McxoJMQ2cCA==;
+Received: from dovex.skk ([192.168.10.12])
+	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <linux@slavino.sk>)
+	id 1rVSLT-00057R-1M
+	for netfilter@vger.kernel.org;
+	Thu, 01 Feb 2024 09:22:51 +0100
+Message-ID: <7226e29c-5b1f-4845-8171-fd633f4a896c@slavino.sk>
+Date: Thu, 1 Feb 2024 09:22:49 +0100
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <630b00f5-7535-49ad-9761-96287da0a586@app.fastmail.com>
-In-Reply-To: <20240131221012.289b2a17152cbcae39132ab1@plushkava.net>
+Subject: Re: Combine ipv4 and ipv6 in a set
+To: Netfilter list <netfilter@vger.kernel.org>
 References: <be623941-d82e-4430-b6ea-5bdbc5b48da8@tootai.net>
  <e0e61628-b7b4-4df7-9665-0168fa741fe0@app.fastmail.com>
  <Zbj04V-90zpQwEzl@torres.zugschlus.de>
@@ -80,20 +56,48 @@ References: <be623941-d82e-4430-b6ea-5bdbc5b48da8@tootai.net>
  <Zbom4bTPnkTMbLNE@torres.zugschlus.de>
  <5f76a328-4018-43c7-9f4a-86a1e2a4a94c@app.fastmail.com>
  <83255444-F0BF-4340-B721-976AC8E5B6AC@slavino.sk>
- <20240131221012.289b2a17152cbcae39132ab1@plushkava.net>
-Date: Thu, 01 Feb 2024 07:06:08 +0100
-From: "Kevin P. Fleming" <lists.netfilter@kevin.km6g.us>
-Cc: "Netfilter list" <netfilter@vger.kernel.org>
-Subject: Re: Combine ipv4 and ipv6 in a set
-Content-Type: text/plain
+ <ZbrLg8luc8tbZALr@calendula>
+Content-Language: sk, en-US
+From: Slavko <linux@slavino.sk>
+Autocrypt: addr=linux@slavino.sk; keydata=
+ xsBNBE2fIMwBCADjOr4MY1rKxZnb4hsEdYBDFIHhZO9U3iLN/rNWSFKh3LeERd3Bu5gMz7Hk
+ kn0nsoV2ijRKTLlXE0yzUtoJL+8WdNdWONt//cYcl8Z9V80uGFWfL6h0XWlqlup4XLTPZYz9
+ 7f/k1UsTltiIWd5hK6JU+PA6bFVO3ogq9Nx6ru6pNzQtx6D7D5ND9/4rN45MIYolEMMC2/1J
+ bvM8PFdwB+QmJbj2fKb7jboKFS34VrUQ9xsVJske9/lC0MTWN1HT+dFiXvvue7TmwOgBAd/B
+ 24eGPVtcA2D13IRqhItDTS1DtacnzY3Okx/OEMdUIhjqKCBUGHeP22SagvAaKi8UYBBrABEB
+ AAHNIVNsYXZrbyAoTGludXgpIDxsaW51eEBzbGF2aW5vLnNrPsLAeAQTAQIAIgUCTZ8gzAIb
+ AwYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQg/mquDkYjbYGXAf9FbEfo0wF7hfYgqll
+ CfNSoCcGcj1WkqqXD0kkAY/5wIFTbOOtrGn7TijhuFu9aIzjd+K+3Q9tk4Tt6MSg9ibp25b2
+ HLZPp8UiyPLeE0BAWFgAgtOrrIDg8VkvjfO2jSJjkHhHOWVP1xZYSlApNNhU1KUit7RE0ueV
+ bWG45a8ONSp+eNCSHkgMC8VtoF3oMegi0rgFUXSdiEsZlrpXo0Q7HPFObg2ElTC9QgFr6Lmh
+ uw6I+BvXE0arwa+4ndcesb5pV6TDONOrihgYvZIyZ6V4Bgnt9C6lvK1Y/e62W73YBAEIvQo7
+ j90m0lrBEAMhUhj4aGooeJQ2b/aXkrBwc+9vos7ATQRNnyJKAQgAp8mP9O2fH0KnS1yJzAz+
+ 7fAM8dxFJbagFkv5ljvQ/qkEYh4uI+hWjgV7ok9+9kuzFiHbv8nczhcMr/J0JX4kok/5B5B4
+ QuBdCXAoeAiWaPB4V6peLXheJKsBbBP/wNAFthJitt4P5XXrZbL4hv4+5Vm/uYXXYdQczGYa
+ 2UGMVZxYyH1wh3Ywfk2c4RvPfxfe7Q8pdvpK8U+mKKVDQ6kaTEJXB4EGkp80ncpEDmJEzqvj
+ svKoHHruMUnuJdNkuKvE/knpiOw9jbifIkTQfLEJKgmJE6OpgQ5SEJpGBtCTEJr9Wo1l38ji
+ 6ujrUZyjBerdcucsXOKXk3n8mJhy4pshfQARAQABwsB8BBgBCAAmAhsMFiEEz0au30POX8OO
+ zaE5g/mquDkYjbYFAmACuOoFCRY5xCAACgkQg/mquDkYjbYddAf/SWvH2Z5J23ZNqxpdORYU
+ jUyHISTo3WaO0k72VdIHJqCHR+XSerysTyuBO4mf8SYQ2VpkIVLbOfxLKoHNt7jeVa+bjVki
+ OFCjRPFhn3K+CVPwK45gvDqaAzQI4FAf2zCtdD0Zt44rwkb2e7RP7kGcI5EirVpU14bDk71g
+ lE2JSezwkRYU+4ZUrDo9tGcUzJYjwHMvLXR5+yRIV+gqea1nb6871CtKh1w00X2VUXjDBtXo
+ xSAd+NoTI57gwlnQOavvaITo8eGAnpSx9qA2k25uSVH76dn8KpL6O3b9MWfGn4o2KbA+3Cpg
+ taCpoGgpKB7I+cQ4VywRYFH9rEMRgmr9Kw==
+In-Reply-To: <ZbrLg8luc8tbZALr@calendula>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Jan 31, 2024, at 23:10, Kerin Millar wrote:
-> This has also annoyed me on several occasions. Though I have been using 
-> nftables for a fairly long time, I still find it more natural to 
-> organise rulesets based on the conventions of iptables. Old habits die 
-> hard, as the saying goes. Incidentally, there is an open bug concerning 
-> this.
+Dňa 31. 1. o 23:36 Pablo Neira Ayuso napísal(a):
 
-When I switched to nftables last year (after having used iptables since it was created), I was tempted to do the same, but forced myself to rethink my table structures.
+> There is a command to display the datapath hook pipeline per device:
+> 
+> # nft list hooks device eth0
 
-In the end I landed on using address family 'inet' for all filtering, 'ip' for NAT, and both 'ip' and 'ip6' for netdev (because those rules are entirely about matching addresses). This does mean that my 'inet' table contains many seemingly-duplicate rules, but I don't really care since the result is so much cleaner and easier to understand than it was with iptables. Also my nftables rules are machine-generated so that's not visible at the layer where I do admin work :)
+That is nice, except that it returns empty output here: nft 1.0.6, 
+kernel 6.1.69, inside LXC container... No error reported, just no output.
+
+regards
+
+-- 
+Slavko
+
