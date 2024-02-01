@@ -1,56 +1,56 @@
-Received: from fout4-smtp.messagingengine.com (fout4-smtp.messagingengine.com [103.168.172.147])
+Received: from out1-smtp.messagingengine.com (out1-smtp.messagingengine.com [66.111.4.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB1F6779EA
-	for <netfilter@vger.kernel.org>; Thu,  1 Feb 2024 17:09:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44D806306F
+	for <netfilter@vger.kernel.org>; Thu,  1 Feb 2024 17:24:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706807356; cv=none; b=LXfVm1Y9ujjd5OQcRcIIhYNpoKRor0yMuLfc+RAS4FKYKDE4u7+iypypyjJXG7HsXEwP9czLB/28VmBePKwSQKUAR5u1Yiq2M8hoA69Ici1WRbvG6EM2AMB8Uedt71q7gIhqGJB8dIztrMQavBKI3sAqBpi9v+XXsF9SvGXI3yw=
+	t=1706808299; cv=none; b=aECohTY9nMaSpUQceA7UeoLMCV133IwpJWS8/ExjtJmwUGyXsfqJI53n4bSHVhJDaB9zdmBsXxmoLibxsJG+ZhS3rbOuDSkv9iGuVsp/RFtheNY7uABSqABhKFSP3ycOlQ6Gd9Uwa4Tb0PIR7ruNRY0EcW9DpPs4byr4q9u7S3U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706807356; c=relaxed/simple;
-	bh=lDHiETPybBrHJxnx1m5Y4UyIMY+/7cV7UxZaxj0TlGk=;
+	s=arc-20240116; t=1706808299; c=relaxed/simple;
+	bh=aTtuM2aC2KmyVLpyiiZniFFXZQa/gAPjkWYd/X/VUX8=;
 	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=jvkEVyBVwtL61mudYOGeD3Y6IwrHnVLCGkCX99ASUo0040WEQDwaeAtg3HsiefB5xSjtdgqbSjVQrnyZQMyPJecrY7y6CiHBAr0/7lkAI+DyI4hPb1nPx0xXafQ5eNFqJ++x6738pb41jh7xtfAeNnC5BL/nPOrVVng7WGp26Ek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=ec27fJaA; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=VQiFd/+S; arc=none smtp.client-ip=103.168.172.147
+	 Mime-Version:Content-Type; b=dXQYXiQtDhIFecJj9smk80z/VtQE4H/miZQNobj2X9I8Xq5GiIAkYgjdJHDRsgwwgahFnXG/Avx+2VDXueL887m7B3z6tWwEuoMD2r3ypWgXN+hOZSELMrfUUYGzqZJpzl1NOAKM5poeOoFvthGroy/tJzowh6fMdod98NLA8ek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=YEkghol9; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=UZpqqDxG; arc=none smtp.client-ip=66.111.4.25
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="ec27fJaA";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="VQiFd/+S"
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailfout.nyi.internal (Postfix) with ESMTP id 853EB1380097;
-	Thu,  1 Feb 2024 12:09:12 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Thu, 01 Feb 2024 12:09:12 -0500
+	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="YEkghol9";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="UZpqqDxG"
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailout.nyi.internal (Postfix) with ESMTP id 362C45C00B2;
+	Thu,  1 Feb 2024 12:24:57 -0500 (EST)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute4.internal (MEProxy); Thu, 01 Feb 2024 12:24:57 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
 	 h=cc:cc:content-transfer-encoding:content-type:content-type
 	:date:date:from:from:in-reply-to:in-reply-to:message-id
 	:mime-version:references:reply-to:subject:subject:to:to; s=fm1;
-	 t=1706807352; x=1706893752; bh=pIWuP2Tvi697B79bPXTAKvcqXu/JTS6n
-	UbdoDW7Wy5M=; b=ec27fJaACKd8vxbLfwQM0iiTkisHhzOhutMuM9h0kXllL1s1
-	28Vst1xIn9hX1odk/8LQ3u9pxbHtsBZsmtTSQym+Rivd+T6VRaOd5mU7DXm3keZ3
-	zl1ci1upix43zv9fGfIp47fSSuEvdBhAcZii9DDLkdJH9od3LHRKsGGzUW4gPtN3
-	TxY4RyR8TsFUulaWnRKK4g8uwg6uwBWh4E6TJ/cbRhv8CzG2TlB+S79JIpJbhAxm
-	y1+3uGrB5kabMoCLzmiQGDJIcGzBQEPG+AOwC2Bzj+7/AhNNdlj+AwGmEBsCmlRE
-	VcU4WzbJFBSxqQVWPExJv8zLOaYosFhz3tajEQ==
+	 t=1706808297; x=1706894697; bh=AW1E3dIUfQufP66l1p6tydwiiagdGrWt
+	xfXycMt0T4A=; b=YEkghol9THj+RlqtmxA+NNperul552LEywz6d1fGW0U7HQzz
+	TaWH1m7uX/YgAV4+gEyvUnq4JAmHa3KSfXegaS2JVi4wdF+rncRbUA4PrBJf4sFN
+	R+nUBL9e0EBS6qHTigTfA230jnU0kzJKen6/WcbDFhYeY3KRR0wa4PgaWDAoAGNJ
+	Yy6GG9VI5kAOTs55rkN7a1aJb1GTIDTDHOs6wkS94DLIi+VFXD5l6E55Wp68G2wP
+	f21VqVYDQSySktBgt8oY3fUv+Yhy+ONkkYtH2GtUQX1Oc97Xvayxi1xAlUSBxBGd
+	TlKHzIIhlikks7LJUGbudXSlsGojLReEAKJW2w==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:content-type:date:date:feedback-id:feedback-id
 	:from:from:in-reply-to:in-reply-to:message-id:mime-version
 	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1706807352; x=
-	1706893752; bh=pIWuP2Tvi697B79bPXTAKvcqXu/JTS6nUbdoDW7Wy5M=; b=V
-	QiFd/+SAt0C4HjvDGxxI8BnVCi+RI+YNXcLnRCTh7/bpox1EyvsnvzFEb5UIUcm0
-	10tgx8D5h/UWG66UJLWrlIltkSh7OGlqxMlR8f4yNIq0Z1tfZTJQdB3hAHrbzRJL
-	rkgf8seeQspKpZAXBysYp1pXSB0E1bqix4xqKOjTHFd2Vy08fBAYTsmUKPX3j3ch
-	FVCi/x8cw3WR2F+1HWC6MYGMANLUinoKVwyePUkOahsaBg/brijWvnpk7ZksgoSP
-	qGJN3jN4gdZBsHUPnsyZNIpkdYdoTxRt+tVE19QDA6gZERDogQBuwkHwzPyXZTK7
-	yulMxb3YONE0qEP76JHBQ==
-X-ME-Sender: <xms:ONC7ZaAFjvuouYxvvTJzljcospy97qtDfOoIpnSKUz77FTqFXg7a-Q>
-    <xme:ONC7ZUhB_Osgq33-xkaY7ju9HakqpGihSXrVt5zJoQLptOyrX2tXudi4OT34AZG7i
-    vvmKaSccCWDEUS7>
-X-ME-Received: <xmr:ONC7ZdnTzrKWcmcYzI5yvzeBXcCEB5RR3mDaOfkPedT0ZF6lyNHdS-OUCPryYZ85O59QFcLdKWhY_6vGiwkC>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfeduuddgleefucetufdoteggodetrfdotf
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1706808297; x=
+	1706894697; bh=AW1E3dIUfQufP66l1p6tydwiiagdGrWtxfXycMt0T4A=; b=U
+	ZpqqDxGyctQQPtvp4FCLdtTedOlu95GFdfY+lExbcNsfhHLZ6JTIftlBKVj7G8xF
+	x+pt4uCHoqWap0u/m+BFjkl+0shIsf9XitrNj/ozK+hfJ3M5NOQPy1bKq044nqoq
+	IQr1aa+9LfCimk7XYclDCJzv1J2rAUYvbAOUrLo9vcpA/MZLVVexnqutoFRpVukN
+	uBF0WrpHDTHALHJo8TYPFkHWdpiNytlnlnkTR6K2dvCZSrbTooBkxKl/niRuIrz8
+	JvVJ4BUX76opKHBGDTlkKSLiGRAFJ1ImOTlhQvumw5Fuhz70Sab2CIcBXVYHBdln
+	/xouZaEO+KswgkthDbofA==
+X-ME-Sender: <xms:6dO7Zbkrkmlti678cdz5PRt-848-vPR-oz4GD4I7ose6IOIZ8vidxQ>
+    <xme:6dO7Ze3vBksjc_zbvXYXY79f1nI7XryGHYqoJL88Rhx36bEmFPTWbnkT4-Bifs5Gy
+    -tbFwGR_1eGjfm5>
+X-ME-Received: <xmr:6dO7ZRpuX9mIV4hImq3ThcVSnBR9Zazvk2UMxz2IiA3cqius7Abgmg8TA1uscA09EN5FcnJeBOqeA5fUjcu4>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfeduuddgleeiucetufdoteggodetrfdotf
     fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
     uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
     cujfgurhepfffhvfevuffkjghfofggtgfgsehtjeertdfjtddvnecuhfhrohhmpefmvghr
@@ -58,29 +58,21 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfeduuddgleefucetufdoteggod
     htthgvrhhnpeeihfettefhgeeftefgheeugeeffeehkedukeefffejgeeutdeggeejtdei
     hefhveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
     hkfhhmsehplhhushhhkhgrvhgrrdhnvght
-X-ME-Proxy: <xmx:ONC7ZYyVVLPekoCzPvsHsLELBBzqOwb9sR-gi4uPU2hzPzYkJAuVHQ>
-    <xmx:ONC7ZfQ4s9rdpF_0aP-Mpknil00ol8_lMzZQdvRsoxWjsOo4Z8F2sg>
-    <xmx:ONC7ZTYUUb0qeGT2gGO4swB8gq9kA-DfCC6gFu8a9RMQvwbYlSpQSg>
-    <xmx:ONC7ZafwiAXh3TIC0lKJWOjwEZGKGOQxrX8z13t25hLxxLUxDZ-55w>
+X-ME-Proxy: <xmx:6dO7ZTmpaJtiGjOkdiGmD-FgvXbA-_cfV0z0XiJGfukNawRKLuqTUQ>
+    <xmx:6dO7ZZ0Had4zOn9VdtYiGOnlCtRi27tJWLA10QJAL6xAVluwaIXYng>
+    <xmx:6dO7ZSvoMbu_PM2Tk9yO6dLo9JJrBxvWCaXA7-2oEsLY6HWpO7r9SQ>
+    <xmx:6dO7Za9CLAFlFovIwb0uWcCTGGgQrWuGTT-w7ZIby3w_XBisbGqeOQ>
 Feedback-ID: i2431475f:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
- 1 Feb 2024 12:09:11 -0500 (EST)
-Date: Thu, 1 Feb 2024 17:09:08 +0000
+ 1 Feb 2024 12:24:56 -0500 (EST)
+Date: Thu, 1 Feb 2024 17:24:55 +0000
 From: Kerin Millar <kfm@plushkava.net>
-To: "Kevin P. Fleming" <lists.netfilter@kevin.km6g.us>
-Cc: "Netfilter list" <netfilter@vger.kernel.org>
-Subject: Re: Combine ipv4 and ipv6 in a set
-Message-Id: <20240201170908.5ebde576bd4f21e007b96a00@plushkava.net>
-In-Reply-To: <630b00f5-7535-49ad-9761-96287da0a586@app.fastmail.com>
-References: <be623941-d82e-4430-b6ea-5bdbc5b48da8@tootai.net>
-	<e0e61628-b7b4-4df7-9665-0168fa741fe0@app.fastmail.com>
-	<Zbj04V-90zpQwEzl@torres.zugschlus.de>
-	<cd7cbfc0-b7d4-4713-9e2d-f92596fb4844@app.fastmail.com>
-	<Zbom4bTPnkTMbLNE@torres.zugschlus.de>
-	<5f76a328-4018-43c7-9f4a-86a1e2a4a94c@app.fastmail.com>
-	<83255444-F0BF-4340-B721-976AC8E5B6AC@slavino.sk>
-	<20240131221012.289b2a17152cbcae39132ab1@plushkava.net>
-	<630b00f5-7535-49ad-9761-96287da0a586@app.fastmail.com>
+To: Edward Dickson <edickson@hudson-trading.com>
+Cc: netfilter@vger.kernel.org
+Subject: Re: [nftables] Multiple reject withs in a single rule
+Message-Id: <20240201172455.dbcd6ff0da8e545e06106e93@plushkava.net>
+In-Reply-To: <CALqmkGz7HqTeAvyZwJDTcZsuSUVi6usAD8P6XwTnfMxzBSs=Fw@mail.gmail.com>
+References: <CALqmkGz7HqTeAvyZwJDTcZsuSUVi6usAD8P6XwTnfMxzBSs=Fw@mail.gmail.com>
 X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-unknown-linux-gnu)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
@@ -91,21 +83,51 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu, 01 Feb 2024 07:06:08 +0100
-"Kevin P. Fleming" <lists.netfilter@kevin.km6g.us> wrote:
+On Fri, 24 Nov 2023 14:57:09 +0000
+Edward Dickson <edickson@hudson-trading.com> wrote:
 
-> On Wed, Jan 31, 2024, at 23:10, Kerin Millar wrote:
-> > This has also annoyed me on several occasions. Though I have been using 
-> > nftables for a fairly long time, I still find it more natural to 
-> > organise rulesets based on the conventions of iptables. Old habits die 
-> > hard, as the saying goes. Incidentally, there is an open bug concerning 
-> > this.
+> Hello,
 > 
-> When I switched to nftables last year (after having used iptables since it was created), I was tempted to do the same, but forced myself to rethink my table structures.
+> I am running nftables v0.9.8 and am aiming to create a single
+> rejection rule which specifies multiple rejection types for different
+> protocols.
 > 
-> In the end I landed on using address family 'inet' for all filtering, 'ip' for NAT, and both 'ip' and 'ip6' for netdev (because those rules are entirely about matching addresses). This does mean that my 'inet' table contains many seemingly-duplicate rules, but I don't really care since the result is so much cleaner and easier to understand than it was with iptables. Also my nftables rules are machine-generated so that's not visible at the layer where I do admin work :)
+> Something like: "reject with tcp reset with icmpx type admin-prohibited".
+> 
+> However when I've tried this, nftables throws an error:
+> Error: syntax error, unexpected with, expecting end of file or newline
+> or semicolon
+> add rule inet filter output reject with tcp reset with icmpx type
+> admin-prohibited
+> 
+>  ^^^^ (under the second with)
+> 
+> Error: Statement after terminal statement has no effect
+> add rule inet filter output reject with tcp reset reject with icmpx
+> type admin-prohibited
+>                                       ~~~~~~ (under first reject)
+> ^^^^^^ (under the second reject)
+> 
+> 
+> I am currently using two rules which covers TCP, ICMP and anything
+> else, but would be better as a single rule:
+>     add rule inet filter output meta l4proto tcp reject with tcp reset
+>     add rule inet filter output reject with icmpx type admin-prohibited
+> 
+> But this would be better as a single rule, as the duplicate similar
+> rules create complexity and duplication.
+> 
+> Is there a way to specify multiple rejection types in a single nftables rule?
 
-I ended up using fewer tables, while naming several chains so as to incorporate a faux namespace e.g. "nat/PREROUTING". It works well enough but I cannot say that I have come to like it.
+A chain would handle this perfectly adequately.
+
+chain prohibit {
+	meta l4proto tcp reject with tcp reset
+	meta l4proto udp reject
+	reject with icmpx type admin-prohibited
+}
+
+Then, simply employ "goto prohibit" as a target in your rules.
 
 -- 
 Kerin Millar
