@@ -1,77 +1,99 @@
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wout1-smtp.messagingengine.com (wout1-smtp.messagingengine.com [64.147.123.24])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 077C24F60F
-	for <netfilter@vger.kernel.org>; Wed, 31 Jan 2024 23:11:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D32684A28
+	for <netfilter@vger.kernel.org>; Thu,  1 Feb 2024 06:06:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.24
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706742706; cv=none; b=EhSC++ygjmUGgMW6qVB6bZmYhsU3xlPgaQ2pCL1zc9Cwdq0TJVyRHiimtIBFe4yL20PRkijsyBX6tv6g5BGIPQM9sls6dIdwUotPri5LL47kgydGuEDJl87HoKXsCx9aEJTrRopZDX6PGCITQ/TbV2NUpatSd2Y2DIEUBjLPL9Q=
+	t=1706767594; cv=none; b=OxgKLFgoUvAzjxs62VQZiNpCB8Oq5HQOYCYWLpFpfBoE7pjmQd2+sqcjWE4T5V52v0OkEyXLeVyS2oM2C+QBMq0c3I0Gr9dGzy2sBMPMlt0ORD11VPcva+hn5kOG+k1+6/KsdwLShPSig6YkSXRs3Fcc4e1hjpSL6bZaOqOxRYM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706742706; c=relaxed/simple;
-	bh=Wyof18NxeeS04tFUBTp1xSrzeHJYoiBqRJCLmkzWQkg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rA/qhIAlLp6WPf87+4KngZfl6ijE5HwC6r5o9XcSUA26rKcf4t6RwQODHR+insS6KGMKNhEW1VMYUtyNS0MyW1CWX0vOcnDR85FOaIt0ocK/GmSj3yABhpOsMEY61eBl0T9Ouqa0YVZ4ble2JITCp8EmYePtelCPd0Q5soXGMbg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AzlM5ZsU; arc=none smtp.client-ip=209.85.219.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1706767594; c=relaxed/simple;
+	bh=MIOhWRvMuriflW/8JMC4dRBOW5xg0al580/zbGThxH4=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:Cc:
+	 Subject:Content-Type; b=hIUMQiVamY9MaIJ8pHjVwX3yY8FErFceemTMQlU+Qsd0dSmPg4I1rcvg9QZ3MB1rrXitOeOUsittOIUy8S8mYWqJz6YRlJNBmyi+sPv5YNvF5SOoAQiSFiqTTX8Pv9SGZAi5ZoFQHE9JfIVyt0OmfPHt3oNSoR8UeWeUHQDvEp4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kevin.km6g.us; spf=pass smtp.mailfrom=kevin.km6g.us; dkim=pass (2048-bit key) header.d=km6g.us header.i=@km6g.us header.b=ZbynBh+8; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=LZGrEEFP; arc=none smtp.client-ip=64.147.123.24
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kevin.km6g.us
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kevin.km6g.us
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AzlM5ZsU"
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dc6c3902a98so243461276.1
-        for <netfilter@vger.kernel.org>; Wed, 31 Jan 2024 15:11:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1706742704; x=1707347504; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Wyof18NxeeS04tFUBTp1xSrzeHJYoiBqRJCLmkzWQkg=;
-        b=AzlM5ZsUyiei3sWn5VUqK1rtcOd0qgKiHYsOWMtUmkBWQRQUffkpJnUJ6+sz0UYQSI
-         srMF0+X6pvuNvstsmo9AZhJgLnAFHsnpBHCqRP9vYs1jSKbJIvIoYCPEB0zqhBizyfDi
-         y1ej6JibbKpIiG83HkkMENwSIT+8gr/V5PRMzooIHb1nvqL7PczQle1DY/0IRvMcayXt
-         +xKi7R0RCFGJoQGKT734wAkt5cSYJMMPguP/66YEKgQi86XaDyM1/mitOBBrTuTlsr3I
-         wm+7Bq1yodXVNyBryyxyVIgaH5SBehPlbkbAmMIfM6Ofz6+JXQ/fXnQDcRPIQh8tK6nH
-         +HuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706742704; x=1707347504;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Wyof18NxeeS04tFUBTp1xSrzeHJYoiBqRJCLmkzWQkg=;
-        b=EHVEypEvkVGwo5XGA2myImaJUnGkVD49x36hCA0b/vPXtr/jjsZJzZesJ4+RrXEdSB
-         wqUIUzYGSrKSPfM74H0BQwBkv+l6g5EvW5ucAUwCKaJ3qB7plTKm8Zdyg3pwwKUfr3jn
-         /CYEK4K9VowuT8ErXF0/HlmGDm3NQNpVhE33LXn4n6oGHX9wLHVTaz5LVtKk1dkz2FuK
-         uU7PnvSbIzjeq0FUluLq+Pjj3YyUXRvWsA9aIr/oim1hqdk/dtddD/vDR9tLmRX03iz9
-         Ht4Cf/oRO6ueWnyuSQyshcr0zESPamOgAyCtrDMmXcqiO/O5aHYCtbojShh4SyvIxs94
-         M72A==
-X-Gm-Message-State: AOJu0YxCY/tsKFLufK5jnlInfUtMLfyzwoB2uGSUwpgQU1Wr9868tRch
-	Hn28SUqlNx8rto9lw1KmCFP9yHdZ6SuM8AVBn9JA3Afww9E1JYFkvKcO/+bOHU/XdnZhPswO03M
-	Pd9pnE6RTDbfkSRwZAf4vNiYQlr7HC9JMtUg=
-X-Google-Smtp-Source: AGHT+IHf+bdEOtR7OkdejDCzXqQxBQPtUXQKAtH5+cUvZnmEb7jV2WEvftlGiXam0NkLiwMZjyjJ16+sJLaXJ9FpheQ=
-X-Received: by 2002:a25:b112:0:b0:dc6:978:19a4 with SMTP id
- g18-20020a25b112000000b00dc6097819a4mr577080ybj.56.1706742703823; Wed, 31 Jan
- 2024 15:11:43 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=km6g.us header.i=@km6g.us header.b="ZbynBh+8";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="LZGrEEFP"
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailout.west.internal (Postfix) with ESMTP id 0574F3200AF6
+	for <netfilter@vger.kernel.org>; Thu,  1 Feb 2024 01:06:29 -0500 (EST)
+Received: from imap50 ([10.202.2.100])
+  by compute6.internal (MEProxy); Thu, 01 Feb 2024 01:06:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=km6g.us; h=cc:cc
+	:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to; s=fm1; t=1706767589; x=1706853989; bh=jOElYeDyhZ2mO
+	M6FPda1Djd1oOQ/jpuW79Lz5DEw4QY=; b=ZbynBh+8tG0eIt7I/ZHsl6pySs3fL
+	PPeTnejLQGLzZC7aGrpnm5kLrcbRw8DKNRcgcwQQYO2QHjG/pYeEEP60MBLCbMPV
+	valIZ+uAjc2o9byypyhxLVOqwIOv17EPgbo6DY6Hkc79RRzkzx8iF/xUcN/2rJ+L
+	g8uX8NwCajMgvw/rn7MGns09wCga9AcZ/7THmdn0EoG8nHqcvktcht+xw77Eq7Xb
+	t3HQsepRoh7SHSwszBNAnb3JCIMC8SSXo/miFBRjTjPi4jWNf09/QUuiEGuxH5Bg
+	h4wKsAm6n5XxkhWSpo/RU63Kp1dG3pZqZZVJSgbd3Bb0oYSOPA2DLcAjA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1706767589; x=1706853989; bh=jOElYeDyhZ2mOM6FPda1Djd1oOQ/
+	jpuW79Lz5DEw4QY=; b=LZGrEEFPa/9hYV+rv1DKqRqlXAuW1tvmVDZIePFEP/sD
+	4ix1Gi62vh6uVlI/UX4snOEOApW0ajQAlVtVD0QBa77Ga7Lr7TeFa5ssj/REB61r
+	e8YvoYBxEp9ZhvxmVndhCmhnjkSSN834thKXkQdEQUeET2H3Nis3ZAQrnxFvVzZE
+	Hw1eVbcPF6ewSyR4cxXu2pGydkC646ss60HcWrwU6gshEooYJUS/6py9f4LYnosa
+	8xNzXY4M+qbeiInO9+aGkQYpvvm8IOoKheiCo+kATj+45hSvtBBkVSi5cqFnyDYG
+	1P89407td2y6U0ReNQLyVPkK7ojjwL9+lgFzi/Hzzw==
+X-ME-Sender: <xms:5TS7ZeBBkVa2dz8EJBfzFneB3PeDUL-IBsq1rZ1aWCQYiDPw6gJXug>
+    <xme:5TS7ZYhofp8NL-QL1pBFFE-AVQtKF4Y3iOr-BOGIhjuFdDOtWmAVOSWXlNPeJIagG
+    OHiX_TKKsR0ofx98YU>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvkedrfedutddgledtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    hmihhsshhinhhgucfvqfcufhhivghlugculdeftddmnecujfgurhepofgfggfkjghffffh
+    vefutgesthdtredtreertdenucfhrhhomhepfdfmvghvihhnucfrrdcuhfhlvghmihhngh
+    dfuceolhhishhtshdrnhgvthhfihhlthgvrheskhgvvhhinhdrkhhmiehgrdhusheqnecu
+    ggftrfgrthhtvghrnhepjeeuleetjeehhfeiteekteeiffeivdfgfeekhedvvddutdevie
+    ehieffvddukeeknecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
+    rhhomheplhhishhtshdrnhgvthhfihhlthgvrheskhgvvhhinhdrkhhmiehgrdhush
+X-ME-Proxy: <xmx:5TS7ZRkKfb8_II1u8Ey3JS4P3wqyrgAKPZ3NNdB9DMLYuQa7ab_QgA>
+    <xmx:5TS7ZcwuPyHm5IIVCfSk0omKPXXBFAfF9ae4YUmwZ6N5xKag0sVbFQ>
+    <xmx:5TS7ZTT5RTQnFiP-pZG8P-DyY2Qr19sXotgsJ1DZsbRP2wo3afsC9A>
+    <xmx:5TS7ZWMkpBVwsmohOLgvbfYKcSOF3OxCT_wkV5xGFEaw6G-7ivKwaQ>
+Feedback-ID: i1309466e:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 1D87E1700093; Thu,  1 Feb 2024 01:06:29 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-144-ge5821d614e-fm-20240125.002-ge5821d61
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAJE3=wmAh5Ne9fWdrHOyZx9uuz+_g4+PhVXnfr+pS417mVWfhA@mail.gmail.com>
- <3cfd95bb-93ca-4f40-9e1e-bb2526789161@app.fastmail.com> <CAJE3=wmhLSHY7Gqg7vHX_SAAYKx-PMQFC_i2iEek4mBnghyAbg@mail.gmail.com>
- <20240131223947.525533518741b6cae01e2d6d@plushkava.net>
-In-Reply-To: <20240131223947.525533518741b6cae01e2d6d@plushkava.net>
-From: Anton <anton.khazan@gmail.com>
-Date: Thu, 1 Feb 2024 01:11:28 +0200
-Message-ID: <CAJE3=w=WfYmp7QimYd7Q-rN+5rdq-+9ELVMgzk9GkQ5r60c6NA@mail.gmail.com>
-Subject: Re: Is there an efficient way to delete multiple elements from a set?
-To: Kerin Millar <kfm@plushkava.net>
-Cc: netfilter@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Message-Id: <630b00f5-7535-49ad-9761-96287da0a586@app.fastmail.com>
+In-Reply-To: <20240131221012.289b2a17152cbcae39132ab1@plushkava.net>
+References: <be623941-d82e-4430-b6ea-5bdbc5b48da8@tootai.net>
+ <e0e61628-b7b4-4df7-9665-0168fa741fe0@app.fastmail.com>
+ <Zbj04V-90zpQwEzl@torres.zugschlus.de>
+ <cd7cbfc0-b7d4-4713-9e2d-f92596fb4844@app.fastmail.com>
+ <Zbom4bTPnkTMbLNE@torres.zugschlus.de>
+ <5f76a328-4018-43c7-9f4a-86a1e2a4a94c@app.fastmail.com>
+ <83255444-F0BF-4340-B721-976AC8E5B6AC@slavino.sk>
+ <20240131221012.289b2a17152cbcae39132ab1@plushkava.net>
+Date: Thu, 01 Feb 2024 07:06:08 +0100
+From: "Kevin P. Fleming" <lists.netfilter@kevin.km6g.us>
+Cc: "Netfilter list" <netfilter@vger.kernel.org>
+Subject: Re: Combine ipv4 and ipv6 in a set
+Content-Type: text/plain
 
-I don't know whether this is actually a bug, or is it by design.
-Perhaps a netfilter dev could comment on that.
+On Wed, Jan 31, 2024, at 23:10, Kerin Millar wrote:
+> This has also annoyed me on several occasions. Though I have been using 
+> nftables for a fairly long time, I still find it more natural to 
+> organise rulesets based on the conventions of iptables. Old habits die 
+> hard, as the saying goes. Incidentally, there is an open bug concerning 
+> this.
 
-On Thu, Feb 1, 2024 at 12:39=E2=80=AFAM Kerin Millar <kfm@plushkava.net> wr=
-ote:
-> Anyway, if the performance of nft seems unusually bad for deletions, it c=
-ould be bug material.
+When I switched to nftables last year (after having used iptables since it was created), I was tempted to do the same, but forced myself to rethink my table structures.
+
+In the end I landed on using address family 'inet' for all filtering, 'ip' for NAT, and both 'ip' and 'ip6' for netdev (because those rules are entirely about matching addresses). This does mean that my 'inet' table contains many seemingly-duplicate rules, but I don't really care since the result is so much cleaner and easier to understand than it was with iptables. Also my nftables rules are machine-generated so that's not visible at the layer where I do admin work :)
