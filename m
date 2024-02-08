@@ -1,115 +1,93 @@
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout02.posteo.de (mout02.posteo.de [185.67.36.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91BB47CF31
-	for <netfilter@vger.kernel.org>; Thu,  8 Feb 2024 16:00:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C290383A2
+	for <netfilter@vger.kernel.org>; Thu,  8 Feb 2024 20:11:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707408002; cv=none; b=PEnjYEKvq53ZDecoxICaSrA1kiBOMMF0Ixw8kIi/6L8iJvr1+7OLxti8A6YgL1As0UDm+VhszFwUOPFZ5zQG21+9ZFDawGq7plpFDAeDylKjqZAgrJWse1I5TF4LDwBOVmtPOQaDoQ3Xn011oJ7aewXy1x+36q1cKrWS5/sSe9g=
+	t=1707423070; cv=none; b=PoE0deSGmUSEoliB7LqVEig5y3d25RAqZQtlyHmRfr6HeO17fqH1tgR+Tjf1eKRUE3Q+z2dCcxP7/1bbSJsbYy9ModKAaNgxWbzLU7fADL8Lq6JYmLXbWun4e5+1yVF1wwreQf1ZHh9k+ve3OhR2u2x8MuA3b7hNBBy717Org8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707408002; c=relaxed/simple;
-	bh=FrK+Vcjo+ISKrNKENKQTlpsdVUfaVAcnEuu3ZIsrDBM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Z4olxFyfIWNF33BZodPldHvMcLozXsh1xcfTbc/g1aE+2aRFxzpbhBHP45Fxt3dlAFBdtQnIbCnSYkZoF1AUx2KN2zdjpvaPj0AyPCDTDT4jbFfwUsOYoW3wXn0QnBe2Z2Ai0OI5VMs4k3LtJXNMUW0s9YfiarXTV8Qh4ezfV38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JeE4bEjP; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1707423070; c=relaxed/simple;
+	bh=AU80fMdbwm7fV6dsbnVWH7dtpz1qQSoO0RCh9A1QV78=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=SuwUFTXgq9N9A6S/4XhFjqacirdIBXoFLCp62eMmfwXy9dsXXFb03NN1a+/DZxsQu2CbuaHnBjG0y7VMEidUaFnrJYUen26QsmeZz8NtwiB9bqu3YaQlx7gTnYuWbiEXnPlFJ4eJ4xQdSZV95i1gT1HCvf+Jh+fDh31fT/g+KJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=dt3l8YY+; arc=none smtp.client-ip=185.67.36.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JeE4bEjP"
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc6d9a8815fso2058739276.3
-        for <netfilter@vger.kernel.org>; Thu, 08 Feb 2024 08:00:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1707407999; x=1708012799; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Zv0Oyw+Z4vz3MA9LzK/BL3C0iDO3dhIsNB65ulixuZo=;
-        b=JeE4bEjPi5SJNPUhB8lh+1X0dKWql/VaB5ECD+t4bq2Ougf/IcYksdLNKPORn7fGkc
-         HF+NQsjsOpC9uzoy4jFOwWKhTMb1RC8LexemDuiB7Yc+4xghdRjQk3LeBFhEJOKFH5g2
-         ccsOFzSSBRPzDMQx9VOz/I4Qm883WV2fztPCBLMNAZDViRRVe61mnHXTBvPXSnQ3M7Sc
-         UGNrqsKlQdS43YoPsWajdDn/VHuAjI8HKYn5/6STHGz9AM7IFDtQuyk0p0mrqGp4d0W8
-         OLxhhffiyz8lmLB0QnvPXsbtS5v69WRzezwzF15BKdtJwelMWkDuaXS2/W+TFxFiZiO+
-         YCyw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707407999; x=1708012799;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Zv0Oyw+Z4vz3MA9LzK/BL3C0iDO3dhIsNB65ulixuZo=;
-        b=akFdnNs43j2+JyeqrywA3Zx/R+6WirIbJrHbViOWo1UwBjQHX/pI/CwYZqIKjDVTtn
-         hmX33bM/IZxry0NtKIoINcFDM2PSi+KRMUNipkLR16YABE+XoVGO8Uvye5QLdqDxoWd3
-         RNZQh6m6hmzGH9bvNV561DtNXccxskA15nKYYm7VGBqW9AqJtQy6qq7qYN3uKhqHqwRi
-         kYx06WJdNB1nSX/YG1/BXxRNQ3UjxvzEKvKC9Hmpr89LZ874yj0MTYveRzVd2Fdm6Hbv
-         Q7S/hry2HkyTziDpxJ/omeEGuNDqqThay8qGfszsDZM/b8mKpgn0yxeCdcU+WHB3O0x7
-         CpTA==
-X-Gm-Message-State: AOJu0YyPHABe3YVZwkocu3PuwHOnYiXWj2Th89fzvDc8QP85h5KhpgpM
-	AatNB6cZCSGqns9SZ9s5fj8JVoUMCqZebRCvMaXrjBWbr9A/Fw7wwAtac1rJb5S89KOWAD3FUcc
-	1tUcJ5e2SAQFsG/lgEBBGbYp2BZs=
-X-Google-Smtp-Source: AGHT+IGuvFdAk7XlGTTUH4iRI3Ir7VJzSqi9UF+A+Rs0moXdRNOUTeI4vO2sPkm9KYTD7xziVpUx6sEAEVc9UOTVaZ8=
-X-Received: by 2002:a25:83c6:0:b0:dc6:ba6d:7404 with SMTP id
- v6-20020a2583c6000000b00dc6ba6d7404mr8455235ybm.37.1707407999297; Thu, 08 Feb
- 2024 07:59:59 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="dt3l8YY+"
+Received: from submission (posteo.de [185.67.36.169]) 
+	by mout02.posteo.de (Postfix) with ESMTPS id 1FC95240103
+	for <netfilter@vger.kernel.org>; Thu,  8 Feb 2024 21:11:05 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+	t=1707423065; bh=AU80fMdbwm7fV6dsbnVWH7dtpz1qQSoO0RCh9A1QV78=;
+	h=Date:From:To:Cc:Subject:Message-Id:Mime-Version:Content-Type:
+	 Content-Transfer-Encoding:From;
+	b=dt3l8YY+5dk2H9+na1dfGbS6Tkfnk/akNwh/cHI0etXiQgc7i7KigKVlnPqtHV+DE
+	 2GzhchnzcMLTq86ZL+QMCuI/76duVj8UgLws3PUn1AvZfKbm/ZLHJyI5cVdS3uv9MH
+	 tF9dAqQLF6WRnYpYh5C0xuua8FiM5gUFU0tlfw4cPtBzfbmLV6cXpMVsZol+s6L0ZZ
+	 9VxIw1GCgLOKq4ITtPJx04MLUQKL8xK22SZ4W2SOx1zFc3M5Xc+Wl7jLxQGPP3ijKK
+	 K6EEEzdfW2Nwu/lD4uo1/L8TIoqhvt2QkaltsCwqqvyWnVgIWb3GjO4y/aKOA6YjsZ
+	 Hjkx1ex8PRKrg==
+Received: from customer (localhost [127.0.0.1])
+	by submission (posteo.de) with ESMTPSA id 4TW7Qw36Nnz9rxD;
+	Thu,  8 Feb 2024 21:11:04 +0100 (CET)
+Date: Thu,  8 Feb 2024 20:11:03 +0000
+From: "Xavier B." <somenxavier@posteo.net>
+To: Florian Westphal <fw@strlen.de>
+Cc: netfilter@vger.kernel.org
+Subject: Re: Are there nft set limits?
+Message-Id: <20240208211103.78d7973d821ab2cf31b3443d@posteo.net>
+In-Reply-To: <20240208153219.GN14600@breakpoint.cc>
+References: <20240208162047.0a4c7007c908cbc38d5357a2@posteo.net>
+	<20240208153219.GN14600@breakpoint.cc>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240208162047.0a4c7007c908cbc38d5357a2@posteo.net>
-In-Reply-To: <20240208162047.0a4c7007c908cbc38d5357a2@posteo.net>
-From: Anton <anton.khazan@gmail.com>
-Date: Thu, 8 Feb 2024 17:59:43 +0200
-Message-ID: <CAJE3=wmZAELgnQQne+tAY+5UTiOpPFO9sJ+GBbpYB=8nkUChRw@mail.gmail.com>
-Subject: Re: Are there nft set limits?
-To: "Xavier B." <somenxavier@posteo.net>
-Cc: netfilter@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-It might be included in one of the intervals, which is why grep doesn't see=
- it.
-Try this:
+Yes. It is. Thanks a lot for let me understand better nfttables.
 
-nft get element inet my_table badips { 198.199.104.80 }
+Xavier
 
+On Thu, 8 Feb 2024 16:32:19 +0100
+Florian Westphal <fw@strlen.de> ha escrit:
 
-On Thu, Feb 8, 2024 at 5:22=E2=80=AFPM Xavier B. <somenxavier@posteo.net> w=
-rote:
->
-> Hi,
->
-> I have an artix instance with nfttables there. I have several rules (atta=
-ched file) but mainly I have a set of ip addresses I want to ban:
->
-> table inet my_table {
->
->    set badips {
->        type ipv4_addr
->        flags interval
->        auto-merge
->        elements =3D {1.0.147.18 }
->    }
->
-> chain my_input {
->                 ...
->                 ip saddr @badips drop comment "[nftables] Block ban IP"
->                 ...
->         }
-> ...
-> }
->
-> Until now, when I add some new IP to my badips set, everything is fine, b=
-ut today is not:
->
-> # nft add element inet my_table badips { 198.199.104.80 }
-> # nft list ruleset | grep 198.199.104.80
-> #
->
-> As you can see "nft list ruleset | grep 198.199.104.80" produces no outpu=
-t, which means that this IP is not added in badips set.
->
-> So, I suspect nft has a theoric limit size of number of elements of a set=
-. Is it true? Or not? If it is, what limit is that?
->
-> Thanks in advance,
-> Xavier
+> Xavier B. <somenxavier@posteo.net> wrote:
+> > Hi,
+> > 
+> > I have an artix instance with nfttables there. I have several rules (attached file) but mainly I have a set of ip addresses I want to ban:
+> > 
+> > table inet my_table {
+> > 
+> >    set badips {
+> >        type ipv4_addr
+> >        flags interval
+> >        auto-merge
+> >        elements = {1.0.147.18 }
+> >    }
+> > 
+> > chain my_input {
+> >                 ...
+> >                 ip saddr @badips drop comment "[nftables] Block ban IP"
+> >                 ...
+> >         }
+> > ...
+> > }
+> > 
+> > Until now, when I add some new IP to my badips set, everything is fine, but today is not:
+> > 
+> > # nft add element inet my_table badips { 198.199.104.80 }
+> > # nft list ruleset | grep 198.199.104.80
+> 
+> automerge is on.  Please try
+> 
+> nft get element inet my_table badips { 198.199.104.80 }
+> It should give:
+> 198.199.64.0/18
+> 
+> which includes this address.
