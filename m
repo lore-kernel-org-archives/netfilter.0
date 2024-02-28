@@ -1,48 +1,59 @@
-Received: from hh1.woollysoft.com (hh1.woollysoft.com [5.78.101.231])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA7F770020
-	for <netfilter@vger.kernel.org>; Wed, 28 Feb 2024 21:35:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=5.78.101.231
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D9377291C
+	for <netfilter@vger.kernel.org>; Wed, 28 Feb 2024 21:35:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709156119; cv=none; b=p9bnLdsaRkllN5/AwYtvy3OmbVVURB9pKUJidaRRRa6/xP/kr6/SKxtunD4NjatBRr21bW/tOD3JobsGDGvfDz9vPpl1I27x/jxcQcRCpuZWduLChpqVKxGfvluLjmq+AgrF38UTHw6QZY3BD/ceUCQhAPIksrLic9po+6RZv8I=
+	t=1709156152; cv=none; b=e/LXkwIEQi610dJjYiWAF2tVJv32KZh8QICAIUuU4NdssRr93EkktvjHc9xWKQZLKqYUgxyNjJda9F9LgrwDpJWJWBUD+jMC1UVlFMT8UJHLfyHte1MGSnOIc497sTVEaWHZNK4OvlvcBIovXMP5pGtMgQqzNSJs6G0V/ClcHDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709156119; c=relaxed/simple;
-	bh=BDYRBqoVaUm0DlCA+sDjdv7VgCc0XyFlTwrr89vLNDs=;
+	s=arc-20240116; t=1709156152; c=relaxed/simple;
+	bh=syLbqE+hkizTVk2PYQqopo/CdY/qKlh262wKcC21uV0=;
 	h=Message-ID:Date:MIME-Version:Subject:References:From:To:
-	 In-Reply-To:Content-Type; b=HkWEbRFxrg/bVvnmHrRDAa3fl7wqwmaLMVuqQBRGgQq56r6a6jvAHKN6Y3zdMdK1B1dcfF4335L27c3hHcBFc6WjXXeab2iTzylw5eh/tXB8Z0TWLmIjyG9E+MTWxBIzm7R7MJA1FDmmL5NXKljaYZCadSU8no75ORK3rwKwHWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=woollysoft.com; spf=pass smtp.mailfrom=woollysoft.com; dkim=pass (2048-bit key) header.d=woollysoft.com header.i=@woollysoft.com header.b=UcBnzG8G; arc=none smtp.client-ip=5.78.101.231
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=woollysoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=woollysoft.com
+	 In-Reply-To:Content-Type; b=X4kgtRnzqAc3tYGmLuWTs+O1sK4/h6BGBIc5T2NLt3rKisScupRMyunypMIaDevd1LDm/Sir87FMdxDpgkv0IiJC9ToUdRnu2bwZ4DBB9IvUU8jUY3HuG2P5j6sFe5UZyxoAI/lE1XPV5HC73ySYXjlAUA2ub7edBX7cHYUT0m8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mDbWc5WC; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=woollysoft.com header.i=@woollysoft.com header.b="UcBnzG8G"
-Received: from hh1.woollysoft.com (localhost.localdomain [127.0.0.1])
-	by hh1.woollysoft.com (Proxmox) with ESMTP id 7743C2145E
-	for <netfilter@vger.kernel.org>; Wed, 28 Feb 2024 13:35:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=woollysoft.com;
-	 h=cc:content-transfer-encoding:content-type:content-type:date
-	:from:from:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=hh2311; bh=Njej515vzAG0976jUW
-	WoLFsZRdwaEKNWHQp+HavSNz4=; b=UcBnzG8GSSpOFmt0EHZkExxITJucolcoaZ
-	u7qMyNjbvjxbyjSOe2I1D/cSFavmJnepe+iUl9hFwrtcRYWZLwn0oeOpi/691bn7
-	m5TQCPdHsSznHA6wvWvqvSEK2M6Iqgce2nehdXS1m6zWk1LhlThkdIf3lDwC3MYm
-	skUo+Ojm2UzEMLRi7ChsEHYAphJ9KQu/roiUdZli7P+JWFm9gvpIkVQloJ/ZhoBL
-	9x0Z2paOdECYAIdqq0lqpEL+m+MwmQJapYCR8mGoSBP+/UjKtRCr37zI0MFlO9g7
-	ZE5f7IoNMxLzzdTZzVK0OApucCtiS36hePPIoPwaLW35lD0YBlGA==
-Received: from moe.woollysoft.com (unknown [192.168.10.115])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by hh1.woollysoft.com (Proxmox) with ESMTPS id 5B45E208E0
-	for <netfilter@vger.kernel.org>; Wed, 28 Feb 2024 13:35:17 -0800 (PST)
-Received: from [192.168.8.45] (port=62496)
-	by moe.woollysoft.com with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.94.2)
-	(envelope-from <elf@woollysoft.com>)
-	id 1rfRa8-001vZk-QB
-	for netfilter@vger.kernel.org; Wed, 28 Feb 2024 13:35:16 -0800
-Message-ID: <47a7ba26-96c0-43f4-9fdc-d780826787ac@woollysoft.com>
-Date: Wed, 28 Feb 2024 13:35:16 -0800
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mDbWc5WC"
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-6e56a5b2812so114120b3a.1
+        for <netfilter@vger.kernel.org>; Wed, 28 Feb 2024 13:35:51 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709156150; x=1709760950; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:to:from:references
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=o7Z8sM/xmXoJTi3RrWMC6sKP1D73go3X8Rs3ckulXsE=;
+        b=mDbWc5WCkHlWO42xnuuiAG5s4yH3sT3OojlvSXY9jx6eq5vocZHbObU1VWa7VshcMl
+         OZtdtDQT2zJDMImcnUy2SOOj+4OdcvtpK26wpBmB9Hmel2cw61N6OcZDPPniMaXfUkCD
+         hFJaY1ukEpxydW5O06KsekNLK7+vGxfgHI7Dsrp18nkY2PUS+wz5f2z/xLykXe1thkor
+         Qh+UybF043YaxaRVXrd8tmfyxBwJEDrq1jCdv0F3cWHnzULFPmYfGr1dGZE/IW/GPfWG
+         uyxo901AAWMryJxoIw98teEAjX4zJzFWcNX12y1CvJgMUp4xFR09ItpolI3FU1RzYdsx
+         2krw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709156150; x=1709760950;
+        h=content-transfer-encoding:in-reply-to:to:from:references
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=o7Z8sM/xmXoJTi3RrWMC6sKP1D73go3X8Rs3ckulXsE=;
+        b=wJCnNeUBev7FfN5WZUDiyLQlHY9LGm7VTTe0B4BDc5OjBDK7R9tt8S60rWoUbA4QMM
+         /WUETWw3R8lNsutPiQpupbMvDXbYcjMAhWlrZVhChgkSB658D3fSzd/XZXMLFu9P1TDd
+         kDBbN1gsadyUUIqxbw4neEawxJ3cACV4do5aRyM24b8cWCrujfSCPw1KMpl7w/iFoJAF
+         QTFYoY0I8y9P0L4Kg9aykIMwhxqd5JuHRwYlPeEMJZI2dJ80J1oMXTD2+8xJVWEFIlSU
+         VyjnHlI0XKpH64e790D1jGH5FzhPhFd7QI4d4o9EIXrySCFI2U25K5ibXyLQZkFWBdP6
+         Rt/A==
+X-Gm-Message-State: AOJu0YzncOeotSNdgGLJLIUwKCnPz0bQvDyFHmt8s2qggKKQuwWhQM/Q
+	o0r0srY8SBuqYhE9qPJb+t7MFJ7LScbRcvlfIF4fGooOHV6pt2ku1zSshDow
+X-Google-Smtp-Source: AGHT+IFoiweA5Q1QnLu124rNxoDtPpUM4xY9IdOX4G4ii2W3c0KBUFKEZtCQU0MtY8rzLa6v6ijCVw==
+X-Received: by 2002:a05:6a00:139e:b0:6e5:d6:134a with SMTP id t30-20020a056a00139e00b006e500d6134amr477344pfg.14.1709156150492;
+        Wed, 28 Feb 2024 13:35:50 -0800 (PST)
+Received: from [192.168.8.45] (75-172-97-132.tukw.qwest.net. [75.172.97.132])
+        by smtp.gmail.com with ESMTPSA id e23-20020aa78c57000000b006e509762bcbsm158088pfd.85.2024.02.28.13.35.50
+        for <netfilter@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 28 Feb 2024 13:35:50 -0800 (PST)
+Message-ID: <bc801ae2-1ce5-493f-9187-19a5a2731f01@gmail.com>
+Date: Wed, 28 Feb 2024 13:35:49 -0800
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
@@ -50,27 +61,30 @@ List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Fwd: Knocking example may not work?
+Subject: Fwd: Defined parameters
 Content-Language: en-US
-References: <016b3e39-d379-4c70-afd9-80de3ede473d@woollysoft.com>
-From: Marc Singer <elf@woollysoft.com>
+References: <0ca5dacd-4930-4d0f-8423-26bf81ca4834@woollysoft.com>
+From: Beewoolie <beewoolie@gmail.com>
 To: netfilter@vger.kernel.org
-In-Reply-To: <016b3e39-d379-4c70-afd9-80de3ede473d@woollysoft.com>
-X-Forwarded-Message-Id: <016b3e39-d379-4c70-afd9-80de3ede473d@woollysoft.com>
+In-Reply-To: <0ca5dacd-4930-4d0f-8423-26bf81ca4834@woollysoft.com>
+X-Forwarded-Message-Id: <0ca5dacd-4930-4d0f-8423-26bf81ca4834@woollysoft.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
 Greetings,
 
-I've been investigating the use of port knocking to activate remote 
-access.  Once of the examples uses the form:
+The inclusion of defined parameters should be a boon for tailoring 
+firewall parameters.  It seems, though, that there is a peculiar limitation
 
-set  update ip saddr timeout 0s @Knocked_1
+    define to = 5s
 
-Yet I believe this doesn't do what the author intended.  When I dump 
-this ruleset, the timeout parameter isn't set.  The behavior of the 
-rule, too, is to do nothing as far as I can tell.  Certainly, the 
-timeout isn't changed.
+    set hosts {
+         type ipv4_addr
+         flags timeout
+         timeout $to
+    }
+
+The nft tool complains about the presence of the $ in the timeout line.
 
 Cheers
 
@@ -78,4 +92,3 @@ Cheers
 /Marc Oscar Singer/
 *Woollysoft*
 +1.206.328.1718
-
