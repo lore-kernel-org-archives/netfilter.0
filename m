@@ -1,82 +1,108 @@
-Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from wfout6-smtp.messagingengine.com (wfout6-smtp.messagingengine.com [64.147.123.149])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94DBF1B7EB
-	for <netfilter@vger.kernel.org>; Wed,  6 Mar 2024 22:12:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A36371C29E
+	for <netfilter@vger.kernel.org>; Wed,  6 Mar 2024 22:39:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.149
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709763149; cv=none; b=g/ZUoteCS2DwoMNBEQaLIZnnkKVy9UxROrg2XX45m7PEdfRDrafDcQjobXlc/M08eIsANRahd5arsCFEF0JdqcDvfKSLJRFVQ11mVjVSBervVqWEj7MZ/++p8sunjWkcaqqFIyNr7L9tjGWJT9t4XIqfnoN5gFEYRMaMSqSvsVE=
+	t=1709764769; cv=none; b=NAh5LH6252D2aiqn7/nRG2HD4e6S2nQJA/kPL/TZOh8QHvGI3OlTO4VMM9sCU3TXRb3FoI1H5mmoqJ6/CFDw1qPSgANS0SPcvdnfMyqJD2cH46BEwBgs0vV520YvMlawHVclbfXHlANeJpH1ddKyZ7f/YIEVtsn/V8NUD+zim/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709763149; c=relaxed/simple;
-	bh=S5O3u45DYhWMFVAqOE25wdPATRCt+vFH9BiebbfMj2o=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=A+7fElvH9l7L0avQ//Kga3a584fAu4NoIEL+LvX8V7rYg+K+cy8oSGx2af7maB/AkbHLXiboGwse1/k+V91YCLd2Akk4BK46xT7ckSteTFjPBebtClfKYqlI0LByq//NBQ/lU0leeVODMhVztyVwqniUaP8FhcX0SIDr8PqnY7E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k71zGXZR; arc=none smtp.client-ip=209.85.208.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1709764769; c=relaxed/simple;
+	bh=BLB2lN3l1r4pDSTTMD306J5w8U1Cmw0iqEKSZclunu4=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=K6IPOiUHuUh++ikJBrlu8sJE5csPrjAH9AtmGpSSwBtc6V/lI5gsLIxiQuIld5xWvM9dfvfa6qjvXMfPIGPYM6xEfj9JWcKnDl1G1zZNNbDZlJ2k7kP94AQQ6m/k5S2yU1sW40X/GWhMcAw5WvVocQQ6vpTsqQYXII+fjry9p6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=EtRvZq90; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=FkEiIvZZ; arc=none smtp.client-ip=64.147.123.149
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k71zGXZR"
-Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d094bc2244so2129091fa.1
-        for <netfilter@vger.kernel.org>; Wed, 06 Mar 2024 14:12:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709763146; x=1710367946; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=S5O3u45DYhWMFVAqOE25wdPATRCt+vFH9BiebbfMj2o=;
-        b=k71zGXZR8/nA0XTXhD67xdpRUJEXfGs/r9HyEZUbDIICKIKXtmesBSNan9nl/PPC3X
-         6ArXF8dN+jqtdhqV8pVYk3XDsQDAPLKHTSu3uXajITT7T9qNcdmB1KH6fMg/z5o3m8FA
-         hUO4E1nXf+wvRp7c3yB67nVoPmbIae8h+JhIexrUhKRUOBCdxp635ofAGqPR682PZ44Z
-         EUO2k+u7iWXtN2dbXiLejbPxMpIWgcYJgM9pxaFO/4IKqd/+YOqDfrzyppCJEUCv8yei
-         xHtVO0g2cUsXRvzfU4fZ8IsgIpfCaH4wZps5SR7hC/6I1sd6X+xpdd2P7rHhe/t+Aqms
-         BKRA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709763146; x=1710367946;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=S5O3u45DYhWMFVAqOE25wdPATRCt+vFH9BiebbfMj2o=;
-        b=aNZIYDwPHB1HHwtm2yP4HZZTI2gxDMVhuzrAwrPkzLyTdUTNkITiWQOTRBhzW5Tas1
-         uGHNjmmVUEkj1JtuyTFrrtpcWo27h7z92khmpp+xymszXZC+F+DqpkbQdNxPT7yJQs4V
-         hD+fscGEHQ3o13E0fFbaUxjZDlltUGJ6Xn/w+XSE40AzO9PnuVVra8ZsS/Qhgf9Wt1/j
-         7V1gkA6T2f+0PCSXt1xwzQhuWp8lP63VwkNneM3Sm0miNeWkvq1taAv93iXwhy/P8459
-         /CtLky9c0jqd3hDscAuEzmx5UKAeyJ4QfifVP6wTdkc2WbGZQ2dBevJCbd1ta1D5GEJ5
-         Opxg==
-X-Gm-Message-State: AOJu0YywE+NcbjnVffQmbkHZLHoKWm9t7RJbF4YzwdO+cKaqAoYtWvO3
-	7qYJKW/d9aD8AC0l3kw7r0Q9kAcJsFjgLw5pgc85yYId/gUelda8F9qbhuq9NvZ4bkiTcHD0ob7
-	F0OLeZiBvWQc05pwWqzNDFIUN6ZfEvfbFKB177g==
-X-Google-Smtp-Source: AGHT+IFdmQ+MzJNibm1pxALR48IKFcXaj5VoCrOZbIlFxHaPl3jxHiXXR71b+JgdGSQ1h59+vaU5ltq7xAt/o+qn3lc=
-X-Received: by 2002:a2e:a229:0:b0:2d3:93dd:a192 with SMTP id
- i9-20020a2ea229000000b002d393dda192mr192904ljm.45.1709763145520; Wed, 06 Mar
- 2024 14:12:25 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="EtRvZq90";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="FkEiIvZZ"
+Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
+	by mailfout.west.internal (Postfix) with ESMTP id 7F6E91C00083;
+	Wed,  6 Mar 2024 17:39:26 -0500 (EST)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute1.internal (MEProxy); Wed, 06 Mar 2024 17:39:26 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+	 h=cc:cc:content-transfer-encoding:content-type:content-type
+	:date:date:from:from:in-reply-to:in-reply-to:message-id
+	:mime-version:references:reply-to:subject:subject:to:to; s=fm2;
+	 t=1709764766; x=1709851166; bh=tmDCQj/pz53EVsgrsiQSA2PpwLb39iOA
+	oGH7A+8VyH8=; b=EtRvZq90K0ZXKU5zvYfyIE7wMpH5WGrnUwcCWQ7JIWHCuEfW
+	WK4PGwLOMmO6slIsp/l18ZGF6maxWeZ8K5C8BsZT370Rx9CP9N3YlvX1QhqAzc7b
+	YEQROTGzeOV+E9QFh5I2LxSe4aj/26RxQRjsbfkFo9aTfvfoJ/b/W3UhnijFJxKi
+	JO16F3wHSblcN5kxtRj1GUpmZlevoHf2Gebx8p3G+9j1KrqqM3ZvgYQUPMJNqp1l
+	YC/8eZyaEHLzd6AstR3QBGdu3PpZ5GdlELP7Ho7u54SCxKIcBZ49V0mlw1tniMX2
+	ttvfFcteqSHGaNUO4BqhZLJUR/uPt42LMeDxsg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1709764766; x=
+	1709851166; bh=tmDCQj/pz53EVsgrsiQSA2PpwLb39iOAoGH7A+8VyH8=; b=F
+	kEiIvZZbV5uX8cjjCJBhtoqlUrcKFMzEI1nq+5fLwiQgVV8bTGbkg0xE9TcjroYw
+	hS9js5kU5diEQbGiFcXpZFKgYRcapxILSgm90vLMQDCA+NHue8HHtDTW5+yiF74L
+	/K/8BWnsUaSDDd6Hjdtpdaq59LNVZ0KWIQzDbQIcy19Ej1GXoeSE0rqQdWBRoaxI
+	k8/zoXNwiD44neV8//7C7STwG9oVSgMY/W/GegG1rkunwKsYyj5eVF0u2OzkMnEj
+	uyhhhh7u4JGIqt8b+hib/rrgKzUsM8CK1xybSZnrNR2nMIMw/NF98u4jciwrM0R+
+	Bs/5G3MMGneiqBF7+4IjQ==
+X-ME-Sender: <xms:nfDoZZKa7_tWfj4N6xJzlKwxE_X2yHZnqKC8BJFt05hFmp8iVbkUTQ>
+    <xme:nfDoZVIYcuzqePxYsqrj5eXwZJIf2TaMluWq1nT1yrkupgheW40Mo9NG1g-f-tdhv
+    X1K1l1bzcOn4IEr>
+X-ME-Received: <xmr:nfDoZRtfZq2XjkF9tZD2v4D491iSHXPsD5UZ6X4F5HCl5-_ElV81U7U-Fx6bysxZpkZGZ3tDkj6PDzerczzq>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledriedvucetufdoteggodetrfdotffvucfrrh
+    hofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgenuceurghi
+    lhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfgjfhfogggtgfesthejredtjf
+    dtvdenucfhrhhomhepmfgvrhhinhcuofhilhhlrghruceokhhfmhesphhluhhshhhkrghv
+    rgdrnhgvtheqnecuggftrfgrthhtvghrnhepiefhteethfegfeetgfehueegfeefheekud
+    ekfeffjeeguedtgeegjedtieehhfevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghr
+    rghmpehmrghilhhfrhhomhepkhhfmhesphhluhhshhhkrghvrgdrnhgvth
+X-ME-Proxy: <xmx:nfDoZaYs0CmG9xpwIgaolL3glS4JhLMjcqkFb2c84T_DelXIOHj5JQ>
+    <xmx:nfDoZQbrCy-J3ahJLjZa7XhuzWew_H4ZyjGyDnxr25V_bgZkqv00uw>
+    <xmx:nfDoZeARqRuVFwE71PNzseGAuXFj0R8Y_mTT-4aKrixcNUU6GBkBow>
+    <xmx:nvDoZfkSK-YNJPNKmX8VdkUS8yKeGHSJslzUKAzK8s64l2MbU-nlX1VPU_k>
+Feedback-ID: i2431475f:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 6 Mar 2024 17:39:25 -0500 (EST)
+Date: Wed, 6 Mar 2024 22:39:23 +0000
+From: Kerin Millar <kfm@plushkava.net>
+To: Sreedhar M <sreemtech@gmail.com>
+Cc: netfilter@vger.kernel.org
+Subject: Re: nftables rate limiting per multiple seconds
+Message-Id: <20240306223923.a908a0e0cbfce4a77556ed34@plushkava.net>
+In-Reply-To: <CANvpR2BQ6--KT+aqTNXKO59VOVR9Bq_=JmXEaAL31ra1u_DZaA@mail.gmail.com>
+References: <CANvpR2BQ6--KT+aqTNXKO59VOVR9Bq_=JmXEaAL31ra1u_DZaA@mail.gmail.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-unknown-linux-gnu)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-From: Sreedhar M <sreemtech@gmail.com>
-Date: Wed, 6 Mar 2024 22:11:49 +0000
-Message-ID: <CANvpR2BQ6--KT+aqTNXKO59VOVR9Bq_=JmXEaAL31ra1u_DZaA@mail.gmail.com>
-Subject: nftables rate limiting per multiple seconds
-To: netfilter@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello Team
+On Wed, 6 Mar 2024 22:11:49 +0000
+Sreedhar M <sreemtech@gmail.com> wrote:
 
-I am currently working on configuring rate limiting rules with nft and
-have encountered a challenge. ex: I would appreciate your guidance in
-achieving a rate limit of 10 ICMP echo-request packets within a
-10-second interval.
+> Hello Team
+> 
+> I am currently working on configuring rate limiting rules with nft and
+> have encountered a challenge. ex: I would appreciate your guidance in
+> achieving a rate limit of 10 ICMP echo-request packets within a
+> 10-second interval.
+> 
+> Here is an example rule
+> example : nft add rule filter input icmp type echo-request limit rate
+> over 10/second drop
+> 
+> I understand that nft doesn't directly support specifying rates in the
+> format "10/10 seconds," and I'm seeking advice on how to adjust the
+> parameters to achieve the desired rate limiting behaviour.
+> 
+> Your assistance on this matter would be greatly appreciated.
 
-Here is an example rule
-example : nft add rule filter input icmp type echo-request limit rate
-over 10/second drop
+"1/second burst 10 packets" should be close enough. The bucket will be initialised with 10 tokens and refilled at a rate of 1 per second.
 
-I understand that nft doesn't directly support specifying rates in the
-format "10/10 seconds," and I'm seeking advice on how to adjust the
-parameters to achieve the desired rate limiting behaviour.
-
-Your assistance on this matter would be greatly appreciated.
-
-Thank you for your time and support.
-
-Best Regards
-Sreedhar
+-- 
+Kerin Millar
