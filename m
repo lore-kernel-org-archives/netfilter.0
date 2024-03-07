@@ -1,108 +1,118 @@
-Received: from wfout6-smtp.messagingengine.com (wfout6-smtp.messagingengine.com [64.147.123.149])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A36371C29E
-	for <netfilter@vger.kernel.org>; Wed,  6 Mar 2024 22:39:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4495474262
+	for <netfilter@vger.kernel.org>; Thu,  7 Mar 2024 10:09:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709764769; cv=none; b=NAh5LH6252D2aiqn7/nRG2HD4e6S2nQJA/kPL/TZOh8QHvGI3OlTO4VMM9sCU3TXRb3FoI1H5mmoqJ6/CFDw1qPSgANS0SPcvdnfMyqJD2cH46BEwBgs0vV520YvMlawHVclbfXHlANeJpH1ddKyZ7f/YIEVtsn/V8NUD+zim/8=
+	t=1709806167; cv=none; b=I/0TvjMFJHkVfR3vSpdTRm/x1E7rU0173bOL8Feiko4LEzxFfzVes5MAX4JLQCK7REy1JnmVTukI9V2PiK4m5KpMNXyNY70a0L3L1RfTLQ3tnl4s8kWu6L1nfcNI7y1+0aC0VE6jNw6Cn2/kWtVHYRNTwMjxjAeyQzEyZTpA42M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709764769; c=relaxed/simple;
-	bh=BLB2lN3l1r4pDSTTMD306J5w8U1Cmw0iqEKSZclunu4=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=K6IPOiUHuUh++ikJBrlu8sJE5csPrjAH9AtmGpSSwBtc6V/lI5gsLIxiQuIld5xWvM9dfvfa6qjvXMfPIGPYM6xEfj9JWcKnDl1G1zZNNbDZlJ2k7kP94AQQ6m/k5S2yU1sW40X/GWhMcAw5WvVocQQ6vpTsqQYXII+fjry9p6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=EtRvZq90; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=FkEiIvZZ; arc=none smtp.client-ip=64.147.123.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
+	s=arc-20240116; t=1709806167; c=relaxed/simple;
+	bh=aDMYj+NRpkrAz0muBUcdgLmFt2c7sn1RlkFaaXlmiXM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UWRG81L9WGBufEQREYMvA+SbD/QMj2G4RCsq/su5fV9dDiKFM0Fkh3UXNGZrnuGTl+tEMKwAAudbKIwBqZT+4NKfwwtLADHipJLfL6H+x2w/H6z0pXjSbUY9aLoiv/DuBv2qD7nm/ZLiEpoXcvt62U+Wj4Hszi/5WrvNSI1Pk1U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cGRGoR1i; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="EtRvZq90";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="FkEiIvZZ"
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailfout.west.internal (Postfix) with ESMTP id 7F6E91C00083;
-	Wed,  6 Mar 2024 17:39:26 -0500 (EST)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Wed, 06 Mar 2024 17:39:26 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-	 h=cc:cc:content-transfer-encoding:content-type:content-type
-	:date:date:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=fm2;
-	 t=1709764766; x=1709851166; bh=tmDCQj/pz53EVsgrsiQSA2PpwLb39iOA
-	oGH7A+8VyH8=; b=EtRvZq90K0ZXKU5zvYfyIE7wMpH5WGrnUwcCWQ7JIWHCuEfW
-	WK4PGwLOMmO6slIsp/l18ZGF6maxWeZ8K5C8BsZT370Rx9CP9N3YlvX1QhqAzc7b
-	YEQROTGzeOV+E9QFh5I2LxSe4aj/26RxQRjsbfkFo9aTfvfoJ/b/W3UhnijFJxKi
-	JO16F3wHSblcN5kxtRj1GUpmZlevoHf2Gebx8p3G+9j1KrqqM3ZvgYQUPMJNqp1l
-	YC/8eZyaEHLzd6AstR3QBGdu3PpZ5GdlELP7Ho7u54SCxKIcBZ49V0mlw1tniMX2
-	ttvfFcteqSHGaNUO4BqhZLJUR/uPt42LMeDxsg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1709764766; x=
-	1709851166; bh=tmDCQj/pz53EVsgrsiQSA2PpwLb39iOAoGH7A+8VyH8=; b=F
-	kEiIvZZbV5uX8cjjCJBhtoqlUrcKFMzEI1nq+5fLwiQgVV8bTGbkg0xE9TcjroYw
-	hS9js5kU5diEQbGiFcXpZFKgYRcapxILSgm90vLMQDCA+NHue8HHtDTW5+yiF74L
-	/K/8BWnsUaSDDd6Hjdtpdaq59LNVZ0KWIQzDbQIcy19Ej1GXoeSE0rqQdWBRoaxI
-	k8/zoXNwiD44neV8//7C7STwG9oVSgMY/W/GegG1rkunwKsYyj5eVF0u2OzkMnEj
-	uyhhhh7u4JGIqt8b+hib/rrgKzUsM8CK1xybSZnrNR2nMIMw/NF98u4jciwrM0R+
-	Bs/5G3MMGneiqBF7+4IjQ==
-X-ME-Sender: <xms:nfDoZZKa7_tWfj4N6xJzlKwxE_X2yHZnqKC8BJFt05hFmp8iVbkUTQ>
-    <xme:nfDoZVIYcuzqePxYsqrj5eXwZJIf2TaMluWq1nT1yrkupgheW40Mo9NG1g-f-tdhv
-    X1K1l1bzcOn4IEr>
-X-ME-Received: <xmr:nfDoZRtfZq2XjkF9tZD2v4D491iSHXPsD5UZ6X4F5HCl5-_ElV81U7U-Fx6bysxZpkZGZ3tDkj6PDzerczzq>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledriedvucetufdoteggodetrfdotffvucfrrh
-    hofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgenuceurghi
-    lhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfgjfhfogggtgfesthejredtjf
-    dtvdenucfhrhhomhepmfgvrhhinhcuofhilhhlrghruceokhhfmhesphhluhhshhhkrghv
-    rgdrnhgvtheqnecuggftrfgrthhtvghrnhepiefhteethfegfeetgfehueegfeefheekud
-    ekfeffjeeguedtgeegjedtieehhfevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghr
-    rghmpehmrghilhhfrhhomhepkhhfmhesphhluhhshhhkrghvrgdrnhgvth
-X-ME-Proxy: <xmx:nfDoZaYs0CmG9xpwIgaolL3glS4JhLMjcqkFb2c84T_DelXIOHj5JQ>
-    <xmx:nfDoZQbrCy-J3ahJLjZa7XhuzWew_H4ZyjGyDnxr25V_bgZkqv00uw>
-    <xmx:nfDoZeARqRuVFwE71PNzseGAuXFj0R8Y_mTT-4aKrixcNUU6GBkBow>
-    <xmx:nvDoZfkSK-YNJPNKmX8VdkUS8yKeGHSJslzUKAzK8s64l2MbU-nlX1VPU_k>
-Feedback-ID: i2431475f:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 6 Mar 2024 17:39:25 -0500 (EST)
-Date: Wed, 6 Mar 2024 22:39:23 +0000
-From: Kerin Millar <kfm@plushkava.net>
-To: Sreedhar M <sreemtech@gmail.com>
-Cc: netfilter@vger.kernel.org
-Subject: Re: nftables rate limiting per multiple seconds
-Message-Id: <20240306223923.a908a0e0cbfce4a77556ed34@plushkava.net>
-In-Reply-To: <CANvpR2BQ6--KT+aqTNXKO59VOVR9Bq_=JmXEaAL31ra1u_DZaA@mail.gmail.com>
-References: <CANvpR2BQ6--KT+aqTNXKO59VOVR9Bq_=JmXEaAL31ra1u_DZaA@mail.gmail.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-unknown-linux-gnu)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cGRGoR1i"
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5640fef9fa6so730611a12.0
+        for <netfilter@vger.kernel.org>; Thu, 07 Mar 2024 02:09:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709806163; x=1710410963; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IM/nEpxHTcfR6cE071ret8Il7VEJcQLVtYuQKuWoyVk=;
+        b=cGRGoR1iLzzGwa0SMdI/aNfqWOz5Ti88DfUN2BQK7NFe+ufAsNnBOjwQ5imL2uVsG+
+         BEFpvQ9kUP5qZfSWYBqd4Th6clIt3oMqfc2HI0f+95hvsmsM5JJtmd8KLBX5jdf3brzo
+         69vk/ucCwEN4gkuezkXvejxSn4YUhyioY01pkPQviTOEGikdWunp3bQy9gKknct0+Kmz
+         dYRP4c0h5lTs1GDEaWYo8oyfgiNhDgHiRgqKPs6WWFF6O6PHvVZEvP/mFe7qUk/K4CLT
+         7UpL8z2271ykWXtJSeVXT1LhpBAInVNezmUXKX2BmUQDySePI/x8kA0zkQDyFXw6VkzD
+         WOtA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709806163; x=1710410963;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IM/nEpxHTcfR6cE071ret8Il7VEJcQLVtYuQKuWoyVk=;
+        b=Iyk8IHEVrE5JfBqWgYv5OKCehMnq68a26322W+MfJc+4zG7aT8yJmDXdLQmiuzUHcg
+         IAK+g+5vaqdA3r63Z8sjElr622ERbMIYtjTzgFI5rQ0tEapIrPDKZRUbw/aznyB+HPle
+         /WmtIG946UHVzzp+oriNNSPMjR3smc2sJlCmocALqlU2Ync3VveSRvFyQ40cwGhy9GL7
+         ZVSz5C+5uHVT4Dw1fwK6CCuBvOc78PQMSD1gGFRr8XysQqbD3bVnJ+mNK71EOgHu22sQ
+         0AC/mVJ+X9JZYCxRCNiL1MyVTtto/ppqB8Ii+JPlDp+AyXkyPyGg5DHlhLoHkrjFxgfj
+         ekXA==
+X-Gm-Message-State: AOJu0YyTVexlf9u1mj62sn959kZBnCjcEwiE51ZSseMzUvqdFqcoMNbc
+	peDm9QYplCSmpHIbaOiyCK+psziHfHWZ8bKzliDiyNfbCzE8v0HDqsOFrpBe6uyAoS94H7hrBor
+	t3AoUm/km3SOZaB4CNMT+o+dW+xdletQIABrDfw==
+X-Google-Smtp-Source: AGHT+IG15/cuWZmP/i6vLCABhZoS/0fCEgIwhiHNUKeMpE80A1Zu2w2LoLgRMxenqXI0ZZEYD7qLf+MkmJsj5c3bnnw=
+X-Received: by 2002:a05:6402:222a:b0:566:2a20:fc20 with SMTP id
+ cr10-20020a056402222a00b005662a20fc20mr12933453edb.9.1709806163332; Thu, 07
+ Mar 2024 02:09:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+MIME-Version: 1.0
+References: <CANvpR2BQ6--KT+aqTNXKO59VOVR9Bq_=JmXEaAL31ra1u_DZaA@mail.gmail.com>
+ <20240306223923.a908a0e0cbfce4a77556ed34@plushkava.net>
+In-Reply-To: <20240306223923.a908a0e0cbfce4a77556ed34@plushkava.net>
+From: Sreedhar M <sreemtech@gmail.com>
+Date: Thu, 7 Mar 2024 10:08:47 +0000
+Message-ID: <CANvpR2CH-xmJ05dEou7h1PeBm498qwD0YfiDh_8u_2eQeQKL2g@mail.gmail.com>
+Subject: Re: nftables rate limiting per multiple seconds
+To: kfm@plushkava.net
+Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 6 Mar 2024 22:11:49 +0000
-Sreedhar M <sreemtech@gmail.com> wrote:
+This is really inconvenient that we cant rate limit the packets for
+multiple seconds , we have only the close enough but not 100% right in
+edge cases.
+"1/second burst 10 packets" should be close enough. The bucket will be
+initialised with 10 tokens and refilled at a rate of 1 per second.
 
-> Hello Team
-> 
-> I am currently working on configuring rate limiting rules with nft and
-> have encountered a challenge. ex: I would appreciate your guidance in
-> achieving a rate limit of 10 ICMP echo-request packets within a
-> 10-second interval.
-> 
-> Here is an example rule
-> example : nft add rule filter input icmp type echo-request limit rate
-> over 10/second drop
-> 
-> I understand that nft doesn't directly support specifying rates in the
-> format "10/10 seconds," and I'm seeking advice on how to adjust the
-> parameters to achieve the desired rate limiting behaviour.
-> 
-> Your assistance on this matter would be greatly appreciated.
+I really cant have an alternative for below please
+iptables-translate  -A rms0  -p tcp --dport 8000 -m state --state NEW
+-m recent --update --seconds 10 --hitcount 15 -j DROP
+nft # -A rms0 -p tcp --dport 8000 -m state --state NEW -m recent
+--update --seconds 10 --hitcount 15 -j DROP
 
-"1/second burst 10 packets" should be close enough. The bucket will be initialised with 10 tokens and refilled at a rate of 1 per second.
+Thanks
+Sreedhar
 
--- 
-Kerin Millar
+On Wed, Mar 6, 2024 at 10:39=E2=80=AFPM Kerin Millar <kfm@plushkava.net> wr=
+ote:
+>
+> On Wed, 6 Mar 2024 22:11:49 +0000
+> Sreedhar M <sreemtech@gmail.com> wrote:
+>
+> > Hello Team
+> >
+> > I am currently working on configuring rate limiting rules with nft and
+> > have encountered a challenge. ex: I would appreciate your guidance in
+> > achieving a rate limit of 10 ICMP echo-request packets within a
+> > 10-second interval.
+> >
+> > Here is an example rule
+> > example : nft add rule filter input icmp type echo-request limit rate
+> > over 10/second drop
+> >
+> > I understand that nft doesn't directly support specifying rates in the
+> > format "10/10 seconds," and I'm seeking advice on how to adjust the
+> > parameters to achieve the desired rate limiting behaviour.
+> >
+> > Your assistance on this matter would be greatly appreciated.
+>
+> "1/second burst 10 packets" should be close enough. The bucket will be in=
+itialised with 10 tokens and refilled at a rate of 1 per second.
+>
+> --
+> Kerin Millar
+
+
+
+--=20
+Best Regards
+Sreedhar
