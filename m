@@ -1,65 +1,72 @@
-Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from md.angrycow.ru (md.angrycow.ru [31.131.2.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 743AE5466E
-	for <netfilter@vger.kernel.org>; Mon, 11 Mar 2024 18:56:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40CF77A15B
+	for <netfilter@vger.kernel.org>; Tue, 12 Mar 2024 16:40:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=31.131.2.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710183398; cv=none; b=RZrT/p/lsW9vkVDSd3ArbeDMeArLTziRdcXBp1c7fOfx57hf16ViSsXp3MgUUZKP0rWiDuDa5/Kyn3WjDJ/Dl+uchgjnpllI0ZG5929TBsQ1MJFwkMTWGXVt5ReKCvIS70clm356dpwt05JKRFOk/G9gubLJWZthJmLCeYSA+4I=
+	t=1710261648; cv=none; b=GeboGUbnZ45m6qq7WeOMyqzCrFNS0LcK9i1R+i+lkKvf24nzoMBDPSYaSnbbqNBO6nrm9zxvY/+Nyn4JbPp4vnm/UvcBLQqlLmaxbL0m5dTw2+A1USZXsNVDC7Rr0SIqnigSvsvl3/gJzjV4itVt98q8qKO8GSAQ4J27PHMsPtQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710183398; c=relaxed/simple;
-	bh=SAlM4ZH2rOx4JNT4eCYjWPRwlI3TeLcFKxYlMwkJiVw=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=BRrGjw8vnJcPJBlvKriD1hS0jctNDT0qX/F4invXO+0S2A2VSUy8dHJPkPgSFYKYP1BsUznMKrv5NgK0GCSjJQCDvLzoKln9jG7idtREFpMauZAqXfizhmMKkjELOrSyo+o8HrWzDRoaa6Goscsx4AuEqi7vBi2yUxQQ/XIjI20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OJ7HVfT3; arc=none smtp.client-ip=209.85.208.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1710261648; c=relaxed/simple;
+	bh=z5OlU82rIL70CropVIEHIZx7Trw3Jb6hiiwcYFGX4js=;
+	h=Message-ID:Date:Subject:To:References:From:In-Reply-To:
+	 Content-Type; b=W1c3Fx+bTDswyJiCxHZooQrj2BWh0/Zkdr51NTxuYNX/YDPVmQvDcKbIGJg23D7EYsCJWcrUT9YSTs6iTRjbO+Sr5oxsY8RrCEu+7WeX8vjlfik2G9B6XpT6MJnk/1TBlUqGr5K+0eAQSU6OwUTazVrlBjH4JzHmw+hLYUCNDLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nethence.com; spf=pass smtp.mailfrom=nethence.com; dkim=pass (2048-bit key) header.d=nethence.com header.i=@nethence.com header.b=Fm6BEyc6; arc=none smtp.client-ip=31.131.2.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nethence.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nethence.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OJ7HVfT3"
-Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5684f95cc9bso2779501a12.1
-        for <netfilter@vger.kernel.org>; Mon, 11 Mar 2024 11:56:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710183395; x=1710788195; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=SAlM4ZH2rOx4JNT4eCYjWPRwlI3TeLcFKxYlMwkJiVw=;
-        b=OJ7HVfT3Czbsc4erztXGgcB1307CFhoS57/BIe+ICrbH+eZ5K9OzI2kfJg4XSMS95H
-         6bB7SO7i5bATcQ4IxHyuRpjb0Lbr2skX1pbL8ingEQsGvVZPnrBMEOHHyRabV/YnaVHW
-         dUzx+WyvFt+DR82GL7OS4Ehb45299Op1tSQfFymEupB5eQMcC+Wj+s8AmirnqfR1zv97
-         0U0JeX5Bp4PtNcXZHP48Ao4K+lHlAZAvK2D80xpXTbIHYat5xwWPWneYhN6wUo38Xir2
-         WnLaZmzPxzAf+goStNQ1IHwHmLgcym+/9udZvB6IUghm/1etC6dQ0NTj3Xtp6VkrQLAp
-         RWSg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710183395; x=1710788195;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=SAlM4ZH2rOx4JNT4eCYjWPRwlI3TeLcFKxYlMwkJiVw=;
-        b=p7243CX7E82SK3TytJpPvXJtpCgyaml7Yl0zaeAKCPOrTfP3rbqi9NEb+umcPVSaf0
-         GuOP5pi0BABEsJfxs0oo/jK8SZj3RnaH0uXSTM9sjJu0eoih2diqI4JUx577Ht3m8LCp
-         N8fgskCgjkS7V9KIAAft9kNVEjBi9xsIOH2cCLZlCZkkd4Oomgi+0UlPFnR/sRXy4uJM
-         bcZRrm6Z8TEKMtPfTDZ4EpnIZ8+l2jMzQU1eWcXDcma27TAusg4A2KrKs51GHYfU8oh1
-         /YNgVmiyRRSV9pLffmjRXVgIDyqodak3SHq0IM5L46AskbFAa1T/ClgeFzunSpcS0Lsu
-         euWg==
-X-Gm-Message-State: AOJu0YxiSaCpGNbqKFfW4RtY9OqlgoK+dOAMc3Zc3byJGarYtPEJhXXz
-	IvdHzlpBkxdpd5SVvxQ4f593aWjApFfIEBO7XBvUh4wFBZnE/Jqr4d9aZACSyMrFs8pJUPPaBKp
-	Gu8e1qMoimcDzZti/BwkVnNem0ZXodEA1nWk=
-X-Google-Smtp-Source: AGHT+IEnM7tIOgY3mIGbPZqdAvdTM12wVTGrXps1ZV60MS6FaOPfQE3Nz9KiP2osypzARl13BfTT8/LbTcKMIq7+JBA=
-X-Received: by 2002:a50:8ad9:0:b0:566:1952:afc4 with SMTP id
- k25-20020a508ad9000000b005661952afc4mr8494223edk.6.1710183394756; Mon, 11 Mar
- 2024 11:56:34 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=nethence.com header.i=@nethence.com header.b="Fm6BEyc6"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=nethence.com;
+	s=aug2022; t=1710261317;
+	bh=z5OlU82rIL70CropVIEHIZx7Trw3Jb6hiiwcYFGX4js=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=Fm6BEyc6wUvmWVI2qdMPutlabXkvo/j2AzSLQGp2tCOqae8QPSSKlY5PYqGO4b2AB
+	 S53IsgB3l3fRG+wF4VHSuJRBdDQ6L763xrLgdBty5A2EB1QqP6DcFoHo18x9B/VjjE
+	 H8ldIGDso4dh4ZE9mW5trS/xxeA4alAPEZGzSfF3wLo5/85AzJmaB3DwAxxpoO2SAd
+	 xZtdA1Mj0PzHCTySsdoMeifITmlfsFsIkvxlZSu+9iAk2X8dEaXB9dMYbijMOP9Dkj
+	 DVMHEJUCSDnmJ221IvI0fXj6PPrcHU9+rMrjk8x/XZDmG+5HbmJppSWFMRM7hQBdkB
+	 t/Om71X+oE7zA==
+Message-ID: <cf1d3838-f258-4c9f-afb6-d408d7490350@nethence.com>
+Date: Tue, 12 Mar 2024 19:35:22 +0300
+User-Agent: Mozilla Thunderbird
+Subject: Re: SNI filtering
+Content-Language: en-US, fr
+To: Tim Lewis <elatllat@gmail.com>, netfilter@vger.kernel.org
+References: <CA+3zgmt6ZK+VR5iAb5GKV+vgu5eeDHBFUb=9p+_-kQUziVawfw@mail.gmail.com>
+From: Pierre-Philipp Braun <pbraun@nethence.com>
+In-Reply-To: <CA+3zgmt6ZK+VR5iAb5GKV+vgu5eeDHBFUb=9p+_-kQUziVawfw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-From: Tim Lewis <elatllat@gmail.com>
-Date: Mon, 11 Mar 2024 14:56:23 -0400
-Message-ID: <CA+3zgmt6ZK+VR5iAb5GKV+vgu5eeDHBFUb=9p+_-kQUziVawfw@mail.gmail.com>
-Subject: SNI filtering
-To: netfilter@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
 
-May we have an example of Server Name Indication (SNI) filtering on
-the nftables wiki? When using an environment without the variable
-position support of iptables string match, an example, maybe using
-eBPF, for SNI filtering with nftables would be helpful.
+On 3/11/24 21:56, Tim Lewis wrote:
+> May we have an example of Server Name Indication (SNI) filtering on
+> the nftables wiki? When using an environment without the variable
+> position support of iptables string match, an example, maybe using
+> eBPF, for SNI filtering with nftables would be helpful.
+
+Is that even possible with stock nftables?
+
+FWIW I tried xt_tls module with iptables (https://github.com/Lochnair/xt_tls).  The original filter rule shows up as such
+
+         Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
+          pkts bytes target     prot opt in     out     source               destination
+            27 15363 DROP       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0            tcp dpt:443 TLS match host some-domain.com
+
+while the resulting nftables filter rule shows up as such
+
+         table ip filter {
+                 chain OUTPUT {
+                         type filter hook output priority filter; policy accept;
+                         meta l4proto tcp tcp dport 443 # TLS match host some-domain.com counter packets 10 bytes 5690 drop
+                 }
+         }
+
+but that's just firewalling.  For interception, it doesn't work (https://github.com/Lochnair/xt_tls/issues/35).
+
+-- 
+Pierre-Philipp Braun
