@@ -1,78 +1,66 @@
-Received: from wmail.tana.it (wmail.tana.it [94.198.96.74])
+Received: from smtpa40.poczta.onet.pl (smtpa40.poczta.onet.pl [213.180.142.40])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA5AB1BF27
-	for <netfilter@vger.kernel.org>; Sat, 16 Mar 2024 18:17:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.198.96.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92980468E
+	for <netfilter@vger.kernel.org>; Sat, 16 Mar 2024 18:41:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.180.142.40
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710613041; cv=none; b=uNra2xwffjoryfIc8WD7Rzqm/uq++lUibO83V4RjBITIxwY22WRzz+UrLC/l10D6SztWJkRekOSONgmvkd57xHQc1rwbPYZJICoNu8hcMvhPaT1PyIIo5RYjNzswuWv/R0TVGOyfExl3PCVc1JSv9YdsqU8ojU8VA/BiCFbhioo=
+	t=1710614498; cv=none; b=M/+19F581olvnQhAYQKkyTtrlnMc8GcZ2nkFeYrk3So/2A+JFdDR/K6F2SmglxqHHNr+Mn6Qxhr0ywkYWdPW/aIteXtGEgG3De8uyX1sLon1sfIwqW5tSjAuu2HZbfQj0WVU2XZ9+qr5k6H+vI1uK7A1CnyB30P6892owR9vUqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710613041; c=relaxed/simple;
-	bh=+oCVHauejnErKZHRe8IY9Qi7zYj7VSuguygv1txJkn4=;
-	h=Message-ID:Date:MIME-Version:From:To:Subject:Content-Type; b=VmlKK1DLgxy//DbavCGkQ6wFAt6q6X4ZpA9iPql/i8eWlW3lz8L/4IQ9af5XKWQeHEqBfzvbYTv6h4ZWJmwiEwAf61LMKDpQuZe9WpEQ8VlnJdmEQnekkXq7A0wgTZHXz9ViC2Sq9RQsm0d9LZLGUEH8tTwSJJEL9ieG7A0+NQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tana.it; spf=pass smtp.mailfrom=tana.it; dkim=permerror (0-bit key) header.d=tana.it header.i=@tana.it header.b=1rWhIeiF; dkim=pass (1152-bit key) header.d=tana.it header.i=@tana.it header.b=AF7rqDDD; arc=none smtp.client-ip=94.198.96.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tana.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tana.it
+	s=arc-20240116; t=1710614498; c=relaxed/simple;
+	bh=d9SroKPqjITdvDE/uz4IUUx1azfzlEXkuYpTIIQVu18=;
+	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=qNG4fNPFwYJkQO3h3cVPE2lb0MsXn5fRy7CyWP3pBenF74HhF82EJsVNDVe6X7TWx8IF1Dwwq+rNv1dI84RUbgQOFic5Kv2Nli4r4AkLKtQpR3sfIzq7YqyYZhxyxLXkqChRYNNOo3p0LDhBgGUOD/PfGOqajsuTThxBCfpAM2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=op.pl; spf=pass smtp.mailfrom=op.pl; dkim=pass (1024-bit key) header.d=op.pl header.i=@op.pl header.b=kWZaAfhu; arc=none smtp.client-ip=213.180.142.40
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=op.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=op.pl
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=permerror (0-bit key) header.d=tana.it header.i=@tana.it header.b="1rWhIeiF";
-	dkim=pass (1152-bit key) header.d=tana.it header.i=@tana.it header.b="AF7rqDDD"
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=tana.it;
-	s=epsilon; t=1710612718;
-	bh=PfHmfpOUWy7i1pKpJAJvuOLZ2obn54Q89kGkJ1kpmTE=;
-	h=Author:Date:From:To:Subject;
-	b=1rWhIeiFrLvNiaX8+8AtMem1LAtDS835KuB5zHo6wf+hKxilFrBZ08S4CIaJkzLeP
-	 GJRhzBq34RUSgrPerMrCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tana.it; s=delta;
-	t=1710612718; bh=PfHmfpOUWy7i1pKpJAJvuOLZ2obn54Q89kGkJ1kpmTE=;
-	h=Date:From:To:Subject;
-	b=AF7rqDDDUfjil+wGjOfjGPiutxtuT7eeqqoTDVqpcpisk20yVD09cdiHW4c7EME0j
-	 bQ2a9z6l5hqAFYWSZ/K9GnKj0Zx+qt5/dPnm5OTWSCZTgj2lvNsJGCQPOgBBLPSUKy
-	 7LljG/ao1GuDoVwTXtpLTPf91jahlNyzVbRaAwBII2ybGdklRxxkErxyP7F2v
-Original-Subject: Cannot get the correct IP version from packet
-Author: Alessandro Vesely <vesely@tana.it>
-Received: from [172.25.197.120] (pcale.tana [172.25.197.120])
-  (AUTH: CRAM-MD5 uXDGrn@SYT0/k, TLS: TLS1.3,128bits,ECDHE_RSA_AES_128_GCM_SHA256)
-  by wmail.tana.it with ESMTPSA
-  id 00000000005DC083.0000000065F5E0EE.00004277; Sat, 16 Mar 2024 19:11:58 +0100
-Message-ID: <10cebf27-05b8-4734-b429-689e8e14b44e@tana.it>
-Date: Sat, 16 Mar 2024 19:11:58 +0100
+	dkim=pass (1024-bit key) header.d=op.pl header.i=@op.pl header.b="kWZaAfhu"
+Received: from alfa.kjonca (178235054008.warszawa.vectranet.pl [178.235.54.8])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: kjonca@op.pl)
+	by smtp.poczta.onet.pl (Onet) with ESMTPSA id 4TxqgD5WwgzlfbvR
+	for <netfilter@vger.kernel.org>; Sat, 16 Mar 2024 19:40:24 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=op.pl; s=2011;
+	t=1710614424; bh=oiAhI9HxtpqWy4w4m+ATDfv/GXIDlfeX0cwnln2x/Bg=;
+	h=From:To:Subject:In-Reply-To:References:Date:From;
+	b=kWZaAfhupMbMbVI2QCRkeVyWO1m40IGSKVpFlly8VgkkXWW2XFRE9Yvjjk7pVXoJ4
+	 FyHwhpLfyuntVHiizSwoOFphb0y7gjXcdVgv12jhEzaEXnA3Aa828arC+CB78LULKw
+	 OGUHnBoa5wC7tXpnxyeKunlglDGZgzFhBVW8mJdo=
+Received: by alfa.kjonca (Postfix, from userid 1000)
+	id 4TxqgC5FFmzmbHV; Sat, 16 Mar 2024 19:40:23 +0100 (CET)
+From: =?iso-8859-2?Q?Kamil_Jo=F1ca?= <kjonca@op.pl>
+To: netfilter@vger.kernel.org
+Subject: Re: nft ends with error
+In-Reply-To: <ZV5sxC/YNUDeFgcE@calendula> (Pablo Neira Ayuso's message of
+	"Wed, 22 Nov 2023 22:04:04 +0100")
+References: <8734wxtz3k.fsf@alfa.kjonca> <ZV5sxC/YNUDeFgcE@calendula>
+Date: Sat, 16 Mar 2024 19:40:23 +0100
+Message-ID: <8734sq9g14.fsf@alfa.kjonca>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US, it-IT
-Authentication-Results: tana.it; auth=pass (details omitted)
-From: Alessandro Vesely <vesely@tana.it>
-To: netfilter <netfilter@vger.kernel.org>
-Subject: Cannot get the correct IP version from packet
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-ONET_PL-MDA-SEGREGATION: 0
 
-Help me please,
+Pablo Neira Ayuso <pablo@netfilter.org> writes:
 
-In the queue callback (const struct nlmsghdr *nlh, void *data), I do:
+[...]
+>
+> Thanks for this reproducer. Proposed fix:
+>
+> https://patchwork.ozlabs.org/project/netfilter-devel/patch/20231122210106.183932-1-pablo@netfilter.org/
+>
 
-     struct nlattr *attr[NFQA_MAX+1] = {};
-     if (nfq_nlmsg_parse(nlh, attr) < 0)
-         return MNL_CB_ERROR;
+I know that it was several months ago, but it seems your fix works - no
+error message.
 
-     char *payload = mnl_attr_get_payload(attr[NFQA_PAYLOAD]);
-     if (payload)
-     {
-         int const af = (payload[0] & 0xf);
+KJ
 
-And here I get af == 5.  It should be 4 or 6.
-
-That's using libmnl0:amd64 1.0.4-3.  What's happening?
-
-
-TIA for any hint
-Best
-Ale
-
-
-
-
+-- 
+http://wolnelektury.pl/wesprzyj/teraz/
