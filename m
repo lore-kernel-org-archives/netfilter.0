@@ -1,79 +1,102 @@
-Received: from tootai.net (mail1.tootai.net [213.239.227.108])
+Received: from wfout5-smtp.messagingengine.com (wfout5-smtp.messagingengine.com [64.147.123.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDD7D54FA4
-	for <netfilter@vger.kernel.org>; Mon, 18 Mar 2024 16:56:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.239.227.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2727F54F96
+	for <netfilter@vger.kernel.org>; Mon, 18 Mar 2024 17:16:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710780979; cv=none; b=PeJpWF9FBA/RMDPew0QU1ptoIxmlSK+UiiS3d1FYvPPZtBvxi8zss4T8BqLk0eb683/Mt88ub1aeCYadEzbybzAMvs5gCDHgGPFABcfMouC5020owXD9zZGX9YJrX0KC8zTM7xRdqqyOyND5LW8+SXq/hom5zjatjKqeD/CQvxg=
+	t=1710782188; cv=none; b=CRWZBLX/ZEK4+4Xt+heB5MIEhLvnMzIoQ1ydSznd/vTnWJo2x6qZsjS/ybqP0P+Mer/0DQ0ccQyW5uPpRUdf4TLC7dy4/ob/b3x/eNew0KoATPWXFwYvo14aoL0UIBDgrIttPSVhbapHeUerEGF1J/qjEeyg5R2BqW5bDPV1JlM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710780979; c=relaxed/simple;
-	bh=zcecCSIX9HBjRUtT4D2DXYQeDuyCpiYMeKHQrAFdp4w=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=iHLoz98UtQ9dmibXjZYCWIjLD81rrfVKXkxBAsnNNQHzAxZ44uSpkdw0AR6FMMMkPHTuGUq4+VAQNAZ69IF6Mo59RCLa+6Ipiz9teatMPJjGgiNaDeyyZEV9JHB2UvjD/wopH3WH9VMOexzUiaiujG0jz6Sfwe/WGfLf+KuqRFo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=tootai.net; spf=pass smtp.mailfrom=tootai.net; dkim=pass (1024-bit key) header.d=tootai.net header.i=@tootai.net header.b=AgsXwzMs; dkim=pass (1024-bit key) header.d=tootai.net header.i=@tootai.net header.b=AgsXwzMs; arc=none smtp.client-ip=213.239.227.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=tootai.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tootai.net
+	s=arc-20240116; t=1710782188; c=relaxed/simple;
+	bh=T+0uuLsN1YWtEZItiBpyQGTTJp/2PNy/Sg1jbK+jQvc=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:
+	 Subject:Content-Type; b=mGQ1iMCwiPAYSQ2wBiiS20aBYd+jN0hxPC0pSYR3ZjleWScD5d3v8z/M1h08QOUs/b8WX9HlQ7bsZ7MYfe2Gnzu6QibKnkmyuC9n6IFTBieJS82clQ0uGxYF8lwSk7gjCrLXuo5mE60uEhgDOEt7804nNctLlk477nDZNL02oIY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=LjxMKT09; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=UdAg6e7D; arc=none smtp.client-ip=64.147.123.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tootai.net header.i=@tootai.net header.b="AgsXwzMs";
-	dkim=pass (1024-bit key) header.d=tootai.net header.i=@tootai.net header.b="AgsXwzMs"
-Received: from tootai.net (localhost [127.0.0.1])
-	by mail1.tootai.net (Postfix) with ESMTP id 7A9506081701
-	for <netfilter@vger.kernel.org>; Mon, 18 Mar 2024 17:56:13 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-	t=1710780973; bh=zcecCSIX9HBjRUtT4D2DXYQeDuyCpiYMeKHQrAFdp4w=;
-	h=Date:Subject:From:To:References:In-Reply-To:From;
-	b=AgsXwzMshUBsFW5cI+Y/8V6995blLl4GLsXYJ+kSjU1Bu7rI0cYaqYybhpUliGrM0
-	 le11CiJ406PS2gwk+ocEpqaW7VpWqnXLvynhnyIjb2OY/1A2B3puPP9Z+IZTQToYkz
-	 V1GV+h6B6ZZw2STZTEGe7XKWuS5+OZlxDlBXzT5Q=
-X-Spam-Level: 
-Received: from [IPV6:fd99:1234:beef:cafe::24] (unknown [IPv6:fd99:1234:beef:cafe::24])
-	by mail1.tootai.net (Postfix) with ESMTPA id 463BC60817F6
-	for <netfilter@vger.kernel.org>; Mon, 18 Mar 2024 17:56:13 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-	t=1710780973; bh=zcecCSIX9HBjRUtT4D2DXYQeDuyCpiYMeKHQrAFdp4w=;
-	h=Date:Subject:From:To:References:In-Reply-To:From;
-	b=AgsXwzMshUBsFW5cI+Y/8V6995blLl4GLsXYJ+kSjU1Bu7rI0cYaqYybhpUliGrM0
-	 le11CiJ406PS2gwk+ocEpqaW7VpWqnXLvynhnyIjb2OY/1A2B3puPP9Z+IZTQToYkz
-	 V1GV+h6B6ZZw2STZTEGe7XKWuS5+OZlxDlBXzT5Q=
-Message-ID: <5e1e1a46-215e-42e6-8ce0-29d3b23bfbf7@tootai.net>
-Date: Mon, 18 Mar 2024 17:56:12 +0100
+	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="LjxMKT09";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="UdAg6e7D"
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailfout.west.internal (Postfix) with ESMTP id 1F9F21C00098;
+	Mon, 18 Mar 2024 13:16:25 -0400 (EDT)
+Received: from imap50 ([10.202.2.100])
+  by compute4.internal (MEProxy); Mon, 18 Mar 2024 13:16:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+	 h=cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1710782184; x=1710868584; bh=nF6u+HDxsl
+	fdMzFt93XzSn5WaCSZqLt6c3ay8S5hJ1s=; b=LjxMKT09ILNAauLPdm1fgyxTP4
+	XR2wXyAKgtlHTE/JxkeVZi+0pvQZG3BPrS0w7UQz4kS3Sr3vhsTitwXN38o5aRBv
+	TUlrb5VLnRrC72yTPl9nem9V0cCLkGIe+8P8Auxgu1qc5iuJNA8q9n++gq7HJrmT
+	DqMroArd7GhK/9kYhHy9hkifa+4QDQEs+4nBazNjnSDlLgJNMRAsze4+y1Ep10Aw
+	4BlkM42k6sWWMuCGKe5IbKgxWMuNWPTFZHw2AHmQg0zxuzDDQGUU3jcofl73fzr5
+	zXrly0XEYnkkIF8Vo3BdbGRXlIMR98ctWDrj+OoWuZKlpt3iA7vKL7gT5sXQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1710782184; x=1710868584; bh=nF6u+HDxslfdMzFt93XzSn5WaCSZ
+	qLt6c3ay8S5hJ1s=; b=UdAg6e7D8H6p+t2JLLADfE5cuydsPVNcT/8CcoW16GJh
+	SipgBQI2IWiet3bDOUYhNVOpHtg3MHsnUxgL7phzbToH44P3qI+Oiw7QvENY87Xw
+	gnalitD73ATfnS4MhiEQOe6pcKeAfC5nGJKnl6oQJheeOKR+nmPxqeJs3zZpuxUf
+	PicV4xVIMrw5nI5KQufDKFy2Upl3MxRyhi9pnzDBsdI0/FntfOSPSJEyGPKQlfrI
+	/P6HTpB21FDSidOnVDW7K/6v4uoJY5s8PQtIp0GdQPIAAvtO/wVRN4co0JOh88Bu
+	vgNGAgo/7NVK/yiFG97c22j+9S27vNBqZoEzKS8daQ==
+X-ME-Sender: <xms:6Hb4ZQYQddNea-BWSFiABGe-lSvBK0WCz-FyNBeVFJf4Dv-_HSDD6Q>
+    <xme:6Hb4ZbZSu3YS_YwCaIiUvQnVlFLoorA1RLly_SWGiD2VTVWHnLuL2rVFOp7LNsafv
+    6HphfHwvU8V0Bpr>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrkeejgdellecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfmfgvrhhi
+    nhcuofhilhhlrghrfdcuoehkfhhmsehplhhushhhkhgrvhgrrdhnvghtqeenucggtffrrg
+    htthgvrhhnpedvvdduudekuefgteevgfeuieektdehgeehffejleevfeetgffhjedvlefh
+    leeiteenucffohhmrghinhepmhgrrhgtrdhinhhfohenucevlhhushhtvghrufhiiigvpe
+    dtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehkfhhmsehplhhushhhkhgrvhgrrdhnvght
+X-ME-Proxy: <xmx:6Hb4Za8TOuWINAghJuHz4cK9ESOG68CQCK3pEcPjo38RyXDptj5c_g>
+    <xmx:6Hb4ZaoHofNhSZLy6y-2aLFgi96IMsTHcuSKEgmEzjjI4cx19mDVlA>
+    <xmx:6Hb4ZbrDbiEDsF_IOZJhV1fcKzqbt0kHTZjkQiHB61oM4BF3oiBJcQ>
+    <xmx:6Hb4ZYQOYfzQT-idcL4albWiBXG_78uV5ao1wPnx0qNXhA8PW3btdw>
+    <xmx:6Hb4ZS3OhKdBrFu1fxgFCXumZrwBo5PP3vqlto0q_mdGA3z0OSKH7qLomS0>
+Feedback-ID: i2431475f:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 4C2F41700093; Mon, 18 Mar 2024 13:16:24 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-300-gdee1775a43-fm-20240315.001-gdee1775a
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: IP not banned in interval set
-Content-Language: fr-FR
-From: List Support <list@tootai.net>
-To: Netfilter list <netfilter@vger.kernel.org>
-References: <6586f71b-92d7-447a-bca4-d3b2dbacba20@tootai.net>
+Message-Id: <3f1bf63e-8f04-4659-b06d-b47f96d6b9df@app.fastmail.com>
 In-Reply-To: <6586f71b-92d7-447a-bca4-d3b2dbacba20@tootai.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+References: <6586f71b-92d7-447a-bca4-d3b2dbacba20@tootai.net>
+Date: Mon, 18 Mar 2024 17:16:03 +0000
+From: "Kerin Millar" <kfm@plushkava.net>
+To: "List Support" <list@tootai.net>,
+ "Netfilter list" <netfilter@vger.kernel.org>
+Subject: Re: IP not banned in interval set
+Content-Type: text/plain
 
-Forgot to say that removing auto-merge does the rule apply and working 
-as it should
-
-Le 18/03/2024 à 17:36, List Support a écrit :
+On Mon, 18 Mar 2024, at 4:36 PM, List Support wrote:
 > Hi,
 >
 > nftables v1.0.6 (Lester Gooch #5) from Debian 12. I have a set which 
 > contains in a table mytable of type inet
 >
 > set toban4-smtp {
->     type ipv4_addr
->     flags interval
->     auto-merge
->     elements = { 194.169.175.17-194.169.175.18 }
+>      type ipv4_addr
+>      flags interval
+>      auto-merge
+>      elements = { 194.169.175.17-194.169.175.18 }
 > }
 >
 > chain input {
->     type filter hook input priority -100; policy accept;
->     ip saddr @toban4-smtp tcp dport { 25, 462, 587 } drop
+>      type filter hook input priority -100; policy accept;
+>      ip saddr @toban4-smtp tcp dport { 25, 462, 587 } drop
 > }
 >
 > But
@@ -82,6 +105,11 @@ Le 18/03/2024 à 17:36, List Support a écrit :
 > Error: element does not exist
 > delete element inet reaction toban4-smtp { 194.169.175.17 }
 >
+
+You would need at least nftables 1.0.7 for this to work.
+
+https://marc.info/?l=netfilter&m=167873533514569&w=2
+
 > where
 >
 > nft delete element inet mytable toban4-smtp { 
@@ -93,8 +121,8 @@ Le 18/03/2024 à 17:36, List Support a écrit :
 > those IP is coming back it is allowed to enter :(
 >
 > What's wrong here ?
->
-> Thanks for your support
+
+This isn't particularly clear. Can you share the complete ruleset and explain the test case?
 
 -- 
-Daniel
+Kerin Millar
