@@ -1,129 +1,78 @@
-Received: from out4-smtp.messagingengine.com (out4-smtp.messagingengine.com [66.111.4.28])
+Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09F4328F8
-	for <netfilter@vger.kernel.org>; Sat, 30 Mar 2024 06:27:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.111.4.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23B96748E
+	for <netfilter@vger.kernel.org>; Sat, 30 Mar 2024 19:42:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711780069; cv=none; b=WXGDEQ8w2roykyuOH2ZfpcQhwdaOHzKBk6N7M/M+jlnvyZkOM9qVeGhezmPdf0tJ2MJJS9ts1UneYId/Ei+GKTNH/0ZTKY06X8Iau+hG2FQThE1ND7Q2+hDz+IajKyLWIOUHBhARDqE+odljA0eFO0kpEfVo4iSX5rgwvZuKwSU=
+	t=1711827726; cv=none; b=SHbRTd1nRElMK2qoTkYgXFYYIsk04iEyB6wD1ZiqsYAuaESyy+D6vkLbzzDG5KPJePY9ATYCjxeyxS08M+9mhEfDH9W4/6DlC9TAMY+llp7oV/lXtuEWqGzFcJYGVlfT51RealgwmVhB3JI6sJaR4vtUWCcS4sAQhVVp8MqKBAw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711780069; c=relaxed/simple;
-	bh=bkPWZHqY/AzdSrJ8DrJVTWNyd3ai1vJUTfSXHXoQ1NE=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=Yn/y066NylUQIC94ymQSzBtMRnbImM2DEjVrmPGl17b9Eml8dImGBm9d3EIACDrR9F8w/mcG6nTvgH4/KSX1G2kcqV92zw8p4vcLWP0ZA44o9Dox5YzGDPls5IL4vtZvQde8p/Fk2t7nWqFgznfdxUxa7RYFkQRjs4z2i+FhHu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=XPJffBnA; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=or3f+mdj; arc=none smtp.client-ip=66.111.4.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
+	s=arc-20240116; t=1711827726; c=relaxed/simple;
+	bh=pY9jydOgtE/jlcRqPEGG1VIXS6zZy+jVw3R9H31zt6g=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=N23bJp06YwUpgs3GNNzCD1ujTstP6GnRZdkLkOOxMQIrdLL7W0a4p3lvrYckinjAis19NlmvCBSwlOieZkYUXc57cZb3Nxi43GMzELOI6a7NxC5BX2zOSpeXCHni4+yP/yklBxrumFxCoGreuFLAeDYX4RKirQ3RKY+f2TZ18jk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=KXvHgf0D; arc=none smtp.client-ip=198.252.153.129
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="XPJffBnA";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="or3f+mdj"
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailout.nyi.internal (Postfix) with ESMTP id E3FB15C005B;
-	Sat, 30 Mar 2024 02:27:45 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute4.internal (MEProxy); Sat, 30 Mar 2024 02:27:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-	 h=cc:cc:content-transfer-encoding:content-type:content-type
-	:date:date:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=fm3;
-	 t=1711780065; x=1711866465; bh=lRRoTH0bDeJlrvbVWY3BHwC5SvAcPNzb
-	QL7+tdEKuaE=; b=XPJffBnAmXXULtoREEwW7Aemzjeqw2BMyTXAwBhMFcyrJgsy
-	v38OKHltGILJsIJ28GLDRNQM++gVP1o9/CsvGouFwDGCpg6yKbxDp0P0ky78pK4q
-	V/NoPG2Lq6Jt5oj/wqcZmmhcKYPqHws/Zp9Oy6GR873LxyjI7ZKJWs2H4ZVdKd3+
-	RQ1oLHESM5UpPkCUZdhB8oTfshyjVvTEfHnH6sOlAQsEQiHPtm69QbHqop+DNSBX
-	M4blvCi2vGBt8JuFDTCTEMpzT8wlMf+5il3hiNadeuotLYSoJ89wOXPJGqzZs4cn
-	SVfhW2dANYBtsWFnKaODtrgmKtQwkkahRLI6jg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1711780065; x=
-	1711866465; bh=lRRoTH0bDeJlrvbVWY3BHwC5SvAcPNzbQL7+tdEKuaE=; b=o
-	r3f+mdjrCAA2w7Y+PgiiLcuDJ/pqJ/UFwPxX6Nxt+yrx/d+xDxJVYf2H52TSzPIe
-	1itr0Bx3xk5LEjjjTnSY/IsUQHuYMtvAeeRciXKXv80n0jUiQKe8JWTr4q4yitpg
-	Asicq0/nOGiuMqhCtIzHrm7fVlPNnhWO9bKRFXEn24XYX3WqDOeL8n0770s5KrCx
-	6HDrxxlIwMDxVzqmG1T127D3/0LW9QwcxvHiE2smVC47vsvPEiHXVGr5P0KJHgcc
-	Gsnc8gL/Rf0TiOO6lTf28vobNzN78hPnEr2WtX7eA5VINJqBiVy4tBgUS5d0ahSP
-	9w7VA/OayotqaOF3jwM7A==
-X-ME-Sender: <xms:4bAHZppTiOro5Xaguk_cXI36ojp_HUSI95ePhlME5rgEV4dGhjgeNg>
-    <xme:4bAHZroQFj1j8yDCbvLUnlwW7UrNYdTb-SIzwNwgfo4kXNZqLFuKjEO1thdgSvzR5
-    quKcrFlhIkaaJ0b>
-X-ME-Received: <xmr:4bAHZmOTRIQvsHzoOPdU1slMtecHK9-aYSP-2WH8cWn_rUsK1_xRVSWPycA8-eMouCkki-C6Mmj3t9dGJ_A>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledruddvfedgleeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkjghfofggtgfgsehtjeertdfjtddvnecuhfhrohhmpefmvghr
-    ihhnucfoihhllhgrrhcuoehkfhhmsehplhhushhhkhgrvhgrrdhnvghtqeenucggtffrrg
-    htthgvrhhnpeeihfettefhgeeftefgheeugeeffeehkedukeefffejgeeutdeggeejtdei
-    hefhveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    hkfhhmsehplhhushhhkhgrvhgrrdhnvght
-X-ME-Proxy: <xmx:4bAHZk4fxetcNcnwVHFR_XbTroYtRaYuLKdaJV_coA5zd7WcCCuxsA>
-    <xmx:4bAHZo4sOjk8TuHh1dio3Bc2zintWdzHPfrbk0dhk2U69_SyKvxPsA>
-    <xmx:4bAHZsgom1lEMCf0O77s6iWkikcF1ayhLUp9sZ8TVnI2XTNYnP3C7w>
-    <xmx:4bAHZq6esQgC_Jf_u4IqJoggqdtJhzlwU1pXviwe1oFVeYbJANXdhw>
-    <xmx:4bAHZoH9fOHQ5wBZ5SHFavfHWXVPIkHQ7OnUgORMhcBTl7777jbAvQ>
-Feedback-ID: i2431475f:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 30 Mar 2024 02:27:45 -0400 (EDT)
-Date: Sat, 30 Mar 2024 06:27:42 +0000
-From: Kerin Millar <kfm@plushkava.net>
-To: Blaine Elzey <Blaine.Elzey@cygnalabs.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Subject: Re: Rocky Linux 9 with firewalld and nftables always tracks
- connections
-Message-Id: <20240330062742.abeecf69e3c13c6faa45e276@plushkava.net>
-In-Reply-To: <SJ0PR18MB388483F4136B4AEF9FF7F8F097392@SJ0PR18MB3884.namprd18.prod.outlook.com>
-References: <SJ0PR18MB388483F4136B4AEF9FF7F8F097392@SJ0PR18MB3884.namprd18.prod.outlook.com>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.33; x86_64-unknown-linux-gnu)
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="KXvHgf0D"
+Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx1.riseup.net (Postfix) with ESMTPS id 4V6SMw4hkCzDqCF
+	for <netfilter@vger.kernel.org>; Sat, 30 Mar 2024 19:42:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1711827724; bh=pY9jydOgtE/jlcRqPEGG1VIXS6zZy+jVw3R9H31zt6g=;
+	h=Date:From:To:Subject:Reply-To:From;
+	b=KXvHgf0D02jZXQ99mPCn6ZYZ8aj5CASFE6XlVEDKtyIHZ+Z6Q2DJ3R1gG4z3ij/s8
+	 tFOenoTRc/H0bmDxQynv1m0X42f0AADVKvnDZWfwcHyFavn5a78muEBztWkbQCf3I4
+	 Fv3oG9Ypw6FZOGrKrV3vpyf4k33/lKEVLI1mFdbg=
+X-Riseup-User-ID: CD4012E1F18E9B95D61C362D38C61C8A03FC2128D9A250E60CE7D4974491E98E
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4V6SMh2PlzzFtNc
+	for <netfilter@vger.kernel.org>; Sat, 30 Mar 2024 19:41:51 +0000 (UTC)
+Date: Sat, 30 Mar 2024 19:41:39 -0000
+From: "William N." <netfilter@riseup.net>
+To: netfilter@vger.kernel.org
+Subject: nftables: How to match ICMPv6 subtype in a rule?
+Message-ID: <20240330194139.561b5a24@localhost>
+Reply-To: netfilter@riseup.net
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-Hi,
+Hello,
 
-On Sat, 30 Mar 2024 05:08:04 +0000
-Blaine Elzey <Blaine.Elzey@cygnalabs.com> wrote:
+I have been reading RFC 4890 and 4443, as well as nftables wiki and man
+page.
 
-> I enabled the public zone and the dns service (udp/tcp port 53).  Firewalld service is running and nftables service is not.  The connection tracking table gets full on busy servers, and drops packets.  In prior Linux (RHEL7) I set iptables rules via firewalld direct configuration file.  The same rules are not working now.  I set dns to listen on a 2nd port (5353), and tried 2 nft commands:
-> 
->   # nft insert rule inet firewalld mangle_PREROUTING udp dport 5353 notrack meta mark set 53
->   # nft insert rule inet firewalld filter_IN_public_allow mark 5353 accept
+It is obvious how to match ICMPv6 types using 'icmpv6 type'. However,
+as RFC 4890 recommends, there are situations where only a specific
+SUBtype must be accepted, e.g. section 4.3.1:
 
-You go on to show that the mangle_PREROUTING table is defined in the following manner.
+   o  Time Exceeded (Type 3) - Code 0 only
+   o  Parameter Problem (Type 4) - Codes 1 and 2 only
 
-chain mangle_PREROUTING {
-	type filter hook prerouting priority mangle + 10; policy accept;
-}
+I have been searching for days and I can't find any info about matching
+ICMPv6 subtypes. ip6tables can do that (as shown in the example in the
+RFC) but no info about nftables. ip6tables-translate cannot translate
+subtype rules (it converts them to a comment).
 
-As concerns the use of notrack, let's consider what the latest nft(8) manual has to say.
+So, what is the nftables syntax to accept only a specific subtype of an
+ICMPv6 type?
 
-"Note that for this statement to be effective, it has to be applied to packets before a conntrack lookup happens. Therefore, it needs to sit in a chain with either prerouting or output hook and a hook priority of -300 (raw) or less."
 
-You have not fulfilled this requirement because your priority level is define as -140 (-150 + 10). Below is an example of how one might correctly employ notrack. It presumes that the DNS server is running at the same host as bears the ruleset.
 
-table inet raw {
-	chain PREROUTING {
-		type filter hook prerouting priority raw; policy accept;
-		# Match packets destined to the DNS server (excluding packets that are to be forwarded).
-		fib daddr type local udp dport 5353 notrack
-	}
+FWIW, I am on Debian 12:
 
-	chain OUTPUT {
-		type filter hook output priority raw; policy accept;
-		# Match packets locally generated by the DNS server.
-		udp sport 5353 notrack
-		# Not keeping state for "lo" can also be an effective way of conserving resources.
-		oifname "lo" notrack
-	}
-}
-
-Should you wish to constrain your use of the conntrack table further still, you could potentially go as far as to refrain from using conntrack at all for packets generated by - and destined to - the firewall, instead reserving the use of conntrack for forwarding duty.
-
--- 
-Kerin Millar
+# nft -V
+nftables v1.0.6 (Lester Gooch #5)
+  cli:          editline
+  json:         yes
+  minigmp:      no
+  libxtables:   yes
