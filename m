@@ -1,48 +1,41 @@
-Received: from mx0.riseup.net (mx0.riseup.net [198.252.153.6])
+Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 597A91E86D
-	for <netfilter@vger.kernel.org>; Wed, 10 Apr 2024 15:49:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7888A3EA69
+	for <netfilter@vger.kernel.org>; Wed, 10 Apr 2024 17:33:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712764144; cv=none; b=mxx7eMODvLCER6XjGgpxwXLGYSa2xLwBIAzkcSfc8KTRaWn9tuNyAs2qMXNw5guf5EIMnogHeEdmnwXP4b8LUUJUPHGUAFL8gHLL1aI6WgoljXFyijvKcWJBmx2HC2p7TD/IaYsc/5LoRJ77l/9NuzwyqH/nPNJYxepxTHcocpU=
+	t=1712770409; cv=none; b=iX1IhK9B5ULIm8TLkCjiZxlFkzL10RTHqKePvLi8/mgi17SgIL4tQZduhzAJeDCxB3GiBYPXwMxmYTpuHcUYiJylPx79lIPDKfNesKxljY8d2buSC8LphHx+plYrdfwz4Y3OymMWw35Kz1Nxevexz59hP9/Hvl1wyxqL8TH0mqw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712764144; c=relaxed/simple;
-	bh=KmBcRNBBzl9CUxizaUvIqsY7aU3E7X7wR5wK9XQPIHo=;
-	h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Tgtp5BNpldaJA5L2RzJ8MPlNNLP0+w87JA39M6kj206ypdj1B4gFLkxUk46A9MBOvHBBwKzD5Gjjw6dQH37vw056mIyb/6d7XcFShA1ubVHPelBxP5FWvvNbPorkhOwJZKh8drAlkMflpb8DltLrheQHJF2Td4V9FATVxVfYXXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=WviOljBx; arc=none smtp.client-ip=198.252.153.6
+	s=arc-20240116; t=1712770409; c=relaxed/simple;
+	bh=vCSDkiEDCoI17B5Ah7V1KYt/+PPNY6XZz/ORmgrLdwg=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=ou6WfzRgOv5umoNy98IFwW/5PEBCp4IyiPB8uFBmOgOupdYQztg6kGDLF+Emq9fInFk4A5UwptuJk9OQdumqzKE3Y7lUC6Q0gk8C9LKVQIuVu3E/El7XeG+WfkHTMZZP7TFSAOzK7x3Yi3iHNeYEFqlK38ZFBXSsTzhwSBGOT+E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=ZFxWfG5n; arc=none smtp.client-ip=198.252.153.129
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="WviOljBx"
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="ZFxWfG5n"
 Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx0.riseup.net (Postfix) with ESMTPS id 4VF6gx4qYJz9wmC
-	for <netfilter@vger.kernel.org>; Wed, 10 Apr 2024 15:49:01 +0000 (UTC)
+	by mx1.riseup.net (Postfix) with ESMTPS id 4VF8nZ2g3tzDqVw
+	for <netfilter@vger.kernel.org>; Wed, 10 Apr 2024 17:24:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1712764141; bh=KmBcRNBBzl9CUxizaUvIqsY7aU3E7X7wR5wK9XQPIHo=;
-	h=Date:From:To:Subject:In-Reply-To:References:Reply-To:From;
-	b=WviOljBxozD5yJc4+ksfTARddoSe3AifmcNM/W+ezgV+I1+z1I6KPGFf5OfOCwggU
-	 qtzGNAbQJpjk6NXF+zpJ2UX0MfI7cpqvMnXT7sKHQ35yGbuLsSQ2Xi2XunB3Tsw3ca
-	 CuOaiT9fItre4ohPGDXhV8sJwG/YFvG9Vhm9IGxs=
-X-Riseup-User-ID: C3FDA133CDBEB9A7EB2B33A0770B05660FD368CC08B761059097E643AB85B592
+	t=1712769842; bh=vCSDkiEDCoI17B5Ah7V1KYt/+PPNY6XZz/ORmgrLdwg=;
+	h=Date:From:To:Subject:Reply-To:From;
+	b=ZFxWfG5n9tBSz2B+u2mAqbH2xiUmk9xEBcFaIAOYQvXl1WrjvF/0uluKwwiqq4riC
+	 kgSGLTxv/ZOr+UFaA3W9eQ+rWD0Q5ubm+3xsJ7NCk6EYtBcazD3c9e1BrW0z/KxA5Y
+	 gYDA7CxtwzlmK83jnWtZ/p4UXBHIlCVwDw0pn0j4=
+X-Riseup-User-ID: 36AE7048AE1A32D94690394AEC851EAFF09B2CFD3E57D3D8C10ABCCA8B710325
 Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4VF6gw2QXDzFpbL
-	for <netfilter@vger.kernel.org>; Wed, 10 Apr 2024 15:48:59 +0000 (UTC)
-Date: Wed, 10 Apr 2024 15:48:51 -0000
+	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4VF8nX218dzFpxf
+	for <netfilter@vger.kernel.org>; Wed, 10 Apr 2024 17:23:59 +0000 (UTC)
+Date: Wed, 10 Apr 2024 17:23:43 -0000
 From: "William N." <netfilter@riseup.net>
 To: netfilter@vger.kernel.org
-Subject: Re: Correct way of setting the TCP max segment sizes for IPv4 and
- IPv6?
-Message-ID: <20240410154851.6a627134@localhost>
-In-Reply-To: <9AE2B9F2-FE7D-440F-A595-F015957ECBFF@slavino.sk>
-References: <20240408192441.657ac116@localhost>
-	<3C74BD22-CFE3-444A-AFEC-C532D7F2AACB@slavino.sk>
-	<20240409193300.2aef4ff7@localhost>
-	<9AE2B9F2-FE7D-440F-A595-F015957ECBFF@slavino.sk>
+Subject: connlimit from wiki.nftables.org not working
+Message-ID: <20240410172343.1f7f5ee2@localhost>
 Reply-To: netfilter@riseup.net
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
@@ -53,22 +46,16 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Tue, 09 Apr 2024 22:04:41 +0000 Slavko wrote:
+Hi,
 
-> RFC 9293, sect. 3.7.1
+I am trying this (in Fedora 38 and Debian 12):
 
-By asking "What about the RFC" I didn't mean "Which RFC sets the
-numbers". I meant "Why do you use the same MSS for IPv4 and IPv6,
-considering the RFC explains they are different?"
+https://wiki.nftables.org/wiki-nftables/index.php/Meters#Doing_connlimit_with_nft
 
-> AFAIK main problem of too low MSS is CPU increase,
+and I am getting this:
 
-This is how I understand it too. Wikipedia calls it "protocol
-overhead". I don't know if there are other implications though (e.g. OS
-fingerprinting or something else).
+./connlimit-example:14:16-62: Error: Could not process rule: No such file or directory
+		ct state new add @my_connlimit { ip saddr ct count over 20 } counter drop
+		             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-> using IPv4 limit for both solves corner cases...
-
-How? The two corner cases are different and 1220 is > x2 than 536, i.e.
-very far from the "corner" (limit), i.e. it would not improve
-efficiency.
+Why?
