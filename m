@@ -1,59 +1,105 @@
-Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
+Received: from wfout7-smtp.messagingengine.com (wfout7-smtp.messagingengine.com [64.147.123.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 642A517BB2B
-	for <netfilter@vger.kernel.org>; Wed, 10 Apr 2024 18:24:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 941C9181D17
+	for <netfilter@vger.kernel.org>; Wed, 10 Apr 2024 21:42:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712773467; cv=none; b=jeRmfqgWFy26HJWXE1mAizxElYks28mLD095dyr2loeAICQZBRn9gC7vh8AgSMwH0pO/MgddpoFljPVcGcRShKBdLurEEGDavQ5plgMFt1lGIHvD2YUTbrW9ikX0/tq3BmsrQ49Hc43pgdOGRo+tSUMBmlSidnlVgsML3x7cSsY=
+	t=1712785334; cv=none; b=EkOCu9VkNE0Shm+2+UvyB1mCjqqdmdbeKkd5Uo3x99lXJcoZX2SnKagD9utunrnLcY3y2Xz0tMp+fvj4Sx/LsJ15RI5k5qhY8k7vdoJaWTAkhaR1hLHnwf//E5dlvXIF0Tv4I8uA1VZMLn1HpUtMTB9lwGC2/c/0vmJtaGW4byc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712773467; c=relaxed/simple;
-	bh=cgtSThG1DawVk7SBE6F234dvPCY6Zo4e51KMcU1YBjc=;
-	h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NVH7FyzlnYLRCibtZObgdRP1WuUdp7ADl/8yMWMJgmWhZKHkfnHWSyaAB4TrmHxO9Xnutte+AE9lU+TukoItoypPTMB5zp+7MAHp6qqyCT9Dy872tW6St21c6J0wBDcLhxPetjCEbSdk6UgwKemlkflUiREq07M0FLhhRdlvIvs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=lN4oSnxM; arc=none smtp.client-ip=198.252.153.129
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
+	s=arc-20240116; t=1712785334; c=relaxed/simple;
+	bh=GuFKH0dUVduH3gKvvJMtkIGQVSeAXdRbtRRPBZVMyqg=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:
+	 Subject:Content-Type; b=lfc4nLQ23mqAPR3v+oqo4FG7KcrmyL0ApBPhWezXOFbj6nr8ICHxBdRC3GA9EDPhAY7YXKpQJTfp4KLWBgRcFjQWYo+UvADssW1Zq9ZGxRMBQDr8FdKYG6O4UIXG4zY0IuFIpbxJcss9HDzcllVWp1HN+WgzZboUFkuhnrkhpa8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=bWkiWB4s; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=w4cO6zUf; arc=none smtp.client-ip=64.147.123.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="lN4oSnxM"
-Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx1.riseup.net (Postfix) with ESMTPS id 4VFB7D4tcfzDqVw
-	for <netfilter@vger.kernel.org>; Wed, 10 Apr 2024 18:24:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1712773464; bh=cgtSThG1DawVk7SBE6F234dvPCY6Zo4e51KMcU1YBjc=;
-	h=Date:From:To:Subject:In-Reply-To:References:Reply-To:From;
-	b=lN4oSnxMHPhWqQCsVenNR7bH8vnK3xtruNy2W1ppRCog9uLEWKF/nbntSGMJuwSXQ
-	 uJGS0sNU35DoFBjtwOisu6iGolsZvGUfeUyFVBWEenjJ5QJJIyb5NoGRc3XBR50njx
-	 lKmEzto+fWareObed+ymuZJb9AmMEf+Ep4JZyjOc=
-X-Riseup-User-ID: F126BE8FB5997E12727CF7C041B0489884AFE58038C432CC0CDE643CF6664921
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4VFB7C3fXBzFtl5
-	for <netfilter@vger.kernel.org>; Wed, 10 Apr 2024 18:24:22 +0000 (UTC)
-Date: Wed, 10 Apr 2024 18:24:12 -0000
-From: "William N." <netfilter@riseup.net>
-To: netfilter@vger.kernel.org
-Subject: Re: Correct way of setting the TCP max segment sizes for IPv4 and
- IPv6?
-Message-ID: <20240410182412.54b8d264@localhost>
-In-Reply-To: <7E895779-0120-44AE-B0DE-4BCC2AF897F4@slavino.sk>
-References: <20240408192441.657ac116@localhost>
-	<3C74BD22-CFE3-444A-AFEC-C532D7F2AACB@slavino.sk>
-	<20240409193300.2aef4ff7@localhost>
-	<9AE2B9F2-FE7D-440F-A595-F015957ECBFF@slavino.sk>
-	<20240410154851.6a627134@localhost>
-	<7E895779-0120-44AE-B0DE-4BCC2AF897F4@slavino.sk>
-Reply-To: netfilter@riseup.net
+	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="bWkiWB4s";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="w4cO6zUf"
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailfout.west.internal (Postfix) with ESMTP id 8F0751C000FE;
+	Wed, 10 Apr 2024 17:42:11 -0400 (EDT)
+Received: from imap50 ([10.202.2.100])
+  by compute4.internal (MEProxy); Wed, 10 Apr 2024 17:42:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+	 h=cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm3; t=1712785331; x=1712871731; bh=ns3ayz7u8W
+	RgMCFCSxfX8wVTU7YDrMfSgVAMy9AEo9U=; b=bWkiWB4shb0NYX3R4a2FdSbLDs
+	3IrxbvrLU+LEED3lgjxWzXZSwbIcB2FZM9miNBSap5q62E0klPd8JRRDl9UdCikF
+	/fGLQcM4rJCF8coZpCAyPOJW/8/MgWHpTrvjF3YFycV0XC67t7PL2iIK2dNGUaX/
+	/5yDGswR6+g733kWPKGV8UvTxBcHiguFTsarv98iyxS+dC9AMGvsv0i99djpoN2L
+	5F5xXtIhk9+7dnf4hWpYxKMgHpDh9m4nuvv2v6rS5koqbk3ozk5a8i4ke0C8s2lb
+	voUyaqpz461XM13nqBzmX6m+YTPJlQjBluJvq0o+myLeZnZIOPZSQOYi0qsQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1712785331; x=1712871731; bh=ns3ayz7u8WRgMCFCSxfX8wVTU7YD
+	rMfSgVAMy9AEo9U=; b=w4cO6zUf/RjWiXXafpDeYAjrIEw+pTxyOwh3WDdFd7wQ
+	IrD2RyeWCDKFneCQiHzvnThqfGTjXxpPSjhAnKaRGm999L4g+IJ1KgRolKkXVP8h
+	uECiEmglV2DNkWYd5JOjFE67kgRS8PGL17NJhfDz9q5XKQw3MzPOc6iZXOdfL2fk
+	fLlU6VVRTiWoIgFx6lpX+PFaisWGTzAMZr9QS7hHALAO0cJk6Fm0AP0Y8orM9HJY
+	f1pxN6j47SV4UWm9/VY6Fm0qWpxsPy4nQTgITaj1FiKEPeAXVZOxyQ4CxTmWx2zQ
+	qepErI+0hYoVB2ogGxTleKX+96WBKOEOgmq2hVjIJg==
+X-ME-Sender: <xms:sgcXZijiFn1n0NkubBwOzzMWwz1Nn9TZxXcT-s1Y2spehG_V9rCxhw>
+    <xme:sgcXZjBXxEaoQavR1ASxChGlGlr7aRi-Ow2U4ThFbbzYHb3fGxUTNeQbW_19t48uO
+    ryNicZw1_JFJwHu>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehjedgtdduucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefofgggkfgjfhffhffvufgtsehttd
+    ertderredtnecuhfhrohhmpedfmfgvrhhinhcuofhilhhlrghrfdcuoehkfhhmsehplhhu
+    shhhkhgrvhgrrdhnvghtqeenucggtffrrghtthgvrhhnpedtledtieekheejkeevvedvfe
+    dtveeuuddtkeetvedtueeiffetkeelvdefueffleenucffohhmrghinhepnhhfthgrsghl
+    vghsrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
+    homhepkhhfmhesphhluhhshhhkrghvrgdrnhgvth
+X-ME-Proxy: <xmx:sgcXZqGXjn-wSxPqH2BvbEN19i8onZOHEfMCkqNMFjIW1aMB-l5ypg>
+    <xmx:sgcXZrShQBfvV69UnynyQ5a8FuXZlmlgsaSnX1HlOFDcQcmXt6385g>
+    <xmx:sgcXZvxVAF5ijtv0ug0oPPZWmnrcezqdbpzjiBuVEBZrcztTy3zKDg>
+    <xmx:sgcXZp6gm6AbSe2mmTVNoVzBEYN04x4Af9z3WViQNA1ee_mGO86F_A>
+    <xmx:swcXZoqvHmrdCEKE59_UgEyg4Jqg2dBMk4tSaeRegyv6AK9D9uniMUJZ>
+Feedback-ID: i2431475f:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id B768D1700093; Wed, 10 Apr 2024 17:42:10 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-379-gabd37849b7-fm-20240408.001-gabd37849
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-Id: <f0514bc1-c1dd-4f24-97e5-8c40807dbae9@app.fastmail.com>
+In-Reply-To: <20240410172343.1f7f5ee2@localhost>
+References: <20240410172343.1f7f5ee2@localhost>
+Date: Wed, 10 Apr 2024 22:40:53 +0100
+From: "Kerin Millar" <kfm@plushkava.net>
+To: "William N." <netfilter@riseup.net>, netfilter@vger.kernel.org
+Subject: Re: connlimit from wiki.nftables.org not working
+Content-Type: text/plain
 
-I see what you mean. Thanks for clarifying.
-Hopefully someone more knowledgeable may enlighten us both :)
+On Wed, 10 Apr 2024, at 6:23 PM, William N. wrote:
+> Hi,
+>
+> I am trying this (in Fedora 38 and Debian 12):
+>
+> https://wiki.nftables.org/wiki-nftables/index.php/Meters#Doing_connlimit_with_nft
+>
+> and I am getting this:
+>
+> ./connlimit-example:14:16-62: Error: Could not process rule: No such 
+> file or directory
+> 		ct state new add @my_connlimit { ip saddr ct count over 20 } counter 
+> drop
+> 		             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>
+> Why?
+
+For the avoidance of doubt, please show the complete ruleset that you are attempting to load. 
+
+Additionally, compare the output of "uname -r" to the contents of the /lib/modules directory. Sometimes, people upgrade their kernels then forget to reboot before trying to load a ruleset that requires for one or more kernel modules to be newly loaded.
+
+-- 
+Kerin Millar
