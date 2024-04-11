@@ -1,105 +1,71 @@
-Received: from wfout7-smtp.messagingengine.com (wfout7-smtp.messagingengine.com [64.147.123.150])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f52.google.com (mail-io1-f52.google.com [209.85.166.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 941C9181D17
-	for <netfilter@vger.kernel.org>; Wed, 10 Apr 2024 21:42:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3B361EA7D
+	for <netfilter@vger.kernel.org>; Thu, 11 Apr 2024 12:39:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712785334; cv=none; b=EkOCu9VkNE0Shm+2+UvyB1mCjqqdmdbeKkd5Uo3x99lXJcoZX2SnKagD9utunrnLcY3y2Xz0tMp+fvj4Sx/LsJ15RI5k5qhY8k7vdoJaWTAkhaR1hLHnwf//E5dlvXIF0Tv4I8uA1VZMLn1HpUtMTB9lwGC2/c/0vmJtaGW4byc=
+	t=1712839193; cv=none; b=EkUjnrWNN2ew/tReGziJP6cq7Z5Tl9Md6iEMmRvlvQCWDYo0uFI+yRkvYEtqdjubt+vgm4YCHt4JGM1y6rRNDke/X8iflk1ed0fEkFQHTJ+Dp4lmnf8dVWy4Vr2DRQetA68zyoFAdlXchOuErIMhWL7Xe7HH6ZoOREEcwP6RAu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712785334; c=relaxed/simple;
-	bh=GuFKH0dUVduH3gKvvJMtkIGQVSeAXdRbtRRPBZVMyqg=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:
-	 Subject:Content-Type; b=lfc4nLQ23mqAPR3v+oqo4FG7KcrmyL0ApBPhWezXOFbj6nr8ICHxBdRC3GA9EDPhAY7YXKpQJTfp4KLWBgRcFjQWYo+UvADssW1Zq9ZGxRMBQDr8FdKYG6O4UIXG4zY0IuFIpbxJcss9HDzcllVWp1HN+WgzZboUFkuhnrkhpa8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=bWkiWB4s; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=w4cO6zUf; arc=none smtp.client-ip=64.147.123.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
+	s=arc-20240116; t=1712839193; c=relaxed/simple;
+	bh=G5nPTg1+Z7ziz7ZVQXJvu0O31FbyfEO0Sua7tPxc9vU=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=W81JJC7FS8R4/uwAWAPkUk/3cnI46SpTTo8kbAFdSV9VoPZnbzc9WEzD9yBbPh46swEjQQUGlzs14ejQ6ex6s5KN6OoRhiOSmEI/LTATAdGKNWSJamL6P3ofGR+V2zP+GEpylsdlEwY72EatMhKHUG/u9uiJX3J5DbQQG6NQxv4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layeredsolutionsinc.com; spf=pass smtp.mailfrom=layeredsolutionsinc.com; dkim=pass (2048-bit key) header.d=layeredsolutionsinc-com.20230601.gappssmtp.com header.i=@layeredsolutionsinc-com.20230601.gappssmtp.com header.b=XBdoIvlQ; arc=none smtp.client-ip=209.85.166.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=layeredsolutionsinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=layeredsolutionsinc.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="bWkiWB4s";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="w4cO6zUf"
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailfout.west.internal (Postfix) with ESMTP id 8F0751C000FE;
-	Wed, 10 Apr 2024 17:42:11 -0400 (EDT)
-Received: from imap50 ([10.202.2.100])
-  by compute4.internal (MEProxy); Wed, 10 Apr 2024 17:42:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-	 h=cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1712785331; x=1712871731; bh=ns3ayz7u8W
-	RgMCFCSxfX8wVTU7YDrMfSgVAMy9AEo9U=; b=bWkiWB4shb0NYX3R4a2FdSbLDs
-	3IrxbvrLU+LEED3lgjxWzXZSwbIcB2FZM9miNBSap5q62E0klPd8JRRDl9UdCikF
-	/fGLQcM4rJCF8coZpCAyPOJW/8/MgWHpTrvjF3YFycV0XC67t7PL2iIK2dNGUaX/
-	/5yDGswR6+g733kWPKGV8UvTxBcHiguFTsarv98iyxS+dC9AMGvsv0i99djpoN2L
-	5F5xXtIhk9+7dnf4hWpYxKMgHpDh9m4nuvv2v6rS5koqbk3ozk5a8i4ke0C8s2lb
-	voUyaqpz461XM13nqBzmX6m+YTPJlQjBluJvq0o+myLeZnZIOPZSQOYi0qsQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1712785331; x=1712871731; bh=ns3ayz7u8WRgMCFCSxfX8wVTU7YD
-	rMfSgVAMy9AEo9U=; b=w4cO6zUf/RjWiXXafpDeYAjrIEw+pTxyOwh3WDdFd7wQ
-	IrD2RyeWCDKFneCQiHzvnThqfGTjXxpPSjhAnKaRGm999L4g+IJ1KgRolKkXVP8h
-	uECiEmglV2DNkWYd5JOjFE67kgRS8PGL17NJhfDz9q5XKQw3MzPOc6iZXOdfL2fk
-	fLlU6VVRTiWoIgFx6lpX+PFaisWGTzAMZr9QS7hHALAO0cJk6Fm0AP0Y8orM9HJY
-	f1pxN6j47SV4UWm9/VY6Fm0qWpxsPy4nQTgITaj1FiKEPeAXVZOxyQ4CxTmWx2zQ
-	qepErI+0hYoVB2ogGxTleKX+96WBKOEOgmq2hVjIJg==
-X-ME-Sender: <xms:sgcXZijiFn1n0NkubBwOzzMWwz1Nn9TZxXcT-s1Y2spehG_V9rCxhw>
-    <xme:sgcXZjBXxEaoQavR1ASxChGlGlr7aRi-Ow2U4ThFbbzYHb3fGxUTNeQbW_19t48uO
-    ryNicZw1_JFJwHu>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehjedgtdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefofgggkfgjfhffhffvufgtsehttd
-    ertderredtnecuhfhrohhmpedfmfgvrhhinhcuofhilhhlrghrfdcuoehkfhhmsehplhhu
-    shhhkhgrvhgrrdhnvghtqeenucggtffrrghtthgvrhhnpedtledtieekheejkeevvedvfe
-    dtveeuuddtkeetvedtueeiffetkeelvdefueffleenucffohhmrghinhepnhhfthgrsghl
-    vghsrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrh
-    homhepkhhfmhesphhluhhshhhkrghvrgdrnhgvth
-X-ME-Proxy: <xmx:sgcXZqGXjn-wSxPqH2BvbEN19i8onZOHEfMCkqNMFjIW1aMB-l5ypg>
-    <xmx:sgcXZrShQBfvV69UnynyQ5a8FuXZlmlgsaSnX1HlOFDcQcmXt6385g>
-    <xmx:sgcXZvxVAF5ijtv0ug0oPPZWmnrcezqdbpzjiBuVEBZrcztTy3zKDg>
-    <xmx:sgcXZp6gm6AbSe2mmTVNoVzBEYN04x4Af9z3WViQNA1ee_mGO86F_A>
-    <xmx:swcXZoqvHmrdCEKE59_UgEyg4Jqg2dBMk4tSaeRegyv6AK9D9uniMUJZ>
-Feedback-ID: i2431475f:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id B768D1700093; Wed, 10 Apr 2024 17:42:10 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-379-gabd37849b7-fm-20240408.001-gabd37849
+	dkim=pass (2048-bit key) header.d=layeredsolutionsinc-com.20230601.gappssmtp.com header.i=@layeredsolutionsinc-com.20230601.gappssmtp.com header.b="XBdoIvlQ"
+Received: by mail-io1-f52.google.com with SMTP id ca18e2360f4ac-7d6812b37a6so5500139f.0
+        for <netfilter@vger.kernel.org>; Thu, 11 Apr 2024 05:39:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=layeredsolutionsinc-com.20230601.gappssmtp.com; s=20230601; t=1712839191; x=1713443991; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=G5nPTg1+Z7ziz7ZVQXJvu0O31FbyfEO0Sua7tPxc9vU=;
+        b=XBdoIvlQMz2qaTxodpL/T0adFAptf659oZxUoYJf/5m/mDG/Y4PEoh1H1pvWG3vIgF
+         kydw7ncHnER76fM+ciDXYQ1/wuC0XJnKsVbfA+BOFoB03YlxoYBahys4sgxWxeEFzeTY
+         xCvkSt9pnpoIr/U5vgyHwMl2tzMfGAuEmsxhYe+rUxxALMXaXn1rV7EPTMQXS2Pwl9sl
+         pUqv/gPNzRgWn4vkKsfjcHPAsN92oQ2wbXAEZwpWnezXt+NQMBhq+Mfv/FeL/xXBBit4
+         yjmNWVGqmMPbQu51f6Rr2msM7WIeDQwJVC0sjuPxlp2VeC/BpkaYRe8noPXJ836P642Z
+         B7IA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712839191; x=1713443991;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=G5nPTg1+Z7ziz7ZVQXJvu0O31FbyfEO0Sua7tPxc9vU=;
+        b=c6NtcauDyulQPqnVuDsvMLGHtJneNjJwI7HEGIxAf1kJb3yPvq8F9uiESl9W66IVma
+         vJ1RQqH7IrQ6y87K3KCA6w2QEnNK7KFJ2172Rz7q9oy9EsnUfxnTuRZVzcDTP/UUaEMe
+         aiCLCobLUMCBF1I2UgzI0XGUajURQXsCrC0bq8qYIVrBahSi2nY+58oiDwUDoZBQCyOP
+         c4xerVpUZlnsjlrBCRyP8FcgB/dhZN2lVdMcazajKMOncP8sAhmPbFre6B7PIzQEiikV
+         PROsCEJRGhNpIC9JgVNyZbI8gPSK/7bQEdhG4Lav3XfjUbA7pV2MoqB3cBTU2r5dcFWO
+         Xl5Q==
+X-Gm-Message-State: AOJu0Yxl0ctL9WsFbwcO460tkbc9JB6PUt+FDh1L5e2M+EYQJV9yHecL
+	046Wqq9dVlN1r78G52ecXRdL0HCzjnzyBYBDXeqvBZoRWMa1VEZk2FNyF2QfKK3YKyfMIyHoCfj
+	Nb8uJCiqTLiUr2NrY5LPkvSdr3TeP6JpO90yFsGh0u126LMGlVA==
+X-Google-Smtp-Source: AGHT+IEaNED47Iat7Bea1r9g7hOn6Md8pDdqFJUtroxZEaGPDqmCoRzaPA0RQGQZPfBOvbU+6L0TvnXXbs0BA1Mq29I=
+X-Received: by 2002:a05:6e02:b26:b0:368:974b:f7c7 with SMTP id
+ e6-20020a056e020b2600b00368974bf7c7mr6993863ilu.0.1712839190764; Thu, 11 Apr
+ 2024 05:39:50 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <f0514bc1-c1dd-4f24-97e5-8c40807dbae9@app.fastmail.com>
-In-Reply-To: <20240410172343.1f7f5ee2@localhost>
-References: <20240410172343.1f7f5ee2@localhost>
-Date: Wed, 10 Apr 2024 22:40:53 +0100
-From: "Kerin Millar" <kfm@plushkava.net>
-To: "William N." <netfilter@riseup.net>, netfilter@vger.kernel.org
-Subject: Re: connlimit from wiki.nftables.org not working
-Content-Type: text/plain
+From: Mason Kaufer <mason.kaufer@layeredsolutionsinc.com>
+Date: Thu, 11 Apr 2024 08:39:40 -0400
+Message-ID: <CAEphJuhKcfOoMvATjubj7T31g32tMqpEKi=yE2OAnNf9768XyA@mail.gmail.com>
+Subject: Using iptables and ipset to DROP a list of 2 million addresses
+To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed, 10 Apr 2024, at 6:23 PM, William N. wrote:
-> Hi,
->
-> I am trying this (in Fedora 38 and Debian 12):
->
-> https://wiki.nftables.org/wiki-nftables/index.php/Meters#Doing_connlimit_with_nft
->
-> and I am getting this:
->
-> ./connlimit-example:14:16-62: Error: Could not process rule: No such 
-> file or directory
-> 		ct state new add @my_connlimit { ip saddr ct count over 20 } counter 
-> drop
-> 		             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->
-> Why?
-
-For the avoidance of doubt, please show the complete ruleset that you are attempting to load. 
-
-Additionally, compare the output of "uname -r" to the contents of the /lib/modules directory. Sometimes, people upgrade their kernels then forget to reboot before trying to load a ruleset that requires for one or more kernel modules to be newly loaded.
-
--- 
-Kerin Millar
+Hi,
+I am currently trying to set up a firewall on an Ubuntu 22.04 machine
+that will block a list of 2 million plus ip addresses without slowing
+the network speed down tremendously. I have tried using ipset but I
+get an error that the hash size isn't large enough. I have tried
+manually setting the hash size but it only allows that option to be so
+large. Is there something I am doing wrong or is there a better way to
+achieve this? Any help with this would be much appreciated.
+--
+Mason Kaufer
