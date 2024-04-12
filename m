@@ -1,96 +1,75 @@
-Received: from fout4-smtp.messagingengine.com (fout4-smtp.messagingengine.com [103.168.172.147])
+Received: from mx0.riseup.net (mx0.riseup.net [198.252.153.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4953F205E01
-	for <netfilter@vger.kernel.org>; Thu, 11 Apr 2024 20:05:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35DA154FA0
+	for <netfilter@vger.kernel.org>; Fri, 12 Apr 2024 11:39:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712865918; cv=none; b=u6MMJ/9ZYbrmBCGZomgiQebkcEHKtP3v+YxKRwGUrrs3NdFBkjBotYQPc5w49guWYCMGgkuHsIfCSc0AnTOHv0ijCAjQfWBcqA27rkwB3fSFSlS/Yv8hFKg6DK0YbFHnvZsCvrgPwKB36+/ID30CjwN2yXlcEXlTYT8GU+eVoH4=
+	t=1712921953; cv=none; b=UfqjiaI/jKkvrCidB+HasX1xJa2OuVdNT6u3ZGWbJJHlSmtGF7EdwNBL21YkO2+8TLzc/nkJhdXhMhrxJolk97nAT2PAcRNIetWSLNjEOWVfjligOoEnEC+goC/nBUWsVyXU3A3qXpebLE6utKMuwbplb5yYlAcPfQt/TAGf7m0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712865918; c=relaxed/simple;
-	bh=iMHNIN5V1b3U9uohQEAMmKwwQhFJ5g/PmDCE+SmPQwQ=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:
-	 Subject:Content-Type; b=bNVE57edo2fkJFG1X3yEdSPYoUy6UijvYj23hRG/Zh4xIqlr1FWwYYTuMbY7fyfjGPv/9ATiI/IQ12kDkTPXyI74aUCeva1+eq0xioJUeMJ7BH5LHIRZrWx5+Wh+9ZxOtUr8XzjH90AVWm0GaiNHnx6WVUWXJFgdO6yE+YYIUIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=ioFwvR4K; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=JZ2dhPCl; arc=none smtp.client-ip=103.168.172.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
+	s=arc-20240116; t=1712921953; c=relaxed/simple;
+	bh=AIGIzKiyAoX1Af4qQpVJyj8TDXRNQYf7jguAnDWtk0U=;
+	h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=aWF9N/JlFpbrlPFO86K3PUxX8ItEDO5PSt9a58pHX83SE2yZyskwLjrEfpsvQVhXAXKBenNgbAvxWnskI81+Maqup9uXj4VUZQBG7Nq3syHU91Aywjz023fyRl8yv+9Ba+/mr5TTGuHI577m9Ql/94P1r6Isdsikmg1SlAB7Wdw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=MWrlS+9+; arc=none smtp.client-ip=198.252.153.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="ioFwvR4K";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="JZ2dhPCl"
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailfout.nyi.internal (Postfix) with ESMTP id 55B7613802BC;
-	Thu, 11 Apr 2024 16:05:15 -0400 (EDT)
-Received: from imap50 ([10.202.2.100])
-  by compute4.internal (MEProxy); Thu, 11 Apr 2024 16:05:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-	 h=cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm3; t=1712865915; x=1712952315; bh=pLrQOlhmIQ
-	JCAaQyz7Xsfzp5VYsKZKmq2gEMUyQV2zg=; b=ioFwvR4K4gu4qp+SdUSrBCY22g
-	/HVaz/m4e1P2qoyBtWs1R/5+ct/2djRn7ncUTGibeAyXiwHMnG9FPHYelHwSIn2+
-	Pf9DO6nsuR0HXdeuXrnKa73p3z4cNv/AoFB/xPt4TQsMfk78yE2FF9fNb+NTC9Yh
-	kf7iCma/pbeaondXl4gFb3H9X9XqNK6NUWn3zHV1WG99ozfAF8c3BPtcB2OBiogR
-	QowY+ivjmfbgSfcNGnSpvuyWENfBZo/rGbAkY8dHE+3SKm/eNntQsrT+0JFlZNpH
-	bveYyvbbBXfCop440c9zsc1wv9NLY+TIKJg4txg92P8mFhhlFMdfr8lANUfA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1712865915; x=1712952315; bh=pLrQOlhmIQJCAaQyz7Xsfzp5VYsK
-	ZKmq2gEMUyQV2zg=; b=JZ2dhPClcp9FfCypsitSDF3pH0rkBp+r6LrjLb7p92+i
-	cnfU5oEvkWfbb1MZLt0XXEoZcxrSVaziUxIT07ZBSdHW+GBA7Swk5kMHhUHZrhfe
-	C82t9GR/7E82wyV6DC4vVEBEV31fohUoMyjdhIqJ6c9Bk9S9qbbjFEhFuQC4Y1ET
-	xytz18Mj9KQ+wciF074+BoYv2zWh58PFYyugUt3dgVjn1RX0djE5ZzHs+K5tvjCD
-	9VMzH+v85JS/4qJv4s1jH72fJhKRqP9XkGcQF/6ECsLpG01sj2hgl4lI23AY2waT
-	ijFI27uV2/Iz6roWIvv+hAHyjHk5YgBzkzCN+sIfSw==
-X-ME-Sender: <xms:ekIYZhGyjjeSpLEL1iqwrQyPpr4dy3Lb-rrH_KLYD0GYs8-YOg96UQ>
-    <xme:ekIYZmUzXwliEc2whyqEi2KlFeQfGCfwYAas8D19p1cRZAOAf2JDyJYXuf6qxE8I6
-    mHqoupflO4ydTwx>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudehkedgudeghecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecunecujfgurhepofgfggfkjghffffhvffutgesth
-    dtredtreertdenucfhrhhomhepfdfmvghrihhnucfoihhllhgrrhdfuceokhhfmhesphhl
-    uhhshhhkrghvrgdrnhgvtheqnecuggftrfgrthhtvghrnheptdeltdeikeehjeekveevvd
-    eftdevuedutdekteevtdeuieffteekledvfeeuffelnecuffhomhgrihhnpehnfhhtrggs
-    lhgvshdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfh
-    hrohhmpehkfhhmsehplhhushhhkhgrvhgrrdhnvght
-X-ME-Proxy: <xmx:ekIYZjL4MXSAhIyqxiIOUywTGPtmaAyrGxCet3F0QG0tcdb-UI_TmQ>
-    <xmx:ekIYZnEFP80VwRnXdcXXF3MYHUl442jsCT_ntwY_0cG4j-td14Gzcg>
-    <xmx:ekIYZnWbKEHmXUApKZB8sjVLpcRvFNWTWlqtwXpPFgUvZ8xIZzRdYA>
-    <xmx:ekIYZiPrt4D927Q-kitdTofvBw73FRRW4m1uA4Yl7IPXPHLErX624w>
-    <xmx:e0IYZuftLK2HdlB6emcGFjPLNsualRJa95tDnrWEcRE0PnQainPLwiVQ>
-Feedback-ID: i2431475f:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id DACDD1700093; Thu, 11 Apr 2024 16:05:14 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-379-gabd37849b7-fm-20240408.001-gabd37849
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="MWrlS+9+"
+Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx0.riseup.net (Postfix) with ESMTPS id 4VGF2k3DkFz9vyD
+	for <netfilter@vger.kernel.org>; Fri, 12 Apr 2024 11:39:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1712921950; bh=AIGIzKiyAoX1Af4qQpVJyj8TDXRNQYf7jguAnDWtk0U=;
+	h=Date:From:To:Subject:In-Reply-To:References:Reply-To:From;
+	b=MWrlS+9+xszzofAlBFudwXQ7jXuPbncratDv+7xwuM/V7KE8EWR+qrJ27MXgTLwGw
+	 50NcrvNSy8c2gfH8+HWASi2+osyUGblUQp9xRae/0xYT8wugVcbmS50XdzbuvLcLmF
+	 tBzfJ5JvoMwT2KorRZbfvfnfGzvq3a3werAFMr7o=
+X-Riseup-User-ID: 41E1931CDED3658841BA750CBD762E881C56E986F49736EABEA7BEB6053204C9
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4VGF2T6kcLzFw3D
+	for <netfilter@vger.kernel.org>; Fri, 12 Apr 2024 11:38:57 +0000 (UTC)
+Date: Fri, 12 Apr 2024 11:38:48 -0000
+From: "William N." <netfilter@riseup.net>
+To: netfilter@vger.kernel.org
+Subject: Re: connlimit from wiki.nftables.org not working
+Message-ID: <20240412113848.0fd84173@localhost>
+In-Reply-To: <34397891-d5b8-45ca-8bbc-190a71b34cc6@app.fastmail.com>
+References: <20240410172343.1f7f5ee2@localhost>
+	<f0514bc1-c1dd-4f24-97e5-8c40807dbae9@app.fastmail.com>
+	<20240411165412.0f0c65ce@localhost>
+	<34397891-d5b8-45ca-8bbc-190a71b34cc6@app.fastmail.com>
+Reply-To: netfilter@riseup.net
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <34397891-d5b8-45ca-8bbc-190a71b34cc6@app.fastmail.com>
-In-Reply-To: <20240411165412.0f0c65ce@localhost>
-References: <20240410172343.1f7f5ee2@localhost>
- <f0514bc1-c1dd-4f24-97e5-8c40807dbae9@app.fastmail.com>
- <20240411165412.0f0c65ce@localhost>
-Date: Thu, 11 Apr 2024 21:04:53 +0100
-From: "Kerin Millar" <kfm@plushkava.net>
-To: "William N." <netfilter@riseup.net>, netfilter@vger.kernel.org
-Subject: Re: connlimit from wiki.nftables.org not working
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu, 11 Apr 2024, at 5:54 PM, William N. wrote:
-> Everything is up-to-date and rebooted (many times).
+On Thu, 11 Apr 2024 21:04:53 +0100 Kerin Millar wrote:
 
-I can only induce the same diagnostic in the case that connlimit support is missing.
+> # zgrep NFT_CONNLIMIT /proc/config.gz
+> # CONFIG_NFT_CONNLIMIT is not set
 
-# zgrep NFT_CONNLIMIT /proc/config.gz
-# CONFIG_NFT_CONNLIMIT is not set
+Same here.
 
-With that in mind, are you able to "modprobe nft_connlimit" at all?
+> With that in mind, are you able to "modprobe nft_connlimit" at all?
 
--- 
-Kerin Millar
+It returns a fatal error that the module is not found.
+
+All I find when searching is that the module is missing in different
+distros and some references to CVE-2022-32250 which doesn't clarify
+much:
+
+https://research.nccgroup.com/2022/09/01/settlers-of-netlink-exploiting-a-limited-uaf-in-nf_tables-cve-2022-32250/#rip-control-by-triggering-garbage-collection
+
+I wonder if distros have deliberately removed the module because of the
+CVE or if there is something else.
+
+What would you advise?
