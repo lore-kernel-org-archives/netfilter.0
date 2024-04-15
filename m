@@ -1,40 +1,28 @@
-Received: from river.fysh.org (river.fysh.org [87.98.248.19])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C721912CD8C
-	for <netfilter@vger.kernel.org>; Mon, 15 Apr 2024 13:08:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=87.98.248.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 961287581B
+	for <netfilter@vger.kernel.org>; Mon, 15 Apr 2024 13:20:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713186491; cv=none; b=lsk9Y/urejprOz0b1y9ROnVYK/+wDNQpMVvGgxLMVbew8IjD3IzOL7wJSLaWxjDsxNQy0Men2HLD5EsLLuOYnuk9U07l2iqPjBfv3EFNeq2vKfD+ukr49MF9JGd49eOZTHyOpIVoIcszPxmRVL+4q3PlB9lBQtgResIMTfXpwaY=
+	t=1713187235; cv=none; b=ZqCSASuj/cZVyWBB5JW9P1qiF6J/Ee2Yp5tuqsbVYB4aGW6GDwcOtm0L7Wa/CmiiguwjS8fRaFAYndMF4+N9FyoBXaDMJF+69kWO//d+64ZLFn325cscQ1aNH9P7xc82WR0PHHrl/fJC2yA270hqPtrdgnkoKVOv8vThfGMO+K0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713186491; c=relaxed/simple;
-	bh=RZOSEPyotAJ2FsBChfHQOss7C2EJl+ppRiQciPgz/xU=;
+	s=arc-20240116; t=1713187235; c=relaxed/simple;
+	bh=XW3OZ/LoH5txp9PB9BFWH+xm8Z2QB6OunUmufvEtqkg=;
 	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AMLkEJVgrvZH845c/gc64qWg+Dxz0nmEKtP8cqsqQfOA2SSCmmMEig+8AnyHmN9hfp5nMF9ROsTQ+VD3ix7dSZrJW9ra9D4O2/XOO2yofIeUQHgvqYuyaBKBJ4gSIwk655KmW8PJlHPSaZGEBqBHQV5LOzzmq2epqMrtMCmwSJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=miggy.org; spf=pass smtp.mailfrom=miggy.org; dkim=pass (1024-bit key) header.d=miggy.org header.i=@miggy.org header.b=cLNAIXKK; arc=none smtp.client-ip=87.98.248.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=miggy.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=miggy.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=miggy.org header.i=@miggy.org header.b="cLNAIXKK"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=miggy.org;
-	s=20170316; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:To:From:Date:Sender:Reply-To:Cc:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=ztILbzJYvIaFuMuGHNRnJA59YUySuGRGiitbiWX4F8Q=; b=cLNAIXKKbe0sIHhBm7SreuLIY9
-	n1iZyiV+NXjC9o/TyxwUNZtGP8SLD/FWw+HmUqAl2MdPMtz/74ANkLwBP/hyEugp/Ny0XbkSMpByt
-	tmWvSgE8J5L+wcyrVO6LOe3CbMiyLza+JmZJ6AvbjWq3G0qfxVDd+dgeEMKkafxnRjho=;
-Received: from athan by river.fysh.org with local (Exim 4.96 #2 (Debian))
-	id 1rwM40-00EjHO-2f
-	for netfilter@vger.kernel.org;
-	Mon, 15 Apr 2024 14:08:00 +0100
-Date: Mon, 15 Apr 2024 14:08:00 +0100
-From: Athanasius <netfilter.org@miggy.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Lmu55vNgdFfllsjDrUxZJ7/KaVJZWTvYrA0UXdxoqjtcB/qgqw/E+sBB+PAjxuPsAgAI6Vdj8ZIDVEtFONG9jFUOgN80WIQ5FcBQSRmaaSEGf8YHTkozGXynFMX4Hwb0E5xsPsDpY/z6VCNDY8mrEwconVlqpV/Yi1IExfdM6UY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+	(envelope-from <fw@strlen.de>)
+	id 1rwMG4-0007FO-19
+	for netfilter@vger.kernel.org; Mon, 15 Apr 2024 15:20:28 +0200
+Date: Mon, 15 Apr 2024 15:20:28 +0200
+From: Florian Westphal <fw@strlen.de>
 To: netfilter@vger.kernel.org
 Subject: Re: NFQUEUE usage and interaction with later chain rules
-Message-ID: <Zh0msE4n8nuFYYS3@fysh.org>
-Mail-Followup-To: netfilter@vger.kernel.org
+Message-ID: <20240415132028.GA7880@breakpoint.cc>
 References: <Zh0Y-j3NAbRmAi03@fysh.org>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
@@ -45,77 +33,65 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <Zh0Y-j3NAbRmAi03@fysh.org>
-X-gpg-fingerprint: E218CE1D
-X-gpg-key: http://www.fysh.org/~athan/gpg-key
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Mon, Apr 15, 2024 at 01:09:30PM +0100, Athanasius wrote:
+Athanasius <netfilter.org@miggy.org> wrote:
+>   I'm in the middle of trying to implement some firewall bans based on
+> GeoIP data.  It seemed that implementing an NFQUEUE userspace helper
+> to do the lookups and decision making was the most feasible solution,
+
+For IP matching?  Use ipset or xt_geoip from xtables addons, much
+simpler and faster...
+
+> but I have run into some issues.  I can probably work around them,
+> but it does make this setup more fragile than I'd like.
+> 
+>   So, I'd like to ensure I'm properly understanding some things.
+> 
 >   1. The only practical verdicts the userspace helper can return are
 >   ACCEPT or DROP.  Checking through some documentation, examples, and
 >   kernel code I've come across 'STOLEN', 'QUEUE' and 'REPEAT', but I
 >   cannot find any actual documentation on what these might achieve.
-> 
+
+You can accept, drop, queue (pass packet to queue/program), or repeat,
+which will make the packet reenter the same ruleset, i.e. its queued
+again unless you use mark tricks to avoid that.
+
+STOLEN cannot be used, its kernel internal.
+
 >   2. There appears to be no way to have an NFQUEUE rule act in a manner
 >   where the userspace verdict can cause subsequent rules in the chain to
 >   be considered.
 
-  Well, of course I had an epiphany after sending this.  I can make use
-of packet marks to do what I want, together with a REPEAT verdict.
+Yes.
 
-  1. Have the NFQUEUE rule check that the specific mark value is NOT
-  set.
+>     I'd specifically like my userspace helper to be able to say 'DROP',
+>   but otherwise allow rule evaluation to continue in the chain, rather
+>   than blindly accepting all else.
 
-  2. On not-DROP the userspace helper sets the mark value and returns a
-  verdict of REPEAT.  REPEAT sends the packet through the netfilter
-  chains and rules again, at least the INPUT chain.  So now it doesn't
-  match the NFQUEUE rule and evaluation continues after.
+Thats impossible to do.
 
-I'm being a little vague about 'REPEAT' there because I've still not
-found any documentation telling me what it's *supposed* to do.  I had
-already tried 'STOP' (going through the 'other' possible verdicts), and
-couldn't discern what it was causing to (not) happen.
+>     If I could cause rule evaluation to jump to another chain that would
+>   also be acceptable, simply placing rules that would normally be later
+>   in the current chain into that one.
 
-  For the interested, I'm actually doing this in Python, using the
-`fnfqueue` module.  The `NetfilterQueue` module appeared to offer no way
-to use a more 'custom' verdict, or even set that 'fail open' socket
-option.
-  I'm using `impacket` to decode the packets in order to extract the
-source IP.  The relevant code ends up being:
+Same.
 
-```python
-def process_fnfqueue_packet(pkt):
-    payload = pkt.payload
-    rip = ImpactDecoder.IPDecoder().decode(payload)
-    src_ip = rip.get_ip_src()
-    if ipcheck.check_ip(src_ip):
-        logger.debug(f"{src_ip=} should be banned")
-        pkt.drop()
+> there's no userspace helper listening to the queue... but this literally
+> turns the rule into an ACCEPT, rather than passing evaluation to later
+> rules.  Presumably the 'fail open' socket option, to not cause all
+> packets to be dropped if the queue buffer is filled, has the same issue.
+> It's then blind ACCEPT rather than "let later rules look at the packet".
 
-    else:
-        pkt.mark = 2
-        pkt.verdict(fnfqueue.REPEAT, fnfqueue.MANGLE_MARK)
+Right.
 
-```
+>   Is any of my understanding in error?  Can I actually implement this
+> how I'd prefer, with later rules being evaulated upon some specific
+> verdict returned from userspace ?
 
-`pkt` is the packet as `fnfqueue` provides it.
+No.  It would require significant rewrites on the kernel side, nfqueue
+would have to be moved from core into xt_NFQUEUE and nft_queue,
+respectively, with nftables/xtables specific changes to support what
+you want, and such change would also break backwards compatibility.
 
-`ImpactDecoder...` is from `impacket`.
-
-`ipcheck.check_ip()` is my code doing the GeoIP lookup and returning
-a boolean, `True` for 'should drop'.
-
-  I'll try to remember to write up a web page detailing my findings in
-the hope that it might then be found useful by others in the future.
-
-  Oh and that 'fail open' option is still a little problematic.  Without
-it, because the NFQUEUE rule will initially match, I would just DROP
-packets if the NFQUEUE buffer filled.  With it I'll instead end up with
-blind ACCEPT rather than any subsequent rules being evaluated.
-  I assume there are architectural reasons why evaluation couldn't be
-made to continue after the NFQUEUE rule (e.g. a verdict of
-'NF_CONTINUE'), but it would sure be helpful if that was possible.
-
--- 
-- Athanasius (he/him) = Athanasius(at)miggy.org / https://miggy.org/
-                  GPG/PGP Key: https://miggy.org/gpg-key
-	   "And it's me who is my enemy. Me who beats me up.
-Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
+I don't think this is going to happen.
