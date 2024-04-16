@@ -1,97 +1,98 @@
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 961287581B
-	for <netfilter@vger.kernel.org>; Mon, 15 Apr 2024 13:20:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8116D13440B
+	for <netfilter@vger.kernel.org>; Tue, 16 Apr 2024 17:48:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713187235; cv=none; b=ZqCSASuj/cZVyWBB5JW9P1qiF6J/Ee2Yp5tuqsbVYB4aGW6GDwcOtm0L7Wa/CmiiguwjS8fRaFAYndMF4+N9FyoBXaDMJF+69kWO//d+64ZLFn325cscQ1aNH9P7xc82WR0PHHrl/fJC2yA270hqPtrdgnkoKVOv8vThfGMO+K0=
+	t=1713289694; cv=none; b=otwt73Ax0a+jvnytnBxBdy9xliScLLdaehRZxJXP1Q41QOGcyiLnZDMXLkoEtM7eqsqIMZEFROVAii/0ebKwyjVLownI5+oEpYtp8n9aYqMzAfhuCfeCh0ZtEXquU7/a7w2AaCbARloxO1TUTpFetDzuqJPbmzp9G4RJLSDJ0Qc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713187235; c=relaxed/simple;
-	bh=XW3OZ/LoH5txp9PB9BFWH+xm8Z2QB6OunUmufvEtqkg=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Lmu55vNgdFfllsjDrUxZJ7/KaVJZWTvYrA0UXdxoqjtcB/qgqw/E+sBB+PAjxuPsAgAI6Vdj8ZIDVEtFONG9jFUOgN80WIQ5FcBQSRmaaSEGf8YHTkozGXynFMX4Hwb0E5xsPsDpY/z6VCNDY8mrEwconVlqpV/Yi1IExfdM6UY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@strlen.de>)
-	id 1rwMG4-0007FO-19
-	for netfilter@vger.kernel.org; Mon, 15 Apr 2024 15:20:28 +0200
-Date: Mon, 15 Apr 2024 15:20:28 +0200
-From: Florian Westphal <fw@strlen.de>
+	s=arc-20240116; t=1713289694; c=relaxed/simple;
+	bh=QUzBLx/IQ39gVdK+7VlIHJqBqQuQsDLiZgQg5jPkwj8=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=eh5/Gb6vvsgReaJSh9jQKisYNyy+CFynFn/xSaCW6v4nrx7+jfcoBvQczu0iK+JfTly9oG3pdNtR5d3EOM/C2gSvtqYRP2SwcirKmETSopWDt+j2Y9tUOkN60GLFO7CIt+0wmX/j+ta9NM7bP7UDT3ZFSFw9YIX2Ce/kPCT4/BM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=atvRgsGi; arc=none smtp.client-ip=198.252.153.129
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="atvRgsGi"
+Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx1.riseup.net (Postfix) with ESMTPS id 4VJs2Z48zNzDqfr
+	for <netfilter@vger.kernel.org>; Tue, 16 Apr 2024 17:48:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1713289686; bh=QUzBLx/IQ39gVdK+7VlIHJqBqQuQsDLiZgQg5jPkwj8=;
+	h=Date:From:To:Subject:Reply-To:From;
+	b=atvRgsGiKnwUzPt9yGed2j8861VlEBi8GusNtEXJeAOTRYMb69g7GCuJqsylBo486
+	 o9CHkjrwlxUY6j3AC8IZQ5fZVTHp8cZ87bXG5hX7Su8yYFJZjm8v3dWafu29Q1koWd
+	 tGGOtCOhIu0D4eCf4rQqVU/bSul+H5wZozl0mUPQ=
+X-Riseup-User-ID: 824F4F37DA1AD6DC0C4018B6A698924A03D4A9B1B92562C3D495E09EDDEB9221
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4VJs2W3GM7zFsY3
+	for <netfilter@vger.kernel.org>; Tue, 16 Apr 2024 17:48:02 +0000 (UTC)
+Date: Tue, 16 Apr 2024 17:47:48 -0000
+From: "William N." <netfilter@riseup.net>
 To: netfilter@vger.kernel.org
-Subject: Re: NFQUEUE usage and interaction with later chain rules
-Message-ID: <20240415132028.GA7880@breakpoint.cc>
-References: <Zh0Y-j3NAbRmAi03@fysh.org>
+Subject: Combining/compacting 2 rules into 1
+Message-ID: <20240416174748.5612bd27@localhost>
+Reply-To: netfilter@riseup.net
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zh0Y-j3NAbRmAi03@fysh.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Athanasius <netfilter.org@miggy.org> wrote:
->   I'm in the middle of trying to implement some firewall bans based on
-> GeoIP data.  It seemed that implementing an NFQUEUE userspace helper
-> to do the lookups and decision making was the most feasible solution,
+Hello,
 
-For IP matching?  Use ipset or xt_geoip from xtables addons, much
-simpler and faster...
+I am trying to "compact" the following rules:
 
-> but I have run into some issues.  I can probably work around them,
-> but it does make this setup more fragile than I'd like.
-> 
->   So, I'd like to ensure I'm properly understanding some things.
-> 
->   1. The only practical verdicts the userspace helper can return are
->   ACCEPT or DROP.  Checking through some documentation, examples, and
->   kernel code I've come across 'STOLEN', 'QUEUE' and 'REPEAT', but I
->   cannot find any actual documentation on what these might achieve.
+table netdev filter {
+	chain ingress {
+		type filter hook ingress device "eth0" priority -500;
+		# ...
 
-You can accept, drop, queue (pass packet to queue/program), or repeat,
-which will make the packet reenter the same ruleset, i.e. its queued
-again unless you use mark tricks to avoid that.
+		meta protocol ip \
+			tcp flags syn \
+			tcp option maxseg size lt 536 \
+			log prefix "TCP MSS: " \
+			counter packets 0 bytes 0 \
+			drop
 
-STOLEN cannot be used, its kernel internal.
+		meta protocol ip6 \
+			tcp flags syn \
+			tcp option maxseg size lt 1220 \
+			log prefix "TCP MSS: " \
+			counter packets 0 bytes 0 \
+			drop
+	}
+}
 
->   2. There appears to be no way to have an NFQUEUE rule act in a manner
->   where the userspace verdict can cause subsequent rules in the chain to
->   be considered.
+into something like:
 
-Yes.
+table netdev filter {
+	chain ingress {
+		type filter hook ingress device "eth0" priority -500;
+		# ...
 
->     I'd specifically like my userspace helper to be able to say 'DROP',
->   but otherwise allow rule evaluation to continue in the chain, rather
->   than blindly accepting all else.
+		meta protocol tcp option maxseg size map lt {
+				ip : 536,
+				ip6 : 1220
+			} \
+			tcp flags syn \
+			log prefix "TCP MSS: " \
+			counter packets 0 bytes 0 \
+			drop
+	}
+}
 
-Thats impossible to do.
+but I am getting errors, as my syntax is obviously wrong. The first error is:
 
->     If I could cause rule evaluation to jump to another chain that would
->   also be acceptable, simply placing rules that would normally be later
->   in the current chain into that one.
+Error: syntax error, unexpected size, expecting newline or semicolon
+                meta protocol tcp option maxseg size map lt {
+                                                ^^^^
 
-Same.
-
-> there's no userspace helper listening to the queue... but this literally
-> turns the rule into an ACCEPT, rather than passing evaluation to later
-> rules.  Presumably the 'fail open' socket option, to not cause all
-> packets to be dropped if the queue buffer is filled, has the same issue.
-> It's then blind ACCEPT rather than "let later rules look at the packet".
-
-Right.
-
->   Is any of my understanding in error?  Can I actually implement this
-> how I'd prefer, with later rules being evaulated upon some specific
-> verdict returned from userspace ?
-
-No.  It would require significant rewrites on the kernel side, nfqueue
-would have to be moved from core into xt_NFQUEUE and nft_queue,
-respectively, with nftables/xtables specific changes to support what
-you want, and such change would also break backwards compatibility.
-
-I don't think this is going to happen.
+What is the correct syntax for this?
