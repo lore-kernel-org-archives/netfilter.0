@@ -1,100 +1,97 @@
-Received: from mail.thelounge.net (mail.thelounge.net [91.118.73.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F7DC481A6
-	for <netfilter@vger.kernel.org>; Wed, 17 Apr 2024 21:05:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.118.73.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E60112E1DE
+	for <netfilter@vger.kernel.org>; Wed, 17 Apr 2024 21:24:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713387915; cv=none; b=auqHRTgEzQ8pCfJarorapbxU5AK45iZVhp8rhgHhTxGutzZcZvk520SWbzA9iBg6KHVTIJ7GgkzIT/Uind/+GgK7ZmHHxDJOcyDhqowPjG7xl6jWW8i7jv2yO1An8TmOlqV0lLanA5i4+/FZzPAUaM1a0bwPqLp/8GH4+S0bn0Q=
+	t=1713389097; cv=none; b=IbJEMJ+C/WsNP6BWfidDY/jGsPkiAw5xK2Yx0X3Xjexm7DA76Gj8Zz1UmN1FzUTt+1XGs4+9az7Ecwm7RWT2lQupZe5gpOGRXGeseVGrN53fb5kejm5PofZViTROwGhLe7f6cVJPMPp1FwtYUBQGDB4d751hWnGCz+vB8slFZdc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713387915; c=relaxed/simple;
-	bh=82igX7CjX2fiTg6ADs8ycL0ytLwSw28jJvMOvvaI9Jg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=GD6Mef6ZV60xmA7yqQh4we/dwLo/Wj9AgLazuIMuAAIJ+9s4EeKlpsUp2awrzv66Lo5HzhmwzTgaZyXk4p7GlcnE8CqPqJGm7fN4NVn3A9eLu7yUDwME78uTeU/xK/vkIPuYAEVQeCrkKAF0QGXEPh4WAoPnLT7WGqOtlB0qDw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thelounge.net; spf=pass smtp.mailfrom=thelounge.net; arc=none smtp.client-ip=91.118.73.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thelounge.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=thelounge.net
-Received: from [10.10.10.2] (rh.vpn.thelounge.net [10.10.10.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: h.reindl@thelounge.net)
-	by mail.thelounge.net (THELOUNGE MTA) with ESMTPSA id 4VKXzT6KrjzXZJ
-	for <netfilter@vger.kernel.org>; Wed, 17 Apr 2024 22:47:44 +0200 (CEST)
-Message-ID: <b437910b-b962-4d5c-bd1a-1a6d35ef2bcc@thelounge.net>
-Date: Wed, 17 Apr 2024 22:47:44 +0200
+	s=arc-20240116; t=1713389097; c=relaxed/simple;
+	bh=Ji8jsiAo4I8kXxJLC2xNcU27ZTfw8pjMUsYk5i5yC2g=;
+	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
+	 Cc:In-Reply-To:To; b=Pb4BNe8k/nBgUv7Mu4MSyZbS+KVIbvRyxmM607mH7GYaK+FL+HPw5STOKWpcUpBXW+q9Wso6MbGM+xZ7avoc0ROmmPvW0O8prFLq4r5K20HOUY0HNkMv1l8kg0nHpqwxYeZiMqXXBwNi/AMnZcU2ZZZWU6wu672yrqJINX7h+cE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jcm.me; spf=pass smtp.mailfrom=jcm.me; dkim=pass (1024-bit key) header.d=jcm.me header.i=@jcm.me header.b=RbKQUvUI; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jcm.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=jcm.me
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=jcm.me header.i=@jcm.me header.b="RbKQUvUI"
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6ed2dc03df6so237804b3a.1
+        for <netfilter@vger.kernel.org>; Wed, 17 Apr 2024 14:24:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=jcm.me; s=google; t=1713389093; x=1713993893; darn=vger.kernel.org;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Ji8jsiAo4I8kXxJLC2xNcU27ZTfw8pjMUsYk5i5yC2g=;
+        b=RbKQUvUIhJkJx2O2HC+P80VVrl/YxDcM8gJy2fUPVTYCr2htu8188i9ztSfo896e6j
+         q2z0LKCIpkGs/EDqAmFX2xn2VM6WF4tXgNg53n5UWDvgpWdaNvCMG7SyHEjdiA/buvwS
+         HId8uyhdld/WBQ5LwuNBr8XKkqyctG1AEIvZE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713389093; x=1713993893;
+        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
+         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ji8jsiAo4I8kXxJLC2xNcU27ZTfw8pjMUsYk5i5yC2g=;
+        b=XugDdb0Ck1JCIWW2IKPR7r4oBeJfWZzTsxldyQT8LSeo3lQGdcEsX9f50Vo7Q/7QG6
+         vwjhIv54ehmqY2W5UW2A8LjSo9NNyKSAPC2ewX0SJdl7pM+pymqqH2WFxmpgz9Wjq3v+
+         tyrqdXNgXS/GfMH0RTFNgwaLZ8qeNf2O0Qe/fd5WJqOEiUayu3tMxoDGVHLEIc1SZpey
+         jN8nv+bRK1glcC5yxMX9rEqJRXlUWXk19WJN9/X9X0Eq1ash1bhrTdriQoUbD82mB3kA
+         zbRzq+lz0teWNjtgmODI/3UPXL0XptTG/fOYoWa7rW+7G1uTT1eD5/8BhvpjFvSGZWTo
+         c7bA==
+X-Gm-Message-State: AOJu0Yw+Ol9Z3zm0Vbrrr2UeYzDd25iRK1632M4eBgLI9ZFU4eiI1OZd
+	RIpTMGaCOc5I6MKssEzzvhT0Mh43zRa+DsUFA+IvlZ8EwXf8OGmK/0fIMIKh/GI=
+X-Google-Smtp-Source: AGHT+IEExzkXu+prK1VAO762YeCt2toRruv5n8pAie1MszNFv1qrPFu5SaHJLw66ozDQSBuFLUMwiA==
+X-Received: by 2002:aa7:8e54:0:b0:6ed:d8d2:5040 with SMTP id d20-20020aa78e54000000b006edd8d25040mr1011981pfr.21.1713389093446;
+        Wed, 17 Apr 2024 14:24:53 -0700 (PDT)
+Received: from smtpclient.apple ([50.46.33.125])
+        by smtp.gmail.com with ESMTPSA id gs9-20020a056a004d8900b006e694719fa0sm123155pfb.147.2024.04.17.14.24.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Apr 2024 14:24:53 -0700 (PDT)
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+From: Joshua Moore <j@jcm.me>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+Mime-Version: 1.0 (1.0)
 Subject: Re: DoS/DDoS protection for end nodes
-Content-Language: en-US
-To: netfilter@vger.kernel.org
-References: <20240417194340.20430839@localhost>
-From: Reindl Harald <h.reindl@thelounge.net>
-Autocrypt: addr=h.reindl@thelounge.net; keydata=
- xsDNBFq9ahEBDADEQKxJxY4WUy7Ukg6JbzwAUI+VQYpnRuFKLIvcU+2x8zzf8cLaPUiNhJKN
- 3fD8fhCc2+nEcSVwLDMoVZfsg3BKM/uE/d2XNb3K4s13g3ggSYW9PCeOrbcRwuIvK5gsUqbj
- vXSAOcrR7gz/zD6wTYSNnaj+VO4gsoeCzBkjy9RQlHBfW+bkW3coDCK7DocqmSRTNRYrkZNR
- P1HJBUvK3YOSawbeEa8+l7EbHiW+sdlc79qi8dkHavn/OqiNJQErQQaS9FGR7pA5SvMvG5Wq
- 22I8Ny00RPhUOMbcNTOIGUY/ZP8KPm5mPfa9TxrJXavpGL2S1DE/q5t4iJb4GfsEMVCNCw9E
- 6TaW7x6t1885YF/IZITaOzrROfxapsi/as+aXrJDuUq09yBCimg19mXurnjiYlJmI6B0x7S9
- wjCGP+aZqhqW9ghirM82U/CVeBQx7afi29y6bogjl6eBP7Z3ZNmwRBC3H23FcoloJMXokUm3
- p2DiTcs2XViKlks6Co/TqFEAEQEAAc0mUmVpbmRsIEhhcmFsZCA8aC5yZWluZGxAdGhlbG91
- bmdlLm5ldD7CwREEEwEIADsCGyMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AWIQSdK0bNvBQK
- NnU65NczF01aWJK3uAUCWr1qowIZAQAKCRAzF01aWJK3uEznDACGncwi0KfKOltOBmzIQNIn
- 7kPOBFU8KGIjONpg/5r82zwDEpFOTKw+hCttokV6+9K+j8Iut0u9o7iSQNA70cXqkaqPndxB
- uRIi/L6nm2ZlUMvQj9QD5U+mdTtSQH5WrC5lo2RYT2sTWoAFQ6CSnxxJd9Ud7rjbDy7GRnwv
- IRMfFJZtTf6HAKj8dZecwnBaHqgZQgRAhdsUtH8ejDsWlfxW1Qp3+Vq008OE3XXOFQX5qXWK
- MESOnTtGMq1mU/Pesmyp0+z58l6HyUmcoWruyAmjX7yGQPOT5APg2LFpMHA6LIu40mbb/pfg
- 5am8LWLBXQRCP1D/XLOuQ5DO6mWY0rtQ8ztZ5Wihi5qA9QKcJxmZcdmurlaxi3mavR3VgCIc
- 3hDPcvUqBwB5boNZspowYoHQ21g9qyFHOyeS69SNYhsHPCTr6+mSyn+p4ou4JTKiDRR16q5X
- hHfXO9Ao9zvVVhuw+P4YySmTRRlgJtcneniH8CBbr9PsjzhVcX2RkOCC+ObOwM0EWr1qEQEM
- ANIkbSUr1zk5kE8aXQgt4NFRfkngeDLrvxEgaiTZp93oSkd7mYDVBE3bA4g4tng2WPQL+vnb
- 371eaROa+C7/6CNYJorBx79l+J5qZGXiW56btJEIER0R5yuxIZ9CH+qyO1X47z8chbHHuWrZ
- bTyq4eDrF7dTnEKIHFH9wF15yfKuiSuUg4I2Gdk9eg4vv9Eyy/RypBPDrjoQmfsKJjKN81Hy
- AP6hP9hXL4Wd68VBFBpFCb+5diP+CKo+3xSZr4YUNr3AKFt/19j2jJ8LWqt0Gyf87rUIzAN8
- TgLKITW8kH8J1hiy/ofOyMH1AgBJNky1YHPZU3z1FWgqeTCwlCiPd6cQfuTXrIFP1dHciLpj
- 8haE7f2d4mIHPEFcUXTL0R6J1G++7/EDxDArUJ9oUYygVLQ0/LnCPWMwh7xst8ER994l9li3
- PA9k9zZ3OYmcmB7iqIB+R7Z8gLbqjS+JMeyqKuWzU5tvV9H3LbOw86r2IRJp3J7XxaXigJJY
- 7HoOBA8NwQARAQABwsD2BBgBCAAgFiEEnStGzbwUCjZ1OuTXMxdNWliSt7gFAlq9ahECGwwA
- CgkQMxdNWliSt7hVMwwAmzm7mHYGuChRV3hbI3fjzH+S6+QtiAH0uPrApvTozu8u72pcuvJW
- J4qyK5V/0gsFS8pwdC9dfF8FGMDbHprs6wK0rMqaDawAL8xWKvmyi6ZLsjVScA6aM307CEVr
- v5FJiibO+te+FkzaO9+axEjloSQ9DbJHbE3Sh7tLhpBmDQVBCzfSV7zQtsy9L3mDKJf7rW+z
- hqO9JA885DHHsVPPhA9mNgfRvzQJn/3fFFzqmRVf7mgBV8Wn8aepEUGAd2HzVAb3f1+TS04P
- +RI8qKoqeVdZlbwJD59XUDJrnetQrBEfhEd8naW8mHyEWHVJZnSTUIfPz2sneW1Zu2XkfqwV
- eW+IyDAcYyTXqnEGdFSEgwgzliPJDWm5CHbsU++7Kzar5d5flRgGbtcxqkpl8j0N0BUlN4fA
- cTqn2HJNlhMSV0ZocQ0888Zaq2S5totXr7yuiDzwrp70m9bJY+VPDjaUtWruf2Yiez3EAhtU
- K4rYsjPimkSIVdrNM//wVKdCTbO+
-Organization: the lounge interactive design
-In-Reply-To: <20240417194340.20430839@localhost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Date: Wed, 17 Apr 2024 14:24:41 -0700
+Message-Id: <85A01097-5738-4D36-B203-E322A1D186AD@jcm.me>
+References: <b437910b-b962-4d5c-bd1a-1a6d35ef2bcc@thelounge.net>
+Cc: netfilter@vger.kernel.org
+In-Reply-To: <b437910b-b962-4d5c-bd1a-1a6d35ef2bcc@thelounge.net>
+To: Reindl Harald <h.reindl@thelounge.net>
+X-Mailer: iPhone Mail (21E236)
 
+Agreed. Also trying to react to a DDoS could cause you to DoS yourself :)
 
+I=E2=80=99ve seen this in hardware appliance firewalls trying to be creative=
+ with threat detection/IPS.
 
-Am 17.04.24 um 21:43 schrieb William N.:
-> I have been searching and reading, and reading... I understand this is
-> a huge and complex subject, especially for a non-expert. I read earlier
-> discussions on this ML - some answers seem to say it is futile (i.e.
-> something that should be done by the ISPs, not by the end clients),
-> others suggest there is benefit in doing at least what is possible. So,
-> I hope to have some things clarified by the experts here.
-> 
-> XY: I am trying to do what is right for the network security of a SOHO
-> LAN. The nodes are distrusted, i.e. there is no assumption that they
-> are/will always be "clean" just because they are on the LAN.
-> 
-> My questions:
-> 
-> 1. Is there a point to attempt DoS/DDoS protection directly on the LAN
-> nodes (Linux based)?
-> 
-> 2. What is the right approach (using nftables)?
-
-you can rate-limit requests but for a real DDOS you have *nothing* on 
-your side - your upstream connection is overloaded and dropping packets 
-will gain you nothing
+> On Apr 17, 2024, at 2:05=E2=80=AFPM, Reindl Harald <h.reindl@thelounge.net=
+> wrote:
+>=20
+> =EF=BB=BF
+>=20
+>> Am 17.04.24 um 21:43 schrieb William N.:
+>> I have been searching and reading, and reading... I understand this is
+>> a huge and complex subject, especially for a non-expert. I read earlier
+>> discussions on this ML - some answers seem to say it is futile (i.e.
+>> something that should be done by the ISPs, not by the end clients),
+>> others suggest there is benefit in doing at least what is possible. So,
+>> I hope to have some things clarified by the experts here.
+>> XY: I am trying to do what is right for the network security of a SOHO
+>> LAN. The nodes are distrusted, i.e. there is no assumption that they
+>> are/will always be "clean" just because they are on the LAN.
+>> My questions:
+>> 1. Is there a point to attempt DoS/DDoS protection directly on the LAN
+>> nodes (Linux based)?
+>> 2. What is the right approach (using nftables)?
+>=20
+> you can rate-limit requests but for a real DDOS you have *nothing* on your=
+ side - your upstream connection is overloaded and dropping packets will gai=
+n you nothing
+>=20
