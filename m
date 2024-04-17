@@ -1,53 +1,82 @@
-Received: from flopster.at.encryp.ch (flopster.at.encryp.ch [65.21.140.233])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.thelounge.net (mail.thelounge.net [91.118.73.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDEE1171A1
-	for <netfilter@vger.kernel.org>; Wed, 17 Apr 2024 20:26:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.21.140.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F7DC481A6
+	for <netfilter@vger.kernel.org>; Wed, 17 Apr 2024 21:05:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.118.73.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713385576; cv=none; b=QTTj+zYzjJpefcRkE+LUCt3uiYCNPPlBC4p4tBT6nQ8Wo1TP2xF77E1szVc955vxjm168TZoQsQzZDnNedC51REHfPCMUVK7K7GuAYprLc/Zh5iw5X16JSbkgwhFQ1+rVVVaJXd4diXQ3ZQaUInHHU9DcHsINHPnDCcAECuqfzE=
+	t=1713387915; cv=none; b=auqHRTgEzQ8pCfJarorapbxU5AK45iZVhp8rhgHhTxGutzZcZvk520SWbzA9iBg6KHVTIJ7GgkzIT/Uind/+GgK7ZmHHxDJOcyDhqowPjG7xl6jWW8i7jv2yO1An8TmOlqV0lLanA5i4+/FZzPAUaM1a0bwPqLp/8GH4+S0bn0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713385576; c=relaxed/simple;
-	bh=8Cc4z3nyEAStyBVsJVh9BDniExrpifQgwiFqNlE4rCM=;
+	s=arc-20240116; t=1713387915; c=relaxed/simple;
+	bh=82igX7CjX2fiTg6ADs8ycL0ytLwSw28jJvMOvvaI9Jg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=O8nM4zGnq87sKdQgtPIyVtQVCHAIhexBqaqxZHqowgE2m3mkgtMoK6qKGWwSoWF3HDAAnDAdh6/oyOlXK4Zkqx0Y+ZdPxJgB5qIVvouzCAKmD74+txS47A8VsAgMrUN9Q9baRjlnEBaKsTr8r/tUAjyNc8O6loQA/tgFHV8f8Ds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=at.encryp.ch; spf=pass smtp.mailfrom=at.encryp.ch; dkim=pass (1024-bit key) header.d=at.encryp.ch header.i=@at.encryp.ch header.b=a2EEjAdw; arc=none smtp.client-ip=65.21.140.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=at.encryp.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=at.encryp.ch
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=at.encryp.ch header.i=@at.encryp.ch header.b="a2EEjAdw"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=at.encryp.ch;
-	s=flopster; t=1713385572; h=from:from:reply-to:subject:subject:date:date:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=r7TlIMF9GZGnwxz2xG9f1f3Vj8cYn5x6e1h0filPevM=;
-	b=a2EEjAdwWQgKyXYdDiMF1jvzQ9yR6hsf7UAJRILGV6hX78b7FRX0Ht5FZYbSw48aLquLC6
-	dY/dBAeVWjVCGEa7QKNzUikkGe5KQmSJP4k6BI8LHOunfmkFIBTe7F8rF88II/sGkdgMyQ
-	sh41Es8E5zHWPrtM0vxHRl8HjjBNRZU=
-Message-ID: <7370616d-fa0a35c7-09c3-4db9-9b8c-03b944b73124-at.encryp.ch-74726170@at.encryp.ch>
-Date: Wed, 17 Apr 2024 20:25:51 +0000
+	 In-Reply-To:Content-Type; b=GD6Mef6ZV60xmA7yqQh4we/dwLo/Wj9AgLazuIMuAAIJ+9s4EeKlpsUp2awrzv66Lo5HzhmwzTgaZyXk4p7GlcnE8CqPqJGm7fN4NVn3A9eLu7yUDwME78uTeU/xK/vkIPuYAEVQeCrkKAF0QGXEPh4WAoPnLT7WGqOtlB0qDw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thelounge.net; spf=pass smtp.mailfrom=thelounge.net; arc=none smtp.client-ip=91.118.73.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thelounge.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=thelounge.net
+Received: from [10.10.10.2] (rh.vpn.thelounge.net [10.10.10.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: h.reindl@thelounge.net)
+	by mail.thelounge.net (THELOUNGE MTA) with ESMTPSA id 4VKXzT6KrjzXZJ
+	for <netfilter@vger.kernel.org>; Wed, 17 Apr 2024 22:47:44 +0200 (CEST)
+Message-ID: <b437910b-b962-4d5c-bd1a-1a6d35ef2bcc@thelounge.net>
+Date: Wed, 17 Apr 2024 22:47:44 +0200
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
 Subject: Re: DoS/DDoS protection for end nodes
+Content-Language: en-US
 To: netfilter@vger.kernel.org
 References: <20240417194340.20430839@localhost>
-From: Serg <lists@at.encryp.ch>
+From: Reindl Harald <h.reindl@thelounge.net>
+Autocrypt: addr=h.reindl@thelounge.net; keydata=
+ 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
+ K4rYsjPimkSIVdrNM//wVKdCTbO+
+Organization: the lounge interactive design
 In-Reply-To: <20240417194340.20430839@localhost>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Your question is too broad, but in case of protecting from DDoS over WAN, nftables is not suitable simply because attacker can easily overwhelm your uplink. However, for high-performance scenarios, XDP is a better alternative to nftables.
 
-For LAN, I suppose rate-limit using nftables is sufficient to handle DoS (if you have untrusted devices in your network). I can't imagine of any DDoS scenario in LAN though.
 
-On 4/17/24 19:43, William N. wrote:
-> Hi,
-> 
+Am 17.04.24 um 21:43 schrieb William N.:
 > I have been searching and reading, and reading... I understand this is
 > a huge and complex subject, especially for a non-expert. I read earlier
 > discussions on this ML - some answers seem to say it is futile (i.e.
@@ -65,4 +94,7 @@ On 4/17/24 19:43, William N. wrote:
 > nodes (Linux based)?
 > 
 > 2. What is the right approach (using nftables)?
-> 
+
+you can rate-limit requests but for a real DDOS you have *nothing* on 
+your side - your upstream connection is overloaded and dropping packets 
+will gain you nothing
