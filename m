@@ -1,110 +1,69 @@
-Received: from fout7-smtp.messagingengine.com (fout7-smtp.messagingengine.com [103.168.172.150])
+Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60250136E32
-	for <netfilter@vger.kernel.org>; Wed, 17 Apr 2024 09:50:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25A9B13D290
+	for <netfilter@vger.kernel.org>; Wed, 17 Apr 2024 14:12:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713347432; cv=none; b=eQswg3/Gh8C4cPNjzDlU6BYhbJSYfyAsnZP/QsCWLT7pYzyiKyuHDlh8L7TifStnirsSuKtSU9f0R9yTbjk2h8ZuT6VHQxZGsogBmiJghaEplxJ2fv9oNTyyMuhj2A1kwvEaMBlQLTLzZvqnNNxOkOXoPgcPBuMWEsL7S45Wm/M=
+	t=1713363171; cv=none; b=jH6tcvBbigrWgZpqM62CUWzXF8NwyEeNc7xWLbLorkV2TfDB8x0WNNkekB0TXhfzm/zQulNo513ISKphaalSBTzk24SFhU2AGxh3ww8gZllj+HHaNCoJLPNv3Y3xKnerx1Fc/G29+/lb8MU0bqCdX21JCw9IYeuyvCLWgUV8tcg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713347432; c=relaxed/simple;
-	bh=VzKh51zt8+H+Nxshd9IhpKv7hfOd7urqrmGDNVb+eNg=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:
-	 Subject:Content-Type; b=GiMo8pX3T7vpydDitwvauPmz6bMjIHZzk0Hx13ltPN1xz0viiiyKbaW95K4LWEnyzJiIyLglASks9sIIk/GR4hdcbbLBoI6jYnyIC3lhPrneeKRuOgZ8PmojLfc/RS+KMSeQQvTzL88tVBKNoz4gBMbPqxVihXFx6eY/jZg3wLk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=XgP16D74; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=bsD1LX3j; arc=none smtp.client-ip=103.168.172.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
+	s=arc-20240116; t=1713363171; c=relaxed/simple;
+	bh=pTLMcH4oDDv4Qv+ZWwDlxfuINR6BLh99ytjQsiKSUaI=;
+	h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=hzd8JlZF0mTmb5Im9WeQCUfnGY6oY651q6BURTHorMDqspH9G7GZ2HmuSSWhUC9IexFjPYbQI1HLRuU/cr7XdEZ62uX755Nov4fPYNXVsUWzytEDemO7rxHS4PO6A2r5ZQWS98dq2PVkiBBnhFcTBu7+t8HGTCdeWYj/9n4DibI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=H3nOLgVl; arc=none smtp.client-ip=198.252.153.129
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="XgP16D74";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="bsD1LX3j"
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailfout.nyi.internal (Postfix) with ESMTP id 722C51380250;
-	Wed, 17 Apr 2024 05:50:29 -0400 (EDT)
-Received: from imap50 ([10.202.2.100])
-  by compute4.internal (MEProxy); Wed, 17 Apr 2024 05:50:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-	 h=cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1713347429;
-	 x=1713433829; bh=VEPdJqBlIBMw0sRuBhlsQp7bz1ZmJ0f9wRnta5PV2zs=; b=
-	XgP16D74uLkSDZihDb4HK30a2QI1Ji8Hemq/TxGwhi+vz/ofMwQIAdauh8Zbw9Ak
-	KkF1bZgewR1aT6ohfDTHUBJw3PbGFb4JnRe9fZVCpU6W9Xcbi8NB10lDTqpEABtd
-	Cph9xQK8ASUUFJxWRwZGjNV/qf556n8E1jHq8r8t8Qx606YVV6annQyElBqdYSxi
-	pkP7N40RujOXmnqzVpjHEgnApx6EAXtDO5JiPaJjAaXmY8FfQvmL94k9nsupfqzA
-	BJJ5p7/LKtr27EKiMZ+Sb+dCfZ1j9JEYVoZPF2h5m1g425NpV0l70TScMEh1EnY9
-	ltA9zosSYrmiriqZq4ld+Q==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1713347429; x=
-	1713433829; bh=VEPdJqBlIBMw0sRuBhlsQp7bz1ZmJ0f9wRnta5PV2zs=; b=b
-	sD1LX3jQ+lTa2HpaZ6NlKZgTwU4BnbtrViD4WiC/M1XNcAw68rJRmFxTzyrCPUD6
-	C9R6AVaT0boEoT7RYC6V81+hhWA671wCUxY6EXi62s0W8c4wJ3EuBll0OCHbSG/0
-	ZC520E+H4ACcNOtlDmr+cCeNbbEXn9DvV8JHRTJuoCTy8VOMgo1FQNHViEsNyZ4B
-	fFeIyrUj3+FsuCDDdXlM4tt6VVv3H7W2l8xymElZpjiqTSB3bf1p9suBrYtIHAZO
-	tzM+QrxjeqNbI3kcDa/vQZiNnbN2QhlrxC1YJEEZuDbxA4OwxOR4WuMwG942DnGQ
-	VcVr9+amjCGtkTVzCizDQ==
-X-ME-Sender: <xms:ZZsfZhNuIjYxMC2KAeZRmR90SMA4gKWiMfdYpQ1S3xKXlxqOubSsQQ>
-    <xme:ZZsfZj8MCDdhnZLPvRxWW0NfzDOjtRxrZY7A7Ke5JH3-QVwd3exdWfybk6gXZEu6v
-    1ED9Fld0K3GMsQS>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejkedgvdduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpefofgggkfgjfhffhffvufgtgfesth
-    hqredtreerjeenucfhrhhomhepfdfmvghrihhnucfoihhllhgrrhdfuceokhhfmhesphhl
-    uhhshhhkrghvrgdrnhgvtheqnecuggftrfgrthhtvghrnhepuedvudevjeehjedtffejve
-    fgheeuvedtffehjedvgffghffggfetvdevtdfgheeknecuffhomhgrihhnpeguvggsihgr
-    nhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhroh
-    hmpehkfhhmsehplhhushhhkhgrvhgrrdhnvght
-X-ME-Proxy: <xmx:ZZsfZgQp4ow63rqgM5ZGOP4vaQVPpFipbMEn38gpt_D82Aq7FdOHmQ>
-    <xmx:ZZsfZtt6uLm4MhCkWSJNMB1zxZ1rFLLRQSAoVRY5Llol7304ecQ9_g>
-    <xmx:ZZsfZpfVFDplUxdCHpTS2-8xlQtjkYlCQ9EgFvWdG_7dysDckTVHgw>
-    <xmx:ZZsfZp0338xTB_Q3revk5GIIX1Zo4ncNsjseR42Zy6EuU6ez5H_Cdg>
-    <xmx:ZZsfZpHmE2chiln7F9tTU23Ljc88cs2gV5dEuOPQ_lzruxZpIi-v1Bq2>
-Feedback-ID: i2431475f:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 124601700093; Wed, 17 Apr 2024 05:50:29 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-379-gabd37849b7-fm-20240408.001-gabd37849
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="H3nOLgVl"
+Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx1.riseup.net (Postfix) with ESMTPS id 4VKNCj44B3zDqjV
+	for <netfilter@vger.kernel.org>; Wed, 17 Apr 2024 14:12:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1713363169; bh=pTLMcH4oDDv4Qv+ZWwDlxfuINR6BLh99ytjQsiKSUaI=;
+	h=Date:From:To:Subject:In-Reply-To:References:Reply-To:From;
+	b=H3nOLgVlrfDfD2KNVryvx+dmkdyICAScvk/FGc5DWWsk0Pkq5UuungXxHZ266DUmO
+	 sDm6lNDei7ofxo/6ImaB+jNf4yNwrcMoP1onKMFibhw/0dUwrGJakB4t2RzR9MbJYT
+	 gvkPEOPWi07ubJ7m7IFSSUAj8VBwkgha6F/b87ZQ=
+X-Riseup-User-ID: 25B3EF4DB40A5AB1BED680AFAF87ADC8D06510138A02DF540320B9C5A774A54A
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4VKNCh1zklzFsZl
+	for <netfilter@vger.kernel.org>; Wed, 17 Apr 2024 14:12:47 +0000 (UTC)
+Date: Wed, 17 Apr 2024 14:12:30 -0000
+From: "William N." <netfilter@riseup.net>
+To: netfilter@vger.kernel.org
+Subject: Re: Combining/compacting 2 rules into 1
+Message-ID: <20240417141230.0bc7b1bf@localhost>
+In-Reply-To: <2e3ee5dc-0628-47c0-937b-21daac1c76c0@app.fastmail.com>
+References: <20240416174748.5612bd27@localhost>
+	<20240416195445.41b40f624e2dbec1c593c789@plushkava.net>
+	<20240416191250.04884e9b@localhost>
+	<20240416210851.a9f14dc3c046ce42af06d87a@plushkava.net>
+	<20240417082917.5cbb38ae@localhost>
+	<890e6c2d-ed3a-4a0d-84ae-5cd1a2425316@slavino.sk>
+	<d7419059-cfb1-40df-9280-c673775cb04a@app.fastmail.com>
+	<fb8c2fee-c2fa-49ec-87f9-c563d04f3343@slavino.sk>
+	<2e3ee5dc-0628-47c0-937b-21daac1c76c0@app.fastmail.com>
+Reply-To: netfilter@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <2e3ee5dc-0628-47c0-937b-21daac1c76c0@app.fastmail.com>
-In-Reply-To: <fb8c2fee-c2fa-49ec-87f9-c563d04f3343@slavino.sk>
-References: <20240416174748.5612bd27@localhost>
- <20240416195445.41b40f624e2dbec1c593c789@plushkava.net>
- <20240416191250.04884e9b@localhost>
- <20240416210851.a9f14dc3c046ce42af06d87a@plushkava.net>
- <20240417082917.5cbb38ae@localhost>
- <890e6c2d-ed3a-4a0d-84ae-5cd1a2425316@slavino.sk>
- <d7419059-cfb1-40df-9280-c673775cb04a@app.fastmail.com>
- <fb8c2fee-c2fa-49ec-87f9-c563d04f3343@slavino.sk>
-Date: Wed, 17 Apr 2024 10:50:08 +0100
-From: "Kerin Millar" <kfm@plushkava.net>
-To: Slavko <linux@slavino.sk>, netfilter@vger.kernel.org
-Subject: Re: Combining/compacting 2 rules into 1
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, 17 Apr 2024, at 10:23 AM, Slavko wrote:
-> D=C5=88a 17. 4. o 11:16 Kerin Millar nap=C3=ADsal(a):
->
->>> try hping3
->>=20
->> It doesn't seem to have any way to directly control the value of the =
-options field.
->
-> while i never tried it, is not --tcp-mss option for that?
->
->       hping3 -S --tcp-mss <host>
+Just tested on Debian 12:
 
-Apparently, it requires an additional patch.
+# hping3 <host> -c 1 --syn --tcp-mss 100
 
-https://sources.debian.org/patches/hping3/3.a2.ds2-10/160_tcp_mss.diff/
+This triggers the discussed rule (output from 'nft monitor trace'):
 
---=20
-Kerin Millar
+...
+trace id 98d76ca4 netdev filter ingress rule meta protocol . tcp option maxseg size { ip . 0-535, ip6 . 0-1219 } tcp flags syn log prefix "TCP MSS: " counter packets 0 bytes 0 drop (verdict drop)
+
+hping3 also doesn't work with IPv6 though.
