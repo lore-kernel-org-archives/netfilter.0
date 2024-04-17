@@ -1,76 +1,67 @@
-Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0.riseup.net (mx0.riseup.net [198.252.153.6])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13246146D4B
-	for <netfilter@vger.kernel.org>; Wed, 17 Apr 2024 15:30:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B56A22338
+	for <netfilter@vger.kernel.org>; Wed, 17 Apr 2024 19:43:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713367851; cv=none; b=En4U/+MctEiyYCzNvoCh0fWnlp9pbTN4TfOFspA5NyJdjT1AJlwR6AdX85vE38AytLQtzClPPJk8yQJsr784zW/I5gz/kT/MYqrlkNa7GGVxniZBlx/JK0UaSPqdYi/KO8WHWmCR+EZecQs3apYAbdkkTw2NIb/CI77mysvi7Dg=
+	t=1713383041; cv=none; b=dLLNIibj/gZtHZhRDeOfWg5xak3aJNFNx6cjVEyQBfN9UDmUf8ORGScG4hQoS0FEOErbGj7ji7vmeyuyFf4vD8+YOAn0I36mlGHlALa8V5wOlVHlMwDwU2gNrqK6SPCDsR6Zfl1reI/kZbPRhWWUr8DIUALrw5HNmqSS6uwIRGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713367851; c=relaxed/simple;
-	bh=fNabOlSD7bSM3QZNBXRGXcIXx1M9xgAFjwHVxG1OLEs=;
-	h=Date:From:To:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=AUztysxUahLHsJtk2l4y4aW8OPZSlXxkawIgZjscIlm9bPSErtNNWjDeXK9amNUtE+eKQqBq9Y2OyOTNCc+xfaZEivXi3WR0xY9PFBfFRfFDCCNeuCoTWs0zZM2cfuzZFOLmfhplZg2L92bJ8Kc2cLVRWOrH7if2Onqbhu+eJ/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=JIuYmovA; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=dgRriEyf; arc=none smtp.client-ip=185.25.250.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
+	s=arc-20240116; t=1713383041; c=relaxed/simple;
+	bh=Ms9hLW9pSXE9BP4BjUMRimqxxpqUGW7K1W8bj8220rU=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=JEJOO2w+vJBY9pub5Tvp+w+jOEluxKWtdZNFRzz49RIcWuYl7V8c2K2zEywPSL/Y4DEU/JCP/uR3gxsX4CtNcfEc0Cv8spBYsz2MFYUrSpTXUrQHW9xiGkhSuz5rk+wgUi0GiEj2llmUy8zUmSbwrJQ3Sgal6ISJWsguBUpKd7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=bkhX1HVz; arc=none smtp.client-ip=198.252.153.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="JIuYmovA";
-	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="dgRriEyf"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
-	s=r2023; h=Content-Type:MIME-Version:Message-ID:References:In-Reply-To:
-	Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:
-	Message-Id:Content-Type:In-Reply-To:References;
-	bh=fNabOlSD7bSM3QZNBXRGXcIXx1M9xgAFjwHVxG1OLEs=; t=1713367847; x=1714577447; 
-	b=JIuYmovAcbi+kjqe7gIeU9x1CshIdn7G5L0IUwT7+Aq/eS6tQEiJqyJrZh6mHVwkJF8cj1DXyyr
-	W/EifcP16wxRdI1qgR2HBFCjm4dMJ9dQsnQPV6dyee+NXMjc7epVRKVsWMRk8T4UE2J3aB6/JC+LS
-	fgb90tKvOZiqj8sMlDw=;
-DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=slavino.sk; s=e2023; h=Content-Type:MIME-Version:Message-ID:References:
-	In-Reply-To:Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:
-	MIME-Version:Message-Id:Content-Type:In-Reply-To:References;
-	bh=fNabOlSD7bSM3QZNBXRGXcIXx1M9xgAFjwHVxG1OLEs=; t=1713367847; x=1714577447; 
-	b=dgRriEyfIXHcbyehBu9pjoBMUf9Wiv1+g4yujLgI7rhH8juGXR9joYuVRC7mYXVLRzIwoLqK2WP
-	jZjQ8mzKqDg==;
-Received: from dovex.skk ([192.168.10.12])
-	by primex.slavino.sk with esmtpsa  (TLS1.3)(Exim 4.96)
-	(envelope-from <linux@slavino.sk>)
-	id 1rx7FC-000NCR-0i
-	for netfilter@vger.kernel.org;
-	Wed, 17 Apr 2024 17:30:43 +0200
-Date: Wed, 17 Apr 2024 15:30:40 +0000
-From: Slavko <linux@slavino.sk>
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="bkhX1HVz"
+Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx0.riseup.net (Postfix) with ESMTPS id 4VKWYh74Hpz9wN6
+	for <netfilter@vger.kernel.org>; Wed, 17 Apr 2024 19:43:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1713383033; bh=Ms9hLW9pSXE9BP4BjUMRimqxxpqUGW7K1W8bj8220rU=;
+	h=Date:From:To:Subject:Reply-To:From;
+	b=bkhX1HVzxdhi9hptWvCgzmVQSOZhBXlskdvalMkhPEN1avRld+ue9d6eDg37z2n7P
+	 s29Vs5bipPqlbSwB3vfwwOv+7ko83uqKpdBqGKGCsW6DYP5SO56kO+NKo8ScHhGjAd
+	 VwOSy9a7SoGQB+yZewHSeL3B7JoDqBrWpo5xN32A=
+X-Riseup-User-ID: 1CCB198484843179A168A1404B05DA35CB6858647C750BBBD37F0218F12B9394
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4VKWYd3P8bzFtXs
+	for <netfilter@vger.kernel.org>; Wed, 17 Apr 2024 19:43:49 +0000 (UTC)
+Date: Wed, 17 Apr 2024 19:43:40 -0000
+From: "William N." <netfilter@riseup.net>
 To: netfilter@vger.kernel.org
-Subject: Re: Combining/compacting 2 rules into 1
-In-Reply-To: <20240417141230.0bc7b1bf@localhost>
-References: <20240416174748.5612bd27@localhost> <20240416195445.41b40f624e2dbec1c593c789@plushkava.net> <20240416191250.04884e9b@localhost> <20240416210851.a9f14dc3c046ce42af06d87a@plushkava.net> <20240417082917.5cbb38ae@localhost> <890e6c2d-ed3a-4a0d-84ae-5cd1a2425316@slavino.sk> <d7419059-cfb1-40df-9280-c673775cb04a@app.fastmail.com> <fb8c2fee-c2fa-49ec-87f9-c563d04f3343@slavino.sk> <2e3ee5dc-0628-47c0-937b-21daac1c76c0@app.fastmail.com> <20240417141230.0bc7b1bf@localhost>
-Message-ID: <D78A1AF0-4E66-4B71-A1C9-C9DFBD8C1C63@slavino.sk>
+Subject: DoS/DDoS protection for end nodes
+Message-ID: <20240417194340.20430839@localhost>
+Reply-To: netfilter@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-D=C5=88a 17=2E apr=C3=ADla 2024 14:12:30 UTC pou=C5=BE=C3=ADvate=C4=BE "Wil=
-liam N=2E" <netfilter@riseup=2Enet> nap=C3=ADsal:
+Hi,
 
->hping3 also doesn't work with IPv6 though=2E
+I have been searching and reading, and reading... I understand this is
+a huge and complex subject, especially for a non-expert. I read earlier
+discussions on this ML - some answers seem to say it is futile (i.e.
+something that should be done by the ISPs, not by the end clients),
+others suggest there is benefit in doing at least what is possible. So,
+I hope to have some things clarified by the experts here.
 
-That is sad, i don't use hping3 often the bad boys run it
-for me :-D But i consider it as great tool for both, testing
-& learning, as good that i didn't realize missing IPv6, i am
-sorry for confusing you=2E
+XY: I am trying to do what is right for the network security of a SOHO
+LAN. The nodes are distrusted, i.e. there is no assumption that they
+are/will always be "clean" just because they are on the LAN.
 
-But i see that in many open sourde tools=2E A lot of them are
-very good, but old and lacks modern features=2E=2E=2E
+My questions:
 
-regards
+1. Is there a point to attempt DoS/DDoS protection directly on the LAN
+nodes (Linux based)?
 
-
---=20
-Slavko
-https://www=2Eslavino=2Esk/
+2. What is the right approach (using nftables)?
