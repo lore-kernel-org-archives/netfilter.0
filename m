@@ -1,100 +1,103 @@
-Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh3-smtp.messagingengine.com (fhigh3-smtp.messagingengine.com [103.168.172.154])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D85B12AAF7
-	for <netfilter@vger.kernel.org>; Wed, 17 Apr 2024 08:54:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79843524D4
+	for <netfilter@vger.kernel.org>; Wed, 17 Apr 2024 09:17:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.154
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713344103; cv=none; b=VvHzYcDjjkvAqLtNOsABtGFzBm1b62yteV4mBzpg07gcZ91IlOXh6buFCib6tzCNXxJrG5JyULrSduakiMNgDUwGTv/9ww/Ji7Qspq78moe3pvrW6JgHyWeSN59aCn6v9WA4OCcy7gw4Xi2P6ySNkeqMVV6zZW0c4PhHdVKEW8A=
+	t=1713345437; cv=none; b=UVB8DgNmzvngga1mMcXas1Mj7pfX48YovU/iSeKa3YOEWXFJCwvjPi77/H1Y2QSAX+OJdDGE44Qbu5TqOFn6gfTbtctrRNRvu5TG3reg4lTJUB/RpR48i1lTwd3YMdRdYd49PuuZbn1TDMV4PznKZ1EIfMyMrwgRZFxWD1dBm1I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713344103; c=relaxed/simple;
-	bh=a990/BSbX5/FGAjzWvbJRkh8MU3IGqnO2FDme/RmzrI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Vx+wKYrzbV6KixTUww3Izaqbdz80c5tOGNW291SJD4uBPRy4siQFlsO6WZoO1BRkZrJQKrYX7I3WnzB/EV3CsHZI4nj8d14bWlsfcgBz5PrLQJpSdv4tJLks40R88BeNcHx+3e9Tw1+pUMJ3S+Q3szLFKTh0toQVfidnJHm307Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=2VX03LL/; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=+cezju1r; arc=none smtp.client-ip=185.25.250.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
+	s=arc-20240116; t=1713345437; c=relaxed/simple;
+	bh=5w7J/o5PXWutdCfpk7rOZuH+j7RZieleWVBCW1bsGBY=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:
+	 Subject:Content-Type; b=EvoEtsvxLFplxGp4omq4irkLE8fU467vZRvq8iu8U9Iaip1WMwzKphv6FPEdohnU7GIL0jKSNOdTCPJfSkQTKqvPdJG/4kHKCYBXFGgAnlwFRuNeT1Pa6KrWCOZ/3nVN7YXStzm8RNKsdC6yckgDBclwGD16XW1XIApfIX9XZ+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=ZF7BbqwO; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=K0GzwKEO; arc=none smtp.client-ip=103.168.172.154
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="2VX03LL/";
-	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="+cezju1r"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
-	s=r2023; h=Content-Type:In-Reply-To:Autocrypt:From:References:To:Subject:
-	MIME-Version:Date:Message-ID:From:Reply-To:Sender:Subject:To:Cc:Date:
-	MIME-Version:Message-Id:Content-Type:In-Reply-To:References:Autocrypt;
-	bh=jCVbYs7vh3zVyirHO2ViYJGbat816fPeMZXEK61i7Ho=; t=1713344098; x=1714553698; 
-	b=2VX03LL/rAIKV/chHgYWX+yTL8OcwGtqxkirbLgaFUp44fZRrsllaQ8grDRLUcIlIM1LQ6/2qZ3
-	aXhQilV0oxZ7fLgikAnQKOaf7+GI7unC/2t7EZ3RAu2IRjex4DWB3Aw532P7UuT9bRmy1YDZQE6ag
-	922pWOKRxO0t9DrXRUg=;
-DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=slavino.sk; s=e2023; h=Content-Type:In-Reply-To:Autocrypt:From:References:
-	To:Subject:MIME-Version:Date:Message-ID:From:Reply-To:Sender:Subject:To:Cc:
-	Date:MIME-Version:Message-Id:Content-Type:In-Reply-To:References:Autocrypt;
-	bh=jCVbYs7vh3zVyirHO2ViYJGbat816fPeMZXEK61i7Ho=; t=1713344098; x=1714553698; 
-	b=+cezju1r2lhwbaXSTLCiUuefqdIpny4y2k0UY+CQqyTdstUZo0n0OlYeO/brmCWF7E/SnUVX/9d
-	Typ+OvooeDA==;
-Received: from dovex.skk ([192.168.10.12])
-	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96)
-	(envelope-from <linux@slavino.sk>)
-	id 1rx145-000LuY-2Y
-	for netfilter@vger.kernel.org;
-	Wed, 17 Apr 2024 10:54:49 +0200
-Message-ID: <890e6c2d-ed3a-4a0d-84ae-5cd1a2425316@slavino.sk>
-Date: Wed, 17 Apr 2024 10:54:47 +0200
+	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="ZF7BbqwO";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="K0GzwKEO"
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id 681A91140175;
+	Wed, 17 Apr 2024 05:17:14 -0400 (EDT)
+Received: from imap50 ([10.202.2.100])
+  by compute4.internal (MEProxy); Wed, 17 Apr 2024 05:17:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+	 h=cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1713345434;
+	 x=1713431834; bh=5w7J/o5PXWutdCfpk7rOZuH+j7RZieleWVBCW1bsGBY=; b=
+	ZF7BbqwO3DQTBwJ17yPrO0rsKVu/Fz5zdgiijAKrPllT9/k3fhRMyFDvkfG0aFPK
+	BW08zxgwMAlvb8XYbtjDSl/hJ1G8rc6Y3EV69f1UDn1PO5/xuy7BzIv/blgOl4AC
+	EklREMJHjpNxwYdBv0zGvNXdJFsTVOjzTgZnVRZkwCRDSoGND05QCD2ifzB3HVWj
+	Vb5DWdRsMMYl1t5lV8S9eHN3I1pGC1ulec3ixI8epZnv1xwEJ9Oaybt6L4bGTwcZ
+	lhx7RopHTGs7nQvOKWCR2ZTdvXWxPoSBwvSnL74jX9c0MPhMl0CJw60IDayjYr+f
+	OORhXW/FgCYgTAqCO5Wrfg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1713345434; x=
+	1713431834; bh=5w7J/o5PXWutdCfpk7rOZuH+j7RZieleWVBCW1bsGBY=; b=K
+	0GzwKEOyBngBDOPCg+dyWKyjUAhtZNwMCXHvPWqiqFq9c1eQUJetJb7PKV4cCTKQ
+	B0SA9A9S9Rbz9vLgFmJc7XSLCc1xkhHEHVNE7K0g7MxKMBO1kBrhOGQSRl+WsA5J
+	czGj+Zls/jjUWsl2OKvO3Ep+RX1O7vvMM1PdgySWkcifd44C8MVssTQS8NAuD7VH
+	uYYezVwQT+nkJf3LUppdfhtv6G66j4TdGkX3HTl1ZToAoqIWKn3lYs7hW+rgPLu7
+	jm+hraPodsedl0tgKT93K8UF+ZW9CsZ9yKjGz+Kpk8kau48cGxvVok+CgTILf/e7
+	8ofOlOz83HWenoe5utRyg==
+X-ME-Sender: <xms:mpMfZnIEgXC7xxphLNHMQii7GMzQrCY6oWmUDM-aciy9JENVyyBx6Q>
+    <xme:mpMfZrJs-w2JUsaJbsEpR3TfiMDNfI81_dhyIXkCoojkr4WDtqK7bHJOgIp1Sjmr1
+    DFSSyxU_kcCYE3c>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudejkedgudegucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefofgggkfgjfhffhffvufgtgfesth
+    hqredtreerjeenucfhrhhomhepfdfmvghrihhnucfoihhllhgrrhdfuceokhhfmhesphhl
+    uhhshhhkrghvrgdrnhgvtheqnecuggftrfgrthhtvghrnheptdfgudefhfffveevffefgf
+    duhfelvdetueethfekjeevleefieffudelleegteetnecuvehluhhsthgvrhfuihiivgep
+    tdenucfrrghrrghmpehmrghilhhfrhhomhepkhhfmhesphhluhhshhhkrghvrgdrnhgvth
+X-ME-Proxy: <xmx:mpMfZvuLLV89xzMfvNibRqzQyeYpcdE4Xfsi5KCahylm5tKChr9aQA>
+    <xmx:mpMfZgaIb2yo1-MJrlXjgm4tDcXb-Xr4duVhePTmxcQuWlmXAIVWSg>
+    <xmx:mpMfZuYSfjXqAEcIdG1CiqtGjGEX46vs63Hbmqp2GRY_Vx1_BG4MyQ>
+    <xmx:mpMfZkBMl2yyc3Mo1d1oBtRJh9nFyJhF8EYFRQPcAAB4lHuXCBBlEg>
+    <xmx:mpMfZhxOEb40S7TRaKd7BXIbiWe-AsFzw5sHOCn6IDwkuSqcbVHrztU2>
+Feedback-ID: i2431475f:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 1BA061700093; Wed, 17 Apr 2024 05:17:13 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-379-gabd37849b7-fm-20240408.001-gabd37849
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: Combining/compacting 2 rules into 1
-To: netfilter@vger.kernel.org
+Message-Id: <d7419059-cfb1-40df-9280-c673775cb04a@app.fastmail.com>
+In-Reply-To: <890e6c2d-ed3a-4a0d-84ae-5cd1a2425316@slavino.sk>
 References: <20240416174748.5612bd27@localhost>
  <20240416195445.41b40f624e2dbec1c593c789@plushkava.net>
  <20240416191250.04884e9b@localhost>
  <20240416210851.a9f14dc3c046ce42af06d87a@plushkava.net>
  <20240417082917.5cbb38ae@localhost>
-Content-Language: sk
-From: Slavko <linux@slavino.sk>
-Autocrypt: addr=linux@slavino.sk; keydata=
- xsBNBE2fIMwBCADjOr4MY1rKxZnb4hsEdYBDFIHhZO9U3iLN/rNWSFKh3LeERd3Bu5gMz7Hk
- kn0nsoV2ijRKTLlXE0yzUtoJL+8WdNdWONt//cYcl8Z9V80uGFWfL6h0XWlqlup4XLTPZYz9
- 7f/k1UsTltiIWd5hK6JU+PA6bFVO3ogq9Nx6ru6pNzQtx6D7D5ND9/4rN45MIYolEMMC2/1J
- bvM8PFdwB+QmJbj2fKb7jboKFS34VrUQ9xsVJske9/lC0MTWN1HT+dFiXvvue7TmwOgBAd/B
- 24eGPVtcA2D13IRqhItDTS1DtacnzY3Okx/OEMdUIhjqKCBUGHeP22SagvAaKi8UYBBrABEB
- AAHNIVNsYXZrbyAoTGludXgpIDxsaW51eEBzbGF2aW5vLnNrPsLAeAQTAQIAIgUCTZ8gzAIb
- AwYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQg/mquDkYjbYGXAf9FbEfo0wF7hfYgqll
- CfNSoCcGcj1WkqqXD0kkAY/5wIFTbOOtrGn7TijhuFu9aIzjd+K+3Q9tk4Tt6MSg9ibp25b2
- HLZPp8UiyPLeE0BAWFgAgtOrrIDg8VkvjfO2jSJjkHhHOWVP1xZYSlApNNhU1KUit7RE0ueV
- bWG45a8ONSp+eNCSHkgMC8VtoF3oMegi0rgFUXSdiEsZlrpXo0Q7HPFObg2ElTC9QgFr6Lmh
- uw6I+BvXE0arwa+4ndcesb5pV6TDONOrihgYvZIyZ6V4Bgnt9C6lvK1Y/e62W73YBAEIvQo7
- j90m0lrBEAMhUhj4aGooeJQ2b/aXkrBwc+9vos7ATQRNnyJKAQgAp8mP9O2fH0KnS1yJzAz+
- 7fAM8dxFJbagFkv5ljvQ/qkEYh4uI+hWjgV7ok9+9kuzFiHbv8nczhcMr/J0JX4kok/5B5B4
- QuBdCXAoeAiWaPB4V6peLXheJKsBbBP/wNAFthJitt4P5XXrZbL4hv4+5Vm/uYXXYdQczGYa
- 2UGMVZxYyH1wh3Ywfk2c4RvPfxfe7Q8pdvpK8U+mKKVDQ6kaTEJXB4EGkp80ncpEDmJEzqvj
- svKoHHruMUnuJdNkuKvE/knpiOw9jbifIkTQfLEJKgmJE6OpgQ5SEJpGBtCTEJr9Wo1l38ji
- 6ujrUZyjBerdcucsXOKXk3n8mJhy4pshfQARAQABwsB8BBgBCAAmAhsMFiEEz0au30POX8OO
- zaE5g/mquDkYjbYFAmACuOoFCRY5xCAACgkQg/mquDkYjbYddAf/SWvH2Z5J23ZNqxpdORYU
- jUyHISTo3WaO0k72VdIHJqCHR+XSerysTyuBO4mf8SYQ2VpkIVLbOfxLKoHNt7jeVa+bjVki
- OFCjRPFhn3K+CVPwK45gvDqaAzQI4FAf2zCtdD0Zt44rwkb2e7RP7kGcI5EirVpU14bDk71g
- lE2JSezwkRYU+4ZUrDo9tGcUzJYjwHMvLXR5+yRIV+gqea1nb6871CtKh1w00X2VUXjDBtXo
- xSAd+NoTI57gwlnQOavvaITo8eGAnpSx9qA2k25uSVH76dn8KpL6O3b9MWfGn4o2KbA+3Cpg
- taCpoGgpKB7I+cQ4VywRYFH9rEMRgmr9Kw==
-In-Reply-To: <20240417082917.5cbb38ae@localhost>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+ <890e6c2d-ed3a-4a0d-84ae-5cd1a2425316@slavino.sk>
+Date: Wed, 17 Apr 2024 10:16:53 +0100
+From: "Kerin Millar" <kfm@plushkava.net>
+To: Slavko <linux@slavino.sk>, netfilter@vger.kernel.org
+Subject: Re: Combining/compacting 2 rules into 1
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Dňa 17. 4. o 10:29 William N. napísal(a):
-> Thank you!
-> 
-> Your tool works great for IPv4. I couldn't get it to work with IPv6
-> addresses, as it says:
+On Wed, 17 Apr 2024, at 9:54 AM, Slavko wrote:
+> D=C5=88a 17. 4. o 10:29 William N. nap=C3=ADsal(a):
+>> Thank you!
+>>=20
+>> Your tool works great for IPv4. I couldn't get it to work with IPv6
+>> addresses, as it says:
+>
+> try hping3
 
-try hping3
+It doesn't seem to have any way to directly control the value of the opt=
+ions field.
 
-regards
-
--- 
-Slavko
-https://www.slavino.sk/
-
+--=20
+Kerin Millar
