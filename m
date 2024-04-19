@@ -1,49 +1,45 @@
-Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
+Received: from mx0.riseup.net (mx0.riseup.net [198.252.153.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC844168AE6
-	for <netfilter@vger.kernel.org>; Thu, 18 Apr 2024 16:32:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E856FAD51
+	for <netfilter@vger.kernel.org>; Fri, 19 Apr 2024 10:56:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713457927; cv=none; b=Qg/AFcJG5pTzHzazUVYarxz+xIRhKRpm8KbCnn4qJKJLP0FeFkX3/9HCzlD4K+ggW0aeBzL5i45G6WPTU2JJBXGWSAXNWmKv4vSrWrO9/sMDF5ZKVL4DmZfZV5Kt3sJ2gXJI07aILq6jvQaO9r1mTodpZj9Usjm8HFVkWwxG3kw=
+	t=1713524175; cv=none; b=Yx1iZ5IDvvc5+rhRB5i8XR+ANl1jByVlwpphhx10yAHkiOMuuMyyJ7EQfRRCcDAICPKky/Uz3eSnkDjCovIjSuzWE9zgbGlP70D+ZU09tAS8s6afi67rNmomtrb7lTlWOLWjSdH+Kx9RrC/ZsL/6R3JMFG0hpxZBo67umouCv9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713457927; c=relaxed/simple;
-	bh=xSKTeTI0yui6+NcmolKLPdAsrhFjIj8W0xcCpEQn+w8=;
+	s=arc-20240116; t=1713524175; c=relaxed/simple;
+	bh=xiWs0DVzbn5HVLQeo9YMacq416+vkdsnNc9BYSN2YYQ=;
 	h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=eENll4Dyqq5Uf6La0Sp9adzxe2tFkYlFJPHHQwHGE4hWhuXmMYHl9UXRKXjvzQ4k6K5EzGNX57fHBnZTcZT9oeUjfrZ/CTzDK0ObnvtmUCK8p9ra1j4CzpjiiICxl6Z1HlapgixCVrSxdJB8B/Ta6Cbky5yv84IjcbBisVRopys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=mIXwhvQE; arc=none smtp.client-ip=198.252.153.129
+	 MIME-Version:Content-Type; b=tttHPMfqrvjtMSEF41I3dlq9JC0ULvLIWj0TpknRL8vrk3KEHwQwHUG2g4zJ3Xyfid8X72WanFC9B9vIO/n1iongIXBCYS99Ej3zf5pH2xMSa7OigZ0984Q2fR5Ud5+xO1PUYX1GN6+um94k4Vvhok65o5Lq2LAMby3u1jnHgyk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=FVhnj54p; arc=none smtp.client-ip=198.252.153.6
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="mIXwhvQE"
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="FVhnj54p"
 Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx1.riseup.net (Postfix) with ESMTPS id 4VL3Fq1sfKzDqSm
-	for <netfilter@vger.kernel.org>; Thu, 18 Apr 2024 16:31:59 +0000 (UTC)
+	by mx0.riseup.net (Postfix) with ESMTPS id 4VLWlp69Ksz9vZt
+	for <netfilter@vger.kernel.org>; Fri, 19 Apr 2024 10:56:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1713457919; bh=xSKTeTI0yui6+NcmolKLPdAsrhFjIj8W0xcCpEQn+w8=;
+	t=1713524166; bh=xiWs0DVzbn5HVLQeo9YMacq416+vkdsnNc9BYSN2YYQ=;
 	h=Date:From:To:Subject:In-Reply-To:References:Reply-To:From;
-	b=mIXwhvQEkGBQKqnS9UMIVTFdImFOkFt2TcASA2dwxU41jPcZwfJIPeOFskDXPEWLx
-	 EDEPpGdXLyx/W32wao5SVMsVE37LLrxQ8vD4FiY8IRRqzzu0nTc+phzSvJKQz3EmTY
-	 lPeHpFkSchFlHz2FZDF2+lPcp8vf5XHiF/BUNWNI=
-X-Riseup-User-ID: 0B3AB8B59DCB19B502EC0CD5F7CEFD64962D604919DF4DCEE44DD80EE5D80C12
+	b=FVhnj54p35cxmc0M4u9hHgPFyZrX8KWP4qZ6HYLxymx/irAX/w/atQLgDU8Co6XQO
+	 +HvQW1nUGixklVy96rdt8qOLQNnW1WYzsK+aDI/1TjKIi+VijTIn0OCA7/9ScMsxdY
+	 abQTtfGeVJUpqXkU4YfLiRHmdOm1GKNgm1ZC10zQ=
+X-Riseup-User-ID: E6F10AA6DBF0290E9764C3B52005BDF7E5F063E35DA1244AB04A3F32C3A69A36
 Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4VL3Fp3jLNzFtNy
-	for <netfilter@vger.kernel.org>; Thu, 18 Apr 2024 16:31:58 +0000 (UTC)
-Date: Thu, 18 Apr 2024 16:31:44 -0000
+	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4VLWlZ4NPDzFrx3
+	for <netfilter@vger.kernel.org>; Fri, 19 Apr 2024 10:55:53 +0000 (UTC)
+Date: Fri, 19 Apr 2024 10:55:42 -0000
 From: "William N." <netfilter@riseup.net>
 To: netfilter@vger.kernel.org
-Subject: Re: DoS/DDoS protection for end nodes
-Message-ID: <20240418163144.10b6342e@localhost>
-In-Reply-To: <7370616d-29a7cdb4-057f-4e56-a950-010bdd25c347-at.encryp.ch-74726170@at.encryp.ch>
-References: <20240417194340.20430839@localhost>
-	<7370616d-fa0a35c7-09c3-4db9-9b8c-03b944b73124-at.encryp.ch-74726170@at.encryp.ch>
-	<20240418121340.58c1fa6e@localhost>
-	<07f45d43-0ab0-42bf-87e2-9c8ce00bcdb6@linutronix.de>
-	<20240418153254.65058b50@localhost>
-	<7370616d-29a7cdb4-057f-4e56-a950-010bdd25c347-at.encryp.ch-74726170@at.encryp.ch>
+Subject: Re: Combining/compacting 2 rules into 1
+Message-ID: <20240419105542.74aaac89@localhost>
+In-Reply-To: <20240416195445.41b40f624e2dbec1c593c789@plushkava.net>
+References: <20240416174748.5612bd27@localhost>
+	<20240416195445.41b40f624e2dbec1c593c789@plushkava.net>
 Reply-To: netfilter@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
@@ -54,9 +50,20 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu, 18 Apr 2024 16:16:20 +0000 (UTC) Serhii wrote:
+Is it possible to combine, e.g.:
 
-> No, nftables hooks are running too late to have similar performance
-> as XDP/eBPF offers.
+tcp flags fin,syn / fin,syn drop
+tcp flags syn,rst / syn,rst drop
+tcp flags fin,rst / fin,rst drop
+tcp flags fin / fin,ack drop
 
-In that case, XDP (and hence C coding) is still necessary, right?
+into something like:
+
+tcp flags {
+	fin,syn / fin,syn,
+	syn,rst / syn,rst,
+	fin,rst / fin,rst,
+	fin / fin,ack
+	} drop
+
+just using some correct syntax?
