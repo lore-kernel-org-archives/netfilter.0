@@ -1,59 +1,59 @@
-Received: from mx0.riseup.net (mx0.riseup.net [198.252.153.6])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from flopster.at.encryp.ch (flopster.at.encryp.ch [65.21.140.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C79A2131BB2
-	for <netfilter@vger.kernel.org>; Fri, 19 Apr 2024 16:28:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7F4319F
+	for <netfilter@vger.kernel.org>; Fri, 19 Apr 2024 16:30:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.21.140.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713544113; cv=none; b=V0oI+6UZKI6PzqQT04I7FG+xnoaa99gTNivMXdo+4h3yvpPBZ4MZxegaSj0hJ16i3vXN7x2ddWRohjYDj0qkXrsecAYt/MXKXc9couxySIFZzAM35L10bD9+BuXOe/uh63zIaVBAnZ/CrPmza8NdJN0n/JDO5CEWBFjqBF/qYuY=
+	t=1713544253; cv=none; b=lfPVqLDwOXgu5zcvdV+jcDE96Db4MxKvywAeKyWU3hIpkBzpXvJCQtQmvg5pQ3vpv4jbt6V2X85BRtmsvbUvuNC1uWDz06flZZCqvEvYCoGjZr39UhukgTabTq9JAWvMZa4Sld73EYL7n66LjMKT1Vw0eKJrTqv4HL1H9JZLPcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713544113; c=relaxed/simple;
-	bh=S/XqtZqMjCGaMg8PkXlouw05tUA40aUM+3VEPjqM6Pg=;
-	h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=a8W+VA1UOQbzZE08CBxBdY97Ci8osTpAWUu8rAQXiH27Owh68tNP2kh8icV8f+8/t5lRQ4sHzUQh56cyz+P7JEintx+J5E5VfMOw6zXZw1rgIz5H3L0iE3TJF4VCPYTaX5rp5g5HRJM8yRlcsAEEkS41W/aALJ31Epl9T/ylRCY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=D1AbG5mu; arc=none smtp.client-ip=198.252.153.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
+	s=arc-20240116; t=1713544253; c=relaxed/simple;
+	bh=/4jW5wTW+GoXY6gq/w7kZ/2YKR1VB3lzhj6N+DVfdB0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=KK7RJbJ8x50ObQtYGiQO1H2YosD5MqPooNRCZIihlrssUsaxCM1GOtS+T4taJ1wPAqyqyi1ODCub4ZfHaf0U4QxtxOTkZngW6wU6nz+o6SlNfxjAqJ+w55gPH5eIRXypioDxY3KuD0LfgQv60GuxgWTBvXuxeO00BLIqYiHVoAY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=at.encryp.ch; spf=pass smtp.mailfrom=at.encryp.ch; dkim=pass (1024-bit key) header.d=at.encryp.ch header.i=@at.encryp.ch header.b=Qxrq+cLs; arc=none smtp.client-ip=65.21.140.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=at.encryp.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=at.encryp.ch
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="D1AbG5mu"
-Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx0.riseup.net (Postfix) with ESMTPS id 4VLg7M1Ybjz9vNf
-	for <netfilter@vger.kernel.org>; Fri, 19 Apr 2024 16:28:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1713544111; bh=S/XqtZqMjCGaMg8PkXlouw05tUA40aUM+3VEPjqM6Pg=;
-	h=Date:From:To:Subject:In-Reply-To:References:Reply-To:From;
-	b=D1AbG5muRx5lFFTTB4zTCLmLJz0HdI/9Hfznav+qcut2cP5Jda8jpXUTGsy51Yd45
-	 GjiNGxPz321H3DRD754OhL9apNQR8hvXT5LtLV8PDJ5pCQnSrLjbd8uzife6ilw2Vr
-	 wqcwJB/UaJtA15IMPtFObqQZXIPF/g1tQ/zAHoI4=
-X-Riseup-User-ID: 3FD7E96146B4C2493D13301DC09097257070D0D4309437ED5C1FEDFAB82B6037
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4VLg7K2DBhzFrsM
-	for <netfilter@vger.kernel.org>; Fri, 19 Apr 2024 16:28:28 +0000 (UTC)
-Date: Fri, 19 Apr 2024 16:28:11 -0000
-From: "William N." <netfilter@riseup.net>
-To: netfilter@vger.kernel.org
-Subject: Re: How to measure/profile ruleset performance?
-Message-ID: <20240419162811.43288975@localhost>
-In-Reply-To: <7370616d-997afb3d-332c-4a26-afe9-e2a7c4e80c19-at.encryp.ch-74726170@at.encryp.ch>
-References: <20240419160232.4caca594@localhost>
-	<7370616d-997afb3d-332c-4a26-afe9-e2a7c4e80c19-at.encryp.ch-74726170@at.encryp.ch>
-Reply-To: netfilter@vger.kernel.org
+	dkim=pass (1024-bit key) header.d=at.encryp.ch header.i=@at.encryp.ch header.b="Qxrq+cLs"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=at.encryp.ch;
+	s=flopster; t=1713544249; h=from:from:reply-to:subject:subject:date:date:to:to:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=YX8if9tka5CNOkAHVrKuxR/jsqvuQckKj15PInJVzzs=;
+	b=Qxrq+cLs3KNaij635BFBWn3WLtwbhTM9I3iuvts/c7UU5/zzEzVZ5WgTWcvsKNNMiSHWzQ
+	7LFLIRvpWhBvRN0DAUzh2dTaH6USFDsCoG8TD4MyFgHwdNwLlIhCASk9vJTBAjugTNdsPe
+	/y/rXmf1+3OE6XF+PlrSh1LfG4CDWoo=
+Message-ID: <7370616d-a6cbfe24-6b0a-4c74-8621-7fdc357facb2-at.encryp.ch-74726170@at.encryp.ch>
+Date: Fri, 19 Apr 2024 16:30:45 +0000
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Subject: Re: How to measure/profile ruleset performance?
+To: netfilter@vger.kernel.org
+References: <20240419160232.4caca594@localhost>
+ <7370616d-997afb3d-332c-4a26-afe9-e2a7c4e80c19-at.encryp.ch-74726170@at.encryp.ch>
+ <20240419162811.43288975@localhost>
+From: Serhii <lists@at.encryp.ch>
+In-Reply-To: <20240419162811.43288975@localhost>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On Fri, 19 Apr 2024 16:06:14 +0000 Serhii wrote:
+I am not aware of any software-appliances or solutions to perform per-rule firewall performance evaluation, however there are a few hardware traffic generators that are able to squeze packets on a line rate speed. As for software frameworks, you might be interested in DPDK.
 
-> To evaluate firewall performance you would need to generate high
-> packet rate.
+On 4/19/24 16:28, William N. wrote:
+> On Fri, 19 Apr 2024 16:06:14 +0000 Serhii wrote:
+> 
+>> To evaluate firewall performance you would need to generate high
+>> packet rate.
+> 
+> How to do that?
+> And how will I know how individual rules perform?
+> 
 
-How to do that?
-And how will I know how individual rules perform?
+-- 
+Send unsolicited bulk mail to carle34@at.encryp.ch
