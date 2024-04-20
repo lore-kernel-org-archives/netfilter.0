@@ -1,61 +1,81 @@
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from mx0.riseup.net (mx0.riseup.net [198.252.153.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B060326AC5
-	for <netfilter@vger.kernel.org>; Sat, 20 Apr 2024 17:31:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70EA3205E21
+	for <netfilter@vger.kernel.org>; Sat, 20 Apr 2024 18:38:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713634289; cv=none; b=TZ5zzZSPAZAIitDnaOfN5C+Ng1Ahd82dBObskazssTRxuIBeZzvfKSkBW+AtbT3ht8LMgovqvOcB5ybMv3MDdfl4D1vvcb9YgYsUmo1OvwOp+Xe0ZdB2xBl+2sJvp2FOMJwwZxmzcpp65txOSHikk1Y2uJjy5hU6va94yrFb3+Y=
+	t=1713638297; cv=none; b=m8umrq4MBphtnsrptdX95MCkpDqD22nb+o67fD+8PFhWMed9XmvcR40JTum018BozX3hxf+XdDr9ZCGNkMHhZK13kolpyGpxsPjm1Rn0NIgNHm4QEIcgcMiaNiWKwgEHScL5mhODT5DTuCFj3KvbocV6FHJMnCbNisWFjiVDsDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713634289; c=relaxed/simple;
-	bh=PGrW7KTSsEczwzfdOeY5OP8tHh9IgoIkwRWcfmDNjT0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D2kPq6G/HRMZneGdkdReG5ggVVuaE4jV0lKZq5GHAL8H/a+j7MKnM99u0xMnLCZpR8FrG6rP6kR5agS2ONoHXCSVb1rWXRGEi7Xgf8NPOSe1W0rmY0KnM0zjeFupAmUsppfU3MAZH77q/D7teD5E+KLdwPc+lG4humGQJbAybX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@strlen.de>)
-	id 1ryEYY-0005mK-LC; Sat, 20 Apr 2024 19:31:18 +0200
-Date: Sat, 20 Apr 2024 19:31:18 +0200
-From: Florian Westphal <fw@strlen.de>
-To: G H <uothrawn@yahoo.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Subject: Re: Rewrite arp response with nft
-Message-ID: <20240420173118.GA21662@breakpoint.cc>
-References: <48471547.724608.1713545266678.ref@mail.yahoo.com>
- <48471547.724608.1713545266678@mail.yahoo.com>
+	s=arc-20240116; t=1713638297; c=relaxed/simple;
+	bh=k4LPG86mkxjOS/qKm385tgW8XxEZc+Vha2kH6Txm4iM=;
+	h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=FWf7qvGgDa9mQvHXnW+sMNFA8QCTr79u0J4MFeu2JyZoCOyk1e0Ez+njHJTlRsDokAwhirAkURqz1FiWvLawfiVZvWD5FjZrnHFs7ExxhmfkVkKz88DeKpd989osA2GF9iFvlLaPKdfm7oz2zz/w9GPP7po8nJ3gLWMyGj+lL0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=ItTqxQ/D; arc=none smtp.client-ip=198.252.153.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="ItTqxQ/D"
+Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx0.riseup.net (Postfix) with ESMTPS id 4VMKyT4d90z9vqS
+	for <netfilter@vger.kernel.org>; Sat, 20 Apr 2024 18:38:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1713638289; bh=k4LPG86mkxjOS/qKm385tgW8XxEZc+Vha2kH6Txm4iM=;
+	h=Date:From:To:Subject:In-Reply-To:References:Reply-To:From;
+	b=ItTqxQ/D96yTwDxu48cJpdYNm+BLez3KuwzQUvjY5+Dz7VkluyLLCHQ29r7zb+fGd
+	 OvrHzObgX27R9sVk5eXWAw4a0CNtehm0c8klZS4tJf3wATNU/UBS6PerVF2mp9GRVz
+	 VttvpeHW8ceX6YILZM7GJUuL4r6mSP6t1dh4i7/s=
+X-Riseup-User-ID: 00D5BD79FF5EEC934D6B68BA7D180AB823F80E1CAF692CB52562F36487ED578A
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4VMKyR1yJvzFv6f
+	for <netfilter@vger.kernel.org>; Sat, 20 Apr 2024 18:38:06 +0000 (UTC)
+Date: Sat, 20 Apr 2024 18:37:50 -0000
+From: "William N." <netfilter@riseup.net>
+To: netfilter@vger.kernel.org
+Subject: Re: [Thread split] nftables rule optimization - dropping invalid in
+ ingress?
+Message-ID: <20240420183750.332ffbad@localhost>
+In-Reply-To: <20240420084802.6ff973cf@localhost>
+References: <20240420084802.6ff973cf@localhost>
+Reply-To: netfilter@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <48471547.724608.1713545266678@mail.yahoo.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-G H <uothrawn@yahoo.com> wrote:
->  On early versions of Linux, I could use ebtables to rewrite the ARP packet using the below command. This ensures that the switch would only see MAC address 00:50:56:96:12:5e, not aa:18:f0:55:79:1e.
-> 
-> ebtables -t nat -I POSTROUTING --logical-out br0 --src aa:18:f0:55:79:1e \
->       -j snat --to-src 00:50:56:96:12:5e --snat-arp --snat-target ACCEPT
->       
-> I can get close to recreating this with nftables, but it is missing the functionality provided by the --snat-arp argument.
-> 
-> table bridge filter {
->     chain POSTROUTING {
->         type filter hook postrouting priority 0; policy accept;
->         ether saddr aa:18:f0:55:79:1e ether saddr set 00:50:56:96:12:5e
->     }
-> }
-> 
-> My outgoing ARP packet has its source MAC address rewritten successfully, but the "is-at" still points to the original MAC address. How do I alter the outbound ARP response to set "is-at" to point to 00:50:56:96:12:5e?
+After spending some time looking for more info and based on this:
 
-No idea, but you might want to look at the "arp" payload expression.
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/net/netfilter/nf_conntrack_proto_tcp.c?h=v5.8#n700
 
-Maybe:
-arp operation reply arp daddr ether set ...
+I think I figured it out:
 
+tcp flags & (fin|syn|rst|ack|urg) != {
+		syn,
+		syn|urg,
+		syn|ack,
+		rst,
+		rst|ack,
+		fin|ack,
+		fin|ack|urg,
+		ack,
+		ack|urg
+	} drop comment "TCP invalid"
+
+This checks the listed values against the mask "fin|syn|rst|ack|urg".
+The same values and mask are used in the conntrack code, i.e. it drops
+invalid TCP packets.
+
+According to my own tests, this works in the ingress hook, i.e. early
+drop.
+
+The only question that remains is performance measurement and
+comparison, as mentioned.
+
+Please let me know what you think.
