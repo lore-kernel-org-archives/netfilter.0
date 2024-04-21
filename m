@@ -1,47 +1,47 @@
-Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
+Received: from mx0.riseup.net (mx0.riseup.net [198.252.153.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38BD6625
-	for <netfilter@vger.kernel.org>; Sun, 21 Apr 2024 17:47:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E8841CAA1
+	for <netfilter@vger.kernel.org>; Sun, 21 Apr 2024 17:50:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713721668; cv=none; b=sG9bmhmQCPsWD6SPBNBxf0ugA3yzUxMUSpncOYAS0//GsKSm16UelxunNYGqcbDB37oj/5LSjNaEs8beBZSZ0Arjri0/ROQGhwcIryl+ZrKlxG7mUlGziTwpWlxJ/E04zACHbmj2PgiehGwKD4uQQQ8dZvigPSgd3pNJpmFxCvs=
+	t=1713721814; cv=none; b=f5hrIT+KdpOsO/HHl8KWQzPN9Byv0hevGSt7KzSnchqNB7VVJBw/rvzmWkIFae9XNn47BH/m81EgxhbxyaO5ZFE/kf/XUQw4Va6fnxUWMxCVS9pLtegB8Drqq2V1PMVB2QYrrQ+9Rd8JcOiN+diYjDD7jOQ0A8VqBmYDQsd5RAA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713721668; c=relaxed/simple;
-	bh=UmFObwuHUia3aO/C/wXFN9/vaIIdhIiYidgL1qaxnT8=;
+	s=arc-20240116; t=1713721814; c=relaxed/simple;
+	bh=Uvit9jlDd/caSyTjezID8W8znscoye8/6qwXImIa+bU=;
 	h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PqDNh9lxuLLOBHVj65s8GpWskJTtetUzibLUVJk4WVdzpd80n9To8zXtL8HJ/7qQC3ZBGwPvo/TUw/lpuor6rbrPqCwWwMiqA3mbxLspKtgYld5c26lbL46LQAPUh3VS+RiVjUq0IXm3amjbyhYwTd9Z1/dvojHDPDp3L4t6ymk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=ghXbO69p; arc=none smtp.client-ip=198.252.153.129
+	 MIME-Version:Content-Type; b=tZovWY8THAqj9ML0VXOYr6y9rNghIftaV4dSHDho5JeuX6lqzx/QFz+igVWFYsWKD2vwh6kl+7epMUd9YMtywbCVpGU0dE6bM/5uU60I7Dd3QoN3xJrXzKoYWB+8GmqZ+LyqOEMYZpubLDBPLQXzmdpSNx3ZqNIsQIUKObKvjS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=BClaJZUB; arc=none smtp.client-ip=198.252.153.6
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="ghXbO69p"
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="BClaJZUB"
 Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx1.riseup.net (Postfix) with ESMTPS id 4VMwnl6t67zDqDL
-	for <netfilter@vger.kernel.org>; Sun, 21 Apr 2024 17:47:39 +0000 (UTC)
+	by mx0.riseup.net (Postfix) with ESMTPS id 4VMwrh54Bnz9tJ3
+	for <netfilter@vger.kernel.org>; Sun, 21 Apr 2024 17:50:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1713721660; bh=UmFObwuHUia3aO/C/wXFN9/vaIIdhIiYidgL1qaxnT8=;
+	t=1713721812; bh=Uvit9jlDd/caSyTjezID8W8znscoye8/6qwXImIa+bU=;
 	h=Date:From:To:Subject:In-Reply-To:References:Reply-To:From;
-	b=ghXbO69pGgcf5oO70Q7LXW85Fz7k+VcpzxA77cDlNaAqTkV2gtycRT+1vbKzoRBs5
-	 E8AAxbK/4JuS2HdurKtcGbK6c56RpulgCLTCQba9rYVao4gn9+oNvMYZbHlBnn/cVE
-	 Y/1bTAapn15j3lurF/4uqCwJz8sOYNDz1UIJpN1M=
-X-Riseup-User-ID: 7CDE4AE5A4098EF8CC404788C7C0E03D33B81778765085BFCF4D488411288141
+	b=BClaJZUBsIh1Md7x/8ai/7PqeZxrenDzyti/ncbebV2pcIKNkA3OhMI5l2B72peuN
+	 aVqGiaM30ujqN8pw4MLatPsJXSL6/vyiIiip9n4QXLmSlB0v7nZkZ7Ss0vIMEmSY0R
+	 x6ZhtPapjbOl2XuAnVvwegQR2E46xolGoDC6KVt0=
+X-Riseup-User-ID: 0EFAB45BB1E5A17D2386AC771E61CCF085741B67ADF1DD8E4769AAE01E02E8BB
 Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4VMwnj6qYLzFsf8
-	for <netfilter@vger.kernel.org>; Sun, 21 Apr 2024 17:47:37 +0000 (UTC)
-Date: Sun, 21 Apr 2024 17:47:26 -0000
+	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4VMwrd6Pn6zFt7t
+	for <netfilter@vger.kernel.org>; Sun, 21 Apr 2024 17:50:08 +0000 (UTC)
+Date: Sun, 21 Apr 2024 17:50:00 -0000
 From: "William N." <netfilter@riseup.net>
 To: netfilter@vger.kernel.org
 Subject: Re: [Thread split] nftables rule optimization - dropping invalid in
  ingress?
-Message-ID: <20240421174726.7345861d@localhost>
-In-Reply-To: <31f21bca-c442-40f9-a1a3-d9cfe9778570@app.fastmail.com>
+Message-ID: <20240421175000.5fa666d7@localhost>
+In-Reply-To: <rNVqfcHpj4XyJlxISjkKDdyRHbyPqlyF8MOHq07xz1_V3vc99maPQTsAuxgA2PZNbvff2dUfl2s0YdJBI4muw8A7FiMeKu2KvnjK0fG7kYo=@proton.me>
 References: <20240420084802.6ff973cf@localhost>
  <20240420183750.332ffbad@localhost>
- <31f21bca-c442-40f9-a1a3-d9cfe9778570@app.fastmail.com>
+ <rNVqfcHpj4XyJlxISjkKDdyRHbyPqlyF8MOHq07xz1_V3vc99maPQTsAuxgA2PZNbvff2dUfl2s0YdJBI4muw8A7FiMeKu2KvnjK0fG7kYo=@proton.me>
 Reply-To: netfilter@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
@@ -52,122 +52,17 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Sat, 20 Apr 2024 20:16:49 +0100 Kerin Millar wrote:
+On Sun, 21 Apr 2024 03:45:31 +0000 Eric wrote:
 
-> If using the ingress hook in this way is to make any measurable
-> difference to your load average at all, my expectation would be for
-> it be observable in the event that you are subjected to a
-> concentrated flood of invalid TCP packets.
+> I'd be very interested in seeing some statistics on how many actual
+> invalid packets you see on a live link.  Stick some counters in there
+> and collect dropped versus passed packets...
 
-I was thinking the same.
+This particular system is a desktop one (rebooted often), so that kind
+of stats won't make any sense.
 
-> You could use hping3 to conduct a series of stress tests.
+> My naive guess would be there are only tiny percentage of rejected
+> packets.
 
-The question is how to measure the difference correctly. I am not a
-network expert. I see some articles about firewall performance testing
-using  iperf3 but in a VM-to-VM test (which I use) it is quite
-inconsistent. Additionally, iperf3 is not able to do what hping3
-does and I have no idea how to measure anything using hping3, which is
-probably the correct test, as it would trigger the rules.
-
-My clumsy attempt to have at least some comparison:
-
-Testing procedure
------------------
-
-1. Design the ruleset
-2. Put the rule to be tested in a separate file and include that file
-3. In the file, have the line with the rule, followed by a single
-'continue' on a new line. Repeat this combination 1000 times (to make
-it have an observable effect)
-4. In VM1 run (where rules reside):
-
-iperf3 -s -p <port>
-5. In VM2 run:
-
-for (( i=0; i<10; i++)); do iperf3 -c 10.137.0.82 -p <port> -V; done
-
-6. Note the speed after each iteration.
-
-I am doing it 10 times because my observation shows that the first
-iteration is always faster and the next ones decline to a point of
-"saturation" (my interpretation - some resource exhaustion, e.g. memory
-buffer). That is the inconsistency, mentioned above and my attempt to
-get rid of it. Additionally, I also tested 'time ./my-firewall' to
-compare this too.
-
-Results
--------
-
-# Early drop:
-
-time to load = 23 sec
-Bitrates (in Gbits/sec):
-
-3.53
-2.88
-2.92
-2.91
-2.66
-2.80
-2.83
-2.79
-2.83
-2.82
-
-# Drop in prerouting (using conntrack and 'invalid'):
-
-time to load = 1.326 s
-Bitrates:
-
-4.19
-3.48
-3.46
-3.50
-3.53
-3.52
-3.51
-3.48
-3.42
-3.40
-
-For comparison, the speed without any ruleset (after 'nft flush
-ruleset'):
-
-Bitrates:
-
-5.54
-4.96
-4.66
-4.33
-4.32
-4.32
-4.33
-4.34
-4.31
-4.32
-
-Summarized
-----------
-
-Given the rules are repeated 1000 times, early drop is ~82% of the
-speed of dropping using conntrack in prerouting and takes x20 more time
-to load.
-
-My interpretation (may be completely wrong, so corrections are welcome)
------------------
-
-conntrack is faster because it is compiled (binary), i.e. the same rule
-written in nftables syntax needs additional processing (hence the much
-higher load time), which makes it less efficient.
-
-Additional info
----------------
-
-If the rule is set only once (not repeated 1000 times, as in the test)
-there is no difference between the 3 cases above - same speed. So,
-ceteris paribus, the question comes down to: is there a security
-benefit in dropping invalid packets earlier (e.g. right after dropping
-fragments and bogons)?
-
-I would highly appreciate the thoughts of the experts here.
+Without a particular attack - quite possible. However, it is always
+good to learn what is better/worse/futile.
