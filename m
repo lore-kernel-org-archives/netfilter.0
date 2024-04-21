@@ -1,115 +1,97 @@
-Received: from fhigh6-smtp.messagingengine.com (fhigh6-smtp.messagingengine.com [103.168.172.157])
+Received: from mail-0301.mail-europe.com (mail-0301.mail-europe.com [188.165.51.139])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 176C6374F7
-	for <netfilter@vger.kernel.org>; Sat, 20 Apr 2024 20:11:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34DCB205E22
+	for <netfilter@vger.kernel.org>; Sun, 21 Apr 2024 03:45:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.165.51.139
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713643866; cv=none; b=ubBsxob/MDVvOwMVJUammYhPERoFTusDCP5NYLdHjH3O+TFlVaYRZX4Qc1JYWAfq2xboafIGNWhdL3utjSa0mYq6aTPws0R99vJrCYsSI9kalCYyuNQ1GDVhbnurnbQhoLbx6isjlAMP8dYYOF9EbISH2tDiKaVsebc6Z3X5U6s=
+	t=1713671157; cv=none; b=u+8XfKLaD66ekIVM/pZjUXDMekCFERk5t0td0Jo55i84Z2aS8NWeFelbtrGMTIwDorvo0vi/OFSu5WI+iw9AwtvxMrFpXap4jYNhXdurcbC9HbGp4Av4mcgmIygniZP680CXgJ/WVB7dLpyUQot3SiuPqNsOuu6u8ZdKHDQseLg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713643866; c=relaxed/simple;
-	bh=jYB6OERXHEECAHtyYz5kxzoeAe+94I0jinlGQsE+Le0=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:
-	 Subject:Content-Type; b=pczlYUHOc6hLIrHAw8fs+CCkjn20Kc8fTLHU+qyTD9FZYW71c35mpzhxgIHrN0vAsaATk6zkHXMQ+XXX6jK6OUN6yCl7OxgXQs/NRsXDmOXsJSwZTuk+hv8jvxLY3PK+WoJK6wHw17xybZWAWqen6+42//i94dkzKFfOeWzS2ew=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=amH63AjJ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=GKcdU9Pd; arc=none smtp.client-ip=103.168.172.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
+	s=arc-20240116; t=1713671157; c=relaxed/simple;
+	bh=DcNqW7JL0ZQ55dILZLKbvBdq8IMKnz2GsLrS/8YJT0A=;
+	h=Date:To:From:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=VbU3PiOt6xyRH3xDVFWSnGFi9hO0X1oEeejGnlR/7G9lCqF6D03FsWUAIdFnc5l7yRA3CQLVdB2V8ZTnTl7hsYuqsnYC/VNFRlDG7pq4DHfxlYd8P4kAoGzDubiG8VnkyTypWLyXqJEYuD8hLC6A4f+1q9X3zM2D9Mgih4hc5ns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=haeKG37e; arc=none smtp.client-ip=188.165.51.139
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="amH63AjJ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="GKcdU9Pd"
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 2EBFB11400E9
-	for <netfilter@vger.kernel.org>; Sat, 20 Apr 2024 16:11:03 -0400 (EDT)
-Received: from imap50 ([10.202.2.100])
-  by compute4.internal (MEProxy); Sat, 20 Apr 2024 16:11:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-	 h=cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm1; t=1713643863; x=1713730263; bh=gfj7EvFsph
-	pX/nPulh9HbGOBo4B/g2VKt4yepupVMqY=; b=amH63AjJHzTL6FXtkkoaWzn65b
-	/BSgeA3BVj84Ims+k2o/LHFzdTeYNFNZJtKH/asX2u6gEQhsrbsQIppkx080OB6O
-	L/9wucqJzlyZZFwsVkr81FA3thS8Y9/AXRmGB/SHrEy+fdhoLv8LKzlmVUbrr+11
-	qPRZHzqvt775rQ1eKZutUVEQIz3Amta+WgPmq48xBuRnrERLdTqnZpHizu3IHYA/
-	nAdTxhl2HugbiPKx88t8yX3TW9wRUDCKRv8irYjOxhtB/drBy23j45c08rhGY+zn
-	9fvmQPKahXkb5NMmGy+juuyhky6uDKsBg9ScBt7LwfHJ/3/jqtgnIsjQ5f3g==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1713643863; x=1713730263; bh=gfj7EvFsphpX/nPulh9HbGOBo4B/
-	g2VKt4yepupVMqY=; b=GKcdU9PdKAEaXqWwygu2Wslf73HgNuzFN2nfmAexKfLL
-	rrYQw6WkPPa6Iujgbho1B48WsVmR6g18S5D06jJjHfZZ/RV5vG7w2KKOkK4CHGPA
-	uMo8RmT9zcbhagZsO5u26iyY/3SnhVvg17eGVaxXVwRURp1boVag6UOnJXVmwkMm
-	oIv5KZ+lXkyluWiRs58STFBmnJOGowTdm/XCS1ZVNG7Jof1ZE3ZGV4zXPEaFYhhb
-	kfsYKPGfFdP4gzWM+HDlzbUFPc9hETRkhlfhYKrDQaxJ8AX2RCwdXbcy6NEQF6qN
-	LvUDX9iT3AFkttIXL1d4RpFjXEXiXWtvx/B+/l5CGw==
-X-ME-Sender: <xms:ViEkZrxvVPUwWk-nWVwbnM_6bPUzvQAI1XyYdGG3mdjmS9eThx9Fsg>
-    <xme:ViEkZjSXnKI5uBhPO41IBopoQsHyQXzIOZZG8wDJLyTOkBBmyCw9ADsxEzAi-qxIA
-    iXXc7CCVtkjVyf6>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudekgedgudegiecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfgh
-    necuuegrihhlohhuthemuceftddtnecuogfuuhhsphgvtghtffhomhgrihhnucdlgeelmd
-    enucfjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedfmfgv
-    rhhinhcuofhilhhlrghrfdcuoehkfhhmsehplhhushhhkhgrvhgrrdhnvghtqeenucggtf
-    frrghtthgvrhhnpedtkefhleeludduheeiudegkeeihfeiveeitdehvdehiefhgfejheel
-    gedukedugeenucffohhmrghinhepkhgvrhhnvghlrdhorhhgpdhsohgtrghllhhinhhugi
-    gvgihpohdrohhrghdpghhithhhuhgsrdhiohdpghhithhhuhgsrdgtohhmnecuvehluhhs
-    thgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepkhhfmhesphhluhhshh
-    hkrghvrgdrnhgvth
-X-ME-Proxy: <xmx:VyEkZlVx1V9XjLP5Ur1ZtJbPAxC6g9nbwnCUNo3p3YnzH3bGzyd-JA>
-    <xmx:VyEkZlgL8wZTAeuAw44ZDTao8sz2rxvEQJeePARMqVl8u0Uygm5gDg>
-    <xmx:VyEkZtCoEFPq6EGLLcHqySiuVXtk6NU3wOKGI_jq7FMUycz7VCKbiA>
-    <xmx:VyEkZuJcadYNmkcYyn1D07mDhVdAGxkXE5WZcHig4jVCj7cY_1wcgA>
-    <xmx:VyEkZgqEfUC0r3bsEzzZGNtNzH6_H5VGLrsGDrHr6MDhGs8NMAh-7BJT>
-Feedback-ID: i2431475f:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id D93681700093; Sat, 20 Apr 2024 16:11:02 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-379-gabd37849b7-fm-20240408.001-gabd37849
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="haeKG37e"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1713671134; x=1713930334;
+	bh=alVCrKbDChxCJ0e177Ug/E/r+oePU7CsgiaxlbcfTXE=;
+	h=Date:To:From:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=haeKG37ePTCAEdSdCwHMQB9dBP8nHLAy4pGxUiGtw4jjKPgj+bxh+nEfVbG8588sO
+	 jqvaapO0Lc8566rI8YKgkReSLLpyarpfzLaZvlPbD+T8Ar0i0ZYAklKbP1eFVIn1p7
+	 bRvIqYk6xeErOaUz+KENLKYSJmctaeqEcgpOgjck3Kvtc8LsY3RbwX2ss/HUoUzGQJ
+	 QWsr52C9FSU5NvY+eXxDv/dmlWNOxWc1t9359xyv2e3GrUq614GPdj5Zg8c0/JKrA0
+	 D+5XbTl5wolj/q6G68i5dY6qL46id49+kN3i6x9pLRtYpiGfmFz18rHrmC19Zz1fRK
+	 3SCbZkFBCtTIQ==
+Date: Sun, 21 Apr 2024 03:45:31 +0000
+To: netfilter@vger.kernel.org
+From: Eric <evil.function@proton.me>
+Subject: Re: [Thread split] nftables rule optimization - dropping invalid in ingress?
+Message-ID: <rNVqfcHpj4XyJlxISjkKDdyRHbyPqlyF8MOHq07xz1_V3vc99maPQTsAuxgA2PZNbvff2dUfl2s0YdJBI4muw8A7FiMeKu2KvnjK0fG7kYo=@proton.me>
+In-Reply-To: <20240420183750.332ffbad@localhost>
+References: <20240420084802.6ff973cf@localhost> <20240420183750.332ffbad@localhost>
+Feedback-ID: 48716100:user:proton
+X-Pm-Message-ID: e689a2343d0dc00dbfd5665407652cbc958b8569
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <68460267-05ce-4b2a-881e-963460ba8062@app.fastmail.com>
-In-Reply-To: <20240418153254.65058b50@localhost>
-References: <20240417194340.20430839@localhost>
- <7370616d-fa0a35c7-09c3-4db9-9b8c-03b944b73124-at.encryp.ch-74726170@at.encryp.ch>
- <20240418121340.58c1fa6e@localhost>
- <07f45d43-0ab0-42bf-87e2-9c8ce00bcdb6@linutronix.de>
- <20240418153254.65058b50@localhost>
-Date: Sat, 20 Apr 2024 21:10:22 +0100
-From: "Kerin Millar" <kfm@plushkava.net>
-To: netfilter@vger.kernel.org
-Subject: Re: DoS/DDoS protection for end nodes
-Content-Type: text/plain
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, 18 Apr 2024, at 4:32 PM, William N. wrote:
-> On Thu, 18 Apr 2024 16:11:13 +0200 Florian Kauer wrote:
->
->> So the basic idea is to maintain the iptables and/or nftables
->> interface and "just" translate them to BPFs in the back. So no need
->> to write C if you don't want to.
->
-> Then nftables can be used against DDoS with the BPF performance, right?
->
-> Has this made it to the mainline kernel or it is still something
-> experimental?
 
-See:
 
-http://vger.kernel.org/bpfconf2023_material/bpfilter.pdf
-https://www.socallinuxexpo.org/sites/default/files/presentations/Scale21x.pdf
 
-Also:
 
-https://facebook.github.io/bpfilter/index.html
-https://github.com/qdeslandes/iptables
-https://github.com/qdeslandes/nftables/tree/bpfilter_support
 
-The latter two links are for Deslandes' forks of iptables and nftables. I don't know what Meta are using behind the scenes but both appear to be highly experimental.
+Sent with Proton Mail secure email.
 
--- 
-Kerin Millar
+On Saturday, April 20th, 2024 at 11:37, William N. <netfilter@riseup.net> w=
+rote:
+
+> After spending some time looking for more info and based on this:
+>=20
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/n=
+et/netfilter/nf_conntrack_proto_tcp.c?h=3Dv5.8#n700
+>=20
+> I think I figured it out:
+>=20
+> tcp flags & (fin|syn|rst|ack|urg) !=3D {
+> syn,
+> syn|urg,
+> syn|ack,
+> rst,
+> rst|ack,
+> fin|ack,
+> fin|ack|urg,
+> ack,
+> ack|urg
+> } drop comment "TCP invalid"
+>=20
+> This checks the listed values against the mask "fin|syn|rst|ack|urg".
+> The same values and mask are used in the conntrack code, i.e. it drops
+> invalid TCP packets.
+>=20
+> According to my own tests, this works in the ingress hook, i.e. early
+> drop.
+>=20
+> The only question that remains is performance measurement and
+> comparison, as mentioned.
+>=20
+> Please let me know what you think.
+
+I'd be very interested in seeing some statistics on how many actual
+invalid packets you see on a live link.  Stick some counters in there
+and collect dropped versus passed packets...
+
+My naive guess would be there are only tiny percentage of rejected
+packets.
+
+Eric
