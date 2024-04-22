@@ -1,68 +1,130 @@
-Received: from mx0.riseup.net (mx0.riseup.net [198.252.153.6])
+Received: from fout4-smtp.messagingengine.com (fout4-smtp.messagingengine.com [103.168.172.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E8841CAA1
-	for <netfilter@vger.kernel.org>; Sun, 21 Apr 2024 17:50:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30FC615218E
+	for <netfilter@vger.kernel.org>; Mon, 22 Apr 2024 14:42:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713721814; cv=none; b=f5hrIT+KdpOsO/HHl8KWQzPN9Byv0hevGSt7KzSnchqNB7VVJBw/rvzmWkIFae9XNn47BH/m81EgxhbxyaO5ZFE/kf/XUQw4Va6fnxUWMxCVS9pLtegB8Drqq2V1PMVB2QYrrQ+9Rd8JcOiN+diYjDD7jOQ0A8VqBmYDQsd5RAA=
+	t=1713796932; cv=none; b=MdVdYTbdQ29tLjP1Qm+qLhvm4p4XEkPiEZ4MJ8aTmlCNSbvT+li/DTWxQHstK8Rl3loTyMlMF11pofyBeZeKmblqU2UorFHTG3R952JOuK1oQQdyerknikvkH9ysXffdE7H2IfL0R9evbxdWoEJTskOCr+wVB2F2xPRgsd4uDTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713721814; c=relaxed/simple;
-	bh=Uvit9jlDd/caSyTjezID8W8znscoye8/6qwXImIa+bU=;
-	h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tZovWY8THAqj9ML0VXOYr6y9rNghIftaV4dSHDho5JeuX6lqzx/QFz+igVWFYsWKD2vwh6kl+7epMUd9YMtywbCVpGU0dE6bM/5uU60I7Dd3QoN3xJrXzKoYWB+8GmqZ+LyqOEMYZpubLDBPLQXzmdpSNx3ZqNIsQIUKObKvjS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=BClaJZUB; arc=none smtp.client-ip=198.252.153.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
+	s=arc-20240116; t=1713796932; c=relaxed/simple;
+	bh=K5P7whjFWiQTuBno8rBGnJV9nFOp+wUyplHoHXUK3ko=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=gJQuLVxs4owytm2JpXmlwVQA4lELPVaW4OAYKPw+f6xqnKKtYv7Ed+zxEz3X8pz3ys0LbuRmTIh/7/oTNfH4Pg/UbJjBK5NhsxiqyH5zTzB6VwWc1PO5oXorlycs8jLVelz8ZP/wpsfceKKOj63XCnSzlh3FU6SlsWeyDrrohL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=naccy.de; spf=pass smtp.mailfrom=naccy.de; dkim=pass (2048-bit key) header.d=naccy.de header.i=@naccy.de header.b=pOYrFZ4g; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=F5EnaGTB; arc=none smtp.client-ip=103.168.172.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=naccy.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=naccy.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="BClaJZUB"
-Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx0.riseup.net (Postfix) with ESMTPS id 4VMwrh54Bnz9tJ3
-	for <netfilter@vger.kernel.org>; Sun, 21 Apr 2024 17:50:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1713721812; bh=Uvit9jlDd/caSyTjezID8W8znscoye8/6qwXImIa+bU=;
-	h=Date:From:To:Subject:In-Reply-To:References:Reply-To:From;
-	b=BClaJZUBsIh1Md7x/8ai/7PqeZxrenDzyti/ncbebV2pcIKNkA3OhMI5l2B72peuN
-	 aVqGiaM30ujqN8pw4MLatPsJXSL6/vyiIiip9n4QXLmSlB0v7nZkZ7Ss0vIMEmSY0R
-	 x6ZhtPapjbOl2XuAnVvwegQR2E46xolGoDC6KVt0=
-X-Riseup-User-ID: 0EFAB45BB1E5A17D2386AC771E61CCF085741B67ADF1DD8E4769AAE01E02E8BB
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4VMwrd6Pn6zFt7t
-	for <netfilter@vger.kernel.org>; Sun, 21 Apr 2024 17:50:08 +0000 (UTC)
-Date: Sun, 21 Apr 2024 17:50:00 -0000
-From: "William N." <netfilter@riseup.net>
-To: netfilter@vger.kernel.org
-Subject: Re: [Thread split] nftables rule optimization - dropping invalid in
- ingress?
-Message-ID: <20240421175000.5fa666d7@localhost>
-In-Reply-To: <rNVqfcHpj4XyJlxISjkKDdyRHbyPqlyF8MOHq07xz1_V3vc99maPQTsAuxgA2PZNbvff2dUfl2s0YdJBI4muw8A7FiMeKu2KvnjK0fG7kYo=@proton.me>
-References: <20240420084802.6ff973cf@localhost>
- <20240420183750.332ffbad@localhost>
- <rNVqfcHpj4XyJlxISjkKDdyRHbyPqlyF8MOHq07xz1_V3vc99maPQTsAuxgA2PZNbvff2dUfl2s0YdJBI4muw8A7FiMeKu2KvnjK0fG7kYo=@proton.me>
-Reply-To: netfilter@vger.kernel.org
+	dkim=pass (2048-bit key) header.d=naccy.de header.i=@naccy.de header.b="pOYrFZ4g";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="F5EnaGTB"
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailfout.nyi.internal (Postfix) with ESMTP id C01D413812F7;
+	Mon, 22 Apr 2024 10:42:06 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Mon, 22 Apr 2024 10:42:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=naccy.de; h=cc
+	:content-transfer-encoding:content-type:content-type:date:date
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1713796926;
+	 x=1713883326; bh=+yIi3brrbrnVbSZ624NDO1b6aPUk48Zqa+/88LWMnhM=; b=
+	pOYrFZ4gJ1YUaF0BaHkjCK5FdNQ7nPkQmJORMnoQZlS7eCmxD1gBn1hd1UH5WbFc
+	OAtOXCsuNhVX031/lL0OfF88PBGYDW77S80/Lcfua4mdhHkOWmzQHjpgAVo7PprA
+	VYaObPJ2A9K4bVuhA6dIiK3VD9GZNkzs1J1H4CtJSlDIsKkucLiRcbSQyf3he3RU
+	G1TUqJ4Ihr3UIcu7lQcTevU3QcO5S/OGgrSIQhqHZVS5wrIM3c2wzjPJ28WVf5Hy
+	+ChhJqZIHh8z5nqSINCKER+biuZRgXUlqSetuEeUEIA1Qscc6aN9paIzJgdto36g
+	wIgE5NBCRltyC3iZW+hasg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=1713796926; x=
+	1713883326; bh=+yIi3brrbrnVbSZ624NDO1b6aPUk48Zqa+/88LWMnhM=; b=F
+	5EnaGTBjzDPyI79p88EVT6WPxCKdIXFQ+E4OXE0RYlFnDOJ3YBxyODdfynkESlNd
+	IRt6eJR4m+SBo41AS3fzeX+kIZpHGu15mqLh0bBtF8ZjSALj41HBr8cf9D3v7XTi
+	aJGo9n8YDunbcyLipzmNVO17qcfrnrJsRJ58D5xbJnnt+qmAjrISkq8j67mgeGo0
+	euhoo0NE6f3ICy1zB5PXSxc/HAvamZiJx9VvENZuAtPps1OVK7/8U5HnMoM74lOL
+	ei32aM3XL9AQciP8xO8z3Am8I7+6zk35UtIWJf9i+BTrJyp5QQM20vTa2wwC1urp
+	1zC7a4B4VTr46xx6xEeiQ==
+X-ME-Sender: <xms:PncmZgFCJf6P9R0JAJCU2G6XYaNK86SC309k6qksJ8JqJsuhuu_TTA>
+    <xme:PncmZpUcDK4sy_7IjO8E_LOkNg7wXLzvA4m87gFbYZ578ivfQjUshcNQ45l50NPBA
+    -Y1JWVAoUfE96fkm5w>
+X-ME-Received: <xmr:PncmZqJhkoORPg3IPu-9jdORNTjOfcNrEHwMmM82jJwFyrZtlEXdtfjcXWaBka_1kN80S8eoXcfCmkgqpcUXk7I1gno>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrudekledgkedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucgoufhushhpvggtthffohhmrghinhculdegledmne
+    cujfgurhepkfffgggfuffvfhfhjggtgfesthejredttddvjeenucfhrhhomhepsfhuvghn
+    thhinhcuffgvshhlrghnuggvshcuoehquggvsehnrggttgihrdguvgeqnecuggftrfgrth
+    htvghrnhepjeeftdevffetgeejhfeihfelleeuuefhteegueevgfeuveevhffgudffgefh
+    feeunecuffhomhgrihhnpehgihhthhhusgdrtghomhdphihouhhtuhgsvgdrtghomhdpgh
+    hithhhuhgsrdhiohenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
+    fhhrohhmpehquggvsehnrggttgihrdguvg
+X-ME-Proxy: <xmx:PncmZiGKRksGAXxUny-3E8qtopewEyMI6uW-5VyMrczbKRzxr6_pFg>
+    <xmx:PncmZmU60p0Kzie6Vlzd1mWgc5Yiq8iOipbythwpeIHLAuUtEJ6GJg>
+    <xmx:PncmZlM3_P4D1K3a5hvCzQW8ekd4SuoGpH8JWnB6a25QDNpAp2ZZGw>
+    <xmx:PncmZt2xOZhfQ7LyxEVuRI1QbRczNqD2huKcVLoWRGpqIUK3Mk_udw>
+    <xmx:PncmZjhPwtLVGHu31GlnFcw4XC37pb37fesTuV6X5wXMvfn_wHitz3FM>
+Feedback-ID: i14194934:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 22 Apr 2024 10:42:05 -0400 (EDT)
+Message-ID: <b513f4de-6717-4306-b56a-70144a59dddc@naccy.de>
+Date: Mon, 22 Apr 2024 16:42:04 +0200
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: DoS/DDoS protection for end nodes
+To: netfilter@vger.kernel.org, "William N." <netfilter@riseup.net>
+References: <20240417194340.20430839@localhost>
+ <7370616d-fa0a35c7-09c3-4db9-9b8c-03b944b73124-at.encryp.ch-74726170@at.encryp.ch>
+ <20240418121340.58c1fa6e@localhost>
+ <07f45d43-0ab0-42bf-87e2-9c8ce00bcdb6@linutronix.de>
+ <20240418153254.65058b50@localhost>
+Content-Language: en-US
+From: Quentin Deslandes <qde@naccy.de>
+In-Reply-To: <20240418153254.65058b50@localhost>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On Sun, 21 Apr 2024 03:45:31 +0000 Eric wrote:
+On 18/04/2024 17:32, William N. wrote:
+> On Thu, 18 Apr 2024 16:11:13 +0200 Florian Kauer wrote:
+> 
+>> So the basic idea is to maintain the iptables and/or nftables
+>> interface and "just" translate them to BPFs in the back. So no need
+>> to write C if you don't want to.
 
-> I'd be very interested in seeing some statistics on how many actual
-> invalid packets you see on a live link.  Stick some counters in there
-> and collect dropped versus passed packets...
+That's the idea. bpfilter is the back-end working transparently to
+convert nftables (or iptables) rules into BPF program(s). Florian
+Westphal expressed interest a few months ago to offload nftables
+rules into XDP using bpfilter, so I implemented it. 
 
-This particular system is a desktop one (rebooted often), so that kind
-of stats won't make any sense.
+While nftables doesn't support bpfilter officially, my fork [0]
+enable the --bpf flag to send the Netlink requests to the bpfilter
+daemon instead of the kernel. nftables support is still early, but you
+can filter on IP and ports, and bpfilter will create and attach
+an XDP program to your system.
 
-> My naive guess would be there are only tiny percentage of rejected
-> packets.
+> Then nftables can be used against DDoS with the BPF performance, right?
+> 
+> Has this made it to the mainline kernel or it is still something
+> experimental?
+> 
 
-Without a particular attack - quite possible. However, it is always
-good to learn what is better/worse/futile.
+The project is still under heavy development, but there was a lot
+to do in the background. There are a lot more changes planned in the
+coming months to extend its capabilities.
+
+See:
+- https://github.com/facebook/bpfilter
+- My talk at LPC 2023: https://www.youtube.com/watch?v=J5Hm6PrJWI4&t=27649s
+- (Growing) documentation: https://facebook.github.io/bpfilter/index.html
+
+Feel free to reach out if you want to know more :)
+
+[0]: https://github.com/qdeslandes/nftables/tree/bpfilter_support
+
+Regards,
+Quentin Deslandes
