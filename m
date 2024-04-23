@@ -1,59 +1,114 @@
-Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
+Received: from correo.bersol.info (correo.bersol.info [82.194.72.224])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90D1A50271
-	for <netfilter@vger.kernel.org>; Mon, 22 Apr 2024 17:32:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 565B213DB98
+	for <netfilter@vger.kernel.org>; Tue, 23 Apr 2024 19:49:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=82.194.72.224
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713807178; cv=none; b=NNQDjI+I3ESFxKyB9ml37SsPY7ZDGup+t3CXfEE9wWusp5YpIS0ziccSl8Y2f6Sf6NbGRhZAWden8Abwb5ufgoEvCu8jlrsTGKIdyx99I+sgioC0CEtsyZNiy3mF7mbOg4kRLsIsXAzRG4aZ+5Jmi1rDzHb/vykjPcuONkZ8OBs=
+	t=1713901803; cv=none; b=FnBvd1k3+OugmBVlcvrYUEihj1OUC8fdoP4XWac4rEFQqalNWYFSmNnCCVo4VV6u55Npg03VrogEBl5DmfGYbphGWaMMfoUMrKn67oxRoxtjrdKeAYJeAfkYMtHQIX7CYSWw0uw5kXG587y1VmPEVxVcD8H68GknIWG4FUbJRI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713807178; c=relaxed/simple;
-	bh=3UQga69w4lv4SnqHXpAzQygqZsBuq5atdzmi4DPADos=;
-	h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Hu4coz7r/oQ7+0ipfH8cMKhTECJWN+brN9akNZ9jRi8+D3NdMlIDeOvOGFYSHn+zwhvkGEoQBAZMAW136TmPyvBdW9yTZplrF3KuRMvrF6GKW7xpSW+kWpRrNixh4t7DHvjIxfqWK8+7yXqqty2+WAWd1oLDm+JW10tuUIUNbbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=Yki6VlhT; arc=none smtp.client-ip=198.252.153.129
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
+	s=arc-20240116; t=1713901803; c=relaxed/simple;
+	bh=ebVEj0LqfGI1YleERCJlXItqo6z0NPyjyC3P2SoKJK8=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=s5UltgeM6DV3utH+R68h4r9xfkFkHEuTi0Zc+S19MkfVfGVQf9qmdfN/jmx91Zw0mVG2nYoiEj5RhiyD3hGW5WFpaUXyQBOc7vwEnlf3xxSSDGfTQy389BoYpgUUpjnVsxkdbu1hyoMEIXxz4HOdRQNge10/570rfghkAx9dZKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bersol.info; spf=pass smtp.mailfrom=bersol.info; dkim=pass (1024-bit key) header.d=bersol.info header.i=@bersol.info header.b=PBH/4N88; arc=none smtp.client-ip=82.194.72.224
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bersol.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bersol.info
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="Yki6VlhT"
-Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	dkim=pass (1024-bit key) header.d=bersol.info header.i=@bersol.info header.b="PBH/4N88"
+Received: from PTLAALVAREZ1 (58.red-88-14-51.dynamicip.rima-tde.net [88.14.51.58])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mx1.riseup.net (Postfix) with ESMTPS id 4VNXQB41LHzDqNq
-	for <netfilter@vger.kernel.org>; Mon, 22 Apr 2024 17:32:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1713807170; bh=3UQga69w4lv4SnqHXpAzQygqZsBuq5atdzmi4DPADos=;
-	h=Date:From:To:Subject:In-Reply-To:References:Reply-To:From;
-	b=Yki6VlhTAOPzkYJzxVgkslKy1ydes1dH9vL3oIuKsrP+b0Y4GHBbSI/HG1nzIW23e
-	 LBLUO+EkUOdCr1Rcs1LAMh+6rmvV8M4C9v8ZB4gQUUD1++79EE0KGfQi2Tp60/lmnd
-	 cmKPxcstDdBVxfsO1FWVzD/aP2/krBWF1OosdY9U=
-X-Riseup-User-ID: 8DB6A17DB76A6880529A285841D9ED3BB9AC8059687CE189DADFC997AAD31E61
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4VNXQ91Nv9zFtTQ
-	for <netfilter@vger.kernel.org>; Mon, 22 Apr 2024 17:32:48 +0000 (UTC)
-Date: Mon, 22 Apr 2024 17:32:35 -0000
-From: "William N." <netfilter@riseup.net>
-To: netfilter@vger.kernel.org
-Subject: Re: DoS/DDoS protection for end nodes
-Message-ID: <20240422173124.592a30c5@localhost>
-In-Reply-To: <93219c99-b8a8-4878-87ac-53ee0ef4ff0a@naccy.de>
-References: <20240417194340.20430839@localhost>
-	<7370616d-fa0a35c7-09c3-4db9-9b8c-03b944b73124-at.encryp.ch-74726170@at.encryp.ch>
-	<20240418121340.58c1fa6e@localhost>
-	<07f45d43-0ab0-42bf-87e2-9c8ce00bcdb6@linutronix.de>
-	<20240418153254.65058b50@localhost>
-	<b513f4de-6717-4306-b56a-70144a59dddc@naccy.de>
-	<20240422151227.4b022e75@localhost>
-	<93219c99-b8a8-4878-87ac-53ee0ef4ff0a@naccy.de>
-Reply-To: netfilter@vger.kernel.org
+	(Authenticated sender: alberto@bersol.info)
+	by correo.bersol.info (Postfix) with ESMTPSA id 060AD205AF
+	for <netfilter@vger.kernel.org>; Tue, 23 Apr 2024 21:43:56 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bersol.info; s=dkim;
+	t=1713901436;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=kueqSD4PIlisQPY8CE/6nxsb11EON7iq6Ad/vSHEx5o=;
+	b=PBH/4N88jlaQL5E/Ui8zHrg60B+YUdkzlEyPj09sCYZG89aiWcsQdcDxMT7dsH2ZNeKoYV
+	ndU8DYfig4Wrrx5IPyfhiJ2yFkPI1w8rXHya0BXpfia68Zh1RW20rdrB0mws6uslDB1pTm
+	H3ReiGZCWIJs/es2/7d3PenudiJSBXg=
+Authentication-Results: correo.bersol.info;
+	auth=pass smtp.auth=alberto@bersol.info smtp.mailfrom=alberto@bersol.info
+From: "Alberto" <alberto@bersol.info>
+To: <netfilter@vger.kernel.org>
+Subject: NFT: Drop to Docker bridge
+Date: Tue, 23 Apr 2024 21:43:55 +0200
+Message-ID: <006f01da95b6$93fc6870$bbf53950$@bersol.info>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Content-Type: text/plain;
+	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 16.0
+Thread-Index: AdqVtDQFv6MFsIKJREyK6mVh5QnEnA==
+Content-Language: es
 
-Thanks! I will look into that.
+Hi,
+I'm configuring my NFTABLES policy with the following scenario:
+
+- Eth0: Wan Interface
+- Br0: Lan Interface (bridge with several ports).
+- Docker0: Default Docker bridge (unused).
+- br-9028b4c107a5: Docker bridge interface between operative containers.
+
+IPTABLES Policy Docker is disabled ({ "iptables": false } in
+/etc/Docker/Daemon.json), and I define global policy.
+
+I want to define a Policy with Access to WAN (eth0) for LAN (Br0) and Docker
+containers (Br-9028b4c107a5) interfaces, but without Access from WAN, and
+total Access between LAN (Br0) and Docker Containers (Br-9028b4c107a5).
+
+My Policy:
+
+table ip alb-nat {
+        chain PREROUTING {
+                type nat hook prerouting priority 30; policy accept;
+        }
+
+        chain POSTROUTING {
+                type nat hook postrouting priority 30; policy accept;
+                oifname "eth0" ip saddr 192.168.1.0/24 masquerade
+                oifname "eth0" ip saddr 172.22.0.0/24 masquerade
+        }
+}
+table inet alb-fw {
+        chain BASE_CHECKS {
+                ct state vmap { invalid : drop, established : accept,
+related : accept, new : accept }
+        }
+        chain INPUT {
+                type filter hook input priority filter + 10; policy drop;
+                jump BASE_CHECKS
+                iifname "lo" accept
+                iifname "br0" ip saddr 192.168.1.0/24 accept
+                log prefix "[NFTABLES] Denied: " flags all
+        }
+        chain FORWARD {
+                type filter hook forward priority filter + 10; policy drop;
+                jump BASE_CHECKS
+                iifname "br0" oifname "br-9028b4c107a5" ip saddr
+192.168.1.0/24 accept
+                iifname "br-9028b4c107a5" oifname "br0" ip saddr
+172.22.0.0/24 accept
+        }
+        chain OUTPUT {
+                type filter hook output priority filter + 10
+                jump BASE_CHECKS
+        }
+}
+
+But always can Access to containers from WAN.
+I don't know why, because FORWARD Chain is DROP.
+
+Can somebody give me a hint to solve the problem?
+
+Best Regards,
+Alberto
+
