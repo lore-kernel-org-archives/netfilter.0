@@ -1,82 +1,109 @@
-Received: from forward201b.mail.yandex.net (forward201b.mail.yandex.net [178.154.239.156])
+Received: from mx0.riseup.net (mx0.riseup.net [198.252.153.6])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62CF267A0D
-	for <netfilter@vger.kernel.org>; Thu,  2 May 2024 09:59:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C060E3FBA4
+	for <netfilter@vger.kernel.org>; Sun,  5 May 2024 19:26:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714643993; cv=none; b=NfiXn8Dsqh9PX1+WbMwjU/qjm+IJfGQ6GtfYrFIvY3V0Rd3t4unn2S9UQocJA7LWfohx0AqeEa0awFycnwFFH/++Zxha9Nbtd0gRjFJ+vmNI4AurKKpDFqDfn94xIhz94sbhU5ugbXwAURPbyH33VO0PaOXX6gTx0IcNWgM/hao=
+	t=1714937174; cv=none; b=UI2GRZMLMYt2MekIICC3nrOKvW19gHTezX8w1IXP+86c2HrbEH5zmgrpVZp1U52eqb45qArl9Ldr2RAGHAwpSU/hkOdhji7lM1Hu7MNd4vHD1ocFhelCFZ4yQXG+G4yGRxG9gBI1odnWd6+GT1B+b7Zd4sfrRgVYAkob+TnkqyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714643993; c=relaxed/simple;
-	bh=BRPX/4F9j7s1ubeV71LRerf0HAOmzoIB6oLXkGHtLcg=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Content-Type; b=jXs3tZsIVj4iOT9WbW6iHkCYKuAhGAdf1gibIpRqAJeTlCMAfbfoYwUcOlnjmgu2u6zPQtO/yrVgeTHmqo68GMcm4iC9limZHAuOBy4oiwGH69C9zB4IEvxSx8clTCVyCiBUFUw1e/atQCv0UeNa1We0Foi8k3LxnB4vcFrn9pw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=lCg8Wp84; arc=none smtp.client-ip=178.154.239.156
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
+	s=arc-20240116; t=1714937174; c=relaxed/simple;
+	bh=6n+uufhB3BNkW3iStmney5wOigXxaHejVywOnw7PHkI=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=BGFZMkn+cPVqjGEWVHHQWdXwjoopQreRp/wyeID5j9ZJE5PzxRt/p7MIThlN7rHnFOvy7VBTS0vV3XQj8NjGBEguxiUJ2Ib03Yvr0hYHpDQKkhVlQnjnayDthPkXk8Xr/pACNlU2Fb51vwfEeF7heUeZUj0YGiaxuddTN/6EJy0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=B0A9Llh/; arc=none smtp.client-ip=198.252.153.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="lCg8Wp84"
-Received: from forward101c.mail.yandex.net (forward101c.mail.yandex.net [IPv6:2a02:6b8:c03:500:1:45:d181:d101])
-	by forward201b.mail.yandex.net (Yandex) with ESMTPS id BD5196677D
-	for <netfilter@vger.kernel.org>; Thu,  2 May 2024 12:52:28 +0300 (MSK)
-Received: from mail-nwsmtp-smtp-production-main-46.myt.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-46.myt.yp-c.yandex.net [IPv6:2a02:6b8:c12:2a3:0:640:17ea:0])
-	by forward101c.mail.yandex.net (Yandex) with ESMTPS id 2341D60AC3
-	for <netfilter@vger.kernel.org>; Thu,  2 May 2024 12:52:21 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-46.myt.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id KqPUmboiCCg0-dNzIoWpv;
-	Thu, 02 May 2024 12:52:20 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
-	t=1714643540; bh=9yilMDBc614oIYLvSliOuSNt83GeXi1n29KKiiCeS5Q=;
-	h=To:Subject:From:Date:Message-ID;
-	b=lCg8Wp84INC5pxoDrN/lOjGEnEPZ7g57YqVJV1vs/Vmd8hsOya+giXpgGY14gY8dI
-	 /dcA7r7WxTYMpSS8XFQLdYCoKyiIt7ZxWYHfQGcOO3GXVc7rYCzCSqREiLjPSDFqjb
-	 DA8UDDm1P/fhkpTH6ZK1S2hECeIO1Er2r3f176gk=
-Authentication-Results: mail-nwsmtp-smtp-production-main-46.myt.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
-Message-ID: <5f4adebc-51ce-ff05-5296-f6c5718d9f4e@yandex.ru>
-Date: Thu, 2 May 2024 12:52:19 +0300
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="B0A9Llh/"
+Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx0.riseup.net (Postfix) with ESMTPS id 4VXZJt3Sbxz9vQB
+	for <netfilter@vger.kernel.org>; Sun,  5 May 2024 19:26:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1714937166; bh=6n+uufhB3BNkW3iStmney5wOigXxaHejVywOnw7PHkI=;
+	h=Date:From:To:Subject:Reply-To:From;
+	b=B0A9Llh/h9nSNbDF0kYDE6iYuqITcxIWfh3PTESwnXuduyf0W1T73KOie8SeH4c+6
+	 2JKFt13FZQcFFg2mjnoYbCce25HH5OUa+P374nWSML6KopDMiCE8JqSi+a8Abm+bKy
+	 7xzawIqFQSJ/uY2nwl+kKTjE2jpl8YyPhBbNufkw=
+X-Riseup-User-ID: 3B4B6909F1B028BAA5502B41B1F97957681D51624FDA6A5D5861B8750B025A3E
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4VXZJd6JdtzFwmW
+	for <netfilter@vger.kernel.org>; Sun,  5 May 2024 19:25:53 +0000 (UTC)
+Date: Sun, 5 May 2024 19:25:31 -0000
+From: "William N." <netfilter@riseup.net>
+To: netfilter@vger.kernel.org
+Subject: Sets nesting/reference? Complex concatenations in vmaps?
+Message-ID: <20240505192531.5e4ed8a8@localhost>
+Reply-To: netfilter@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.13.0
-From: La Rus <zator@yandex.ru>
-Subject: Retrieve L2 header or MAR from packet
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Content-Language: ru
-Organization: StarLet Team
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hello!
-I'm try to study netfilter queue API, I'm need retrive a MAC of a has 
-been received IP pakeck.
+Hi,
 
-I use:
-nft add rule ip filter OUTPUT ip protocol icmp counter queue num 1
+I am trying to use one set inside another. However, none of my two
+attempts work. Simplified example:
 
-...
-if (l_nlattr[NFQA_HWADDR])
-         {
-             struct nfqnl_msg_packet_hw *hw = 
-mnl_attr_get_payload(l_nlattr[NFQA_HWADDR]);
-             unsigned int hwlen = ntohs(hw->hw_addrlen);
-             const unsigned char *addr = hw->hw_addr;
-             unsigned int i;
+# cat test 
+#!/usr/sbin/nft -f
 
-             $DUMPHEX(addr, hwlen);
-         }
-...
-The pierce of code abohe is not executed.
-So, is there what I'm need to check additionaly ?
+table ip6 t {
+        define ranges = {
+                2001:db8:85::/60,
+                2001:dd8:23::/48,
+		# ...
+        }
+
+        set ONE {
+                type ipv6_addr
+                flags interval
+                auto-merge
+                counter packets 0 bytes 0
+                elements = { $ranges }
+        }
+
+        set TWO {
+                type icmpv6_type . icmpv6_code . ipv6_addr . ipv6_addr
+                flags interval
+                auto-merge
+                counter packets 0 bytes 0
+                elements = {
+                        1 . 2 . ::/0 . @ONE,
+                        3 . 4 . ::/0 . $ranges
+			# ...
+                }
+        }
+}
+
+# nft -c -f test 
+test:22:19-19: Error: syntax error, unexpected @
+                        1 . 2 . ::/0 . @ONE,
+                                       ^
+test:23:4-4: Error: syntax error, unexpected number
+                        3 . 4 . ::/0 . $ranges
+                        ^
+test:26:1-1: Error: syntax error, unexpected '}'
+}
+^
+
+# nft -v
+nftables v1.0.6 (Lester Gooch #5)
 
 
+What is the correct way to do this?
 
 
----
-С уважением,
-Ruslan R. Laishev
-OpenVMS bigot, natural born system/network progger, C contractor.
-+79013163222
-+79910009922
+XY: Ideally, I would also like to have similarly structured vmaps,
+including also 'ct state' as part of the concatenations in a complex
+vmap, instead of a set, e.g. (pseudo code):
+
+iifgroup . icmpv6_type . icmpv6_code . ip6_saddr . ip6_daddr . ct_state : verdict
+
+What is the syntax for that?
