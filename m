@@ -1,98 +1,66 @@
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.188.207])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6219915CD65
-	for <netfilter@vger.kernel.org>; Mon,  6 May 2024 21:53:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.188.207
+Received: from mx0.riseup.net (mx0.riseup.net [198.252.153.6])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC8231FAA
+	for <netfilter@vger.kernel.org>; Thu,  9 May 2024 12:42:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715032438; cv=none; b=myIXyTRmEwPmj4c18Z2eQ4bIJfzebJkC8wLYaAYRlGoFYp6ax4zGGK1Sh3cWZCEDPRnv4SF07dAZDsG/6/Tf/wHr2JYVTzdh5n3pKkQqOzRM5PaX8EMNKxjnuRfj1D9RJ9mMcvYXMUmQq6gEzo0u71dIrc4N22yOSI9UMJ1fSpw=
+	t=1715258573; cv=none; b=cD8DwR/yO0AjjrGtDtVei9KHrbc5JkPc8bPO9mv4UFjwy7XPOR/5XuKDjIkwPp2iWzouTn0E0q+5dm1aLxpxe3sfMfP7Af3neNtBHplUR9Bjuqe9Y/do0jDvZ8McBK5tcoToU4dMI0rR0rG4hXW39oPkBDrrbvjT2LG6W7ed+64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715032438; c=relaxed/simple;
-	bh=51IysXBNevouza/i/7Btqmrzhn4IYGbESIc/PVp4VE8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pjuUJMQ0nW+X12csr8+SPil9lepys66oIVfaKZt7GTaclpoAAPKbeRpo5wMk14RtTXDlnhXkWk2GYxBuJ+OH8wbIo3qROCVNNo9tfTLCbFPLT1vQhL0UNshsJIlc4oaGFX0jGIzglVbNb0WD8FzO9WfkzpJRrCIkog0IE2As6pg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=217.70.188.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Date: Mon, 6 May 2024 23:53:49 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: shibu samuel <msshibu@gmail.com>
-Cc: netfilter@vger.kernel.org
-Subject: Re: Kernel panic in nf_nat_setup_info, with re injected packet from
- libnfml
-Message-ID: <ZjlRbXsjCc9uOjpN@calendula>
-References: <CAKon4rta5-Nynqh71LCHVo6mJKKD+ZNz447NebsjMnoNuz6Ogg@mail.gmail.com>
+	s=arc-20240116; t=1715258573; c=relaxed/simple;
+	bh=w4APhs0kgRjkDwm2FJrj9y2CkMBXp1izcEtrykflDRA=;
+	h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=shIjAyst2veIwSvqHlplB5FkHh7uUTu2ONbiHbINCs22DRKNANQS/xiNfj7ilAfQR4/cEB6mrhCvezhReXBSSKVtfbFyrzRTSl8mH7lSzCM7e5Ki43OWNVg72eGuuA5LKUkaHujZz4EkVjn7gEay4hIPfCdUBzYbLzh0lVkq1Uw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=qVkZ3jxW; arc=none smtp.client-ip=198.252.153.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="qVkZ3jxW"
+Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx0.riseup.net (Postfix) with ESMTPS id 4VZs9d2GcTz9wHQ
+	for <netfilter@vger.kernel.org>; Thu,  9 May 2024 12:42:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1715258565; bh=w4APhs0kgRjkDwm2FJrj9y2CkMBXp1izcEtrykflDRA=;
+	h=Date:From:To:Subject:In-Reply-To:References:Reply-To:From;
+	b=qVkZ3jxWqKNS0sgZg9nORKNJ0yeLw/OB2vNpzsPnfU3VY2y0YbkaNtk30Lz+y8taW
+	 BeEWKtPeWyxxTlYtFJA1dQSm7liVOVrNR42ZY0hkNwtcYfA7cGD/+L1/K+3yDpYyo5
+	 kq4m89P2lDwHTH0t8VEdNwTWxqiL3en19F/AZ2Ag=
+X-Riseup-User-ID: 7F18E5675ECA8D2CD4B912A5FED284C8CC226249F7895D53014C2613D359319D
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4VZs9b5ZrPzFvRg
+	for <netfilter@vger.kernel.org>; Thu,  9 May 2024 12:42:43 +0000 (UTC)
+Date: Thu, 9 May 2024 12:42:30 -0000
+From: "William N." <netfilter@riseup.net>
+To: netfilter@vger.kernel.org
+Subject: Re: Sets nesting/reference? Complex concatenations in vmaps?
+Message-ID: <20240509124230.6e5fdb9c@localhost>
+In-Reply-To: <20240505192531.5e4ed8a8@localhost>
+References: <20240505192531.5e4ed8a8@localhost>
+Reply-To: netfilter@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAKon4rta5-Nynqh71LCHVo6mJKKD+ZNz447NebsjMnoNuz6Ogg@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Mon, May 06, 2024 at 09:27:43AM +0530, shibu samuel wrote:
-> Hello All,
-> 
-> We are seeing a kernel panic, while using application which
-> "reinjects" packets to kernel using, libnfml.
-> 
-> Below the brief view of the setup. Linux 5.14 Kernel, libnfml version 1.0.4)
-> 
-> - an LXC container based application is listening for certain packets,
-> using libnfml netlink sockets.
+Regarding vmaps, I found that this syntax works:
 
-Are you using br_netfilter as a built-in feature? I cannot see in the
-module list.
+icmpv6 type . icmpv6 code . ip6 saddr . ip6 daddr . ct state vmap {
+	1 . 1 . ::/0 . ::/0 . established : continue
+}
 
-> - In the HOST iptables rule, certain rules are written to push to the
-> queue via below iptables actions
->    "-j NFQUEUE --queue-num 0 --queue-bypass"
-> - The container based application examines the packet and then either
-> a) Drops the packet by setting NF_DROP verdit
-> or
-> b) Reinjects back to kernel with NF_REPAT verdict.
-> 
-> 
-> The issue is randomly reproducible, the setup has various sort of
-> traffic (DNS, HTTP, HTTPS and multicast)
-> 
-> Below is the call stack we got from the Kernel Panic. (include the
-> KASAD dump as well)
-> 
-> root@Beacon 10:/# [ 8927.212608]
-> ==================================================================
-> [ 8927.212650] BUG: KASAN: wild-memory-access in
-> nf_nat_setup_info+0x170/0xb10 [nf_nat]
-> [ 8927.218715] Read of size 1 at addr 646f636e652031de by task fstunnel/5303
-> [ 8927.226609]
-> [ 8927.233293] CPU: 3 PID: 5303 Comm: fstunnel Tainted: P        W
->     5.4.164 #0
-> [ 8927.234858] Hardware name: Qualcomm Technologies, Inc.
-> IPQ9574/AP-AL02-C2 (DT)
-> [ 8927.242234] Call trace:
-> [ 8927.249441]  dump_backtrace+0x0/0x1a8
-> [ 8927.251784]  show_stack+0x14/0x1c
-> [ 8927.255604]  dump_stack+0xe0/0x138
-> [ 8927.258902]  __kasan_report+0x18c/0x1c4
-> [ 8927.262197]  kasan_report+0xc/0x14
-> [ 8927.265931]  __asan_load1+0x58/0x60
-> [ 8927.269409]  nf_nat_setup_info+0x170/0xb10 [nf_nat]
-[...]
-> Some debugging from our side shows the that memory violation has
-> happened in below function
-> while using the tuple fetched from ct tuplehash.
-> 
-> nf_nat_setup_info->get_unique_tuple->find_appropriate_src->same_src
+However, just like with sets, this does not work:
 
-How did you obtain this call path? Do you have a reproducer?
+icmpv6 type . icmpv6 code . ip6 saddr . ip6 daddr . ct state vmap {
+	1 . 1 . ::/0 . @ONE . established : continue
+}
 
-> This suggests that there could be a corrupted/already freed entry in
-> nat_bysource table.
-> 
-> 
-> Can anybody help in this regards?
-> - Any suggestions to further narrow the problem
-> - Similar known problems or any patches in later versions?
+Is there really no way to refer to a set from within a concatenation/map?
 
-There are at least two fixes for nf_queue that I can see in more recent
-5.4 -stable series, but it might be unrelated.
+
