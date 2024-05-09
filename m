@@ -1,66 +1,101 @@
-Received: from mx0.riseup.net (mx0.riseup.net [198.252.153.6])
+Received: from wfout2-smtp.messagingengine.com (wfout2-smtp.messagingengine.com [64.147.123.145])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC8231FAA
-	for <netfilter@vger.kernel.org>; Thu,  9 May 2024 12:42:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4588013B7BD
+	for <netfilter@vger.kernel.org>; Thu,  9 May 2024 12:55:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715258573; cv=none; b=cD8DwR/yO0AjjrGtDtVei9KHrbc5JkPc8bPO9mv4UFjwy7XPOR/5XuKDjIkwPp2iWzouTn0E0q+5dm1aLxpxe3sfMfP7Af3neNtBHplUR9Bjuqe9Y/do0jDvZ8McBK5tcoToU4dMI0rR0rG4hXW39oPkBDrrbvjT2LG6W7ed+64=
+	t=1715259312; cv=none; b=rjSQd/VR4VACy06wydWMc/rZsnydFYQY2AQEEvY4TOitRhYeNUTQTUmvUj+6sPJ3q+XkZpPda+cv5Mb00327dHlw6ddL0toREWLZZjEKAaMFLji90EwJdg1epQ422cMTzbxgzQn2yBrk/S6X6PUh0WqQoMwy/pOhGZR/4yH3teg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715258573; c=relaxed/simple;
-	bh=w4APhs0kgRjkDwm2FJrj9y2CkMBXp1izcEtrykflDRA=;
-	h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=shIjAyst2veIwSvqHlplB5FkHh7uUTu2ONbiHbINCs22DRKNANQS/xiNfj7ilAfQR4/cEB6mrhCvezhReXBSSKVtfbFyrzRTSl8mH7lSzCM7e5Ki43OWNVg72eGuuA5LKUkaHujZz4EkVjn7gEay4hIPfCdUBzYbLzh0lVkq1Uw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=qVkZ3jxW; arc=none smtp.client-ip=198.252.153.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
+	s=arc-20240116; t=1715259312; c=relaxed/simple;
+	bh=yVyqMMj5qbZbyKU2fsJsGb2I9X6PRuotADmKOp/Ta3A=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:
+	 Subject:Content-Type; b=fSsViZoSj8uUmHG2B4hJOOJ21UzWZ+OF5RZmXJXof5x+ghLWsb3Pil+vrSmed1Wn2T3Pg/71Wp6VYqxigulQh7195l8NuQLE03JhrSMh1t1vFQ6qkbPH5NF7vhBLPpx+v1SgLeAGz1aQ71PYQ8We9Pa9aaXITYqyE7TvNzaumtg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=j62UVU9p; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=QJ26q+OV; arc=none smtp.client-ip=64.147.123.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="qVkZ3jxW"
-Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx0.riseup.net (Postfix) with ESMTPS id 4VZs9d2GcTz9wHQ
-	for <netfilter@vger.kernel.org>; Thu,  9 May 2024 12:42:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1715258565; bh=w4APhs0kgRjkDwm2FJrj9y2CkMBXp1izcEtrykflDRA=;
-	h=Date:From:To:Subject:In-Reply-To:References:Reply-To:From;
-	b=qVkZ3jxWqKNS0sgZg9nORKNJ0yeLw/OB2vNpzsPnfU3VY2y0YbkaNtk30Lz+y8taW
-	 BeEWKtPeWyxxTlYtFJA1dQSm7liVOVrNR42ZY0hkNwtcYfA7cGD/+L1/K+3yDpYyo5
-	 kq4m89P2lDwHTH0t8VEdNwTWxqiL3en19F/AZ2Ag=
-X-Riseup-User-ID: 7F18E5675ECA8D2CD4B912A5FED284C8CC226249F7895D53014C2613D359319D
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4VZs9b5ZrPzFvRg
-	for <netfilter@vger.kernel.org>; Thu,  9 May 2024 12:42:43 +0000 (UTC)
-Date: Thu, 9 May 2024 12:42:30 -0000
-From: "William N." <netfilter@riseup.net>
-To: netfilter@vger.kernel.org
-Subject: Re: Sets nesting/reference? Complex concatenations in vmaps?
-Message-ID: <20240509124230.6e5fdb9c@localhost>
-In-Reply-To: <20240505192531.5e4ed8a8@localhost>
-References: <20240505192531.5e4ed8a8@localhost>
-Reply-To: netfilter@vger.kernel.org
+	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="j62UVU9p";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="QJ26q+OV"
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailfout.west.internal (Postfix) with ESMTP id 13AA31C0010C
+	for <netfilter@vger.kernel.org>; Thu,  9 May 2024 08:55:09 -0400 (EDT)
+Received: from imap50 ([10.202.2.100])
+  by compute4.internal (MEProxy); Thu, 09 May 2024 08:55:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+	 h=cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm1; t=1715259308; x=1715345708; bh=CajOcHRnow
+	XptahP10K3rgQhrFCVS3IArG0DLaC5pCU=; b=j62UVU9pUoaxxjAgPZA0vnnArH
+	5NP8bxIxX6tGBD8asWST0crwAOrEtCdKnU35CAmoAR7hwT40hKpDmtY7Ikjtgj9n
+	tZ1hXCZkwj1PHfkZxvy9V3MxrUuqt3UwfHvzXQ0eNKrAfi303OCMqB6Yw8iJIh23
+	6jpPbYLG06WqhbeeONZWDsUcETjit7+ygFzWfDIax8QUimRaLKOWQPhiRWuqKUOq
+	elbUlqtu9UhwnI4kLADGcvoIShfaPsJkXm38Wr61LvLO/TgoylsWmKQ09acHl63X
+	6OFJoU1dBwqqCMP+Y2i6MjtRnNf9QCr4/kUrbRSwq/M23/f7LLFitWXo6imw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm3; t=1715259308; x=1715345708; bh=CajOcHRnowXptahP10K3rgQhrFCV
+	S3IArG0DLaC5pCU=; b=QJ26q+OV+kFT0gh9v5siYRbG9SjGXfmNqNfDQL7kL+EC
+	jYZoomvn1soF+XnxL4eRVGKQOGXbb3cNNpqx6oHADMsRjjUuTGppuxcPJzA3xhVV
+	x/75wDwlBvhoCd0pCNe3cDXLUBmGasUbGFDhKI1rYUPUaS0RcCoDoXV3xFvc6AyC
+	BS8GWaG84aN0TsXfEId1p7QotesgEBN9hmYpYqOTHjBtt5CfUT4GjrSrFeAOAz44
+	IViwD09VzaAIPHJvKrl0I+Mkflws9VHH7RDtz7ewqh1b3UKLcd0Ywzyor+oGBr82
+	BGLiXdqLIN3AuMpwHeUdJms8n0Y/uzrs0FVk34hBNw==
+X-ME-Sender: <xms:rMc8Zta_hUv9piN9Rh00TW0O61edZ_CzwBQaeZEl-KyKwzLmANuB1A>
+    <xme:rMc8ZkYOiwdRQCMGcBGe1ojpOk07buxDiN0s-BDUlw4C5lrEb8Lt9s3UgpHuSgpx6
+    T8luj1xoAmYYG8x>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvdefvddgheejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefofgggkfgjfhffhffvufgtsehttd
+    ertderredtnecuhfhrohhmpedfmfgvrhhinhcuofhilhhlrghrfdcuoehkfhhmsehplhhu
+    shhhkhgrvhgrrdhnvghtqeenucggtffrrghtthgvrhhnpeekheffffetgfduiefgkedvfe
+    duhffhfefhkeffvddvfeekuddthfffieeggedvffenucevlhhushhtvghrufhiiigvpedt
+    necurfgrrhgrmhepmhgrihhlfhhrohhmpehkfhhmsehplhhushhhkhgrvhgrrdhnvght
+X-ME-Proxy: <xmx:rMc8Zv9P8PiqTaZ8PQ7WVm1-yvmJ5TjYbYC_H11QhT0pmjUKAatg2g>
+    <xmx:rMc8ZrqVKAyOSLzyXm7yT8sw9Q9E9WRy_VPSrds3buBcF50lETpkLA>
+    <xmx:rMc8ZoqgiDOceeMxO_j6t56H1gb_E6CLmERun6Iuyf4JY-SP546JgQ>
+    <xmx:rMc8ZhTzht3Z2-uHuBdtbjx3gY2WGGPnm6Zxe2LstNTKy-fe0KfjOQ>
+    <xmx:rMc8ZvTN0XGqpaf76Wj5kQcCZx3pyJuIVt4Xzsgcub0x19vDViQA0NHb>
+Feedback-ID: i2431475f:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 632911700093; Thu,  9 May 2024 08:55:08 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-443-g0dc955c2a-fm-20240507.001-g0dc955c2
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Message-Id: <dd5723aa-6516-4cfc-9a24-bc3e599dda54@app.fastmail.com>
+In-Reply-To: <20240509124230.6e5fdb9c@localhost>
+References: <20240505192531.5e4ed8a8@localhost>
+ <20240509124230.6e5fdb9c@localhost>
+Date: Thu, 09 May 2024 13:54:47 +0100
+From: "Kerin Millar" <kfm@plushkava.net>
+To: netfilter@vger.kernel.org
+Subject: Re: Sets nesting/reference? Complex concatenations in vmaps?
+Content-Type: text/plain
 
-Regarding vmaps, I found that this syntax works:
+On Thu, 9 May 2024, at 1:42 PM, William N. wrote:
+> Regarding vmaps, I found that this syntax works:
+>
+> icmpv6 type . icmpv6 code . ip6 saddr . ip6 daddr . ct state vmap {
+> 	1 . 1 . ::/0 . ::/0 . established : continue
+> }
+>
+> However, just like with sets, this does not work:
+>
+> icmpv6 type . icmpv6 code . ip6 saddr . ip6 daddr . ct state vmap {
+> 	1 . 1 . ::/0 . @ONE . established : continue
+> }
+>
+> Is there really no way to refer to a set from within a concatenation/map?
 
-icmpv6 type . icmpv6 code . ip6 saddr . ip6 daddr . ct state vmap {
-	1 . 1 . ::/0 . ::/0 . established : continue
-}
+I have yet to read the original question(s) that you sent to the list but I think the answer is that there is not.
 
-However, just like with sets, this does not work:
-
-icmpv6 type . icmpv6 code . ip6 saddr . ip6 daddr . ct state vmap {
-	1 . 1 . ::/0 . @ONE . established : continue
-}
-
-Is there really no way to refer to a set from within a concatenation/map?
-
-
+-- 
+Kerin Millar
