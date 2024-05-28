@@ -1,151 +1,144 @@
-Received: from mail-wr1-f67.google.com (mail-wr1-f67.google.com [209.85.221.67])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from relay3-d.mail.gandi.net (relay3-d.mail.gandi.net [217.70.183.195])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3B056E611
-	for <netfilter@vger.kernel.org>; Tue, 28 May 2024 09:41:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CC1516ABC0
+	for <netfilter@vger.kernel.org>; Tue, 28 May 2024 10:00:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.195
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716889280; cv=none; b=C8r0HlYTmyd20wsY1erNRkqawmWSaq0IlWyITdRZHG5dsSDz5eV82CrcDQyd66Xvl54zXcAQYM8oQbSKDWeK5VvOX1bbRsdATbyCrq9wVVta0OZL4DDyyQ5BacFC7w3JId3BBuPMS+4AwWOdF0ojRJry4x+W9/LvTYQDjQAkBEw=
+	t=1716890456; cv=none; b=QHkIglMEV7p1EP62q7xHAi9qJ6zxGYTTT6i4qmRg2YsMtStwAOKwVu7iUqPQpocNEmnR3+ThGLngKPo4YgMFeERYhuE3luNU9H9/Nnx+jkOpKtIVjDw2Ads/SrwHC7YZWZZ/JB7qYZMw3dYDGT2qL7iA/yAP3A23HmTSFpQqELE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716889280; c=relaxed/simple;
-	bh=AFuW+pIvdfFqXX9eHfiKoSV0VU8xXPo0tC+ywCMPAYk=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=eRNKkLtbkXaHuctNrX5WybcMnu1ZruPXqxPshVZguFt6YJoQz0IJtKh2KpIgqIkrKujAkG0apFEtuqFTZEMkrfcnVyJnKoHYpClvk8A5oRKxlhamIXKlMomrVCUF1jJtMmm1VMbBS5ki4EDQmyXlpJFV2+lE+BQBwTQ0y51jcZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Sxl2Ld7N; arc=none smtp.client-ip=209.85.221.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1716890456; c=relaxed/simple;
+	bh=pgSS5fNC3mI/ica0R3IGTMXpHniMJUuMFZJWc9r7tls=;
+	h=From:To:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=j+8+tvcWSmIOsg6qeugti0rIzNarjpbL1OmA4S61PDmufb4LZmKFT7nThryhc2nte2E4ekhyiaseMs16K7PyXLGOdFUCT3d2HYs5LnNuYJZn6/vCuy559112MLJg4iliYcpk8x8TvLSl9tMOduXl3XROwUVpxoIlMJ/vj3aF+e0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=biscuolo.net; spf=pass smtp.mailfrom=biscuolo.net; dkim=pass (2048-bit key) header.d=biscuolo.net header.i=@biscuolo.net header.b=gsF5GV2T; arc=none smtp.client-ip=217.70.183.195
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=biscuolo.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=biscuolo.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sxl2Ld7N"
-Received: by mail-wr1-f67.google.com with SMTP id ffacd0b85a97d-354cd8da8b9so557830f8f.0
-        for <netfilter@vger.kernel.org>; Tue, 28 May 2024 02:41:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716889277; x=1717494077; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AdkMjZJ29przuUvorwWq1vy46lg9tsridlnO61Z11os=;
-        b=Sxl2Ld7NSDOyOhT8OluoIJRyr6KdEjltDQ2gYlwQdy9K/0g99tbDs6tWfj/hllKc8a
-         dIxGsX2/oOPSHQeBIayeNTPUQml3dMSx/645l0iN/VVlDmvFBZC2PAE/R119o0/7xL5O
-         FSQSTcLQ6pSeGY6xIX2pVcztZqjq+onVKKrHkfhJI1P64m0kZp8XmG5Ks4SQwj5ANb6g
-         kQJIPqkNsnK5MU8UMYgRCyouuRsokI0vk1km/RdbgsE3u0gH1wYGk78n8BTpgCeJpNyg
-         he9NPHiy8hNUeEjV9/ON5Aya0XuVqEoCawgpMLRiypn2Erytt3JtUQ1Ll7CxEqOdn+UU
-         oOEw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716889277; x=1717494077;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=AdkMjZJ29przuUvorwWq1vy46lg9tsridlnO61Z11os=;
-        b=NZ0/+3FhWzZ8iE7IsB1Sc/mOs0TrI6KE0iEx4OHg7zuQ1kRFkqEa6lC8L9fi/P7NoU
-         dLZZsaR6l1K6CP2//RZdXaR8Jkf9qQrq6+kAW6LNN/cYDebt1ltQSguhb00Zrfo7ByXF
-         4CFBU62Cs2NznW2FouDBPIZFv7BiX+WYnH6uUjKecl4wtrBA/ERXfLz3ayaAp9D9qF5T
-         UQTFLPE21+XbTXW/bpatwRi8PlUCJo5UPUoID6sIfmvYfywwy/b85/uPfdRUYfMvSZI/
-         ru8nPxaCFoWq5q7SKVo3Gb666YiF/7r8sWXU7u/DuS/iXSf0NQ4hJScd0zRNgSpXF16v
-         EgUg==
-X-Gm-Message-State: AOJu0YzjVa1TRJRxaTEP6PUBpz6ZPCzC4j9MC9wjyAwbbb+glI256o17
-	yHxrTQhwV1nEIibFj/4liLH91mcvCQjCXZ0erUOxjmUKH0eQEatOZzd5Cg+S
-X-Google-Smtp-Source: AGHT+IEsV94t+X+bAL+a+G7sb9xdxc7kpWYvcVGX3Wqvj8r4SZ07uEuvaTu6h7Fq6FbEKX4ZYriwXg==
-X-Received: by 2002:a5d:4944:0:b0:34a:1a7a:9d60 with SMTP id ffacd0b85a97d-3552f4fca07mr7091021f8f.62.1716889276946;
-        Tue, 28 May 2024 02:41:16 -0700 (PDT)
-Received: from ?IPV6:2001:470:5139::fb2? ([2001:470:5139::fb2])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3557a1c9570sm11107731f8f.68.2024.05.28.02.41.16
-        for <netfilter@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 28 May 2024 02:41:16 -0700 (PDT)
-Message-ID: <f0c38ac0-5445-491b-9706-c1a129d77acd@gmail.com>
-Date: Tue, 28 May 2024 11:41:15 +0200
+	dkim=pass (2048-bit key) header.d=biscuolo.net header.i=@biscuolo.net header.b="gsF5GV2T"
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 55ADD6000C
+	for <netfilter@vger.kernel.org>; Tue, 28 May 2024 10:00:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=biscuolo.net;
+	s=gm1; t=1716890451;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Fo7K+7/6QFXFG+/itWSsU43nkfiGiU9/L1K0jgFJD3k=;
+	b=gsF5GV2TQZWWbV0WRbEr6tlZHIz6CQ74mIrb24lhE20mccOb2OfluqD+nKsYDkHMz7MF8B
+	nEP5bZ9HzojoAz9FYx+Pe3lvIKfAf5D2q0Ynbrrh2HYEUzDBhyXtHgdUs/19yJ7+L0JHF/
+	QCxA3DWldDSS5/T1JjLJw722XUxyD0CHNNlGgxnRKJ3DzNFgVke2/ztPgYcdfjM6nDbvnd
+	pp7aQCR0UsEgUA4fsFgp/u1hP2Qymsgj2o+Vw4Z3lFnJdTi2c0usPW5IqZo7igRTr7G+VZ
+	TMHCR0+KbS2QZ0DqEJIOldXcDCnqJ0qXcPihcdd54FjfaDDpErPGC35RZScz8A==
+Received: from roquette.mug.biscuolo.net (roquette [10.38.2.14])
+	by bourrache.mug.xelera.it (Postfix) with SMTP id 7C63732C9601
+	for <netfilter@vger.kernel.org>; Tue, 28 May 2024 12:00:50 +0200 (CEST)
+Received: (nullmailer pid 26162 invoked by uid 1000);
+	Tue, 28 May 2024 10:00:49 -0000
+From: Giovanni Biscuolo <giovanni@biscuolo.net>
+To: netfilter@vger.kernel.org
+Subject: Re: connection refused from DNATted host (libvirt guests!)
+In-Reply-To: <875xuzw77l.fsf@xelera.eu>
+Organization: Biscuolo Worldwide Network
+References: <875xuzw77l.fsf@xelera.eu>
+Date: Tue, 28 May 2024 12:00:48 +0200
+Message-ID: <87sey2uugf.fsf@xelera.eu>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: netfilter@vger.kernel.org
-From: "Tobias Jakobi (Compleo)" <tobias.jakobi.compleo@gmail.com>
-Subject: Using NAT engine information to apply fwmark to packet
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha512; protocol="application/pgp-signature"
+X-GND-Sasl: giovanni@biscuolo.net
 
-Hello everyone,
+--=-=-=
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-looking for some pointers concerning this problem. So what I'm trying to 
-achieve is to base the routing decision of a packet on the question "Was 
-this packet handled by the NAT engine?".
+Hello,
 
-I'm using systemd-networkd to setup NAT / masquerading on the system, 
-which basically means that networkd enables forwarding for the correct 
-interfaces and adds a nftables table.
+I'm not subscribed to this list, please keep me in the From: when
+replying, thanks!
 
-Which looks like this:
-table ip io.systemd.nat {
-     set masq_saddr {
-         type ipv4_addr
-         flags interval
-         elements = { 192.168.15.0/24 }
-     }
+I've found a solution, I'm porting here hoping it could be useful to
+others.
 
-     map map_port_ipport {
-         type inet_proto . inet_service : ipv4_addr . inet_service
-     }
+I've also change a little bit the subject to include the important
+missing information about libvirt guests.
 
-     chain prerouting {
-         type nat hook prerouting priority dstnat + 1; policy accept;
-         fib daddr type local dnat ip to meta l4proto . th dport map 
-@map_port_ipport
-     }
+Giovanni Biscuolo <giovanni@biscuolo.net> writes:
 
-     chain output {
-         type nat hook output priority -99; policy accept;
-         ip daddr != 127.0.0.0/8 oif "lo" dnat ip to meta l4proto . th 
-dport map @map_port_ipport
-     }
+[...]
 
-     chain postrouting {
-         type nat hook postrouting priority srcnat + 1; policy accept;
-         ip saddr @masq_saddr masquerade
-     }
-}
+> I'm using libvirt to define and run a guest (IPv4 192.168.133.9) inside
+> my host
 
-My naive approach was to add another table, which looks like this:
-table ip nat.test {
-     chain prerouting {
-         type nat hook prerouting priority dstnat + 2; policy accept;
-         meta mark set 0x00000007
-     }
-}
+OK now I've understand that:
 
-I can then use the fwmark 0x7 in my routing policy rule to select an 
-appropriate routing table.
+1. libvirt (still?!?) uses iptables and not nftables to define firewall
+rules (see [1])
 
-However this does not work properly.
+2. iptables defined filters are _not_ visible via "nft" commands, at
+least not via 'nft list ruleset' I was using to look at rules.  I was
+actually expecting a uniform interface to netfilter, but I see that even
+today we still have to manage netfilter via (at least?) two different
+interfaces.
 
-When I issue a simple ping to 8.8.8.8 from my NAT client (which has the 
-192.168.15.2), then I see that the ICMP packet pops up on the gateway 
-(the 192.168.15.1), is then masqueraded and tagged with the fwmark, 
-before eventually being send to the Google DNS, where it is answered.
+3. when defining a network bridge with a forward "mode=3D'nat'" parameter
+(the default) libvirt configures firewalling rules (via iptables) so
+that =C2=ABinbound connections from other networks are all prohibited; all
+connections between guests on the same network, and to/from the host to
+the guests, are unrestricted and not NATed.=C2=BB (see [2]
 
-So this direction "NAT client -> outside world" seems to be working. 
-What is not working is the when the Google DNS replies and then whole 
-masquerading stuff is done in reverse. In this case I don't see any 
-fwmark being added, and hence the routing policy rule does not apply.
+The solution I've adopted is to (re)define the libvirt created network
+bridge (swws-bridge in my case) using forward "mode=3D'open'", so that =C2=
+=ABno
+firewall rules will be added for the network=C2=BB (see [2]) by libvirt and=
+ I
+can manage all firewall rules via nftables alone.  Once reconfigured
+swws-bridge I was able to remotely connect to my DNATted (and forwarded)
+ports on my guest machine.
 
-Looking at the netfilter flowchart 
-(https://wiki.nftables.org/wiki-nftables/index.php/Netfilter_hooks) I 
-get the impression that applying rules with priority dstnat + 2 is 
-probably too late when the NAT engine detects that a packet belongs to a 
-connection that it is tracking.
+Another solution could have been to configure some libvirt nwfilters via
+XML (see [3])... but no :-D
 
-So I guess my question is: I this whole thing even possible, and if yes, 
-how do I extract the required information from the NAT engine?
+[...]
 
-I'm currently looking into netfilter's connmark functionality, as the 
-NAT engine is basically conntrack?! (is it really?) And it seems to 
-allow to transfer connection marks with packet marks, which I probably 
-need here.
+Happy hacking.
 
-Thanks in advance!
+[1] https://libvirt.org/firewall.html#firewalld-and-the-virtual-network-dri=
+ver
+so libvirt can use firewalld backends but not nftables directly :-(
 
-With best wishes,
-Tobias
+[2] https://libvirt.org/formatnetwork.html#connectivity
 
+[3] https://libvirt.org/formatnwfilter.html
+
+=2D-=20
+Giovanni Biscuolo
+
+=C2=ABSi pu=C3=B2 sperare
+ Che il mondo torni a quote pi=C3=B9 normali=C2=BB.
+
+--=-=-=
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJKBAEBCgA0FiEERcxjuFJYydVfNLI5030Op87MORIFAmZVq1AWHGdpb3Zhbm5p
+QGJpc2N1b2xvLm5ldAAKCRDTfQ6nzsw5EpVfD/9ph3Kgq3OTN1ZlGC1oXLHZrsAq
+vts/msAwZWM4v/2QeNQll4Pq29KNIpKawDc7qIINxGTSPfwISylB9XZtYSaOMmfh
+ikXNtvnRU00i9pACxMHtj2+wn5vKx3A725Az/HPlk5UXyqh6fN5GIWHOFyufV+Iu
+V3GlBhoak3n4tokheEQXv4sXG0JuYJq9nDzgXLz0YGTOEYur5pqLHFiKRnWZBlgZ
+AE2bGYvVYrctJ67QmNsjNeryvskdNoaE8Jyk+X9fvkIg0LzkuHEae0eMCU2F9kUF
+DQRIy71pA4D09bw+omc+xUrr2HGeQysK//CN8mSw7yMBf9hacs3Bk6VIyh7JkVDN
+7khFRzC8RXzvn+hyoPlP1oqBxWlszoJmCuSfw2RwLz3paJoHkPTpegRntcHr9tjA
+hZYrX5z1bjETidx0A3N31d+EwW9jB2+67u4pkdVExd53L8+3mvRcjUO9Q8D4VP5k
+QVFzGyC213CT5ooAexyLmrF3gafMwOtZslkhp3XqF0QQEL0EyglBYjBmVI8KKwHp
+VVz0Lm3bgiuIuquPXemVDG90iTwGhbZN4iAjs2hH9USpMzAjAYWXXOaTMHwPYOzB
++w/gJ7bpK8T+ueBCu9QzpgzctlJM7CkPQu4bLGhAzOWremGO2h8vZRtfmbRyn076
+UoElgPbokvM0QWrOfw==
+=ljG0
+-----END PGP SIGNATURE-----
+--=-=-=--
