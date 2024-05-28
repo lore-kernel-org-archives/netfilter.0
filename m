@@ -1,75 +1,151 @@
-Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f67.google.com (mail-wr1-f67.google.com [209.85.221.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C6C7139D1B
-	for <netfilter@vger.kernel.org>; Mon, 27 May 2024 17:17:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3B056E611
+	for <netfilter@vger.kernel.org>; Tue, 28 May 2024 09:41:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716830267; cv=none; b=e6h026Bw0a8x92vKIFBOYV2DntTXiWe0AOFmJbzwhRGGDOlh42/UDo+6wBxMDZTJkTDPsSG619ntf0GcWtyaGVSd6gIaV637EDav8zau99Qr0NY0ojnVSdBenB1PeF3kOB38M79VGmYlx4lb+X2sZXwfjRoh+5aS3UFaIN1iz/E=
+	t=1716889280; cv=none; b=C8r0HlYTmyd20wsY1erNRkqawmWSaq0IlWyITdRZHG5dsSDz5eV82CrcDQyd66Xvl54zXcAQYM8oQbSKDWeK5VvOX1bbRsdATbyCrq9wVVta0OZL4DDyyQ5BacFC7w3JId3BBuPMS+4AwWOdF0ojRJry4x+W9/LvTYQDjQAkBEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716830267; c=relaxed/simple;
-	bh=92XqNEP/w48uyizxoanTqAq0gQSw0DeIKJU8KjvoZWw=;
-	h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Um8Pp9Y0LCoGH32DrbEytc3iGuF0+w30nTUic2d7HFO1ccDkczCY0+wOz2RKxw1DTCd/WGKtlJbDVQO+jjnDeP/pO7Mjbs3XmG26t5cIpUSE/2d7/0CURi/J9GQ3cNQQ9S37eqhfl3d0/375e+PpHvVYE00oUQjoO+pQxu3RZ1c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=QwpORIG/; arc=none smtp.client-ip=198.252.153.129
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
+	s=arc-20240116; t=1716889280; c=relaxed/simple;
+	bh=AFuW+pIvdfFqXX9eHfiKoSV0VU8xXPo0tC+ywCMPAYk=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=eRNKkLtbkXaHuctNrX5WybcMnu1ZruPXqxPshVZguFt6YJoQz0IJtKh2KpIgqIkrKujAkG0apFEtuqFTZEMkrfcnVyJnKoHYpClvk8A5oRKxlhamIXKlMomrVCUF1jJtMmm1VMbBS5ki4EDQmyXlpJFV2+lE+BQBwTQ0y51jcZ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Sxl2Ld7N; arc=none smtp.client-ip=209.85.221.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="QwpORIG/"
-Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx1.riseup.net (Postfix) with ESMTPS id 4Vp2Qd6gkzzDqSL
-	for <netfilter@vger.kernel.org>; Mon, 27 May 2024 17:17:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1716830266; bh=92XqNEP/w48uyizxoanTqAq0gQSw0DeIKJU8KjvoZWw=;
-	h=Date:From:To:Subject:In-Reply-To:References:Reply-To:From;
-	b=QwpORIG/BfRYmaFBGTrSqL53F++MVSSjNVK7r5NOh4qZfUGo3lwvewX59wOFTxr8a
-	 e/qrfmmmyVvdrayMez/4cM8V/4sWbMGj7ljAfwPw/ME5thQZ9X/n0HqZeMN+ZfkD99
-	 6JH70WpdXRZjqx03/BdjqV2Jvnk94dNdzLDk+mdY=
-X-Riseup-User-ID: 06DDFA62A6AA7C1A7688D2CA85F814588606D19EEE4D8ADAB95EE8D9F4A86B00
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4Vp2Qb3L3bzFvPk
-	for <netfilter@vger.kernel.org>; Mon, 27 May 2024 17:17:41 +0000 (UTC)
-Date: Mon, 27 May 2024 17:17:18 -0000
-From: "William N." <netfilter@riseup.net>
-To: netfilter@vger.kernel.org
-Subject: Re: nft not logging some layer 2 frames?
-Message-ID: <20240527171718.7db995bf@localhost>
-In-Reply-To: <70c9f5d0-b6be-4ab2-b154-d9d334ebb19d@del.bg>
-References: <20240524155729.4fd15210@localhost>
-	<70c9f5d0-b6be-4ab2-b154-d9d334ebb19d@del.bg>
-Reply-To: netfilter@vger.kernel.org
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sxl2Ld7N"
+Received: by mail-wr1-f67.google.com with SMTP id ffacd0b85a97d-354cd8da8b9so557830f8f.0
+        for <netfilter@vger.kernel.org>; Tue, 28 May 2024 02:41:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1716889277; x=1717494077; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=AdkMjZJ29przuUvorwWq1vy46lg9tsridlnO61Z11os=;
+        b=Sxl2Ld7NSDOyOhT8OluoIJRyr6KdEjltDQ2gYlwQdy9K/0g99tbDs6tWfj/hllKc8a
+         dIxGsX2/oOPSHQeBIayeNTPUQml3dMSx/645l0iN/VVlDmvFBZC2PAE/R119o0/7xL5O
+         FSQSTcLQ6pSeGY6xIX2pVcztZqjq+onVKKrHkfhJI1P64m0kZp8XmG5Ks4SQwj5ANb6g
+         kQJIPqkNsnK5MU8UMYgRCyouuRsokI0vk1km/RdbgsE3u0gH1wYGk78n8BTpgCeJpNyg
+         he9NPHiy8hNUeEjV9/ON5Aya0XuVqEoCawgpMLRiypn2Erytt3JtUQ1Ll7CxEqOdn+UU
+         oOEw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716889277; x=1717494077;
+        h=content-transfer-encoding:subject:from:to:content-language
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=AdkMjZJ29przuUvorwWq1vy46lg9tsridlnO61Z11os=;
+        b=NZ0/+3FhWzZ8iE7IsB1Sc/mOs0TrI6KE0iEx4OHg7zuQ1kRFkqEa6lC8L9fi/P7NoU
+         dLZZsaR6l1K6CP2//RZdXaR8Jkf9qQrq6+kAW6LNN/cYDebt1ltQSguhb00Zrfo7ByXF
+         4CFBU62Cs2NznW2FouDBPIZFv7BiX+WYnH6uUjKecl4wtrBA/ERXfLz3ayaAp9D9qF5T
+         UQTFLPE21+XbTXW/bpatwRi8PlUCJo5UPUoID6sIfmvYfywwy/b85/uPfdRUYfMvSZI/
+         ru8nPxaCFoWq5q7SKVo3Gb666YiF/7r8sWXU7u/DuS/iXSf0NQ4hJScd0zRNgSpXF16v
+         EgUg==
+X-Gm-Message-State: AOJu0YzjVa1TRJRxaTEP6PUBpz6ZPCzC4j9MC9wjyAwbbb+glI256o17
+	yHxrTQhwV1nEIibFj/4liLH91mcvCQjCXZ0erUOxjmUKH0eQEatOZzd5Cg+S
+X-Google-Smtp-Source: AGHT+IEsV94t+X+bAL+a+G7sb9xdxc7kpWYvcVGX3Wqvj8r4SZ07uEuvaTu6h7Fq6FbEKX4ZYriwXg==
+X-Received: by 2002:a5d:4944:0:b0:34a:1a7a:9d60 with SMTP id ffacd0b85a97d-3552f4fca07mr7091021f8f.62.1716889276946;
+        Tue, 28 May 2024 02:41:16 -0700 (PDT)
+Received: from ?IPV6:2001:470:5139::fb2? ([2001:470:5139::fb2])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3557a1c9570sm11107731f8f.68.2024.05.28.02.41.16
+        for <netfilter@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 28 May 2024 02:41:16 -0700 (PDT)
+Message-ID: <f0c38ac0-5445-491b-9706-c1a129d77acd@gmail.com>
+Date: Tue, 28 May 2024 11:41:15 +0200
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: netfilter@vger.kernel.org
+From: "Tobias Jakobi (Compleo)" <tobias.jakobi.compleo@gmail.com>
+Subject: Using NAT engine information to apply fwmark to packet
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, 27 May 2024 13:17:50 +0300 Teodor Milkov wrote:
+Hello everyone,
 
-> I just tried putting log before counter and still nothing showing in 
-> logs. But does order really matter?
+looking for some pointers concerning this problem. So what I'm trying to 
+achieve is to base the routing decision of a packet on the question "Was 
+this packet handled by the NAT engine?".
 
-Perhaps not. I just thought it might be worth trying.
-What happens if you remove the counter and use only log?
+I'm using systemd-networkd to setup NAT / masquerading on the system, 
+which basically means that networkd enables forwarding for the correct 
+interfaces and adds a nftables table.
 
-I tried this:
+Which looks like this:
+table ip io.systemd.nat {
+     set masq_saddr {
+         type ipv4_addr
+         flags interval
+         elements = { 192.168.15.0/24 }
+     }
 
-table netdev xxx {
-        chain ingress {
-                type filter hook ingress device "eth0" priority -600
+     map map_port_ipport {
+         type inet_proto . inet_service : ipv4_addr . inet_service
+     }
 
-                counter
-                log prefix "TEST: "
-                drop
-        }
+     chain prerouting {
+         type nat hook prerouting priority dstnat + 1; policy accept;
+         fib daddr type local dnat ip to meta l4proto . th dport map 
+@map_port_ipport
+     }
+
+     chain output {
+         type nat hook output priority -99; policy accept;
+         ip daddr != 127.0.0.0/8 oif "lo" dnat ip to meta l4proto . th 
+dport map @map_port_ipport
+     }
+
+     chain postrouting {
+         type nat hook postrouting priority srcnat + 1; policy accept;
+         ip saddr @masq_saddr masquerade
+     }
 }
 
-and I ran 'arp' on the other end of the eth0 link. I can see logging
-works, i.e. without specifying any particular protocol whatsoever.
-Counter works too.
+My naive approach was to add another table, which looks like this:
+table ip nat.test {
+     chain prerouting {
+         type nat hook prerouting priority dstnat + 2; policy accept;
+         meta mark set 0x00000007
+     }
+}
+
+I can then use the fwmark 0x7 in my routing policy rule to select an 
+appropriate routing table.
+
+However this does not work properly.
+
+When I issue a simple ping to 8.8.8.8 from my NAT client (which has the 
+192.168.15.2), then I see that the ICMP packet pops up on the gateway 
+(the 192.168.15.1), is then masqueraded and tagged with the fwmark, 
+before eventually being send to the Google DNS, where it is answered.
+
+So this direction "NAT client -> outside world" seems to be working. 
+What is not working is the when the Google DNS replies and then whole 
+masquerading stuff is done in reverse. In this case I don't see any 
+fwmark being added, and hence the routing policy rule does not apply.
+
+Looking at the netfilter flowchart 
+(https://wiki.nftables.org/wiki-nftables/index.php/Netfilter_hooks) I 
+get the impression that applying rules with priority dstnat + 2 is 
+probably too late when the NAT engine detects that a packet belongs to a 
+connection that it is tracking.
+
+So I guess my question is: I this whole thing even possible, and if yes, 
+how do I extract the required information from the NAT engine?
+
+I'm currently looking into netfilter's connmark functionality, as the 
+NAT engine is basically conntrack?! (is it really?) And it seems to 
+allow to transfer connection marks with packet marks, which I probably 
+need here.
+
+Thanks in advance!
+
+With best wishes,
+Tobias
+
