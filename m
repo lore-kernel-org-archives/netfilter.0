@@ -1,40 +1,27 @@
-Received: from filter.openoffice.nl (filter.openoffice.nl [144.76.204.185])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E408152180
-	for <netfilter@vger.kernel.org>; Thu, 30 May 2024 08:26:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.204.185
+Received: from mx.apservice.sk (s7.printflow.eu [195.28.87.147])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B612C12BE91
+	for <netfilter@vger.kernel.org>; Thu, 30 May 2024 11:06:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.28.87.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717057573; cv=none; b=u08SR8edJ36pZyKV+Sb+nch/iEsgrYALxth/LFjVj6/hYXzqKstJlEpFw/grIq2ww7Q6ofe/u1yAb2VncdG1khizo5h22f0JJVDUoKw/2LhGX/XydMGzFZVf0HlP2QSHr3bpI3Go/Nurz4FgyS1LMLlolHeIcbR5zLTMpauCbfM=
+	t=1717067193; cv=none; b=jtAgAC7yT3iSj7NvcK2DRO5+Ua+GAZci4TtoYuYBl50Clf8sFXehNGxekMT2CsErcnbHCsYXK1wnGoB1DVZQ9B+9P8bZXZ+xdvxPuGH2U+I7FSbQgVDKVMNY0ohVv7lR4uvmACfyM0sudM/5gMfmYaAV7Q51JeC86sBcVa+d//E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717057573; c=relaxed/simple;
-	bh=m5ulkWtt+/F47bFy5ZqKy0HvYCDUMLdPHyImuryYf9Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=pXYfG7h5rbtbqNDwRt+2SbCNzSefnGqVheC0c34TOExRiS69TFFNMKHkv8auRqXkT8L7DiVycD4HHUlI+5FOZ6mkMFlpbknLyUjgcVs07Q/yRkjn31Hbl0KfOuo0po+gzuyqDqRrDxgvMHZdaET+otrB7tDj3JWx8FBymw/wSbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sessink.nl; spf=pass smtp.mailfrom=sessink.nl; dkim=pass (1024-bit key) header.d=sessink.nl header.i=@sessink.nl header.b=abkX7Uci; arc=none smtp.client-ip=144.76.204.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sessink.nl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sessink.nl
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=sessink.nl header.i=@sessink.nl header.b="abkX7Uci"
-Received: from localhost (localhost [127.0.0.1])
-	by filter.openoffice.nl (Postfix) with ESMTP id 5A798100438;
-	Thu, 30 May 2024 10:18:58 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at filter.openoffice.nl
-Received: from filter.openoffice.nl ([IPv6:::1])
-	by localhost (filter.openoffice.nl [IPv6:::1]) (amavisd-new, port 10024)
-	with ESMTP id 4AaYdVCVz3Rj; Thu, 30 May 2024 10:18:56 +0200 (CEST)
-Received: from blub.net (mail.blub.net [95.217.39.243])
-	by filter.openoffice.nl (Postfix) with ESMTP id 251D910032F;
-	Thu, 30 May 2024 10:18:56 +0200 (CEST)
-Received: from [IPV6:2a02:a46d:bbe9:0:647c:da8f:c2d3:5233] (2a02-a46d-bbe9-0-647c-da8f-c2d3-5233.fixed6.kpn.net [IPv6:2a02:a46d:bbe9:0:647c:da8f:c2d3:5233])
-	by blub.net (Postfix) with ESMTPSA id E2A7A3001C2;
-	Thu, 30 May 2024 10:18:55 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=sessink.nl; s=201802;
-	t=1717057136; bh=m5ulkWtt+/F47bFy5ZqKy0HvYCDUMLdPHyImuryYf9Q=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=abkX7UciajqZzoGkVJIuXHWuSmy2wrokdMKxSg4lHgmIB1n6ZUrC7f0U4zlRxKmBY
-	 AddzTiw3gz3Iohhl9R9yu1DeHOVUGYKWjkJzyKgDvCzFEKJjMakmjTHqSOco7M4FYi
-	 2cwUD1NaUwKZOK9GsIex0FbkcUehVx63H3QcJh/A=
-Message-ID: <781b5fb2-1fbd-4e76-bb59-29ee3b530f73@sessink.nl>
-Date: Thu, 30 May 2024 10:18:54 +0200
+	s=arc-20240116; t=1717067193; c=relaxed/simple;
+	bh=Z68pk/oG8GgbTPNIPTRNSzueNhn1dnWB9zH3Krg3cjc=;
+	h=Message-ID:Date:MIME-Version:Subject:References:To:From:
+	 In-Reply-To:Content-Type; b=MZ/DXgvv+EzCNyetEuWKu8Y8AnqL05fRPV+8PzEA8rbivAZ4rmGW7rjOjslCoOqpHI7TUSlK0zhLuVKTgxcr7i3Noe99qP7UeCeX/CiSrOMfztj5ZG6Bt+pzbGAdirobfZPmn7yIBtdW9d23NZu12Iyl4hiHBOrH5V7QrImhbQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=e-posta.sk; spf=pass smtp.mailfrom=e-posta.sk; arc=none smtp.client-ip=195.28.87.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=e-posta.sk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=e-posta.sk
+Received: by mx.apservice.sk (MainDeamon@apservice.sk, from userid 30022)
+	id 4DAD0401B2; Thu, 30 May 2024 13:06:28 +0200 (CEST)
+Received: from [10.1.1.50] (unknown [10.1.1.50])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx.apservice.sk (MainDeamon@apservice.sk) with ESMTPSA id 3AE1840184
+	for <netfilter@vger.kernel.org>; Thu, 30 May 2024 13:06:26 +0200 (CEST)
+Message-ID: <62990481-29d3-4d22-9a65-28ceee7e4a27@e-posta.sk>
+Date: Thu, 30 May 2024 13:06:26 +0200
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
@@ -42,54 +29,87 @@ List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Cant get "tcp dport 22 @ih,0,32 0x5353482d" to work/match
-To: Pascal Ernster <netfilter@hardfalcon.net>, netfilter@vger.kernel.org
-References: <c2c52fe9-5ff1-4eb9-96e5-81e645e77b50@hardfalcon.net>
-Content-Language: nl-NL
-From: Valentijn Sessink <valentijn@sessink.nl>
-In-Reply-To: <c2c52fe9-5ff1-4eb9-96e5-81e645e77b50@hardfalcon.net>
+Subject: Fwd: ebtables rule rewriten to nft 'set host' does not work
+Content-Language: en-US
+References: <a7c35e53-7b4a-4af0-a31d-044737e32a26@e-posta.sk>
+To: netfilter@vger.kernel.org
+From: netfilter@e-posta.sk
+In-Reply-To: <a7c35e53-7b4a-4af0-a31d-044737e32a26@e-posta.sk>
+X-Forwarded-Message-Id: <a7c35e53-7b4a-4af0-a31d-044737e32a26@e-posta.sk>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Hi,
 
-You're trying to match information that is not yet available.
 
-The first tcp/dst 22 packet will not match any of your @ih packets, 
-because it's just a SYN without payload:
 
-On 30-05-2024 09:27, Pascal Ernster wrote:
-> multiplexing SSH and TLS on TLS port 443. The idea is to match the 
-> "SSH-" string in the TCP payload of the SSH client's first packet of the 
-[...]>>         ct state { established, related } accept comment "allow
->> tracked connections"
-[...]
->>         tcp dport 22 @ih,0,32 0x5353482d counter packets 0 bytes 0 log 
->> prefix "##### SSH DEBUG 1 ##### " flags all accept comment "allow SSH- 
->> via SSH port"
->>         tcp dport 22 @ih,0,32 != 0x5353482d counter packets 0 bytes 0 
->> log prefix "##### SSH DEBUG 2 ##### " flags all accept comment "allow 
->> SSH- via SSH port"
->>         tcp dport 22 counter packets 1 bytes 80 log prefix "##### SSH 
->> DEBUG 3 ##### " flags all accept comment "allow SSH- via SSH port"
+On 2024-05-30 01:17, Kerin Millar wrote:
+> On Wed, 29 May 2024, at 10:07 AM,netfilter@e-posta.sk  wrote:
+>> Hi guys I got kind of Man-In-Middle setup, where ubuntu based box is
+>> correcting coordinates transferred thru wire.
+>>
+>> This is old setup coming from age of iptables and ebtables. I tried to
+>> move to nft command-line, but with no success. ebtables command works,
+>> but nft does not. Note: box is running nftables with iptable and ebtable
+>> interface.
+>>
+>> When I convert ebtables command into nft rule, this rule never get hit,
+>> while its ebtables equivalent does.
+new wording: nft based rule is not executed as expected - it does not 
+drop bridged connection into box
+>> nft version
+>>
+>> # nft -V
+>> nftables v1.0.2 (Lester Gooch)
+>>
+>>
+>> script setting nft ruleset via nft and ebtables
+>>
+>> #!/bin/bash
+>> IP=*IP*
+>> PORT=*PORT*
+>>
+>> nft flush ruleset
+>> nft -f - <<NFT
+>> table bridge nat {
+>>           chain PREROUTING {
+>>                   type filter hook prerouting priority dstnat; policy accept;
+>>                   meta ibrname "*DEV*"  ip daddr ${IP}  ether type ip
+>> tcp dport ${PORT}  meta pkttype set host
+>>           }
+>> }
+>> ....
+>> NFT
+>> # this rule does not work in NFT (yet?)
+>> ebtables -t nat -A PREROUTING --logical-in *DEV*-p ipv4 --ip-protocol
+>> tcp --ip-dst $IP --ip-dport $PORT -j redirect --redirect-target ACCEPT
+>>
+>>
+>> resulting ruleset, as you can see ebtables rule is hit, nft is not, when
+>> I try to match rules word, by work, I usually get error
+>>
+>> # nft list ruleset
+>> table bridge nat {
+>>           chain PREROUTING {
+>>                   type filter hook prerouting priority dstnat; policy accept;
+>>                   meta ibrname "*DEV*" ip daddr *IP* ether type ip tcp
+>> dport *PORT* meta pkttype set host
+> I note that "meta pkttype set host" isn't valid syntax, though your shell script has it right. Still, this rule has no counter. How can you be so sure that it isn't being hit? Could it perhaps be that it is hit, with processing continuing due to the absence of the "accept" keyword?
 
-... but it *will* match this one:
+Thanks for response
 
->>         tcp dport 22 accept comment "allow ssh"
+1. you are right after adding counter I can see rule get hit, but does 
+nothing (next same table rule is executed, even it should be not, and 
+coordinate corrector is not connect if ebtables rule is not used.
 
-And afterwards, packets will be accepted based on the "ct state 
-established" rule at the beginning of your script and not hit any 
-further rules.
+2. 'meta pkttype set host' is only way i could make nft ruleset to 
+parse. Now when I try 'import' back rule as 'exported' thru nft list 
+ruleset, that is use: 'meta set pkttype host' i get error: 'Error: 
+syntax error, unexpected set', so seems export + import would not work here.
 
-As your @ih information will only be available in an established 
-connection (i.e. packet number 3 or so), it will never be reached.
+3. just tried to export to json format. nft rule and ebtables rule 
+differs. ebtables rule got one "xt": null in place of 'daddr' and 
+'dport' and other one in place of 'mangle'. Seems rules are not same 
+even when their list output is almost same. is it possible nftable 
+actually add rule on IP level instead of ethernet? In any case (and more 
+importantly) does anyone know how to fix it?
 
-Also, as Florian says:
-- you cannot redirect a connection to another port once it has already 
-been established;
-- while at the same time, you cannot distinguish between SSH or HTTPS 
-without having an established connection.
-
-V.
--- 
-Durgerdamstraat 29, 1507 JL Zaandam; telefoon 075-7100071
