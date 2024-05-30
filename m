@@ -1,109 +1,95 @@
-Received: from mx.apservice.sk (s7.printflow.eu [195.28.87.147])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCC5717D8A6
-	for <netfilter@vger.kernel.org>; Thu, 30 May 2024 14:50:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.28.87.147
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717080660; cv=none; b=tt6+kNqWwFjXB3gYAw9voP11pXc0pFcWQZBxbul+8/xBcO0vKiI27QM85v3ReZn+MDU6QH/MtMATL/CSzeujCNArc76iIb7PzCk3pw9kit90wfkYiw9DvK4j489nNC1G9WIUAkuIbmzjU0rP009ZEa+q4FPx+n0QQuMwACNopwQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717080660; c=relaxed/simple;
-	bh=BmY7mXAdC6SryHQVarACZWQLTmod85phHwMZoLYIkAY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=DH3g4jIxn5Ghl5KdGqnig6G2J7dr6gclO4XfQipnx3ppMVetEtCp7fPAqJUo55MHW9NYYofvXz9VU859nJZ7v0WPmMs5dhoHGI3yOlITGPXmEAGEgXHwW60eL9sJ1CfyH1qGGU22fQMffzPZ8ialq8O8+YwiNJHtR37sxcAdFyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=e-posta.sk; spf=pass smtp.mailfrom=e-posta.sk; arc=none smtp.client-ip=195.28.87.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=e-posta.sk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=e-posta.sk
-Received: by mx.apservice.sk (MainDeamon@apservice.sk, from userid 30022)
-	id 20BBB401B3; Thu, 30 May 2024 16:50:53 +0200 (CEST)
-Received: from [10.1.1.50] (unknown [10.1.1.50])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+Received: from 0.smtp.remotehost.it (0.smtp.remotehost.it [213.190.28.75])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by mx.apservice.sk (MainDeamon@apservice.sk) with ESMTPSA id 9AD3940184;
-	Thu, 30 May 2024 16:50:51 +0200 (CEST)
-Message-ID: <2448325a-0efd-462c-b0ff-8ad132ec1397@e-posta.sk>
-Date: Thu, 30 May 2024 16:50:50 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13B7118756A
+	for <netfilter@vger.kernel.org>; Thu, 30 May 2024 20:47:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.190.28.75
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1717102049; cv=none; b=b2Ls6Sr+VWmqpcSk6Q6RQDQqnwooqpMhtDes05hHUfH7rTSJ6lYz9p3DK/nM5zQEgxkHD6YzL+X7kvCyEkdhAPxcSkIXnSEOw/mSzesFJJL8P0R6t/yAz0afLcYa31aqiE97FsG9K3LGA72hocapTWBrUZc8GRJpMNH5YfRugHg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1717102049; c=relaxed/simple;
+	bh=Ln4kpVaa+r3YP0K88GzPljoAuA3cw2idyv/G9v0HkXM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=nyKKjwlAE55Hf03GmZdXTrzaJQvU+9SaidpoSCAOFmo7tKtdZRq4C9quKuHoHTcgm2iNkv3eu3YpDmlv+56TRovaWpplOG7jX6I+ju8zFxvDz8gMGn7nsZ2ajDL9XHAQTHSn4ComvpYs0swLTfHlI+1uYTfkbIxyQFQDFq4g34Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hardfalcon.net; spf=pass smtp.mailfrom=hardfalcon.net; dkim=permerror (0-bit key) header.d=hardfalcon.net header.i=@hardfalcon.net header.b=UHL19gyc; arc=none smtp.client-ip=213.190.28.75
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=hardfalcon.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=hardfalcon.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=permerror (0-bit key) header.d=hardfalcon.net header.i=@hardfalcon.net header.b="UHL19gyc"
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=hardfalcon.net;
+	s=dkim_2024-02-03; t=1717102040;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IB05Qh6iNtHiJr3rqvlTMAapchqLUd/Uuvn2KRfJkEk=;
+	b=UHL19gycI//ni39Iuc0yeii3xQbU3ugEbBcWNJZUEJiZ2ytnWJXzXflUEEetmLm5ngejsI
+	oa0pZnnAVQV6CbBg==
+Message-ID: <009a5cd4-5b1b-4df4-9702-4c20f93c478f@hardfalcon.net>
+Date: Thu, 30 May 2024 22:47:14 +0200
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: ebtables rule rewriten to nft 'set host' does not work
-To: Florian Westphal <fw@strlen.de>, netfilter@vger.kernel.org
-References: <b1c34f18-f564-4eda-a4ce-1af086d5a8aa@e-posta.sk>
- <20240530131002.GA2041@breakpoint.cc>
+Subject: Re: Cant get "tcp dport 22 @ih,0,32 0x5353482d" to work/match
+To: Valentijn Sessink <valentijn@sessink.nl>, Florian Westphal
+ <fw@strlen.de>, netfilter@vger.kernel.org
+References: <c2c52fe9-5ff1-4eb9-96e5-81e645e77b50@hardfalcon.net>
+ <781b5fb2-1fbd-4e76-bb59-29ee3b530f73@sessink.nl>
 Content-Language: en-US
-From: netfilter@e-posta.sk
-In-Reply-To: <20240530131002.GA2041@breakpoint.cc>
+From: Pascal Ernster <netfilter@hardfalcon.net>
+In-Reply-To: <781b5fb2-1fbd-4e76-bb59-29ee3b530f73@sessink.nl>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-
-On 2024-05-30 15:10, Florian Westphal wrote:
-> netfilter@e-posta.sk <netfilter@e-posta.sk> wrote:
->> Hi guys I got kind of Man-In-Middle setup, where ubuntu based box is
->> correcting coordinates transferred thru wire.
->>
->> This is old setup coming from age of iptables and ebtables. I tried to move
->> to nft command-line, but with no success. ebtables command works, but nft
->> does not. Note: box is running nftables with iptable and ebtable interface.
->>
->> When I convert ebtables command into nft rule, this rule never get hit,
->> while its ebtables equivalent does.
->>
->> nft version
->>
->> # nft -V
->> nftables v1.0.2 (Lester Gooch)
->>
->>
->> script setting nft ruleset via nft and ebtables
->>
->> #!/bin/bash
->> IP=*IP*
->> PORT=*PORT*
->>
->> nft flush ruleset
->> nft -f - <<NFT
->> table bridge nat {
->>          chain PREROUTING {
->>                  type filter hook prerouting priority dstnat; policy accept;
->>                  meta ibrname "*DEV*"  ip daddr ${IP}  ether type ip  tcp
->> dport ${PORT}  meta pkttype set host
->>          }
->> }
->> ....
->> NFT
->> # this rule does not work in NFT (yet?)
->> ebtables -t nat -A PREROUTING --logical-in *DEV*-p ipv4 --ip-protocol tcp
->> --ip-dst $IP --ip-dport $PORT -j redirect --redirect-target ACCEPT
-> -j redirect mangles ethernet destination address to that of bridge
-> device.
->
-> See this example from nft(8):
->
->   # assumes 00:11:22:33:44:55 is local MAC address.
->   bridge input meta iif eth0 ip saddr 192.168.0.0/16 tcp dport \
->     80 meta pkttype set unicast ether daddr set 00:11:22:33:44:55
-
-explanation seems to make sense. When this project started - some decade 
-ago - I used ebtables ...-j DROP what was meant to move 
-packet/connection from bridge into routing. Getting MAC address may get 
-tricky, but doable, as bridge may have dynamic MAC, fortunaly not my 
-case. Still need to get MAC from bridge, to have one script for all 
-installations.
-
-I don't know how I may missed that in manual. Unfortunately, copy pasted 
-example does not parse.
-
-# nft bridge input meta iif eth0 ip saddr 192.168.0.0/16 tcp dport 80 
-meta pkttype set unicast ether daddr set 00:11:22:33:44:55
-
-Error: syntax error, unexpected meta, expecting string
-
-bridge input meta iif eth0 ip saddr 192.168.0.0/16 tcp dport 80 meta 
-pkttype set unicast ether daddr set 00:11:22:33:44:55
+[2024-05-30 10:03] Florian Westphal:
+> You cannot redirect once the first packet has been processed.
+…
+> Rule above accepts the packet with SSH string in the payload.
+> 
+>>> 		tcp dport 22 counter packets 1 bytes 80 log prefix "##### SSH DEBUG 3 ##### " flags all accept comment "allow SSH- via SSH port"
+> 
+> ... and this matches the initial SYN packet.
 
 
-I will try to poke with it and let you know If I do succeed.
+[2024-05-30 10:18] Valentijn Sessink:
+> You're trying to match information that is not yet available.
+> 
+> The first tcp/dst 22 packet will not match any of your @ih packets, 
+> because it's just a SYN without payload:
+…
+> ... but it *will* match this one:
+> 
+>>>         tcp dport 22 accept comment "allow ssh"
+> 
+> And afterwards, packets will be accepted based on the "ct state 
+> established" rule at the beginning of your script and not hit any 
+> further rules.
+> 
+> As your @ih information will only be available in an established 
+> connection (i.e. packet number 3 or so), it will never be reached.
+> 
+> Also, as Florian says:
+> - you cannot redirect a connection to another port once it has already 
+> been established;
+> - while at the same time, you cannot distinguish between SSH or HTTPS 
+> without having an established connection.
+
+Argh, you're right, I forgot about the SYN/ACK handshake. 🙈
+Thanks a lot to both of you for the explanation! :)
+
+I have found a way to use nginx to demultiplex SSH and TLS/HTTPS on the 
+same port, and I'm even able to pass the original client IP using the 
+PROXY protocol, but only for the TLS/HTTPS stuff.
+
+The only detail left is figuring out how to pass the original client IP 
+to OpenSSH, which doesn't support the PROXY protocol. Apparently, even 
+that should be possible by using the "transparent" parameter with nginx' 
+"proxy_bind" directive, but that's probably not a topic for the 
+netfilter mailing list.
+
+
+Regards
+Pascal
