@@ -1,66 +1,95 @@
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48758176AD2
-	for <netfilter@vger.kernel.org>; Thu, 30 May 2024 08:03:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+Received: from filter.openoffice.nl (filter.openoffice.nl [144.76.204.185])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E408152180
+	for <netfilter@vger.kernel.org>; Thu, 30 May 2024 08:26:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.204.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717056207; cv=none; b=i7w+jqX/N+j8otRnoZflceL6qwVL1r9ooKAVyMaFgelIb7hcDP5+QukchuSir/uY6BtoeD5RsHYkSNOUmylZGogYe4Z1aphMtZlLHk7Hbk1toxCOvaocUWZL+HuWZfJXP8zBhfC7/Lz5ozJ1yy6U4RfIlSR8gc8/t+q4VqEKMN4=
+	t=1717057573; cv=none; b=u08SR8edJ36pZyKV+Sb+nch/iEsgrYALxth/LFjVj6/hYXzqKstJlEpFw/grIq2ww7Q6ofe/u1yAb2VncdG1khizo5h22f0JJVDUoKw/2LhGX/XydMGzFZVf0HlP2QSHr3bpI3Go/Nurz4FgyS1LMLlolHeIcbR5zLTMpauCbfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717056207; c=relaxed/simple;
-	bh=taCg0hOVEnCwBNJcNXyd+DYJV5Ym9uaa9NBAfO9O0X8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SuG4sLoG39Cf2edST3PykOv9bSj5PR14LmHVevmJYeKmftL/LTk6kpHUBZQSAPqS5355ww4MWaVHo2yiMP0F7ssGVaku7LUUI8oMbadQkXhpAR3IS+sDHGHhs8Ay0eVf5ZxNM5FsdVlzxnB/9kjwMJ8pbwgVZ9JUE6zOYyq1i/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@strlen.de>)
-	id 1sCakt-0000WZ-Q0; Thu, 30 May 2024 10:03:23 +0200
-Date: Thu, 30 May 2024 10:03:23 +0200
-From: Florian Westphal <fw@strlen.de>
-To: Pascal Ernster <netfilter@hardfalcon.net>
-Cc: netfilter@vger.kernel.org
-Subject: Re: Cant get "tcp dport 22 @ih,0,32 0x5353482d" to work/match
-Message-ID: <20240530080323.GB19949@breakpoint.cc>
-References: <c2c52fe9-5ff1-4eb9-96e5-81e645e77b50@hardfalcon.net>
+	s=arc-20240116; t=1717057573; c=relaxed/simple;
+	bh=m5ulkWtt+/F47bFy5ZqKy0HvYCDUMLdPHyImuryYf9Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=pXYfG7h5rbtbqNDwRt+2SbCNzSefnGqVheC0c34TOExRiS69TFFNMKHkv8auRqXkT8L7DiVycD4HHUlI+5FOZ6mkMFlpbknLyUjgcVs07Q/yRkjn31Hbl0KfOuo0po+gzuyqDqRrDxgvMHZdaET+otrB7tDj3JWx8FBymw/wSbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sessink.nl; spf=pass smtp.mailfrom=sessink.nl; dkim=pass (1024-bit key) header.d=sessink.nl header.i=@sessink.nl header.b=abkX7Uci; arc=none smtp.client-ip=144.76.204.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sessink.nl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sessink.nl
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=sessink.nl header.i=@sessink.nl header.b="abkX7Uci"
+Received: from localhost (localhost [127.0.0.1])
+	by filter.openoffice.nl (Postfix) with ESMTP id 5A798100438;
+	Thu, 30 May 2024 10:18:58 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at filter.openoffice.nl
+Received: from filter.openoffice.nl ([IPv6:::1])
+	by localhost (filter.openoffice.nl [IPv6:::1]) (amavisd-new, port 10024)
+	with ESMTP id 4AaYdVCVz3Rj; Thu, 30 May 2024 10:18:56 +0200 (CEST)
+Received: from blub.net (mail.blub.net [95.217.39.243])
+	by filter.openoffice.nl (Postfix) with ESMTP id 251D910032F;
+	Thu, 30 May 2024 10:18:56 +0200 (CEST)
+Received: from [IPV6:2a02:a46d:bbe9:0:647c:da8f:c2d3:5233] (2a02-a46d-bbe9-0-647c-da8f-c2d3-5233.fixed6.kpn.net [IPv6:2a02:a46d:bbe9:0:647c:da8f:c2d3:5233])
+	by blub.net (Postfix) with ESMTPSA id E2A7A3001C2;
+	Thu, 30 May 2024 10:18:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=sessink.nl; s=201802;
+	t=1717057136; bh=m5ulkWtt+/F47bFy5ZqKy0HvYCDUMLdPHyImuryYf9Q=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=abkX7UciajqZzoGkVJIuXHWuSmy2wrokdMKxSg4lHgmIB1n6ZUrC7f0U4zlRxKmBY
+	 AddzTiw3gz3Iohhl9R9yu1DeHOVUGYKWjkJzyKgDvCzFEKJjMakmjTHqSOco7M4FYi
+	 2cwUD1NaUwKZOK9GsIex0FbkcUehVx63H3QcJh/A=
+Message-ID: <781b5fb2-1fbd-4e76-bb59-29ee3b530f73@sessink.nl>
+Date: Thu, 30 May 2024 10:18:54 +0200
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: Cant get "tcp dport 22 @ih,0,32 0x5353482d" to work/match
+To: Pascal Ernster <netfilter@hardfalcon.net>, netfilter@vger.kernel.org
+References: <c2c52fe9-5ff1-4eb9-96e5-81e645e77b50@hardfalcon.net>
+Content-Language: nl-NL
+From: Valentijn Sessink <valentijn@sessink.nl>
 In-Reply-To: <c2c52fe9-5ff1-4eb9-96e5-81e645e77b50@hardfalcon.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-Pascal Ernster <netfilter@hardfalcon.net> wrote:
-> Hi,
-> 
-> 
-> I'm trying to write an nftables rule set that should eventually allow
-> multiplexing SSH and TLS on TLS port 443. The idea is to match the "SSH-"
-> string in the TCP payload of the SSH client's first packet of the
-> connection/handshake to port 443, and then redirect/forward that TCP
-> connection to port 22, where the actual SSH server is running.
+Hi,
 
-You cannot redirect once the first packet has been processed.
+You're trying to match information that is not yet available.
 
-> However, I seem unable to get "@ih" expressions to work/match at all - even
-> when I write two "@ih" expressions that should match the exact complement of
-> each other, none of them match anything. Here's the full output of "nft list
-> ruleset" after one SSH connection to port 22:
-> 
-> > # nft list ruleset
-> > table inet filter {
-> > 	chain input {
-> > 		type filter hook input priority filter; policy drop;
-> > 		ct state invalid drop comment "early drop of invalid connections"
-> > 		ct state { established, related } accept comment "allow tracked connections"
+The first tcp/dst 22 packet will not match any of your @ih packets, 
+because it's just a SYN without payload:
 
-Rule above accepts the packet with SSH string in the payload.
+On 30-05-2024 09:27, Pascal Ernster wrote:
+> multiplexing SSH and TLS on TLS port 443. The idea is to match the 
+> "SSH-" string in the TCP payload of the SSH client's first packet of the 
+[...]>>         ct state { established, related } accept comment "allow
+>> tracked connections"
+[...]
+>>         tcp dport 22 @ih,0,32 0x5353482d counter packets 0 bytes 0 log 
+>> prefix "##### SSH DEBUG 1 ##### " flags all accept comment "allow SSH- 
+>> via SSH port"
+>>         tcp dport 22 @ih,0,32 != 0x5353482d counter packets 0 bytes 0 
+>> log prefix "##### SSH DEBUG 2 ##### " flags all accept comment "allow 
+>> SSH- via SSH port"
+>>         tcp dport 22 counter packets 1 bytes 80 log prefix "##### SSH 
+>> DEBUG 3 ##### " flags all accept comment "allow SSH- via SSH port"
 
-> > 		tcp dport 22 counter packets 1 bytes 80 log prefix "##### SSH DEBUG 3 ##### " flags all accept comment "allow SSH- via SSH port"
+... but it *will* match this one:
 
-... and this matches the initial SYN packet.
+>>         tcp dport 22 accept comment "allow ssh"
+
+And afterwards, packets will be accepted based on the "ct state 
+established" rule at the beginning of your script and not hit any 
+further rules.
+
+As your @ih information will only be available in an established 
+connection (i.e. packet number 3 or so), it will never be reached.
+
+Also, as Florian says:
+- you cannot redirect a connection to another port once it has already 
+been established;
+- while at the same time, you cannot distinguish between SSH or HTTPS 
+without having an established connection.
+
+V.
+-- 
+Durgerdamstraat 29, 1507 JL Zaandam; telefoon 075-7100071
