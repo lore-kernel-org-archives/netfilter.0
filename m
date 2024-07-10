@@ -1,100 +1,68 @@
-Received: from smtp2-kfki.kfki.hu (smtp2-kfki.kfki.hu [148.6.0.51])
+Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0D767174F
-	for <netfilter@vger.kernel.org>; Wed, 10 Jul 2024 07:19:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.6.0.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB7B2199E92
+	for <netfilter@vger.kernel.org>; Wed, 10 Jul 2024 18:43:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720595975; cv=none; b=BIA04RAWKSdeWuP517t7az2SGk0OLjLWAr817gA0NIMt8VFQYIV20OhSxOmKcYVau2+bhxzmy0ByUMA1XcYEWJZFN69TI93mj6xiQKLBilZyi+dz7P/7KqBMuetFwIYaDHkpksBYIBsJ5bNmjy/7HBmiYPNk/9LBzyp/E/ckNmU=
+	t=1720637034; cv=none; b=n+dGRPy/isVmAR4Dn2qPzRsz9Zuq4WN5cCgaawCRi8q65gSTB8sMUmV7v9La29KuhbzlN6bqylRd94tkum3bY+A68q4IwDyX4Mp3LjxVAzOu21RKo1aTcCpccYj1vE5EWbKWwxS0AedWruA0XwW1fG4PjjAgwxU5kKz8k4rlaBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720595975; c=relaxed/simple;
-	bh=A1vvU3sWGfOK6daESQDVdx3+O19sSLCLdAOq2T85gWM=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=p5vIldK+UleuD2li5BOlPHHlqtQRjxRY9VhWCaDbnjn55Ic9aa4qaoIHVCGxTCNlhV0x8plRV10N9Gd3ILtLJVQjLUvkmJsFSut1bkFtzqfCJTiVS1bgPVxJUzIUVHK7VYjXcTrDEjKJjFH3HW+u7dPKtQeQxKYmt0Nd3HjDoWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=blackhole.kfki.hu; spf=pass smtp.mailfrom=blackhole.kfki.hu; dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b=fR8NYyVl; arc=none smtp.client-ip=148.6.0.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=blackhole.kfki.hu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=blackhole.kfki.hu
+	s=arc-20240116; t=1720637034; c=relaxed/simple;
+	bh=NJd0ZokMUj2WFHFf69/jfaBv51ygSJrOpzXvO8CfEpE=;
+	h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=knj0sxgyfAnuidEAABSTONWYquGp0jL9KT/Dfk0QBsHLrMvJNvFx6KZE5ftA/1is4c7Q6p4ms5rorb6tbuognCpxGn5J0+caubjj4VJK09SwCPNyMgEBYf92w6M8nFH2o9BAoHu+MbFPFtCYANu/7X1Wde44vyMZd7AxqRFE1RA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=o884LBhk; arc=none smtp.client-ip=198.252.153.129
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=blackhole.kfki.hu header.i=@blackhole.kfki.hu header.b="fR8NYyVl"
-Received: from localhost (localhost [127.0.0.1])
-	by smtp2.kfki.hu (Postfix) with ESMTP id C93B9CC02D9;
-	Wed, 10 Jul 2024 09:11:34 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	blackhole.kfki.hu; h=mime-version:references:message-id
-	:in-reply-to:from:from:date:date:received:received:received
-	:received; s=20151130; t=1720595492; x=1722409893; bh=Y5TIye4f6O
-	/9lBxeKruzOu3ztp5GHTORGa1T88s//Bo=; b=fR8NYyVlMkqP5xdvrU8QfIcjXc
-	WYiNaXOLYUZq0u0b9ep3Dqfr+5x/2mqVtmgOFwjvZwFd5a0Tgv3qTiFIJENSkfA0
-	PPjM8oXpEOAmihbuPkuSXMz8XRxTttBkPdrZEOyfQr+2F+3zvsBZzXcnbf2DU4Qs
-	hkz0hC7VNjmjdsk6Q=
-X-Virus-Scanned: Debian amavisd-new at smtp2.kfki.hu
-Received: from smtp2.kfki.hu ([127.0.0.1])
-	by localhost (smtp2.kfki.hu [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP; Wed, 10 Jul 2024 09:11:32 +0200 (CEST)
-Received: from blackhole.kfki.hu (blackhole.szhk.kfki.hu [148.6.240.2])
-	by smtp2.kfki.hu (Postfix) with ESMTP id 7BDD3CC02CE;
-	Wed, 10 Jul 2024 09:11:32 +0200 (CEST)
-Received: by blackhole.kfki.hu (Postfix, from userid 1000)
-	id 7608B34316B; Wed, 10 Jul 2024 09:11:32 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by blackhole.kfki.hu (Postfix) with ESMTP id 746B734316A;
-	Wed, 10 Jul 2024 09:11:32 +0200 (CEST)
-Date: Wed, 10 Jul 2024 09:11:32 +0200 (CEST)
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-To: Kevin Johnson <kevinamiel100@gmail.com>
-cc: netfilter@vger.kernel.org
-Subject: Re: Understanding and debugging conntrack source code
-In-Reply-To: <CAFiPqxWHmNKNc3o_HFcZ+OVJZhFSdka8BJeyuLvhf19y9MnUkA@mail.gmail.com>
-Message-ID: <b4262091-dcc2-67f1-f8db-e709ebd613a2@blackhole.kfki.hu>
-References: <CAFiPqxWHmNKNc3o_HFcZ+OVJZhFSdka8BJeyuLvhf19y9MnUkA@mail.gmail.com>
+	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="o884LBhk"
+Received: from mx0.riseup.net (mx0-pn.riseup.net [10.0.1.42])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx1.riseup.net (Postfix) with ESMTPS id 4WK63Y5kXtzDqch
+	for <netfilter@vger.kernel.org>; Wed, 10 Jul 2024 18:35:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
+	t=1720636505; bh=NJd0ZokMUj2WFHFf69/jfaBv51ygSJrOpzXvO8CfEpE=;
+	h=Date:From:To:Subject:In-Reply-To:References:Reply-To:From;
+	b=o884LBhk7jn3Q5x0gYl+GkOzaZJ1KFHJyv5E29MIkzzr62i9LBDnO+Q+fTi+LnrNV
+	 tY6c3TZlNSExV9o4p2KETMxKbQVh2nh+gZtvh9Ws1uCpNFhuvbKuTnkjm7BDWtpklI
+	 x+8jiarac1U6Tlyb9HJEfnipIElahPghfRqPzau8=
+Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx0.riseup.net (Postfix) with ESMTPS id 4WK63R5JKnz9wGK
+	for <netfilter@vger.kernel.org>; Wed, 10 Jul 2024 18:34:59 +0000 (UTC)
+X-Riseup-User-ID: 542D95EE9C5E02B53924F64F4C983D16FCE234CC3AF132DE111E724DB6ADC91D
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4WK63Q4yP2zFs2c
+	for <netfilter@vger.kernel.org>; Wed, 10 Jul 2024 18:34:58 +0000 (UTC)
+Date: Wed, 10 Jul 2024 18:34:51 -0000
+From: "William N." <netfilter@riseup.net>
+To: netfilter@vger.kernel.org
+Subject: Re: nftables rule optimization - evaluating efficiency
+Message-ID: <20240710183451.0f193976@localhost>
+In-Reply-To: <20240702190318.618a3933@localhost>
+References: <20240702190318.618a3933@localhost>
+Reply-To: netfilter@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Hi,
+On Tue, 2 Jul 2024 19:03:18 -0000 William N. wrote:
 
-On Wed, 10 Jul 2024, Kevin Johnson wrote:
+> [...]
+> Also, it is not clear what is the actual "load" of different
+> instructions in terms of CPU cycles and memory, i.e. one instruction
+> may look as "one" but may actually cost more than another 2, right?
+> 
+> What is the proper way to evaluate and optimize rule efficiency?
 
-> I've been trying to understand the connection tracking (conntrack) 
-> source code (specifically nf_conntrack_proto_tcp.c and 
-> nf_conntrack_proto_udp.c) by sending packets between virtual machines 
-> and observing the connection states, looking to possibly find 
-> vulnerabilities or perhaps weaknesses.
->
-> Are there additional documentation somewhere that aid with the 
-> understanding of the conntrack source code (specifically 
-> nf_conntrack_proto_tcp.c and nf_conntrack_proto_udp.c), since it's a bit 
-> complex and difficult to understand?
-
-nf_conntrack_proto_udp.c is simple because we have to handle a simple 
-stream of packets and just update the timer in order not to timeout the 
-conntrack entry too early.
-
-nf_conntrack_proto_tcp.c is more complex. The code refers to RFC793 and 
-RFC1122 at a couple of places, of course. The tcp_in_window() function is 
-practically the implementation of Guido van Rooij's article (the first 
-link still works, you can download the pdf from there) with the addition 
-of SACK support (RFC2018). The hardest part I think is the big switch 
-statement in nf_conntrack_tcp_packet() which handles the reopened 
-connections, possible out of sync cases, challenge ACKs (RFC5961), 
-simultaneous opens, etc.
-
-> Is there a way a debugger can be setup where when pings are sent from
-> one machine to another, I can see which conntrack functions are being
-> executed or which lines are being processed?
-
-You can easily sprinkle the code with printk-s ;-). That of course won't 
-work in production, but in a test environment with constructed/replayed 
-traffic it is fine.
-
-Best regards,
-Jozsef
--- 
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
-PGP key : https://wigner.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics
-           H-1525 Budapest 114, POB. 49, Hungary
+Are those difficult or somehow inappropriate questions?
+Or is there a better place to ask?
