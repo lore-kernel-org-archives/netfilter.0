@@ -1,74 +1,137 @@
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5843F135A65
-	for <netfilter@vger.kernel.org>; Wed, 10 Jul 2024 21:39:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19FAFC121
+	for <netfilter@vger.kernel.org>; Thu, 11 Jul 2024 03:33:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720647546; cv=none; b=RPuNS4SsuPEqpOxhK8FR5XQT3S5hmtSbbJUo8shzyoqix4s/9bEiJBqt/7nxQpzIDj3JwgEXDtXsn30tLc3768IBEyJ+vwmVACM2H3FDL55f38aP/wbFfEtXqEEXPCmVwYokQOWxGjD3IU27q13ztXm5CIDqUO7L02zNkbFfaa8=
+	t=1720668787; cv=none; b=YvjyX8ibecQtGYfsa38TSEA5eOUrrhHB72G27fL4g2jNyBTRf5Bvlr4fVQznq6h5YUKzTdY6af82Pj1Jf/I0C8eAgXo7SS2NfXn8SCieazro6Uz9C6XS6ObEXdXKL2DooLStr0Fci/MTmu1wHu0RS5DT1tjC67vcicU45/I3EV8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720647546; c=relaxed/simple;
-	bh=1ZLcKt3YvYw3shA+Z+zH+KEtgJBoWz9iAZWA58HrtWY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FmGLYxb2z+GVtD5e0fawbCfVWym1iDfadY0Gy6rBiDPSFRlLScbOaMEPi733F1WZ/TO4LfesGbGyXKdm4apX3+r7aPRK8iFzdc3pDvAFQh1DTkIMl9KfdDeUtVEwQ7mQqS76MnEZ96m5X+3hNTNKAg8S9Xyd/E5MhrHLK6YCuzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@strlen.de>)
-	id 1sRf1h-0000jk-8h; Wed, 10 Jul 2024 23:39:01 +0200
-Date: Wed, 10 Jul 2024 23:39:01 +0200
-From: Florian Westphal <fw@strlen.de>
-To: Kerin Millar <kfm@plushkava.net>
-Cc: netfilter@vger.kernel.org
-Subject: Re: nftables rule optimization - evaluating efficiency
-Message-ID: <20240710213901.GB550@breakpoint.cc>
-References: <20240702190318.618a3933@localhost>
- <20240710183451.0f193976@localhost>
- <1c12afa3-40fd-48df-9076-92277570ef3b@app.fastmail.com>
+	s=arc-20240116; t=1720668787; c=relaxed/simple;
+	bh=70pNCh0gTngXESz19XhJgIZXkfMZO1ZAwvDtsiSnZZw=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=CaMwFwG54Cti7YzV1MDfztXYFZLTRioFpJQUaqt157XdybxfmVNo+KOZ3FoHN/ocnIvC9oJsyl7FpmU1uosmJHT3m7ypwGo3xkdvCZHCk62ysvJo8B2s33AAEPx+VkSqPf6HXvpJ4MiTU/izrHHz8AI7aE5u7nKTt7+jn0P/mxQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fEouo2kY; arc=none smtp.client-ip=209.85.219.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fEouo2kY"
+Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-6b5d6ba7c90so2609276d6.1
+        for <netfilter@vger.kernel.org>; Wed, 10 Jul 2024 20:33:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1720668785; x=1721273585; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=hFOLRE1QEbGoioM6inAqebQ6pt+yClTlw418Sxdop1I=;
+        b=fEouo2kYS5SI7SRIYffz039i6uRWtSKqWvwiMCalYI5rMsPhpKLP/+/cBOjhgrctSd
+         esWyGod5bMR5kdWCXqAe3qwGC764mu56CtRVEIffnA+z0hk0tadGPGwELiAMgdZAgAq9
+         +hCMpxT38s2R5JCmQaQasyo1v6z3O2Y6OQqU/b7d79gjpeKpJ7EwneTnjI1pbEDlKU8K
+         +BDKN8LZWU1p42aqxjn7OR9Xrsw1FBsljpzBk5JwCHTu3nFqOtwK/+iyvzCbR9sVoi+U
+         bOZ3rePozy+AHDD+AilJm8orUd8QCcsf6oCs3PY44SsgsTLOwCmSXrsrdzxL2Io6hLtM
+         qESQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720668785; x=1721273585;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hFOLRE1QEbGoioM6inAqebQ6pt+yClTlw418Sxdop1I=;
+        b=qJM6TwfvIMQwurLcoVNugMEHlvW94LQ3Gv82mTji9Eei0TTVlHPVWyiHeWrxFgau0G
+         uCFaNn+mxP5I7wOPdfVxNNPo6P4vprnmsy8KcKCX/pyUodzyCVlG/dYW7QPCw9XikqYv
+         iIu+fBcRyTs5kgwLQASbDV5S95kp9sE8dB6+MS6WgGbPzcmBLQMoBfjxk4BnVL8q88HJ
+         Ovy02bMljsMbNlmS+wZHsgTj1CYGh9Zm+/7Qa8upPKg9O/MWz39ORNHORJwDgCJlDE8Z
+         gQgejdkRrkqbeN4Xok46nYs7ex7EzuuyCAINqXeFt6TKcKV864m2Hnzfd0d5f8i+YzyX
+         gDIw==
+X-Gm-Message-State: AOJu0YyF2oiRqXG0AJePc27TJaBMCq+j+fq9gwIKjcuQxALKouy1FuMB
+	kLNJsyczF1uW+5dFxjPpYqWHV8CYFwQ/Ij9woVlMBUy1bdVHO7v/J7o9j2sRIKVvdRv+NPQ9YUw
+	LTKjnmMpAvzwVuXDI1hQ26dobwhAFZFGZaIg=
+X-Google-Smtp-Source: AGHT+IHPZKn6saObcmYNAYzrbAnMm7aIlQbIkn4/UQTnYRkyHAPJflP1m6B7izouUI+njJpBeQG54+v/PHEik4TfbKQ=
+X-Received: by 2002:ad4:5fce:0:b0:6b5:32de:bfe7 with SMTP id
+ 6a1803df08f44-6b61bce076bmr75146556d6.22.1720668784954; Wed, 10 Jul 2024
+ 20:33:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1c12afa3-40fd-48df-9076-92277570ef3b@app.fastmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+From: Matt Ayre <maayr3@gmail.com>
+Date: Thu, 11 Jul 2024 13:32:53 +1000
+Message-ID: <CAEoHhZyh=Cri2gkJmSnqj-MBa3wp2xEGMV+F02iM9TOv4QeWGA@mail.gmail.com>
+Subject: Transparent SNAT bridge with physdev module
+To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Kerin Millar <kfm@plushkava.net> wrote:
-> On Wed, 10 Jul 2024, at 7:34 PM, William N. wrote:
-> > On Tue, 2 Jul 2024 19:03:18 -0000 William N. wrote:
-> >
-> >> [...]
-> >> Also, it is not clear what is the actual "load" of different
-> >> instructions in terms of CPU cycles and memory, i.e. one instruction
-> >> may look as "one" but may actually cost more than another 2, right?
-> 
-> Indeed. It cannot be presumed that all instructions are equal in expense.
+Hi there,
 
-Yes, but then again nft will try to make reasonable choices.
+I have a very basic SNAT + physdev setup and I'm finding it wont work
+and it would seem to be a obvious bug to me if this scenario is
+supported, which I believe it is
 
-tcp dport { 22, 80 } will not allocate a huge hash table for two values.
-Is it faster than
-tcp dport 22
-tcp dport 80
-?
+Some of my versions here;
 
-No idea.  And given the volume of bugs I don't really care too much.
+$ sudo iptables --version
+iptables v1.8.9 (nf_tables)
+$ uname -a
+Linux us-sjc-eqnx-sv1-gw-0-5530 6.1.0-15-amd64 #1 SMP PREEMPT_DYNAMIC
+Debian 6.1.66-1 (2023-12-09) x86_64 GNU/Linux
 
-> >> What is the proper way to evaluate and optimize rule efficiency?
-> >
-> > Are those difficult or somehow inappropriate questions?
-> > Or is there a better place to ask?
-> 
-> You are enquiring as to how to assess the relative efficiency of the bytecode instructions through the direct understanding of how they are processed by the nftables VM. Said VM is unique and - as far as I know - wholly undocumented. As regards difficulty, the intersection of people who follow the list and possess the necessary expertise can probably be conveyed quite comfortably by a single digit. It is a pity; I would also have been interested to see an informed reply but the absence of one wasn't altogether surprising to me.
+The relevant iptables configuration is this;
 
-The additional issue that its hard to give a useful answer.
+iptables -m physdev --physdev-out ens87f6 -t nat -A POSTROUTING -s
+10.0.0.0/8 -j SNAT --to-source x.x.x.62 --persistent
 
-Use 'perf record -a ... and pktgen' is likely a rather useless reply.
-And might even incorrect depending on what one wants to measure.
+The result is that SNAT works in the outbound direction but on the
+reply direction when the packet is unNATed, the dmac is changed to be
+the bridge mac which causes the packet to punt to routing instead of
+being forwarded correctly
 
-In general, its best to compact the ruleset as much as possible
-and use sets/maps/vmaps wherever possible.
+I know this because of the following packet logging I subsequently
+added on the mangle prerouting and forward chains and can see whats
+happening at the intermediate stages inside the system;
+
+kernel: IPTABLES M-PR:IN=br_nat_in_3 OUT= PHYSIN=ens87f6
+MAC=52:54:00:2b:95:c9:82:71:1f:83:80:b6:08:00 SRC=52.94.29.126
+DST=x.x.x.62 LEN=84 TOS=0x00 PREC=0x00 TTL=241 ID=46108 DF PROTO=ICMP
+TYPE=0 CODE=0 ID=54612 SEQ=408
+kernel: IPTABLES M-F :IN=br_nat_in_3 OUT=br0 PHYSIN=ens87f6
+MAC=a2:20:71:68:06:df:82:71:1f:83:80:b6:08:00 SRC=52.94.29.126
+DST=10.117.117.91 LEN=84 TOS=0x00 PREC=0x00 TTL=240 ID=46108 DF
+PROTO=ICMP TYPE=0 CODE=0 ID=54612 SEQ=408
+
+$ ip link show br_nat_in_3
+226: br_nat_in_3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc
+noqueue state UP mode DEFAULT group default qlen 1000
+  link/ether a2:20:71:68:06:df brd ff:ff:ff:ff:ff:ff
+
+Same problem is visible from ebtables logging
+
+So I can imagine why in some of the use cases of different scenarios
+rewriting the dmac is necessary to push the packet back up to routing
+and get it forwarded to the correct place, but that behaviour becomes
+a problem in the transparent nat scenario
+
+Maybe its never worked or never been supported in the history of
+nftables/iptables but some of the examples I found online led me to
+believe otherwise. It does make sense to me that it never would work
+because theres no toggle to turn off this behaviour and its required
+for the other scenarios. It would need to be smart enough to turn off
+that dmac mangle behaviour when the physdev module was in use for
+bridged traffic, though possibly that would not always be the desired
+behaviour
+
+I did have a quick look into ntfables and whether it could do this but
+1) i couldnt find any documentation for this scenario or examples of
+people doing it and 2) I am understanding that both are just frontends
+for the same underlying functionality anyway since I can get the
+following output with the nft command for my iptables rule
+
+$ sudo nft list table ip nat
+# Warning: table ip nat is managed by iptables-nft, do not touch!
+table ip nat {
+    chain POSTROUTING {
+        type nat hook postrouting priority srcnat; policy accept;
+        ip saddr 10.0.0.0/8 xt match physdev counter packets 10959
+bytes 1033744 snat to x.x.x.62 persistent
+    }
+    chain PREROUTING {
+        type nat hook prerouting priority dstnat; policy accept;
+    }
+}
