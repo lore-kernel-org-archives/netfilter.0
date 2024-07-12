@@ -1,60 +1,95 @@
-Received: from mx1.riseup.net (mx1.riseup.net [198.252.153.129])
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E68D44644C
-	for <netfilter@vger.kernel.org>; Thu, 11 Jul 2024 19:15:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.129
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87FF413E41A
+	for <netfilter@vger.kernel.org>; Fri, 12 Jul 2024 08:55:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720725318; cv=none; b=jEDymCxdPor+eIM2BJnLxXP74ZT94lOotpJBoT/M1EfeL2R0bukfX+fjuzsO6CcvyNnxhuouL38gSeyXwkbfU9pnlPa9o9RrpQz1DTW5myiJQaQI03a+Po1YLcixRzgH7jrJC5dgKaravW44RtgSm9dFsdJ2TnHBN6In7v+0Z2g=
+	t=1720774552; cv=none; b=b79PRHGQedPGWIwj/psLUe8aYxuDJpAWB42crnzdv7RI7W97klj2NmSm86Snhz0L8qOH81L+VaHUrmDIdT3mYaFII3ysKWW7Tm1kT4BgiI5VJsMADkxfFEqltxyGLZgA4YMdBz7JKgAphla4C+gS4I/l2p+2V2BVidXnNCIlmxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720725318; c=relaxed/simple;
-	bh=HMmNDqJP8hSqaDdflrqysN3F+kVysVJbEA5XEVx7EaY=;
-	h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jr6l0HVZ39KRCHDUieG5NKH7B5ly96rq5Yk1G3F7jeac+iYJluUrPlAPSbai+YgItY2eu0fvQWn50awlJPc+PgRQ1Cykadj2gtRfmVFiod+dz7BCmyOmCVRMQzvZ2aIc5D1YhNcbA11egMY40YvNp7G66H8GD5M83OZ5EKT0Zzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=MkWn4rMy; arc=none smtp.client-ip=198.252.153.129
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="MkWn4rMy"
-Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx1.riseup.net (Postfix) with ESMTPS id 4WKkvS3JZVzDqMS
-	for <netfilter@vger.kernel.org>; Thu, 11 Jul 2024 19:15:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1720725316; bh=HMmNDqJP8hSqaDdflrqysN3F+kVysVJbEA5XEVx7EaY=;
-	h=Date:From:To:Subject:In-Reply-To:References:Reply-To:From;
-	b=MkWn4rMyCVGa0GpFSgzSN8bQo+cVR40beUTWuLRPx5FQDyK1+gJk3XEa1b1Gx3tZc
-	 ISnVb3SYsVyIvahqDfPdONHtOcPHIpp7ki3MWLu54wvbalpUAq+EKhmzhcfLvf4v8n
-	 Ot5O0+PU6Vg4gkhdUi6o2+IwR+nRpvYwL8CaorMs=
-X-Riseup-User-ID: 52497F0FD7EEC3C9A8235F68E5F825D8C508675F6D528733E5637451FD4926A6
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4WKkvR3KMBzFwbl
-	for <netfilter@vger.kernel.org>; Thu, 11 Jul 2024 19:15:15 +0000 (UTC)
-Date: Thu, 11 Jul 2024 19:15:12 -0000
-From: "William N." <netfilter@riseup.net>
-To: netfilter@vger.kernel.org
-Subject: Re: nftables rule optimization - evaluating efficiency
-Message-ID: <20240711191512.084c060a@localhost>
-In-Reply-To: <20240710213901.GB550@breakpoint.cc>
-References: <20240702190318.618a3933@localhost>
-	<20240710183451.0f193976@localhost>
-	<1c12afa3-40fd-48df-9076-92277570ef3b@app.fastmail.com>
-	<20240710213901.GB550@breakpoint.cc>
-Reply-To: netfilter@vger.kernel.org
+	s=arc-20240116; t=1720774552; c=relaxed/simple;
+	bh=/29nmhTnI/oLlglxf2qMDrowoLbm9gpSVH0DLDzNzKE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FO2DJYYi2roDr95iaviBmKuZiV3RbjjvIEPy1UAqkRalyIsB/7zRoOhKM6mWzAc2IarNIkVb8qfeCyoXyEEtkV387Nciw879xWdXvo2aEy0SFGPRn4Wb+mvsp0k/thqj49dR5mnSUYAXNEf8sy9rC6yIiNk1KMaKIQEnjgeauqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gnumonks.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gnumonks.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
+Received: from uucp by ganesha.gnumonks.org with local-bsmtp (Exim 4.94.2)
+	(envelope-from <laforge@gnumonks.org>)
+	id 1sSC45-001kjK-2U; Fri, 12 Jul 2024 10:55:41 +0200
+Received: from laforge by localhost.localdomain with local (Exim 4.98-RC3)
+	(envelope-from <laforge@gnumonks.org>)
+	id 1sSBy2-0000000061g-0L0n;
+	Fri, 12 Jul 2024 10:49:26 +0200
+Date: Fri, 12 Jul 2024 10:49:26 +0200
+From: Harald Welte <laforge@gnumonks.org>
+To: Seetharaman <seetharamang17@gmail.com>
+Cc: netfilter@vger.kernel.org
+Subject: Re: Regarding ulogd_output_SYSLOG.so
+Message-ID: <ZpDuFmbSr3uXZdIs@nataraja>
+References: <CAOWAF3y694=sQhW0oTtm8pKnbP=_mP02=cKcFk6pLUehjDrCyQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAOWAF3y694=sQhW0oTtm8pKnbP=_mP02=cKcFk6pLUehjDrCyQ@mail.gmail.com>
 
-On Wed, 10 Jul 2024 23:39:01 +0200 Florian Westphal wrote:
+Hi Steetharaman,
 
-> In general, its best to compact the ruleset as much as possible
-> and use sets/maps/vmaps wherever possible.
+On Fri, Jul 12, 2024 at 12:02:02PM +0530, Seetharaman wrote:
+>    I am trying to use ulogd in the openwrt system to send the logs captured
+> using NFLOG to a remote syslog server.
 
-That's what I suspected too.
+I don't think this is something that is implemented. You'd have to run a local syslogd
+which then forwards it to a remote machine.
+
+Or, alternatively, you would need to implement an output plugin that implements the remote syslog
+prtoocol (https://datatracker.ietf.org/doc/html/rfc5424).  Should be rather easy: Simply open a UDP
+socket and then format the packets into strings and send it over said UDP socket.
+
+> I am using below ulogd configuration:
+> 
+> [global]
+> loglevel="5"
+> logfile="/var/log/ulogd.log"
+> plugin="/usr/lib/ulogd/ulogd_inppkt_NFLOG.so"
+> plugin="/usr/lib/ulogd/ulogd_filter_IFINDEX.so"
+> plugin="/usr/lib/ulogd/ulogd_filter_IP2STR.so"
+> plugin="/usr/lib/ulogd/ulogd_filter_PRINTPKT.so"
+> plugin="/usr/lib/ulogd/ulogd_output_SYSLOG.so"
+> plugin="/usr/lib/ulogd/ulogd_raw2packet_BASE.so"
+> stack="log1:NFLOG,base1:BASE,ifi1:IFINDEX,ip2str1:IP2STR,print1:PRINTPKT,sys1:SYSLOG"
+> network="lan"
+> [log1]
+> group="1"
+
+
+> *[sys1]*
+> *host="10.0.0.1"*
+> *port="514"*
+
+where did you find the instructions that those config options are valid?  Did you see
+any such example anywhere?
+
+http://git.netfilter.org/ulogd2/tree/output/ulogd_output_SYSLOG.c#n48
+clearly only registers the "facility" and "level" options, and nothing else.
+
+> But the logs are being sent to the local syslog daemon instead of remote
+> syslog daemon.
+
+no surprise, as you're doing something the code clearly was not designed for, and which I don't believe
+we ever claimed should work.
+
+> Does ulogd_output_SYSLOG.so  really supports remote logging?
+
+No. Why do you think it would? where did you find such information?
+
+-- 
+- Harald Welte <laforge@gnumonks.org>          https://laforge.gnumonks.org/
+============================================================================
+"Privacy in residential applications is a desirable marketing option."
+                                                  (ETSI EN 300 175-7 Ch. A6)
