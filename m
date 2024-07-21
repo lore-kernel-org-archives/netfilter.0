@@ -1,142 +1,121 @@
-Received: from fhigh1-smtp.messagingengine.com (fhigh1-smtp.messagingengine.com [103.168.172.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6C9626AED
-	for <netfilter@vger.kernel.org>; Sun, 21 Jul 2024 16:47:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F30D4400
+	for <netfilter@vger.kernel.org>; Sun, 21 Jul 2024 17:58:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721580424; cv=none; b=e/TI2EEymi9wE8jazO8tN/wG2jPpMYpmb9opk7Qfgqfg9AhNp4071JjikPleNqtmha4/dW8Ca6sCkKIWFL4PclS1SrgfLSDyF+IaxYv5cyq5kA/4PRgBEab360z+x5atW1PsgUS3r13GLQJ+e42yVQJTlf0zzS6pRbLWNyMhyfs=
+	t=1721584725; cv=none; b=kC/ZIa+6LVYVYmf0TZg5tVgj+WUWN8+tTY8fsun73fzzx4mM23h3EEHlIMYt2J/N2megHXucFdkxgjlJR5KJsrhICgB7zbBNl/SJgGdcuKSpX9kgvPI6HclHKoXUEIyo1Lk3txo6OXoZmoVDzeRk5L2plVv5t26jzmr5pplyXIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721580424; c=relaxed/simple;
-	bh=/45fIRpp8ARR+la7TSfAcRwDcrZULBVs31KBNqIBQ98=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=Mtbra0KLXX7PVVbEyYZNSiCU+m11HhCjAkctMbNgkJy/q8NuxJFAAhgebG4OJQxQih4fkH2yKKA1V9EAj0SvdlTRxDSDyBIdIPZrodtBqmLid9TATHp5JxA25TeUhQZVm5bYWPC69oJ4WvJufOurmISR9DjUy92MD/dGNlGcrm4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=YjOm9Lja; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=b2iFGbYE; arc=none smtp.client-ip=103.168.172.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
+	s=arc-20240116; t=1721584725; c=relaxed/simple;
+	bh=CAyRoRu4VWHMJ2dVI+B1ziOlM3VFTkp2cEDJw7cp5CM=;
+	h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=bfIBdDLEiefOA1AWvsnW5QTHy9i1bogZT8ikKQg3O6mg3FClvsg0gRBkBvSBzjdo7PCPCD4Aes6KiSnd+QP0e7OM502LqaU2jUsOdtuO1mQ27Baw14uo9dPDA3qNLgDeY4ZCvvnGA2YLPBseYn/BW7sS4JIxRmLkxouVX/whoWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=K/y6HBfO; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=h6JVwkhc; arc=none smtp.client-ip=185.25.250.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="YjOm9Lja";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="b2iFGbYE"
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id AFCF711400AC;
-	Sun, 21 Jul 2024 12:47:01 -0400 (EDT)
-Received: from wimap25 ([10.202.2.85])
-  by compute5.internal (MEProxy); Sun, 21 Jul 2024 12:47:01 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-	 h=cc:cc:content-type:content-type:date:date:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm1; t=1721580421; x=
-	1721666821; bh=+JcC99b/ZgLnN7c610G9UtteA/BZAMSUyVxnyY5oiXs=; b=Y
-	jOm9Ljaew6NzsdU+ThtDjiVFbavwtARMMjYfoAd8C1lfcjEU05G1tCxZXsNGTP9t
-	95q7+2D6NX2KLLNuxqVUeWh9MfboZm0f5LJv5fi8IChKAes7rNyBi0a9g8cYgrcM
-	Q9qglXpMgkFg8//sCCSyLwqDlvJFyElr6Qv0CJ6M8+LRIIst6E0TaDajiPOW7H5Z
-	LqjzRXqRAcuhzFtqA2fOyf+NrKmOLtoGEyvXtR00J4b+uN/e78q62a19/G3ZtQQP
-	oHOpC0AqLDL2tera7jqsHVpVymqp/o9IOpQ+38He5v/T2k8OBFu/nPRybmRjJEMW
-	QF01v/0fE/hEuzbQiASSA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm3; t=1721580421; x=1721666821; bh=+JcC99b/ZgLnN7c610G9UtteA/BZ
-	AMSUyVxnyY5oiXs=; b=b2iFGbYEXyAHaN4kqXdQWcma6qp0C6+b3+vTpnEbQGtk
-	8Hnfa1w7QNNLm5IEDAuSfllRqsBEP9p2gtrFOQPTtYshNVotwkGDoDJ1CiXdRMfx
-	V+NZ9IAHTREkU6TCjFILEOcQ8wqcuM6ZBcFXz7pLfAt4TFyBUMSb2/0NgspCEQjd
-	V8IZHcCguNPUNIuZmQMIJLrqbZd/3Ed2rVAfz96oEqC0ZSroBJloYxOsLflzYQel
-	m2MChEKlVfBz0SXQj9HxrfVORSDjxj45qXfuvCkPJWTYpRXpNXvxuu6TcG1O1i/f
-	AcXqI4w8+YHNw9z+YGHije/AAOmIFapuuhidbjzoeg==
-X-ME-Sender: <xms:hTudZtC6rFJ4H7cCeqXwROfLL1iumzxVZVnKjiBFAAQCaYCA4k7nTA>
-    <xme:hTudZriGGENVc5pj_Tuz-ukei4bdXWqhM8_dLEG5iLLTZy9SbzcvA8Zyl0GWG1caY
-    VjwHEZDlbmJq9QJ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrheehgddutdeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedfmfgv
-    rhhinhcuofhilhhlrghrfdcuoehkfhhmsehplhhushhhkhgrvhgrrdhnvghtqeenucggtf
-    frrghtthgvrhhnpeelleeuvdetgedtteduvdetheegjeeigfekudekfeeugeelffevkeek
-    udfftefhveenucffohhmrghinhepnhgvthhfihhlthgvrhdrohhrghenucevlhhushhtvg
-    hrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehkfhhmsehplhhushhhkhgr
-    vhgrrdhnvght
-X-ME-Proxy: <xmx:hTudZokEe1PH0Qbvkg4y3RpNg7LcQtCG9oG6rnlRD8z8-5L5OdKVRA>
-    <xmx:hTudZnxwo1LQ024MDI9Oe38KeesAGE4FT072lr7RtmkYEIEWFaUC1g>
-    <xmx:hTudZiQROn0vozHnaGAJqC99h-JiGQH-XcP-Y3a1VrROZY2R5L7AgA>
-    <xmx:hTudZqZANgMsWFdLkF4nj0qhkUu_DUHDSEtIo8JYAgppydqhxIjlgg>
-    <xmx:hTudZteeIMi4qa53f5SZL3biyDwVJtQ0zSXqOm6p6I9ujnNjpts0xlen>
-Feedback-ID: i2431475f:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id 31D4A1040061; Sun, 21 Jul 2024 12:47:01 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-568-g843fbadbe-fm-20240701.003-g843fbadb
+	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="K/y6HBfO";
+	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="h6JVwkhc"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
+	s=r2023; h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:
+	Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:
+	Content-Type:Message-Id:In-Reply-To:References;
+	bh=K0a/sUNd7aWiip8vym20NqfjZRKrkrGI1ulUsD1+/M8=; t=1721584721; x=1722794321; 
+	b=K/y6HBfO/Lsyr60QEyPnQdg0DmXFGa8TS+OSv2VJWOIgFi8okhG7oJr0iLnsdb5U8/jPOlTjgez
+	JVFYWccWlSGHjpU/c5mGG/6A6wXFx9xmzrrHqC0GDTSekgxlYWxkkeX2yFBSkoXnxJ47LnPgFxZd+
+	PSCwZTUDzvXu4rowg3M=;
+DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=slavino.sk; s=e2023; h=Content-Type:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:
+	MIME-Version:Content-Type:Message-Id:In-Reply-To:References;
+	bh=K0a/sUNd7aWiip8vym20NqfjZRKrkrGI1ulUsD1+/M8=; t=1721584721; x=1722794321; 
+	b=h6JVwkhcmkVHvRoegsjaqqSFCcqWRfEbMOsmO7U8ADVBgdpZBRfOtR6hAvOw8DL0/JQjLTudVMJ
+	kKTw5/FDVAQ==;
+Received: from dovex.skk ([192.168.10.12])
+	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <linux@slavino.sk>)
+	id 1sVapS-000Q4M-1j
+	for netfilter@vger.kernel.org;
+	Sun, 21 Jul 2024 19:58:38 +0200
+Date: Sun, 21 Jul 2024 19:58:36 +0200
+From: Slavko <linux@slavino.sk>
+To: "netfilter ML" <netfilter@vger.kernel.org>
+Subject: Re: Sets update
+Message-ID: <20240721195836.340f65f1@bonifac.skk>
+In-Reply-To: <ba07a45c-7564-4b40-92de-ea698d16f49f@app.fastmail.com>
+References: <A1B9EF5A-1696-4A6D-B0D1-81DD32DC41C0@slavino.sk>
+	<ba07a45c-7564-4b40-92de-ea698d16f49f@app.fastmail.com>
+Face: iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAFVBMVEX7+/xrTUz4//3Ozc10AAH5/v3///8f7tJ8AAAB2UlEQVQ4jW2STY6EIBCFSwmumykPQDTtGqxO74kcgNiJa8dE7n+EAfzBtONCpD5eVfko8Pszeb+sflqOPVyA535abyB+9wnfwMgek/8XFEO33sE6lYWB/8HLqOUOFre87H+g9LK2P7y6p+o+1mJ1B75j1g7VeFeshTXifbfEza+goAqqLyAhAKsC+QahqVD9o74VYxGB6PUBJl+C5FwCUhEUSEpCM41PmGYJABK07oNk0EQQAw54K9KDGAQhl6C4ewDwJnZjjVZptQaD0PQSOqC4R2x0Btg76HwbI5oE1Rt4WUPhvG9cjAht+00SvlD5JThQQYiY2g6s3oBRzXMzgG1nKS2asDr+HPb0aSGmsiWwS9r4+rxP0M1tkgxQW/PzewF+pqPKgEV1cbdiCQxUB+AyaJzeq5AmfQG+IEwtDSTwIU8ArtBCtSKYpEg/lhNwFnwYGi2I3qRhPkGpYx5kmmBqtcrgg5hcUrxhqBicoNh6wnB11vaXP/8lkSYkeYaan4CJV7RQVtFm88jAxSlE8M85XonKgM91qBwtmnVt+1z86eI1+/3OMLc7tgbV5k1IhtndMnS/j6x3dAEciB/D7VuVwQI5Po9h1E7Au/kkq89gKt3ziMu1SuAPWe5Dq/EEywcAAAAASUVORK5CYII=
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <25712e6c-a8ec-4b90-a3f5-9598f2732a73@app.fastmail.com>
-In-Reply-To: 
- <IaAIguFhd9166N8ahepxBr7RDvjeW_BR2R0yuNXw0bCEGePrIv2hmcAPU6J2PM6JciU1Rd3YaqzqRA75zSf8OliDMf-gqNetZkmd-3SNHf4=@proton.me>
-References: <A1B9EF5A-1696-4A6D-B0D1-81DD32DC41C0@slavino.sk>
- <ba07a45c-7564-4b40-92de-ea698d16f49f@app.fastmail.com>
- <IaAIguFhd9166N8ahepxBr7RDvjeW_BR2R0yuNXw0bCEGePrIv2hmcAPU6J2PM6JciU1Rd3YaqzqRA75zSf8OliDMf-gqNetZkmd-3SNHf4=@proton.me>
-Date: Sun, 21 Jul 2024 17:46:41 +0100
-From: "Kerin Millar" <kfm@plushkava.net>
-To: Eric <evil.function@proton.me>
-Cc: Slavko <linux@slavino.sk>, "netfilter ML" <netfilter@vger.kernel.org>
-Subject: Re: Sets update
-Content-Type: text/plain
+Content-Type: multipart/signed; boundary="Sig_/04tqrqE3r/uReEop6cXB3sW";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Sun, 21 Jul 2024, at 5:09 PM, Eric wrote:
-> On Sunday, July 21st, 2024 at 02:58, Kerin Millar <kfm@plushkava.net> wrote:
->> As far as I am aware, it is impossible to add elements in a way that merely reset their expiry times in the case that they exist
->
-> 'reset element' was added in 1.0.8, but requires kernel 6.5 or later:
->
-> nft add   element inet xyz set_ipv4 '{ 1.0.0.1 expires 1h }'
-> sleep 10
-> nft reset element inet xyz set_ipv4 '{ 1.0.0.1 }'
-> nft get   element inet xyz set_ipv4 '{ 1.0.0.1 }'
->
-> See https://bugzilla.netfilter.org/show_bug.cgi?id=1689
+--Sig_/04tqrqE3r/uReEop6cXB3sW
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Thank you. Putting aside my disappointment that the terminology shall now forever be disjoint with that employed by packet path updates, it appears to be a broken feature.
+Hi,
 
-# nft -v; uname -r; nft list ruleset
-nftables v1.0.9 (Old Doc Yak #3)
-6.6.36-1-lts
-table ip filter {
-        set x {
-                type ipv4_addr
-                size 65536
-                flags dynamic,timeout
-                timeout 1h
-                elements = { 1.2.3.4 expires 57m38s723ms }
-        }
-}
-# nft 'reset element ip filter x { 1.2.3.4 }'
-table ip filter {
-        set x {
-                type ipv4_addr
-                size 65536
-                flags dynamic,timeout
-                timeout 1h
-                elements = { 1.2.3.4 expires 56m37s83ms }
-        }
-}
-# nft list ruleset
-table ip filter {
-        set x {
-                type ipv4_addr
-                size 65536
-                flags dynamic,timeout
-                timeout 1h
-                elements = { 1.2.3.4 expires 56m5s366ms }
-        }
-}
+D=C5=88a Sun, 21 Jul 2024 10:58:30 +0100 "Kerin Millar" <kfm@plushkava.net>
+nap=C3=ADsal:
 
-Further, defining the initial timeout on a per-element basis has no impact on the proceedings here, nor does defining a new timeout and/or expires value in the course of issuing the reset command.
+> Mind you, it gets worse. While the nft utility supports a JSON output
+> mode to ease parsing, its output is less accurate than the
+> conventional output mode in so far as all "timeout" and "expires"
+> values are truncated to integer seconds and conveyed as JSON integers.
 
-An additional problem with it is that it raises an error in the case that the specified element does not already exist, just as delete does. So, even if it were working as intended, it would continue to fall short of achieving feature parity with ipset(8).
+Even worse, the JSON output lacks counters at all, the nft output:
 
---
-Kerin Millar
+    ...
+    elements =3D { IP.AD.DR.ES last used never counter packets 0 bytes 0\
+                     expires 1d23h36m40s340ms
+    ...
+
+But JSON output lacks counters:
+
+    nft -j list set ... | jq '.nftables[] | select(.set !=3D null).set.elem=
+[0]'
+    { "elem": {
+        "val": "IP.AD.DR.ES",
+        "expires": 171653,
+        "last": null
+      }
+    }
+
+And yes, error messages are more than cryptic... We was talking about
+memory usage, and my first attempt to add/update list of ~2700 items
+ended with "Out of memory" error. First i was shocked, 2700 items
+consumes 6GB RAM??? It took some time to realize, that i had duplicate
+IPs in list. Really not helpful error message, and one element per line
+doesn't help with that...
+
+regards
+
+--=20
+Slavko
+https://www.slavino.sk
+
+--Sig_/04tqrqE3r/uReEop6cXB3sW
+Content-Type: application/pgp-signature
+Content-Description: Digitálny podpis OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEwhNakIB2F5/fdXmSAQVZxpJoYkcFAmadTEwACgkQAQVZxpJo
+YkfOiAf/SuIa8ZEq4BYBzChAzMqTw7F94uuPFYSqmLRk7jz3XGFUKds6aEB7GbWt
+/M/SWyzmhqGGD4QPOkYxxJULFU+1orXiPvgNX1GNLLWowinIPddbljwo7AEAQ7Od
+qfFrPCJUMa6i//LIh1sYLG7icVLOMifY8oUzBl00Sbcwd7cNCsXhP0WezUndO8hd
+J48dozk4oZdQPeVZDySK1hKkXJMMWr6jZ9RN6kOU0QbeHDjA1+1oLejt/Tg1jE8C
+ZWJ8dlFe37dglkiTkRsYjC0YOSOOWCXJ4lwMPuojInW08Q24hISLSI5fi1i8J4kZ
+BLmSmOrIXpKSRDQjz1e0pVjkgaNlFw==
+=ndlX
+-----END PGP SIGNATURE-----
+
+--Sig_/04tqrqE3r/uReEop6cXB3sW--
