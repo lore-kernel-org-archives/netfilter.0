@@ -1,121 +1,293 @@
-Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F30D4400
-	for <netfilter@vger.kernel.org>; Sun, 21 Jul 2024 17:58:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BBEE1C6A8;
+	Mon, 22 Jul 2024 20:37:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721584725; cv=none; b=kC/ZIa+6LVYVYmf0TZg5tVgj+WUWN8+tTY8fsun73fzzx4mM23h3EEHlIMYt2J/N2megHXucFdkxgjlJR5KJsrhICgB7zbBNl/SJgGdcuKSpX9kgvPI6HclHKoXUEIyo1Lk3txo6OXoZmoVDzeRk5L2plVv5t26jzmr5pplyXIk=
+	t=1721680629; cv=none; b=JSifB9KM4FXpXOQB2B6XYvrmOLP462UgN1wv5s+bmORneQvr9CubWx3wfviX6dL/7tu42gL5rpfwwZ3zccsj8zc+6TZA4EQD0kUfKTmU4hktIYwY0mRQ1GPUyojLpZ/l7RX6bUszUc4kq2HHwAXAJPw0II9aAVd7ar2mbulvqLg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721584725; c=relaxed/simple;
-	bh=CAyRoRu4VWHMJ2dVI+B1ziOlM3VFTkp2cEDJw7cp5CM=;
-	h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bfIBdDLEiefOA1AWvsnW5QTHy9i1bogZT8ikKQg3O6mg3FClvsg0gRBkBvSBzjdo7PCPCD4Aes6KiSnd+QP0e7OM502LqaU2jUsOdtuO1mQ27Baw14uo9dPDA3qNLgDeY4ZCvvnGA2YLPBseYn/BW7sS4JIxRmLkxouVX/whoWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=K/y6HBfO; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=h6JVwkhc; arc=none smtp.client-ip=185.25.250.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="K/y6HBfO";
-	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="h6JVwkhc"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
-	s=r2023; h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:
-	Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:
-	Content-Type:Message-Id:In-Reply-To:References;
-	bh=K0a/sUNd7aWiip8vym20NqfjZRKrkrGI1ulUsD1+/M8=; t=1721584721; x=1722794321; 
-	b=K/y6HBfO/Lsyr60QEyPnQdg0DmXFGa8TS+OSv2VJWOIgFi8okhG7oJr0iLnsdb5U8/jPOlTjgez
-	JVFYWccWlSGHjpU/c5mGG/6A6wXFx9xmzrrHqC0GDTSekgxlYWxkkeX2yFBSkoXnxJ47LnPgFxZd+
-	PSCwZTUDzvXu4rowg3M=;
-DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=slavino.sk; s=e2023; h=Content-Type:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:
-	MIME-Version:Content-Type:Message-Id:In-Reply-To:References;
-	bh=K0a/sUNd7aWiip8vym20NqfjZRKrkrGI1ulUsD1+/M8=; t=1721584721; x=1722794321; 
-	b=h6JVwkhcmkVHvRoegsjaqqSFCcqWRfEbMOsmO7U8ADVBgdpZBRfOtR6hAvOw8DL0/JQjLTudVMJ
-	kKTw5/FDVAQ==;
-Received: from dovex.skk ([192.168.10.12])
-	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96)
-	(envelope-from <linux@slavino.sk>)
-	id 1sVapS-000Q4M-1j
-	for netfilter@vger.kernel.org;
-	Sun, 21 Jul 2024 19:58:38 +0200
-Date: Sun, 21 Jul 2024 19:58:36 +0200
-From: Slavko <linux@slavino.sk>
-To: "netfilter ML" <netfilter@vger.kernel.org>
+	s=arc-20240116; t=1721680629; c=relaxed/simple;
+	bh=6SsSuQc23hw4o6m6TjTj2wDt9FevKsg2fRTBnsLzIAo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=isaY03zWyWp1UF7Mjg75DTQmcls7OTGhrJvG1afp86IU64AIgRNSv2ZQ/BU9fKHsGPIVbd5soUmOWEON0KWVv9D1jtNiVODWt9dH4Lz85cTaeicAAlaY02Au3lOO4jG4PUrC3/xoIFuH28jfJY4PoYIZSFy2N9IrIk/8K+FWQKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
+Received: from [46.222.212.173] (port=7656 helo=gnumonks.org)
+	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <pablo@gnumonks.org>)
+	id 1sVzm7-00HEI5-Es; Mon, 22 Jul 2024 22:36:54 +0200
+Date: Mon, 22 Jul 2024 22:36:49 +0200
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Kerin Millar <kfm@plushkava.net>
+Cc: Slavko <linux@slavino.sk>, netfilter ML <netfilter@vger.kernel.org>,
+	netfilter-devel@vger.kernel.org
 Subject: Re: Sets update
-Message-ID: <20240721195836.340f65f1@bonifac.skk>
-In-Reply-To: <ba07a45c-7564-4b40-92de-ea698d16f49f@app.fastmail.com>
+Message-ID: <Zp7C4VRGtXta6cdM@calendula>
 References: <A1B9EF5A-1696-4A6D-B0D1-81DD32DC41C0@slavino.sk>
-	<ba07a45c-7564-4b40-92de-ea698d16f49f@app.fastmail.com>
-Face: iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAFVBMVEX7+/xrTUz4//3Ozc10AAH5/v3///8f7tJ8AAAB2UlEQVQ4jW2STY6EIBCFSwmumykPQDTtGqxO74kcgNiJa8dE7n+EAfzBtONCpD5eVfko8Pszeb+sflqOPVyA535abyB+9wnfwMgek/8XFEO33sE6lYWB/8HLqOUOFre87H+g9LK2P7y6p+o+1mJ1B75j1g7VeFeshTXifbfEza+goAqqLyAhAKsC+QahqVD9o74VYxGB6PUBJl+C5FwCUhEUSEpCM41PmGYJABK07oNk0EQQAw54K9KDGAQhl6C4ewDwJnZjjVZptQaD0PQSOqC4R2x0Btg76HwbI5oE1Rt4WUPhvG9cjAht+00SvlD5JThQQYiY2g6s3oBRzXMzgG1nKS2asDr+HPb0aSGmsiWwS9r4+rxP0M1tkgxQW/PzewF+pqPKgEV1cbdiCQxUB+AyaJzeq5AmfQG+IEwtDSTwIU8ArtBCtSKYpEg/lhNwFnwYGi2I3qRhPkGpYx5kmmBqtcrgg5hcUrxhqBicoNh6wnB11vaXP/8lkSYkeYaan4CJV7RQVtFm88jAxSlE8M85XonKgM91qBwtmnVt+1z86eI1+/3OMLc7tgbV5k1IhtndMnS/j6x3dAEciB/D7VuVwQI5Po9h1E7Au/kkq89gKt3ziMu1SuAPWe5Dq/EEywcAAAAASUVORK5CYII=
+ <ba07a45c-7564-4b40-92de-ea698d16f49f@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/04tqrqE3r/uReEop6cXB3sW";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: multipart/mixed; boundary="9isL2rVfE/aIL8hq"
+Content-Disposition: inline
+In-Reply-To: <ba07a45c-7564-4b40-92de-ea698d16f49f@app.fastmail.com>
+X-Spam-Score: -1.9 (-)
 
---Sig_/04tqrqE3r/uReEop6cXB3sW
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
 
-Hi,
+--9isL2rVfE/aIL8hq
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
-D=C5=88a Sun, 21 Jul 2024 10:58:30 +0100 "Kerin Millar" <kfm@plushkava.net>
-nap=C3=ADsal:
+On Sun, Jul 21, 2024 at 10:58:30AM +0100, Kerin Millar wrote:
+> I doubt it. Perhaps we need a new "update element" command to act
+> similarly to the set statement bearing the same name.
 
-> Mind you, it gets worse. While the nft utility supports a JSON output
-> mode to ease parsing, its output is less accurate than the
-> conventional output mode in so far as all "timeout" and "expires"
-> values are truncated to integer seconds and conveyed as JSON integers.
+I have these two patches that have remained in my local tree. They
+need a rebase, update tests and so on.
 
-Even worse, the JSON output lacks counters at all, the nft output:
+I can aim at merging this upstream in the next development cycle.
 
-    ...
-    elements =3D { IP.AD.DR.ES last used never counter packets 0 bytes 0\
-                     expires 1d23h36m40s340ms
-    ...
+--9isL2rVfE/aIL8hq
+Content-Type: text/x-diff; charset=utf-8
+Content-Disposition: attachment;
+	filename="0001-netfilter-nf_tables-add-timeout-extension-to-element.patch"
 
-But JSON output lacks counters:
+From deb81f87834b117f60609177e1c8dd58bf09cd00 Mon Sep 17 00:00:00 2001
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Date: Wed, 18 Oct 2023 22:49:03 +0200
+Subject: [PATCH nf-next,RFC 1/2] netfilter: nf_tables: add timeout extension
+ to elements to prepare for updates
 
-    nft -j list set ... | jq '.nftables[] | select(.set !=3D null).set.elem=
-[0]'
-    { "elem": {
-        "val": "IP.AD.DR.ES",
-        "expires": 171653,
-        "last": null
-      }
-    }
+Timeout extension is not allocated in case that the default set timeout
+value is the same. However, with set element updates, this can be updated
+too so, allocate it but do not include it in netlink messages so users
+do not observe any change in the existing listings / events.
 
-And yes, error messages are more than cryptic... We was talking about
-memory usage, and my first attempt to add/update list of ~2700 items
-ended with "Out of memory" error. First i was shocked, 2700 items
-consumes 6GB RAM??? It took some time to realize, that i had duplicate
-IPs in list. Really not helpful error message, and one element per line
-doesn't help with that...
+This updates c3e1b005ed1c ("netfilter: nf_tables: add set element
+timeout support").
 
-regards
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+Need rebase and extend tests.
 
---=20
-Slavko
-https://www.slavino.sk
+ net/netfilter/nf_tables_api.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
---Sig_/04tqrqE3r/uReEop6cXB3sW
-Content-Type: application/pgp-signature
-Content-Description: Digitálny podpis OpenPGP
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index ec616bbe75de..b7ede2aba06d 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -5642,6 +5642,7 @@ static int nf_tables_fill_setelem(struct sk_buff *skb,
+ 		goto nla_put_failure;
+ 
+ 	if (nft_set_ext_exists(ext, NFT_SET_EXT_TIMEOUT) &&
++	    *nft_set_ext_timeout(ext) != READ_ONCE(set->timeout) &&
+ 	    nla_put_be64(skb, NFTA_SET_ELEM_TIMEOUT,
+ 			 nf_jiffies64_to_msecs(*nft_set_ext_timeout(ext)),
+ 			 NFTA_SET_ELEM_PAD))
+@@ -6752,11 +6753,9 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+ 		if (err < 0)
+ 			goto err_parse_key_end;
+ 
+-		if (timeout != READ_ONCE(set->timeout)) {
+-			err = nft_set_ext_add(&tmpl, NFT_SET_EXT_TIMEOUT);
+-			if (err < 0)
+-				goto err_parse_key_end;
+-		}
++		err = nft_set_ext_add(&tmpl, NFT_SET_EXT_TIMEOUT);
++		if (err < 0)
++			goto err_parse_key_end;
+ 	}
+ 
+ 	if (num_exprs) {
+-- 
+2.30.2
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEEwhNakIB2F5/fdXmSAQVZxpJoYkcFAmadTEwACgkQAQVZxpJo
-YkfOiAf/SuIa8ZEq4BYBzChAzMqTw7F94uuPFYSqmLRk7jz3XGFUKds6aEB7GbWt
-/M/SWyzmhqGGD4QPOkYxxJULFU+1orXiPvgNX1GNLLWowinIPddbljwo7AEAQ7Od
-qfFrPCJUMa6i//LIh1sYLG7icVLOMifY8oUzBl00Sbcwd7cNCsXhP0WezUndO8hd
-J48dozk4oZdQPeVZDySK1hKkXJMMWr6jZ9RN6kOU0QbeHDjA1+1oLejt/Tg1jE8C
-ZWJ8dlFe37dglkiTkRsYjC0YOSOOWCXJ4lwMPuojInW08Q24hISLSI5fi1i8J4kZ
-BLmSmOrIXpKSRDQjz1e0pVjkgaNlFw==
-=ndlX
------END PGP SIGNATURE-----
+--9isL2rVfE/aIL8hq
+Content-Type: text/x-diff; charset=utf-8
+Content-Disposition: attachment;
+	filename="0002-netfilter-nf_tables-set-element-timeout-update-suppo.patch"
 
---Sig_/04tqrqE3r/uReEop6cXB3sW--
+From 6f9de93f7a4e9cc004689cbffe836a5d80ce9c5f Mon Sep 17 00:00:00 2001
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Date: Wed, 18 Oct 2023 23:07:21 +0200
+Subject: [PATCH nf-next,RFC 2/2] netfilter: nf_tables: set element timeout
+ update support
+
+Store new timeout and expiration to be updated from .commit path.
+Simply discard the timeout update if .abort path is exercised.
+
+This patch requires ("netfilter: nf_tables: use timestamp to check for
+set element timeout") to make sure an element does not expire while
+transaction is ongoing.
+
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+Need rebase and extend tests.
+
+ include/net/netfilter/nf_tables.h | 19 +++++++++-
+ net/netfilter/nf_tables_api.c     | 62 ++++++++++++++++++++++++++-----
+ 2 files changed, 69 insertions(+), 12 deletions(-)
+
+diff --git a/include/net/netfilter/nf_tables.h b/include/net/netfilter/nf_tables.h
+index d791dbfd12f9..9e48b5ab5f39 100644
+--- a/include/net/netfilter/nf_tables.h
++++ b/include/net/netfilter/nf_tables.h
+@@ -801,8 +801,14 @@ static inline struct nft_set_elem_expr *nft_set_ext_expr(const struct nft_set_ex
+ static inline bool __nft_set_elem_expired(const struct nft_set_ext *ext,
+ 					  u64 tstamp)
+ {
+-	return nft_set_ext_exists(ext, NFT_SET_EXT_EXPIRATION) &&
+-	       time_after_eq64(tstamp, *nft_set_ext_expiration(ext));
++	u64 expiration;
++
++	if (!nft_set_ext_exists(ext, NFT_SET_EXT_EXPIRATION))
++		return false;
++
++	expiration = READ_ONCE(*nft_set_ext_expiration(ext));
++
++	return time_after_eq64(tstamp, expiration);
+ }
+ 
+ static inline bool nft_set_elem_expired(const struct nft_set_ext *ext)
+@@ -1657,6 +1663,9 @@ struct nft_trans_table {
+ struct nft_trans_elem {
+ 	struct nft_set			*set;
+ 	struct nft_elem_priv		*elem_priv;
++	u64				timeout;
++	u64				expiration;
++	bool				update;
+ 	bool				bound;
+ };
+ 
+@@ -1664,6 +1673,12 @@ struct nft_trans_elem {
+ 	(((struct nft_trans_elem *)trans->data)->set)
+ #define nft_trans_elem_priv(trans)	\
+ 	(((struct nft_trans_elem *)trans->data)->elem_priv)
++#define nft_trans_elem_update(trans)	\
++	(((struct nft_trans_elem *)trans->data)->update)
++#define nft_trans_elem_timeout(trans)	\
++	(((struct nft_trans_elem *)trans->data)->timeout)
++#define nft_trans_elem_expiration(trans)	\
++	(((struct nft_trans_elem *)trans->data)->expiration)
+ #define nft_trans_elem_set_bound(trans)	\
+ 	(((struct nft_trans_elem *)trans->data)->bound)
+ 
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index b7ede2aba06d..74696ec4a491 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -5641,17 +5641,20 @@ static int nf_tables_fill_setelem(struct sk_buff *skb,
+ 		         htonl(*nft_set_ext_flags(ext))))
+ 		goto nla_put_failure;
+ 
+-	if (nft_set_ext_exists(ext, NFT_SET_EXT_TIMEOUT) &&
+-	    *nft_set_ext_timeout(ext) != READ_ONCE(set->timeout) &&
+-	    nla_put_be64(skb, NFTA_SET_ELEM_TIMEOUT,
+-			 nf_jiffies64_to_msecs(*nft_set_ext_timeout(ext)),
+-			 NFTA_SET_ELEM_PAD))
+-		goto nla_put_failure;
++	if (nft_set_ext_exists(ext, NFT_SET_EXT_TIMEOUT)) {
++		u64 timeout = READ_ONCE(*nft_set_ext_timeout(ext));
++
++		if (timeout != READ_ONCE(set->timeout) &&
++		    nla_put_be64(skb, NFTA_SET_ELEM_TIMEOUT,
++				 nf_jiffies64_to_msecs(timeout),
++				 NFTA_SET_ELEM_PAD))
++			goto nla_put_failure;
++	}
+ 
+ 	if (nft_set_ext_exists(ext, NFT_SET_EXT_EXPIRATION)) {
+ 		u64 expires, now = get_jiffies_64();
+ 
+-		expires = *nft_set_ext_expiration(ext);
++		expires = READ_ONCE(*nft_set_ext_expiration(ext));
+ 		if (time_before64(now, expires))
+ 			expires -= now;
+ 		else
+@@ -6584,6 +6587,7 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+ 	struct nft_data_desc desc;
+ 	enum nft_registers dreg;
+ 	struct nft_trans *trans;
++	bool update = false;
+ 	u64 expiration;
+ 	u64 timeout;
+ 	int err, i;
+@@ -6893,8 +6897,28 @@ static int nft_add_set_elem(struct nft_ctx *ctx, struct nft_set *set,
+ 			     nft_set_ext_exists(ext2, NFT_SET_EXT_OBJREF) &&
+ 			     *nft_set_ext_obj(ext) != *nft_set_ext_obj(ext2)))
+ 				goto err_element_clash;
+-			else if (!(nlmsg_flags & NLM_F_EXCL))
++			else if (!(nlmsg_flags & NLM_F_EXCL)) {
+ 				err = 0;
++				if (timeout) {
++					nft_trans_elem_timeout(trans) = timeout;
++					if (expiration == 0)
++						expiration = timeout;
++
++					update = true;
++				}
++				if (expiration) {
++					nft_trans_elem_expiration(trans) =
++						expiration;
++					update = true;
++				}
++
++				if (update) {
++					nft_trans_elem_priv(trans) = elem_priv;
++					nft_trans_elem_update(trans) = true;
++					nft_trans_commit_list_add_tail(ctx->net, trans);
++					goto err_elem_free;
++				}
++			}
+ 		} else if (err == -ENOTEMPTY) {
+ 			/* ENOTEMPTY reports overlapping between this element
+ 			 * and an existing one.
+@@ -10096,7 +10120,24 @@ static int nf_tables_commit(struct net *net, struct sk_buff *skb)
+ 		case NFT_MSG_NEWSETELEM:
+ 			te = (struct nft_trans_elem *)trans->data;
+ 
+-			nft_setelem_activate(net, te->set, te->elem_priv);
++			if (te->update) {
++				const struct nft_set_ext *ext =
++					nft_set_elem_ext(te->set, te->elem_priv);
++
++				if (te->timeout &&
++				    nft_set_ext_exists(ext, NFT_SET_EXT_TIMEOUT)) {
++					WRITE_ONCE(*nft_set_ext_timeout(ext),
++						   te->timeout);
++				}
++				if (te->expiration &&
++				    nft_set_ext_exists(ext, NFT_SET_EXT_EXPIRATION)) {
++					WRITE_ONCE(*nft_set_ext_expiration(ext),
++						   get_jiffies_64() + te->expiration);
++				}
++			} else {
++				nft_setelem_activate(net, te->set, te->elem_priv);
++			}
++
+ 			nf_tables_setelem_notify(&trans->ctx, te->set,
+ 						 te->elem_priv,
+ 						 NFT_MSG_NEWSETELEM);
+@@ -10377,7 +10418,8 @@ static int __nf_tables_abort(struct net *net, enum nfnl_abort_action action)
+ 			nft_trans_destroy(trans);
+ 			break;
+ 		case NFT_MSG_NEWSETELEM:
+-			if (nft_trans_elem_set_bound(trans)) {
++			if (nft_trans_elem_update(trans) ||
++			    nft_trans_elem_set_bound(trans)) {
+ 				nft_trans_destroy(trans);
+ 				break;
+ 			}
+-- 
+2.30.2
+
+
+--9isL2rVfE/aIL8hq--
