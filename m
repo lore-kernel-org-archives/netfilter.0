@@ -1,85 +1,94 @@
-Received: from smtp-outgoing-1701.laposte.net (smtp-outgoing-1701.laposte.net [160.92.124.99])
+Received: from mail.thelounge.net (mail.thelounge.net [91.118.73.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66CB87E785
-	for <netfilter@vger.kernel.org>; Mon, 29 Jul 2024 06:00:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=160.92.124.99
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2470F7D3EC
+	for <netfilter@vger.kernel.org>; Mon, 29 Jul 2024 07:23:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.118.73.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722232849; cv=none; b=n0ruxrBuvSIay+e1rI99HNkephfzd1HOSmZrH3jAYx16Bd+Nyo04WZUjK9/mOmHHvl0GbGNrkj+odSX1NYbREW3CdhZ+vMJjO55wIF71e19Ta/7RtNtcep5Xc8Yqima/a3Sxv9OInMe1vTxWyS2KweD75kDk/uZNO5jfKx+6Cak=
+	t=1722237815; cv=none; b=lwKMkke+WWEBGWFntr+13UZnpzKro1flfzs4WSwl+FJ4FhEUgeEURzK/OsZr7959bcOMG/mrnA0pUo0abunQjCX6XrjDWTKSrGY0vzenhKIt8P2rdEo6JTq2xr2eBVWTDGn9/SQP12pvbeIJivrX2pDOb1NO7Ypi3BFXD3VxBvY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722232849; c=relaxed/simple;
-	bh=9Qt4Zs4qL0CN0taIlVUurlt7tC6K+YEc8HsAnKXdMt8=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=RLh3N2pdOqjyi7yFVo9EOaDJg9KQZ+PbvK8ISOBjV2SUczHobriS3fF0z0K0saWOoITI+h0Dvgm1sWOjFouKDA1KYLDxk2tWm/FzetnUJqfL8sDbOX9w+0MQArpixlboJMXQLMgyTq2yx5747NTm9s1l5wnuIEL6CALNzFyL6NY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=laposte.net; spf=pass smtp.mailfrom=laposte.net; dkim=pass (2048-bit key) header.d=laposte.net header.i=@laposte.net header.b=dBJOoIHP; arc=none smtp.client-ip=160.92.124.99
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=laposte.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=laposte.net
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=laposte.net header.i=@laposte.net header.b="dBJOoIHP"
-X-mail-filterd: {"version":"1.8.0","queueID":"4WX9kz4FLzzdZLg","contextId":
- "b72f77a1-547f-4cab-bd03-7aaf87c7909c"}
-Received: from outgoing-mail.laposte.net (localhost.localdomain [127.0.0.1])
-	by mlpnf0106.laposte.net (SMTP Server) with ESMTP id 4WX9kz4FLzzdZLg
-	for <netfilter@vger.kernel.org>; Sun, 28 Jul 2024 20:59:07 +0200 (CEST)
-X-mail-filterd: {"version":"1.8.0","queueID":"4WX9kz3B82zdZLZ","contextId":
- "d1d17ba9-d71e-4105-bcf9-31fbdef71a81"}
-X-lpn-mailing: LEGIT
-X-lpn-spamrating: 40
-X-lpn-spamlevel: not-spam
-Received: from B550-AORUS-ELITE-AX-V2 (lfbn-ren-1-1305-231.w86-229.abo.wanadoo.fr [86.229.152.231])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	s=arc-20240116; t=1722237815; c=relaxed/simple;
+	bh=VI0o5+oMdHWMKNh1iOSN/R3m7vm05+SNLyLibZqVHPE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JVM76Uvcz4El+eX4+Iewf261dLV0KsT9p9yciguZC+bvmZzf1jYsXeLMwWvK+0ZZuoB6bVbjV47yHGU3wN3ePQBI75cTmooQDDKcWMCL6oLqW8CofMJG2NIYnTkcJQYXELH84M49ajAHGYJQIxmswgNGvA6ypyUTK7KEQHNgdlM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thelounge.net; spf=pass smtp.mailfrom=thelounge.net; arc=none smtp.client-ip=91.118.73.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thelounge.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=thelounge.net
+Received: from [10.10.10.2] (rh.vpn.thelounge.net [10.10.10.2])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
 	(No client certificate requested)
-	by mlpnf0106.laposte.net (SMTP Server) with ESMTPSA id 4WX9kz3B82zdZLZ
-	for <netfilter@vger.kernel.org>; Sun, 28 Jul 2024 20:59:07 +0200 (CEST)
-From: Kevin Vigouroux <ke.vigouroux@laposte.net>
-To: netfilter@vger.kernel.org
-Subject: How to set packet priority in the netdev table?
-Date: Sun, 28 Jul 2024 20:59:07 +0200
-Message-ID: <87plqxuyv8.fsf@laposte.net>
+	(Authenticated sender: h.reindl@thelounge.net)
+	by mail.thelounge.net (THELOUNGE MTA) with ESMTPSA id 4WXVFr394ZzXLL;
+	Mon, 29 Jul 2024 09:23:23 +0200 (CEST)
+Message-ID: <f54bf0d9-7166-4412-81a2-46c889a3c39c@thelounge.net>
+Date: Mon, 29 Jul 2024 09:23:22 +0200
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=laposte.net; s=lpn-wlmd; t=1722232843; bh=9Qt4Zs4qL0CN0taIlVUurlt7tC6K+YEc8HsAnKXdMt8=; h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dBJOoIHPh3O+KVxgmFgO6NoMOvmqzPYkSniaqhsuWNvPu+BDD//MEQR4D195P6z2JTG8g0gDmWTE5+RLIxxxfBTSAncWMUiyjvtRmDwgTcHBysFCfY3Lf0Uby5HLplYvVXKqhDddr/RgTZglypCqkSVqhz19vCRKck/DtdLav5a3Cy5BGVqsRgEUj+p9VnkPpCgaC7ZuHl7czl3oZ72fwB+nS+dXLmCDB6/5vBXOfnaJojORKPzaBjzs3E3t/IdWgpWqCK1tHGhPYBSCzAtH/8IwGaL6rtFf5HkZE2hic3IuNCH0KqvT0RncwTSw2Rb0msPwIlh7KM8+7AYfppD7HA==;
+User-Agent: Mozilla Thunderbird
+Subject: Re: Unknown option "--to-ports"
+Content-Language: en-US
+To: Tom Isaacson <thomas.isaacson@motorolasolutions.com>
+Cc: Florian Westphal <fw@strlen.de>, netfilter@vger.kernel.org
+References: <CAMp_5HbpSmy4G0-Aty9dD4FnwvvNU-iQfTtzYhysQSiL6jbA1g@mail.gmail.com>
+ <CAMp_5Ha4HGLqkWAA=syC3+U0M3xxq3OuN9b_WvYNc9dV=CvzDg@mail.gmail.com>
+ <20240725021904.GA13051@breakpoint.cc>
+ <CAMp_5HZL85o7frtb+JSw6sq+uLT8V3St0Asz+Z5zqW529UaCMg@mail.gmail.com>
+ <614ba217-0f24-434f-9cd1-a98061f951f6@thelounge.net>
+ <CAMp_5HaeF7diaCS8TsF0BvrUVjd9yNJ+kT_LZsrX3xxCc_rGMw@mail.gmail.com>
+From: Reindl Harald <h.reindl@thelounge.net>
+Autocrypt: addr=h.reindl@thelounge.net; keydata=
+ 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
+ K4rYsjPimkSIVdrNM//wVKdCTbO+
+Organization: the lounge interactive design
+In-Reply-To: <CAMp_5HaeF7diaCS8TsF0BvrUVjd9yNJ+kT_LZsrX3xxCc_rGMw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi!
 
-I don't understand how to set the internal priority of packets encapsulated in
-802.1Q frames.
 
-#+BEGIN_SRC
-table netdev filter {
-    chain egress {
-         type filter hook egress device eth1 priority filter; policy accept;
-         udp dport 547 meta priority set 0:6 ip6 dscp set cs6
-    }
-}
-#+END_SRC
+Am 29.07.24 um 07:44 schrieb Tom Isaacson:
+> I'm not accusing anyone, I was asking for help diagnosing the problem.
+> Luckily I ignored your suggestions because you were both wrong
 
-tcpdump shows me that the DSCP in the DHCPv6 packets is modified but not the
-PCP (priority code point).
+no, below you postet a strace / compile orgy which shouldn't have been 
+necessary if the distribution would have built the kernel binary right
 
-#+BEGIN_QUOTE
-    NETDEV ADDRESS FAMILY
-
-    The Netdev address family handles packets from the device ingress and egress
-    path. This family allows you to filter packets of any ethertype such as ARP,
-    VLAN 802.1q, VLAN 802.1ad (Q-in-Q) as well as IPv4 and IPv6 packets.
-#+END_QUOTE
-
-Source: man 8 nft
-
-It is unclear which interface I should use?
-
-eth1 or eth1.832 (VLAN 832)?
-
-I've asked for help on the OpenWrt forum but they haven't been able to answer
-me.
-
-Source: https://forum.openwrt.org/t/how-do-you-set-packet-priority-in-the-netdev-table/205371/4
-
----
-Best regards
-Kevin Vigouroux
+[harry@srv-rhsoft:/downloads]$ rpm -q --file 
+/usr/lib64/xtables/libxt_owner.so
+iptables-libs-1.8.9-5.fc39.x86_64
