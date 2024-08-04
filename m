@@ -1,95 +1,66 @@
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from smtp-outgoing-1601.laposte.net (smtp-outgoing-1601.laposte.net [160.92.124.96])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7028C182D8
-	for <netfilter@vger.kernel.org>; Thu,  1 Aug 2024 18:01:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37974210FB
+	for <netfilter@vger.kernel.org>; Sun,  4 Aug 2024 13:09:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=160.92.124.96
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722535288; cv=none; b=Gn0qbeE1a+fdAzcaRo0lXZAUFcrP+ZW0ixwlc5memGovMoj3xHve4V5xgWgT1x6DKev0mDZ04VRvICpbob87UXdv4tMWicLYiK6JsTvRWcqY2jzTBOah27vUa2lWRrROFQZqGcRHxJntNMTWGyb8gieGvVqIXXm1gIAp2ez8oxU=
+	t=1722776954; cv=none; b=YDN0cH//u7mCE069U6cGI3KnT4zXyHBbi8UDaE7yMmAlXHN+I/brlOlNAnyoj6IFveMLYxeBqUGjjz3/TuHfn+N2vsI2i8E0P5GdikLlR6qIOCKEj3U5qhUJG3oHk9rl6H2RH0N1zbBsLQaEz6QjUYB33g6dUJ1I1/D5nmmlziI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722535288; c=relaxed/simple;
-	bh=JFMohmRWX75JZU3xXdHWWjMuGrxHudblqSMXV1bwbQM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aUpmfWF7L2svUpuYgWWxazwOTdZ7EDfI/vmmmZXvBLbW7Eay8pNuNmpP//q/2s4J5tST+DAxbviTilNWFq9g5qXIJ3grL4AP5ofSXFESyGyyOeb2P9iyAEwOZHNgHAlxpKlmxR6kiEEVNa89a8/bCjGi03ZAuYAgbt9uS3/Zsjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@strlen.de>)
-	id 1sZa72-0002zF-36; Thu, 01 Aug 2024 20:01:16 +0200
-Date: Thu, 1 Aug 2024 20:01:16 +0200
-From: Florian Westphal <fw@strlen.de>
-To: Arne Zachlod <arne@nerdkeller.org>
-Cc: netfilter@vger.kernel.org
-Subject: Re: libnftables way of deleting a rule
-Message-ID: <20240801180116.GA11401@breakpoint.cc>
-References: <5dd7c429-94f8-40b6-be32-9de999d3bbdf@nerdkeller.org>
+	s=arc-20240116; t=1722776954; c=relaxed/simple;
+	bh=vpSNtVrMFN2Q+24IdNLE0ypfujbMCs1B1Ez9Sn82Byw=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Q/YpVUzeDyP92k5GGBDkzpfyd3ECJtZqtuTMHjI/OrHRJBvmsC63EdOxiUV5CmVtZB4ucKgas3o6wPF9lYr8UP2LvWDUs4UZNd396UiWM2OXydQTiWcqQaPN2vWrzG0fZ7+uYoSzj2Z++10QNGtakjhugoSqS4L51EN41NXczQc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=laposte.net; spf=pass smtp.mailfrom=laposte.net; dkim=pass (2048-bit key) header.d=laposte.net header.i=@laposte.net header.b=OM5TvjaS; arc=none smtp.client-ip=160.92.124.96
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=laposte.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=laposte.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=laposte.net header.i=@laposte.net header.b="OM5TvjaS"
+X-mail-filterd: {"version":"1.8.0","queueID":"4WcKdh6DG2z16Hmd","contextId":
+ "0b294a03-a71f-48f7-b563-eb104bb18561"}
+Received: from outgoing-mail.laposte.net (localhost.localdomain [127.0.0.1])
+	by mlpnf0105.laposte.net (SMTP Server) with ESMTP id 4WcKdh6DG2z16Hmd
+	for <netfilter@vger.kernel.org>; Sun,  4 Aug 2024 15:08:56 +0200 (CEST)
+X-mail-filterd: {"version":"1.8.0","queueID":"4WcKdh5XSQz16HmJ","contextId":
+ "80e3f168-a36e-4dae-83fd-51aa696b8abb"}
+X-lpn-mailing: LEGIT
+X-lpn-spamrating: 40
+X-lpn-spamlevel: not-spam
+Received: from B550-AORUS-ELITE-AX-V2 (lfbn-ren-1-1305-231.w86-229.abo.wanadoo.fr [86.229.152.231])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mlpnf0105.laposte.net (SMTP Server) with ESMTPSA id 4WcKdh5XSQz16HmJ
+	for <netfilter@vger.kernel.org>; Sun,  4 Aug 2024 15:08:56 +0200 (CEST)
+From: Kevin Vigouroux <ke.vigouroux@laposte.net>
+To: netfilter@vger.kernel.org
+Subject: Can't set meta priority for some packets in netdev family!
+Date: Sun, 04 Aug 2024 15:08:56 +0200
+Message-ID: <87jzgw4eqf.fsf@laposte.net>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5dd7c429-94f8-40b6-be32-9de999d3bbdf@nerdkeller.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=laposte.net; s=lpn-wlmd; t=1722776941; bh=vpSNtVrMFN2Q+24IdNLE0ypfujbMCs1B1Ez9Sn82Byw=; h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=OM5TvjaSKtp7ewKTLROKVV9Jvq2lc9prvkGoQzdtPeO8vu23opPc78ZTv/a6lWCHIzGgMjKvBzDlpNWI7tQWX2jiX+6rpRQWKjf3vPzdcMdH9X7BSKKG2XmZEyPd+Zeq2oaX3yedymU9ghCtKAqu793E0CX6Uba1VGcwupdQ6cyv8hl3Q41Y2fZeC5ySE1MY7LOjSbHN3tlaWHY4kHN0aMt7wVoPoqoa4Wu/DUTBuJY0l4Lc/Fk210K8kF+gX3TMuspvGkzcYWP//AmDKyA++FSqE46jKMRfxQJjJzM99m/bkSELmcH9n1+yFMCRDBfOLrhURyPSF2/F9Vj2k39PAg==;
 
-Arne Zachlod <arne@nerdkeller.org> wrote:
-> I'm porting a program (written in C) that currently uses iptables to
-> nftables, trying to not change a lot of the internal concept of said
-> program.
-> The program currently uses execute() calls and calls iptables directly via
-> these. I wanted to at least use libnftables, and everything seems to works
-> quite well, I just have a problem with deleting rules.
-> I read through the code of libnftables, but I couldn't find a way to get the
-> handle of a rule I added. In iptables, this is no problem, you just give the
-> rule again to delete it. In libnftables though I need the handle. Currently,
-> I'm looking into libnftables-json, but I would prefer not to use it just to
-> get the handles. Is there a better way of deleting a rule than parsing the
-> JSON for them? Maybe even with libnftables directly?
+Hi!
 
-Depends, if you can remember which rule has which handle assigned then
-this would work, modified add example:
+The following rule mangles SSH packets but not ICMPv6 one.
 
-+++ a/examples/nft-buffer.c
-+++ b/examples/nft-buffer.c
-@@ -11,6 +11,8 @@ const char ruleset[] =
- int main(void)
- {
-        struct nft_ctx *ctx;
-+       char buf[8192];
-+       FILE *fp;
-        int err;
- 
-        ctx = nft_ctx_new(0);
-@@ -19,16 +21,20 @@ int main(void)
-                return EXIT_FAILURE;
+table netdev filter {
+        chain egress {
+                type filter hook egress device "br-lan" priority filter; policy accept;
+                vlan id 10 ip6 daddr fdc0:7ceb:81a6::/48 meta priority set 0:6 counter packets 473 bytes 70912
         }
- 
-+       nft_ctx_output_set_flags(ctx, NFT_CTX_OUTPUT_ECHO | NFT_CTX_OUTPUT_HANDLE);
-+
-+       buf[0] = 0;
-+       fp = fmemopen(buf, sizeof(buf), "w+");
-+       nft_ctx_set_output(ctx, fp);
-+
-        /* create ruleset: all commands in the buffer are atomically applied */
-        err = nft_run_cmd_from_buffer(ctx, ruleset);
-        if (err < 0)
-                fprintf(stderr, "failed to run nftables command\n");
- 
--       err = nft_run_cmd_from_buffer(ctx, "list ruleset");
--       if (err < 0)
--               fprintf(stderr, "failed to run nftables command\n");
--
-        nft_ctx_free(ctx);
-+       fclose(fp);
-+       fprintf(stderr, "res is %s\n", buf);
- 
-        return EXIT_SUCCESS;
- }
+}
 
-NFT_CTX_OUTPUT_ECHO makes kernel dump the just-added-rule(s) back and
-NFT_CTX_OUTPUT_HANDLE tells nft to postfix each line with '# handle %u'.
+Why?
 
+I also tried to modify ICMPv6 packets explicitly in a netdev family table without success.
+However, it works in an inet family table at the postrouting hook. I'm completely lost!!
 
+--
+Best regards,
+Kevin Vigouroux
