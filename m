@@ -1,114 +1,55 @@
-Received: from fhigh8-smtp.messagingengine.com (fhigh8-smtp.messagingengine.com [103.168.172.159])
+Received: from mail3.g1.pair.com (mail3.g1.pair.com [66.39.3.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34D3919258C
-	for <netfilter@vger.kernel.org>; Fri, 23 Aug 2024 19:14:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.159
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F2361C870C
+	for <netfilter@vger.kernel.org>; Fri, 23 Aug 2024 22:50:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.39.3.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724440493; cv=none; b=q/XnzfJTTrivyVv9atBy1t029u+HHrkhZvFiJpNmw4BHGftQH5GS3ZfQtEpkM2/xaXYSu2oPMaYQkTm/HHQ+0OV512j1W1XgQgE3lpXBSraxjw14i+U/VQTKGTFIejkImbFDlUbtXv2kBcEieHNKBSLnxFxGfE7K5oOLlYEvoFI=
+	t=1724453445; cv=none; b=eqsDFwy9hssGJ0Gdxjm6g6WMqwNN0967mQ6sNQ2kF8HxG/hz0rLvFxZCCfF5ZEklFP2ywv7ubVu/R66LMGiwsM1uOzlyxjI2UaGUVZkTGac0woC7mL8e/DzxrdQ5sh7srFi51TowPdz0st/pW4154H/UUYmUHQXR2BZSl8iTEfA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724440493; c=relaxed/simple;
-	bh=XjB7ZYUtwrc+/EsIteuyVGjsTsGjUZuaRj8USl4OPQY=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Content-Type; b=XDHMX8rU0WKfX3qXKIq3Bzg037uz5TBELmg+kSOiEiLir/AHOVl07rugwV0g74oXDJrvPDCs8IuU5oEgaCfFFQjERzwsjfflKK+P/9wjVxNqJtPP/PI5fo0YYZUWQNEwdVTAsiEAv8KGGOEqGjy5D7rForiRBiUz2FMNd47OkhY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dev-mail.net; spf=pass smtp.mailfrom=dev-mail.net; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=AI/+iAyf; arc=none smtp.client-ip=103.168.172.159
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dev-mail.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dev-mail.net
+	s=arc-20240116; t=1724453445; c=relaxed/simple;
+	bh=LXDXf9DL9kCvW+jYrsuhlgKqyDufq4EpiNsTWghgUhw=;
+	h=Date:From:To:Subject:Message-Id:Mime-Version:Content-Type; b=EdfbhcI4+rv3Ctk8XF2kn7BsNDof++pNyLWQJZHKFd7KXcuACJbb7ksu4USVKAIHHUHDj+iE0el03YaCPx8zB7pG4ReuY4FVdRd5GZvSMJGpwWTmQU9MfPHZAigBNrHml8Q1sQCk4+Ki3InbLwjk+hSIsk0BVk6PfGH9xHGnLo4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fourthriver.com; spf=pass smtp.mailfrom=fourthriver.com; dkim=pass (2048-bit key) header.d=fourthriver.com header.i=@fourthriver.com header.b=OCBmUo/6; arc=none smtp.client-ip=66.39.3.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fourthriver.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fourthriver.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="AI/+iAyf"
-Received: from phl-compute-05.internal (phl-compute-05.nyi.internal [10.202.2.45])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 0F3F31151AD0
-	for <netfilter@vger.kernel.org>; Fri, 23 Aug 2024 15:14:50 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-05.internal (MEProxy); Fri, 23 Aug 2024 15:14:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:message-id:mime-version:reply-to:reply-to:subject
-	:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender
-	:x-sasl-enc; s=fm1; t=1724440490; x=1724526890; bh=JAzPlguQjLZ2t
-	xX17stH5HtTbpb8iTn37F/6fCuVt3I=; b=AI/+iAyfmUHvYYUv3kee1LumygOFd
-	e2sAMbsqITRq4eX8heALvAyFWlk6YmjGNDMB74WBYK91djk3iwkN4IYV362JlMdK
-	yux4V1GMAcdLwnEUqv2ALj3T4Zz5O3z42aVqk8EWuGzJbqo7Dc3pstSXO2/qwcNs
-	454/LllWT7aU6N7L+R5yRDWaurCbVsUbYStFTS/SUQCY7YKofJMqVA4LBNituBEb
-	v4B5QApGM8bpe/Qz6oJY8QlJgQmgXTSKfrWdPS4k9J4XbVGLyJCUUGjW72Fdaj/V
-	vG4dBppQsYsXzQFHH1/eOdE0pHMwNm6bbqujOlKbS49jRs+qoSo5SnP9g==
-X-ME-Sender: <xms:qd_IZmbtTCZydR0On7qaC2Nxf2BAnaTVh14qJMvOq3OVktHYfukCSw>
-    <xme:qd_IZpbUCAJ-mWcXYilDkf6fBQ0T9bwV58gvmtJwiM5GMtEfkX0L3Thy9mdH6FJ4B
-    NJ2w8ZN4VshSi8A>
-X-ME-Received: <xmr:qd_IZg-gadJ0l-cSNVgxJEaQc83iglGcYko76k9G431zZ2EwHOHwyRvnexK-VBpRDPX79XqVszSGgzzj1X8Ld99NsYxMq6X_GTXq1g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddruddvvddgudeffecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecunecujfgurhepkfffgg
-    gfrhfhuffvtgfgsehtjeertddtvdejnecuhfhrohhmpehpghhnugcuoehpghhnugesuggv
-    vhdqmhgrihhlrdhnvghtqeenucggtffrrghtthgvrhhnpeejueeuueegteehudehffdvvd
-    eghfeuleejuefgteeuteevhffglefghfeutedttdenucevlhhushhtvghrufhiiigvpedt
-    necurfgrrhgrmhepmhgrihhlfhhrohhmpehpghhnugesuggvvhdqmhgrihhlrdhnvghtpd
-    hnsggprhgtphhtthhopedupdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehnvght
-    fhhilhhtvghrsehvghgvrhdrkhgvrhhnvghlrdhorhhg
-X-ME-Proxy: <xmx:qd_IZooMflHpGI4Rin99XmO6eipXNuTrJ8V_bPPsgaecpUpR_Pw49w>
-    <xmx:qd_IZhoXa2nyIZikF60yxCxAv_DiQVpzbJX15gjbNpNMZVEcUlODXw>
-    <xmx:qd_IZmTOOHJX0yNsJoIyFCAql9-k7_TbRObYS6tDcKvBGylbqoVLpA>
-    <xmx:qd_IZhpKaxpFtXe5UR8tUktM6GBmq3CbHmGYIMvQsTMkwv7liokhVA>
-    <xmx:qt_IZilCjjsy60-DH11snC9X0A5R0f_J8fvImiZ6cKXW6NfHy9P35sZM>
-Feedback-ID: if6e94526:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA for
- <netfilter@vger.kernel.org>; Fri, 23 Aug 2024 15:14:49 -0400 (EDT)
-Message-ID: <5e5fd477-c8d1-4985-b269-ab40245fb5ce@dev-mail.net>
-Date: Fri, 23 Aug 2024 15:14:48 -0400
+	dkim=pass (2048-bit key) header.d=fourthriver.com header.i=@fourthriver.com header.b="OCBmUo/6"
+Received: from mail3.g1.pair.com (localhost [127.0.0.1])
+	by mail3.g1.pair.com (Postfix) with ESMTP id E7386A1BA6F
+	for <netfilter@vger.kernel.org>; Fri, 23 Aug 2024 18:50:34 -0400 (EDT)
+Received: from Mario (c-174-181-12-36.hsd1.pa.comcast.net [174.181.12.36])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mail3.g1.pair.com (Postfix) with ESMTPSA id BF4E29084F2
+	for <netfilter@vger.kernel.org>; Fri, 23 Aug 2024 18:50:34 -0400 (EDT)
+Date: Fri, 23 Aug 2024 18:50:36 -0400
+From: Brian Sammon <bds@fourthriver.com>
+To: netfilter@vger.kernel.org
+Subject: Understanding output from "nft list"
+Message-Id: <20240823185036.85bd988a1ee2baab2f73b307@fourthriver.com>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.30; i686-pc-mingw32)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Reply-To: pgnd@dev-mail.net
-From: pgnd <pgnd@dev-mail.net>
-Content-Language: en-US, fr, de-DE, pl, es-ES
-Subject: nftables' ulogd2 group "#" usage -- variable substitution possible?
-To: netfilter@vger.kernel.org
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fourthriver.com; h=date:from:to:subject:message-id:mime-version:content-type:content-transfer-encoding; s=pair-202402142043; bh=77XR5tUQdgUWhVfk0v/alWAmw4TOvX3AyR+OKl0NtWc=; b=OCBmUo/6GRqogzzlxnRPBVJrVqjaOqRKEOGUow2+Kn2ugVHwRPZvnvaFXDWkftf95oOnEBqY+fVVuBsRFlGOOI90LF53sIhPyBwiMpRo9SPdH1rmQup9vZ9ipRCsa054xoCXiMv3OV3zKz+AYKOD1dtkeu4nCDSHbFwjkhfljJYcOSSke5Ogku34yx1S0dsv2Ig2Q/8kVm4vP7at2Pz/t3HhDVIJFK1PqO3NBx/CMrvWZb++ujOWUuYBj9ii8XR/VNxlbxkV+YVDjKjWwY+lZiTr4qSBryriM886ANh7y7zZ9AIUCiLnWpNlaLTOg5SQYqWuIFmVsR6IL5RsL4Vpnw==
+X-Scanned-By: mailmunge 3.11 on 66.39.3.170
 
-i've built/installed nft + ulogd2 from sources, master branch
+Is there a document that is good for understanding the output of "nft list"? (more specifically the kind of output that comes from "nfs list ruleset")  In particular I'm looking for a description of the syntax.
 
-both are available
+I've been browsing around https://www.netfilter.org/ and I've been having trouble finding the kind of information that I'm looking for.
 
-	nft -V
-		nftables v1.1.0 (Commodore Bullmoose)
-		  cli:          editline
-		  json:         yes
-		  minigmp:      no
-		  libxtables:   no
+The first questions I have:
+Can/should I assume that each line in the output of "nft list" is a separate, uh... "thing"[1] that can be (human-)parsed independently from every other line?  Is there something that signifies "this line should be considered as part of the same Thing as the last/next line"?
 
-	ulogd -V
-		ulogd Version 2.0.8
-		(C) 2000-2006 Harald Welte <laforge@netfilter.org>
-		(C) 2008-2012 Pablo Neira Ayuso <pablo@netfilter.org>
-		(C) 2008-2012 Eric Leblond <eric@regit.org>
+Should I be reading each line/"thing" from left to right in my attempt to parse/understand it?
 
-and generally work as expected
+This is complicated by the fact that the current firewall config is generated by a "front end" package, which I'm also trying to learn.
+I wonder if the output from "nft list" represents some weird syntax generated by the front end package.  Can I assume that the output of "nft list" is _valid_ syntax?
 
-rule logging, e.g.
-
-	meta l4proto {tcp} th dport 22 log prefix "SSH DROP: " group 2 drop;
-
-works as intended
-
-for convenience/readability, I define an alias var
-
-	define $LOG_ssh = 2
-
-but attempt to
-
-	meta l4proto {tcp} th dport 22 log prefix "SSH DROP: " group $LOG_ssh drop;
-
-returns
-
-	./test.nft:123:63-63: Error: syntax error, unexpected '$', expecting number
-		meta l4proto {tcp} th dport 22 log prefix "SSH DROP: " group $LOG_ssh drop;
-
-vars clearly work elsewhere.
-
-is variable non-use intended/expected here?
-or is my usage incorrect?
+[1] - I'm not sure if "expression", "statement", or "rule", or something else, is an appropriate word to use here.
