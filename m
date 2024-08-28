@@ -1,87 +1,75 @@
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7DF018786F;
-	Wed, 28 Aug 2024 14:08:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA242433C1
+	for <netfilter@vger.kernel.org>; Wed, 28 Aug 2024 19:36:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724854099; cv=none; b=fbsNRQS3sa+V1kTpBBIvPXrgWEi/4b3ZHFlezUloG31Sqnl7rBUwdcV2ZtoP9p/4V4wS/OozGlt5Mwvqb8sA5e5zT3IwsKvJmNM9x+47HqqhPg7N92xBvNKWlPk+sobiCtobYMOacgFazCdA3kpnToHentvG8ekkpElWl76jKys=
+	t=1724873790; cv=none; b=RIbETcSm/j++r8SGBjne7ttINbAocuhp9D73kgTNCstOlU1VFqElwgsM7xNHDcXmSk31dftzwGuEDUcKGiA4fBzfBk9+ITdubIexUeJeBP3H/rLuR50SQtiyn/Ai2+eBMWsYWmazLGtLfuxuJSlJOX5tZ/Lw6vd3fouO3UsG4Cc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724854099; c=relaxed/simple;
-	bh=ywI3MLxowgahZyW/GIFjgDd7jFOzw4JDC6rxiA4AXzs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=naw405DTm2c0DdZI1B6DlJE+qVf2ot6GChAkJ09lwAQVyWL/k0WwHiL1peLXE4VgtNLsdH88xqTVAFUL6v3VFcwKaSkJ+xpk+ROvvUZRMeH5rHBAcBzEs5XaXqthdmwTUeL6ciPpOHIfaI4nO6Nm8tpSO9WTCqgJe/Xga+Q8GfU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
-Received: from [78.30.37.63] (port=52962 helo=gnumonks.org)
-	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <pablo@gnumonks.org>)
-	id 1sjJLG-001ZT8-6K; Wed, 28 Aug 2024 16:08:12 +0200
-Date: Wed, 28 Aug 2024 16:08:09 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Echo Nar <echo@lethedata.com>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
-Subject: Re: Stateless NAT ICMP Payload Mismatch
-Message-ID: <Zs8vSUOWgM5MpLxu@calendula>
-References: <CANsOo6on+x7OrWQN5w6Ls5RwcLHKx4Kmrp80-fPxte2LQfcuOQ@mail.gmail.com>
+	s=arc-20240116; t=1724873790; c=relaxed/simple;
+	bh=bXt4rOpVlF0iyTlsskpgNlah8EsHeUzEN1QkBrEYNCg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DBgss3eYU+QAtUSx76vjsQn2AlctuH45as/H6W0iWOJSc8IkS3sSJVyO2mjOYKIhgtSR8zZ7o3ikLfFzhEfFsIEbdB6vsjTp8YZTfqJ158v11oXMnC6jvjhr/wNclP0qSIVjJAevIA7cWpVxRBXo0q5GVsXEOOsm94B8dbEBdxw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lethedata.com; spf=pass smtp.mailfrom=lethedata.com; dkim=pass (2048-bit key) header.d=lethedata-com.20230601.gappssmtp.com header.i=@lethedata-com.20230601.gappssmtp.com header.b=vJYooYux; arc=none smtp.client-ip=209.85.222.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lethedata.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lethedata.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=lethedata-com.20230601.gappssmtp.com header.i=@lethedata-com.20230601.gappssmtp.com header.b="vJYooYux"
+Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-842fe6f6c04so2313605241.2
+        for <netfilter@vger.kernel.org>; Wed, 28 Aug 2024 12:36:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=lethedata-com.20230601.gappssmtp.com; s=20230601; t=1724873788; x=1725478588; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=bXt4rOpVlF0iyTlsskpgNlah8EsHeUzEN1QkBrEYNCg=;
+        b=vJYooYuxtZU9w5sMhWXMhsuUaqwqUw/IO8gRs0qPTYge4KZ6VJ0OBTKVro8WoA4FT4
+         kSneePLcLcELn4BHnrVM3C85XvLZFKn/+rvNSIJoB62wECADv4/nil//tAOXGAtWLoXp
+         HTGNngQXbYNoisvpHpoKvYTEk/YtoXTw/2JssQLG7nUZbXg1uDpr4dSKwUONQi7K64ET
+         1P558dLsMl6o1o3vJFrGrU8lJpxk6AfAODj0nb9IgibCCOijMMQTfFzqepeWm+/6ebwp
+         S/V1q3vOb4TvQ88J4pgyE/JZsFmitB3hwToVY9g6jwh+S3j8sqy2Lbq4tmBGP5uDfi/M
+         nDYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724873788; x=1725478588;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bXt4rOpVlF0iyTlsskpgNlah8EsHeUzEN1QkBrEYNCg=;
+        b=weKf8yp4qwITjxM2u5HNbSfnyBJRFZu9bTUIafEbWzEnGPRL+0ycdpJJSgYI+LpSPG
+         /RNQwGO/bj2AeORAjaDwgChFVShqmDdx5QGO+rPhBEjjjk6e4OEYlz8lPgVjBMv7t5NQ
+         4937Kb26M0lagRZ+N90Bz5PxSXqHFzNGtgkpfSP3hUMtYZxurB8r3Rvi8tnG+cjeVv1v
+         Rfii3L5MIz7JsFW0kYjP205n5vMWh9d9gngP16A1e+ywgYMy8pKlth2se8Sk3wQ5Fzma
+         hcLjhyc+4jkRM219pvKfmdj0nvu0Fi7yoUvXXUzCJunjVDWiQ2OqyORra3mXXQyCNGuF
+         teyg==
+X-Gm-Message-State: AOJu0Yz02wfiv+H2Rg0IrZSlDBt7fN/O5/FFmwglcPT85FraNT5nhZbo
+	MkVsDlrJ/mjWZrQKs3gGNdh4wy36DU9lwUGyjB7agmS6cIGln3bWuN0RlbPVSk/8tz8B9Rb2XAP
+	pIwoam8cJxEFSz8ap59YEpHs7w5IvpIS5DVTO0A==
+X-Google-Smtp-Source: AGHT+IFokLkFIoKOAP2kzlDsbbIUCc1X2k8T9Ug7aiL/mJnpuVtE5wEh0fqNh+9mDIkRH3A4IJPPxLbBYjHYjJRYNJA=
+X-Received: by 2002:a05:6102:a4e:b0:498:ef8c:cb56 with SMTP id
+ ada2fe7eead31-49a5b24f48cmr998521137.24.1724873787687; Wed, 28 Aug 2024
+ 12:36:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CANsOo6on+x7OrWQN5w6Ls5RwcLHKx4Kmrp80-fPxte2LQfcuOQ@mail.gmail.com>
-X-Spam-Score: -1.9 (-)
+References: <CANsOo6on+x7OrWQN5w6Ls5RwcLHKx4Kmrp80-fPxte2LQfcuOQ@mail.gmail.com>
+ <Zs8vSUOWgM5MpLxu@calendula>
+In-Reply-To: <Zs8vSUOWgM5MpLxu@calendula>
+From: Echo Nar <echo@lethedata.com>
+Date: Wed, 28 Aug 2024 14:35:49 -0500
+Message-ID: <CANsOo6ox5gwM1qXErBe9f4v=re77BorWjm6FoCqx19WaigmwQA@mail.gmail.com>
+Subject: Re: Stateless NAT ICMP Payload Mismatch
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Wed, Aug 28, 2024 at 9:08=E2=80=AFAM Pablo Neira Ayuso wrote:
+>
+> Would you file a bugzilla ticket to request this to make sure this
+> does not get lost?
 
-On Tue, Aug 27, 2024 at 03:15:00PM -0500, Echo Nar wrote:
-> Is there a way to set up a stateless NAT that updates ICMP payloads
-> i.e. destination-unreachable (type 3)?
-
-At quick glance, it should be possible to mangle ICMP payloads with a
-userspace nft update only.
-
-Would you file a bugzilla ticket to request this to make sure this
-does not get lost?
-
-Thanks.
-
-> With the current rules I have (shown below) I am able to receive ICMP
-> destination-unreachable packets but the payload is wrong causing them
-> to be dropped by clients. This pretty much breaks traceroute on both
-> sides.
-> 
-> Internal to external:
-> IPv4 Header - Src: 192.0.2.2, Dst: 100.64.1.105
-> ICMP Type 3 Payload - Src: 203.0.113.100, Dst: 192.0.2.2
-> 
-> External to internal:
->    IPv4 Header - Src: 203.0.113.100, Dst: 203.0.113.200
->    ICMP Type 3 Payload - Src: 203.0.113.200, Dst: 100.64.1.105
-> 
-> table ip NAT {
->    chain prerouting {
->       type filter hook prerouting priority raw; policy accept;
->          iif "eth0" ip daddr 203.0.113.100 ip daddr set 100.64.1.105
-> notrack return
->    }
-> 
->    chain postrouting {
->       type filter hook postrouting priority raw; policy accept;
->          oif "eth0" ip saddr 100.64.1.105 ip saddr set 203.0.113.100
-> notrack return
->    }
-> }
-> 
-> As a side note, tc performs ICMP modifications (but doesn't meet my
-> needs) which is why I'm thinking nftables should be able to do it as
-> well.
-> --
-> Thanks,
-> Echo Nar
-> 
+Sure. nftables nft bug 1771 created.
