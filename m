@@ -1,63 +1,82 @@
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F4D61A0BCB
-	for <netfilter@vger.kernel.org>; Tue,  3 Sep 2024 09:43:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD41319AD56
+	for <netfilter@vger.kernel.org>; Wed,  4 Sep 2024 09:02:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725356637; cv=none; b=RUoN8M7Qp2KQ/amLv/4VTEzEUUzdNvmeDaijKWvhzWUzdAgq5AimyuIBMRKqiwOmj3unDOcEhrlJCFPewPeVFJOv/cztZY1WGoHIXleI8FGCmAZ78Be0bU133IcWy5Y9CIE7UsworK1fmGfbfV9joob62khRK1cTon7Hr3RyC5s=
+	t=1725440555; cv=none; b=qBUUEjZKyzlM5FuCxD0VfgoWLA5OPADxxIJ345+DD8BH8kvCtvbYUeraZnkdM8ubCH2Jw+bIg7eBLdAglZVot8+0CPFspmSXw9VREDVOT+C6TTHSOscl0eKUdgMm/fb9/4pKr+qaLRdoI5wGUP6dz5Xa3OeHXimBmtk9FE6Cvk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725356637; c=relaxed/simple;
-	bh=7wQEKsCMYBqc1GCidd+UlSqRHq3qA+0txtweMxAo1QY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r+6iYNBuZ2woV811z9gJzKbQwoUqVHb7ignBhwW9p6d9WR2TMM+NG8cdSgS6zX71nPngIfYCpvVCzUwlVxbIK1guBXTlTF4Hi1jMQI/5J3BceHqE5fKRHtD81T6CfvRHQAOdK49Hgiyt5tJb52PdDVlfeAw8JFqijH9BDciJ2B0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
-Received: from [78.30.37.63] (port=59244 helo=gnumonks.org)
-	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <pablo@gnumonks.org>)
-	id 1slQ4l-00AJBu-11; Tue, 03 Sep 2024 11:43:53 +0200
-Date: Tue, 3 Sep 2024 11:43:50 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Sunny73Cr <Sunny73Cr@protonmail.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Subject: Re: Raw payload expressions are mangled
-Message-ID: <ZtbaVgOFLwFIr4ve@calendula>
-References: <DZC45RRhLNfzeCW9I6ahm9glqdw7JeVCHAtNRmJKEGsvLMzUaU1kI-yv-5rVp2mJq3dJPyHN2yWVbSiwc7JWWvZOf4GXBmtiPpYZS9zVKEo=@protonmail.com>
+	s=arc-20240116; t=1725440555; c=relaxed/simple;
+	bh=r2Je/kEzD/HjpYmVaxnm9E96e25VguU4hQD5O1WGz2U=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=PntjDzrDV7ss1ykafNQL2MYSkbJHpIduWepZKm570rpObrVmI/K0Da83tXpyeH94/ByvXuNDUxUwpicsyWqZDop/FvbE1a+sZ9VImKsqndLRRsySTbrCA4xVAvRMMdznd1FMrHcqTosSmg3lL8KeGCm2V41TEFbx2yW00XuMEIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=aros@gmx.com header.b=hryVs+66; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmx.com header.i=aros@gmx.com header.b="hryVs+66"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
+	s=s31663417; t=1725440551; x=1726045351; i=aros@gmx.com;
+	bh=r2Je/kEzD/HjpYmVaxnm9E96e25VguU4hQD5O1WGz2U=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:From:Subject:
+	 Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=hryVs+66ztKH7AO8Ht6xA9YgjzS/cpAHtmz0/kvsyxddBKTUCBQ46IZh5N5S05EU
+	 dCPJras78A24AGcUiTqa8SjaIAJEyjPInTXgpVAfQP946I1O9Kq6w1AudZesho7gt
+	 fv/Sq78F6i7Mq9Z0hcB9rrHXdmtAWIcRReh3nph5zap4kOH46qZQiUlelu+BA/F+D
+	 CHQXIqmRumSM7qGaFZPZZVvpBjTmzlIJI6JmpIJGabM7dAGw5D4TRnZ+XnrxEdMTA
+	 RwwwuDfZ7N1rcVmjSmexw5/puCL2TDSqIZiFIcB8z4PDUyBZzRshnpH7QmNBgu+i0
+	 Q5gYrHk4J6OfZNR5cw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [10.2.19.9] ([98.159.234.3]) by mail.gmx.net (mrgmx105
+ [212.227.17.174]) with ESMTPSA (Nemesis) id 1N95eJ-1s1Ubh37Wp-00y2wB for
+ <netfilter@vger.kernel.org>; Wed, 04 Sep 2024 11:02:30 +0200
+Message-ID: <ce0df381-389f-44ce-93ab-c1f8db5faea6@gmx.com>
+Date: Wed, 4 Sep 2024 09:02:29 +0000
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <DZC45RRhLNfzeCW9I6ahm9glqdw7JeVCHAtNRmJKEGsvLMzUaU1kI-yv-5rVp2mJq3dJPyHN2yWVbSiwc7JWWvZOf4GXBmtiPpYZS9zVKEo=@protonmail.com>
-X-Spam-Score: -1.8 (-)
+To: netfilter@vger.kernel.org
+From: "Artem S. Tashkinov" <aros@gmx.com>
+Subject: nftables are non-deterministic
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:II4aJ0Viyb3Q/qXwiyiQobKQ5EoBCVn/8tR55qpSp+c9QxKNNWg
+ P/t6acc/Cra9PhWY8BnETIC3xpk9z61nN8uiKjwJamgMSe74dlUnfvbJB9kdH/JHHga2uBC
+ g/13keF3Q4grILz2uM7XRqyAr2WaN4bBj6OcfOxVbz5jVm3VXegdEE6EpT4q7feSgLf3Qbj
+ HFtCqIGxI4pE3O/33OfuA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:gclVvu8kvyI=;9jirvLg/NNpi1dOsq8/5NX3uFW2
+ AIj+e3CeVEPUBNNrdvEMYh9Bp3s5/PIcZO4uXseKfLWcbz61/5i3YpycZwTj8ap6tS8gcosLM
+ xbfxfneNs47d+OWuDj0nm/8BqMeHs3LlWVudEXL3dXWluyklQRmZA4GmskE73PSIudwa2w60v
+ fdaOewpzRyoUgcvxwJWrMY4CTUY5bb4P4p1dmoTPny5AdNDgao1jRrDqKi9wJllaU8j+t8/gS
+ a4JuNIwJ0z7e7k8X/uRA5pPkZzFMa3EnEU71tXWDUGkMunvNbqMLG92KLnH9/Bsd6IPQk9FFg
+ dP9gZz+psUtEHxP70BIv4OdQ3620rvEd8IcysNZ4CCi66HKWTe6YgcffuL46zULyWAozfryEs
+ mZmrVfxKh7a3qb4/DbOM9mmw9o6dE/rQmet0qIAq71C5dAUNl52+ini40SeQfTIE16c6vgKBb
+ Lnqg6BLK4UgbCyyIc5QyMbJvqVlg24nzTt7o9bN5lA7flk/JBmW/AVxoji/WmKgcSbcBxblBh
+ TtzyaDjY4yDEEJxAGJjL/l4W2JiwKEz6bJzRLSfl8ZZPQNiUSs169+OdWA7PR8EVPbUmhl7Oi
+ UOhUsaXvUwEBvYbeA4Qe4D+9+Bejq6CRU80ATYSUhxWJ8+dS5E0+rhEpEyG1DcEaF1zyZtY+h
+ MCouFfV5R4SBCUtVVGz+dQIKYb8BAIxDXvhn/Ra2+FWQO89vPWY+lQBAQlp0FhvwrqS4Zb5Si
+ b9VH7DJkIspxPyJlnZkbHfEIGr0sttBU0U6Qv+grg+YyMZkfV+/CSFFEcffRFDjGhtay+IQQj
+ bEUOObaPIWtfiiz68yr3qzjw==
 
-On Tue, Sep 03, 2024 at 07:58:56AM +0000, Sunny73Cr wrote:
-> Hi, I am attempting to match ntpv4 replies inbound to my machine; like so:
-> 
-> udp sport 123 dport 123 @ih,2,3 0x4 @ih,5,3 0x4 @ih,8,8 0x1
-> 
-> In english, this is: "ntpv4 mode server stratum 1" (there are additional checks for poll, precision and reference, though they're not neccesary here)
-> 
-> After loading the rule (among others) with /usr/sbin/nft -f (in a config file) on Debian 12 Bookworm (not yet updated); the rule shows as:
-> 
-> ip daddr 10.0.0.5 udp sport 123 udp dport 123 ct state established meta skuid 996 @ih,0,8 & 0x38 == 0x20 @ih,0,8 & 0x7 == 0x4 @ih,8,8 0x1
-> 
-> It seems bit-level checks were aligned to '8 bit boundaries'. The resulting expression is technically correct, though it is (as far as I'm aware), only minimally faster.
+Hello,
 
-raw expressions only support operations at byte boundary, you have to
-use bitwise (&) expression to narrow down the scope of your matching.
+Connections to a certain port are _randomly_ delayed by up to three second=
+s.
 
-> I would prefer the output to remain as I had typed; as I did not ask for NFT to optimise the ruleset as of yet, and I need to spend much more time validating the configuration.
->
-> Is this optimisation able to be toggled off?
+This is not down to the service, it works perfectly.
 
-No.
+This has been happening for the past couple of years. This has never
+happened with iptables.
 
-You can file a bugzilla ticket to request an enhancement, maybe
-someone will pick it up at some point.
+I wouldn't want to share my nftables config, so if someone's willing to
+take a look, please give me your email so that I could send you the
+config privately, off-mailing-list.
+
+Best regards,
+Artem
