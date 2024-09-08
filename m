@@ -1,123 +1,150 @@
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
+Received: from fhigh4-smtp.messagingengine.com (fhigh4-smtp.messagingengine.com [103.168.172.155])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12B1542A9D
-	for <netfilter@vger.kernel.org>; Sat,  7 Sep 2024 06:23:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCFDC1876
+	for <netfilter@vger.kernel.org>; Sun,  8 Sep 2024 00:08:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.155
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725690185; cv=none; b=Z85gpkyeUuR8mc3q0L7SFNJArtCULgVtuVjnY+1lhAdWCqMnS54C+uvxo15lAwhvrrmh6ZU8KKkArU23ifGVwtpFAtfOdoS/UwEXrlhUBvvONdKqaZkA0TXV1/KR1KNtVwauRgljuOsobDkpquaVg9pUi84MH+sBv8ptsnggpzo=
+	t=1725754089; cv=none; b=gZgYdDFRr+fQxaNowcQ740nvlVrXl1/WSTWFPO8IsW8dwmBpjZ70Ln9ynsVu2mw2N6IZCzb97VwAQoy/zsmtSlA57oeWFQ7R3M8nLyZOykR21oTZNpD2dVPh9hcaBZ8TMoUAqQtFRA84g8qlU7jiotyd627RUAACwNKOGKivyik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725690185; c=relaxed/simple;
-	bh=Of/QV0WQq/tjvcYWs+arn5VIBKZ3wQ6gpLP5YZXu1I8=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=fZ2kLI2dhmLw4dAJc6+9Yl1eQUVOR4zYdchE4Dhwks8Ht0K0I8W6v9zhPdq+HHlVYeqXQG6mjbjueIn4yZa+XO+tkQmdWYhpdtapuXUy0kQz4lnZeVTx9A/XLsbWpu7QT5m/pM9uMALXyd3OySOIpD0wxZGUeReaPPYhgNsaB6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=lars.nooden@gmx.com header.b=Fis1HCEt; arc=none smtp.client-ip=212.227.15.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+	s=arc-20240116; t=1725754089; c=relaxed/simple;
+	bh=+IdOEn0nucnDFYaS8SI6zgL7Hk4mFjwSlft5zf6pCu4=;
+	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=uNRu9vBTwi/DkWGRS9AWWw2CYdH0qgq5z/CoYIcCKggAjXDRUvOKVjMTddQpdBingfR2JXBJ/tAUooftv6a4stRCCOcBEnUcpqGC3qQU5d/0Erra5BEaCncMXL6vbjx97HUsGko0np5UFIa5TwNEZfnf+iZy7XuFIMToEVglxW8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=LzMw4/DW; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=JaXPIqlA; arc=none smtp.client-ip=103.168.172.155
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=lars.nooden@gmx.com header.b="Fis1HCEt"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1725690181; x=1726294981; i=lars.nooden@gmx.com;
-	bh=1Wwa1kjAH3DA8LYJ/hDQWHxrSFrrovvr4rI0HFCxT3A=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:From:Subject:
-	 Content-Type:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=Fis1HCEtL9f12Qn3LugnLTiJagOq3Rmbq0fo918HNLhJ3/Kll4DglPk0fHIS2tg5
-	 L2w4mLTz5Y9pi9HeTPW/kXal5kYr8y7d9Db2te7Ik3Ta37U2CD2kYtOFfu4J0PnOd
-	 7swfl2h1mud8gwkZvcB/stUhBaN0bMEIUVnxIobM6Lj9EQHm+Jjqq4teNRQ02Dmdj
-	 8vEsrA2M60SUbk/qxd47Z+YOKvJosnAlgOeTWPKtjwys/nHEhhOKL0dCFfBRB8kKv
-	 dOdTrhVyhNBWsDR8JxgnsP4qCQW02GfEnDu82Cp/Cm9UL92+onpN4XZCzMovdWK03
-	 oUYvVhWhVHaWWqTKwQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [10.11.9.65] ([80.220.100.104]) by mail.gmx.net (mrgmx004
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MdvmO-1sE2ap04pS-00pLte for
- <netfilter@vger.kernel.org>; Sat, 07 Sep 2024 08:23:01 +0200
-Message-ID: <3235fb97-5759-4250-9129-ba8006ffd53d@gmx.com>
-Date: Sat, 7 Sep 2024 09:23:00 +0300
+	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="LzMw4/DW";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="JaXPIqlA"
+Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id B124A114015B;
+	Sat,  7 Sep 2024 20:08:05 -0400 (EDT)
+Received: from phl-imap-10 ([10.202.2.85])
+  by phl-compute-03.internal (MEProxy); Sat, 07 Sep 2024 20:08:05 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+	 h=cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1725754085;
+	 x=1725840485; bh=fu1HCT2XrB7K3eKuCmEoxw/MJ1izfA2A9toHhKaAjSw=; b=
+	LzMw4/DW8JoUhSgdMun9KSahivJ6t1o3BoUbDP1JJzyH5yWI/IquqwEy/bHOhZiv
+	XCA/tFyxxfUjCtlIqjMTo3W75tX+sCiDZ97Vy+ETusFKQLzIC0tqGAr5UrQ2sXo+
+	qioZ4qRa0cjp0tLb3iWKJKuareXsZWViDzL7cKTaJlHkKXm1sdjmQbvAkyWencwB
+	GLaDgFE+nksj0KZig7+Tgjx/o0MQfRtvDREUsPl1WbgKG4ACRrc/QLqNxFMPvCuO
+	CUNZopygZe8pJ1j647G9qZRvUcAGhB2OYaFZXBhAwyCo7wtPxa5FZHS3jh4W047i
+	cTiTw3AhYeg6TgN3j7SvgQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1725754085; x=
+	1725840485; bh=fu1HCT2XrB7K3eKuCmEoxw/MJ1izfA2A9toHhKaAjSw=; b=J
+	aXPIqlAryMA+4G/mJW7HBzsSRb80zHfGNcw+qWKlJxAdMotmKHRQxZ8XHX+kN4jh
+	R01qpqmc5QO/+O1vcMV8thLQ2nHA4QMF+QWEyyHwCUcu+t1dZo/ZeQQvnBMBLTmb
+	F4uSPtLW/+cuXUlo7j3wSHcjQ/sKvJhCNv+7GsuSfis5z2bTA4DvRbXzE8hlgaEv
+	mUFvmI795xHfq7Ws5uiE8HnAbv83hDjGcBYRU7riNc4QD3fcaS8t/Gr1z4w1L687
+	D7XBw8fkbmEV+Utaxei8PeWL0EaQgOmopcsd0mcEUUlgbaDBMtqdvaT/Pq2SIr5A
+	C6XvHu9YrHzjzleOvjKlA==
+X-ME-Sender: <xms:5ercZgIkc4Y1rKy7i_BddPIKIITPYIDBBue-ackyrY0PeFZ-Pc3s9Q>
+    <xme:5ercZgI9Lufs6Ez5KWGTy_gmyV4ypmXa4e6tLzv4ZiNsOcNb1HgV9y0ahBAngBer3
+    _idclEnNLffpgn1>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudeigedgfedtucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepofggfffhvffkjghfufgtgfesthhqredtredtjeen
+    ucfhrhhomhepfdfmvghrihhnucfoihhllhgrrhdfuceokhhfmhesphhluhhshhhkrghvrg
+    drnhgvtheqnecuggftrfgrthhtvghrnhepgfeftdefjeeuvddvudffffdtffffudefvdeu
+    ueelgedugfekgeekveejteehvdevnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+    hmpehmrghilhhfrhhomhepkhhfmhesphhluhhshhhkrghvrgdrnhgvthdpnhgspghrtghp
+    thhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheplhgrrhhsrdhnohhoug
+    gvnhesghhmgidrtghomhdprhgtphhtthhopehnvghtfhhilhhtvghrsehvghgvrhdrkhgv
+    rhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:5ercZgseuOq_IHPFIAeIcLeua7kbjM9gqDCcvxmQm1DkJJcQIyBZDg>
+    <xmx:5ercZtYYaty9onFtY-6pGfTZvW3onpPF130BWt0noAR7YERsHX4c0A>
+    <xmx:5ercZnabCOFphUBBOcXYwk_Z7YXV9hNqvA3tA7kMkqOuEawn1KO2AA>
+    <xmx:5ercZpDRBLLnnGtHoabCWFAgYdkKZk_6oIqN4x31Cq39Pufjn6y9Iw>
+    <xmx:5ercZuwoX-tIifwEme1cElmkZOkWlIESJMiLMQB0Wkey81i4zeKF-rd7>
+Feedback-ID: i2431475f:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 70C413C0066; Sat,  7 Sep 2024 20:08:05 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Linux Netfilter Users List <netfilter@vger.kernel.org>
-From: =?UTF-8?Q?Lars_Nood=C3=A9n?= <lars.nooden@gmx.com>
-Subject: Wiki entry on Element timeouts in NFtables
-Autocrypt: addr=lars.nooden@gmx.com; keydata=
- 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 2w==
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Date: Sun, 08 Sep 2024 01:07:44 +0100
+From: "Kerin Millar" <kfm@plushkava.net>
+To: =?UTF-8?Q?Lars_Nood=C3=A9n?= <lars.nooden@gmx.com>,
+ "Linux Netfilter Users List" <netfilter@vger.kernel.org>
+Message-Id: <7a0d6545-4f06-4279-8c36-29c6ae2f56cf@app.fastmail.com>
+In-Reply-To: <3235fb97-5759-4250-9129-ba8006ffd53d@gmx.com>
+References: <3235fb97-5759-4250-9129-ba8006ffd53d@gmx.com>
+Subject: Re: Wiki entry on Element timeouts in NFtables
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:HezEdGLD/QSWcIc/IWBXrNSkig7gZYKe3iHsz6+siDYw4mTbgeE
- Q4U5WRFhSENYgWgcNNlx1rt0gLkm596Vz6JS2RBUrc+IdAbaKlF+OEGLdtjFfRLjdsJ6dfE
- uPOgcjx6XkErn++s+hqsveWF1BSBif8gy2tqG067rQmt/i8y/EIdR9aB5WWw9VugTaaszuO
- j1X00lDURSXpKcCcuOd6g==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:d5WPp1dF2aU=;SMQszGmjRvG4t7MB7UDnAcQ5B28
- l00XVp6KSMo+SVoHEnygGDuG4u4gVf8pR9R2CHQQEofo4zW0TdUKmnm2j1wwHeQadGjjKJ09g
- 3L2vzbEeC/kzEoqreHI3O7Z3LLL22BaEAOTDCI8Ig8HjDP/q8Oy3y1Slg8C4WZ5bxCj98cbTy
- RdL4oEJURipaKrYIiOlrqdOU1r43+NsnCn2CwMAcp8VABG++SB7CXipVt9T/6cLLMbFzieE90
- ix8+APM2bJO9AOA2QTYeKYXzsJHrtdKwjRPahGQUWiw78eOtbge266yTrD3oHmYkNZO3WP2+g
- LvO52USRGT5VpBhQF0AnhwghMUNCgO5wwi6s5q77roQg94LHlBHaCRHUTVXfsN388JX4HUXc6
- Zs/8WoAWAqMCrpbnevpyc/M6UVyhciw+qbmvJqNmFlSQOH9l6S8G73g35+p2vKdA+CdBWI7Mg
- rWBxR/OXUTbMEzrpXO6eGVHlUs9aRJsTnElPuo1rITJm6WbgWM6+pE3SWbjTpdd4g1Up4LeDb
- JCoEzf0xYTGtke7giIdSH5fx748/GTPcXqbykWcJ1bSrecomIWTktcaHlRAjtp3iO+ysye/Xk
- lFcH7dsf0ozk2z2+rzsaigdnBG6ok9LxjDvgzdCP6XM7ZqnKj9ZB4PVndyFgiH1WeJOrFBvH7
- MK6Eeygt1giSt3Is6BBZfJfDWK/LVekAkrDboiC4JvZyxi7+V39EmQzhIIfVculI78xkacCs7
- h5mC5TXBkSHxvFDVZqH19Ws/oDCx9jWKZsK+cAo+3oS2x9UeqlDX04LJBEjc9GO9yqtntOYWe
- khF/XWI+dRvDfkumy8rlGytg==
 
-I am unclear on the differences between 'timeout' and 'expires' as
-described in the Wiki entry=C2=B9 on Element timeouts.
+On Sat, 7 Sep 2024, at 7:23 AM, Lars Nood=C3=A9n wrote:
+> I am unclear on the differences between 'timeout' and 'expires' as
+> described in the Wiki entry=C2=B9 on Element timeouts.
+>
+> If 'expires' is assigned, but no 'timeout' is given, then what happens?
 
-If 'expires' is assigned, but no 'timeout' is given, then what happens?
-Will the entry expire regardless of whether additional matching traffic
-comes in?  Why do the two examples have 'timeout' with larger values
-than the 'expires' in  both?
+One of three things can happen.
 
-Thanks,
-Lars
+Firstly, if the set was not specified to support stateful elements, the =
+kernel will raise EINVAL and nft(8) will print a rather generic diagnost=
+ic message.
 
-=C2=B9 https://wiki.nftables.org/wiki-nftables/index.php/Element_timeouts
+Secondly, if the set was specified to support stateful elements and also=
+ has a defined 'timeout' value, the element will be added with the speci=
+fied 'expires' value, but with no 'timeout' value of its own. Note that =
+there is a distinction to be made between the 'timeout' values at set sc=
+ope and at element scope.
+
+Thirdly, if the set was specified to support stateful elements but has n=
+o defined 'timeout' value, the behaviour will be as if 'expires' had not=
+ been specified at all and the element will be added a permanent one, if=
+ it did not already exists. I consider this behaviour to be a bug becaus=
+e the outcome does not match the user's intent. I think that the kernel =
+should instead raise EINVAL on the basis that the user is requesting for=
+ the element to be ephemeral but the request parameters make the request=
+ impossible to satisfy.
+
+The set declaration shown in the wiki article contains 'flags timeout', =
+which causes it to support dynamic set elements. However, the set has no=
+ 'timeout' value. Therefore, the third case of the aforementioned cases =
+would apply.
+
+> Will the entry expire regardless of whether additional matching traffic
+> comes in?
+
+The 'expires' value refers to a timer, the value of which automatically =
+decreases until:
+
+1) it reaches 0
+2) a rule is matched which performs 'update @setname' upon the element
+
+In the first case, the element will be removed from the set. In the seco=
+nd case, the 'expires' value will be reset so as to be equal to the 'tim=
+eout' value.
+
+> Why do the two examples have 'timeout' with larger values
+> than the 'expires' in both?
+
+I do not know why the author of the article decided to present such an e=
+xample without further explanation. However, it is perfectly legal to ad=
+d an element where the 'expires' value is lower than the 'timeout' value.
+
+Indeed, consider what happens when listing a ruleset. Unless the -s opti=
+on is specified, the state of each element will be included in the outpu=
+t. That means that the element states can be persisted and subsequently =
+restored.
+
+# nft list ruleset > ruleset.nft                      # includes states
+# { echo flush ruleset; cat ruleset.nft; } | nft -f - # restores states
+
+--=20
+Kerin Millar
