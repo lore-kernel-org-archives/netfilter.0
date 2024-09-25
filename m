@@ -1,110 +1,67 @@
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A7571D5AA5;
-	Wed, 25 Sep 2024 12:18:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D26C643AA4
+	for <netfilter@vger.kernel.org>; Wed, 25 Sep 2024 13:05:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727266724; cv=none; b=UXBAYArw0ZEddM936LknKdJSvOvl5nxvbHz4bV8Th/YmcLeet2uDIB+NYY9ZXWE2h09Y+UgF+GFsao+AllVKIv29yQru0Wv7GxtLt3iCfkga+RDCUUP6g2u5E6ZnXY/EOt0cgCwlErQJifKl/aU8oA2YLMqOUKdxfvXonkpwjrY=
+	t=1727269510; cv=none; b=bKGHBvAfyNUSFzU0t9lRXyCjxNfWn1kZZrkqfhkrGOk3HcI6SyQDQLeBKFi6tvQ/fItApr5HRcuW0KmI6Ut1rT8qgNE4d2jxCekF/TXkL5wPfzoHAah7l+mJjjli72yc+FR94YP8syidalZ2zZd447aEPtEqBShLFQpQk5ZJvj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727266724; c=relaxed/simple;
-	bh=s3YSUa2IiULzJiw6XSiOlweurXkEkKS09tKVZbzxjAI=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=FA1dWCPizvrr6uOaactPj8nVuWhyflHgpBpIALwHO885EssDvp3WQYNpq3dz97daq6KszLi2b9f9sUcxohdjuTyM70JnJJhhBHOrP43Klyd7EToF1S/3zuE3+IFpQW76M2OZZDoFKCV/DLSF8NjL4EmO2KQp+R7yMIIF/IS/6B8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
-Received: from [78.30.37.63] (port=57572 helo=gnumonks.org)
-	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <pablo@gnumonks.org>)
-	id 1stQyX-0006n8-DN; Wed, 25 Sep 2024 14:18:35 +0200
-Date: Wed, 25 Sep 2024 14:18:32 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Cc: netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org,
-	lwn@lwn.net
-Subject: [ANNOUNCE] libnetfilter_conntrack 1.1.0 release
-Message-ID: <ZvP_mG-yKnnNOlkB@calendula>
+	s=arc-20240116; t=1727269510; c=relaxed/simple;
+	bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+	h=From:Content-Type:Mime-Version:Subject:Message-Id:Date:To; b=sszVDSD3UezjryoFhvLREwe7oFf9SmGMno5LgOzBAsFC+XnKWSCzek7tqTFNAhBaREE3vb7Dk3vh1IK8wUDEubT9Y+6c7NXF+wzgKVYCfdfUFu4W6TdXvFnBM4u6/BVohhgZY/ECXxoMGmcfQJCmPnGdYCv7X1ateE6Jl3hzk0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=calivia.com; spf=none smtp.mailfrom=calivia.com; dkim=pass (2048-bit key) header.d=calivia-com.20230601.gappssmtp.com header.i=@calivia-com.20230601.gappssmtp.com header.b=Vnfw5BCe; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=calivia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=calivia.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=calivia-com.20230601.gappssmtp.com header.i=@calivia-com.20230601.gappssmtp.com header.b="Vnfw5BCe"
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-7d50e865b7aso5380391a12.0
+        for <netfilter@vger.kernel.org>; Wed, 25 Sep 2024 06:05:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=calivia-com.20230601.gappssmtp.com; s=20230601; t=1727269508; x=1727874308; darn=vger.kernel.org;
+        h=to:date:message-id:subject:mime-version:content-transfer-encoding
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=Vnfw5BCeSeQrVI1cNL4JgbP0h4LHBeDDh70yLQnayHHMywW8YyEanZLTlXnuKr3TMO
+         LuqT1VbsOMmCUXYY8Z2nqjChSRq7ntgRUfUQva00Kns4HHrW6Ai0C8rclGyNWb07rkcz
+         9J0XRUcW0z1XrilHKoNWHqZXjM8TmKnyEkXaWZ9AykhjcVSK3iUARn2Zs61jjm9sENDh
+         K/1nsWKkM2XUxSBu7+tt/Z9H3I2yj7eP6NkZkZwxrOhNqdyLPsEey54AN2c27SjxnP8m
+         6f9aUjUNe8ar+CSmIalpW/m2Bq1woiCE7C7JvW1wf6ET4OheoTdk1YHACYE+K9WuMhUY
+         Ir+w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727269508; x=1727874308;
+        h=to:date:message-id:subject:mime-version:content-transfer-encoding
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=47DEQpj8HBSa+/TImW+5JCeuQeRkm5NMpJWZG3hSuFU=;
+        b=I4/nayA+dNenOb0HZlUzt9xJI1zaeWVhQnYyO2MihrvvHspl7nZmJqzgx7qeexghu2
+         1Ojjar9jwnHdqJ1Ry2kI+xviINx8wQpokB6rf+XyFbVRXWR6PGLlacEztbWvC1gAvlgc
+         hLaTJjxvbOumnRzhxoOXqzH90nEqJ7BrnH8kEWuF97Ct6rouNnyeWeRI+sPqGcPKsDQu
+         u6pv7gnbGBseOdCNiWZ3t0Sgzrvl5wbjEPsnZ3YJlTtIMEAt2Iic8SoXHQe5WHO/GQ2g
+         CBe9LxI4qiyIIsqyaPh93claVgqDjoB/lsez9V/PqSPgKAoWCa5+FfP+mgfXt2UVz21O
+         ROYA==
+X-Gm-Message-State: AOJu0YyHSsa287WmVI5O/mJhUmlf+WASFNXSl7rv7Fjpy+2P9zPbZ1Z7
+	xKIcQJx0Mql+1TG3E4tjk2tK/HDhgJyVWi52LHr0ev7/ojwgvbCdo9bKooDsFTvBtZre/mCzZec
+	r
+X-Google-Smtp-Source: AGHT+IEaWewe9aODITeJEDFjuMrNb/TrSs7UPqE4Un7CeT2Cbi4gLe5OTSLq1s6h5jcZjctK+6NT1Q==
+X-Received: by 2002:a17:90b:48c5:b0:2dd:6969:208e with SMTP id 98e67ed59e1d1-2e06ae25d43mr3291379a91.3.1727269507650;
+        Wed, 25 Sep 2024 06:05:07 -0700 (PDT)
+Received: from smtpclient.apple (85-195-230-253.fiber7.init7.net. [85.195.230.253])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e06e23a135sm1459504a91.39.2024.09.25.06.05.04
+        for <netfilter@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 25 Sep 2024 06:05:05 -0700 (PDT)
+From: michael.steinmann@calivia.com
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="LUh22oYdKkjy2MC5"
-Content-Disposition: inline
-X-Spam-Score: -1.9 (-)
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3818.100.11.1.3\))
+Subject: unsubscribe
+Message-Id: <9780ACB5-F67C-4CF4-879C-A95D40F5E209@calivia.com>
+Date: Wed, 25 Sep 2024 15:04:54 +0200
+To: netfilter <netfilter@vger.kernel.org>
+X-Mailer: Apple Mail (2.3818.100.11.1.3)
 
-
---LUh22oYdKkjy2MC5
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-
-Hi!
-
-The Netfilter project presents:
-
-        libnetfilter_conntrack 1.1.0
-
-This release includes:
-
-- Enhancements for filtering dump and flush commands,
-  see struct nfct_filter_dump and nfct_nlmsg_build_filter().
-- ctnetlink event BPF fixes (endianness issue, IPv6 matching) and
-  enhancements (zone matching).
-- fix for musl compilation.
-
-See ChangeLog that comes attached to this email for more details.
-
-You can download it from:
-
-https://www.netfilter.org/projects/libnetfilter_conntrack/downloads.html
-
-NB: This release has switched to tar.xz files.
-
---LUh22oYdKkjy2MC5
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: attachment;
-	filename="changes-libnetfilter_conntrack-1.1.0.txt"
-
-Felix Huettner (2):
-      dump: support filtering by zone
-      conntrack: support flush filtering
-
-Jeremy Sowden (5):
-      conntrack: fix BPF code for filtering on big-endian architectures
-      conntrack: simplify calculation of `struct sock_fprog` length
-      conntrack: increase the length of `l4proto_map`
-      Ignore `configure~`
-      conntrack: fix BPF for filtering IPv6 addresses
-
-Pablo Neira Ayuso (7):
-      conntrack: add sanity check to netlink socket filter API
-      src: reverse calloc() invocation
-      conntrack: api: bail out if setting up filter for flush/dump fails
-      conntrack: mnl: clean up check for mismatching l3num and tuple filter
-      conntrack: update link to git repository
-      src: remove unused parameter from build functions
-      libnetfilter_conntrack: bump version to 1.1.0
-
-Peter Fordham (1):
-      configure: C99 compatibility issues
-
-Phil Sutter (3):
-      expect/conntrack: Avoid spurious covscan overrun warning
-      Makefile: Create LZMA-compressed dist-files
-      conntrack: bsf: Do not return -1 on failure
-
-Priyankar Jain (1):
-      conntrack: Add zone filtering for conntrack events
-
-Robert Marko (1):
-      conntrack: fix build with kernel 5.15 and musl
-
-Romain Bellan (2):
-      Adding NFCT_FILTER_DUMP_TUPLE in filter_dump_attr, using kernel CTA_FILTER API
-      utils: add NFCT_FILTER_DUMP_TUPLE example
-
-
---LUh22oYdKkjy2MC5--
