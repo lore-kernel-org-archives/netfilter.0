@@ -1,51 +1,51 @@
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94612184D
-	for <netfilter@vger.kernel.org>; Sun, 29 Sep 2024 11:20:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5D831547DB
+	for <netfilter@vger.kernel.org>; Mon, 30 Sep 2024 07:39:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727608858; cv=none; b=abAWMIstVdk10q/vIhsqsAU+ME/nmybVZWEz64bxRe92wOp+RhUgz0u4YhpVlMAYGCLp8fztdBMvguKswyk+ZMEIC1BtXssVRhpSZFU8dYozuUp+MipVZV0RuozSkuDmyUkP8uLCeMYZsXoio9ZjPumwZ70Ty1onzR63VXdo4Ok=
+	t=1727681968; cv=none; b=PqJLKUm/yXw6sw0K7lRpgoMjdCigp3StrI34GMGH+TatoTtK3g3RVKdAdt1BEHsKbs5/2V3bmh7D+zTFfAwi+TCBhg9MadCmt4XBHOAGVnybCMhsm1Iapg2zEtE/bpoStdiv5nHsqSTna7dySiSj22e/JOGwsJGzrKxKfCpNTQQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727608858; c=relaxed/simple;
-	bh=VMwbbtal5s9fHW6ilRGg2sQQV1HkwXetSEJEynv1jfE=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=XoN0DLq7ZClQaZzDOWrQDG+5OgTtCJmuQUSb+oBBc6PH4rznKEkJZ4uiz/QsTbR6MXK5Y73N27JsFj7CLa0kkuZnC2Cg46R7sDaNXYstFPmGYwrhYU7cHrlmLlH7QV8/ht/MXsov/i3Io2GzbqHK48iDltSXiVBBblsiVh9zSrQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=byjvphzF; arc=none smtp.client-ip=209.85.214.179
+	s=arc-20240116; t=1727681968; c=relaxed/simple;
+	bh=tk86e0dbBWrKiH0wtj6NSGBhAQ23oTKXdPGgcTbsIkU=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=mI4WAffNYz7k9th5XbNpjV1LL6QNrkQK3dDzf02WLTZFALq9el8mF740iYqczy4G6hYsnz7UABTJVl4KMCLVe0eTDDhmQczYno4GgyJcQaSBH35QqbZ+qyYEkyK8koS/Agm+gqJAqaMg8IGvP/QmWBq4I1o+YvwJlfg9vQJFo3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lh16hh1/; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="byjvphzF"
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-20b0b2528d8so37944135ad.2
-        for <netfilter@vger.kernel.org>; Sun, 29 Sep 2024 04:20:54 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lh16hh1/"
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-20b9b35c7c3so1389035ad.3
+        for <netfilter@vger.kernel.org>; Mon, 30 Sep 2024 00:39:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727608853; x=1728213653; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1727681964; x=1728286764; darn=vger.kernel.org;
         h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=xTuUmaxctBPlA74KG+Oci/fev+HCQs7HKlzZPCTIHh0=;
-        b=byjvphzFSAV/5rrtXrFQSXQPERJA6knKzqbTCvwi52cIFnAEWU1eE87fRZjC67t9Us
-         dq2bgkoUaC1Nb5IPByoCRdhDEWAmTyIMV2j/Bx4r+c6NqecmHbhnTxOabo0GDz/z/+R3
-         BXv0tAzNve7z1TdWLN4ONiZpPAPaBMXF5zIXec5NLgGySParK+VnMoZawYwVrHknR1oe
-         g7/fbjvUy8GMxaSRFmRyg4lFbRMvxKNCfVHScW0tf8Ji+r6S5p8VyxZURogZAVgznEXI
-         NSkvw2kOv9y3Gl50p97pZjij9VJQ0tjymAYSHKaxgUwOeoxvN3pu5s27zLrYRrEzqGQd
-         GKBQ==
+        bh=kwffJVi6QZcA+pLqGoZhAF+KouIxIJiiHCNMiophoso=;
+        b=lh16hh1/iQEGlwQ1FnRMsQw9s/lvvOXf6fKr/hbGCr6spw0GmXaRLetdEadELlkgde
+         g8G0+NXeN8JGRIPjKmaFKA5ti50Q4D0yccibfU53v4IoPjnYD5MqPNUQbgY9nA1P+i23
+         GuCKd+lBFme8Juh2JXulvJdyf4GFh4zA6cG0vufG2TjVeMABi/CqrbUoRHXKktQWciNl
+         ZZwqN8VVnpLLiEoS/E2sWk+7/zzjwCRS7sFSp+sJt3xioQmd7NiGQ7PQcgwogb/mVJkz
+         HAtq6NmO9wuWaBckpACcMWNmHKZYmUY0yV0mbwEjYLwCps+09jzcbGYEh2jW9hO29rYC
+         wP8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727608853; x=1728213653;
+        d=1e100.net; s=20230601; t=1727681964; x=1728286764;
         h=to:subject:message-id:date:from:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=xTuUmaxctBPlA74KG+Oci/fev+HCQs7HKlzZPCTIHh0=;
-        b=jexG8vyVdr4REpVdQ/A46W1PZ0xBtHjNzm/6PbtE7LVuopy7wb+PF/I5co7QdaaeI+
-         Qt240ytePtgIFg3qa9472juyBWVp/iPfn11kvV3ShJ7REckKTsxRtcU+y6ISx1szGcqV
-         KJkkZVvs3lgCJZMZymaBLKHvs9e4lpb+hnLaKkskTGXtN8t/nVPW7JjhH6zg6Iv/r0Eh
-         5gYhvVMKGanzZjmM9Gfx0A3fNEanrVwbeNCwB3hzagcsiDMpuy5VywOeXIUZJ8yJTUMq
-         Eijo2wgpHUsDu+91WsB7aszs7cwaupPWyiSeZkTqNJnN9QuuwCcDr4yY3ykFUh5RgKec
-         Eung==
-X-Gm-Message-State: AOJu0YwQEouZSpKxj1d4qbfoBkhHWu0RMgN4rt6Up5YxoFRUpbweKur3
-	B7Mlj9+wbErmbrzv0DzNOd4i8Kgsa1Pwmx1qk4vkwSi7SSXjF/7KU/C5OAq+pEyM+2CIIqsoL/b
-	ao1Mfs5EFK259GzsoLjv2hXi8OON1F7HNhA==
-X-Google-Smtp-Source: AGHT+IETp+4vV9CixybogZH/7l0DHlZOPsrRVLYba9TMO4+bk+flH0UJs4ePUUwGnG1J01XWpV8rjmqBy65xCebpnWY=
-X-Received: by 2002:a17:90b:f06:b0:2d8:eba2:ac6e with SMTP id
- 98e67ed59e1d1-2e0b8e8ebc7mr10534288a91.29.1727608853139; Sun, 29 Sep 2024
- 04:20:53 -0700 (PDT)
+        bh=kwffJVi6QZcA+pLqGoZhAF+KouIxIJiiHCNMiophoso=;
+        b=uO1MOAfQIsLfhoJ3V5nKN6UV0EqGR/mgPjcpkL69emAK5jcF2Sk+9min2qo7IXaPv/
+         vtjbhg6Ncy94eRw2UdhGuhn9m9W7KwhN79hp+Rnl2tYfLs48VENE4TpRs4WYSMsyIYT+
+         YG1wqIwFWiPa7TYG7NPufrmZN/O7APCEsVAIRBgvwser46jyw9XxaKCqi+iA73tr2PfJ
+         VzBd2LjaQ8TBullfmRuKv8tKox+E7G22zzTmyKWARjm6hgsVq5Li+mbOOpnIKwUe44vr
+         SWvFIMJbr7G3QiXkX6nhPu03wBmyhy281hifA9cWqmyduvam38y7Fx0gipxHSv/HUq33
+         oV2g==
+X-Gm-Message-State: AOJu0Yxb4tgz5vFRFSHYuSj1OjDsbQzUHcxkNTOTpUp2UU6LxhGL4+vk
+	kcwuUIwLC5B2Q2DG0xvHtstfwdHAonoLugiS2taKMo7B62gVLUilhKICMFqJHkoqVt1xSA2k+D+
+	awUuaP+07wo0UQ9lrfbgFGgzWK+a+7qygCg==
+X-Google-Smtp-Source: AGHT+IFbNBpVfEJKyW4BeoqCvW8adGJ+Au4Qabne/osPFPXRjzbKn0Cu3pyRmJ5NAlKQu2RHupSU4G00PD+MeSByrZc=
+X-Received: by 2002:a05:6a20:d80d:b0:1cf:6c86:231c with SMTP id
+ adf61e73a8af0-1d4fa6bb333mr17849697637.26.1727681963400; Mon, 30 Sep 2024
+ 00:39:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
@@ -53,223 +53,116 @@ List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 From: Avinash Dige <avinash.dige@gmail.com>
-Date: Sun, 29 Sep 2024 16:50:41 +0530
-Message-ID: <CAG0FA8WMgp+2pfa0ORb+PTn2aNdCoaxHTz7nappC6TcumXdNZg@mail.gmail.com>
+Date: Mon, 30 Sep 2024 13:09:11 +0530
+Message-ID: <CAG0FA8UwEBU7NMzj63aU93AuJSaXzFciu0Qi3fOn-YNwB8F9MQ@mail.gmail.com>
 Subject: Clarification on the functioning of "ct count"
 To: netfilter@vger.kernel.org
-Content-Type: multipart/mixed; boundary="00000000000000cfbf06234048e4"
+Content-Type: multipart/mixed; boundary="000000000000b6f8060623514d98"
 
---00000000000000cfbf06234048e4
-Content-Type: multipart/alternative; boundary="00000000000000cfbd06234048e2"
-
---00000000000000cfbd06234048e2
+--000000000000b6f8060623514d98
 Content-Type: text/plain; charset="UTF-8"
 
-I have questions about how exactly using "ct count" or "ct count over" in
-dynamic nft sets works. I want to implement nft rules for the following use
-cases:
+Posting this again without HTML formatting in case the first mail has
+been rejected. I have questions about how exactly using "ct count" or
+"ct count over" in dynamic nft sets works. I want to implement nft
+rules for the following use cases:
 1. Limit the max TCP sessions from one host to 5000.
 2. Limit the max TCP sessions to one host to 5000.
 
-I tried using 'ct count' for the 1st use case. But I have questions about
-it.
-Documentation:
+I tried using 'ct count' for the 1st use case. I have questions about
+how exactly using "ct count" or "ct count over" in dynamic nft sets
+work.
 https://wiki.nftables.org/wiki-nftables/index.php/Meters#Doing_connlimit_with_nft
-I tried the example from the above link: (For testing, just changed the "*ct
-count over 20*" part to "*ct count over 3*" & for my use case I would
-change it to 5000.)
-```
+I tried the example from the above link: (For testing, just changed
+the "ct count over 20" part to "ct count over 3" & for my use case I
+would change it to 5000.)
+'''
+table ip filter {
+set my_connlimit {
+type ipv4_addr
+size 65535
+flags dynamic
+}
 
-
-
-
-
-
-
-
-
-
-
-*table ip filter {    set my_connlimit {            type ipv4_addr
-  size 65535            flags dynamic    }    chain output {
-type filter hook output priority filter; policy accept;            ct state
-new add @my_connlimit { ip saddr ct count over 3 } counter drop    }}*
-```
-
-I did a setup of 3 machines (including VMs).
-*Host machine: 192.168.56.1*
+chain output {
+type filter hook output priority filter; policy accept;
+ct state new add @my_connlimit { ip saddr ct count over 3 } counter drop
+}
+}
+'''
+I have a setup of 3 machines (VMs).
+Host machine: 192.168.56.1
 Then on virtualbox, I set up 2 VMs.
-
-*Machine 1: 192.168.56.101Machine 2: 192.168.56.103*
+Machine 1: 192.168.56.101
+Machine 2: 192.168.56.103
 I put the above nft rules on "Machine 1".
-I have recorded videos of the tests I conducted.
-In the video:
-i. Left half of the screen: Top 4 terminal windows are from the "host
-machine".
-ii. Left half of the screen: Bottom 4 terminal windows are from the
-"Machine 2".
-iii. Right half of the screen: Output on "Machine 1" for the commands:
-'sudo conntrack -L' & 'sudo nft list table ip filter'. We can monitor the
-actual conntrack tables entries on "Machine 1" & the nft set elements in
-the my_connlimit set on "Machine 1".
+I have recorded videos.
+Left half of the screen: Top 4 terminal windows are from the "host machine".
+Left half of the screen: Bottom 4 terminal windows are from the "Machine 2".
+Right half of the screen: Output on "Machine 1" for the commands:
+'sudo conntrack -L' & 'sudo nft list table ip filter'. We can monitor
+the actual conntrack tables entries on "Machine 1" & the nft set
+elements in the my_connlimit set on "Machine 1".
 Then I tried the following test- "Test 1".
-    From "Host machine", initialised 4 ssh connections to "Machine 1".
+From "Host machine", initialised 4 ssh connections to "Machine 1".
 (Watch the top 4 terminal windows on the left half of the screen)
-    Expectation: 192.168.56.1 should get added to the my_connlimit set
+Expectation: 192.168.56.1 should get added to the my_connlimit set
 after the number of connections from 192.168.56.1 exceeds 3.
-    Actual observation: 192.168.56.1 does not get added to the my_connlimit
-set. Although the conntrack table correctly shows 4 new entries from
-192.168.56.1.
-I have recorded & attached the video of the test:* test1.webm* (Watch the
-right half of the screen for conntrack table & nft set outputs on "Machine
-1")
+Actual observation: 192.168.56.1 does not get added to the my_connlimit set.
+I have recorded a video of the test: test1.webm (Watch the right half
+of the screen)
 
 Then I tried the following test- "Test 2".
-    From "Machine 2", initialised 4 ssh connections to "Machine 1". (Watch
+From "Machine 2", initialised 4 ssh connections to "Machine 1". (Watch
 the bottom 4 terminal windows on the left half of the screen)
-    Expectation: 192.168.56.103 should get added to the my_connlimit set
+Expectation: 192.168.56.103 should get added to the my_connlimit set
 after the number of connections from 192.168.56.103 exceeds 3.
-    Actual observation: 192.168.56.103 does not get added to the
-my_connlimit set. Although the conntrack table correctly shows 4 new
-entries from 192.168.56.103.
-I have recorded & attached the video of the test: *test2.webm* (Watch the
-right half of the screen for conntrack table & nft set outputs on "Machine
-1")
+Actual observation: 192.168.56.103 does not get added to the my_connlimit set.
+I have recorded a video of the test: test1.webm (Watch the right half
+of the screen, that's the c)
 
-# I. So I am having trouble understanding & need a clarification on how
-exactly using "ct count" or "ct count over" in dynamic nft sets work.
-    The documentation says- 'For each packet matching this rule, it adds an
-element to the set whose key is 'ip saddr' and it allows a maximum number
-of 20 established connections to such IP source addresses.'
-    Does that mean-
-    1. For a particular source IP address, when the first packet matches
+I. I am having trouble understanding how exactly using "ct count" or
+"ct count over" in dynamic nft sets work.
+The documentation says- 'For each packet matching this rule, it adds
+an element to the set whose key is 'ip saddr' and it allows a maximum
+number of 20 established connections to such IP source addresses.'
+Does that mean-
+1. For a particular source IP address, when the first packet matches
 this rule, its 'ip saddr ct count over 20' would get added to the
 my_connlimit set.
-    2. When the ct count for this source IP address goes over 20, we would
+2. When the ct count for this source IP address goes over 20, we would
 start dropping these packets.
-# II. What changes do I need to do to make the rule work so that I can
-track connection count individually for separate IP addresses? I need to do
-this without having separate rules for each IP address.
-    Having separate nft rules for each IP address manually works (Rules
-like below)
-    ```
-*    meta l4proto tcp ct state new ip saddr 192.168.56.1 ct count over 5000
-add @my_connlimit { ip saddr } counter *
-
-
-
-
-*    meta l4proto tcp ct state new ip saddr 192.168.56.102 ct count over
-5000 add @my_connlimit { ip saddr } counter     meta l4proto tcp ct state
-new ip saddr 192.168.56.103 ct count over 5000 add @my_connlimit { ip saddr
-} counter     meta l4proto tcp ct state new ip saddr 192.168.56.104 ct
-count over 5000 add @my_connlimit { ip saddr } counter     meta l4proto tcp
-ct state new ip saddr 192.168.56.105 ct count over 5000 add @my_connlimit {
-ip saddr } counter     ```*
-    But this is not a feasible solution as the number of clients increases.
-Thus I am looking at a rule like `*meta l4proto tcp ct state new add
-@my_connlimit { ip saddr ct count over 5000 } counter drop*` to work, but
-it is not working as expected.
+II. What changes do I need to do to make the rule work so that I can
+track connection count individually for separate IP addresses? I need
+to do this without having separate rules for each IP address.
+Having separate nft rules for each IP address manually works (Rules like below)
+'''
+meta l4proto tcp ct state new ip saddr 192.168.56.102 ct count over
+5000 add @my_connlimit { ip saddr } counter
+meta l4proto tcp ct state new ip saddr 192.168.56.103 ct count over
+5000 add @my_connlimit { ip saddr } counter
+meta l4proto tcp ct state new ip saddr 192.168.56.104 ct count over
+5000 add @my_connlimit { ip saddr } counter
+meta l4proto tcp ct state new ip saddr 192.168.56.105 ct count over
+5000 add @my_connlimit { ip saddr } counter
+'''
+But this is not a feasible solution as the number of clients
+increases. Thus I am looking at a rule like 'meta l4proto tcp ct state
+new add @my_connlimit { ip saddr ct count over 5000 } counter drop' to
+work, but it is not working as expected.
 
 
 -- 
 
+Avinash Dige
+9028317335
 
-*Avinash Dige9028317335*
-
---00000000000000cfbd06234048e2
-Content-Type: text/html; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-<div dir=3D"ltr">I have questions about how exactly using &quot;ct count&qu=
-ot; or &quot;ct count over&quot; in dynamic nft sets works. I want to imple=
-ment nft rules for the following use cases:<br>1. Limit the max TCP session=
-s from one host to 5000.<br>2. Limit the max TCP sessions to one host to 50=
-00.<br><br>I tried using &#39;ct count&#39; for the 1st use case. But I hav=
-e questions about it. <br>Documentation: <a href=3D"https://wiki.nftables.o=
-rg/wiki-nftables/index.php/Meters#Doing_connlimit_with_nft">https://wiki.nf=
-tables.org/wiki-nftables/index.php/Meters#Doing_connlimit_with_nft</a><br>I=
- tried the example from the above link: (For testing, just changed the &quo=
-t;<i>ct count over 20</i>&quot; part to &quot;<i>ct count over 3</i>&quot; =
-&amp; for my use case I would change it to 5000.)<br>```<br><i>table ip fil=
-ter {<br>=C2=A0 =C2=A0 set my_connlimit {<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 type ipv4_addr<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 s=
-ize 65535<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 flags dynamic<br>=C2=
-=A0 =C2=A0 }<br><br>=C2=A0 =C2=A0 chain output {<br>=C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 type filter hook output priority filter; policy accept=
-;<br>=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 ct state new add @my_connlim=
-it { ip saddr ct count over 3 } counter drop<br>=C2=A0 =C2=A0 }<br>}</i><br=
->```<br><br>I did a setup of 3 machines (including VMs). <br><b>Host machin=
-e: 192.168.56.1</b><br>Then on virtualbox, I set up 2 VMs.<br><b>Machine 1:=
- 192.168.56.101<br>Machine 2: 192.168.56.103</b><br>I put the above nft rul=
-es on &quot;Machine 1&quot;.<br>I have recorded videos of the tests I condu=
-cted. <br>In the video: <br>i. Left half of the screen: Top 4 terminal wind=
-ows are from the &quot;host machine&quot;.<br>ii. Left half of the screen: =
-Bottom 4 terminal windows are from the &quot;Machine 2&quot;.<br>iii. Right=
- half of the screen: Output on &quot;Machine 1&quot; for the commands: &#39=
-;sudo conntrack -L&#39; &amp; &#39;sudo nft list table ip filter&#39;. We c=
-an monitor the actual conntrack tables entries on &quot;Machine 1&quot; &am=
-p; the nft set elements in the my_connlimit set on &quot;Machine 1&quot;.<b=
-r>Then I tried the following test- &quot;Test 1&quot;.<br>=C2=A0 =C2=A0 Fro=
-m &quot;Host machine&quot;, initialised 4 ssh connections to &quot;Machine =
-1&quot;. (Watch the top 4 terminal windows on the left half of the screen)<=
-br>=C2=A0 =C2=A0 Expectation: 192.168.56.1 should get added to the my_connl=
-imit set after the number of connections from 192.168.56.1 exceeds 3.<br>=
-=C2=A0 =C2=A0 Actual observation: 192.168.56.1 does not get added to the my=
-_connlimit set. Although the conntrack table correctly shows 4 new entries =
-from 192.168.56.1.<br>I have recorded &amp; attached the video of the test:=
-<b> test1.webm</b> (Watch the right half of the screen for conntrack table =
-&amp; nft set outputs on &quot;Machine 1&quot;)<br><br>Then I tried the fol=
-lowing test- &quot;Test 2&quot;.<br>=C2=A0 =C2=A0 From &quot;Machine 2&quot=
-;, initialised 4 ssh connections to &quot;Machine 1&quot;. (Watch the botto=
-m 4 terminal windows on the left half of the screen)<br>=C2=A0 =C2=A0 Expec=
-tation: 192.168.56.103 should get added to the my_connlimit set after the n=
-umber of connections from 192.168.56.103 exceeds 3.<br>=C2=A0 =C2=A0 Actual=
- observation: 192.168.56.103 does not get added to the my_connlimit set. Al=
-though the conntrack table correctly shows 4 new entries from 192.168.56.10=
-3.<br>I have recorded &amp; attached the video of the test: <b>test2.webm</=
-b> (Watch the right half of the screen for conntrack table &amp; nft set ou=
-tputs on &quot;Machine 1&quot;)<br><br># I. So I am having trouble understa=
-nding &amp; need a clarification on how exactly using &quot;ct count&quot; =
-or &quot;ct count over&quot; in dynamic nft sets work. <br>=C2=A0 =C2=A0 Th=
-e documentation says- &#39;For each packet matching this rule, it adds an e=
-lement to the set whose key is &#39;ip saddr&#39; and it allows a maximum n=
-umber of 20 established connections to such IP source addresses.&#39;<br>=
-=C2=A0 =C2=A0 Does that mean-<br>=C2=A0 =C2=A0 1. For a particular source I=
-P address, when the first packet matches this rule, its &#39;ip saddr ct co=
-unt over 20&#39; would get added to the my_connlimit set.<br>=C2=A0 =C2=A0 =
-2. When the ct count for this source IP address goes over 20, we would star=
-t dropping these packets.<br># II. What changes do I need to do to make the=
- rule work so that I can track connection count individually for separate I=
-P addresses? I need to do this without having separate rules for each IP ad=
-dress.<br>=C2=A0 =C2=A0 Having separate nft rules for each IP address manua=
-lly works (Rules like below)<br>=C2=A0 =C2=A0 ```<br><i>=C2=A0 =C2=A0 meta =
-l4proto tcp ct state new ip saddr 192.168.56.1 ct count over 5000 add @my_c=
-onnlimit { ip saddr } counter </i><br><i>=C2=A0 =C2=A0 meta l4proto tcp ct =
-state new ip saddr 192.168.56.102 ct count over 5000 add @my_connlimit { ip=
- saddr } counter <br>=C2=A0 =C2=A0 meta l4proto tcp ct state new ip saddr 1=
-92.168.56.103 ct count over 5000 add @my_connlimit { ip saddr } counter <br=
->=C2=A0 =C2=A0 meta l4proto tcp ct state new ip saddr 192.168.56.104 ct cou=
-nt over 5000 add @my_connlimit { ip saddr } counter <br>=C2=A0 =C2=A0 meta =
-l4proto tcp ct state new ip saddr 192.168.56.105 ct count over 5000 add @my=
-_connlimit { ip saddr } counter <br>=C2=A0=C2=A0=C2=A0 ```</i><br>=C2=A0 =
-=C2=A0 But this is not a feasible solution as the number of clients increas=
-es. Thus I am looking at a rule like `<i>meta l4proto tcp ct state new add =
-@my_connlimit { ip saddr ct count over 5000 } counter drop</i>` to work, bu=
-t it is not working as expected.<br><br clear=3D"all"><br><span class=3D"gm=
-ail_signature_prefix">-- </span><br><div dir=3D"ltr" class=3D"gmail_signatu=
-re" data-smartmail=3D"gmail_signature"><div dir=3D"ltr"><div><span style=3D=
-"font-family:courier new,monospace"><br></span></div><span style=3D"font-fa=
-mily:courier new,monospace"><b>Avinash Dige<br>9028317335</b></span><br></d=
-iv></div></div>
-
---00000000000000cfbd06234048e2--
---00000000000000cfbf06234048e4
+--000000000000b6f8060623514d98
 Content-Type: video/webm; name="test2.webm"
 Content-Disposition: attachment; filename="test2.webm"
 Content-Transfer-Encoding: base64
-Content-ID: <f_m1nhkg9q1>
-X-Attachment-Id: f_m1nhkg9q1
+Content-ID: <f_m1op72ac1>
+X-Attachment-Id: f_m1op72ac1
 
 GkXfowEAAAAAAAAQQoKFd2VibQBCh4ECQoWBAhhTgGcBAAAAABEuMhFNm3QBAAAAAAAAjE27AQAA
 AAAAABJTq4QVSalmU6yIAAAAAAAAAJhNuwEAAAAAAAASU6uEFlSua1OsiAAAAAAAAAEF7JoBAAAA
@@ -20025,12 +19918,12 @@ ABhYL/QACIAEAACAABAAAgAAQAAIbbbTbbZDbazbbObbXbbaMbbGbbUbbZTbazbbQbbX7baUbbHb
 bVbbZjba3bbRbbYbbabbbIbbWbbZzba7bbRjbYzbajbbKbbWbbaDba/bbSjbY7barbbMbbW7baLb
 bDbbTbbZDbazbbObbXbbaMbbGbbUbbZTbazbbQbbX7baUbbHbbVbbZjba3bbRbbYbbabbbIbbWbb
 Zzba7bbRjbYzbajbbKbbPAAcU7trAQAAAAAAABy7AQAAAAAAABOzgQ63AQAAAAAAAAf3gQHxggFq
---00000000000000cfbf06234048e4
+--000000000000b6f8060623514d98
 Content-Type: video/webm; name="test1.webm"
 Content-Disposition: attachment; filename="test1.webm"
 Content-Transfer-Encoding: base64
-Content-ID: <f_m1nhkg940>
-X-Attachment-Id: f_m1nhkg940
+Content-ID: <f_m1op729i0>
+X-Attachment-Id: f_m1op729i0
 
 GkXfowEAAAAAAAAQQoKFd2VibQBCh4ECQoWBAhhTgGcBAAAAAA8rZRFNm3QBAAAAAAAAjE27AQAA
 AAAAABJTq4QVSalmU6yIAAAAAAAAAJhNuwEAAAAAAAASU6uEFlSua1OsiAAAAAAAAAEF7JoBAAAA
@@ -37474,4 +37367,4 @@ AIAAEAACAABAAAhttijJjbYzbajbbKbbWbbaDba/bbSjbY7barbbMbbW7baLbbDbbTbbZDbazbbO
 bbXbbaMbbGbbUbbZTbazbbQbbX7baUbbHbbVbbZjba3bbRbbYbbabbbIbbWbbZzba7bbRjbYzbaj
 bbKbbWbbaDba/bbSjbY7barbbMbbW7baLbbDbbTbbZDbazbbObbXbbaMbbGbbUbbZTbazbbQbbX7
 baUbbHbbLNiC2AAAHFO7awEAAAAAAAAcuwEAAAAAAAATs4EItwEAAAAAAAAH94EB8YIBag==
---00000000000000cfbf06234048e4--
+--000000000000b6f8060623514d98--
