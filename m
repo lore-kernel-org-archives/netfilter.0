@@ -1,63 +1,79 @@
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDE81127E18
-	for <netfilter@vger.kernel.org>; Mon, 30 Sep 2024 09:51:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67964194083
+	for <netfilter@vger.kernel.org>; Wed,  2 Oct 2024 08:50:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727689923; cv=none; b=ER0ZLtcQ0Y6JpizNnco4otpin2oJzWoAnkRgo2ygiV6Oc+XKrWV4jOSwi07dYBNt6rlxGe2zNDBpSM0MzqgypNwWeMcQjfQjU2S14gs0+bGO1kZn8zuUof05F4hXKOj0NRkQvPSay502urR1fJWgjwQKcnvLEcx0YuNyXYTczJA=
+	t=1727859063; cv=none; b=E+Nin50osX/nXgdV9ueBdCsvhhXUmIcrky/7WNW+hR5TV4MFqT5ayXHIix+i8IYjDTif5JYANtL0YOsIoXfOfmWRsIHMO4oIHNeIZaLhok773z/cOk6Mm2rp8KtfsNeJJllHH5T40alEsSpz0rMTtRY0bHFiU4/S63yxIktzt4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727689923; c=relaxed/simple;
-	bh=4PGdgTCT6lk8SsMm/Fgu5EPcj6HI42ZUjYr2LipQkRI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xwu9TZw6mbPau+xIjvXaor8uFONUdqAN5m+WjWHboBo47KIX8GgunO9NhAjXmBtMv34cU178W3E7exK3dtxvbypCKSGrV4qcq2MippXDqpn+jTC2kf92AbDjmbgghIwrr2rWZDB2rBK//BI2XDMWMt8xDQAP9s1/MdLNUy/ndXU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
-Received: from [78.30.37.63] (port=33358 helo=gnumonks.org)
-	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <pablo@gnumonks.org>)
-	id 1svD4N-007w0x-3q; Mon, 30 Sep 2024 11:51:57 +0200
-Date: Mon, 30 Sep 2024 11:51:54 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: "Brian J. Murrell" <brian@interlinx.bc.ca>
-Cc: netfilter@vger.kernel.org
-Subject: Re: Allowing closed connections time to drain before logging packets
-Message-ID: <Zvp0uij4kC6Vjj9p@calendula>
-References: <97d9d783d0ff4ac494b909176f2a99df2d1190e5.camel@interlinx.bc.ca>
+	s=arc-20240116; t=1727859063; c=relaxed/simple;
+	bh=4pM51LkfBWUdKQceeGLkTo8mOxtvtTOQdt2liqGjICI=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To; b=BZ2ZL0rqNXezZ6Oue5yB9xveeUPWn+VHSvQ41tg3qRBi6Qjgy53qSbXhLXaQYneTUpsseW4Gne6ThDsJQwO0O7G7B+Oe/EdmCeToi+Kat1oePMtrMaKBJnQhoksUTHYyoavaCY8CGZ9LbKZ2OXOF7K0JGJX6w7YTR8XtVuk1AKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rjp.ie; spf=pass smtp.mailfrom=rjp.ie; dkim=pass (1024-bit key) header.d=rjp.ie header.i=@rjp.ie header.b=RsRfbVjM; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rjp.ie
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjp.ie
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=rjp.ie header.i=@rjp.ie header.b="RsRfbVjM"
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <97d9d783d0ff4ac494b909176f2a99df2d1190e5.camel@interlinx.bc.ca>
-X-Spam-Score: -1.9 (-)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rjp.ie; s=key1;
+	t=1727859056;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=wp4f3zL7phnvgF2otzRkljAP/hp0570s+bFsnM0bA4g=;
+	b=RsRfbVjMvAhl8ImFChDWPCN3yO18TX1UNEJhOzYOgJaIza9z5a5Ui/7z2vr+jU0jI6zALr
+	81MiSWtAku2EI1d/PkSCyhO7iztAMwWdLdGYC/MPRLIQwtkgro5ty6UcJ4aWy/gH0qO5Fu
+	s6sPS79RRnjcJdmSboId9zsVri5JeVs=
+Date: Wed, 02 Oct 2024 08:50:53 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Ronan Pigott" <ronan@rjp.ie>
+Message-ID: <5dd9da7a3d3a2773ec124ceea3c516395526a73b@rjp.ie>
+TLS-Required: No
+Subject: How to count bytes?
+To: netfilter@vger.kernel.org
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Sep 25, 2024 at 01:09:38PM -0400, Brian J. Murrell wrote:
-> I often see entries such as this being logged in my system log:
-> 
-> IN=ens3 OUT= MAC=[redacted] SRC=[redacted] DST=10.75.26.3 LEN=74 TOS=0x00 PREC=0x00 TTL=43 ID=3769 DF PROTO=TCP SPT=33944 DPT=22 WINDOW=229 RES=0x00 ACK PSH URGP=0
-> 
-> I suspect these are packets that come straggling in after a TCP
-> connection has been shut down.  Is there any way to have netfilter give
-> recently shut down TCP connections a bit of grace time before logging
-> packets that have been sent after they were shut down, just to reduce
-> the false-positive noise in my logs?
+Hi netfilter,
 
-These are packets logged through 'ct state invalid', right?
+I'm interested in counting the total number of bytes emitted by a particu=
+lar
+application/flow, inlcuding ip+tcp headers.
 
-> Same goes for UDP in fact:
-> 
-> IN=eth0.2 OUT= MAC=[redacted] SRC=[reacted, remote IP] DST=[redacted, my local IP] LEN=99 TOS=0x00 PREC=0x00 TTL=59 ID=0 DF PROTO=UDP SPT=443 DPT=37242 LEN=79 MARK=0x3f00
-> 
-> for, for example, QUIC connections.
-> 
-> Cheers,
-> b.
-> 
+In theory, this is what the counter counts, but the accuracy is broken by=
+ GSO.
 
+The man page says the following:
 
+  Careful with matching on ip length: If GRO/GSO is enabled, then the Lin=
+ux
+  kernel might aggregate several packets into one big packet that is larg=
+er than
+  MTU. Moreover, if GRO/GSO maximum size is larger than 65535 (see man
+  ip-link(8), specifically gro_ipv6_max_size and gso_ipv6_max_size), then=
+ ip
+  length might be 0 for such jumbo packets. meta length allows you to mat=
+ch on
+  the packet length including the IP header size. If you want to perform
+  heuristics on the ip length field, then disable GRO/GSO.
+
+But afaict, disabling GSO will not have any effect on the ip header lengt=
+h
+field =E2=80=94 large packets are still generated with len > mtu and rema=
+in intact for
+all of the netfilter hooks before they are segmented. I think this paragr=
+aph
+should probably be removed.
+
+Is it possible to make an accurate count of bytes in netfilter?
+
+Thanks,
+
+Ronan
