@@ -1,79 +1,82 @@
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67964194083
-	for <netfilter@vger.kernel.org>; Wed,  2 Oct 2024 08:50:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D925A84A36;
+	Wed,  2 Oct 2024 22:53:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727859063; cv=none; b=E+Nin50osX/nXgdV9ueBdCsvhhXUmIcrky/7WNW+hR5TV4MFqT5ayXHIix+i8IYjDTif5JYANtL0YOsIoXfOfmWRsIHMO4oIHNeIZaLhok773z/cOk6Mm2rp8KtfsNeJJllHH5T40alEsSpz0rMTtRY0bHFiU4/S63yxIktzt4Q=
+	t=1727909642; cv=none; b=DfoXtB5/CJlJUhPEhSc1xccUNIpKPUXrUddehgeY+sLFCwHAClBYmOgsRWSJS58JkdvF4o3UIc9ADlpeW+4Ilw7opTVmJW2x+Kzods134Zz2QkqLcwnMgYDieytGuOoTK35iske7E6sRGtHAgj1lyBIv7ckkpv65hHLQbzLCfxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727859063; c=relaxed/simple;
-	bh=4pM51LkfBWUdKQceeGLkTo8mOxtvtTOQdt2liqGjICI=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To; b=BZ2ZL0rqNXezZ6Oue5yB9xveeUPWn+VHSvQ41tg3qRBi6Qjgy53qSbXhLXaQYneTUpsseW4Gne6ThDsJQwO0O7G7B+Oe/EdmCeToi+Kat1oePMtrMaKBJnQhoksUTHYyoavaCY8CGZ9LbKZ2OXOF7K0JGJX6w7YTR8XtVuk1AKw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rjp.ie; spf=pass smtp.mailfrom=rjp.ie; dkim=pass (1024-bit key) header.d=rjp.ie header.i=@rjp.ie header.b=RsRfbVjM; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rjp.ie
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rjp.ie
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=rjp.ie header.i=@rjp.ie header.b="RsRfbVjM"
+	s=arc-20240116; t=1727909642; c=relaxed/simple;
+	bh=0zjMo9uus+vZLntPQs1e06U24r/4GzaUI1aeovRWxRU=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=XfVr2lRsRmQxU1HMX3YFI2fyJABQ6aS9Ij1m8AEWUXOH6tjjSeT1kjpKMK8TPlRMzCNYAIX+UySaAnO5HIwDhGWN833Jnz7Qxdks2d4ic1Chw99igtBGA7U9g7tMknV3UXIJyQ5jUnFvuS3xY5KsfIiDrqQ5k4FD1Fc/JTs49jY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
+Received: from [78.30.37.63] (port=56532 helo=gnumonks.org)
+	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <pablo@gnumonks.org>)
+	id 1sw8EB-00CTXI-Js; Thu, 03 Oct 2024 00:53:53 +0200
+Date: Thu, 3 Oct 2024 00:53:50 +0200
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org,
+	netfilter-announce@lists.netfilter.org, lwn@lwn.net
+Subject: [ANNOUNCE] libnftnl 1.2.8 release
+Message-ID: <Zv3O_lxf0Rh450_T@calendula>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=rjp.ie; s=key1;
-	t=1727859056;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=wp4f3zL7phnvgF2otzRkljAP/hp0570s+bFsnM0bA4g=;
-	b=RsRfbVjMvAhl8ImFChDWPCN3yO18TX1UNEJhOzYOgJaIza9z5a5Ui/7z2vr+jU0jI6zALr
-	81MiSWtAku2EI1d/PkSCyhO7iztAMwWdLdGYC/MPRLIQwtkgro5ty6UcJ4aWy/gH0qO5Fu
-	s6sPS79RRnjcJdmSboId9zsVri5JeVs=
-Date: Wed, 02 Oct 2024 08:50:53 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Ronan Pigott" <ronan@rjp.ie>
-Message-ID: <5dd9da7a3d3a2773ec124ceea3c516395526a73b@rjp.ie>
-TLS-Required: No
-Subject: How to count bytes?
-To: netfilter@vger.kernel.org
-X-Migadu-Flow: FLOW_OUT
+Content-Type: multipart/mixed; boundary="GhNsXPny9S+yJ+VV"
+Content-Disposition: inline
+X-Spam-Score: -1.9 (-)
 
-Hi netfilter,
 
-I'm interested in counting the total number of bytes emitted by a particu=
-lar
-application/flow, inlcuding ip+tcp headers.
+--GhNsXPny9S+yJ+VV
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 
-In theory, this is what the counter counts, but the accuracy is broken by=
- GSO.
+Hi!
 
-The man page says the following:
+The Netfilter project proudly presents:
 
-  Careful with matching on ip length: If GRO/GSO is enabled, then the Lin=
-ux
-  kernel might aggregate several packets into one big packet that is larg=
-er than
-  MTU. Moreover, if GRO/GSO maximum size is larger than 65535 (see man
-  ip-link(8), specifically gro_ipv6_max_size and gso_ipv6_max_size), then=
- ip
-  length might be 0 for such jumbo packets. meta length allows you to mat=
-ch on
-  the packet length including the IP header size. If you want to perform
-  heuristics on the ip length field, then disable GRO/GSO.
+        libnftnl 1.2.8
 
-But afaict, disabling GSO will not have any effect on the ip header lengt=
-h
-field =E2=80=94 large packets are still generated with len > mtu and rema=
-in intact for
-all of the netfilter hooks before they are segmented. I think this paragr=
-aph
-should probably be removed.
+libnftnl is a userspace library providing a low-level netlink
+programming interface (API) to the in-kernel nf_tables subsystem.
+This library is currently used by nftables.
 
-Is it possible to make an accurate count of bytes in netfilter?
+This release contains a few fixes only:
 
-Thanks,
+* incorrect validation of dynset netlink attribute from the kernel.
+* don't append a newline when printing a rule.
 
-Ronan
+See ChangeLog that comes attached to this email for more details on
+the updates.
+
+You can download it from:
+
+https://www.netfilter.org/projects/libnftnl/downloads.html
+
+Happy firewalling.
+
+--GhNsXPny9S+yJ+VV
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: attachment; filename="changes-libnftnl-1.2.8.txt"
+
+Florian Westphal (1):
+      expr: dynset: validate expressions are of nested type
+
+Pablo Neira Ayuso (2):
+      src: remove scaffolding around deprecated parser functions
+      build: libnftnl 1.2.8 release
+
+Phil Sutter (1):
+      rule: Don't append a newline when printing a rule
+
+
+--GhNsXPny9S+yJ+VV--
