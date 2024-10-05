@@ -1,33 +1,33 @@
 Received: from server.interlinx.bc.ca (mail.interlinx.bc.ca [69.165.217.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65A5A1798C
-	for <netfilter@vger.kernel.org>; Sat,  5 Oct 2024 18:24:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7280114A4DF
+	for <netfilter@vger.kernel.org>; Sat,  5 Oct 2024 18:28:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.165.217.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728152659; cv=none; b=tX9qA2JcFLUyvspo/7pH9EjUrhWzBLNJGnKkj/8PVo39Erl4ydpczFMF/zGEeYAgZVnE4aCPzRGZ4rI5utiRHn2Ml8+J0t9kOOa9dOspSWpk6ZULk2SrYtzXG2gpNuzEmXNy1Vu23tYraSujFGfkDEZWSTRcV1e8y2LN87HHCkI=
+	t=1728152933; cv=none; b=ucmKkYRcpolLhz43jcDCxBUV5EACgD2nlbnXkC5mQZ4WVoYLCs6BKQA4NmIxwk5lIo1Kqxa8L0wjt+cWmDRVu08UY9MsUb2LVijwHm75AmvIYaz5/e/9iAfzysDObOgzwKDYsWHpqFSOY6hH7+1UnTyQcx2xSKiZhercMlgQFpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728152659; c=relaxed/simple;
-	bh=aQnjYxsBdknSBdMaHuG4W8EvqgEmCMruwlal5S2Tv1Y=;
+	s=arc-20240116; t=1728152933; c=relaxed/simple;
+	bh=ANNbIFNHUeqEXLdXx5Ip31LmOfPvzkhGG0RXJYvus0o=;
 	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=A96eJYf+pOzOotuGLRI2wFvmrC89ZHtdO51tbFI/GX4UKFLGyWRFBXzG045TOL47Yafdz8CzYTWOdxfPDnLrPBE7kfqVZDxmfkMmtbAXWSqTCBPb9mzRHgMrp+fMhynkz+miChEf6+bt10HlJbsqZAoZqf1wXVusn11h7tefYqw=
+	 Content-Type:MIME-Version; b=iTLEGkqVD9GFECPCjKZPJBWnmWnPtk0vrOZndggHE1o+iCCgj2qpzLIajaCGJ1oKB1XIUSUjl2P8U/FPwfL+1vlO1caQ/BpBL+spEiNO+xLpWqSh3ZpcjSU8CF3puDvJq5wln/odyN7YjYvlNyvi366HvpbWzQCekPoeedn3Nhg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=interlinx.bc.ca; spf=fail smtp.mailfrom=interlinx.bc.ca; arc=none smtp.client-ip=69.165.217.196
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=interlinx.bc.ca
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=interlinx.bc.ca
 Received: from brian-laptop.interlinx.bc.ca (brian-laptop.interlinx.bc.ca [IPv6:fd31:aeb1:48df:0:2374:a2d1:e1b7:89a3])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by server.interlinx.bc.ca (Postfix) with ESMTPSA id 08B102FDEC
-	for <netfilter@vger.kernel.org>; Sat,  5 Oct 2024 14:14:53 -0400 (EDT)
-Message-ID: <df0473c6094fdd30b96fa3ec8afd9c40b16a60ee.camel@interlinx.bc.ca>
+	by server.interlinx.bc.ca (Postfix) with ESMTPSA id 5D9072FED6
+	for <netfilter@vger.kernel.org>; Sat,  5 Oct 2024 14:28:49 -0400 (EDT)
+Message-ID: <88ac33831e0fd303064f7f3e0de6af419f67611b.camel@interlinx.bc.ca>
 Subject: Re: Allowing closed connections time to drain before logging packets
 From: "Brian J. Murrell" <brian@interlinx.bc.ca>
 To: netfilter@vger.kernel.org
-Date: Sat, 05 Oct 2024 14:14:52 -0400
-In-Reply-To: <Zvp0uij4kC6Vjj9p@calendula>
+Date: Sat, 05 Oct 2024 14:28:49 -0400
+In-Reply-To: <5538AEED-B141-4584-A081-4B37559F35FE@slavino.sk>
 References: <97d9d783d0ff4ac494b909176f2a99df2d1190e5.camel@interlinx.bc.ca>
-	 <Zvp0uij4kC6Vjj9p@calendula>
+	 <5538AEED-B141-4584-A081-4B37559F35FE@slavino.sk>
 Autocrypt: addr=brian@interlinx.bc.ca; prefer-encrypt=mutual;
  keydata=mQINBFJXCMcBEADE0HqaCnLZu2Iesx727mXjyJIX6KFGmGiE5eXBcLApM5gtrQM5x+82h
  1iKze30VR9UKNzHz50m6dvUxXz2IhN+uprfSNtooWU5Lp6YO8wZoicCWU+oJbQC/BvYIiHK6WpuSF
@@ -155,20 +155,44 @@ List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Mon, 2024-09-30 at 11:51 +0200, Pablo Neira Ayuso wrote:
+On Wed, 2024-09-25 at 18:18 +0000, Slavko wrote:
 >=20
-> These are packets logged through 'ct state invalid', right?
+> You can consider to extend netfilter connection timeouts.
 
-Yes, I would say that is a reasonable statement.  But they are only
-just recently invalid, as of the closing of the valid "session" just a
-few packets before.
+This seems like the ideal solution.  But which timeout would I extend
+to keep a connection valid for some period of time after netfilter has
+seen the close of a (TCP for example) session?
 
-So while I want to still log generally invalid packets (i.e. an ACK-
-only packet not part of an existing session, or an RST not part of a an
-actively closing session, etc.), I don't want to log packets that are
-only invalid because they are "stragglers" (i.e. were delayed in the
-network, etc. and only arrive after the close of the session) from a
-recently (let's say, 30 or maybe even 60 seconds since) closed session.
+> You have two options with TCP:
+>=20
+> + setup kernel knob to consider NEW packet without SYN
+> as invalid and drop INVALID packets
+
+But I do want to continue to log and drop otherwise (other than for
+very recently closed session) INVALID packets.  I just don't want
+packets that are from a connection that was recently closed to be
+considered INVALID.
+
+> + drop NEW TCP packets without SYN by exact FW rule
+
+But I don't want to drop all/any TCP packets without a SYN if they were
+never part of a recently closed session.  I still want to log port
+probing for example.
+
+> A little complicated with UDP,
+
+If there is a timeout after a closed "session" before it's considered
+INVALID, it shouldn't be any more complicated for UDP than TCP since
+both have concepts of VALID/ACTIVE and INVALID sessions.  They just
+consider when they are "closed" differently (i.e. TCP with FIN packets
+and UDP after a timeout of connection idleness).
+
+
+> For both (TCP/UDP) consider to add more conditions, as sport,
+> ephemeral dports, etc...
+
+There are no more conditions I can add that help determine if packets
+are part of a recently closed session or not, AFAIU.
 
 Cheers,
 b.
