@@ -1,158 +1,138 @@
-Received: from mta200a-ord.mtasv.net (mta200a-ord.mtasv.net [104.245.209.200])
+Received: from fhigh-a5-smtp.messagingengine.com (fhigh-a5-smtp.messagingengine.com [103.168.172.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DBB020CCF7
-	for <netfilter@vger.kernel.org>; Tue,  8 Oct 2024 20:08:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.245.209.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E6C720A5FF
+	for <netfilter@vger.kernel.org>; Tue,  8 Oct 2024 20:21:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728418116; cv=none; b=gk8YqRAjKbO+2aHfxu28xs3T5PBbKcQ6wGOE5mwx+31R4CRxaa6cpDEF5nDdu2y37wlsdMFqCf/SiuNsBoVoygMnwbc+T6GTiECy5kJ9pnk96XQze7BraarP737a1KG3wsrfI5PNh+ZHEmw2LX6hlUyUSjYauLGbf1NPEtlGjNs=
+	t=1728418917; cv=none; b=PrCm/3jU32YdK0uYYaKw07lSdNhGiXwbn3zHsfGbi2aifkiq1lyiDwbK70jrlaDPr9GyskM2FWW2W0n1DJU5u+sEwqcQGUxz06Q8U1ZJnwR2G9mHf37qHujge5jg+1L2XcQ/EhvR22qtXfQnPc8qaEMFqDDGpNRqzddghIj8Zek=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728418116; c=relaxed/simple;
-	bh=ipviyP4P5ZWpRUUQNclUaHcDyBX6sr6TEka3YL5HwUY=;
-	h=From:Date:Subject:Message-Id:To:MIME-Version:Content-Type; b=bwZjUihxooJ0gCR1Zmts0he/9ULA+goiv7XDl4ZagsdCjKKMTcEiJhEaq2QDsnHIXT05PvDUiUP/l7NvXODblO71ewYPLqMydnWAk8FNSF3lbltvy95G1RINieVQuPfSUYZia8U9ji+CTAwN8IRYs7X+BfD1WW7ERgy6f3/ciuQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=black-sheep-research.com; spf=pass smtp.mailfrom=pm-bounces.black-sheep-research.com; dkim=pass (2048-bit key) header.d=pm.mtasv.net header.i=@pm.mtasv.net header.b=LWI+h12Y; dkim=pass (1024-bit key) header.d=black-sheep-research.com header.i=martin@black-sheep-research.com header.b=EjdZw77R; arc=none smtp.client-ip=104.245.209.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=black-sheep-research.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm-bounces.black-sheep-research.com
+	s=arc-20240116; t=1728418917; c=relaxed/simple;
+	bh=1+BqfvDCcpoTx/RA7LeseKt8DC0qDZOKOHt5gWM/NQI=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=DyRpnQRl4m3QHn9JMcGriHr20I+BXKPNmvRX40TTc3SO9e1+JuxwnTXFIWIoz0jktc5E0/ySKPw1ydM1r6knOWknJJq+vwGIhiZtR2dAfSiHY73IcleFWwxTsieKuXuRoebt+dd/4xoPiRLlqZCIjEy5WQp8fmYp2QqowmpxaCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=fXcM48rQ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ciOwN0lD; arc=none smtp.client-ip=103.168.172.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pm.mtasv.net header.i=@pm.mtasv.net header.b="LWI+h12Y";
-	dkim=pass (1024-bit key) header.d=black-sheep-research.com header.i=martin@black-sheep-research.com header.b="EjdZw77R"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=pm20241004; d=pm.mtasv.net;
- h=From:Date:Subject:Message-Id:Reply-To:To:MIME-Version:Content-Type:
- Content-Transfer-Encoding:Date:From:Message-ID:Reply-To:Sender:Subject:To:CC;
- t=1728418114; x=1728504514;
- bh=ipviyP4P5ZWpRUUQNclUaHcDyBX6sr6TEka3YL5HwUY=;
- b=LWI+h12Y1ELYho3rRMiJ2rGUnQDoLT75YrKTA5Wz7mn3teSQUxWPDWZ3LAWkFefR86BvRU2y8vlJ
-   3YP1FqDOO4jeo0AxgnMHacexh9YjWRPQl6bORFULCL5N6buCUpQrXRob5lFK7ZeJ2nYhFMLDyJ06
-   cD3KWYaQOqvO4QQoIq/NKMcIvChc7mV1mACVC5Z6fB2j72Xa84c69K0VbNFlI1Ds5e3E87N6XMmZ
-   6mHfFOT748I/cvOlz1ie7ur7XSCW12TldErzGXhvU3ZI+dDqfyBzzfa3xeYDaQ4jDV5nFXzu8ZRw
-   ZTex51U7U4CXRncL3DoEQqbp//EwPMv1ZN0ffw==
-Received: by mta200a-ord.mtasv.net id h0m8k23864o8 for <netfilter@vger.kernel.org>; Tue, 8 Oct 2024 16:08:33 -0400 (envelope-from <pm_bounces@pm-bounces.black-sheep-research.com>)
-X-PM-IP: 104.245.209.200
-X-IADB-IP: 104.245.209.200
-X-IADB-IP-REVERSE: 200.209.245.104
-DKIM-Signature: v=1; a=rsa-sha256; d=black-sheep-research.com;
-	s=20220127112152pm; c=relaxed/relaxed; i=martin@black-sheep-research.com;
-	t=1728418113; x=1728590913;
-	h=date:date:from:from:message-id:reply-to:reply-to:sender:subject:subject:to:
-	to:cc:feedback-id:mime-version:content-type:content-transfer-encoding;
-	bh=ipviyP4P5ZWpRUUQNclUaHcDyBX6sr6TEka3YL5HwUY=;
-	b=EjdZw77RaonfEwQ4/tjXU2UzvNoia02DlZuUGBT+3bd9WeCP1Cy0FCGy2LT0NKVbdHCTixfbWzK
-	kAfP36c+yVmA/EplCAJ0uuRUAlHB/4oBSaalg7pUeIrFZFHyNECWZcvsLo1TGbqBqJAqG1woQyVQ0
-	nKkovcJUuxF5olcp9y0=
-From: Martin Brampton <martin@black-sheep-research.com>
-Date: Tue, 08 Oct 2024 20:08:33 +0000
-Subject: Problem with ipv6
-Message-Id: <c3e11308-7b43-456b-af93-a03a6040f223@mtasv.net>
-Reply-To: martin@black-sheep-research.com
-To: netfilter@vger.kernel.org
-User-Agent: Mozilla Thunderbird
-Feedback-ID: s8569101-_:s8569101:a226829:postmark
-X-Complaints-To: abuse@postmarkapp.com
-X-PM-Message-Id: c3e11308-7b43-456b-af93-a03a6040f223
-X-PM-RCPT: |bTB8MjI2ODI5fDg1NjkxMDF8bmV0ZmlsdGVyQHZnZXIua2VybmVsLm9yZw==|
-X-PM-Message-Options: v1;1.TagpA4u5Jvnbtnq7GvGh5A.6k1f1dyjhkslBmbXl5hFz1GrA01Bug3jCk0L2eAyg_ahVuVMdaUut8jFCBQtk8_8_kjVRSqHXHlnw7zR8QVNetDhTZTC0vdY2ZIrAExUlwU9jR95QGb4FXJmiW3YF1taGhbgTgrV8SQeCDdyxR1I3ObfYM066ltMbMRsK2AzmSMH5r8uETt7QCIFc6c2g9X2
+	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="fXcM48rQ";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ciOwN0lD"
+Received: from phl-compute-06.internal (phl-compute-06.phl.internal [10.202.2.46])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 0F6F81140137;
+	Tue,  8 Oct 2024 16:21:54 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-06.internal (MEProxy); Tue, 08 Oct 2024 16:21:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+	 h=cc:cc:content-transfer-encoding:content-type:content-type
+	:date:date:from:from:in-reply-to:in-reply-to:message-id
+	:mime-version:references:reply-to:subject:subject:to:to; s=fm3;
+	 t=1728418914; x=1728505314; bh=6JSTkxM8iVN64PBIYei6x9+snHDE6vvj
+	lUSCuGb9MlA=; b=fXcM48rQgttEUd9N6xI3kjuIHPHaRKHT5vkGDSiCiRmHuKSD
+	R5ms1VYonzg1GuQ7a1TRckbSxH1iVFUxAL6pA5MFNM90ZMyvyxkF7z2xTi/HX7LX
+	7y99rkDtRG4wcqJI18wWAbHkgJSJpWLbZmpoiQNaQNqv4S19/1W3C9gRH7pq0kKz
+	O4ZAk6Pr1AzAcJtCqRibahYKjYgawisdccapwT3acjJzsKHwD3r5WgP1uozuMAuS
+	OoWI+IvRZyhcI9NdmPs0j2ZhY/xjl17UjeVm/8+0b+SBA+/recGAryRWjQxxtYD5
+	f+GCbbLlP3GVl2wkxAFDzJ1LOyeE0iTZuXpYYA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1728418914; x=
+	1728505314; bh=6JSTkxM8iVN64PBIYei6x9+snHDE6vvjlUSCuGb9MlA=; b=c
+	iOwN0lDJjyDUexmX+zn7QuzNOE1AsCRX5ceqql69PVPvWUAHcW1WbzNhJTAQ0QAv
+	ZDlY1nS5fe6dil5Ap52n+mXaK69CRjUSO6v5oT2MYQltsNLzmVr/Aw8YUeKr1DFr
+	Oy0hqUsnPlKEfP/tWowA+RIgDufpmwKAGA1Acdhsd0ap546rE1BNVV0S0ACYiIRy
+	KhRfLOYsC+wUVbRpjIoOAmpGm6efxaxKKPgJrdcJO8HlGq/knXg4q/X7qx/mRr/J
+	RcssnI5rEYbb28H2lZekzgXkDIpiOG9zlmEaz8AlQhq226rB3C2aMXZUiQgsSnoX
+	75WbNjWOWLLEsrWm5wSCA==
+X-ME-Sender: <xms:YZQFZx8NaSP1ckXuk33oAPxkoUl-JWAGqFMeMZ9BFFJjfRyA_dfNKQ>
+    <xme:YZQFZ1uMDriog52BZze5Tr75fWpK-w2RNbdyhl63pvoh4UecE7YrC_2ggVRoRik0E
+    kGJ3PdQTjpHm9hA>
+X-ME-Received: <xmr:YZQFZ_Dcj7VcqVuNtZefTdX1Ikj297abWCQ0YtJ83ULnhWQ115OWQxFQOpa7N0otrAvTp6vnaCny2qO-GRa1MQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdefuddgudeglecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfgjfhfogggtgfesthekredtjfdt
+    jeenucfhrhhomhepmfgvrhhinhcuofhilhhlrghruceokhhfmhesphhluhhshhhkrghvrg
+    drnhgvtheqnecuggftrfgrthhtvghrnhepteejkeetkeegfedtueejheevtdekfeejueet
+    ffejgfefuddtudfhkefhfeevvdehnecuffhomhgrihhnpegrkhgrrdhmshdpnhhfthgrsg
+    hlvghsrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
+    rhhomhepkhhfmhesphhluhhshhhkrghvrgdrnhgvthdpnhgspghrtghpthhtohepvddpmh
+    houggvpehsmhhtphhouhhtpdhrtghpthhtoheprhhosghinhgssegvgigtvghlvghrrght
+    vgdrihhnfhhopdhrtghpthhtohepnhgvthhfihhlthgvrhesvhhgvghrrdhkvghrnhgvlh
+    drohhrgh
+X-ME-Proxy: <xmx:YZQFZ1ce5KCjZZTTaS-jIYYIjcq769fa2mUg6K1Eb_bRRDthoIjd1A>
+    <xmx:YZQFZ2PZ2hrebhlR86BxPkMSq2sZzWhYRK6nQgMhUTh3oT5zl-lEVQ>
+    <xmx:YZQFZ3kdqND8Dk-Bh9w1dP6jH1jrprnQWYjpDembOhTSwVOeoQjoKQ>
+    <xmx:YZQFZwvUOG5QlAgN2nS7_5U84vdqqSWXpgs1FCyBI7_FHqlWj2Fvsw>
+    <xmx:YpQFZ_aPVAjtLzdmGVqo9PZ3ncfIwCg7cbwgfskBoQNgQzb15de9Hwi8>
+Feedback-ID: i2431475f:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 8 Oct 2024 16:21:53 -0400 (EDT)
+Date: Tue, 8 Oct 2024 21:21:51 +0100
+From: Kerin Millar <kfm@plushkava.net>
+To: Robin Bussell <RobinB@excelerate.info>
+Cc: netfilter@vger.kernel.org
+Subject: Re: Unsuccessful adding policy to a regular chain
+Message-Id: <20241008212151.9524f0f9eb3e3146376f617f@plushkava.net>
+In-Reply-To: <00218364-B6FE-4CDD-AE5E-B7DB3EE35E6F@excelerate.info>
+References: <CWXP123MB4792C9E58B0187197122EAFBD07E2@CWXP123MB4792.GBRP123.PROD.OUTLOOK.COM>
+	<daa4a802-c058-494c-b47b-f258728a00c2@app.fastmail.com>
+	<00218364-B6FE-4CDD-AE5E-B7DB3EE35E6F@excelerate.info>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-unknown-linux-gnu)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-PM-MTA-Pool: transactional-3
+Mime-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-I've been struggling to get nftables to handle IPv6 traffic on selected=20
-ports. First efforts were on Debian 12, with nftables 1.0.6.
+On Tue, 8 Oct 2024 19:00:50 +0000
+Robin Bussell <RobinB@excelerate.info> wrote:
 
-The setup was quite complex, but included simple rules to open port 25=20
-for SMTP. They worked for ipv4, but about a minute after starting up=20
-nftables, ipv6 was blocked. The problem is not specific to port 25, a=20
-similar problem applied to 80 and 443.
+> 
+> 
+> 
+> 
+> On 8 Oct 2024, at 18:12, Kerin Millar <kfm@plushkava.net> wrote:
+> 
+> ﻿[You don't often get email from kfm@plushkava.net. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
+> 
+> [EXTERNAL EMAIL]
+> 
+> On Tue, 8 Oct 2024, at 5:59 PM, Robin Bussell wrote:
+> Hi Folks,
+>         I'm trying to create a regular chain with a default drop
+> policy and not getting anywhere. The wiki implies this can be done, but
+> when I try:
+> 
+> nft 'add chain ip myTable myChain { policy drop ;}'
+> 
+> I get back:
+> 
+> Error: Could not process rule: Operation not supported
+> add chain ip O365 O365WhiteList { policy drop ;}
+>                                  ^^^^^^^^^^^
+> 
+> ( those carets line up with the "policy drop" on my terminal. A table
+> called myTable of the ip family exists already )
+> 
+> So are policies actually supported on regular chains? If so, can you
+> tell me what might be wrong with my  nft invocation?
+> 
+> There can be no policy for a chain bearing no hook.
+> 
+> 
+> <https://wiki.nftables.org/wiki-nftables/index.php/Configuring_chains#Adding_regular_chains>
+> Configuring chains<https://wiki.nftables.org/wiki-nftables/index.php/Configuring_chains#Adding_regular_chains>
+> wiki.nftables.org<https://wiki.nftables.org/wiki-nftables/index.php/Configuring_chains#Adding_regular_chains>
+> [X]<https://wiki.nftables.org/wiki-nftables/index.php/Configuring_chains#Adding_regular_chains>
+>  This wiki article states otherwise though.
 
-I know that the service provided by Postfix works, as it is possible to=20
-send email via ipv6 when nftables is stopped.
+The article has been corrected.
 
-The complexity was mainly to do with a lot of sets to control different=20
-options.
-
-To try to pin things down, I then created a Digital Ocean VPS using=20
-Ubuntu 24.04 to get a later version of nftables - 1.0.9. The rules were=20
-hacked down to a bare minimum. The ruleset is shown below. The problem=20
-continues - without nftables I can submit mail. After "systemctl restart=20
-nftables" access remains possible - but only for about a minute. There=20
-are messages in syslog about the client when it is able to connect, but=20
-none in respect of dropped packets. There are many ipv4 dropped packets=20
-- probably just internet noise. Any thoughts?
-
-table inet firewall {
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 chain input {
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 type filter hook input priority filter; policy accept;
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 ct state { established, related } accept
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 iifname "lo" accept
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 icmpv6 type { destination-unreachable, packet-too-big,=20
-time-exceeded, parameter-problem, echo-request, mld-listener-query,=20
-nd-router-solicit, nd-router-advert, nd-neighbor-solicit,=20
-nd-neighbor-advert } accept
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 ip protocol icmp icmp type echo-request ip saddr=20
-127.0.0.1 accept
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 ip6 nexthdr tcp tcp dport 25 accept
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 ip protocol tcp tcp dport 25 accept
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 tcp dport 22 ip saddr 62.3.121.238 accept
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 udp dport 60000-61000 ip saddr 62.3.121.238 accept
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 log prefix "nftables input dropped: " flags all counter=20
-packets 242 bytes 12885 drop
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 chain forward {
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 type filter hook forward priority filter; policy drop;
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 ct state { established, related } accept
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 log prefix "nftables forward dropped: " flags all=20
-counter packets 0 bytes 0 drop
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 chain output {
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 type filter hook output priority filter; policy drop;
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 ct state { established, related } accept
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 ip protocol icmp icmp type echo-request accept
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 ip protocol icmp icmp type echo-request ip daddr=20
-127.0.0.1 accept
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 icmpv6 type echo-request accept
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 ip protocol { tcp, udp } th dport 53 accept
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 tcp dport 123 accept
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 tcp dport { 80, 443 } accept
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 tcp dport { 25, 465, 587, 993, 995, 4190 } accept
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 chain prerouting {
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 type nat hook prerouting priority dstnat; policy accept;
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 chain postrouting {
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 type nat hook postrouting priority srcnat; policy accept;
- =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
-}
-
+-- 
+Kerin Millar
