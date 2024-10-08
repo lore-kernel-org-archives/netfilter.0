@@ -1,199 +1,174 @@
-Received: from server.interlinx.bc.ca (mail.interlinx.bc.ca [69.165.217.196])
+Received: from GBR01-LO4-obe.outbound.protection.outlook.com (mail-lo4gbr01on2101.outbound.protection.outlook.com [40.107.122.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7280114A4DF
-	for <netfilter@vger.kernel.org>; Sat,  5 Oct 2024 18:28:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.165.217.196
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728152933; cv=none; b=ucmKkYRcpolLhz43jcDCxBUV5EACgD2nlbnXkC5mQZ4WVoYLCs6BKQA4NmIxwk5lIo1Kqxa8L0wjt+cWmDRVu08UY9MsUb2LVijwHm75AmvIYaz5/e/9iAfzysDObOgzwKDYsWHpqFSOY6hH7+1UnTyQcx2xSKiZhercMlgQFpM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728152933; c=relaxed/simple;
-	bh=ANNbIFNHUeqEXLdXx5Ip31LmOfPvzkhGG0RXJYvus0o=;
-	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=iTLEGkqVD9GFECPCjKZPJBWnmWnPtk0vrOZndggHE1o+iCCgj2qpzLIajaCGJ1oKB1XIUSUjl2P8U/FPwfL+1vlO1caQ/BpBL+spEiNO+xLpWqSh3ZpcjSU8CF3puDvJq5wln/odyN7YjYvlNyvi366HvpbWzQCekPoeedn3Nhg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=interlinx.bc.ca; spf=fail smtp.mailfrom=interlinx.bc.ca; arc=none smtp.client-ip=69.165.217.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=interlinx.bc.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=interlinx.bc.ca
-Received: from brian-laptop.interlinx.bc.ca (brian-laptop.interlinx.bc.ca [IPv6:fd31:aeb1:48df:0:2374:a2d1:e1b7:89a3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by server.interlinx.bc.ca (Postfix) with ESMTPSA id 5D9072FED6
-	for <netfilter@vger.kernel.org>; Sat,  5 Oct 2024 14:28:49 -0400 (EDT)
-Message-ID: <88ac33831e0fd303064f7f3e0de6af419f67611b.camel@interlinx.bc.ca>
-Subject: Re: Allowing closed connections time to drain before logging packets
-From: "Brian J. Murrell" <brian@interlinx.bc.ca>
-To: netfilter@vger.kernel.org
-Date: Sat, 05 Oct 2024 14:28:49 -0400
-In-Reply-To: <5538AEED-B141-4584-A081-4B37559F35FE@slavino.sk>
-References: <97d9d783d0ff4ac494b909176f2a99df2d1190e5.camel@interlinx.bc.ca>
-	 <5538AEED-B141-4584-A081-4B37559F35FE@slavino.sk>
-Autocrypt: addr=brian@interlinx.bc.ca; prefer-encrypt=mutual;
- keydata=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
- Dc1uQeNIcmTaawmvwmnhoNZYwBfdrEi8mWJtwQ9rxRpbkrz8OFCbNGc1AGeRx464OkJ3EHy+/x0Xn
- 9qDxL7OLAZ6tChCcmlhbiBKLiBNdXJyZWxsIDxicmlhbkBpbnRlcmxpbnguYmMuY2E+iHYEMBECAD
- YFAkFRkTovHQBUaGlzIGlzIGFuIG9sZCBrZXkuICBQbGVhc2UgdXNlIDYyRjJCOTcwIG5vdy4ACgk
- QWkUtrHIQJiJp2wCeMuwXHszwNxBY8nR9o9Rv9mrrWjoAn14m48ueXrhGJsJOwj12CqynCKwdmI4E
- U55NCQEEAOhiOhVQNRL+2mctVQUjsOFHftZvNXeNM6w7UC7+zoWFhpuQomK5Wy8E1s1qt68amxbvG
- fJe7BRln3aDaErtxzv1RIJbtxOpcmyk5pg8ofdza9/kBX1PtwhR0RpeFHJ+uE15CcAvzNkOM4snWl
- keneYNASKQ76ih2Q/pep/kdF1BACDCJ25riQE3BCABAgChBQJXsqABmh0CVGhpcyBrZXkgd2FzIGd
- lbmVyYXRlZCBhcyBwYXJ0IG9mIHRoZSBFdmlsMzIgcHJvamVjdC4KSXQgaXMgbm90IG93bmVkIGJ5
- IHRoZSB1c2VyIGRlc2NyaWJlZCBpbiB0aGUgVUlELgpTZWUgaHR0cHM6Ly9ldmlsMzIuY29tL3Jld
- m9rZWQgZm9yIG1vcmUgZGV0YWlscy4ACgkQDpHnaGLyuXADagP+O8Xu3d/cauZx84xmjGxTL7OBMi
- x/4Lr6cUeh5ahcptaJEQHMgYxWg+SbNLq5iXyyUL7zn+FlVT804PHpOvpdd2zETqow4yteuz1Olyv
- 04dJWCGaqUY1XpSEyaeFhPZPWQ7libV+vDtb75VNPm88JhsBZXoZ8kSUactp+RqjZDye0KEJyaWFu
- IEouIE11cnJlbGwgPGJyaWFuQGludGVybGlueC5iYy5jYT6IuAQTAQIAIgUCU+BJ4AIbLwYLCQgHA
- wIGFQgCCQoLBBYCAwECHgECF4AACgkQDpHnaGLyuXDzRQQAhiAYEko0qilFSVu9TKEHzUGdSw9jFW
- O4rAlocPSXf0j0e2Uw1z1v4hvqtW3tMRNK7f+eifvvxfRM9SrM0+DuSQA60/kwP6X6NuJ1SQQ//ck
- klmTr1/rJPC+ZnuIbtE01augCZYLw2TQIU4U2cakLUGJqV8SZsNkmNG+c04lLCsCZAaIENOfAUxEE
- AMbyzutLDHcwOMVUvS6GFjPZ2KfgU/I9n1OzT3/O3UX7b6CU4PZ2xo/1C0dVsL2pGZx8Apm+bEMoA
- /eGRWdkC2G26R7rAXnXLPsTaddrAc1j17NVbIWZe1dUP5ju/3coYrrkBgIYRhGom4jxVqiwnEchGp
- GLQWuY3BP1juen3+eTAKD/2AdHKjAWRlOj8fyCow2cHgbe4wP/Q/nnagGdqyMIWIjkAR4/zvWJ28S
- 6ERnx4hdvlzvLMeryaSNzEi8/MUfWI+r20G0SSYP6BpOeguneDHHle9v+PPBooE6FcwmMEVBf7wVz
- WUFhAeUYGwbXJw+M7wpWP1v6IPK8JexMnip7Ke6gMO5Xy9ad9kmYN3VrYytG3UHaPyYD/R26wKk+Z
- M2abDpIuqvJR2Blc5QvnM0iCnmZVHonm9Y9AEehZsON2hAt02+y/yzZ98yhCN9AbLFE2Gm/N9Q0M0
- b7FVm7yCpIeTxtn2zrflfof7ln3GaGtbiEASoQpsevlcTppt8NSp49ZRtCKBturoXLXuXn59aNAx3
- 1XWCgMHybtChCcmlhbiBKLiBNdXJyZWxsIDxicmlhbkBpbnRlcmxpbnguYmMuY2E+iFMEEBECAAsF
- AjTnwFMECwMBAgASCRCXcRCUYvK5cAdlR1BHAAEBRe8AoMrjwQhhp40fTxJ4jq7usVx6eXjIAKD6s
- xVTia/AeRc6ukrODwvqng9hJLQgQnJpYW4gSi4gTXVycmVsbCA8YnJpYW5Ac3VuLmNvbT6ISQQwEQ
- IACQUCUoKgWQIdIAAKCRCXcRCUYvK5cOwGAKDJO2OHMNaFyC5WbVwpvKp6EkaYEwCg9ETMisiO9K5
- KevxXj1exCPMvylm0I0JyaWFuIEouIE11cnJlbGwgPGJyaWFuQGJlb25peC5jb20+iEkEMBECAAkF
- AlKCoFkCHSAACgkQl3EQlGLyuXBgpwCfRHsJWNscLl9DaVKVI83VN0hUvXYAoLzLmbZ4IPIcKGtQX
- ipcK+XgYQfctChCcmlhbiBKLiBNdXJyZWxsIDxCcmlhbi5NdXJyZWxsQFN1bi5DT00+iEkEMBECAA
- kFAlKCoFkCHSAACgkQl3EQlGLyuXCxygCg10BJ1RJ0B8MLJqaEPwjImxO6Xj0AoMQsthNoXCwy7XO
- hUiUt+XjGDKKGtClCcmlhbiBKLiBNdXJyZWxsIDxicmlhbkBicmlhbi5tdXJyZWxsLmNhPohfBBMR
- AgAXBQI8t9eKBQsHCgMEAxUDAgMWAgECF4AAEgkQl3EQlGLyuXAHZUdQRwABAQbaAKCwKGGFFlRor
- ED/FnKXTHtor2eWtACeN2TsVMsCPshjtaVuLs+fH5LO6P20KUJyaWFuIEouIE11cnJlbGwgPGNvb2
- tlckBpbnRlcmxpbnguYmMuY2E+iGQEExECABwFAj5dJ68CGwMECwcDAgMVAgMDFgIBAh4BAheAABI
- JEJdxEJRi8rlwB2VHUEcAAQFC6gCg1K4t13XDc52IO3uIR1aVM8MqPgcAoIIIILSGhMFEaLY34bSo
- cNNYtJ79tCxCcmlhbiBKLiBNdXJyZWxsIDxuZXRmaWx0ZXJAaW50ZXJsaW54LmJjLmNhPohkBBMRA
- gAcBQI9yTdUAhsDBAsHAwIDFQIDAxYCAQIeAQIXgAASCRCXcRCUYvK5cAdlR1BHAAEB1zwAn0iSmK
- YuPu2zv6B2hiJtKnGJsVLeAJ96FtWl9Uo92jc1RMRHFxFLvTdI4LQyQnJpYW4gSi4gTXVycmVsbCA
- oS0xVRyBhY2NvdW50KSA8YnJpYW5Aa2x1Zy5vbi5jYT6IZAQTEQIAHAUCPcUi2gIbAwQLBwMCAxUC
- AwMWAgECHgECF4AAEgkQl3EQlGLyuXAHZUdQRwABARkxAJ4+2OV7b7jfDAbQ8L4bhIPJVREXhACg1
- QL4VtqlUUwJ7PLEVZ6V7wll2am0NUJyaWFuIEouIE11cnJlbGwgKD5jbGlja2V0eSBjbGljazwpID
- xib2ZoQGtsdWcub24uY2E+iGQEExECABwFAj3FIwoCGwMECwcDAgMVAgMDFgIBAh4BAheAABIJEJd
- xEJRi8rlwB2VHUEcAAQFrGgCfdZWKmCszRrsU+8mBYDli97WVYecAoLegVz3WuxWsxBVpnWUN+vPQ
- Cs24tDdCcmlhbiBKLiBNdXJyZWxsICg+Y2xpY2tldHkgY2xpY2s8KSA8Ym9maEBraW5nc3Rvbi5uZ
- XQ+iF8EExECABcFAjy1qR4FCwcKAwQDFQMCAxYCAQIXgAASCRCXcRCUYvK5cAdlR1BHAAEBLyUAn1
- E7eftZqeduGBJ33sfO6hW8Xc48AKDHF83gZHpjZoUb/E9Imh4NPkXvx7Q4QnJpYW4gSi4gTXVycmV
- sbCAoV2hhbWNsb3VkLCBJbmMuKSA8YnJpYW5Ad2hhbWNsb3VkLmNvbT6IYgQTEQIAIgUCTWP03AIb
- AwYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQl3EQlGLyuXDOMwCfVNMqn4k02agHN6W/ZclR+
- e8S9FkAmwZLhPqFa/X2M7xmW5R/bTMznMmltEJCcmlhbiBKLiBNdXJyZWxsIChDbHVzdGVyIEZpbG
- VzeXN0ZW1zLCBJbmMuKSA8YnJpYW5AY2x1c3RlcmZzLmNvbT6ISQQwEQIACQUCUoKgWAIdIAAKCRC
- XcRCUYvK5cFJJAJ9otGn0eLsltoMCBKFlyK6v4pJDXQCg1cFhVOBfAxeLNHdcZdkdQe+xKxy0TkJy
- aWFuIEouIE11cnJlbGwgKEkgZG9uJ3QgdXN1YWxseSByZWFkIHRoaXMgYWNjb3VudCkgPGJyaWFua
- m11cnJlbGxAZ21haWwuY29tPohgBBMRAgAgBQJLzKsDAhsDBgsJCAcDAgQVAggDBBYCAwECHgECF4
- AACgkQl3EQlGLyuXCP+QCfbEHvWzrLhaJ8noFNlPJi9F3o9S0AoPn+fZ/a/qkAoPt+Rfm7sTUWu/R
- jtE5CcmlhbiBKLiBNdXJyZWxsIChKYWJiZXIgYWNjb3VudCBvbiB0aGUgS0xVRyBzZXJ2ZXIpIDxi
- cmlhbkBqYWJiZXIua2x1Zy5vbi5jYT6IZgQTEQIAHgUCPvoDQQIbAwYLCQgHAwIDFQIDAxYCAQIeA
- QIXgAASCRCXcRCUYvK5cAdlR1BHAAEBVjEAn3Rcfi8zD+Lyad+pLPZ1O+WW0vvGAKDe6fDd4LxROz
- yTgyr7+EcxAU/z8bRRQnJpYW4gSi4gTXVycmVsbCAoTXkgU291cmNlRm9yZ2UgYWNjb3VudCkgPGJ
- yaWFuX2pfbXVycmVsbEB1c2Vycy5zb3VyY2Vmb3JnZS5uZXQ+iF8EExECABcFAjys16sFCwcKAwQD
- FQMCAxYCAQIXgAASCRCXcRCUYvK5cAdlR1BHAAEBD3oAoMJDSIFPzWsRv3W2RNdxBqfbMxHaAJ45G
- MtFqAjf4R0lVueUBW1OrUPz2LRbQnJpYW4gSi4gTXVycmVsbCAoVmlhIFlhaG9vISwgdXNlIGFzIG
- EgbGFzdCByZXNvcnQgdG8gcmVhY2ggbWUpIDxicmlhbl9qX211cnJlbGxAeWFob28uY29tPohfBBM
- RAgAXBQI8jisYBQsHCgMEAxUDAgMWAgECF4AAEgkQl3EQlGLyuXAHZUdQRwABASQYAKCC0c9ICbiw
- NqDcob3h63nyueajbgCfdwBSiG5eeRAx9UBgPvPtwOhppCq0LEJyaWFuIEouIE11cnJlbGwgPGJya
- WFuX2pfbXVycmVsbEBjb2dlY28uY2E+iGEEExECACEFAleaVzcCGwMFCwkIBwIGFQgJCgsCBBYCAw
- ECHgECF4AACgkQl3EQlGLyuXCtdwCdG850C123WLJQvNaq+kJbgXebm6gAnAqjBxoorSW5fssdU36
- ALpu5mnmE
-Content-Type: text/plain; charset="ISO-8859-15"
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A13701E0DD0
+	for <netfilter@vger.kernel.org>; Tue,  8 Oct 2024 16:59:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.122.101
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1728406783; cv=fail; b=vBgYcgy42GzMtk9I/USaXZa41YKqQA784jCrBzXu32CmKoVF+H8BNUwUEYhTN6MMp+b20PORNaHSDXF1zypRaN7f+AENC0OCKCnFEHd4DITXhnolsBDxR0IswI0n1pDXJ3PgKWUGoepal5nkt3espiqRVcA05V+wbQRq549xQTM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1728406783; c=relaxed/simple;
+	bh=eXtHtpOC3QLKpu1FgH/eu2ZQy3K4AradcFj4R6Oq9Q8=;
+	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=GggPFpi6V6cW59SassKfz0/At8+yCtgC4uRlMSc969Mix4IfNG9KoTsB3Nl+2d3a6/6k+yn6qnSbhQjCjK82DRhEiOw0arvM+JyX7r/c5gdKQXcoRDihLbuR2Q5INgDTtVCRUPHXcVsBv8Xw7fx7OiXGxEfRzGxBBNVf2sURfkU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=excelerate.info; spf=pass smtp.mailfrom=excelerate.info; dkim=pass (1024-bit key) header.d=excelerateinfo.onmicrosoft.com header.i=@excelerateinfo.onmicrosoft.com header.b=uecODEDM; arc=fail smtp.client-ip=40.107.122.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=excelerate.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=excelerate.info
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=excelerateinfo.onmicrosoft.com header.i=@excelerateinfo.onmicrosoft.com header.b="uecODEDM"
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=EyEpNxf8UAQfZ2JFm1A5hSzdEfPieaDwJEt0T1RLkf4JN8Sa3jG0dYH+mH1DN7lHBjDBTlMMtqHciJNla86OWXS4pjmj4LbdfcIPEgzWOmbdwfFyDGlahqzWeMOJWreNNBJ6VlzstP97HhcBU8lQrQUHM4XSrhdCWjNf8/XyMgXpW++UyIsGdi545zZWVGTW0mWwd/0qvABeZmj6wdiIR2SEgtVvSdgWlTMdoxxOveLWOvI1xxEiBxmox12qhFErv5Og6lobonoKWqwZYLNXuaKG3FeytzZW2ji6UiFj7WrE3bWpFjW9w2nqj1R2tWj7nHc8y99NCfmtPjusikoAiQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=eXtHtpOC3QLKpu1FgH/eu2ZQy3K4AradcFj4R6Oq9Q8=;
+ b=Z5jVZxtTIAoo1wvAopsxTMwwh7YUUhp13yUw3tBMyNrvxHt2B86e0VcPpmZxNtZohLEbx8YzPy5EhqurjDCOT347zpo51bUjs8ZNc9zBtwRS1hPSy+pgJ3V/TjkgGvWjCkqK/TAwOEDRD3aK5lSfRUJ/vLONsuuFKS0BDS5GIAPpwZgdrtponK7EiYX5ZHznnKxJI78oc28c0vKkqExN/i+mle1+aGmZ6g7ALzhw0JL5SwqEeKKsZeGnYNV6TKamqt4gJx+batD0pUTjRVb7oKPClS0LG4eV+/f1E6uIApKKl6CC/QlFfJFRrwIddnyJEUnOTRvSZAPM0hqmQ2jtiQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=excelerate.info; dmarc=pass action=none
+ header.from=excelerate.info; dkim=pass header.d=excelerate.info; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=excelerateinfo.onmicrosoft.com; s=selector2-excelerateinfo-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=eXtHtpOC3QLKpu1FgH/eu2ZQy3K4AradcFj4R6Oq9Q8=;
+ b=uecODEDMJQG8D/pyLu+8cg1irhrwhh2DpZMhzz3NUWWCBaA0v5W9XCA8X8TNOS6vJEXESb4jdA3lLXLP23IGLLOOJmY8NOECTzf9qlPe4jBX0nnUAGz07l5KZRKuE8mC/kAJmg2PH2jVuoi/5COIYi5L5JmLs+wHZhCW+cjCmtI=
+Received: from CWXP123MB4792.GBRP123.PROD.OUTLOOK.COM (2603:10a6:400:115::12)
+ by LO3P123MB3546.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:104::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8026.24; Tue, 8 Oct
+ 2024 16:59:39 +0000
+Received: from CWXP123MB4792.GBRP123.PROD.OUTLOOK.COM
+ ([fe80::cab2:b395:9892:3156]) by CWXP123MB4792.GBRP123.PROD.OUTLOOK.COM
+ ([fe80::cab2:b395:9892:3156%2]) with mapi id 15.20.8026.020; Tue, 8 Oct 2024
+ 16:59:39 +0000
+From: Robin Bussell <RobinB@excelerate.info>
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Subject: Unsuccessful adding policy to a regular chain
+Thread-Topic: Unsuccessful adding policy to a regular chain
+Thread-Index: AQHbGaLkrQ5SuReP8U6Ah0Huspy8OQ==
+Date: Tue, 8 Oct 2024 16:59:38 +0000
+Message-ID:
+ <CWXP123MB4792C9E58B0187197122EAFBD07E2@CWXP123MB4792.GBRP123.PROD.OUTLOOK.COM>
+Accept-Language: en-GB, en-US
+Content-Language: en-GB
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=excelerate.info;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: CWXP123MB4792:EE_|LO3P123MB3546:EE_
+x-ms-office365-filtering-correlation-id: 99fc52e5-09cc-4357-c690-08dce7ba9897
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|376014|366016|1800799024|38070700018;
+x-microsoft-antispam-message-info:
+ =?iso-8859-1?Q?Cpz3ZSJYbpKeu6mlmtsdDDrU83wb+0wtllIZPCKxuS+IYy11a1vYBhgRx+?=
+ =?iso-8859-1?Q?l+yC40ASsu5d+GFu1S2NQnmj7fiCedYejczXcJh5QJzLh6HlbnmQIasAgf?=
+ =?iso-8859-1?Q?jqAAWkCj2Li4N9scNgN8Mz+sP7ojBKhhR3DFO540Oe2BS8yd9fhwm59Dbm?=
+ =?iso-8859-1?Q?ySlcHVgL4YdFjeEqpneOCJq68MaPI0/1y9gTSOCDHBPAAnpROIC3dznhQK?=
+ =?iso-8859-1?Q?SSOnvZEsW36EBfvmpSaLfFWPdLbFSYtyUaFjJBhh4mF464HN93R28DGgno?=
+ =?iso-8859-1?Q?NlvP/aKXRGTzn1o9XOfQOC0OVYPrqhnVV+dsmopYxxk2ba+5xS7AH4YuSF?=
+ =?iso-8859-1?Q?9WK+5SSTSy7EoHCmpER2ULh7WZ61jTRQkuuDnzZd5k6u6WdXOWv/Lasbiv?=
+ =?iso-8859-1?Q?aGasv6mN5ngLi3p8D4na0JDEpdmrJYM+hYeziBHr2qwBANEeeGPdupfiOT?=
+ =?iso-8859-1?Q?igkgoAwAEINttAj4X5c5H3yxmHTIetn4b1Lo0ip/HE1hQtHJxm/K+T1E6J?=
+ =?iso-8859-1?Q?nL2Rgp3trhPtc3EhFhPnMzhn+yKastYAAHD5nkV3Pt19ytQRZldhKgoWJ0?=
+ =?iso-8859-1?Q?CkaPsI9Zh3lIggF8UoEdZ7JR5LwwYLwat7SfJDdieTvyNaKjkng8mOf3vc?=
+ =?iso-8859-1?Q?/uZ3ocqpY55da8oFCNLStNMiv7BA3yOk9G17H2UUPsJFPE9IH5f3K2LG7r?=
+ =?iso-8859-1?Q?G3Ujfxr0HhQGhOgGYOxgVuvK1dk4koJdM62cpo6H6IRAwPezAwLkmuLB05?=
+ =?iso-8859-1?Q?Q0H2JPIXmXTeTkcw2bhk9Zd6TrZ4tIqXCodRooEPOp+v7O7AaTxHwPNNfd?=
+ =?iso-8859-1?Q?LcSJYH6eLlsJkU5+cVFgW4bBLPfzECkfAqwwcpOr8qg+d0c5+0695JEEfW?=
+ =?iso-8859-1?Q?ckqtYHu6zZ4GqaUMZCKNCVls/BtMQ/XEkpl+pamZC7cdQKusHByRBMlkZt?=
+ =?iso-8859-1?Q?viYZjabpCzMZS6mmyzKw/TFbibSI/zp/xc8giYcFgKUhwzmgRNW9ZueJOD?=
+ =?iso-8859-1?Q?rjsa8wqNPeaVTftLyxArSpxdymg7UTTy/8ckeZlTs9Bkimxe1kS+BLs/tU?=
+ =?iso-8859-1?Q?U4Cak39nwC3bGXNLKYpKqk6pY79rE++xrTbAd1RYeDutxLAYNm1rogD8aJ?=
+ =?iso-8859-1?Q?qwBF/SZ3egKtTXz6UtJ1PuKgy8j2AFylvLzCk0SyBrdom1MUG9urXlsKFs?=
+ =?iso-8859-1?Q?i2x9FH2VUBvno4G3+RjJbKRBplvoTpiIw/4VWtSUKBEC2WMSECk1yLRyjE?=
+ =?iso-8859-1?Q?pTdT+OdWC50EnHmWzXEBEyIMgOcfG2vObxaGVDExbdzINmdawksr4dangl?=
+ =?iso-8859-1?Q?PLLkC/i6txiFwR8KnBk9Lr78+4aWB+oSIjSue7AHrhpaZELxknjI9OUImw?=
+ =?iso-8859-1?Q?FArvfIiOnS9hFHH9J1MV/Gf0gHyuY6uA=3D=3D?=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWXP123MB4792.GBRP123.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024)(38070700018);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?iso-8859-1?Q?qszTNuYY+p2sspZd9kJ8zQy6lWSkQQ3/Lvnq/AKH0Aja6YsaLQvjoRaYK7?=
+ =?iso-8859-1?Q?6pMtZNjO5YgXm/ZvXzCLjTdS4PN9Wg3dbKwmoctGTZhzx7FBiMKjVhojyJ?=
+ =?iso-8859-1?Q?Blg2iwD07/WFg41IAEeCH2zEFY/9vk1tfeeh1PRRhpDGbpqIftVoZuh5Mw?=
+ =?iso-8859-1?Q?Wm8e7+YAIzRy7YoH4ilygMLdtURu5A2CqdJzxEaQmUKEApO35Dxop+yzOZ?=
+ =?iso-8859-1?Q?xbXZ980hmQDst0MH9spz61npTM5nEtm2k6qJxt0MVP6Gj+B133Dt+2SY+s?=
+ =?iso-8859-1?Q?+NrsqMWD7hCPu3Ox4uWN8xIQ4GnHt8cIhuW1PHhcKgbr5je8LkmnV+zXEL?=
+ =?iso-8859-1?Q?Mtsu0g0wy+UDrdyJc0itNA7QZHCQpHgZD0+LsvdsWXigxJOXVKRqvkHrtP?=
+ =?iso-8859-1?Q?QOcmxHRQ+/KOItKxxaMe+EX+JhTd2JdoO5IPgtMnWIGRjLzDzQk5J5cds0?=
+ =?iso-8859-1?Q?v4cr4tTnYV8odnDGZBu5ZMB2EwwSxPxdNcA0moQTHLMIh3BOwvwU6YjFbe?=
+ =?iso-8859-1?Q?MUi3bSLNIg14Cq09fAmw1RJ0+4KrNch3H7ct4TBxsLKTzrirfoOfC/Musm?=
+ =?iso-8859-1?Q?Yiew53M1QhdP21OJO2D92tgAuTR1XsThS0bQAHZgfZmq0IOgZflSr7stAI?=
+ =?iso-8859-1?Q?VrY5L0qoSk02wk5vy1J0IyILf9Izg/BaIOurro/S/OMWfFM8Hq23a5TYwv?=
+ =?iso-8859-1?Q?hR2QYD8y6JII8PUc+qt8SE78N6TRFmVdeRghZlWniAKNMVAmL28KEE/Z2i?=
+ =?iso-8859-1?Q?MfXwgE2lcvwZjY293c8GZaHKf9rWUob2iR8Bd0g+ujzbp/HGHwBs2PRc+O?=
+ =?iso-8859-1?Q?b7bnF0uE97CdmIGUN5AlSMrPF4CTfe5LNC4u37vTGMSV9WVidnJKC9utnB?=
+ =?iso-8859-1?Q?1zR7M470krobLIIENWkM4oCkpQjvO/UEzQHorsvsE/mx4WaSBsw3B19axB?=
+ =?iso-8859-1?Q?aBpM0BrMWecPlG6krdd/g0kMeDRsopOsyyfdNcN5PqLMWtpCJmLVaaqQKd?=
+ =?iso-8859-1?Q?A5rUBU/zt/HgE1rdM//PxHOe3VIhtmVs9PlOffKMhW4LtXYuSAqiu24NgS?=
+ =?iso-8859-1?Q?3o1oWMG5+t3GFoCqD0Rc4UXnLGab414YNB+bZzZCL9s8HVF0mIUFFAHJGF?=
+ =?iso-8859-1?Q?phP5edp3SQVJtaxWAom1GHRR/CpCExYrD5loUtbOjk2ywioUSmN0st4d+F?=
+ =?iso-8859-1?Q?D1mEoBWsHUO6T0ImUnDrCNWbECq0lp6/2l2UukPuWx+gd3mPtDf0Q+5KeY?=
+ =?iso-8859-1?Q?+fmYKLp07ig4zKIuNkBvSfTMKEu3KaZxPF2EEHlfw6KImeNa3Of6r58BMF?=
+ =?iso-8859-1?Q?b1qNAMxdDPB+gQcwpT73UC3LxcPokgQXI8iRIOAj2XCHWU2BNf10m+l4o8?=
+ =?iso-8859-1?Q?ArpHFcJ60tCV9ot8XsJVQoDxHrJ5te9do+PBpzOWaUMBzfsQZtmsPQwp6x?=
+ =?iso-8859-1?Q?ygnM7qkyyv2xoFX/vtUj9DWIeiAUWTW7pwGKhsdlJXXNbigr3Z7pR24d/q?=
+ =?iso-8859-1?Q?8WMksAW15HBBthIm5Wuv95G7AKblrUMktn5n6x1PhHkdmvnzaUxykiYDwv?=
+ =?iso-8859-1?Q?WCPKPFraEmJgTytgV0EWnnxFyYspaitN8UkVYhb45I2NNY0f8ZGOlETJ6I?=
+ =?iso-8859-1?Q?HjnGW7LOwpar3tR/Bm6giydKeICZaP31hy?=
+Content-Type: text/plain; charset="iso-8859-1"
 Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-OriginatorOrg: excelerate.info
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: CWXP123MB4792.GBRP123.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-Network-Message-Id: 99fc52e5-09cc-4357-c690-08dce7ba9897
+X-MS-Exchange-CrossTenant-originalarrivaltime: 08 Oct 2024 16:59:38.9432
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a6d8a7b1-77f0-4119-a6d4-0e2aa62bf8c8
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Sp70J+4EbNFNZnZAwMd9c8467b0ppas2qnKYyLr/ic6RGV00bfJILV5GvTKpau+gw12Hco4+PoowfFkUrce/oQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO3P123MB3546
 
-On Wed, 2024-09-25 at 18:18 +0000, Slavko wrote:
->=20
-> You can consider to extend netfilter connection timeouts.
-
-This seems like the ideal solution.  But which timeout would I extend
-to keep a connection valid for some period of time after netfilter has
-seen the close of a (TCP for example) session?
-
-> You have two options with TCP:
->=20
-> + setup kernel knob to consider NEW packet without SYN
-> as invalid and drop INVALID packets
-
-But I do want to continue to log and drop otherwise (other than for
-very recently closed session) INVALID packets.  I just don't want
-packets that are from a connection that was recently closed to be
-considered INVALID.
-
-> + drop NEW TCP packets without SYN by exact FW rule
-
-But I don't want to drop all/any TCP packets without a SYN if they were
-never part of a recently closed session.  I still want to log port
-probing for example.
-
-> A little complicated with UDP,
-
-If there is a timeout after a closed "session" before it's considered
-INVALID, it shouldn't be any more complicated for UDP than TCP since
-both have concepts of VALID/ACTIVE and INVALID sessions.  They just
-consider when they are "closed" differently (i.e. TCP with FIN packets
-and UDP after a timeout of connection idleness).
-
-
-> For both (TCP/UDP) consider to add more conditions, as sport,
-> ephemeral dports, etc...
-
-There are no more conditions I can add that help determine if packets
-are part of a recently closed session or not, AFAIU.
-
-Cheers,
-b.
-
+Hi Folks,=0A=
+=A0 =A0 =A0 =A0 =A0I'm trying to create a regular chain with a default drop=
+ policy and not getting anywhere. The wiki implies this can be done, but wh=
+en I try:=0A=
+=0A=
+=A0nft 'add chain ip myTable myChain { policy drop ;}'=0A=
+=A0=A0=0A=
+I get back:=0A=
+=0A=
+Error: Could not process rule: Operation not supported=0A=
+add chain ip O365 O365WhiteList { policy drop ;}=0A=
+=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 ^^^^^^^=
+^^^^=0A=
+=0A=
+( those carets line up with the "policy drop" on my terminal. A table calle=
+d myTable of the ip family exists already )=0A=
+=0A=
+So are policies actually supported on regular chains? If so, can you tell m=
+e what might be wrong with my=A0 nft invocation?=0A=
+=0A=
+What I want to do is make a whitelist setup by having a base chain hooked t=
+o forward with a rule that jumps to my whitelist chain for packets coming i=
+n from one particular interface.=0A=
+Then have the whitelist chain with a default drop policy and a set of rules=
+ defining=A0 which hosts and networks to accept for further forwarding.=0A=
+=0A=
+Can anyone help me here?=0A=
+=0A=
+nft --version returns:=A0 nftables v1.0.6 (Lester Gooch #5)=A0 =A0 , all op=
+erations are being run as root on debian 12.=0A=
+=0A=
+=0A=
+Thanks,=0A=
+=A0 =A0 =A0 =A0 =A0 =A0Robin.=A0=A0=0A=
+=0A=
