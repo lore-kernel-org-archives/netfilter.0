@@ -1,115 +1,109 @@
-Received: from fhigh-a5-smtp.messagingengine.com (fhigh-a5-smtp.messagingengine.com [103.168.172.156])
+Received: from mta246b-ord.mtasv.net (mta246b-ord.mtasv.net [104.245.209.246])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82CC91E104B
-	for <netfilter@vger.kernel.org>; Tue,  8 Oct 2024 20:28:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AF9513B2A5
+	for <netfilter@vger.kernel.org>; Tue,  8 Oct 2024 21:18:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.245.209.246
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728419327; cv=none; b=CUTM/OdwwjL87xbNJa1e0iVUnqtGiGqkkrj6xrz4quFf3SldqTGus94JDevflFdcCix+e5tdaSk2AwK5aIHCr6ABEGVxULcmMtk+x7SJQIFMnYemp38bOMqGwn1h0etGNqcKOmvMdC64aSTgJKmrEzJTC0N8nYq2LHVYcAF3RK0=
+	t=1728422300; cv=none; b=loMX8kMaxZINandjAXvNwuqkmeVrBellyihO7kcXGGPlVcbrsFXshPf88/zIRuT/3MoxBv3CZiQPWNW8h6a35kM+CGzhqySNSpfzxFO65/lHed3MK3AjN0JSQUcS/2J5gAOG35IuEEsyEGEAUgmbEbE/rGO3lomwYGlTX/Ko5II=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728419327; c=relaxed/simple;
-	bh=wH9+gCW7MBXh01YuBaRPJ/JHJ7nss/c9oYyZA6F6iOo=;
-	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=s4hYEapVPe77Var2+rV5HxVUtksq0rIzi5hqrOr66OHzhtvc28Z0eEz66BabOqeBmCVdW6fF4VkJ29zMeDUWTbvE+FbHEMvuDZ8Kq4orH/kmrftezsLQNtckm+WXSyCrK0RLUl+/y2HRaHgtZrMypvqs4dY+5pZBKBdGvkAELKs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kevin.km6g.us; spf=pass smtp.mailfrom=kevin.km6g.us; dkim=pass (2048-bit key) header.d=km6g.us header.i=@km6g.us header.b=Ihv0retO; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=S7PaUUt6; arc=none smtp.client-ip=103.168.172.156
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kevin.km6g.us
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kevin.km6g.us
+	s=arc-20240116; t=1728422300; c=relaxed/simple;
+	bh=bgWJilBLUhngy+PpfDw8BDg76o5IIGTHth714+RThEg=;
+	h=From:Date:Subject:Message-Id:To:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=IVsf34J+JUOCYNELAwZtd/0kW6xhYAexoxpyjyr5tar1d9uV+hoVWQp2sQYhnbXmnckaz7vykpgWKwdjXqdNGuT/KOn9y89RrmbzRBngKrJ3ZdhZhxg8Z+GA0aso4EJJpRm/0Y/BfvfHfZypXD/OfOmp5KjCVbrdV2sbsSw4ASY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=black-sheep-research.com; spf=pass smtp.mailfrom=pm-bounces.black-sheep-research.com; dkim=pass (2048-bit key) header.d=pm.mtasv.net header.i=@pm.mtasv.net header.b=Eqg1Ltsn; dkim=pass (1024-bit key) header.d=black-sheep-research.com header.i=martin@black-sheep-research.com header.b=blfcc7wk; arc=none smtp.client-ip=104.245.209.246
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=black-sheep-research.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm-bounces.black-sheep-research.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=km6g.us header.i=@km6g.us header.b="Ihv0retO";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="S7PaUUt6"
-Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 7E0A3114009A
-	for <netfilter@vger.kernel.org>; Tue,  8 Oct 2024 16:28:44 -0400 (EDT)
-Received: from phl-imap-08 ([10.202.2.84])
-  by phl-compute-05.internal (MEProxy); Tue, 08 Oct 2024 16:28:44 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=km6g.us; h=cc
-	:content-transfer-encoding:content-type:content-type:date:date
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1728419324;
-	 x=1728505724; bh=oc8Zy9Nj5O+DpsVRkn/FRJjPD4dflkt/WV+6w0XlA7A=; b=
-	Ihv0retOtfniNLWOEvLI0dRFJPftGNxPL/KlpI5FTH5iod7nz0uThxB4vJ87faOr
-	F+Dtw2sJXTKXx5Q0VoDJ73WtBAXnoe6vrvFKu0kktTGVlR71TeMuXxoJpD82bB1J
-	k1ktQozHL3vQcnFZZ6CF6dugMdy1t8xy9xlSeCvoIssFJVBwBdw+2VOlEgc09jk1
-	rnq0Vggd/WaDTFZiISwiHEXqVMrA93hVT0Cz+6vKaKH10UmDKf7YSebb6wGGxwaY
-	QO9+ZAdO9LOPTkS720WeCKSY4rj4Y1u1kWkX5OALCo13J4cn+AVAIHqiUuwo05fW
-	EnhQtR6ZGv9oKjJ/j5BdWA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1728419324; x=
-	1728505724; bh=oc8Zy9Nj5O+DpsVRkn/FRJjPD4dflkt/WV+6w0XlA7A=; b=S
-	7PaUUt6B3k/w9GfJ5VLhuSnMxTZ299By1s0kCC8fWwUn9kpLNsz7jzFRqUP7J47N
-	2qi0BKiT+F/MuGSaZGXeoK96fAw949mrGlv+0a0GrK6giH9hZBkq7lxAnqKiCgRu
-	Nu3+VKnKJd+fBPpoJ/xu2aynFTA+FDJ/UHk2w08Z+wll94KzcfszZOk9s9+63nbo
-	SEaiUsJE1RaGY+0wc2TXycuIqQlgVX3Xd8h6HPlwAwkfnQV9k7/RUR+1XLpkAKW2
-	Qm0T8qEuNWmMULduaE922T84O35pcnI/kdVSN36mcsNCnTT5wfIRD4VdiBXQh7by
-	AUItuFce8gUP1Fxe/HlJw==
-X-ME-Sender: <xms:-5UFZ6Nuzg2m6TBiNh7L0dFlJoaHm6YiOlvYdszQ97GgcbMF-yqhXQ>
-    <xme:-5UFZ4-phfg8HgnwVR25bRywgPDnFTHPKPodjDx9r8oG7UvrkEoYjpyOHQVWhwz4e
-    O9qjKUmftb3xF96uGA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdefuddgudehtdcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecunecujfgurhepofggff
-    fhvffkjghfufgtgfesthhqredtredtjeenucfhrhhomhepfdfmvghvihhnucfrrdcuhfhl
-    vghmihhnghdfuceolhhishhtshdrnhgvthhfihhlthgvrheskhgvvhhinhdrkhhmiehgrd
-    husheqnecuggftrfgrthhtvghrnhepfeduvdetffdvvedtieefleffvddtheegueetieei
-    gfektefgudfhveeuhefgudehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomheplhhishhtshdrnhgvthhfihhlthgvrheskhgvvhhinhdrkhhmiehg
-    rdhushdpnhgspghrtghpthhtohepuddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoh
-    epnhgvthhfihhlthgvrhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:-5UFZxQEdDA7EnPYDZ521JL5WgvTv3981vNoIwCYTH3aixR1-iasUg>
-    <xmx:_JUFZ6sgYzw2kLX6oSItkemyperr_dszNgUTRixsrXK_zRxRcrafkw>
-    <xmx:_JUFZydPdmm8wNMQhXWRYGSKvzgy-ZsXGCtNWUlGtO6yDw8Qf_is5w>
-    <xmx:_JUFZ-1ZV31ZVGGc20FNIxNC5GTP9vquHVFVPkv3XsjawFGeS5YY5g>
-    <xmx:_JUFZ6kPrnj1_tweRtmcpG2Z8NVo9CoJ0kDlcvGDZIxDDAaSjCH9Nm8Z>
-Feedback-ID: i1309466e:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id DE8EF18A0065; Tue,  8 Oct 2024 16:28:43 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	dkim=pass (2048-bit key) header.d=pm.mtasv.net header.i=@pm.mtasv.net header.b="Eqg1Ltsn";
+	dkim=pass (1024-bit key) header.d=black-sheep-research.com header.i=martin@black-sheep-research.com header.b="blfcc7wk"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=pm20241004; d=pm.mtasv.net;
+ h=From:Date:Subject:Message-Id:Reply-To:To:References:In-Reply-To:
+ MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:Message-ID:
+ Reply-To:Sender:Subject:To:CC; t=1728422298; x=1728508698;
+ bh=q9aqXh+i8wJDv7/odZhk1Q4onK1rcIIsfWw6WpTt5lU=;
+ b=Eqg1LtsngeOtWlueUYfiqMGcpE0Pyd7r+bp4+kmrhO30K40UnuvGRyFJJcvPwhkXFxiV04sFp1Kp
+   9V+pyO5SDcWtKTcgUmWuKqeQkhHbxPteACQkmwUWV1r77nWIWBE1ytU9CEdI2Gky/eqE6RdBauRY
+   gX4d0L3asV+o064qzHOSVCO1hoG6ZUFQQcFlondqwqEf5lQIpf3uD1zgpGaMJH0/RWCHMgPCa1Qd
+   npsgsjGUTTjIy/cL54HuYAXwqEc1Ip359Hf7Hq7bi84Ao3rdkvQnuRWbgGK8db1CEv6W3TC5CLE1
+   e8mjCKDJvpMx21JN/1SqOZggPJ+aEgt6O0bUug==
+Received: by mta246b-ord.mtasv.net id h0mgpc3864oj for <netfilter@vger.kernel.org>; Tue, 8 Oct 2024 17:18:14 -0400 (envelope-from <pm_bounces@pm-bounces.black-sheep-research.com>)
+X-PM-IP: 104.245.209.246
+X-IADB-IP: 104.245.209.246
+X-IADB-IP-REVERSE: 246.209.245.104
+DKIM-Signature: v=1; a=rsa-sha256; d=black-sheep-research.com;
+	s=20220127112152pm; c=relaxed/relaxed; i=martin@black-sheep-research.com;
+	t=1728422294; x=1728595094;
+	h=date:date:from:from:message-id:reply-to:reply-to:sender:subject:subject:to:
+	to:cc:references:in-reply-to:feedback-id:mime-version:content-type:
+	content-transfer-encoding;
+	bh=q9aqXh+i8wJDv7/odZhk1Q4onK1rcIIsfWw6WpTt5lU=;
+	b=blfcc7wkyEaUNkHLkuFr/zka+dC1YY+MWgPTZ/xg9R/mTy6cSbqZHHRS4tz07/9qnD8mEecB7Az
+	xMSXYTktYfCX/joKVgyOx1Xi9jUqj8U5X5PK/VB0M6ZB59KfyJEtqV9km8vSyv0wndHkKPjdP3cNX
+	p1eqUCbwUbQ4glpPV/M=
+From: Martin Brampton <martin@black-sheep-research.com>
+Date: Tue, 08 Oct 2024 21:18:14 +0000
+Subject: Re: Problem with ipv6
+Message-Id: <98f3cf05-f4fa-4f13-9044-508ccaf17728@mtasv.net>
+Reply-To: martin@black-sheep-research.com
+To: netfilter@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+References: <c3e11308-7b43-456b-af93-a03a6040f223@mtasv.net> <bbde0691-8b84-48f6-abff-7215bc634cd3@app.fastmail.com>
+In-Reply-To: <bbde0691-8b84-48f6-abff-7215bc634cd3@app.fastmail.com>
+Feedback-ID: s8569101-_:s8569101:a226829:postmark
+X-Complaints-To: abuse@postmarkapp.com
+X-PM-Message-Id: 98f3cf05-f4fa-4f13-9044-508ccaf17728
+X-PM-RCPT: |bTB8MjI2ODI5fDg1NjkxMDF8bmV0ZmlsdGVyQHZnZXIua2VybmVsLm9yZw==|
+X-PM-Message-Options: v1;1.vvHvx_gL0x7jgtImj5-COw.6AuHrlnzy6mKaQBaMLT20jWY9ROpmIbdc9mRMzQJl4U0XyN9xEAzCNUBXpeexZh04L3S9pkLqK4AEBhatY7rYdn071aolluGqThBbDpAaDqZ9bW7fttxROYugh49NPKMGHZ6rF0DAgN1eQXZItw0YVTlaVsu8NknWHhXEyjkbQTq53mZdzzezmsyxtzzrJK9
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Tue, 08 Oct 2024 16:28:23 -0400
-From: "Kevin P. Fleming" <lists.netfilter@kevin.km6g.us>
-To: netfilter@vger.kernel.org
-Message-Id: <bbde0691-8b84-48f6-abff-7215bc634cd3@app.fastmail.com>
-In-Reply-To: <c3e11308-7b43-456b-af93-a03a6040f223@mtasv.net>
-References: <c3e11308-7b43-456b-af93-a03a6040f223@mtasv.net>
-Subject: Re: Problem with ipv6
-Content-Type: text/plain; charset=utf-8
+X-PM-MTA-Pool: transactional-3
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Oct 8, 2024, at 16:08, Martin Brampton wrote:
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 chain output {
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 type filter hook output priority filter; policy dr=
-op;
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 ct state { established, related } accept
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 ip protocol icmp icmp type echo-request accept
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 ip protocol icmp icmp type echo-request ip daddr=20
-> 127.0.0.1 accept
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 icmpv6 type echo-request accept
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 ip protocol { tcp, udp } th dport 53 accept
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 tcp dport 123 accept
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 tcp dport { 80, 443 } accept
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 tcp dport { 25, 465, 587, 993, 995, 4190 } accept
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+Ah, progress! If the policy is changed to accept, things work. Also, if=20
+it is kept as drop, but the input ICMP rule is copied to output, things=20
+work.
 
-What happens if you change this policy to 'accept', and make no other ch=
-anges?
+Is this a sensible rule?
 
-At a minimum, you aren't allowing outbound IPv6 ICMP ND packets, which a=
-re required for finding other hosts (analogous to IPv4 ARP).
+  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0 icmpv6 type { destination-unreachable, packet-too-big,
+time-exceeded, parameter-problem, echo-request, mld-listener-query,
+nd-router-solicit, nd-router-advert, nd-neighbor-solicit,
+nd-neighbor-advert } accept
+
+On 08/10/2024 21:28, Kevin P. Fleming wrote:
+> On Tue, Oct 8, 2024, at 16:08, Martin Brampton wrote:
+>>   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 chain output {
+>>   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 type filter hook output priority filter; policy drop;
+>>   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 ct state { established, related } accept
+>>   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 ip protocol icmp icmp type echo-request accept
+>>   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 ip protocol icmp icmp type echo-request ip daddr
+>> 127.0.0.1 accept
+>>   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 icmpv6 type echo-request accept
+>>   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 ip protocol { tcp, udp } th dport 53 accept
+>>   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 tcp dport 123 accept
+>>   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 tcp dport { 80, 443 } accept
+>>   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 tcp dport { 25, 465, 587, 993, 995, 4190 } accept
+>>   =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+> What happens if you change this policy to 'accept', and make no other cha=
+nges?
+>
+> At a minimum, you aren't allowing outbound IPv6 ICMP ND packets, which ar=
+e required for finding other hosts (analogous to IPv4 ARP).
+>
+
