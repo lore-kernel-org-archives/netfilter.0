@@ -1,138 +1,115 @@
 Received: from fhigh-a5-smtp.messagingengine.com (fhigh-a5-smtp.messagingengine.com [103.168.172.156])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E6C720A5FF
-	for <netfilter@vger.kernel.org>; Tue,  8 Oct 2024 20:21:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82CC91E104B
+	for <netfilter@vger.kernel.org>; Tue,  8 Oct 2024 20:28:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.156
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728418917; cv=none; b=PrCm/3jU32YdK0uYYaKw07lSdNhGiXwbn3zHsfGbi2aifkiq1lyiDwbK70jrlaDPr9GyskM2FWW2W0n1DJU5u+sEwqcQGUxz06Q8U1ZJnwR2G9mHf37qHujge5jg+1L2XcQ/EhvR22qtXfQnPc8qaEMFqDDGpNRqzddghIj8Zek=
+	t=1728419327; cv=none; b=CUTM/OdwwjL87xbNJa1e0iVUnqtGiGqkkrj6xrz4quFf3SldqTGus94JDevflFdcCix+e5tdaSk2AwK5aIHCr6ABEGVxULcmMtk+x7SJQIFMnYemp38bOMqGwn1h0etGNqcKOmvMdC64aSTgJKmrEzJTC0N8nYq2LHVYcAF3RK0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728418917; c=relaxed/simple;
-	bh=1+BqfvDCcpoTx/RA7LeseKt8DC0qDZOKOHt5gWM/NQI=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=DyRpnQRl4m3QHn9JMcGriHr20I+BXKPNmvRX40TTc3SO9e1+JuxwnTXFIWIoz0jktc5E0/ySKPw1ydM1r6knOWknJJq+vwGIhiZtR2dAfSiHY73IcleFWwxTsieKuXuRoebt+dd/4xoPiRLlqZCIjEy5WQp8fmYp2QqowmpxaCs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=fXcM48rQ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=ciOwN0lD; arc=none smtp.client-ip=103.168.172.156
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
+	s=arc-20240116; t=1728419327; c=relaxed/simple;
+	bh=wH9+gCW7MBXh01YuBaRPJ/JHJ7nss/c9oYyZA6F6iOo=;
+	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=s4hYEapVPe77Var2+rV5HxVUtksq0rIzi5hqrOr66OHzhtvc28Z0eEz66BabOqeBmCVdW6fF4VkJ29zMeDUWTbvE+FbHEMvuDZ8Kq4orH/kmrftezsLQNtckm+WXSyCrK0RLUl+/y2HRaHgtZrMypvqs4dY+5pZBKBdGvkAELKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kevin.km6g.us; spf=pass smtp.mailfrom=kevin.km6g.us; dkim=pass (2048-bit key) header.d=km6g.us header.i=@km6g.us header.b=Ihv0retO; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=S7PaUUt6; arc=none smtp.client-ip=103.168.172.156
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kevin.km6g.us
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kevin.km6g.us
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="fXcM48rQ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="ciOwN0lD"
-Received: from phl-compute-06.internal (phl-compute-06.phl.internal [10.202.2.46])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id 0F6F81140137;
-	Tue,  8 Oct 2024 16:21:54 -0400 (EDT)
-Received: from phl-mailfrontend-01 ([10.202.2.162])
-  by phl-compute-06.internal (MEProxy); Tue, 08 Oct 2024 16:21:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-	 h=cc:cc:content-transfer-encoding:content-type:content-type
-	:date:date:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=fm3;
-	 t=1728418914; x=1728505314; bh=6JSTkxM8iVN64PBIYei6x9+snHDE6vvj
-	lUSCuGb9MlA=; b=fXcM48rQgttEUd9N6xI3kjuIHPHaRKHT5vkGDSiCiRmHuKSD
-	R5ms1VYonzg1GuQ7a1TRckbSxH1iVFUxAL6pA5MFNM90ZMyvyxkF7z2xTi/HX7LX
-	7y99rkDtRG4wcqJI18wWAbHkgJSJpWLbZmpoiQNaQNqv4S19/1W3C9gRH7pq0kKz
-	O4ZAk6Pr1AzAcJtCqRibahYKjYgawisdccapwT3acjJzsKHwD3r5WgP1uozuMAuS
-	OoWI+IvRZyhcI9NdmPs0j2ZhY/xjl17UjeVm/8+0b+SBA+/recGAryRWjQxxtYD5
-	f+GCbbLlP3GVl2wkxAFDzJ1LOyeE0iTZuXpYYA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
+	dkim=pass (2048-bit key) header.d=km6g.us header.i=@km6g.us header.b="Ihv0retO";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="S7PaUUt6"
+Received: from phl-compute-05.internal (phl-compute-05.phl.internal [10.202.2.45])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 7E0A3114009A
+	for <netfilter@vger.kernel.org>; Tue,  8 Oct 2024 16:28:44 -0400 (EDT)
+Received: from phl-imap-08 ([10.202.2.84])
+  by phl-compute-05.internal (MEProxy); Tue, 08 Oct 2024 16:28:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=km6g.us; h=cc
+	:content-transfer-encoding:content-type:content-type:date:date
 	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1728418914; x=
-	1728505314; bh=6JSTkxM8iVN64PBIYei6x9+snHDE6vvjlUSCuGb9MlA=; b=c
-	iOwN0lDJjyDUexmX+zn7QuzNOE1AsCRX5ceqql69PVPvWUAHcW1WbzNhJTAQ0QAv
-	ZDlY1nS5fe6dil5Ap52n+mXaK69CRjUSO6v5oT2MYQltsNLzmVr/Aw8YUeKr1DFr
-	Oy0hqUsnPlKEfP/tWowA+RIgDufpmwKAGA1Acdhsd0ap546rE1BNVV0S0ACYiIRy
-	KhRfLOYsC+wUVbRpjIoOAmpGm6efxaxKKPgJrdcJO8HlGq/knXg4q/X7qx/mRr/J
-	RcssnI5rEYbb28H2lZekzgXkDIpiOG9zlmEaz8AlQhq226rB3C2aMXZUiQgsSnoX
-	75WbNjWOWLLEsrWm5wSCA==
-X-ME-Sender: <xms:YZQFZx8NaSP1ckXuk33oAPxkoUl-JWAGqFMeMZ9BFFJjfRyA_dfNKQ>
-    <xme:YZQFZ1uMDriog52BZze5Tr75fWpK-w2RNbdyhl63pvoh4UecE7YrC_2ggVRoRik0E
-    kGJ3PdQTjpHm9hA>
-X-ME-Received: <xmr:YZQFZ_Dcj7VcqVuNtZefTdX1Ikj297abWCQ0YtJ83ULnhWQ115OWQxFQOpa7N0otrAvTp6vnaCny2qO-GRa1MQ>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdefuddgudeglecutefuodetggdotefrod
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1728419324;
+	 x=1728505724; bh=oc8Zy9Nj5O+DpsVRkn/FRJjPD4dflkt/WV+6w0XlA7A=; b=
+	Ihv0retOtfniNLWOEvLI0dRFJPftGNxPL/KlpI5FTH5iod7nz0uThxB4vJ87faOr
+	F+Dtw2sJXTKXx5Q0VoDJ73WtBAXnoe6vrvFKu0kktTGVlR71TeMuXxoJpD82bB1J
+	k1ktQozHL3vQcnFZZ6CF6dugMdy1t8xy9xlSeCvoIssFJVBwBdw+2VOlEgc09jk1
+	rnq0Vggd/WaDTFZiISwiHEXqVMrA93hVT0Cz+6vKaKH10UmDKf7YSebb6wGGxwaY
+	QO9+ZAdO9LOPTkS720WeCKSY4rj4Y1u1kWkX5OALCo13J4cn+AVAIHqiUuwo05fW
+	EnhQtR6ZGv9oKjJ/j5BdWA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1728419324; x=
+	1728505724; bh=oc8Zy9Nj5O+DpsVRkn/FRJjPD4dflkt/WV+6w0XlA7A=; b=S
+	7PaUUt6B3k/w9GfJ5VLhuSnMxTZ299By1s0kCC8fWwUn9kpLNsz7jzFRqUP7J47N
+	2qi0BKiT+F/MuGSaZGXeoK96fAw949mrGlv+0a0GrK6giH9hZBkq7lxAnqKiCgRu
+	Nu3+VKnKJd+fBPpoJ/xu2aynFTA+FDJ/UHk2w08Z+wll94KzcfszZOk9s9+63nbo
+	SEaiUsJE1RaGY+0wc2TXycuIqQlgVX3Xd8h6HPlwAwkfnQV9k7/RUR+1XLpkAKW2
+	Qm0T8qEuNWmMULduaE922T84O35pcnI/kdVSN36mcsNCnTT5wfIRD4VdiBXQh7by
+	AUItuFce8gUP1Fxe/HlJw==
+X-ME-Sender: <xms:-5UFZ6Nuzg2m6TBiNh7L0dFlJoaHm6YiOlvYdszQ97GgcbMF-yqhXQ>
+    <xme:-5UFZ4-phfg8HgnwVR25bRywgPDnFTHPKPodjDx9r8oG7UvrkEoYjpyOHQVWhwz4e
+    O9qjKUmftb3xF96uGA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdefuddgudehtdcutefuodetggdotefrod
     ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenucfjughrpeffhffvvefukfgjfhfogggtgfesthekredtjfdt
-    jeenucfhrhhomhepmfgvrhhinhcuofhilhhlrghruceokhhfmhesphhluhhshhhkrghvrg
-    drnhgvtheqnecuggftrfgrthhtvghrnhepteejkeetkeegfedtueejheevtdekfeejueet
-    ffejgfefuddtudfhkefhfeevvdehnecuffhomhgrihhnpegrkhgrrdhmshdpnhhfthgrsg
-    hlvghsrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhf
-    rhhomhepkhhfmhesphhluhhshhhkrghvrgdrnhgvthdpnhgspghrtghpthhtohepvddpmh
-    houggvpehsmhhtphhouhhtpdhrtghpthhtoheprhhosghinhgssegvgigtvghlvghrrght
-    vgdrihhnfhhopdhrtghpthhtohepnhgvthhfihhlthgvrhesvhhgvghrrdhkvghrnhgvlh
-    drohhrgh
-X-ME-Proxy: <xmx:YZQFZ1ce5KCjZZTTaS-jIYYIjcq769fa2mUg6K1Eb_bRRDthoIjd1A>
-    <xmx:YZQFZ2PZ2hrebhlR86BxPkMSq2sZzWhYRK6nQgMhUTh3oT5zl-lEVQ>
-    <xmx:YZQFZ3kdqND8Dk-Bh9w1dP6jH1jrprnQWYjpDembOhTSwVOeoQjoKQ>
-    <xmx:YZQFZwvUOG5QlAgN2nS7_5U84vdqqSWXpgs1FCyBI7_FHqlWj2Fvsw>
-    <xmx:YpQFZ_aPVAjtLzdmGVqo9PZ3ncfIwCg7cbwgfskBoQNgQzb15de9Hwi8>
-Feedback-ID: i2431475f:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 8 Oct 2024 16:21:53 -0400 (EDT)
-Date: Tue, 8 Oct 2024 21:21:51 +0100
-From: Kerin Millar <kfm@plushkava.net>
-To: Robin Bussell <RobinB@excelerate.info>
-Cc: netfilter@vger.kernel.org
-Subject: Re: Unsuccessful adding policy to a regular chain
-Message-Id: <20241008212151.9524f0f9eb3e3146376f617f@plushkava.net>
-In-Reply-To: <00218364-B6FE-4CDD-AE5E-B7DB3EE35E6F@excelerate.info>
-References: <CWXP123MB4792C9E58B0187197122EAFBD07E2@CWXP123MB4792.GBRP123.PROD.OUTLOOK.COM>
-	<daa4a802-c058-494c-b47b-f258728a00c2@app.fastmail.com>
-	<00218364-B6FE-4CDD-AE5E-B7DB3EE35E6F@excelerate.info>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-unknown-linux-gnu)
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecunecujfgurhepofggff
+    fhvffkjghfufgtgfesthhqredtredtjeenucfhrhhomhepfdfmvghvihhnucfrrdcuhfhl
+    vghmihhnghdfuceolhhishhtshdrnhgvthhfihhlthgvrheskhgvvhhinhdrkhhmiehgrd
+    husheqnecuggftrfgrthhtvghrnhepfeduvdetffdvvedtieefleffvddtheegueetieei
+    gfektefgudfhveeuhefgudehnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
+    hmrghilhhfrhhomheplhhishhtshdrnhgvthhfihhlthgvrheskhgvvhhinhdrkhhmiehg
+    rdhushdpnhgspghrtghpthhtohepuddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoh
+    epnhgvthhfihhlthgvrhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:-5UFZxQEdDA7EnPYDZ521JL5WgvTv3981vNoIwCYTH3aixR1-iasUg>
+    <xmx:_JUFZ6sgYzw2kLX6oSItkemyperr_dszNgUTRixsrXK_zRxRcrafkw>
+    <xmx:_JUFZydPdmm8wNMQhXWRYGSKvzgy-ZsXGCtNWUlGtO6yDw8Qf_is5w>
+    <xmx:_JUFZ-1ZV31ZVGGc20FNIxNC5GTP9vquHVFVPkv3XsjawFGeS5YY5g>
+    <xmx:_JUFZ6kPrnj1_tweRtmcpG2Z8NVo9CoJ0kDlcvGDZIxDDAaSjCH9Nm8Z>
+Feedback-ID: i1309466e:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id DE8EF18A0065; Tue,  8 Oct 2024 16:28:43 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Date: Tue, 08 Oct 2024 16:28:23 -0400
+From: "Kevin P. Fleming" <lists.netfilter@kevin.km6g.us>
+To: netfilter@vger.kernel.org
+Message-Id: <bbde0691-8b84-48f6-abff-7215bc634cd3@app.fastmail.com>
+In-Reply-To: <c3e11308-7b43-456b-af93-a03a6040f223@mtasv.net>
+References: <c3e11308-7b43-456b-af93-a03a6040f223@mtasv.net>
+Subject: Re: Problem with ipv6
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 8 Oct 2024 19:00:50 +0000
-Robin Bussell <RobinB@excelerate.info> wrote:
+On Tue, Oct 8, 2024, at 16:08, Martin Brampton wrote:
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 chain output {
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 type filter hook output priority filter; policy dr=
+op;
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 ct state { established, related } accept
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 ip protocol icmp icmp type echo-request accept
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 ip protocol icmp icmp type echo-request ip daddr=20
+> 127.0.0.1 accept
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 icmpv6 type echo-request accept
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 ip protocol { tcp, udp } th dport 53 accept
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 tcp dport 123 accept
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 tcp dport { 80, 443 } accept
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 tcp dport { 25, 465, 587, 993, 995, 4190 } accept
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
 
-> 
-> 
-> 
-> 
-> On 8 Oct 2024, at 18:12, Kerin Millar <kfm@plushkava.net> wrote:
-> 
-> ﻿[You don't often get email from kfm@plushkava.net. Learn why this is important at https://aka.ms/LearnAboutSenderIdentification ]
-> 
-> [EXTERNAL EMAIL]
-> 
-> On Tue, 8 Oct 2024, at 5:59 PM, Robin Bussell wrote:
-> Hi Folks,
->         I'm trying to create a regular chain with a default drop
-> policy and not getting anywhere. The wiki implies this can be done, but
-> when I try:
-> 
-> nft 'add chain ip myTable myChain { policy drop ;}'
-> 
-> I get back:
-> 
-> Error: Could not process rule: Operation not supported
-> add chain ip O365 O365WhiteList { policy drop ;}
->                                  ^^^^^^^^^^^
-> 
-> ( those carets line up with the "policy drop" on my terminal. A table
-> called myTable of the ip family exists already )
-> 
-> So are policies actually supported on regular chains? If so, can you
-> tell me what might be wrong with my  nft invocation?
-> 
-> There can be no policy for a chain bearing no hook.
-> 
-> 
-> <https://wiki.nftables.org/wiki-nftables/index.php/Configuring_chains#Adding_regular_chains>
-> Configuring chains<https://wiki.nftables.org/wiki-nftables/index.php/Configuring_chains#Adding_regular_chains>
-> wiki.nftables.org<https://wiki.nftables.org/wiki-nftables/index.php/Configuring_chains#Adding_regular_chains>
-> [X]<https://wiki.nftables.org/wiki-nftables/index.php/Configuring_chains#Adding_regular_chains>
->  This wiki article states otherwise though.
+What happens if you change this policy to 'accept', and make no other ch=
+anges?
 
-The article has been corrected.
-
--- 
-Kerin Millar
+At a minimum, you aren't allowing outbound IPv6 ICMP ND packets, which a=
+re required for finding other hosts (analogous to IPv4 ARP).
