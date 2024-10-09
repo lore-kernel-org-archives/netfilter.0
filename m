@@ -1,82 +1,83 @@
-Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from tootai.net (mail1.tootai.net [213.239.227.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46DD315F3FF
-	for <netfilter@vger.kernel.org>; Tue,  8 Oct 2024 21:46:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F13F6187843
+	for <netfilter@vger.kernel.org>; Wed,  9 Oct 2024 07:59:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.239.227.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728424020; cv=none; b=gjaGkazCIMQU4NbdEZDn9Y/fqd41gZGJWf/RDO88J5cZ/N6AnQ9SVSQL2beCehLkdrCKsHf3p9IuiJGpof49eQ+PWvQm+fz03tMZbA/eGOxU4PGwo+w42PZM+gIH5QuhQD92cHWBy1Z0CtxNFJ1bfoe82xHMA3mAf37YtS6pQTA=
+	t=1728460774; cv=none; b=nt04OuzJam+kM5DigFGywPi1Pr36p9NCYuGHTRs5v9zIoKtbiiHXJdp2kDTdD6f3z92Mwaxb7c7LRyFP9GdizIm1eIkRO4msPZATPCweO5rhAuLktMthq9rwudutePlK2gB1dd4S5ajdpZwiPD5vbrP2y4FnZcXc90WDI/iM/fo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728424020; c=relaxed/simple;
-	bh=k8+ku8EmNhVcx62dUwGZ0eLGAb7YkZfgvaG3gdIInSM=;
-	h=Date:From:To:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=sDDygwaQzCUxpSuO7g6gujSXtBFwdQXTd4sweAv5KVZnpVUVKQLuEQBZJ+6SkdL+hvLVIxTWn2LlaoiyZut267FSHZGFL3ls9Lawii/t9pl4K9TEJ22p+BE7NJVWBxNUNFCg+S+sTVrRtM9+8U9Ud3vnEJFCRk3fMSbNPYN0tvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=u4szb1fL; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=BRPlIXm8; arc=none smtp.client-ip=185.25.250.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
+	s=arc-20240116; t=1728460774; c=relaxed/simple;
+	bh=QFxVhZcFLRdgafEk/nFMpSNa+6n+VmX+tbBfu1lWaWE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=f9FajhqWNQnpqIzKl+6aJdu/hVFHeQadasBZ2Sme84jHWQscYSzMKucPdmIEpjjVfEK3/e9LHAInGcu9SgEiz4u79w/PPNMLNlpGn/qEF0SD52ejaa/GQZUS40FFZ+mF1zaU5cjTkAczf722IYcXI3BbdPxacKBncuvtDl0zp1I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=tootai.net; spf=pass smtp.mailfrom=tootai.net; dkim=pass (1024-bit key) header.d=tootai.net header.i=@tootai.net header.b=CgHDoFTU; dkim=pass (1024-bit key) header.d=tootai.net header.i=@tootai.net header.b=CgHDoFTU; arc=none smtp.client-ip=213.239.227.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=tootai.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tootai.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="u4szb1fL";
-	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="BRPlIXm8"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
-	s=r2023; h=Content-Type:MIME-Version:Message-ID:References:In-Reply-To:
-	Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:
-	Content-Type:Message-Id:In-Reply-To:References;
-	bh=nDfqXiSiL1IvH2B7DFGv3aeZY5gxwJV4fi2Am4srLxM=; t=1728424015; x=1729633615; 
-	b=u4szb1fL1ldvSTLCsYHCeRYbg6uf0AdsHunygq7WXQOM9wCsGpynL4wD/G0PoTak3v7lN6zqK/o
-	tp82VvU85qPNOuSfxvd/TKNH68H0SF87yd57TZGQ4hkkGB1FJYIxAXzAgGJl3QUfisHw0lWG8MGtj
-	JMy5EUHQ6LNuHVBsu/4=;
-DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=slavino.sk; s=e2023; h=Content-Type:MIME-Version:Message-ID:References:
-	In-Reply-To:Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:
-	MIME-Version:Content-Type:Message-Id:In-Reply-To:References;
-	bh=nDfqXiSiL1IvH2B7DFGv3aeZY5gxwJV4fi2Am4srLxM=; t=1728424015; x=1729633615; 
-	b=BRPlIXm85Z0FTEfm2T63NABvbYEEJM8FabFlsEgamz++KcgbOt5SDynnu8HvEp0bK/kUUNrdnB8
-	6Of58k7A7Dg==;
-Received: from dovex.skk ([192.168.10.12])
-	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96)
-	(envelope-from <linux@slavino.sk>)
-	id 1syHxP-000S6T-2Y
-	for netfilter@vger.kernel.org;
-	Tue, 08 Oct 2024 23:41:27 +0200
-Date: Tue, 08 Oct 2024 21:41:25 +0000
-From: Slavko <linux@slavino.sk>
-To: netfilter@vger.kernel.org
-Subject: Re: Problem with ipv6
-In-Reply-To: <98f3cf05-f4fa-4f13-9044-508ccaf17728@mtasv.net>
-References: <c3e11308-7b43-456b-af93-a03a6040f223@mtasv.net> <bbde0691-8b84-48f6-abff-7215bc634cd3@app.fastmail.com> <98f3cf05-f4fa-4f13-9044-508ccaf17728@mtasv.net>
-Message-ID: <174AE88F-91A4-4189-90E3-93814F0BB318@slavino.sk>
+	dkim=pass (1024-bit key) header.d=tootai.net header.i=@tootai.net header.b="CgHDoFTU";
+	dkim=pass (1024-bit key) header.d=tootai.net header.i=@tootai.net header.b="CgHDoFTU"
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
+	t=1728460223; bh=QFxVhZcFLRdgafEk/nFMpSNa+6n+VmX+tbBfu1lWaWE=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=CgHDoFTUAKgat/PHiEKXd1Dxj1O3HwaMViF5fPenOMTD8Zz8/YXSywwK/CfxBNwfX
+	 lgNVk3w2kMEpqoGCjNTbreUo+xYjvj2JBFBkUpQxW/o4FJPOKP93l9p5j5q4QRz2UA
+	 I1QEmCQQ2ygRIRjIm5V0a4eLVPIN6OgjhlGL2GDo=
+Received: from tootai.net (localhost [127.0.0.1])
+	by mail1.tootai.net (Postfix) with ESMTP id AC69C6081A01;
+	Wed,  9 Oct 2024 09:50:23 +0200 (CEST)
+X-Spam-Level: 
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
+	t=1728460223; bh=QFxVhZcFLRdgafEk/nFMpSNa+6n+VmX+tbBfu1lWaWE=;
+	h=Date:Subject:To:References:From:In-Reply-To:From;
+	b=CgHDoFTUAKgat/PHiEKXd1Dxj1O3HwaMViF5fPenOMTD8Zz8/YXSywwK/CfxBNwfX
+	 lgNVk3w2kMEpqoGCjNTbreUo+xYjvj2JBFBkUpQxW/o4FJPOKP93l9p5j5q4QRz2UA
+	 I1QEmCQQ2ygRIRjIm5V0a4eLVPIN6OgjhlGL2GDo=
+Received: from [IPV6:fd99:1234:beef:cafe::24] (unknown [IPv6:fd99:1234:beef:cafe::24])
+	by mail1.tootai.net (Postfix) with ESMTPA id 4D51160818A4;
+	Wed,  9 Oct 2024 09:50:23 +0200 (CEST)
+Message-ID: <504b1c67-8335-4839-83fa-ea4e39d745c6@tootai.net>
+Date: Wed, 9 Oct 2024 09:50:22 +0200
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-
-D=C5=88a 8=2E okt=C3=B3bra 2024 21:18:14 UTC pou=C5=BE=C3=ADvate=C4=BE Mart=
-in Brampton <martin@black-sheep-research=2Ecom> nap=C3=ADsal:
-
->Is this a sensible rule?
->
->  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 icmpv6 type { destination-unreachable, packet-too-big=
-,
->time-exceeded, parameter-problem, echo-request, mld-listener-query,
->nd-router-solicit, nd-router-advert, nd-neighbor-solicit,
->nd-neighbor-advert } accept
-
-For IPv6 here is one simple rule: you must not block NDP, nor in INPUT,
-nor in OUTPUT, it will make your life more easy=2E When you understand
-NDP in more details, you can limit it for more security, if not, just allo=
-w
-all icmpv6=2E Do not try to be too smart, othervise you will break IPv6=2E
-
-regards
+User-Agent: Mozilla Thunderbird
+Subject: Re: Problem with ipv6
+To: "Kevin P. Fleming" <lists.netfilter@kevin.km6g.us>,
+ netfilter@vger.kernel.org
+References: <c3e11308-7b43-456b-af93-a03a6040f223@mtasv.net>
+ <bbde0691-8b84-48f6-abff-7215bc634cd3@app.fastmail.com>
+Content-Language: fr-FR
+From: Daniel <tech@tootai.net>
+In-Reply-To: <bbde0691-8b84-48f6-abff-7215bc634cd3@app.fastmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Virus-Scanned: ClamAV using ClamSMTP
 
 
---=20
-Slavko
-https://www=2Eslavino=2Esk/
+Le 08/10/2024 à 22:28, Kevin P. Fleming a écrit :
+> On Tue, Oct 8, 2024, at 16:08, Martin Brampton wrote:
+>>           chain output {
+>>                   type filter hook output priority filter; policy drop;
+>>                   ct state { established, related } accept
+>>                   ip protocol icmp icmp type echo-request accept
+>>                   ip protocol icmp icmp type echo-request ip daddr
+>> 127.0.0.1 accept
+>>                   icmpv6 type echo-request accept
+>>                   ip protocol { tcp, udp } th dport 53 accept
+>>                   tcp dport 123 accept
+>>                   tcp dport { 80, 443 } accept
+>>                   tcp dport { 25, 465, 587, 993, 995, 4190 } accept
+>>           }
+> What happens if you change this policy to 'accept', and make no other changes?
+
+Or simply add new in state
+
+ct state { established, related, new } accept
+
+-- 
+
+Daniel
