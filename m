@@ -1,157 +1,74 @@
-Received: from tootai.net (mail1.tootai.net [213.239.227.108])
+Received: from mta203a-ord.mtasv.net (mta203a-ord.mtasv.net [104.245.209.203])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33E10198A39
-	for <netfilter@vger.kernel.org>; Thu, 10 Oct 2024 16:48:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.239.227.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73FFE1C9ECA
+	for <netfilter@vger.kernel.org>; Thu, 10 Oct 2024 19:25:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.245.209.203
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728578890; cv=none; b=koqWoZ45jBRzsbS6S9HHCZrERhJv040u8IK7iFeGdtWPindmU95ItMCBh09hb9P2UY+ElHRvYeEwbw/7187v1mQ7NvZXfoOy+MmPlzWGaLkKcJ3mM957A85d8NH88LeZD4P8tMVTLhX5gVjesGAstN+yMEvO6FkoEuQweTABvys=
+	t=1728588305; cv=none; b=qIE0SaKDI2JbM9/rxtMFu21NFVDIgoH+LqDmRN9MX3esqUiO6ZKDBOfEL8Gr86g+YYxnQbkASDqa/+JEHaZ8+r7TaK46pL27B7QrON8bi+I1l0492o7/+ympBDqI1ob6eLkWoQxJkIPkbOGUq2bK0b3dn5CmiqhbzUppuUxntnQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728578890; c=relaxed/simple;
-	bh=0CzT1bbdQGiNrFJZUQYhnG76U15z0w2TTCjskGUDgYk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=bSZ/hvx5gIcoW0LQwgp5ZdpwL7+o21N5uPXF6E1vbbHD8iosI8GYkQ0JIWmRYL/CBbPjkq7trnTVotQkp4U5XRn95RcUm/7y3IwVfE9N8Eout0OrGmHIHKfYg/LeqlRq6LT+KiWAgKB5MSCFJAPCBIWBQRzK+fZM4I1UAUBOQwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=tootai.net; spf=pass smtp.mailfrom=tootai.net; dkim=pass (1024-bit key) header.d=tootai.net header.i=@tootai.net header.b=kkARcwUF; dkim=pass (1024-bit key) header.d=tootai.net header.i=@tootai.net header.b=igM/mRKV; arc=none smtp.client-ip=213.239.227.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=tootai.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tootai.net
+	s=arc-20240116; t=1728588305; c=relaxed/simple;
+	bh=VRzeqlZ6E7W8O6NAVFFCsX2SxFldaN44QT3zlUPRv9o=;
+	h=From:Date:Subject:Message-Id:To:References:In-Reply-To:
+	 MIME-Version:Content-Type; b=Jr7G5kpkWnAGw2vlj72QOnIov30UJSHISqUFh5IpEB/aSuu3JiPrU7z6bSjUl2PKD2DhfQK3LNkBl6MCUyCY5rdb5oEKSQn2OCLlmNQ7dASdFt0+bS/amogkDFJBxAl9mCg+yQ6D8dhSLpAUd4f8VfNcF7aoz5YUZG62mlWI7VY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=black-sheep-research.com; spf=pass smtp.mailfrom=pm-bounces.black-sheep-research.com; dkim=pass (2048-bit key) header.d=pm.mtasv.net header.i=@pm.mtasv.net header.b=C9Jc9eB4; dkim=pass (1024-bit key) header.d=black-sheep-research.com header.i=martin@black-sheep-research.com header.b=eLyKioJG; arc=none smtp.client-ip=104.245.209.203
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=black-sheep-research.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm-bounces.black-sheep-research.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=tootai.net header.i=@tootai.net header.b="kkARcwUF";
-	dkim=pass (1024-bit key) header.d=tootai.net header.i=@tootai.net header.b="igM/mRKV"
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-	t=1728578877; bh=0CzT1bbdQGiNrFJZUQYhnG76U15z0w2TTCjskGUDgYk=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=kkARcwUF5oOp+pjeL4Gt2xihUNRNb/ievKf0GUEsy2OL4GJE+Tkzh9b5+t5mOZTej
-	 zNbVpaVW8y3L1rrvNn3rcspJ4vQCBeV50bwBnmWdV/XnAoNUeTF8ElmAwGcke9izge
-	 7+qxPZ+JLqyXN5TF0MFoCax9PgjYYp5/3Tlm0avo=
-Received: from tootai.net (localhost [127.0.0.1])
-	by mail1.tootai.net (Postfix) with ESMTP id 0572F6081A01
-	for <netfilter@vger.kernel.org>; Thu, 10 Oct 2024 18:47:57 +0200 (CEST)
-X-Spam-Level: 
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=tootai.net; s=mail;
-	t=1728578876; bh=0CzT1bbdQGiNrFJZUQYhnG76U15z0w2TTCjskGUDgYk=;
-	h=Date:Subject:To:References:From:In-Reply-To:From;
-	b=igM/mRKV9yzuLirhBX+VUeTH2Oc+zAoA6GhemtV2NrlBRzCeCvWjOlavC2ZoCjupP
-	 gbIqsfKTGGIrVRsDSy/gdjxqkdwYfbjEC3k3LVmloAHLNmpHK9+NZhHRQ1+K1pkPZW
-	 bPSgWB5WGLgaIOvDjw733SdjxuA45IQ3O+36DSX4=
-Received: from [IPV6:fd99:1234:beef:cafe::24] (unknown [IPv6:fd99:1234:beef:cafe::24])
-	by mail1.tootai.net (Postfix) with ESMTPA id 2E71460818A4
-	for <netfilter@vger.kernel.org>; Thu, 10 Oct 2024 18:47:49 +0200 (CEST)
-Message-ID: <59586f06-cb9e-4810-b7ad-e397ea111485@tootai.net>
-Date: Thu, 10 Oct 2024 18:47:48 +0200
+	dkim=pass (2048-bit key) header.d=pm.mtasv.net header.i=@pm.mtasv.net header.b="C9Jc9eB4";
+	dkim=pass (1024-bit key) header.d=black-sheep-research.com header.i=martin@black-sheep-research.com header.b="eLyKioJG"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=pm20241004; d=pm.mtasv.net;
+ h=From:Date:Subject:Message-Id:Reply-To:To:References:In-Reply-To:
+ MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:Message-ID:
+ Reply-To:Sender:Subject:To:CC; t=1728588303; x=1728674703;
+ bh=VRzeqlZ6E7W8O6NAVFFCsX2SxFldaN44QT3zlUPRv9o=;
+ b=C9Jc9eB4v9ySKc8QlurneJbco41FSXv1/vgoPcgkTbBmzaps7sXY8xONDHFatL2xupaI9tr6qYJT
+   ICz8+B720hgpTNF++pR34tMGM+4lMUZzzod0TYY09XQ77Xtw8JbJiBmePVOlMmV27tJPDHybJ2kN
+   PIsZrjjaJ0F3cpVQLeIMGuKXBAWMlPGg13d3mykimxOknM86VKKQnhQNUjeE8KzRykfGuJybHqXy
+   3IwMUJeR0iCGgHM+Uo5prCExb+9i8jbFGY3j8/tXIPCjPW7C/WhvRIiFv5Byjgxo7MEWztn/HLB+
+   0EZU/Z+XYnpNMTKpMRVp/nwg9XhAUPIEDpJ6ng==
+Received: by mta203a-ord.mtasv.net id h10l0s3864o8 for <netfilter@vger.kernel.org>; Thu, 10 Oct 2024 15:25:02 -0400 (envelope-from <pm_bounces@pm-bounces.black-sheep-research.com>)
+X-PM-IP: 104.245.209.203
+X-IADB-IP: 104.245.209.203
+X-IADB-IP-REVERSE: 203.209.245.104
+DKIM-Signature: v=1; a=rsa-sha256; d=black-sheep-research.com;
+	s=20220127112152pm; c=relaxed/relaxed; i=martin@black-sheep-research.com;
+	t=1728588302; x=1728761102;
+	h=date:date:from:from:message-id:reply-to:reply-to:sender:subject:subject:to:
+	to:cc:references:in-reply-to:feedback-id:mime-version:content-type:
+	content-transfer-encoding;
+	bh=VRzeqlZ6E7W8O6NAVFFCsX2SxFldaN44QT3zlUPRv9o=;
+	b=eLyKioJGrE3n7z8fmcsrF1c+rElLL7OrzhveHAUret5mI2+eWAKPZVI8xTn3fleMU98VKPr23E1
+	VNPT8CDYJ1DQiQ/sW8K4gXWXKDQ3M/7KGGha4FZCz5kPF0PmDBbdGNXTQGKhwZVuxsUO9Jw+cfFEx
+	RyxYLA1+rRWxMrk7UC8=
+From: Martin Brampton <martin@black-sheep-research.com>
+Date: Thu, 10 Oct 2024 19:25:02 +0000
+Subject: Re: VPN nftables
+Message-Id: <f1f09316-a0f3-43e8-854a-a7d6a7138aaa@mtasv.net>
+Reply-To: martin@black-sheep-research.com
+To: netfilter@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+References: <b80835b3-5e07-4631-92b3-3c04b58a43d0@mtasv.net> <59586f06-cb9e-4810-b7ad-e397ea111485@tootai.net>
+In-Reply-To: <59586f06-cb9e-4810-b7ad-e397ea111485@tootai.net>
+Feedback-ID: s8569101-_:s8569101:a226829:postmark
+X-Complaints-To: abuse@postmarkapp.com
+X-PM-Message-Id: f1f09316-a0f3-43e8-854a-a7d6a7138aaa
+X-PM-RCPT: |bTB8MjI2ODI5fDg1NjkxMDF8bmV0ZmlsdGVyQHZnZXIua2VybmVsLm9yZw==|
+X-PM-Message-Options: v1;1.bd-9TlyI2N2xp6XpzUQVHA.zTS72hym3jhGEyBdsL5glZIFQ9vTzL-TBsQO1fGf8ScSixVtBOZG2Cl6-Ca8DWRs2aEUfGP8CFR6LxwBNfbV4Ekmfu-fk9IsF08jBNsSqlOsW_qRQ-9ZKDU0OYCxbm2FQWJJkHBO3tDAU0gJUV3Quz-0-aX4xZVEo_y2wc5MpMVXQOacjDXwIx-vhHcS5P67
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: VPN nftables
-To: netfilter@vger.kernel.org
-References: <b80835b3-5e07-4631-92b3-3c04b58a43d0@mtasv.net>
-Content-Language: fr-FR
-From: Daniel <tech@tootai.net>
-In-Reply-To: <b80835b3-5e07-4631-92b3-3c04b58a43d0@mtasv.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Virus-Scanned: ClamAV using ClamSMTP
+X-PM-MTA-Pool: transactional-3
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-In the output set policy to accept or add new to ct state
+Thanks. Unfortunately that doesn't help.
 
-Le 10/10/2024 à 18:18, Martin Brampton a écrit :
-> On a Debian 12 VPS with openvpn installed, I am having difficulty
-> finding an nftable ruleset that works. The following is the current
-> ruleset, excluding the set definitions. I can connect to the VPN, but
-> then cannot access any services.
->
-> I'm aware there are overlapping rules, but that is because I'm
-> attempting to use a standard ruleset across all servers, with additions
-> according to the services needed. Any thoughts?
->
-> table inet firewall {
->       chain input {
->           type filter hook input priority filter; policy accept;
->           ct state { established, related } accept
->           iifname "lo" accept
->           icmpv6 type { destination-unreachable, packet-too-big,
-> time-exceeded, parameter-problem, echo-request, mld-listener-query,
-> nd-router-solicit, nd-router-advert, nd-neighbor-solicit,
-> nd-neighbor-advert } accept
->           ip protocol icmp icmp type echo-request ip saddr @servers_ipv4
-> accept
->           ip protocol icmp icmp type echo-request ip saddr 127.0.0.1 accept
->           ip saddr @spamhaus_blacklist drop
->           ip saddr @blacklist_v4 drop
->           tcp dport 443 accept
->           iifname "tun0" accept
->           tcp dport 22 ip saddr @always_ipv4 accept
->           tcp dport 22 ip saddr @privileged_ipv4 accept
->           tcp dport 22 ip saddr @tunnelin_ipv4 accept
->           tcp dport 22 ip saddr @security_v4 accept
->           tcp dport 22 ip saddr 193.107.20.105 accept
->           tcp dport 22 ip6 saddr @always_ipv6 accept
->           tcp dport 22 ip6 saddr @privileged_ipv6 accept
->           tcp dport 22 ip6 saddr @tunnelin_ipv6 accept
->           tcp dport 22 ip6 saddr @security_v6 accept
->           tcp dport 22 log prefix "Denied SSH: " drop
->           udp dport 60000-61000 ip saddr @always_ipv4 accept
->           udp dport 60000-61000 ip saddr @privileged_ipv4 accept
->           udp dport 60000-61000 ip6 saddr @always_ipv6 accept
->           udp dport 60000-61000 ip6 saddr @privileged_ipv6 accept
->           udp dport 60000-61000 log prefix "Denied MOSH: " drop
->           ip saddr @munin_host_v4 tcp dport 4949 accept
->           ip6 saddr @munin_host_v6 tcp dport 4949 accept
->           tcp dport 3306 ip saddr 127.0.0.1 accept
->           log prefix "nftables input dropped: " flags all counter packets
-> 86 bytes 9203 drop
->       }
->
->       chain forward {
->           type filter hook forward priority filter; policy drop;
->           ct state { established, related } accept
->           iifname "tun0" oifname "eth0" accept
->           iifname "eth0" oifname "tun0" ct state new accept
->           log prefix "nftables forward dropped: " flags all counter
-> packets 0 bytes 0 drop
->       }
->
->       chain output {
->           type filter hook output priority filter; policy drop;
->           ct state { established, related } accept
->           ip protocol icmp icmp type echo-request ip daddr @servers_ipv4
-> accept
->           ip protocol icmp icmp type echo-request ip daddr 127.0.0.1 accept
->           icmpv6 type { destination-unreachable, packet-too-big,
-> time-exceeded, parameter-problem, echo-request, mld-listener-query,
-> nd-router-solicit, nd-router-advert, nd-neighbor-solicit,
-> nd-neighbor-advert } accept
->           ip protocol { tcp, udp } th dport 53 accept
->           tcp dport 123 accept
->           tcp dport { 80, 443 } accept
->           ip daddr @postmark_v4 tcp dport 587 accept
->           ip daddr @postmarklists_v4 tcp dport 587 accept
->           ip daddr @smtp2go_v4 tcp dport 587 accept
->           ip6 daddr @postmark_v6 tcp dport 587 accept
->           ip6 daddr @postmarklists_v6 tcp dport 587 accept
->           ip6 daddr @smtp2go_v6 tcp dport 587 accept
->           ip daddr @vault_v4 tcp dport 22 accept
->           ip6 daddr @vault_v6 tcp dport 22 accept
->           ip daddr 127.0.0.1 tcp dport 3306 accept
->           ip protocol tcp accept
->           ip6 nexthdr tcp accept
->           ip protocol udp accept
->           ip6 nexthdr udp accept
->       }
->
->       chain prerouting {
->           type nat hook prerouting priority dstnat; policy accept;
->       }
->
->       chain postrouting {
->           type nat hook postrouting priority srcnat; policy accept;
->       }
-> }
+In fact, it seems that installing and configuring nftables destroys openvpn=
+.
 
--- 
-Daniel Huhardeaux
-+33.368460088@tootai.net	      sip:820@sip.tootai.net
-      					    tootaiNET
+ > In the output set policy to accept or add new to ct state
+
