@@ -1,74 +1,110 @@
-Received: from mta203a-ord.mtasv.net (mta203a-ord.mtasv.net [104.245.209.203])
+Received: from fout-a5-smtp.messagingengine.com (fout-a5-smtp.messagingengine.com [103.168.172.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73FFE1C9ECA
-	for <netfilter@vger.kernel.org>; Thu, 10 Oct 2024 19:25:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=104.245.209.203
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DF4819DFA2
+	for <netfilter@vger.kernel.org>; Thu, 10 Oct 2024 19:56:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728588305; cv=none; b=qIE0SaKDI2JbM9/rxtMFu21NFVDIgoH+LqDmRN9MX3esqUiO6ZKDBOfEL8Gr86g+YYxnQbkASDqa/+JEHaZ8+r7TaK46pL27B7QrON8bi+I1l0492o7/+ympBDqI1ob6eLkWoQxJkIPkbOGUq2bK0b3dn5CmiqhbzUppuUxntnQ=
+	t=1728590204; cv=none; b=cWnxgvej8JOgQ+pBxWHZdJ9pKo2KC6KvUzS55dNiVJNfP9kOEq2K/MsOQlx5rlPtUa+x7Vx3C2gxpDsZl5mNnrWNunoYXCnfpokoi9acXZ8L+CvSvSXdJS1w0z3YiRmj6GOhDOzBje+TxWL/jdShbJrJlliTEesiOEK+G7vGyCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728588305; c=relaxed/simple;
-	bh=VRzeqlZ6E7W8O6NAVFFCsX2SxFldaN44QT3zlUPRv9o=;
-	h=From:Date:Subject:Message-Id:To:References:In-Reply-To:
-	 MIME-Version:Content-Type; b=Jr7G5kpkWnAGw2vlj72QOnIov30UJSHISqUFh5IpEB/aSuu3JiPrU7z6bSjUl2PKD2DhfQK3LNkBl6MCUyCY5rdb5oEKSQn2OCLlmNQ7dASdFt0+bS/amogkDFJBxAl9mCg+yQ6D8dhSLpAUd4f8VfNcF7aoz5YUZG62mlWI7VY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=black-sheep-research.com; spf=pass smtp.mailfrom=pm-bounces.black-sheep-research.com; dkim=pass (2048-bit key) header.d=pm.mtasv.net header.i=@pm.mtasv.net header.b=C9Jc9eB4; dkim=pass (1024-bit key) header.d=black-sheep-research.com header.i=martin@black-sheep-research.com header.b=eLyKioJG; arc=none smtp.client-ip=104.245.209.203
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=black-sheep-research.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pm-bounces.black-sheep-research.com
+	s=arc-20240116; t=1728590204; c=relaxed/simple;
+	bh=a1nDa6fLNobBC/Zs4Ht61p7P5wxZaoKyOhSerQRYmq8=;
+	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=KXKD9LxW3HrvFZjMlM/F3rayNpg/tmRloi/YtP9galC3TB64eVICzOtVIHJB+aSW+1OpdKolUVurUdfijadjSTuUv06kJIW/Qo6JhDgfxiyc9APmbWggCy2jadvvF0ptg/B0BPolsyBXab0JTLq1c2dr0dZi1IBdYD7LsJl8fzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=gVfiPL1r; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=CvGO1XVV; arc=none smtp.client-ip=103.168.172.148
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=pm.mtasv.net header.i=@pm.mtasv.net header.b="C9Jc9eB4";
-	dkim=pass (1024-bit key) header.d=black-sheep-research.com header.i=martin@black-sheep-research.com header.b="eLyKioJG"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; s=pm20241004; d=pm.mtasv.net;
- h=From:Date:Subject:Message-Id:Reply-To:To:References:In-Reply-To:
- MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:Message-ID:
- Reply-To:Sender:Subject:To:CC; t=1728588303; x=1728674703;
- bh=VRzeqlZ6E7W8O6NAVFFCsX2SxFldaN44QT3zlUPRv9o=;
- b=C9Jc9eB4v9ySKc8QlurneJbco41FSXv1/vgoPcgkTbBmzaps7sXY8xONDHFatL2xupaI9tr6qYJT
-   ICz8+B720hgpTNF++pR34tMGM+4lMUZzzod0TYY09XQ77Xtw8JbJiBmePVOlMmV27tJPDHybJ2kN
-   PIsZrjjaJ0F3cpVQLeIMGuKXBAWMlPGg13d3mykimxOknM86VKKQnhQNUjeE8KzRykfGuJybHqXy
-   3IwMUJeR0iCGgHM+Uo5prCExb+9i8jbFGY3j8/tXIPCjPW7C/WhvRIiFv5Byjgxo7MEWztn/HLB+
-   0EZU/Z+XYnpNMTKpMRVp/nwg9XhAUPIEDpJ6ng==
-Received: by mta203a-ord.mtasv.net id h10l0s3864o8 for <netfilter@vger.kernel.org>; Thu, 10 Oct 2024 15:25:02 -0400 (envelope-from <pm_bounces@pm-bounces.black-sheep-research.com>)
-X-PM-IP: 104.245.209.203
-X-IADB-IP: 104.245.209.203
-X-IADB-IP-REVERSE: 203.209.245.104
-DKIM-Signature: v=1; a=rsa-sha256; d=black-sheep-research.com;
-	s=20220127112152pm; c=relaxed/relaxed; i=martin@black-sheep-research.com;
-	t=1728588302; x=1728761102;
-	h=date:date:from:from:message-id:reply-to:reply-to:sender:subject:subject:to:
-	to:cc:references:in-reply-to:feedback-id:mime-version:content-type:
-	content-transfer-encoding;
-	bh=VRzeqlZ6E7W8O6NAVFFCsX2SxFldaN44QT3zlUPRv9o=;
-	b=eLyKioJGrE3n7z8fmcsrF1c+rElLL7OrzhveHAUret5mI2+eWAKPZVI8xTn3fleMU98VKPr23E1
-	VNPT8CDYJ1DQiQ/sW8K4gXWXKDQ3M/7KGGha4FZCz5kPF0PmDBbdGNXTQGKhwZVuxsUO9Jw+cfFEx
-	RyxYLA1+rRWxMrk7UC8=
-From: Martin Brampton <martin@black-sheep-research.com>
-Date: Thu, 10 Oct 2024 19:25:02 +0000
-Subject: Re: VPN nftables
-Message-Id: <f1f09316-a0f3-43e8-854a-a7d6a7138aaa@mtasv.net>
-Reply-To: martin@black-sheep-research.com
-To: netfilter@vger.kernel.org
-User-Agent: Mozilla Thunderbird
-References: <b80835b3-5e07-4631-92b3-3c04b58a43d0@mtasv.net> <59586f06-cb9e-4810-b7ad-e397ea111485@tootai.net>
-In-Reply-To: <59586f06-cb9e-4810-b7ad-e397ea111485@tootai.net>
-Feedback-ID: s8569101-_:s8569101:a226829:postmark
-X-Complaints-To: abuse@postmarkapp.com
-X-PM-Message-Id: f1f09316-a0f3-43e8-854a-a7d6a7138aaa
-X-PM-RCPT: |bTB8MjI2ODI5fDg1NjkxMDF8bmV0ZmlsdGVyQHZnZXIua2VybmVsLm9yZw==|
-X-PM-Message-Options: v1;1.bd-9TlyI2N2xp6XpzUQVHA.zTS72hym3jhGEyBdsL5glZIFQ9vTzL-TBsQO1fGf8ScSixVtBOZG2Cl6-Ca8DWRs2aEUfGP8CFR6LxwBNfbV4Ekmfu-fk9IsF08jBNsSqlOsW_qRQ-9ZKDU0OYCxbm2FQWJJkHBO3tDAU0gJUV3Quz-0-aX4xZVEo_y2wc5MpMVXQOacjDXwIx-vhHcS5P67
+	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="gVfiPL1r";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="CvGO1XVV"
+Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
+	by mailfout.phl.internal (Postfix) with ESMTP id 7F918138038E;
+	Thu, 10 Oct 2024 15:56:41 -0400 (EDT)
+Received: from phl-imap-10 ([10.202.2.85])
+  by phl-compute-03.internal (MEProxy); Thu, 10 Oct 2024 15:56:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+	 h=cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1728590201;
+	 x=1728676601; bh=+kgCefjjULYDtKqSipQnyNNI5cqClvwsRaSJh4siwTk=; b=
+	gVfiPL1rcq74u39OPGgbU1eC5chF6bkrrYIZGPRWJQ3REfZ3THiNcMBUZG1PW6Gc
+	hbeZ5/Q5enFYuIJN9JgqP293phPHzAS+cp/oEhzE9yyI3xtZwGtjlQKOytOWoW+8
+	DoK6BeKRDGuZR09D+++xWDqQvUR0Sh9SsqBN2fx9lYlmzARsiluXmIM/LFm4hZWg
+	GrtKnEUVNuleCJYhxONpDHJtbkX3/vOul3MNym864rGI8yu2Rq/CNJftKugMVZ4w
+	Rm1lR0E+A0+XFBDpOHN1JQKZ6b+IABVicIPPd8kM7CQwqQNmLyRAQhfgffFfCIkd
+	JuQjzvCzLJboy4EbwwsUWA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1728590201; x=
+	1728676601; bh=+kgCefjjULYDtKqSipQnyNNI5cqClvwsRaSJh4siwTk=; b=C
+	vGO1XVVAKx4GKcGHys8g40w/COKNExS44udru2vHnpo6B0+eiH43hDH8AhpAxafg
+	5IS7zGQI5BBNQkygYElWxQ67sOiSFvI4T7UGXbyNA3Mpr3ljbfYrq1M8Q59O+b5x
+	loAfNL1xGMuIV680WDQVrQ4eg/I90BdY78Zr7zAv/tON2AKmGMKJTms7Wz9Vq36m
+	P3Azj1Som1HAjFWKmpfBXSIlkwCCNcOXuSLp1g8hLTLFRu7aosWl85JLS80/f+Fm
+	9/NImS3j352z7yeZbPlOTE6kktHWOTweYPDMiotNrQhIGUk72yXXYJNOrgJxJRXL
+	t3P62OWm0rhxrJEUjPdIQ==
+X-ME-Sender: <xms:eTEIZ2MuHDKC4kuJwJjqB4ZIGj2O-p2ydFzmh7EKLjU99mO5pWvL1g>
+    <xme:eTEIZ0_O5ozhLlpnJU8N0yRKU70FFcITBg4n84vxx-UlHaqy1zucvab9h5bM8jMFV
+    1YNep_3vJ7DxA7e>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvdefiedgudejucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepofggfffhvffkjghfufgtgfesthejredtredttden
+    ucfhrhhomhepfdfmvghrihhnucfoihhllhgrrhdfuceokhhfmhesphhluhhshhhkrghvrg
+    drnhgvtheqnecuggftrfgrthhtvghrnhepieekkefgudfgtdeugedthfehtdehffevffeu
+    vdejgfetleeileetledtveefvedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrg
+    hmpehmrghilhhfrhhomhepkhhfmhesphhluhhshhhkrghvrgdrnhgvthdpnhgspghrtghp
+    thhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtohepmhgrrhhtihhnsegslh
+    grtghkqdhshhgvvghpqdhrvghsvggrrhgthhdrtghomhdprhgtphhtthhopehnvghtfhhi
+    lhhtvghrsehvghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:eTEIZ9Qp1QUGmeGwvWxtaXNWszDxBbhLwaTJN4JK7eWAMFYYlNpMqA>
+    <xmx:eTEIZ2uzqqvLlqu3xpUVH-HZXnX2OAs92B-Bhw_ONarsldVrtVFcuA>
+    <xmx:eTEIZ-dKyOGd17oSfnIQ3Ag_nahZGT2U5PMHZX7rVV6nhZUtb_2t2A>
+    <xmx:eTEIZ60KbvWdKBFdVvWDtOXSzoQYFORmyJgYbVS_S0ZF2xx8LhNIlw>
+    <xmx:eTEIZyGhPqULskLyqdGCZscyFnGFfz4QE0OJx75uZT2lG1k_t3D-tK2B>
+Feedback-ID: i2431475f:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 2A43E3C0066; Thu, 10 Oct 2024 15:56:41 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-PM-MTA-Pool: transactional-3
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Date: Thu, 10 Oct 2024 20:56:20 +0100
+From: "Kerin Millar" <kfm@plushkava.net>
+To: "Martin Brampton" <martin@black-sheep-research.com>,
+ netfilter@vger.kernel.org
+Message-Id: <798fe091-1614-4db7-8692-66c2d03a9f54@app.fastmail.com>
+In-Reply-To: <f1f09316-a0f3-43e8-854a-a7d6a7138aaa@mtasv.net>
+References: <b80835b3-5e07-4631-92b3-3c04b58a43d0@mtasv.net>
+ <59586f06-cb9e-4810-b7ad-e397ea111485@tootai.net>
+ <f1f09316-a0f3-43e8-854a-a7d6a7138aaa@mtasv.net>
+Subject: Re: VPN nftables
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-Thanks. Unfortunately that doesn't help.
+On Thu, 10 Oct 2024, at 8:25 PM, Martin Brampton wrote:
+> Thanks. Unfortunately that doesn't help.
+>
+> In fact, it seems that installing and configuring nftables destroys openvpn.
 
-In fact, it seems that installing and configuring nftables destroys openvpn=
-.
+In your initial post, you describe your problem as not being able to access any services. That does not amount to a concrete description of a test case. Upon your peer being connected, what exactly have you tried where the outcome is not as expected? What were the diagnostic messages reported, if any? If you were to focus on - and detail - a particular scenario, it could make it easier for other readers to help you diagnose the underlying problem.
 
- > In the output set policy to accept or add new to ct state
+Additionally, you may find it beneficial to define a rule that enables the nftrace mode for packets of interest. That is, those that you suspect are being erroneously dropped. I usually do so in a prerouting hook. For example:
 
+chain prerouting {
+    type filter hook prerouting priority raw; policy accept;
+
+    # Trace any TCP packet arriving that is destined for port 22 at any host
+    tcp dport 22 meta nftrace set 1
+}
+
+You may then run "nft monitor trace" and observe the trajectory of the packet(s) through your ruleset in real time.
+
+-- 
+Kerin Millar
