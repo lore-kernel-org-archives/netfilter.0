@@ -1,152 +1,153 @@
-Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF17A137C35
-	for <netfilter@vger.kernel.org>; Thu, 17 Oct 2024 22:10:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 117521D6195
+	for <netfilter@vger.kernel.org>; Thu, 17 Oct 2024 23:30:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729203044; cv=none; b=LMNGEjxGFoUgu1PdUdUEQc8n3VvkjPnNvotyc8hhGDcIVU8dJ0BEz6fi/e8uYbt8no2I2mR5ewtLGHsdAYaCfE6FG9Ij13qdx4CR7HcVs2SMFFUnkJjG71u/b3W8ZullEhlOL+cnYgxRMPMOkUVW5d2YEqX1vk/uioPOXOyI1W4=
+	t=1729207838; cv=none; b=H0zQEsVEy8/R5ju4qbu2RqBzNDoh9r+j9wi9zQnvjWAugROaE3Aw6M/ENmafgJ7ecNkpNHkAxf0dowKFRg3Lyqdz+a5srK2TZ4dOnOWLestippwjPQpfischmMkLitvAUAROE7DWAOQrCNUGjxptzU0KlaqqwaVNsWzbpi1/wRM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729203044; c=relaxed/simple;
-	bh=o7EuDbQBAIjE5kUYzXM7T2tsM0tQHOyuDVs6jIjPxOY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sHLIco3t28fqxyohdGEPyUUfap9GmH2tEcvojoIGgKDHcCs9fwMGFNZBqdI+M7dGOuMhcNYs665ZExDYH+HV1YOn8W/uTOFTJDUWvZTG487IhhplxoIa+edbuwCH/vjh15+CF4utfR3lzQTQYrISoQA/L3YkfY7Po4tlW8yoSxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Oo1rqiVk; arc=none smtp.client-ip=209.85.166.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Oo1rqiVk"
-Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-3a3b0247d67so5627655ab.3
-        for <netfilter@vger.kernel.org>; Thu, 17 Oct 2024 15:10:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729203039; x=1729807839; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=PWxBK1XcV3/yVaL8sBBH7TCNw4TJrFOXLtdXagQkvaY=;
-        b=Oo1rqiVkFM9CHINKXE/h2qNU3p/U/8aPWbzMIXRpIRiD2MEIHV0StI0PPf6T7iRFnX
-         TIYkS9nia8sDULiNTF/naWLfpRNgwt25j90dTsd4WjjqHUItfMxC+DGgLDCCwgmFkwCb
-         Ett34DNcAeo7khsw7fwPamayZbhOtWLxKNkF/tCrxVImJNwZAU0yC3i/jzej46FBqXnk
-         3MqbcOpyuCZC6CdHeOligZEivZJ/cepBX032iFkDZepejN1VWiIyUknF0XAbQwhgb1RO
-         I95d9WhoXNFrkyaLEzCjLm/hdRn0MAkBCF2NEqpcLXtAxubvjdcxl9AXWDtM7LZ86geL
-         6j4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729203039; x=1729807839;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=PWxBK1XcV3/yVaL8sBBH7TCNw4TJrFOXLtdXagQkvaY=;
-        b=lv6XBW8oflk9DeViM2HBfnH0U+d/3hu24wtuciEf8ltu0mtfwmPQebSoXNOSLuzTfV
-         xgq8iR2nJZiWNRKmiGZ9Mk3X+tYIDrWc383OR6xCv7zres2AYAjxqI2u48/FTT5FiUMm
-         pG2iNEM/CTCxIyLFuhyUztRt6uwjGEnxYcvPNKunT6QiOXxHrvRxnkVkyFHBaTRrJdCp
-         L/tUQQY777O02mzgaSVGUCxyDasM6V2BJ4SPD6yvuFPCHtJpKm/QpxOGwbBE1gB3C/Kl
-         wvTJHc4tYWnpE3wq+q+thrgl0sGJ38pj+juMGSa2PsmiRFJfQHzYqNWpbQ0XuU2ITOhX
-         4StA==
-X-Forwarded-Encrypted: i=1; AJvYcCVNsWe49AycBDBbkV456BiWzZxYaqsywWDI7ZIEAbtbCRpQ4g9yvBYg+CDrlAwBR+uO4AZ1Pmiyynk=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx4pvp5geo2icNyxxqBnBKs/NFF1BC9aBfxYLSRf9PX6BNGL85z
-	7kQqERdhrFqhS0+QM0RRdW0+9tH1NyQzhd9hE/bbTR0/ZAyuSLhSF6BO5ldxbN1b802Bar/u2AC
-	X9o18icPntcFerANzMkYsuUTzU05e4GKQQodcyQ==
-X-Google-Smtp-Source: AGHT+IGJNt7uHTigXZcJWZCIbehmdRG8XxNn3Cdmt0VRKQX0UnG7afgFQ276yoLSk82giBa7y5W0B/H29wZ7ZVQ816Q=
-X-Received: by 2002:a05:6e02:1a2a:b0:3a0:9aef:4c2 with SMTP id
- e9e14a558f8ab-3a3f40a7912mr2866205ab.19.1729203038863; Thu, 17 Oct 2024
- 15:10:38 -0700 (PDT)
+	s=arc-20240116; t=1729207838; c=relaxed/simple;
+	bh=c3VUVal+IPKzCCKsEVzHWwqufk4UsEm1MkrSBrbxPPY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AVf609X39MYg4Jtvbn+3nQIoHPZWs1gIFthL1ocs+sM2ZnJScq+xOoRDnhKli0oTrCFlFyBV8My+b9PdvCU51eyUxHx+8F91DqfF4NiLEfy4tOSzGIIv9lG6kiQIAUNWh2A3+MMDifM1HK2vjHWRsPb8W/8I1jXd05dzz+vjXTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+	(envelope-from <fw@strlen.de>)
+	id 1t1Zwt-00011q-GC; Fri, 18 Oct 2024 01:30:31 +0200
+Date: Fri, 18 Oct 2024 01:30:31 +0200
+From: Florian Westphal <fw@strlen.de>
+To: Antonio Ojea <antonio.ojea.garcia@gmail.com>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>,
+	Florian Westphal <fw@strlen.de>, netfilter@vger.kernel.org
+Subject: Re: Most optimal method to dump UDP conntrack entries
+Message-ID: <20241017233031.GA3675@breakpoint.cc>
+References: <CABhP=tZe2MDYJWqmyhb=we2g_v11wuDb6yBp878vt7qQYrvUiA@mail.gmail.com>
+ <20241017124632.GC12005@breakpoint.cc>
+ <ZxE8-pDn9Alzm50K@calendula>
+ <CABhP=ta5FesHP+xnPq7UaiNvvorfGgPJZV9Xxdvk_-SLk7ZxEg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CABhP=tZe2MDYJWqmyhb=we2g_v11wuDb6yBp878vt7qQYrvUiA@mail.gmail.com>
- <20241017124632.GC12005@breakpoint.cc> <ZxE8-pDn9Alzm50K@calendula>
-In-Reply-To: <ZxE8-pDn9Alzm50K@calendula>
-From: Antonio Ojea <antonio.ojea.garcia@gmail.com>
-Date: Thu, 17 Oct 2024 23:10:02 +0100
-Message-ID: <CABhP=ta5FesHP+xnPq7UaiNvvorfGgPJZV9Xxdvk_-SLk7ZxEg@mail.gmail.com>
-Subject: Re: Most optimal method to dump UDP conntrack entries
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Florian Westphal <fw@strlen.de>, netfilter@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABhP=ta5FesHP+xnPq7UaiNvvorfGgPJZV9Xxdvk_-SLk7ZxEg@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-On Thu, 17 Oct 2024 at 17:36, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
->
-> On Thu, Oct 17, 2024 at 02:46:32PM +0200, Florian Westphal wrote:
-> > Antonio Ojea <antonio.ojea.garcia@gmail.com> wrote:
-> > > In the context of Kubernetes, when DNATing entries for UDP Services,
-> > > we need to deal with some edge cases where some UDP entries are left
-> > > orphaned but blackhole the traffic to the new endpoints.
-> > >
-> > > At high level, the scenario is:
-> > > - Client IP_A sends UDP traffic to VirtualIP IP_B --> Kubernetes
-> > > Translates this to Endpoint IP_C
-> > > - Endpoint IP_C is replaced by Endpoint IP_D, but since Client IP_A
-> > > does not stop sending traffic, the conntrack entry IP_A IP_B --> IP_C
-> > > takes precedence and is being renewed, so traffic is not sent to the
-> > > new Endpoint IP_D and is lost.
-> > >
-> > > To solve this problem, we have some heuristics to detect those
-> > > scenarios when the endpoints change and flush the conntrack entries,
-> > > however, since this is event based, if we lost the event that
-> > > triggered the problem or something happens that fails to clean up the
-> > > entry,  the user need to manually flush the entries.
-> > >
-> > > We are implementing a new approach to solve this, we list all the UDP
-> > > conntrack entries using netlink, compare against the existing
-> > > programmed nftables/iptables rules, and flush the ones we know are
-> > > stale.
-> > >
-> > > During the implementation review, the question [1] this raises is, how
-> > > impactful is it to dump all the conntrack entries each time we program
-> > > the iptables/nftables rules (this can be every 1s on nodes with a lot
-> > > of entries)?
-> > > Is this approach completely safe?
-> > > Should we try to read from procfs instead?
-> >
-> > Walking all conntrack entries in 1s intervals is going to be slow, no
-> > matter the chosen interface.  Even doing the filtering in the kernel to
-> > not dump all entries but only those that match udp/port/ip criteria is
-> > not going to change it.
+Antonio Ojea <antonio.ojea.garcia@gmail.com> wrote:
+> We are not worried about being slow in the order of seconds, the
+> system is eventually consistent so there can always be a reasonable
+> latency.
+> Since we only care about UDP, losing packets during that period is not
+> desirable but is assumable.
+> My main concern is if constantly dumping all the entries via netlink
+> can cause any issue or increase resources consumption.
 
-We are not worried about being slow in the order of seconds, the
-system is eventually consistent so there can always be a reasonable
-latency.
-Since we only care about UDP, losing packets during that period is not
-desirable but is assumable.
-My main concern is if constantly dumping all the entries via netlink
-can cause any issue or increase resources consumption.
+It doesn't need lots of extra memory on kernel side, just for the
+some internal tracking ("where were we") and temporary netlink
+buffer to assemble the dump chunks returned to userspace.
 
-> >
-> > Also both proc and netlink dumps can miss entries (albeit its rare),
-> > if parallel insertions/deletes happen (which is normal on busy system).
-> >
+> > > Also both proc and netlink dumps can miss entries (albeit its rare),
+> > > if parallel insertions/deletes happen (which is normal on busy system).
+> 
+> That is one of the reasons we want to implement this reconcile loop,
+> so it can be resilient to this kind of errors, we keep the state on
+> the API in the control plane, so we can always rebuild the state in
+> the dataplane (recreating nftables rules and delete conntrack entries
+> that does not match the current state)
 
-That is one of the reasons we want to implement this reconcile loop,
-so it can be resilient to this kind of errors, we keep the state on
-the API in the control plane, so we can always rebuild the state in
-the dataplane (recreating nftables rules and delete conntrack entries
-that does not match the current state)
+OK, but wouldn't it be better to not need this at all?
 
-> > I wonder why the appropriate delete requests cannot be done when the
-> > mapping is altered, I mean, you must have some code that issues
-> > either iptables -t nat -D ... or nft delete element ... or similar.
-> >
-> > If you do that, why not also fire off the conntrack -D request
-> > afterwards?  Or are these publish/withdraw so frequent that this
-> > doesn't matter compared to poll based approach?
-> >
-> > Something like
-> >    conntrack -D --protonum 17 --orig-dst $vserver --orig-port-dst 53 --reply-src $rserver --reply-port-src 5353
-> >
-> > would zap everything to $rserver mapped to $vserver from client point of view.
->
+The UDP tracker is old and refreshs the timeout for every packet, but
+who says it needs to stay that way?
 
-This is how it is implemented today and it works, but it does not
-handle process restarts per example, or is not resilient to errors.
-The implementation is also much more complex because we need to
-implement all the possible edge cases that can leave stale entries
+With very simple patch to only refresh in 'reply' dir:
 
+    [NEW] udp      17 30 src=127.0.0.1 dst=127.0.0.1 sport=49819 dport=12345 [UNREPLIED] src=127.0.0.1 dst=127.0.0.1 sport=12345 dport=49819
+[DESTROY] udp      17 src=127.0.0.1 dst=127.0.0.1 sport=49819 dport=12345 [UNREPLIED] src=127.0.0.1 dst=127.0.0.1 sport=12345 dport=49819
+    [NEW] udp      17 30 src=127.0.0.1 dst=127.0.0.1 sport=49819 dport=12345 [UNREPLIED] src=127.0.0.1 dst=127.0.0.1 sport=12345 dport=49819
+[DESTROY] udp      17 src=127.0.0.1 dst=127.0.0.1 sport=49819 dport=12345 [UNREPLIED] src=127.0.0.1 dst=127.0.0.1 sport=12345 dport=49819
+    [NEW] udp      17 30 src=127.0.0.1 dst=127.0.0.1 sport=49819 dport=12345 [UNREPLIED] src=127.0.0.1 dst=127.0.0.1 sport=12345 dport=49819
 
-> This reminds me, it would be good to expand conntrack utility to use
-> the new kernel API to filter from kernel + delete.
->
-> I will try to get here.
+This is with a unidirectional UDP stream.
 
-I should bring more of these problems to the mailing list :-)
+diff --git a/net/netfilter/nf_conntrack_proto_udp.c b/net/netfilter/nf_conntrack_proto_udp.c
+--- a/net/netfilter/nf_conntrack_proto_udp.c
++++ b/net/netfilter/nf_conntrack_proto_udp.c
+@@ -17,6 +17,7 @@
+ #include <linux/netfilter.h>
+ #include <linux/netfilter_ipv4.h>
+ #include <linux/netfilter_ipv6.h>
++#include <net/netfilter/nf_conntrack_acct.h>
+ #include <net/netfilter/nf_conntrack_l4proto.h>
+ #include <net/netfilter/nf_conntrack_ecache.h>
+ #include <net/netfilter/nf_conntrack_timeout.h>
+@@ -80,6 +81,35 @@ static bool udp_error(struct sk_buff *skb,
+ 	return false;
+ }
+ 
++static void nf_ct_refresh_udp(struct nf_conn *ct,
++			      enum ip_conntrack_dir dir,
++			      u32 len, u32 extra_jiffies)
++{
++	/* Only update if this is not a fixed timeout */
++	if (test_bit(IPS_FIXED_TIMEOUT_BIT, &ct->status))
++		return nf_ct_acct_update(ct, dir, len);
++
++	switch (dir) {
++	case IP_CT_DIR_ORIGINAL:
++		/* do not refresh in original dir, else stale dnat mapping
++		 * can be kept alive indefinitely.
++		 */
++		if (nf_ct_is_confirmed(ct))
++			return nf_ct_acct_update(ct, dir, len);
++		break;
++	case IP_CT_DIR_REPLY:
++		extra_jiffies += nfct_time_stamp;
++		break;
++	case IP_CT_DIR_MAX: /* silence warning wrt. unhandled enum */
++		break;
++	}
++
++	if (READ_ONCE(ct->timeout) != extra_jiffies)
++		WRITE_ONCE(ct->timeout, extra_jiffies);
++
++	nf_ct_acct_update(ct, dir, len);
++}
++
+ /* Returns verdict for packet, and may modify conntracktype */
+ int nf_conntrack_udp_packet(struct nf_conn *ct,
+ 			    struct sk_buff *skb,
+@@ -114,7 +144,7 @@ int nf_conntrack_udp_packet(struct nf_conn *ct,
+ 			stream = (status & IPS_ASSURED) == 0;
+ 		}
+ 
+-		nf_ct_refresh_acct(ct, ctinfo, skb, extra);
++		nf_ct_refresh_udp(ct, CTINFO2DIR(ctinfo), skb->len, extra);
+ 
+ 		/* never set ASSURED for IPS_NAT_CLASH, they time out soon */
+ 		if (unlikely((status & IPS_NAT_CLASH)))
+@@ -124,7 +154,7 @@ int nf_conntrack_udp_packet(struct nf_conn *ct,
+ 		if (stream && !test_and_set_bit(IPS_ASSURED_BIT, &ct->status))
+ 			nf_conntrack_event_cache(IPCT_ASSURED, ct);
+ 	} else {
+-		nf_ct_refresh_acct(ct, ctinfo, skb, timeouts[UDP_CT_UNREPLIED]);
++		nf_ct_refresh_udp(ct, CTINFO2DIR(ctinfo), skb->len, timeouts[UDP_CT_UNREPLIED]);
+ 	}
+ 	return NF_ACCEPT;
+ }
+
+The obvious counter-argument is "but what if its the reply side that is
+sending, and we have a stale SNAT mapping?".
+
+Solution would be to track timestamp of last packet seen per direction,
+and then stop refreshing the timeout if one side ceases sending.
+
+I think thats much better than what we have now and there would be no
+need to actively zap UDP flows, they would timeout automatically once
+one side ceases to transmit.
