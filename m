@@ -1,16 +1,16 @@
 Received: from mail.thelounge.net (mail.thelounge.net [91.118.73.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DF32189B97
-	for <netfilter@vger.kernel.org>; Thu, 24 Oct 2024 07:14:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7817A16A92D
+	for <netfilter@vger.kernel.org>; Thu, 24 Oct 2024 07:23:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.118.73.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729754072; cv=none; b=ucbUP7xp9M+dUuGtjXD6NIGuxVmABOQgsCkXAdDA9ovqbl6nEaXrFuyBKxhDZ02xnDcW1Cngzbf9dal8CV/umeexT4IjVc1udLpZskWawW0t98PZIOYY33nlFFv3J9ioBCoqzLSAROl8aRaDTAeIhT+wKJV0ztW/vOI4QCllrQ0=
+	t=1729754584; cv=none; b=moDDzRKNboUYUEdJyeinIzx0MB/JAPAsjS+5/glKxZoMA82LCLo39+rDBHT1qxG4K6H8Is1+zxmlLzwaQkCciio92yqP1z6BxqfPnulvMhwlu7G+7/Mf6qjWt0Scsb3XIO/g04aqSTpW6M+bEC4fHGUA3jI3sdKiHAv6wSFLUtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729754072; c=relaxed/simple;
-	bh=TiohGv5sUfQPDxWXis+RqOIi6NamImgSXMDMC8Ei7F8=;
+	s=arc-20240116; t=1729754584; c=relaxed/simple;
+	bh=tba2yyJH21sfA1t7BzNWIIZjL3MzTyINnmII4HrEo/Q=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Eze8I/XiEB5C+jt3ReI1ER6VOJwDCMXSHRV67xRw2ZAvsQ2QjM90WEt+s+GVdecApo1/okV1UCANlzEjTGSem0EvpGOxl188NZuxrwZb5Tah1oRAwWCMnHFSrBLy3aElHYNxsNyE5ehKM03Ob4DA0Hd5ZbAzJciBoquuS/KRsdA=
+	 In-Reply-To:Content-Type; b=Kjke7akNcEh+oazM8NEno01CdVfnrMEOdnbyA8Wy5oqTXZz5Bk6qi48rqAvQ9xFtg/9cYv6CcZv6WAhFGZ98lQcWlBuk4WX66l/NcIWrRhhq/zTKhLuxmxiP8Pnvs4xlmtXPY1+mZjpk5D+80bXxurTNkbw5o+QJBeMCVWb2HRw=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thelounge.net; spf=pass smtp.mailfrom=thelounge.net; arc=none smtp.client-ip=91.118.73.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thelounge.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=thelounge.net
@@ -19,10 +19,10 @@ Received: from [10.10.10.2] (rh.vpn.thelounge.net [10.10.10.2])
 	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
 	(No client certificate requested)
 	(Authenticated sender: h.reindl@thelounge.net)
-	by mail.thelounge.net (THELOUNGE MTA) with ESMTPSA id 4XYxx63XXMzXLL;
-	Thu, 24 Oct 2024 09:14:18 +0200 (CEST)
-Message-ID: <a5d98b7d-1166-4b44-a98c-1721de8724f5@thelounge.net>
-Date: Thu, 24 Oct 2024 09:14:18 +0200
+	by mail.thelounge.net (THELOUNGE MTA) with ESMTPSA id 4XYy754tZWzXLR;
+	Thu, 24 Oct 2024 09:22:57 +0200 (CEST)
+Message-ID: <96da88bf-4be0-4c74-a3d8-f563c7b31815@thelounge.net>
+Date: Thu, 24 Oct 2024 09:22:57 +0200
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
@@ -95,6 +95,19 @@ Am 24.10.24 um 00:10 schrieb Matt Zagrabelny:
 > drive up the memory required for having the conntrack track every
 > connection/packet - thus possibly exhausting the memory and not
 > allowing other packets through.
-completly irrelevant
+> 
+> So, now I am wondering if the conntrack rules should (always?) go at
+> the end of my ruleset.
+and how do you you imagine they would do anything at the end of the 
+ruleset?
 
-the conntrack happens no matter where your rules are long before
+the rule for the new connection would also hit related/established and 
+after ACCEPT your rule at the end won't ever hit because anything not 
+accepted before will not match anyways and reach the final DROP
+
+the whole purpose of conntrack is to save walking through the whole 
+ruleset and over 90% of all packages are related/established - so put 
+them on the top and don't try to over-engineer things you obviously have 
+no clue how they work behind the scenes
+
+
