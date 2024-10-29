@@ -1,85 +1,127 @@
-Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
+Received: from mta-p7.oit.umn.edu (mta-p7.oit.umn.edu [134.84.196.207])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A07CC197A7E
+	for <netfilter@vger.kernel.org>; Tue, 29 Oct 2024 15:58:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.84.196.207
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1730217493; cv=none; b=OyDqAILHslguvau+RUTckxeqDGOAxNNmMjPennaQKNHFNvtcvi+aXZeGxDaO715qfxAl+PrnfwIfkLpcGCCIuvrVmT83bFE919tgcGxyC+HXK9I4O7PQIsIqG9RhVY3MCt4Yct+nofgHm/Wrm4uyetHKP4RvQ+E3V4+ppMURDmQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1730217493; c=relaxed/simple;
+	bh=Rj8+GVhXIEGYaFP2d5EcpyeijaD3Nkk8UCQGfeHCDKA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=mUiCdu/eb7rRPZyysT3FdTJF+t9+RbLLOR9jiHxfUbHP6Dok8L+hN2/gaGE4GRneKsOxyAwGpt4irYnZ7mwjLh2UP7FzMYc2LccAxHpmCJcYW5zigg37xxR4yBsNMcpulG7A98sFQcU11ll8tNZNFrtB6KPvjIdT/tebzAy8BOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=d.umn.edu; spf=pass smtp.mailfrom=d.umn.edu; dkim=pass (2048-bit key) header.d=d.umn.edu header.i=@d.umn.edu header.b=BzPEzdrk; arc=none smtp.client-ip=134.84.196.207
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=d.umn.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=d.umn.edu
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=d.umn.edu header.i=@d.umn.edu header.b="BzPEzdrk"
+Received: from localhost (unknown [127.0.0.1])
+	by mta-p7.oit.umn.edu (Postfix) with ESMTP id 4XdFK81fKfz9vYdL
+	for <netfilter@vger.kernel.org>; Tue, 29 Oct 2024 15:58:04 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at umn.edu
+Received: from mta-p7.oit.umn.edu ([127.0.0.1])
+ by localhost (mta-p7.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id KjE2HWlfv7UK for <netfilter@vger.kernel.org>;
+ Tue, 29 Oct 2024 10:58:04 -0500 (CDT)
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60D5A1974FE
-	for <netfilter@vger.kernel.org>; Tue, 29 Oct 2024 15:47:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730216862; cv=none; b=VyJhUGSCe5dDHySdBpNUCcCv7AsSwAnin1HG7v4Uj5vJzHiBY4APS3VSdtyqEOBE9V4mPEsiYoUO1EelSjDcKmYut5DtQRqIhO5OSccHufuiZRooxbJ0j2NtAaTxog2ZJXyBxPcYa21cU9jaElKIuM5i+S3h2XVr12CPDasrn0E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730216862; c=relaxed/simple;
-	bh=odaxn6qbvDBTf+jZLetOJYmvIgm5P56CCNTq2gzgwpk=;
-	h=Date:From:To:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=gGLZhcTzpevYLEWF1WpXj9n21Rni7JxilyZAUZUJ5loGPdhc9ZxSvr9zW8gGjmm4HT56sTP0q9wTZFxtr04WzJ1JGudUNUk1clR6Gn2pIV1bbChhg6GAsgE8qa9eZG/DlFbdhU40RjCcpQtm502ZQA2bvAAAdfC0rs157aSzxjI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=Te1gv4cF; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=hQQZP674; arc=none smtp.client-ip=185.25.250.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="Te1gv4cF";
-	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="hQQZP674"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
-	s=r2023; h=Content-Type:MIME-Version:Message-ID:References:In-Reply-To:
-	Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:
-	Content-Type:Message-Id:In-Reply-To:References;
-	bh=W/tLUvY4Jx2yC4ZEoG0HOeVbhb4Ez6oSwwBtgpV0dGg=; t=1730216858; x=1731426458; 
-	b=Te1gv4cFXTQFduiN6+vcBEzatXCy03xPit2rXm0jes3KdCDoK+Dg74ZhoCm+riVN47ghZI2V1t7
-	94QYSQQd1kNZG3YTbkT3g0QxvKTN0FQMb46v3gsp/RLQawv5Wcf4+L009VFYDkHNPBGKPYl8cc02Q
-	WKp9RboyHquoEjWLeIE=;
-DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=slavino.sk; s=e2023; h=Content-Type:MIME-Version:Message-ID:References:
-	In-Reply-To:Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:
-	MIME-Version:Content-Type:Message-Id:In-Reply-To:References;
-	bh=W/tLUvY4Jx2yC4ZEoG0HOeVbhb4Ez6oSwwBtgpV0dGg=; t=1730216858; x=1731426458; 
-	b=hQQZP674rUgPV4ZgMYrNwiAq772iSAxKnU70LS3S2hEe4usYrTxOtgcmoTP4XEafvNAnq+a5/aU
-	UuRCVbUUyBA==;
-Received: from dovex.skk ([192.168.10.12])
-	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96)
-	(envelope-from <linux@slavino.sk>)
-	id 1t5oRN-002AEr-2t
-	for netfilter@vger.kernel.org;
-	Tue, 29 Oct 2024 16:47:30 +0100
-Date: Tue, 29 Oct 2024 15:47:25 +0000
-From: Slavko <linux@slavino.sk>
-To: netfilter <netfilter@vger.kernel.org>
-Subject: Re: connection tracking and kernel dropping packets
-In-Reply-To: <CAOLfK3VUyrxBzd4sfk9Fhb8RnmQ8TAbszh0j2TD1a24WE-h74g@mail.gmail.com>
-References: <CAOLfK3VUyrxBzd4sfk9Fhb8RnmQ8TAbszh0j2TD1a24WE-h74g@mail.gmail.com>
-Message-ID: <771EECBD-1B8C-46F9-8429-B1118380F7A2@slavino.sk>
+	by mta-p7.oit.umn.edu (Postfix) with ESMTPS id 4XdFK75zfhz9vYdB
+	for <netfilter@vger.kernel.org>; Tue, 29 Oct 2024 10:58:03 -0500 (CDT)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p7.oit.umn.edu 4XdFK75zfhz9vYdB
+DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p7.oit.umn.edu 4XdFK75zfhz9vYdB
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a9a1c2c963aso64034066b.2
+        for <netfilter@vger.kernel.org>; Tue, 29 Oct 2024 08:58:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=d.umn.edu; s=google; t=1730217482; x=1730822282; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=jT1x3WVWN5+wgmuWasbL+rZ3x5/0r9WPPtah01fMWGk=;
+        b=BzPEzdrkayVR9M0mFJ+cZI3X+TIVH0G9wkNAxAND//BkC2KkSePGs6yLv5LD8RJNxu
+         BI97j16HnuPpBZ1rU+LP52nXKfM0vgq8GNu31fZnvhODnG4jOjWWB4WoiEz2Y/cmFmsK
+         5hIksC9uNZPQREj/WeQIaEbCtOayGSicmlnQQdgNZ40Bt56H2Nb4hah7NdslkXkv4XAq
+         3x3B6DkcxI/V3rGSpeA6OwaGTgOO0RgFsvlRtmBm7xC89IpUB/VvbjjkDfr6wX28+wMg
+         4Et/iWqHv6pp2w3EsvykprYhyoGzPn3MhPPOMLKoTg9E2FFu7oc2n5+RaobvV5oz3m39
+         Pb3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730217482; x=1730822282;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jT1x3WVWN5+wgmuWasbL+rZ3x5/0r9WPPtah01fMWGk=;
+        b=fT4niB/QRVR1XqIXbKdWH4dfaQt3yKXdbsHb+d483C14956M/sn7yDE1iSFUSqhGgU
+         u65rVuAxPshlQCCWyHzidQVqE8AX9r3oYrpo5IPN1ICO30I1zScRubiRQe/h5FR9FwRT
+         tqyug4N5KV5a9fnh8NZZIN0ywoPtPdtouyh3Ygs55M+dKjS3PE9rkazMZq78aiNU99xN
+         EpPr/o0Ew5Ia7YtCy02BhB72PE6aDKspD4GKuLoAL7tSLWLcSs8NgoXWFxbEsoBjdvLM
+         CE4MgOtKZSRKPwUndcI6cRBdeZORJEPfqPWsQgDHYfZqWNYlhMiO8XGOm6yafhsLhV5x
+         lGHw==
+X-Gm-Message-State: AOJu0Yyd8MUqoLo+2IKlj7FahlgNtEI+8essL75M+L+GdK0ntj9Zo/+2
+	MO6hpvbltnzOKJ3cpPJTYwGS2Pzy0PoxQz6dYBm2BH392XISIwWbKjtgEiREADRFKOmTcgWP1LF
+	HinzEVCnolAC+vB8VR3AkyGuHSoFjGatDO0teve7h8mHwEcS7YfAtQanCf5Lm+7MWxIIRavtz+f
+	VBa2WLDuIIppBBd4pdoedMiJlXTuupzUwnDSD49YOAqjrwWg==
+X-Received: by 2002:a17:907:7f0e:b0:a9a:147d:fec2 with SMTP id a640c23a62f3a-a9de5f04397mr437645566b.6.1730217482224;
+        Tue, 29 Oct 2024 08:58:02 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH6bEZMLonmBR8tb0KtvcFAirx+TjROrYK6cnfuE8/POyo6x80MyadFxir4C2Pz8YKBsnFz/j25iMEeLnQsObM=
+X-Received: by 2002:a17:907:7f0e:b0:a9a:147d:fec2 with SMTP id
+ a640c23a62f3a-a9de5f04397mr437645166b.6.1730217481832; Tue, 29 Oct 2024
+ 08:58:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+References: <CAOLfK3VUyrxBzd4sfk9Fhb8RnmQ8TAbszh0j2TD1a24WE-h74g@mail.gmail.com>
+ <771EECBD-1B8C-46F9-8429-B1118380F7A2@slavino.sk>
+In-Reply-To: <771EECBD-1B8C-46F9-8429-B1118380F7A2@slavino.sk>
+From: Matt Zagrabelny <mzagrabe@d.umn.edu>
+Date: Tue, 29 Oct 2024 10:57:50 -0500
+Message-ID: <CAOLfK3WiKNW4iHARxRm=Kr20USL-k8ctrHEx1GJ5EMWNf1320w@mail.gmail.com>
+Subject: Re: connection tracking and kernel dropping packets
+To: Slavko <linux@slavino.sk>
+Cc: netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-D=C5=88a 29=2E okt=C3=B3bra 2024 15:11:34 UTC pou=C5=BE=C3=ADvate=C4=BE Mat=
-t Zagrabelny <mzagrabe@d=2Eumn=2Eedu> nap=C3=ADsal:
+Hi Slavko,
 
->=2E=2E=2Ebut it is still dropping packets due to the CT=2E
+On Tue, Oct 29, 2024 at 10:48=E2=80=AFAM Slavko <linux@slavino.sk> wrote:
+>
+> D=C5=88a 29. okt=C3=B3bra 2024 15:11:34 UTC pou=C5=BE=C3=ADvate=C4=BE Mat=
+t Zagrabelny <mzagrabe@d.umn.edu> nap=C3=ADsal:
+>
+> >...but it is still dropping packets due to the CT.
+>
+> You have first to inspect what is filling your conntrack table:
+>
+>     conntrack -L
 
-You have first to inspect what is filling your conntrack table:
+Ah.. Thanks for that hint!
 
-    conntrack -L
+>
+> Then you have to decide, if you have to add more notrack rules, or
+> you are under eg. SYN flood or so... IMO you forget that DNS can
+> use TCP too (not mentioned in that article"s rules).
 
-Then you have to decide, if you have to add more notrack rules, or
-you are under eg=2E SYN flood or so=2E=2E=2E IMO you forget that DNS can
-use TCP too (not mentioned in that article"s rules)=2E
-
-Do not forget, that "lo" traffic can create (a lot of) conntrack entries
-too=2E
-
->I'm running Linux 3=2E2=2E0-4-amd64
-
-IMO quite old, AFAIK modern kernels can do better with SYN floods
-(via better SYN cookies approach), if that is source of your problems=2E
-
-regards
+Agreed. I added the TCP no track after sending the initial email.
 
 
---=20
-Slavko
-https://www=2Eslavino=2Esk/
+> Do not forget, that "lo" traffic can create (a lot of) conntrack entries
+> too.
+
+Sure. I'll look at the conntrack output.
+
+> >I'm running Linux 3.2.0-4-amd64
+>
+> IMO quite old, AFAIK modern kernels can do better with SYN floods
+> (via better SYN cookies approach), if that is source of your problems.
+
+Agreed. It's on the docket to upgrade.
+
+Thanks for the helpful reply.
+
+Cheers!
+
+-m
