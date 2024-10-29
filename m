@@ -1,137 +1,85 @@
-Received: from mta-p6.oit.umn.edu (mta-p6.oit.umn.edu [134.84.196.206])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8BA118DF86
-	for <netfilter@vger.kernel.org>; Tue, 29 Oct 2024 15:17:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.84.196.206
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730215040; cv=none; b=eSx4xQGPd63M3GoK4FzR2mpukjmb48kh1gypkuo9weDZZUkz+NkhR1g6Oet2KGLq1Gd8SSxKarSKsoIHNnidd6d1wKqGRv//HWZOTDCAg/ULnQ6h7SgmHu2aAo/QyxV0PGEejsyEL9G6znII3BURhbUdeU46OTcQ+Ah/AoJuxeY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730215040; c=relaxed/simple;
-	bh=vKTq+KTuLMTe0J+givWxu48wSy/6TGfy+UgcI53ZiOY=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=UC10I6/PZgzcSVQv4HCBmJdscA3Etaj/iz+dULBUODyk1gj/10lU7ksbSmq4oZMBjvGSxW6sc53vTkhufQuttTMdNZmw6Yn9J6ohaDwBhU/wWLUt1gtix++i5EZP4t67P8Mc6ZJbk2kzWRzB0xErvqmbEeqMXxwwd+ZJo2vRDFA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=d.umn.edu; spf=pass smtp.mailfrom=d.umn.edu; dkim=pass (2048-bit key) header.d=d.umn.edu header.i=@d.umn.edu header.b=b4GJPDRJ; arc=none smtp.client-ip=134.84.196.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=d.umn.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=d.umn.edu
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=d.umn.edu header.i=@d.umn.edu header.b="b4GJPDRJ"
-Received: from localhost (unknown [127.0.0.1])
-	by mta-p6.oit.umn.edu (Postfix) with ESMTP id 4XdDHl6hx5z9vn4J
-	for <netfilter@vger.kernel.org>; Tue, 29 Oct 2024 15:11:47 +0000 (UTC)
-X-Virus-Scanned: amavisd-new at umn.edu
-Received: from mta-p6.oit.umn.edu ([127.0.0.1])
- by localhost (mta-p6.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
- with ESMTP id c7omIk10iirB for <netfilter@vger.kernel.org>;
- Tue, 29 Oct 2024 10:11:47 -0500 (CDT)
-Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com [209.85.218.72])
+Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by mta-p6.oit.umn.edu (Postfix) with ESMTPS id 4XdDHl3thZz9vn4K
-	for <netfilter@vger.kernel.org>; Tue, 29 Oct 2024 10:11:47 -0500 (CDT)
-DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p6.oit.umn.edu 4XdDHl3thZz9vn4K
-DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p6.oit.umn.edu 4XdDHl3thZz9vn4K
-Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a99fc6b0f19so59344366b.1
-        for <netfilter@vger.kernel.org>; Tue, 29 Oct 2024 08:11:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=d.umn.edu; s=google; t=1730214706; x=1730819506; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=JWS5y5ZxR9PvmjKhpAwQZwu82XaFwSuoP/4MYwfjkvg=;
-        b=b4GJPDRJjIrv9qcHb0c3nx6xw5RK+Te94wSUTI/bi0Z2e12ZZq7cV+R9ZOvBDpewYR
-         1AGNI76zoBodbPGuWnC9zGUWSnCezmqeGqZc8VZ8y9IPs2tKm6uh9Kb9+tDgji0otzf8
-         YsOBiZRucby5PSqRvQT/jeFau/kTWniFRcWxpPHPFBlD7s1/nPpjS+R/BXLSYGBSQJCd
-         1kWfd/b1DnRc++e78bJKQP1oY6+x0LXq/xG7wuolWY87WHhmhDWgsHg/lRe5Zs2/3vVJ
-         /kY+c0eiyOzc4ddzOCd2GHvEN34d0M2wFTIkn04xloDzzjOEFobRCV+Yb/rb2pfKt3uT
-         e1Ag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730214706; x=1730819506;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JWS5y5ZxR9PvmjKhpAwQZwu82XaFwSuoP/4MYwfjkvg=;
-        b=CzjOy9oWj7QzzwT5EDRHep5wKwOR0PNVg4+NQHj9iPEqiC7g0aHftyiPfhncwNjxh5
-         o280uB2NHoQ3LeiXsRhLpC6Ybbr5FA1rLe7CbBKqklm9Y57SJdeMhsRKVF/ry7gCPQ4h
-         qscqc10EsseAxHuBVS8UBowry/G33n0byS/5NUWxHdTyGj7AnRrK6de3dkATFPPbd+sH
-         bU1RcT6TnThDJo+VhHZ1mM0Vzd5G+N5772US7CDniGBexTjm0DcznB9GocYvV3roKxyJ
-         V3WheQa07WnT2RAFKXEIWL0sCjZJilTQPsqnKPjq6QU9CsVqCBD6Oj/ayPKz5znZtKVi
-         vEDw==
-X-Gm-Message-State: AOJu0Yz28AiogwVHEad+K5Y99VZlU1zbyS/LMffbiTbmeQTVfTGoCsv4
-	ale+lpZRWqeOSFUQtmxS2QKTC6A7+9TF8UKEHzmQpJ977aZyZuwr3cNAyxShcFyRDAMhQErHHyF
-	2Sbvqz0qWaERoosu7AoeTfBYdncbeoB/kiV0kaIraLqU6jU4RYrU5B0fnIjoQHtfkr8k1P21l0J
-	ZYZ3RmjT6XTmFhdf496TIqNwYpRTKxTpryag30HlxqKYqQcb65
-X-Received: by 2002:a17:906:794a:b0:a99:63d8:a1d7 with SMTP id a640c23a62f3a-a9de5cea4camr530566766b.3.1730214705915;
-        Tue, 29 Oct 2024 08:11:45 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHjBKnJVS2Wwli9OweHJiFnu0BkM7jcoG5PiJ6jejNxsnwOgndqPtgM6zaokTGvSoEOksRyfSwZOW42PLb+tv0=
-X-Received: by 2002:a17:906:794a:b0:a99:63d8:a1d7 with SMTP id
- a640c23a62f3a-a9de5cea4camr530565366b.3.1730214705460; Tue, 29 Oct 2024
- 08:11:45 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60D5A1974FE
+	for <netfilter@vger.kernel.org>; Tue, 29 Oct 2024 15:47:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1730216862; cv=none; b=VyJhUGSCe5dDHySdBpNUCcCv7AsSwAnin1HG7v4Uj5vJzHiBY4APS3VSdtyqEOBE9V4mPEsiYoUO1EelSjDcKmYut5DtQRqIhO5OSccHufuiZRooxbJ0j2NtAaTxog2ZJXyBxPcYa21cU9jaElKIuM5i+S3h2XVr12CPDasrn0E=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1730216862; c=relaxed/simple;
+	bh=odaxn6qbvDBTf+jZLetOJYmvIgm5P56CCNTq2gzgwpk=;
+	h=Date:From:To:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=gGLZhcTzpevYLEWF1WpXj9n21Rni7JxilyZAUZUJ5loGPdhc9ZxSvr9zW8gGjmm4HT56sTP0q9wTZFxtr04WzJ1JGudUNUk1clR6Gn2pIV1bbChhg6GAsgE8qa9eZG/DlFbdhU40RjCcpQtm502ZQA2bvAAAdfC0rs157aSzxjI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=Te1gv4cF; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=hQQZP674; arc=none smtp.client-ip=185.25.250.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="Te1gv4cF";
+	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="hQQZP674"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
+	s=r2023; h=Content-Type:MIME-Version:Message-ID:References:In-Reply-To:
+	Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:
+	Content-Type:Message-Id:In-Reply-To:References;
+	bh=W/tLUvY4Jx2yC4ZEoG0HOeVbhb4Ez6oSwwBtgpV0dGg=; t=1730216858; x=1731426458; 
+	b=Te1gv4cFXTQFduiN6+vcBEzatXCy03xPit2rXm0jes3KdCDoK+Dg74ZhoCm+riVN47ghZI2V1t7
+	94QYSQQd1kNZG3YTbkT3g0QxvKTN0FQMb46v3gsp/RLQawv5Wcf4+L009VFYDkHNPBGKPYl8cc02Q
+	WKp9RboyHquoEjWLeIE=;
+DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=slavino.sk; s=e2023; h=Content-Type:MIME-Version:Message-ID:References:
+	In-Reply-To:Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:
+	MIME-Version:Content-Type:Message-Id:In-Reply-To:References;
+	bh=W/tLUvY4Jx2yC4ZEoG0HOeVbhb4Ez6oSwwBtgpV0dGg=; t=1730216858; x=1731426458; 
+	b=hQQZP674rUgPV4ZgMYrNwiAq772iSAxKnU70LS3S2hEe4usYrTxOtgcmoTP4XEafvNAnq+a5/aU
+	UuRCVbUUyBA==;
+Received: from dovex.skk ([192.168.10.12])
+	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <linux@slavino.sk>)
+	id 1t5oRN-002AEr-2t
+	for netfilter@vger.kernel.org;
+	Tue, 29 Oct 2024 16:47:30 +0100
+Date: Tue, 29 Oct 2024 15:47:25 +0000
+From: Slavko <linux@slavino.sk>
+To: netfilter <netfilter@vger.kernel.org>
+Subject: Re: connection tracking and kernel dropping packets
+In-Reply-To: <CAOLfK3VUyrxBzd4sfk9Fhb8RnmQ8TAbszh0j2TD1a24WE-h74g@mail.gmail.com>
+References: <CAOLfK3VUyrxBzd4sfk9Fhb8RnmQ8TAbszh0j2TD1a24WE-h74g@mail.gmail.com>
+Message-ID: <771EECBD-1B8C-46F9-8429-B1118380F7A2@slavino.sk>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Matt Zagrabelny <mzagrabe@d.umn.edu>
-Date: Tue, 29 Oct 2024 10:11:34 -0500
-Message-ID: <CAOLfK3VUyrxBzd4sfk9Fhb8RnmQ8TAbszh0j2TD1a24WE-h74g@mail.gmail.com>
-Subject: connection tracking and kernel dropping packets
-To: netfilter <netfilter@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hello,
+D=C5=88a 29=2E okt=C3=B3bra 2024 15:11:34 UTC pou=C5=BE=C3=ADvate=C4=BE Mat=
+t Zagrabelny <mzagrabe@d=2Eumn=2Eedu> nap=C3=ADsal:
 
-The kernel of my DNS server is dropping packets:
+>=2E=2E=2Ebut it is still dropping packets due to the CT=2E
 
-kernel: [48074703.302657] nf_conntrack: table full, dropping packet.
+You have first to inspect what is filling your conntrack table:
 
-I've followed this knowledge base article:
+    conntrack -L
 
-https://kb.isc.org/docs/aa-01183
+Then you have to decide, if you have to add more notrack rules, or
+you are under eg=2E SYN flood or so=2E=2E=2E IMO you forget that DNS can
+use TCP too (not mentioned in that article"s rules)=2E
 
-for configuring iptables to not track the connections of DNS packets.
+Do not forget, that "lo" traffic can create (a lot of) conntrack entries
+too=2E
 
-...but it is still dropping packets due to the CT.
+>I'm running Linux 3=2E2=2E0-4-amd64
 
-I know I could bump the conntrack memory, but I'd still like to know
-why my iptables rules aren't sufficient for not dropping DNS packets.
+IMO quite old, AFAIK modern kernels can do better with SYN floods
+(via better SYN cookies approach), if that is source of your problems=2E
 
-I'm running Linux 3.2.0-4-amd64
+regards
 
-Here are my iptables rules:
 
-# iptables -vnL -t raw
-Chain PREROUTING (policy ACCEPT 24M packets, 2112M bytes)
- pkts bytes target     prot opt in     out     source               destination
-  16M 1153M CT         udp  --  *      *       0.0.0.0/0
-0.0.0.0/0            udp dpt:53 CT notrack
-3723K  701M CT         udp  --  *      *       0.0.0.0/0
-0.0.0.0/0            udp spt:53 CT notrack
-
-Chain OUTPUT (policy ACCEPT 24M packets, 5436M bytes)
- pkts bytes target     prot opt in     out     source               destination
-3760K  327M CT         udp  --  *      *       0.0.0.0/0
-0.0.0.0/0            udp dpt:53 CT notrack
-  16M 4680M CT         udp  --  *      *       0.0.0.0/0
-0.0.0.0/0            udp spt:53 CT notrack
-
-# iptables -vnL
-Chain INPUT (policy DROP 45173 packets, 2842K bytes)
- pkts bytes target     prot opt in     out     source               destination
-  23M 2065M ACCEPT     all  --  *      *       0.0.0.0/0
-0.0.0.0/0            ctstate RELATED,ESTABLISHED,UNTRACKED
-   11   804 ACCEPT     all  --  lo     *       0.0.0.0/0            0.0.0.0/0
-    4   284 ACCEPT     udp  --  *      *       0.0.0.0/0
-0.0.0.0/0            udp dpt:53
- 709K   37M ACCEPT     tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0            tcp dpt:53
-
-Chain FORWARD (policy DROP 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source               destination
-
-Chain OUTPUT (policy ACCEPT 24M packets, 5439M bytes)
- pkts bytes target     prot opt in     out     source               destination
-
-Any ideas what I'm missing?
-
-Thanks for the help!
-
--m
+--=20
+Slavko
+https://www=2Eslavino=2Esk/
