@@ -1,125 +1,137 @@
-Received: from mail.thelounge.net (mail.thelounge.net [91.118.73.15])
+Received: from mta-p6.oit.umn.edu (mta-p6.oit.umn.edu [134.84.196.206])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1AB6217F3F
-	for <netfilter@vger.kernel.org>; Sat, 26 Oct 2024 11:15:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.118.73.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8BA118DF86
+	for <netfilter@vger.kernel.org>; Tue, 29 Oct 2024 15:17:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.84.196.206
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729941356; cv=none; b=SQgbDuwug+LmJyLMmpG2PdarhmwZ6AKgn+rPvXmollPAdWWwNQ6JHvMzWva9Ti57xD4R3mYaQg9Y7tYa4D8Ehnl56jJ8OwFxeETYynjw+Fh5o9sUImGkOPhK3z2ZZ1agLZUnQosJBFaS3ZRjmCNsOJWOJ7Oi1rs/0ws517yeoI8=
+	t=1730215040; cv=none; b=eSx4xQGPd63M3GoK4FzR2mpukjmb48kh1gypkuo9weDZZUkz+NkhR1g6Oet2KGLq1Gd8SSxKarSKsoIHNnidd6d1wKqGRv//HWZOTDCAg/ULnQ6h7SgmHu2aAo/QyxV0PGEejsyEL9G6znII3BURhbUdeU46OTcQ+Ah/AoJuxeY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729941356; c=relaxed/simple;
-	bh=aXHWZ/H528gA/p97ldtc6L3WWvkPI/8xA8WnsS0l7U8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=Wuap5uuR5v16BBMnU5mD9piE+gmPENJ6qmntzaHPQfvrd1NWB4m9IVFDkoJglDdN0J/KNJFjuBTlDynSLT8XcdtunZoz4OMcAIs1zXYGxFNipZvEZ0W2CFXz5n4p8sHjPCfTF1vcWztygahRZfmELflyc4kH/eKxoiNHW4jisYw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thelounge.net; spf=pass smtp.mailfrom=thelounge.net; arc=none smtp.client-ip=91.118.73.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thelounge.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=thelounge.net
-Received: from [10.10.10.2] (rh.vpn.thelounge.net [10.10.10.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
+	s=arc-20240116; t=1730215040; c=relaxed/simple;
+	bh=vKTq+KTuLMTe0J+givWxu48wSy/6TGfy+UgcI53ZiOY=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=UC10I6/PZgzcSVQv4HCBmJdscA3Etaj/iz+dULBUODyk1gj/10lU7ksbSmq4oZMBjvGSxW6sc53vTkhufQuttTMdNZmw6Yn9J6ohaDwBhU/wWLUt1gtix++i5EZP4t67P8Mc6ZJbk2kzWRzB0xErvqmbEeqMXxwwd+ZJo2vRDFA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=d.umn.edu; spf=pass smtp.mailfrom=d.umn.edu; dkim=pass (2048-bit key) header.d=d.umn.edu header.i=@d.umn.edu header.b=b4GJPDRJ; arc=none smtp.client-ip=134.84.196.206
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=d.umn.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=d.umn.edu
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=d.umn.edu header.i=@d.umn.edu header.b="b4GJPDRJ"
+Received: from localhost (unknown [127.0.0.1])
+	by mta-p6.oit.umn.edu (Postfix) with ESMTP id 4XdDHl6hx5z9vn4J
+	for <netfilter@vger.kernel.org>; Tue, 29 Oct 2024 15:11:47 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at umn.edu
+Received: from mta-p6.oit.umn.edu ([127.0.0.1])
+ by localhost (mta-p6.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id c7omIk10iirB for <netfilter@vger.kernel.org>;
+ Tue, 29 Oct 2024 10:11:47 -0500 (CDT)
+Received: from mail-ej1-f72.google.com (mail-ej1-f72.google.com [209.85.218.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	(Authenticated sender: h.reindl@thelounge.net)
-	by mail.thelounge.net (THELOUNGE MTA) with ESMTPSA id 4XbHBr4wxDzXLL;
-	Sat, 26 Oct 2024 13:15:43 +0200 (CEST)
-Message-ID: <05641870-3448-4c7d-8e37-ab5956a5aa89@thelounge.net>
-Date: Sat, 26 Oct 2024 13:15:43 +0200
+	by mta-p6.oit.umn.edu (Postfix) with ESMTPS id 4XdDHl3thZz9vn4K
+	for <netfilter@vger.kernel.org>; Tue, 29 Oct 2024 10:11:47 -0500 (CDT)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p6.oit.umn.edu 4XdDHl3thZz9vn4K
+DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p6.oit.umn.edu 4XdDHl3thZz9vn4K
+Received: by mail-ej1-f72.google.com with SMTP id a640c23a62f3a-a99fc6b0f19so59344366b.1
+        for <netfilter@vger.kernel.org>; Tue, 29 Oct 2024 08:11:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=d.umn.edu; s=google; t=1730214706; x=1730819506; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=JWS5y5ZxR9PvmjKhpAwQZwu82XaFwSuoP/4MYwfjkvg=;
+        b=b4GJPDRJjIrv9qcHb0c3nx6xw5RK+Te94wSUTI/bi0Z2e12ZZq7cV+R9ZOvBDpewYR
+         1AGNI76zoBodbPGuWnC9zGUWSnCezmqeGqZc8VZ8y9IPs2tKm6uh9Kb9+tDgji0otzf8
+         YsOBiZRucby5PSqRvQT/jeFau/kTWniFRcWxpPHPFBlD7s1/nPpjS+R/BXLSYGBSQJCd
+         1kWfd/b1DnRc++e78bJKQP1oY6+x0LXq/xG7wuolWY87WHhmhDWgsHg/lRe5Zs2/3vVJ
+         /kY+c0eiyOzc4ddzOCd2GHvEN34d0M2wFTIkn04xloDzzjOEFobRCV+Yb/rb2pfKt3uT
+         e1Ag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730214706; x=1730819506;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JWS5y5ZxR9PvmjKhpAwQZwu82XaFwSuoP/4MYwfjkvg=;
+        b=CzjOy9oWj7QzzwT5EDRHep5wKwOR0PNVg4+NQHj9iPEqiC7g0aHftyiPfhncwNjxh5
+         o280uB2NHoQ3LeiXsRhLpC6Ybbr5FA1rLe7CbBKqklm9Y57SJdeMhsRKVF/ry7gCPQ4h
+         qscqc10EsseAxHuBVS8UBowry/G33n0byS/5NUWxHdTyGj7AnRrK6de3dkATFPPbd+sH
+         bU1RcT6TnThDJo+VhHZ1mM0Vzd5G+N5772US7CDniGBexTjm0DcznB9GocYvV3roKxyJ
+         V3WheQa07WnT2RAFKXEIWL0sCjZJilTQPsqnKPjq6QU9CsVqCBD6Oj/ayPKz5znZtKVi
+         vEDw==
+X-Gm-Message-State: AOJu0Yz28AiogwVHEad+K5Y99VZlU1zbyS/LMffbiTbmeQTVfTGoCsv4
+	ale+lpZRWqeOSFUQtmxS2QKTC6A7+9TF8UKEHzmQpJ977aZyZuwr3cNAyxShcFyRDAMhQErHHyF
+	2Sbvqz0qWaERoosu7AoeTfBYdncbeoB/kiV0kaIraLqU6jU4RYrU5B0fnIjoQHtfkr8k1P21l0J
+	ZYZ3RmjT6XTmFhdf496TIqNwYpRTKxTpryag30HlxqKYqQcb65
+X-Received: by 2002:a17:906:794a:b0:a99:63d8:a1d7 with SMTP id a640c23a62f3a-a9de5cea4camr530566766b.3.1730214705915;
+        Tue, 29 Oct 2024 08:11:45 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHjBKnJVS2Wwli9OweHJiFnu0BkM7jcoG5PiJ6jejNxsnwOgndqPtgM6zaokTGvSoEOksRyfSwZOW42PLb+tv0=
+X-Received: by 2002:a17:906:794a:b0:a99:63d8:a1d7 with SMTP id
+ a640c23a62f3a-a9de5cea4camr530565366b.3.1730214705460; Tue, 29 Oct 2024
+ 08:11:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: IPtables rate limiting question
-Content-Language: en-US
-To: Kerin Millar <kfm@plushkava.net>, Slavko <linux@slavino.sk>,
- netfilter@vger.kernel.org
-References: <CAMa3rT49eeJT-rKdrVRXyfQd91cvQy=Cid55X2RFEpP4P5hFJg@mail.gmail.com>
- <85253915-6d36-483f-a84b-69de4a1ba161@app.fastmail.com>
- <B840B6F3-FBF2-449E-9AE6-F713CE6BE111@slavino.sk>
- <a166ff38-c2d8-4528-b0f7-8b72d50159ec@app.fastmail.com>
- <07588221-314c-4ccd-9344-3696d267a870@thelounge.net>
- <58bbba7a-958b-4153-92dc-2090f464fb06@app.fastmail.com>
-From: Reindl Harald <h.reindl@thelounge.net>
-Autocrypt: addr=h.reindl@thelounge.net; keydata=
- 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
- K4rYsjPimkSIVdrNM//wVKdCTbO+
-Organization: the lounge interactive design
-In-Reply-To: <58bbba7a-958b-4153-92dc-2090f464fb06@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+From: Matt Zagrabelny <mzagrabe@d.umn.edu>
+Date: Tue, 29 Oct 2024 10:11:34 -0500
+Message-ID: <CAOLfK3VUyrxBzd4sfk9Fhb8RnmQ8TAbszh0j2TD1a24WE-h74g@mail.gmail.com>
+Subject: connection tracking and kernel dropping packets
+To: netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 
+Hello,
 
+The kernel of my DNS server is dropping packets:
 
-Am 26.10.24 um 13:05 schrieb Kerin Millar:
-> On Sat, 26 Oct 2024, at 11:23 AM, Reindl Harald wrote:
->> Am 25.10.24 um 23:37 schrieb Kerin Millar:
->>> On Fri, 25 Oct 2024, at 9:13 PM, Slavko wrote:
->>>> Dňa 25. októbra 2024 18:12:56 UTC používateľ Kerin Millar
->>>> <kfm@plushkava.net> napísal:
->>>>
->>>>> To that end, consider taking advantage of ipsets. Below is a sample ruleset in iptables-save format.
->>>>>
->>>>> *raw
->>>>> :PREROUTING ACCEPT [0:0]
->>>>> :OUTPUT ACCEPT [0:0]
->>>>> :limitban - [0:0]
->>>>> -A PREROUTING ! -i lo -p tcp -m conntrack --ctstate NEW -j limitban
->>>>
->>>> Please will conntrack really works in raw table? I live in that raw table
->>>> happens before conntrack...
->>>
->>> Probably not
->>
->> for sure not
->>
->> The poster did not say which table they are using
->>
->> he did! >>> *raw
-> 
-> He (Francisco) certainly did not. It was I that wrote "*raw" and to whom Slavko was replying
-anyways - "--ctstate" is nonsense in RAW and everybody should know that
-the whole point of RAW ist to bypass conntrack
+kernel: [48074703.302657] nf_conntrack: table full, dropping packet.
 
-the whole conntrack stuff is misplaced in case of rate limiting - at 
-that point all packets which belog to existing connections are already 
-accepted by a conntrack rule at the begin
+I've followed this knowledge base article:
 
-you fill your ipsets after conntrack did it's job and the DROP rule 
-don't need any ctstate - after the decision this IP has to be banned was 
-made it don't matter which state a packet has
+https://kb.isc.org/docs/aa-01183
 
-hence THIS rule belongs to RAW to bypass conntrack
+for configuring iptables to not track the connections of DNS packets.
 
+...but it is still dropping packets due to the CT.
 
+I know I could bump the conntrack memory, but I'd still like to know
+why my iptables rules aren't sufficient for not dropping DNS packets.
+
+I'm running Linux 3.2.0-4-amd64
+
+Here are my iptables rules:
+
+# iptables -vnL -t raw
+Chain PREROUTING (policy ACCEPT 24M packets, 2112M bytes)
+ pkts bytes target     prot opt in     out     source               destination
+  16M 1153M CT         udp  --  *      *       0.0.0.0/0
+0.0.0.0/0            udp dpt:53 CT notrack
+3723K  701M CT         udp  --  *      *       0.0.0.0/0
+0.0.0.0/0            udp spt:53 CT notrack
+
+Chain OUTPUT (policy ACCEPT 24M packets, 5436M bytes)
+ pkts bytes target     prot opt in     out     source               destination
+3760K  327M CT         udp  --  *      *       0.0.0.0/0
+0.0.0.0/0            udp dpt:53 CT notrack
+  16M 4680M CT         udp  --  *      *       0.0.0.0/0
+0.0.0.0/0            udp spt:53 CT notrack
+
+# iptables -vnL
+Chain INPUT (policy DROP 45173 packets, 2842K bytes)
+ pkts bytes target     prot opt in     out     source               destination
+  23M 2065M ACCEPT     all  --  *      *       0.0.0.0/0
+0.0.0.0/0            ctstate RELATED,ESTABLISHED,UNTRACKED
+   11   804 ACCEPT     all  --  lo     *       0.0.0.0/0            0.0.0.0/0
+    4   284 ACCEPT     udp  --  *      *       0.0.0.0/0
+0.0.0.0/0            udp dpt:53
+ 709K   37M ACCEPT     tcp  --  *      *       0.0.0.0/0
+0.0.0.0/0            tcp dpt:53
+
+Chain FORWARD (policy DROP 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+
+Chain OUTPUT (policy ACCEPT 24M packets, 5439M bytes)
+ pkts bytes target     prot opt in     out     source               destination
+
+Any ideas what I'm missing?
+
+Thanks for the help!
+
+-m
