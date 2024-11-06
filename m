@@ -1,128 +1,195 @@
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+Received: from mta-p8.oit.umn.edu (mta-p8.oit.umn.edu [134.84.196.208])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EFA18BEE
-	for <netfilter@vger.kernel.org>; Mon,  4 Nov 2024 13:50:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A066518FC8C
+	for <netfilter@vger.kernel.org>; Wed,  6 Nov 2024 17:52:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.84.196.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730728214; cv=none; b=EZU0nYky32/ZlpXdGevnAa9ICjuG9pSHQACAG5rz+RFGKvOI6vzstrI0Rq2aB1pC/w+u4IvW2dO1rXZcHwLWHmA7IoApXpqMjlwfAjFT+wVZIGYz0AHhXpcG5SSGZ5uLgyhZDwS/HTwbP7262WBZUwARGeMPa4W55bnLWUxkSTU=
+	t=1730915543; cv=none; b=KzelhBkkOjqFl37YgKRRQWYbNsV6BfUurPfQo1r0Wu57zQg8BXxsWI0XAvV5/oxSh0ctYIl+eyXn3XhEJymtAwSm9wsjqEQR3Qdz3o9SppaDPs9cMUddg+P35w18JeyuwyWQKojwYNJs2ooJgFqyi+rkFGkGis4mjBgDb5GlfbU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730728214; c=relaxed/simple;
-	bh=8Gno5WHwuWZDY5r9FALS1eye9nkLl7DHmNosT7RzwVo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=P2PweVh7hW/2gpwkned/RerPHr5vxn9CKWInzb6w3GQrwh2xeqEWDEyMzpDFTccMi+mGoOdJL0LsDLOO+PoA6GUpcEr4MCT9R7LV9B6ISTclLL6bR63eu1RlK7y+R/gQNDsnz622Hctrcdv3NaNM7vOYQ9idQ6rqQgucm7q5UIo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=lars.nooden@gmx.com header.b=uNvHiMUQ; arc=none smtp.client-ip=212.227.15.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
+	s=arc-20240116; t=1730915543; c=relaxed/simple;
+	bh=K2Kfo2wylM7riAvwoNMINuKjFqKXB9d2drRb0ZNaU1A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jcg1inYZhbV1XxYmenuzWt4gIFRPmoYoalxntygVGuznT8U9GuJymzXv7qIa4tB7cNV13YfylpnU8aZa/scX065pZ+1+cahfBgk12dRxmCqGSSfvRVbN1N58WEpM3DKpRrQITzOUc9y0pBYh19Su5rDuAt5pcXnwmmQdB2EGTDw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=d.umn.edu; spf=pass smtp.mailfrom=d.umn.edu; dkim=pass (2048-bit key) header.d=d.umn.edu header.i=@d.umn.edu header.b=R88yWj16; arc=none smtp.client-ip=134.84.196.208
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=d.umn.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=d.umn.edu
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=lars.nooden@gmx.com header.b="uNvHiMUQ"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1730728210; x=1731333010; i=lars.nooden@gmx.com;
-	bh=sF5uLQds+YqWV+Epq7LmnWRbdIylL7nYxXQQ20Rug84=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=uNvHiMUQYWyFIfNbxydNeRO2Jo9xBjdATWo9l3WFH5HKK4en6L7SNzP6xSF1VVrC
-	 uJgiITKYbRkFz5z8yAj73Ueq3KsTPuHWwBdBjiR6+gdRk07iwpxpBuCW7Cso+cDWM
-	 UefkF5EQpuSP0tmt5GmzO/YAREG1Pzu0KvxcOwr1A93r4Q9OAORbrDTtPsM7puHOd
-	 v7VWbfayyOgOWs9KVMq7vbsdXTSLVK31pu35svz+KbYbWwtR4j4k96Fh6WJOQxyUN
-	 R/W+qbqMET60vKdUruA+gvoXzsC7iWHsRJ98xmEYJxjKGxdbEw0x1DCvcgMZwAmXq
-	 0nS4Ma259UjEb9Auiw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [10.11.9.65] ([80.220.108.110]) by mail.gmx.net (mrgmx005
- [212.227.17.184]) with ESMTPSA (Nemesis) id 1MUXtS-1tGiva0E8u-00YF8H for
- <netfilter@vger.kernel.org>; Mon, 04 Nov 2024 14:50:10 +0100
-Message-ID: <bcbdfe35-ad06-4b48-9d22-bd454ba363bb@gmx.com>
-Date: Mon, 4 Nov 2024 15:50:09 +0200
+	dkim=pass (2048-bit key) header.d=d.umn.edu header.i=@d.umn.edu header.b="R88yWj16"
+Received: from localhost (unknown [127.0.0.1])
+	by mta-p8.oit.umn.edu (Postfix) with ESMTP id 4XkCJv4mZxz9wlnw
+	for <netfilter@vger.kernel.org>; Wed,  6 Nov 2024 17:45:03 +0000 (UTC)
+X-Virus-Scanned: amavisd-new at umn.edu
+Received: from mta-p8.oit.umn.edu ([127.0.0.1])
+ by localhost (mta-p8.oit.umn.edu [127.0.0.1]) (amavisd-new, port 10024)
+ with ESMTP id 9B_rXfeV0J3q for <netfilter@vger.kernel.org>;
+ Wed,  6 Nov 2024 11:45:03 -0600 (CST)
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com [209.85.208.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by mta-p8.oit.umn.edu (Postfix) with ESMTPS id 4XkCJv2BCqz9wlns
+	for <netfilter@vger.kernel.org>; Wed,  6 Nov 2024 11:45:03 -0600 (CST)
+DMARC-Filter: OpenDMARC Filter v1.3.2 mta-p8.oit.umn.edu 4XkCJv2BCqz9wlns
+DKIM-Filter: OpenDKIM Filter v2.11.0 mta-p8.oit.umn.edu 4XkCJv2BCqz9wlns
+Received: by mail-ed1-f69.google.com with SMTP id 4fb4d7f45d1cf-5ca0ea6c3deso702983a12.2
+        for <netfilter@vger.kernel.org>; Wed, 06 Nov 2024 09:45:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=d.umn.edu; s=google; t=1730915102; x=1731519902; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GbblU5OirE98qeIsLSuV2sbts6z9ytm6KAtWwCNln34=;
+        b=R88yWj16j6DOOG0IzGBbh04Uo86HZt3w0jtd3ZKiR4EqdbiG9hsRW0pc4aEN8c3JWs
+         z6pL9D1VepPt9lSy1ngIn5bK4/7uoS0XWc+vTfETJ79LwtG1m/pBCgCUOjOjdUsJ78J1
+         vLhTUafQo3qpdQDVPQFjOqYgxOwvaeSGOSm1O7HIoh8uxJAxfx1XoVO+MUkhSHtYvIcV
+         fz47JlnGAp5HaO9+5fZGuSFhME2sA7+TJBR+NM0+KEcvCPgBmX1X9sYxkkLbHQggT89P
+         x6dNf4RmbJwQnG4+T6PZeDSl0tw7AnExL7cBZASARN7DlruFfbVlxxOsYbagG7D/gFgs
+         mFgw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1730915102; x=1731519902;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GbblU5OirE98qeIsLSuV2sbts6z9ytm6KAtWwCNln34=;
+        b=hnEo/q8FZBn99f6/wfk7lHVIrPHLxArluHZLjIiGHtYyNx8rgu3HITmMBU8rDJZYLj
+         PG47VaAT2vtNEnvgcO/ReFkvlH54iyGJyKG5Np2I0OSMCDw4wsZHWAe4Sq58lmoYeNYK
+         cb+fT8aZ3Jw4Hqt+YKtGQiJAFh82dXQQYJZV9D7zifVfzag1AoSAi4ONKV1/YmiIbE7V
+         1Oc0MFJxx5dIPcJhW2luWkpjxgjdsFWXuJj36j1W9ku2tnTuFOxn9Hk47B4w6sr9FD7Y
+         qv9EqgP25MMe24RQCXRDKOLU5KBgR12IJ/IozgDkRMy5pZ97s7woH+LCOM9PXrtjrJAw
+         sndw==
+X-Gm-Message-State: AOJu0Yy0vzBUQz7YhTtBxj+63NqIyfhTXhh//Dd9ulOnqZjUiXPZlLzB
+	GcP6xqbXS/gQoVWY1gRQeQWx6x17iRZPYIqHpQMFeKseM9RVK/AGWF8OF6Two6t6qNYN9CMHFDL
+	1sErsUqJe53hj30PO3LiNXnskXPiwKU/pj+HggK8xeEcrckQNBfF+W658H4nr1YXSiDVdLHrrSm
+	jY8nrTKXTQaHCcHKnuoXRcTKWZRcC6zYzvhpZA1fCFsdHRDoJo
+X-Received: by 2002:a17:906:ef0e:b0:a80:a3a8:9867 with SMTP id a640c23a62f3a-a9ed3b64280mr15319066b.9.1730915101512;
+        Wed, 06 Nov 2024 09:45:01 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHxBBhPgaHqwn5bDVZQpyL0CRzs6h4EF5+atBYY+TQN0AQua/ITr35HdWDwgyFHWhRODRRB1YNZnrVYlKM/A0Q=
+X-Received: by 2002:a17:906:ef0e:b0:a80:a3a8:9867 with SMTP id
+ a640c23a62f3a-a9ed3b64280mr15317966b.9.1730915101044; Wed, 06 Nov 2024
+ 09:45:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Countering some types of SSH spoofing with NFTables
-To: Linux Netfilter Users List <netfilter@vger.kernel.org>
-References: <d985d5e4-18b9-4f66-9e24-c7b1c9640caa@gmx.com>
- <f0624e62-0079-43aa-9bd9-28f820914263@app.fastmail.com>
- <66933c54-769b-4371-bbf7-b115a85de4c2@app.fastmail.com>
-Content-Language: en-US
-From: =?UTF-8?Q?Lars_Nood=C3=A9n?= <lars.nooden@gmx.com>
-Autocrypt: addr=lars.nooden@gmx.com; keydata=
- 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 2w==
-In-Reply-To: <66933c54-769b-4371-bbf7-b115a85de4c2@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+References: <CAOLfK3VUyrxBzd4sfk9Fhb8RnmQ8TAbszh0j2TD1a24WE-h74g@mail.gmail.com>
+ <771EECBD-1B8C-46F9-8429-B1118380F7A2@slavino.sk>
+In-Reply-To: <771EECBD-1B8C-46F9-8429-B1118380F7A2@slavino.sk>
+From: Matt Zagrabelny <mzagrabe@d.umn.edu>
+Date: Wed, 6 Nov 2024 11:44:50 -0600
+Message-ID: <CAOLfK3UWDAOAww10O2NxFBPgLa+Rr92=Lw+qFb1fxDOhD_6Dgg@mail.gmail.com>
+Subject: Re: connection tracking and kernel dropping packets
+To: Slavko <linux@slavino.sk>
+Cc: netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:Xb1wPz1YUNXRkSHtTVd1Fr+68vNpudXy7kpX75vVQo87EoKo5VR
- w2JETqtENvkQgy9GpdKB0ZvX6uuf5tmysDSQoAOPzv9cvec6rvuboZxYORLZYVe9C/lzvaZ
- aWVrlvMqQyQAfRr8M+UGm4AfRfI0oBYYK2kTdPfVG2/bpdhNybCNG03tdKVcLjFZdj0KQPD
- br7FFqgXpkmJuZsRxwkSw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:BKjr2yIofag=;YERpgez1bqdXkB8zqvOQODNfV0e
- u27XxYL6sMcIh/5pe1nPGCLNVuuL8NbwqriKghECI+0jvYFWow577VDs62QsVQrPrMSi8t8CJ
- EK+KC5pseAY7ykNfUj7nAeDG6oQIc1V5y8ciPjomNwsdJTjqlymMgC+LPtfvJ3HXhtzbdZmaj
- hpQxaPCycfTcmT9fPnZyIF5ws1hN8uN9tNHzUX4Yc3/BtN1BYah0V8p5jIO93VyPo7Yjh/8Kl
- Neoa+vaUr570WfvmfN9DNFAq7Yz70XLV/xtf9/u92+xE3LXkx+b52Y04Gl0HahffN5WH9b8MC
- WxErkKOSUlzlxJOrdfHpSFN/Wy/25+Iwt8vyNSPzEfQEc5NoiyqNtAv//SBFtrnLJ23yi2mFi
- 5arNn0ng39fHnpep6pqNCnI9VVDZyj14WqrgxF2aW6znDwLFTPQEDYfkEtIWfEQl08kdxtVkZ
- CowSeQDahXulR8R8mzQBoxLr2KxRy8kFdO9NwFYoNuyATaoCoqBfsR3zcsJlEkY+T+OEebKQD
- ehap2TaH179x6nKDkhx5cLUt196x8v8nsqPCbPd3GU9RHmFqhFbgvVKmzG/7a4uubDxts958W
- UBWDqA3j0wAlVdW2rMLhPS6BhN0A6aEQr4Ctbm/Rg071wQffy8cbLL3e2JMdUcdrGh7JiAmLM
- c8jZHqIGgbmz9F272bp4yP216tCtD9yDqJTNVh1/uFwDUU8b5HNYxHzKhP7vXdSRGifaHwB3c
- exG0LeQWoXudhy+JVqHZeoAZ8ZJ8AFQDwkfNuEv7F1SmVDIiTk6Rkc=
 
-On 11/3/24 21:08, Kerin Millar wrote:
-[snip]> Upon reading your post a second time, I noticed that your sample
-ruleset already
-> contains a rule that depends upon connection tracking. As such, you coul=
-d use
-> state matching to assist in accounting for backscatter.
-[snip]
+Greetings...
 
-Thanks for the explanations and the NFTables rules.   I'll do some more
-reading and experimenting.
+On Tue, Oct 29, 2024 at 10:48=E2=80=AFAM Slavko <linux@slavino.sk> wrote:
+>
+> D=C5=88a 29. okt=C3=B3bra 2024 15:11:34 UTC pou=C5=BE=C3=ADvate=C4=BE Mat=
+t Zagrabelny <mzagrabe@d.umn.edu> nap=C3=ADsal:
+>
+> >...but it is still dropping packets due to the CT.
+>
+> You have first to inspect what is filling your conntrack table:
+>
+>     conntrack -L
 
-/Lars
+I've waited a week to let the TCP streams in the conntrack table time
+out. I'm still seeing the kernel drop packets:
+
+# tail -f /var/log/kern.log
+Nov  6 11:29:02 netadm kernel: [48773744.961053] nf_conntrack: table
+full, dropping packet.
+
+...and confirmed with /proc:
+
+# cat /proc/sys/net/ipv4/netfilter/ip_conntrack_count
+65536
+
+...but there aren't that many flows in the conntrack table, and none
+in the expect table.
+
+# conntrack -L > /dev/null
+conntrack v1.2.1 (conntrack-tools): 22 flow entries have been shown.
+
+# conntrack -L expect
+conntrack v1.2.1 (conntrack-tools): 0 expectations have been shown.
+
+Any idea where to find what is still causing the kernel to drop packets?
+
+I still need to handle the INVALID state, but here is my current rule-set:
+
+# Generated by iptables-save v1.4.14 on Wed Nov  6 11:40:00 2024
+*raw
+:PREROUTING ACCEPT [559078817:46637850935]
+:OUTPUT ACCEPT [539455981:114717831525]
+[311121010:22258566347] -A PREROUTING -p udp -m udp --dport 53 -j CT --notr=
+ack
+[82158007:15791189816] -A PREROUTING -p udp -m udp --sport 53 -j CT --notra=
+ck
+[160638557:7854716900] -A PREROUTING -p tcp -m tcp --dport 53 -j CT --notra=
+ck
+[55174:13694242] -A PREROUTING -p tcp -m tcp --sport 53 -j CT --notrack
+[82898530:7187312985] -A OUTPUT -p udp -m udp --dport 53 -j CT --notrack
+[310815684:92319143568] -A OUTPUT -p udp -m udp --sport 53 -j CT --notrack
+[81356:4991618] -A OUTPUT -p tcp -m tcp --dport 53 -j CT --notrack
+[134221259:13321766219] -A OUTPUT -p tcp -m tcp --sport 53 -j CT --notrack
+COMMIT
+# Completed on Wed Nov  6 11:40:00 2024
+# Generated by iptables-save v1.4.14 on Wed Nov  6 11:40:00 2024
+*nat
+:PREROUTING ACCEPT [2196269:120347484]
+:INPUT ACCEPT [1191964:55756667]
+:OUTPUT ACCEPT [43401:4029238]
+:POSTROUTING ACCEPT [43401:4029238]
+COMMIT
+# Completed on Wed Nov  6 11:40:00 2024
+# Generated by iptables-save v1.4.14 on Wed Nov  6 11:40:00 2024
+*mangle
+:PREROUTING ACCEPT [559078013:46637808723]
+:INPUT ACCEPT [559078013:46637808723]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [539456018:114717838594]
+:POSTROUTING ACCEPT [539456018:114717838594]
+COMMIT
+# Completed on Wed Nov  6 11:40:00 2024
+# Generated by iptables-save v1.4.14 on Wed Nov  6 11:40:00 2024
+*filter
+:INPUT DROP [1028561:66625259]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [539455943:114717822181]
+[555959622:46411126809] -A INPUT -m conntrack --ctstate
+RELATED,ESTABLISHED,UNTRACKED -j ACCEPT
+[158:11928] -A INPUT -i lo -j ACCEPT
+[0:0] -A INPUT -s 10.101.0.0/16 -p icmp -j ACCEPT
+[1283248:91447747] -A INPUT -s 10.212.0.0/16 -p icmp -j ACCEPT
+[0:0] -A INPUT -s 10.84.0.0/16 -p icmp -j ACCEPT
+[23101:2217696] -A INPUT -s 10.57.0.0/16 -p icmp -j ACCEPT
+[0:0] -A INPUT -s 10.94.0.0/16 -p icmp -j ACCEPT
+[0:0] -A INPUT -s 127.0.0.0/8 -p icmp -j ACCEPT
+[767154:60545933] -A INPUT -s 10.0.0.0/8 -p icmp -j ACCEPT
+[0:0] -A INPUT -s 172.16.0.0/12 -p icmp -j ACCEPT
+[12243:5597503] -A INPUT -s 192.168.0.0/16 -p icmp -j ACCEPT
+[0:0] -A INPUT -s 100.64.0.0/10 -p icmp -j ACCEPT
+[3:243] -A INPUT -p udp -m udp --dport 53 -j ACCEPT
+[0:0] -A INPUT -p tcp -m tcp --dport 53 -j ACCEPT
+[0:0] -A INPUT -s 10.212.109.49/32 -p tcp -m tcp --dport 8139 -j ACCEPT
+[3888:233280] -A INPUT -s 10.212.0.0/17 -p tcp -m tcp --dport 22 -j ACCEPT
+[0:0] -A INPUT -s 10.212.128.0/18 -p tcp -m tcp --dport 22 -j ACCEPT
+[0:0] -A INPUT -s 10.212.192.0/19 -p tcp -m tcp --dport 22 -j ACCEPT
+[0:0] -A INPUT -s 127.0.0.0/8 -p tcp -m tcp --dport 22 -j ACCEPT
+[0:0] -A INPUT -s 10.0.0.0/8 -p tcp -m tcp --dport 22 -j ACCEPT
+[0:0] -A INPUT -s 172.16.0.0/12 -p tcp -m tcp --dport 22 -j ACCEPT
+[8:416] -A INPUT -s 192.168.0.0/16 -p tcp -m tcp --dport 22 -j ACCEPT
+[0:0] -A INPUT -s 100.72.0.0/15 -p tcp -m tcp --dport 22 -j ACCEPT
+[0:0] -A INPUT -s 10.94.202.160/27 -p icmp -j ACCEPT
+COMMIT
+# Completed on Wed Nov  6 11:40:00 2024
+
+Thanks for any help!
+
+-m
