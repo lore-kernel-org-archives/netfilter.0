@@ -1,92 +1,61 @@
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40B9F224FD
-	for <netfilter@vger.kernel.org>; Sun, 10 Nov 2024 21:48:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57098157472
+	for <netfilter@vger.kernel.org>; Sun, 10 Nov 2024 21:50:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731275292; cv=none; b=teAxvqU6j8lWf3myIDw1rmIS2vsqeKcPJC6ceGJM9LRDhJFH9YT7PmP7Zpcv2gxKFTN6+IZHtE9UaVUD3+xWitrr4qKgUSA0Rwj3Dw+GqJADOc5NJpXquIHW0bZx5h+9Zw8MV+6jLG6FlO418pPqB84rP0+TBxnF53aKps9DKTY=
+	t=1731275406; cv=none; b=JTePXeUzOcn2A8kqvfFg9/XYJuqoqx81t3RXrI3gLErzTJNq6qXRQJ7e/gA2KrWjX5gs4PLg1vp7DqG4F0uX7gJbf2zNv+KzoflWy0RinShadWoqgewcozs+D4TKiy6cvrVnKDfEH1lwIAOCwVK6OrjowLW8FzLWjQkHBg4SL0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731275292; c=relaxed/simple;
-	bh=atHdhWx5E0wNDvDgaQ7VsKOWxEZNvaPPj75ZlrghaB4=;
+	s=arc-20240116; t=1731275406; c=relaxed/simple;
+	bh=LXJ7SbQGlbFvvAh6mTaB8jrw9xto0epzxiFdWw6fkw0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BDqfgrnOTKXCsi1vO8bSBFSKoYvpByZqnchQuMQx31VwL5q+jXxo9joTWudCalzVOBKPt1vcT2En3aoGui49ayq8Myjx6d/+3yRvJJoP6xiFxOQx2O6Fyvv0xS7RXPdIFQpswBCeqQQjPRDqmDXhLcJwkBhAh6b6jXOBVRZDE9g=
+	 Content-Type:Content-Disposition:In-Reply-To; b=DKDw9B/jBDav2S56HAGl5/J6dWWEdFryuOrlLHbZX8+lSCLpy1ngA8mUGk4EddD6sOo9EMXgF4Y3e4hbbUGhZ4zw55VjXFUBfOz5TgpveL9/I5oKR52au4iDu5xaXiZ+Qgb0ZYYdEI/ozhZiCWBHDa15ITJcVPQ/eHsjv6CD4tM=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
 	(envelope-from <fw@strlen.de>)
-	id 1tAFmc-0006px-2a; Sun, 10 Nov 2024 22:47:46 +0100
-Date: Sun, 10 Nov 2024 22:47:46 +0100
+	id 1tAFon-0006rF-LV; Sun, 10 Nov 2024 22:50:01 +0100
+Date: Sun, 10 Nov 2024 22:50:01 +0100
 From: Florian Westphal <fw@strlen.de>
-To: Matt Zagrabelny <mzagrabe@d.umn.edu>
-Cc: Slavko <linux@slavino.sk>, netfilter <netfilter@vger.kernel.org>
-Subject: Re: connection tracking and kernel dropping packets
-Message-ID: <20241110214746.GA25943@breakpoint.cc>
-References: <CAOLfK3VUyrxBzd4sfk9Fhb8RnmQ8TAbszh0j2TD1a24WE-h74g@mail.gmail.com>
- <771EECBD-1B8C-46F9-8429-B1118380F7A2@slavino.sk>
- <CAOLfK3UWDAOAww10O2NxFBPgLa+Rr92=Lw+qFb1fxDOhD_6Dgg@mail.gmail.com>
+To: Florian Westphal <fw@strlen.de>
+Cc: Antonio Ojea <antonio.ojea.garcia@gmail.com>,
+	Pablo Neira Ayuso <pablo@netfilter.org>, netfilter@vger.kernel.org
+Subject: Re: Most optimal method to dump UDP conntrack entries
+Message-ID: <20241110215001.GB25943@breakpoint.cc>
+References: <CABhP=tZe2MDYJWqmyhb=we2g_v11wuDb6yBp878vt7qQYrvUiA@mail.gmail.com>
+ <20241017124632.GC12005@breakpoint.cc>
+ <ZxE8-pDn9Alzm50K@calendula>
+ <CABhP=ta5FesHP+xnPq7UaiNvvorfGgPJZV9Xxdvk_-SLk7ZxEg@mail.gmail.com>
+ <20241017233031.GA3675@breakpoint.cc>
+ <CABhP=tY=YnMPSMH0-T2oxHyE2Uzoy=RnHQmO4DRQ_Go8xzMGeg@mail.gmail.com>
+ <20241018113318.GA28324@breakpoint.cc>
+ <CABhP=tZronr5azSE9mrr+hTKWFVb41jYQ2FzoWDahwVf1Zt4zQ@mail.gmail.com>
+ <20241021135342.GB15761@breakpoint.cc>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOLfK3UWDAOAww10O2NxFBPgLa+Rr92=Lw+qFb1fxDOhD_6Dgg@mail.gmail.com>
+In-Reply-To: <20241021135342.GB15761@breakpoint.cc>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 
-Matt Zagrabelny <mzagrabe@d.umn.edu> wrote:
-> On Tue, Oct 29, 2024 at 10:48 AM Slavko <linux@slavino.sk> wrote:
-> >
-> > Dňa 29. októbra 2024 15:11:34 UTC používateľ Matt Zagrabelny <mzagrabe@d.umn.edu> napísal:
-> >
-> > >...but it is still dropping packets due to the CT.
-> >
-> > You have first to inspect what is filling your conntrack table:
-> >
-> >     conntrack -L
+Florian Westphal <fw@strlen.de> wrote:
+> Antonio Ojea <antonio.ojea.garcia@gmail.com> wrote:
+> > On Fri, 18 Oct 2024 at 13:33, Florian Westphal <fw@strlen.de> wrote:
+> > > Same as what happens now, 2nd packet follows NAT mapping of first one.
+> > 
+> > This looks like the way to go ... if you can send me a patch I can do
+> > some testing next week and report back
 > 
-> I've waited a week to let the TCP streams in the conntrack table time
-> out. I'm still seeing the kernel drop packets:
+> Here is a better patch, renew only when responses are seen.
+> This means that once either initiator or responder ceases to send
+> packets entry will time out.
+> 
+> Subject: netfilter: nf_conntrack_proto_udp: renew timeout only for bidirectional traffic
 
-conntrack -F not working?
-
-> # tail -f /var/log/kern.log
-> Nov  6 11:29:02 netadm kernel: [48773744.961053] nf_conntrack: table
-> full, dropping packet.
-> 
-> ...and confirmed with /proc:
-> 
-> # cat /proc/sys/net/ipv4/netfilter/ip_conntrack_count
-> 65536
-> 
-> ...but there aren't that many flows in the conntrack table, and none
-> in the expect table.
-> 
-> # conntrack -L > /dev/null
-> conntrack v1.2.1 (conntrack-tools): 22 flow entries have been shown.
-
-Depending on userspace/kernel version this may only list ipv4.
-
-> Any idea where to find what is still causing the kernel to drop packets?
-> 
-> I still need to handle the INVALID state, but here is my current rule-set:
-> 
-> # Generated by iptables-save v1.4.14 on Wed Nov  6 11:40:00 2024
-> *raw
-> :PREROUTING ACCEPT [559078817:46637850935]
-> :OUTPUT ACCEPT [539455981:114717831525]
-> [311121010:22258566347] -A PREROUTING -p udp -m udp --dport 53 -j CT --notrack
-> [82158007:15791189816] -A PREROUTING -p udp -m udp --sport 53 -j CT --notrack
-> [160638557:7854716900] -A PREROUTING -p tcp -m tcp --dport 53 -j CT --notrack
-> [55174:13694242] -A PREROUTING -p tcp -m tcp --sport 53 -j CT --notrack
-> [82898530:7187312985] -A OUTPUT -p udp -m udp --dport 53 -j CT --notrack
-> [310815684:92319143568] -A OUTPUT -p udp -m udp --sport 53 -j CT --notrack
-> [81356:4991618] -A OUTPUT -p tcp -m tcp --dport 53 -j CT --notrack
-> [134221259:13321766219] -A OUTPUT -p tcp -m tcp --sport 53 -j CT --notrack
-> COMMIT
-
-Is this an ipv4 only system?
+Ping.  Did you have a chance to test this?
