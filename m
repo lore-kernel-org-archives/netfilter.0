@@ -1,109 +1,78 @@
-Received: from fout-b8-smtp.messagingengine.com (fout-b8-smtp.messagingengine.com [202.12.124.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E45221A4C5
-	for <netfilter@vger.kernel.org>; Tue, 12 Nov 2024 17:31:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 108F6213148
+	for <netfilter@vger.kernel.org>; Tue, 12 Nov 2024 17:47:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731432695; cv=none; b=WEVrXEPsG0AK850QHKcWLE2dnkB5y4EIAfJun4sUXOQ474lJs/U8ihlIaF+QlKNrh6hY9j9DFFzllO6DQB98xiUZ/bjfPT0Txkh4V3scbNGlnDhLCRkPJgUONtvMvqShIvj2P/Ml6AZQnOf0xvkUSL4fD4Isb536icXRsjg3HoM=
+	t=1731433627; cv=none; b=Fc7sOr+7bg8XMMw1j9C3ncN1k5xKOmzyOJklkYd1/SzdsPxiEL0YAmMIsjjcqVU6jpBhgQVK0AW75p9KMZvPI9Z5KDDPac3gY8Yx+r4oXHWRVJy1nkeBtPiY7dwo190PBjvE8qJsVd8vKVe8qLVHgo+DDnfIlj1XcudN/4IHTSE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731432695; c=relaxed/simple;
-	bh=HOKmuqSA0DPnHwgLmMPSDmWVSkYlIB+sWkAf1Yet9X4=;
-	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=HdwELwn8+vxXlZBfCFvfWUFwYEs8RsPoownAhSJj0Ymmg55Vm/rtLjO5wG4NjS2yEp9wpGwET9PqMkO7BqC1n4ro/6fHL7GWTSU5hJSjUA0qAP05TStEOkPMr5RnX0fi6AjHqUqW+aiPAmKXAkQsq12PfZC/0hHtyzA42GjZRio=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=Bg6L261x; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=hAH5sVdZ; arc=none smtp.client-ip=202.12.124.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
+	s=arc-20240116; t=1731433627; c=relaxed/simple;
+	bh=E0gBBWusucHtVVw/Ncbtyb/GuF+6JiNxCxGy6Em4/CA=;
+	h=Date:From:To:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=Qqnnuav0HCw6y4sRdWmkfniD9GSOjaw5OC57cdjWKOkUiSGqosDQwbUns6Tb6I/tgK6aRGGvdpr1Yj07FaDA8mbDkOVneRsUAi7EXO5ibo+gzF0p5owijjisBzNtABl1BMVZFcy4EZnoXQU96J5vv7IiIyZxrM+GnhC+mhhtN4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=hLoaNklk; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=yG+Uyhnh; arc=none smtp.client-ip=185.25.250.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="Bg6L261x";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="hAH5sVdZ"
-Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
-	by mailfout.stl.internal (Postfix) with ESMTP id 67FBB114014E;
-	Tue, 12 Nov 2024 12:31:32 -0500 (EST)
-Received: from phl-imap-10 ([10.202.2.85])
-  by phl-compute-03.internal (MEProxy); Tue, 12 Nov 2024 12:31:32 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-	 h=cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1731432692;
-	 x=1731519092; bh=geLgSctRhrfZDA9/od8yOhQhpQ2X5EW8sjy7l82Kd+w=; b=
-	Bg6L261xT6Z4O/UucjIQZqM12BN2XU2Mk1Mli7O4WzNU0HumwnNHwkIMFV6+6GlQ
-	KE0vvfz5vtaw0zTEBfs4bNmJUYK8pi35B5vz/9DoY3EpVJr21YKL7DPlmb2eq8/z
-	+WbVJMpzliDGPKvH5wz0sXKUenOHWKSe3hp9P6KdJ8hbM0pwWPfpg9ggFo4gAFjN
-	0QY/AzRpjYs0oDObWkewGrA77tBiVLJWiGGu68EcaiP3voTk4FQOjAVs7V9F01Fg
-	Jpcr7/aLgPlCwtSANLrBpgPNVvAFMN4AnCZwJyt7JrXk5KGQ+eOnjhbNWEgRat9q
-	Cp2p5PgTU1s1sDnK5VBiew==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm3; t=1731432692; x=1731519092; bh=g
-	eLgSctRhrfZDA9/od8yOhQhpQ2X5EW8sjy7l82Kd+w=; b=hAH5sVdZCVHqJ1fXc
-	V3lNX9gIf1SCQeD/M9g3FpTJXrzQZ/pfaetKGq+6DcxNGl8/931OpSBudhjotbia
-	FyRKMhMtPGUEU4JaGvBUQCSjklGKByu90fkhzA7Xt7put6eca5GsWS67KqQ5OdI1
-	D2dTHmcjwGYKydtw5T7BON1yixFSATkd+hNnI0mTWHbU7FDZbE6ko3MiH+uge8/w
-	BImRp/fuOZmSqNGnt3yH9K9yPqTH1KqBnGCNV7RlIl198A/LyjkwW/GxsZtqW7pv
-	AQl5vvxBUd0LER1fGQSvXlKj5VPu+ZsrCnDeRfGiTvEdfKHRgcFq//X186lGWMu1
-	FgPgQ==
-X-ME-Sender: <xms:85AzZ5LoQKQ-8EquSKwGk1oIFrCL5veBFP6t63iHUjquCFjqICwOJA>
-    <xme:85AzZ1JOJItVFdpV0EuuRRLg9GSyzMtOL6jz_f3Cql_Qwae5EzSbHzi2a7z91O1FE
-    kNDaaoqf5E9ubkP>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrudeggdelkecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdpuffr
-    tefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnth
-    hsucdlqddutddtmdenucfjughrpefoggffhffvkfgjfhfutgfgsehtjeertdertddtnecu
-    hfhrohhmpedfmfgvrhhinhcuofhilhhlrghrfdcuoehkfhhmsehplhhushhhkhgrvhgrrd
-    hnvghtqeenucggtffrrghtthgvrhhnpeeiteefieehhedujeejgeegvdehfefghfffueev
-    keettdfhudettdfhieetledtveenucffohhmrghinhepnhgvthhfihhlthgvrhdrohhrgh
-    enucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehkfhhm
-    sehplhhushhhkhgrvhgrrdhnvghtpdhnsggprhgtphhtthhopedvpdhmohguvgepshhmth
-    hpohhuthdprhgtphhtthhopehthhhomhgrsheskhhovghllhgvrhdrugihnhgunhhsrdho
-    rhhgpdhrtghpthhtohepnhgvthhfihhlthgvrhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:85AzZxtdyyNPfsHKp7s53pFMW7NM6Wb3azb84w0uvPE6Kv68Bl-zvg>
-    <xmx:85AzZ6ZSBHdMAp4a68FfmLRhj8pJ9Avp03O8Qw7-YWHLfHhaff01LQ>
-    <xmx:85AzZwYZZPBL3oyu5b-Esp_h_bHfEdp776jJQZvonPaFjs76mdo0Pg>
-    <xmx:85AzZ-CniA_1VJUe2rfZUQVwygrIjLTZBe_ukrt0EhDFoWtMloD4Vw>
-    <xmx:9JAzZ7zMOC4Q83MaNXFELw6RoaTlwhBxkZtb5ccojW-jFpSk3GlzVSbk>
-Feedback-ID: i2431475f:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 7CA5E3C0066; Tue, 12 Nov 2024 12:31:31 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="hLoaNklk";
+	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="yG+Uyhnh"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
+	s=r2023; h=Content-Type:MIME-Version:Message-ID:References:In-Reply-To:
+	Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:
+	Content-Type:Message-Id:In-Reply-To:References;
+	bh=E0gBBWusucHtVVw/Ncbtyb/GuF+6JiNxCxGy6Em4/CA=; t=1731433622; x=1732643222; 
+	b=hLoaNklkA8KYjsuC0acoMu2hXiR1267p3R7uqBUa763kvjxs03eH+jRKhGPvWucnNwEgSQhd5Hh
+	lL6tDWLPm4tXCkgne92EU+aLJ5qs1ROBoRLI4gefBwbzDyVOJiR8CMSzLktXFN25BCR3qlvzwyLz4
+	aCb8apUVJxCNYBlkOw8=;
+DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=slavino.sk; s=e2023; h=Content-Type:MIME-Version:Message-ID:References:
+	In-Reply-To:Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:
+	MIME-Version:Content-Type:Message-Id:In-Reply-To:References;
+	bh=E0gBBWusucHtVVw/Ncbtyb/GuF+6JiNxCxGy6Em4/CA=; t=1731433622; x=1732643222; 
+	b=yG+UyhnhqX5c1XPOSK/sxg8sapjpy7kGFPkmUvKnWUYnZwgkIykUekeLV2wpPJezq82sLz4lBxC
+	dfcANHmwLAA==;
+Received: from dovex.skk ([192.168.10.12])
+	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <linux@slavino.sk>)
+	id 1tAuyb-000EMz-0O
+	for netfilter@vger.kernel.org;
+	Tue, 12 Nov 2024 18:46:53 +0100
+Date: Tue, 12 Nov 2024 17:46:50 +0000
+From: Slavko <linux@slavino.sk>
+To: netfilter@vger.kernel.org
+Subject: Re: ipset vs. nftables set
+In-Reply-To: <3e7fbdce-5d16-4abd-a315-3303da3874bc@app.fastmail.com>
+References: <45ec57eecdb93fe0d03f63702ef68ebbb79bbdc1.camel@koeller.dyndns.org> <3e7fbdce-5d16-4abd-a315-3303da3874bc@app.fastmail.com>
+Message-ID: <2BDA8DF3-425E-44B6-A477-F088C404BFDD@slavino.sk>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Tue, 12 Nov 2024 17:31:11 +0000
-From: "Kerin Millar" <kfm@plushkava.net>
-To: "Thomas Koeller" <thomas@koeller.dyndns.org>, netfilter@vger.kernel.org
-Message-Id: <3e7fbdce-5d16-4abd-a315-3303da3874bc@app.fastmail.com>
-In-Reply-To: 
- <45ec57eecdb93fe0d03f63702ef68ebbb79bbdc1.camel@koeller.dyndns.org>
-References: 
- <45ec57eecdb93fe0d03f63702ef68ebbb79bbdc1.camel@koeller.dyndns.org>
-Subject: Re: ipset vs. nftables set
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 12 Nov 2024, at 2:55 PM, Thomas Koeller wrote:
-> Hi,
->
-> migrating my existing firewall setup from iptables + ipset to nftables, 
-> I ran into a problem.
->
-> The firewall uses an ipset containing ipv4 source addresses to 
-> implement a dynamic blacklist. There are multiple rules that use this
-> ipset, and these rules are in chains that belong to different tables. 
-> This doesn't seem to be possible with nftables sets, that
-> apparently always have to belong to one and only one table, is this 
-> correct? At least I couldn't figure out how to create a set that
-> is accessible throughout the entire ruleset.
+On 12=2E novembra 2024 17:31:11 UTC, Kerin Millar <kfm@plushkava=2Enet> wro=
+te:
+>On Tue, 12 Nov 2024, at 2:55 PM, Thomas Koeller wrote:
 
-Yes. Rules may only reference a named set from the enclosing table.
+>Yes=2E Rules may only reference a named set from the enclosing table,
 
-https://bugzilla.netfilter.org/show_bug.cgi?id=1472
+But one can have multiple hooks (chains) in one table, even with the
+same priority (i not suggest that)=2E Thus one can combine multiple
+tables into one and share sets, eg=2E in raw & filter hooks=2E
 
--- 
-Kerin Millar
+Or one can mix iptables-nft with nftables, it requites more carefull
+settings (hardcoded iptables hook's priorities, flush, etc) but it
+works=2E
+
+regards
+
+
+--=20
+Slavko
+https://www=2Eslavino=2Esk/
