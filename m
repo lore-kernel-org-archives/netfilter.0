@@ -1,28 +1,30 @@
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE413213EE8
-	for <netfilter@vger.kernel.org>; Tue, 12 Nov 2024 18:21:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06B40213154
+	for <netfilter@vger.kernel.org>; Tue, 12 Nov 2024 18:24:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731435698; cv=none; b=r6xpiFQpXx7uvyKBjewAMJGtXidX1IjgLZaSGV16m+KTpHrB98DBcuskcZ/daTuR9tUdB1+1HUM8dXZW8NiFPgIjD7mKmRU53az+pPrtrkILh+tWGftgFzx5IAZEEpgTwK2AG2e2OqVQZc5aQnFiIUO4zbZOoEz6LUsovIw/rRc=
+	t=1731435893; cv=none; b=Eld40BAzr2HAWByKK12s3khPWcPhiAOOtBwAT20E/6YCH7/Ru5FWDtMvwqCjNElQZ5OLMfIL+FN4rss8VSYZwpOLU2MKDKNVpBD0sz7bOMeLWp6efRZsvvk9wRU6X+t0SBN7n5j5k9o+sWsFmUrSGFm7lnONQta3f1Yr5fUXAqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731435698; c=relaxed/simple;
-	bh=k07wiU3AfGQmajXQwkyr7jS601wbcvNktH4pfmeI3zk=;
+	s=arc-20240116; t=1731435893; c=relaxed/simple;
+	bh=WqNYn0JKvX7ikSCFbDQdkeJsLJ0gCmtnYyseSc+CfR4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fto+yaO4JXGgjJgclNMpezHGcDMXuoiPmtE5ef3P4xQZyRlVKwVEhEX+CUMwO7TlImj1LpToqotf39ukIiSlWPN4XqezHmySFTkr3maTdEg4KGSOAzhJHO2WBU9H1HZF7EaFiYtc9u5w6lRZW+osQveVUEYXSfTjg0yqK9io8oo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@strlen.de>)
-	id 1tAvW9-0007YC-Mf; Tue, 12 Nov 2024 19:21:33 +0100
-Date: Tue, 12 Nov 2024 19:21:33 +0100
-From: Florian Westphal <fw@strlen.de>
-To: Thomas =?iso-8859-15?Q?K=F6ller?= <thomas@koeller.dyndns.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Iv3vNWrs69JuEgerd5aGKfOlN8+goQquTuJCS+NFSx7q3owf0GiRoaGK4HWgb5ITdt0U7lu+H0uJNRj4c8PSidIyGYmjOT33WUmTkN54hxXvyhRpMMXDqfpM8DB867rF3pmXn3j4OV718arrz2Ql69Q1HjvLgSe3+krR7i1Ct2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
+Received: from [78.30.37.63] (port=33622 helo=gnumonks.org)
+	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <pablo@gnumonks.org>)
+	id 1tAvZG-009Juf-FI; Tue, 12 Nov 2024 19:24:48 +0100
+Date: Tue, 12 Nov 2024 19:24:45 +0100
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Thomas =?utf-8?Q?K=C3=B6ller?= <thomas@koeller.dyndns.org>
 Cc: netfilter@vger.kernel.org
 Subject: Re: connection tracking state in rules
-Message-ID: <20241112182133.GB28817@breakpoint.cc>
+Message-ID: <ZzOdbYay4hhiwqbZ@calendula>
 References: <c7d037d9-2261-4627-8e46-bd960f1ab6d3@koeller.dyndns.org>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
@@ -30,13 +32,15 @@ List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
 In-Reply-To: <c7d037d9-2261-4627-8e46-bd960f1ab6d3@koeller.dyndns.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Spam-Score: -1.9 (-)
 
-Thomas Köller <thomas@koeller.dyndns.org> wrote:
+On Tue, Nov 12, 2024 at 06:56:30PM +0100, Thomas KÃ¶ller wrote:
+> Hi,
+> 
 > tried to create a rule using the conntrack state of a packet:
 > 
 > [root@sarkovy nftables]# cat ruleset-own.txt
@@ -54,12 +58,27 @@ Thomas Köller <thomas@koeller.dyndns.org> wrote:
 >                               ^^^^^^^^
 > This is rejected, but why?
 
-Conntrack state isn't available in ingress hook.
+Because there is currently no support for connection tracking at
+ingress.
 
 > And, btw., which one is correct, 'ct state established,related' or 'ct state
 > { established,related }'?
 
-Both work: related and established state are mutually exclusive.
+Use of { } implies a set instance.
 
-established,related is a bit more compact and doesn't need the anonymous
-set.
+# nft describe ct state
+ct expression, datatype ct_state (conntrack state) (basetype bitmask, integer), 32 bits
+
+pre-defined symbolic constants (in hexadecimal):
+        invalid                         0x00000001
+        new                             0x00000008
+        established                     0x00000002
+        related                         0x00000004
+        untracked                       0x00000040
+
+Use of:
+
+        ct state established,related
+
+(just like in iptables --m --state) is perfectly fine for this
+particular case.
