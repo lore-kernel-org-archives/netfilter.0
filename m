@@ -1,53 +1,65 @@
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A3322144B5
-	for <netfilter@vger.kernel.org>; Tue, 12 Nov 2024 18:18:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE413213EE8
+	for <netfilter@vger.kernel.org>; Tue, 12 Nov 2024 18:21:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731435541; cv=none; b=dNlJ1hWjX9o8YtYqTcMugHGA/u4OyaWlZKS7Z5gYX/X7CfkqIOGriP+LOzfQ4rOFgHGTvypD19ltBV8xIRWcMZPMe4tfDXtdhlg4WuqPxkPPCYrAJiUkLggFTe+EKXBKYeER0BxESA03Lu0j2wR4wGLiQ2A8OYu3zP4NL3Ha5fg=
+	t=1731435698; cv=none; b=r6xpiFQpXx7uvyKBjewAMJGtXidX1IjgLZaSGV16m+KTpHrB98DBcuskcZ/daTuR9tUdB1+1HUM8dXZW8NiFPgIjD7mKmRU53az+pPrtrkILh+tWGftgFzx5IAZEEpgTwK2AG2e2OqVQZc5aQnFiIUO4zbZOoEz6LUsovIw/rRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731435541; c=relaxed/simple;
-	bh=FC7FKErT09YyCsxNhOaOEiezQeTHZgRyWEWW7Kwd7Go=;
+	s=arc-20240116; t=1731435698; c=relaxed/simple;
+	bh=k07wiU3AfGQmajXQwkyr7jS601wbcvNktH4pfmeI3zk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XAomBAY+LVJHFxKCrfMgF0Eo8qvsRb5WnXtJAY3YvrPUsJ82ETrtfr9Il4jU2Z+d92djO6T4+xQhrm/hHeiot+hTw9vW6CMyFIEQVffHSl0uh/zfJKxhJUbMaDhzjiWPffnqUojBOImNICDkfpzraWCPKvx6OGZJS6JeMbY9bao=
+	 Content-Type:Content-Disposition:In-Reply-To; b=fto+yaO4JXGgjJgclNMpezHGcDMXuoiPmtE5ef3P4xQZyRlVKwVEhEX+CUMwO7TlImj1LpToqotf39ukIiSlWPN4XqezHmySFTkr3maTdEg4KGSOAzhJHO2WBU9H1HZF7EaFiYtc9u5w6lRZW+osQveVUEYXSfTjg0yqK9io8oo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
 Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
 	(envelope-from <fw@strlen.de>)
-	id 1tAvTb-0007Wi-N2; Tue, 12 Nov 2024 19:18:55 +0100
-Date: Tue, 12 Nov 2024 19:18:55 +0100
+	id 1tAvW9-0007YC-Mf; Tue, 12 Nov 2024 19:21:33 +0100
+Date: Tue, 12 Nov 2024 19:21:33 +0100
 From: Florian Westphal <fw@strlen.de>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Slavko <linux@slavino.sk>, netfilter@vger.kernel.org
-Subject: Re: ipset vs. nftables set
-Message-ID: <20241112181855.GA28817@breakpoint.cc>
-References: <45ec57eecdb93fe0d03f63702ef68ebbb79bbdc1.camel@koeller.dyndns.org>
- <3e7fbdce-5d16-4abd-a315-3303da3874bc@app.fastmail.com>
- <2BDA8DF3-425E-44B6-A477-F088C404BFDD@slavino.sk>
- <ZzObEveL6rLYzv-b@calendula>
+To: Thomas =?iso-8859-15?Q?K=F6ller?= <thomas@koeller.dyndns.org>
+Cc: netfilter@vger.kernel.org
+Subject: Re: connection tracking state in rules
+Message-ID: <20241112182133.GB28817@breakpoint.cc>
+References: <c7d037d9-2261-4627-8e46-bd960f1ab6d3@koeller.dyndns.org>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-15
 Content-Disposition: inline
-In-Reply-To: <ZzObEveL6rLYzv-b@calendula>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c7d037d9-2261-4627-8e46-bd960f1ab6d3@koeller.dyndns.org>
 User-Agent: Mutt/1.10.1 (2018-07-13)
 
-Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> > But one can have multiple hooks (chains) in one table, even with the
-> > same priority (i not suggest that). Thus one can combine multiple
-> > tables into one and share sets, eg. in raw & filter hooks.
+Thomas Köller <thomas@koeller.dyndns.org> wrote:
+> tried to create a rule using the conntrack state of a packet:
 > 
-> Don't do that, please.
+> [root@sarkovy nftables]# cat ruleset-own.txt
+> create table netdev world
+> add set netdev world blacklist { type ipv4_addr; flags dynamic,timeout;
+> timeout 1h; gc-interval 6h; size 256; }
+> create chain netdev world ingress { type filter hook ingress device
+> "eth_cable" priority filter; policy drop; }
+> add rule netdev world ingress ip protocol tcp ip saddr @blacklist counter
+> drop
+> add rule netdev world ingress ct state established,related counter accept
+> [root@sarkovy nftables]# nft -cf ruleset-own.txt
+> ruleset-own.txt:5:31-38: Error: Could not process rule: Protocol error
+> add rule netdev world ingress ct state established,related counter accept
+>                               ^^^^^^^^
+> This is rejected, but why?
 
-Why not?  Single-table approach makes sense, in my opinion,
-provided that single table is controlled by single entity, be
-that a program like firewalld or traditional sysadmin.
+Conntrack state isn't available in ingress hook.
 
-With multi-table things become awkward due to the imposed
-scoping rules that prevent cross-table use of sets/maps.
+> And, btw., which one is correct, 'ct state established,related' or 'ct state
+> { established,related }'?
+
+Both work: related and established state are mutually exclusive.
+
+established,related is a bit more compact and doesn't need the anonymous
+set.
