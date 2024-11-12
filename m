@@ -1,78 +1,50 @@
-Received: from outbound3.eu.mailhop.org (outbound3.eu.mailhop.org [52.29.21.168])
+Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B15B11A4F21
-	for <netfilter@vger.kernel.org>; Tue, 12 Nov 2024 17:57:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.29.21.168
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C940B21502E
+	for <netfilter@vger.kernel.org>; Tue, 12 Nov 2024 18:14:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731434262; cv=none; b=IUyD7oHrfPxDT/MjO4uITuw5+Ix21SCRCvLQOH/Dw6zFUzwqGVxFvy3t9vz5K2VwcymfVSehgRZp+evW/OOvQOqH/ebmE6uKizMhEYWzPiRy1YLPHpCKZfqgAaXkanSYAZNHJgtl92Jle1z6vc9ufw7kKP8xDXX2iz46MXJwjUQ=
+	t=1731435265; cv=none; b=W1D141FXpiIMPukp9kezas3xRVgFoyOXeLjVDVWirnjhnyaltjs+4tNjLX6KYUXYH3oBhRk3UM0qSbeidMMiSthIy7klf8w84k6gtgr7WZOClca6EGXlRzHqvIDI6ZvDLlIeU6CyHjHfdmYcs8e6RkhngYoH3m75HbyWWrlrLUY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731434262; c=relaxed/simple;
-	bh=jQZwmbLlL/mf+cmRWBxHWFxRmh7AaAAeQpKF//kZYCg=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=cvPhuMsam/Yhi7ZEWb9i8/uUucCBCqSKbNyj0KYcRcJOCwzEozE53fdHenx3R7xgrfsqcSvq5B7m752fuJ0njhCg/SkQbjvPxm5tMGfz9MiN1I2h40/FLYD59B1HtkLj9iKMPR/LcnOrXafBro3qYdHPoYrY9tNmjjA9QGpU4Ek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=koeller.dyndns.org; spf=none smtp.mailfrom=koeller.dyndns.org; dkim=pass (2048-bit key) header.d=outbound.mailhop.org header.i=@outbound.mailhop.org header.b=L3wksizX; arc=none smtp.client-ip=52.29.21.168
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=koeller.dyndns.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=koeller.dyndns.org
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outbound.mailhop.org header.i=@outbound.mailhop.org header.b="L3wksizX"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=outbound.mailhop.org; s=dkim-high;
-	h=content-transfer-encoding:content-type:subject:from:to:mime-version:date:
-	 message-id:from;
-	bh=jecFxo9069DVvRGd/l/xH+FWeEYu6+7AiKMyR7TfsTI=;
-	b=L3wksizXx2Vm1Wxn/mb5wUind7un57dvqEYqu3pxM5mg9l2PgnrXgzLwqeA7cZr4NNemM1zaIneZj
-	 3dlHDdvgpF7EaClgC2c2zXriUOgjnJ5ujI3lJsTE6q31bOg8PBqI+QX25dPa5ZYFQZMXXG/ZjqAZos
-	 AVowhYtQ7iPS0DqhnGHtON4tJEthB+QqvWTI/auqK/FVCHQx2r/actinY6Gs35aFaTUpb7znEH0mpu
-	 HChSIe6cEwgEUJpce8r8k5e27Fb/xpbDc11wBb7jgDWoPAyKby/A9p45cNaL5Wzf5x7LKilmIcOES7
-	 B8pl6D102IjZMy57rhKm01WmA5kjU3A==
-X-MHO-RoutePath: dGtvZWxsZXI=
-X-MHO-User: 7249e018-a11f-11ef-b21f-25ccbfd3c7c9
-X-Report-Abuse-To: https://support.duocircle.com/support/solutions/articles/5000540958-duocircle-standard-smtp-abuse-information
-X-Mail-Handler: DuoCircle Outbound SMTP
-Received: from mail.koeller.dyndns.org (ip1f123f5c.dynamic.kabel-deutschland.de [31.18.63.92])
-	by outbound3.eu.mailhop.org (Halon) with ESMTPSA
-	id 7249e018-a11f-11ef-b21f-25ccbfd3c7c9;
-	Tue, 12 Nov 2024 17:56:30 +0000 (UTC)
-Received: from [IPV6:fd46:1ffa:d8e0::1] (sarkovy.koeller.dyndns.org [IPv6:fd46:1ffa:d8e0::1])
-	by mail.koeller.dyndns.org (Postfix) with ESMTPSA id 53A11968A04
-	for <netfilter@vger.kernel.org>; Tue, 12 Nov 2024 18:56:30 +0100 (CET)
-Message-ID: <c7d037d9-2261-4627-8e46-bd960f1ab6d3@koeller.dyndns.org>
-Date: Tue, 12 Nov 2024 18:56:30 +0100
+	s=arc-20240116; t=1731435265; c=relaxed/simple;
+	bh=PKqDbtCiKMr+QP1HLLpVRxQVDzbuMYvPe9bh+L4HTG4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CYoj5KIftAeCoJAF+wyGFxDx65aJcNN3tpe0kIpEY8gfTKUVFCbRERefAKivLMBjnCP7MFubE8YdVhQ1hbqvOhpcvfX8pwtJE4571kA7wPprYFLFvBU8AdVETd8aNqz9bxPYSC7xH6PYHa1yf51nWOFDlR2hR+EBhUSuc48YLeY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
+Received: from [78.30.37.63] (port=48438 helo=gnumonks.org)
+	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <pablo@gnumonks.org>)
+	id 1tAvP4-009HDw-MY; Tue, 12 Nov 2024 19:14:16 +0100
+Date: Tue, 12 Nov 2024 19:14:13 +0100
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Thomas Koeller <thomas@koeller.dyndns.org>
+Cc: netfilter@vger.kernel.org
+Subject: Re: ipset vs. nftables set
+Message-ID: <ZzOa9Zx_1s4WSI0x@calendula>
+References: <45ec57eecdb93fe0d03f63702ef68ebbb79bbdc1.camel@koeller.dyndns.org>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: netfilter@vger.kernel.org
-Content-Language: en-US, de-DE
-From: =?UTF-8?Q?Thomas_K=C3=B6ller?= <thomas@koeller.dyndns.org>
-Subject: connection tracking state in rules
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <45ec57eecdb93fe0d03f63702ef68ebbb79bbdc1.camel@koeller.dyndns.org>
+X-Spam-Score: -1.9 (-)
 
-Hi,
+On Tue, Nov 12, 2024 at 03:55:13PM +0100, Thomas Koeller wrote:
+> Hi,
+> 
+> migrating my existing firewall setup from iptables + ipset to nftables, I ran into a problem.
+> 
+> The firewall uses an ipset containing ipv4 source addresses to implement a dynamic blacklist. There are multiple rules that use this
+> ipset, and these rules are in chains that belong to different tables. This doesn't seem to be possible with nftables sets, that
+> apparently always have to belong to one and only one table, is this correct? At least I couldn't figure out how to create a set that
+> is accessible throughout the entire ruleset.
 
-tried to create a rule using the conntrack state of a packet:
-
-[root@sarkovy nftables]# cat ruleset-own.txt
-create table netdev world
-add set netdev world blacklist { type ipv4_addr; flags dynamic,timeout; 
-timeout 1h; gc-interval 6h; size 256; }
-create chain netdev world ingress { type filter hook ingress device 
-"eth_cable" priority filter; policy drop; }
-add rule netdev world ingress ip protocol tcp ip saddr @blacklist 
-counter drop
-add rule netdev world ingress ct state established,related counter accept
-[root@sarkovy nftables]# nft -cf ruleset-own.txt
-ruleset-own.txt:5:31-38: Error: Could not process rule: Protocol error
-add rule netdev world ingress ct state established,related counter accept
-                               ^^^^^^^^
-This is rejected, but why?
-
-And, btw., which one is correct, 'ct state established,related' or 'ct 
-state { established,related }'?
-
-Thomas
-
+Then, unify your tables in one global inet table.
