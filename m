@@ -1,97 +1,75 @@
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outbound5a.eu.mailhop.org (outbound5a.eu.mailhop.org [3.124.88.253])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 031712170C2
-	for <netfilter@vger.kernel.org>; Tue, 12 Nov 2024 18:28:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20435202643
+	for <netfilter@vger.kernel.org>; Tue, 12 Nov 2024 19:05:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=3.124.88.253
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731436138; cv=none; b=kwPBFnwDQGi2+LhKoDnch84c42KZ+bv5DNEFffwT+nkiAJnIdq4I2GsBesG08BtoHyyDJTCwZuJqV+5q37YRPg10XFoHhXipoHaMghRsVRTnmtB/tlJJ32uKCrRaubDJSdX0/Ksfqy01DFAdyzOKLFqd5vZo92pyKEb5xrAV14s=
+	t=1731438303; cv=none; b=H6Xw0jdmJiSARGebrHQ7+y3LVtu/GKGjdQQC7lgX2ZaDH85AckTeIvQSnJuy/vya7o5nbLXIftbkhRjxtU2K1vpr80W1yWUFO0OOeTJbMGOtBiY6RNEWKytQVVR6R/iTyqgH+Pf03zIUoMp2L2p8Ud7kaOlVRlbNo+ShyL+f13A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731436138; c=relaxed/simple;
-	bh=2gs6yOPA9D9o9FU+cui5DTFovtBD4QiayWtecZwqUdQ=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=HqRokBGYyNDWi5vkBizFsgUM9Z08Pecq7ZV7EebOMCJAIJJlzRVY7cygOMML3XXuQdE+gzHplNWO0BzPrmz0nxO+htnEzih3A/Q6Nb/ReBFu0JZkkWvebB7gQxApvJ5OGJOLJR6zHGg+kzhps0AryWHlK0fvqkXzG4ojWTwQ/mk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nEWc9dtl; arc=none smtp.client-ip=209.85.219.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1731438303; c=relaxed/simple;
+	bh=OXrn9vvPGBOdHzkBfWxxniti22Bf5SAfbeW73lCgs8s=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:References:
+	 In-Reply-To:Content-Type; b=HGhHpw+yOcGX1jQ9WsI5+vm4+zh0xamjxZ8JDH70Ej8NimRl6B/NMal5nBiWgdOvhx91+5r9ueE+r4QZuCCxfIDLK1N64ZWtZAzd8MG2lM0un5U+etEu/5aXM7ltTHQBaT4eG1RDFfUiR8JAwXW4/jPatd8QhtvxU8VvRn+eO4U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=koeller.dyndns.org; spf=none smtp.mailfrom=koeller.dyndns.org; dkim=pass (2048-bit key) header.d=outbound.mailhop.org header.i=@outbound.mailhop.org header.b=ivr6P/t4; arc=none smtp.client-ip=3.124.88.253
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=koeller.dyndns.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=koeller.dyndns.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nEWc9dtl"
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-e0875f1e9edso7833782276.1
-        for <netfilter@vger.kernel.org>; Tue, 12 Nov 2024 10:28:56 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=outbound.mailhop.org header.i=@outbound.mailhop.org header.b="ivr6P/t4"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731436136; x=1732040936; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=IQCY7vSO4PN/7iOBRzPYqWwli1l8ar63GgHoTfu3w18=;
-        b=nEWc9dtluymlO6O7TXoiQUxF+8tmSL+j+i/PyaGIRv/hA6yd9UhvFTQWyWOL6+v1pS
-         2QqlFw7gDZCkadnkoXajLyW3efDzqz5qGBkuoL+QzDjfHWlc0Bex5UaahZ5tZcl3w4kS
-         /klOTRB9eIloAhgkrkXi33k+nZo8QIYEeyGof3ozVWoLBIY0OVET3HpmOnTXdPp9mx/7
-         C8SZS9mqmm5y8+Bblq4We1t8fCSK7682oqNdBAFvfqM1KPaEZ/3Ot9qOlKrP4X7UriWe
-         KCwzLmseHxPwyGaiu06+ri/nGbTvrpcsh0yL3ZtTqnTUUn4FMg+4J6MlR+DSvm0Sbw/K
-         KR7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731436136; x=1732040936;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IQCY7vSO4PN/7iOBRzPYqWwli1l8ar63GgHoTfu3w18=;
-        b=bUwnLk1js6sd4KeT97nx067QIJGTNIsMkIOee6SgFMctOD2DJa0/zRM/hGwQPnhjOZ
-         b5sjtUmSxzRjOilw2URDCro6nxElWc79EsMcMmymr3/7U6qiDp8ONGvumUnLzOp7qfNg
-         xQJ4XwoMycASN5SgIm44eDysyRdP9XO0q6ick2RFwpALVHo2d7wtw4qyMtcesQI0ntt1
-         5pi2CiAhQWWdol/yp+6ojuUkG01GiC3j7YGEwAtAEzqzb+KK+eoWpP32gQ39sNGIbvBI
-         jlpdSlU2zsGlB7+AFfdzzkJuI2kCqV4Ao+kWM6JhH2AQJ+ojYBa4afHYIn45GVukwtLk
-         O6vQ==
-X-Gm-Message-State: AOJu0YzAyn/tmJnbDIZbhwYUqMToNYAjDZOMjtdII6SW4uXQYXjN6slI
-	SzSE3wXEgTct8AlxA0I18AaVav1curOL4tfz66UWdwqQ8NrfPfGDtO3x7BCazQ0xhaED2+I4zK7
-	caF5rDauByWWoDvgGOpv2uXPbfiLBA7wO
-X-Google-Smtp-Source: AGHT+IH9QpZerHR5Q4CWMj1fVVnTTSKWBJZVsSF50bOuYq9LooGN0CkYPQZ/NRrypzWNkl7dDzhxlw/sQOlBHq1IAUg=
-X-Received: by 2002:a05:6902:2d07:b0:e30:e3f6:75ec with SMTP id
- 3f1490d57ef6-e337f861df9mr17747767276.17.1731436135572; Tue, 12 Nov 2024
- 10:28:55 -0800 (PST)
+	d=outbound.mailhop.org; s=dkim-high;
+	h=content-transfer-encoding:content-type:in-reply-to:references:to:subject:from:
+	 mime-version:date:message-id:from;
+	bh=6jky3Z6LtC9sRWOW+oFSQ+tVRxy6M7L629Ui2zYX3yM=;
+	b=ivr6P/t4cunOfuIOU9M5PMa3kDVZ8B7PzErPrDt7+tlHAtbtTZAVKsGGVNDYmrsltn+Kjik4gwkuU
+	 pP23YhJAb5RUAC3ZfRWIdUSn3eY5Q6wXGogAfmwvrKmbFXKjuHQdl6qWCozZwrPAT4Bprr0JPakiwc
+	 gjlCNfRWsO/Ifsh1ze2OuFZx++B8BjtxOmczcUUtgNiN4a6sV+KK7/Jo/2tezIeq8hEx9wdYHgJsuq
+	 XV++8slQHoorZHzfNgbjzy+4VBLrktuLyGdwNxXHeCwNszlj/9LInepqE0ESbLYc/MG74P7cQ7HkVb
+	 vSV01C0tu6PB3PHUtIooHPjvtvMpw9A==
+X-MHO-RoutePath: dGtvZWxsZXI=
+X-MHO-User: 03440c1d-a129-11ef-b223-25ccbfd3c7c9
+X-Report-Abuse-To: https://support.duocircle.com/support/solutions/articles/5000540958-duocircle-standard-smtp-abuse-information
+X-Mail-Handler: DuoCircle Outbound SMTP
+Received: from mail.koeller.dyndns.org (ip1f123f5c.dynamic.kabel-deutschland.de [31.18.63.92])
+	by outbound3.eu.mailhop.org (Halon) with ESMTPSA
+	id 03440c1d-a129-11ef-b223-25ccbfd3c7c9;
+	Tue, 12 Nov 2024 19:04:59 +0000 (UTC)
+Received: from [IPV6:fd46:1ffa:d8e0::1] (sarkovy.koeller.dyndns.org [IPv6:fd46:1ffa:d8e0::1])
+	by mail.koeller.dyndns.org (Postfix) with ESMTPSA id EACAC968AF6
+	for <netfilter@vger.kernel.org>; Tue, 12 Nov 2024 20:04:58 +0100 (CET)
+Message-ID: <ea13484a-ed25-4812-b6b9-928ba19531e4@koeller.dyndns.org>
+Date: Tue, 12 Nov 2024 20:04:58 +0100
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Vincent Li <vincent.mc.li@gmail.com>
-Date: Tue, 12 Nov 2024 10:28:44 -0800
-Message-ID: <CAK3+h2xXycJ887M9pvDvuJK82fP51PXAb99Bs3XNTSQV4ycQXg@mail.gmail.com>
-Subject: iptables SYNPROXY small packet size transmission performance issue
-To: netfilter <netfilter@vger.kernel.org>, Vincent Li <vincent.mc.li@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+From: =?UTF-8?Q?Thomas_K=C3=B6ller?= <thomas@koeller.dyndns.org>
+Subject: Re: connection tracking state in rules
+To: netfilter@vger.kernel.org
+References: <c7d037d9-2261-4627-8e46-bd960f1ab6d3@koeller.dyndns.org>
+ <ZzOdbYay4hhiwqbZ@calendula>
+Content-Language: en-US
+In-Reply-To: <ZzOdbYay4hhiwqbZ@calendula>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi,
 
-I setup SYNPROXY iptables rules as below for my  web server serving
-one static simple page, then test the latency through
-https://check-host.net/check-http?host=https://www.bpfire.net, there
-are some country locations shows 4 - 5 seconds delay, which is caused
-by server sending small packet size, see the capture screenshot:
-https://github.com/vincentmli/xdp-tools/issues/7#issuecomment-2465554843
 
-INTERFACE=eth0
+Am 12.11.24 um 19:24 schrieb Pablo Neira Ayuso:
+> Because there is currently no support for connection tracking at
+> ingress.
 
-sysctl -w net.ipv4.tcp_syncookies=2
-sysctl -w net.ipv4.tcp_timestamps=1
-sysctl -w net.netfilter.nf_conntrack_tcp_loose=0
+O.k., I guess this is probably obvious to people more familiar with the 
+kernel's netfilter subsystem. For the benefit of all others, it might be 
+desirable to have it documented somewhere in the nft man page (or did I 
+just miss it?).
 
-iptables -t raw -I PREROUTING  -i $INTERFACE -p tcp -m tcp --syn
---dport 443 -j CT --notrack
-iptables -t filter -A INPUT -i $INTERFACE -p tcp -m tcp -m state
---state INVALID,UNTRACKED --dport 443 -j SYNPROXY --sack-perm
---timestamp --wscale 7 --mss 1460
+So, does this mean that I cannot use conntrack state in netdev tables, 
+since these only allow for the filter/ingress combo? What I wanted to 
+achieve was to create a firewall that just protects one particular 
+interface, the one connected to the internet at large. Netdev seemed 
+like the way to go.
 
-Initially this issue was reported to me when one user attach XDP
-acceleration for iptables SYNPROXY, after I reproduced the latency and
-did more testing here
-https://github.com/vincentmli/xdp-tools/issues/7#issuecomment-2471174263,
-it narrows down to 'iptables -t filter -A INPUT -i $INTERFAC -p tcp -m
-tcp -m state --state INVALID,UNTRACKED --dport 443 -j SYNPROXY
---sack-perm --timestamp --wscale 7 --mss 1460', if I remove
-'--sack-perm --timestamp --wscale 7 --mss 1460', the small packet size
-transmission issue does not occur.
-
-Any clue to solve this issue for iptables SYNPROXY?
-
-Thanks
-
-Vincent
