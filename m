@@ -1,43 +1,43 @@
-Received: from outbound2.eu.mailhop.org (outbound2.eu.mailhop.org [35.157.29.171])
+Received: from outbound5i.eu.mailhop.org (outbound5i.eu.mailhop.org [35.156.234.212])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B73171C32
-	for <netfilter@vger.kernel.org>; Thu, 14 Nov 2024 14:02:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.157.29.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F8191C32
+	for <netfilter@vger.kernel.org>; Thu, 14 Nov 2024 14:02:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.156.234.212
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731592964; cv=none; b=ZlzoS4e9jH7ehFdTwO6V+nnyr+8SbRwRCl2h9PcJLiBYmMYHn7mDhwVuzjybrESJy7xEXDWRCgkLHqmm7/wDP5SRGJeVGwE8CAmnd1fq14PmSMdTXGLVef++t4xNMgqZ766lliw044FWGbYokpg4nI8VOw7Y7LR5iHeQpI3Zqig=
+	t=1731592972; cv=none; b=CBTAyxbyIzEahyDrILdgu91UENxoYPTNYyfDqvXJCjdQQ/84UJYiHYMEEHxsZZsQn5RoH6BMbauDgg7w9/WpkliJGIBbCnzh5ewg8e9vUOT0MLUIrULwqob+y0OV0Dk5q5+Hwzf/wipQCCzIRRJ8OjOVcDQGkaCSRrruy9PMwes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731592964; c=relaxed/simple;
-	bh=RG5yAeflv3tohgXXM8hh7cwC4adFTqFktVbgXWAdNPY=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=E0bPp34f/BKKu+GBkHGvJ+tqxT3NWL7hB/jNOaHtJY0Y1rLeZODSmwKDA6nTfGaE86A/3Cpjorm/tpL6Ox6/jCxJ3tArGSdCLIBHFFko9OlplO3nzH46zbGWSeQFBrdfzs0aGo8uBSpeZ30aHSSOYVTQaEpY5rFb7Yi34/F6HjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=koeller.dyndns.org; spf=none smtp.mailfrom=koeller.dyndns.org; dkim=pass (2048-bit key) header.d=outbound.mailhop.org header.i=@outbound.mailhop.org header.b=FU7I86Bv; arc=none smtp.client-ip=35.157.29.171
+	s=arc-20240116; t=1731592972; c=relaxed/simple;
+	bh=CBiW526Rt73bVQ7OSluhUIC7Y3JmPnSbbur+KOtc2uE=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=WJxPeolKYboIQ23czdJEDt8UTzHxgyQDIyvzYyCd7wq6I+H1orHryRS4+/CoAgbx/xp3dblbIY9I5ElYoVkVTJq9i7n33wUuKBftRewCbgIS01X0lh5LzH1X/Z4+GgdvfLWnS9cKvWO4Z/O5zfG7Lmp38KGUEVbft48sf4QxMzk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=koeller.dyndns.org; spf=none smtp.mailfrom=koeller.dyndns.org; dkim=pass (2048-bit key) header.d=outbound.mailhop.org header.i=@outbound.mailhop.org header.b=KVjgfovV; arc=none smtp.client-ip=35.156.234.212
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=koeller.dyndns.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=koeller.dyndns.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outbound.mailhop.org header.i=@outbound.mailhop.org header.b="FU7I86Bv"
+	dkim=pass (2048-bit key) header.d=outbound.mailhop.org header.i=@outbound.mailhop.org header.b="KVjgfovV"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=outbound.mailhop.org; s=dkim-high;
 	h=content-transfer-encoding:content-type:subject:from:to:mime-version:date:
 	 message-id:from;
-	bh=jX2WzzEDkrArDo5NTqTyMwiQg9qqGG3r2DNi2bKue8E=;
-	b=FU7I86BviEy803r85FLafdh/8r6s+6cLIAKdt8bJI7oQmrmwYmyhB/NxYJP5GRIrwtDKm/D5c1VYa
-	 2y1gMu8e1XM647rW6if5Ax6TD/Dba+GT/EP9idefRWu3JLB5Me5eejkwVAfpOD6uAA1Ze/u11sAZuh
-	 pBy+qasTRHT4NhQjmhX7KsnehLrCeS58ZGXMk2HQ8WUVzu4z53XYafx1X7yFRMjeDyssxEgdYNVN35
-	 +R7gMCN6SOZIJ6veUZjsg7m/dHNmncFyBNdEQ5+Y5CYzEqaQOtf1oimtKqeoSE2rkhy2mD5TIXu2zW
-	 TrnQkijavlso01/amgDRPy757+hcdIw==
+	bh=xVhDAKbpPycTQcQ3UC2EeHMN4wv67ADYm2I1K1l71wU=;
+	b=KVjgfovVaIA32VikhOBdFXvFecQil/MwgodrweGV2pANTLixKm8RLCxAmAx8jJtAkTefycACgrcYw
+	 pqmtt6SZZzeAlX5GAQ9+QJUc7lHjCckcJShOy9pln9cSfEfRf+lHMMwRFikDllsteezPH4a2udznM/
+	 mhZ1VPPOeMl+1BwYQv5l0BvX2RW1jSGCaq9E3KzzBKXfeGifaajToDRjUX9jgR6awZXkJusJeD73o8
+	 618T18q3wJZpbf1Vt9SlBwuESf+9jBSYhesOYyYVyl13rEZjVjRhc5Os+IB1YiqNZaq2/ObuLb1TYS
+	 3O+t5HpB3R8Ro4XSAOb1HdSpiA9BAeQ==
 X-MHO-RoutePath: dGtvZWxsZXI=
-X-MHO-User: f48256e6-a290-11ef-a024-7b4c7e2b9385
+X-MHO-User: 1d107aa8-a291-11ef-a024-7b4c7e2b9385
 X-Report-Abuse-To: https://support.duocircle.com/support/solutions/articles/5000540958-duocircle-standard-smtp-abuse-information
 X-Mail-Handler: DuoCircle Outbound SMTP
 Received: from mail.koeller.dyndns.org (ip1f123f5c.dynamic.kabel-deutschland.de [31.18.63.92])
 	by outbound2.eu.mailhop.org (Halon) with ESMTPSA
-	id f48256e6-a290-11ef-a024-7b4c7e2b9385;
-	Thu, 14 Nov 2024 14:01:33 +0000 (UTC)
+	id 1d107aa8-a291-11ef-a024-7b4c7e2b9385;
+	Thu, 14 Nov 2024 14:02:41 +0000 (UTC)
 Received: from [IPV6:fd46:1ffa:d8e0::1] (sarkovy.koeller.dyndns.org [IPv6:fd46:1ffa:d8e0::1])
-	by mail.koeller.dyndns.org (Postfix) with ESMTPSA id 24E4F969A5D
-	for <netfilter@vger.kernel.org>; Thu, 14 Nov 2024 15:01:33 +0100 (CET)
-Message-ID: <f6857dc4-84a7-4bc5-aefe-c3b893671e8c@koeller.dyndns.org>
-Date: Thu, 14 Nov 2024 15:01:33 +0100
+	by mail.koeller.dyndns.org (Postfix) with ESMTPSA id 4F38C969A57
+	for <netfilter@vger.kernel.org>; Thu, 14 Nov 2024 14:53:04 +0100 (CET)
+Message-ID: <209ce99a-9f22-444d-bd75-8b38865aea3b@koeller.dyndns.org>
+Date: Thu, 14 Nov 2024 14:53:04 +0100
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
@@ -48,12 +48,17 @@ User-Agent: Mozilla Thunderbird
 To: netfilter@vger.kernel.org
 Content-Language: en-US
 From: =?UTF-8?Q?Thomas_K=C3=B6ller?= <thomas@koeller.dyndns.org>
-Subject: Dropping of the end of a chain
+Subject: Adding set elements
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-The nft manpage states that if the end of a chain invoked via 'goto' is 
-reached without a verdict, 'evaluation will continue at the last chain 
-instead of the one containing the goto statement'. I cannot make sense 
-of this; what is the 'last chain'?
+What exactly happens if an attempt is made to add another element to a 
+set that is already full? I ran into this condition and found that a 
+subsequent 'nft list ruleset' would display the set with no contained 
+elements at all.
+
+I think that a reasonable way to handle this case would be to apply sume 
+LRU strategy to free up a slot, but that is apparently not the case?
+
+Thomas
 
