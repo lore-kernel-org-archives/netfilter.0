@@ -1,73 +1,71 @@
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47A851CF7D6
-	for <netfilter@vger.kernel.org>; Tue, 19 Nov 2024 16:06:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E07D1D4142
+	for <netfilter@vger.kernel.org>; Tue, 19 Nov 2024 18:00:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732032389; cv=none; b=easX5Pnel3n5kkU7SBIf8tOtHG4VRzXscaVEEQnKiK/aNoufF+zESM05C6IW6m6r5ipCTw9fNFSBuETsKR7Wlc8bU8iNgqJuV+lfqKdIqsd1fLXOfVBQc9ZD1m7abBzJbrWdWgQJt5QnRE73rfueb+FOA3abtn0DqF/0V5MF3j4=
+	t=1732039226; cv=none; b=HS5wpN+DxIep/X0YPNPpTenXhXn7YJwbZp/AwYuuq8UkQh0A65n6Hi+/6jZNZ2HUvAvd1sZ+P1AOQuepfS/DzmE3iFzcMxO6bEtA4I07FLbEgjJzG8zZqC1awC5+709kxO93yn6z21w3vhkfR3/iLEJB95SskPz9TVoZf9RuqjU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732032389; c=relaxed/simple;
-	bh=CKAliH4LG9t6GS8OFQHI3bKbZwN9w7t6R4HPBEAQsSE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l8qH4eo2BxOs3pxcNSp/gEU5P8UGcNKi9to2hdv8Lgnn3ybmuE2K+2bQKvoKoCyF39eULFAPFKhuKQWxS8V3edIl574rkyaH2UIeJ7Qj6JzCD8hNxwZJ6MO8IV0YViuOx3A8i23PK3siirGRoFqc4b9cmM109AlVht7dfBKA1FQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@strlen.de>)
-	id 1tDQk5-00064o-4E; Tue, 19 Nov 2024 17:06:17 +0100
-Date: Tue, 19 Nov 2024 17:06:17 +0100
-From: Florian Westphal <fw@strlen.de>
-To: Slavko <linux@slavino.sk>
-Cc: netfilter@vger.kernel.org
+	s=arc-20240116; t=1732039226; c=relaxed/simple;
+	bh=IBJyWOPFUwPWKh0Id4SIuTwo/Z3aP5/DNEYCFpgCzY0=;
+	h=Date:From:To:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=pwpS/8MysvnJNH+Pq9LwotKUBDFGZD9XeQ1rjaKEpBZ8yIAIenlcBnxKGZUSOBgHJxbfpNFGzzZcxhhdeB+kf314OO25ysref4bV1OQObwq0l9h+YzmyJ8oTnVabJUqzJb5zAzmAyCk2oYjIPGe0LSr9U9xKhlBMkNJnIuOP8XY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=HmMO7Maj; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=D8Jjr0RX; arc=none smtp.client-ip=185.25.250.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="HmMO7Maj";
+	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="D8Jjr0RX"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
+	s=r2023; h=Content-Type:MIME-Version:Message-ID:References:In-Reply-To:
+	Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:
+	Content-Type:Message-Id:In-Reply-To:References;
+	bh=IBJyWOPFUwPWKh0Id4SIuTwo/Z3aP5/DNEYCFpgCzY0=; t=1732039223; x=1733248823; 
+	b=HmMO7MajinOXdkXBFDo24qhj57cEuqpg/mkxzPgWEDyd+sTWDkMUsqyer22ICKUdPBPHS1oLw0z
+	3VuXLJWYQ5OdbcbHPxF5OCl8t5cAh1Cl9zmZQ78nSxwIkrhsTxEBMbc7Qb+4HDRdwKfSh+2bdrU5V
+	IUfDNMvnyaB8k8NG9DA=;
+DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=slavino.sk; s=e2023; h=Content-Type:MIME-Version:Message-ID:References:
+	In-Reply-To:Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:
+	MIME-Version:Content-Type:Message-Id:In-Reply-To:References;
+	bh=IBJyWOPFUwPWKh0Id4SIuTwo/Z3aP5/DNEYCFpgCzY0=; t=1732039223; x=1733248823; 
+	b=D8Jjr0RXjxosTBnhMcEaRVKm54ejR00RNDk+SGV/5q4J6z+K72yR4XS+2k0PZctQ/JtQQkUqwTN
+	I8NIa8r5mBg==;
+Received: from dovex.skk ([192.168.10.12])
+	by primex.slavino.sk with esmtpsa  (TLS1.3)(Exim 4.96)
+	(envelope-from <linux@slavino.sk>)
+	id 1tDSWS-000n75-1s
+	for netfilter@vger.kernel.org;
+	Tue, 19 Nov 2024 19:00:20 +0100
+Date: Tue, 19 Nov 2024 18:00:16 +0000
+From: Slavko <linux@slavino.sk>
+To: netfilter ML <netfilter@vger.kernel.org>
 Subject: Re: set with limit
-Message-ID: <20241119160617.GA21970@breakpoint.cc>
-References: <756a9507-5ecf-4ba4-a8d3-d364f13dbfd5@slavino.sk>
+In-Reply-To: <20241119160617.GA21970@breakpoint.cc>
+References: <756a9507-5ecf-4ba4-a8d3-d364f13dbfd5@slavino.sk> <20241119160617.GA21970@breakpoint.cc>
+Message-ID: <A49323C1-3811-4863-B527-57738F247231@slavino.sk>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <756a9507-5ecf-4ba4-a8d3-d364f13dbfd5@slavino.sk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Slavko <linux@slavino.sk> wrote:
-> with nft v1.0.6 and kernel 5.10.226 i want to limit logging count
-> by IP. I setup set:
-> 
->     set log_base4 {
->         typeof ip saddr
->         size 1000
->         flags dynamic,timeout
->         limit rate 1/minute burst 2 packets
->         timeout 1h
->         comment "IPv4 base log limit"
->     }
-> 
-> It is then used in chain:
-> 
->     chain input {
->         type filter hook input priority filter + 5; policy accept;
->         ...
->         update @log_base4 { ip saddr } log group 0
->     }
-> 
-> I see, that set is filled/updated by particular IP:
-> 
->     elements = { X.Y.Z.W timeout 1h expires 59m59s360ms }
-> 
-> But i see 15 lines per minute (it sends packet every 4 sec) for that
-> IP. I expect max 2 lines per minute...
-> 
-> Please what i did wrong?
+On 19=2E novembra 2024 16:06:17 UTC, Florian Westphal <fw@strlen=2Ede> wrot=
+e:
 
-Looks like 5.10 is too old, listing should show limit expression was
-attached, i.e.:
+>Looks like 5=2E10 is too old, listing should show limit expression was
+>attached, i=2Ee=2E:
 
- elements = { x.y.z.w limit rate 1/minute burst 2 packets timeout 1h expires 59m55s504ms, ...
+Thanks, i will try with meter tomorrow=2E=2E=2E
 
-... (this is with 6.11.5 and your rules above).
+regards
+
+
+--=20
+Slavko
+https://www=2Eslavino=2Esk/
