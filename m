@@ -1,103 +1,112 @@
-Received: from outbound5e.eu.mailhop.org (outbound5e.eu.mailhop.org [52.28.168.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0AFD190499
-	for <netfilter@vger.kernel.org>; Sat, 16 Nov 2024 11:18:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.28.168.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71D5514E2C0
+	for <netfilter@vger.kernel.org>; Tue, 19 Nov 2024 12:03:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731755919; cv=none; b=AQPqDkXVuKeRUVaQtn0x0A64GK3bpP+zxoKoEtxaIA5ckzy0w7NytAc2yVuomi9ZBGYsolFDx7ZCcPvtjtEmDXxja56cRey9jWuYaZfuubMw71Y0qn5EDZPS0+0TgVCg/sVMJuPCef4f2hD5dIjPP9Av+md7sVT7OLyDWeiUFX0=
+	t=1732017839; cv=none; b=BAZLc0CmIbnhF5PMXqWJ4I5ENdIivPOeOYkqFwwLMFLfIIL2vfPXSaQmcZAFUZpIZQtose7ANDN2hcYP4RJ4Zc2DPD/ppRxGXbuogv35W2OMNHrpekFH1HDh/b6Fq/ZC3vaYrJZ3dCnL/pqO2UZ2LPUnxVO2mUhisxEd4XIUBRQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731755919; c=relaxed/simple;
-	bh=IJFjzFDPocJLl8crRomOAtVGArGC2+Ry8iHvlDA7cs0=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=ireuJolRcf4GF2qncYEkLoUgJ/t+JgJw/Vjzf60o1MAVqyFFaZTRZCfAWXaLhR6I98jumMlEYzN+IFCksrAdaPpCpQW3NXMVTqeeW+DRlQbbVk+QSg7CNp9Y/BbtPm6I0Mnampiq4lgisP8w9vWMh/urnuvA7kP2KcOg0H6bXJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=koeller.dyndns.org; spf=none smtp.mailfrom=koeller.dyndns.org; dkim=pass (2048-bit key) header.d=outbound.mailhop.org header.i=@outbound.mailhop.org header.b=BscaEM1D; arc=none smtp.client-ip=52.28.168.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=koeller.dyndns.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=koeller.dyndns.org
+	s=arc-20240116; t=1732017839; c=relaxed/simple;
+	bh=Fi58NIwUGtV2gP2kaQoiZpUeqwJ1Ndzsstf17yBx1wo=;
+	h=Message-ID:Date:MIME-Version:From:To:Subject:Content-Type; b=H8b+7zR6FhwbKFB0D8kIqyctqEMRQdIgG+tisP+K5jC2iOBr47dWhoDQkJz9EjZcRC2TyDMGYtTbz6S+9ZRb9dyCD0dncY+z0eZSeTpwZBYpPwg9mIfh8X8K70EPwobjO+ad5Imp+Tat0CWDePQqFjWo6L7cjZOrjC4fMtkxFy0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=xRluvhIh; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=uL6Mh4uF; arc=none smtp.client-ip=185.25.250.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outbound.mailhop.org header.i=@outbound.mailhop.org header.b="BscaEM1D"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=outbound.mailhop.org; s=dkim-high;
-	h=content-transfer-encoding:content-type:in-reply-to:references:cc:to:subject:
-	 from:mime-version:date:message-id:from;
-	bh=K+a4r2bVrzgecq1n1I/T+7I+F8EbZd000wfmkPMtFVM=;
-	b=BscaEM1DLtVe1cGQouX+560lK6IVQjKhnhsFt/tZJSz2qmSVkrrVBOWlo2rPOjMeSXLsrJainZyrG
-	 MB6sJ9xJ6/3tz+QKrbD1d04P5Tn0HKv/WEO1r4lTsaQ96JR6bYzfh0wZTx0iKs7PMYQDbpGMQeXhEY
-	 x5jxzVYqk1bkFofBFwumY8MJ7z9bm0IWmvXRB9oBX63yOwmr1OW7Xojczaas+oqsdkedu2lJlCqIJz
-	 G00s8d5K5REX2UaKIYS0U/aqPg3+x6tfED2l7k8Y9O9dOGDlByLapc16F6eUqrWY3RZS+r6areePlR
-	 xEMhmENhQEgY8v03hFjZv2zJu24rIBA==
-X-MHO-RoutePath: dGtvZWxsZXI=
-X-MHO-User: 5cce41c7-a40c-11ef-a0a0-7b4c7e2b9385
-X-Report-Abuse-To: https://support.duocircle.com/support/solutions/articles/5000540958-duocircle-standard-smtp-abuse-information
-X-Mail-Handler: DuoCircle Outbound SMTP
-Received: from mail.koeller.dyndns.org (ip1f123f5c.dynamic.kabel-deutschland.de [31.18.63.92])
-	by outbound2.eu.mailhop.org (Halon) with ESMTPSA
-	id 5cce41c7-a40c-11ef-a0a0-7b4c7e2b9385;
-	Sat, 16 Nov 2024 11:17:27 +0000 (UTC)
-Received: from [IPV6:fd46:1ffa:d8e0::1] (sarkovy.koeller.dyndns.org [IPv6:fd46:1ffa:d8e0::1])
-	by mail.koeller.dyndns.org (Postfix) with ESMTPSA id 5694B96AC15;
-	Sat, 16 Nov 2024 12:17:27 +0100 (CET)
-Message-ID: <0f260665-7d2c-4274-b635-f40519ed193f@koeller.dyndns.org>
-Date: Sat, 16 Nov 2024 12:17:27 +0100
+	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="xRluvhIh";
+	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="uL6Mh4uF"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
+	s=r2023; h=Content-Type:Autocrypt:Subject:To:From:MIME-Version:Date:
+	Message-ID:From:Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:Content-Type:
+	Message-Id:Autocrypt; bh=kWhr9hoR9bghoAmzCfAQMRB6+NtEOFmLQ6bFfVyMR0M=;
+	t=1732017835; x=1733227435; b=xRluvhIheGi+C2+u7e7CTxkZyOgE/LCPQRsCT5nslIsVRrn
+	apdtHXZ8e4oLwMce3Na9Qr2w1kJryyo8JgJ2d3VMg/K04PsEtHLYbi4/qk9yQ2C9yfloWy1H2ON4N
+	HiSm/AwfWSKBH1tLKk8wCXQPWEbFF9Qy2E3zUdWrPGnvnaw=;
+DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=slavino.sk; s=e2023; h=Content-Type:Autocrypt:Subject:To:From:MIME-Version:
+	Date:Message-ID:From:Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:
+	Content-Type:Message-Id:Autocrypt;
+	bh=kWhr9hoR9bghoAmzCfAQMRB6+NtEOFmLQ6bFfVyMR0M=; t=1732017835; x=1733227435; 
+	b=uL6Mh4uF9DXjq11xMONZsu0zDOsW2BGwZpQrFHIPqUGiqkXTYuwPGfibmBXRA7caLhzYUa1jI4s
+	m5oUqQn0RDA==;
+Received: from dovex.skk ([192.168.10.12])
+	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <linux@slavino.sk>)
+	id 1tDMxP-000loT-0V
+	for netfilter@vger.kernel.org;
+	Tue, 19 Nov 2024 13:03:47 +0100
+Message-ID: <756a9507-5ecf-4ba4-a8d3-d364f13dbfd5@slavino.sk>
+Date: Tue, 19 Nov 2024 13:03:46 +0100
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: =?UTF-8?Q?Thomas_K=C3=B6ller?= <thomas@koeller.dyndns.org>
-Subject: Re: Adding set elements
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
-References: <209ce99a-9f22-444d-bd75-8b38865aea3b@koeller.dyndns.org>
- <Zzc4D1R7pTJlCDvR@calendula>
-Content-Language: en-US
-In-Reply-To: <Zzc4D1R7pTJlCDvR@calendula>
+From: Slavko <linux@slavino.sk>
+Content-Language: sk
+To: netfilter@vger.kernel.org
+Subject: set with limit
+Autocrypt: addr=linux@slavino.sk; keydata=
+ xsBNBE2fIMwBCADjOr4MY1rKxZnb4hsEdYBDFIHhZO9U3iLN/rNWSFKh3LeERd3Bu5gMz7Hk
+ kn0nsoV2ijRKTLlXE0yzUtoJL+8WdNdWONt//cYcl8Z9V80uGFWfL6h0XWlqlup4XLTPZYz9
+ 7f/k1UsTltiIWd5hK6JU+PA6bFVO3ogq9Nx6ru6pNzQtx6D7D5ND9/4rN45MIYolEMMC2/1J
+ bvM8PFdwB+QmJbj2fKb7jboKFS34VrUQ9xsVJske9/lC0MTWN1HT+dFiXvvue7TmwOgBAd/B
+ 24eGPVtcA2D13IRqhItDTS1DtacnzY3Okx/OEMdUIhjqKCBUGHeP22SagvAaKi8UYBBrABEB
+ AAHNIVNsYXZrbyAoTGludXgpIDxsaW51eEBzbGF2aW5vLnNrPsLAeAQTAQIAIgUCTZ8gzAIb
+ AwYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQg/mquDkYjbYGXAf9FbEfo0wF7hfYgqll
+ CfNSoCcGcj1WkqqXD0kkAY/5wIFTbOOtrGn7TijhuFu9aIzjd+K+3Q9tk4Tt6MSg9ibp25b2
+ HLZPp8UiyPLeE0BAWFgAgtOrrIDg8VkvjfO2jSJjkHhHOWVP1xZYSlApNNhU1KUit7RE0ueV
+ bWG45a8ONSp+eNCSHkgMC8VtoF3oMegi0rgFUXSdiEsZlrpXo0Q7HPFObg2ElTC9QgFr6Lmh
+ uw6I+BvXE0arwa+4ndcesb5pV6TDONOrihgYvZIyZ6V4Bgnt9C6lvK1Y/e62W73YBAEIvQo7
+ j90m0lrBEAMhUhj4aGooeJQ2b/aXkrBwc+9vos7ATQRNnyJKAQgAp8mP9O2fH0KnS1yJzAz+
+ 7fAM8dxFJbagFkv5ljvQ/qkEYh4uI+hWjgV7ok9+9kuzFiHbv8nczhcMr/J0JX4kok/5B5B4
+ QuBdCXAoeAiWaPB4V6peLXheJKsBbBP/wNAFthJitt4P5XXrZbL4hv4+5Vm/uYXXYdQczGYa
+ 2UGMVZxYyH1wh3Ywfk2c4RvPfxfe7Q8pdvpK8U+mKKVDQ6kaTEJXB4EGkp80ncpEDmJEzqvj
+ svKoHHruMUnuJdNkuKvE/knpiOw9jbifIkTQfLEJKgmJE6OpgQ5SEJpGBtCTEJr9Wo1l38ji
+ 6ujrUZyjBerdcucsXOKXk3n8mJhy4pshfQARAQABwsB8BBgBCAAmAhsMFiEEz0au30POX8OO
+ zaE5g/mquDkYjbYFAmACuOoFCRY5xCAACgkQg/mquDkYjbYddAf/SWvH2Z5J23ZNqxpdORYU
+ jUyHISTo3WaO0k72VdIHJqCHR+XSerysTyuBO4mf8SYQ2VpkIVLbOfxLKoHNt7jeVa+bjVki
+ OFCjRPFhn3K+CVPwK45gvDqaAzQI4FAf2zCtdD0Zt44rwkb2e7RP7kGcI5EirVpU14bDk71g
+ lE2JSezwkRYU+4ZUrDo9tGcUzJYjwHMvLXR5+yRIV+gqea1nb6871CtKh1w00X2VUXjDBtXo
+ xSAd+NoTI57gwlnQOavvaITo8eGAnpSx9qA2k25uSVH76dn8KpL6O3b9MWfGn4o2KbA+3Cpg
+ taCpoGgpKB7I+cQ4VywRYFH9rEMRgmr9Kw==
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
+Hi,
 
+with nft v1.0.6 and kernel 5.10.226 i want to limit logging count
+by IP. I setup set:
 
-Am 15.11.24 um 13:01 schrieb Pablo Neira Ayuso:
-> Hi,
-> 
-> On Thu, Nov 14, 2024 at 02:53:04PM +0100, Thomas Köller wrote:
->> What exactly happens if an attempt is made to add another element to a set
->> that is already full? I ran into this condition and found that a subsequent
->> 'nft list ruleset' would display the set with no contained elements at all.
-> 
-> I don't see this here.
-> 
-> Would you post a reproducer for a current kernel in -stable?
-> 
->> I think that a reasonable way to handle this case would be to apply sume LRU
->> strategy to free up a slot, but that is apparently not the case?
-> 
-> Could you develop your usecase?
-> 
+     set log_base4 {
+         typeof ip saddr
+         size 1000
+         flags dynamic,timeout
+         limit rate 1/minute burst 2 packets
+         timeout 1h
+         comment "IPv4 base log limit"
+     }
 
-I wanted to create a blacklist that the ipv4 source addresses of packets 
-that matched certain criteria were added to, like so:
+It is then used in chain:
 
-add set ip tbl_ipv4 blacklist { type ipv4_addr; flags dynamic,timeout; 
-timeout 1h; gc-interval 6h; size 256; }
+     chain input {
+         type filter hook input priority filter + 5; policy accept;
+         ...
+         update @log_base4 { ip saddr } log group 0
+     }
 
-and later:
+I see, that set is filled/updated by particular IP:
 
-add rule ip tbl_ipv4 syn add @blacklist { ip saddr timeout 1h } counter drop
+     elements = { X.Y.Z.W timeout 1h expires 59m59s360ms }
 
-I noticed that set elements were accumulating over time as expected, but 
-after some time the set showed up as empty in the output of 'nft list 
-ruleset'. However, I cannot state with certainty that it was the 
-overflow condition that caused this to happen, that was just a guess.
+But i see 15 lines per minute (it sends packet every 4 sec) for that
+IP. I expect max 2 lines per minute...
 
-I since reduced the element timeout to 10m and the gc-interval to 30m, 
-and haven't encountered the problem for a while now.
+Please what i did wrong?
 
-Assuming that the storage allocated to deleted elements is reused if new 
-elements are added before the set is garbage-collected, I would reason 
-that the choice of gc interval is not critical and it probably makes 
-sense to choose a rather large value in relation to element timeout, is 
-this correct?
-
+-- 
+Slavko
+https://www.slavino.sk/
