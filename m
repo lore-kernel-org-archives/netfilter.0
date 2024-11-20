@@ -1,110 +1,63 @@
-Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from srv1.dorfdsl.de (srv1.dorfdsl.de [82.139.196.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F784156F39
-	for <netfilter@vger.kernel.org>; Wed, 20 Nov 2024 08:17:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86C3015855C
+	for <netfilter@vger.kernel.org>; Wed, 20 Nov 2024 20:06:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=82.139.196.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732090643; cv=none; b=i1BP9zOXj3J7J8TES/hmNNzESPaKnpbh86o/wfbYHhYXIDE1zle1+oxa/udbnOipMIw3hB9awsx9u+rsEJos8QNTP6aOCWMp0bP1XgJhT/2n4igUBIlIHZY9aGWgAtjpubU2WvK+f/nW7vxm5uyaRDas2D6pUE559DQdj+Bl0P4=
+	t=1732133204; cv=none; b=AIIoODYvuDjjrDsZbfQ6GvqVgpXtUFmWgpAP+0hhaQQxD2zOk54jmudT2YhVB6JYZAc/37MIyOTJa/4h1g5tVcPLx7MbZim99gzX7Q9ip9sphldmNiqVFXivT9SWtSSmXG6QzWjDECJXMhvx2zy6L+cpUC0nlZoEL6Kwnv+t+0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732090643; c=relaxed/simple;
-	bh=6um0mFgI/BVXsrFSTT/Nr+ACRjm0pfcwlsBvPAX720A=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=UOC3rJ7P6aCcf51hr81uc81hLidt+PwpWO9/rAXAfTX+KuQBwI6K7cC2i8Pm9ngZLKiNBCPcMb0/lOkq7Ds8K5UFlUDVmu0kW87UeP1Bi82YI1z5ROeJWjCE4GmMwBlSuPd3oU7Uy/M3eEv1dzazKt2/jW9nASgw1e/zqtW9G4M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=lWOPDNkN; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=hxJaq7Cs; arc=none smtp.client-ip=185.25.250.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
+	s=arc-20240116; t=1732133204; c=relaxed/simple;
+	bh=L+Uwfu1EBkmzEoWR2kAj63u5OEAImOVH++hir//MpFw=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=X3G6ilvkOtcft2bYN43AY42qc2+eX9pqIVCqUmp5wucXMjDvaxkZo/rueH6Tc9sZTC5+U7tSNbH7XG0xjxhsdcwkb+ZIFntzNB64GYBOtDbKN1htfuJO1p/7Iv6CEE68tGDkz+29DfWTYpRFhxHum0pNTy4E46OuaKnhfaqW/4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dorfdsl.de; spf=pass smtp.mailfrom=dorfdsl.de; dkim=pass (2048-bit key) header.d=dorfdsl.de header.i=@dorfdsl.de header.b=QuzK+wgc; arc=none smtp.client-ip=82.139.196.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dorfdsl.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dorfdsl.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="lWOPDNkN";
-	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="hxJaq7Cs"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
-	s=r2023; h=Content-Type:In-Reply-To:Autocrypt:References:To:From:Subject:
-	MIME-Version:Date:Message-ID:From:Reply-To:Sender:Subject:To:Cc:Date:
-	MIME-Version:Content-Type:Message-Id:In-Reply-To:References:Autocrypt;
-	bh=R/GfVpLChKmHqSzvqLw5PXBdAxl1mlfd+CsJ3aztIP0=; t=1732090639; x=1733300239; 
-	b=lWOPDNkNcmgi9kJh4K4h88OCo98LGd7jNyxS35GOQ+N7wvpxJF7c8E3xTYmTxG8+Nb+EnmMyY7Q
-	EfqwiDl50/Tw2+fI9ZSQAJo+R2QxuywuGWGpA6qAq0Lc/ndkIoarMx5jII3KF7Adv6MXds1u6jWY4
-	4R8wi0RkqHVto5z9CXQ=;
-DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=slavino.sk; s=e2023; h=Content-Type:In-Reply-To:Autocrypt:References:To:
-	From:Subject:MIME-Version:Date:Message-ID:From:Reply-To:Sender:Subject:To:Cc:
-	Date:MIME-Version:Content-Type:Message-Id:In-Reply-To:References:Autocrypt;
-	bh=R/GfVpLChKmHqSzvqLw5PXBdAxl1mlfd+CsJ3aztIP0=; t=1732090639; x=1733300239; 
-	b=hxJaq7CsXbBY4+RKN347yfhpDEnOJTU+vKxSxzMzO/xw2EcbcJ/VgeYwrlgy5juxeu//1f3TwxM
-	AqqXg2UBiBQ==;
-Received: from dovex.skk ([192.168.10.12])
-	by primex.slavino.sk with esmtpsa  (TLS1.3)(Exim 4.96)
-	(envelope-from <linux@slavino.sk>)
-	id 1tDftj-000q7c-0N
-	for netfilter@vger.kernel.org;
-	Wed, 20 Nov 2024 09:17:15 +0100
-Message-ID: <fd59a4c5-0063-4b32-93e5-e078a44270e8@slavino.sk>
-Date: Wed, 20 Nov 2024 09:17:13 +0100
+	dkim=pass (2048-bit key) header.d=dorfdsl.de header.i=@dorfdsl.de header.b="QuzK+wgc"
+Authentication-Results: srv1; none (SPF check N/A for local connections 
+   -  client-ip=2a01:170:118f:2:9410:35ba:d4d5:43be; 
+   helo=[IPv6:2a01:170:118f:2:9410:35ba:d4d5:43be]; 
+   envelope-from=mm@dorfdsl.de; receiver=<UNKNOWN>)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorfdsl.de;
+	s=default; t=1732133197;
+	bh=L+Uwfu1EBkmzEoWR2kAj63u5OEAImOVH++hir//MpFw=;
+	h=Date:From:To:Subject:From;
+	b=QuzK+wgcCnW60i/88w19Koh/02cc49Nib2HM6hzQfPrE8KH0u8JPfuskNHtNnlB3v
+	 9KbBKauS758f7V7z0GhoXIYT6e9p+2UT9JjKja/7QxELin9MXctcVis+L3ZeFI4jSR
+	 hLv8CwYZ9yDkLJycPRkvUVXlB0dQ5c0k8g7XtJPLwPTRr3V44357YE4ZXdn/V0xBnu
+	 f8kB/uKXkYv3IHbPykx8r9xw1nPIK9UYSKwg5gTfZLleqYyWfsFisnN37mP/1ozxwW
+	 iRiKBodydQUja501/qal5i8jDF1A8vF2L8ZWVZUlljvTHNY/X4auLWrNdDIo1v2tLl
+	 7NavbC4MKx9RQ==
+Received: from ryz.dorfdsl.de ([IPv6:2a01:170:118f:2:9410:35ba:d4d5:43be])
+	(authenticated bits=0)
+	by srv1.dorfdsl.de (8.18.1/8.18.1/Debian-6~bpo12+1) with ESMTPSA id 4AKK6bT0033658
+	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT)
+	for <netfilter@vger.kernel.org>; Wed, 20 Nov 2024 21:06:37 +0100
+Date: Wed, 20 Nov 2024 21:06:36 +0100
+From: Marco Moock <mm@dorfdsl.de>
+To: <netfilter@vger.kernel.org>
+Subject: logging to a different place than kernel ring buffer
+Message-ID: <20241120210636.6df71d81@ryz.dorfdsl.de>
+X-Mailer: Claws Mail 4.3.0 (GTK 3.24.43; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: set with limit
-From: Slavko <linux@slavino.sk>
-To: netfilter ML <netfilter@vger.kernel.org>
-References: <756a9507-5ecf-4ba4-a8d3-d364f13dbfd5@slavino.sk>
- <20241119160617.GA21970@breakpoint.cc>
- <A49323C1-3811-4863-B527-57738F247231@slavino.sk>
-Content-Language: sk
-Autocrypt: addr=linux@slavino.sk; keydata=
- xsBNBE2fIMwBCADjOr4MY1rKxZnb4hsEdYBDFIHhZO9U3iLN/rNWSFKh3LeERd3Bu5gMz7Hk
- kn0nsoV2ijRKTLlXE0yzUtoJL+8WdNdWONt//cYcl8Z9V80uGFWfL6h0XWlqlup4XLTPZYz9
- 7f/k1UsTltiIWd5hK6JU+PA6bFVO3ogq9Nx6ru6pNzQtx6D7D5ND9/4rN45MIYolEMMC2/1J
- bvM8PFdwB+QmJbj2fKb7jboKFS34VrUQ9xsVJske9/lC0MTWN1HT+dFiXvvue7TmwOgBAd/B
- 24eGPVtcA2D13IRqhItDTS1DtacnzY3Okx/OEMdUIhjqKCBUGHeP22SagvAaKi8UYBBrABEB
- AAHNIVNsYXZrbyAoTGludXgpIDxsaW51eEBzbGF2aW5vLnNrPsLAeAQTAQIAIgUCTZ8gzAIb
- AwYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQg/mquDkYjbYGXAf9FbEfo0wF7hfYgqll
- CfNSoCcGcj1WkqqXD0kkAY/5wIFTbOOtrGn7TijhuFu9aIzjd+K+3Q9tk4Tt6MSg9ibp25b2
- HLZPp8UiyPLeE0BAWFgAgtOrrIDg8VkvjfO2jSJjkHhHOWVP1xZYSlApNNhU1KUit7RE0ueV
- bWG45a8ONSp+eNCSHkgMC8VtoF3oMegi0rgFUXSdiEsZlrpXo0Q7HPFObg2ElTC9QgFr6Lmh
- uw6I+BvXE0arwa+4ndcesb5pV6TDONOrihgYvZIyZ6V4Bgnt9C6lvK1Y/e62W73YBAEIvQo7
- j90m0lrBEAMhUhj4aGooeJQ2b/aXkrBwc+9vos7ATQRNnyJKAQgAp8mP9O2fH0KnS1yJzAz+
- 7fAM8dxFJbagFkv5ljvQ/qkEYh4uI+hWjgV7ok9+9kuzFiHbv8nczhcMr/J0JX4kok/5B5B4
- QuBdCXAoeAiWaPB4V6peLXheJKsBbBP/wNAFthJitt4P5XXrZbL4hv4+5Vm/uYXXYdQczGYa
- 2UGMVZxYyH1wh3Ywfk2c4RvPfxfe7Q8pdvpK8U+mKKVDQ6kaTEJXB4EGkp80ncpEDmJEzqvj
- svKoHHruMUnuJdNkuKvE/knpiOw9jbifIkTQfLEJKgmJE6OpgQ5SEJpGBtCTEJr9Wo1l38ji
- 6ujrUZyjBerdcucsXOKXk3n8mJhy4pshfQARAQABwsB8BBgBCAAmAhsMFiEEz0au30POX8OO
- zaE5g/mquDkYjbYFAmACuOoFCRY5xCAACgkQg/mquDkYjbYddAf/SWvH2Z5J23ZNqxpdORYU
- jUyHISTo3WaO0k72VdIHJqCHR+XSerysTyuBO4mf8SYQ2VpkIVLbOfxLKoHNt7jeVa+bjVki
- OFCjRPFhn3K+CVPwK45gvDqaAzQI4FAf2zCtdD0Zt44rwkb2e7RP7kGcI5EirVpU14bDk71g
- lE2JSezwkRYU+4ZUrDo9tGcUzJYjwHMvLXR5+yRIV+gqea1nb6871CtKh1w00X2VUXjDBtXo
- xSAd+NoTI57gwlnQOavvaITo8eGAnpSx9qA2k25uSVH76dn8KpL6O3b9MWfGn4o2KbA+3Cpg
- taCpoGgpKB7I+cQ4VywRYFH9rEMRgmr9Kw==
-In-Reply-To: <A49323C1-3811-4863-B527-57738F247231@slavino.sk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-Dňa 19. 11. o 19:00 Slavko napísal(a):
-> On 19. novembra 2024 16:06:17 UTC, Florian Westphal <fw@strlen.de> wrote:
-> 
->>Looks like 5.10 is too old, listing should show limit expression was
->>attached, i.e.:
-> 
-> Thanks, i will try with meter tomorrow...
+Hello!
 
-Yes, with meter it works:
+I want to log denied traffic, but to syslog or a file rather than the
+kernel ring buffer because that messes up the virtual consoles.
 
-     nft list meter inet filter base_log4
-     table inet filter {
-         meter base_log4 {
-                 type ipv4_addr
-                 size 65535
-                 flags dynamic,timeout
-                 elements = { 10.60.65.78 limit rate 1/minute burst 2
-                              packets timeout 1h expires 59m58s208ms }
-         }
-     }
+What is a good way to achieve that?
 
-thanks again.
+--=20
+Gru=C3=9F
+Marco
 
--- 
-Slavko
-https://www.slavino.sk/
-
+Send unsolicited bulk mail to 1732133134muell@stinkedores.dorfdsl.de
