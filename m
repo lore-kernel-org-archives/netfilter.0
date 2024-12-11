@@ -1,59 +1,52 @@
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+Received: from npcomp.net (npcomp.net [69.61.8.91])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C656F1D6DDA
-	for <netfilter@vger.kernel.org>; Wed, 11 Dec 2024 16:04:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DEE21FE479
+	for <netfilter@vger.kernel.org>; Wed, 11 Dec 2024 17:26:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=69.61.8.91
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733933051; cv=none; b=iENfD1rcO0QL2/fqqzvMcinS9mczmGVFwTjIFQ0mr6D1XMfZxydT/z7tRQ9zBWTxvvNsdRJRbgvWf1RRLA7ubSJuKm8nx1R2l60kIwmCiBu6OKPaddTIxkFBgrry2qL7K8RMNIaXpy+jXQeFRdP52f/5TNWDoIia66xCtE2QErs=
+	t=1733937967; cv=none; b=gPR3oPi5dCAcjAvgJal/pKriBR3cNc/Ycla2demAUvhQIUgb1UCTx1MoKansKzpACJj6sNrnYpGfSk9vOlNcl9C8nWsqNtMxAl0790OjRA6VbO9nBBJJYqMFWv9b5MOc/kzY9LywvQ9L8rw8wF8N4gcxjDG388rOhw7YVQv+9Ps=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733933051; c=relaxed/simple;
-	bh=lyxgv4boL9m8EEfmKb9rKoOnKe3mGOtMRXpgNXB28CM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JSSOH/Xl8JmGoWAXB02gcHvdD0kTpHYBhgLHIYEUDK3awXbbTFoHmHXnD/KXIn3M6HRUHP2KCWRtJNcAvvq/ppp8y4diZneIv2J+MZI5fzoNSxz7e15+XerlhB9qGsOGyf4R92lxJrACVcBaemxJ1nzjYIjMAcAeuQzpM0yzbgA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
-Received: from [78.30.39.247] (port=46272 helo=gnumonks.org)
-	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <pablo@gnumonks.org>)
-	id 1tLPBo-00DgE3-JD; Wed, 11 Dec 2024 17:03:54 +0100
-Date: Wed, 11 Dec 2024 17:03:48 +0100
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: caskd <caskd@redxen.eu>
-Cc: netfilter@vger.kernel.org
-Subject: Re: Regression 1.0.9..1.1.1 in glob inclusion behaviour
-Message-ID: <Z1m33DSjQDjPrsRI@calendula>
-References: <2HWYO8DBOM98M.3CP5UDE19R679@unix.is.love.unix.is.life>
+	s=arc-20240116; t=1733937967; c=relaxed/simple;
+	bh=3jXWHxZ24XuoVgoQM0HiLIQJtC1X6w9oVNrIRvTndi8=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=GWPG5XmVldjViKZYCbnnha6VFnked45JTjNaCAkV3byTUx7JpKxbzE1+DHZuc/iiDfKSsPJfI9V87+o8RAYL/EmpZlU57CrxOU5g2cYyNk4SY3vAVyuKrmP5+03dye13doVcaFvZes6bwhgvx3cfq4jYxp13dmzXthgP13LYTvE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=eldondev.com; spf=pass smtp.mailfrom=eldondev.com; dkim=pass (1024-bit key) header.d=eldondev.com header.i=@eldondev.com header.b=HSJDzrfc; arc=none smtp.client-ip=69.61.8.91
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=eldondev.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=eldondev.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=eldondev.com header.i=@eldondev.com header.b="HSJDzrfc"
+Received: by npcomp.net (Postfix, from userid 1000)
+	id 840C34670A9; Wed, 11 Dec 2024 16:47:44 +0000 (-00)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=eldondev.com;
+	s=eldondev; t=1733935664;
+	bh=3jXWHxZ24XuoVgoQM0HiLIQJtC1X6w9oVNrIRvTndi8=;
+	h=Date:From:To:Subject;
+	b=HSJDzrfcdCHPKEyG0ZZa/NcSqKG2RiUQ1PPn7cYbz87ei7h5t9tdppdba911jjryc
+	 6X80NSEdQIA3QkDojRefuxPtXbthqiESywP412jnIBtci2rk2vE0VyqmlT/eXUHNjx
+	 1jAtC6D+RMv71lCCh1s1lAQvkgXSzCgB04L130Sk=
+Date: Wed, 11 Dec 2024 16:47:44 +0000
+From: eldon-nfv@eldondev.com
+To: netfilter@vger.kernel.org
+Subject: conntrack-tools conntrack cli json output option?
+Message-ID: <Z1nCMHHK6EjEMekj@localhost>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2HWYO8DBOM98M.3CP5UDE19R679@unix.is.love.unix.is.life>
-X-Spam-Score: -1.9 (-)
 
-On Wed, Dec 11, 2024 at 09:40:43AM +0000, caskd wrote:
-> Hello netfilter users and devs,
-> 
-> Following upgrade to 1.1.1 i've noticed strange behavior in the inclusion of my netfilter rulesets. Entries included via glob were duplicated. This only occurs when both -I and -f is used, due to the follwing commits:
-> 
-> 6ef04f99382c074c3669de31cf0a70651662b261 libnftables: search for default include path last
-> 302e9f8b3a1382cf09db32541693b5df7d80ca1e libnftables: add base directory of -f/--filename to include path
-> 
-> Steps to replicate:
-> 
-> Create a directory with one or more rule files.
-> Include everything in the directory with include 'dir/*' from /etc/nft/rules
-> Apply the rules with nft -I /etc/nft -f /etc/nft/rules
-> 
-> If the include dir is defined as a command-line parameter then entries are duplicated, while without it they are not.
-> This was not the case on 1.0.9 before these commits were present.
-> 
-> Has someone worked on a patch for this yet? If not, i might give it a shot myself.
+Hi all,
+I see some other netfilter tools support json as an output format,
+apparently this is done elsewhere with libjansson. Would it be
+obvious or a welcome patch to add support to this similar to the
+xml output of conntrack -L? Is anyone using an existing tool for this?
 
-Please, take a look, thanks.
+I searched this list archives, sorry if I missed previous discussion.
+
+Thanks,
+Eldon
+
