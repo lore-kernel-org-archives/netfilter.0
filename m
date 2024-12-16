@@ -1,75 +1,80 @@
-Received: from ganesha.gnumonks.org (ganesha.gnumonks.org [213.95.27.120])
+Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [148.6.0.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A4F11DE3BF
-	for <netfilter@vger.kernel.org>; Thu, 12 Dec 2024 22:26:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.27.120
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD354207677;
+	Mon, 16 Dec 2024 19:05:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.6.0.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734042390; cv=none; b=GOXBmeU1sNKymTFMcFf9G/WMk16SB7hARlBc83mSTKHNPzD+i8xnEV+JABh5yYJ+rEZdPgvTH/U1EImO8NPd4G9XQw4aXudUTJkpEIpV+19udBwmUMcCDk2pG7xs3igc8AOv7pXBMsOim9BCjEPJvp/oMnimzeREtGf23f4q2jM=
+	t=1734375954; cv=none; b=GkB1SLiKEu+gpa8oiNFlm7Gpy/Gfp9cgNpZtwbJE/rlX+svJ2IR+z0wk9dtHCAOseqMQRE6mCGuNKtZpErgPUzqommMapCV2vKKcRAYLWcn8XTLJHuCDdUflx9j4JFQUjiQDQRvbF7tHvt9U3lcd1tGqWYOZTPYuSC5MV6yUhtA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734042390; c=relaxed/simple;
-	bh=EKq+3T9lmdAOzhGeXp278nMsOA4HSH4e+f2ynO5o52A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=STnZ9rr8rpr8Mh4oCxv+IzsJuOpjYt1qZhhVWbrZEmbNB7msEt8EgNBnVFLlVK2a8F0CATG0NmvVJ8DWe8hg1FzBpsgr8zzxFp+zlSFs+MulPOXNcww0hRHjlwiNmRsgI5H9/d0HoPnoP7bP7ZTooM3MjiVrYyXcu1Xk8ZjTeDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=gnumonks.org; arc=none smtp.client-ip=213.95.27.120
+	s=arc-20240116; t=1734375954; c=relaxed/simple;
+	bh=fcWhGrVEYhPa2x9U0xaIPXHRolHp0CpbmLSRFVZitc8=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=j4pv1rv7ClxXQlAvMGrDCvS5pEMQKwppv3UDlWGpLqVlU7vyBInBjT18U8V2EH11jLcwf3ZZmtUL2EuCL7ZDUfDD2g2BfmrQ6A6M3ZYelejjpeyNWktBRFO8QPw2/Nfoc6qHC0eVry6wY1mZT+lAST9PiLdnykiNaqXWjqZUSPI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=148.6.0.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnumonks.org
-Received: from [78.30.39.247] (port=53552 helo=gnumonks.org)
-	by ganesha.gnumonks.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <pablo@gnumonks.org>)
-	id 1tLrdR-006p9U-7n; Thu, 12 Dec 2024 23:26:19 +0100
-Date: Thu, 12 Dec 2024 23:26:15 +0100
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: caskd <caskd@redxen.eu>
-Cc: netfilter@vger.kernel.org
-Subject: Re: Regression 1.0.9..1.1.1 in glob inclusion behaviour
-Message-ID: <Z1tjB1M0L5d2mja6@calendula>
-References: <2HWYO8DBOM98M.3CP5UDE19R679@unix.is.love.unix.is.life>
- <Z1n9Gj6UaA5CfQIj@calendula>
- <1YCABX5KN97Z8.2KUN1QSJDL07P@unix.is.love.unix.is.life>
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Received: from localhost (localhost [127.0.0.1])
+	by smtp2.kfki.hu (Postfix) with ESMTP id 0D10232E01E4;
+	Mon, 16 Dec 2024 20:00:38 +0100 (CET)
+X-Virus-Scanned: Debian amavis at smtp2.kfki.hu
+Received: from smtp2.kfki.hu ([127.0.0.1])
+ by localhost (smtp2.kfki.hu [127.0.0.1]) (amavis, port 10026) with ESMTP
+ id Y1CBQZqaPO-P; Mon, 16 Dec 2024 20:00:35 +0100 (CET)
+Received: from mentat.rmki.kfki.hu (78-131-74-17.pool.digikabel.hu [78.131.74.17])
+	(Authenticated sender: kadlecsik.jozsef@wigner.hu)
+	by smtp2.kfki.hu (Postfix) with ESMTPSA id D1F1F32E01E3;
+	Mon, 16 Dec 2024 20:00:35 +0100 (CET)
+Received: by mentat.rmki.kfki.hu (Postfix, from userid 1000)
+	id 98FC21424A2; Mon, 16 Dec 2024 20:00:35 +0100 (CET)
+Received: from localhost (localhost [127.0.0.1])
+	by mentat.rmki.kfki.hu (Postfix) with ESMTP id 952421413D1;
+	Mon, 16 Dec 2024 20:00:35 +0100 (CET)
+Date: Mon, 16 Dec 2024 20:00:35 +0100 (CET)
+From: Jozsef Kadlecsik <kadlec@netfilter.org>
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Subject: [ANNOUNCE] ipset 7.23 released
+Message-ID: <38a9d4fa-067f-320c-33e6-9edbb6acafdb@netfilter.org>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1YCABX5KN97Z8.2KUN1QSJDL07P@unix.is.love.unix.is.life>
-X-Spam-Score: -1.9 (-)
+Content-Type: text/plain; charset=US-ASCII
+X-deepspam: maybeham 5%
 
 Hi,
 
-On Thu, Dec 12, 2024 at 10:33:14AM +0000, caskd wrote:
-> > I don't manage to reproduce such duplication with 1.1.1.
-> > 
-> > Would you make a simpler reproducer?
-> Yes, surely. I've tested the following in a priviledged debian unstable container and i have the same behavior.
-> 
-> mkdir -p /tmp/test/include
-> echo > /tmp/test/main <<-EOF
-> table inet test {
-> 	chain test {
-> 		include "include/*";
-> 	}
-> }
-> EOF
-> echo "tcp dport 22 accept;" > /tmp/test/include/one
-> echo "tcp dport 25 accept;" > /tmp/test/include/two
-> nft -e -I /tmp/test/ -f /tmp/test/main
-> 
-> Executing this on 1.1.1 results in the following being executed/outputted:
-> root@nnd-navi:/tmp/test# nft -e -I /tmp/test/ -f /tmp/test/main
-> add table inet test
-> add chain inet test test
-> add rule inet test test tcp dport 22 accept
-> add rule inet test test handle 2 tcp dport 25 accept
-> add rule inet test test handle 3 tcp dport 22 accept
-> add rule inet test test tcp dport 25 accept
+I'm happy to announce ipset 7.23 which includes fixes in the kernel part 
+and in the ipset tool and the tests:
 
-Thanks for your reproducer.
+Userspace changes:
+  - tests: runtest.sh: Keep running, print summary of failed tests
+    (Phil Sutter)
+  - tests: cidr.sh: Fix for quirks in RHEL's ipcalc (Phil Sutter)
+  - tests: cidr.sh: Respect IPSET_BIN env var (Phil Sutter)
+  - ipset: Fix implicit declaration of function basename (Mike Pagano)
+  - tests: Reduce testsuite run-time (Phil Sutter)
+  - lib: ipset: Avoid 'argv' array overstepping (Phil Sutter)
+  - lib: data: Fix for global-buffer-overflow warning by ASAN
+    (Phil Sutter)
 
-I am proposing the following fix for this issue:
+Kernel part changes:
+  - netfilter: ipset: Hold module reference while requesting a module
+    (Phil Sutter)
+  - netfilter: ipset: add missing range check in bitmap_ip_uadt
+    (Jeongjun Park)
+  - netfilter: ipset: Fix suspicious rcu_dereference_protected()
+  - Replace BUG_ON() with WARN_ON_ONCE() according to usage policy.
 
-https://patchwork.ozlabs.org/project/netfilter-devel/patch/20241212222436.179133-1-pablo@netfilter.org/
+You can download the source code of ipset from:
+        http://ipset.netfilter.org
+        git://git.netfilter.org/ipset.git
+
+Best regards,
+Jozsef
+-- 
+E-mail : kadlec@netfilter.org, kadlec@blackhole.kfki.hu,
+         kadlecsik.jozsef@wigner.hu
+Address: Wigner Research Centre for Physics
+         H-1525 Budapest 114, POB. 49, Hungary
