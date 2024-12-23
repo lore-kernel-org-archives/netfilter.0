@@ -1,55 +1,55 @@
-Received: from mail-il1-f181.google.com (mail-il1-f181.google.com [209.85.166.181])
+Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A48A1B3922
-	for <netfilter@vger.kernel.org>; Mon, 23 Dec 2024 14:35:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFDD7199943
+	for <netfilter@vger.kernel.org>; Mon, 23 Dec 2024 15:03:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734964515; cv=none; b=OUmiHsTQMZVn8PzLax7aFFnuei20XUGU0LSotLwqoCa91TDIWyuJAUbgm1m2oizzV7j1tmyVFTpomezKazKPDbZkhLN0+BQytpryx9/VJi4ApXoyElER6Endu67Gy0GzdwqeL2bljTpl/b+d7d2Bd3FNd486nH4k+EyYLBiQzzw=
+	t=1734966205; cv=none; b=LEFSUkaQVrB7LunETw/KqTrrhPK+6sc62Z+ipvyLoXEvs1sjMulGhuC4uDtRIT0hxBjP0iMegZfTqPqKJ52A6dz8wAC2b9H0fG7CO2Amkfphf/vySYtvnyrf/NYeRXVY6K+jgMYhkOJHVnMxVzhjb5/yahXLJedet2zWEKlaUIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734964515; c=relaxed/simple;
-	bh=HlZzNvhTavYfHURKfeYdG2iAj7mVEJkwSKp3KNUGC18=;
+	s=arc-20240116; t=1734966205; c=relaxed/simple;
+	bh=2MadDioAQUOkexJ2whQBw4UZ1ZcPFimc3qHhXDtOUE4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lkUSrV7lsLfHXGHpIK1BS946MuDFK9tXtZMRdoTkeDdaHAyP0VW0TaGhU2112KWCPD/2SNt7kQI+ogiOv9lmDqhOAXsOR4FStFmfddfXYRna+haAqP1meOrG49EbzKDddV+DdhGUUnlkwFx/VclNEBHJUYXCO7iUtURv8q3+qAY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kOxjbZMU; arc=none smtp.client-ip=209.85.166.181
+	 To:Cc:Content-Type; b=ecPO/M8lIh2R3OB8t8/aT5KZTk3O5TrBYfJTs3yOZNJedfAJaPmD1le5uF5nV+Ws02spYC+QQKu9fd/UcMDjBbA34NnXxJE37tK9EdazeKP/wXutOTWPnjCCSMNYsUQTzzIFZmbkjKNXJt57/aVSOXgSLsQHQncJDl/peE4b5BQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d7sfRzuT; arc=none smtp.client-ip=209.85.166.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kOxjbZMU"
-Received: by mail-il1-f181.google.com with SMTP id e9e14a558f8ab-3a9cee9d741so28927955ab.3
-        for <netfilter@vger.kernel.org>; Mon, 23 Dec 2024 06:35:13 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d7sfRzuT"
+Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-3a7dd54af4bso15306075ab.2
+        for <netfilter@vger.kernel.org>; Mon, 23 Dec 2024 07:03:23 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734964513; x=1735569313; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1734966203; x=1735571003; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7TjW2TIevr3cpBK31D9JOq9hTmVh4yX+u1BmrIOpuD8=;
-        b=kOxjbZMUJdxZrDHDG9MHl1+KykPTtofc2b/Hm1f9QcZtBKVEMLVUYUZv9HcfYcT8pV
-         /lUBn3s3o9lH/g3pJdkz7aNDRPtY/gkWJcMozPJocyEGmmYOV3HDM/BV0+y40k84b+mX
-         nwz2M7eRq9HlIQ4OxXSQQCZcGrKL0s7yN+3jj+yOYHtaF9yIVmMrlsRu9oCIySZqPotz
-         O02By8M8/bVn4F4zvmTBkT/IeUVMwz+sIStQ2yKer5o0jK4JQOYwRc9o5f0BiyVZpCJv
-         IQ07tMFaV1soa3JYvNDoo9AzeuV3SoNnN/DfAxXl4Y7AS+SI3LecoG41n6Xki/peoxrv
-         aWAQ==
+        bh=VO/PKnMVh6GlUCmLEGMyFVSiOTaFybGH5XwqeiYkAaE=;
+        b=d7sfRzuTusrpC6To74bJH+lNQb6XVwdNOOZRiu8MpEiT//egbCXUCXs83w1gPBJwG8
+         nB0Wc+iYd8iXIgyZ9XHfkujn51FepQtYhloCsNHDCdxZZGYqRuFo8LC3Tq2uEF5s7jL1
+         QdL2gffmfHU17j4lpR9thn2SShJl1Krjv44Y4OJBxctOmAnvTXz6fBiTyprLxZFj+l3d
+         0YryIZTqszUaxOFsrWUrfB7MMHp0ZV5gOMuJcHl/zSS6rrQh9BJa+YzCzyRaAj263IGP
+         uxC0dOmeQIkhNq8oikzHTpt9HbQrho4Ib0XJpeALcjHel4omaffi/1WtaEYDPZYqK/sp
+         U/YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734964513; x=1735569313;
+        d=1e100.net; s=20230601; t=1734966203; x=1735571003;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=7TjW2TIevr3cpBK31D9JOq9hTmVh4yX+u1BmrIOpuD8=;
-        b=ZR34zz5TB7B5Y/Uw+4uK1ynW53v6962/7Ffu5KyAxesKbaAsdxZiX2FFopSFd5oFHw
-         bQ7BUxmUI1XELHUaD6FtiHubAWpB/X9A5u23sTiSeOeu8c9zALMvvtwDOBLpNumZBLPU
-         WpQKYHkE/oRBL+0RH7BFdrcj2Ga6OTNnN6OLs/J9NSLL4O8+OaniC/nyZ2ETpvIz5yTz
-         SQceM6ZVONUSk7l91+8BM4qn3ZxHntKTpKpMFVYWy/VDXV5Xg2m2aY2IA8u/4+NHpdfK
-         g2lKQAyZjnrznq3Tq3Lm6ih0iuaNJ2BQKkb9wwOOj1p1g1ab6te08h7mI9p4Ix1pQRag
-         F2LA==
-X-Gm-Message-State: AOJu0Yxe3c0U0NSvFFX/y+bh94chiX5RCQLxmUaw4vGjRUt/YxiuNHJs
-	Ze1tGn80qOHZ9gQIy5+mPyaVcP/lLorNsw5ysYg4vVnzhJ45VlKRyEoLtCu5vun2A2SMRVA5kSg
-	8xJ4aV29t/SebpdR4KZFjXUrtYOb285THa/4=
-X-Gm-Gg: ASbGnctJEYG16vP4EZQCnARixuiJdRfzV6NXrxtU/+xI93g/8i92j73P0Y2Xl5CTppD
-	3rkxevMiSiprHid7vTfJu1pvkCzZSFk8+tJVH
-X-Google-Smtp-Source: AGHT+IGPNdtYgxIW/gOsFjbd2KAzrgA9bVjzIWimVpGY/0OwC8Zb0nwvgRZLUCEYuvBcty9he8LEtOJ57UKpKcojQ6U=
-X-Received: by 2002:a05:6e02:1a21:b0:3a7:8208:b843 with SMTP id
- e9e14a558f8ab-3c2d5a27dccmr121289665ab.23.1734964513250; Mon, 23 Dec 2024
- 06:35:13 -0800 (PST)
+        bh=VO/PKnMVh6GlUCmLEGMyFVSiOTaFybGH5XwqeiYkAaE=;
+        b=FunD5LHlIUhQ3nSdfruMEDRgbK4CR+uCfO9Y1CNhWYrfrzhreoe5lMCYFWQrXEwXCf
+         gfFMuolBZkId/hGuJBBULpvtGm04BW6V6uboQwk46TEGJ+l0I2xMj8JaJ2+QGHQGEQms
+         Mv8MrLm+60vC/88+IJkoUSzOL4sy7FJM3euegy/ydmQ0iTvdd41I4DrQrFPmNgAJikJ2
+         jfIzXa8YZkZVZ+W+1HxzBUhqEjdDwOsn9iRlgmc/rOipEsXzQknAF/IWseVnOyR3yCzY
+         ZeAmot74wNa2BCib15Jl1sfK+zTvxukIyPhZa1RP0wkv3up1RyGiRQe8j8k93XEAC7jA
+         4Tzw==
+X-Gm-Message-State: AOJu0YykMg0mr9oAYhLJLrNUVCDdcuxfRA9pCa43sfX6A82BTIB28icq
+	Zk4SFg63lvjF38M3B0usGfENtxAQy7ylpyBdkTw4P7fPzbtzW5Gb1XfDBAeIEVEJZ5mGpB35o30
+	EShHvWAWVfy3u/FtgQlURDb0gopw=
+X-Gm-Gg: ASbGncui/TgUAS+c1HNLdhWuZzW5zX/oaD9egHqveiF69K83KldOd4iTu9yQgEpU02/
+	beHtITYNROkTWxcxAzAueWStUupAatWqjGpbH
+X-Google-Smtp-Source: AGHT+IHYlcxS+SdRjkXp0GDcsgfkjeECfZgKkZHqnpWdNdxCnem+x1dGo+i32icPdnqzhbMEQ1UtxNIZbkUWJ5Mzve8=
+X-Received: by 2002:a05:6e02:190d:b0:3a7:7ded:521b with SMTP id
+ e9e14a558f8ab-3c2d514f3ffmr97496265ab.17.1734966203107; Mon, 23 Dec 2024
+ 07:03:23 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
@@ -57,37 +57,55 @@ List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <CABhP=tZtzqX8vfL5zdqxx6sdZWT56iWAhW35-=U8Z16HZBs-ug@mail.gmail.com>
- <20241223125151.GA7005@breakpoint.cc>
-In-Reply-To: <20241223125151.GA7005@breakpoint.cc>
+ <20241223125151.GA7005@breakpoint.cc> <CABhP=tbjB4H1NXxC+_xJFM0pGby3YX_V9PP-XqLVMr3xZUpQwg@mail.gmail.com>
+In-Reply-To: <CABhP=tbjB4H1NXxC+_xJFM0pGby3YX_V9PP-XqLVMr3xZUpQwg@mail.gmail.com>
 From: Antonio Ojea <antonio.ojea.garcia@gmail.com>
-Date: Mon, 23 Dec 2024 15:34:37 +0100
-Message-ID: <CABhP=tbjB4H1NXxC+_xJFM0pGby3YX_V9PP-XqLVMr3xZUpQwg@mail.gmail.com>
+Date: Mon, 23 Dec 2024 16:02:47 +0100
+Message-ID: <CABhP=tbWy7tQh1XKGAsQqQ5LzaUbrwz7iGvFaK_iEpP9LMH0kQ@mail.gmail.com>
 Subject: Re: nftables portmap map
 To: Florian Westphal <fw@strlen.de>
 Cc: netfilter@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
->> nft add rule inet cni-kindnet prerouting dnat to ip daddr . ip protocol . th dport map @hostport-map-v4
-
+On Mon, 23 Dec 2024 at 15:34, Antonio Ojea
+<antonio.ojea.garcia@gmail.com> wrote:
 >
-> Strange, this version does work for me.
+> >> nft add rule inet cni-kindnet prerouting dnat to ip daddr . ip protocol . th dport map @hostport-map-v4
 >
-> table inet cni-kindnet {
->         map hostport-map-v4 {
->                 type ipv4_addr . inet_proto . inet_service : ipv4_addr . inet_service
->                 flags interval
->         }
+> >
+> > Strange, this version does work for me.
+> >
+> > table inet cni-kindnet {
+> >         map hostport-map-v4 {
+> >                 type ipv4_addr . inet_proto . inet_service : ipv4_addr . inet_service
+> >                 flags interval
+> >         }
+> >
+> >         chain prerouting {
+> >                 type nat hook prerouting priority dstnat; policy accept;
+> >                 dnat ip to ip daddr . ip protocol . th dport map @hostport-map-v4
+> >         }
+> > }
 >
->         chain prerouting {
->                 type nat hook prerouting priority dstnat; policy accept;
->                 dnat ip to ip daddr . ip protocol . th dport map @hostport-map-v4
->         }
-> }
+> Yeah, it works for me too, it seems the difference is the "ip"
+> statement after the "dnat" ... "dnat ip to ip daddr ..."
+>
+> Without that "ip" I can see with strace that it gets " -1 EAGAIN
+> (Resource temporarily unavailable)
+>
+> Thanks for the help
 
-Yeah, it works for me too, it seems the difference is the "ip"
-statement after the "dnat" ... "dnat ip to ip daddr ..."
+I can not make it work for ipv6, and tried different combinations
+        map hostport-map-v6 {
+                type ipv6_addr . inet_proto . inet_service : ipv6_addr
+. inet_service
+                flags interval
+        }
 
-Without that "ip" I can see with strace that it gets " -1 EAGAIN
-(Resource temporarily unavailable)
-
-Thanks for the help
+ nft add rule inet cni-kindnet prerouting dnat ip6 to ip6 daddr . meta
+l4proto . th dport map @hostport-map-v6
+Error: transport protocol mapping is only valid after transport protocol match
+add rule inet cni-kindnet prerouting dnat ip6 to ip6 daddr . meta
+l4proto . th dport map @hostport-map-v6
+                                     ~~~~
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
