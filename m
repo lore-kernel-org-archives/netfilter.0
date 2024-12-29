@@ -1,95 +1,101 @@
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C06779F2
-	for <netfilter@vger.kernel.org>; Sat, 28 Dec 2024 09:21:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 215124CB5B
+	for <netfilter@vger.kernel.org>; Sun, 29 Dec 2024 10:01:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735377687; cv=none; b=UwT/sZTxTwNiiBHItyj3HJNjH8PMn0H2qqVD+nMgbp7+6jN1OiBUU+K/BpOK/g+573dOjroeqayneKnGmQqn4tYbdrwTUKifm7eJgEUUmofPyGtZ7CdkeIj+kV2BZ4eNscHnmNY7kEmpO1cxvThHP7sKJijwJc0Sq2HH5yl+hTg=
+	t=1735466473; cv=none; b=sCW9bfAKu9EDAXnFfXE8cu7+9bpLuapnXNAFgK1sddREoVEK8U6/+f9Oh3NAkhSKyxz00GFuyUr2bj5YBEN7XHw16oypjLxC7TRNfKyfS7arytGceh0pcrYrQSre+1Kkvlp7a/RkKxV/YHxfRqOBDWbMNxIZl0kd4MjgFt+UA3E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735377687; c=relaxed/simple;
-	bh=fGEasHI6ynLJj17FlcR6NvSqa8kk2nSRuOYl374227c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bjnhaDphyJqQjZ8DGUtU1pgy6sy5uGh04/kGfP1oi7a1+0CkRI3BrDdCXKj3WyDstaRtfhWNFtUY1h2O5SJkbWrsJ6smMq3StM4Br9wIO4xOGbWJs/vq8PSwu/G8D7qftcxFxKqJtqCct84ejvjVL8IVTfQ8OeRmoQwz68CC5+E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YT9Rw5K6; arc=none smtp.client-ip=209.85.166.173
+	s=arc-20240116; t=1735466473; c=relaxed/simple;
+	bh=pVzMzlm2cRjYCy2eoRc2qQv9mKKTEA5+1FD/Tz9KfMU=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=MubfShvv2Dp/6s7kgxJUeryHk2Bj2XvPRKYKxdiCvojqeic1i6SZFADGWlzZF8paUxr6LGGc0A/prHd/suUnTm9r9CBbZUVDxdmEWSpnWtoE0vWT+jvdRJJRSZfbYZZfw2alngRTOLzsCwp59bNw/nJ5Oqx8gAPzCrVhVG2UkXU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aHPuapib; arc=none smtp.client-ip=209.85.214.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YT9Rw5K6"
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-3ab2f414695so28261155ab.0
-        for <netfilter@vger.kernel.org>; Sat, 28 Dec 2024 01:21:25 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aHPuapib"
+Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-2163bd70069so3743135ad.0
+        for <netfilter@vger.kernel.org>; Sun, 29 Dec 2024 02:01:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1735377685; x=1735982485; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=7e0Zl2ENyQxlue5K5R/9/GC4TTXbxNKEhea+VNON+Rk=;
-        b=YT9Rw5K6Ct1p0aCGPQClRrhoWCVtgHkKO9Eljdz8QsrqJnhC+trz/th9sFFl041mZY
-         ztGZ1Sy62B+xyCgip7LxjhCQwGuHRZVtRXqmCbxKDAPBsMh+jj+VskjBZL5AcCkejGX/
-         M1a0yNDlxBHsGoVgCz4GREy3LUxnB0eE04TMXa01VjoEufoCZpiMHfgfV0l7owR/Ybet
-         71pd6pdQCKiGzpOjibLjGqJ8X5Cyw9q0kncOq0PY9Y3yOdVfXAKTAmlifFAQ/uoNEzFu
-         mtamGUYRpgxwXI3slWxDY6OA9yFcotm2or2ohVNXLLmmcfvAsiCZr+aSyleYk+/oJkjN
-         rSwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735377685; x=1735982485;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20230601; t=1735466470; x=1736071270; darn=vger.kernel.org;
+        h=disposition-notification-to:content-disposition:mime-version
+         :message-id:subject:to:from:date:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=7e0Zl2ENyQxlue5K5R/9/GC4TTXbxNKEhea+VNON+Rk=;
-        b=nPxQthW4+zssbxY/5FQFkCVXTPggB7PxqVvSDMdVnixC/dIuCbw4ZgFsMTQvC/0RZt
-         5LVfyAGn5C8Zub8k8l4Y6+FnoF+bOkCt1DIDWrvO7ObIHcs+Zj+NLb83DEqq5J32+Kd3
-         Av6BmbJve/2uOE2mrn0rXeeVPq60q1o4gt4rXmr8JUuLFuimK/d5OTN6o8hurbvs7Vc8
-         Wzp6tfmNyBmCAiIg0eDDdd/96ftbW6knq+fwlARozsZIhNdHihP/l37Nej/BLgrM4hFs
-         Yhzq2wzWT63vmj0Fe+mEXMTKOEEekyY9EEfjWnMESWDMjK6F0h1O4X15ZjIPEnBKs4HJ
-         EPUg==
-X-Gm-Message-State: AOJu0YwGDsrQniFzni385hvc1Q1edKHRs4NQNDV8Q7lRSo5af099P/QR
-	6g2l7O6IwhQZyAhvI6fuqJM9l0BjW3OaSpL7/ipoB6uFcb4xblIEJXq7cAPTB5Zi2wQ7pWtVVLC
-	Pu7eGJwUlJUy7KPzJ64DhviPqPucwa0ETi7Q=
-X-Gm-Gg: ASbGncsmkw+8NszP5UQoPt0O/A3jJYmVdZeVN8DrdFAItCej66gs6eSyzLXEuJgDTbU
-	Rme1Kyxq4kELz/2+h43OpCvMRUks4eDGa+zp/
-X-Google-Smtp-Source: AGHT+IFgEwZnxEyXcn5oCwrpD75yWkxM/T5W8JgLfLTN+Sb83r3V3kP5siPaDT+l4gKrGMmH4SozzQVqHMAcSVjjaSU=
-X-Received: by 2002:a92:b745:0:b0:3a7:dee4:c423 with SMTP id
- e9e14a558f8ab-3c2d1f7505amr177603355ab.9.1735377684717; Sat, 28 Dec 2024
- 01:21:24 -0800 (PST)
+        bh=LRKC3oQ7ftaG8Db5Tl1gKT/btjvU5Q9fXUTCP21bCtU=;
+        b=aHPuapibo8FSXAMyPNgeRZkotF+wJGylhq5YBtw9UIG2JmMU6G8NLRcp5nt5Znn426
+         q88QW8UvOfPOKDM+bRnbJRXugHzWZ3MUfnY++neY5DEPBrUJcMtFx+LtSuaeat0lg80L
+         372EnJD5FhuhwffARjDHjJQ5TqjioK6BJjkZxMU5khSjkTmQ5VnLykktRgVddcUEnBrR
+         No9D0jPdBIjFyqpCNHrgl77c0QO9H99R2eezBo8CzSr2M/89c/aGZBrgIMHTCCzpSUWV
+         jglP2/iUu6ytUHzTyiYbntmnfBey9HewT3Q9lx971Ap5QZgo8vMHKGPS9BxC8e8QeXHf
+         KeKQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1735466470; x=1736071270;
+        h=disposition-notification-to:content-disposition:mime-version
+         :message-id:subject:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=LRKC3oQ7ftaG8Db5Tl1gKT/btjvU5Q9fXUTCP21bCtU=;
+        b=wIxfREvU5ZfZoJhJObfTFgQBjjUjiftK2UfOK2ojRxwVYWnjpNtpkNOl0/rBuBqcaz
+         iOsrmKtq92ThtM2wRNRgRW2ccmYWQnpctyfN6Nlaq7BaZS+so+hW3xbKn4sWg7k77Zpv
+         QPeJ0Hf7dwIcDeGBZBVYRGBDsLSJjK9jSvBy8jiZVqekQSIOuhxxi6B5GQpXvuFSEtDk
+         zbaVoXXjbs3cpf9UnFETHoRBYWpnFkDi/WM2digM5IV8L6JSmxtML2ryJ8MkHRny8Us9
+         m0FKnAPENZOIt6yNEF8tls+1iErBgCW5xRjmsJcce8PxoXbOw5GCbwum4cQg26oA8rkb
+         tkzQ==
+X-Gm-Message-State: AOJu0Ywh5n0kTpU708n51/Cb+qa03V74slMOqtj+2k2F5Yz1B7s7mct5
+	1RtzTE1Estl/vmDZBIzE9QZjPRBHLUs5GpWBUCGzDQmDbUDXQg89gn3tCTk2fciyAQ==
+X-Gm-Gg: ASbGnct4fdZYmKsmlvgAq5t33gLa6Z8jY94rYU6/ORlTU5ZZY7ZqczGoeZlqWrDq8Vy
+	Pp8xGqp2vsT2eY2yPzTwYlYhbRhzrfzFtwtmFyDZRoMqBhiXZqKWTCDyrj3JZpTHgyU6x/2er3J
+	5U38QabVkLLJ0gC/ZMpgLo/IyO4Cvvesxwxh5J9gMh8AmP+PwiD+rMHuGtSZcDnRIOKLnuyZDo2
+	qhC7FHsyfjtjsotO8EhwsgYIK6H5MBvStyFrumz+Di+KxN7RfC9TC0=
+X-Google-Smtp-Source: AGHT+IGk+2fRuAV287sQkuJMn+r72+aELrniueq9OCvcrgbWwOBAjiYTpj+pLcOHb+znOkkQzBklDw==
+X-Received: by 2002:a05:6a20:258a:b0:1e1:aef4:9ce7 with SMTP id adf61e73a8af0-1e5e0484c5fmr46202684637.17.1735466470226;
+        Sun, 29 Dec 2024 02:01:10 -0800 (PST)
+Received: from localhost ([2a0c:b641:69c:caa0:8566:eb3f:80a1:5bf9])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72aad816540sm17889474b3a.22.2024.12.29.02.01.08
+        for <netfilter@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 29 Dec 2024 02:01:09 -0800 (PST)
+Date: Sun, 29 Dec 2024 18:00:36 +0800
+From: lilydjwg <lilydjwg@gmail.com>
+To: netfilter@vger.kernel.org
+Subject: expires larger than timeout causes error
+Message-ID: <Z3EdxDDREx_TeWZT@lilyforest.localdomain>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CABhP=tZtzqX8vfL5zdqxx6sdZWT56iWAhW35-=U8Z16HZBs-ug@mail.gmail.com>
- <20241223125151.GA7005@breakpoint.cc> <CABhP=tbjB4H1NXxC+_xJFM0pGby3YX_V9PP-XqLVMr3xZUpQwg@mail.gmail.com>
- <CABhP=tbWy7tQh1XKGAsQqQ5LzaUbrwz7iGvFaK_iEpP9LMH0kQ@mail.gmail.com> <20241223161505.GA12569@breakpoint.cc>
-In-Reply-To: <20241223161505.GA12569@breakpoint.cc>
-From: Antonio Ojea <antonio.ojea.garcia@gmail.com>
-Date: Sat, 28 Dec 2024 10:20:48 +0100
-Message-ID: <CABhP=tZ36BjQfyQigNMddOrMT8htjgq_7j4LBF-n1SCFXBJQqw@mail.gmail.com>
-Subject: Re: nftables portmap map
-To: Florian Westphal <fw@strlen.de>
-Cc: netfilter@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: Mutt 2.2.13 (00d56288) (2024-03-09)
 
-On Mon, 23 Dec 2024 at 17:15, Florian Westphal <fw@strlen.de> wrote:
->
-> Antonio Ojea <antonio.ojea.garcia@gmail.com> wrote:
-> > l4proto . th dport map @hostport-map-v6
-> > Error: transport protocol mapping is only valid after transport protocol match
-> > add rule inet cni-kindnet prerouting dnat ip6 to ip6 daddr . meta
-> > l4proto . th dport map @hostport-map-v6
-> >                                      ~~~~
-> > ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->
-> Looks like a bug, fixed in nft 1.1.1
+I have an IPv4 set with timeout 2d, but update its elements to 4d when
+a rule matches. It was fine until kernel is updated to 6.12.6 or 6.12.7.
+E.g. the following snippet gives an error when importing:
 
-Perfect, in the meantime and for reference I solved it using a map per protocol
-
-        map hostport-map-v6-tcp {
-                type ipv6_addr . inet_service : ipv6_addr . inet_service
-                flags interval
+table inet blocker {
+        set spam_ips {
+                type ipv4_addr
+                size 65535
+                flags dynamic,timeout
+                timeout 2d
+                elements = { 1.2.3.4 expires 3d }
         }
+}
 
-        chain prerouting {
-                type nat hook prerouting priority dstnat; policy accept;
-                dnat ip6 to ip6 daddr . tcp dport map @hostport-map-v6-tcp
-        }
+a.nft:7:16-22: Error: Could not process rule: Numerical result out of range
+                elements = { 1.2.3.4 expires 3d }
+                             ^^^^^^^
 
-Thanks for the help
+kernel 6.10.6 worked just fine. nftables cli v1.1.1.
+
+Despite I can't import the set, existing elements can still be updated
+to timeout more that 2d.
+
+A new bug? Or a new limitation?
+
+-- 
+Best regards,
+lilydjwg
