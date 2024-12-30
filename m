@@ -1,96 +1,123 @@
-Received: from mail.thelounge.net (mail.thelounge.net [91.118.73.15])
+Received: from fout-b1-smtp.messagingengine.com (fout-b1-smtp.messagingengine.com [202.12.124.144])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5DFE126C13
-	for <netfilter@vger.kernel.org>; Mon, 30 Dec 2024 15:40:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.118.73.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4F8833C9
+	for <netfilter@vger.kernel.org>; Mon, 30 Dec 2024 22:17:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735573240; cv=none; b=tRAXBAJ460n/Eudw7riQMIlgV3KjJx/DtpJ1pIzhd4gx+7ajDKbZfw/hjdYOfEhhZ1NpeCOOpeQ/7k8HBBPcdO/CcaEfzKG4Ai7h4EH3v+dWFgmawA7mHBheeFHhU+RxG5NeyWPzsMNqS8fmIPk0k+rgjEn/+3d+RgTg/vtq8t0=
+	t=1735597059; cv=none; b=Fib8/DqdAeU9HKgzgr85u1IjF5sYmsAy083RvwVRHBW6B/IfjDEN/UhjYYOb+4CxB3ua2h/3j+xpBG6ostwNneYIFXu6qtNrwEMo1AhIQP1htvb6niHjW5MFSOsPB/JynCAFiQOrrkswE1U7vWkdlp41ZyNhXO66JP9DZ6bqjjI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735573240; c=relaxed/simple;
-	bh=O2pDGGjdDnmGkuBDY+pwl1gB+q2K3992f/ybQHD76SQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YrcdPNVKASjauuuWAfpQ7cuImUjM1o63GpMloWJuvQL/CAnmI+Nx54P3lwFi4bqNu137bsyGkSH1W64V9yg0Y3s5sNHlbDxmYqRHU8crGpoXqjyObkBy5VNw7D3JrMS6phvNNSl733GS/rdP1Ys8Ke4KyfSc7e80qz0odXUzM1I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thelounge.net; spf=pass smtp.mailfrom=thelounge.net; arc=none smtp.client-ip=91.118.73.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thelounge.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=thelounge.net
-Received: from [10.10.10.2] (rh.vpn.thelounge.net [10.10.10.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: h.reindl@thelounge.net)
-	by mail.thelounge.net (THELOUNGE MTA) with ESMTPSA id 4YML0K2hLTzXVv;
-	Mon, 30 Dec 2024 16:40:33 +0100 (CET)
-Message-ID: <897d1cb9-512b-41a3-ab26-a8caae37d460@thelounge.net>
-Date: Mon, 30 Dec 2024 16:40:33 +0100
+	s=arc-20240116; t=1735597059; c=relaxed/simple;
+	bh=aGk6edSB8NA0vdAe4d2dpVKS5sKHVipUEaxXT5IWgrI=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=DNuMsimm3mOGVa7hd52msDxgU5Jwc4IKzbo36f/oFVb/lPcUr0vpmKG0RfTH3FevhGikbT35M5MFVEnc58ZIUsr0pD1Xe2LaS2Bp6Ms88IpgNc2lm7MoUW66CxMWxhDhU34Nknt/ua+hJcWSYkaC8PZvFU3O4Gu56LR1gwRcyBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=fNZh48Rf; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=LFbkR2W2; arc=none smtp.client-ip=202.12.124.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="fNZh48Rf";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="LFbkR2W2"
+Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
+	by mailfout.stl.internal (Postfix) with ESMTP id A0F821140188;
+	Mon, 30 Dec 2024 17:17:35 -0500 (EST)
+Received: from phl-imap-10 ([10.202.2.85])
+  by phl-compute-03.internal (MEProxy); Mon, 30 Dec 2024 17:17:35 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+	 h=cc:cc:content-transfer-encoding:content-type:content-type
+	:date:date:from:from:in-reply-to:in-reply-to:message-id
+	:mime-version:references:reply-to:subject:subject:to:to; s=fm3;
+	 t=1735597055; x=1735683455; bh=xL/hvSUOPvRGdwCTHD4MWc/36l8lhMW8
+	InonPX7GKso=; b=fNZh48RfwSf5kq0/YxK4OtgsMGSF0UqV6AIjn3Mtu4nxapzT
+	XETqx5IPqkaKILcFwoDNKlnTDtX5gnJoQfswGXSezzihrDKXAp4gLsnP0bidVSlv
+	ZBv4P3T0fJtVA8XEdIqlSu7Mlj0ly5T1cW4+Q2I76ujyVK97xwCApHdGYZPDcg5Y
+	Ugq1qh035QItJyQZCFZOeV2g50D2G63srQQ0JYpsgJXtFRiQjZZuSfPb1Q5ybzrL
+	wMitcQtKOYnkOHPe2nnKx3US6yvNPvgMdAIDpLoRK47h90zShPssDg1hbY6cw04Z
+	MtE66zakuTvaHtUwe5JviPhmX2b0zKms6Aokug==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1735597055; x=
+	1735683455; bh=xL/hvSUOPvRGdwCTHD4MWc/36l8lhMW8InonPX7GKso=; b=L
+	FbkR2W2WJCGYS6wbxkPKAHQXKwV86sTvOaw/ViMeXf0YlSPeBTHJzbbu4nV3z9tg
+	VmpPYq7pk/q3572/qXUddsODittDq8G5wHGznzH8IN8l2KLG58ex0zIDnrWhHNzL
+	p3r3edCuIDNml7r0cQn/mqVXUgf88Ji/YBXlTq2P5yVNI9ot1aL7rBycG4VlzSPy
+	AA8HgVxDFQNdkmPoF1oPFKv2wKRH7BP1CQv5w8mq2n47OaXz7oQ1fi+tvKsNFrME
+	SfgsuIa+RRm413cWnFA9NtAJP9+RGeTXYwOjGyLgZ/qvYEtKyMIcssHQI9PxXLgD
+	reEz1vLkYFnr1A0xjqRnQ==
+X-ME-Sender: <xms:_htzZ8J15XBnO5T_xDA2-Jl77tHiMPlMdQBmak_djjBiRFEc2J0zGg>
+    <xme:_htzZ8KLTUw3BcnKDdmUr6SZdNmA_71bBqcLyporlXSGQVu8adWSxqlLU3xqsQJYO
+    W87_icJWN6n0sMe>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddruddviedgudeiudcutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
+    hnthhsucdlqddutddtmdenucfjughrpefoggffhffvvefkjghfufgtgfesthejredtredt
+    tdenucfhrhhomhepfdfmvghrihhnucfoihhllhgrrhdfuceokhhfmhesphhluhhshhhkrg
+    hvrgdrnhgvtheqnecuggftrfgrthhtvghrnheptdeutdefvdeivedutdehieduleeugfdt
+    fedutdegvdffkedtjeejvdetffdvgfdunecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+    hrrghmpehmrghilhhfrhhomhepkhhfmhesphhluhhshhhkrghvrgdrnhgvthdpnhgspghr
+    tghpthhtohepfedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheplhhilhihughjfi
+    hgsehgmhgrihhlrdgtohhmpdhrtghpthhtohephhdrrhgvihhnughlsehthhgvlhhouhhn
+    ghgvrdhnvghtpdhrtghpthhtohepnhgvthhfihhlthgvrhesvhhgvghrrdhkvghrnhgvlh
+    drohhrgh
+X-ME-Proxy: <xmx:_htzZ8slzTKgA3VuNiwJJlbdhe8okmcB8Lcb6goswnvmjz9J7hB3RQ>
+    <xmx:_htzZ5blVBfkJJltnAxbSMukBFLcu96fPHfhUoBDy0g4AdJwjsoaBQ>
+    <xmx:_htzZzZJ9itQ6yL-sA0RPAyQP67PaWlW3f7_NVg1jm7yD2jpIYL2Cw>
+    <xmx:_htzZ1BMUtAfb1z5qwVtzuWsaONjcCC5B_luMNkDZ8l3oiY6KSmhnQ>
+    <xmx:_xtzZykH0X3rLlpei_tpt5n4lS6B3_vVue9Abaa3QceYVXmtmPxDL5FB>
+Feedback-ID: i2431475f:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 98A7A3C0066; Mon, 30 Dec 2024 17:17:34 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: expires larger than timeout causes error
-Content-Language: en-US
-To: lilydjwg <lilydjwg@gmail.com>
+Date: Mon, 30 Dec 2024 22:16:55 +0000
+From: "Kerin Millar" <kfm@plushkava.net>
+To: "Reindl Harald" <h.reindl@thelounge.net>, lilydjwg <lilydjwg@gmail.com>
 Cc: netfilter@vger.kernel.org
+Message-Id: <4cbb5060-62ba-4c31-a290-f294ba6f621e@app.fastmail.com>
+In-Reply-To: <897d1cb9-512b-41a3-ab26-a8caae37d460@thelounge.net>
 References: <Z3EdxDDREx_TeWZT@lilyforest.localdomain>
  <95e9679c-0ed0-4f57-b7d0-203729321d3b@thelounge.net>
  <Z3K5_wCC4LwwCKHu@lilyforest.localdomain>
-From: Reindl Harald <h.reindl@thelounge.net>
-Autocrypt: addr=h.reindl@thelounge.net; keydata=
- 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
- K4rYsjPimkSIVdrNM//wVKdCTbO+
-Organization: the lounge interactive design
-In-Reply-To: <Z3K5_wCC4LwwCKHu@lilyforest.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ <897d1cb9-512b-41a3-ab26-a8caae37d460@thelounge.net>
+Subject: Re: expires larger than timeout causes error
+Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
+On Mon, 30 Dec 2024, at 3:40 PM, Reindl Harald wrote:
+> Am 30.12.24 um 16:19 schrieb lilydjwg:
+>> On Sun, Dec 29, 2024 at 06:01:48PM +0100, Reindl Harald wrote:
+>>>
+>>> Am 29.12.24 um 11:00 schrieb lilydjwg:
+>>>> I have an IPv4 set with timeout 2d, but update its elements to 4d when
+>>>> a rule matches
+>>>
+>>> why?
+>> 
+>> I just found it. With the timeout seperated, I could distinguish
+>> frequent and active IPs from inactive / once
+> you can't anyways that way - when the remaining value is 1 day you have 
+> no clue if it started with 2 or 4
 
+They can.
 
-Am 30.12.24 um 16:19 schrieb lilydjwg:
-> On Sun, Dec 29, 2024 at 06:01:48PM +0100, Reindl Harald wrote:
->>
->> Am 29.12.24 um 11:00 schrieb lilydjwg:
->>> I have an IPv4 set with timeout 2d, but update its elements to 4d when
->>> a rule matches
->>
->> why?
-> 
-> I just found it. With the timeout seperated, I could distinguish
-> frequent and active IPs from inactive / once
-you can't anyways that way - when the remaining value is 1 day you have 
-no clue if it started with 2 or 4
+# nft 'table ip t { set s { type ipv4_addr; timeout 2d; }; }'
+# nft 'add element ip t s { 1.2.3.4 }'
+# nft 'add element ip t s { 1.2.3.5 timeout 4d }'
+# nft list set ip t s
+table ip t {
+        set s {
+                type ipv4_addr
+                timeout 2d
+                elements = { 1.2.3.4 expires 1d23h59m54s923ms, 1.2.3.5 timeout 4d expires 3d23h59m58s323ms }
+        }
+}
 
-
+-- 
+Kerin Millar
