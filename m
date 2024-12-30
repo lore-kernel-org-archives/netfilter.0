@@ -1,123 +1,93 @@
-Received: from fhigh-a4-smtp.messagingengine.com (fhigh-a4-smtp.messagingengine.com [103.168.172.155])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC51D1A9B48
-	for <netfilter@vger.kernel.org>; Mon, 30 Dec 2024 14:21:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.155
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D85C0195
+	for <netfilter@vger.kernel.org>; Mon, 30 Dec 2024 15:20:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735568488; cv=none; b=sQG1Hfuyq9WdM1ts1hUscrKAevHZJ+rsRuZZxIzpi4MHvdnKY0GluYuv5KtGnNHvWdOmdpomifSQmWEpmjB4iWxkTqPhMsEAYczvWYvJNz82Pt5IjKqBTUf0Gj1FMn+yuKJLQGyumHG3cKWtWI8EOcfXqfxl2ECtEfSfTO55Ar4=
+	t=1735572004; cv=none; b=ismMmti5Jpw3Y19/ObjKDaVAtaI8GFLn1rKWO5ZhqVjQNPhzUKYr5Ym+eWWJDtJ11Km0tDvRHSsroa7K7H8KAHMIncGT7oNZouJabpNff/Ea/jUjNtIJHptFXzlSuQRMcntm77bJrNIx54rZghswXAdMuSmiBzPfi3fH7IZ/Hmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735568488; c=relaxed/simple;
-	bh=ZnHJRcsR8lM2Jlr1jJrqfKEHXAFraDuZyc4VE6TXfUE=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=mfCV5Es8HdjDrFl1WOjFANYfNVpPQwM5ss14A+2uZV1T6bQN6+poGgPDuVEo3mFBLTsu9og0oMWQ0hQTxbw201qGPAZY5+xcJ/P/ZMJObUYf8cpJcHIUiJw7Aowb78t25Nox3rHyy4RxT5rIXsA5yxf+0VQANttFznaslbReKL8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=ciZgf5i+; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Q/lAd6Hk; arc=none smtp.client-ip=103.168.172.155
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
+	s=arc-20240116; t=1735572004; c=relaxed/simple;
+	bh=Ur0/+kMqAJeOhefj/fOb0BaIj1ZO5u6sEpgeN1rQlic=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HJLRNDruILfIqbxfdGaKGEsOmWwTSbYEVxV3lJ4pWSsIKPnh/7kV6/6EcmynAQvXb9aChoOpYDN8ApH3+wYGtYcZ7QenLbXbMbU7KKBqQO2+MzBuZkqyF4yz/nZ4+MM204CupkCBCbxmJpkWHz9sJea0B+XNWrL4SRQKFW+mzNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CfhldpVn; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="ciZgf5i+";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Q/lAd6Hk"
-Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
-	by mailfhigh.phl.internal (Postfix) with ESMTP id C11A911400BC;
-	Mon, 30 Dec 2024 09:21:24 -0500 (EST)
-Received: from phl-imap-10 ([10.202.2.85])
-  by phl-compute-03.internal (MEProxy); Mon, 30 Dec 2024 09:21:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-	 h=cc:cc:content-transfer-encoding:content-type:content-type
-	:date:date:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=fm3;
-	 t=1735568484; x=1735654884; bh=6iolNtSDmSXtFGRVcActLgZl7uFMRTuM
-	FIaSrOqoO9o=; b=ciZgf5i+M4XIh0niMLL6fogRTIYjl80YKu5Crel08Yu5tfyX
-	m23U0JAcXw0CzIg8nBWMArDLy94Ea5FnHjG6uefP56zsc6EkH/3ToAS7yNsngXgA
-	e04sQcFJHLKAnxuY/DI6E/Ghvn9kRTghu0Kp+fjSRH7ih48U+GoWcKhnLUkUnHxo
-	hYCL2tFzko5P1CDIsp4sx+FxtbywqMemwfoq/9Z/MCvj2w1hRWyIRpvBKu0HqvUO
-	VODnAR6saL5Y9ao+uMxtv1U1tZkeb+A8K12GTjyDtflz2VvVJdCVhF4QtEzNaBfh
-	MoNykeQrZ5CDiRc6RiST9IElEKrvZ9hqFmL4JQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1735568484; x=
-	1735654884; bh=6iolNtSDmSXtFGRVcActLgZl7uFMRTuMFIaSrOqoO9o=; b=Q
-	/lAd6HkadzS+ZMyJMitDm444avwteNb8Xy5IRINBYDH7mElMcDARZY5nd39/errD
-	SKYmAMp9dgRV59Wg4TuFyCNv2W3rqO1wmqbO3z+L/axODkG8qtA/uL79zJ3acl/d
-	ZBG6LKxkJdRDL02DqMBVeGYCUFt1lyKy39V2U0rwI/BvaKD+Ge6Pk1iEJs+u627o
-	KFQxg6gwqVBucKGklbf31F01edsSNQfnaXjniYZd8oDUFr5QgIsn8HKJysrdELXO
-	SkAopcYsy0lgvc7415oIc54GlQQoWQSDO+80ZE6S+d80gbdLAaixQrdek7g0yvff
-	eVYejQHP0RyyFxCYm+HjQ==
-X-ME-Sender: <xms:ZKxyZ4n2tRYjSQkrFUPvp6FstyaIerINgdieGL01GpHjfIW6lrLW9Q>
-    <xme:ZKxyZ30qO4Onz3vlSESXkMKHml1gLlEzbmHAYwtZytJ-qJVcRrrSK5akBSxGGJwY1
-    tngM2KwEAUzW7tl>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddruddviedgieefucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhepofggfffhvfevkfgjfhfutgfgsehtjeertdertddt
-    necuhfhrohhmpedfmfgvrhhinhcuofhilhhlrghrfdcuoehkfhhmsehplhhushhhkhgrvh
-    grrdhnvghtqeenucggtffrrghtthgvrhhnpedtuedtfedvieevuddtheeiudeluefgtdef
-    uddtgedvffektdejjedvteffvdfgudenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
-    grmhepmhgrihhlfhhrohhmpehkfhhmsehplhhushhhkhgrvhgrrdhnvghtpdhnsggprhgt
-    phhtthhopeefpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehlihhlhigujhifgh
-    esghhmrghilhdrtghomhdprhgtphhtthhopehprggslhhosehnvghtfhhilhhtvghrrdho
-    rhhgpdhrtghpthhtohepnhgvthhfihhlthgvrhesvhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:ZKxyZ2q9-ZB25vgdeKNAw3POu1jSd4mxO5X4irYEbfKYZ4OdkeytUQ>
-    <xmx:ZKxyZ0lOHumUQCvBKZ67QUvWXCbBHdgUXdY3nSm7TmrcluhwtVAUGA>
-    <xmx:ZKxyZ22vzDGH-o8HwdaBKO9vMWAeFdj4Xq9CGgoN-SHdarN2-pBopQ>
-    <xmx:ZKxyZ7s7JdlTRji1RfKHEi-Tg3aUkkrkNxwyH-TP9yPfmXhZmHISvw>
-    <xmx:ZKxyZ0Bd41bO8gl0FAleICmKqIWsCtrafhrMmWuSvNWt6obhMKLRDw3N>
-Feedback-ID: i2431475f:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 643CA3C0066; Mon, 30 Dec 2024 09:21:24 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CfhldpVn"
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-21670dce0a7so23852175ad.1
+        for <netfilter@vger.kernel.org>; Mon, 30 Dec 2024 07:20:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1735572002; x=1736176802; darn=vger.kernel.org;
+        h=disposition-notification-to:in-reply-to:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=kHkrQy1sZ0ZtjuxUgl/Y3NFbl1vtKeKDaeiJxMI6R4o=;
+        b=CfhldpVn8bZrlOiWK4GuNWAg7mH7EnIXSi83XLtti47LdN2JMk3U1qFBi33czv8S8F
+         P/nY/XH/mX28B5V6JQ0YDeQMeygOYWAHM1TJn1vd73+h6hWKYwYtuFu4xpf/7G6uEvGU
+         2mcKuR4PDOhQ5E7xC5e8pHv0KD6AQLNM3BNwfzi1fuZYEMeCWf7BOmpIuni/wDG+NS67
+         Sbv6MDG0wM3FERKA+9ulljJbkqP0SNC+P9tg6p6YN9+YofXB3coQwZt5S9ojcG23Mf5b
+         i50ZUGCz3oRe1BnBh1mcZOaBoVp+9uVCO1xkBpT2ugCMO8p1OIP0mVyQg48F5EuRRqKF
+         fpZg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1735572002; x=1736176802;
+        h=disposition-notification-to:in-reply-to:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kHkrQy1sZ0ZtjuxUgl/Y3NFbl1vtKeKDaeiJxMI6R4o=;
+        b=r/ap1ZjZsGVhk7CuytyLsxounoC3+rFqVoLVSYnsJ/wxoJT4hOriYQe7gjmjteiUWS
+         ZQcqCawnp9tPYXpFaEIVMd+nVr9UMiVI/TujIlbmzSu7ookkHeEybcvrC+wHRSRQweeF
+         J+t51A1eCnucyvGc84hn+D2k10nH1zP0qYLW/3GLACPIFGtagNRYtcAT3d2CDftblduL
+         DOSRbwqx3AgboVEJR+CJqR/iFmp3/+JgseBCnvCnoDwbC7e/1vn+lLBdPFAdfvWM/69Z
+         lGJnsa4cfGsyX4vcTbuU0wJqiYLykQlFamtQ5XmvWTZ2eMYlhUXWPqyApFKtMdgE8sDC
+         hOwA==
+X-Gm-Message-State: AOJu0Yx3dfSEWlZie+IZL40kP3PJaJVwDF5lE6eVtt1mjsIyjjP6X/fX
+	R2ixh9QFUznlOXKhVS34rhLB78Eq1r3IDU1+W6kanPMGqbmm41DQzZ3AMWu4VeDExw==
+X-Gm-Gg: ASbGncv12IMj+Rmnh/VTxXJk8jWsQ107vCiLa9mXZ3dG0RDu6cIwd7sjHUwLcOb+9SW
+	Jwnr4UhbBOw0uECw4ZlbtzJvbskhzsV6bLxGqerGPXQICi6hTgh4cctS4s4z/kQScGis0l5dJcn
+	3Auut5HybhM/rdCAljvazrGAmgCo5k5ddZRr+zi7eM+TWzo3sIMY2WYZMpp349bINEeo9GQPlGr
+	wCL/uKYFbpGYsHMO3lg1MhyWVDjlw3f65+eC+CC09CSLGgY30Rp
+X-Google-Smtp-Source: AGHT+IEI/xkbpzhQCW78XgH8iIAOQBj8kSZe9rU4y+3AK1M+fPlXqE/SRVa++n/hM2PSj/Ra5rPHyA==
+X-Received: by 2002:a17:902:c406:b0:216:2bd7:1c4a with SMTP id d9443c01a7336-219e6ebb716mr532326335ad.26.1735572001582;
+        Mon, 30 Dec 2024 07:20:01 -0800 (PST)
+Received: from localhost ([2a0c:b641:69c:caa0:3784:b48:826a:b03])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dc96eb83sm180490125ad.97.2024.12.30.07.19.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Dec 2024 07:20:00 -0800 (PST)
+Date: Mon, 30 Dec 2024 23:19:27 +0800
+From: lilydjwg <lilydjwg@gmail.com>
+To: Reindl Harald <h.reindl@thelounge.net>
+Cc: netfilter@vger.kernel.org
+Subject: Re: expires larger than timeout causes error
+Message-ID: <Z3K5_wCC4LwwCKHu@lilyforest.localdomain>
+References: <Z3EdxDDREx_TeWZT@lilyforest.localdomain>
+ <95e9679c-0ed0-4f57-b7d0-203729321d3b@thelounge.net>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Mon, 30 Dec 2024 14:21:04 +0000
-From: "Kerin Millar" <kfm@plushkava.net>
-To: "Pablo Neira Ayuso" <pablo@netfilter.org>, lilydjwg <lilydjwg@gmail.com>
-Cc: netfilter@vger.kernel.org
-Message-Id: <9baf59ed-06b2-48d2-bd21-c1f744b761d3@app.fastmail.com>
-In-Reply-To: <Z3J8fo-l0iMglG5v@calendula>
-References: <Z3EdxDDREx_TeWZT@lilyforest.localdomain>
- <Z3J8fo-l0iMglG5v@calendula>
-Subject: Re: expires larger than timeout causes error
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <95e9679c-0ed0-4f57-b7d0-203729321d3b@thelounge.net>
+X-Mailer: Mutt 2.2.13 (00d56288) (2024-03-09)
 
-On Mon, 30 Dec 2024, at 10:57 AM, Pablo Neira Ayuso wrote:
-> On Sun, Dec 29, 2024 at 06:00:36PM +0800, lilydjwg wrote:
+On Sun, Dec 29, 2024 at 06:01:48PM +0100, Reindl Harald wrote:
+> 
+> Am 29.12.24 um 11:00 schrieb lilydjwg:
 >> I have an IPv4 set with timeout 2d, but update its elements to 4d when
->> a rule matches. It was fine until kernel is updated to 6.12.6 or 6.12.7.
->> E.g. the following snippet gives an error when importing:
->> 
->> table inet blocker {
->>         set spam_ips {
->>                 type ipv4_addr
->>                 size 65535
->>                 flags dynamic,timeout
->>                 timeout 2d
->>                 elements = { 1.2.3.4 expires 3d }
->>         }
->> }
->> 
->> a.nft:7:16-22: Error: Could not process rule: Numerical result out of range
->>                 elements = { 1.2.3.4 expires 3d }
->>                              ^^^^^^^
->> 
->> kernel 6.10.6 worked just fine. nftables cli v1.1.1.
->> 
->> Despite I can't import the set, existing elements can still be updated
->> to timeout more that 2d.
->> 
->> A new bug? Or a new limitation?
->
-> You have to use _timeout_ to override the default set timeout policy
-> for your elements.
+>> a rule matches
+> 
+> why?
 
-It would be more intuitive were the circumflex characters to indicate "expires 3d" or "3d" as being at fault.
+I just found it. With the timeout seperated, I could distinguish
+frequent and active IPs from inactive / once.
+
+Not very important to me. So I'll just stop doing so as it is
+obviously not supported.
 
 -- 
-Kerin Millar
+Best regards,
+lilydjwg
