@@ -1,76 +1,92 @@
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.netfilter.org (xvm-190-124.dc0.ghst.net [217.70.190.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1260F1A23B6
-	for <netfilter@vger.kernel.org>; Mon, 30 Dec 2024 10:16:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9971A1991D2
+	for <netfilter@vger.kernel.org>; Mon, 30 Dec 2024 11:06:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735553779; cv=none; b=EWy/QfGHdwKX8rsPMvw7QooickXHFBueRUtfkT/AgJ3hpARWIiuPK6jAMZQsOVz3nRQwLS41xbDq1mkJefgmA4DgGlXIx9LLsh94la1xWbuiZN43ai5DO7yrh6YmAbLK2fdzBv0/a0TblCynerVDfMovw8yUaWUCSrJznxVYxFY=
+	t=1735556799; cv=none; b=r5aNfTqBvhUqjHbjrdfqgZZagEheUBGBtXzeQrY2cmZ2qWDJ/oTshuZqXhXz4FqeHHp6wS5tWs+A+ns8hUq/qKTbgv+hmJAuuIRRhs99ge0bnfJZ0UOiOlTednrY6ZSm0p3x4HXekMkWBNXrXilVKQfyqVbEWnK1SlDzZtgyUS0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735553779; c=relaxed/simple;
-	bh=kTjdRQrK1WLJARxyc/vaaOYw9ykMKZ/dQhKk5wNpXkE=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=BGgV48AicnmjDwG+tCx2GUN1ypaZ7dCKS1k+Ho42QDRztXKzVdqWySoMII4Axsi26oDT7pS/Rb0jfq8TTfcpBDheBPS2Wd0qB3xftn1Nh27jubcGTTSDb6fuQ7hNGYQ2Gov2IYSb4v3wMp/6cEdzW9NXz8WNAZojHUarLE14Q50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d1LRU2Hf; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1735556799; c=relaxed/simple;
+	bh=Zu6ugzRUS9aU1Gsi0ZyBeSawWBTqsDwMlR94RBk5Kfw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GFVBDtt8X88Glck95s3citwWir+M80WuzFx0VXrZDta5rUeui2t8nu9WEIbdfgTQBwO6gWIEM3XY09rEZVfJyEW5rO3GhSOsgdDT8taGN0oyR3nw+X5CbY3kKJNbZXs6Ev403KBrC6mRr+L3xL8o1sdh9aWqTzqV0ljbP1s/8os=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=fail smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=LPyskIEA; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=W3xJ0qDU; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d1LRU2Hf"
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-436345cc17bso65661315e9.0
-        for <netfilter@vger.kernel.org>; Mon, 30 Dec 2024 02:16:15 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1735553774; x=1736158574; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=kTjdRQrK1WLJARxyc/vaaOYw9ykMKZ/dQhKk5wNpXkE=;
-        b=d1LRU2Hf7MICrPv4vFrR9q6Xqr5eP0nNK3TKLENlskrcegv3yHIZa8WulKtRiynXe8
-         56Nsj23sfdiHHyT2Akayxz1NEzAykf4RptkSaFogqZAg/PgCOSWSg7owQuGg9LW9wIBa
-         YKm7ZzD3JD/r5F+uXMDr3d3w+7jiKSv8NvcZhmNL9XFyuJ8Z8E0+xYLzq+kL4mGYL1XI
-         OoRakTiqHogQzwS07Dv71bWrBi40BHE0qO7TQL5FWZG04g93GB9hOoXvxA0UOpv68teI
-         tM5fVjrWP0MuIejqtu/IvdRNA5GH7OXq9dTJvc8cG4khb+L28V6E7TpV96AGWvm/1bRW
-         EYvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735553774; x=1736158574;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kTjdRQrK1WLJARxyc/vaaOYw9ykMKZ/dQhKk5wNpXkE=;
-        b=ua80XFgIGcCw8k+BACSaa0SyUwFwFXlpuViFu9TIcC5J59w10Z5NWPE0lZ90k60m1i
-         lAiajSrNE3oIYF7uoaDK6OKO2sbO5i78k48tWY9SnV+SBlrQnAdEPAuk6bn0oYRhhuF9
-         E8VJtr2DxdKsJwvYLJWtc4nERA25ORqly52qUVaEeEkIl7YSA4x9+k3M4u+fzq3DPSuA
-         ndcQShHXxGbnpmicBLUPmDAnzgPCYm+wFnGf+Q1lfdg11uY1s94QjEAWniY6IfjAtxl1
-         NO7OE+nEJDVzBHAXAvTRfZczQ798VkLmxpyfZv81oMSv8rAmVFTQLyWqUbYpq0UtwOUp
-         dH/g==
-X-Gm-Message-State: AOJu0Yz5qF3+athAwhJlz+vBbvg/WtN0ejBOkN+e7XTBoM0/LYaqeTW9
-	1USlHD6FbPNPOTfVFt+tvgYsIwonkPYZ185z+dBXxgzx8+s471xdkovb68+KN+sLbiXkl0um3/I
-	qjyI152nDrFUozHl84SwnKFasrjHrEes2wRE=
-X-Gm-Gg: ASbGnctjaOs9bzjahYk0k45ltti4mVSjv3Bwv/pWWZ3dCF0a1qy3b/6pUfgOkpC2NCZ
-	9/xzH4xMT32gwkXNpYBNWV/KGfoJ5NeJ9EGnHTg==
-X-Google-Smtp-Source: AGHT+IGlBkx2gnT3BqduLPS8iARmAKI5yvlzHy7YljckB/a3SwzoYkGCN7h/7RMPWpbXjkzTbd1IHLbpZZXcAtOfqVo=
-X-Received: by 2002:a5d:5e09:0:b0:386:3213:5b9d with SMTP id
- ffacd0b85a97d-38a223fd110mr27459615f8f.41.1735553774372; Mon, 30 Dec 2024
- 02:16:14 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="LPyskIEA";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="W3xJ0qDU"
+Received: by mail.netfilter.org (Postfix, from userid 109)
+	id 6EF6660243; Mon, 30 Dec 2024 11:57:05 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1735556225;
+	bh=891MqkxZrRdJEQJwBkT7YvQQHdE+Qr8O4DsmJG4gSrU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LPyskIEAphtyMOf4eljdVX4J99wgrpXnEihmbFaZ6nQmvs+iWHnHeZRpzG9N7gGxc
+	 JmSN5Y0bG8Qnyz+G/jvJ6E6MDRj6qP0AjM49H4WautVGXPsWVpHCgWiaUpHbW0tzVn
+	 e7K5fJc318W8kgoPehRTbg4L8yvMJ2zgmlfxRyjDWoniFoDrLn3gKFEipvY2kysKkv
+	 WhaeC+qOUpS23ev2gIPEeM+ReN4xhbKr6gJnau1lOwX7X5S3/ewiCLbI6s1EYUxakD
+	 zN8AAYzANDWMGwbuwWj2MraZaIEOGGaOEim/qTr+7u9Ss76stkjZkfkbSrIqaF4bos
+	 cZDPzg85LoScw==
+X-Spam-Level: 
+Received: from netfilter.org (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id CA59260243;
+	Mon, 30 Dec 2024 11:57:04 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1735556224;
+	bh=891MqkxZrRdJEQJwBkT7YvQQHdE+Qr8O4DsmJG4gSrU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=W3xJ0qDUITt7fJIrSuTVM0aYN6rzNRbRvipzSZkX4p80ZURr78WUTwfWQ4lOlmrjf
+	 RmPAAMHkI+SQb41RBPrKmOSN/OiP4HN7vdJSr1Ucq9UzSMACek54Js/KYTOihhCCtH
+	 p/Mn86NNHC3jCWZ5gIY22iSxTgXGK+femMX/6lCVe9fRV8kUHM870jIzGf+aGtldks
+	 LLhM0MnBtTtjSRpRYFw5f6cbr7DtK/dU4Cs+zMK5GxuleSPMgiaahhecTY45d+nl3s
+	 nCdndKPNUV5ScFfQ4txRG+Ls8YxmeA0uJhXS++JS1V3YYDztVTNhrC4zZxS0cT8zqK
+	 mzf/CvpgN2yyA==
+Date: Mon, 30 Dec 2024 11:57:02 +0100
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: lilydjwg <lilydjwg@gmail.com>
+Cc: netfilter@vger.kernel.org
+Subject: Re: expires larger than timeout causes error
+Message-ID: <Z3J8fo-l0iMglG5v@calendula>
+References: <Z3EdxDDREx_TeWZT@lilyforest.localdomain>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Aksel Nyman <nyman.aksel@gmail.com>
-Date: Mon, 30 Dec 2024 11:16:03 +0100
-Message-ID: <CAFKe4zsiyGxitj_ZAaFgMyzOCPhypn1JOx7fCKfbyNsN7AKNDw@mail.gmail.com>
-Subject: flowtable ipv4-via-ipv6 routing
-To: netfilter@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <Z3EdxDDREx_TeWZT@lilyforest.localdomain>
 
-Hi,
+On Sun, Dec 29, 2024 at 06:00:36PM +0800, lilydjwg wrote:
+> I have an IPv4 set with timeout 2d, but update its elements to 4d when
+> a rule matches. It was fine until kernel is updated to 6.12.6 or 6.12.7.
+> E.g. the following snippet gives an error when importing:
+> 
+> table inet blocker {
+>         set spam_ips {
+>                 type ipv4_addr
+>                 size 65535
+>                 flags dynamic,timeout
+>                 timeout 2d
+>                 elements = { 1.2.3.4 expires 3d }
+>         }
+> }
+> 
+> a.nft:7:16-22: Error: Could not process rule: Numerical result out of range
+>                 elements = { 1.2.3.4 expires 3d }
+>                              ^^^^^^^
+> 
+> kernel 6.10.6 worked just fine. nftables cli v1.1.1.
+> 
+> Despite I can't import the set, existing elements can still be updated
+> to timeout more that 2d.
+> 
+> A new bug? Or a new limitation?
 
-It seems as the flowtable acceleration doesnt support sending ipv4
-traffic via an ipv6 next-hop. At least when i have tried i see the
-device running the flowtable sending arp requests for IP addresses
-that should be routed. If i add ipv4 next hop addresses then the
-flowtable works fine.
+You have to use _timeout_ to override the default set timeout policy
+for your elements.
 
-The use case is having the netfilter firewall also running FRR with
-BGP unnumbered to minimize IPv4 address allocation for link networks
-and with flowtable acceleration to make it faster :)
-
-Cheers,
+Thanks
