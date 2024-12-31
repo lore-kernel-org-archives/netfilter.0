@@ -1,123 +1,177 @@
-Received: from fout-b1-smtp.messagingengine.com (fout-b1-smtp.messagingengine.com [202.12.124.144])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4F8833C9
-	for <netfilter@vger.kernel.org>; Mon, 30 Dec 2024 22:17:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE31217ADE8
+	for <netfilter@vger.kernel.org>; Tue, 31 Dec 2024 10:55:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735597059; cv=none; b=Fib8/DqdAeU9HKgzgr85u1IjF5sYmsAy083RvwVRHBW6B/IfjDEN/UhjYYOb+4CxB3ua2h/3j+xpBG6ostwNneYIFXu6qtNrwEMo1AhIQP1htvb6niHjW5MFSOsPB/JynCAFiQOrrkswE1U7vWkdlp41ZyNhXO66JP9DZ6bqjjI=
+	t=1735642506; cv=none; b=RghOItKdz8V4Rjbe4RUxhjAy09fE2JbYDXZJShv/svFMsM++ym4jnZWbMJMLvQefbp3210QvHrIFt26+LVFRNwd2gaZZ3dq0+hmPb3Y/uENBJi7Z9j38ztxsZz1VM8y8B1CLBN2RnCDc2z5pqqUq8wD/l6b6Taqxao9xniZV6H0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735597059; c=relaxed/simple;
-	bh=aGk6edSB8NA0vdAe4d2dpVKS5sKHVipUEaxXT5IWgrI=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=DNuMsimm3mOGVa7hd52msDxgU5Jwc4IKzbo36f/oFVb/lPcUr0vpmKG0RfTH3FevhGikbT35M5MFVEnc58ZIUsr0pD1Xe2LaS2Bp6Ms88IpgNc2lm7MoUW66CxMWxhDhU34Nknt/ua+hJcWSYkaC8PZvFU3O4Gu56LR1gwRcyBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=fNZh48Rf; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=LFbkR2W2; arc=none smtp.client-ip=202.12.124.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
+	s=arc-20240116; t=1735642506; c=relaxed/simple;
+	bh=l0cPzNIgdsj2NNFVKuQROl5DaA+Dje7G3rkow9fd6r0=;
+	h=From:Content-Type:Mime-Version:Subject:Message-Id:Date:Cc:To; b=Tm5WGnBxOmsRw8FJBSUwGanglmRDwZhKcaB4rZnWJezj2NoT6H/X69QhnDCQXXviSrOQCw/uNC/54sCn0EhXmvadq1OjIxtqhmwjtwOZOeithpaoI3oEP26hfvJ+B1xo4EGK2r2yn/YnZH2fX1jyQqqET0mMLOzynnVP0h9kIMA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iEZnaabb; arc=none smtp.client-ip=209.85.208.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="fNZh48Rf";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="LFbkR2W2"
-Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
-	by mailfout.stl.internal (Postfix) with ESMTP id A0F821140188;
-	Mon, 30 Dec 2024 17:17:35 -0500 (EST)
-Received: from phl-imap-10 ([10.202.2.85])
-  by phl-compute-03.internal (MEProxy); Mon, 30 Dec 2024 17:17:35 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-	 h=cc:cc:content-transfer-encoding:content-type:content-type
-	:date:date:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=fm3;
-	 t=1735597055; x=1735683455; bh=xL/hvSUOPvRGdwCTHD4MWc/36l8lhMW8
-	InonPX7GKso=; b=fNZh48RfwSf5kq0/YxK4OtgsMGSF0UqV6AIjn3Mtu4nxapzT
-	XETqx5IPqkaKILcFwoDNKlnTDtX5gnJoQfswGXSezzihrDKXAp4gLsnP0bidVSlv
-	ZBv4P3T0fJtVA8XEdIqlSu7Mlj0ly5T1cW4+Q2I76ujyVK97xwCApHdGYZPDcg5Y
-	Ugq1qh035QItJyQZCFZOeV2g50D2G63srQQ0JYpsgJXtFRiQjZZuSfPb1Q5ybzrL
-	wMitcQtKOYnkOHPe2nnKx3US6yvNPvgMdAIDpLoRK47h90zShPssDg1hbY6cw04Z
-	MtE66zakuTvaHtUwe5JviPhmX2b0zKms6Aokug==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1735597055; x=
-	1735683455; bh=xL/hvSUOPvRGdwCTHD4MWc/36l8lhMW8InonPX7GKso=; b=L
-	FbkR2W2WJCGYS6wbxkPKAHQXKwV86sTvOaw/ViMeXf0YlSPeBTHJzbbu4nV3z9tg
-	VmpPYq7pk/q3572/qXUddsODittDq8G5wHGznzH8IN8l2KLG58ex0zIDnrWhHNzL
-	p3r3edCuIDNml7r0cQn/mqVXUgf88Ji/YBXlTq2P5yVNI9ot1aL7rBycG4VlzSPy
-	AA8HgVxDFQNdkmPoF1oPFKv2wKRH7BP1CQv5w8mq2n47OaXz7oQ1fi+tvKsNFrME
-	SfgsuIa+RRm413cWnFA9NtAJP9+RGeTXYwOjGyLgZ/qvYEtKyMIcssHQI9PxXLgD
-	reEz1vLkYFnr1A0xjqRnQ==
-X-ME-Sender: <xms:_htzZ8J15XBnO5T_xDA2-Jl77tHiMPlMdQBmak_djjBiRFEc2J0zGg>
-    <xme:_htzZ8KLTUw3BcnKDdmUr6SZdNmA_71bBqcLyporlXSGQVu8adWSxqlLU3xqsQJYO
-    W87_icJWN6n0sMe>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddruddviedgudeiudcutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
-    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivg
-    hnthhsucdlqddutddtmdenucfjughrpefoggffhffvvefkjghfufgtgfesthejredtredt
-    tdenucfhrhhomhepfdfmvghrihhnucfoihhllhgrrhdfuceokhhfmhesphhluhhshhhkrg
-    hvrgdrnhgvtheqnecuggftrfgrthhtvghrnheptdeutdefvdeivedutdehieduleeugfdt
-    fedutdegvdffkedtjeejvdetffdvgfdunecuvehluhhsthgvrhfuihiivgeptdenucfrrg
-    hrrghmpehmrghilhhfrhhomhepkhhfmhesphhluhhshhhkrghvrgdrnhgvthdpnhgspghr
-    tghpthhtohepfedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheplhhilhihughjfi
-    hgsehgmhgrihhlrdgtohhmpdhrtghpthhtohephhdrrhgvihhnughlsehthhgvlhhouhhn
-    ghgvrdhnvghtpdhrtghpthhtohepnhgvthhfihhlthgvrhesvhhgvghrrdhkvghrnhgvlh
-    drohhrgh
-X-ME-Proxy: <xmx:_htzZ8slzTKgA3VuNiwJJlbdhe8okmcB8Lcb6goswnvmjz9J7hB3RQ>
-    <xmx:_htzZ5blVBfkJJltnAxbSMukBFLcu96fPHfhUoBDy0g4AdJwjsoaBQ>
-    <xmx:_htzZzZJ9itQ6yL-sA0RPAyQP67PaWlW3f7_NVg1jm7yD2jpIYL2Cw>
-    <xmx:_htzZ1BMUtAfb1z5qwVtzuWsaONjcCC5B_luMNkDZ8l3oiY6KSmhnQ>
-    <xmx:_xtzZykH0X3rLlpei_tpt5n4lS6B3_vVue9Abaa3QceYVXmtmPxDL5FB>
-Feedback-ID: i2431475f:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 98A7A3C0066; Mon, 30 Dec 2024 17:17:34 -0500 (EST)
-X-Mailer: MessagingEngine.com Webmail Interface
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iEZnaabb"
+Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-3022598e213so34143471fa.0
+        for <netfilter@vger.kernel.org>; Tue, 31 Dec 2024 02:55:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1735642503; x=1736247303; darn=vger.kernel.org;
+        h=to:cc:date:message-id:subject:mime-version
+         :content-transfer-encoding:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=vs8tqcBs6NvOlPeQgnzPEjPoviMHjf/LyY5Kk2QcPos=;
+        b=iEZnaabbIvQydn15g79OwD1E5BZP5fztVcRjRsCnrgMgl8C8YJFF59lHqndvHP4/sb
+         UzGv0+/sImtIrYopT8Ys0NTNneHU+wQC1O4H6tuYFAc8hmIM59DYca4Qld/2gcwzwCtO
+         TX8HcKEp9V6eyjr5VtQKCwI+hIVd9YJ8r76Z8Bb1qgQwZbT+jSgfJNg4b6eOxtmnMRnM
+         ekSX1UWvCYoo6UltYFTKoufVz6t7aSKaLxk8gs81NRjmTWMIk/s8xqJaZDNsBEz4E68w
+         vEFauyfVoPMYB98kzyuw7Zu/zA2nRZIhUP1WsfPwM8FqxlvQOy1juOrn62dOock5vVAf
+         rp8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1735642503; x=1736247303;
+        h=to:cc:date:message-id:subject:mime-version
+         :content-transfer-encoding:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vs8tqcBs6NvOlPeQgnzPEjPoviMHjf/LyY5Kk2QcPos=;
+        b=p8eEL/TSxqT17Yc1kLT2RnJMICiCSZSxjRWYJ2nGoNPDjKyEMh+slfVsLZoYvUbHMe
+         4fghxp8w404+tNML22N5qWeXop/6SWlF/RFKVfAYq+JFt/jO9rymjwb1bDpGXuWzmdNh
+         bM+kl7p4sMiOQAWs7640m90ZYFCQkSC1V7GNisy7EKj1o+CtXQPL5FqcqFpsZUTI8vuH
+         HtGBiDBS4krfpg+KdK59TxhHiT9/aDzMIVqtVP3oBZVBUsJkAmo6Xo9oQkz8PwpJuCWN
+         aIFliAatrksgdELNXmMtVXHsfc2eT05NV6SrR3s0JfxVL9P5j3e71M1lzCHvpIoaTb4Z
+         4acA==
+X-Gm-Message-State: AOJu0YzV8gmF6BPjqiFMeTDE9tDCOYdYuYUWds+Eaks0sJzj+BODbDsX
+	Wsicf3A0co0uImhpJfqQvy7gyrUWaMbBkeqZDrWp9kiKlD0Qhc46R7XQ0hSk
+X-Gm-Gg: ASbGnctuyBY/189fdZHEy27b1fDvOv0zygig0cBd8FmL2SlqGJSxETRrQm7NxpQEPld
+	dZSRi8Q1venPKQVSVjyxU1yjaFUR5k1/stTU6kL2cvu1OaBzsflZxClvKc47Q47yoZsTaXVc9MH
+	JprRH+OvQB5/wKFm83YTbY+IfWL81lG8bGI9M2geD0r4glTYapkn722v6YtQ1M+YIg8XyyRWMMm
+	kaB3jzNq/ECsDKp+RBWeShhU+v1FJ8KxUgjKpNISfyQgkvMlC6maV407qhWuoI8Uo91dV9RZCMD
+X-Google-Smtp-Source: AGHT+IHp44mXm9Rq4eBF67CKmkddQZhY0oSl8mKrqLJvdKTaCkslwlWSnv4EYuJv8c0LGl0B52pV0w==
+X-Received: by 2002:a05:6512:3a85:b0:540:3572:1864 with SMTP id 2adb3069b0e04-5422955fd11mr10878780e87.44.1735642502723;
+        Tue, 31 Dec 2024 02:55:02 -0800 (PST)
+Received: from smtpclient.apple ([37.99.45.32])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-54223602625sm3403579e87.112.2024.12.31.02.55.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 31 Dec 2024 02:55:02 -0800 (PST)
+From: Alexey Kashavkin <akashavkin@gmail.com>
+Content-Type: text/plain;
+	charset=us-ascii
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Date: Mon, 30 Dec 2024 22:16:55 +0000
-From: "Kerin Millar" <kfm@plushkava.net>
-To: "Reindl Harald" <h.reindl@thelounge.net>, lilydjwg <lilydjwg@gmail.com>
-Cc: netfilter@vger.kernel.org
-Message-Id: <4cbb5060-62ba-4c31-a290-f294ba6f621e@app.fastmail.com>
-In-Reply-To: <897d1cb9-512b-41a3-ab26-a8caae37d460@thelounge.net>
-References: <Z3EdxDDREx_TeWZT@lilyforest.localdomain>
- <95e9679c-0ed0-4f57-b7d0-203729321d3b@thelounge.net>
- <Z3K5_wCC4LwwCKHu@lilyforest.localdomain>
- <897d1cb9-512b-41a3-ab26-a8caae37d460@thelounge.net>
-Subject: Re: expires larger than timeout causes error
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3776.700.51\))
+Subject: Clarification of the procedure for filtering IP option fields
+Message-Id: <8647C646-1BE2-4956-9598-27CCADD44315@gmail.com>
+Date: Tue, 31 Dec 2024 15:54:50 +0500
+Cc: pablo@netfilter.org,
+ ssuryaextr@gmail.com
+To: netfilter@vger.kernel.org
+X-Mailer: Apple Mail (2.3776.700.51)
 
-On Mon, 30 Dec 2024, at 3:40 PM, Reindl Harald wrote:
-> Am 30.12.24 um 16:19 schrieb lilydjwg:
->> On Sun, Dec 29, 2024 at 06:01:48PM +0100, Reindl Harald wrote:
->>>
->>> Am 29.12.24 um 11:00 schrieb lilydjwg:
->>>> I have an IPv4 set with timeout 2d, but update its elements to 4d when
->>>> a rule matches
->>>
->>> why?
->> 
->> I just found it. With the timeout seperated, I could distinguish
->> frequent and active IPs from inactive / once
-> you can't anyways that way - when the remaining value is 1 day you have 
-> no clue if it started with 2 or 4
+Hi,
 
-They can.
+I am investigating ip options filtering using the exthdr expression and =
+exploring the code in the kernel and the following is not quite clear to =
+me: =20
 
-# nft 'table ip t { set s { type ipv4_addr; timeout 2d; }; }'
-# nft 'add element ip t s { 1.2.3.4 }'
-# nft 'add element ip t s { 1.2.3.5 timeout 4d }'
-# nft list set ip t s
-table ip t {
-        set s {
-                type ipv4_addr
-                timeout 2d
-                elements = { 1.2.3.4 expires 1d23h59m54s923ms, 1.2.3.5 timeout 4d expires 3d23h59m58s323ms }
-        }
-}
+> On 19 Aug 2019, at 17:58, Pablo Neira Ayuso <pablo@netfilter.org> =
+wrote:
+>=20
+> * Match on IPv4 options, e.g.
+>=20
+>        add rule x y ip option rr exists drop
+>=20
+>  You can also match on type, ptr, length and addr fields of routing
+>  options, e.g.
+>=20
+>        add rule x y ip option rr type 1 drop
+>=20
+>  lsrr, rr, ssrr and ra IPv4 options are supported.
 
--- 
-Kerin Millar
+What is meant by type in this example? As you can read in RFC791[1], the =
+Record Route (rr) designation in this example is the type of the ip =
+option. The first octet defines the option type, which is a constant and =
+cannot have any other value. For clarity:=20
+
+> IPOPT_LSRR       (3 | IPOPT_CONTROL | IPOPT_COPY)  =3D type 131
+> IPOPT_RR (7 | IPOPT_CONTROL)  =3D type 7
+> IPOPT_SSRR       (9 | IPOPT_CONTROL | IPOPT_COPY)  =3D type 137
+> IPOPT_RA         (20 | IPOPT_CONTROL | IPOPT_COPY)  =3D type 148
+
+
+Based on the ipv4_find_option() function I can see that it only returns =
+the value whether the option is present in the IP header or not and if =
+it is present then its offset in the buffer is taken, but how is the =
+addr field checked? For example, I want to filter traffic with LSRR =
+option and certain addresses in the route data of this option, but I =
+don't see in the kernel where it will be checked.
+
+> static int ipv4_find_option(struct net *net, struct sk_buff *skb,
+> 			    unsigned int *offset, int target)
+> {
+> 	unsigned char optbuf[sizeof(struct ip_options) + 40];
+> 	struct ip_options *opt =3D (struct ip_options *)optbuf;
+> 	struct iphdr *iph, _iph;
+> 	unsigned int start;
+> 	bool found =3D false;
+> 	__be32 info;
+> 	int optlen;
+> 	iph =3D skb_header_pointer(skb, 0, sizeof(_iph), &_iph);
+> 	if (!iph)
+> 		return -EBADMSG;
+> 	start =3D sizeof(struct iphdr);
+> 	optlen =3D iph->ihl * 4 - (int)sizeof(struct iphdr);
+> 	if (optlen <=3D 0)
+> 		return -ENOENT;
+> 	memset(opt, 0, sizeof(struct ip_options));
+> 	/* Copy the options since __ip_options_compile() modifies
+> 	 * the options.
+> 	 */
+> 	if (skb_copy_bits(skb, start, opt->__data, optlen))
+> 		return -EBADMSG;
+> 	opt->optlen =3D optlen;
+> 	if (__ip_options_compile(net, opt, NULL, &info))
+> 		return -EBADMSG;
+> 	switch (target) {
+> 	case IPOPT_SSRR:
+> 	case IPOPT_LSRR:
+> 		if (!opt->srr)
+> 			break;
+> 		found =3D target =3D=3D IPOPT_SSRR ? opt->is_strictroute =
+:
+> 					       !opt->is_strictroute;
+> 		if (found)
+> 			*offset =3D opt->srr + start;
+> 		break;
+> 	case IPOPT_RR:
+> 		if (!opt->rr)
+> 			break;
+> 		*offset =3D opt->rr + start;
+> 		found =3D true;
+> 		break;
+> 	case IPOPT_RA:
+> 		if (!opt->router_alert)
+> 			break;
+> 		*offset =3D opt->router_alert + start;
+> 		found =3D true;
+> 		break;
+> 	default:
+> 		return -EOPNOTSUPP;
+> 	}
+> 	return found ? target : -ENOENT;
+> }
+
+I also don't see a check in the nft_exthdr_ipv4_eval() function.
+
+If you can make this point more transparent with a code example, I would =
+really appreciate it. I need this for further writing my module for =
+nftables.
+
+1. https://www.rfc-editor.org/rfc/rfc791.html
+
+Regards,=20
+Alexey.=
