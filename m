@@ -1,177 +1,109 @@
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com [209.85.208.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from achilles.binarus.de (achilles.binarus.de [167.235.4.162])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE31217ADE8
-	for <netfilter@vger.kernel.org>; Tue, 31 Dec 2024 10:55:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B2CB257D
+	for <netfilter@vger.kernel.org>; Sat,  4 Jan 2025 18:20:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.235.4.162
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735642506; cv=none; b=RghOItKdz8V4Rjbe4RUxhjAy09fE2JbYDXZJShv/svFMsM++ym4jnZWbMJMLvQefbp3210QvHrIFt26+LVFRNwd2gaZZ3dq0+hmPb3Y/uENBJi7Z9j38ztxsZz1VM8y8B1CLBN2RnCDc2z5pqqUq8wD/l6b6Taqxao9xniZV6H0=
+	t=1736014829; cv=none; b=Oenk51ZcQ+5V5zQZuRSw/4eP6IPKljKcq+QqbIZooFmIPVyjPXOEV2t3ZDkx7i43dukLUJHI5i2jnOWo9j1y1E8EtkGCGe37wa/Z0VZA1yabUgWuh63uvgxzE0p9vCNWyMq4oT2X6xHXugbbWMlyRH16OUAmKaCqpaBkahu+l2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735642506; c=relaxed/simple;
-	bh=l0cPzNIgdsj2NNFVKuQROl5DaA+Dje7G3rkow9fd6r0=;
-	h=From:Content-Type:Mime-Version:Subject:Message-Id:Date:Cc:To; b=Tm5WGnBxOmsRw8FJBSUwGanglmRDwZhKcaB4rZnWJezj2NoT6H/X69QhnDCQXXviSrOQCw/uNC/54sCn0EhXmvadq1OjIxtqhmwjtwOZOeithpaoI3oEP26hfvJ+B1xo4EGK2r2yn/YnZH2fX1jyQqqET0mMLOzynnVP0h9kIMA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iEZnaabb; arc=none smtp.client-ip=209.85.208.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1736014829; c=relaxed/simple;
+	bh=hFAPWZSjkl6ilT7VWHa8P6TcE8X5/Dqxwxnhogh0k34=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=r7yn/BlIHkKYKEfFy4L/170ISgM9hQOvWjORP3P09fhRi7AmwGoSBtpDQJ+0QRUnrXdBWTZsw97Z/GOsyLpcElvDU2apKfuH76JW9awaueDwmTfw7tUhLGKS/VLulPeHCx2UaZudmS/56k436g9AdWDzpQ/sgHaCyEIa0hvF/RM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=binarus.de; spf=pass smtp.mailfrom=binarus.de; dkim=pass (4096-bit key) header.d=binarus.de header.i=@binarus.de header.b=BRy4tGCx; arc=none smtp.client-ip=167.235.4.162
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=binarus.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=binarus.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iEZnaabb"
-Received: by mail-lj1-f176.google.com with SMTP id 38308e7fff4ca-3022598e213so34143471fa.0
-        for <netfilter@vger.kernel.org>; Tue, 31 Dec 2024 02:55:04 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1735642503; x=1736247303; darn=vger.kernel.org;
-        h=to:cc:date:message-id:subject:mime-version
-         :content-transfer-encoding:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=vs8tqcBs6NvOlPeQgnzPEjPoviMHjf/LyY5Kk2QcPos=;
-        b=iEZnaabbIvQydn15g79OwD1E5BZP5fztVcRjRsCnrgMgl8C8YJFF59lHqndvHP4/sb
-         UzGv0+/sImtIrYopT8Ys0NTNneHU+wQC1O4H6tuYFAc8hmIM59DYca4Qld/2gcwzwCtO
-         TX8HcKEp9V6eyjr5VtQKCwI+hIVd9YJ8r76Z8Bb1qgQwZbT+jSgfJNg4b6eOxtmnMRnM
-         ekSX1UWvCYoo6UltYFTKoufVz6t7aSKaLxk8gs81NRjmTWMIk/s8xqJaZDNsBEz4E68w
-         vEFauyfVoPMYB98kzyuw7Zu/zA2nRZIhUP1WsfPwM8FqxlvQOy1juOrn62dOock5vVAf
-         rp8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735642503; x=1736247303;
-        h=to:cc:date:message-id:subject:mime-version
-         :content-transfer-encoding:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vs8tqcBs6NvOlPeQgnzPEjPoviMHjf/LyY5Kk2QcPos=;
-        b=p8eEL/TSxqT17Yc1kLT2RnJMICiCSZSxjRWYJ2nGoNPDjKyEMh+slfVsLZoYvUbHMe
-         4fghxp8w404+tNML22N5qWeXop/6SWlF/RFKVfAYq+JFt/jO9rymjwb1bDpGXuWzmdNh
-         bM+kl7p4sMiOQAWs7640m90ZYFCQkSC1V7GNisy7EKj1o+CtXQPL5FqcqFpsZUTI8vuH
-         HtGBiDBS4krfpg+KdK59TxhHiT9/aDzMIVqtVP3oBZVBUsJkAmo6Xo9oQkz8PwpJuCWN
-         aIFliAatrksgdELNXmMtVXHsfc2eT05NV6SrR3s0JfxVL9P5j3e71M1lzCHvpIoaTb4Z
-         4acA==
-X-Gm-Message-State: AOJu0YzV8gmF6BPjqiFMeTDE9tDCOYdYuYUWds+Eaks0sJzj+BODbDsX
-	Wsicf3A0co0uImhpJfqQvy7gyrUWaMbBkeqZDrWp9kiKlD0Qhc46R7XQ0hSk
-X-Gm-Gg: ASbGnctuyBY/189fdZHEy27b1fDvOv0zygig0cBd8FmL2SlqGJSxETRrQm7NxpQEPld
-	dZSRi8Q1venPKQVSVjyxU1yjaFUR5k1/stTU6kL2cvu1OaBzsflZxClvKc47Q47yoZsTaXVc9MH
-	JprRH+OvQB5/wKFm83YTbY+IfWL81lG8bGI9M2geD0r4glTYapkn722v6YtQ1M+YIg8XyyRWMMm
-	kaB3jzNq/ECsDKp+RBWeShhU+v1FJ8KxUgjKpNISfyQgkvMlC6maV407qhWuoI8Uo91dV9RZCMD
-X-Google-Smtp-Source: AGHT+IHp44mXm9Rq4eBF67CKmkddQZhY0oSl8mKrqLJvdKTaCkslwlWSnv4EYuJv8c0LGl0B52pV0w==
-X-Received: by 2002:a05:6512:3a85:b0:540:3572:1864 with SMTP id 2adb3069b0e04-5422955fd11mr10878780e87.44.1735642502723;
-        Tue, 31 Dec 2024 02:55:02 -0800 (PST)
-Received: from smtpclient.apple ([37.99.45.32])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-54223602625sm3403579e87.112.2024.12.31.02.55.01
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 31 Dec 2024 02:55:02 -0800 (PST)
-From: Alexey Kashavkin <akashavkin@gmail.com>
-Content-Type: text/plain;
-	charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
+	dkim=pass (4096-bit key) header.d=binarus.de header.i=@binarus.de header.b="BRy4tGCx"
+X-Envelope-To: <netfilter@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=binarus.de;
+	s=b201601; t=1736014613;
+	bh=hFAPWZSjkl6ilT7VWHa8P6TcE8X5/Dqxwxnhogh0k34=;
+	h=Date:To:From:Subject:From:Reply-To:Subject:Date:To:Cc:Resent-Date:
+	 Resent-From:Resent-To:Resent-Cc:In-Reply-To:References:List-Id:
+	 List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+	 List-Archive;
+	b=BRy4tGCxgeoq2/7vydcd+Ej9s91lHK/ZsP2KNfofgRfy/0kHZb4mFV6c5kTJvto30
+	 FqIT1NxpDiaLX49TJy6td2n96phoK9BzNuyhXFwp/j9j9RrVJMkqPYQe+sW305Q2va
+	 VWAnprGmYvPx5EVFitDEw8VjQhMNwdT0pDPvcX4j14hk1A7EXSH4hF53/nbzBV3ERw
+	 pPv6eEIO+esMZHkHIswdPh88Acxqmfw+qZJAjn/HlmA4N0Phd7ZkR2M9xzVhi1lt5O
+	 b2iyThf8AX01/OsQLDKIxQArtBH61/ctbhd8WGcgC1rCa8YcrUjQcqDVWJjVoaRdZ8
+	 vpcOUTmwhBkJooo7NLA5N7qsMVuMd84ann2T5kl3axmh5Hwo8npcgAkIwMLm/zQXH7
+	 eTPK1Bme689mXZrxnqqv2e1c2nMrLWYaHujphtqX25aMUwig4yO0aczLqu/rf7Yvs5
+	 Iu9b9LpEcl5qQbtTfbAOPlltvO3Lj6k+cq5vYfH7iP+VDWi3E+8nXtx1esbH4PUX5z
+	 wnVKMaxxEnKkg/dXqDA0CDoZcy6Ea64ACl0h+C9WGG4pXPrwiD5towiTXvlJiZD7PV
+	 v77zLc4VlLAzeO1QlYbP8QaIql0pul0wuZK+coLrxpUAJ/ScxrgmCliOYhnGrWEDfJ
+	 vxw/y75Ck2njlXOS+tJXPyLE=
+Received: from [192.168.20.100] (pd9531926.dip0.t-ipconnect.de [217.83.25.38])
+	(authenticated bits=0)
+	by achilles.binarus.de (8.15.2/8.15.2/Debian-22+deb11u3) with ESMTPSA id 504IGrQl2521287
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <netfilter@vger.kernel.org>; Sat, 4 Jan 2025 19:16:53 +0100
+Message-ID: <23875ea1-9194-4353-ae54-8811e53984ad@binarus.de>
+Date: Sat, 4 Jan 2025 19:16:52 +0100
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3776.700.51\))
-Subject: Clarification of the procedure for filtering IP option fields
-Message-Id: <8647C646-1BE2-4956-9598-27CCADD44315@gmail.com>
-Date: Tue, 31 Dec 2024 15:54:50 +0500
-Cc: pablo@netfilter.org,
- ssuryaextr@gmail.com
+MIME-Version: 1.0
+User-Agent: Betterbird (Windows)
+Content-Language: en-US, de-DE
 To: netfilter@vger.kernel.org
-X-Mailer: Apple Mail (2.3776.700.51)
+From: Binarus <lists@binarus.de>
+Subject: General questions about priorities - Clarification appreciated
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Bin-MAIL-FROM: <lists@binarus.de>
+X-Bin-RCPT-TO: <netfilter@vger.kernel.org>
 
-Hi,
+Dear all,
 
-I am investigating ip options filtering using the exthdr expression and =
-exploring the code in the kernel and the following is not quite clear to =
-me: =20
+at first a big thanks to the developers for providing the netfilter infrastructure and userland tools.
 
-> On 19 Aug 2019, at 17:58, Pablo Neira Ayuso <pablo@netfilter.org> =
-wrote:
->=20
-> * Match on IPv4 options, e.g.
->=20
->        add rule x y ip option rr exists drop
->=20
->  You can also match on type, ptr, length and addr fields of routing
->  options, e.g.
->=20
->        add rule x y ip option rr type 1 drop
->=20
->  lsrr, rr, ssrr and ra IPv4 options are supported.
+We're in the process of migrating from iptables to nft, and we would like to do it right. That is, we don't want to use helper scripts or other means that automatically translate our iptables rules to nft syntax. Instead, we would like to create the nft rules from scratch.
 
-What is meant by type in this example? As you can read in RFC791[1], the =
-Record Route (rr) designation in this example is the type of the ip =
-option. The first octet defines the option type, which is a constant and =
-cannot have any other value. For clarity:=20
+Having said this, I guess I've understood the most important concepts. However, I find it very hard to understand how to correctly assign priorities, due to unclear documentation. Therefore I'd very much appreciate if somebody could answer the following questions.
 
-> IPOPT_LSRR       (3 | IPOPT_CONTROL | IPOPT_COPY)  =3D type 131
-> IPOPT_RR (7 | IPOPT_CONTROL)  =3D type 7
-> IPOPT_SSRR       (9 | IPOPT_CONTROL | IPOPT_COPY)  =3D type 137
-> IPOPT_RA         (20 | IPOPT_CONTROL | IPOPT_COPY)  =3D type 148
+1.
+
+It is not clear to me which priorities are assigned to internal netfilter actions and which priorities we should use for custom chains. Well-known priorities are listed in the wiki here: https://wiki.nftables.org/wiki-nftables/index.php/Netfilter_hooks#Priority_within_hook
+
+This table is worrying. For example, we obviously should use priority 0 for our own filter chains. We can guess this from the fact that hopefully nftables does not apply any filtering unless explicitly told so (i.e., priority 0 should not be assigned to a chain or to an internal process by default) and from the fact that every tutorial we saw so far uses priority 0 for filter chains.
+
+But things are unclear for other priorities. Let's take NF_IP_PRI_CONNTRACK as an example.
+
+ From the NF_IP_PRI_CONNTRACK description in the table: "Connection tracking processes run early in prerouting and output hooks to associate packets with tracked connections." I am understanding this in the sense that an internal process is assigned priority -200. If this understanding is correct, using priority -200 for a custom chain would be a bad idea, because then the custom chain would be at the same priority as that internal processes, and (according to the docs) we cannot predict if a packet first would hit the custom chain or if it first would hit the internal processing. At least, this is true as long as the internal processes use the same hooks as the custom chains (in this case prerouting or output); unfortunately, the documentation does not tell whether or not this is the case.
+
+On the other hand, the table mentions prerouting and output being "typical hooks" for priority -200. This makes the impression that we should use priority -200 for custom prerouting and output chains, and contradicts the statements in the previous paragraph.
+
+Could somebody please explain in detail why typical hooks (and thus, custom chains) should be placed at priorities that are used by (read: reserved for) internal processes, or explain my misunderstanding? Do internal processes use the same hooks as custom chains?
+
+[ Side note: I have noticed the remark below the table which instructs us to use priorities above -200 for nat type chains, but (1) that still leaves the question open for filter and route type chains, and (2) NF_IP_PRI_CONNTRACK was just an example; there are other priorities without such remarks. ]
+
+2.
+
+There seems to be no authoritative reference regarding priorities. Just above the aforementioned table, there is the following sentence: "The following table shows Netfilter priority values, check the nft manpage for reference."
+
+I have read the nft man page on my debian system (bookworm, up-to-date at the time of writing, nftables 1.0.6, kernel 6.1.0) and found that it indeed contains a similar table. But that table is much smaller than the one in the wiki. It contains only six entries (leaving away those for the bridge family) and no "description" column, while the wiki version contains 13 entries and has a "description" column. I have also checked the man page at the project's homepage (https://www.netfilter.org/projects/nftables/manpage.html), but it currently does not provide more information than my local man page.
+
+This again leaves me totally clueless. Which version is true? Have priorities been removed, and the man page is right, or have priorities been added, and the wiki is right? Or are both incomplete?
+
+Is there an authoritative and complete reference about all priorities where custom chains can or should be setup, so that these custom chains do not conflict with any internal processing, i.e., so that these custom chains are never at the same hook with the same priority as internal processes?
+
+[ Side note: As a normal administrator / user, I would like to avoid to read the source code just to be able to setup chains correctly :-) ]
+
+3.
+
+According to the documentation, the bridge family supports only chains of type filter, and supports the prerouting, postrouting, input, output and forward hooks. But the aforementioned table lists "dstnat" as name for priority -300 in the bridge family, and lists prerouting as typical hook for that priority; similar for "srcnat" at priority 300 and hook "postrouting".
+
+I am unable to understand this. Why are there priorities with the nft keyword / names "dstnat" and "srcnat" although chains of type nat are not supported in the bridge family?
+
+This leads to another question: If we want to filter in a bridge prerouting chain (again, the filter type is the only supported chain type here), should we use priority -200 for that chain (because -200 is the value of the "filter" keyword, and filtering is what we can do), or should we use priority -300 (because the "typical prerouting" hook is placed at -300, according to the table)? The same question applies for filter type chains in the output and postrouting hooks.
 
 
-Based on the ipv4_find_option() function I can see that it only returns =
-the value whether the option is present in the IP header or not and if =
-it is present then its offset in the buffer is taken, but how is the =
-addr field checked? For example, I want to filter traffic with LSRR =
-option and certain addresses in the route data of this option, but I =
-don't see in the kernel where it will be checked.
+Best regards, and thanks in advance for any explanations,
 
-> static int ipv4_find_option(struct net *net, struct sk_buff *skb,
-> 			    unsigned int *offset, int target)
-> {
-> 	unsigned char optbuf[sizeof(struct ip_options) + 40];
-> 	struct ip_options *opt =3D (struct ip_options *)optbuf;
-> 	struct iphdr *iph, _iph;
-> 	unsigned int start;
-> 	bool found =3D false;
-> 	__be32 info;
-> 	int optlen;
-> 	iph =3D skb_header_pointer(skb, 0, sizeof(_iph), &_iph);
-> 	if (!iph)
-> 		return -EBADMSG;
-> 	start =3D sizeof(struct iphdr);
-> 	optlen =3D iph->ihl * 4 - (int)sizeof(struct iphdr);
-> 	if (optlen <=3D 0)
-> 		return -ENOENT;
-> 	memset(opt, 0, sizeof(struct ip_options));
-> 	/* Copy the options since __ip_options_compile() modifies
-> 	 * the options.
-> 	 */
-> 	if (skb_copy_bits(skb, start, opt->__data, optlen))
-> 		return -EBADMSG;
-> 	opt->optlen =3D optlen;
-> 	if (__ip_options_compile(net, opt, NULL, &info))
-> 		return -EBADMSG;
-> 	switch (target) {
-> 	case IPOPT_SSRR:
-> 	case IPOPT_LSRR:
-> 		if (!opt->srr)
-> 			break;
-> 		found =3D target =3D=3D IPOPT_SSRR ? opt->is_strictroute =
-:
-> 					       !opt->is_strictroute;
-> 		if (found)
-> 			*offset =3D opt->srr + start;
-> 		break;
-> 	case IPOPT_RR:
-> 		if (!opt->rr)
-> 			break;
-> 		*offset =3D opt->rr + start;
-> 		found =3D true;
-> 		break;
-> 	case IPOPT_RA:
-> 		if (!opt->router_alert)
-> 			break;
-> 		*offset =3D opt->router_alert + start;
-> 		found =3D true;
-> 		break;
-> 	default:
-> 		return -EOPNOTSUPP;
-> 	}
-> 	return found ? target : -ENOENT;
-> }
+Binarus
 
-I also don't see a check in the nft_exthdr_ipv4_eval() function.
 
-If you can make this point more transparent with a code example, I would =
-really appreciate it. I need this for further writing my module for =
-nftables.
-
-1. https://www.rfc-editor.org/rfc/rfc791.html
-
-Regards,=20
-Alexey.=
