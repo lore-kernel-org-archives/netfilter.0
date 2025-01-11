@@ -1,102 +1,79 @@
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E3DA18A6A9
-	for <netfilter@vger.kernel.org>; Wed,  8 Jan 2025 21:59:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 852B1156F54
+	for <netfilter@vger.kernel.org>; Sat, 11 Jan 2025 10:08:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736373582; cv=none; b=LG0cWk50HS32WFBV2su609htzvKV8RvZNHpQPzZbVnvVdach0YLcWzCPROJqF96ttu7p9M9fyzs0XXfxyyCdT2ZEUisBVt7ApBZpFjynRWMbP6XEzACzsRikryVuY/8r59d1ztXTdhmac1zt9tVz8HdqdONvbgoMMS5KceeZgek=
+	t=1736590093; cv=none; b=PLdsFIqdMfIfrSb15ELFZSgiWzhFRa1qaKzeCm4zmLhnKKW9az/Rkd45xWWVAO278S/1FfWgw137iiGb9Lph5XO9KdbNX/wT1Ck+Z+MA78g67JpvTPP5TCKhvQhP4QKfVhcF4vOoQSUMQfWWlO+9qE4b+zlrw7/tbHUlFKoxLEM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736373582; c=relaxed/simple;
-	bh=TGe61LkLqXnJCNxfmbHClluZnez9z0nPU3M1+kEVplI=;
-	h=MIME-Version:Message-ID:From:To:Subject:Content-Type:In-Reply-To:
-	 References:Date; b=k6JR+EPvxXgs2ud+dpriYWCkkVzPGAR1PepcvPOPzlsAUfYlgOIIZ8Bpuk6K7b+gyKbUhvRihHZ6PEpd3G3Q/UzaHcvCzlBsuNIBvCGYCYs+UbW6Pkd/h/1ANrU+zzKZl0pDyCpVz+ZdBwq74eXtcDhXbR7Y2bLupWrNoMghL6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=potatojuggler@gmx.net header.b=oU9ST5Pj; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+	s=arc-20240116; t=1736590093; c=relaxed/simple;
+	bh=ShbksblAE46cURyS3RVz408PcWu5bHF8gKMW5TFohr8=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=hIi74n4bTtVy9POOwOU1Y+Kase4TZmi0VL8gtlK1cO9Z/Cd0MI0V1bg/ycOEp0PeGAww27uZ0+WXF0wrK1CVBb/QKDO6LhYHDvJydf2jnayZKImAl63dpg/G0wn/BW6OzuKC5jz9tgctw9nNoGRubjyLhy5qle27yOdobaOiM88=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=Ov8uV78z; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=9JMX45iR; arc=none smtp.client-ip=185.25.250.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.net header.i=potatojuggler@gmx.net header.b="oU9ST5Pj"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
-	s=s31663417; t=1736373574; x=1736978374; i=potatojuggler@gmx.net;
-	bh=GVe9x4GjgbfHnr2qZdOdhP5TiMokl3hJT8HPEesk4GE=;
-	h=X-UI-Sender-Class:MIME-Version:Message-ID:From:To:Subject:
-	 Content-Type:In-Reply-To:References:Date:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=oU9ST5PjriSAcssXpqBnlgGmeEXHHvRqjr3RVSVz0uXsFByu2tDVj1TpXGEJOF/M
-	 s2rVnWeu6hnKcfdyTzofffUvtjat5GaqJLBD5xlG/za0aSgL0GvhiWj43PJ6cqvxx
-	 KFV8nDHgeHYIP8hk3TVmONYxkCJJ+BoX3D69fo4Dv9ZprgBV9v0PUaXOkhTvjC0uH
-	 RdaCzZgzIQxNoargJ12d1/teN1tHcVkRt4p2ebXzVdy6vI+OdRiqg6V45R+bTSXXx
-	 NHWLqFt8ok5757vJJ7d8IMKRn0ISwqF8tkiifhp06mmLxX4nE/xNEnsRQnD1UYaYU
-	 9LegLD8cscYid/DP8g==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [86.56.211.2] ([86.56.211.2]) by
- trinity-msg-rest-gmx-gmx-live-bbc95d94c-v89sw (via HTTP); Wed, 8 Jan 2025
- 21:59:34 +0000
+	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="Ov8uV78z";
+	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="9JMX45iR"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
+	s=r2023; h=Content-Type:MIME-Version:Message-ID:Subject:To:From:Date:From:
+	Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:Content-Type:Message-Id;
+	bh=eCVakIo3cKCvrkxyBo8/dmAkbQLPkbVc/K//QwakS0Y=; t=1736590089; x=1737799689; 
+	b=Ov8uV78zFXuobroeg/JDAFQ5qKCslmRokCpPCNAlTmvboFHSeahyb4ibZzfg6ing/0cXmANEXLL
+	MtWJyoFH+Kfg/b0VJc/qmfctyVrG5vyPPJ4WfG8cWhBUmz5EzfEpS8QDAHahMTkyxK/04FMlaWsmQ
+	8FcrNIj31RXlVkwTBe4=;
+DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=slavino.sk; s=e2023; h=Content-Type:MIME-Version:Message-ID:Subject:To:From
+	:Date:From:Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:Content-Type:
+	Message-Id; bh=eCVakIo3cKCvrkxyBo8/dmAkbQLPkbVc/K//QwakS0Y=; t=1736590089;
+	x=1737799689; b=9JMX45iR26yRYSiUpND0/NTNMnoXXMPBrU+W/FIWx51fTNumS8UWHNNTiGDjw
+	XEmo0CrmO52awLJRKjZhlQdAg==;
+Received: from dovex.skk ([192.168.10.12])
+	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <linux@slavino.sk>)
+	id 1tWYPR-002AJA-0g
+	for netfilter@vger.kernel.org;
+	Sat, 11 Jan 2025 11:08:01 +0100
+Date: Sat, 11 Jan 2025 11:07:59 +0100
+From: Slavko <linux@slavino.sk>
+To: netfilter@vger.kernel.org
+Subject: list sets
+Message-ID: <20250111110759.6bc33181@bonifac.skk>
+Face: iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAFVBMVEX7+/xrTUz4//3Ozc10AAH5/v3///8f7tJ8AAAB2UlEQVQ4jW2STY6EIBCFSwmumykPQDTtGqxO74kcgNiJa8dE7n+EAfzBtONCpD5eVfko8Pszeb+sflqOPVyA535abyB+9wnfwMgek/8XFEO33sE6lYWB/8HLqOUOFre87H+g9LK2P7y6p+o+1mJ1B75j1g7VeFeshTXifbfEza+goAqqLyAhAKsC+QahqVD9o74VYxGB6PUBJl+C5FwCUhEUSEpCM41PmGYJABK07oNk0EQQAw54K9KDGAQhl6C4ewDwJnZjjVZptQaD0PQSOqC4R2x0Btg76HwbI5oE1Rt4WUPhvG9cjAht+00SvlD5JThQQYiY2g6s3oBRzXMzgG1nKS2asDr+HPb0aSGmsiWwS9r4+rxP0M1tkgxQW/PzewF+pqPKgEV1cbdiCQxUB+AyaJzeq5AmfQG+IEwtDSTwIU8ArtBCtSKYpEg/lhNwFnwYGi2I3qRhPkGpYx5kmmBqtcrgg5hcUrxhqBicoNh6wnB11vaXP/8lkSYkeYaan4CJV7RQVtFm88jAxSlE8M85XonKgM91qBwtmnVt+1z86eI1+/3OMLc7tgbV5k1IhtndMnS/j6x3dAEciB/D7VuVwQI5Po9h1E7Au/kkq89gKt3ziMu1SuAPWe5Dq/EEywcAAAAASUVORK5CYII=
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-ID: <trinity-c141489b-3bc6-44fd-bf1e-da6f4ec06b80-1736373574654@trinity-msg-rest-gmx-gmx-live-bbc95d94c-v89sw>
-From: potatojuggler@gmx.net
-To: lists.netfilter@kevin.km6g.us, netfilter@vger.kernel.org
-Subject: Aw: Re: aggressive firewalling via nftables
-Content-Type: text/plain; charset=UTF-8
-In-Reply-To: <57c39b0f-3aa5-42db-8ef0-7a928420e50e@app.fastmail.com>
-Importance: normal
-References: <trinity-8c3627be-7f9f-4150-a74a-5a69dbd8781a-1736180864807@trinity-msg-rest-gmx-gmx-live-548599f845-9tnlq>
- <57c39b0f-3aa5-42db-8ef0-7a928420e50e@app.fastmail.com>
-Date: Wed, 8 Jan 2025 21:59:34 +0000
-Sensitivity: Normal
-X-Priority: 3
-X-UI-CLIENT-META-MAIL-DROP: W10=
-X-Provags-ID: V03:K1:nuqQkdNc6eF9ul5IlBNoFJGxiNmFV4BYe7OU18AFl15cYoEQmuiUbjPir4qj4z25cBCfV
- +3T60u/dw5qB6g8W9GwdxEXwX6crpsaphpk0DLCxY9dN6BlU02gsFQk4AgYCLxKA9XRDxVwK3Zl3
- AgpVkQBJWbRrgmw7a3MOqauYGhfaLuMVKZCd1GAFYIZhbqDEER+GJ6yDgx3DznVDZCwveKgtpvf0
- YQsX1IwM62BlxZ0BRclvnW+CrBSLP0TIvCUkyUnQAwqHzbTXQ+BuxkimMHJUCC8U3rQL1gZwgUU7
- whxOdFlFaJpOwOJpVeXve71mycPz7aEF2dcMBkcp0oqRQmRaP6IfEnm5C7yshUH2U8=
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:5ItU02rTd8c=;R5aQSlYokuq9uvonHIbVawlpH0R
- 0Rskhr1rjL8GA3E3NqiVYlwb0j+N83NvX0pfGV7lNjRkYx2cHzccXBz61JPuT6JMjLCBA5V/C
- z2rhaFV6tLDUrtCquHkLCstSdBp0GiX7zrTuoPvQ17pGbGhV1DCJrJ+t1oEPPJdUp17FlSZdF
- 1sgmaocxW7x5Osb5S9eEAea8UiT5dprAyq9HGJ4/4Yeo7oMC+ROOd25oU4qmDtTJ/wCCjm6MI
- UqiMwSoXJ52pWjg+wD8lOEyd9l4s2XQxoaPRNxcnqEYxMcYtsWXn7105u3AdtRr0NeAl59dxE
- +oveekAYXqHcYn/Y082WvVg2e5DR5nSWDR+Gxzy8heZ3XNLAvNhr6tzLHX02BQvGtzQM/gqwf
- eGrNIutal0cEnScjvgzNOUKmOX4W7h7h/5l6WH99R2vsa2/trJANEdVLNR24Qq+gdqLGRXUmG
- wevfEOwuD+6kiP8vSEOCNbAiz/ce1HTrG8P39wH2FgHFavJoFtSKVCMXstnEPVKZSjx4FmjrE
- woPHMZwNDPMnYEdQIaYiQRGDVz2bpW1EzcHZabMEu9jZc8tHKbQYrp/Xv4i9zVIySNyTDEKom
- A2ZNQp/CfthidfnYfRyOOBl8H1KQxC1UaVBK2/OSpECUIsPJj/HYuAyYdXVt2iIku+44RGTOZ
- ll1VVjKjaVR+6WjvPQnGAmVVSVbAvOaHhWi6mqH0L/SvHPN71L9D1M+Z+vTYDN2c01bPtscpN
- pOXQX479DRFwnd1+HVWNC+aJOPeAYADVqWPneLtLACPZ7mtOznH84FMV60F7mQI96GOLrMDhe
- ffNRCYxIwS1M+jxSvLq+Z2fEeOX1w6B3JgGnceztk76r6uMhc0OQBZ/SD+HYbkvbhjQBEDzyY
- UPaiGkGwB0CO+5Mpka1Ik27u1LUqd4ei0Y0M=
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-> A small clarification: QUIC does not use TCP at all, not even for an ini=
-tial handshake. It is entirely UDP-based.
-You are absolutely right, thanks for pointing that out! Somehow picked up =
-that it does a TCP handshake for IP address verification and then switches=
- over to UDP with a negotiated session token - I read up more on it now. I=
- want to offer HTTP3 as well on my server, so I will have to find a way to=
- properly track / rate limit new QUIC connections or traffic volume... wil=
-l address that sometime later.
+Hi,
 
+recently i start to use fail2ban with nftables and it works. It uses
+separate (configurable) table for its rules, where it puts particular
+sets.
 
-On the #netfilter channel on the Liberia IRC I already got help in order t=
-o match new TCP connections with the following rule:
-    add rule inet filter input tcp flags ack ct original packets 2 update =
-@rate4tcp { ip saddr limit rate over 12/minute burst 24 packets }
-Since I do the following at the very start of my ruleset, it will correctl=
-y only match verified new connections, but not forged ack packets:
-    ct state invalid drop
-This will find the second packet from a client with the ack flag, which is=
- the one concluding the TCP handshake for the new connection - and with th=
-e set entry I can track and rate limit.
-My question now is though, if this will also match the ack packet, if it h=
-as to be retransmitted (packet was fumbled up in transit)...
-Does "ct original packets 2" match the second packet overall from the send=
-er, or the second valid (not incrementing on retransmit) one only?
-The man pages did not go into too much detail on this unfortunately.
+But i noticed, that while i can list all sets in nftables, or limit
+that list to particular family, i cannot list sets of only one table:
+
+    nft -t list sets inet f2ban
+    Error: syntax error, unexpected string, expecting end of file or \
+        newline or semicolon
+    list sets inet f2ban
+                   ^^^^^
+
+That result matches with the manpage, but it is surprising for me,
+especially when the sets belongs to table by definition...
+
+Please, is here some special reason for that limitation, or just nobody
+coded it yet?
+
+regards
+
+-- 
+Slavko
+https://www.slavino.sk
