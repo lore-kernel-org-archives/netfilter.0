@@ -1,78 +1,80 @@
-Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
+Received: from wmail.tana.it (wmail.tana.it [94.198.96.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71B7E3595B
-	for <netfilter@vger.kernel.org>; Thu, 23 Jan 2025 03:32:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DDA027726
+	for <netfilter@vger.kernel.org>; Fri, 24 Jan 2025 19:07:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.198.96.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737603129; cv=none; b=EDQqYansruswSOqxZqsi1qr8KHgj/iSlI9TE+1K2BSZGzZhXbacNY67jjf//IkE5uuUTTEGRYETlvPhSUeWlM841H1mDEt7xxbm5OrJLnqwrblmKO3TiW6ckQ0D7U/HDvyrKA//x7ooGUBdTaPAtmWUSL0o+lEUZUd5pjZmL/+I=
+	t=1737745659; cv=none; b=hzzVhIRuZeawLTCarBAVIYaRGQaWx5bzfN28ayAJ1jKKXXbQhWiOXOb+ysf3XPeWPNcxwy1spDdILy26ZryE/G+GNomQ5XPFQYrVGFS8vD8iPqxPw3WzOLIPiCAdauJSiGQm8klhUtI20Q3WNgjrmHLPtN8kFmk7l58oTv3cG9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737603129; c=relaxed/simple;
-	bh=y2yx9gccAxb3VuILQBZkgH2qRZaWvwykMHVjZ63wPIQ=;
-	h=Date:To:From:Subject:Message-ID:MIME-Version:Content-Type; b=XT8+Fgnv3NkPRmQ2myV/wBsP42YmpYNureD3Vr9fZI1NnT1/mLjSO9vSL/uS6nXnFp3uGTuvkPQ/Do59d1C+WMuNNZ3hhf+1k8g0ueglsGLGcapfuZ7mXUJQfZfpZkKytPAoOp+4Ly6FVf9HDN7X3O0tQAOo3rQfGKahc5ZmXmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=ayzQqzxf; arc=none smtp.client-ip=185.70.40.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
+	s=arc-20240116; t=1737745659; c=relaxed/simple;
+	bh=MYuvBMkMsl552WdX2qYgWwlvqjCW0mRDLsNFzj1qxZE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=pXg/x9i30LSU2xeJ5u68oTCePNzyPBY/utvwE0aXk+RFMu91N+58Gzk8tnXA+h/trmngv7i4FitRs5UF5+4pJkO2bn1+EMWFn4hB5tBOgnseGYodkxs4ML5gqnZcc1oo7DKUIemgBwI65ryORt5q7w61jbhEWjL9jTkVfi1AaMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tana.it; spf=pass smtp.mailfrom=tana.it; dkim=pass (1152-bit key) header.d=tana.it header.i=@tana.it header.b=Cs6+7hHL; arc=none smtp.client-ip=94.198.96.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tana.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tana.it
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="ayzQqzxf"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1737603120; x=1737862320;
-	bh=V4A1MapicS+EgbqkjoGT8V6ejFV32VSqabyrZIXt91I=;
-	h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector:
-	 List-Unsubscribe:List-Unsubscribe-Post;
-	b=ayzQqzxfxqsBoJ1KiB1uOFJ9yydMvtIiPWziLpZYXDE2a49aehWQhD/EyZJ4eNlkX
-	 6U0RfbBcDmsnv0dM4XCbVu+lSvY7+13ovWT4vm1ZSOOgX18Q1OM3in2Wm8sJrOFfwV
-	 R31ZQhVNz95ZglfBzrfFcd4o7MlV9WtfnOdLZJ/wLye2ZNGajPC1T/FyTA1/dbb4ln
-	 40olKS5Lr3cdQz6alQWi0IKLJIMi81ii2/lbBNrno60ad7osyoEtReEOytR0cJG/t+
-	 vp4VdKEe2UfNdxQCWYFTdkcrgNmUJ0nD5Ow+OBCrC1fsYzalkoP9qiCs/Qe1dfTx/R
-	 wvU+8V/ViMAlw==
-Date: Thu, 23 Jan 2025 03:31:57 +0000
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-From: Sunny73Cr <Sunny73Cr@protonmail.com>
-Subject: Raw Payload Expressions - out of bounds write?
-Message-ID: <Bp_PH3aO9-d7-Av1SaQGtAgrvHaPwr0l5r_aR31_U8l5IvbSFaLJ1lXI3vFBV46Xb4IxK-tP-HkcSFS-2KCLyYfRibcIkioxjdem46U0IB8=@protonmail.com>
-Feedback-ID: 13811339:user:proton
-X-Pm-Message-ID: ca4d2bd110803abe785490dcf8f542e7c3a8a5d9
+	dkim=pass (1152-bit key) header.d=tana.it header.i=@tana.it header.b="Cs6+7hHL"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tana.it; s=delta;
+	t=1737745340; bh=98mJpveENIX0Z1WFz7Nz/h1YwGf7nxE02VKKyrhGMgI=;
+	h=Date:Subject:To:References:From:In-Reply-To;
+	b=Cs6+7hHLpE/+rgwM9/zRrqZDrU98A/ry+yYbuB6LiJOME1fF0AYTyir2DTMiNyB90
+	 Ivd5iphdqhnwupH+x6VQfST9x/GffbNjuN65Q0Xx8N8rI8T7urm4XJELP6XxcBCkpY
+	 xWKy2lKX/fIWaGW9Bxd4bcp048RTDKcjBQLzuZJbCizbHA1JJ5LepeMZx+qXB
+Original-Subject: Re: aggressive firewalling via nftables
+Author: Alessandro Vesely <vesely@tana.it>
+Received: from [172.25.197.120] (pcale.tana [::ffff:172.25.197.120])
+  (AUTH: CRAM-MD5 uXDGrn@SYT0/k, TLS: TLS1.3,128bits,ECDHE_RSA_AES_128_GCM_SHA256)
+  by wmail.tana.it with ESMTPSA
+  id 00000000005DC05A.000000006793E3BB.000054D5; Fri, 24 Jan 2025 20:02:19 +0100
+Message-ID: <19fa6c75-ee8a-4614-b71d-7272c37374e1@tana.it>
+Date: Fri, 24 Jan 2025 20:02:19 +0100
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: aggressive firewalling via nftables
+To: potatojuggler@gmx.net, netfilter@vger.kernel.org
+References: <trinity-8c3627be-7f9f-4150-a74a-5a69dbd8781a-1736180864807@trinity-msg-rest-gmx-gmx-live-548599f845-9tnlq>
+Authentication-Results: tana.it; auth=pass (details omitted)
+From: Alessandro Vesely <vesely@tana.it>
+Content-Language: en-US, it-IT
+In-Reply-To: <trinity-8c3627be-7f9f-4150-a74a-5a69dbd8781a-1736180864807@trinity-msg-rest-gmx-gmx-live-548599f845-9tnlq>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Hi,
+On Mon 06/Jan/2025 17:27:44 +0100 potatojuggler wrote:
+> /etc/nftables.d/limit-rate.nft
+> Contains a set to limit the number of new connections per IP per minute.
 
-Raw Payload Expressions - does this cause an out of bounds write?
+I'm still using iptables.  It has a handy module named hashlimit.  It takes 
+stuff like the following example:
 
-1. Input configuration file (modification to /etc/nftables.conf):
+iptables -A connserver -m hashlimit \
+	--hashlimit-name firewall \
+	--hashlimit-mode srcip \
+	--hashlimit-srcmask 32 \
+	--hashlimit-upto 500/hour \
+	--hashlimit-burst 100 \
+	--hashlimit-htable-size 16384 \
+	--hashlimit-htable-max 65536 \
+	--hashlimit-htable-expire 60000 \
+	--hashlimit-htable-gcinterval 2000 \
+	-j NFQUEUE
 
-chain output {
-  type filter hook output priority filter;
+Isn't it available with nft?
 
-  @ih,58,6 set 0 \
-  @ih,86,6 set 0 \
-  @ih,170,22 set 0 \
-  accept;
-}
+Best
+Ale
+-- 
+(sorry for being late...)
 
-2. run /etc/nftables.conf
 
-3. Output ruleset (/usr/sbin/nft list rulset):
 
-chain output {
- type filter hook output priority filter; policy accept;
- @ih,48,16 set @ih,48,16 & 0x3f \
- @ih,80,16 set @ih,80,16 & 0x3f0 \
- @ih,160,32 set @ih,160,32 @0x3fffff \
- accept;
-}
 
-The mask appears correct for the first re-write, but subsequent re-writes a=
-ppear to be too large.
 
-Please advise.
 
-sunny
