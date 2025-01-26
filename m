@@ -1,250 +1,90 @@
-Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
+Received: from shakotay.alphanet.ch (shakotay.alphanet.ch [46.140.72.222])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E73EE17E
-	for <netfilter@vger.kernel.org>; Sun, 26 Jan 2025 06:19:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74C0425A64F
+	for <netfilter@vger.kernel.org>; Sun, 26 Jan 2025 09:23:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.140.72.222
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737872376; cv=none; b=qB9moVDNoI64IjEmAAOWP1XfqaVqUg2sBbr3NK6KPIWlL1ORt1WmC9P/rp+WOneu4BWRc0eP8UKvKMPpCTl9sbdwo3nhKAu6IEQd2KnuvwgArAfNyTRDq8NpEYA7XZbJzdmJ9TyYMNDMdqU8wSnq/vA0zq0waDod9FLLWYoeyR8=
+	t=1737883421; cv=none; b=BqW24uji70pF+Fjo4O96tb8RoZ82J5gcgparYoXwDhVhFlQG4vFRk4SP+RRzkvFqvm/uLU1lsCM3MYVEgtHyoHx7mbDCuSFc+Ipv0+TOjHDf7LzQCY5YoYg+JqrV3+nz2TPPk7GrQiCQp73WUQoeKl6Y58PaCdi3SOcO9ar222Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737872376; c=relaxed/simple;
-	bh=G9b9/bwz8iCKaSvDCY5f3N/JUIDIUjsxru7LAqSwaUg=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Enh4sWmb18f60mjtiTtUI6hv5n8HFRorO/qF2eRmRDPLSd2YdLHW0NwIBgNXOx+k6s+cYjKWWFDwnmSYvmxLnpYXIuBfoNlVMbtlCPXJnXLPk7NzpyvcJrCejbr29RHScIgDllrIgW4QUCS+bFO3zFIIKQOn0IZKQfWafXFzJzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=MdyWUrYm; arc=none smtp.client-ip=185.70.43.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
+	s=arc-20240116; t=1737883421; c=relaxed/simple;
+	bh=leq7ETQaileYo1V7r0qfpQ1SJO74WLuhBm+3n9XpL6g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=m2niDOI+DyRag5h5+3SU59dgpJleqg52vnyiSOhSjBewqdmwgdsRCyaOZdcjN+rO5M0x82xN+mjdA+ABfFkiR4dx0PGiKJ9YPphNGGRgeV5tkZi5Q0f+6PJoS94pHPK8wxO5Wbh3LqzTX9y/aW6FJC/Ji1cSQFH+XB9x28T+PHs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alphanet.ch; spf=pass smtp.mailfrom=alphanet.ch; dkim=pass (2048-bit key) header.d=alphanet.ch header.i=@alphanet.ch header.b=PeSuWkyA; arc=none smtp.client-ip=46.140.72.222
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alphanet.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alphanet.ch
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="MdyWUrYm"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1737872366; x=1738131566;
-	bh=m5ylAkKTcRmc63b6aiwJc4O08+DUQmaNgmIaDUjcJEg=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
-	b=MdyWUrYmBV9r28iM2fJRFjFhDkrPl01GHdVmakG7kGpJtFVfENkIH3sbq+lZd+0LB
-	 7PyQszTc2Gq1AqqhUXbwOxznfHYo7kO47tRQOYzahrq2IQD9J/mHrVXpIdQkvDHef3
-	 9NtqrXHnWUq2fvStacIKtlRw/Tbmgq5WzxjJSpLmIJQMZSKA66q3cTi+pClnKgXmjn
-	 /cSvkORhd7QrnMgnzaA608GwNDu9fdpV4oxMbUAgYpcS2nuVXNStfxSvclUIXQqAcX
-	 fADjlSrFqqnWJT8tZOSBkil3pqQP1GkmNCMZySLaMuHv5OkrPBdOTDhwFcZt6Yc/Sy
-	 tznb6zllLPPtQ==
-Date: Sun, 26 Jan 2025 06:19:23 +0000
-To: Marc SCHAEFER <schaefer@alphanet.ch>
-From: Sunny73Cr <Sunny73Cr@protonmail.com>
+	dkim=pass (2048-bit key) header.d=alphanet.ch header.i=@alphanet.ch header.b="PeSuWkyA"
+Received: by shakotay.alphanet.ch (Postfix, from userid 1000)
+	id B888C1241331; Sun, 26 Jan 2025 10:23:34 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alphanet.ch; s=mail;
+	t=1737883414; bh=leq7ETQaileYo1V7r0qfpQ1SJO74WLuhBm+3n9XpL6g=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PeSuWkyA+0GmC1CusQNz76XU+Su5jTmw6IuArgqsh3KTHnM3wlrOfUrKDhPUXRDfl
+	 7tDl+8WtQLOM7ofhfZuvX201UVaqLJelYw0s7hB9peX4x2pMryNKwZG6RimUz8rwv3
+	 D3SvMpTpIAI4IFz6CsEmqXOYuzJJ6O54+PEtMWR62hqOm/2W3x7qkJVAexXA0Yi2OP
+	 2m7Q/ej4Pr6i9SqwjcHyM6tG3o7wZYrdBlfsn41RkdDiUpiggI3ZzCW1h/XAXxFZMh
+	 v5AHlVcP6nyqqE1A/OeZ+OGeoYdPVBis1WvTNiX8MbjlGFUbB4SXYXLf+8hL9Oo7KD
+	 vmtGBjsom0LeQ==
+Date: Sun, 26 Jan 2025 10:23:34 +0100
+From: Marc SCHAEFER <schaefer@alphanet.ch>
+To: Sunny73Cr <Sunny73Cr@protonmail.com>
 Cc: netfilter@vger.kernel.org
 Subject: Re: nftables DNAT routes to wrong iface
-Message-ID: <o-Kdk2GAq901xVkHQ5Aru09OR2zTnTDL0Dl4V_SkKMgUtNUrTTgP_dBjqTs5qukem5k3sekFKj88zrlZYr_fzHCSaiNDq8i_7w9mz3dY1TQ=@protonmail.com>
-In-Reply-To: <Z5UJheaMk+bZsEFe@alphanet.ch>
+Message-ID: <Z5X/FjHPPIHy/89n@alphanet.ch>
 References: <Z5UJheaMk+bZsEFe@alphanet.ch>
-Feedback-ID: 13811339:user:proton
-X-Pm-Message-ID: 348923e978e0a361de5c01edc37c4a7e79573898
+ <o-Kdk2GAq901xVkHQ5Aru09OR2zTnTDL0Dl4V_SkKMgUtNUrTTgP_dBjqTs5qukem5k3sekFKj88zrlZYr_fzHCSaiNDq8i_7w9mz3dY1TQ=@protonmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <o-Kdk2GAq901xVkHQ5Aru09OR2zTnTDL0Dl4V_SkKMgUtNUrTTgP_dBjqTs5qukem5k3sekFKj88zrlZYr_fzHCSaiNDq8i_7w9mz3dY1TQ=@protonmail.com>
 
-Hi,
+Hello,
 
-> The routing table has:
+On Sun, Jan 26, 2025 at 06:19:23AM +0000, Sunny73Cr wrote:
+> > 193.72.186.128/26 dev enp2s0.300 proto kernel scope link src 193.72.186.130
+> New reply (and now public): '193.72.186.128/26' does not cover all of
+> '193.72.186.0/24', and some packets will not get routed.
 
-> default via 46.140.72.217 dev br0 onlink
-> 46.140.72.216/29 dev br0 proto kernel scope link src 46.140.72.218
-> 192.168.202.0/24 dev enp2s0.202 proto kernel scope link src > 192.168.202=
-.2
-> 193.72.186.128/26 dev enp2s0.300 proto kernel scope link src 193.72.186.1=
-30
+Why should it?  The firewall 193.72.186.130 on which the DNAT is done is
+connected to 193.72.186.128/26 because this is how the router
+193.72.186.129 on the other side of the VLAN 300 defined that VLAN:
 
-Oops! Old reply (please disregard): '193.72.186.128/26' is poorly subnetted=
-; the correct base address is 193.72.186.192/26. Did you mean '193.72.186.1=
-28/25'? As a result, '193.72.186.130' is not part of the subnet that you ar=
-e routing. Consider if 25 bits is the correct mask.
+   193.72.186.128/26 dev enp5s0.300 proto kernel scope link src 193.72.186.129 
 
-New reply (and now public): '193.72.186.128/26' does not cover all of '193.=
-72.186.0/24', and some packets will not get routed. You could try changing =
-your route to '193.72.186.0/24', or edit the firewall policy to reflect the=
- '193.72.186.128/26' route.
+Indeed, the addresses 193.72.186.128 (reserved, subnet) to
+193.72.186.191 (reserved, subnet broadcast) correspond to a
+193.72.186.128/26 aka 32 - 26 = 6 free bit, so 64 addresses.
 
-sunny
+On the same VLANs there are other machines, such as 193.72.186.190 that
+I used for my test.
 
-Sent with Proton Mail secure email.
+BTW, those (193.72.186.129, 193.72.186.190) are ping-reachable from the
+Internet (193.72.186.130 is currently down, as it is a test machine).
+The setup works, it's just the DNAT that routes wrong for some
+reason (I am an nftables beginner).  Do not try random connections to
+those IP addresses (ping is ok), you might trigger the IDS.
 
-On Sunday, January 26th, 2025 at 4:55 AM, Marc SCHAEFER <schaefer@alphanet.=
-ch> wrote:
+The DNAT problem is that when a machine from 193.72.186.128/26 (e.g.
+193.72.186.190 in the example) sends a TCP datagram on port 8080
+of 193.72.186.130, this gets correctly DNATted to 192.168.202.10
+port 80, however, then the routing entry:
 
-> Hello,
->=20
-> I am trying to do this:
->=20
-> Both local IP addresses, when access from outside:
->=20
-> enp2s0.310: 193.72.186.130:8080
-> br0: 46.140.72.218:8080
->=20
-> are DNATed to
->=20
-> enp2s0.202: 192.168.202.10:80 (a remote machine)
->=20
-> I know there are two steps:
->=20
-> - the incoming DNAT in prerouting (and the forward accept)
-> -> this part I am stuck, see below
->=20
->=20
-> - then when the reply comes back, route to the proper interface where
-> it came from (using conntrack + marks + specific routing tables)
-> -> this part I have not done yet -- it would be required for
->=20
-> 193.72.186.130:8080 obviously because the default route
-> does not go there.
->=20
-> What I observe:
->=20
-> telnet 46.140.72.218 8080 from outside works (*), it connects to 192.168.=
-202.10:80
-> and there is nothing bizarre in tcpdump either on br0 nor on
-> enp2s0.202 (no delays, lost packets, e.g.) (**)
->=20
-> telnet 193.72.186.130 8080 gives this on enp2s0.300
->=20
-> IP 193.72.186.190.52636 > 193.72.186.130.8080 (normal)
->=20
-> IP 193.72.186.190.52636 > 192.168.202.10.80 (good, it was DNATted, BUT sh=
-ould be on enp2s0.202!)
->=20
->=20
-> aka the DNAT is executed, but then 192.168.202.10 is not routed
-> correctly. From the diagram https://wiki.nftables.org/wiki-nftables/index=
-.php/Netfilter_hooks
-> I thought that routing would be done AFTER prerouting/DNAT.
->=20
-> The routing table has:
->=20
-> default via 46.140.72.217 dev br0 onlink
-> 46.140.72.216/29 dev br0 proto kernel scope link src 46.140.72.218
 > 192.168.202.0/24 dev enp2s0.202 proto kernel scope link src 192.168.202.2
-> 193.72.186.128/26 dev enp2s0.300 proto kernel scope link src 193.72.186.1=
-30
->=20
-> (*) not from 193.72.186.0/24, however, gets the same bug.
->=20
-> The nftables config:
->=20
-> table ip filter {
-> # obviously a later goal is also to encode the L4 protocol here
-> # and not hardcode it in the prerouting
-> map multihoming_ext {
-> type ipv4_addr . inet_service : ipv4_addr . inet_service
-> elements =3D { 193.72.186.130 . 8080 : 192.168.202.10 . 80,
-> 46.140.72.218 . 8080 : 192.168.202.10 . 80 }
-> }
->=20
-> set w_all {
-> type ipv4_addr
-> flags interval
-> elements =3D { 46.140.72.216/29,
-> 192.168.202.1, 193.72.186.0/24
-> }
-> }
->=20
-> chain input {
-> type filter hook input priority filter; policy drop;
-> ct state invalid counter packets 3 bytes 120 drop
-> ct state { established, related } counter packets 1092 bytes 76846 accept
-> iif "lo" counter packets 0 bytes 0 accept
-> counter packets 324 bytes 13539 jump whitelist
-> counter packets 323 bytes 13455 jump blacknets
-> counter packets 323 bytes 13455 jump blacklist
-> counter packets 323 bytes 13455 jump incoming
-> }
->=20
-> chain forward {
-> type filter hook forward priority filter; policy drop;
-> ct state invalid counter packets 0 bytes 0 drop
-> ct state { established, related } counter packets 12 bytes 548 accept
->=20
-> # already after DNAT, obviously
-> iifname "br0" ip daddr 192.168.202.10 tcp dport 80 accept
-> iifname "enp2s0.300" ip daddr 192.168.202.10 tcp dport 80 accept
-> }
->=20
-> chain output {
-> type filter hook output priority filter; policy accept;
-> ct state invalid counter packets 0 bytes 0 drop
-> ct state { established, related } counter packets 890 bytes 182096 accept
-> oif "lo" counter packets 0 bytes 0 accept
-> counter packets 1 bytes 76 jump outgoing
-> }
->=20
-> chain rejectcounter {
-> meta l4proto tcp counter packets 0 bytes 0 reject with tcp reset
-> meta l4proto udp counter packets 0 bytes 0 reject
-> counter packets 0 bytes 0 drop
-> }
->=20
-> chain dropcounter {
-> counter packets 320 bytes 13349 drop
-> }
->=20
-> chain whitelist {
-> ip saddr @w_all counter packets 1 bytes 84 accept
-> }
->=20
-> chain blacknets {
-> }
->=20
-> chain blacklist {
-> }
->=20
-> chain incoming {
-> icmp type echo-request counter packets 3 bytes 106 accept
-> icmp type echo-reply counter packets 0 bytes 0 accept
-> tcp dport 22 ip saddr { 46.140.72.216/29, 192.168.202.1, 193.72.186.0/24 =
-} counter packets 0 bytes 0 jump dropcounter
-> udp dport 22 ip saddr { 46.140.72.216/29, 192.168.202.1, 193.72.186.0/24 =
-} counter packets 0 bytes 0 jump dropcounter
-> counter packets 320 bytes 13349 jump dropcounter
-> }
->=20
-> chain outgoing {
-> }
->=20
-> chain multihoming_prerouting {
-> type nat hook prerouting priority dstnat; policy accept;
->=20
-> # this is the DNAT
-> dnat ip to ip daddr . tcp dport map @multihoming_ext
-> }
-> }
-> table ip myhelpers {
-> chain prerouting {
-> type filter hook prerouting priority filter; policy accept;
-> }
-> }
->=20
-> [ I removed ip6 entries ]
->=20
-> Any idea what could be wrong?
->=20
-> Thank you.
->=20
-> (**) very nice:
-> br0:
-> IP 46.140.72.222.60394 > 46.140.72.218.8080
->=20
-> IP 46.140.72.218.8080 > 46.140.72.222.60394
->=20
-> IP 46.140.72.222.60394 > 46.140.72.218.8080
->=20
->=20
-> enp2s0.202 (another connection):
-> IP 46.140.72.222.57790 > 192.168.202.10.80
->=20
-> IP 192.168.202.10.80 > 46.140.72.222.57790
->=20
-> IP 46.140.72.222.57790 > 192.168.202.10.80
->=20
-> 
+
+is not respected, and the datagram is sent on enp2s0.300.
+
+In another case, which is 46.140.72.218:8080 (on enp2s0.400), the DNAT
+correctly works and sends to 192.168.202.10 on enp2s0.202.
+
+As said in the mail, the reply packet won't work on 193.72.186.128/26,
+that's expected (not default route, and no conntrack/mark set
+yet), but it's the initial packet which is routed wrong.
+
+Thank you & have a nice day.
