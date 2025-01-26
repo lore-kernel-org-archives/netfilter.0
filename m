@@ -1,43 +1,43 @@
-Received: from mail-4322.protonmail.ch (mail-4322.protonmail.ch [185.70.43.22])
+Received: from mail-4316.protonmail.ch (mail-4316.protonmail.ch [185.70.43.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56AAB2C80
-	for <netfilter@vger.kernel.org>; Sun, 26 Jan 2025 06:16:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E73EE17E
+	for <netfilter@vger.kernel.org>; Sun, 26 Jan 2025 06:19:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737872211; cv=none; b=AYSR5LP4loJ5wFZdhC3wKEAuX+LbWMzSnBaHLWNAioGdQaeeTWtzzh65N9oTF1DEdhIwofeX+hIugfjKUpyNru4SOXm4a+Wg85+jtuHE+1iPCty8j6iVf/O78I+dAYTkgT6Z4rekHAfVGqbmFewrCsuDPf+3XCiRlssEtsY8dK0=
+	t=1737872376; cv=none; b=qB9moVDNoI64IjEmAAOWP1XfqaVqUg2sBbr3NK6KPIWlL1ORt1WmC9P/rp+WOneu4BWRc0eP8UKvKMPpCTl9sbdwo3nhKAu6IEQd2KnuvwgArAfNyTRDq8NpEYA7XZbJzdmJ9TyYMNDMdqU8wSnq/vA0zq0waDod9FLLWYoeyR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737872211; c=relaxed/simple;
-	bh=+mEYXvv+sRyTZS8J/k48GVRKa99HMscSfAO+m7s3EZI=;
+	s=arc-20240116; t=1737872376; c=relaxed/simple;
+	bh=G9b9/bwz8iCKaSvDCY5f3N/JUIDIUjsxru7LAqSwaUg=;
 	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=YhfithWLorY96KDYcLUy278EBjNuwJty7c/bLpS5slOANf7Q1L20y7jb38YivLXNxXpmNunigstzJxwFYCwOrRon+Y3zOxTIiBnUplynZHA4EMxsZweUObPGZGQpYa093CasT4klQeq/Icf1QMMs55g8FNDnviXC0dV/f3G06bE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=b0O4w/GG; arc=none smtp.client-ip=185.70.43.22
+	 MIME-Version:Content-Type; b=Enh4sWmb18f60mjtiTtUI6hv5n8HFRorO/qF2eRmRDPLSd2YdLHW0NwIBgNXOx+k6s+cYjKWWFDwnmSYvmxLnpYXIuBfoNlVMbtlCPXJnXLPk7NzpyvcJrCejbr29RHScIgDllrIgW4QUCS+bFO3zFIIKQOn0IZKQfWafXFzJzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=MdyWUrYm; arc=none smtp.client-ip=185.70.43.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="b0O4w/GG"
+	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="MdyWUrYm"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1737872201; x=1738131401;
-	bh=+mEYXvv+sRyTZS8J/k48GVRKa99HMscSfAO+m7s3EZI=;
+	s=protonmail3; t=1737872366; x=1738131566;
+	bh=m5ylAkKTcRmc63b6aiwJc4O08+DUQmaNgmIaDUjcJEg=;
 	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
 	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
 	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
-	b=b0O4w/GGuaivx7ZN2Vi+QbcdKDGURBWovFJqDR03UDwt7cnnfVselj3k05YfHi0Px
-	 A5fJypjgWVGY970oprxyfY+2x5sg8ekLNidQisXOTMARqRqAXooqaQ62lsR9/9y6p/
-	 DgIOdbgMRlREkWscW5x3tEc1iUGBTxtaFYf3MXoCnGPvrCOfmdMyoPuZuARLLfsE4g
-	 ZwhYQzXsg348mDqh97Tn/VkI8gFr/nzMuQtldQqDwdm+D3j8DRXonSTEJAe8EPRuTe
-	 DtW7zN44RMcKnVZl8JW45Vxq0uYfqBPMbDPPYrdOwi78oUxNPxTTM0Wmx3c8TVbg/B
-	 gTeZLGYSAYuOg==
-Date: Sun, 26 Jan 2025 06:16:40 +0000
-To: Adam Nielsen <a.nielsen@shikadi.net>
+	b=MdyWUrYmBV9r28iM2fJRFjFhDkrPl01GHdVmakG7kGpJtFVfENkIH3sbq+lZd+0LB
+	 7PyQszTc2Gq1AqqhUXbwOxznfHYo7kO47tRQOYzahrq2IQD9J/mHrVXpIdQkvDHef3
+	 9NtqrXHnWUq2fvStacIKtlRw/Tbmgq5WzxjJSpLmIJQMZSKA66q3cTi+pClnKgXmjn
+	 /cSvkORhd7QrnMgnzaA608GwNDu9fdpV4oxMbUAgYpcS2nuVXNStfxSvclUIXQqAcX
+	 fADjlSrFqqnWJT8tZOSBkil3pqQP1GkmNCMZySLaMuHv5OkrPBdOTDhwFcZt6Yc/Sy
+	 tznb6zllLPPtQ==
+Date: Sun, 26 Jan 2025 06:19:23 +0000
+To: Marc SCHAEFER <schaefer@alphanet.ch>
 From: Sunny73Cr <Sunny73Cr@protonmail.com>
 Cc: netfilter@vger.kernel.org
-Subject: Re: DROP rule is ignored for multicast traffic, but only via Wireguard
-Message-ID: <p9JEctPurB2u2xYPmntE0hNiDEwwfhZmyGEnYlpmmE2PQcHHwlNFwgbXJSMMEdMNlScN27ILZ9XOuxKkEkBsWonEg_r1GNHn68Kb7_Ft76E=@protonmail.com>
-In-Reply-To: <20250126012028.2a3f1428@gnosticus>
-References: <20250126012028.2a3f1428@gnosticus>
+Subject: Re: nftables DNAT routes to wrong iface
+Message-ID: <o-Kdk2GAq901xVkHQ5Aru09OR2zTnTDL0Dl4V_SkKMgUtNUrTTgP_dBjqTs5qukem5k3sekFKj88zrlZYr_fzHCSaiNDq8i_7w9mz3dY1TQ=@protonmail.com>
+In-Reply-To: <Z5UJheaMk+bZsEFe@alphanet.ch>
+References: <Z5UJheaMk+bZsEFe@alphanet.ch>
 Feedback-ID: 13811339:user:proton
-X-Pm-Message-ID: c4348e72ac749fd210215e2a59817a8f73806be2
+X-Pm-Message-ID: 348923e978e0a361de5c01edc37c4a7e79573898
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
@@ -47,80 +47,204 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-- Note: I am re-replying, as I responded incorrectly. My reply should now s=
-how on the mailing list.
+Hi,
 
-> is there just something going on here that I'm
-unaware of?
+> The routing table has:
 
-I am uncertain, but consider that it is possible that the kernel is routing=
- based on Ethernet destination address.
+> default via 46.140.72.217 dev br0 onlink
+> 46.140.72.216/29 dev br0 proto kernel scope link src 46.140.72.218
+> 192.168.202.0/24 dev enp2s0.202 proto kernel scope link src > 192.168.202=
+.2
+> 193.72.186.128/26 dev enp2s0.300 proto kernel scope link src 193.72.186.1=
+30
 
-You could try blocking destinations that match IP6 multicast MAC addresses.=
- To quote 'IANA Ethernet Numbers' (I forget the proper name for the documen=
-t): "As described in <xref type=3D"draft" data=3D"RFC-ietf-intarea-rfc7042b=
-is-11"/>, 48-bit MAC addresses
-in the range 33-33-00-00-00-00 to 33-33-FF-FF-FF-FF are used for IPv6 multi=
-cast."
+Oops! Old reply (please disregard): '193.72.186.128/26' is poorly subnetted=
+; the correct base address is 193.72.186.192/26. Did you mean '193.72.186.1=
+28/25'? As a result, '193.72.186.130' is not part of the subnet that you ar=
+e routing. Consider if 25 bits is the correct mask.
 
-There may be some specific sub-sets you are interested in. Please consult R=
-FC7042 and related for further information.
-
-Another thing to consider is the route that the packet follows. Carefully r=
-ead your static routing rules and ensure you are filtering on the correct i=
-nterface.
+New reply (and now public): '193.72.186.128/26' does not cover all of '193.=
+72.186.0/24', and some packets will not get routed. You could try changing =
+your route to '193.72.186.0/24', or edit the firewall policy to reflect the=
+ '193.72.186.128/26' route.
 
 sunny
 
-On Sunday, January 26th, 2025 at 4:20 AM, Adam Nielsen <a.nielsen@shikadi.n=
-et> wrote:
+Sent with Proton Mail secure email.
 
-> Hi all,
+On Sunday, January 26th, 2025 at 4:55 AM, Marc SCHAEFER <schaefer@alphanet.=
+ch> wrote:
+
+> Hello,
 >=20
-> I'm having some problems getting iptables to match some packets going
-> through my machine.
+> I am trying to do this:
 >=20
-> To debug, I created these rules:
+> Both local IP addresses, when access from outside:
 >=20
-> ip6tables -I INPUT 1 -i wg0 -j DROP
-> ip6tables -I FORWARD 1 -i wg0 -j DROP
+> enp2s0.310: 193.72.186.130:8080
+> br0: 46.140.72.218:8080
 >=20
-> This correctly blocked all unicast traffic coming in on the interface,
-> but it did not stop any multicast traffic from coming in.
+> are DNATed to
 >=20
-> I can use `tcpdump -i wg0` to confirm the multicast traffic is
-> definitely hitting this interface, yet somehow it seems to be skipping
-> any rules I have configured. I have "smcroute" running to configure
-> some static multicast routing rules in the kernel, and the kernel is
-> picking up and rebroadcasting the multicast traffic to other machines
-> on the LAN, despite the DROP rules.
+> enp2s0.202: 192.168.202.10:80 (a remote machine)
 >=20
-> Does anyone know why this might be?
+> I know there are two steps:
 >=20
-> The setup is a Wireguard VPN, with multicast enabled (this is off by
-> default). The remote end is sending multicast traffic, which is
-> forwarded over the VPN where it arrives on the machine in question.
+> - the incoming DNAT in prerouting (and the forward accept)
+> -> this part I am stuck, see below
 >=20
-> This all works fine, but I am trying to set up some rules to match the
-> multicast traffic so that I can use the packet counter stats to see how
-> much multicast traffic is traversing the VPN. These rules work fine
-> for unicast traffic across the VPN, but they are reporting zero bytes
-> transmitted for multicast traffic.
 >=20
-> To debug this I switched to the above DROP rules instead as I figured
-> they should have a more obvious impact, but even these are ignored.
-> Those rules are inserted first, so they should match before any other
-> rule is examined, so no other rules should be affecting their behaviour.
+> - then when the reply comes back, route to the proper interface where
+> it came from (using conntrack + marks + specific routing tables)
+> -> this part I have not done yet -- it would be required for
 >=20
-> I added these rules to another machine and they worked fine, blocking
-> all incoming IPv6 multicast traffic immediately. The only differences
-> with that machine was that the packets were coming in on a physical
-> interface instead of a Wireguard one, and the kernel is not doing
-> multicast routing.
+> 193.72.186.130:8080 obviously because the default route
+> does not go there.
 >=20
-> This makes me wonder whether it's a bug in the Wireguard
-> implementation, or is there just something going on here that I'm
-> unaware of?
+> What I observe:
 >=20
-> Many thanks,
-> Adam.
+> telnet 46.140.72.218 8080 from outside works (*), it connects to 192.168.=
+202.10:80
+> and there is nothing bizarre in tcpdump either on br0 nor on
+> enp2s0.202 (no delays, lost packets, e.g.) (**)
+>=20
+> telnet 193.72.186.130 8080 gives this on enp2s0.300
+>=20
+> IP 193.72.186.190.52636 > 193.72.186.130.8080 (normal)
+>=20
+> IP 193.72.186.190.52636 > 192.168.202.10.80 (good, it was DNATted, BUT sh=
+ould be on enp2s0.202!)
+>=20
+>=20
+> aka the DNAT is executed, but then 192.168.202.10 is not routed
+> correctly. From the diagram https://wiki.nftables.org/wiki-nftables/index=
+.php/Netfilter_hooks
+> I thought that routing would be done AFTER prerouting/DNAT.
+>=20
+> The routing table has:
+>=20
+> default via 46.140.72.217 dev br0 onlink
+> 46.140.72.216/29 dev br0 proto kernel scope link src 46.140.72.218
+> 192.168.202.0/24 dev enp2s0.202 proto kernel scope link src 192.168.202.2
+> 193.72.186.128/26 dev enp2s0.300 proto kernel scope link src 193.72.186.1=
+30
+>=20
+> (*) not from 193.72.186.0/24, however, gets the same bug.
+>=20
+> The nftables config:
+>=20
+> table ip filter {
+> # obviously a later goal is also to encode the L4 protocol here
+> # and not hardcode it in the prerouting
+> map multihoming_ext {
+> type ipv4_addr . inet_service : ipv4_addr . inet_service
+> elements =3D { 193.72.186.130 . 8080 : 192.168.202.10 . 80,
+> 46.140.72.218 . 8080 : 192.168.202.10 . 80 }
+> }
+>=20
+> set w_all {
+> type ipv4_addr
+> flags interval
+> elements =3D { 46.140.72.216/29,
+> 192.168.202.1, 193.72.186.0/24
+> }
+> }
+>=20
+> chain input {
+> type filter hook input priority filter; policy drop;
+> ct state invalid counter packets 3 bytes 120 drop
+> ct state { established, related } counter packets 1092 bytes 76846 accept
+> iif "lo" counter packets 0 bytes 0 accept
+> counter packets 324 bytes 13539 jump whitelist
+> counter packets 323 bytes 13455 jump blacknets
+> counter packets 323 bytes 13455 jump blacklist
+> counter packets 323 bytes 13455 jump incoming
+> }
+>=20
+> chain forward {
+> type filter hook forward priority filter; policy drop;
+> ct state invalid counter packets 0 bytes 0 drop
+> ct state { established, related } counter packets 12 bytes 548 accept
+>=20
+> # already after DNAT, obviously
+> iifname "br0" ip daddr 192.168.202.10 tcp dport 80 accept
+> iifname "enp2s0.300" ip daddr 192.168.202.10 tcp dport 80 accept
+> }
+>=20
+> chain output {
+> type filter hook output priority filter; policy accept;
+> ct state invalid counter packets 0 bytes 0 drop
+> ct state { established, related } counter packets 890 bytes 182096 accept
+> oif "lo" counter packets 0 bytes 0 accept
+> counter packets 1 bytes 76 jump outgoing
+> }
+>=20
+> chain rejectcounter {
+> meta l4proto tcp counter packets 0 bytes 0 reject with tcp reset
+> meta l4proto udp counter packets 0 bytes 0 reject
+> counter packets 0 bytes 0 drop
+> }
+>=20
+> chain dropcounter {
+> counter packets 320 bytes 13349 drop
+> }
+>=20
+> chain whitelist {
+> ip saddr @w_all counter packets 1 bytes 84 accept
+> }
+>=20
+> chain blacknets {
+> }
+>=20
+> chain blacklist {
+> }
+>=20
+> chain incoming {
+> icmp type echo-request counter packets 3 bytes 106 accept
+> icmp type echo-reply counter packets 0 bytes 0 accept
+> tcp dport 22 ip saddr { 46.140.72.216/29, 192.168.202.1, 193.72.186.0/24 =
+} counter packets 0 bytes 0 jump dropcounter
+> udp dport 22 ip saddr { 46.140.72.216/29, 192.168.202.1, 193.72.186.0/24 =
+} counter packets 0 bytes 0 jump dropcounter
+> counter packets 320 bytes 13349 jump dropcounter
+> }
+>=20
+> chain outgoing {
+> }
+>=20
+> chain multihoming_prerouting {
+> type nat hook prerouting priority dstnat; policy accept;
+>=20
+> # this is the DNAT
+> dnat ip to ip daddr . tcp dport map @multihoming_ext
+> }
+> }
+> table ip myhelpers {
+> chain prerouting {
+> type filter hook prerouting priority filter; policy accept;
+> }
+> }
+>=20
+> [ I removed ip6 entries ]
+>=20
+> Any idea what could be wrong?
+>=20
+> Thank you.
+>=20
+> (**) very nice:
+> br0:
+> IP 46.140.72.222.60394 > 46.140.72.218.8080
+>=20
+> IP 46.140.72.218.8080 > 46.140.72.222.60394
+>=20
+> IP 46.140.72.222.60394 > 46.140.72.218.8080
+>=20
+>=20
+> enp2s0.202 (another connection):
+> IP 46.140.72.222.57790 > 192.168.202.10.80
+>=20
+> IP 192.168.202.10.80 > 46.140.72.222.57790
+>=20
+> IP 46.140.72.222.57790 > 192.168.202.10.80
+>=20
+> 
