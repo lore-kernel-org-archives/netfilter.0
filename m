@@ -1,40 +1,38 @@
 Received: from shakotay.alphanet.ch (shakotay.alphanet.ch [46.140.72.222])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74C0425A64F
-	for <netfilter@vger.kernel.org>; Sun, 26 Jan 2025 09:23:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 416EA27713
+	for <netfilter@vger.kernel.org>; Sun, 26 Jan 2025 09:36:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.140.72.222
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737883421; cv=none; b=BqW24uji70pF+Fjo4O96tb8RoZ82J5gcgparYoXwDhVhFlQG4vFRk4SP+RRzkvFqvm/uLU1lsCM3MYVEgtHyoHx7mbDCuSFc+Ipv0+TOjHDf7LzQCY5YoYg+JqrV3+nz2TPPk7GrQiCQp73WUQoeKl6Y58PaCdi3SOcO9ar222Q=
+	t=1737884216; cv=none; b=CyyigNX9CVDM/hcJgTdD8oXkT2ehqpOmwVC2Lsbem0zUCp/lTwkSlRHH+dfCp7zeb+XnmY7SoG5cekrntbhBcPRbPkAdsTyFYAMCZdFi2iDKpxaUf6+ZhxOERigmC9KXRiQiK1mbCrV+lpE+Zj/rWZ+L7KQUoubj82p5gPgoyTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737883421; c=relaxed/simple;
-	bh=leq7ETQaileYo1V7r0qfpQ1SJO74WLuhBm+3n9XpL6g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m2niDOI+DyRag5h5+3SU59dgpJleqg52vnyiSOhSjBewqdmwgdsRCyaOZdcjN+rO5M0x82xN+mjdA+ABfFkiR4dx0PGiKJ9YPphNGGRgeV5tkZi5Q0f+6PJoS94pHPK8wxO5Wbh3LqzTX9y/aW6FJC/Ji1cSQFH+XB9x28T+PHs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alphanet.ch; spf=pass smtp.mailfrom=alphanet.ch; dkim=pass (2048-bit key) header.d=alphanet.ch header.i=@alphanet.ch header.b=PeSuWkyA; arc=none smtp.client-ip=46.140.72.222
+	s=arc-20240116; t=1737884216; c=relaxed/simple;
+	bh=NJS0HP+Pitrqokc8LW34oXFovOGqDh1tmMIBO2pbpSs=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Uo7wFvdvEMxN80yIcQjib/a+b/kOa0mQrDcgTIQKWbuZr0zobxMeCwCj6yeoPD8K0e+7o70xkMhIt5C/V+Z0Y4r1WsIVP6UvnYLTcbKAY5pOVYHTDg5r4+QgHAp7MrYrnRXcw8qkQZeyLysyONQy1L08QXdLjF3kytJQXbOJcQg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alphanet.ch; spf=pass smtp.mailfrom=alphanet.ch; dkim=pass (2048-bit key) header.d=alphanet.ch header.i=@alphanet.ch header.b=Wmu21+xV; arc=none smtp.client-ip=46.140.72.222
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alphanet.ch
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alphanet.ch
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=alphanet.ch header.i=@alphanet.ch header.b="PeSuWkyA"
+	dkim=pass (2048-bit key) header.d=alphanet.ch header.i=@alphanet.ch header.b="Wmu21+xV"
 Received: by shakotay.alphanet.ch (Postfix, from userid 1000)
-	id B888C1241331; Sun, 26 Jan 2025 10:23:34 +0100 (CET)
+	id 992BF124168B; Sun, 26 Jan 2025 10:36:51 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alphanet.ch; s=mail;
-	t=1737883414; bh=leq7ETQaileYo1V7r0qfpQ1SJO74WLuhBm+3n9XpL6g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=PeSuWkyA+0GmC1CusQNz76XU+Su5jTmw6IuArgqsh3KTHnM3wlrOfUrKDhPUXRDfl
-	 7tDl+8WtQLOM7ofhfZuvX201UVaqLJelYw0s7hB9peX4x2pMryNKwZG6RimUz8rwv3
-	 D3SvMpTpIAI4IFz6CsEmqXOYuzJJ6O54+PEtMWR62hqOm/2W3x7qkJVAexXA0Yi2OP
-	 2m7Q/ej4Pr6i9SqwjcHyM6tG3o7wZYrdBlfsn41RkdDiUpiggI3ZzCW1h/XAXxFZMh
-	 v5AHlVcP6nyqqE1A/OeZ+OGeoYdPVBis1WvTNiX8MbjlGFUbB4SXYXLf+8hL9Oo7KD
-	 vmtGBjsom0LeQ==
-Date: Sun, 26 Jan 2025 10:23:34 +0100
+	t=1737884211; bh=NJS0HP+Pitrqokc8LW34oXFovOGqDh1tmMIBO2pbpSs=;
+	h=Date:From:To:Subject:References:In-Reply-To:From;
+	b=Wmu21+xVysnUvRB1yWX+IPh/+RcbUn9HDeAyHFDTnmdMjxYRNMS27QaeSnm6NdwFS
+	 DWyWF4m/UBQfK3IHfzDwSzATVGrjBvdaNrQti8F36zE3OnvfGMrkrpT9tJ1VRwEdOV
+	 wUlHB68/e9ie+R7fP1+djnaHG8oc/SZ10s8ThjkmosABHTxLOnlKFBomBLSLJUny1z
+	 0A9F2xzKCBuVeHfhrs+FLhJJRNdRitq5v3Vq1FhxLlmLIYSO0p0/4tAiDknb2IB9xP
+	 hrBub+BaFX5Fwt6tVktUI+DiSEE7GQ+XMDm3e8aU3HPt0O9blpZM7wKfbNC8QlxIKb
+	 N4hSSDFvgobmQ==
+Date: Sun, 26 Jan 2025 10:36:51 +0100
 From: Marc SCHAEFER <schaefer@alphanet.ch>
-To: Sunny73Cr <Sunny73Cr@protonmail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 Subject: Re: nftables DNAT routes to wrong iface
-Message-ID: <Z5X/FjHPPIHy/89n@alphanet.ch>
+Message-ID: <Z5YCM6HeZ3sxRf64@alphanet.ch>
 References: <Z5UJheaMk+bZsEFe@alphanet.ch>
- <o-Kdk2GAq901xVkHQ5Aru09OR2zTnTDL0Dl4V_SkKMgUtNUrTTgP_dBjqTs5qukem5k3sekFKj88zrlZYr_fzHCSaiNDq8i_7w9mz3dY1TQ=@protonmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
@@ -43,48 +41,28 @@ List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <o-Kdk2GAq901xVkHQ5Aru09OR2zTnTDL0Dl4V_SkKMgUtNUrTTgP_dBjqTs5qukem5k3sekFKj88zrlZYr_fzHCSaiNDq8i_7w9mz3dY1TQ=@protonmail.com>
+In-Reply-To: <Z5UJheaMk+bZsEFe@alphanet.ch>
 
 Hello,
 
-On Sun, Jan 26, 2025 at 06:19:23AM +0000, Sunny73Cr wrote:
-> > 193.72.186.128/26 dev enp2s0.300 proto kernel scope link src 193.72.186.130
-> New reply (and now public): '193.72.186.128/26' does not cover all of
-> '193.72.186.0/24', and some packets will not get routed.
+On Sat, Jan 25, 2025 at 04:55:49PM +0100, Marc SCHAEFER wrote:
+>    telnet 193.72.186.130 8080 gives this on enp2s0.300
+> 
+>       IP 193.72.186.190.52636 > 193.72.186.130.8080 (normal)
+>       IP 193.72.186.190.52636 > 192.168.202.10.80   (good, it was DNATted, BUT should be on enp2s0.202!)
 
-Why should it?  The firewall 193.72.186.130 on which the DNAT is done is
-connected to 193.72.186.128/26 because this is how the router
-193.72.186.129 on the other side of the VLAN 300 defined that VLAN:
+Ok, my fault!
 
-   193.72.186.128/26 dev enp5s0.300 proto kernel scope link src 193.72.186.129 
+There still was an old configuration lying around which did:
 
-Indeed, the addresses 193.72.186.128 (reserved, subnet) to
-193.72.186.191 (reserved, subnet broadcast) correspond to a
-193.72.186.128/26 aka 32 - 26 = 6 free bit, so 64 addresses.
+root@test:~# ip rule
+0:      from all lookup local
+32764:  from 193.72.186.128/26 lookup 193
+32766:  from all lookup main
+32767:  from all lookup default
 
-On the same VLANs there are other machines, such as 193.72.186.190 that
-I used for my test.
+obviously, that's the bug.
 
-BTW, those (193.72.186.129, 193.72.186.190) are ping-reachable from the
-Internet (193.72.186.130 is currently down, as it is a test machine).
-The setup works, it's just the DNAT that routes wrong for some
-reason (I am an nftables beginner).  Do not try random connections to
-those IP addresses (ping is ok), you might trigger the IDS.
+If I remove those, then it works like it should.
 
-The DNAT problem is that when a machine from 193.72.186.128/26 (e.g.
-193.72.186.190 in the example) sends a TCP datagram on port 8080
-of 193.72.186.130, this gets correctly DNATted to 192.168.202.10
-port 80, however, then the routing entry:
-
-> 192.168.202.0/24 dev enp2s0.202 proto kernel scope link src 192.168.202.2
-
-is not respected, and the datagram is sent on enp2s0.300.
-
-In another case, which is 46.140.72.218:8080 (on enp2s0.400), the DNAT
-correctly works and sends to 192.168.202.10 on enp2s0.202.
-
-As said in the mail, the reply packet won't work on 193.72.186.128/26,
-that's expected (not default route, and no conntrack/mark set
-yet), but it's the initial packet which is routed wrong.
-
-Thank you & have a nice day.
+I will now work on the conntrack part.
