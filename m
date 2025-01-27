@@ -1,65 +1,83 @@
-Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
+Received: from shakotay.alphanet.ch (shakotay.alphanet.ch [46.140.72.222])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC9C82AF0E
-	for <netfilter@vger.kernel.org>; Sun, 26 Jan 2025 18:08:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F5BF13C809
+	for <netfilter@vger.kernel.org>; Mon, 27 Jan 2025 20:31:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.140.72.222
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1737914914; cv=none; b=DSxuZWXJfQHwQXK/t++d1c1kXMdIkoy+7aVvnmfDpUfbKuYk2DB1Fx1K+s2jh374f4v2ImnCFM6uaefFNdVmt9cijD2cC4z79rKONsr5Xti2rxGgRHnSukg54po8DGIv/nhALoGwEu2MZkjL7kAAf9h+z3V3OlQRGCpeiKnXlqY=
+	t=1738009899; cv=none; b=XMBKuWK6ja7gKy8ILTB0bVucAx43FS8ZQGQuJCTFm/QnRMhYXDUql8gJR0u9VQC7YI6Ybb2xCfPdgjr/KRNnwNahArw8h2zP3NuQi26Es2hAXceYh1zU9YCF/nDVHO4uhJPjIW+o2FX3gkjerlP9/ASZ5/cz0ZVMfE9twJeC8oo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1737914914; c=relaxed/simple;
-	bh=c3KB7sV3I1S+q1SUCeLWw/MihF87uKqP6kXf0GFTjao=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=k6RCNQKUk74knv2h7ezQJOk0ekiE7V/RYAT3hdg4O2b+5e7HBPTFqB3/jbkZ63fwVPu2peXS72JGvjtKBPtkPx/B2IockuOYqz8x5iLwo+yJ70hfdJ6AeZvpAf0WdVhXkmZ5veeDDzjYrNVep6uhE8roXaU2zwXXOlz180+FqcM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=FoZ/6Hd8; arc=none smtp.client-ip=185.70.40.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
+	s=arc-20240116; t=1738009899; c=relaxed/simple;
+	bh=YwVSe/YT6G0rYZORCOkvNwZ+Z5jErAIeWZRIabntgOI=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=J5tgZpPJCboH5JgoZPiD1xQ0h9Y66RnlnVwDS/wqIhoE7+DxcFAXJLvQcshJZtMqNmndPjfixw8tVylBsWdWObvNLjxX7JRqWPB2ni2zyXbX2Gq26EZTvp2VSt91BWABaMjov5lNeRX21tGAHSEhV48aq/CLCqH+zPQCdbQThkA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alphanet.ch; spf=pass smtp.mailfrom=alphanet.ch; dkim=pass (2048-bit key) header.d=alphanet.ch header.i=@alphanet.ch header.b=KUWqItOg; arc=none smtp.client-ip=46.140.72.222
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alphanet.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alphanet.ch
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="FoZ/6Hd8"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1737914903; x=1738174103;
-	bh=c3KB7sV3I1S+q1SUCeLWw/MihF87uKqP6kXf0GFTjao=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
-	b=FoZ/6Hd8O8CQl6+WPx3YIt2/j0bLnB+yP6ArMkc8hKj5obJMDDwmdqxaZ47wOIfrL
-	 km371jcMlJjt3K1KF+Tn96+mTK3ilhNbQ1o6rU8xZbq4K0XpAbezXCYrvqGCShpCwB
-	 A9+MM9xj+1Iafsz1VbeEcQHPh9ZYV8EqJ+3YLu9naOXRRgtljaitu8Ju/8dUlE1+c7
-	 UkGadM2GsoXaE0N467rc/b/01Fwcw1L5AUf8Ls3LW4OO1GRxOucYN1TLXs8nURezks
-	 jXYYYUudHyw8ao8bwNphfM+4l2nR4PNYWUr/eIB+AFJHxBTgf37iKZIwJEo2/Zp4kw
-	 DK89DJWO5RuHw==
-Date: Sun, 26 Jan 2025 18:08:20 +0000
-To: Florian Westphal <fw@strlen.de>
-From: Sunny73Cr <Sunny73Cr@protonmail.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Subject: Re: Raw Payload Expressions - out of bounds write?
-Message-ID: <R5drxaQptK9DK89Lt1TmFpDxo86ctD3Pu2WS4wEhXcOZq7yuVqJDxNIc2tZVIx1PJpF15g1AOJCW3gxNIPqlVH6ubbppDWQlzErAa4UP3UI=@protonmail.com>
-In-Reply-To: <20250126135021.GB3073@breakpoint.cc>
-References: <Bp_PH3aO9-d7-Av1SaQGtAgrvHaPwr0l5r_aR31_U8l5IvbSFaLJ1lXI3vFBV46Xb4IxK-tP-HkcSFS-2KCLyYfRibcIkioxjdem46U0IB8=@protonmail.com> <20250126135021.GB3073@breakpoint.cc>
-Feedback-ID: 13811339:user:proton
-X-Pm-Message-ID: 297267482e5925a63e773cb7945529041e8e7726
+	dkim=pass (2048-bit key) header.d=alphanet.ch header.i=@alphanet.ch header.b="KUWqItOg"
+Received: by shakotay.alphanet.ch (Postfix, from userid 1000)
+	id 68BA612418A2; Mon, 27 Jan 2025 21:31:27 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alphanet.ch; s=mail;
+	t=1738009887; bh=YwVSe/YT6G0rYZORCOkvNwZ+Z5jErAIeWZRIabntgOI=;
+	h=Date:From:To:Subject:From;
+	b=KUWqItOgVSuVLIrsvIWdHG7AimrHdkwxGl//cORDTkI0PIiK1At6m2in+Xa6JtEhr
+	 eGtoeUfmFp4Zkd5U7UNNVpLX5dNGE6Yj7Hi5ax8/ougHuFC+E5mNjFSkqAsNvRHPgv
+	 vxhVwaZ7axsG0js4bOVLvVzTO2ar32O8xt+pXZ7BUarQqKl5giT48beMIHbeH3N2yA
+	 uFE6Ik6yKGZuxJdiPPWLtr5rNxahXYL4mFRNJtsDRqLLbNUbSMFzW2kqdbabKQSsZx
+	 +REfJLhpYjJFoaUiJAA/UoRkHj8M+3Lb68L4Vjcl89mCd44iWdKF+dZ0CSCOHZhRSI
+	 oER3u7KAAikew==
+Date: Mon, 27 Jan 2025 21:31:27 +0100
+From: Marc SCHAEFER <schaefer@alphanet.ch>
+To: netfilter@vger.kernel.org
+Subject: SNAT vs ip rule
+Message-ID: <Z5ftHy+Xj99BdvbV@alphanet.ch>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> Please elaborate as what is wrong here in listing 3.
+Hello,
 
-Within the second line of the rule (@ih,80,16 set @ih,80,16 & 0x3f0 \)
+Assume a firewall with three network interfaces:
 
-The mask 0x3f0 equates to 1,008 in decimal.
-(3 * 16**2) + (15 * 16**1) + (0 * 16^0) =3D 1,008
-Here '**' indicates exponent.
+   - enp2s0.300: 193.72.186.130
+   - enp2s0.400: 46.140.72.218
+   - enp2s0.202: 192.168.202.2
 
-1,008 is far larger than the 34 bit range that I covered.
-I understand that within NetFilter, there may be safeguards that which prev=
-ent writing beyond array bounds; but, that section of the rule still covers=
- the bits that I did not wish to zero.
+The default route goes through enp2s0.400, however there is another
+routing table with default route through enp2s0.300 (table 193).
 
-Apologies, but I have not checked the code as of yet.
+There is an ip rule from 193.72.186.128/26 with works correctly
+directly on the firewall
 
-sunny
+    ping -I 46.140.72.218 8.8.8.8 # goes to enp2s0.400
+    ping -I 193.72.186.130 8.8.8.8 # goes to enp2s0.300
+
+Now, assume a machine 192.168.202.10, on enp2s0.202, with default route
+192.168.202.2.
+
+What I want to do:
+
+192.168.202.10% ping 8.8.8.8
+
+   192.168.202.10 gets rewritten with SNAT to 192.72.186.130
+
+   as from 193.72.186.130, ip rule selects default route via enp2s0.300
+
+It does not seem to work: ip rule is ignored, the SNAT works, but the
+datagram src=193.72.186.130 is sent on the default route enp2s0.400,
+not enp2s0.300.
+
+So, maybe the ip rule is invoked before SNAT?
+
+With iptables, the only solution that worked was using CONNTRACK, mark
+and save/restore and an ip rule on the mark.
+
+Is that also the case with nftables?
+
+Thank you.
