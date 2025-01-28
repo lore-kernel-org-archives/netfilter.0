@@ -1,68 +1,107 @@
-Received: from mail-40134.protonmail.ch (mail-40134.protonmail.ch [185.70.40.134])
+Received: from azazel.net (taras.nevrast.org [35.176.194.208])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C32E9768FC
-	for <netfilter@vger.kernel.org>; Tue, 28 Jan 2025 05:48:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.134
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C04C61684AE
+	for <netfilter@vger.kernel.org>; Tue, 28 Jan 2025 12:02:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.176.194.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738043334; cv=none; b=k9guex5o+EOqhO0RnXm7Y/nX8/fCezzwl6/TUV2hlzevpI4E9QuVouk8dIR7lqEkN+OTzDJHkEcPbcSoFjFFdibKJQCUiPETwYp62SU+MyS9uyUuux4j8Zd1+o+SNo7gzmhTgJIIv52ydbE5LkAJH9mT65VM/XLGiIkm8FsauyM=
+	t=1738065740; cv=none; b=o4KrbWFrfotGq105dRdx4oCY7uMkCBeIvjehxh+GHANLLrFgntjmWQihDbKLo4P0YUcSs9WSlCBHzDT0iybMzcYrWmADGBONWwMuSXoSFJzhPOd7jyP0z6/wKK3k4N+EZ1NUaWhA2o5v7rt9M3KDjm8rp3E/4h4M8bnaWO+b8uI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738043334; c=relaxed/simple;
-	bh=WOEKQSSnTvEdeuXRD4AYhdhppiRZDUrAt1CN9yrvMwM=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bzYkACtyyrpTmK8peVZRa4/QaTpnLegbg1vCFryh9yqnU9XwuJv3Z+X7Bf6DqNgnbv0SMgbq961dXS/mLj1KiotCjw0rXSFJXCuR68Jok/Xh9oyN/sV3QhiK2qGzze1SVG0DoNLk+Q64/mU1Vqz2+Zg1tHIs4X54WxV8CAw5aVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=OwANgsM2; arc=none smtp.client-ip=185.70.40.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
+	s=arc-20240116; t=1738065740; c=relaxed/simple;
+	bh=BqO5kqRWH3BEJsoYWVK/1J1uhE9Ebxo4XeGAK9eFoes=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q3AQfIM+Yku5/0IF6Goe6Ir4g7OOHRC5gtO61pWhEdy/26qps4/qvBAPRPyXEOWTe8Zyen4haWtQY+ttvPWHXt6K09G1HoiWUrJTFUZ7r5KVnC3ivggnBUI/IbQE06AyTPjorKRJXakvA18wsjm0rxb0Zq6JIXWOgsMyC00DieU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net; spf=pass smtp.mailfrom=azazel.net; dkim=pass (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b=F/YtO2gw; arc=none smtp.client-ip=35.176.194.208
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=azazel.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="OwANgsM2"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1738043324; x=1738302524;
-	bh=WOEKQSSnTvEdeuXRD4AYhdhppiRZDUrAt1CN9yrvMwM=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
-	b=OwANgsM2QGz0NOLaTEcnP5wgPANF1OzimFqsC6WDJhotxpGoIJhYwRBpqQ9N5uFeM
-	 A/QekSvWH0mTTj+o9hjX4/w2pPDQOnipcJ0y0aGnf9ChlPsAEP3MuQJUgmExat5Mjf
-	 NP1uW5Q6PdHWvC6S5MkTLjTwSCPgqEGxm/+K9obs3XE5Itf6E0BdibVYusrsT1KK/i
-	 8LnM8YLbQYGUm1N1oYUqRPt5c8XlXzpbaJMKTv5rJ1tI/49rsfF3HIl/4J0g+ZME2B
-	 NDOha3DOuOeFcMkcFauylQikRsETJFhUNfJuTWMmjxmRvEdLsKMHyU+TTCqT7IOb1w
-	 iphneSyo3VCpA==
-Date: Tue, 28 Jan 2025 05:48:39 +0000
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-From: Sunny73Cr <Sunny73Cr@protonmail.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Subject: Re: Raw payload expressions are mangled
-Message-ID: <gwahcYIw793HXoIlydvHfjEr4aIOm4Mmv7VlsDq0N1KU6zZyRQTS219wEnMH0KqmR2Ir9DhDbPzUYBy4m98D1KQf9WC_Zc9PrxFWgo1X-u0=@protonmail.com>
-In-Reply-To: <ZtbaVgOFLwFIr4ve@calendula>
-References: <DZC45RRhLNfzeCW9I6ahm9glqdw7JeVCHAtNRmJKEGsvLMzUaU1kI-yv-5rVp2mJq3dJPyHN2yWVbSiwc7JWWvZOf4GXBmtiPpYZS9zVKEo=@protonmail.com> <ZtbaVgOFLwFIr4ve@calendula>
-Feedback-ID: 13811339:user:proton
-X-Pm-Message-ID: 3b4fa2d63d992cff533690d85d0af72e0c8960ca
+	dkim=pass (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="F/YtO2gw"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+	s=20220717; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=VpDvxH01zNiLfPrbH8ekhT2Xv0WN3aUGnZ29tGHAnnc=; b=F/YtO2gw1bqZ0kV8PYXeNA5u0S
+	zpwbukb4dBXP9k9b8cTxlijFqNvqeQgMmphseh/8evLQXP0Vem9gbNqkugCJ1olh0sAYiLmuzpRz4
+	xGOgD9aytYjev2Ohsate+/wSgfADbxv2btAq5f7oYiJ8zQqRZgXfaNPRyyubjjjLsLy4xK0mvB51n
+	tf3umcup42hQN0oC9oDq8w0LL25Kd4eb4leCHzfrjPIglhhBiqprscwJIDRvOa94IfujjW91qPZkF
+	eq01eVqOpo81aI6y4HYerQaRbyECgfyY8yFVAZ+Oda9McTeOi4kqAu3k8qCi36Eu+byIMjjS5zX0B
+	NYQB/rEg==;
+Received: from celephais.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:3c21:9cff:fe2f:35f] helo=celephais.dreamlands)
+	by taras.nevrast.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <jeremy@azazel.net>)
+	id 1tckI9-00G7K9-38;
+	Tue, 28 Jan 2025 12:02:05 +0000
+Date: Tue, 28 Jan 2025 12:02:04 +0000
+From: Jeremy Sowden <jeremy@azazel.net>
+To: Sunny73Cr <Sunny73Cr@protonmail.com>
+Cc: Florian Westphal <fw@strlen.de>,
+	"netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Subject: Re: Raw Payload Expressions - out of bounds write?
+Message-ID: <20250128120204.GD485209@celephais.dreamlands>
+References: <Bp_PH3aO9-d7-Av1SaQGtAgrvHaPwr0l5r_aR31_U8l5IvbSFaLJ1lXI3vFBV46Xb4IxK-tP-HkcSFS-2KCLyYfRibcIkioxjdem46U0IB8=@protonmail.com>
+ <20250126135021.GB3073@breakpoint.cc>
+ <R5drxaQptK9DK89Lt1TmFpDxo86ctD3Pu2WS4wEhXcOZq7yuVqJDxNIc2tZVIx1PJpF15g1AOJCW3gxNIPqlVH6ubbppDWQlzErAa4UP3UI=@protonmail.com>
+ <20250128003706.GB29891@breakpoint.cc>
+ <KzQMgyTEENAtLkTnyJgmjSJRjhrPRkiRZnDoPpM7P8n7Xs-yWpoBwP_SP12Tmn2ZGkEFLnzRRAOr4BNFwYUCKifrV8lgAtDEfki4KlpDaXU=@protonmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="/LiOpep0+rnORp3d"
+Content-Disposition: inline
+In-Reply-To: <KzQMgyTEENAtLkTnyJgmjSJRjhrPRkiRZnDoPpM7P8n7Xs-yWpoBwP_SP12Tmn2ZGkEFLnzRRAOr4BNFwYUCKifrV8lgAtDEfki4KlpDaXU=@protonmail.com>
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:3c21:9cff:fe2f:35f
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on taras.nevrast.org); SAEximRunCond expanded to false
+
+
+--/LiOpep0+rnORp3d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
+On 2025-01-28, at 04:19:55 +0000, Sunny73Cr wrote:
+> > Use --debug=3Dnetlink
+>=20
+> Apologies, I am not sure what this refers to: I assume it is a
+> compilation argument; and I cannot recompile NetFilter as of yet.
 
-The rule translation results in matching the binary:
-"0b0001010000000001"
+It's one of nft's command-line arguments.  From the man-page:
 
-It should be "0b0010010000000001"
+      -d, --debug level
+           Enable debugging output. The debug level can be any of
+           scanner, parser, eval, netlink, mnl, proto-ctx, segtree,
+           all. You can combine more than one by separating by the ,
+           symbol, for example -d eval,mnl.
 
-or really any selection from:
+J.
 
-"0b0010010000000001"
-"0b0110010000000001"
-"0b1010010000000001"
-"0b1110010000000001"
+--/LiOpep0+rnORp3d
+Content-Type: application/pgp-signature; name="signature.asc"
 
-in order to match an "indeterminate LI"; as my rule was not concerned with =
-this value.
+-----BEGIN PGP SIGNATURE-----
 
-I cannot reason as to why VN is matched as 2 instead of 4.
+wsG7BAABCgBvBYJnmMc7CRAphqwKvfEEDUcUAAAAAAAeACBzYWx0QG5vdGF0aW9u
+cy5zZXF1b2lhLXBncC5vcmfb3YG2ITsfb2qoDfy8qJoDb2Ga7z7dasuYUxsgPkRG
+yRYhBGwdtFNj70A3vVbVFymGrAq98QQNAAAyKA//TVFSLzuCTf41DTGn8e3Qj/H0
+GxBKFMnFmvIlg9L93vTyUjHy0SnPIL1dFxhMnKEPsMva7V8ts/eIMZg4eLunzAHo
+ZPwcaBD/JgNDYJZ1XWM0tvGKnkN/rT9ZtF6fY/bIxzZaa2CTdPtQfd9/0hXbRIIc
+eb41XN8MUF+vMCwXnwqWlpqnVhaVW/CZ4Y+x5Nr5jBqWVNmKaLVlO1dqC0wI2fSS
++wotCMQzrQHrJEq4bQtefy6m694uWaLzxn5xyo4osd9d1pn6rVutz3sf44FMHI/m
+HpCQ8wXX9gzECMyEVsePnlNqABhGQd+DFDuCxXjvKh0cw9W+BTSOi4oIoFcWR0hi
+hJNiWG06Q9uYRuMXrOJs0D1VqDuXKChQJ7pMPky7UvQn9gSSbdo0b0rq+mXyiYmX
+oB6Zq132kgdbbIOqNYNHKA+DAWI1/rOBQPq5jKZt7mEBhZf9pUnSGjpClghkOBCA
+183YCtaAgkJ0x1BVswiTXEiVUotUY9gGTNo08Kp/ToiJYfE0wE30o9uhDxos677P
+cxyaTAOo8OllD8mQxnR7knnd1dL1he/l012uhSVIuTCselOmGe8FuItnW1f0JbKb
+TMYlLCEUGfJ1IuFzT4/QK9aur7Zy1IWmuAUbcXIfOiqNupFlsvmT2PeK6Qd+d9dI
+oyQFOl9Lo9PRl2zCjvo=
+=YLFJ
+-----END PGP SIGNATURE-----
 
-sunny
+--/LiOpep0+rnORp3d--
