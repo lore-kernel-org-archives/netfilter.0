@@ -1,79 +1,133 @@
-Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
+Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 664F41F152B
-	for <netfilter@vger.kernel.org>; Thu, 30 Jan 2025 20:39:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 059B07081F
+	for <netfilter@vger.kernel.org>; Thu, 30 Jan 2025 23:23:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738269582; cv=none; b=rNKTPUMLk7f/cngFInX3CzykjRbHE4g/efGLjHGmpzxk5EYGOtzeqDwsUW9Dsm5TH6A7l1tf+WIXcFRZ/H6blF+j6yzmMK4jQXU7s9vHcjrsy/uxKOL5El95IhK6UGw4DicjAvNbHfWOCGGm+jAS3thDVVK8lXYEmtNEsNpQ9nM=
+	t=1738279432; cv=none; b=fW3bDYREXQrX4K2w2I3USMLnL1H1ZP3lH8CGVwNyNfgixC6TxJrOVrgozNTqAj11Wo/zmG/VPoMnXnbVfNC5umAvyDhPCamVV2NYWDFkAbiuGrq6vDSQ/fKGP+XeD9HxhqzGkK4eVM16FrWklydiz31Yvg11jWg5yVNxwa7/ohU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738269582; c=relaxed/simple;
-	bh=jZVqmvE43I1vvwR5gReANwG1UshSoxgzD7BQGh52TcA=;
-	h=Date:From:To:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=qxqV25IBzBOgOHZbcPnzxk+9gQTl/6C16RSQwEB1DHT5nyDu/bxpCqNB4BFq9xX37cx4kwjCSEVViu+hn66tTQv02Pzu9k4VZxzBRR/1zGc1N20MEtc4FZuhyIFzm7spLzcPJmnG14qB++Gqtz0Kcxy7XecP23ZrgYIAyYV6VZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=NARMPR8f; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=nEsKn5Pd; arc=none smtp.client-ip=185.25.250.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
+	s=arc-20240116; t=1738279432; c=relaxed/simple;
+	bh=ceBkOPJBlpwFlAkrF0Y7gLIeSIWnQiPDNyJY9jjR10Q=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=OgtYAozZfy//aQzk99YnoCIDnWkDA694guoZI1C2Uhj4yAhbQMaRVFXKYp7Ut9Y4P5aCHQEIxFYQQcI10x9RqT+ljGJ99YMM5HfmzRCcM6dc9SL8xqssSCasCIYH5hZqk2VM/oQjlvdaLxRW1DuxWoiGQcbs2LiM/9/vLNsLUuw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OhzObwn6; arc=none smtp.client-ip=209.85.221.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="NARMPR8f";
-	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="nEsKn5Pd"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
-	s=r2023; h=Content-Type:MIME-Version:Message-ID:References:In-Reply-To:
-	Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:
-	Content-Type:Message-Id:In-Reply-To:References;
-	bh=kbUVI9SHYAZJta4J3CR58zSWPRc9R9EcgDk4xKZzqHA=; t=1738269578; x=1739479178; 
-	b=NARMPR8f8jSL7Bbk3WZfYPYzcJCFLx3nCjyTUx7+DgKqSNinbrQOAGIYh0cl2ATqABQJjjxX4Hz
-	Fv5D8zp+zX5pX6Is2WKfAPR8tlu9Rm6P50LSyDbVa5+mvlVzMvTdoXER7aaz0C0yJsm0v0ERPOQiI
-	JYxPT+5VFe0Ef99pJjk=;
-DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=slavino.sk; s=e2023; h=Content-Type:MIME-Version:Message-ID:References:
-	In-Reply-To:Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:
-	MIME-Version:Content-Type:Message-Id:In-Reply-To:References;
-	bh=kbUVI9SHYAZJta4J3CR58zSWPRc9R9EcgDk4xKZzqHA=; t=1738269578; x=1739479178; 
-	b=nEsKn5PdfDyViG4MJ6ir5bPMMqC4BcLIXEHmmbR2XtKCrnVIcIU2H4zfC9PyFBEwj6QHU/uP35G
-	Nf582YPiWDw==;
-Received: from dovex.skk ([192.168.10.12])
-	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96)
-	(envelope-from <linux@slavino.sk>)
-	id 1tdbEa-001X6m-22
-	for netfilter@vger.kernel.org;
-	Thu, 30 Jan 2025 21:33:56 +0100
-Date: Thu, 30 Jan 2025 20:33:53 +0000
-From: Slavko <linux@slavino.sk>
-To: netfilter@vger.kernel.org
-Subject: Re: Netfilter not dropping packets as it should
-In-Reply-To: <ee288424-68d5-44e4-95e4-91cf43751e54@binarus.de>
-References: <ee288424-68d5-44e4-95e4-91cf43751e54@binarus.de>
-Message-ID: <A7C91E02-4420-41B8-806B-0A3C14922208@slavino.sk>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OhzObwn6"
+Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-385d7b4da2bso1165337f8f.1
+        for <netfilter@vger.kernel.org>; Thu, 30 Jan 2025 15:23:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1738279429; x=1738884229; darn=vger.kernel.org;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=APSaop3/7Op+YgiLcsHFmditeHri2Zsvb5hDmJhZXHk=;
+        b=OhzObwn6iCW3TO8NvPBsmMlrJNSpsO3M6wCT0me9Bm2lsULT/R7PY1TlyXdwW+JRSy
+         YXLosMGQ9KhaavMiErhVZ/LFnGqospAhDsgurD16B29I0cad1OHuVBfO+FfilmgviQTe
+         b0sy9nDGKEMPrebUaguDeIZp0nN0eSyX5KvXE9KUzY/aGhkGMhuz01LTHRfltuxU+H6q
+         v+wuiNQUgyc4s9PMuq59QvFfK2WLpfpEwWpLo/rbeij0odfRFlBNF3B7rGMMTxL/BJss
+         tEQ+9Rb+2HcQjHeOvav/SryElCiR3uo8p2SBgBVyq2aPAmlT7+EiaTLWIzx1uuyUCf50
+         LjIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1738279429; x=1738884229;
+        h=to:references:message-id:content-transfer-encoding:cc:date
+         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=APSaop3/7Op+YgiLcsHFmditeHri2Zsvb5hDmJhZXHk=;
+        b=JRAEn4ecNyc11Ga55X/NLJQV2aDUIFammCZrYPdvihMXwHmgmV4Q3y9LFTZmUw3t8f
+         hj20Lhnm0eKYCuJ9FRin5cGj6+WM3LJyCl4Vcuv1Eqq1/FLRElrgA8Svp3wgYB5HAv+F
+         IB4NMh7VdpBkhXGoReSv4tbDtg0KBd5JWmKeJlaBArANWySco5Je55gz1nhGtTwz58/6
+         1aoWsF4W2Xlxd6RlNRE9XK9jQ/4xFLzv1w+q1LRj46B1HAjwwfO6riV5PorAwJ07Iapy
+         jjyX+e6kxLIwZHwOoMTNGehAzpn88py64DbJJfsnCMAqvAgXWyFT4IGWaB6dx7xZXjvj
+         mwuA==
+X-Gm-Message-State: AOJu0YxOa5Qbf3TdbYLwAEdpCtgUHnZ/kB5amw/LSQZNsO+e9TLxQRtd
+	GHvjRmtJn//LCSu22yPsLa74sG3eCGT5XdSPU6vDL+Qquk+RNH4l
+X-Gm-Gg: ASbGncu3IwXQmfbIuQnCklXBPSowpR1a+B0h/j4ooFhH/kHN6M9lelueuRJY75Npr5+
+	FFuC8tRNv2TRpv8jixwtITSA4HrcnD2lDKKZN4uwT9ANJDFU7+fJUHjPVe0FQ3kC1EabezIOK4b
+	pL1c9526/9Eb2gVwIhpW3hhzUMEgBhfXazWlSbLEkOs1TeCxL6hoNO2SwF5SAGvJvGZoUAh/CCl
+	dNUrrFULqK9FTpg0byc6lD+POqemXPhhXW/SNFN0XKH4c5iL49TEYcnVwWbvTVZEWsow3Txs0Pa
+	Zd+fakar+YDvsk9opzBx6Xb+n17Ff7l3Gpj4JoGXalKEsH21Y050vedSG3P5dAR3ULbZa8DODFR
+	7JUNqsw==
+X-Google-Smtp-Source: AGHT+IFjk5mCRB5yO62hW+6VJhPeXWEFCQrW70w4MHtV2hsKcn4cRWV4d5X0OnTA/qgL0OkHp2WB+g==
+X-Received: by 2002:adf:f685:0:b0:385:fb34:d5a0 with SMTP id ffacd0b85a97d-38c5196a442mr6703920f8f.29.1738279429038;
+        Thu, 30 Jan 2025 15:23:49 -0800 (PST)
+Received: from smtpclient.apple (ec2-18-184-164-91.eu-central-1.compute.amazonaws.com. [18.184.164.91])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38c5c1b574fsm3183498f8f.70.2025.01.30.15.23.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 30 Jan 2025 15:23:48 -0800 (PST)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3776.700.51\))
+Subject: Re: Clarification of the procedure for filtering IP option fields
+From: Alexey Kashavkin <akashavkin@gmail.com>
+In-Reply-To: <Z5u_wv3bfDkRKLXE@calendula>
+Date: Fri, 31 Jan 2025 02:23:36 +0300
+Cc: netfilter@vger.kernel.org,
+ ssuryaextr@gmail.com
 Content-Transfer-Encoding: quoted-printable
+Message-Id: <BCA1A218-C8C5-4CB4-91A8-8237EF440CE5@gmail.com>
+References: <8647C646-1BE2-4956-9598-27CCADD44315@gmail.com>
+ <123C96BD-BF4E-4EE5-8330-35B35E5A37CE@gmail.com> <Z5u7sji0GX4Hfjci@calendula>
+ <Z5u8cNsrlEn5JH5g@calendula> <Z5u_wv3bfDkRKLXE@calendula>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+X-Mailer: Apple Mail (2.3776.700.51)
 
-On 30=2E janu=C3=A1ra 2025 19:35:28 UTC, Binarus <lists@binarus=2Ede> wrote=
-:
+> On 30 Jan 2025, at 21:06, Pablo Neira Ayuso <pablo@netfilter.org> =
+wrote:
+> This is what you mean:
+>=20
+> # nft describe ip option lsrr addr
+> exthdr expression, datatype ipv4_addr (IPv4 address) (basetype =
+integer), 32 bits
+> <ip-option-use-ipv4-type.patch>
 
->Please consider the ruleset that's at the end of this post=2E It doesn't =
-make any sense, but it lets everybody reproduce the problem easily=2E
+Yes, changing the data type for the addr field in the templates with =
+this macro makes it more user friendly and allows the user to specify =
+the first IP address in the IP option in the network packet as the value =
+of the addr field.
 
-IMO, try to set in prerouting hook:
+# nft list table ip ipopt
+table ip ipopt {
+        chain ipopt {
+                ip option lsrr addr 192.168.0.11 drop
+                ip option lsrr addr 10.0.0.1 drop
+                ip option lsrr length 11 counter packets 0 bytes 0 drop
+        }
+}
 
-    nftrace set 1
+I assume that Stefan converted the IP to a decimal number and then =
+already specified the resulting value in the addr field.=20
+For example like this:
 
-And then try to connect to SSH and post output of:
+# echo '192*2^24 + 168*2^16 + 0 + 11' | bc
+3232235531
+# echo '10*2^24 + 0 + 0 + 1' | bc
+167772161
 
-    nft monitor trace
+# nft add rule ip ipopt_t test_ipopt_c ip option lsrr addr 3232235531 =
+drop
+# nft add rule ip ipopt_t test_ipopt_c ip option lsrr addr 167772161 =
+drop
 
-While i don't know how netdev table steps in play, we
-then will not need to guess=2E=2E=2E
+table ip ipopt_t {
+        chain ipopt_c {
+                ip option lsrr addr 3232235531 drop
+                ip option lsrr addr 167772161 drop
+                ip option lsrr length 11 counter packets 0 bytes 0 drop
+        }
+}
 
 
---=20
-Slavko
-https://www=2Eslavino=2Esk/
+
+Without the type field in the templates as a token for bison and =
+ipaddr_type as the data type, this functionality in nft becomes more =
+correct according to RFC791.
+
+Thank you for the clarification.=
