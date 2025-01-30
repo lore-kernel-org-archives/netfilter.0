@@ -1,149 +1,137 @@
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+Received: from achilles.binarus.de (achilles.binarus.de [167.235.4.162])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92E591EBFF9
-	for <netfilter@vger.kernel.org>; Thu, 30 Jan 2025 18:07:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F3151E522
+	for <netfilter@vger.kernel.org>; Thu, 30 Jan 2025 19:40:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.235.4.162
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738260425; cv=none; b=Dth+oCJXQ2G5RV2ik9nRjpJpfpd9XMBqR9kNmSG+Vnnh+pq9qH1WHuttusmy98SqrCK4M22mGqzcZ7OxaB917lYMr76qrVg30uYrI3cYVNufqHBwl0VYChTPe/EvPWLv8TIBiWvuqCo+PshghBHAIv8LvKkr9ycKVoYHA6wguHA=
+	t=1738266035; cv=none; b=hPYRKMMZ6GQ/7Lo8ZazUKkW/hcSSjLBJE/RDxaMMhR+5eRmdUTEfLgcSuoWscAbZYwFcmMT3js60BBOSm8T5CTLwNdVZE9u7oR7UaZkbMfah6M8LtiEko0HqEAyCl/qCsl5n7MN2aybPbrG1V+iahNswTxIaPnXVTZu1lfkHAPQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738260425; c=relaxed/simple;
-	bh=U7JFZefQkWtuG9JS0AwadSdYa1njzJLnY7m1qQRNk6M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o9QwAKuwz0DzIaXa+A2nLcexJ35ABIetHwBkB9ca2e9oBAKWJKu8Dmo2RJi2unUyT+/7nlr2jyHamXAl9Lga/yc4xI9qvDWFtFneGM7vdHyOpXfSaED5yNp+RK5xAvQkEmESpeQ4ZTZhE2YZvZ5emcQ/x6hujVh+58+E4NzvrvA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=aU2JGA7l; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=AQte13qC; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+	s=arc-20240116; t=1738266035; c=relaxed/simple;
+	bh=4bIB7wb1XIsjCxgM/GMTCUdTGx9HOkFj9g851U06FFM=;
+	h=Message-ID:Date:MIME-Version:From:To:Subject:Content-Type; b=uaDKb9yXmwNoI3PBV8J3Zy7SomDnB9e2PQaURs0rra2E3kzLJbuikR3izR+K/uak1mqnRZn2GEsKxwpqN+YCUb579sMmxHOYd1cjlkwitm0IwtoXqFBRsxBrECuKop1qxhRRLqlqYK3xRw6xB1mkOM9nIwLHPvc0y9zOcsX/wVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=binarus.de; spf=pass smtp.mailfrom=binarus.de; dkim=pass (4096-bit key) header.d=binarus.de header.i=@binarus.de header.b=F2GfwZ4Q; arc=none smtp.client-ip=167.235.4.162
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=binarus.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=binarus.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="aU2JGA7l";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="AQte13qC"
-Received: by mail.netfilter.org (Postfix, from userid 109)
-	id 0791260281; Thu, 30 Jan 2025 19:07:02 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1738260422;
-	bh=eJ60TYgxhUEeH+Ry0XVJFumKzLu1pA+dqPNHYzY8AIY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aU2JGA7lq2PiyrXvCukZ3s/l0UdbErX0lCPkFoiRfa4R9eDcz44wtnotInvOsilN6
-	 v68lwE3zq1RffMl2QPZ0Typhy/T/V58km47YB03TSUkt+vnKjTtAOip3MCFkRIJJDG
-	 rrbVRvSq4orLOklOCyAKF/87UcIvBkUu4hnybnqcjcxNkJtBHa1JMb5QIwbS/E2EzC
-	 zUme3KXQne9kfgG0uWk7/U8xFulari/SPyZ1sFjtss+5UDvnPJCvfTYRoeYZpARO4c
-	 wbvDqhFWXkz3A9ZLyamN91WJXkkwJzvAwlFeGzSC6jLbV0clQNpBWLodbjY91urKGX
-	 c3tMAGtcy/Nuw==
-X-Spam-Level: 
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 4551960281;
-	Thu, 30 Jan 2025 19:07:01 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1738260421;
-	bh=eJ60TYgxhUEeH+Ry0XVJFumKzLu1pA+dqPNHYzY8AIY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AQte13qCoLYVo9X69jd9fL2CWBlmm7ZkhTyi1utROCjg6fZ6riF1yKQ5yCmS5BYh5
-	 O5QWzLIcYv1izEzybksIcpdKlKpApxrMnDmsK90d7ZmCIZB9CFdTK5ZEK3GYJCTu1l
-	 y4O8owEh8JOVtHUWdWiRHy1OZXIQ+vsZnPkO1bHWeomYaPXh45u2cB0a3rH6DOBLS6
-	 mhTOfc9nCGarM2IsYqG0WrHXZtW9z91YFluE7FpDvSz20FLC1zB/XXXV90VFytpJ5a
-	 f7ET6lAUfFP421tDCp7HoT+RmeNSUGPqan9IL/kTqcm76oWvRFCzl5GdXKjmynti/3
-	 ltgiP4EBqf9zA==
-Date: Thu, 30 Jan 2025 19:06:58 +0100
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Alexey Kashavkin <akashavkin@gmail.com>
-Cc: netfilter@vger.kernel.org, ssuryaextr@gmail.com
-Subject: Re: Clarification of the procedure for filtering IP option fields
-Message-ID: <Z5u_wv3bfDkRKLXE@calendula>
-References: <8647C646-1BE2-4956-9598-27CCADD44315@gmail.com>
- <123C96BD-BF4E-4EE5-8330-35B35E5A37CE@gmail.com>
- <Z5u7sji0GX4Hfjci@calendula>
- <Z5u8cNsrlEn5JH5g@calendula>
+	dkim=pass (4096-bit key) header.d=binarus.de header.i=@binarus.de header.b="F2GfwZ4Q"
+X-Envelope-To: <netfilter@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=binarus.de;
+	s=b201601; t=1738265729;
+	bh=4bIB7wb1XIsjCxgM/GMTCUdTGx9HOkFj9g851U06FFM=;
+	h=Date:From:To:Subject:From:Reply-To:Subject:Date:To:Cc:Resent-Date:
+	 Resent-From:Resent-To:Resent-Cc:In-Reply-To:References:List-Id:
+	 List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:
+	 List-Archive;
+	b=F2GfwZ4Q6P7T74F74OhDNnEzJYSK6+Q77hl4+I80+MsITTEAjfIMxo+Jx2xM6eK3L
+	 7EZLNYrAs0BuG/2PYsMRdvfSTr2yOyjKeIXPYscZ+ppvRB19HA3T6KO2YlIBczd40+
+	 DIlC2TiGcUSIcyVhaDEdZ/04kK5k7SXriRs5+WCZp2Zqr0NmK1V8vwi3FLzomK65WX
+	 zH3YXJWHD+AAG3wwbS6Mv7byT0YYlmeFiuZ+s/mUIejTpMiR41V2D/IdhCorKM197k
+	 XF1qh36kbk3Y3mJgksYTLB9TgJ8QGZthqOF02736cFXtlYUe5OlMR9nLopgv44HXns
+	 21qMTkCefkJHvvbge3GZAJhbnByUgN86+Lo9z6ALaSWnQ6cgBAh3thQnAl2q/cpj5q
+	 zB9A+A7YQP+t9nySMFZquhOFgaZYTsaKiDD/Ps5Owqi8JcLjxBXYRbT1i2ZY/jtY89
+	 ZKHeCQx9RZ+O6eTTTCjY9TqXCGK+qLwL7BB8bRHLb17yk94vh2Zg+VO663i6III2s0
+	 ZhUerVHg5OphN+7tXr6G4XHvAqUZTM45RjwPMJQJ1YuodOB5mE4NLHTdc1kmkhXeYz
+	 TkG6mBarQsCVf4k/6cBUEYRc3I7COMGdWNArp4e7OLcJ5BlGvhXDZZwR01ysynIxuM
+	 sPNX86XMjGq8E7JYbrLZNczo=
+Received: from [192.168.20.110] (p5496968b.dip0.t-ipconnect.de [84.150.150.139])
+	(authenticated bits=0)
+	by achilles.binarus.de (8.15.2/8.15.2/Debian-22+deb11u3) with ESMTPSA id 50UJZSPD4132041
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
+	for <netfilter@vger.kernel.org>; Thu, 30 Jan 2025 20:35:29 +0100
+Message-ID: <ee288424-68d5-44e4-95e4-91cf43751e54@binarus.de>
+Date: Thu, 30 Jan 2025 20:35:28 +0100
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="zu3s3DN6NYukA69a"
-Content-Disposition: inline
-In-Reply-To: <Z5u8cNsrlEn5JH5g@calendula>
+User-Agent: Betterbird (Windows)
+From: Binarus <lists@binarus.de>
+Content-Language: en-US
+To: netfilter@vger.kernel.org
+Subject: Netfilter not dropping packets as it should
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Bin-MAIL-FROM: <lists@binarus.de>
+X-Bin-RCPT-TO: <netfilter@vger.kernel.org>
+
+Dear experts,
+
+this is a cross posting, see https://unix.stackexchange.com/questions/789174/netfilter-not-dropping-packets-as-it-should. Since I didn't get an answer there for a couple of weeks, I am repeating the question here in the hope that the problem can easily be reproduced. For me this is a very important key point in understanding netfilter / nftables.
+
+Please consider the ruleset that's at the end of this post. It doesn't make any sense, but it lets everybody reproduce the problem easily.
+
+With this ruleset, all IPv4 packets that come in via enp0s3 are accepted in the ingress hook, but finally traverse a chain with a drop policy. Each of these chains does not contain any explicit rule besides the drop policy, and thus should behave as it would (only) contain an explicit drop verdict for all packets.
+
+Hence, applications on that machine should not see any IPv4 packets that originate from other machines.
+
+But they definitely do. For example, I have an SSH daemon running on that machine. The daemon listens on an IPv4 address only (in fact, I have disabled IPv6 on that machine completely by adding ipv6.disable=1 to the kernel command line). Even after I have loaded the ruleset below, I can connect to the SSH daemon via IPv4 from the outside without any issue.
+
+Can somebody please explain why the rules below don't make the kernel drop all incoming IPv4 packets? Did I misunderstand the purpose of the drop policy?
+
+Thank you very much in advance, and best regards,
+
+Binarus
 
 
---zu3s3DN6NYukA69a
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 
-On Thu, Jan 30, 2025 at 06:52:52PM +0100, Pablo Neira Ayuso wrote:
-> On Thu, Jan 30, 2025 at 06:49:41PM +0100, Pablo Neira Ayuso wrote:
-> > Hi,
-> > 
-> > On Thu, Jan 30, 2025 at 04:52:29PM +0300, Alexey Kashavkin wrote:
-> > > Hello, 
-> > > 
-> > > I am still figuring out the syntax for adding rules to filter IP
-> > > options. Please, if anyone has an understanding of how this works
-> > > give at least a short reply.
-> > 
-> > This 'type' field is redundant.
-> > 
-> > > I understand how the exthdr expression works in the kernel code. But
-> > > so far there is still a question about specifying the type field,
-> > > what is the purpose of this field here? There is also a question
-> > > about other fields, let's take for example the IP option LSRR, it
-> > > has an addr field. I assume, knowing this option from RFC791 it
-> > > specifies IP addresses, but in the case of nft it is not so, this
-> > > field has datatype intereger.
-> > 
-> > Yes, this should be at least 32-bits.
-> 
-> Actually, this is 32-bits already:
-> 
-> # nft describe ip option lsrr addr
-> exthdr expression, datatype integer (integer), 32 bits
 
-This is what you mean:
 
-# nft describe ip option lsrr addr
-exthdr expression, datatype ipv4_addr (IPv4 address) (basetype integer), 32 bits
+table netdev t_NETDEV_enp0s3 {
+   chain enp0s3-ingress-filter {
+     type filter hook ingress device "enp0s3" priority filter; policy drop;
+     ether type 0x0806 arp ptype 0x0800 accept
+     ether type 0x0800 accept
+     log prefix "foo: " drop
+   }
+}
 
---zu3s3DN6NYukA69a
-Content-Type: text/x-diff; charset=utf-8
-Content-Disposition: attachment; filename="ip-option-use-ipv4-type.patch"
+table ip t_IP {
 
-diff --git a/src/ipopt.c b/src/ipopt.c
-index 37f779d468ab..ddb42f5712d4 100644
---- a/src/ipopt.c
-+++ b/src/ipopt.c
-@@ -24,7 +24,7 @@ static const struct exthdr_desc ipopt_lsrr = {
- 		[IPOPT_FIELD_TYPE]		= PHT("type",    0,  8),
- 		[IPOPT_FIELD_LENGTH]		= PHT("length",  8,  8),
- 		[IPOPT_FIELD_PTR]		= PHT("ptr",    16,  8),
--		[IPOPT_FIELD_ADDR_0]		= PHT("addr",   24, 32),
-+		[IPOPT_FIELD_ADDR_0]		= PROTO_HDR_TEMPLATE("addr", &ipaddr_type, BYTEORDER_BIG_ENDIAN, 24, 32),
- 	},
- };
- 
-@@ -35,7 +35,7 @@ static const struct exthdr_desc ipopt_rr = {
- 		[IPOPT_FIELD_TYPE]		= PHT("type",   0,   8),
- 		[IPOPT_FIELD_LENGTH]		= PHT("length",  8,  8),
- 		[IPOPT_FIELD_PTR]		= PHT("ptr",    16,  8),
--		[IPOPT_FIELD_ADDR_0]		= PHT("addr",   24, 32),
-+		[IPOPT_FIELD_ADDR_0]		= PROTO_HDR_TEMPLATE("addr", &ipaddr_type, BYTEORDER_BIG_ENDIAN, 24, 32),
- 	},
- };
- 
-@@ -46,7 +46,7 @@ static const struct exthdr_desc ipopt_ssrr = {
- 		[IPOPT_FIELD_TYPE]		= PHT("type",   0,   8),
- 		[IPOPT_FIELD_LENGTH]		= PHT("length",  8,  8),
- 		[IPOPT_FIELD_PTR]		= PHT("ptr",    16,  8),
--		[IPOPT_FIELD_ADDR_0]		= PHT("addr",   24, 32),
-+		[IPOPT_FIELD_ADDR_0]		= PROTO_HDR_TEMPLATE("addr", &ipaddr_type, BYTEORDER_BIG_ENDIAN, 24, 32),
- 	},
- };
- 
-@@ -56,7 +56,7 @@ static const struct exthdr_desc ipopt_ra = {
- 	.templates	= {
- 		[IPOPT_FIELD_TYPE]		= PHT("type",   0,   8),
- 		[IPOPT_FIELD_LENGTH]		= PHT("length", 8,   8),
--		[IPOPT_FIELD_VALUE]		= PHT("value",  16, 16),
-+		[IPOPT_FIELD_ADDR_0]		= PROTO_HDR_TEMPLATE("addr", &ipaddr_type, BYTEORDER_BIG_ENDIAN, 24, 32),
- 	},
- };
- 
+   chain prerouting-nat {
+     type nat hook prerouting priority dstnat; policy drop;
+     log prefix "ip4-prerouting-nat:" drop;
+   }
+   chain prerouting-filter {
+     type filter hook prerouting priority filter; policy drop;
+     log prefix "ip4-prerouting-filter:" drop;
+   }
 
---zu3s3DN6NYukA69a--
+   chain input-nat {
+     type nat hook input priority dstnat; policy drop;
+     log prefix "ip4-input-nat:" drop;
+   }
+   chain input-filter {
+     type filter hook input priority filter; policy drop;
+     log prefix "ip4-input-filter:" drop;
+   }
+
+   chain forward-filter {
+     type filter hook forward priority filter; policy drop;
+     log prefix "ip4-forward-filter:" drop;
+   }
+
+   chain output-nat {
+     type nat hook output priority srcnat; policy drop;
+     log prefix "ip4-output-nat:" drop;
+   }
+   chain output-filter {
+     type filter hook output priority filter; policy drop;
+     log prefix "ip4-output-filter:" drop;
+   }
+   chain output-route {
+     type route hook output priority mangle; policy drop;
+     log prefix "ip4-output-route:" drop;
+   }
+
+   chain postrouting-nat {
+     type nat hook postrouting priority srcnat; policy drop;
+     log prefix "ip4-postrouting-nat:" drop;
+   }
+   chain postrouting-filter {
+     type filter hook postrouting priority filter; policy drop;
+     log prefix "ip4-postrouting-filter:" drop;
+   }
+}
