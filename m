@@ -1,59 +1,43 @@
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+Received: from mail-40133.protonmail.ch (mail-40133.protonmail.ch [185.70.40.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6540D1A2393
-	for <netfilter@vger.kernel.org>; Tue, 28 Jan 2025 12:41:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8032A19C561
+	for <netfilter@vger.kernel.org>; Thu, 30 Jan 2025 11:27:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738068105; cv=none; b=nnCeyZZ+pIi0wPdBgmY9Fe23mgTeT1/b0+Fqw+Vo1TBKsFPK6ubjdF56M8AwcpAA03nFKYgTDtOBEnOn08KEZSu8VSJVnxw8m6WjkwVYpcVuCYuCGS49IOwRu9LSmCxdsUqjOvQPjnwGfPYvEtu21XDbXIImEzIs60r43OIWYBg=
+	t=1738236444; cv=none; b=ku3N9n0NizwDX6cTokimvci2Dqs95uGiBuHEJNks4cMhIuB/YdLIW20xf6NGSnJx3laxMmG4jJBL4CmMdqPE2gqAQE0Gq6H/XGAqjc81yT9CH4wmAQX06z2A9jReANUWfqgrtjhc6ddk1KbJWqmcApw9ZoZebnVlHSaxNd1YfhY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738068105; c=relaxed/simple;
-	bh=11ArZcUQWrX6Zh9aHpDprZcz9CHE+psw3X5jAtRGtdI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VxBaUZw/aYN2bvGpzky+8/vhHJcxW6AVrOOBvYKpbOcmAnfbwhfqsp5sBBWA3sqOoCYXDSudVWiK4+NPLt+qJtoZSgxgSO/ZgXKwNyOGaaeeI2+GdHMQo0oAbR3yqyTmX45jqMsBc/qqQdjxu8k2gQW1+ueoRYwV8VhoM5PkE4k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=CEXhSCms; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=CEXhSCms; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+	s=arc-20240116; t=1738236444; c=relaxed/simple;
+	bh=WLyPXAKusxM2Xjm2q/9P01/RtcsRRy0F7uhGx6NjMTQ=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=d9cVTmrvzS9vQ2PlH7xMtPy0QjVYDGkFnCZL6/Ril+ln0SO5oCAz67xJajp0E1+lx7Ae5JzOr38zy2KSpXjrMsmwBpeKgrMA6rsCxXu0Cu85LSLrSZDDDPxuy8MvZlVGLrfcBjILovj4WWja5acGSnUKtC9oWx4A1Pb9SxLOmUQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=u0tiDU4L; arc=none smtp.client-ip=185.70.40.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="CEXhSCms";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="CEXhSCms"
-Received: by mail.netfilter.org (Postfix, from userid 109)
-	id CF5816028B; Tue, 28 Jan 2025 13:41:40 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1738068100;
-	bh=66PP5WSI4hh+gl869kbCF6nSRv60KCigOvIoNrOGH6A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CEXhSCms2tNk/3aPaYK4juBFkOlInTtezS7dhqrk+ZqRPQlfXiewws4V+/PTkKLaM
-	 JHXqGw4of7KlQYnCpuTwb5A4yrq0MTsuI0e2K5ik1gQ9gHjPvADJOof9USkjgjyvQo
-	 Gu9EXREH/01lY0Eb1SqrxAMtoqJT7AIJXSrCDKJ79dPA+On1F4xpsk4kyeWYxjBNj5
-	 1PZ7q9MDeLYiFuQULx/zTRyorE4bvOvhVOvZXa7v4KfJQN0sYprdyefd3K8KXFlmmF
-	 cUovlP9W0xajb40c20s3WEj1YJaEtp+2cTZt8989h3VsFe3xMx03PYAEEY4sF7LsD8
-	 ou9LWgT/f8S1w==
-X-Spam-Level: 
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id ECE9B60286;
-	Tue, 28 Jan 2025 13:41:39 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1738068100;
-	bh=66PP5WSI4hh+gl869kbCF6nSRv60KCigOvIoNrOGH6A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CEXhSCms2tNk/3aPaYK4juBFkOlInTtezS7dhqrk+ZqRPQlfXiewws4V+/PTkKLaM
-	 JHXqGw4of7KlQYnCpuTwb5A4yrq0MTsuI0e2K5ik1gQ9gHjPvADJOof9USkjgjyvQo
-	 Gu9EXREH/01lY0Eb1SqrxAMtoqJT7AIJXSrCDKJ79dPA+On1F4xpsk4kyeWYxjBNj5
-	 1PZ7q9MDeLYiFuQULx/zTRyorE4bvOvhVOvZXa7v4KfJQN0sYprdyefd3K8KXFlmmF
-	 cUovlP9W0xajb40c20s3WEj1YJaEtp+2cTZt8989h3VsFe3xMx03PYAEEY4sF7LsD8
-	 ou9LWgT/f8S1w==
-Date: Tue, 28 Jan 2025 13:41:37 +0100
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Florian Westphal <fw@strlen.de>
-Cc: Sunny73Cr <Sunny73Cr@protonmail.com>,
-	"netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="u0tiDU4L"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+	s=protonmail3; t=1738236434; x=1738495634;
+	bh=WLyPXAKusxM2Xjm2q/9P01/RtcsRRy0F7uhGx6NjMTQ=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
+	b=u0tiDU4LxVphxW422OqLzqqX0FYLlo0NSprst3L/RX/BIGI6dFgYCbUX/u+CxRlLh
+	 mzKHsyGudT1T9XPFUNwywgFF5wKlpJ8xgggDFTdGf3cI3yKCb4kbV4hoZUwlEsULiN
+	 2a344rTlumX8b8k9F3gxtTrB66NbMI8TAXkgaOXdufXf20okS2+B/MHRr5H+m+utVX
+	 Egacu5t6yj3m1M4wvZVDXSyRbGmx3396pXDM0uEgEtk5A2TciFPv0puKqw0ojE/AfT
+	 46sFH5n0P8ngj0Mu5aDsNiA9Gj4keLcpecBGV+VpaYcOzWXL+ZnqbOkFgmUXoyTWvO
+	 ez4yDxhPwheYg==
+Date: Thu, 30 Jan 2025 11:27:09 +0000
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Sunny73Cr <Sunny73Cr@protonmail.com>
+Cc: Florian Westphal <fw@strlen.de>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 Subject: Re: Raw Payload Expressions - out of bounds write?
-Message-ID: <Z5jQgcbCXiLyPwV-@calendula>
-References: <Bp_PH3aO9-d7-Av1SaQGtAgrvHaPwr0l5r_aR31_U8l5IvbSFaLJ1lXI3vFBV46Xb4IxK-tP-HkcSFS-2KCLyYfRibcIkioxjdem46U0IB8=@protonmail.com>
- <20250126135021.GB3073@breakpoint.cc>
- <R5drxaQptK9DK89Lt1TmFpDxo86ctD3Pu2WS4wEhXcOZq7yuVqJDxNIc2tZVIx1PJpF15g1AOJCW3gxNIPqlVH6ubbppDWQlzErAa4UP3UI=@protonmail.com>
- <20250128003706.GB29891@breakpoint.cc>
+Message-ID: <PVrkUQp56-Jj22U0UNcuDB2ECbRGvxlQdpV9wqJEScEZCv87qu5FdvjBKhhAzXkGv71nnXYmPI2TlxCo-dz_Mz-2Y52rrOVQLWvmPYm7cIA=@protonmail.com>
+In-Reply-To: <Z5jQgcbCXiLyPwV-@calendula>
+References: <Bp_PH3aO9-d7-Av1SaQGtAgrvHaPwr0l5r_aR31_U8l5IvbSFaLJ1lXI3vFBV46Xb4IxK-tP-HkcSFS-2KCLyYfRibcIkioxjdem46U0IB8=@protonmail.com> <20250126135021.GB3073@breakpoint.cc> <R5drxaQptK9DK89Lt1TmFpDxo86ctD3Pu2WS4wEhXcOZq7yuVqJDxNIc2tZVIx1PJpF15g1AOJCW3gxNIPqlVH6ubbppDWQlzErAa4UP3UI=@protonmail.com> <20250128003706.GB29891@breakpoint.cc> <Z5jQgcbCXiLyPwV-@calendula>
+Feedback-ID: 13811339:user:proton
+X-Pm-Message-ID: fbd9cd5711bd72720fd0e2e42b533c7b00ef2620
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
@@ -61,32 +45,12 @@ List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250128003706.GB29891@breakpoint.cc>
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Jan 28, 2025 at 01:37:06AM +0100, Florian Westphal wrote:
-> Sunny73Cr <Sunny73Cr@protonmail.com> wrote:
-> > > Please elaborate as what is wrong here in listing 3.
-> > 
-> > Within the second line of the rule (@ih,80,16 set @ih,80,16 & 0x3f0 \)
-> > 
-> > The mask 0x3f0 equates to 1,008 in decimal.
-> > (3 * 16**2) + (15 * 16**1) + (0 * 16^0) = 1,008
-> > Here '**' indicates exponent.
-> > 
-> > 1,008 is far larger than the 34 bit range that I covered.
-> 
-> Sigh.  Why did you not say something like:
-> 
-> The mask is provided as '0x3f0' in the listing, but I had expected
-> 0xfc0f, as only 6 bits should be cleared, but the mask KEEPS 6 bits.
-> 
-> It would have saved me a headache figuring out bug you refer to.
-> I am not a mind reader :-/
-> 
-> Use --debug=netlink, it looks like its a display bug.
-> 
-> I'll have a look.
 
-It looks like netlink_delinearize is missing code to compact the
-expression.
+I can't see the problem within the code.
+
+Aside from the latter half of NTP timestamps, which expressions do not work=
+?
+
+sunny
