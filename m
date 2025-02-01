@@ -1,133 +1,247 @@
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-b1-smtp.messagingengine.com (fout-b1-smtp.messagingengine.com [202.12.124.144])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 059B07081F
-	for <netfilter@vger.kernel.org>; Thu, 30 Jan 2025 23:23:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DAD517BA5
+	for <netfilter@vger.kernel.org>; Sat,  1 Feb 2025 10:31:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1738279432; cv=none; b=fW3bDYREXQrX4K2w2I3USMLnL1H1ZP3lH8CGVwNyNfgixC6TxJrOVrgozNTqAj11Wo/zmG/VPoMnXnbVfNC5umAvyDhPCamVV2NYWDFkAbiuGrq6vDSQ/fKGP+XeD9HxhqzGkK4eVM16FrWklydiz31Yvg11jWg5yVNxwa7/ohU=
+	t=1738405888; cv=none; b=UFJ2RqclsMKVv2Xr2x6dAvJsBAXpRNxz8k/9QpqwA4bzyRSKNIS4dW/yFQHLCNRk+CleTt/cIxOpRHXHDlf3JlqQjYQbe7cVfjhjTtAkqZE/qFPhcyQPJTSnk89FXMMPp7/NN7r7MKg8GxPs0qjCL4TNYVQae+PEt2hemvppa4k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1738279432; c=relaxed/simple;
-	bh=ceBkOPJBlpwFlAkrF0Y7gLIeSIWnQiPDNyJY9jjR10Q=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=OgtYAozZfy//aQzk99YnoCIDnWkDA694guoZI1C2Uhj4yAhbQMaRVFXKYp7Ut9Y4P5aCHQEIxFYQQcI10x9RqT+ljGJ99YMM5HfmzRCcM6dc9SL8xqssSCasCIYH5hZqk2VM/oQjlvdaLxRW1DuxWoiGQcbs2LiM/9/vLNsLUuw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OhzObwn6; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1738405888; c=relaxed/simple;
+	bh=qOQugjKsfUEYLxCquboeW8Q59nRNSW2/Jx3URzHEzko=;
+	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=gjBzbYfU1Q0ozPf7NPJDZmMLWJ6JaKewrMDwGoh1i8Y5CRlSk4xPaGgKxvYfMtp25E5iiOcjMbKwlBc629ZhaGFBE8JjsjwRRJzVb1gQ8FDDDXroCdUv92wgoBc9RA++F1zbRlkzvxtZsXUE1Fy8kpoePseB07p11n30f9OrYxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sent.com; spf=pass smtp.mailfrom=sent.com; dkim=pass (2048-bit key) header.d=sent.com header.i=@sent.com header.b=FcSw9QMe; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=j1fPPQCB; arc=none smtp.client-ip=202.12.124.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sent.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sent.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OhzObwn6"
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-385d7b4da2bso1165337f8f.1
-        for <netfilter@vger.kernel.org>; Thu, 30 Jan 2025 15:23:50 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1738279429; x=1738884229; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=APSaop3/7Op+YgiLcsHFmditeHri2Zsvb5hDmJhZXHk=;
-        b=OhzObwn6iCW3TO8NvPBsmMlrJNSpsO3M6wCT0me9Bm2lsULT/R7PY1TlyXdwW+JRSy
-         YXLosMGQ9KhaavMiErhVZ/LFnGqospAhDsgurD16B29I0cad1OHuVBfO+FfilmgviQTe
-         b0sy9nDGKEMPrebUaguDeIZp0nN0eSyX5KvXE9KUzY/aGhkGMhuz01LTHRfltuxU+H6q
-         v+wuiNQUgyc4s9PMuq59QvFfK2WLpfpEwWpLo/rbeij0odfRFlBNF3B7rGMMTxL/BJss
-         tEQ+9Rb+2HcQjHeOvav/SryElCiR3uo8p2SBgBVyq2aPAmlT7+EiaTLWIzx1uuyUCf50
-         LjIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1738279429; x=1738884229;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=APSaop3/7Op+YgiLcsHFmditeHri2Zsvb5hDmJhZXHk=;
-        b=JRAEn4ecNyc11Ga55X/NLJQV2aDUIFammCZrYPdvihMXwHmgmV4Q3y9LFTZmUw3t8f
-         hj20Lhnm0eKYCuJ9FRin5cGj6+WM3LJyCl4Vcuv1Eqq1/FLRElrgA8Svp3wgYB5HAv+F
-         IB4NMh7VdpBkhXGoReSv4tbDtg0KBd5JWmKeJlaBArANWySco5Je55gz1nhGtTwz58/6
-         1aoWsF4W2Xlxd6RlNRE9XK9jQ/4xFLzv1w+q1LRj46B1HAjwwfO6riV5PorAwJ07Iapy
-         jjyX+e6kxLIwZHwOoMTNGehAzpn88py64DbJJfsnCMAqvAgXWyFT4IGWaB6dx7xZXjvj
-         mwuA==
-X-Gm-Message-State: AOJu0YxOa5Qbf3TdbYLwAEdpCtgUHnZ/kB5amw/LSQZNsO+e9TLxQRtd
-	GHvjRmtJn//LCSu22yPsLa74sG3eCGT5XdSPU6vDL+Qquk+RNH4l
-X-Gm-Gg: ASbGncu3IwXQmfbIuQnCklXBPSowpR1a+B0h/j4ooFhH/kHN6M9lelueuRJY75Npr5+
-	FFuC8tRNv2TRpv8jixwtITSA4HrcnD2lDKKZN4uwT9ANJDFU7+fJUHjPVe0FQ3kC1EabezIOK4b
-	pL1c9526/9Eb2gVwIhpW3hhzUMEgBhfXazWlSbLEkOs1TeCxL6hoNO2SwF5SAGvJvGZoUAh/CCl
-	dNUrrFULqK9FTpg0byc6lD+POqemXPhhXW/SNFN0XKH4c5iL49TEYcnVwWbvTVZEWsow3Txs0Pa
-	Zd+fakar+YDvsk9opzBx6Xb+n17Ff7l3Gpj4JoGXalKEsH21Y050vedSG3P5dAR3ULbZa8DODFR
-	7JUNqsw==
-X-Google-Smtp-Source: AGHT+IFjk5mCRB5yO62hW+6VJhPeXWEFCQrW70w4MHtV2hsKcn4cRWV4d5X0OnTA/qgL0OkHp2WB+g==
-X-Received: by 2002:adf:f685:0:b0:385:fb34:d5a0 with SMTP id ffacd0b85a97d-38c5196a442mr6703920f8f.29.1738279429038;
-        Thu, 30 Jan 2025 15:23:49 -0800 (PST)
-Received: from smtpclient.apple (ec2-18-184-164-91.eu-central-1.compute.amazonaws.com. [18.184.164.91])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38c5c1b574fsm3183498f8f.70.2025.01.30.15.23.47
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 30 Jan 2025 15:23:48 -0800 (PST)
-Content-Type: text/plain;
-	charset=us-ascii
+	dkim=pass (2048-bit key) header.d=sent.com header.i=@sent.com header.b="FcSw9QMe";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="j1fPPQCB"
+Received: from phl-compute-10.internal (phl-compute-10.phl.internal [10.202.2.50])
+	by mailfout.stl.internal (Postfix) with ESMTP id 69CEB11400AC;
+	Sat,  1 Feb 2025 05:31:24 -0500 (EST)
+Received: from phl-imap-14 ([10.202.2.87])
+  by phl-compute-10.internal (MEProxy); Sat, 01 Feb 2025 05:31:24 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=cc
+	:content-transfer-encoding:content-type:content-type:date:date
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1738405884;
+	 x=1738492284; bh=2VF++h2YTkUlw6o9GHaM7zuwUaFtjIfY5avjZgB/jIY=; b=
+	FcSw9QMe7la2lYnMTDnNLcT2ufdDLBaxiOnTkmNIOmnzcsEeNGHDQrV9uvqzLRVm
+	kjWRYZesyvvcRlSva4YBNQmlmFpIG8uaHeFP6/PCvKaaHiq489iSht6TA+Et6pXY
+	jG0+zvFsv3iZBFv0XveytjmcITF5qFn4WmPQ31SkHWZSqQx75Ycr0uQQjDl04IzV
+	qqoaCrImEGGMe+frTXwyBXBj9NyU4HKwM1VO83BgQGMw2gYhQAn8cphRNIn4UgGV
+	xIl0WdHl+z/3nQsAWJk4eWkmlZTLsCxSrHb7PqFrS8S5sVNZz+RQKiR5XeQpPIjR
+	8aNMI86zX1iYApZbZg3RXQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
+	:x-me-sender:x-sasl-enc; s=fm3; t=1738405884; x=1738492284; bh=2
+	VF++h2YTkUlw6o9GHaM7zuwUaFtjIfY5avjZgB/jIY=; b=j1fPPQCBtDMxHYzMN
+	jYrR3Ul7jEJ5Aq9qWcnrsZybqCwzjbLYlmtQCSug7fKjiVcgm2XYgdv8cgUqNKgC
+	QPVmySuvva3xc3xOVEpC2UjI1IX+0kOM3wsTvN6+SVM+lPzF8Q+Me/fZjhB7I5BZ
+	PgHyKS3L3Bfs68nkikf3qW4NSRd+Kj9IRKuWj973QLtbNZxZPexjFzwpXlbfF/n+
+	m776f9rAqVnZ8TNPm1ISXrUzOJB5Z+tFKOz1pUuZAPjGVAslv/oC0qcnlu7tRwjf
+	+/fUjjtLd1iU28cN/inPoVOXqDip+1CojZNUCqaV2OTHc3dDYsMOIoQuMFALREL+
+	cFYjQ==
+X-ME-Sender: <xms:-_edZ9tQHZ_FfO7zVdw5XwVMoKtLlW289d9vEMXqLUnYURXdTSGJqg>
+    <xme:-_edZ2dL-tFYaEjV2X_kiuDXmS469Ol_iLL2Ktc0WBxgsdFMokCxfy0hHE-aaT6Np
+    qQ3g8FhzFX_EacY8TE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdduudeglecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdp
+    uffrtefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecunecujfgurhepofggff
+    fhvffkjghfufgtgfesthejredtredttdenucfhrhhomhepfdeuvghrthhoucfhuhhrthhh
+    fdcuoegsfhdvtddvheesshgvnhhtrdgtohhmqeenucggtffrrghtthgvrhhnpeektdeghe
+    ehuedvveevteetuedvffeikeegfeetuddtudelffdvtdfgtefgtdffieenucffohhmrghi
+    nhepshhtrggtkhgvgigthhgrnhhgvgdrtghomhenucevlhhushhtvghrufhiiigvpedtne
+    curfgrrhgrmhepmhgrihhlfhhrohhmpegsfhdvtddvheesshgvnhhtrdgtohhmpdhnsggp
+    rhgtphhtthhopedvpdhmohguvgepshhmthhpohhuthdprhgtphhtthhopehlihhsthhsse
+    gsihhnrghruhhsrdguvgdprhgtphhtthhopehnvghtfhhilhhtvghrsehvghgvrhdrkhgv
+    rhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:-_edZwz9pBOnpczKHL6OhvTrSwf-GX5wWVwCBGKSMqNNycbFHDsr0A>
+    <xmx:-_edZ0Pyi4yp9mtj9YbmxepBI6frjopdpt2NuyXDTRAcD7L6Au-gmg>
+    <xmx:-_edZ98cRj_5FM7XqfasWu3gqBIrUAbFAr9Yf0KZJZl2W5VQmPWeKQ>
+    <xmx:-_edZ0VBRW-rgIy6vnfMvfu3eLteQmDx3e9TOE7BddXEimYzRBTElA>
+    <xmx:_PedZ_nih8XFs4ueL_xBmGx0C9Hh7vQqx2uhPBae8cYyJWIME_r10klp>
+Feedback-ID: i9e06489f:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 8175A2800083; Sat,  1 Feb 2025 05:31:23 -0500 (EST)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3776.700.51\))
-Subject: Re: Clarification of the procedure for filtering IP option fields
-From: Alexey Kashavkin <akashavkin@gmail.com>
-In-Reply-To: <Z5u_wv3bfDkRKLXE@calendula>
-Date: Fri, 31 Jan 2025 02:23:36 +0300
-Cc: netfilter@vger.kernel.org,
- ssuryaextr@gmail.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <BCA1A218-C8C5-4CB4-91A8-8237EF440CE5@gmail.com>
-References: <8647C646-1BE2-4956-9598-27CCADD44315@gmail.com>
- <123C96BD-BF4E-4EE5-8330-35B35E5A37CE@gmail.com> <Z5u7sji0GX4Hfjci@calendula>
- <Z5u8cNsrlEn5JH5g@calendula> <Z5u_wv3bfDkRKLXE@calendula>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-X-Mailer: Apple Mail (2.3776.700.51)
+MIME-Version: 1.0
+Date: Sat, 01 Feb 2025 21:30:58 +1100
+From: "Berto Furth" <bf2025@sent.com>
+To: Binarus <lists@binarus.de>, netfilter@vger.kernel.org
+Message-Id: <5c0ffbb9-1bb7-403f-af74-dca23f8fefd6@app.fastmail.com>
+In-Reply-To: <ee288424-68d5-44e4-95e4-91cf43751e54@binarus.de>
+References: <ee288424-68d5-44e4-95e4-91cf43751e54@binarus.de>
+Subject: Re: Netfilter not dropping packets as it should
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-> On 30 Jan 2025, at 21:06, Pablo Neira Ayuso <pablo@netfilter.org> =
-wrote:
-> This is what you mean:
->=20
-> # nft describe ip option lsrr addr
-> exthdr expression, datatype ipv4_addr (IPv4 address) (basetype =
-integer), 32 bits
-> <ip-option-use-ipv4-type.patch>
+Hi Binarus,
 
-Yes, changing the data type for the addr field in the templates with =
-this macro makes it more user friendly and allows the user to specify =
-the first IP address in the IP option in the network packet as the value =
-of the addr field.
+A non expert here....so my answer if probably rubbish...but anyway...
 
-# nft list table ip ipopt
-table ip ipopt {
-        chain ipopt {
-                ip option lsrr addr 192.168.0.11 drop
-                ip option lsrr addr 10.0.0.1 drop
-                ip option lsrr length 11 counter packets 0 bytes 0 drop
-        }
-}
+I went ahead and loaded your listed configuration into my /etc/nftables.conf file.
 
-I assume that Stefan converted the IP to a decimal number and then =
-already specified the resulting value in the addr field.=20
-For example like this:
+I got an error when I tried to load your configuration and as such IP traffic was allowed because there were essentially no nftables rules operating.
 
-# echo '192*2^24 + 168*2^16 + 0 + 11' | bc
-3232235531
-# echo '10*2^24 + 0 + 0 + 1' | bc
-167772161
+The lines that generated an error were as follows..
 
-# nft add rule ip ipopt_t test_ipopt_c ip option lsrr addr 3232235531 =
-drop
-# nft add rule ip ipopt_t test_ipopt_c ip option lsrr addr 167772161 =
-drop
+# nft -c -f /etc/nftables.conf
+/etc/nftables.conf:27:26-40: Error: invalid priority expression value in this context.
+     type nat hook input priority dstnat; policy drop;
+                         ^^^^^^^^^^^^^^^
+/etc/nftables.conf:41:27-41: Error: invalid priority expression value in this context.
+     type nat hook output priority srcnat; policy drop;
+                          ^^^^^^^^^^^^^^^
+However when I replaced "dstnat" with "-100" and "srcnat" with "100" the nftables filers were accepted and IPv4 traffic to the unit stopped.
 
-table ip ipopt_t {
-        chain ipopt_c {
-                ip option lsrr addr 3232235531 drop
-                ip option lsrr addr 167772161 drop
-                ip option lsrr length 11 counter packets 0 bytes 0 drop
-        }
-}
+The diffs between what I used and what you posted are as follows
+
+*** /etc/nftables.conf.binarus  2025-02-01 21:25:46.418090954 +1100
+--- /etc/nftables.conf  2025-02-01 21:25:22.198057049 +1100
+***************
+*** 24,30 ****
+     }
+  
+     chain input-nat {
+!      type nat hook input priority dstnat; policy drop;
+       log prefix "ip4-input-nat:" drop;
+     }
+     chain input-filter {
+--- 24,30 ----
+     }
+  
+     chain input-nat {
+!      type nat hook input priority -100; policy drop;
+       log prefix "ip4-input-nat:" drop;
+     }
+     chain input-filter {
+***************
+*** 38,44 ****
+     }
+  
+     chain output-nat {
+!      type nat hook output priority srcnat; policy drop;
+       log prefix "ip4-output-nat:" drop;
+     }
+     chain output-filter {
+--- 38,44 ----
+     }
+  
+     chain output-nat {
+!      type nat hook output priority 100; policy drop;
+       log prefix "ip4-output-nat:" drop;
+     }
+     chain output-filter {
+
+I hope that helps.
+
+Berto.
 
 
-
-Without the type field in the templates as a token for bison and =
-ipaddr_type as the data type, this functionality in nft becomes more =
-correct according to RFC791.
-
-Thank you for the clarification.=
+On Fri, 31 Jan 2025, at 06:35, Binarus wrote:
+> Dear experts,
+>
+> this is a cross posting, see 
+> https://unix.stackexchange.com/questions/789174/netfilter-not-dropping-packets-as-it-should. 
+> Since I didn't get an answer there for a couple of weeks, I am 
+> repeating the question here in the hope that the problem can easily be 
+> reproduced. For me this is a very important key point in understanding 
+> netfilter / nftables.
+>
+> Please consider the ruleset that's at the end of this post. It doesn't 
+> make any sense, but it lets everybody reproduce the problem easily.
+>
+> With this ruleset, all IPv4 packets that come in via enp0s3 are 
+> accepted in the ingress hook, but finally traverse a chain with a drop 
+> policy. Each of these chains does not contain any explicit rule besides 
+> the drop policy, and thus should behave as it would (only) contain an 
+> explicit drop verdict for all packets.
+>
+> Hence, applications on that machine should not see any IPv4 packets 
+> that originate from other machines.
+>
+> But they definitely do. For example, I have an SSH daemon running on 
+> that machine. The daemon listens on an IPv4 address only (in fact, I 
+> have disabled IPv6 on that machine completely by adding ipv6.disable=1 
+> to the kernel command line). Even after I have loaded the ruleset 
+> below, I can connect to the SSH daemon via IPv4 from the outside 
+> without any issue.
+>
+> Can somebody please explain why the rules below don't make the kernel 
+> drop all incoming IPv4 packets? Did I misunderstand the purpose of the 
+> drop policy?
+>
+> Thank you very much in advance, and best regards,
+>
+> Binarus
+>
+>
+>
+>
+>
+> table netdev t_NETDEV_enp0s3 {
+>    chain enp0s3-ingress-filter {
+>      type filter hook ingress device "enp0s3" priority filter; policy drop;
+>      ether type 0x0806 arp ptype 0x0800 accept
+>      ether type 0x0800 accept
+>      log prefix "foo: " drop
+>    }
+> }
+>
+> table ip t_IP {
+>
+>    chain prerouting-nat {
+>      type nat hook prerouting priority dstnat; policy drop;
+>      log prefix "ip4-prerouting-nat:" drop;
+>    }
+>    chain prerouting-filter {
+>      type filter hook prerouting priority filter; policy drop;
+>      log prefix "ip4-prerouting-filter:" drop;
+>    }
+>
+>    chain input-nat {
+>      type nat hook input priority dstnat; policy drop;
+>      log prefix "ip4-input-nat:" drop;
+>    }
+>    chain input-filter {
+>      type filter hook input priority filter; policy drop;
+>      log prefix "ip4-input-filter:" drop;
+>    }
+>
+>    chain forward-filter {
+>      type filter hook forward priority filter; policy drop;
+>      log prefix "ip4-forward-filter:" drop;
+>    }
+>
+>    chain output-nat {
+>      type nat hook output priority srcnat; policy drop;
+>      log prefix "ip4-output-nat:" drop;
+>    }
+>    chain output-filter {
+>      type filter hook output priority filter; policy drop;
+>      log prefix "ip4-output-filter:" drop;
+>    }
+>    chain output-route {
+>      type route hook output priority mangle; policy drop;
+>      log prefix "ip4-output-route:" drop;
+>    }
+>
+>    chain postrouting-nat {
+>      type nat hook postrouting priority srcnat; policy drop;
+>      log prefix "ip4-postrouting-nat:" drop;
+>    }
+>    chain postrouting-filter {
+>      type filter hook postrouting priority filter; policy drop;
+>      log prefix "ip4-postrouting-filter:" drop;
+>    }
+> }
