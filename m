@@ -1,71 +1,104 @@
-Received: from mail.inliniac.net (static-27.netfusion.at [83.215.238.27])
+Received: from mail-10630.protonmail.ch (mail-10630.protonmail.ch [79.135.106.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77CCD182BC
-	for <netfilter@vger.kernel.org>; Sat,  8 Feb 2025 14:43:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.215.238.27
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4B5A243968
+	for <netfilter@vger.kernel.org>; Sat,  8 Feb 2025 20:26:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.135.106.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739025841; cv=none; b=KgeUkNgKphFJeo3LkQjgVyINMA0wzFcUP5g/7oFH75611HhFjKnftPD+xaTKzQNsnLjonozcSzh24oWv3XZoO1Ov5gx262/TIYnNr5Pc7Ve5VF5vwQrsO6A2gpe4stU96JlHTYzDyZeBSJQc8Fj80LiCInPwKBcYEdZHKATbhBw=
+	t=1739046379; cv=none; b=rmuvRERccBruo3ZckqVDF6EYJPqwKNgE2jy0n5L6bjKqD27ugL7xM2diAEwXhTmGBO+Gk89pfhB4owEOaQZu/a6AXrqiAgDwZ+nb+CBEAahK1vYC8Jpn0yRdoDG788oQ4XoznVMD62xAnd6lmHda0EoCxK3o22MEzPAGY5oNRUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739025841; c=relaxed/simple;
-	bh=1TGqqi04hZjX/Ef5Zo7alnb+k59uwmc7+S0sdNn7UiY=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=SK6NkWI9uKdWgMFrMzYJdW5HHfyKmgUNdoUFJfIilhNqYhZPgvNhiEDSiFiZpOTiFgK/Tszot5KOaKyPkl7oE89RT4PzLdxt5Sn6l+5zR2+g0pmSLv8JBRyaUxYN7No6QUH7inCa3Ac/FFVWtNT13xjy5aauEkncz/yX0Jkw+kA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inliniac.net; spf=pass smtp.mailfrom=inliniac.net; arc=none smtp.client-ip=83.215.238.27
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=inliniac.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inliniac.net
-Received: from [192.168.0.5] (82-169-178-200.fixed.kpn.net [82.169.178.200])
-	(Authenticated sender: victorlists)
-	by mail.inliniac.net (Postfix) with ESMTPSA id A60E4297
-	for <netfilter@vger.kernel.org>; Sat,  8 Feb 2025 15:36:51 +0100 (CET)
-Message-ID: <5f970dae-b21b-4837-9e96-955bedbdf69f@inliniac.net>
-Date: Sat, 8 Feb 2025 15:35:27 +0100
+	s=arc-20240116; t=1739046379; c=relaxed/simple;
+	bh=XIHU6zKa9+baZCOF4YIpLF6XnBG4OuhFPZvu7cwEP3I=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=m7UDnv+4PXK1GjTjPKC/xrsvsA56TRDUpo8f9fy9BzOb6ZCtSzWEzMA1WDmIvxS1Un+H3IhxQUs0BtZB7J8OvmNjk/QUzDOCtIR1o02EL+prBMr8jC2VMbAM26eDoye5zzA3R3bWBK0KrxkcWZpT1tf7YvFccSHI1A0rPne2Sl0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=yFG7hBn+; arc=none smtp.client-ip=79.135.106.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="yFG7hBn+"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+	s=protonmail3; t=1739046372; x=1739305572;
+	bh=XIHU6zKa9+baZCOF4YIpLF6XnBG4OuhFPZvu7cwEP3I=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
+	b=yFG7hBn+/d1RfbIxjPtj1kSZC4PWdoaBj9raWy6j9CcBA1ShlqUCJU7yc7FB3xXO1
+	 9uNaaeOD4hyH2xXUIJqircN1rwQgWJlSF1UbdZeguWVKTVC8TMgZIbgpfKHbE1JCoL
+	 qJml7lSSDK89qA/fNzbEHgsxiq9MA1CQmX0ITa18bupJFmnoxaRV8ne0fVpCeCXOFa
+	 Q8TWHnZCWOWKPGl9tL5PENq0gPkUYKSXvlcvRY/XlcfXAarNTAKxB8DwIthW9yXV/4
+	 niYbqESR/jhmcgDl2qkzh6aGv0Akhnhr1Fsr2Cj/yBAe422QHBrcje+RhQ+dVs1G9e
+	 jDPnPuQGcYJYw==
+Date: Sat, 08 Feb 2025 20:26:09 +0000
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Sunny73Cr <Sunny73Cr@protonmail.com>
+Cc: Florian Westphal <fw@strlen.de>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Subject: Re: Raw Payload Expressions - out of bounds write?
+Message-ID: <omRiDfO4yHw_nf-Xsk390UcpY_66yoc_oOELR6Fwu94Nr4QtjOT_1tcjVT_wOaaVW5QwqNRBvQonQbXXayhp1CFTAKEF3Qz0ToC7HenQBpk=@protonmail.com>
+In-Reply-To: <PVrkUQp56-Jj22U0UNcuDB2ECbRGvxlQdpV9wqJEScEZCv87qu5FdvjBKhhAzXkGv71nnXYmPI2TlxCo-dz_Mz-2Y52rrOVQLWvmPYm7cIA=@protonmail.com>
+References: <Bp_PH3aO9-d7-Av1SaQGtAgrvHaPwr0l5r_aR31_U8l5IvbSFaLJ1lXI3vFBV46Xb4IxK-tP-HkcSFS-2KCLyYfRibcIkioxjdem46U0IB8=@protonmail.com> <20250126135021.GB3073@breakpoint.cc> <R5drxaQptK9DK89Lt1TmFpDxo86ctD3Pu2WS4wEhXcOZq7yuVqJDxNIc2tZVIx1PJpF15g1AOJCW3gxNIPqlVH6ubbppDWQlzErAa4UP3UI=@protonmail.com> <20250128003706.GB29891@breakpoint.cc> <Z5jQgcbCXiLyPwV-@calendula> <PVrkUQp56-Jj22U0UNcuDB2ECbRGvxlQdpV9wqJEScEZCv87qu5FdvjBKhhAzXkGv71nnXYmPI2TlxCo-dz_Mz-2Y52rrOVQLWvmPYm7cIA=@protonmail.com>
+Feedback-ID: 13811339:user:proton
+X-Pm-Message-ID: 45692a112d3661b8a3bceb9b3ddd107d694e7506
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US, nl
-To: netfilter@vger.kernel.org
-From: Victor Julien <lists@inliniac.net>
-Subject: named counters vs flush ruleset
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+Hi,
 
-I'm working on finally supporting nftables in Vuurmuur.
+Apologies for my mistake in these threads. I think the title should read 'o=
+ut of bounds read'.
 
-In the iptables support, I have special rules per interface to get per 
-iface packets and bytes. Essentially my tool reads the iptables -vnL 
-output and parses all the things. When a user applies a ruleset change, 
-Vuurmuur reads the most current values, constructs a new input file to 
-`iptables-restore` and loads the rules. This works but is tedious, and 
-also lacks some precision as we are not counting the packets/bytes while 
-Vuurmuur is working.
+I noticed there may be a floating point error or another miscellaneous appr=
+oximation error when calculating the mask for raw payload expressions. It i=
+s somewhat related to this thread.
 
-In the nftables support, I'm more or less looking at the same logic. The 
-ruleset is build as a .nft file that is loaded with `nft -f`.
+using nft -d all (debug all); I found:
 
-Now I found the the named counter feature, and also the json output `nft 
--j list counters`. This combination seems perfect.
+inet filter output 5 4
+[ payload load 2b @ inner header + 6 =3D> reg 1 ]
+[ bitwise reg 1 =3D ( reg 1 & 0x0000c0ff ) ^ 0x00000000 ]
 
-I guess my main question is if we can make these counters persistent 
-somehow. As part of the ruleset reload, I issue a `flush ruleset`, which 
-also removes the counters.
+After careful consideration, I realised that here; '2b' indicates two bytes=
+, not two bits. I suggest it should read '2 Bytes'. Additionally, the "+ 6"=
+ section should really read as "+ 6 Bytes". "2B" or "6B" may get misread as=
+ 28, or 68; if the user makes a poor choice in font. Poor choice in font is=
+ not my concern, particularly; but fault-tolerant design is always nice.
 
-So can we make counters survive a `flush ruleset`, or is there a better 
-way to load a new ruleset?
+Anyhow, with the alterations to expression; I can then match it (2 bytes, o=
+ffset of 6 bytes) to the 'mangled' input of @ih,48,16
 
-Thanks!
-Victor
+> [ bitwise reg 1 =3D ( reg 1 & 0x0000c0ff ) ^ 0x00000000 ]
 
--- 
-----------------------------------------------
-Victor Julien
-https://www.inliniac.net/
-PGP: https://www.inliniac.net/victorjulien.asc
-----------------------------------------------
+Assuming that the mask is stored in a 32-bit integer field, the length of t=
+he string is fine. Otherwise, the mask of "0x0000c0ff" equates to 49,407 bi=
+ts.
+Since raw payload expression includes the starting position in payload expr=
+essions; it is really 49,408 bits to match.
+Via empirical calculation, the closest base 2 logarithm I can find for 49,4=
+07 (bits) is approximately ~15.5924570373.
+If the mask is intended to cover 16 bits; should it not equate to 65,535 bi=
+ts; or "0x0000ffff".
 
+Though, the intent was not to read and set the same value; rather, it was t=
+o redact 6 bits of data. Considering the intent of my input statement (@ih,=
+58,6); I think the mask should be ((2^16) - (2^6)); or 65,472 in decimal; o=
+r 0xfff9 in hexadecimal.
 
+This leaves us with an output statement of (little endian mask, as it seems=
+ is the case):
+
+@ih,48,16 set @ih,48,16 & 0xfff9
+
+The statement:
+
+> [ bitwise reg 1 =3D ( reg 1 & 0x0000c0ff ) ^ 0x00000000 ]
+
+Should then read:
+
+> [ bitwise reg 1 =3D ( reg 1 & 0x0000fff9 ) ^ 0x00000000 ]
+
+sunny
