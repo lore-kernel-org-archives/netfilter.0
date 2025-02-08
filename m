@@ -1,43 +1,55 @@
-Received: from mail-10630.protonmail.ch (mail-10630.protonmail.ch [79.135.106.30])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4B5A243968
-	for <netfilter@vger.kernel.org>; Sat,  8 Feb 2025 20:26:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.135.106.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E71B5244E83
+	for <netfilter@vger.kernel.org>; Sat,  8 Feb 2025 21:49:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739046379; cv=none; b=rmuvRERccBruo3ZckqVDF6EYJPqwKNgE2jy0n5L6bjKqD27ugL7xM2diAEwXhTmGBO+Gk89pfhB4owEOaQZu/a6AXrqiAgDwZ+nb+CBEAahK1vYC8Jpn0yRdoDG788oQ4XoznVMD62xAnd6lmHda0EoCxK3o22MEzPAGY5oNRUc=
+	t=1739051393; cv=none; b=YhKw+i7QZRQ93XZCwEQGTt/9WniHC3aaD7Dzcrfh+mPv9sJl+9GJ4QrX2yk2/qZt6/THY6z1IKyT/jROA/feqxu3CrKDImp/t8h5yBuvWl8sfnBUC9fgZmtwgqpwXQjf1hjvWAeXFC1XMzFJ+hjuKu+zSW/rdCGaMQijLZ7MGqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739046379; c=relaxed/simple;
-	bh=XIHU6zKa9+baZCOF4YIpLF6XnBG4OuhFPZvu7cwEP3I=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=m7UDnv+4PXK1GjTjPKC/xrsvsA56TRDUpo8f9fy9BzOb6ZCtSzWEzMA1WDmIvxS1Un+H3IhxQUs0BtZB7J8OvmNjk/QUzDOCtIR1o02EL+prBMr8jC2VMbAM26eDoye5zzA3R3bWBK0KrxkcWZpT1tf7YvFccSHI1A0rPne2Sl0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=yFG7hBn+; arc=none smtp.client-ip=79.135.106.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
+	s=arc-20240116; t=1739051393; c=relaxed/simple;
+	bh=/RPjGxIwTe8R4LlPA4yx31FHO9DmcwxA6k5CxQwDWnc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KYeKhAvhLHZIDsQ6jwqopQvAz6QJcMDOY91P/0UC5KQ0TatZ/juQ1E5QhN+waMZWNpx0m0mn6oPBSpspLpNXYjOVwTM6FyorDTt13CTaawkdL05zAgMlqMh5zl7xvas5JKJya4lup0Ia0u0OZG/T0Nx+kQK85oLma9hFN4MPNns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=XDNgHsLG; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=XDNgHsLG; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="yFG7hBn+"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1739046372; x=1739305572;
-	bh=XIHU6zKa9+baZCOF4YIpLF6XnBG4OuhFPZvu7cwEP3I=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
-	b=yFG7hBn+/d1RfbIxjPtj1kSZC4PWdoaBj9raWy6j9CcBA1ShlqUCJU7yc7FB3xXO1
-	 9uNaaeOD4hyH2xXUIJqircN1rwQgWJlSF1UbdZeguWVKTVC8TMgZIbgpfKHbE1JCoL
-	 qJml7lSSDK89qA/fNzbEHgsxiq9MA1CQmX0ITa18bupJFmnoxaRV8ne0fVpCeCXOFa
-	 Q8TWHnZCWOWKPGl9tL5PENq0gPkUYKSXvlcvRY/XlcfXAarNTAKxB8DwIthW9yXV/4
-	 niYbqESR/jhmcgDl2qkzh6aGv0Akhnhr1Fsr2Cj/yBAe422QHBrcje+RhQ+dVs1G9e
-	 jDPnPuQGcYJYw==
-Date: Sat, 08 Feb 2025 20:26:09 +0000
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-From: Sunny73Cr <Sunny73Cr@protonmail.com>
-Cc: Florian Westphal <fw@strlen.de>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Subject: Re: Raw Payload Expressions - out of bounds write?
-Message-ID: <omRiDfO4yHw_nf-Xsk390UcpY_66yoc_oOELR6Fwu94Nr4QtjOT_1tcjVT_wOaaVW5QwqNRBvQonQbXXayhp1CFTAKEF3Qz0ToC7HenQBpk=@protonmail.com>
-In-Reply-To: <PVrkUQp56-Jj22U0UNcuDB2ECbRGvxlQdpV9wqJEScEZCv87qu5FdvjBKhhAzXkGv71nnXYmPI2TlxCo-dz_Mz-2Y52rrOVQLWvmPYm7cIA=@protonmail.com>
-References: <Bp_PH3aO9-d7-Av1SaQGtAgrvHaPwr0l5r_aR31_U8l5IvbSFaLJ1lXI3vFBV46Xb4IxK-tP-HkcSFS-2KCLyYfRibcIkioxjdem46U0IB8=@protonmail.com> <20250126135021.GB3073@breakpoint.cc> <R5drxaQptK9DK89Lt1TmFpDxo86ctD3Pu2WS4wEhXcOZq7yuVqJDxNIc2tZVIx1PJpF15g1AOJCW3gxNIPqlVH6ubbppDWQlzErAa4UP3UI=@protonmail.com> <20250128003706.GB29891@breakpoint.cc> <Z5jQgcbCXiLyPwV-@calendula> <PVrkUQp56-Jj22U0UNcuDB2ECbRGvxlQdpV9wqJEScEZCv87qu5FdvjBKhhAzXkGv71nnXYmPI2TlxCo-dz_Mz-2Y52rrOVQLWvmPYm7cIA=@protonmail.com>
-Feedback-ID: 13811339:user:proton
-X-Pm-Message-ID: 45692a112d3661b8a3bceb9b3ddd107d694e7506
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="XDNgHsLG";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="XDNgHsLG"
+Received: by mail.netfilter.org (Postfix, from userid 109)
+	id 9FDDE60564; Sat,  8 Feb 2025 22:49:48 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1739051388;
+	bh=+8o2joxgaFPPGVi3zSEjCnJcmCJ1WQxkoUxwnEYgZSk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XDNgHsLGFS4o4YsXEQo3gI0Ru0dqGDi5KUAUZV9Mk73VwKNsNVE/97cVS20pu9/hY
+	 3EpG6H1qU1dGEq15ENPfiau7I2eq/QPtKAEO4V8ghu+k45GsfkVZG+IZ/uXtx53rt8
+	 h0XRt9VgEX7UhXn4hCpEbf4+Oi3TuIoCb56NKOOG1UOOvw+T/IP+hnPLBi1uy7EOj4
+	 Zag9uIeMJc/DKX5viDPL376V/LaN2TIv7Ej/75bps2pC5V3V0bg5v4R+cT30S1s/AY
+	 cc1fiJhGUF0nc6lRuy7ywm/AHgq4ugjpkWtFaxt/bQDQay5P6SVM0DNicPEIIVhh/V
+	 8dgx4BJLe1IzA==
+X-Spam-Level: 
+Received: from netfilter.org (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id 0992860564;
+	Sat,  8 Feb 2025 22:49:48 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1739051388;
+	bh=+8o2joxgaFPPGVi3zSEjCnJcmCJ1WQxkoUxwnEYgZSk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XDNgHsLGFS4o4YsXEQo3gI0Ru0dqGDi5KUAUZV9Mk73VwKNsNVE/97cVS20pu9/hY
+	 3EpG6H1qU1dGEq15ENPfiau7I2eq/QPtKAEO4V8ghu+k45GsfkVZG+IZ/uXtx53rt8
+	 h0XRt9VgEX7UhXn4hCpEbf4+Oi3TuIoCb56NKOOG1UOOvw+T/IP+hnPLBi1uy7EOj4
+	 Zag9uIeMJc/DKX5viDPL376V/LaN2TIv7Ej/75bps2pC5V3V0bg5v4R+cT30S1s/AY
+	 cc1fiJhGUF0nc6lRuy7ywm/AHgq4ugjpkWtFaxt/bQDQay5P6SVM0DNicPEIIVhh/V
+	 8dgx4BJLe1IzA==
+Date: Sat, 8 Feb 2025 22:49:45 +0100
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Victor Julien <lists@inliniac.net>
+Cc: netfilter@vger.kernel.org
+Subject: Re: named counters vs flush ruleset
+Message-ID: <Z6fRedYWO14e0l7e@calendula>
+References: <5f970dae-b21b-4837-9e96-955bedbdf69f@inliniac.net>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
@@ -45,60 +57,36 @@ List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+In-Reply-To: <5f970dae-b21b-4837-9e96-955bedbdf69f@inliniac.net>
 
-Hi,
+Hi Victor,
 
-Apologies for my mistake in these threads. I think the title should read 'o=
-ut of bounds read'.
+On Sat, Feb 08, 2025 at 03:35:27PM +0100, Victor Julien wrote:
+> Hi all,
+> 
+> I'm working on finally supporting nftables in Vuurmuur.
+> 
+> In the iptables support, I have special rules per interface to get per iface
+> packets and bytes. Essentially my tool reads the iptables -vnL output and
+> parses all the things. When a user applies a ruleset change, Vuurmuur reads
+> the most current values, constructs a new input file to `iptables-restore`
+> and loads the rules. This works but is tedious, and also lacks some
+> precision as we are not counting the packets/bytes while Vuurmuur is
+> working.
+> 
+> In the nftables support, I'm more or less looking at the same logic. The
+> ruleset is build as a .nft file that is loaded with `nft -f`.
+> 
+> Now I found the the named counter feature, and also the json output `nft -j
+> list counters`. This combination seems perfect.
+> 
+> I guess my main question is if we can make these counters persistent
+> somehow. As part of the ruleset reload, I issue a `flush ruleset`, which
+> also removes the counters.
+> 
+> So can we make counters survive a `flush ruleset`, or is there a better way
+> to load a new ruleset?
 
-I noticed there may be a floating point error or another miscellaneous appr=
-oximation error when calculating the mask for raw payload expressions. It i=
-s somewhat related to this thread.
-
-using nft -d all (debug all); I found:
-
-inet filter output 5 4
-[ payload load 2b @ inner header + 6 =3D> reg 1 ]
-[ bitwise reg 1 =3D ( reg 1 & 0x0000c0ff ) ^ 0x00000000 ]
-
-After careful consideration, I realised that here; '2b' indicates two bytes=
-, not two bits. I suggest it should read '2 Bytes'. Additionally, the "+ 6"=
- section should really read as "+ 6 Bytes". "2B" or "6B" may get misread as=
- 28, or 68; if the user makes a poor choice in font. Poor choice in font is=
- not my concern, particularly; but fault-tolerant design is always nice.
-
-Anyhow, with the alterations to expression; I can then match it (2 bytes, o=
-ffset of 6 bytes) to the 'mangled' input of @ih,48,16
-
-> [ bitwise reg 1 =3D ( reg 1 & 0x0000c0ff ) ^ 0x00000000 ]
-
-Assuming that the mask is stored in a 32-bit integer field, the length of t=
-he string is fine. Otherwise, the mask of "0x0000c0ff" equates to 49,407 bi=
-ts.
-Since raw payload expression includes the starting position in payload expr=
-essions; it is really 49,408 bits to match.
-Via empirical calculation, the closest base 2 logarithm I can find for 49,4=
-07 (bits) is approximately ~15.5924570373.
-If the mask is intended to cover 16 bits; should it not equate to 65,535 bi=
-ts; or "0x0000ffff".
-
-Though, the intent was not to read and set the same value; rather, it was t=
-o redact 6 bits of data. Considering the intent of my input statement (@ih,=
-58,6); I think the mask should be ((2^16) - (2^6)); or 65,472 in decimal; o=
-r 0xfff9 in hexadecimal.
-
-This leaves us with an output statement of (little endian mask, as it seems=
- is the case):
-
-@ih,48,16 set @ih,48,16 & 0xfff9
-
-The statement:
-
-> [ bitwise reg 1 =3D ( reg 1 & 0x0000c0ff ) ^ 0x00000000 ]
-
-Should then read:
-
-> [ bitwise reg 1 =3D ( reg 1 & 0x0000fff9 ) ^ 0x00000000 ]
-
-sunny
+Would it work for you to destroy all other existing objects (not the
+table and counters) instead?
