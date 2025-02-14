@@ -1,90 +1,117 @@
-Received: from cerberus.halldom.com (cerberus.halldom.com [79.135.97.241])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f46.google.com (mail-oa1-f46.google.com [209.85.160.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D24C21946AA
-	for <netfilter@vger.kernel.org>; Fri, 14 Feb 2025 19:18:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.135.97.241
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F54C1922DE
+	for <netfilter@vger.kernel.org>; Fri, 14 Feb 2025 23:57:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1739560706; cv=none; b=rT9c1FBnCCaropaFt+XEytV74TIky8aaeaOWUzeTjHBvCzoBPB0v9Cl+CmQsS36QQ3sfOkPbphRqTXvLPJYdsdV1BiU8j0r1cwug1DPlO9Z/tX6H4JDp1XzUcqdG2LoDPnboSpSHeQZnAWyOSkPw3qjqZc2H/IL8AXuV3FWyFe8=
+	t=1739577471; cv=none; b=Mvx38dCoGfngzdEIuepYge/J129wL99s2H3Vnn/eGA7BuJatcHGrAYRARnvOyMvmiIBCZ+AmPgHytyHVNVioJuN+HN8+kLBW0Ao8gCwuiHp85hKVxajfGROyu4UDly15OAf5zh6LQVpG+BOhSx0NSWf3gvcnEU3lTKhtXoP8K58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1739560706; c=relaxed/simple;
-	bh=k20lexgIQvmrJqj+u3TxqWaChJ34q/xrOb1SO/OsEy0=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=ks8f9CNnJiOWK5YENB3FWAgKuWGdKaRbXI3vtMoobYxIcIA9UwhXSbx4AtkQTdnBc687AZvwlbBtguCn5u0Vu6wnnuTIYR0voRZzIR+HeslQJXqGjMY1SWilhoNEoVxjA68hB021/srhZBGsxeRQFw5oH9B8EM8ohMbvKApe8xw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gmch.uk; spf=pass smtp.mailfrom=gmch.uk; dkim=pass (2048-bit key) header.d=halldom.com header.i=@halldom.com header.b=hZxTSICy; arc=none smtp.client-ip=79.135.97.241
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gmch.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmch.uk
+	s=arc-20240116; t=1739577471; c=relaxed/simple;
+	bh=7s+EQst/5k259m+/wIfloI8YBqrGIvRjznf55gVHXzA=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=RAaKHWRMMq124eqtiOpen1xcZ1EMIEfB5YiAXI8zfFo1G9fBKhsLSITVKxxxMSL1Psqek+Z88RPm4mdyhxgVLi6pSQgjvhRIU1Y6pwSduTcL2EmYLIgmA+f5cA73fgPfNtYe/WIG+WyJQUqWUiJuvWPmAmfv6O2LRGAHbylXANI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rsraz4Nj; arc=none smtp.client-ip=209.85.160.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=halldom.com header.i=@halldom.com header.b="hZxTSICy"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=halldom.com
-	; s=key20240618; h=Content-Transfer-Encoding:Content-Type:Subject:From:To:
-	MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=XL+YUZK2m5/3Q36XOxJ2HRhg3dkok/qsdikR54HE0Dk=; b=hZxTSICy+LaNvx/nEVUx4RG8iD
-	lfTZmde8kMTZSfbuEsgxnsKgb1yhc283MOddWEsAKJVlvGrxQpT4Hh2R75Vx8YqVDXcJISAPBoVCu
-	ncjtoC6Fg4+Bc3VJ6KRopuNvST/l449Gnnx8T2AH32Mr7CsoHMDwAf77WSQkdmFyquCFbtMFRoy5N
-	qq0IRLTV22QbzC5CNI3vExeLDK581O4Ub+PgczCkTcGKEnwZlHIbQ7LrhYqx99/SgKocz421eHtv2
-	GklN++4iFxkjYhxvoJ0ucD+MglLBqIe2XSMptNm1683pgdSThbXwJdoXEFWE0YLji5bNGtELTruIP
-	Xj5BO+Og==;
-Received: from ceres.halldom.com ([79.135.97.244]:63225)
-	by cerberus.halldom.com with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
-	(Exim 4.98)
-	(envelope-from <netfilter@gmch.uk>)
-	id 1tj0jZ-00000000NIy-0PKk
-	for netfilter@vger.kernel.org;
-	Fri, 14 Feb 2025 18:48:17 +0000
-Message-ID: <79155174-f4f8-4368-8fde-cbab6b30091e@gmch.uk>
-Date: Fri, 14 Feb 2025 18:48:16 +0000
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rsraz4Nj"
+Received: by mail-oa1-f46.google.com with SMTP id 586e51a60fabf-2b86794e3abso1248354fac.0
+        for <netfilter@vger.kernel.org>; Fri, 14 Feb 2025 15:57:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1739577469; x=1740182269; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=sXLA7wiOsQvEbKNG+yQHBS+SaKGEa8RFBKrCSFjcj5I=;
+        b=Rsraz4NjXmqDrDMDF8+YgAhQ5ytqeEWPxDVf3S4EPgqAyVpkinHnAiX5PXDQ2ABSvk
+         38QRTyXfqZRZnlbtiUU7Qg2AG0jcyL3T1Yg7o5Zqvia8TaXqsLSxv3B0/NyCpYWvrrUX
+         ESwWtNs9MOM5V8pQl+Wwjhc6NZ/MXpPS1trdjkSg7exuMkh5CtdgRCwYhxDrzto8g8t+
+         lA50WMk58AyhB8RJ49WpJCyCuGFwL3FCqgpny/xI6bfB7DC0mojVj54fnDFu7C50JF+O
+         Y6reazOEA47jrMAOOfMo4ifciFpLN0VUOjoP+nRWBWl0RTVGfKxSLGyYw+KeAq8QOqL2
+         k/+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1739577469; x=1740182269;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=sXLA7wiOsQvEbKNG+yQHBS+SaKGEa8RFBKrCSFjcj5I=;
+        b=tfRtBvL2IF8qqDiwzGh9zuDvpm8Vrodl/QgpIMo+Ecj2G39/VJcAPUUfjot5vgcq3g
+         jRxRErsaNm+FTE3/ywawINLGYbRU9uO/cnKohJ/fAnL6KxLvNNnbegs0KTT0L5GFF3ZT
+         tFkKmcONUCXjfORoi8O+SPTgzIToVmkcLfovZxlWML7K65VhqLamNAW2Mr0DHUiCWnbU
+         mnT2DIoIa7qhao02jxmAFz3U/PBun9zg3HPaF3zLsbSaPYtJGpzNeT6j7WSpTjSJ15TI
+         m9U5xRB3mWg0Mh5dZqDwuzkWJgusF0bey/e2kPQ5fhkri4YhPgrMC1ySiHS/UlIxcxhH
+         OvHg==
+X-Gm-Message-State: AOJu0Yxo17MgZ+Brx0EXkQF+H2VWXMi/lLHbHVSFSXCeDS6eOZlLNDff
+	haFRvpfGHgoIqiZcnYAorRzR+dIWLWk+Lr+ZJ1nMcukhhxkz/yoUi+avIHUDRQkK0z7SHbHN96A
+	yJHn3MeBfZi0qh1iuVlWaBifuroeU3UtwmYE=
+X-Gm-Gg: ASbGncuQai5lJuSY0BqOFzvSlZHnqnFZanCMerag5WMEuoABxjayqYwrA/1fRR0eirj
+	56sqef05Dw43RP9Iv8NONR+tXR9WftSmfAlvBn0pu+zPpSarncFmQXUh/pd9YAZ0z735xVn8=
+X-Google-Smtp-Source: AGHT+IH7bEEvePBaWSQosfexXabFRRKt6bRfnvLS87WuI24wQQgthEnuWfDhaL9UQBG8mhQ11SrJNkZ4S7ukFd24K6U=
+X-Received: by 2002:a05:6871:297:b0:2bc:6933:4a9f with SMTP id
+ 586e51a60fabf-2bc99d3fc2bmr585571fac.25.1739577468936; Fri, 14 Feb 2025
+ 15:57:48 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-GB
+From: Alon Bar-Lev <alon.barlev@gmail.com>
+Date: Sat, 15 Feb 2025 01:57:33 +0200
+X-Gm-Features: AWEUYZmnJWQdvONaLY83LYDKPVxg09mnSJYJg81SAKF3Mda4j_hKRoH6mQD7jr8
+Message-ID: <CAOazyz1wYSHCYt+nk7hu2fmiW+GRRMMX0sejAa-31xH_VeWvXA@mail.gmail.com>
+Subject: Static bidirectional static NAT for duplicate IP devices using iptables
 To: netfilter@vger.kernel.org
-From: Chris Hall <netfilter@gmch.uk>
-Subject: NAT and ICMP
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="UTF-8"
 
+Hello,
 
-I have a firewall/router using nft.  It connects to the outside world 
-with a single globally routeable IP address ('Real-IP').
+I am sure this was addressed before, I tried to find relevant
+information but could not. I appreciate any assistance.
 
-I want to use the Real-IP both for NAT and for the firewall/router itself.
+Constraints
 
-My understanding is that for tcp and udp:
+* Two devices with the same IP, this cannot be changed.
+* Devices do not have a default router, they must communicate with
+applications on the same IP network.
+* Host applications should access the two devices using UDP and TCP
+based protocols.
 
-   * for private source IPs, I can configure SNAT to use one port
-     range, say 16384:65535.
+Network Solution
 
-   * and I can, elsewhere, configure the firewall/router to use a
-     different range, say 0.16383, with no NAT required (inbound
-     or outbound).
+* To avoid address conflict, each device resides on a different VLAN.
 
-But for ICMP queries, I cannot find equivalent settings to manage the 
-"Query Identifier".
+APPLICATION -->
+Kernel -->
+* v10@eth0 - interface on VLAN=10
+* v11@eth0 - interface on VLAN=11
 
-It has occurred to me that the trick might be to SNAT all outbound ICMP 
-queries, something like:
+Switch -->
+* Port1 VLAN=10
+  * DEVICE1 [10.0.0.10]
+* Port2 VLAN=11
+  * DEVICE2 [10.0.0.10]
 
-   .... ip protocol ICMP ip saddr 203.0.113.1 snat to 203.0.113.1
-   .... ip protocol ICMP ip saddr 10.0.0.0/8  snat to 203.0.113.1
+Diagram [In fixed width font]:
+---
+,-----------+--------.       ,----------+-+--------.
+|           |v10@eth0|.......|          |1|VLAN=10 |---DEVICE1 [10.0.0.10]
+|APPLICATION|    eth0|-------|   Switch +-+--------+
+|           |v11@eth0|.......|          |2|VLAN=11 |---DEVICE2 [10.0.0.10]
+`-----------+--------'       `----------+-+--------'
+---
 
-where 203.0.113.1 is the Real-IP. I'm guessing NATing the source address 
-to itself is OK... yes ?
+I would like to have a bidirectional static NAT so that per
+application point of view:
+* DEVICE1 will be 192.168.110.10
+* DEVICE2 will be 192.168.111.10
+And per device point of view:
+* APPLICATION will be 10.0.0.11
 
-------------------------------------------------------------
+I thought of having v10@eth0 address 192.168.110.1 and v11@eth0
+address 192.168.111.0, however, I am unsure how to set up the
+bidirectional translation to the device virtual address using SNAT
+without creating duplicate addresses.
 
-Separately: where should I look to find the degree of conformance to the 
-various "NAT Behavioural Requirements": RFCs 4787, 5382, 5508 and 7857 ?
+Any assistance will be appreciated.
 
-------------------------------------------------------------
-
-Thanks,
-
-Chris
-
+Regards,
+Alon Bar-Lev
