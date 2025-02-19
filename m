@@ -1,109 +1,105 @@
-Received: from mail-40131.protonmail.ch (mail-40131.protonmail.ch [185.70.40.131])
+Received: from azazel.net (taras.nevrast.org [35.176.194.208])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A90AC1DC05F
-	for <netfilter@vger.kernel.org>; Wed, 19 Feb 2025 23:32:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.40.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F0AF1B87EB
+	for <netfilter@vger.kernel.org>; Wed, 19 Feb 2025 23:37:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.176.194.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740007922; cv=none; b=ekOlJcR6pg/qO6p6XD3k8hv1fhhiawMn7mupPPawW9tlVRWvvlD4aXHQ3Ii6OV1xWQWh4A/YO98QTOFeoqRJwlxBuUJCG+Rutz8/oaAfB4QS/3pGvcnmk//NP/2LRRB8FqpormZYrKdisqSA2Z+R23mbUzrJHIkkk7qsZV0Fvq4=
+	t=1740008242; cv=none; b=arV9nJTdP/OE/nTcjfr8nP7pOzZ1WQkswVDms60BNFPzWdtIXuBsva3fcxZICtPDHRdLxlxCjZ/wxnKPbrn3pjMb18IebOwp//TbaRHs9SsOx8VaftMMPbMy0Ol7HGF46WbwbrVffApuXZMPhA2yZIrh3onAmBA0q3kP6K+a8bE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740007922; c=relaxed/simple;
-	bh=gJvC4BMl8hueBCa0gZtLdj3BZsMIAt25ONc90OhDfLE=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cq5RT+j66EvRuiJ68vbd3kHOab/WQ1IHVjYG8Lcp+FQeLOiebGjMcyLQygvL9rccetBNrg3ggbzdiisOMRoQ/t8VeRhSQ3xEmbnDBlY354wLqNANGzAWnnsU4vyXcLc+EbUDq2Z8kxADY9CB4axmZXdpqZsg84aArqggi5WxF1c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=E/UkjOMo; arc=none smtp.client-ip=185.70.40.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
+	s=arc-20240116; t=1740008242; c=relaxed/simple;
+	bh=E4qjImXgTnQDkwN5+GXcn0hmfpvy6ztPIHfg5APNj70=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qhu4ph2g9NzFPxvAyEV60AErpzZP4wSv8rLa1RC55uouL/wOPKNc3++kHZxmFRQZqJzCRA9JsMorIAgQozTc28VmRqfCxtt9GFmN4NLpvnxwMsBXtEoLZ4Nz4YrVt4gjjyWL7RNZLefV2mig6Svwob+UDyfuS20+io71P8R1nUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net; spf=pass smtp.mailfrom=azazel.net; dkim=pass (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b=dPjET3GG; arc=none smtp.client-ip=35.176.194.208
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=azazel.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="E/UkjOMo"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1740007912; x=1740267112;
-	bh=Rcb8ZQMPobmd6x2Qrttjjd3n51zh7+7nK+vTGGWAUvQ=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
-	b=E/UkjOMoT1RN9tiaBVUotvVrhOd51wPoAlsK3Mja50O0l+Ludrq+YcuXDR3vxH5o/
-	 0BY2FYWJOUVqpex2mgchb36ePPgqx4iw+CmjHZ+Y//7Rm5hapJpoeGideT4ZT4xNw1
-	 KvpusQEC07AnRBdoMIYdHQuG1NUkcIGMx41ePCmhkf3kwqjKoKzfSJoh9unRTlbcQg
-	 jG8jg8GAeF5HymbXif4E/lBiTrjMsk8ixeUDbdQRu1M3xt9ncyRfX6kfdUHbahDTsg
-	 h7G4FbxhTbRxMYeNKrC4LiNWUKbAkyzTntee/PxZ08+bSw1hbCWLB4/t6UjmsTjbaa
-	 IXRlLQWu0aeaA==
-Date: Wed, 19 Feb 2025 23:31:49 +0000
-To: Chris Hall <netfilter@gmch.uk>
-From: Sunny73Cr <Sunny73Cr@protonmail.com>
-Cc: netfilter@vger.kernel.org
-Subject: Re: NAT and ICMP
-Message-ID: <4hsquyHJcCy4nfOS75I-ZTDKSl8H5iO2rcJKyfAAuexJ7Kakp2TR4Z9UK0DYtTHmPmOLNKO7OKAFKw9X46HC9Y5Juh8NK-4A9zKnfjajs1s=@protonmail.com>
-In-Reply-To: <79155174-f4f8-4368-8fde-cbab6b30091e@gmch.uk>
-References: <79155174-f4f8-4368-8fde-cbab6b30091e@gmch.uk>
-Feedback-ID: 13811339:user:proton
-X-Pm-Message-ID: 812676f4a5e27a2db014d2a8c98f0575741533a7
+	dkim=pass (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="dPjET3GG"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
+	s=20220717; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=6Aw3HlEstLrp62bJH1sJyI/DfdkCbB6x5JL9PJs5yO4=; b=dPjET3GGSFcP7SgZeYdsn+lPxW
+	LbL6O4ZbsavUphycvtWAxhmiwnxKc9VaMPRW2YEGiOu0m1Gr9z78oZuvJCBQhVJU7pr3RxN2VBBZ5
+	+XczRhn6QTGY6jgnApUvWtV4HzkJwqEkQXu5OFZd4UBThcPoed3jJklC+mdQs4Yk/vnZUxXl3PUc+
+	+o0p9h3yk5+2qwPiHlgMynUmgox6CcFeW5IZspP6a4Pr7BKT8cMUGOaoyUF5YMcYykkBTa5iZ0Vpq
+	4nVGdBY6I1lHhKyM3Oj0Og3XqsclRc25uYi8BjflcQA5qC4xpIIXrg54zgcA07FsoVWhZhgWe8q5t
+	2D4lCrFQ==;
+Received: from celephais.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:3c21:9cff:fe2f:35f] helo=celephais.dreamlands)
+	by taras.nevrast.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <jeremy@azazel.net>)
+	id 1tktAF-00D8Ay-0p;
+	Wed, 19 Feb 2025 23:07:35 +0000
+Date: Wed, 19 Feb 2025 23:07:34 +0000
+From: Jeremy Sowden <jeremy@azazel.net>
+To: Slavko <linux@slavino.sk>
+Cc: Netfilter <netfilter@vger.kernel.org>
+Subject: Re: Cannot browse SQL files in ulog2 git
+Message-ID: <20250219230734.GB489148@celephais.dreamlands>
+References: <468BFBD9-371E-46E5-9BEC-018B8C3F5D11@slavino.sk>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="KwIWAuozBXooUT5G"
+Content-Disposition: inline
+In-Reply-To: <468BFBD9-371E-46E5-9BEC-018B8C3F5D11@slavino.sk>
+X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:3c21:9cff:fe2f:35f
+X-SA-Exim-Mail-From: jeremy@azazel.net
+X-SA-Exim-Scanned: No (on taras.nevrast.org); SAEximRunCond expanded to false
 
-Hi,
 
-> ...configure the firewall/router to use a different range
+--KwIWAuozBXooUT5G
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-You do not need to allocate a different range, per se; the port selection a=
-lgorithm of the kernel will only use a port if it is not already in use.
-
-For LAN to WAN forwarded connections; you should SNAT the local port of mos=
-t requests to the range 49152-65535, and the address to an available or app=
-ropriate 'public IP' (appears to be 203.0.113.1). Requirements may be diffe=
-rent as defined by the network administrator for your LAN or a MAN/Intranet=
-.
-
-Refer to IANA Service Name and Transport Protocol Port Number Registry for =
-a description of ephemeral/private/dynamic ports; and why you may wish to a=
-void the 'System' and 'User' port range for local ports. There are exceptio=
-ns: NTP is static 123<->123; do not blindly NAT everything.
-
-> ICMP "Query Identifier"
-
-May you explain this one in more detail? I'm unfamiliar with an ICMP Query =
-Identifier.
-
-> SNAT all outbound ICMP queries, something like:
+On 2025-02-15, at 14:57:21 +0000, Slavko wrote:
+> i recently play with SQL in ulog2, it works, but i want to
+> read recent SQL examples in doc directory in web browser,
+> but i got 403 response, the same response provides the
+> wget tool::
 >
->  .... ip protocol ICMP ip saddr 203.0.113.1 snat to 203.0.113.1
+>     wget -qSO- https://git.netfilter.org/ulogd2/plain/doc/mysql-ulogd2.sql
+>     Date: Sat, 15 Feb 2025 14:48:34 GMT
+>     ...
+>
+> The Makefile in this dir is readable...
+>
+> Please, is it really blocked or by some mistake?
 
-This SNAT is not neccessary and will only load the router for not much gain=
-. It may be neccesary if you were attempting to alter the port: though, if =
-you wish for the router to use a different port range across the board; you=
- can simply change the "net.ipv4.ip_local_port_range" via `# sysctl -w net.=
-ipv4.ip_local_port_range=3D"low high"` where low and high are the lower and=
- upper bounds of the port range.
+Confirmed.  I get 403's for all the SQL files in that directory.  At a
+guess, mod_security is being overzealous.  If you use git to clone the
+repo, you will be able to read the SQL.
 
-To adhere to IANA recommendations:
+J.
 
-`sudo sysctl -w net.ipv4.ip_local_port_range=3D"49152 65535"`
-or
-`su -l root && sysctl -w net.ipv4.ip_local_port_range=3D"49152 65535"`
-or
-something that adheres to your SELinux policy.
+--KwIWAuozBXooUT5G
+Content-Type: application/pgp-signature; name="signature.asc"
 
-I am unsure of how to make these edits persistent (they revert after a rebo=
-ot with no further interaction); you may need to recompile the kernel to do=
- so. Looks like `man sysctl` mentions `/etc/sysctl.d/*.conf` files: these m=
-ay be of use also.
+-----BEGIN PGP SIGNATURE-----
 
-As for:
+wsG7BAABCgBvBYJntmQlCRAphqwKvfEEDUcUAAAAAAAeACBzYWx0QG5vdGF0aW9u
+cy5zZXF1b2lhLXBncC5vcmd91PQhO8Rng+bYpAzO99fPJCxR7PCo9l/3WHlEqLNX
+ThYhBGwdtFNj70A3vVbVFymGrAq98QQNAAAs+g/+PlMiv6HMcFuOPMUOhBidZsdl
+U/dtASvxmAQ7cyx51ZcB0sQPREQpA+f9ra3/Rt/X+HSDJTRvkXncZ3/lAMCn/k9t
+wef02iB5Jtww6MOHCuqYdn0SkGEUckB8inm4cKdYq3Fs1Nfm5a3Sj0keJpYLkizM
+JQaS0/GEP8LKDCaph3jv1etDUM27IUw94b1jM6xV9lW+9k50L4kjR1XBfCkjINY5
+fobKW+WpMMvvpobxiVt7wWQSMmNeNlJs20m8d9ZJwqA3g9GEDf+Kb40EP2w/ihLX
+mGGXieOZcQsIiR5Arg+FvQI30GOSg0VoWTZk2366bffuSsyEuJTOiIqD7wzhveXv
+BeR+LERZvRlZZY/aMbUkZ+opAy8Rsty6wMYW2LnJftPc2p86ufzqWis7scUDtGja
+2vVqinBngOauS45BqjakxB2yba5mamT8LBb1jBIW8HJcSGmNNsfn8cwjlLxHYGCr
+9eZJ+6NZegNO2+GOL/TMCXGsnO8sq2N4AZpldfsw3uk5aczZriH7H767Vlytfhj9
+m+Lo12k8h6yJMSYKx82YR47u5QYJ2yTQyOCUf2gVyw5eMujdewy1du95sMW1tOpk
+c+Ce3x9DAzxFVHdtF7fezWXiHYUJSX3eCxMH9x3knrjIlXjjZx0IE8NSpdsKs+Y/
+hfkhtswqwQdy4vgKXfE=
+=u1tz
+-----END PGP SIGNATURE-----
 
-> where should I look to find the degree of conformance to the various "NAT=
- Behavioural Requirements"...
-
-I am unsure. I am hoping for "Address and Port-Dependent Mapping". I believ=
-e the best way to check is to make some connections in a test environment a=
-nd observe tshark / wireshark logs. If you were looking for a 'NAT Connecti=
-on State' table; I am unsure. You could browse the likes of VyOS source cod=
-e (I think it is available!). If you can't use tshark / wireshark, try the =
-TCP and UDP tables in `/net/tcp` and `/net/udp`.
-
-sunny
+--KwIWAuozBXooUT5G--
