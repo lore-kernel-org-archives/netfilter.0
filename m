@@ -1,94 +1,83 @@
-Received: from a3i686.smtp2go.com (a3i686.smtp2go.com [203.31.38.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9376A2116F5
-	for <netfilter@vger.kernel.org>; Fri, 21 Feb 2025 15:56:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.31.38.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 710741D5AA1
+	for <netfilter@vger.kernel.org>; Fri, 21 Feb 2025 17:13:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740153365; cv=none; b=MZOmCgQHDhhIBq7tyMPk/vyqFqJN7MRj0LXhuP/B4ISNSG8rmlEzh+wrRnkxYIMXqVih+zNR17VckmzkTmepqMlrWFlgxh6DWkJwwAT18/hA70VVl4ZZBWmzG3LVfAtkf/BRZ54LoC6/l6EA45dwvOUVPrugJ4GlqJek4NE+fno=
+	t=1740158007; cv=none; b=jcMnMFi0R3kt3NfZZ2+U6m1tCl2ZBxzYehQrdzWHFpk7+o4KWXlvntc94T0QZmO7abvdUBtCyLVOuGnaNB4bFxmyyXroSZRT1dl2wFOkWOwyJD5lYHBnrDOCtySybJnQwC/FhZyqwtiMWoYB/fkvRStlmAbootQkq/mDWdMuknw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740153365; c=relaxed/simple;
-	bh=iS0ZdQSaoZjKa9Ce4jzj7mPf1SSCsha1y81XTZqJb5c=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=HjiHrGkPxmR/SV3c78V5hKcT1/YaIbNtqJzmL3MUGmCdTFEPrfFmvGlX2KVIFFXy68ZnN6lx5ODmXNb5TVmNHCjDlujh7XuszrDU+YUx6Xd4kENAsE4vZnsxOTA+OMkSUzxt19i0mWoTl56Xibun7EQnb1A1hXRnRtvNPYj8HzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=return.smtpcorp.com; dkim=pass (2048-bit key) header.d=smtpcorp.com header.i=@smtpcorp.com header.b=i6ljwrZh; arc=none smtp.client-ip=203.31.38.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=return.smtpcorp.com
+	s=arc-20240116; t=1740158007; c=relaxed/simple;
+	bh=VCn8COR3rsTCrIRcSDvtVszMvpPYS3sd2oizWjjs15Y=;
+	h=Date:From:To:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=Rsogdcr10805epoVNb4xZB6eNErVdQ5nEU4oUIR4jttnWC/PPgZUxskDPrnRkuZM/gU9S2nvh8nqxvMKKoqpb+sjrQJRwsfnk2X5ZTuqoWoSy+JFCHz8MX+/RWrALQxonX37mS6GaDTIU4Io6cDhkzjget0yVnYJNKSZREOq5Ws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=AlopihL6; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=iGJUYiaV; arc=none smtp.client-ip=185.25.250.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=smtpcorp.com header.i=@smtpcorp.com header.b="i6ljwrZh"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=smtpcorp.com;
- i=@smtpcorp.com; q=dns/txt; s=a1-4; t=1740152455; h=feedback-id :
- x-smtpcorp-track : date : message-id : to : subject : from : reply-to
- : sender : list-unsubscribe : list-unsubscribe-post;
- bh=71w/nqPVOrDSMYHfmCQ5aPF8J1lblbHKY0M3Ij8157s=;
- b=i6ljwrZhBo4Z9163DaxMsSXeL+z6N2Vlv+ig8/TAjkAVbe2Hbi8zYNiw9gcE3KOhPuulQ
- wFEFBTUYIquUe5n2Pv33/H12JF1b12YOZrdFY2Si9+YsC5UqSGGlRFTI+gSIuZvUwlqWO30
- hpEjvHdRfBNHRrZcAcbRjggOYJvUzovaKA75aS+CFpmyukDFCljXu9/UhEi3wviNn3F2WQo
- MU1mphDngRNvzvUm0cPDXxlAtIQ1uy9gflN2RWAkL3M8eTUo6fAQgBERn/6fHTI4tNwGyMW
- QhS0c3CfN4UUekjNMn/96viDpo7V66UKKblfnVDqFg13idO5VveDlFFlvUsA==
-Received: from [10.188.239.178] (helo=stodi.digitalkingdom.org)
-	by smtpcorp.com with esmtpsa (TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.97.1-S2G)
-	(envelope-from <robinleepowell@gmail.com>)
-	id 1tlV92-4o5NDgriJmh-tBOf
+	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="AlopihL6";
+	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="iGJUYiaV"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
+	s=r2025; h=Content-Type:MIME-Version:Message-ID:References:In-Reply-To:
+	Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:
+	Content-Type:Message-Id:In-Reply-To:References;
+	bh=W6ZqQMqEXAcxuhYU8+uvWGsekATcXF8hP4EFK+VhXZI=; t=1740158002; x=1741367602; 
+	b=AlopihL6PMRQZZHl8r53nOt5WiR8QuX+MF39V/1KWP1sSnsghGOHHlB3SSy26O09KOs5RkYwbSK
+	PXoCMVQSS0KhfNSYeueoUqh7B8hNqWOhU+8xn2eA7RVwyTnPWGihdBx0qEHPgttlzIOU+NG1Khq/0
+	p1WmK7f6XM/GtDDgCDU=;
+DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=slavino.sk; s=e2025; h=Content-Type:MIME-Version:Message-ID:References:
+	In-Reply-To:Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:
+	MIME-Version:Content-Type:Message-Id:In-Reply-To:References;
+	bh=W6ZqQMqEXAcxuhYU8+uvWGsekATcXF8hP4EFK+VhXZI=; t=1740158002; x=1741367602; 
+	b=iGJUYiaV8BvUAuUsDJmtbgZm26/6EIzuEabOZapd2UxkUr+jYxY8K+E7mJM2OL6ukJ2Q8NUORgo
+	q/gGPPD3gAw==;
+Received: from dovex.skk ([192.168.10.12])
+	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <linux@slavino.sk>)
+	id 1tlWaP-0013cJ-1h
 	for netfilter@vger.kernel.org;
-	Fri, 21 Feb 2025 15:40:53 +0000
-Received: from rlpowell by stodi.digitalkingdom.org with local (Exim 4.98)
-	(envelope-from <robinleepowell@gmail.com>)
-	id 1tlV91-00000003NYw-2qtS
-	for netfilter@vger.kernel.org;
-	Fri, 21 Feb 2025 07:40:51 -0800
-Date: Fri, 21 Feb 2025 07:40:51 -0800
-From: robinleepowell@gmail.com
+	Fri, 21 Feb 2025 18:13:13 +0100
+Date: Fri, 21 Feb 2025 17:13:12 +0000
+From: Slavko <linux@slavino.sk>
 To: netfilter@vger.kernel.org
-Subject: What is *supposed* to happen with automated nftables accept rules?
-Message-ID: <Z7ieg3BGT2gxXqP3@stodi.digitalkingdom.org>
+Subject: =?US-ASCII?Q?Re=3A_What_is_*supposed*_to_happen_wi?=
+ =?US-ASCII?Q?th_automated_nftables_accept_rules=3F?=
+In-Reply-To: <Z7ieg3BGT2gxXqP3@stodi.digitalkingdom.org>
+References: <Z7ieg3BGT2gxXqP3@stodi.digitalkingdom.org>
+Message-ID: <03148B08-C3E7-493C-AC87-8A011BF5D5BF@slavino.sk>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Report-Abuse: Please forward a copy of this message, including all headers, to <abuse-report@smtp2go.com>
-Feedback-ID: 555302m:555302aHyVB35:555302sel_H8RWRL
-X-smtpcorp-track: ZDphU5IBmres.6O9wDkOxNcHp.nGTxiAbU8CK
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-So I'm working with a libvirt issue that partly turned out, after
-many hours, to be "libvirt is adding rules to make its VMs work but
-it can't override my default reject in my main nftables rule set so
-nothing works for the VMs".
+Hi,
 
-There are many many posts with libvirt specifically about problems
-like this with nftables.  I assume similar things happen with docker
-and anything else that needs to be like "yeah I know you want to
-reject traffic but this system I'm managing needs to work".
+On 21=2E febru=C3=A1ra 2025 15:40:51 UTC, robinleepowell@gmail=2Ecom wrote=
+:
 
-The "problem" is that I have "reject with icmpx type
-port-unreachable" in my INPUT chain.  Which, by the way, I got
-straight from /etc/nftables/main.nft in the nftables RPM on Fedora
-41 (which is what I am running).  30 years of sysadminning leads me
-to believe that default-deny anything that isn't explicitely
-accepted is the correct move.  :)
+>So my question is, what *should* happen here?  As far as I can tell,
+>there is absolutely nothing the libvirt tooling can do to override
+>my reject=2E  I can't jump between tables so I can't do like "jump
+>libvert_inp" in my chain=2E  What's the right move?  Options I've
+>thought of; I'm hoping there's something better:
 
-So my question is, what *should* happen here?  As far as I can tell,
-there is absolutely nothing the libvirt tooling can do to override
-my reject.  I can't jump between tables so I can't do like "jump
-libvert_inp" in my chain.  What's the right move?  Options I've
-thought of; I'm hoping there's something better:
+Basicaly, you can "overide" reject in two steps:
 
-- I try to add a very generic blanket accept for "traffic that's
-  probably libvirt related"; I dunno can I add a rule for virbr0 if
-  libvirt hasn't set it up yet?, that seems unlikely to work, and I
-  can't see what else I could do for such a rule
+1=2E mark packets accepted by libvirt (or generaly in any other rule)
+2=2E exlude these marks from your reject
 
-- libvirt and I both move to firewalld which I gather doesn't have
-  this problem?
+You must check in libvirt docs, If it is able to set some mark=2E=2E=2E
 
-- It's just expected that I have to copy the libvirt rules in
-  details into my chain so the accepts happen in the right place
+regards
 
-Surely this comes up regularly and there must be a standard
-response?, but I definitely couldn't find anything on the nftables
-wiki.
+
+--=20
+Slavko
+https://www=2Eslavino=2Esk/
