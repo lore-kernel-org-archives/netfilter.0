@@ -1,93 +1,113 @@
-Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx03.uni-tuebingen.de (mx03.uni-tuebingen.de [134.2.5.213])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67A341E51E0
-	for <netfilter@vger.kernel.org>; Thu, 27 Feb 2025 16:51:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D48E725F984
+	for <netfilter@vger.kernel.org>; Fri, 28 Feb 2025 14:12:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.2.5.213
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1740675096; cv=none; b=W+4nY1ZI5G9gfLCbecL2l19hsXLS/5x8i2kUpaC1Uw/IWG5bFBz41TP4ryiQ8jDAsoqow9vbGTGkwmSTufrboOg1VNReCva+szO38IvEYsKx8mMIA/WHlamNnSXkz7VFjYc5JF0YmGSNHgcTss6JzyAsfNI7E/hpmdtFhF26EFU=
+	t=1740751923; cv=none; b=lcmTh9fE486azHV2WhMf3Lg9pwjwKlL+1knp//s142/zsqIjqdhvf43ypUCpYs9Z4xFLsxQv3ieeeOUZHpPyTV7GTHOKhAUFVPTHPunuoejB80cVS42EI+NqZAX20hbimz4q4QBGHHnx51nKXSXt+pa5l8GwDx6oleWX+5/ixTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1740675096; c=relaxed/simple;
-	bh=dpbl4baVpLIhbidu0kkiUclzEgKY3uyQxk6vLBC1cUA=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=QraQuPDckr33r74c03UMKJBADWI6ra+NyobRtc8rJ5HR121ZicNq1BBOogzLT5451E71aImz1zzZudJrA4a6TsYuY3U817QyCf0eZ7PXBD4j6jLVRDtn4pon/ZozzdvltZ0kA6HlD32CjDH3Xy3rMPVSY64/MLSogXfSX7hMc6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=QmXGF16j; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=mzM/0qvU; arc=none smtp.client-ip=185.25.250.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
+	s=arc-20240116; t=1740751923; c=relaxed/simple;
+	bh=ah/EaLdaGKRjgGy9i2wGUo9t1rgOvs/6XpMoDVrKiFA=;
+	h=Date:Message-ID:From:To:Subject:Content-Type:MIME-Version:
+	 Content-Disposition; b=GyrszSYtS9hy8gJkZ4UFu0e8WtinL/FEs/drqUcfuQQ7ejBs+6p7jLVapWiJMG/P+wQmDp/RndRvQfqj/IdjrY0lYQ9xJBzHHUtI4wv4+G46CS06Nv+lF/7OBuydZVAe6JUscKNyJELmpOpV21NpXLGAaQAYG8YeWtYVy7/FOgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zdv.uni-tuebingen.de; spf=pass smtp.mailfrom=zdv.uni-tuebingen.de; dkim=pass (2048-bit key) header.d=uni-tuebingen.de header.i=@uni-tuebingen.de header.b=Tf0v25n8; arc=none smtp.client-ip=134.2.5.213
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zdv.uni-tuebingen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zdv.uni-tuebingen.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="QmXGF16j";
-	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="mzM/0qvU"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
-	s=r2025; h=Content-Type:MIME-Version:Message-ID:Subject:To:From:Date:From:
-	Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:Content-Type:Message-Id;
-	bh=mQ/3SqOKE2i6fZBr06vzKrao+3SPa4X8gHEvF7eJHYo=; t=1740675092; x=1741884692; 
-	b=QmXGF16jEY+uHgLgz/0DhnSVschSlu23ixo8SR4eFFvdb6lIgQd3rU/9gVO/2+7nSwtCR8Ae4Mh
-	1mvFVswGcIwNl1rNFEcnpzfjwYXzxLxaSHYB8TOATyxCutGafmfAV8fXlictx89V0G+SEmSe6ZpuS
-	WxSUvpQ10hITJD1re+I=;
-DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=slavino.sk; s=e2025; h=Content-Type:MIME-Version:Message-ID:Subject:To:From
-	:Date:From:Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:Content-Type:
-	Message-Id; bh=mQ/3SqOKE2i6fZBr06vzKrao+3SPa4X8gHEvF7eJHYo=; t=1740675092;
-	x=1741884692; b=mzM/0qvUPSU9yP+fzV9BCiq7rmiI01ihFYPUz5SQiqdBJ18niPmULzKCm0Ky5
-	17dJdm5rO8FPFGuXQNmLioMDQ==;
-Received: from dovex.skk ([192.168.10.12])
-	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96)
-	(envelope-from <linux@slavino.sk>)
-	id 1tnh6Z-001Zgr-0I
-	for netfilter@vger.kernel.org;
-	Thu, 27 Feb 2025 17:51:23 +0100
-Date: Thu, 27 Feb 2025 16:51:21 +0000
-From: Slavko <linux@slavino.sk>
-To: netfilter ML <netfilter@vger.kernel.org>
-Subject: Log ARP headers
-Message-ID: <FADC1D05-BC58-45CF-AEBA-2D4B85928185@slavino.sk>
+	dkim=pass (2048-bit key) header.d=uni-tuebingen.de header.i=@uni-tuebingen.de header.b="Tf0v25n8"
+Received: from webmail1.uni-tuebingen.de (webmail1.uni-tuebingen.de [IPv6:2001:7c0:300c:3105::8602:5c2])
+	by mx03.uni-tuebingen.de (Postfix) with ESMTPS id EBF6B20AA0C7
+	for <netfilter@vger.kernel.org>; Fri, 28 Feb 2025 15:11:58 +0100 (CET)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx03.uni-tuebingen.de EBF6B20AA0C7
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uni-tuebingen.de;
+	s=20211202prod; t=1740751918;
+	bh=wpruD+ncs74Ua/+XgSBFA9Uqo9n0CLkSFdBVkkiUgIQ=;
+	h=Date:From:To:Subject:From;
+	b=Tf0v25n8Iv1uIsgGNTdwlLvbnZIk2pXxhnENw+ZgUD8ni7rXUad7y+Dfuph6vBWan
+	 /BQ+K3aP0WBO3DIskQ08kAqmBEaKkL4bPlO64DxN8kT4m0HgCO4FA1ySEDk5MYelHD
+	 xv/sHV4IZyGCQc3sSZeP+bTIIijNNZdCOQkdtn02+AwHRull+xXXKhc0SXvn8asOQs
+	 V7+egfBY/sjnMmjbRlBQ2LdwUdsAz0ao6zR2SXQpXqiR4irMp1IZWEJmZLkmFDnCTa
+	 cWCDUu07UYCj1fqWxGYCmfm76BGqFl6yYvLceSvZ/w8z1+7SxAQFSSjdUuLbI5fWR2
+	 m2D37RxT/eUsA==
+Received: from webmail1.uni-tuebingen.de (localhost [127.0.0.1])
+	by webmail1.uni-tuebingen.de (Postfix) with ESMTPSA id E408160AE195
+	for <netfilter@vger.kernel.org>; Fri, 28 Feb 2025 15:11:58 +0100 (CET)
+Received: from maxwell.wi113.uni-tuebingen.de
+ (maxwell.wi113.uni-tuebingen.de [134.2.232.77]) by webmail.uni-tuebingen.de
+ (Horde Framework) with HTTPS; Fri, 28 Feb 2025 15:11:58 +0100
+Date: Fri, 28 Feb 2025 15:11:58 +0100
+Message-ID: <20250228151158.Horde.S7bxprjzrKb3P7rZjqTDZz_@webmail.uni-tuebingen.de>
+From: Michael Menge <michael.menge@zdv.uni-tuebingen.de>
+To: netfilter@vger.kernel.org
+Subject: nft reset element crashes with error BUG: unhandled op 8
+User-Agent: Horde Application Framework 5
+Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
 Hi,
 
-i want to log ARP headers, thus i create arp family table
-with one chain with only one rule, somethong as:
+i want to use a named set in nftables to to restrict outgoing http(s)  
+connections only to
+update servers. As the update servers are behind CDNs with multiple  
+changing IPs i need
+to automatically update the named set.
 
-    arp operation request limit =2E=2E=2E countef log group 2 prefix =2E=
-=2E=2E
+I discovered that "reset element" was added to the nft command which  
+should enable me to reset
+the timeout without removing the IPs already in the set, and to keep a  
+clean list of IPs.
 
-It basically works, counter grows and packets are logged
-via ulogd2 stack::
+Fetch list of IPs, Call
+"nft add element inet filter updatesv4 {a.b.c.d timeout 1h}" and
+"nft reset element inet filter updatesv4 {a.b.c.d}" for each IP
 
-    stack=3Dlog2a:NFLOG,base1:BASE,ifi1:IFINDEX,ip2str1:IP2STR,mac2str1:HW=
-HDR,gp1:GPRINT
+(I know that i can use multiple IPs, in the add and reset element command)
 
-Except that the log entries has not any ARP headers=2E
+In my test I triggered the following error:
+===
+[root@mail ~]# nft add element inet filter updatesv4 {1.2.3.4 timeout 1h}
+[root@mail ~]# nft list set inet filter updatesv4
+table inet filter {
+	set updatesv4 {
+		type ipv4_addr
+		flags interval,timeout
+		elements = { 1.2.3.4 timeout 1h expires 59m53s324ms }
+	}
+}
+[root@mail ~]# nft reset element inet filter updatesv4 {1.2.3.4}
+BUG: unhandled op 8
+nft: evaluate.c:1734: interval_set_eval: Assertion `0' failed.
+Aborted (core dumped)
+[root@mail ~]#
+===
+I am using:
+- AlmaLinux release 9.5 (Teal Serval)
+- Kernel 5.14.0-503.23.2.el9_5.x86_64
+- nftables-1.0.9-3.el9.x86_64
 
-Then i found this article [1], which mentions the ARP as
-sysctlt key:
+I could not find any related bugs in bugzilla.
+Is this a know bug? already fixed in newer version?
+Should this have worked?
+How can i help to debug/fix this?
 
-    net=2Enetfilter=2Enf_log=2E3
+Kind Regards
 
-Thus i set it to "nfnetlink_log", but that doesn't help=2E It
-is hard to find what these numbers are, but i guess that
-family constants, as 2, 7 and 10 (from ulogd2 start log)
-coresponds to inet, inet6 and bridge family, but i am not
-aware of arp family=2E=2E=2E
+    Michael Menge
 
-I guess that ulogd2 is able to log ARP headers as i found
-them in BASE plugin's info output, but please what i have
-to do to get them into log? Or problem is, that i play with
-it inside LXC container (other logging works in it)?
+--
+--------------------------------------------------------------------------------
+Michael Menge                          Tel.: (49) 7071 / 29-70316
+Universität Tübingen                   Fax.: (49) 7071 / 29-5912
+Zentrum für Datenverarbeitung          mail:  
+michael.menge@zdv.uni-tuebingen.de
+Wächterstraße 76
+72074 Tübingen
 
-regards
-
-[1] <https://fedoramagazine=2Eorg/network-address-translation-part-4-connt=
-rack-troubleshooting/
-
---=20
-Slavko
-https://www=2Eslavino=2Esk/
