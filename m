@@ -1,65 +1,71 @@
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E0B61C5D76
-	for <netfilter@vger.kernel.org>; Mon,  3 Mar 2025 22:03:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 406B61F03C0
+	for <netfilter@vger.kernel.org>; Mon,  3 Mar 2025 22:20:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741039418; cv=none; b=PtxO3umTpbKYKvp/idXDTn3vjUULvfVOzUAI16WoOh9hxN1j+7eKRPuM5Hn7byYExS8Vd5To0WcqGGCBP6KclZvGFsLQxzF6UgsCJRC4Q0JHpEaN8iMaTh33QleWmPjnYav5xoXrgiv7vRooNy5Rude7THZ0ODXedDQTb6voMtE=
+	t=1741040417; cv=none; b=JW8JHl/BrjYPG8KVXguAUmi4LHJOr0mD3B1Ot37XGUmQNEhxF1mxQK73OjYXNE8E+H/HIDYzU4gq99c1qC0ZKYDzphX+2+vLlBWAMRCNv0qouKca39IrdJ4Wxlhkzep3ROcYxHSOJJA2Gurb3NO4Sq/SgB96C/elDuUjDI9hIaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741039418; c=relaxed/simple;
-	bh=C9xYHHg8aEX2PeIXde8NYuwptGMV/eYi2ksF+zGuslA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i94wtcM63iMeSkoa1hMy5CuWOhUIVin9oMAJs+cP0vWvdqGDUWU4ZmX48R3XHCNcJDIFDebZMnLJYJx9NsTb1+Uri5w+SJ1CiLijAV6y1U4CJpmddstXhW2OJ/1VQQ6gocI0Y117glU8fW3jh89IP1tv1S3vgQ54foGHyK+r02k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@strlen.de>)
-	id 1tpDss-0005Ks-Ac; Mon, 03 Mar 2025 23:03:34 +0100
-Date: Mon, 3 Mar 2025 23:03:34 +0100
-From: Florian Westphal <fw@strlen.de>
-To: Slavko <linux@slavino.sk>
-Cc: netfilter ML <netfilter@vger.kernel.org>
+	s=arc-20240116; t=1741040417; c=relaxed/simple;
+	bh=zAkX4wcRnB1DYMNZutq/aXyan53uWGmYBlu7cHfAsAI=;
+	h=Date:From:To:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=C79Q8V047m9mQXgtMTVHh3hJOFcv9HR46llPsZdDa2ZJUz/o14IPciByKHaDMwdzVg0psmVHoo3kbHwMIvRPZhT3O2UAWx9dCEVXWW5XVnMwrsVMPaVswZKkSVTpLKVLHXrlgFm4hiKsKtYuywCgvjRQ/MkCce+dxo+leOJgs0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=D+C2rOp/; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=NMLnzxsm; arc=none smtp.client-ip=185.25.250.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="D+C2rOp/";
+	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="NMLnzxsm"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
+	s=r2025; h=Content-Type:MIME-Version:Message-ID:References:In-Reply-To:
+	Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:
+	Content-Type:Message-Id:In-Reply-To:References;
+	bh=zAkX4wcRnB1DYMNZutq/aXyan53uWGmYBlu7cHfAsAI=; t=1741040415; x=1742250015; 
+	b=D+C2rOp/LCvTt9FzRk9Ujic2IiOOoCI1RGLsqsa/xcm1IfleaJ9+6dmSTzYkyIjIkWI7MEhNkq5
+	L0vgwVa5aXwLo9gxUccvIz49TRsWtc57PR/XKx/nC09v0yly2vcQeL4G7Od2s+4mySyK1b46H5RLu
+	mXDGvQl5LAxQEQfZ/ZE=;
+DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=slavino.sk; s=e2025; h=Content-Type:MIME-Version:Message-ID:References:
+	In-Reply-To:Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:
+	MIME-Version:Content-Type:Message-Id:In-Reply-To:References;
+	bh=zAkX4wcRnB1DYMNZutq/aXyan53uWGmYBlu7cHfAsAI=; t=1741040415; x=1742250015; 
+	b=NMLnzxsmfatkkUZSm5NvTSi8lUwYaWQAEwR4zoCycoPwBUEOR/wJP82rOig8U3aMMdjYSaMVcS6
+	Sx3QHGZIdAw==;
+Received: from dovex.skk ([192.168.10.12])
+	by primex.slavino.sk with esmtpsa  (TLS1.3)(Exim 4.96)
+	(envelope-from <linux@slavino.sk>)
+	id 1tpE8z-001v9f-09
+	for netfilter@vger.kernel.org;
+	Mon, 03 Mar 2025 23:20:13 +0100
+Date: Mon, 03 Mar 2025 22:20:09 +0000
+From: Slavko <linux@slavino.sk>
+To: netfilter ML <netfilter@vger.kernel.org>
 Subject: Re: Log ARP headers
-Message-ID: <20250303220334.GA19712@breakpoint.cc>
-References: <FADC1D05-BC58-45CF-AEBA-2D4B85928185@slavino.sk>
- <20250303193533.GA16225@breakpoint.cc>
- <88D0D02C-9C84-428F-B62B-EBA5E359D325@slavino.sk>
+In-Reply-To: <20250303220334.GA19712@breakpoint.cc>
+References: <FADC1D05-BC58-45CF-AEBA-2D4B85928185@slavino.sk> <20250303193533.GA16225@breakpoint.cc> <88D0D02C-9C84-428F-B62B-EBA5E359D325@slavino.sk> <20250303220334.GA19712@breakpoint.cc>
+Message-ID: <02EE0387-0B06-4D5D-BD52-EE85EE9A2F90@slavino.sk>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <88D0D02C-9C84-428F-B62B-EBA5E359D325@slavino.sk>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Slavko <linux@slavino.sk> wrote:
-> >I think this is missing support in ulogd2.
-> >
-> >Untested, to give you some starting point:
-> >(3 is NFPROTO_ARP).
-> >
-> >--- a/filter/raw2packet/ulogd_raw2packet_BASE.c
-> >+++ b/filter/raw2packet/ulogd_raw2packet_BASE.c
-> >@@ -959,6 +959,8 @@ static int _interp_pkt(struct ulogd_pluginstance *pi)
-> >                return _interp_ipv6hdr(pi, len);
-> >        case AF_BRIDGE:
-> >                return _interp_bridge(pi, len);
-> >+       case 3:
-> >+               return _interp_arp(pi, len);
-> >        }
-> >        return ULOGD_IRET_OK;
-> > }
-> 
-> Unfortunately, i don't speak C ;-) I understand this change,
-> but i cannot see all consequence,
-> 
-> Any chance that it will go to ulogd itself? Or i have to maintain
-> this patch locally only? (I mean for future versions)
+On 3=2E marca 2025 22:03:34 UTC, Florian Westphal <fw@strlen=2Ede> wrote:
 
-Can you test and report back if this works?
-I have no idea what I am doing as I don't use ulogd.
+>Can you test and report back if this works?
+
+I have that in my plan, with a little luck i will patch
+and test debian stable's package at weekend, with
+more luck even sooner :-)
+
+regards
+
+
+--=20
+Slavko
+https://www=2Eslavino=2Esk/
