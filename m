@@ -1,82 +1,92 @@
-Received: from mx04.uni-tuebingen.de (mx04.uni-tuebingen.de [134.2.5.214])
+Received: from cerberus.halldom.com (unknown [79.135.97.240])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E38A213E67
-	for <netfilter@vger.kernel.org>; Mon,  3 Mar 2025 15:50:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=134.2.5.214
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87FC21E285A
+	for <netfilter@vger.kernel.org>; Mon,  3 Mar 2025 18:59:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.135.97.240
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741017035; cv=none; b=hixJEYRWVxMevelBUJMe9rspEQJlka7J6LXGaF4iqMVP+troZxo5u9SRNQs0AQV+Cnd/rdblH8oLubQnudYn3hTLwi8pehuhpaU35zRszVml39h7yVLuRDlJ+qzCPHvDL+0RziSFt0ktrqeUlrjHaFXa6XzbS9wy5X+053slovE=
+	t=1741028367; cv=none; b=LgjwDCR5fG8rUNK4x0ZYhuz0wEPRKS0Qhw2mKry66GhATVmS7w27ixJwrRLLek9XlyyV+soIXJTxcAOW2upAnqet5heF2hn46SMBsBKL75s3ODDv+8RLtBW+KRcypgPihddpFEjB9yrf/AJJ1H0zHKasnW2kpZ9kb0EB9M7MUes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741017035; c=relaxed/simple;
-	bh=mp0KjDjybimI0joV2pAXruab5CrZA6TZZC2E3/jSl3Y=;
-	h=Date:Message-ID:From:To:Cc:Subject:References:In-Reply-To:
-	 Content-Type:MIME-Version:Content-Disposition; b=E19uaL2LnxXlKSf8AnjyDXFEkOzz6hDAQ0JFbsc4vWbH/0ZCeiarfTw7ngJSzoTAQivL743EmA8IKLZEFrUOaLluAvKpgdw2W6lheilJpvRR5J0jrkeYhU4QC258KoIPB4ng2HBgf79s7xNMxPwxxhIloItwrAfNLYh1lVF66EI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zdv.uni-tuebingen.de; spf=pass smtp.mailfrom=zdv.uni-tuebingen.de; dkim=pass (2048-bit key) header.d=uni-tuebingen.de header.i=@uni-tuebingen.de header.b=ieQYcjAG; arc=none smtp.client-ip=134.2.5.214
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zdv.uni-tuebingen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zdv.uni-tuebingen.de
+	s=arc-20240116; t=1741028367; c=relaxed/simple;
+	bh=R8ViPUSnaw1TBfQKD1n7+FanzTgsLNLRd1yyadzsj/E=;
+	h=Message-ID:Date:MIME-Version:From:Subject:References:To:
+	 In-Reply-To:Content-Type; b=A6wcb48xCO75j7zL/hk0yo+ILIB9gEAcx8uQNWMUhL7KU0nharNMFV2oOsiaEpPhf5sbWiJo93+D862MlLqDfRYKOvs6ut5psA17BeCf5eh5ptcCCpT7A+jc5AcTfLvEjQEbVIDMlMSq6XBokiCIpfDEif26ylrh28pITe6VrPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gmch.uk; spf=pass smtp.mailfrom=gmch.uk; dkim=pass (2048-bit key) header.d=halldom.com header.i=@halldom.com header.b=OQqWc98a; arc=none smtp.client-ip=79.135.97.240
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gmch.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmch.uk
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=uni-tuebingen.de header.i=@uni-tuebingen.de header.b="ieQYcjAG"
-Received: from webmail1.uni-tuebingen.de (webmail1.uni-tuebingen.de [134.2.5.194])
-	by mx04.uni-tuebingen.de (Postfix) with ESMTPS id E91DC20AAB84;
-	Mon,  3 Mar 2025 16:50:22 +0100 (CET)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx04.uni-tuebingen.de E91DC20AAB84
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uni-tuebingen.de;
-	s=20211202prod; t=1741017022;
-	bh=eMmTMIK+dpSl0LLzgCaQl3kbbDWCrGsU6mP32y3Xarc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ieQYcjAGtf5vt2SJkqa9p3MGc0MvjWzzjXugga0r+6AHITBBHj4qyEr9sudA78Yr0
-	 8J+VP73+hh9xx3GrGQoM3ErxOuqvIVDaP1fBcuTCvrwHcecFjfc7TM6Y8tUyWPSt5r
-	 JZ6q+DpnuMo9dubWJX3teHWtuf5bXzGQ79tn0bpUxFRQWO2TGYcWU9XJpYTQ1fyDf0
-	 P7Za18OW9Qsm8/4r9ERtM9gzxNc5ZkH0Awenq9hlyvaM1+ze6o36FcoTX8q1g2L8oX
-	 6Lr3LYkwmQScy1wXdN64bxsmxuFJZx8o0XIyM+fe17wAl9TCeZGehDP/oZqV8JhYCx
-	 k5fSQQfTtVQzA==
-Received: from webmail1.uni-tuebingen.de (localhost [127.0.0.1])
-	by webmail1.uni-tuebingen.de (Postfix) with ESMTPSA id DD69C60D1DC2;
-	Mon,  3 Mar 2025 16:50:22 +0100 (CET)
-Received: from [2a02:8070:8984:8400::966c] ([2a02:8070:8984:8400::966c]) by
- webmail.uni-tuebingen.de (Horde Framework) with HTTPS; Mon, 03 Mar 2025
- 16:50:22 +0100
-Date: Mon, 03 Mar 2025 16:50:22 +0100
-Message-ID: <20250303165022.Horde.zz0jv6tjsYLYlAYzTWTTTN8@webmail.uni-tuebingen.de>
-From: Michael Menge <michael.menge@zdv.uni-tuebingen.de>
-To: Florian Westphal <fw@strlen.de>
-Cc: netfilter@vger.kernel.org
-Subject: Re: nft reset element crashes with error BUG: unhandled op 8
-References: <20250228151158.Horde.S7bxprjzrKb3P7rZjqTDZz_@webmail.uni-tuebingen.de>
- <20250228142507.GA24116@breakpoint.cc>
-In-Reply-To: <20250228142507.GA24116@breakpoint.cc>
-User-Agent: Horde Application Framework 5
-Content-Type: text/plain; charset=utf-8; format=flowed; DelSp=Yes
+	dkim=pass (2048-bit key) header.d=halldom.com header.i=@halldom.com header.b="OQqWc98a"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=halldom.com
+	; s=key20240618; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:To:
+	References:Subject:From:MIME-Version:Date:Message-ID:Sender:Reply-To:Cc:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=JfLAnEdLyADdu9VJoHgeQutOW/nLZLkZ8D6zdCrtVz4=; b=OQqWc98aobDkJh2XdkX3Wa42/a
+	wQ5G2/h/aAuW+4eTQfD9mIw8PTs9WX2jGSzsAWOvfm7C2WdOk/tEJjvvX8YQIB33k+OiT2AxeG3FV
+	THLnN1ysx84U1phosUbzf2B2jyzGStIsfZlqr4fx/w3GtCWW6vZpWhfZM+oGTwNtWzS3FTUNBZat+
+	s+cjznILj9kSw0w0+BuTJSi5VNrvjsyeI1/8/oF35JC8foY/N+5e4+LM3kCAItODYTndBn9xr8Fmf
+	HrVMX0OBq/s7j41ksBuNvRHf2XdfpaJ85fXoMfU3hB/+rS32wStRQ6tx2QP7XDZl8FqAJhn7mP06P
+	U3bobPlw==;
+Received: from [79.135.97.241] (port=49752)
+	by cerberus.halldom.com with esmtpsa  (TLS1.3) tls TLS_AES_128_GCM_SHA256
+	(Exim 4.98)
+	(envelope-from <netfilter@gmch.uk>)
+	id 1tpALN-000000000M1-0Vfn
+	for netfilter@vger.kernel.org;
+	Mon, 03 Mar 2025 18:16:45 +0000
+Message-ID: <e526722b-9ec7-49db-8b22-a756a390b24c@gmch.uk>
+Date: Mon, 3 Mar 2025 18:16:45 +0000
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+From: Chris Hall <netfilter@gmch.uk>
+Subject: snat and Port Numbers
+References: <93e5770f-86d1-4c07-b9c9-ba8953e1796c@gmch.uk>
+Content-Language: en-GB
+To: netfilter@vger.kernel.org
+In-Reply-To: <93e5770f-86d1-4c07-b9c9-ba8953e1796c@gmch.uk>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 
-Quoting Florian Westphal <fw@strlen.de>:
+I'm trying to understand what ports the netfilter snat will map TCP/UDP 
+connections to.  I've tried, but failed, to find answers elsewhere :-(
 
+---------------
 
-> No, you can update existing element timeouts:
-> nft add element inet filter updatesv4 {1.2.3.4 timeout 1h expires 1h}
+For iptables the SNAT target may be set:
 
-I did test this, but it does nor reset the "expires" counter",
-in which kernel/netfilter version was this implemented?
+    --to-source [ipaddr[-ipaddr]][:port[-port]]
 
-Kind Regards
+where [according to iptables-extensions(8)]:
 
-    Michael
+    "If no port range is specified, then source ports below 512 will
+     be mapped to other ports below 512: those between 512 and 1023
+     inclusive will be mapped to ports below 1024, and other ports
+     will be mapped to 1024 or above.  Where possible, no port
+     alteration will occur."
 
+Is the nftables snat the same ??
 
---
---------------------------------------------------------------------------------
-Michael Menge                          Tel.: (49) 7071 / 29-70316
-Universität Tübingen                   Fax.: (49) 7071 / 29-5912
-Zentrum für Datenverarbeitung          mail:  
-michael.menge@zdv.uni-tuebingen.de
-Wächterstraße 76
-72074 Tübingen
+If a port range is specified, will all source ports be forced into that 
+range ??  Or are source ports below 1024 still mapped separately ??
 
+Then there are the /proc/sys/net/ipv4 entries:
+
+   ip_local_port_range:        32768   60999
+   ip_local_reserved_ports:    <empty>
+   ip_unprivileged_port_start: 1024
+
+Do these interact with the source port mapping for snat at all ??
+
+RFC's 4787 & 5382 REQUIRE "Endpoint-Independent Mapping".  Is that 
+supported ??
+
+Thanks,
+
+Chris
