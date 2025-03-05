@@ -1,77 +1,120 @@
-Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CD17134D4
-	for <netfilter@vger.kernel.org>; Wed,  5 Mar 2025 13:30:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9520E1FCF68;
+	Wed,  5 Mar 2025 22:22:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741181422; cv=none; b=AI50DeIlskUz64ED+csVJSTZVreIpfB92SljQYtMwRC3Ujwv+JdWEyfA34G9cqk4IiVp0rMp77eWQlyE2da3qQ4jzyJ2FJ7rLS93Kszwgs8E08NwoS2/Nb1+Ztb05zmyrNjwvvOI7faoNiqx/ed5+1zOdUEhFHGBKlIHTViNkrU=
+	t=1741213335; cv=none; b=hqBUz+PoCfAAvjrrofzjC1aPo3lFqHgIJ3VohfgjzQpAJFtFmVFixbwyPQgCAqM8hbPofDMoFbc6yUnY+FpPsl9PTerpVFbR6oJBX/iOidsDNFXDmR+9PO4cEDz/m/q2uGr7UPRPQJUkk0r23fQ1QSfLy84lYzh/LhuuiWAz6Cg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741181422; c=relaxed/simple;
-	bh=WFPmgY09gFLNAlSDB8ZNbqlSTP38VYcCKHXTOqTRst0=;
-	h=Date:From:To:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=uh99Q4kAEO7k8ljiyIw+d7KLqGP2N/AegwZg5uqTnvbgR+jEN+lmQv//S1D+qvLHAvitUESa5pKVoOduxS+vKOXE9LJ3rGeNUPYxcPUD3PWNH+PY25l6fOsDh6uVBDBDSPeKIGvCYgPk6+vM5LkZmsZ07Ix+ikzlRlhWo+nEpEU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=pzMvBVBn; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=LOkwQFe1; arc=none smtp.client-ip=185.25.250.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
+	s=arc-20240116; t=1741213335; c=relaxed/simple;
+	bh=wRjrKsPE7fFyDalDzgaEP8nV6yY1K6u+Bq3Htds6dgU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lscINuvKe8t9DwrC+egA/aEBn5zaywrVDpIVwAXC2H8E1Cj15qC9U5eScUg8J2cRuQD2hLC6WxSSPh1PwtpxjpToGid9kT7ZEYVnB7LjJC0Kev/YpSaBZaYofr0y/t7czE2/IPJJODKbxMxL8u5RIRvj/unfSZactzJTsvd8P6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=dQtvYLin; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=dQtvYLin; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="pzMvBVBn";
-	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="LOkwQFe1"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
-	s=r2025; h=Content-Type:MIME-Version:Message-ID:References:In-Reply-To:
-	Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:
-	Content-Type:Message-Id:In-Reply-To:References;
-	bh=5BWcosny7DXllWlEmo9PQAsLR0xWNH7cdZnEoMWrJP8=; t=1741181420; x=1742391020; 
-	b=pzMvBVBn0hm9Nk7VbDFUyXoZkaF7Bq6EB78Smrm8HX6d28W3X07XUp17phK7CxN18PrGEgLEAt4
-	sWn4vs0XGYTIfViLzBmbL31cSbbnxHEzbOrayANT9wWPjpGy9gv/vOepVp0wetHkm1rC1T+FSYQm2
-	kgB7ADN89YFxnJcpSQ8=;
-DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=slavino.sk; s=e2025; h=Content-Type:MIME-Version:Message-ID:References:
-	In-Reply-To:Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:
-	MIME-Version:Content-Type:Message-Id:In-Reply-To:References;
-	bh=5BWcosny7DXllWlEmo9PQAsLR0xWNH7cdZnEoMWrJP8=; t=1741181420; x=1742391020; 
-	b=LOkwQFe1RZ+4EIpb6ANE5ZrsmH9BpwAb0YRwb4nY8oHXqV4Keif0+kr5GMPqqoWpfSuwheNfpZe
-	gTpGawoaeDQ==;
-Received: from dovex.skk ([192.168.10.12])
-	by primex.slavino.sk with esmtpsa  (TLS1.3)(Exim 4.96)
-	(envelope-from <linux@slavino.sk>)
-	id 1tpopF-0023e1-1X
-	for netfilter@vger.kernel.org;
-	Wed, 05 Mar 2025 14:30:17 +0100
-Date: Wed, 05 Mar 2025 13:30:16 +0000
-From: Slavko <linux@slavino.sk>
-To: netfilter ML <netfilter@vger.kernel.org>
-Subject: Re: Log ARP headers
-In-Reply-To: <20250305142016.37749842@bonifac.skk>
-References: <FADC1D05-BC58-45CF-AEBA-2D4B85928185@slavino.sk> <20250303193533.GA16225@breakpoint.cc> <88D0D02C-9C84-428F-B62B-EBA5E359D325@slavino.sk> <20250303220334.GA19712@breakpoint.cc> <20250305142016.37749842@bonifac.skk>
-Message-ID: <C9C45DB3-2903-441C-A219-6BA13C9235D6@slavino.sk>
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="dQtvYLin";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="dQtvYLin"
+Received: by mail.netfilter.org (Postfix, from userid 109)
+	id ACE816029C; Wed,  5 Mar 2025 23:22:11 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1741213331;
+	bh=LBS8vWq+7dq8qNi+FWZrfL5Q7mKeYMiUIULxIXJ9i7U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dQtvYLin7d5TSvk07gYub+8m1PuCMv0p4tF5B2BE9bi/bpqSPqcYEWs6nwSEbJmwk
+	 VLdYDrQc1lBOlGsYjMl5B6BU//qmkJwJHGp/V9r2tVkNvlwKy738CXBR2q43HZ39Eb
+	 Bxe6WY6WJzCzg1DmnFQ0Q9krOSCkX40IGiCWPiPBrrgIxG5cPUcqXDTno8fcH76FqK
+	 NmiTxJdhZna3C94c/2ZgMDgsH6TD2OE5A2HhFsHxF/NSLDTNKPZGM0AXY4/Dwul0Ff
+	 50mS8YVlsI+ekQV7ah8jxTP+1w7tjPmg9zSKW4gHPPvKL1Rx8jHCrp7yy2xOmjdbPk
+	 gB43mqQ6g2hEA==
+X-Spam-Level: 
+Received: from netfilter.org (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id 0A4FF6029B;
+	Wed,  5 Mar 2025 23:22:11 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1741213331;
+	bh=LBS8vWq+7dq8qNi+FWZrfL5Q7mKeYMiUIULxIXJ9i7U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dQtvYLin7d5TSvk07gYub+8m1PuCMv0p4tF5B2BE9bi/bpqSPqcYEWs6nwSEbJmwk
+	 VLdYDrQc1lBOlGsYjMl5B6BU//qmkJwJHGp/V9r2tVkNvlwKy738CXBR2q43HZ39Eb
+	 Bxe6WY6WJzCzg1DmnFQ0Q9krOSCkX40IGiCWPiPBrrgIxG5cPUcqXDTno8fcH76FqK
+	 NmiTxJdhZna3C94c/2ZgMDgsH6TD2OE5A2HhFsHxF/NSLDTNKPZGM0AXY4/Dwul0Ff
+	 50mS8YVlsI+ekQV7ah8jxTP+1w7tjPmg9zSKW4gHPPvKL1Rx8jHCrp7yy2xOmjdbPk
+	 gB43mqQ6g2hEA==
+Date: Wed, 5 Mar 2025 23:22:08 +0100
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Florian Westphal <fw@strlen.de>
+Cc: Michael Menge <michael.menge@zdv.uni-tuebingen.de>,
+	netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Subject: Re: nft reset element crashes with error BUG: unhandled op 8
+Message-ID: <Z8jOkDx8YhIYKi59@calendula>
+References: <20250228151158.Horde.S7bxprjzrKb3P7rZjqTDZz_@webmail.uni-tuebingen.de>
+ <20250228142507.GA24116@breakpoint.cc>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250228142507.GA24116@breakpoint.cc>
 
-On 5=2E marca 2025 13:20:16 UTC, Slavko <linux@slavino=2Esk> wrote:
+On Fri, Feb 28, 2025 at 03:25:07PM +0100, Florian Westphal wrote:
+> Michael Menge <michael.menge@zdv.uni-tuebingen.de> wrote:
+> > i want to use a named set in nftables to to restrict outgoing http(s)
+> > connections only to
+> > update servers. As the update servers are behind CDNs with multiple changing
+> > IPs i need
+> > to automatically update the named set.
+> > 
+> > I discovered that "reset element" was added to the nft command which should
+> > enable me to reset
+> > the timeout without removing the IPs already in the set, and to keep a clean
+> > list of IPs.
+> 
+> No, you can update existing element timeouts:
+> nft add element inet filter updatesv4 {1.2.3.4 timeout 1h expires 1h}
+> 
+> reset will not affect the timeout, only quota or counters.
+> 
+> > Fetch list of IPs, Call
+> > "nft add element inet filter updatesv4 {a.b.c.d timeout 1h}" and
+> > "nft reset element inet filter updatesv4 {a.b.c.d}" for each IP
+> > 
+> > (I know that i can use multiple IPs, in the add and reset element command)
+> > 
+> > In my test I triggered the following error:
+> > ===
+> > [root@mail ~]# nft add element inet filter updatesv4 {1.2.3.4 timeout 1h}
+> > [root@mail ~]# nft list set inet filter updatesv4
+> > table inet filter {
+> > 	set updatesv4 {
+> > 		type ipv4_addr
+> > 		flags interval,timeout
+> > 		elements = { 1.2.3.4 timeout 1h expires 59m53s324ms }
+> > 	}
+> > }
+> > [root@mail ~]# nft reset element inet filter updatesv4 {1.2.3.4}
+> > BUG: unhandled op 8
+> > nft: evaluate.c:1734: interval_set_eval: Assertion `0' failed.
+> > Aborted (core dumped)
+> 
+> This should be the right fix, I will submit this formally later:
+> diff --git a/src/evaluate.c b/src/evaluate.c
+> --- a/src/evaluate.c
+> +++ b/src/evaluate.c
+> @@ -1946,6 +1946,7 @@ static int interval_set_eval(struct eval_ctx *ctx, struct set *set,
+>  				 ctx->nft->debug_mask);
+>  		break;
+>  	case CMD_GET:
+> +	case CMD_RESET:
+>  		break;
+>  	default:
+>  		BUG("unhandled op %d\n", ctx->cmd->op);
 
->That "solves" the "Unknown protocol family" problem and packets are
->logged with ARP entries (beside others):
->
->    arp=2Ehwtype=3D1,
->    arp=2Eprotocoltype=3D2048,
->    arp=2Eoperation=3D1,
->    arp=2Esaddr=3D158=2E160=2E47=2E125,
->    arp=2Edaddr=3D168=2E160=2E47=2E125,
+Patch looks good, would you please merge this upstream?
 
-Ah, i forget to mention, that fields "arp=2E[ds]hwaddr" are missing
-in log=2E
-
-regards
-
-
---=20
-Slavko
-https://www=2Eslavino=2Esk/
+Thanks.
