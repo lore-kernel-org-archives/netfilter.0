@@ -1,109 +1,109 @@
 Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39B5D1AF0C5
-	for <netfilter@vger.kernel.org>; Sat,  8 Mar 2025 11:32:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E997122258F
+	for <netfilter@vger.kernel.org>; Tue, 11 Mar 2025 07:53:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741433575; cv=none; b=u/47iDrVUxMMxa4/HMaYxNJv6FcQ18R/nGDoa46QLvgtR3mbR02+dIk7PtNBaxGS3EtyJ/cNd7Q5dJubHaE/52r4tVyrXRgwXZqEEFZ27mT/ZiqjRyipCzIdCpFqprgUvqcE7T+qDrPeTHT2g+Dy/R5dQbm/njp7PMKsKlRQuGM=
+	t=1741679602; cv=none; b=FsgzhfaFm1l4F1BDd6z/RAbzoy6WW2lJv1Mcy2XBpz+ePlMDg77jEAnTXASoMm43QXEh/OT85Wp4bDFD6GaPTqLEayTXOo1NfuP0OGYxLtIVN2T6BFE87eO4mGfFxWsGShIsS+4AYx9jTqCzeWx0675vMkiHyQp8Xcy7ui3iIeY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741433575; c=relaxed/simple;
-	bh=SoiM2+TjvZU9sewN0ihoB2yZNxYr4fbMTsOLRT+8P5E=;
-	h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UxHZ8X5zuR8NwzhDMMd+tuOFd6eHLBAz5CfmfaNfQyVoAYbSmm98e39tw45nqVOhvGiSbIdoO+7fM8R7lY/T6EJBXRvkjmNo/M2vgh5Nktz0ANigOjPxHweigaPpFnb7wwEknDrmpLwWHfGVNkkCzLaSl8BMkDl46JLFXYAYzWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=bAHL1/gG; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=vI4n+8Hc; arc=none smtp.client-ip=185.25.250.72
+	s=arc-20240116; t=1741679602; c=relaxed/simple;
+	bh=UbRdiN+Dg7KsElgP+jRghMRKmIg08NP8Z5WuNSFpv/8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=idF5drCPPkzmYsjjqfz8v2iVOLIVcDSOVSsCtTt3g/KAQUHHIOHmpeAAXbitD/uHodyca4VlI2S+M39rKir8XXnV0H6nDHocdkCECruMqsapN/8YGuxTU178qjIWzZsunnIe6jluwacDXIFoFFPEIjOx5CYhnIDKI5R9Up/BVs8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=cstSp8WK; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=ePSe0j/U; arc=none smtp.client-ip=185.25.250.72
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="bAHL1/gG";
-	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="vI4n+8Hc"
+	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="cstSp8WK";
+	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="ePSe0j/U"
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
-	s=r2025; h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:
-	Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:
-	Content-Type:Message-Id:In-Reply-To:References;
-	bh=7FO50oGx/6YJ34n+AQMxRUTYnKF3hcZO63JNkDUGSGI=; t=1741433571; x=1742643171; 
-	b=bAHL1/gGITBr0dMQeKqEyoG3Z3izaelGS/3kSnICDvaoIlyCE+b7clfjoDLaBjpv8bn82R0Pji3
-	vM9IzvWMvE1a3sBkLOfaqoHHu5pUWIjD+ylwyX2g/eqBrtW9bIsL6EheWwVyu1xj0hsUAVHO3xDEK
-	fqJhCsgjKqAh18xxTv8=;
+	s=r2025; h=Content-Type:In-Reply-To:Autocrypt:From:References:To:Subject:
+	MIME-Version:Date:Message-ID:From:Reply-To:Sender:Subject:To:Cc:Date:
+	MIME-Version:Content-Type:Message-Id:In-Reply-To:References:Autocrypt;
+	bh=jM+a82EYSd/nLBGIIiWVF0WOv5jhDkN+D1qaN+T7/ak=; t=1741679599; x=1742889199; 
+	b=cstSp8WKtHX94TB8RgUTv1Ju13QmCupXNe16LdbPE5v4iXg/jaQ843NmfvX+ONAfNvYlvlKfs5C
+	hgwO71SNjJfapaZt0S502Yu2EkPzHT4HOQ1GhswXEXCgzJ8E98/VESsnREASMUjg3cIYouHMV3DHi
+	AUcq0NhbIjC9B/QKW/c=;
 DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=slavino.sk; s=e2025; h=Content-Type:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:
-	MIME-Version:Content-Type:Message-Id:In-Reply-To:References;
-	bh=7FO50oGx/6YJ34n+AQMxRUTYnKF3hcZO63JNkDUGSGI=; t=1741433571; x=1742643171; 
-	b=vI4n+8HcE/WWJUOdy6jny29Yc11zXR7OhE+sBfLKhLzArBAPMOViiSEwmoyIv0vaHaZHzv+SXsz
-	mLsNNANyyBA==;
+	d=slavino.sk; s=e2025; h=Content-Type:In-Reply-To:Autocrypt:From:References:
+	To:Subject:MIME-Version:Date:Message-ID:From:Reply-To:Sender:Subject:To:Cc:
+	Date:MIME-Version:Content-Type:Message-Id:In-Reply-To:References:Autocrypt;
+	bh=jM+a82EYSd/nLBGIIiWVF0WOv5jhDkN+D1qaN+T7/ak=; t=1741679599; x=1742889199; 
+	b=ePSe0j/Us+gZsWMGGOFzEOgZneczrh4LtuQHZEE6ng45zapQ+J7htP2ZFNSkgqghM3TyKPGvvzj
+	88EhZFBc3DA==;
 Received: from dovex.skk ([192.168.10.12])
-	by primex.slavino.sk with esmtpsa  (TLS1.3)(Exim 4.96)
+	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
 	(envelope-from <linux@slavino.sk>)
-	id 1tqsQC-002Kiv-1n
+	id 1truQG-002Yi8-2f
 	for netfilter@vger.kernel.org;
-	Sat, 08 Mar 2025 12:32:48 +0100
-Date: Sat, 8 Mar 2025 12:32:47 +0100
-From: Slavko <linux@slavino.sk>
-To: netfilter@vger.kernel.org
-Subject: Re: ulogd2, sqlite3 and negative TCP Seq numbers
-Message-ID: <20250308123247.0bed888e@bonifac.skk>
-In-Reply-To: <20250308204559.178294db@gnosticus>
-References: <20250308111405.441477a1@bonifac.skk>
-	<20250308204559.178294db@gnosticus>
-Face: iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAFVBMVEX7+/xrTUz4//3Ozc10AAH5/v3///8f7tJ8AAAB2UlEQVQ4jW2STY6EIBCFSwmumykPQDTtGqxO74kcgNiJa8dE7n+EAfzBtONCpD5eVfko8Pszeb+sflqOPVyA535abyB+9wnfwMgek/8XFEO33sE6lYWB/8HLqOUOFre87H+g9LK2P7y6p+o+1mJ1B75j1g7VeFeshTXifbfEza+goAqqLyAhAKsC+QahqVD9o74VYxGB6PUBJl+C5FwCUhEUSEpCM41PmGYJABK07oNk0EQQAw54K9KDGAQhl6C4ewDwJnZjjVZptQaD0PQSOqC4R2x0Btg76HwbI5oE1Rt4WUPhvG9cjAht+00SvlD5JThQQYiY2g6s3oBRzXMzgG1nKS2asDr+HPb0aSGmsiWwS9r4+rxP0M1tkgxQW/PzewF+pqPKgEV1cbdiCQxUB+AyaJzeq5AmfQG+IEwtDSTwIU8ArtBCtSKYpEg/lhNwFnwYGi2I3qRhPkGpYx5kmmBqtcrgg5hcUrxhqBicoNh6wnB11vaXP/8lkSYkeYaan4CJV7RQVtFm88jAxSlE8M85XonKgM91qBwtmnVt+1z86eI1+/3OMLc7tgbV5k1IhtndMnS/j6x3dAEciB/D7VuVwQI5Po9h1E7Au/kkq89gKt3ziMu1SuAPWe5Dq/EEywcAAAAASUVORK5CYII=
+	Tue, 11 Mar 2025 08:53:08 +0100
+Message-ID: <bf1fc6b8-1cbd-43a5-945c-a34f9fe3418f@slavino.sk>
+Date: Tue, 11 Mar 2025 08:53:07 +0100
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: ulogd2, sqlite3 and negative TCP Seq numbers
+To: netfilter ML <netfilter@vger.kernel.org>
+References: <20250308111405.441477a1@bonifac.skk>
+ <20250308204559.178294db@gnosticus>
+From: Slavko <linux@slavino.sk>
+Content-Language: sk
+Autocrypt: addr=linux@slavino.sk; keydata=
+ xsBNBE2fIMwBCADjOr4MY1rKxZnb4hsEdYBDFIHhZO9U3iLN/rNWSFKh3LeERd3Bu5gMz7Hk
+ kn0nsoV2ijRKTLlXE0yzUtoJL+8WdNdWONt//cYcl8Z9V80uGFWfL6h0XWlqlup4XLTPZYz9
+ 7f/k1UsTltiIWd5hK6JU+PA6bFVO3ogq9Nx6ru6pNzQtx6D7D5ND9/4rN45MIYolEMMC2/1J
+ bvM8PFdwB+QmJbj2fKb7jboKFS34VrUQ9xsVJske9/lC0MTWN1HT+dFiXvvue7TmwOgBAd/B
+ 24eGPVtcA2D13IRqhItDTS1DtacnzY3Okx/OEMdUIhjqKCBUGHeP22SagvAaKi8UYBBrABEB
+ AAHNIVNsYXZrbyAoTGludXgpIDxsaW51eEBzbGF2aW5vLnNrPsLAkgQTAQgAPAIbAwYLCQgH
+ AwIGFQgCCQoLBBYCAwECHgECF4AWIQTPRq7fQ85fw47NoTmD+aq4ORiNtgUCY9TvHgIZAQAK
+ CRCD+aq4ORiNtoEBB/0d9egzccsfZh7gzMnee8TYgTOMB5rMLB1I+ZUgRwCkjBrOybV4L3sy
+ fxp6OC645HYNYzpxIuQXlPVnHNFHuRaIDb1+2jt6HE3tKOkQEBSUnyQBEWrZM4nc9yA/7//O
+ DleDDMAmMKV4VYprcBTt0aBVEnf+5wP5ykLoqKT6YN/EPNMtmujXtC9lQJgDENx/UAWdFsMZ
+ 5EW89UP3D+Vkd1z4YPSimHAmyXtzrh0zgOyO1NI6WZVoe+ik8leKKH60jBWQT+tFnvAnJyGT
+ w42JNotsVBSLhR2Ra7sdBVTmIV99zBjEqHqcQTWXXN6/6eDy0VrUu1tRWusMS/eWju9gxxDT
+ zsBNBE2fIkoBCACnyY/07Z8fQqdLXInMDP7t8Azx3EUltqAWS/mWO9D+qQRiHi4j6FaOBXui
+ T372S7MWIdu/ydzOFwyv8nQlfiSiT/kHkHhC4F0JcCh4CJZo8HhXql4teF4kqwFsE//A0AW2
+ EmK23g/ldetlsviG/j7lWb+5hddh1BzMZhrZQYxVnFjIfXCHdjB+TZzhG89/F97tDyl2+krx
+ T6YopUNDqRpMQlcHgQaSnzSdykQOYkTOq+Oy8qgceu4xSe4l02S4q8T+SemI7D2NuJ8iRNB8
+ sQkqCYkTo6mBDlIQmkYG0JMQmv1ajWXfyOLq6OtRnKMF6t1y5yxc4peTefyYmHLimyF9ABEB
+ AAHCwHwEGAEIACYCGwwWIQTPRq7fQ85fw47NoTmD+aq4ORiNtgUCZ4tgQgUJHb/IeAAKCRCD
+ +aq4ORiNtj3ZB/4oNyVEtcIa7kRbhUq0pwHwR8Rz15STenOUOr7+Sw4eJX2TO2PWs0CwP1Sq
+ agt1BuiydjVUnk7Exqdx0GSVwsXI20BcC46UQkgutoiBuSynkqh2N2J+exrWdfFHOm5TwWTO
+ oSEO4z8J460jeGs8DyTi+IqMatMQ6FanW7U6kEZupMMz0tqsa5b4o9E4bHS8oxPnKI/Cvufu
+ 3HGg7zW9GcFLjoeuNSXlbuqW9B+P7vTiTjRh5s3x8mlNUr6fjFtIUvJ/FkX/J5IRk5ylADox
+ vURsV90WraN8tJM64uHvOdanFlEC9gD7kVj6ZL+FZ3638pbpDfcNEZkRlffniRzL3lc/
+In-Reply-To: <20250308204559.178294db@gnosticus>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-Ahoj,
-
-Dňa Sat, 8 Mar 2025 20:45:59 +1000 Adam Nielsen <a.nielsen@shikadi.net>
-napísal:
-
+Dňa 8. 3. o 11:45 Adam Nielsen napísal(a):
+>> Not all are logged as negative, i collet (and pair) all yet logged:
+>> 
+>>     LOGEMU         SQLITE3
+>>     3489577139 -> -805390157
+> 
 > If I run this in bash:
 > 
->   $ echo $[0x100000000 - 3489577139]
->   805390157
-> 
-> It gives me the same number you get in SQLite.  This means you are
-> taking a number that needs 32-bits, and storing it in a place that
-> only has 31 bits for storage.  It is probably a signed 32-bit
-> integer, which has 1 bit for sign and 31 bits for the number.
+>    $ echo $[0x100000000 - 3489577139]
+>    805390157
 
-OK, that my initial feel, that it has something with signed/unsigned,
-numbers was correct. Interesting is, that i tried almost the same
-calculation (2^32 - X) with bc, but i must did something wrong (or
-typo), now i get the same result as you... Initial investigation i did
-yesterday at night, i my eyes was really tired.
+For now i add trigger into SQLite DB, to correct value if it is less 
+than zero, seems to work::
 
-> A quick Google suggests SQLite does this automatically.
+     CREATE TRIGGER ulogd_fixsig1
+     AFTER INSERT ON ulog_pkt WHEN NEW.tcp_seq < 0 BEGIN
+     UPDATE ulog_pkt SET tcp_seq = NEW.tcp_seq + (1<<32)
+         WHERE rowid = NEW.rowid;
+     END;
 
-Yes, that is how i understand the SQLite's INT field -- up to 2^63
-positive value, and all other *INT (SMALLINT, BIGINT, etc)
-definitions are just for readability of schema, more or less aliases
-for INT... IMO the same (more or less) applies to UNSIGNED definition.
-
-> This means SQLite or your schema is not at fault, but rather whatever
-> is handling the number before generating the SQL is using integers
-> that are too small (or are incorrectly signed).
-
-Eh, get all (wanted) fields from source/ulogd -i output is not very easy
-task, in mean that is is huge amount of fields, thus prone to mistake.
-Thank for confirmation, that schema is OK (at least in this case).
-
-> Possibly it is something calling printf() and passing %ld instead of
-> %lu for that field.
-
-I don't know, if ulogd2 does some decision based on SQLite's field type,
-or takes into account field's name only...
-
-I see in sources (ulogd_output_SQLITE3.c), eg. the ULOGD_RET_INT32 and
-its ULOGD_RET_UINT32 counterpart, but i don't see that counterpart for
-ULOGD_RET_INT64. For me, it is hard to say if that is important...
-
-regards
+Please, can someone take look on it in ulogd2 code?
 
 -- 
 Slavko
-https://www.slavino.sk
+https://www.slavino.sk/
+
