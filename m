@@ -1,109 +1,128 @@
-Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from sender4-op-o12.zoho.com (sender4-op-o12.zoho.com [136.143.188.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E997122258F
-	for <netfilter@vger.kernel.org>; Tue, 11 Mar 2025 07:53:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741679602; cv=none; b=FsgzhfaFm1l4F1BDd6z/RAbzoy6WW2lJv1Mcy2XBpz+ePlMDg77jEAnTXASoMm43QXEh/OT85Wp4bDFD6GaPTqLEayTXOo1NfuP0OGYxLtIVN2T6BFE87eO4mGfFxWsGShIsS+4AYx9jTqCzeWx0675vMkiHyQp8Xcy7ui3iIeY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741679602; c=relaxed/simple;
-	bh=UbRdiN+Dg7KsElgP+jRghMRKmIg08NP8Z5WuNSFpv/8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=idF5drCPPkzmYsjjqfz8v2iVOLIVcDSOVSsCtTt3g/KAQUHHIOHmpeAAXbitD/uHodyca4VlI2S+M39rKir8XXnV0H6nDHocdkCECruMqsapN/8YGuxTU178qjIWzZsunnIe6jluwacDXIFoFFPEIjOx5CYhnIDKI5R9Up/BVs8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=cstSp8WK; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=ePSe0j/U; arc=none smtp.client-ip=185.25.250.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CC1378F5D
+	for <netfilter@vger.kernel.org>; Tue, 11 Mar 2025 13:33:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.12
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1741700007; cv=pass; b=sUSymhkfANsEEUCRui83RCfV2MepEwivPQEUNdYLTnw0EQAZ0XdjBFufLT58UCSiqjB0Y++cDlyA7U1VvOsKzKx+AV3iWbXNKRD4hagnyFsWg8mB/zjoRa+JFjEdFD+ehk7ZcPAzmCElJw7zrBaMLUvUq+9RH9Y2cCGcABQH/l8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1741700007; c=relaxed/simple;
+	bh=JGMHSvRlnxy21r/xgVFnIOA3oWMOJMd8+tTDh5pxS8M=;
+	h=Date:From:To:Message-ID:In-Reply-To:Subject:MIME-Version:
+	 Content-Type; b=bnxewXGglH0//7a0f6pSEgk0EwQH+w/abi136xfHxS9nefXr0OqPv3fnhVJYM4l0teuasII8IA+V32z/1YOKxzlISMvX6jrPzsMNYNzp+6m3hCaxOZMehAdETwShA5UtOSSKGJGwWwjvLKaEDK4p77EemmnZbcam4FPm3TtFmtU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=eray.ca; spf=pass smtp.mailfrom=eray.ca; dkim=pass (1024-bit key) header.d=eray.ca header.i=bilgin@eray.ca header.b=J9WDoLnO; arc=pass smtp.client-ip=136.143.188.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=eray.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=eray.ca
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="cstSp8WK";
-	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="ePSe0j/U"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
-	s=r2025; h=Content-Type:In-Reply-To:Autocrypt:From:References:To:Subject:
-	MIME-Version:Date:Message-ID:From:Reply-To:Sender:Subject:To:Cc:Date:
-	MIME-Version:Content-Type:Message-Id:In-Reply-To:References:Autocrypt;
-	bh=jM+a82EYSd/nLBGIIiWVF0WOv5jhDkN+D1qaN+T7/ak=; t=1741679599; x=1742889199; 
-	b=cstSp8WKtHX94TB8RgUTv1Ju13QmCupXNe16LdbPE5v4iXg/jaQ843NmfvX+ONAfNvYlvlKfs5C
-	hgwO71SNjJfapaZt0S502Yu2EkPzHT4HOQ1GhswXEXCgzJ8E98/VESsnREASMUjg3cIYouHMV3DHi
-	AUcq0NhbIjC9B/QKW/c=;
-DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=slavino.sk; s=e2025; h=Content-Type:In-Reply-To:Autocrypt:From:References:
-	To:Subject:MIME-Version:Date:Message-ID:From:Reply-To:Sender:Subject:To:Cc:
-	Date:MIME-Version:Content-Type:Message-Id:In-Reply-To:References:Autocrypt;
-	bh=jM+a82EYSd/nLBGIIiWVF0WOv5jhDkN+D1qaN+T7/ak=; t=1741679599; x=1742889199; 
-	b=ePSe0j/Us+gZsWMGGOFzEOgZneczrh4LtuQHZEE6ng45zapQ+J7htP2ZFNSkgqghM3TyKPGvvzj
-	88EhZFBc3DA==;
-Received: from dovex.skk ([192.168.10.12])
-	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96)
-	(envelope-from <linux@slavino.sk>)
-	id 1truQG-002Yi8-2f
-	for netfilter@vger.kernel.org;
-	Tue, 11 Mar 2025 08:53:08 +0100
-Message-ID: <bf1fc6b8-1cbd-43a5-945c-a34f9fe3418f@slavino.sk>
-Date: Tue, 11 Mar 2025 08:53:07 +0100
+	dkim=pass (1024-bit key) header.d=eray.ca header.i=bilgin@eray.ca header.b="J9WDoLnO"
+ARC-Seal: i=1; a=rsa-sha256; t=1741700002; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=kd3IUHtkBIfhB32a6wGiBYubwHUHQRW5r9gsHiGlAR7ekyn33Sye3GntPDILLsjhrui9t8ZyXJWmet05v1Ku1viERGj170+6r23RDxV2AySVVnyKDLZ9Ro25Im2Z1RMUPCzfVkML72ThoOTv6u6JIGjY4S2u2EKR3mvEpdAf0XA=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1741700002; h=Content-Type:Content-Transfer-Encoding:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To:Cc; 
+	bh=JGMHSvRlnxy21r/xgVFnIOA3oWMOJMd8+tTDh5pxS8M=; 
+	b=JXNQH1xORC9C59E/s1d6LvnREtdJeJypOj13bBNfGmTYVOw9Nmw2vJXhhqGFGsaBNYEgiyuAfa34NV2XCughlZGz5dQ1Licc5oD5QyzZ6O8yz0hLhKbQ1wONlDyt8xf6E8WTJFZH6uf62kKuPbFPm0YBtz3y8y0wyz63OFz37KA=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	dkim=pass  header.i=eray.ca;
+	spf=pass  smtp.mailfrom=bilgin@eray.ca;
+	dmarc=pass header.from=<bilgin@eray.ca>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1741700002;
+	s=zmail; d=eray.ca; i=bilgin@eray.ca;
+	h=Date:Date:From:From:To:To:Message-ID:In-Reply-To:Subject:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To:Cc;
+	bh=JGMHSvRlnxy21r/xgVFnIOA3oWMOJMd8+tTDh5pxS8M=;
+	b=J9WDoLnOl4YCHmTtJEJ4omzM4TIJAWE6CHfkFpEE5175s6NqUYd4VSjnqr1bqwf2
+	MjXqYHG21vIKgxP+xLJPfeTGgfIgNapmdqU71nkPWlCqvIP/8FUySYMqKyTz+Iew/34
+	+z76HpviL9x2a1RS9fogI7wSu3/YVJP5xuOEy25U=
+Received: from mail.zoho.com by mx.zohomail.com
+	with SMTP id 1741700000251640.8929313903682; Tue, 11 Mar 2025 06:33:20 -0700 (PDT)
+Date: Tue, 11 Mar 2025 09:33:20 -0400
+From: Eray Bilgin <bilgin@eray.ca>
+To: "netfilter" <netfilter@vger.kernel.org>
+Message-ID: <1958568e9a1.be49b3ad53051.1702359735061948725@eray.ca>
+In-Reply-To: 
+Subject: connection tracking fails to update udp timer
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: ulogd2, sqlite3 and negative TCP Seq numbers
-To: netfilter ML <netfilter@vger.kernel.org>
-References: <20250308111405.441477a1@bonifac.skk>
- <20250308204559.178294db@gnosticus>
-From: Slavko <linux@slavino.sk>
-Content-Language: sk
-Autocrypt: addr=linux@slavino.sk; keydata=
- xsBNBE2fIMwBCADjOr4MY1rKxZnb4hsEdYBDFIHhZO9U3iLN/rNWSFKh3LeERd3Bu5gMz7Hk
- kn0nsoV2ijRKTLlXE0yzUtoJL+8WdNdWONt//cYcl8Z9V80uGFWfL6h0XWlqlup4XLTPZYz9
- 7f/k1UsTltiIWd5hK6JU+PA6bFVO3ogq9Nx6ru6pNzQtx6D7D5ND9/4rN45MIYolEMMC2/1J
- bvM8PFdwB+QmJbj2fKb7jboKFS34VrUQ9xsVJske9/lC0MTWN1HT+dFiXvvue7TmwOgBAd/B
- 24eGPVtcA2D13IRqhItDTS1DtacnzY3Okx/OEMdUIhjqKCBUGHeP22SagvAaKi8UYBBrABEB
- AAHNIVNsYXZrbyAoTGludXgpIDxsaW51eEBzbGF2aW5vLnNrPsLAkgQTAQgAPAIbAwYLCQgH
- AwIGFQgCCQoLBBYCAwECHgECF4AWIQTPRq7fQ85fw47NoTmD+aq4ORiNtgUCY9TvHgIZAQAK
- CRCD+aq4ORiNtoEBB/0d9egzccsfZh7gzMnee8TYgTOMB5rMLB1I+ZUgRwCkjBrOybV4L3sy
- fxp6OC645HYNYzpxIuQXlPVnHNFHuRaIDb1+2jt6HE3tKOkQEBSUnyQBEWrZM4nc9yA/7//O
- DleDDMAmMKV4VYprcBTt0aBVEnf+5wP5ykLoqKT6YN/EPNMtmujXtC9lQJgDENx/UAWdFsMZ
- 5EW89UP3D+Vkd1z4YPSimHAmyXtzrh0zgOyO1NI6WZVoe+ik8leKKH60jBWQT+tFnvAnJyGT
- w42JNotsVBSLhR2Ra7sdBVTmIV99zBjEqHqcQTWXXN6/6eDy0VrUu1tRWusMS/eWju9gxxDT
- zsBNBE2fIkoBCACnyY/07Z8fQqdLXInMDP7t8Azx3EUltqAWS/mWO9D+qQRiHi4j6FaOBXui
- T372S7MWIdu/ydzOFwyv8nQlfiSiT/kHkHhC4F0JcCh4CJZo8HhXql4teF4kqwFsE//A0AW2
- EmK23g/ldetlsviG/j7lWb+5hddh1BzMZhrZQYxVnFjIfXCHdjB+TZzhG89/F97tDyl2+krx
- T6YopUNDqRpMQlcHgQaSnzSdykQOYkTOq+Oy8qgceu4xSe4l02S4q8T+SemI7D2NuJ8iRNB8
- sQkqCYkTo6mBDlIQmkYG0JMQmv1ajWXfyOLq6OtRnKMF6t1y5yxc4peTefyYmHLimyF9ABEB
- AAHCwHwEGAEIACYCGwwWIQTPRq7fQ85fw47NoTmD+aq4ORiNtgUCZ4tgQgUJHb/IeAAKCRCD
- +aq4ORiNtj3ZB/4oNyVEtcIa7kRbhUq0pwHwR8Rz15STenOUOr7+Sw4eJX2TO2PWs0CwP1Sq
- agt1BuiydjVUnk7Exqdx0GSVwsXI20BcC46UQkgutoiBuSynkqh2N2J+exrWdfFHOm5TwWTO
- oSEO4z8J460jeGs8DyTi+IqMatMQ6FanW7U6kEZupMMz0tqsa5b4o9E4bHS8oxPnKI/Cvufu
- 3HGg7zW9GcFLjoeuNSXlbuqW9B+P7vTiTjRh5s3x8mlNUr6fjFtIUvJ/FkX/J5IRk5ylADox
- vURsV90WraN8tJM64uHvOdanFlEC9gD7kVj6ZL+FZ3638pbpDfcNEZkRlffniRzL3lc/
-In-Reply-To: <20250308204559.178294db@gnosticus>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+Importance: Medium
+User-Agent: Zoho Mail
+X-Mailer: Zoho Mail
 
-Dňa 8. 3. o 11:45 Adam Nielsen napísal(a):
->> Not all are logged as negative, i collet (and pair) all yet logged:
->> 
->>     LOGEMU         SQLITE3
->>     3489577139 -> -805390157
-> 
-> If I run this in bash:
-> 
->    $ echo $[0x100000000 - 3489577139]
->    805390157
+i noticed this when my voip phone mysteriously stopped ringing. i use
+a tp-link router as a gateway which i'm certain is running
+linux/netfilters, though i don't know what version. i've observed the
+same problem on my raspberry pi running iptables v1.8.2.
 
-For now i add trigger into SQLite DB, to correct value if it is less 
-than zero, seems to work::
+usually the first thing a sip client does is register with the provider's
+server. this has the effect of punching a hole through any firewalls in
+its path. after that initial registration, my provider keeps the
+connection alive by sending messages every 60 seconds.
 
-     CREATE TRIGGER ulogd_fixsig1
-     AFTER INSERT ON ulog_pkt WHEN NEW.tcp_seq < 0 BEGIN
-     UPDATE ulog_pkt SET tcp_seq = NEW.tcp_seq + (1<<32)
-         WHERE rowid = NEW.rowid;
-     END;
+when netfilters sees traffic moving back and forth, the connection should
+transition to the assured state and set the expiration timer to
+nf_conntrack_udp_timeout_stream, which by default is 120 seconds.=C2=A0but =
+in
+this case the timer is reset to nf_conntrack_udp_timeout, which is 30
+seconds. the connection does not appear as "assured".
 
-Please, can someone take look on it in ulogd2 code?
+pi@zawardo:~ $ sudo conntrack -L | grep 5060
+conntrack v1.4.5 (conntrack-tools): 26 flow entries have been shown.
+udp=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 17 3 src=3Dx.x.53.184.sip dst=3Dx.x.126.7=
+3 sport=3D5060 dport=3D5060
+src=3Dx.x.126.73 dst=3Dx.x.53.184 sport=3D5060 dport=3D5060 mark=3D0 use=3D=
+1
 
--- 
-Slavko
-https://www.slavino.sk/
+this means that the connection is already expired before the first
+keep-alive arrives. if the router is using nat or filtering new connections
+then the messages bounce back until the client opens a new connection
+from inside.
+
+pi@zawardo:~ $ sudo tcpdump -i ppp0 udp port 5060 or icmp
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on ppp0, link-type LINUX_SLL (Linux cooked), capture size 262144 =
+bytes
+16:28:46.010042 IP x.x.53.184.sip > sip.example.com.sip: SIP: REGISTER sip:=
+sip.example.com:5060 SIP/2.0
+16:28:46.018303 IP sip.example.com.sip > x.x.53.184.sip: SIP: SIP/2.0 401 U=
+nauthorized
+16:28:46.021205 IP x.x.53.184.sip > sip.example.com.sip: SIP: REGISTER sip:=
+sip.example.com:5060 SIP/2.0
+16:28:46.030034 IP sip.example.com.sip > x.x.53.184.sip: SIP: SIP/2.0 200 O=
+K
+16:28:46.031020 IP sip.example.com.sip > x.x.53.184.sip: SIP: OPTIONS sip:z=
+awardo@x.x.53.184:5060 SIP/2.0
+16:28:46.031326 IP sip.example.com.sip > x.x.53.184.sip: SIP: NOTIFY sip:za=
+wardo@x.x.53.184:5060 SIP/2.0
+16:28:46.034408 IP x.x.53.184.sip > sip.example.com.sip: SIP: PUBLISH sip:z=
+awardo@sip.example.com:5060 SIP/2.0
+16:29:46.030460 IP sip.example.com.sip > x.x.53.184.sip: SIP: OPTIONS sip:z=
+awardo@x.x.53.184:5060 SIP/2.0
+16:29:46.030587 IP x.x.53.184 > sip.example.com: ICMP x.x.53.184 udp port s=
+ip unreachable, length 492
+16:29:46.530506 IP sip.example.com.sip > x.x.53.184.sip: SIP: OPTIONS sip:z=
+awardo@x.x.53.184:5060 SIP/2.0
+16:29:46.530619 IP x.x.53.184 > sip.example.com: ICMP x.x.53.184 udp port s=
+ip unreachable, length 492
+
+i've tested this with a few different sip servers and it doesn't matter
+whether the pi is forwarding the connection or initiating the connection
+itself.
+
+before you ask me to update netfilters, just know i'm more=20
+interested in learning why this occurs since it seems to be=20
+contrary to what i know about how connection tracking
+should work. if it is a known bug affecting older versions of
+netfilters then i would appreciate any documentation that might
+persuade tp-link to update their firmware.
+
+yours,
+
+eray
+
 
