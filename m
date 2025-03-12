@@ -1,93 +1,97 @@
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f180.google.com (mail-il1-f180.google.com [209.85.166.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1CF21DFF7
-	for <netfilter@vger.kernel.org>; Wed, 12 Mar 2025 16:13:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 987FF156C62
+	for <netfilter@vger.kernel.org>; Wed, 12 Mar 2025 18:03:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741796008; cv=none; b=NZaR82aNgLxB4JkEd7MvMqNJ17YYyuZ6WSsiXMTOM9SdlqVCcklO9UvvLT8CXRnUW4DWXRtN38xcx5ck8hRvAEBBuWdaegbHMOJyXqZsqowIgk93Bf6lbAzWIC0E7j1mPpS6GlpzlwxU6mi7a0T195AjlHXz6wzfF86BrNPrfb0=
+	t=1741802586; cv=none; b=s0FWGI+3ym6R238eUT6Qf1U0GX+gnpHsTskIKB9gk9AgAiReY7a9jOt4eF7rrgBGyPrilE77ZYy/icfTNxTrz2YhGg0ioyDmjL0UqFnn7aRoZ5wL/KnxcucDV3b5kdKdGHulrBoSTLPJNO3i5Y5erLJAweuZv0kqqBdQn015zZg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741796008; c=relaxed/simple;
-	bh=OZcdBU8tq5GGPuRV/su4N3mMQsZpmu38kgPhhyfrZio=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KBsOSswT5zpbNfXj3amoqfHg1qb/4zASqwXDVzGeIHL1IfjeV7+4VfmB1nbA2sQPUu0QS+ZoJOO9Zt/v4IMYRcINPIhFvUOmodDeRZ2Ztv2IcZIFg/5Z9NOgxbI3OW3XEUQbioS50N6t2XWUEmsLtkMb1hKLd2+rjlnjgiT2KIw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@strlen.de>)
-	id 1tsOhw-000863-Ff; Wed, 12 Mar 2025 17:13:24 +0100
-Date: Wed, 12 Mar 2025 17:13:24 +0100
-From: Florian Westphal <fw@strlen.de>
-To: Antonio Ojea <antonio.ojea.garcia@gmail.com>
-Cc: netfilter@vger.kernel.org
-Subject: Re: netfilter expected behavior for established connections
-Message-ID: <20250312161324.GB28069@breakpoint.cc>
-References: <CABhP=tYOynShd82rwVuDMJDTE8LcM6+FHwx7Tfuk183EW+ipPA@mail.gmail.com>
+	s=arc-20240116; t=1741802586; c=relaxed/simple;
+	bh=D58rwvSsveCMjce9qsI+fjk4c630RddW2DutBE1V6sw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tUZjwiopDf7/WlNA9aL5OOQLIp9ob3klhixmQgfOOrdyH3AIb5aOCb6y048MqHNhpqkEpJ8ljwhkCNWTC06FkIZvAGCb5WeF6dVkCi2n4tycOq4g9zHwWy7EJ3eGz13+5qNCoO6jVnhESgLstEcXNVmnrDLTGWu8HiDOOmuIoYg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TkM/isv6; arc=none smtp.client-ip=209.85.166.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TkM/isv6"
+Received: by mail-il1-f180.google.com with SMTP id e9e14a558f8ab-3d434c84b7eso564585ab.1
+        for <netfilter@vger.kernel.org>; Wed, 12 Mar 2025 11:03:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741802583; x=1742407383; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=D58rwvSsveCMjce9qsI+fjk4c630RddW2DutBE1V6sw=;
+        b=TkM/isv6QGHiTMIxT+SFm8K0I0+55vWHPMvJIAU5/nKL8A2/XNLg2SiHt/DU0GayqQ
+         hLHPumdiMnHqobGsZp3I8LRk7S/ybYMjKgT9OE/CMMuXCZM5vn7+NrKSMCdlmGM7sMgW
+         WHEubxr4/5GWcN2qMjEfWrOTaIhO/XmkqA7Oku5OTjUhkR1QxnrlXofG8rXOdy92Oi3f
+         0E2XINdEYXMvHCsLHf7NqgQciq4J2sWhJv6WmRUrJ3S/+p2CSLDdct9cdP7vGWy3q39w
+         Tj0FgbWv/jhxPsLUTlJYBtI2Ysw5Ndng32qw4DQFRxUVDW8JX+wd077LtPte3GIcG1vO
+         Dv5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741802583; x=1742407383;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=D58rwvSsveCMjce9qsI+fjk4c630RddW2DutBE1V6sw=;
+        b=ROGMGHcUUuGFY/h45fMG3z/Xe9VWzb/WeqqxUWb3NPGKYGhCgszClqlf4NEojjwYFD
+         kWTYXvXuQTfXYwqraDFOp49xGeTa+OA7ERRqKCZYyoQCpm3Y8mcAl3Uw7wF5XdRlMSy8
+         Y76IHbA0qqbskOOBMXf7a2BjXhRU1howaoGEUxtkj8DLSWd9Nr6zoneEnC7yEullQ87V
+         nM+M37EXo4eRXHB2ubtCtMdqIpKkVnbb1zraIqXAW8VWnMdtZwpiuapnDNKN5+ZR0O4w
+         He2R8RJUQsgKwxsi8za96JZKoutDF3mfYpHNiX5PeZrRd4Cv+1zUmEPjfLOWzIopCdUr
+         3Irw==
+X-Gm-Message-State: AOJu0YwRq0B94nqzgeYgYqTlAK8G4b7KMV9VYP0tCG0dWwLjyzCIDQbV
+	ArELMq1Smp1auHditJaZZ45YXGDd5IJg9jjHwe6Fz7Z4GHEMYglGA6P5GjdwCqBCaZ8qUsOhq1Q
+	pLso37fvK0zxGgNNCfGzal1fmLvU=
+X-Gm-Gg: ASbGncuFU5hkuUWoFXmErRuvpFlafXP4bJVfrSAsyEtrVHgSMmK0GHe7D0dxSykr/Yg
+	I1/lnR0GrdmkWC3X3HLXiy6slS90v4eVDzAhDnMUDR9RvESUAe/I0GQdRBxEsE2ZqJrzh7lnS2a
+	Y1m0jc2sRawrK7N86x/nSdtveAWmjfByL4nA==
+X-Google-Smtp-Source: AGHT+IF53BZyl+Y/S+JLKJygXiL+vNsGiAIE23+M6YST4XK5N81wSxLUjv+2ygC4PqVD60Smgj1Z4FMn9AIMEcNXgto=
+X-Received: by 2002:a05:6e02:1d85:b0:3cf:c773:6992 with SMTP id
+ e9e14a558f8ab-3d468921f4amr106597235ab.12.1741802583608; Wed, 12 Mar 2025
+ 11:03:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABhP=tYOynShd82rwVuDMJDTE8LcM6+FHwx7Tfuk183EW+ipPA@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <CABhP=tYOynShd82rwVuDMJDTE8LcM6+FHwx7Tfuk183EW+ipPA@mail.gmail.com>
+ <20250312161324.GB28069@breakpoint.cc>
+In-Reply-To: <20250312161324.GB28069@breakpoint.cc>
+From: Antonio Ojea <antonio.ojea.garcia@gmail.com>
+Date: Wed, 12 Mar 2025 19:02:26 +0100
+X-Gm-Features: AQ5f1JoEP_84ng9iPBQXs4DD-_3kQkmY_1CQ1hJxZ8tlZ7cgUdeEwVbtpwJoBio
+Message-ID: <CABhP=ta1mct0M37VvT5_HA-oQdJ5s8LCRL4AF=Mb=TzZS=0F0Q@mail.gmail.com>
+Subject: Re: netfilter expected behavior for established connections
+To: Florian Westphal <fw@strlen.de>
+Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Antonio Ojea <antonio.ojea.garcia@gmail.com> wrote:
-> I'm puzzled trying to understand the following behavior, appreciate it
-> if you can help me to understand better how this works.
-> 
-> The setup is like this:  Client --- Router --- Server
-> 
-> - Router DNATs to a Virtual IP and Port of the Server.
-> - Client establishes a permanent connection to the Virtual IP.
-> - Router adds a REJECT rule in the FORWARD hook for the Server IP
-> 
-> I expect the REJECT to match the established connection, but the
-> client keeps reaching the Server using the existing connection.
-> 
-> The packets of the established connection do not show up on the traces
-> using nftrace.
-> 
-> Is it possible to "DROP/REJECT" the established connection ?
-> 
-> I've created a selftest to reproduce this behavior, please find it attached.
+> Are you sure this script works as intended?
+>
+> Doing:
+> socat tcp-listen:12345,fork PIPE &
+>
+> socat PIPE:P tcp:127.0.0.1:12345 &
+>
+> echo foo > P
+>
+> ... causes endless traffic, since listener echoes
+> P back, that gets written to P, socat reads from it,
+> eches foo to server, that sends to client, ...
+>
 
-Are you sure this script works as intended?
+heh, I got bitten for that too, that is why I have
 
-Doing:
-socat tcp-listen:12345,fork PIPE &
+echo PING >&3 && read line <&3
 
-socat PIPE:P tcp:127.0.0.1:12345 &
-
-echo foo > P
-
-... causes endless traffic, since listener echoes
-P back, that gets written to P, socat reads from it,
-eches foo to server, that sends to client, ...
-
-Probably you need to use:
-
-socat -u PIPE:P,rdonly ... ?
-
-This config change is also needed:
-
---- a/tools/testing/selftests/net/netfilter/config
-+++ b/tools/testing/selftests/net/netfilter/config
-@@ -81,6 +81,7 @@ CONFIG_NFT_NUMGEN=m
- CONFIG_NFT_QUEUE=m
- CONFIG_NFT_QUOTA=m
- CONFIG_NFT_REDIR=m
-+CONFIG_NFT_REJECT=m
-
-since thats the kernel feature template used by the netdev ci to
-build the test kernel to use.
-
-Another issue: cwd might be readonly, so creating pipe.test will fail.
-
-I suggest to use
-pipename=$(mktemp -u)
-
-so the named fifo is created in /tmp which is writeable.
+the moment that you read it from the fd, it does not come back to the
+socket and you break the loop.
+I like this approach because it guarantees the packet traverse the
+network , but I think we can make it unidirectionally and just dump
+the other side in a
+It is surprisingly more complex than I thought to create a persistent
+connection that you can reuse in the test..
+Let me try to find a simpler way
