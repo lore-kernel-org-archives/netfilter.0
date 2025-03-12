@@ -1,91 +1,114 @@
-Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-b7-smtp.messagingengine.com (fhigh-b7-smtp.messagingengine.com [202.12.124.158])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86A4D1386DA
-	for <netfilter@vger.kernel.org>; Wed, 12 Mar 2025 18:30:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 822611E7C05
+	for <netfilter@vger.kernel.org>; Wed, 12 Mar 2025 19:45:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741804231; cv=none; b=IBWpGY1HYSGY4Eu+y71GiOt7NcSw+0EFlx0KY5FnB/QVM3HlB+asOnZEaz78j11ARq5tf3XliDAprmBPeKDp8Vq/9yEHkncqUXomvZ4Dd4r6UxwVLi7vawJGzpBWR6kU7LTlg3PVm6pARne/j78V0IQguBGwq1uvaBxPUn77+n4=
+	t=1741808725; cv=none; b=iKQ1wD8uEzc0p01hw7y+eC5dU3Ma1xFbcHTklgM7yE7i3LzlwK1jDPSQgDuWn+J3V0p5wnRdGg3PiEn69ezkYL4c00jL9q4zOm70RmNpEC5RQyfLfpluf8AUo/Or0Kbg7TaOV7w9e003pPBxqOX3ESLCEq8R/ZiQGrpQUE7BuII=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741804231; c=relaxed/simple;
-	bh=dnBjRP25fDWTHaXS6GvoUjyWPwAFPjbKZ5wIwcxvGHc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ff7chyBrYToZP3IMxndwT/shZqBfnY4TnDcuu6u1+XJb2KskPGIXnc2Fdte8qGS5clL1PQ+dOEuM5Tc9rVVJscJkcznmDKyBUGHAUmJpqdppiX0Eb+jdrS++44uggKwy6/YzXYaYOCO4FkQqtFkU2UPwFtIwaMnrkmxBBdHBIbU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZJ9tJKR8; arc=none smtp.client-ip=209.85.166.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1741808725; c=relaxed/simple;
+	bh=ICMQbVii7L2nAd3iYnkWKfd7zUucIpQ/ss6kUC9EL6I=;
+	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=huizH/+064B2RZ6n4GHZDa5bh6ApJj/ghE58l1719VW9Q8OphZ7qDNuAjW4uaHk21w/FWvxbpYbStQzK2sPDhYFzGQ+Sse9kfbYOfi2wfrAXttZlJyhzMjZByauciclpduxZ1vmsETk79jR7ygIGyphXFewGD5k9VcqCBOljA0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=XbBFTu4L; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=XXRNOlxc; arc=none smtp.client-ip=202.12.124.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZJ9tJKR8"
-Received: by mail-il1-f177.google.com with SMTP id e9e14a558f8ab-3d46693a5e9so720325ab.3
-        for <netfilter@vger.kernel.org>; Wed, 12 Mar 2025 11:30:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1741804229; x=1742409029; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=dnBjRP25fDWTHaXS6GvoUjyWPwAFPjbKZ5wIwcxvGHc=;
-        b=ZJ9tJKR88WOxCVXc/vpWMc4Nbv+kpw/zZbaX6wozUfJd3CD/EmtCLvsc1Fu+0c0Hty
-         7WCp7pWmtN2wB5FdFS+dgXSD/+1ha0J/rYQ2yWY6XCAyMIm48CVyUjOK4qipVaalHx71
-         S/7cHjix8klG8V5//gjWlq5ZvTdgfd2sHXZ0/2b9WfAL/UMimeif8FeM9ju5/+wf10A/
-         RhnJX7ZWY0jm7VRk/O82m+uC22Lda4NwFJhhUkgdJSPw4wib4QU9qD9fNd2qP/R4lXZf
-         ZLsvqTH0U/Qh+dN6MNUT9hGGexJJOXHBFs/2pUWrqgPiXSKM0qAE1cHx4baNcydzvhRl
-         FJXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1741804229; x=1742409029;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=dnBjRP25fDWTHaXS6GvoUjyWPwAFPjbKZ5wIwcxvGHc=;
-        b=m9ciuhW/jeHRL8iWMOO7uHzHWFWTTxN56tpmniNTZpVQW7fbaXPl/q3odsbcGTHpmq
-         jVQnPP2BrR2oREbsZ+hpI49elmPE+VRZXQspSpx74TjlxTsssnivIhx0328/WBhFcemw
-         v35P0T9KVSy6BP8/YylUPoMvDsALB/wDvn84P/r3fknlNuCvKqaNvQ3Pr27ARrSJ+E07
-         NBNwpsUkOHRs0rLTyEXHp6Az0OCax9yeSv6Oto7NgUKc870L9WiGedGAgtL1V1FHC23y
-         eDK13BfIIOxXzZEdOuFJQS3uOoO+t+H972WryE1zAsW8T2WmCrPEZk0rYHeXiSXTNb56
-         aVeA==
-X-Gm-Message-State: AOJu0YxsPwqI7F82ECFdQw0pGVEtD5k4FiMNFC6GWlUAop4zZCXDDJET
-	3dQR7qoo1V3gAxNIk9Jmrdm3LOEMLU6bn8/gqw3OOonKp0w9XkTxGUvMJ7bKcDJSKZZSLoHep5Z
-	YbUIOuxiOFBHiJmrNSG6CXb+WIDzj7E7v
-X-Gm-Gg: ASbGncvM0PQEWm2qqHft8BYYxZNZPKOMLjK4UaBaW2QPeeubQQVuhE6RSE1NqNLS4DL
-	1HTokiwFoxoRZL/NiYmnN8lWyJjhy28onZl+QLDYFDR/uU2WVtPpo5jTPfaKv2zBSQVH8YR2o6g
-	wXXx1GpvIwh2tQgDGBvpgLwuo=
-X-Google-Smtp-Source: AGHT+IH4zDVMYeiRkVx2FxtBJhCWXOT4o01JC97QGE+CfZVg4xl7Be3IrfW/5wBS5uWhU0/5r5y2ojxpBSiGB27C+4w=
-X-Received: by 2002:a92:1901:0:b0:3d4:6e2f:b493 with SMTP id
- e9e14a558f8ab-3d46e2fb819mr45006665ab.11.1741804229364; Wed, 12 Mar 2025
- 11:30:29 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="XbBFTu4L";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="XXRNOlxc"
+Received: from phl-compute-11.internal (phl-compute-11.phl.internal [10.202.2.51])
+	by mailfhigh.stl.internal (Postfix) with ESMTP id 82178254017A;
+	Wed, 12 Mar 2025 15:45:22 -0400 (EDT)
+Received: from phl-imap-10 ([10.202.2.85])
+  by phl-compute-11.internal (MEProxy); Wed, 12 Mar 2025 15:45:22 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+	 h=cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1741808722;
+	 x=1741895122; bh=/CSUhs3tU7wkN0JnGv7fShFcFfjQ9nHb8AtL8u2PjVY=; b=
+	XbBFTu4LC4kKzFmWRATUP7QNqVpKFn3nSAGaNo5Z3pfWj6cCXSYQAGE4h7Z3R6Ni
+	p00ea0wkN+HBOKH0YLKT2XHK9sRv+6qb/3MrspAHSanzjQ0pUhST3aVsBuRwt3Ey
+	9hUj1cb8Y76EtlX4W6rywwjBW0GG/5tksHnLxF3Iq7cMYzvCIkAPQu6SN2XGw56J
+	xNgaja5hYxBbbxSNDpxm+yA3Taj4kEhqssa1pOO3aDDOCJ5Nq6/7bWSygRJgYtRf
+	peW+4IZpBqUTJESl99mt0Os/5Nvgi0QNdfuMh4RXaK6qIPtYayWApGb7P0o7NsQy
+	R77RnUL9B/Amc7Pfu1kLig==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
+	:x-me-sender:x-sasl-enc; s=fm1; t=1741808722; x=1741895122; bh=/
+	CSUhs3tU7wkN0JnGv7fShFcFfjQ9nHb8AtL8u2PjVY=; b=XXRNOlxcykOFtIAJ6
+	64ByUeJoc84daasOg1O2LsgQ5/GRdsn3aBbIjA16cCYD+SFUnuLVfb7vt8pTsSVd
+	2ds4BCQ8N2GFmEk8W6760bbHDiURl58sYRtDigFjose+3s5dmEb9nvRT5rnyefyb
+	yX7Q78Nf6PRxiegyoaCRnKsdebDuPbx5Ue6Cww9AOSXBjxpFUmmmd0gl9R/ZyBrc
+	tJgWqNJ0Fs6gDmupom57d5RyLKnnpd8BUHiJuPbpv+z+V5wmcYpA6PxSWOo/DhTV
+	gA2JUsBuPHQ1wQLFV0cS22edNrDTvrYXp7POw0a2a/ytzUy6tahNDu+jQepB8RlN
+	Bfrsg==
+X-ME-Sender: <xms:UuTRZ5FDn2YnXlvtX_kD414b4UYcOKA9ZQ6sWADpq7l32UaUaRfFfA>
+    <xme:UuTRZ-UmJhhOResYxoO5lf5vUmr4SAGDRvikiyylVF_9YuXpPYoMVmqsRWphjK4S-
+    FO8jOaYdvk3quTN>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefvddrtddtgdduvdehleegucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggv
+    pdfurfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpih
+    gvnhhtshculddquddttddmnecujfgurhepofggfffhvffkjghfufgtgfesthhqredtredt
+    jeenucfhrhhomhepfdfmvghrihhnucfoihhllhgrrhdfuceokhhfmhesphhluhhshhhkrg
+    hvrgdrnhgvtheqnecuggftrfgrthhtvghrnhepgfeftdefjeeuvddvudffffdtffffudef
+    vdeuueelgedugfekgeekveejteehvdevnecuvehluhhsthgvrhfuihiivgeptdenucfrrg
+    hrrghmpehmrghilhhfrhhomhepkhhfmhesphhluhhshhhkrghvrgdrnhgvthdpnhgspghr
+    tghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheplhgrrhhsrdhnoh
+    houggvnhesghhmgidrtghomhdprhgtphhtthhopehnvghtfhhilhhtvghrsehvghgvrhdr
+    khgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:UuTRZ7KlrPeb17Jjk8UoUOmwPSIx02P4KXQDyyANE77t1XfM0H956w>
+    <xmx:UuTRZ_HkW_Jl1wAQbViNVAqeDLJFsAz4h-kNYNCvLz9ABoBYeBjhxw>
+    <xmx:UuTRZ_XEQAlYGCwhGm0BvOYRnzvZcV6DGSeVBZ9yge2eFo6UE3s09Q>
+    <xmx:UuTRZ6OWSqo1Sm1KZ5q18ittl4A8xJTcX3zKb_3ZIhe01Tu4q15l7g>
+    <xmx:UuTRZ2c9NjJLQjCzRHcRwzxc-9XCnWir-clS0iOV6_kBy4CGC089SSSC>
+Feedback-ID: i2431475f:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 224E63C0066; Wed, 12 Mar 2025 15:45:22 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CABhP=tYOynShd82rwVuDMJDTE8LcM6+FHwx7Tfuk183EW+ipPA@mail.gmail.com>
- <20250312161324.GB28069@breakpoint.cc> <CABhP=ta1mct0M37VvT5_HA-oQdJ5s8LCRL4AF=Mb=TzZS=0F0Q@mail.gmail.com>
- <20250312182021.GA3007@breakpoint.cc>
-In-Reply-To: <20250312182021.GA3007@breakpoint.cc>
-From: Antonio Ojea <antonio.ojea.garcia@gmail.com>
-Date: Wed, 12 Mar 2025 19:29:49 +0100
-X-Gm-Features: AQ5f1JqPUpwS8tn5j1OHhWiDy7pKMCTUK612smJdMkEXv_QvPLJ77vGNLQm2oCw
-Message-ID: <CABhP=tbbS3S=yCViCq82RcG3bYt6=C4i9i7pn-w6nZCzjpyKuA@mail.gmail.com>
-Subject: Re: netfilter expected behavior for established connections
-To: Florian Westphal <fw@strlen.de>
-Cc: netfilter@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Date: Wed, 12 Mar 2025 19:44:25 +0000
+From: "Kerin Millar" <kfm@plushkava.net>
+To: =?UTF-8?Q?Lars_Nood=C3=A9n?= <lars.nooden@gmx.com>,
+ "Linux Netfilter Users List" <netfilter@vger.kernel.org>
+Message-Id: <34c26829-a535-43b5-accd-884f4acd0614@app.fastmail.com>
+In-Reply-To: <6eec303a-752f-41e7-a903-37b3614d170b@gmx.com>
+References: <6eec303a-752f-41e7-a903-37b3614d170b@gmx.com>
+Subject: Re: Dynamically appending addresses to a named set
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, 12 Mar 2025 at 19:20, Florian Westphal <fw@strlen.de> wrote:
+On Wed, 12 Mar 2025, at 4:08 PM, Lars Nood=C3=A9n wrote:
+> Hello,
 >
-> Antonio Ojea <antonio.ojea.garcia@gmail.com> wrote:
-> > heh, I got bitten for that too, that is why I have
-> >
-> > echo PING >&3 && read line <&3
-> >
-> > the moment that you read it from the fd, it does not come back to the
-> > socket and you break the loop.
+> In NFTables, I have created a named set called 'bar' in the chain input
+> in the table foo.  I can add elements to the set manually,
 >
-> AFAIU the read could happen before socat managed to read from
-> the pipe (so nothing is sent over network).
+> # nft add element ip foo bar { 192.168.2.2 }
 >
-> Or there could have been several writes over the network,
-> not just 'exactly one write'.
+> However, I am not able to guess the syntax to have a regular NFTables
+> rule do the appending automatically.  I've tried a lot of permutations
+> of the following, but always with fatal errors,
+>
+> # nft add rule foo input tcp dport 22 counter add @bar { ip saddr }
+> Error: Could not process rule: Operation not supported
+> add rule foo input tcp dport 22 counter add @bar { ip saddr }
 
-I tcpdumped to verify the behavior, but let me work on it and use a
-different approach that is not so racy and random, I just wanted to
-validate my assumption on the expected behavior
+For the kernel to raise ENOTSUP does not indicate an error of syntax. Th=
+e bytecode intended for the nftables VM will already have been compiled =
+at this point.
+
+I suspect that your set has been declared with the "interval" flag in ef=
+fect, in which case updates from the packet path are not allowed. As far=
+ as I can tell, this constraint is undocumented.
+
+--=20
+Kerin Millar
