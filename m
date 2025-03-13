@@ -1,123 +1,83 @@
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f170.google.com (mail-il1-f170.google.com [209.85.166.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B15B262D35
-	for <netfilter@vger.kernel.org>; Thu, 13 Mar 2025 08:59:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A6BF1F3FE3
+	for <netfilter@vger.kernel.org>; Thu, 13 Mar 2025 23:24:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1741856363; cv=none; b=TU49afRzb3zShaSsBpBGJ+yEVDzShQ5CCLe6DRi1bi+XS0vq9npwHRnRdNTbnrzJ5QC/4bnw9CiLYZktca9lL093uDR41zYcCDUSvOYX3V1Cb8i0L5hkKAU90YsZOHYdIejEvK9crxGkeyNXRXznXcJPtMPmcXLrh5btzH8XGMk=
+	t=1741908258; cv=none; b=jciBOgO+b7ETGflU7HiZQ4EfSf+zod5Difv4FLL+lwlrmqr3v+tP52g9+/LYDWOLLGikZP7/O3/ZWDU1WoaQk6Xvq7oa1SrarQ3g2UlD8QCeBBYZInJnyhfgsk3B1iSfY4jfHK1jZmAqrS6XwYyPP7k+wTlolE6z1MMHcxML5UY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1741856363; c=relaxed/simple;
-	bh=dr4koQRr0uq/8OR7Sd5tePNfcVptOKsmgvUWjL/hD2w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cblpKyHnI1SG0sQuQ/qC9l1fJiS5tIhAW+bcVsRQ3Z5JBYp0TynXZ1M1EifYQ+rs4rtRxQhWZp02a+U6rrrGDN5fpr42y6hhAdtPAHueEHkKaNOFSscUJI1EuhC+GZIivT50hALwgRKpfkSYDJuOjWuoLbYCgOhDQIomq3MJhCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=fMCoGChO; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=fMpZwyCs; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+	s=arc-20240116; t=1741908258; c=relaxed/simple;
+	bh=r8mWz79eZNE3VNFVIZ4FTYfBXsMPqe5vEDm9mL4/1Us=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ApFV4ubM3sXOmeULJaPQqX4XvLqyDLWjc2ExxO4qZ3fQfSzI0v04ubfiTvnAvQRLluJD5EQq52Agt8TMShSw9R+8oJxnKUUVj7XqQ6lgzfwHjH+HlUX6SlFx30ciIacUEcnbPDiLIi6pdjzYD4o+JgZQuNQ7kevyEs5+IK+xT9g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aUQNlk3k; arc=none smtp.client-ip=209.85.166.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="fMCoGChO";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="fMpZwyCs"
-Received: by mail.netfilter.org (Postfix, from userid 109)
-	id 6E074602A5; Thu, 13 Mar 2025 09:59:14 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1741856354;
-	bh=YSJP83lhJxuxyRKvy8YNJxRmOWvmqEY3QB6nnO6hBmI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fMCoGChOifteIxxcEGKtx1cnFu9hZ/2h4n36NJxRfl0p+kGqq+ltC9vSYhj27SzIa
-	 VC50TkmeouTCIsBJgTneljqs6zb89dxLI5pwubcBdgQka25QT4ye0Jzr1jhrw8AewK
-	 VOeiCn7LtGUBMxkMsDduy0W4E7JzzdpYfLCgTuiF2HiiN2yWAI+OHY+Mu9mD9Zoxku
-	 A0QgxhuugNpaJ3TfUpKGP2MeVTtwpDJYFVaBM+hllXDEin6iehbhw6MoOlRAXIkLBZ
-	 NKHSuBA9BmkBTgBWe43nzMnLakIHFlLc19gIVVhELxgJulobi7nHvUc10LiIfXOgXB
-	 wpAomqUdyrZ4g==
-X-Spam-Level: 
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 84D9D602A0;
-	Thu, 13 Mar 2025 09:59:13 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1741856353;
-	bh=YSJP83lhJxuxyRKvy8YNJxRmOWvmqEY3QB6nnO6hBmI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fMpZwyCsgeUbg+ca/GvcYOaSXPCnzzJcD7lWl1F4lN8L+/wWiDKGkkO0JbHBVFr4r
-	 6ZMQxbnubnbk33wGlyimO2b+1lFz8rPnNG3CxYU9VYyPXRAUaq+NGwr/3Er8rC4FES
-	 xW/50Ji94WgPksQzAnOT7c1jo6+lReF7COGHmjtJ2hEKBb0/s3BHKKHAX3j6ULAF16
-	 GtHpeJ8IhlGXGOuRZDmpKhrNn/0ilsj+2MXtDc3u/Q8qQMVfaHlx4qe1CqWl0WgP4u
-	 dd2fSiAIUUcbJQQ4giA6MW0+epdzV3SpsP2V3PjoDZl1gGOrr6Lb2OLS5GLD+YCmhj
-	 FOVpH9lA2TFyw==
-Date: Thu, 13 Mar 2025 09:59:11 +0100
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Lars =?utf-8?Q?Nood=C3=A9n?= <lars.nooden@gmx.com>, f@calendula
-Cc: Linux Netfilter Users List <netfilter@vger.kernel.org>
-Subject: Re: Dynamically appending addresses to a named set
-Message-ID: <Z9KeXyPhYJHsXFqg@calendula>
-References: <6eec303a-752f-41e7-a903-37b3614d170b@gmx.com>
- <34c26829-a535-43b5-accd-884f4acd0614@app.fastmail.com>
- <Z9Hk8SsJwZArWo9C@calendula>
- <7773800a-a467-4821-8ee0-bab3bc001ab7@app.fastmail.com>
- <Z9IFgS-NOhJKUsFk@calendula>
- <cd939795-b632-4eba-9ff0-c003c4419ba0@gmx.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aUQNlk3k"
+Received: by mail-il1-f170.google.com with SMTP id e9e14a558f8ab-3d45875d440so6967745ab.0
+        for <netfilter@vger.kernel.org>; Thu, 13 Mar 2025 16:24:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1741908254; x=1742513054; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=r8mWz79eZNE3VNFVIZ4FTYfBXsMPqe5vEDm9mL4/1Us=;
+        b=aUQNlk3kz8ayqpyrAY1oEDsPWngEsJL/bRpFniJqOE00AyiS8nit2WGECB76lks9ux
+         j93scXOEbNEEEHu1Vk5uPMThW3wFOx6sSupAtCaMjmvXbSecb+pQIsd6fEn/zSox7YQQ
+         ZDFBCADmxtFTl7MekumSAGOsY0VoYdxYBxsjC4Jc1iFHifMjfSaoUAkIpiPp9s/i9c6p
+         yGb8FEMqdh9mVota3gW97JkqBTo04HtRo2DrypsP38CZW8pUQAVzqSLLN2X0AKLfD1MC
+         K4eBwji0l59fxSPznHgATfA7dSuYtQ2rEpgwWvELZHGNTYOk9uflwUWgD09JZ2Qn5duA
+         UaRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1741908254; x=1742513054;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=r8mWz79eZNE3VNFVIZ4FTYfBXsMPqe5vEDm9mL4/1Us=;
+        b=T6/flO+cfHeMu//X9F2vZ0nN+5uLeXQ6gwjRL/swGRLHSdcL74ephpxnEHcdsqGoM7
+         ehDWsFtePeya3xcgNNIuIYwtlQDqCpUOdx4rHhvRgWymm0dZKxlz+SJ0woZmMjpZCtBp
+         BQyE2trL6fROLQNnL1cbF3qApQzVLsYutBQWDWvXQFM0mokzgx/i/42X27roUgxAyaLT
+         JAAzjvHpQN/xY5zz+TJRIuncxrTVLqV3n4/O10xkF/lCr1xryNJNzi8kzXA1oNjJxPl0
+         V/dGjpOKmtLgJIync232YGa0MmNgLrTh9wNKXlj37QPP1gL0zDln5MWEdqh5JDhAYFX9
+         46Pw==
+X-Gm-Message-State: AOJu0YxECiF5YO6YOij7Wo9jGIBbXV+8InCI7xDo/ICOs7E60I7IYFOi
+	UoUHj06oYSZjyoaNwR/S2rxdhL8PMq5/uVU7yThGxlQ53wJdeYBfItUgpkW8s3N94qq7ciPcv/l
+	oIVfaopSFlpnn+idcBSrcZuMRuMacMjI/IMI=
+X-Gm-Gg: ASbGncsxouzv2NjRcgW/TTxdwVXccKG2tdIFtfZGW5MAthStdcUkwXqKbu2gWPl0793
+	SgYx3kyGbcdPA8pvXdpJ5twNJKbhG0HTVHv79C2HPfse+V6QHNBMzguyUmsemx0y8j3T0dwiKBR
+	UlhPYnsGz6yHdsIRyVE80i3SKx
+X-Google-Smtp-Source: AGHT+IE4KnP/PrhKRnnVdZR6C95iiDyNidrJ9LU46RMkcVlr8Fsx2ndCYirlKiB02PS1uloCp1yQLedcjcvn6iMumGw=
+X-Received: by 2002:a05:6e02:746:b0:3d4:6ff4:261e with SMTP id
+ e9e14a558f8ab-3d48397f84amr3339575ab.0.1741908254410; Thu, 13 Mar 2025
+ 16:24:14 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <cd939795-b632-4eba-9ff0-c003c4419ba0@gmx.com>
+References: <CABhP=tYOynShd82rwVuDMJDTE8LcM6+FHwx7Tfuk183EW+ipPA@mail.gmail.com>
+ <20250312161324.GB28069@breakpoint.cc> <CABhP=ta1mct0M37VvT5_HA-oQdJ5s8LCRL4AF=Mb=TzZS=0F0Q@mail.gmail.com>
+ <20250312182021.GA3007@breakpoint.cc> <CABhP=tbbS3S=yCViCq82RcG3bYt6=C4i9i7pn-w6nZCzjpyKuA@mail.gmail.com>
+In-Reply-To: <CABhP=tbbS3S=yCViCq82RcG3bYt6=C4i9i7pn-w6nZCzjpyKuA@mail.gmail.com>
+From: Antonio Ojea <antonio.ojea.garcia@gmail.com>
+Date: Fri, 14 Mar 2025 00:23:37 +0100
+X-Gm-Features: AQ5f1JodQziQaqTSkCixBvf_yoxYvp-azbEmkL49o3wzN3aOpwp7juhshIgSExc
+Message-ID: <CABhP=tYqdXgQrAMUJu8KYvh3krsTtyR-foxY201wtRojjMOaqg@mail.gmail.com>
+Subject: Re: netfilter expected behavior for established connections
+To: Florian Westphal <fw@strlen.de>
+Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Mar 13, 2025 at 06:31:03AM +0200, Lars Noodén wrote:
-> Thanks.
-> 
-> On 3/12/25 21:44, Kerin Millar wrote:
-> > I suspect that your set has been declared with the "interval" flag
-> > in effect, in which case updates from the packet path are not
-> > allowed. As far as I can tell, this constraint is undocumented.
-> 
-> Yes, it is the case that the interval flag has been set.  It seems that
-> the interval flag necessary when the set shall contain a mixture of
-> single IPv4 addresses and subnets with elements:
-> 
-> 	"Error: You must add 'flags interval' to your
-> 	 set declaration if you want to add prefix elements"
-> 
-> and with auto-merge:
-> 
-> 	"Error: auto-merge only works with interval sets"
-> 
-> It is necessary to have auto-merge since the individual IPv4 addresses
-> and subnets get added in an unpredictable manner and may overlap.
-> 
-> On 3/13/25 00:06, Pablo Neira Ayuso wrote:
-> > The ruleset above provides sufficient context to infer that the
-> > dynamic flag is needed, but that might not be the case in all
-> > circunstances. The dynamic flag cannot be inferred in all cases like
-> > the one above.
-> > 
-> > Without Lars' set declaration, the question is incomplete and it is
-> > not easy to answer.
-> 
-> The following is basically the set up:
-> 
-> table ip foo {
->         set bar {
->                 type ipv4_addr
->                 flags interval
->                 auto-merge
->                 elements = { 192.168.2.0/24 }
->         }
-> 	chain input {}
-> }
-> 
-> The two important parts to retain are auto-merge and pre-defined
-> elements (and be able to add to the elements later).
+> I tcpdumped to verify the behavior, but let me work on it and use a
+> different approach that is not so racy and random, I just wanted to
+> validate my assumption on the expected behavior
 
-which together with your previous rule means that:
+There were also other bugs in this patch so please disregard it.
+I submitted a new one in
+https://lore.kernel.org/netfilter-devel/20250313231341.3040002-1-aojea@google.com/T/#u
 
-# nft add rule foo input tcp dport 22 counter add @bar { ip saddr }
-Error: Could not process rule: Operation not supported
-add rule foo input tcp dport 22 counter add @bar { ip saddr }
-                                        ^^^^^^^^^^^^^^^^^^^^^
-
-reports EOPNOTSUP because interval sets do not currently support
-updates from the packet path.
+I also realized that I need to use "reject with tcp reset" to close
+the established connection, rejecting ICMP messages does not seem to
+have any effect over established connections.
