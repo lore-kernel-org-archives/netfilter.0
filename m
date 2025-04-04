@@ -1,92 +1,75 @@
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 540EB376
-	for <netfilter@vger.kernel.org>; Fri,  4 Apr 2025 05:15:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A62A1A3172
+	for <netfilter@vger.kernel.org>; Fri,  4 Apr 2025 15:12:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743743751; cv=none; b=IIdgw4DLnghuZc0iEpO0UobbKE36CQL+XRSZ//QJVFeft/z1/IyehCWI7uMCh30U7ElVwevuEg62iIauG1QososYCOY4j+EZRbCdnt6E8o+nokKtpIRs2fjB+GVVTtSkJSZJPT/rBmb3eLiTWrj0sgnzG8Eh7Qiq3Ho65wF1cPM=
+	t=1743779533; cv=none; b=iAEGQTsEpkW4+ONqsta1x/meYs2H3jYugpGkSyoZoeAW7xWMdSHTFN5ag83MbXn/GWZmVrm3csM0d+NYs2qDao8JfsDjl4CptPPyj9s4NAC35K4XR/SUqUHkdXeoka4ts0Pz4fEJoLGI+I8CB8prR/IBp8sh+vpPnT43/H4TTUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743743751; c=relaxed/simple;
-	bh=+APal7ELVilrQXERmPw/EC3UMR3deE+5PkabnilbIPA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QFKelQXR7V/5JR3cpcwBLSedca9dkRmKFMDeWnRUA43/9oOCBUYrYM14t/lDqFvpjt2/lwugAh1OX9bzNZ5S9AiG7TnbfOe8oV0wNnaASQLo8VYflUbs430+Lfj27cOmItMY3dUXBIxAAIqhL/2Sxn1V2HuW/HvsxCk8LHBEszI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qcv43869; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1743779533; c=relaxed/simple;
+	bh=sIlpWO2Kg675VcexPXLQa9joR/OyUONzjq6mExW+5t0=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=SAEPrvJv8nLY0+7f/hjy3ZQpv9vAhIM14zmOFPFqNsQJtQXzNZwsBe9sPkcH8OqJTki3gHYxP5XIUvIwrxMxsY4Xs5dwpPytF0BtGmaBsOLFCO5d5yVFkUy4OyjmdX4f77SEbeGW9ZxIwx6WIfWGXsxlRXSaiV7sgCS/qGxMcls=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=V1btHcDv; arc=none smtp.client-ip=80.241.56.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mailbox.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qcv43869"
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-549963b5551so1938950e87.2
-        for <netfilter@vger.kernel.org>; Thu, 03 Apr 2025 22:15:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1743743747; x=1744348547; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=prr+bSeOC04YyR7xJ79EShiUmrz/N6J8LaI43fiGfWo=;
-        b=Qcv43869v15rnPt7Zl01MCqOhzv5I+bvKtIQy/KJNvMeADraDShSkydG1SYtScDjx2
-         Si73tAK0PvG3HNUWZgcNYhYjvY8mKGdbhqG8KWFs+vlaoXiWlhVOVVXAZmdoCIM0VCdq
-         BS0xEypQ1hM/pcshBRairrI5vxM7ZSKFCK+VQUGHG55PCyYFdpkDUbGwjvoi9P+FtgCb
-         SMuRDXsCpDFyPhyG8lmlZi29+F+e8yiXyMZITverZaUJRBQNe/YE8p6SM9rOZ/6S1hDu
-         +llmedW+z2DBApGdMXvYPC7luxdy8r926HtinAYJfjZUWWV1KsVm+m052RCr7xlJPGIw
-         S0AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1743743747; x=1744348547;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=prr+bSeOC04YyR7xJ79EShiUmrz/N6J8LaI43fiGfWo=;
-        b=lke5i+R+2sywnuVIgVw/wMh+Cy9GdWyWdBg4105W8DoRUfi6SrYTv+oem0vR9seCZO
-         L+IBaJOVdNLMzXz0hLtAFHyZAvrahgvWoD/YL6cIv/0b4BCBBmR2LodH6CfyYp12cA9v
-         PjNGi05e4oFjWbBtqcBPtKC3z5TqkKVwIZpUqvgupC81hUaFHAKLru8wLpY+euAqLnEb
-         kmEmLHIv2/0K0rfwPl73RkPZDmN+9vD+2GvCb/oyYUHztF3SmCHrLLmBbc39dle/17Xp
-         icudjmRuVczBNYK+l0dT+0b78I7QAC4ltWZKbTFscwGx3GEQ5z3of0nZst844HvEkJ9E
-         jRHg==
-X-Forwarded-Encrypted: i=1; AJvYcCV4/ea/lpI5THvfPw0Up97scTxa+YNC7GB/qWkf/53PVHtQBCgz54wOyb40v3TYDjgN3UbHyLXeP5Y=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy1EV5EKnBtdeMlK3QIjIG77+RWXlIDm8Xjib47SRtfI/Iabk9w
-	nWFC/DUY2wnvi36uM0H5k/1a7q8LeJjlUzytReNtApPw+90QGTzD7lue4z14Zo+0fWsG83psIo3
-	u9h2MaX2KgPk50vl6m4nOuky3S+nb+j2W
-X-Gm-Gg: ASbGnctPLLZX3OFDCMhIn/ihP9bJEAQpm/PiHg6dMsV7/gmr/2cnheg6l3TK9z8lk16
-	D6n/6R3IZoI5x1dAiB4UYIdQqXBddmUYiT/HpoGJWhQiuLa93x9nnQ0nzdTk4dbm83P+iw8V91V
-	VfV/cdvRHD8RnoPu/1ZS4MtIoA2QZAb9KS45R1ylHvPU9NtJ65dP80+MQs
-X-Google-Smtp-Source: AGHT+IHCC8vIpTC4KBiu16HLvb1wVtcwI6TlCZnDsEYmDg84+uAZf/8laE1wU6DnFMNfG71P/YulvtGuWzJ6dIWDNkk=
-X-Received: by 2002:a05:6512:1189:b0:54a:cc09:eacc with SMTP id
- 2adb3069b0e04-54c227dc5f0mr457567e87.39.1743743747224; Thu, 03 Apr 2025
- 22:15:47 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="V1btHcDv"
+Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:b231:465::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4ZThsf0HYlz9sdJ
+	for <netfilter@vger.kernel.org>; Fri,  4 Apr 2025 17:12:06 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
+	t=1743779526;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type;
+	bh=sIlpWO2Kg675VcexPXLQa9joR/OyUONzjq6mExW+5t0=;
+	b=V1btHcDvA7vIMrwQ44bdj5fDkgzc4q+dBo1kkSIbqutkvKfDAAnikH/Pguz9WFblMqc5YW
+	nZihiBJM+VMeSXT+2rlzTiLpmjXIQefHKDEmnnQUAccclVMLVg+oum0lTyzMaDu5OS62D9
+	oWIfi0YTYw3vBqja2x3ivxBsmgu2xtpLY1blp/YCq+4ahlfurNi/nZgEv2E6WWip4d7vqN
+	gW9fytghCcYBA34EZhldTsCsrUzNP+ylyoFQ4qaVG8/JJZUjf4rBvm081vs7WmzWAqIcsx
+	v0HxPC57HqO4bTELlWkQsQ13PCnAQeZdUZelSfpgEylcpRCx9CZufo3lwcIN2w==
+Date: Fri, 4 Apr 2025 17:12:03 +0200
+From: Anthony Ruhier <aruhier@mailbox.org>
+To: netfilter@vger.kernel.org
+Subject: Replace flow offload by flow add in wiki
+Message-ID: <yw2rcklool64bepdn3kue7yj7xryymdmhjoe72hqujj4xaads4@yzo7qkb452oc>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CANgxkqwxitLiMHvtDmaa0c-KaGKwj0GyLvCa+wai3LZSwnQZKw@mail.gmail.com>
- <CAPrh4R6V=4W6VnCowJevFgJTMoT2fWVV1X2eKASKmhD38n_5tA@mail.gmail.com>
- <CANgxkqwR0V3LvEECApmg-d=xZKN35j663VqsUoCZj9JgQ=UKbQ@mail.gmail.com>
- <20250403182511.GA24688@breakpoint.cc> <20250404032247.GA15620@breakpoint.cc>
-In-Reply-To: <20250404032247.GA15620@breakpoint.cc>
-From: sontu mazumdar <sontu21@gmail.com>
-Date: Fri, 4 Apr 2025 10:45:35 +0530
-X-Gm-Features: ATxdqUGZXMDF2L-8Z9weEy8YercA1PmI2bP40hPtxt2CHjXyFTfXRCZ3CyJgHG4
-Message-ID: <CANgxkqwnMH7fXra+VUfODT-8+qFLgskq3set1cAzqqJaV4iEZg@mail.gmail.com>
-Subject: Re: Nftables v6 address not matched properly in nftable set
-To: Florian Westphal <fw@strlen.de>
-Cc: Bradley Hook <bhook@kansasdeaf.gov>, netfilter@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-MBO-RS-ID: 8da1c2a6b3c579a8244
+X-MBO-RS-META: be7arc4ze7k6otj65njxewao973x8rdp
 
-Thanks Florian.
+Hi,
+I was setting up flowtables offloading in my nftables rules, and I got confused
+by the wiki page.
 
-On Fri, Apr 4, 2025 at 8:52=E2=80=AFAM Florian Westphal <fw@strlen.de> wrot=
-e:
->
-> Florian Westphal <fw@strlen.de> wrote:
-> > sontu mazumdar <sontu21@gmail.com> wrote:
-> > > Hence I feel somewhere the logic in nftable/netfilter is incorrect an=
-d
-> > > it looks like a bug.
-> >
-> > This set type had many bugs, you need to tell us the kernel version you
-> > are testing with.
->
-> Looks like its a bug in the avx2 implementation, I'll send a patch
-> shortly and will place you on CC.  Thanks for reporting.
+In https://wiki.nftables.org/wiki-nftables/index.php/Flowtables, the example
+given to offload a flow is using the `flow offload` rule.
+
+If I understood correctly, `flow offload` has been deprecated in favor of `flow
+add`. Is it possible to replace any occurrence of `offload` with `add` please?
+
+Also in this example, I got confused with the presence of the conntrack state
+rule:
+
+> tcp dport { 80, 443 } ct state established flow offload @f counter
+
+From
+https://thermalcircle.de/doku.php?id=blog:linux:flowtables_1_a_netfilter_nftables_fastpath,
+checking that the state is established seems unnecessary, as `flow add` will
+match only if the conntrack state is "confirmed". If it's correct, could it be
+removed for clarity? And even better, add an explanation over when the rule
+would be matched.
+
+Thanks,
+--
+Anthony Ruhier
