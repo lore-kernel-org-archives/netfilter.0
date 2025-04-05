@@ -1,75 +1,78 @@
-Received: from mout-p-101.mailbox.org (mout-p-101.mailbox.org [80.241.56.151])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A62A1A3172
-	for <netfilter@vger.kernel.org>; Fri,  4 Apr 2025 15:12:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.241.56.151
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 855501CD1F
+	for <netfilter@vger.kernel.org>; Sat,  5 Apr 2025 10:02:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1743779533; cv=none; b=iAEGQTsEpkW4+ONqsta1x/meYs2H3jYugpGkSyoZoeAW7xWMdSHTFN5ag83MbXn/GWZmVrm3csM0d+NYs2qDao8JfsDjl4CptPPyj9s4NAC35K4XR/SUqUHkdXeoka4ts0Pz4fEJoLGI+I8CB8prR/IBp8sh+vpPnT43/H4TTUQ=
+	t=1743847357; cv=none; b=SKNnxjpchwG9wKTBDC0bmIDv0NSdMmPt2Yc+EEqO826wKfq+2zA2oFnOXUp4FXwOwEv7PHlJatz//bss4mZuzPwN6S2FUeQftcUR1PRk9cNApcYoe0ocP4iPVLLMnnECRV2OTWUpmFcZfWkDDYRWrkCxAiRNgc2LI72soj8Sx0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1743779533; c=relaxed/simple;
-	bh=sIlpWO2Kg675VcexPXLQa9joR/OyUONzjq6mExW+5t0=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=SAEPrvJv8nLY0+7f/hjy3ZQpv9vAhIM14zmOFPFqNsQJtQXzNZwsBe9sPkcH8OqJTki3gHYxP5XIUvIwrxMxsY4Xs5dwpPytF0BtGmaBsOLFCO5d5yVFkUy4OyjmdX4f77SEbeGW9ZxIwx6WIfWGXsxlRXSaiV7sgCS/qGxMcls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org; spf=pass smtp.mailfrom=mailbox.org; dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b=V1btHcDv; arc=none smtp.client-ip=80.241.56.151
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mailbox.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mailbox.org
+	s=arc-20240116; t=1743847357; c=relaxed/simple;
+	bh=hW+NvbGvqdh5Nj3+suYvwJoawJDyOE2LJU7iKprm3cE=;
+	h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Aqx3QaMyWrvFq6mDkBhCC9sITf/xw7EiQl78IQyZBR0qUZFOqOT19gZ9F+9NQqbS1pCz0IkCJbnNpfKrQqRz+zTA4hUAd4fQRn0707ZnXnwdfTZ08A5qt1YO2NIEF8fOx2dehwS76OEpWl1ry9YB1yEsB7D5n3alYb57X5SyW5c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=j7zXEdR7; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=zS8bxBQ0; arc=none smtp.client-ip=185.25.250.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mailbox.org header.i=@mailbox.org header.b="V1btHcDv"
-Received: from smtp1.mailbox.org (smtp1.mailbox.org [IPv6:2001:67c:2050:b231:465::1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mout-p-101.mailbox.org (Postfix) with ESMTPS id 4ZThsf0HYlz9sdJ
-	for <netfilter@vger.kernel.org>; Fri,  4 Apr 2025 17:12:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mailbox.org; s=mail20150812;
-	t=1743779526;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type;
-	bh=sIlpWO2Kg675VcexPXLQa9joR/OyUONzjq6mExW+5t0=;
-	b=V1btHcDvA7vIMrwQ44bdj5fDkgzc4q+dBo1kkSIbqutkvKfDAAnikH/Pguz9WFblMqc5YW
-	nZihiBJM+VMeSXT+2rlzTiLpmjXIQefHKDEmnnQUAccclVMLVg+oum0lTyzMaDu5OS62D9
-	oWIfi0YTYw3vBqja2x3ivxBsmgu2xtpLY1blp/YCq+4ahlfurNi/nZgEv2E6WWip4d7vqN
-	gW9fytghCcYBA34EZhldTsCsrUzNP+ylyoFQ4qaVG8/JJZUjf4rBvm081vs7WmzWAqIcsx
-	v0HxPC57HqO4bTELlWkQsQ13PCnAQeZdUZelSfpgEylcpRCx9CZufo3lwcIN2w==
-Date: Fri, 4 Apr 2025 17:12:03 +0200
-From: Anthony Ruhier <aruhier@mailbox.org>
-To: netfilter@vger.kernel.org
-Subject: Replace flow offload by flow add in wiki
-Message-ID: <yw2rcklool64bepdn3kue7yj7xryymdmhjoe72hqujj4xaads4@yzo7qkb452oc>
+	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="j7zXEdR7";
+	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="zS8bxBQ0"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
+	s=r2025; h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:
+	Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:
+	Content-Type:Message-Id:In-Reply-To:References;
+	bh=HlRihdRibqd2Q/ciupr822sgLW2tISaFYc61ICSqeV8=; t=1743847352; x=1745056952; 
+	b=j7zXEdR7lnr5y4nZZN10FSXJRNNcozMw4BYXEMQfqDn4wIvy7Tclg6+JuBsUMSbTBcQ2bLEdACo
+	zwJSK35nZzSzyyKsBDmgVs+k2vI6LoYXNY7LJdGFoFsws6fLgBj5ehXgfXYt7tXwfPYnKeCFRcX2Q
+	gWB9t0ervJ7n5GxiK+k=;
+DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=slavino.sk; s=e2025; h=Content-Type:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:
+	MIME-Version:Content-Type:Message-Id:In-Reply-To:References;
+	bh=HlRihdRibqd2Q/ciupr822sgLW2tISaFYc61ICSqeV8=; t=1743847352; x=1745056952; 
+	b=zS8bxBQ0az423rppxbBv/Uy0tEXDcMYoAjL+TjfXjfu7teVXTnyTmPlBz/kwGC1Y8X24RreoLtQ
+	+MYyVOCjpDQ==;
+Received: from dovex.skk ([192.168.10.12])
+	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <linux@slavino.sk>)
+	id 1u10Eg-001i3n-2s
+	for netfilter@vger.kernel.org;
+	Sat, 05 Apr 2025 11:54:47 +0200
+Date: Sat, 5 Apr 2025 11:54:45 +0200
+From: Slavko <linux@slavino.sk>
+To: Netfilter <netfilter@vger.kernel.org>
+Subject: Re: Log ARP headers
+Message-ID: <20250405115436.7b67e491@bonifac.skk>
+In-Reply-To: <20250303220055.GA4034310@celephais.dreamlands>
+References: <FADC1D05-BC58-45CF-AEBA-2D4B85928185@slavino.sk>
+	<20250303193533.GA16225@breakpoint.cc>
+	<88D0D02C-9C84-428F-B62B-EBA5E359D325@slavino.sk>
+	<20250303220055.GA4034310@celephais.dreamlands>
+Face: iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAFVBMVEX7+/xrTUz4//3Ozc10AAH5/v3///8f7tJ8AAAB2UlEQVQ4jW2STY6EIBCFSwmumykPQDTtGqxO74kcgNiJa8dE7n+EAfzBtONCpD5eVfko8Pszeb+sflqOPVyA535abyB+9wnfwMgek/8XFEO33sE6lYWB/8HLqOUOFre87H+g9LK2P7y6p+o+1mJ1B75j1g7VeFeshTXifbfEza+goAqqLyAhAKsC+QahqVD9o74VYxGB6PUBJl+C5FwCUhEUSEpCM41PmGYJABK07oNk0EQQAw54K9KDGAQhl6C4ewDwJnZjjVZptQaD0PQSOqC4R2x0Btg76HwbI5oE1Rt4WUPhvG9cjAht+00SvlD5JThQQYiY2g6s3oBRzXMzgG1nKS2asDr+HPb0aSGmsiWwS9r4+rxP0M1tkgxQW/PzewF+pqPKgEV1cbdiCQxUB+AyaJzeq5AmfQG+IEwtDSTwIU8ArtBCtSKYpEg/lhNwFnwYGi2I3qRhPkGpYx5kmmBqtcrgg5hcUrxhqBicoNh6wnB11vaXP/8lkSYkeYaan4CJV7RQVtFm88jAxSlE8M85XonKgM91qBwtmnVt+1z86eI1+/3OMLc7tgbV5k1IhtndMnS/j6x3dAEciB/D7VuVwQI5Po9h1E7Au/kkq89gKt3ziMu1SuAPWe5Dq/EEywcAAAAASUVORK5CYII=
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-MBO-RS-ID: 8da1c2a6b3c579a8244
-X-MBO-RS-META: be7arc4ze7k6otj65njxewao973x8rdp
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi,
-I was setting up flowtables offloading in my nftables rules, and I got confused
-by the wiki page.
+Ahoj,
 
-In https://wiki.nftables.org/wiki-nftables/index.php/Flowtables, the example
-given to offload a flow is using the `flow offload` rule.
+Dňa Mon, 3 Mar 2025 22:00:55 +0000 Jeremy Sowden <jeremy@azazel.net>
+napísal:
 
-If I understood correctly, `flow offload` has been deprecated in favor of `flow
-add`. Is it possible to replace any occurrence of `offload` with `add` please?
+> > I understand this change, but i cannot see all consequence,
+> >
+> > Any chance that it will go to ulogd itself? Or i have to maintain
+> > this patch locally only? (I mean for future versions)  
+> 
+> I'll look at this when I get a moment.
 
-Also in this example, I got confused with the presence of the conntrack state
-rule:
+Please, any progress in this?
 
-> tcp dport { 80, 443 } ct state established flow offload @f counter
-
-From
-https://thermalcircle.de/doku.php?id=blog:linux:flowtables_1_a_netfilter_nftables_fastpath,
-checking that the state is established seems unnecessary, as `flow add` will
-match only if the conntrack state is "confirmed". If it's correct, could it be
-removed for clarity? And even better, add an explanation over when the rule
-would be matched.
-
-Thanks,
---
-Anthony Ruhier
+-- 
+Slavko
+https://www.slavino.sk
