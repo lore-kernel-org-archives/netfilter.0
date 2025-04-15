@@ -1,74 +1,106 @@
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38E0628A1E0
-	for <netfilter@vger.kernel.org>; Tue, 15 Apr 2025 14:39:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 464EA163
+	for <netfilter@vger.kernel.org>; Tue, 15 Apr 2025 15:22:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744727969; cv=none; b=FAmCuMUuBFw7eagF1UZB7pKaTlpABo7arb/dTr0COzOhJNErcUFVoPV83w5dVu9Kj+JY/6nlnbsSqe2J3vg2DejSGaEX8G3OuCiegrY+Ajkh0tEtliraex4/d4lIfkGqI1QcdO5PH6XkT0IREfR7FXVdYsrsx3puwQgzkMp9p10=
+	t=1744730584; cv=none; b=BvmElXzcD9fzt2CMwXzY0pLCOrjRQEHNd44f7grTpIBMxe2ybEXDZrXLZjc5gEARn0b28Nzxtt1eqKlus083TpQowPSk31+ob4OQewQ01VYCUBQepq2G18Gt6RMblJXLmjVVb78fyvTkoihXPA6M8YATsuR4SSMAsSAAxm3YBNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744727969; c=relaxed/simple;
-	bh=IY+v4P4lhK13OIyhWzgnhlS3n0rGVxP3K+oDqUB7/uA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N136WGO/g2TEXbNCo0stT8NaCUlqOKj5qbr/eWUn6BaZLfFVuvosCIuw0ssatrUF7Urfs8G1UsYWhEE0oVnGz/xUw7phSEqObE4sC0twuB4K6IyYXJcy47FLN8fkg2Nf4YCMRCcJVT/kenV8o5GwkEq+HUepEPKET+ikL8ut3ow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=FDcqUngF; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=Zw1/b39i; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+	s=arc-20240116; t=1744730584; c=relaxed/simple;
+	bh=uByh/h8vg+uUm5Yk0RuocQGpgX8EXCzuYqPCLSInFOs=;
+	h=Date:From:To:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=tLHqRxqWDoacJ0ABcQljcSTvLMOyISUeUWSnQDFrdvCyn+Sx8AOcL2QNrRm/MMTpjt53BKdB6woZNOYV0eA6uGNDTY0eisMqgSkMPQp2G5F/5el/7LZhReyntgs5oDFpx2s2GgzPXhAGH+N+uA4oqPM9X+IAIfJDIkmi3OULfdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=ScplZcJE; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=YdQNUXKB; arc=none smtp.client-ip=185.25.250.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="FDcqUngF";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="Zw1/b39i"
-Received: by mail.netfilter.org (Postfix, from userid 109)
-	id 1E2806090F; Tue, 15 Apr 2025 16:39:23 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1744727963;
-	bh=Q6XAwBu1AfHChVWv3ul7m4sV6Rrb2xJrH4yAocU35Vo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FDcqUngFlTPYVxQzUxLepFAdtbEUCw3AuwRB3H+jxw2SfpBWuFNGbrxK+Br/+Q1Dx
-	 xIKayGXBLuNDauMaf3MiH3MuGRajazITQ+QRl8EyMrqj3tlREVwNMNaibx0CY6rNob
-	 yMUSUbqEMM3SHmowL6+VFYIb5GTNNWFXeCDAQjEMfh60IUjlgU7YxEVktcQpFiFSgt
-	 V7BzoXIq+3Vc4j4zlqH726WsK96uZnehmKqffh0bGF2PdFGDV4SdceA29t3PtgYsHe
-	 2a4WwjPqAYNXhqk64knGLpDoD17QgIu6L0L0yQLN2JQlItkcEtRSMcto7xlTtqDEHx
-	 EHj/jszzfdmig==
-X-Spam-Level: 
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 851526090F;
-	Tue, 15 Apr 2025 16:39:22 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1744727962;
-	bh=Q6XAwBu1AfHChVWv3ul7m4sV6Rrb2xJrH4yAocU35Vo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Zw1/b39ie3JGUz+EbtV501IWEayrZoMFBm4NspEQd+7g8wEAhkQiMvglh18256LO9
-	 pleT28WTzgozn7hXXvBh7gtv8/HbSwRTbk4L4XZ3YFPSL1ALXQcKLJhZABxjL4kjzq
-	 SN+BEtsF/UfPJd6hnojth8ton7tlZyWVaz5Q1tiju0A07jeMF4yTy8rrW/jK17BYaY
-	 wq8tegKNSNqId18TOtAEQ+r/KlW749BH91sm0mPFDHwM8gI+l8tocllRrkvHfNPvsG
-	 OEeLex9dys1NWQIpxnn4ED1HT2uqmhnwGpcn37i2ASnaCt1Yc8bMSOSY1X7/U8fyEg
-	 eH/6nQCppbk4g==
-Date: Tue, 15 Apr 2025 16:39:20 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Slavko <linux@slavino.sk>
-Cc: netfilter@vger.kernel.org
+	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="ScplZcJE";
+	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="YdQNUXKB"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
+	s=r2025; h=Content-Type:MIME-Version:Message-ID:References:In-Reply-To:
+	Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:
+	Content-Type:Message-Id:In-Reply-To:References;
+	bh=D92JzdOvzv2SksVi5PAaRl/+SCvnu6FhqMkl4LNeCYc=; t=1744730579; x=1745940179; 
+	b=ScplZcJEdCyQ2DqqVp98IlVU9X6tf+OyXkU6WYRpqeAuRGeoRZUFdat2LdxBACPybNLNq3SSh9I
+	VnMaCmPo6fiqmun2rlHnl+N7vixezwDWyVFa5w1/fdQALgo7Tw5M7mkDkbFqFFFEh4bTs5Eh9jmtc
+	JWjC0eJ+WcwWWaEa2hI=;
+DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=slavino.sk; s=e2025; h=Content-Type:MIME-Version:Message-ID:References:
+	In-Reply-To:Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:
+	MIME-Version:Content-Type:Message-Id:In-Reply-To:References;
+	bh=D92JzdOvzv2SksVi5PAaRl/+SCvnu6FhqMkl4LNeCYc=; t=1744730579; x=1745940179; 
+	b=YdQNUXKB/u0VvAJNa5jDTQ4gso1aYHrE49MUrF3gzvYxRQtlFJPzndM/AKpDkC9SQ9ayliKUAkm
+	l+Y1itTUPBw==;
+Received: from dovex.skk ([192.168.10.12])
+	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <linux@slavino.sk>)
+	id 1u4i7j-000F6L-33
+	for netfilter@vger.kernel.org;
+	Tue, 15 Apr 2025 17:22:56 +0200
+Date: Tue, 15 Apr 2025 15:22:52 +0000
+From: Slavko <linux@slavino.sk>
+To: netfilter@vger.kernel.org
 Subject: Re: [ANNOUNCE] nftables 1.1.2 release
-Message-ID: <Z_5vmAQdcUCOg86F@calendula>
-References: <Z_1KxMUDT0D8e6wH@calendula>
- <d110693b-efa3-4742-8d6e-f56c83ef66ff@slavino.sk>
+In-Reply-To: <Z_5vmAQdcUCOg86F@calendula>
+References: <Z_1KxMUDT0D8e6wH@calendula> <d110693b-efa3-4742-8d6e-f56c83ef66ff@slavino.sk> <Z_5vmAQdcUCOg86F@calendula>
+Message-ID: <01529A93-9DCA-4F48-8F80-C4CB32A11B43@slavino.sk>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d110693b-efa3-4742-8d6e-f56c83ef66ff@slavino.sk>
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Apr 15, 2025 at 09:58:52AM +0200, Slavko wrote:
-> Dňa 14. 4. o 19:49 Pablo Neira Ayuso napísal(a):
-> 
-> > - Set element auto-merge now skips elements with timeout/expiration.
-> 
-> please, can you write more about this?
+On 15=2E apr=C3=ADla 2025 14:39:20 UTC, Pablo Neira Ayuso <pablo@netfilter=
+=2Eorg> wrote:
 
-Sure:
+>https://git=2Enetfilter=2Eorg/nftables/commit/?id=3Dda0bac050c8b258824272=
+7f9915a1ea8bc48ceb2
 
-https://git.netfilter.org/nftables/commit/?id=da0bac050c8b2588242727f9915a1ea8bc48ceb2
+Thanks, but i still do not understand, consider this set:
+
+    table inet filter {
+        set testset {
+                type ipv4_addr
+                flags interval,timeout
+                auto-merge
+                timeout 1m
+        }
+    }
+
+Now i add one network, and one or two seconds later second
+network::
+
+    nft add element inet filter testset "{ 192=2E168=2E1=2E0/24 }"
+    sleep 1
+    nft add element inet filter testset "{ 192=2E168=2E2=2E0/24 }"
+
+Currently (1=2E0=2E6), they are merged with timeout reset::
+
+    table inet filter {
+        set testset {
+                =2E=2E=2E
+                elements =3D { 192=2E168=2E1=2E0-192=2E168=2E2=2E255 expir=
+es XY }
+        }
+    }
+
+What will be result with new behavior? Will be both (not merged)
+in set, each with different timeout/expires?
+
+Another example is to add subnet of existing element, currently
+the new subnet is not added (or is merged into existing without
+timeout change)=2E How it will work with this new behavior? Will be
+both in set? Or error happens? Or something other?
+
+regards
+
+
+--=20
+Slavko
+https://www=2Eslavino=2Esk/
