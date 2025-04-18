@@ -1,55 +1,134 @@
-Received: from mail-106101.protonmail.ch (mail-106101.protonmail.ch [79.135.106.101])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B01D82153DA
-	for <netfilter@vger.kernel.org>; Thu, 17 Apr 2025 22:33:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.135.106.101
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D391CDDBC
+	for <netfilter@vger.kernel.org>; Fri, 18 Apr 2025 00:15:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744929229; cv=none; b=cjx4z2ArDbWUpf+nIEoACDuoT9wBuKmqtpmAkN3NoxJt0Ydc6gcHf1OCSUMhN7wtxeKas3RQslYE39jNo9qtghGKn0Rnz/WXu89p6hM2ZnP/W/OF/LgNSMxNjR71L7dgFbTNiJ9aOBpZIWpXex1581SPMe2Z3N1SEHyEwyUc5Ac=
+	t=1744935354; cv=none; b=eq1cewBG3bdkasnKEU3QE9/GGTRORdpHWVg9ZxpoU+iz1HSr1cFBnaUj1KWpl8uOSvjZj6QR09rg013FAlszrEja/5wWe9zgnwAqaXgeuYxV1jRGfNEc/rFA8Qq1AgNfvHopF9m/IBJ1Yy1HB9JOepCVtt0r+uf6HAeZNI3nL2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744929229; c=relaxed/simple;
-	bh=rSsEtUnTIkLzjasZMiVExqOjjHaLG8Hr2mRB+PspGAo=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=QHyNqZ0Oi1dMWuQ5wZnkWSaTxVrybUdHDIuY67KEwgutDiWHycr9UuZOOTxEB46vxiFwl6ucI1kEQinTEaD3a9/6+WKNs9KENkcnp0ZHWXUXR9gKGTWotpdt6750LT+ghcULpFTyH3X2WRbIwyT0OkSSllXgXa2qme6656FDgAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=hg4ydHMV; arc=none smtp.client-ip=79.135.106.101
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="hg4ydHMV"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1744929224; x=1745188424;
-	bh=rSsEtUnTIkLzjasZMiVExqOjjHaLG8Hr2mRB+PspGAo=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
-	b=hg4ydHMVsNXCjiqEf+siuoAyqgF8GpybntyodSG4NKylVLrQ3qVI1rygHt+mIU/fZ
-	 UP7g1JUwvz+Mcaya3YNIs8+K9fc85TbfAitN6qX8xmLkspnpm9P7Wr9TXaKmdzSHqd
-	 PmqBnfKbjeUqnymSXvRh18G3gkLJdksD9DVWMfiQBId/jfYB8XmOow4V4fyxwNMVXj
-	 YqgixUOQodRMfvPMjZv/5b2bYll3YzmUul84wbFBXsqpvQhQZ9/IJTE5cJawhhcVPy
-	 bUsZtaDuxLx8WwRzNj6U0VHyV9eg6VDIZIwo9W3Bp7c9GlpRmqWxQd59f+f2JsJpAa
-	 o9XdmsvKwj6EA==
-Date: Thu, 17 Apr 2025 22:33:40 +0000
+	s=arc-20240116; t=1744935354; c=relaxed/simple;
+	bh=futBe/n/WtXNAnnWBTHM4shttioIbCniYZh1MQyKMhg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RKKltx31dab1btwWg36QPsyTLeR2vksnexGaqTJbMPJhAVKDoN9Y8Q+AlVygPnttrbVv2YTP/v1mepwfWputytJ48H3IAQqwxM2D7qky1E6TqmTi+exmBw3VXqOUy7EYz99hzoCv91LqFDwNYzetnV3TUemerLsR3FcyvvfmVu0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+	(envelope-from <fw@strlen.de>)
+	id 1u5ZOR-0005a1-HD; Fri, 18 Apr 2025 02:15:43 +0200
+Date: Fri, 18 Apr 2025 02:15:43 +0200
+From: Florian Westphal <fw@strlen.de>
 To: Kevin Vigouroux <ke.vigouroux@laposte.net>
-From: Sunny73Cr <Sunny73Cr@protonmail.com>
 Cc: netfilter@vger.kernel.org
 Subject: Re: Can the PCP field be set in the netdev table?
-Message-ID: <Gu3V89R_iHD59fwn-XkS_Bg5f2Mw9rLEfE4s1ByGZZy6gVONt1WwiNAyvg2Qui3NtRDfnJRwkFDddYnMiah_FL3EMCzJvzyT85U3hX1_IkM=@protonmail.com>
-In-Reply-To: <QeFwNvN8Q3lUul6dSJmJlq8MTp9ifHpuXYYhyra79MKEQf5bxqf8kdBtyvzUFMsJfXBoG3fDo_5Cn0m1DOdhPzyS3x4K46tSPAhcsZuwxVQ=@protonmail.com>
-References: <877c3kvzyk.fsf@laposte.net> <ULYEvwyZR2o5mOmJi1GCdWxJu-bftNMqoV8y_KVt3i9eXaWu7uTOBZk9D2-cXABoNO_SUbnRRKRUj9NyYjHbnO5NfkViqsjUsLBdfbyZc_Q=@protonmail.com> <QeFwNvN8Q3lUul6dSJmJlq8MTp9ifHpuXYYhyra79MKEQf5bxqf8kdBtyvzUFMsJfXBoG3fDo_5Cn0m1DOdhPzyS3x4K46tSPAhcsZuwxVQ=@protonmail.com>
-Feedback-ID: 13811339:user:proton
-X-Pm-Message-ID: 277b51924cc2069afcf5667329e3682cb6f92757
+Message-ID: <20250418001543.GB20519@breakpoint.cc>
+References: <877c3kvzyk.fsf@laposte.net>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877c3kvzyk.fsf@laposte.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-Another correction....
+Kevin Vigouroux <ke.vigouroux@laposte.net> wrote:
+> Hi!
+> 
+> I tried in vain to modify the PCP field with many rules. Nothing worked.
 
-It is matching a priority of 6, DEI of 0, VID of 96.
+Yes, this is broken, likely due to vlan hw tag offload.
 
-sunny
+>   [ bitwise reg 1 = ( reg 1 & 0x0000001f ) ^ 0x00000020 ]
+>   [ payload write reg 1 => 1b @ link header + 14 csum_type 0 csum_off 0 csum_flags 0x0 ]
+                             ~~
 
+kernel doesn't handle 1 byte writes to the vlan pseudoheader at this
+time, so this will need a userspace/nft fixup to expand this to a 2 byte write.
+
+I can look at it next week (need to create a vlan test setup first).
+
+You could try to disable HW offload of the vlan tag and see if that helps.
+
+with patch, this will emit a 2byte load/store which kernel should be
+able to handle:
+
+  [ meta load iiftype => reg 1 ]
+  [ cmp eq reg 1 0x00000001 ]
+  [ payload load 2b @ link header + 12 => reg 1 ]
+  [ cmp eq reg 1 0x00000081 ]
+  [ payload load 2b @ link header + 14 => reg 1 ]
+  [ bitwise reg 1 = ( reg 1 & 0x0000ff1f ) ^ 0x00000020 ]
+  [ payload write reg 1 => 2b @ link header + 14 csum_type 0 csum_off 0 csum_flags 0x0 ]
+  [ counter pkts 0 bytes 0 ]
+
+A short in the dark, compile tested only, no idea if this is enough to
+make it work.
+
+diff --git a/src/evaluate.c b/src/evaluate.c
+--- a/src/evaluate.c
++++ b/src/evaluate.c
+@@ -3258,6 +3258,24 @@ static bool stmt_evaluate_payload_need_csum(const struct expr *payload)
+ 	return desc && desc->checksum_key;
+ }
+ 
++static bool stmt_evaluate_is_vlan(const struct expr *payload)
++{
++	return payload->payload.base == PROTO_BASE_LL_HDR &&
++	       payload->payload.desc == &proto_vlan;
++}
++
++static bool stmt_evaluate_payload_need_aligned_fetch(const struct expr *payload)
++{
++
++	if (stmt_evaluate_payload_need_csum(payload))
++		return true;
++
++	if (stmt_evaluate_is_vlan(payload))
++		return true;
++
++	return false;
++}
++
+ static int stmt_evaluate_exthdr(struct eval_ctx *ctx, struct stmt *stmt)
+ {
+ 	struct expr *exthdr;
+@@ -3287,7 +3305,7 @@ static int stmt_evaluate_payload(struct eval_ctx *ctx, struct stmt *stmt)
+ 	unsigned int masklen, extra_len = 0;
+ 	struct expr *payload;
+ 	mpz_t bitmask, ff;
+-	bool need_csum;
++	bool aligned_fetch;
+ 
+ 	if (stmt->payload.expr->payload.inner_desc) {
+ 		return expr_error(ctx->msgs, stmt->payload.expr,
+@@ -3310,7 +3328,7 @@ static int stmt_evaluate_payload(struct eval_ctx *ctx, struct stmt *stmt)
+ 	if (stmt->payload.val->etype == EXPR_RANGE)
+ 		return stmt_error_range(ctx, stmt, stmt->payload.val);
+ 
+-	need_csum = stmt_evaluate_payload_need_csum(payload);
++	aligned_fetch = stmt_evaluate_payload_need_aligned_fetch(payload);
+ 
+ 	if (!payload_needs_adjustment(payload)) {
+ 
+@@ -3318,7 +3336,7 @@ static int stmt_evaluate_payload(struct eval_ctx *ctx, struct stmt *stmt)
+ 		 * update checksum and the length is not even because
+ 		 * kernel checksum functions cannot deal with odd lengths.
+ 		 */
+-		if (!need_csum || ((payload->len / BITS_PER_BYTE) & 1) == 0)
++		if (!aligned_fetch || ((payload->len / BITS_PER_BYTE) & 1) == 0)
+ 			return 0;
+ 	}
+ 
+@@ -3334,7 +3352,7 @@ static int stmt_evaluate_payload(struct eval_ctx *ctx, struct stmt *stmt)
+ 				  "uneven load cannot span more than %u bytes, got %u",
+ 				  sizeof(data), payload_byte_size);
+ 
+-	if (need_csum && payload_byte_size & 1) {
++	if (aligned_fetch && payload_byte_size & 1) {
+ 		payload_byte_size++;
+ 
+ 		if (payload_byte_offset & 1) { /* prefer 16bit aligned fetch */
