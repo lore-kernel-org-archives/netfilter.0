@@ -1,134 +1,88 @@
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D391CDDBC
-	for <netfilter@vger.kernel.org>; Fri, 18 Apr 2025 00:15:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 668F28836
+	for <netfilter@vger.kernel.org>; Fri, 18 Apr 2025 00:54:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1744935354; cv=none; b=eq1cewBG3bdkasnKEU3QE9/GGTRORdpHWVg9ZxpoU+iz1HSr1cFBnaUj1KWpl8uOSvjZj6QR09rg013FAlszrEja/5wWe9zgnwAqaXgeuYxV1jRGfNEc/rFA8Qq1AgNfvHopF9m/IBJ1Yy1HB9JOepCVtt0r+uf6HAeZNI3nL2Y=
+	t=1744937700; cv=none; b=l/nSQi8ZwYb6PrXlbv+wOR3Hm3Hf79aOvB2ad9smn6JHP9uVS/ZX2GOFcUqvnzmi2jAm6Q4p10vW3M2kkVFEliBRhugseiOyXsn9/9zB+fJxBY5YUi1RW4lhyRJ4h1UNAqGgPenwYpfMuNtQ/h007hWxO53qyuSBXPrUo9XsdNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1744935354; c=relaxed/simple;
-	bh=futBe/n/WtXNAnnWBTHM4shttioIbCniYZh1MQyKMhg=;
+	s=arc-20240116; t=1744937700; c=relaxed/simple;
+	bh=fy9LQZ13nDi4yF2KXWcU5IVZrM4L4V8MJjUIjptFlGc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RKKltx31dab1btwWg36QPsyTLeR2vksnexGaqTJbMPJhAVKDoN9Y8Q+AlVygPnttrbVv2YTP/v1mepwfWputytJ48H3IAQqwxM2D7qky1E6TqmTi+exmBw3VXqOUy7EYz99hzoCv91LqFDwNYzetnV3TUemerLsR3FcyvvfmVu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
-	(envelope-from <fw@strlen.de>)
-	id 1u5ZOR-0005a1-HD; Fri, 18 Apr 2025 02:15:43 +0200
-Date: Fri, 18 Apr 2025 02:15:43 +0200
-From: Florian Westphal <fw@strlen.de>
-To: Kevin Vigouroux <ke.vigouroux@laposte.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=o88LLpQ2mbslQhtVAg03JvXycojaodtQV96NkQzwhdJBAzHe0nSfUkq140a1QzWpSxGZw1T8pNfi/k/+t1cCoiLCRSGF+3gAKN18K+cmK9iQk2PqobL0UgGtwfHTm5zQIr+eYm6XtqL/gXoBunp3T0k6+BCbBeEUm86PjHN7taM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=GRsJ/R8o; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=qRp5Pskt; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="GRsJ/R8o";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="qRp5Pskt"
+Received: by mail.netfilter.org (Postfix, from userid 109)
+	id 3077B60884; Fri, 18 Apr 2025 02:54:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1744937695;
+	bh=DznhhMOKNbyh6UHT713VFQB8I+m95JAhiPL34f7Ad/c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GRsJ/R8oSH6MPq0bEhbCcQdjrkgtX+Ws6qgyKfkt3me+mWEAQljZW/wYpcMXviXhB
+	 zgwQBcESHtsdZMNVU7MmbEUQsSDT5l86BhAs7pufGAcbu+EgIz/97pjf/kglEGNbwt
+	 qraKVW15Op1Ye4CECrVju+oWzoXMI7+FlrVXCUsj/8h2THMS1M2czPKc3GpEL69cY5
+	 Z7JM8pY56jWNg4AilFMNVq3V7ibZjiOrlRu/TQrHo2UdyQ5yTcjrGaZYwAJlbX20LT
+	 WgB6HJ6M1/n0WKAB6i0T1bNwPhrmMS86l+T+EJuosuz5xByQQEL9VxrhHL/Q3z+7bX
+	 AZUF/bQ8eYAHA==
+X-Spam-Level: 
+Received: from netfilter.org (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id 8E8DC6085E;
+	Fri, 18 Apr 2025 02:54:54 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1744937694;
+	bh=DznhhMOKNbyh6UHT713VFQB8I+m95JAhiPL34f7Ad/c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qRp5PsktURk4+uwo3xtsuBkVr4kJCbwwK0cidFVuqRmwcsrv8uXB/Dgx/OSWNOLQf
+	 PK0EPyRl1iujViAxUrR5BJAwv5t+rS6yWLRMDrAECPhsAYg8+xgu3waMeXej3xPVlV
+	 eqm5b4yYWpHlAW2M+BtfQmcMMurXVXrgcuDoaqnKh+59M0RRvPBR9zWzks5JuQixbo
+	 FH4lHbXoeSaTmLcW9KoeSrmI3Ty/NRmjvbkkrKjy/BCxLn4zFSvdMBCcM0QrSSujLF
+	 /JuG9bydTlW3MfOKEyGzb17+/j39SVSDyvpdvP+0WJAyoIWaPO+pBJ00vploJfUVzT
+	 ZywQbQGEiPbeg==
+Date: Fri, 18 Apr 2025 02:54:52 +0200
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Anthony Ruhier <aruhier@mailbox.org>
 Cc: netfilter@vger.kernel.org
-Subject: Re: Can the PCP field be set in the netdev table?
-Message-ID: <20250418001543.GB20519@breakpoint.cc>
-References: <877c3kvzyk.fsf@laposte.net>
+Subject: Re: Replace flow offload by flow add in wiki
+Message-ID: <aAGi3BJ_tZudukGi@calendula>
+References: <yw2rcklool64bepdn3kue7yj7xryymdmhjoe72hqujj4xaads4@yzo7qkb452oc>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <877c3kvzyk.fsf@laposte.net>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <yw2rcklool64bepdn3kue7yj7xryymdmhjoe72hqujj4xaads4@yzo7qkb452oc>
 
-Kevin Vigouroux <ke.vigouroux@laposte.net> wrote:
-> Hi!
+On Fri, Apr 04, 2025 at 05:12:03PM +0200, Anthony Ruhier wrote:
+> Hi,
+> I was setting up flowtables offloading in my nftables rules, and I got confused
+> by the wiki page.
 > 
-> I tried in vain to modify the PCP field with many rules. Nothing worked.
+> In https://wiki.nftables.org/wiki-nftables/index.php/Flowtables, the example
+> given to offload a flow is using the `flow offload` rule.
+> 
+> If I understood correctly, `flow offload` has been deprecated in favor of `flow
+> add`. Is it possible to replace any occurrence of `offload` with `add` please?
+> 
+> Also in this example, I got confused with the presence of the conntrack state
+> rule:
+> 
+> > tcp dport { 80, 443 } ct state established flow offload @f counter
+> 
+> From
+> https://thermalcircle.de/doku.php?id=blog:linux:flowtables_1_a_netfilter_nftables_fastpath,
+> checking that the state is established seems unnecessary, as `flow add` will
+> match only if the conntrack state is "confirmed". If it's correct, could it be
+> removed for clarity? And even better, add an explanation over when the rule
+> would be matched.
 
-Yes, this is broken, likely due to vlan hw tag offload.
+For the record, I have updated this.
 
->   [ bitwise reg 1 = ( reg 1 & 0x0000001f ) ^ 0x00000020 ]
->   [ payload write reg 1 => 1b @ link header + 14 csum_type 0 csum_off 0 csum_flags 0x0 ]
-                             ~~
-
-kernel doesn't handle 1 byte writes to the vlan pseudoheader at this
-time, so this will need a userspace/nft fixup to expand this to a 2 byte write.
-
-I can look at it next week (need to create a vlan test setup first).
-
-You could try to disable HW offload of the vlan tag and see if that helps.
-
-with patch, this will emit a 2byte load/store which kernel should be
-able to handle:
-
-  [ meta load iiftype => reg 1 ]
-  [ cmp eq reg 1 0x00000001 ]
-  [ payload load 2b @ link header + 12 => reg 1 ]
-  [ cmp eq reg 1 0x00000081 ]
-  [ payload load 2b @ link header + 14 => reg 1 ]
-  [ bitwise reg 1 = ( reg 1 & 0x0000ff1f ) ^ 0x00000020 ]
-  [ payload write reg 1 => 2b @ link header + 14 csum_type 0 csum_off 0 csum_flags 0x0 ]
-  [ counter pkts 0 bytes 0 ]
-
-A short in the dark, compile tested only, no idea if this is enough to
-make it work.
-
-diff --git a/src/evaluate.c b/src/evaluate.c
---- a/src/evaluate.c
-+++ b/src/evaluate.c
-@@ -3258,6 +3258,24 @@ static bool stmt_evaluate_payload_need_csum(const struct expr *payload)
- 	return desc && desc->checksum_key;
- }
- 
-+static bool stmt_evaluate_is_vlan(const struct expr *payload)
-+{
-+	return payload->payload.base == PROTO_BASE_LL_HDR &&
-+	       payload->payload.desc == &proto_vlan;
-+}
-+
-+static bool stmt_evaluate_payload_need_aligned_fetch(const struct expr *payload)
-+{
-+
-+	if (stmt_evaluate_payload_need_csum(payload))
-+		return true;
-+
-+	if (stmt_evaluate_is_vlan(payload))
-+		return true;
-+
-+	return false;
-+}
-+
- static int stmt_evaluate_exthdr(struct eval_ctx *ctx, struct stmt *stmt)
- {
- 	struct expr *exthdr;
-@@ -3287,7 +3305,7 @@ static int stmt_evaluate_payload(struct eval_ctx *ctx, struct stmt *stmt)
- 	unsigned int masklen, extra_len = 0;
- 	struct expr *payload;
- 	mpz_t bitmask, ff;
--	bool need_csum;
-+	bool aligned_fetch;
- 
- 	if (stmt->payload.expr->payload.inner_desc) {
- 		return expr_error(ctx->msgs, stmt->payload.expr,
-@@ -3310,7 +3328,7 @@ static int stmt_evaluate_payload(struct eval_ctx *ctx, struct stmt *stmt)
- 	if (stmt->payload.val->etype == EXPR_RANGE)
- 		return stmt_error_range(ctx, stmt, stmt->payload.val);
- 
--	need_csum = stmt_evaluate_payload_need_csum(payload);
-+	aligned_fetch = stmt_evaluate_payload_need_aligned_fetch(payload);
- 
- 	if (!payload_needs_adjustment(payload)) {
- 
-@@ -3318,7 +3336,7 @@ static int stmt_evaluate_payload(struct eval_ctx *ctx, struct stmt *stmt)
- 		 * update checksum and the length is not even because
- 		 * kernel checksum functions cannot deal with odd lengths.
- 		 */
--		if (!need_csum || ((payload->len / BITS_PER_BYTE) & 1) == 0)
-+		if (!aligned_fetch || ((payload->len / BITS_PER_BYTE) & 1) == 0)
- 			return 0;
- 	}
- 
-@@ -3334,7 +3352,7 @@ static int stmt_evaluate_payload(struct eval_ctx *ctx, struct stmt *stmt)
- 				  "uneven load cannot span more than %u bytes, got %u",
- 				  sizeof(data), payload_byte_size);
- 
--	if (need_csum && payload_byte_size & 1) {
-+	if (aligned_fetch && payload_byte_size & 1) {
- 		payload_byte_size++;
- 
- 		if (payload_byte_offset & 1) { /* prefer 16bit aligned fetch */
+Thanks.
