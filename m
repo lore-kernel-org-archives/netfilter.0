@@ -1,65 +1,46 @@
-Received: from smtp-outgoing-1701.laposte.net (smtp-outgoing-1701.laposte.net [160.92.124.99])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20A1C1D7E35
-	for <netfilter@vger.kernel.org>; Sat, 19 Apr 2025 12:43:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=160.92.124.99
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09F10265CB5
+	for <netfilter@vger.kernel.org>; Mon, 21 Apr 2025 13:27:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745066632; cv=none; b=GNMABYBCYMCNZKE6BXYFdxNssAAxkPUUWrH6Rtvo4OaqOhzE9rgpPz2TGYWgXu+sJchJxEWzY2xKhnofu5jD4UpQ8x7p7nQDzSmPOQ3MdQiJYgjEwaz4DLB31FPjdetKz7R0lGxZsdpDAHzVqk5lXjRNGpf2LNgohVd6RjchaEk=
+	t=1745242055; cv=none; b=NLpXBq+1AJFqYTJNDx3jLpFCfKz+AR+thJ/gI0+2N4+CkLUxmhYST5pvZfVBiGdQQ2Il/krgUXsrl1t6Jn6YAwX6n0YuWTU7xMWGaUD8wFSo+XRyGqGYgF9OzKZjKjuSkJmbg00kbMpZFzl+m8z4lonDvtQmOgkeUTZR2vjeKhY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745066632; c=relaxed/simple;
-	bh=NP9lZphhTNsWlSZ838Jw91oLpCwIBELGHrGUMMB9+zc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=q0E8UBr4x1+9A66FUbhZnnPKLRqS7LyUub+0PuFwqukARHIDzlyFgbgpy0TuMVyPV7fD8gKVojG0NPCSQpjpeCgbgkKwM6SPNnUF42L0gfIgOnGvUN5IZIMJ+wVALhlUR6pBRJHhKmuZFO00jsen59Ehi0DvGFLny8IA6EwhjAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=laposte.net; spf=pass smtp.mailfrom=laposte.net; dkim=pass (2048-bit key) header.d=laposte.net header.i=@laposte.net header.b=b6E06DBf; arc=none smtp.client-ip=160.92.124.99
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=laposte.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=laposte.net
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=laposte.net header.i=@laposte.net header.b="b6E06DBf"
-X-mail-filterd: {"version":"1.9.1","queueID":"4Zfhrf1lVdzKm44","contextId":
- "b0d894d6-5433-4468-ab30-afba620a5176"}
-Received: from outgoing-mail.laposte.net (localhost.localdomain [127.0.0.1])
-	by mlpnf0115.laposte.net (SMTP Server) with ESMTP id 4Zfhrf1lVdzKm44;
-	Sat, 19 Apr 2025 08:42:26 +0200 (CEST)
-X-mail-filterd: {"version":"1.9.1","queueID":"4Zfhrf0sl0zKm43","contextId":
- "70967c8e-09fb-4532-982b-ae181ae81a93"}
-X-lpn-mailing: LEGIT
-X-lpn-spamrating: 40
-X-lpn-spamlevel: not-spam
-Received: from B550-AORUS-ELITE-AX-V2 (lfbn-ren-1-301-157.w2-10.abo.wanadoo.fr [2.10.138.157])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mlpnf0115.laposte.net (SMTP Server) with ESMTPSA id 4Zfhrf0sl0zKm43;
-	Sat, 19 Apr 2025 08:42:26 +0200 (CEST)
-From: Kevin Vigouroux <ke.vigouroux@laposte.net>
-To: Sunny73Cr <Sunny73Cr@protonmail.com>
-Cc: netfilter@vger.kernel.org
-Subject: Re: Can the PCP field be set in the netdev table?
-In-Reply-To: <Gu3V89R_iHD59fwn-XkS_Bg5f2Mw9rLEfE4s1ByGZZy6gVONt1WwiNAyvg2Qui3NtRDfnJRwkFDddYnMiah_FL3EMCzJvzyT85U3hX1_IkM=@protonmail.com>
-	(Sunny73Cr@protonmail.com's message of "Thu, 17 Apr 2025 22:33:40
-	+0000")
-References: <877c3kvzyk.fsf@laposte.net>
-	<ULYEvwyZR2o5mOmJi1GCdWxJu-bftNMqoV8y_KVt3i9eXaWu7uTOBZk9D2-cXABoNO_SUbnRRKRUj9NyYjHbnO5NfkViqsjUsLBdfbyZc_Q=@protonmail.com>
-	<QeFwNvN8Q3lUul6dSJmJlq8MTp9ifHpuXYYhyra79MKEQf5bxqf8kdBtyvzUFMsJfXBoG3fDo_5Cn0m1DOdhPzyS3x4K46tSPAhcsZuwxVQ=@protonmail.com>
-	<Gu3V89R_iHD59fwn-XkS_Bg5f2Mw9rLEfE4s1ByGZZy6gVONt1WwiNAyvg2Qui3NtRDfnJRwkFDddYnMiah_FL3EMCzJvzyT85U3hX1_IkM=@protonmail.com>
-Date: Sat, 19 Apr 2025 08:42:25 +0200
-Message-ID: <87cyd8lkj2.fsf@laposte.net>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1745242055; c=relaxed/simple;
+	bh=ABhlaI/kacxou6DGmNkJQKw1dqgyDRmtOZy82wSmHgM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=M1vB8MIkgww930A/wiRGdWaFGamv+cWSgPgBeUr9CwDIVAVMtBamsDcNVSKVBHM3QjhIvKyGxXs6ZyubTRTf1zyXrisrDCPbhdTtdjdcIEV3XeDx9hgVUvwsKnRt9ibyXHrauWvU5B/gOphwEcU7OcyQHuFR7KMqkPQJ6HTCWFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
+Received: from fw by Chamillionaire.breakpoint.cc with local (Exim 4.92)
+	(envelope-from <fw@strlen.de>)
+	id 1u6rB8-0001nv-CE; Mon, 21 Apr 2025 15:27:18 +0200
+Date: Mon, 21 Apr 2025 15:27:18 +0200
+From: Florian Westphal <fw@strlen.de>
+To: Chen Linxuan <chenlinxuan@uniontech.com>
+Cc: Sunny73Cr <Sunny73Cr@protonmail.com>, netfilter@vger.kernel.org
+Subject: Re: How to Achieve Functionality Equivalent to iptables -m owner
+ --socket-exist in nft?
+Message-ID: <20250421132718.GA6623@breakpoint.cc>
+References: <CAC1kPDOzuhA9T2PDrYX8c9833B3QY7ECYDaXKE4zbkyc1FfX1w@mail.gmail.com>
+ <9bsxFpl1jZK-Q-1fvltsQ9TIJQbKJLLZ2BOKaF1HF8AAaaczi4Nazmyc_joMqUNu_Gbnii28h2OAIrFKNJyfOXU-C6si-ocGfhl9nabaQrM=@protonmail.com>
+ <CAC1kPDPkQXWENzPeCRjmNO1cOFOD90RzPSCEPq-0cNQnfrPx+g@mail.gmail.com>
+ <weuaFW4cJd3LV86Dm_XEPqzgsdQlndvgmC3sLnNg4KEH6kM_9IuaVzS3EItenqX_y5N0Ke8Q-eVuv8_oQUYikrH1u9XUyF3ZUploTxzY7OI=@protonmail.com>
+ <CAC1kPDNdUO-v5UEJYZgtOL1iZTBBxteUdfaGDAAgVQNEzcoWYQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=laposte.net; s=lpn-wlmd; t=1745066620; bh=NP9lZphhTNsWlSZ838Jw91oLpCwIBELGHrGUMMB9+zc=; h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:MIME-Version:Content-Type; b=b6E06DBfzNmggeqzWJwl/A9E86uT4j7mYdTpVn9P/f61EyJsRWtdVyu9i5nxwNiwVTdThRLSImCLRHEvfZgsxDSxfwcKir29MaDHJlPmFbYiM5yJNyIfuAx7539oDsDzVYlyuc1eh7s4+KCrc3Kv8CeTbgadSGR81OPoIRUl9PnDzPuk4VyUrQoeUxZYIjaVroey9ZApCKxFDVuYjBnf9DppCmle9Qqituec79TirI+ZSR2KQ/0mB8IYfE6OEJHL7bWfVnIeBWCq7FuI0rqNR+IATQNdFdPGTEmVCLR9ZyEwOJKMxkR7eg9M+PJv8JAOh33N8bLVLgr+GFOF7UhHlA==;
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAC1kPDNdUO-v5UEJYZgtOL1iZTBBxteUdfaGDAAgVQNEzcoWYQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-Thanks for the explanation!
+Chen Linxuan <chenlinxuan@uniontech.com> wrote:
+> Is the --socket-exist feature missing in nftable?
 
-However, the exclusive OR between bits 1 and 0 results in 0. Consequently, only
-the PCP field is modified by the operation.
-
---
-Best regards,
-Kevin Vigouroux
+meta skuid >= 0
