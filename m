@@ -1,130 +1,89 @@
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E1BD27815B;
-	Tue, 22 Apr 2025 11:44:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 956B827D786
+	for <netfilter@vger.kernel.org>; Tue, 22 Apr 2025 12:32:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745322251; cv=none; b=lRJmLab1oDPSgVPksV56ZTRzKx91WIjex5QUI9NSk2Rv7R2m1BI7FAkGqy8YOcF5auB+Lpu/sxkxlLClrp6bJJgh7mpeqCUJlAlRk+fzUw17KX+Q3VY44vrJ6yxWwt2jE2whkB8Qq/rWrMpko4A/vsDsEPxVg0XeTNm1ULQKXys=
+	t=1745325133; cv=none; b=S2U+pKwghlMZnVE5/w8bW70ZQvSG4H/fgotdX4KTxzl/cOf8l0jZ/64GRzJjFtRWN2Qw3BQDafwgCrfOMxlJTaltVRaMs7OIGBGOnqF1gd/kvdlXw/xdCUCpbVaecwLDBYC0+VXFG4JSnwTcTyAf1BeaWy1bMSqD10c6YG52UE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745322251; c=relaxed/simple;
-	bh=0SJZ4NFhZXBaM3WznzcAPczPKN69J8Kh0Zkk5FzAszw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=l5j5irONek+t6miSQmDzsWr3rxm4zeBg9l/sTATxtMpCYgRLKONBtyYYEoVx2tuVdhyYAbgrR/9GOvnT2xMs2x5DkeMvI4SShQqCx54TxPsVEtF76DEPvpcU67TpetACz4RrDiArlSVsIR4WB+MZEHDYuUfBSyQOf8xudeLmq2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=t9CwRx3h; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=X5uTpcw5; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+	s=arc-20240116; t=1745325133; c=relaxed/simple;
+	bh=7S4l0wiGn6xE5mnxom27n9Ix58afAwZuVQFCpnduJ/8=;
+	h=Date:From:To:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=sK7JH9zHDs+yvphUFtqtx38FyUwN0SVknpQiJyllfdybHbriJPr7QZSMs/F+F3s81H3fJboc7EVcjtieW7oteunpn5M68yrH5j8qk6U9nC+1j4HfwH8SELJgb4WExPtEr4Koo6oDXeDpfAvGOw+YCApjdhpReaH3ALmqrbRH1yg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=PzcnDMEE; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=L9nEmELC; arc=none smtp.client-ip=185.25.250.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="t9CwRx3h";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="X5uTpcw5"
-Received: by mail.netfilter.org (Postfix, from userid 109)
-	id 8BC646062F; Tue, 22 Apr 2025 13:44:03 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1745322243;
-	bh=2lvC8aBIaC9vo96uZIY6di9kQoFjH1x9H9QBbtx+75c=;
-	h=Date:From:To:Cc:Subject:From;
-	b=t9CwRx3h3ZLSQoAemtcSHhCVOhFHGbshdxzvvUn5oHOWVhQAefYa00JZuYpSNnSkH
-	 NowvuxVoF0o5z4HHKwvGN02jk3iDHX1rgFW4lVUI0NOTuRpo8ZgY+wWietCqmMCavP
-	 7tVl/gXjqhJ2NtV9Vkof7ZGec3EgCQlF74V9fWOT0xTMF1lJ4Wd4sPzcIk8X2A8Orn
-	 O8PFcQ9mxOf+WmVbsqz99kO5uVz1xYg+W8Mm8PefgyCrXvbuqqGEpeB/apeNz3Ilxo
-	 3Ddj/i9GEgYbBd1x/TYcpbmTBPRUfsWVZCUkbnyA36A1LEcGNPdmJzGd8e0lX1r/um
-	 7NYaOmW5anZSQ==
-X-Spam-Level: 
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id B3ADC6062F;
-	Tue, 22 Apr 2025 13:44:01 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1745322241;
-	bh=2lvC8aBIaC9vo96uZIY6di9kQoFjH1x9H9QBbtx+75c=;
-	h=Date:From:To:Cc:Subject:From;
-	b=X5uTpcw5fuPhnlqEX1HN8GUzZCYCc4kBXN76FAJKidxqklxgvDabgzwTUlSJY+xW7
-	 fR5bf4duNLTFnFgcY9l0armM3JycVfk2iwJ+za51PgHN4QkjEvxoy1aZ9lpwsknZuO
-	 QKjrcOzPHVFXzGik1l3pc1aZRd1avcmR89PV9p3dCuDVMfLW5KnFjlBFbFhYe/pmDx
-	 VRGf0sog/TGSn8dVgyJ2ZLgAOIe4lbKecY97pdxmpDS7+57fVgbmoAMK1is5BP/0zQ
-	 bis5HCV1Q53611fqMdZDlM+07WMjSqJcZW/J17LoiN7kP2AXr8KDs9D4zYBK/6Pl02
-	 iMGCP90eLMJsQ==
-Date: Tue, 22 Apr 2025 13:43:59 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
-Cc: netfilter-announce@lists.netfilter.org, lwn@lwn.net,
-	netdev@vger.kernel.org
-Subject: [ANNOUNCE] nftables 1.1.3 release
-Message-ID: <aAeA_6rbRNqpIRE2@calendula>
+	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="PzcnDMEE";
+	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="L9nEmELC"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
+	s=r2025; h=Content-Type:MIME-Version:Message-ID:References:In-Reply-To:
+	Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:
+	Content-Type:Message-Id:In-Reply-To:References;
+	bh=8oNNWlDFBtpt9RVOPn5FsPK/9VDT9YVrWsij9I/nfYE=; t=1745325129; x=1746534729; 
+	b=PzcnDMEEcxDxql7v1jaP0Wu8LhA8rD2Ea7SqS3iBdfkkzgqaW/tjjzU8WlLWXLYs03iqe7/zbWn
+	T23T+5XKvz5XqQYb+uQnKtfRhmoyL2TDjHIe4G1cWiNxCa1XPHhqrGFzu2jrMZ5QtO+drqxklIE/7
+	CJ6fYaLuEWBlkTATnD8=;
+DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=slavino.sk; s=e2025; h=Content-Type:MIME-Version:Message-ID:References:
+	In-Reply-To:Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:
+	MIME-Version:Content-Type:Message-Id:In-Reply-To:References;
+	bh=8oNNWlDFBtpt9RVOPn5FsPK/9VDT9YVrWsij9I/nfYE=; t=1745325129; x=1746534729; 
+	b=L9nEmELCHyo9vbFvocxfO2N6lnZT7lSfNZ7EvUH9dXu7jcSed0sM2kK7SPJvl2yUUv5RkOHAAHE
+	kF4PQ23a0CA==;
+Received: from dovex.skk ([192.168.10.12])
+	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <linux@slavino.sk>)
+	id 1u7CnH-000s6F-09
+	for netfilter@vger.kernel.org;
+	Tue, 22 Apr 2025 14:32:07 +0200
+Date: Tue, 22 Apr 2025 12:32:04 +0000
+From: Slavko <linux@slavino.sk>
+To: netfilter ML <netfilter@vger.kernel.org>
+Subject: Re: nftables RP filter and loopback
+In-Reply-To: <20250422114352.GA2092@breakpoint.cc>
+References: <905173BB-6745-4B59-8795-F9AC1E063A38@slavino.sk> <20250422114352.GA2092@breakpoint.cc>
+Message-ID: <622E44D0-8F02-4663-ABAD-01497C7D6692@slavino.sk>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="v0lrDgCn2ghomeXI"
-Content-Disposition: inline
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+On 22=2E apr=C3=ADla 2025 11:43:52 UTC, Florian Westphal <fw@strlen=2Ede> w=
+rote:
+>Slavko <linux@slavino=2Esk> wrote:
+
+>This is an input chain=2E  The loopback bypass is restricted
+>to PRE_ROUTING before v6=2E15-rc1=2E
+
+Uh, oh, ah, i checked everything except this and i have in my
+notes something as "fib outside prerouting can provide not
+expected results" (without explanation), now i understand what
+happen and too what that note means ;-)
+
+Thanks, i changed hook to prerounting and now it works as
+expected=2E
+
+>(This is an oversight, originally fib was rejected in input chain, and
+>when that restriction got lifted the lo bypass check wasn't adjusted)=2E
+
+I didn' use nftables in that time, thus i cannot compare
+behavior=2E Just to confirm that i understund you properly:
+
++ from 6=2E15 it will work even in input hook and lo as expected
++ before 6=2E15 it doesn't work (properly) outside of prerouting
+  hook only with lo traffic (other ifaces works)
+
+regards
 
 
---v0lrDgCn2ghomeXI
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-
-Hi!
-
-The Netfilter project proudly presents:
-
-        nftables 1.1.3
-
-This release contains a few fixes:
-
-- Incorrect bytecode for vlan pcp mangling from netdev family chains
-  such as ingress/egress:
-
-     ... vlan pcp set 6 counter
-
-- Bogus element in large concatenated set ranges, leading to:
-
-      16777216 . 00:11:22:33:44:55 . 10.1.2.3 comment "123456789012345678901234567890"
-
-  instead of:
-
-     "lo" . 00:11:22:33:44:55 . 10.1.2.3 comment "123456789012345678901234567890"
-
-- Restore set auto-merge feature with timeouts, disabled in the
-  previous v1.1.2 release.
-
-See changelog for more details (attached to this email).
-
-You can download this new release from:
-
-https://www.netfilter.org/projects/nftables/downloads.html
-https://www.netfilter.org/pub/nftables/
-
-[ NOTE: We have switched to .tar.xz files for releases. ]
-
-To build the code, libnftnl >= 1.2.9 and libmnl >= 1.0.4 are required:
-
-* https://netfilter.org/projects/libnftnl/index.html
-* https://netfilter.org/projects/libmnl/index.html
-
-Visit our wikipage for user documentation at:
-
-* https://wiki.nftables.org
-
-For the manpage reference, check man(8) nft.
-
-In case of bugs and feature requests, file them via:
-
-* https://bugzilla.netfilter.org
-
-Happy firewalling.
-
---v0lrDgCn2ghomeXI
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: attachment; filename="changes-nftables-1.1.3.txt"
-
-Florian Westphal (1):
-      evalute: make vlan pcp updates work
-
-Pablo Neira Ayuso (3):
-      Revert "intervals: do not merge intervals with different timeout"
-      netlink: bogus concatenated set ranges with netlink message overrun
-      build: Bump version to 1.1.3
-
-
---v0lrDgCn2ghomeXI--
+--=20
+Slavko
+https://www=2Eslavino=2Esk/
