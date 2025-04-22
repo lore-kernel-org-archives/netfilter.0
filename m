@@ -1,79 +1,80 @@
-Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 046A814BFA2
-	for <netfilter@vger.kernel.org>; Tue, 22 Apr 2025 13:15:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EAA618D
+	for <netfilter@vger.kernel.org>; Tue, 22 Apr 2025 14:16:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745327742; cv=none; b=fCvEMCAleylXpuhnSpwt16joQG4+RfUlZc2hkn/pdHM2c49RS84mAQGsVCHDdLOmWoMzN9m5TePL0w0ZHKWG22F0LCBXDnBHQSP/wfezYp/2IghLGRRoEGjbzgSRtiizLYjW9BOYgyp7IsC7x0gReQT5yRqXptloCZ3g19yNmZo=
+	t=1745331365; cv=none; b=Kn88M0F46P5s+2NQeaufpkR4p5Per/D9svYFODqvy5DD2BV7cWx+82fzggzCbLiKStsew6Ze46OZlg6+UcFnOqHxVkwSfVfWbZ74YUzMHxmgOFwAHUCDl+DSqDA9lBpdfepzW8fsq6kUgb8yS4adCkZWQ3lG1HAb21iiUFGidxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745327742; c=relaxed/simple;
-	bh=dZgSfvHPsoGJhfV7ZV6j+E5jyWNdKNTujx76DmDI044=;
-	h=Date:From:To:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=Dj3I549Qu7xJQAV9AsHihxv1jorfNClgw0Eva/gYpdJgtirEpyevv9Do+PiDRNPDBQjYDSBUodS90TeZtDDXbzz1PwYKpR4//+bxzNV0kfV4mZhbv1K1ZTeypLZZ3xNXyuX3fqyk05r3fhPoFCLa+aWOlKEiJ/wRcxdMK1VunTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=gv9yZ21u; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=vZyRk1Dv; arc=none smtp.client-ip=185.25.250.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
+	s=arc-20240116; t=1745331365; c=relaxed/simple;
+	bh=1h5cwZsU6nzIXDaD6vTzS+CI7r42jRRpH0sx6lGnICs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I5j5IWJfJbSg3M2XirbCY2AcK9irCwhZL1jQgx4fJ22xGOCVicjNBANPNDCZGDqNSS4UNOo3NqKhbIZDkRXDHZRbI/NFSjsTp8IlDIEuQ5yrKp4suWsvsYoEZZFsdj0FsOWMw1u7s5ontIXdtUBrLr+/xfUZru51OMaUVMG3Yog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=pzRT48xf; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=UDPkTrrw; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="gv9yZ21u";
-	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="vZyRk1Dv"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
-	s=r2025; h=Content-Type:MIME-Version:Message-ID:References:In-Reply-To:
-	Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:
-	Content-Type:Message-Id:In-Reply-To:References;
-	bh=YwgKZ7wbbCN5MawBPRtful+pjYFZ8eTCDXGopglmAJ0=; t=1745327740; x=1746537340; 
-	b=gv9yZ21u2/rCc2Hpn82F97BOs5atErHY+4xXvhfNzQlDl2ib/sa+tHhacVbhD3eZV7M/Zwn1X4B
-	kihKxiO1OxFfcqFLXfIketMF1DnRPGroKVtyEjapUmYw6vD5lggNuo1XvyrrVVGgD3r4ODufMsYyN
-	qe51pCtLGzhcIBKjDq0=;
-DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=slavino.sk; s=e2025; h=Content-Type:MIME-Version:Message-ID:References:
-	In-Reply-To:Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:
-	MIME-Version:Content-Type:Message-Id:In-Reply-To:References;
-	bh=YwgKZ7wbbCN5MawBPRtful+pjYFZ8eTCDXGopglmAJ0=; t=1745327740; x=1746537340; 
-	b=vZyRk1DvWNACelVWDlLwrJQHgUiMPm934UrVxL3FKT1pXq27W7wupoY/m7n01lSRSIHzSGVcvn9
-	GsA9ez2ykCA==;
-Received: from dovex.skk ([192.168.10.12])
-	by primex.slavino.sk with esmtpsa  (TLS1.3)(Exim 4.96)
-	(envelope-from <linux@slavino.sk>)
-	id 1u7DTN-000sF2-2b
-	for netfilter@vger.kernel.org;
-	Tue, 22 Apr 2025 15:15:38 +0200
-Date: Tue, 22 Apr 2025 13:15:35 +0000
-From: Slavko <linux@slavino.sk>
-To: netfilter ML <netfilter@vger.kernel.org>
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="pzRT48xf";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="UDPkTrrw"
+Received: by mail.netfilter.org (Postfix, from userid 109)
+	id 2D3FA6034B; Tue, 22 Apr 2025 16:16:00 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1745331360;
+	bh=skL495oGY81SunktWUAWUFRleAXQOtocbYpWP6Lf964=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pzRT48xfnmFzCHUtUziBsnZT6uXZrvh7g1gZHJAP+l6d408n7hpAUVNQ15Mx5YvJa
+	 lVHyYchk1t0OXh3c1mZAhzrdUCFvO24h2C4prt+uon82ontLQ0WoDN6RsdGETrPHOD
+	 fQT8hsW4lMcJGVmqIACUTMXacwOjcHX0NXvsComx0IS0Tess9HlIAgya9kdUJIJ9ak
+	 XCORvuTzPJm9QK+AcbNdiOzIyovkBg7Ssw/XWF/17uccUFN2W/rR7ToLcS3DlYOJZ9
+	 ubfk5h32wv5FcFNUtKL3N8TPhGRSU78cEpRHTasr3fB6OwlbxpoewMBW1caC79A1df
+	 cgILDY1Wn0vWg==
+X-Spam-Level: 
+Received: from netfilter.org (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id 4C720602DD;
+	Tue, 22 Apr 2025 16:15:59 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1745331359;
+	bh=skL495oGY81SunktWUAWUFRleAXQOtocbYpWP6Lf964=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=UDPkTrrw2ppC2A9lxXVJxTJ8J7tEw6/jjpj1gI7LHBTkMVig1DsLU/gz69eSe2wyp
+	 cr5JuGLK0wVqr80lNo+RmvYrEZyJWpahnWrp0D6ioJabnh5y6lnYhOKCkqUetwEv0l
+	 4u1hFBZdYZrWxcyX0MTovaBVj/d+GqRzIDJGZW7MjhcDItCl15S0XCfpFf8PpKwVtq
+	 l/EFoQRa3HxLAxMzV1svQJFTs0D6px9kWX1ZL1lD+xmPR6VHmCihsPmwutsaieSH2P
+	 wFq0cDbE2iHwj/K97KXJbS0Pw1C4Y36Y0beGwuB1KsnzW4FNXVEb3YzxaNeeZ9vB0u
+	 HvSCPtOItd/wQ==
+Date: Tue, 22 Apr 2025 16:15:56 +0200
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Florian Westphal <fw@strlen.de>
+Cc: Slavko <linux@slavino.sk>, netfilter ML <netfilter@vger.kernel.org>
 Subject: Re: nftables RP filter and loopback
-In-Reply-To: <20250422125351.GC2092@breakpoint.cc>
-References: <905173BB-6745-4B59-8795-F9AC1E063A38@slavino.sk> <20250422114352.GA2092@breakpoint.cc> <622E44D0-8F02-4663-ABAD-01497C7D6692@slavino.sk> <20250422125351.GC2092@breakpoint.cc>
-Message-ID: <C56FF994-7809-411B-ACBF-1FE2F6730CA2@slavino.sk>
+Message-ID: <aAeknJtZBVycJKCm@calendula>
+References: <905173BB-6745-4B59-8795-F9AC1E063A38@slavino.sk>
+ <20250422114352.GA2092@breakpoint.cc>
+ <622E44D0-8F02-4663-ABAD-01497C7D6692@slavino.sk>
+ <20250422125351.GC2092@breakpoint.cc>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20250422125351.GC2092@breakpoint.cc>
 
-On 22=2E apr=C3=ADla 2025 12:53:51 UTC, Florian Westphal <fw@strlen=2Ede> w=
-rote:
->Slavko <linux@slavino=2Esk> wrote:
->> + from 6=2E15 it will work even in input hook and lo as expected
->
->Yes=2E
->
->> + before 6=2E15 it doesn't work (properly) outside of prerouting
->>   hook only with lo traffic (other ifaces works)
->
->Yes=2E  fib works fine but not for loopback traffic=2E
->
+On Tue, Apr 22, 2025 at 02:53:51PM +0200, Florian Westphal wrote:
+> Slavko <linux@slavino.sk> wrote:
+> > + from 6.15 it will work even in input hook and lo as expected
+> 
+> Yes.
+> 
+> > + before 6.15 it doesn't work (properly) outside of prerouting
+> >   hook only with lo traffic (other ifaces works)
+> 
+> Yes.  fib works fine but not for loopback traffic.
 
-Thanks, IMO worth of (short) note in manpage, or at least
-in wiki page=2E
+Florian, is it worth to request to include this update to -stable
+kernels? Or you prefer the manpage note as it has been suggested?
 
-refards
-
-
---=20
-Slavko
-https://www=2Eslavino=2Esk/
+Thanks.
