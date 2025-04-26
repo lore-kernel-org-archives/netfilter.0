@@ -1,76 +1,135 @@
-Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C92818C91F
-	for <netfilter@vger.kernel.org>; Sat, 26 Apr 2025 09:40:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFCEF8635F
+	for <netfilter@vger.kernel.org>; Sat, 26 Apr 2025 21:56:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745660459; cv=none; b=JhV+5o6NPj45u37Y44P8yMiM14bPw5kZDBvkkmVTt5asT9hSgSXwB0fvfXB7qyAY2fsVx685hAE9nElBGnd9jjxjg4CbfpqX/6sPBYojrT0V9Qpmzv7o6j4JAw4MZXpBrJzmXSnh0FTorJwnDiX9wHX80/6aGk7jKxWwcruNG1I=
+	t=1745704589; cv=none; b=OC/JiDv3HrQHnqvdFFWJ6aJUlflEGroyDNp0yMshwig+b/y9uRvtwj8hXc/JCNarO/6xN+qCzf10JRTO94IK+nHR07xN7YnKC2egO9iNNXUJwe08KCtN9JWxOgvcy+yjDdhE6KGCX4w6L9BKbcYRz0/Olgg0KjPBnJ5sXu3ByOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745660459; c=relaxed/simple;
-	bh=1qOsi2hNnY3FwsteorDVWwbVLrnT7IMfvjkJDCdbjmI=;
-	h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=tdla73YbiPOOyoSm1K8lFJnjjRDJz4boX3xkE3/FeseKiMl2RemJXjfbAy8EeY6c+NUpwO9RKeSUFI0AD5zXWc1sbxqaLcg24xtu97a1ZssexJMEUP3j3nGp0HgYNZvnyxP8q/4jAlcao0OpKw52yYVkn0oT6cJSDEWs3spctsA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=XJ9QwNlk; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=p87O6qwn; arc=none smtp.client-ip=185.25.250.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
+	s=arc-20240116; t=1745704589; c=relaxed/simple;
+	bh=x8HeijfTb3nXBaSeagsdIL1wEi6KZp5XezqXTDth1zM=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=cEbCRhBgZKk545kLFIMEJ4V6smO5UTCNLlLnjySMaJvsQ/guPgjFKvHVcmybiGhr2uL/xyxr8cd+9auptlF4GlMSsGQujDP2zxuITWBsdKb0C7MECsKUOUn+YvInrbmORI09QPJ1hEPj5Mnz/lVchhxCwhrdStubw3oW7B5M8ao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PA/2D0Zq; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="XJ9QwNlk";
-	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="p87O6qwn"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
-	s=r2025; h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:
-	Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:
-	Content-Type:Message-Id:In-Reply-To:References;
-	bh=8rMxfYI7XFpbKwYA849m6ecNu1J/s5TIrKwQbr3IKWQ=; t=1745660455; x=1746870055; 
-	b=XJ9QwNlkRunEfjpYFuv+l9kJdw7Y0Rdt3srgvsQqAPM+8FCzjWDsxo82ssrySYkCsoJvDA95guf
-	zwXbMdwMMVSW8Sm3/yScGKqkrMEpibZXbpd11eZ7jpTSfzfypgsJGoBLSqwqIOLwL3O7f9XdqOXd7
-	MXxQX3gnDQ6hk4riEOM=;
-DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=slavino.sk; s=e2025; h=Content-Type:MIME-Version:References:In-Reply-To:
-	Message-ID:Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:
-	MIME-Version:Content-Type:Message-Id:In-Reply-To:References;
-	bh=8rMxfYI7XFpbKwYA849m6ecNu1J/s5TIrKwQbr3IKWQ=; t=1745660455; x=1746870055; 
-	b=p87O6qwnw7YaAGSYjojZ+tvuhrPIbG2zyAPU6yu7WMfarKDG+IwKbJlEwtfvCbYDiUAd9d9BlsQ
-	pQBL+bW1rCQ==;
-Received: from dovex.skk ([192.168.10.12])
-	by primex.slavino.sk with esmtpsa  (TLS1.3)(Exim 4.96)
-	(envelope-from <linux@slavino.sk>)
-	id 1u8c1k-001CKU-1u
-	for netfilter@vger.kernel.org;
-	Sat, 26 Apr 2025 11:40:52 +0200
-Date: Sat, 26 Apr 2025 11:40:51 +0200
-From: Slavko <linux@slavino.sk>
-To: netfilter ML <netfilter@vger.kernel.org>
-Subject: Re: nftables RP filter and loopback
-Message-ID: <20250426114051.607c5135@bonifac.skk>
-In-Reply-To: <20250426092447.GA13989@breakpoint.cc>
-References: <905173BB-6745-4B59-8795-F9AC1E063A38@slavino.sk>
-	<20250422114352.GA2092@breakpoint.cc>
-	<20250426103921.48f3255e@bonifac.skk>
-	<20250426092447.GA13989@breakpoint.cc>
-Face: iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAFVBMVEX7+/xrTUz4//3Ozc10AAH5/v3///8f7tJ8AAAB2UlEQVQ4jW2STY6EIBCFSwmumykPQDTtGqxO74kcgNiJa8dE7n+EAfzBtONCpD5eVfko8Pszeb+sflqOPVyA535abyB+9wnfwMgek/8XFEO33sE6lYWB/8HLqOUOFre87H+g9LK2P7y6p+o+1mJ1B75j1g7VeFeshTXifbfEza+goAqqLyAhAKsC+QahqVD9o74VYxGB6PUBJl+C5FwCUhEUSEpCM41PmGYJABK07oNk0EQQAw54K9KDGAQhl6C4ewDwJnZjjVZptQaD0PQSOqC4R2x0Btg76HwbI5oE1Rt4WUPhvG9cjAht+00SvlD5JThQQYiY2g6s3oBRzXMzgG1nKS2asDr+HPb0aSGmsiWwS9r4+rxP0M1tkgxQW/PzewF+pqPKgEV1cbdiCQxUB+AyaJzeq5AmfQG+IEwtDSTwIU8ArtBCtSKYpEg/lhNwFnwYGi2I3qRhPkGpYx5kmmBqtcrgg5hcUrxhqBicoNh6wnB11vaXP/8lkSYkeYaan4CJV7RQVtFm88jAxSlE8M85XonKgM91qBwtmnVt+1z86eI1+/3OMLc7tgbV5k1IhtndMnS/j6x3dAEciB/D7VuVwQI5Po9h1E7Au/kkq89gKt3ziMu1SuAPWe5Dq/EEywcAAAAASUVORK5CYII=
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PA/2D0Zq"
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-5efe8d9ebdfso4965947a12.3
+        for <netfilter@vger.kernel.org>; Sat, 26 Apr 2025 14:56:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1745704586; x=1746309386; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=x8HeijfTb3nXBaSeagsdIL1wEi6KZp5XezqXTDth1zM=;
+        b=PA/2D0ZqT9aIQ89HB4mYc9Lb6EsiSaqfUNvjOUux8Zt1KWB+F0J+3CeCguuk43+yPx
+         OAFbvPkaeIZeiIyABlje56GMwGOomE7s7/QDHFw8Osi2bQNEIDKVSneyVZTVFEnDu41/
+         tWyWmzeSq5wzt0WXqkHamSGus058U4QA3FJMoVrIKRqJ8JnDZzn1w+W6YsKb4LX1rTry
+         Hm7ubYQRBX6i44TYDQqGmWlN71SpA541olUIzyutpTvc1ILYa0Rhh0Ubl01FcsHlTYIr
+         hmzIEnzKGFsPS2S+2qjCta3eCN9fGYOkvFnp1iCF+XMDYYGmxV4VERvKJ7R9U4Z3Hg6U
+         e02w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1745704586; x=1746309386;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=x8HeijfTb3nXBaSeagsdIL1wEi6KZp5XezqXTDth1zM=;
+        b=neru+ucCR02zTpkHd+eYH6TFAWqThB4AzYr3sg1pKEVjIzXP+Z5S42gOOv1oz23Pt1
+         zJAZG8HH8p5VWQWpOJTvD1QZEzHnjHMShvOUbOBJsjn1V8+d8aQME/eCGmC85OExy5AR
+         cye+a9GvEX2v+Q34bAo/itY9418zQ902WLWHkLguJcE/pv7UvTlJ32rFE4w42BZBUXHu
+         8ZbwI4LWqK+0hp9MW13BhBGCte46xZVDv1cBnRkJlNsWJ5E835lyhkitI53XonX7XcJs
+         FcgmXATt5cl+NSGujUNupysHX24TFX7NyngH2Q/mAyffJo6dzGlg75+CGdy4S0hJjaDG
+         HT7g==
+X-Gm-Message-State: AOJu0YwejvUSNflkd0lhTED68kyjN4sfQgyeMhezrnD22pcFvPi3ptWv
+	VL9Ai91ahs9FFPtd8ZuPPZUskXLZVjPfQ/T3TY9L6wIxE6vAMhuMVpAZG/6NwbUanqAjZckuedY
+	vbjZZz1PFcX+OucHgdxlENWSScfpHjIqn
+X-Gm-Gg: ASbGncsCddJwyrslVvzZjoeT1jIaoVD0sOiJuvzHtkPtBPO0ePBlj+4F1jr+EpCFpdo
+	wJTWEKp4IZgENEmjaeWlmDxGXaFbY+CT5UTt3HD2cr44SltR0wuivancI5vMlSSpoSqwmXov65I
+	laNw2xPgf38tAIjqD5H2zG
+X-Google-Smtp-Source: AGHT+IEeHaeor5U0FGElj0Pedymr3f//xZtoHNCrpNHXYOcq6rFaLaVsokwcGetXJZKRtW8MXSsD1oH2OR/wQgKHLCQ=
+X-Received: by 2002:a17:907:9725:b0:ac2:49b1:166f with SMTP id
+ a640c23a62f3a-ace84b4c0b9mr327905166b.52.1745704585501; Sat, 26 Apr 2025
+ 14:56:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+From: =?UTF-8?B?UGF2ZWwgUGXFiMOheg==?= <pavel.penaz@gmail.com>
+Date: Sat, 26 Apr 2025 23:56:13 +0200
+X-Gm-Features: ATxdqUGpP1X-YguK9pB3hh3M0aax0uItSlVDjdlWBsOwm3YhTjklqKP3tFzeLYM
+Message-ID: <CANPmkQt-P-yW+oEA=m-dvJ_dP-7yBOzGNgMRO6ppUPLgMVdcgw@mail.gmail.com>
+Subject: Vmap lookup transiently fails during atomic ruleset reload under
+ load, leading to rule bypass
+To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Ahoj,
+Dear all,
+I ran into a reproducible issue with nftables, and would like to get
+your view, if it is a bug, or possibly a design limitation with atomic
+ruleset reload and maps. Thanks in advance for any feedback.
 
-Dňa Sat, 26 Apr 2025 11:24:47 +0200 Florian Westphal <fw@strlen.de>
-napísal:
+When performing an atomic ruleset reload (nft -f <file>) under heavy
+network traffic conditions, nftables vmap lookups appear to fail
+transiently. This causes packets that should match the vmap rule to
+incorrectly bypass it and hit subsequent rules in the chain. This
+issue has been observed even when the atomic reload uses an identical
+ruleset file to the currently loaded one, suggesting a race condition
+or transient inconsistency during the reload process itself rather
+than a logic difference between rule versions.
 
-> You either have no conntrack active at all or you have another
-> notrack rule in output ("lo" is picked up in output, not prerouting).
+Environment:
+Kernel: 6.12.20+rpt-rpi-2712 (uname -r)
+nftables: v1.1.2 (Commodore Bullmoose #3) (nft --version)
+Hardware: Raspberry Pi 5
 
-yes, you are right, i have opposite lo notrack in output chain and it
-seems, that for "lo" <=> "lo" traffic it is enough (tested).
+Minimal reproducible ruleset:
 
-thanks
+#!/usr/sbin/nft -f flush ruleset
+table inet main {
+chain forward {
+# Forward chain with accept policy
+type filter hook forward priority filter; policy accept;
+# Rule 1: Accept all packets with specific saddr via anonymous vmap
+ip saddr vmap { 78.128.211.42 : accept }
+# Rule 2: Log packets from the same source
+# This rule should normally NOT be hit due to Rule 1
+ip saddr 78.128.211.42 log prefix "VMAP_BYPASS: " level warning
+}}
 
--- 
-Slavko
-https://www.slavino.sk
+Steps to Reproduce:
+
+Save the above ruleset to a file (e.g., rules.nft).
+Load the ruleset: sudo nft -f rules.nft
+Generate significant, sustained network traffic that passes through
+the forward chain and originates from the IP address specified in the
+vmap (e.g., 78.128.211.42).
+
+(Context: This was successfully reproduced by initiating a
+high-bandwidth download from the server 78.128.211.42
+(speedtest.cesnet.cz) to a client machine (LAN_IP_ADDR in logs)
+located behind the nftables host, forcing traffic through the forward
+chain).
+
+While the heavy traffic is flowing, execute an atomic ruleset reload
+using the same rules file: sudo nft -f rules.nft
+Timing/Load Sensitivity: This issue appears sensitive to timing and
+load. It may be necessary to run the sudo nft -f rules.nft command
+multiple times during the traffic flow to trigger the race condition.
+Monitor kernel logs: dmesg
+
+Observed Behavior:
+
+Occasionally, coinciding with the execution of nft -f rules.nft during
+heavy traffic, log messages matching Rule 2 appear in the kernel log,
+indicating that Rule 1 was bypassed:
+
+Apr 26 22:37:23 hostname kernel: VMAP_BYPASS: IN=wan_if OUT=lan_if
+SRC=78.128.211.42 DST=LAN_IP_ADDR LEN=1492 TOS=0x00 PREC=0x00 TTL=58
+ID=2432 DF PROTO=TCP SPT=443 DPT=58956 WINDOW=294 RES=0x00 ACK URGP=0
+
+(Note: IN/OUT interface names and DST IP have been generalized to
+wan_if, lan_if, and LAN_IP_ADDR. Hostname generalized to hostname.)
+
+Thanks!
+Pavel
