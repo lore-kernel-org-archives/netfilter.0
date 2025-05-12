@@ -1,75 +1,75 @@
-Received: from srv1.dorfdsl.de (srv1.dorfdsl.de [82.139.196.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 478614C81
-	for <netfilter@vger.kernel.org>; Tue, 29 Apr 2025 18:48:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=82.139.196.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32FB5246768
+	for <netfilter@vger.kernel.org>; Mon, 12 May 2025 16:44:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1745952515; cv=none; b=Xo9+L9s9Gn6qXdmhgrkZ0r5FxPRH5i1dmwnhG3HIKaYPXOrfPHHk/r6+yL6jJSoWjK+rRHyxQPaXW0zDrzmayVuU8KpIcQCsmeJtcybdtIKD31knNwvg/oYzzXOREbjIcqSZlRPr7gBL1jToI56ju8D1eW+002wayK9pqgJq9ps=
+	t=1747068253; cv=none; b=cyzjPBzn72bgqNettW9Uti7bgb9GA+ZlDo9j3A3inGuIlN6k16rp9c9Cn6thEw6dEjwjyBP88fWOjWYocaP+s/b44iqTw41zJgM1P9SRGPSEzwJftJyNktATS6LHUwsDck3yvRgRWTO/Se3jOone+WREXj20QmBMAbPtzEyLmKM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1745952515; c=relaxed/simple;
-	bh=v/Vre8XXkKPBHQvaiSSn2G/kOFQ2pnSFVYtKxQz1EHM=;
-	h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JHgcQ7u9N0JTPusP/gEYN5vlPc5zNBwwnnEld/RVWiNosnTHjH8U1W/NwMDhCwu1VltIx/tR7rP/W//AiL+4bx14smwGktGZiMblRnZJAPqwtgfbQXUEtvYD6s2lY9f1I8U6nm972YJkEsXlmwa1EfuM6AmhQe+pXku77U4JpMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dorfdsl.de; spf=pass smtp.mailfrom=dorfdsl.de; dkim=pass (2048-bit key) header.d=dorfdsl.de header.i=@dorfdsl.de header.b=K6Qt2RO7; arc=none smtp.client-ip=82.139.196.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dorfdsl.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dorfdsl.de
+	s=arc-20240116; t=1747068253; c=relaxed/simple;
+	bh=EdR4rVAuk2wMy7P0U5fMc6t6VpvJiNKVLAlFoeHyB9k=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=JIg2zmfKmBrlJpQZ0JcZx5nLk9nmFe6l5FYgsvzoqdWvf5/BiVefxK/twQ7iQZ5JJ6KwFR1Wq2M/R2Qou3us7NRk9LjGJKl1nXjX34e6SD5rW2Q83FAF1ZKdQlS8Jq7+4CxSlun7vlYH0w4lLt8EYNnrwwvwe/zQKjI0kpXS+0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=LAakMtDS; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=gBdpv0/h; arc=none smtp.client-ip=185.25.250.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dorfdsl.de header.i=@dorfdsl.de header.b="K6Qt2RO7"
-Authentication-Results: srv1.dorfdsl.de; none (SPF check N/A for local 
-   connections -  client-ip=2a01:170:118f:2:c68b:7958:7335:bda8; 
-   helo=[IPv6:2a01:170:118f:2:c68b:7958:7335:bda8]; 
-   envelope-from=mm@dorfdsl.de; receiver=<UNKNOWN>)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorfdsl.de;
-	s=default; t=1745952366;
-	bh=v/Vre8XXkKPBHQvaiSSn2G/kOFQ2pnSFVYtKxQz1EHM=;
-	h=Date:From:To:Subject:In-Reply-To:References:From;
-	b=K6Qt2RO7vfaUcQ316rWZ6EBFd280CTWxT620gNlI0ZGFniTMvqfpQaAHYdE17m50V
-	 4wVwWsbrXhWlfrDWetIOQP2+0ILThNwyszOtbu4OhTTOzOCwCEXH2P7O6mIc1jjqQf
-	 ZiGZ3vkl7+5IHnEZoW13MOJcnoYWMZOD44qQXpSSWqp0pzT89M8Y6oT/3CCcs+I3j5
-	 PG21+3xWaqwnH26MrJAIedyCU2LFvQVUc6S/QJY13DJ8Kb1T8k6wz0GlfzfOK9KgwL
-	 LDjrwixkS8SMxs0gX8hSShIYqdDTgZIIXd6WtwCuOfYK7zoWI+kgrSiZcRqYrYvckf
-	 +I9oiBWrXVemA==
-Received: from ryz.dorfdsl.de ([IPv6:2a01:170:118f:2:c68b:7958:7335:bda8])
-	(authenticated bits=0)
-	by srv1.dorfdsl.de (8.18.1/8.18.1/Debian-6~bpo12+1) with ESMTPSA id 53TIk6kN548338
-	(version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT)
-	for <netfilter@vger.kernel.org>; Tue, 29 Apr 2025 20:46:06 +0200
-Date: Tue, 29 Apr 2025 20:46:06 +0200
-From: Marco Moock <mm@dorfdsl.de>
-To: netfilter@vger.kernel.org
-Subject: Re: send all traffic to a specific address
-Message-ID: <20250429204606.5f988720@ryz.dorfdsl.de>
-In-Reply-To: <0f1f9636-ad4f-410c-ae4b-b628552dc98b@pahlevanzadeh.net>
-References: <0f1f9636-ad4f-410c-ae4b-b628552dc98b@pahlevanzadeh.net>
-X-Mailer: Claws Mail 4.3.1 (GTK 3.24.49; x86_64-pc-linux-gnu)
+	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="LAakMtDS";
+	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="gBdpv0/h"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
+	s=r2025; h=Content-Type:MIME-Version:Message-ID:Subject:To:From:Date:From:
+	Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:Content-Type:Message-Id;
+	bh=EhW0hQ6NVQ0RbhLfs4ixRtcF10fGEM9CFlZirHG8kN8=; t=1747068248; x=1748277848; 
+	b=LAakMtDSoq0WrO6RGMwRZHYUepO/hdukScXl41eojXwUYYz2t2Z3dRQZMCXW22AWe+sxy5IZ0pO
+	O9ue5L1yrC/6LcSMP2RS950UMHX0yKFJZsGFYkDwAUQ0Wo698M23sWe/ZkdP+yJNqQmvMqEQmqFP5
+	MPCRzXgPmwq6MTg608k=;
+DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=slavino.sk; s=e2025; h=Content-Type:MIME-Version:Message-ID:Subject:To:From
+	:Date:From:Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:Content-Type:
+	Message-Id; bh=EhW0hQ6NVQ0RbhLfs4ixRtcF10fGEM9CFlZirHG8kN8=; t=1747068248;
+	x=1748277848; b=gBdpv0/hwkPavBRAijeUXCNw6/+BU+KPmUmXA5O2Q0YMY8fN4BVmCHUs5lgbb
+	UQg5qCKiMrCKMI/QooX+2jBAQ==;
+Received: from dovex.skk ([192.168.10.12])
+	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <linux@slavino.sk>)
+	id 1uEW6S-001L3y-07
+	for netfilter@vger.kernel.org;
+	Mon, 12 May 2025 18:34:08 +0200
+Date: Mon, 12 May 2025 16:34:03 +0000
+From: Slavko <linux@slavino.sk>
+To: netfilter ML <netfilter@vger.kernel.org>
+Subject: Repeated SYN+ACK count
+Message-ID: <6ABC13EB-FB13-4FBD-9FB8-57D16CCD109C@slavino.sk>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain;
+ charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-Am 29.04.2025 um 22:10:30 Uhr schrieb Mohsen Pahlevanzadeh:
+Hi,
 
-> I have a linux-box and run a program to send my traffic to another PC.
+more or less often i see SYN packets, which don't ACK nor RST
+my SYN+ACKs, which then retries=2E My idea was to use something
+as this in output hook:
 
-Which purpose does this have?
+    tcp flags syn,ack / syn,ack ct reply packets gt 1 counter
 
-> Now I have 127.0.0.1:8080
->=20
-> I want to send all of my traffic to this socket. I don't want to send=20
-> even one packet without touch 127.0.0.1:8080 Then 127.0.0.1:8080 send
-> my traffic to eth0.
+But the counter stays on zero=2E I tested it with hping and spoofed
+IP and the tcpdump shows expected count of retries, when i check
+conntrack output i see packets=3D1 in both directions, thus i guess
+that ACK+SYN retries are not counted separately=2E Am i right?
 
-I don't know how this is supposed to work, please give more details
-about your goal.
+Please, have i to touch some more settings or just to use another
+approach? In iptables i use some connmark magic for that, which i
+want to avoid=2E=2E=2E
 
+regards
 
 --=20
-Gru=C3=9F
-Marco
-
-Send unsolicited bulk mail to 1745957430muell@cartoonies.org
+Slavko
+https://www=2Eslavino=2Esk/
