@@ -1,79 +1,122 @@
-Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [148.6.0.49])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27A5E36124;
-	Sat, 17 May 2025 14:18:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.6.0.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4B1F21C9E3
+	for <netfilter@vger.kernel.org>; Mon, 19 May 2025 22:20:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747491503; cv=none; b=ddWbKSV/zNmjtIKuToKkAh6CUpFvOo/zqLrWlErAyYnzeCiGnFz65Z2NUuUHa4Q4JRdrUTuOyfw/6l1zgd4JCWghYsfORQSu6Gmyrl/WEkjhd2XsKi9v6Ko4SRsPxqnRmuBTElT+WSBEiJNTAvnJkDu3aWlHKfQFqQdl7TIu/Gg=
+	t=1747693255; cv=none; b=ASar8CMsU4tZxjoMLMhkUxeUcgMvZyrHRX2lK4wFfTIWfjjAqJ4N/eK1/yHLa71eEDZvNKYJDw+h0ZY3zD6DHKwWzxBGh5oLxpnn6llqo8LantBYXOoXIOZGMujzSgVEsAP+WKbLgG9HV/4Ov3nsgcrzyeX/DlS6LWRLjeJ8H2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747491503; c=relaxed/simple;
-	bh=3Ms3uQ9OkmCBdcUOft7hQ+dcKpJ2PP0n6BeOTq8OA1s=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=cPO9udgdJ5kIIncWilob642/rSQcvOgsWvbNuevqnlQ4B99HWgGUz4edIDj8/upXHofO12jVCk1cgFNsB8OARkt8crKFyw4Te7VeWrWVMHM7gKsaV3brbeyezdwQixczzATgeK8FdJ6ld/d4uU42zrLUkpCC2VmUTRdImTtF57E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=148.6.0.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Received: from localhost (localhost [127.0.0.1])
-	by smtp0.kfki.hu (Postfix) with ESMTP id 93C2C19201B6;
-	Sat, 17 May 2025 16:08:30 +0200 (CEST)
-X-Virus-Scanned: Debian amavis at smtp0.kfki.hu
-Received: from smtp0.kfki.hu ([127.0.0.1])
- by localhost (smtp0.kfki.hu [127.0.0.1]) (amavis, port 10026) with ESMTP
- id bwj59q2Nblcb; Sat, 17 May 2025 16:08:28 +0200 (CEST)
-Received: from mentat.rmki.kfki.hu (92-249-141-197.pool.digikabel.hu [92.249.141.197])
-	(Authenticated sender: kadlecsik.jozsef@wigner.hu)
-	by smtp0.kfki.hu (Postfix) with ESMTPSA id 556C6192019E;
-	Sat, 17 May 2025 16:08:28 +0200 (CEST)
-Received: by mentat.rmki.kfki.hu (Postfix, from userid 1000)
-	id 1296D14209B; Sat, 17 May 2025 16:08:28 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by mentat.rmki.kfki.hu (Postfix) with ESMTP id 0F65B1419A1;
-	Sat, 17 May 2025 16:08:28 +0200 (CEST)
-Date: Sat, 17 May 2025 16:08:28 +0200 (CEST)
-From: Jozsef Kadlecsik <kadlec@netfilter.org>
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
-Subject: [ANNOUNCE] ipset 7.24 released
-Message-ID: <9a47a1a8-7ae4-53fd-cca7-044a78da4c7b@netfilter.org>
+	s=arc-20240116; t=1747693255; c=relaxed/simple;
+	bh=lmi67jkqL/smeBcQRYV0puPSlv1Jg/NaqLWAQzIvN90=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=CqL33shpH+ufNvw18ZyC6r7/o3lPdm5ldxqMjED/iaL++4WAGfXKcCrlDe6pEfGEwawADNN+rs0or4PTYLmE6XcTzvIkkoTMMrFyKrqh3NUhKtqoZHxmBYKd0f17/dhb64FNnFcuk46mAV119hmuoQ+uW8p9Vu9VFC6Ur7glVtM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
+Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
+	id CA71060146; Tue, 20 May 2025 00:20:42 +0200 (CEST)
+Date: Tue, 20 May 2025 00:20:10 +0200
+From: Florian Westphal <fw@strlen.de>
+To: netfilter@vger.kernel.org
+Subject: [ANNOUNCE] ulogd 2.0.9 release
+Message-ID: <aCuxDRv-wa236GbK@strlen.de>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-X-deepspam: dunno 71%
+Content-Type: multipart/mixed; boundary="Ye+0WOi6LuW7/zp3"
+Content-Disposition: inline
 
-Hi,
 
-I'm happy to announce ipset 7.24 with brings a couple of json related 
-output fixes and an important kernel side region locking fix for all hash 
-types when timeouts are used.
+--Ye+0WOi6LuW7/zp3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Userspace changes:
-  - Improve fixing commas in sorted json output
-  - Fix extra quotes around elements in json output
-    (bugzilla #1793, issue 3.)
-  - Fix commas in sorted json output (bugzilla #1793, issue 4)
-  - Fix unquoted port range in json output (bugzilla #1793, issue 1)
-  - Fix extraneous comma in terse list json output (Joachim,
-    bugzilla #1793, issue 2)
-  - bash-completion: restore fix for syntax error (Jeremy Sowden)
-  - Correct typo in man-page (Jeremy Sowden)
+Hi!
 
-Kernel part changes:
-  - netfilter: ipset: fix region locking in hash types
-  - Handle "netfilter: ipset: Fix for recursive locking warning"
-    patch for backward compatibility
-  - netfilter: ipset: Fix for recursive locking warning
+The Netfilter project proudly presents:
 
-You can download the source code of ipset from:
-        https://ipset.netfilter.org
-        git://git.netfilter.org/ipset.git
+        ulogd 2.0.9
 
-Best regards,
-Jozsef
--- 
-E-mail : kadlec@netfilter.org, kadlec@blackhole.kfki.hu, 
-         kadlecsik.jozsef@wigner.hu
-Address: Wigner Research Centre for Physics
-         H-1525 Budapest 114, POB. 49, Hungary
+ulogd is a userspace logging daemon for netfilter/iptables related
+logging. This includes per-packet logging and per-flow logging as
+well as flexible user-defined accounting. This also includes output
+plugins to represent logging using different backends such as mysql,
+postgresql, pcap, json among others.
+
+See ChangeLog that comes attached to this email for more details.
+
+You can download it from:
+
+https://www.netfilter.org/projects/ulogd/downloads.html
+
+Happy firewalling.
+
+--Ye+0WOi6LuW7/zp3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="changes-ulogd-2.0.9.txt"
+
+Corubba Smith (18):
+      nfct: fix calloc argument order
+      nfct: add newline to reliable log message
+      gprint: fix comma after ip addresses
+      ipfix: re-arm send timer
+      ulogd: ignore private data on plugin stop
+      ulogd: fix config file fd leak
+      ulogd: ignore malformed config directives
+      nfct: add icmpv6
+      ulogd: add ulogd_parse_configfile public function
+      all: use config_parse_file function in all plugins
+      ulogd: improve integer option parsing
+      ulogd: provide default configure implementation
+      all: remove trivial configure hooks
+      ulogd: raise error on unknown config key
+      nfct: fix counter-reset without hashtable
+      nfct: add flow end timestamp on hashtable purge
+      ulog: remove input plugin
+      ulogd: remove libipulog
+
+Harald Welte (1):
+      README: update project homepage and mailing list addresses
+
+Jeremy Sowden (25):
+      doc: mysql: declare MAC protocol columns unsigned
+      ulogd: fix parse-error check
+      filter: fix buffer sizes in filter plug-ins
+      JSON: remove incorrect config value check
+      db: fix back-log capacity checks
+      pgsql: correct `ulog2.ip_totlen` type
+      filter: IP2BIN: correct spelling of variable
+      output: add missing support for int64_t values
+      output: Fix formatting of OPRINT switch.
+      build: fix pgsql fall-back configuration of CFLAGS
+      pcap: simplify opening of output file
+      pcap: prevent crashes when output `FILE *` is null
+      src: record length of integer key values
+      printpkt: fix statement punctuator
+      printpkt, raw2packet_BASE: keep gateway address in NBO
+      raw2packet_BASE: store ARP address values as integers
+      ip2hbin: store ipv6 address as integer
+      ipfix: skip non-ipv4 addresses
+      gprint, oprint: use inet_ntop to format ip addresses
+      gprint, oprint: add support for printing ipv6 addresses
+      sqlite3: correct binding of ipv4 addresses and 64-bit integers
+      sqlite3: insert ipv6 addresses as null rather than garbage
+      db: insert ipv6 addresses in the same format as ip2bin
+      IP2STR: correct address buffer size
+      IP2HBIN, IP2STR: correct typo's
+
+Kyuwon Shim (1):
+      ulogd2: avoid use after free in unregister on global ulogd_fds linked list
+
+Pablo Neira Ayuso (1):
+      build: bump release version to 2.0.9
+
+Phil Sutter (1):
+      Makefile: Create LZMA-compressed dist-files
+
+
+--Ye+0WOi6LuW7/zp3--
