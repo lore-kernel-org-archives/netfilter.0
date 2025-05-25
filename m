@@ -1,105 +1,76 @@
-Received: from mail.integraal.info (integraal.connected.by.freedominter.net [194.145.195.28])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A135222A7E2
-	for <netfilter@vger.kernel.org>; Wed, 21 May 2025 16:15:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.145.195.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BEF32F32
+	for <netfilter@vger.kernel.org>; Sun, 25 May 2025 07:51:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1747844115; cv=none; b=pyy3pae+n4jBL1WXZ76ubnpCl8/0doUfzD+f2kc+C30u6+XXRx/tUluSDMs8g9HW8tltU15Usd2tcJB4K49f1WMC5RM/5i9dzzeX+crluJ/tL475KIqzYKCOS5cvB+MKuGEsBjDojEoiusTYrs7yXlQchB9kiggIvjWCOWImIEs=
+	t=1748159509; cv=none; b=QDnD72l8+/8IPqcAdsacVguV2ze2fk8OV/lGuBQacL/3k4lyzfj1R8+2X4CYALFAfv5yEKJj4eM0UFucyLE7BGDdT42N7zlOkpKs8FxgZOA4dHCQSkabmErg21GlNn2JlRQRZN0NvKRkjSini0fS5cgQ8VKdv+4N8uBpHPZ29uU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1747844115; c=relaxed/simple;
-	bh=Quqp5IymPGh4LbPtZQG5wKRaXvpzPQTRjYR6Szde6Ac=;
-	h=MIME-Version:Date:From:To:Subject:Message-ID:Content-Type; b=Fl8CAoTnCSW2GxvceYKZIHHwSVohzGU8X6CzgebcQlOWMDv5gHoa0pSAZ629IUyiVndV9hekhx/rvjWlXUY1bqXYtmO6Se+m5nF3//oDggfTSb5X9oUbfDbuJ0apo0WeUof2YEbOOTi364sXeSuuffHG5j1wMLsDJ3NIRTf51QE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wielders.net; spf=pass smtp.mailfrom=wielders.net; dkim=pass (2048-bit key) header.d=wielders.net header.i=@wielders.net header.b=lWO82l7v; arc=none smtp.client-ip=194.145.195.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wielders.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wielders.net
+	s=arc-20240116; t=1748159509; c=relaxed/simple;
+	bh=EINlKqXeKUrErt/TwIASOBC+7tfM+GZQzW18b5jLuak=;
+	h=Date:From:To:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=iMUethNSBxbhX8jWvppnbKnCIk7Sau2xiG2eH46v36AaatuMJu06u/X3brd+r0+Kjp9EsI/3K6Wuity06JOsYx/JCfPpdSpLBTwG2KUgQtorfIv73aU3lEcjPdaHU/gNaeUGRl/+1KZ+E41v3s9hBJGWt5ttsQOGtKucRJZ7zTE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=BxLcOwph; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=n4yM5Pyj; arc=none smtp.client-ip=185.25.250.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=wielders.net header.i=@wielders.net header.b="lWO82l7v"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=wielders.net;
-	s=postfix; t=1747844106;
-	bh=Quqp5IymPGh4LbPtZQG5wKRaXvpzPQTRjYR6Szde6Ac=;
-	h=Date:From:To:Subject:Reply-To:From;
-	b=lWO82l7vSoVQ2FeuxaZZBoF1wPwm8LBS+7tmWGOz3R2PrGWzFy+/CEx5hTCYU5aGE
-	 heoZ9pvH25c1ggH7lOJgbP/ENqIo8efxx3rMbCqFED7tjHAZv281whowKIoPOZMMMe
-	 UMCqWGvlKhqzRT/NCOm5523yD6ZqsUOJwsCd139EfflTNk/t1nnoN7QqYwvdzQoWTy
-	 LjT48ckX5CHqNjYofK2toOMo0vBkw34QNdD1b1mto0T7YR+XVjwMqzC3sdPFtRHot0
-	 Q+lMz+eDNR/6jSyH2B9rloR00gQTFqw3bf5UdNH+vdSBTm207yTE1ROaN+3LnRsJHU
-	 qvqemVhhD6SzQ==
-Received: from email.wielders.net (einstein.integraal.info [192.168.11.254])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by mail.integraal.info (Postfix) with ESMTPSA id 952B312006E
-	for <netfilter@vger.kernel.org>; Wed, 21 May 2025 16:15:06 +0000 (UTC)
+	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="BxLcOwph";
+	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="n4yM5Pyj"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
+	s=r2025; h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:
+	Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:MIME-Version:
+	Content-Type:Message-Id:In-Reply-To:References;
+	bh=ugrnd/8lnc89WzbQmO2PqCNLg9OSPFX53Ms8LCSuuP0=; t=1748159505; x=1749369105; 
+	b=BxLcOwph2UTa3c3u+dVH+YS+TlED9FuUrhJI+CIm548YqFY1559hom3kUBgAEd6mE3zfMgZW3d6
+	z7PcNdhXOxEZT6RZ2qCswqTfQGrA1k0RcWziffRqSGqReCvozYoez5MrRSEQ1qbOgX7IC6t3Llmif
+	o3k9qowrkbIt9xLE52Q=;
+DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=slavino.sk; s=e2025; h=Content-Type:MIME-Version:References:In-Reply-To:
+	Message-ID:Subject:To:From:Date:From:Reply-To:Sender:Subject:To:Cc:Date:
+	MIME-Version:Content-Type:Message-Id:In-Reply-To:References;
+	bh=ugrnd/8lnc89WzbQmO2PqCNLg9OSPFX53Ms8LCSuuP0=; t=1748159505; x=1749369105; 
+	b=n4yM5Pyjs1VRN6L7Ph2v93Pi+CXDhzqaDtyE47M0hPqxD5m9FpyoKWstwocW2VQYPhsFKF8N73R
+	NoK681oCxBg==;
+Received: from dovex.skk ([192.168.10.12])
+	by primex.slavino.sk with esmtpsa  (TLS1.3)(Exim 4.96)
+	(envelope-from <linux@slavino.sk>)
+	id 1uJ68z-0006ie-2x
+	for netfilter@vger.kernel.org;
+	Sun, 25 May 2025 09:51:42 +0200
+Date: Sun, 25 May 2025 09:51:40 +0200
+From: Slavko <linux@slavino.sk>
+To: Netfilter <netfilter@vger.kernel.org>
+Subject: Re: Log ARP headers
+Message-ID: <20250525095130.69477537@bonifac.skk>
+In-Reply-To: <20250303220055.GA4034310@celephais.dreamlands>
+References: <FADC1D05-BC58-45CF-AEBA-2D4B85928185@slavino.sk>
+	<20250303193533.GA16225@breakpoint.cc>
+	<88D0D02C-9C84-428F-B62B-EBA5E359D325@slavino.sk>
+	<20250303220055.GA4034310@celephais.dreamlands>
+Face: iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAFVBMVEX7+/xrTUz4//3Ozc10AAH5/v3///8f7tJ8AAAB2UlEQVQ4jW2STY6EIBCFSwmumykPQDTtGqxO74kcgNiJa8dE7n+EAfzBtONCpD5eVfko8Pszeb+sflqOPVyA535abyB+9wnfwMgek/8XFEO33sE6lYWB/8HLqOUOFre87H+g9LK2P7y6p+o+1mJ1B75j1g7VeFeshTXifbfEza+goAqqLyAhAKsC+QahqVD9o74VYxGB6PUBJl+C5FwCUhEUSEpCM41PmGYJABK07oNk0EQQAw54K9KDGAQhl6C4ewDwJnZjjVZptQaD0PQSOqC4R2x0Btg76HwbI5oE1Rt4WUPhvG9cjAht+00SvlD5JThQQYiY2g6s3oBRzXMzgG1nKS2asDr+HPb0aSGmsiWwS9r4+rxP0M1tkgxQW/PzewF+pqPKgEV1cbdiCQxUB+AyaJzeq5AmfQG+IEwtDSTwIU8ArtBCtSKYpEg/lhNwFnwYGi2I3qRhPkGpYx5kmmBqtcrgg5hcUrxhqBicoNh6wnB11vaXP/8lkSYkeYaan4CJV7RQVtFm88jAxSlE8M85XonKgM91qBwtmnVt+1z86eI1+/3OMLc7tgbV5k1IhtndMnS/j6x3dAEciB/D7VuVwQI5Po9h1E7Au/kkq89gKt3ziMu1SuAPWe5Dq/EEywcAAAAASUVORK5CYII=
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Wed, 21 May 2025 18:15:06 +0200
-From: Pierre Wielders <pierre@wielders.net>
-To: netfilter@vger.kernel.org
-Subject: documentation/explaination on the syntax of the set_elem data
- arrangement.
-Reply-To: pierre@wielders.net
-Mail-Reply-To: pierre@wielders.net
-Message-ID: <a4465ba85a6faea0e960c7e0b37586af@wielders.net>
-X-Sender: pierre@wielders.net
-Organization: Integraal Automatisering
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Dear reader,
+Hi,
 
+Dňa Mon, 3 Mar 2025 22:00:55 +0000 Jeremy Sowden <jeremy@azazel.net>
+napísal:
 
-I am currently trying to wrap the libmnl into a C++ wrapper that allows 
-to get (starting with that) and set rules. So far I was able (using 
-reverse engineering ;-) figure out most of the stuff.
+> I'll look at this when I get a moment.
 
-I am a bit stuck now on the set_elem in the set. Is there somewhere 
-documentation that describes the syntax here?
+I seen series of patches, i seen some related debate about these
+patches and i see some that some parts was pushed to git, then i lost
+in it.
 
-What I get from the sets:
+Please, is ARP logging working in 2.0.9?
 
-Table:  [lxc]
-Set:    { "name":"__set1",
-           "handle":4,
-           "flags":3,
-           "key": {
-             "type":   ["service"],
-             "length": 2
-           },
-           "userdata":{
-             "length":6,
-             "data": "00:04:02:00:00:00"
-           },
-           "elements": [
-             { "key": {"type":"value","data":"06:00:01:00:00:35:00:00"} 
-},
-             { "key": {"type":"value","data":"06:00:01:00:00:43:00:00"} }
-           ]
-         }
-
-I know that the elements in the set represent are the port number 53 
-(0x35) and 67 (0x43) :
-
-"match":{
-     "op":"==",
-     "left":{
-         "payload":{
-             "protocol":"udp",
-             "field":"dport"
-         }
-     },
-     "right":{
-         "set":[ 53, 67 ]
-     }
-}
-
-What is the other information "06:00:01:00" and "00:00". Is there a 
-document describing how to interpret the data or can someone explain or 
-is reverse engineering the only option (got a bit hard on this part :-)
-
-BR Pierre
+-- 
+Slavko
+https://www.slavino.sk
