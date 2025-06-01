@@ -1,81 +1,57 @@
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail-106104.protonmail.ch (mail-106104.protonmail.ch [79.135.106.104])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BDDC1A0B08
-	for <netfilter@vger.kernel.org>; Fri, 30 May 2025 17:50:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6031B79D0
+	for <netfilter@vger.kernel.org>; Sun,  1 Jun 2025 03:45:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.135.106.104
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1748627460; cv=none; b=t/xXdN+b+DX4BSeYdDMO5t8cCk89DWdFJnIIA0wyNRovUVQqtmfRPuojBp0Ldc+7+lqDpQsNCYLOghxLqFtzxTLzkBJvR48ypfX3SBs2Gi8oisbm4pMPGkQn9qEPTY7hL0bNy+TUulYz63HK8653mzFbXXA3xjYi9mW4k/cbNMo=
+	t=1748749522; cv=none; b=o4UIHnBXmIEjVYUDwv1R+2755ecF3nMpsZe+6dDfDRxuFr3Zhzz3SvaahSFMYwt1JgbsBu13/tiLyQyg1iBBPiwJz410D7ouVamGksWYN4lOoFzEHAhuhuYXs+yFqfvwNimKsGe86lzLFZagi7/OShzPrQtxYS403crolcR1sZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1748627460; c=relaxed/simple;
-	bh=izH/husjuRLRGba2sjgE6+XFZrDtCv/sRWKQCwDcmgs=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=acEQRevgJhsTbgyd15xcm6IDIsI0donFsTCKDolya0qUtP1eXnUBYZtd9VJUGr+kELc0T0UrtWNw//DGRwxYTCKey4xSN//bOkrUfotTh1wOjlLmIlkOWzyvle45sE0oMomBoQQnNR44VKPv3fMULlKq+5g8QtAbI1lCKHguWtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZeN27T5r; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1748749522; c=relaxed/simple;
+	bh=kesnoCNtS9bXOTJNKzE83dnoFkbzwGDdfnYTM1/v7YQ=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=APByb5siWEz0YyK8ffraYKaX5jyjGm0mIKkUqmu95aWxqNL/oryrFgL6UvzW+KPbiG6MjTcGgp2HMsOF7LR91t0y5cDll0KsJasJcFIxSjPxWY5OBxBq7/5cpUtiV9IwYfpOMkLjgzqy7KT5ZwVvsFi9hAmK88lY6X9CwzsKxpI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=Gb0M2cPv; arc=none smtp.client-ip=79.135.106.104
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZeN27T5r"
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-3a375888197so1186624f8f.0
-        for <netfilter@vger.kernel.org>; Fri, 30 May 2025 10:50:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1748627455; x=1749232255; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=oaZRyTT8kWb/uSpl/Oqh6WPykhrqcT6PkgE3Jd7/yIM=;
-        b=ZeN27T5rjFLC6GmkeKU6UAXWFMIUxYGGLBSLRSms5t9W44r/NUHOi9J0RjVFtfVgX7
-         EAGVGO+tXn0MWszfSw2QzMXLr/QUA262/n5LPph2AWiBiWxXDg5Xs6+LFbv9EKM9zlmp
-         wgVmGa/n+qcVuTJVRX8T40BLhkHdIzo2dQYk03iY3bJE3Uiix0/6UFvcDi0lvFHposPF
-         Q0IDmGLTbH/40ExDnMiCI+NFicmlh7Mef8f/ydcQNt1gYOQ5PGaRLZOvlhgu7UjU29Uf
-         Q6AJ6tRi0mI6eS6XJJzrUl9le3nc9OYveihLeje/G2gBFbvk5xGVbm0MnrxABHfrCVw3
-         /gAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1748627455; x=1749232255;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=oaZRyTT8kWb/uSpl/Oqh6WPykhrqcT6PkgE3Jd7/yIM=;
-        b=o8BbLbrrOkjds0nC1VWVoVcO4KljJBzeOTElRIQ/ytPcLMrr7VY+Mgj0Ea3pRFNAIS
-         0XrifTdtpmLKDfZnh1MCUhw57o0IAgp0WEEcYFePvckROimU7yPC6kSbA3kGrLnzkRYw
-         354EG7ZbN97fX1XoxpxnSQ7vKsUUrIzB1zdW9Vp9N6i/dT7cj72uNqfuC3WctuJt5z9x
-         0YScW6vUXg85tAAvOdbsyiJEcielm8tDg/nd8is6Fwz+kSNTDKfu8xrakuev9DbmS2p8
-         Z0T2ychSDGOjEzXHk0N/qu9mkA1tU31R/JkDvIcZ0rX8ThczSy81DBtHypc0gG02HpQT
-         2QUw==
-X-Gm-Message-State: AOJu0YyhQtDDmfyfJef6LmbGUXyLucNIdthQ5doO7E8TN1EF50BEvyNR
-	50biTVKOakSVSJ2mdz3tSNGjgHCCPSBM6XGVwvPv7VfymBAEJJ6XKk7PYbWNs39aWfhK6r0o9e6
-	Mfs5WkmzmCVfXsNOUcnzbc4Y1T9pGFgvC8N1i
-X-Gm-Gg: ASbGncuwbhgwtdQ1YiGTcgHYciV+nJBkvzRdni9+2YLuU8KFgzWR3AGqWEUI5zyH8wq
-	XuZ9Wht6hPuelL5sh/7WGzeJtJ51jEtYW2GxwswpwhdpLdcUR9SZhN0sOqNGy6xY6eeYHuQNiQe
-	oELRmA3ZehG0wb8P2181Wqr10WIAhVMRQ2
-X-Google-Smtp-Source: AGHT+IEsK4EzlJcMRaYSoYBf55O/YKivIs6wiejbHEglrbeaTVxHIZSi53KguQ/t0r/f/MW2QJ+PMKVDaVMpzkWOTBk=
-X-Received: by 2002:a5d:5885:0:b0:3a4:f51b:9f9a with SMTP id
- ffacd0b85a97d-3a4f7a4b143mr3159367f8f.18.1748627455008; Fri, 30 May 2025
- 10:50:55 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="Gb0M2cPv"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+	s=protonmail3; t=1748749510; x=1749008710;
+	bh=kesnoCNtS9bXOTJNKzE83dnoFkbzwGDdfnYTM1/v7YQ=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector:List-Unsubscribe:List-Unsubscribe-Post;
+	b=Gb0M2cPvRPvZmbu098ODcIMzcVfGZj8bntWBd6/avG+bm2zzo3achN/9JFFz19fP0
+	 CN4ESb5tqVgPO3ZKvhIdJ0t/PJBYgjOoOLqPWg/skAHkeNhUgRAdYXyOk0DQ01OVuD
+	 dq+RbgAlFGvLhhUk04HM0QN9Cn5L8/2tvOcQSWGKfB5fYLtWJZ90lbAnfjjDd7sfKm
+	 Z+qLPQ70wmZVi89tWEXvsS5ITxzWlowpJms4zKHEa0PjaYVYZVBtXpvdpjRsill6Xi
+	 jTwcZOE9zsNp1I8n8Q4A0oPo1aMqEutHlHASPKEh/poVGVR4d4b+wlNsLT0gFOnMZR
+	 6SBfGi67oKmDg==
+Date: Sun, 01 Jun 2025 03:45:06 +0000
+To: Andrew Latham <lathama@gmail.com>
+From: Sunny73Cr <Sunny73Cr@protonmail.com>
+Cc: netfilter@vger.kernel.org
+Subject: Re: Command Line Interface Usage and Documentation Query
+Message-ID: <feYDoEUUIY1YxRJNvG6oAEAGBJ0QInOm7X2M4KQhe8DdIjXagsrcCatPAt_1FQtMeRpSq6mFJ2i3mlQi3lKNWs0aJTnBORiGSN24IN4Ivqg=@protonmail.com>
+In-Reply-To: <CA+qj4S_A3P_17evt12MCF0T99e=oiOQnpeukr7Rs4+Ti3aEr4g@mail.gmail.com>
+References: <CA+qj4S_A3P_17evt12MCF0T99e=oiOQnpeukr7Rs4+Ti3aEr4g@mail.gmail.com>
+Feedback-ID: 13811339:user:proton
+X-Pm-Message-ID: 94ab0313d3b7814c1f9a56f694cd8afb137481f0
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Andrew Latham <lathama@gmail.com>
-Date: Fri, 30 May 2025 11:50:43 -0600
-X-Gm-Features: AX0GCFu8wGNhY1sXi-cbKbl1bll_1tFajU1bvo_ZEZZhRkZ5fNWccOI0r6EKIJY
-Message-ID: <CA+qj4S_A3P_17evt12MCF0T99e=oiOQnpeukr7Rs4+Ti3aEr4g@mail.gmail.com>
-Subject: Command Line Interface Usage and Documentation Query
-To: netfilter@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Two items:
+> nft --help` lacks
 
-A. I was about to do some work using the nft command line interface
-and I noticed the `nft --help` lacks the `Comands` section that
-`iptables --help` has. I can provide a patch or proposed text after I
-confirm that no one else is currently on this. Somewhere near
-https://git.netfilter.org/nftables/tree/src/main.c#n98 is what I
-suspect.
+I suggest working on or improving the manual page (man nft).
 
-B. On the wiki the mention of the mailing list might also have the
-subscribe link along with a link to the archives. I almost missed it
-until I searched the page for `mail` at
-https://wiki.nftables.org/wiki-nftables/index.php/Main_Page
+You could 'redirect' nft --help to instead display the manual page contents=
+; centralising 'help texts' is a good idea.
 
--- 
-- Andrew "lathama" Latham -
+sunny
