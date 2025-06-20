@@ -1,26 +1,27 @@
 Received: from isrv.corpit.ru (isrv.corpit.ru [86.62.121.231])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30B28283142
-	for <netfilter@vger.kernel.org>; Fri, 20 Jun 2025 09:28:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3473F223DFA
+	for <netfilter@vger.kernel.org>; Fri, 20 Jun 2025 11:58:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=86.62.121.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750411734; cv=none; b=AwxYYdDlRmHvqnxtioOfxr9pcKipzlN9DgxtYBpBT9+jsHI1SCvrqqDNAq8zewjhxIOo8t++vpksSuYY36a36QSwiz1gK5scJlPj3Papm/nnnXAIrwA/rJRV3k2xOv+I72bUA6ReAxIDqlGCo5AhKEv6LK5N9OPhE0UJ73zrwKo=
+	t=1750420702; cv=none; b=YnYERJ51kTi46A5jQ9bbtBX/tTpuXMqbG3YLi/YbVcCpfvL3eYogu3+Esg7M0dhVNyyOk4JJWC+vs3CL0iQmT+Ion7qM0MsXkJDtv9MPrz7mmMOPZIyrVCeI2FSoaBiXxsRwOjLF32O6/jZe/lp9+PkSzi/iYunvjMs03iCZm2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750411734; c=relaxed/simple;
-	bh=+vMLd2JpLwlbeylX5J393OvrHj8Akvw1fNNL3CMHrEI=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=bKo3XFu5qjQ+SVFTe3IPYl5Di4Puv8H4cJLfG20zPj3n+Y66EyMyqmfqjllMEfO+UlPvTz22ukjbMImRWAY664DEw9kMlILSklfhW8je1c841w3YKSzLu4pTmiz2tyDxySet6n9imcngwZY1a4AuYo7oYDBXIlqO3FQwUFqR1JI=
+	s=arc-20240116; t=1750420702; c=relaxed/simple;
+	bh=ZwfyXx11Ytpvvami1vn+ZpJK8PFh5ZoPh9Ac/m6hdFk=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
+	 In-Reply-To:Content-Type; b=J4+t0k5orlJcg8bCaZo0bpn+d4agl8jA1TC81lI0TUGJ+vABwevDBI1VtiLjwCG9F7IEyqDcgAAXENP+znzdmebQyYXzU5+oJf+MKMql7oeUEpejtfe5hCsrErDvmkurtWyLU7CSWII54L9W7WupnX2x5FOsdK4Tm6NjSiM5ubs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tls.msk.ru; spf=pass smtp.mailfrom=tls.msk.ru; arc=none smtp.client-ip=86.62.121.231
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tls.msk.ru
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tls.msk.ru
 Received: from tsrv.corpit.ru (tsrv.tls.msk.ru [192.168.177.2])
-	by isrv.corpit.ru (Postfix) with ESMTP id 9228912E7EE
-	for <netfilter@vger.kernel.org>; Fri, 20 Jun 2025 12:28:46 +0300 (MSK)
+	by isrv.corpit.ru (Postfix) with ESMTP id EFFB412E8AE
+	for <netfilter@vger.kernel.org>; Fri, 20 Jun 2025 14:58:05 +0300 (MSK)
 Received: from [192.168.177.146] (mjtthink.wg.tls.msk.ru [192.168.177.146])
-	by tsrv.corpit.ru (Postfix) with ESMTP id 2B2B722A1D1
-	for <netfilter@vger.kernel.org>; Fri, 20 Jun 2025 12:28:49 +0300 (MSK)
-Message-ID: <075d8041-5e10-43ae-bae9-12a3f25c70d5@tls.msk.ru>
-Date: Fri, 20 Jun 2025 12:28:49 +0300
+	by tsrv.corpit.ru (Postfix) with ESMTP id ADDB522A2BF
+	for <netfilter@vger.kernel.org>; Fri, 20 Jun 2025 14:58:08 +0300 (MSK)
+Message-ID: <ec2a6853-a864-4708-a565-267e61c5162a@tls.msk.ru>
+Date: Fri, 20 Jun 2025 14:58:08 +0300
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
@@ -28,10 +29,11 @@ List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Content-Language: en-US, ru-RU
-To: netfilter@vger.kernel.org
+Subject: Re: order of netfilter hooks and check for martian source
 From: Michael Tokarev <mjt@tls.msk.ru>
-Subject: order of netfilter hooks and check for martian source
+To: netfilter@vger.kernel.org
+References: <075d8041-5e10-43ae-bae9-12a3f25c70d5@tls.msk.ru>
+Content-Language: en-US, ru-RU
 Autocrypt: addr=mjt@tls.msk.ru; keydata=
  xsFNBGYpLkcBEACsajkUXU2lngbm6RyZuCljo19q/XjZTMikctzMoJnBGVSmFV66kylUghxs
  HDQQF2YZJbnhSVt/mP6+V7gG6MKR5gYXYxLmypgu2lJdqelrtGf1XtMrobG6kuKFiD8OqV6l
@@ -75,79 +77,69 @@ Autocrypt: addr=mjt@tls.msk.ru; keydata=
  YPkzzso6HT7rlapB5nulYmplJZSZ4RmE1ATZKf+wUPocDu6N10LtBNbwHWTT5NLtxNJAJAvl
  ojis6H1kRWZE/n5buyPY2NYeyWfjjrerOYt3er55n4C1I88RSCTGeejVmXWuo65QD2epvzE6
  3GgKngeVm7shlp7+d3D3+fAAHTvulQQqV3jOodz+B4yzuZ7WljkNrmrWrH8aI4uA98c=
+In-Reply-To: <075d8041-5e10-43ae-bae9-12a3f25c70d5@tls.msk.ru>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-Hi!
+On 20.06.2025 12:28, Michael Tokarev wrote:
+> Hi!
+> 
+> I'm facing a very difficult to solve situation with nftables
+> DNAT hooks not working well together with network stack martian
+> source check.  In my situation, I've policy routing (we're moving
+> from one ISP to another, so (temporarily) use two default routes
+> in two different routing tables), and a DNAT rules on external
+> interfaces which redirects certain ports to different internal
+> hosts.
+> 
+> We've two external ethernet interfaces, let's say eth1 & eth2,
+> with two externally routed IP addresses, ip1 & ip2, and the
+> following routing rules (simplified):
+> 
+>    from ip1 default via gw1 dev eth1
+>    from ip2 default via gw2 dev eth2
+>    from all default via gw1 dev eth1
+> 
+> And there's also ethINT, with some host having hostINT address.
+> 
+> I'm doing DNAT from ip1:port to hostINT:port, and also
+> from ip2:port to hostINT:port.
+> 
+> When initial packet arrives, it gets mangled by nftables
+> DNAT rule first, and only after that, it gets checked for
+> martian sources.  When initial packet comes to ip2:port,
+> it looks like
+> 
+>     extIP => ip2:port
+> 
+> after DNAT, it becomes
+> 
+>     extIP => hostINT:port
+> 
+> so info about its original destination IP is lost at this
+> point.
+> 
+> Now the network stack checks this new packet for martian
+> sources.  It does not match the 2nd rule above (for ip2),
+> since the packet does not have ip2 in it anymore.  So the
+> kernel "thinks" this packet should've been arrived on
+> eth1 (according to the 3rd routing rule above), instead of
+> eth2.  And it gets dropped as martian source.
 
-I'm facing a very difficult to solve situation with nftables
-DNAT hooks not working well together with network stack martian
-source check.  In my situation, I've policy routing (we're moving
-from one ISP to another, so (temporarily) use two default routes
-in two different routing tables), and a DNAT rules on external
-interfaces which redirects certain ports to different internal
-hosts.
+The situation turned out to be even more interesting here.
 
-We've two external ethernet interfaces, let's say eth1 & eth2,
-with two externally routed IP addresses, ip1 & ip2, and the
-following routing rules (simplified):
+I turned off rp_filter, to let the packets in.  But it does
+not work still.  Because the reply packets, from hostINT
+back to extIP, gets routed to gw1 through eth1, instead of
+gw2 through eth2.  Because apparently, routing decision
+is made before de-DNAT'ification, so routing rules see
+hostINT=>extIP, instead of ip2=>extIP, where rule2 above
+should kick in.
 
-   from ip1 default via gw1 dev eth1
-   from ip2 default via gw2 dev eth2
-   from all default via gw1 dev eth1
+The result is that packet with srcIP=ip2 is sent to eth1
+where it does not belong at all.
 
-And there's also ethINT, with some host having hostINT address.
-
-I'm doing DNAT from ip1:port to hostINT:port, and also
-from ip2:port to hostINT:port.
-
-When initial packet arrives, it gets mangled by nftables
-DNAT rule first, and only after that, it gets checked for
-martian sources.  When initial packet comes to ip2:port,
-it looks like
-
-    extIP => ip2:port
-
-after DNAT, it becomes
-
-    extIP => hostINT:port
-
-so info about its original destination IP is lost at this
-point.
-
-Now the network stack checks this new packet for martian
-sources.  It does not match the 2nd rule above (for ip2),
-since the packet does not have ip2 in it anymore.  So the
-kernel "thinks" this packet should've been arrived on
-eth1 (according to the 3rd routing rule above), instead of
-eth2.  And it gets dropped as martian source.
-
-Exactly the same question has been asked multiple times
-in the past, for example -- 
-https://serverfault.com/questions/1021798/how-to-redirect-requests-on-port-80-to-localhost3000-using-nftables
-it is the same situation but dnat is to 127.0.0.1, which is
-special, and the same logic applies.
-
-The question is: why NAT table modifies the packet BEFORE
-the kernel checks for martians in it?  To me, it would be
-much more logical to check for martians first, and only
-when it's done, traverse the nat tables.   And it looks
-absolutely illogical to do it the other way around, as
-it is done currently.
-
-Maybe only the mangle netfilter table which can be done
-before, for "special" processing, -- and even that is
-questionable, since there are applications for both ways.
-
-In order to overcome this current situation, I would need
-to disable martians checking (at least on this interface),
-and to - basically - implement whole logic based on the
-routing also in netfilter rules.  Which, given the
-complexity of our routing table, is rather an ambitious
-task, and it would be twice as complex to support in the
-future too (compared to current usage).
-
-Why it's done in this (seemingly illogical) order?
+This really looks like a bug in kernel.
 
 Thanks,
 
