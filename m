@@ -1,156 +1,154 @@
-Received: from mail-4325.protonmail.ch (mail-4325.protonmail.ch [185.70.43.25])
+Received: from isrv.corpit.ru (isrv.corpit.ru [86.62.121.231])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 005881FDA
-	for <netfilter@vger.kernel.org>; Sat, 14 Jun 2025 15:28:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.25
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30B28283142
+	for <netfilter@vger.kernel.org>; Fri, 20 Jun 2025 09:28:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=86.62.121.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1749914939; cv=none; b=jqUa7ZE5yCLh7FromlyUqNTboYjMk03d7M4o/e5KPZ7iNoy7BCyaxV+biLS/WKLZOlbGrKcy8L7JfjsZUrJ4+nc86EhWuzK96K+T3Vynh8BLfTiD+O92dZ+q3d6LF2NBet0dBI/zBU9skfQURZNF2U++MD7f8leb+mUuyo8stMQ=
+	t=1750411734; cv=none; b=AwxYYdDlRmHvqnxtioOfxr9pcKipzlN9DgxtYBpBT9+jsHI1SCvrqqDNAq8zewjhxIOo8t++vpksSuYY36a36QSwiz1gK5scJlPj3Papm/nnnXAIrwA/rJRV3k2xOv+I72bUA6ReAxIDqlGCo5AhKEv6LK5N9OPhE0UJ73zrwKo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1749914939; c=relaxed/simple;
-	bh=XT9Biltuo3FrAd4AzrTZBnm+2P/NR5Q6mDQo+QKMjAo=;
-	h=Date:To:From:Subject:Message-ID:MIME-Version:Content-Type; b=rKfo7opOSmA907RyZf/GOj2DTyoLvPCK3ahcCQCauhetdjmF8ZDt7nbOPR7F+x+xvk1CYyx0CUsTFICA0VZdZZt4i/1p5Eh2vA+2lBSmBztZOJsw6GAUkm91D+ABU5un/TyH95IoAF7zTNOc41T9SPLyz5OgkJcdFXIMHfkXuKc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=VcyEpDhp; arc=none smtp.client-ip=185.70.43.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="VcyEpDhp"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1749914934; x=1750174134;
-	bh=jpaSu/yjwunTFSKVMbF9GyUWNprNAyBOqgtWMhK6eeE=;
-	h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector:
-	 List-Unsubscribe:List-Unsubscribe-Post;
-	b=VcyEpDhp9xmfbAhqP47kQS/z0JrVI+r/uwlOX2Y+XmKG7s6aHgFFAU9/wi9gCFXER
-	 e1ivQzeH31dqmx/oIpyL+AV8iUAocOkcqD90GxtmywsvQ4h0F0gxbBUnoP3FiXtlGC
-	 ysxcMQhYQfcb2pqTOk+xEnnmp/23JMd6eHF6vb8n/70rgngOlsQkI7wOHreeFAERAY
-	 8OFNJ8c7RWtcHdQcKNdClnAGtbzIOXAvj8ehfPA/xeZ31HgQrPpGI8VIBPheUwrdY8
-	 b/pj6qlNxR/XjrVWlkTyUq1GyEHne/GG/myJSA2Sb5RQIy42/K6CYYfUJlxQL8qunV
-	 mDNrz/5/LU4Og==
-Date: Sat, 14 Jun 2025 15:28:48 +0000
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-From: =?utf-8?Q?Pavel_Hor=C3=A1=C4=8Dek?= <horacek.pavel@protonmail.com>
-Subject: CPU usage problem for offloaded flows with mlx5
-Message-ID: <GWSKknFWTZvpY548VJJxkEOvg1h_vkJZsepn3Eea7AhaRFyEZHJvThaOX4g_O-zmIjE6gtsn51VJCVTMQZvF-o-BOMs46j7UNnJ9pzhpG8I=@protonmail.com>
-Feedback-ID: 9081103:user:proton
-X-Pm-Message-ID: 63f89782019a9f899c45e8485329cca38638a920
+	s=arc-20240116; t=1750411734; c=relaxed/simple;
+	bh=+vMLd2JpLwlbeylX5J393OvrHj8Akvw1fNNL3CMHrEI=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=bKo3XFu5qjQ+SVFTe3IPYl5Di4Puv8H4cJLfG20zPj3n+Y66EyMyqmfqjllMEfO+UlPvTz22ukjbMImRWAY664DEw9kMlILSklfhW8je1c841w3YKSzLu4pTmiz2tyDxySet6n9imcngwZY1a4AuYo7oYDBXIlqO3FQwUFqR1JI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tls.msk.ru; spf=pass smtp.mailfrom=tls.msk.ru; arc=none smtp.client-ip=86.62.121.231
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tls.msk.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tls.msk.ru
+Received: from tsrv.corpit.ru (tsrv.tls.msk.ru [192.168.177.2])
+	by isrv.corpit.ru (Postfix) with ESMTP id 9228912E7EE
+	for <netfilter@vger.kernel.org>; Fri, 20 Jun 2025 12:28:46 +0300 (MSK)
+Received: from [192.168.177.146] (mjtthink.wg.tls.msk.ru [192.168.177.146])
+	by tsrv.corpit.ru (Postfix) with ESMTP id 2B2B722A1D1
+	for <netfilter@vger.kernel.org>; Fri, 20 Jun 2025 12:28:49 +0300 (MSK)
+Message-ID: <075d8041-5e10-43ae-bae9-12a3f25c70d5@tls.msk.ru>
+Date: Fri, 20 Jun 2025 12:28:49 +0300
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US, ru-RU
+To: netfilter@vger.kernel.org
+From: Michael Tokarev <mjt@tls.msk.ru>
+Subject: order of netfilter hooks and check for martian source
+Autocrypt: addr=mjt@tls.msk.ru; keydata=
+ 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
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 Hi!
 
-I've been testing out some of the tc rule offloading features in the kernel=
- and came across a weird issue for offloaded rules that use the connection =
-tracking offload.
+I'm facing a very difficult to solve situation with nftables
+DNAT hooks not working well together with network stack martian
+source check.  In my situation, I've policy routing (we're moving
+from one ISP to another, so (temporarily) use two default routes
+in two different routing tables), and a DNAT rules on external
+interfaces which redirects certain ports to different internal
+hosts.
 
-The main idea was to implement a kind of basic routing offload, something a=
-kin to [1], with tc ct added to support creation of conntrack records, like=
- in [2]. Compared against that was the nftables flowtables [3] that was set=
- up to perform conntrack offloading in software.
+We've two external ethernet interfaces, let's say eth1 & eth2,
+with two externally routed IP addresses, ip1 & ip2, and the
+following routing rules (simplified):
 
-When using the tc ct hardware offload, however, a drastic increase in CPU u=
-sage was measured. On average, ~2.5 times higher, but increasing linearly w=
-ith the number of offloaded flows. The testing consisted of sending a lot o=
-f short-lived UDP and/or TCP connections, at speeds of 4.5, 9, and 13.5 kcp=
-s. The CPU usage increase was measured in all cases. Kernel 6.6.9-1.7 was u=
-sed, with ConnectX6-Dx NIC in switchdev mode and native mlx5 driver.
+   from ip1 default via gw1 dev eth1
+   from ip2 default via gw2 dev eth2
+   from all default via gw1 dev eth1
 
-Looking into the culprit with perf, the following three calls used up the m=
-ost CPU time:
+And there's also ethINT, with some host having hostINT address.
 
-9.54% [kernel] [k] native_queued_spin_lock_slowpath
-5.49% [kernel] [k] pv_native_safe_halt
-3.39% [kernel] [k] rhashtable_jhash2
+I'm doing DNAT from ip1:port to hostINT:port, and also
+from ip2:port to hostINT:port.
 
-With the call stack on native_queued_spin_lock_slowpath:
+When initial packet arrives, it gets mangled by nftables
+DNAT rule first, and only after that, it gets checked for
+martian sources.  When initial packet comes to ip2:port,
+it looks like
 
-0. ret_from_fork_asm
-1. ret_from_fork
-2. kthread
-3. worker_thread
-4. process_scheduled_works
-5. process_one_work
-6. nf_flow_offload_work_gc
-7. nf_flow_table_iterate
-8. nf_flow_offload_gc_step
-9. nf_flow_offload_stats
-10. flow_offload_queue_work
-11. queue_work_on
-12. __queue_work
-13. _raw_spin_lock
-14. native_queued_spin_lock_slowpath
+    extIP => ip2:port
 
-This led me to discover that the garbage collector in nf_flow_offload_gc_st=
-ep is updating the statistics with nf_flow_offload_stats for every HW offlo=
-aded conntrack record, which seems to create a lot of collisions on the spi=
-nlock in workqueues, increasing the CPU usage with more HW offloaded flows.
+after DNAT, it becomes
 
-Has anyone encountered this issue before, and do you think this can be some=
-how mitigated?
+    extIP => hostINT:port
 
-With regards,
-Pavel
+so info about its original destination IP is lost at this
+point.
 
+Now the network stack checks this new packet for martian
+sources.  It does not match the 2nd rule above (for ip2),
+since the packet does not have ip2 in it anymore.  So the
+kernel "thinks" this packet should've been arrived on
+eth1 (according to the 3rd routing rule above), instead of
+eth2.  And it gets dropped as martian source.
 
-The tc rules used (it only routes the 48.0.0.0/16 back on the same device, =
-while creating and using the conntrack entry):
+Exactly the same question has been asked multiple times
+in the past, for example -- 
+https://serverfault.com/questions/1021798/how-to-redirect-requests-on-port-80-to-localhost3000-using-nftables
+it is the same situation but dnat is to 127.0.0.1, which is
+special, and the same logic applies.
 
-# Drop packets with TTL 1
-tc filter add dev ${DEV} ingress \
-  chain 0 pref 1 protocol 802.1Q \
-  flower skip_sw vlan_ethtype ipv4 ip_ttl 1 \
-  action drop
+The question is: why NAT table modifies the packet BEFORE
+the kernel checks for martians in it?  To me, it would be
+much more logical to check for martians first, and only
+when it's done, traverse the nat tables.   And it looks
+absolutely illogical to do it the other way around, as
+it is done currently.
 
-# Decapsulate VLAN
-tc filter add dev ${DEV} ingress \
-  chain 0 pref 1 protocol 802.1Q \
-  flower skip_sw vlan_ethtype ipv4 vlan_id ${VLAN} \
-  action vlan pop pipe action goto chain 1
+Maybe only the mangle netfilter table which can be done
+before, for "special" processing, -- and even that is
+questionable, since there are applications for both ways.
 
-# Track untracked connections
-tc filter add dev hge21 ingress \
-  chain 1 pref 1 protocol ip \
-  flower ct_state -trk \
-  action ct pipe action goto chain 2
+In order to overcome this current situation, I would need
+to disable martians checking (at least on this interface),
+and to - basically - implement whole logic based on the
+routing also in netfilter rules.  Which, given the
+complexity of our routing table, is rather an ambitious
+task, and it would be twice as complex to support in the
+future too (compared to current usage).
 
-# Send established connections to forwarding
-tc filter add dev ${DEV} ingress \
-  chain 2 pref 1 protocol ip \
-  flower ct_state +trk+est-new \
-  action goto chain 4
+Why it's done in this (seemingly illogical) order?
 
-# Send newly tracked connections to routing
-tc filter add dev ${DEV} ingress \
-  chain 2 pref 1 protocol ip \
-  flower ct_state +trk+new \
-  action goto chain 3
+Thanks,
 
-# Tag connections in prefix 48.0.0.0/16
-tc filter add dev ${DEV} ingress \
-  chain 3 pref 1 protocol ip \
-  flower dst_ip 48.0.0.0/16 \
-  action ct commit mark 0x01 pipe action goto chain 4
-
-# Forward connections with tag 0x01
-tc filter add dev ${DEV} ingress \
-  chain 4 pref 1 protocol ip  \
-  flower ct_mark 0x01 \
-  action pedit ex munge eth dst set ${MAC_DST} munge eth src set ${MAC_SRC}=
- munge ip ttl dec pipe \
-  csum ip4h pipe \
-  action vlan push id ${VLAN} pipe action mirred egress redirect dev ${DEV}
-
-
-[1] https://archive.fosdem.org/2024/events/attachments/fosdem-2024-3337-fly=
-ing-higher-hardware-offloading-with-bird/slides/22273/flower-routed-fosdem2=
-4_gUABpPa.pdf
-
-[2] https://netdevconf.info/0x14/pub/slides/48/Netdev_0x14_CT_offload.pdf
-
-[3] https://wiki.nftables.org/wiki-nftables/index.php/Flowtables
+/mjt
