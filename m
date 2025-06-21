@@ -1,27 +1,27 @@
 Received: from isrv.corpit.ru (isrv.corpit.ru [86.62.121.231])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0081542AB4
-	for <netfilter@vger.kernel.org>; Sat, 21 Jun 2025 14:54:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB25D191F92
+	for <netfilter@vger.kernel.org>; Sat, 21 Jun 2025 14:56:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=86.62.121.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750517655; cv=none; b=e/vTzbasznNH9XskspQUrXFkPOmYX9jqyhEztf8gQEOEun+lnSmrvk2Jw4Zdv812zeHmc5PAWzw05aLziU/Z9O1XYi1GwnSLwd2zrRUQigpAJV29TWFVT0z/pgj+Em2RrgTF0bNhSwlH0H8xo3NdKTVWK8r3T6d1vAvZ9GJ0WIY=
+	t=1750517768; cv=none; b=REVwGwMueKiHWtpDNIjI7xcdu9s3X7jgYurkDK/E8N+vL2T5qKv8GEQkXYHXBTSSiRPMTzVayrQTqhYU1mQcKJS1XNZFaPTNvL/AcrLzsPqpElBmV059Jmn6UOcLE9NdIPaqlQwQu1YIn5eVgAqueCrkyYW7LmHDc/01SFEF3hE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750517655; c=relaxed/simple;
-	bh=0W4e/XIt3wm2yXEwNBZiXf0GNTF1ep/9I1Q54Xlyh2k=;
+	s=arc-20240116; t=1750517768; c=relaxed/simple;
+	bh=TtSssfricKqc48OzxUt6e+8wguP5aflSXy+7HcapJ+k=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=inRJs7LSQdZpVhDvuvgQPu1Imjd+KpMlOZ7Z5nINAeUnAiJGHGLnK49jDX4zpIfbuJ5a/fyBpZ/xOmYhDB7vrtFtZoSlpE1Mq5B9a7ibKTHTkYtbWQJfXL8ck6xCu1OELT7XfaSyGOZzVh7KARb4Nfjtr8ArFbUBXvsJJqf+qVg=
+	 In-Reply-To:Content-Type; b=bk5Wnocp6g5dmD0s5gCMs/AgFGM/DdWo15tOoymT6gxWtglZGLrfzfh1MTWInxtVZ3aXJ9i+l3rtZSLiwtkTF3EVO5G1ObNJcg3byU0bcOGOrCidjIPQv8xilN9HN194+j9a5zV/K7WyAIBNUcvM0hdNvltk6746gqUDGcuRLqg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tls.msk.ru; spf=pass smtp.mailfrom=tls.msk.ru; arc=none smtp.client-ip=86.62.121.231
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tls.msk.ru
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tls.msk.ru
 Received: from tsrv.corpit.ru (tsrv.tls.msk.ru [192.168.177.2])
-	by isrv.corpit.ru (Postfix) with ESMTP id 19CA212EE78;
-	Sat, 21 Jun 2025 17:53:57 +0300 (MSK)
+	by isrv.corpit.ru (Postfix) with ESMTP id 5A07912EE7A;
+	Sat, 21 Jun 2025 17:55:58 +0300 (MSK)
 Received: from [192.168.177.146] (mjtthink.wg.tls.msk.ru [192.168.177.146])
-	by tsrv.corpit.ru (Postfix) with ESMTP id 9B84322AA53;
-	Sat, 21 Jun 2025 17:54:01 +0300 (MSK)
-Message-ID: <d0a65fe0-40af-4810-adae-f1bb4c003525@tls.msk.ru>
-Date: Sat, 21 Jun 2025 17:54:01 +0300
+	by tsrv.corpit.ru (Postfix) with ESMTP id EEC7B22AA58;
+	Sat, 21 Jun 2025 17:56:02 +0300 (MSK)
+Message-ID: <9fc435dd-547f-4e50-8c2c-862a1ff62a2c@tls.msk.ru>
+Date: Sat, 21 Jun 2025 17:56:02 +0300
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
@@ -85,32 +85,13 @@ Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 21.06.2025 17:42, Jozsef Kadlecsik wrote:
-...
-
->  From netfilter point of view routing is a completely independent, "black
-> box" system. We can operate before and after routing but we cannot jump to
-> "hooks" in routing because there isn't any there.
-
-This kinda defeats the purpose, I think, as demonstrated by this
-situation.
-
-Original issue was that checking for martians is done after netfilter
-modified the packet, which is rather pointless, and it is a fundamental
-thing: it's the original addresses which should be checked for martians,
-not the altered ones.  Can this ever be done, -- first the rp filter is
-applied, next the NAT table is consulted, and next regular routing is
-done to the resulting packet?
-
-Current, more serious issue - wrong routing of replies to DNATed packets
-- is actually the same, - the de-NATing of replies should be done before
-the routing, while it is done after.
-
+..
 > However, routing decisions can be affected by marking packets. So I'd mark
 > packets before routing and use routing tables according to the mark value.
 
-It is probably possible to do, I think, but it becomes too complex to
-be practical.  Why can't we fix the order instead and make it to work
-in a natural, expected way?
+The prob with replies to DNAted packets is that these packets traverse
+routing rules first, BEFORE they're seen by netfilter code.  Who can
+mark them for routing if routing is done before it's in netfilter?
 
 Thanks,
 
