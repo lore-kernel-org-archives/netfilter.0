@@ -1,163 +1,137 @@
-Received: from isrv.corpit.ru (isrv.corpit.ru [86.62.121.231])
+Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [148.6.0.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4FCD136988
-	for <netfilter@vger.kernel.org>; Sat, 21 Jun 2025 09:32:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=86.62.121.231
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39FAF70824
+	for <netfilter@vger.kernel.org>; Sat, 21 Jun 2025 14:49:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.6.0.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750498324; cv=none; b=DfcpT4gN6FOAapBp3gp8wEU/h1+MvbOctqrYbtjnKQBecnWzfXJo1C8pyJKhm7jS+pC/1zQXYIcrK6UyNMJlagENQHn/EnlALx94IOod3Ni2ylzBdx+l+0iie7xGObMm29tp6eBhHzyt1Eb8oGWMSZgFqzq6PDrHW3AYEu+Fkpw=
+	t=1750517347; cv=none; b=ZfnBenCNc0l2e1dHuwjt7VoMDLpYckjJkYub+ecoCKWUUguPxgQPWbO5MCqxGOQ6lYfD5mcs1eommkN0mgn3f4c9ktpe1A34v4gTBzOBN+coYZ+99et4z1SXsEKCpqdhgWnEc8a3UldO/bR72/hUPh5iWc3bYv09TVkFn5K6Eko=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750498324; c=relaxed/simple;
-	bh=yOJCVnrqwskiK2SjVKboTtdkfvQTAA8HEAf7WncUgPU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oHHtloqNx2V2c3uj1CKn+kFNxdbDkGKNXlJ2UmrbYhNFnulAMK/tItF89XT167VLfuySZIcg2F27d1rEZeqKfG9G801NvVx+Y9dPeHTywpjkt009SnEI1m6SOO6v13IKlYSYuXTpEAuaamZ71d9uNufQdNhLq4etjXFJxp0uppE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tls.msk.ru; spf=pass smtp.mailfrom=tls.msk.ru; arc=none smtp.client-ip=86.62.121.231
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tls.msk.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tls.msk.ru
-Received: from tsrv.corpit.ru (tsrv.tls.msk.ru [192.168.177.2])
-	by isrv.corpit.ru (Postfix) with ESMTP id 4231512ECD6;
-	Sat, 21 Jun 2025 12:31:49 +0300 (MSK)
-Received: from [192.168.177.146] (mjtthink.wg.tls.msk.ru [192.168.177.146])
-	by tsrv.corpit.ru (Postfix) with ESMTP id 7ACCF22A914;
-	Sat, 21 Jun 2025 12:31:53 +0300 (MSK)
-Message-ID: <a06d9f4f-4fa9-44f8-b1dd-6cc4cb610215@tls.msk.ru>
-Date: Sat, 21 Jun 2025 12:31:53 +0300
+	s=arc-20240116; t=1750517347; c=relaxed/simple;
+	bh=lfUR77/suwtvbrqVKFngokfoQfPuLZDfRvFy44jMgeo=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=n4Xt0AXa1Oxpdgv0I+5P0cGzffkqcDk8VLqO4BP4CRdfIS+aMkeBPXILJacyEqgeGxXIkp9VlpJdIGMaAOuPWTsgrPfD+OICpvvxh+FCypYY2a5EkUtp+kQUCYwm5IF+SibQ8J5t6gkkeKPD3BU87YLmGXrb5Ef4v33uQNpsk9c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=148.6.0.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Received: from localhost (localhost [127.0.0.1])
+	by smtp1.kfki.hu (Postfix) with ESMTP id 4bPcWS5JDhzGFDMF;
+	Sat, 21 Jun 2025 16:42:28 +0200 (CEST)
+X-Virus-Scanned: Debian amavis at smtp1.kfki.hu
+Received: from smtp1.kfki.hu ([127.0.0.1])
+ by localhost (smtp1.kfki.hu [127.0.0.1]) (amavis, port 10026) with ESMTP
+ id L-jUlRQkz4gX; Sat, 21 Jun 2025 16:42:26 +0200 (CEST)
+Received: from mentat.rmki.kfki.hu (unknown [148.6.192.8])
+	(Authenticated sender: kadlecsik.jozsef@wigner.hu)
+	by smtp1.kfki.hu (Postfix) with ESMTPSA id 4bPcWQ5vZKzGFDMC;
+	Sat, 21 Jun 2025 16:42:26 +0200 (CEST)
+Received: by mentat.rmki.kfki.hu (Postfix, from userid 1000)
+	id 15496140EA3; Sat, 21 Jun 2025 16:42:26 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+	by mentat.rmki.kfki.hu (Postfix) with ESMTP id 1201F140184;
+	Sat, 21 Jun 2025 16:42:26 +0200 (CEST)
+Date: Sat, 21 Jun 2025 16:42:26 +0200 (CEST)
+From: Jozsef Kadlecsik <kadlec@netfilter.org>
+To: Michael Tokarev <mjt@tls.msk.ru>
+cc: netfilter@vger.kernel.org
+Subject: Re: order of netfilter hooks and check for martian source
+In-Reply-To: <ec2a6853-a864-4708-a565-267e61c5162a@tls.msk.ru>
+Message-ID: <b69fa9d9-6e56-0e08-adec-ba768a108938@netfilter.org>
+References: <075d8041-5e10-43ae-bae9-12a3f25c70d5@tls.msk.ru> <ec2a6853-a864-4708-a565-267e61c5162a@tls.msk.ru>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: order of netfilter hooks and check for martian source
-To: Pavel Penaz <pavel.penaz@gmail.com>
-Cc: netfilter@vger.kernel.org
-References: <075d8041-5e10-43ae-bae9-12a3f25c70d5@tls.msk.ru>
- <ec2a6853-a864-4708-a565-267e61c5162a@tls.msk.ru>
- <7wR-GVqRP8l9UDDo4OaeWZXZOMKF6adK7-bORlkCF2AY4NKDLlPX1R91egntfEvG3tWyXuSY81TpbWsF0zyYk4MhPc81-g7HdntMFp7zPHE=@protonmail.com>
- <eb707b4a-0f98-43e2-a68a-7498aeed9b17@tls.msk.ru>
- <CANPmkQsQUPOpY2o7ytVVFuCtvLq-98cNvBYVFiAfxbPEatHyTw@mail.gmail.com>
-Content-Language: en-US, ru-RU
-From: Michael Tokarev <mjt@tls.msk.ru>
-Autocrypt: addr=mjt@tls.msk.ru; keydata=
- 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
-In-Reply-To: <CANPmkQsQUPOpY2o7ytVVFuCtvLq-98cNvBYVFiAfxbPEatHyTw@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/mixed; boundary="8323329-229791729-1750516946=:3235"
 
-On 21.06.2025 10:54, Pavel Penaz wrote:
-> Hi,
-> to route the return packets accordingly, can you try adding the
-> following two rules with "ip rule add ..." and check if this helps?
-> 
-> to ip1 lookup table1
-> to ip2 lookup table2
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Quite expectedly this changed nothing.  For a return packet, it is
-sent from an IP on local network (target of the dnat rule) to the
-external IP, so neither ip1 nor ip2 is mentioned in the packet.
-So such rules don't apply.
+--8323329-229791729-1750516946=:3235
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-After adding these rules with prio 32785 & 32786, the return packet
-is still routed through eth1 (per rule 32790).
+Hi,
 
-We need to exchange the order of operations (dnat vs routing), not
-order of rules within these two.  Such reordering will automatically
-and correctly solve both my problems, and a few similar problems
-people reported over the years.
+On Fri, 20 Jun 2025, Michael Tokarev wrote:
 
-Checking result of NAT for martians makes no sense.  Ditto for
-applying routing rules before de-NAT-ification of return packets.
+> On 20.06.2025 12:28, Michael Tokarev wrote:
+> >=20
+> > I'm facing a very difficult to solve situation with nftables
+> > DNAT hooks not working well together with network stack martian
+> > source check.=C2=A0 In my situation, I've policy routing (we're movin=
+g
+> > from one ISP to another, so (temporarily) use two default routes
+> > in two different routing tables), and a DNAT rules on external
+> > interfaces which redirects certain ports to different internal
+> > hosts.
+> >=20
+> > We've two external ethernet interfaces, let's say eth1 & eth2,
+> > with two externally routed IP addresses, ip1 & ip2, and the
+> > following routing rules (simplified):
+> >=20
+> >  =C2=A0 from ip1 default via gw1 dev eth1
+> >  =C2=A0 from ip2 default via gw2 dev eth2
+> >  =C2=A0 from all default via gw1 dev eth1
+> >=20
+> > And there's also ethINT, with some host having hostINT address.
+> >=20
+> > I'm doing DNAT from ip1:port to hostINT:port, and also
+> > from ip2:port to hostINT:port.
+> >=20
+> > When initial packet arrives, it gets mangled by nftables
+> > DNAT rule first, and only after that, it gets checked for
+> > martian sources.=C2=A0 When initial packet comes to ip2:port,
+> > it looks like
+> >=20
+> >  =C2=A0=C2=A0 extIP =3D> ip2:port
+> >=20
+> > after DNAT, it becomes
+> >=20
+> >  =C2=A0=C2=A0 extIP =3D> hostINT:port
+> >=20
+> > so info about its original destination IP is lost at this
+> > point.
+> >=20
+> > Now the network stack checks this new packet for martian
+> > sources.=C2=A0 It does not match the 2nd rule above (for ip2),
+> > since the packet does not have ip2 in it anymore.=C2=A0 So the
+> > kernel "thinks" this packet should've been arrived on
+> > eth1 (according to the 3rd routing rule above), instead of
+> > eth2.=C2=A0 And it gets dropped as martian source.
+>=20
+> The situation turned out to be even more interesting here.
+>=20
+> I turned off rp_filter, to let the packets in.  But it does
+> not work still.  Because the reply packets, from hostINT
+> back to extIP, gets routed to gw1 through eth1, instead of
+> gw2 through eth2.  Because apparently, routing decision
+> is made before de-DNAT'ification, so routing rules see
+> hostINT=3D>extIP, instead of ip2=3D>extIP, where rule2 above
+> should kick in.
+>=20
+> The result is that packet with srcIP=3Dip2 is sent to eth1
+> where it does not belong at all.
+>=20
+> This really looks like a bug in kernel.
 
-Thanks,
+From netfilter point of view routing is a completely independent, "black=20
+box" system. We can operate before and after routing but we cannot jump t=
+o=20
+"hooks" in routing because there isn't any there.
 
-/mjt
+However, routing decisions can be affected by marking packets. So I'd mar=
+k=20
+packets before routing and use routing tables according to the mark value=
+.
 
-> Best regards
-> Pavel
-> 
-> On Sat, Jun 21, 2025 at 9:26 AM Michael Tokarev <mjt@tls.msk.ru> wrote:
->>
->> On 21.06.2025 03:48, Sunny73Cr wrote:
->>> Hi,
->>>
->>>> from hostINT back to extIP, gets routed to gw1 through eth1
->>>
->>> Looks like the default route for 'any' source has too much priority; without looking at the code, it seems that the assumption is that there's no point checking the other routes, if there is an 'any' route. I suggest removing the 'any' route and relying on SNAT for 'hidden' clients. Add more routing rules if neccessary.
->>
->> Unfortunately there's no way to remove the "any" route
->> or make its priority lower:
->>
->> # ip rule list
->> 0:      from all lookup local
->> 32766:  from all lookup main
->> 32767:  from all lookup default
->> 32770:  from ip1 lookup table1 proto static
->> 32780:  from ip2 lookup table2 proto static
->> 32790:  from all lookup table1 proto static
->>
->> # ip route list table table1
->> default via gw1 dev eth1 proto static
->>
->> # ip route list table table2
->> default via gw2 dev eth2 proto static
->>
->> It is the rule 32790 which kicks in *before*
->> reverse-DNAT (for replies, SNAT), while it should
->> be consulted after SNAT.
->>
->> (There's no "default" route in main table.  It
->> has regular local routing information for locally
->> connected and inter-connected networks, there's
->> nothing relevant in it for the packets in question).
->>
->> The problem is that I can't change order of snat vs
->> order of routing, no matter how I change priorities
->> of the rules.  Or I don't see a way to do this.
->>
->> Thanks,
->>
->> /mjt
->>
-
+Best regards,
+Jozsef
+--=20
+E-mail : kadlec@netfilter.org, kadlec@blackhole.kfki.hu, kadlecsik.jozsef=
+@wigner.hu
+Address: Wigner Research Centre for Physics
+         H-1525 Budapest 114, POB. 49, Hungary
+--8323329-229791729-1750516946=:3235--
