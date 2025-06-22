@@ -1,143 +1,150 @@
-Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [148.6.0.51])
+Received: from isrv.corpit.ru (isrv.corpit.ru [86.62.121.231])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AC681ACED7
-	for <netfilter@vger.kernel.org>; Sun, 22 Jun 2025 10:10:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.6.0.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F21E517736
+	for <netfilter@vger.kernel.org>; Sun, 22 Jun 2025 10:23:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=86.62.121.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750587027; cv=none; b=snZp3KCwBSeavaW5gAO6If4FnRSDWBrQmKdTt4Y6el7kTEGvsIs3RyziJsuO1dYntRU48NnBfOXqFPeFWOl9Eq0V/ovbdCfkroyzGS4XNyqGUWXiCA1VdI14s/ahFebUW9oefQLaV7cSPkPbMHabGl5CN6+iMzr2SYUBPOJwgBE=
+	t=1750587848; cv=none; b=JiZkNlZZESuSlI1d1dnrQMXfEP/3PnArPNKClyWnLUSxuXvYV1as3vVdW3p0biI4Sc9KHdJG3NgsWw7lWrDoYRS9sJPVI7pjMh37Ur/yuN/1otolsLK10QhAzmFnQUBmRqDU/XKjuuJ9Mji8KHwtazbdcy6LuML/2b5a4hZEZI4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750587027; c=relaxed/simple;
-	bh=b+Rs3+rDVcBgtO/Eof6CwHlQDFNhWI8NT+Yclvt1WT4=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=Xog3SiGjPztk7T+cEqOcTLsHiaix2F+jb9FdrClqc5kofi9kPa8iaYDLYqlkF4MmaOrFhHNQeWlfrBt14IL3yvh0MVsSh40XyvuUg1JJvBjSbfemj/VV0Bl5mJAu/qCHbIaz1XDB9Mv21lW1rWDXvEq9q/6lUAZPuHDbtGM7VSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=148.6.0.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Received: from localhost (localhost [127.0.0.1])
-	by smtp2.kfki.hu (Postfix) with ESMTP id 4bQ6Qx4xgsz7s852;
-	Sun, 22 Jun 2025 12:10:17 +0200 (CEST)
-X-Virus-Scanned: Debian amavis at smtp2.kfki.hu
-Received: from smtp2.kfki.hu ([127.0.0.1])
- by localhost (smtp2.kfki.hu [127.0.0.1]) (amavis, port 10026) with ESMTP
- id DZ6U2joDeoAA; Sun, 22 Jun 2025 12:10:15 +0200 (CEST)
-Received: from mentat.rmki.kfki.hu (unknown [148.6.192.8])
-	(Authenticated sender: kadlecsik.jozsef@wigner.hu)
-	by smtp2.kfki.hu (Postfix) with ESMTPSA id 4bQ6Qv5h4dz7s84y;
-	Sun, 22 Jun 2025 12:10:15 +0200 (CEST)
-Received: by mentat.rmki.kfki.hu (Postfix, from userid 1000)
-	id 9D163141033; Sun, 22 Jun 2025 12:10:15 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by mentat.rmki.kfki.hu (Postfix) with ESMTP id 99F4A1409A3;
-	Sun, 22 Jun 2025 12:10:15 +0200 (CEST)
-Date: Sun, 22 Jun 2025 12:10:15 +0200 (CEST)
-From: Jozsef Kadlecsik <kadlec@netfilter.org>
-To: Michael Tokarev <mjt@tls.msk.ru>
-cc: netfilter@vger.kernel.org
-Subject: Re: order of netfilter hooks and check for martian source
-In-Reply-To: <0d34447b-5e69-40e2-a0ca-f44b1e74d47d@tls.msk.ru>
-Message-ID: <b2c876c8-df09-ed44-05c1-a1bd57ea2c7c@netfilter.org>
-References: <075d8041-5e10-43ae-bae9-12a3f25c70d5@tls.msk.ru> <ec2a6853-a864-4708-a565-267e61c5162a@tls.msk.ru> <b69fa9d9-6e56-0e08-adec-ba768a108938@netfilter.org> <9fc435dd-547f-4e50-8c2c-862a1ff62a2c@tls.msk.ru> <c1ecb68e-d4ce-9773-8649-ebac5171da06@netfilter.org>
- <51d3ebab-f543-4cbf-9923-8a9d965de826@tls.msk.ru> <26692fd4-71d4-4a77-b581-064837e2bb07@tls.msk.ru> <0d34447b-5e69-40e2-a0ca-f44b1e74d47d@tls.msk.ru>
+	s=arc-20240116; t=1750587848; c=relaxed/simple;
+	bh=D23t39UgNIK+Q3aX9Qoc1dfH6Ipp5H3dl7Xv/mFqsVY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sbGOf0z4aaNHUl+ENrNdNRXssBLxFpP7Cr+EWS+uK8jB7dpz5tSINtvghRzBuLVLvL0cHzYTp1DmVdPq8ujVKx2C9KCOaDBL7oS1LV/Lx1/NeFagjoT3kBQU5yb0zoQpBvICg0EYZt1tb44DSis4IqltxFHNym+8xlVixRgCiqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tls.msk.ru; spf=pass smtp.mailfrom=tls.msk.ru; arc=none smtp.client-ip=86.62.121.231
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tls.msk.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tls.msk.ru
+Received: from tsrv.corpit.ru (tsrv.tls.msk.ru [192.168.177.2])
+	by isrv.corpit.ru (Postfix) with ESMTP id DDA6412F2FD;
+	Sun, 22 Jun 2025 13:23:43 +0300 (MSK)
+Received: from [192.168.177.146] (mjtthink.wg.tls.msk.ru [192.168.177.146])
+	by tsrv.corpit.ru (Postfix) with ESMTP id D6C5022B822;
+	Sun, 22 Jun 2025 13:23:49 +0300 (MSK)
+Message-ID: <fb77199a-cca5-49ca-a953-8cfa13f0210a@tls.msk.ru>
+Date: Sun, 22 Jun 2025 13:23:49 +0300
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1587914648-1750587015=:3235"
+User-Agent: Mozilla Thunderbird
+Subject: Re: order of netfilter hooks and check for martian source
+To: Jozsef Kadlecsik <kadlec@netfilter.org>
+Cc: netfilter@vger.kernel.org
+References: <075d8041-5e10-43ae-bae9-12a3f25c70d5@tls.msk.ru>
+ <ec2a6853-a864-4708-a565-267e61c5162a@tls.msk.ru>
+ <b69fa9d9-6e56-0e08-adec-ba768a108938@netfilter.org>
+ <9fc435dd-547f-4e50-8c2c-862a1ff62a2c@tls.msk.ru>
+ <c1ecb68e-d4ce-9773-8649-ebac5171da06@netfilter.org>
+ <51d3ebab-f543-4cbf-9923-8a9d965de826@tls.msk.ru>
+ <26692fd4-71d4-4a77-b581-064837e2bb07@tls.msk.ru>
+ <0d34447b-5e69-40e2-a0ca-f44b1e74d47d@tls.msk.ru>
+ <b2c876c8-df09-ed44-05c1-a1bd57ea2c7c@netfilter.org>
+Content-Language: en-US, ru-RU
+From: Michael Tokarev <mjt@tls.msk.ru>
+Autocrypt: addr=mjt@tls.msk.ru; keydata=
+ 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
+In-Reply-To: <b2c876c8-df09-ed44-05c1-a1bd57ea2c7c@netfilter.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On 22.06.2025 13:10, Jozsef Kadlecsik wrote:
 
---8323329-1587914648-1750587015=:3235
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+> You have got a non-simple routing configuration and reverse path filtering
+> has got its own troubles with it, which is further complicated by natting.
 
-On Sat, 21 Jun 2025, Michael Tokarev wrote:
+Exactly the same issue happens when one tries to redirect packets to a
+service (eg, a transparent proxy) running on 127.0.0.1, - it does not
+involve any complex routing setup, and it also fails with current order
+of things.
 
-> On 21.06.2025 20:50, Michael Tokarev wrote:
-> > On 21.06.2025 19:08, Michael Tokarev wrote:
-> > > On 21.06.2025 19:05, Jozsef Kadlecsik wrote:
-> > > > On Sat, 21 Jun 2025, Michael Tokarev wrote:
-> > > >=20
-> > > > > On 21.06.2025 17:42, Jozsef Kadlecsik wrote:
-> > > > > ..
-> > > > > > However, routing decisions can be affected by marking packets=
-. So
-> > > > > > I'd mark
-> > > > > > packets before routing and use routing tables according to th=
-e mark
-> > > > > > value.
-> > > > >=20
-> > > > > The prob with replies to DNAted packets is that these packets t=
-raverse
-> > > > > routing rules first, BEFORE they're seen by netfilter code.=C2=A0=
- Who can
-> > > > > mark them for routing if routing is done before it's in netfilt=
-er?
-> > > >=20
-> > > > No, not at all. You can mark the incoming first packet, store the=
-=20
-> > > > packet's mark value in conntrack and restore from conntrack for=20
-> > > > the reply packets in mangle/prerouting. Which is exactly that,=20
-> > > > before routing.
-> >=20
-> > I tried to follow this route.=C2=A0 In the dnat rule, I applied a mar=
-k to
-> > this conntrack entry, and checked this fwmark in ip rule to perform
-> > routing through ip2/gw2 instead of default ip1/gw1.
->=20
-> I figured out how to actually make it work. I can dnat the initial
-> packet to a different internal-host IP (adding second IP to the dnat
-> destination host), and in the routing rules, use this second IP as
-> the key for routing table decision.  Thankfully there's no shortage
-> for internal IP addresses.  But this is very ugly, - an ugly work-
-> around for a bug in kernel which shouldn't be there in the first
-> place.
->=20
-> For the initial issue (martians checked after netfilter doing mangling)=
-,
-> the work-around also exists and is also really ugly - it is repeating
-> the martians check in netfilter rules, ie, keeping routing table in two
-> places.
+> So it's best to separate the issues:
+> 
+> reverse path filtering: By enablink loose mode for both of the default
+> route interfaces should be enough because that way the routing engine can
+> find an entry in the FIB and won't drop the packets as martian.
 
-You have got a non-simple routing configuration and reverse path filterin=
-g=20
-has got its own troubles with it, which is further complicated by natting=
-.
-So it's best to separate the issues:
+Why can't netfilter dnat hook up AFTER martians check in network stack? 
+Yes, this requires separation of checking for martians (rp-filter) and
+actual routing, but these are separate anyway, since they check for
+different things (rp-filter is applied to source address of the incoming
+packet, while routing is applied to destination).  Wouldn't this solve
+this issue once and for all?
 
-reverse path filtering: By enablink loose mode for both of the default=20
-route interfaces should be enough because that way the routing engine can=
-=20
-find an entry in the FIB and won't drop the packets as martian.
+> Due to NAT, wrong interface picked by the routing engine: you have got
+> source-based routing which don't play well with NAT. Therefore I suggested
+> marking and using a mark-based routing because that solves it, both in the
+> case of iptables and nftables.
 
-Due to NAT, wrong interface picked by the routing engine: you have got=20
-source-based routing which don't play well with NAT. Therefore I suggeste=
-d=20
-marking and using a mark-based routing because that solves it, both in th=
-e=20
-case of iptables and nftables. If you can pick another IP address which=20
-matches the good entry in the routing table, that's also good. There's=20
-third solution if you use nftables: the reverse direction for DNAT is an=20
-internal SNAT and in nftables you *can* set the SNAT priority to the same=
-=20
-as DNAT, i.e. before routing. That way routing'll see the natted source=20
-address and source-based routing can pick the good outgoing interface.=20
-However, if you use SNAT as well otherwise, then that can also be affecte=
-d=20
-in routing.
+I don't see a way to do that.  Because autoatic marking reply packets is
+- apparenty - done at the same stage as de-DNAT-ification of these
+packets, ie, too late, when routing decision has already been done.
+No matter what, I don't see how to change the order of netfilter hook
+vs routing of the reply packets.
 
-[Personally, I always check ingress-egress in netfilter, regardless of th=
-e=20
-reverse path filtering.]
+>      If you can pick another IP address which
+> matches the good entry in the routing table, that's also good. There's
+> third solution if you use nftables: the reverse direction for DNAT is an
+> internal SNAT and in nftables you *can* set the SNAT priority to the same
+> as DNAT, i.e. before routing. That way routing'll see the natted source
+> address and source-based routing can pick the good outgoing interface.
+> However, if you use SNAT as well otherwise, then that can also be affected
+> in routing.
 
-Best regards,
-Jozsef
---=20
-E-mail : kadlec@netfilter.org, kadlec@blackhole.kfki.hu, kadlecsik.jozsef=
-@wigner.hu
-Address: Wigner Research Centre for Physics
-         H-1525 Budapest 114, POB. 49, Hungary
---8323329-1587914648-1750587015=:3235--
+How one would change the internal SNAT priority so it's applied after or
+before routing?
+
+Can't the same mechanism be used to modify priority of regular dnat vs
+rp-filter?
+
+> [Personally, I always check ingress-egress in netfilter, regardless of the
+> reverse path filtering.]
+
+Yeah, I'm slowly going towards this direction as well, - but more
+because of the current issues with netfilter I'm facing.
+
+Thanks,
+
+/mjt
