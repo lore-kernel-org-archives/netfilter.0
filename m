@@ -1,139 +1,89 @@
-Received: from smtp-out.kfki.hu (smtp-out.kfki.hu [148.6.0.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 909FF79F5
-	for <netfilter@vger.kernel.org>; Sun, 22 Jun 2025 13:19:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.6.0.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F07FC1865EE
+	for <netfilter@vger.kernel.org>; Thu, 26 Jun 2025 04:28:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1750598380; cv=none; b=L1Q4ABT8mBvGoy3+m7hR2N9EmrNWEQiVKzDIb49570ZDnysDF4jFQ2kkLGpuTBaISPcyvdb8n0Vu0lFLiC2XIefaQKL0qbQn+yb9Opl8+8qK0GH74yAJ8GRDxjbc5MNO0luVn7X+lEfEbv6+Mc1b9RUu5f7ggEmuQCvdCrje8MU=
+	t=1750912090; cv=none; b=M5HR1HUB7J/5m1bQHAdnVCkauy9WhLepTkqQoS83B8jLkSan9GI3bU4oMrcsDWc29RQykJsiH+cA+m9SwVG5GtjE0zExH2vxVVX5EoLLBEiMjNbt7RqbFKPQTaJ8UG36fwE3pMLIDzsWnhENjTZuRpHZNyY1M79FqBnKWwb1gAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1750598380; c=relaxed/simple;
-	bh=MAZ8k2Nwz4FHJOawQVgpJPVXtyE+vhQPn4sCBt7XiG8=;
-	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=oNUMezpeBUDISd7kzV3e8moLNYWSYrCNlsnT0D0qW6vOGo9h7HaKYNbJF6AEjkgJEEwTlmrkAA7H6xUZzhSHMDhOMuiZjNMhEUglPq110ItSVYJoaGMm9rDxs9vmRC9rxWRjRK8/I217JbrHR94RYLmv3QcrsZ53Mt8pWrhulgY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; arc=none smtp.client-ip=148.6.0.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
-Received: from localhost (localhost [127.0.0.1])
-	by smtp0.kfki.hu (Postfix) with ESMTP id 4bQBdL3H6tz3sb7m;
-	Sun, 22 Jun 2025 15:19:34 +0200 (CEST)
-X-Virus-Scanned: Debian amavis at smtp0.kfki.hu
-Received: from smtp0.kfki.hu ([127.0.0.1])
- by localhost (smtp0.kfki.hu [127.0.0.1]) (amavis, port 10026) with ESMTP
- id POVWxbC8KNE2; Sun, 22 Jun 2025 15:19:32 +0200 (CEST)
-Received: from mentat.rmki.kfki.hu (unknown [148.6.192.8])
-	(Authenticated sender: kadlecsik.jozsef@wigner.hu)
-	by smtp0.kfki.hu (Postfix) with ESMTPSA id 4bQBdJ24JKz3sb7f;
-	Sun, 22 Jun 2025 15:19:32 +0200 (CEST)
-Received: by mentat.rmki.kfki.hu (Postfix, from userid 1000)
-	id 28439141033; Sun, 22 Jun 2025 15:19:32 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-	by mentat.rmki.kfki.hu (Postfix) with ESMTP id 257CE1405BC;
-	Sun, 22 Jun 2025 15:19:32 +0200 (CEST)
-Date: Sun, 22 Jun 2025 15:19:32 +0200 (CEST)
-From: Jozsef Kadlecsik <kadlec@netfilter.org>
-To: Michael Tokarev <mjt@tls.msk.ru>
-cc: netfilter@vger.kernel.org
-Subject: Re: order of netfilter hooks and check for martian source
-In-Reply-To: <fb77199a-cca5-49ca-a953-8cfa13f0210a@tls.msk.ru>
-Message-ID: <d2f48184-bcf8-4c9b-0139-e006fb81c452@netfilter.org>
-References: <075d8041-5e10-43ae-bae9-12a3f25c70d5@tls.msk.ru> <ec2a6853-a864-4708-a565-267e61c5162a@tls.msk.ru> <b69fa9d9-6e56-0e08-adec-ba768a108938@netfilter.org> <9fc435dd-547f-4e50-8c2c-862a1ff62a2c@tls.msk.ru> <c1ecb68e-d4ce-9773-8649-ebac5171da06@netfilter.org>
- <51d3ebab-f543-4cbf-9923-8a9d965de826@tls.msk.ru> <26692fd4-71d4-4a77-b581-064837e2bb07@tls.msk.ru> <0d34447b-5e69-40e2-a0ca-f44b1e74d47d@tls.msk.ru> <b2c876c8-df09-ed44-05c1-a1bd57ea2c7c@netfilter.org> <fb77199a-cca5-49ca-a953-8cfa13f0210a@tls.msk.ru>
+	s=arc-20240116; t=1750912090; c=relaxed/simple;
+	bh=Idwj5YCZC3JzbeGrXOTHn7qVhOoLLkFjPOE+YkHPcwQ=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=SFSodrN233YvaV+lFfr+vumddG7YkVB1FcZimQSjDKbbYH1DFCrIbfaiXY9W+0zsK4Qy6wTV8iv6J0QX3bk4gqLkp+cLNr/3Y77jynfwqcFQrbTmIvb1Li15Xgh8iEgqbl3ycYqAzwUvcwRHg85JMqSjJyi+jAksA6JhSdkcboo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BWpiPrf+; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BWpiPrf+"
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-32b43cce9efso4326791fa.3
+        for <netfilter@vger.kernel.org>; Wed, 25 Jun 2025 21:28:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1750912087; x=1751516887; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=ui/phIQLw3Jji4NuLAxzBYqA/b/PnXarnoaoejm9eV8=;
+        b=BWpiPrf+AWXNvpLhjfSTENHAJqeBW2eqs+zcB3mDqQ29wjPmhT1puRobkRGgBwZ71u
+         u5MmoGf3BNXKY0AtzSvIxJCtTKHZGs5mvJA12QNH8u8iC4h7+JWMkIGSxml/A4lHCaue
+         vM8zYRN+NUNVxZ1C+fuWDv3etlksfx4y8v46k6layUEGPE7iavZfhBknVB0GcqNkazCN
+         LQBpIHu/ThJvcWJGzRn3yZu+yOiHVfVkiMMyDRL87U593v5IV4d0PBBjhlmQtlPgSgg1
+         6zIryVCPbFw+ATM8dykypHNX/43kM8Q/3Q+R3GbOHYDz9OeL2sKlTZeXuXX/mkqCOZOR
+         Ws3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1750912087; x=1751516887;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ui/phIQLw3Jji4NuLAxzBYqA/b/PnXarnoaoejm9eV8=;
+        b=oK+4MEziqVg27k979yOWITyFz71QbzDj87Jwe65p4asMUVBnYptE2U9lgvijAstBSi
+         kEY+LvN1MOssYdUuYAI6ZkoWTrssAXo2R08zzxB9Zt9AcRteb1xpK6yBz83Yh5s6rWCB
+         UFYB1E7cVAhBlbRboQ4vetmeZ0X5ucAU1AQtiunDTjl2G2kfU8PvhXIv2ggUsWWeVQLs
+         sdB1UxzaDeZ0hLqmbHjIztxP1FQDKaJoVNw5T6WwkuODwBF43ZArCAMZMr0LdAxOu+j8
+         PLGs/Zvy3zjjlxmUrNofIuhubd5w/W6zRNwv2Iz9xY4PWh40BiB4K7KNVf9kBAWDFhhD
+         sOiw==
+X-Gm-Message-State: AOJu0YzsUfRITcRB0HcA5zJ2j4Zwd1A7KM9ZHEyrWYB4/z4v7ChrbraM
+	xHJEff3T73W7uEgEML85o60zulNagnezrNP6ujIZPsAy0S0QxX4HlAm+Ha4ZPTDyHYjn6m2qjBx
+	lCwoQWFaWeJCZHXu8FMn0c/6u5Xp1MtCxPOa/obc=
+X-Gm-Gg: ASbGncuOhPNxTWjn85U1i90agzjze3xxaYdDH3foL+jCzn489RbwDdg/05GNHlttZqw
+	Wigap6c6zAEUhy4x7YLXBWy3lct/3GGbH+dwhEn9xhmO0BKXtXurgP8OCHVMKcn7ClzcpnQgoYc
+	OdBwGzQK7UL1MXCCTtPAOjHjH7dvdY3s54KnbM2TVnusS1Mp0v4DGBIw==
+X-Google-Smtp-Source: AGHT+IEWEv/qLu1+TZpID2sHjinikiThEJFrWFL9wVOS/wzAYkLnfm7zJkIl9SDj04ReoGGV62i5eflNVO3HhadX/oA=
+X-Received: by 2002:a05:6512:2315:b0:553:cf7d:72a0 with SMTP id
+ 2adb3069b0e04-554fdcc4d03mr1620640e87.5.1750912086470; Wed, 25 Jun 2025
+ 21:28:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+From: sontu mazumdar <sontu21@gmail.com>
+Date: Thu, 26 Jun 2025 09:57:54 +0530
+X-Gm-Features: Ac12FXw779j0-513NHqSr4X06PJty3xw8lIGw_DmZblrWVeBcz8npCtICeQoF74
+Message-ID: <CANgxkqwQpVQDM7AP20A0pCsGkPhte9tr-1gwdJJRVxqB9M2nng@mail.gmail.com>
+Subject: Element-Level Logging Support in nftables Sets
+To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, 22 Jun 2025, Michael Tokarev wrote:
+Hi Everyone,
 
-> On 22.06.2025 13:10, Jozsef Kadlecsik wrote:
-> 
-> > You have got a non-simple routing configuration and reverse path filtering
-> > has got its own troubles with it, which is further complicated by natting.
-> 
-> Exactly the same issue happens when one tries to redirect packets to a 
-> service (eg, a transparent proxy) running on 127.0.0.1, - it does not 
-> involve any complex routing setup, and it also fails with current order 
-> of things.
+I am exploring whether it's possible to add logging support at the
+element level within an nftables set. Specifically, I'm looking for
+functionality where an individual element in a set can trigger a log
+when it's matched=E2=80=94something like the following:
 
-That is also a case when routing and NAT-ing don't play well.
- 
-> > So it's best to separate the issues:
-> > 
-> > reverse path filtering: By enablink loose mode for both of the default
-> > route interfaces should be enough because that way the routing engine can
-> > find an entry in the FIB and won't drop the packets as martian.
-> 
-> Why can't netfilter dnat hook up AFTER martians check in network stack? 
-> Yes, this requires separation of checking for martians (rp-filter) and 
-> actual routing, but these are separate anyway, since they check for 
-> different things (rp-filter is applied to source address of the incoming 
-> packet, while routing is applied to destination).  Wouldn't this solve 
-> this issue once and for all?
-
-I can repeat only myself: routing is a whole system, independent of the 
-netfilter framework. We can't pick parts of it or jump into a specific 
-stage.
-
-> > Due to NAT, wrong interface picked by the routing engine: you have got
-> > source-based routing which don't play well with NAT. Therefore I suggested
-> > marking and using a mark-based routing because that solves it, both in the
-> > case of iptables and nftables.
-> 
-> I don't see a way to do that.  Because autoatic marking reply packets is 
-> - apparenty - done at the same stage as de-DNAT-ification of these 
-> packets, ie, too late, when routing decision has already been done. No 
-> matter what, I don't see how to change the order of netfilter hook vs 
-> routing of the reply packets.
-
-Where comes this "apparently"? There's no automatic packet marking,
-at all. You tell the system at exactly when should it happen. In 
-iptables-save language, mark value 1 for original direction, mark 2 for 
-reply
-
-*filter
-...
-# Original direction
-# In nftables it's not needed but in iptables 
-# we don't have multiple targets
-:mark-accept - [0:0]
--A mark-accept -j CONNMARK --mark 1
--A mark-accept -j LOG/ULOG ...
--A mark-accept -j ACCEPT
-# Original direction, first packet
-... -m state --state NEW ... -j mark-accept
-
-# Reply direction
-*mangle
-...
--A PREROUTING -m state --ctdir REPLY -m connmark --mark 1 -j MARK --mark 2
-
-> How one would change the internal SNAT priority so it's applied after or
-> before routing?
-
-table ip nat {
-  chain postrouting {
-    # Override default priority and set it before routing
-    type nat hook postrouting priority dstnat; policy accept;
-  }
-  chain prerouting {
-    type nat hook prerouting priority dstnat; policy accept;
-  }
+table inet mytable {
+set s {
+typeof ip saddr
+counter
+elements =3D { 1.1.1.1 log prefix "element1" level info,
+                     1.1.1.3 log prefix "element2" level info }
+        }
 }
 
-See https://wiki.nftables.org/wiki-nftables/index.php/Netfilter_hooks
+I understand that nftables sets currently do not support logging at
+the element level. Is there any plan to introduce this feature in
+future releases?
 
-> Can't the same mechanism be used to modify priority of regular dnat vs
-> rp-filter?
-
-With the above SNAT happens before routing, including rp-filter.
-
-Best regards,
-Jozsef
--- 
-E-mail : kadlec@netfilter.org, kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.hu
-Address: Wigner Research Centre for Physics
-         H-1525 Budapest 114, POB. 49, Hungary
+Regards,
+Sontu
