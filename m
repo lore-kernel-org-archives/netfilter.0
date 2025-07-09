@@ -1,90 +1,105 @@
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D66D32D5C7B
-	for <netfilter@vger.kernel.org>; Wed,  9 Jul 2025 15:20:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBC2524169E;
+	Wed,  9 Jul 2025 23:08:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752074432; cv=none; b=Hybgq9OVAdXI8ZFuTVtwhhfTd2O4Eu0vTZfvNBqdZ25BwhMs0G6cmYVYIVhhOC1JOjVxD18uptDdjwekIHbPnNoS8y+j61vN/eAZbG55A9flUIOD3hQHNOKyEB1tnSWOyhiCp+c1hbHhalwKBXVWJowJsn56RaTt2+0lqs19/VU=
+	t=1752102490; cv=none; b=WnIsnNSiu2SuwD7nICr9IkAQRgUEfxJlF697UW95K+xqDJs8ReE19MOlwWD/QkyLIlIISWouUEyxoEgxyOmSA/TG3oExZLfD6qmv3YsyaW84PfC0nN+7i9/yajxRB/T+ikKqOoOOQ2gYTgu+r4jVhzmNo3bTokys75Z+giALzgk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752074432; c=relaxed/simple;
-	bh=gaEFCoVCo+7tT9xtU2JRCuzuXcSRPp3W7TFrAczvQNs=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=Aq4lzvj63BvOHpqUn5WYTqfLc1oDPBky6ga+TcspBfpQH1EfPc3oBBniPqEYFLu2hP/i6+aYFXRRG3WjZR4FVjj4iB7/ZmbfBInGKG6QxVgwEBZUfZAJ2iBmrH3d2JerfTHUNw58aHfIMBmnnynfjshv7eZsh4qQGJGGeit2XGc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=businessbeginnerresources.com; spf=pass smtp.mailfrom=businessbeginnerresources.com; dkim=pass (2048-bit key) header.d=businessbeginnerresources-com.20230601.gappssmtp.com header.i=@businessbeginnerresources-com.20230601.gappssmtp.com header.b=S3cu9k/I; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=businessbeginnerresources.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=businessbeginnerresources.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=businessbeginnerresources-com.20230601.gappssmtp.com header.i=@businessbeginnerresources-com.20230601.gappssmtp.com header.b="S3cu9k/I"
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-450ce3a2dd5so54968435e9.3
-        for <netfilter@vger.kernel.org>; Wed, 09 Jul 2025 08:20:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=businessbeginnerresources-com.20230601.gappssmtp.com; s=20230601; t=1752074429; x=1752679229; darn=vger.kernel.org;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=gaEFCoVCo+7tT9xtU2JRCuzuXcSRPp3W7TFrAczvQNs=;
-        b=S3cu9k/IAy7B1tC3APOZOq/wuErrx6ev9TKKNb1kUH/s1o3ncaXFpmyf6X+OFeqp4A
-         LlkuV6lugpIz4l5WQRaTogbG9YsNK9aksZGx6hDwXpwF349diBPCx8bFfXusl8zSmdHz
-         qSxU1mrGb8hZs+EIAx+y4jG87Yvcq536w0u6eniXf88K4a7khvUfbmlxqiOQd9NZdUp/
-         BExYios2q0Bm+rPc3bposZJwZnG5A7OozXJpRT33a8UK3VcN9/kHinZPQIsZcuuFpEty
-         W0lKL4JKiMPam8BxcWwMRolEgpJlPsdJdceIm3dgccYfPGX9L2OAMl5/W/ShgaU1VLIw
-         IJCw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1752074429; x=1752679229;
-        h=content-transfer-encoding:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gaEFCoVCo+7tT9xtU2JRCuzuXcSRPp3W7TFrAczvQNs=;
-        b=n363PNHVUK1Ta3d6NiqRuq12NLyo3/+0O5SzIguXo9tJkeiNmZWaOf33UT9aedoWt+
-         7rxFpj/oyh174HNJELQojZ3SOtiCcG77H/VgpiQpfMn5CtVBEV4VFAfK8JnwlifOG+rZ
-         JNuFcqHyYnchS4Z7Vvx+JHqdpDkZTa2baBYe0dRfSzefC4bKLCBxC+N8Xi1Ep9VAzCfq
-         oVShRVbHo4iAJHFzH9PwipwZQe4ZA4TnYlxf4XUsw3Gzs36l55e4TvYM/DjaHuVj8wM9
-         ELJfSbCqCB3c41C6QPMCVrlb0FtKPNJ0nYgjNDMlLgJRJYNztf+/2t242zwRt3FKdUkS
-         SZ6g==
-X-Gm-Message-State: AOJu0YyrP09xOaxhhkibY2z7orPxvKpybh34CfFbSSUbNsAvdndwOpdi
-	gQDXUh6cX9xbPOLLXHouIyzIIMyCOZJ9HzWO2+TBZOGrv2p4SEasntlWtidB4bdZsi2M6Ip5liF
-	VWYTzUfbVJpJt9TYV+bGJ0HAYB0uuF4YLBB6oMVe3lg6k4TMwIR5g
-X-Gm-Gg: ASbGnctUFST/zJGF3hEp/1SS/zl4zN1erh5M6LGokoR9teBBOAL5mRFcATt0KKmsbx2
-	oiiW9XdgYrRePWhjHwcwHA9SeayzMWJrP/78XLMbNgj3vsukA3DUWlPu3I/FobvpfFJJ/eK4hCk
-	4KAfCuEvCwDSLQ8MrFClU/K9rJ9myGbpFOYAL/1hDVFEs=
-X-Google-Smtp-Source: AGHT+IHkhHCsWf1B11ktoNu8dIcxzJvyM1DL+PGLAesOeYHYCqTQXaGEGRS0Fa9K1PH/r1Mx8Pp+5plz7ttwpK/GEwI=
-X-Received: by 2002:a05:6000:240b:b0:3b4:9721:2b19 with SMTP id
- ffacd0b85a97d-3b5e44d7f75mr2513192f8f.11.1752074428936; Wed, 09 Jul 2025
- 08:20:28 -0700 (PDT)
-Received: from 161630743330 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 9 Jul 2025 08:20:28 -0700
-Received: from 161630743330 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 9 Jul 2025 08:20:28 -0700
+	s=arc-20240116; t=1752102490; c=relaxed/simple;
+	bh=lN+HdSs+M71XVyqCjYsxfW2xQ/2suTkluOOvdlfVMyk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=V8h0t7i0RjAInQyfxZZ0dO+qNIwJUPPFsXn2GmCz385OZWBhsjOOr3jtuQWTnU+BJm1PLsYIZTbnFzUuYv7JwaO8ViXQFlbn6XI2W5IKoOchhkIix4TEngBt+PZu96B6043vPfLb3I6fNLKNoOYLJ63CPsP93f4MTfKncQ7veIk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=Chamillionaire.breakpoint.cc
+Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
+	id A7A35607AC; Thu, 10 Jul 2025 01:08:05 +0200 (CEST)
+From: Florian Westphal <fw@strlen.de>
+To: <netfilter-devel@vger.kernel.org>
+Cc: netfilter@vger.kernel.org,
+	Florian Westphal <fw@strlen.de>,
+	pavelpribylov01@gmail.com
+Subject: [PATCH nft] doc: expand on gc-interval, size and a few other set/map keywords
+Date: Thu, 10 Jul 2025 01:07:52 +0200
+Message-ID: <20250709230800.30997-1-fw@strlen.de>
+X-Mailer: git-send-email 2.49.0
+In-Reply-To: <CANnZF1bKkHctvnpG6JnhtMpUzj6FC5crn1bDqt+eq-G_+mR_Eg@mail.gmail.com>
+References: <CANnZF1bKkHctvnpG6JnhtMpUzj6FC5crn1bDqt+eq-G_+mR_Eg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Savannah Bush <sbush@businessbeginnerresources.com>
-Date: Wed, 9 Jul 2025 08:20:28 -0700
-X-Gm-Features: Ac12FXzK-a3P7eUSnjGz2t7fWmsuT2JemA_e9JIKW7WkwBuPLPjXANWFu9HT_IM
-Message-ID: <CAHJJyk6KXFPXtmyC_worrbP1U7AiA-jS=ck-ThYXo7_65Mv5Yw@mail.gmail.com>
-Subject: Let me write your new guest post
-To: netfilter@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Hi,
+Reported-by: <pavelpribylov01@gmail.com>
+Signed-off-by: Florian Westphal <fw@strlen.de>
+---
+ doc/nft.txt | 27 ++++++++++++++++++++++++++-
+ 1 file changed, 26 insertions(+), 1 deletion(-)
 
-With social media evolving so quickly, creating content that stays
-fresh and engaging is vital. Stunning visuals and interactive features
-are just the beginning of what can help your posts shine.
+diff --git a/doc/nft.txt b/doc/nft.txt
+index 1be2fbac05c1..8712981943d7 100644
+--- a/doc/nft.txt
++++ b/doc/nft.txt
+@@ -596,6 +596,8 @@ Sets are element containers of a user-defined data type, they are uniquely
+ identified by a user-defined name and attached to tables. Their behaviour can
+ be tuned with the flags that can be specified at set creation time.
+ 
++See Set and Map flags below for more details.
++
+ [horizontal]
+ *add*:: Add a new set in the specified table. See the Set specification table below for more information about how to specify properties of a set.
+ *delete*:: Delete the specified set.
+@@ -636,6 +638,27 @@ string: performance [default], memory
+ automatic merge of adjacent/overlapping set elements (only for interval sets) |
+ |=================
+ 
++The *gc-interval* doesn't affect element timeout, but it does affect memory reclaim.
++A large set that rarely has elements that time out can use a higher (less frequent) garbage
++collection to save cpu time, whereas sets that see many updates with short-lived elements
++will benefit from a lower interval.
++Lower intervals ensure the set stays below its maximum size.
++Internally, a timed-out entry stays around until it is removed by the garbage collector, which
++also decrements the sets element count.
++This also means that it is possible to have a set that can not accept more elements, even
++if all elements timed out, if the *gc-interval* is set too large.
++
++The *size* defines the upper limit of the amount of elements that the set can support.
++Mandatory for sets that are added to from the ruleset with the *add* and *update* keywords.
++Providing the *size* keyword for sets that are only added to via *nft add element* allows for
++a more compact (memory conserving) set implementation selection, but it is not required.
++
++The optional *policy* keyword can be used to request a more memory-conserving set implementation.
++
++*auto-merge* instructs the nftables frontend to merge adjacent and overlapping ranges.
++Example: When the set contains range *1.2.3.1-1.2.3.4*, then adding element *1.2.3.2* has no
++effect.  Adding *1.2.3.5* changes the existing range to cover *1.2.3.1-1.2.3.5*.
++Without this flag, *1.2.3.2* can not be added and *1.2.3.5* is inserted as a new entry.
+ 
+ MAPS
+ -----
+@@ -684,6 +707,8 @@ If a required flag is missing, the ruleset might still work, as
+ nftables will auto-enable features if it can infer this from the ruleset.
+ This may not work for all cases, however, so it is recommended to
+ specify all required features in the set/map definition manually.
++Also, some features are mutually exclusive.  For example, it is not possible
++for a set to support intervals and insertion from the packet path.
+ 
+ .Set and Map flags
+ [options="header"]
+@@ -691,7 +716,7 @@ specify all required features in the set/map definition manually.
+ |Flag		| Description
+ |constant	| Set contents will never change after creation
+ |dynamic	| Set must support updates from the packet path with the *add*, *update* or *delete* keywords.
+-|interval	| Set must be able to store intervals (ranges)
++|interval	| Set must be able to store intervals (ranges). Cannot be combined with the *dynamic* flag.
+ |timeout	| Set must support element timeouts (auto-removal of elements once they expire).
+ |=================
+ 
+-- 
+2.49.0
 
-I=E2=80=99d be happy to contribute an article with strategies for enhancing
-social media engagement. Would you be interested in adding this
-helpful content to your website?
-
-I=E2=80=99d love to hear what you think!
-
-Thank you,
-Savannah Bush / BusinessBeginnerResources.com
-
-
-P.S. If you=E2=80=99re interested but would like an article on a different
-subject, please let me know. I=E2=80=99d be happy to tailor my work to your
-needs!
