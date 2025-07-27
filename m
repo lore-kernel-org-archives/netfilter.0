@@ -1,86 +1,57 @@
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from sender4-op-o12.zoho.com (sender4-op-o12.zoho.com [136.143.188.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEEFC25C81F
-	for <netfilter@vger.kernel.org>; Mon, 14 Jul 2025 15:00:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1752505244; cv=none; b=ZOH8VRPIFJfZu4zwB4gnUG/4UUuJXmx+/RrXcW32fiIYZr2KEAETipm7k8ZPLtTSMU238oHpEQT1zi10xR+FJ0cK2K1DCuPyNyep4hLrB5opT3o1oaK1pxVFsjMg0GMAuYMv8zbWDoSITczJiS5ajRomLM6uzBWTx3w4uLT62qQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1752505244; c=relaxed/simple;
-	bh=N0r1i1AX2zLlLqCEcQLtjlrNwLPEwmhDlEAOeav+Jkc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=doWn9zaWn8UrOTpSitazSzxv025REbV1U/ikQkg16bDUFjJf0Ci+9BK9O4Vm+8hMd0AeYLrtxxKVj1ZzwpqV6tWegRMFtxbZrXL90S2pFZSUCCVJzxkDX/wJNlrdPjGlhTlBADrUpSoSgcAHdrmJPl+QRaFWip+bVKmpUBv46Pc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 81872612D8; Mon, 14 Jul 2025 17:00:39 +0200 (CEST)
-Date: Mon, 14 Jul 2025 17:00:34 +0200
-From: Florian Westphal <fw@strlen.de>
-To: Niklas Beierl <niklasbeierl@posteo.net>
-Cc: netfilter@vger.kernel.org
-Subject: Re: TCPOPTSTROP can be repalced with undocumented "reset tcp option
- opt"
-Message-ID: <aHUbkoEEVmK9dw-_@strlen.de>
-References: <4c0c089d-cc53-4375-bb01-c34a858809bf@posteo.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 055BD35898
+	for <netfilter@vger.kernel.org>; Sun, 27 Jul 2025 03:00:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.12
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1753585233; cv=pass; b=DffZx6uZHQ6+FifKHkyxRd2aqz4q+l/yT9ieVaMowhS6UZBQvvKO6LMN/1OWhOtgjAHRyu9jygiHOrtdWf8gxRR/ioAvlmkLyhx+NJud1N2toPS5JSjY4+W55Y+XYsl6//kvKwEhdntIXSaLCC1ZNnU2mF4HFexlCn/gcRUr4P0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1753585233; c=relaxed/simple;
+	bh=Y58jrg5n9HzuvxAZd6tcdqCgvAQNH7NrK7x73qI0Pv0=;
+	h=Date:From:To:Message-ID:In-Reply-To:Subject:MIME-Version:
+	 Content-Type; b=ZGhRoadfkt3OlTYQ+EEF5lyWI7Zo0QunaX0eSBhTKDlRQTLiEX9kPfd47ysD8bGr5iKghjqTpSIWr/5ywbE2fqYctybCIePfhBxNjlGLam4rWWc1Rr9fXsycRETIXz/3nt7JuAp4r8gsk3X8r0i9Pg+Q2CbKtuoWL49mksPamD8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=permerror header.from=eray.ca; spf=pass smtp.mailfrom=eray.ca; dkim=pass (1024-bit key) header.d=eray.ca header.i=bilgin@eray.ca header.b=Z4pPry3k; arc=pass smtp.client-ip=136.143.188.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=permerror header.from=eray.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=eray.ca
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=eray.ca header.i=bilgin@eray.ca header.b="Z4pPry3k"
+ARC-Seal: i=1; a=rsa-sha256; t=1753585229; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=ViMiO56XyXum+rpT6qWnx4DkVDLYfzepRB8lyfuKD61Wan4KDB/W+8D4Os5T9Xw3tPMOvaSa4pevCQ3rfq42p0Wdz0YsKQhIh8IVHau1QOqMO9EcF5/Oj3HlHxhla3e/5jXKmd2opK5Iy5vWhwYwCaHAqPxUZqDR8mEpC03cuy4=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1753585229; h=Content-Type:Content-Transfer-Encoding:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To:Cc; 
+	bh=Y58jrg5n9HzuvxAZd6tcdqCgvAQNH7NrK7x73qI0Pv0=; 
+	b=eXuPlORjfFbfjfa3I+TuQg0JcmTJQqv8cRFoPt5QMx0gCoNIDPEoGEishm0PSX9SQYM+Q6UgBrrFy6sSDUtPQhibVnnYD02InFjEHr5+foVyKrr86TrvCpi855TFLwRanAdGoPSRFm4rIfS9JvnsM0Oci1O1FF05B/N7IJdDMI0=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	dkim=pass  header.i=eray.ca;
+	spf=pass  smtp.mailfrom=bilgin@eray.ca;
+	dmarc=pass header.from=<bilgin@eray.ca>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1753585229;
+	s=zmail; d=eray.ca; i=bilgin@eray.ca;
+	h=Date:Date:From:From:To:To:Message-ID:In-Reply-To:Subject:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To:Cc;
+	bh=Y58jrg5n9HzuvxAZd6tcdqCgvAQNH7NrK7x73qI0Pv0=;
+	b=Z4pPry3kM+vF8ZK3v8oSGBO4Ca6hI3p1WzCHWUDx2gmOrUblAW/gSHMRZgP7N8+T
+	CMM3V+zxtyrWTxYXtJF193Jal9i9UJicRfkOuiLuH2WzeCaiYFch1gtYUFspQbxdzKt
+	mj47DPQsFMkZwAzj9zLP6aQK+9UIgsNpKiCKLPfg=
+Received: from mail.zoho.com by mx.zohomail.com
+	with SMTP id 1753585227669818.5908441533121; Sat, 26 Jul 2025 20:00:27 -0700 (PDT)
+Date: Sat, 26 Jul 2025 23:00:27 -0400
+From: Eray Bilgin <bilgin@eray.ca>
+To: "netfilter" <netfilter@vger.kernel.org>
+Message-ID: <19849d316fa.2ce380632614151.8846727672667329038@eray.ca>
+In-Reply-To: 
+Subject: zoombinis
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <4c0c089d-cc53-4375-bb01-c34a858809bf@posteo.net>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+Importance: Medium
+User-Agent: Zoho Mail
+X-Mailer: Zoho Mail
 
-Niklas Beierl <niklasbeierl@posteo.net> wrote:
-> I found myself in the situation of needing the behavior from the legacy  
-> TCPOPTSTRIP target. On the netfilter wiki, this target is listed under 
-> "Unsupported extensions" with the very brief comment "consider native 
-> interface, need to extend nft_exthdr.c".
-> 
-> https://wiki.nftables.org/wiki-nftables/index.php/Supported_features_compared_to_xtables#TCPOPTSTRIP
-
-I've removed this bit, its outdated.
-
-> reset tcp option OPT
-> 
-> which seems to turn the selected option into NOPs. To my understanding 
-> this is equivalent to  "-p tcp -j TCPOPTSTRIP --strip-options OPT".
-
-It is.
-
-> I think this should be mentioned in the wiki on the Mangling packet 
-> headers page and also with regards to replacing TCPOPTRESET. How can I 
-> make this happen? Can I get credentials to the wiki somehow? Should I 
-> instead write it up and send it to someone?
-
-You could send a patch for iptables, specifically
-extensions/libxt_TCPOPTSTRIP.c and add ".xlate" support together with a
-libxt_TCPOPTSTRIP.txlate file (with tests).
-
-Then the wiki could link to that just like it does for other supported
-extensions.
-
-> Furthermore, I would like to understand (and document) the general 
-> syntax for setting tcp options. I am especially curious whether tcp 
-> options can also be set if the field is not known to the netfilter code.
-
-Whats your use case?
-
-You can do
-tcp option @255,8,8 255
-
-(locate option 255, offset 8 bit, fetch 8 bits), then compare to 255.
-Same syntax as raw payload expressions.
-
-> I guess there are issues with encoding the cli-passed value 
-> appropriately in the header field?
-> 
-> Lastly I was wondering whether it is also possible to add or entirely 
-> remove option fields from tcp headers - as opposed to just NOPing them?
-
-Not at this time, its more expensive since data needs to be moved.
-NOPing is much simpler.
+i've noticed packets belonging to an established/assured tcp or udp connection will cease matching rules in the built-in forwarding chain over time. i'm not actually sure if it's a function of time or number of packets. the maximum number of matches i've seen for a single connection is 65. this indicates to me that only the first 65 packets pass through the chain. i realize that only the first packet is passed through the nat table but i was under the impression that every subsequent packet exchanged has to pass through the filter table. is this a bug or is it something i don't understand about netfilters??
