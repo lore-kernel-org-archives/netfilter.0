@@ -1,84 +1,86 @@
-Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 093C61E2858
-	for <netfilter@vger.kernel.org>; Thu, 31 Jul 2025 22:59:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E07AC2907;
+	Thu, 31 Jul 2025 23:16:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754002794; cv=none; b=vFKYbJ/xdynY++vFiljV++E261B6HDW1jB6KoCPeTU4Nr9ia5HP0VLODI/6dbc4DWPIQzDOMvQY47EUdvYeP0azTYWF4XZpSYYAGYrV4/IIf2iJOYJRPDZ2uWapRtOcETPXgwuzFatgp6/UZPqeOVs3LAavqoT45iqMzxf1IMOQ=
+	t=1754003796; cv=none; b=GNjTXHfe26x7EozSYFe1diK8VpsDEXdLjBhke8C1WHgi7cWH/cwLQAtxz21waxiEHdYzIcNW9bZWkVkXaVdo/Kzv+PUPrQrQI+gXfKvC7fQK/vNylTVT8w0CwrfUZyIt16g65VuKYoZwHAoDhZyswsDVu8YDlHmoTlBPoLOQNyQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754002794; c=relaxed/simple;
-	bh=rnbxgA1kRyskEwUnBb+6Jt2QNhEV8Z5k949fWjgeCIo=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=iJtI4jR37ODPzCVNdkk/SOZZXpvhJfkhUcA5BXJ0Tgyh3GeQy2q/lf9dKVc7Ky7WUFs9TU6Da9YNgiRJBaNF6v+xF0gCb/6lDUDkA/ibCamyrWpXN29i3lT0br9l8Fz81+JFUqPkDfUOFPIy9mTbDJuKN0AEHB4wn7oekZYDeCA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T2pum60T; arc=none smtp.client-ip=209.85.166.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1754003796; c=relaxed/simple;
+	bh=OZjtIxJzwLS8eVHfDEPQ5JMu/j3Yi34YtkloLo95LE0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nCi5XAK3HAT3eD5VEeKdS8IeiYIO6wpAaqGmJTxi7e7Y7tuZ/dqMRYVbPUtcurNhTtL7yfMlP4R+nRMy8lezJCHdb3lcMMnyeMJ0OXyM07s6gF9OQ/uWGjpfTXPtAIaroUj3wyESxAfd5er+lnUejSYDFTfYJXancgXu1rlMHyc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=E4VVwf8B; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=injUDuGR; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T2pum60T"
-Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-87faacc4b8fso51138939f.1
-        for <netfilter@vger.kernel.org>; Thu, 31 Jul 2025 15:59:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1754002792; x=1754607592; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=rnbxgA1kRyskEwUnBb+6Jt2QNhEV8Z5k949fWjgeCIo=;
-        b=T2pum60TdE3ubk+ChgP5iy1A/+F9BARN/v0ehyNdYgKTfyrYGi/yGJteRy+S4jL9+4
-         ih7tOZg+v1Hjf9QKD7D2ckG/mS/nuNquFZ1BJUT5w2TbpoRYWMg2sV36WrxRCNPPFgPe
-         w2e7/gTfrBnYPeF1SCLRzscM1Tq25zdWLIUxJ1fWoZtUbK48u/O63EZZ+8V3Xvl9rG2e
-         bdupYkR9lAbyVHujBw7+3cZw/5AhU35MARNmaaEHnHSYmuR6/C3VqQx2iieUHiKJuyjb
-         0AbBRAkscXEYbkUw2q+Y9l07n3yeBu1tl9l93cdgoayB0rJeKGH0os0aDgEVVIseLyWD
-         349Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1754002792; x=1754607592;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rnbxgA1kRyskEwUnBb+6Jt2QNhEV8Z5k949fWjgeCIo=;
-        b=PZq/G78SqQ1vh/aMS5blAN+iU3k5P3nD5px0YL1gMlRQ/V83P5F7GnJFYWCe87jLys
-         3zRTlVNT+e2vxOPiPi6bB8WAR6YcpF5+h4va51DQPX2oVBjotg0ALNdvcta1RI5zeVpC
-         H9zilnPrUbXygy0sy1ZWTQR92VqE5rhiLEFoqUtDqQBHS3PusVPqf4m+7V6sJaxsU6xT
-         EEbleuRqy3MOIOU2Xoutdse/l32KjPsgGBlyy+lE8iTTBMvs7Ko8WBau7RRXN99YVNKP
-         DfYj4CZEX9S3/WTlEyvtU2+mBgqS4OmIbSLzWG3+ZGwFA0f/5STD7rjso+J1wlEQ7isF
-         CqeQ==
-X-Gm-Message-State: AOJu0Yzxk/G0CTXqUJm1LqZQgvhfDR+yhj1ZF4n086FfnoRaImJrfoTs
-	1aExPZjnEzb/T10DHD062EBY6qfL8ZdK9ZRVUlYHoj7RgsDjwGfg8dUuKiRmdA3MOX37JMD2/1w
-	xwTs8n+tVYkbE0KmVWnd+gYudjse34BloKhd2gUI=
-X-Gm-Gg: ASbGncsXW1jOKP9xWvLaYZLt6e2FHAzm3gq2GRdxry6S53SGCD7tbM7EK+/ShH4nmht
-	/e1PtHMVeNwAKaKhbWcoF/mXqlZuSP8K3oRHX1j7iUlT4uGcead3CjDnHtlxGJ+3H2etR2WUO3y
-	QGh0JmtfPdOoQq60Ho0279PajtJWwipGFYdMtJXfUoVplIZkNeWWE+xmd0fWEEx6ko1GtKMm0WR
-	ssgAA==
-X-Google-Smtp-Source: AGHT+IHnj+o/HvqNgxBXq/yhddCOWFpx1h8SJ9vbhJlEqtksZHwl67IvdfJKME1D6nTcSjcVFf4AFZe+gFNbCaR03jY=
-X-Received: by 2002:a05:6e02:188e:b0:3e3:d197:b578 with SMTP id
- e9e14a558f8ab-3e40d68924dmr12749485ab.8.1754002791680; Thu, 31 Jul 2025
- 15:59:51 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="E4VVwf8B";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="injUDuGR"
+Received: by mail.netfilter.org (Postfix, from userid 109)
+	id 0052F6026B; Fri,  1 Aug 2025 01:16:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1754003785;
+	bh=9FBV9J8jsn5V8EAdQjjAkkhqaFNKGRAtm3BqWnb/tM4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=E4VVwf8BcP7YqL8Pzn7Bpg0Sx4D0MP2u2NZk9hacBTiIjlKoW9mXCVHLCHer/BE+b
+	 y/BOtJBaHsjjulaRE+3BZxBVjQJrwrA3fkcuJel6WxOkgok28FQHy/ykXkHU76Ptxm
+	 6Eryc4B5YhstbwE1xFKHqx4TdPA+uW5rk+UJSBCXWM3T5tRMFgl3IXorzSs1BOJwfz
+	 mbSXdJNEJw2G4NZ+A8VfHXCB7JL+uy60NtWY/LdiOftHJwCLOpH4XfT6408KXoB/AP
+	 rxP+0ndk/njCz7lW1oIqFQeZy/JeebzBuLRAtd/qp+jk3NeTD7FzL2bid7nksbo8m/
+	 jkynKZ4XGPztQ==
+X-Spam-Level: 
+Received: from netfilter.org (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id 5D4A060265;
+	Fri,  1 Aug 2025 01:16:24 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1754003784;
+	bh=9FBV9J8jsn5V8EAdQjjAkkhqaFNKGRAtm3BqWnb/tM4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=injUDuGRnQVYqVo3mR5AgLmxdzk18vKAPKlfTYNd+t2XKUxJ1cWpntDLbSp45BBC1
+	 Chs1tzjyZ7kgnCqS44zswjahUNm4ZjvPbEEgTPhv5hQHbCxA1JnVWjS5D2lCopx/L0
+	 aLM7W5Che0mMVZwWLYVecYDhCwzdiz1M5yxpbiTCu+HP4n/QgwAWuPBIedx2Y9f76l
+	 EGtYQDT6/VcL4EdGWo4esdleTAOSvZcrC80xkloBApoQGE9OxyLCMSQuED5AHRrktc
+	 53MoUyoV5t+7WYHMdwEtkSmxj6GdVajfPjf5eDFvXqaRD3II7yZ+tF5awzYP9g9klG
+	 qfHt8pAkUFjJA==
+Date: Fri, 1 Aug 2025 01:16:21 +0200
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org
+Cc: netfilter@vger.kernel.org
+Subject: nftables 1.0.6.y stable branch updates (strike 2)
+Message-ID: <aIv5RcJY6RycFRFc@calendula>
+References: <Z5J7Vh5OPORkmmXC@calendula>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Antonio Ojea <antonio.ojea.garcia@gmail.com>
-Date: Fri, 1 Aug 2025 00:59:15 +0200
-X-Gm-Features: Ac12FXwL0JWXNvr57tmAnGSOJYBXzKUf_WsHfsc3gqCkt0qEWUc_V_gBZ7jxuzw
-Message-ID: <CABhP=tbrKeaQCAnKHbJoWNcgTthvmAEPEOcvux_W8eztR5QT1Q@mail.gmail.com>
-Subject: Query on nftables DNAT for localhost-to-localhost traffic in IPv6 or
- without route_localnet
-To: netfilter@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <Z5J7Vh5OPORkmmXC@calendula>
 
 Hi,
 
-We (kubernetes) are currently exploring options for port forwarding
-traffic that originates from localhost and is also destined for
-localhost, to redirect it to a different destination IP address and
-port [1].
+I have updated the 1.0.6.y -stable branch:
 
-We can use the route_localnet sysctl parameter, however, that does not
-work for IPv6.
+https://git.netfilter.org/nftables/log/?h=1.0.6.y
 
-We are trying to avoid solutions that rely on eBPF or userspace
-proxies to reduce the maintenance load, and hoping to find a solution
-within the kernel's networking stack.
+This branch contains 334 selected commits out of the 887 commits
+available between v1.0.6 and git HEAD.
 
-Any guidance or suggestions you could provide would be greatly appreciated.
+I have backported tests/shell and tests/py based on git HEAD on this
+branch, so this stable branch is self-contained.
 
-[1]: https://github.com/kubernetes/kubernetes/issues/132955
+- tests/shell displays:
+  I: results: [OK] 428 [SKIPPED] 23 [FAILED] 0 [TOTAL] 451
+
+- tests/py: No errors. This includes -j for json testing.
+
+I have tested with libnftnl 1.2.4 and Linux kernel 6.1-stable.
+
+I might still collect a few more recent fixes in git HEAD from the
+last two months.
+
+Proposed plan is to release this -stable 1.0.6.y after nftables 1.1.4
+comes out, in the first two weeks of Aug 2025.
