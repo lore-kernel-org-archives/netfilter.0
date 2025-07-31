@@ -1,57 +1,84 @@
-Received: from sender4-op-o12.zoho.com (sender4-op-o12.zoho.com [136.143.188.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 055BD35898
-	for <netfilter@vger.kernel.org>; Sun, 27 Jul 2025 03:00:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.12
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1753585233; cv=pass; b=DffZx6uZHQ6+FifKHkyxRd2aqz4q+l/yT9ieVaMowhS6UZBQvvKO6LMN/1OWhOtgjAHRyu9jygiHOrtdWf8gxRR/ioAvlmkLyhx+NJud1N2toPS5JSjY4+W55Y+XYsl6//kvKwEhdntIXSaLCC1ZNnU2mF4HFexlCn/gcRUr4P0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1753585233; c=relaxed/simple;
-	bh=Y58jrg5n9HzuvxAZd6tcdqCgvAQNH7NrK7x73qI0Pv0=;
-	h=Date:From:To:Message-ID:In-Reply-To:Subject:MIME-Version:
-	 Content-Type; b=ZGhRoadfkt3OlTYQ+EEF5lyWI7Zo0QunaX0eSBhTKDlRQTLiEX9kPfd47ysD8bGr5iKghjqTpSIWr/5ywbE2fqYctybCIePfhBxNjlGLam4rWWc1Rr9fXsycRETIXz/3nt7JuAp4r8gsk3X8r0i9Pg+Q2CbKtuoWL49mksPamD8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=permerror header.from=eray.ca; spf=pass smtp.mailfrom=eray.ca; dkim=pass (1024-bit key) header.d=eray.ca header.i=bilgin@eray.ca header.b=Z4pPry3k; arc=pass smtp.client-ip=136.143.188.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=permerror header.from=eray.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=eray.ca
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 093C61E2858
+	for <netfilter@vger.kernel.org>; Thu, 31 Jul 2025 22:59:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1754002794; cv=none; b=vFKYbJ/xdynY++vFiljV++E261B6HDW1jB6KoCPeTU4Nr9ia5HP0VLODI/6dbc4DWPIQzDOMvQY47EUdvYeP0azTYWF4XZpSYYAGYrV4/IIf2iJOYJRPDZ2uWapRtOcETPXgwuzFatgp6/UZPqeOVs3LAavqoT45iqMzxf1IMOQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1754002794; c=relaxed/simple;
+	bh=rnbxgA1kRyskEwUnBb+6Jt2QNhEV8Z5k949fWjgeCIo=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=iJtI4jR37ODPzCVNdkk/SOZZXpvhJfkhUcA5BXJ0Tgyh3GeQy2q/lf9dKVc7Ky7WUFs9TU6Da9YNgiRJBaNF6v+xF0gCb/6lDUDkA/ibCamyrWpXN29i3lT0br9l8Fz81+JFUqPkDfUOFPIy9mTbDJuKN0AEHB4wn7oekZYDeCA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T2pum60T; arc=none smtp.client-ip=209.85.166.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=eray.ca header.i=bilgin@eray.ca header.b="Z4pPry3k"
-ARC-Seal: i=1; a=rsa-sha256; t=1753585229; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=ViMiO56XyXum+rpT6qWnx4DkVDLYfzepRB8lyfuKD61Wan4KDB/W+8D4Os5T9Xw3tPMOvaSa4pevCQ3rfq42p0Wdz0YsKQhIh8IVHau1QOqMO9EcF5/Oj3HlHxhla3e/5jXKmd2opK5Iy5vWhwYwCaHAqPxUZqDR8mEpC03cuy4=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1753585229; h=Content-Type:Content-Transfer-Encoding:Date:Date:From:From:MIME-Version:Message-ID:Subject:Subject:To:To:Message-Id:Reply-To:Cc; 
-	bh=Y58jrg5n9HzuvxAZd6tcdqCgvAQNH7NrK7x73qI0Pv0=; 
-	b=eXuPlORjfFbfjfa3I+TuQg0JcmTJQqv8cRFoPt5QMx0gCoNIDPEoGEishm0PSX9SQYM+Q6UgBrrFy6sSDUtPQhibVnnYD02InFjEHr5+foVyKrr86TrvCpi855TFLwRanAdGoPSRFm4rIfS9JvnsM0Oci1O1FF05B/N7IJdDMI0=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=eray.ca;
-	spf=pass  smtp.mailfrom=bilgin@eray.ca;
-	dmarc=pass header.from=<bilgin@eray.ca>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1753585229;
-	s=zmail; d=eray.ca; i=bilgin@eray.ca;
-	h=Date:Date:From:From:To:To:Message-ID:In-Reply-To:Subject:Subject:MIME-Version:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To:Cc;
-	bh=Y58jrg5n9HzuvxAZd6tcdqCgvAQNH7NrK7x73qI0Pv0=;
-	b=Z4pPry3kM+vF8ZK3v8oSGBO4Ca6hI3p1WzCHWUDx2gmOrUblAW/gSHMRZgP7N8+T
-	CMM3V+zxtyrWTxYXtJF193Jal9i9UJicRfkOuiLuH2WzeCaiYFch1gtYUFspQbxdzKt
-	mj47DPQsFMkZwAzj9zLP6aQK+9UIgsNpKiCKLPfg=
-Received: from mail.zoho.com by mx.zohomail.com
-	with SMTP id 1753585227669818.5908441533121; Sat, 26 Jul 2025 20:00:27 -0700 (PDT)
-Date: Sat, 26 Jul 2025 23:00:27 -0400
-From: Eray Bilgin <bilgin@eray.ca>
-To: "netfilter" <netfilter@vger.kernel.org>
-Message-ID: <19849d316fa.2ce380632614151.8846727672667329038@eray.ca>
-In-Reply-To: 
-Subject: zoombinis
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T2pum60T"
+Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-87faacc4b8fso51138939f.1
+        for <netfilter@vger.kernel.org>; Thu, 31 Jul 2025 15:59:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1754002792; x=1754607592; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=rnbxgA1kRyskEwUnBb+6Jt2QNhEV8Z5k949fWjgeCIo=;
+        b=T2pum60TdE3ubk+ChgP5iy1A/+F9BARN/v0ehyNdYgKTfyrYGi/yGJteRy+S4jL9+4
+         ih7tOZg+v1Hjf9QKD7D2ckG/mS/nuNquFZ1BJUT5w2TbpoRYWMg2sV36WrxRCNPPFgPe
+         w2e7/gTfrBnYPeF1SCLRzscM1Tq25zdWLIUxJ1fWoZtUbK48u/O63EZZ+8V3Xvl9rG2e
+         bdupYkR9lAbyVHujBw7+3cZw/5AhU35MARNmaaEHnHSYmuR6/C3VqQx2iieUHiKJuyjb
+         0AbBRAkscXEYbkUw2q+Y9l07n3yeBu1tl9l93cdgoayB0rJeKGH0os0aDgEVVIseLyWD
+         349Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1754002792; x=1754607592;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rnbxgA1kRyskEwUnBb+6Jt2QNhEV8Z5k949fWjgeCIo=;
+        b=PZq/G78SqQ1vh/aMS5blAN+iU3k5P3nD5px0YL1gMlRQ/V83P5F7GnJFYWCe87jLys
+         3zRTlVNT+e2vxOPiPi6bB8WAR6YcpF5+h4va51DQPX2oVBjotg0ALNdvcta1RI5zeVpC
+         H9zilnPrUbXygy0sy1ZWTQR92VqE5rhiLEFoqUtDqQBHS3PusVPqf4m+7V6sJaxsU6xT
+         EEbleuRqy3MOIOU2Xoutdse/l32KjPsgGBlyy+lE8iTTBMvs7Ko8WBau7RRXN99YVNKP
+         DfYj4CZEX9S3/WTlEyvtU2+mBgqS4OmIbSLzWG3+ZGwFA0f/5STD7rjso+J1wlEQ7isF
+         CqeQ==
+X-Gm-Message-State: AOJu0Yzxk/G0CTXqUJm1LqZQgvhfDR+yhj1ZF4n086FfnoRaImJrfoTs
+	1aExPZjnEzb/T10DHD062EBY6qfL8ZdK9ZRVUlYHoj7RgsDjwGfg8dUuKiRmdA3MOX37JMD2/1w
+	xwTs8n+tVYkbE0KmVWnd+gYudjse34BloKhd2gUI=
+X-Gm-Gg: ASbGncsXW1jOKP9xWvLaYZLt6e2FHAzm3gq2GRdxry6S53SGCD7tbM7EK+/ShH4nmht
+	/e1PtHMVeNwAKaKhbWcoF/mXqlZuSP8K3oRHX1j7iUlT4uGcead3CjDnHtlxGJ+3H2etR2WUO3y
+	QGh0JmtfPdOoQq60Ho0279PajtJWwipGFYdMtJXfUoVplIZkNeWWE+xmd0fWEEx6ko1GtKMm0WR
+	ssgAA==
+X-Google-Smtp-Source: AGHT+IHnj+o/HvqNgxBXq/yhddCOWFpx1h8SJ9vbhJlEqtksZHwl67IvdfJKME1D6nTcSjcVFf4AFZe+gFNbCaR03jY=
+X-Received: by 2002:a05:6e02:188e:b0:3e3:d197:b578 with SMTP id
+ e9e14a558f8ab-3e40d68924dmr12749485ab.8.1754002791680; Thu, 31 Jul 2025
+ 15:59:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+From: Antonio Ojea <antonio.ojea.garcia@gmail.com>
+Date: Fri, 1 Aug 2025 00:59:15 +0200
+X-Gm-Features: Ac12FXwL0JWXNvr57tmAnGSOJYBXzKUf_WsHfsc3gqCkt0qEWUc_V_gBZ7jxuzw
+Message-ID: <CABhP=tbrKeaQCAnKHbJoWNcgTthvmAEPEOcvux_W8eztR5QT1Q@mail.gmail.com>
+Subject: Query on nftables DNAT for localhost-to-localhost traffic in IPv6 or
+ without route_localnet
+To: netfilter@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-Importance: Medium
-User-Agent: Zoho Mail
-X-Mailer: Zoho Mail
 
-i've noticed packets belonging to an established/assured tcp or udp connection will cease matching rules in the built-in forwarding chain over time. i'm not actually sure if it's a function of time or number of packets. the maximum number of matches i've seen for a single connection is 65. this indicates to me that only the first 65 packets pass through the chain. i realize that only the first packet is passed through the nat table but i was under the impression that every subsequent packet exchanged has to pass through the filter table. is this a bug or is it something i don't understand about netfilters??
+Hi,
+
+We (kubernetes) are currently exploring options for port forwarding
+traffic that originates from localhost and is also destined for
+localhost, to redirect it to a different destination IP address and
+port [1].
+
+We can use the route_localnet sysctl parameter, however, that does not
+work for IPv6.
+
+We are trying to avoid solutions that rely on eBPF or userspace
+proxies to reduce the maintenance load, and hoping to find a solution
+within the kernel's networking stack.
+
+Any guidance or suggestions you could provide would be greatly appreciated.
+
+[1]: https://github.com/kubernetes/kubernetes/issues/132955
