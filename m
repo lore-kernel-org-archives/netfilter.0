@@ -1,55 +1,43 @@
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+Received: from mail-4319.protonmail.ch (mail-4319.protonmail.ch [185.70.43.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E07AC2907;
-	Thu, 31 Jul 2025 23:16:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90EBF635
+	for <netfilter@vger.kernel.org>; Fri,  1 Aug 2025 00:37:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754003796; cv=none; b=GNjTXHfe26x7EozSYFe1diK8VpsDEXdLjBhke8C1WHgi7cWH/cwLQAtxz21waxiEHdYzIcNW9bZWkVkXaVdo/Kzv+PUPrQrQI+gXfKvC7fQK/vNylTVT8w0CwrfUZyIt16g65VuKYoZwHAoDhZyswsDVu8YDlHmoTlBPoLOQNyQ=
+	t=1754008664; cv=none; b=R6b/hzoAMIcwsTofb2d0OospudTOEGgqoctRVmLq26a/A7K5vaZu3X6VU20RXe6LnyppTWV1/mZsxR3HFPeljFuO1iJkHlTNaNfN4S7Sxe2vkPf2hO0JRMxrvIioMPO+SxmMOOI9msUFkp0nDV5fj+LKxMGJ0KvRo+brqmxxtGA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754003796; c=relaxed/simple;
-	bh=OZjtIxJzwLS8eVHfDEPQ5JMu/j3Yi34YtkloLo95LE0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nCi5XAK3HAT3eD5VEeKdS8IeiYIO6wpAaqGmJTxi7e7Y7tuZ/dqMRYVbPUtcurNhTtL7yfMlP4R+nRMy8lezJCHdb3lcMMnyeMJ0OXyM07s6gF9OQ/uWGjpfTXPtAIaroUj3wyESxAfd5er+lnUejSYDFTfYJXancgXu1rlMHyc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=E4VVwf8B; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=injUDuGR; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+	s=arc-20240116; t=1754008664; c=relaxed/simple;
+	bh=1uMVQhVoI9n3g4hA+927F91Ps0BRRwnef+dlbozm5Ec=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qhiLXXl+Qw5lxmHciivcixrgZLiwm+Hb6QGu5gxpZLG1bbr2Rzdihnd0maNSJfLnKKsRFdnqixjfz29x7k7LqYhSwIwF3NQ9S1Ox0RLEU6fkL8hoJIqwBgwQqD3t7eXDDZO2sHBfXi6oGqONmBoK6vXI2qAumd5kPxz/4FESz6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=ehLwUAp0; arc=none smtp.client-ip=185.70.43.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="E4VVwf8B";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="injUDuGR"
-Received: by mail.netfilter.org (Postfix, from userid 109)
-	id 0052F6026B; Fri,  1 Aug 2025 01:16:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1754003785;
-	bh=9FBV9J8jsn5V8EAdQjjAkkhqaFNKGRAtm3BqWnb/tM4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=E4VVwf8BcP7YqL8Pzn7Bpg0Sx4D0MP2u2NZk9hacBTiIjlKoW9mXCVHLCHer/BE+b
-	 y/BOtJBaHsjjulaRE+3BZxBVjQJrwrA3fkcuJel6WxOkgok28FQHy/ykXkHU76Ptxm
-	 6Eryc4B5YhstbwE1xFKHqx4TdPA+uW5rk+UJSBCXWM3T5tRMFgl3IXorzSs1BOJwfz
-	 mbSXdJNEJw2G4NZ+A8VfHXCB7JL+uy60NtWY/LdiOftHJwCLOpH4XfT6408KXoB/AP
-	 rxP+0ndk/njCz7lW1oIqFQeZy/JeebzBuLRAtd/qp+jk3NeTD7FzL2bid7nksbo8m/
-	 jkynKZ4XGPztQ==
-X-Spam-Level: 
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 5D4A060265;
-	Fri,  1 Aug 2025 01:16:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1754003784;
-	bh=9FBV9J8jsn5V8EAdQjjAkkhqaFNKGRAtm3BqWnb/tM4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=injUDuGRnQVYqVo3mR5AgLmxdzk18vKAPKlfTYNd+t2XKUxJ1cWpntDLbSp45BBC1
-	 Chs1tzjyZ7kgnCqS44zswjahUNm4ZjvPbEEgTPhv5hQHbCxA1JnVWjS5D2lCopx/L0
-	 aLM7W5Che0mMVZwWLYVecYDhCwzdiz1M5yxpbiTCu+HP4n/QgwAWuPBIedx2Y9f76l
-	 EGtYQDT6/VcL4EdGWo4esdleTAOSvZcrC80xkloBApoQGE9OxyLCMSQuED5AHRrktc
-	 53MoUyoV5t+7WYHMdwEtkSmxj6GdVajfPjf5eDFvXqaRD3II7yZ+tF5awzYP9g9klG
-	 qfHt8pAkUFjJA==
-Date: Fri, 1 Aug 2025 01:16:21 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
+	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="ehLwUAp0"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+	s=protonmail3; t=1754008653; x=1754267853;
+	bh=1uMVQhVoI9n3g4hA+927F91Ps0BRRwnef+dlbozm5Ec=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=ehLwUAp0u1SOJxb7v0gbDjQotb6UR+jYUIqTiqq0g7YsAtdd1NegaE1lwyss/TNSb
+	 5tFTDmHsmUKLfi1cW5G2/tLH3DPabs+bnIliduBD3fPvaM7pWzjAfTrnkbnme5RZP6
+	 To1YhFQW5Qc9uoEJh0NttQSS237YcUv4KHV1ttsoDNRsv3OQGAqTSMNfwHPM5oCFKN
+	 Dl6Zage2pIyB65ef6AJqfknIobG1ull0u4xbSyn74GcLwge611B4bEYzdtzdv0B8sa
+	 CIZihkkmtoyOdHOSahu9NWhCNiQ8XNPTLRwA038Cbx57nbHRq/ZljIg2WTmY6o0uJ0
+	 7HUNyds+SB7ZA==
+Date: Fri, 01 Aug 2025 00:37:29 +0000
+To: Michael Tokarev <mjt@tls.msk.ru>
+From: Sunny73Cr <Sunny73Cr@protonmail.com>
 Cc: netfilter@vger.kernel.org
-Subject: nftables 1.0.6.y stable branch updates (strike 2)
-Message-ID: <aIv5RcJY6RycFRFc@calendula>
-References: <Z5J7Vh5OPORkmmXC@calendula>
+Subject: Re: another netfilter-initiated martian source
+Message-ID: <piJMusI05I5kJYQLODHq1mfDgoziqzcA4nAy0EtKXI2iPinVOf889r3n5--jM9kqfZ2jd0_yP6DH72SWYCnmdJsyzYH5nMrdjtc64uBkvT0=@protonmail.com>
+In-Reply-To: <6c104af0-eadd-4449-b690-126030b8794f@tls.msk.ru>
+References: <6c104af0-eadd-4449-b690-126030b8794f@tls.msk.ru>
+Feedback-ID: 13811339:user:proton
+X-Pm-Message-ID: f1374f2cfbe76e60560f88c3340d1f735c90e96c
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
@@ -57,30 +45,47 @@ List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <Z5J7Vh5OPORkmmXC@calendula>
+Content-Transfer-Encoding: quoted-printable
 
 Hi,
 
-I have updated the 1.0.6.y -stable branch:
+Unless there are additional rules in a forward chain, which were not shown =
+in your mail:
 
-https://git.netfilter.org/nftables/log/?h=1.0.6.y
+> With these, the following packets are seen on eth-tls interface...
+> ...ICMP 16.15.192.246 tcp port 443 unreachable...
+...
+> And at the same time, I see this in dmesg:...
+> Jul 03 10:13:12 gate kernel: tls->ext reject:...
 
-This branch contains 334 selected commits out of the 887 commits
-available between v1.0.6 and git HEAD.
+It appears that reject functions 'well' - an ICMP reject is sent; though, i=
+t should probably appear in dmesg - that is configuration task on your part=
+. Whether you can aptly match this type of packet with expressions, I am un=
+sure. After writing the rule to match ICMP reject, check the 'bytecode' by =
+adding the '-d' flag to your call to 'nft' when loading the ruleset. Try '-=
+d netlink', but '-d all' can be helpful if you have the time.
 
-I have backported tests/shell and tests/py based on git HEAD on this
-branch, so this stable branch is self-contained.
+> With these, the following packets are seen on eth-tls interface...
+> And at the same time, I see this in dmesg...
 
-- tests/shell displays:
-  I: results: [OK] 428 [SKIPPED] 23 [FAILED] 0 [TOTAL] 451
+It appears that the packet is not forwarded - try re-running the test after=
+ logging all packets to dmesg, and compare to output of something like tsha=
+rk or wireshark.
 
-- tests/py: No errors. This includes -j for json testing.
+> And at the same time, I see this in dmesg:...
+> ul 03 10:13:12 gate kernel: IPv4: martian source 192.168.177.2 from
+16.15.192.246, on dev eth-rinet
 
-I have tested with libnftnl 1.2.4 and Linux kernel 6.1-stable.
+It is possible that this log occurs prior to the packet getting dropped. Yo=
+u are correct in saying that it does not originate from address "16.15..." =
+and it should not be on the 'rinet' interface. What a poor log! That code m=
+ay have been written when only inbound filtering was popular. It may also (=
+poorly) report that it was found on a different interface compared to where=
+ it really occurred, or, it really was forwarded to the wrong interface, an=
+d 'rp_filter 1' saved the situation.
 
-I might still collect a few more recent fixes in git HEAD from the
-last two months.
+Try setting up some explicit rules to kill martian packets, where they shou=
+ld not exist. i.e. block 192.168.0.0/16 source out WAN, 192.168.0.0/16 dest=
+ination from WAN (usually... -_-), etc.
 
-Proposed plan is to release this -stable 1.0.6.y after nftables 1.1.4
-comes out, in the first two weeks of Aug 2025.
+sunny
