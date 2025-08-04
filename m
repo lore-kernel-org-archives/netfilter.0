@@ -1,91 +1,89 @@
-Received: from mail-4319.protonmail.ch (mail-4319.protonmail.ch [185.70.43.19])
+Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90EBF635
-	for <netfilter@vger.kernel.org>; Fri,  1 Aug 2025 00:37:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 082A31DF985
+	for <netfilter@vger.kernel.org>; Mon,  4 Aug 2025 08:25:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1754008664; cv=none; b=R6b/hzoAMIcwsTofb2d0OospudTOEGgqoctRVmLq26a/A7K5vaZu3X6VU20RXe6LnyppTWV1/mZsxR3HFPeljFuO1iJkHlTNaNfN4S7Sxe2vkPf2hO0JRMxrvIioMPO+SxmMOOI9msUFkp0nDV5fj+LKxMGJ0KvRo+brqmxxtGA=
+	t=1754295949; cv=none; b=tM+m1q+PG7q8WT6SHctxRPDd87FLd0A6tpjkHf6JIoSJ0x/1Ijas8LYWFkGTJsRJH3CjLHgep5XG/Us8SvLfrM3exe52ZsjGBfReKMXKrVgbkOvg4JDGGM+8fZnKXwaJCPSsrSjQQ17u5uJq3HdBP4WglG5TfI29RHB5tXz3sC4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1754008664; c=relaxed/simple;
-	bh=1uMVQhVoI9n3g4hA+927F91Ps0BRRwnef+dlbozm5Ec=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qhiLXXl+Qw5lxmHciivcixrgZLiwm+Hb6QGu5gxpZLG1bbr2Rzdihnd0maNSJfLnKKsRFdnqixjfz29x7k7LqYhSwIwF3NQ9S1Ox0RLEU6fkL8hoJIqwBgwQqD3t7eXDDZO2sHBfXi6oGqONmBoK6vXI2qAumd5kPxz/4FESz6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=ehLwUAp0; arc=none smtp.client-ip=185.70.43.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="ehLwUAp0"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1754008653; x=1754267853;
-	bh=1uMVQhVoI9n3g4hA+927F91Ps0BRRwnef+dlbozm5Ec=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=ehLwUAp0u1SOJxb7v0gbDjQotb6UR+jYUIqTiqq0g7YsAtdd1NegaE1lwyss/TNSb
-	 5tFTDmHsmUKLfi1cW5G2/tLH3DPabs+bnIliduBD3fPvaM7pWzjAfTrnkbnme5RZP6
-	 To1YhFQW5Qc9uoEJh0NttQSS237YcUv4KHV1ttsoDNRsv3OQGAqTSMNfwHPM5oCFKN
-	 Dl6Zage2pIyB65ef6AJqfknIobG1ull0u4xbSyn74GcLwge611B4bEYzdtzdv0B8sa
-	 CIZihkkmtoyOdHOSahu9NWhCNiQ8XNPTLRwA038Cbx57nbHRq/ZljIg2WTmY6o0uJ0
-	 7HUNyds+SB7ZA==
-Date: Fri, 01 Aug 2025 00:37:29 +0000
-To: Michael Tokarev <mjt@tls.msk.ru>
-From: Sunny73Cr <Sunny73Cr@protonmail.com>
+	s=arc-20240116; t=1754295949; c=relaxed/simple;
+	bh=Y0PKgOHB6rEk1diKX60yWfxZiAPuKTfLGkYYfg36lBY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nlnBjzRu1VRG+r5ibrX5jI84VYU3RSBFkBEqezXgcc8DSUQc64OmMHFYwBip/sptPZxzR/2u2bf/A4XT79r74Fs+tj9Od+fffoFkpmbMo0VWYGsKjpxIPSR436P5k2dPY9C0YJlTYYweZ7Z7a+rIRy7YIZhIEo0Oit2L+uwcTzM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
+Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
+	id 232F760532; Mon,  4 Aug 2025 10:25:38 +0200 (CEST)
+Date: Mon, 4 Aug 2025 10:25:37 +0200
+From: Florian Westphal <fw@strlen.de>
+To: Antonio Ojea <antonio.ojea.garcia@gmail.com>
 Cc: netfilter@vger.kernel.org
-Subject: Re: another netfilter-initiated martian source
-Message-ID: <piJMusI05I5kJYQLODHq1mfDgoziqzcA4nAy0EtKXI2iPinVOf889r3n5--jM9kqfZ2jd0_yP6DH72SWYCnmdJsyzYH5nMrdjtc64uBkvT0=@protonmail.com>
-In-Reply-To: <6c104af0-eadd-4449-b690-126030b8794f@tls.msk.ru>
-References: <6c104af0-eadd-4449-b690-126030b8794f@tls.msk.ru>
-Feedback-ID: 13811339:user:proton
-X-Pm-Message-ID: f1374f2cfbe76e60560f88c3340d1f735c90e96c
+Subject: Re: Query on nftables DNAT for localhost-to-localhost traffic in
+ IPv6 or without route_localnet
+Message-ID: <aJBugbUKvPaiZ_PD@strlen.de>
+References: <CABhP=tbrKeaQCAnKHbJoWNcgTthvmAEPEOcvux_W8eztR5QT1Q@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CABhP=tbrKeaQCAnKHbJoWNcgTthvmAEPEOcvux_W8eztR5QT1Q@mail.gmail.com>
 
-Hi,
+Antonio Ojea <antonio.ojea.garcia@gmail.com> wrote:
+> We (kubernetes) are currently exploring options for port forwarding
+> traffic that originates from localhost and is also destined for
+> localhost, to redirect it to a different destination IP address and
+> port [1].
 
-Unless there are additional rules in a forward chain, which were not shown =
-in your mail:
+Don't think its a good idea, has much higher risk of exposing
+credentials.  Maybe fixable by placing macsec or ipsec tunnel.
 
-> With these, the following packets are seen on eth-tls interface...
-> ...ICMP 16.15.192.246 tcp port 443 unreachable...
-...
-> And at the same time, I see this in dmesg:...
-> Jul 03 10:13:12 gate kernel: tls->ext reject:...
+> We can use the route_localnet sysctl parameter, however, that does not
+> work for IPv6.
 
-It appears that reject functions 'well' - an ICMP reject is sent; though, i=
-t should probably appear in dmesg - that is configuration task on your part=
-. Whether you can aptly match this type of packet with expressions, I am un=
-sure. After writing the rule to match ICMP reject, check the 'bytecode' by =
-adding the '-d' flag to your call to 'nft' when loading the ruleset. Try '-=
-d netlink', but '-d all' can be helpful if you have the time.
+Seems no kernel changes are needed, but its ugly because daddr ::1 has
+to be concealed in prerouting to prevent RT6_LOOKUP_F_IFACE flag:
 
-> With these, the following packets are seen on eth-tls interface...
-> And at the same time, I see this in dmesg...
+        if (rt6_need_strict(&fl6->daddr) && dev->type != ARPHRD_PIMREG)
+                flags |= RT6_LOOKUP_F_IFACE;
 
-It appears that the packet is not forwarded - try re-running the test after=
- logging all packets to dmesg, and compare to output of something like tsha=
-rk or wireshark.
+... in ip6_route_input_lookup().  This seems to do the trick:
 
-> And at the same time, I see this in dmesg:...
-> ul 03 10:13:12 gate kernel: IPv4: martian source 192.168.177.2 from
-16.15.192.246, on dev eth-rinet
+define fakein6 = dead::1ce
+table inet test {
+        chain nat_pr {
+                type nat hook postrouting priority srcnat ; policy accept;
+                ct status dnat ct original ip6 saddr ::1 masquerade
+        }
 
-It is possible that this log occurs prior to the packet getting dropped. Yo=
-u are correct in saying that it does not originate from address "16.15..." =
-and it should not be on the 'rinet' interface. What a poor log! That code m=
-ay have been written when only inbound filtering was popular. It may also (=
-poorly) report that it was found on a different interface compared to where=
- it really occurred, or, it really was forwarded to the wrong interface, an=
-d 'rp_filter 1' saved the situation.
+        chain nat_out {
+                type nat hook output priority dstnat ; policy accept;
+                ip6 daddr ::1 tcp dport 12345 dnat to [dead:beef:0:227:300::3]:22
+        }
 
-Try setting up some explicit rules to kill martian packets, where they shou=
-ld not exist. i.e. block 192.168.0.0/16 source out WAN, 192.168.0.0/16 dest=
-ination from WAN (usually... -_-), etc.
+        chain pre {
+                type filter hook prerouting priority 0 ; policy accept;
+                ct status dnat,snat ct original ip6 saddr ::1 ct original ip6 daddr ::1 ip6 daddr set $fakein6 comment "daddr is ::1 but that forces strict route lookup"
+        }
 
-sunny
+        chain in {
+                type filter hook input priority 0 ; policy accept;
+                ct status dnat,snat ct original ip6 saddr ::1 ct original ip6 daddr ::1 ip6 daddr set ::1 comment " get rid if fakein6"
+        }
+}
+
+$ ip -6 addr show dev lo
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    inet6 dead::1ce/128 scope global
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host noprefixroute
+       valid_lft forever preferred_lft forever
+
+$ uname -sr ; ssh -p 12345 ::1 uname -sr
+Linux 6.15.8-200.fc42.x86_64
+Linux 6.1.0-37-amd64
