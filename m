@@ -1,115 +1,98 @@
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f175.google.com (mail-il1-f175.google.com [209.85.166.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C759F322A3F
-	for <netfilter@vger.kernel.org>; Mon, 18 Aug 2025 14:20:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D23FD341AAF
+	for <netfilter@vger.kernel.org>; Mon, 18 Aug 2025 16:12:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755526841; cv=none; b=NqA99XfBVqabus470t1WizuIBrRGRr9y/Uv+iKRP+Q0KQdS+oVWWyGAqzWm7+D4d73AUDSN6+p4BfVc9MiLp4nb2BM5yy7yF96lbfDhsITuZYs21JpyY2W8MgpSOwqsPLKGrfjGCnchJ2mP7Q+NIlgI1bRmJRptWsma9P0QNUBA=
+	t=1755533548; cv=none; b=e9IiOAOvfmUxIqz/VmyLYTLBNmRW5E+MItPzzphEn3htA7aZDiNbXOAJsXngoWcnYXtAi1BZWbf4l1qCgFj2NE4GC48XN4e9bTmKW/Fpzsl7nJiLWy0/21r7PQPoAILwkECPFTLzo0q03bdWbkvq08JWoMD1STFIxxVljfNSxvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755526841; c=relaxed/simple;
-	bh=E28H7PQ6L0i336wCl5niVkp8ANh7G6ztS6uPPS0Wty0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CeaZ5IjkRy8d5Ib3uLdeIoJ5a7WdrA18cGVPqMXNov21g/cWGFSxsF3u3wXoypz5MwhbUfst0aLOtMTqwe9GhP0rtHelOKPuO0f8+mlNGeicXGyZGKPkvZta+JgIOoRv26iyTji48RenhPa8AyhrjSxAnrhQ6IoZ3Pj7S6yyPAQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=ftxNx5fV; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=Pes/+FJW; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+	s=arc-20240116; t=1755533548; c=relaxed/simple;
+	bh=OZkuxi+MAEq/fthUxDF1qw9Ysf5puzuemL5F6UWXYmw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jaJiMRkYAD7K0szjDmaJt0CIyzuvaQWKPdzLFxbta0RHOPfYfTfGcT/lMLXFt2SPLGK8wWiO8gtylQfzBK+fuCcuh0QlNkOiAI9jyGQ3Wye/F0Kk5BzVWr5qd3doUifAt/NMqSdtB7H6veZSZX5+iZo5a/ye/FONmTjuVpS0uRs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FJs4+2+Q; arc=none smtp.client-ip=209.85.166.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="ftxNx5fV";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="Pes/+FJW"
-Received: by mail.netfilter.org (Postfix, from userid 109)
-	id 2643060297; Mon, 18 Aug 2025 16:20:36 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1755526836;
-	bh=itWA7cirbTMj+7elUaBpgM3ATkiwrggXHPw/Wrh1vqQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ftxNx5fV9zj9KUswro8Slq6p8amL0VRKQj9i2oFiqOE5YykX+eutXdZEmvo1ibMLx
-	 WcrBIjTxazPLgU9kp1cVGX9eG8Qw9sCTXTE3Yw/VBlWFdNRPddjUT9H/4yxS6WB9Wt
-	 ulAX/HxUU9p9s3kJ/6rvkUHityHqFAKQwZUhXFOkVUy12LhurfH1hrlv3F39PS/jS8
-	 ScltuqrykR/YN9+6On85+9c23G/LMtCrtetfxa1XwAPssKrMpRbySlaYoGWtPkOCg9
-	 be6rhb1opQBBS25I+qZbJ797AQ/aJcpqQMJ7H2U2C9d1UDOCafg+UyXUO9QYAu1ML6
-	 MIaLiYP47bRqw==
-X-Spam-Level: 
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 9017960297;
-	Mon, 18 Aug 2025 16:20:35 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1755526835;
-	bh=itWA7cirbTMj+7elUaBpgM3ATkiwrggXHPw/Wrh1vqQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Pes/+FJWUH2RJzrCafzeVvF94YA8xwrXaJWlX5eBBX8tbxciukq15WZyuN+saHRYj
-	 8rs5HtIReZN0+SFV27ZRLW7qJ0mT57/6iblrAk8GKJquU91va+L6N3mnWB3BX01CRD
-	 OJ6m/skvptyGF2FFny3elyWe34ueuUWduOBpBDw5ZbtijnhPpjRM0eq1gWhX0byOZu
-	 aBhAWww66MaVU8oEJCJk3jfMPW/ooy5jPdCGFrXxQ81kFUSArlxVjuATSFTnnW69su
-	 Dxaxyd6bYZvMaUIWGkiA2Is08S9LudVj0CEYisy8qZzsiI2Mda3AzqTA5Julf83X5B
-	 7FfT8v9SSG16A==
-Date: Mon, 18 Aug 2025 16:20:32 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: ratheesh kannoth <ratheesh.ksz@gmail.com>
-Cc: Netfilter mailing list <netfilter@vger.kernel.org>
-Subject: Re: nft for bridge.
-Message-ID: <aKM2sOMlivuUJHOJ@calendula>
-References: <CAGZFCEGKWfnuXdXvSBQEJFfHeKsDKLx0E+SLorBs6HWRUs1kFg@mail.gmail.com>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FJs4+2+Q"
+Received: by mail-il1-f175.google.com with SMTP id e9e14a558f8ab-3e57376f5abso39194915ab.0
+        for <netfilter@vger.kernel.org>; Mon, 18 Aug 2025 09:12:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1755533546; x=1756138346; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=OZkuxi+MAEq/fthUxDF1qw9Ysf5puzuemL5F6UWXYmw=;
+        b=FJs4+2+QlR9pXrYvnKb7CWKiBITZrm3SotEzIAF+7sFgSXt3k17leBnO94Bmhjtrh3
+         m9m/hmT9Mz2FcDxbuDHgjkxe2bDs2rzAlTihMQl2iXhkVjZu5cSRME7ydcDGCkFrEndX
+         oSuRwdWsQ/Mpet9ks+vxuor+Lw5q/0hSBnxkVFTzuTbCdSY91DdCPaTVFT1uOUysWqAf
+         ULYczuoACUZxEHTDqy1ChsjFtymylvCFhzscBcZutH00TZiiRyJ/hKim8c4b4jxEYVvR
+         EDOgedZcYkViu0cYX4Ji9pxnoh7NLzuwRCaRxAFfbqh2x6J6OJQ9nMyYopg6W0LkcX5Q
+         uRyA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1755533546; x=1756138346;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=OZkuxi+MAEq/fthUxDF1qw9Ysf5puzuemL5F6UWXYmw=;
+        b=h+u5IewCwbN12nPPi6xHX+i3RG/iBp6ZM/yUJO3wNoPp+N5d3u/gVcN1YXIzYmlZW1
+         hOlpHNhexphddUvnnimSsx2K9b9+hna8rY/YTg4+g2aLq8mJ8X6vHVB3CXqcwMYzDTtO
+         JeS8Yl0NroZrGF1eumscukUuxJ8Fa++tCbp6TvkQ549YS7Iwdwkk86irQQrhfRrTC+I4
+         wuNP0oARBEiFYFtIrwbfCXURJe1clhAcOO5mIenZUZuqou4KyXkrLFDFQJaSalSu7oIF
+         d6FyImAZURQaF4PNnndotN9h73cGDL/kL52al5emOsHAZvuIKJnUm80sA2id2gQMKrVV
+         /5bg==
+X-Forwarded-Encrypted: i=1; AJvYcCU10TQ5HYqRVT7+0YhzWHED4+7WpjfXI9+YcJOVgFouUl3+aWH005b8bDJK6YPtrEBNErzOm+6Kh6k=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwHhE8MnydUK0LtSE9+aiMVgBBr0389Jh9qpa2TvL4V7+s3pUf8
+	qc7LJG2SUiLt6OJ+ON8atmz23fcfdmSKDQBFgWmYMqZCv8EHRU4o22fN7sdwEcYp3Wpf44HmVdq
+	Y8JmZpgh2dqq/eKBR1aWFY6sfTxd2x58=
+X-Gm-Gg: ASbGncsdSWizeyqEy6b6u12Vmcltt2CBd2L3077c5YVfWlxq/QImYwI4PRzIk9kz3aQ
+	yXuLlstRK04w9pmPH4IhgvEtGJQ6ZnNMx3GbMo5JwkKU+8O/6lUE63yaVoZHyzmkV3MvI7aO0qs
+	YOn7wH0DREcPVonvs4eI684ykpHmIQ88Q7Y94Vln8xiex1859679SLt5JluEJ6w5eGMsEoa3QXc
+	K9GQ+GYErIYl1Prwg==
+X-Google-Smtp-Source: AGHT+IED+JTTmlvy1wdq83Kv6byzirgfFWZ5D/9VXeUX2vPiPqG2+MRhzT30+VYYgcAti164L5GFOCaaetiw8/80Cco=
+X-Received: by 2002:a92:ca4f:0:b0:3e3:ef06:674c with SMTP id
+ e9e14a558f8ab-3e57e9d5defmr246583565ab.20.1755533545764; Mon, 18 Aug 2025
+ 09:12:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAGZFCEGKWfnuXdXvSBQEJFfHeKsDKLx0E+SLorBs6HWRUs1kFg@mail.gmail.com>
+References: <CABhP=tbrKeaQCAnKHbJoWNcgTthvmAEPEOcvux_W8eztR5QT1Q@mail.gmail.com>
+ <aJBugbUKvPaiZ_PD@strlen.de> <aJpNme8xRUbhNs4P@calendula> <aJsi1_zrVmQyHyw0@strlen.de>
+ <aJsxDCRGVSQjGh6f@calendula>
+In-Reply-To: <aJsxDCRGVSQjGh6f@calendula>
+From: Antonio Ojea <antonio.ojea.garcia@gmail.com>
+Date: Mon, 18 Aug 2025 18:11:49 +0200
+X-Gm-Features: Ac12FXzkwJzI7Nq9UBgrbTcTVOXKg1j6JIwLgYNZ9vzOQV8TrZ0TfhM2EHipQxU
+Message-ID: <CABhP=tbYVM2NBCo35QBGmwe8JL98Vt08JE6NWBgpxKpFTGFqeg@mail.gmail.com>
+Subject: Re: Query on nftables DNAT for localhost-to-localhost traffic in IPv6
+ or without route_localnet
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Florian Westphal <fw@strlen.de>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Aug 18, 2025 at 05:35:49PM +0530, ratheesh kannoth wrote:
-> hi,
-> 
-> inet offload is working fine for me.
-> ++++++++++++++++++++++++
-> /etc/nftables/inet.nft
-> 
-> table inet x {
-> 
->      flowtable f {
->         hook ingress priority 0
->         devices = { eth0, sdp1-0 }
->         flags offload;
->      }
-> 
->     chain forward {
->         type filter hook forward priority 0; policy accept;
->         ct state { established, related } flow add @f
->     }
-> }
-> ++++++++++++++++++
-> But bridge nft fails. Could you help with correct configuration?  i
-> have already enabled below config
-> CONFIG_NF_TABLES_BRIDGE=y
-> CONFIG_NF_CONNTRACK_BRIDGE=y
-> 
-> 
-> /etc/nftables/ibridge-raw.nft
-> --------------
-> table bridge x {
-> 
->      flowtable f {
->         hook ingress priority 0
->         devices = { br0  }
->         flags offload;
->      }
-> 
->     chain forward {
->         type filter hook forward priority 0; policy accept;
->         ct state { established, related } flow add @f
->     }
-> }
-> ~# nft -f /etc/nftables/ipv4-raw.nft
-> /etc/nftables/ipv4-raw.nft:7:16-16: Error: Could not process rule: No
-> such file or directory
->      flowtable f {
->                ^
-> /etc/nftables/ipv4-raw.nft:15:43-53: Error: Could not process rule: No
-> such file or directory
->         ct state { established, related } flow add @f
->                                           ^^^^^^^^^^^
+>
+> > But at this time I don't want to spend time on enabling such hacks
+> > (lo-to-remote-dst-nat) unless there is a good use case for it.
+>
+> I am not familiar with this use-case.
 
-No flowtable support for the bridge family yet, sorry.
+only one use case in kubernetes and one we were trying to avoid to the
+point we removed the functionality in the new implementation of
+kube-proxy with nftables, but since it came back recently I just
+considered it worth to ask.
+I will try to expose the use case simplifying some of the technical
+details, container runtimes need to pull images from registries (think
+of it as a webserver to serve container images).
+For efficiency and to reduce network traffic, it's common to run a
+local registry mirror or cache. Localhost is a simple and reliable
+target for the container runtime that pulls the images, and by
+convention they treat localhost registries as "secure" by default,
+meaning they don't require a valid TLS certificate setup.
+Kubernetes has a networking option to forward a specific port in a
+node to a virtual ip with a set of endpoints, and people were using
+this functionality to implement the local cache mechanism ...
+So personally I do not feel this is a good use case for netfilter to
+implement something new based on it
