@@ -1,65 +1,62 @@
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+Received: from sonic317-35.consmr.mail.ne1.yahoo.com (sonic317-35.consmr.mail.ne1.yahoo.com [66.163.184.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9408533A001
-	for <netfilter@vger.kernel.org>; Thu, 21 Aug 2025 17:41:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49A7142A8C
+	for <netfilter@vger.kernel.org>; Thu, 21 Aug 2025 19:07:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=66.163.184.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1755798105; cv=none; b=Tg5ZhRhmyPZB4cXOvvxr6fbrHDg3pnjHDfDJ6EbtNr5c7ma/fnMDZsnRj8G3sq3hGmPoh9zwl3NEBBPe5ChO71YG4VnUUtnUfjeDF2SBsaUPteyAi3GrulPrGb8Z/2uB4uxD9ty0Xqnhh5miDqhRZSWbBhjWfODhVlFJlpyZQZc=
+	t=1755803267; cv=none; b=eTR7eMFMnS9W8B+uA7PBt/tCLYLwxXVob+C6BmxmvMVDDepU5Js4enXdtBe0i6t1QJq3R6PdP7WktoQtWSRLyOOjtPeBjLCYC4BOfcEWnUnM1AS6A3mIuf+sO66NleWaBo1/hazSfLVD8E/Kggm3/dlEJnhe1JSpVmj20NeUOYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1755798105; c=relaxed/simple;
-	bh=xLGjc8uJPQNpI3nPj4EJOboODH0oPZ5fWi34w+Lt/DQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=siwHebqBNi/9sWgY9eEBz49Kgm+ZyYBTI7NX6YOlujRZ4C6ud+3O41jT/0yxgVktMW7AHHTzpcfA2rECjqOKF7HVh7fpWB8kizDkqDr2miyFt/oglp3+rOj7YFTfpRX7CG32z0cPJpjwnHqzZHTEt7+uKgCNu8Wd6V7+UAr6EnA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tz6t/plf; arc=none smtp.client-ip=209.85.215.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1755803267; c=relaxed/simple;
+	bh=9V2trpZHoMVnskanLK7wUFf5RUsS+s5nAqbxPAFgG64=;
+	h=Message-ID:Date:MIME-Version:From:To:Subject:Content-Type:
+	 References; b=XSBRGSvhH3Ptk7ggvh76L2h3nLIhV/lFGtc8Xrhh30Ui+WXraTxSjBhyUjka49X2vB14bnHoH/J5bEx0DkI5kaXcM7HnbvLrk3zu1oj6jrH1jKTO3B27AVJS2DgI6DdYuPVApTZb3EwB8AtsrhPyn0LVtaxMMQ3TypJpgx8/s0Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sbcglobal.net; spf=pass smtp.mailfrom=sbcglobal.net; dkim=pass (2048-bit key) header.d=sbcglobal.net header.i=@sbcglobal.net header.b=UGteKbel; arc=none smtp.client-ip=66.163.184.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sbcglobal.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sbcglobal.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tz6t/plf"
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-b4717ba0d5dso940726a12.1
-        for <netfilter@vger.kernel.org>; Thu, 21 Aug 2025 10:41:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1755798102; x=1756402902; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=hb4i9wLH7Qc2VSNvG6WQcNDl2VL58bEHy/u4cex5pyU=;
-        b=Tz6t/plfrEGfErRVzPufY2yelIIDMnxCdHTiHdxPlSgO0hE9VbJrEUEnE/CeNaJ+in
-         1KrxiBxvLy+P7HcFW9iYS24f3V+f75h4RKGTH7lZDVmRe1zLsmzfklvV3l06gUkuTM/V
-         G8H39RtA+kbP8h0ctsLbceTCGLQVEmORwFNIsGgTYV9o9DkVpSCYKKczwxXJ/FMiXtyQ
-         L8cQZj6+gtQHBLzM1shGcO+dJp+jKLWNTUOaOFwa5uKFyT7W0ItgAgavARfWrK44EKN+
-         u38g6xuup5Axh7aYqfg8i8tdlz2soPIKwtEE6XJ2gww0oF2f/fyUjGnSOnCoj5gVN1US
-         z6qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1755798102; x=1756402902;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hb4i9wLH7Qc2VSNvG6WQcNDl2VL58bEHy/u4cex5pyU=;
-        b=cpNQhlXyXq+hQSYim1qzhufsmGNEHYS7erUTFOnRjsIMT9x129dLgm3dKct0YkpgiA
-         aQ1DuJY5QMeNdsCdLU7gK0Yk27Pm80to7MOmIRacFYbOwLGrGEZLwCpH5/oNgBNv0jLW
-         ZYPyNZBSIpPgVStEVhdLMgI9CUKmrEvvAmm+uhGxUX/9sov9XRXrwR0jSxUVflsBfjIN
-         /g2Nlhg2xkOM1Pl0sbO6k71JiJwM9npadO4yVhTq6MFNPk5oGFTz+A50RAA7L5BSTAzO
-         ht7shcSkUbkecfTCeKXu2XeoNunsPhnmf+Gf5I27137X85Netf8KytrIYc2MKqHdChka
-         AB6g==
-X-Gm-Message-State: AOJu0YwGu59FYwXTtRNAZuHWnAXtaHiZEeeE8zHZh4YS4SMeqoGf8p4M
-	DpSOexRXOctGnhDh86FLn8ChXF9PsP6xYd5ut3E1tvnnLc1dQwMXE9z1kjOOVln1
-X-Gm-Gg: ASbGncv68T5Djo2HtliNriSTTzmIaFDbfz1CYccIVJbLU/wxjrGP1iFVnwz9AwSk9dR
-	+KdB8IrooIqzHP9Od1z5V4NgntrlHy0iK3F50XJRJoHlPurckZK3lpzaTSAl1KMh+WuR4M74lPs
-	rs6o3HQWEFU2rd/d8mzOLN8X3BkvZCuRLN39btHO7KwPQK8N+00yShtW6CAcTSBTwFPMgcDLZ52
-	2cMHrshi4PNIItoEUyBrLCKXl9x6LILCj221sw2b/Twgka4EJgzC4Hs3pCTwa3aNku6AckGM3gZ
-	/F9+QUTTRupsq0lgKY9IAKNEaasi9LpxgPIEQxuns7e4UOgxEqDDdFqHxb4HbblKDuYMB0OdWyo
-	Tq4fs2juZj8HO37a0EKN2p6WGcLmBVzFmrGTfXvPxjh2oNTMGNFhYaw==
-X-Google-Smtp-Source: AGHT+IEt1LPOvf9HWKhEtv2LrwPaw451n1r9f2+UMxwYlz8KyihE8mxluhDjD0OuyzN3vv2Bou0D5g==
-X-Received: by 2002:a17:902:c40f:b0:240:86fa:a058 with SMTP id d9443c01a7336-246023aec06mr42475705ad.7.1755798102569;
-        Thu, 21 Aug 2025 10:41:42 -0700 (PDT)
-Received: from ?IPV6:2605:59c0:20ab:6e00::10dd:b102? ([2605:59c0:20ab:6e00::10dd:b102])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-245ed339fb3sm61529835ad.13.2025.08.21.10.41.41
-        for <netfilter@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 21 Aug 2025 10:41:42 -0700 (PDT)
-Message-ID: <90016230-6489-487c-a6a6-487a1defd853@gmail.com>
-Date: Thu, 21 Aug 2025 10:41:41 -0700
+	dkim=pass (2048-bit key) header.d=sbcglobal.net header.i=@sbcglobal.net header.b="UGteKbel"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sbcglobal.net; s=s2048; t=1755803264; bh=/nzoFr+YvL2Tu8XmB3G+NlE/TU6DDMvvI4WM6FcZqAc=; h=Date:From:To:Subject:References:From:Subject:Reply-To; b=UGteKbel4TMYanF2csy6l4Flq3M0bE7jSJfDk9QEbf8TDKaKHDQfCkGjAXrl7obG2t2b1Il0BqPcx7fpFwdeguFGo78PR/eCUq4jsAGLu3QFcKgvUgsxPKRdAJ3I6V0VJ9XlOWv156x7usC6+9eWZ+bYLbxtwF42XYdEPS7R097gDNt9K2KK5jCpTfP46DLiGle/mwUBuRqIXXxvkxQdCLWbBq6I0VqbCvSdVhzdLdNdnX3upkIbaA1ps1nqx6Xv9kQ7GW0GOLcZMNZpjJbXuT1gpuV0zPKxfxuphRS8NWAvxV7J7r8d6jO4EwBn68oNwaUrxwO56KLuEq2ocXxh9Q==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1755803264; bh=heBx5BT1nP/xS9XzwVxHCCSoLuuaCz0P9tznyqgl+dx=; h=X-Sonic-MF:Date:From:To:Subject:From:Subject; b=P6JlaQel5nIgXs9zA+59b/BcxpKFasjrEQGnLvzufBriHwXRdqt1mD06qsqLvJEGyp8ZFml8A17AkDQqdpxHcggdCE4b3DkfFkf2QR4OhUILknFtgMxRI4/S2s2Ilv/TtrQmsWqCdxcXamqgAOHvxlQJ/9xEqOk0dYUgExH7aBtYQUA5ShKqRr7lG0RG7016/AJa8iLHvQI7i5PqcdaY+oEXKI10mWdXKXSKtmUWFDgDRI6irjR5qqfZu6eTzUEKOBuFvHz/KGausg8KrWCP9pUpHRbZ4n4c9UjJxY977XEw2P9wQRyN9DwnG61IC8SD/NcGeBdq5BgPJJoOCp42vQ==
+X-YMail-OSG: 1vCt1OoVM1miTB4drB1p0YI2ugbt3ZxwkKGeC_O639UO6kzFSyqt0u2H6_vad.3
+ N0YneKBKwvKrsi0YmsrhMrNm6c3Kl0Bq82k2QxU6ENYVvnFWX5i.qZB6IBu7br5Y3ceyp6jPy07n
+ xqA4TFglhe3GqZWBKRPkLlkS2Cfl3_p9i8W2amj7HFO..RHA3H9M4323JCOuFhyVJ3l78tW4.Nbh
+ PsWI27ESayCqDy0Cj7oD6G1rO_loYWCpqWuRnht5bKRjab4_urgWhPlE7EBxTa_lJ0AzsNqQn.jE
+ FofvXGi0W.efM0GjWDd5VFNCmquBooNwt7A7ajC5Xd8506XRMXF2oD4IZAue6p6XVFKlNPg3NS_S
+ NYdVvaSsQlMVQB3KHaEFNAEq_nTP9Ik7uTgoM54oAS3CTX2aoClgKsEzyqzcZlp_nPKYZYYrhOEc
+ CXpkqNXKQBgNopgbrv7nj3ql6MZN24uNAfo014tFMAZzHHGAH0dT0SXT3Fj8qfIxOKkoq7mbFjkU
+ iYDDvF7ArIK7bBpzFbv9X3ioHwzVEblKVaBAkkVrg3cfMqdvjZd1.efi.uBVHOt3jTRDHrTYzyiD
+ NWo5Ir2qKHsIWOPAHMxPom4rXP.vZpa7QEBu3D3wYP4i4v4LCcFKsUwzr4z6xQi99Ot1pC13.KVZ
+ YKQ9_TipmB6Ubd.hZa9k13ECqB73734KQtdvfVt9HeA7SvVnpLWlxJZyhBpeO1Z.NSdPeBR8Q9Mu
+ 1hSlMLdmz284PQbQmew5hLJjXJAadfYT0eurpnYr3HxmISmisRc8SQB0NHkCHO5pbjAYIjekIsSU
+ DXQPvxkfEgA1ZdW8HqmcnM9RRwzxRRtGrW50Fj.DeLuSwT_QjLvpwFtG3h.J35fUODj78GPmoF8c
+ WLqlwRsv55W4J.iUi7j2qeekfjEbiduxFqxrMPsvBn2H29.DGE0Qu.6zvEKEaBwSf6Zr53osvTnH
+ MpwPw0jkcTl4tYWxu07TLnnf6sK0UVvCi9.if83vmoEtLng7x1sF5rJYSNyj3iGNt5Bhyjb4SCwJ
+ uMe1hmMO_OxLz8x9QIc8zC6a1.PLDQu5Sb31ZnJwEk_CWqKa53eSNh.7FCSi.SsdKxDUuehDXde9
+ ZqDw76bQDxiFUlieOaaVsFHndUqmHS0clsn1BUdX_1EnRjkwb3INRThDawLrHNrAlrPVTl3qBLEz
+ PSEI6DQZiqghZN62ZzL5K9jAD9e3lNrBpaXDwVQ5Oshx9GabmntgpPDUMxr9KEsnxhAD0Mh4K.5w
+ fa1cWNTRueD72B0QHM.JaakjAdNEQyVBGEr.eJaXrRpLR.ZkkzYojeV7QdI7zPgqJptiLqmoml9A
+ a4lXZhaj_SL1YFknF3RAPiSAojTLH5hZ4SQXkgJSup5UC64at_1jh5OBZWWE9O1ShXDnAmTWFXOJ
+ 3NXus4N7zT8CTXCAhGBoKy1TI1F.eEIf5yqE0dH7q0tj2ilwxduYfdk0rpjBw0WFTt9e9XSTCO2T
+ kVxKowNPUJvFOF44qSkjwTTJc.nikUB3zsuGsN00GtBmNJe81EyJvzIQPra7sM7yVhCO.MtrTOGe
+ s0XoQKo6eKZI6iw_g0aYMQJ_HMEo1K3T5tsz0CFSbNvTTU2M3N5n5HZ_HA1vBf4nTFZKoFbNGF4G
+ Fsz9PuqJbDtQjj5U2lsNJdCFMU6a0_jphl3Dw.5TqJG_xT.TWe8dy..4eO.ZmDszgVmeqfhGJAoz
+ YY90k_4_UGs1nJX.1GO80y.y2tsVe2.VuaAaDaBoKoPBnXxlKgm7N8r8o2IG6.Fdx_ae0lEw52hr
+ kP1_gIF8PYZtRd9LjZJmaEFUeJ2n6nFhq.GQmYaU.LW66qFsYhojOBIpDSEsFjAdycQBvXwKYIDw
+ owhVvhTcv.XhKyRP9iF0DxzL4evfuJMUMgXbV17DsYc8noappqjFr3IBE_ABaeTxc3BGG5lavJmc
+ hCnVhbHr.d8eJkMvHeDrdEiIW3PO6xiGhy2x0dupTWxFB4rR3QjKvN6pfD6haqfsylpPZJ5wyOb4
+ JHhMT172IdAU8WZixEiMP7NecBnmd3hjX411dfZlEbdVJuQN82fQhr17BpmUwfk5tX9JaMVvlqXJ
+ vyCmk1LDsod9jp1SVd.d32xLC3Oe.2lSabhek81lnRDUqo70HE52vYjF2R9zxM7I1CXyTpXLPA9B
+ 7pmuetufs0PS8Dz1GjQ7jg1PaHl1QBM1XO2US4vj8sPxbaKms2JGRLXlB5Y5rGZuyxq8FLxmzPOv
+ Oe9vmdEB7ty4SgE6rle1KZnbIVGTPTqGQVczOrj994CXVdoM6sf8WDU9e1pB9giGxCIyW2lhXb6N
+ I
+X-Sonic-MF: <s.egbert@sbcglobal.net>
+X-Sonic-ID: e2b79cdd-3a6f-451c-b4bb-6e50eb79a6b6
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic317.consmr.mail.ne1.yahoo.com with HTTP; Thu, 21 Aug 2025 19:07:44 +0000
+Received: by hermes--production-ne1-9495dc4d7-27szc (Yahoo Inc. Hermes SMTP Server) with ESMTPA ID 6c4baa0885a9ebc6e70c3087d0ca1c31;
+          Thu, 21 Aug 2025 18:57:35 +0000 (UTC)
+Message-ID: <14bff92f-ba0f-441b-ad0c-241cb4716c33@sbcglobal.net>
+Date: Thu, 21 Aug 2025 13:57:34 -0500
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
@@ -67,41 +64,70 @@ List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: Implicit add conflicts with declarative add
-To: netfilter@vger.kernel.org
-References: <1130f6aa-3c98-4960-879b-27f6ab054313.ref@sbcglobal.net>
- <1130f6aa-3c98-4960-879b-27f6ab054313@sbcglobal.net>
+From: S Egbert <s.egbert@sbcglobal.net>
 Content-Language: en-US
-From: Gordon Fisher <gordfisherman@gmail.com>
-In-Reply-To: <1130f6aa-3c98-4960-879b-27f6ab054313@sbcglobal.net>
+To: netfilter@vger.kernel.org
+Subject: repeated 'add chain'/'delete chain' 5x and ...
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+References: <14bff92f-ba0f-441b-ad0c-241cb4716c33.ref@sbcglobal.net>
+X-Mailer: WebService/1.1.24338 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo
 
-On 8/20/25 11:39, S Egbert wrote:
-> Take the following NFT snippet:
->
->     add table ip table_id             # imperative
->     add chain ip table_id chain_id    # imperative???
->
->     table ip table_id {
->         chain chain_id {              # declarative
->             type nat hook input priority 0; policy drop;
->             ip daddr 192.168.1.100 dnat to 192.168.1.200;
->         };
->     };
->
-> Fails with:
->
->
->     add-chain.tp.nft:6:9-38: Error: Chain of type "nat" is not 
-> supported, perhaps kernel support is missing?
->             type nat hook input priority 0; policy drop;
->             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->
-I believe the issue is that ``type nat`` is a table type than a chain 
-type, so it appears that you have that part of the declaration in the 
-wrong place (the policy portion is indeed for a chain.)
+During my vim syntax highlight unit testing... I noticed a behavior of 
+'nft' with regard to repeated adding/deleting same two sets of chains 5x.
 
--- 
-GF
+Running latest nft v1.1.4, Debian 13, Linux 6.12.41+deb13-amd64,
 
+     add table netdev T
+
+     add    chain netdev T A { type filter hook ingress priority -500; 
+policy accept; };
+     delete chain netdev T A { type filter hook ingress priority -500; 
+policy accept; };
+
+     add    chain netdev T A { type filter hook ingress device eno2 
+priority -500; policy accept; };
+     delete chain netdev T A { type filter hook ingress device eno2 
+priority -500; policy accept; };
+
+     add    chain netdev T A { type filter hook ingress priority -500; 
+policy accept; };
+     delete chain netdev T A { type filter hook ingress priority -500; 
+policy accept; };
+
+     add    chain netdev T A { type filter hook egress device eno2 
+priority -500; policy accept; };
+     delete chain netdev T A { type filter hook egress device eno2 
+priority -500; policy accept; };
+
+     add    chain netdev T A { type filter hook egress device eno2 
+priority -500; policy accept; };  # ERROR IS HERE
+     delete chain netdev T A { type filter hook egress device eno2 
+priority -500; policy accept; };
+
+
+gets me the following nftables v1.1.4 output:
+
+     $ make check chain-type-netdev.tp.nft
+     Checking file: chain-type-netdev.tp.nft
+     /opt/nftables/sbin/nft -c -f chain-type-netdev.tp.nft
+     chain-type-netdev.tp.nft:17:1-94: Error: Could not process rule: No 
+such file or directory
+     delete chain netdev T A { type filter hook egress device eno2 
+priority -500; policy accept; };
+  
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     make: *** [Makefile:19: check] Error 1
+
+
+nftables v1.1.3 output is identical:
+
+     $ sudo /usr/sbin/nft -c -f chain-type-netdev.tp.nft
+     chain-type-netdev.tp.nft:17:1-94: Error: Could not process rule: No 
+such file or directory
+     delete chain netdev T A { type filter hook egress device eno2 
+priority -500; policy accept; };
+  
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This is also true of my other Linux platform.
