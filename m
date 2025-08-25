@@ -1,90 +1,95 @@
-Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6505235041;
-	Mon, 25 Aug 2025 09:35:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D40DC2A1CF
+	for <netfilter@vger.kernel.org>; Mon, 25 Aug 2025 10:16:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1756114543; cv=none; b=F68D2wgij1E5W3vX5Rsit6J1hXAo7jRVsS+MChity98DD8hbH7ugAuiuOIlz1A4oJxB7MNN9/2PUoPPcDwea4uwbc6mCOArM//Xe+nPaq2dXB/tnBCKEamO4Tfc6yQW8rxluC94pvKScIYcWmBHAqP1+xtQRVGK8FGcdoi+J1yM=
+	t=1756117023; cv=none; b=T7lsB+Y/GXFlBWmcIalKYexvYqWnH21wH/P4dcqq2LKSaShbvyHFVpGvhUdVUcjoGNwCOIu7oo+ITBL/UxAuMnGsO32312qmxiZGLb7GZYyiTxunBde7RgEa6K245TK3sw9cwipY/lNpDGMdiFQUeaWx8Hj7QwK6Q+aIvCJSK4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1756114543; c=relaxed/simple;
-	bh=zaL/gEZPUvRkrqggKJeihJBuq6o+SQEEPHjLdF99uko=;
+	s=arc-20240116; t=1756117023; c=relaxed/simple;
+	bh=F3QW3ta0GPDvwESgP30EUs3vJIxwa91cJwwjhO5R+po=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WAmi1r4njG/U25U8pZO/5cJ7RThJpFF5kmumsR4mUHa2vP3hDdDCmCAqu2bWOttGniThiRYlU2E4TIk0kGn618OXZ3VT52VMLSbi9BcC7ZTucryAr8SJNSE6lPmeUy+G6BgyDPcogokOIKtd+ZqOoJwavw/VoWGODRkeqrJlGMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
-Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id 9BDCF60298; Mon, 25 Aug 2025 11:35:38 +0200 (CEST)
-Date: Mon, 25 Aug 2025 11:35:38 +0200
-From: Florian Westphal <fw@strlen.de>
-To: S Egbert <s.egbert@sbcglobal.net>
-Cc: netfilter@vger.kernel.org,
-	netfilter-devel <netfilter-devel@vger.kernel.org>
-Subject: Re: repeated 'add chain'/'delete chain' 5x and ...
-Message-ID: <aKwuatk_6Ji8VhO-@strlen.de>
-References: <14bff92f-ba0f-441b-ad0c-241cb4716c33.ref@sbcglobal.net>
- <14bff92f-ba0f-441b-ad0c-241cb4716c33@sbcglobal.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=kCPvMk3k+bRZZeOkkP/+JoucTQFg6Bvb53UceKxdnrE2BB90c3LTlFcAhpxaIfCnBBT38eJNuY3bjxtTQIGfVVCz1HppG91MYx4+8cZ+wUSen/k0fJEJERYfgP4X4hvb2Kvi5MAzam1nhFeliuHs3IgXUaxz84SJFOAwOFllSeg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=ksyta8AM; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=qJovwZN8; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="ksyta8AM";
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="qJovwZN8"
+Received: by mail.netfilter.org (Postfix, from userid 109)
+	id 41A0F6026C; Mon, 25 Aug 2025 12:16:50 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1756117010;
+	bh=NOVudPz0wU9fvHb0axoQzoPZ/5Mc6MpYeZJT1br3Gmw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ksyta8AM7vx/RgBU+5/Ffw58DDmUxo7ShOQN8P+YfJDNDlnvEnBncEtPFXy/z2rni
+	 YNE89YtGCobphQS72z5bfX24J8Rlag6gXplMv2Qng928+NBkNQ4hMHSj6XBicehyj3
+	 6JaKZZUlk8mji0clqqup06+YJG/LqJxl7cbwndfwm2/VQKbJ/uV7e2wmZ10gf69w1g
+	 sX2rMUsLCoGVOwx936Zf/fi0kA/iRK/cIzcfhJOjPtC/MSflsY4N1pwIKGZWf2p32G
+	 cHrddAYpRclTkYp1L2U+SWVPdBjlqNs+mWPcNf9Xr25f4NUGQ7xnSlvbtuOnULXf+Y
+	 64rQzTihe9QaA==
+X-Spam-Level: 
+Received: from netfilter.org (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with ESMTPSA id 6FFC96026C;
+	Mon, 25 Aug 2025 12:16:49 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1756117009;
+	bh=NOVudPz0wU9fvHb0axoQzoPZ/5Mc6MpYeZJT1br3Gmw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=qJovwZN8PzNMP7viFSbJyQf4ClGQesfxPOX33PHviYI4oH9wakNpDwUj+UPO0Bpik
+	 JgkBI/82fGLdmgNDiGKGtOkzulSjEpgp+wbvqBCWUzuKWejWieerxW2CJ/Ogk7/GF9
+	 n+atDYugnSCqOzwUj/qtcWj8DiCbJvUZ0/JklQElRJwTvGWXGSwlCSYA4e1eL1Z5GR
+	 EZ3JGG2iZA4v3za1tnWZQJKxEWquq24ShqyHnHzceu0sNa+R+Xa6gWSvkxLlua8oNA
+	 DbIM8w5fzxqML5DTNavoTXI+NNQC4fFPgLJJWn49G4Qv6T20QwUfEJu+nWFCZi9vrd
+	 hkbvBq3IUiZpw==
+Date: Mon, 25 Aug 2025 12:16:46 +0200
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: lilydjwg <lilydjwg@gmail.com>
+Cc: netfilter@vger.kernel.org
+Subject: Re: nft error Could not process rule: No buffer space available
+Message-ID: <aKw4DikLFS8MVGVY@calendula>
+References: <aKrK6h2zYdqj2unR@lilyboudoir.localdomain>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <14bff92f-ba0f-441b-ad0c-241cb4716c33@sbcglobal.net>
+In-Reply-To: <aKrK6h2zYdqj2unR@lilyboudoir.localdomain>
 
-S Egbert <s.egbert@sbcglobal.net> wrote:
+Hi,
 
-[ cc -devel ]
+On Sun, Aug 24, 2025 at 04:18:50PM +0800, lilydjwg wrote:
+> I'm switching from iptables+ipset to nftables, and as part of it, I need to
+> import a set containing ~2400 IPv6 networks. The file looks like this:
 
-> During my vim syntax highlight unit testing... I noticed a behavior of 'nft'
-> with regard to repeated adding/deleting same two sets of chains 5x.
+What nftables version are you using?
+
+> define elems = {
+>   2001:123::/31,
+>   ...
+> }
 > 
-> Running latest nft v1.1.4, Debian 13, Linux 6.12.41+deb13-amd64,
+> table ip6 mytable {
+>   set myset {
+>     type ipv6_addr
+>     flags dynamic,interval
+>     elements = $elems
+>   }
+>   chain output {
+>     type route hook output priority -150;
+>     ... ip6 daddr @myset reject
+>   }
+> }
 > 
->     add table netdev T
+> And then "nft -f myfile.nft" fails with
 > 
->     add    chain netdev T A { type filter hook ingress priority -500; policy
-> accept; };
->     delete chain netdev T A { type filter hook ingress priority -500; policy
-> accept; };
+> netlink: Error: Could not process rule: No buffer space available
 > 
->     add    chain netdev T A { type filter hook ingress device eno2 priority
-> -500; policy accept; };
->     delete chain netdev T A { type filter hook ingress device eno2 priority
-> -500; policy accept; };
+> -- 
+> Best regards,
+> lilydjwg
 > 
->     add    chain netdev T A { type filter hook ingress priority -500; policy
-> accept; };
->     delete chain netdev T A { type filter hook ingress priority -500; policy
-> accept; };
-
-Thats unrelated to the add/del below.
-
->     add    chain netdev T A { type filter hook egress device eno2 priority
-> -500; policy accept; };
->     delete chain netdev T A { type filter hook egress device eno2 priority
-> -500; policy accept; };
-
-This adds empty egress chain for egress, not hooked to any device.
-
->     add    chain netdev T A { type filter hook egress device eno2 priority
-> -500; policy accept; };  # ERROR IS HERE
-
-This asks to update the empty egress chain and add "eno2" as new device
-hook.
-
->     delete chain netdev T A { type filter hook egress device eno2 priority
-> -500; policy accept; };
-
-This delete will fail because the previous update request (add a hook for
-netdev chain for "eno2" device) is still pending and not committed yet, so
-the device name isn't found when searching the basechains hook list.
-
-Trying to support "add X/undo X" patterns has led to dozens of bugs
-already.
-
-I don't think we should support this, the logic is complicated enough
-as-is.
