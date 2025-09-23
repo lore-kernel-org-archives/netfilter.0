@@ -1,132 +1,211 @@
-Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dog.elm.relay.mailchannels.net (dog.elm.relay.mailchannels.net [23.83.212.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F764286889
-	for <netfilter@vger.kernel.org>; Mon, 22 Sep 2025 09:39:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758533977; cv=none; b=DnnR/eHmw1/4stuqW2039FVZw0RspkqcDuHbxTb916PxFjAEbu2LvtDws42XJe6Xh2/hZKCVewSfjnl5T1Xv2zqvTzzgDXEQ2ujxdopNrr0rycpdxLJfFNkrpE5nX+TumdlBl7qs/EnXsUwRcLqCmMZs4MmGO2PVzhZI8k5BUTw=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758533977; c=relaxed/simple;
-	bh=BAwy9a3oezL6by0mC4EO+RPCmJZjT4JuW6i3DSj7FgE=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=DRrBx6Wa+IXAoUSX9sZueXXGrxL4L3TgHdxsXXG+73GfNu/IQIVXJbHzyg3GmZQq74+M3dFFcoH4DD4iN8LzRb2Vy7peF2sjy8pPIM5NhDACA4MrKKXuK8sZHD9GEsWd8OnEzAj2LJrxsySmKR9rHqhdQtR5Lc+6IDquMt1h5yE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YnI+PX5l; arc=none smtp.client-ip=209.85.166.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YnI+PX5l"
-Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-4257f2b59ffso186675ab.1
-        for <netfilter@vger.kernel.org>; Mon, 22 Sep 2025 02:39:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758533974; x=1759138774; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=BAwy9a3oezL6by0mC4EO+RPCmJZjT4JuW6i3DSj7FgE=;
-        b=YnI+PX5lzAgWE15tAAJvI5wUAbVp6mHv3rqCBAfDDGQ5Nwhdif4pxkSpIGVYYzK0iK
-         +TarAp4FoDuLEcaGMI1YpTz3nT7MzixJ4qPfHSdwjgKcY0m+y7gcV3ChqxqPJgjdKVfV
-         FVIRFCP+2DL71eY9Y4Fz4ob+kmknMo9bXFXJ08raXhm/+GMK2mykP0+1ZV3hteKVSgm4
-         1yqYvozt/no6ppsF2seeGNtyyVH8ZuIvvyidRUHLtncSTlknJJofy31HPOAxjnZ1eZSr
-         cwr5/d2xN1wYdn+09POndyZiadbviYR33sjYdgXSWE3LXYFh8hKlCn+QWVLtKQW5qr7Q
-         tIPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758533974; x=1759138774;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=BAwy9a3oezL6by0mC4EO+RPCmJZjT4JuW6i3DSj7FgE=;
-        b=UWH3MteSunTtAbRG7y3guIjRaOBa5s7XeERsHfkIy5nWg0LwXIzoLbKk0jU7hy53GV
-         fHaPoZ9/QxDPBU1mJyF+V0BDx7eyPF+dfstiX+sRYLpe/VMyv0irT8TYebxFj2Wdw1RX
-         uiKM3iV7vME/bkhT97wZAfKwa+/P4bgLHN2vGDkpqzIjxg4o56wXLwRI6DDk70F3QcKo
-         A3Cdsrmp48QfX/2MK8fUO/lYVJ617g9eFC61hZTaCYYN0AblhoyPHvUzZ5AwfDvbDvKo
-         s3RXD683EqahkSMNpHpSlhJaCJ7MWYIQJ3OzuoHyKd0vgmJS6LFTIcIPR3HvEh88PHoz
-         liEQ==
-X-Gm-Message-State: AOJu0Yz43lV5/tPZYe8/plL0T6y5Xlgf4gJVPcOyB2V16Gd0D8K5KEI0
-	0ZsMXXqTx3eAa1tK5N+i2f9/foamKGjls9p8LZBZeV3rzaUz6nzGxsvgPLVEBqtTaeRoaB7Q1QI
-	v634yd1g2oBSPMalBYJFtmU0nUIwfaPYpM5WSncA=
-X-Gm-Gg: ASbGnct7miIJ1wrASynzqy9nGot9GYg8xZVcwTSBbR9tnOraPJ+qL6hgM+VIbHH7ml1
-	WxJTvuAzYC/FhoyEY2WMHCJHzSdD+CyCY+iVJ4L2mvpJQDcse8AaSdvrG0K0UTy8qUVgQDtbmd8
-	YhuJnwDwS8ZKhha2rWXiggJBtx9l107trWgkqICJHUNVXwkg/cBh9X17oCuCniRLfRmRGoi2UFR
-	sd9uw==
-X-Google-Smtp-Source: AGHT+IFiV7d6NNrZYyR10/0KmMiOcSqsxPHd7U3/TKgIJkmEQZ38YcUPPZIv5IgPLIvoCfTSsJUbmM7R+/hJPztKY+I=
-X-Received: by 2002:a05:6e02:3c83:b0:425:70ad:799e with SMTP id
- e9e14a558f8ab-42570ad830fmr95075165ab.10.1758533973994; Mon, 22 Sep 2025
- 02:39:33 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 381271EB5DB
+	for <netfilter@vger.kernel.org>; Tue, 23 Sep 2025 01:18:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.212.48
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1758590317; cv=pass; b=cdosWCrFGaLFeyKIblD0dpXwKqupesG5xv2st1xPtp4IAncbt3DgaQsnoB8QPKXLAwT6l84d22wnWGDlypgnyULYLKhJmCK51H+xU1xpvsoFF1PVu/u8wEDQOg2Vt1FUmEM+zky8SxcAR1YcTI0gZ7Owo1/LYQ2UAcBJsKO30dQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1758590317; c=relaxed/simple;
+	bh=tQt+kgKIAhdb87sptOIXQOUdkVs5Hi6sVhh2fW8SAvE=;
+	h=Message-ID:Subject:From:To:Date:Content-Type:MIME-Version; b=NYK0i/v8yDbq/INjeCfcO7QXKidKX+63NqaAx5b2bO6SkXH1QidG+fBJRLQ7d1Vtv6nngHXCN9x3UPXl9WhxJpZ1tsHM00iWv7O4NHEUeowKaZDP3O7id203Byf9yngn1tuLMJwmQRRNdQgcTmLc8kmurpswMU73p4poSMjLGiY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org; spf=pass smtp.mailfrom=scientia.org; arc=pass smtp.client-ip=23.83.212.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id AD995100E29
+	for <netfilter@vger.kernel.org>; Tue, 23 Sep 2025 01:18:28 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (trex-blue-6.trex.outbound.svc.cluster.local [100.109.34.94])
+	(Authenticated sender: instrampxe0y3a)
+	by relay.mailchannels.net (Postfix) with ESMTPA id 001E01014E1
+	for <netfilter@vger.kernel.org>; Tue, 23 Sep 2025 01:18:27 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1758590308; a=rsa-sha256;
+	cv=none;
+	b=87sGT8U99FcGIhNEcgGONa/zkYEVKYZWgj85MZVQtGQGM9E3c5Qsretix0dLp+pkHmfDWY
+	nlJIWCtIP84rkNd8k4CeKlRopga6hXqerlXTa89oNsA5PfTYXEJf3A21gJRSEcfJ2b+KYW
+	snLoXI/jUxDYv3X+QJ3cSTdVZ/w3Kng3iFuEIfJOsXN3TPfQ5Am9wxE2FOOOrzxc4+4XEA
+	TN82jYWHYggoPWddmjoZCQ/tV0XrGdl/fmKGLwcrgnUlcNdEQJ5Rnk/zUZibIJIkhOMVzj
+	p6nA7fgJtG8cDBVvEIsau4qsipJmiBGSKLRcNJwovRzwc8+BQRAvFSgpLdmq0g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+	s=arc-2022; t=1758590308;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=I92e9HF2SuQcLuWrfGBNXj0p0rx5HjYtOtbFpTeZ9bo=;
+	b=Ud+hIYwtoisi34XGgyT8ldid+HKAgtBmLnrzv/17sUZivklqxvfGW2hdLRU+qo44shwwGh
+	2GK+Wmf28T5GEiJnuVODcbnNGLuazVP92LbkuoLkMln3L+RrcXnqrc78LdxZH83MbY9emr
+	szIg1u1GhOOGNxqIahV4blEBMYGMRGcGR6Cxvbs2XewnoexsMRR6nQMUXZLyr7LSD/BJHT
+	E4bkaewGOM4CcNKDEH2R9MhXwDCQx/tKmwAtcclQ+iTXryJ8VxjTwHcrvnxj4o3g5AxhSO
+	b+q1c8ONx9VtB9MOqWn6nJNh5Xg9VgGthkIwbka+ez8wpapWP+iIs1agVAiTQw==
+ARC-Authentication-Results: i=1;
+	rspamd-59b854cb4c-mrmsv;
+	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Macabre-Minister: 6066f1454ac94b84_1758590308520_3663946474
+X-MC-Loop-Signature: 1758590308520:785317573
+X-MC-Ingress-Time: 1758590308520
+Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
+ [3.69.87.180])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+	by 100.109.34.94 (trex/7.1.3);
+	Tue, 23 Sep 2025 01:18:28 +0000
+Received: from [79.127.207.171] (port=1450 helo=[10.2.0.2])
+	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.98.2)
+	(envelope-from <calestyo@scientia.org>)
+	id 1v0rfm-00000008OVP-0jNL
+	for netfilter@vger.kernel.org;
+	Tue, 23 Sep 2025 01:18:26 +0000
+Message-ID: <5a7d4a11bdeb50123e68df16726c4d1b461d2fd7.camel@scientia.org>
+Subject: some questions on nft
+From: Christoph Anton Mitterer <calestyo@scientia.org>
+To: netfilter@vger.kernel.org
+Date: Tue, 23 Sep 2025 03:18:25 +0200
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2-3 
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Antonio Ojea <antonio.ojea.garcia@gmail.com>
-Date: Mon, 22 Sep 2025 11:38:57 +0200
-X-Gm-Features: AS18NWDLaRS_JE0U_MbWjmg5K95c6hAkH1av3Dj6Bh02YOk-FmdAnj9JABxpEQ8
-Message-ID: <CABhP=tYo-R_vFJhfUGj_GmW5mCAFR3VNEkkhJDp7pHpHNYvD5g@mail.gmail.com>
-Subject: Confirming conntrack behavior on environments with multiple network namespaces
-To: netfilter@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-AuthUser: calestyo@scientia.org
 
-Hello Netfilter developers,
-
-I've been debugging conntrack performance issues in Kubernetes
-recently and it will be great to confirm my understanding from my
-observations, testing and public information I could read.
-
-My assumptions are:
-
-Global hash table: There is a single global hash table for the entire
-system. Its size is governed by nf_conntrack_buckets, and since commit
-3183ab89 ("netfilter: conntrack: allow increasing bucket size via
-sysctl too"), it is possible to resize this table at runtime. The hash
-key correctly includes the network namespace ID to differentiate per
-namespace entries.
-
-Per-namespace limit: net.netfilter.nf_conntrack_max is a per-namespace
-value (inherited from the init_net default) that limits the number of
-entries that a single namespace is allowed to create.
-
-Kubernetes "double-accounting": In Kubernetes, if a pod/container
-enables conntrack internally (e.g., a service mesh sidecar or network
-function), a single application connection will create two conntrack
-entries in the global table: one for the pod's namespace and one for
-the root namespace (for node-level routing/NAT).
-
-Monitoring the load factor: To monitor the system state (as suggested
-by commit c77737b's focus on chain length), a key metric is the Load
-Factor: global_count / nf_conntrack_buckets.
-
-I was surprised to find that reading
-/proc/sys/net/netfilter/nf_conntrack_count from the root namespace
-(init_net) returns the global sum of all entries. Reading the same
-file from inside a pod's namespace returns the per-namespace count.
-
-Is this behavior correct? It seems to be the simplest and most
-accurate way to monitor the global Load Factor is doing something like
-
-watch -n 2 "awk 'NR==1{count=\$1} NR==2{buckets=\$1; printf
-\"Connections: %-10d | Buckets: %-10d | Load Factor: %.2f\n\", count,
-buckets, count/buckets}' /proc/sys/net/netfilter/nf_conntrack_count
-/proc/sys/net/netfilter/nf_conntrack_buckets"
+Hey.
 
 
-Causes of bloat: One of the common causes of high connection counts
-seems to be the very long default timeout for established connections
-(nf_conntrack_tcp_timeout_established = 5 days). However, it seems
-most distros override the default and set it to a lower number by
-default, like one hour.
+I'd have some questions, where I couldn't find the answer in the wiki
+nor the manpage:
 
-I'm also looking at nf_conntrack_tcp_timeout_time_wait (120s) vs. the
-kernel's 60s TIME_WAIT, though I'm less clear on the implications of
-tuning this.
 
-Per-namespace statistics: Finally, is there a recommended,
-programmatic way to get a breakdown of conntrack statistics per
-namespace? I'm especially interested in the total number of entries
-for each namespace. We know we can nsenter each network namespace and
-read its local sysctl, but this is very inefficient. Is there a better
-way to get this breakdown from the root namespace, perhaps via
-netlink, procfs, or eBPF with something like bpftrace?
+1) I there any difference between e.g
+      ct state established,related accept
+   and
+      ct state {established,related} accept
+   I mean the later is obviously a set, the former syntax doesn't even
+   seem to be documented but is used even by official tools (e.g.=C2=A0
+   -translate).
+   In particular, is any of them faster?
 
-Does this analysis seem correct to you? Any confirmation, advice or
-correction would be incredibly helpful.
+   Same for others like dport.
 
-Thank you,
-Antonio Ojea
+
+2) When using the *inet* family (which btw. is really nice)... quite
+   some of the examples in the wiki and other 3rd party places use
+   e.g.:
+      add rule inet my_table my_input meta l4proto '{ icmp, ipv6-icmp }' ac=
+cept
+      add rule inet my_table my_input meta l4proto udp ct state new jump my=
+_udp_chain
+      add rule inet filter output meta l4proto tcp
+      add rule filter input meta l4proto { tcp, udp }  th dport 53  counter=
+ packets 0 bytes 0  accept  comment \"accept DNS\"
+
+   Am I correct, that l4proto has to be used in these, simply because
+   the respective protos are matches as a whole, and e.g. the tcp/udp
+   header expression cannot be used because one would need to add
+   something like dport?
+
+   But as soon as one does want to do that anyway (e.g. using
+   tcp/udp dport or some icmp icmpv6 type), is there any difference or
+   disadvantage when leaving out the meta l4proto match and just doing
+     tcp ..
+     udp ..
+     icmp
+     icmpv6 ..
+   ?
+   AFAIU, tcp/udp would just work in both v4 and v6 while icmp would
+   only apply to v4 and icmpv6 only to v6 packets automatically.
+   So an obscure ICMPv6 over IPv4 wouldn't be matched, right?
+
+   In particular.e.g
+
+
+3) I've seen examples like:
+      ct state vmap { established : accept, related : accept, invalid : dro=
+p }=20
+   where a vmap is used, which is a nice way of writing it down.
+
+   But is this slower (when it internally uses some hash or so) than
+   e.g. two rules:
+       ct state established,related accept
+       ct state invalid accept
+   ?
+
+
+4) In principle I prefer the syntax as returned by nft list over the
+   one using single commands, like:
+     add rule ...
+   is there any documentation on how the block based syntax is
+   merged when using include? Or is that even officially supported?
+
+   It seems that something like:
+      table inet filter {
+      	chain input {
+      		type filter hook input priority filter
+      		ct state {established,related} accept
+      	}
+      }
+      include "x.nft"
+     =20
+   with that x.nft being e.g.:
+      table inet filter {
+	chain input {
+		type filter hook input priority filter
+		ip daddr 1.1.1.1 accept
+	}
+      }
+   would actually merge (but e.g. things like table comment aren't
+   overwritten.
+  =20
+   But no idea how his would be done with sets, etc.?
+   Or is this simply a: don't do such stupid things?
+
+
+5) Many examples use:
+     iif lo
+   or
+     iifname lo
+
+   Now first, if I'd bring down lo and bring it up again (like it may
+   actually happen with eth0/wlan0 and others)... would it get a
+   different id, and thus no longer be matched by iif?
+
+   In particular for lo, wouldn't it anyway better to use
+     iiftype loopback
+   (which would simply match all loopbacks, regardless of their name)
+   or is there any disadvantage I can't see?)
+
+
+6) Probably not possible, but can one match v4 and v6 addrs in one rule
+   (when being in the inet family)?
+   Like in:
+      ??? daddr @addrs tcp dport 22 accept
+   with @addrs containing v4 and v6
+
+
+7) Also not possible, AFAICS, but was it ever considered to allow
+   using=C2=A0sets within (v)maps or even other sets?
+   Like:
+   set http_ports {
+		typeof tcp dport
+		elements =3D { 80, 443, 8080 }
+	}
+   map whitelist {
+		type ipv4_addr . inet_service : verdict
+	}
+
+   add element filter whitelist { 1.2.3.4 . @http_ports : accept}
+   add element filter whitelist { 4.4.4.4 . @foo_ports : accept}  =20
+
+
+
+Thanks,
+Chris.
