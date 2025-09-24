@@ -1,117 +1,135 @@
 Received: from Chamillionaire.breakpoint.cc (Chamillionaire.breakpoint.cc [91.216.245.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E662927A127
-	for <netfilter@vger.kernel.org>; Tue, 23 Sep 2025 17:07:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C0BB1922F6
+	for <netfilter@vger.kernel.org>; Wed, 24 Sep 2025 12:17:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.216.245.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758647226; cv=none; b=O174hdsVehaeYRetQlfq4oHNtsj6X4CQZxYzrTWrw9co+NHCXyHG0OKpBdByUzE1KgZgUwzKeun097u+pMZP741HgImjNXViMY+vRVDIXbL3bRpuhohAkGVRdVXaO1JO8vvpJKLubwtBMgGxi+WsXFXra4a2hHnx7Ped+wEeymM=
+	t=1758716243; cv=none; b=ltequFdI/z2Q8Cp+8FY5Y4Ybn4WQN39Y7Cc4FjPEJmLpibHQhMMF3GRuW+/tAsy7JlSGQd1MF+rvT5T7eGhU5hl5563OThXrt+x09OpEJ4zcHBfWe4cYRRSPKRBTZk+XlZ4SY2n/kLrAETcPI/LPB4j/t0jpFsmrd/K3RgJNxOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758647226; c=relaxed/simple;
-	bh=Y6cTg1Jc2LuMU7UDxu/om1etG7PYu0TmxXv77Gl7vaE=;
+	s=arc-20240116; t=1758716243; c=relaxed/simple;
+	bh=9NjwYtDa4fCf2MM8+BTKTg8k6e50OQhlIOya58xT6wI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l3kNKVqJ8u7W6IiEi+JMWyQUj7MZ62YiKGmnAH9r23PN55gvUVImPJVYiGwXNKmK8jScrUtzgoInMvDJ1h49V5kNuXinnyRmchrRoo5qGSlwFjWQJiUwqM6uo3hF45LZTeM7Ypoz2d0CwSGkBLqQv3LY22GiLG111tVEkmwdenU=
+	 Content-Type:Content-Disposition:In-Reply-To; b=ajFsd81GJofX5jRFq4NYJPVtHgqid9xoYNDa1g/EqNyD0DXQZhYymKWl4StqpXNsAfaL47B+Hk84y2Sih6pxm83EEtwIag7zUyH1b2/SC49FltLC+Jb5oBD3tgpjGUyk69zWrE4q+c9uQvIDPFUYaGWxQL+cBSszzh+i6tiOzX0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de; spf=pass smtp.mailfrom=strlen.de; arc=none smtp.client-ip=91.216.245.30
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=strlen.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=strlen.de
 Received: by Chamillionaire.breakpoint.cc (Postfix, from userid 1003)
-	id CCA7F61935; Tue, 23 Sep 2025 19:07:01 +0200 (CEST)
-Date: Tue, 23 Sep 2025 19:07:01 +0200
+	id 8B1D9601A6; Wed, 24 Sep 2025 14:17:11 +0200 (CEST)
+Date: Wed, 24 Sep 2025 14:17:11 +0200
 From: Florian Westphal <fw@strlen.de>
-To: Antonio Ojea <antonio.ojea.garcia@gmail.com>
+To: Christoph Anton Mitterer <calestyo@scientia.org>
 Cc: netfilter@vger.kernel.org
-Subject: Re: Confirming conntrack behavior on environments with multiple
- network namespaces
-Message-ID: <aNLTtcdGNJT8FuYk@strlen.de>
-References: <CABhP=tYo-R_vFJhfUGj_GmW5mCAFR3VNEkkhJDp7pHpHNYvD5g@mail.gmail.com>
+Subject: Re: some questions on nft
+Message-ID: <aNPhP63SyX2ofE92@strlen.de>
+References: <5a7d4a11bdeb50123e68df16726c4d1b461d2fd7.camel@scientia.org>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CABhP=tYo-R_vFJhfUGj_GmW5mCAFR3VNEkkhJDp7pHpHNYvD5g@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5a7d4a11bdeb50123e68df16726c4d1b461d2fd7.camel@scientia.org>
 
-Antonio Ojea <antonio.ojea.garcia@gmail.com> wrote:
-> My assumptions are:
+Christoph Anton Mitterer <calestyo@scientia.org> wrote:
+> 1) I there any difference between e.g
+>       ct state established,related accept
+
+You can use nft --netlink=debug, that should explain the difference.
+This is a bit-test, matches if either flag is set.
+
+>    and
+>       ct state {established,related} accept
+
+matches when established is set but not related and vice versa.
+Given established and related are mutually exclusive, both do the
+same thing but the former is a bit faster.
+
+>       add rule inet my_table my_input meta l4proto '{ icmp, ipv6-icmp }' accept
+>       add rule inet my_table my_input meta l4proto udp ct state new jump my_udp_chain
+>       add rule inet filter output meta l4proto tcp
+>       add rule filter input meta l4proto { tcp, udp }  th dport 53  counter packets 0 bytes 0  accept  comment \"accept DNS\"
 > 
-> Global hash table: There is a single global hash table for the entire
-> system. Its size is governed by nf_conntrack_buckets, and since commit
-> 3183ab89 ("netfilter: conntrack: allow increasing bucket size via
-> sysctl too"), it is possible to resize this table at runtime. The hash
-> key correctly includes the network namespace ID to differentiate per
-> namespace entries.
+>    Am I correct, that l4proto has to be used in these, simply because
+>    the respective protos are matches as a whole, and e.g. the tcp/udp
+>    header expression cannot be used because one would need to add
+>    something like dport?
 
-Yes.
+'udp dport 53' would not match tcp (it internally adds l4proto udp).
 
-> Per-namespace limit: net.netfilter.nf_conntrack_max is a per-namespace
-> value (inherited from the init_net default) that limits the number of
-> entries that a single namespace is allowed to create.
+>    But as soon as one does want to do that anyway (e.g. using
+>    tcp/udp dport or some icmp icmpv6 type), is there any difference or
+>    disadvantage when leaving out the meta l4proto match and just doing
+>      tcp ..
+>      udp ..
+>      icmp
+>      icmpv6 ..
+>    ?
+>    AFAIU, tcp/udp would just work in both v4 and v6 while icmp would
+>    only apply to v4 and icmpv6 only to v6 packets automatically.
+>    So an obscure ICMPv6 over IPv4 wouldn't be matched, right?
 
-Yes, there is a patch rotting in backlog that allows non-init netns to
-shrink it so the lower value is used.  As-is, only init_net can change
-this.
+No, would not be matched.  You can check --netlink=debug to reveal
+the internal dependencies that nft will insert to prevent false matches
+on random packets.
 
-I hope I can get to this patch by mid of october.
-
-> Kubernetes "double-accounting": In Kubernetes, if a pod/container
-> enables conntrack internally (e.g., a service mesh sidecar or network
-> function), a single application connection will create two conntrack
-> entries in the global table: one for the pod's namespace and one for
-> the root namespace (for node-level routing/NAT).
-
-2 conntrack entries -> 4 hash entries (origin, reply).
-
-> Monitoring the load factor: To monitor the system state (as suggested
-> by commit c77737b's focus on chain length), a key metric is the Load
-> Factor: global_count / nf_conntrack_buckets.
-
-Yes.
-
-> I was surprised to find that reading
-> /proc/sys/net/netfilter/nf_conntrack_count from the root namespace
-> (init_net) returns the global sum of all entries. Reading the same
-> file from inside a pod's namespace returns the per-namespace count.
-
-No, its always per namespace, even in init_net.
-Try not enabling conntrack in init_net.
-
-Or add 'notrack' rules in init_net for the netns originating traffic.
-Or create a netns, enable conntrack and then only create connections
-to addresses reachable via loopback. In all these cases init_net won't
-be affected by the net namespace.
-
-> Is this behavior correct? It seems to be the simplest and most
-> accurate way to monitor the global Load Factor is doing something like
+> 3) I've seen examples like:
+>       ct state vmap { established : accept, related : accept, invalid : drop } 
+>    where a vmap is used, which is a nice way of writing it down.
 > 
-> watch -n 2 "awk 'NR==1{count=\$1} NR==2{buckets=\$1; printf
-> \"Connections: %-10d | Buckets: %-10d | Load Factor: %.2f\n\", count,
-> buckets, count/buckets}' /proc/sys/net/netfilter/nf_conntrack_count
-> /proc/sys/net/netfilter/nf_conntrack_buckets"
+>    But is this slower (when it internally uses some hash or so) than
+>    e.g. two rules:
+>        ct state established,related accept
+>        ct state invalid accept
 
-That will only monitor that namespace, I'm not aware of a global counter.
+Heavily depends on the circumstances, IIRC the set lookup costs are more
+expensive than a single rule only doing payload checks. but its faster
+when replacing at least 3 rules.
 
-> Causes of bloat: One of the common causes of high connection counts
-> seems to be the very long default timeout for established connections
-> (nf_conntrack_tcp_timeout_established = 5 days). However, it seems
-> most distros override the default and set it to a lower number by
-> default, like one hour.
+> 4) In principle I prefer the syntax as returned by nft list over the
+>    one using single commands, like:
+>      add rule ...
+>    is there any documentation on how the block based syntax is
+>    merged when using include? Or is that even officially supported?
 
-5 days is the historic value inherited from ip_conntrack.
-I don't know of a good default value to use instead.
+Its expected to work, yes.  Not aware of any documentation.
 
-Changing it to 1h seems to short for a default value, changing it to
-4 days looks pointless to me.
+>    But no idea how his would be done with sets, etc.?
+>    Or is this simply a: don't do such stupid things?
 
-> Per-namespace statistics: Finally, is there a recommended,
-> programmatic way to get a breakdown of conntrack statistics per
-> namespace? I'm especially interested in the total number of entries
-> for each namespace. We know we can nsenter each network namespace and
-> read its local sysctl, but this is very inefficient. Is there a better
-> way to get this breakdown from the root namespace, perhaps via
-> netlink, procfs, or eBPF with something like bpftrace?
+Well, its always a good idea to NOT do stupid things :)
 
-Not at this time.  There is ctnetlink but it requires the nsenter
-dance.
+> 5) Many examples use:
+>      iif lo
+>    or
+>      iifname lo
+> 
+>    Now first, if I'd bring down lo and bring it up again (like it may
+>    actually happen with eth0/wlan0 and others)... would it get a
+>    different id, and thus no longer be matched by iif?
+
+No, lo is always 1.  For other devices, yes, might get different id.
+
+>    In particular for lo, wouldn't it anyway better to use
+>      iiftype loopback
+>    (which would simply match all loopbacks, regardless of their name)
+>    or is there any disadvantage I can't see?)
+
+Hmm, why would anyone add another loopback device?
+
+> 6) Probably not possible, but can one match v4 and v6 addrs in one rule
+>    (when being in the inet family)?
+>    Like in:
+>       ??? daddr @addrs tcp dport 22 accept
+>    with @addrs containing v4 and v6
+
+No.
+
+> 7) Also not possible, AFAICS, but was it ever considered to allow
+>    using sets within (v)maps or even other sets?
+
+No idea. I don't like it because it slows things down (need to
+iterate and then query several sets).
