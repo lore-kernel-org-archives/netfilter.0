@@ -1,65 +1,27 @@
-Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from isrv.corpit.ru (isrv.corpit.ru [212.248.84.144])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 342862C032C
-	for <netfilter@vger.kernel.org>; Thu, 25 Sep 2025 16:52:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 410652798F8
+	for <netfilter@vger.kernel.org>; Thu, 25 Sep 2025 19:24:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.248.84.144
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1758819127; cv=none; b=CSHS1QnR2M1TAgBd+zdN56N49dVpFamQp2oXZeHnQS8mCuTV0vrWPAUJmxANc9pSpkuv+JbFg+WkG+PPtwYPFefLaqBJRQFeK+Nt6uMq+YHZhtx18jrxkKav8fFEYEXwCt/mmlD6tOP/7TR10PJKV6yjO1s1IGhh6a7sdHe3esc=
+	t=1758828306; cv=none; b=GnXgpSYoMARCkReyGQUwtmTCEuiWyQNtndwD223jyGj6EfQod6D/eoieUN7T0McPTN6/a+mPHdx+f28ISTswG7WEojaRzokx2vfQYnznFwg2HaYEZl5a5r3agaFwYFbDNJrsiy1AdX+SuN75zQ+p+FPmvfKMqaKi+k73L1azU64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1758819127; c=relaxed/simple;
-	bh=zj+nwgAcAXSk0H/FeN9Nm0jDKmHyEKFlv/3tcKDuMlc=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=k5SJBg8+l2/BC5S9JmLveKrS8CedpbHBjxgxVtH/pZVtOmjMgfJvvCCboG1EwQ7TytJ5OOEfvTCPeHahbLuLYWAgDR3F5XXQsymVQI5nDi+z21Zza3yu9guGNfWobaGislXZWlpBxRAVUM5laYUfZ96GeWMbPxFRAP6iqEtK1BQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LndxcJLG; arc=none smtp.client-ip=209.85.160.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LndxcJLG"
-Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-3197f534179so1017862fac.2
-        for <netfilter@vger.kernel.org>; Thu, 25 Sep 2025 09:52:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1758819125; x=1759423925; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=62GIzEVDKgt6Npmb9fjrCcBhX07LGCezzpuo+CAyjcA=;
-        b=LndxcJLGpbEHAY/YJVTGV65s1GoLqOT62GKD/md9WD/GoDxDA1rPp01czYb1hcIP45
-         MqM7k6a0hr1emi5aSE+s3okBoe5ACtb4nH5NuvQvNg4WZs0hSL/UEEfmPZPU+nPj/MtQ
-         VmKrCD8YNUQ/Ppy/5RzNW0AI7S9NIx0uGfc7VAca8U5yux4tFOrcgs03j90KpuPYRMSb
-         bf/9aEwUXJvWDpDmk3TUaGYMS7V1biGAqDPG3iYa7v6wGLC6+puUXtqbaoRg5rgn2I5+
-         VWPw9in1Dden5D50h90Dm9DiZfdqZQdlpiHNctr86/Dcerj+7KR/O81UDDi7YpD83UlA
-         303w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1758819125; x=1759423925;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=62GIzEVDKgt6Npmb9fjrCcBhX07LGCezzpuo+CAyjcA=;
-        b=JwoD2Fv2MJDzzb7pMPwUldGURCqsw4qQYPyc8h2740GnaEzFrFJADdpT6BUbJTiXwp
-         Tn0AoeIAWzej2P2HZj7wPr2aendsU+aKub1VW9jeI42IzV9HRZMi6a1+Po3jy6C00EAM
-         0DGbAYqMfHuFCyCkhepbIlRUQKDem6Hn0xu+yfAZBHmISfYDaMD8RpZf12krfBCmRbgP
-         tz+yc7Kf3d1iyktuAtW1Y8Qvx+bGvzHYxrAUi/Jk1oc7e0Ht5uQ81mBLzUB7sIuLb0Wn
-         BOCOXUkVkrcHaP2rlzbWGY3QguvK4OpYdCaOE0fPMPcvcoZR62g+SjYB+Ng8F06QW/IE
-         eppg==
-X-Gm-Message-State: AOJu0YwhQVWZR/Kkow1JQkWhtQ36tR63/W04U9Qn2tN6hAj9B0vZupQu
-	FIgHkcbdCxuWK6WfcixA/GV4sFQSDPin6y8JkFz3tE4jqd/mniAvkDXE5V1C0Q==
-X-Gm-Gg: ASbGncsxz9wXguYexrPyzXJEh3TBdXtu1DTifsIZjxf/GlRLbv5rBx1pmaHuSTJKG2Q
-	jDX+B3mDQiREfEvoDbWy59TmVfiRm8Onh2knn8dfPLoncMO/tOqxsdNGn6e4nLEN/kpujpWZ/Vg
-	12bp1Vx+yFa178RtWcQKq8wTp7GRSG4IPlmzPiFjvt/2fzy+g7F24+7vLDEueLIYrKKGGnGpggP
-	X34mxmqrFq53qEP32lLQ3E7XA9uidhb+66zp7j6titiEmdI8QmvPsuIOx1qvb3FcludGc1SlQ2E
-	dEq1v7t3F70iL2A+YYolrKSj2iVxGWXFPO5qS+FFderNjC8p8tmCsdAIf11Yw8d3taVTiGMljno
-	1PbVYOj8cSburmf4RYFL7uUvu/1YOzfzD0b7AkZRHu5nayd6YJaRO9I7WtfnvJuuHbF/JcJFuVi
-	pFYN4=
-X-Google-Smtp-Source: AGHT+IGRMugs8x1VIgkBowv2dTnOaxzELOpUuGtx+2Vm6KOlaNzyS5MpNvMUmYEaP2zotN0/x/jrgQ==
-X-Received: by 2002:a05:6870:85c9:b0:344:5201:15a4 with SMTP id 586e51a60fabf-35ec0c332famr2116096fac.16.1758819125046;
-        Thu, 25 Sep 2025 09:52:05 -0700 (PDT)
-Received: from [172.31.250.1] (47-162-145-207.bng01.plan.tx.frontiernet.net. [47.162.145.207])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-363b055c292sm684541fac.17.2025.09.25.09.52.04
-        for <netfilter@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Sep 2025 09:52:04 -0700 (PDT)
-Message-ID: <9d95db74-ba98-4712-be2a-b90cfc0239bc@gmail.com>
-Date: Thu, 25 Sep 2025 11:52:04 -0500
+	s=arc-20240116; t=1758828306; c=relaxed/simple;
+	bh=QhDYU2ZluGWmMs/oRTTMTQxPHhKaRZbjGoi2tgus5Dk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=uD/HHI3PWxPt9G70XHtd6Kk8E3Ah/saYBS7lIyBKPlkjroSjrwF7sN5oN0KLheEYqHVNfnGFI63jbfYwjownn6ZlMpWX8K5DzdDDS36iAVDGgJsFIpcE0MisKTPbZ7+A+w4Vl9zGffmeS7TAZ8TJM3vZ/w8XqkIkup8aGhjjYlg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tls.msk.ru; spf=pass smtp.mailfrom=tls.msk.ru; arc=none smtp.client-ip=212.248.84.144
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tls.msk.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tls.msk.ru
+Received: from tsrv.corpit.ru (tsrv.tls.msk.ru [192.168.177.2])
+	by isrv.corpit.ru (Postfix) with ESMTP id 11B93157AF5;
+	Thu, 25 Sep 2025 22:15:08 +0300 (MSK)
+Received: from [192.168.177.146] (mjtthink.wg.tls.msk.ru [192.168.177.146])
+	by tsrv.corpit.ru (Postfix) with ESMTP id 35C8129083A;
+	Thu, 25 Sep 2025 22:15:08 +0300 (MSK)
+Message-ID: <ff7e2fbc-5139-4730-be10-f99adbd130a5@tls.msk.ru>
+Date: Thu, 25 Sep 2025 22:15:08 +0300
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
@@ -67,52 +29,77 @@ List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-From: Ian Pilcher <arequipeno@gmail.com>
-Subject: redirect/dnat to localhost address in prerouting chain?
+Subject: Re: redirect/dnat to localhost address in prerouting chain?
+To: Ian Pilcher <arequipeno@gmail.com>,
+ "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+References: <9d95db74-ba98-4712-be2a-b90cfc0239bc@gmail.com>
+Content-Language: en-US, ru-RU
+From: Michael Tokarev <mjt@tls.msk.ru>
+Autocrypt: addr=mjt@tls.msk.ru; keydata=
+ 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
+In-Reply-To: <9d95db74-ba98-4712-be2a-b90cfc0239bc@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-I have a multi-homed host that (among a lot of other things) routes
-traffic between the different subnets in my home network.  On that host
-I have a couple of *redirect* rules in a prerouting chain:
+On 25.09.2025 19:52, Ian Pilcher wrote:
+> I have a multi-homed host that (among a lot of other things) routes
+> traffic between the different subnets in my home network.  On that host
+> I have a couple of *redirect* rules in a prerouting chain:
 
-table ip nat {
+This is a well-known bug in netfilter, reported multiple times by
+multiple users.
 
-   chain prerouting {
-     type nat hook prerouting priority dstnat + 20
-     policy accept
+It manifests itself in several cases, one of them is what you've
+found.
 
-     # HTTPS connections to old switches are redirected to stunnel
-     ip daddr { ... } tcp dport 443 redirect to :8084
+See my other emails in this mailinglist from this year for other
+examples, - examples which clearly and obviously shows the buggy
+behavior.  There are numerous other examples like this reported
+over the years by multiple users.
 
-     # HTTP connections to the management network are redirected to an
-     # Apache virtual host that will send a redirect to the HTTPS version
-     ip daddr .../24 tcp dport 80 redirect to :8089
-   }
-}
+Unfortunately, the netfilter devs don't consider it to be a bug.
 
-In order to make this work, I currently have both stunnel and Apache
-listening on the IPv4 wildcard address, which I don't like.  There's no
-reason that stunnel or Apache (on that port) should ever receive traffic
-directly from another host.
+Thanks,
 
-Unfortunately, I haven't been able to make things work when stunnel or
-Apache is configured to only listen on 127.0.0.1.  The redirect rules
-shown above result in a "connection refused" error.  I've also tried
-changing the rules from redirects to dnats, e.g.:
-
-   redirect to :8084 → dnat to 127.0.0.1:8084
-
-This causes connection attempts to time out.
-
-Is there any way to make this work?
-
-TIA!
-
--- 
-========================================================================
-If your user interface is intuitive in retrospect ... it isn't intuitive
-========================================================================
-
+/mjt
