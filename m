@@ -1,98 +1,122 @@
-Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fout-a7-smtp.messagingengine.com (fout-a7-smtp.messagingengine.com [103.168.172.150])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C7BA28371
-	for <netfilter@vger.kernel.org>; Sat, 27 Sep 2025 19:54:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AADC28371
+	for <netfilter@vger.kernel.org>; Sat, 27 Sep 2025 19:58:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759002864; cv=none; b=d2HtrfsUznviH0rR2T/0KaRMzpH5YS+GoBzKLRhrCNwGyINE3eNt6DmDzwbZUuLHxlzKjbHCo9zGJW+D4wGvDbM01QHjy6gCVWJ+Rfvm+Uoq9DVdHfkvL9DC6vHQ3zKio1mkkXhfpdk9q8YXY+ouIUICz3F5bfGy2qlJGadIXbA=
+	t=1759003132; cv=none; b=DsgaREOTivwAPrCYrsuTCv81EoCC62os/rkyEl22+eHLEo76dUkzsRQXnbboGR3BSoQIujAN+h/nYkbiYQxWz0wUZR4DRkCi1VsKhZS3wa2UEPdz9J/VkdQtLXaSlnSOLLxteQn8CJ56I5xgfGzBZWNt0Zi7vzMfzCYSlgpuM1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759002864; c=relaxed/simple;
-	bh=KjBlPCfQximDlVHpdWiFGCPiSK8L8TxiTlsYVikdQqA=;
-	h=Date:From:To:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=Bdo+sWhMvGNHNz79AYcBjJ4/ErXzB9JSHfBvV+tBEbpoHTE10SQE4PXPDWcofyhTZDoXWy8IxJa2ZgJb+/TAWeN5il1DqIT2zvy8rsVir1E2UhbbAcwr+hA4nq5IWuLOTAALQjY/XE12qNgqEq0L1lLaEXfVq1XsyQXwuuiIrK4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=tlwHxlQ3; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=9lriKmbe; arc=none smtp.client-ip=185.25.250.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
+	s=arc-20240116; t=1759003132; c=relaxed/simple;
+	bh=puK18UgkTjRQZyycxUA3dWot+u/ZAMuIse62R7rezV8=;
+	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=U5bpCBxY8l4u2aIjIqedMdCmW0DmXB7BkUDLTwE97Nqxd4+/56GJvCoDaBBfkEqnbVodccZuZXIwq7lHakM+Qu7IN2Cb5bIjkeA8kPA4zdeS4hMwL05cL1MFdNj+J97ZEaZCt622IvMRv7B2MA/HXVJSw7lu5+qEJrOhUoPa5wk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=IPoVXewJ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=AHXYDW1o; arc=none smtp.client-ip=103.168.172.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="tlwHxlQ3";
-	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="9lriKmbe"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
-	s=r2025; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:
-	References:In-Reply-To:Subject:To:From:Date:From:To:Cc:Reply-To:Subject:Date:
-	Sender:Content-ID; bh=6u432JJXaKmAuIL1N6ivbWDmIS6nKaeX+HPgf6WFqCs=;
-	t=1759002860; x=1760212460; b=tlwHxlQ3NJckpBB3FPFV4ZcMHukq06Qe318Ab70JN4dHXMJ
-	2YWUwTlj/tQ+WPULa9+IQM/gsqzd3F6ViSHjX+qLf9bGSvwCZVGs05th6RO1fzfgLXEgPWwsu8C7g
-	LnZbJGxd03Hn5fW4B+B1I7RIPtTLl1MuOtThRKytD3fIcZ0=;
-DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=slavino.sk; s=e2025; h=Content-Transfer-Encoding:Content-Type:MIME-Version:
-	Message-ID:References:In-Reply-To:Subject:To:From:Date:From:To:Cc:Reply-To:
-	Subject:Date:Sender:Content-ID;
-	bh=6u432JJXaKmAuIL1N6ivbWDmIS6nKaeX+HPgf6WFqCs=; t=1759002860; x=1760212460; 
-	b=9lriKmbelhYT/1lcQKayPradYX49A31T6AP01PrhfUNcMIGJSch4LUTFaGgPQ55MK9hv8loFBjg
-	ZwRtBztbmDw==;
-Received: from dovex.skk ([192.168.10.12])
-	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96)
-	(envelope-from <linux@slavino.sk>)
-	id 1v2azp-000NH5-14;
-	Sat, 27 Sep 2025 21:54:17 +0200
-Date: Sat, 27 Sep 2025 19:54:14 +0000
-From: Slavko <linux@slavino.sk>
-To: Kerin Millar <kfm@plushkava.net>,
- "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Subject: Re: list elements of set
-In-Reply-To: <8f4996a6-2b16-477a-b753-515d2af8a84c@app.fastmail.com>
-References: <3a8cc7e8-febf-4b28-ac22-ad03f936e879@app.fastmail.com> <8902E14F-5A51-4455-B40A-AA8B4F97BED3@getmailspring.com> <5f21dad4-bdad-4b03-bbfd-c767768058e8@app.fastmail.com> <589E8454-6788-40BA-A2F5-B60ACEADD97B@slavino.sk> <8f4996a6-2b16-477a-b753-515d2af8a84c@app.fastmail.com>
-Message-ID: <826D2B00-B189-4992-9535-67B314C2678F@slavino.sk>
+	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="IPoVXewJ";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="AHXYDW1o"
+Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
+	by mailfout.phl.internal (Postfix) with ESMTP id 827ACEC0090;
+	Sat, 27 Sep 2025 15:58:49 -0400 (EDT)
+Received: from phl-imap-08 ([10.202.2.84])
+  by phl-compute-10.internal (MEProxy); Sat, 27 Sep 2025 15:58:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+	 h=cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm3; t=1759003129;
+	 x=1759089529; bh=0lvZqvM36v7IcNdDZjjrSZCwiByf/Z+r4AmkEdBfUw4=; b=
+	IPoVXewJDN9nxbyZpsyujsoKCByvPzbIzgBwsh2TEPBt1tfMl+Pdec0R/JkgDEYm
+	h2ooVWrutbfeE3d5kV6Tbx/DSR38OADO758kWbX4z+Dc2sthq0am1iQi5kmY9SH2
+	p1MwHrF5NpFLumc/xhbnOXUVRQ4vxGhNhwAfS+lycaHQS7AycDEwhpwLHE3Y1geH
+	RqhMU2QpFOxN+9+OPWECibUxK7bAquMpcjgwL4SfdrSIqIykeSE+qiL6KD0se2Rf
+	1mmanH/mA35rjOp4pGBWbsPacUFrU0S4y7vIi11SxTlEzts8rDce6RrjV09riCB4
+	oamA+TVdx5jurOzjYiu2Kg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
+	:x-me-sender:x-sasl-enc; s=fm2; t=1759003129; x=1759089529; bh=0
+	lvZqvM36v7IcNdDZjjrSZCwiByf/Z+r4AmkEdBfUw4=; b=AHXYDW1onqF+BSLLc
+	cVUTT6VovKFGXYVM+xQ9smD610kOiFJveD/HMcNLoHypidCb9ICUoF49A7BmFvSN
+	jz5i8JOgeBHuvIl3KLP67G+qOXnzF52ldPoO0cAEiKjuURW33nd+98cbBi1OLE9k
+	wDty4XDdLLfclLmZVTxRHQYXWGVPeoOkTZbB7wqORcuDA0Eo3lMAbmTworQHKDiv
+	Mzs/GdcCvYqSLC4Aaj+WGO+PtRBlamoEqjhzt4z7B5WOTKTcViqO9Wx8l/fPmTCI
+	i4G72dj8Qx83/2rA86VAR69cRx6d7/MJC7opZjx6mCKq0Tt9C7XWErGjUeFfQHV7
+	STxSg==
+X-ME-Sender: <xms:-UHYaOoNHbOcIRtnp44E7_XgcpJ22-heXIdkPvUky3Ba1a69uejwTw>
+    <xme:-UHYaHf8Jfn5bgJikudMXPrS6mwr57CN0zw4SPGDw0r-hqT6RWa33pfX4ftfO5uFJ
+    0obNJzy9_5dm04iCedFrWEJvTa-UKL0r5OYb_nXgCwCncZBBTby>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdejfeduhecutefuodetggdotefrod
+    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
+    ihhlohhuthemuceftddtnecunecujfgurhepofggfffhvffkjghfufgtgfesthhqredtre
+    dtjeenucfhrhhomhepfdfmvghrihhnucfoihhllhgrrhdfuceokhhfmhesphhluhhshhhk
+    rghvrgdrnhgvtheqnecuggftrfgrthhtvghrnhepgfeftdefjeeuvddvudffffdtffffud
+    efvdeuueelgedugfekgeekveejteehvdevnecuvehluhhsthgvrhfuihiivgeptdenucfr
+    rghrrghmpehmrghilhhfrhhomhepkhhfmhesphhluhhshhhkrghvrgdrnhgvthdpnhgspg
+    hrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheplhhinhhugies
+    shhlrghvihhnohdrshhkpdhrtghpthhtohepnhgvthhfihhlthgvrhesvhhgvghrrdhkvg
+    hrnhgvlhdrohhrgh
+X-ME-Proxy: <xmx:-UHYaJXDzr2kyIuU4jjpZcEgLn9M3NtLSJVHLuw2Bj3MqJugT7Md1g>
+    <xmx:-UHYaHht9z8waMXMPkNGbChexBz_DyWk-mYVC2hp8YggB7Nkd1t6IA>
+    <xmx:-UHYaM_pGW0VkMsRciMzNENjfTvKui5z724GmCDCnX1uZ5_eG64Qsg>
+    <xmx:-UHYaJByhGYwkTOz_eWGQYn0Kr3bG_FfI4mWUZFfTym60LdLihETKQ>
+    <xmx:-UHYaE5_3fEXLRtc1A-l9jYkaSb9IIRVwLPCIvKhArOFxStCh-4cbx5H>
+Feedback-ID: i2431475f:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id 2685F2CE0072; Sat, 27 Sep 2025 15:58:49 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+X-ThreadId: AmmvrmHs2kGs
+Date: Sat, 27 Sep 2025 20:58:28 +0100
+From: "Kerin Millar" <kfm@plushkava.net>
+To: Slavko <linux@slavino.sk>,
+ "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Message-Id: <f62b7c23-a152-4ec3-a9cb-f97c322ab1f1@app.fastmail.com>
+In-Reply-To: <826D2B00-B189-4992-9535-67B314C2678F@slavino.sk>
+References: <3a8cc7e8-febf-4b28-ac22-ad03f936e879@app.fastmail.com>
+ <8902E14F-5A51-4455-B40A-AA8B4F97BED3@getmailspring.com>
+ <5f21dad4-bdad-4b03-bbfd-c767768058e8@app.fastmail.com>
+ <589E8454-6788-40BA-A2F5-B60ACEADD97B@slavino.sk>
+ <8f4996a6-2b16-477a-b753-515d2af8a84c@app.fastmail.com>
+ <826D2B00-B189-4992-9535-67B314C2678F@slavino.sk>
+Subject: Re: list elements of set
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-D=C5=88a 27=2E septembra 2025 19:19:42 UTC pou=C5=BE=C3=ADvate=C4=BE Kerin =
-Millar <kfm@plushkava=2Enet> nap=C3=ADsal:
->On Sat, 27 Sep 2025, at 6:24 PM, Slavko wrote:
->> D=C5=88a 27=2E septembra 2025 10:59:54 UTC pou=C5=BE=C3=ADvate=C4=BE Ke=
-rin Millar=20
-
->> 1=2E the nftables is list of objects, thus one must first filter the "m=
-etadata"
->>    object, it is first list item, but who know if it is guaranted
+On Sat, 27 Sep 2025, at 8:54 PM, Slavko wrote:
+> D=C5=88a 27. septembra 2025 19:19:42 UTC pou=C5=BE=C3=ADvate=C4=BE Ker=
+in Millar=20
+> <kfm@plushkava.net> nap=C3=ADsal:
+>>On Sat, 27 Sep 2025, at 6:24 PM, Slavko wrote:
+>>> D=C5=88a 27. septembra 2025 10:59:54 UTC pou=C5=BE=C3=ADvate=C4=BE K=
+erin Millar=20
 >
->I don't think this particular criticism carries much weight=2E
+>>> 1. the nftables is list of objects, thus one must first filter the "=
+metadata"
+>>>    object, it is first list item, but who know if it is guaranted
+>>
+>>I don't think this particular criticism carries much weight.
+>
+> I understand how are metadata useful, and i do not ask to omit it, but
+> my idea is/was that "nftables" can be object (instead of list):
+>
+>     {"nftables": {
+>         "metadata": {...},
+>         "sets": [
+>             {...},
+>             ...
+>         ]
+>     }}
 
-I understand how are metadata useful, and i do not ask to omit it, but
-my idea is/was that "nftables" can be object (instead of list):
-
-    {"nftables": {
-        "metadata": {=2E=2E=2E},
-        "sets": [
-            {=2E=2E=2E},
-            =2E=2E=2E
-        ]
-    }}
-
-Thus one can just use:
-
-    jq "=2Enftables=2Esets[]"
-
-Instead of ugly:
-
-    jq ''=2Enftables[1:][]=2Eset'
-
-Or too long:
-
-    jq '=2Enftables[] | select(=2Eset !=3D null)=2Eset'
-
-regards
-
+Ah, I see.
 
 --=20
-Slavko
-https://www=2Eslavino=2Esk/
+Kerin Millar
