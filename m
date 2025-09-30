@@ -1,122 +1,159 @@
-Received: from fout-a7-smtp.messagingengine.com (fout-a7-smtp.messagingengine.com [103.168.172.150])
+Received: from purple.birch.relay.mailchannels.net (purple.birch.relay.mailchannels.net [23.83.209.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AADC28371
-	for <netfilter@vger.kernel.org>; Sat, 27 Sep 2025 19:58:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.150
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759003132; cv=none; b=DsgaREOTivwAPrCYrsuTCv81EoCC62os/rkyEl22+eHLEo76dUkzsRQXnbboGR3BSoQIujAN+h/nYkbiYQxWz0wUZR4DRkCi1VsKhZS3wa2UEPdz9J/VkdQtLXaSlnSOLLxteQn8CJ56I5xgfGzBZWNt0Zi7vzMfzCYSlgpuM1E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759003132; c=relaxed/simple;
-	bh=puK18UgkTjRQZyycxUA3dWot+u/ZAMuIse62R7rezV8=;
-	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=U5bpCBxY8l4u2aIjIqedMdCmW0DmXB7BkUDLTwE97Nqxd4+/56GJvCoDaBBfkEqnbVodccZuZXIwq7lHakM+Qu7IN2Cb5bIjkeA8kPA4zdeS4hMwL05cL1MFdNj+J97ZEaZCt622IvMRv7B2MA/HXVJSw7lu5+qEJrOhUoPa5wk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=IPoVXewJ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=AHXYDW1o; arc=none smtp.client-ip=103.168.172.150
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="IPoVXewJ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="AHXYDW1o"
-Received: from phl-compute-10.internal (phl-compute-10.internal [10.202.2.50])
-	by mailfout.phl.internal (Postfix) with ESMTP id 827ACEC0090;
-	Sat, 27 Sep 2025 15:58:49 -0400 (EDT)
-Received: from phl-imap-08 ([10.202.2.84])
-  by phl-compute-10.internal (MEProxy); Sat, 27 Sep 2025 15:58:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-	 h=cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1759003129;
-	 x=1759089529; bh=0lvZqvM36v7IcNdDZjjrSZCwiByf/Z+r4AmkEdBfUw4=; b=
-	IPoVXewJDN9nxbyZpsyujsoKCByvPzbIzgBwsh2TEPBt1tfMl+Pdec0R/JkgDEYm
-	h2ooVWrutbfeE3d5kV6Tbx/DSR38OADO758kWbX4z+Dc2sthq0am1iQi5kmY9SH2
-	p1MwHrF5NpFLumc/xhbnOXUVRQ4vxGhNhwAfS+lycaHQS7AycDEwhpwLHE3Y1geH
-	RqhMU2QpFOxN+9+OPWECibUxK7bAquMpcjgwL4SfdrSIqIykeSE+qiL6KD0se2Rf
-	1mmanH/mA35rjOp4pGBWbsPacUFrU0S4y7vIi11SxTlEzts8rDce6RrjV09riCB4
-	oamA+TVdx5jurOzjYiu2Kg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm2; t=1759003129; x=1759089529; bh=0
-	lvZqvM36v7IcNdDZjjrSZCwiByf/Z+r4AmkEdBfUw4=; b=AHXYDW1onqF+BSLLc
-	cVUTT6VovKFGXYVM+xQ9smD610kOiFJveD/HMcNLoHypidCb9ICUoF49A7BmFvSN
-	jz5i8JOgeBHuvIl3KLP67G+qOXnzF52ldPoO0cAEiKjuURW33nd+98cbBi1OLE9k
-	wDty4XDdLLfclLmZVTxRHQYXWGVPeoOkTZbB7wqORcuDA0Eo3lMAbmTworQHKDiv
-	Mzs/GdcCvYqSLC4Aaj+WGO+PtRBlamoEqjhzt4z7B5WOTKTcViqO9Wx8l/fPmTCI
-	i4G72dj8Qx83/2rA86VAR69cRx6d7/MJC7opZjx6mCKq0Tt9C7XWErGjUeFfQHV7
-	STxSg==
-X-ME-Sender: <xms:-UHYaOoNHbOcIRtnp44E7_XgcpJ22-heXIdkPvUky3Ba1a69uejwTw>
-    <xme:-UHYaHf8Jfn5bgJikudMXPrS6mwr57CN0zw4SPGDw0r-hqT6RWa33pfX4ftfO5uFJ
-    0obNJzy9_5dm04iCedFrWEJvTa-UKL0r5OYb_nXgCwCncZBBTby>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggdejfeduhecutefuodetggdotefrod
-    ftvfcurfhrohhfihhlvgemucfhrghsthforghilhdpuffrtefokffrpgfnqfghnecuuegr
-    ihhlohhuthemuceftddtnecunecujfgurhepofggfffhvffkjghfufgtgfesthhqredtre
-    dtjeenucfhrhhomhepfdfmvghrihhnucfoihhllhgrrhdfuceokhhfmhesphhluhhshhhk
-    rghvrgdrnhgvtheqnecuggftrfgrthhtvghrnhepgfeftdefjeeuvddvudffffdtffffud
-    efvdeuueelgedugfekgeekveejteehvdevnecuvehluhhsthgvrhfuihiivgeptdenucfr
-    rghrrghmpehmrghilhhfrhhomhepkhhfmhesphhluhhshhhkrghvrgdrnhgvthdpnhgspg
-    hrtghpthhtohepvddpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheplhhinhhugies
-    shhlrghvihhnohdrshhkpdhrtghpthhtohepnhgvthhfihhlthgvrhesvhhgvghrrdhkvg
-    hrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:-UHYaJXDzr2kyIuU4jjpZcEgLn9M3NtLSJVHLuw2Bj3MqJugT7Md1g>
-    <xmx:-UHYaHht9z8waMXMPkNGbChexBz_DyWk-mYVC2hp8YggB7Nkd1t6IA>
-    <xmx:-UHYaM_pGW0VkMsRciMzNENjfTvKui5z724GmCDCnX1uZ5_eG64Qsg>
-    <xmx:-UHYaJByhGYwkTOz_eWGQYn0Kr3bG_FfI4mWUZFfTym60LdLihETKQ>
-    <xmx:-UHYaE5_3fEXLRtc1A-l9jYkaSb9IIRVwLPCIvKhArOFxStCh-4cbx5H>
-Feedback-ID: i2431475f:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 2685F2CE0072; Sat, 27 Sep 2025 15:58:49 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CD1C86352
+	for <netfilter@vger.kernel.org>; Tue, 30 Sep 2025 02:18:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=23.83.209.150
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1759198708; cv=pass; b=r3Joer+FrWTWyg87vAB7TmBmItd+iJpZM8UB7pl1TLIdlV9KT5PcAF/gmbRomhNC7M6O5z2Mv1VokPp09I169CKmjvsYyLHmE0PU/alCpMfN6CIDK0YnQ7QJhJp1zO12qLfFu88dii4J4wNcCUddXNcLiEePGcCb8ONQj8wObp8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1759198708; c=relaxed/simple;
+	bh=MaS8SJR5QFECPQlKzve6XVbFnyxJKpNK606CTsQsXpE=;
+	h=Message-ID:Subject:From:To:Date:Content-Type:MIME-Version; b=ZSKuZg4yZDvJmXU5D1jjCMsG8wjHJhOaDTPmsXuTd/lhBMuyRtRfFhTEfJ6n6gUBBc5xcPSesRDfwM42hMcl7NePmTFdzOaS7SN5lSqkVKbcpy+xl1IIWVXsn4vu+vuT+KGqXAzishggIfvgl99HwklWsATDvd2R4LvkH/zUHNY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org; spf=pass smtp.mailfrom=scientia.org; arc=pass smtp.client-ip=23.83.209.150
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=scientia.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+Received: from relay.mailchannels.net (localhost [127.0.0.1])
+	by relay.mailchannels.net (Postfix) with ESMTP id 696BD8A04AE
+	for <netfilter@vger.kernel.org>; Tue, 30 Sep 2025 01:53:28 +0000 (UTC)
+Received: from cpanel-007-fra.hostingww.com (trex-blue-5.trex.outbound.svc.cluster.local [100.109.34.121])
+	(Authenticated sender: instrampxe0y3a)
+	by relay.mailchannels.net (Postfix) with ESMTPA id C5BD88A0A91
+	for <netfilter@vger.kernel.org>; Tue, 30 Sep 2025 01:53:27 +0000 (UTC)
+ARC-Seal: i=1; s=arc-2022; d=mailchannels.net; t=1759197208; a=rsa-sha256;
+	cv=none;
+	b=JXBaNbEinYQGo9dAoI4kBU162oqNseLhgodoe0l1JKzGZdU4HK/B6L4qLQsou32Zn9P9bd
+	TMjE2KyYbE/g6dP5YlV6o7P4lFucIDiTchJijHkx8zIbPdqTkJN3n1FwvISoxv4xcc0nit
+	XRkA5wJ/TWbCU5o4LgExHAOvzFsThNsoBJyXn8VuLOOlNP5MIFU/0xbRj7CzOKSbxNcue1
+	hJGsukKmJ+yon9Hz3K0aeppItJF1JWhXDgKdpgPpn7//8zPG9t1CbD+rg7zV6gJQ2t654m
+	6L6/Ba6w47rLVIFCrbZD1qmC45IoWJuDpuYs01lRlgjHsN458Oipp1ZFfPn97w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=mailchannels.net;
+	s=arc-2022; t=1759197208;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=+7osOp5Uk0y+C9f7Xrq6EfE7YrMb5p232FLlCU4+APU=;
+	b=z+2W+XZ/b2j4nL1EP27TDl0XtOo2YllWa1717fPtqTXLpfdSWnv2TvjVGSIkSHPamjGQNU
+	iP25RHOkJc8fBaWg3AeUgvt/j5SRtu17sTjB/2fNPs7GCYtxaManQHDNdpyepGLRV9VgHI
+	fVr508Q0wWQxe5Uu8OApsnR8nX/IzoAW+9AkJo/YkyJH7NeeG1PzqdRTt4hC/05qPNHC+H
+	PsnmHkLu9gSkfwpVfW1Bh+fIukX+SPqJ6UoaMhnVkq6KH3JSR/C3OAPi8SF301XGhkQ99n
+	qk9iv7Xw4lzpF+Fw/h36FxyXGHzxDNq2GOBpBtytrwY0kEWcl+fncuckhqrhww==
+ARC-Authentication-Results: i=1;
+	rspamd-867694b6c6-mmmr6;
+	auth=pass smtp.auth=instrampxe0y3a smtp.mailfrom=calestyo@scientia.org
+X-Sender-Id: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MC-Relay: Neutral
+X-MailChannels-SenderId: instrampxe0y3a|x-authuser|calestyo@scientia.org
+X-MailChannels-Auth-Id: instrampxe0y3a
+X-Juvenile-Befitting: 7fed8ecf38ecaabf_1759197208310_4253736870
+X-MC-Loop-Signature: 1759197208310:2452123960
+X-MC-Ingress-Time: 1759197208310
+Received: from cpanel-007-fra.hostingww.com (cpanel-007-fra.hostingww.com
+ [3.69.87.180])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384)
+	by 100.109.34.121 (trex/7.1.3);
+	Tue, 30 Sep 2025 01:53:28 +0000
+Received: from [212.104.214.84] (port=29624 helo=[10.2.0.2])
+	by cpanel-007-fra.hostingww.com with esmtpsa  (TLS1.3) tls TLS_AES_256_GCM_SHA384
+	(Exim 4.98.2)
+	(envelope-from <calestyo@scientia.org>)
+	id 1v3PYU-000000048g8-3dUY
+	for netfilter@vger.kernel.org;
+	Tue, 30 Sep 2025 01:53:26 +0000
+Message-ID: <db91f59a7a80fa48a46edbd90bf5da8a65dd6c3a.camel@scientia.org>
+Subject: nftables: conditionally enabling rules?
+From: Christoph Anton Mitterer <calestyo@scientia.org>
+To: netfilter@vger.kernel.org
+Date: Tue, 30 Sep 2025 03:53:25 +0200
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.56.2-3 
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: AmmvrmHs2kGs
-Date: Sat, 27 Sep 2025 20:58:28 +0100
-From: "Kerin Millar" <kfm@plushkava.net>
-To: Slavko <linux@slavino.sk>,
- "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Message-Id: <f62b7c23-a152-4ec3-a9cb-f97c322ab1f1@app.fastmail.com>
-In-Reply-To: <826D2B00-B189-4992-9535-67B314C2678F@slavino.sk>
-References: <3a8cc7e8-febf-4b28-ac22-ad03f936e879@app.fastmail.com>
- <8902E14F-5A51-4455-B40A-AA8B4F97BED3@getmailspring.com>
- <5f21dad4-bdad-4b03-bbfd-c767768058e8@app.fastmail.com>
- <589E8454-6788-40BA-A2F5-B60ACEADD97B@slavino.sk>
- <8f4996a6-2b16-477a-b753-515d2af8a84c@app.fastmail.com>
- <826D2B00-B189-4992-9535-67B314C2678F@slavino.sk>
-Subject: Re: list elements of set
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-AuthUser: calestyo@scientia.org
 
-On Sat, 27 Sep 2025, at 8:54 PM, Slavko wrote:
-> D=C5=88a 27. septembra 2025 19:19:42 UTC pou=C5=BE=C3=ADvate=C4=BE Ker=
-in Millar=20
-> <kfm@plushkava.net> nap=C3=ADsal:
->>On Sat, 27 Sep 2025, at 6:24 PM, Slavko wrote:
->>> D=C5=88a 27. septembra 2025 10:59:54 UTC pou=C5=BE=C3=ADvate=C4=BE K=
-erin Millar=20
->
->>> 1. the nftables is list of objects, thus one must first filter the "=
-metadata"
->>>    object, it is first list item, but who know if it is guaranted
->>
->>I don't think this particular criticism carries much weight.
->
-> I understand how are metadata useful, and i do not ask to omit it, but
-> my idea is/was that "nftables" can be object (instead of list):
->
->     {"nftables": {
->         "metadata": {...},
->         "sets": [
->             {...},
->             ...
->         ]
->     }}
+Hey.
 
-Ah, I see.
+What I do is about the following:
 
---=20
-Kerin Millar
+I have one main rules file, with some basic rules like:
+   table inet filter {
+   	chain input {
+   		type filter hook input priority filter; policy drop;
+   	=09
+  =20
+   		ct state established,related accept
+   		ct state invalid drop
+   	=09
+   		meta iif lo accept
+   	=09
+   		icmp type @drop-icmp_types drop
+   		icmpv6 type @drop-icmpv6_types drop
+   		meta l4proto {icmp, ipv6-icmp} accept
+   	}
+   	chain output {
+   		type filter hook output priority filter; policy accept;
+   	}
+   	chain forward {
+   		type filter hook forward priority filter; policy drop;
+   	}
+   }
+   include "/etc/nftables/rules.d/*.nft"
+
+
+Via the include, any other rules can be added (e.g. allowing ssh)
+merely by placing an according file in the directory.
+
+
+Similarly, I'd like to be able to choose between strong/weak host
+model.
+
+Ideally, the ruleset would default to strong host model, via something
+like:
+   nft add rule inet filter input fib daddr . iif type !=3D { local, broadc=
+ast, multicast } drop
+and only if some use-soft-host-model.nft is placed in rules.d/ it would
+remove that rule.
+Also, I'd prefer to avid any scripted generation of the rules... with
+that it would of course be easy.
+Also, no workarounds that cost performance, e.g. by adding the rule in
+a regular chain, and have the included file flushthat.
+
+How it cannot be done:
+- I cannot simply set the rule in my base file and delete/destroy it in
+  some included use-soft-host-model.nft file, because AFAIU, I can't
+  really get the handle of the rule or manually specify one.
+  So that would only work if I resort to scripting.
+- I tried something like:
+    define hostmodel=3Dstrong
+  (which could be re-defined to "weak" by an included file)
+  and explicitly include ".../$hostmodel".
+  But that doesn't work either as var's aren't expanded in strings and
+  include doesn't accept the plain var.
+
+The only that really works is e.g.:
+- insert the rule (in the beginning of the chain) via the included file
+- include "/etc/nftables/hostmodel.nft"
+  and have that be a symlink to either weak (empty) or strong
+  (contains=C2=A0the above rule) file...
+
+But that wouldn't give me the default-to-strong.
+
+
+Any ideas? Or is there something like conditional importing?
+
+It would be nice if one could e.g. simply say:
+  include "foo" if $var eq bar
+even better would be, if one could give include a further parameter
+that ignores non-existent files (which right now only works with
+wildcards).
+
+
+Thanks,
+Chris.
