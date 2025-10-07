@@ -1,68 +1,102 @@
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A123223AD
-	for <netfilter@vger.kernel.org>; Tue,  7 Oct 2025 11:10:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE9741FDE39
+	for <netfilter@vger.kernel.org>; Tue,  7 Oct 2025 22:45:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1759835453; cv=none; b=dAGT2FXsgKOf4XHiLtcPejI90+ZRd1CzIvnlK/Q+DZzPm8QWAhvMAl20NUcKWoS6y7EtICk7aqwpv47HWCi2Buh9e58cH2JHkS1p3NjRuquwEnYfpu0pm2W3TOLX9UJjCz6hi2Mgpmo1SThS7QptGYOi68YUnb7SKGviXp6Z05I=
+	t=1759877138; cv=none; b=GUOV5Kpoe/i01Jci7iF3UBaJo59LJgdjxKAAdDE490czGza/xfIlq+i0neXNIsYHc2N/m82yGfqfTzlAnSojeU1u7Hpvllf40z80/cboc9/WF0uqo1pUCNAGN5OYS0TRTOTnAQjJKGxDISe89HkoVpUY7eBdP8z3XobKY10EYik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1759835453; c=relaxed/simple;
-	bh=L3Vg9v8WMaSOkm5ztLhXsfuHGkmn2ay7a/YYNPQpFCg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=shBnQMDU/XqtGp7AhX8nHd3RkwVo4JHW525jNPwWRjUFMRW+T/zZ/+TiDZC9qLCGG1ckYpMi6OOC2olJZnFsTomjwZDCnDroZGf6l7aOWTvFQ/R09kfmKsuQ99pqIBv1Sv/Hae84aj3sk+WaKjXixSv2lZCYblUzytPwzjQIE2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=UWjQTTBi; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=v6S4oxwG; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+	s=arc-20240116; t=1759877138; c=relaxed/simple;
+	bh=2gnV7K7Z5zjDWWxk2NSd4Ib75O43KxpJwJIBi/d65eI=;
+	h=Date:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=THISLRre9VuDdAs8vHT0CaMwKNLOGrIf5YuKzO/5/c0ZD09yInI/Fl9HbsQkhbHDrtZk1M/kZ60CFYPecwX+GL8yFHWOAkBFufqKVN3LqTtkIeWDrUWhZSIWiEmWnQNWwDRENBM09rI/2g/BEYALDjzgei8R8NGCTaTWWnpBkJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZHkeYfiA; arc=none smtp.client-ip=209.85.222.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="UWjQTTBi";
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="v6S4oxwG"
-Received: by mail.netfilter.org (Postfix, from userid 109)
-	id 19D7560272; Tue,  7 Oct 2025 13:10:50 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1759835450;
-	bh=JcPngw9j4c/2yauBwIJ2sZkWRmkRUy5K2DR4K/vISuc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UWjQTTBiTpnC7OkcOe3kTK/K0snp54O+jgzBSwdh20JcIY2yEgmAMuzBNSMs3mEFj
-	 0TNsyeKXNxyDUrGoOcDQmtD+0tpMkugc/4wOaNXppo00zBEYWZkQnj/EwKOarpxrl+
-	 +ox2h/dnw9AeOFJZRENNVLOCB+29osyrhagClC2etXQOvWiArD4wB0cUOuaHZWzdI8
-	 a4z0xHHaEqCB4icMja6Sb+5+menWwvWSyRQBBg/x+H+bTFyomBBDNgU3PO5zh3s7CG
-	 HJ6+KpZShTUp6zn9jzV0aFrt/oX9OcvuRjxBM0zR5vHV56sYtly2IdGkiYND/bK3WT
-	 Lq0edqYPsCQLw==
-X-Spam-Level: 
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 838886026C;
-	Tue,  7 Oct 2025 13:10:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1759835449;
-	bh=JcPngw9j4c/2yauBwIJ2sZkWRmkRUy5K2DR4K/vISuc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=v6S4oxwGwk/n+jjuux3dE3LgMy56JKTiDBSThx/V4lS7oAFK5w0+3lvm5X5DW247S
-	 mwVrCoY+1T+3+ekuneWcbFHanuNJLi7OnMJScqQbAA0AdJJrb6nVjeWyXeUFZle3ad
-	 jI3uHC/bESRXP5aOga1sSkct//J28dFgmyaZySBpKg1iFplOt8goQkEPcoVR71N1HY
-	 we1XsRxfTtF6oo5oxIbFQj2n2CkTCtjk5oRX5nnQaS0h2jdhWGX9CQQvozeXN3KLHh
-	 tiPTJD6/0EEF6zdSMybMyl0OVpVsrXUG0sLKhiRKXwTfOaTT9Oa9nCsOcRFrS3Q8Bx
-	 v24Tu9TWe63Cw==
-Date: Tue, 7 Oct 2025 13:10:46 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: imnozi@gmail.com
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZHkeYfiA"
+Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-8572d7b2457so40244485a.1
+        for <netfilter@vger.kernel.org>; Tue, 07 Oct 2025 15:45:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1759877135; x=1760481935; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:from:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=21WaKikB8izhOWh9C7dBki8FxOFmgGJ/j0W5esF18Us=;
+        b=ZHkeYfiAsylqJ6JEGxmXUYDAz5IAFnCttK9ApkQ0p7yguazYVO2elFpj34CVBnsFbx
+         Vg2rAMddZaYWdbSNMaN/mf61Vu1/vmzh5tJhoNQ//BLWxROpZaQnw8cegICyD6puqmz3
+         Z0kKNw5H+f+S8DvJFsXoIJ60XlyATkV9DnDa8iQ1M/uD0KfS+OJ9MXW0zLsRqpPcPnz6
+         hfyZHqil00R4k+cYxHhn9ikgXtWtmSHbAeeed4GQatFyowKi+bdAnVe0rk5VVne+/EgK
+         vfYzXo269CyONKwL0te9xJgQAo21rByxPPYUNkk1Ow9U0YHgpWKls2fo1E4ivGsXfDP2
+         Etqg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1759877135; x=1760481935;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=21WaKikB8izhOWh9C7dBki8FxOFmgGJ/j0W5esF18Us=;
+        b=WQd4yq8DS/FXOLJqeZWBJyQbazsTRxXO18j6GrmbmcEblFrehqSw3OyMyC9FKCHaTe
+         7rpOReR9lBajzqaSZ3Plmk2dpSDYlzoPdrIk++oWcLn0LVL50gnXb6hMMCVXRsnnM7gL
+         p9FCY7el6WNSSn6lkLjl8p9xBh94rsGaiy+SwVTgk/4zuwSs/MLapu6NPewJnVcPK/Zz
+         0QFLNt8pmzttjbPKURMgetp0q71RGIfKEOgq8F8HUqbECRQluAz74j/zbMIbC6dbV6M6
+         fWRZGm7W4JBVYhUdH3DNEd2DHmAXDdLmjF8rZCv4wRDXut5rpR4NTSaf8hgn0cEAHL3/
+         ZBaA==
+X-Gm-Message-State: AOJu0YzUiYFyXyY8N51HYbICfvJgadB0Fk5TjtT5UfoFc9VD5eSf3dUw
+	sSEF0Yayj3dxhHqJswW7FNKO/2TghaQzujoNqb6mui2Kj5jqbEKMQhUUv/XNcg==
+X-Gm-Gg: ASbGncugAJfSoJ2wJHzvvOFcED1WGuyWCyQ4cGifHihUW78ytN5wWWM3dMpkNbx+N6B
+	LvJeAScrhZSS8KEVjAtzYGHOyvnhQpQXeFV/pgF0iFcToxekhj0LAxqXCX6z9cVc/K5IjQUxECb
+	ieuKDUrJwb6/tx+eVKQhPcsVTNrAZOnA6ieTyUI0Szy+By+qw7fX25+g9whLeCGS2OGLb0opYJs
+	HdYNl50JREqZmq+Cjkga0nF0G7XRawx84Hn0+BZ945xMC/tO9GqcaV21QXgZi3Xnal6xVopdt85
+	mR8D+n9ukoKu54B0nzGr3UveeTgyHt7tIxEXw1T2QPEUByb8IrRKDoLvjpCx7YqAtfabk6d8Nkq
+	NRBUte54R+MThG9r8S5HbvmejmuKieR1HvwP5iWYb
+X-Google-Smtp-Source: AGHT+IH5sfHgyaPl/BkeRRMtHHcJsi8Z3ENw/gAZ8tzW9y7RNh0riB5SkJ2f0DW60/j9+SRO0f2qXw==
+X-Received: by 2002:a05:620a:d95:b0:857:22dd:fbc1 with SMTP id af79cd13be357-8836f55cc43mr150549185a.37.1759877135257;
+        Tue, 07 Oct 2025 15:45:35 -0700 (PDT)
+Received: from playground ([204.111.226.76])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-87771129491sm1689531385a.2.2025.10.07.15.45.34
+        for <netfilter@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 07 Oct 2025 15:45:35 -0700 (PDT)
+Date: Tue, 7 Oct 2025 18:45:31 -0400
+From: <imnozi@gmail.com>
 Cc: netfilter@vger.kernel.org
 Subject: Re: nf-ct-list and nf-exp-delete
-Message-ID: <aOT1NhYSS65KwwJD@calendula>
+Message-ID: <20251007184531.73f3404d@playground>
+In-Reply-To: <aOT1NhYSS65KwwJD@calendula>
 References: <20251007051508.049e8821@playground>
+	<aOT1NhYSS65KwwJD@calendula>
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20251007051508.049e8821@playground>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Oct 07, 2025 at 05:15:08AM -0400, imnozi@gmail.com wrote:
-> [iptables v1.8.7; old, but it's what I have.]
+On Tue, 7 Oct 2025 13:10:46 +0200
+Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+
+> On Tue, Oct 07, 2025 at 05:15:08AM -0400, imnozi@gmail.com wrote:
+> > [iptables v1.8.7; old, but it's what I have.]
+> > 
+> > Why does 'nf-exp-delete -i [id]' *not* remove remove some conntrack entries even after being told to remove them multiple times? It deletes most entries for my purposes (if condition is met, delete conntrack entry and block the IP using ipset). Blocked IPs are DROPped on internet side, and RESET and REJECTed on the internal side. But from time to time, I see ESTABLISHED conns that don't get (can't be) deleted.
 > 
-> Why does 'nf-exp-delete -i [id]' *not* remove remove some conntrack entries even after being told to remove them multiple times? It deletes most entries for my purposes (if condition is met, delete conntrack entry and block the IP using ipset). Blocked IPs are DROPped on internet side, and RESET and REJECTed on the internal side. But from time to time, I see ESTABLISHED conns that don't get (can't be) deleted.
+> nf-exp-delete -i [id] ????
 
-nf-exp-delete -i [id] ????
+Given:
+----
+# nf-ct-list --tcp-state=ESTABLISHED --reply-src=10.X.X.2 -f details
+tcp ESTABLISHED 188.132.249.148:57992 -> 204.111.X.X:443 10.X.X.2:443 <- 188.132.249.148:57992 mark 17488 
+    id 0xf016f3da family inet refcnt 1 timeout 10m 17s <ASSURED,DNAT>
+----
+
+then:
+----
+nf-exp-delete -i 0xf016f3da
+----
+usually removes that entry from conntrack. In my experience, some entries are not, and cannot be, removed without drastic measures that would interrupt firewall operations.
+
+N
