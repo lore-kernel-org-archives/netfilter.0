@@ -1,177 +1,79 @@
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
+Received: from mail-oi1-f193.google.com (mail-oi1-f193.google.com [209.85.167.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA4733594A
-	for <netfilter@vger.kernel.org>; Fri, 10 Oct 2025 18:17:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70E941C5D7D
+	for <netfilter@vger.kernel.org>; Sat, 11 Oct 2025 10:09:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1760120231; cv=none; b=O4mPPfKRfdYoFrvj0rR7jnaQ6mSUJ5fuqz2/Eu1GlDH9alKIu8JXHxdRK49eM3ROOSitclga4wmufPIl7K9OBqomc4qak6IKnNXzLdgO/x5xCspuo8SyMSe2m62smxTbM8Pl1KfkLAUfZn/kUtFYGD2kSVAbB0ElsuDmmWGKsf8=
+	t=1760177380; cv=none; b=JdGaMh/v2vxIyLRuCwdsA9BwMHDyz+0mxJoVgqDieXh0lqiyrodgbDD7QsVqKjFJDZMS3TK5Fn++nXL7e5GsIzukfnLg1bZsDDFnqqovVY9EWAxy8jGogy63arNYxzkbvSowy4p9kXPtIuHb9OXe5rTXA1o6HQyJf1LGUCbmR4E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1760120231; c=relaxed/simple;
-	bh=+KLUIp5iJhllF7LBCnJTPHzz9Tlayqu+7ecQTOly1kU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sIH7O1EHn5J4mxPAPadYlv0JXCIapLl7ERZpAhpRsBjNhx2/nJnsJTuIWwUvn/tcM6NfxQbJU6GEuTW8aNWx93UwyLfLEjpIdr+fP40KTQssWhrvSJhSJmlIqW05m7CdYAjNYw2nOsS30vD8Y5eVAd6tw0UDd05DwAFtFHM5QlQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wj1+GK+v; arc=none smtp.client-ip=209.85.128.180
+	s=arc-20240116; t=1760177380; c=relaxed/simple;
+	bh=k//kyIXExDnlqRFw0nMAOwW+TouL3Ntwk9Ys8MOMUpI=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=iUXyZ9FZMQD624k9cHXNV52KiUQuwyz9YsGuwJiqrJiL0XS9O81kSJgPBu9qFPVhe/If5qY9tiSrLc3Vmi5ptMNobtIu4cESnBdb2cSpPpZ5Eyjb1TnI1BcY9h5aTNGpT9HlT3BhNUUd0e2f6wbG1ncKRbhKgPxqQcUSjtiynnI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KI0NSE22; arc=none smtp.client-ip=209.85.167.193
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wj1+GK+v"
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-71d6014810fso23008167b3.0
-        for <netfilter@vger.kernel.org>; Fri, 10 Oct 2025 11:17:09 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KI0NSE22"
+Received: by mail-oi1-f193.google.com with SMTP id 5614622812f47-43f9cc65f66so1528090b6e.2
+        for <netfilter@vger.kernel.org>; Sat, 11 Oct 2025 03:09:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1760120228; x=1760725028; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XRQC4/6HRbVOIhffpPQo+bNXnEW/+R3tjlrhZ3cZ8RM=;
-        b=Wj1+GK+vWJjioogzedVWi6X4E87d2lxBOTfRWq5+6PEToy6tX7fyw/PGM9d6cpY+nk
-         Clh+IL0CCToAEmwX92uZzSsmFztgpm3giiArlcIo+tz5FPt8xoV76ndlpxMbfwRXw0Ae
-         HepWoSZ54WSoCC6eTLwf1uU5Qpu58LYJXxyovdf9dfF6UdzoUlToAxt/s41PIo7fWAlJ
-         XXuXaawSz0XMuxMfGOwC3+jZAHWI1lxKThLNUYNK/LRv8Wg/I83s7shUY8Mx90i39Ib6
-         rHLZPyT18p+olG3XuNXZirjqHnfwgh99xdoZHLrrUEd6CYCiPHG2rHKKs0lXzBoG/SAf
-         ZGHg==
+        d=gmail.com; s=20230601; t=1760177374; x=1760782174; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=k//kyIXExDnlqRFw0nMAOwW+TouL3Ntwk9Ys8MOMUpI=;
+        b=KI0NSE22/KHt54fiwCS0ptPfpEPSuFPNXCXBUQT1aXaGeCOATpnExC5bd9nBCCm4zg
+         g9O638faOpNp4rOkcscp5nDN0t9cWXk1T2hf2hxEbr2dFxMaudKYMLK8TvRgPAdzNZ1A
+         FMgSCwCx1EgyKMTg99B2NjGvba6NyYj+zpWVCnRagnNM/ULKfQoGqSWcz6jW+Tf104lK
+         BuRvoumAeR62JKzo+D858VKLGxFrH8eyG8Ms+GTRiAINEjfCpEGqiivy86T0cDANvmdN
+         +h9l37/LhugddpIRN9qlIzoBI7FQIwLl/wDOEW9MzCkOB61FCTgWPT3GdW9vRn0L6M+j
+         h6Pg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1760120228; x=1760725028;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XRQC4/6HRbVOIhffpPQo+bNXnEW/+R3tjlrhZ3cZ8RM=;
-        b=oLbe39ngXxNxmDgJWVVUsxRFc62UbvBxjP9A9lPcJB2tO64OAuyTiJKJ02I239jUg1
-         T42ZsRVlwkj95MctI2O/oqJR0iJUvg3ytDM2HJwNUXEzE2Phbddy8Iz6kWrv0nlHqZDQ
-         jCfbVM8gbORdP+JUEFqHCfw8RbtDm6v+2w1wELRA5IlA6wC6f3+ZoNeMBY2ZvWEVFw5M
-         Ihm1yh+hviUlFiiCV1Jan2+UruV9xfcrm27Vcpn+eO8rs/IkMvdDfomYOis2UZYDCtTZ
-         JFzh9Ro9kpPdhvFyBfESPdC1VY+tePYbGRrsl1UcJpz6eoWnloSuFLrmTuoez4XFtgsR
-         m+/A==
-X-Gm-Message-State: AOJu0Yzi4cNrrOqy5g27DzqcfSGpljTyUlSBJuO2z+oQYnneBl1oIjBq
-	Pz9OsZuhYA5s2Y5jo7uctg2lM4w/4Z7fiiqwROSyT40vrrxjcCJhoYspPhy294Wf5V5uIDOxCFg
-	WgP1d/xAXx+Jnw4ReNCb1nYCVGjH4ckw=
-X-Gm-Gg: ASbGncsDxyDy9sK61aZu0nWa2mQeZLJ5Fr8OMEBUa3WN2ttzJm9rFTs4H8dMe0cyZXK
-	ACt/SNI0/Ku3WzoMR4WPkyokSgoNCiPqMQTkp1STyP3zeE9lfMtqxPYkoSmn/cjxG7tyTuRE9kH
-	YYMVB9GIMxUxXiPK88YuTI45hQRAjgXux1JK7G8iSnJ3zWo49AAAqFUJGub2SHeQLcJ/rgjyfGX
-	APkpzJnwFRD2sS987t90HmufgX5H8UC053e6yK9pxCcrNAM5MhMsVEHSgmLm4NTOoqt
-X-Google-Smtp-Source: AGHT+IEBlTD+i4qIWdzzVt+HsTzKimQb8SJRsMSDdE0yl4GOVJjwbD6pngHRWsAjWni+crZvk0GXcExpNcUBMELZ0e4=
-X-Received: by 2002:a05:690e:6cd:b0:63c:f5a6:f2e6 with SMTP id
- 956f58d0204a3-63cf5a70bdcmr32524d50.56.1760120228375; Fri, 10 Oct 2025
- 11:17:08 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1760177374; x=1760782174;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=k//kyIXExDnlqRFw0nMAOwW+TouL3Ntwk9Ys8MOMUpI=;
+        b=hwzXjdBbGMRgX0xUVENyN/CJA/zxOoVqe7AeUA7GLOy8EBE+rqUshR5wVSWsg1eMEt
+         yUxVn+HwkMiELPa1T4IWHtIvtNHGPd+DBkx9SNNOm2+EaNUynpW6ZMIAHFSXZO9pI/zc
+         jPsxln2ydimqwxIR8aPcld8hdMdLjkhVfuzDjCp4QfJuZkhdZnPAypLZtuVyz0XIftsh
+         kZ2f7BvF1zZnMkd0rK2EDcF8GUdipvi2l9jCD5x1S9tCMByGwanrACazOdvaG95J2kBv
+         9xCFoaA5iKksaRAEYTCxIwJpFRDhr5UWVEiv9q7kPLQxYQUBay/w8hBJd9Caxaa3T8+f
+         nlmA==
+X-Gm-Message-State: AOJu0YwgZ4BaNs7I7MRTfOLcy+g8PK7SujFHFY3uT4cXj65Q0soO9jj0
+	KS4PA3x1AlyY/f1LeRXgHMA6Yi4CNvad0zlLsPOvpE7K3pI0oNiXeBa5D2DTZysPaJiMfYQjBlC
+	jyF52O7zHiBkb1Soxx/1wCGqXSbVlYiW3TpWFoS0/wq+u
+X-Gm-Gg: ASbGncun15yDZSXI4RODPGdsEpNIvH2Am85Yroq1iOuDNGkhD3NpUgbkHvxil1ithtN
+	0G3pgCFcL0Dyz7xnOIa7FfRsijJTkTwjdGKw363VSPymF3Mgkxhiv5DDxV/9dYXfhC/FBhf/pGG
+	peMp0Ue+r3JUSSA6z5CwGczkYWHQoYybRt2ok6cA7bQzx5K1Evaz6MEACqUDH3gfT63980DgGH+
+	5ZQTFQYOb23o2QRQaoISNmBD9zbI31KzuOPtQQ=
+X-Google-Smtp-Source: AGHT+IEHsXBZnmnovdeIMgykbpsR/MF117sR7BxvKg21Br+5ohSkqBm2MtSRGuyeF05mYDzWOdu0Gdwj/k69bAeVllc=
+X-Received: by 2002:a05:6808:3c47:b0:441:8f74:f1c with SMTP id
+ 5614622812f47-4418f741d6dmr4000859b6e.54.1760177374121; Sat, 11 Oct 2025
+ 03:09:34 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <2145964596.1381722050.1760118324261.JavaMail.root@zimbra62-e11.priv.proxad.net>
-In-Reply-To: <2145964596.1381722050.1760118324261.JavaMail.root@zimbra62-e11.priv.proxad.net>
-From: Brian Davidson <davidson.brian@gmail.com>
-Date: Fri, 10 Oct 2025 14:16:56 -0400
-X-Gm-Features: AS18NWA0P0i3_6XgSQFG5sosfjJ5INuCWEkLIevf8-F0abu8KlJC8q_Bfk5TxZY
-Message-ID: <CAOoaxdGXagWNmav2pyZSZ0U1Q4uew=WjRUK5SDkNF_6X-LchKA@mail.gmail.com>
-Subject: Re: Rule with double check ignore with 802.1Q packet
-To: "Antoine C." <acalando@free.fr>
-Cc: netfilter@vger.kernel.org
+From: Cyrus <cyrusrereza@gmail.com>
+Date: Sat, 11 Oct 2025 12:09:22 +0200
+X-Gm-Features: AS18NWBtO1bLRBE6fDvkWNuci6XMxqszRls_VVOPvCa8aLHpzh7kye3zeA5_mNI
+Message-ID: <CAEcyiz83o-NK263Efj5xfGPuVMUqur7TT-RofZ-WkJirMzB9oA@mail.gmail.com>
+Subject: Is there a way to extend the timeout of elements in an nftables set?
+To: netfilter@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Oct 10, 2025 at 1:45=E2=80=AFPM Antoine C. <acalando@free.fr> wrote=
-:
->
-> Hello,
->
-> I found a weird behavior with NF tables. I am trying to filter specific p=
-ackets and I cannot understand what is going on in the following case. It l=
-ooks like a bug, but I do not know NFT very well so I prefer to ask first.
->
-> I am using 2 virtual interfaces veth0 and veth1 on Linux:
-> Linux sopvubu22-214d 6.8.0-64-generic #67~22.04.1-Ubuntu SMP PREEMPT_DYNA=
-MIC Tue Jun 24 15:19:46 UTC 2 x86_64 x86_64 x86_64 GNU/Linux
->
-> Interfaces were created with:
-> ip link add veth0 type veth peer name veth1
->
->
-> NFT were configured with the following script:
-> ---
-> #!/usr/sbin/nft -f
->
-> flush ruleset
->
-> # INPUT Filtering
-> table netdev tb_in {
->     chain ch_in {
->         type filter hook ingress device veth1 priority 100;
->         nftrace set 1
->         ether saddr AA:BB:CC:DD:00:38   log prefix "--test 1-- "
->         ip saddr 192.168.140.56         log prefix "--test 2-- "
->         ether saddr AA:BB:CC:DD:00:38 ip saddr 192.168.140.56 log prefix =
-"--tests 1&2 -- "
->         ip saddr 192.168.140.56 ether saddr AA:BB:CC:DD:00:38  log prefix=
- "--tests 2&1 -- "
->     }
-> }
-> ---
-> Then I send this specific packet:
-> echo AA BB CC DD 00 50 AA BB CC DD 00 38 81 00 28 48 08 00 45 00 00 1C 00=
- 01 00 00 40 11 E0 F6 C0 A8 8C 38 C0 A8 8C 50 1D 89 1D 83 00 08 2A F8 | xxd=
- -r -p | socat - INTERFACE:veth0
->
-> And I get the following log:
-> trace id 5235f40e netdev tb_in ch_in packet: iif "veth1" ether saddr aa:b=
-b:cc:dd:00:38 ether daddr aa:bb:cc:dd:00:50 vlan pcp 1 vlan dei 0 vlan id 2=
-120 ip saddr 192.168.140.56 ip daddr 192.168.140.80 ip dscp cs0 ip ecn not-=
-ect ip ttl 64 ip id 1 ip protocol udp ip length 28 udp sport 7561 udp dport=
- 7555 udp length 8
-> trace id 5235f40e netdev tb_in ch_in rule meta nftrace set 1 (verdict con=
-tinue)
-> trace id 5235f40e netdev tb_in ch_in rule ether saddr aa:bb:cc:dd:00:38 l=
-og prefix "--test 1-- " (verdict continue)
-> trace id 5235f40e netdev tb_in ch_in rule ip saddr 192.168.140.56 log pre=
-fix "--test 2-- " (verdict continue)
-> trace id 5235f40e netdev tb_in ch_in rule ip saddr 192.168.140.56 ether s=
-addr aa:bb:cc:dd:00:38 log prefix "--tests 2&1 -- " (verdict continue)
-> trace id 5235f40e netdev tb_in ch_in policy accept
->
-> What is very strange is that the "test 1 & 2" is failing, despite being e=
-xactly identical, apart the order, to other tests. I get the same log with =
-'dmesg'.
->
-> The packet sent can be decomposed in (ether + vlan + ip + udp) headers bu=
-t no data. And if I remove the vlan part (81 00 28 48), it works.
->
-> Is it a bug or do I miss something ? Maybe it has been corrected in a new=
-er kernel version?
->
-> Thanks for your help,
-> Antoine
+With ipsets, the timeout of an element in a set gets extended each
+time you `ipset add` it. However, that doesn't happen with nftables
+(v1.1.1) sets - when you `nft add` an element, the timeout is set
+initially but never subsequently updated. Is there another way to do
+this that I'm missing?
 
-Despite having the same expressions, the rules get interpreted
-differently by nftables. The second rule checks the meta protocol
-also. This is on kernel 6.6.104 and nftables 1.1.1.
+Regardless, I think it's worth noting that the existing behavior makes
+the `nftset` functionality of dnsmasq (where it automatically adds
+select resolved IPs to nftables sets) unusable for me compared to its
+equivalent `ipset` functionality.
 
-# nft list table netdev t
-table netdev t {
-        chain c {
-              ether saddr aa:bb:cc:dd:00:38 ip saddr 192.168.140.56 \
-log prefix "--tests 1&2 --"
-              ip saddr 192.168.140.56 ether saddr aa:bb:cc:dd:00:38 \
-log prefix "--tests 2&1 --"
-        }
-}
-# nft list table netdev t | nft -c -d netlink -f /dev/stdin
-netdev (null) (null) use 0
-netdev t c
-  [ meta load iiftype =3D> reg 1 ]
-  [ cmp eq reg 1 0x00000001 ]
-  [ payload load 8b @ link header + 6 =3D> reg 1 ]
-  [ cmp eq reg 1 0xddccbbaa 0x00083800 ]
-  [ payload load 4b @ network header + 12 =3D> reg 1 ]
-  [ cmp eq reg 1 0x388ca8c0 ]
-  [ log prefix --tests 1&2 -- ]
-netdev t c
-  [ meta load protocol =3D> reg 1 ]
-  [ cmp eq reg 1 0x00000008 ]
-  [ payload load 4b @ network header + 12 =3D> reg 1 ]
-  [ cmp eq reg 1 0x388ca8c0 ]
-  [ meta load iiftype =3D> reg 1 ]
-  [ cmp eq reg 1 0x00000001 ]
-  [ payload load 6b @ link header + 6 =3D> reg 1 ]
-  [ cmp eq reg 1 0xddccbbaa 0x00003800 ]
-  [ log prefix --tests 2&1 -- ]
+Thanks,
+Cyrus
