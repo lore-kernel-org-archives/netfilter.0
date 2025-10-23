@@ -1,55 +1,123 @@
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C1B930AAD4
-	for <netfilter@vger.kernel.org>; Thu, 23 Oct 2025 11:42:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C8C2320CC0
+	for <netfilter@vger.kernel.org>; Thu, 23 Oct 2025 14:01:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1761219738; cv=none; b=uQkwUJdanocbFm4LnD3asQHnzwPoVIsidr1cQLULj82n0uzxZnJb+vW8PGxH7yaMHD0i7HtPxH1/ClSw7nOmDzoWIeCUj8ho4JYDrzqrBl1bTDcgvH6oQBsRg6z1ZLfunhf0MOnINALyMkYtwLnKsg6l8hDk6sLU2fXyarisXpQ=
+	t=1761228070; cv=none; b=GjQ4+DVz4vo75vMLbEaPMYiq7AlupdTDdYv5GFuosYLQDnmtJuyRprCAmtjddUpqTUGWMz7hiE/sm32pWRMn0y81Ib3XoI9VJWMhZ04lrdvYO532G9Uu4BVyaUtJ3/PstZZqC69ft5I+e1EJ8jQYJCGprXq2mo1E2WMRRgi5MRg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1761219738; c=relaxed/simple;
-	bh=bvsdGbajE4nNcFmItlifGzXUeWL4/gtwWEDzz9okwHc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kJ433BqojDvR4qFDz9c4R85CThxJ5rQibhk0446uOPEpNOqpfqT6i7/JWVPB0gFSYG5TeBWRUVpEA+6xIUpcr/rpBIjkxZhxFpFhT1dWaBuipA5LUU9/dZdRLU94cs0m2lKqQnOKwW5AVFswFCnn+0140Y0Jlyg8geqqF6com1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=Bd1FCDuj; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+	s=arc-20240116; t=1761228070; c=relaxed/simple;
+	bh=qcQ0N9WOmo8cRYfausJdGnaPkhS8cnNOY1GzFndO+3s=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=eJ0qV0LgJrz1olNlxjyDzpIX6N3rrwS14ZsusLie4ufTunDIYP4z0tO97E476mvSFXlX0K1/iuYJMd3Vu0hKBgHY6vet7OO0F7roztnBHL+8RxAcKhfn5dYOfjsFO6jcXD6OoM7wm4uoVeDw87FmBwLKGtRBfAgh+NSJrVjrubA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=yF98rY4M; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=21cD0eUH; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=iIoGhK6o; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=LF1e2aZM; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="Bd1FCDuj"
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with ESMTPSA id 4CF3C6028E;
-	Thu, 23 Oct 2025 13:42:06 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1761219726;
-	bh=UqwWKIiEPTmdYk0MEco4+01Ttr8ohrYqS9/w2Oyk7Yk=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Bd1FCDujILSq+XyprxJoPqWAqA9+03OhA+vN++pNlKjnpGmKSbyZfqk/Fqlvgd0BK
-	 xQiSt24smAaSn+EpNFeC83e05xKxgeRUJttF6syG+FkY+JGE2ewFvF5h4Fp9rik9T0
-	 3Wz8Y/HQ2J7z01Rox9VSUfs8bLr3NFOx2m3O894XttmuDAahvVLUCwtfo5zieHjknq
-	 /rxoCEGehWwaIBEiDtPNoyaKjSo8vCJ084xseDosz6feQq3k1b8h/7H0bU2qGBNszL
-	 qn0im3XIx1K+c7Tcr7352SMvZNV+B57tNahsBvC7hoVpFho8NdEByMn/TIQYA8yonL
-	 XGUy+ssP8j9jA==
-Date: Thu, 23 Oct 2025 13:42:03 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: louis.t42@caramail.com
-Cc: netfilter@vger.kernel.org
-Subject: Re: Nftables ct count over 2 counter continues to trigger with only
- 1 connection
-Message-ID: <aPoUi7Uqienwt-Vq@calendula>
-References: <trinity-85c72a88-d762-46c3-be97-36f10e5d9796-1761173693813@3c-app-mailcom-bs12>
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="yF98rY4M";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="21cD0eUH";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="iIoGhK6o";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="LF1e2aZM"
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 65F502120C;
+	Thu, 23 Oct 2025 14:00:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1761228062; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y0TcEauEn84Q3VXWh7tH+rJ4kKDdczN/AEcexOHFMG0=;
+	b=yF98rY4MnXL15YDX2cd6cDYD2VJiFFOXzbxe30r7+OjD5u6GhxL+7rZsw6+bZzu5GGeu59
+	sVPIrmnIH2cbAy95JWBJackZw8yE/43eZzvWlmK45FTVx++/QsFF7PV/Qsa+E3GA4yxXYU
+	ylHsWGaWqczka4+uEgAlDE0pczr4aPY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1761228062;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y0TcEauEn84Q3VXWh7tH+rJ4kKDdczN/AEcexOHFMG0=;
+	b=21cD0eUHOkxU1Q8AV3bZE9xA5alIMQFi4F5FdCBgKWsNKoJuT//LfVBvrmHVRFn4YV00xF
+	iIOG3BlHf8AnMjDQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1761228058; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y0TcEauEn84Q3VXWh7tH+rJ4kKDdczN/AEcexOHFMG0=;
+	b=iIoGhK6o/uEo7w1mGfve4LlxpCYTxo5o7rjXSlaDmGro26kGDLOEPM3mvMD0inxS954Nc7
+	4e0vQIF99BPlCXz3H2EQp7mZju9ihmKMdJo5wB2le9+kF0uAoXkhJos9L95jfbJ7nnxAwc
+	H2zyw/rhEWBeHDET/iv9mwALwTO9miM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1761228058;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Y0TcEauEn84Q3VXWh7tH+rJ4kKDdczN/AEcexOHFMG0=;
+	b=LF1e2aZMHh6a7gpn9rNASCi1XD8Qxs9ahJRMxy1tkQnbvXbki5xYOJoHSI3tbG5cwiWaW3
+	k2il1qNLWZwOVtCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3C1C1136CF;
+	Thu, 23 Oct 2025 14:00:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id LTysCxo1+mj6SQAAD6G6ig
+	(envelope-from <fmancera@suse.de>); Thu, 23 Oct 2025 14:00:58 +0000
+Message-ID: <055140b7-e2c2-41ed-a8ec-4e8e074d37f9@suse.de>
+Date: Thu, 23 Oct 2025 16:00:51 +0200
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: Nftables ct count over 2 counter continues to trigger with only 1
+ connection
+To: louis.t42@caramail.com, netfilter@vger.kernel.org
+References: <trinity-85c72a88-d762-46c3-be97-36f10e5d9796-1761173693813@3c-app-mailcom-bs12>
+Content-Language: en-US
+From: Fernando Fernandez Mancera <fmancera@suse.de>
 In-Reply-To: <trinity-85c72a88-d762-46c3-be97-36f10e5d9796-1761173693813@3c-app-mailcom-bs12>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWO(0.00)[2];
+	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_TO(0.00)[caramail.com,vger.kernel.org];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[caramail.com];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid,caramail.com:email,imap1.dmz-prg2.suse.org:helo]
+X-Spam-Flag: NO
+X-Spam-Score: -4.30
+X-Spam-Level: 
 
-Hi,
 
-On Thu, Oct 23, 2025 at 12:54:53AM +0200, louis.t42@caramail.com wrote:
+
+On 10/23/25 12:54 AM, louis.t42@caramail.com wrote:
 > Hello,
 > 
 > I have read the documentation and asked on Stack Exchange but am unable to find an answer to the following behavior.
@@ -57,11 +125,11 @@ On Thu, Oct 23, 2025 at 12:54:53AM +0200, louis.t42@caramail.com wrote:
 > Given this table and chain where 123.123.123.123 is my own address:
 > 
 > table ip mytable {
->         chain mychain {
->                 type filter hook input priority filter; policy accept;
->                 ip saddr != 123.123.123.123 drop
->                 ip saddr 123.123.123.123 ct count over 2 counter
->         }
+>          chain mychain {
+>                  type filter hook input priority filter; policy accept;
+>                  ip saddr != 123.123.123.123 drop
+>                  ip saddr 123.123.123.123 ct count over 2 counter
+>          }
 > }
 > 
 > I am establishing a varying number of TCP connections from my own address by connecting via SSH. These show up in "ss -at" and "conntrack -L" as well as disappear once disconnected - all as expected.
@@ -73,5 +141,11 @@ On Thu, Oct 23, 2025 at 12:54:53AM +0200, louis.t42@caramail.com wrote:
 > It even continues incrementing after a "conntrack -F" and often feels as though it is a one-way switch once the counter has triggered. Sometimes closing all connections (to 0 total) stops the counter from incrementing.
 > 
 > Is there an explanation as to this "ct count" behavior in more detail?
+> 
+> Thanks.
 
-This behaviour looks buggy, I am trying to narrow down the issue.
+Yes, this seems buggy. I have reproduced this with upstream kernel and 
+also on 5.10 so I guess this has been here for a long time. I am working 
+now on a patch.
+
+Thanks!
