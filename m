@@ -1,113 +1,135 @@
-Received: from azazel.net (taras.nevrast.org [35.176.194.208])
+Received: from relay.yourmailgateway.de (relay.yourmailgateway.de [188.68.63.102])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D38722BDC09
-	for <netfilter@vger.kernel.org>; Tue, 18 Nov 2025 11:46:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.176.194.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE44613635C
+	for <netfilter@vger.kernel.org>; Sun, 30 Nov 2025 21:12:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.68.63.102
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763466371; cv=none; b=a3IwXwwZmeOcSeaLu+gRyqwTDicEmjgS1lstM7PO6hFBZ4JnX+MdSyNAghCkLr734744rzsAxplceDzdAelqmqyR7o0r/vYHHBuxNe/irdopIr/iGZkUz7kOehN2cvnd1HQQmkBjgXPJuRju5lHDimWbBi0/Y7lbJPwkuUQlPWk=
+	t=1764537173; cv=none; b=aQA/QCkYisZBFi+SpZojzz1wrhSOMbnWekd3b87DMDq1sAnY2UhOqubHRpOCmpSKHPIO+0enJAUqkNJtvsbYonebOV/4CdBXWlcJkcbAC0DUHA19wYNPTMBl6TQqzO6AHfqdbjmRxTJglZQnQp9Thoi4jMPpTgXJo6ALCcHVX0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763466371; c=relaxed/simple;
-	bh=LfY1wxE3vCAkwg63+jMMcdUgny4SCd64oZk4uc+4RTM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BmYHy+fEp+Vv4yeliorxOiZ3aqKhOGjZmCCzxfG0uGTQc95FKnzZVHS3dK39jDtDN+DEq7ruSb5vMXeiFw1VPumvraZvQJOIoxcqDOBIJlfxD6SHWRXipiF1AN/lYMy95o66pUorLlz0MpHXQ5vpSw+74Htk1FhfPJLRFM77C7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net; spf=pass smtp.mailfrom=azazel.net; dkim=pass (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b=ZhjAk1tN; arc=none smtp.client-ip=35.176.194.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=azazel.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=azazel.net
+	s=arc-20240116; t=1764537173; c=relaxed/simple;
+	bh=RQU5smx6TkJEtlTQXBiSCnOhTAd7VBD3rVWstjMY5N0=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=HKo3UKa1XZNWlNvzVcMl/9MqE0yd02arxrJCsCOH1K+NBHcXbi2QPOjSn3+DoevovRCqkdPUEuboxGKpKgIWrsW6SWgZbp1LVZBCpE1qIDqn6pj0+J3vr8EYSkPgGaYR7bGuW8NpZCJ1O5H74zr/tvqxJEJWir3gXqCVMVYq2b8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=permerror header.from=mk16.de; spf=none smtp.mailfrom=mk16.de; dkim=pass (2048-bit key) header.d=mk16.de header.i=@mk16.de header.b=M2elI6AN; arc=none smtp.client-ip=188.68.63.102
+Authentication-Results: smtp.subspace.kernel.org; dmarc=permerror header.from=mk16.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mk16.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=azazel.net header.i=@azazel.net header.b="ZhjAk1tN"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=azazel.net;
-	s=20220717; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=EKrf+0U4zfQoHdzkFK1JcvzD0u8ARMPUN/KujoVjT4E=; b=ZhjAk1tNZZCfTPY/hlKEVhc8d1
-	jTVW6EEsZsmG6EoFYuNFWpNum2jwHZCDVZ3sLWExh5HAEhoPjEF4urHoA6tqTPVa8caehL9HnpSjS
-	HrOr/8wEnbDEc99z4Pp5QOM3U4ra/L8BvO/GruDcH9Q9Ab3PwbF8imynTRyacm6jt0xR+yDMuKwRL
-	lJKXyrJ/UMeHNVKGXVBT6BJnjLpJhRE10qZGJZoshRs+cDridb7SJAVG7Ss7mDBfE8VDcWVi3+Vku
-	7IVT6oJflVZEbESr8WfeIFD+5+pNu3BxCY9oNfvw3y0walRbo5asoDCKBE0mMi55RDlkPMSaqipw1
-	K+1Vqafg==;
-Received: from celephais.dreamlands.azazel.net ([2001:8b0:fb7d:d6d7:3c21:9cff:fe2f:35f] helo=celephais.dreamlands)
-	by taras.nevrast.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.98.2)
-	(envelope-from <jeremy@azazel.net>)
-	id 1vLK9l-00000001N0d-0WWR;
-	Tue, 18 Nov 2025 11:45:57 +0000
-Date: Tue, 18 Nov 2025 11:45:55 +0000
-From: Jeremy Sowden <jeremy@azazel.net>
-To: Alessandro Vesely <vesely@tana.it>
-Cc: netfilter@vger.kernel.org
-Subject: Re: Changes in iptables-legacy
-Message-ID: <20251118114555.GA968246@celephais.dreamlands>
-References: <df96861a-23f2-428f-95d6-83ecbc4044ad@tana.it>
+	dkim=pass (2048-bit key) header.d=mk16.de header.i=@mk16.de header.b="M2elI6AN"
+Received: from mors-relay-2502.netcup.net (localhost [127.0.0.1])
+	by mors-relay-2502.netcup.net (Postfix) with ESMTPS id 4dKKK14lBWz6Djs
+	for <netfilter@vger.kernel.org>; Sun, 30 Nov 2025 22:04:05 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=mk16.de; s=key2;
+	t=1764536645; bh=RQU5smx6TkJEtlTQXBiSCnOhTAd7VBD3rVWstjMY5N0=;
+	h=Date:From:To:Subject:From;
+	b=M2elI6ANiJDAycYG/DFk8tnho8nOmCrcNkLa70nTJft2BW7vxPJrlS9AH5r3sjzGp
+	 aUjWb1PBYbwMcM4U9Wr8wren6e4j8kczO6K0O1imJ2PZD6/p/HBHLzYbcSYNvZuQgE
+	 NOfR+2/D8W9uXcOPIYAb8+Efo6lOCQWhDCGAAm54l8eOXeiLcf2DXAjqBQK3Tj/op2
+	 sYh6V/EpdBS3DslHs5iTfBODqE1+H7KFwMEMW8GYDH18toSmUl7Wbf3w4Bca7LeNbt
+	 rOZwr4BWU/5M3OXmaKCUT9JdLmU25O6FondNrti0UMkKERqh5+iO60ebHMC5/PHCq9
+	 KWJJBTZJBCR1Q==
+Received: from policy01-mors.netcup.net (unknown [46.38.225.35])
+	by mors-relay-2502.netcup.net (Postfix) with ESMTPS id 4dKKK142Jzz4xN6
+	for <netfilter@vger.kernel.org>; Sun, 30 Nov 2025 22:04:05 +0100 (CET)
+X-Virus-Scanned: Debian amavisd-new at policy01-mors.netcup.net
+X-Spam-Flag: NO
+X-Spam-Score: -2.898
+X-Spam-Level: 
+Received: from mxe87b.netcup.net (unknown [10.243.12.53])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by policy01-mors.netcup.net (Postfix) with ESMTPS id 4dKKK06jVLz8tXM
+	for <netfilter@vger.kernel.org>; Sun, 30 Nov 2025 22:04:04 +0100 (CET)
+Received: from ciel (dynamic-2a02-3100-8043-f201-ad98-26d5-86cc-c8a0.310.pool.telefonica.de [IPv6:2a02:3100:8043:f201:ad98:26d5:86cc:c8a0])
+	by mxe87b.netcup.net (Postfix) with ESMTPSA id BBEBD1C0087;
+	Sun, 30 Nov 2025 22:04:03 +0100 (CET)
+Authentication-Results: mxe87b;
+        spf=pass (sender IP is 2a02:3100:8043:f201:ad98:26d5:86cc:c8a0) smtp.mailfrom=m-k-mailling-list@mk16.de smtp.helo=ciel
+Received-SPF: pass (mxe87b: connection is authenticated)
+Date: Sun, 30 Nov 2025 21:04:01 +0000
+From: Marek =?UTF-8?B?S8O8dGhl?= <m-k-mailling-list@mk16.de>
+To: netfilter@vger.kernel.org
+Subject: Filtering MLD messages
+Message-ID: <20251130210401.77c74ee1@ciel>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="wjyK2I/gWK8MdGnJ"
-Content-Disposition: inline
-In-Reply-To: <df96861a-23f2-428f-95d6-83ecbc4044ad@tana.it>
-X-SA-Exim-Connect-IP: 2001:8b0:fb7d:d6d7:3c21:9cff:fe2f:35f
-X-SA-Exim-Mail-From: jeremy@azazel.net
-X-SA-Exim-Scanned: No (on taras.nevrast.org); SAEximRunCond expanded to false
+Content-Type: multipart/signed; boundary="Sig_/4VZ6B3Gyfu_OrrzUh9=bC_f";
+ protocol="application/pgp-signature"; micalg=pgp-sha512
+X-PPP-Message-ID: 
+ <176453664399.1947370.16303324893105791979@mxe87b.netcup.net>
+X-Rspamd-Server: rspamd-worker-8404
+X-Rspamd-Queue-Id: BBEBD1C0087
+X-NC-CID: 5e6z4CkWBSdPrWBYHX0BT2Zfnh4fb8Mkcg7k6CZMrkozcF6bwyrkqVY=
 
-
---wjyK2I/gWK8MdGnJ
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
+--Sig_/4VZ6B3Gyfu_OrrzUh9=bC_f
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-On 2025-11-18, at 12:31:15 +0100, Alessandro Vesely wrote:
-> I'm still using iptables; my scripts work well... call me lazy.  I=20
-> didn't expect behavior changes.  Instead, when I upgraded to the last=20
-> Devuan release, equivalent to Debian Trixie, I got iptables v1.8.11=20
-> (legacy).
->=20
-> One of the scripts had a daily call like so:
->=20
->     iptables -L -Z -vnx
->=20
-> The new version resulted in an error:
->=20
->     iptables v1.8.11 (legacy): Illegal option `--numeric' with this comma=
-nd
->     Try `iptables -h' or 'iptables --help' for more information.
->=20
-> Is this a Debian quirk or is it found in the official source?
->=20
-> By simply removing -Z, the above command works and its output is
-> properly digested by my legacy Perl code.  However, I'd be curious to
-> know why this change was made.  I hope it's not a subtle way to push
-> people to migrate...
+Hello,
 
-It's a bug in 1.8.11.  The Netfilter team have fixed it.
+I would like to filter MLD messages:
+1. Only MLD listener queries and MLD2 listener reports should be
+allowed.
+2. The messages must have a hop limit of 1.
+3. The messages must have a hop-by-hop extension header.
+4. The messages must have the router alert option set in the hop-by-hop
+extension header.
+5. The source address is in the link-local range.
 
-J.
+```
+set icmp6_mld {
+    type icmpv6_type . icmpv6_code;
+    flags interval;
+    elements =3D {
+        mld-listener-query . 0,
+        mld2-listener-report . 0
+    };
+}
 
---wjyK2I/gWK8MdGnJ
-Content-Type: application/pgp-signature; name="signature.asc"
+[...]
+
+icmpv6 type . icmpv6 code @icmp6_mld ip6 hoplimit 1 exthdr hbh exists ip6 s=
+addr fe80::/10 counter accept;
+```
+
+I have managed to write 1-3 and 5, but I don't know how to filter
+the Router Alert option. I have seen that there is `ip option ra`, but
+it doesn't seem to work for IPv6. Does anyone know how to write such a
+filter?
+
+I would really appreciate some help!
+
+Best regards,
+Marek K=C3=BCthe
+
+--=20
+Marek K=C3=BCthe
+m.k@mk16.de
+er/ihm he/him
+
+--Sig_/4VZ6B3Gyfu_OrrzUh9=bC_f
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
 
 -----BEGIN PGP SIGNATURE-----
 
-wsG7BAABCgBvBYJpHFxlCRAphqwKvfEEDUcUAAAAAAAeACBzYWx0QG5vdGF0aW9u
-cy5zZXF1b2lhLXBncC5vcmfIYJnvrgx8PiFV87oqSX1iJ5kYWpQvVYzN2YWqpe82
-GhYhBGwdtFNj70A3vVbVFymGrAq98QQNAABT6g/+JQ5uAnW5rimqWIvpl7KGn/D7
-zU/ZiqcNUHIW3T6pxGhlBPuHpkfnHheFNm2Nera0cZvNVypheQFQ7OM4DCvqBbOa
-afv39mYjqzVmc9FlEv3s2/B87ix+N74xYtZPOnDE4HOlLKek8RLPikfydGKQWLcc
-QogYTgdZvxGcOpvxQO4oim966/yWvVHg0ylMp9jO8zAU9bFWQo72K+HDynwnlsiR
-HrZBOuc8+pOYibt7Z/j+5gvzlYmqltof41gOHt49iE1eC+tctu97PlDI6iXPhpuP
-cqCqQ1sDnG2lAk2+mxqM220EfUHATbViKB6HDOhhRQjZB0gM4tftTkyLyPz7wMH/
-PgHtdS176SVfgR9ipYOjE5DiodcKYud1DlOTFJA7putaEHMgujXnqBVG1FRNW0Ci
-ZnyhpIMUvbyejiWhn7L4PaOQEVXrpj+EIMkNjsCk8rprcygic6fAwc6uekdqPLnh
-hJyL/EGLkMXelySspP+g6Q1HQjsxPbJqcpnzpzBytV8ImdZYRsnl4fhNIqCdUpli
-9a5tgnrVB1JqDe+L7s406ugX6CHjhn5cytnz0yp/VDfPduNV/RPHlbBU29obRFd/
-U9Fpk/DnqVsPEOyOUnsR6ZUwgOvftQm8E4aQn1fnUsvsZQ0A+FwUl1IKcR08xARt
-D/54yHoOkAccbpOSn88=
-=O9kq
+iQIzBAEBCgAdFiEEmqKBWfzrPNg7whIBfoaRRmmRCMcFAmkssUIACgkQfoaRRmmR
+CMcaHQ/+P+choBdpYl7jQCdrTkF7+Koy/zD4Eh6vsdnm4vDlgKtdLmvOJrQAwPRv
+sKQGDjjRdQTBIkGMJIPyOVZjNgiIBaq8A86pjLl/XurPnZ5D/xZN4qeS0ky6ivy5
+zuO8yrP5t0luOQjTsaPlOax6nx7z9nhEAD3Wab/jBFBqrD7qx/hNkxTiqqDh779T
+MZZAHe0/M+/7ga0XLdKAM3l+7tq44mB+rSb7Fkh8bsVq2S1gSb8D3XgNA7ferZ62
+TbC3LWbrH0GN/biAL0QjkXhyNBn3VUy5ke1Tt1Y5QiHU2ThqBgtFmTrKa1XZu98S
+3xRUVdo5ILiF8QEnlHOHDQqtfrQxWfa0zZcddLdydiWZ+qi26+6+FXUXDhmd4ueN
+ADJPW7A+rycskUnLmVovAgLQAvreVmVlXRK4n04s46ihoKrXSYmiAJwehwt3ppg2
+OJFOcvPwKqIXnYJkdYJxsMTCHtnSf7PUoGnr67Kmp1ArMy7s0PtLgL4lKqiYReN9
+cAWK68MeHHB8vZpCmFzUJk1aFHvPNzCYsphSfaCNyjQkmnpCNtOZt8uNiIR9isNr
+pI4xo2DEDVCxq2zRZoRYBMVoRZLskruYlUj2Oz34Nxms1FDHClpM0TpTRgsErCId
+D8U5mIiXGrk1Aj+LMIZWktZlbgu8qtz4I49UIvfU1d/YU/qvkLk=
+=Hi/k
 -----END PGP SIGNATURE-----
 
---wjyK2I/gWK8MdGnJ--
+--Sig_/4VZ6B3Gyfu_OrrzUh9=bC_f--
