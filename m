@@ -1,58 +1,97 @@
-Received: from mail-106102.protonmail.ch (mail-106102.protonmail.ch [79.135.106.102])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2E638460
-	for <netfilter@vger.kernel.org>; Tue,  2 Dec 2025 05:22:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.135.106.102
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67D381D555;
+	Wed,  3 Dec 2025 16:08:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764652969; cv=none; b=b3FVAQEqpKTp/2Rvn6IDzDiW2Npc+2kLuQc2Sevl3reh1VHZKBWcaAcfeUtff5bmIRd5SJe4XB3puYqU9MFVdLQNq1aOtiP4wUEx5lRuwpnehpiUkNBx1Vi5M4iuCrA64pkFM55856SMGluvzFnPVvdvdLbUxvmmS1lyik4Xt4s=
+	t=1764778130; cv=none; b=PqA1ZR8CUC6P8OeAdaaZc0ar2DGVZtduT9Euz4dxeLZ5ETXj5ikaAyWVAElJLpOZlwQDyLSDxqqJjcht5R17oMugk8aImaRcS8xQ0Zuu2oQ7Qu8fLjW2347pJi08BCMLAD6oHQyrNyb99fUl9+hclXitQqDQajIwZjyLtDgwiW0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764652969; c=relaxed/simple;
-	bh=AyXMBZaWF27mzjav34UCz9erjlgnBGz1fzwm9jb1zJU=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=sufRgly1kUaIIr67bvmZofePJppAj7RzH9Lx8WEF9LoQSKIWggX4cgdS07LjwtiSJTsjxdqEFJp1JNTKFGBDM23xjIhlcGHM5xm/INdDoTs8vf1yjxp0UJcx3zhj619UpHrL4+E6ilpCIlZCejXtDLDYNY+MAeY8fcnjrmeGKRA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=kLTxISpa; arc=none smtp.client-ip=79.135.106.102
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
+	s=arc-20240116; t=1764778130; c=relaxed/simple;
+	bh=aUs6lQYder+1Mm0Q6gTZnBaAxTkukI4Bt7fVzmsbOLI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=nRnfarhVfspfhMoFdXe46VRtqehhHpHdLtWp3jpbODQLD3CqjkZUHsD+ycEzZigh+aJeXpeP9xcYsZqRnUjz6rL8NoDnPTJh6mLUdGNtws0TcXBMP3CfEEGP06ybNp6DIIdxMNF2z2qFeORbuc0SUdZ8zlmxrnrp/zZ8KJ4+QMU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=S1/7c+dg; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="kLTxISpa"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1764652959; x=1764912159;
-	bh=AyXMBZaWF27mzjav34UCz9erjlgnBGz1fzwm9jb1zJU=;
-	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
-	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
-	 Message-ID:BIMI-Selector;
-	b=kLTxISpaiInjEiGFnMxOnC8K2HQzDwBb0Xh+pK7TMmon54jPSFIYcV3+WoH39dpHo
-	 BPwbun0qisI/hQ7t7YA95IeZ5moktP0fZ/XVM6I3Mr8MMdW7Dt52ttdjfP+PUcrA8l
-	 UNmh7vb2oqDkJDrAv+VI+ZwZd8l1+C556ht4EAckMd5cIKQIZLCEYt8ip6QYtQ6ndu
-	 cJpgilTYVetbWHL4WW/9fgYGAqFVzhpmzwOn8zyQqOxxWhiwBOXi5w3fHVfA7MipCI
-	 JdG2zImlXUkWhojkl71TXK4ssN1+lFwtaYAbYP3T5gf+xfGdrJXkhokNa4R/r9+RxA
-	 PbXsXeMU6RHLQ==
-Date: Tue, 02 Dec 2025 05:22:35 +0000
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-From: Sunny73Cr <Sunny73Cr@protonmail.com>
-Cc: Florian Westphal <fw@strlen.de>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Subject: Re: Raw Payload Expressions - out of bounds write?
-Message-ID: <kuUJGRs1a1DdAt7MEJCz4fXLEjqeBjJVCBHC1on_UwwZ_dzm2oBlaegoGvfXtBfOdBiaqIIxr61cjENm4ruyDE0oFIJATfzuTBiD2n4uimQ=@protonmail.com>
-In-Reply-To: <GkTCZ4QMPjhS04MCXYiLoDrM7d866Suc7ALxvplJpr9bcr6HRlooJ6_xsL4TUjr6Svkztc5Gz9FOqzQAON_GvpjFyPGPpUqaE_sGaBiNBgc=@protonmail.com>
-References: <Bp_PH3aO9-d7-Av1SaQGtAgrvHaPwr0l5r_aR31_U8l5IvbSFaLJ1lXI3vFBV46Xb4IxK-tP-HkcSFS-2KCLyYfRibcIkioxjdem46U0IB8=@protonmail.com> <20250128003706.GB29891@breakpoint.cc> <Z5jQgcbCXiLyPwV-@calendula> <PVrkUQp56-Jj22U0UNcuDB2ECbRGvxlQdpV9wqJEScEZCv87qu5FdvjBKhhAzXkGv71nnXYmPI2TlxCo-dz_Mz-2Y52rrOVQLWvmPYm7cIA=@protonmail.com> <omRiDfO4yHw_nf-Xsk390UcpY_66yoc_oOELR6Fwu94Nr4QtjOT_1tcjVT_wOaaVW5QwqNRBvQonQbXXayhp1CFTAKEF3Qz0ToC7HenQBpk=@protonmail.com> <20250209014753.GA1766@breakpoint.cc> <WBhjrc0cnQh1u_11--tRibauTRslpdAmnTsjeE4tfNg85IDiO5euCk3pLgdnqOZEhq5mbDD2IRo_XykzL7V0UeSisrebbDrIjGon0qifnag=@protonmail.com> <Z6kq8I6WG96GkNsI@calendula> <GkTCZ4QMPjhS04MCXYiLoDrM7d866Suc7ALxvplJpr9bcr6HRlooJ6_xsL4TUjr6Svkztc5Gz9FOqzQAON_GvpjFyPGPpUqaE_sGaBiNBgc=@protonmail.com>
-Feedback-ID: 13811339:user:proton
-X-Pm-Message-ID: 0c7f54864e9a627c31783cc69926cf4afa85a8b2
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="S1/7c+dg"
+Received: from netfilter.org (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with UTF8SMTPSA id AEEFC60251;
+	Wed,  3 Dec 2025 17:08:36 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1764778116;
+	bh=RIZH+837axEPMbvjhXwhKSwSV47vc6GEjWwvPWuY5cs=;
+	h=Date:From:To:Cc:Subject:From;
+	b=S1/7c+dgHHl/kqLOzFScI8bPeSLlUjsD7kBN8zPotQNfzWvXoRpji/6aF+ev93JVg
+	 kkYxgdbofai9yklfDmufg5sMpOzXRgQj4gQiKEtWINF0QbstyRyjj/H6Uuz2m5MPCs
+	 R44sk9VE6akeaH4IyNXnKsQRCSJnvMgHFcYqFEkj8cxSogl4bwgEaVOLfBG+eORxCM
+	 HbpRStOmep1H71p988BIURWY17VYMR6dXHUxYMfyRbnRnhWTrcbZz/AM2r3V66PDuJ
+	 PtQoIVP4xI5CbwhPLeRFywiBwdGXIYo6+oMVZxG3+vvdvHsuwhXvkaOZ7TtBadxWnf
+	 ZCGIMGTZM/Swg==
+Date: Wed, 3 Dec 2025 16:08:34 +0000
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Cc: netfilter-announce@lists.netfilter.org, lwn@lwn.net
+Subject: [ANNOUNCE] libnftnl 1.3.1 release
+Message-ID: <aTBggr8_2CS9fa2k@chamomile>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="cI0bsuTuS2bhIJ9G"
+Content-Disposition: inline
+
+
+--cI0bsuTuS2bhIJ9G
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-Hi all,
+Hi!
 
-In regard to this chain; I would like to contribute code to the NetFilter p=
-roject: what is the best way to exchange PGP keys?
+The Netfilter project proudly presents:
 
-sunny
+        libnftnl 1.3.1
 
-SIGNATURE NOTICE: sunny_0xAD0EBA5C_public.asc
-[KEY REDACTED, WE HAVE NOT MET]
+libnftnl is a userspace library providing a low-level netlink
+programming interface (API) to the in-kernel nf_tables subsystem.
+This library is currently used by nftables.
+
+This release contains:
+
+- add meta ibrhwaddr support
+- fix for NFTA_DEVICE_PREFIX with asterisk at the end of the string
+- new NFTNL_UDATA_TABLE_NFT{VER,BLD} to store build information in userdata
+- complete tunnel options support
+
+See ChangeLog that comes attached to this email for more details on
+the updates.
+
+You can download it from:
+
+https://www.netfilter.org/projects/libnftnl/downloads.html
+
+Happy firewalling.
+
+--cI0bsuTuS2bhIJ9G
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: attachment; filename="changes-libnftnl-1.3.1.txt"
+
+Fernando Fernandez Mancera (2):
+      tunnel: add support to geneve options
+      expr: meta: introduce ibrhwaddr meta expression
+
+Pablo Neira Ayuso (2):
+      tunnel: rework options
+      build: libnftnl 1.3.1 release
+
+Phil Sutter (4):
+      udata: Introduce NFTNL_UDATA_TABLE_NFT{VER,BLD}
+      utils: Add helpers for interface name wildcards
+      utils: Drop asterisk from end of NFTA_DEVICE_PREFIX strings
+      utils: Introduce nftnl_parse_str_attr()
+
+
+--cI0bsuTuS2bhIJ9G--
