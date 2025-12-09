@@ -1,66 +1,80 @@
-Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FEA3433AD
-	for <netfilter@vger.kernel.org>; Mon,  8 Dec 2025 23:32:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD5852C2349
+	for <netfilter@vger.kernel.org>; Tue,  9 Dec 2025 07:58:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765236751; cv=none; b=emKUFzaW8fuICmjtQq4St+R8iNkbbZ8pcW3Uqr++6UuJ/StWWvsXJoJVeLatfX3FJNa7P6k0wLEJsP5Pbnppt5iwUhPkLh6nhYTAPbcOcXTbh8UXBtGQaEtQ+tMyqbdFUAQ9TGCuKGx90oWXkymT4THKxGb6rwbk1vFRuugyUp0=
+	t=1765267111; cv=none; b=JJ8kkvm253fEU4P8nmuu4r29ixkIDS9kdJFPJyXt3P6/Fwxn/YD114SZQRPsnbx85oMJnQ7SGxiwr1nyYaGXeZSjuNw4kYrQ9z+YRooNuc+zEDLKT39ae4cu369+zvdwbjHHpDpXHVlydJRfqYzfRC4SVxdDGux3ixM0coASOd0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765236751; c=relaxed/simple;
-	bh=VeFM6QYsIaQCZ24AV+dOsj5Mq2FpUL3G7RMgYE7z8Vw=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=L/A1RXibU7gSulx7cjHmtMwzCWgeB6XqJeHQmUqWAsIK7VtI9RbC2t6R2ev66B+JDMsRo/0xW+UyN6jkvPwRaT1pa+/35f2lIFXhbM+opg61H0vWjDgBV8Md+mvEH8osp96KQC7aUo0DoXZBEUKaj5h8oYlVR+kC5UFxP/sD+Yk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KZKLNRlV; arc=none smtp.client-ip=209.85.161.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1765267111; c=relaxed/simple;
+	bh=XuxaNrG4iHTngM90x7iL5gGm28cmPOvS8tY/c0M/E4Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=kTWwBZ7Ufl2lJY71RWrdc9ycHIfAEhh2DBWk2ollVw765wv3QJEsQ22dYcw8R6DVdTvp9UUPzUt8QMY3ispd4vmBg1ArMJZhGHcJ+AXFhgcGA6uM+lzyHAUQFZfcKqRXQfzochTfiVpe1hWvc0BPmNMtp3b6E4glqTm7i4DN/3E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=GbG/N/Zr; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=NkEHQ9E3; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=X3HYvriX; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=ZXST4C5R; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KZKLNRlV"
-Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-656b52c0f88so2917037eaf.0
-        for <netfilter@vger.kernel.org>; Mon, 08 Dec 2025 15:32:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765236748; x=1765841548; darn=vger.kernel.org;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=yGT0sMK9oEAB+nHv+iKrfiA50pITwf9wp/nL0yV3dbM=;
-        b=KZKLNRlV6mydFNw1YOy5HUNuM4xcelbrbf9mMx/o5VfrqyVSo47g8NY5hmIxYOG4N7
-         V+a+Mzna1CiaJi7bDdiplUyMf98JPOo46CVjN2bG/5os3SEaTJb0ucl7+0NaGWu9GF+W
-         vQ6pW6mVgQzgxg5qKvDr+gmcZz3o8mlfkePJw0EAQyZRFnuaMZ8/Yy10FH3hJFButDrd
-         8JNL8HoHHRfw/Kmc7/p3G6JxAy8SZred9KGYGVSxN0jxyVpkuMYyYrx6TF4Ng0EHnWZy
-         oGLJkIyoXdDBTD1HgI1mRu1HDIYoEmPk3zKNv6+9w83hLmtDhZaEfGq9MaDxFD6qzH1g
-         oqXQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765236748; x=1765841548;
-        h=content-transfer-encoding:subject:from:to:content-language
-         :user-agent:mime-version:date:message-id:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yGT0sMK9oEAB+nHv+iKrfiA50pITwf9wp/nL0yV3dbM=;
-        b=vWhiIOC3zV4lDJkQspJldejsrrMlbjLENbmMHW44ztHI6W1wCUyL6KyEbVi+KWPgUv
-         KXmIIqYCuDazBfcGfnVrov9oN56jRvN/vsHa+oxkX2qyh94sTfu9SJhifUiBVUL3vcBz
-         Xy619sNxYQmzD642P03rF4ynuUP+3RF7UwSucWc3BZWB6GGRDQW07Wp5RncUH/c5AQh/
-         TXdHsgC5Co+B7K+4j+a9WoHBFMfKz/oyBZK0B9QilQBThzektvqdi2c24Zr20KCGLOWR
-         bZwstGX+1Mdbtk2UjZofAz8hPMxE+e7/ZsSocs1GggD/5/j41lm9chZJs2nUbBc8zF9g
-         urwA==
-X-Gm-Message-State: AOJu0Yy+lxx/6iEEHgrlGMzAUXwimcXVt+yaHxRFTdn1qsdK3CoBBjx5
-	AvEBwM1ctfFG6lOH/aBbBw6u6hcshN+uxFH2yR3SLXUo0Kiu/Y7cEOmtitWDvQ==
-X-Gm-Gg: ASbGnctheSHwSQJoHh0cC6jcANZhA6VETJBDnwLQkudC/ecgbr5HH35sQmAF2gIsNA9
-	QEwcqFcusjng2OMcpQYiiwNVawr9DnQylD+OgsXpRYU95s4/ZyEA++YRC5iBKHAweilBlAEFCSM
-	9aqZJ7uboovHyN6XZ1m3zWalKJXIfHNTIbJOLM5oXz2/sNSjk8Ui7FQMq7pKSUbJo/SJH4f4s1j
-	1jTb2MnO6bKatW+6AZ91072CzHbw2SRSAr9+UKZ1ETBPzkltG2by/2blneoxW67+zXyTPOE89rH
-	hHJ7Z4ZcqHEsO8yIUk0W+N6lRy3ragl4hdqo8SuiSSvaS59yk18EF8jgScPU/BeV/XZNpHRwzf8
-	f5MlOW1LyL5WBd7DFlzBNELnfLcbvaFxqbecbii1ydNxQ97+AwSPEG8sB1rIvVOqEyWsqTFdf0L
-	QeN1svt5svEI9yksmAXoswN3i38fCP9y1ZUNKxvgv6lzpVojRm945QXhrJW4DgPobranCeH7RVa
-	KYZsQ==
-X-Google-Smtp-Source: AGHT+IFF6f2dgHgBG+yeQof1YjjolVb/pR5p74o72GNBoAqCQSRcGB6QPkm3tE/vAwsFdqN30066mQ==
-X-Received: by 2002:a05:6820:4c03:b0:659:9a49:8e97 with SMTP id 006d021491bc7-6599a8c2b5fmr3643430eaf.27.1765236748096;
-        Mon, 08 Dec 2025 15:32:28 -0800 (PST)
-Received: from [172.31.250.1] (47-162-126-134.bng01.plan.tx.frontiernet.net. [47.162.126.134])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-6597ea6807esm6838519eaf.0.2025.12.08.15.32.27
-        for <netfilter@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 08 Dec 2025 15:32:27 -0800 (PST)
-Message-ID: <067a7b31-699f-4642-af16-9062c69e9fe2@gmail.com>
-Date: Mon, 8 Dec 2025 17:32:27 -0600
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="GbG/N/Zr";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="NkEHQ9E3";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="X3HYvriX";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="ZXST4C5R"
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id B3E2633796;
+	Tue,  9 Dec 2025 07:58:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1765267107; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hoLjqVarGwon9YQWPPriNRjc1MwsPnU+rwGlRykKF6k=;
+	b=GbG/N/ZrxyAiYJBuvBRIaiaWIbcYoXJahI08soTPqUYs/bW8rh+LTKfTM2NW2poIvCxr+H
+	h9QrxVShkMSOWTlfxpJ/7rhePGquiYtH37mJ70TMf5dCT6jJhZzqTulSwMdK0nK8uNEC2A
+	TKixyMxOVEjlsbhcDZDPAuScd49hBxQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1765267107;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hoLjqVarGwon9YQWPPriNRjc1MwsPnU+rwGlRykKF6k=;
+	b=NkEHQ9E3vFcsi3B+LIYvm+X3Lh09XRXCCOF79E4spbiN/ceVUTtagrFM/5tUMp6p6E7F48
+	zxdWStMIdplhdKCw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1765267106; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hoLjqVarGwon9YQWPPriNRjc1MwsPnU+rwGlRykKF6k=;
+	b=X3HYvriX0jz/+BKHIMAS2ktp7MkNiIJS1Tm5L5gJ0LZsiE9+Owp6di5I0Evwj3hELdRg74
+	wJkKIqEjNkOnwSfLULeAkPi3oCed7lhJqcrhGbSejqK355UtlUeaYMnQO0Lap5uYh7Upq3
+	8B6+07R2S4hJt7UPSs+KeAd66kzGI6k=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1765267106;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hoLjqVarGwon9YQWPPriNRjc1MwsPnU+rwGlRykKF6k=;
+	b=ZXST4C5RMjwuC6xoomvT9s/zq2CsMmkeM1tYSS2FHc7Ger7JKNtSyo2IvG/Dnw+/OixmLy
+	Zn6fobHwMCgxMxDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 82FB83EA63;
+	Tue,  9 Dec 2025 07:58:26 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 2neVHqLWN2n9ZAAAD6G6ig
+	(envelope-from <fmancera@suse.de>); Tue, 09 Dec 2025 07:58:26 +0000
+Message-ID: <8952aa2a-5882-4653-b34a-cb08f537c5ec@suse.de>
+Date: Tue, 9 Dec 2025 08:57:59 +0100
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
@@ -68,34 +82,124 @@ List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
+Subject: Re: netfilter: nf_conncount: cpu soft lockup using limiting with Open
+ vSwitch.
+To: Odintsov Vladislav <VlOdintsov@k2.cloud>,
+ "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>,
+ "ovs-dev@openvswitch.org" <ovs-dev@openvswitch.org>
+Cc: Kovalev Evgeniy <EvgKovalev@k2.cloud>,
+ Vazhnetsov Anton <AVazhnetsov@k2.cloud>,
+ Rukomoinikova Aleksandra <ARukomoinikova@k2.cloud>
+References: <7a6872ce-8015-4397-bbe9-22108c65b7ec@k2.cloud>
+ <f801e56e-eba5-460e-919a-3e839b1f9905@k2.cloud>
 Content-Language: en-US
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-From: Ian Pilcher <arequipeno@gmail.com>
-Subject: How to determine type of nftables set
+From: Fernando Fernandez Mancera <fmancera@suse.de>
+In-Reply-To: <f801e56e-eba5-460e-919a-3e839b1f9905@k2.cloud>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: NO
+X-Spam-Score: -4.26
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.26 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.16)[-0.803];
+	MIME_GOOD(-0.10)[text/plain];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_TWO(0.00)[2];
+	URIBL_BLOCKED(0.00)[suse.de:mid,imap1.dmz-prg2.suse.org:helo];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:mid]
 
-I am working on an application that will be working with pre-existing
-(created by the system administrator) netfilter sets.  These sets should
-contain either IPv4 of IPv6 addresses.
+On 12/8/25 1:27 PM, Odintsov Vladislav wrote:
+> On 08.12.2025 15:06, Rukomoinikova Aleksandra wrote:
+>> Hi!
+>> I was testing conntrack limiting using Open vSwitch and noticed the
+>> following issue: under certain limits, a CPU lock occurred.
+>>
+>> [  491.682936] watchdog: BUG: soft lockup - CPU#1 stuck for 26s! [ovs-
+>> dpctl:19437]
+>>
+>> This occurs during a high packet frequency when trying to get the set
+>> limits through ovs-dpctl ct-get-limits.
+>>
+>> In the trace, I can see that the lock occurred on attempts to acquire a
+>> spinlock.
+>>
+>> [  491.683056]  <IRQ>
+>> [  491.683059]  _raw_spin_lock_bh+0x29/0x30
+>> [  491.683064]  count_tree+0x19b/0x1f0 [nf_conncount]
+>> [  491.683069]  ovs_ct_commit+0x196/0x490 [openvswitch]
+>>
+>> Prior to this, in the trace, there was processing of a task from
+>> userspace (ovs-dpctl)
+>>
+>> [  491.683236]  </IRQ>
+>> [  491.683237]  <TASK>
+>> [  491.683238]  asm_common_interrupt+0x22/0x40
+>> [  491.683240] RIP: 0010:nf_conncount_gc_list+0x18a/0x200 [nf_conncount]
+>>
+>> Inside the nf_conncount_gc_list function, a lock is taken on
+>> nf_conncount.c:spin_trylock_bh(&list->list_lock):335. After this, the
+>> not-so-fast __nf_conncount_gc_list function is executed. If, at this
+>> moment, a packet interrupt arrives on the same сpu core (and
+>> spin_trylock_bh doesn't disable interrupts on that core), then scenario
+>> I encountered occurs: the first lock remains held, while the packet
+>> interrupt also attempts to acquire it at
+>> nf_conncount.c:spin_lock_bh(&rbconn->list.list_lock):502 while
+>> committing to conntrack. This attempt fails, leading to a soft lockup.
+>>
 
-How can my application determine what type of address a particular set
-holds?  I can query the set and get a NFT_MSG_GETSET message back, but
-it's murky after that.
+Yes that makes sense. That nf_conncount_gc_list() was added there to 
+cover a different scenario which might be also affected by this soft 
+lockup under the same conditions.
 
-The message contains a NFTA_SET_KEY_TYPE attribute, which looks
-promising, but I can't find anything telling me how to interpret it.
-ChatGPT says that I should just look at the NFTA_SET_KEY_LEN attribute,
-but that doesn't seem reliable; how would I distinguish a 32-bit IPv4
-address from 2 16-bit ports?
+>> Hence my question: shouldn't we avoid calling nf_conncount_gc_list when
+>> querying limits without an skb (as OVS does in openvswitch/
+>> conntrack.c:1773)? The limit retrieval operation should be read-only
+>> regarding the contract state, not involve potential modification.
+>>
+>> Like this:
+>> --- a/net/netfilter/nf_conncount.c
+>> +++ b/net/netfilter/nf_conncount.c
+>> @@ -495,7 +495,6 @@ count_tree(struct net *net,
+>>                int ret;
+>>
+>>                if (!skb) {
+>> -                nf_conncount_gc_list(net, &rbconn->list);
+>>                    return rbconn->list.count;
+>>                }
+>>
 
-Short of digging through the source code of nft, how am I supposed to do
-this?
+Let me think on something, I would like to provide a solution that is 
+suitable for OVS + xt/nft_connlimit. Because this change would break 
+some xt_connlimit use-cases. Also without this nf_conncount_gc_list(), 
+the connection count wouldn't be accurate.. if some connections closed 
+already the count number would still consider them..
 
-TIA!
+Thanks for reporting it, I will let you know my findings on how to solve 
+this :-)
 
--- 
-========================================================================
-If your user interface is intuitive in retrospect ... it isn't intuitive
-========================================================================
+Thanks,
+Fernando.
+
+>> Thanks!
+>>
+>> -- 
+>> regards,
+>> Alexandra.
+>>
+> 
+> + ovs-dev ML
 
