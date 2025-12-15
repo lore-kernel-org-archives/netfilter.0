@@ -1,242 +1,263 @@
-Received: from ksmg.croc.ru (ksmg.croc.ru [195.38.23.104])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E5A4285CB4
-	for <netfilter@vger.kernel.org>; Fri, 12 Dec 2025 21:27:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.38.23.104
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C362D327BE0
+	for <netfilter@vger.kernel.org>; Mon, 15 Dec 2025 11:00:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765574842; cv=none; b=fMSNbK7KR2U5rCCbHPcdOCnQNAyIRoZQx9QVWgf6sVTHYlSm0if5izYCQQVJN8OYtTsyQlGlkIqlAoek9fLYzvg16iSI3vLbuK4VYzm8VmDBuMW7sBFrewj34/puFHAkCvS1xw6FxPh7VM4z30kYjNhAeYeHvUvAYtyYw3078Og=
+	t=1765796417; cv=none; b=CkRJyOxT6W+XyZ9vo4wLInW1Uw4k6rNX9Kpo8OCUPR734PpLqsC4U7Ze59N5/o9f0uhVRnt45hjTvoElEKQbEtjvaddOt7jsJ3//N5iU8NGnPG2Mvx3VA5ejcWliV0oPxmo1VGv5ilnngfjF5LvFq6y4Uos+vhTatPRA3uviwSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765574842; c=relaxed/simple;
-	bh=v9CdE5l5Y/ME+QdXF2buahLjfghUYCIzv9A9ubpZWLE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=GYdjY9i2MhfKSab9deshIn3PXEpvgUBUlzFTv209qLxUwrbW7dG4QAzuuzurknUOfAstCFxhIIue0wsk0NGS4PxRn0LNlkUOD0j9pWeqy663jfKhJ/npKULagNxufEagIW7ddoIwBxklUJuJGnm1iAvPzT2k3TwOL5KmjV+z0YQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=k2.cloud; spf=pass smtp.mailfrom=k2.cloud; dkim=pass (2048-bit key) header.d=k2.cloud header.i=@k2.cloud header.b=G0O+cuBO; arc=none smtp.client-ip=195.38.23.104
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=k2.cloud
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=k2.cloud
+	s=arc-20240116; t=1765796417; c=relaxed/simple;
+	bh=du5SLQDCuoafMSziKeWh6iwZCfkNeMOvRSowOsptQ+0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=SioJ5ymGbmuefWffKCxkVJ1W18rmlHMBTVbVEv05CQI4Hc9NiKmGI/h8UFGkUk48J5lPjyNzkxeSk3w7WXFjG8kpqUjnHmZoyrBFVGy4ZIlIYlJRmCsBgZnD5mT9sFMfIxmkQPrk9fZUjEvfymSHDTQlGd45lTG71pC+KtLJ7Ro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ZUF/nHq4; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=35axwnQO; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ZUF/nHq4; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=35axwnQO; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=k2.cloud header.i=@k2.cloud header.b="G0O+cuBO"
-Received: from ksmg (localhost [127.0.0.1])
-	by ksmg.croc.ru (Postfix) with ESMTP id 10730260012;
-	Sat, 13 Dec 2025 00:27:06 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 ksmg.croc.ru 10730260012
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=k2.cloud; s=mail;
-	t=1765574826; bh=v9CdE5l5Y/ME+QdXF2buahLjfghUYCIzv9A9ubpZWLE=;
-	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version:From;
-	b=G0O+cuBO+P1+2MKneqZXgTv++gXouXclur/MjV9V8VDHjXuxytm4XXWmhScNHHQkg
-	 fse92GiYhXYuHkTO/nyDs1vgNBA3nAR/YFGR8f+hbF9Rkw8kMhFTvEpiPn93sC13aC
-	 gw35vYu0KQ6SjLdv8n8JMXnzvA+yb3gV36aCkPJjGZTzd8sei+iGOTRSLXPsF/UgDC
-	 I67+FUIfvWeSSlZg+TMj4Ho0fL8s0ONBgzqq7R5aYqqv+qAX5SQbu9xFdHXtkJq+zv
-	 zvJjzdFaEvpfjEHrrPmfiEvRsOYpkdxx/6EWeaGW/1inUQJf3WgXcQGPOdlCy5b2UL
-	 HWUoMB5yoVePA==
-Received: from MXONE (unknown [195.38.23.35])
-	by ksmg.croc.ru (Postfix) with ESMTP;
-	Sat, 13 Dec 2025 00:27:06 +0300 (MSK)
-From: Rukomoinikova Aleksandra <ARukomoinikova@k2.cloud>
-To: Fernando Fernandez Mancera <fmancera@suse.de>, Pablo Neira Ayuso
-	<pablo@netfilter.org>
-CC: Odintsov Vladislav <VlOdintsov@k2.cloud>, "netfilter@vger.kernel.org"
-	<netfilter@vger.kernel.org>, "ovs-dev@openvswitch.org"
-	<ovs-dev@openvswitch.org>, Kovalev Evgeniy <EvgKovalev@k2.cloud>, "Vazhnetsov
- Anton" <AVazhnetsov@k2.cloud>, Rukomoinikova Aleksandra
-	<ARukomoinikova@k2.cloud>
-Subject: Re: netfilter: nf_conncount: cpu soft lockup using limiting with Open
- vSwitch.
-Thread-Topic: netfilter: nf_conncount: cpu soft lockup using limiting with
- Open vSwitch.
-Thread-Index: AQHcaDsVbNL3K1IlB0eOzJ8ZLirR3rUXeWWAgAFG7ICAAAxpAIABh5aAgAQFD4A=
-Date: Fri, 12 Dec 2025 21:27:05 +0000
-Message-ID: <b2064e7b-0776-4e14-adb6-c68080987471@k2.cloud>
-References: <7a6872ce-8015-4397-bbe9-22108c65b7ec@k2.cloud>
- <f801e56e-eba5-460e-919a-3e839b1f9905@k2.cloud>
- <8952aa2a-5882-4653-b34a-cb08f537c5ec@suse.de> <aTfg8A3QHDKqXxuY@chamomile>
- <6202915d-5129-4e48-aff3-c20446925406@suse.de>
-In-Reply-To: <6202915d-5129-4e48-aff3-c20446925406@suse.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <703A36B38BBCE6478732AA879D694240@croc.ru>
-Content-Transfer-Encoding: base64
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ZUF/nHq4";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="35axwnQO";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ZUF/nHq4";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="35axwnQO"
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id D9E013383B;
+	Mon, 15 Dec 2025 11:00:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1765796413; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0YUTv3A5uHxIGPhuRpRKvxKzzbuhnqhQHny84V2znxQ=;
+	b=ZUF/nHq4AsPQ+HOV3dzvvbWgxRQwNuGBCRi8L1IiMzotVIsX0GmRu3eMxjV8yCvOlAG+qW
+	nNmOfEA3uAlHbdE+w0lNqE8sfpJIBeXGiJIpp9SGryxDZfWCY0uhPlj32+a2JZ6hro3FA2
+	A8rSe9Pahh6Ad2S6rl78lgvbvy67mv8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1765796413;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0YUTv3A5uHxIGPhuRpRKvxKzzbuhnqhQHny84V2znxQ=;
+	b=35axwnQO0dXmCCWLpFSz6pULXenQSJfqmkQtGo1mG6ZTnEHV5FVkcdIT5jAMnlW3DfSV/F
+	ESksLaYLHMfH+jDA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1765796413; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0YUTv3A5uHxIGPhuRpRKvxKzzbuhnqhQHny84V2znxQ=;
+	b=ZUF/nHq4AsPQ+HOV3dzvvbWgxRQwNuGBCRi8L1IiMzotVIsX0GmRu3eMxjV8yCvOlAG+qW
+	nNmOfEA3uAlHbdE+w0lNqE8sfpJIBeXGiJIpp9SGryxDZfWCY0uhPlj32+a2JZ6hro3FA2
+	A8rSe9Pahh6Ad2S6rl78lgvbvy67mv8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1765796413;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0YUTv3A5uHxIGPhuRpRKvxKzzbuhnqhQHny84V2znxQ=;
+	b=35axwnQO0dXmCCWLpFSz6pULXenQSJfqmkQtGo1mG6ZTnEHV5FVkcdIT5jAMnlW3DfSV/F
+	ESksLaYLHMfH+jDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 76CD63EA63;
+	Mon, 15 Dec 2025 11:00:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id U24/Gj3qP2mtYAAAD6G6ig
+	(envelope-from <fmancera@suse.de>); Mon, 15 Dec 2025 11:00:13 +0000
+Message-ID: <46357175-2d8b-4d93-9c9b-20bbd51408d9@suse.de>
+Date: Mon, 15 Dec 2025 12:00:05 +0100
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-KSMG-Rule-ID: 4
-X-KSMG-Message-Action: skipped
-X-KSMG-AntiSpam-Status: not scanned, allowlist
-X-KSMG-AntiPhishing: not scanned, allowlist
-X-KSMG-LinksScanning: not scanned, allowlist
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, not scanned, allowlist
+User-Agent: Mozilla Thunderbird
+Subject: Re: netfilter: nf_conncount: cpu soft lockup using limiting with Open
+ vSwitch.
+To: Rukomoinikova Aleksandra <ARukomoinikova@k2.cloud>,
+ Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Odintsov Vladislav <VlOdintsov@k2.cloud>,
+ "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>,
+ "ovs-dev@openvswitch.org" <ovs-dev@openvswitch.org>,
+ Kovalev Evgeniy <EvgKovalev@k2.cloud>,
+ Vazhnetsov Anton <AVazhnetsov@k2.cloud>
+References: <7a6872ce-8015-4397-bbe9-22108c65b7ec@k2.cloud>
+ <f801e56e-eba5-460e-919a-3e839b1f9905@k2.cloud>
+ <8952aa2a-5882-4653-b34a-cb08f537c5ec@suse.de> <aTfg8A3QHDKqXxuY@chamomile>
+ <6202915d-5129-4e48-aff3-c20446925406@suse.de>
+ <b2064e7b-0776-4e14-adb6-c68080987471@k2.cloud>
+Content-Language: en-US
+From: Fernando Fernandez Mancera <fmancera@suse.de>
+In-Reply-To: <b2064e7b-0776-4e14-adb6-c68080987471@k2.cloud>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: NO
+X-Spam-Score: -4.28
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.28 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.18)[-0.899];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.de:mid]
 
-SGkgb25lIG1vcmUgdGltZSEgSSBmb3VuZCBhbm90aGVyIGlzc3VlLiBJJ2xsIGRlc2NyaWJlIGl0
-IGJlbG93Lg0KDQpJbiBteSBvcGluaW9uLCBpdCdzIHJlbGV2YW50IGFmdGVyIG1lcmdpbmcgWzFd
-wqAgSSBzYXcgdGhhdCBhIGZpeCBmb3IgDQp0aGlzIGNvbW1pdCB3YXMgbWVyZ2VkIGxhc3Qgd2Vl
-aywgYnV0IGJ1dCBpdCBkb2Vzbid0IGZpeCBjYXNlIEknbGwgDQpkZXNjcmliZSBiZWxvdy4NCg0K
-SSBjcmVhdGUgbGltaXRzIHZpYSBPcGVuIHZTd2l0Y2ggYW5kIHJ1biBhIFRDUCBmbG9vZCB0aGlz
-IHdheTrigKhocGluZzMgLVMgDQotSSBob3N0IC1wIDEwODgwIC1pIHU1IDEwLjI1NS40MS4xMDEg
-LWMgMTAwIChIZXJlLCAtaSB1NSBpcyBpbXBvcnRhbnQsIA0KbWVhbmluZyB3aXRoIHRpbWVycyA8
-IGppZmZpZXM7IGl0J3MgbW9yZSBsaWtlbHkgdGhlIGlzc3VlIHdvbid0IA0KcmVwcm9kdWNlIG90
-aGVyd2lzZSkNCuKAqEFuZCBJIHNldCB0aGUgZm9sbG93aW5nIGxpbWl0IG9uIHRoZSB6b25lIHdo
-ZXJlIHRoZXNlIGNvbm5lY3Rpb25zIA0KYXJyaXZlOuKAqG92cy1kcGN0bCBjdC1zZXQtbGltaXRz
-IHpvbmU9OSxsaW1pdD0xMDANCg0KSSBzdGFydCB0cmFmZmljLCBJIHNlZSB0cmFmZmljIG9uIHRo
-ZSBpbnRlcmZhY2U6IFRDUCBTWU4gLT4gVENQIFNZTitBQ0sgDQotPiBUQ1AgUlNULiBab25lIDkg
-b3ZlcmZsb3dzLCBidXQgY29ubmVjdGlvbnMgaW1tZWRpYXRlbHkgYmVjb21lIENMT1NFRC4gDQpJ
-IHJ1biBocGluZzMgYWdhaW46IGhwaW5nMyAtUyAtSSBob3N0IC1wIDEwODgwIC1pIHU1IDEwLjI1
-NS40MS4xMDEgLWMgDQoxMDAgLSBJIGRvbid0IHNlZSBhbnl0aGluZyBvbiB0aGUgaW50ZXJmYWNl
-IGFuZCBJIHNlZSBtZXNzYWdlcyBpbiBkbWVzZyANCmZyb20gb3BlbnZzd2l0Y2ggc2F5aW5nIHRo
-ZSBudW1iZXIgb2YgY29ubmVjdGlvbnMgZXhjZWVkcyB0aGUgbGltaXQuIEF0IA0KdGhpcyBtb21l
-bnQsIGlmIEkgY2FsbCBvdnMtZHBjdGwgY3QtZ2V0LWxpbWl0cywgdHJhZmZpYyB3aWxsIGltbWVk
-aWF0ZWx5IA0Kc3RhcnQgZmxvd2luZyBhZ2FpbiBiZWNhdXNlIHRoZSBsaW1pdCB3aWxsIGJlIHJl
-c2V0IHRvIHplcm8uDQoNCkkgdGhpbmsgdGhlIHByb2JsZW0gaXMgYXMgZm9sbG93czogYmVmb3Jl
-IGNvbW1pdCBbMV0sIHdlIGNhbGxlZCANCl9fbmZfY29ubmNvdW50X2djX2xpc3QgZm9yIGV2ZXJ5
-IGNvbm5lY3Rpb24sIGFuZCB0aGlzIGZ1bmN0aW9uIGl0ZXJhdGVzIA0Kb3ZlciBhbGwgY29ubmVj
-dGlvbnMgYW5kIGNsZWFucyB1cCB0aG9zZSBhbHJlYWR5IGNsb3NlZC4NCg0KV2hhdCB3ZSBoYXZl
-IG5vdyBpcyB0aGF0IHdoZW4gdHJ5aW5nIHRvIGFkZCBhIGNvbm5lY3Rpb24gaW4gDQpfX25mX2Nv
-bm5jb3VudF9hZGQsIGlmIHdlIGRvbid0IGZpbmQgaXQsIHRoZW4gd2hpbGUgaGFuZGxpbmcgZXJy
-b3JzLCB3ZSANCmRvbid0IGNvbnRpbnVlIHRoZSBpdGVyYXRpb24gZnVydGhlciBhbmQgaW1tZWRp
-YXRlbHkgZXhpdCB0aGUgZnVuY3Rpb24gDQp3aXRoIHplcm8sIHdoaWNoIHJlcHJlc2VudHMgdGhl
-IGN1cnJlbnQgY29ubmVjdGlvbiBjb3VudCAtIHdlIHdpbGwgY2xlYW4gDQpjb25uZWN0aW9ucyBp
-biB0aGUgbGlzdCBvbmx5IHVudGlsIHdlIGZpbmQgdGhlIGNvbm5lY3Rpb24gd2Ugd2FudCB0byAN
-CmNvbW1pdCBub3cgLSBtZWFuaW5nIHRoZSBjb25uZWN0aW9uIGNvdW50IHdpbGwgYmVjb21lIG91
-dGRhdGVkLg0KDQpGdXJ0aGVybW9yZSwgd2UgdGhlbiBnbyB0byBjaGVjayBhbHJlYWR5X2Nsb3Nl
-ZCBmb3VuZCBjb25uZWN0aW9ucyBhbmQgDQppdGVyYXRlIGNvbGxlY3QgdmFyaWFibGUsIHdoaWNo
-IGFsc28gZG9lc24ndCBhbGxvdyBjb25uZWN0aW9ucyB0byBiZSANCmZ1bGx5IGNsZWFuZWQgdXA7
-IHdlIHdpbGwgY2xlYW4gdXAgYSBtYXhpbXVtIG9mIDggDQooQ09OTkNPVU5UX0dDX01BWF9OT0RF
-UykgZW50cmllcyBwZXIgb25lIGNhbGwgdG8gX19uZl9jb25uY291bnRfYWRkLg0KDQpBbHNvLCB3
-aXRoIHN1Y2ggYSBUQ1AgYXR0YWNrIC0gd2hlbiBjb25uZWN0aW9ucyB0cmFuc2l0aW9uIHRvIENM
-T1NFRCANCmltbWVkaWF0ZWx5IC0gX19uZl9jb25uY291bnRfZ2NfbGlzdCB3b24ndCBiZSBjYWxs
-ZWQgYXQgYWxsLCBiZWNhdXNlIHdlIA0Kd2lsbCBjb25zdGFudGx5IGJlIGNhbGxpbmcgX19uZl9j
-b25uY291bnRfYWRkIGFuZCB1cGRhdGluZyB0aGUgbGFzdF9nYyANCnN0YXR1cy4gVGhhdCdzIHdo
-eSBvdnMtZHBjdGwgY3QtZ2V0LWxpbWl0cyBoZWxwczsgaXQgc2ltcGx5IGNhbGxzIA0KX19uZl9j
-b25uY291bnRfZ2NfbGlzdCBhbmQgY2xlYW5zIHVwIGFsbCBjbG9zZWQgY29ubmVjdGlvbnMuDQpJ
-IHByb3Bvc2UgdGhlIGZvbGxvd2luZyBiZWhhdmlvciwgd2hpY2ggd2lsbCBiZSBzaW1pbGFyIHRv
-IHdoYXQgd2UgaGFkIA0KYmVmb3JlIFsyXQ0KDQpkaWZmIC0tZ2l0IGEvbmV0L25ldGZpbHRlci9u
-Zl9jb25uY291bnQuYyBiL25ldC9uZXRmaWx0ZXIvbmZfY29ubmNvdW50LmMNCmluZGV4IDE5MDM5
-YTA4MDJiOC4uZTUyMjQ3ODVmMDFlIDEwMDY0NA0KLS0tIGEvbmV0L25ldGZpbHRlci9uZl9jb25u
-Y291bnQuYw0KKysrIGIvbmV0L25ldGZpbHRlci9uZl9jb25uY291bnQuYw0KQEAgLTE3MSw2ICsx
-NzEsNyBAQCBzdGF0aWMgaW50IF9fbmZfY29ubmNvdW50X2FkZChzdHJ1Y3QgbmV0ICpuZXQsDQog
-wqAgwqAgwqBzdHJ1Y3QgbmZfY29ubiAqZm91bmRfY3Q7DQogwqAgwqAgwqB1bnNpZ25lZCBpbnQg
-Y29sbGVjdCA9IDA7DQogwqAgwqAgwqBib29sIHJlZmNvdW50ZWQgPSBmYWxzZTsNCivCoCDCoCBi
-b29sIG5lZWRfYWRkID0gZmFsc2U7DQoNCiDCoCDCoCDCoGlmICghZ2V0X2N0X29yX3R1cGxlX2Zy
-b21fc2tiKG5ldCwgc2tiLCBsM251bSwgJmN0LCAmdHVwbGUsICZ6b25lLCANCiZyZWZjb3VudGVk
-KSkNCiDCoCDCoCDCoCDCoCDCoHJldHVybiAtRU5PRU5UOw0KQEAgLTE5Niw3ICsxOTcsOCBAQCBz
-dGF0aWMgaW50IF9fbmZfY29ubmNvdW50X2FkZChzdHJ1Y3QgbmV0ICpuZXQsDQogwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqBpZiAobmZfY3RfdHVwbGVfZXF1YWwoJmNvbm4tPnR1cGxlLCAmdHVw
-bGUpICYmDQogwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqBuZl9jdF96b25lX2lkKCZj
-b25uLT56b25lLCBjb25uLT56b25lLmRpcikgPT0NCiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoG5mX2N0X3pvbmVfaWQoem9uZSwgem9uZS0+ZGlyKSkNCi3CoCDCoCDCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCBnb3RvIG91dF9wdXQ7IC8qIGFscmVhZHkgZXhpc3RzICovDQorwqAgwqAg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgLyogYWxyZWFkeSBleGlzdHMgKi8NCivCoCDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCBuZWVkX2FkZCA9IGZhbHNlOw0KIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgfSBlbHNlIHsNCiDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoGNvbGxlY3QrKzsNCiDCoCDC
-oCDCoCDCoCDCoCDCoCDCoH0NCkBAIC0yMTQsNyArMjE2LDcgQEAgc3RhdGljIGludCBfX25mX2Nv
-bm5jb3VudF9hZGQoc3RydWN0IG5ldCAqbmV0LA0KIMKgIMKgIMKgIMKgIMKgIMKgIMKgICogQXR0
-ZW1wdCB0byBhdm9pZCBhIHJlLWFkZCBpbiB0aGlzIGNhc2UuDQogwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgKi8NCiDCoCDCoCDCoCDCoCDCoCDCoCDCoG5mX2N0X3B1dChmb3VuZF9jdCk7DQotwqAgwqAg
-wqAgwqAgwqAgwqAgZ290byBvdXRfcHV0Ow0KK8KgIMKgIMKgIMKgIMKgIMKgIG5lZWRfYWRkID0g
-ZmFsc2U7DQogwqAgwqAgwqAgwqAgwqB9IGVsc2UgaWYgKGFscmVhZHlfY2xvc2VkKGZvdW5kX2N0
-KSkgew0KIMKgIMKgIMKgIMKgIMKgIMKgIMKgLyoNCiDCoCDCoCDCoCDCoCDCoCDCoCDCoCAqIHdl
-IGRvIG5vdCBjYXJlIGFib3V0IGNvbm5lY3Rpb25zIHdoaWNoIGFyZQ0KQEAgLTIyMiwxMyArMjI0
-LDE2IEBAIHN0YXRpYyBpbnQgX19uZl9jb25uY291bnRfYWRkKHN0cnVjdCBuZXQgKm5ldCwNCiDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCAqLw0KIMKgIMKgIMKgIMKgIMKgIMKgIMKgbmZfY3RfcHV0KGZv
-dW5kX2N0KTsNCiDCoCDCoCDCoCDCoCDCoCDCoCDCoGNvbm5fZnJlZShsaXN0LCBjb25uKTsNCi3C
-oCDCoCDCoCDCoCDCoCDCoCBjb2xsZWN0Kys7DQogwqAgwqAgwqAgwqAgwqAgwqAgwqBjb250aW51
-ZTsNCiDCoCDCoCDCoCDCoCDCoH0NCg0KIMKgIMKgIMKgIMKgIMKgbmZfY3RfcHV0KGZvdW5kX2N0
-KTsNCiDCoCDCoCDCoH0NCg0KK8KgIMKgIGlmICghbmVlZF9hZGQpIHsNCivCoCDCoCDCoCDCoCBn
-b3RvIG91dF9wdXQ7DQorwqAgwqAgfQ0KKw0KIMKgYWRkX25ld19ub2RlOg0KDQpbMV0gbmV0Zmls
-dGVyOiBuZl9jb25uY291bnQ6IHJlZHVjZSB1bm5lY2Vzc2FyeSBHQyBjb21taXQgDQpodHRwczov
-L2dpdGh1Yi5jb20vdG9ydmFsZHMvbGludXgvY29tbWl0L2QyNjU5Mjk5MzBlMmZmYWZjNzQ0YzBh
-ZTA1ZmI3MGFjZDUzYmUxZWUNClsyXSBuZXRmaWx0ZXI6IG5mX2Nvbm5jb3VudDogbWVyZ2UgbG9v
-a3VwIGFuZCBhZGQgZnVuY3Rpb25zIGNvbW1pdC4gDQpodHRwczovL2dpdGh1Yi5jb20vdG9ydmFs
-ZHMvbGludXgvY29tbWl0L2RmNGE5MDI1MDk3NjY4OTdmNzM3MWZkZmE0YzNiZjhiYzMyMWI1NWQN
-ClszXSBuZXRmaWx0ZXI6IG5mdF9jb25ubGltaXQ6IHVwZGF0ZSB0aGUgY291bnQgaWYgYWRkIHdh
-cyBza2lwcGVkIA0KaHR0cHM6Ly9naXRodWIuY29tL3RvcnZhbGRzL2xpbnV4L2NvbW1pdC82OTg5
-NGU1YjRjNWUyOGNkYTVmMzJhZjMzZDRhOTJiN2E0YjkzYjBlDQoNCkRvIHlvdSB0aGluayBJIG1p
-c3NlZCBhbnkgY2FzZXMsIGFuZCBob3cgd2lsbCB0aGlzIGFmZmVjdCB0aGUgZnVuY3Rpb24ncyAN
-CnBlcmZvcm1hbmNlPyBUaGFua3MpDQoNCg0KDQpPbiAxMC4xMi4yMDI1IDExOjAzLCBGZXJuYW5k
-byBGZXJuYW5kZXogTWFuY2VyYSB3cm90ZToNCj4NCj4gT24gMTIvOS8yNSA5OjQyIEFNLCBQYWJs
-byBOZWlyYSBBeXVzbyB3cm90ZToNCj4+IE9uIFR1ZSwgRGVjIDA5LCAyMDI1IGF0IDA4OjU3OjU5
-QU0gKzAxMDAsIEZlcm5hbmRvIEZlcm5hbmRleiBNYW5jZXJhIA0KPj4gd3JvdGU6DQo+Pj4gT24g
-MTIvOC8yNSAxOjI3IFBNLCBPZGludHNvdiBWbGFkaXNsYXYgd3JvdGU6DQo+Pj4+IE9uIDA4LjEy
-LjIwMjUgMTU6MDYsIFJ1a29tb2luaWtvdmEgQWxla3NhbmRyYSB3cm90ZToNCj4+Pj4+IEhpIQ0K
-Pj4+Pj4gSSB3YXMgdGVzdGluZyBjb25udHJhY2sgbGltaXRpbmcgdXNpbmcgT3BlbiB2U3dpdGNo
-IGFuZCBub3RpY2VkIHRoZQ0KPj4+Pj4gZm9sbG93aW5nIGlzc3VlOiB1bmRlciBjZXJ0YWluIGxp
-bWl0cywgYSBDUFUgbG9jayBvY2N1cnJlZC4NCj4+Pj4+DQo+Pj4+PiBbwqAgNDkxLjY4MjkzNl0g
-d2F0Y2hkb2c6IEJVRzogc29mdCBsb2NrdXAgLSBDUFUjMSBzdHVjayBmb3IgMjZzISANCj4+Pj4+
-IFtvdnMtDQo+Pj4+PiBkcGN0bDoxOTQzN10NCj4+Pj4+DQo+Pj4+PiBUaGlzIG9jY3VycyBkdXJp
-bmcgYSBoaWdoIHBhY2tldCBmcmVxdWVuY3kgd2hlbiB0cnlpbmcgdG8gZ2V0IHRoZSBzZXQNCj4+
-Pj4+IGxpbWl0cyB0aHJvdWdoIG92cy1kcGN0bCBjdC1nZXQtbGltaXRzLg0KPj4+Pj4NCj4+Pj4+
-IEluIHRoZSB0cmFjZSwgSSBjYW4gc2VlIHRoYXQgdGhlIGxvY2sgb2NjdXJyZWQgb24gYXR0ZW1w
-dHMgdG8gDQo+Pj4+PiBhY3F1aXJlIGENCj4+Pj4+IHNwaW5sb2NrLg0KPj4+Pj4NCj4+Pj4+IFvC
-oCA0OTEuNjgzMDU2XcKgIDxJUlE+DQo+Pj4+PiBbwqAgNDkxLjY4MzA1OV3CoCBfcmF3X3NwaW5f
-bG9ja19iaCsweDI5LzB4MzANCj4+Pj4+IFvCoCA0OTEuNjgzMDY0XcKgIGNvdW50X3RyZWUrMHgx
-OWIvMHgxZjAgW25mX2Nvbm5jb3VudF0NCj4+Pj4+IFvCoCA0OTEuNjgzMDY5XcKgIG92c19jdF9j
-b21taXQrMHgxOTYvMHg0OTAgW29wZW52c3dpdGNoXQ0KPj4+Pj4NCj4+Pj4+IFByaW9yIHRvIHRo
-aXMsIGluIHRoZSB0cmFjZSwgdGhlcmUgd2FzIHByb2Nlc3Npbmcgb2YgYSB0YXNrIGZyb20NCj4+
-Pj4+IHVzZXJzcGFjZSAob3ZzLWRwY3RsKQ0KPj4+Pj4NCj4+Pj4+IFvCoCA0OTEuNjgzMjM2XcKg
-IDwvSVJRPg0KPj4+Pj4gW8KgIDQ5MS42ODMyMzddwqAgPFRBU0s+DQo+Pj4+PiBbwqAgNDkxLjY4
-MzIzOF3CoCBhc21fY29tbW9uX2ludGVycnVwdCsweDIyLzB4NDANCj4+Pj4+IFvCoCA0OTEuNjgz
-MjQwXSBSSVA6IDAwMTA6bmZfY29ubmNvdW50X2djX2xpc3QrMHgxOGEvMHgyMDAgDQo+Pj4+PiBb
-bmZfY29ubmNvdW50XQ0KPj4+Pj4NCj4+Pj4+IEluc2lkZSB0aGUgbmZfY29ubmNvdW50X2djX2xp
-c3QgZnVuY3Rpb24sIGEgbG9jayBpcyB0YWtlbiBvbg0KPj4+Pj4gbmZfY29ubmNvdW50LmM6c3Bp
-bl90cnlsb2NrX2JoKCZsaXN0LT5saXN0X2xvY2spOjMzNS4gQWZ0ZXIgdGhpcywgdGhlDQo+Pj4+
-PiBub3Qtc28tZmFzdCBfX25mX2Nvbm5jb3VudF9nY19saXN0IGZ1bmN0aW9uIGlzIGV4ZWN1dGVk
-LiBJZiwgYXQgdGhpcw0KPj4+Pj4gbW9tZW50LCBhIHBhY2tldCBpbnRlcnJ1cHQgYXJyaXZlcyBv
-biB0aGUgc2FtZSDRgXB1IGNvcmUgKGFuZA0KPj4+Pj4gc3Bpbl90cnlsb2NrX2JoIGRvZXNuJ3Qg
-ZGlzYWJsZSBpbnRlcnJ1cHRzIG9uIHRoYXQgY29yZSksIHRoZW4gDQo+Pj4+PiBzY2VuYXJpbw0K
-Pj4+Pj4gSSBlbmNvdW50ZXJlZCBvY2N1cnM6IHRoZSBmaXJzdCBsb2NrIHJlbWFpbnMgaGVsZCwg
-d2hpbGUgdGhlIHBhY2tldA0KPj4+Pj4gaW50ZXJydXB0IGFsc28gYXR0ZW1wdHMgdG8gYWNxdWly
-ZSBpdCBhdA0KPj4+Pj4gbmZfY29ubmNvdW50LmM6c3Bpbl9sb2NrX2JoKCZyYmNvbm4tPmxpc3Qu
-bGlzdF9sb2NrKTo1MDIgd2hpbGUNCj4+Pj4+IGNvbW1pdHRpbmcgdG8gY29ubnRyYWNrLiBUaGlz
-IGF0dGVtcHQgZmFpbHMsIGxlYWRpbmcgdG8gYSBzb2Z0IA0KPj4+Pj4gbG9ja3VwLg0KPj4+Pj4N
-Cj4+Pg0KPj4+IFllcyB0aGF0IG1ha2VzIHNlbnNlLiBUaGF0IG5mX2Nvbm5jb3VudF9nY19saXN0
-KCkgd2FzIGFkZGVkIHRoZXJlIHRvIA0KPj4+IGNvdmVyIGENCj4+PiBkaWZmZXJlbnQgc2NlbmFy
-aW8gd2hpY2ggbWlnaHQgYmUgYWxzbyBhZmZlY3RlZCBieSB0aGlzIHNvZnQgbG9ja3VwIA0KPj4+
-IHVuZGVyDQo+Pj4gdGhlIHNhbWUgY29uZGl0aW9ucy4NCj4+DQo+PiBTZWUgYmVsb3csIGEgcXVp
-Y2sgYnJvd3NpbmcgdGVsbHMgbWUgT1ZTIGZvcmdvdCB0byBkaXNhYmxlIEJIIHRvDQo+PiBwZXJm
-b3JtIHRoaXMgR0MuDQo+Pg0KPj4+Pj4gSGVuY2UgbXkgcXVlc3Rpb246IHNob3VsZG4ndCB3ZSBh
-dm9pZCBjYWxsaW5nIG5mX2Nvbm5jb3VudF9nY19saXN0IA0KPj4+Pj4gd2hlbg0KPj4+Pj4gcXVl
-cnlpbmcgbGltaXRzIHdpdGhvdXQgYW4gc2tiIChhcyBPVlMgZG9lcyBpbiBvcGVudnN3aXRjaC8N
-Cj4+Pj4+IGNvbm50cmFjay5jOjE3NzMpPyBUaGUgbGltaXQgcmV0cmlldmFsIG9wZXJhdGlvbiBz
-aG91bGQgYmUgcmVhZC1vbmx5DQo+Pj4+PiByZWdhcmRpbmcgdGhlIGNvbnRyYWN0IHN0YXRlLCBu
-b3QgaW52b2x2ZSBwb3RlbnRpYWwgbW9kaWZpY2F0aW9uLg0KPj4+Pj4NCj4+Pj4+IExpa2UgdGhp
-czoNCj4+Pj4+IC0tLSBhL25ldC9uZXRmaWx0ZXIvbmZfY29ubmNvdW50LmMNCj4+Pj4+ICsrKyBi
-L25ldC9uZXRmaWx0ZXIvbmZfY29ubmNvdW50LmMNCj4+Pj4+IEBAIC00OTUsNyArNDk1LDYgQEAg
-Y291bnRfdHJlZShzdHJ1Y3QgbmV0ICpuZXQsDQo+Pj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgaW50IHJldDsNCj4+Pj4+DQo+Pj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqAgaWYgKCFza2IpIHsNCj4+Pj4+IC3CoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-bmZfY29ubmNvdW50X2djX2xpc3QobmV0LCAmcmJjb25uLT5saXN0KTsNCj4+Pj4+IMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHJldHVybiByYmNvbm4tPmxpc3QuY291bnQ7
-DQo+Pj4+PiDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfQ0KPj4+Pj4NCj4+Pg0KPj4+
-IExldCBtZSB0aGluayBvbiBzb21ldGhpbmcsIEkgd291bGQgbGlrZSB0byBwcm92aWRlIGEgc29s
-dXRpb24gdGhhdCBpcw0KPj4+IHN1aXRhYmxlIGZvciBPVlMgKyB4dC9uZnRfY29ubmxpbWl0LiBC
-ZWNhdXNlIHRoaXMgY2hhbmdlIHdvdWxkIGJyZWFrIA0KPj4+IHNvbWUNCj4+PiB4dF9jb25ubGlt
-aXQgdXNlLWNhc2VzLiBBbHNvIHdpdGhvdXQgdGhpcyBuZl9jb25uY291bnRfZ2NfbGlzdCgpLCB0
-aGUNCj4+PiBjb25uZWN0aW9uIGNvdW50IHdvdWxkbid0IGJlIGFjY3VyYXRlLi4gaWYgc29tZSBj
-b25uZWN0aW9ucyBjbG9zZWQgDQo+Pj4gYWxyZWFkeQ0KPj4+IHRoZSBjb3VudCBudW1iZXIgd291
-bGQgc3RpbGwgY29uc2lkZXIgdGhlbS4uDQo+Pg0KPj4gU2lkZSBub3RlLCB0aGlzIHBhcnRpY3Vs
-YXIgbGluZSBvbmx5IGFmZmVjdHMgT1ZTLCB3aGljaCBpcyB0aGUgb25seQ0KPj4gY2FsbGVyIHBh
-c3NpbmcgTlVMTCBhcyBza2I6DQo+Pg0KPj4gbmV0L25ldGZpbHRlci94dF9jb25ubGltaXQuYzrC
-oMKgIGNvbm5lY3Rpb25zID0gDQo+PiBuZl9jb25uY291bnRfY291bnRfc2tiKG5ldCwgc2tiLCB4
-dF9mYW1pbHkocGFyKSwgaW5mby0+ZGF0YSwga2V5KTsNCj4+IG5ldC9vcGVudnN3aXRjaC9jb25u
-dHJhY2suYzrCoMKgwqAgY29ubmVjdGlvbnMgPSANCj4+IG5mX2Nvbm5jb3VudF9jb3VudF9za2Io
-bmV0LCBza2IsIGluZm8tPmZhbWlseSwNCj4+IG5ldC9vcGVudnN3aXRjaC9jb25udHJhY2suYzrC
-oMKgwqAgem9uZV9saW1pdC5jb3VudCA9IA0KPj4gbmZfY29ubmNvdW50X2NvdW50X3NrYihuZXQs
-IE5VTEwsIDAsIGRhdGEsDQo+Pg0KPj4gQW5vdGhlciByZWxldmFudCBhc3BlY3Q6IG5mX2Nvbm5j
-b3VudF9nY19saXN0KCkgaXMgY2FsbGVkIF93aXRob3V0Xw0KPj4gZGlzYWJsaW5nIEJIIChiZWZv
-cmUgcmVjZW50IEZlcm5hbmRvJ3MgY2hhbmdlcykuDQo+Pg0KPj4gWW91IGZpeCBpdCBoZXJlLCBG
-ZXJuYW5kbzoNCj4+DQo+PiBjb21taXQgYzAzNjJiNTc0ODI4MmUyMmZhMTU5MmE4ZDM0NzRmNzI2
-YWQ5NjRjMg0KPj4gQXV0aG9yOiBGZXJuYW5kbyBGZXJuYW5kZXogTWFuY2VyYSA8Zm1hbmNlcmFA
-c3VzZS5kZT4NCj4+IERhdGU6wqDCoCBGcmkgTm92IDIxIDAxOjE0OjMxIDIwMjUgKzAxMDANCj4+
-DQo+PiDCoMKgwqDCoCBuZXRmaWx0ZXI6IG5mX2Nvbm5jb3VudDogbWFrZSBuZl9jb25uY291bnRf
-Z2NfbGlzdCgpIHRvIGRpc2FibGUgQkgNCj4+DQo+PiBJIHRoaW5rIGl0IGlzIG9ubHkgYSBtYXR0
-ZXIgb2YgYmFja3BvcnRpbmcgaXQgdG8gLXN0YWJsZS4NCj4NCj4gVGhhdCBpcyByaWdodCwgdGhh
-bmtzIFBhYmxvLiBKdXN0IGEgbm90ZSwgdGhhdCBjb21taXQgZG9lc24ndCBoYXZlIGENCj4gZml4
-ZXMgdGFnIGJlY2F1c2UgSSBqdXN0IGRpZCBpdCB0byBzaW1wbGlmeSBpdHMgdXNlIHNvIGl0IHdv
-bid0IGJlDQo+IHBpY2tlZCBhdXRvbWF0aWNhbGx5Li4gc2hvdWxkIHdlIHNlbmQgYSByZXF1ZXN0
-IHRvIHN0YWJsZSBtYWlsaW5nIGxpc3Q/DQo+DQo+IFRoYW5rcywNCj4gRmVybmFuZG8uDQoNCg0K
-LS0gDQpyZWdhcmRzLA0KQWxleGFuZHJhLg0KDQo=
+On 12/12/25 10:27 PM, Rukomoinikova Aleksandra wrote:
+> Hi one more time! I found another issue. I'll describe it below.
+> 
+> In my opinion, it's relevant after merging [1]  I saw that a fix for
+> this commit was merged last week, but but it doesn't fix case I'll
+> describe below.
+> 
+
+Just to be sure, you have tested this with the latest mainline kernel, 
+right? Because as you mentioned we merged several fixes addressing 
+outdated counts.
+
+> I create limits via Open vSwitch and run a TCP flood this way: hping3 -S
+> -I host -p 10880 -i u5 10.255.41.101 -c 100 (Here, -i u5 is important,
+> meaning with timers < jiffies; it's more likely the issue won't
+> reproduce otherwise)
+>  And I set the following limit on the zone where these connections
+> arrive: ovs-dpctl ct-set-limits zone=9,limit=100
+> 
+> I start traffic, I see traffic on the interface: TCP SYN -> TCP SYN+ACK
+> -> TCP RST. Zone 9 overflows, but connections immediately become CLOSED.
+> I run hping3 again: hping3 -S -I host -p 10880 -i u5 10.255.41.101 -c
+> 100 - I don't see anything on the interface and I see messages in dmesg
+> from openvswitch saying the number of connections exceeds the limit. At
+> this moment, if I call ovs-dpctl ct-get-limits, traffic will immediately
+> start flowing again because the limit will be reset to zero.
+> 
+
+To me it seems that openvswitch should perform a GC somewhere similar to 
+what we did on nft_connlimit/xt_connlimit.
+
+> I think the problem is as follows: before commit [1], we called
+> __nf_conncount_gc_list for every connection, and this function iterates
+> over all connections and cleans up those already closed.
+> 
+> What we have now is that when trying to add a connection in
+> __nf_conncount_add, if we don't find it, then while handling errors, we
+> don't continue the iteration further and immediately exit the function
+> with zero, which represents the current connection count - we will clean> connections in the list only until we find the connection we want to
+> commit now - meaning the connection count will become outdated.
+> 
+> Furthermore, we then go to check already_closed found connections and
+> iterate collect variable, which also doesn't allow connections to be
+> fully cleaned up; we will clean up a maximum of 8
+> (CONNCOUNT_GC_MAX_NODES) entries per one call to __nf_conncount_add.
+> 
+> Also, with such a TCP attack - when connections transition to CLOSED
+> immediately - __nf_conncount_gc_list won't be called at all, because we
+> will constantly be calling __nf_conncount_add and updating the last_gc
+> status. That's why ovs-dpctl ct-get-limits helps; it simply calls
+> __nf_conncount_gc_list and cleans up all closed connections.
+> I propose the following behavior, which will be similar to what we had
+> before [2]
+> 
+> diff --git a/net/netfilter/nf_conncount.c b/net/netfilter/nf_conncount.c
+> index 19039a0802b8..e5224785f01e 100644
+> --- a/net/netfilter/nf_conncount.c
+> +++ b/net/netfilter/nf_conncount.c
+> @@ -171,6 +171,7 @@ static int __nf_conncount_add(struct net *net,
+>        struct nf_conn *found_ct;
+>        unsigned int collect = 0;
+>        bool refcounted = false;
+> +    bool need_add = false;
+> 
+>        if (!get_ct_or_tuple_from_skb(net, skb, l3num, &ct, &tuple, &zone,
+> &refcounted))
+>            return -ENOENT;
+> @@ -196,7 +197,8 @@ static int __nf_conncount_add(struct net *net,
+>                    if (nf_ct_tuple_equal(&conn->tuple, &tuple) &&
+>                        nf_ct_zone_id(&conn->zone, conn->zone.dir) ==
+>                        nf_ct_zone_id(zone, zone->dir))
+> -                    goto out_put; /* already exists */
+> +                    /* already exists */
+> +                    need_add = false;
+
+I don't see the point to continue here. If we reached this, it means the 
+ct is already tracked. Sure, the count is not being updated but does it 
+matter? This connection is already tracked.
+
+>                } else {
+>                    collect++;
+>                }
+> @@ -214,7 +216,7 @@ static int __nf_conncount_add(struct net *net,
+>                 * Attempt to avoid a re-add in this case.
+>                 */
+>                nf_ct_put(found_ct);
+> -            goto out_put;
+> +            need_add = false;
+>            } else if (already_closed(found_ct)) {
+>                /*
+>                 * we do not care about connections which are
+> @@ -222,13 +224,16 @@ static int __nf_conncount_add(struct net *net,
+>                 */
+>                nf_ct_put(found_ct);
+>                conn_free(list, conn);
+> -            collect++;
+>                continue;
+>            }
+
+This worries me a bit, it would mean that for every legit add operation 
+the function will go through ALL the connections tracked which might be 
+a really huge number. This would impact the performance.
+
+IMO, this is the only relevant line on the patch for your use-case 
+probably. I do not think the others have any impact. I am wondering if 
+this can be fixed by handling it from openvswitch side by calling gc 
+when needed.
+
+I am going to try to reproduce this locally on a machine I have. Let's 
+see what I can get.
+
+Thanks,
+Fernando.
+
+> 
+>            nf_ct_put(found_ct);
+>        }
+> 
+> +    if (!need_add) {
+> +        goto out_put;
+> +    }
+> +
+>    add_new_node:
+> 
+> [1] netfilter: nf_conncount: reduce unnecessary GC commit
+> https://github.com/torvalds/linux/commit/d265929930e2ffafc744c0ae05fb70acd53be1ee
+> [2] netfilter: nf_conncount: merge lookup and add functions commit.
+> https://github.com/torvalds/linux/commit/df4a902509766897f7371fdfa4c3bf8bc321b55d
+> [3] netfilter: nft_connlimit: update the count if add was skipped
+> https://github.com/torvalds/linux/commit/69894e5b4c5e28cda5f32af33d4a92b7a4b93b0e
+> 
+> Do you think I missed any cases, and how will this affect the function's
+> performance? Thanks)
+> 
+
+
