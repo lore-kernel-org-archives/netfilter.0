@@ -1,39 +1,43 @@
-Received: from mail-43166.protonmail.ch (mail-43166.protonmail.ch [185.70.43.166])
+Received: from mail-07.mail-europe.com (mail-0701.mail-europe.com [51.83.17.38])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD9AF2036E9
-	for <netfilter@vger.kernel.org>; Thu, 18 Dec 2025 05:10:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.166
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFBCE350D62
+	for <netfilter@vger.kernel.org>; Thu, 18 Dec 2025 15:47:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=51.83.17.38
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766034635; cv=none; b=GJErAv1UpYjirMRYz7/YolpHI3701PJJbgclcnaptzy6YCMBF7xJYzou0y53REiZ+NoQpjKvnj2i/uA1yxNA/64MlR3wR//M6z8z2yTtm9qwli/7kxeA3NT5GsUkznnzLfgwCp7IYq0MKtfjZcS5elO2s5NuYs61GgNafN0iHKs=
+	t=1766072877; cv=none; b=NNcrhBByJqnTYhKCsvNM568AOWPEEjJBJZRnpSSg0dV7L9/f3lc+tTx2gNI9B0wP0b7ngrwaSGtvbB1MxCYTM+3xWhXo27N6JNx/V/yqszyp3kmeZ46n21wgmmT/hbv0cSoJ15mP2PrBmrEbJh14+KL5YOxPMZHQ0P80cKiAsr8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766034635; c=relaxed/simple;
-	bh=QvxlFRwO1KIHzUk2uGdbBVUqHnxfYVK2vrVz2h27E30=;
-	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=FLcsjKKHD4yhqCGdbneuqMDqBuMfpH6OZWTTicWgRlAYxjUMPtauAvrHcRPCWMcWNa0ckITvR2xMXcHKU5lauaLkSichruNqCnQ7Hf9VD7BE3QqsX4F4RlAFSBlfJ4sX+ptbJsJPf8IusaPM9ydsK59FE8Zwr21LqEvYg8e9J2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=FCqajGqo; arc=none smtp.client-ip=185.70.43.166
+	s=arc-20240116; t=1766072877; c=relaxed/simple;
+	bh=opps4wgwYYPTwpdajng+CUVM21889t3iehFbTKRVLsE=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=K44aQuUsBihYgXfVRyJaOHiM7pm3qv4YeCuQBRSCjpTsnhn3Xb604tulzvP/6YXY75h1E+jrYG1VfctX1M9SkRqjvyMcMqGYv/Ntn4Tjv5VFnD1Q09ZxA586MrfTo9KpkW2Z/B1ZiuoJE77TfBbqUlY+XAwgfJPqXOyz7S+RfEI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=fail smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=YsjFpdhb; arc=none smtp.client-ip=51.83.17.38
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=protonmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="FCqajGqo"
+	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="YsjFpdhb"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
-	s=protonmail3; t=1766034630; x=1766293830;
-	bh=QvxlFRwO1KIHzUk2uGdbBVUqHnxfYVK2vrVz2h27E30=;
-	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
-	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
-	b=FCqajGqocwMvNOSi6fw/jqxs4LbebAm93jua4XTNkapQPTmNNdcoA4AdW4hD180zX
-	 QoIBXBhDM/GVp8y9+/Fxagq8zxJKqBY0n0wIDzwfgrDyxwG3adWeMMCpQvH8XfrUEF
-	 NgF/qbfjNiRbLBkAhLlwmMpozkzNIdDgbF5NAPp2ufSWD1WA8NcZX0NCQjlTjQg1Et
-	 wNOvgghK0ae3NEsow3+q97wl2EDYG2w7WGL93o92CgIhoQa3pIIIjcUzJHkl23lJI4
-	 A7jRExpWDK973snYYvMyJzBui1EZCAJsgKutDgmf+H2lbdEZgqIOuoUMqmAyBf/NMk
-	 mNJpFCRALdinQ==
-Date: Thu, 18 Dec 2025 05:10:24 +0000
+	s=protonmail3; t=1766072863; x=1766332063;
+	bh=opps4wgwYYPTwpdajng+CUVM21889t3iehFbTKRVLsE=;
+	h=Date:To:From:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Feedback-ID:From:To:Cc:Date:Subject:Reply-To:Feedback-ID:
+	 Message-ID:BIMI-Selector;
+	b=YsjFpdhbz0cuimgoP+DWng8hepMXxeYHRzPIC9ue/z1z/pr6vbMnPpW/BUWx3PUYM
+	 rP1RX67JBTFy/bmk51JL4tEZ+tdXbYsnxojD9QZ2rNzOCW8RPKbFsMoUCHPqY8IGvk
+	 dm6+V2IHFYmsLgCNLD6yhjebzKpLFHhdRv2MWfjbJGvvHvdpCpe6H0FGeVkL1AxblH
+	 LmUap5ybkvMkSB8/w592alliSCu7XeAATxVJjz+qif7FmzDYReiC6N9yCWg26DmQZ9
+	 Ms8XMeebj7cYXuXMsfa5Cg1+UYEKttlJwe1DPi/EsMADm86nyt9Wpt/asFiVlSdqc1
+	 OmwVtpIoMNeYw==
+Date: Thu, 18 Dec 2025 15:47:41 +0000
 To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 From: Turritopsis Dohrnii Teo En Ming <teo.en.ming@protonmail.com>
 Cc: "ceo@teo-en-ming-corp.com" <ceo@teo-en-ming-corp.com>
-Subject: Advanced Persistent Threat (APT) hackers had hacked into my Virtualmin Linux Virtual Private Server (VPS) on 15 Dec 2025 Monday around noon time
-Message-ID: <mj93-Tre0m23bWZQ5OtETinivhzhbtFx1Oudy65KRqg-SbVrjza6Nb9BaslRuCYLFWKOxdX8URUTyUlvB3RjNogv2AloPv5MKKWKCexO4Ww=@protonmail.com>
+Subject: Re: Advanced Persistent Threat (APT) hackers had hacked into my Virtualmin Linux Virtual Private Server (VPS) on 15 Dec 2025 Monday around noon time
+Message-ID: <7fDR1NAoQ-tUsWCIipg9hI0XGvoPyFSc6ARBzMXdUA9vWm0evoY0QpsdKH1SqRd8Z6BCK5ZVFyBX7jGgXo0xqZUTXoaxrS_qM5H74g-NgLA=@protonmail.com>
+In-Reply-To: <mj93-Tre0m23bWZQ5OtETinivhzhbtFx1Oudy65KRqg-SbVrjza6Nb9BaslRuCYLFWKOxdX8URUTyUlvB3RjNogv2AloPv5MKKWKCexO4Ww=@protonmail.com>
+References: <mj93-Tre0m23bWZQ5OtETinivhzhbtFx1Oudy65KRqg-SbVrjza6Nb9BaslRuCYLFWKOxdX8URUTyUlvB3RjNogv2AloPv5MKKWKCexO4Ww=@protonmail.com>
 Feedback-ID: 39510961:user:proton
-X-Pm-Message-ID: 4b5e1063de6e86068bc13de6271756c9ea635c01
+X-Pm-Message-ID: e29322451edaa19e076f4e1a745d0e22462673c4
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
@@ -43,96 +47,179 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
 
-Subject: Advanced Persistent Threat (APT) hackers had hacked into my Virtua=
-lmin Linux Virtual Private Server (VPS) on 15 Dec 2025 Monday around noon t=
-ime
+Hi guys,
 
-Good day from Singapore,
+It appears that my /etc/postfix/virtual configuration file was modified. I =
+have no idea whether it was Advanced Persistent Threat (APT) hackers who mo=
+dified it or something else on my Linux server modified it. But if it were =
+Advanced Persistent Threat (APT) hackers, I am nowhere as smart and intelli=
+gent as them, for they are extremely good in hiding their tracks. I am clea=
+rly no match at all for Advanced Persistent Threat (APT) hackers. Apparentl=
+y my /etc/postfix/virtual was modified to a breaking point after I had crea=
+ted a new email account "alerts@teo-en-ming-corp.com" on 15 Dec 2025 Monday=
+ at around 12.29 PM Singapore Time. I was helping my client to configure em=
+ail alerts in their Lenovo ThinkSystem SR530 server XClarity Controller whe=
+n Gmail and their corporate email don't work.
 
-Today 17 Dec 2025 Wednesday around 12.30 PM, I was trying to use GMail (Goo=
-gle Mail) to send email to my email accounts hosted in Virtualmin Linux Vir=
-tual Private Server (VPS) (aka web hosting control panel). GMail reported t=
-he error "554 5.7.1 Relay access denied". Which means all of my email accou=
-nts hosted in Virtualmin Linux VPS could no longer receive emails.
+Now, here is what I have done on my Virtualmin Linux VPS to solve the probl=
+em (as advised by the community and generative AI).
 
-Advanced Persistent Threat (APT) hackers must have hacked into my Virtualmi=
-n Linux VPS and changed my server configuration.
+Edit /etc/postfix/main.cf
 
-Webmin version: 2.520
-Virtualmin version: 7.50.0 GPL
-Operating system: AlmaLinux 9.6
-Usermin version: 2.420
-Authentic theme version: 25.20
-Linux Kernel and CPU: Linux 5.14.0-570.51.1.el9_6.x86_64 on x86_64
+I have removed the domains teo-en-ming.com and teo-en-ming-corp.com from th=
+e mydestination directive.
 
-When I logged in to Roundcube Webmail, I noticed that I had stopped receivi=
-ng emails with the email accounts hosted in Virtualmin Linux VPS since 15 D=
-ec 2025 Monday around 12 noon Singapore Time.
-
-When I checked /var/log/maillog in Virtualmin Linux VPS, I observed that I =
-had started getting "554 5.7.1 Relay access denied" errors since 15 Dec 202=
-5 Monday around 12.28 PM (for my email accounts hosted in Virtualmin Linux =
-VPS).
-
-Advanced Persistent Threat (APT) hackers must have hacked into my Virtualmi=
-n Linux VPS and changed my server configuration.
-
-When I checked /etc/postfix/main.cf on my Virtualmin Linux VPS, Advanced Pe=
-rsistent Threat (APT) hackers had changed the following line to:
+Now my FINAL mydestination looks like:
 
 mydestination =3D $myhostname, localhost.$mydomain, localhost, ns1.turritop=
 sis-dohrnii-teo-en-ming.com
 
-I had to change the above line back to:
+Save the changes to /etc/postfix/main.cf
 
-mydestination =3D $myhostname, localhost.$mydomain, localhost, ns1.turritop=
-sis-dohrnii-teo-en-ming.com, teo-en-ming.com, teo-en-ming-corp.com
+Since my present /etc/postfix/virtual is not working, I have renamed it.
 
-And then restart Postfix daemon/service (systemctl restart postfix).
+# cd /etc/postfix
 
-For Virtual Server teo-en-ming-corp.com in Virtualmin Linux VPS:
+# mv virtual virtual.notworking
 
-Advanced Persistent Threat (APT) hackers had changed my email account user'=
-s Login access to Database, FTP and SSH. I had to change it back to Databas=
-e, Email, FTP and SSH.
+I have decided to restore virtual.rpmsave which has a timestamp of 14 Dec 2=
+022 (3 years ago).
 
-Advanced Persistent Threat (APT) hackers had also changed "Primary email ad=
-dress enabled" to No. I had to change it back to Yes.
+# cp virtual.rpmsave virtual
 
-For Virtual Server teo-en-ming.com in Virtualmin Linux VPS:
+# postmap /etc/postfix/virtual
 
-Advanced Persistent Threat (APT) hackers had changed my email account user'=
-s Login access to FTP and SSH. I had to change it back to Email, FTP and SS=
-H.
+# systemctl restart postfix
 
-Advanced Persistent Threat (APT) hackers had also changed "Primary email ad=
-dress enabled" to No. I had to change it back to Yes.
+Now I have managed to solve the problem with the help and assistance of the=
+ folks at Virtualmin community and elsewhere. Their help and assistance is =
+deeply appreciated. Many thanks.
+Now all of my email accounts hosted in Virtualmin Linux VPS are able to rec=
+eive emails.
 
-After making all of the above changes, I am able to start receiving emails =
-with my email accounts hosted in Virtualmin Linux VPS since 1.15 PM today 1=
-7 Dec 2025 Wednesday.
+Before solving the problem tonight / this evening, GMail used to send me De=
+livery Staus Notification (Failure).
 
-When I checked OpenSSH server logins and Virtualmin logins, only public IPv=
-4 addresses belonging to me were present. There were no traces of Advanced =
-Persistent Threat (APT) hackers gaining unauthorized entry into my Virtualm=
-in Linux VPS at all. Of course, if they are Advanced Persistent Threat (APT=
-) hackers, they must be very smart and intelligent (their intelligence quot=
-ient IQ sure way above me) to remove all traces of their unauthorized intru=
-sions into my Virtualmin Linux VPS.
+[QUOTE]
+Message not delivered
 
-How can I make a request to Advanced Persistent Threat (APT) hackers so tha=
-t they will stop playing pranks on my Android (Linux) phones, home desktop =
-computer, laptops, Virtualmin and Webmin Linux servers and other various nu=
-merous online accounts not secured with 2FA / MFA?
+Your message couldn't be delivered to ceo@teo-en-ming-corp.com because the =
+remote server is misconfigured. See the technical details below for more in=
+formation.
 
-Please advise.
+The response from the remote server was:
+554 5.7.1 : Relay access denied
+[/QUOTE]
 
-Thank you very much.
+Thank you for all the help and advise guys! The cause of the problem is wit=
+h /etc/postfix/virtual and not /etc/postfix/main.cf. But I still have no id=
+ea who or what modified /etc/postfix/virtual that caused my Linux mail serv=
+er to go down. I am no forensic expert.
 
 Regards,
 
 Mr. Turritopsis Dohrnii Teo En Ming
 Extremely Democratic People's Republic of Singapore
-17 Dec 2025 Wednesday 3.50 PM Singapore Time
+18 Dec 2025 Thursday 11.02 pm Singapore Time
 
 
+
+
+
+
+On Thursday, December 18th, 2025 at 1:10 PM, Turritopsis Dohrnii Teo En Min=
+g <teo.en.ming@protonmail.com> wrote:
+
+>=20
+>=20
+> Subject: Advanced Persistent Threat (APT) hackers had hacked into my Virt=
+ualmin Linux Virtual Private Server (VPS) on 15 Dec 2025 Monday around noon=
+ time
+>=20
+> Good day from Singapore,
+>=20
+> Today 17 Dec 2025 Wednesday around 12.30 PM, I was trying to use GMail (G=
+oogle Mail) to send email to my email accounts hosted in Virtualmin Linux V=
+irtual Private Server (VPS) (aka web hosting control panel). GMail reported=
+ the error "554 5.7.1 Relay access denied". Which means all of my email acc=
+ounts hosted in Virtualmin Linux VPS could no longer receive emails.
+>=20
+> Advanced Persistent Threat (APT) hackers must have hacked into my Virtual=
+min Linux VPS and changed my server configuration.
+>=20
+> Webmin version: 2.520
+> Virtualmin version: 7.50.0 GPL
+> Operating system: AlmaLinux 9.6
+> Usermin version: 2.420
+> Authentic theme version: 25.20
+> Linux Kernel and CPU: Linux 5.14.0-570.51.1.el9_6.x86_64 on x86_64
+>=20
+> When I logged in to Roundcube Webmail, I noticed that I had stopped recei=
+ving emails with the email accounts hosted in Virtualmin Linux VPS since 15=
+ Dec 2025 Monday around 12 noon Singapore Time.
+>=20
+> When I checked /var/log/maillog in Virtualmin Linux VPS, I observed that =
+I had started getting "554 5.7.1 Relay access denied" errors since 15 Dec 2=
+025 Monday around 12.28 PM (for my email accounts hosted in Virtualmin Linu=
+x VPS).
+>=20
+> Advanced Persistent Threat (APT) hackers must have hacked into my Virtual=
+min Linux VPS and changed my server configuration.
+>=20
+> When I checked /etc/postfix/main.cf on my Virtualmin Linux VPS, Advanced =
+Persistent Threat (APT) hackers had changed the following line to:
+>=20
+> mydestination =3D $myhostname, localhost.$mydomain, localhost, ns1.turrit=
+opsis-dohrnii-teo-en-ming.com
+>=20
+> I had to change the above line back to:
+>=20
+> mydestination =3D $myhostname, localhost.$mydomain, localhost, ns1.turrit=
+opsis-dohrnii-teo-en-ming.com, teo-en-ming.com, teo-en-ming-corp.com
+>=20
+> And then restart Postfix daemon/service (systemctl restart postfix).
+>=20
+> For Virtual Server teo-en-ming-corp.com in Virtualmin Linux VPS:
+>=20
+> Advanced Persistent Threat (APT) hackers had changed my email account use=
+r's Login access to Database, FTP and SSH. I had to change it back to Datab=
+ase, Email, FTP and SSH.
+>=20
+> Advanced Persistent Threat (APT) hackers had also changed "Primary email =
+address enabled" to No. I had to change it back to Yes.
+>=20
+> For Virtual Server teo-en-ming.com in Virtualmin Linux VPS:
+>=20
+> Advanced Persistent Threat (APT) hackers had changed my email account use=
+r's Login access to FTP and SSH. I had to change it back to Email, FTP and =
+SSH.
+>=20
+> Advanced Persistent Threat (APT) hackers had also changed "Primary email =
+address enabled" to No. I had to change it back to Yes.
+>=20
+> After making all of the above changes, I am able to start receiving email=
+s with my email accounts hosted in Virtualmin Linux VPS since 1.15 PM today=
+ 17 Dec 2025 Wednesday.
+>=20
+> When I checked OpenSSH server logins and Virtualmin logins, only public I=
+Pv4 addresses belonging to me were present. There were no traces of Advance=
+d Persistent Threat (APT) hackers gaining unauthorized entry into my Virtua=
+lmin Linux VPS at all. Of course, if they are Advanced Persistent Threat (A=
+PT) hackers, they must be very smart and intelligent (their intelligence qu=
+otient IQ sure way above me) to remove all traces of their unauthorized int=
+rusions into my Virtualmin Linux VPS.
+>=20
+> How can I make a request to Advanced Persistent Threat (APT) hackers so t=
+hat they will stop playing pranks on my Android (Linux) phones, home deskto=
+p computer, laptops, Virtualmin and Webmin Linux servers and other various =
+numerous online accounts not secured with 2FA / MFA?
+>=20
+> Please advise.
+>=20
+> Thank you very much.
+>=20
+> Regards,
+>=20
+> Mr. Turritopsis Dohrnii Teo En Ming
+> Extremely Democratic People's Republic of Singapore
+> 17 Dec 2025 Wednesday 3.50 PM Singapore Time
