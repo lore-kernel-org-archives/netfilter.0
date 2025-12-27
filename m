@@ -1,136 +1,96 @@
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+Received: from wmail.tana.it (wmail.tana.it [94.198.96.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3909D3A1E60
-	for <netfilter@vger.kernel.org>; Thu, 25 Dec 2025 22:19:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C71D81A317D
+	for <netfilter@vger.kernel.org>; Sat, 27 Dec 2025 12:15:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.198.96.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766701200; cv=none; b=ihxkbSmuNrcsh0C5XN8Wm7+cTW+8ADvEMLPx0r/udZ3Ke/krWay88072YdOV/4Q9b5tdEhD8S4a7wtipoddggXJ2rwbY3bKgelDoSjYSL4E+AtU2sAcSN2fLN4vmCXZhfNMjxXE0x6C811lSWXhwrQfUbD1EPTnkTX3++b7TiR0=
+	t=1766837726; cv=none; b=sRWbqH+F51YIoMGiYYPDveMfnEsF9TCF52zArfgwj3Bqe0f7EfJP++CKvpkejtmSrDlBPMNFva4UV9oiKuJOn8fE3W/SPi/bPRnXtq9t7v7mvLDip2OIpwF4hArcEnFwTdmHWE6ustxUBIutCuOqHVTjrxplk9mfiKVunuiipqg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766701200; c=relaxed/simple;
-	bh=2JWlbUZ7dBJ653od6XHAi2p/kJr6J+EBDVWyNCu8azA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=V84ndmRXbiiIBSdUtROCUTtH91Pwkp1xgnWMfgOYsZCp0MTsKzckZWd1LU9IuU7QsFFKGZKob/SFAyDUgz1KYxIwpeC8aQiBQSN2kc4Cwev/tppiwqreAFxG2qn2zoCSgWVyYiwZ7kh/L8NlPNgKM/6MSRipCbqd8oJnFrw5I/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=ASqRiWg5; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+	s=arc-20240116; t=1766837726; c=relaxed/simple;
+	bh=AIrmnXOfbnDU9Y+oeQEnwT9iEj7GJncaN8cd6oIpVps=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=oThtz6BQNugbAa9kKsYA9LO7P7mgtbR30GA3GlUfL3hRkpsrH0WBppoi2b62IxY0ApmmW3+ethjmUMkIhHitQQI75+On6gMWAOBmSAfUCiLu9XNFWwQbMNU9IcA5j5IVgxDUcZkcL2W4OR3dM6MctGXEnCNNzOZ9Pa37EGcuDkk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tana.it; spf=pass smtp.mailfrom=tana.it; dkim=pass (1152-bit key) header.d=tana.it header.i=@tana.it header.b=CVNN6ruw; arc=none smtp.client-ip=94.198.96.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tana.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tana.it
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="ASqRiWg5"
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 260F2600B9;
-	Thu, 25 Dec 2025 23:19:49 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1766701189;
-	bh=tnTHC+kLt/KhiwBuzdW5HS1E5rkFu6n7R5lyP1vQTTQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ASqRiWg5/p1MW6vnYBC68OrVdc7GTETGOJ+fnvIjncErQvi6juCPR45yAbCseKO5g
-	 pLgo3mgwOmiVxE7+CejnLIuXBQLTjHMkgDBMx+Md0helNDDG9TvyvVwR0RD8nraPB/
-	 8Ja/FnX6XMper6dLVrpFzeQr/LH2FCjunigHNL6Q+4/s9Xg1gLayiB4enpUoRnjamx
-	 rA2eakY248/CJc3HNWHMyKXgKe3dZK1nuVh7ro+E0jwD/IRKPxS9HcTsSMUX2R/V/z
-	 S5kHOQj+Jaz3L/8mnlO280WTj6fSv4nS2FUFNihyFT16wpdB4eNyiHoIxGHAX5VsKn
-	 qpLcyu2nc941A==
-Date: Thu, 25 Dec 2025 23:19:46 +0100
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Maiquel Paiva <maiquelpaiva@gmail.com>
-Cc: security@kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
-Subject: Re: [SECURITY] nf_tables: incorrect sscanf return check leads to use
- of uninitialized variable
-Message-ID: <aU24grYBKEoWErwE@chamomile>
-References: <CALGDAeBqaTDJhZr0AuFz5M2fmgXsyxLz73Rkqj5ZwwRFoFHoGg@mail.gmail.com>
+	dkim=pass (1152-bit key) header.d=tana.it header.i=@tana.it header.b="CVNN6ruw"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tana.it; s=delta;
+	t=1766837412; bh=AVeqEgwuqIGWQlzdyXB9EosXODgcdXJ78uKyxzLOy/4=;
+	h=Date:To:From:Subject;
+	b=CVNN6ruwlOfsZMnCO8pFkym+WUmiaX8HYodzsqfSZkqAS+PmZ1Qg/gv84x4qf+br6
+	 ovNJJjDrAVcro5Vy0eXnKyIMGCb/W+9sBQUS5r+kIWiF0oizGag1lgprZ6hgM/ghzR
+	 p81CWn1wwUiozyoB20x4ycRdzafMwRBr8zyU4RlwzjaKylsQ3oJKZ2vMLs19a
+Original-Subject: Netlink buffers
+Author: Alessandro Vesely <vesely@tana.it>
+Received: from [172.25.197.83] (pcale.tana [::ffff:172.25.197.83])
+  (AUTH: CRAM-MD5 uXDGrn@SYT0/k, TLS: TLS1.3,128bits,ECDHE_RSA_AES_128_GCM_SHA256)
+  by wmail.tana.it with ESMTPSA
+  id 00000000005DC028.00000000694FCCA4.00002505; Sat, 27 Dec 2025 13:10:12 +0100
+Message-ID: <370b3b8c-0ab3-426d-9770-6a4b418d9cd8@tana.it>
+Date: Sat, 27 Dec 2025 13:10:14 +0100
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CALGDAeBqaTDJhZr0AuFz5M2fmgXsyxLz73Rkqj5ZwwRFoFHoGg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+To: netfilter@vger.kernel.org
+Content-Language: en-US, it-IT
+Authentication-Results: tana.it; auth=pass (details omitted)
+From: Alessandro Vesely <vesely@tana.it>
+Subject: Netlink buffers
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
 Hi,
 
-On Thu, Dec 25, 2025 at 06:06:29PM -0300, Maiquel Paiva wrote:
-> Summary
-> -------
-> nf_tables_set_alloc_name() uses an incorrect return-value check for
-> sscanf(),
-> which may lead to the use of an uninitialized stack variable.
-> 
-> Affected code
-> -------------
-> File: net/netfilter/nf_tables_api.c
-> Function: nf_tables_set_alloc_name()
-> 
-> Relevant snippet:
-> 
->     list_for_each_entry(i, &ctx->table->sets, list) {
->         int tmp;
-> 
->         if (!nft_is_active_next(ctx->net, i))
->             continue;
->         if (!sscanf(i->name, name, &tmp))
->             continue;
->         if (tmp < min || tmp >= min + BITS_PER_BYTE * PAGE_SIZE)
->             continue;
-> 
->         set_bit(tmp - min, inuse);
->     }
-> 
-> Problem description
-> -------------------
-> sscanf() returns the number of successfully assigned input items, or EOF
-> (-1)
-> if an input failure occurs before any conversion.
-> 
-> The current check:
-> 
->     if (!sscanf(...))
-> 
-> only rejects the case where sscanf() returns 0. If sscanf() returns -1
-> (EOF),
-> the condition evaluates to false, and the code continues execution with
-> `tmp`
-> left uninitialized.
+I have two problems on this subject.
 
-Looking at lib/vsprintf.c, I don't see how this can return -1.
+One is with ulogd2.  I'm using the Debian stable version.  It has parameters netlink_socket_buffer_size and netlink_socket_buffer_maxsize.  On ENOBUFS, it does so:
 
-And you will have to fix more code in the kernel if your statement
-would be true:
+     if (nlsockbufmaxsize_ce(upi->config_kset).u.value) {
+         int s = cpi->nlbufsiz * 2;
+         if (setnlbufsiz(upi, s)) {
+             ulogd_log(ULOGD_NOTICE,
+                   "We are losing events, "
+                   "increasing buffer size "
+                   "to %d\n", cpi->nlbufsiz);
 
-net/core/dev.c:                 if (!sscanf(name_node->name, name, &i))
+The log it produces is like the following:
 
-> This may lead to undefined behavior when `tmp` is later used in arithmetic
-> and as an index for set_bit().
+Dec 25 04:44:46 29 north ulogd[21274]: We are losing events, increasing buffer size to 425984
+Dec 25 04:45:25 29 north ulogd[21274]: We are losing events, increasing buffer size to 425984
+Dec 25 04:46:08 29 north ulogd[21274]: We are losing events, increasing buffer size to 425984
+Dec 25 04:46:49 29 north ulogd[21274]: We are losing events, increasing buffer size to 425984
+Dec 25 04:47:28 29 north ulogd[21274]: We are losing events, increasing buffer size to 425984
+Dec 25 04:48:11 29 north ulogd[21274]: We are losing events, increasing buffer size to 425984
+...
 
-Even if that would true, tmp is checked to be on the boundaries right
-after this.
+The setnlbufsiz() function is supposed to alter the buffer size by executing this:
 
-                        if (!sscanf(i->name, name, &tmp))
-                                continue;
-                        if (tmp < min || tmp >= min + BITS_PER_BYTE * PAGE_SIZE) <--- here
-                                continue;
+     cpi->nlbufsiz = nfnl_rcvbufsiz(nfct_nfnlh(cpi->cth), size);
 
-> Proof of incorrect check
-> ------------------------
-> A simple user-space test demonstrates that sscanf() returns -1 for empty
-> or whitespace-only strings:
-> 
->     input: ""      -> sscanf return = -1
->     input: "   "   -> sscanf return = -1
->     input: "abc"   -> sscanf return = 0
->     input: "123"   -> sscanf return = 1
-> 
-> In the -1 case, the current kernel code does not execute the `continue`
-> statement and uses an uninitialized `tmp`.
-> 
-> Impact
-> ------
-> Depending on stack contents, this may result in out-of-bounds bit
-> operations,
-> memory corruption, or kernel crashes (DoS). While this is a logic bug, it
-> has
-> security implications.
+This function should set the new size of the socket buffer and return it.  Obviously, the size is never doubled.
 
-No. This report is bullshit.
+Is there a newer version of ulogd2?
 
-Happy holidays!
+The second problem is similar.  A custom filter using libmnl reports ENOBUF about once every two days, during the cron.daily process.  I haven't figured out what's causing it yet.  However, I don't know how to increase the socket buffer if necessary.  The previous version (which didn't use libmnl) called setsockopt() with SO_RCVBUF, but mnl_socket_setsockopt() doesn't appear to have such an option.
+
+
+Any hint?
+
+
+Best
+Ale
+-- 
+
+
+
+
+
+
+
+
+
