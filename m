@@ -1,131 +1,78 @@
-Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCA773451C1
-	for <netfilter@vger.kernel.org>; Tue,  6 Jan 2026 19:36:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E7BC313E07
+	for <netfilter@vger.kernel.org>; Wed,  7 Jan 2026 10:52:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767728193; cv=none; b=CAkliwsVX9zdLfj5T6NWwSV3DTe8tHOLP7tM7/43xQGQrWLgatwUUzPRa9ucQLdYcd6WJt9kwGibZg/19CVtAT1sGJrBF3JNj5bwB/8bbh1vOHlKGSw5+UEB6uqz0UJ2Evf885zOll5+f2nT80Od6jwCAECeAOTVSC0W5YOKsAs=
+	t=1767783159; cv=none; b=h849OL5x9lzNw042PDpWYdoUsLpLAuysO3zCLwpv2nHTuJXg2YdtAMaEXVSC3ic3O6GdExQ8J1nQXCVghz6nsrq1N3mrGENtd5OnOodm3Cu2Z5etFr6OYpTWG6klLq06PdiXG0xzJvxOtWIr/LEkA3F4y1HFEOVGQju6tV++S4A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767728193; c=relaxed/simple;
-	bh=ahK2dT5X4B9moUf/Ai0ij298BKsccf5NGUd/o5QbEl4=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=igO9ktW5DyeGHbmjlQ0Gs9JfajHZgT8uOWnr3MU7U+yEq26FiIpfGOQYvzNqSaDWJiwOPnKN0ZwgjqWyN++LyUKh0iPIMpL52d0yF6z+oU6YuoR0ondykru8hu398S6rMxDkAEzHCVXYyIdpOE/jE+Zum92qoVaJHQTlneLFFmY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=qSAz/PLy; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=7rthlX0G; arc=none smtp.client-ip=185.25.250.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
+	s=arc-20240116; t=1767783159; c=relaxed/simple;
+	bh=rySINYqQCPdrM3pyk67dYEiSHvdKJmFsbS4jI7v4mog=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UELsHuJ7vJdZN/fG3POkjcSbLFfzy+njI0LCM/pwO+HHZqdby5QW8/gUxSDXa9/8eI9ienRTfqu5NYqcE6gc3H5mZ7hNZThE47m5pyhhmxhefIC1CRs4wkpdGn4qL5vV+v0WYYIgOseqyr9yURLFeqa6Q2WYN9aTRlhfDp8W0tI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ghPHaS52; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="qSAz/PLy";
-	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="7rthlX0G"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
-	s=r2025; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:
-	References:In-Reply-To:Subject:CC:To:From:Date:From:To:Cc:Reply-To:Subject:
-	Date:Sender:Content-ID; bh=wQ2N3kDdh8hd4pA1mXGr49mwxTlORdAjsFoABNf7iA4=;
-	t=1767728188; x=1768937788; b=qSAz/PLyCz+gffCMxgJ8p23r02KZUK19thTwTWUffAEtNgj
-	rSFMzQYIh3qKwhn9ZY/nE26QwGBavY7spv9/5TIBmsQnSKItMbaXNQ+msdRoqDWco1w4RW1E23o4w
-	ceCERFjjqJRLwji/4wQMNRjKKCJjuZM0A0y6RYtJItZl8Hs=;
-DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=slavino.sk; s=e2025; h=Content-Transfer-Encoding:Content-Type:MIME-Version:
-	Message-ID:References:In-Reply-To:Subject:CC:To:From:Date:From:To:Cc:Reply-To
-	:Subject:Date:Sender:Content-ID;
-	bh=wQ2N3kDdh8hd4pA1mXGr49mwxTlORdAjsFoABNf7iA4=; t=1767728188; x=1768937788; 
-	b=7rthlX0G/A0VCK/95Nnlu15TrFgWJrtrySHdkPj2R/i7l3JP4Yt5oz+K+S/TNMvRtKLBHj+9s4a
-	2KdPsuEbHCw==;
-Received: from dovex.skk ([192.168.10.12])
-	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96)
-	(envelope-from <linux@slavino.sk>)
-	id 1vdCqw-004nMm-0a;
-	Tue, 06 Jan 2026 20:36:26 +0100
-Date: Tue, 06 Jan 2026 19:36:22 +0000
-From: Slavko <linux@slavino.sk>
-To: Dmitry Konishchev <konishchev@gmail.com>
-CC: netfilter@vger.kernel.org
-Subject: Re: Dangerous examples in nftables documentation
-In-Reply-To: <CABYZ2k40WHg2Thzo0=4r6Y6UTAtrw3EMRq=0fwKVViL40exAMA@mail.gmail.com>
-References: <CABYZ2k5wSkW7ifYSzw_QekqNz7yrcAG3tN9qKA-dCzaD_uUvhQ@mail.gmail.com> <E1B33049-8304-4686-8806-56D7F5AF54F8@slavino.sk> <CABYZ2k40WHg2Thzo0=4r6Y6UTAtrw3EMRq=0fwKVViL40exAMA@mail.gmail.com>
-Message-ID: <1ED8A4EF-7A6B-4253-A35D-5070EDBEE9C6@slavino.sk>
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ghPHaS52"
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-64ba74e6892so3134267a12.2
+        for <netfilter@vger.kernel.org>; Wed, 07 Jan 2026 02:52:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1767783156; x=1768387956; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rySINYqQCPdrM3pyk67dYEiSHvdKJmFsbS4jI7v4mog=;
+        b=ghPHaS52+ELhMz5/1wSJAaxFmuGxB4qeHGxf+v8XurflgScRK7nXhfgH6UP9YQ9A3R
+         Ofopq8MIurEqroJMqffDHVUPO1bsGAjnqdJM0v7X/IcD+KPmaFLIfnlm+yX6vyH1qBfX
+         Nx5QRSAiLkS8WlNB146vk9d43j9hVWxVUTMsBavIQWomgRbCgufLspnFs/4CwSaSoxXd
+         pkteuYaBNyNmEcG/NPqD/z/B2SQvKSra34Q817g5pogcFqNc/BXFQO5AaGZ3x4cY8tWv
+         Pw3k5eM2/8eInrTHoj4/gBZQdLkSx+JFwiMjX9WWMermz1WzdRyA5AWqdQsf/0xVg2AF
+         QCAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767783156; x=1768387956;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=rySINYqQCPdrM3pyk67dYEiSHvdKJmFsbS4jI7v4mog=;
+        b=q10RnozsleKb9sc6UBX0NyilpKTNP1en0IAaoWBtLEOK5UE+gCkp1/GUSvmqLF1S3A
+         QPzvbjpThouQORcSBtDq/gyA8VWySmOXrHFNSBqMn78kbDW8jsft8YuNoPPt0mp9k9JN
+         bAMa9AavKwV9NsP3qQERjeYFbVHl4r5crFZrmnhslMouVqO3n2tf6gIo7aZ0uxmfjtGy
+         2Ma8qVWrIEaQ/fkbBac5q+dtmIlQx2Z0H/xrHWDqW508kpED2NQ5assdn5MQbeAfA6hn
+         fvQlk0/1g99E6DG3vjCpPhzQmvYCAXMInsUejNkDL+FIJcC5o1HYUssE54EZNBBQOfXe
+         0/pg==
+X-Gm-Message-State: AOJu0YwPEzpBkOQQviqc0jmMhICEiWUIMZ+/BT1FTsaOXiO+ATk+fJ3Y
+	tE4HhnioSrlgtigqJhVpFtiUwinI+ZaGdc52yfbE9AbElnc3u54Sq086D1winVXiX5pUGbrNOn4
+	bkKfcQg4i7P3O2GYaCcJnI231uXec8AUPLyUp6b8=
+X-Gm-Gg: AY/fxX5U/UtuxgT8cOFHx77mPc9sY/N6VaTDTyQTXOQXKlGqKHJbLfeEKA4p+a+n/Mw
+	uiOfTcYspktyVGNhaWATOtYZt+bL994OodEgL4z0AuoZxl5wzx6CPCY4ZRiJhgApamjqQyR0AcU
+	njarsETjtisJ/MYvCVjbBmMwpoy5m4vEvSFdCwlMnV+olKzspQSKFdlreEFHZAOlJDMpZlg5Q2J
+	JBmHb2fasy2AbtOL5qGJLbbSddIaGqWAcuihWwIJSqC7BPV83kwiEdN0WF1S6yfar4ffzyT
+X-Google-Smtp-Source: AGHT+IFqCg79hwbH3lsmINYZ2k4351h3ErXaPFEmAHTJTU+0Tsh8+2L14t1sO4GdpvDmgF7Faok/wM60Vg6JkOTzgKE=
+X-Received: by 2002:a17:906:f5a5:b0:b72:eaba:aac2 with SMTP id
+ a640c23a62f3a-b8444f3f59cmr199761566b.26.1767783156087; Wed, 07 Jan 2026
+ 02:52:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
+References: <CABYZ2k5wSkW7ifYSzw_QekqNz7yrcAG3tN9qKA-dCzaD_uUvhQ@mail.gmail.com>
+ <E1B33049-8304-4686-8806-56D7F5AF54F8@slavino.sk> <CABYZ2k40WHg2Thzo0=4r6Y6UTAtrw3EMRq=0fwKVViL40exAMA@mail.gmail.com>
+ <1ED8A4EF-7A6B-4253-A35D-5070EDBEE9C6@slavino.sk>
+In-Reply-To: <1ED8A4EF-7A6B-4253-A35D-5070EDBEE9C6@slavino.sk>
+From: Dmitry Konishchev <konishchev@gmail.com>
+Date: Wed, 7 Jan 2026 13:52:24 +0300
+X-Gm-Features: AQt7F2rKbmr7x9g8pFdVH4l1xxakxOlxRO-ly9CNh1lZDi_b50A91UpdwPSrEew
+Message-ID: <CABYZ2k66H=TepZ_7i9+MFNm3ahxmgPW13cbWogvsqzyVDJKj6g@mail.gmail.com>
+Subject: Re: Dangerous examples in nftables documentation
+To: Slavko <linux@slavino.sk>
+Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-D=C5=88a 6=2E janu=C3=A1ra 2026 18:36:05 UTC pou=C5=BE=C3=ADvate=C4=BE Dmit=
-ry Konishchev <konishchev@gmail=2Ecom> nap=C3=ADsal:
-
->Oh=2E=2E=2E =3D) It's quite unexpected after `tcp flags !=3D syn` which t=
-urns
-
-There are multiple way to write the same thing, this is shortcut
-(or how to name it in English):
-=20
-    tcp flags FLAG=20
-
-(as i mentioned early, less typing =3D=3D less typos, and one flag is
-less to change than two flags, etc=2E=2E=2E) The full syntax is simple
-bitwise operation & comparison:
-
-    tcp flags & MASK =3D=3D VALUE
-
-The difference is, that shortcut has not equal/nonequal operator=2E
-To be fuly confused, it is possible to use another form to get the
-same (guess which syn is mask and which is value):
-
-    tcp flags syn / syn
-
-When you do just with equal/nonequal comparison, no mask is
-applied, thus whole flags field value is compared::
-
-    tcp flags =3D=3D syn    # only SYN flag is set
-    tcp flags !=3D syn    # hard to describe for me in En :-P
-
-Remember, that flags field is just 8-bit number, the "syn" itself
-is number (named constant) too=2E=2E=2E Your friend is debug output:
-
-    nft -c --debug=3Dnetlink add rule =2E=2E=2E
-
-The -c option is check (do not add rule at all), the output you will get
-will ba something as this:
-
-    [ payload load 1b @ transport header + 13 =3D> reg 1 ]
-    [ bitwise reg 1 =3D ( reg 1 & 0x00000002 ) ^ 0x00000000 ]
-    [ cmp neq reg 1 0x00000000 ]
-
-1, get value and store it in reg 1
-2, do bitwise operation on reg 1 and store result in reg 1 (again)
-3=2E compare that reg 1 is zero
-
-For me the biggest problem is to understand bitwise operators,
-as i usualy use named funczions (AND, XOR, NOT=2E=2E=2E), but with little
-effort (and notes) it is understandable=2E=2E=2E
-
->out to be a simple comparison, as well as `ip daddr 1=2E2=2E3=2E4` is a
->simple comparison=2E=2E=2E Thanks! That's what I am talking about: the
->current documentation is so sparse, lacks details and having no
-
-Did you read nft's manpage? It contain almost everithing, except
-detailed examples=2E=2E=2E
-
->ability to test rules (it's hard to reproduce exact packets and test
->your rules against them) that you have no options other than wondering
->and learning from examples which are, as we found out "are just, ehm,
->examples"=2E :)
-
-For IPv4 only (with TCP it doesn't matter), the hping3 is your friend,
-here is unrelated hping3 example, where i reproduced SYN segment
-with 12 B zero data (it has many other options):
-
-    hping3 -S -c 1 -d 12 -E /dev/zero =2E=2E=2E
-
-happy firewalling
-:-)
-
-
---=20
-Slavko
-https://www=2Eslavino=2Esk/
+Thanks for the suggestion of `nft -c --debug=3Dnetlink` and hping3 =E2=80=
+=93
+it's much of a help.
