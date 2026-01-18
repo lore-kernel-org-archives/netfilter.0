@@ -1,93 +1,94 @@
-Received: from wmail.tana.it (wmail.tana.it [94.198.96.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8EFE2EC0AA
-	for <netfilter@vger.kernel.org>; Thu, 15 Jan 2026 11:37:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=94.198.96.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52DDC17B425
+	for <netfilter@vger.kernel.org>; Sun, 18 Jan 2026 08:28:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768477081; cv=none; b=rGGff5x2XvVm3m3aiyr8CNI+asjeu5vJzQQSZC4CwGirrGd4fCsbZ2h5xzlJ02tjPCtlDYH5RB/TI73e44yZO3XDsuiWcnBxPOZiaZUB6d4rJgsOu58P7PL4sn9EgK1o7HJvExZNWmLplgj+9rs+D99m2ulZrv0c2tP0tE3uNa0=
+	t=1768724898; cv=none; b=RL2bnZW/1JnqR4PxMJ5oVyiYzrxz8T8mOQ22wMObeMJAJPgfZOOTbq0GU279ql0gcxI51hmrP9zf2Lq9tysBsUDdh5P8uAP3Stc4Ebd7gyb15TkXOK5HQNuMN6PWKkghdGb7bZdVe1vy8/xOQWi+jhJy4GSr2V1I6zF9OhhX0S8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768477081; c=relaxed/simple;
-	bh=BIxWZj+bOA25zvFxXe/ufcRdqBR8BoB+PDc1zuKTOmE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=q2ZgpAUVFYWbEjP0E/fPF6SlQF+C924yRDUtjehBlYmZXz8ERFvQut5vA2Wi+21OPL9H9W9bvWM/S6+/pMi7UG4+lvSaPSFWYSsoRWf44KzTCwFT07p1MsAKJeQ6b8NGpJf3U2sDRKVnw2rbKhv/9doaKo5/CAxSy3ni5eutRpU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tana.it; spf=pass smtp.mailfrom=tana.it; dkim=pass (1152-bit key) header.d=tana.it header.i=@tana.it header.b=CS1LTypd; arc=none smtp.client-ip=94.198.96.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=tana.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tana.it
+	s=arc-20240116; t=1768724898; c=relaxed/simple;
+	bh=2O1JkvzXlbRshNZSa4EMLyCs1l9AJvoytR6te1PfmuQ=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type; b=EBsjpC5N5vEquYbjMuX6jDeSdjiu0iL5pb2W6QhhI+hJqixnJEeqBTAULMRqgwdlGivXyd3JSeGAjZHzpDN0mkg9FckAw4hMyUI1xHSP8uf99uO8yaQr+4X3VI9rFYpkBmM5QEHoqAElet0QAXAMlQTAI01SbNgKHCKYgiMGs5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=oDA3NBjn; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=cl8YsYko; arc=none smtp.client-ip=185.25.250.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1152-bit key) header.d=tana.it header.i=@tana.it header.b="CS1LTypd"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tana.it; s=delta;
-	t=1768477067; bh=hkQiTviaVUvcaC84UW5qsjz2vOoIAiCVr7/8VbSt1ys=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=CS1LTypdNOYd4i9T64lxxxc9xS7iZXidhEooy/uk44xzO77Rl3iX/k8wwksYq2iO5
-	 pfZT/a8ecO6XkrGsJRVhFfrHDBOjj5V0ggpg4utW2R/KyUqqWo8I+w82YfdDhl48lW
-	 3ppw7S89MfkNvnduDq4BtyZBpwNaDugwwnwGaxkqIp+lS6H4ljrMiU+S8JpCT
-Original-Subject: Re: What happens to netfilter during end-of-day?
-Author: Alessandro Vesely <vesely@tana.it>
-Received: from [172.25.197.83] (pcale.tana [::ffff:172.25.197.83])
-  (AUTH: CRAM-MD5 uXDGrn@SYT0/k, TLS: TLS1.3,128bits,ECDHE_RSA_AES_128_GCM_SHA256)
-  by wmail.tana.it with ESMTPSA
-  id 00000000005DC0EF.000000006968D18B.00006DD0; Thu, 15 Jan 2026 12:37:47 +0100
-Message-ID: <dfa73014-c624-42e7-862d-71bff829e0ad@tana.it>
-Date: Thu, 15 Jan 2026 12:37:49 +0100
+	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="oDA3NBjn";
+	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="cl8YsYko"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
+	s=r2025; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:
+	Subject:To:From:Date:From:To:Cc:Reply-To:Subject:Date:Sender:In-Reply-To:
+	References:Content-ID; bh=HNZa16IBxZaLgmPmrpxlMoYBaz8U8RsVda+np44UhfU=;
+	t=1768724896; x=1769934496; b=oDA3NBjnokOe8sUaGE/HM/hfbAYJwZ/f+FqjrwZTxsKSMl5
+	PPH9dOIIsjauq/wJZ6wQSmTamD7GYFzCF1t+fDpV9aPSfv41dSSaOD0OZcXugdPzi4AyGLrHCi/jE
+	lTVJAy699yS+K+LfvFNQ4N/CFSBMToXL/+NTieCnUq6WlPk=;
+DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=slavino.sk; s=e2025; h=Content-Transfer-Encoding:Content-Type:MIME-Version:
+	Message-ID:Subject:To:From:Date:From:To:Cc:Reply-To:Subject:Date:Sender:
+	In-Reply-To:References:Content-ID;
+	bh=HNZa16IBxZaLgmPmrpxlMoYBaz8U8RsVda+np44UhfU=; t=1768724896; x=1769934496; 
+	b=cl8YsYkoFYmxw66pvcnxwJpByQdbWTXbJlN/vohndVv6PzE9WPow4X4VcmWWQc6eYlOu3u04Hei
+	hOTNVwM3IBg==;
+Received: from dovex.skk ([192.168.10.12])
+	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <linux@slavino.sk>)
+	id 1vhO3D-000hUk-2i
+	for netfilter@vger.kernel.org;
+	Sun, 18 Jan 2026 09:22:23 +0100
+Date: Sun, 18 Jan 2026 09:22:22 +0100
+From: Slavko <linux@slavino.sk>
+To: netfilter@vger.kernel.org
+Subject: IPv6 blackhole route
+Message-ID: <20260118082222.698d9d06@bonifac.skk>
+Face: iVBORw0KGgoAAAANSUhEUgAAADAAAAAwBAMAAAClLOS0AAAAFVBMVEX7+/xrTUz4//3Ozc10AAH5/v3///8f7tJ8AAAB2UlEQVQ4jW2STY6EIBCFSwmumykPQDTtGqxO74kcgNiJa8dE7n+EAfzBtONCpD5eVfko8Pszeb+sflqOPVyA535abyB+9wnfwMgek/8XFEO33sE6lYWB/8HLqOUOFre87H+g9LK2P7y6p+o+1mJ1B75j1g7VeFeshTXifbfEza+goAqqLyAhAKsC+QahqVD9o74VYxGB6PUBJl+C5FwCUhEUSEpCM41PmGYJABK07oNk0EQQAw54K9KDGAQhl6C4ewDwJnZjjVZptQaD0PQSOqC4R2x0Btg76HwbI5oE1Rt4WUPhvG9cjAht+00SvlD5JThQQYiY2g6s3oBRzXMzgG1nKS2asDr+HPb0aSGmsiWwS9r4+rxP0M1tkgxQW/PzewF+pqPKgEV1cbdiCQxUB+AyaJzeq5AmfQG+IEwtDSTwIU8ArtBCtSKYpEg/lhNwFnwYGi2I3qRhPkGpYx5kmmBqtcrgg5hcUrxhqBicoNh6wnB11vaXP/8lkSYkeYaan4CJV7RQVtFm88jAxSlE8M85XonKgM91qBwtmnVt+1z86eI1+/3OMLc7tgbV5k1IhtndMnS/j6x3dAEciB/D7VuVwQI5Po9h1E7Au/kkq89gKt3ziMu1SuAPWe5Dq/EEywcAAAAASUVORK5CYII=
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: What happens to netfilter during end-of-day?
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
-References: <3460873f-7359-46df-9e26-65c4ce0e38d2@tana.it>
- <aWg6PgmGEA6fbpwG@chamomile>
-Authentication-Results: tana.it; auth=pass (details omitted)
-From: Alessandro Vesely <vesely@tana.it>
-Content-Language: en-US, it-IT
-In-Reply-To: <aWg6PgmGEA6fbpwG@chamomile>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Thu 15/Jan/2026 01:52:14 +0100 Pablo Neira Ayuso wrote:
-> On Wed, Jan 14, 2026 at 11:14:49AM +0100, Alessandro Vesely wrote:
->> 
->> I have a netfilter daemon that makes a looping call to mnl_socket_recvfrom()
->> and quickly examines packet headers. It only stops when it's rebooted.
->> However, almost every day it receives an ENOBUFS error, just once, around 4
->> AM, while running cron.daily.
->> 
->> I haven't found any useful logs from around the same time that explain
->> what's happening. Does anyone have more information?
-> 
-> Where is your program? It sound like it is buggy?
+Hi,
 
+i play with blackhole route on IPv6 and i either did something wrong or
+i am somewhat confused... I am in really using on somewhat old OpenWRT
+router (Linux 4.4.92 mips, with iptables v1.4.21), but my investigation
+was on Debian oldstable (Linux 6.1.0-42-amd64 x86_64, with iptables
+v1.8.9 (nf_tables)), inside privileged LXC container (if that matter).
 
-The program is part of ipqbdb[*].  The daemon I'm running is slightly different 
-from the released one.  I copied its source here, if you'd like to have a look 
-at it:
-https://www.tana.it/ibd-judge.c
-https://www.tana.it/setsig_func.h
+I tried to use TRACE target on Debian, but it fails on rule with match
+module, thus no luck to investigate it in more depth on machine with
+iptables (with real rules):
 
-The include file is for setting signals.  (Another daemon in the package, the 
-log parser, catches USR1.  Normally, no signals are sent to ibd-judge.)
+    ...
+    Error: match extension not found
+    xtables-monitor v1.8.9 (nf_tables): Parsing nftables rule failed
+    Perhaps xtables-monitor or your kernel needs to be upgraded.
+    ...
 
-The daemon spends its time in a daemon_loop(), calling mnl_cb_run().  I launch 
-the daemon with arguments "q0s" and "q2dm4", which means block source IP in 
-queue 0, mark with value 4 destination IP in queue 2.
+When i add IPv4 blackhole route, the packet seems to be dropped at
+routing decision, at least counters in filter/INPUT chain doesn't grows,
+i don't get response for ping and in kernel log (i log from all network
+namespaces) i see:
 
-Can you spot bugs?
+    IPv4: martian source 10.0.0.2 from 10.0.0.3, on dev eth0
 
-Best
-Ale
+But when i try to same with IPv6, eg.:
+
+    ip route add blackhole fd16:b::3/64
+
+(it works even without -6) i do not get ping response, but counters in
+filter/INPUT continues to grow and nothing is logged in kernel log, thus
+i guess that packet goes behind routing decision.
+
+Please, did i it wrongly or it is expected behavior on IPv6 or ...?
+
+regards
 
 -- 
-[*] https://savannah.nongnu.org/projects/ipqbdb/
-
-
-
-
-
-
-
-
+Slavko
+https://www.slavino.sk
