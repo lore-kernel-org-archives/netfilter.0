@@ -1,149 +1,105 @@
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B431849C;
-	Wed,  4 Feb 2026 01:00:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770166828; cv=none; b=HLMknWS3yr0FoD1rbEnPYSU+JxUGhgi7tLTq03qIT1ikHBCQDDlF5aSxdxsUr36YOQKcEF8rvNJuKlE1JUfqShw/IQ5mKvgdf5IRpPuYcDlE22nQoWTTP2FZOg1X50XU+rgv03m/AljAfZlnd4jPoJrTx42mYyQ5NIFOTIVVjZQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770166828; c=relaxed/simple;
-	bh=Ft80vlbxKey3m4R0LeLvi4vUfPPD/rA+uhsoveCXxoQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=elKIPS5uPYqi9Rw2vCOmbOXwg1Qpoho69BymPTDHggEbJDyNvYHvNoPMBgO3olXzWUYuK7gb7Tq7tpt+4NLybvuRgb9n/2epsIRmyYDSHopk7Vlt89JV9u/AGa5FVBS1BOi/7/Np5gQkO9viqySTywtg82tldKsmVGAix1QwODA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=FCFVnOmg; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3250E38E133
+	for <netfilter@vger.kernel.org>; Wed,  4 Feb 2026 20:46:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.161.47
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770237980; cv=pass; b=IyEx88xnMs8BA0KEsDMN/52rOOjCnajeX6JLVzwah4VfZFduq//4XJWoWCywJGK/uif2wlalRoWxqB34kWUjSxWBF1Srg8dWt465iK3EnoxR+ehUZw95dC9EoLkRHn/2j3Z95fDqvMw9zaTzVY/XQZ9CfGsxE+cDnMEzucP0F6Q=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770237980; c=relaxed/simple;
+	bh=kPNdQ+mhreOYwAVpjejqftWikICR1vqecnBg8ara1LM=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=MQmCBlIyf8rA6QlKrtEVXa8qkbN0m098W5Co2GVB8v0CaB9cnzFp+l6PVpVjPas4Gt8MwvbGwylC2dSVtieVHjJC7mOOgIlIgM02k37jdAtNq7p44SOh3hh/rlLCwuV13kuR1RFv+B8rFt4ZTTkaplyHgJZJdkVgtyZ6vyM9oe4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=businessbeginnerresources.com; spf=pass smtp.mailfrom=businessbeginnerresources.com; dkim=pass (2048-bit key) header.d=businessbeginnerresources-com.20230601.gappssmtp.com header.i=@businessbeginnerresources-com.20230601.gappssmtp.com header.b=b1BK4t8j; arc=pass smtp.client-ip=209.85.161.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=businessbeginnerresources.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=businessbeginnerresources.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="FCFVnOmg"
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 38196606BB;
-	Wed,  4 Feb 2026 02:00:24 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1770166824;
-	bh=ZcJfjmVWAV7buNPQmv2sFIMWEBJ4LD+fQux7/PDzLUE=;
-	h=Date:From:To:Cc:Subject:From;
-	b=FCFVnOmg68vxDhqdfVl3qdwoYnFyTAvmaZFXZhnOiDLOGRZuF2gxmF6ihWweBdl8s
-	 yUDtJO6DLpmputME3EhpLFnnIYOOLwOIeBZSqFjR5uGAP2CL7HUj21nNTnEpTtT/Xr
-	 b42mAP6LyC9xbHvtbf4qxqaT4xWwGyDutFJ5u8OkT1KmSCb58HUdE53GJ8J4S1/k0w
-	 L4/5SMk4zzS+r9qgej0Dg0Xm8gOeq7y8MKfgBwGewb9zr8mhMV/HJ1gMz7UtNSJc7j
-	 +Bw6ODb6prR+M1qcMJE7HZfh17iIBe+2nfGLz7U+V4Sz8Wv9GthDddx64SEisgZTBZ
-	 SQSn3tF1IGClw==
-Date: Wed, 4 Feb 2026 02:00:20 +0100
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org
-Cc: netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org,
-	lwn@lwn.net
-Subject: [ANNOUNCE] conntrack-tools 1.4.9 release
-Message-ID: <aYKaJFugoa7l5n44@chamomile>
+	dkim=pass (2048-bit key) header.d=businessbeginnerresources-com.20230601.gappssmtp.com header.i=@businessbeginnerresources-com.20230601.gappssmtp.com header.b="b1BK4t8j"
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-6611c3b147eso143166eaf.2
+        for <netfilter@vger.kernel.org>; Wed, 04 Feb 2026 12:46:19 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1770237979; cv=none;
+        d=google.com; s=arc-20240605;
+        b=DAGwzjwe6M4hdFs+i8VlRaytYFjEPVlJ3tMdt0jOLG+28N/CzEZGD8dz49U95APztn
+         sJBO0HPtOglsVrPRdVuU0tNbIVeUgPBfh0Qv9dnqH0SimxxyvUeAmWUqjni1koDBhe/9
+         yw/UISAQtJiS2RvyqY8/dseBxKsubAQVSYVYNjJ5qDyw/u8ONxJytLjuU4N+CfQUR6VM
+         sMtnkuMi46/CBgdx/IxePytjo4F3djhBADezUXKqiK5uh08ben/VzLGZe+agfPH+ziS6
+         prfCKYnFhD2ck1swcwyc82gi5FJgzpMhdkMDMvh0QGzPo3fHtvkFT2R1PZyStrqF5x5I
+         yFEg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :mime-version:dkim-signature;
+        bh=kPNdQ+mhreOYwAVpjejqftWikICR1vqecnBg8ara1LM=;
+        fh=geUeWHCx2uWsMvmpsADhdQW4khNH6dN0NqOGko2wfwc=;
+        b=iL7r0VeGKY/1Nyf4xz3JYnAsORMq2MqNQbovzsm7FJVB+i8gYAEQWnKrAr1VvmPa3i
+         606w5YL11To/25oXIzYsxQxxqxRFlY0uC/Dz16gK70P0HdV88r0ddKhwTr+TybDTpnbe
+         0N4/lXJ+qLaSjf0LYoOlrBHNvoyQ1Iz9WlcHWRp2OVExx56FHfvNUD8LN4XrT6i9vrbH
+         NIGy1cCLuHyBvzKfX1yVLnjHjp8eF+eT2pKqnericFXdnzCMouhmhTnqErXPXVJy2GFF
+         BrXAbUq9i/QmWbgGSosm8KxTM/oZJg/RxtK+wZ1g6vPaZnj9zh3NQggBqMy8lz1BTBiq
+         c2iQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=businessbeginnerresources-com.20230601.gappssmtp.com; s=20230601; t=1770237979; x=1770842779; darn=vger.kernel.org;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=kPNdQ+mhreOYwAVpjejqftWikICR1vqecnBg8ara1LM=;
+        b=b1BK4t8jkw3ny8vVq7GC7jC77746EStHRuaHVSU4BJSK/RDG/atVzx6Zgt+Cz5Y5YU
+         O8YIC/BB9CERdwbMs5M7f11tzBFR3pf1s4bDOcoK2IvVqr9N9WZgalefA2LDS05l+2f8
+         fGVlO+8I0KxZyZudh9nmLyn8I2CJNE4F5BbwzqWuuiMG3EBoFMBPAMyhC/LoxhV9Z4y4
+         masv2xg8etun0mvY3IpYsfMJIFkZRpemqP/lLr6goth1qpeEU1v3KJuoh2YOPNCNqbcO
+         HCPQxwfEYBRicgFTlfrqO/0E2e1W2njcqudJAi1Hhro4BvupQ8bGEMuojjQ23YBy/Zhe
+         VuZw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770237979; x=1770842779;
+        h=content-transfer-encoding:to:subject:message-id:date:from
+         :mime-version:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kPNdQ+mhreOYwAVpjejqftWikICR1vqecnBg8ara1LM=;
+        b=mSxbu82/2ZE+bbaCJh1sEE9V8J8M2Z4KHngSRwwwfYUV2izbTjLYHNDlh6ok/0jD4X
+         Wwvjbn4+r96jL98G7YJPPWOfa1YmclRje6WBLSveW8OOVzpgiAfUOpzrD5azlU18InWo
+         mN80CjADMeY3abREy0rBxtZpz1/mqj0XcwsvW3SM7ZrGfMLUcy1xL2Cfl/KJ7qO4RjIx
+         M71ckHjvjCzw4JU5clgplkq2aUBWGPGnYGtokYtUGD3jPtbTZRnsrndv3AAoBp/hmoZk
+         EhisbzKsxQIKb9WMjD8z3y2ejef1PyiAHGuxpIXJBhJPC7/6yxbBOjrVCyiL712Ywgqf
+         +lSw==
+X-Gm-Message-State: AOJu0YxVEgTE1Q9XUIvXoHN/6Oe1fL2ZEBMGKfUfLwpgP+HImwxHGQXv
+	ycniO3GDY2WFnwr6jDHl4BvaOzIuvE5cMdF5Ugj8JltFuQwV3rhPdqmGdhUdCneRfx3R+sPnmQW
+	Fk/MILKue1mxDMYgmQYOgxG5z5l6KRl/NBQngO76qMCUHVKJhnuAA
+X-Gm-Gg: AZuq6aKA5GzMOi2cBBI/9rDXwmJPVOBzXTvj57AA1wlC6yeKt6v/YtwqQ4Lzi3Ey3/c
+	4QF7nsgBYsyZ+ka6FdwXbFBgrApjwTpsZkMm/oEXs3XEGB6OPpOZwj1KmgWVdlp6eyEFqTZQPF+
+	aB/R1+7IG3uDxVu6Lm8Gc1zYsjBnWuqWXkKXzU8gioxSeFQU7xINoYiZ5p7mNmLLLfRazHTJSbZ
+	5ztmI+FqiF/CR/MGoCbjTEweZMXDXDmhcgZicWDCARzWKjLkb9PFkYFyailC2CKB3hv+FI=
+X-Received: by 2002:a05:6820:3088:b0:663:40d:4893 with SMTP id
+ 006d021491bc7-66a203a57eamr2222661eaf.3.1770237978898; Wed, 04 Feb 2026
+ 12:46:18 -0800 (PST)
+Received: from 161630743330 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 4 Feb 2026 20:46:18 +0000
+Received: from 161630743330 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 4 Feb 2026 20:46:18 +0000
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="nXqxhrFKglGDWqSA"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+From: Savannah Bush <savannah.bush@businessbeginnerresources.com>
+Date: Wed, 4 Feb 2026 20:46:18 +0000
+X-Gm-Features: AZwV_QicZGBBO2I8WvmOGkRHXJiyWRZyBL30sejrHqo6dYDCPFkNUENUxVPrgog
+Message-ID: <CAEDTVcB5ryPt-Ljr3XvduMxAKm3B8Q8-4K0CBnO1BdMoZ+FCBA@mail.gmail.com>
+Subject: Checking In on Your Content Needs
+To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi,
 
---nXqxhrFKglGDWqSA
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+I hope you're doing well. I wanted to follow up on my previous email
+about contributing strategies to enhance social media engagement for
+your site. If there's anything specific you=E2=80=99re looking for, I'd lov=
+e
+to tailor my content to your needs.
 
-Hi!
+If you=E2=80=99ve already responded, I appreciate it and apologize for any =
+oversight.
 
-The Netfilter project proudly presents:
-
-        conntrack-tools 1.4.9
-
-This release contains bugfixes, for the conntrack cli:
-
-- skip ENOSPC on updates when ct label is not available
-- don't print [USERSPACE] information in case of XML output
-- fix parsing of tuple-port-src and tuple-port-dst
-- improve --secmark,--id,--zone parser
-- improve --mark parser
-- fix for ENOENT in delete to align behaviour with updates
-- fix compiler warnings with -Wcalloc-transposed-args
-- prefer kernel-provided event timestamp via CTA_TIMESTAMP_EVENT
-  if it is available
-- introduce --labelmap option to specify connlabel.conf path
-- Extend error message for EBUSY when registering userspace helper
-
-and the conntrackd daemon:
-
-- don't add expectation table entry for RPC portmap port
-- fix signal handler race-condition
-- restrict multicast reception, otherwise multicast sync messages
-  can be received from any interface if your firewall policy does
-  not restrict the interface used for sending and receiving them.
-- remove double close() in multicast resulting in EBADFD
-
-You can download the new release from:
-
-https://netfilter.org/projects/conntrack-tools/downloads.html#conntrack-tools-1.4.9
-
-To build the code, updated libnetfilter_conntrack 1.1.1 is required:
-
-https://netfilter.org/projects/libnetfilter_conntrack/downloads.html#libnetfilter_conntrack-1.1.1
-
-In case of bugs and feature requests, file them via:
-
-* https://bugzilla.netfilter.org
-
-Happy firewalling.
-
---nXqxhrFKglGDWqSA
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: attachment;
-	filename="changes-conntrack-tools-1.4.9.txt"
-Content-Transfer-Encoding: 8bit
-
-Ahelenia Ziemiańska (1):
-      conntrack: -L doesn't take a value, so don't discard one (same for -IUDGEFA)
-
-Christoph Heiss (2):
-      conntrack: move label parsing to after argument parsing
-      conntrack: introduce --labelmap option to specify connlabel.conf path
-
-Donald Yandt (2):
-      conntrackd: prevent memory loss if reallocation fails
-      conntrackd: exit with failure status
-
-Florian Westphal (2):
-      conntrack: prefer kernel-provided event timestamp if it is available
-      conntrack: --id argument is mandatory
-
-Ignacy Gawędzki (1):
-      conntrack: don't print [USERSPACE] information in case of XML output
-
-Markus Breitenberger (1):
-      conntrackd: Fix signal handler race-condition
-
-Pablo Neira Ayuso (8):
-      conntrack: ct label update requires proper ruleset
-      tests: conntrack: missing space before option
-      conntrack: improve --secmark,--id,--zone parser
-      conntrack: improve --mark parser
-      conntrackd: restrict multicast reception
-      conntrackd: remove double close() in multicast resulting in EBADFD
-      conntrackd: update netns test to support IPv6
-      conntrack-tools 1.4.9 release
-
-Pfeil Daniel (1):
-      conntrackd: helpers/rpc: Don't add expectation table entry for portmap port
-
-Phil Sutter (3):
-      conntrack: Fix for ENOENT in mnl_nfct_delete_cb()
-      src: Eliminate warnings with -Wcalloc-transposed-args
-      nfct: helper: Extend error message for EBUSY
-
-Stephan Brunner (1):
-      conntrack: tcp: fix parsing of tuple-port-src and tuple-port-dst
-
-Xavier Claude (1):
-      conntrackd.conf.5: fix typos
-
-
---nXqxhrFKglGDWqSA--
+Thank you,
+Savannah
