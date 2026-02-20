@@ -1,134 +1,156 @@
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 198AA2045AD
-	for <netfilter@vger.kernel.org>; Fri, 20 Feb 2026 11:53:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.218.45
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771588397; cv=pass; b=Vlhj6JZY6DL6Mt7BRjXoUEwHKdybv7MXqLJx+lkKBY5j8ToprnEll+cApbs4AC4+Rp9dhl7SGLB+NUryrfMd63Nyx6W8RddG5YcOsXnIH/dxH49GyDnBZFqMiSdCiI5ALKwiNy2Tuc6f9gAmYfwV9UpTHBGfOv+EFWbbCmYkXoI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771588397; c=relaxed/simple;
-	bh=FSvDEBA44bDiYZE4U13R7/fLXcFyL9CAEfnuMIL71hw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rxZEjvhJyuSEDlaqubOOJHCYDSLtbTWjmoVpRSWdevgJYKCcfKQVlHVL+B5aqcBO9+Cn/TPz0jXVR+sLpCqY+3S2H22Xvh/uvIfGn0JVdWt9pvLpwXZfKezdqQAfdqCCa73tZeWLtom0yy4rg2SNllJ94gyVkVzOd2u7Obw8VL8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PQEZQRBO; arc=pass smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1406342CB6;
+	Fri, 20 Feb 2026 12:47:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1771591639; cv=none; b=r6b2VaPaSPwBYfpC6rwgdqsUTZkNEDLI6hXDoLrlGyKCT1jlvDTImIkQznAbNSTSTtQMuSe6FaZoCNDH6cWEumOHOxBlsoaNqOjLgQGpQlyD1pv7HbYHfk2ztasdIsk5fEng3mMjkO5WRiZLTm/1bRZxweOIfZldAWJ+9PFl4lU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1771591639; c=relaxed/simple;
+	bh=JFyGMNfU/nR+ZUR/jVuKUGN28QnOydA4SyKTOSwSeO0=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=U2G4wBXIat8re9pXV4dd7Ml5o17fAqZqoUNJevaEBInNZFFUxF7zyxOGLNTZsR6da4xI49fpXB5+gQX1CidS9XPM9Mi5aOJ0UxGkk/cM69oIEudsBj0VIrKtkGVFTPlecl9XLsagL8NoOren3WHCaC51S3qaECG4PRzKayIi4V8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=tT4NR+V+; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PQEZQRBO"
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-b8fb6ad3243so327343766b.1
-        for <netfilter@vger.kernel.org>; Fri, 20 Feb 2026 03:53:15 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1771588394; cv=none;
-        d=google.com; s=arc-20240605;
-        b=g1bFc0XaT1P1NUhBTCOWvZs3cXY/XghNXnjwUEIhR6F58MDN4t7d6OWBHJMj6Lc750
-         UE3kr+rY60rpoqwsflzlB/OUrlIbdhai57UobeJas9l++B6/wf+eYrnzM9ySqV2kq5nW
-         l1bsnMGlvBr4bG9EBqAtiC8ULybsFJKRf80okj0RmO2FJYsFlafJ6RdHzJ+juf2+c11y
-         SUcLUak4GbUVacEkvo5BEItnNRBBJcqLczbl5rxG7VJpzgfbqitOI4pkXBp/NwyIt+rQ
-         JP0GFShNSQ6mPX18qlA2zXol3soLSVygVUxpvwZ6jSGqqMU9CoAUPHwu+id31/nG06NF
-         iCbw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=FSvDEBA44bDiYZE4U13R7/fLXcFyL9CAEfnuMIL71hw=;
-        fh=dQL/icvlRnEEU32fCG/BceaqwZ1e8totpmh8mBT8gSg=;
-        b=W1Hm9JY9a9t5lmz+NbUtqbBp3xtXD9jhfdoVfXBEAd3n6KWNAtQyfqNdVRyG2Ksw3z
-         E2F8pLSzcPVatv1zFXFJPhG3723TeMo1AOqyF/cKVjRKgXVcr8VErHQS9gxZZx/v6Pxh
-         pUirvXW/EXJAOao0f/BCkXCmh55Q+OugzcC4OkwkbTn+dnRTSMTwEddj2zn5mfQX3dPr
-         j3PukvslA3BkvySg8ZyAVPLqShV6T0dW3uDxQUEbU5cySSkgFmLdMziTYy7qK1hlWvm2
-         ynT2QC/UW28RBRhHzEhDI///R8a1WgtZktJmqXCCbuIQ8D9NcIpiKL3qFW/UyqurpmV4
-         w1Xw==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771588394; x=1772193194; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=FSvDEBA44bDiYZE4U13R7/fLXcFyL9CAEfnuMIL71hw=;
-        b=PQEZQRBOc4XoTw51IOU55FZaUIfo/RdclexSU0rXtXrUSROUiZ0gNBhbp2dxZ10xkK
-         zvXyen2Xrp+44Srvk1IqkSV7BCt3tZIXjjZZDBb7jaLZgP5mBO+YMvrmCXE40F0pY1jy
-         yI0QPIZAMfxUjbTdAj5J22BaXi8DhoL1a6aHz6v+Q2eeLIFYOxRylvHICGAYww2WtZLD
-         7LNG1stfKidlPYY/pKEHsakomEGGTCLl+3M2WHRfJyeJ1OmvFiB1dj0lMAXmE5nMF7cK
-         HonKvfgQZlT9Am4dnQVdZvKc00dQZziOBZP+QVOpWg8UH6xlGYuykLNPU6HBHxzc9FFb
-         JcPA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771588394; x=1772193194;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=FSvDEBA44bDiYZE4U13R7/fLXcFyL9CAEfnuMIL71hw=;
-        b=xCk0F8XHqxlrIMYOoW2cYJo9Hte8tkJtABByosVgPTs0/e4cvmkHTTBgNrlpqiQeJA
-         qDIes1CZYIq/gvHFXEnZ61jJAu5ZHSD70zmt0moHh9zVNMjQH6crj5RQeIRyFoyIv+qs
-         YTF0IgSujHP6zkE6ykyj6/vGPJbC0lObSIP6CxT8r/hi+Zx8kIDRX/scwwRiVXfxsPwD
-         JBl9gOc+7dxreuFLQ+yw1L51hCPHaVmIeXdgIHdzaWHckvdYiondsfK4Yi31gfKUczNm
-         I9R/FZ3Upo0f5eHezDGh3J9ytyvjoVpLcndwI0Klm2v9by3tvgShLXBcaonToem49kVU
-         kw5A==
-X-Gm-Message-State: AOJu0Yw5wuk7fLDF8ACTh4PPqA+kmnudV4ZNYDrriBGx4nSOWKg6966D
-	ZujSMOvxcz4E4P+ck+wIaKUtGoILbwWZ4bsrXRox4NF9zQPtc3qV/GWp4L127MpzBIJ0YKSVZvZ
-	86+Awb2Zvg9WF/KKWLXK059SsfFShMbVhWA==
-X-Gm-Gg: AZuq6aIVtGeS5mp1vbsoWGlyAEo1T2hmSjxBc3Leq+D0oFnOTPpHjZvz/M2BOPy4GlV
-	h5gSgmIYmyI+gwLoZbo/jznoj63C6wS3KgLgq0wLP8s5lIpz1H5kB9SI83XJHaH0BMwOxhsUYYC
-	hEQx1UQxb59v2I/SATxdTBqTd5/FnhBZcPXHTKz1IugTwoLZ1LPjUZSlLPh8MMVTVGlsfaHASXx
-	K7JWhryPlZSsRP7ZZym5cEwSUWq+axHDJG+qTUZ2MGvuyDMBFqjPtf0RqjiRAFjOiLkdqJUN4DG
-	NBCEDPrRZjqVBlJsFejLXSdnLzexJoRzvqqgPwKdsQtPc2MMDMQ6
-X-Received: by 2002:a17:907:848:b0:b8e:fe3c:2255 with SMTP id
- a640c23a62f3a-b9072e22c9amr84054666b.5.1771588393937; Fri, 20 Feb 2026
- 03:53:13 -0800 (PST)
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="tT4NR+V+"
+Received: from netfilter.org (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 3DF5F6017A;
+	Fri, 20 Feb 2026 13:47:08 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1771591628;
+	bh=ONyQV6T0+5t4Bd7vk7ir6GQcSh3D8DF7pd2iHbs5CtY=;
+	h=Date:From:To:Cc:Subject:From;
+	b=tT4NR+V+DMhgGSUIUcJ4Y5GFNxZRaZ3qpCAhKxzfXg9U5DBMCl99IGRuL1MJT1zbz
+	 szN1CoA2puNxRi50wojvxPwfe7cp5Q96q+Ao8Re9fzfo4zF8sJvqwNErhhweSfwfyj
+	 yGC8TRKfJuPBJQzPTBl88dwTFXeHUZTmxdfQC8y+npYLEB3XSY8I7CpjYLi78Prs6/
+	 NkS+pKzPSYf5+5828ihrgId/IyaQB3f7TdquZ3ezhTaJnTjs9FtQ8Haz+rBBBp0E8n
+	 5sxxdx9wPaFi8tQybb0VAz8MAMUmZ7srPg4+G+o62Ls4g/4sLqF8F9CJ8Th6UC8v0u
+	 +5ennfG++muJw==
+Date: Fri, 20 Feb 2026 13:47:05 +0100
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Cc: netfilter-announce@lists.netfilter.org, lwn@lwn.net,
+	netdev@vger.kernel.org
+Subject: [ANNOUNCE] iptables 1.8.12 release
+Message-ID: <aZhXyS70BQ-JnSPg@chamomile>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <37d6e23b-a14f-470d-b97b-2466849fc4ce@localities.work> <CAPJdpdBYt-VTdjeZ-X8BeLNTuxSmKssacgZEin9jFjypEqkEUA@mail.gmail.com>
-In-Reply-To: <CAPJdpdBYt-VTdjeZ-X8BeLNTuxSmKssacgZEin9jFjypEqkEUA@mail.gmail.com>
-From: Paul Robert Marino <prmarino1@gmail.com>
-Date: Fri, 20 Feb 2026 06:52:38 -0500
-X-Gm-Features: AaiRm51E-30toulzaPLowo0JBrYth9XDdFkXub5iUB3dGQXd4z_siun9uqeYmO4
-Message-ID: <CAPJdpdA=oSy=s0m+xNGjA1swMjiOcKU+ofm+4wuATr-Zb9jOCQ@mail.gmail.com>
-Subject: Re: dummy net iface?
-To: listy <listy@localities.work>
-Cc: netfilter@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/mixed; boundary="a96Q5qd2CyaIn7KF"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 
-Let me clarify
-If you enable ip_forward in sysctl then you can port forward from one
-port to another on a dummy interface or to a port on another
-interface.
-Though that's unusual behavior, normally you would want to bind a
-service to the dummy interface and port forward or route from a
-physical interface to the dummy the service on the dummy interface so
-if the physical interface goes down the service will keep listening
-and traffic will resume after the physical interface is brought back
-up without needing to restart the service.
-However if you want to port forward on a non-routable interface to
-prevent external network traffic from being able to connect to the
-service then you would use a loopback interface instead because any IP
-address assigned to a loopback interface becomes non-routable by
-default. but note for port forwarding ip_forward will need to be
-enabled in sysctl regardless if you want to forward from one port to
-another. Also note you can't forward from a physical or dummy
-interface to a loopback interface or vica versa.
 
-On Fri, Feb 20, 2026 at 6:39=E2=80=AFAM Paul Robert Marino <prmarino1@gmail=
-.com> wrote:
->
-> Did you enable ip_forward in sysctl ?
->
-> On Fri, Feb 20, 2026 at 6:09=E2=80=AFAM listy <listy@localities.work> wro=
-te:
-> >
-> > Hi guys.
-> >
-> > 'dummy' network interface - I get that those are meant to be
-> > kind of a sing/black-hole but... should such iface not
-> > port-forward on itself? (as oppose to other ifaces, which it
-> > does not I think)
-> > So, I cannot get "normal" port-forward - firewalld with
-> > nftables as per default in Fedora, which I try to do it with
-> > - because it needs more tweaking for "dummy" ifaces _do_
-> > port-forwarding or.. they do _not_ - do you know?
-> >
-> > many thanks, L.
-> >
+--a96Q5qd2CyaIn7KF
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+
+Hi!
+
+The Netfilter project proudly presents:
+
+        iptables 1.8.12
+
+This release contains the following fixes:
+
+* Fix null dereference parsing bitwise operations.
+* Refuse to run under file capabilities, ie. getauxval(AT_SECURE).
+* Fix for all-zero mask on Big Endian in arptables-nft.
+* Support adding and replacing a rule in the same batch in
+  iptables-nft.
+
+*filter
+-A FORWARD -m comment --comment "new rule being replaced"
+-R FORWARD 1 -m comment --comment "new replacing rule"
+COMMIT
+
+* Print -X in xtables-monitor command for base chains.
+* Remove incorrect libebt_redirect translations.
+* Translate bare '-m sctp' match to '-p sctp' just like TCP and UDP.
+* Support for info-request and info-reply icmp types.
+* Fix interface comparisons in `-C` commands in iptables-nft.
+* Several fixes for ip[6]tables-translate, the tool to ease migration
+  to nftables.
+* Document flush behaviour with --noflush for user-defined chains.
+
+See changelog for more details (attached to this email).
+
+You can download this new release from:
+
+  https://www.netfilter.org/projects/iptables/downloads.html
+  https://www.netfilter.org/pub/iptables/
+
+To build the code, libnftnl >= 1.2.6 is required:
+
+  http://netfilter.org/projects/libnftnl/downloads.html
+
+In case of bugs and feature requests, file them via:
+
+  https://bugzilla.netfilter.org
+
+Happy firewalling.
+
+P.S: tarball and website update is available since yesterday, I could
+not deliver this cover letter until today, apologies for this delay.
+
+--a96Q5qd2CyaIn7KF
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: attachment; filename="changes-iptables-1.8.12.txt"
+Content-Transfer-Encoding: 8bit
+
+Achill Gilgenast (1):
+      configure: Avoid addition assignment operators
+
+Alan Ross (1):
+      libxtables: refuse to run under file capabilities
+
+Florian Westphal (2):
+      man: iptables-restore.8: document flush behaviour for user-defined chains
+      nft: revert compat expressions in userdata
+
+Jeremy Sowden (2):
+      ip[6]tables-translate: fix test failures when WESP is defined
+      nft: fix interface comparisons in `-C` commands
+
+Miao Wang (1):
+      extensions: libebt_redirect: prevent translation
+
+Pablo Neira Ayuso (1):
+      configure: Bump version for 1.8.12 release
+
+Phil Sutter (20):
+      nft: Drop interface mask leftovers from post_parse callbacks
+      nft: Make add_log() static
+      nft: ruleparse: Introduce nft_parse_rule_expr()
+      nft: __add_{match,target}() can't fail
+      nft: Introduce UDATA_TYPE_COMPAT_EXT
+      nft-ruleparse: Fallback to compat expressions in userdata
+      nft: Pass nft_handle into add_{action,match}()
+      nft: Embed compat extensions in rule userdata
+      tests: iptables-test: Add nft-compat variant
+      extensions: icmp: Support info-request/-reply type names
+      xshared: Accept an option if any given command allows it
+      extensions: sctp: Translate bare '-m sctp' match
+      libxtables: Promote xtopt_esize_by_type() as xtopt_psize getter
+      Revert "libxtables: Promote xtopt_esize_by_type() as xtopt_psize getter"
+      xtables-monitor: Print -X command for base chains, too
+      nft: Support replacing a rule added in the same batch
+      libxtables: Store all requested target types
+      ruleparse: arp: Fix for all-zero mask on Big Endian
+      tests: shell: Review nft-only/0009-needless-bitwise_0
+      configure: Auto-detect libz unless explicitly requested
+
+Remy D. Farley (1):
+      iptables: fix null dereference parsing bitwise operations
+
+Łukasz Stelmach (1):
+      extensions: man: Add a note about route_localnet sysctl
+
+
+--a96Q5qd2CyaIn7KF--
