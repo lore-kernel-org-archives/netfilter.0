@@ -1,51 +1,67 @@
-Received: from out.good-with-numbers.com (out.good-with-numbers.com [70.36.235.100])
+Received: from mail.localities.work (unknown [89.231.102.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C0F13C2E
-	for <netfilter@vger.kernel.org>; Sun, 15 Feb 2026 03:04:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=70.36.235.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAA8B33FE07
+	for <netfilter@vger.kernel.org>; Fri, 20 Feb 2026 11:09:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.231.102.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771124646; cv=none; b=DKIn6CzRuhC4sCBp8a7q4Kuxb8gUE5w2rYp0LfVqhu1D0vATTPfs4qjG6Xn0rj6tzcXBAM3BVkecUh9JoosXWvki/STvt6dLjJlgYsdwrb8NS+O1iRleKjc2jBOFVL/H6Oo3k+tud0ShWLkDBWiEoOBXrfmmqDFP9KpbPdVhqcY=
+	t=1771585743; cv=none; b=HaWU5z7jsjsBMQIcxdKALjVdIsUr8x0qj8xud/u4s9jzk01YIuwd9Lm0gD9+9WXy06Fir1Zv27FRLenF6U3V0OPape9pdlvD9nz/wzs7Syt+rn6x9NL+UjozO8RTk4tGVUZSWVVtjkFbEFVjOUIbd+YGoBZuuiTOrcZ8nlYxoXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771124646; c=relaxed/simple;
-	bh=E7U81INzIYdOpulXu0vyqVhMUQrs9nH64codIXPPzTQ=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=RGUoaAY8MekGaqtkATIcLYy3U7MZ4xv9khktLKr/TxZHHY9ZKHFbTAgNKOBeS05nnDVwEbnJlPf0OHse/9/Ujl3bZ8C1whJeuQ+bFXjQe89rzgcwCA8f5DDWxOsm8uIjscH/fP/GPEVLMM0r1woBlFLnc8BTFhuub6IFJ66FXJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=good-with-numbers.com; spf=pass smtp.mailfrom=good-with-numbers.com; arc=none smtp.client-ip=70.36.235.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=good-with-numbers.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=good-with-numbers.com
-Date: Sun, 15 Feb 2026 02:57:00 +0000
-From: Mike <debian@good-with-numbers.com>
-To: netfilter@vger.kernel.org
-Subject: standard for dropping in a modular setup?
-Message-ID: <aZE1/DlyD/ZyoVa4@70-36-235-101.dsl.static.fusionbroadband.com>
+	s=arc-20240116; t=1771585743; c=relaxed/simple;
+	bh=WwE0b8SPXLUNkP0hAgSo68KBBsUSYAxckk7dnEOZlZ0=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=Qdl6aIEpcrjCLwanyCFFN+9y/aSatMd+JwFdTWGE/hZQcz5sm8dx4Nz4ScMurOqUN/SQq8qq/9UOSkde2km7rY8Zv9XEKNhpb8u+IS4N5D1eki184hhZKFtkdtORo37cO6ubK2XvaBgB1SwZzh78j9t5qPMxnWNcf7Ej2jEY2Ro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=localities.work; spf=pass smtp.mailfrom=localities.work; dkim=pass (1024-bit key) header.d=localities.work header.i=@localities.work header.b=JIDdpaaV; arc=none smtp.client-ip=89.231.102.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=localities.work
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=localities.work
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=localities.work header.i=@localities.work header.b="JIDdpaaV"
+Received: from localhost (localhost [127.0.0.1])
+	by dzien.mine.priv (Postfix) with ESMTP id A9ECD8093703
+	for <netfilter@vger.kernel.org>; Fri, 20 Feb 2026 12:09:02 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=localities.work;
+	 h=content-transfer-encoding:content-type:content-type:subject
+	:subject:from:from:content-language:user-agent:mime-version:date
+	:date:message-id:received:received; s=dkim20251117; t=
+	1771585741; x=1772449742; bh=WwE0b8SPXLUNkP0hAgSo68KBBsUSYAxckk7
+	dnEOZlZ0=; b=JIDdpaaVent/ain4f/ZKEzKnEWfGo85qWSsOSrSOjYbbJufisrM
+	ae8cHQy3+V38ALchvE8yLgpVIvntlEVO2UdNrOjHH4iQZmTggAAQRcpk73XItEj/
+	9XTzKqYYuH2lIuP9PIMk94wusrqRlNwjXtp7gJvfAS0Ka2+JIatJ9tAY=
+X-Virus-Scanned: amavis at mine.priv
+Received: from dzien.mine.priv ([127.0.0.1])
+ by localhost (dzien.mine.priv [127.0.0.1]) (amavis, port 10022) with LMTP
+ id 9XCUDUcwnXpJ for <netfilter@vger.kernel.org>;
+ Fri, 20 Feb 2026 12:09:01 +0100 (CET)
+Received: from [10.3.0.10] (unknown [10.3.0.10])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange x25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by dzien.mine.priv (Postfix) with ESMTPSA id 81A278093702
+	for <netfilter@vger.kernel.org>; Fri, 20 Feb 2026 12:09:01 +0100 (CET)
+Message-ID: <37d6e23b-a14f-470d-b97b-2466849fc4ce@localities.work>
+Date: Fri, 20 Feb 2026 12:08:59 +0100
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+To: netfilter@vger.kernel.org
+Content-Language: en-MW, pl, pl-PL
+From: listy <listy@localities.work>
+Subject: dummy net iface?
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-I imagine that this has been asked before; please point me to the discussion
-if so.
+Hi guys.
 
-It's well known that if you attach two base chains to a hook, and they both
-have a default drop policy, the lower priority chain will drop all the
-packets that were accepted in the other chain.  So if you want to set up a
-configuration that aims to be "modular", you have to address the question of
-how to drop packets by default that were accepted by no chain.
+'dummy' network interface - I get that those are meant to be 
+kind of a sing/black-hole but... should such iface not 
+port-forward on itself? (as oppose to other ifaces, which it 
+does not I think)
+So, I cannot get "normal" port-forward - firewalld with 
+nftables as per default in Fedora, which I try to do it with 
+- because it needs more tweaking for "dummy" ifaces _do_ 
+port-forwarding or.. they do _not_ - do you know?
 
-One way to do that would be to have a lowest priority base chain that drops
-packets that don't have a particular mark bit set.  Then set that mark bit
-whenever you accept a packet in any other chain.  The bit then serves as a
-"definitively accepted" flag.  All the chains would use the default "accept"
-policy (but would not necessarily set this bit by default).
-
-The problem is then which bit do you choose.  If all the rules are your own,
-it doesn't matter.  But if you're trying to integrate your rules with those
-from another source like firewalld, there needs to be some agreement on which
-bit to use.
-
-So the question: is there any such agreement?
+many thanks, L.
