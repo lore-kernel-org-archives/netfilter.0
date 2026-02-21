@@ -1,156 +1,116 @@
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+Received: from mail.localities.work (unknown [89.231.102.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1406342CB6;
-	Fri, 20 Feb 2026 12:47:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D3E821771B
+	for <netfilter@vger.kernel.org>; Sat, 21 Feb 2026 08:48:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.231.102.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771591639; cv=none; b=r6b2VaPaSPwBYfpC6rwgdqsUTZkNEDLI6hXDoLrlGyKCT1jlvDTImIkQznAbNSTSTtQMuSe6FaZoCNDH6cWEumOHOxBlsoaNqOjLgQGpQlyD1pv7HbYHfk2ztasdIsk5fEng3mMjkO5WRiZLTm/1bRZxweOIfZldAWJ+9PFl4lU=
+	t=1771663722; cv=none; b=lx3xXSQzFfqgGXUFNTdV1MZw0m7ubo+UtIRyPWd1YZdKnh7k6Yjl/DwCtyzr6pNgLI8rrjlfIzomhJfPnWB+x5HhPPKaG7DP7BNr5lxuDkYGDyjxavbHLIXtr69auDOIRaldVQIHlyXDQUcKCI9XfT2MRaht0FgxC8NrdnV3Rf0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771591639; c=relaxed/simple;
-	bh=JFyGMNfU/nR+ZUR/jVuKUGN28QnOydA4SyKTOSwSeO0=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=U2G4wBXIat8re9pXV4dd7Ml5o17fAqZqoUNJevaEBInNZFFUxF7zyxOGLNTZsR6da4xI49fpXB5+gQX1CidS9XPM9Mi5aOJ0UxGkk/cM69oIEudsBj0VIrKtkGVFTPlecl9XLsagL8NoOren3WHCaC51S3qaECG4PRzKayIi4V8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=tT4NR+V+; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+	s=arc-20240116; t=1771663722; c=relaxed/simple;
+	bh=APU8M0CX8veN3RJ7bmdNbA4hmZtPikcbM6dU7fdAc98=;
+	h=Message-ID:Date:MIME-Version:Subject:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EKaBDCEj6UjXK9Sn4uRkmgyCnnGUK1dMwmgGG0+FeVMFxnUM+5fRcL+7n5tSODjfSgegroou2VP25dNcazItdTspAzG/qvxYHWj5qYbhI4CP2XOD5xifS/DI0BXA74pJamxuybtlM3osJX3RvSW/HUcOe2FfpBVSqQEP3nySb1k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=localities.work; spf=pass smtp.mailfrom=localities.work; dkim=pass (1024-bit key) header.d=localities.work header.i=@localities.work header.b=rgWz6aZO; arc=none smtp.client-ip=89.231.102.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=localities.work
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=localities.work
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="tT4NR+V+"
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 3DF5F6017A;
-	Fri, 20 Feb 2026 13:47:08 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1771591628;
-	bh=ONyQV6T0+5t4Bd7vk7ir6GQcSh3D8DF7pd2iHbs5CtY=;
-	h=Date:From:To:Cc:Subject:From;
-	b=tT4NR+V+DMhgGSUIUcJ4Y5GFNxZRaZ3qpCAhKxzfXg9U5DBMCl99IGRuL1MJT1zbz
-	 szN1CoA2puNxRi50wojvxPwfe7cp5Q96q+Ao8Re9fzfo4zF8sJvqwNErhhweSfwfyj
-	 yGC8TRKfJuPBJQzPTBl88dwTFXeHUZTmxdfQC8y+npYLEB3XSY8I7CpjYLi78Prs6/
-	 NkS+pKzPSYf5+5828ihrgId/IyaQB3f7TdquZ3ezhTaJnTjs9FtQ8Haz+rBBBp0E8n
-	 5sxxdx9wPaFi8tQybb0VAz8MAMUmZ7srPg4+G+o62Ls4g/4sLqF8F9CJ8Th6UC8v0u
-	 +5ennfG++muJw==
-Date: Fri, 20 Feb 2026 13:47:05 +0100
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
-Cc: netfilter-announce@lists.netfilter.org, lwn@lwn.net,
-	netdev@vger.kernel.org
-Subject: [ANNOUNCE] iptables 1.8.12 release
-Message-ID: <aZhXyS70BQ-JnSPg@chamomile>
+	dkim=pass (1024-bit key) header.d=localities.work header.i=@localities.work header.b="rgWz6aZO"
+Received: from localhost (localhost [127.0.0.1])
+	by whale.mine.priv (Postfix) with ESMTP id BCB5E112B03
+	for <netfilter@vger.kernel.org>; Sat, 21 Feb 2026 09:48:39 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=localities.work;
+	 h=content-transfer-encoding:content-type:content-type
+	:in-reply-to:from:from:content-language:references:subject
+	:subject:user-agent:mime-version:date:date:message-id:received
+	:received; s=dkim20251117; t=1771663719; x=1772527720; bh=APU8M0
+	CX8veN3RJ7bmdNbA4hmZtPikcbM6dU7fdAc98=; b=rgWz6aZO9U/LFfc9256pTl
+	BMbW8V2yTLqogKylE5aqEzTi9HbUpynAyjPNtTpsAi1EzgkoSnJ/Qr3XuXmz3pWj
+	3kJ/7bte/5L4pABt4OhuvsSXYs9HqcgUfxBgS6ypK9+Plvaa5wa+FvMy3EI+pezx
+	m1KYBUpoByQnU6IpQ7Zcg=
+X-Virus-Scanned: amavis at mine.priv
+Received: from whale.mine.priv ([127.0.0.1])
+ by localhost (whale.mine.priv [127.0.0.1]) (amavis, port 10022) with LMTP
+ id 8adrYD0bZ2lK for <netfilter@vger.kernel.org>;
+ Sat, 21 Feb 2026 09:48:39 +0100 (CET)
+Received: from [10.3.0.10] (unknown [10.3.0.10])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange x25519 server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by whale.mine.priv (Postfix) with ESMTPSA id 010FBE2104
+	for <netfilter@vger.kernel.org>; Sat, 21 Feb 2026 09:48:39 +0100 (CET)
+Message-ID: <61080b94-afdd-48c2-bb7c-74aacf3d9352@localities.work>
+Date: Sat, 21 Feb 2026 09:48:38 +0100
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="a96Q5qd2CyaIn7KF"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: dummy net iface?
+Cc: netfilter@vger.kernel.org
+References: <37d6e23b-a14f-470d-b97b-2466849fc4ce@localities.work>
+ <CAPJdpdBYt-VTdjeZ-X8BeLNTuxSmKssacgZEin9jFjypEqkEUA@mail.gmail.com>
+Content-Language: en-MW, pl, pl-PL
+From: listy <listy@localities.work>
+In-Reply-To: <CAPJdpdBYt-VTdjeZ-X8BeLNTuxSmKssacgZEin9jFjypEqkEUA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+Yes I did/do have net.ipv4.ip_forward = 1
+Then I must be doing something wrong or not doing something.
+I run a container which listens on a dummy iface, well, 
+'pasta' does it on behalf of 'podman'
 
---a96Q5qd2CyaIn7KF
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+-> $ nmap 10.9.4.7 -p 5350
+...
+5350/tcp open  nat-pmp-status
 
-Hi!
+-> $ nmap 10.9.4.7 -p 5350 -sU
+...
+5350/udp open|filtered nat-pmp-status
 
-The Netfilter project proudly presents:
+what listens is a dns recursor, then 'firewalld' looks like so:
 
-        iptables 1.8.12
+-> $ firewall-cmd --list-all --zone=mine-fwd-dummy
+mine-fwd-dummy (active)
+   target: default
+   icmp-block-inversion: no
+   interfaces: forwarder-dummy
+   sources:
+   services:
+   ports:
+   protocols:
+   forward: yes
+   masquerade: no
+   forward-ports:
+	port=53:proto=tcp:toport=5350:toaddr=10.9.4.7
+	port=53:proto=udp:toport=5350:toaddr=10.9.4.7
+   source-ports:
+   icmp-blocks:
 
-This release contains the following fixes:
+which results in:
+-> $ nft list table inet firewalld
+...
+         chain nat_PRE_mine-fwd-dummy_allow {
+                 meta nfproto ipv4 tcp dport 53 dnat ip to 
+10.9.4.7:5350
+                 meta nfproto ipv4 udp dport 53 dnat ip to 
+10.9.4.7:5350
+         }
+...
 
-* Fix null dereference parsing bitwise operations.
-* Refuse to run under file capabilities, ie. getauxval(AT_SECURE).
-* Fix for all-zero mask on Big Endian in arptables-nft.
-* Support adding and replacing a rule in the same batch in
-  iptables-nft.
+forwarder-dummy is: 10.9.4.7
 
-*filter
--A FORWARD -m comment --comment "new rule being replaced"
--R FORWARD 1 -m comment --comment "new replacing rule"
-COMMIT
+yet
 
-* Print -X in xtables-monitor command for base chains.
-* Remove incorrect libebt_redirect translations.
-* Translate bare '-m sctp' match to '-p sctp' just like TCP and UDP.
-* Support for info-request and info-reply icmp types.
-* Fix interface comparisons in `-C` commands in iptables-nft.
-* Several fixes for ip[6]tables-translate, the tool to ease migration
-  to nftables.
-* Document flush behaviour with --noflush for user-defined chains.
+-> $ nmap 10.9.4.7 -p 53
+...
+53/tcp closed domain
 
-See changelog for more details (attached to this email).
+same for 'udp'
+I'm on Centos 9 with 6.12.74-1.el9.x86_64
+If I'm missing something - what that might be..
+thanks, L
 
-You can download this new release from:
-
-  https://www.netfilter.org/projects/iptables/downloads.html
-  https://www.netfilter.org/pub/iptables/
-
-To build the code, libnftnl >= 1.2.6 is required:
-
-  http://netfilter.org/projects/libnftnl/downloads.html
-
-In case of bugs and feature requests, file them via:
-
-  https://bugzilla.netfilter.org
-
-Happy firewalling.
-
-P.S: tarball and website update is available since yesterday, I could
-not deliver this cover letter until today, apologies for this delay.
-
---a96Q5qd2CyaIn7KF
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: attachment; filename="changes-iptables-1.8.12.txt"
-Content-Transfer-Encoding: 8bit
-
-Achill Gilgenast (1):
-      configure: Avoid addition assignment operators
-
-Alan Ross (1):
-      libxtables: refuse to run under file capabilities
-
-Florian Westphal (2):
-      man: iptables-restore.8: document flush behaviour for user-defined chains
-      nft: revert compat expressions in userdata
-
-Jeremy Sowden (2):
-      ip[6]tables-translate: fix test failures when WESP is defined
-      nft: fix interface comparisons in `-C` commands
-
-Miao Wang (1):
-      extensions: libebt_redirect: prevent translation
-
-Pablo Neira Ayuso (1):
-      configure: Bump version for 1.8.12 release
-
-Phil Sutter (20):
-      nft: Drop interface mask leftovers from post_parse callbacks
-      nft: Make add_log() static
-      nft: ruleparse: Introduce nft_parse_rule_expr()
-      nft: __add_{match,target}() can't fail
-      nft: Introduce UDATA_TYPE_COMPAT_EXT
-      nft-ruleparse: Fallback to compat expressions in userdata
-      nft: Pass nft_handle into add_{action,match}()
-      nft: Embed compat extensions in rule userdata
-      tests: iptables-test: Add nft-compat variant
-      extensions: icmp: Support info-request/-reply type names
-      xshared: Accept an option if any given command allows it
-      extensions: sctp: Translate bare '-m sctp' match
-      libxtables: Promote xtopt_esize_by_type() as xtopt_psize getter
-      Revert "libxtables: Promote xtopt_esize_by_type() as xtopt_psize getter"
-      xtables-monitor: Print -X command for base chains, too
-      nft: Support replacing a rule added in the same batch
-      libxtables: Store all requested target types
-      ruleparse: arp: Fix for all-zero mask on Big Endian
-      tests: shell: Review nft-only/0009-needless-bitwise_0
-      configure: Auto-detect libz unless explicitly requested
-
-Remy D. Farley (1):
-      iptables: fix null dereference parsing bitwise operations
-
-Łukasz Stelmach (1):
-      extensions: man: Add a note about route_localnet sysctl
-
-
---a96Q5qd2CyaIn7KF--
