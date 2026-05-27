@@ -1,107 +1,121 @@
-Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
+Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC5783D9027
-	for <netfilter@vger.kernel.org>; Tue, 26 May 2026 10:32:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC567315D21
+	for <netfilter@vger.kernel.org>; Wed, 27 May 2026 01:42:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779791537; cv=none; b=hTqdOVePlgREgspy1QlFgYucppgc+0VAO4xiZPLYiF3pdwNyRXybOtauuwd5/g62pjeLvmYtxSf5KAs5p2SLm+5WwGhfqq8NFZJs33olcMYrOmqSumbbRkVhU8e1IWuzzg9mPOfdD4PFcYix4hoaNMRJbaNV6N8YIgepyZat2ag=
+	t=1779846127; cv=none; b=HSpWOV/enPXL/Ug/XHPCumH4ng7JW4xT+jugEwG7rhq5GW2QvkMpnbXA/dS52LsrW3Tt1RHZB+Ku30deXSM6PELNVK7nzunz+WGEJgOIa8ZSyVSEMQLd6A88FWw+wMPJsOOWVikUQMvTnDEtrPVfyMMetph3hPrgR9xNTrd/E4w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779791537; c=relaxed/simple;
-	bh=QpRphMHTkPA6MNLjLk19cW1WKrefYQbnWOYA6RBBX1g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=BdVjErGuViHTjERJFPuWlB5WohMPx/aSzYsOjo2ELfuF903VT/5m0vhqny+x90U1IVWfOIE/qyD7jAm/mxG0p35Jv33zWDJtjWSNP6O9RuQ9UkdT1kwszZkBqrh4GTMozyjxiznsN3GJNULaYX5yoZqzVTx5lFNNncL6cQBDX7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=lOMC/RsA; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=t4tj6Sme; arc=none smtp.client-ip=185.25.250.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
+	s=arc-20240116; t=1779846127; c=relaxed/simple;
+	bh=32dsN97BG1ZtaFA3Ti+ukBCBqCSSr6/wnuQlbV8qZMo=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qwaOxl/oW3diQSoLWYkmifa7CflLIVpcCW3QLoa1fh8vZZ6CyUiKrAY6A6fXaB5sEtNHcfi43Kv40hBVlyUzfSAxMAJ546laJz7sErjeRRcuEy94P43iLxhNXo4piF5ZdYY/yalTiAiBlNq49gxIgaaJ6QKMO81V3MGfAABuzLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U1zUVIcn; arc=none smtp.client-ip=209.85.222.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="lOMC/RsA";
-	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="t4tj6Sme"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
-	s=r2025; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:Autocrypt:From:
-	References:To:Subject:MIME-Version:Date:Message-ID:From:To:Cc:Reply-To:
-	Subject:Date:Sender:Content-ID;
-	bh=hkjwFcDisrYcdOTp+UveNpm2lNQsq4byzuVPj84Pt1M=; t=1779791534; x=1781001134; 
-	b=lOMC/RsA4e4a4h366U68+ZsaXjqLSDGG8WzzN50JSLwtqP7TgSIACQHLxufTLZnZjVZ93uWQlA2
-	E6ddn4f6/265CdxnNRx78QEQJzUBzJ5rX1e103yfENPhp0m8uPaOIB0+b8f99REJkAhuLcKbDCu+l
-	8vPnUugUeZptxobM85A=;
-DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=slavino.sk; s=e2025; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:
-	Autocrypt:From:References:To:Subject:MIME-Version:Date:Message-ID:From:To:Cc:
-	Reply-To:Subject:Date:Sender:Content-ID;
-	bh=hkjwFcDisrYcdOTp+UveNpm2lNQsq4byzuVPj84Pt1M=; t=1779791534; x=1781001134; 
-	b=t4tj6SmenUnLTxQFpd8+ZC7BsB//0PPMSl9yQWscH89BO1eUePuTYVrNCSgfUoa2be4agQJNL6N
-	J/cIG9aU9Cg==;
-Received: from dovex.skk ([192.168.10.12])
-	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96)
-	(envelope-from <linux@slavino.sk>)
-	id 1wRoxo-0012bT-0T
-	for netfilter@vger.kernel.org;
-	Tue, 26 May 2026 12:24:44 +0200
-Message-ID: <cf36c2f7-80f4-45b8-9091-2ce7f8007be6@slavino.sk>
-Date: Tue, 26 May 2026 12:24:42 +0200
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U1zUVIcn"
+Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-914b03e42b2so630842385a.0
+        for <netfilter@vger.kernel.org>; Tue, 26 May 2026 18:42:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1779846125; x=1780450925; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tfHhtsUGD4nsHiG1/1+cWW06MDN0GRT266FNCCiFv9w=;
+        b=U1zUVIcn5wqKsesqNfWQeCvMalIJASt5utNWytw25hLGHOyvU8ofcQWLzpOCxaeyib
+         /ZhbQWGq6SLwrEatgPKCMpAuFjX1F5YaIzfnIqfPYymk66x4am24UeW31tl3z+AeIXD7
+         M1i63npsp5e4oDIBvNy4CGAyhQp1kz33WUzk4Ij3BascBVEF5doFQvXC6a13LhWUJUJR
+         IibPq+PMULJA7blmuuC/Aq0Wpvw2uaF8RvNEsPoWHfMQ5zRce1RUOq+ptrBJsVyO55ap
+         mV6q/aPgGEI5nqTAAa9ktZAXajH/XA4owJgYvPVIgDOwlp5l+9uQitGH2hDklePho0AD
+         ASMw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1779846125; x=1780450925;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=tfHhtsUGD4nsHiG1/1+cWW06MDN0GRT266FNCCiFv9w=;
+        b=FIlo1hNRqhjjerxt+KYSetj8Bb/JSUskjunKrnNcN7rZVtpW10w4g4rgMjiqwhK6Fw
+         tfkf+QxSISDla6yxh40nljr7jh+bFU/XK8lnUo99uff5CpX8hzhv+yP6c7Z9sUFMvBQR
+         USv31HG9A/9aVRGXnwGTjtY4QZgf/A8DSjU/Ks2/Qc0lk05jmPkEaiWqhWxjbwahjhit
+         +85wqrAIYDBKW+emqdOFdnihE5OUDn+1icwfCHIOuRulaSDzQf8eE+0QK7sylMgHxMXa
+         q0fSzH9IWs8CDtghdMcqlMLdvUd4zzIjcqdVZFGGqwiy0k/4pVj5DOkwuDc7jicR2057
+         /MyQ==
+X-Gm-Message-State: AOJu0YxLYRbrUi1UwyZTn150CwQzaYl4aPaJT6t6wJ8VVHZSB+vEH9mS
+	1i0+lefVs/8XEV38kEq4XKIyaNFfwLT1DEyuPOeDIzA/fxk2GqSrQ/s5DFO9Cw==
+X-Gm-Gg: Acq92OE2tX+LQ22phronkwgde5wr8rlsUEBRReFjqbIfn1F4SHKYSLCNVN7j+iyN4I2
+	+c61uCJtKC+DGz0hSra/BPM+25f1pctAHICb+6M9b8xXpiINo+VlNPeUxMDNQOUBrNocryPX37t
+	Hiwv3QQWKe+XbZiGTcwPf1hMFR2O5UPXdKe6D02qoREPmAfdh5tWjRU67t6CciAuieoeBE5EmDM
+	xOJPnao+VnIJ4Utwi05sneMR45Tfwadda6rpX8wfRdKKca6JQhMtSjNoTQGBM8uxAtsmAXEVNVl
+	gr1TqKXmcEw/eNS1y5up+3UwEaGFowlV7h9N0hmvonIEV5ZchVL6UXXzcwWgausjQsQhrXl8QIl
+	38AAoH9BDoQ/lBVf8BcorUC+TApic6Qd/o2N4LSZHBvUs05bkxIanhFjmDVQZGzjsUBA4Q6WChd
+	wkRXN7MxW9Xmt7vIwV
+X-Received: by 2002:a05:620a:1996:b0:914:cd24:cb0f with SMTP id af79cd13be357-914cd24d09emr2062826685a.40.1779846124760;
+        Tue, 26 May 2026 18:42:04 -0700 (PDT)
+Received: from playground ([204.111.226.76])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-914f870eae0sm354427885a.18.2026.05.26.18.42.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 26 May 2026 18:42:04 -0700 (PDT)
+Date: Tue, 26 May 2026 21:42:01 -0400
+From: <imnozi@gmail.com>
+To: netfilter@vger.kernel.org
+Cc: netfilter-devel@vger.kernel.org
+Subject: Re: ipset not completely working in mangle:PREROUTING
+Message-ID: <20260526214201.0e3d6f3a@playground>
+In-Reply-To: <20260525205736.1c76666f@playground>
+References: <20260525205736.1c76666f@playground>
+X-Mailer: Claws Mail 4.3.1 (GTK 3.24.49; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: ipset not completely working in mangle:PREROUTING
-To: netfilter ML <netfilter@vger.kernel.org>
-References: <20260525205736.1c76666f@playground>
- <a276ecef-e609-4d55-bc71-ddb9c9ff2f3c@app.fastmail.com>
- <20260525235754.4943a2b6@playground>
- <1c466022-e165-fda9-f356-8fdd4d474e15@blackhole.kfki.hu>
-From: Slavko <linux@slavino.sk>
-Content-Language: sk
-Autocrypt: addr=linux@slavino.sk; keydata=
- xsBNBE2fIMwBCADjOr4MY1rKxZnb4hsEdYBDFIHhZO9U3iLN/rNWSFKh3LeERd3Bu5gMz7Hk
- kn0nsoV2ijRKTLlXE0yzUtoJL+8WdNdWONt//cYcl8Z9V80uGFWfL6h0XWlqlup4XLTPZYz9
- 7f/k1UsTltiIWd5hK6JU+PA6bFVO3ogq9Nx6ru6pNzQtx6D7D5ND9/4rN45MIYolEMMC2/1J
- bvM8PFdwB+QmJbj2fKb7jboKFS34VrUQ9xsVJske9/lC0MTWN1HT+dFiXvvue7TmwOgBAd/B
- 24eGPVtcA2D13IRqhItDTS1DtacnzY3Okx/OEMdUIhjqKCBUGHeP22SagvAaKi8UYBBrABEB
- AAHNIVNsYXZrbyAoTGludXgpIDxsaW51eEBzbGF2aW5vLnNrPsLAkgQTAQgAPAIbAwYLCQgH
- AwIGFQgCCQoLBBYCAwECHgECF4AWIQTPRq7fQ85fw47NoTmD+aq4ORiNtgUCY9TvHgIZAQAK
- CRCD+aq4ORiNtoEBB/0d9egzccsfZh7gzMnee8TYgTOMB5rMLB1I+ZUgRwCkjBrOybV4L3sy
- fxp6OC645HYNYzpxIuQXlPVnHNFHuRaIDb1+2jt6HE3tKOkQEBSUnyQBEWrZM4nc9yA/7//O
- DleDDMAmMKV4VYprcBTt0aBVEnf+5wP5ykLoqKT6YN/EPNMtmujXtC9lQJgDENx/UAWdFsMZ
- 5EW89UP3D+Vkd1z4YPSimHAmyXtzrh0zgOyO1NI6WZVoe+ik8leKKH60jBWQT+tFnvAnJyGT
- w42JNotsVBSLhR2Ra7sdBVTmIV99zBjEqHqcQTWXXN6/6eDy0VrUu1tRWusMS/eWju9gxxDT
- zsBNBE2fIkoBCACnyY/07Z8fQqdLXInMDP7t8Azx3EUltqAWS/mWO9D+qQRiHi4j6FaOBXui
- T372S7MWIdu/ydzOFwyv8nQlfiSiT/kHkHhC4F0JcCh4CJZo8HhXql4teF4kqwFsE//A0AW2
- EmK23g/ldetlsviG/j7lWb+5hddh1BzMZhrZQYxVnFjIfXCHdjB+TZzhG89/F97tDyl2+krx
- T6YopUNDqRpMQlcHgQaSnzSdykQOYkTOq+Oy8qgceu4xSe4l02S4q8T+SemI7D2NuJ8iRNB8
- sQkqCYkTo6mBDlIQmkYG0JMQmv1ajWXfyOLq6OtRnKMF6t1y5yxc4peTefyYmHLimyF9ABEB
- AAHCwHwEGAEIACYCGwwWIQTPRq7fQ85fw47NoTmD+aq4ORiNtgUCZ4tgQgUJHb/IeAAKCRCD
- +aq4ORiNtj3ZB/4oNyVEtcIa7kRbhUq0pwHwR8Rz15STenOUOr7+Sw4eJX2TO2PWs0CwP1Sq
- agt1BuiydjVUnk7Exqdx0GSVwsXI20BcC46UQkgutoiBuSynkqh2N2J+exrWdfFHOm5TwWTO
- oSEO4z8J460jeGs8DyTi+IqMatMQ6FanW7U6kEZupMMz0tqsa5b4o9E4bHS8oxPnKI/Cvufu
- 3HGg7zW9GcFLjoeuNSXlbuqW9B+P7vTiTjRh5s3x8mlNUr6fjFtIUvJ/FkX/J5IRk5ylADox
- vURsV90WraN8tJM64uHvOdanFlEC9gD7kVj6ZL+FZ3638pbpDfcNEZkRlffniRzL3lc/
-In-Reply-To: <1c466022-e165-fda9-f356-8fdd4d474e15@blackhole.kfki.hu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Dňa 26. 5. o 9:51 Jozsef Kadlecsik napísal(a):
->>> On Tue, 26 May 2026, at 1:57 AM, imnozi@gmail.com wrote:
->>>> iptables v1.8.7 (legacy)
->>>> ipset v6.34, protocol version: 6
+OUT! OUT, demons of stupidity! Or to use a slightly more modern saw, artificial intelligence is no match for natural stupidity.
+
+It works much better when I also add the VPS IP to the *whitelist*!
+
+Sorry about the noise. Sigh.
+
+Thanks,
+Neal
+
+
+On Mon, 25 May 2026 20:57:36 -0400
+<imnozi@gmail.com> wrote:
+
+> iptables v1.8.7 (legacy)
+> ipset v6.34, protocol version: 6
 > 
-> That's pretty old. Still it has no effect on the subject.
-
-I have even older ipset/iptables (v6.32/v1.4.21) on my router and it 
-works as expected in manlge's PREROUTING chain:
-
-   16M  975M drlst_drop  all  --  *      *       0.0.0.0/0  0.0.0.0/0 
-match-set droplst src
-
-That is only excerpt, it is after accept of ESTABLISHED,RELATED and in 
-chain based on input interface...
-
-regards
-
--- 
-Slavko
-https://www.slavino.sk/
+> I have four sets:
+>   - blockSetHost (hash:ip)
+>   - blockSetNet (hash:net)
+>   - whiteSetHost (hash:ip)
+>   - whiteSetNet (hash:net)
+> 
+> I added rules to match the block sets in filter to INPUT, FORWARD and OUTPUT. The rules match and jump to chain blDrop. In blDrop, if either white set matches, control returns. If no match, the packet is dropped.
+> 
+> This works well in filter. But there's one artifact. The blocked packets are 'accounted' to the internal server where they would have gone.
+> 
+> To fix this, I added the rules below to mangle. Here in mangle, the white sets never match and all of the packets (that matched the block sets) are dropped.
+> 
+> Is this another instance of 'it doesn't work in mangle or in PREROUTING'?
+> 
+> Thanks,
+> Neal
+> 
+> ----
+> The rules used in mangle; eth3 is internet:
+> -A blDrop -m set --match-set whiteSetNet src -j RETURN
+> -A blDrop -m set --match-set whiteSetHost src -j RETURN
+> -A blDrop -j DROP
+> 
+> -A PREROUTING -i eth3 -p udp -m set --match-set blockSetHost src -m state --state NEW -j blDrop
+> -A PREROUTING -i eth3 -p tcp -m set --match-set blockSetHost src -m state --state NEW -j blDrop
+> -A PREROUTING -i eth3 -p udp -m set --match-set blockSetNet src -m state --state NEW -j blDrop
+> -A PREROUTING -i eth3 -p tcp -m set --match-set blockSetNet src -m state --state NEW -j blDrop
 
