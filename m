@@ -1,121 +1,109 @@
-Received: from mail-qk1-f173.google.com (mail-qk1-f173.google.com [209.85.222.173])
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC567315D21
-	for <netfilter@vger.kernel.org>; Wed, 27 May 2026 01:42:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.173
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1779846127; cv=none; b=HSpWOV/enPXL/Ug/XHPCumH4ng7JW4xT+jugEwG7rhq5GW2QvkMpnbXA/dS52LsrW3Tt1RHZB+Ku30deXSM6PELNVK7nzunz+WGEJgOIa8ZSyVSEMQLd6A88FWw+wMPJsOOWVikUQMvTnDEtrPVfyMMetph3hPrgR9xNTrd/E4w=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1779846127; c=relaxed/simple;
-	bh=32dsN97BG1ZtaFA3Ti+ukBCBqCSSr6/wnuQlbV8qZMo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qwaOxl/oW3diQSoLWYkmifa7CflLIVpcCW3QLoa1fh8vZZ6CyUiKrAY6A6fXaB5sEtNHcfi43Kv40hBVlyUzfSAxMAJ546laJz7sErjeRRcuEy94P43iLxhNXo4piF5ZdYY/yalTiAiBlNq49gxIgaaJ6QKMO81V3MGfAABuzLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U1zUVIcn; arc=none smtp.client-ip=209.85.222.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7BA6318EC1
+	for <netfilter@vger.kernel.org>; Mon,  1 Jun 2026 11:33:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.215.170
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1780313602; cv=pass; b=u5ymQwPb3mzzWqe3FZ/Z5wxVxLSeEDobnWcoFWPtAAxqIhkRvPFqwZVtHWAgYZhPE+txcG9julwfHmV0uX89nnJ8Q2xTFWPXsU+QtmU23rRyWnjQPkKL9vGx4GojzKSz+CxYBcmN53XkQvHyFLVCndjRgnmV8qe/1ReUjWO1dpM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1780313602; c=relaxed/simple;
+	bh=uVMhWSI3M7PqFpwkfEATZt8vBsIE3hJ1C0QZF5LG9t0=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=dCmogWgQ3LvQ/pmR82lWTWHwWdc2FbikibjFVedUVYOMya6Uu28ZW4wxKjbgBAeXlucEjCHsqNbdFz5/wY3zaWxr3rrAkYxYCrSt0Nxx82hMvZEdo6n7aCmak2DnyDsHhx6U8a+x1/UuElNIMyzjKqmMGUcE+XGAyLCT87qPR0A=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (1024-bit key) header.d=mojatatu.com header.i=@mojatatu.com header.b=NxZq/K5P; arc=pass smtp.client-ip=209.85.215.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U1zUVIcn"
-Received: by mail-qk1-f173.google.com with SMTP id af79cd13be357-914b03e42b2so630842385a.0
-        for <netfilter@vger.kernel.org>; Tue, 26 May 2026 18:42:05 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=mojatatu.com header.i=@mojatatu.com header.b="NxZq/K5P"
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-c85a2c012e5so384290a12.1
+        for <netfilter@vger.kernel.org>; Mon, 01 Jun 2026 04:33:20 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1780313600; cv=none;
+        d=google.com; s=arc-20240605;
+        b=L77fSz3QdEiZ9VpWNG8xztzOn2bq+r0zm8xi3eGBbGa+pePelOhQwsdMKnDQCvSvIq
+         XVytlu+5a4my9G5Zc/uurJ20RqS0+LjzQ526/eVqAiSCKJYeTgBoSXr1t/ACraG6+v2a
+         vGMdPg1/gA7YHOkVY+oTYylZgnfKapj3o2LCq3pdylanNsNVWrlojLh3qFApFkDpabeq
+         yiFpglV5fWuOEffp216SeWgrx/ALtBVhDdwzS6muQf0/KNZmHlzUzgpbw4V3Lbdi8Y9E
+         kHs3aqiPSaKDq5Z022mjnqC+95rsoOU86bxJbOS/YhG7iJDL/gF55p6ehLIgcWimeVEv
+         9Ngw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:from:mime-version:dkim-signature;
+        bh=uVMhWSI3M7PqFpwkfEATZt8vBsIE3hJ1C0QZF5LG9t0=;
+        fh=M0sBCZQihETN9vwPtjCqdni0wBqPuE8Z3kVSuTcowfw=;
+        b=gQgtiG11T+IdNT69jdGrDF0MyUDDOuoT67bp0plZmtQFE6VN4Ik+AMicwy7g346v+f
+         HUJHMdxvJSNsd+zhK7SRRZcGfeZUF8Rxre2eNYUkGCrHDWx8Ce6vEuYA94p2PxfAPLd1
+         VP4ZhPWf83460FxTlqR/S6i4re5ofkQ1XCIPkZj9hGwGdWWoVHWjc2DetLBf52YdZMVx
+         cL16Fv++fRSxwfJdOvYUcqrNMZ5VzFj+RBAOVywgIDcg2Fa0ndDexxVKdfONGFcLMZ2z
+         cL5x1cuXJq8ZwsII1Tvy47FqeXsQFuSVuQ34iUC9XKAg6kj2CJkzIDBFEymSh4t/1JaE
+         xLzQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1779846125; x=1780450925; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tfHhtsUGD4nsHiG1/1+cWW06MDN0GRT266FNCCiFv9w=;
-        b=U1zUVIcn5wqKsesqNfWQeCvMalIJASt5utNWytw25hLGHOyvU8ofcQWLzpOCxaeyib
-         /ZhbQWGq6SLwrEatgPKCMpAuFjX1F5YaIzfnIqfPYymk66x4am24UeW31tl3z+AeIXD7
-         M1i63npsp5e4oDIBvNy4CGAyhQp1kz33WUzk4Ij3BascBVEF5doFQvXC6a13LhWUJUJR
-         IibPq+PMULJA7blmuuC/Aq0Wpvw2uaF8RvNEsPoWHfMQ5zRce1RUOq+ptrBJsVyO55ap
-         mV6q/aPgGEI5nqTAAa9ktZAXajH/XA4owJgYvPVIgDOwlp5l+9uQitGH2hDklePho0AD
-         ASMw==
+        d=mojatatu.com; s=google; t=1780313600; x=1780918400; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=uVMhWSI3M7PqFpwkfEATZt8vBsIE3hJ1C0QZF5LG9t0=;
+        b=NxZq/K5PUE0h0E5mGzSrCcr06uEotsZJnn5qP20NrM5IJBFexugyZDJon0nmo7VDjK
+         LAsOk5Kav4Jj2LBD7XkQV9KBDwQ0DJjBWBd2u5tdFg443tQC8c/v4YGU0fSgAeinMXtP
+         UILenMZXPIcO414OeOhdT3GDiKYB3rE/cdROQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1779846125; x=1780450925;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=tfHhtsUGD4nsHiG1/1+cWW06MDN0GRT266FNCCiFv9w=;
-        b=FIlo1hNRqhjjerxt+KYSetj8Bb/JSUskjunKrnNcN7rZVtpW10w4g4rgMjiqwhK6Fw
-         tfkf+QxSISDla6yxh40nljr7jh+bFU/XK8lnUo99uff5CpX8hzhv+yP6c7Z9sUFMvBQR
-         USv31HG9A/9aVRGXnwGTjtY4QZgf/A8DSjU/Ks2/Qc0lk05jmPkEaiWqhWxjbwahjhit
-         +85wqrAIYDBKW+emqdOFdnihE5OUDn+1icwfCHIOuRulaSDzQf8eE+0QK7sylMgHxMXa
-         q0fSzH9IWs8CDtghdMcqlMLdvUd4zzIjcqdVZFGGqwiy0k/4pVj5DOkwuDc7jicR2057
-         /MyQ==
-X-Gm-Message-State: AOJu0YxLYRbrUi1UwyZTn150CwQzaYl4aPaJT6t6wJ8VVHZSB+vEH9mS
-	1i0+lefVs/8XEV38kEq4XKIyaNFfwLT1DEyuPOeDIzA/fxk2GqSrQ/s5DFO9Cw==
-X-Gm-Gg: Acq92OE2tX+LQ22phronkwgde5wr8rlsUEBRReFjqbIfn1F4SHKYSLCNVN7j+iyN4I2
-	+c61uCJtKC+DGz0hSra/BPM+25f1pctAHICb+6M9b8xXpiINo+VlNPeUxMDNQOUBrNocryPX37t
-	Hiwv3QQWKe+XbZiGTcwPf1hMFR2O5UPXdKe6D02qoREPmAfdh5tWjRU67t6CciAuieoeBE5EmDM
-	xOJPnao+VnIJ4Utwi05sneMR45Tfwadda6rpX8wfRdKKca6JQhMtSjNoTQGBM8uxAtsmAXEVNVl
-	gr1TqKXmcEw/eNS1y5up+3UwEaGFowlV7h9N0hmvonIEV5ZchVL6UXXzcwWgausjQsQhrXl8QIl
-	38AAoH9BDoQ/lBVf8BcorUC+TApic6Qd/o2N4LSZHBvUs05bkxIanhFjmDVQZGzjsUBA4Q6WChd
-	wkRXN7MxW9Xmt7vIwV
-X-Received: by 2002:a05:620a:1996:b0:914:cd24:cb0f with SMTP id af79cd13be357-914cd24d09emr2062826685a.40.1779846124760;
-        Tue, 26 May 2026 18:42:04 -0700 (PDT)
-Received: from playground ([204.111.226.76])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-914f870eae0sm354427885a.18.2026.05.26.18.42.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 26 May 2026 18:42:04 -0700 (PDT)
-Date: Tue, 26 May 2026 21:42:01 -0400
-From: <imnozi@gmail.com>
-To: netfilter@vger.kernel.org
-Cc: netfilter-devel@vger.kernel.org
-Subject: Re: ipset not completely working in mangle:PREROUTING
-Message-ID: <20260526214201.0e3d6f3a@playground>
-In-Reply-To: <20260525205736.1c76666f@playground>
-References: <20260525205736.1c76666f@playground>
-X-Mailer: Claws Mail 4.3.1 (GTK 3.24.49; x86_64-pc-linux-gnu)
+        d=1e100.net; s=20251104; t=1780313600; x=1780918400;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=uVMhWSI3M7PqFpwkfEATZt8vBsIE3hJ1C0QZF5LG9t0=;
+        b=GvApFd5Mx+nJT1jjDqDXS8WQe2zlgyg9Sofq2OdPtQ4VFjaH/I+K8LTvHbj9HUDsZD
+         Bz7ic2S5OKnOcmXAfO5MLDjx9DGTh9xlqWMXBEGcWrV+mCAAu8rVqDUmOvNmFytlz3bG
+         3aFJjXN2FTwIpHtpNxyZjw7ir95tbmbyvE8exNw9igMLH2BfvWfUfAIHrELFol54J1rI
+         2hbJqTZRdMQOBkNmHQoDVXMpg4LYDiRL7l2ZxyhfHpbQ2EG+j6uxpsZ3aKow5vrUPlqJ
+         XG36UntjBWbxdFIvfuLUIT9zotckVML72djf1XFq0a4BwXylpGv6p/AMXlyRqSy9MQcp
+         kI0g==
+X-Forwarded-Encrypted: i=1; AFNElJ/kdBshBAJm5eaO+qQIoJrvn9wp77MQZB0guxcHAbB0DklVBwKc2K/wIkz6ZQ7ZNW1NIkZ3f9Xadqo=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxTQRCtwEBavrovVk2OHQAELmVSimAbTkdl4vHD5C7oMtudd4Il
+	/+ORAzvsvYdZ2LIyy3g10++0uZhhTkgsW9/aU4GVIwuE4vTiBf0KE/Lb0dSMSzU77FE8Saw21wB
+	cuXmFEpYAwrpOg6PE/Q1f2wPyngWYLAdzNx0O9G2o
+X-Gm-Gg: Acq92OGy+M5fUKzscpwqAt/LN5oyZ05R+Oc5cKMPrydJpgg8J098fZKKMRxa0IgIsIX
+	RIjuwQHb5HIQpSCX/CWkFMxLRFjsmSfCeE4svjVtPUb3fiMBhSJw2QWAts6Ixf724r33HKbyqHI
+	1KujOclSy7eQaj2oVI+ql9WwQEg2G38RHq9kTWRp2D3CQjserJU6lc4IuZfsQbOwToP2An4Ek/k
+	9mVl0VwnsWGCvWrfjJoE9s/RPNouGZYvl56orW2siHYME4tIgP7zSGnJSf3quoynD0tL7y21/n6
+	/WWrAWUmPWzYIQ0MynzaUgDf3A==
+X-Received: by 2002:a05:6a21:7a96:b0:398:b433:87ed with SMTP id
+ adf61e73a8af0-3b427f5dee5mr11677802637.44.1780313600132; Mon, 01 Jun 2026
+ 04:33:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Date: Mon, 1 Jun 2026 07:33:09 -0400
+X-Gm-Features: AVHnY4I4Oq7kfzkvATZfqv_I4dIxsQYBxFxWE5rf6WImcq-_O15EbAx7JO-P5HE
+Message-ID: <CAM0EoMkbu0Y-qhtdQ03Zn93JKOUHd6yZy-DJ2mtYDC6aehsR6g@mail.gmail.com>
+Subject: Call for participation: New Age Tooling BoF
+To: Linux Kernel Network Developers <netdev@vger.kernel.org>
+Cc: netfilter-devel@vger.kernel.org, 
+	linux-wireless <linux-wireless@vger.kernel.org>, netfilter@vger.kernel.org, 
+	lartc@vger.kernel.org, ovs-dev@openvswitch.org, bpf <bpf@vger.kernel.org>, 
+	people <people@netdevconf.info>, PJ Waskiewicz <pjwaskiewicz@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 
-OUT! OUT, demons of stupidity! Or to use a slightly more modern saw, artificial intelligence is no match for natural stupidity.
+Apologies for the shotgun - I wasnt sure how to best reach out given
+the short notice.
 
-It works much better when I also add the VPS IP to the *whitelist*!
+The recent AI tool bug onslaught (on the victim side for me) has
+highlighted the changing landscape on development tooling.
+As an initial skeptic I have to say the quality and accuracy of the AI
+analysis makes me feel like i have been in some deep slumber. I am
+still very clueless.
+And for these selfish reasons, I am helping organize a BoF at
+netdevconf 0x1A (week of July 13 in Rome.it) to discuss this new age
+of tooling.
+This BoF is a catch all for folks engaging AI in security (you will be
+in a friendly environment!), building tools, doing code reviews,
+generating patches and general automation. The intended focus is
+networking, but adjacent areas are also welcome.
 
-Sorry about the noise. Sigh.
+Come and discuss your tricks of the trade. The contribution can be in
+the form of a talk, tutorial or demo.
 
-Thanks,
-Neal
-
-
-On Mon, 25 May 2026 20:57:36 -0400
-<imnozi@gmail.com> wrote:
-
-> iptables v1.8.7 (legacy)
-> ipset v6.34, protocol version: 6
-> 
-> I have four sets:
->   - blockSetHost (hash:ip)
->   - blockSetNet (hash:net)
->   - whiteSetHost (hash:ip)
->   - whiteSetNet (hash:net)
-> 
-> I added rules to match the block sets in filter to INPUT, FORWARD and OUTPUT. The rules match and jump to chain blDrop. In blDrop, if either white set matches, control returns. If no match, the packet is dropped.
-> 
-> This works well in filter. But there's one artifact. The blocked packets are 'accounted' to the internal server where they would have gone.
-> 
-> To fix this, I added the rules below to mangle. Here in mangle, the white sets never match and all of the packets (that matched the block sets) are dropped.
-> 
-> Is this another instance of 'it doesn't work in mangle or in PREROUTING'?
-> 
-> Thanks,
-> Neal
-> 
-> ----
-> The rules used in mangle; eth3 is internet:
-> -A blDrop -m set --match-set whiteSetNet src -j RETURN
-> -A blDrop -m set --match-set whiteSetHost src -j RETURN
-> -A blDrop -j DROP
-> 
-> -A PREROUTING -i eth3 -p udp -m set --match-set blockSetHost src -m state --state NEW -j blDrop
-> -A PREROUTING -i eth3 -p tcp -m set --match-set blockSetHost src -m state --state NEW -j blDrop
-> -A PREROUTING -i eth3 -p udp -m set --match-set blockSetNet src -m state --state NEW -j blDrop
-> -A PREROUTING -i eth3 -p tcp -m set --match-set blockSetNet src -m state --state NEW -j blDrop
-
+cheers,
+jamal
