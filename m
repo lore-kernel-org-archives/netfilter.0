@@ -1,109 +1,86 @@
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from forward103d.mail.yandex.net (forward103d.mail.yandex.net [178.154.239.214])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7BA6318EC1
-	for <netfilter@vger.kernel.org>; Mon,  1 Jun 2026 11:33:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.215.170
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780313602; cv=pass; b=u5ymQwPb3mzzWqe3FZ/Z5wxVxLSeEDobnWcoFWPtAAxqIhkRvPFqwZVtHWAgYZhPE+txcG9julwfHmV0uX89nnJ8Q2xTFWPXsU+QtmU23rRyWnjQPkKL9vGx4GojzKSz+CxYBcmN53XkQvHyFLVCndjRgnmV8qe/1ReUjWO1dpM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780313602; c=relaxed/simple;
-	bh=uVMhWSI3M7PqFpwkfEATZt8vBsIE3hJ1C0QZF5LG9t0=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=dCmogWgQ3LvQ/pmR82lWTWHwWdc2FbikibjFVedUVYOMya6Uu28ZW4wxKjbgBAeXlucEjCHsqNbdFz5/wY3zaWxr3rrAkYxYCrSt0Nxx82hMvZEdo6n7aCmak2DnyDsHhx6U8a+x1/UuElNIMyzjKqmMGUcE+XGAyLCT87qPR0A=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com; spf=none smtp.mailfrom=mojatatu.com; dkim=pass (1024-bit key) header.d=mojatatu.com header.i=@mojatatu.com header.b=NxZq/K5P; arc=pass smtp.client-ip=209.85.215.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mojatatu.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=mojatatu.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0804F377031
+	for <netfilter@vger.kernel.org>; Mon,  1 Jun 2026 12:19:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.214
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1780316367; cv=none; b=PeqQHl07IbLScRAe7n3/ZwkJa1seY5TbzWn0+iwN5If0h50/JRYQLQtavVHNV10jPqE+hUmUY1NN/Y90JTXqxswJNhGsXcsUzlpLhB8X/Szqwu1WrbwYs/DnZEM9DpDsZL0Tf0NMVfhl+yaN4lZxI8aefYeOm4TSw0ajBBzERzY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1780316367; c=relaxed/simple;
+	bh=AXZmhqrpZ4wmNNA/hjAhd4FywLm++GMdxKpKBP4Qb7A=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=tb8X2vYRsrKnPemt3iFgvBkqSl2wEEolemyT2JogV9PV2A7PXKFNlFQPhg7qBZIrsjAwR2j6Obo5AlWuSN+Ad5Of/KKg4lduDwK2JKew2yJR2u5VBgINqU9ySO3Pu4ShLGfPkXEG34ZaTSkETMeU2HQb5wxlw1644l8CuRY5oW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.pl; spf=pass smtp.mailfrom=yandex.pl; dkim=pass (1024-bit key) header.d=yandex.pl header.i=@yandex.pl header.b=lJCoXb8e; arc=none smtp.client-ip=178.154.239.214
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.pl
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mojatatu.com header.i=@mojatatu.com header.b="NxZq/K5P"
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-c85a2c012e5so384290a12.1
-        for <netfilter@vger.kernel.org>; Mon, 01 Jun 2026 04:33:20 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1780313600; cv=none;
-        d=google.com; s=arc-20240605;
-        b=L77fSz3QdEiZ9VpWNG8xztzOn2bq+r0zm8xi3eGBbGa+pePelOhQwsdMKnDQCvSvIq
-         XVytlu+5a4my9G5Zc/uurJ20RqS0+LjzQ526/eVqAiSCKJYeTgBoSXr1t/ACraG6+v2a
-         vGMdPg1/gA7YHOkVY+oTYylZgnfKapj3o2LCq3pdylanNsNVWrlojLh3qFApFkDpabeq
-         yiFpglV5fWuOEffp216SeWgrx/ALtBVhDdwzS6muQf0/KNZmHlzUzgpbw4V3Lbdi8Y9E
-         kHs3aqiPSaKDq5Z022mjnqC+95rsoOU86bxJbOS/YhG7iJDL/gF55p6ehLIgcWimeVEv
-         9Ngw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:from:mime-version:dkim-signature;
-        bh=uVMhWSI3M7PqFpwkfEATZt8vBsIE3hJ1C0QZF5LG9t0=;
-        fh=M0sBCZQihETN9vwPtjCqdni0wBqPuE8Z3kVSuTcowfw=;
-        b=gQgtiG11T+IdNT69jdGrDF0MyUDDOuoT67bp0plZmtQFE6VN4Ik+AMicwy7g346v+f
-         HUJHMdxvJSNsd+zhK7SRRZcGfeZUF8Rxre2eNYUkGCrHDWx8Ce6vEuYA94p2PxfAPLd1
-         VP4ZhPWf83460FxTlqR/S6i4re5ofkQ1XCIPkZj9hGwGdWWoVHWjc2DetLBf52YdZMVx
-         cL16Fv++fRSxwfJdOvYUcqrNMZ5VzFj+RBAOVywgIDcg2Fa0ndDexxVKdfONGFcLMZ2z
-         cL5x1cuXJq8ZwsII1Tvy47FqeXsQFuSVuQ34iUC9XKAg6kj2CJkzIDBFEymSh4t/1JaE
-         xLzQ==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mojatatu.com; s=google; t=1780313600; x=1780918400; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=uVMhWSI3M7PqFpwkfEATZt8vBsIE3hJ1C0QZF5LG9t0=;
-        b=NxZq/K5PUE0h0E5mGzSrCcr06uEotsZJnn5qP20NrM5IJBFexugyZDJon0nmo7VDjK
-         LAsOk5Kav4Jj2LBD7XkQV9KBDwQ0DJjBWBd2u5tdFg443tQC8c/v4YGU0fSgAeinMXtP
-         UILenMZXPIcO414OeOhdT3GDiKYB3rE/cdROQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1780313600; x=1780918400;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uVMhWSI3M7PqFpwkfEATZt8vBsIE3hJ1C0QZF5LG9t0=;
-        b=GvApFd5Mx+nJT1jjDqDXS8WQe2zlgyg9Sofq2OdPtQ4VFjaH/I+K8LTvHbj9HUDsZD
-         Bz7ic2S5OKnOcmXAfO5MLDjx9DGTh9xlqWMXBEGcWrV+mCAAu8rVqDUmOvNmFytlz3bG
-         3aFJjXN2FTwIpHtpNxyZjw7ir95tbmbyvE8exNw9igMLH2BfvWfUfAIHrELFol54J1rI
-         2hbJqTZRdMQOBkNmHQoDVXMpg4LYDiRL7l2ZxyhfHpbQ2EG+j6uxpsZ3aKow5vrUPlqJ
-         XG36UntjBWbxdFIvfuLUIT9zotckVML72djf1XFq0a4BwXylpGv6p/AMXlyRqSy9MQcp
-         kI0g==
-X-Forwarded-Encrypted: i=1; AFNElJ/kdBshBAJm5eaO+qQIoJrvn9wp77MQZB0guxcHAbB0DklVBwKc2K/wIkz6ZQ7ZNW1NIkZ3f9Xadqo=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxTQRCtwEBavrovVk2OHQAELmVSimAbTkdl4vHD5C7oMtudd4Il
-	/+ORAzvsvYdZ2LIyy3g10++0uZhhTkgsW9/aU4GVIwuE4vTiBf0KE/Lb0dSMSzU77FE8Saw21wB
-	cuXmFEpYAwrpOg6PE/Q1f2wPyngWYLAdzNx0O9G2o
-X-Gm-Gg: Acq92OGy+M5fUKzscpwqAt/LN5oyZ05R+Oc5cKMPrydJpgg8J098fZKKMRxa0IgIsIX
-	RIjuwQHb5HIQpSCX/CWkFMxLRFjsmSfCeE4svjVtPUb3fiMBhSJw2QWAts6Ixf724r33HKbyqHI
-	1KujOclSy7eQaj2oVI+ql9WwQEg2G38RHq9kTWRp2D3CQjserJU6lc4IuZfsQbOwToP2An4Ek/k
-	9mVl0VwnsWGCvWrfjJoE9s/RPNouGZYvl56orW2siHYME4tIgP7zSGnJSf3quoynD0tL7y21/n6
-	/WWrAWUmPWzYIQ0MynzaUgDf3A==
-X-Received: by 2002:a05:6a21:7a96:b0:398:b433:87ed with SMTP id
- adf61e73a8af0-3b427f5dee5mr11677802637.44.1780313600132; Mon, 01 Jun 2026
- 04:33:20 -0700 (PDT)
+	dkim=pass (1024-bit key) header.d=yandex.pl header.i=@yandex.pl header.b="lJCoXb8e"
+Received: from mail-nwsmtp-smtp-production-main-94.klg.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-94.klg.yp-c.yandex.net [IPv6:2a02:6b8:c42:6c24:0:640:92d0:0])
+	by forward103d.mail.yandex.net (Yandex) with ESMTPS id 8BF19C00AD
+	for <netfilter@vger.kernel.org>; Mon, 01 Jun 2026 15:19:15 +0300 (MSK)
+Received: by mail-nwsmtp-smtp-production-main-94.klg.yp-c.yandex.net (smtp) with ESMTPSA id CJdeUTle1eA0-ksbSw1kN;
+	Mon, 01 Jun 2026 15:19:15 +0300
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.pl; s=mail;
+	t=1780316355; bh=9k+rlhKGTu9bhS1FocSYjPL6yXJCMwD47Mr6N7nxa70=;
+	h=Subject:From:To:Date:Message-ID;
+	b=lJCoXb8eUGRd710/0segkZeyQ2ybmXmuUoQoINB+OyTCc2yxpcLAXpUX2Ln9octtw
+	 ZA6PRUHGXLp8I6RzK4x38aF6RwqU6JBvmqWXKbwATS/2Qf1UyB1oa/OqawyagINfWP
+	 GkFE7Y50CLnu7NZKsxRM2NYwt3yvri+JddUAIQt4=
+Authentication-Results: mail-nwsmtp-smtp-production-main-94.klg.yp-c.yandex.net; dkim=pass header.i=@yandex.pl
+Message-ID: <287a4898-f45f-417a-8b00-a44801139ae2@yandex.pl>
+Date: Mon, 1 Jun 2026 14:19:12 +0200
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Jamal Hadi Salim <jhs@mojatatu.com>
-Date: Mon, 1 Jun 2026 07:33:09 -0400
-X-Gm-Features: AVHnY4I4Oq7kfzkvATZfqv_I4dIxsQYBxFxWE5rf6WImcq-_O15EbAx7JO-P5HE
-Message-ID: <CAM0EoMkbu0Y-qhtdQ03Zn93JKOUHd6yZy-DJ2mtYDC6aehsR6g@mail.gmail.com>
-Subject: Call for participation: New Age Tooling BoF
-To: Linux Kernel Network Developers <netdev@vger.kernel.org>
-Cc: netfilter-devel@vger.kernel.org, 
-	linux-wireless <linux-wireless@vger.kernel.org>, netfilter@vger.kernel.org, 
-	lartc@vger.kernel.org, ovs-dev@openvswitch.org, bpf <bpf@vger.kernel.org>, 
-	people <people@netdevconf.info>, PJ Waskiewicz <pjwaskiewicz@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US-large
+To: netfilter@vger.kernel.org
+From: Michal Soltys <msoltyspl@yandex.pl>
+Subject: [BUG?] success of adding interval elements to map/set depends on
+ order
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Apologies for the shotgun - I wasnt sure how to best reach out given
-the short notice.
+Hi,
 
-The recent AI tool bug onslaught (on the victim side for me) has
-highlighted the changing landscape on development tooling.
-As an initial skeptic I have to say the quality and accuracy of the AI
-analysis makes me feel like i have been in some deep slumber. I am
-still very clueless.
-And for these selfish reasons, I am helping organize a BoF at
-netdevconf 0x1A (week of July 13 in Rome.it) to discuss this new age
-of tooling.
-This BoF is a catch all for folks engaging AI in security (you will be
-in a friendly environment!), building tools, doing code reviews,
-generating patches and general automation. The intended focus is
-networking, but adjacent areas are also welcome.
+Consider the following ruleset file:
 
-Come and discuss your tricks of the trade. The contribution can be in
-the form of a talk, tutorial or demo.
+#!/usr/bin/nft -f
+flush ruleset
 
-cheers,
-jamal
+table ip Main {
+   map snatmap {
+     typeof oifname . ip saddr : ip saddr
+     flags interval
+     elements = {
+       "egress0" . 10.192.0.88/29 comment "generic": 1.2.3.4,
+       "egress0" . 10.192.0.93 comment "sip": 5.6.7.8,
+     }
+     comment "SNAT map"
+   }
+}
+
+trying to load such ruleset fails with elements in this order will fail 
+with:
+
+/etc/nftables-test.conf:10:25-61: Error: Could not process rule: File exists
+                         "egress0" . 10.192.0.93 comment "sip": 5.6.7.8,
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+But if we swap the order of those two elements so the more narrow one is 
+present earlier, the rules will load successfully. Same applies for 
+manual adding via "nft add element". And same happens if it was a 
+regular set instead of a map.
+
+This should probably either fail in both cases, or succeed in both cases ?
+
+Then there is also a question how that would/should behave in case of a 
+map, e.g. would
+
+snat ip to oifname . ip saddr map @snatmap comment "snat map"
+
+use 1.2.3.4 or 5.6.7.8 for 10.192.0.93 ?
