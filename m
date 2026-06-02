@@ -1,72 +1,72 @@
 Received: from fout-b5-smtp.messagingengine.com (fout-b5-smtp.messagingengine.com [202.12.124.148])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57C53361DD2
-	for <netfilter@vger.kernel.org>; Tue,  2 Jun 2026 16:25:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92DD3368D52
+	for <netfilter@vger.kernel.org>; Tue,  2 Jun 2026 16:48:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.148
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780417561; cv=none; b=edDqR0OkqSguHYQTCFQaHTS7wQl9qKhHRtPsc9TkNeGg+MerCnGwLFR+aLu+1nYEnbU0vL4+a8AyNlVgyFbnPz80ZG6daAewljnaAk442ggzWs2T6Sf2KWeUhm6BuQtvBVEpK/TXaJQB3nkOzgWnBMhZlDP8bJZu589wgUVnrQM=
+	t=1780418914; cv=none; b=kmt7ohK1nC9M+/LDWsqnpqNFbIFuaTiR8TIsdsU+ueqVVk4n1r4Djp7xpahM8nd2C78c/F0cA5TOR2/vbD0M8j/HDzSOEO25Vj/moy6o3WqnSy69C/EO3yvhDqmmNjPmkWW6X9WkEmmR1Er9ToABKKlYQeqBLYoJ6A1cdSyS5Uc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780417561; c=relaxed/simple;
-	bh=jetuxH/Hf5283VvknyJAt74xjynkq2oyVgBR1Taiwno=;
+	s=arc-20240116; t=1780418914; c=relaxed/simple;
+	bh=n9OZ6ul3gfSvclWjhAs8X7wceFRdK2lhMSmywaCWBCo=;
 	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=p3GLXY3gBmipN/CBLBTTeC/kRdPwxRob/qzrVRj3FNMw4kWFPvHgGojprgkm0hScj4LvwLGjoRz7tPFWvX6P03TefmcT9QoHrBXdg7ZHN9GykB/vxFYBuJcojcTGe7M8ppLeMZNHogBGhprvhCwFumyxKT4y7633BJ/EAbz8cGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=KAFxnPi5; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=SZaR6xCq; arc=none smtp.client-ip=202.12.124.148
+	 Subject:Content-Type; b=SJcTrUvZk4UPrzwpsozAz17lpQLWysmH6eJXk02A6H9Bh9JmsvnZ5o4t5vDx3mqmq7cA49WlrHhZKtMPJVDLa6B7y1sB/CS9/fcxP27z8giNkHYZAWDYYMB+kPcY0/Qe+GfF5rSTEtEplHAmCBsoB9KkRbknhz92nzy2vE3FI9Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=M6UsBySf; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=UMWOjE2D; arc=none smtp.client-ip=202.12.124.148
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="KAFxnPi5";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="SZaR6xCq"
+	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="M6UsBySf";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="UMWOjE2D"
 Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
-	by mailfout.stl.internal (Postfix) with ESMTP id 4CD0E1D0004D;
-	Tue,  2 Jun 2026 12:25:58 -0400 (EDT)
+	by mailfout.stl.internal (Postfix) with ESMTP id E8D371D001C3;
+	Tue,  2 Jun 2026 12:48:31 -0400 (EDT)
 Received: from phl-imap-10 ([10.202.2.85])
-  by phl-compute-01.internal (MEProxy); Tue, 02 Jun 2026 12:25:58 -0400
+  by phl-compute-01.internal (MEProxy); Tue, 02 Jun 2026 12:48:32 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
 	 h=cc:content-transfer-encoding:content-type:content-type:date
 	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1780417558;
-	 x=1780503958; bh=8y7dRwXPhM8qQ+DkhMQ3yHon3uVAEVQy5LOMpNYAw8Q=; b=
-	KAFxnPi5TzhAmreTeHYX/Z0jddyUilAzr9swz4Nz3hnhjVCmZMYRKe990F5r5ff7
-	cU137611vwCzq+pe2Nbql/ZPS1iOExo/XCSfZRp0pPtOVlZR79j+L5ll5mSM3csf
-	VH+mwrzuWrm0ChECgBIoPLKTn/E63sPC/EmgkNxK1j6EjoneibkzK+ni9Vd5tEEa
-	sf/jrOVIeFhWu6eG9spqhynD6kyG5QDym4efUgVaupa4WK7KX1uUNTlhsVEJLvg6
-	0VUcuNalSwXr1Qz1Yx9skkYAGM5YmF8E/EezqbiDlRX5UZN1crAVPtNR3iLV9ocn
-	iGRqItB81JqwdOGPl8wuIQ==
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1780418911;
+	 x=1780505311; bh=GJ83mJztPNs8OTaZSwUjEsZV+PKuRdPGMNt7vb3e2fA=; b=
+	M6UsBySfWnIu0jiorwmH5h4ucIjrHxK/rBEHBInCmfuHxp0wDgx2pQQPRY8Y4kC7
+	45MvcIjUBTiqtlymE2UYbmnzxT7xZNVaaXGNC0b6K7yeKa982shQAVSe1L2bihB/
+	mZowqHXM89rN+HE2ffzTbC9yjhrkH4VaMuqDvVfRfmS8JGFqxwatzmWb1BB3ahtI
+	+nuvLzcWKQZXtLTrxH+OV6tp2p8hf1Up/1hI2msO4z4WZ18EkZVhojPKarMmaPoB
+	YnRRhG3AJm2Pavx3lxOasvzDB2CW037xDJsYW0geMGrBip1H2kC8KQlos1gbHBWS
+	RrrINiJ5xE2EoXa73KZlcw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:content-transfer-encoding:content-type
 	:content-type:date:date:feedback-id:feedback-id:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
 	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm1; t=1780417558; x=1780503958; bh=8
-	y7dRwXPhM8qQ+DkhMQ3yHon3uVAEVQy5LOMpNYAw8Q=; b=SZaR6xCqP9gxXVpxE
-	OUtht/3oodyYJ2xZK/x4Txv3Zz0075Xzc8my5oJvQWXZSnPnZSTBv0Tkfnzlkz84
-	8d5iOS9MefY5ML73w7bgZI34iFDxMhQ47jv4c40e7o7vpVfFoIzBW1lXKFRKKVcS
-	pipjaiSFphoXTTn204Rl3vIBUE109CCs8tuaIN3Vibfu86Z+n3YHUeeS9j1sgO9N
-	5zUOBnt/dqbRV0pDylmpFtGz9IvU46GO5zXlDMDBDa02ajc+bxPq7ZjfRYHE/Y5s
-	Cd4Bp4DbMwwbmsFy7QOdC78ww1KoRWK6NSd3VdfMCmZzyXsJDbT1o5q7xB51ANc/
-	owGmA==
-X-ME-Sender: <xms:FQQfalHxGRE9g890gddKKhGgvo_qLDyN3Fs__VAQbHVAHVjvQvmGLA>
-    <xme:FQQfalJZFSff3M6B9Yr9XiyKF-sW7Ht9EFfk0h6vZi_yVP4yvmpCBvW75t7rVCFII
-    F1DLsr226o3PSjUuMhl14VcFQ3f4V0Brq3GLbUfF8cwMNjlzXWw>
-X-ME-Proxy-Cause: dmFkZTE2wKIFviduYosQOXUc7wzhPpYItZugnMpkllp8HO+HCu7A4HOQC9DrJwZ/Yw320R
-    1z3LVfVsHUfOM5NcDKwLR1kbIJoDGJv7WIGZ7TYlvUMkT8TRXELytMfeoI6+OgELqGh9cF
-    dv0+nIRxwegneH3f5K478SoH+bYKSxJGZLKWT+7at/m9WjKnSPx/TiWEZbFXGTyYWZYxj1
-    VfYuWxX4Klld1y2Od7X/T8GqiUmJHfC5+IjRhipOSz+STTGxQcCTYEegrC2KNNLfeoPrUq
-    IBMJ6XcArUu39RFQrfvSAqrbCB06r/PA/CVbE88HWcBYrs9ttj+fyz7H5cGOiJgpWCRGmp
-    HTv3h58ZjBiztJm0lsrkCCIu4tTzErnNBwohLhULkSdPSLTi2eNp3v4D2dqmk2l3oFheZ7
-    KucU22v/60lkG5nSyPZYzcA4Ho03sdXo4ADSUmMhQrO9UDbZbPliO3/7ApaQYkh78Qf73O
-    YUt/5uMt23z/7LAfsmwuS27+6t+0+a0kCga6EWV+r2Sje1C9PsuRVM7ZaFt6ZvclznP1kM
-    IuiYeZ02h7w74ofRMA2MKFeM94RhyCO0ykMQE2L/CtDcYsGL9fhdmuXnvbjN5KBADTqQih
-    hANoQpBEj82+Sd+sUnclAlYVUpnOXRCHH1soZcc/2NEdBqgMZvBkm3SduYjw
-X-ME-Proxy: <xmx:FQQfas6CSsvQ93S3LejauOVFbf9qzE-Fi2RU7h4yAKBiOYeNz-bdOA>
-    <xmx:FQQfaiOxvlf-Utux_IeYRdk50lYAdiuCptHRFDxGFr9JijPWDbI2ig>
-    <xmx:FQQfaqmQLzGByI0pI7X7U3qtYs7GKT800OKid74IlCVu3lE7kebEaA>
-    <xmx:FQQfapRl1kg_xEXL5FwtVbwd68wTA-AwMCb7fU2GhL309lwD08IBog>
-    <xmx:FgQfavm_jmFcy8wjf93GnLo-kNOUEX78Imh9yqWHhWIcWRoNwzbs2WWi>
+	:x-me-sender:x-sasl-enc; s=fm1; t=1780418911; x=1780505311; bh=G
+	J83mJztPNs8OTaZSwUjEsZV+PKuRdPGMNt7vb3e2fA=; b=UMWOjE2D3XdXU6Lsg
+	VtmzGr2i3WQZWS9gmezIlXXTgY3ng/5A/3Is7gRscjvftYDhUow7td33/sX1HREk
+	n/TXosOTeW+v2oWD8kS3ms/0tRp9MD1BfgkOj4w6Xdg17l80/yrj4/MX6Y2kmyBo
+	Tvd69df1JwPjLR5RG8dgueC+d4QEBpZ7q+e5t6T/GP86kR1acxh/AoK2fBRI/IDy
+	udheOg+4trqHEVbR9wag5WBorHso/FCcmC/RWotRPvPYEUkPU7kq2kF7ilqXvpr4
+	Z2FEg1xRtdmtDw7acTbU50ma6at3/1O4diLIG/czfAycXTghKT3fT4DUIfi1nmBQ
+	9v2dA==
+X-ME-Sender: <xms:XwkfahU3dGh66OaER7odheeRHhYoy2IpHVSlGtV116rlr23T0xFbTg>
+    <xme:XwkfasYl47sS09U68vDg4p6NZMCCVpa34zDsSTRPLHrFtUyoTTtVNIQLIsRBJ_y-8
+    6dEoQTQyAHH1ZCm2-pC_jrqKKlLAd3o94790zpTEcV9vLohbLWf>
+X-ME-Proxy-Cause: dmFkZTFPeoT7Xv68+ttgUn4YJfqrTc21jaN3+2k1+yLYilNQUdMsKpsm/DwEk8CZ8WX0tc
+    wvizsWRMHPpiS3Vq2RUjNOVc1DNwLbbIp2Ah2Gwr/4LlOHhteZrEsNgvjAf//AYQEGlY+C
+    4rve0wicc31+jufyM2qxNp2SlxfQlW3gnqwCnh82caEYw+st0uSEt6LiNJLEQUi8p6p4SF
+    zLBf7tYJ+SwBEBZ+FbY48aonFZGCU0LJUlYuBa6QWBGncD1GH0TKo450ZXsLP3XNHPVtGP
+    H/7t9LkE0SxgAEb+mUt49aiAeuSsRelh6r362w5HMYqzI1JO/PGaBYwNOXktF20fkKF7ke
+    VtIIIE4ja32Iod1BrtUyUtoLMtUikaVh8gqs7UK8zqc+uqASE2xisaqhnGSc+LenVIjPGq
+    aZc6m1UmkxLIqT0b97RotWLUS56/2XMzt8auoiiLyriS+RY4igwlil92hsBk8JhFkLuLaI
+    5EDLBVZIOBVqRHkcgOQ19JmZ/SSDYe9wPNXFzIqht9Ep/ZYbBK7S01eHYACNmXcV1plTg+
+    v+blfQAyg7XARNf62OVqqzWuYYW65Vwr15OpUJJfD3DU9T37exzTyo7F9O6FToQgRY0D+J
+    pSb6B6g1GvCmoWjY27yaNfBFXd1NWa4VWcAumCN1uiS74FQOs9pGlIVn3rNg
+X-ME-Proxy: <xmx:XwkfaoCNvj5cIQJZHsCfeTrl_01cTJT39hxMwZEoTWY6Lbqh34xZjw>
+    <xmx:XwkfaoeIHYSi5W2Li2Uq9bTLzeiRiwMC1pTCzex58YUgbzGKgRGVNg>
+    <xmx:XwkfajLpdqFtT0aqIZNEZkpnia4mUp3CIqELtm0lgtnll7DdxeP_ZA>
+    <xmx:Xwkfarch1Ijtehme6HDc7j9QLralxrj6Xe9TNYg_DQBczJ2ofka0aQ>
+    <xmx:XwkfaqVtA-92nv6zzS2H6A0hu5XII7EbHwrcEXd8jhWiNWMOnJ3Nx1ux>
 Feedback-ID: i2431475f:Fastmail
 Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 98A63216008B; Tue,  2 Jun 2026 12:25:57 -0400 (EDT)
+	id 1E116216008A; Tue,  2 Jun 2026 12:48:31 -0400 (EDT)
 X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
@@ -74,65 +74,66 @@ List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: A8Q2qJYAM7bV
-Date: Tue, 02 Jun 2026 17:24:24 +0100
+X-ThreadId: AkwmOWhkQqyJ
+Date: Tue, 02 Jun 2026 17:47:48 +0100
 From: "Kerin Millar" <kfm@plushkava.net>
-To: "Jan Kasprzak" <kas@fi.muni.cz>, netfilter@vger.kernel.org
-Message-Id: <93605739-24d5-4402-9212-b06ffefe9b46@app.fastmail.com>
-In-Reply-To: <ah7ylcA705Ai0HQi@fi.muni.cz>
-References: <ah7ylcA705Ai0HQi@fi.muni.cz>
-Subject: Re: conntrackd master-master IPv4/IPv6 configuration order
+To: "Michal Soltys" <msoltyspl@yandex.pl>, netfilter@vger.kernel.org
+Message-Id: <c4723eac-8af9-4146-8375-c389b21fbd4d@app.fastmail.com>
+In-Reply-To: <287a4898-f45f-417a-8b00-a44801139ae2@yandex.pl>
+References: <287a4898-f45f-417a-8b00-a44801139ae2@yandex.pl>
+Subject: Re: [BUG?] success of adding interval elements to map/set depends on order
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-Hi Yenya,
+Hi Michal,
 
-On Tue, 2 Jun 2026, at 4:11 PM, Jan Kasprzak wrote:
-> Hello, netfilter users,
+On Mon, 1 Jun 2026, at 1:19 PM, Michal Soltys wrote:
+> Hi,
 >
-> I plan to deploy a pair of Linux routers/firewalls with state data
-> synchronized using conntrackd. Unlike my previous deployments, I would
-> like to use both routers at the same time:
+> Consider the following ruleset file:
 >
-> one router routing IPv4 traffic and acting as a standby for IPv6 traffic,
-> and another one routing IPv6 traffic and acting as a standby for IPv4 traffic.
+> #!/usr/bin/nft -f
+> flush ruleset
 >
-> Can I use conntrackd to synchronize the state data between these
-> routers? I am not sure which commands should I run at takover time
-> (as described in conntrack-tools/doc/sync/primary-backup.sh).
+> table ip Main {
+>    map snatmap {
+>      typeof oifname . ip saddr : ip saddr
+>      flags interval
+>      elements = {
+>        "egress0" . 10.192.0.88/29 comment "generic": 1.2.3.4,
+>        "egress0" . 10.192.0.93 comment "sip": 5.6.7.8,
+>      }
+>      comment "SNAT map"
+>    }
+> }
+>
+> trying to load such ruleset fails with elements in this order will fail 
+> with:
+>
+> /etc/nftables-test.conf:10:25-61: Error: Could not process rule: File exists
+>                          "egress0" . 10.192.0.93 comment "sip": 5.6.7.8,
+>                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>
+> But if we swap the order of those two elements so the more narrow one is 
+> present earlier, the rules will load successfully. Same applies for 
+> manual adding via "nft add element". And same happens if it was a 
+> regular set instead of a map.
 
-You should be able to go about it more or less in the documented way. Just be careful as to which configuration file is used in the case that you are running multiple instances. For example:
+Given the absence of the auto-merge flag, overlapping elements are supposed to be rejected. The consistent behaviour would be to reject both orderings. That these rules can ever be loaded successfully is an unequivocal bug.
 
-# To be run by the script that commits the IPv4 states into the kernel
-conntrackd -C /etc/conntrackd/conntrackd-v4.conf -c
-
-# To be run by the script that commits the IPv6 states into the kernel
-conntrackd -C /etc/conntrackd/conntrackd-v6.conf -c
-
-The same goes for the -f (flush) and -R (resync) options.
+Speaking of which, there have been various bugs concerning sets and maps over the years. If I may ask, which version of Linux and nftables are you using?
 
 >
-> Or maybe I should run two instances of conntrackd on each node, one for
-> synchronizing IPv4 by default in one direction, and other one for IPv6
-> by default in the opposite direction, and having dedicated scripts
-> for promoting to master/demoting to standby/starting up for IPv4 and IPv6.
-
-The idea of running two instances is sensible. That way, there can be a distinct failover procedure for both address families. If you do this, remember to give each instance its own UNIX socket path, lock file and multicast group/port so that they don't clash.
-
-Also, note that conntrack states are not synchronised in one direction. Rather, they are replicated in both directions continuously. A receiving node holds the replicated states in a so-called external cache until such time as they are committed. The commit operation injects them into the kernel conntrack table that Netfilter actually consults. The internal cache acts as a mirror of the kernel conntrack table (the commit operation does not touch that particular cache).
-
+> This should probably either fail in both cases, or succeed in both cases ?
 >
-> And two separate conntrackd configs filtering out the unwanted L3 protocol
-> by universal prefix address:
+> Then there is also a question how that would/should behave in case of a 
+> map, e.g. would
 >
->         Filter From Kernelspace {
-> 		Address Ignore { IPv4_address 0.0.0.0/0 }
->                 # or Address Ignore { IPv6_address ::/0 }
-> 		...
-> 	}
+> snat ip to oifname . ip saddr map @snatmap comment "snat map"
 >
+> use 1.2.3.4 or 5.6.7.8 for 10.192.0.93 ?
 
-Yes, this should work exactly as you expect. The first directive should result in state changes pertaining to IPv4 being ignored. Likewise for the second, only pertaining to IPv6.
+Undefined behaviour. It would boil down to whichever is matched first. This sort of ambiguity demonstrates why overlapping elements must be rejected rather than be resolved by some notion of specificity.
 
 --
 Kerin Millar
