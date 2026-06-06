@@ -1,125 +1,117 @@
-Received: from anxur.fi.muni.cz (anxur.fi.muni.cz [147.251.48.3])
+Received: from fout-a4-smtp.messagingengine.com (fout-a4-smtp.messagingengine.com [103.168.172.147])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BD28339861
-	for <netfilter@vger.kernel.org>; Tue,  2 Jun 2026 19:44:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.251.48.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 801CD4071FD
+	for <netfilter@vger.kernel.org>; Sat,  6 Jun 2026 18:49:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780429472; cv=none; b=DggapyYjMUHve2++C6jNLpehtsuB0b1uEC75DbxmLoujW9AEloO/OUR83G5qZdymmUKKbLgiVtM2f0h3FALJLXcXT7Gt3cWudD7z20UnQ94Mb1RaKQbbQLNMPSzUuT04R0zZuhcC34GK43+w9eHqoc1MF43nkrZNLH0vQS6iss8=
+	t=1780771743; cv=none; b=uDQzC0BhhNRYER8TeAHaaCLEF95XMl9SBI4SdIvXdoq/WcT4EuRPZtaCHhc8TK9yGoMol0bZs9GAdBpWL5rK4gXd2Cl84EjbZ9tgVDkPaZr9Kyth3HV9q6TxzW5Xv/UH/vhhcZH8NJPGwDUaAAA+CbMNqpbPYzlt+RW3StvgMf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780429472; c=relaxed/simple;
-	bh=8waKWAKHpvQbWxu2/hMSiuVDlkmRC+PyZy62CRq6W0k=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hf/vN3nyOXcq5huHB0B6lctyJYZz7ekJDP8tsER1TrcYYeZl8VTDAkAloPKqCAbr2JmCre0XtSEPRBpJK+5xPubzqmbZtohhhxF7v6iceUYmmfQLtWd9GEdv7eMRM2D4wv5mVetWw5jUVDw0oMLwsXrZPoimCQQuvyActyr2mz0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fi.muni.cz; spf=pass smtp.mailfrom=fi.muni.cz; dkim=pass (2048-bit key) header.d=fi.muni.cz header.i=@fi.muni.cz header.b=Hk5YiLWr; arc=none smtp.client-ip=147.251.48.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fi.muni.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fi.muni.cz
+	s=arc-20240116; t=1780771743; c=relaxed/simple;
+	bh=w5ZQ8QeBJvD61/idbjgCsAWGZ6XlFDfHLoANFqIUb3w=;
+	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=a9ooFECfE/oFYmqz75GQGB2QEkAlfUaoJGeZNnUngA2QnwIbzlPz+b+q0R03SWViau89/ICNAlkMZJUfDeigFRLOdUq/wcbQETogwMgVDMZ+1yNtnIkWtQX51ZdFEJgn8ECdAPMXUHVGioIz+aRDArAr2ivoqjHwZgsAw2pkbMk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=CGqcqVFH; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=gaKKExVC; arc=none smtp.client-ip=103.168.172.147
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fi.muni.cz header.i=@fi.muni.cz header.b="Hk5YiLWr"
-Received: by anxur.fi.muni.cz (Postfix, from userid 11561)
-	id A0F1D208DD1F; Tue,  2 Jun 2026 21:44:24 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fi.muni.cz;
-	s=20230215; t=1780429464;
-	bh=nRRuqwsW7ulolD99lM3W4ddpG7nPlCCTp+ZlycRo7sU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Hk5YiLWrqXJCklMpt6uIupAngOdaC2I2ek1buP3iVxZFhi73wa6AAVPGJpi9n0pQi
-	 YqkiS4cdQTdQV839Oveuv7u6zPVGKP6YfbKxdmdttzq0V9h5H+okQTr0qo+XmIXQKv
-	 RxZG3uorHl5QjfB6G9iT7ukPVC+EaJEOY3Kr/FHJJYdn2uR4kI0qz9HXogorTnQQRH
-	 IChxuICy+DU4DNOjgfQpGtKZdBKgJB1Qh6e5Pa7huKsOAjqMQXMk8sz+6nWS+T0TQU
-	 N+fLGC1MI0a5F2M5zt4aAFsH6Lzt3mUzyY4iHWimEsJVoey8TbyrcRP4TufQrk5Rm1
-	 eyZDi9vROy6YA==
-Date: Tue, 2 Jun 2026 21:44:24 +0200
-From: Jan Kasprzak <kas@fi.muni.cz>
-To: Kerin Millar <kfm@plushkava.net>
-Cc: netfilter@vger.kernel.org
-Subject: Re: conntrackd master-master IPv4/IPv6 configuration order
-Message-ID: <ah8ymM00JGqUZZYW@fi.muni.cz>
-References: <ah7ylcA705Ai0HQi@fi.muni.cz>
- <93605739-24d5-4402-9212-b06ffefe9b46@app.fastmail.com>
+	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="CGqcqVFH";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="gaKKExVC"
+Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
+	by mailfout.phl.internal (Postfix) with ESMTP id 8C37BEC00D7;
+	Sat,  6 Jun 2026 14:49:00 -0400 (EDT)
+Received: from phl-imap-10 ([10.202.2.85])
+  by phl-compute-01.internal (MEProxy); Sat, 06 Jun 2026 14:49:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+	 h=cc:cc:content-transfer-encoding:content-type:content-type
+	:date:date:from:from:in-reply-to:in-reply-to:message-id
+	:mime-version:references:reply-to:subject:subject:to:to; s=fm2;
+	 t=1780771740; x=1780858140; bh=w5ZQ8QeBJvD61/idbjgCsAWGZ6XlFDfH
+	LoANFqIUb3w=; b=CGqcqVFH/p2G0NaaiAL+TDJGAfPMYNye5/Hov6nGaFwq2FgJ
+	j779II0yEMzKcgGwlLWIeu5dG6bNmNUPLR5d6QSxazOo5A86SjLbEipdufmA+FBC
+	0zuG3szk/cIyRdaG5eyo2QW5OxFB3YuebVgXUUljK9qxNWQEwPuYWwM5vlwF1iX6
+	cFZWMLScMY3ldgswDUsMmNBK1ClWHxdqugC9Le8wyCub8FINvjIpMI+7UqGitYGN
+	uBVFbf3DHEOJoGmsd/NIEokOIWRyd1BCfDHfwR/fc7LvOFXZR6dCasYy7k0com0Y
+	zAk86unxqInS9oZncs1ug+8HbAouXVxsh3PkjA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1780771740; x=
+	1780858140; bh=w5ZQ8QeBJvD61/idbjgCsAWGZ6XlFDfHLoANFqIUb3w=; b=g
+	aKKExVCBCt8qWRg7ze+OVRUjF0SsWXqZ2PLUCCqIvDnlZtTi7IQkb7L0RjHuqqcq
+	C4J9VG/7LtXoKIs+YnllbgaebmYHMD/vW9R1Rbv6tgBfilVvDdDUuLLgx3MYRkbw
+	t2TjhT5oz+iefV83tgRbQY+FIob07MfMCsz6UlJzjSS/jVYNgSYxxJvxtz4Qn6k2
+	hBvl19B5cw+hH2aHCK6jQ8T7douBGAe/B9/iFf9eVeOVYWwcDxoZBt9LtrY7xDiS
+	eIhajLk9Zt5dxt40UrPVXs44pZNC87ndBAwO1P/Wt+bvwauPafTFSUvMP6tLLh1b
+	aseJ/LS4puqrdlOj1rqxw==
+X-ME-Sender: <xms:m2skas0DhD9F4Opb_HDYoNSXCfm7BogqQ4-bY12tpk5sOgVAVVaPQA>
+    <xme:m2skah6gKslf-ZtZFC9xPO1ndPAToLdjUv6dl0NLyIrISjgfn8mYvgSFwhmAnDK-G
+    tqQt6Np-kAhBJ6O-tpd5BrOm4hOOmloWyNFESxLGjEdybj6OsLQ>
+X-ME-Proxy-Cause: dmFkZTGL0hGoFfzmghY/Bu4+NISy0GApZ1i+9XaNIvw8RQQ9mB4/kAHcooeJ2arYfvY1oT
+    hHJkMqV5yAQnCSS357DW/6m/FR8M57sZBb4FwI/Qf68OXoiA2V3qdhMRFnV890xuzb39tx
+    FYRJo5VSwA3cekwvwEUf0qKYwMNkbtp664Zxz0bS0tXxHv1d+k29MmpYaLwtVM4LPplV5/
+    XhWgpVAt37+rjhCh8ptz6HQBwWXf1svvpVReSBxfk6ADhhtVL47PM6Zu+pQAKGZsDFkn2D
+    tHnsFhx/gCVlGcI2qZH9rJggn283v0kpqdAMuDRu27sS9uXFH0sbgDfZ6ZVmzlJuze+eNJ
+    FMSaucBPVms9O4hpwWYCjcfmSmqz+CL5dvex7Ugwbb8lq4dnn7jONaioqKE3jPcnYbEGk5
+    XbL+q33ER/v/S2RSwgyhEi1L/v9WGOgLKHeNJScq0DQWz67Wq/uuD7M4WVlYVl6nod018Y
+    P1cgCSCXmXD+WkJB7uaT8fbp+XuDxLKWtM0N1SUdgW7JzoCccBCj9jLV7EdSaqKrk1jS2G
+    wupSR4f/mqaPY4Ve6oel+XlpLdWgc9O5i/759V/Qa/tjyq15FDrjOFhqLL8b4V98iXxUPV
+    7W3RNh00t5gjN/6PAKDHJSXBOkZR8lVoohZuhxgJncM1v45KXJPPCu/qyG+A
+X-ME-Proxy: <xmx:m2skaqreKY8aJEbilpG1wbC4zc5KHmEDJlENMya3LTNI2nPr3nc3TA>
+    <xmx:m2skas91MOFcwkXBKetPFgs80WmSZ3ukH_YHkApLQvS6tRCnOsZlhg>
+    <xmx:m2skauXV4mMJ86yN9fFcQz1OLU555UkUmyEX-UkwigzCXKR3BzZeZA>
+    <xmx:m2skaiDIrspFtPzGc67hAM6aFqALRBSw82Ykzg1cSVJyLnAQimnt4A>
+    <xmx:nGskakWqHYGaKaw1Vh2m3ts0JmHyO_ROVUya2CS2jjDumunZ31cMXLVQ>
+Feedback-ID: i2431475f:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id A5C9F216008A; Sat,  6 Jun 2026 14:48:59 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <93605739-24d5-4402-9212-b06ffefe9b46@app.fastmail.com>
-X-Clacks-Overhead: GNU Terry Pratchett
+X-ThreadId: A8Q2qJYAM7bV
+Date: Sat, 06 Jun 2026 19:48:39 +0100
+From: "Kerin Millar" <kfm@plushkava.net>
+To: "Jan Kasprzak" <kas@fi.muni.cz>
+Cc: netfilter@vger.kernel.org
+Message-Id: <2388d669-3749-4743-b3b8-994ca908d0ff@app.fastmail.com>
+In-Reply-To: <ah8ymM00JGqUZZYW@fi.muni.cz>
+References: <ah7ylcA705Ai0HQi@fi.muni.cz>
+ <93605739-24d5-4402-9212-b06ffefe9b46@app.fastmail.com>
+ <ah8ymM00JGqUZZYW@fi.muni.cz>
+Subject: Re: conntrackd master-master IPv4/IPv6 configuration order
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
-	Hi Kerin,
+Hi Yenya,
 
-thanks for your insights. Some follow-up question:
-
-Kerin Millar wrote:
-> # To be run by the script that commits the IPv4 states into the kernel
-> conntrackd -C /etc/conntrackd/conntrackd-v4.conf -c
+On Tue, 2 Jun 2026, at 8:44 PM, Jan Kasprzak wrote:
+> Hi Kerin,
 >
-> # To be run by the script that commits the IPv6 states into the kernel
-> conntrackd -C /etc/conntrackd/conntrackd-v6.conf -c
+> thanks for your insights. Some follow-up question:
 >
-> The same goes for the -f (flush) and -R (resync) options.
-
-I have been thinking about going without takeover actions altogether.
-What could possibly go wrong if I commit the state from an external
-table to the standby node kernel periodically? For example, to run
-conntrackd-v[46].timer systemd unit on the standby node[s] all the time,
-committing the data to the standby node every few (tens of) seconds,
-and should the master node go down, use the data from the last commit.
-
-Of course I will use a dedicated socket and port (I use UDP, not mcast)
-for each instance.
-
-Possible package enhancement:
-provide a conntrackd@.service unit template, which would use
-/etc/conntrackd/%I.conf configuration file. Also, the control socket
-should probaly live in /run/conntrackd instead of
-/var/lib/conntrackd.
-
--Yenya
-
-> > Or maybe I should run two instances of conntrackd on each node,
-> one for
-> > synchronizing IPv4 by default in one direction, and other one for IPv6
-> > by default in the opposite direction, and having dedicated scripts
-> > for promoting to master/demoting to standby/starting up for IPv4
-> and IPv6.
+> Kerin Millar wrote:
+>> # To be run by the script that commits the IPv4 states into the kernel
+>> conntrackd -C /etc/conntrackd/conntrackd-v4.conf -c
+>>
+>> # To be run by the script that commits the IPv6 states into the kernel
+>> conntrackd -C /etc/conntrackd/conntrackd-v6.conf -c
+>>
+>> The same goes for the -f (flush) and -R (resync) options.
 >
-> The idea of running two instances is sensible. That way, there can
-> be a distinct failover procedure for both address families. If you
-> do this, remember to give each instance its own UNIX socket path,
-> lock file and multicast group/port so that they don't clash.
->
-> Also, note that conntrack states are not synchronised in
-> one direction. Rather, they are replicated in both directions
-> continuously. A receiving node holds the replicated states in a
-> so-called external cache until such time as they are committed. The
-> commit operation injects them into the kernel conntrack table that
-> Netfilter actually consults. The internal cache acts as a mirror of
-> the kernel conntrack table (the commit operation does not touch that
-> particular cache).
->
-> >
-> > And two separate conntrackd configs filtering out the unwanted
-> L3 protocol
-> > by universal prefix address:
-> >
-> >         Filter From Kernelspace {
-> >		Address Ignore { IPv4_address 0.0.0.0/0 }
-> >		    # or Address Ignore { IPv6_address ::/0 }
-> >		...
-> >	}
-> >
->
-> Yes, this should work exactly as you expect. The first directive should
-> result in state changes pertaining to IPv4 being ignored. Likewise
-> for the second, only pertaining to IPv6.
->
-> --
-> Kerin Millar
+> I have been thinking about going without takeover actions altogether.
+> What could possibly go wrong if I commit the state from an external
+> table to the standby node kernel periodically? For example, to run
+> conntrackd-v[46].timer systemd unit on the standby node[s] all the time,
+> committing the data to the standby node every few (tens of) seconds,
+> and should the master node go down, use the data from the last commit.
 
--- 
-| Jan "Yenya" Kasprzak <kas at {fi.muni.cz - work | yenya.net - private}> |
-| https://www.fi.muni.cz/~kas/                        GPG: 4096R/A45477D5 |
-    I don't like Python; its lack of inline, anonymous, multi-statement
-    functions makes me sad.                                --Eric Wastl
+You could set "DisableExternalCache on", which would allow for the received replicated states to be committed to the kernel conntrack table in realtime. I have never used such a configuration myself. However, I can say that there are some caveats to be aware of. One is that you may need to size the conntrack table accordingly. Another is that the write path becomes more costly, since it reaches into kernel space all the time (event type filtering may help to mitigate this).
+
+--
+Kerin Millar
