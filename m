@@ -1,71 +1,98 @@
-Received: from forward501a.mail.yandex.net (forward501a.mail.yandex.net [178.154.239.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp.rodier.me (pigment.rodier.me [45.63.101.247])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 414162AE8D
-	for <netfilter@vger.kernel.org>; Sun,  7 Jun 2026 13:00:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16B27322B72
+	for <netfilter@vger.kernel.org>; Mon,  8 Jun 2026 11:31:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.63.101.247
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780837239; cv=none; b=QIReN3G+n+v6BfHrjzY2rlZrKwr7+NOSYHT0OywVr/KMnZ/o93fqkqibBoSPyTnvBjQ/HQcjBGMW/M914MMbxIHpkYYMEnLlDDRkkessO1/zV3IkyuVAqJYs8FhXN8H5AZWue2T71xzcSD9EJkIGi/LjzN2A+rjJ5Bzi12x3Ja4=
+	t=1780918263; cv=none; b=BTUcRfZI7/omIAYjo6wgb+C/ialROxekgIuRyCPKRzGg5y6+ygYYpVibvkK/n17ZgKh58BGAuLjq8JpVmYlLC/Om6ZAutVGrXkFdu6ArbqnnvrN8floTFDiC/b5OCpxHLxEqxxB8tIvFuglmozdrVgRx89yISiJkm/dfdz5ClXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780837239; c=relaxed/simple;
-	bh=314nGnswBitsJ9SaX25y9gZWMpbvusGKF9y5kloYr9Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=jBFr2a6ZHQ1x4m8C3x8xqk+EyJWY9b9xbaiUy12hzAw+SVuO4lLZFOnv1+QSm+Hz6yA0Z63P7zTPvHzTF7zQjGY23F4hn227XqLilXhhYgaNOVPh5BicTKwxPV+P+ljQQlvDYpAo3x3UzJOXeSsCr/nOBlRCfVYbVcHcszUfgio=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.pl; spf=pass smtp.mailfrom=yandex.pl; dkim=pass (1024-bit key) header.d=yandex.pl header.i=@yandex.pl header.b=rPWS1K50; arc=none smtp.client-ip=178.154.239.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.pl
+	s=arc-20240116; t=1780918263; c=relaxed/simple;
+	bh=MJ6EKGPNMyY3ATvHMWtn416ZQBl1T4TqaoRxam+hwAQ=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To; b=Qpme32m1xalLBuQ8DEwzRfTibTesUWudSpld4+GVw54dWu/2/ZzJpcyIMNdAv6J3qpsSAp4RRjpLYXXjU+jqDPN5NYj6SGZN5arbj2RL0u67PhJFJuStqM58AtTSBlfBPuqVhRMKZxRuisPhwAV6DNzTxNzkL1PthvJvgwGnAxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rodier.me; spf=pass smtp.mailfrom=rodier.me; dkim=pass (2048-bit key) header.d=rodier.me header.i=@rodier.me header.b=DjemDFow; arc=none smtp.client-ip=45.63.101.247
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rodier.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rodier.me
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex.pl header.i=@yandex.pl header.b="rPWS1K50"
-Received: from mail-nwsmtp-smtp-production-main-52.vla.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-52.vla.yp-c.yandex.net [IPv6:2a02:6b8:c0f:4c9f:0:640:5657:0])
-	by forward501a.mail.yandex.net (Yandex) with ESMTPS id A178F80A03;
-	Sun, 07 Jun 2026 15:53:27 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-52.vla.yp-c.yandex.net (smtp) with ESMTPSA id OrGFqwkg4qM0-FXvryCxi;
-	Sun, 07 Jun 2026 15:53:27 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.pl; s=mail;
-	t=1780836807; bh=oHEpM/JzKdREMhRqaz64Jt2ZdxdYZqZltLQc06ogZAM=;
-	h=In-Reply-To:From:Date:References:To:Subject:Message-ID;
-	b=rPWS1K50kQ62CA9hpOC7bRdt8+PFFWFSRbYY62TWrwmT7XWMEkDgZIsVaSgmf9xJo
-	 H9Vjr93xObaqxQMnFtIumfR2K4BnF/NB6AueTtHQJXhgSmqi777cTa4xOPTXJXfp9z
-	 D9oBdsmY6moMuDHlVvxInXk9THBWxmuVkXXq3EKQ=
-Authentication-Results: mail-nwsmtp-smtp-production-main-52.vla.yp-c.yandex.net; dkim=pass header.i=@yandex.pl
-Message-ID: <0446c465-ce93-43f6-ac3d-c3a40ae6f854@yandex.pl>
-Date: Sun, 7 Jun 2026 14:53:29 +0200
+	dkim=pass (2048-bit key) header.d=rodier.me header.i=@rodier.me header.b="DjemDFow"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rodier.me;
+	s=pigment-2026; t=1780918258;
+	bh=MJ6EKGPNMyY3ATvHMWtn416ZQBl1T4TqaoRxam+hwAQ=;
+	h=Date:Subject:From:To:From;
+	b=DjemDFowKGowaMU2rAK+Fvc9GQqreTJB5Brg0AWQz//heuZ5VouxAP4IXlh0NzMI6
+	 6XwaRM6AdSO1R30qaXtKP9ws7iLfdPIluVwgzzUo+OPbPcBpeJRxbfnybrdO9iIIsE
+	 GJWrEGf+1cjv5gGmBTgZATwh61hYWPCl8l+AjLA+ZkZAzp/2o9ACg6z5xSCyAeMuLu
+	 KdH20n+6jP488gZyxcFPqWWTY7aedl1kCP74ztdZyTcm3jRyefLCNopEKqjmE+wDuZ
+	 LhVlLQ22KZFb+mGzFTUp2NnPmaenqw0iwrnSIxGVF4tv5PN89dCmKHjD8NildpCFLx
+	 RibeXRnqaUdvg==
+Authentication-Results: smtp.rodier.me;
+	auth=pass smtp.auth=andre smtp.mailfrom=andre@rodier.me
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [BUG?] success of adding interval elements to map/set depends on
- order
-To: Kerin Millar <kfm@plushkava.net>, netfilter@vger.kernel.org
-References: <287a4898-f45f-417a-8b00-a44801139ae2@yandex.pl>
- <c4723eac-8af9-4146-8375-c389b21fbd4d@app.fastmail.com>
-Content-Language: en-US
-From: Michal Soltys <msoltyspl@yandex.pl>
-In-Reply-To: <c4723eac-8af9-4146-8375-c389b21fbd4d@app.fastmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+Content-Type: multipart/signed;
+ boundary=278e88c6f2398b619962ac0a3ffc48329e3e2fb0ea2b2008d38e038e6afe;
+ micalg=pgp-sha512; protocol="application/pgp-signature"
+Date: Mon, 08 Jun 2026 12:30:55 +0100
+Message-Id: <DJ3MTZXMKPIT.1A41M4YZMF8UY@rodier.me>
+Subject: Question on rate limiting on nftables
+From: "Andre Rodier" <andre@rodier.me>
+To: <netfilter@vger.kernel.org>
 
-On 26/06/02 18:47, Kerin Millar wrote:
-> Hi Michal,
-> 
->>
->> But if we swap the order of those two elements so the more narrow one is 
->> present earlier, the rules will load successfully. Same applies for 
->> manual adding via "nft add element". And same happens if it was a 
->> regular set instead of a map.
-> 
-> Given the absence of the auto-merge flag, overlapping elements are supposed to be rejected. The consistent behaviour would be to reject both orderings. That these rules can ever be loaded successfully is an unequivocal bug.
+--278e88c6f2398b619962ac0a3ffc48329e3e2fb0ea2b2008d38e038e6afe
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-Yea, and auto-merge would make no sense in context of a map (for the 
-record I did try that, but nft rightly complained it's not supported).
+Hello,
 
-> 
-> Speaking of which, there have been various bugs concerning sets and maps over the years. If I may ask, which version of Linux and nftables are you using?
-> 
+I am testing nftables SSH connections attempts limit, and I read about "met=
+ers"
 
-1.1.6 (on arch) as well as the older version shipped with debian13 
-(think it was 1.1.3).
+I would like to know the difference between these two methods of new connec=
+tions limiting, and to ensure the first one is correct.
+
+The first option:
+
+~~~
+table inet filter {
+  [...]
+  meta nfproto ipv4 tcp dport ssh ct state new,untracked \
+  limit rate over 10/second \
+  counter add @banned_ipv4 { ip saddr . ssh } \
+  comment "Ban SSH bots"
+}
+~~~
+
+And the second option:
+
+~~~
+table inet filter {
+  [...]
+  meta nfproto ipv4 tcp dport ssh ct state new,untracked \
+  meter ssh4 { ip saddr limit rate over 10/second } \
+  add @banned_ipv4 { ip saddr . ssh }
+}
+~~~
+
+Is there any advantage using the second method ?
+
+Thanks for your insights
+
+--=20
+=F0=9F=8C=90 https//rodier.me/
+
+--278e88c6f2398b619962ac0a3ffc48329e3e2fb0ea2b2008d38e038e6afe
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iIYEABYKAC4WIQQgxtr4dsuCnRR2flvDkWYfWv7tQgUCaian8BAcYW5kcmVAcm9k
+aWVyLm1lAAoJEMORZh9a/u1Ch4sBAMQs2TjOKY098XI9CG6iSgIYJ6EWKXLnkT2b
+9LEW2HfeAP42BWmL3FvOdW7rOuZE5ZimTelte9VV2W6tHDiEJuZ+Bg==
+=ICDl
+-----END PGP SIGNATURE-----
+
+--278e88c6f2398b619962ac0a3ffc48329e3e2fb0ea2b2008d38e038e6afe--
