@@ -1,78 +1,76 @@
-Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
+Received: from smtp.rodier.me (pigment.rodier.me [45.63.101.247])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47CDA4071E3
-	for <netfilter@vger.kernel.org>; Mon,  8 Jun 2026 14:38:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1197640BCBA
+	for <netfilter@vger.kernel.org>; Mon,  8 Jun 2026 15:01:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.63.101.247
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780929525; cv=none; b=VxePIqojrKk/WQWrVkxYRb0crA3OOJT/pNNkxHT6DcP4g2OLJD1a9c1bTSw8CSLDtvttjWu9gZrm3ImLtDlLas4ApzZM/DQ1firJNGEGPDpwFlGwIEGR1d6+e0bl9P2mVT9L7wLLryhV0Nm3e9E3X2gCrxzWL5AOfGzVNN8Gz7Y=
+	t=1780930910; cv=none; b=Nshs0rRWdE0x4kC6wegmb566u+ZcTm3ZXvLSfGa2ATqemDMCK1LlAA7JaviYW+r13syejCAYWuZSeZlZDfCCMVMjsfGOFEUI0UbP4WnSTkHdRtBjhfowno+pla1K9GpflH1m14lWKbvbdMExOOo4fT9EMon9Nnv4UMSDNYJiPqM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780929525; c=relaxed/simple;
-	bh=9Qtx+eCsdo0/CiffX75i1o5LqVHmjsueZz0A6tKUcis=;
-	h=Date:From:To:Subject:In-Reply-To:References:Message-ID:
-	 MIME-Version:Content-Type; b=O5IrrxcAZQZrkJ7z3BFL/2JhwkCqF0+XUxjIRMj02pKsdtqQ712TRy6SpfxZrcxU5klCPSJQk2mTI09VVyJRBCCINVmAV88vPPYgoT6M4iyeVcj/htEAegE4NPyiiUN4FFpODJFl1DTIyYsjaVYLBiEefuSslX1thVwaMQo6BNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=FQSPpaEl; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=CJP/eOS0; arc=none smtp.client-ip=185.25.250.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
+	s=arc-20240116; t=1780930910; c=relaxed/simple;
+	bh=kYmr/eNKF5Lb81OVkX1DRmmKAOl0RLlJuFTeE0J+MEc=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=n1t/ZTnqGvGJi/S+8VE2gdmTeU27AaoI9mRLDryTBelaR+h16uMEOM5iO+Thc6SKUE/IlfNNvgwhQlGqgTwqcB2gDakepLPcIWvXz4oTwsUaHqaVdeLjlPHFjrZk1r8revaZiVwuWpA6jQWBhTcomkYNv/AI7bv/KprIMfktV5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rodier.me; spf=pass smtp.mailfrom=rodier.me; dkim=pass (2048-bit key) header.d=rodier.me header.i=@rodier.me header.b=Pgkbf+Ch; arc=none smtp.client-ip=45.63.101.247
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rodier.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rodier.me
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="FQSPpaEl";
-	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="CJP/eOS0"
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
-	s=r2025; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:
-	References:In-Reply-To:Subject:To:From:Date:From:To:Cc:Reply-To:Subject:Date:
-	Sender:Content-ID; bh=9Qtx+eCsdo0/CiffX75i1o5LqVHmjsueZz0A6tKUcis=;
-	t=1780929522; x=1782139122; b=FQSPpaElClJEikfWhuu7J6FMu8KL7+2zM+Zf8+S2onSeptA
-	avEVdVD38gYVRVfotkyBOYWH4zWVazycA9EIhIgV7uVh4oVdzZQ1z3vcuCo+meOIGFVdDKRQVJPy+
-	wsSi7hsoYRIsgeFvWRHf3xsOkY6SH9Wurgh5iCoYw77y55c=;
-DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=slavino.sk; s=e2025; h=Content-Transfer-Encoding:Content-Type:MIME-Version:
-	Message-ID:References:In-Reply-To:Subject:To:From:Date:From:To:Cc:Reply-To:
-	Subject:Date:Sender:Content-ID;
-	bh=9Qtx+eCsdo0/CiffX75i1o5LqVHmjsueZz0A6tKUcis=; t=1780929522; x=1782139122; 
-	b=CJP/eOS0ZQXfzmxV2me2caMgaWcsvqwkF2mTo3hy0tP4FSuK4HlC69Eh2zDwNSOPifG0QSfY7TJ
-	zgmaRGBjFDg==;
-Received: from dovex.skk ([192.168.10.12])
-	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96)
-	(envelope-from <linux@slavino.sk>)
-	id 1wWb1l-000s8l-0r
-	for netfilter@vger.kernel.org;
-	Mon, 08 Jun 2026 16:32:33 +0200
-Date: Mon, 08 Jun 2026 14:32:31 +0000
-From: Slavko <linux@slavino.sk>
-To: netfilter@vger.kernel.org
+	dkim=pass (2048-bit key) header.d=rodier.me header.i=@rodier.me header.b="Pgkbf+Ch"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rodier.me;
+	s=pigment-2026; t=1780930898;
+	bh=kYmr/eNKF5Lb81OVkX1DRmmKAOl0RLlJuFTeE0J+MEc=;
+	h=Subject:From:To:Date:In-Reply-To:References:From;
+	b=Pgkbf+ChlzyYCkuzfBfSdI+Mncj59wJlUtDp8kBmcUSHwGwk4R4D27EcFtjkKeiv6
+	 D+AkWHYuzR77SA2tZd8x+NoL90AThK7Wzj2f9nkc1peRXH+Op5ONHf2ZH8Eu/AiqNo
+	 0oU+OenvkiBwydRz6ngzWFB/pOTMHz699Rwdubn3tSj8IhoeQbVKzCIoD7qg0DjCi4
+	 fDtjzTN4PTKuG3zxuIu59bOmumJB2V2UVfC2sSMK75lhJQ8lsuVtQtmnRI18pnvogj
+	 tepLJTqIywA5z2V0+fpMPBRbGqe+hv6bLFOtft45i/zORBk8CNqDCX+lpk11Mtc3kF
+	 hBbViJ3t/1kCQ==
+Authentication-Results: smtp.rodier.me;
+	auth=pass smtp.auth=andre smtp.mailfrom=andre@rodier.me
+Message-ID: <e8e26118c36111d0b4aa290e1e411ff15b6f64aa.camel@rodier.me>
 Subject: Re: Question on rate limiting on nftables
-In-Reply-To: <8d84a240-b9ae-41f4-b111-33007909b0a2@app.fastmail.com>
-References: <DJ3MTZXMKPIT.1A41M4YZMF8UY@rodier.me> <8d84a240-b9ae-41f4-b111-33007909b0a2@app.fastmail.com>
-Message-ID: <74E543AC-1B65-4E99-8324-B5758DCBA669@slavino.sk>
+From: Andre Rodier <andre@rodier.me>
+To: Slavko <linux@slavino.sk>, netfilter@vger.kernel.org
+Date: Mon, 08 Jun 2026 16:01:37 +0100
+In-Reply-To: <74E543AC-1B65-4E99-8324-B5758DCBA669@slavino.sk>
+References: <DJ3MTZXMKPIT.1A41M4YZMF8UY@rodier.me>
+	 <8d84a240-b9ae-41f4-b111-33007909b0a2@app.fastmail.com>
+	 <74E543AC-1B65-4E99-8324-B5758DCBA669@slavino.sk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
 
-D=C5=88a 8=2E j=C3=BAna 2026 12:45:55 UTC pou=C5=BE=C3=ADvate=C4=BE Kerin M=
-illar <kfm@plushkava=2Enet> nap=C3=ADsal:
+On Mon, 2026-06-08 at 14:32 +0000, Slavko wrote:
+> D=C5=88a 8. j=C3=BAna 2026 12:45:55 UTC pou=C5=BE=C3=ADvate=C4=BE Kerin M=
+illar
+> <kfm@plushkava.net> nap=C3=ADsal:
+>=20
+> > If the problem can be characterised as "I endure too much log noise
+> > from sshd and I find it annoying" then perhaps configure sshd(8) to
+> > additionally bind to some other random port than 22 and expose only
+> > that port.
+>=20
+> Not worth of change ports, soon or latter it will be found
+> and abused as default port.
 
->If the problem can be characterised as "I endure too much log noise from =
-sshd and I find it annoying" then perhaps configure sshd(8) to additionally=
- bind to some other random port than 22 and expose only that port=2E
+There is a big advantage on changing the port number, though. It is
+reducing the noise considerably. Also, a connection attempts on a
+different port should immediately raise attention, as it is involving
+more than a basic SSH scan bot.
 
-Not worth of change ports, soon or latter it will be found
-and abused as default port=2E
-
-Fail2ban or so, can block addresses selectively=2E BTW, here after
-long time (1-2 years) of banning the counts drops from hundreds/thousands
-addresses daily to tens daily=2E Currently, i have banned 30 addresses
-with bantime up to 90 days, from that the ~20 is today "spike"=2E
-
-regards
-
+> Fail2ban or so, can block addresses selectively. BTW, here after
+> long time (1-2 years) of banning the counts drops from
+> hundreds/thousands
+> addresses daily to tens daily. Currently, i have banned 30 addresses
+> with bantime up to 90 days, from that the ~20 is today "spike".
+>=20
+> regards
 
 --=20
-Slavko
-https://www=2Eslavino=2Esk/
+=F0=9F=8C=90 https://rodier.me/
