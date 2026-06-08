@@ -1,75 +1,93 @@
-Received: from anxur.fi.muni.cz (anxur.fi.muni.cz [147.251.48.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from primex.slavino.sk (primex.slavino.sk [185.25.250.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 592DF25B0A5
-	for <netfilter@vger.kernel.org>; Mon,  8 Jun 2026 16:39:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.251.48.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D0CA372062
+	for <netfilter@vger.kernel.org>; Mon,  8 Jun 2026 16:56:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.25.250.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780936746; cv=none; b=FDdKviLnBATZTtNqQLdIuyn3ylCn/TePRGAXXcVmplpKOIE9VfAUNRnuEZ8uEyEX2U/ABARu94fWyTn61GR3h4JMnkmFCYGRP9wYnaiVJNhbDxsUam2nCsmGwmmr8ANLDmI3kejK1LCWfzq6/98R5ZfSFV+FxULRsPChJ0GqTX4=
+	t=1780937809; cv=none; b=HzZoiC2EftHc+xzTI8Rr1a2xWOHk1crBv0066RBRfoBYdgUh/5n1B9ZLGDNKrWibeIbAXYcG7+nemrH1rKbejhbl6WFWbWmM9AaVE9npufa3TW2luGRU7g4+/WGN1GUu8IRzW2tbChEhXQrDusrnDBXoq6LPaiGZsjtnq0xJVew=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780936746; c=relaxed/simple;
-	bh=yPwrAeQ6RVUxNgmB6BtCU9DPye9e6Bzn1xyTo5klpgE=;
-	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=AnP5vIhrsxpfgdC6EhhO8QxqAqE6I9JMfEEi43gshw3lP5Aiaus//CD8Tp79ID24BoncZbFD45G7Sy3ycDTA5oi6bZduCQbwiVel5yNZX8yd+3pD5+T1KbR98lICyyM8uWl3/I5mHKA4kXHvP/RV9c8KYg8xdSF7ue9oD/UPc10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fi.muni.cz; spf=pass smtp.mailfrom=fi.muni.cz; dkim=pass (2048-bit key) header.d=fi.muni.cz header.i=@fi.muni.cz header.b=t95+yL98; arc=none smtp.client-ip=147.251.48.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fi.muni.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fi.muni.cz
+	s=arc-20240116; t=1780937809; c=relaxed/simple;
+	bh=LfiPmKDDvjBVgD6ZuZW4zOlKvGRwU1GB7HOBeTBQ4ic=;
+	h=Date:From:To:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=JYsinvmf8AwnZiT6+HDhWm4fE/9lP0okKc5if3QirS2zAQ2Dw8DZEQwezz7mQrBfwJj5ofsC8DjCGqyqMIn4th6JFVnz52yDtD2nrzqYrViY9mLVOirlfB6Fo2pEQ58PVlBaYcYCPxXmNKt6VfS7rH4ZatZstba47GrPHH3zUIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk; spf=pass smtp.mailfrom=slavino.sk; dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=Dzwc/F+8; dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b=gCqkMm/f; arc=none smtp.client-ip=185.25.250.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=slavino.sk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=slavino.sk
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fi.muni.cz header.i=@fi.muni.cz header.b="t95+yL98"
-Received: by anxur.fi.muni.cz (Postfix, from userid 11561)
-	id 67D9B208DD1B; Mon,  8 Jun 2026 18:38:54 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fi.muni.cz;
-	s=20230215; t=1780936734;
-	bh=9/Ch8h7iDzRsBdWic0kUYgqdShN410Yfc6Z6Yis6E04=;
-	h=Date:From:To:Subject:From;
-	b=t95+yL98DzVrOsAOXU6XmODQTSaelblFVaUM0c2HATRWX40rihvNwq6NqZbaeXgtZ
-	 jkCrrAmyAMgiyZkVwu1Xbi6LI+UdUad0kTKUF9KNMWHpEJLFjRdr3sl0zYqajCiU+M
-	 3FFUvbqyLMaklCK0GaGMLpxrGr2/vb/Iq3Ki9qq4Sj421uny+jO8RklxoCWcHtAZRy
-	 JRPUN/97EY3FpO+ckH5xhcSf1NsP+ROo4eBrFoB14gNKKXNaZWCu/XHcxJccblHF2D
-	 nZQet0jXbm4BMxfsUOo6aymEXqOD4duhV9tFnp8jPFA1oQzx9Q4RLhqJgypTZvpScU
-	 mrbjfHhLtDFDA==
-Date: Mon, 8 Jun 2026 18:38:54 +0200
-From: Jan Kasprzak <kas@fi.muni.cz>
+	dkim=pass (1024-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="Dzwc/F+8";
+	dkim=permerror (0-bit key) header.d=slavino.sk header.i=@slavino.sk header.b="gCqkMm/f"
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=slavino.sk;
+	s=r2025; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:
+	References:In-Reply-To:Subject:To:From:Date:From:To:Cc:Reply-To:Subject:Date:
+	Sender:Content-ID; bh=LfiPmKDDvjBVgD6ZuZW4zOlKvGRwU1GB7HOBeTBQ4ic=;
+	t=1780937807; x=1782147407; b=Dzwc/F+8fIB+2m4qnreLWzBa7RyLWRH80yEnESyRYOa+qAr
+	9NoaaRgixv8ohftjTs5QTI0J/hiAL+CDn7JtoA0QefzBxalqV1ZTXuDGmaJLnT906vxysmmQItUeX
+	LCTHrmddOwHx7e9aZmA5dKJBkvQ0Svl6KFq78nhMNZ0LseE=;
+DKIM-Signature: v=1; a=ed25519-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=slavino.sk; s=e2025; h=Content-Transfer-Encoding:Content-Type:MIME-Version:
+	Message-ID:References:In-Reply-To:Subject:To:From:Date:From:To:Cc:Reply-To:
+	Subject:Date:Sender:Content-ID;
+	bh=LfiPmKDDvjBVgD6ZuZW4zOlKvGRwU1GB7HOBeTBQ4ic=; t=1780937807; x=1782147407; 
+	b=gCqkMm/fFcH1hDX3hkFZOVPOesXCwV1kqiYMFIx6E52JVajZtevkcXLir4d+xsjYW1BkEJNz5d4
+	SnDZ/22ZZBw==;
+Received: from dovex.skk ([192.168.10.12])
+	by primex.slavino.sk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
+	(Exim 4.96)
+	(envelope-from <linux@slavino.sk>)
+	id 1wWdHI-000sop-2g
+	for netfilter@vger.kernel.org;
+	Mon, 08 Jun 2026 18:56:45 +0200
+Date: Mon, 08 Jun 2026 16:56:42 +0000
+From: Slavko <linux@slavino.sk>
 To: netfilter@vger.kernel.org
-Subject: Logging SNAT'ed connections
-Message-ID: <aibwHhKDBOgr2p7M@fi.muni.cz>
+Subject: Re: Question on rate limiting on nftables
+In-Reply-To: <e8e26118c36111d0b4aa290e1e411ff15b6f64aa.camel@rodier.me>
+References: <DJ3MTZXMKPIT.1A41M4YZMF8UY@rodier.me> <8d84a240-b9ae-41f4-b111-33007909b0a2@app.fastmail.com> <74E543AC-1B65-4E99-8324-B5758DCBA669@slavino.sk> <e8e26118c36111d0b4aa290e1e411ff15b6f64aa.camel@rodier.me>
+Message-ID: <CF337785-88C0-4EF8-95A7-2C281AF067A7@slavino.sk>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Clacks-Overhead: GNU Terry Pratchett
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi all,
+D=C5=88a 8=2E j=C3=BAna 2026 15:01:37 UTC pou=C5=BE=C3=ADvate=C4=BE Andre R=
+odier <andre@rodier=2Eme> nap=C3=ADsal:
 
-how do you log SNAT'ed connections for further forensic purposes,
-when somebody complains about your public IP address and you want to be
-able to find a local user behind NAT?
+>There is a big advantage on changing the port number, though=2E It is
+>reducing the noise considerably=2E Also, a connection attempts on a
+>different port should immediately raise attention, as it is involving
+>more than a basic SSH scan bot=2E
 
-I used to run something like
+I used high port for ~10 years=2E Yes for first year or two
+the noise dropped significantly=2E That is from server where
+SSH access have only i and password auth is disabled anyway,
+thus i didn't watch it then in detail for multiple years as
+it was just noise=2E About 5 years ago i did some closer
+inspection and i collected some stats, and i found, that
+in average there was attempts from ~1k unique IPs daily,
+with spikes over 2k daily, i decided what i stated -- not
+worth to setup non-default port on clients=2E
 
-conntrack --event --buffer-size 1600000 -o id,timestamp --src-nat >> $LOGFILE
+Thus again, changing port is only short term solution=2E My
+scanners catching stats (on some sort of honeypot) shows
+~8k unique ports scanned in last 90 days, and that are only
+most obvious scans blocked after first acces, without well
+known scanners (shodan and familly), which are catched by
+other way before=2E=2E=2E
 
-which did what I want. But now I tried to run the same on AlmaLinux9 host,
-and it seems that --src-nat filter does not get applied - it shows
-even connections which are not SNAT'ed at all, because they are for my
-own IP address:
+Try to guess how long it will take novadays to discover,
+that your SSH listens on different port and how long it
+will take to appear/share/sold that info on some dark
+forums?
 
-[1780936563.343940]	    [NEW] icmp     1 30 src=128.1.227.61 dst=xx.yy.zz.13 type=8 code=0 id=8724 [UNREPLIED] src=xx.yy.zz.13 dst=128.1.227.61 type=0 code=0 id=8724 id=2525400839
-[1780936563.343994]	 [UPDATE] icmp     1 30 src=128.1.227.61 dst=xx.yy.zz.13 type=8 code=0 id=8724 src=xx.yy.zz.13 dst=128.1.227.61 type=0 code=0 id=8724 id=2525400839
-[1780936565.281121]	    [NEW] icmp     1 30 src=128.1.227.61 dst=xx.yy.zz.11 type=8 code=0 id=8724 [UNREPLIED] src=xx.yy.zz.11 dst=128.1.227.61 type=0 code=0 id=8724 id=2574615308
-[1780936565.281167]	 [UPDATE] icmp     1 30 src=128.1.227.61 dst=xx.yy.zz.11 type=8 code=0 id=8724 src=xx.yy.zz.11 dst=128.1.227.61 type=0 code=0 id=8724 id=2574615308
+regards
 
-Here xx.yy.zz.11 and .13 are my public IP addresses. Why do these connections
-show up in the conntrack --event --src-nat output? Thanks!
 
--Yenya
-
--- 
-| Jan "Yenya" Kasprzak <kas at {fi.muni.cz - work | yenya.net - private}> |
-| https://www.fi.muni.cz/~kas/                        GPG: 4096R/A45477D5 |
-    I don't like Python; its lack of inline, anonymous, multi-statement
-    functions makes me sad.                                --Eric Wastl
+--=20
+Slavko
+https://www=2Eslavino=2Esk/
