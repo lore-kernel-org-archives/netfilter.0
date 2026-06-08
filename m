@@ -1,119 +1,126 @@
-Received: from fout-a4-smtp.messagingengine.com (fout-a4-smtp.messagingengine.com [103.168.172.147])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85814395AD1
-	for <netfilter@vger.kernel.org>; Mon,  8 Jun 2026 20:48:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.147
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 174783AFD12
+	for <netfilter@vger.kernel.org>; Mon,  8 Jun 2026 21:54:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780951714; cv=none; b=ZMbai4LmCx42/0yoyMvfVVdQ74Oyd1Pvptv01FpaZNyamRBT4g2+1OCHN9IJb6xqThb+cVwV18d19zcREVTZkQ3UCVHYl0S505bkpVSuKpRmyL8zc5jI8jPu5F0QGMO8OUSjEyFX1QWNczDaNraqqrOIMproDXjnmC+rrjESd4E=
+	t=1780955682; cv=none; b=nmLZvQFA3vMfcpNIoG3jQyK+6hJoOKSg650PDAiOuDKXvb/uvvLzPSr3q3oo4o27AWq/i7X3iBJAkpmNXEM+RcITpq4PvZr7Rjyo3CNJ6Lgh1qYdMXUsmXutoBAvE0bCnrPO5pKKC8xAuvUqL+IT5FcaWr8W19++UWCkMQZdzNg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780951714; c=relaxed/simple;
-	bh=5jr9Hd4pNQGGirD4Xzi50cpThr3niVbZXSNIipF+qzs=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=lGzkIquCEmQnsSZeppJJbiMseYXFyvSBhv48O8f4tdV876pu1WgCv+46Ax7/5Miy1dyLKOyS7o9slQ95qU3407hDFW7oRJW3jiefeq63HyARqTSDnc2NFT6fVVfzQnOeIMCpFoklcUkk5LNafSoQgcT6rB4gHyk6yVRC6SdBJLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=XGHm4IEx; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=LC7yo85R; arc=none smtp.client-ip=103.168.172.147
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
+	s=arc-20240116; t=1780955682; c=relaxed/simple;
+	bh=KRFm1ESgS9dXedDALRk5FyV3w7fIXk6MXYFV+iZ34TY=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tao+JWvczfF5GVAfs2CyaWPJLKqGF/CTR3S4ZXDF4WsDnJJxfrMqJqEg8WyP6C0q0Qjz5EIXS5awSU8+/5G4AYIFWX1IiAA3h8MKdXctQOhhOR4kPhQydedZ+2yys//f3lyATJyB4lqIK+yCoGfs8PP7+2QdP0a7El9+5D0PO8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZmqeBN3L; arc=none smtp.client-ip=209.85.219.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="XGHm4IEx";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="LC7yo85R"
-Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
-	by mailfout.phl.internal (Postfix) with ESMTP id BD6C9EC012B;
-	Mon,  8 Jun 2026 16:48:31 -0400 (EDT)
-Received: from phl-imap-10 ([10.202.2.85])
-  by phl-compute-01.internal (MEProxy); Mon, 08 Jun 2026 16:48:31 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-	 h=cc:cc:content-transfer-encoding:content-type:content-type
-	:date:date:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=fm2;
-	 t=1780951711; x=1781038111; bh=wzkvCpPqP6Fgr7J45ROD848+1F+8A/aI
-	OxTe5VQGFcg=; b=XGHm4IExh+nfZoQiuTtY2Qta1SLOtV5mKjdpfkGOQqJdMium
-	Fpr9Gk4C8tF/Kwus3VOR0qw0ZYqhX/gv4Ml7aTuEStWNgl2dLAR9sjvRD1+qjghe
-	YbkLlE/F9o1crjtifcMEyrHHGNdomhXPoZ9fHheImCwtQm5QA7GcezIYvrN/91Qp
-	LRJx9IgaQeCbHGp8KCj8ZYw+jozo0ge8MdXtxucOfiwmAfKaMdVEknMGG7KWls2v
-	f4TQDLVHmw4P+YflBj4wTVPYbtVIMjz1lfF2cQNoD3opR7syS0LilVW41haCZuxQ
-	9GrgEwjP/xBWi2e0MO498/c0/zO8sa30emaJ2A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1780951711; x=
-	1781038111; bh=wzkvCpPqP6Fgr7J45ROD848+1F+8A/aIOxTe5VQGFcg=; b=L
-	C7yo85RSOmZCNxuxMkhD2bVPal3Cl6IFbZ7JTTHAC9f/RICLB1Ev/Es9hJp+68rE
-	0uaoebejYzUuy4BFDywSw8URcAfMkltx9f1TFy/goXU8EViDh45q2rkwnwn1WbFz
-	bOLgwp1ojXZb8TrbD8//zf5QfukCLdZwHQXrUc1XcTA57vuntc1/2LGfYvQsQJ/z
-	QPqk+ziZKzPOr3xKDb3H5jVJAUnM0rALW5BIp3SPN/Jo7TE2YndTOVEq5H794UoW
-	KSghH6IAK5WfegUNBoVBtGFRHt8BAbIgZGyrR8qT7Q9jmDm0ojZKKGKLntjkZCTN
-	fK6HEYPo2bha0GBYTV2VA==
-X-ME-Sender: <xms:nyonajFfi1Zq7uoEZOyHFKp7q1TSxZ19pXQREgYwim-ujL2zd35GsQ>
-    <xme:nyonarJhmCtDksQz4PTJSPIxFivUYbHKZPE-NEI5DclMZ0Gd07Fv-UtpSON-o2_yx
-    0ldfmprgLPy2suLePKx5OhqqprjAIEpkGT-6Onwz6EUawSlP2w>
-X-ME-Proxy-Cause: dmFkZTGAY3PxC6obfyp5fgBI0ma1UOqUV7ypxXwWBUZqJ8EsDcUSBrCjbznVFQZDmXSU7L
-    R7ONub2ck1Xv1z3kruzoTcRT3iZq4ZeS5GVALcluExRkaGSVKFcTl0UAShtC+npGoWcscb
-    F6AtoiJmjg1M77gi+dpxP8ngH4aiS3aPYLX9G2WRcrmNxFKeXxrPMX/aWbRHgFnpIFuiBB
-    U2Lu8Q3Pea9ZhEb1UHKjZTd3d7N6I+IobjWVwYg0i7aeiHGljFmMlIzHF2P3Ks8dgAX5/G
-    YKjbkE73R4AC+swPiEqfIAqnktFRpM1JPzI+ho6s2PEUSE4BVDkAUfTZ996Hc1QHGJGesm
-    gIck2AOq0HiRiC80O3x24VfZwJjHPRH26hewKqLPyA/hi4ETT1U8sK4eVW7YhpnbaXOJmG
-    cyZH2987rGEbVv0dC6V0A4jeZMpcH0EaSM66nbTFlg+D6O/MRB7uryf0ImG5fzO1/Phy3j
-    aBmoOiXp3XlyrLJeCTSabfY8jjr21TT71LvEEP4Uda2XAF/jJAU1kt6oqe0Pker+y7k7bR
-    0d29TkmvuaX4HXG3gveRrxnO2dtGuilEhw5V5UXw7JxGoeUvRKXyB3NbrPq9+iN8zFB5Tc
-    7YpVwIVw0UFvXrJx8MTCws11wfYrnWKZyTNl5RTl32PyeI4VHl2+0n3ZvPrA
-X-ME-Proxy: <xmx:nyonaq5LcSTe8KrB9whaK31V_GaxJN9orANUOTDVO4fDoaeTXmMgKQ>
-    <xmx:nyonaoN4O5Rf4nXZCHTHaZ_NOfMOu-OWQE-G0hammC7SPk-SA_nOPA>
-    <xmx:nyonaom08BkMNUoUBYa63LiyKZIG3XqL5C0GcN3MdsL6_bvKm_9e2w>
-    <xmx:nyonavTrzTv0g_jNjHI_ka4XJ_InPnILWDg663_v9hSpFSsgvnBang>
-    <xmx:nyonalkkWMFfSzXSBUd6BEBMz000hkWLqUZ_zxom9U9IF76l74OH-KdW>
-Feedback-ID: i2431475f:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 36A79216008B; Mon,  8 Jun 2026 16:48:31 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZmqeBN3L"
+Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-8cd45d4b7e2so56640076d6.2
+        for <netfilter@vger.kernel.org>; Mon, 08 Jun 2026 14:54:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1780955680; x=1781560480; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=gqQXM3rYyyS4p63Kiet3gcvAwBS8hya1zjYsH6RJ7F8=;
+        b=ZmqeBN3LRQ1ZjklBEc8kGEOr97bYpB+9kLZNqku/d11Lj0mPH72QSQYOi0nbbhdD7f
+         /ZwbtjpHCgcoWn9CczSm6O3EFGtbixmTMygDP8yabpD7A5+TR3IScpaD4zIqFxBwGGsP
+         BhZ+dyNLnUmP1t3GkoqqpkYHVce8UuyIz7LQCj0lXtuNYdQtxsPiLBhlePGjxaL5BXQX
+         xwCWPKnEPX68vhvYP+KZjyyq6bc9tlN6zIoyfzsoAjgbagSOQc7ilUZywgmYOnV3pMWK
+         zdP1vjUgcUU9f9ugLXusGKow+t3vpEhsNQ9SBcugrzk3AbhzSWraYbiBdtYaA5vszsmO
+         Hiww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1780955680; x=1781560480;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=gqQXM3rYyyS4p63Kiet3gcvAwBS8hya1zjYsH6RJ7F8=;
+        b=cFGZTyxop9WpL6vsJL8E5lT/fein0hGb158lDw18ukFCCn35U5vqEUjVI2/ArbgBNy
+         ZOBah7cN0dYSBq6ll1ATf2NhkKhrLjket43bLkLSCJGw3N+AGtJxMrPpjR4u0ooiuRMp
+         A3I/W8SyNqoD2MmOpZJYYi9hApClOX+WOllRXLIgygyzBIDDRNKJ4K7p9knARS5uWkjE
+         lgqLeCIYI/QeP6YnC0+f0x6wYKPUx4W4qiR3mkty2xoKkkCYYK3GeupHpuNJr/2NAxVn
+         SndS1oDTpIXkqX+cQZUPNpcrroJ215Xdnutln8j7BphbL1MXNvcawNNx8QZDoBfaTJyZ
+         Nxsg==
+X-Gm-Message-State: AOJu0YzyHo3/P80cI8oLg25e/o1ed/w7pF4y0tdjeM5fuahfV280tX0r
+	eFaczJoTL6PggSrEhop5K2VRSE8KcvBBImnaZy5SuepPFdZs63/LvjjnxjjtWQ==
+X-Gm-Gg: Acq92OErQC62UlitML2ASoW5PspNeDbPFSr6zzNnmnTIYCMogPVaTlmKUCKmko3P84y
+	9QIEzoZb7Td+drXoXxWXiW9mJBkHJVVSm9bWk6e0rylNUGi0G8ocoQm+FIoO0ccnA2E7C1rtfSr
+	S/B7dFiCcJrTBx9ECgyBPH/TEssWlPjXhgNTiFtZ/JTUwo4a5zO53YOu9FPb6qxoyRRuQvoXt4p
+	Lxek7R32fIGwM4LtZEuxACdGGh/Rzm6sEY+7itzouybzsxKkEpyq0m0u/iKrjmRKr7lBlUYYxTV
+	z2DAGq1DM5nNld6kRppKE1/g4SgSwt77taZ0EfyxoGPNKjlI4D2P9FDYB5VmPm8u5xjUmI4vn6m
+	KluZ+C5134SoeKDlIU5DlfD7uBeLv88faxuvGhb+s+qzNPfvkWmeGG2grkl2jGGftJI/G6C5i5c
+	TgMorA87Od1eN8JHX4TwJOebA8b28=
+X-Received: by 2002:a05:6214:570e:b0:8cc:ccb:48d9 with SMTP id 6a1803df08f44-8cee63b0a85mr294737236d6.38.1780955680034;
+        Mon, 08 Jun 2026 14:54:40 -0700 (PDT)
+Received: from playground ([204.111.226.76])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8cecd277070sm176547326d6.48.2026.06.08.14.54.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Jun 2026 14:54:39 -0700 (PDT)
+Date: Mon, 8 Jun 2026 17:54:38 -0400
+From: <imnozi@gmail.com>
+To: "Andre Rodier" <andre@rodier.me>
+Cc: <netfilter@vger.kernel.org>
+Subject: Re: Question on rate limiting on nftables
+Message-ID: <20260608175438.34c41f02@playground>
+In-Reply-To: <DJ3MTZXMKPIT.1A41M4YZMF8UY@rodier.me>
+References: <DJ3MTZXMKPIT.1A41M4YZMF8UY@rodier.me>
+X-Mailer: Claws Mail 4.3.1 (GTK 3.24.49; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: A0ZtpkyXIlXs
-Date: Mon, 08 Jun 2026 21:47:53 +0100
-From: "Kerin Millar" <kfm@plushkava.net>
-To: "Jan Kasprzak" <kas@fi.muni.cz>
-Cc: netfilter@vger.kernel.org
-Message-Id: <3c59323d-449d-4f1c-abf3-2df0ada64cbb@app.fastmail.com>
-In-Reply-To: <aich5cMiSFlr1pcH@fi.muni.cz>
-References: <aibwHhKDBOgr2p7M@fi.muni.cz>
- <90d53169-3ae6-40a6-a01d-7fae27d24c8f@app.fastmail.com>
- <aich5cMiSFlr1pcH@fi.muni.cz>
-Subject: Re: Logging SNAT'ed connections
-Content-Type: text/plain
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Mon, 8 Jun 2026, at 9:11 PM, Jan Kasprzak wrote:
-> Hi, Kerin,
->
-> Kerin Millar wrote:
->> Unfortunately, it appears to be a bug affecting ICMP. Possibly here:
->> 
->> https://git.netfilter.org/libnetfilter_conntrack/tree/src/conntrack/objopt.c?id=7e5397b9167bdd7597be809b8f088ff333e1ad31#n189
->> 
->> For now, I would suggest filtering with something else.
->> 
->> conntrack -E -o id,timestamp |
->> perl -ne 'print if /\bsrc=(\S+).*\bdst=(\S+)/ && $1 ne $2'
->
-> Oh, I did not expect it to be a bug.
->
-> Anyway, you probably mean src= in both cases. Using backreferences,
-> I did it this way:
->
-> perl -nE 'print if /\bsrc=(\S+)\s.*\bsrc=(?!\1\s)/'
+On Mon, 08 Jun 2026 12:30:55 +0100
+"Andre Rodier" <andre@rodier.me> wrote:
 
-The idea I had in mind was to compare orig.src against reply.dst. Where orig.src != reply.dst, NAT applies. Your approach compares orig.src to reply.src. Those will differ for most flows, whether they were subjected to NAT or not.
+> Hello,
+> 
+> I am testing nftables SSH connections attempts limit, and I read about "meters"
+> 
+> I would like to know the difference between these two methods of new connections limiting, and to ensure the first one is correct.
+> 
+> The first option:
+> 
+> ~~~
+> table inet filter {
+>   [...]
+>   meta nfproto ipv4 tcp dport ssh ct state new,untracked \
+>   limit rate over 10/second \
+>   counter add @banned_ipv4 { ip saddr . ssh } \
+>   comment "Ban SSH bots"
+> }
+> ~~~
+> 
+> And the second option:
+> 
+> ~~~
+> table inet filter {
+>   [...]
+>   meta nfproto ipv4 tcp dport ssh ct state new,untracked \
+>   meter ssh4 { ip saddr limit rate over 10/second } \
+>   add @banned_ipv4 { ip saddr . ssh }
+> }
+> ~~~
+> 
+> Is there any advantage using the second method ?
+> 
+> Thanks for your insights
+> 
 
-I would tend not to use backreferences in that way because it becomes quite easy to make a mistake.
+The first method, as already explained, effectively drops packets when too many arrive too quickly from all sources. The second tracks individual IPs.
 
-$ printf 'x=123.45 y=123.45\n' | perl -nE 'say "matched: $1" if /x=(\S+).*\by=(?!\1\s)/'
-matched: 123.4
+In my F/W, attempts from internet to access ports that are *not* open/forwarded are logged as 'badtraffic' and dropped. Attempts, again from internet, to access open/forwarded ports too quickly (N SYNs in M seconds) are logged as 'badtraffic' and dropped. The limiter looks at all open/forwarded ports.
 
---
-Kerin Millar
+I also have a script that runs periodically; it gathers the IPs from the 'badtraffic' log entries (and IPs from other sources) and adds them to an IP set if they are not already covered there by a /16 or /24 set and not already present in the IP set. Periodically blocking them allows the rate-limited IPs to expire from the rate limiter. They stay blocked until they fall out of the logs.
+
+This and the other measures I've taken have reduced bandit* traffic from well over 100kbit/s to around 3kbit/s on average. They've reduced guests on my forum from over 400 (up to 5000) to less than 15. Alas, there is one drawback to my methods: I don't know how many false positives they trigger; my limits are probably a little too tight. The rate limiter has 2048 entries. At present, the sets contain 9000 blocked nets and 535k blocked IPs. That's about 1/8000 of the internet, so my methods mightn't be too aggressive.
+
+Neal
+
+
+* - Yes, I call all of those miscreants 'bandits', for that is what they are.
