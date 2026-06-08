@@ -1,98 +1,137 @@
-Received: from smtp.rodier.me (pigment.rodier.me [45.63.101.247])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fhigh-a8-smtp.messagingengine.com (fhigh-a8-smtp.messagingengine.com [103.168.172.159])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16B27322B72
-	for <netfilter@vger.kernel.org>; Mon,  8 Jun 2026 11:31:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.63.101.247
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0553A23645D
+	for <netfilter@vger.kernel.org>; Mon,  8 Jun 2026 12:46:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1780918263; cv=none; b=BTUcRfZI7/omIAYjo6wgb+C/ialROxekgIuRyCPKRzGg5y6+ygYYpVibvkK/n17ZgKh58BGAuLjq8JpVmYlLC/Om6ZAutVGrXkFdu6ArbqnnvrN8floTFDiC/b5OCpxHLxEqxxB8tIvFuglmozdrVgRx89yISiJkm/dfdz5ClXs=
+	t=1780922778; cv=none; b=NFSJ1ZNs0x95CoFog/qaiLUJ/JPV4BdNHjebLRNPyuO6B4Az7hPsLuwSwZj9k6RmJcdBBK3ieFExfHW+P1LbJCuj5ei/2YeVsvJ2LQuBXlne6ADg2zujuZpqKE2c+0YSGxQkTcflUVVh9rC14mOoSfVVHjQfpU9CrSATJdd9gGk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1780918263; c=relaxed/simple;
-	bh=MJ6EKGPNMyY3ATvHMWtn416ZQBl1T4TqaoRxam+hwAQ=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To; b=Qpme32m1xalLBuQ8DEwzRfTibTesUWudSpld4+GVw54dWu/2/ZzJpcyIMNdAv6J3qpsSAp4RRjpLYXXjU+jqDPN5NYj6SGZN5arbj2RL0u67PhJFJuStqM58AtTSBlfBPuqVhRMKZxRuisPhwAV6DNzTxNzkL1PthvJvgwGnAxM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rodier.me; spf=pass smtp.mailfrom=rodier.me; dkim=pass (2048-bit key) header.d=rodier.me header.i=@rodier.me header.b=DjemDFow; arc=none smtp.client-ip=45.63.101.247
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=rodier.me
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rodier.me
+	s=arc-20240116; t=1780922778; c=relaxed/simple;
+	bh=023rA8wN7GYDjgGoZkI/MbzHOcDZbPWDE2WCckIOiR4=;
+	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
+	 Subject:Content-Type; b=IxDgPSHml/RvIXkbtvSBKh1XEl0zEeyOR3d/m+IIsU0l2yXxwB/3yX0K/KSKRnAkTQrdc5qxi2f85R2ok3HTZHRNiJalB4bfHbQJL+4bHHR25llw2gOTumqA0TScaJ2MBFsbeTbPqr6nVZ3kly1s3tsRnR1y7/CIsQJVfWkffX4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=DGXaWjpy; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=dYLMxpGf; arc=none smtp.client-ip=103.168.172.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rodier.me header.i=@rodier.me header.b="DjemDFow"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rodier.me;
-	s=pigment-2026; t=1780918258;
-	bh=MJ6EKGPNMyY3ATvHMWtn416ZQBl1T4TqaoRxam+hwAQ=;
-	h=Date:Subject:From:To:From;
-	b=DjemDFowKGowaMU2rAK+Fvc9GQqreTJB5Brg0AWQz//heuZ5VouxAP4IXlh0NzMI6
-	 6XwaRM6AdSO1R30qaXtKP9ws7iLfdPIluVwgzzUo+OPbPcBpeJRxbfnybrdO9iIIsE
-	 GJWrEGf+1cjv5gGmBTgZATwh61hYWPCl8l+AjLA+ZkZAzp/2o9ACg6z5xSCyAeMuLu
-	 KdH20n+6jP488gZyxcFPqWWTY7aedl1kCP74ztdZyTcm3jRyefLCNopEKqjmE+wDuZ
-	 LhVlLQ22KZFb+mGzFTUp2NnPmaenqw0iwrnSIxGVF4tv5PN89dCmKHjD8NildpCFLx
-	 RibeXRnqaUdvg==
-Authentication-Results: smtp.rodier.me;
-	auth=pass smtp.auth=andre smtp.mailfrom=andre@rodier.me
+	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="DGXaWjpy";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="dYLMxpGf"
+Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id 4104114001B6;
+	Mon,  8 Jun 2026 08:46:16 -0400 (EDT)
+Received: from phl-imap-10 ([10.202.2.85])
+  by phl-compute-01.internal (MEProxy); Mon, 08 Jun 2026 08:46:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
+	 h=cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1780922776;
+	 x=1781009176; bh=4UcXtT/hyWvJrWwnteXqom+X8zuHFPmDKfiC9nAIu4Q=; b=
+	DGXaWjpy8tKqEujWwwu4UGNeW7f6uJWL80cVOd500uBJ8Bsa9WViq26R4x25YLU0
+	jtjj+NWdj/roKPCkE5uhOmUEuZa2CRZ/ixa8M+PJmeY+DLcz6ULYT8UfFQcWqAP8
+	q2qPJOgib57kUsCA6RBToudHcTEnAtUcvGydwm9tw8cnEdvwGdnImdfslygmEbvD
+	4bX9umvjNQRVT+bY33zLxkepm4Qf9Ou4Lv8vwunDyQj8RI/WFp7f8AgiF7Pio6tN
+	V9E8Vaa7OQURaHY53nlDBc0+/ufg2XNH0Gp3nT8VWWBRDdCWPtkuY4LElafCEQiF
+	qhmSlp1P0oJs2Q4S4oMzDw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:content-type:date:date:feedback-id:feedback-id:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
+	:x-me-sender:x-sasl-enc; s=fm1; t=1780922776; x=1781009176; bh=4
+	UcXtT/hyWvJrWwnteXqom+X8zuHFPmDKfiC9nAIu4Q=; b=dYLMxpGfxqVFiwqkx
+	Qx6hMc+FXjXq1ODkPorRZ9Gg/7e8aoSX4iafAclbC9WZM7c3k4cBwsON7Q/w6tpa
+	UDI59ecTHfhYedbjSPwulw2Qx/iZ/kZPlvT+wsdGGUwi4hDWwRHMsAuoWAyIaqUq
+	m42HpSo0ZazJUQQ04TXOAIXEgoun91pdQ9DBvEwRVQ/xXiZfveHiwRMEHKr36PTa
+	eamGgANszO0l32LltI60qyms+TLVCKmmOizmDhG4Qz8h2qTA3dNUpVZfdO2pIgsc
+	Yddz9fclZ3u9AKTBcvA0IsyxeuBo2tbFOkgj1zyKGDrRqNmczKvo/jqTzDqpc4Zg
+	2K30w==
+X-ME-Sender: <xms:l7kmajqLdfRupjlikgt3plS0a258Y0MVbquZr-EEEqCMbQS-6PUBYQ>
+    <xme:l7kmaoc3KTIW9dosLdW9zCG-yULXSzi5qcPy2fL1dflzeZwoliazuuWUp_V-qtER3
+    1kSMOV2qfM42csI3IxgfesiiIeFDWt4ENvDm149gYGcY04BWb0>
+X-ME-Proxy-Cause: dmFkZTEhpJWXUAUmMD39+K+77BzvvrM2w0AKjJqB2UBpWpY6kk1V/KsMHZNpyEou4x2nfS
+    5dIOSPsKwQgV0CzohRMrb/Dr3a/F6G7H3LvV7B+SMLugqvXnW2m+HmelmEEfm3pA4+1ozz
+    Hv1bK4JUejsfrVOFdx/OluXfJnyIM1ssOSRx/ZwbdAXX8HUbXJWdoIyD/ZoSsPykxik7oR
+    moNdjzmyDLBJiBzJGP0uAghsM4QRThg3hGLYv4tLKZSUprRhOxQ8wveHQFtC6juL4+TqVq
+    jKsZ57yP3kP4HfHuls0n+zkupu5K84i4iJqCiPLAvz00zaULZPttq9LwBB4tfR3pC6ZFLu
+    q7zNnCSn84RaaSOe12JZ687tFbNAlUQZKYTV0sk0711FE7ICCiAVD3hf3smdhNZkJqvQae
+    CIjusr8LZ1yWJU4B6DMpPJN5ViO42jOHjU/emxmBlDMgdgjFrnhQh9t6jbFAJGB72nKItT
+    S3TX8ju04iiGxJw7yf3FZzCulW9fwUuTuJFbRONAgxmDyZ+orrhiW1hKwF/kwuWVcZTy7n
+    3z355T0eCoBpWRLDKwA6QJiqhhCYb4OMdkB13HSDhEZfD51X3wwAij8g9qkoMBw7CDY/53
+    vHT784OWMlT8bkpC1GMThI9Vop+Bt/ser6rRhGZlX1DIiRa4jMWvsEhTKsSQ
+X-ME-Proxy: <xmx:l7kmauU0gc7hSzODt02tkP86yvIoceM_Fz-NWqQlr0fyW166yOn-zg>
+    <xmx:mLkmaoiMf4MTq75TGUoEenRURpztB7ptFn5dKTn62yltcx2DZzQe_g>
+    <xmx:mLkmap-Dt_w2l7WQoRjinsvgPNAAaC5QErpFo3T8G6CTa69DlQ6fyA>
+    <xmx:mLkmaiDQj1DY7bPSmlOQFdRBerWHwpUmKMZ24yxpnvnygFwXuIx9jg>
+    <xmx:mLkmat7pDXQSzE42s-l6HyhaKsIxNVFSMzNYGsXtrHEDTm7Tt02QcfV_>
+Feedback-ID: i2431475f:Fastmail
+Received: by mailuser.phl.internal (Postfix, from userid 501)
+	id CFFF0216008B; Mon,  8 Jun 2026 08:46:15 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: multipart/signed;
- boundary=278e88c6f2398b619962ac0a3ffc48329e3e2fb0ea2b2008d38e038e6afe;
- micalg=pgp-sha512; protocol="application/pgp-signature"
-Date: Mon, 08 Jun 2026 12:30:55 +0100
-Message-Id: <DJ3MTZXMKPIT.1A41M4YZMF8UY@rodier.me>
-Subject: Question on rate limiting on nftables
-From: "Andre Rodier" <andre@rodier.me>
-To: <netfilter@vger.kernel.org>
+MIME-Version: 1.0
+X-ThreadId: ABFZICgcHfNg
+Date: Mon, 08 Jun 2026 13:45:55 +0100
+From: "Kerin Millar" <kfm@plushkava.net>
+To: "Andre Rodier" <andre@rodier.me>, netfilter@vger.kernel.org
+Message-Id: <8d84a240-b9ae-41f4-b111-33007909b0a2@app.fastmail.com>
+In-Reply-To: <DJ3MTZXMKPIT.1A41M4YZMF8UY@rodier.me>
+References: <DJ3MTZXMKPIT.1A41M4YZMF8UY@rodier.me>
+Subject: Re: Question on rate limiting on nftables
+Content-Type: text/plain
+Content-Transfer-Encoding: 7bit
 
---278e88c6f2398b619962ac0a3ffc48329e3e2fb0ea2b2008d38e038e6afe
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
+Hi Andre,
 
-Hello,
+On Mon, 8 Jun 2026, at 12:30 PM, Andre Rodier wrote:
+> Hello,
+>
+> I am testing nftables SSH connections attempts limit, and I read about "meters"
+>
+> I would like to know the difference between these two methods of new 
+> connections limiting, and to ensure the first one is correct.
+>
+> The first option:
+>
+> ~~~
+> table inet filter {
+>   [...]
+>   meta nfproto ipv4 tcp dport ssh ct state new,untracked \
+>   limit rate over 10/second \
+>   counter add @banned_ipv4 { ip saddr . ssh } \
+>   comment "Ban SSH bots"
+> }
+> ~~~
 
-I am testing nftables SSH connections attempts limit, and I read about "met=
-ers"
+This sets up a single token bucket whose state is controlled by any host that sends packets to port 22, facilitating trivial denial-of-service attacks. Consider the following scenario:
 
-I would like to know the difference between these two methods of new connec=
-tions limiting, and to ensure the first one is correct.
+1) one or more third-party hosts hammer port 22, keeping the bucket empty
+2) while it is empty, you innocently try to ssh in
+3) you are added to @banned_ipv4
 
-The first option:
+>
+> And the second option:
+>
+> ~~~
+> table inet filter {
+>   [...]
+>   meta nfproto ipv4 tcp dport ssh ct state new,untracked \
+>   meter ssh4 { ip saddr limit rate over 10/second } \
+>   add @banned_ipv4 { ip saddr . ssh }
+> }
+> ~~~
+>
+> Is there any advantage using the second method ?
 
-~~~
-table inet filter {
-  [...]
-  meta nfproto ipv4 tcp dport ssh ct state new,untracked \
-  limit rate over 10/second \
-  counter add @banned_ipv4 { ip saddr . ssh } \
-  comment "Ban SSH bots"
-}
-~~~
+Yes, because an individual token bucket ends up being maintained for each ip saddr. Be mindful of matters pertaining to resource consumption, though. You probably don't want to size your sets with the intent of being able to cover all 4.29 billion addresses that exist in the IPv4 namespace. As such, it might be preferable to ban shorter prefixes - such as /24 - rather than individual addresses [*]. To do so would reintroduce the problem of collateral damage (as with your first option) but would limit the blast radius to batches of 256 addresses within each /24.
 
-And the second option:
+It might also be useful to reconsider the problem that is ostensibly being solved. If the problem can be characterised as "I endure too much log noise from sshd and I find it annoying" then perhaps configure sshd(8) to additionally bind to some other random port than 22 and expose only that port. If, instead, the problem can be characterised as "I'm worried about being hacked" then be sure not to permit password authentication.
 
-~~~
-table inet filter {
-  [...]
-  meta nfproto ipv4 tcp dport ssh ct state new,untracked \
-  meter ssh4 { ip saddr limit rate over 10/second } \
-  add @banned_ipv4 { ip saddr . ssh }
-}
-~~~
+[*] This is made possible in nftables by its support for bitwise arithmetic, e.g. "ip saddr & 255.255.255.0".
 
-Is there any advantage using the second method ?
-
-Thanks for your insights
-
---=20
-=F0=9F=8C=90 https//rodier.me/
-
---278e88c6f2398b619962ac0a3ffc48329e3e2fb0ea2b2008d38e038e6afe
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iIYEABYKAC4WIQQgxtr4dsuCnRR2flvDkWYfWv7tQgUCaian8BAcYW5kcmVAcm9k
-aWVyLm1lAAoJEMORZh9a/u1Ch4sBAMQs2TjOKY098XI9CG6iSgIYJ6EWKXLnkT2b
-9LEW2HfeAP42BWmL3FvOdW7rOuZE5ZimTelte9VV2W6tHDiEJuZ+Bg==
-=ICDl
------END PGP SIGNATURE-----
-
---278e88c6f2398b619962ac0a3ffc48329e3e2fb0ea2b2008d38e038e6afe--
+--
+Kerin Millar
