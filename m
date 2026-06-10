@@ -1,120 +1,89 @@
-Received: from fout-a6-smtp.messagingengine.com (fout-a6-smtp.messagingengine.com [103.168.172.149])
+Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99CA93E0C4C
-	for <netfilter@vger.kernel.org>; Wed, 10 Jun 2026 10:09:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.149
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EE6A40D57E
+	for <netfilter@vger.kernel.org>; Wed, 10 Jun 2026 11:18:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781086189; cv=none; b=RdpYlrDKwDmpGIRxKFdLHDObYbUHbvahkh4LH/Fc7fiKvsiiBo+Qwwu7CzmW6lKDlP3PlGIIeC2dZ6MJCc9p3vuycCt1J+qhQketyq8etIpDkHqz8PAssKB7fRdtBRvBf5x0ms7j9pBcCnp1yXyqkeShlZqwLfadt0ONOMlw1PI=
+	t=1781090286; cv=none; b=hZutzmNNNG3UboHluhcL89ek1ZpgMi3oys2UwvznBgWty4khyeJT5ap5Rq+eQVRflpvVB2vzq4Rw/Uy3w5XNONvDcabWQy2UU0QBE2Ee6zuHg3JpUJvy0C0s/LwQzg8a/7/MykzwFjkV1QlS/lyy8jQXJ2NBKfm4PyCEDMbDA0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781086189; c=relaxed/simple;
-	bh=g8UaIMNZ6Oo1D6i/+vRtHEgZfok/J+jFfuTIBNXcovI=;
-	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=CV3gJqygyRl7amIV7vyUFH35Px6g4b2YlC/6O+eLGIZRF8v2jm3FWbFZLRxk0bi5PSt9kVdAyYUCvfGEgQmn2xPOPEjlUlgBcKFL7oqPUowHsM0pZNoRJ9T+6zf8hzb5dh99gCujl3SC0Zu9W5noa7YrRTKTodG11op3pFMYAzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=BscY8kO0; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=B2qfAvye; arc=none smtp.client-ip=103.168.172.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
+	s=arc-20240116; t=1781090286; c=relaxed/simple;
+	bh=R01kFp57lBZRpXWXfghh83KwrOvf/n27juSPfd1TukM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZIklry4gEceKZXnAAUG+ehvDHcx8S/4vUpTl6JLXG+h7pLgGcaTlFNf/l6A/FiZmHD0WJjvkQJO9UwzW3p3bhnN7dC/75oPBBW3kO36A0rBMWkqkrRIDS1S8Pu3yI2e1UmqMbPn6tvTz3rA2+qnhZaYYEla2Ex4ePmUQQnx9gOA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=GmCuoHJO; arc=none smtp.client-ip=217.70.190.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="BscY8kO0";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="B2qfAvye"
-Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
-	by mailfout.phl.internal (Postfix) with ESMTP id BDCD2EC01DA;
-	Wed, 10 Jun 2026 06:09:46 -0400 (EDT)
-Received: from phl-imap-10 ([10.202.2.85])
-  by phl-compute-01.internal (MEProxy); Wed, 10 Jun 2026 06:09:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-	 h=cc:cc:content-transfer-encoding:content-type:content-type
-	:date:date:from:from:in-reply-to:in-reply-to:message-id
-	:mime-version:references:reply-to:subject:subject:to:to; s=fm2;
-	 t=1781086186; x=1781172586; bh=c/hOJ/KJcEicZXZqBABzylXmivEPvIsP
-	c3Z48/SSTxw=; b=BscY8kO0BOQ2a6zI/zSd7YrTvgouhfgkSxDPpJd1GlLytkbV
-	AxXENVGD888nG21jPQl7lv62UpdPO3/Q3l0M7p4BIVEgpgg9T9ARzv9zWf/vh4pn
-	r6XolUWYni6GetHhBpFjyVrrHT0185yBgsMbcgnsFnzLUB+6Pf1GEW9wIinZOPPE
-	JuvFaHxMpPXsPWtwoiOFhOSpmDxhIx7w9QT+UqRKDv9b1mE5KHen0QIJzWWd6CuW
-	XYnrrC5hDAmv3Xn9C99gu7/0CHXXsU/uZNXBXROwJCN+Ad0mGHzM4Qm1sji0J2DY
-	vXiGQirysvtj+gOUKqH/u7odcaD1zHWI0OjwLQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1781086186; x=
-	1781172586; bh=c/hOJ/KJcEicZXZqBABzylXmivEPvIsPc3Z48/SSTxw=; b=B
-	2qfAvyeR62D0Ze3w/OKfnYo300YwmSf1tLk8W7nlE32hyueEjD1FgUloer0wha3l
-	qXDgG5g9QCSfRIiqk2X730Vq5Wbn6aGOP1utsOG+rPQrtHLFQfM2xPuUFmeyhc5+
-	LE38mq9Pm/oHLpsIJZTDXsCQWokrj9XjRDZNQp1YrXC1v+pjcEGx57pMVOLmcCGy
-	Li7/GdZZSf5hRcU9Qt93F3zpCDYj4soR0HgkN1dl4tv98U3r4RsoE/1Jh+XY1tRQ
-	pB6ZYyZYOqBO6WzW0XajRBZXLB6VNqd7BEv1shayxvs93GZBbCSg8UgM27S6b5FZ
-	2QLv26eyneHR5XJgB5y/g==
-X-ME-Sender: <xms:6jcpahnRD_ZZ9M5FbllVKvB6Z0kM0ocFlcEGziGFTnD7ewAKmFy9Dg>
-    <xme:6jcpanpRM0femuXmmwdtpOw4kJRJ0qqzmQBJVL0JlTjTHLvD2fSWLmwCu2hW-ZHEh
-    3zEOO9EjufeOTTwiMTab_pax9KG5Wfq0noXIxu-pvN-fGgAFSUZ>
-X-ME-Proxy-Cause: dmFkZTEKjr9iLksxO0IEalRcMWDjlC7DmIxo45qGKRDr5L6mw5Xb1h670AeJ50ZK/ySqgL
-    YCPV0eWtI5/47Wg5CuQ3l23IY5mylUg0Sce+V40tmiv2TK5feKQGAimb52NWiJecxRt6Yc
-    BvrCjQxicuPuOMCIWNwnLWkhOBHpCLLbtoMPx8h374VjfPDjJJGd+Uv/dixAkPcpwVGLgl
-    GhwmkNMyXAGmDVzRoMWRHz6+sIPpEq70qVSoXvhlP8u91CXdf6vktzJCGKWKRvZX8dAC7p
-    bXqXNq1YqOFmYiJdza7Uv54sBPgDaL8DB7vGUAcFzmcFUcZrF91GwEBUuNaUtzNceYzQD2
-    sbeq4E3jyVsZFh8IZljPmYpAz/DTcwFBsqTpcPqxSE57SzBRnL6nEfnjF0MVIyMPoFJG26
-    68E4j8fKP1WPNwZlc8oHhp9JcUgo2JVOgxTxxp8qTSja3cB03t7zhOjhAaiDU5kSXuShz6
-    bN9urztdd7QUozuUsRoa/Xh2FV8DxFjl3z1qToFpzDAqcCYYUwUONMmH4ULS320gFGW8dj
-    MjKJkZ1UYAxzU66YiJLbe0A7g1oy31ZYRNYrtZc3/F6Oi6iXP+Tiq2I4fPt5VQWEn9ZPcH
-    b04ZsHWXvIJWS5nek2MdIGCq7ztYr36021Rs7mj3eJP4fYKbNM2mFOxHKnqQ
-X-ME-Proxy: <xmx:6jcpaujTD0TjYZdQYJSvAn2wK4GrFAJsWz_G_Jv0PdaReNDZ_DChqw>
-    <xmx:6jcpamwtyqWzl8CiUZz0MqE7LypFrPVgENbiU3iz-3ev0o8dLGj0jg>
-    <xmx:6jcpapLa1S2JK_2codogBzat_HnUsWbhpqjbNIOPi0tpp_TcgOcMYQ>
-    <xmx:6jcpalS9lstEuKcudgPCAlHC7Lrq3wSUOrzy_jbSV7VRXo4XN7N6LQ>
-    <xmx:6jcpatE1hy6HWBPOYVX-WdjwAXswRPO4jOvNHE0ooH9TVZjQyVbdAa2W>
-Feedback-ID: i2431475f:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 3C43E216008A; Wed, 10 Jun 2026 06:09:46 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="GmCuoHJO"
+Received: from netfilter.org (mail-agni [217.70.190.124])
+	by mail.netfilter.org (Postfix) with UTF8SMTPSA id A659E60196;
+	Wed, 10 Jun 2026 13:18:02 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
+	s=2025; t=1781090282;
+	bh=zXN9AnDAPBDHtaosfYTypOsJ0pxQ4+iscB1SEKzGK5s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GmCuoHJOL8Zvsu9+T6wz83r86XHTPC2JHgpiMD5sKAGQ/lC+mRdBQcPNuqFSILDij
+	 pP/5XQzYhBoiHxI4j1rfQarApr5leYvnFqIFqv3RGyBN3KU0fSRQ0+DrGPRbA9nHLF
+	 JyBkFtQVoCyyl6b/8JR5iBSWDcxkX/moG365nZMm1LcsQghHecvWbdJFKLb+w7A49B
+	 F8Mi1a1ImI9Vu25fxcgtv2X2BCpjNqX9MiGYRrAxaChQj0hwD1s8S1PsY/HF+8J3wZ
+	 lVU55M9x/HoLBi/+Rmwsz4iwEu95eocyjhJkAQPsxj1GB/+IwxkK7IfqWpP4CJGlZq
+	 vOwva7Q3i8DHA==
+Date: Wed, 10 Jun 2026 13:18:00 +0200
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Kerin Millar <kfm@plushkava.net>
+Cc: Jan Kasprzak <kas@fi.muni.cz>, netfilter@vger.kernel.org
+Subject: Re: Logging SNAT'ed connections
+Message-ID: <ailH6MomrFCvxH8Q@chamomile>
+References: <aibwHhKDBOgr2p7M@fi.muni.cz>
+ <90d53169-3ae6-40a6-a01d-7fae27d24c8f@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: AbmbupR3g_CV
-Date: Wed, 10 Jun 2026 11:09:25 +0100
-From: "Kerin Millar" <kfm@plushkava.net>
-To: "Reindl Harald" <h.reindl@thelounge.net>, "Randy Bush" <randy@psg.com>
-Cc: netfilter@vger.kernel.org
-Message-Id: <7ceb27a6-e16d-4f27-8b99-16d8256437a7@app.fastmail.com>
-In-Reply-To: <24394eb0-abf4-4825-9041-0554badd34a8@thelounge.net>
-References: <m233yv2r20.wl-randy@psg.com>
- <7b1ed82b-3bdd-4cae-bb08-7f8479778a7a@app.fastmail.com>
- <m21pef2ope.wl-randy@psg.com>
- <24394eb0-abf4-4825-9041-0554badd34a8@thelounge.net>
-Subject: Re: prefix len confusion
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <90d53169-3ae6-40a6-a01d-7fae27d24c8f@app.fastmail.com>
 
-On Wed, 10 Jun 2026, at 7:20 AM, Reindl Harald wrote:
-> Am 10.06.26 um 03:01 schrieb Randy Bush:
->>>> essentially, i am seeing the traditional ssh dict attcak to
->>>> 42.642.11.82, when i think i am filtering 42.642.11.80/30, which should
->>>> cover 42.642.11.82
->>>
->> sorry for being insufficiently explicit
->> 
->> the ssh attacker is getting through to 42.642.11.82, which is a piece of
->> hardware, not a vm.  it is the ssh port of a hardware switch whose
->> security profile i prefer not to expose to attackers.
->> 
->>      define VULN4 = {
->> 	42.642.11.34/31,
->> 	42.642.11.36/31,
->> 	42.642.11.40/29,
->> 	42.642.11.48/29,
->> 	42.642.11.80/30   # <<<====
->>      }
-> you guys realize that "642" can't be part of an ipv4 address
-> and "should cover" is best answered with ipcalc
-> in that case it says the input is nonsense
+On Mon, Jun 08, 2026 at 06:53:30PM +0100, Kerin Millar wrote:
+> On Mon, 8 Jun 2026, at 5:38 PM, Jan Kasprzak wrote:
+> > Hi all,
+> >
+> > how do you log SNAT'ed connections for further forensic purposes,
+> > when somebody complains about your public IP address and you want to be
+> > able to find a local user behind NAT?
+> >
+> > I used to run something like
+> >
+> > conntrack --event --buffer-size 1600000 -o id,timestamp --src-nat >> $LOGFILE
+> >
+> > which did what I want. But now I tried to run the same on AlmaLinux9 host,
+> > and it seems that --src-nat filter does not get applied - it shows
+> > even connections which are not SNAT'ed at all, because they are for my
+> > own IP address:
+> >
+> > [1780936563.343940]	    [NEW] icmp     1 30 src=128.1.227.61 
+> > dst=xx.yy.zz.13 type=8 code=0 id=8724 [UNREPLIED] src=xx.yy.zz.13 
+> > dst=128.1.227.61 type=0 code=0 id=8724 id=2525400839
+> > [1780936563.343994]	 [UPDATE] icmp     1 30 src=128.1.227.61 
+> > dst=xx.yy.zz.13 type=8 code=0 id=8724 src=xx.yy.zz.13 dst=128.1.227.61 
+> > type=0 code=0 id=8724 id=2525400839
+> > [1780936565.281121]	    [NEW] icmp     1 30 src=128.1.227.61 
+> > dst=xx.yy.zz.11 type=8 code=0 id=8724 [UNREPLIED] src=xx.yy.zz.11 
+> > dst=128.1.227.61 type=0 code=0 id=8724 id=2574615308
+> > [1780936565.281167]	 [UPDATE] icmp     1 30 src=128.1.227.61 
+> > dst=xx.yy.zz.11 type=8 code=0 id=8724 src=xx.yy.zz.11 dst=128.1.227.61 
+> > type=0 code=0 id=8724 id=2574615308
+> >
+> > Here xx.yy.zz.11 and .13 are my public IP addresses. Why do these connections
+> > show up in the conntrack --event --src-nat output? Thanks!
+> 
+> Unfortunately, it appears to be a bug affecting ICMP. Possibly here:
+> 
+> https://git.netfilter.org/libnetfilter_conntrack/tree/src/conntrack/objopt.c?id=7e5397b9167bdd7597be809b8f088ff333e1ad31#n189
 
-This is not the flex that you think it is.
+Maybe then this helps?
 
-Firstly, it is (obviously) a comment intended to draw attention to the entry, not a diagnostic message. Secondly, had the ruleset not been (obviously) obfuscated, nft would hardly wait until encountering that particular entry before electing to complain about an invalid address.
-
---
-Kerin Millar
+https://patchwork.ozlabs.org/project/netfilter-devel/patch/20260610103039.167819-1-pablo@netfilter.org/
