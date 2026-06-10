@@ -1,99 +1,60 @@
-Received: from mail.netfilter.org (mail.netfilter.org [217.70.190.124])
+Received: from r.rg.net (r.rg.net [198.180.152.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E047033FE15
-	for <netfilter@vger.kernel.org>; Wed, 10 Jun 2026 15:31:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.190.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B4E03E1208
+	for <netfilter@vger.kernel.org>; Wed, 10 Jun 2026 16:01:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.180.152.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781105512; cv=none; b=XAxpDDCMMRJLFlTXXwAvgmj6GzqwujAUTZFSkR/yMCQgRlDEelHag3Npp972eqlGENXSTwf79mSRJurkzPg9lKOAHlkqPGEL3MKbdhq6oKF0ytQ4BTcOg9+FkffLI80i4cI48d+Cj2dYRlzf33XYkEpf7AJZ74ftavuQdG68s4Q=
+	t=1781107275; cv=none; b=P9yGncX/YjKtykOPqadETKgPs14WlRSnUu/gaA6Pjljaa0jnX9f3V1TkfFrM+liC7DkdsMERGLyND9yOvgxe0Y57XwinDWhb4uK+Nz9FSjJo5uoE/1RhOlwRN3QHD43bB+JT0p7F7xkMNx1n1Hkyy2lDI3FMJ0I/SQXJt5hXBm0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781105512; c=relaxed/simple;
-	bh=yVyXaDYYiheUYuQd7qBun0lc2c2KmNxWB2l+QKpR7TU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tke/XZtlUyX5hM7l5kFn0O9BQk0XxwQH2xHa7/0Hm10gaZF7Ks+cniLkB6rapC43qvbKNHqgOUJHPpSXlBlRxE5h3x42wRiVEGHtjUCEHNbJdl9MXcB59ivTvwg8b2BT/VfJoUVJZTlT6TyEG4LeVH4lYG4NsBfZ+0d7OT5QTWQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org; spf=pass smtp.mailfrom=netfilter.org; dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b=O2qnXxLi; arc=none smtp.client-ip=217.70.190.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=netfilter.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netfilter.org
+	s=arc-20240116; t=1781107275; c=relaxed/simple;
+	bh=1QNgOUXmaVqAyzoTzA9KdJcfWxH6a23FgvlLI1Bewqw=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=MZ40NMG8cDSjtSdQ/uzDLGK4zt69Bj2oTAlEe/w/Ppg0wMGWKA3zWXQ33zGVtJ94j/pjvhaJJz+vjCBi5/M0eP9sn6HZpLSOlUCyOOpItYaPbg6IBevAW6CO8R15q+S/FjVKZO3jYeej3LLsXT2545Gl0Yb24f284q7Vaq+49+I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=psg.com; spf=pass smtp.mailfrom=psg.com; dkim=pass (2048-bit key) header.d=psg.com header.i=@psg.com header.b=cVnj2WX+; arc=none smtp.client-ip=198.180.152.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=psg.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=psg.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=netfilter.org header.i=@netfilter.org header.b="O2qnXxLi"
-Received: from netfilter.org (mail-agni [217.70.190.124])
-	by mail.netfilter.org (Postfix) with UTF8SMTPSA id 09B9A601BF;
-	Wed, 10 Jun 2026 17:31:49 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=netfilter.org;
-	s=2025; t=1781105509;
-	bh=MlRPSF7XbO5I1yMb9ELym2pphWtLaauhmn1YdNWi1Fs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=O2qnXxLiivCFiqNJHLOHC7d0wSFoYc+KWONfAFHC7b+bJ9XPjWRbE0jv03wjuqaeY
-	 /JS3VHiHazVIwwIUCtal/j0WRGdpklQfyeaPAowpR29NgaGeIKch/WsIDYazGGMw2q
-	 YaW/ZpKsoGpUCYYecF4PS+3ulVE0AxaKOkn3SZbU06p0h2ehU6IES63cPxA8jsA5HB
-	 dQg+juSW/rregHlwyyunaSBOfrOd/vy9WEX8fPWcOU6Z10gVXtSJ0PQgRVUMO0F44P
-	 W4SGniS5lBWiAgDtk15E1bbxuyus5oMI6xlBmXiDtx93vOxmeBZTBEM4TJXnk9joow
-	 ewIxkhO+D9u2A==
-Date: Wed, 10 Jun 2026 17:31:46 +0200
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-To: Kerin Millar <kfm@plushkava.net>
-Cc: Jan Kasprzak <kas@fi.muni.cz>, netfilter@vger.kernel.org
-Subject: Re: Logging SNAT'ed connections
-Message-ID: <aimDYp2y_oxSIIzi@chamomile>
-References: <aibwHhKDBOgr2p7M@fi.muni.cz>
- <90d53169-3ae6-40a6-a01d-7fae27d24c8f@app.fastmail.com>
- <ailH6MomrFCvxH8Q@chamomile>
- <74dd050a-3587-4fdc-b06f-c82a9fd398e4@app.fastmail.com>
+	dkim=pass (2048-bit key) header.d=psg.com header.i=@psg.com header.b="cVnj2WX+"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=psg.com;
+	s=rgnet-mail; t=1781107273;
+	bh=1QNgOUXmaVqAyzoTzA9KdJcfWxH6a23FgvlLI1Bewqw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=cVnj2WX+yKs5QDRi2dfZfu+C8RrR5ky+/UDabknOgIdamKoMtQGWUBVJJgN77T3BE
+	 xhD18tebphRJPOvjD8yFWC2GPbtABY8LwhxnFSGcwLFmGlQynpqAB/OZuZjJpYxKdD
+	 sQnsIRRD5LAagwvegYdhPKNYuwDGHfH+00GXxvtM7vGGKcklWoDcfz/ntTU40kNbbc
+	 AGQmu+3yCTxwEf3HcLhDhHJlxXFM/Kl3EhKvRwUSo0b6cpSA3Ksjf3foB04/fAJeY7
+	 N/JWmece86J5eViS7A/3vS2s/Pym9j6szOKFVHVZeRHnIAYenvBGQwYuSoudJR+B64
+	 CX48JiPDOQSdQ==
+Received: from ryuu.rg.net (localhost [127.0.0.1])
+	by r.rg.net (Postfix) with ESMTP id 0D7BD8026E;
+	Wed, 10 Jun 2026 16:01:12 +0000 (UTC)
+Date: Wed, 10 Jun 2026 09:01:13 -0700
+Message-ID: <m2tsra1j1y.wl-randy@psg.com>
+From: Randy Bush <randy@psg.com>
+To: Reindl Harald <h.reindl@thelounge.net>
+Cc: netfilter@vger.kernel.org
+Subject: Re: prefix len confusion
+In-Reply-To: <24394eb0-abf4-4825-9041-0554badd34a8@thelounge.net>
+References: <m233yv2r20.wl-randy@psg.com>
+	<7b1ed82b-3bdd-4cae-bb08-7f8479778a7a@app.fastmail.com>
+	<m21pef2ope.wl-randy@psg.com>
+	<24394eb0-abf4-4825-9041-0554badd34a8@thelounge.net>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <74dd050a-3587-4fdc-b06f-c82a9fd398e4@app.fastmail.com>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
 
-On Wed, Jun 10, 2026 at 01:04:54PM +0100, Kerin Millar wrote:
-> On Wed, 10 Jun 2026, at 12:18 PM, Pablo Neira Ayuso wrote:
-> > On Mon, Jun 08, 2026 at 06:53:30PM +0100, Kerin Millar wrote:
-> >> On Mon, 8 Jun 2026, at 5:38 PM, Jan Kasprzak wrote:
-> >> > Hi all,
-> >> >
-> >> > how do you log SNAT'ed connections for further forensic purposes,
-> >> > when somebody complains about your public IP address and you want to be
-> >> > able to find a local user behind NAT?
-> >> >
-> >> > I used to run something like
-> >> >
-> >> > conntrack --event --buffer-size 1600000 -o id,timestamp --src-nat >> $LOGFILE
-> >> >
-> >> > which did what I want. But now I tried to run the same on AlmaLinux9 host,
-> >> > and it seems that --src-nat filter does not get applied - it shows
-> >> > even connections which are not SNAT'ed at all, because they are for my
-> >> > own IP address:
-> >> >
-> >> > [1780936563.343940]	    [NEW] icmp     1 30 src=128.1.227.61 
-> >> > dst=xx.yy.zz.13 type=8 code=0 id=8724 [UNREPLIED] src=xx.yy.zz.13 
-> >> > dst=128.1.227.61 type=0 code=0 id=8724 id=2525400839
-> >> > [1780936563.343994]	 [UPDATE] icmp     1 30 src=128.1.227.61 
-> >> > dst=xx.yy.zz.13 type=8 code=0 id=8724 src=xx.yy.zz.13 dst=128.1.227.61 
-> >> > type=0 code=0 id=8724 id=2525400839
-> >> > [1780936565.281121]	    [NEW] icmp     1 30 src=128.1.227.61 
-> >> > dst=xx.yy.zz.11 type=8 code=0 id=8724 [UNREPLIED] src=xx.yy.zz.11 
-> >> > dst=128.1.227.61 type=0 code=0 id=8724 id=2574615308
-> >> > [1780936565.281167]	 [UPDATE] icmp     1 30 src=128.1.227.61 
-> >> > dst=xx.yy.zz.11 type=8 code=0 id=8724 src=xx.yy.zz.11 dst=128.1.227.61 
-> >> > type=0 code=0 id=8724 id=2574615308
-> >> >
-> >> > Here xx.yy.zz.11 and .13 are my public IP addresses. Why do these connections
-> >> > show up in the conntrack --event --src-nat output? Thanks!
-> >> 
-> >> Unfortunately, it appears to be a bug affecting ICMP. Possibly here:
-> >> 
-> >> https://git.netfilter.org/libnetfilter_conntrack/tree/src/conntrack/objopt.c?id=7e5397b9167bdd7597be809b8f088ff333e1ad31#n189
-> >
-> > Maybe then this helps?
-> >
-> > https://patchwork.ozlabs.org/project/netfilter-devel/patch/20260610103039.167819-1-pablo@netfilter.org/
-> 
-> I have not yet tried it but shouldn't the helper function be checking against the protonum field? Also, the referenced commit appears unrelated to the fix. I think it should refer to b4c3a23c884c.
+> you guys realize that "642" can't be part of an ipv4 address and
+> "should cover" is best answered with ipcalc in that case it says the
+> input is nonsense
 
-Thanks for reviewing, v2 is here:
+my apologies.  i meant the >256 octets to signal that these data had
+been manipulated with intent to anonymize.  i did not intent to give
+heartburn to a fellow ipcalc user.
 
-https://patchwork.ozlabs.org/project/netfilter-devel/patch/20260610151735.192168-1-pablo@netfilter.org/
+randy
