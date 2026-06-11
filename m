@@ -1,72 +1,72 @@
 Received: from fout-b7-smtp.messagingengine.com (fout-b7-smtp.messagingengine.com [202.12.124.150])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5381D1DED5B
-	for <netfilter@vger.kernel.org>; Thu, 11 Jun 2026 01:06:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 596981DED5B
+	for <netfilter@vger.kernel.org>; Thu, 11 Jun 2026 01:10:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.150
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781140004; cv=none; b=oYj52m1cncYQWvQBrl7lEV4/CXQvU4/jxCRWkOUGu7ed2i1gZse6laWKh+arEw929jf7kWfpzGk+cc2ZsCCDE8FCxxhLWkvMJf99jdmW9iM8rPxwuELb1lmnSpZV9ZeVQtdEt2cIH4b6lhQ3Kvw83iu9oofV58EDCX/p3tWIAaI=
+	t=1781140230; cv=none; b=tuv4J04aoA/cDlEN/rvXytJ+wrGoB/k6mtIuV0VV6JlKWTyUYK0O4/mBsCS6gK401ByYWDvgdLBh2wPiMw3e2m3w/jkGcya2kTK7+DDuLguKgk18WqWMbBBGn6MuO8QGz7yZ7NmX1iI4GXsuH1T3+7DNLx8IpCyDbRs3zh6w4Uk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781140004; c=relaxed/simple;
-	bh=5+vZoj2Ctf3zFIeBX6C3nySwSWZHWm1IWULrcpNfW88=;
+	s=arc-20240116; t=1781140230; c=relaxed/simple;
+	bh=aAZa0j/WNt3sKdBpKKgHA0ZIB6K6xYms4QhSEmr+tJc=;
 	h=MIME-Version:Date:From:To:Cc:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=dSaHBMKkMgBW4YtjV0B+VYlOCnRcQJqS4o01oSIpQA9mkVnwam6P9Owy7fqlCjj82LklhM4J8utog2B60ylwNtQZWPss88ejbp8cCG42zXTCk37Hu/QWmAiFbsD/8Mc9hj7egjso+G8wxONFdbr7nvuWOJb4jMgUn9LaTjpMZBI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=S1kWNhMQ; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=EkJeAz6a; arc=none smtp.client-ip=202.12.124.150
+	 Subject:Content-Type; b=j5LDW5F9kbZK1bxiMwRXWPogwiPfSDN/ISCLMgwKSh6mkQ1l+WRLI874fuD2brLrbm8tmIGan01gCeH+p9LGy4HIs+xxtNhcaVQGAgKHFoHFiJBPJ67L8KVn4EmlOUiSGYOPLXB4g2j+fwaCrE4f0p5s79GkIxCzrfZYvomDV6k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=g/4XyPNF; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=UlfdoZuW; arc=none smtp.client-ip=202.12.124.150
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="S1kWNhMQ";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="EkJeAz6a"
+	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="g/4XyPNF";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="UlfdoZuW"
 Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
-	by mailfout.stl.internal (Postfix) with ESMTP id 924921D0008D;
-	Wed, 10 Jun 2026 21:06:41 -0400 (EDT)
+	by mailfout.stl.internal (Postfix) with ESMTP id 861D01D0008D;
+	Wed, 10 Jun 2026 21:10:28 -0400 (EDT)
 Received: from phl-imap-10 ([10.202.2.85])
-  by phl-compute-01.internal (MEProxy); Wed, 10 Jun 2026 21:06:41 -0400
+  by phl-compute-01.internal (MEProxy); Wed, 10 Jun 2026 21:10:28 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
 	 h=cc:cc:content-transfer-encoding:content-type:content-type
 	:date:date:from:from:in-reply-to:in-reply-to:message-id
 	:mime-version:references:reply-to:subject:subject:to:to; s=fm2;
-	 t=1781140001; x=1781226401; bh=zMOdTXnkQhRcH3faoJ+AmX7iUaNgFNok
-	5w5SwGyZf9c=; b=S1kWNhMQ5SwLSHIbAtKlr/Yges70xMP0WNert8Llu/VB8Vak
-	noiu1uIvZ+qMoV3iyYOCuoGmEynxX0C8+jpFeXD8Pn/3ZD/AkaDPupT2US+9wDho
-	IeHSdydp/paap5B71AyBnQbzagn4tzlYsoYvk+btDTz8CIVDT6ei0Zl5NyJxRkI1
-	H2hm1ajQX4KiiZRbL7fV4bTVCg9Z9bMEPlQirVsFQq530HOna9lIWh4QNubiFZJi
-	WyiIOfsriRcjI2GPhA6tVGMJQHNxVvGSZVJhn6h7Ug5eWoz9+YTJqXXeP0LPTv20
-	6F5/q6iE+cV05bSR0b0DfoLN5/wdlImd7hWXSg==
+	 t=1781140228; x=1781226628; bh=/m7deDyz7+l+OqJKvVVpVvBQFYITggNa
+	kEEHJCctWRM=; b=g/4XyPNFVJj9nYVZxMGCHFcEG5PUCQ7zpilDjql4ZuAyHzVv
+	6/RXP5QjVOt4sCNq9aCeNfL16aIWeGCp5kWJGkB3hDqUHtXpvhZHI+9TQIt9gA+O
+	TmSskUnoa5rpX76eXmqhVTdi71LYnQuqoAfStey43fDDPDFBhm8CG3xGpME06pl4
+	V2dP8U2Q+oXH9WVXn5eWpVS+b4RrhZZk+SoincMebgbHreIV06PWd1h9tEBKR+d4
+	CX1y/FUEOkFcgENP+AnYr7qlF04M9zx0io4G9ECPLHRorOJL1CKSGmM5dXu1zOs4
+	KVqDxMZHnxkIUEG3HupGoD2EFONzbNbzFyBRYw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-transfer-encoding
 	:content-type:content-type:date:date:feedback-id:feedback-id
 	:from:from:in-reply-to:in-reply-to:message-id:mime-version
 	:references:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1781140001; x=
-	1781226401; bh=zMOdTXnkQhRcH3faoJ+AmX7iUaNgFNok5w5SwGyZf9c=; b=E
-	kJeAz6aew+UXZ47q4iNxP+bedWZtHSuk1cusjy+FEDusrnFakrX3riq2aXn9A5vL
-	cQxejevU1P46Adm5fnPGilJTJLoOI4WNKRhragvRp/74Ss9RWmBMEIrTWIbJZzM4
-	74P0YsFIZ8gTjgYmN0FnTPHAkLzgRMAu8Coptc/ebxEj17ckMNgCMKgYgtCyLBvk
-	HHTuPuuXI5Jx8bErK/8b/274Opmc8oTgONALBj75D5rnVhSHWcD9PX9X7yhWOJ46
-	TP4rLaI2jsbZev5HdxmLMoXlXoA9i0AzI/LtSeqbYo1YAzsQHXLiq+4meKc0pA2s
-	Bc61HRHKjbNjSXewxzySw==
-X-ME-Sender: <xms:IQoqahhvuewYbsUL4P5EHt6Fu5TTLm0cutlILUmSC-dzURarxO0neQ>
-    <xme:IQoqag2xcnp99jbd_R5RSX52EyG_Izvm0p0THoePglPc3L7Yz_YTXuju-sZhbAHsz
-    0nrG-EbOhM0JYBAfIJS_ioxZwKmd53RjtU86u0xV3PU1ohIqjg6Cg>
-X-ME-Proxy-Cause: dmFkZTEZI6PgFIPUzTtfNPi+x+QKOhN/2MCrGlgVSrrJPQPrBUK5/Pd36yQOyx7BCdnL1J
-    HZoAEVTosG6dPscdG8Ne3nxwFXkrEdJy45jW3kLdUhV40//W7HQ6BCU6QQ3zKeg+6lE4Pr
-    TuQOoF7vIzFuTRV3rgZYoO/kKxGvDJkRZ0kTNsSiy3ifBGTiPyPh3Njrzwr8A7dtDFR9S2
-    hyb/lOrG9Mdv3hjHV7a8rLsDwYDieoUiHBIaIYbitAZuM1BV9sly5NXsbsWw79Kkshjdv4
-    g1WBLzUA+oRkHSYZGKEkIIixaCYn+juaRKOJdPreOcNWNj1O0vAnie7+0EBOLB7U6k+sdQ
-    PBWJib+Eejcx1dV6cZU+IqwrRuaioHYnPLfPjIj7jYDO/FNO/GlgBEIIj93JyonsqDtKLF
-    ZyJXwYjf6G8HBq6odH5Wj5+pm1eHjsXQllHpU9222vm7XPXHNI9jYrIC6urmNXXLqSmO6b
-    MiwzdwWQnTJauzdJ0jtKpDeBbV8zWsXDpcLRdisZXQlRJWmi/fdo3UraiQljo40PqZq/Ga
-    oo6UTFAb+JMokDyHA8debpXFzfRPlm2P9S0jkKhE7tM9GlufNLj//igx91YUnFTRBG+KZ8
-    ix8bLQmS0NBcOP9+EORLk4wNVqpV7KtnoeM6q/yrrxjJ9YdHWI6ZemoyZbgA
-X-ME-Proxy: <xmx:IQoqaq9pzH2m0C4ML-EIydEmwD6Hh_pr5mGRaw17o5orVE_KvFS9rQ>
-    <xmx:IQoqaie9Gk93vZ2gOVsO38vp8IkX2U_rqqz-bSwvaqxgVoZA1x37Pg>
-    <xmx:IQoqajEPqVBB23oi0TPdaPKungqLtByz-he6slwJU9emXb7ra8-TVw>
-    <xmx:IQoqagf_XsVlTE5sE4binBOwoaw-_mK1X1w_M859lz2wWVJTWN1XCw>
-    <xmx:IQoqatBqgO7zDyhNR57IHE2Tmfr1hTQUXKX5fuKA1_LVYqhGx7qlivED>
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=1781140228; x=
+	1781226628; bh=/m7deDyz7+l+OqJKvVVpVvBQFYITggNakEEHJCctWRM=; b=U
+	lfdoZuWJy4iq7iJZ+JbMwwVjgufibckeU0BHjvEtcfWL0KBbcHeVjdRV0BZ58ocU
+	tQzVHPo5HX620GFsRQz9IiTelbiwOS4en3ZwVOo+b438ortqBekZFyb6JWi/CHp2
+	CvlwN6bkGw5AecLkW/dau//1bSVMN8HjP6SiFVBQCR0sJ1LL8Fm+Pvm8a6bQShvI
+	OZSb1wA2reXe0Ck886zofAkBqbVbqWa8EDmed5bbnIm4+j4quNcffkKPu9pco1NB
+	OobjgjFXyCDkE4cfEq1Sl47lUeKRIx8cYqosNrLMOv5wUCPluUQXYuKzqRe/bacn
+	Dzu2OlzN3b+NGx40Nzq5Q==
+X-ME-Sender: <xms:Awsqajdea5AiI6NN83WAL5CfhRVUs6V2mDvmlp0Cdc4U-rMEnKCGFw>
+    <xme:AwsqakBbn1z67S6hqa3DcidBTXn8J-xOvQBulGdZ5_I1bKoxeel6_BR_f1Ee64Vsa
+    VAPnpRKgcS0A17pwKHi2eQCRy3rPnUT9alxEDXfxbvzpb9owerH>
+X-ME-Proxy-Cause: dmFkZTGV7yN96crkogHumRDNAI8Od6IW+bNxkvqJD9JaVXjCRiE05Difs+Q5MBAFrcB1gQ
+    DpCQREBrUTV17G+KLFhEAq8slhJQZhuqbtdgkAOV2U3kqE1SnZ+G4hpP7+f14ClpmrZWi6
+    cv4u1W1XvVNALq8Q4jE4iUt5Auhu2bhQIBsVwEtyxwF/GY4hdW92J7LgL3dgCcyu+F1kaK
+    wfhj73dhu9ixih1xGn62AxCCm53xt2X3NwoGBPfbT2Ch9jFgXaU8857je9Q4EEWKX7ZXt9
+    96iuetHuAMKgr/OmcWiMMyZIsoWpLBoCZ6cSdRsj8VfRyk3/tDiHUJp/9HQLil7r8T2+IZ
+    SjkmrQaFTvfXF7jaY2uChAoz64GBiaVJTJFwbLwVILAH8jx3BNbU18OSKZZgXo9o17VqD9
+    E7xIFM8r/UCT5QiVXSltYM4kQGeBiNJhlG2FAMDzFvejsI2lPXN2IPMIkpssWtA3PiTG9R
+    if7/reX8Pm2iJCGsjarRJxBwJWQMnITZrj6RuQp5dQ/ItKr/yMmQxqFkYLljaPmX4bkwf4
+    PSnK5gio/TtdAuY3cb3NyRCgbWxkw/+v5x/c9S1dt4KCRqZhVshDJNoZscQ3UmA3er+vFf
+    UmS67a/XA5x/UfYP14Lky8MP+6KdVWA5VgefkwnXep31/gBpsdan3k/prXUg
+X-ME-Proxy: <xmx:AwsqapYPbnD38HSTp_seGI_nbiHIyMgBSMOOVYAzGR3XFOtIf1tyGg>
+    <xmx:AwsqaoLq7xto9PqHw3cQ9cHHD1c4bolCPqYDAMeqU-cHzHoD4cR2gw>
+    <xmx:AwsqavAgEcjV-yNjBXX3DglYODDq63FTxJ2ZJiN9adzmEP6YW_VF8Q>
+    <xmx:AwsqalontBqK6pcSA1mqzMYF6I55SZVlksO3n8Tmzt39LyRvLH1d3w>
+    <xmx:BAsqagzUV45_AfdlfCoUXU5TYumvpUiSbpaapQkp1-Xw_o8qBCdQg7xy>
 Feedback-ID: i2431475f:Fastmail
 Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 168FE216008A; Wed, 10 Jun 2026 21:06:41 -0400 (EDT)
+	id AC90E216008A; Wed, 10 Jun 2026 21:10:27 -0400 (EDT)
 X-Mailer: MessagingEngine.com Webmail Interface
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
@@ -74,37 +74,53 @@ List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: AbmbupR3g_CV
-Date: Thu, 11 Jun 2026 02:05:48 +0100
+X-ThreadId: AaxyEWkns8lg
+Date: Thu, 11 Jun 2026 02:10:07 +0100
 From: "Kerin Millar" <kfm@plushkava.net>
-To: Sunny73Cr <Sunny73Cr@protonmail.com>
-Cc: "Randy Bush" <randy@psg.com>, netfilter@vger.kernel.org
-Message-Id: <8057b5ab-29fa-42b9-865f-2fbceaa0e94a@app.fastmail.com>
-In-Reply-To: 
- <eo6IAy4tTDDl6AcRVB1pmRAiEEylNBe2EGlUxAsDHSglsWmdaXg-oFwfDcPGyTmYP17SvtgGpOOye8uy2u9lZLgPaxuTnUWPY7jiJEgpdM8=@protonmail.com>
-References: <m233yv2r20.wl-randy@psg.com>
- <7b1ed82b-3bdd-4cae-bb08-7f8479778a7a@app.fastmail.com>
- <m21pef2ope.wl-randy@psg.com>
- <6fcf67b9-4fee-4b1c-85f1-597afff788ba@app.fastmail.com>
- <m2o6hi1hku.wl-randy@psg.com>
- <ead376de-4dd5-4725-86df-bf7cf798b672@app.fastmail.com>
- <m2ik7q1ff8.wl-randy@psg.com>
- <2c8aa7b9-b387-402f-be90-a59f8b669e30@app.fastmail.com>
- <eo6IAy4tTDDl6AcRVB1pmRAiEEylNBe2EGlUxAsDHSglsWmdaXg-oFwfDcPGyTmYP17SvtgGpOOye8uy2u9lZLgPaxuTnUWPY7jiJEgpdM8=@protonmail.com>
-Subject: Re: prefix len confusion
+To: "Pablo Neira Ayuso" <pablo@netfilter.org>, Binarus <lists@binarus.de>
+Cc: netfilter@vger.kernel.org
+Message-Id: <1e155a71-b849-494d-94cc-4de58f8e2f0c@app.fastmail.com>
+In-Reply-To: <ainwA_Lkyr85C6dB@chamomile>
+References: <06c74ee3-64eb-47db-8575-bfe42eb47c4b@binarus.de>
+ <ainwA_Lkyr85C6dB@chamomile>
+Subject: Re: "nft list hooks" not working (empty output)
 Content-Type: text/plain
 Content-Transfer-Encoding: 7bit
 
-On Thu, 11 Jun 2026, at 12:51 AM, Sunny73Cr wrote:
-> Try this:
+On Thu, 11 Jun 2026, at 12:15 AM, Pablo Neira Ayuso wrote:
+> On Thu, Jun 11, 2026 at 12:24:28AM +0200, Binarus wrote:
+>> Dear all,
+>> 
+>> according to the man page for nft, "nft list hooks" should list all functions registered at each hook, along with their priorities, and including the internal nftables functions. I am understanding this in the sense that "nft list hooks" should output something at least when there actually is a ruleset.
+>> 
+>> But on my test system, that output is always empty. Please consider the following excerpt from a terminal session:
+>> 
+>> root@charon /etc/network # nft list ruleset
+>> table ip t_IP {
+>>         chain input-filter {
+>>                 type filter hook input priority filter; policy accept;
+>>                 ip protocol icmp drop
+>>         }
+>> }
+>> root@charon /etc/network # nft list hooks
+>> root@charon /etc/network #
+>> 
+>> Of course, that ruleset does not make any sense, but it serves its purpose for testing. "nft list hooks" should output something in that situation, shouldn't it?
+>> 
+>> This happens on Debian trixie, kernel 6.12.90, nftables 1.1.3.
+>> 
+>> I also have tried "nft list hooks inet" with the same result.
+>> 
+>> Furthermore, I have created another ruleset with an ingress filter and have tried "nft list hooks netdev", which also gave no output.
+>> 
+>> Any advice or explanation? Where is my misunderstanding or mistake?
 >
-> table ip filter {
->     chain forward {
->         type filter hook forward priority filter;
->         iifname "lo" accept # please filter this too, you'll bounce 
-> your bushies (brows)
+> It seems debian kernels do not compile support for this command?
+>
+> grep CONFIG_NETFILTER_NETLINK_HOOK /boot/config-6.12.74+deb13+1-amd64 
+> # CONFIG_NETFILTER_NETLINK_HOOK is not set
 
-Packets sourced from or destined to 127.0.0.0/8 are not forwarded: they're dropped as martians unless net.ipv4.conf.<iface>.route_localnet is set to 1, where <iface> is the incoming interface. Hence, in most cases, the commented rule there is superfluous.
+For that matter, someone asked about this at Libera about three weeks ago. It's a puzzling omission.
 
---
+-- 
 Kerin Millar
