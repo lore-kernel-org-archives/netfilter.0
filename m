@@ -1,116 +1,96 @@
-Received: from fout-b3-smtp.messagingengine.com (fout-b3-smtp.messagingengine.com [202.12.124.146])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F91B2E7363
-	for <netfilter@vger.kernel.org>; Wed, 17 Jun 2026 02:04:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.146
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F0A346B5
+	for <netfilter@vger.kernel.org>; Wed, 17 Jun 2026 02:43:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781661847; cv=none; b=UVELmOqzDlJmTN3FWfvjGY2XoJjMgrMvGxn0vUxUwOUv7CJHLjXxVkRFmj5wIpP13liSIa5ISxRgk0r9zJ18aNTv3Q/EWCT0qZj2CIRqAByx4tOfwI+dLRG/teVQGV91HV9YHlFsXsLtBW06LTvt3GD9AKn+yl/3q9M2T5rw704=
+	t=1781664217; cv=none; b=h4pjmpLCqDv0K7ueLLsOis7blqD0IEH9t0EWDFoECpiRNbzvKiXSBuQetvtWlJAcDOeznrTwiox53yKn7imy95uhy0W37ba+vv5FGVgMOOOmD/NbKTKc3nsVDrLq5qmTsBgnd/TzMalj9PIkHKsp3RCmCgsGZ9/nJCZPVw95QxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781661847; c=relaxed/simple;
-	bh=HclMW+9yqhbk1Inxg03QAx8xM8S+cP2wK7b1aVhGVMk=;
-	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=qBWC2w7RRT9P1WejCFZmz0IMnybzZ/fj3Thr/EBQi54O2AVjKebVELm4bKE4LfR8ZBNdjxCGIkysIh2VxRt2hruwSwaALqiKK9crntsLhMCsbvmJ8hItKhyl+wJ53iKUOJkoRaZoxNaHGRWUrnrALTCYDgUIhnWsMTYcj4L6+T0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=f14YUmiY; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=fM5VCQC9; arc=none smtp.client-ip=202.12.124.146
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
+	s=arc-20240116; t=1781664217; c=relaxed/simple;
+	bh=E8AE3WW3QzL9iNMOkMLg1ZAfpAD0qgnImnYhbGWYQvQ=;
+	h=Message-ID:Subject:From:To:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=ogMlnLlY542IDVL1eixiKLw1SzK9jC7h7ecbK4ymRTSeD3IpUkCCZBXQKa67bFT4dBpJONlerMHY3Llie7x7UKZmv3jEysyNeR9Z/A9d63xYm6ns2jZKkeG/eaUSj4QcAxMrQ+DAsI5U6TFzZK8BF+qsSx0AsvTsgP5/+T+mLXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZLcZvkgH; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="f14YUmiY";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="fM5VCQC9"
-Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
-	by mailfout.stl.internal (Postfix) with ESMTP id 41FFA1D000BD;
-	Tue, 16 Jun 2026 22:04:05 -0400 (EDT)
-Received: from phl-imap-10 ([10.202.2.85])
-  by phl-compute-01.internal (MEProxy); Tue, 16 Jun 2026 22:04:05 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-	 h=cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1781661845;
-	 x=1781748245; bh=BniPE4V7mtGhFsNFCTtzR+Frk6tn425uUnR48+hRIwM=; b=
-	f14YUmiYuPkZlZdr9LhmGQpBGaG27Zbb1EMIJp88d2zRhqQWJy1OPFZVbYeTKYH4
-	T+j7DhNReC42HTAixH8Tyw7lBZXx/NkAHCdNUmwlhu0wnmvzvIhTyzO9iINc+A14
-	E/XTaFmW3ZF0HzYEHRL6q05/4Fq/1xP342Mq8Wm+TTsXsQ6yXI+hHeNxxoR9gVqe
-	AIHisjUCFyPiGArM2x7UTZiM7iIHFcXmcP7jxVkITzwfx+uArcRqaC7CIPUvBUgD
-	1uDC1OJ9X1qQ87YE4cWprw0TZlYHFYBxJ7tZbUFP5mje+kcWGEvUcN2MF9XWMYKY
-	HwmNgVZnm8dr4Ybz59LLhQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm1; t=1781661845; x=1781748245; bh=B
-	niPE4V7mtGhFsNFCTtzR+Frk6tn425uUnR48+hRIwM=; b=fM5VCQC9hddEyIwKp
-	naoMTJ+l41wo2FJfNl9gHlomUaDe8c3GltqdN21i4QNShaBvUfyVeDtwr6SNssVk
-	H9Bv55f2GdeXy3Mp/eOmph0l8FENh2I4RKjGwSOXPnKw2vtGKjvhPyLPsJA5s2MG
-	nlwm7/Nr5dZDHgA+rk7RaBjSJlk3m7uhLFitpL8H4fgwjuQWbXR+E85rSfiDAXme
-	pjZeG/qKRvEJrwh3pwRkBQKWIs+SmOG7xi9c2aSkTBOMH23+U+EBlrHGr6GZROY6
-	+9jvTt671ewy2V95iGIrLWJ8qR7TIqSQg+XaJZFvboebQSUSm9fEHKRs3lT7NeYd
-	vdo2g==
-X-ME-Sender: <xms:lAAyaozCBQagLdKcw0S63DFUOaJmkjlIJlohzykqng9ZThwko2TwIw>
-    <xme:lAAyanFx3FkwK0jfn3wU-F60XmJqr-QQowBMyXDPCJUNIHGCYp1IUF0ciU45-Uguh
-    TWkD3VvhNm061jrrS-oMX4bdquB_D5w-Bu6kg6A1B88S4IetHY>
-X-ME-Proxy-Cause: dmFkZTG2IA7swFpny8bUrpjP8hx2bnFReo9jwa8rfnb56e8NNO/Rl04ij0DuSPJDk7fV9w
-    +pQYoS/YxMcIXS+uJBU12DE9zwMOkZrBckk06I5kZU4k6Bm1dsL4mBeRzTnVT/S/LAMceD
-    1HoyB9gIZhGO4IK5hHeyqTy1SDOQKPKhyfxcprdefjIbaW0vnX8YkOVXYxsqC0qFuhGy71
-    9cvABk1KOjV6ep6QFMH5Ugw5+NXuGdxojvQY2/X1h6btxH7zUKoKGj40OU2TdkbZU6vIZE
-    yCJPNoe7tvQwcwVDC0D6dws0CdkQeVZ5PikaAHv/Q/t3KN1S21q+B9NiUo5aVKl269G5oV
-    kqw1MS5BsQyeUl+2DdTSNlENCdoDRiBuWdB4q03+X5FJKlfI8a1MLq6E4rI8SkDQ7kKVUN
-    ec+C3flsyiyTIL/nkocx+EeSZZLct3HP8hSiFvcJ9ue+MNW+lOky0GQWyiFB1UlEG86yPu
-    zhYvQgIBpooYuEwdE5WJz630wiYEBuqtPK//qktJXIvl4SGvq4fg8/4GABvNChhtOug5yM
-    R/UHkWYRFjRuMes3/LAtVTQJX5cZD79jHkE/5lOESFG+agPUgxUfdkQ6y4ZUO9QzAdlnhO
-    LiLZxli8mJ43fQpSPTwL3M/3VsOT99YZ8jGivIKm62ewijdSfNUIOMQ9IH6A
-X-ME-Proxy: <xmx:lAAyarfktTVx0CImi5KHfAb75F6laI_76vpuzH7WTJJxhT9wXRsK9g>
-    <xmx:lAAyavIUffzsiu3hTh5G9zYx9gYgFKrXS9SVi5F052HrDQhx9f1pYA>
-    <xmx:lAAyasHU8fbH9-9LjpHU-ApdQcdYYuGplBxhi02qyLIiO1Zt6Hr6dg>
-    <xmx:lAAyaprnoIfU9_vCSQe2WdiEKJeRfl2npFDasKQT6Ckxt-bIKsYOUg>
-    <xmx:lQAyav0IExTpOrNX7YPfHQjYcF7IPbvIqfeJBqhn-CqBt-gn4SxpCGe->
-Feedback-ID: i2431475f:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id D0CC3216008A; Tue, 16 Jun 2026 22:04:04 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZLcZvkgH"
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-2c0aa420401so38626075ad.3
+        for <netfilter@vger.kernel.org>; Tue, 16 Jun 2026 19:43:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1781664215; x=1782269015; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=E8AE3WW3QzL9iNMOkMLg1ZAfpAD0qgnImnYhbGWYQvQ=;
+        b=ZLcZvkgHiagUg7NML5ntui+REJ1d22kVU8BH0TTXGshUSifoI4iyZxV8uR4cfrSdWi
+         X1K7yMGlfYDde9gurDbbQ/W+YhgJcXn0+wbrauiHHWnPmw9CS2ygYwRtGQT6B5pX/mAo
+         Wp9ADMkfoyflcwFzDsCMdzz5SRpt8uA/agkyZ/wVaRS58DoIWGj3rY6WumhGrmKXK52N
+         DjranheBsHe4HqOw3QgL8USU0L+KBUIfrD1Lts5/QuolT+krAv93/igsZ4ONLbno0fyZ
+         isMEA817Ugwn7bwt2jqPp8jv3MwPGP1TkzjfGKsuQzdYgtqvFN5syl49KbUtiGJV+iuf
+         uLIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1781664215; x=1782269015;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:to:from:subject:message-id:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=E8AE3WW3QzL9iNMOkMLg1ZAfpAD0qgnImnYhbGWYQvQ=;
+        b=LIUAeaIzNQLG1nP/Ax1z1gDIF1SwqNldFWEo56pyUi45aqsODAPNMuUJ89YMjJ19FB
+         nkL453hLcz4ENOxnRL09kqQAT9w2Y8n9ujWzS00D3x9ggmVCKbF56SicZScH3dgZlZ99
+         gQH3p4n3vRQqN0Mwa33TUPBZEuOJIR2lDytMsFK7B/un8/B+B2Yd13pdTS9OSU5s9K86
+         LySC9BM79dVagzBNuEq09fLvUXt/VVtX90tzLbvRpx4ZLPKb8gmP38qPZeMuI+owCrP8
+         4LIFJ+v7Pk2cJR/R9FowAwEs/pDXM7/7GF8kU6CwnpqFaSkXWYRurnWsnhMqEsX26Bzp
+         ayFg==
+X-Forwarded-Encrypted: i=1; AFNElJ/XbvPGjZADZruY+/hnvH+8Ng9W4Baxfyr8ErdemKGOoe51l/zXqbh+u1+hLiSFmdeJaJYUewP1RHY=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxatH8crnP5MgE84aMja+n/44O2pQvd/dXleTEX3DOQs+Czn8xL
+	9n8JW2rkXE01RQWbukMhHJ6MpolLO6T4iIVwGdy0WKBRKnJd2YfnUeVs
+X-Gm-Gg: AfdE7cmrlyl1MNZJdVK65QGG9LlIxCJK1Zd5GcoYHpF/qIzA8Ugx2mAnP7K1Z3VSJhY
+	MWk/CZaXFNcLJLDZn/V4OQd/aSr0bxuSJPID96zBCAvQZ0HNcdtjLEv7hkAc34nUO6qauop+dDT
+	gDDgBF8hwqB2sZuzp1eSi1z73Q64WVtaPVEEaDg0RsExueSlP+kNivnwSRORdv6DvZstrrf/OzV
+	tn51lc1yIL3BRfeV5C2aAcA1pd+AHN9wJlPMYiLS5PNHpGhmqNTlaS4/0+EKyG19fSoQM10Nagt
+	6DoN5vVRKbLZbSE0ASGfreYdR0OOnaUC2HuGryGPhc1zYSRJzQOv2qQJSK3yZ8rzTM7TowAtsR3
+	FLgdJiGevDciL2B9F4b39NbPjasEUkydKxVd/xSKriVaD6wZyXjnTORVzKYOQZEYRPhgPlKj4O6
+	LGERjzuWFUjkmhiehcbtn+QVeA/ECYA2zm5Keh/0Ipw7Mo5AUE4aITAPYwBWnc
+X-Received: by 2002:a17:903:32d1:b0:2bc:f1ef:2e64 with SMTP id d9443c01a7336-2c6bc0c8905mr18661545ad.12.1781664215159;
+        Tue, 16 Jun 2026 19:43:35 -0700 (PDT)
+Received: from [192.168.88.2] ([182.70.116.80])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2c6b3f65c27sm13707435ad.3.2026.06.16.19.43.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 16 Jun 2026 19:43:34 -0700 (PDT)
+Message-ID: <9785e186a6c8256319382149fc71fb90976f6e8e.camel@gmail.com>
+Subject: Re: No meta ibrindex/obrindex, only meta ibrname/obrname
+From: Avinash Duduskar <avinash.duduskar@gmail.com>
+To: Corwyn Briggs <corwynbriggs@gmail.com>, netfilter@vger.kernel.org
+Date: Wed, 17 Jun 2026 08:13:32 +0530
+In-Reply-To: <8400bf65-82b4-495a-a5ef-4ad7a1fafb08@gmail.com>
+References: <8400bf65-82b4-495a-a5ef-4ad7a1fafb08@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.60.2 
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: A4AgOTky-GBw
-Date: Wed, 17 Jun 2026 03:03:44 +0100
-From: "Kerin Millar" <kfm@plushkava.net>
-To: "Corwyn Briggs" <corwynbriggs@gmail.com>, netfilter@vger.kernel.org
-Message-Id: <51e12579-9901-40d6-8223-ecf6a94eb6c8@app.fastmail.com>
-In-Reply-To: <efd80966-8380-4d70-a313-b6d9585ef0b2@app.fastmail.com>
-References: <8400bf65-82b4-495a-a5ef-4ad7a1fafb08@gmail.com>
- <efd80966-8380-4d70-a313-b6d9585ef0b2@app.fastmail.com>
-Subject: Re: No meta ibrindex/obrindex, only meta ibrname/obrname
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
 
-On Wed, 17 Jun 2026, at 2:52 AM, Kerin Millar wrote:
-> Hi,
->
-> On Wed, 17 Jun 2026, at 2:34 AM, Corwyn Briggs wrote:
->> Hello!
->> I am somewhat new to Linux and am configuring a custom firewall for the 
->> first time. I have come across a discrepancy wherein the index of an 
->> interface on a bridge (i.e. a veth bonded to the bridge) cannot be used 
->> to match in an inet chain, but the name can be used via meta 
->> ibrname/obrname. I would like to use the index since it is a bit faster 
->> and my interfaces should not be dynamic, but meta ibrindex/obrindex does 
->> not exist in any manpages I have read. I checked over the archive as 
->> best I could and did not see any discussion about the feature either. Is 
->> this an intentional difference or rather just something which was never 
->> implemented?
->
-> Support for meta ibriport/obriport was introduced by nft v0.3, then 
-> changed to meta ibrname/obrname by nft v0.8.4. But these are only 
-> usable within bridge family tables. For the inet family, one would use 
-> iifname/oifname instead.
->
-> One cannot compare against the bridge index; nftables simply doesn't 
-> support this at the current time.
+Doesn't look like anyone's asked for this in the 12+ years since these
+keys landed (2014), nice find.
 
-I may have overstated this. Where iifname/oifname works in an inet table, so should iif and oif. But there is definitely no such analogue for meta ibrname/obrname (which pertains to the bridge family).
+Every meta key that identifies a specific interface comes in a
+name/index pair: iif/iifname, oif/oifname, sdif/sdifname.
+The bridge-master keys are the only ones that are name-only.
 
--- 
-Kerin Millar
+Closing that API asymmetry could be a legit reason to add it, if
+someone's keen to write it.
+
+On Tue, 2026-06-16 at 20:34 -0500, Corwyn Briggs wrote:
+>=20
+>=20
+> Is this an intentional difference or rather just something which was
+> never implemented?
+> I wish I could offer a fix, but I haven't the faintest idea how a
+> person would go about implementing one, so I appreciate any advice on
+> this issue.
+> Thank you all!
