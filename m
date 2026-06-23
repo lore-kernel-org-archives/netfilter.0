@@ -1,174 +1,190 @@
-Received: from fout-b1-smtp.messagingengine.com (fout-b1-smtp.messagingengine.com [202.12.124.144])
+Received: from mail-4319.protonmail.ch (mail-4319.protonmail.ch [185.70.43.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 322BF31282F
-	for <netfilter@vger.kernel.org>; Wed, 17 Jun 2026 21:06:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.144
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8522230F938
+	for <netfilter@vger.kernel.org>; Tue, 23 Jun 2026 10:04:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1781730371; cv=none; b=TIFrGyaEnX3/BVXrYc9LFDLeZSgfnp1hvVj/2kqn+aVQiwekLvXfcVlK7tqeJ2zabnX6bp7xmQa/wxS6UmrMpWSUMMOACckwweGB4KuqqP6FQHhrhoY2F9rNmY+i0P9XJAZjGYmJGeSuL2s6Krm0Zexa2Sdw8yz/Dd0xkcunkiw=
+	t=1782209101; cv=none; b=diq7hG9V9B+NP4I22jvTJVY+lfYScHIvVnOn9mathT0nSQmD+iS/zoC5vLrXabwnS7n3XzCA9UnO4TPbhMXLQMxz9O/MDWhryMDsWTG4Bp/ieGAd8XLz16u2NscTsP9HMxS9Sf+MrVQm0iYJL+z47F27ubEAf4dkc1IuD9iWku4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1781730371; c=relaxed/simple;
-	bh=MRNogqd6d3y2FypYmHRtNBDFonnHalUL5Mtg/cUCr0U=;
-	h=MIME-Version:Date:From:To:Message-Id:In-Reply-To:References:
-	 Subject:Content-Type; b=qUpriZCahy3ZiEhLxfRctH36z9bigEXfox05dR2eaTqANQ4JpOQs1xs1VJrhO0AV/xXw7VuNVxrEidSjPbguXQwgTuk1VLTJPt5atl9fvX5DG89+0nHKKimqSLrIWjQdDy2Y2Po335I1z1LFz3xSbcz/qE3Kgq/QyztnrZ1dmx8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net; spf=pass smtp.mailfrom=plushkava.net; dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b=ctQ1UNbu; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=kxyJ6tWM; arc=none smtp.client-ip=202.12.124.144
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=plushkava.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=plushkava.net
+	s=arc-20240116; t=1782209101; c=relaxed/simple;
+	bh=lXIbd4Qz1Sh079Ygeg/456qjXwXwTq0NstvF6I/Xi/0=;
+	h=Date:To:From:Subject:Message-ID:MIME-Version:Content-Type; b=JInlhkU6Oj3DkD8sR1H7/4mncYgVFsC0MapAw1BeXYFd5aIj/B6DHx+tDZdXULt+adY8v0myDckkXWh6vDvkhVvGlHnxSLOB7QlHs8RRAp7mRgPy9X3rjmePYQKqMc8MTFhtYlapm/R5m2StOOzPoWd5zUkpgNHAWt6fXaR/kY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me; spf=pass smtp.mailfrom=proton.me; dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b=PhaD0JjT; arc=none smtp.client-ip=185.70.43.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=proton.me
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=proton.me
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=plushkava.net header.i=@plushkava.net header.b="ctQ1UNbu";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="kxyJ6tWM"
-Received: from phl-compute-01.internal (phl-compute-01.internal [10.202.2.41])
-	by mailfout.stl.internal (Postfix) with ESMTP id 98F861D0008B;
-	Wed, 17 Jun 2026 17:06:09 -0400 (EDT)
-Received: from phl-imap-10 ([10.202.2.85])
-  by phl-compute-01.internal (MEProxy); Wed, 17 Jun 2026 17:06:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=plushkava.net;
-	 h=cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm2; t=1781730369;
-	 x=1781816769; bh=b/4+lbdy4RRCn8Pr0XkgVynzAv3rXh674JIkCGTLIsA=; b=
-	ctQ1UNbuC2XrTyWiACFEUA/G33atsTSDe3eMtnWkDydHe8OMnGI+ZM3NXNtVY/vT
-	Nu7zDcPSejdssf2VECatnm9f8+UFEFcNhaa/D7ZEqSBybjaX4icffYUygIz6YdKM
-	oyWo3m5W2jpoZUzQm4NPxFjVmntD7Px5XZr0Zm7iQqesjM2qVgWRK5gFwGD76eOP
-	HIskHvvca2KRtn67QUOphNWuBunpcjkTqAeGOkb9biZfePqqz0XiSxZXMI0LOmx4
-	RY/2xVUZklKrTIG0HUC767bI0lT/qB/9pdDd58fCRNu2wdDyTf1qIysb6QyLh0Q3
-	nYxqAx5lMypIM8gK/2/3gA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-transfer-encoding:content-type
-	:content-type:date:date:feedback-id:feedback-id:from:from
-	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm1; t=1781730369; x=1781816769; bh=b
-	/4+lbdy4RRCn8Pr0XkgVynzAv3rXh674JIkCGTLIsA=; b=kxyJ6tWMMM0oTJr96
-	t9TLc0sBuEzO+B9RqqxZlpJEnCactu1Qn/T1iOoV9jr68k6VfWv3sbjt0BIt+XlV
-	cS3U0AhGUadjVkcybmSG7FGsj/8Tm+66BEh+h1EZXOWCzBMSJcdbVz37lUxIaJ05
-	WVobcNZXOqSuuWNOX6AT0dbyYR1PspbYwxec3C63eblykKVDpkDbCZXL+S7JQWvC
-	a1RXm7WXQGvJgEsel6hrcMPynz9pieK/d4cJddnOrE7zXDi39GgJy+rnfgL9qHqD
-	RMyceFj3MnKXM8Jp6BVPLzxG4LswLQXtEwIb9BWdft9A7d/M53YmEi+mY2DtKsqf
-	/fcXQ==
-X-ME-Sender: <xms:QQwzanRlHAi2mdbmdWWB4hnk-5wr8cbuib-hEBZqfdr63_hp2T-VMQ>
-    <xme:QQwzajk-vPEBQIPY0OUBONMlZ7vGdY9g_SzixlSBtMGvWugckPpNVqMkz4kjT_P5K
-    7YZXCqWF7fLfaom9kCQrqEWTVS6zKAXeLtkwLkwvYJVCGebV02J>
-X-ME-Proxy-Cause: dmFkZTGFMbOyEPnbwRoXZxodrlC5keKgNEwq6XRTF9sp84YDDntZueBLJvTboOYoA5O4Y9
-    ZAsQXshEqq1+wL+vfr3agStl/NAU0zm1x0ZEgkS2qGWC9T341AFFyi0RlALe4yj8GFXLEg
-    p50pWgXGj1xMOaYm4AHHgShu8ug/qeW5a8RZelmns/bp+IHIMVTwUUnMcPF7rWh6fnOCfv
-    jqiDFif6qDuzvZTVgRNVdrW4Mp4bP1Pcg3mJfdsyg0i1GiFlPcmZEb6tEuH36RaZ3gt6Dj
-    O7eeLF85/JbWFVFidwWEii1iNKwq9H4yHK1us5PZE3hEdUdk2ojRPUBLPgLNXN+8g45Kqh
-    T124VJLuha8xIT9T2N6WFnhdcQGjhasq5RvbeEoaQaTiHuRomNzfv6ut+jv7cRQBeutucD
-    LpiwbwXLHFAucpoqaIPRIyx4WkENZVKBFm/uY5j9KTjW+M9ICaSwVqyH8iTOh8puIq6W4o
-    68uj9lVdbzhY/iYdsebptrbbGMCclUDxdYdEfddX7WZJjnKd1cKm1Z+Yp/Sc2ajLPyCd7F
-    TSkjeIm5V+QcFL+41WO293cJgQPGPvGEre/WHksTcT8Li22oMrnkHQNZc7rTUJ8W25TYOC
-    wfJfnWNPx4tLPvO1zkYL6VgYjcBZ1y9nu04avrJ3VzB0QY58lrA9MvEGuFtg
-X-ME-Proxy: <xmx:QQwzap8R27tZbNTaPLzncZXtaF-2738BRGiDcUnTYoBtfNBx60z8lQ>
-    <xmx:QQwzarqjiRbunvny8UaFe1Tgoe7BkbKY2ekyxHXzhqOicm4B3opthQ>
-    <xmx:QQwzaulP8mYAtIkU4aAfRSD7n5zVZw5uZA4spQSYqif20UwLy6seDg>
-    <xmx:QQwzaqJHW9-7ZOZAYoB8ESPlxxBSV2qszTm5ZeXDd-ifHCp4bRX7BA>
-    <xmx:QQwzan9JhgbobIVmyq2sQjp35h8b4WgXGB0jJasyzgkys9nVd3VW-mg_>
-Feedback-ID: i2431475f:Fastmail
-Received: by mailuser.phl.internal (Postfix, from userid 501)
-	id 051492160098; Wed, 17 Jun 2026 17:06:09 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
+	dkim=pass (2048-bit key) header.d=proton.me header.i=@proton.me header.b="PhaD0JjT"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=proton.me;
+	s=protonmail; t=1782209087; x=1782468287;
+	bh=lXIbd4Qz1Sh079Ygeg/456qjXwXwTq0NstvF6I/Xi/0=;
+	h=Date:To:From:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=PhaD0JjTsibgirYKdgSCZWgtRkCQyfhSHfmkD0IGzXcn8uyyXHc7D6j2HA5t8Dq11
+	 8Iq6KJr8qIr74vFu+59LJSGCY4V+OOYTVb/iXFwm4LyMZL3RZmEtUaQmajqQJto+hW
+	 omIou4Fp8x4ycD2nYMe4guu3xOn9U30+K6aZt0G9u4YMVxuLWX32+G2dMjUtXJwuWI
+	 u9xTyI90znzeLzdYQZNbnrIvj3fZO2ei0y0clazMSNpw1jz7dLaTGcMujSxf9N2p2d
+	 u2WjX/1uCmV7rHkdl6QJTjU6f02orpOBC/cBTuhxy1m2tuRH5nz3Hj5qc19WMAlNhm
+	 fWH5eu74skB7w==
+Date: Tue, 23 Jun 2026 10:04:42 +0000
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+From: Atlas <atlas-git@proton.me>
+Subject: Automated L3 Leak Testing Framework for nftables (Network Sandbox Engine)
+Message-ID: <pikD6W611JTG_qlz6Ts6YIdjQP6gvHlm_iF--Wb1r5mImR-P7xB76IwUxdTbr2qPkVPqVkd01eUF4AfgqZAQMmO9sh7HogXaoGz7cJ7GpWU=@proton.me>
+Feedback-ID: 188920377:user:proton
+X-Pm-Message-ID: 37e4a8695b415179c3bde1c7fe178163084eda4a
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-ThreadId: AhuJ1KYLFSEJ
-Date: Wed, 17 Jun 2026 22:05:48 +0100
-From: "Kerin Millar" <kfm@plushkava.net>
-To: "Tomas Mudrunka" <mudrunka@spoje.net>, netfilter@vger.kernel.org
-Message-Id: <4b39fd25-7829-4544-a506-23386ddd1457@app.fastmail.com>
-In-Reply-To: <b1e1c08ec510f963bafff40065e8f8c2@spoje.net>
-References: <b1e1c08ec510f963bafff40065e8f8c2@spoje.net>
-Subject: Re: Using NFT for dynamic per-packet traffic load balancing
-Content-Type: text/plain
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; protocol="application/pgp-signature"; micalg=pgp-sha512; boundary="------ad37fa301c9d7c9370a6972a510232decd40bcb9b0955cbaa7101e25b75bc9c5"; charset=utf-8
+
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------ad37fa301c9d7c9370a6972a510232decd40bcb9b0955cbaa7101e25b75bc9c5
+Content-Type: multipart/mixed;boundary=---------------------a084fd41d3cb923cb48cd613eed26112
+
+-----------------------a084fd41d3cb923cb48cd613eed26112
+Content-Type: multipart/alternative;boundary=---------------------d9e82492d5d04786e90217ae8cf716d5
+
+-----------------------d9e82492d5d04786e90217ae8cf716d5
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;charset=utf-8
 
 Hi,
+I am writing to share an open-source testing framework that heavily relies=
+ on nftables and Linux network namespaces, which might be of interest to t=
+hose working on automated firewall validation and proxy architectures.
 
-On Tue, 14 Apr 2026, at 5:11 PM, Tomas Mudrunka wrote:
-> Hello
-> I was experimenting with using NFT to balance traffic between several 
-> links, this is what i came up with:
->
-> table bridge balancer {
->      chain egress_forward {
->          type filter hook forward priority filter; policy accept;
->          meta ibrname br0 drop;
->      }
-> }
->
-> table netdev balancer {
->      map dispatch_map {
->          typeof numgen random mod 100 : oif
->          flags interval
->          elements = {
->              0-9   : "eth0",
->              10-29 : "eth1",
->              30-99 : "eth2",
->          }
->      }
->
->      chain br_egress {
->          type filter hook egress device br0 priority filter; policy drop;
->          fwd to numgen random mod 100 map @dispatch_map
->      }
-> }
->
->
-> You create bridge br0 with eth0-eth2 interfaces in it.
-> There is a map that sets weights of how much traffic should be directed 
-> to individual links, so you can fully use multiple links even when the 
-> bandwidth is not equal.
-> For wireless links you can even get signal quality feedback from radio 
-> hardware and live tune the map based on it. Tried up to 10 times a 
-> second without any issues using following command:
->
-> echo 'flush map netdev balancer dispatch_map; add element netdev 
-> balancer dispatch_map { 0-32 : "eth0", 33-66 : "eth1", 67-99 : "eth2" }' 
-> | sudo nft -f -
->
-> Being able to dynamicaly fine tune this map from userspace in realtime 
-> is killer-feature of this approach and cannot be achieved by regular 
-> linux interface bonding (link aggregation). While it is very important 
-> for me, i agree this is quite niche requirement.
->
-> The nft ruleset prevents bridge from actualy forwarding between ports, 
-> so each frame is sent only via single randomly selected interface. 
-> Received packets are not forwarded anywhere except for local ip stack.
->
-> I know this setup is still quite rough, but i wonder if there is 
-> something that can be improved. It seems to be really interresting 
-> topic.
+While building a transparent proxy (TransparentTorProxy), I noticed a lack=
+ of automated tools to empirically test L3/L4 cleartext leaks during proxy=
+ teardown or daemon crashes (e.g., handling asynchronous TCP SYN retransmi=
+ssions when a ruleset is flushed).
 
-It is interesting. What makes it rough is that it is an implementation of per-packet load balancing. It might work well enough for many short-lived TCP flows in aggregate, or traffic that is tolerant to reordering (various UDP-based protocols). Otherwise, it might under-perform.
+To solve this, I developed the Network Sandbox Engine (NSE). It dynamicall=
+y spawns isolated network namespaces (ip netns), applies nftables rulesets=
+, injects background traffic, and uses PCAP to verify the absence of leaks=
+ during graceful teardowns.
 
-Given that, I would suggest keeping an eye on your reordering/retransmit stats with ss -ti.
+To achieve a zero-leak teardown, the tool relies on a specific LIFO inject=
+ion of reject with tcp reset rules applied just before flushing the tables=
+, effectively clearing the kernel queues before the firewall goes down.
 
->
-> Maybe i don't like using "fwd to" and should just drop frames on all 
-> interfaces except for one. because right now i cannot see egress frames 
-> on br0 using wireshark, only ingress.
+I thought this community might find the testing methodology-or the specifi=
+c nftables state transition handling-useful for other proxying or containm=
+ent projects.
 
-Even so, the use of "fwd to" is probably for the best.
+The testing suite (and the resulting transparent proxy architecture) is av=
+ailable here:=C2=A0https://github.com/onyks-os/NetworkSandboxEngine
 
->
-> Maybe i can ditch bridge completely and use dummy interface instead? I 
-> am not sure what is cleanest way. i want to be able to use wireshark to 
-> see all frames going through the load balancing on single interface, 
-> which is not really happening right now. but i can observe individual 
-> interfaces, which is not as useful, but allowed me to verify the 
-> ballancing works properly and follows weight ratio defined in the map.
+Feedback on the nftables teardown logic or suggestions for further kernel-=
+level hardening are highly appreciated.
 
-A dummy interface wouldn't pair with "fwd to". If you wish to dispense with the bridging aspect, a netdev ingress hook might work.
+Best regards,
+onyks
+-----------------------d9e82492d5d04786e90217ae8cf716d5
+Content-Type: multipart/related;boundary=---------------------76cbb4169e0a0adc5d3c5228995578b2
 
-You could make use of counters in order to track the distribution.
+-----------------------76cbb4169e0a0adc5d3c5228995578b2
+Content-Type: text/html;charset=utf-8
+Content-Transfer-Encoding: base64
 
-meta mark set numgen random mod 100
-meta mark 0-9   counter fwd to "eth0"
-meta mark 10-29 counter fwd to "eth1"
-meta mark 30-99 counter fwd to "eth2"
+PGRpdiBzdHlsZT0iZm9udC1mYW1pbHk6IEFyaWFsLCBzYW5zLXNlcmlmOyBmb250LXNpemU6IDE0
+cHg7Ij48c3BhbiBzdHlsZT0iZm9udC1zaXplOiAxMnB0OyBsaW5lLWhlaWdodDogbm9ybWFsOyI+
+SGksPC9zcGFuPjxkaXY+PGJyPjwvZGl2PjxkaXY+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZTogMTJw
+dDsgbGluZS1oZWlnaHQ6IG5vcm1hbDsiPkkgYW0gd3JpdGluZyB0byBzaGFyZSBhbiBvcGVuLXNv
+dXJjZSB0ZXN0aW5nIGZyYW1ld29yayB0aGF0IGhlYXZpbHkgcmVsaWVzIG9uIG5mdGFibGVzIGFu
+ZCBMaW51eCBuZXR3b3JrIG5hbWVzcGFjZXMsIHdoaWNoIG1pZ2h0IGJlIG9mIGludGVyZXN0IHRv
+IHRob3NlIHdvcmtpbmcgb24gYXV0b21hdGVkIGZpcmV3YWxsIHZhbGlkYXRpb24gYW5kIHByb3h5
+IGFyY2hpdGVjdHVyZXMuPC9zcGFuPjwvZGl2PjxkaXY+PGJyPjwvZGl2PjxkaXY+PHNwYW4gc3R5
+bGU9ImZvbnQtc2l6ZTogMTJwdDsgbGluZS1oZWlnaHQ6IG5vcm1hbDsiPldoaWxlIGJ1aWxkaW5n
+IGEgdHJhbnNwYXJlbnQgcHJveHkgKDwvc3Bhbj48c3BhbiBzdHlsZT0iZm9udC1zaXplOiAxMnB0
+OyBsaW5lLWhlaWdodDogbm9ybWFsOyI+PGEgaHJlZj0iaHR0cHM6Ly9naXRodWIuY29tL29ueWtz
+LW9zL1RyYW5zcGFyZW50VG9yUHJveHkiIHRpdGxlPSJUcmFuc3BhcmVudFRvclByb3h5Ij48c3Bh
+biBzdHlsZT0iZm9udC1zaXplOiAxMnB0OyI+VHJhbnNwYXJlbnRUb3JQcm94eTwvc3Bhbj48L2E+
+PC9zcGFuPjxzcGFuIHN0eWxlPSJmb250LXNpemU6IDEycHQ7IGxpbmUtaGVpZ2h0OiBub3JtYWw7
+Ij4pLCBJIG5vdGljZWQgYSBsYWNrIG9mIGF1dG9tYXRlZCB0b29scyB0byBlbXBpcmljYWxseSB0
+ZXN0IEwzL0w0IGNsZWFydGV4dCBsZWFrcyBkdXJpbmcgcHJveHkgdGVhcmRvd24gb3IgZGFlbW9u
+IGNyYXNoZXMgKGUuZy4sIGhhbmRsaW5nIGFzeW5jaHJvbm91cyBUQ1AgU1lOIHJldHJhbnNtaXNz
+aW9ucyB3aGVuIGEgcnVsZXNldCBpcyBmbHVzaGVkKS48L3NwYW4+PC9kaXY+PGRpdj48YnI+PC9k
+aXY+PGRpdj48c3BhbiBzdHlsZT0iZm9udC1zaXplOiAxMnB0OyBsaW5lLWhlaWdodDogbm9ybWFs
+OyI+VG8gc29sdmUgdGhpcywgSSBkZXZlbG9wZWQgdGhlIDwvc3Bhbj48c3BhbiBzdHlsZT0iZm9u
+dC1zaXplOiAxMnB0OyBsaW5lLWhlaWdodDogbm9ybWFsOyI+PGEgaHJlZj0iaHR0cHM6Ly9naXRo
+dWIuY29tL29ueWtzLW9zL05ldHdvcmtTYW5kYm94RW5naW5lIiB0aXRsZT0iTmV0d29yayBTYW5k
+Ym94IEVuZ2luZSI+PHNwYW4gc3R5bGU9ImZvbnQtc2l6ZTogMTJwdDsiPk5ldHdvcmsgU2FuZGJv
+eCBFbmdpbmU8L3NwYW4+PC9hPjwvc3Bhbj48c3BhbiBzdHlsZT0iZm9udC1zaXplOiAxMnB0OyBs
+aW5lLWhlaWdodDogbm9ybWFsOyI+IChOU0UpLiBJdCBkeW5hbWljYWxseSBzcGF3bnMgaXNvbGF0
+ZWQgbmV0d29yayBuYW1lc3BhY2VzIChpcCBuZXRucyksIGFwcGxpZXMgbmZ0YWJsZXMgcnVsZXNl
+dHMsIGluamVjdHMgYmFja2dyb3VuZCB0cmFmZmljLCBhbmQgdXNlcyBQQ0FQIHRvIHZlcmlmeSB0
+aGUgYWJzZW5jZSBvZiBsZWFrcyBkdXJpbmcgZ3JhY2VmdWwgdGVhcmRvd25zLjwvc3Bhbj48L2Rp
+dj48ZGl2Pjxicj48L2Rpdj48ZGl2PjxzcGFuIHN0eWxlPSJmb250LXNpemU6IDEycHQ7IGxpbmUt
+aGVpZ2h0OiBub3JtYWw7Ij5UbyBhY2hpZXZlIGEgemVyby1sZWFrIHRlYXJkb3duLCB0aGUgdG9v
+bCByZWxpZXMgb24gYSBzcGVjaWZpYyBMSUZPIGluamVjdGlvbiBvZiByZWplY3Qgd2l0aCB0Y3Ag
+cmVzZXQgcnVsZXMgYXBwbGllZCBqdXN0IGJlZm9yZSBmbHVzaGluZyB0aGUgdGFibGVzLCBlZmZl
+Y3RpdmVseSBjbGVhcmluZyB0aGUga2VybmVsIHF1ZXVlcyBiZWZvcmUgdGhlIGZpcmV3YWxsIGdv
+ZXMgZG93bi48L3NwYW4+PC9kaXY+PGRpdj48YnI+PC9kaXY+PGRpdj48c3BhbiBzdHlsZT0iZm9u
+dC1zaXplOiAxMnB0OyBsaW5lLWhlaWdodDogbm9ybWFsOyI+SSB0aG91Z2h0IHRoaXMgY29tbXVu
+aXR5IG1pZ2h0IGZpbmQgdGhlIHRlc3RpbmcgbWV0aG9kb2xvZ3ktb3IgdGhlIHNwZWNpZmljIG5m
+dGFibGVzIHN0YXRlIHRyYW5zaXRpb24gaGFuZGxpbmctdXNlZnVsIGZvciBvdGhlciBwcm94eWlu
+ZyBvciBjb250YWlubWVudCBwcm9qZWN0cy48L3NwYW4+PC9kaXY+PGRpdj48YnI+PC9kaXY+PGRp
+dj48c3BhbiBzdHlsZT0iZm9udC1zaXplOiAxMnB0OyBsaW5lLWhlaWdodDogbm9ybWFsOyI+VGhl
+IHRlc3Rpbmcgc3VpdGUgKGFuZCB0aGUgcmVzdWx0aW5nIHRyYW5zcGFyZW50IHByb3h5IGFyY2hp
+dGVjdHVyZSkgaXMgYXZhaWxhYmxlIGhlcmU6Jm5ic3A7PC9zcGFuPjxzcGFuIHN0eWxlPSJmb250
+LXNpemU6IDEycHQ7IGxpbmUtaGVpZ2h0OiBub3JtYWw7Ij48c3Bhbj48YSB0YXJnZXQ9Il9ibGFu
+ayIgcmVsPSJub3JlZmVycmVyIG5vZm9sbG93IG5vb3BlbmVyIiBocmVmPSJodHRwczovL2dpdGh1
+Yi5jb20vb255a3Mtb3MvTmV0d29ya1NhbmRib3hFbmdpbmUiPjxzcGFuIHN0eWxlPSJmb250LXNp
+emU6IDEycHQ7Ij5odHRwczovL2dpdGh1Yi5jb20vb255a3Mtb3MvTmV0d29ya1NhbmRib3hFbmdp
+bmU8L3NwYW4+PC9hPjwvc3Bhbj48L3NwYW4+PC9kaXY+PGRpdj48YnI+PC9kaXY+PGRpdj48c3Bh
+biBzdHlsZT0iZm9udC1zaXplOiAxMnB0OyBsaW5lLWhlaWdodDogbm9ybWFsOyI+RmVlZGJhY2sg
+b24gdGhlIG5mdGFibGVzIHRlYXJkb3duIGxvZ2ljIG9yIHN1Z2dlc3Rpb25zIGZvciBmdXJ0aGVy
+IGtlcm5lbC1sZXZlbCBoYXJkZW5pbmcgYXJlIGhpZ2hseSBhcHByZWNpYXRlZC48L3NwYW4+PC9k
+aXY+PGRpdj48YnI+PC9kaXY+PGRpdj48c3BhbiBzdHlsZT0iZm9udC1zaXplOiAxMnB0OyBsaW5l
+LWhlaWdodDogbm9ybWFsOyI+QmVzdCByZWdhcmRzLDwvc3Bhbj48L2Rpdj48ZGl2PjxzcGFuIHN0
+eWxlPSJmb250LXNpemU6IDEycHQ7IGxpbmUtaGVpZ2h0OiBub3JtYWw7Ij5vbnlrczwvc3Bhbj48
+L2Rpdj48L2Rpdj48ZGl2IHN0eWxlPSJmb250LWZhbWlseTogQXJpYWwsIHNhbnMtc2VyaWY7IGZv
+bnQtc2l6ZTogMTRweDsiIGNsYXNzPSJwcm90b25tYWlsX3NpZ25hdHVyZV9ibG9jayI+CjwvZGl2
+Pgo=
+-----------------------76cbb4169e0a0adc5d3c5228995578b2--
+-----------------------d9e82492d5d04786e90217ae8cf716d5--
+-----------------------a084fd41d3cb923cb48cd613eed26112
+Content-Type: application/pgp-keys; filename="publickey - atlas-git@proton.me - 0x1F67851E.asc"; name="publickey - atlas-git@proton.me - 0x1F67851E.asc"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="publickey - atlas-git@proton.me - 0x1F67851E.asc"; name="publickey - atlas-git@proton.me - 0x1F67851E.asc"
 
--- 
-Kerin Millar
+LS0tLS1CRUdJTiBQR1AgUFVCTElDIEtFWSBCTE9DSy0tLS0tCgp4ak1FYWNLOWt4WUpLd1lCQkFI
+YVJ3OEJBUWRBajNYeDd2azNiWnBrMmF2b1dqWnlNUDRGMXF3aDVzYVAKbkYvUll0MUFvb1hOS1dG
+MGJHRnpMV2RwZEVCd2NtOTBiMjR1YldVZ1BHRjBiR0Z6TFdkcGRFQndjbTkwCmIyNHViV1Urd3NB
+UkJCTVdDZ0NEQllKcHdyMlRBd3NKQndrUW8zR1pBTnJmbjVoRkZBQUFBQUFBSEFBZwpjMkZzZEVC
+dWIzUmhkR2x2Ym5NdWIzQmxibkJuY0dwekxtOXlaeUc5N0pHOTVxQXRpRFY2dkdMdkp5TUUKVzFX
+V0J6eHkyaWdqazhFNTloTlJBeFVLQ0FRV0FBSUJBaGtCQXBzREFoNEJGaUVFSDJlRkhqQWljQnlr
+CjhlMlpvM0daQU5yZm41Z0FBSVZMQVFDVHZhTzdtdHZRbTBGM2RhUDBhSlpabFFTeUF5STU3eDZt
+ZlQzdgpqVkNsbndFQTRLeW9EWXhPMFF0dVAwaDVGSTk1MEtMTlkxWlpzN3J0RnBsN3dsRXc2d1BP
+T0FScHdyMlQKRWdvckJnRUVBWmRWQVFVQkFRZEF3dkRnbGdIckR5SnQrcnR3KzFHV0VJdndUVHo3
+eW8xemFyRkVPMVJvClR4Z0RBUWdId3I0RUdCWUtBSEFGZ21uQ3ZaTUpFS054bVFEYTM1K1lSUlFB
+QUFBQUFCd0FJSE5oYkhSQQpibTkwWVhScGIyNXpMbTl3Wlc1d1ozQnFjeTV2Y21kVnFTaHFyRThp
+QVpqbUt0SVpQSThyWmVHa01hL0kKdjhRTmtKT2x1aWVudXdLYkRCWWhCQjluaFI0d0luQWNwUEh0
+bWFOeG1RRGEzNStZQUFBS0t3RCtOdit3CmZPRTE5N1VXQW9mbjZwcDJFL2N6emxQbjY3TmRGcytO
+QnNhbmdjc0EvUnFUMDJIUlgvMGpFZUoxZndNMwpQUUZGby9od3d2RHBTYUJ1UXNjZXRYSUEKPVdU
+bnQKLS0tLS1FTkQgUEdQIFBVQkxJQyBLRVkgQkxPQ0stLS0tLQo=
+-----------------------a084fd41d3cb923cb48cd613eed26112--
+
+--------ad37fa301c9d7c9370a6972a510232decd40bcb9b0955cbaa7101e25b75bc9c5
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: ProtonMail
+
+wroEARYKAG0Fgmo6WiwJEKNxmQDa35+YRRQAAAAAABwAIHNhbHRAbm90YXRp
+b25zLm9wZW5wZ3Bqcy5vcmfNoVLc9Tlka/yZ9PPhSdojpPplq6eYy8fbaxf8
+dlDFtxYhBB9nhR4wInAcpPHtmaNxmQDa35+YAABkhgD4zKVJRIX9KZs6USgP
+0uVme6Pr9qKAdssMNx57n9t0eAEA3qBt3QI5AB6zFZ3ahce8aEMkYyw+Kek8
+LbWYXQ0P+wg=
+=/K31
+-----END PGP SIGNATURE-----
+
+
+--------ad37fa301c9d7c9370a6972a510232decd40bcb9b0955cbaa7101e25b75bc9c5--
+
