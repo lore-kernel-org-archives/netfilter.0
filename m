@@ -1,66 +1,66 @@
-Received: from mail-dy1-f178.google.com (mail-dy1-f178.google.com [74.125.82.178])
+Received: from mail-dy1-f169.google.com (mail-dy1-f169.google.com [74.125.82.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBDD81A9F87
-	for <netfilter@vger.kernel.org>; Thu, 25 Jun 2026 16:55:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30D0337C92D
+	for <netfilter@vger.kernel.org>; Thu, 25 Jun 2026 17:21:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782406519; cv=none; b=pOq4x0vV9ainUtvSIX9dL/uarzqF+pkNswLLJysPVjf+tat1KZrm3i3CyF/eAUsA6MP6upejE5PjsgR1vZAlII5+knFy/8BYKC3tjFvX9YrQFYzbV9W1PyYzQDJtc9/vaWkynvx+ZPHkN+Pdbf33+hkAC9q2FrNMDMOjk6kF5cw=
+	t=1782408061; cv=none; b=QcC8pF9IUAAtzohqdkEJDa/MpJZwOUIZqbQzZJM9U8NEwFDKvBQOSZQJ8ipO+NEIsqW2XdH5wfLabTbeSGdVHyhVOTRlXnRBjgxtSqVm1I61b5eN6e1ZF68c7lptVeglrRFi2q2hW1a0IgFb571ysql1QOscFEwgWqjqIsFU/2U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782406519; c=relaxed/simple;
-	bh=T0Cu4sQiMtn3GGbuT8isvTMNrsQBX9sZDipdP+YA+Ig=;
+	s=arc-20240116; t=1782408061; c=relaxed/simple;
+	bh=Kj0z1vIajO6G5ISbmAQXRyEcLzfEvKd8CEFo4+HoJHI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=rfPgy/EzPWQid3Qkdhvp9DBC+R67x2hivOuSt7JVCx5l0m48Fhr9LvXNkMISbUNu7zZZyEKWCNJ8F0IHxdFTGCkFomdFixhRp1LdrNJ8tdfO0opMw1811qZtCEunf4ozwHCCE4lWejPMitX2lk8O7BUOxrt0lRDJiGVhM5F1vis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UhI8b+lL; arc=none smtp.client-ip=74.125.82.178
+	 In-Reply-To:Content-Type; b=S63l6F5XMBlytUJnbFRXmZfN7ONJhBLGBhKofhmbmf9mBoPR66xRhgylIjVP8S6rgId+A45HpkZYFdU2tD1Rsdf7dxxyX/lhcHInxgJuj4dlubGAjP8Xd3xglq4swuvkQziB1s/ePCLEoZ1VZ0zraHBF2gT4XXV7TEs6fUWDQTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HmM3gFQj; arc=none smtp.client-ip=74.125.82.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UhI8b+lL"
-Received: by mail-dy1-f178.google.com with SMTP id 5a478bee46e88-304f590dd91so128505eec.0
-        for <netfilter@vger.kernel.org>; Thu, 25 Jun 2026 09:55:17 -0700 (PDT)
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HmM3gFQj"
+Received: by mail-dy1-f169.google.com with SMTP id 5a478bee46e88-30bf132969bso201754eec.0
+        for <netfilter@vger.kernel.org>; Thu, 25 Jun 2026 10:21:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1782406517; x=1783011317; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1782408059; x=1783012859; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:to:subject:user-agent:mime-version:date:message-id:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=wNycTMUND9rX+oId0ZF7rK5i/JnXzYQiUlj9MZmtqGg=;
-        b=UhI8b+lLlg6iwbnzoMbHxQqu8rQLbUMhrLMp8mkNMrsZPFWwb7+PZWKRc1hcFINo8R
-         Yrh7zdwbbAkcRy0+BPBIUnhpIxqjFrbAj+EoMfNYeq8F96X/3AmglapSIBs07PmGzqpk
-         x7pvK6Cya0iPJtPcIA78qSibHp4174yVqNNKp+8AxB2FoskKDY2Fp9PFZZ9y6cKtg0Gi
-         uoUS5l+a3yb8DLLST4k1ejuG6X4vxzehIZZ+/8wmd2y7qJSywC+0TtoFKeqRf8Nexm5A
-         ZtS+bE+4iksJ34EvMQaqeNMpwx3QTlVVrxyvm7QTDWgsxmywSAKLGnl5hrTG0Lw/ip86
-         ZX+g==
+        bh=ntVloE+C1mM/NaeyXSvt9iulU28ibzGc9NVPFiGH/xo=;
+        b=HmM3gFQj7mzPVJUPmJjpELs76QBWunJzI++KtbBEGtBZYJS1fUOhmjgUi/7GN4Si86
+         c4gNL4BDHEhhqMobPPVaiO6RewIX5umFo/j2Nt4L4+7x2VXRL5Uj/azHdqtgoUzqqUf7
+         8tXDHuJ8nUTL6jF6vjuaUFZLJ1PKM004sEklKHpKIJUiOQ1HZV3ySibS74XhHE6VVIhe
+         YkTpjNVl7xS0lZJLoKPFTG+nEOS4XQ6azQl2p4Ru/Pv4ZuyKrKshigTy0nHI0ZNag+XI
+         2ZJs9WiGj8on0jqWCPBowGKYcsN5ium068p3WmXP6XGtP396i6Eu++WgsfG7npgfMQ5l
+         UvNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782406517; x=1783011317;
+        d=1e100.net; s=20251104; t=1782408059; x=1783012859;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=wNycTMUND9rX+oId0ZF7rK5i/JnXzYQiUlj9MZmtqGg=;
-        b=KRi1xvISNLZscpQMr6I8jwCtUHI1CbWXckyx9/hS7GN6qYVfBwf7OZxTQpMf8AidpN
-         OJCSBqxD2/qPaqEbUqj0BRa3e1R5F4L7Fze9NXeuR2dfD4oBg7LlYOuMMLx7WsS3ToDW
-         c3sryxBNRA0cWe6lERe6ig34unVN3/aDk5LqV4giEmiOKSdP3TR7iAV/gTL0DjiodNjK
-         YtqI4rHxdmfQ/u5b3bCFqMCdhd+6RuDeuKtfFgcM64weL9SUl7Y7/xi10coFwiB4COkC
-         HVtR9RxaibG7XdRJxkYGsshvg40Q/zDtOpykKWEwjUlcAkNpq18X0cRoddykCcBCIZN6
-         TQmw==
-X-Forwarded-Encrypted: i=1; AHgh+RoNZtrSuQQtjHOoTKBXz7HQz9LYR/f3rimUS89Zap/q+CjAilJxi8gGJ00fmGFeMrgk+kWBmtjHJw4=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw1830FhSXIp/um9/G7aNyqNagby1jlaXlQ9gqkM/MPRIYgH5uc
-	0WmjpQaDSXBDkDbClrJb8RBVk6Ll59oaR4/hkM+Dq54gBxJsrc+IRbXXcstYtm6w
-X-Gm-Gg: AfdE7cmK991+BFcCXxDC9UOHN0P7ctC7f6zmHXDo1KXOIFaZ5WAuoTcQjHrlZ8TnAuc
-	hENpSe5S1Uq1/6/NhuldiB58mF1MVgZt2zy+JmC0qvDld9B415VWfZsuRnu5asXX6Duk/ICGglq
-	4zC3PHXO0IDp2s523fvLExIcOcs41zH6pZYmuQtPF+qokO8SPOSmYYut0hCEWm6flSbQXeCWKlM
-	3Vf5q36+MRILdX6JeGXCnaSiwwFnRPiRd6/cBEnBGE4OC0IPFhcfub4rf3ldQErTtscSHh7Kk6o
-	vcLXDWZoWRKgWgwgGgSnlHYdb1qcS9K4Gq45H32b236MVCJqBho/4dOYtXjOdLQEMaAyEJWsA2v
-	Ewu8FvbJHJhWJyogCG7LP4AXsDC6MP9eNgeaj70q+dy9cCXEkKTh6EV/TSbUum1xLS4dtMqmy+5
-	7THDMDo3f9lRDja2tB+5o5NVPVZYGYG181Ni7RoANl2JI=
-X-Received: by 2002:a05:7300:8c2c:b0:30c:2af0:1cc with SMTP id 5a478bee46e88-30c84fdf0c5mr3967060eec.34.1782406516846;
-        Thu, 25 Jun 2026 09:55:16 -0700 (PDT)
+        bh=ntVloE+C1mM/NaeyXSvt9iulU28ibzGc9NVPFiGH/xo=;
+        b=inMUSPXfQcb87TeY2GG7tlFs4L/29JbyABUU1OlM2SEkM/xB38HiIYrxEyKfVtWqQz
+         vcOqb5/GXVjCCh8KJ8R+kT6RPhf16ebrgSTFaqbeBh66+Z2BFHTdxmgLR9EtMMa91hq5
+         mHFpI/uSX+x7yuacokzLm6taIANxnImoCF1g/x96sFV7EZW9MwYYHT/zSiSlCTzdpVEm
+         xnXWz42YbWu2G2ge9A7AwDKF2gWclyKFRkbsGJcbFQ2y/BUtPhpfK6PQxKxEnsQs/+bJ
+         CuggWjrCnEuiKgfLo5wldTKSkYwJFVvjMQ6/dY/+sEhXJvoZO7bPSBix963voVCogreH
+         eznQ==
+X-Forwarded-Encrypted: i=1; AHgh+Rqz7W4/9CIN7++oX3gIBBSrOJAgD+tYwDC6XuMdK1beaTterfYYaG6uj6524LMJp5wUY41g+iutRBI=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzu1NQvsNDCU95ZfqZGfaeegOmCS7/dFV9sX0ZHyQHJJIXQgJxo
+	R1dajM69fMKCvJcyxcbLG45obz3zKoBnlt+CYKy+MGE3G3wDHRWLDPal
+X-Gm-Gg: AfdE7clsIQUupsCCIN1N97jm/B/agjjJ0Pw6pzzhRvvWUQ0/f0T+R43BM1uRXNtkxTT
+	ZdH4/Cyd7DTatHL9/XlHUvXQBSp2Qm+ENWVGG/ohz1rK51XeQXAJcaOrN7r1TVhFgIubTx2oEAZ
+	Qytn4MA3tY575bGvay/sYSROnxZEAMcioIXs4loVDm/vu/OgzkJUB9UsPyKbT0K1xRjnccTqE7s
+	4ARd9MqU4BRWNkhDx1GnTrWyuY53xX5QcQIvO4uth+GglnJyGgpYiimA71wnECtCLeHQCY0eNHe
+	FGVAI0VYYtgDZSqzz8zZhuQtqT/dzusWBs4gIUG1JaqSip1EO/QkOHjyxxIvMZ6zPp6YwajvAFg
+	La6pf0Pa7iaGaYyj0u38knP1iorALxLCHhlEbDUIUJ9NJfgCHxZpTf9Nbmt07eCD7v6fq0W8rRG
+	f7pfvpue9f2LhGCNdwCq3ZcJ2Cp8jDLS7VDCH1ZkBG1rk=
+X-Received: by 2002:a05:7301:6583:b0:30c:7b76:9047 with SMTP id 5a478bee46e88-30c84d4a202mr3547280eec.17.1782408059014;
+        Thu, 25 Jun 2026 10:20:59 -0700 (PDT)
 Received: from ?IPV6:2605:59c0:207f:5300::10dd:b102? ([2605:59c0:207f:5300::10dd:b102])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30c7ca87caasm9534797eec.27.2026.06.25.09.55.16
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30c7c8b1ab6sm16274478eec.15.2026.06.25.10.20.58
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Jun 2026 09:55:16 -0700 (PDT)
-Message-ID: <5a12f4da-c052-493b-8cd5-3b5319d05057@gmail.com>
-Date: Thu, 25 Jun 2026 09:55:14 -0700
+        Thu, 25 Jun 2026 10:20:58 -0700 (PDT)
+Message-ID: <e244a0d0-49ec-4ea4-aba7-3aee899ef0ed@gmail.com>
+Date: Thu, 25 Jun 2026 10:20:57 -0700
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
@@ -69,28 +69,40 @@ List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: Question on rate limiting on nftables
-To: Kerin Millar <kfm@plushkava.net>, Andre Rodier <andre@rodier.me>,
+To: =?UTF-8?Q?Lars_Nood=C3=A9n?= <lars.nooden@gmx.com>,
  netfilter@vger.kernel.org
 References: <DJ3MTZXMKPIT.1A41M4YZMF8UY@rodier.me>
  <8d84a240-b9ae-41f4-b111-33007909b0a2@app.fastmail.com>
+ <74E543AC-1B65-4E99-8324-B5758DCBA669@slavino.sk>
+ <e8e26118c36111d0b4aa290e1e411ff15b6f64aa.camel@rodier.me>
+ <6141c93d-ca25-4b3f-8a6b-b048f2ec595f@gmx.com>
 Content-Language: en-US
 From: Gordon Fisher <gordfisherman@gmail.com>
-In-Reply-To: <8d84a240-b9ae-41f4-b111-33007909b0a2@app.fastmail.com>
+In-Reply-To: <6141c93d-ca25-4b3f-8a6b-b048f2ec595f@gmx.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 6/8/26 5:45 AM, Kerin Millar wrote:
-> [...]
+On 6/8/26 8:57 AM, Lars Noodén wrote:
+> On 6/8/26 18:01, Andre Rodier wrote:
+>> Also, a connection attempts on a
+>> different port should immediately raise attention, as it is involving
+>> more than a basic SSH scan bot.
 >
-> If the problem can be characterised as "I endure too much log noise from sshd and I find it annoying" then perhaps configure sshd(8) to additionally bind to some other random port than 22 and expose only that port.
+> Shifting ports might quiet the logs somewhat, but your SSH port will 
+> be found both quickly and easily by bots.  That has been the case for 
+> a long time:
 >
-> [...]
-
-Another way is to simply disallow (drop) all connections to resources 
-you don't want the random public to access, and only allow the 
-hosts/networks you actually desire to get in. This has long been my 
-policy on any server that I administer and thus never had a problem with 
-random probes.
+>  https://bsdly.blogspot.com/2013/02/theres-no-protection-in-high-ports.html 
+>
+>
+> It is difficult to fit nftables into mitigations for those probes 
+> because modern scans usually come from a wide spread of addresses and 
+> networks.  In the case of SSH, using SSH keys (or even SSH 
+> certificates) and turning off password authentication clears out a lot 
+> of the bots, but that has been mentioned already.
+>
+You can just block access (drop) to all and only allow to specific 
+address(es), then probes are taken out of the picture entirely.
 
 -- 
 gfish
