@@ -1,115 +1,69 @@
-Received: from mail-dy1-f177.google.com (mail-dy1-f177.google.com [74.125.82.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outbound.qs.icloud.com (qs-2003f-snip4-11.eps.apple.com [57.103.86.63])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B7F5328610
-	for <netfilter@vger.kernel.org>; Fri, 26 Jun 2026 17:04:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B055800
+	for <netfilter@vger.kernel.org>; Sat, 27 Jun 2026 22:25:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=57.103.86.63
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1782493448; cv=none; b=dYFG0aqwNSZXrPSxRHlSlB1Td9TdoRpbVrs/hWEWBoljRlprch8pfoFOHXUc8QI5g3oqXDFevHp55ssVtl4FMCK60F+yWf+WppChsCwXlwz2czTMYCDJ8Ud9wq+iYQuX5hEN8NDSY9wZ3XGOjRuVNVRfdnkj2ns49MG5iqkQgCU=
+	t=1782599117; cv=none; b=bSP3w6V41lsh1LlvCveTPSqNZHAkDUo4dqR+eZ5TgTj5USwAdmt29n8SYv/vvAcjkumSnk7/B8fUUgfffGDI/QogtzmadKYN/REUu618AZyQI5GapKHXy+EEheMnKFG8aKfsl4L67b77GwHAtTH9TF5oGQeaiDQYNoQuxsZLOh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1782493448; c=relaxed/simple;
-	bh=zmXlY5Q1VbnIhD2md201NDzJrfZY2++J6kTdFJzY3OU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=jqg+yfwFMfxSl7vdzKVsrn4TtYt4QB3rCXNvCthWadbQi/V61bgn/crySdPP5n0cWTDOP0yZPi/rrIsY6O2k6MW2As9jgw2dffbPbNlJhIGBt3YhKNZCKPh6O7TJGXlWcgSdqlir+pT+lyoLLerHoMp72Eur7E2PNX2WlEddKJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=sFvjfUUR; arc=none smtp.client-ip=74.125.82.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+	s=arc-20240116; t=1782599117; c=relaxed/simple;
+	bh=3UA12xPHQMeHhZflM8wubFDfjQ2fLpvTHlqwC8XetPE=;
+	h=From:Content-Type:Mime-Version:Subject:Message-Id:Date:To; b=TApfa+32yz5smZWrn86f/fGN4uNX89+bxLwYigp3WwP8Wc07/dbXPOS7PFfexCiM6AiD2O9WdgW1zcrdDqPL2oF2MVuNl1/DDdleFslKsu3xAYhii2m66og0qNOxwgm6KKa0pONnNTZBPQMtDCWyxJcyv0odCXjxaI6eucy4IKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=icloud.com; spf=pass smtp.mailfrom=icloud.com; dkim=pass (2048-bit key) header.d=icloud.com header.i=@icloud.com header.b=E5PcMmmD; arc=none smtp.client-ip=57.103.86.63
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=icloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=icloud.com
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="sFvjfUUR"
-Received: by mail-dy1-f177.google.com with SMTP id 5a478bee46e88-30bc871ecdfso1606727eec.1
-        for <netfilter@vger.kernel.org>; Fri, 26 Jun 2026 10:04:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1782493446; x=1783098246; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=AfQY+vHX01Bcb5UZrDO8pUaKTgyxnWNkC2i7H7+MAgQ=;
-        b=sFvjfUURo+w26M9MtnPyZD5WajTvsMuLq1Qsavcbg7NdGInpk7yHqWOgglKh58hRFV
-         UBVHqHHT9xMM61DzX+kGReqzeRIZuW0qaS3GyuncSZq4cAZT1H0QKwyeCFgeZxcoEZPR
-         pAZ9rLatLBGRNZ0DwqAlizMqx8UXJ4HmXhK+smOfGrx6cjNbEbNgZI2ThTjGXl8IWD2X
-         yHyv5MRec+Xw0AhAmcEoUUp6p3BPa0lf6c1CieQ3KrPrb6gR99yTpCQ2tid2GobaXQ5R
-         3nr0x7oHZrEwB952p4nLlN9k57eVA21HxJmjgCLT41LHOUt3oqM+1e/op+xfD9chSPxL
-         gtKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1782493446; x=1783098246;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=AfQY+vHX01Bcb5UZrDO8pUaKTgyxnWNkC2i7H7+MAgQ=;
-        b=S50/bkNSGFVf209tIi168QFaef5D9TT5M+zFAD1ZL64BNXk/DKFgz20AA4bNMr0wH0
-         IEmNh7gLUnRIDUcw5O1zWHEXxCWmSfMog7RnYEkOt7i9pl+TOdDFTKEH+YJr0puoyb/r
-         UkpL7j51MZiYZhif2LRwq47iBLhtkJoVaCa2mCRk6hH6ZYUSE3tHdKPN1hZixBZt+UEM
-         2a8WyltpsxN7fo3DUwJHKhsSZGyYlwmnp3uods1xkA2mXHYSQPfLiOLHhbXY7rCTqprB
-         hePsMl98LKLJvNnvvJUToyMoI6IK/8WaEYNJ7TBPXq1Rml5z3Ed1dU2Q3YsUro1oKDNl
-         AOpw==
-X-Forwarded-Encrypted: i=1; AHgh+RquwuKKOPkOmtnrKIiWZt2dBxYWJ+zQ3F8d0YM+kwx7E6gW2m8BGNn81A66D9iyI2gDFEbmgWyy/3w=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxfgW5eUH7DlgvQcLw/FanVLc/tmjg9KxfEb3lolvhZ/wTKD7Na
-	zGGL500rQc9BadSKvgY2qs3gz/XO33YJJe8uu0a7461iOFJ8iLafUxmx4z8EewzK
-X-Gm-Gg: AfdE7cluuoQc2H7k8kQvCq06C5WDDBszO3ey9RG46VXzlRS9N4twYIBO8GplQgbTQX/
-	T6Y4xtf18Ot9637a5hfEOOUqjL7VKKZhF0/EWBp4f50VFWzPSxZY6gJwQOMvG+Y2CRAAGVOyn3p
-	JEHxf3LQuYLDsTxAd1EQT5AyBbgtlICc6bWgongcHw0aN+ENrkKA8dV62gx9k9v7I2EilYJM8P1
-	Mg5+dkj811puiCoJPFcoCYCpI4K0PQ2E5gNFU5jKSdp3GHiFPZzLFw44qu6+m8MzVKM8H+dqlNY
-	9QK2zlDAgBIX0t3QjxJRqpynPAy8gbw58ji2dOWNu9nGTfi8ZCjJkgj+JMJeZ2EmlVIJgPr7ug1
-	Wpvrp1phv68LAktgqmH7rb7DSCzLTiI7zVk+y7GzfwPR1AjTJaLD/+qwJ3p8xg4/bhRqLE1ScyS
-	iBlSPj8QbyjBaofp8C0uaWm27kWbV+38NTNVoEq+MHm2k=
-X-Received: by 2002:a05:7301:6194:10b0:30c:99c8:2b1b with SMTP id 5a478bee46e88-30c99c82df7mr2109978eec.10.1782493446128;
-        Fri, 26 Jun 2026 10:04:06 -0700 (PDT)
-Received: from ?IPV6:2605:59c0:207f:5300::10dd:b102? ([2605:59c0:207f:5300::10dd:b102])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-30c7ca438ddsm18927893eec.23.2026.06.26.10.04.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Jun 2026 10:04:04 -0700 (PDT)
-Message-ID: <310cc7ad-5e38-45df-9ae1-a54ec433c130@gmail.com>
-Date: Fri, 26 Jun 2026 10:04:02 -0700
+	dkim=pass (2048-bit key) header.d=icloud.com header.i=@icloud.com header.b="E5PcMmmD"
+Received: from outbound.qs.icloud.com (unknown [127.0.0.2])
+	by p00-icloudmta-asmtp-us-east-2d-10-percent-1 (Postfix) with ESMTPS id 98EC830000F2
+	for <netfilter@vger.kernel.org>; Sat, 27 Jun 2026 22:25:14 +0000 (UTC)
+X-ICL-RepId: 019f0b2f-df59-75d7-9b59-1e5c99e3cf4e
+X-ICL-Out-Info: HUtFAUMEWwJACUgATUQeDx5WFlZNRAJCTQtMHVwCUxxBAU0dXwVSEhVdRVkMUxxaGV44Wg5bBEcUFxtcABcNVk1QG18CQg8cE1YVEx9UVgNQUR1fAgoERwRbF0YDU0VDAxcRUAFYHlZeWhdeTUcfQE1iSQFaGVscQBdKbk1TDw8ZWhRcGFNFUR9UWF4EU1YOQg08AVUAXAJdfE91LhpfBUUPVXFfA1wfQgBOdSgCXXNJek0HLV4IXh9MHB0OWAYMUE0BQwgKAlEcVg1X
+Dkim-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=icloud.com; s=1a1hai; t=1782599115; x=1785191115; bh=mes/JhKrubXawsqnKh8xD+YxKhF9uTdFiZify51xyNk=; h=From:Content-Type:Mime-Version:Subject:Message-Id:Date:To:x-icloud-hme; b=E5PcMmmDWfHOwi5ndBhET3aVSwjZcRU+FG9jepldU3QjuXFTmkcKNb7N7IHncV1bX02hed4d/IAsfdKSOMY48MqKprY8U/hyHOdK/ywO4f6acPDm/y8Iaw56MTXFc2PCwCudFcgHHGUU4H89zOslOOdSWc7rFyOBjPHc9fzwr/e9ad4WfZQkGBaugwWnptNkta3tbs+Zpb5oHRvmL9hZYmPqPDqNQGRddMRQNQwq2IEDY3FZT+L93BSUkdNW8HYlQGBCfkpBpb7oIfJzOJYiLXOKRXWomQ6gj7gpPT8DSCHHPUA87J5fim/12JGlMKLjFVLZWHVC9meJbNvGVdK4Wg==
+Received: from smtpclient.apple (unknown [17.57.155.37])
+	by p00-icloudmta-asmtp-us-east-2d-10-percent-1 (Postfix) with ESMTPSA id 2A32730000A1
+	for <netfilter@vger.kernel.org>; Sat, 27 Jun 2026 22:25:14 +0000 (UTC)
+From: Sigmond Axel <jadwhig@icloud.com>
+Content-Type: text/plain;
+	charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
 List-Subscribe: <mailto:netfilter+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:netfilter+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Question on rate limiting on nftables
-To: Reindl Harald <h.reindl@thelounge.net>, Andre Rodier <andre@rodier.me>,
- Slavko <linux@slavino.sk>, netfilter@vger.kernel.org
-References: <DJ3MTZXMKPIT.1A41M4YZMF8UY@rodier.me>
- <8d84a240-b9ae-41f4-b111-33007909b0a2@app.fastmail.com>
- <74E543AC-1B65-4E99-8324-B5758DCBA669@slavino.sk>
- <e8e26118c36111d0b4aa290e1e411ff15b6f64aa.camel@rodier.me>
- <1bdfe5c3-f889-4464-a28e-9533e209371c@thelounge.net>
-Content-Language: en-US
-From: Gordon Fisher <gordfisherman@gmail.com>
-In-Reply-To: <1bdfe5c3-f889-4464-a28e-9533e209371c@thelounge.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.600.51.1.1\))
+Subject: RA Guard DHCP Guard Pattern Possible Enhancement 
+Message-Id: <24D28770-E7FC-4756-B247-296FE56A9C54@icloud.com>
+Date: Sat, 27 Jun 2026 17:25:02 -0500
+To: netfilter@vger.kernel.org
+X-Mailer: Apple Mail (2.3864.600.51.1.1)
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNjI3MDE5OSBTYWx0ZWRfXwhjjJVe8jJJU
+ l6OdNphXN8T9RjBMXOSrLSzWxiHj4pj7enyF8MCTFv2GCgLHTKe3Mn2W3wPso+lOdghDbZlAgtr
+ 1NsX5AXdxjkO5fimT+fzXCXuV54s4hI1nPXLWmSg/H8ucN9QXqrbOrIIicqfbW2ftuc7YOMt1cK
+ Rggza9seufA5AKj/hc22YhAjvJxwJy8NHdjzNaQTp/O8NjSWA89C3YCkRyPv+0vvw+PKQMNm+CZ
+ y0ICFnIFNT/WEttAvo3/Axff7yTJctx6ktS7mp/rJjoOrAaCiJZF+cKwdQSRQ7bm5AIQUFhtW3t
+ 26kKv4YjKFZ9mShupZe
+X-Proofpoint-GUID: oZBZGnnBc6p_4R4Xsmg9iZ21vSwafsjE
+X-Proofpoint-ORIG-GUID: oZBZGnnBc6p_4R4Xsmg9iZ21vSwafsjE
 
-On 6/8/26 9:05 AM, Reindl Harald wrote:
->
->
-> Am 08.06.26 um 17:01 schrieb Andre Rodier:
->> On Mon, 2026-06-08 at 14:32 +0000, Slavko wrote:
->>> Dňa 8. júna 2026 12:45:55 UTC používateľ Kerin Millar
->>> <kfm@plushkava.net> napísal:
->>>
->>>> If the problem can be characterised as "I endure too much log noise
->>>> from sshd and I find it annoying" then perhaps configure sshd(8) to
->>>> additionally bind to some other random port than 22 and expose only
->>>> that port.
->>>
->>> Not worth of change ports, soon or latter it will be found
->>> and abused as default port.
->>
->> There is a big advantage on changing the port number, though. It is
->> reducing the noise considerably. Also, a connection attempts on a
->> different port should immediately raise attention, as it is involving
->> more than a basic SSH scan bot
->
-> and in fact you can have a few ports before as trigger to put the IP 
-> on a drop-list for a few minutes which isn't possible when you host 
-> ftp servers
->
-Which raises the question, why are people still using ye olde FTP still 
-instead of, say, SFTP?
+Greetings,  There is this old greeting format where one leg is placed =
+forward and a formal full body bow is then initiated. Required by =
+royalty 100 years ago for greeting and respect. Virtually extending that =
+now=E2=80=A6  =20
 
--- 
-gfish
+Problem:   A broadcast can come from anywhere to request a change an =
+existing RA ipv6, or DHCP ipv4 important configs.  The reply is =
+initiated by a client in both cases. The first reply is the trusted one. =
+The reply broadcast contains the MAC address and the ip of the =
+responder.  This can be stored in a tuple set for future reference.  The =
+problem comes about when there is no proper way to test if the set if it =
+is empty.  The set is set at size 1 tuple set with ip address and MAC, =
+once populated with the trusted value the client will initiate a renewal =
+and can reset the tuple set on the next reply=20
 
+The RA Guard and DHCP guard have the same pattern also DHCPv6 too.  =
+There may be something I am over looking. Maybe a  null set setting. =
+Could be a very simple and useful enhancement.  Or something I am over =
+looking.  Sigi.=20=
