@@ -1,113 +1,112 @@
-Received: from GVXPR05CU001.outbound.protection.outlook.com (mail-swedencentralazon11023133.outbound.protection.outlook.com [52.101.83.133])
+Received: from AS8PR04CU009.outbound.protection.outlook.com (mail-westeuropeazon11021097.outbound.protection.outlook.com [52.101.70.97])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57B6538DC53
-	for <netfilter@vger.kernel.org>; Thu, 15 Oct 2026 07:38:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.83.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BAC14D9577
+	for <netfilter@vger.kernel.org>; Thu, 15 Oct 2026 12:54:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.70.97
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1792049942; cv=fail; b=ZjNorKi1WLBH/TGu3tv7s48jzUWNJBe1mMXM/8Axd6S7q3dtTEP04756sri1KgLxeoIOoHjLqN5Ucs6ELky3LLg3bNrsPMyFjTKJ2mcCo8lDk0cr4NmAFppIkt/S2s0sND1pZe3kwvxqahEi0HBD5ZdLEJhm777kDa0FHxzC6rg=
+	t=1792068875; cv=fail; b=gfCvT903Xrlh0tOA7C9Es0FRG4hrqTmWn1lYPe9fXNiTmD7we3Qd4YpptjytiHbbGnJ51UhIw8VZmEeax9b+ibu8fbCV68j6brg0uR7Kpp+2fKgHZQDyBvzzVZonNBaeq5SXaMhvFHNEV/QbDCS7/KGT24t+9Wxzs2tsKCKCBT8=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1792049942; c=relaxed/simple;
-	bh=BVWGZEQyukcX2LHug9kP2d5hXDYNQnEuyHQfgqZ3778=;
-	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=P4tXU7gV/WuZNwTUd19Kl0kcU9j6lBV0AyKpu4rxJ8Y9/nWVJ26GF7Hu9Yjh2fTaL8QOVAJNk8UPfFl1j40iLphR4ZtdYzt95qlqyT9ABkin2UQ5487Zoh74mXflKnBn2hWW6ugurAPtsT8IYEneI5NM51W93mgDEzQda6rB+NE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=earthlink.iq; spf=pass smtp.mailfrom=earthlink.iq; dkim=pass (2048-bit key) header.d=earthlink.iq header.i=@earthlink.iq header.b=TjqZp0z9; arc=fail smtp.client-ip=52.101.83.133
+	s=arc-20240116; t=1792068875; c=relaxed/simple;
+	bh=BgYafUe3wYcRvqWCbmVtg6Mv4iWoppMcVYVXWh9IzIo=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=GzLpxgohr48b1qb2FXgapakdrUw9UBGK4rSjjIYkQIqu7fXbBwFjY5mMpmsRZKqg4OAxA8aQiYq1rZqkl7tAieaq4HjVyCmecDC60SW93AzD/Gcs34YuVgLmAiXgJe+2zwxkOBDRa5Rls9e4OtxbcwWGBD6yZ98kH2BUe2nDJJ0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=earthlink.iq; spf=pass smtp.mailfrom=earthlink.iq; dkim=pass (2048-bit key) header.d=earthlink.iq header.i=@earthlink.iq header.b=BDYVqLGm; arc=fail smtp.client-ip=52.101.70.97
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=earthlink.iq
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=earthlink.iq
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=earthlink.iq header.i=@earthlink.iq header.b="TjqZp0z9"
+	dkim=pass (2048-bit key) header.d=earthlink.iq header.i=@earthlink.iq header.b="BDYVqLGm"
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=A4UmPssCHqEQfoIVhnWx7qSrFcfpCb+xLIHUliqp8jKZuKjtGU8/BFaRAzYI5zEd/gJ5z/DhQPjZl+bOawMD2/ZX2xa7XwpWyilA+2dVMGCv90WNZOfgcDB0HYWRpUm8ePOGdIRScytSqEpRLkzDH/J36dAjPeq6jwujyPRpTda32lxMJp5IDHkoxYDVx3/Y5DMkiMqMtDSEX8ISvdsRqJr2Xxeqi6+bri02Isu9sRGHgK67RpfAviY4MqH7yoqjUAdhFdy0ZFD2X0+i/0Ii+FCJXLHoBU2AFs5bpxHY72xJK+LM4w6jbQeRlNGvxl+IxfWtGvcoKBqb7ORRnO0N9w==
+ b=brkR+W7IZlFBd951VK9u2SpyL9/Vf0VI5gEHff5+/f2CcyAKtu6gUjog21jJ/c08ac+H/I6XBab1iB0IzfEC70qD7kGFQVRc7u34Eng08gSL734Rc+R8fiKko/IVICNm5lLyCmCuTuq1VEFzI5WpxlAM8yk+QkhYKiUifNx0a0mdX7YaOik4Mw1Olvs/2YgUJ5gql/2cDL6el5jOxvygkHk8+oLC6OvsfCmUycJ2SDRQRml11pZwUnQfkIXO4mWryyC/69L74LhO4AeKD1ENOIOduuhuGos1Sa9dN3DeKANrcp6jHcd+q/QGAWo6z5yvqvXlYiD345z3eNiz/Cuz9w==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BVWGZEQyukcX2LHug9kP2d5hXDYNQnEuyHQfgqZ3778=;
- b=d4qEGpUkVmTXV9JOfdbxGIsnNyHrsux6LHHrveRWreiLZWjNAKuL+EeubXjTyTQVFavJMUwmkxx5Bz7m2CnenO34f0z4EajIa7oUuX3cJw31Eg9BgabRqBQxhykzmS/wOK4NcnC1ozY8NmDXI1SZjfkARymq6Izg7in47uh0HEUeql4zOikRqYUHNqIzwTBBhBnYLZiOGVTKIrI2bmgEJnCf6iU9DfnQS78HTEzysYoDv0mMG6F1NfwM6DOFIin58Gg5wi9hFNbkiKiCLeIfZzYzVEH80015ygRwZ8FgGQNoFPQLq77wPatmvkvGqXa85Av90o0fiHQ6rVZdp7L2Fw==
+ bh=BgYafUe3wYcRvqWCbmVtg6Mv4iWoppMcVYVXWh9IzIo=;
+ b=TsIzt3RJOz2cJ26nDLiavZvRZ2FNAduUhlST3KLGepoG4dfY4ijpDte09FCUBf9Bu3XM0y4ZYLdu+BGv5gEZBsoE5gQgnmV51in3qiPo39OtA6CJ3vBjVqjDdXD7n8UtLuJDnxE2aCny4pYdgpAExjKUrZC8pg4qeYUbyERZZxjFRa1FnnB0f60mMLR+KVWPofXMu9G24+RWHO7ImNKQHcsaLfc3b/a+i8UiDRVz6vKduOBFuQyxhcJ48E+zY/gA1kX+J2jF1Y8d1nBexORi6O6tokWKOu5hCrc0aFVbP91jBQOQdiYZo2AAXxtyDu+cgQU3oNsHR386c0YYrGCkEg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=earthlink.iq; dmarc=pass action=none header.from=earthlink.iq;
  dkim=pass header.d=earthlink.iq; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=earthlink.iq;
  s=selector1;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BVWGZEQyukcX2LHug9kP2d5hXDYNQnEuyHQfgqZ3778=;
- b=TjqZp0z9OjGMuoHibJN9OkYztjKPXD+/50b+btXojd/t72jxw5D+lldDXbocCi8Ef1TzweJ28KMYyUYtdCzBehdnApnZ2OQMdxmvEuvWJTOurV9+ioZukZ1QalpK2rDJpdOTDMz4SPvyRDCUv+WLhq1cRjL34gRFVAtOfnORlKyN1oDhN/fT861oLWW5DdxFxJJA8UpsWTpdwiuM/F8lHvp18uOwcwS1RY0Ym4dFFI8eOE/JFpIYPW+kSJfYh4OGiC1GJ6KxKKSeaydxsoH9WiuAlfYiO3p1TItqObNw9a50WB82to/saFpoU8E49FtYqytK0Y+zC1lrcNyFW6O+Bg==
+ bh=BgYafUe3wYcRvqWCbmVtg6Mv4iWoppMcVYVXWh9IzIo=;
+ b=BDYVqLGm5mpRCcJR24oWgghgeIEbBmlLUZ/IXRKjJWdUSDWhAuSJhjjw0Wk7AVU5CfSnKB6abSgV+Ep7fWSSem5mBfF++BGzljx3RkKTC8oL8n0BzNg07Axy+NVHp19IMVWARDoAm+W5/xwKixrCTYoxHI4tlCNuj6RqzIKG1QUZKncSzPiGUvt7uSmPwo0hemVfoiEMvcgz85zx0p+SFkGBkT2olhZJzR6JxD4EEZ1SCO347Xt76WEBY7x7PnxhMFKE448eT99PBE0SeMXkHZZwRFP2nnDmPzxocmoXrXT+1jd6lGYdft86Ng1FWzcmgHwY5Ri7r17VzwDB/PSqGA==
 Received: from AM0PR02MB4307.eurprd02.prod.outlook.com (2603:10a6:208:d9::10)
- by GV2PR02MB11970.eurprd02.prod.outlook.com (2603:10a6:150:350::22) with
+ by DB5PR02MB10189.eurprd02.prod.outlook.com (2603:10a6:10:4a6::11) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.522.13; Thu, 15 Oct
- 2026 07:38:52 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.21.496.23; Thu, 15 Oct
+ 2026 12:54:30 +0000
 Received: from AM0PR02MB4307.eurprd02.prod.outlook.com
  ([fe80::c392:dbc8:75f1:ef9c]) by AM0PR02MB4307.eurprd02.prod.outlook.com
  ([fe80::c392:dbc8:75f1:ef9c%6]) with mapi id 15.21.0522.013; Thu, 15 Oct 2026
- 07:38:52 +0000
+ 12:54:29 +0000
 From: Muhammad Zuhayr al-Tayyar <mzuhayr@earthlink.iq>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Subject: Nftables flow table hardware offload
+To: Lazuardi Nasution <mrxlazuardin@gmail.com>
+CC: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Subject: Re: Nftables flow table hardware offload
 Thread-Topic: Nftables flow table hardware offload
-Thread-Index: AQHdXHetRqLsqxqdTEqK6TWm0UBISw==
-Date: Thu, 15 Oct 2026 07:38:52 +0000
+Thread-Index: AQHdXHetRqLsqxqdTEqK6TWm0UBIS7b+RKaAgAAj5zE=
+Date: Thu, 15 Oct 2026 12:54:29 +0000
 Message-ID:
+ <AM0PR02MB4307273B9336DB6501760728C69C2@AM0PR02MB4307.eurprd02.prod.outlook.com>
+References:
  <AM0PR02MB430700A2F758257B5AD3049CC69C2@AM0PR02MB4307.eurprd02.prod.outlook.com>
+ <CA+u3Gu+KFN-r_j3BS+SBQMnM2XxB5gqENVARRC_0LP7AG8i1Og@mail.gmail.com>
+In-Reply-To:
+ <CA+u3Gu+KFN-r_j3BS+SBQMnM2XxB5gqENVARRC_0LP7AG8i1Og@mail.gmail.com>
 Accept-Language: en-US
 Content-Language: en-US
+X-Mentions: mrxlazuardin@gmail.com
 X-MS-Has-Attach:
 X-MS-TNEF-Correlator:
 msip_labels:
 authentication-results: mx.microsoft.com 1; dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=earthlink.iq;
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: AM0PR02MB4307:EE_|GV2PR02MB11970:EE_
-x-ms-office365-filtering-correlation-id: 08c7df6d-42e5-49e5-19a5-08df2a8f5bfb
+x-ms-traffictypediagnostic: AM0PR02MB4307:EE_|DB5PR02MB10189:EE_
+x-ms-office365-filtering-correlation-id: 32ff73e0-ae79-4c0d-6cf2-08df2abb737d
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam:
- BCL:0;ARA:13230040|376014|1800799024|366016|23010399003|38070700021|56012099006|10067099003|18002099003|6133799003;
+ BCL:0;ARA:13230040|366016|376014|23010399003|1800799024|6133799003|18002099003|22082099003|10067099003|4143699003|261009223027099003|56012099006|38070700021;
 x-microsoft-antispam-message-info:
- UKOb5rGI8YIfxlb3Sx0FlIhKrBtwWwewcAKCQdgYS/avWvmsOiXCKKkrjYCc6IBCAaUbyfFl89VvstYIdOMX8r4Wtd1/h5ZmpVsHhsJ+51Ge6N4BdQSkKA2qDUTU1LnrC0fwnsSyGU2LPoX4KLc75qHL9JL1SZItGfWGjK0piacs2GFh+y+PXGlvpqc/LtoSIg2I0ABDcoI+4FgZRlMCPnqX407Ec49hgJGvJX4tXlRv173lE4lDQfpdvRwfBENi1+MvmhlEsQ7pALLRTHx0rhL7MS2H1y0360SALtrjREYH3o04LhyIZW8myN02IbAqRnKlJcj1PQlqFXhS71JrO1xX6LNqpq2HR6MOSNacWtuTJqHAs1id6pEQcQcEl3CTSS6ORIdakVLHjb0UGUmzpuuYyyfqBCXqz+a9jDWDhh5pbMmmy+Ljnh9X5JjId3JRp3wn/IHSPy924SwiVMyF9w+dExbuSZOkW1KkHX/NX6Exduv7KPhiIMHEXUmclnMfCdwGiPKUxx6xmjN14EdcqDaGHX4gFLF0OFdmOjED4eIYP7WiJr0S1VjlxOVN8BDxqZ4BPG17ASmfzJnAj3SH4yZ49Vyw8+hKD2RfW46rbmIQA0qlr2Kf1gI5LXn/zA27LY6piYZyRtjctVJCQgXskvQU8JP+OpIgBRuSFeT56vQESc1kMkE+MrqrKaiRj3TtBk0RxMmIHK9n2uwGd6iv06x3NDNWQT4Zsn3DVFdiITo=
+ TallesqO80wx+zdUPE+TrFS2fKgkIi4+sZYioH85ZX0gjwYP0hB2Kk+vEmFm/QWUvxkx9F66nNqjayKsQBQQ3ZEOvUSGR0i+MmNfszTXwWLxeF1OHIBWquVfLFiwpJmYmH3ZSZWYlZhU9BFCu0ZDq8fO/2AZBT1tkMgxlhnC4ZokLlmL9MrKz3ZPItYsyZ1ybYMw37Etsu2FSrCgSYNYUa84qiQsxHSEBLbSR+UNPIhUtZdsN2wkVqg90r86Y5dzHI4vxb5+kYHJcg8GfUazjIl+aPk1xuB6StWW4UhdgCknwctqRdZaW69O9ljpAYbjYw6ZwRQgY20gR4KqZPnU+7h2RXeh/dYTCF0r0f90lHyHp8FynywhttcuYPzLEPotAIgnC6/W8DJz6OF/RK17MIr/GPD3M/Tv6K1Pr4EsPc0qBxLSb5l/XMq9Higkh2Muc9lBU3mkOBpOXdhLBEplSTDxmJy+oBb5xMcsRiwSlK3bNOomVtqK1LKL0oFEvNJ+vAu7Whlz7IqPa8PI7yEPqs34Y7L0rP8cKGbE9PB2sMxzOcgrSdZthhvmcAQW5Wwd4tvY9oaKrAymLLbd9JjqwwzZrbjWckANuF8c+7F0dgqPkuvMH2vSvCUUoIr/1iihehoDli0tnbWrZfC/oqJR1SN14nObT5V7LGwqGjcvNrfFzDsqa7Y+DWFpwIn8o74PrWlVa1enPyRnoB6hH8u6zg9DHOQ4QKFJ1bcneiBcGvg=
 x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR02MB4307.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016)(23010399003)(38070700021)(56012099006)(10067099003)(18002099003)(6133799003);DIR:OUT;SFP:1102;
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR02MB4307.eurprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(23010399003)(1800799024)(6133799003)(18002099003)(22082099003)(10067099003)(4143699003)(261009223027099003)(56012099006)(38070700021);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
 x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?NnJTL0FGY21aNWFZcjhxcUpmTXpFejFZWHZZOFFlajlqRXZTazFKZHlna0NY?=
- =?utf-8?B?bUxLajZ1ZDZyU3o1bWExNjhRdmE3NXNhV3dHbTZUcjJOR2EzcTdRNlVlNTZ6?=
- =?utf-8?B?Q3JuREtNU0MxUHM0V2t1UEtidDN6c3BoQmlyZDRJYVFiTUdiUXBqVnk3V2Uw?=
- =?utf-8?B?WTlId2JrWlcrY3JNYUhnTkFReTNrRjJDNkZ0SHc0SkFxUVpDRjQwM0poZFdP?=
- =?utf-8?B?QXliVkxlUnI1cE00d3ZRQUluYWNmNDc0UndJSi9QQWlqc2VZTUpXVXJ3RnNO?=
- =?utf-8?B?akt2aDJKckJSU1lGOEhhbU80aVpLWloxbXFkcWk5NWRIWFo3cGNBdlJjdzVl?=
- =?utf-8?B?SFBoUUswM21pTVVvbVZOc0dCblRudyszckZ2TWREb1hCSlRJQUtNZjNkT2pi?=
- =?utf-8?B?Y0V6RzdTMGQzUExCZmk4Y0Q2ckdqR3Z6TTVZUElIV2E2V2JZOWNLN0FPcmhT?=
- =?utf-8?B?RzczU2ZwL2ROYUVoMnc2VDZIUU8xWVdsMjFJSlhweU5hTjA5ekszOEJVTnp6?=
- =?utf-8?B?TVNjTUxrQ1VPTXpCdTY2REQrWm9KaVdVMm9za1FCTFNpZUZ0b2RWMkVqSVcz?=
- =?utf-8?B?cnRWWnFaYmpHRmcvSmlZTlNQRkowd0xlM0wvZGpiZ1pVVC9maVFObmhVbEIz?=
- =?utf-8?B?ZE10V1hPVksyOG9WZEM4eW1hcklyNzc3QVovcWNRdG9STkt1MzF5bWxNS0dq?=
- =?utf-8?B?a1pHMG03RXVnc1d0VlVybTg5UVVOQ2Vndlh4TWswSnhpdUxDSnJ3TTR3cDBP?=
- =?utf-8?B?ZTlVV2NlaEVtMTI5WkhrUURMdDlndmp1Y3hobWJxSkY0cEdVUU82RGVZSlBa?=
- =?utf-8?B?UjdOam4zdm54Qy9nRXJESlBOYm9RTzNnenpUa3ZzclppSzNpOVN1VnpyeGVD?=
- =?utf-8?B?anowK3Z3aDJnTlBSbGozMkU3S2IrK0d6azVkb0VCajdrbEJZQnRydjVHR3BG?=
- =?utf-8?B?ZjBQWEdwWmx0VmtVZEo5UE44ekJ5U2QzRTNiWWh6UVI1bjkrOUJ1c2Zzb25N?=
- =?utf-8?B?YU9qdC9Hc2xyNzBvWHhsd3JwN3BUY1lTKzRuY3BBdEhsMmk0RXdnMGpZZThn?=
- =?utf-8?B?T0RJbW5vb1kxVkoyZlRYcTAvMzRWM3kvWmhtbVBmbGJtL0MvWTZCMFo4akZZ?=
- =?utf-8?B?a0gya1ptS0dZazBZQkJpMXY4UFIrSSsxaGloTG9SQkxHTDA4TmplT25TRkFT?=
- =?utf-8?B?NGRtc1J2WW1TK0RGNkFZSWgrOVhNUnowZXZsazZKWlM4eVlnVE9GYTVMMEIz?=
- =?utf-8?B?U0E2R0k2V2NlYytHVmJFdWtQTlZVV1ozVENJeE93TVlibXRlY3VSWDM4NXVh?=
- =?utf-8?B?WTdiaWFHdXgvK0EyL0lJV0FYQWVxaDBLZWZyZWJUYXFMdmRHVXltY0pXVkNt?=
- =?utf-8?B?NnBRVlNhOGhjMS9CS0xOcmFNYzJyalBRRklVNUtwaW9pbkhuaXAyUHNSUjdo?=
- =?utf-8?B?V0ZuUDAwQy9VdlNsMnpmbFZ1cG92Q0JDYkw4N05IMzcvVFhWWXdGQXlqYi9W?=
- =?utf-8?B?dzJOTDRJZU84Nng2YXMyODdiVG1IM1hnZEQ3eUQvKzVmVUQ5NWllVmRuNFlp?=
- =?utf-8?B?SE5iSU44aXNGR3VpWmlLNTQyQVpiTnR1Tjd5OEJoekR4bzFEWTNrSkJwdlhl?=
- =?utf-8?B?SC8xeVVCMkp2TWpMV2FMWW9uYWxOV3E4cGdyV05kQmt1UEVuMDZSaThXUlRS?=
- =?utf-8?B?L3dvZm9SL05xSGhPa1RjdVc1YnNpUkhVSi92V3lYcVkveitmT0ZaNzJva093?=
- =?utf-8?B?TW9hQTI4ekRhbUFLejRxYUhOM1Y2L2o4WXQzTkhWWGIyQ25KaTNuak5nSFBt?=
- =?utf-8?B?V0h0cy9NYkFsMWVwSVJyemczemd5cTM4WERxd0xVejJVWWVkY1FFSlhNeWMx?=
- =?utf-8?B?clFzbHRnZ1ZZS1BsU2YvK0tvZDU5R0dvYVExb3FVbytKRFlDVUZCc3ozMFg1?=
- =?utf-8?B?Wmg3TXFQdFNvN2ViTS9VNHMwSmhNMlBidDZxMmZlNk1jKzJlK3E0R0dkbVJS?=
- =?utf-8?B?OE9OVVFrZUxzQXdhVjVJVTI3aFJac1JZcGhzc3NkZFdIbFF4ek8rUmRkd1NN?=
- =?utf-8?B?VXZKQW1NMTJDK0dWQkVFY3JTNW0zc1k5clZITzgvZDl2UmRsNzBScEtVUEpX?=
- =?utf-8?B?RHd5UEhDZlloeHlaUk04TnBWOHRRWGJndTZISWVBUlQrYitMRnl2Qjl1dkRX?=
- =?utf-8?B?SHh4bFdGKzRiMmN6SHhDcXNVckJmN3A3YjNmdEJHMVl3SjVuR3JzbkI5TGF4?=
- =?utf-8?B?QVFzbENPYndqTC8vTDkveTVZUTNxb1ZkYXM3eWREajU5OTVheUFWbjNHVnJu?=
- =?utf-8?Q?DojrzAsIXef+wRxJhC?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+ =?iso-8859-1?Q?Qymt2HwWWuZnVuUFmm+9LgcIPVp9vkHUPageIYNOU7A0IRHsHL7nBPWYiB?=
+ =?iso-8859-1?Q?t+6S4fzepHJcd3+Fy5elnxa9idv/QYVWYw7KgU4yv8wl5VYFyrwB8bsg5B?=
+ =?iso-8859-1?Q?qwQw0DZhhRhZ/RQkLXI7VczIlsHcXvXVkVC1BQaZ5fDE2OScROK21C7fmV?=
+ =?iso-8859-1?Q?N4o7PF4LA47uOT8ZsLbayzqRwoudR1cq5UHdUlX2Ikbkc1N3XMAYyt7o0N?=
+ =?iso-8859-1?Q?q+kkW3Z0HHmTbXGZEc9kDEgIutsFvxGPa8YtsJS+khpczoYCX2a+x/tPL3?=
+ =?iso-8859-1?Q?VW1OByBcUppn6UVzJ+TK2jDhTLtONvEnutQROzd+LFzWNzwnYDtxZZwOjG?=
+ =?iso-8859-1?Q?5lddyWv/s6wDxzaD+fMyQ4FzCRpsjpcnnQhxlLbcoKIKRunNezydMzinbp?=
+ =?iso-8859-1?Q?5X+3ADs+MOjPGibw4sY9tl+wlEPtkky/FL0uSV+OUaxNdhrOvdxxZps2J/?=
+ =?iso-8859-1?Q?/8fKj7cW5DFoiiXJ6FzlG+GkZiYHmdY9cZba6ip0ikPsFO1qcu9RqBuPiz?=
+ =?iso-8859-1?Q?a0tioi1LoKu7m8sm0hg2iLIIfn0JiMhocE0MI0bdDWBVUzpOfHtSr1MoSC?=
+ =?iso-8859-1?Q?8vqpAadOrHA9F/dWsfJmAkZ7HWAkk5Hmshefdv99ryrK3EeaJd3o5Jctv6?=
+ =?iso-8859-1?Q?JgM5aQ7I4+ub1WY8PIRA89JIQ81Gi59WPQZ1I2KHjmEgVZMPgE7B1dlMmn?=
+ =?iso-8859-1?Q?saRupACI4QNNQoLZRDmZLaGF1Cr/b0DU7yw54WXB5f/2P4nsmZWZi7cVpz?=
+ =?iso-8859-1?Q?RcaLBZHHHyQphwoZDroH7TsVJOXRXqJbisLQbNIyTG8SLarBTNdVExGOPj?=
+ =?iso-8859-1?Q?/AqMA/sBhX4ZDaxLqhmSwcpxTOmoP0e6voEIKVY94hkT7Gy09L1cQmGz9d?=
+ =?iso-8859-1?Q?iizf9PJV+nvKKbaJ8zM/62lr3LvTCzmEfvB4O+lJ41l6yzj+uSBc/+h1uw?=
+ =?iso-8859-1?Q?5lZVu/3yBpvSZJbFgv+Pf4aZ9sOPmssp3ehqDtm8ju5Be0Y2sGAaPo6neJ?=
+ =?iso-8859-1?Q?HDK8KsbVzbTylq9IJVhjbgJGqSW7hW8MB3d5G0aNVNWoM+lt+mhMSTT2Uc?=
+ =?iso-8859-1?Q?79xieUHi8cRM7yBFbtk1Pl+q3zpFubF85aYV4lsWtGTwBGaNR8LVFGjxZz?=
+ =?iso-8859-1?Q?mLG7zBBVnivQaQOJHYDHre550qdZZ/ORrDZys2fsjI5bOXE2KLpwBrffnE?=
+ =?iso-8859-1?Q?+C8O9GZ5TvB/GB+2a/wxHNjf1aOvfStMSCduX3kPUo9TsZbmODlz+/HtNW?=
+ =?iso-8859-1?Q?D75mpljhD/TxDnNO1vMcd+NLrqsEocJguuNQuH42xiZu5I81wTKZFOFuGj?=
+ =?iso-8859-1?Q?fEKxMNBUX9Bj8N2IKP4ggxw4iEj6v2wnhlNwo09lrH/Ru6iwNjzyaqNb9X?=
+ =?iso-8859-1?Q?5yWimq9V2c7pE9byfuRbnR1WNDbrByQTsEtTlJpjKICh1fN4xWQJ91HlBa?=
+ =?iso-8859-1?Q?sb1YuSKYIYGN5pXh3/irQJHleJG9Ctk6o5zTZvC9rQNsxLA26MS2fxeqOn?=
+ =?iso-8859-1?Q?6qe473i9BD8jq3a9AuWUIP8eR4NwLx3VKXwiYHKWJDbpg1gTnY5Y+8TreN?=
+ =?iso-8859-1?Q?hEyUK2tHtjoq6QcNbbgbOw15uFUAm9R9qrdTFVqmSn1E3F1SOuS4B1grTq?=
+ =?iso-8859-1?Q?FnfLbYOQS1IKVWAbM6XHyzpug/IMah4GwHrRNbvX5z3sROBnVQmKa7AYDO?=
+ =?iso-8859-1?Q?Y+C9o9+IL02so0QBDvKWZ5SiZSbXJuyr1YH/V5/I7q9nMuiDLX2oTc0qdI?=
+ =?iso-8859-1?Q?gikHEV5CaCnb+dhCdETaC/TgcBF/ty0SvED647kWCdWrbM?=
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: netfilter@vger.kernel.org
 List-Id: <netfilter.vger.kernel.org>
@@ -117,41 +116,97 @@ MIME-Version: 1.0
 X-OriginatorOrg: earthlink.iq
 X-MS-Exchange-CrossTenant-AuthAs: Internal
 X-MS-Exchange-CrossTenant-AuthSource: AM0PR02MB4307.eurprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 08c7df6d-42e5-49e5-19a5-08df2a8f5bfb
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2026 07:38:52.1615
+X-MS-Exchange-CrossTenant-Network-Message-Id: 32ff73e0-ae79-4c0d-6cf2-08df2abb737d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Oct 2026 12:54:29.4230
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
 X-MS-Exchange-CrossTenant-id: 89d949e4-9c48-4c58-9092-cf9b53301a04
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: D7xf6af3IWSvPb5zW5uUxrF0yx5ZfQqP0RY8rnTZbjg5d4eb4+O+ahSPOKMWR17/GW1qOjBfwG3I0Jaa4K+rOA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV2PR02MB11970
+X-MS-Exchange-CrossTenant-userprincipalname: d0MUMFW24aJKvGzIhoYmFzxQydwYoEXt4buf2AfdXHtOnyAvOqZ/3PJ696x8aLllGvj/+0Ise4S3AEJJn2FQkA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB5PR02MB10189
 
-RGVhciBUZWFtLCAKCkdyZWV0aW5ncywgCgpJIG5lZWQgdG8gdmVyaWZ5IGlmIHRoZSBuZnRhYmxl
-IGlzIGRlc2lnbmVkIHRvIHdvcmsgd2l0aCB0aGlzIHNldHVwLCBJIG5lZWQgdG8gaW1wbGVtZW50
-IGZpcmV3YWxsLCBidXQgd2l0aCBoYXJkd2FyZSBvZmZsb2FkIGZvciB0aGUgZmxvdyB0YWJsZSB0
-byBnYWluIHRoZSBtYXhpbXVtIHBlcmZvcm1hbmNlLgoKSSBhbSBwbGFubmluZyB0byBidXkgTklD
-IHRoYXQgaGFzIGhhcmR3YXJlIGFjY2VsZXJhdGlvbiBsaWtlIE52aWRpYSBCYXNlZCBjaGlwIENv
-bm5lY3RYLTYgRFgsIHdoaWNoIGlzIGVxdWlwcGVkIHdpdGggQVNBUDIgZmVhdHVyZXMuCgpBcyBJ
-IHVuZGVyc3RhbmQgSWYgSSBuZWVkIHRvIGltcGxlbWVudCB0aGUgaGFyZHdhcmUgb2ZmbG9hZCwg
-SSBoYXZlIHRvIGV4cG9zZSB0aGUgbmljIGVzd2l0Y2ggdG8gdGhlIGtlcm5lbCB2aWEgc3dpdGNo
-ZGV2IG1vZGUsIGFuZCBpbiBteSBkZXNpZ24gdGhlIHNlcnZlciBzaG91bGQgaGF2ZSBkdWFsIGhv
-bWUgY29ubmVjdGlvbiB0byB0aGUgc3dpdGNoLCBzbyBib25kIGlzIHJlcXVpcmVkLCBidXQgYXMg
-d2UgZXhwb3NlZCB0aGUgZXN3aXRjaCwgd2UgaGF2ZSB0byBtYWtlIGhhcmR3YXJlIGxhZyB3aXRo
-IExBQ1AgKDgwMi4zYWQpLCBhbmQgdGhpcyB3aWxsIG1ha2UgdGhlIGZvcndhcmRpbmcgZGF0YWJh
-c2Ugc2hhcmVkIGJldHdlZW4gdGhlIHR3byBwb3J0cyBpbiBzYW1lIE5JQy4KCkF0IHRoZSBlbmQg
-dGhlcmUgYXJlIHR3byByZXByZXNlbnRvcnMgc2hvdWxkIGJlIGV4cG9zZWQgdG8ga2VybmVsIHRv
-IHVzZSB0aGVtIGluIGJvbmQsIGlmIHRoaXMgc2V0dXAgaXMgYmxvY2tlciwgd2UgY2FuIGZhbGwg
-YmFjayB0byBzaW5nbGUgY29ubmVjdGlvbiBpbnN0ZWFkIG9mIHR3by4KCkFsc28sIGluIGVpdGhl
-ciBjYXNlLCBtdWx0aXBsZSBWbGFucyBzaG91bGQgYmUgcGFzc2VkIG9uIHRoZSB1cGxpbmsgaW50
-ZXJmYWNlIHRoYXQgcmVwcmVzZW50cyB0aGUgdXBsaW5rIHBlZXJpbmcgcGx1cyB0aGUgVmxhbnMg
-Zm9yIHRoZSBwcm90ZWN0ZWQgc2VydmljZXMuCgpOb3RlLCB3ZSBhcmUgZnJlZSB0byB1c2UgYW55
-IGtlcm5lbCByZWxlYXNlIHRoYXQgc3VwcG9ydHMgdGhpcyBmZWF0dXJlLgpPdXIgcXVlc3Rpb25z
-CuKAguKAguKAguKAgmEpIElzIG5mdGFibGVzIChuZXRmaWx0ZXIpIGZsb3d0YWJsZSBoYXJkd2Fy
-ZSBvZmZsb2FkIG9mZmljaWFsbHkgc3VwcG9ydGVkIG9uIHN1Y2ggTklDLCBpZiBub3QgaXQgd291
-bGQgYmUgZ3JlYXQgaWYgeW91IHNoYXJlIHdoYXQgaXQgaXMgc3VwcG9ydGVkCuKAguKAguKAguKA
-ggrigILigILigILigIJiKSB3aGF0IGludGVyZmFjZSBzaG91bGQgd2UgcHV0IGluc2lkZSB0aGUg
-ZGVmaW5pdGlvbiBvZiBmbG93IHRhYmxlIGluIG5mdGFibGUgY29uZmlnPyBJcyBpdCBhIGJvbmQs
-ICBvciB0aGUgcmVwcmVzZW50ZXJzIG9yIHRoZSBzdWItaW50ZXJmYWNlcz8gICBJIGFtIGFza2lu
-ZyBiZWNhdXNlIG5vdCBhbGwgaW50ZXJmYWNlIHR5cGVzIGhhdmUgaGFuZGxlciB0byB0aGUgVENf
-U0VUVVBfRlQuCgoKQXBwcmVjaWF0ZSB5b3VyIHN1cHBvcnQKCk1vaGFtbWVkIFp1aGFpcgpFYXJ0
-aGxpbmsgVGVsZWNvbW11bmljYXRpb25zCg==
+Dear @Lazuardi Nasution,=A0=0A=
+=0A=
+Thanks for your reply.=0A=
+=0A=
+Actually, I am building the firewall around nftables, and keep OVS and SR-I=
+OV away for simplicity, but the problem is I don't think all interface type=
+s are accepted (like bond, bond.vlan) for the flow table HW offload , I tra=
+ced part of the code in=A0=0A=
+- net/netfilter/nf_tables_api.c=0A=
+- net/netfilter/nf_flow_table_offload.c=0A=
+- drivers/net/ethernet/mellanox/mlx5/core/en/rep/tc.c=0A=
+=0A=
+if the interface is bond, the offload for the "TC_Setup_FT" is rejected=0A=
+=0A=
+=0A=
+Best regards.=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+=0A=
+________________________________________=0A=
+From: Lazuardi Nasution <mrxlazuardin@gmail.com>=0A=
+Sent: Thursday, October 15, 2026 11:25 AM=0A=
+To: Muhammad Zuhayr al-Tayyar <mzuhayr@earthlink.iq>=0A=
+Cc: netfilter@vger.kernel.org <netfilter@vger.kernel.org>=0A=
+Subject: Re: Nftables flow table hardware offload=0A=
+=0A=
+=0A=
+[External Email] This message originated from outside our organization. Ple=
+ase exercise caution when clicking links or opening attachments.=0A=
+=0A=
+Hi=A0Muhammad,=0A=
+=0A=
+1. I only have worked with OVS based ASAP2. I think it should be the same w=
+ith nftables, so the nftables will be on the OVS side as control plane.=0A=
+=0A=
+2. Like on OVS, you should bind PF and VF representor to nftables. Don't fo=
+rget to enable "offload" flag. For LACP, the PF is bonding interface.=0A=
+=0A=
+Best regards.=0A=
+=0A=
+On Thu, Oct 15, 2026, 2:39 PM Muhammad Zuhayr al-Tayyar <mzuhayr@earthlink.=
+iq> wrote:=0A=
+Dear Team,=0A=
+=0A=
+Greetings,=0A=
+=0A=
+I need to verify if the nftable is designed to work with this setup, I need=
+ to implement firewall, but with hardware offload for the flow table to gai=
+n the maximum performance.=0A=
+=0A=
+I am planning to buy NIC that has hardware acceleration like Nvidia Based c=
+hip ConnectX-6 DX, which is equipped with ASAP2 features.=0A=
+=0A=
+As I understand If I need to implement the hardware offload, I have to expo=
+se the nic eswitch to the kernel via switchdev mode, and in my design the s=
+erver should have dual home connection to the switch, so bond is required, =
+but as we exposed the eswitch, we have to make hardware lag with LACP (802.=
+3ad), and this will make the forwarding database shared between the two por=
+ts in same NIC.=0A=
+=0A=
+At the end there are two representors should be exposed to kernel to use th=
+em in bond, if this setup is blocker, we can fall back to single connection=
+ instead of two.=0A=
+=0A=
+Also, in either case, multiple Vlans should be passed on the uplink interfa=
+ce that represents the uplink peering plus the Vlans for the protected serv=
+ices.=0A=
+=0A=
+Note, we are free to use any kernel release that supports this feature.=0A=
+Our questions=0A=
+a) Is nftables (netfilter) flowtable hardware offload officially supported =
+on such NIC, if not it would be great if you share what it is supported=0A=
+=0A=
+b) what interface should we put inside the definition of flow table in nfta=
+ble config? Is it a bond,=A0 or the representers or the sub-interfaces?=A0 =
+=A0I am asking because not all interface types have handler to the TC_SETUP=
+_FT.=0A=
+=0A=
+=0A=
+Appreciate your support=0A=
+=0A=
+Mohammed Zuhair=0A=
+Earthlink Telecommunications=
